@@ -17,8 +17,8 @@ import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
 public class GetOrganisasjonCommand implements Callable<OrganisasjonDTO> {
     private final WebClient webClient;
     private final String token;
-    private final String miljo;
     private final String orgnummer;
+    private final String miljo;
 
     @Override
     public OrganisasjonDTO call() {

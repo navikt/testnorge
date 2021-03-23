@@ -10,7 +10,9 @@ spring:
 
 
 consumers:
-  organisasjonapi:
-    url: https://testnorge-organisasjon-api.dev.adeo.no
+  testnav-organisasjon-service:
+    url: https://testnav-organisasjon-service.dev.intern.nav.no
+    name: testnav-organisasjon-service
+    cluster: dev-gcp
+    namespace: dolly
     threads: 7
-    client_id: f4167796-bf43-438b-a282-a480e8108d0c
