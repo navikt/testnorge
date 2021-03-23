@@ -71,16 +71,7 @@ export const Oppholdsstatus = ({ formikBag }) => {
 			formikBag.setFieldValue('udistub.harOppholdsTillatelse', false)
 			formikBag.setFieldValue('udistub.oppholdStatus.ikkeOppholdstilatelseIkkeVilkaarIkkeVisum', {
 				avslagEllerBortfall: {
-					avgjorelsesDato: null,
-					avslagOppholdsrettBehandlet: null,
-					avslagOppholdstillatelseBehandletGrunnlagEOS: null,
-					avslagOppholdstillatelseBehandletGrunnlagOvrig: null
-				},
-				ovrigIkkeOppholdsKategoriArsak: null,
-				utvistMedInnreiseForbud: {
-					innreiseForbud: null,
-					innreiseForbudVedtaksDato: null,
-					varighet: null
+					avgjorelsesDato: null
 				}
 			})
 		} else if (value === 'UAVKLART') {
@@ -99,7 +90,7 @@ export const Oppholdsstatus = ({ formikBag }) => {
 		<React.Fragment>
 			<DollySelect
 				name="oppholdsstatus"
-				label="Oppholdsstatus"
+				label="Innenfor eller utenfor EØS"
 				value={oppholdsstatus}
 				options={Options('oppholdsstatus')}
 				onChange={v => endreOppholdsstatus(v.value)}

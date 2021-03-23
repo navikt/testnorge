@@ -44,8 +44,7 @@ const arbeidsadgangFelter = {
 		fra: null,
 		til: null
 	},
-	typeArbeidsadgang: null,
-	forklaring: null
+	typeArbeidsadgang: null
 }
 
 UdiPanel.heading = 'UDI'
@@ -73,7 +72,8 @@ UdiPanel.initialValues = ({ set, del, has }) => ({
 		add: () =>
 			set('udistub.arbeidsadgang', {
 				...arbeidsadgangFelter,
-				hjemmel: ''
+				hjemmel: '',
+				forklaring: null
 			}),
 		remove: () => del('udistub.arbeidsadgang.hjemmel')
 	},
