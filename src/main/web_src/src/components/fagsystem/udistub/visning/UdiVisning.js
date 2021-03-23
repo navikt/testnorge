@@ -10,7 +10,7 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 export const UdiVisning = ({ data, loading }) => {
 	if (loading) return <Loading label="Laster UDI-data" />
-	if (!data) return false
+	if (!data || Object.keys(data).length === 0) return false
 
 	return (
 		<div>

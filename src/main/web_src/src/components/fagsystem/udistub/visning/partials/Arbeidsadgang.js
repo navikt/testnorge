@@ -10,8 +10,8 @@ export const Arbeidsadgang = ({ arbeidsadgang }) => {
 		typeArbeidsadgang,
 		arbeidsOmfang,
 		periode,
-		forklaring,
-		hjemmel
+		hjemmel,
+		forklaring
 	} = arbeidsadgang
 
 	return (
@@ -29,8 +29,8 @@ export const Arbeidsadgang = ({ arbeidsadgang }) => {
 				/>
 				<TitleValue title="Fra dato" value={Formatters.formatStringDates(periode && periode.fra)} />
 				<TitleValue title="Til dato" value={Formatters.formatStringDates(periode && periode.til)} />
-				<TitleValue title="Forklaring" value={forklaring} />
 				<TitleValue title="Hjemmel" value={hjemmel} />
+				<TitleValue title="Forklaring" value={forklaring} />
 			</div>
 		</div>
 	)

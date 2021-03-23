@@ -3,18 +3,12 @@ import _get from 'lodash/get'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import { AvslagEllerBortfall, AvslagEllerBortfallVisning } from './AvslagEllerBortfallVisning'
-import {
-	UtvistMedInnreiseForbud,
-	UtvistMedInnreiseForbudVisning
-} from './UtvistMedInnreiseForbudVisning'
 
 type Opphold = {
 	oppholdsstatus: {
 		oppholdSammeVilkaar: {}
 		ikkeOppholdstilatelseIkkeVilkaarIkkeVisum: {
 			avslagEllerBortfall: AvslagEllerBortfall
-			utvistMedInnreiseForbud: UtvistMedInnreiseForbud
-			ovrigIkkeOppholdsKategoriArsak: string
 		}
 		uavklart: boolean
 	}
@@ -102,24 +96,11 @@ export const Oppholdsstatus = (opphold: Opphold) => {
 						Formatters.showLabel([currentOppholdsrettType], oppholdsstatus[currentOppholdsrettType])
 					}
 				/>
-				<TitleValue
-					title="Øvrig ikkeoppholds årsak"
-					value={Formatters.showLabel(
-						'ovrigIkkeOppholdsKategoriArsak',
-						oppholdsstatus.ikkeOppholdstilatelseIkkeVilkaarIkkeVisum?.ovrigIkkeOppholdsKategoriArsak
-					)}
-				/>
 			</div>
 			<AvslagEllerBortfallVisning
 				// @ts-ignore
 				avslagEllerBortfall={
 					oppholdsstatus?.ikkeOppholdstilatelseIkkeVilkaarIkkeVisum?.avslagEllerBortfall
-				}
-			/>
-			<UtvistMedInnreiseForbudVisning
-				// @ts-ignore
-				utvistMedInnreiseForbud={
-					oppholdsstatus?.ikkeOppholdstilatelseIkkeVilkaarIkkeVisum?.utvistMedInnreiseForbud
 				}
 			/>
 		</div>

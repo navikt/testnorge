@@ -14,7 +14,7 @@ const selectOptions: SelectOptions = {
 		{ value: 'BOST', label: 'BOST' },
 		{ value: 'FDAT', label: 'FDAT (dødfødt)' }
 	],
-	// kjonn: [{ value: 'K', label: 'Kvinne' }, { value: 'M', label: 'Mann' }],
+
 	kjonnBarn: [
 		{ value: 'K', label: 'Jente' },
 		{ value: 'M', label: 'Gutt' },
@@ -38,7 +38,7 @@ const selectOptions: SelectOptions = {
 		{ value: true, label: 'Ja' },
 		{ value: false, label: 'Nei' }
 	],
-	// stringBoolean: [{ value: 'true', label: 'Ja' }, { value: 'false', label: 'Nei' }],
+
 	adresseNrType: [
 		{ value: 'POSTNR', label: 'postnummer' },
 		{ value: 'KOMMUNENR', label: 'kommunenummer' }
@@ -135,12 +135,6 @@ const selectOptions: SelectOptions = {
 		{ value: 'FO', label: 'Fengsel' }
 	],
 
-	// varighet: [
-	// 	{ value: 'L', label: 'Langvarig' },
-	// 	{ value: 'K', label: 'Kortvarig' },
-	// 	{ value: 'U', label: 'Ubestemt' }
-	// ],
-
 	// UDI
 	oppholdsstatus: [
 		{ value: 'eosEllerEFTAOpphold', label: 'EØS- eller EFTA-opphold' },
@@ -201,16 +195,6 @@ const selectOptions: SelectOptions = {
 		{ value: 'MIDLERTIDIG', label: 'Midlertidig' }
 	],
 
-	ovrigIkkeOppholdsKategoriArsak: [
-		{ value: 'OPPHEVET_INNREISEFORBUD', label: 'Opphevet innreiseforbud' },
-		{ value: 'ANNULERING_AV_VISUM', label: 'Annulering av visum' },
-		{ value: 'UTLOPT_OPPHOLDSTILLATELSE', label: 'Utløpt oppholdstillatelse' },
-		{
-			value: 'UTLOPT_EO_SELLER_EFTA_OPPHOLDSRETT_ELLER_EO_SELLER_EFTA_OPPHOLDSTILLATELSE',
-			label: 'Utløpt oppholdsrett/oppholdstillatelse'
-		}
-	],
-
 	avslagGrunnlagOverig: [
 		{ value: 'PERMANENT', label: 'Permanent' },
 		{ value: 'BESKYTTELSE', label: 'Beskyttelse' },
@@ -246,13 +230,6 @@ const selectOptions: SelectOptions = {
 		{ value: 'UAVKLART', label: 'Uavklart' }
 	],
 
-	varighet: [
-		{ value: 'ETT_AR', label: 'Ett år' },
-		{ value: 'TO_AR', label: 'To år' },
-		{ value: 'FEM_AR', label: 'Fem år' },
-		{ value: 'VARIG', label: 'Varig' }
-	],
-
 	jaNeiUavklart: [
 		{ value: 'JA', label: 'Ja' },
 		{ value: 'NEI', label: 'Nei' },
@@ -285,8 +262,6 @@ const selectOptions: SelectOptions = {
 		{ value: false, label: 'Navn' },
 		{ value: true, label: 'ID-nummer' }
 	],
-
-	// nyIdent: [{ value: 'navn', label: 'Navn' }, { value: 'idnummer', label: 'ID-nummer' }],
 
 	identtypeUtenBost: [
 		{ value: 'FNR', label: 'FNR' },

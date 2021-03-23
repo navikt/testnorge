@@ -44,9 +44,9 @@ export const initialValues = {
 		// @ts-ignore
 		typeArbeidsadgang: null,
 		// @ts-ignore
-		forklaring: null,
+		hjemmel: '',
 		// @ts-ignore
-		hjemmel: ''
+		forklaring: null
 	},
 	udistub: [
 		{

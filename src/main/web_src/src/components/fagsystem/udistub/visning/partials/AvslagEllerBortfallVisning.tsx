@@ -5,9 +5,6 @@ import Formatters from '~/utils/DataFormatter'
 export type AvslagEllerBortfall = {
 	avslagEllerBortfall: {
 		avgjorelsesDato: Date
-		avslagOppholdsrettBehandlet: string
-		avslagOppholdstillatelseBehandletGrunnlagEOS: string
-		avslagOppholdstillatelseBehandletGrunnlagOvrig: string
 	}
 }
 
@@ -19,27 +16,6 @@ export const AvslagEllerBortfallVisning = ({ avslagEllerBortfall }: AvslagEllerB
 				<TitleValue
 					title="Avgjørelsesdato"
 					value={Formatters.formatStringDates(avslagEllerBortfall.avgjorelsesDato)}
-				/>
-				<TitleValue
-					title="Avslag Oppholdsrett"
-					value={Formatters.showLabel(
-						'avslagOppholdsrettBehandlet',
-						avslagEllerBortfall.avslagOppholdsrettBehandlet
-					)}
-				/>
-				<TitleValue
-					title="Avslag grunnlag EØS"
-					value={Formatters.showLabel(
-						'avslagGrunnlagTillatelseGrunnlagEOS',
-						avslagEllerBortfall.avslagOppholdstillatelseBehandletGrunnlagEOS
-					)}
-				/>
-				<TitleValue
-					title="Avslag grunnlag øvrig"
-					value={Formatters.showLabel(
-						'avslagGrunnlagOverig',
-						avslagEllerBortfall.avslagOppholdstillatelseBehandletGrunnlagOvrig
-					)}
 				/>
 			</div>
 		</>
