@@ -40,6 +40,7 @@ applications:
   testnav-jenkins-batch-status-service: dev-gcp.dolly.testnav-jenkins-batch-status-service
   tps-identer-vedlikehold: dev-fss.dolly.tps-identer-vedlikehold
   testnav-inntektsmelding-generator-service: dev-gcp.dolly.testnav-inntektsmelding-generator-service
+  testnav-helsepersonell-service: dev-gcp.dolly.testnav-helsepersonell-service
 
 zuul:
   routes:

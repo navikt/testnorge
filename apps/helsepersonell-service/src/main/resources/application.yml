@@ -1,0 +1,29 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+spring:
+  main:
+    banner-mode: off
+  application:
+    version: application.version.todo
+    name: testnav-helsepersonell-service
+
+samhandlerregisteret.api.threads: 5
+hodejegeren.api.threads: 2
+
+avspillingsgruppe.helsepersonell.id: 100001163
+
+helsepersonell.controller.cache.hours: 24
+
+
+consumers:
+  testnav-hodejegeren-proxy:
+    cluster: dev-fss
+    namespace: dolly
+    threads: 2
+    name: testnav-hodejegeren-proxy
+    url: https://testnav-hodejegeren-proxy.dev-fss-pub.nais.io
+  testnav-samhandlerregisteret-proxy:
+    cluster: dev-fss
+    namespace: dolly
+    threads: 5
+    name: testnav-samhandlerregisteret-proxy
+    url: https://testnav-samhandlerregisteret-proxy.dev-fss-pub.nais.io
