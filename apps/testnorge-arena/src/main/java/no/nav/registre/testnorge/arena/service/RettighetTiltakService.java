@@ -18,11 +18,13 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.arena.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.testnorge.arena.consumer.rs.TiltakSyntConsumer;
@@ -35,7 +37,9 @@ import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTiltakspenge
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Deltakerstatuser;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 
 import static no.nav.registre.testnorge.arena.service.util.ServiceUtils.BEGRUNNELSE;
@@ -167,23 +171,6 @@ public class RettighetTiltakService {
         return identerMedOpprettedeTiltak;
     }
 
-    Map<String, List<NyttVedtakResponse>> opprettTiltaksaktiviteter(
-            List<RettighetRequest> rettigheter
-    ) {
-        List<RettighetRequest> tiltaksaktiviteter = new ArrayList<>(rettigheter.size());
-        for (var rettighet : rettigheter) {
-            if (!(rettighet instanceof RettighetTilleggRequest)) {
-                log.error("Opprettelse av tiltaksaktivitet er kun støttet for tilleggsstønad");
-                continue;
-            }
-            if (rettighet.getVedtakTillegg() != null && !rettighet.getVedtakTillegg().isEmpty()) {
-                tiltaksaktiviteter.add(opprettRettighetTiltaksaktivitetRequest(rettighet, false));
-            }
-        }
-
-        return rettighetArenaForvalterConsumer.opprettRettighet(tiltaksaktiviteter);
-    }
-
     RettighetTiltaksaktivitetRequest opprettRettighetTiltaksaktivitetRequest(
             RettighetRequest rettighet,
             boolean erHistoriskAktivitet
@@ -247,6 +234,70 @@ public class RettighetTiltakService {
         serviceUtils.lagreIHodejegeren(responses);
 
         return responses;
+    }
+
+    List<RettighetTiltaksaktivitetRequest> getTiltaksaktivitetRettigheter(
+            String personident,
+            String miljoe,
+            List<NyttVedtakTillegg> tillegg,
+            Boolean erHistoriskAktivitet
+    ) {
+        if (tillegg != null && !tillegg.isEmpty()) {
+            var rettigheter = new ArrayList<RettighetTiltaksaktivitetRequest>();
+
+            var tilleggRequests = getTilleggRequestsForTiltaksaktivitet(personident, miljoe, tillegg);
+
+            for (var request : tilleggRequests) {
+                rettigheter.add(opprettRettighetTiltaksaktivitetRequest(request, erHistoriskAktivitet));
+            }
+
+            return rettigheter;
+        }
+        return Collections.emptyList();
+    }
+
+    private List<RettighetTilleggRequest> getTilleggRequestsForTiltaksaktivitet(
+            String personident,
+            String miljoe,
+            List<NyttVedtakTillegg> tillegg
+    ) {
+        var tilleggRequests = new ArrayList<RettighetTilleggRequest>();
+
+        ArrayList<Integer> nyRettighetIndices = new ArrayList<>();
+
+        if (tillegg.size() == 1){
+            nyRettighetIndices = (ArrayList<Integer>) Arrays.asList(0,1);
+        }else{
+            for (int i = 0; i < tillegg.size(); i++) {
+                if (tillegg.get(i).getVedtaktype().equals("O")) {
+                    nyRettighetIndices.add(i);
+                }
+                if (i == tillegg.size() - 1) {
+                    nyRettighetIndices.add(i + 1);
+                }
+            }
+        }
+
+
+        for (int j = 0; j < nyRettighetIndices.size() - 1; j++) {
+            var subList = tillegg.subList(nyRettighetIndices.get(j), nyRettighetIndices.get(j + 1));
+            var perioder = subList.stream().map(NyttVedtakTillegg::getVedtaksperiode).collect(Collectors.toList());
+            var fraDato = Collections.min(perioder.stream().map(Vedtaksperiode::getFom).collect(Collectors.toList()));
+            var tilDato = Collections.max(perioder.stream().map(Vedtaksperiode::getTom).collect(Collectors.toList()));
+
+            var oppdatertVedtak = new NyttVedtakTillegg();
+            oppdatertVedtak.getVedtaksperiode().setFom(fraDato);
+            oppdatertVedtak.getVedtaksperiode().setTom(tilDato);
+            oppdatertVedtak.setRettighetKode(subList.get(0).getRettighetKode());
+            oppdatertVedtak.setBegrunnelse(BEGRUNNELSE);
+            var rettighetRequest = new RettighetTilleggRequest(Collections.singletonList(oppdatertVedtak));
+            rettighetRequest.setPersonident(personident);
+            rettighetRequest.setMiljoe(miljoe);
+
+            tilleggRequests.add(rettighetRequest);
+        }
+
+        return tilleggRequests;
     }
 
     private Map<String, List<NyttVedtakResponse>> aktiverTiltaksdeltakelse(

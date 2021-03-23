@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arena.consumer.rs.util.ConsumerUtils;
 import no.nav.registre.testnorge.arena.service.util.ArbeidssoekerUtils;
 import no.nav.registre.testnorge.arena.service.util.IdenterUtils;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -191,17 +192,6 @@ public class RettighetTilleggService {
         return opprettTilleggsstoenad(avspillergruppeId, miljoe, antallNyeIdenter, tilleggSyntConsumer.opprettReisestoenadArbeidssoekere(syntRequest));
     }
 
-    public void opprettTiltaksaktiviteter(List<RettighetRequest> rettigheter) {
-        var aktivitetResponse = rettighetTiltakService.opprettTiltaksaktiviteter(rettigheter);
-        for (var response : aktivitetResponse.values()) {
-            for (var vedtakResponse : response) {
-                if (vedtakResponse.getFeiledeRettigheter() != null && !vedtakResponse.getFeiledeRettigheter().isEmpty()) {
-                    log.error("Kunne ikke opprette aktivitet på ident {}", vedtakResponse.getFeiledeRettigheter().get(0).getPersonident());
-                }
-            }
-        }
-    }
-
     private Map<String, List<NyttVedtakResponse>> opprettTilleggsstoenad(
             Long avspillergruppeId,
             String miljoe,
@@ -210,21 +200,22 @@ public class RettighetTilleggService {
     ) {
         var utvalgteIdenter = identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
 
-        List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
+        List<RettighetRequest> rettigheter = new ArrayList<>();
+
         for (var syntetisertRettighet : syntetiserteRettigheter) {
+            var ident = utvalgteIdenter.remove(utvalgteIdenter.size() - 1);
             syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
 
             var rettighetRequest = new RettighetTilleggRequest(Collections.singletonList(syntetisertRettighet));
 
-            rettighetRequest.setPersonident(utvalgteIdenter.remove(utvalgteIdenter.size() - 1));
+            rettighetRequest.setPersonident(ident);
             rettighetRequest.setMiljoe(miljoe);
 
+            rettigheter.addAll(rettighetTiltakService.getTiltaksaktivitetRettigheter(ident, miljoe, Collections.singletonList(syntetisertRettighet), false));
             rettigheter.add(rettighetRequest);
         }
 
         arbeidssoekerUtils.opprettArbeidssoekerTillegg(rettigheter, miljoe);
-
-        opprettTiltaksaktiviteter(rettigheter);
 
         var identerMedOpprettedeTillegg = rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
         serviceUtils.lagreIHodejegeren(identerMedOpprettedeTillegg);
