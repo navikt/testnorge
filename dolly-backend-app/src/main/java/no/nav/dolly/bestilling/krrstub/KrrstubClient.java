@@ -68,7 +68,7 @@ public class KrrstubClient implements ClientRegister {
     private void kobleMaalformTilSpraak(RsDollyUtvidetBestilling bestilling, DigitalKontaktdata digitalKontaktdata) {
 
         if (nonNull(bestilling.getTpsf()) && isKrrMaalform(bestilling.getTpsf().getSprakKode()) && isBlank(digitalKontaktdata.getSpraak())) {
-            digitalKontaktdata.setSpraak(bestilling.getTpsf().getSprakKode());
+            digitalKontaktdata.setSpraak(bestilling.getTpsf().getSprakKode().toLowerCase());
             digitalKontaktdata.setSpraakOppdatert(ZonedDateTime.now());
         }
     }
