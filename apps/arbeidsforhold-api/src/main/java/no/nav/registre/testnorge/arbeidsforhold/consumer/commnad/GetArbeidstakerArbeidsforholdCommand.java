@@ -35,7 +35,7 @@ public class GetArbeidstakerArbeidsforholdCommand implements Callable<List<Arbei
     @Override
     public List<Arbeidsforhold> call() {
         RequestEntity<Void> request = RequestEntity
-                .get(new UriTemplate(url + "/v1/arbeidstaker/arbeidsforhold").expand("q2"))
+                .get(new UriTemplate(url + "/v1/arbeidstaker/arbeidsforhold").expand("q1"))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(NAV_CONSUMER_TOKEN, "Bearer " + token)
                 .header(NAV_PERSON_IDENT, ident)
