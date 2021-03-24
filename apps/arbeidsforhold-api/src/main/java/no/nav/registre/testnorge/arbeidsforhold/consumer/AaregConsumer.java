@@ -40,7 +40,16 @@ public class AaregConsumer {
     }
 
     public Arbeidsforhold getArbeidsforhold(String ident, String orgnummer, String arbeidsforholdId) {
-        return getArbeidsforholds(ident, orgnummer)
+        var arbeidsforholds = getArbeidsforholds(ident, orgnummer);
+
+        log.info(
+                "Fant {} arbeidsforhold med arbeidsforholdId: {} for {}.",
+                arbeidsforholds.size(),
+                ident,
+                arbeidsforholds.stream().map(Arbeidsforhold::getArbeidsforholdId).collect(Collectors.joining(", "))
+        );
+
+        return arbeidsforholds
                 .stream()
                 .filter(value -> value.getArbeidsforholdId().equals(arbeidsforholdId))
                 .findFirst()
