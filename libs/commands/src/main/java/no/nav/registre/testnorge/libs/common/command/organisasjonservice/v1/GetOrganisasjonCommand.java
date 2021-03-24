@@ -34,7 +34,7 @@ public class GetOrganisasjonCommand implements Callable<OrganisasjonDTO> {
                     .header("miljo", miljo)
                     .retrieve()
                     .bodyToMono(OrganisasjonDTO.class)
-                    .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(10)))
+                    .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(3)))
                     .block();
         } catch (WebClientResponseException.NotFound e) {
             return null;

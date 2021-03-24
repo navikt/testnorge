@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.HelsepersonellListeDTO;
@@ -23,6 +25,7 @@ public class GetHelsepersonellCommand implements Callable<HelsepersonellListeDTO
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .retrieve()
                 .bodyToMono(HelsepersonellListeDTO.class)
+                .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(3)))
                 .block();
     }
 }
