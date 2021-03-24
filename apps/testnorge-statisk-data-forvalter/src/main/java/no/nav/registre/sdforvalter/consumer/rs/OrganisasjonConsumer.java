@@ -1,7 +1,6 @@
 package no.nav.registre.sdforvalter.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -13,7 +12,7 @@ import java.util.concurrent.Executors;
 
 import no.nav.registre.sdforvalter.config.credentials.OrganisasjonApiServerProperties;
 import no.nav.registre.sdforvalter.domain.status.ereg.Organisasjon;
-import no.nav.registre.testnorge.libs.common.command.GetOrganisasjonCommand;
+import no.nav.registre.testnorge.libs.common.command.organisasjonservice.v1.GetOrganisasjonCommand;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 

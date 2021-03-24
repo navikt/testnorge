@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.synt.sykemelding.config.credentials;
+package no.nav.organisasjonforvalter.config.credentials;
 
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -9,5 +9,4 @@ import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 @Configuration
 @ConfigurationProperties(prefix = "consumers.testnav-organisasjon-service")
 public class OrganisasjonServiceProperties extends NaisServerProperties {
-
 }

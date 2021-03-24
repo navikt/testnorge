@@ -1,14 +1,13 @@
 package no.nav.organisasjonforvalter.consumer;
 
+import static java.lang.String.format;
+import static java.lang.System.currentTimeMillis;
+import static java.util.Objects.nonNull;
+
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.server.WebServerException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,29 +24,30 @@ import reactor.retry.Retry;
 import java.time.Duration;
 import java.util.UUID;
 
-import static java.lang.String.format;
-import static java.lang.System.currentTimeMillis;
-import static java.util.Objects.nonNull;
+import no.nav.organisasjonforvalter.config.credentials.OrganisasjonServiceProperties;
+import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
+import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 
 @Slf4j
 @Service
-public class OrganisasjonApiConsumer {
+public class OrganisasjonConsumer {
 
     private static final int TIMEOUT_S = 10;
     private static final String STATUS_URL = "/api/v1/organisasjoner/{orgnummer}";
     private static final String MILJOE = "miljo";
 
     private final AccessTokenService accessTokenService;
-    private final AccessScopes accessScopes;
     private final WebClient webClient;
+    private final OrganisasjonServiceProperties serviceProperties;
 
-    public OrganisasjonApiConsumer(
-            @Value("${organisasjon.api.url}") String baseUrl,
-            @Value("${organisasjon.api.client.id}") String clientId,
-            AccessTokenService accessTokenService) {
-
+    public OrganisasjonConsumer(
+            OrganisasjonServiceProperties serviceProperties,
+            AccessTokenService accessTokenService
+    ) {
+        this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder()
-                .baseUrl(baseUrl)
+                .baseUrl(serviceProperties.getUrl())
                 .clientConnector(new ReactorClientHttpConnector(
                         HttpClient.create()
                                 .tcpConfiguration(tcpClient -> tcpClient
@@ -55,10 +55,10 @@ public class OrganisasjonApiConsumer {
                                         .doOnConnected(connection ->
                                                 connection
                                                         .addHandlerLast(new ReadTimeoutHandler(TIMEOUT_S))
-                                                        .addHandlerLast(new WriteTimeoutHandler(TIMEOUT_S))))))
-                .build();
+                                                        .addHandlerLast(new WriteTimeoutHandler(TIMEOUT_S))
+                                        ))
+                )).build();
         this.accessTokenService = accessTokenService;
-        this.accessScopes = new AccessScopes("api://" + clientId + "/.default");
     }
 
     public OrganisasjonDTO getStatus(String orgnummer, String miljoe) {
@@ -66,7 +66,7 @@ public class OrganisasjonApiConsumer {
         long startTime = currentTimeMillis();
 
         try {
-            AccessToken accessToken = accessTokenService.generateToken(accessScopes);
+            AccessToken accessToken = accessTokenService.generateToken(serviceProperties);
             ResponseEntity<OrganisasjonDTO> response = webClient.get()
                     .uri(STATUS_URL.replace("{orgnummer}", orgnummer))
                     .header("Nav-Consumer-Id", "Testnorge")

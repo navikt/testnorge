@@ -55,6 +55,9 @@ dependencies {
 
     implementation 'javax.persistence:javax.persistence-api:2.2'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.11.2'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation project(':testnorge-testing')
 }
 
 description = 'organisasjon-forvalter'

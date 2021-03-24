@@ -20,7 +20,6 @@ consumers:
     name: testnav-organisasjon-service
     cluster: dev-gcp
     namespace: dolly
-    threads: 7
   testnorge-arbeidsforhold-api:
     url: https://testnorge-arbeidsforhold-api.dev.intern.nav.no
     cluster: dev-fss

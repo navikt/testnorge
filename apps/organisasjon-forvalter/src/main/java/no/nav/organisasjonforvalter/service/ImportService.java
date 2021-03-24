@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.organisasjonforvalter.consumer.MiljoerServiceConsumer;
-import no.nav.organisasjonforvalter.consumer.OrganisasjonApiConsumer;
+import no.nav.organisasjonforvalter.consumer.OrganisasjonConsumer;
 import no.nav.organisasjonforvalter.provider.rs.responses.RsOrganisasjon;
 import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import org.apache.commons.lang3.StringUtils;
@@ -25,7 +25,7 @@ import static org.apache.logging.log4j.util.Strings.isBlank;
 public class ImportService {
 
     private final MiljoerServiceConsumer miljoerServiceConsumer;
-    private final OrganisasjonApiConsumer organisasjonApiConsumer;
+    private final OrganisasjonConsumer organisasjonApiConsumer;
     private final MapperFacade mapperFacade;
 
     public Map<String, RsOrganisasjon> getOrganisasjoner(String orgnummer, Set<String> miljoer) {
