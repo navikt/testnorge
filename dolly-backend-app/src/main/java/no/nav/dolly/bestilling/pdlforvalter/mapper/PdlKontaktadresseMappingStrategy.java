@@ -80,6 +80,8 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                                                             postadresse, PostadresseIFrittFormat.class));
                                                     kontaktadresse.setKilde(CONSUMER);
                                                     kontaktadresse.setMaster(Master.PDL);
+                                                    kontaktadresse.setGyldigFraOgMed(LocalDate.now().minusYears(1));
+                                                    kontaktadresse.setGyldigFraOgMed(LocalDate.now().plusYears(10));
                                                     return kontaktadresse;
                                                 })
                                                 .collect(Collectors.toList()),
