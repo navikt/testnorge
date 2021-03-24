@@ -165,6 +165,17 @@ export const sivilstander = Yup.array().of(
 					// Da vi skal validere mot "forrige forhold" trenger vi ikke sjekke første
 					if (partnerIdx === 0 && sivilstandIdx === 0) return true
 
+					const getSisteForholdDato = () => {
+						if (!values.personFoerLeggTil?.tpsf?.sivilstander) {
+							return null
+						}
+						const datoer = values.personFoerLeggTil.tpsf.sivilstander
+							.filter(sivstand => sivstand.sivilstandRegdato)
+							.map(sivilstand => new Date(sivilstand.sivilstandRegdato))
+							.sort((a, b) => b.getTime() - a.getTime()) // Seneste dato på første index
+						return datoer && datoer.length > 0 && datoer[0].toISOString().substring(0, 10)
+					}
+
 					const getSivilstandRegdato = (pIdx, sIdx) =>
 						_get(
 							values.tpsf.relasjoner.partnere,
@@ -172,6 +183,7 @@ export const sivilstander = Yup.array().of(
 						)
 
 					let prevDato
+
 					if (sivilstandIdx > 0) {
 						prevDato = getSivilstandRegdato(partnerIdx, sivilstandIdx - 1)
 					} else {
@@ -180,6 +192,9 @@ export const sivilstander = Yup.array().of(
 							`[${partnerIdx - 1}].sivilstander`
 						)
 						prevDato = getSivilstandRegdato(partnerIdx - 1, prevPartnerSivilstandArr.length - 1)
+					}
+					if (!prevDato) {
+						prevDato = getSisteForholdDato()
 					}
 
 					// Selve testen
