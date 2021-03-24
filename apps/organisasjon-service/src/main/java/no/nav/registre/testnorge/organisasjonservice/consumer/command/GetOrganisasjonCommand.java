@@ -35,6 +35,7 @@ public class GetOrganisasjonCommand implements Callable<OrganisasjonDTO> {
                     .bodyToMono(OrganisasjonDTO.class)
                     .block();
         } catch (WebClientResponseException.NotFound e) {
+            log.warn("Fant ikke {}.", orgnummer);
             return null;
         }
     }
