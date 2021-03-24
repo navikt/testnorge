@@ -81,7 +81,7 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                                                     kontaktadresse.setKilde(CONSUMER);
                                                     kontaktadresse.setMaster(Master.PDL);
                                                     kontaktadresse.setGyldigFraOgMed(LocalDate.now().minusYears(1));
-                                                    kontaktadresse.setGyldigFraOgMed(LocalDate.now().plusYears(10));
+                                                    kontaktadresse.setGyldigTilOgMed(LocalDate.now().plusYears(10));
                                                     return kontaktadresse;
                                                 })
                                                 .collect(Collectors.toList()),
