@@ -333,7 +333,7 @@ public class RettighetTiltakService {
                 var tiltak = tiltakUtils.finnTiltak(ident, miljoe, deltakelse);
 
                 if (tiltak != null) {
-                    if (!tiltakUtils.harGyldigTiltakKode(tiltak, kvalifiseringsgruppe)) {
+                    if (tiltakUtils.harIkkeGyldigTiltakKode(tiltak, kvalifiseringsgruppe)) {
                         tiltak.setTiltakKode(tiltakUtils.getGyldigTiltakKode(tiltak, kvalifiseringsgruppe));
                     }
                     deltakelse.setTiltakId(tiltak.getTiltakId());
