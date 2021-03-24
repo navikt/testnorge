@@ -10,6 +10,7 @@ import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetEndreDeltake
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetFinnTiltakRequest;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Deltakerstatuser;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
@@ -202,8 +203,8 @@ public class TiltakUtils {
         List<NyttVedtakTiltak> nyeVedtak = new ArrayList<>();
 
         for (var vedtak : vedtaksliste) {
-            if (nyeVedtak.isEmpty() || ((!harOverlappendeVedtak(vedtak, relatedVedtak)) &&
-                    !harOverlappendeTiltakOver100Prosent(vedtak, nyeVedtak))) {
+            if (nyeVedtak.isEmpty() || (harIkkeOverlappendeVedtak(vedtak, relatedVedtak) &&
+                    harIkkeOverlappendeTiltakOver100Prosent(vedtak, nyeVedtak))) {
                 nyeVedtak.add(vedtak);
             }
         }
@@ -216,35 +217,37 @@ public class TiltakUtils {
             return vedtaksliste;
         }
 
-        List<NyttVedtakTiltak> nyeVedtak = new ArrayList<>();
+        List<NyttVedtakTiltak> oppdatertVedtaksliste = new ArrayList<>();
+        List<NyttVedtakTiltak> sekvensVedtak = new ArrayList<>();
 
         var vedtakSequences = getVedtakSequences(vedtaksliste);
 
         for (var sequence : vedtakSequences) {
-            var validSequence = true;
-            for (var vedtak : sequence) {
-                if (!nyeVedtak.isEmpty() && harOverlappendeVedtak(vedtak, nyeVedtak)) {
-                    validSequence = false;
-                    break;
-                }
-            }
-            if (validSequence) {
-                nyeVedtak.addAll(sequence);
+            var fraDato = Collections.min(sequence.stream().map(NyttVedtakTiltak::getFraDato).collect(Collectors.toList()));
+            var tilDato = Collections.max(sequence.stream().map(NyttVedtakTiltak::getTilDato).collect(Collectors.toList()));
+
+            var vedtak = new NyttVedtakTiltak();
+            vedtak.setFraDato(fraDato);
+            vedtak.setTilDato(tilDato);
+
+            if (oppdatertVedtaksliste.isEmpty() || harIkkeOverlappendeVedtak(vedtak, sekvensVedtak)) {
+                sekvensVedtak.add(vedtak);
+                oppdatertVedtaksliste.addAll(sequence);
             }
         }
 
-        return nyeVedtak;
+        return oppdatertVedtaksliste;
     }
 
-    private boolean harOverlappendeVedtak(NyttVedtakTiltak vedtak, List<? extends NyttVedtak> vedtaksliste) {
+    private boolean harIkkeOverlappendeVedtak(NyttVedtakTiltak vedtak, List<? extends NyttVedtak> vedtaksliste) {
         if (vedtaksliste == null || vedtaksliste.isEmpty()) {
-            return false;
+            return true;
         }
         var fraDato = vedtak.getFraDato();
         var tilDato = vedtak.getTilDato();
 
         if (fraDato == null) {
-            return false;
+            return true;
         }
 
         for (var item : vedtaksliste) {
@@ -252,13 +255,13 @@ public class TiltakUtils {
             var tilDatoItem = item.getTilDato();
 
             if (datoerOverlapper(fraDato, tilDato, fraDatoItem, tilDatoItem)) {
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
-    private boolean harOverlappendeTiltakOver100Prosent(
+    private boolean harIkkeOverlappendeTiltakOver100Prosent(
             NyttVedtakTiltak vedtak,
             List<NyttVedtakTiltak> vedtaksliste
     ) {
@@ -267,7 +270,7 @@ public class TiltakUtils {
         var tilDato = vedtak.getTilDato();
 
         if (fraDato == null) {
-            return false;
+            return true;
         }
 
         for (var item : vedtaksliste) {
@@ -277,11 +280,11 @@ public class TiltakUtils {
             if (datoerOverlapper(fraDato, tilDato, fraDatoItem, tilDatoItem)) {
                 prosent += item.getTiltakProsentDeltid();
                 if (prosent > 100) {
-                    return true;
+                    return false;
                 }
             }
         }
-        return false;
+        return true;
     }
 
     private boolean datoerOverlapper(LocalDate fraDatoA, LocalDate tilDatoA, LocalDate fraDatoB, LocalDate tilDatoB) {
@@ -418,10 +421,10 @@ public class TiltakUtils {
         return rettighetRequest;
     }
 
-    public boolean harGyldigTiltakKode(NyttVedtakTiltak tiltak, Kvalifiseringsgrupper kvalifiseringsgruppe) {
+    public boolean harIkkeGyldigTiltakKode(NyttVedtakTiltak tiltak, Kvalifiseringsgrupper kvalifiseringsgruppe) {
         var adminKode = tiltak.getTiltakAdminKode();
         var tiltakKode = tiltak.getTiltakKode();
-        return innsatsTilTiltakKoder.get(kvalifiseringsgruppe.toString()).get(adminKode).contains(tiltakKode);
+        return !innsatsTilTiltakKoder.get(kvalifiseringsgruppe.toString()).get(adminKode).contains(tiltakKode);
     }
 
     public String getGyldigTiltakKode(NyttVedtakTiltak tiltak, Kvalifiseringsgrupper kvalifiseringsgruppe) {
