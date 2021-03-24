@@ -176,7 +176,7 @@ public class RettighetTiltakServiceTest {
 
         when(serviceUtils.velgKodeBasertPaaSannsynlighet(anyList())).thenReturn(aktivitetskodeMedSannsynlighet);
 
-        var request = rettighetTiltakService.opprettRettighetTiltaksaktivitetRequest(tilleggRequest, true);
+        var request = rettighetTiltakService.opprettRettighetTiltaksaktivitetRequest("","",nyttVedtakTillegg);
 
         assertThat(request.getVedtakTiltak()).hasSize(1);
         assertThat(request.getVedtakTiltak().get(0).getFraDato()).isEqualTo(LocalDate.now().minusMonths(1));
