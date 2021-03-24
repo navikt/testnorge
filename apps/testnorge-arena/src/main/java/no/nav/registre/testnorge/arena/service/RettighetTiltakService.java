@@ -228,7 +228,7 @@ public class RettighetTiltakService {
     ) {
         var tilleggVedtak = new ArrayList<NyttVedtakTillegg>();
 
-        var nyRettighetIndices = getIndicesForVedtakSekvenser(tillegg);
+        var nyRettighetIndices = tiltakUtils.getIndicesForVedtakSekvenser(tillegg);
 
         for (int j = 0; j < nyRettighetIndices.size() - 1; j++) {
             var subList = tillegg.subList(nyRettighetIndices.get(j), nyRettighetIndices.get(j + 1));
@@ -246,26 +246,7 @@ public class RettighetTiltakService {
         return tilleggVedtak;
     }
 
-    private List<Integer> getIndicesForVedtakSekvenser(
-            List<NyttVedtakTillegg> tillegg
-    ) {
-        List<Integer> nyRettighetIndices = new ArrayList<>();
 
-        if (tillegg.size() == 1) {
-            nyRettighetIndices = Arrays.asList(0, 1);
-        } else {
-            for (int i = 0; i < tillegg.size(); i++) {
-                if (tillegg.get(i).getVedtaktype().equals("O")) {
-                    nyRettighetIndices.add(i);
-                }
-                if (i == tillegg.size() - 1) {
-                    nyRettighetIndices.add(i + 1);
-                }
-            }
-        }
-
-        return nyRettighetIndices;
-    }
 
     RettighetTiltaksaktivitetRequest opprettRettighetTiltaksaktivitetRequest(
             String personident,

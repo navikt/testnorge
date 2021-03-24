@@ -11,6 +11,7 @@ import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetFinnTiltakRe
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Deltakerstatuser;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 
 import org.springframework.stereotype.Service;
@@ -137,7 +138,7 @@ public class TiltakUtils {
                     var tilDatoDeltakelse = deltakelse.getTilDato();
 
                     if ((fraDatoDeltakelse != null && fraDato.isAfter(fraDatoDeltakelse.minusDays(1))) &&
-                            (tilDato == null || tilDatoDeltakelse != null && tilDato.isBefore(tilDatoDeltakelse.plusDays(1)))) {
+                            (tilDato == null || tilDatoDeltakelse == null || tilDato.isBefore(tilDatoDeltakelse.plusDays(1)))) {
                         return deltakelse;
                     }
 
@@ -180,8 +181,8 @@ public class TiltakUtils {
         var vedtak = NyttVedtakTiltak.builder()
                 .tiltakKode(tiltaksdeltakelse.getTiltakKode())
                 .tiltakProsentDeltid(tiltaksdeltakelse.getTiltakProsentDeltid())
-                .tiltakVedtak(tiltaksdeltakelse.getTiltakVedtak())
-                .tiltakYtelse(tiltaksdeltakelse.getTiltakYtelse())
+                .tiltakVedtak("J")
+                .tiltakYtelse("J")
                 .tiltakAdminKode(tiltaksdeltakelse.getTiltakAdminKode())
                 .build();
         vedtak.setFraDato(tiltaksdeltakelse.getFraDato());
@@ -303,19 +304,34 @@ public class TiltakUtils {
 
     private List<List<NyttVedtakTiltak>> getVedtakSequences(List<NyttVedtakTiltak> vedtak) {
         List<List<NyttVedtakTiltak>> vedtakSequences = new ArrayList<>();
-        List<NyttVedtakTiltak> sequence = new ArrayList<>();
-        for (var tiltak : vedtak) {
-            if (tiltak.getVedtaktype() != null && tiltak.getVedtaktype().equals("O") && !sequence.isEmpty()) {
-                vedtakSequences.add(sequence);
-                sequence = new ArrayList<>();
-            }
-            sequence.add(tiltak);
-        }
-        if (!sequence.isEmpty()) {
-            vedtakSequences.add(sequence);
+        var indices = getIndicesForVedtakSekvenser(vedtak);
+
+        for (int j = 0; j < indices.size() - 1; j++) {
+            vedtakSequences.add(vedtak.subList(indices.get(j), indices.get(j + 1)));
         }
 
         return vedtakSequences;
+    }
+
+    public List<Integer> getIndicesForVedtakSekvenser(
+            List<? extends NyttVedtak> vedtak
+    ) {
+        List<Integer> nyRettighetIndices = new ArrayList<>();
+
+        if (vedtak.size() == 1) {
+            nyRettighetIndices = Arrays.asList(0, 1);
+        } else {
+            for (int i = 0; i < vedtak.size(); i++) {
+                if (vedtak.get(i).getVedtaktype().equals("O")) {
+                    nyRettighetIndices.add(i);
+                }
+                if (i == vedtak.size() - 1) {
+                    nyRettighetIndices.add(i + 1);
+                }
+            }
+        }
+
+        return nyRettighetIndices;
     }
 
     public boolean canSetDeltakelseTilGjennomfoeres(NyttVedtakTiltak tiltaksdeltakelse, List<NyttVedtakTiltak> tiltak) {
