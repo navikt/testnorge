@@ -28,7 +28,7 @@ public class LogRequests extends ZuulFilter {
     @Override
     public Object run() {
         RequestContext ctx = RequestContext.getCurrentContext();
-        log.info("Path: {}", ctx.getRequest().getPathInfo());
+        log.info("request -> {}, request uri -> {}", ctx.getRequest(), ctx.getRequest().getRequestURI());
         return null;
     }
 }
