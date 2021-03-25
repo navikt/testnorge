@@ -17,6 +17,6 @@ zuul:
   routes:
     testnorge-hodejegeren:
       path: /**
-      url: https://kuhr-sar-api.dev.adeo.no
+      url: https://kuhr-sar-api.dev.adeo.no/
   host:
     socket-timeout-millis: 30000

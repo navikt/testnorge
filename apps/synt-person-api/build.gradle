@@ -32,7 +32,7 @@ dependencies {
     implementation 'org.projectlombok:lombok:1.18.12'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.2'
     implementation 'org.springframework.boot:spring-boot-starter-webflux:2.3.2.RELEASE'
-    implementation project(':testnorge-common-command')
+    implementation project(':commands')
     implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:2.2.4.RELEASE'

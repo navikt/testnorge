@@ -16,7 +16,7 @@ dependencies {
     implementation 'org.springframework.security:spring-security-web:5.3.4.RELEASE'
     implementation 'org.springframework.security:spring-security-config:5.3.4.RELEASE'
     implementation 'org.springframework.security:spring-security-core:5.3.4.RELEASE'
-    implementation project(':testnorge-common-command')
+    implementation project(':commands')
     implementation project(':testnorge-oauth2')
     implementation 'org.springframework.boot:spring-boot-starter-webflux:2.3.2.RELEASE'
     implementation 'com.jayway.jsonpath:json-path:2.4.0'

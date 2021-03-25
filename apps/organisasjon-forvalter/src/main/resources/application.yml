@@ -6,10 +6,6 @@ miljoer:
     client:
       id: 30003084-1585-4629-a017-686b4387b12e
 organisasjon:
-  api:
-    url: https://testnorge-organisasjon-api.dev.adeo.no
-    client:
-      id: f4167796-bf43-438b-a282-a480e8108d0c
   bestilling:
     url: https://organisasjon-bestilling-service.dev.intern.nav.no
     client:
@@ -34,3 +30,10 @@ spring:
 
 kafka:
   groupid: organisasjon-forvalter-v1
+
+consumers:
+  testnav-organisasjon-service:
+    url: https://testnav-organisasjon-service.dev.intern.nav.no
+    name: testnav-organisasjon-service
+    cluster: dev-gcp
+    namespace: dolly

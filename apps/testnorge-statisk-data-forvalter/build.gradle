@@ -18,7 +18,7 @@ dependencies {
     implementation project(':testnorge-data-transfer-objects')
     implementation project(':testnorge-core')
     implementation project(':testnorge-database')
-    implementation project(':testnorge-common-command')
+    implementation project(':commands')
     implementation project(':testnorge-csv-converter')
 
     implementation 'org.springframework.kafka:spring-kafka:2.5.6.RELEASE'
