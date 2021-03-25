@@ -7,7 +7,9 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import no.nav.registre.inntekt.consumer.rs.altinninntekt.dto.rs.RsInntektsmelding;
@@ -25,11 +27,12 @@ public class GenererInntektsmeldingCommand implements Callable<String> {
         try {
             return webClient
                     .post()
-                    .uri("/api//v2/inntektsmelding/2018/12/11")
+                    .uri("/api/v2/inntektsmelding/2018/12/11")
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .body(BodyInserters.fromPublisher(Mono.just(dto), RsInntektsmelding.class))
                     .retrieve()
                     .bodyToMono(String.class)
+                    .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(10)))
                     .block();
         } catch (WebClientResponseException e) {
             log.error(

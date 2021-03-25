@@ -8,8 +8,3 @@ spring:
 
 aareg:
   url: https://modapp-{miljo}.adeo.no/aareg-services/api
-
-consumers:
-  organisasjonapi:
-    url: https://testnorge-organisasjon-api.dev.adeo.no
-    client_id: f4167796-bf43-438b-a282-a480e8108d0c

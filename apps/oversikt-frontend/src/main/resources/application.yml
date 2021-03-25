@@ -41,6 +41,7 @@ applications:
   tps-identer-vedlikehold: dev-fss.dolly.tps-identer-vedlikehold
   testnav-inntektsmelding-generator-service: dev-gcp.dolly.testnav-inntektsmelding-generator-service
   testnav-helsepersonell-service: dev-gcp.dolly.testnav-helsepersonell-service
+  testnav-organisasjon-service: dev-gcp.dolly.testnav-organisasjon-service
 
 zuul:
   routes:
