@@ -2,10 +2,12 @@ package no.nav.registre.testnorge.pdlproxy.filter;
 
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 
 import java.util.Set;
 
+@Slf4j
 public class AddAuthorizationToRouteFilter extends ZuulFilter {
     private final GenerateToken generateToken;
     private final Set<String> routes;
@@ -34,6 +36,7 @@ public class AddAuthorizationToRouteFilter extends ZuulFilter {
     @Override
     public Object run() {
         RequestContext ctx = RequestContext.getCurrentContext();
+        log.info("Inject token i requesten.");
         ctx.addZuulRequestHeader(HttpHeaders.AUTHORIZATION, "Bearer " + generateToken.getToken());
         return null;
     }
