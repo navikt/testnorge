@@ -92,18 +92,21 @@ public class TiltakUtils {
         List<NyttVedtakTiltak> nyVedtaksliste = new ArrayList<>();
 
         var vedtakSequences = getVedtakSequences(vedtaksliste);
+        var brukteIndices = new ArrayList<Integer>();
 
         for (var sequence : vedtakSequences) {
             var initialFraDato = sequence.get(0).getFraDato();
-            for (var vedtak : sequence) {
-                var deltakelse = finnNoedvendigTiltaksdeltakelse(vedtak, tiltaksdeltakelser);
-                if (deltakelse != null) {
+
+            var deltakelseIndex = finnNoedvendigTiltaksdeltakelse(initialFraDato, sequence.get(0).getTilDato(), tiltaksdeltakelser, brukteIndices);
+            if (deltakelseIndex != null) {
+                brukteIndices.add(deltakelseIndex);
+                var deltakelse = tiltaksdeltakelser.get(deltakelseIndex);
+                for (var vedtak : sequence) {
                     var nyttVedtak = shiftVedtakDatesBasertPaaTiltaksdeltakelse(vedtak, deltakelse, initialFraDato);
                     nyVedtaksliste.add(nyttVedtak);
-                } else if (vedtak.getVedtaktype().equals("O")) {
-                    break;
                 }
             }
+
         }
         return nyVedtaksliste;
     }
@@ -119,7 +122,7 @@ public class TiltakUtils {
             newFraDato = deltakelse.getFraDato().plusDays(initialShift);
 
             if (deltakelse.getTilDato() != null && newFraDato.isAfter(deltakelse.getTilDato())) {
-                newFraDato = deltakelse.getTilDato();
+                newFraDato = deltakelse.getTilDato().minusDays(1);
             }
         }
         vedtak.setFraDato(newFraDato);
@@ -128,21 +131,18 @@ public class TiltakUtils {
         return vedtak;
     }
 
-    private NyttVedtakTiltak finnNoedvendigTiltaksdeltakelse(NyttVedtakTiltak vedtak, List<NyttVedtakTiltak> tiltaksdeltakelser) {
-        if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty()) {
-            var fraDato = vedtak.getFraDato();
-            var tilDato = vedtak.getTilDato();
-
-            if (fraDato != null) {
-                for (var deltakelse : tiltaksdeltakelser) {
+    private Integer finnNoedvendigTiltaksdeltakelse(LocalDate fraDato, LocalDate tilDato, List<NyttVedtakTiltak> tiltaksdeltakelser, List<Integer> brukteIndices) {
+        if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty() && fraDato != null) {
+            for (var i = 0; i < tiltaksdeltakelser.size(); i++) {
+                if (!brukteIndices.contains(i)) {
+                    var deltakelse = tiltaksdeltakelser.get(i);
                     var fraDatoDeltakelse = deltakelse.getFraDato();
                     var tilDatoDeltakelse = deltakelse.getTilDato();
 
                     if ((fraDatoDeltakelse != null && fraDato.isAfter(fraDatoDeltakelse.minusDays(1))) &&
                             (tilDato == null || tilDatoDeltakelse == null || tilDato.isBefore(tilDatoDeltakelse.plusDays(1)))) {
-                        return deltakelse;
+                        return i;
                     }
-
                 }
             }
         }
