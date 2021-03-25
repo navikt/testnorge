@@ -1,0 +1,32 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+spring:
+  application:
+    name: aareg-synt-services-proxy
+    desciption: Proxy for pdl som legger på AzureAd sikkerhet og lager en sts token.
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+
+sts:
+  token:
+    provider:
+      url: ${STS_TOKEN_PROVIDER_URL}
+      username: ${STS_TOKEN_PROVIDER_USERNAME}
+      password: ${STS_TOKEN_PROVIDER_PASSWORD}
+
+zuul:
+  ignoredPatterns: /internal/isReady, /internal/isAlive
+  set-content-length: true
+  routes:
+    pdl-api:
+      path: /pdl-api/**
+      url: https://pdl-api.dev.adeo.no/
+    pdl-testdata:
+      path: /pdl-testdata/**
+      url: https://pdl-testdata.dev.adeo.no/
+  host:
+    socket-timeout-millis: 30000

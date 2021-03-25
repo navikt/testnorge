@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.aaregsyntserviceproxy.config;
+package no.nav.registre.testnorge.pdlproxy.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
