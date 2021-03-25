@@ -21,6 +21,7 @@ sts:
 zuul:
   ignoredPatterns: /internal/isReady, /internal/isAlive
   set-content-length: true
+  sensitiveHeaders: Cookie,Set-Cookie
   routes:
     pdl-api:
       path: /pdl-api/**

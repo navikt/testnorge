@@ -36,8 +36,9 @@ public class AddAuthorizationToRouteFilter extends ZuulFilter {
     @Override
     public Object run() {
         RequestContext ctx = RequestContext.getCurrentContext();
-        log.info("Inject token i requesten.");
-        ctx.addZuulRequestHeader(HttpHeaders.AUTHORIZATION, "Bearer " + generateToken.getToken());
+        log.info("Inject bearer token i requesten.");
+        var token = generateToken.getToken();
+        ctx.addZuulRequestHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token);
         return null;
     }
 }
