@@ -38,9 +38,12 @@ public class OrganisasjonMottakServiceConsumer {
     }
 
     private Adresse createAdresse(no.nav.registre.sdforvalter.domain.Adresse adresse) {
-        if (adresse == null) {
+        if (adresse == null ||  adresse.getKommunenr() == null
+        ) {
             return null;
         }
+
+        log.info("Setter adresse: {}.", adresse);
         return Adresse.newBuilder()
                 .setPostadresse1(adresse.getAdresse())
                 .setKommunenummer(adresse.getKommunenr())

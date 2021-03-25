@@ -15,11 +15,18 @@ consumers:
     url: https://nais-synthdata-elsam.dev.adeo.no
   sykemelding:
     url: https://testnorge-sykemelding-api.dev.adeo.no
-  organisasjonapi:
-    client_id: f4167796-bf43-438b-a282-a480e8108d0c
-    url: https://testnorge-organisasjon-api.dev.adeo.no
+  testnav-organisasjon-service:
+    url: https://testnav-organisasjon-service.dev.intern.nav.no
+    name: testnav-organisasjon-service
+    cluster: dev-gcp
+    namespace: dolly
   testnorge-arbeidsforhold-api:
     url: https://testnorge-arbeidsforhold-api.dev.intern.nav.no
     cluster: dev-fss
     namespace: dolly
     name: testnorge-arbeidsforhold-api
+  testnav-helsepersonell-service:
+    url: https://testnav-helsepersonell-service.dev.intern.nav.no
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-helsepersonell-service

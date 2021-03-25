@@ -1,7 +1,6 @@
 package no.nav.registre.sdforvalter.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -11,9 +10,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import no.nav.registre.sdforvalter.config.credentials.OrganisasjonApiServerProperties;
+import no.nav.registre.sdforvalter.config.credentials.OrganisasjonServiceProperties;
 import no.nav.registre.sdforvalter.domain.status.ereg.Organisasjon;
-import no.nav.registre.testnorge.libs.common.command.GetOrganisasjonCommand;
+import no.nav.registre.testnorge.libs.common.command.organisasjonservice.v1.GetOrganisasjonCommand;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 
@@ -21,12 +20,12 @@ import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 @Component
 public class OrganisasjonConsumer {
     private final WebClient webClient;
-    private final OrganisasjonApiServerProperties serverProperties;
+    private final OrganisasjonServiceProperties serverProperties;
     private final AccessTokenService accessTokenService;
     private final Executor executor;
 
     public OrganisasjonConsumer(
-            OrganisasjonApiServerProperties serverProperties,
+            OrganisasjonServiceProperties serverProperties,
             AccessTokenService accessTokenService
     ) {
         this.serverProperties = serverProperties;

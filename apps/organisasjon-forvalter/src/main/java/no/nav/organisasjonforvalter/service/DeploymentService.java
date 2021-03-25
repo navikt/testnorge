@@ -3,7 +3,7 @@ package no.nav.organisasjonforvalter.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.organisasjonforvalter.consumer.OrganisasjonApiConsumer;
+import no.nav.organisasjonforvalter.consumer.OrganisasjonConsumer;
 import no.nav.organisasjonforvalter.consumer.OrganisasjonMottakConsumer;
 import no.nav.organisasjonforvalter.jpa.entity.Organisasjon;
 import no.nav.organisasjonforvalter.jpa.repository.OrganisasjonRepository;
@@ -34,7 +34,7 @@ public class DeploymentService {
     private final OrganisasjonRepository organisasjonRepository;
     private final OrganisasjonMottakConsumer organisasjonMottakConsumer;
     private final DeployStatusService deployStatusService;
-    private final OrganisasjonApiConsumer organisasjonApiConsumer;
+    private final OrganisasjonConsumer organisasjonApiConsumer;
     private final MapperFacade mapperFacade;
 
     public DeployResponse deploy(DeployRequest request) {

@@ -13,32 +13,30 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.common.command.GetOrganisasjonCommand;
-import no.nav.registre.testnorge.libs.common.command.SaveOrganisasjonCommand;
+import no.nav.registre.testnorge.libs.common.command.organisasjonservice.v1.GetOrganisasjonCommand;
 import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.registre.testnorge.mn.organisasjonapi.config.credentials.OrganisasjonServiceProperties;
 
 @Slf4j
 @Component
 public class OrganisasjonConsumer {
-    private final String clientId;
+    private final OrganisasjonServiceProperties serviceProperties;
     private final AccessTokenService accessTokenService;
     private final WebClient webClient;
     private final ExecutorService executorService;
 
     public OrganisasjonConsumer(
-            @Value("${consumers.organisasjonapi.client_id}") String clientId,
-            @Value("${consumers.organisasjonapi.url}") String baseUrl,
-            @Value("${consumers.organisasjonapi.threads}") Integer threads,
+            OrganisasjonServiceProperties serviceProperties,
             AccessTokenService accessTokenService
     ) {
-        this.clientId = clientId;
+        this.serviceProperties = serviceProperties;
         this.accessTokenService = accessTokenService;
-        this.executorService = Executors.newFixedThreadPool(threads);
+        this.executorService = Executors.newFixedThreadPool(serviceProperties.getThreads());
         this.webClient = WebClient
                 .builder()
-                .baseUrl(baseUrl)
+                .baseUrl(serviceProperties.getUrl())
                 .build();
     }
 
@@ -50,12 +48,12 @@ public class OrganisasjonConsumer {
     }
 
     public OrganisasjonDTO getOrganisjon(String orgnummer, String miljo) {
-        AccessToken accessToken = accessTokenService.generateToken(clientId);
+        AccessToken accessToken = accessTokenService.generateToken(serviceProperties);
         return new GetOrganisasjonCommand(webClient, accessToken.getTokenValue(), orgnummer, miljo).call();
     }
 
     public List<OrganisasjonDTO> getOrganisasjoner(Set<String> orgnummerListe, String miljo) {
-        AccessToken accessToken = accessTokenService.generateToken(clientId);
+        AccessToken accessToken = accessTokenService.generateToken(serviceProperties);
         var futures = orgnummerListe.stream().map(value -> getFutureOrganisasjon(value, accessToken, miljo)).collect(Collectors.toList());
         List<OrganisasjonDTO> list = new ArrayList<>();
 

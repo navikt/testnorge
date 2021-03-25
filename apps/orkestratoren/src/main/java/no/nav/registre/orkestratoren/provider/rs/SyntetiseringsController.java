@@ -7,8 +7,6 @@ import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsResp
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaAapRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaTilleggstoenadArbeidssoekereRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaTilleggstoenadRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaTiltakRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaVedtakshistorikkRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserBisysRequest;
@@ -33,7 +31,6 @@ import no.nav.registre.orkestratoren.service.TestnorgeSigrunService;
 import no.nav.registre.orkestratoren.service.TestnorgeSkdService;
 import no.nav.registre.orkestratoren.service.TestnorgeTpService;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -189,20 +186,6 @@ public class SyntetiseringsController {
             @RequestBody SyntetiserArenaTiltakRequest tiltakRequest
     ) {
         return testnorgeArenaService.opprettArenaTiltak(tiltakRequest);
-    }
-
-    @PostMapping(value = "/arena/tilleggstoenad/generer")
-    public List<NyttVedtakTillegg> opprettTilleggstoenadIArena(
-            @RequestBody SyntetiserArenaTilleggstoenadRequest tilleggstoenadRequest
-    ) {
-        return testnorgeArenaService.opprettArenaTilleggstoenad(tilleggstoenadRequest);
-    }
-
-    @PostMapping(value = "/arena/tilleggstoenadArbeidssoeker/generer")
-    public List<NyttVedtakTillegg> opprettTilleggstoenadArbeidssoekerIArena(
-            @RequestBody SyntetiserArenaTilleggstoenadArbeidssoekereRequest tilleggstoenadArbeidssoekereRequest
-    ) {
-        return testnorgeArenaService.opprettArenaTilleggstoenadArbeidssoekere(tilleggstoenadArbeidssoekereRequest);
     }
 
     @PostMapping(value = "/medl/medlemskap/generer")

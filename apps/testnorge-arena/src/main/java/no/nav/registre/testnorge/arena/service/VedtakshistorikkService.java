@@ -1,7 +1,6 @@
 package no.nav.registre.testnorge.arena.service;
 
 import static no.nav.registre.testnorge.arena.service.RettighetAapService.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
-import static no.nav.registre.testnorge.arena.service.RettighetTilleggService.ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT;
 import static no.nav.registre.testnorge.arena.service.RettighetAapService.SYKEPENGEERSTATNING_MAKS_PERIODE;
 import static no.nav.registre.testnorge.arena.service.util.ServiceUtils.AKTIVITETSFASE_SYKEPENGEERSTATNING;
 import static no.nav.registre.testnorge.arena.service.util.ServiceUtils.BEGRUNNELSE;
@@ -76,6 +75,7 @@ public class VedtakshistorikkService {
 
     private static final String MAALGRUPPEKODE_TILKNYTTET_AAP = "NEDSARBEVN";
     private static final String MAALGRUPPEKODE_TILKNYTTET_TILTAKSPENGER = "MOTTILTPEN";
+    private static final LocalDate ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT = LocalDate.of(2020, 02, 29);
 
     public Map<String, List<NyttVedtakResponse>> genererVedtakshistorikk(
             Long avspillergruppeId,
@@ -318,7 +318,7 @@ public class VedtakshistorikkService {
         var aap115 = historikk.getAap115();
         if (aap != null && !aap.isEmpty()) {
             return rettighetAapService.opprettetPersonOgInntektIPopp(personident, miljoe, aap.get(0));
-        } else if (aap115 != null && !aap115.isEmpty()){
+        } else if (aap115 != null && !aap115.isEmpty()) {
             return rettighetAapService.opprettetPersonOgInntektIPopp(personident, miljoe, aap115.get(0));
         }
         return true;
@@ -596,15 +596,18 @@ public class VedtakshistorikkService {
         var tillegg = oppdaterVedtakTillegg(historikk);
 
         if (tillegg != null && !tillegg.isEmpty() && !rettigheter.isEmpty()) {
-            for (var vedtak : tillegg) {
-                var rettighetRequest = new RettighetTilleggRequest(Collections.singletonList(vedtak));
-                rettighetRequest.setPersonident(personident);
-                rettighetRequest.setMiljoe(miljoe);
-                rettighetRequest.getNyeTilleggsstonad().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
 
-                opprettTiltaksaktivitet(rettigheter, rettighetRequest);
+            var tiltaksaktiviteter = rettighetTiltakService.getTiltaksaktivitetRettigheter(personident, miljoe, tillegg);
+            if (tiltaksaktiviteter != null && !tiltaksaktiviteter.isEmpty()){
+                rettigheter.addAll(tiltaksaktiviteter);
 
-                rettigheter.add(rettighetRequest);
+                for (var vedtak : tillegg) {
+                    vedtak.setBegrunnelse(BEGRUNNELSE);
+                    var rettighetRequest = new RettighetTilleggRequest(Collections.singletonList(vedtak));
+                    rettighetRequest.setPersonident(personident);
+                    rettighetRequest.setMiljoe(miljoe);
+                    rettigheter.add(rettighetRequest);
+                }
             }
         }
     }
@@ -677,11 +680,5 @@ public class VedtakshistorikkService {
         return false;
     }
 
-    private void opprettTiltaksaktivitet(List<RettighetRequest> rettigheter, RettighetTilleggRequest request) {
-        if (request.getVedtakTillegg() != null && !request.getVedtakTillegg().isEmpty()) {
-            rettigheter.add(rettighetTiltakService.opprettRettighetTiltaksaktivitetRequest(
-                    request, true));
-        }
-    }
 
 }

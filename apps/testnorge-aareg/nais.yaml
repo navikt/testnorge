@@ -10,6 +10,7 @@ spec:
   azure:
     application:
       enabled: true
+      tenant: nav.no
   webproxy: true
   liveness:
     path: /internal/isAlive
