@@ -7,18 +7,22 @@ APP_VERSION: ${application.version}
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
 CLIENT_ID: f0174d28-cb33-44f9-a7b5-09e52582e601
-HELSEPERSONELL_CLIENT_ID: a7ed78ab-07c1-49ef-a05d-19216c517f2c
-ORGANISASJON_FORVALTER_CLIENT_ID: 80f07134-375b-4df8-be48-2ba877774c6c
 UDI_STUB_CLIENT_ID: ${UDI_CLIENT_ID}
 
 CLIENT_SECRET: ${azure.app.client.secret}
 
 consumers:
   testnav-helsepersonell-service:
+    name: testnav-helsepersonell-service
+    namespace: dolly
     url: https://testnav-helsepersonell-service.dev.intern.nav.no
     cluster: dev-gcp
+
+  testnav-organisasjon-service:
+    name: testnav-organisasjon-service
     namespace: dolly
-    name: testnav-helsepersonell-service
+    url: https://testnav-organisasjon-service.dev.intern.nav.no
+    cluster: dev-gcp
 
 #### APP DB ####
 ? app.datasource.onsHosts

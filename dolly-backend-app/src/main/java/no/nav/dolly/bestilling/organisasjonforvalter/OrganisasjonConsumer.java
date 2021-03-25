@@ -6,12 +6,10 @@ import no.nav.dolly.bestilling.organisasjonforvalter.domain.BestillingResponse;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployRequest;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployResponse;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDetaljer;
+import no.nav.dolly.config.credentials.OrganisasjonServiceProperties;
 import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.properties.ProvidersProps;
-import no.nav.dolly.security.oauth2.domain.AccessScopes;
 import no.nav.dolly.security.oauth2.domain.AccessToken;
 import no.nav.dolly.security.oauth2.service.TokenService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -36,16 +34,15 @@ public class OrganisasjonConsumer {
 
     private final TokenService tokenService;
     private final WebClient webClient;
+    private final OrganisasjonServiceProperties serviceProperties;
 
-    public OrganisasjonConsumer(ProvidersProps providersProps, TokenService tokenService) {
+    public OrganisasjonConsumer(TokenService tokenService, OrganisasjonServiceProperties serviceProperties) {
         this.tokenService = tokenService;
+        this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder()
-                .baseUrl(providersProps.getOrganisasjonForvalter().getUrl())
+                .baseUrl(serviceProperties.getUrl())
                 .build();
     }
-
-    @Value("${ORGANISASJON_FORVALTER_CLIENT_ID}")
-    private String organisasjonerClientId;
 
     @Timed(name = "providers", tags = { "operation", "organisasjon-hent" })
     public OrganisasjonDetaljer hentOrganisasjon(List<String> orgnumre) {
@@ -112,8 +109,6 @@ public class OrganisasjonConsumer {
     private AccessToken getAccessToken(String s) {
         log.info(s, getNavCallId(), CONSUMER);
 
-        return tokenService.generateToken(
-                new AccessScopes("api://" + organisasjonerClientId + "/.default")
-        );
+        return tokenService.generateToken(serviceProperties);
     }
 }
