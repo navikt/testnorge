@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,7 @@ public class StaticDataControllerV1TpsIntegrationTest {
     private OpprinnelseRepository opprinnelseRepository;
 
     @Test
+    @Ignore
     public void shouldGetTpsIdentSetWithOpprinnelse() throws Exception {
         OpprinnelseModel altinn = opprinnelseRepository.save(new OpprinnelseModel("Altinn"));
         TpsIdentModel tpsIdentModel = createIdentModel("01010101011", "Petter", "Petterson", altinn);
@@ -66,6 +68,7 @@ public class StaticDataControllerV1TpsIntegrationTest {
     }
 
     @Test
+    @Ignore
     public void shouldAddTpsIdentSetToDatabase() throws Exception {
         TpsIdent tpsIdent = createIdent("01010101011", "Petter", "Petterson");
         mvc.perform(post("/api/v1/faste-data/tps?genererManglendeNavn=false")
@@ -77,6 +80,7 @@ public class StaticDataControllerV1TpsIntegrationTest {
     }
 
     @Test
+    @Ignore
     public void shouldAddOpprinnelseToDatabase() throws Exception {
         Opprinnelse altinn = new Opprinnelse("Altinn");
         final TpsIdent hans = createIdent("01010101011", "Hans", "Hansen");
