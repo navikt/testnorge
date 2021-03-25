@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.samhandlerregisteretproxy.config;
+package no.nav.registre.testnorge.aaregproxy.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;

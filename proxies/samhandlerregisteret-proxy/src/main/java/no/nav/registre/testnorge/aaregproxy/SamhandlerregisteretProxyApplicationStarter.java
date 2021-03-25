@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.samhandlerregisteretproxy;
+package no.nav.registre.testnorge.aaregproxy;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
