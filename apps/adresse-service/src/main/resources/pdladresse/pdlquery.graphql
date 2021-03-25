@@ -1,0 +1,18 @@
+query ($paging:Paging, $criteria:[Criterion]) {
+    sokAdresse (paging: $paging,  criteria: $criteria){
+        hits {
+            score,
+            vegadresse {
+                matrikkelId
+                husnummer
+                husbokstav
+                adressenavn
+                postnummer
+                poststed
+            },
+        }
+        pageNumber,
+        totalPages,
+        totalHits
+    }
+}
