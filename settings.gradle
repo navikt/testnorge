@@ -275,3 +275,6 @@ project(":hodejegeren-proxy").projectDir = file('proxies/hodejegeren-proxy')
 
 include 'samhandlerregisteret-proxy'
 project(":samhandlerregisteret-proxy").projectDir = file('proxies/samhandlerregisteret-proxy')
+
+include 'pdl-proxy'
+project(":pdl-proxy").projectDir = file('proxies/pdl-proxy')
