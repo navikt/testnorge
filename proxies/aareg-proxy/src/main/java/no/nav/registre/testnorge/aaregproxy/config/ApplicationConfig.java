@@ -2,15 +2,14 @@ package no.nav.registre.testnorge.aaregproxy.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 
 import no.nav.registre.testnorge.aaregproxy.filter.AddAuthorizationAndNavConsumerTokenToRouteFilter;
-import no.nav.registre.testnorge.aaregproxy.service.StsOidcTokenService;
 import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
+import no.nav.registre.testnorge.libs.service.StsOidcTokenService;
 
 @Configuration
 @Import({
@@ -19,7 +18,6 @@ import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
 @Profile({"dev", "prod"})
 @RequiredArgsConstructor
 public class ApplicationConfig {
-    private final RestTemplateBuilder restTemplateBuilder;
 
     @Bean
     public StsOidcTokenService stsPreprodOidcTokenService(
@@ -27,7 +25,7 @@ public class ApplicationConfig {
             @Value("${sts.preprod.token.provider.username}") String username,
             @Value("${sts.preprod.token.provider.password}") String password
     ) {
-        return new StsOidcTokenService(restTemplateBuilder, url, username, password);
+        return new StsOidcTokenService(url, username, password);
     }
 
     @Bean
@@ -36,7 +34,7 @@ public class ApplicationConfig {
             @Value("${sts.test.token.provider.username}") String username,
             @Value("${sts.test.token.provider.password}") String password
     ) {
-        return new StsOidcTokenService(restTemplateBuilder, url, username, password);
+        return new StsOidcTokenService(url, username, password);
     }
 
     @Bean
