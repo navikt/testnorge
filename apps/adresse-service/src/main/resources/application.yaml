@@ -1,7 +1,8 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
-consumers.pdl-consumers:
-  url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
-  cluster: dev-fss
-  namespace: dolly
-  name: adresse-services-proxy
+consumers:
+  pdl-services:
+    url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-pdl-proxy

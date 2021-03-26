@@ -34,8 +34,8 @@ public class AdresseController {
         return pdlAdresseService.getAdresseKommunenummer(kommunenummer, bydelsnavn);
     }
 
-    @GetMapping(value = "/postnummer/{postnummer}")
-    @Operation(description = "Henter tilfelfige adresser absert på postnummer")
+    @GetMapping(value = "/auto")
+    @Operation(description = "Henter spesifisert adresse")
     public JsonNode getTilfeldigAdresseAutocomplete(@RequestBody AdresseRequest request) {
 
         return pdlAdresseService.getAdresseAutoComplete(request);

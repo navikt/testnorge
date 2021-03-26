@@ -11,6 +11,7 @@ spec:
   azure:
     application:
       enabled: true
+      tenant: nav.no
   ingresses:
     - "https://testnav-adresse-service.dev.intern.nav.no"
   liveness:
@@ -32,8 +33,6 @@ spec:
     requests:
       cpu: 1000m
       memory: 4096Mi
-  vault:
-    enabled: true
   accessPolicy:
     inbound:
       rules:

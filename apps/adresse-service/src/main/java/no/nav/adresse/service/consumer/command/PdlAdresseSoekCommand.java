@@ -32,7 +32,7 @@ public class PdlAdresseSoekCommand implements Callable<JsonNode> {
                     .post()
                     .uri(builder -> builder.path("/pdl-api/graphql").build())
                     .body(BodyInserters.fromValue(query))
-                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .header(TEMA, TemaGrunnlag.GEN.name())
                     .retrieve()
