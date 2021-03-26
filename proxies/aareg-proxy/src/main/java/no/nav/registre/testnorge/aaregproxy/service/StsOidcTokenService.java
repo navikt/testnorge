@@ -70,6 +70,10 @@ public class StsOidcTokenService {
     }
 
     private void updateToken() {
+
+
+
+
         ResponseEntity<?> responseEntity = restTemplate.exchange(RequestEntity
                         .get(URI.create((url)
                                 .concat("?grant_type=client_credentials&scope=openid")))
@@ -87,6 +91,10 @@ public class StsOidcTokenService {
         }
         expiry = LocalDateTime.now().plusSeconds(((JsonNode) responseEntity.getBody()).get("expires_in").asLong());
         token = ((JsonNode) responseEntity.getBody()).get("access_token").asText();
+
+
+        var exchange = restTemplate.exchange(RequestEntity.get(URI.create("https://modapp-q0.adeo.no/aareg-services/api/v1/arbeidsgiver/arbeidsforhold")).build(), String.class);
+        log.info("body: {}", exchange.getBody());
     }
 
 }
