@@ -76,4 +76,4 @@ zuul:
       path: /api/t6/**
       url: https://modapp-t6.adeo.no/aareg-services/api/
   host:
-    socket-timeout-millis: 60000
+    socket-timeout-millis: 30000
