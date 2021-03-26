@@ -8,11 +8,13 @@ import org.springframework.http.HttpHeaders;
 import java.util.Set;
 
 @Slf4j
-public class AddAuthorizationToRouteFilter extends ZuulFilter {
+public class AddAuthorizationAndNavConsumerTokenToRouteFilter extends ZuulFilter {
+    public static final String HEADER_NAV_CONSUMER_TOKEN = "Nav-Consumer-Token";
+
     private final GenerateToken generateToken;
     private final Set<String> routes;
 
-    public AddAuthorizationToRouteFilter(GenerateToken generateToken, String... routes) {
+    public AddAuthorizationAndNavConsumerTokenToRouteFilter(GenerateToken generateToken, String... routes) {
         this.generateToken = generateToken;
         this.routes = Set.of(routes);
     }
@@ -36,9 +38,10 @@ public class AddAuthorizationToRouteFilter extends ZuulFilter {
     @Override
     public Object run() {
         RequestContext ctx = RequestContext.getCurrentContext();
-        log.info("Inject bearer token i requesten.");
+        log.info("Injecter bearer token i requesten.");
         var token = generateToken.getToken();
         ctx.addZuulRequestHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token);
+        ctx.addZuulRequestHeader(HEADER_NAV_CONSUMER_TOKEN, "Bearer " + token);
         return null;
     }
 }

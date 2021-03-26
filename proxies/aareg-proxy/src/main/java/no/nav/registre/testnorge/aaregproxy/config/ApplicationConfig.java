@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 
+import no.nav.registre.testnorge.aaregproxy.filter.AddAuthorizationAndNavConsumerTokenToRouteFilter;
 import no.nav.registre.testnorge.aaregproxy.filter.AddAuthorizationToRouteFilter;
 import no.nav.registre.testnorge.aaregproxy.service.StsOidcTokenService;
 import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
@@ -41,8 +42,8 @@ public class ApplicationConfig {
 
 
     @Bean
-    public AddAuthorizationToRouteFilter stsPreprodAddAuthorizationToRouteFilter(StsOidcTokenService stsPreprodOidcTokenService) {
-        return new AddAuthorizationToRouteFilter(
+    public AddAuthorizationAndNavConsumerTokenToRouteFilter stsPreprodAddAuthorizationToRouteFilter(StsOidcTokenService stsPreprodOidcTokenService) {
+        return new AddAuthorizationAndNavConsumerTokenToRouteFilter(
                 stsPreprodOidcTokenService::getToken,
                 "modapp-q0",
                 "modapp-q1",
@@ -56,8 +57,8 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public AddAuthorizationToRouteFilter stsTestAddAuthorizationToRouteFilter(StsOidcTokenService stsTestOidcTokenService) {
-        return new AddAuthorizationToRouteFilter(
+    public AddAuthorizationAndNavConsumerTokenToRouteFilter stsTestAddAuthorizationToRouteFilter(StsOidcTokenService stsTestOidcTokenService) {
+        return new AddAuthorizationAndNavConsumerTokenToRouteFilter(
                 stsTestOidcTokenService::getToken,
                 "modapp-t0",
                 "modapp-t1",
