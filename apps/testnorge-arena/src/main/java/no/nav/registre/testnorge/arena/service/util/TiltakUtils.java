@@ -256,15 +256,8 @@ public class TiltakUtils {
         var fraDato = vedtak.getFraDato();
         var tilDato = vedtak.getTilDato();
 
-        if (fraDato == null) {
-            return true;
-        }
-
         for (var item : vedtaksliste) {
-            var fraDatoItem = item.getFraDato();
-            var tilDatoItem = item.getTilDato();
-
-            if (datoerOverlapper(fraDato, tilDato, fraDatoItem, tilDatoItem)) {
+            if (datoerOverlapper(fraDato, tilDato, item.getFraDato(), item.getTilDato())) {
                 prosent += item.getTiltakProsentDeltid();
                 if (prosent > 100) {
                     return false;
