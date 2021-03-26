@@ -1,6 +1,5 @@
-package no.nav.tpsidenter.vedlikehold;
+package no.nav.adresse.service;
 
-import no.nav.registre.testnorge.libs.core.util.VaultUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -8,10 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class AdresseServiceApplicationStarter {
 
     public static void main(String[] args) {
-
-        if ("prod".equals(System.getProperty("spring.profiles.active"))) {
-            VaultUtil.initCloudVaultToken();
-        }
 
         SpringApplication.run(AdresseServiceApplicationStarter.class, args);
     }

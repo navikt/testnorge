@@ -1,4 +1,4 @@
-package no.nav.tpsidenter.vedlikehold.config;
+package no.nav.adresse.service.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

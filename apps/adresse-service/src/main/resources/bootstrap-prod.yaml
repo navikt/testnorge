@@ -3,13 +3,7 @@ spring:
     name: tps-identer-vedlikehold
   cloud:
     vault:
-      host: vault.adeo.no
-      port: 443
-      fail-fast: true
-      connection-timeout: 15000
-      read-timeout: 30000
-      generic:
-        enabled: false
+      enabled: false
   flyway:
     enabled: false
   security:

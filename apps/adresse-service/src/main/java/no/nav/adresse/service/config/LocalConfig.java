@@ -1,4 +1,4 @@
-package no.nav.tpsidenter.vedlikehold.config;
+package no.nav.adresse.service.config;
 
 import no.nav.registre.testnorge.libs.localdevelopment.LocalDevelopmentConfig;
 import org.springframework.context.annotation.Configuration;

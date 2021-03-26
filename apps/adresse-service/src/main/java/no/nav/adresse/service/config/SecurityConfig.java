@@ -1,4 +1,4 @@
-package no.nav.tpsidenter.vedlikehold.config;
+package no.nav.adresse.service.config;
 
 import no.nav.registre.testnorge.libs.oauth2.config.OAuth2ResourceServerConfiguration;
 import org.springframework.beans.factory.annotation.Value;
