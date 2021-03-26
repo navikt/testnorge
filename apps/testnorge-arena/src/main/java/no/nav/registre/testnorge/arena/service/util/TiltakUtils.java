@@ -305,7 +305,7 @@ public class TiltakUtils {
 
     private List<List<NyttVedtakTiltak>> getVedtakSequences(List<NyttVedtakTiltak> vedtak) {
         List<List<NyttVedtakTiltak>> vedtakSequences = new ArrayList<>();
-        var indices = getIndicesForVedtakSekvenser(vedtak);
+        var indices = getIndicesForVedtakSequences(vedtak);
 
         for (int j = 0; j < indices.size() - 1; j++) {
             vedtakSequences.add(vedtak.subList(indices.get(j), indices.get(j + 1)));
@@ -314,7 +314,7 @@ public class TiltakUtils {
         return vedtakSequences;
     }
 
-    public List<Integer> getIndicesForVedtakSekvenser(
+    public List<Integer> getIndicesForVedtakSequences(
             List<? extends NyttVedtak> vedtak
     ) {
         List<Integer> nyRettighetIndices = new ArrayList<>();

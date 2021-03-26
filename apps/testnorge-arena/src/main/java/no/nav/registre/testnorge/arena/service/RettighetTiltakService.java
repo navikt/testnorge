@@ -227,7 +227,7 @@ public class RettighetTiltakService {
     ) {
         var tilleggVedtak = new ArrayList<NyttVedtakTillegg>();
 
-        var nyRettighetIndices = tiltakUtils.getIndicesForVedtakSekvenser(tillegg);
+        var nyRettighetIndices = tiltakUtils.getIndicesForVedtakSequences(tillegg);
 
         for (int j = 0; j < nyRettighetIndices.size() - 1; j++) {
             var subList = tillegg.subList(nyRettighetIndices.get(j), nyRettighetIndices.get(j + 1));
