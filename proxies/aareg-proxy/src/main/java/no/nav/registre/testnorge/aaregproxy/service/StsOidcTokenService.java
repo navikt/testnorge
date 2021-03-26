@@ -70,10 +70,6 @@ public class StsOidcTokenService {
     }
 
     private void updateToken() {
-
-
-
-
         ResponseEntity<?> responseEntity = restTemplate.exchange(RequestEntity
                         .get(URI.create((url)
                                 .concat("?grant_type=client_credentials&scope=openid")))
