@@ -70,7 +70,7 @@ public class KrrstubClient implements ClientRegister {
         if (nonNull(bestilling.getTpsf()) && isKrrMaalform(bestilling.getTpsf().getSprakKode()) && isBlank(digitalKontaktdata.getSpraak())) {
             digitalKontaktdata.setSpraak(bestilling.getTpsf().getSprakKode().toLowerCase());
             digitalKontaktdata.setSpraakOppdatert(ZonedDateTime.now());
-            bestilling.getKrrstub().setRegistrert(true);
+            digitalKontaktdata.setRegistrert(true);
         }
     }
 
