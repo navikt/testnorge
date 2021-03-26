@@ -24,7 +24,7 @@ public class ApplicationConfig {
     @Bean
     public StsOidcTokenService stsPreprodOidcTokenService(
             @Value("${sts.preprod.token.provider.url}") String url,
-            @Value("${sts.preprod.token.provider.url}") String username,
+            @Value("${sts.preprod.token.provider.username}") String username,
             @Value("${sts.preprod.token.provider.password}") String password
     ) {
         return new StsOidcTokenService(restTemplateBuilder, url, username, password);
@@ -33,7 +33,7 @@ public class ApplicationConfig {
     @Bean
     public StsOidcTokenService stsTestOidcTokenService(
             @Value("${sts.test.token.provider.url}") String url,
-            @Value("${sts.test.token.provider.url}") String username,
+            @Value("${sts.test.token.provider.username}") String username,
             @Value("${sts.test.token.provider.password}") String password
     ) {
         return new StsOidcTokenService(restTemplateBuilder, url, username, password);
