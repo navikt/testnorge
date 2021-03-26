@@ -11,6 +11,7 @@ import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetFinnTiltakRe
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Deltakerstatuser;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 
 import org.springframework.stereotype.Service;
@@ -89,13 +90,13 @@ public class TiltakUtils {
 
         List<NyttVedtakTiltak> nyVedtaksliste = new ArrayList<>();
 
-        var vedtakSequences = getVedtakSequences(vedtaksliste);
+        var vedtakSequences = getVedtakSequencesTiltak(vedtaksliste);
         var brukteIndices = new ArrayList<Integer>();
 
         for (var sequence : vedtakSequences) {
             var initialFraDato = sequence.get(0).getFraDato();
 
-            var deltakelseIndex = finnNoedvendigTiltaksdeltakelse(initialFraDato, sequence.get(0).getTilDato(), tiltaksdeltakelser, brukteIndices);
+            var deltakelseIndex = finnNoedvendigTiltaksdeltakelse(tiltaksdeltakelser, brukteIndices);
             if (deltakelseIndex != null) {
                 brukteIndices.add(deltakelseIndex);
                 var deltakelse = tiltaksdeltakelser.get(deltakelseIndex);
@@ -129,18 +130,11 @@ public class TiltakUtils {
         return vedtak;
     }
 
-    private Integer finnNoedvendigTiltaksdeltakelse(LocalDate fraDato, LocalDate tilDato, List<NyttVedtakTiltak> tiltaksdeltakelser, List<Integer> brukteIndices) {
-        if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty() && fraDato != null) {
+    private Integer finnNoedvendigTiltaksdeltakelse(List<NyttVedtakTiltak> tiltaksdeltakelser, List<Integer> brukteIndices) {
+        if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty()) {
             for (var i = 0; i < tiltaksdeltakelser.size(); i++) {
                 if (!brukteIndices.contains(i)) {
-                    var deltakelse = tiltaksdeltakelser.get(i);
-                    var fraDatoDeltakelse = deltakelse.getFraDato();
-                    var tilDatoDeltakelse = deltakelse.getTilDato();
-
-                    if ((fraDatoDeltakelse != null && fraDato.isAfter(fraDatoDeltakelse.minusDays(1))) &&
-                            (tilDato == null || tilDatoDeltakelse == null || tilDato.isBefore(tilDatoDeltakelse.plusDays(1)))) {
-                        return i;
-                    }
+                    return i;
                 }
             }
         }
@@ -191,12 +185,14 @@ public class TiltakUtils {
 
     public List<NyttVedtakTiltak> removeOverlappingTiltakVedtak(
             List<NyttVedtakTiltak> vedtaksliste,
-            List<? extends NyttVedtak> relatedVedtak
+            List<NyttVedtakAap> aapVedtak
     ) {
 
         if (vedtaksliste == null || vedtaksliste.isEmpty()) {
             return vedtaksliste;
         }
+
+        var relatedVedtak = getVedtakForSequencesAap(aapVedtak);
 
         List<NyttVedtakTiltak> nyeVedtak = new ArrayList<>();
 
@@ -218,7 +214,7 @@ public class TiltakUtils {
         List<NyttVedtakTiltak> oppdatertVedtaksliste = new ArrayList<>();
         List<NyttVedtakTiltak> sekvensVedtak = new ArrayList<>();
 
-        var vedtakSequences = getVedtakSequences(vedtaksliste);
+        var vedtakSequences = getVedtakSequencesTiltak(vedtaksliste);
 
         for (var sequence : vedtakSequences) {
             var fraDato = Collections.min(sequence.stream().map(NyttVedtakTiltak::getFraDato).collect(Collectors.toList()));
@@ -286,24 +282,14 @@ public class TiltakUtils {
     }
 
     private boolean datoerOverlapper(LocalDate fraDatoA, LocalDate tilDatoA, LocalDate fraDatoB, LocalDate tilDatoB) {
-        if (fraDatoB == null || (tilDatoA == null && tilDatoB == null)) {
+        try {
+            return fraDatoA.isBefore(tilDatoB) && fraDatoB.isBefore(tilDatoA);
+        } catch (Exception e) {
             return false;
-        }
-
-        if (tilDatoA == null) {
-            return (fraDatoA.isAfter(fraDatoB.minusDays(1)) && fraDatoA.isBefore(tilDatoB));
-        } else {
-            if (tilDatoB == null) {
-                return (fraDatoB.isAfter(fraDatoA.minusDays(1)) && fraDatoB.isBefore(tilDatoA));
-            } else {
-                return ((fraDatoA == fraDatoB) || (fraDatoA.isBefore(fraDatoB) && tilDatoA.isAfter(fraDatoB)) ||
-                        (fraDatoA.isAfter(fraDatoB) && fraDatoA.isBefore(tilDatoB)));
-            }
-
         }
     }
 
-    private List<List<NyttVedtakTiltak>> getVedtakSequences(List<NyttVedtakTiltak> vedtak) {
+    private List<List<NyttVedtakTiltak>> getVedtakSequencesTiltak(List<NyttVedtakTiltak> vedtak) {
         List<List<NyttVedtakTiltak>> vedtakSequences = new ArrayList<>();
         var indices = getIndicesForVedtakSequences(vedtak);
 
@@ -312,6 +298,28 @@ public class TiltakUtils {
         }
 
         return vedtakSequences;
+    }
+
+    private List<NyttVedtakAap> getVedtakForSequencesAap(List<NyttVedtakAap> aapVedtak) {
+        if (aapVedtak == null || aapVedtak.isEmpty()){
+            return Collections.emptyList();
+        }
+
+        List<NyttVedtakAap> vedtakForSequences = new ArrayList<>();
+        var indices = getIndicesForVedtakSequences(aapVedtak);
+
+        for (int j = 0; j < indices.size() - 1; j++) {
+            var sequence = aapVedtak.subList(indices.get(j), indices.get(j + 1));
+            var fraDato = Collections.min(sequence.stream().map(NyttVedtakAap::getFraDato).collect(Collectors.toList()));
+            var tilDato = Collections.max(sequence.stream().map(NyttVedtakAap::getTilDato).collect(Collectors.toList()));
+
+            var vedtak = new NyttVedtakAap();
+            vedtak.setFraDato(fraDato);
+            vedtak.setTilDato(tilDato);
+            vedtakForSequences.add(vedtak);
+        }
+
+        return vedtakForSequences;
     }
 
     public List<Integer> getIndicesForVedtakSequences(
