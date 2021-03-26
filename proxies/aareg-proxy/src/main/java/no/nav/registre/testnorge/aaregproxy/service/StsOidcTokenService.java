@@ -70,6 +70,8 @@ public class StsOidcTokenService {
     }
 
     private void updateToken() {
+        log.info("Oppretter token med brukernavn: {}", username);
+
         ResponseEntity<?> responseEntity = restTemplate.exchange(RequestEntity
                         .get(URI.create((url)
                                 .concat("?grant_type=client_credentials&scope=openid")))

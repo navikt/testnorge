@@ -281,3 +281,6 @@ project(":pdl-proxy").projectDir = file('proxies/pdl-proxy')
 
 include 'aareg-proxy'
 project(":aareg-proxy").projectDir = file('proxies/aareg-proxy')
+
+include 'security-token-service'
+project(":security-token-service").projectDir = file('libs/security-token-service')
