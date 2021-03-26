@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 
 import no.nav.registre.testnorge.aaregproxy.filter.AddAuthorizationAndNavConsumerTokenToRouteFilter;
-import no.nav.registre.testnorge.aaregproxy.filter.AddAuthorizationToRouteFilter;
 import no.nav.registre.testnorge.aaregproxy.service.StsOidcTokenService;
 import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
 
