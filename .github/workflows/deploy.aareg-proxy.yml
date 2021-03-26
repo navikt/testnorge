@@ -1,4 +1,4 @@
-name: Deploy ereg-proxy
+name: Deploy aareg-proxy
 
 on:
   push:
