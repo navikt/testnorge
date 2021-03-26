@@ -25,6 +25,7 @@ public class SecurityConfig extends OAuth2ResourceServerConfiguration {
         super(oAuth2ResourceServerProperties, acceptedAudience);
     }
 
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.sessionManagement()
