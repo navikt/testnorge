@@ -73,5 +73,4 @@ public class StsOidcTokenService {
         expiry = LocalDateTime.now().plusSeconds(node.get("expires_in").asLong());
         token = node.get("access_token").asText();
     }
-
 }
