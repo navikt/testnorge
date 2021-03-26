@@ -240,15 +240,8 @@ public class TiltakUtils {
         var fraDato = vedtak.getFraDato();
         var tilDato = vedtak.getTilDato();
 
-        if (fraDato == null) {
-            return true;
-        }
-
         for (var item : vedtaksliste) {
-            var fraDatoItem = item.getFraDato();
-            var tilDatoItem = item.getTilDato();
-
-            if (datoerOverlapper(fraDato, tilDato, fraDatoItem, tilDatoItem)) {
+            if (datoerOverlapper(fraDato, tilDato, item.getFraDato(), item.getTilDato())) {
                 return false;
             }
         }
@@ -301,7 +294,7 @@ public class TiltakUtils {
     }
 
     private List<NyttVedtakAap> getVedtakForSequencesAap(List<NyttVedtakAap> aapVedtak) {
-        if (aapVedtak == null || aapVedtak.isEmpty()){
+        if (aapVedtak == null || aapVedtak.isEmpty()) {
             return Collections.emptyList();
         }
 
