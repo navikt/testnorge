@@ -41,7 +41,7 @@ public class ApplicationConfig {
 
     @Bean
     public AddAuthorizationAndNavConsumerTokenToRouteFilter stsPreprodAddAuthorizationToRouteFilter(StsOidcTokenService stsPreprodOidcTokenService) {
-        return new AddAuthorizationAndNavConsumerTokenToRouteFilter(
+        var addAuthorizationAndNavConsumerTokenToRouteFilter = new AddAuthorizationAndNavConsumerTokenToRouteFilter(
                 stsPreprodOidcTokenService::getToken,
                 "modapp-q0",
                 "modapp-q1",
@@ -52,6 +52,10 @@ public class ApplicationConfig {
                 "modapp-q6",
                 "modapp-q8"
         );
+
+        addAuthorizationAndNavConsumerTokenToRouteFilter.restTemplate = restTemplateBuilder.build();
+
+        return addAuthorizationAndNavConsumerTokenToRouteFilter;
     }
 
     @Bean
