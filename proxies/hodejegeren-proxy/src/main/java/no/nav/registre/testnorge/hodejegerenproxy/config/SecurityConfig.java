@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.pdlproxy.config;
+package no.nav.registre.testnorge.hodejegerenproxy.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;

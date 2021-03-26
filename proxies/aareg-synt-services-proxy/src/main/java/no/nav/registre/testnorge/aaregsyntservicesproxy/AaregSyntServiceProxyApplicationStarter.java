@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.pdlproxy;
+package no.nav.registre.testnorge.aaregsyntservicesproxy;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

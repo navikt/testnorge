@@ -39,7 +39,6 @@ public class ApplicationConfig {
         return new StsOidcTokenService(restTemplateBuilder, url, username, password);
     }
 
-
     @Bean
     public AddAuthorizationAndNavConsumerTokenToRouteFilter stsPreprodAddAuthorizationToRouteFilter(StsOidcTokenService stsPreprodOidcTokenService) {
         return new AddAuthorizationAndNavConsumerTokenToRouteFilter(

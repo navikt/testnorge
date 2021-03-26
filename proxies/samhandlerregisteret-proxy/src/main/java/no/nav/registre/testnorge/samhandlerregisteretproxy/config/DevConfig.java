@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.pdlproxy.config;
+package no.nav.registre.testnorge.samhandlerregisteretproxy.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

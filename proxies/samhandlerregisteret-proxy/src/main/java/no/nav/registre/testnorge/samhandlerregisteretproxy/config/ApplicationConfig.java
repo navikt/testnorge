@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.aaregproxy.config;
+package no.nav.registre.testnorge.samhandlerregisteretproxy.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -10,8 +10,7 @@ import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2ServerToServerCo
 
 @Configuration
 @Import({
-        ApplicationCoreConfig.class,
-        SecureOAuth2ServerToServerConfiguration.class
+        ApplicationCoreConfig.class
 })
 @Profile({"dev", "prod"})
 @RequiredArgsConstructor
