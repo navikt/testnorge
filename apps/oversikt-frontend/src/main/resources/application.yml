@@ -42,6 +42,8 @@ applications:
   testnav-inntektsmelding-generator-service: dev-gcp.dolly.testnav-inntektsmelding-generator-service
   testnav-helsepersonell-service: dev-gcp.dolly.testnav-helsepersonell-service
   testnav-organisasjon-service: dev-gcp.dolly.testnav-organisasjon-service
+  testnav-pdl-proxy: dev-fss.dolly.testnav-pdl-proxy
+  adresse-service: dev-gcp.dolly.testnav-adresse-service
 
 zuul:
   routes:
