@@ -7,7 +7,6 @@ import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsResp
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserAaregRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaAapRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaTiltakRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaVedtakshistorikkRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserBisysRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserFrikortRequest;
@@ -31,7 +30,6 @@ import no.nav.registre.orkestratoren.service.TestnorgeSigrunService;
 import no.nav.registre.orkestratoren.service.TestnorgeSkdService;
 import no.nav.registre.orkestratoren.service.TestnorgeTpService;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

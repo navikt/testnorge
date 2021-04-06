@@ -98,21 +98,4 @@ public class TestnorgeArenaService {
         arenaRespons.addAll(nyeRettigheter);
     }
 
-    private void byggTiltakResponse(
-            String type,
-            List<NyttVedtakResponse> nyeVedtakTiltak,
-            List<NyttVedtakTiltak> arenaRespons) {
-        List<NyttVedtakTiltak> nyeRettigheter = new ArrayList<>();
-        List<NyttVedtakFeil> feiledeRettigheter = new ArrayList<>();
-        for (var vedtak : nyeVedtakTiltak) {
-            nyeRettigheter.addAll(vedtak.getNyeRettigheterTiltak() != null ? vedtak.getNyeRettigheterTiltak() : new ArrayList<>());
-            feiledeRettigheter.addAll(vedtak.getFeiledeRettigheter() != null ? vedtak.getFeiledeRettigheter() : new ArrayList<>());
-        }
-        log.info("{}: Opprettet {} tiltak. Antall feilede tiltak: {}",
-                type,
-                nyeRettigheter.size(),
-                feiledeRettigheter.size());
-        arenaRespons.addAll(nyeRettigheter);
-    }
-
 }
