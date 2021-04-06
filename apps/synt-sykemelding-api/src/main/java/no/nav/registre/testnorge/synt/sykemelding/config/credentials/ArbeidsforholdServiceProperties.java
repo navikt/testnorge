@@ -7,6 +7,6 @@ import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 
 
 @Configuration
-@ConfigurationProperties(prefix = "consumers.testnorge-arbeidsforhold-api")
-public class ArbeidsforholdApiServiceProperties extends NaisServerProperties {
+@ConfigurationProperties(prefix = "consumers.testnav-arbeidsforhold-service")
+public class ArbeidsforholdServiceProperties extends NaisServerProperties {
 }

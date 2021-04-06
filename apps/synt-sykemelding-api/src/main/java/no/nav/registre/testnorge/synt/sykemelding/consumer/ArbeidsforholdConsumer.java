@@ -4,7 +4,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
-import no.nav.registre.testnorge.synt.sykemelding.config.credentials.ArbeidsforholdApiServiceProperties;
+import no.nav.registre.testnorge.synt.sykemelding.config.credentials.ArbeidsforholdServiceProperties;
 import no.nav.registre.testnorge.synt.sykemelding.consumer.command.GetArbeidsforholdCommand;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -14,11 +14,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class ArbeidsforholdConsumer {
     private final AccessTokenService accessTokenService;
     private final WebClient webClient;
-    private final ArbeidsforholdApiServiceProperties serviceProperties;
+    private final ArbeidsforholdServiceProperties serviceProperties;
 
     public ArbeidsforholdConsumer(
             AccessTokenService accessTokenService,
-            ArbeidsforholdApiServiceProperties serviceProperties
+            ArbeidsforholdServiceProperties serviceProperties
     ) {
         this.accessTokenService = accessTokenService;
         this.serviceProperties = serviceProperties;
