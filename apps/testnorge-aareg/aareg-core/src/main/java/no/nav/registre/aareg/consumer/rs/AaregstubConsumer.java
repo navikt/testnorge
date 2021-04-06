@@ -21,11 +21,9 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
 import no.nav.registre.aareg.exception.ResponseNullPointerException;
 import no.nav.registre.aareg.provider.rs.response.SletteArbeidsforholdResponse;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j
-@DependencyOn("testnorge-aaregstub")
 public class AaregstubConsumer {
 
     private final RestTemplate restTemplate;

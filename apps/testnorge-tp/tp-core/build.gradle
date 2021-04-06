@@ -8,8 +8,9 @@ bootJar {
 }
 
 dependencies {
-    implementation project(':testnorge-dependency-analysis')
+    implementation project(':tp-domain')
     implementation project(':testnorge-core')
+
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth:2.2.5.RELEASE'
     implementation 'org.projectlombok:lombok:1.18.12'
     implementation 'javax.validation:validation-api:2.0.1.Final'
@@ -20,7 +21,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.3.4.RELEASE'
     implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
     implementation 'org.hibernate:hibernate-core:5.4.21.Final'
-    implementation project(':tp-domain')
+
     implementation 'io.springfox:springfox-swagger2:2.9.2'
     implementation 'io.springfox:springfox-swagger-ui:2.9.2'
     implementation 'no.nav.registre:testnorge-consumers:1.12.0-RELEASE'

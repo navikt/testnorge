@@ -1,6 +1,7 @@
 package no.nav.registre.sdforvalter.consumer.rs;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -19,15 +20,16 @@ import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Metadata;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Opprettelsesdokument;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Organisasjon;
 import no.nav.registre.testnorge.libs.dto.generernavnservice.v1.NavnDTO;
-import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1.EndringsdokumentProducer;
-import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v1.OpprettelsesdokumentProducer;
+import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v2.EndringsdokumentV2Producer;
+import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v2.OpprettelsesdokumentV2Producer;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class OrganisasjonMottakServiceConsumer {
 
-    private final OpprettelsesdokumentProducer opprettelsesdokumentProducer;
-    private final EndringsdokumentProducer endringsdokumentProducer;
+    private final OpprettelsesdokumentV2Producer opprettelsesdokumentProducer;
+    private final EndringsdokumentV2Producer endringsdokumentProducer;
     private final GenererNavnConsumer genererNavnConsumer;
 
     private String genererNavn(String enhetstype) {
@@ -36,9 +38,12 @@ public class OrganisasjonMottakServiceConsumer {
     }
 
     private Adresse createAdresse(no.nav.registre.sdforvalter.domain.Adresse adresse) {
-        if (adresse == null) {
+        if (adresse == null ||  adresse.getKommunenr() == null
+        ) {
             return null;
         }
+
+        log.info("Setter adresse: {}.", adresse);
         return Adresse.newBuilder()
                 .setPostadresse1(adresse.getAdresse())
                 .setKommunenummer(adresse.getKommunenr())
@@ -78,18 +83,21 @@ public class OrganisasjonMottakServiceConsumer {
         UUID uuid = UUID.randomUUID();
         Organisasjon organisasjon = createOrganisasjon(orgTree);
 
+
         if (update) {
-            endringsdokumentProducer.send(uuid.toString(), Endringsdokument.newBuilder()
+            var endringsdokument = Endringsdokument.newBuilder()
                     .setOrganisasjon(organisasjon)
                     .setMetadata(metadata)
-                    .build()
-            );
+                    .build();
+            log.info("Sender endringsdokument: \n{}", endringsdokument);
+            endringsdokumentProducer.send(uuid.toString(), endringsdokument);
         } else {
-            opprettelsesdokumentProducer.send(uuid.toString(), Opprettelsesdokument.newBuilder()
+            var opprettelsesdokument = Opprettelsesdokument.newBuilder()
                     .setOrganisasjon(organisasjon)
                     .setMetadata(metadata)
-                    .build()
-            );
+                    .build();
+            log.info("Sender opprettelsesdokument: \n{}", opprettelsesdokument);
+            opprettelsesdokumentProducer.send(uuid.toString(), opprettelsesdokument);
         }
     }
 

@@ -12,13 +12,13 @@ spec:
   azure:
     application:
       enabled: true
+      tenant: nav.no
   accessPolicy:
     inbound:
       rules:
         - application: team-dolly-lokal-app
           cluster: dev-fss
         - application: mn-synt-arbeidsforhold-service
-        - application: arbeidsforhold-frontend
         - application: testnorge-oversikt-frontend
         - application: testnorge-synt-sykemelding-api
   liveness:

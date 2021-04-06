@@ -17,7 +17,7 @@ dependencies {
 
     implementation project(':local-development')
     implementation project(':testnorge-core')
-    implementation project(':testnorge-common-command')
+    implementation project(':commands')
     implementation project(':testnorge-avro-schema')
     implementation project(':testnorge-oauth2')
     implementation project(':testnorge-database')
@@ -33,6 +33,8 @@ dependencies {
     implementation 'com.zaxxer:HikariCP'
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.postgresql:postgresql'
+
+    compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml'
 
     implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'

@@ -41,4 +41,6 @@ public class ArbeidsforholdResponse {
     List<PermisjonDTO> permisjoner;
     String historikk;
     FartoeyDTO fartoey;
+    List<InntektDTO> inntekter;
+    AvvikDTO avvik;
 }

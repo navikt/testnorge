@@ -8,8 +8,9 @@ bootJar {
 }
 
 dependencies {
-    implementation project(':testnorge-dependency-analysis')
     implementation project(':testnorge-core')
+    implementation project(':sam-domain')
+
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.3.4.RELEASE'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth:2.2.5.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-actuator:2.3.4.RELEASE'
@@ -23,7 +24,7 @@ dependencies {
     implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
     implementation 'org.springframework.boot:spring-boot-starter:1.5.3.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa:1.5.3.RELEASE'
-    implementation project(':sam-domain')
+
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'no.nav.registre:testnorge-consumers:1.12.0-RELEASE'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config:2.2.5.RELEASE'

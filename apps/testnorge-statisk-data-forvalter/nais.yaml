@@ -11,6 +11,7 @@ spec:
   azure:
     application:
       enabled: true
+      tenant: nav.no
   liveness:
     path: /internal/isAlive
     periodSeconds: 30
@@ -36,6 +37,8 @@ spec:
       cpu: 200m
       memory: 1024Mi
   webproxy: true
+  kafka:
+    pool: nav-dev
   ingresses:
     - "https://testnorge-statisk-data-forvalter.nais.preprod.local"
     - "https://testnorge-statisk-data-forvalter.dev.adeo.no"

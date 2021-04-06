@@ -23,6 +23,7 @@ spec:
   azure:
     application:
       enabled: true
+      tenant: nav.no
   accessPolicy:
     inbound:
       rules:
@@ -32,9 +33,6 @@ spec:
           cluster: dev-fss
         - application: mn-original-populasjon
           cluster: dev-fss
-    outbound:
-      rules:
-        - application: applikasjonsanalyse-service
   gcp:
     sqlInstances:
       - type: POSTGRES_12

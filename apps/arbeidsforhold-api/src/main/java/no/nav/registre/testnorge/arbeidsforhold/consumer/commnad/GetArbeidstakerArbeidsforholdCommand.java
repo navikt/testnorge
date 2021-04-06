@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
-import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -23,6 +22,10 @@ import no.nav.registre.testnorge.arbeidsforhold.domain.Arbeidsforhold;
 @Slf4j
 @RequiredArgsConstructor
 public class GetArbeidstakerArbeidsforholdCommand implements Callable<List<Arbeidsforhold>> {
+
+    private static final String NAV_CONSUMER_TOKEN = "Nav-Consumer-Token";
+    private static final String NAV_PERSON_IDENT = "Nav-Personident";
+
     private final RestTemplate restTemplate;
     private final String url;
     private final String token;
@@ -34,12 +37,12 @@ public class GetArbeidstakerArbeidsforholdCommand implements Callable<List<Arbei
         RequestEntity<Void> request = RequestEntity
                 .get(new UriTemplate(url + "/v1/arbeidstaker/arbeidsforhold").expand("q2"))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header(AaregHeaders.NAV_CONSUMER_TOKEN, "Bearer " + token)
-                .header(AaregHeaders.NAV_PERSON_IDENT, ident)
+                .header(NAV_CONSUMER_TOKEN, "Bearer " + token)
+                .header(NAV_PERSON_IDENT, ident)
                 .build();
 
         ResponseEntity<ArbeidsforholdDTO[]> response = restTemplate.exchange(request, ArbeidsforholdDTO[].class);
-        if (!response.getStatusCode().is2xxSuccessful() || !response.hasBody() || response.getBody()==null) {
+        if (!response.getStatusCode().is2xxSuccessful() || !response.hasBody() || response.getBody() == null) {
             log.error(
                     "Klarer ikke å hente arbeidsforhold for {}. Response code: {}",
                     ident,

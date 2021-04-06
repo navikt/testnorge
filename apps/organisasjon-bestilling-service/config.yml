@@ -11,6 +11,7 @@ spec:
   azure:
     application:
       enabled: true
+      tenant: nav.no
   accessPolicy:
     inbound:
       rules:
@@ -22,13 +23,13 @@ spec:
           cluster: dev-fss
         - application: jenkins-batch-status-service
           cluster: dev-fss
+        - application: testnav-jenkins-batch-status-service
+          cluster: dev-gcp
         - application: dolly-backend-dev
           cluster: dev-fss
         - application: dolly-backend
           cluster: dev-fss
     outbound:
-      rules:
-        - application: applikasjonsanalyse-service
       external:
         - host: ereg-batch-status-service.dev-fss-pub.nais.io
   gcp:

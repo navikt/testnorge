@@ -1,7 +1,6 @@
 package no.nav.registre.testnorge.miljoerservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.miljoerservice.response.MiljoerResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -13,7 +12,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import static java.util.Objects.isNull;
 
 @Service
-@DependencyOn(value = "tps-forvalteren", external = true)
 @Slf4j
 public class TpsfConsumer {
 

@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: testnav-organisasjon-service
+    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
+    description: "Testnorge organisasjoner API"
+
+
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+
+consumers:
+  testnav-ereg-proxy:
+    url: https://testnav-ereg-proxy.dev-fss-pub.nais.io
+    name: testnav-ereg-proxy
+    cluster: dev-fss
+    namespace: dolly

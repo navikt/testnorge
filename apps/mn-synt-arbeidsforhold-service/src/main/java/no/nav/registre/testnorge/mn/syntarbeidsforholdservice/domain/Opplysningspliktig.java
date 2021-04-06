@@ -10,14 +10,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.ArbeidsforholdDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.PersonDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.VirksomhetDTO;
 
 @Slf4j
-@DependencyOn("testnorge-arbeidsforhold-api")
 @RequiredArgsConstructor
 public class Opplysningspliktig {
     private static final Random RANDOM = new Random();

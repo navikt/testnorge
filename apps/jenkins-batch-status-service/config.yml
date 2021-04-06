@@ -1,7 +1,7 @@
 ﻿apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: jenkins-batch-status-service
+  name: testnav-jenkins-batch-status-service
   namespace: dolly
   labels:
     team: dolly
@@ -15,10 +15,18 @@ spec:
         - application: team-dolly-lokal-app
           cluster: dev-fss
         - application: testnorge-oversikt-frontend
-        - application: organisasjon-mottak-service
+          cluster: dev-fss
+        - application: testnav-organisasjon-mottak-service
+          cluster: dev-gcp
+    outbound:
+      rules:
+        - application: organisasjon-bestilling-service
+      external:
+        - host: testnorge-batch-adeo-proxy.dev-fss-pub.nais.io
   azure:
     application:
       enabled: true
+      tenant: nav.no
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -35,9 +43,9 @@ spec:
   resources:
     requests:
       cpu: 200m
-      memory: 4000Mi
+      memory: 1024Mi
     limits:
       cpu: 500m
-      memory: 5000Mi
+      memory: 2048Mi
   ingresses:
-    - "https://jenkins-batch-status-service.dev.intern.nav.no"
+    - "https://testnav-jenkins-batch-status-service.dev.intern.nav.no"

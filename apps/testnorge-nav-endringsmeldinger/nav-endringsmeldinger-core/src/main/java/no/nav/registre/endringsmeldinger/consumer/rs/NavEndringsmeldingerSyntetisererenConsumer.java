@@ -14,11 +14,9 @@ import org.w3c.dom.Document;
 import java.util.List;
 
 import no.nav.registre.endringsmeldinger.consumer.rs.exceptions.SyntetiseringsException;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Component
-@DependencyOn(value = "syntrest", external = true)
 public class NavEndringsmeldingerSyntetisererenConsumer {
 
     private static final ParameterizedTypeReference<List<Document>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {

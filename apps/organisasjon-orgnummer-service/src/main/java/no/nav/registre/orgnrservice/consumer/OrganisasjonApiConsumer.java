@@ -1,11 +1,6 @@
 package no.nav.registre.orgnrservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.orgnrservice.consumer.exceptions.OrganisasjonApiException;
-import no.nav.registre.testnorge.libs.common.command.GetOrganisasjonCommand;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -20,28 +15,33 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
+import no.nav.registre.orgnrservice.config.credentials.OrganisasjonServiceProperties;
+import no.nav.registre.orgnrservice.consumer.exceptions.OrganisasjonApiException;
+import no.nav.registre.testnorge.libs.common.command.organisasjonservice.v1.GetOrganisasjonCommand;
+import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+
 @Slf4j
 @Component
-@DependencyOn("testnorge-organisasjon-api")
 public class OrganisasjonApiConsumer {
 
     private final WebClient webClient;
-    private final String clientId;
     private final AccessTokenService accessTokenService;
+    private final OrganisasjonServiceProperties serviceProperties;
     private final ExecutorService executorService;
     private final MiljoerConsumer miljoerConsumer;
 
-    OrganisasjonApiConsumer(@Value("${consumers.organisasjon-api.url}") String url,
-                            @Value("${consumers.organisasjon-api.client_id}") String clientId,
-                            @Value("${consumers.organisasjon-api.threads}") Integer threads,
-                            AccessTokenService accessTokenService,
-                            MiljoerConsumer miljoerConsumer) {
-        this.clientId = clientId;
+    OrganisasjonApiConsumer(
+            OrganisasjonServiceProperties serviceProperties,
+            AccessTokenService accessTokenService,
+            MiljoerConsumer miljoerConsumer
+    ) {
+        this.serviceProperties = serviceProperties;
         this.accessTokenService = accessTokenService;
-        this.executorService = Executors.newFixedThreadPool(threads);
+        this.executorService = Executors.newFixedThreadPool(serviceProperties.getThreads());
         this.miljoerConsumer = miljoerConsumer;
         this.webClient = WebClient.builder()
-                .baseUrl(url)
+                .baseUrl(serviceProperties.getUrl())
                 .build();
     }
 
@@ -57,9 +57,11 @@ public class OrganisasjonApiConsumer {
         List<String> miljoer = miljoerConsumer.hentMiljoer().getEnvironments();
         Set<String> ekskluderteMiljoer = Set.of("qx", "u5");
 
+        var token = accessTokenService.generateToken(serviceProperties).getTokenValue();
+
         var futures = miljoer.stream()
                 .filter(miljoe -> !ekskluderteMiljoer.contains(miljoe))
-                .map(enkeltmiljoe -> getOrgnrFraMiljoeThreads(orgnummer, enkeltmiljoe, getToken()))
+                .map(enkeltmiljoe -> getOrgnrFraMiljoeThreads(orgnummer, enkeltmiljoe, token))
                 .collect(Collectors.toList());
 
         List<OrganisasjonDTO> miljoeListe = new ArrayList<>();
@@ -73,14 +75,5 @@ public class OrganisasjonApiConsumer {
         }
         long antallMiljoerOrgnrFinnes = miljoeListe.stream().filter(Objects::nonNull).count();
         return antallMiljoerOrgnrFinnes > 0;
-    }
-
-    private String getToken() {
-        if (SecurityContextHolder.getContext().getAuthentication() == null) {
-            log.info("Henter token for batchkjøring (ikke innlogget)");
-            return accessTokenService.generateClientCredentialAccessToken(clientId).getTokenValue();
-        } else {
-            return accessTokenService.generateToken(clientId).getTokenValue();
-        }
     }
 }

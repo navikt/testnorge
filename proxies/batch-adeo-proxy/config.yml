@@ -11,6 +11,7 @@ spec:
   webproxy: true
   azure:
     application:
+      tenant: nav.no
       enabled: true
   accessPolicy:
     inbound:
@@ -25,6 +26,12 @@ spec:
           cluster: dev-fss
         - application: testnorge-oversikt-frontend
           cluster: dev-fss
+        - application: organisasjon-mottak-service
+          cluster: dev-fss
+        - application: testnav-organisasjon-mottak-service
+          cluster: dev-gcp
+        - application: testnav-jenkins-batch-status-service
+          cluster: dev-gcp
   liveness:
     path: /internal/isAlive
     initialDelay: 4

@@ -23,10 +23,9 @@ dependencies {
     }
 
     implementation 'com.sun.xml.ws:jaxws-ri:2.3.3'
-    implementation project(':testnorge-core')
-    implementation project(':testnorge-dependency-analysis')
-    implementation project(':testnorge-oauth2')
 
+    implementation project(':testnorge-core')
+    implementation project(':testnorge-oauth2')
     implementation project(':aareg-domain')
     implementation project(':testnorge-domain')
 

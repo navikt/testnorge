@@ -10,7 +10,9 @@ spec:
   azure:
     application:
       enabled: true
+      tenant: nav.no
       replyURLs:
+        - "https://testnav-endringsmelding.dev.intern.nav.no/login/oauth2/code/aad"
         - "https://endringsmelding.dev.intern.nav.no/login/oauth2/code/aad"
         - "http://localhost:8080/login/oauth2/code/aad"
       claims:
@@ -32,7 +34,6 @@ spec:
     outbound:
       rules:
         - application: endringsmelding-service
-        - application: applikasjonsanalyse-service
         - application: testnorge-profil-api
   resources:
     limits:
@@ -44,3 +45,4 @@ spec:
   image: {{ image }}
   ingresses:
     - "https://endringsmelding.dev.intern.nav.no"
+    - "https://testnav-endringsmelding.dev.intern.nav.no"

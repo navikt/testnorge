@@ -101,7 +101,7 @@ public class AccessTokenService {
 
 
     private AccessToken generateClientCredentialAccessToken(AccessScopes accessScopes) {
-        log.info("Henter OAuth2 access token fra client credential...");
+        log.trace("Henter OAuth2 access token fra client credential...");
 
         var body = BodyInserters
                 .fromFormData("scope", String.join(" ", accessScopes.getScopes()))
@@ -160,9 +160,11 @@ public class AccessTokenService {
             log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow");
             return accessToken;
         } catch (WebClientResponseException e) {
+            var secret = clientCredentials.getClientSecret().substring(0, 3) + "******************";
             log.error(
-                    "Feil ved henting av access token for {}. Feilmelding: {}.",
+                    "Feil ved henting av access token for {} med client secret: {}.\nError: \n{}.",
                     String.join(" ", accessScopes.getScopes()),
+                    secret,
                     e.getResponseBodyAsString()
             );
             throw e;

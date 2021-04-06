@@ -9,7 +9,6 @@ bootJar {
 
 dependencies {
     implementation project(':local-development')
-    implementation project(':testnorge-dependency-analysis-auto-configuration')
 
     implementation 'org.apache.commons:commons-csv:1.8'
 

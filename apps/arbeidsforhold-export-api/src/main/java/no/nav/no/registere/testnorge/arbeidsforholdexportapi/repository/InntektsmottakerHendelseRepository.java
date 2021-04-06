@@ -9,9 +9,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import no.nav.no.registere.testnorge.arbeidsforholdexportapi.converter.csv.AvvikSyntetiseringCsvPrinterConverter;
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.Arbeidsforhold;
+import no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.Avvik;
+import no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.Inntekt;
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.Permisjon;
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.repository.mapper.InntektsmottakerXmlArbeidsforholdRowMapper;
+import no.nav.no.registere.testnorge.arbeidsforholdexportapi.repository.mapper.InntektsmottakerXmlAvvikRowMapper;
+import no.nav.no.registere.testnorge.arbeidsforholdexportapi.repository.mapper.InntektsmottakerXmlInntekterRowMapper;
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.repository.mapper.InntektsmottakerXmlPermisjonerRowMapper;
 
 @Slf4j
@@ -46,6 +51,28 @@ public class InntektsmottakerHendelseRepository {
                 new InntektsmottakerXmlPermisjonerRowMapper(page * size, count())
         ).stream().flatMap(Collection::stream).collect(Collectors.toList());
         log.info("Hentet {} INNTEKTSMOTTAKER_XML med {} permisjoner fra DB.", size, list.size());
+        return list;
+    }
+
+    public List<Inntekt> getInntekter(int page, int size) {
+        log.info("Henter {} INNTEKTSMOTTAKER_XML fra DB...", size);
+        List<Inntekt> list = jdbcTemplate.query(
+                "SELECT INNTEKTSMOTTAKER_XML FROM AAREG_UTTREKK.temp_uttrekk_inhe ORDER BY EFF_OPPLYSNINGSPLIKTIG_ID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY",
+                new Object[]{ page * size, size},
+                new InntektsmottakerXmlInntekterRowMapper(page * size, count())
+        ).stream().flatMap(Collection::stream).collect(Collectors.toList());
+        log.info("Hentet {} INNTEKTSMOTTAKER_XML med {} inntekter fra DB.", size, list.size());
+        return list;
+    }
+
+    public List<Avvik> getAvvik(int page, int size) {
+        log.info("Henter {} INNTEKTSMOTTAKER_XML fra DB...", size);
+        List<Avvik> list = jdbcTemplate.query(
+                "SELECT INNTEKTSMOTTAKER_XML FROM AAREG_UTTREKK.temp_uttrekk_inhe ORDER BY EFF_OPPLYSNINGSPLIKTIG_ID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY",
+                new Object[]{ page * size, size},
+                new InntektsmottakerXmlAvvikRowMapper(page * size, count())
+        ).stream().flatMap(Collection::stream).collect(Collectors.toList());
+        log.info("Hentet {} INNTEKTSMOTTAKER_XML med {} inntekter fra DB.", size, list.size());
         return list;
     }
 }

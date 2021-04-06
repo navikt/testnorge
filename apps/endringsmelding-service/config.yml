@@ -12,6 +12,7 @@ spec:
   azure:
     application:
       enabled: true
+      tenant: nav.no
   accessPolicy:
     inbound:
       rules:
@@ -21,8 +22,6 @@ spec:
         - application: endringsmelding-frontend
           cluster: dev-gcp
     outbound:
-      rules:
-        - application: applikasjonsanalyse-service
       external:
         - host: tps-forvalteren-proxy.dev-fss-pub.nais.io
   liveness:

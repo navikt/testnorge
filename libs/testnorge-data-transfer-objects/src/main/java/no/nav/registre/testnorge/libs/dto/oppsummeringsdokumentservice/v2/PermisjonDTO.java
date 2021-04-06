@@ -6,20 +6,35 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class PermisjonDTO {
-    @JsonProperty(required = true)
+    @JsonProperty
+    String permisjonId;
+    @JsonProperty
     String beskrivelse;
-    @JsonProperty(required = true)
+    @JsonProperty
     LocalDate startdato;
-    @JsonProperty(required = true)
+    @JsonProperty
     LocalDate sluttdato;
-    @JsonProperty(required = true)
+    @JsonProperty
     Float permisjonsprosent;
+    @JsonProperty
+    List<AvvikDTO> avvik;
+
+    public List<AvvikDTO> getAvvik() {
+        if (avvik == null) {
+            avvik = new ArrayList<>();
+        }
+        return avvik;
+    }
 }

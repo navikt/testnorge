@@ -10,6 +10,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.converter.csv.ArbeidsforholdSyntetiseringCsvPrinterConverter;
+import no.nav.no.registere.testnorge.arbeidsforholdexportapi.converter.csv.AvvikSyntetiseringCsvPrinterConverter;
+import no.nav.no.registere.testnorge.arbeidsforholdexportapi.converter.csv.InntektSyntetiseringCsvPrinterConverter;
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.converter.csv.PermisjonSyntetiseringCsvPrinterConverter;
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.repository.InntektsmottakerHendelseRepository;
 
@@ -64,6 +66,56 @@ public class ArbeidsforholdExportService {
         for (int page = 0; page < numberOfPages; page++) {
             log.info("Henter for side {}/{} med opp til {} per side.", page + 1, numberOfPages, PAGE_SIZE);
             printer.write(inntektsmottakerHendelseRepository.getPermisjoner(page, PAGE_SIZE));
+            printWriter.flush();
+        }
+        log.info("Lukker printeren til fil {}.", path);
+        printer.close();
+        return path;
+    }
+
+    public Path writeInntekter() throws IOException {
+        var count = inntektsmottakerHendelseRepository.count();
+        int numberOfPages = (int) Math.ceil(count / (float) PAGE_SIZE);
+
+        if (numberOfPages > 1) {
+            log.warn("Deler opp operasjonen i {} deler for å unngå minne problemer.", numberOfPages);
+        }
+        var path = Files.createTempFile("ink-" + System.currentTimeMillis() + "-", ".csv");
+
+        var file = path.toFile();
+        log.info("Fil opprettet: {}.", path);
+        file.deleteOnExit();
+        var printWriter = new PrintWriter(file);
+
+        var printer = new InntektSyntetiseringCsvPrinterConverter(printWriter);
+        for (int page = 0; page < numberOfPages; page++) {
+            log.info("Henter for side {}/{} med opp til {} per side.", page + 1, numberOfPages, PAGE_SIZE);
+            printer.write(inntektsmottakerHendelseRepository.getInntekter(page, PAGE_SIZE));
+            printWriter.flush();
+        }
+        log.info("Lukker printeren til fil {}.", path);
+        printer.close();
+        return path;
+    }
+
+    public Path writeAvvik() throws IOException {
+        var count = inntektsmottakerHendelseRepository.count();
+        int numberOfPages = (int) Math.ceil(count / (float) PAGE_SIZE);
+
+        if (numberOfPages > 1) {
+            log.warn("Deler opp operasjonen i {} deler for å unngå minne problemer.", numberOfPages);
+        }
+        var path = Files.createTempFile("avk-" + System.currentTimeMillis() + "-", ".csv");
+
+        var file = path.toFile();
+        log.info("Fil opprettet: {}.", path);
+        file.deleteOnExit();
+        var printWriter = new PrintWriter(file);
+
+        var printer = new AvvikSyntetiseringCsvPrinterConverter(printWriter);
+        for (int page = 0; page < numberOfPages; page++) {
+            log.info("Henter for side {}/{} med opp til {} per side.", page + 1, numberOfPages, PAGE_SIZE);
+            printer.write(inntektsmottakerHendelseRepository.getAvvik(page, PAGE_SIZE));
             printWriter.flush();
         }
         log.info("Lukker printeren til fil {}.", path);

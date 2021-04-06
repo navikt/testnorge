@@ -18,7 +18,6 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.common.command.GetPersonCommand;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
 import no.nav.registre.testnorge.libs.dto.person.v1.Persondatasystem;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
@@ -28,7 +27,6 @@ import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateAcc
 
 @Slf4j
 @Component
-@DependencyOn("testnorge-person-api")
 public class PersonConsumer {
     private final WebClient webClient;
     private final AzureClientCredentials clientCredential;

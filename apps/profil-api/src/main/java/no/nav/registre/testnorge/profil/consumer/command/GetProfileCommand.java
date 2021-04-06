@@ -8,11 +8,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.profil.consumer.dto.ProfileDTO;
 
 @Slf4j
-@DependencyOn(value = "azure-ad", external = true)
 @RequiredArgsConstructor
 public class GetProfileCommand implements Callable<ProfileDTO> {
 

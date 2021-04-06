@@ -13,7 +13,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.personexportapi.consumer.command.GetTpsfGrupperCommand;
 import no.nav.registre.testnorge.personexportapi.consumer.command.GetTpsfMeldingerFromPageCommand;
 import no.nav.registre.testnorge.personexportapi.consumer.dto.GruppeDTO;
@@ -21,7 +20,6 @@ import no.nav.registre.testnorge.personexportapi.domain.Person;
 
 @Slf4j
 @Component
-@DependencyOn(value = "tps-forvalter", external = true)
 public class TpsfConsumer {
     private final WebClient webClient;
     private final String username;

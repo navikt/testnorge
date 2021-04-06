@@ -8,8 +8,8 @@ bootJar {
 }
 
 dependencies {
-    implementation project(':testnorge-dependency-analysis')
     implementation project(':testnorge-core')
+
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth:2.2.5.RELEASE'
     implementation 'org.projectlombok:lombok:1.18.12'
     implementation 'org.springframework.boot:spring-boot-starter-web:2.3.4.RELEASE'

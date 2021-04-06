@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Endringsdokument;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Opprettelsesdokument;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Organisasjon;
-import no.nav.registre.testnorge.libs.kafkaconfig.topic.OrganisasjonTopic;
-import no.nav.registre.testnorge.organisasjonmottak.consumer.EregConsumer;
+import no.nav.registre.testnorge.libs.kafkaconfig.topic.v2.OrganisasjonTopic;
+import no.nav.registre.testnorge.organisasjonmottak.consumer.JenkinsConsumer;
 import no.nav.registre.testnorge.organisasjonmottak.domain.Ansatte;
 import no.nav.registre.testnorge.organisasjonmottak.domain.DetaljertNavn;
 import no.nav.registre.testnorge.organisasjonmottak.domain.Epost;
@@ -40,7 +40,7 @@ import no.nav.registre.testnorge.organisasjonmottak.domain.ToLine;
 @Component
 @RequiredArgsConstructor
 public class OrganaisjonMottakListener {
-    private final EregConsumer eregConsumer;
+    private final JenkinsConsumer jenkinsConsumer;
 
 
     @KafkaListener(topics = OrganisasjonTopic.ORGANISASJON_OPPRETT_ORGANISASJON)
@@ -60,7 +60,7 @@ public class OrganaisjonMottakListener {
     }
 
     private void save(String uuid, String miljo, Organisasjon organisasjon, boolean update) {
-        eregConsumer.save(Flatfil.create(createRecords(organisasjon, update)), miljo, uuid);
+        jenkinsConsumer.send(Flatfil.create(createRecords(organisasjon, update)), miljo, uuid);
     }
 
     private List<Record> createRecords(Organisasjon organisasjon, boolean update) {

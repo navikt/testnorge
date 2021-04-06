@@ -1,0 +1,64 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+spring:
+  application:
+    name: testnav-ereg-proxy
+    desciption: Proxy for ereg som legger på sikkerhet og redirecter til riktig miljø.
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+
+zuul:
+  ignoredPatterns: /internal/isReady, /internal/isAlive
+  set-content-length: true
+  routes:
+    modapp-q0:
+      path: /api/q0/**
+      url: https://modapp-q0.adeo.no/ereg/api/
+    modapp-q1:
+      path: /api/q1/**
+      url: https://modapp-q1.adeo.no/ereg/api/
+    modapp-q2:
+      path: /api/q2/**
+      url: https://modapp-q2.adeo.no/ereg/api/
+    modapp-q3:
+      path: /api/q3/**
+      url: https://modapp-q3.adeo.no/ereg/api/
+    modapp-q4:
+      path: /api/q4/**
+      url: https://modapp-q3.adeo.no/ereg/api/
+    modapp-q5:
+      path: /api/q5/**
+      url: https://modapp-q5.adeo.no/ereg/api/
+    modapp-q6:
+      path: /api/q6/**
+      url: https://modapp-q6.adeo.no/ereg/api/
+    modapp-q8:
+      path: /api/q8/**
+      url: https://modapp-q8.adeo.no/ereg/api/
+    modapp-t0:
+      path: /api/t0/**
+      url: https://modapp-t0.adeo.no/ereg/api/
+    modapp-t1:
+      path: /api/t1/**
+      url: https://modapp-t1.adeo.no/ereg/api/
+    modapp-t2:
+      path: /api/t2/**
+      url: https://modapp-t2.adeo.no/ereg/api/
+    modapp-t3:
+      path: /api/t3/**
+      url: https://modapp-t3.adeo.no/ereg/api/
+    modapp-t4:
+      path: /api/t4/**
+      url: https://modapp-t4.adeo.no/ereg/api/
+    modapp-t5:
+      path: /api/t5/**
+      url: https://modapp-t5.adeo.no/ereg/api/
+    modapp-t6:
+      path: /api/t6/**
+      url: https://modapp-t6.adeo.no/ereg/api/
+  host:
+    socket-timeout-millis: 30000

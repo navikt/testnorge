@@ -14,11 +14,9 @@ import java.util.Collections;
 import java.util.List;
 
 import no.nav.registre.medl.consumer.rs.response.MedlSyntResponse;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Component
 @Slf4j
-@DependencyOn(value = "syntrest",external = true)
 public class MedlSyntConsumer {
 
     private static final ParameterizedTypeReference<List<MedlSyntResponse>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {

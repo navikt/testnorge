@@ -10,13 +10,10 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
-import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdRequest;
 import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdResponse;
 import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdWithHistorikkRequest;
 
 @Slf4j
-@DependencyOn("syntrest")
 @RequiredArgsConstructor
 public class GenerateNextArbeidsforholdWithHistorikkCommand implements Callable<ArbeidsforholdResponse> {
     private final WebClient webClient;

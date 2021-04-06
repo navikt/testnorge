@@ -3,14 +3,12 @@ package no.nav.registre.testnorge.arena.consumer.rs;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arena.consumer.rs.command.PostEndreInnsatsbehovCommand;
 import no.nav.registre.testnorge.arena.consumer.rs.request.EndreInnsatsbehovRequest;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Slf4j
 @Component
-@DependencyOn(value = "arena-forvalteren", external = true)
 public class InnsatsArenaForvalterConsumer {
 
     private final WebClient webClient;

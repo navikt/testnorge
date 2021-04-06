@@ -11,12 +11,10 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 import java.util.List;
 
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.tp.TpSaveInHodejegerenRequest;
 
 @Component
 @Slf4j
-@DependencyOn("testnorge-hodejegeren")
 public class HodejegerenHistorikkConsumer {
 
     private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {

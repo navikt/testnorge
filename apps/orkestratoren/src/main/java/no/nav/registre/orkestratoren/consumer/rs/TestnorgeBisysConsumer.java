@@ -12,11 +12,9 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserBisysRequest;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Component
-@DependencyOn("testnorge-bisys")
 public class TestnorgeBisysConsumer {
 
     private static final ParameterizedTypeReference<Object> RESPONSE_TYPE = new ParameterizedTypeReference<>() {

@@ -8,11 +8,9 @@ bootJar {
 }
 
 dependencies {
-    implementation project(':testnorge-common-command')
+    implementation project(':commands')
     implementation project(':testnorge-oauth2')
-    implementation project(':testnorge-dependency-analysis')
     implementation project(':testnorge-core')
-    implementation project(':testnorge-dependency-analysis-auto-configuration')
     implementation project(':testnorge-domain')
     implementation project(':testnorge-data-transfer-objects')
     implementation project(':testnorge-reporting')

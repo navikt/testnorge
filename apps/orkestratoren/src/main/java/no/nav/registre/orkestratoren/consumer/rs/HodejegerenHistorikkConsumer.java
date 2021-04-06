@@ -3,7 +3,6 @@ package no.nav.registre.orkestratoren.consumer.rs;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.domain.dto.namespacetps.TpsPersonDokumentType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -21,7 +20,6 @@ import java.util.List;
 
 @Component
 @Slf4j
-@DependencyOn("testnorge-hodejegeren")
 public class HodejegerenHistorikkConsumer {
 
     private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {

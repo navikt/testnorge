@@ -1,0 +1,54 @@
+---
+apiVersion: kafka.nais.io/v1
+kind: Topic
+metadata:
+  name: testnav-opprett-organisasjon-v1-1
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  pool: nav-dev
+  config:
+    cleanupPolicy: delete
+    minimumInSyncReplicas: 1
+    partitions: 3
+    replication: 3
+    retentionBytes: -1
+    retentionHours: 72
+  acl:
+    - team: dolly
+      application: testnav-organisasjon-mottak-service
+      access: read
+    - team: dolly
+      application: testnorge-statisk-data-forvalter
+      access: write
+    - team: dolly
+      application: organisasjon-forvalter
+      access: write
+---
+apiVersion: kafka.nais.io/v1
+kind: Topic
+metadata:
+  name: testnav-endre-organisasjon-v1-1
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  pool: nav-dev
+  config:
+    cleanupPolicy: delete
+    minimumInSyncReplicas: 1
+    partitions: 3
+    replication: 3
+    retentionBytes: -1
+    retentionHours: 72
+  acl:
+    - team: dolly
+      application: testnav-organisasjon-mottak-service
+      access: read
+    - team: dolly
+      application: testnorge-statisk-data-forvalter
+      access: write
+    - team: dolly
+      application: organisasjon-forvalter
+      access: write

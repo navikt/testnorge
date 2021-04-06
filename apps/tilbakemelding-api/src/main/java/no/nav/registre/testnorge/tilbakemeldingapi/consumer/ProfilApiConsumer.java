@@ -5,11 +5,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.List;
 
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.profil.v1.ProfilDTO;
-import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
@@ -17,7 +14,6 @@ import no.nav.registre.testnorge.tilbakemeldingapi.config.credentials.ProfilServ
 
 @Slf4j
 @Component
-@DependencyOn("testnorge-profil-api")
 public class ProfilApiConsumer {
 
     private final WebClient webClient;

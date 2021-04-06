@@ -20,8 +20,6 @@ spec:
         - application: oppsummeringsdokument-frontend
           cluster: dev-gcp
     outbound:
-      rules:
-        - application: applikasjonsanalyse-service
       external:
         - host: aareg-synt-services-proxy.dev-fss-pub.nais.io
   elastic:
@@ -29,6 +27,7 @@ spec:
   azure:
     application:
       enabled: true
+      tenant: nav.no
   liveness:
     path: /internal/isAlive
     initialDelay: 4

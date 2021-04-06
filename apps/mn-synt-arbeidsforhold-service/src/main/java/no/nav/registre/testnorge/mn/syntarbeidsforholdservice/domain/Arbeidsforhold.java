@@ -11,7 +11,9 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.ArbeidsforholdDTO;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.AvvikDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.FartoeyDTO;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.InntektDTO;
 import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdRequest;
 import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdResponse;
 import no.nav.registre.testnorge.libs.dto.syntrest.v1.PermisjonDTO;
@@ -45,15 +47,30 @@ public class Arbeidsforhold {
                 .stream()
                 .map(dto -> no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.PermisjonDTO
                         .builder()
+                        .permisjonId(UUID.randomUUID().toString())
                         .beskrivelse(dto.getBeskrivelse())
                         .permisjonsprosent(Float.parseFloat(dto.getPermisjonsprosent()))
                         .sluttdato(dto.getSluttdato())
                         .startdato(dto.getStartdato())
+                        .avvik(getAvvik(dto.getAvvik()))
                         .build()
                 ).collect(Collectors.toList());
 
-        if(!permisjoner.isEmpty()){
-            log.info("Permisjoner registert på arbeidsforhold id {}.",arbeidsforholdId);
+        var inntekter = Optional.ofNullable(response.getInntekter())
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(inntekt -> InntektDTO
+                        .builder()
+                        .startdatoOpptjeningsperiode(inntekt.getStartdatoOpptjeningsperiode())
+                        .sluttdatoOpptjeningsperiode(inntekt.getSluttdatoOpptjeningsperiode())
+                        .opptjeningsland(inntekt.getOpptjeningsland())
+                        .antall(inntekt.getAntall())
+                        .avvik(getAvvik(inntekt.getAvvik()))
+                        .build()
+                ).collect(Collectors.toList());
+
+        if (!permisjoner.isEmpty()) {
+            log.info("Permisjoner registert på arbeidsforhold id {}.", arbeidsforholdId);
         }
 
         this.dto = ArbeidsforholdDTO
@@ -74,18 +91,25 @@ public class Arbeidsforhold {
                         .skipstype(response.getFartoey().getSkipstype())
                         .build() : null
                 )
+                .inntekter(inntekter)
+                .avvik(getAvvik(response.getAvvik()))
                 .build();
     }
 
-    public boolean isForenklet(){
+    private List<AvvikDTO> getAvvik(no.nav.registre.testnorge.libs.dto.syntrest.v1.AvvikDTO avvik) {
+        return avvik != null ? Collections.singletonList(AvvikDTO.builder()
+                .id(avvik.getId())
+                .alvorlighetsgrad(avvik.getAlvorlighetsgrad())
+                .navn(avvik.getNavn())
+                .build()
+        ) : Collections.emptyList();
+    }
+
+    public boolean isForenklet() {
         return dto.getTypeArbeidsforhold().equals("forenkletOppgjoersordning");
     }
 
-    public Arbeidsforhold(
-            ArbeidsforholdResponse response,
-            String ident,
-            String virksomhetsnummer
-    ) {
+    public Arbeidsforhold(ArbeidsforholdResponse response, String ident, String virksomhetsnummer) {
         this(response, ident, UUID.randomUUID().toString(), virksomhetsnummer);
     }
 
@@ -183,9 +207,25 @@ public class Arbeidsforhold {
                         value.getBeskrivelse(),
                         value.getPermisjonsprosent() != null ? value.getPermisjonsprosent().toString() : null,
                         value.getStartdato(),
-                        value.getSluttdato()
+                        value.getSluttdato(),
+                        getAvvik(value.getAvvik())
                 )).collect(Collectors.toList()))
+                .inntekter(dto.getInntekter().stream().map(value -> no.nav.registre.testnorge.libs.dto.syntrest.v1.InntektDTO
+                        .builder()
+                        .antall(value.getAntall())
+                        .opptjeningsland(value.getOpptjeningsland())
+                        .startdatoOpptjeningsperiode(value.getStartdatoOpptjeningsperiode())
+                        .sluttdatoOpptjeningsperiode(value.getSluttdatoOpptjeningsperiode())
+                        .avvik(getAvvik(value.getAvvik()))
+                        .build()
+                ).collect(Collectors.toList()))
+                .antallInntekter(dto.getInntekter().size())
+                .avvik(getAvvik(dto.getAvvik()))
                 .build();
+    }
+
+    private no.nav.registre.testnorge.libs.dto.syntrest.v1.AvvikDTO getAvvik(List<no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.AvvikDTO> list) {
+        return list.stream().findFirst().map(avvik -> no.nav.registre.testnorge.libs.dto.syntrest.v1.AvvikDTO.builder().alvorlighetsgrad(avvik.getAlvorlighetsgrad()).navn(avvik.getNavn()).id(avvik.getId()).build()).orElse(null);
     }
 
     public ArbeidsforholdHistorikk toHistorikk(String miljo) {

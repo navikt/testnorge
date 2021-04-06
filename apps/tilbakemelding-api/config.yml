@@ -24,13 +24,13 @@ spec:
     outbound:
       rules:
         - application: testnorge-profil-api
-        - application: applikasjonsanalyse-service
       external:
         - host: slack.com
         - host: login.microsoftonline.com
   azure:
     application:
       enabled: true
+      tenant: nav.no
   liveness:
     path: /internal/isAlive
     initialDelay: 4

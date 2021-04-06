@@ -10,8 +10,8 @@ bootJar {
 dependencies {
     compile group: 'org.springframework', name: 'spring-tx', version: '5.2.9.RELEASE'
 
-    implementation project(':testnorge-dependency-analysis')
     implementation project(':testnorge-core')
+
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth:2.2.5.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-web:2.3.4.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-actuator:2.3.4.RELEASE'

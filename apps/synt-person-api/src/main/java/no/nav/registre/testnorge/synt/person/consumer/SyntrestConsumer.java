@@ -6,12 +6,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.synt.person.consumer.command.GetSyntPersonCommand;
 import no.nav.registre.testnorge.synt.person.consumer.dto.SyntPersonDTO;
 
 @Component
-@DependencyOn("syntrest")
 public class SyntrestConsumer {
     private final WebClient webClient;
 

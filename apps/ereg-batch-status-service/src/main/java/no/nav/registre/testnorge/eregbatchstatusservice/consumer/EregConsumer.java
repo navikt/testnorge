@@ -9,11 +9,9 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.eregbatchstatusservice.config.EregProperties;
 import no.nav.registre.testnorge.eregbatchstatusservice.consumer.command.GetBatchStatusCommand;
-import no.nav.registre.testnorge.libs.analysis.DependencyOn;
 
 @Slf4j
 @Component
-@DependencyOn(name = "ereg")
 public class EregConsumer {
     private final Map<String, WebClient> envWebClientMap;
 

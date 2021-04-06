@@ -15,7 +15,6 @@ public class MNSyntArbeidsforholdServiceApplicationStarter {
         if ("prod".equals(System.getProperty("spring.profiles.active"))) {
             VaultUtil.initCloudVaultToken();
         }
-
         SpringApplication.run(MNSyntArbeidsforholdServiceApplicationStarter.class, args);
     }
 }

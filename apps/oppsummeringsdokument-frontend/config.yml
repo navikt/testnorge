@@ -10,6 +10,7 @@ spec:
   azure:
     application:
       enabled: true
+      tenant: nav.no
       replyURLs:
         - "https://oppsummeringsdokument-frontend.dev.intern.nav.no/login/oauth2/code/aad"
         - "http://localhost:8080/login/oauth2/code/aad"
@@ -29,7 +30,6 @@ spec:
     outbound:
       rules:
         - application: oppsummeringsdokument-service
-        - application: applikasjonsanalyse-service
   resources:
     limits:
       cpu: 1000m

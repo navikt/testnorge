@@ -10,11 +10,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.concurrent.Callable;
 
 import no.nav.registre.testnorge.libs.core.headers.NavHeaders;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.dto.KodeverkDTO;
 
 @Slf4j
-@DependencyOn("kodeverk")
 @RequiredArgsConstructor
 public class GetKodeverkCommand implements Callable<KodeverkDTO> {
     private final WebClient webClient;

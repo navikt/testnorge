@@ -2,7 +2,9 @@ package no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0.Inntektsmottaker;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0.Leveranse;
@@ -30,18 +32,23 @@ public class Arbeidsforhold {
     private final String fartsomraade;
     private final Permisjoner permisjoner;
     private final String kildereferanse;
+    private final Integer antallInntekter;
+    private final List<Avvik> avvikList;
 
     public Arbeidsforhold(
             Leveranse leveranse,
             Virksomhet virksomhet,
             Inntektsmottaker inntektsmottaker,
+            Integer antallInntekter,
             no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0.Arbeidsforhold arbeidsforhold
     ) {
+        this.antallInntekter = antallInntekter;
         this.virksomhetOrgnummer = virksomhet.getNorskIdentifikator();
         this.kalendermaaned = leveranse.getKalendermaaned().toString();
         this.opplysningspliktigOrgnummer = leveranse.getOpplysningspliktig().getNorskIdentifikator();
+        this.kildereferanse = inntektsmottaker.getKilde().getKildereferanse();
         this.ident = inntektsmottaker.getNorskIdentifikator();
-        this.permisjoner = Permisjoner.from(arbeidsforhold.getPermisjon(), getKalendermaaned(), getIdent(), getKildereferanse());
+        this.permisjoner = Permisjoner.from(arbeidsforhold.getPermisjon(), getKalendermaaned(), getIdent(), getKildereferanse(), arbeidsforhold.getTypeArbeidsforhold());
         this.arbeidsforholdId = arbeidsforhold.getArbeidsforholdId();
         this.arbeidsforholdType = arbeidsforhold.getTypeArbeidsforhold();
         this.yrke = arbeidsforhold.getYrke();
@@ -58,7 +65,13 @@ public class Arbeidsforhold {
         this.skipsregister = arbeidsforhold.getFartoey() != null ? arbeidsforhold.getFartoey().getSkipsregister() : null;
         this.skipstype = arbeidsforhold.getFartoey() != null ? arbeidsforhold.getFartoey().getSkipstype() : null;
         this.fartsomraade = arbeidsforhold.getFartoey() != null ? arbeidsforhold.getFartoey().getFartsomraade() : null;
-        this.kildereferanse = inntektsmottaker.getKilde().getKildereferanse();
+        this.avvikList = arbeidsforhold.getAvvik() != null
+                ? arbeidsforhold.getAvvik().stream().map(value -> new Avvik(value, "ARBEIDSFORHOLD", arbeidsforhold.getTypeArbeidsforhold())).collect(Collectors.toList())
+                : Collections.emptyList();
+    }
+
+    public boolean hasAvvik() {
+        return !avvikList.isEmpty();
     }
 
     public String getArbeidsforholdId() {
@@ -164,11 +177,18 @@ public class Arbeidsforhold {
         return permisjoner.getList();
     }
 
+    public Integer getAntallInntekter() {
+        return antallInntekter;
+    }
 
     private static LocalDate toLocalDate(XMLGregorianCalendar calendar) {
         if (calendar == null) {
             return null;
         }
         return LocalDate.of(calendar.getYear(), calendar.getMonth(), calendar.getDay());
+    }
+
+    public List<Avvik> getAvvikList() {
+        return avvikList;
     }
 }

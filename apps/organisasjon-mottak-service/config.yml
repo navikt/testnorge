@@ -1,23 +1,29 @@
 ﻿apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: organisasjon-mottak-service
+  name: testnav-organisasjon-mottak-service
   namespace: dolly
   labels:
     team: dolly
 spec:
   image: {{ image }}
   port: 8080
-  webproxy: true
   azure:
     application:
       enabled: true
+      tenant: nav.no
   accessPolicy:
     inbound:
       rules:
         - application: team-dolly-lokal-app
           cluster: dev-fss
         - application: testnorge-oversikt-frontend
+          cluster: dev-fss
+    outbound:
+      rules:
+        - application: testnav-jenkins-batch-status-service
+      external:
+        - host: aareg-synt-services-proxy.dev-fss-pub.nais.io
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -29,19 +35,16 @@ spec:
     periodSeconds: 5
     failureThreshold: 500
   replicas:
-    min: 1
+    min: 3
     max: 3
-  vault:
-    enabled: true
-    paths:
-      - kvPath: /serviceuser/data/dev/srvtestnorge
-        mountPath: /secret/serviceuser
   resources:
     requests:
       cpu: 200m
-      memory: 4000Mi
+      memory: 1024Mi
     limits:
       cpu: 500m
-      memory: 5000Mi
+      memory: 2048Mi
+  kafka:
+    pool: nav-dev
   ingresses:
-    - "https://organisasjon-mottak-service.dev.intern.nav.no"
+    - "https://testnav-organisasjon-mottak-service.dev.intern.nav.no"

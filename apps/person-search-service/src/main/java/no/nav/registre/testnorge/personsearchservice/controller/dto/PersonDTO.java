@@ -20,4 +20,6 @@ public class PersonDTO {
     FoedselDTO foedsel;
     SivilstandDTO sivilstand;
     StatsborgerskapDTO statsborgerskap;
+    UtfyttingFraNorgeDTO utfyttingFraNorge;
+    InnflyttingTilNorgeDTO innfyttingTilNorge;
 }

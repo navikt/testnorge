@@ -1,4 +1,4 @@
-plugins {
+ plugins {
     id 'no.nav.registre.testnorge.java-conventions'
     id 'org.springframework.boot' version '2.3.4.RELEASE'
     id 'io.spring.dependency-management' version '1.0.8.RELEASE'
@@ -13,15 +13,12 @@ dependencyManagement {
 }
 
 dependencies {
-
     implementation project(':kafka-config')
     implementation project(':kafka-producers')
     implementation project(':local-development')
     implementation project(':testnorge-core')
-    implementation project(':testnorge-dependency-analysis')
-    implementation project(':testnorge-dependency-analysis-auto-configuration')
     implementation project(':testnorge-avro-schema')
-    implementation project(':testnorge-common-command')
+    implementation project(':commands')
     implementation project(':testnorge-data-transfer-objects')
     implementation project(':testnorge-oauth2')
 

@@ -1,7 +1,6 @@
 package no.nav.registre.testnorge.arena.service;
 
 import static no.nav.registre.testnorge.arena.service.RettighetAapService.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
-import static no.nav.registre.testnorge.arena.service.RettighetTilleggService.ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT;
 import static no.nav.registre.testnorge.arena.service.RettighetAapService.SYKEPENGEERSTATNING_MAKS_PERIODE;
 import static no.nav.registre.testnorge.arena.service.util.ServiceUtils.AKTIVITETSFASE_SYKEPENGEERSTATNING;
 import static no.nav.registre.testnorge.arena.service.util.ServiceUtils.BEGRUNNELSE;
@@ -54,6 +53,7 @@ import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.RettighetType;
 import no.nav.registre.testnorge.libs.core.util.IdentUtil;
 
 import org.springframework.stereotype.Service;
@@ -75,6 +75,7 @@ public class VedtakshistorikkService {
 
     private static final String MAALGRUPPEKODE_TILKNYTTET_AAP = "NEDSARBEVN";
     private static final String MAALGRUPPEKODE_TILKNYTTET_TILTAKSPENGER = "MOTTILTPEN";
+    private static final LocalDate ARENA_TILLEGG_TILSYN_FAMILIEMEDLEMMER_DATE_LIMIT = LocalDate.of(2020, 02, 29);
 
     public Map<String, List<NyttVedtakResponse>> genererVedtakshistorikk(
             Long avspillergruppeId,
@@ -211,14 +212,14 @@ public class VedtakshistorikkService {
             if (senesteVedtak == null) {
                 log.info("Kunne ikke opprette rettigheter for ident: " + personident);
                 rettighetRequests = new ArrayList<>();
-            } else if (senesteVedtak instanceof NyttVedtakAap) {
+            } else if (senesteVedtak.getRettighetType() == RettighetType.AAP) {
                 rettighetRequests = arbeidsoekerUtils.opprettArbeidssoekerAap(personident, rettigheter, miljoe, ((NyttVedtakAap) senesteVedtak).getAktivitetsfase());
-            } else if (senesteVedtak instanceof NyttVedtakTiltak) {
+            } else if (senesteVedtak.getRettighetType() == RettighetType.TILTAK) {
                 rettighetRequests = arbeidsoekerUtils.opprettArbeidssoekerTiltak(rettigheter, miljoe);
-            } else if (senesteVedtak instanceof NyttVedtakTillegg) {
+            } else if (senesteVedtak.getRettighetType() == RettighetType.TILLEGG) {
                 rettighetRequests = arbeidsoekerUtils.opprettArbeidssoekerTillegg(rettigheter, miljoe);
             } else {
-                throw new VedtakshistorikkException("Ukjent vedtakstype: " + senesteVedtak.getClass());
+                throw new VedtakshistorikkException("Mangler støtte for rettighettype: " + senesteVedtak.getRettighetType());
             }
         }
 
@@ -314,8 +315,11 @@ public class VedtakshistorikkService {
             String miljoe
     ) {
         var aap = historikk.getAap();
+        var aap115 = historikk.getAap115();
         if (aap != null && !aap.isEmpty()) {
             return rettighetAapService.opprettetPersonOgInntektIPopp(personident, miljoe, aap.get(0));
+        } else if (aap115 != null && !aap115.isEmpty()) {
+            return rettighetAapService.opprettetPersonOgInntektIPopp(personident, miljoe, aap115.get(0));
         }
         return true;
     }
@@ -423,11 +427,12 @@ public class VedtakshistorikkService {
             arbeidsoekerUtils.opprettArbeidssoekerTiltakdeltakelse(personident, miljoe, kvalifiseringsgruppe);
 
             tiltaksdeltakelser.forEach(deltakelse -> {
-                if (!tiltakUtils.harGyldigTiltakKode(deltakelse, kvalifiseringsgruppe)) {
+                if (tiltakUtils.harIkkeGyldigTiltakKode(deltakelse, kvalifiseringsgruppe)) {
                     deltakelse.setTiltakKode(tiltakUtils.getGyldigTiltakKode(deltakelse, kvalifiseringsgruppe));
                 }
                 deltakelse.setFodselsnr(personident);
                 deltakelse.setTiltakYtelse("J");
+                deltakelse.setTiltakVedtak("J");
             });
             tiltaksdeltakelser.forEach(deltakelse -> {
                 var tiltak = tiltakUtils.finnTiltak(personident, miljoe, deltakelse);
@@ -592,15 +597,18 @@ public class VedtakshistorikkService {
         var tillegg = oppdaterVedtakTillegg(historikk);
 
         if (tillegg != null && !tillegg.isEmpty() && !rettigheter.isEmpty()) {
-            for (var vedtak : tillegg) {
-                var rettighetRequest = new RettighetTilleggRequest(Collections.singletonList(vedtak));
-                rettighetRequest.setPersonident(personident);
-                rettighetRequest.setMiljoe(miljoe);
-                rettighetRequest.getNyeTilleggsstonad().forEach(rettighet -> rettighet.setBegrunnelse(BEGRUNNELSE));
 
-                opprettTiltaksaktivitet(rettigheter, rettighetRequest);
+            var tiltaksaktiviteter = rettighetTiltakService.getTiltaksaktivitetRettigheter(personident, miljoe, tillegg);
+            if (tiltaksaktiviteter != null && !tiltaksaktiviteter.isEmpty()){
+                rettigheter.addAll(tiltaksaktiviteter);
 
-                rettigheter.add(rettighetRequest);
+                for (var vedtak : tillegg) {
+                    vedtak.setBegrunnelse(BEGRUNNELSE);
+                    var rettighetRequest = new RettighetTilleggRequest(Collections.singletonList(vedtak));
+                    rettighetRequest.setPersonident(personident);
+                    rettighetRequest.setMiljoe(miljoe);
+                    rettigheter.add(rettighetRequest);
+                }
             }
         }
     }
@@ -673,11 +681,5 @@ public class VedtakshistorikkService {
         return false;
     }
 
-    private void opprettTiltaksaktivitet(List<RettighetRequest> rettigheter, RettighetTilleggRequest request) {
-        if (request.getVedtakTillegg() != null && !request.getVedtakTillegg().isEmpty()) {
-            rettigheter.add(rettighetTiltakService.opprettRettighetTiltaksaktivitetRequest(
-                    request, true));
-        }
-    }
 
 }

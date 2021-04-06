@@ -1,3 +1,4 @@
+
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -25,10 +26,7 @@ gradleEnterprise {
 }
 
 include(':proxies')
-
-include(':testnorge-dependency-analysis-auto-configuration')
-
-include(':inntektsmelding-stub')
+include(':inntektsmelding-generator-service')
 include(':testnorge-tss')
 include(':profil-api')
 include(':hodejegeren-core')
@@ -56,7 +54,6 @@ include(':testnorge-arena')
 include(':testnorge-token-provider')
 include(':nav-endringsmeldinger-core')
 include(':synt-sykemelding-api')
-include(':testnorge-dependency-analysis')
 include(':testnorge-csv-converter')
 include(':testnorge-tp')
 include(':udi-stub')
@@ -77,12 +74,12 @@ include(':sam-local')
 include(':aareg-core')
 include(':testnorge-avro-schema')
 include(':mn-organisasjon-api')
-include(':organisasjon-api')
+include(':organisasjon-service')
 include(':testnorge-database')
-include(':rapportering-api')
+include(':organisasjon-service')
 include(':token-provider-core')
 include(':arbeidsforhold-xsd')
-include(':helsepersonell-api')
+include(':helsepersonell-service')
 include(':person-export-api')
 include(':apps')
 include(':brreg-stub')
@@ -93,14 +90,13 @@ include(':testnorge-spion')
 include(':oversikt-frontend')
 include(':opprett-person-pdl')
 include(':varslinger-api')
-include(':testnorge-common-command')
-include(':hendelse-api')
+include(':commands')
 include(':testnorge-inntekt')
 include(':inst-local')
 include(':arbeidsforhold-api')
 include(':tp-core')
 include(':testnorge-aareg')
-include(':avhengighetsanalyse-frontend')
+include(':applikasjonsanalyse-frontend')
 include(':syntrest')
 include(':synt-person-api')
 include(':skd-core')
@@ -120,8 +116,9 @@ include(':mn-person-service')
 include(':mn-synt-arbeidsforhold-service')
 include(':organisasjon-orgnummer-service')
 include(':organisasjon-forvalter')
+include(':tps-identer-vedlikehold')
 
-project(":inntektsmelding-stub").projectDir = file('apps/inntektsmelding-stub')
+project(":inntektsmelding-generator-service").projectDir = file('apps/inntektsmelding-generator-service')
 project(":testnorge-tss").projectDir = file('apps/testnorge-tss')
 project(":profil-api").projectDir = file('apps/profil-api')
 project(":hodejegeren-core").projectDir = file('apps/testnorge-hodejegeren/hodejegeren-core')
@@ -147,7 +144,6 @@ project(":testnorge-reporting").projectDir = file('libs/testnorge-reporting')
 project(":testnorge-token-provider").projectDir = file('apps/testnorge-token-provider')
 project(":nav-endringsmeldinger-core").projectDir = file('apps/testnorge-nav-endringsmeldinger/nav-endringsmeldinger-core')
 project(":synt-sykemelding-api").projectDir = file('apps/synt-sykemelding-api')
-project(":testnorge-dependency-analysis").projectDir = file('libs/testnorge-dependency-analysis')
 project(":testnorge-csv-converter").projectDir = file('libs/testnorge-csv-converter')
 project(":testnorge-tp").projectDir = file('apps/testnorge-tp')
 project(":udi-stub").projectDir = file('apps/udi-stub')
@@ -169,12 +165,12 @@ project(":sam-local").projectDir = file('apps/testnorge-sam/sam-local')
 project(":aareg-core").projectDir = file('apps/testnorge-aareg/aareg-core')
 project(":testnorge-avro-schema").projectDir = file('libs/testnorge-avro-schema')
 project(":mn-organisasjon-api").projectDir = file('apps/mn-organisasjon-api')
-project(":organisasjon-api").projectDir = file('apps/organisasjon-api')
+project(":organisasjon-service").projectDir = file('apps/organisasjon-service')
 project(":testnorge-database").projectDir = file('libs/testnorge-database')
-project(":rapportering-api").projectDir = file('apps/rapportering-api')
+project(":organisasjon-service").projectDir = file('apps/organisasjon-service')
 project(":token-provider-core").projectDir = file('apps/testnorge-token-provider/token-provider-core')
 project(":arbeidsforhold-xsd").projectDir = file('xsd/arbeidsforhold-xsd')
-project(":helsepersonell-api").projectDir = file('apps/helsepersonell-api')
+project(":helsepersonell-service").projectDir = file('apps/helsepersonell-service')
 project(":person-export-api").projectDir = file('apps/person-export-api')
 project(":brreg-stub").projectDir = file('apps/brreg-stub')
 project(":sigrun-domain").projectDir = file('apps/testnorge-sigrun/sigrun-domain')
@@ -183,14 +179,13 @@ project(":testnorge-spion").projectDir = file('apps/testnorge-spion')
 project(":oversikt-frontend").projectDir = file('apps/oversikt-frontend')
 project(":opprett-person-pdl").projectDir = file('apps/opprett-person-pdl')
 project(":varslinger-api").projectDir = file('apps/varslinger-api')
-project(":testnorge-common-command").projectDir = file('libs/testnorge-common-command')
-project(":hendelse-api").projectDir = file('apps/hendelse-api')
+project(":commands").projectDir = file('libs/commands')
 project(":testnorge-inntekt").projectDir = file('apps/testnorge-inntekt')
 project(":inst-local").projectDir = file('apps/testnorge-inst/inst-local')
 project(":arbeidsforhold-api").projectDir = file('apps/arbeidsforhold-api')
 project(":tp-core").projectDir = file('apps/testnorge-tp/tp-core')
 project(":testnorge-aareg").projectDir = file('apps/testnorge-aareg')
-project(":avhengighetsanalyse-frontend").projectDir = file('apps/avhengighetsanalyse-frontend')
+project(":applikasjonsanalyse-frontend").projectDir = file('apps/applikasjonsanalyse-frontend')
 project(":syntrest").projectDir = file('apps/syntrest')
 project(":synt-person-api").projectDir = file('apps/synt-person-api')
 project(":skd-core").projectDir = file('apps/testnorge-skd/skd-core')
@@ -210,8 +205,7 @@ project(":mn-synt-arbeidsforhold-service").projectDir = file('apps/mn-synt-arbei
 project(":ident-check-in-prod-service").projectDir = file('apps/ident-check-in-prod-service')
 project(":organisasjon-orgnummer-service").projectDir = file('apps/organisasjon-orgnummer-service')
 project(":organisasjon-forvalter").projectDir = file('apps/organisasjon-forvalter')
-project(":testnorge-dependency-analysis-auto-configuration").projectDir = file('libs/testnorge-dependency-analysis-auto-configuration')
-
+project(":tps-identer-vedlikehold").projectDir = file('apps/tps-identer-vedlikehold')
 
 include 'organisasjon-mottak-service'
 project(":organisasjon-mottak-service").projectDir = file('apps/organisasjon-mottak-service')
@@ -252,12 +246,6 @@ project(":batch-adeo-proxy").projectDir = file('proxies/batch-adeo-proxy')
 include 'applikasjonsanalyse-service'
 project(":applikasjonsanalyse-service").projectDir = file('apps/applikasjonsanalyse-service')
 
-include 'analysis-auto-configuration'
-project(":analysis-auto-configuration").projectDir = file('libs/analysis-auto-configuration')
-
-include 'analysis'
-project(":analysis").projectDir = file('libs/analysis')
-
 include 'aareg-synt-services-proxy'
 project(":aareg-synt-services-proxy").projectDir = file('proxies/aareg-synt-services-proxy')
 
@@ -275,3 +263,18 @@ project(":endringsmelding-frontend").projectDir = file('apps/endringsmelding-fro
 
 include 'person-search-service'
 project(":person-search-service").projectDir = file('apps/person-search-service')
+
+include 'frontend'
+project(":frontend").projectDir = file('libs/frontend')
+
+include 'ereg-proxy'
+project(":ereg-proxy").projectDir = file('proxies/ereg-proxy')
+
+include 'hodejegeren-proxy'
+project(":hodejegeren-proxy").projectDir = file('proxies/hodejegeren-proxy')
+
+include 'samhandlerregisteret-proxy'
+project(":samhandlerregisteret-proxy").projectDir = file('proxies/samhandlerregisteret-proxy')
+
+include 'pdl-proxy'
+project(":pdl-proxy").projectDir = file('proxies/pdl-proxy')

@@ -19,11 +19,9 @@ import java.util.List;
 import no.nav.registre.orkestratoren.consumer.rs.response.InstitusjonsoppholdResponse;
 import no.nav.registre.orkestratoren.consumer.rs.response.SletteInstitusjonsoppholdResponse;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInstRequest;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @Component
-@DependencyOn("testnorge-inst")
 public class TestnorgeInstConsumer {
 
     private static final ParameterizedTypeReference<Object> RESPONSE_TYPE_START_SYNT = new ParameterizedTypeReference<>() {

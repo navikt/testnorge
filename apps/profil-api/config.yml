@@ -10,6 +10,7 @@ spec:
   azure:
     application:
       enabled: true
+      tenant: nav.no
   port: 8080
   tracing:
     enabled: true
@@ -26,9 +27,6 @@ spec:
           cluster: dev-gcp
         - application: dolly-frontend
           cluster: dev-fss
-    outbound:
-      rules:
-        - application: applikasjonsanalyse-service
   liveness:
     path: /internal/isAlive
     initialDelay: 4

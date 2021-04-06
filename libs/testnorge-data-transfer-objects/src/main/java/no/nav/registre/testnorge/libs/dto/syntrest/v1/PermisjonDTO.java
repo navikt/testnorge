@@ -22,4 +22,5 @@ public class PermisjonDTO {
     LocalDate startdato;
     @JsonAlias("SLUTTDATO")
     LocalDate sluttdato;
+    AvvikDTO avvik;
 }

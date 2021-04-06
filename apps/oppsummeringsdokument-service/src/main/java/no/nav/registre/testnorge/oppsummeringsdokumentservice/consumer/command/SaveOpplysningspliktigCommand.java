@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -19,16 +20,22 @@ public class SaveOpplysningspliktigCommand implements Runnable {
     @SneakyThrows
     @Override
     public void run() {
-        log.trace(xml);
 
-        webClient
-                .post()
-                .uri(builder -> builder.path("/oppsummeringsdokument").build())
-                .body(BodyInserters.fromPublisher(Mono.just(xml), String.class))
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .retrieve()
-                .bodyToMono(Void.class)
-                .block();
+        try {
+            webClient
+                    .post()
+                    .uri(builder -> builder.path("/oppsummeringsdokument").build())
+                    .body(BodyInserters.fromPublisher(Mono.just(xml), String.class))
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                    .retrieve()
+                    .bodyToMono(Void.class)
+                    .block();
+        } catch (
+                WebClientResponseException e) {
+            log.error("Feil ved lagring av oppsummeringsdokument: {}.", e.getResponseBodyAsString());
+            log.error(xml);
+            throw e;
+        }
     }
 }

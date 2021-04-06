@@ -35,6 +35,15 @@ applications:
   mn-original-populasjon: dev-fss.dolly.mn-original-populasjon
   testnav-statistikk-service: dev-gcp.dolly.testnav-statistikk-service
   testnorge-batch-adeo-proxy: dev-fss.dolly.testnorge-batch-adeo-proxy
+  testnav-ereg-proxy: dev-fss.dolly.testnav-ereg-proxy
+  testnav-organisasjon-mottak-service: dev-gcp.dolly.testnav-organisasjon-mottak-service
+  testnav-jenkins-batch-status-service: dev-gcp.dolly.testnav-jenkins-batch-status-service
+  tps-identer-vedlikehold: dev-fss.dolly.tps-identer-vedlikehold
+  testnav-inntektsmelding-generator-service: dev-gcp.dolly.testnav-inntektsmelding-generator-service
+  testnav-helsepersonell-service: dev-gcp.dolly.testnav-helsepersonell-service
+  testnav-organisasjon-service: dev-gcp.dolly.testnav-organisasjon-service
+  testnav-pdl-proxy: dev-fss.dolly.testnav-pdl-proxy
+  adresse-service: dev-gcp.dolly.testnav-adresse-service
 
 zuul:
   routes:

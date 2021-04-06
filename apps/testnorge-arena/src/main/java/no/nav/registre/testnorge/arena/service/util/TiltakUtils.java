@@ -11,6 +11,7 @@ import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetFinnTiltakRe
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Deltakerstatuser;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 
 import org.springframework.stereotype.Service;
@@ -89,19 +90,22 @@ public class TiltakUtils {
 
         List<NyttVedtakTiltak> nyVedtaksliste = new ArrayList<>();
 
-        var vedtakSequences = getVedtakSequences(vedtaksliste);
+        var vedtakSequences = getVedtakSequencesTiltak(vedtaksliste);
+        var brukteIndices = new ArrayList<Integer>();
 
         for (var sequence : vedtakSequences) {
             var initialFraDato = sequence.get(0).getFraDato();
-            for (var vedtak : sequence) {
-                var deltakelse = finnNoedvendigTiltaksdeltakelse(vedtak, tiltaksdeltakelser);
-                if (deltakelse != null) {
+
+            var deltakelseIndex = finnNoedvendigTiltaksdeltakelse(tiltaksdeltakelser, brukteIndices);
+            if (deltakelseIndex != null) {
+                brukteIndices.add(deltakelseIndex);
+                var deltakelse = tiltaksdeltakelser.get(deltakelseIndex);
+                for (var vedtak : sequence) {
                     var nyttVedtak = shiftVedtakDatesBasertPaaTiltaksdeltakelse(vedtak, deltakelse, initialFraDato);
                     nyVedtaksliste.add(nyttVedtak);
-                } else if (vedtak.getVedtaktype().equals("O")) {
-                    break;
                 }
             }
+
         }
         return nyVedtaksliste;
     }
@@ -117,7 +121,7 @@ public class TiltakUtils {
             newFraDato = deltakelse.getFraDato().plusDays(initialShift);
 
             if (deltakelse.getTilDato() != null && newFraDato.isAfter(deltakelse.getTilDato())) {
-                newFraDato = deltakelse.getTilDato();
+                newFraDato = deltakelse.getTilDato().minusDays(1);
             }
         }
         vedtak.setFraDato(newFraDato);
@@ -126,21 +130,11 @@ public class TiltakUtils {
         return vedtak;
     }
 
-    private NyttVedtakTiltak finnNoedvendigTiltaksdeltakelse(NyttVedtakTiltak vedtak, List<NyttVedtakTiltak> tiltaksdeltakelser) {
+    private Integer finnNoedvendigTiltaksdeltakelse(List<NyttVedtakTiltak> tiltaksdeltakelser, List<Integer> brukteIndices) {
         if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty()) {
-            var fraDato = vedtak.getFraDato();
-            var tilDato = vedtak.getTilDato();
-
-            if (fraDato != null) {
-                for (var deltakelse : tiltaksdeltakelser) {
-                    var fraDatoDeltakelse = deltakelse.getFraDato();
-                    var tilDatoDeltakelse = deltakelse.getTilDato();
-
-                    if ((fraDatoDeltakelse != null && fraDato.isAfter(fraDatoDeltakelse.minusDays(1))) &&
-                            (tilDato == null || tilDatoDeltakelse != null && tilDato.isBefore(tilDatoDeltakelse.plusDays(1)))) {
-                        return deltakelse;
-                    }
-
+            for (var i = 0; i < tiltaksdeltakelser.size(); i++) {
+                if (!brukteIndices.contains(i)) {
+                    return i;
                 }
             }
         }
@@ -191,18 +185,20 @@ public class TiltakUtils {
 
     public List<NyttVedtakTiltak> removeOverlappingTiltakVedtak(
             List<NyttVedtakTiltak> vedtaksliste,
-            List<? extends NyttVedtak> relatedVedtak
+            List<NyttVedtakAap> aapVedtak
     ) {
 
         if (vedtaksliste == null || vedtaksliste.isEmpty()) {
             return vedtaksliste;
         }
 
+        var relatedVedtak = getVedtakForSequencesAap(aapVedtak);
+
         List<NyttVedtakTiltak> nyeVedtak = new ArrayList<>();
 
         for (var vedtak : vedtaksliste) {
-            if (nyeVedtak.isEmpty() || ((!harOverlappendeVedtak(vedtak, relatedVedtak)) &&
-                    !harOverlappendeTiltakOver100Prosent(vedtak, nyeVedtak))) {
+            if (nyeVedtak.isEmpty() || (harIkkeOverlappendeVedtak(vedtak, relatedVedtak) &&
+                    harIkkeOverlappendeTiltakOver100Prosent(vedtak, nyeVedtak))) {
                 nyeVedtak.add(vedtak);
             }
         }
@@ -215,49 +211,44 @@ public class TiltakUtils {
             return vedtaksliste;
         }
 
-        List<NyttVedtakTiltak> nyeVedtak = new ArrayList<>();
+        List<NyttVedtakTiltak> oppdatertVedtaksliste = new ArrayList<>();
+        List<NyttVedtakTiltak> sekvensVedtak = new ArrayList<>();
 
-        var vedtakSequences = getVedtakSequences(vedtaksliste);
+        var vedtakSequences = getVedtakSequencesTiltak(vedtaksliste);
 
         for (var sequence : vedtakSequences) {
-            var validSequence = true;
-            for (var vedtak : sequence) {
-                if (!nyeVedtak.isEmpty() && harOverlappendeVedtak(vedtak, nyeVedtak)) {
-                    validSequence = false;
-                    break;
-                }
-            }
-            if (validSequence) {
-                nyeVedtak.addAll(sequence);
+            var fraDato = Collections.min(sequence.stream().map(NyttVedtakTiltak::getFraDato).collect(Collectors.toList()));
+            var tilDato = Collections.max(sequence.stream().map(NyttVedtakTiltak::getTilDato).collect(Collectors.toList()));
+
+            var vedtak = new NyttVedtakTiltak();
+            vedtak.setFraDato(fraDato);
+            vedtak.setTilDato(tilDato);
+
+            if (oppdatertVedtaksliste.isEmpty() || harIkkeOverlappendeVedtak(vedtak, sekvensVedtak)) {
+                sekvensVedtak.add(vedtak);
+                oppdatertVedtaksliste.addAll(sequence);
             }
         }
 
-        return nyeVedtak;
+        return oppdatertVedtaksliste;
     }
 
-    private boolean harOverlappendeVedtak(NyttVedtakTiltak vedtak, List<? extends NyttVedtak> vedtaksliste) {
+    private boolean harIkkeOverlappendeVedtak(NyttVedtakTiltak vedtak, List<? extends NyttVedtak> vedtaksliste) {
         if (vedtaksliste == null || vedtaksliste.isEmpty()) {
-            return false;
+            return true;
         }
         var fraDato = vedtak.getFraDato();
         var tilDato = vedtak.getTilDato();
 
-        if (fraDato == null) {
-            return false;
-        }
-
         for (var item : vedtaksliste) {
-            var fraDatoItem = item.getFraDato();
-            var tilDatoItem = item.getTilDato();
-
-            if (datoerOverlapper(fraDato, tilDato, fraDatoItem, tilDatoItem)) {
-                return true;
+            if (datoerOverlapper(fraDato, tilDato, item.getFraDato(), item.getTilDato())) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
-    private boolean harOverlappendeTiltakOver100Prosent(
+    private boolean harIkkeOverlappendeTiltakOver100Prosent(
             NyttVedtakTiltak vedtak,
             List<NyttVedtakTiltak> vedtaksliste
     ) {
@@ -265,57 +256,77 @@ public class TiltakUtils {
         var fraDato = vedtak.getFraDato();
         var tilDato = vedtak.getTilDato();
 
-        if (fraDato == null) {
-            return false;
-        }
-
         for (var item : vedtaksliste) {
-            var fraDatoItem = item.getFraDato();
-            var tilDatoItem = item.getTilDato();
-
-            if (datoerOverlapper(fraDato, tilDato, fraDatoItem, tilDatoItem)) {
+            if (datoerOverlapper(fraDato, tilDato, item.getFraDato(), item.getTilDato())) {
                 prosent += item.getTiltakProsentDeltid();
                 if (prosent > 100) {
-                    return true;
+                    return false;
                 }
             }
         }
-        return false;
+        return true;
     }
 
     private boolean datoerOverlapper(LocalDate fraDatoA, LocalDate tilDatoA, LocalDate fraDatoB, LocalDate tilDatoB) {
-        if (fraDatoB == null || (tilDatoA == null && tilDatoB == null)) {
+        try {
+            return fraDatoA.isBefore(tilDatoB) && fraDatoB.isBefore(tilDatoA);
+        } catch (Exception e) {
             return false;
-        }
-
-        if (tilDatoA == null) {
-            return (fraDatoA.isAfter(fraDatoB.minusDays(1)) && fraDatoA.isBefore(tilDatoB));
-        } else {
-            if (tilDatoB == null) {
-                return (fraDatoB.isAfter(fraDatoA.minusDays(1)) && fraDatoB.isBefore(tilDatoA));
-            } else {
-                return ((fraDatoA == fraDatoB) || (fraDatoA.isBefore(fraDatoB) && tilDatoA.isAfter(fraDatoB)) ||
-                        (fraDatoA.isAfter(fraDatoB) && fraDatoA.isBefore(tilDatoB)));
-            }
-
         }
     }
 
-    private List<List<NyttVedtakTiltak>> getVedtakSequences(List<NyttVedtakTiltak> vedtak) {
+    private List<List<NyttVedtakTiltak>> getVedtakSequencesTiltak(List<NyttVedtakTiltak> vedtak) {
         List<List<NyttVedtakTiltak>> vedtakSequences = new ArrayList<>();
-        List<NyttVedtakTiltak> sequence = new ArrayList<>();
-        for (var tiltak : vedtak) {
-            if (tiltak.getVedtaktype() != null && tiltak.getVedtaktype().equals("O") && !sequence.isEmpty()) {
-                vedtakSequences.add(sequence);
-                sequence = new ArrayList<>();
-            }
-            sequence.add(tiltak);
-        }
-        if (!sequence.isEmpty()) {
-            vedtakSequences.add(sequence);
+        var indices = getIndicesForVedtakSequences(vedtak);
+
+        for (int j = 0; j < indices.size() - 1; j++) {
+            vedtakSequences.add(vedtak.subList(indices.get(j), indices.get(j + 1)));
         }
 
         return vedtakSequences;
+    }
+
+    private List<NyttVedtakAap> getVedtakForSequencesAap(List<NyttVedtakAap> aapVedtak) {
+        if (aapVedtak == null || aapVedtak.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<NyttVedtakAap> vedtakForSequences = new ArrayList<>();
+        var indices = getIndicesForVedtakSequences(aapVedtak);
+
+        for (int j = 0; j < indices.size() - 1; j++) {
+            var sequence = aapVedtak.subList(indices.get(j), indices.get(j + 1));
+            var fraDato = Collections.min(sequence.stream().map(NyttVedtakAap::getFraDato).collect(Collectors.toList()));
+            var tilDato = Collections.max(sequence.stream().map(NyttVedtakAap::getTilDato).collect(Collectors.toList()));
+
+            var vedtak = new NyttVedtakAap();
+            vedtak.setFraDato(fraDato);
+            vedtak.setTilDato(tilDato);
+            vedtakForSequences.add(vedtak);
+        }
+
+        return vedtakForSequences;
+    }
+
+    public List<Integer> getIndicesForVedtakSequences(
+            List<? extends NyttVedtak> vedtak
+    ) {
+        List<Integer> nyRettighetIndices = new ArrayList<>();
+
+        if (vedtak.size() == 1) {
+            nyRettighetIndices = Arrays.asList(0, 1);
+        } else {
+            for (int i = 0; i < vedtak.size(); i++) {
+                if (vedtak.get(i).getVedtaktype().equals("O")) {
+                    nyRettighetIndices.add(i);
+                }
+                if (i == vedtak.size() - 1) {
+                    nyRettighetIndices.add(i + 1);
+                }
+            }
+        }
+
+        return nyRettighetIndices;
     }
 
     public boolean canSetDeltakelseTilGjennomfoeres(NyttVedtakTiltak tiltaksdeltakelse, List<NyttVedtakTiltak> tiltak) {
@@ -402,10 +413,10 @@ public class TiltakUtils {
         return rettighetRequest;
     }
 
-    public boolean harGyldigTiltakKode(NyttVedtakTiltak tiltak, Kvalifiseringsgrupper kvalifiseringsgruppe) {
+    public boolean harIkkeGyldigTiltakKode(NyttVedtakTiltak tiltak, Kvalifiseringsgrupper kvalifiseringsgruppe) {
         var adminKode = tiltak.getTiltakAdminKode();
         var tiltakKode = tiltak.getTiltakKode();
-        return innsatsTilTiltakKoder.get(kvalifiseringsgruppe.toString()).get(adminKode).contains(tiltakKode);
+        return !innsatsTilTiltakKoder.get(kvalifiseringsgruppe.toString()).get(adminKode).contains(tiltakKode);
     }
 
     public String getGyldigTiltakKode(NyttVedtakTiltak tiltak, Kvalifiseringsgrupper kvalifiseringsgruppe) {

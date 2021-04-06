@@ -1,0 +1,18 @@
+plugins {
+    id 'no.nav.registre.testnorge.java-conventions'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Hoxton.SR8'
+    }
+}
+
+dependencies {
+    implementation 'org.projectlombok:lombok:1.18.12'
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-zuul'
+}
+
+group = 'no.nav.registre.testnorge.libs'
+description = 'frontend'

@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OppdaterArbeidsforholdArbeidsforholdIkkeFunnet;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OppdaterArbeidsforholdSikkerhetsbegrensning;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OppdaterArbeidsforholdUgyldigInput;
@@ -31,7 +30,6 @@ import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@DependencyOn(value = "aareg-ws", external = true)
 public class AaregWsConsumer {
 
     public static final String STATUS_OK = "OK";

@@ -22,10 +22,8 @@ dependencies {
     implementation project(':testnorge-core')
     implementation project(':testnorge-oauth2')
     implementation project(':testnorge-database')
-    implementation project(':testnorge-common-command')
+    implementation project(':commands')
     implementation project(':testnorge-data-transfer-objects')
-    implementation project(':testnorge-dependency-analysis')
-    implementation project(':testnorge-dependency-analysis-auto-configuration')
 
 //  Database
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'

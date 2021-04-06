@@ -8,4 +8,6 @@ import java.util.List;
 public interface OrganisasjonRepository extends CrudRepository<Organisasjon, Long> {
 
     List<Organisasjon> findAllByOrganisasjonsnummerIn(List<String> orgnumre);
+
+    List<Organisasjon> findAllByBrukerId(String brukerid);
 }

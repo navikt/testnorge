@@ -2,6 +2,9 @@ package no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Permisjon {
     private final String ident;
@@ -11,8 +14,16 @@ public class Permisjon {
     private final Float permisjonsprosent;
     private final LocalDate startdato;
     private final LocalDate sluttdato;
+    private final String typeArbeidsforhold;
+    private final List<Avvik> avvikList;
 
-    public Permisjon(no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0.Permisjon permisjon, String kalendermaaned, String ident, String kildereferans) {
+    public Permisjon(
+            no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0.Permisjon permisjon,
+            String kalendermaaned,
+            String ident,
+            String kildereferans,
+            String typeArbeidsforhold
+    ) {
         this.kalendermaaned = kalendermaaned;
         this.ident = ident;
         this.beskrivelse = permisjon.getBeskrivelse();
@@ -20,6 +31,10 @@ public class Permisjon {
         this.startdato = toLocalDate(permisjon.getStartdato());
         this.sluttdato = toLocalDate(permisjon.getSluttdato());
         this.kildereferanse = kildereferans;
+        this.avvikList = permisjon.getAvvik() != null
+                ? permisjon.getAvvik().stream().map(value -> new Avvik(value, "PERMISJON", typeArbeidsforhold)).collect(Collectors.toList())
+                : Collections.emptyList();
+        this.typeArbeidsforhold = typeArbeidsforhold;
     }
 
     public String getBeskrivelse() {
@@ -50,10 +65,22 @@ public class Permisjon {
         return kalendermaaned;
     }
 
+    public String getTypeArbeidsforhold() {
+        return typeArbeidsforhold;
+    }
+
     private static LocalDate toLocalDate(XMLGregorianCalendar calendar) {
         if (calendar == null) {
             return null;
         }
         return LocalDate.of(calendar.getYear(), calendar.getMonth(), calendar.getDay());
+    }
+
+    public boolean hasAvvik() {
+        return !avvikList.isEmpty();
+    }
+
+    public List<Avvik> getAvvikList() {
+        return avvikList;
     }
 }

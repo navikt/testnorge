@@ -13,12 +13,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 import no.nav.registre.testnorge.libs.dto.hendelse.v1.HendelseDTO;
 import no.nav.registre.testnorge.libs.dto.hendelse.v1.HendelseType;
 
 @Slf4j
-@DependencyOn("testnorge-hendelse-api")
 @RequiredArgsConstructor
 public class GetHendelseCommand implements Callable<List<HendelseDTO>> {
     private final RestTemplate restTemplate;
