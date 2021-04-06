@@ -12,6 +12,7 @@ import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.arbeidsforholdservice.config.credentials.AaregServiceProperties;
@@ -51,20 +52,21 @@ public class AaregConsumer {
                 .build();
     }
 
-    private List<Arbeidsforhold> getArbeidsforholds(String ident) {
+    private List<Arbeidsforhold> getArbeidsforholds(String ident, String miljo) {
         var accessToken = accessTokenService.generateToken(serverProperties);
-        return new GetArbeidstakerArbeidsforholdCommand(webClient, "q1", accessToken.getTokenValue(), ident).call();
+        return new GetArbeidstakerArbeidsforholdCommand(webClient, miljo, accessToken.getTokenValue(), ident).call();
     }
 
-    private List<Arbeidsforhold> getArbeidsforholds(String ident, String orgnummer) {
-        return getArbeidsforholds(ident)
+    private List<Arbeidsforhold> getArbeidsforholds(String ident, String orgnummer, String miljo) {
+        return getArbeidsforholds(ident, miljo)
                 .stream()
+                .filter(Objects::nonNull)
                 .filter(value -> value.getOrgnummer().equals(orgnummer))
                 .collect(Collectors.toList());
     }
 
-    public Arbeidsforhold getArbeidsforhold(String ident, String orgnummer, String arbeidsforholdId) {
-        return getArbeidsforholds(ident, orgnummer)
+    public Arbeidsforhold getArbeidsforhold(String ident, String orgnummer, String arbeidsforholdId, String miljo) {
+        return getArbeidsforholds(ident, orgnummer, miljo)
                 .stream()
                 .filter(value -> value.getArbeidsforholdId().equals(arbeidsforholdId))
                 .findFirst()

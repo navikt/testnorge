@@ -20,9 +20,8 @@ import no.nav.registre.testnorge.arbeidsforholdservice.domain.Arbeidsforhold;
 @RequiredArgsConstructor
 public class GetArbeidstakerArbeidsforholdCommand implements Callable<List<Arbeidsforhold>> {
     private static final String NAV_PERSON_IDENT = "Nav-Personident";
-
     private final WebClient webClient;
-    private final String miljoe;
+    private final String miljo;
     private final String token;
     private final String ident;
 
@@ -32,7 +31,7 @@ public class GetArbeidstakerArbeidsforholdCommand implements Callable<List<Arbei
         try {
             var arbeidsforhold = webClient
                     .get()
-                    .uri(builder -> builder.path("/api/{}/v1/arbeidstaker/arbeidsforhold").build(miljoe))
+                    .uri(builder -> builder.path("/api/{miljo}/v1/arbeidstaker/arbeidsforhold").build(miljo))
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .header(NAV_PERSON_IDENT, ident)
                     .retrieve()
