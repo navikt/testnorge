@@ -195,7 +195,7 @@ public class VedtakshistorikkService {
         opprettVedtakFritakMeldekort(vedtakshistorikk, personident, miljoe, rettigheter);
         oppdaterTiltaksdeltakelse(vedtakshistorikk, personident, miljoe, tiltak);
         opprettVedtakTiltaksdeltakelse(vedtakshistorikk, personident, miljoe, rettigheter);
-        opprettFoersteVedtakEndreDeltakerstatus(vedtakshistorikk, personident, miljoe, rettigheter, tiltak);
+        opprettFoersteVedtakEndreDeltakerstatus(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakTiltakspenger(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakBarnetillegg(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettAvsluttendeVedtakEndreDeltakerstatus(vedtakshistorikk, personident, miljoe, rettigheter, tiltak);
@@ -476,8 +476,7 @@ public class VedtakshistorikkService {
             Vedtakshistorikk historikk,
             String personident,
             String miljoe,
-            List<RettighetRequest> rettigheter,
-            List<NyttVedtakTiltak> tiltak
+            List<RettighetRequest> rettigheter
     ) {
         var tiltaksdeltakelser = historikk.getTiltaksdeltakelse();
 
@@ -487,7 +486,7 @@ public class VedtakshistorikkService {
             return;
         }
         for (var deltakelse : tiltaksdeltakelser) {
-            if (rettighetTiltakService.canSetDeltakelseTilGjennomfoeres(deltakelse, tiltak)) {
+            if (rettighetTiltakService.canSetDeltakelseTilGjennomfoeres(deltakelse)) {
                 List<String> endringer = rettighetTiltakService.getFoersteEndringerDeltakerstatus(deltakelse.getTiltakAdminKode());
 
                 for (var endring : endringer) {

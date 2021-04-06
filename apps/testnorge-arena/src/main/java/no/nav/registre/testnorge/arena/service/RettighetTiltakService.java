@@ -67,7 +67,6 @@ public class RettighetTiltakService {
     private static final Map<String, Map<String, List<String>>> innsatsTilTiltakKoder;
 
     private static final List<String> AVBRUTT_TILTAK_STATUSER = new ArrayList<>(Arrays.asList("AVLYST", "AVBRUTT"));
-    private static final String PLANLAGT_TILTAK_STATUS = "PLANLAGT";
 
     static {
         deltakerstatuskoderMedAarsakkoder = new HashMap<>();
@@ -358,15 +357,7 @@ public class RettighetTiltakService {
         return nyRettighetIndices;
     }
 
-    public boolean canSetDeltakelseTilGjennomfoeres(NyttVedtakTiltak tiltaksdeltakelse, List<NyttVedtakTiltak> tiltak) {
-        var tilknyttetTiltak = tiltak.stream().filter(t -> t.getTiltakId().equals(tiltaksdeltakelse.getTiltakId())).collect(Collectors.toList());
-        if (!tilknyttetTiltak.isEmpty() && tilknyttetTiltak.get(0) != null) {
-            var status = tilknyttetTiltak.get(0).getTiltakStatusKode();
-            if (PLANLAGT_TILTAK_STATUS.equals(status)) {
-                return false;
-            }
-        }
-
+    public boolean canSetDeltakelseTilGjennomfoeres(NyttVedtakTiltak tiltaksdeltakelse) {
         var fraDato = tiltaksdeltakelse.getFraDato();
         return (fraDato != null && fraDato.isBefore(LocalDate.now().plusDays(1)));
     }
