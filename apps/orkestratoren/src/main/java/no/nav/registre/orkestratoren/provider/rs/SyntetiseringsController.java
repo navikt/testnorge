@@ -181,13 +181,6 @@ public class SyntetiseringsController {
         return testnorgeArenaService.opprettArenaAap(aapRequest);
     }
 
-    @PostMapping(value = "/arena/tiltak/generer")
-    public List<NyttVedtakTiltak> opprettTiltakIArena(
-            @RequestBody SyntetiserArenaTiltakRequest tiltakRequest
-    ) {
-        return testnorgeArenaService.opprettArenaTiltak(tiltakRequest);
-    }
-
     @PostMapping(value = "/medl/medlemskap/generer")
     public Object opprettMedlemskapIMedl(
             @RequestBody SyntetiserMedlRequest syntetiserMedlRequest

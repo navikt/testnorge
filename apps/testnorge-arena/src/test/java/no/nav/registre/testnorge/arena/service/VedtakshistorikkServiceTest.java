@@ -16,7 +16,6 @@ import no.nav.registre.testnorge.arena.consumer.rs.VedtakshistorikkSyntConsumer;
 import no.nav.registre.testnorge.arena.service.util.IdenterUtils;
 import no.nav.registre.testnorge.arena.service.util.ArbeidssoekerUtils;
 import no.nav.registre.testnorge.arena.service.util.DatoUtils;
-import no.nav.registre.testnorge.arena.service.util.TiltakUtils;
 import no.nav.registre.testnorge.arena.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.Saksopplysning;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
@@ -50,9 +49,6 @@ public class VedtakshistorikkServiceTest {
 
     @Mock
     private ArbeidssoekerUtils arbeidssoekerUtils;
-
-    @Mock
-    private TiltakUtils tiltakUtils;
 
     @Mock
     private DatoUtils datoUtils;
@@ -156,7 +152,7 @@ public class VedtakshistorikkServiceTest {
         responseAsMap.put(fnr1, expectedResponsesFromArenaForvalter);
 
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(responseAsMap);
-        when(rettighetAapService.opprettetPersonOgInntektIPopp(anyString(), anyString(),any(NyttVedtakAap.class))).thenReturn(true);
+        when(rettighetAapService.opprettetPersonOgInntektIPopp(anyString(), anyString(), any(NyttVedtakAap.class))).thenReturn(true);
 
         var response = vedtakshistorikkService.genererVedtakshistorikk(avspillergruppeId, miljoe, antallIdenter);
 

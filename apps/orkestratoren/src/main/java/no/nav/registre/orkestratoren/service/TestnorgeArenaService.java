@@ -9,11 +9,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeArenaAapConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeArenaConsumer;
-import no.nav.registre.orkestratoren.consumer.rs.TestnorgeArenaTiltakConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeArenaVedtakshistorikkConsumer;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaAapRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaTiltakRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaVedtakshistorikkRequest;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakFeil;
@@ -28,7 +26,6 @@ public class TestnorgeArenaService {
     private final TestnorgeArenaConsumer testnorgeArenaConsumer;
     private final TestnorgeArenaVedtakshistorikkConsumer vedtakshistorikkConsumer;
     private final TestnorgeArenaAapConsumer aapConsumer;
-    private final TestnorgeArenaTiltakConsumer tiltakConsumer;
 
     public List<String> opprettArbeidssokereIArena(SyntetiserArenaRequest arenaRequest, boolean medOppfoelging) {
         return testnorgeArenaConsumer.opprettArbeidsoekere(arenaRequest, medOppfoelging);
@@ -79,39 +76,6 @@ public class TestnorgeArenaService {
                     .antallNyeIdenter(aapRequest.getAntallFritakMeldekort())
                     .build());
             byggAapResponse("fritak meldekort", nyeVedtakFritakMeldekort, arenaRespons);
-        }
-
-        return arenaRespons;
-    }
-
-    public List<NyttVedtakTiltak> opprettArenaTiltak(SyntetiserArenaTiltakRequest tiltakRequest) {
-        List<NyttVedtakTiltak> arenaRespons = new ArrayList<>();
-
-        if (tiltakRequest.getAntallTiltaksdeltakelse() != null && tiltakRequest.getAntallTiltaksdeltakelse() > 0) {
-            var nyeTiltakDeltakelse = tiltakConsumer.opprettTiltaksdeltakelse(SyntetiserArenaRequest.builder()
-                    .avspillergruppeId(tiltakRequest.getAvspillergruppeId())
-                    .miljoe(tiltakRequest.getMiljoe())
-                    .antallNyeIdenter(tiltakRequest.getAntallTiltaksdeltakelse())
-                    .build());
-            byggTiltakResponse("tiltaksdeltakelse", nyeTiltakDeltakelse, arenaRespons);
-        }
-
-        if (tiltakRequest.getAntallTiltakspenger() != null && tiltakRequest.getAntallTiltakspenger() > 0) {
-            var nyeTiltakPenger = tiltakConsumer.opprettTiltakspenger(SyntetiserArenaRequest.builder()
-                    .avspillergruppeId(tiltakRequest.getAvspillergruppeId())
-                    .miljoe(tiltakRequest.getMiljoe())
-                    .antallNyeIdenter(tiltakRequest.getAntallTiltakspenger())
-                    .build());
-            byggTiltakResponse("tiltakspenger", nyeTiltakPenger, arenaRespons);
-        }
-
-        if (tiltakRequest.getAntallBarnetillegg() != null && tiltakRequest.getAntallBarnetillegg() > 0) {
-            var nyeTiltakBarnetillegg = tiltakConsumer.opprettBarnetillegg(SyntetiserArenaRequest.builder()
-                    .avspillergruppeId(tiltakRequest.getAvspillergruppeId())
-                    .miljoe(tiltakRequest.getMiljoe())
-                    .antallNyeIdenter(tiltakRequest.getAntallBarnetillegg())
-                    .build());
-            byggTiltakResponse("barnetillegg", nyeTiltakBarnetillegg, arenaRespons);
         }
 
         return arenaRespons;
