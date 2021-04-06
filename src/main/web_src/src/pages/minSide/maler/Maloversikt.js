@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { api } from './api'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
-import { TextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import Loading from '~/components/ui/loading/Loading'
 import Button from '~/components/ui/button/Button'
@@ -10,6 +9,7 @@ import { MalIconItem } from '~/components/ui/icon/IconItem'
 import { EndreMalnavn } from './EndreMalnavn'
 import { slettMal } from './SlettMal'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { SearchField } from '~/components/searchField/SearchField'
 
 export default ({ brukerId }) => {
 	const [loading, setLoading] = useState(true)
@@ -78,16 +78,7 @@ export default ({ brukerId }) => {
 			<hr />
 			<div className="flexbox--space">
 				<h2>Mine maler</h2>
-				<div className="searchfield-container skjemaelement searchField">
-					<TextInput
-						id="searchfield-inputfield"
-						type="text"
-						placeholder="Søk etter mal"
-						onChange={e => setSearchText(e.target.value)}
-						aria-label="Search"
-						icon="search"
-					/>
-				</div>
+				<SearchField placeholder={'Søk etter mal'} setText={setSearchText} />
 			</div>
 			{maler.length > 0 ? (
 				malerFiltrert(maler, searchText).length > 0 ? (
