@@ -427,11 +427,12 @@ public class VedtakshistorikkService {
             arbeidsoekerUtils.opprettArbeidssoekerTiltakdeltakelse(personident, miljoe, kvalifiseringsgruppe);
 
             tiltaksdeltakelser.forEach(deltakelse -> {
-                if (!tiltakUtils.harGyldigTiltakKode(deltakelse, kvalifiseringsgruppe)) {
+                if (tiltakUtils.harIkkeGyldigTiltakKode(deltakelse, kvalifiseringsgruppe)) {
                     deltakelse.setTiltakKode(tiltakUtils.getGyldigTiltakKode(deltakelse, kvalifiseringsgruppe));
                 }
                 deltakelse.setFodselsnr(personident);
                 deltakelse.setTiltakYtelse("J");
+                deltakelse.setTiltakVedtak("J");
             });
             tiltaksdeltakelser.forEach(deltakelse -> {
                 var tiltak = tiltakUtils.finnTiltak(personident, miljoe, deltakelse);
