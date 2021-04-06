@@ -424,7 +424,6 @@ public class RettighetTiltakService {
             NyttVedtakTiltak tiltaksdeltakelse,
             String deltakerstatuskode
     ) {
-
         NyttVedtakTiltak vedtak = new NyttVedtakTiltak();
         vedtak.setDeltakerstatusKode(deltakerstatuskode);
         vedtak.setTiltakId(tiltaksdeltakelse.getTiltakId());
