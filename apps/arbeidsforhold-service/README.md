@@ -2,4 +2,4 @@
 API for arbeidsforhold.
 
 ## Swagger
-Swagger finnes under [/api](https://testnav-arbeidsforhold-service.dev.intern.nav.no/api) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://testnav-arbeidsforhold-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
