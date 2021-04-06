@@ -4,11 +4,8 @@ import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.apis.CustomObjectsApi;
 import io.kubernetes.client.util.Config;
 import io.kubernetes.client.util.KubeConfig;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.syntrest.consumer.SyntAmeldingConsumer;
-import no.nav.registre.syntrest.consumer.SyntConsumer;
-import no.nav.registre.syntrest.kubernetes.ApplicationManager;
-import no.nav.registre.syntrest.kubernetes.KubernetesController;
 import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
 
 import org.apache.http.client.config.RequestConfig;
@@ -34,6 +31,7 @@ import java.util.concurrent.ScheduledExecutorService;
 
 @Slf4j
 @Configuration
+@RequiredArgsConstructor
 @Import(ApplicationCoreConfig.class)
 public class AppConfig {
 
@@ -41,24 +39,6 @@ public class AppConfig {
     private final int EXECUTOR_POOL_SIZE = 4;
     @Value("${kube-config-path}")
     private String kubeConfigPath;
-    @Value("${isAlive}")
-    private String isAliveUrl;
-    @Value("${docker-image-path}")
-    private String dockerImagePath;
-    @Value("${max-alive-retries}")
-    private int maxRetries;
-    @Value("${alive-retry-delay}")
-    private int retryDelay;
-    @Value("${github_username}")
-    private String github_username;
-    @Value("${github_password}")
-    private String github_password;
-    @Value("${proxy-url}")
-    private String proxyUrl;
-    @Value("${proxy-port}")
-    private int proxyPort;
-    @Value("${synth-amelding-url}")
-    private String ameldingUrl;
 
     @Bean
     ScheduledExecutorService scheduledExecutorService() {
@@ -110,98 +90,4 @@ public class AppConfig {
 
     @Bean
     RestTemplateBuilder restTemplateBuilder() { return new RestTemplateBuilder(); }
-
-    @Bean
-    @DependsOn({"restTemplateBuilder", "customObjectsApi"})
-    public KubernetesController kubernetesController() {
-        return new KubernetesController(customObjectsApi(), github_username, github_password,
-                proxyUrl, proxyPort, isAliveUrl, dockerImagePath, maxRetries, retryDelay);
-    }
-
-
-    @Bean
-    @DependsOn({"kubernetesController", "scheduledExecutorService"})
-    public ApplicationManager applicationManager() {
-        return new ApplicationManager(kubernetesController(), scheduledExecutorService());
-    }
-
-
-    @Bean
-    @DependsOn({"applicationManager", "restTemplate"})
-    SyntConsumer aaregConsumer() {
-        return new SyntConsumer(applicationManager(), "synthdata-aareg");
-    }
-
-    @Bean
-    @DependsOn({"applicationManager", "restTemplate"})
-    SyntConsumer bisysConsumer() {
-        return new SyntConsumer(applicationManager(), "synthdata-arena-bisys");
-    }
-
-    @Bean
-    @DependsOn({"applicationManager", "restTemplate"})
-    SyntConsumer instConsumer() {
-        return new SyntConsumer(applicationManager(), "synthdata-inst");
-    }
-
-    @Bean
-    @DependsOn({"applicationManager", "restTemplate"})
-    SyntConsumer medlConsumer() {
-        return new SyntConsumer(applicationManager(), "synthdata-medl");
-    }
-
-    @Bean
-    @DependsOn({"applicationManager", "restTemplate"})
-    SyntConsumer meldekortConsumer() {
-        return new SyntConsumer(applicationManager(), "synthdata-arena-meldekort");
-    }
-
-    @Bean
-    @DependsOn({"applicationManager", "restTemplate"})
-    SyntConsumer navConsumer() {
-        return new SyntConsumer(applicationManager(), "synthdata-nav");
-    }
-
-    @Bean
-    @DependsOn({"applicationManager", "restTemplate"})
-    SyntConsumer poppConsumer() {
-        return new SyntConsumer(applicationManager(), "synthdata-popp");
-    }
-
-    @Bean
-    @DependsOn({"applicationManager", "restTemplate"})
-    SyntConsumer samConsumer() {
-        return new SyntConsumer(applicationManager(), "synthdata-sam");
-    }
-
-    @Bean
-    @DependsOn({"applicationManager", "restTemplate"})
-    SyntConsumer inntektConsumer() {
-        return new SyntConsumer(applicationManager(), "synthdata-inntekt");
-    }
-
-    @Bean
-    @DependsOn({"applicationManager", "restTemplate"})
-    SyntConsumer tpConsumer() {
-        return new SyntConsumer(applicationManager(), "synthdata-tp");
-    }
-
-    @Bean
-    @DependsOn({"applicationManager", "restTemplate"})
-    SyntConsumer tpsConsumer() {
-        return new SyntConsumer(applicationManager(), "synthdata-tps");
-    }
-
-    @Bean
-    @DependsOn({"applicationManager", "restTemplate"})
-    SyntConsumer frikortConsumer() {
-        return new SyntConsumer(applicationManager(), "synthdata-frikort");
-    }
-
-    @Bean
-    @DependsOn({"applicationManager"})
-    SyntAmeldingConsumer ameldingConsumer() {
-        return new SyntAmeldingConsumer(applicationManager(), "synthdata-amelding", ameldingUrl);
-    }
-
 }

@@ -11,51 +11,38 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @Slf4j
 public class SyntAmeldingConsumer extends SyntConsumer {
     private final WebClient webClient;
 
-    private static final long SHUTDOWN_TIME_DELAY_SECONDS = 600;
     private static final String REST_CLIENT_EXCEPTION_MESSAGE = "Unexpected Rest Client Exception: {}";
 
-    public SyntAmeldingConsumer(ApplicationManager applicationManager, String appName, String synthAmeldingUrl) {
-        super(applicationManager, appName);
-        this.webClient = WebClient.builder().baseUrl(synthAmeldingUrl).build();
+    public SyntAmeldingConsumer(ApplicationManager applicationManager, String appName, String uri, boolean shutdown) {
+        super(applicationManager, appName, uri, shutdown);
+        this.webClient = WebClient.builder().baseUrl(uri).build();
     }
 
-    public List<ArbeidsforholdAmelding> synthesizeArbeidsforholdStart(List<String> datoer, String url) {
-        try {
-            startSyntApplication();
-        } catch (ApiException e) {
-            return Collections.emptyList();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return Collections.emptyList();
-        }
-
+    public List<ArbeidsforholdAmelding> synthesizeArbeidsforholdStart(List<String> datoer, String url) throws ApiException, InterruptedException {
+        startSyntAmelding();
         try {
             return new PostArbeidsforholdStartCommand(datoer, url, webClient).call();
         } catch (RestClientException e) {
             log.error(REST_CLIENT_EXCEPTION_MESSAGE, Arrays.toString(e.getStackTrace()));
             throw e;
         } finally {
-            scheduleShutdown(SHUTDOWN_TIME_DELAY_SECONDS);
+            if (shutdown) {
+                scheduleIfShutdown();
+            }
         }
     }
 
-    public List<ArbeidsforholdAmelding> synthesizeArbeidsforholdHistorikk(ArbeidsforholdAmelding tidligereArbeidsforhold, String syntAmeldingUrlPath) {
-        try {
-            startSyntApplication();
-        } catch (ApiException e) {
-            return Collections.emptyList();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return Collections.emptyList();
-        }
-
+    public List<ArbeidsforholdAmelding> synthesizeArbeidsforholdHistorikk(
+            ArbeidsforholdAmelding tidligereArbeidsforhold,
+            String syntAmeldingUrlPath
+    ) throws ApiException, InterruptedException {
+        startSyntAmelding();
         try {
             return new PostArbeidsforholdHistorikkCommand(tidligereArbeidsforhold, syntAmeldingUrlPath, webClient).call();
         } catch (RestClientException e) {
@@ -64,7 +51,7 @@ public class SyntAmeldingConsumer extends SyntConsumer {
         }
     }
 
-    private void startSyntApplication() throws InterruptedException, ApiException {
+    private void startSyntAmelding() throws InterruptedException, ApiException {
         try {
             applicationManager.startApplication(this);
         } catch (ApiException | InterruptedException e) {

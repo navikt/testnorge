@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
@@ -13,6 +14,7 @@ import reactor.netty.tcp.ProxyProvider;
 import java.util.Objects;
 
 @Slf4j
+@Component
 public class GitHubConsumer {
     /**
      * The GitHub Consumer provides an interface to GitHub, primarily to retrieve package tags.

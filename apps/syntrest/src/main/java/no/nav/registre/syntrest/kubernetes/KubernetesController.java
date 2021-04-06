@@ -8,24 +8,15 @@ import io.kubernetes.client.models.V1DeleteOptions;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.consumer.GitHubConsumer;
 import no.nav.registre.syntrest.utils.NaisYaml;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.conn.ssl.DefaultHostnameVerifier;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.conn.SystemDefaultRoutePlanner;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.ResourceAccessException;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriTemplate;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.netty.http.client.HttpClient;
 
-import java.net.ProxySelector;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +26,8 @@ import java.util.concurrent.TimeUnit;
 import static java.util.Objects.isNull;
 
 @Slf4j
+@Component
+@DependsOn("customObjectsApi")
 public class KubernetesController {
 
     private static final int TIMEOUT = 240_000;  // in milliseconds
@@ -54,8 +47,7 @@ public class KubernetesController {
     private final WebClient webClient;
 
 
-    public KubernetesController(RestTemplateBuilder restTemplateBuilder,
-                                CustomObjectsApi customObjectsApi,
+    public KubernetesController(CustomObjectsApi customObjectsApi,
                                 NaisYaml naisYaml,
                                 GitHubConsumer gitHubConsumer,
                                 @Value("${isAlive}") String isAliveUrl,
@@ -97,7 +89,7 @@ public class KubernetesController {
             try {
                 api.deleteNamespacedCustomObject(GROUP, VERSION, NAMESPACE, PLURAL, appName, deleteOptions,
                         null, null, null);
-                log.info("Successfully deleted application \'{}\'", appName);
+                log.info("Successfully deleted application '{}'", appName);
 
             } catch (JsonSyntaxException e) {
                 if (e.getCause() instanceof IllegalStateException) {
@@ -111,7 +103,6 @@ public class KubernetesController {
                     throw e;
                 }
             }
-
         } else {
             log.info("No application named '{}' found. Unable to delete.", appName);
             throw new IllegalArgumentException("No application named '" + appName + "' found. Unable to delete.");
@@ -119,12 +110,16 @@ public class KubernetesController {
     }
 
     public boolean isAlive(String appName) {
-        String response = webClient.get()
-                .uri(isAliveUrl)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-        return "1".equals(response);
+        try {
+            String response = webClient.get()
+                    .uri(isAliveUrl.replace("{appName}", appName))
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+            return "1".equals(response);
+        } catch (WebClientResponseException.ServiceUnavailable | WebClientResponseException.NotFound e) {
+            return false;
+        }
     }
 
     public boolean existsOnCluster(String appName) throws ApiException {
@@ -137,13 +132,13 @@ public class KubernetesController {
 
         List<String> applications = new ArrayList<>();
 
-        LinkedTreeMap result = (LinkedTreeMap) api.listNamespacedCustomObject(GROUP, VERSION, NAMESPACE, PLURAL,
+        Map result = (Map) api.listNamespacedCustomObject(GROUP, VERSION, NAMESPACE, PLURAL,
                 null, null, null, null);
-        ArrayList items = (ArrayList) result.get("items");
+        List items = (List) result.get("items");
 
         for (Object item : items) {
-            LinkedTreeMap app = (LinkedTreeMap) item;
-            LinkedTreeMap metadata = (LinkedTreeMap) app.get("metadata");
+            Map app = (Map) item;
+            Map metadata = (Map) app.get("metadata");
             String name = (String) metadata.get("name");
 
             applications.add(name);

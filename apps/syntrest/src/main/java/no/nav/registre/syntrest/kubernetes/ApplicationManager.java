@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.consumer.SyntConsumer;
 
 import org.apache.commons.lang.time.DateUtils;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.Map;
@@ -24,6 +26,8 @@ import java.util.concurrent.TimeUnit;
  * because no arguments can be given to a callable function.
  */
 @Slf4j
+@Component
+@DependsOn({"kubernetesController", "scheduledExecutorService"})
 public class ApplicationManager {
 
     private final KubernetesController kubernetesController;
@@ -49,7 +53,7 @@ public class ApplicationManager {
     }
 
     public synchronized void scheduleShutdown(SyntConsumer app, long shutdownTimeDelaySeconds) {
-        log.info("Scheduling shutdown for \'{}\' at {}.",
+        log.info("Scheduling shutdown for '{}' at {}.",
                 app.getAppName(),
                 DateUtils.addSeconds(new Date(), (int) shutdownTimeDelaySeconds));
         activeApplications.put(
@@ -57,11 +61,12 @@ public class ApplicationManager {
                 scheduledExecutorService.schedule(app::shutdownApplication, shutdownTimeDelaySeconds, TimeUnit.SECONDS));
     }
 
-    public void shutdownApplication(String appId) {
+    public synchronized void shutdownApplication(String appId) {
         try {
             kubernetesController.takedownImage(appId);
             activeApplications.remove(appId);
-        } catch (ApiException ignored
+        } catch (ApiException ignored) {
+            log.warn("Caught exception when shutting down application {}.", appId);
         }
     }
 

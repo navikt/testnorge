@@ -2,12 +2,15 @@ package no.nav.registre.syntrest.kubernetes;
 
 import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.apis.CustomObjectsApi;
+import no.nav.registre.syntrest.consumer.GitHubConsumer;
+import no.nav.registre.syntrest.utils.NaisYaml;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Profile("KubernetesTest")
 @Configuration
@@ -44,6 +47,8 @@ public class KubernetesTestConfig {
 
     @Bean
     KubernetesController kubernetesController() {
-        return new KubernetesController(restTemplateBuilder(), customObjectsApi(), github_username, github_password, proxyUrl, proxyPort, isAliveUrl, dockerImagePath, maxRetries, retryDelay);
+        var naisYaml = new NaisYaml(dockerImagePath);
+        var githubConsumer = new GitHubConsumer(github_username, github_password, proxyUrl, proxyUrl, proxyPort, WebClient.builder());
+        return new KubernetesController(customObjectsApi(), naisYaml, githubConsumer, isAliveUrl, dockerImagePath, maxRetries, retryDelay);
     }
 }

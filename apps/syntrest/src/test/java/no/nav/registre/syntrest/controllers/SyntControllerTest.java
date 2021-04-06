@@ -1,6 +1,10 @@
 package no.nav.registre.syntrest.controllers;
 
-import no.nav.registre.syntrest.consumer.SyntConsumer;
+import io.kubernetes.client.ApiException;
+import no.nav.registre.syntrest.consumer.SyntAmeldingConsumer;
+import no.nav.registre.syntrest.consumer.SyntGetConsumer;
+import no.nav.registre.syntrest.consumer.SyntPostConsumer;
+import no.nav.registre.syntrest.consumer.SyntPostMapConsumer;
 import no.nav.registre.syntrest.domain.aareg.Arbeidsforholdsmelding;
 import no.nav.registre.syntrest.domain.bisys.Barnebidragsmelding;
 import no.nav.registre.syntrest.domain.frikort.FrikortKvittering;
@@ -17,12 +21,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.internal.util.reflection.FieldSetter;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,8 +36,20 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class SyntControllerTest {
 
-    @Mock
-    private SyntConsumer consumer;
+    @Mock private SyntPostConsumer<Arbeidsforholdsmelding[], String[]> aaregConsumer;
+    @Mock private SyntGetConsumer<Barnebidragsmelding[]> bisysConsumer;
+    @Mock private SyntGetConsumer<Institusjonsmelding[]> instConsumer;
+    @Mock private  SyntGetConsumer<Medlemskapsmelding[]> medlConsumer;
+    @Mock private SyntGetConsumer<String[]> meldekortConsumer;
+    @Mock private SyntGetConsumer<String[]> navConsumer;
+    @Mock private SyntPostConsumer<Inntektsmelding[], String[]> poppConsumer;
+    @Mock private SyntGetConsumer<SamMelding[]> samConsumer;
+    @Mock private SyntPostMapConsumer<Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>,
+                    Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>> inntektConsumer;
+    @Mock private SyntGetConsumer<TPmelding[]> tpConsumer;
+    @Mock private SyntGetConsumer<SkdMelding[]> tpsConsumer;
+    @Mock private SyntPostMapConsumer<Map<String, List<FrikortKvittering>>, Map<String, Integer>> frikortConsumer;
+    @Mock private SyntAmeldingConsumer ameldingConsumer;
 
     private String aaregUrl = "dummy/generate_aareg";
     private String bisysUrl = "dummy/generate_bisys/{numToGenerate}";
@@ -55,20 +68,20 @@ public class SyntControllerTest {
     private SyntController syntController;
 
     @Test
-    public void aaregTest() throws NoSuchFieldException {
-        FieldSetter.setField(syntController, syntController.getClass().getDeclaredField("aaregUrl"), aaregUrl);
-        List<String> identer = new ArrayList<>();
+    public void aaregTest() throws ApiException, InterruptedException {
+        List<String> identer = new ArrayList<String>();
         List<Arbeidsforholdsmelding> expectedResponse = new ArrayList<>();
+        Arbeidsforholdsmelding[] response = {};
 
-        when(consumer.synthesizeData(any())).thenReturn(expectedResponse);
+        when(aaregConsumer.synthesizeData(any(), any())).thenReturn(response);
 
         ResponseEntity<List<Arbeidsforholdsmelding>> listResponseEntity = syntController.generateAareg(identer);
 
-        verify(consumer).synthesizeData(any(RequestEntity.class));
+        verify(aaregConsumer).synthesizeData(identer.toArray(new String[0]), String[].class);
 
         assertThat(listResponseEntity.getBody(), equalTo(expectedResponse));
     }
-
+/*
     @Test
     public void bisysTest() throws NoSuchFieldException {
         FieldSetter.setField(syntController, syntController.getClass().getDeclaredField("bisysUrl"), bisysUrl);
@@ -298,5 +311,5 @@ public class SyntControllerTest {
         verify(consumer).synthesizeData(any(RequestEntity.class));
         assertThat(mapResponseEntity.getBody(), equalTo(expectedResponse));
     }
-
+*/
 }
