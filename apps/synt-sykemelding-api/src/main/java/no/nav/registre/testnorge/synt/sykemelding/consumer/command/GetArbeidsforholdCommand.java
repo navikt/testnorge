@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO;
@@ -38,6 +40,7 @@ public class GetArbeidsforholdCommand implements Callable<ArbeidsforholdDTO> {
                 .onStatus(HttpStatus::is4xxClientError, response -> Mono.error(
                         new HttpClientErrorException(HttpStatus.NOT_FOUND, "Fant ikke arbeidsforhold")))
                 .bodyToMono(ArbeidsforholdDTO.class)
+                .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(10)))
                 .block();
     }
 }
