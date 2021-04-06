@@ -1,11 +1,12 @@
 package no.nav.adresse.service.dto;
 
-import java.util.Map;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
@@ -21,14 +22,19 @@ public class GraphQLRequest {
     @AllArgsConstructor
     public static class Paging {
 
-        private String pageNumber;
-        private String resultsPerPage;
-        private Map<SortBy, String> sortBy;
+        private Long pageNumber;
+        private Long resultsPerPage;
+        private List<SortBy> sortBy;
     }
 
-    public enum SortBy {
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SortBy {
 
-        fieldName, direction;
+        private String fieldName;
+        private String direction;
     }
 
     @Data
@@ -43,6 +49,6 @@ public class GraphQLRequest {
 
     public enum SearchRule {
 
-        fuzzy, equals, from, to;
+        fuzzy, equals, from, to
     }
 }

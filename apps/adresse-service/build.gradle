@@ -29,6 +29,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config:'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
 
+    implementation 'ma.glasnost.orika:orika-core:1.5.2'
     implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
     implementation 'org.aspectj:aspectjweaver:1.9.6'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'

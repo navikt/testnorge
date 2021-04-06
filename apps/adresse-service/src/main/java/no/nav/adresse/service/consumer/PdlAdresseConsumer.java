@@ -1,9 +1,9 @@
 package no.nav.adresse.service.consumer;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import no.nav.adresse.service.config.credentials.PdlServiceProperties;
 import no.nav.adresse.service.consumer.command.PdlAdresseSoekCommand;
 import no.nav.adresse.service.dto.GraphQLRequest;
+import no.nav.adresse.service.dto.PdlAdresseResponse;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ public class PdlAdresseConsumer {
                 .build();
     }
 
-    public JsonNode sendPdlAdresseSoek(GraphQLRequest adresseQuery) {
+    public PdlAdresseResponse sendPdlAdresseSoek(GraphQLRequest adresseQuery) {
         var accessToken = accessTokenService.generateToken(properties);
         return new PdlAdresseSoekCommand(webClient, adresseQuery, accessToken.getTokenValue()).call();
     }

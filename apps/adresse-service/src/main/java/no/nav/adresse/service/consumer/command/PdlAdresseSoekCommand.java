@@ -1,10 +1,9 @@
 package no.nav.adresse.service.consumer.command;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.adresse.service.dto.GraphQLRequest;
+import no.nav.adresse.service.dto.PdlAdresseResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -15,7 +14,7 @@ import java.util.concurrent.Callable;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PdlAdresseSoekCommand implements Callable<JsonNode> {
+public class PdlAdresseSoekCommand implements Callable<PdlAdresseResponse> {
 
     private static final String TEMA = "Tema";
 
@@ -23,9 +22,8 @@ public class PdlAdresseSoekCommand implements Callable<JsonNode> {
     private final GraphQLRequest query;
     private final String token;
 
-    @SneakyThrows
     @Override
-    public JsonNode call() {
+    public PdlAdresseResponse call() {
 
         try {
             return webClient
@@ -36,7 +34,7 @@ public class PdlAdresseSoekCommand implements Callable<JsonNode> {
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .header(TEMA, TemaGrunnlag.GEN.name())
                     .retrieve()
-                    .bodyToMono(JsonNode.class)
+                    .bodyToMono(PdlAdresseResponse.class)
                     .block();
 
         } catch (
