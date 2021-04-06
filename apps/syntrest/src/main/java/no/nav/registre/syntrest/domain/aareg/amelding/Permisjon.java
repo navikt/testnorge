@@ -31,4 +31,7 @@ public class Permisjon {
     @JsonAlias({"BESKRIVELSE", "beskrivelse"})
     private String beskrivelse;
 
+    @JsonAlias({"AVVIK", "avvik"})
+    private Avvik avvik;
+
 }

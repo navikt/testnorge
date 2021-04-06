@@ -39,29 +39,11 @@ import no.nav.registre.syntrest.domain.sam.SamMelding;
 import no.nav.registre.syntrest.domain.tp.TPmelding;
 import no.nav.registre.syntrest.domain.tps.SkdMelding;
 import no.nav.registre.syntrest.utils.InputValidator;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependenciesOn;
-import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 
 @Slf4j
 @RestController
 @RequestMapping("api/v1/generate")
 @RequiredArgsConstructor
-@DependenciesOn({
-        @DependencyOn(value = "nais-synthdata-medl", external = true),
-        @DependencyOn(value = "nais-synthdata-inst", external = true),
-        @DependencyOn(value = "nais-synthdata-arena-meldekort", external = true),
-        @DependencyOn(value = "nais-synthdata-inntekt", external = true),
-        @DependencyOn(value = "nais-synthdata-elsam", external = true),
-        @DependencyOn(value = "nais-synthdata-popp", external = true),
-        @DependencyOn(value = "nais-synthdata-tp", external = true),
-        @DependencyOn(value = "nais-synthdata-tps", external = true),
-        @DependencyOn(value = "nais-synthdata-nav", external = true),
-        @DependencyOn(value = "nais-synthdata-sam", external = true),
-        @DependencyOn(value = "nais-synthdata-aareg", external = true),
-        @DependencyOn(value = "nais-synthdata-frikort", external = true),
-        @DependencyOn(value = "nais-synthdata-amelding", external = true),
-        @DependencyOn(value = "nais-synthdata-arena-bisys", external = true)
-})
 public class SyntController {
 
     ///////////// SYNT CONSUMERS //////////////
