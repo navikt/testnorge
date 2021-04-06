@@ -174,8 +174,8 @@ public class TiltakUtils {
         var vedtak = NyttVedtakTiltak.builder()
                 .tiltakKode(tiltaksdeltakelse.getTiltakKode())
                 .tiltakProsentDeltid(tiltaksdeltakelse.getTiltakProsentDeltid())
-                .tiltakVedtak("J")
-                .tiltakYtelse("J")
+                .tiltakVedtak(tiltaksdeltakelse.getTiltakVedtak())
+                .tiltakYtelse(tiltaksdeltakelse.getTiltakYtelse())
                 .tiltakAdminKode(tiltaksdeltakelse.getTiltakAdminKode())
                 .build();
         vedtak.setFraDato(tiltaksdeltakelse.getFraDato());

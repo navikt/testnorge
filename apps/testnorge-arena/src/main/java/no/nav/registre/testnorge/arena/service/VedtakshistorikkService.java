@@ -432,6 +432,7 @@ public class VedtakshistorikkService {
                 }
                 deltakelse.setFodselsnr(personident);
                 deltakelse.setTiltakYtelse("J");
+                deltakelse.setTiltakVedtak("J");
             });
             tiltaksdeltakelser.forEach(deltakelse -> {
                 var tiltak = tiltakUtils.finnTiltak(personident, miljoe, deltakelse);
