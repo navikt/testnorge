@@ -74,16 +74,15 @@ public class PdlAdresseService {
     private static Properties getKommunerFromFile() {
 
         val resource = new ClassPathResource("kommuner/kommuner.yml");
+        val kommuner = new Properties();
+
         try (final InputStream stream = resource.getInputStream()) {
-
-            Properties kommuner = new Properties();
             kommuner.load(stream);
-            return kommuner;
-
         } catch (IOException e) {
             log.error("Lesing av kommuner feilet", e);
-            return null;
         }
+
+        return kommuner;
     }
 
     private static GraphQLRequest.Criteria buildCriteria(String name, String value, PdlSearchRule rule) {
@@ -144,7 +143,7 @@ public class PdlAdresseService {
 
         Long hits = hitsCache.getOrDefault(serialize(request), null);
         if (nonNull(hits)) {
-            pageNumber = (long) (Math.floor(secureRandom.nextFloat() * hits / antall) % (hits / antall - antall));
+            pageNumber = (long) (Math.floor(secureRandom.nextFloat() * hits / antall) % ((double) hits / antall - antall));
             resultsPerPage = antall;
         }
 
