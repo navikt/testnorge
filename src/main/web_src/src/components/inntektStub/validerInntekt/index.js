@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import _get from 'lodash/get'
 import Inntekt from './Inntekt'
 import { Formik } from 'formik'
@@ -95,16 +95,18 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 				api.validate(values).then(response => setFields(response))
 				setFormikBag(values)
 			}}
-			component={({ handleSubmit }) => (
-				<div>
-					<Inntekt
-						fields={fields}
-						onValidate={handleSubmit}
-						formikBag={formikBag}
-						path={inntektPath}
-					/>
-				</div>
-			)}
+			component={({ handleSubmit }) => {
+				return (
+					<div>
+						<Inntekt
+							fields={fields}
+							onValidate={handleSubmit}
+							formikBag={formikBag}
+							path={inntektPath}
+						/>
+					</div>
+				)
+			}}
 		/>
 	)
 }

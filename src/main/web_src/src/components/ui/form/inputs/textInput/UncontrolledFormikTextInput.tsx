@@ -3,6 +3,7 @@ import { fieldError } from '~/components/ui/form/formUtils'
 import React from 'react'
 import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { useFormikContext } from 'formik'
+import { FormikField } from '~/components/ui/form/FormikField'
 
 type Props = {
 	name: string
@@ -12,23 +13,34 @@ type Props = {
 export default ({ name, defaultValue, ...props }: Props) => {
 	const { errors, touched, setFieldTouched, setFieldValue, values } = useFormikContext()
 	return (
-		<DollyTextInput
-			// @ts-ignore
-			defaultValue={defaultValue || _get(values, name)}
-			onBlur={(event: React.FocusEvent<HTMLInputElement>) => {
-				if (!_get(touched, name)) {
-					setFieldTouched(name, true)
+		<FormikField name={name} fastfield={false}>
+			{({ field, form, meta }) => {
+				const handleBlur = event => {
+					if (!_get(touched, field.name)) {
+						setFieldTouched(field.name, true)
+					}
+					if (_get(touched, field.name) !== event.target.value) {
+						setFieldValue(name, event.target.value, true)
+					}
+					if (props.onSubmit) {
+						props.onSubmit()
+					}
 				}
-				if (_get(touched, name) !== event.target.value) {
-					setFieldValue(name, event.target.value, true)
-				}
+
+				return (
+					<DollyTextInput
+						// @ts-ignore
+						defaultValue={defaultValue || _get(values, name)}
+						onBlur={handleBlur}
+						name={name}
+						feil={fieldError({
+							touched: _get(touched, name),
+							error: _get(errors, name)
+						})}
+						{...props}
+					/>
+				)
 			}}
-			name={name}
-			feil={fieldError({
-				touched: _get(touched, name),
-				error: _get(errors, name)
-			})}
-			{...props}
-		/>
+		</FormikField>
 	)
 }

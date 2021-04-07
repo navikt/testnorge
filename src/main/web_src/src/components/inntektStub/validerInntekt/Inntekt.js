@@ -39,7 +39,7 @@ const booleanField = options => {
 	return options.length > 0 && typeof options[0] === 'boolean'
 }
 
-const fieldReslover = (field, options = [], handleChange, values, path, index) => {
+const fieldResolver = (field, options = [], handleChange, values, path, index) => {
 	if (dateFields.includes(field)) {
 		return (
 			<FormikDatepicker
@@ -74,14 +74,13 @@ const fieldReslover = (field, options = [], handleChange, values, path, index) =
 				visHvisAvhuket={false}
 				name={field}
 				label={texts(field)}
-				onBlur={handleChange}
+				onSubmit={handleChange}
 				size={numberFields.includes(field) ? 'medium' : 'large'}
 				feil={sjekkFelt(field, options, values, path)}
 				type={numberFields.includes(field) ? 'number' : 'text'}
 			/>
 		)
 	}
-
 	return (
 		<FormikSelect
 			key={index}
@@ -101,7 +100,7 @@ const fieldReslover = (field, options = [], handleChange, values, path, index) =
 
 const Inntekt = ({ fields = {}, onValidate, formikBag, path }) => (
 	<div className="flexbox--flex-wrap">
-		{fieldReslover(
+		{fieldResolver(
 			'inntektstype',
 			['LOENNSINNTEKT', 'YTELSE_FRA_OFFENTLIGE', 'PENSJON_ELLER_TRYGD', 'NAERINGSINNTEKT'],
 			onValidate,
@@ -112,7 +111,7 @@ const Inntekt = ({ fields = {}, onValidate, formikBag, path }) => (
 		{Object.keys(fields)
 			.filter(field => !(fields[field].length === 1 && fields[field][0] === '<TOM>'))
 			.map(field =>
-				fieldReslover(field, fields[field], onValidate, formikBag.values, path, `${path}.${field}`)
+				fieldResolver(field, fields[field], onValidate, formikBag.values, path, `${path}.${field}`)
 			)}
 	</div>
 )
