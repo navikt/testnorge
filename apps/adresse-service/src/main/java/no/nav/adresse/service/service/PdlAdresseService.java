@@ -96,7 +96,7 @@ public class PdlAdresseService {
     private static String serialize(AdresseRequest request) {
         return String.format("%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s",
                 request.getMatrikkelId(),
-                request.getVeinavn(),
+                request.getAdressenavn(),
                 request.getHusnummer(),
                 request.getHusbokstav(),
                 request.getPostnummer(),
@@ -156,7 +156,7 @@ public class PdlAdresseService {
                                 .build(),
                         "criteria",
                         Stream.of(
-                                buildCriteria("adressenavn", request.getVeinavn(), FUZZY),
+                                buildCriteria("adressenavn", request.getAdressenavn(), FUZZY),
                                 buildCriteria("husnummer", request.getHusnummer(), EQUALS),
                                 buildCriteria("husbokstav", request.getHusbokstav(), EQUALS),
                                 buildCriteria("postnummer", request.getPostnummer(), EQUALS),

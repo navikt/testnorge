@@ -16,7 +16,7 @@ public class AdresseRequest {
 
     private String matrikkelId;
 
-    private String veinavn;
+    private String adressenavn;
     private String husnummer;
     private String husbokstav;
 
@@ -32,7 +32,7 @@ public class AdresseRequest {
     @JsonIgnore
     public boolean isEmpty() {
         return isBlank(getMatrikkelId()) &&
-                isBlank(getVeinavn()) &&
+                isBlank(getAdressenavn()) &&
                 isBlank(getHusnummer()) &&
                 isBlank(getHusbokstav()) &&
                 isBlank(getPostnummer()) &&
