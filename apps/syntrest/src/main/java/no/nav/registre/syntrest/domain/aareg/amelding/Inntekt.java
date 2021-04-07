@@ -1,4 +1,4 @@
-package no.nav.registre.syntrest.domain.amelding;
+package no.nav.registre.syntrest.domain.aareg.amelding;
 
 import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonAlias;
@@ -11,6 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.registre.syntrest.domain.aareg.amelding.Avvik;
 
 @Getter
 @Setter
