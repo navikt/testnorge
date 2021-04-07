@@ -322,15 +322,17 @@ public class RettighetTiltakService {
         List<NyttVedtakAap> vedtakForSequences = new ArrayList<>();
         var indices = getIndicesForVedtakSequences(aapVedtak);
 
-        for (int j = 0; j < indices.size() - 1; j++) {
-            var sequence = aapVedtak.subList(indices.get(j), indices.get(j + 1));
-            var fraDato = Collections.min(sequence.stream().map(NyttVedtakAap::getFraDato).collect(Collectors.toList()));
-            var tilDato = Collections.max(sequence.stream().map(NyttVedtakAap::getTilDato).collect(Collectors.toList()));
+        if (!indices.isEmpty()){
+            for (int j = 0; j < indices.size() - 1; j++) {
+                var sequence = aapVedtak.subList(indices.get(j), indices.get(j + 1));
+                var fraDato = Collections.min(sequence.stream().map(NyttVedtakAap::getFraDato).collect(Collectors.toList()));
+                var tilDato = Collections.max(sequence.stream().map(NyttVedtakAap::getTilDato).collect(Collectors.toList()));
 
-            var vedtak = new NyttVedtakAap();
-            vedtak.setFraDato(fraDato);
-            vedtak.setTilDato(tilDato);
-            vedtakForSequences.add(vedtak);
+                var vedtak = new NyttVedtakAap();
+                vedtak.setFraDato(fraDato);
+                vedtak.setTilDato(tilDato);
+                vedtakForSequences.add(vedtak);
+            }
         }
 
         return vedtakForSequences;
