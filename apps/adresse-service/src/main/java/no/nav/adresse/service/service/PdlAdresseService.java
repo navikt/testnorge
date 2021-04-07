@@ -10,6 +10,7 @@ import no.nav.adresse.service.dto.PdlAdresseResponse;
 import no.nav.adresse.service.dto.PdlAdresseResponse.Data;
 import no.nav.adresse.service.dto.PdlAdresseResponse.Hits;
 import no.nav.adresse.service.dto.PdlAdresseResponse.Vegadresse;
+import no.nav.adresse.service.dto.PdlSearchRule;
 import org.apache.http.Consts;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
@@ -31,8 +32,8 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.adresse.service.dto.GraphQLRequest.SearchRule.equals;
-import static no.nav.adresse.service.dto.GraphQLRequest.SearchRule.fuzzy;
+import static no.nav.adresse.service.dto.PdlSearchRule.EQUALS;
+import static no.nav.adresse.service.dto.PdlSearchRule.FUZZY;
 import static org.apache.commons.lang3.StringUtils.isAlpha;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
@@ -41,6 +42,7 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 @Service
 public class PdlAdresseService {
 
+    private static final Long INITIAL_PAGESIZE = 100L;
     private final PdlAdresseConsumer pdlAdresseConsumer;
     private final MapperFacade mapperFacade;
 
@@ -84,6 +86,29 @@ public class PdlAdresseService {
         }
     }
 
+    private static GraphQLRequest.Criteria buildCriteria(String name, String value, PdlSearchRule rule) {
+        return isNotBlank(value) ?
+                GraphQLRequest.Criteria.builder()
+                        .fieldName(name)
+                        .searchRule(Map.of(rule.getName(), value))
+                        .build() : null;
+    }
+
+    private static String serialize(AdresseRequest request) {
+        return String.format("%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s",
+                request.getMatrikkelId(),
+                request.getVeinavn(),
+                request.getHusnummer(),
+                request.getHusbokstav(),
+                request.getPostnummer(),
+                request.getKommunenummer(),
+                request.getBydelsnummer(),
+                request.getPoststed(),
+                request.getKommunenavn(),
+                request.getBydelsnavn(),
+                request.getTilleggsnavn());
+    }
+
     public List<Vegadresse> getAdressePostnummer(String postStedNummer, Long antall) {
 
         return getAdresseAutoComplete(
@@ -115,20 +140,9 @@ public class PdlAdresseService {
         }
 
         Long pageNumber = 0L;
-        Long resultsPerPage = 100L;
+        Long resultsPerPage = INITIAL_PAGESIZE;
 
-        Long hits = hitsCache.getOrDefault(String.format("%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s",
-                request.getMatrikkelId(),
-                request.getVeinavn(),
-                request.getHusnummer(),
-                request.getHusbokstav(),
-                request.getPostnummer(),
-                request.getKommunenummer(),
-                request.getBydelsnummer(),
-                request.getPoststed(),
-                request.getKommunenavn(),
-                request.getBydelsnavn(),
-                request.getTilleggsnavn()), null);
+        Long hits = hitsCache.getOrDefault(serialize(request), null);
         if (nonNull(hits)) {
             pageNumber = (long) (Math.floor(secureRandom.nextFloat() * hits / antall) % (hits / antall - antall));
             resultsPerPage = antall;
@@ -143,77 +157,22 @@ public class PdlAdresseService {
                                 .build(),
                         "criteria",
                         Stream.of(
-                                isNotBlank(request.getVeinavn()) ?
-                                        GraphQLRequest.Criteria.builder()
-                                                .fieldName("adressenavn")
-                                                .searchRule(Map.of(fuzzy, request.getVeinavn()))
-                                                .build() : null,
-                                isNotBlank(request.getHusnummer()) ?
-                                        GraphQLRequest.Criteria.builder()
-                                                .fieldName("husnummer")
-                                                .searchRule(Map.of(equals, request.getHusnummer()))
-                                                .build() : null,
-                                isNotBlank(request.getHusbokstav()) ?
-                                        GraphQLRequest.Criteria.builder()
-                                                .fieldName("husbokstav")
-                                                .searchRule(Map.of(equals, request.getHusbokstav()))
-                                                .build() : null,
-                                isNotBlank(request.getPostnummer()) ?
-                                        GraphQLRequest.Criteria.builder()
-                                                .fieldName("postnummer")
-                                                .searchRule(Map.of(equals, request.getPostnummer()))
-                                                .build() : null,
-                                isNotBlank(request.getPoststed()) ?
-                                        GraphQLRequest.Criteria.builder()
-                                                .fieldName("poststed")
-                                                .searchRule(Map.of(fuzzy, request.getPoststed()))
-                                                .build() : null,
-                                isNotBlank(request.getKommunenummer()) ?
-                                        GraphQLRequest.Criteria.builder()
-                                                .fieldName("kommunenummer")
-                                                .searchRule(Map.of(equals, request.getKommunenummer()))
-                                                .build() : null,
-                                isNotBlank(request.getKommunenavn()) ?
-                                        GraphQLRequest.Criteria.builder()
-                                                .fieldName("kommunenavn")
-                                                .searchRule(Map.of(fuzzy, request.getKommunenavn()))
-                                                .build() : null,
-                                isNotBlank(request.getBydelsnummer()) ?
-                                        GraphQLRequest.Criteria.builder()
-                                                .fieldName("bydelsnummer")
-                                                .searchRule(Map.of(equals, request.getBydelsnummer()))
-                                                .build() : null,
-                                isNotBlank(request.getBydelsnavn()) ?
-                                        GraphQLRequest.Criteria.builder()
-                                                .fieldName("bydelsnavn")
-                                                .searchRule(Map.of(fuzzy, request.getBydelsnavn()))
-                                                .build() : null,
-                                isNotBlank(request.getTilleggsnavn()) ?
-                                        GraphQLRequest.Criteria.builder()
-                                                .fieldName("tilleggsnavn")
-                                                .searchRule(Map.of(fuzzy, request.getTilleggsnavn()))
-                                                .build() : null,
-                                isNotBlank(request.getMatrikkelId()) ?
-                                        GraphQLRequest.Criteria.builder()
-                                                .fieldName("matrikkelId")
-                                                .searchRule(Map.of(equals, request.getMatrikkelId()))
-                                                .build() : null
+                                buildCriteria("adressenavn", request.getVeinavn(), FUZZY),
+                                buildCriteria("husnummer", request.getHusnummer(), EQUALS),
+                                buildCriteria("husbokstav", request.getHusbokstav(), EQUALS),
+                                buildCriteria("postnummer", request.getPostnummer(), EQUALS),
+                                buildCriteria("poststed", request.getPoststed(), FUZZY),
+                                buildCriteria("kommunenummer", request.getKommunenummer(), EQUALS),
+                                buildCriteria("kommunenavn", request.getKommunenavn(), FUZZY),
+                                buildCriteria("bydelsnummer", request.getBydelsnummer(), EQUALS),
+                                buildCriteria("bydelsnavn", request.getBydelsnavn(), FUZZY),
+                                buildCriteria("tilleggsnavn", request.getTilleggsnavn(), FUZZY),
+                                buildCriteria("matrikkelId", request.getMatrikkelId(), EQUALS)
                         )
                                 .filter(Objects::nonNull)
                                 .collect(Collectors.toList())))
                 .build());
-        hitsCache.put(String.format("%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s",
-                request.getMatrikkelId(),
-                request.getVeinavn(),
-                request.getHusnummer(),
-                request.getHusbokstav(),
-                request.getPostnummer(),
-                request.getKommunenummer(),
-                request.getBydelsnummer(),
-                request.getPoststed(),
-                request.getKommunenavn(),
-                request.getBydelsnavn(),
-                request.getTilleggsnavn()), response.getData().getSokAdresse().getTotalHits());
+        hitsCache.put(serialize(request), response.getData().getSokAdresse().getTotalHits());
         return mapperFacade.mapAsList(getSublist(response.getData(), antall, request), Vegadresse.class);
     }
 

@@ -44,11 +44,6 @@ public class GraphQLRequest {
     public static class Criteria {
 
         private String fieldName;
-        private Map<SearchRule, String> searchRule;
-    }
-
-    public enum SearchRule {
-
-        fuzzy, equals, from, to
+        private Map<String, String> searchRule;
     }
 }

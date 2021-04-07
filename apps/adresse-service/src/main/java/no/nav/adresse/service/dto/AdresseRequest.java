@@ -1,5 +1,6 @@
 package no.nav.adresse.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,6 +29,7 @@ public class AdresseRequest {
     private String bydelsnavn;
     private String tilleggsnavn;
 
+    @JsonIgnore
     public boolean isEmpty() {
         return isBlank(getMatrikkelId()) &&
                 isBlank(getVeinavn()) &&
