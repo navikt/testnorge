@@ -78,11 +78,7 @@ public class AppConfig {
     }
 
     @Bean
-    WebClient.Builder webClientBuilder() {
-        return WebClient.builder();
-    }
-
-    @Bean UriBuilderFactory uriFactory() {
+    UriBuilderFactory uriFactory() {
         return new DefaultUriBuilderFactory();
     }
 

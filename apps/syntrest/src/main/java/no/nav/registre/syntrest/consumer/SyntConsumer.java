@@ -70,6 +70,6 @@ public abstract class SyntConsumer {
 
     public void addQueryParameter(String parameterName, Object parameterValue) {
         var paramSeparator = this.uri.contains("?") ? "&" : "?";
-        this.uri = this.uri + paramSeparator + parameterName + "=" + parameterValue.toString();
+        this.uri += paramSeparator + parameterName + "=" + parameterValue.toString();
     }
 }
