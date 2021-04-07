@@ -4,11 +4,10 @@ plugins {
 }
 
 repositories {
-    mavenLocal()
-    mavenCentral()
     maven {
         url = uri('https://repo1.maven.org/maven2/')
     }
+    mavenLocal()
     maven {
         name = "GitHubPackages"
         url = uri('https://maven.pkg.github.com/navikt/maven-release')
@@ -20,13 +19,6 @@ repositories {
     maven {
         url = uri('http://packages.confluent.io/maven/')
     }
-    maven {
-        url = uri('https://repo.maven.apache.org/maven2/')
-    }
-    maven {
-        url = uri('https://repo.adeo.no/repository/github-package-registry-navikt')
-    }
-
 }
 
 
