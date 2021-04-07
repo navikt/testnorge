@@ -12,7 +12,7 @@ import static org.apache.commons.lang.StringUtils.ordinalIndexOf;
 @Slf4j
 public class SyntGetConsumer<T> extends SyntConsumer {
 
-    private final Class<T> clazz;
+    private final Class<T> responseClass;
     private final UriBuilderFactory uriFactory;
 
     public SyntGetConsumer(
@@ -20,11 +20,11 @@ public class SyntGetConsumer<T> extends SyntConsumer {
             String name,
             String uri,
             boolean shutdown,
-            Class<T> clazz,
+            Class<T> responseClass,
             UriBuilderFactory uriFactory
     ) {
         super(applicationManager, name, uri, shutdown);
-        this.clazz = clazz;
+        this.responseClass = responseClass;
         this.uriFactory = uriFactory;
     }
 
@@ -42,7 +42,7 @@ public class SyntGetConsumer<T> extends SyntConsumer {
         var response = webClient.get()
                 .uri(requestUri)
                 .retrieve()
-                .bodyToMono(clazz)
+                .bodyToMono(responseClass)
                 .block();
         scheduleIfShutdown();
 

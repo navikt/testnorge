@@ -1,7 +1,7 @@
 package no.nav.registre.syntrest.controllers;
 
 import io.kubernetes.client.ApiException;
-import no.nav.registre.syntrest.consumer.SyntAmeldingConsumer;
+import no.nav.registre.syntrest.consumer.domain.SyntAmeldingConsumer;
 import no.nav.registre.syntrest.consumer.SyntGetConsumer;
 import no.nav.registre.syntrest.consumer.SyntPostConsumer;
 import no.nav.registre.syntrest.consumer.SyntPostMapConsumer;
@@ -19,7 +19,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.internal.util.reflection.FieldSetter;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
 

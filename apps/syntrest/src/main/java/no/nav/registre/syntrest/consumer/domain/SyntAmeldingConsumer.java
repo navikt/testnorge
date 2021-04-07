@@ -1,7 +1,8 @@
-package no.nav.registre.syntrest.consumer;
+package no.nav.registre.syntrest.consumer.domain;
 
 import io.kubernetes.client.ApiException;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.syntrest.consumer.SyntConsumer;
 import no.nav.registre.syntrest.consumer.command.PostArbeidsforholdHistorikkCommand;
 import no.nav.registre.syntrest.consumer.command.PostArbeidsforholdStartCommand;
 import no.nav.registre.syntrest.domain.aareg.amelding.ArbeidsforholdAmelding;
@@ -25,16 +26,14 @@ public class SyntAmeldingConsumer extends SyntConsumer {
     }
 
     public List<ArbeidsforholdAmelding> synthesizeArbeidsforholdStart(List<String> datoer, String url) throws ApiException, InterruptedException {
-        startSyntAmelding();
+        startApplication();
         try {
             return new PostArbeidsforholdStartCommand(datoer, url, webClient).call();
         } catch (RestClientException e) {
             log.error(REST_CLIENT_EXCEPTION_MESSAGE, Arrays.toString(e.getStackTrace()));
             throw e;
         } finally {
-            if (shutdown) {
-                scheduleIfShutdown();
-            }
+            scheduleIfShutdown();
         }
     }
 
@@ -42,20 +41,11 @@ public class SyntAmeldingConsumer extends SyntConsumer {
             ArbeidsforholdAmelding tidligereArbeidsforhold,
             String syntAmeldingUrlPath
     ) throws ApiException, InterruptedException {
-        startSyntAmelding();
+        startApplication();
         try {
             return new PostArbeidsforholdHistorikkCommand(tidligereArbeidsforhold, syntAmeldingUrlPath, webClient).call();
         } catch (RestClientException e) {
             log.error(REST_CLIENT_EXCEPTION_MESSAGE, Arrays.toString(e.getStackTrace()));
-            throw e;
-        }
-    }
-
-    private void startSyntAmelding() throws InterruptedException, ApiException {
-        try {
-            applicationManager.startApplication(this);
-        } catch (ApiException | InterruptedException e) {
-            log.error("Could not start synth package {}: {}", this.appName, e.getMessage());
             throw e;
         }
     }

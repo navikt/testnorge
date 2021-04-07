@@ -3,10 +3,12 @@ package no.nav.registre.syntrest.consumer;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.tcp.ProxyProvider;
@@ -74,7 +76,7 @@ public class GitHubConsumer {
         }
 
         log.warn("Could not find tag for application {}.", appName);
-        return "";
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not find application tag.");
     }
 
     private String getCorrectGithubPackageName(String appName) {

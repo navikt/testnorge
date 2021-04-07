@@ -22,6 +22,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.DefaultUriBuilderFactory;
+import org.springframework.web.util.UriBuilderFactory;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -35,7 +37,7 @@ import java.util.concurrent.ScheduledExecutorService;
 @Import(ApplicationCoreConfig.class)
 public class AppConfig {
 
-    private static final int TIMEOUT = 240_000;
+    private static final int TIMEOUT_IN_MILLIS = 240_000;
     private final int EXECUTOR_POOL_SIZE = 4;
     @Value("${kube-config-path}")
     private String kubeConfigPath;
@@ -52,9 +54,9 @@ public class AppConfig {
                         .setRoutePlanner(new SystemDefaultRoutePlanner(ProxySelector.getDefault()))
                         .setSSLHostnameVerifier(new DefaultHostnameVerifier())
                         .setDefaultRequestConfig(RequestConfig.custom()
-                                .setConnectTimeout(TIMEOUT)
-                                .setSocketTimeout(TIMEOUT)
-                                .setConnectionRequestTimeout(TIMEOUT)
+                                .setConnectTimeout(TIMEOUT_IN_MILLIS)
+                                .setSocketTimeout(TIMEOUT_IN_MILLIS)
+                                .setConnectionRequestTimeout(TIMEOUT_IN_MILLIS)
                                 .build())
                         .setMaxConnPerRoute(2000)
                         .setMaxConnTotal(5000)
@@ -78,6 +80,10 @@ public class AppConfig {
     @Bean
     WebClient.Builder webClientBuilder() {
         return WebClient.builder();
+    }
+
+    @Bean UriBuilderFactory uriFactory() {
+        return new DefaultUriBuilderFactory();
     }
 
     @Bean

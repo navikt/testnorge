@@ -1,8 +1,7 @@
 package no.nav.registre.syntrest.config;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.registre.syntrest.consumer.SyntAmeldingConsumer;
-import no.nav.registre.syntrest.consumer.SyntConsumer;
+import no.nav.registre.syntrest.consumer.domain.SyntAmeldingConsumer;
 import no.nav.registre.syntrest.consumer.SyntGetConsumer;
 import no.nav.registre.syntrest.consumer.SyntPostConsumer;
 import no.nav.registre.syntrest.consumer.SyntPostMapConsumer;
@@ -19,8 +18,6 @@ import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.springframework.web.util.UriBuilderFactory;
 
 import java.util.List;
@@ -59,14 +56,9 @@ public class SyntConsumerConfig {
     private String ameldingUrl;
 
     private final ApplicationManager applicationManager;
-
-
-    @Bean UriBuilderFactory uriFactory() {
-        return new DefaultUriBuilderFactory();
-    }
+    private final UriBuilderFactory uriFactory;
 
     @Bean
-    @DependsOn({"applicationManager"})
     SyntPostConsumer<Arbeidsforholdsmelding[], String[]> aaregConsumer() {
         return new SyntPostConsumer<Arbeidsforholdsmelding[], String[]>(
                 applicationManager,
@@ -77,7 +69,6 @@ public class SyntConsumerConfig {
     }
 
     @Bean
-    @DependsOn({"applicationManager"})
     SyntGetConsumer<Barnebidragsmelding[]> bisysConsumer() {
         return new SyntGetConsumer<Barnebidragsmelding[]>(
                 applicationManager,
@@ -85,11 +76,10 @@ public class SyntConsumerConfig {
                 bisysUrl,
                 true,
                 Barnebidragsmelding[].class,
-                uriFactory());
+                uriFactory);
     }
 
     @Bean
-    @DependsOn({"applicationManager"})
     SyntGetConsumer<Institusjonsmelding[]> instConsumer() {
         return new SyntGetConsumer<Institusjonsmelding[]>(
                 applicationManager,
@@ -97,11 +87,10 @@ public class SyntConsumerConfig {
                 instUrl,
                 true,
                 Institusjonsmelding[].class,
-                uriFactory());
+                uriFactory);
     }
 
     @Bean
-    @DependsOn({"applicationManager"})
     SyntGetConsumer<Medlemskapsmelding[]> medlConsumer() {
         return new SyntGetConsumer<Medlemskapsmelding[]>(
                 applicationManager,
@@ -109,11 +98,10 @@ public class SyntConsumerConfig {
                 medlUrl,
                 true,
                 Medlemskapsmelding[].class,
-                uriFactory());
+                uriFactory);
     }
 
     @Bean
-    @DependsOn({"applicationManager"})
     SyntGetConsumer<String[]> meldekortConsumer() {
         return new SyntGetConsumer<String[]>(
                 applicationManager,
@@ -121,11 +109,10 @@ public class SyntConsumerConfig {
                 arenaMeldekortUrl,
                 false,
                 String[].class,
-                uriFactory());
+                uriFactory);
     }
 
     @Bean
-    @DependsOn({"applicationManager"})
     SyntGetConsumer<String[]> navConsumer() {
         return new SyntGetConsumer<String[]>(
                 applicationManager,
@@ -133,11 +120,10 @@ public class SyntConsumerConfig {
                 navEndringsmeldingUrl,
                 true,
                 String[].class,
-                uriFactory());
+                uriFactory);
     }
 
     @Bean
-    @DependsOn({"applicationManager"})
     SyntPostConsumer<Inntektsmelding[], String[]> poppConsumer() {
         return new SyntPostConsumer<Inntektsmelding[], String[]>(
                 applicationManager,
@@ -148,7 +134,6 @@ public class SyntConsumerConfig {
     }
 
     @Bean
-    @DependsOn({"applicationManager"})
     SyntGetConsumer<SamMelding[]> samConsumer() {
         return new SyntGetConsumer<SamMelding[]>(
                 applicationManager,
@@ -156,11 +141,10 @@ public class SyntConsumerConfig {
                 samUrl,
                 true,
                 SamMelding[].class,
-                uriFactory());
+                uriFactory);
     }
 
     @Bean
-    @DependsOn({"applicationManager"})
     SyntPostMapConsumer<Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>,
                 Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>> inntektConsumer() {
         return new SyntPostMapConsumer<Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>,
@@ -172,7 +156,6 @@ public class SyntConsumerConfig {
     }
 
     @Bean
-    @DependsOn({"applicationManager"})
     SyntGetConsumer<TPmelding[]> tpConsumer() {
         return new SyntGetConsumer<TPmelding[]>(
                 applicationManager,
@@ -180,11 +163,10 @@ public class SyntConsumerConfig {
                 tpUrl,
                 true,
                 TPmelding[].class,
-                uriFactory());
+                uriFactory);
     }
 
     @Bean
-    @DependsOn({"applicationManager"})
     SyntGetConsumer<SkdMelding[]> tpsConsumer() {
         return new SyntGetConsumer<SkdMelding[]>(
                 applicationManager,
@@ -192,11 +174,10 @@ public class SyntConsumerConfig {
                 tpsUrl,
                 true,
                 SkdMelding[].class,
-                uriFactory());
+                uriFactory);
     }
 
     @Bean
-    @DependsOn({"applicationManager"})
     SyntPostMapConsumer<Map<String, List<FrikortKvittering>>, Map<String, Integer>> frikortConsumer() {
         return new SyntPostMapConsumer<Map<String, List<FrikortKvittering>>, Map<String, Integer>>(
                 applicationManager,
@@ -206,7 +187,6 @@ public class SyntConsumerConfig {
     }
 
     @Bean
-    @DependsOn({"applicationManager"})
     SyntAmeldingConsumer ameldingConsumer() {
         return new SyntAmeldingConsumer(
                 applicationManager,

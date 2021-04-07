@@ -7,7 +7,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import no.nav.registre.syntrest.consumer.SyntAmeldingConsumer;
+import no.nav.registre.syntrest.consumer.domain.SyntAmeldingConsumer;
 import no.nav.registre.syntrest.consumer.SyntGetConsumer;
 import no.nav.registre.syntrest.consumer.SyntPostConsumer;
 import no.nav.registre.syntrest.consumer.SyntPostMapConsumer;

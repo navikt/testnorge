@@ -1,7 +1,6 @@
 package no.nav.registre.syntrest.kubernetes;
 
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.internal.LinkedTreeMap;
 import io.kubernetes.client.ApiException;
 import io.kubernetes.client.apis.CustomObjectsApi;
 import io.kubernetes.client.models.V1DeleteOptions;
@@ -9,12 +8,12 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.consumer.GitHubConsumer;
 import no.nav.registre.syntrest.utils.NaisYaml;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.netty.http.client.HttpClient;
 
 import java.time.Duration;
@@ -30,7 +29,7 @@ import static java.util.Objects.isNull;
 @DependsOn("customObjectsApi")
 public class KubernetesController {
 
-    private static final int TIMEOUT = 240_000;  // in milliseconds
+    private static final int TIMEOUT_IN_MILLISECONSDS = 240_000;
     private final String GROUP = "nais.io";
     private final String VERSION = "v1alpha1";
     private final String NAMESPACE = "dolly";
@@ -64,7 +63,7 @@ public class KubernetesController {
         this.api = customObjectsApi;
 
         HttpClient httpClient = HttpClient.create()
-                .responseTimeout(Duration.ofMillis(TIMEOUT));
+                .responseTimeout(Duration.ofMillis(TIMEOUT_IN_MILLISECONSDS));
         ReactorClientHttpConnector connector = new ReactorClientHttpConnector(httpClient);
         this.webClient = WebClient.builder().clientConnector(connector).build();
     }

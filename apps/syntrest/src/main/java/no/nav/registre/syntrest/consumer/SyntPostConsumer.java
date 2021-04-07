@@ -13,21 +13,21 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class SyntPostConsumer<T, R> extends SyntConsumer {
 
-    private final Class<T> clazz;
+    private final Class<T> responseClass;
 
-    public SyntPostConsumer(ApplicationManager applicationManager, String name, String uri, boolean shutdown, Class<T> clazz) {
+    public SyntPostConsumer(ApplicationManager applicationManager, String name, String uri, boolean shutdown, Class<T> responseClass) {
         super(applicationManager, name, uri, shutdown);
-        this.clazz = clazz;
+        this.responseClass = responseClass;
     }
 
-    public T synthesizeData(R body, Class<R> rClazz) throws InterruptedException, ApiException {
+    public T synthesizeData(R body, Class<R> requestClass) throws InterruptedException, ApiException {
         startApplication();
 
         T response = webClient.post()
                 .uri(uri)
-                .body(Mono.just(body), rClazz)
+                .body(Mono.just(body), requestClass)
                 .retrieve()
-                .bodyToMono(clazz)
+                .bodyToMono(responseClass)
                 .block();
 
         scheduleIfShutdown();
