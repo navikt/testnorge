@@ -24,12 +24,14 @@ public abstract class SyntConsumer {
 
     protected final ApplicationManager applicationManager;
     protected final WebClient webClient;
-    protected final String uri;
     protected final boolean shutdown;
     protected final String appName;
 
+    protected String uri;
+
     @Value("${synth-package-unused-uptime}")
     private long shutdownTimeDelaySeconds;
+
 
     public SyntConsumer(ApplicationManager applicationManager, String name, String uri, boolean shutdown) {
         this.applicationManager = applicationManager;
@@ -64,5 +66,10 @@ public abstract class SyntConsumer {
 
     public String getUri() {
         return this.uri;
+    }
+
+    public void addQueryParameter(String parameterName, Object parameterValue) {
+        var paramSeparator = this.uri.contains("?") ? "&" : "?";
+        this.uri = this.uri + paramSeparator + parameterName + "=" + parameterValue.toString();
     }
 }

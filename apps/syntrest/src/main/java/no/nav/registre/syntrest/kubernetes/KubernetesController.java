@@ -81,7 +81,7 @@ public class KubernetesController {
         }
     }
 
-    public void takedownImage(String appName) throws ApiException, JsonSyntaxException {
+    public void takedownImage(String appName) throws ApiException {
 
         if (existsOnCluster(appName)) {
             V1DeleteOptions deleteOptions = new V1DeleteOptions();

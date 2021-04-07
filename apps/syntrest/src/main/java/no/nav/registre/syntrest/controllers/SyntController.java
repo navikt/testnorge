@@ -40,6 +40,8 @@ import no.nav.registre.syntrest.domain.tp.TPmelding;
 import no.nav.registre.syntrest.domain.tps.SkdMelding;
 import no.nav.registre.syntrest.utils.InputValidator;
 
+import static java.util.Objects.isNull;
+
 @Slf4j
 @RestController
 @RequestMapping("api/v1/generate")
@@ -144,6 +146,11 @@ public class SyntController {
     ) throws ApiException, InterruptedException {
         InputValidator.validateInput(numToGenerate);
         InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.MELDEGRUPPE, meldegruppe);
+
+        if (!isNull(arbeidstimer)) {
+            meldekortConsumer.addQueryParameter("arbeidstimer", arbeidstimer);
+        }
+
         var responseArray = meldekortConsumer.synthesizeData(String.valueOf(numToGenerate), meldegruppe);
         List<String> response = Arrays.asList(responseArray.clone());
         doResponseValidation(response);
@@ -292,7 +299,7 @@ public class SyntController {
     }
 
     private void doResponseValidation(Object response) {
-        if (Objects.isNull(response)) {
+        if (isNull(response)) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Syntetisering feilet.");
         }
     }
