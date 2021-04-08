@@ -63,7 +63,7 @@ public class OrganisasjonOrdreController {
     }
 
     @GetMapping("/{ordreId}")
-    public ResponseEntity<List<ItemDTO>> getStatus(@PathVariable String ordreId) {
+    public ResponseEntity<List<ItemDTO>> getStatus(@PathVariable String orgnummer, @PathVariable String ordreId) {
         var status = ordreService.getStatus(ordreId);
 
         if (status == null) {

@@ -76,6 +76,4 @@ public class OrganisasjonController {
         service.delete(orgnummer);
         return ResponseEntity.noContent().build();
     }
-
-
 }
