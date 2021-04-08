@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.libs.common.command.organisasjonservice.v1;
+package no.nav.registre.testnorge.organisasjonfastedataservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,36 +8,37 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.registre.testnorge.libs.dto.organiasjonbestilling.v1.ItemDTO;
 
 @Slf4j
 @RequiredArgsConstructor
-public class GetOrganisasjonCommand implements Callable<OrganisasjonDTO> {
+public class GetOrdreCommand implements Callable<List<ItemDTO>> {
     private final WebClient webClient;
     private final String token;
-    private final String orgnummer;
-    private final String miljo;
+    private final String ordreId;
 
     @Override
-    public OrganisasjonDTO call() {
-        log.info("Henter organisasjon med orgnummer {}.", orgnummer);
+    public List<ItemDTO> call() {
+        log.info("Henter ordre med ordreId {}.", ordreId);
         try {
-            return webClient
+            var response = webClient
                     .get()
                     .uri(builder -> builder
-                            .path("/api/v1/organisasjoner/{orgnummer}")
-                            .build(orgnummer)
+                            .path("/api/v1/order/{ordreId}/items")
+                            .build(ordreId)
                     )
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                    .header("miljo", miljo)
                     .retrieve()
-                    .bodyToMono(OrganisasjonDTO.class)
+                    .bodyToMono(ItemDTO[].class)
                     .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(3)))
                     .block();
+            return Arrays.asList(response);
         } catch (WebClientResponseException.NotFound e) {
-            log.warn("Organisasjon med orgnummer {} ikke funnet.", orgnummer);
+            log.warn("Fant ikke ordre med ordreId {}.", ordreId);
             return null;
         }
     }
