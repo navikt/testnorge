@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.Value;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util.Supplier;
 
 import java.util.HashSet;
 import java.util.List;
@@ -116,12 +117,12 @@ public class Ereg extends FasteData {
                 .build();
     }
 
-    public no.nav.registre.testnorge.libs.dto.organisasjonfastedataservice.v1.OrganisasjonDTO toDTOv2(){
+    public no.nav.registre.testnorge.libs.dto.organisasjonfastedataservice.v1.OrganisasjonDTO toDTOv2(Supplier<String> generateDefaultName) {
         return no.nav.registre.testnorge.libs.dto.organisasjonfastedataservice.v1.OrganisasjonDTO
                 .builder()
                 .orgnummer(orgnr)
                 .enhetstype(enhetstype)
-                .navn(navn)
+                .navn(this.navn != null ? this.navn : generateDefaultName.get())
                 .redigertNavn(redigertNavn)
                 .epost(epost)
                 .forretningsAdresse(forretningsAdresse != null ? forretningsAdresse.toDTOv2() : null)

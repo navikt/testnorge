@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import no.nav.registre.sdforvalter.database.model.EregModel;
@@ -69,6 +70,18 @@ public class EregAdapter extends FasteDataAdapter {
         }).collect(Collectors.toList());
 
         log.info("Fant {} orgnr fra gruppe {}", liste.size(), gruppe);
+        return new EregListe(liste);
+    }
+
+
+    public EregListe fetchAll() {
+        log.info("Henter alle ereg data");
+        var stream = StreamSupport.stream(repository.findAll().spliterator(), false);
+        List<Ereg> liste = stream.map(eregModel -> {
+            List<TagModel> tagModels = eregTagAdapter.findAllTagsBy(eregModel.getOrgnr());
+            return new Ereg(eregModel, tagModels);
+        }).collect(Collectors.toList());
+        log.info("Fant {} organisajoner.", liste.size());
         return new EregListe(liste);
     }
 

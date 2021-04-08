@@ -19,9 +19,9 @@ public class OrganisasjonMigereringController {
     private final OrganisasjonFasteDataConsumer fasteDataConsumer;
 
     @PostMapping
-    public ResponseEntity<HttpStatus> opprett(@RequestParam String gruppe) {
-        var eregListe = eregAdapter.fetchBy(gruppe);
+    public ResponseEntity<HttpStatus> opprett(@RequestParam(required = false) String gruppe) {
+        var eregListe = gruppe == null ? eregAdapter.fetchAll() : eregAdapter.fetchBy(gruppe);
         fasteDataConsumer.opprett(eregListe);
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.noContent().build();
     }
 }

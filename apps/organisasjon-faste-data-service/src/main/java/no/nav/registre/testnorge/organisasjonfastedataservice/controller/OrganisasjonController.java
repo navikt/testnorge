@@ -32,8 +32,8 @@ public class OrganisasjonController {
     private final OrganisasjonService service;
 
     @GetMapping
-    public ResponseEntity<List<OrganisasjonDTO>> getOrganisasjoner(@RequestParam Gruppe gruppe) {
-        var organisasjoner = service.getOrganisasjoner(gruppe);
+    public ResponseEntity<List<OrganisasjonDTO>> getOrganisasjoner(@RequestParam(required = false) Gruppe gruppe) {
+        var organisasjoner = gruppe == null ? service.getOrganisasjoner() : service.getOrganisasjoner(gruppe);
         return ResponseEntity.ok(organisasjoner.stream().map(Organisasjon::toDTO).collect(Collectors.toList()));
     }
 

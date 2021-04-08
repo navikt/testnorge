@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import no.nav.registre.testnorge.libs.dto.organisasjonfastedataservice.v1.Gruppe;
 import no.nav.registre.testnorge.organisasjonfastedataservice.domain.Organisasjon;
@@ -30,6 +31,12 @@ public class OrganisasjonService {
         var list = repository.findByGruppe(gruppe);
         return list.stream().map(Organisasjon::new).collect(Collectors.toList());
     }
+
+    public List<Organisasjon> getOrganisasjoner() {
+        var list = repository.findAll();
+        return StreamSupport.stream(list.spliterator(), false).map(Organisasjon::new).collect(Collectors.toList());
+    }
+
 
     public Optional<Organisasjon> getOrganisasjon(String orgnummer) {
         var model = repository.findById(orgnummer);
