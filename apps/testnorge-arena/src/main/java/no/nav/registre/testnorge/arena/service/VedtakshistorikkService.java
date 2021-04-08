@@ -430,7 +430,6 @@ public class VedtakshistorikkService {
                 }
                 deltakelse.setFodselsnr(personident);
                 deltakelse.setTiltakYtelse("J");
-                deltakelse.setTiltakVedtak("J");
             });
             tiltaksdeltakelser.forEach(deltakelse -> {
                 var tiltak = rettighetTiltakService.finnTiltak(personident, miljoe, deltakelse);
@@ -440,6 +439,7 @@ public class VedtakshistorikkService {
                     deltakelse.setTiltakProsentDeltid(tiltak.getTiltakProsentDeltid());
                     deltakelse.setFraDato(tiltak.getFraDato());
                     deltakelse.setTilDato(tiltak.getTilDato());
+                    deltakelse.setTiltakYtelse(tiltak.getTiltakYtelse());
                     tiltaksliste.add(tiltak);
                 }
             });

@@ -116,6 +116,8 @@ public class RettighetTiltakService {
             return vedtaksliste;
         }
 
+        var deltakelser = tiltaksdeltakelser.stream().filter(t -> t.getTiltakYtelse() != null && t.getTiltakYtelse().equals("J")).collect(Collectors.toList());
+
         List<NyttVedtakTiltak> nyVedtaksliste = new ArrayList<>();
 
         var vedtakSequences = getVedtakSequencesTiltak(vedtaksliste);
@@ -124,10 +126,10 @@ public class RettighetTiltakService {
         for (var sequence : vedtakSequences) {
             var initialFraDato = sequence.get(0).getFraDato();
 
-            var deltakelseIndex = finnNoedvendigTiltaksdeltakelse(tiltaksdeltakelser, brukteIndices);
+            var deltakelseIndex = finnNoedvendigTiltaksdeltakelse(deltakelser, brukteIndices);
             if (deltakelseIndex != null) {
                 brukteIndices.add(deltakelseIndex);
-                var deltakelse = tiltaksdeltakelser.get(deltakelseIndex);
+                var deltakelse = deltakelser.get(deltakelseIndex);
                 for (var vedtak : sequence) {
                     var nyttVedtak = shiftVedtakDatesBasertPaaTiltaksdeltakelse(vedtak, deltakelse, initialFraDato);
                     nyVedtaksliste.add(nyttVedtak);
@@ -322,17 +324,15 @@ public class RettighetTiltakService {
         List<NyttVedtakAap> vedtakForSequences = new ArrayList<>();
         var indices = getIndicesForVedtakSequences(aapVedtak);
 
-        if (!indices.isEmpty()){
-            for (int j = 0; j < indices.size() - 1; j++) {
-                var sequence = aapVedtak.subList(indices.get(j), indices.get(j + 1));
-                var fraDato = Collections.min(sequence.stream().map(NyttVedtakAap::getFraDato).collect(Collectors.toList()));
-                var tilDato = Collections.max(sequence.stream().map(NyttVedtakAap::getTilDato).collect(Collectors.toList()));
+        for (int j = 0; j < indices.size() - 1; j++) {
+            var sequence = aapVedtak.subList(indices.get(j), indices.get(j + 1));
+            var fraDato = Collections.min(sequence.stream().map(NyttVedtakAap::getFraDato).collect(Collectors.toList()));
+            var tilDato = Collections.max(sequence.stream().map(NyttVedtakAap::getTilDato).collect(Collectors.toList()));
 
-                var vedtak = new NyttVedtakAap();
-                vedtak.setFraDato(fraDato);
-                vedtak.setTilDato(tilDato);
-                vedtakForSequences.add(vedtak);
-            }
+            var vedtak = new NyttVedtakAap();
+            vedtak.setFraDato(fraDato);
+            vedtak.setTilDato(tilDato);
+            vedtakForSequences.add(vedtak);
         }
 
         return vedtakForSequences;
