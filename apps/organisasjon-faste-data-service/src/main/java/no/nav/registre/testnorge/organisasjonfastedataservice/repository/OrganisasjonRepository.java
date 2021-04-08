@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import no.nav.registre.testnorge.organisasjonfastedataservice.domain.Gruppe;
+import no.nav.registre.testnorge.libs.dto.organisasjonfastedataservice.v1.Gruppe;
 import no.nav.registre.testnorge.organisasjonfastedataservice.repository.model.OrganisasjonModel;
 
 @Repository

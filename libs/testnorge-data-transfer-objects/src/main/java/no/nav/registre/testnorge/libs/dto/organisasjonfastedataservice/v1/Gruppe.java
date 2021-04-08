@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.organisasjonfastedataservice.domain;
+package no.nav.registre.testnorge.libs.dto.organisasjonfastedataservice.v1;
 
 public enum Gruppe {
     DOLLY,

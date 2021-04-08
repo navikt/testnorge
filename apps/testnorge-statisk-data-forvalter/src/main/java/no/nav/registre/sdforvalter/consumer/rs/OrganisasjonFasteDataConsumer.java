@@ -9,6 +9,7 @@ import no.nav.registre.sdforvalter.consumer.rs.commnad.SaveOrganisasjonFasteData
 import no.nav.registre.sdforvalter.consumer.rs.domain.OrgTree;
 import no.nav.registre.sdforvalter.consumer.rs.domain.OrgTreeList;
 import no.nav.registre.sdforvalter.domain.EregListe;
+import no.nav.registre.testnorge.libs.dto.organisasjonfastedataservice.v1.Gruppe;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 
 @Slf4j
@@ -46,7 +47,7 @@ public class OrganisasjonFasteDataConsumer {
                 webClient,
                 accessToken.getTokenValue(),
                 organisasjon.toDTOv2(),
-                organisasjon.getGruppe() == null ? "ANDRE" : organisasjon.getGruppe()
+                organisasjon.getGruppe() == null ? Gruppe.ANDRE : Gruppe.valueOf(organisasjon.getGruppe()'')
         ).run();
         orgTree.getUnderorganisasjon().forEach(this::opprett);
     }

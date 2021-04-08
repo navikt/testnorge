@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import no.nav.registre.testnorge.libs.dto.organisasjonfastedataservice.v1.Gruppe;
 import no.nav.registre.testnorge.libs.dto.organisasjonfastedataservice.v1.OrganisasjonDTO;
 import no.nav.registre.testnorge.organisasjonfastedataservice.repository.model.OrganisasjonModel;
 

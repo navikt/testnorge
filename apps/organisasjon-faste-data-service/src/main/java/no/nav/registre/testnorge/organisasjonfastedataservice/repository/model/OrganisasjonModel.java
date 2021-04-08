@@ -24,7 +24,7 @@ import javax.persistence.TemporalType;
 import java.util.Date;
 import java.util.List;
 
-import no.nav.registre.testnorge.organisasjonfastedataservice.domain.Gruppe;
+import no.nav.registre.testnorge.libs.dto.organisasjonfastedataservice.v1.Gruppe;
 import no.nav.registre.testnorge.organisasjonfastedataservice.domain.Organisasjon;
 import no.nav.registre.testnorge.organisasjonfastedataservice.repository.converter.OrganisasjonJsonConverter;
 
