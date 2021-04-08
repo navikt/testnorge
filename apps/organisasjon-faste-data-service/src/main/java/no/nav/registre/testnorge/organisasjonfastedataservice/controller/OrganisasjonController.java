@@ -19,8 +19,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.dto.organisasjonfastedataservice.v1.OrganisasjonDTO;
 import no.nav.registre.testnorge.libs.dto.organisasjonfastedataservice.v1.Gruppe;
+import no.nav.registre.testnorge.libs.dto.organisasjonfastedataservice.v1.OrganisasjonDTO;
 import no.nav.registre.testnorge.organisasjonfastedataservice.domain.Organisasjon;
 import no.nav.registre.testnorge.organisasjonfastedataservice.service.OrganisasjonService;
 
@@ -32,9 +32,14 @@ public class OrganisasjonController {
     private final OrganisasjonService service;
 
     @GetMapping
-    public ResponseEntity<List<OrganisasjonDTO>> getOrganisasjoner(@RequestParam(required = false) Gruppe gruppe) {
+    public ResponseEntity<List<OrganisasjonDTO>> getOrganisasjoner(@RequestParam(required = false) Gruppe gruppe, @RequestParam(required = false) Boolean kanHaArbeidsforhold) {
         var organisasjoner = gruppe == null ? service.getOrganisasjoner() : service.getOrganisasjoner(gruppe);
-        return ResponseEntity.ok(organisasjoner.stream().map(Organisasjon::toDTO).collect(Collectors.toList()));
+        var list = organisasjoner
+                .stream()
+                .filter(value -> kanHaArbeidsforhold == null || value.kanHaArbidsforhold() == kanHaArbeidsforhold)
+                .map(Organisasjon::toDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(list);
     }
 
     @PutMapping

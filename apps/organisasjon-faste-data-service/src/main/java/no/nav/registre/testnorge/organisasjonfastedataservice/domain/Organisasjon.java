@@ -68,6 +68,11 @@ public class Organisasjon {
                 .orElse(Collections.emptyList());
     }
 
+    @JsonIgnore
+    public boolean kanHaArbidsforhold() {
+        return enhetstype.equals("BEDR") || enhetstype.equals("AAFY");
+    }
+
 
     @JsonIgnore
     public List<Organisasjon> getUnderenheter() {

@@ -1,7 +1,6 @@
 package no.nav.registre.sdforvalter.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.Supplier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -12,7 +11,6 @@ import no.nav.registre.sdforvalter.consumer.rs.domain.OrgTreeList;
 import no.nav.registre.sdforvalter.domain.EregListe;
 import no.nav.registre.testnorge.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.registre.testnorge.libs.dto.organisasjonfastedataservice.v1.Gruppe;
-import no.nav.registre.testnorge.libs.dto.organisasjonfastedataservice.v1.OrganisasjonDTO;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 
 @Slf4j
@@ -54,12 +52,10 @@ public class OrganisasjonFasteDataConsumer {
         var organisasjon = orgTree.getOrganisasjon();
         log.info("Oppretter organisajon med orgnummer {}.", organisasjon.getOrgnr());
         var accessToken = accessTokenService.generateToken(serverProperties);
-        var dto = organisasjon.toDTOv2(() -> genererNavn(organisasjon.getEnhetstype()));
-
         new SaveOrganisasjonFasteDataCommand(
                 webClient,
                 accessToken.getTokenValue(),
-                dto,
+                organisasjon.toDTOv2(() -> genererNavn(organisasjon.getEnhetstype())),
                 organisasjon.getGruppe() == null ? Gruppe.ANDRE : Gruppe.valueOf(organisasjon.getGruppe())
         ).run();
         orgTree.getUnderorganisasjon().forEach(this::opprett);

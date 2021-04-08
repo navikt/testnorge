@@ -15,7 +15,7 @@ public class OrgTreeList {
     public OrgTreeList(EregListe eregListe) {
         this.list = new ArrayList<>();
         for (Ereg ereg : eregListe.getListe()) {
-            if (!contains(ereg)) {
+            if (!contains(ereg) && ereg.getJuridiskEnhet() == null) {
                 list.add(OrgTree.from(ereg, eregListe.getListe()));
             }
         }
@@ -24,5 +24,4 @@ public class OrgTreeList {
     public boolean contains(Ereg ereg) {
         return list.stream().anyMatch(value -> value.contains(ereg));
     }
-
 }

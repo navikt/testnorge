@@ -17,6 +17,7 @@ public class OrganisasjonDTO {
     String orgnummer;
     @JsonProperty(required = true)
     String enhetstype;
+    @JsonProperty(required = true)
     String navn;
     String redigertNavn;
     String epost;
