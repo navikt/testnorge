@@ -115,4 +115,20 @@ public class Ereg extends FasteData {
                 .kanHaArbeidsforhold(isKanHaArbeidsforhold())
                 .build();
     }
+
+    public no.nav.registre.testnorge.libs.dto.organisasjonfastedataservice.v1.OrganisasjonDTO toDTOv2(){
+        return no.nav.registre.testnorge.libs.dto.organisasjonfastedataservice.v1.OrganisasjonDTO
+                .builder()
+                .orgnummer(orgnr)
+                .enhetstype(enhetstype)
+                .navn(navn)
+                .redigertNavn(redigertNavn)
+                .epost(epost)
+                .forretningsAdresse(forretningsAdresse != null ? forretningsAdresse.toDTOv2() : null)
+                .postadresse(postadresse != null ? postadresse.toDTOv2() : null)
+                .internetAdresse(internetAdresse)
+                .overenhet(juridiskEnhet)
+                .naeringskode(naeringskode)
+                .build();
+    }
 }

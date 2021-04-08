@@ -8,5 +8,6 @@ public enum Gruppe {
     EKSTERNE,
     OTP,
     INTERNE,
-    HJELPEGRUPPE
+    HJELPEGRUPPE,
+    WIP
 }

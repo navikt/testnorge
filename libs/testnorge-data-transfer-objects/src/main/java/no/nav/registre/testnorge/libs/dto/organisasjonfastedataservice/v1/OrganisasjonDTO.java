@@ -17,24 +17,14 @@ public class OrganisasjonDTO {
     String orgnummer;
     @JsonProperty(required = true)
     String enhetstype;
-    @JsonProperty
     String navn;
-    @JsonProperty
     String redigertNavn;
-    @JsonProperty
     String epost;
-    @JsonProperty
     String internetAdresse;
-    @JsonProperty
     String naeringskode;
-    @JsonProperty
     String overenhet;
-    @JsonProperty
     AdresseDTO forretningsAdresse;
-    @JsonProperty
     AdresseDTO postadresse;
-    @JsonProperty
     String opprinnelse;
-    @JsonProperty
     Set<String> tags;
 }
