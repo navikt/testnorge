@@ -33,6 +33,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -247,8 +248,8 @@ public class RettighetTiltakService {
         var vedtakSequences = getVedtakSequencesTiltak(vedtaksliste);
 
         for (var sequence : vedtakSequences) {
-            var fraDato = Collections.min(sequence.stream().map(NyttVedtakTiltak::getFraDato).collect(Collectors.toList()));
-            var tilDato = Collections.max(sequence.stream().map(NyttVedtakTiltak::getTilDato).collect(Collectors.toList()));
+            var fraDato = sequence.stream().map(NyttVedtakTiltak::getFraDato).filter(Objects::nonNull).min(LocalDate::compareTo).orElse(null);
+            var tilDato = sequence.stream().map(NyttVedtakTiltak::getTilDato).filter(Objects::nonNull).max(LocalDate::compareTo).orElse(null);
 
             var vedtak = new NyttVedtakTiltak();
             vedtak.setFraDato(fraDato);
@@ -326,8 +327,9 @@ public class RettighetTiltakService {
 
         for (int j = 0; j < indices.size() - 1; j++) {
             var sequence = aapVedtak.subList(indices.get(j), indices.get(j + 1));
-            var fraDato = Collections.min(sequence.stream().map(NyttVedtakAap::getFraDato).collect(Collectors.toList()));
-            var tilDato = Collections.max(sequence.stream().map(NyttVedtakAap::getTilDato).collect(Collectors.toList()));
+
+            var fraDato = sequence.stream().map(NyttVedtakAap::getFraDato).filter(Objects::nonNull).min(LocalDate::compareTo).orElse(null);
+            var tilDato = sequence.stream().map(NyttVedtakAap::getTilDato).filter(Objects::nonNull).max(LocalDate::compareTo).orElse(null);
 
             var vedtak = new NyttVedtakAap();
             vedtak.setFraDato(fraDato);
@@ -509,8 +511,9 @@ public class RettighetTiltakService {
         for (int j = 0; j < nyRettighetIndices.size() - 1; j++) {
             var subList = tillegg.subList(nyRettighetIndices.get(j), nyRettighetIndices.get(j + 1));
             var perioder = subList.stream().map(NyttVedtakTillegg::getVedtaksperiode).collect(Collectors.toList());
-            var fraDato = Collections.min(perioder.stream().map(Vedtaksperiode::getFom).collect(Collectors.toList()));
-            var tilDato = Collections.max(perioder.stream().map(Vedtaksperiode::getTom).collect(Collectors.toList()));
+
+            var fraDato = perioder.stream().map(Vedtaksperiode::getFom).filter(Objects::nonNull).min(LocalDate::compareTo).orElse(null);
+            var tilDato = perioder.stream().map(Vedtaksperiode::getTom).filter(Objects::nonNull).max(LocalDate::compareTo).orElse(null);
 
             var oppdatertVedtak = new NyttVedtakTillegg();
             oppdatertVedtak.setVedtaksperiode(new Vedtaksperiode(fraDato, tilDato));
