@@ -20,7 +20,7 @@ public class SaveOrganisasjonFasteDataCommand implements Runnable {
     @Override
     public void run() {
         webClient
-                .post()
+                .put()
                 .uri("/api/v1/organisasjon")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header("gruppe", gruppe)
