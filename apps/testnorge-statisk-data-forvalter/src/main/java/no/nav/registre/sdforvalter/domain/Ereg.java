@@ -129,6 +129,8 @@ public class Ereg extends FasteData {
                 .internetAdresse(internetAdresse)
                 .overenhet(juridiskEnhet)
                 .naeringskode(naeringskode)
+                .opprinnelse(getOpprinnelse())
+                .tags(tags)
                 .build();
     }
 }
