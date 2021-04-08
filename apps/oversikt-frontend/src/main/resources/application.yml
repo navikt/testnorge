@@ -47,6 +47,7 @@ applications:
   testnav-arbeidsforhold-service: dev-gcp.dolly.testnav-arbeidsforhold-service
   testnav-adresse-service: dev-gcp.dolly.testnav-adresse-service
   testnav-pdl-forvalter: dev-gcp.dolly.testnav-pdl-forvalter
+  testnav-organisasjon-faste-data-service: dev-gcp.dolly.testnav-organisasjon-faste-data-service
 
 zuul:
   routes:
