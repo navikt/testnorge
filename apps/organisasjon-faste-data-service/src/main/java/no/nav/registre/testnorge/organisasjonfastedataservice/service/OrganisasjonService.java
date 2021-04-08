@@ -19,7 +19,6 @@ public class OrganisasjonService {
     private final OrganisasjonRepository repository;
 
     public void save(Organisasjon organisasjon, Gruppe gruppe) {
-
         repository.save(organisasjon.toModel(gruppe));
     }
 
