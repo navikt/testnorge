@@ -46,5 +46,7 @@ spec:
       memory: 2048Mi
   kafka:
     pool: nav-dev
+  envFrom:
+    - secret: google-sql-testnav-organisasjon-faste-data-service
   ingresses:
     - "https://testnav-organisasjon-faste-data-service.dev.intern.nav.no"
