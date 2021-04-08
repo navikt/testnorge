@@ -18,11 +18,14 @@ public class OrgTreeList {
 
     public OrgTreeList(EregListe eregListe) {
         this.list = new ArrayList<>();
-        for (Ereg ereg : eregListe.getListe()) {
-            if (!contains(ereg) && ereg.getJuridiskEnhet() == null) {
-                list.add(OrgTree.from(ereg, eregListe.getListe()));
-            }
-        }
+
+        eregListe
+                .getListe()
+                .stream()
+                .filter(ereg -> !contains(ereg) && ereg.getJuridiskEnhet() == null)
+                .forEach(ereg -> OrgTree.from(ereg, eregListe.getListe()));
+
+
         var sum = list.stream().map(OrgTree::size).reduce(0, Integer::sum);
         if (eregListe.size() != sum) {
             log.warn("Bare {}/{} organisasjoner er sattopp i organisasjon traer.", sum, eregListe.size());

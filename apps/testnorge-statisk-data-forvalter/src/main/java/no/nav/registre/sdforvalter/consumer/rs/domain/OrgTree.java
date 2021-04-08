@@ -23,7 +23,7 @@ public class OrgTree {
     }
 
     public int size() {
-        return 1 + underorganisasjon.stream().map(OrgTree::size).reduce(0, Integer::sum);
+        return underorganisasjon.stream().map(OrgTree::size).reduce(1, Integer::sum);
     }
 
     public boolean contains(Ereg ereg) {
