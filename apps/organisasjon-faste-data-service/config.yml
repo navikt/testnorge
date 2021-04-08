@@ -19,6 +19,11 @@ spec:
           cluster: dev-fss
         - application: testnorge-oversikt-frontend
           cluster: dev-fss
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_12
+        databases:
+          - name: testnav-organisasjon-faste-data-db
   liveness:
     path: /internal/isAlive
     initialDelay: 4
