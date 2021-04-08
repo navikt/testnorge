@@ -47,7 +47,7 @@ public class OrganisasjonFasteDataConsumer {
                 webClient,
                 accessToken.getTokenValue(),
                 organisasjon.toDTOv2(),
-                organisasjon.getGruppe() == null ? Gruppe.ANDRE : Gruppe.valueOf(organisasjon.getGruppe()'')
+                organisasjon.getGruppe() == null ? Gruppe.ANDRE : Gruppe.valueOf(organisasjon.getGruppe())
         ).run();
         orgTree.getUnderorganisasjon().forEach(this::opprett);
     }
