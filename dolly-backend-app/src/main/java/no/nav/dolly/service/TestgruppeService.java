@@ -1,11 +1,13 @@
 package no.nav.dolly.service;
 
 import lombok.RequiredArgsConstructor;
+import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsLockTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -18,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -32,6 +35,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @RequiredArgsConstructor
 public class TestgruppeService {
 
+    private final MapperFacade mapperFacade;
     private final TestgruppeRepository testgruppeRepository;
     private final TransaksjonMappingRepository transaksjonMappingRepository;
     private final BrukerService brukerService;
@@ -50,6 +54,15 @@ public class TestgruppeService {
                 .sistEndretAv(bruker)
                 .build()
         );
+    }
+
+    public RsTestgruppeMedBestillingId fetchPaginertTestgruppeById(Long gruppeId, Integer pageNo, Integer pageSize) {
+        Testgruppe testgruppe = fetchTestgruppeById(gruppeId);
+        Page<Testident> testidentPage = identService.getBestillingerFromGruppePaginert(gruppeId, pageNo, pageSize);
+        testgruppe.setTestidenter(testidentPage.toSet());
+        RsTestgruppeMedBestillingId rsTestgruppe = mapperFacade.map(testgruppe, RsTestgruppeMedBestillingId.class);
+        rsTestgruppe.setAntallIdenter((int) testidentPage.getTotalElements());
+        return rsTestgruppe;
     }
 
     public Testgruppe fetchTestgruppeById(Long gruppeId) {
@@ -79,7 +92,7 @@ public class TestgruppeService {
         Set<Testgruppe> favoritter = eidAvBruker.stream().map(Bruker::getFavoritter).flatMap(Collection::stream).collect(Collectors.toSet());
         testgrupper.addAll(favoritter);
 
-        return testgrupper.stream().collect(Collectors.toList());
+        return new ArrayList<>(testgrupper);
     }
 
     public Testgruppe saveGruppeTilDB(Testgruppe testgruppe) {
