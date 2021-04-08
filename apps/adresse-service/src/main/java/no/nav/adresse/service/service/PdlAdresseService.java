@@ -32,6 +32,7 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.adresse.service.dto.PdlSearchRule.CONTAINS;
 import static no.nav.adresse.service.dto.PdlSearchRule.EQUALS;
 import static no.nav.adresse.service.dto.PdlSearchRule.FUZZY;
 import static org.apache.commons.lang3.StringUtils.isAlpha;
@@ -94,7 +95,7 @@ public class PdlAdresseService {
     }
 
     private static String serialize(AdresseRequest request) {
-        return String.format("%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s",
+        return String.format("%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s",
                 request.getMatrikkelId(),
                 request.getAdressenavn(),
                 request.getHusnummer(),
@@ -105,7 +106,8 @@ public class PdlAdresseService {
                 request.getPoststed(),
                 request.getKommunenavn(),
                 request.getBydelsnavn(),
-                request.getTilleggsnavn());
+                request.getTilleggsnavn(),
+                request.getFritekst());
     }
 
     public List<Vegadresse> getAdressePostnummer(String postStedNummer, Long antall) {
@@ -166,18 +168,21 @@ public class PdlAdresseService {
                                 buildCriteria("bydelsnummer", request.getBydelsnummer(), EQUALS),
                                 buildCriteria("bydelsnavn", request.getBydelsnavn(), FUZZY),
                                 buildCriteria("tilleggsnavn", request.getTilleggsnavn(), FUZZY),
-                                buildCriteria("matrikkelId", request.getMatrikkelId(), EQUALS)
+                                buildCriteria("matrikkelId", request.getMatrikkelId(), EQUALS),
+                                buildCriteria("fritekst", request.getFritekst(), CONTAINS)
                         )
                                 .filter(Objects::nonNull)
                                 .collect(Collectors.toList())))
                 .build());
-        hitsCache.put(serialize(request), response.getData().getSokAdresse().getTotalHits());
+        if (nonNull(response.getData().getSokAdresse())) {
+            hitsCache.put(serialize(request), response.getData().getSokAdresse().getTotalHits());
+        }
         return mapperFacade.mapAsList(getSublist(response.getData(), antall, request), Vegadresse.class);
     }
 
     private List<Hits> getSublist(Data data, long antall, AdresseRequest request) {
 
-        if (data.getSokAdresse().getHits().isEmpty()) {
+        if (isNull(data.getSokAdresse()) || data.getSokAdresse().getHits().isEmpty()) {
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Ingen adresse funnet, request: " + request.toString());
 
         } else if (data.getSokAdresse().getHits().size() == antall) {

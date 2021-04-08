@@ -1,6 +1,7 @@
 package no.nav.adresse.service.provider;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import no.nav.adresse.service.dto.AdresseRequest;
 import no.nav.adresse.service.dto.AdresseResponse;
@@ -26,28 +27,29 @@ public class AdresseController {
     @GetMapping(value = "/postnummer/{postnummer}")
     @Operation(description = "Henter tilfeldige adresser basert på postnummer eller poststed")
     public AdresseResponse getTilfeldigAdressePostnummer(@PathVariable String postnummer,
-                                                         @RequestHeader(required = false) Long antall) {
+                                                         @Schema(defaultValue = "1") @RequestHeader(required = false) Long antall) {
 
         return AdresseResponse.builder()
                 .vegadresser(pdlAdresseService.getAdressePostnummer(postnummer, nonNull(antall) ? antall : 1))
                 .build();
     }
 
-    @GetMapping(value = "/kommunenummer/{kommune}")
-    @Operation(description = "Henter tilfeldige adresser basert på kommune, opsjonelt bydel")
-    public AdresseResponse getTilfeldigAdresseKommunenummer(@PathVariable String kommune,
+    @GetMapping(value = "/kommunenummer/{kommunenummer}")
+    @Operation(description = "Henter tilfeldige adresser basert på kommune (nummer eller navn), " +
+            "opsjonelt bydel (nummer eller navn)")
+    public AdresseResponse getTilfeldigAdresseKommunenummer(@PathVariable String kommunenummer,
                                                             @RequestParam(required = false) String bydel,
-                                                            @RequestHeader(required = false) Long antall) {
+                                                            @Schema(defaultValue = "1") @RequestHeader(required = false) Long antall) {
 
         return AdresseResponse.builder()
-                .vegadresser(pdlAdresseService.getAdresseKommunenummer(kommune, bydel, nonNull(antall) ? antall : 1))
+                .vegadresser(pdlAdresseService.getAdresseKommunenummer(kommunenummer, bydel, nonNull(antall) ? antall : 1))
                 .build();
     }
 
     @PostMapping(value = "/auto")
-    @Operation(description = "Henter spesifisert adresse")
+    @Operation(description = "Henter tilfeldige adresse basert på parametre inn, tom forespørsel gir helt tilfeldig adresse")
     public AdresseResponse getTilfeldigAdresseAutocomplete(@RequestBody AdresseRequest request,
-                                                           @RequestHeader(required = false) Long antall) {
+                                                           @Schema(defaultValue = "1") @RequestHeader(required = false) Long antall) {
 
         return AdresseResponse.builder()
                 .vegadresser(pdlAdresseService.getAdresseAutoComplete(request, nonNull(antall) ? antall : 1))

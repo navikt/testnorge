@@ -8,7 +8,8 @@ public enum PdlSearchRule {
     FUZZY("fuzzy"),
     EQUALS("equals"),
     FROM("from"),
-    TO("to");
+    TO("to"),
+    CONTAINS("contains");
 
     PdlSearchRule(String name) {
         this.name = name;

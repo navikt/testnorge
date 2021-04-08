@@ -1,6 +1,7 @@
 package no.nav.adresse.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,6 +30,9 @@ public class AdresseRequest {
     private String bydelsnavn;
     private String tilleggsnavn;
 
+    @Schema(name = "Fritekstsøk", example= "Sannergata 2 0557 Oslo")
+    private String fritekst;
+
     @JsonIgnore
     public boolean isEmpty() {
         return isBlank(getMatrikkelId()) &&
@@ -41,6 +45,7 @@ public class AdresseRequest {
                 isBlank(getPoststed()) &&
                 isBlank(getKommunenavn()) &&
                 isBlank(getBydelsnavn()) &&
-                isBlank(getTilleggsnavn());
+                isBlank(getTilleggsnavn()) &&
+                isBlank(getFritekst());
     }
 }
