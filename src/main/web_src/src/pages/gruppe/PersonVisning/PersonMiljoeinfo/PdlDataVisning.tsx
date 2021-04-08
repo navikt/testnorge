@@ -30,6 +30,12 @@ export const PdlDataVisning = ({ data }: PdlData) => {
 		return null
 	}
 
+	const gjeldendeAdresse = adresseListe => {
+		if (!adresseListe || adresseListe.length === 0) return null
+		const filteredArray = adresseListe.filter(adresse => adresse.metadata.historisk != true)
+		return filteredArray.length > 0 ? filteredArray[0] : adresseListe[0]
+	}
+
 	const getPersonInfo = (identInfo: Data) => {
 		return (
 			<div className="boks">
@@ -37,7 +43,7 @@ export const PdlDataVisning = ({ data }: PdlData) => {
 				<IdentInfo data={identInfo.hentIdenter} />
 				<GeografiskTilknytning data={identInfo.hentGeografiskTilknytning} />
 				<PdlNasjonalitet data={identInfo.hentPerson} />
-				<PdlBoadresse data={identInfo.hentPerson.bostedsadresse[0]} />
+				<PdlBoadresse data={gjeldendeAdresse(identInfo.hentPerson.bostedsadresse)} />
 				<PdlFullmakt data={identInfo.hentPerson.fullmakt[0]} />
 			</div>
 		)
