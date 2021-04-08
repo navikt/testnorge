@@ -29,29 +29,14 @@ public class OrganisasjonOrdreController {
     private final OrganisasjonOrdreService ordreService;
 
     @PostMapping
-    public ResponseEntity<HttpStatus> create(@PathVariable String orgnummer, @RequestHeader String miljo) {
+    public ResponseEntity<HttpStatus> create(@PathVariable String orgnummer, @RequestHeader String miljo, @RequestHeader Boolean update) {
         var organisasjon = service.getOrganisasjon(orgnummer);
         if (organisasjon.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        var ordreId = ordreService.create(organisasjon.get(), miljo);
-
-        URI uri = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{ordreId}")
-                .buildAndExpand(ordreId)
-                .toUri();
-
-        return ResponseEntity.created(uri).build();
-    }
-
-    @PatchMapping
-    public ResponseEntity<HttpStatus> change(@PathVariable String orgnummer, @RequestHeader String miljo) {
-        var organisasjon = service.getOrganisasjon(orgnummer);
-        if (organisasjon.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        var ordreId = ordreService.change(organisasjon.get(), miljo);
+        var ordreId = update != null && update
+                ? ordreService.change(organisasjon.get(), miljo)
+                : ordreService.create(organisasjon.get(), miljo);
 
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()

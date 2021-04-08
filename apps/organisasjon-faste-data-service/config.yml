@@ -19,6 +19,10 @@ spec:
           cluster: dev-fss
         - application: testnorge-oversikt-frontend
           cluster: dev-fss
+    outbound:
+      rules:
+        - application: organisasjon-bestilling-service
+          cluster: dev-gcp
   gcp:
     sqlInstances:
       - type: POSTGRES_12
