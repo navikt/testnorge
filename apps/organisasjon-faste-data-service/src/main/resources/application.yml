@@ -17,7 +17,7 @@ kafka:
 
 consumers:
   organisasjon-bestilling-service:
-    url: https://organisasjon-bestilling-service.dev.intern.nav.no
+    url: http://organisasjon-bestilling-service.dolly.svc.cluster.local
     cluster: dev-gcp
     namespace: dolly
     name: organisasjon-bestilling-service
