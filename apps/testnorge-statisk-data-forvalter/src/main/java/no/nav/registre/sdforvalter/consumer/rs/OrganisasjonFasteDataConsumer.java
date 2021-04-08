@@ -15,7 +15,6 @@ import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 @Slf4j
 @Component
 public class OrganisasjonFasteDataConsumer {
-
     private final WebClient webClient;
     private final OrganisasjonFasteDataServiceProperties serverProperties;
     private final AccessTokenService accessTokenService;

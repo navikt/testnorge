@@ -1,11 +1,15 @@
 package no.nav.registre.testnorge.organisasjonfastedataservice.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Value;
 
 import no.nav.registre.testnorge.libs.dto.organisasjonfastedataservice.v1.AdresseDTO;
 
 
 @Value
+@AllArgsConstructor
+@NoArgsConstructor(force = true)
 public class Adresse {
     public Adresse(AdresseDTO dto) {
         this.adresselinje1 = dto.getAdresselinje1();
