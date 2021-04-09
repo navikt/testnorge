@@ -4,8 +4,7 @@ import _get from 'lodash/get'
 import _has from 'lodash/has'
 import Panel from '~/components/ui/panel/Panel'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
-import { panelError } from '~/components/ui/form/formUtils'
-import { erForste } from '~/components/ui/form/formUtils'
+import { erForste, panelError } from '~/components/ui/form/formUtils'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
@@ -13,14 +12,14 @@ import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFiel
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import {
-	requiredDate,
-	requiredString,
-	requiredNumber,
+	ifPresent,
 	messages,
-	ifPresent
+	requiredDate,
+	requiredNumber,
+	requiredString
 } from '~/utils/YupValidations'
 import { FormikProps } from 'formik'
-import { Kodeverk, Ytelser, Inntekt } from '../InntektsmeldingTypes'
+import { Inntekt, Kodeverk, Ytelser } from '../InntektsmeldingTypes'
 import InntektsmeldingSelect from './partials/InntektsmeldingSelect'
 import InntektsmeldingYtelseSelect from './partials/InntektsmeldingYtelseSelect'
 import OmsorgspengerForm from './partials/omsorgspengerForm'
@@ -203,7 +202,9 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingForm) => {
 										<SykepengerForm path={`${path}.sykepengerIArbeidsgiverperioden`} />
 									</Kategori>
 								)}
-								{ytelse === Ytelser.Pleiepenger && (
+								{(ytelse === Ytelser.Pleiepenger ||
+									ytelse === Ytelser.PleiepengerBarn ||
+									ytelse === Ytelser.PleiepengerNaerstaaende) && (
 									<PleiepengerForm path={`${path}.pleiepengerPerioder`} />
 								)}
 								{ytelse === Ytelser.Omsorgspenger && (

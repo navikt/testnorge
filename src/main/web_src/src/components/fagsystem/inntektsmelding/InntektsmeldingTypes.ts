@@ -12,6 +12,8 @@ export enum Ytelser {
 	Foreldrepenger = 'FORELDREPENGER',
 	Svangerskapspenger = 'SVANGERSKAPSPENGER',
 	Pleiepenger = 'PLEIEPENGER',
+	PleiepengerBarn = 'PLEIEPENGER_BARN',
+	PleiepengerNaerstaaende = 'PLEIEPENGER_NAERSTAAENDE',
 	Omsorgspenger = 'OMSORGSPENGER',
 	Opplaeringspenger = 'OPPLAERINGSPENGER'
 }
@@ -95,6 +97,7 @@ export type Fravaer = {
 	tom?: string
 }
 export type Pleiepenger = { fom: string; tom: string }
+
 export type Refusjon = {
 	refusjonsbeloepPrMnd?: number
 	refusjonsopphoersdato?: string

@@ -6,7 +6,7 @@ import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import Formatters from '~/utils/DataFormatter'
 import { FormikProps } from 'formik'
-import { Ytelser, Tema } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
+import { Tema, Ytelser } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 interface InntektsmeldingSelect {
@@ -88,39 +88,37 @@ const setYtelseOgTema = (value: Option, formikBag: FormikProps<{}>, path: string
 		...rest
 	} = _get(formikBag.values, path)
 
-	switch (value.value) {
-		case Ytelser.Omsorgspenger:
-			formikBag.setFieldValue(path, {
-				...rest,
-				ytelse: value.value,
-				omsorgspenger: { harUtbetaltPliktigeDager: false },
-				sykepengerIArbeidsgiverperioden: { bruttoUtbetalt: '' }
-			})
-			break
-		case Ytelser.Sykepenger:
-			formikBag.setFieldValue(path, {
-				...rest,
-				ytelse: value.value,
-				sykepengerIArbeidsgiverperioden: { bruttoUtbetalt: '' }
-			})
-
-			break
-		case Ytelser.Foreldrepenger:
-			formikBag.setFieldValue(path, {
-				...rest,
-				ytelse: value.value,
-				startdatoForeldrepengeperiode: ''
-			})
-			break
-		case Ytelser.Pleiepenger:
-			formikBag.setFieldValue(path, {
-				...rest,
-				ytelse: value.value,
-				pleiepengerPerioder: [{ fom: '', tom: '' }]
-			})
-			break
-		default:
-			// Foreløpig ingen spesielle keys for opplærings- og svangerskapspenger
-			formikBag.setFieldValue(`${path}.ytelse`, value.value)
+	if (value.value === Ytelser.Omsorgspenger) {
+		formikBag.setFieldValue(path, {
+			...rest,
+			ytelse: value.value,
+			omsorgspenger: { harUtbetaltPliktigeDager: false },
+			sykepengerIArbeidsgiverperioden: { bruttoUtbetalt: '' }
+		})
+	} else if (value.value === Ytelser.Sykepenger) {
+		formikBag.setFieldValue(path, {
+			...rest,
+			ytelse: value.value,
+			sykepengerIArbeidsgiverperioden: { bruttoUtbetalt: '' }
+		})
+	} else if (value.value === Ytelser.Foreldrepenger) {
+		formikBag.setFieldValue(path, {
+			...rest,
+			ytelse: value.value,
+			startdatoForeldrepengeperiode: ''
+		})
+	} else if (
+		value.value === Ytelser.Pleiepenger ||
+		value.value === Ytelser.PleiepengerBarn ||
+		value.value === Ytelser.PleiepengerNaerstaaende
+	) {
+		formikBag.setFieldValue(path, {
+			...rest,
+			ytelse: value.value,
+			pleiepengerPerioder: [{ fom: '', tom: '' }]
+		})
+	} else {
+		// Foreløpig ingen spesielle keys for opplærings- og svangerskapspenger
+		formikBag.setFieldValue(`${path}.ytelse`, value.value)
 	}
 }
