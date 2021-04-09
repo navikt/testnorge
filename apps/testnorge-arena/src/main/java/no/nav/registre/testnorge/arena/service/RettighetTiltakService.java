@@ -460,15 +460,18 @@ public class RettighetTiltakService {
 
         List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
         for (var syntetisertRettighet : syntetiserteRettigheter) {
+            var utvalgtIdent = utvalgteIdenter.remove(utvalgteIdenter.size() - 1);
+
+            arbeidsoekerUtils.opprettArbeidssoekerTiltak(utvalgtIdent, miljoe);
+
             var rettighetRequest = new RettighetTiltaksaktivitetRequest(Collections.singletonList(syntetisertRettighet));
 
-            rettighetRequest.setPersonident(utvalgteIdenter.remove(utvalgteIdenter.size() - 1));
+            rettighetRequest.setPersonident(utvalgtIdent);
             rettighetRequest.setMiljoe(miljoe);
 
             rettigheter.add(rettighetRequest);
         }
-        var responses = rettighetArenaForvalterConsumer
-                .opprettRettighet(arbeidsoekerUtils.opprettArbeidssoekerTiltak(rettigheter, miljoe));
+        var responses = rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
         for (var response : responses.values()) {
             for (var nyttVedtakResponse : response) {
                 if (!nyttVedtakResponse.getFeiledeRettigheter().isEmpty()) {

@@ -1,0 +1,19 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+spring:
+  application:
+    name: testnav-arbeidsforhold-service
+    description: Tjenester for arbeidsforhold.
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+
+
+consumers.testnav-aareg-proxy:
+  url: https://testnav-aareg-proxy.dev-fss-pub.nais.io
+  cluster: dev-fss
+  namespace: dolly
+  name: testnav-aareg-proxy
