@@ -18,8 +18,8 @@ import java.util.Random;
 public class VedtakshistorikkSyntConsumer {
 
     // Krav fra Arena et at tidligste dato(minimumsdato) for innsending av vedtakshistorikk er 01.10.2010.
-    // Har satt datoen nå til 01.06.2017 siden Arena mangler støtte for tiltakspenger bak i tid.
-    private static final LocalDate MINIMUM_DATE = LocalDate.of(2017, 1, 1);
+    // Har satt datoen nå til 01.01.2015 siden Arena mangler støtte for tiltakspenger bak i tid.
+    private static final LocalDate MINIMUM_DATE = LocalDate.of(2015, 1, 1);
 
     private final WebClient webClient;
     private Random rand;

@@ -1,0 +1,48 @@
+﻿apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: testnav-arbeidsforhold-service
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  image: {{ image }}
+  port: 8080
+  azure:
+    application:
+      enabled: true
+      tenant: nav.no
+  accessPolicy:
+    inbound:
+      rules:
+        - application: team-dolly-lokal-app
+          cluster: dev-fss
+        - application: testnorge-oversikt-frontend
+          cluster: dev-fss
+        - application: testnorge-synt-sykemelding-api
+          cluster: dev-fss
+    outbound:
+      external:
+        - host: testnav-aareg-proxy.dev-fss-pub.nais.io
+  liveness:
+    path: /internal/isAlive
+    initialDelay: 4
+    periodSeconds: 5
+    failureThreshold: 500
+  readiness:
+    path: /internal/isReady
+    initialDelay: 4
+    periodSeconds: 5
+    failureThreshold: 500
+  replicas:
+    min: 1
+    max: 1
+  resources:
+    requests:
+      cpu: 200m
+      memory: 1024Mi
+    limits:
+      cpu: 500m
+      memory: 2048Mi
+  ingresses:
+    - "https://testnav-arbeidsforhold-service.dev.intern.nav.no"

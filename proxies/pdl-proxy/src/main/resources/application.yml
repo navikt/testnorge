@@ -2,7 +2,7 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 
 spring:
   application:
-    name: aareg-synt-services-proxy
+    name: testnav-pdl-proxy
     desciption: Proxy for pdl som legger på AzureAd sikkerhet og lager en sts token.
   security:
     oauth2:

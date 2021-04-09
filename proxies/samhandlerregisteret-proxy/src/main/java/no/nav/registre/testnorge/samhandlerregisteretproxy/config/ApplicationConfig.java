@@ -10,8 +10,7 @@ import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2ServerToServerCo
 
 @Configuration
 @Import({
-        ApplicationCoreConfig.class,
-        SecureOAuth2ServerToServerConfiguration.class
+        ApplicationCoreConfig.class
 })
 @Profile({"dev", "prod"})
 @RequiredArgsConstructor

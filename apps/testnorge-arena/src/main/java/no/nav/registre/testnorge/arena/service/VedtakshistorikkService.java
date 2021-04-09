@@ -37,12 +37,10 @@ import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTiltakspenge
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTvungenForvaltningRequest;
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetUngUfoerRequest;
 import no.nav.registre.testnorge.arena.consumer.rs.VedtakshistorikkSyntConsumer;
-import no.nav.registre.testnorge.arena.service.exception.VedtakshistorikkException;
 import no.nav.registre.testnorge.arena.service.util.ArbeidssoekerUtils;
 import no.nav.registre.testnorge.arena.service.util.DatoUtils;
 import no.nav.registre.testnorge.arena.service.util.IdenterUtils;
 import no.nav.registre.testnorge.arena.service.util.ServiceUtils;
-import no.nav.registre.testnorge.arena.service.util.TiltakUtils;
 
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Deltakerstatuser;
@@ -53,7 +51,6 @@ import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.RettighetType;
 import no.nav.registre.testnorge.libs.core.util.IdentUtil;
 
 import org.springframework.stereotype.Service;
@@ -67,7 +64,6 @@ public class VedtakshistorikkService {
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
     private final IdenterUtils identerUtils;
     private final ArbeidssoekerUtils arbeidsoekerUtils;
-    private final TiltakUtils tiltakUtils;
     private final RettighetAapService rettighetAapService;
     private final RettighetTiltakService rettighetTiltakService;
     private final DatoUtils datoUtils;
@@ -189,41 +185,30 @@ public class VedtakshistorikkService {
             return Collections.emptyMap();
         }
 
+        var senesteVedtak = datoUtils.finnSenesteVedtak(vedtakshistorikk.getAlleVedtak());
+
         opprettVedtakAap115(ikkeAvluttendeAap115, personident, miljoe, rettigheter);
         opprettVedtakAap(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakAap115(avsluttendeAap115, personident, miljoe, rettigheter);
         opprettVedtakUngUfoer(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakTvungenForvaltning(vedtakshistorikk, personident, miljoe, rettigheter, identerMedKontonummer);
         opprettVedtakFritakMeldekort(vedtakshistorikk, personident, miljoe, rettigheter);
-        oppdaterTiltaksdeltakelse(vedtakshistorikk, personident, miljoe, tiltak);
+        oppdaterTiltaksdeltakelse(vedtakshistorikk, personident, miljoe, tiltak, senesteVedtak);
         opprettVedtakTiltaksdeltakelse(vedtakshistorikk, personident, miljoe, rettigheter);
-        opprettFoersteVedtakEndreDeltakerstatus(vedtakshistorikk, personident, miljoe, rettigheter, tiltak);
+        opprettFoersteVedtakEndreDeltakerstatus(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakTiltakspenger(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakBarnetillegg(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettAvsluttendeVedtakEndreDeltakerstatus(vedtakshistorikk, personident, miljoe, rettigheter, tiltak);
         opprettVedtakTillegg(vedtakshistorikk, personident, miljoe, rettigheter);
 
-        List<RettighetRequest> rettighetRequests = rettigheter;
-        var identerIArena = identerUtils.hentEksisterendeArbeidsoekerIdenter(false);
-
-        if (!identerIArena.contains(personident)) {
-            var senesteVedtak = datoUtils.finnSenesteVedtak(vedtakshistorikk.getAlleVedtak());
-
-            if (senesteVedtak == null) {
-                log.info("Kunne ikke opprette rettigheter for ident: " + personident);
-                rettighetRequests = new ArrayList<>();
-            } else if (senesteVedtak.getRettighetType() == RettighetType.AAP) {
-                rettighetRequests = arbeidsoekerUtils.opprettArbeidssoekerAap(personident, rettigheter, miljoe, ((NyttVedtakAap) senesteVedtak).getAktivitetsfase());
-            } else if (senesteVedtak.getRettighetType() == RettighetType.TILTAK) {
-                rettighetRequests = arbeidsoekerUtils.opprettArbeidssoekerTiltak(rettigheter, miljoe);
-            } else if (senesteVedtak.getRettighetType() == RettighetType.TILLEGG) {
-                rettighetRequests = arbeidsoekerUtils.opprettArbeidssoekerTillegg(rettigheter, miljoe);
-            } else {
-                throw new VedtakshistorikkException("Mangler støtte for rettighettype: " + senesteVedtak.getRettighetType());
-            }
+        try {
+            arbeidsoekerUtils.opprettArbeidssoekerVedtakshistorikk(personident, miljoe, senesteVedtak);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            rettigheter = Collections.emptyList();
         }
 
-        return rettighetArenaForvalterConsumer.opprettRettighet(rettighetRequests);
+        return rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
     }
 
     private void oppdaterAapSykepengeerstatningDatoer(List<NyttVedtakAap> aapVedtak) {
@@ -419,22 +404,29 @@ public class VedtakshistorikkService {
             Vedtakshistorikk historikk,
             String personident,
             String miljoe,
-            List<NyttVedtakTiltak> tiltaksliste
+            List<NyttVedtakTiltak> tiltaksliste,
+            NyttVedtak senesteVedtak
     ) {
         var tiltaksdeltakelser = historikk.getTiltaksdeltakelse();
         if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty()) {
-            var kvalifiseringsgruppe = rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.BFORM;
-            arbeidsoekerUtils.opprettArbeidssoekerTiltakdeltakelse(personident, miljoe, kvalifiseringsgruppe);
+            Kvalifiseringsgrupper kvalifiseringsgruppe;
+            try {
+                kvalifiseringsgruppe = arbeidsoekerUtils.opprettArbeidssoekerTiltaksdeltakelse(personident, miljoe, senesteVedtak);
+            } catch (Exception e) {
+                historikk.setTiltaksdeltakelse(Collections.emptyList());
+                return;
+            }
 
             tiltaksdeltakelser.forEach(deltakelse -> {
-                if (!tiltakUtils.harGyldigTiltakKode(deltakelse, kvalifiseringsgruppe)) {
-                    deltakelse.setTiltakKode(tiltakUtils.getGyldigTiltakKode(deltakelse, kvalifiseringsgruppe));
+                if (rettighetTiltakService.harIkkeGyldigTiltakKode(deltakelse, kvalifiseringsgruppe)) {
+                    deltakelse.setTiltakKode(rettighetTiltakService.getGyldigTiltakKode(deltakelse, kvalifiseringsgruppe));
                 }
                 deltakelse.setFodselsnr(personident);
                 deltakelse.setTiltakYtelse("J");
+                deltakelse.setTiltakVedtak("J");
             });
             tiltaksdeltakelser.forEach(deltakelse -> {
-                var tiltak = tiltakUtils.finnTiltak(personident, miljoe, deltakelse);
+                var tiltak = rettighetTiltakService.finnTiltak(personident, miljoe, deltakelse);
 
                 if (tiltak != null) {
                     deltakelse.setTiltakId(tiltak.getTiltakId());
@@ -448,7 +440,7 @@ public class VedtakshistorikkService {
             var nyeTiltaksdeltakelser = tiltaksdeltakelser.stream()
                     .filter(deltakelse -> deltakelse.getTiltakId() != null).collect(Collectors.toList());
 
-            nyeTiltaksdeltakelser = tiltakUtils.removeOverlappingTiltakVedtak(nyeTiltaksdeltakelser, historikk.getAap());
+            nyeTiltaksdeltakelser = rettighetTiltakService.removeOverlappingTiltakVedtak(nyeTiltaksdeltakelser, historikk.getAap());
 
             historikk.setTiltaksdeltakelse(nyeTiltaksdeltakelser);
         }
@@ -463,7 +455,7 @@ public class VedtakshistorikkService {
         var tiltaksdeltakelser = historikk.getTiltaksdeltakelse();
         if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty()) {
             for (var deltakelse : tiltaksdeltakelser) {
-                var nyDeltakelse = tiltakUtils.getVedtakForTiltaksdeltakelseRequest(deltakelse);
+                var nyDeltakelse = rettighetTiltakService.getVedtakForTiltaksdeltakelseRequest(deltakelse);
                 var rettighetRequest = new RettighetTiltaksdeltakelseRequest(Collections.singletonList(nyDeltakelse));
 
                 rettighetRequest.setPersonident(personident);
@@ -477,8 +469,7 @@ public class VedtakshistorikkService {
             Vedtakshistorikk historikk,
             String personident,
             String miljoe,
-            List<RettighetRequest> rettigheter,
-            List<NyttVedtakTiltak> tiltak
+            List<RettighetRequest> rettigheter
     ) {
         var tiltaksdeltakelser = historikk.getTiltaksdeltakelse();
 
@@ -488,11 +479,11 @@ public class VedtakshistorikkService {
             return;
         }
         for (var deltakelse : tiltaksdeltakelser) {
-            if (tiltakUtils.canSetDeltakelseTilGjennomfoeres(deltakelse, tiltak)) {
-                List<String> endringer = tiltakUtils.getFoersteEndringerDeltakerstatus(deltakelse.getTiltakAdminKode());
+            if (rettighetTiltakService.canSetDeltakelseTilGjennomfoeres(deltakelse)) {
+                List<String> endringer = rettighetTiltakService.getFoersteEndringerDeltakerstatus(deltakelse.getTiltakAdminKode());
 
                 for (var endring : endringer) {
-                    var rettighetRequest = tiltakUtils.opprettRettighetEndreDeltakerstatusRequest(personident, miljoe,
+                    var rettighetRequest = rettighetTiltakService.opprettRettighetEndreDeltakerstatusRequest(personident, miljoe,
                             deltakelse, endring);
 
                     rettigheter.add(rettighetRequest);
@@ -518,10 +509,10 @@ public class VedtakshistorikkService {
         var tiltaksdeltakelser = vedtak.getTiltaksdeltakelse();
         if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty()) {
             for (var deltakelse : tiltaksdeltakelser) {
-                if (tiltakUtils.canSetDeltakelseTilFinished(deltakelse, tiltak)) {
-                    var deltakerstatuskode = tiltakUtils.getAvsluttendeDeltakerstatus(deltakelse, tiltak).toString();
+                if (rettighetTiltakService.canSetDeltakelseTilFinished(deltakelse, tiltak)) {
+                    var deltakerstatuskode = rettighetTiltakService.getAvsluttendeDeltakerstatus(deltakelse, tiltak).toString();
 
-                    var rettighetRequest = tiltakUtils.opprettRettighetEndreDeltakerstatusRequest(personident, miljoe,
+                    var rettighetRequest = rettighetTiltakService.opprettRettighetEndreDeltakerstatusRequest(personident, miljoe,
                             deltakelse, deltakerstatuskode);
 
                     rettigheter.add(rettighetRequest);
@@ -539,10 +530,10 @@ public class VedtakshistorikkService {
         var tiltakspenger = historikk.getTiltakspenger() != null ? historikk.getTiltakspenger() : new ArrayList<NyttVedtakTiltak>();
         var tiltaksdeltakelser = historikk.getTiltaksdeltakelse();
 
-        List<NyttVedtakTiltak> nyeTiltakspenger = tiltakUtils.oppdaterVedtakslisteBasertPaaTiltaksdeltakelse(
+        List<NyttVedtakTiltak> nyeTiltakspenger = rettighetTiltakService.oppdaterVedtakslisteBasertPaaTiltaksdeltakelse(
                 tiltakspenger, tiltaksdeltakelser);
 
-        nyeTiltakspenger = tiltakUtils.removeOverlappingTiltakSequences(nyeTiltakspenger);
+        nyeTiltakspenger = rettighetTiltakService.removeOverlappingTiltakSequences(nyeTiltakspenger);
 
         if (nyeTiltakspenger != null && !nyeTiltakspenger.isEmpty()) {
             for (var vedtak : nyeTiltakspenger) {
@@ -568,10 +559,10 @@ public class VedtakshistorikkService {
 
         List<NyttVedtakTiltak> nyeBarnetillegg = new ArrayList<>();
         if (!tiltakspenger.isEmpty()) {
-            nyeBarnetillegg = tiltakUtils.oppdaterVedtakslisteBasertPaaTiltaksdeltakelse(
+            nyeBarnetillegg = rettighetTiltakService.oppdaterVedtakslisteBasertPaaTiltaksdeltakelse(
                     barnetillegg, tiltaksdeltakelser);
 
-            nyeBarnetillegg = tiltakUtils.removeOverlappingTiltakSequences(nyeBarnetillegg);
+            nyeBarnetillegg = rettighetTiltakService.removeOverlappingTiltakSequences(nyeBarnetillegg);
 
             if (nyeBarnetillegg != null && !nyeBarnetillegg.isEmpty()) {
                 for (var vedtak : nyeBarnetillegg) {
@@ -598,7 +589,7 @@ public class VedtakshistorikkService {
         if (tillegg != null && !tillegg.isEmpty() && !rettigheter.isEmpty()) {
 
             var tiltaksaktiviteter = rettighetTiltakService.getTiltaksaktivitetRettigheter(personident, miljoe, tillegg);
-            if (tiltaksaktiviteter != null && !tiltaksaktiviteter.isEmpty()){
+            if (tiltaksaktiviteter != null && !tiltaksaktiviteter.isEmpty()) {
                 rettigheter.addAll(tiltaksaktiviteter);
 
                 for (var vedtak : tillegg) {

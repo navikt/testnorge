@@ -18,8 +18,8 @@ dependencies {
     implementation project(':local-development')
     implementation project(':testnorge-core')
     implementation project(':testnorge-oauth2')
+    implementation project(':security-token-service')
 
-    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.security:spring-security-web'
     implementation 'org.springframework.security:spring-security-config'
     implementation 'org.springframework.security:spring-security-core'
@@ -27,6 +27,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
+    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-zuul'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
 

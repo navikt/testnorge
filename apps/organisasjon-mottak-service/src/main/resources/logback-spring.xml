@@ -38,7 +38,7 @@
     <logger name="no.nav.registre.testnorge.libs.logging.LogRequestInterceptor">
         <level value="TRACE"/>
     </logger>
-    <logger name="no.nav.registre.testnorge.arbeidsforhold.consumer.commnad.SaveOpplysningspliktigCommand">
+    <logger name="no.nav.registre.testnorge.arbeidsforholdservice.consumer.commnad.SaveOpplysningspliktigCommand">
         <level value="TRACE"/>
     </logger>
 </configuration>
