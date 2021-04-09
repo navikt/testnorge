@@ -44,7 +44,6 @@ applications:
   testnav-organisasjon-service: dev-gcp.dolly.testnav-organisasjon-service
   testnav-pdl-proxy: dev-fss.dolly.testnav-pdl-proxy
   testnav-aareg-proxy: dev-fss.dolly.testnav-aareg-proxy
-  adresse-service: dev-gcp.dolly.testnav-adresse-service
   testnav-arbeidsforhold-service: dev-gcp.dolly.testnav-arbeidsforhold-service
   testnav-adresse-service: dev-gcp.dolly.testnav-adresse-service
   testnav-pdl-forvalter: dev-gcp.dolly.testnav-pdl-forvalter
