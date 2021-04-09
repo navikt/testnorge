@@ -1,13 +1,17 @@
 package no.nav.registre.inntekt.factories;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.inntekt.consumer.rs.altinninntekt.dto.RsInntektsmeldingRequest;
 import no.nav.registre.inntekt.consumer.rs.altinninntekt.dto.rs.RsInntektsmelding;
 
+@Slf4j
 public class RsAltinnInntektsmeldingFactory {
 
     private RsAltinnInntektsmeldingFactory() {}
 
     public static RsInntektsmelding create(RsInntektsmeldingRequest request, String ident) {
+
+        log.info("Lager Inntektsmelding med ytelse: " + request.getYtelse());
         return RsInntektsmelding.builder()
                 .ytelse(request.getYtelse())
                 .aarsakTilInnsending(request.getAarsakTilInnsending())
