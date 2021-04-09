@@ -41,9 +41,6 @@ public class OrganisasjonMottakConsumer {
         return ordreId;
     }
 
-
-
-
     public String change(Organisasjon organisasjon, String miljo, String ordreId) {
         var endringsdokumentBuilder = Endringsdokument
                 .newBuilder();

@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import no.nav.registre.sdforvalter.config.credentials.OrganisasjonFasteDataServiceProperties;
 import no.nav.registre.sdforvalter.consumer.rs.commnad.SaveOrganisasjonFasteDataCommand;
 import no.nav.registre.sdforvalter.consumer.rs.domain.OrgTree;
@@ -42,15 +44,18 @@ public class OrganisasjonFasteDataConsumer {
     }
 
     public void opprett(EregListe eregListe) {
+        var count = new AtomicInteger();
         log.info("Oppretter {} organisasjoner...", eregListe.size());
         var treeList = new OrgTreeList(eregListe);
-        treeList.getList().forEach(this::opprett);
+        treeList.getList().forEach(tree -> {
+            opprett(tree, count);
+            log.info("{}/{} organisasjoner opprettet...", count.get(), eregListe.size());
+        });
         log.info("{} organisasjoner opprettet.", eregListe.size());
     }
 
-    private void opprett(OrgTree orgTree) {
+    private void opprett(OrgTree orgTree, AtomicInteger count) {
         var organisasjon = orgTree.getOrganisasjon();
-        log.info("Oppretter organisajon med orgnummer {}.", organisasjon.getOrgnr());
         var accessToken = accessTokenService.generateToken(serverProperties);
         new SaveOrganisasjonFasteDataCommand(
                 webClient,
@@ -58,6 +63,7 @@ public class OrganisasjonFasteDataConsumer {
                 organisasjon.toDTOv2(() -> genererNavn(organisasjon.getEnhetstype())),
                 organisasjon.getGruppe() == null ? Gruppe.ANDRE : Gruppe.valueOf(organisasjon.getGruppe())
         ).run();
-        orgTree.getUnderorganisasjon().forEach(this::opprett);
+        count.incrementAndGet();
+        orgTree.getUnderorganisasjon().forEach(tree -> opprett(tree, count));
     }
 }
