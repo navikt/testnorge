@@ -28,7 +28,7 @@ public class OrganisasjonService {
     }
 
     public List<Organisasjon> getOrganisasjoner(Gruppe gruppe) {
-        var list = repository.findByGruppe(gruppe);
+        var list = repository.findAllByGruppe(gruppe);
         return list.stream().map(Organisasjon::new).collect(Collectors.toList());
     }
 

@@ -24,9 +24,7 @@ public class OrganisasjonMottakConsumer {
     private final OpprettelsesdokumentV2Producer opprettelsesdokumentProducer;
     private final EndringsdokumentV2Producer endringsdokumentProducer;
 
-    public String create(Organisasjon organisasjon, String miljo) {
-        var uuid = UUID.randomUUID().toString();
-
+    public String create(Organisasjon organisasjon, String miljo, String ordreId) {
         var opprettelsesdokument = Opprettelsesdokument
                 .newBuilder();
 
@@ -35,17 +33,18 @@ public class OrganisasjonMottakConsumer {
                 .setMiljo(miljo)
                 .build();
 
-        opprettelsesdokumentProducer.send(uuid, opprettelsesdokument
+        opprettelsesdokumentProducer.send(ordreId, opprettelsesdokument
                 .setOrganisasjon(create(organisasjon))
                 .setMetadata(metadata)
                 .build()
         );
-        return uuid;
+        return ordreId;
     }
 
-    public String change(Organisasjon organisasjon, String miljo) {
-        var uuid = UUID.randomUUID().toString();
 
+
+
+    public String change(Organisasjon organisasjon, String miljo, String ordreId) {
         var endringsdokumentBuilder = Endringsdokument
                 .newBuilder();
 
@@ -54,12 +53,12 @@ public class OrganisasjonMottakConsumer {
                 .setMiljo(miljo)
                 .build();
 
-        endringsdokumentProducer.send(uuid, endringsdokumentBuilder
+        endringsdokumentProducer.send(ordreId, endringsdokumentBuilder
                 .setOrganisasjon(create(organisasjon))
                 .setMetadata(metadata)
                 .build()
         );
-        return uuid;
+        return ordreId;
     }
 
     private no.nav.registre.testnorge.libs.avro.organisasjon.v1.Organisasjon create(Organisasjon organisasjon) {

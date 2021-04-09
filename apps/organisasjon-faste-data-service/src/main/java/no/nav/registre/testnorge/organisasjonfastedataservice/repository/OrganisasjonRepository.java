@@ -10,5 +10,7 @@ import no.nav.registre.testnorge.organisasjonfastedataservice.repository.model.O
 
 @Repository
 public interface OrganisasjonRepository extends CrudRepository<OrganisasjonModel, String> {
-    List<OrganisasjonModel> findByGruppe(Gruppe gruppe);
+    List<OrganisasjonModel> findAllByGruppe(Gruppe gruppe);
+
+    List<OrganisasjonModel> findAllByGruppeAndOverenhetIsNull(Gruppe gruppe);
 }
