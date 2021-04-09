@@ -31,7 +31,11 @@ public class OrganisasjonOrdreController {
     private final OrganisasjonOrdreService ordreService;
 
     @PostMapping("/organisasjon/{orgnummer}")
-    public ResponseEntity<HttpStatus> create(@PathVariable String orgnummer, @RequestHeader String miljo, @RequestHeader Boolean update) {
+    public ResponseEntity<HttpStatus> create(
+            @PathVariable String orgnummer,
+            @RequestHeader String miljo,
+            @RequestHeader Boolean update
+    ) {
         var organisasjon = service.getOrganisasjon(orgnummer);
         if (organisasjon.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -50,7 +54,11 @@ public class OrganisasjonOrdreController {
     }
 
     @PostMapping("/organisasjon")
-    public ResponseEntity<HttpStatus> create(@RequestHeader Gruppe gruppe, @RequestHeader String miljo, @RequestHeader Boolean update) {
+    public ResponseEntity<HttpStatus> create(
+            @RequestHeader Gruppe gruppe,
+            @RequestHeader String miljo,
+            @RequestHeader Boolean update
+    ) {
         var ordreId = update != null && update
                 ? ordreService.change(gruppe, miljo)
                 : ordreService.create(gruppe, miljo);
