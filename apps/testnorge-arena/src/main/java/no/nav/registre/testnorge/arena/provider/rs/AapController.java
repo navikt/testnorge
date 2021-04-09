@@ -43,7 +43,7 @@ public class AapController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(rettighetAapService.genererAapMedTilhoerende115(ident, miljoe));
+                .body(rettighetAapService.genererAap(ident, miljoe));
     }
 
     @PostMapping("generer/rettighet/aap_115")
