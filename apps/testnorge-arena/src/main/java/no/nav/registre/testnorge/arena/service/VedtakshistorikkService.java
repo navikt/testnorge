@@ -37,7 +37,6 @@ import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTiltakspenge
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTvungenForvaltningRequest;
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetUngUfoerRequest;
 import no.nav.registre.testnorge.arena.consumer.rs.VedtakshistorikkSyntConsumer;
-import no.nav.registre.testnorge.arena.service.exception.VedtakshistorikkException;
 import no.nav.registre.testnorge.arena.service.util.ArbeidssoekerUtils;
 import no.nav.registre.testnorge.arena.service.util.DatoUtils;
 import no.nav.registre.testnorge.arena.service.util.IdenterUtils;
@@ -52,7 +51,6 @@ import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.RettighetType;
 import no.nav.registre.testnorge.libs.core.util.IdentUtil;
 
 import org.springframework.stereotype.Service;
