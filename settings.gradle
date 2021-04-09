@@ -117,6 +117,7 @@ include(':mn-synt-arbeidsforhold-service')
 include(':organisasjon-orgnummer-service')
 include(':organisasjon-forvalter')
 include(':tps-identer-vedlikehold')
+include(':adresse-service')
 
 project(":inntektsmelding-generator-service").projectDir = file('apps/inntektsmelding-generator-service')
 project(":testnorge-tss").projectDir = file('apps/testnorge-tss')
@@ -206,6 +207,7 @@ project(":ident-check-in-prod-service").projectDir = file('apps/ident-check-in-p
 project(":organisasjon-orgnummer-service").projectDir = file('apps/organisasjon-orgnummer-service')
 project(":organisasjon-forvalter").projectDir = file('apps/organisasjon-forvalter')
 project(":tps-identer-vedlikehold").projectDir = file('apps/tps-identer-vedlikehold')
+project(":adresse-service").projectDir = file('apps/adresse-service')
 
 include 'organisasjon-mottak-service'
 project(":organisasjon-mottak-service").projectDir = file('apps/organisasjon-mottak-service')

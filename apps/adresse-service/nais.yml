@@ -1,0 +1,45 @@
+apiVersion: nais.io/v1alpha1
+kind: Application
+metadata:
+  name: testnav-adresse-service
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  image: {{ image }}
+  webproxy: true
+  azure:
+    application:
+      enabled: true
+      tenant: nav.no
+  ingresses:
+    - "https://testnav-adresse-service.dev.intern.nav.no"
+  liveness:
+    path: /internal/isAlive
+    periodSeconds: 30
+    initialDelay: 30
+  readiness:
+    path: /internal/isReady
+    initialDelay: 30
+  prometheus:
+    path: /internal/prometheus
+  replicas:
+    min: 1
+    max: 1
+  resources:
+    limits:
+      cpu: 1200m
+      memory: 8192Mi
+    requests:
+      cpu: 1000m
+      memory: 4096Mi
+  accessPolicy:
+    inbound:
+      rules:
+        - application: testnorge-oversikt-frontend
+          cluster: dev-fss
+        - application: team-dolly-lokal-app
+          cluster: dev-fss
+    outbound:
+      external:
+        - host: https://testnav-pdl-proxy.dev-fss-pub.nais.io
