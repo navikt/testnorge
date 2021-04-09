@@ -11,7 +11,7 @@ public class RsAltinnInntektsmeldingFactory {
 
     public static RsInntektsmelding create(RsInntektsmeldingRequest request, String ident) {
 
-        log.info("Lager Inntektsmelding med ytelse: " + request.getYtelse());
+        log.info("Lager RsInntektsmelding med ytelse: " + request.getYtelse());
         return RsInntektsmelding.builder()
                 .ytelse(request.getYtelse())
                 .aarsakTilInnsending(request.getAarsakTilInnsending())
