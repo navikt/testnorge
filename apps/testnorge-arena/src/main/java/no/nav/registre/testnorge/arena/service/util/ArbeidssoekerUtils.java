@@ -71,7 +71,7 @@ public class ArbeidssoekerUtils {
 
 
     public boolean arbeidssoekerIkkeOpprettetIArena(String personident){
-        var identerIArena = identerUtils.hentEksisterendeArbeidsoekerIdenter(false);
+        var identerIArena = identerUtils.hentEksisterendeArbeidsoekerIdent(personident,false);
         return !identerIArena.contains(personident);
     }
 

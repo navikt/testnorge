@@ -222,6 +222,11 @@ public class IdenterUtils {
         return hentIdentListe(arbeidsoekere);
     }
 
+    public List<String> hentEksisterendeArbeidsoekerIdent(String personident, boolean useCache) {
+        var arbeidsoekere = brukereArenaForvalterConsumer.hentArbeidsoekere(personident, null, null, useCache);
+        return hentIdentListe(arbeidsoekere);
+    }
+
     public List<String> hentEksisterendeArbeidsoekerIdenter(String eier, String miljoe, boolean useCache) {
         var arbeidsoekere = brukereArenaForvalterConsumer.hentArbeidsoekere(null, eier, miljoe, useCache);
         return hentIdentListe(arbeidsoekere);
