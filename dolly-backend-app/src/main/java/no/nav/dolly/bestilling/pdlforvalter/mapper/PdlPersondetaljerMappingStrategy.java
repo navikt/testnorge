@@ -6,7 +6,6 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pdlforvalter.domain.Kjoenn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDoedsfall;
-import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFoedsel;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKjoenn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpprettPerson;
@@ -46,17 +45,6 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                                 .map(Person::getIdent).collect(Collectors.toList()));
                     }
                 })
-                .register();
-
-        factory.classMap(Person.class, PdlFoedsel.class)
-                .customize(new CustomMapper<>() {
-                    @Override
-                    public void mapAtoB(Person person, PdlFoedsel pdlFoedsel, MappingContext context) {
-
-                        pdlFoedsel.setKilde(CONSUMER);
-                    }
-                })
-                .byDefault()
                 .register();
 
         factory.classMap(Person.class, PdlNavn.class)
