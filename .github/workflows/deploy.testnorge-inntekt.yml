@@ -2,7 +2,6 @@ name: Deploy testnorge-inntekt
 
 on:
   push:
-    branches: master
     paths:
       - apps/testnorge-inntekt/**
       - libs/testnorge-core/**
