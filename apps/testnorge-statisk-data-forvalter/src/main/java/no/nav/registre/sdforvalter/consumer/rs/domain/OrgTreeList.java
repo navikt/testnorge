@@ -19,17 +19,16 @@ public class OrgTreeList {
     public OrgTreeList(EregListe eregListe) {
         this.list = new ArrayList<>();
 
-        eregListe
-                .getListe()
-                .stream()
-                .filter(ereg -> !contains(ereg) && ereg.getJuridiskEnhet() == null)
-                .forEach(ereg -> OrgTree.from(ereg, eregListe.getListe()));
-
+        for (Ereg ereg : eregListe.getListe()) {
+            if (ereg.getJuridiskEnhet() == null && !contains(ereg)) {
+                list.add(OrgTree.from(ereg, eregListe.getListe()));
+            }
+        }
 
         var sum = list.stream().map(OrgTree::size).reduce(0, Integer::sum);
         if (eregListe.size() != sum) {
             log.error("Bare {}/{} organisasjoner er sattopp i organisasjon traer.", sum, eregListe.size());
-            log.error("Organisasjonene finnes ikke i organisasjon treet {}.", notInTree(eregListe));
+            log.error("Organisasjonene finnes ikke i organisasjon treet {}.", String.join(",", notInTree(eregListe)));
         }
     }
 
@@ -48,5 +47,4 @@ public class OrgTreeList {
     private boolean isInnOrgTree(Ereg ereg) {
         return list.stream().anyMatch(value -> value.contains(ereg));
     }
-
 }
