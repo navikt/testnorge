@@ -38,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -68,6 +69,13 @@ public class OppslagController {
     public KodeverkAdjusted fetchKodeverkByName(@PathVariable("kodeverkNavn") String kodeverkNavn) {
         KodeverkBetydningerResponse response = kodeverkConsumer.fetchKodeverkByName(kodeverkNavn);
         return kodeverkMapper.mapBetydningToAdjustedKodeverk(kodeverkNavn, response.getBetydninger());
+    }
+
+    @GetMapping("/kodeverk")
+    @Operation(description = "Hent kodeverk, returnerer map")
+    public Map<String, String> fetchKodeverk(@RequestParam String kodeverk) {
+
+        return kodeverkConsumer.getKodeverkByName(kodeverk);
     }
 
     @GetMapping("/pdlperson/ident/{ident}")

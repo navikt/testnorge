@@ -92,8 +92,18 @@ public class TestgruppeController {
     }
 
     @Cacheable(CACHE_GRUPPE)
-    @GetMapping("/{gruppeId}")
+    @GetMapping("/{gruppeId}/page/{pageNo}")
     @Operation(description = "Hent paginert testgruppe")
+    public RsTestgruppeMedBestillingId getPaginertTestgruppe(@PathVariable("gruppeId") Long gruppeId,
+                                                             @PathVariable("pageNo") Integer pageNo,
+                                                             @RequestParam Integer pageSize) {
+
+        return testgruppeService.fetchPaginertTestgruppeById(gruppeId, pageNo, pageSize);
+    }
+
+    @Cacheable(CACHE_GRUPPE)
+    @GetMapping("/{gruppeId}")
+    @Operation(description = "Hent testgruppe")
     public RsTestgruppeMedBestillingId getTestgruppe(@PathVariable("gruppeId") Long gruppeId) {
         return mapperFacade.map(testgruppeService.fetchTestgruppeById(gruppeId), RsTestgruppeMedBestillingId.class);
     }
@@ -108,7 +118,7 @@ public class TestgruppeController {
 
     @Cacheable(CACHE_GRUPPE)
     @GetMapping("/page/{pageNo}")
-    @Operation(description = "Hent testgrupper")
+    @Operation(description = "Hent paginerte testgrupper")
     public RsTestgruppePage getTestgrupper(@PathVariable(value = "pageNo") Integer pageNo, @RequestParam(value = "pageSize") Integer pageSize) {
 
         Page<Testgruppe> page = testgruppeService.getAllTestgrupper(pageNo, pageSize);

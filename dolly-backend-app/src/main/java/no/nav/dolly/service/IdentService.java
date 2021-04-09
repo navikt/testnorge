@@ -12,6 +12,8 @@ import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.IdentRepository.GruppeBestillingIdent;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -96,6 +98,11 @@ public class IdentService {
     public List<GruppeBestillingIdent> getBestillingerFromGruppe(Testgruppe gruppe) {
 
         return identRepository.getBestillingerFromGruppe(gruppe);
+    }
+
+    public Page<Testident> getBestillingerFromGruppePaginert(Long gruppeId, Integer pageNo, Integer pageSize) {
+
+        return identRepository.getBestillingerFromGruppePaginert(gruppeId, PageRequest.of(pageNo, pageSize));
     }
 
     public Testident getTestIdent(String ident) {
