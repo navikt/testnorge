@@ -9,8 +9,10 @@ import ma.glasnost.orika.MapperFacade;
 import org.springframework.stereotype.Component;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.namespace.QName;
 import javax.xml.ws.soap.SOAPFaultException;
 import java.io.StringWriter;
 import java.util.HashMap;
@@ -86,6 +88,8 @@ public class AaregWsConsumer {
         arbeidsforholdRequest.setArkivreferanse(getUuid(request.getArkivreferanse()));
         arbeidsforholdRequest.setRapporteringsperiode(mapperFacade.map(request.getRapporteringsperiode(), XMLGregorianCalendar.class));
 
+        log(arbeidsforholdRequest);
+
         Map<String, String> status = new HashMap<>(request.getEnvironments().size());
         request.getEnvironments().forEach(env -> {
             try {
@@ -109,15 +113,31 @@ public class AaregWsConsumer {
     @SneakyThrows
     private void log(OpprettArbeidsforholdRequest request) {
         try {
+            var element = new JAXBElement<>(new QName("", "opprettArbeidsforhold"), OpprettArbeidsforholdRequest.class, request);
+
             JAXBContext jaxbContext = JAXBContext.newInstance(OpprettArbeidsforholdRequest.class);
-
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-
             StringWriter sw = new StringWriter();
+            jaxbMarshaller.marshal(element, sw);
 
-            jaxbMarshaller.marshal(request, sw);
+            log.info(sw.toString());
+        } catch (Exception e) {
+            log.error("Feil ved logging av opprett arbeidsforhold request.", e);
+        }
+    }
+
+    @SneakyThrows
+    private void log(OppdaterArbeidsforholdRequest request) {
+        try {
+
+            var element = new JAXBElement<>(new QName("", "oppdaterArbeidsforhold"), OppdaterArbeidsforholdRequest.class, request);
+
+            JAXBContext jaxbContext = JAXBContext.newInstance(OppdaterArbeidsforholdRequest.class);
+            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            StringWriter sw = new StringWriter();
+            jaxbMarshaller.marshal(element, sw);
 
             log.info(sw.toString());
         } catch (Exception e) {
