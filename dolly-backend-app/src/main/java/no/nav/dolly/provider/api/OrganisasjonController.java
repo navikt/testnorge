@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.organisasjonforvalter.OrganisasjonClient;
-import no.nav.dolly.bestilling.organisasjonforvalter.OrganisasjonConsumer;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployRequest;
 import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling;
@@ -37,7 +36,6 @@ public class OrganisasjonController {
 
     private final OrganisasjonClient organisasjonClient;
     private final OrganisasjonBestillingService bestillingService;
-    private final OrganisasjonConsumer organisasjonConsumer;
 
     @ResponseStatus(HttpStatus.CREATED)
     @CacheEvict(value = CACHE_ORG_BESTILLING, allEntries = true)

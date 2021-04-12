@@ -5,8 +5,7 @@ import no.nav.dolly.bestilling.organisasjonforvalter.domain.BestillingRequest;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.BestillingResponse;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployRequest;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployResponse;
-import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDetaljer;
-import no.nav.dolly.config.credentials.OrganisasjonServiceProperties;
+import no.nav.dolly.config.credentials.OrganisasjonForvalterProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.oauth2.domain.AccessToken;
 import no.nav.dolly.security.oauth2.service.TokenService;
@@ -14,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.List;
 import java.util.UUID;
 
 import static java.lang.String.format;
@@ -34,35 +32,15 @@ public class OrganisasjonConsumer {
 
     private final TokenService tokenService;
     private final WebClient webClient;
-    private final OrganisasjonServiceProperties serviceProperties;
+    private final OrganisasjonForvalterProperties organisasjonForvalterProperties;
 
-    public OrganisasjonConsumer(TokenService tokenService, OrganisasjonServiceProperties serviceProperties) {
+    public OrganisasjonConsumer(TokenService tokenService, OrganisasjonForvalterProperties organisasjonForvalterProperties) {
         this.tokenService = tokenService;
-        this.serviceProperties = serviceProperties;
+        this.organisasjonForvalterProperties = organisasjonForvalterProperties;
         this.webClient = WebClient.builder()
-                .baseUrl(serviceProperties.getUrl())
+                .baseUrl(organisasjonForvalterProperties.getUrl())
                 .build();
     }
-
-    @Timed(name = "providers", tags = { "operation", "organisasjon-hent" })
-    public OrganisasjonDetaljer hentOrganisasjon(List<String> orgnumre) {
-
-        AccessToken accessToken = getAccessToken("Organisasjon hent request sendt, callId: {}, consumerId: {}");
-
-        return webClient
-                .get()
-                .uri(uriBuilder ->
-                        uriBuilder.path(ORGANISASJON_FORVALTER_URL)
-                                .queryParam("orgnumre", orgnumre)
-                                .build())
-                .header(AUTHORIZATION, BEARER + accessToken.getTokenValue())
-                .header(HEADER_NAV_CALL_ID, getNavCallId())
-                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .retrieve()
-                .bodyToFlux(OrganisasjonDetaljer.class)
-                .blockFirst();
-    }
-
 
     @Timed(name = "providers", tags = { "operation", "organisasjon-opprett" })
     public ResponseEntity<BestillingResponse> postOrganisasjon(BestillingRequest bestillingRequest) {
@@ -88,7 +66,6 @@ public class OrganisasjonConsumer {
         return sendDeployOrganisasjonRequest(request, getNavCallId(), accessToken);
     }
 
-
     private ResponseEntity<DeployResponse> sendDeployOrganisasjonRequest(DeployRequest deployRequest, String callId, AccessToken accessToken) {
         return webClient
                 .post()
@@ -109,6 +86,6 @@ public class OrganisasjonConsumer {
     private AccessToken getAccessToken(String s) {
         log.info(s, getNavCallId(), CONSUMER);
 
-        return tokenService.generateToken(serviceProperties);
+        return tokenService.generateToken(organisasjonForvalterProperties);
     }
 }

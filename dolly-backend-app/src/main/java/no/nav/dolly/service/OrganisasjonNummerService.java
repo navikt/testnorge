@@ -24,11 +24,6 @@ public class OrganisasjonNummerService {
         return organisasjonNummerRepository.save(organisasjonNummer);
     }
 
-    public List<OrganisasjonNummer> fetchOrganisasjonNummereFromBestillingsId(Long bestillingsId) {
-        return organisasjonNummerRepository.findByBestillingId(bestillingsId).orElseThrow(
-                () -> new NotFoundException("Kunne ikke finne noen organisasjoner knyttet til bestillingId=" + bestillingsId + ", i tabell ORGANISASJON_BESTILLINGS_PROGRESS"));
-    }
-
     public List<OrganisasjonNummer> fetchBestillingsIdFromOrganisasjonNummer(String orgnummer) {
         return organisasjonNummerRepository.findByOrganisasjonNummer(orgnummer).orElseThrow(
                 () -> new NotFoundException("Kunne ikke finne noen bestillinger knyttet til organisasjonNummer=" + orgnummer + ", i tabell ORGANISASJON_BESTILLINGS_PROGRESS"));
