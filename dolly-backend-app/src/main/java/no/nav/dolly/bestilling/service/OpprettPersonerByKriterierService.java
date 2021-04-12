@@ -9,7 +9,6 @@ import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
@@ -27,9 +26,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.domain.jpa.Testident.Master.TPSF;
 
 @Slf4j
 @Service
@@ -75,7 +74,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
             dollyForkJoinPool.submit(() -> {
                 Collections.nCopies(bestilling.getAntallIdenter(), true).parallelStream()
                         .filter(ident -> !bestillingService.isStoppet(bestilling.getId()))
-                        .map(ident -> {
+                        .forEach(ident -> {
 
                             BestillingProgress progress = null;
                             try {
@@ -83,9 +82,9 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
                                 DollyPerson dollyPerson = DollyPerson.builder()
                                         .hovedperson(leverteIdenter.get(0))
-                                        .master(Testident.Master.TPSF)
+                                        .master(TPSF)
                                         .build();
-                                progress = new BestillingProgress(bestilling.getId(), dollyPerson.getHovedperson(), Testident.Master.TPSF);
+                                progress = new BestillingProgress(bestilling.getId(), dollyPerson.getHovedperson(), TPSF);
 
                                 sendIdenterTilTPS(new ArrayList<>(List.of(bestilling.getMiljoer().split(","))),
                                         leverteIdenter, bestilling.getGruppe(), progress);
@@ -97,14 +96,13 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                         .bestillingId(bestilling.getId())
                                         .ident("?")
                                         .feil("NA:" + errorStatusDecoder.decodeRuntimeException(e))
+                                        .master(TPSF)
                                         .build();
                             } finally {
                                 oppdaterProgress(bestilling, progress);
                             }
+                        });
 
-                            return null;
-                        })
-                        .collect(Collectors.toList());
                 oppdaterBestillingFerdig(bestilling);
             });
 

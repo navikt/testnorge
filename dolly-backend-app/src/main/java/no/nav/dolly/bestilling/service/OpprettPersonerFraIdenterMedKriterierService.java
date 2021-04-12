@@ -17,8 +17,8 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
-import no.nav.dolly.service.IdentService;
 import no.nav.dolly.service.DollyPersonCache;
+import no.nav.dolly.service.IdentService;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 
@@ -70,7 +69,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
             dollyForkJoinPool.submit(() -> {
                 tilgjengeligeIdenter.getStatuser().parallelStream()
                         .filter(ident -> !bestillingService.isStoppet(bestilling.getId()))
-                        .map(identStatus -> {
+                        .forEach(identStatus -> {
 
                             BestillingProgress progress = new BestillingProgress(bestilling.getId(), identStatus.getIdent(), Testident.Master.TPSF);
                             try {
@@ -97,9 +96,8 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                             } finally {
                                 oppdaterProgress(bestilling, progress);
                             }
-                            return null;
-                        })
-                        .collect(Collectors.toList());
+                        });
+
                 oppdaterBestillingFerdig(bestilling);
             });
         } else {

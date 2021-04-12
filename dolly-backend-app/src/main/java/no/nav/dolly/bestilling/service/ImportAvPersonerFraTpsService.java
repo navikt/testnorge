@@ -66,7 +66,7 @@ public class ImportAvPersonerFraTpsService extends DollyBestillingService {
             dollyForkJoinPool.submit(() -> {
                 asList(bestilling.getTpsImport().split(",")).parallelStream()
                         .filter(ident -> !bestilling.isStoppet())
-                        .map(ident -> {
+                        .forEach(ident -> {
                             BestillingProgress progress = new BestillingProgress(bestilling.getId(), ident, TPSF);
                             try {
                                 Person person = tpsfService.importerPersonFraTps(TpsfImportPersonRequest.builder()
@@ -89,8 +89,7 @@ public class ImportAvPersonerFraTpsService extends DollyBestillingService {
                             } finally {
                                 oppdaterProgress(bestilling, progress);
                             }
-                            return null;
-                        }).collect(toList());
+                        });
                 oppdaterBestillingFerdig(bestilling);
             });
 

@@ -69,7 +69,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
             dollyForkJoinPool.submit(() -> {
                 bestilling.getGruppe().getTestidenter().parallelStream()
                         .filter(testident -> !bestillingService.isStoppet(bestilling.getId()))
-                        .map(testident -> {
+                        .forEach(testident -> {
 
                             BestillingProgress progress = new BestillingProgress(bestilling.getId(), testident.getIdent(),
                                     testident.getMaster());
@@ -111,9 +111,8 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                             } finally {
                                 oppdaterProgress(bestilling, progress);
                             }
-                            return null;
-                        })
-                        .collect(toList());
+                        });
+
                 oppdaterBestillingFerdig(bestilling);
             });
         }

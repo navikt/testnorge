@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 
@@ -60,7 +59,7 @@ public class GjenopprettBestillingService extends DollyBestillingService {
             dollyForkJoinPool.submit(() -> {
                 bestillingProgressService.fetchBestillingProgressByBestillingId(bestilling.getOpprettetFraId()).parallelStream()
                         .filter(ident -> !bestillingService.isStoppet(bestilling.getId()))
-                        .map(gjenopprettFraProgress -> {
+                        .forEach(gjenopprettFraProgress -> {
 
                             BestillingProgress progress = new BestillingProgress(bestilling.getId(), gjenopprettFraProgress.getIdent(),
                                     gjenopprettFraProgress.getMaster());
@@ -84,9 +83,7 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                             } finally {
                                 oppdaterProgress(bestilling, progress);
                             }
-                            return null;
-                        })
-                        .collect(Collectors.toList());
+                        });
                 oppdaterBestillingFerdig(bestilling);
             });
         } else {

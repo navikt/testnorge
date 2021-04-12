@@ -27,7 +27,6 @@ import java.util.concurrent.ExecutorService;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.nonNull;
-import static java.util.stream.Collectors.toList;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
 
 @Service
@@ -67,7 +66,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
             dollyForkJoinPool.submit(() -> {
                 asList(bestilling.getPdlImport().split(",")).parallelStream()
                         .filter(ident -> !bestilling.isStoppet())
-                        .map(ident -> {
+                        .forEach(ident -> {
                             BestillingProgress progress = new BestillingProgress(bestilling.getId(), ident, PDL);
                             try {
 
@@ -86,8 +85,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                             } finally {
                                 oppdaterProgress(bestilling, progress);
                             }
-                            return null;
-                        }).collect(toList());
+                        });
                 oppdaterBestillingFerdig(bestilling);
             });
 
