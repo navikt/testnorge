@@ -51,7 +51,7 @@ export const gyldigNesteStatus = {
 }
 
 // Gyldige statuser før oppretting av ny partner
-export const gyldigSisteStatus = ['ENKE', 'SKIL', 'GJPA', 'SKPA']
+export const gyldigSisteStatus = ['ENKE', 'SKIL', 'GJPA', 'SKPA', 'SAMB']
 
 // Hjelpefunksjoner for uthenting
 const sisteSivilstandKode = sivilstander =>

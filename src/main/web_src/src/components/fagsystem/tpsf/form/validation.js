@@ -198,13 +198,16 @@ export const sivilstander = Yup.array().of(
 					}
 
 					// Selve testen
-					const dateValid = isAfter(new Date(dato), addDays(new Date(prevDato), 2))
+					const dateValidAfter = isAfter(new Date(dato), addDays(new Date(prevDato), 2))
+					const dateValidBeforeToday = isBefore(new Date(dato), Date.now())
 					return (
-						dateValid ||
+						(dateValidAfter && dateValidBeforeToday) ||
 						this.createError({
-							message: `Dato må være etter tidligere forhold (${Dataformatter.formatDate(
-								prevDato
-							)}) og det må minst være 2 dager i mellom`,
+							message: !dateValidAfter
+								? `Dato må være etter tidligere forhold (${Dataformatter.formatDate(
+										prevDato
+								  )}), og det må minst være 2 dager i mellom`
+								: 'Dato kan ikke være etter dagens dato',
 							path: path
 						})
 					)
