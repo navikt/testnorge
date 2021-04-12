@@ -74,12 +74,18 @@ export const SortKodeverkArray = data => {
 	}
 
 	if (data.name === 'Arbeidsforholdstyper') {
-		// Kodeverket for arbeidsforholdstyper har to verdier som AAREG per i dag ikke støtter
-		const arbeidsforhold = kodeverk.filter(
-			kode =>
-				kode.value !== 'frilanserOppdragstakerHonorarPersonerMm' &&
-				kode.value !== 'pensjonOgAndreTyperYtelserUtenAnsettelsesforhold'
-		)
+		// Kodeverket for arbeidsforholdstyper har en type som AAREG per i dag ikke støtter
+		const arbeidsforhold = kodeverk
+			.filter(kode => kode.value !== 'pensjonOgAndreTyperYtelserUtenAnsettelsesforhold')
+			.map(kode => {
+				if (kode.value === 'frilanserOppdragstakerHonorarPersonerMm') {
+					return {
+						...kode,
+						label: 'Frilansere/oppdragstakere, honorar, m.m.'
+					}
+				}
+				return kode
+			})
 		return arbeidsforhold
 	}
 
