@@ -36,7 +36,7 @@ public class OrganisasjonController {
         var organisasjoner = gruppe == null ? service.getOrganisasjoner() : service.getOrganisasjoner(gruppe);
         var list = organisasjoner
                 .stream()
-                .filter(value -> kanHaArbeidsforhold == null || value.kanHaArbidsforhold() == kanHaArbeidsforhold)
+                .filter(value -> kanHaArbeidsforhold == null || value.kanHaArbeidsforhold() == kanHaArbeidsforhold)
                 .map(Organisasjon::toDTO)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(list);

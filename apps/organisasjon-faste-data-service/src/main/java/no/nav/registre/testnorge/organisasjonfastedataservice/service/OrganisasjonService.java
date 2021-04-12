@@ -31,7 +31,7 @@ public class OrganisasjonService {
         log.info("Henter alle organisasjoner med gruppe {}...", gruppe);
         var list = repository.findAllByGruppe(gruppe);
         var organisasjoner = list.stream().map(Organisasjon::new).collect(Collectors.toList());
-        log.info("Fant {} organisajoner med gruppe {}.", organisasjoner.size(), gruppe);
+        log.info("Fant {} organisasjoner med gruppe {}.", organisasjoner.size(), gruppe);
         return organisasjoner;
     }
 
@@ -42,7 +42,7 @@ public class OrganisasjonService {
                 .stream(list.spliterator(), false)
                 .map(Organisasjon::new)
                 .collect(Collectors.toList());
-        log.info("Fant {} organisajoner.", organisasjoner.size());
+        log.info("Fant {} organisasjoner.", organisasjoner.size());
         return organisasjoner;
     }
 

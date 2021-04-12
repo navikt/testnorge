@@ -81,7 +81,7 @@ public class EregAdapter extends FasteDataAdapter {
             List<TagModel> tagModels = eregTagAdapter.findAllTagsBy(eregModel.getOrgnr());
             return new Ereg(eregModel, tagModels);
         }).collect(Collectors.toList());
-        log.info("Fant {} organisajoner.", liste.size());
+        log.info("Fant {} organisasjoner.", liste.size());
         return new EregListe(liste);
     }
 

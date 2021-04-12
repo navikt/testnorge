@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.organisasjonfastedataservice.consumer;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -18,6 +19,7 @@ import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v2.Opprettelse
 import no.nav.registre.testnorge.organisasjonfastedataservice.domain.Adresse;
 import no.nav.registre.testnorge.organisasjonfastedataservice.domain.Organisasjon;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class OrganisasjonMottakConsumer {
@@ -85,6 +87,12 @@ public class OrganisasjonMottakConsumer {
         if (adresse == null) {
             return null;
         }
+
+        if(adresse.getKommunenr() == null){
+            log.warn("Kommunenr kan ikke være null. Adresse blir satt til null.");
+            return null;
+        }
+
         return no.nav.registre.testnorge.libs.avro.organisasjon.v1.Adresse.newBuilder()
                 .setPostadresse1(adresse.getAdresselinje1())
                 .setPostadresse2(adresse.getAdresselinje2())

@@ -27,7 +27,7 @@ public class OrgTreeList {
 
         var sum = list.stream().map(OrgTree::size).reduce(0, Integer::sum);
         if (eregListe.size() != sum) {
-            log.error("Bare {}/{} organisasjoner er sattopp i organisasjon traer.", sum, eregListe.size());
+            log.error("Bare {}/{} organisasjoner er satt opp i organisasjon traer.", sum, eregListe.size());
             log.error("Organisasjonene finnes ikke i organisasjon treet {}.", String.join(",", notInTree(eregListe)));
         }
     }

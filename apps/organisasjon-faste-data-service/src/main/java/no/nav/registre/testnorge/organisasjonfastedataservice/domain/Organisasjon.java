@@ -67,10 +67,9 @@ public class Organisasjon {
     }
 
     @JsonIgnore
-    public boolean kanHaArbidsforhold() {
+    public boolean kanHaArbeidsforhold() {
         return enhetstype.equals("BEDR") || enhetstype.equals("AAFY");
     }
-
 
     @JsonIgnore
     public List<Organisasjon> getUnderenheter() {
