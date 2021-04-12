@@ -236,7 +236,6 @@ public class IdenterUtils {
             List<Arbeidsoeker> arbeidsoekere
     ) {
         if (arbeidsoekere.isEmpty()) {
-            log.info("Fant ingen eksisterende identer.");
             return new ArrayList<>();
         }
 
