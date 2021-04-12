@@ -28,17 +28,26 @@ public class OrganisasjonService {
     }
 
     public List<Organisasjon> getOrganisasjoner(Gruppe gruppe) {
+        log.info("Henter alle organisasjoner med gruppe {}...", gruppe);
         var list = repository.findAllByGruppe(gruppe);
-        return list.stream().map(Organisasjon::new).collect(Collectors.toList());
+        var organisasjoner = list.stream().map(Organisasjon::new).collect(Collectors.toList());
+        log.info("Fant {} organisajoner med gruppe {}.", organisasjoner.size(), gruppe);
+        return organisasjoner;
     }
 
     public List<Organisasjon> getOrganisasjoner() {
+        log.info("Henter alle organisasjoner...");
         var list = repository.findAll();
-        return StreamSupport.stream(list.spliterator(), false).map(Organisasjon::new).collect(Collectors.toList());
+        var organisasjoner = StreamSupport
+                .stream(list.spliterator(), false)
+                .map(Organisasjon::new)
+                .collect(Collectors.toList());
+        log.info("Fant {} organisajoner.", organisasjoner.size());
+        return organisasjoner;
     }
 
-
     public Optional<Organisasjon> getOrganisasjon(String orgnummer) {
+        log.info("Henter organisasjon med orgnummer {}...", orgnummer);
         var model = repository.findById(orgnummer);
         if (model.isEmpty()) {
             log.warn("Fant ikke organisasjon {}.", orgnummer);
