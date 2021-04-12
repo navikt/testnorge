@@ -25,6 +25,9 @@ spec:
     - team: dolly
       application: organisasjon-forvalter
       access: write
+    - team: dolly
+      application: testnav-organisasjon-faste-data-service
+      access: write
 ---
 apiVersion: kafka.nais.io/v1
 kind: Topic
@@ -51,4 +54,7 @@ spec:
       access: write
     - team: dolly
       application: organisasjon-forvalter
+      access: write
+    - team: dolly
+      application: testnav-organisasjon-faste-data-service
       access: write

@@ -22,11 +22,15 @@ public class OrgTree {
         );
     }
 
-    public boolean contains(Ereg ereg){
+    public int size() {
+        return underorganisasjon.stream().map(OrgTree::size).reduce(1, Integer::sum);
+    }
+
+    public boolean contains(Ereg ereg) {
         return organisasjon.getOrgnr().equals(ereg.getOrgnr()) || underorganisasjon.stream().anyMatch(value -> value.contains(ereg));
     }
 
-    private static List<OrgTree> findAllWithJuridiskenhet(Ereg juridsikenhet, List<Ereg> liste){
+    private static List<OrgTree> findAllWithJuridiskenhet(Ereg juridsikenhet, List<Ereg> liste) {
         return liste
                 .stream()
                 .filter(ereg -> ereg.getJuridiskEnhet() != null && ereg.getJuridiskEnhet().equals(juridsikenhet.getOrgnr()))
