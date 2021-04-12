@@ -37,7 +37,8 @@ public class AaregRestConsumer {
     public ResponseEntity<List<Arbeidsforhold>> hentArbeidsforhold(String ident, String miljoe) {
 
         log.info("Henter arbeidsforhold for ident {} i miljø {}...", ident, miljoe);
-        var url = URI.create(aaregArbeidsforholdFasitConsumer.getUrlForEnv(miljoe) + "?arbeidsforholdtype=ordinaertArbeidsforhold,maritimtArbeidsforhold,forenkletOppgjoersordning,frilanserOppdragstakerHonorarPersonerMm");
+        var url = URI.create(aaregArbeidsforholdFasitConsumer.getUrlForEnv(miljoe) +
+                "?arbeidsforholdtype=ordinaertArbeidsforhold,maritimtArbeidsforhold,forenkletOppgjoersordning,frilanserOppdragstakerHonorarPersonerMm");
         var getRequest = RequestEntity
                 .get(url)
                 .header(ACCEPT, APPLICATION_JSON_VALUE)
