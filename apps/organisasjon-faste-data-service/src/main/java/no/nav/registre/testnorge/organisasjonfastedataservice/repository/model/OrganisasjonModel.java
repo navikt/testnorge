@@ -15,6 +15,7 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 
 import javax.persistence.OneToMany;
@@ -52,7 +53,7 @@ public class OrganisasjonModel {
     @Column(name = "GRUPPE", nullable = false)
     private Gruppe gruppe;
 
-    @OneToMany(mappedBy = "overenhet", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "overenhet", fetch = FetchType.LAZY)
     private List<OrganisasjonModel> underenheter;
 
     @Temporal(TemporalType.TIMESTAMP)
