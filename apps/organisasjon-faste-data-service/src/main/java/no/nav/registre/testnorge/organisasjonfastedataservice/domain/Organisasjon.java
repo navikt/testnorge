@@ -22,18 +22,18 @@ import no.nav.registre.testnorge.organisasjonfastedataservice.repository.model.O
 public class Organisasjon {
 
     public Organisasjon(OrganisasjonDTO dto) {
-        this.orgnummer = dto.getOrgnummer();
-        this.enhetstype = dto.getEnhetstype();
-        this.navn = dto.getNavn();
-        this.redigertNavn = dto.getRedigertNavn();
-        this.epost = dto.getEpost();
-        this.internetAdresse = dto.getInternetAdresse();
-        this.overenhet = dto.getOverenhet();
-        this.forretningsAdresse = dto.getForretningsAdresse() != null ? new Adresse(dto.getForretningsAdresse()) : null;
-        this.postadresse = dto.getPostadresse() != null ? new Adresse(dto.getPostadresse()) : null;
-        this.opprinnelse = dto.getOpprinnelse();
-        this.tags = dto.getTags();
-        this.underenheter = new ArrayList<>();
+        orgnummer = dto.getOrgnummer();
+        enhetstype = dto.getEnhetstype();
+        navn = dto.getNavn();
+        redigertNavn = dto.getRedigertNavn();
+        epost = dto.getEpost();
+        internetAdresse = dto.getInternetAdresse();
+        overenhet = dto.getOverenhet();
+        forretningsAdresse = dto.getForretningsAdresse() != null ? new Adresse(dto.getForretningsAdresse()) : null;
+        postadresse = dto.getPostadresse() != null ? new Adresse(dto.getPostadresse()) : null;
+        opprinnelse = dto.getOpprinnelse();
+        tags = dto.getTags();
+        model = null;
     }
 
     String orgnummer;
@@ -47,7 +47,8 @@ public class Organisasjon {
     Adresse postadresse;
     String opprinnelse;
     Set<String> tags;
-    List<Organisasjon> underenheter;
+    @JsonIgnore
+    OrganisasjonModel model;
 
     public Organisasjon(OrganisasjonModel model) {
         var organisasjon = model.getOrganisasjon();
@@ -62,10 +63,7 @@ public class Organisasjon {
         postadresse = organisasjon.getPostadresse();
         opprinnelse = organisasjon.getOpprinnelse();
         tags = organisasjon.getTags();
-        underenheter = Optional
-                .ofNullable(model.getUnderenheter())
-                .map(value -> value.stream().map(Organisasjon::new).collect(Collectors.toList()))
-                .orElse(Collections.emptyList());
+        this.model = model;
     }
 
     @JsonIgnore
@@ -76,7 +74,10 @@ public class Organisasjon {
 
     @JsonIgnore
     public List<Organisasjon> getUnderenheter() {
-        return underenheter;
+        return Optional
+                .ofNullable(model.getUnderenheter())
+                .map(value -> value.stream().map(Organisasjon::new).collect(Collectors.toList()))
+                .orElse(Collections.emptyList());
     }
 
     public OrganisasjonDTO toDTO() {
@@ -105,5 +106,4 @@ public class Organisasjon {
                 .overenhet(overenhet)
                 .build();
     }
-
 }
