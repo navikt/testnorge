@@ -12,6 +12,8 @@ public interface TestgruppeRepository extends PagingAndSortingRepository<Testgru
 
     Optional<Testgruppe> findById(Long id);
 
+    List<Testgruppe> findAllByOrderById();
+
     List<Testgruppe> findAllById(Iterable<Long> ids);
 
     Testgruppe save(Testgruppe testgruppe);
