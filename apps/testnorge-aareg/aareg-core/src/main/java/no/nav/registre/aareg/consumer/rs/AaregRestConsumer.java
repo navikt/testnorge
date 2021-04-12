@@ -40,8 +40,10 @@ public class AaregRestConsumer {
     ) {
 
         log.info("Henter arbeidsforhold for ident {} i miljø {}.", ident, miljoe);
+        var url = URI.create(aaregArbeidsforholdFasitConsumer.getUrlForEnv(miljoe));
+        log.info("Url={}", url);
         var getRequest = RequestEntity
-                .get(URI.create(aaregArbeidsforholdFasitConsumer.getUrlForEnv(miljoe)))
+                .get(url)
                 .header(ACCEPT, APPLICATION_JSON_VALUE)
                 .header(AUTHORIZATION, stsOidcService.getIdToken(miljoe))
                 .header(HEADER_NAV_CONSUMER_TOKEN, stsOidcService.getIdToken(miljoe))
