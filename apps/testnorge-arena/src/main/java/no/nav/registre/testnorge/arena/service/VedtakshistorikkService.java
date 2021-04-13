@@ -122,7 +122,10 @@ public class VedtakshistorikkService {
             if (minimumAlder > maksimumAlder) {
                 log.error("Kunne ikke opprette vedtakshistorikk på ident med minimum alder {}.", minimumAlder);
             } else {
-                opprettVedtaksHistorikkResponse(avspillergruppeId, miljoe, responses, vedtakshistorikken, tidligsteDatoBarnetillegg, minimumAlder, maksimumAlder);
+                var identerIAldersgruppe = getOensketIdentIAldersgruppe(avspillergruppeId, miljoe, vedtakshistorikken, tidligsteDatoBarnetillegg, minimumAlder, maksimumAlder);
+                if (!identerIAldersgruppe.isEmpty()) {
+                    responses.putAll(opprettHistorikkOgSendTilArena(avspillergruppeId, identerIAldersgruppe.get(0), miljoe, vedtakshistorikken));
+                }
             }
         }
     }
@@ -143,25 +146,30 @@ public class VedtakshistorikkService {
         return maksimumAlder;
     }
 
-    private void opprettVedtaksHistorikkResponse(Long avspillergruppeId, String miljoe, Map<String, List<NyttVedtakResponse>> responses, Vedtakshistorikk vedtakshistorikk, LocalDate tidligsteDatoBarnetillegg,
-                                                 int minimumAlder, int maksimumAlder) {
-        List<String> identerIAldersgruppe = Collections.emptyList();
+
+    private List<String> getOensketIdentIAldersgruppe(
+            Long avspillergruppeId,
+            String miljoe,
+            Vedtakshistorikk vedtakshistorikk,
+            LocalDate tidligsteDatoBarnetillegg,
+            int minimumAlder,
+            int maksimumAlder
+    ) {
         try {
             var maaVaereBosatt = vedtakshistorikk.getAap() != null && !vedtakshistorikk.getAap().isEmpty();
+            LocalDate tidligsteDatoBosatt = maaVaereBosatt ? datoUtils.finnTidligsteDatoAap(vedtakshistorikk.getAap()) : null;
 
             if (tidligsteDatoBarnetillegg != null) {
-                identerIAldersgruppe = identerUtils.getUtvalgteIdenterIAldersgruppeMedBarnUnder18(avspillergruppeId, 1, minimumAlder, maksimumAlder, miljoe, tidligsteDatoBarnetillegg, maaVaereBosatt);
+                return identerUtils.getUtvalgteIdenterIAldersgruppeMedBarnUnder18(avspillergruppeId, 1, minimumAlder, maksimumAlder, miljoe, tidligsteDatoBosatt, tidligsteDatoBarnetillegg);
             } else {
-                identerIAldersgruppe = identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, 1, minimumAlder, maksimumAlder, miljoe, maaVaereBosatt);
+                return identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, 1, minimumAlder, maksimumAlder, miljoe, tidligsteDatoBosatt);
             }
         } catch (RuntimeException e) {
             log.error("Kunne ikke hente utvalgte identer.", e);
-        }
-
-        if (!identerIAldersgruppe.isEmpty()) {
-            responses.putAll(opprettHistorikkOgSendTilArena(avspillergruppeId, identerIAldersgruppe.get(0), miljoe, vedtakshistorikk));
+            return Collections.emptyList();
         }
     }
+
 
     private Map<String, List<NyttVedtakResponse>> opprettHistorikkOgSendTilArena(
             Long avspillergruppeId,

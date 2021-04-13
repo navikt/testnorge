@@ -147,7 +147,8 @@ public class BrukereService {
             Long avspillergruppeId,
             String miljoe
     ) {
-        var identer = identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallIdenter, MINIMUM_ALDER, MAKSIMUM_ALDER, miljoe, false);
+        var identer = identerUtils
+                .getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallIdenter, MINIMUM_ALDER, MAKSIMUM_ALDER, miljoe, null);
 
         Map<String, NyeBrukereResponse> responses = new HashMap<>();
         for (var ident : identer) {

@@ -65,9 +65,10 @@ public class RettighetAapService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        var utvalgteIdenter = identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter, MIN_ALDER_AAP, MAX_ALDER_AAP - 1, miljoe, true);
-        var syntRequest = consumerUtils.createSyntRequest(utvalgteIdenter.size());
+        var syntRequest = consumerUtils.createSyntRequest(antallNyeIdenter);
         var syntetiserteRettigheter = aapSyntConsumer.syntetiserRettighetAap(syntRequest);
+
+        var utvalgteIdenter = identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter, MIN_ALDER_AAP, MAX_ALDER_AAP - 1, miljoe, datoUtils.finnTidligsteDatoAap(syntetiserteRettigheter));
 
         List<RettighetRequest> aap115Rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
         List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
@@ -152,7 +153,7 @@ public class RettighetAapService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        var utvalgteIdenter = identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter, MIN_ALDER_AAP, MAX_ALDER_AAP - 1, miljoe, false);
+        var utvalgteIdenter = identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter, MIN_ALDER_AAP, MAX_ALDER_AAP - 1, miljoe, null);
         var syntRequest = consumerUtils.createSyntRequest(utvalgteIdenter.size());
         var syntetiserteRettigheter = aapSyntConsumer.syntetiserRettighetAap115(syntRequest);
 
@@ -187,7 +188,7 @@ public class RettighetAapService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        var utvalgteIdenter = identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter, MIN_ALDER_UNG_UFOER, MAX_ALDER_UNG_UFOER - 1, miljoe, false);
+        var utvalgteIdenter = identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter, MIN_ALDER_UNG_UFOER, MAX_ALDER_UNG_UFOER - 1, miljoe, null);
         var syntRequest = consumerUtils.createSyntRequest(utvalgteIdenter.size(), ARENA_AAP_UNG_UFOER_DATE_LIMIT);
         var syntetiserteRettigheter = aapSyntConsumer.syntetiserRettighetUngUfoer(syntRequest);
 
@@ -218,7 +219,7 @@ public class RettighetAapService {
             int antallNyeIdenter
     ) {
         var identerMedKontonummer = identerUtils.getIdenterMedKontoinformasjon(avspillergruppeId, miljoe, antallNyeIdenter);
-        var utvalgteIdenter = identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter, MIN_ALDER_AAP, MAX_ALDER_AAP - 1, miljoe, false);
+        var utvalgteIdenter = identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter, MIN_ALDER_AAP, MAX_ALDER_AAP - 1, miljoe, null);
         var syntRequest = consumerUtils.createSyntRequest(utvalgteIdenter.size());
         var syntetiserteRettigheter = aapSyntConsumer.syntetiserRettighetTvungenForvaltning(syntRequest);
 
