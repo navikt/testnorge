@@ -213,14 +213,17 @@ public class VedtakshistorikkService {
         opprettAvsluttendeVedtakEndreDeltakerstatus(vedtakshistorikk, personident, miljoe, rettigheter, tiltak);
         opprettVedtakTillegg(vedtakshistorikk, personident, miljoe, rettigheter);
 
-        try {
-            arbeidsoekerUtils.opprettArbeidssoekerVedtakshistorikk(personident, miljoe, senesteVedtak);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            rettigheter = Collections.emptyList();
+        if (!rettigheter.isEmpty()){
+            try {
+                arbeidsoekerUtils.opprettArbeidssoekerVedtakshistorikk(personident, miljoe, senesteVedtak);
+            } catch (Exception e) {
+                log.error(e.getMessage());
+                return Collections.emptyMap();
+            }
+            return rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
+        } else {
+            return Collections.emptyMap();
         }
-
-        return rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
     }
 
     private void oppdaterAapSykepengeerstatningDatoer(List<NyttVedtakAap> aapVedtak) {
