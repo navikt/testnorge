@@ -25,11 +25,11 @@ export type Adresse = {
   poststed?: string;
 };
 
-const fetchOrganisasjoner = (gruppe: string, tag: string) =>
+const fetchOrganisasjoner = (gruppe: string, tag?: string, opprinnelse?: string) =>
   Api.fetchJson<Organisasjon[]>(
     `/testnav-organisasjon-faste-data-service/api/v1/organisasjoner?gruppe=${gruppe}${
-      !tag ? 'tag=' + tag : ''
-    }`,
+      tag ? '&tag=' + tag : ''
+    }${opprinnelse ? '&opprinnelse=' + opprinnelse : ''}`,
     {
       method: 'GET',
     }

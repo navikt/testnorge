@@ -10,6 +10,7 @@ import { CompareTable } from '@/components/compare-table';
 import { Adresse, Organisasjon } from '@/service/OrganisasjonService';
 import { OrganisasjonComperator } from '@/comperator';
 import { Pageable } from '@/components/pagable';
+import { Input } from 'nav-frontend-skjema';
 
 type Gruppe =
   | 'DOLLY'
@@ -62,10 +63,16 @@ export default () => {
   const [gruppe, setGruppe] = useState<Gruppe>('DOLLY');
   const [miljo, setMiljo] = useState<string>('q1');
   const [loading, setLoading] = useState<boolean>(false);
+  const [tag, setTag] = useState<string>('');
+  const [opprinelse, setOpprinelse] = useState<string>('');
 
   const onSearch = (gruppe: Gruppe) => {
     setLoading(true);
-    OrganisasjonFasteDataService.fetchOrganisasjoner(gruppe)
+    OrganisasjonFasteDataService.fetchOrganisasjoner(
+      gruppe,
+      !tag ? null : tag,
+      !opprinelse ? null : opprinelse
+    )
       .then((response) => {
         setOrganisasjoner(response);
         setLoading(false);
@@ -75,7 +82,7 @@ export default () => {
 
   useEffect(() => {
     setOrganisasjoner(null);
-  }, [gruppe, miljo]);
+  }, [gruppe, miljo, tag, opprinelse]);
 
   return (
     <Form>
@@ -91,6 +98,22 @@ export default () => {
           htmlId="miljo-select"
           onChange={(value: string) => setMiljo(value)}
           options={toOptions(miljoer)}
+        />
+        <Input
+          label="Tag"
+          value={tag}
+          onChange={(e) => {
+            setTag(e.target.value);
+          }}
+        />
+      </Line>
+      <Line>
+        <Input
+          label="Opprinelse"
+          value={opprinelse}
+          onChange={(e) => {
+            setOpprinelse(e.target.value);
+          }}
         />
         <Knapp
           disabled={loading}

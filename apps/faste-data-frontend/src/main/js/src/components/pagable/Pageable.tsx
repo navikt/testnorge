@@ -11,12 +11,6 @@ const ITEMS_PER_PAGE = 10;
 
 function Pageable<T>({ items, render }: Props<T>) {
   const [position, setPosition] = useState<number>(0);
-
-  console.log(
-    position * ITEMS_PER_PAGE + ITEMS_PER_PAGE,
-    items.length,
-    Math.min(position * ITEMS_PER_PAGE + ITEMS_PER_PAGE, items.length)
-  );
   return (
     <>
       {render(

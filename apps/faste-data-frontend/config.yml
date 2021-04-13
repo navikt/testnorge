@@ -12,11 +12,17 @@ spec:
       enabled: true
       tenant: nav.no
       replyURLs:
-        - "https://testnav-faste-data-frontend.dev.intern.nav.no/login/oauth2/code/aad"
+        - "https://testnav-faste-data.dev.intern.nav.no/login/oauth2/code/aad"
         - "http://localhost:8080/login/oauth2/code/aad"
       claims:
         groups:
           - id: 9c7efec1-1599-4216-a67e-6fd53a6a951c
+  accessPolicy:
+    outbound:
+      rules:
+        - application: testnorge-profil-api
+        - application: testnav-organisasjon-faste-data-service
+        - application: testnav-organisasjon-service
   liveness:
     path: /internal/isAlive
     periodSeconds: 30
@@ -38,4 +44,4 @@ spec:
       memory: 1024Mi
   image: {{ image }}
   ingresses:
-    - "https://testnav-faste-data-frontend.dev.intern.nav.no"
+    - "https://testnav-faste-data.dev.intern.nav.no"

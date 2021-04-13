@@ -36,13 +36,15 @@ public class OrganisasjonController {
     public ResponseEntity<List<OrganisasjonDTO>> getOrganisasjoner(
             @RequestParam(required = false) Gruppe gruppe,
             @RequestParam(required = false) Boolean kanHaArbeidsforhold,
+            @RequestParam(required = false) String opprinnelse,
             @RequestParam(required = false) String tag
     ) {
         var organisasjoner = gruppe == null ? service.getOrganisasjoner() : service.getOrganisasjoner(gruppe);
         var list = organisasjoner
                 .stream()
                 .filter(value -> kanHaArbeidsforhold == null || value.kanHaArbeidsforhold() == kanHaArbeidsforhold)
-                .filter(value -> tag == null || value.getTags().contains(tag))
+                .filter(value -> tag == null || value.getTags().stream().map(String::toUpperCase).collect(Collectors.toSet()).contains(tag.toUpperCase()))
+                .filter(value -> opprinnelse == null || value.getOpprinnelse() != null && value.getOpprinnelse().equals(opprinnelse))
                 .map(Organisasjon::toDTO)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(list);
