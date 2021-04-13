@@ -2,21 +2,16 @@ package no.nav.registre.syntrest.consumer;
 
 import io.kubernetes.client.ApiException;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
+
+import no.nav.registre.syntrest.kubernetes.ApplicationManager;
+
 
 @Slf4j
 public abstract class SyntConsumer {

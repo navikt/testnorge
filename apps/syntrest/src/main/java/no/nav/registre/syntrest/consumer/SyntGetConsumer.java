@@ -2,7 +2,6 @@ package no.nav.registre.syntrest.consumer;
 
 import io.kubernetes.client.ApiException;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -10,6 +9,8 @@ import org.springframework.web.util.UriBuilderFactory;
 
 import java.net.MalformedURLException;
 import java.net.URI;
+
+import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 
 
 @Slf4j
