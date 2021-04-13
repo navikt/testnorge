@@ -1,7 +1,6 @@
 package no.nav.registre.testnorge.arena.service;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -111,7 +110,7 @@ public class VedtakshistorikkServiceTest {
 
         vedtakshistorikkListe = new ArrayList<>((Collections.singletonList(vedtakshistorikk)));
 
-        when(identerUtils.getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt(), eq(miljoe), anyBoolean())).thenReturn(identer);
+        when(identerUtils.getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt(), eq(miljoe), eq(null))).thenReturn(identer);
     }
 
     @Test
@@ -156,7 +155,7 @@ public class VedtakshistorikkServiceTest {
 
         var response = vedtakshistorikkService.genererVedtakshistorikk(avspillergruppeId, miljoe, antallIdenter);
 
-        verify(identerUtils).getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt(), eq(miljoe), anyBoolean());
+        verify(identerUtils).getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt(), eq(miljoe), eq(null));
         verify(vedtakshistorikkSyntConsumer).syntetiserVedtakshistorikk(antallIdenter);
         verify(rettighetAapService).opprettetPersonOgInntektIPopp(anyString(), anyString(), any(NyttVedtakAap.class));
         verify(rettighetArenaForvalterConsumer).opprettRettighet(anyList());

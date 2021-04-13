@@ -1,8 +1,7 @@
 package no.nav.registre.testnorge.arena.consumer.rs;
 
 import static no.nav.registre.testnorge.arena.testutils.ResourceUtils.getResourceFileContent;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetRequest;
 import okhttp3.mockwebserver.Dispatcher;
@@ -70,11 +69,11 @@ public class RettighetAapBrukereArenaForvalterConsumerTest {
 
         var response = consumer.opprettRettighet(rettigheter);
 
-        assertThat(response.get(fnr).get(0).getNyeRettigheterAap().size(), equalTo(1));
-        assertThat(response.get(fnr).get(1).getNyeRettigheterAap().size(), equalTo(1));
-        assertThat(response.get(fnr).get(2).getNyeRettigheterAap().size(), equalTo(1));
-        assertThat(response.get(fnr).get(3).getNyeRettigheterAap().size(), equalTo(1));
-        assertThat(response.get(fnr).get(4).getFeiledeRettigheter().size(), equalTo(1));
+        assertThat(response.get(fnr).get(0).getNyeRettigheterAap()).hasSize(1);
+        assertThat(response.get(fnr).get(1).getNyeRettigheterAap()).hasSize(1);
+        assertThat(response.get(fnr).get(2).getNyeRettigheterAap()).hasSize(1);
+        assertThat(response.get(fnr).get(3).getNyeRettigheterAap()).hasSize(1);
+        assertThat(response.get(fnr).get(4).getFeiledeRettigheter()).hasSize(1);
     }
 
     private void stubArenaForvalterOpprettRettighet() {

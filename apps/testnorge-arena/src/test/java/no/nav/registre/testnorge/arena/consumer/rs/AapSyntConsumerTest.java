@@ -1,8 +1,6 @@
 package no.nav.registre.testnorge.arena.consumer.rs;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import no.nav.registre.testnorge.arena.consumer.rs.request.synt.SyntRequest;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.GensakKoder;
@@ -97,10 +95,10 @@ public class AapSyntConsumerTest {
         var response = syntConsumer.syntetiserRettighetAap(syntRequest);
 
         NyttVedtakAap rettighet = response.get(0);
-        assertThat(rettighet.getAktivitetsfase(), equalTo("UA"));
-        assertThat(genSaksopplysningKoderMatches(rettighet, expectedGensakKoder), is(true));
-        assertThat(rettighet.getGenSaksopplysninger().get(8).getOverordnet(), is(GensakOvKoder.OOPPL));
-        assertThat(rettighet.getGenSaksopplysninger().get(20).getOverordnet(), is(GensakOvKoder.TLONN));
+        assertThat(rettighet.getAktivitetsfase()).isEqualTo("UA");
+        assertThat(genSaksopplysningKoderMatches(rettighet, expectedGensakKoder)).isTrue();
+        assertThat(rettighet.getGenSaksopplysninger().get(8).getOverordnet()).isEqualTo(GensakOvKoder.OOPPL);
+        assertThat(rettighet.getGenSaksopplysninger().get(20).getOverordnet()).isEqualTo(GensakOvKoder.TLONN);
     }
 
     public boolean genSaksopplysningKoderMatches(NyttVedtakAap rettighet, List<GensakKoder> koder){
@@ -122,20 +120,20 @@ public class AapSyntConsumerTest {
         var rettighet = response.get(0);
         var vilkaar = rettighet.getVilkaar();
 
-        assertThat(rettighet.getUtfall(), equalTo("JA"));
-        assertThat(rettighet.getVedtaktype(), equalTo("O"));
+        assertThat(rettighet.getUtfall()).isEqualTo("JA");
+        assertThat(rettighet.getVedtaktype()).isEqualTo("O");
 
-        assertThat(vilkaar.get(0).getKode(), equalTo("AAUNGNEDS"));
-        assertThat(vilkaar.get(0).getStatus(), equalTo("V"));
+        assertThat(vilkaar.get(0).getKode()).isEqualTo("AAUNGNEDS");
+        assertThat(vilkaar.get(0).getStatus()).isEqualTo("V");
 
-        assertThat(vilkaar.get(1).getKode(), equalTo("AANEDSSL"));
-        assertThat(vilkaar.get(1).getStatus(), equalTo("V"));
+        assertThat(vilkaar.get(1).getKode()).isEqualTo("AANEDSSL");
+        assertThat(vilkaar.get(1).getStatus()).isEqualTo("V");
 
-        assertThat(vilkaar.get(2).getKode(), equalTo("AASSLDOK"));
-        assertThat(vilkaar.get(2).getStatus(), equalTo("V"));
+        assertThat(vilkaar.get(2).getKode()).isEqualTo("AASSLDOK");
+        assertThat(vilkaar.get(2).getStatus()).isEqualTo("V");
 
-        assertThat(vilkaar.get(3).getKode(), equalTo("AAFOR36"));
-        assertThat(vilkaar.get(3).getStatus(), equalTo("V"));
+        assertThat(vilkaar.get(3).getKode()).isEqualTo("AAFOR36");
+        assertThat(vilkaar.get(3).getStatus()).isEqualTo("V");
     }
 
     @Test
@@ -148,17 +146,17 @@ public class AapSyntConsumerTest {
         var rettighet = response.get(0);
         var vilkaar = rettighet.getVilkaar();
 
-        assertThat(rettighet.getUtfall(), equalTo("JA"));
-        assertThat(rettighet.getVedtaktype(), equalTo("O"));
+        assertThat(rettighet.getUtfall()).isEqualTo("JA");
+        assertThat(rettighet.getVedtaktype()).isEqualTo("O");
 
-        assertThat(vilkaar.get(0).getKode(), equalTo("MISBRUK"));
-        assertThat(vilkaar.get(0).getStatus(), equalTo("J"));
+        assertThat(vilkaar.get(0).getKode()).isEqualTo("MISBRUK");
+        assertThat(vilkaar.get(0).getStatus()).isEqualTo("J");
 
-        assertThat(vilkaar.get(1).getKode(), equalTo("PSYK"));
-        assertThat(vilkaar.get(1).getStatus(), equalTo("V"));
+        assertThat(vilkaar.get(1).getKode()).isEqualTo("PSYK");
+        assertThat(vilkaar.get(1).getStatus()).isEqualTo("V");
 
-        assertThat(vilkaar.get(2).getKode(), equalTo("SKADE"));
-        assertThat(vilkaar.get(2).getStatus(), equalTo("J"));
+        assertThat(vilkaar.get(2).getKode()).isEqualTo("SKADE");
+        assertThat(vilkaar.get(2).getStatus()).isEqualTo("J");
     }
 
     @Test
@@ -170,29 +168,29 @@ public class AapSyntConsumerTest {
 
         var rettighet = response.get(0);
         var vilkaar = rettighet.getVilkaar();
-        assertThat(rettighet.getUtfall(), equalTo("JA"));
-        assertThat(rettighet.getVedtaktype(), equalTo("O"));
+        assertThat(rettighet.getUtfall()).isEqualTo("JA");
+        assertThat(rettighet.getVedtaktype()).isEqualTo("O");
 
-        assertThat(vilkaar.get(0).getKode(), equalTo("FRI_MAAI"));
-        assertThat(vilkaar.get(0).getStatus(), equalTo("J"));
+        assertThat(vilkaar.get(0).getKode()).isEqualTo("FRI_MAAI");
+        assertThat(vilkaar.get(0).getStatus()).isEqualTo("J");
 
-        assertThat(vilkaar.get(1).getKode(), equalTo("FRI_MABH"));
-        assertThat(vilkaar.get(1).getStatus(), equalTo("J"));
+        assertThat(vilkaar.get(1).getKode()).isEqualTo("FRI_MABH");
+        assertThat(vilkaar.get(1).getStatus()).isEqualTo("J");
 
-        assertThat(vilkaar.get(2).getKode(), equalTo("FRI_MAPL"));
-        assertThat(vilkaar.get(2).getStatus(), equalTo("J"));
+        assertThat(vilkaar.get(2).getKode()).isEqualTo("FRI_MAPL");
+        assertThat(vilkaar.get(2).getStatus()).isEqualTo("J");
 
-        assertThat(vilkaar.get(3).getKode(), equalTo("FRI_MARY"));
-        assertThat(vilkaar.get(3).getStatus(), equalTo("J"));
+        assertThat(vilkaar.get(3).getKode()).isEqualTo("FRI_MARY");
+        assertThat(vilkaar.get(3).getStatus()).isEqualTo("J");
 
-        assertThat(vilkaar.get(4).getKode(), equalTo("FRI_MATI"));
-        assertThat(vilkaar.get(4).getStatus(), equalTo("J"));
+        assertThat(vilkaar.get(4).getKode()).isEqualTo("FRI_MATI");
+        assertThat(vilkaar.get(4).getStatus()).isEqualTo("J");
 
-        assertThat(vilkaar.get(5).getKode(), equalTo("FRI_MAVI"));
-        assertThat(vilkaar.get(5).getStatus(), equalTo("V"));
+        assertThat(vilkaar.get(5).getKode()).isEqualTo("FRI_MAVI");
+        assertThat(vilkaar.get(5).getStatus()).isEqualTo("V");
 
-        assertThat(vilkaar.get(6).getKode(), equalTo("FRI_MAVU"));
-        assertThat(vilkaar.get(6).getStatus(), equalTo("J"));
+        assertThat(vilkaar.get(6).getKode()).isEqualTo("FRI_MAVU");
+        assertThat(vilkaar.get(6).getStatus()).isEqualTo("J");
     }
 
     private void stubSyntetiserAapRettighet() {
