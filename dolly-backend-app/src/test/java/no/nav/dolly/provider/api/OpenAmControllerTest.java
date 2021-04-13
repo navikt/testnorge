@@ -1,5 +1,24 @@
 package no.nav.dolly.provider.api;
 
+import no.nav.dolly.domain.jpa.Bestilling;
+import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.resultset.RsOpenAmResponse;
+import no.nav.dolly.repository.BestillingRepository;
+import no.nav.dolly.service.OpenAmService;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -11,25 +30,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
-import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.resultset.RsOpenAmResponse;
-import no.nav.dolly.repository.BestillingRepository;
-import no.nav.dolly.service.OpenAmService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class OpenAmControllerTest {
@@ -66,10 +66,14 @@ public class OpenAmControllerTest {
                         .miljoer(format("%s,%s", MILJOE1, MILJOE2))
                         .gruppe(Testgruppe.builder()
                                 .testidenter(new HashSet<>(asList(Testident.builder().ident(IDENT1)
-                                                .bestillingProgress(singletonList(BestillingProgress.builder().bestillingId(BESTILLING_ID).build()))
+                                                .bestillingProgress(singletonList(BestillingProgress.builder()
+                                                        .bestilling(Bestilling.builder().id(BESTILLING_ID).build())
+                                                        .build()))
                                                 .build(),
                                         Testident.builder().ident(IDENT2)
-                                                .bestillingProgress(singletonList(BestillingProgress.builder().bestillingId(BESTILLING_ID).build()))
+                                                .bestillingProgress(singletonList(BestillingProgress.builder()
+                                                        .bestilling(Bestilling.builder().id(BESTILLING_ID).build())
+                                                        .build()))
                                                 .build())))
                                 .build())
                         .build()));

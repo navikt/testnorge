@@ -186,19 +186,6 @@ public class OrganisasjonBestillingService {
     }
 
     @Transactional
-    @CacheEvict(value = CACHE_ORG_BESTILLING, allEntries = true)
-    public void slettBestillingByBestillingId(Long bestillingId) {
-
-        bestillingRepository.findById(bestillingId).orElseThrow(() ->
-                new HttpClientErrorException(HttpStatus.NOT_FOUND, "Fant ikke noen bestilling med id: " + bestillingId));
-
-        organisasjonNummerService.deleteByBestillingId(bestillingId);
-        progressService.deleteByBestillingId(bestillingId);
-        bestillingRepository.deleteBestillingWithNoChildren(bestillingId);
-    }
-
-    @Transactional
-    @CacheEvict(value = CACHE_ORG_BESTILLING, allEntries = true)
     public void slettBestillingByOrgnummer(String orgnummer) {
 
         List<Long> bestillinger = organisasjonNummerService.fetchBestillingsIdFromOrganisasjonNummer(orgnummer).stream()

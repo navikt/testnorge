@@ -106,7 +106,7 @@ public class Bestilling {
     @Column(name = "NAV_SYNTETISK_IDENT")
     private Boolean navSyntetiskIdent;
 
-    @OneToMany(mappedBy = "bestillingId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "bestilling", fetch = FetchType.LAZY)
     private List<BestillingProgress> progresser;
 
     @OneToMany(mappedBy = "bestillingId", fetch = FetchType.LAZY)

@@ -76,7 +76,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                 bestilling.getGruppe().getTestidenter().parallelStream()
                         .filter(testident -> !bestillingService.isStoppet(bestilling.getId()))
                         .forEach(testident -> {
-                            BestillingProgress progress = new BestillingProgress(bestilling.getId(), testident.getIdent(), testident.getMaster());
+                            BestillingProgress progress = new BestillingProgress(bestilling, testident.getIdent(), testident.getMaster());
                             try {
                                 DollyPerson dollyPerson = prepareDollyPerson(bestilling, tpsfBestilling, testident, progress);
                                 gjenopprettNonTpsf(dollyPerson, bestKriterier, progress, true);

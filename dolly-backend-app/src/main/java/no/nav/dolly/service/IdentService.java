@@ -102,7 +102,7 @@ public class IdentService {
 
     public Page<Testident> getBestillingerFromGruppePaginert(Long gruppeId, Integer pageNo, Integer pageSize) {
 
-        return identRepository.getBestillingerFromGruppePaginert(gruppeId, PageRequest.of(pageNo, pageSize));
+        return identRepository.getTestidentByTestgruppeIdOrderByBestillingProgressIdDesc(gruppeId, PageRequest.of(pageNo, pageSize));
     }
 
     public Testident getTestIdent(String ident) {

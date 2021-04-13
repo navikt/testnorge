@@ -16,6 +16,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
@@ -38,8 +40,9 @@ public class BestillingProgress {
     })
     private Long id;
 
-    @Column(name = "BESTILLING_ID")
-    private Long bestillingId;
+    @ManyToOne
+    @JoinColumn(name = "BESTILLING_ID", nullable = false)
+    private Bestilling bestilling;
 
     private String ident;
 
@@ -101,9 +104,9 @@ public class BestillingProgress {
 
     private String feil;
 
-    public BestillingProgress(Long bestillingId, String ident, Master master) {
+    public BestillingProgress(Bestilling bestilling, String ident, Master master) {
         this.ident = ident;
-        this.bestillingId = bestillingId;
+        this.bestilling = bestilling;
         this.master = master;
     }
 

@@ -1,19 +1,15 @@
 package no.nav.dolly.api;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.bestilling.service.OpprettPersonerByKriterierService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
-import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
-import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.provider.api.TestgruppeController;
 import no.nav.dolly.service.BestillingService;
-import no.nav.dolly.service.PersonService;
 import no.nav.dolly.service.TestgruppeService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,9 +20,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -35,7 +28,6 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class TestgruppeControllerTest {
 
-    private static final String IDENT = "12345678901";
     private static final Long GRUPPE_ID = 1L;
     private static final Long BESTILLING_ID = 1L;
 
@@ -46,13 +38,7 @@ public class TestgruppeControllerTest {
     private MapperFacade mapperFacade;
 
     @Mock
-    private DollyBestillingService dollyBestillingService;
-
-    @Mock
     private BestillingService bestillingService;
-
-    @Mock
-    private PersonService personService;
 
     @Mock
     private OpprettPersonerByKriterierService opprettPersonerByKriterierService;
@@ -80,21 +66,6 @@ public class TestgruppeControllerTest {
         testgruppeController.oppdaterTestgruppe(GRUPPE_ID, gruppe);
 
         verify(testgruppeService).oppdaterTestgruppe(GRUPPE_ID, gruppe);
-    }
-
-    @Test
-    public void getTestgruppe() {
-        RsTestgruppeMedBestillingId testgruppeMedBestillingId = new RsTestgruppeMedBestillingId();
-        testgruppeMedBestillingId.setId(GRUPPE_ID);
-        when(testgruppeService.fetchTestgruppeById(GRUPPE_ID)).thenReturn(new Testgruppe());
-        when(mapperFacade.map(any(Testgruppe.class), eq(RsTestgruppeMedBestillingId.class))).thenReturn(testgruppeMedBestillingId);
-
-        RsTestgruppe result = testgruppeController.getTestgruppe(GRUPPE_ID);
-
-        assertThat(result.getId(), is(equalTo(GRUPPE_ID)));
-
-        verify(testgruppeService).fetchTestgruppeById(GRUPPE_ID);
-        verify(mapperFacade).map(any(Testgruppe.class), eq(RsTestgruppeMedBestillingId.class));
     }
 
     @Test

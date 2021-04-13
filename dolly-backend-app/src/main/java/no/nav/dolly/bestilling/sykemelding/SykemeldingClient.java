@@ -57,11 +57,13 @@ public class SykemeldingClient implements ClientRegister {
 
                     if (postSyntSykemelding(bestilling, dollyPerson)) {
                         RsSyntSykemelding syntSykemelding = bestilling.getSykemelding().getSyntSykemelding();
-                        saveTransaksjonId(syntSykemelding.getOrgnummer(), syntSykemelding.getArbeidsforholdId(), progress.getBestillingId(), dollyPerson.getHovedperson());
+                        saveTransaksjonId(syntSykemelding.getOrgnummer(), syntSykemelding.getArbeidsforholdId(),
+                                progress.getBestilling().getId(), dollyPerson.getHovedperson());
 
                     } else if (postDetaljertSykemelding(bestilling, dollyPerson)) {
                         RsDetaljertSykemelding detaljertSykemelding = bestilling.getSykemelding().getDetaljertSykemelding();
-                        saveTransaksjonId(detaljertSykemelding.getMottaker().getOrgNr(), null, progress.getBestillingId(), dollyPerson.getHovedperson());
+                        saveTransaksjonId(detaljertSykemelding.getMottaker().getOrgNr(), null,
+                                progress.getBestilling().getId(), dollyPerson.getHovedperson());
                     }
                     progress.setSykemeldingStatus("OK");
                 }

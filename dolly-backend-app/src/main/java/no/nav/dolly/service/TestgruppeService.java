@@ -120,10 +120,10 @@ public class TestgruppeService {
     public void deleteGruppeById(Long gruppeId) {
         Testgruppe testgruppe = fetchTestgruppeById(gruppeId);
 
-        bestillingService.slettBestillingerByGruppeId(gruppeId);
         transaksjonMappingRepository.deleteAllByIdentIn(testgruppe.getTestidenter().stream()
                 .map(Testident::getIdent)
                 .collect(Collectors.toList()));
+        bestillingService.slettBestillingerByGruppeId(gruppeId);
         identService.slettTestidenterByGruppeId(gruppeId);
         brukerService.sletteBrukerFavoritterByGroupId(gruppeId);
         testgruppeRepository.deleteTestgruppeById(gruppeId);

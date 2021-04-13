@@ -298,7 +298,10 @@ public class BestillingService {
         List<BestillingProgress> bestillingProgresses = bestillingProgressRepository.findByIdent(ident);
         bestillingProgressRepository.deleteByIdent(ident);
 
-        Set<Long> bestillingIds = bestillingProgresses.stream().map(BestillingProgress::getBestillingId).collect(toSet());
+        Set<Long> bestillingIds = bestillingProgresses.stream()
+                .map(BestillingProgress::getBestilling)
+                .map(Bestilling::getId)
+                .collect(toSet());
 
         bestillingIds.forEach(id -> {
 

@@ -71,7 +71,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                         .filter(ident -> !bestillingService.isStoppet(bestilling.getId()))
                         .forEach(identStatus -> {
 
-                            BestillingProgress progress = new BestillingProgress(bestilling.getId(), identStatus.getIdent(), Testident.Master.TPSF);
+                            BestillingProgress progress = new BestillingProgress(bestilling, identStatus.getIdent(), Testident.Master.TPSF);
                             try {
                                 if (identStatus.isAvailable()) {
 

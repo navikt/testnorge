@@ -3,6 +3,7 @@ package no.nav.dolly.mapper.strategy;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
@@ -28,7 +29,10 @@ public class TestgruppeMedBestillingIdMappingStrategy implements MappingStrategy
                                         .iBruk(isTrue(testident.getIBruk()))
                                         .beskrivelse(testident.getBeskrivelse())
                                         .bestillingId(testident.getBestillingProgress().stream()
-                                                .map(BestillingProgress::getBestillingId)
+                                                .filter(bestillingProgress ->
+                                                        bestillingProgress.getBestilling().getGruppe().getId().equals(testident.getTestgruppe().getId()))
+                                                .map(BestillingProgress::getBestilling)
+                                                .map(Bestilling::getId)
                                                 .sorted(Comparator.reverseOrder())
                                                 .collect(Collectors.toList()))
                                         .master(testident.getMaster())

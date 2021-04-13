@@ -61,7 +61,7 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                         .filter(ident -> !bestillingService.isStoppet(bestilling.getId()))
                         .forEach(gjenopprettFraProgress -> {
 
-                            BestillingProgress progress = new BestillingProgress(bestilling.getId(), gjenopprettFraProgress.getIdent(),
+                            BestillingProgress progress = new BestillingProgress(bestilling, gjenopprettFraProgress.getIdent(),
                                     gjenopprettFraProgress.getMaster());
 
                             try {

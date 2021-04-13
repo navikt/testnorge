@@ -6,13 +6,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Collection;
 import java.util.List;
 
-public interface IdentRepository extends CrudRepository<Testident, String> {
+public interface IdentRepository extends PagingAndSortingRepository<Testident, String> {
 
     Testident findByIdent(String ident);
 
@@ -32,22 +32,19 @@ public interface IdentRepository extends CrudRepository<Testident, String> {
 
     @Query(value = "select bp.ident as ident, b.id as bestillingid, " +
             "b.bestKriterier as bestkriterier from Bestilling b " +
-            "join BestillingProgress bp on bp.bestillingId = b.id " +
+            "join BestillingProgress bp on bp.bestilling.id = b.id " +
             "and b.gruppe = :gruppe " +
             "and b.opprettetFraId is null " +
             "and b.bestKriterier is not null and b.bestKriterier <> '{}' " +
             "and bp.ident is not null and length(bp.ident) = 11")
     List<GruppeBestillingIdent> getBestillingerFromGruppe(@Param(value = "gruppe") Testgruppe testgruppe);
 
-    @Query("select ti " +
-            "from Testident ti " +
+    @Query("select ti from Testident ti " +
             "join BestillingProgress bp on bp.ident = ti.ident " +
-            "join Bestilling b on b.id = bp.bestillingId " +
-            "where ti.testgruppe.id = :gruppe_id " +
-            "and bp.bestillingId = (select max(bp.bestillingId) from BestillingProgress bp where bp.ident = ti.ident) " +
-            "group by ti.ident, b.sistOppdatert " +
-            "order by b.sistOppdatert desc")
-    Page<Testident> getBestillingerFromGruppePaginert(@Param(value = "gruppe_id") Long gruppeId, Pageable pageable);
+            "and ti.testgruppe.id = :gruppeId " +
+            "and bp.id = (select max(bps.id) from BestillingProgress bps where bps.ident = ti.ident) " +
+            "order by bp.id desc")
+    Page<Testident> getTestidentByTestgruppeIdOrderByBestillingProgressIdDesc(@Param(value = "gruppeId") Long gruppeId, Pageable pageable);
 
     interface GruppeBestillingIdent {
 

@@ -67,7 +67,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                 asList(bestilling.getPdlImport().split(",")).parallelStream()
                         .filter(ident -> !bestilling.isStoppet())
                         .forEach(ident -> {
-                            BestillingProgress progress = new BestillingProgress(bestilling.getId(), ident, PDL);
+                            BestillingProgress progress = new BestillingProgress(bestilling, ident, PDL);
                             try {
 
                                 PdlPerson pdlPerson = objectMapper.readValue(pdlPersonConsumer.getPdlPerson(ident).toString(), PdlPerson.class);

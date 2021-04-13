@@ -84,7 +84,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                         .hovedperson(leverteIdenter.get(0))
                                         .master(TPSF)
                                         .build();
-                                progress = new BestillingProgress(bestilling.getId(), dollyPerson.getHovedperson(), TPSF);
+                                progress = new BestillingProgress(bestilling, dollyPerson.getHovedperson(), TPSF);
 
                                 sendIdenterTilTPS(new ArrayList<>(List.of(bestilling.getMiljoer().split(","))),
                                         leverteIdenter, bestilling.getGruppe(), progress);
@@ -93,7 +93,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
                             } catch (RuntimeException e) {
                                 progress = BestillingProgress.builder()
-                                        .bestillingId(bestilling.getId())
+                                        .bestilling(bestilling)
                                         .ident("?")
                                         .feil("NA:" + errorStatusDecoder.decodeRuntimeException(e))
                                         .master(TPSF)

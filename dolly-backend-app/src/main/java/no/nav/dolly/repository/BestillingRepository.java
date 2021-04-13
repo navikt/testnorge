@@ -22,7 +22,8 @@ public interface BestillingRepository extends Repository<Bestilling, Long> {
     int deleteByGruppeId(Long gruppeId);
 
     @Modifying
-    @Query(value = "delete from Bestilling b where b.id = :bestillingId and not exists (select bp from BestillingProgress bp where bp.bestillingId = :bestillingId)")
+    @Query(value = "delete from Bestilling b where b.id = :bestillingId and not exists " +
+            "(select bp from BestillingProgress bp where bp.bestilling.id = :bestillingId)")
     int deleteBestillingWithNoChildren(@Param("bestillingId") Long bestillingId);
 
     @Modifying

@@ -67,7 +67,7 @@ public class ImportAvPersonerFraTpsService extends DollyBestillingService {
                 asList(bestilling.getTpsImport().split(",")).parallelStream()
                         .filter(ident -> !bestilling.isStoppet())
                         .forEach(ident -> {
-                            BestillingProgress progress = new BestillingProgress(bestilling.getId(), ident, TPSF);
+                            BestillingProgress progress = new BestillingProgress(bestilling, ident, TPSF);
                             try {
                                 Person person = tpsfService.importerPersonFraTps(TpsfImportPersonRequest.builder()
                                         .miljoe(bestilling.getKildeMiljoe())

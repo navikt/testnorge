@@ -1,18 +1,7 @@
 package no.nav.dolly.bestilling.dokarkiv;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-import static java.util.Objects.requireNonNull;
-import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -23,11 +12,22 @@ import no.nav.dolly.bestilling.dokarkiv.domain.JoarkTransaksjon;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
-import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
+import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.TransaksjonMappingService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static java.util.Objects.requireNonNull;
+import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -65,7 +65,8 @@ public class DokarkivClient implements ClientRegister {
                                     .append(environment)
                                     .append(":OK");
 
-                            saveTransaksjonId(requireNonNull(response.getBody()), dollyPerson.getHovedperson(), progress.getBestillingId(), environment);
+                            saveTransaksjonId(requireNonNull(response.getBody()), dollyPerson.getHovedperson(),
+                                    progress.getBestilling().getId(), environment);
                         }
 
                     } catch (RuntimeException e) {

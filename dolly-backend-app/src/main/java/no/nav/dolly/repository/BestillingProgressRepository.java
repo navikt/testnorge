@@ -16,7 +16,7 @@ public interface BestillingProgressRepository extends Repository<BestillingProgr
     Optional<List<BestillingProgress>> findByBestillingId(Long bestillingId);
 
     @Modifying
-    @Query("delete from BestillingProgress bp where bp.bestillingId in (select b.id from Bestilling b where b.gruppe.id = :gruppeId)")
+    @Query("delete from BestillingProgress bp where bp.bestilling.id in (select b.id from Bestilling b where b.gruppe.id = :gruppeId)")
     int deleteByGruppeId(@Param("gruppeId") Long gruppeId);
 
     @Modifying

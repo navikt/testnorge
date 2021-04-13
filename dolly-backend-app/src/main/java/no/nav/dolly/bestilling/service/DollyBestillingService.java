@@ -179,7 +179,7 @@ public class DollyBestillingService {
             if (testident.isPdl() && nonNull(request.getTpsf())) {
                 throw new DollyFunctionalException("Importert person fra TESTNORGE kan ikke endres.");
             }
-            BestillingProgress progress = new BestillingProgress(bestilling.getId(), bestilling.getIdent(), testident.getMaster());
+            BestillingProgress progress = new BestillingProgress(bestilling, bestilling.getIdent(), testident.getMaster());
             TpsfBestilling tpsfBestilling = nonNull(request.getTpsf()) ? mapperFacade.map(request.getTpsf(), TpsfBestilling.class) : new TpsfBestilling();
             tpsfBestilling.setAntall(1);
             tpsfBestilling.setNavSyntetiskIdent(bestilling.getNavSyntetiskIdent());
@@ -232,7 +232,7 @@ public class DollyBestillingService {
             if (testident.isPdl()) {
                 throw new DollyFunctionalException("Importert person fra TESTNORGE kan ikke endres.");
             }
-            BestillingProgress progress = new BestillingProgress(bestilling.getId(), ident, TPSF);
+            BestillingProgress progress = new BestillingProgress(bestilling, ident, TPSF);
             TpsfRelasjonRequest tpsfBestilling = mapperFacade.map(request.getTpsf(), TpsfRelasjonRequest.class);
             List<String> identer = tpsfService.relasjonPerson(ident, tpsfBestilling);
             sendIdenterTilTPS(request.getEnvironments(), identer, null, progress);

@@ -71,7 +71,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                         .filter(testident -> !bestillingService.isStoppet(bestilling.getId()))
                         .forEach(testident -> {
 
-                            BestillingProgress progress = new BestillingProgress(bestilling.getId(), testident.getIdent(),
+                            BestillingProgress progress = new BestillingProgress(bestilling, testident.getIdent(),
                                     testident.getMaster());
                             try {
                                 Optional<DollyPerson> dollyPerson = prepareDollyPersonTpsf(bestilling, progress);
