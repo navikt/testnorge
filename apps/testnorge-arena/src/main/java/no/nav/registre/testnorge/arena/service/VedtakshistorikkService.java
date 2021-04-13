@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
@@ -67,7 +66,6 @@ public class VedtakshistorikkService {
     private final RettighetAapService rettighetAapService;
     private final RettighetTiltakService rettighetTiltakService;
     private final DatoUtils datoUtils;
-    private final Random rand;
 
     private static final String MAALGRUPPEKODE_TILKNYTTET_AAP = "NEDSARBEVN";
     private static final String MAALGRUPPEKODE_TILKNYTTET_TILTAKSPENGER = "MOTTILTPEN";
@@ -103,28 +101,31 @@ public class VedtakshistorikkService {
             String miljoe,
             Map<String, List<NyttVedtakResponse>> responses
     ) {
-        var vedtakshistorikk = vedtakshistorikkSyntConsumer.syntetiserVedtakshistorikk(1);
-        for (var vedtakshistorikken : vedtakshistorikk) {
-            vedtakshistorikken.setTilsynFamiliemedlemmer(fjernTilsynFamiliemedlemmerVedtakMedUgyldigeDatoer(vedtakshistorikken.getTilsynFamiliemedlemmer()));
-            vedtakshistorikken.setUngUfoer(fjernAapUngUfoerMedUgyldigeDatoer(vedtakshistorikken.getUngUfoer()));
-            oppdaterAapSykepengeerstatningDatoer(vedtakshistorikken.getAap());
+        var vedtakshistorikkListe = vedtakshistorikkSyntConsumer.syntetiserVedtakshistorikk(1);
 
-            LocalDate tidligsteDato = datoUtils.finnTidligsteDato(vedtakshistorikken);
-            LocalDate tidligsteDatoBarnetillegg = datoUtils.finnTidligeDatoBarnetillegg(vedtakshistorikken.getBarnetillegg());
+        if (!vedtakshistorikkListe.isEmpty()) {
+            var vedtakshistorikk = vedtakshistorikkListe.get(0);
+
+            vedtakshistorikk.setTilsynFamiliemedlemmer(fjernTilsynFamiliemedlemmerVedtakMedUgyldigeDatoer(vedtakshistorikk.getTilsynFamiliemedlemmer()));
+            vedtakshistorikk.setUngUfoer(fjernAapUngUfoerMedUgyldigeDatoer(vedtakshistorikk.getUngUfoer()));
+            oppdaterAapSykepengeerstatningDatoer(vedtakshistorikk.getAap());
+
+            LocalDate tidligsteDato = datoUtils.finnTidligsteDato(vedtakshistorikk);
+            LocalDate tidligsteDatoBarnetillegg = datoUtils.finnTidligeDatoBarnetillegg(vedtakshistorikk.getBarnetillegg());
 
             if (tidligsteDato == null) {
-                continue;
+                return;
             }
 
             var minimumAlder = Math.toIntExact(ChronoUnit.YEARS.between(tidligsteDato.minusYears(MIN_ALDER_AAP), LocalDate.now()));
-            var maksimumAlder = getMaksimumAlder(vedtakshistorikken, minimumAlder);
+            var maksimumAlder = getMaksimumAlder(vedtakshistorikk, minimumAlder);
 
             if (minimumAlder > maksimumAlder) {
                 log.error("Kunne ikke opprette vedtakshistorikk på ident med minimum alder {}.", minimumAlder);
             } else {
-                var oensketIdent = getOensketIdentIAldersgruppe(avspillergruppeId, miljoe, vedtakshistorikken, tidligsteDatoBarnetillegg, minimumAlder, maksimumAlder);
-                if (oensketIdent != null) {
-                    responses.putAll(opprettHistorikkOgSendTilArena(avspillergruppeId, oensketIdent, miljoe, vedtakshistorikken));
+                var utvalgtIdent = getUtvalgtIdentIAldersgruppe(avspillergruppeId, miljoe, vedtakshistorikk, tidligsteDatoBarnetillegg, minimumAlder, maksimumAlder);
+                if (utvalgtIdent != null) {
+                    responses.putAll(opprettHistorikkOgSendTilArena(avspillergruppeId, utvalgtIdent, miljoe, vedtakshistorikk));
                 }
             }
         }
@@ -147,7 +148,7 @@ public class VedtakshistorikkService {
     }
 
 
-    private String getOensketIdentIAldersgruppe(
+    private String getUtvalgtIdentIAldersgruppe(
             Long avspillergruppeId,
             String miljoe,
             Vedtakshistorikk vedtakshistorikk,
@@ -169,7 +170,7 @@ public class VedtakshistorikkService {
             return identer.isEmpty() ? null : identer.get(0);
 
         } catch (RuntimeException e) {
-            log.error("Kunne ikke hente utvalgte identer.", e);
+            log.error("Kunne ikke hente utvalgt ident.", e);
             return null;
         }
     }
@@ -213,7 +214,7 @@ public class VedtakshistorikkService {
         opprettAvsluttendeVedtakEndreDeltakerstatus(vedtakshistorikk, personident, miljoe, rettigheter, tiltak);
         opprettVedtakTillegg(vedtakshistorikk, personident, miljoe, rettigheter);
 
-        if (!rettigheter.isEmpty()){
+        if (!rettigheter.isEmpty()) {
             try {
                 arbeidsoekerUtils.opprettArbeidssoekerVedtakshistorikk(personident, miljoe, senesteVedtak);
             } catch (Exception e) {

@@ -61,9 +61,6 @@ public class VedtakshistorikkServiceTest {
     @Mock
     private RettighetTiltakService rettighetTiltakService;
 
-    @Mock
-    private Random rand;
-
     @InjectMocks
     private VedtakshistorikkService vedtakshistorikkService;
 
