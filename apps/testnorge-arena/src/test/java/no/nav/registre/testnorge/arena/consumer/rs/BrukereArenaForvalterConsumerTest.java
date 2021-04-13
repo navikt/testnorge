@@ -40,11 +40,9 @@ public class BrukereArenaForvalterConsumerTest {
                 mockWebServer.url("/api").toString());
     }
 
-    @Test
-    public void checkEmptyListOnBadSentTilArenaForvalterRequest() {
+    @Test(expected = Exception.class)
+    public void checkExceptionOccursOnBadSentTilArenaForvalterRequest() {
         NyeBrukereResponse response = brukereArenaForvalterConsumer.sendTilArenaForvalter(null);
-
-        assertThat(response.getArbeidsoekerList()).isEmpty();
     }
 
     @Test
