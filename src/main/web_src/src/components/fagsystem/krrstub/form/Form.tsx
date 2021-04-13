@@ -1,5 +1,6 @@
 import React from 'react'
 import * as Yup from 'yup'
+import { requiredBoolean } from '~/utils/YupValidations'
 import _get from 'lodash/get'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
@@ -10,15 +11,25 @@ import Panel from '~/components/ui/panel/Panel'
 import { erForste, panelError } from '~/components/ui/form/formUtils'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { FormikProps } from 'formik'
+
+type KrrstubForm = {
+	formikBag: FormikProps<{}>
+}
+
+type Change = {
+	value: boolean
+}
 
 const krrAttributt = 'krrstub'
 
-export const KrrstubForm = ({ formikBag }) => {
+export const KrrstubForm = ({ formikBag }: KrrstubForm) => {
 	const leverandoerer = SelectOptionsOppslag.hentKrrLeverandoerer()
+	//@ts-ignore
 	const leverandoerOptions = SelectOptionsOppslag.formatOptions('sdpLeverandoer', leverandoerer)
 	const registrert = _get(formikBag, 'values.krrstub.registrert')
 
-	const handleRegistrertChange = registrert => {
+	const handleRegistrertChange = (registrert: Change) => {
 		if (!registrert.value) {
 			formikBag.setFieldValue('krrstub', {
 				epost: '',
@@ -36,11 +47,13 @@ export const KrrstubForm = ({ formikBag }) => {
 	}
 
 	return (
+		//@ts-ignore
 		<Vis attributt={krrAttributt}>
 			<Panel
 				heading="Kontakt- og reservasjonsregisteret"
 				hasErrors={panelError(formikBag, krrAttributt)}
 				iconType="krr"
+				//@ts-ignore
 				startOpen={() => erForste(formikBag.values, [krrAttributt])}
 			>
 				<div className="flexbox--flex-wrap">
@@ -49,8 +62,9 @@ export const KrrstubForm = ({ formikBag }) => {
 						label="Registrert i KRR"
 						options={Options('boolean')}
 						onChange={handleRegistrertChange}
-						value={_get(formikBag.values, 'krrstub.registrert')}
+						value={registrert}
 						isClearable={false}
+						feil={registrert === null && { feilmelding: 'Feltet er påkrevd' }}
 					/>
 					{registrert && (
 						<>
@@ -96,13 +110,13 @@ export const KrrstubForm = ({ formikBag }) => {
 
 KrrstubForm.validation = {
 	krrstub: Yup.object({
-		epost: '',
+		epost: Yup.string(),
 		gyldigFra: Yup.date().nullable(),
 		mobil: Yup.string().matches(/^[0-9]*$/, 'Ugyldig mobilnummer'),
-		sdpAdresse: '',
-		sdpLeverandoer: '',
-		spraak: '',
-		registrert: '',
-		reservert: ''
+		sdpAdresse: Yup.string(),
+		sdpLeverandoer: Yup.string(),
+		spraak: Yup.string(),
+		registrert: requiredBoolean,
+		reservert: Yup.boolean().nullable()
 	})
 }
