@@ -54,7 +54,7 @@ public class PostArenaBrukerCommand implements Callable<NyeBrukereResponse> {
                     .block();
         } catch (Exception e) {
             log.error("Klarte ikke å sende inn ny(e) bruker(e) til Arena-forvalteren.", e);
-            return NyeBrukereResponse.builder().arbeidsoekerList(Collections.emptyList()).build();
+            return null;
         }
     }
 }

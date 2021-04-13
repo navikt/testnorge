@@ -49,7 +49,7 @@ public class GetAktoerIdTilIdenterCommand implements Callable<Map<String, Aktoer
                     .block();
         } catch (Exception e) {
             log.error("Kunne ikke hente aktør id for identer: {}", identer.toString().replaceAll("[\r\n]", ""), e);
-            return Collections.emptyMap();
+            throw e;
         }
     }
 
