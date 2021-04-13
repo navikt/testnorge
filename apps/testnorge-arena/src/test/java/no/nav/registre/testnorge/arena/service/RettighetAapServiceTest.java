@@ -129,7 +129,7 @@ public class RettighetAapServiceTest {
         fritakMeldekortRettigheter = new ArrayList<>(Collections.singletonList(nyRettighetFritakMeldekort));
 
         when(identerUtils.getLevende(avspillergruppeId, miljoe)).thenReturn(identer);
-        when(identerUtils.getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt(), eq(miljoe), anyBoolean())).thenReturn(identer);
+        when(identerUtils.getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt(), eq(miljoe), eq(null))).thenReturn(identer);
         when(identerUtils.hentEksisterendeArbeidsoekerIdenter(anyBoolean())).thenReturn(new ArrayList<>(Collections.singletonList(fnr1)));
     }
 
@@ -188,7 +188,7 @@ public class RettighetAapServiceTest {
         Map<String, List<NyttVedtakResponse>> expectedResponsesFromArenaForvalter = new HashMap<>();
         expectedResponsesFromArenaForvalter.put(fnr1, new ArrayList<>(Collections.singletonList(nyRettighetungUfoerResponse)));
 
-        when(identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallIdenter, 18, 35, miljoe, false)).thenReturn(identer);
+        when(identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallIdenter, 18, 35, miljoe, null)).thenReturn(identer);
         when(consumerUtils.createSyntRequest(antallIdenter, ARENA_AAP_UNG_UFOER_DATE_LIMIT)).thenReturn(syntRequest);
         when(aapSyntConsumer.syntetiserRettighetUngUfoer(syntRequest)).thenReturn(ungUfoerRettigheter);
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(expectedResponsesFromArenaForvalter);
