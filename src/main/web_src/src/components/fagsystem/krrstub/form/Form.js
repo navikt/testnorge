@@ -17,7 +17,6 @@ export const KrrstubForm = ({ formikBag }) => {
 	const leverandoerer = SelectOptionsOppslag.hentKrrLeverandoerer()
 	const leverandoerOptions = SelectOptionsOppslag.formatOptions('sdpLeverandoer', leverandoerer)
 	const registrert = _get(formikBag, 'values.krrstub.registrert')
-	const infotekst = 'For å sette disse verdiene må personen være registrert i KRR'
 
 	const handleRegistrertChange = registrert => {
 		if (!registrert.value) {
@@ -53,48 +52,43 @@ export const KrrstubForm = ({ formikBag }) => {
 						value={_get(formikBag.values, 'krrstub.registrert')}
 						isClearable={false}
 					/>
+					{registrert && (
+						<>
+							<FormikSelect
+								name="krrstub.reservert"
+								label="Reservert"
+								options={Options('boolean')}
+								fastfield={false}
+							/>
+							<FormikTextInput name="krrstub.epost" label="E-post" />
+							<FormikTextInput name="krrstub.mobil" label="Mobilnummer" type="number" />
+							<FormikSelect
+								name="krrstub.spraak"
+								label="Språk"
+								options={Options('spraaktype')}
+								fastfield={false}
+							/>
+							<FormikDatepicker
+								name="krrstub.gyldigFra"
+								label="Kontaktinfo gjelder fra"
+								fastfield={false}
+							/>
+						</>
+					)}
 				</div>
-				<div className="flexbox--flex-wrap" title={!registrert ? infotekst : null}>
-					<FormikTextInput name="krrstub.epost" label="E-post" disabled={!registrert} />
-					<FormikTextInput
-						name="krrstub.mobil"
-						label="Mobilnummer"
-						type="number"
-						disabled={!registrert}
-					/>
-					<FormikSelect
-						name="krrstub.spraak"
-						label="Språk"
-						options={Options('spraaktype')}
-						disabled={!registrert}
-						fastfield={false}
-					/>
-					<FormikSelect
-						name="krrstub.reservert"
-						label="Reservert"
-						options={Options('boolean')}
-						disabled={!registrert}
-						fastfield={false}
-					/>
-					<FormikDatepicker
-						name="krrstub.gyldigFra"
-						label="Kontaktinfo gjelder fra"
-						disabled={!registrert}
-						fastfield={false}
-					/>
-				</div>
-				<div className="flexbox--flex-wrap" title={!registrert ? infotekst : null}>
-					<Kategori title={'Sikker digital postkasse'}>
-						<FormikTextInput name="krrstub.sdpAdresse" label="Adresse" disabled={!registrert} />
-						<FormikSelect
-							fastfield={false}
-							name="krrstub.sdpLeverandoer"
-							label="Leverandør"
-							options={leverandoerOptions}
-							disabled={!registrert}
-						/>
-					</Kategori>
-				</div>
+				{registrert && (
+					<div className="flexbox--flex-wrap">
+						<Kategori title={'Sikker digital postkasse'}>
+							<FormikTextInput name="krrstub.sdpAdresse" label="Adresse" />
+							<FormikSelect
+								fastfield={false}
+								name="krrstub.sdpLeverandoer"
+								label="Leverandør"
+								options={leverandoerOptions}
+							/>
+						</Kategori>
+					</div>
+				)}
 			</Panel>
 		</Vis>
 	)

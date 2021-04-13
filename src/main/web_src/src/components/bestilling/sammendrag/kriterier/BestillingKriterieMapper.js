@@ -684,18 +684,18 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		const krrStub = {
 			header: 'Kontaktinformasjon og reservasjon',
 			items: [
-				obj('Mobilnummer', krrKriterier.mobil),
-				obj('Epost', krrKriterier.epost),
-				obj('Adresse', krrKriterier.sdpAdresse),
-				obj('Leverandør', krrKriterier.sdpLeverandoer),
-				obj('Språk', Formatters.showLabel('spraaktype', krrKriterier.spraak)),
+				obj('Registrert i KRR', krrKriterier.registrert ? 'JA' : 'NEI'),
 				{
 					label: 'RESERVERT MOT DIGITALKOMMUNIKASJON',
-					value: krrKriterier.reservert ? 'JA' : 'NEI',
+					value: krrKriterier.reservert === null ? null : krrKriterier.reservert ? 'JA' : 'NEI',
 					width: 'medium'
 				},
+				obj('Epost', krrKriterier.epost),
+				obj('Mobilnummer', krrKriterier.mobil),
+				obj('Språk', Formatters.showLabel('spraaktype', krrKriterier.spraak)),
 				obj('Gyldig fra', Formatters.formatDate(krrKriterier.gyldigFra)),
-				obj('Registrert i DKIF', krrKriterier.registrert ? 'JA' : 'NEI')
+				obj('Adresse', krrKriterier.sdpAdresse),
+				obj('Leverandør', krrKriterier.sdpLeverandoer)
 			]
 		}
 

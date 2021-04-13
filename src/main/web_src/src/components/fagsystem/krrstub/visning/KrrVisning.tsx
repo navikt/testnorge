@@ -22,8 +22,16 @@ export const Visning = ({ data }) => {
 				render={response =>
 					data && (
 						<>
-							<TitleValue title="Mobilnummer" value={data.mobil} />
+							<TitleValue
+								title="Registrert i KRR"
+								value={Formatters.oversettBoolean(data.registrert)}
+							/>
+							<TitleValue
+								title="Reservert mot digitalkommunikasjon"
+								value={Formatters.oversettBoolean(data.reservert)}
+							/>
 							<TitleValue title="E-post" value={data.epost} />
+							<TitleValue title="Mobilnummer" value={data.mobil} />
 							<TitleValue
 								title="Språk"
 								value={
@@ -31,15 +39,7 @@ export const Visning = ({ data }) => {
 									Formatters.showLabel('spraaktype', data.spraak.toLowerCase().replace(' ', ''))
 								}
 							/>
-							<TitleValue
-								title="Reservert mot digitalkommunikasjon"
-								value={Formatters.oversettBoolean(data.reservert)}
-							/>
 							<TitleValue title="Gyldig fra" value={Formatters.formatDate(data.gyldigFra)} />
-							<TitleValue
-								title="Registrert i DKIF"
-								value={Formatters.oversettBoolean(data.registrert)}
-							/>
 							<TitleValue title="SDP Adresse" value={data.sdpAdresse} />
 							<TitleValue
 								title="SDP Leverandør"
