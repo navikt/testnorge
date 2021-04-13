@@ -8,13 +8,39 @@ import { KrrApi } from '~/service/Api'
 import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
-export const Visning = ({ data }) => {
+type KrrVisning = {
+	data: Array<Data>
+	loading: boolean
+}
+
+type Visning = {
+	data: Data
+}
+
+type Data = {
+	sdpLeverandoer: number
+	registrert: boolean
+	reservert: boolean
+	epost: string
+	mobil: string
+	spraak: string
+	gyldigFra: string
+	sdpAdresse: string
+}
+
+type SdpLeverandoer = {
+	data: {
+		navn: string
+	}
+}
+
+export const Visning = ({ data }: Visning) => {
 	return (
 		<>
 			<LoadableComponent
 				onFetch={() =>
 					data.sdpLeverandoer
-						? KrrApi.getSdpLeverandoer(data.sdpLeverandoer).then(leverandoer => {
+						? KrrApi.getSdpLeverandoer(data.sdpLeverandoer).then((leverandoer: SdpLeverandoer) => {
 								return leverandoer.data
 						  })
 						: Promise.resolve()
@@ -53,7 +79,7 @@ export const Visning = ({ data }) => {
 	)
 }
 
-export const KrrVisning = ({ data, loading }) => {
+export const KrrVisning = ({ data, loading }: KrrVisning) => {
 	if (loading) return <Loading label="laster krr data" />
 	if (!data) return false
 
