@@ -17,6 +17,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.dto.organisasjonfastedataservice.v1.Gruppe;
@@ -27,16 +28,21 @@ import no.nav.registre.testnorge.organisasjonfastedataservice.service.Organisasj
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/organisasjon")
+@RequestMapping("/api/v1/organisasjoner")
 public class OrganisasjonController {
     private final OrganisasjonService service;
 
     @GetMapping
-    public ResponseEntity<List<OrganisasjonDTO>> getOrganisasjoner(@RequestParam(required = false) Gruppe gruppe, @RequestParam(required = false) Boolean kanHaArbeidsforhold) {
+    public ResponseEntity<List<OrganisasjonDTO>> getOrganisasjoner(
+            @RequestParam(required = false) Gruppe gruppe,
+            @RequestParam(required = false) Boolean kanHaArbeidsforhold,
+            @RequestParam(required = false) String tag
+    ) {
         var organisasjoner = gruppe == null ? service.getOrganisasjoner() : service.getOrganisasjoner(gruppe);
         var list = organisasjoner
                 .stream()
                 .filter(value -> kanHaArbeidsforhold == null || value.kanHaArbeidsforhold() == kanHaArbeidsforhold)
+                .filter(value -> tag == null || value.getTags().contains(tag))
                 .map(Organisasjon::toDTO)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(list);

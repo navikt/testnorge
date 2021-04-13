@@ -33,6 +33,8 @@ spec:
           cluster: dev-fss
         - application: dolly-backend
           cluster: dev-fss
+        - application: testnav-faste-data-frontend
+          cluster: dev-gcp
     outbound:
       external:
         - host: testnav-ereg-proxy.dev-fss-pub.nais.io
