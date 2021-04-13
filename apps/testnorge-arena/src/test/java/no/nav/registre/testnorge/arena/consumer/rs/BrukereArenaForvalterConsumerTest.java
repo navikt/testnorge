@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import no.nav.registre.testnorge.arena.consumer.rs.util.ArbeidssoekerCacheUtil;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -40,11 +39,9 @@ public class BrukereArenaForvalterConsumerTest {
                 mockWebServer.url("/api").toString());
     }
 
-    @Test
-    public void checkEmptyListOnBadSentTilArenaForvalterRequest() {
-        NyeBrukereResponse response = brukereArenaForvalterConsumer.sendTilArenaForvalter(null);
-
-        assertThat(response.getArbeidsoekerList()).isEmpty();
+    @Test(expected = Exception.class)
+    public void checkExceptionOccursOnBadSentTilArenaForvalterRequest() {
+        brukereArenaForvalterConsumer.sendTilArenaForvalter(null);
     }
 
     @Test

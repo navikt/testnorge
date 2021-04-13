@@ -162,11 +162,12 @@ public class ArbeidssoekerUtils {
     ) {
         if (arbeidssoekerIkkeOpprettetIArena(personident)) {
             var nyeBrukereResponse = brukereService.sendArbeidssoekereTilArenaForvalter(Collections.singletonList(personident), miljoe, kvalifiseringsgruppe, INGEN_OPPFOELGING);
-            if (nyeBrukereResponse != null && nyeBrukereResponse.getNyBrukerFeilList() != null && !nyeBrukereResponse.getNyBrukerFeilList().isEmpty()) {
-                nyeBrukereResponse.getNyBrukerFeilList().forEach(nyBrukerFeil -> {
-                    log.error("Kunne ikke opprette ny bruker med fnr {} i arena: {}", nyBrukerFeil.getPersonident(), nyBrukerFeil.getMelding());
-                    throw new ArbeidssoekerException("Kunne ikke opprette bruker i arena");
-                });
+            if (nyeBrukereResponse == null) {
+                log.error("Kunne ikke opprette ny bruker med fnr {} i Arena: {}", personident, "Ukjent feil.");
+                throw new ArbeidssoekerException("Kunne ikke opprette bruker i Arena");
+            } else if (nyeBrukereResponse.getNyBrukerFeilList() != null && !nyeBrukereResponse.getNyBrukerFeilList().isEmpty()) {
+                log.error("Kunne ikke opprette ny bruker med fnr {} i Arena: {}", personident, nyeBrukereResponse.getNyBrukerFeilList().get(0).getMelding());
+                throw new ArbeidssoekerException("Kunne ikke opprette bruker i Arena");
             }
         }
     }
