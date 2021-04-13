@@ -1,10 +1,9 @@
 package no.nav.registre.syntrest.config;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.registre.syntrest.consumer.domain.SyntAmeldingConsumer;
 import no.nav.registre.syntrest.consumer.SyntGetConsumer;
 import no.nav.registre.syntrest.consumer.SyntPostConsumer;
-import no.nav.registre.syntrest.consumer.SyntPostMapConsumer;
+import no.nav.registre.syntrest.consumer.domain.SyntAmeldingConsumer;
 import no.nav.registre.syntrest.domain.aareg.Arbeidsforholdsmelding;
 import no.nav.registre.syntrest.domain.bisys.Barnebidragsmelding;
 import no.nav.registre.syntrest.domain.frikort.FrikortKvittering;
@@ -18,8 +17,11 @@ import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriBuilderFactory;
 
+import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Map;
 
@@ -57,142 +59,176 @@ public class SyntConsumerConfig {
 
     private final ApplicationManager applicationManager;
     private final UriBuilderFactory uriFactory;
+    private final WebClient.Builder webClientBuilder;
+
+    // Request/Response types
+    private static final ParameterizedTypeReference<List<String>> STRING_LIST_TYPE = new ParameterizedTypeReference<>() {};
+    private static final ParameterizedTypeReference<Map<String, Integer>> STRING_INTEGER_MAP_TYPE = new ParameterizedTypeReference<>() {};
+    private static final ParameterizedTypeReference<List<Arbeidsforholdsmelding>> ARBEIDSFORHOLDSMELDING_LIST_TYPE = new ParameterizedTypeReference<>() {};
+    private static final ParameterizedTypeReference<List<Barnebidragsmelding>> BARNEBIDRAGSMELDING_LIST_TYPE = new ParameterizedTypeReference<>() {};
+    private static final ParameterizedTypeReference<List<Institusjonsmelding>> INSTITUSJONSMELDING_LIST_TYPE = new ParameterizedTypeReference<>() {};
+    private static final ParameterizedTypeReference<List<Medlemskapsmelding>> MEDLEMSKAPSMELDING_LIST_TYPE = new ParameterizedTypeReference<>() {};
+    private static final ParameterizedTypeReference<List<Inntektsmelding>> INNTEKTSMELDING_POPP_LIST_TYPE = new ParameterizedTypeReference<>() {};
+    private static final ParameterizedTypeReference<List<SamMelding>> SAM_MELDING_LIST_TYPE = new ParameterizedTypeReference<>() {};
+    private static final ParameterizedTypeReference<Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>> INNTEKTSMELDING_MAP_TYPE = new ParameterizedTypeReference<>() {};
+    private static final ParameterizedTypeReference<List<TPmelding>> TP_MELDING_LIST_TYPE = new ParameterizedTypeReference<>() {};
+    private static final ParameterizedTypeReference<List<SkdMelding>> SKD_MELDING_LIST_TYPE = new ParameterizedTypeReference<>() {};
+    private static final ParameterizedTypeReference<Map<String, List<FrikortKvittering>>> STRING_FRIKORT_KVITTERING_MAP_TYPE = new ParameterizedTypeReference<>() {};
+
 
     @Bean
-    SyntPostConsumer<Arbeidsforholdsmelding[], String[]> aaregConsumer() {
-        return new SyntPostConsumer<Arbeidsforholdsmelding[], String[]>(
+    SyntPostConsumer<List<String>, List<Arbeidsforholdsmelding>> aaregConsumer() throws MalformedURLException {
+        return new SyntPostConsumer<List<String>, List<Arbeidsforholdsmelding>>(
                 applicationManager,
                 "synthdata-aareg",
                 aaregUrl,
                 true,
-                Arbeidsforholdsmelding[].class);
+                STRING_LIST_TYPE,
+                ARBEIDSFORHOLDSMELDING_LIST_TYPE,
+                webClientBuilder);
     }
 
     @Bean
-    SyntGetConsumer<Barnebidragsmelding[]> bisysConsumer() {
-        return new SyntGetConsumer<Barnebidragsmelding[]>(
+    SyntGetConsumer<List<Barnebidragsmelding>> bisysConsumer() throws MalformedURLException {
+        return new SyntGetConsumer<List<Barnebidragsmelding>>(
                 applicationManager,
                 "synthdata-arena-bisys",
                 bisysUrl,
                 true,
-                Barnebidragsmelding[].class,
-                uriFactory);
+                BARNEBIDRAGSMELDING_LIST_TYPE,
+                uriFactory,
+                webClientBuilder);
     }
 
     @Bean
-    SyntGetConsumer<Institusjonsmelding[]> instConsumer() {
-        return new SyntGetConsumer<Institusjonsmelding[]>(
+    SyntGetConsumer<List<Institusjonsmelding>> instConsumer() throws MalformedURLException {
+        return new SyntGetConsumer<List<Institusjonsmelding>>(
                 applicationManager,
                 "synthdata-inst",
                 instUrl,
                 true,
-                Institusjonsmelding[].class,
-                uriFactory);
+                INSTITUSJONSMELDING_LIST_TYPE,
+                uriFactory,
+                webClientBuilder
+        );
     }
 
     @Bean
-    SyntGetConsumer<Medlemskapsmelding[]> medlConsumer() {
-        return new SyntGetConsumer<Medlemskapsmelding[]>(
+    SyntGetConsumer<List<Medlemskapsmelding>> medlConsumer() throws MalformedURLException {
+        return new SyntGetConsumer<List<Medlemskapsmelding>>(
                 applicationManager,
                 "synthdata-medl",
                 medlUrl,
                 true,
-                Medlemskapsmelding[].class,
-                uriFactory);
+                MEDLEMSKAPSMELDING_LIST_TYPE,
+                uriFactory,
+                webClientBuilder);
     }
 
     @Bean
-    SyntGetConsumer<String[]> meldekortConsumer() {
-        return new SyntGetConsumer<String[]>(
+    SyntGetConsumer<List<String>> meldekortConsumer() throws MalformedURLException {
+        return new SyntGetConsumer<List<String>>(
                 applicationManager,
                 "synthdata-arena-meldekort",
                 arenaMeldekortUrl,
                 false,
-                String[].class,
-                uriFactory);
+                STRING_LIST_TYPE,
+                uriFactory,
+                webClientBuilder);
     }
 
     @Bean
-    SyntGetConsumer<String[]> navConsumer() {
-        return new SyntGetConsumer<String[]>(
+    SyntGetConsumer<List<String>> navConsumer() throws MalformedURLException {
+        return new SyntGetConsumer<List<String>>(
                 applicationManager,
                 "synthdata-nav",
                 navEndringsmeldingUrl,
                 true,
-                String[].class,
-                uriFactory);
+                STRING_LIST_TYPE,
+                uriFactory,
+                webClientBuilder);
     }
-
     @Bean
-    SyntPostConsumer<Inntektsmelding[], String[]> poppConsumer() {
-        return new SyntPostConsumer<Inntektsmelding[], String[]>(
+    SyntPostConsumer<List<String>, List<Inntektsmelding>> poppConsumer() throws MalformedURLException {
+        return new SyntPostConsumer<List<String>, List<Inntektsmelding>>(
                 applicationManager,
                 "synthdata-popp",
                 poppUrl,
                 true,
-                Inntektsmelding[].class);
+                STRING_LIST_TYPE,
+                INNTEKTSMELDING_POPP_LIST_TYPE,
+                webClientBuilder);
     }
 
     @Bean
-    SyntGetConsumer<SamMelding[]> samConsumer() {
-        return new SyntGetConsumer<SamMelding[]>(
+    SyntGetConsumer<List<SamMelding>> samConsumer() throws MalformedURLException {
+        return new SyntGetConsumer<List<SamMelding>>(
                 applicationManager,
                 "synthdata-sam",
                 samUrl,
                 true,
-                SamMelding[].class,
-                uriFactory);
+                SAM_MELDING_LIST_TYPE,
+                uriFactory,
+                webClientBuilder);
     }
 
     @Bean
-    SyntPostMapConsumer<Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>,
-                Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>> inntektConsumer() {
-        return new SyntPostMapConsumer<Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>,
+    SyntPostConsumer<Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>,
+                Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>> inntektConsumer() throws MalformedURLException {
+        return new SyntPostConsumer<Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>,
                 Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>>(
                 applicationManager,
                 "synthdata-inntekt",
                 inntektUrl,
-                true);
+                true,
+                INNTEKTSMELDING_MAP_TYPE,
+                INNTEKTSMELDING_MAP_TYPE,
+                webClientBuilder);
     }
 
     @Bean
-    SyntGetConsumer<TPmelding[]> tpConsumer() {
-        return new SyntGetConsumer<TPmelding[]>(
+    SyntGetConsumer<List<TPmelding>> tpConsumer() throws MalformedURLException {
+        return new SyntGetConsumer<List<TPmelding>>(
                 applicationManager,
                 "synthdata-tp",
                 tpUrl,
                 true,
-                TPmelding[].class,
-                uriFactory);
+                TP_MELDING_LIST_TYPE,
+                uriFactory,
+                webClientBuilder);
     }
 
     @Bean
-    SyntGetConsumer<SkdMelding[]> tpsConsumer() {
-        return new SyntGetConsumer<SkdMelding[]>(
+    SyntGetConsumer<List<SkdMelding>> tpsConsumer() throws MalformedURLException {
+        return new SyntGetConsumer<List<SkdMelding>>(
                 applicationManager,
                 "synthdata-tps",
                 tpsUrl,
                 true,
-                SkdMelding[].class,
-                uriFactory);
+                SKD_MELDING_LIST_TYPE,
+                uriFactory,
+                webClientBuilder);
     }
 
     @Bean
-    SyntPostMapConsumer<Map<String, List<FrikortKvittering>>, Map<String, Integer>> frikortConsumer() {
-        return new SyntPostMapConsumer<Map<String, List<FrikortKvittering>>, Map<String, Integer>>(
+    SyntPostConsumer<Map<String, Integer>, Map<String, List<FrikortKvittering>>> frikortConsumer() throws MalformedURLException {
+        return new SyntPostConsumer<Map<String, Integer>, Map<String, List<FrikortKvittering>>>(
                 applicationManager,
                 "synthdata-frikort",
                 frikortUrl,
-                true);
+                true,
+                STRING_INTEGER_MAP_TYPE,
+                STRING_FRIKORT_KVITTERING_MAP_TYPE,
+                webClientBuilder);
     }
 
     @Bean
-    SyntAmeldingConsumer ameldingConsumer() {
+    SyntAmeldingConsumer ameldingConsumer() throws MalformedURLException {
         return new SyntAmeldingConsumer(
                 applicationManager,
                 "synthdata-amelding",
                 ameldingUrl,
-                true);
+                true,
+                webClientBuilder);
     }
-
 }

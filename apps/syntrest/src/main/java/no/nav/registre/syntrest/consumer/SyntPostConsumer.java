@@ -3,31 +3,46 @@ package no.nav.registre.syntrest.consumer;
 import io.kubernetes.client.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+
+import java.lang.reflect.Parameter;
+import java.net.MalformedURLException;
 
 /**
  * Class for synth-packages that require a post-request
- * @param <T> Response object
- * @param <R> Request object
+ * @param <Q> Request object (Question)
+ * @param <A> Response object (Answer)
  */
 @Slf4j
-public class SyntPostConsumer<T, R> extends SyntConsumer {
+public class SyntPostConsumer<Q, A> extends SyntConsumer {
 
-    private final Class<T> responseClass;
+    private final ParameterizedTypeReference<A> responseType;
+    private final ParameterizedTypeReference<Q> requestType;
 
-    public SyntPostConsumer(ApplicationManager applicationManager, String name, String uri, boolean shutdown, Class<T> responseClass) {
-        super(applicationManager, name, uri, shutdown);
-        this.responseClass = responseClass;
+    public SyntPostConsumer(
+            ApplicationManager applicationManager,
+            String name,
+            String uri,
+            boolean shutdown,
+            ParameterizedTypeReference<Q> requestType,
+            ParameterizedTypeReference<A> responseType,
+            WebClient.Builder webClientBuilder
+    ) throws MalformedURLException {
+        super(applicationManager, name, uri, shutdown, webClientBuilder);
+        this.requestType = requestType;
+        this.responseType = responseType;
     }
 
-    public T synthesizeData(R body, Class<R> requestClass) throws InterruptedException, ApiException {
+    public A synthesizeData(Q body) throws InterruptedException, ApiException {
         startApplication();
 
-        T response = webClient.post()
-                .uri(uri)
-                .body(Mono.just(body), requestClass)
+        A response = webClient.post()
+                .uri(url.getPath())
+                .body(Mono.just(body), requestType)
                 .retrieve()
-                .bodyToMono(responseClass)
+                .bodyToMono(responseType)
                 .block();
 
         scheduleIfShutdown();

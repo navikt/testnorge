@@ -13,6 +13,8 @@ import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.tcp.ProxyProvider;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Objects;
 
 @Slf4j
@@ -23,6 +25,7 @@ public class GitHubConsumer {
      */
 
     private final WebClient.Builder webClientBuilder;
+    private final URL url;
     private final String username;
     private final String password;
 
@@ -33,8 +36,8 @@ public class GitHubConsumer {
             @Value("${proxy-url") String proxyUrl,
             @Value("${proxy-port}") int proxyPort,
             WebClient.Builder webClientBuilder
-    ) {
-
+    ) throws MalformedURLException {
+        this.url = new URL(githubUrl);
         this.webClientBuilder = webClientBuilder.baseUrl(githubUrl);
 
         if (!"local".equals(proxyUrl) && proxyPort != 0) {
@@ -59,6 +62,7 @@ public class GitHubConsumer {
 
         JsonNode queryAnswer = webClientBuilder.build()
                 .post()
+                .uri(this.url.getPath())
                 .headers(headers -> {
                     headers.setBasicAuth(username, password);
                     headers.setContentType(MediaType.APPLICATION_JSON);

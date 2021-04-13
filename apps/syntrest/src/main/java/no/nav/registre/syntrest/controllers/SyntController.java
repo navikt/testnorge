@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.consumer.domain.SyntAmeldingConsumer;
 import no.nav.registre.syntrest.consumer.SyntGetConsumer;
 import no.nav.registre.syntrest.consumer.SyntPostConsumer;
-import no.nav.registre.syntrest.consumer.SyntPostMapConsumer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,11 +21,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import no.nav.registre.syntrest.domain.aareg.Arbeidsforholdsmelding;
 import no.nav.registre.syntrest.domain.aareg.amelding.ArbeidsforholdAmelding;
@@ -49,19 +47,19 @@ import static java.util.Objects.isNull;
 public class SyntController {
 
     ///////////// SYNT CONSUMERS //////////////
-    private final SyntPostConsumer<Arbeidsforholdsmelding[], String[]> aaregConsumer;
-    private final SyntGetConsumer<Barnebidragsmelding[]> bisysConsumer;
-    private final SyntGetConsumer<Institusjonsmelding[]> instConsumer;
-    private final SyntGetConsumer<Medlemskapsmelding[]> medlConsumer;
-    private final SyntGetConsumer<String[]> meldekortConsumer;
-    private final SyntGetConsumer<String[]> navConsumer;
-    private final SyntPostConsumer<Inntektsmelding[], String[]> poppConsumer;
-    private final SyntGetConsumer<SamMelding[]> samConsumer;
-    private final SyntPostMapConsumer<Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>,
+    private final SyntPostConsumer<List<String>, List<Arbeidsforholdsmelding>> aaregConsumer;
+    private final SyntGetConsumer<List<Barnebidragsmelding>> bisysConsumer;
+    private final SyntGetConsumer<List<Institusjonsmelding>> instConsumer;
+    private final SyntGetConsumer<List<Medlemskapsmelding>> medlConsumer;
+    private final SyntGetConsumer<List<String>> meldekortConsumer;
+    private final SyntGetConsumer<List<String>> navConsumer;
+    private final SyntPostConsumer<List<String>, List<Inntektsmelding>> poppConsumer;
+    private final SyntGetConsumer<List<SamMelding>> samConsumer;
+    private final SyntPostConsumer<Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>,
                 Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>> inntektConsumer;
-    private final SyntGetConsumer<TPmelding[]> tpConsumer;
-    private final SyntGetConsumer<SkdMelding[]> tpsConsumer;
-    private final SyntPostMapConsumer<Map<String, List<FrikortKvittering>>, Map<String, Integer>> frikortConsumer;
+    private final SyntGetConsumer<List<TPmelding>> tpConsumer;
+    private final SyntGetConsumer<List<SkdMelding>> tpsConsumer;
+    private final SyntPostConsumer<Map<String, Integer>, Map<String, List<FrikortKvittering>>> frikortConsumer;
     private final SyntAmeldingConsumer ameldingConsumer;
 
 
@@ -73,8 +71,7 @@ public class SyntController {
             @RequestBody List<String> fnrs
     ) throws ApiException, InterruptedException {
         InputValidator.validateInput(fnrs);
-        var responseArray = aaregConsumer.synthesizeData(fnrs.toArray(new String[0]), String[].class);
-        List<Arbeidsforholdsmelding> response = Arrays.asList(responseArray.clone());
+        var response = aaregConsumer.synthesizeData(fnrs);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -89,8 +86,7 @@ public class SyntController {
     ) throws ApiException, InterruptedException {
 
         InputValidator.validateInput(numToGenerate);
-        var responseArray = bisysConsumer.synthesizeData(String.valueOf(numToGenerate));
-        List<Barnebidragsmelding> response = Arrays.asList(responseArray.clone());
+        var response = bisysConsumer.synthesizeData(String.valueOf(numToGenerate));
         doResponseValidation(response);
         return ResponseEntity.ok(response);
     }
@@ -104,8 +100,7 @@ public class SyntController {
     ) throws ApiException, InterruptedException {
 
         InputValidator.validateInput(numToGenerate);
-        var responseArray = instConsumer.synthesizeData(String.valueOf(numToGenerate));
-        List<Institusjonsmelding> response = Arrays.asList(responseArray.clone());
+        var response = instConsumer.synthesizeData(String.valueOf(numToGenerate));
         doResponseValidation(response);
         return ResponseEntity.ok(response);
     }
@@ -120,8 +115,7 @@ public class SyntController {
     ) throws ApiException, InterruptedException {
 
         InputValidator.validateInput(numToGenerate);
-        var responseArray = medlConsumer.synthesizeData(String.valueOf(numToGenerate));
-        List<Medlemskapsmelding> response = Arrays.asList(responseArray.clone());
+        var response = medlConsumer.synthesizeData(String.valueOf(numToGenerate));
         doResponseValidation(response);
         return ResponseEntity.ok(response);
     }
@@ -143,7 +137,7 @@ public class SyntController {
             @RequestParam int numToGenerate,
             @ApiParam(value = "Verdi som vil overskrive alle ArbeidetTimerSum i meldekort")
             @RequestParam(required = false) Double arbeidstimer
-    ) throws ApiException, InterruptedException {
+    ) throws ApiException, InterruptedException, MalformedURLException {
         InputValidator.validateInput(numToGenerate);
         InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.MELDEGRUPPE, meldegruppe);
 
@@ -151,8 +145,7 @@ public class SyntController {
             meldekortConsumer.addQueryParameter("arbeidstimer", arbeidstimer);
         }
 
-        var responseArray = meldekortConsumer.synthesizeData(String.valueOf(numToGenerate), meldegruppe);
-        List<String> response = Arrays.asList(responseArray.clone());
+        var response = meldekortConsumer.synthesizeData(String.valueOf(numToGenerate), meldegruppe);
         doResponseValidation(response);
         return ResponseEntity.ok(response);
     }
@@ -170,8 +163,7 @@ public class SyntController {
 
         InputValidator.validateInput(numToGenerate);
         InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.ENDRINGSKODE_NAV, endringskode);
-        var responseArray = navConsumer.synthesizeData(String.valueOf(numToGenerate), endringskode);
-        List<String> response = Arrays.asList(responseArray);
+        var response = navConsumer.synthesizeData(String.valueOf(numToGenerate), endringskode);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -188,9 +180,7 @@ public class SyntController {
             @RequestBody List<String> fnrs
     ) throws ApiException, InterruptedException {
         InputValidator.validateInput(fnrs);
-
-        var responseArray = poppConsumer.synthesizeData(fnrs.toArray(new String[0]), String[].class);
-        List<Inntektsmelding> response = Arrays.asList(responseArray.clone());
+        var response = poppConsumer.synthesizeData(fnrs);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -204,8 +194,7 @@ public class SyntController {
             @RequestParam int numToGenerate
     ) throws ApiException, InterruptedException {
         InputValidator.validateInput(numToGenerate);
-        var responseArray = samConsumer.synthesizeData(String.valueOf(numToGenerate));
-        List<SamMelding> response = Arrays.asList(responseArray.clone());
+        var response = samConsumer.synthesizeData(String.valueOf(numToGenerate));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -223,9 +212,9 @@ public class SyntController {
             @RequestBody Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>> fnrInntektMap
     ) throws InterruptedException, ApiException {
         InputValidator.validateInput(new ArrayList<>(fnrInntektMap.keySet()));
-
         var response = inntektConsumer.synthesizeData(fnrInntektMap);
         doResponseValidation(response);
+
         return ResponseEntity.ok(response);
     }
 
@@ -238,8 +227,7 @@ public class SyntController {
             @RequestParam int numToGenerate
     ) throws ApiException, InterruptedException {
         InputValidator.validateInput(numToGenerate);
-        var responseArray = tpConsumer.synthesizeData(String.valueOf(numToGenerate));
-        List<TPmelding> response = Arrays.asList(responseArray.clone());
+        var response = tpConsumer.synthesizeData(String.valueOf(numToGenerate));
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -256,9 +244,9 @@ public class SyntController {
     ) throws ApiException, InterruptedException {
         InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.ENDRINGSKODE, endringskode);
         InputValidator.validateInput(numToGenerate);
-        var responseArray = tpsConsumer.synthesizeData(String.valueOf(numToGenerate), endringskode);
-        List<SkdMelding> response = Arrays.asList(responseArray.clone());
+        var response = tpsConsumer.synthesizeData(String.valueOf(numToGenerate), endringskode);
         doResponseValidation(response);
+
         return ResponseEntity.ok(response);
     }
 

@@ -13,7 +13,6 @@ import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import org.springframework.web.server.ResponseStatusException;
 import reactor.netty.http.client.HttpClient;
 
 import java.time.Duration;
@@ -26,14 +25,13 @@ import static java.util.Objects.isNull;
 
 @Slf4j
 @Component
-@DependsOn("customObjectsApi")
 public class KubernetesController {
 
     private static final int TIMEOUT_IN_MILLISECONSDS = 240_000;
-    private final String GROUP = "nais.io";
-    private final String VERSION = "v1alpha1";
-    private final String NAMESPACE = "dolly";
-    private final String PLURAL = "applications";
+    private static final String GROUP = "nais.io";
+    private static final String VERSION = "v1alpha1";
+    private static final String NAMESPACE = "dolly";
+    private static final String PLURAL = "applications";
 
     private final String isAliveUrl;
     private final CustomObjectsApi api;
@@ -46,14 +44,15 @@ public class KubernetesController {
     private final WebClient webClient;
 
 
-    public KubernetesController(CustomObjectsApi customObjectsApi,
-                                NaisYaml naisYaml,
-                                GitHubConsumer gitHubConsumer,
-                                @Value("${isAlive}") String isAliveUrl,
-                                @Value("${docker-image-path}") String dockerImagePath,
-                                @Value("${max-alive-retries}") int maxRetries,
-                                @Value("${alive-retry-delay}") int retryDelay
-            ) {
+    public KubernetesController(
+            CustomObjectsApi customObjectsApi,
+            NaisYaml naisYaml,
+            GitHubConsumer gitHubConsumer,
+            @Value("${isAlive}") String isAliveUrl,
+            @Value("${docker-image-path}") String dockerImagePath,
+            @Value("${max-alive-retries}") int maxRetries,
+            @Value("${alive-retry-delay}") int retryDelay
+    ) {
 
         this.naisYaml = naisYaml;
         this.gitHubConsumer = gitHubConsumer;

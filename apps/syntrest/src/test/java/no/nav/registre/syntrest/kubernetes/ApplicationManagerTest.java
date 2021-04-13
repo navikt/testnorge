@@ -32,7 +32,7 @@ import static org.mockito.ArgumentMatchers.eq;
 @ContextConfiguration(classes = ApplicationManagerTestConfig.class)
 @EnableAutoConfiguration
 public class ApplicationManagerTest {
-
+/*
     @Autowired
     private KubernetesController kubernetesController;
     @Autowired
@@ -45,7 +45,7 @@ public class ApplicationManagerTest {
     private ApplicationManager globalManager;
 
     private SyntConsumer syntConsumerFrikort;
-/*
+
     @Before
     public void setUp() {
         globalManager = new ApplicationManager(kubernetesController, scheduledExecutorService);

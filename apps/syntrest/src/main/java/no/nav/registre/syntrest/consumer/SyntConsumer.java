@@ -14,6 +14,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Arrays;
 
 @Slf4j
@@ -27,18 +29,20 @@ public abstract class SyntConsumer {
     protected final boolean shutdown;
     protected final String appName;
 
-    protected String uri;
+    protected URL url;
 
     @Value("${synth-package-unused-uptime}")
     private long shutdownTimeDelaySeconds;
 
 
-    public SyntConsumer(ApplicationManager applicationManager, String name, String uri, boolean shutdown) {
+    public SyntConsumer(ApplicationManager applicationManager, String name, String uri, boolean shutdown, WebClient.Builder webClientBuilder) throws MalformedURLException {
         this.applicationManager = applicationManager;
         this.appName = name;
         this.shutdown = shutdown;
-        this.uri = uri;
-        webClient = WebClient.create();
+        this.url = new URL(uri);
+
+        var baseUrl = this.url.getProtocol() + "://" + this.url.getAuthority();
+        this.webClient = webClientBuilder.baseUrl(baseUrl).build();
     }
 
     protected void scheduleIfShutdown() {
@@ -64,12 +68,10 @@ public abstract class SyntConsumer {
         return this.appName;
     }
 
-    public String getUri() {
-        return this.uri;
-    }
-
-    public void addQueryParameter(String parameterName, Object parameterValue) {
-        var paramSeparator = this.uri.contains("?") ? "&" : "?";
-        this.uri += paramSeparator + parameterName + "=" + parameterValue.toString();
+    public void addQueryParameter(String parameterName, Object parameterValue) throws MalformedURLException {
+        var querys = this.url.getQuery();
+        var paramSeparator = querys.contains("?") ? "&" : "?";
+        var newQueyParam = paramSeparator + parameterName + "=" + parameterValue.toString();
+        this.url = new URL(this.url.toString() + newQueyParam);
     }
 }

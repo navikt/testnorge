@@ -11,18 +11,23 @@ import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
 public class SyntAmeldingConsumer extends SyntConsumer {
-    private final WebClient webClient;
 
     private static final String REST_CLIENT_EXCEPTION_MESSAGE = "Unexpected Rest Client Exception: {}";
 
-    public SyntAmeldingConsumer(ApplicationManager applicationManager, String appName, String uri, boolean shutdown) {
-        super(applicationManager, appName, uri, shutdown);
-        this.webClient = WebClient.builder().baseUrl(uri).build();
+    public SyntAmeldingConsumer(
+            ApplicationManager applicationManager,
+            String appName,
+            String uri,
+            boolean shutdown,
+            WebClient.Builder webClientBuilder
+    ) throws MalformedURLException {
+        super(applicationManager, appName, uri, shutdown, webClientBuilder.baseUrl(uri));
     }
 
     public List<ArbeidsforholdAmelding> synthesizeArbeidsforholdStart(List<String> datoer, String url) throws ApiException, InterruptedException {

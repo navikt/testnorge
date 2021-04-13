@@ -12,6 +12,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.net.MalformedURLException;
+
 @Profile("KubernetesTest")
 @Configuration
 public class KubernetesTestConfig {
@@ -46,7 +48,7 @@ public class KubernetesTestConfig {
     private int proxyPort;
 
     @Bean
-    KubernetesController kubernetesController() {
+    KubernetesController kubernetesController() throws MalformedURLException {
         var naisYaml = new NaisYaml(dockerImagePath);
         var githubConsumer = new GitHubConsumer(github_username, github_password, proxyUrl, proxyUrl, proxyPort, WebClient.builder());
         return new KubernetesController(customObjectsApi(), naisYaml, githubConsumer, isAliveUrl, dockerImagePath, maxRetries, retryDelay);

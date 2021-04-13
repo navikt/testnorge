@@ -1,40 +1,15 @@
 package no.nav.registre.syntrest.controllers;
 
-import io.kubernetes.client.ApiException;
-import no.nav.registre.syntrest.consumer.domain.SyntAmeldingConsumer;
-import no.nav.registre.syntrest.consumer.SyntGetConsumer;
-import no.nav.registre.syntrest.consumer.SyntPostConsumer;
-import no.nav.registre.syntrest.consumer.SyntPostMapConsumer;
-import no.nav.registre.syntrest.domain.aareg.Arbeidsforholdsmelding;
-import no.nav.registre.syntrest.domain.bisys.Barnebidragsmelding;
-import no.nav.registre.syntrest.domain.frikort.FrikortKvittering;
-import no.nav.registre.syntrest.domain.inst.Institusjonsmelding;
-import no.nav.registre.syntrest.domain.medl.Medlemskapsmelding;
-import no.nav.registre.syntrest.domain.popp.Inntektsmelding;
-import no.nav.registre.syntrest.domain.sam.SamMelding;
-import no.nav.registre.syntrest.domain.tp.TPmelding;
-import no.nav.registre.syntrest.domain.tps.SkdMelding;
-
-import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.ResponseEntity;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SyntControllerTest {
-
+/*
     @Mock private SyntPostConsumer<Arbeidsforholdsmelding[], String[]> aaregConsumer;
     @Mock private SyntGetConsumer<Barnebidragsmelding[]> bisysConsumer;
     @Mock private SyntGetConsumer<Institusjonsmelding[]> instConsumer;
@@ -80,7 +55,7 @@ public class SyntControllerTest {
 
         assertThat(listResponseEntity.getBody(), equalTo(expectedResponse));
     }
-/*
+
     @Test
     public void bisysTest() throws NoSuchFieldException {
         FieldSetter.setField(syntController, syntController.getClass().getDeclaredField("bisysUrl"), bisysUrl);

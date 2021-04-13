@@ -1,0 +1,66 @@
+package no.nav.registre.syntrest.config;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import lombok.RequiredArgsConstructor;
+import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.http.codec.json.Jackson2JsonDecoder;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.DefaultUriBuilderFactory;
+import org.springframework.web.util.UriBuilderFactory;
+import reactor.netty.http.client.HttpClient;
+
+import javax.net.ssl.SSLException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
+@Configuration
+@Profile("test")
+@RequiredArgsConstructor
+@Import(ApplicationCoreConfig.class)
+public class TestConfig {
+
+    @Value("${kube-config-path}")
+    private String kubeConfigPath;
+
+    private final ObjectMapper objectMapper;
+
+    @Bean
+    ScheduledExecutorService scheduledExecutorService() {
+        int executorPoolSize = 4;
+        return Executors.newScheduledThreadPool(executorPoolSize);
+    }
+
+    @Bean
+    UriBuilderFactory uriFactory() {
+        return new DefaultUriBuilderFactory();
+    }
+
+    @Bean
+    public WebClient.Builder webClientBuilder() throws SSLException {
+        // Accept all CE certificates
+        SslContext context = SslContextBuilder.forClient()
+                .trustManager(InsecureTrustManagerFactory.INSTANCE)
+                .build();
+        HttpClient httpClient = HttpClient.create().secure(t -> t.sslContext(context));
+
+        // Using fasterxmls ObjectMapper for deserialization
+        ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
+                .codecs(configurer ->
+                        configurer.defaultCodecs().jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper)))
+                .build();
+
+        return WebClient.builder()
+                .clientConnector(new ReactorClientHttpConnector(httpClient))
+                .exchangeStrategies(exchangeStrategies);
+    }
+}

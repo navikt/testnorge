@@ -14,6 +14,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.springframework.web.util.UriBuilderFactory;
 
@@ -26,6 +28,7 @@ import java.util.concurrent.ScheduledExecutorService;
 @Configuration
 @RequiredArgsConstructor
 @Import(ApplicationCoreConfig.class)
+@Profile("!test")
 public class AppConfig {
 
     @Value("${kube-config-path}")
@@ -40,6 +43,11 @@ public class AppConfig {
     @Bean
     UriBuilderFactory uriFactory() {
         return new DefaultUriBuilderFactory();
+    }
+
+    @Bean
+    WebClient.Builder webClient() {
+        return WebClient.builder();
     }
 
     @Bean
