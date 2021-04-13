@@ -1,7 +1,9 @@
 package no.nav.registre.syntrest.kubernetes;
 
 import io.kubernetes.client.ApiException;
+import lombok.RequiredArgsConstructor;
 import no.nav.registre.syntrest.consumer.SyntConsumer;
+import no.nav.registre.syntrest.consumer.SyntGetConsumer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,12 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 
 import static org.junit.Assert.assertEquals;
@@ -24,17 +28,13 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.eq;
 
-@ActiveProfiles("ApplicationManagerTest")
+
 @RunWith(SpringRunner.class)
+@SpringBootTest
 @TestPropertySource(locations = "classpath:application-test.properties")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureWireMock(port = 8082)
-@ContextConfiguration(classes = ApplicationManagerTestConfig.class)
-@EnableAutoConfiguration
+@ActiveProfiles("test")
 public class ApplicationManagerTest {
-/*
-    @Autowired
-    private KubernetesController kubernetesController;
+
     @Autowired
     private ScheduledExecutorService scheduledExecutorService;
 
@@ -44,12 +44,15 @@ public class ApplicationManagerTest {
 
     private ApplicationManager globalManager;
 
-    private SyntConsumer syntConsumerFrikort;
+    @Autowired
+    private SyntGetConsumer<List<String>> navConsumer;
+
+    @MockBean
+    private KubernetesController kubernetesController;
 
     @Before
     public void setUp() {
         globalManager = new ApplicationManager(kubernetesController, scheduledExecutorService);
-        syntConsumerFrikort = new SyntConsumer(globalManager, "synthdata-frikort");
     }
 
 
@@ -69,13 +72,13 @@ public class ApplicationManagerTest {
         Mockito.when(kubernetesController.isAlive(Mockito.anyString())).thenReturn(true);
 
         try {
-            manager.startApplication(syntConsumerFrikort);
+            manager.startApplication(navConsumer);
         } catch (InterruptedException e) {
             fail();
         }
-        manager.scheduleShutdown(syntConsumerFrikort, SHUTDOWN_TIME_DELAY_SECONDS);
+        manager.scheduleShutdown(navConsumer, SHUTDOWN_TIME_DELAY_SECONDS);
         assertEquals(1, manager.getActiveApplications().size());
-        assertTrue(manager.getActiveApplications().containsKey(syntConsumerFrikort.getAppName()));
+        assertTrue(manager.getActiveApplications().containsKey(navConsumer.getAppName()));
     }
 
 
@@ -86,7 +89,7 @@ public class ApplicationManagerTest {
         ApplicationManager manager = new ApplicationManager(kubernetesController, scheduledExecutorService);
 
         try {
-            manager.startApplication(syntConsumerFrikort);
+            manager.startApplication(navConsumer);
         } catch (ApiException | InterruptedException e) { assertTrue(true); }
         assertEquals(0, manager.getActiveApplications().size());
     }
@@ -99,15 +102,15 @@ public class ApplicationManagerTest {
         // SyntConsumer syntConsumerInntekt = new SyntConsumer(manager, "synthdata-inntekt");
         Mockito.when(kubernetesController.isAlive(Mockito.anyString())).thenReturn(true);
 
-        manager.startApplication(syntConsumerInntekt);
-        manager.scheduleShutdown(syntConsumerInntekt, SHUTDOWN_TIME_DELAY_SECONDS);
+        manager.startApplication(navConsumer);
+        manager.scheduleShutdown(navConsumer, SHUTDOWN_TIME_DELAY_SECONDS);
         assertEquals(1, manager.getActiveApplications().size());
-        assertTrue(manager.getActiveApplications().keySet().contains("synthdata-inntekt"));
+        assertTrue(manager.getActiveApplications().keySet().contains("synthdata-nav"));
         Thread.sleep((SHUTDOWN_TIME_DELAY_SECONDS * 1000) + 100);
-        manager.shutdownApplication("synthdata-inntekt");
-        Mockito.verify(kubernetesController, Mockito.atLeastOnce()).takedownImage(eq("synthdata-inntekt"));
+        manager.shutdownApplication("synthdata-nav");
+        Mockito.verify(kubernetesController, Mockito.atLeastOnce()).takedownImage(eq("synthdata-nav"));
         Thread.sleep((SHUTDOWN_TIME_DELAY_SECONDS * 1000) + 100);
         assertEquals(0, manager.getActiveApplications().size());
     }
-    */
+
 }
