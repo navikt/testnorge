@@ -78,7 +78,7 @@ public class SyntConsumerConfig {
 
     @Bean
     SyntPostConsumer<List<String>, List<Arbeidsforholdsmelding>> aaregConsumer() throws MalformedURLException {
-        return new SyntPostConsumer<List<String>, List<Arbeidsforholdsmelding>>(
+        return new SyntPostConsumer<>(
                 applicationManager,
                 "synthdata-aareg",
                 aaregUrl,
@@ -90,7 +90,7 @@ public class SyntConsumerConfig {
 
     @Bean
     SyntGetConsumer<List<Barnebidragsmelding>> bisysConsumer() throws MalformedURLException {
-        return new SyntGetConsumer<List<Barnebidragsmelding>>(
+        return new SyntGetConsumer<>(
                 applicationManager,
                 "synthdata-arena-bisys",
                 bisysUrl,
@@ -102,7 +102,7 @@ public class SyntConsumerConfig {
 
     @Bean
     SyntGetConsumer<List<Institusjonsmelding>> instConsumer() throws MalformedURLException {
-        return new SyntGetConsumer<List<Institusjonsmelding>>(
+        return new SyntGetConsumer<>(
                 applicationManager,
                 "synthdata-inst",
                 instUrl,
@@ -115,7 +115,7 @@ public class SyntConsumerConfig {
 
     @Bean
     SyntGetConsumer<List<Medlemskapsmelding>> medlConsumer() throws MalformedURLException {
-        return new SyntGetConsumer<List<Medlemskapsmelding>>(
+        return new SyntGetConsumer<>(
                 applicationManager,
                 "synthdata-medl",
                 medlUrl,
@@ -127,7 +127,7 @@ public class SyntConsumerConfig {
 
     @Bean
     SyntGetConsumer<List<String>> meldekortConsumer() throws MalformedURLException {
-        return new SyntGetConsumer<List<String>>(
+        return new SyntGetConsumer<>(
                 applicationManager,
                 "synthdata-arena-meldekort",
                 arenaMeldekortUrl,
@@ -139,7 +139,7 @@ public class SyntConsumerConfig {
 
     @Bean
     SyntGetConsumer<List<String>> navConsumer() throws MalformedURLException {
-        return new SyntGetConsumer<List<String>>(
+        return new SyntGetConsumer<>(
                 applicationManager,
                 "synthdata-nav",
                 navEndringsmeldingUrl,
@@ -150,7 +150,7 @@ public class SyntConsumerConfig {
     }
     @Bean
     SyntPostConsumer<List<String>, List<Inntektsmelding>> poppConsumer() throws MalformedURLException {
-        return new SyntPostConsumer<List<String>, List<Inntektsmelding>>(
+        return new SyntPostConsumer<>(
                 applicationManager,
                 "synthdata-popp",
                 poppUrl,
@@ -162,7 +162,7 @@ public class SyntConsumerConfig {
 
     @Bean
     SyntGetConsumer<List<SamMelding>> samConsumer() throws MalformedURLException {
-        return new SyntGetConsumer<List<SamMelding>>(
+        return new SyntGetConsumer<>(
                 applicationManager,
                 "synthdata-sam",
                 samUrl,
@@ -175,8 +175,7 @@ public class SyntConsumerConfig {
     @Bean
     SyntPostConsumer<Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>,
                 Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>> inntektConsumer() throws MalformedURLException {
-        return new SyntPostConsumer<Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>,
-                Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>>(
+        return new SyntPostConsumer<>(
                 applicationManager,
                 "synthdata-inntekt",
                 inntektUrl,
@@ -188,7 +187,7 @@ public class SyntConsumerConfig {
 
     @Bean
     SyntGetConsumer<List<TPmelding>> tpConsumer() throws MalformedURLException {
-        return new SyntGetConsumer<List<TPmelding>>(
+        return new SyntGetConsumer<>(
                 applicationManager,
                 "synthdata-tp",
                 tpUrl,
@@ -200,7 +199,7 @@ public class SyntConsumerConfig {
 
     @Bean
     SyntGetConsumer<List<SkdMelding>> tpsConsumer() throws MalformedURLException {
-        return new SyntGetConsumer<List<SkdMelding>>(
+        return new SyntGetConsumer<>(
                 applicationManager,
                 "synthdata-tps",
                 tpsUrl,
@@ -212,7 +211,7 @@ public class SyntConsumerConfig {
 
     @Bean
     SyntPostConsumer<Map<String, Integer>, Map<String, List<FrikortKvittering>>> frikortConsumer() throws MalformedURLException {
-        return new SyntPostConsumer<Map<String, Integer>, Map<String, List<FrikortKvittering>>>(
+        return new SyntPostConsumer<>(
                 applicationManager,
                 "synthdata-frikort",
                 frikortUrl,

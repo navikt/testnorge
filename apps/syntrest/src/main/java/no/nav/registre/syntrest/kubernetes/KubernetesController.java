@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.consumer.GitHubConsumer;
 import no.nav.registre.syntrest.utils.NaisYaml;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -49,7 +48,6 @@ public class KubernetesController {
             NaisYaml naisYaml,
             GitHubConsumer gitHubConsumer,
             @Value("${isAlive}") String isAliveUrl,
-            @Value("${docker-image-path}") String dockerImagePath,
             @Value("${max-alive-retries}") int maxRetries,
             @Value("${alive-retry-delay}") int retryDelay
     ) {

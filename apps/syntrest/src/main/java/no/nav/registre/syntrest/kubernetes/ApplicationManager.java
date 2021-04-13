@@ -33,7 +33,7 @@ public class ApplicationManager {
     private final KubernetesController kubernetesController;
     private final ScheduledExecutorService scheduledExecutorService;
 
-    private Map<String, ScheduledFuture<?>> activeApplications;
+    private final Map<String, ScheduledFuture<?>> activeApplications;
 
     public ApplicationManager(KubernetesController kubernetesController, ScheduledExecutorService scheduledExecutorService) {
         this.kubernetesController = kubernetesController;

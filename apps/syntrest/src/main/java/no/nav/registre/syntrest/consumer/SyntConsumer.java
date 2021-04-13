@@ -30,7 +30,7 @@ public abstract class SyntConsumer {
     private long shutdownTimeDelaySeconds;
 
 
-    public SyntConsumer(ApplicationManager applicationManager, String name, String uri, boolean shutdown, WebClient.Builder webClientBuilder) throws MalformedURLException {
+    protected SyntConsumer(ApplicationManager applicationManager, String name, String uri, boolean shutdown, WebClient.Builder webClientBuilder) throws MalformedURLException {
         this.applicationManager = applicationManager;
         this.appName = name;
         this.shutdown = shutdown;

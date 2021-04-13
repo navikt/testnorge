@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import io.kubernetes.client.ApiException;
 import io.kubernetes.client.apis.CustomObjectsApi;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,8 +21,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
 
 import java.util.Arrays;
 import java.util.Map;
@@ -34,6 +37,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
+
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -56,7 +60,7 @@ public class SyntControllerIntegrationTest {
 
     ObjectMapper objectMapper = new ObjectMapper();
 
-    @BeforeEach
+    @Before
     public void setup() throws Exception {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
     }
@@ -79,7 +83,7 @@ public class SyntControllerIntegrationTest {
                                 .withHeader("Content-Type", "application/json")
                                 .withBody("[\"hello\", \"world\"]")));
 
-        // var result = mockMvc.perform(get("/nav/Z010").withQueryParam("numToGenerate", equalTo("2")))
+        // var result = mockMvc.perform(MockMvcRequestBuilders.get("/nav/Z010").queryParam("numToGenerate", "2"));
         var result = syntController.generateNavEndringsmelding("Z010", 2);
         System.out.println(result);
 

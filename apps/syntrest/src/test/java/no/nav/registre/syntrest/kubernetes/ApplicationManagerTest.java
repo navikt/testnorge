@@ -103,7 +103,7 @@ public class ApplicationManagerTest {
         assertTrue(manager.getActiveApplications().keySet().contains("synthdata-nav"));
         Thread.sleep((SHUTDOWN_TIME_DELAY_SECONDS * 1000) + 100);
         manager.shutdownApplication("synthdata-nav");
-        Mockito.verify(kubernetesController, Mockito.atLeastOnce()).takedownImage(eq("synthdata-nav"));
+        Mockito.verify(kubernetesController, Mockito.atLeastOnce()).takedownImage("synthdata-nav");
         Thread.sleep((SHUTDOWN_TIME_DELAY_SECONDS * 1000) + 100);
         assertEquals(0, manager.getActiveApplications().size());
     }
