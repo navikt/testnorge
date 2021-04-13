@@ -3,8 +3,10 @@ package no.nav.registre.syntrest.consumer;
 import io.kubernetes.client.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.consumer.command.PostArbeidsforholdHistorikkCommand;
+import no.nav.registre.syntrest.consumer.command.PostArbeidsforholdMedTypeCommand;
 import no.nav.registre.syntrest.consumer.command.PostArbeidsforholdStartCommand;
 import no.nav.registre.syntrest.domain.amelding.ArbeidsforholdAmelding;
+import no.nav.registre.syntrest.domain.amelding.ArbeidsforholdPeriode;
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 
 import org.springframework.web.client.RestClientException;
@@ -37,6 +39,24 @@ public class SyntAmeldingConsumer extends SyntConsumer {
 
         try {
             return new PostArbeidsforholdStartCommand(datoer, url, webClient).call();
+        } catch (RestClientException e) {
+            log.error(REST_CLIENT_EXCEPTION_MESSAGE, Arrays.toString(e.getStackTrace()));
+            throw e;
+        }
+    }
+
+    public ArbeidsforholdAmelding synthesizeArbeidsforholdStart(ArbeidsforholdPeriode request, String url) {
+        try {
+            startSyntApplication();
+        } catch (ApiException e) {
+            return null;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return null;
+        }
+
+        try {
+            return new PostArbeidsforholdMedTypeCommand(request, url, webClient).call();
         } catch (RestClientException e) {
             log.error(REST_CLIENT_EXCEPTION_MESSAGE, Arrays.toString(e.getStackTrace()));
             throw e;
