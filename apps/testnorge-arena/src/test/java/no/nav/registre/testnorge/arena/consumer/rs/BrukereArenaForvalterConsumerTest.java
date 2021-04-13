@@ -42,7 +42,7 @@ public class BrukereArenaForvalterConsumerTest {
 
     @Test(expected = Exception.class)
     public void checkExceptionOccursOnBadSentTilArenaForvalterRequest() {
-        NyeBrukereResponse response = brukereArenaForvalterConsumer.sendTilArenaForvalter(null);
+        brukereArenaForvalterConsumer.sendTilArenaForvalter(null);
     }
 
     @Test
