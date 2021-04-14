@@ -113,7 +113,7 @@ public class KubernetesControllerTest {
     }
 
 
-    @Test
+    @Test(expected = RuntimeException.class)
     public void deployedButNotUp() throws InterruptedException, ApiException {
         githubTagStub();
         stubFor(get(urlEqualTo("/synthdata-frikort/internal/isAlive"))

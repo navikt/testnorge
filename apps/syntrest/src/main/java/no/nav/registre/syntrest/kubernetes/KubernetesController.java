@@ -17,10 +17,8 @@ import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import static java.util.Objects.isNull;
 
@@ -108,6 +106,19 @@ public class KubernetesController {
     }
 
     public boolean isAlive(String appName) {
+        try {
+            String response = webClient.get()
+                    .uri(isAliveUrl.replace("{appName}", appName))
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+            return "1".equals(response);
+        } catch (WebClientResponseException.ServiceUnavailable | WebClientResponseException.NotFound e) {
+            return false;
+        }
+    }
+
+    private boolean pollApplication(String appName) {
         String response = webClient.get()
                 .uri(isAliveUrl.replace("{appName}", appName))
                 .retrieve()
@@ -144,12 +155,14 @@ public class KubernetesController {
         return applications;
     }
 
-    private void waitForDeployment(String appName) throws InterruptedException, ApiException {
+    private void waitForDeployment(String appName) throws ApiException {
         log.info("Waiting for '{}' to deploy... (max {} seconds)", appName, (maxRetries * retryDelay));
-        if (!isAlive(appName)) {
+        try {
+            pollApplication(appName);
+        } catch (RuntimeException e){ // RetryExhaustedException
             log.error("Application '{}' failed to deploy. Terminating...", appName);
             takedownImage(appName);
-            return;
+            throw e;
         }
         log.info("Application '{}' deployed successfully!", appName);
     }
