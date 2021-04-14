@@ -36,6 +36,8 @@ public abstract class BoAdresse {
 
     private Boolean deltAdresse;
 
+    private LocalDateTime gyldigTilOgMed;
+
     public abstract String getAdressetype();
 
     public boolean isGateadresse() {

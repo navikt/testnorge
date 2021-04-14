@@ -32,8 +32,18 @@ public class PdlBostedsadresseMappingStrategy implements MappingStrategy {
         PdlBostedadresse bostedadresse = new PdlBostedadresse();
         bostedadresse.setKilde(CONSUMER);
         bostedadresse.setGyldigFraOgMed(getDato(adresse.getFlyttedato()));
+        bostedadresse.setGyldigTilOgMed(getDato(adresse.getGyldigTilOgMed()));
         bostedadresse.setCoAdressenavn(getCoadresse(adresse));
         return bostedadresse;
+    }
+
+    private static void fixGyldigTilDato(List<BoAdresse> bostedsadresse) {
+        for (var i = 0; i < bostedsadresse.size(); i++) {
+            if (i + 1 < bostedsadresse.size()) {
+                bostedsadresse.get(i).setGyldigTilOgMed(
+                        bostedsadresse.get(i + 1).getFlyttedato().minusDays(1));
+            }
+        }
     }
 
     @Override
@@ -46,6 +56,7 @@ public class PdlBostedsadresseMappingStrategy implements MappingStrategy {
 
                         List<BoAdresse> bostedsadresse = new ArrayList<>(person.getBoadresse());
                         Collections.reverse(bostedsadresse);
+                        fixGyldigTilDato(bostedsadresse);
 
                         historikk.getPdlAdresser().addAll(
                                 Stream.of(
