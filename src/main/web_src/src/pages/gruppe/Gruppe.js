@@ -1,5 +1,4 @@
-import React, { useState } from 'react'
-import { useMount } from 'react-use'
+import React, { useEffect, useState } from 'react'
 import useBoolean from '~/utils/hooks/useBoolean'
 import StatusListeConnector from '~/components/bestilling/statusListe/StatusListeConnector'
 import Loading from '~/components/ui/loading/Loading'
@@ -33,15 +32,20 @@ export default function Gruppe({
 }) {
 	const [visning, setVisning] = useState(VISNING_PERSONER)
 	const [startBestillingAktiv, visStartBestilling, skjulStartBestilling] = useBoolean(false)
-	useMount(() => {
-		getGruppe()
+	const [sidetall, setSidetall] = useState(0)
+	const [sideStoerrelse, setSideStoerrelse] = useState(10)
+
+	useEffect(() => {
 		getBestillinger()
-	})
+	}, [])
 
-	if (isFetching) return <Loading label="Laster personer" panel />
+	useEffect(() => {
+		getGruppe(sidetall, sideStoerrelse)
+	}, [sidetall, sideStoerrelse])
 
+	if (isFetching && !gruppe) return <Loading label="Laster personer" panel />
 	if (!gruppe) {
-		getGruppe()
+		getGruppe(sidetall, sideStoerrelse)
 		getBestillinger()
 		return null
 	}
@@ -84,7 +88,7 @@ export default function Gruppe({
 				<ToggleGruppe onChange={byttVisning} name="toggler">
 					<ToggleKnapp value={VISNING_PERSONER} checked={visning === VISNING_PERSONER}>
 						<Icon size={13} kind={visning === VISNING_PERSONER ? 'manLight' : 'man'} />
-						{`Personer (${identArray.length})`}
+						{`Personer (${gruppe.antallIdenter})`}
 					</ToggleKnapp>
 					<ToggleKnapp value={VISNING_BESTILLING} checked={visning === VISNING_BESTILLING}>
 						<Icon
@@ -106,7 +110,15 @@ export default function Gruppe({
 				/>
 			)}
 
-			{visning === VISNING_PERSONER && <PersonListeConnector iLaastGruppe={erLaast} />}
+			{visning === VISNING_PERSONER && (
+				<PersonListeConnector
+					iLaastGruppe={erLaast}
+					sidetall={sidetall}
+					sideStoerrelse={sideStoerrelse}
+					setSidetall={setSidetall}
+					setSideStoerrelse={setSideStoerrelse}
+				/>
+			)}
 			{visning === VISNING_BESTILLING && <BestillingListeConnector iLaastGruppe={erLaast} />}
 		</div>
 	)

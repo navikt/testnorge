@@ -29,6 +29,10 @@ export default class DollyEndpoints {
 		return `${groupBase}/${gruppeId}`
 	}
 
+	static gruppeByIdPaginert(gruppeId, pageNo, pageSize) {
+		return `${groupBase}/${gruppeId}/page/${pageNo}?pageSize=${pageSize}`
+	}
+
 	static gruppeByUser(userId) {
 		return `${groupBase}?brukerId=${userId}`
 	}

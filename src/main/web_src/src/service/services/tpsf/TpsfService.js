@@ -7,7 +7,7 @@ const getKontaktinfoUrl = () => `${config.services.proxyBackend}/kontaktinfo`
 export default {
 	getPersoner(userArray) {
 		if (!userArray) return
-		const endpoint = getTpsfUrl() + '/dolly/testdata/hentpersoner'
+		const endpoint = getTpsfUrl() + `/dolly/testdata/hentpersoner`
 
 		// Må bruke post-request pga maxString-limit på en GET-request
 		return Request.post(endpoint, userArray)

@@ -28,7 +28,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
-		getGruppe: () => ownProps.gruppeId && dispatch(actions.getById(ownProps.gruppeId)),
+		getGruppe: (pageNo, pageSize) =>
+			ownProps.gruppeId && dispatch(actions.getById(ownProps.gruppeId, pageNo, pageSize)),
 		getOrganisasjoner: fetchOrganisasjoner(dispatch),
 		getBestillinger: () =>
 			ownProps.brukerId

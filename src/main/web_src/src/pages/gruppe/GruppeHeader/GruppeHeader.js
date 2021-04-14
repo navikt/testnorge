@@ -49,7 +49,7 @@ export default function GruppeHeader({
 						title="Eier"
 						value={gruppe.opprettetAv.brukernavn || gruppe.opprettetAv.navIdent}
 					/>
-					<Header.TitleValue title="Antall personer" value={identArray.length} />
+					<Header.TitleValue title="Antall personer" value={gruppe.antallIdenter} />
 					<Header.TitleValue
 						title="Sist endret"
 						value={Formatters.formatStringDates(gruppe.datoEndret)}

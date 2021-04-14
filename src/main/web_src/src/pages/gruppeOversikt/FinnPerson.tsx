@@ -35,6 +35,7 @@ type Respons = {
 			}
 			error?: string
 			message?: string
+			sidetall?: number
 		}
 	}
 }
@@ -67,6 +68,7 @@ export default function FinnPerson({ naviger }: FinnPerson) {
 
 	const navigerTilIdent = async (ident: string) => {
 		naviger(ident).then((response: Respons) => {
+			window.sessionStorage.setItem('sidetall', String(response.value.data.sidetall))
 			if (response.value.data.error) {
 				setFeilmelding(response.value.data.message)
 			} else {

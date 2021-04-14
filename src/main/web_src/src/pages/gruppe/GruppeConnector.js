@@ -22,7 +22,7 @@ const mapStateToProps = (state, ownProps) => ({
 const mapDispatchToProps = (dispatch, ownProps) => {
 	const { gruppeId } = ownProps.match.params
 	return {
-		getGruppe: () => dispatch(actions.getById(gruppeId)),
+		getGruppe: (pageNo, pageSize) => dispatch(actions.getById(gruppeId, pageNo, pageSize)),
 		navigerTilPerson: ident => dispatch(navigerTilPerson(ident)),
 		deleteGruppe: () => dispatch(actions.remove(gruppeId)),
 		laasGruppe: () =>

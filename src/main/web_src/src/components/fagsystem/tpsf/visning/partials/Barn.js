@@ -17,8 +17,8 @@ export const Barn = ({ data, type }) => {
 	useEffect(() => {
 		const fetchData = async () => {
 			setIsLoading(true)
-			const respons = await TpsfApi.getPersoner([data.ident])
-			setBarnInfo(respons.data)
+			const respons = await TpsfApi.getPersoner([data.ident], 0, 10)
+			setBarnInfo(respons.data.contents)
 			setIsLoading(false)
 		}
 		fetchData()

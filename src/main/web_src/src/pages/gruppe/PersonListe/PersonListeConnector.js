@@ -1,15 +1,29 @@
 import { connect } from 'react-redux'
-import { fetchTpsfPersoner, actions, sokSelector, selectPersonListe } from '~/ducks/fagsystem'
+import {
+	actions as actionList,
+	fetchTpsfPersoner,
+	selectPersonListe,
+	sokSelector
+} from '~/ducks/fagsystem'
+import { actions } from '~/ducks/gruppe'
+import { getBestillinger } from '~/ducks/bestillingStatus'
 import { createLoadingSelector } from '~/ducks/loading'
 import personListe from './PersonListe'
 
-const loadingSelector = createLoadingSelector(actions.getTpsf)
-const mapStateToProps = (state, ownProps) => ({
-	searchActive: Boolean(state.search),
-	personListe: sokSelector(selectPersonListe(state), state.search),
-	isFetching: loadingSelector(state),
-	visPerson: state.finnPerson.visPerson
-})
+const loadingSelector = createLoadingSelector([
+	actions.getById,
+	actionList.getTpsf,
+	getBestillinger
+])
+const mapStateToProps = (state, ownProps) => {
+	return {
+		personListe: sokSelector(selectPersonListe(state), state.search),
+		gruppeInfo: state.gruppe.gruppeInfo,
+		identer: state.gruppe.ident,
+		isFetching: loadingSelector(state),
+		visPerson: state.finnPerson.visPerson
+	}
+}
 
 const mapDispatchToProps = { fetchTpsfPersoner }
 

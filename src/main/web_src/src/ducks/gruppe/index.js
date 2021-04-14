@@ -10,7 +10,7 @@ import { handleActions } from '~/ducks/utils/immerHandleActions'
 
 export const actions = createActions(
 	{
-		getById: DollyApi.getGruppeById,
+		getById: DollyApi.getGruppeByIdPaginert,
 		getAlle: DollyApi.getGrupperPaginert,
 		getByUserId: DollyApi.getGruppeByUserId,
 		create: DollyApi.createGruppe,
@@ -46,6 +46,7 @@ export default handleActions(
 		},
 		[onSuccess(actions.getById)](state, action) {
 			const gruppe = action.payload.data
+			state.gruppeInfo = action.payload.data
 			state.ident =
 				gruppe.identer &&
 				gruppe.identer.reduce((acc, curr) => {

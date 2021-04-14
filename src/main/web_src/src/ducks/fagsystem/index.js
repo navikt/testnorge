@@ -208,8 +208,11 @@ export default handleActions(
 // Thunk
 export const fetchTpsfPersoner = () => (dispatch, getState) => {
 	const state = getState()
-	const identer = Object.keys(state.gruppe.ident)
-	if (identer && identer.length >= 1) dispatch(actions.getTpsf(identer))
+
+	let identListe = []
+	Object.values(state.gruppe?.ident)?.forEach(person => identListe.push(person.ident))
+
+	if (identListe && identListe.length >= 1) dispatch(actions.getTpsf(identListe))
 }
 
 /**
@@ -352,7 +355,6 @@ export const selectPersonListe = state => {
 		)
 		.map(ident => {
 			const tpsfIdent = fagsystem.tpsf[ident.ident]
-
 			const mellomnavn = tpsfIdent.mellomnavn ? `${tpsfIdent.mellomnavn.charAt(0)}.` : ''
 
 			return {

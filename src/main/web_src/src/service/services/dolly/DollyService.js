@@ -11,6 +11,10 @@ export default {
 		return Request.get(Endpoints.gruppePaginert(page, pageSize))
 	},
 
+	getGruppeByIdPaginert(gruppeId, pageNo, pageSize) {
+		return Request.get(Endpoints.gruppeByIdPaginert(gruppeId, pageNo, pageSize))
+	},
+
 	getGruppeById(gruppeId) {
 		return Request.get(Endpoints.gruppeById(gruppeId))
 	},
