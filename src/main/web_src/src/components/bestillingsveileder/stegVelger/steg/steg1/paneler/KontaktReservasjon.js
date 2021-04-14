@@ -29,18 +29,18 @@ KontaktReservasjonsPanel.heading = 'Kontakt- og reservasjonsregisteret'
 
 KontaktReservasjonsPanel.initialValues = ({ set, del, has }) => ({
 	krrstub: {
-		label: 'Har kontaktinformasjon',
+		label: 'Tilpass standard kontakt- og reservasjonsopplysninger',
 		checked: has('krrstub'),
 		add() {
 			set('krrstub', {
 				epost: '',
-				gyldigFra: new Date(),
+				gyldigFra: null,
 				mobil: '',
 				sdpAdresse: '',
 				sdpLeverandoer: '',
 				spraak: '',
-				registrert: true,
-				reservert: false
+				registrert: null,
+				reservert: null
 			})
 		},
 		remove() {

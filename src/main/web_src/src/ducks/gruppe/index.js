@@ -46,10 +46,12 @@ export default handleActions(
 		},
 		[onSuccess(actions.getById)](state, action) {
 			const gruppe = action.payload.data
-			state.ident = gruppe.identer.reduce((acc, curr) => {
-				acc[curr.ident] = { ...curr, gruppeId: gruppe.id }
-				return acc
-			}, {})
+			state.ident =
+				gruppe.identer &&
+				gruppe.identer.reduce((acc, curr) => {
+					acc[curr.ident] = { ...curr, gruppeId: gruppe.id }
+					return acc
+				}, {})
 			state.byId[gruppe.id] = _omit(gruppe, 'identer')
 		},
 		[onSuccess(actions.getAlle)](state, action) {
