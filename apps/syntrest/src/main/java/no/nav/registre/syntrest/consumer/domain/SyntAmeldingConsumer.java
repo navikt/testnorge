@@ -21,6 +21,9 @@ import java.util.List;
 public class SyntAmeldingConsumer extends SyntConsumer {
 
     private static final String REST_CLIENT_EXCEPTION_MESSAGE = "Unexpected Rest Client Exception: {}";
+    private final String historikkPath;
+    private final String startPath;
+    private final String startSpesifikkPath;
 
     public SyntAmeldingConsumer(
             ApplicationManager applicationManager,
@@ -30,12 +33,15 @@ public class SyntAmeldingConsumer extends SyntConsumer {
             WebClient.Builder webClientBuilder
     ) throws MalformedURLException {
         super(applicationManager, appName, uri, shutdown, webClientBuilder.baseUrl(uri));
+        this.historikkPath = this.url.getPath() + "/arbeidsforhold";
+        this.startPath = this.url.getPath() + "/arbeidsforhold/start";
+        this.startSpesifikkPath = this.url.getPath() + "/arbeidsforhold/start/%s";
     }
 
-    public List<ArbeidsforholdAmelding> synthesizeArbeidsforholdStart(List<String> datoer, String url) throws ApiException, InterruptedException {
+    public List<ArbeidsforholdAmelding> synthesizeArbeidsforholdStart(List<String> datoer) throws ApiException, InterruptedException {
         startApplication();
         try {
-            return new PostArbeidsforholdStartCommand(datoer, url, webClient).call();
+            return new PostArbeidsforholdStartCommand(datoer, startPath, webClient).call();
         } catch (RestClientException e) {
             log.error(REST_CLIENT_EXCEPTION_MESSAGE, Arrays.toString(e.getStackTrace()));
             throw e;
@@ -44,10 +50,13 @@ public class SyntAmeldingConsumer extends SyntConsumer {
         }
     }
 
-    public ArbeidsforholdAmelding synthesizeArbeidsforholdStart(ArbeidsforholdPeriode request, String url) throws ApiException, InterruptedException {
+    public ArbeidsforholdAmelding synthesizeArbeidsforholdStart(
+            ArbeidsforholdPeriode request,
+            String arbeidsforholdType
+    ) throws ApiException, InterruptedException {
         startApplication();
         try {
-            return new PostArbeidsforholdMedTypeCommand(request, url, webClient).call();
+            return new PostArbeidsforholdMedTypeCommand(request, String.format(startSpesifikkPath, arbeidsforholdType), webClient).call();
         } catch (RestClientException e) {
             log.error(REST_CLIENT_EXCEPTION_MESSAGE, Arrays.toString(e.getStackTrace()));
             throw e;
@@ -57,12 +66,11 @@ public class SyntAmeldingConsumer extends SyntConsumer {
     }
 
     public List<ArbeidsforholdAmelding> synthesizeArbeidsforholdHistorikk(
-            ArbeidsforholdAmelding tidligereArbeidsforhold,
-            String syntAmeldingUrlPath
+            ArbeidsforholdAmelding tidligereArbeidsforhold
     ) throws ApiException, InterruptedException {
         startApplication();
         try {
-            return new PostArbeidsforholdHistorikkCommand(tidligereArbeidsforhold, syntAmeldingUrlPath, webClient).call();
+            return new PostArbeidsforholdHistorikkCommand(tidligereArbeidsforhold, historikkPath, webClient).call();
         } catch (RestClientException e) {
             log.error(REST_CLIENT_EXCEPTION_MESSAGE, Arrays.toString(e.getStackTrace()));
             throw e;
