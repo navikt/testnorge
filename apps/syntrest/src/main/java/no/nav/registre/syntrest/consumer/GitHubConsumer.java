@@ -14,8 +14,11 @@ import reactor.netty.http.client.HttpClient;
 import reactor.netty.tcp.ProxyProvider;
 
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.Objects;
+
+import static java.util.Objects.isNull;
 
 @Slf4j
 @Component
@@ -33,18 +36,20 @@ public class GitHubConsumer {
             @Value("${github_username}") String username,
             @Value("${github_password}") String password,
             @Value("${github_url}") String githubUrl,
-            @Value("${proxy-url") String proxyUrl,
-            @Value("${proxy-port}") int proxyPort,
+            @Value("${http.proxy:#{null}}") String proxy,
             WebClient.Builder webClientBuilder
     ) throws MalformedURLException {
-        WebClient.Builder builder = WebClient.builder();
+        WebClient.Builder builder = webClientBuilder.clone();
 
-        if (!"local".equals(proxyUrl) && proxyPort != 0) {
+        if (!isNull(proxy)) {
+            log.info("Setter opp proxy host {} for Client Credentials", proxy);
+            var uri = URI.create(proxy);
+
             HttpClient httpClient = HttpClient.create()
-                    .tcpConfiguration(tcpClient -> tcpClient.proxy(proxy -> proxy
+                    .tcpConfiguration(tcpClient -> tcpClient.proxy(p -> p
                             .type(ProxyProvider.Proxy.HTTP)
-                            .host(proxyUrl)
-                            .port(proxyPort)));
+                            .host(uri.getHost())
+                            .port(uri.getPort())));
 
             ReactorClientHttpConnector connector = new ReactorClientHttpConnector(httpClient);
             builder.clientConnector(connector);
@@ -75,7 +80,7 @@ public class GitHubConsumer {
                 .bodyToMono(JsonNode.class)
                 .block();
 
-        if (!Objects.isNull(queryAnswer)) {
+        if (!isNull(queryAnswer)) {
             String tag = queryAnswer.findValue("version").asText();
             log.info("Found {} version {}.", appName, tag);
             return tag;
