@@ -37,24 +37,11 @@ public class GitHubConsumer {
             @Value("${proxy-port}") int proxyPort,
             WebClient.Builder webClientBuilder
     ) throws MalformedURLException {
-        WebClient.Builder builder = webClientBuilder.clone();
         this.url = new URL(githubUrl);
-
-        if (!"local".equals(proxyUrl) && proxyPort != 0) {
-            HttpClient httpClient = HttpClient.create()
-                    .tcpConfiguration(tcpClient -> tcpClient.proxy(proxy -> proxy
-                            .type(ProxyProvider.Proxy.HTTP)
-                            .host(proxyUrl)
-                            .port(proxyPort)));
-
-            ReactorClientHttpConnector connector = new ReactorClientHttpConnector(httpClient);
-            builder.clientConnector(connector);
-        }
-
         this.username = username;
         this.password = password;
         var baseUrl = this.url.getProtocol() + "://" + this.url.getAuthority();
-        this.webClient = builder.baseUrl(baseUrl).build();
+        this.webClient = webClientBuilder.baseUrl(baseUrl).build();
     }
 
     public String getApplicationTag(String appName) {
