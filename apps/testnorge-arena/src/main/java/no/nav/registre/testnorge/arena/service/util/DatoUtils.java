@@ -53,7 +53,7 @@ public class DatoUtils {
         return null;
     }
 
-    private LocalDate finnTidligsteDatoAap(List<NyttVedtakAap> vedtak) {
+    public LocalDate finnTidligsteDatoAap(List<NyttVedtakAap> vedtak) {
         var tidligsteDato = LocalDate.now();
         for (var vedtaket : vedtak) {
             tidligsteDato = finnTidligsteDatoAvTo(tidligsteDato, vedtaket.getFraDato());

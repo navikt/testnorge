@@ -93,7 +93,7 @@ include(':varslinger-api')
 include(':commands')
 include(':testnorge-inntekt')
 include(':inst-local')
-include(':arbeidsforhold-api')
+include(':arbeidsforhold-service')
 include(':tp-core')
 include(':testnorge-aareg')
 include(':applikasjonsanalyse-frontend')
@@ -117,6 +117,7 @@ include(':mn-synt-arbeidsforhold-service')
 include(':organisasjon-orgnummer-service')
 include(':organisasjon-forvalter')
 include(':tps-identer-vedlikehold')
+include(':adresse-service')
 
 project(":inntektsmelding-generator-service").projectDir = file('apps/inntektsmelding-generator-service')
 project(":testnorge-tss").projectDir = file('apps/testnorge-tss')
@@ -182,7 +183,7 @@ project(":varslinger-api").projectDir = file('apps/varslinger-api')
 project(":commands").projectDir = file('libs/commands')
 project(":testnorge-inntekt").projectDir = file('apps/testnorge-inntekt')
 project(":inst-local").projectDir = file('apps/testnorge-inst/inst-local')
-project(":arbeidsforhold-api").projectDir = file('apps/arbeidsforhold-api')
+project(":arbeidsforhold-service").projectDir = file('apps/arbeidsforhold-service')
 project(":tp-core").projectDir = file('apps/testnorge-tp/tp-core')
 project(":testnorge-aareg").projectDir = file('apps/testnorge-aareg')
 project(":applikasjonsanalyse-frontend").projectDir = file('apps/applikasjonsanalyse-frontend')
@@ -206,6 +207,7 @@ project(":ident-check-in-prod-service").projectDir = file('apps/ident-check-in-p
 project(":organisasjon-orgnummer-service").projectDir = file('apps/organisasjon-orgnummer-service')
 project(":organisasjon-forvalter").projectDir = file('apps/organisasjon-forvalter')
 project(":tps-identer-vedlikehold").projectDir = file('apps/tps-identer-vedlikehold')
+project(":adresse-service").projectDir = file('apps/adresse-service')
 
 include 'organisasjon-mottak-service'
 project(":organisasjon-mottak-service").projectDir = file('apps/organisasjon-mottak-service')
@@ -278,3 +280,12 @@ project(":samhandlerregisteret-proxy").projectDir = file('proxies/samhandlerregi
 
 include 'pdl-proxy'
 project(":pdl-proxy").projectDir = file('proxies/pdl-proxy')
+
+include 'aareg-proxy'
+project(":aareg-proxy").projectDir = file('proxies/aareg-proxy')
+
+include 'security-token-service'
+project(":security-token-service").projectDir = file('libs/security-token-service')
+
+include 'organisasjon-faste-data-service'
+project(":organisasjon-faste-data-service").projectDir = file('apps/organisasjon-faste-data-service')

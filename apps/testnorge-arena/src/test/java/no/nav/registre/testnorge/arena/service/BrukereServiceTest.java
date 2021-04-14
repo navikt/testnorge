@@ -1,7 +1,6 @@
 package no.nav.registre.testnorge.arena.service;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -130,8 +129,8 @@ public class BrukereServiceTest {
     public void fyllOverfullArenaForvalter() {
         NyeBrukereResponse nyeIdenter = opprettIdenter(null, miljoe);
 
-        assertThat(nyeIdenter.getArbeidsoekerList(), is(Collections.EMPTY_LIST));
-        assertThat(nyeIdenter.getNyBrukerFeilList(), is(Collections.EMPTY_LIST));
+        assertThat(nyeIdenter.getArbeidsoekerList()).isEmpty();
+        assertThat(nyeIdenter.getNyBrukerFeilList()).isEmpty();
     }
 
     @Test
@@ -142,9 +141,9 @@ public class BrukereServiceTest {
 
         NyeBrukereResponse arbeidsokere =
                 brukereService.opprettArbeidsoekere(null, avspillergruppeId, miljoe);
-        assertThat(arbeidsokere.getArbeidsoekerList().size(), is(20));
-        assertThat(arbeidsokere.getArbeidsoekerList().get(0).getPersonident(), is(fnr1));
-        assertThat(arbeidsokere.getArbeidsoekerList().get(4).getPersonident(), is("50505050505"));
+        assertThat(arbeidsokere.getArbeidsoekerList()).hasSize(20);
+        assertThat(arbeidsokere.getArbeidsoekerList().get(0).getPersonident()).isEqualTo(fnr1);
+        assertThat(arbeidsokere.getArbeidsoekerList().get(4).getPersonident()).isEqualTo("50505050505");
 
     }
 
@@ -152,16 +151,16 @@ public class BrukereServiceTest {
     public void hentGyldigeIdenterTest() {
         NyeBrukereResponse nyeIdenter = opprettIdenter(1, miljoe);
 
-        assertThat(nyeIdenter.getArbeidsoekerList().size(), is(1));
-        assertThat(nyeIdenter.getArbeidsoekerList().get(0).getPersonident(), is(fnr2));
+        assertThat(nyeIdenter.getArbeidsoekerList()).hasSize(1);
+        assertThat(nyeIdenter.getArbeidsoekerList().get(0).getPersonident()).isEqualTo(fnr2);
     }
 
     @Test
     public void opprettForMangeNyeIdenter() {
         NyeBrukereResponse nyeIdenter = opprettIdenter(2, miljoe);
 
-        assertThat(nyeIdenter.getArbeidsoekerList().size(), is(1));
-        assertThat(nyeIdenter.getArbeidsoekerList().get(0).getPersonident(), is(fnr2));
+        assertThat(nyeIdenter.getArbeidsoekerList()).hasSize(1);
+        assertThat(nyeIdenter.getArbeidsoekerList().get(0).getPersonident()).isEqualTo(fnr2);
     }
 
     @Test
@@ -173,9 +172,9 @@ public class BrukereServiceTest {
         NyeBrukereResponse arbeidsokere =
                 brukereService.opprettArbeidsoekere(null, avspillergruppeId, miljoe);
 
-        assertThat(arbeidsokere.getArbeidsoekerList().size(), is(5));
-        assertThat(arbeidsokere.getArbeidsoekerList().get(2).getPersonident(), is(fnr3));
-        assertThat(arbeidsokere.getArbeidsoekerList().get(3).getPersonident(), is("40404040404"));
+        assertThat(arbeidsokere.getArbeidsoekerList()).hasSize(5);
+        assertThat(arbeidsokere.getArbeidsoekerList().get(2).getPersonident()).isEqualTo(fnr3);
+        assertThat(arbeidsokere.getArbeidsoekerList().get(3).getPersonident()).isEqualTo("40404040404");
     }
 
     @Test
@@ -186,8 +185,8 @@ public class BrukereServiceTest {
 
         NyeBrukereResponse arbeidsoeker = brukereService.opprettArbeidssoeker(fnr2, avspillergruppeId, miljoe, true);
 
-        assertThat(arbeidsoeker.getArbeidsoekerList().size(), is(1));
-        assertThat(arbeidsoeker.getArbeidsoekerList().get(0).getPersonident(), is(fnr2));
+        assertThat(arbeidsoeker.getArbeidsoekerList()).hasSize(1);
+        assertThat(arbeidsoeker.getArbeidsoekerList().get(0).getPersonident()).isEqualTo(fnr2);
     }
 
     @Test
@@ -198,8 +197,8 @@ public class BrukereServiceTest {
 
         NyeBrukereResponse arbeidsoeker = brukereService.opprettArbeidssoeker(fnr2, avspillergruppeId, miljoe, true);
 
-        assertThat(arbeidsoeker.getArbeidsoekerList().size(), is(1));
-        assertThat(arbeidsoeker.getArbeidsoekerList().get(0).getPersonident(), is(fnr2));
+        assertThat(arbeidsoeker.getArbeidsoekerList()).hasSize(1);
+        assertThat(arbeidsoeker.getArbeidsoekerList().get(0).getPersonident()).isEqualTo(fnr2);
     }
 
     @Test
@@ -209,6 +208,6 @@ public class BrukereServiceTest {
 
         NyeBrukereResponse arbeidsoeker = brukereService.opprettArbeidssoeker(fnr3, avspillergruppeId, miljoe, true);
 
-        assertThat(arbeidsoeker.getArbeidsoekerList(), is(Collections.EMPTY_LIST));
+        assertThat(arbeidsoeker.getArbeidsoekerList()).isEmpty();
     }
 }

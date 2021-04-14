@@ -20,11 +20,11 @@ consumers:
     name: testnav-organisasjon-service
     cluster: dev-gcp
     namespace: dolly
-  testnorge-arbeidsforhold-api:
-    url: https://testnorge-arbeidsforhold-api.dev.intern.nav.no
-    cluster: dev-fss
+  testnav-arbeidsforhold-service:
+    url: https://testnav-arbeidsforhold-service.dev.intern.nav.no
+    cluster: dev-gcp
     namespace: dolly
-    name: testnorge-arbeidsforhold-api
+    name: testnav-arbeidsforhold-service
   testnav-helsepersonell-service:
     url: https://testnav-helsepersonell-service.dev.intern.nav.no
     cluster: dev-gcp

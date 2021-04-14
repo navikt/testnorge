@@ -28,6 +28,7 @@ import java.util.Map;
 
 import no.nav.registre.syntrest.domain.aareg.Arbeidsforholdsmelding;
 import no.nav.registre.syntrest.domain.aareg.amelding.ArbeidsforholdAmelding;
+import no.nav.registre.syntrest.domain.aareg.amelding.ArbeidsforholdPeriode;
 import no.nav.registre.syntrest.domain.bisys.Barnebidragsmelding;
 import no.nav.registre.syntrest.domain.frikort.FrikortKvittering;
 import no.nav.registre.syntrest.domain.inst.Institusjonsmelding;
@@ -285,6 +286,21 @@ public class SyntController {
 
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/amelding/arbeidsforhold/start/{arbeidsforholdType}")
+    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-amelding" })
+    public ResponseEntity<ArbeidsforholdAmelding> generateArbeidforholdMedType(
+            @ApiParam(value = "Arbeidsforhold type.", required = true)
+            @PathVariable String arbeidsforholdType,
+            @RequestBody ArbeidsforholdPeriode request
+    ) throws InterruptedException, ApiException {
+        InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.ARBEIDSFORHOLD_TYPE, arbeidsforholdType);
+        var response = ameldingConsumer.synthesizeArbeidsforholdStart(request, String.format("/arbeidsforhold/start/%s", arbeidsforholdType));
+        doResponseValidation(response);
+
+        return ResponseEntity.ok(response);
+    }
+
 
     private void doResponseValidation(Object response) {
         if (isNull(response)) {

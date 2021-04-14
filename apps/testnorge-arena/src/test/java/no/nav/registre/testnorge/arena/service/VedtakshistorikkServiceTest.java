@@ -1,7 +1,6 @@
 package no.nav.registre.testnorge.arena.service;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -16,7 +15,6 @@ import no.nav.registre.testnorge.arena.consumer.rs.VedtakshistorikkSyntConsumer;
 import no.nav.registre.testnorge.arena.service.util.IdenterUtils;
 import no.nav.registre.testnorge.arena.service.util.ArbeidssoekerUtils;
 import no.nav.registre.testnorge.arena.service.util.DatoUtils;
-import no.nav.registre.testnorge.arena.service.util.TiltakUtils;
 import no.nav.registre.testnorge.arena.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.Saksopplysning;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
@@ -35,7 +33,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 
@@ -52,9 +49,6 @@ public class VedtakshistorikkServiceTest {
     private ArbeidssoekerUtils arbeidssoekerUtils;
 
     @Mock
-    private TiltakUtils tiltakUtils;
-
-    @Mock
     private DatoUtils datoUtils;
 
     @Mock
@@ -65,9 +59,6 @@ public class VedtakshistorikkServiceTest {
 
     @Mock
     private RettighetTiltakService rettighetTiltakService;
-
-    @Mock
-    private Random rand;
 
     @InjectMocks
     private VedtakshistorikkService vedtakshistorikkService;
@@ -115,7 +106,7 @@ public class VedtakshistorikkServiceTest {
 
         vedtakshistorikkListe = new ArrayList<>((Collections.singletonList(vedtakshistorikk)));
 
-        when(identerUtils.getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt(), eq(miljoe), anyBoolean())).thenReturn(identer);
+        when(identerUtils.getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt(), eq(miljoe), eq(null))).thenReturn(identer);
     }
 
     @Test
@@ -156,11 +147,11 @@ public class VedtakshistorikkServiceTest {
         responseAsMap.put(fnr1, expectedResponsesFromArenaForvalter);
 
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(responseAsMap);
-        when(rettighetAapService.opprettetPersonOgInntektIPopp(anyString(), anyString(),any(NyttVedtakAap.class))).thenReturn(true);
+        when(rettighetAapService.opprettetPersonOgInntektIPopp(anyString(), anyString(), any(NyttVedtakAap.class))).thenReturn(true);
 
         var response = vedtakshistorikkService.genererVedtakshistorikk(avspillergruppeId, miljoe, antallIdenter);
 
-        verify(identerUtils).getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt(), eq(miljoe), anyBoolean());
+        verify(identerUtils).getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt(), eq(miljoe), eq(null));
         verify(vedtakshistorikkSyntConsumer).syntetiserVedtakshistorikk(antallIdenter);
         verify(rettighetAapService).opprettetPersonOgInntektIPopp(anyString(), anyString(), any(NyttVedtakAap.class));
         verify(rettighetArenaForvalterConsumer).opprettRettighet(anyList());

@@ -57,7 +57,7 @@ public class IdenterUtils {
             String miljoe
     ) {
         var levendeIdenter = new HashSet<>(hodejegerenConsumer.getLevende(avspillergruppeId));
-        return filtrerIdenterUtenAktoerId(levendeIdenter, miljoe, antallNyeIdenter, false);
+        return filtrerIdenterUtenAktoerId(levendeIdenter, miljoe, antallNyeIdenter, null);
     }
 
     public List<String> getUtvalgteIdenterIAldersgruppe(
@@ -66,10 +66,10 @@ public class IdenterUtils {
             int minimumAlder,
             int maksimumAlder,
             String miljoe,
-            boolean maaVaereBosatt
+            LocalDate tidligsteDatoBosatt
     ) {
         var levendeIdenterIAldersgruppe = new HashSet<>(hodejegerenConsumer.getLevende(avspillergruppeId, minimumAlder, maksimumAlder));
-        return filtrerIdenterUtenAktoerId(levendeIdenterIAldersgruppe, miljoe, antallNyeIdenter, maaVaereBosatt);
+        return filtrerIdenterUtenAktoerId(levendeIdenterIAldersgruppe, miljoe, antallNyeIdenter, tidligsteDatoBosatt);
     }
 
     public List<String> getUtvalgteIdenterIAldersgruppeMedBarnUnder18(
@@ -78,11 +78,11 @@ public class IdenterUtils {
             int minimumAlder,
             int maksimumAlder,
             String miljoe,
-            LocalDate tidligsteDato,
-            boolean maaVaereBosatt
+            LocalDate tidligsteDatoBosatt,
+            LocalDate tidligsteDatoBarn
     ) {
         var levendeIdenterIAldersgruppe = new HashSet<>(hodejegerenConsumer.getLevende(avspillergruppeId, minimumAlder, maksimumAlder));
-        return filtrerIdenterUtenAktoerIdOgBarnUnder18(levendeIdenterIAldersgruppe, miljoe, antallNyeIdenter, tidligsteDato, maaVaereBosatt);
+        return filtrerIdenterUtenAktoerIdOgBarnUnder18(levendeIdenterIAldersgruppe, miljoe, antallNyeIdenter, tidligsteDatoBosatt, tidligsteDatoBarn);
     }
 
     public List<KontoinfoResponse> getIdenterMedKontoinformasjon(
@@ -102,16 +102,16 @@ public class IdenterUtils {
             Set<String> identer,
             String miljoe,
             int antallNyeIdenter,
-            boolean maaVaereBosatt
+            LocalDate tidligsteDatoBosatt
     ) {
         var identerUtenArenabruker = filtrerEksisterendeBrukereIArena(identer, miljoe);
         var identerPartisjonert = partisjonerListe(identerUtenArenabruker, PAGE_SIZE);
         Map<String, String> identerMedAktoerId = new HashMap<>();
         for (var partisjon : identerPartisjonert) {
             var aktoerIdenter = aktoerRegisteretConsumer.hentAktoerIderTilIdenter(partisjon, miljoe);
-            if (maaVaereBosatt) {
+            if (tidligsteDatoBosatt != null) {
                 aktoerIdenter = aktoerIdenter.entrySet().stream()
-                        .filter(x -> tpsForvalterService.identHarPersonstatusBosatt(x.getKey(), miljoe))
+                        .filter(x -> tpsForvalterService.identHarPersonstatusBosatt(x.getKey(), miljoe, tidligsteDatoBosatt))
                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
             }
             identerMedAktoerId.putAll(aktoerIdenter);
@@ -126,8 +126,8 @@ public class IdenterUtils {
             Set<String> identer,
             String miljoe,
             int antallNyeIdenter,
-            LocalDate tidligsteDato,
-            boolean maaVaereBosatt
+            LocalDate tidligsteDatoBosatt,
+            LocalDate tidligsteDatoBarn
     ) {
         var identerUtenArenabruker = filtrerEksisterendeBrukereIArena(identer, miljoe);
 
@@ -140,7 +140,8 @@ public class IdenterUtils {
 
             for (var ident : identerMedAktoerId.keySet()) {
                 var relasjonsResponse = getRelasjonerTilIdent(ident, miljoe);
-                if (inneholderBarnUnder18VedTidspunkt(relasjonsResponse, tidligsteDato) && (!maaVaereBosatt || tpsForvalterService.identHarPersonstatusBosatt(ident, miljoe))) {
+                if (inneholderBarnUnder18VedTidspunkt(relasjonsResponse, tidligsteDatoBarn) &&
+                        (tidligsteDatoBosatt == null || tpsForvalterService.identHarPersonstatusBosatt(ident, miljoe, tidligsteDatoBosatt))) {
                     utvalgteIdenter.add(ident);
                     if (utvalgteIdenter.size() >= antallNyeIdenter) {
                         return utvalgteIdenter;
@@ -222,6 +223,11 @@ public class IdenterUtils {
         return hentIdentListe(arbeidsoekere);
     }
 
+    public List<String> hentEksisterendeArbeidsoekerIdent(String personident, boolean useCache) {
+        var arbeidsoekere = brukereArenaForvalterConsumer.hentArbeidsoekere(personident, null, null, useCache);
+        return hentIdentListe(arbeidsoekere);
+    }
+
     public List<String> hentEksisterendeArbeidsoekerIdenter(String eier, String miljoe, boolean useCache) {
         var arbeidsoekere = brukereArenaForvalterConsumer.hentArbeidsoekere(null, eier, miljoe, useCache);
         return hentIdentListe(arbeidsoekere);
@@ -231,7 +237,6 @@ public class IdenterUtils {
             List<Arbeidsoeker> arbeidsoekere
     ) {
         if (arbeidsoekere.isEmpty()) {
-            log.info("Fant ingen eksisterende identer.");
             return new ArrayList<>();
         }
 

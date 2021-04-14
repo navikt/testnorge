@@ -1,11 +1,9 @@
 package no.nav.registre.testnorge.arena.consumer.rs;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import no.nav.registre.testnorge.arena.consumer.rs.util.ArbeidssoekerCacheUtil;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -18,7 +16,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 @TestPropertySource(locations = "classpath:application-test.properties")
@@ -42,40 +39,38 @@ public class BrukereArenaForvalterConsumerTest {
                 mockWebServer.url("/api").toString());
     }
 
-    @Test
-    public void checkEmptyListOnBadSentTilArenaForvalterRequest() {
-        NyeBrukereResponse response = brukereArenaForvalterConsumer.sendTilArenaForvalter(null);
-
-        assertThat(response.getArbeidsoekerList(), is(Collections.EMPTY_LIST));
+    @Test(expected = Exception.class)
+    public void checkExceptionOccursOnBadSentTilArenaForvalterRequest() {
+        brukereArenaForvalterConsumer.sendTilArenaForvalter(null);
     }
 
     @Test
     public void hentBrukereTest() {
         List<Arbeidsoeker> response = brukereArenaForvalterConsumer.hentArbeidsoekere("", "", "", true);
 
-        assertThat(response.get(2).getPersonident(), is("09038817873"));
-        assertThat(response.size(), is(3));
+        assertThat(response.get(2).getPersonident()).isEqualTo("09038817873");
+        assertThat(response).hasSize(3);
     }
 
     @Test
     public void slettBrukereTest() {
         var test = brukereArenaForvalterConsumer.slettBruker("20202020202", miljoe);
-        assertThat(test, is(true));
+        assertThat(test).isTrue();
     }
 
     @Test
     public void slettBrukereBadReq() {
         var test = brukereArenaForvalterConsumer.slettBruker("10101010101", miljoe);
-        assertThat(test, is(false));
+        assertThat(test).isFalse();
     }
 
     @Test
     public void getBrukereFilterTest() {
         List<Arbeidsoeker> response = brukereArenaForvalterConsumer.hentArbeidsoekere("10101010101", "Dolly", miljoe, true);
 
-        assertThat(response.get(0).getStatus(), is("OK"));
-        assertThat(response.size(), is(2));
-        assertThat(response.get(1).getAap(), is(true));
+        assertThat(response.get(0).getStatus()).isEqualTo("OK");
+        assertThat(response).hasSize(2);
+        assertThat(response.get(1).getAap()).isTrue();
     }
 
     @Test
@@ -83,11 +78,11 @@ public class BrukereArenaForvalterConsumerTest {
         List<Arbeidsoeker> response = brukereArenaForvalterConsumer.hentArbeidsoekere("10101010101", "", "", true);
         response.addAll(brukereArenaForvalterConsumer.hentArbeidsoekere("20202020202", "", "", true));
 
-        assertThat(response.size(), is(4));
-        assertThat(response.get(2).getPersonident(), is("10101010101"));
-        assertThat(response.get(2).getMiljoe(), is("q0"));
-        assertThat(response.get(1).getPersonident(), is("10101010101"));
-        assertThat(response.get(3).getPersonident(), is("20202020202"));
+        assertThat(response).hasSize(4);
+        assertThat(response.get(2).getPersonident()).isEqualTo("10101010101");
+        assertThat(response.get(2).getMiljoe()).isEqualTo("q0");
+        assertThat(response.get(1).getPersonident()).isEqualTo("10101010101");
+        assertThat(response.get(3).getPersonident()).isEqualTo("20202020202");
     }
 
     private Dispatcher getArenaForvalterDispatcher() {

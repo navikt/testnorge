@@ -25,15 +25,19 @@ public class GenererInntektsmeldingCommand implements Callable<String> {
     @Override
     public String call() {
         try {
-            return webClient
+            log.info("Gennerer inntektsmelding...");
+            var response = webClient
                     .post()
                     .uri("/api/v2/inntektsmelding/2018/12/11")
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .body(BodyInserters.fromPublisher(Mono.just(dto), RsInntektsmelding.class))
                     .retrieve()
                     .bodyToMono(String.class)
-                    .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(10)))
+                    .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(3)))
                     .block();
+            log.info("Inntektsmelding generert.");
+            return response;
+
         } catch (WebClientResponseException e) {
             log.error(
                     "Feil ved innsendelse av inntektsmelding. Feilmelding: {}.",

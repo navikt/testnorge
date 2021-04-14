@@ -65,9 +65,10 @@ public class RettighetAapService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        var utvalgteIdenter = identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter, MIN_ALDER_AAP, MAX_ALDER_AAP - 1, miljoe, true);
-        var syntRequest = consumerUtils.createSyntRequest(utvalgteIdenter.size());
+        var syntRequest = consumerUtils.createSyntRequest(antallNyeIdenter);
         var syntetiserteRettigheter = aapSyntConsumer.syntetiserRettighetAap(syntRequest);
+
+        var utvalgteIdenter = identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter, MIN_ALDER_AAP, MAX_ALDER_AAP - 1, miljoe, datoUtils.finnTidligsteDatoAap(syntetiserteRettigheter));
 
         List<RettighetRequest> aap115Rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
         List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
@@ -78,6 +79,8 @@ public class RettighetAapService {
             if (!poppStatus) {
                 return Collections.emptyMap();
             }
+
+            arbeidsoekerUtils.opprettArbeidssoekerAap(ident, miljoe);
 
             var aap115Rettighet = getAap115RettighetRequest(syntetisertRettighet.getFraDato().minusDays(1), syntetisertRettighet.getTilDato(), ident, miljoe);
             aap115Rettigheter.add(aap115Rettighet);
@@ -96,15 +99,15 @@ public class RettighetAapService {
             rettigheter.add(rettighetRequest);
         }
 
-        rettighetArenaForvalterConsumer.opprettRettighet(arbeidsoekerUtils.opprettArbeidssoekerAap(aap115Rettigheter, miljoe));
-        var identerMedOpprettedeRettigheter = rettighetArenaForvalterConsumer.opprettRettighet(arbeidsoekerUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
+        rettighetArenaForvalterConsumer.opprettRettighet(aap115Rettigheter);
+        var identerMedOpprettedeRettigheter = rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
 
         serviceUtils.lagreIHodejegeren(identerMedOpprettedeRettigheter);
 
         return identerMedOpprettedeRettigheter;
     }
 
-    public Map<String, List<NyttVedtakResponse>> genererAapMedTilhoerende115(
+    public Map<String, List<NyttVedtakResponse>> genererAap(
             String ident,
             String miljoe
     ) {
@@ -116,8 +119,6 @@ public class RettighetAapService {
             return Collections.emptyMap();
         }
 
-        var aap115Rettighet = getAap115RettighetRequest(syntetisertRettighet.getFraDato().minusDays(1), syntetisertRettighet.getTilDato(), ident, miljoe);
-
         syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
         var rettighetRequest = new RettighetAapRequest(Collections.singletonList(syntetisertRettighet));
         rettighetRequest.setPersonident(ident);
@@ -127,8 +128,9 @@ public class RettighetAapService {
             datoUtils.setDatoPeriodeVedtakInnenforMaxAntallMaaneder(rettighetRequest.getNyeAap().get(0), SYKEPENGEERSTATNING_MAKS_PERIODE);
         }
 
-        rettighetArenaForvalterConsumer.opprettRettighet(arbeidsoekerUtils.opprettArbeidssoekerAap(new ArrayList<>(Collections.singletonList(aap115Rettighet)), miljoe));
-        return rettighetArenaForvalterConsumer.opprettRettighet(arbeidsoekerUtils.opprettArbeidssoekerAap(new ArrayList<>(Collections.singletonList(rettighetRequest)), miljoe));
+        arbeidsoekerUtils.opprettArbeidssoekerAap(ident, miljoe);
+
+        return rettighetArenaForvalterConsumer.opprettRettighet(Collections.singletonList(rettighetRequest));
     }
 
     private RettighetRequest getAap115RettighetRequest(
@@ -151,21 +153,30 @@ public class RettighetAapService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        var utvalgteIdenter = identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter, MIN_ALDER_AAP, MAX_ALDER_AAP - 1, miljoe, false);
+        var utvalgteIdenter = identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter, MIN_ALDER_AAP, MAX_ALDER_AAP - 1, miljoe, null);
         var syntRequest = consumerUtils.createSyntRequest(utvalgteIdenter.size());
         var syntetiserteRettigheter = aapSyntConsumer.syntetiserRettighetAap115(syntRequest);
 
         List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
         for (var syntetisertRettighet : syntetiserteRettigheter) {
+            var utvalgtIdent = utvalgteIdenter.remove(utvalgteIdenter.size() - 1);
+
+            var poppStatus = opprettetPersonOgInntektIPopp(utvalgtIdent, miljoe, syntetisertRettighet);
+            if (!poppStatus) {
+                return Collections.emptyMap();
+            }
+
+            arbeidsoekerUtils.opprettArbeidssoekerAap(utvalgtIdent, miljoe);
+
             syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
             var rettighetRequest = new RettighetAap115Request(Collections.singletonList(syntetisertRettighet));
-            rettighetRequest.setPersonident(utvalgteIdenter.remove(utvalgteIdenter.size() - 1));
+            rettighetRequest.setPersonident(utvalgtIdent);
             rettighetRequest.setMiljoe(miljoe);
 
             rettigheter.add(rettighetRequest);
         }
 
-        var identerMedOpprettedeRettigheter = rettighetArenaForvalterConsumer.opprettRettighet(arbeidsoekerUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
+        var identerMedOpprettedeRettigheter = rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
 
         serviceUtils.lagreIHodejegeren(identerMedOpprettedeRettigheter);
 
@@ -177,21 +188,25 @@ public class RettighetAapService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        var utvalgteIdenter = identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter, MIN_ALDER_UNG_UFOER, MAX_ALDER_UNG_UFOER - 1, miljoe, false);
+        var utvalgteIdenter = identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter, MIN_ALDER_UNG_UFOER, MAX_ALDER_UNG_UFOER - 1, miljoe, null);
         var syntRequest = consumerUtils.createSyntRequest(utvalgteIdenter.size(), ARENA_AAP_UNG_UFOER_DATE_LIMIT);
         var syntetiserteRettigheter = aapSyntConsumer.syntetiserRettighetUngUfoer(syntRequest);
 
         List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
         for (var syntetisertRettighet : syntetiserteRettigheter) {
+            var utvalgtIdent = utvalgteIdenter.remove(utvalgteIdenter.size() - 1);
+
+            arbeidsoekerUtils.opprettArbeidssoekerAap(utvalgtIdent, miljoe);
+
             syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
             var rettighetRequest = new RettighetUngUfoerRequest(Collections.singletonList(syntetisertRettighet));
-            rettighetRequest.setPersonident(utvalgteIdenter.remove(utvalgteIdenter.size() - 1));
+            rettighetRequest.setPersonident(utvalgtIdent);
             rettighetRequest.setMiljoe(miljoe);
 
             rettigheter.add(rettighetRequest);
         }
 
-        var identerMedOpprettedeRettigheter = rettighetArenaForvalterConsumer.opprettRettighet(arbeidsoekerUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
+        var identerMedOpprettedeRettigheter = rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
 
         serviceUtils.lagreIHodejegeren(identerMedOpprettedeRettigheter);
 
@@ -204,22 +219,26 @@ public class RettighetAapService {
             int antallNyeIdenter
     ) {
         var identerMedKontonummer = identerUtils.getIdenterMedKontoinformasjon(avspillergruppeId, miljoe, antallNyeIdenter);
-        var utvalgteIdenter = identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter, MIN_ALDER_AAP, MAX_ALDER_AAP - 1, miljoe, false);
+        var utvalgteIdenter = identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallNyeIdenter, MIN_ALDER_AAP, MAX_ALDER_AAP - 1, miljoe, null);
         var syntRequest = consumerUtils.createSyntRequest(utvalgteIdenter.size());
         var syntetiserteRettigheter = aapSyntConsumer.syntetiserRettighetTvungenForvaltning(syntRequest);
 
         List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
         for (var syntetisertRettighet : syntetiserteRettigheter) {
+            var utvalgtIdent = utvalgteIdenter.remove(utvalgteIdenter.size() - 1);
+
+            arbeidsoekerUtils.opprettArbeidssoekerAap(utvalgtIdent, miljoe);
+
             syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
             syntetisertRettighet.setForvalter(ServiceUtils.buildForvalter(identerMedKontonummer.remove(identerMedKontonummer.size() - 1)));
             var rettighetRequest = new RettighetTvungenForvaltningRequest(Collections.singletonList(syntetisertRettighet));
-            rettighetRequest.setPersonident(utvalgteIdenter.remove(utvalgteIdenter.size() - 1));
+            rettighetRequest.setPersonident(utvalgtIdent);
             rettighetRequest.setMiljoe(miljoe);
 
             rettigheter.add(rettighetRequest);
         }
 
-        var identerMedOpprettedeRettigheter = rettighetArenaForvalterConsumer.opprettRettighet(arbeidsoekerUtils.opprettArbeidssoekerAap(rettigheter, miljoe));
+        var identerMedOpprettedeRettigheter = rettighetArenaForvalterConsumer.opprettRettighet(rettigheter);
 
         serviceUtils.lagreIHodejegeren(identerMedOpprettedeRettigheter);
 
@@ -241,9 +260,13 @@ public class RettighetAapService {
 
         List<RettighetRequest> rettigheter = new ArrayList<>(syntetiserteRettigheter.size());
         for (var syntetisertRettighet : syntetiserteRettigheter) {
+            var utvalgtIdent = utvalgteIdenter.remove(utvalgteIdenter.size() - 1);
+
+            arbeidsoekerUtils.opprettArbeidssoekerAap(utvalgtIdent, miljoe);
+
             syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
             var rettighetRequest = new RettighetFritakMeldekortRequest(Collections.singletonList(syntetisertRettighet));
-            rettighetRequest.setPersonident(utvalgteIdenter.remove(utvalgteIdenter.size() - 1));
+            rettighetRequest.setPersonident(utvalgtIdent);
             rettighetRequest.setMiljoe(miljoe);
 
             rettigheter.add(rettighetRequest);

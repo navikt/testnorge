@@ -5,24 +5,25 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetRequest;
 import no.nav.registre.testnorge.arena.service.BrukereService;
 import no.nav.registre.testnorge.arena.service.InnsatsService;
 import no.nav.registre.testnorge.arena.service.exception.ArbeidssoekerException;
+import no.nav.registre.testnorge.arena.service.exception.VedtakshistorikkException;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.RettighetType;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URL;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -61,31 +62,73 @@ public class ArbeidssoekerUtils {
             aktivitestsfaserMedInnsatsARBS.putAll(mapARBS);
             aktivitestsfaserMedInnsatsIARBS.putAll(mapIARBS);
         } catch (IOException e) {
-            log.error("Kunne ikke laste inn aktivitetsfase fordelinger.", e);
+            log.error("Kunne ikke laste inn aktivitetsfase fordeling(er).", e);
         }
     }
 
-    public List<RettighetRequest> opprettArbeidssoekerAap(
-            List<RettighetRequest> rettigheter,
-            String miljoe
-    ) {
-        return opprettArbeidssoeker(rettigheter, miljoe, rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.VARIG);
+
+    public boolean arbeidssoekerIkkeOpprettetIArena(String personident) {
+        var identerIArena = identerUtils.hentEksisterendeArbeidsoekerIdent(personident, false);
+        return !identerIArena.contains(personident);
     }
 
-    public List<RettighetRequest> opprettArbeidssoekerAap(
+
+    public void opprettArbeidssoekerVedtakshistorikk(
             String personident,
-            List<RettighetRequest> rettigheter,
+            String miljoe,
+            NyttVedtak senesteVedtak
+    ) {
+        if (senesteVedtak.getRettighetType() == RettighetType.AAP) {
+            opprettArbeidssoekerAap(personident, miljoe, ((NyttVedtakAap) senesteVedtak).getAktivitetsfase());
+        } else if (senesteVedtak.getRettighetType() == RettighetType.TILTAK) {
+            opprettArbeidssoekerTiltak(personident, miljoe);
+        } else if (senesteVedtak.getRettighetType() == RettighetType.TILLEGG) {
+            opprettArbeidssoekerTillegg(personident, miljoe);
+        } else {
+            throw new VedtakshistorikkException("Mangler støtte for rettighettype: " + senesteVedtak.getRettighetType());
+        }
+    }
+
+    public Kvalifiseringsgrupper opprettArbeidssoekerTiltaksdeltakelse(
+            String personident,
+            String miljoe,
+            NyttVedtak senesteVedtak
+    ) {
+        Kvalifiseringsgrupper kvalifiseringsgruppe;
+        if (senesteVedtak.getRettighetType() == RettighetType.AAP) {
+            kvalifiseringsgruppe = rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.VARIG;
+        } else if (senesteVedtak.getRettighetType() == RettighetType.TILTAK) {
+            kvalifiseringsgruppe = rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.BFORM;
+        } else if (senesteVedtak.getRettighetType() == RettighetType.TILLEGG) {
+            kvalifiseringsgruppe = rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.BFORM;
+        } else {
+            throw new VedtakshistorikkException("Mangler støtte for rettighettype: " + senesteVedtak.getRettighetType());
+        }
+
+        opprettArbeidssoeker(personident, miljoe, kvalifiseringsgruppe);
+        return kvalifiseringsgruppe;
+    }
+
+    public void opprettArbeidssoekerAap(
+            String personident,
+            String miljoe
+    ) {
+        opprettArbeidssoeker(personident, miljoe, rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.VARIG);
+    }
+
+    public void opprettArbeidssoekerAap(
+            String personident,
             String miljoe,
             String aktivitetsfase
     ) {
         if (aktivitetsfase == null || aktivitetsfase.isBlank()) {
-            return opprettArbeidssoeker(rettigheter, miljoe, Kvalifiseringsgrupper.BATT);
+            opprettArbeidssoeker(personident, miljoe, Kvalifiseringsgrupper.BATT);
         } else {
             var formidlingsgruppe = velgFormidlingsgruppeBasertPaaAktivitetsfase(aktivitetsfase);
             var kvalifiseringsgruppe = velgKvalifiseringsgruppeBasertPaaFormidlingsgruppe(aktivitetsfase, formidlingsgruppe);
-            var response = opprettArbeidssoeker(rettigheter, miljoe, kvalifiseringsgruppe);
+            opprettArbeidssoeker(personident, miljoe, kvalifiseringsgruppe);
 
-            if (formidlingsgruppe.equals("IARBS") && !response.isEmpty()) {
+            if (formidlingsgruppe.equals("IARBS")) {
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException ex) {
@@ -94,68 +137,41 @@ public class ArbeidssoekerUtils {
                 }
                 innsatsService.endreTilFormidlingsgruppeIarbs(personident, miljoe, kvalifiseringsgruppe);
             }
-            return response;
         }
     }
 
-    public List<RettighetRequest> opprettArbeidssoekerTiltak(
-            List<RettighetRequest> rettigheter,
+    public void opprettArbeidssoekerTiltak(
+            String personident,
             String miljoe
     ) {
-        return opprettArbeidssoeker(rettigheter, miljoe, rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.BFORM);
+        opprettArbeidssoeker(personident, miljoe, rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.BFORM);
     }
 
-    public List<RettighetRequest> opprettArbeidssoekerTillegg(
-            List<RettighetRequest> rettigheter,
+    public void opprettArbeidssoekerTillegg(
+            String personident,
             String miljoe
     ) {
-        return opprettArbeidssoeker(rettigheter, miljoe, rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.BFORM);
+        opprettArbeidssoeker(personident, miljoe, rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.BFORM);
     }
 
-    private List<RettighetRequest> opprettArbeidssoeker(
-            List<RettighetRequest> rettigheter,
+
+    public void opprettArbeidssoeker(
+            String personident,
             String miljoe,
             Kvalifiseringsgrupper kvalifiseringsgruppe
     ) {
-        var identerIArena = identerUtils.hentEksisterendeArbeidsoekerIdenter(true);
-        var uregistrerteBrukere = rettigheter.stream().filter(rettighet -> !identerIArena.contains(rettighet.getPersonident())).map(RettighetRequest::getPersonident)
-                .collect(Collectors.toSet());
-
-        if (!uregistrerteBrukere.isEmpty()) {
-            var nyeBrukereResponse = brukereService
-                    .sendArbeidssoekereTilArenaForvalter(new ArrayList<>(uregistrerteBrukere), miljoe, kvalifiseringsgruppe, INGEN_OPPFOELGING);
-            List<String> feiledeIdenter = new ArrayList<>();
-            if (nyeBrukereResponse != null && nyeBrukereResponse.getNyBrukerFeilList() != null && !nyeBrukereResponse.getNyBrukerFeilList().isEmpty()) {
-                nyeBrukereResponse.getNyBrukerFeilList().forEach(nyBrukerFeil -> {
-                    log.error("Kunne ikke opprette ny bruker med fnr {} i arena: {}", nyBrukerFeil.getPersonident(), nyBrukerFeil.getMelding());
-                    feiledeIdenter.add(nyBrukerFeil.getPersonident());
-                });
-            }
-            rettigheter.removeIf(rettighet -> feiledeIdenter.contains(rettighet.getPersonident()));
-        }
-        return rettigheter;
-    }
-
-    public void opprettArbeidssoekerTiltakdeltakelse(
-            String ident,
-            String miljoe,
-            Kvalifiseringsgrupper kvalifiseringsgruppe
-    ) {
-
-        var identerIArena = identerUtils.hentEksisterendeArbeidsoekerIdenter(true);
-
-        var uregistrertBruker = !identerIArena.contains(ident);
-
-        if (uregistrertBruker) {
-            var nyeBrukereResponse = brukereService
-                    .sendArbeidssoekereTilArenaForvalter(Collections.singletonList(ident), miljoe, kvalifiseringsgruppe, INGEN_OPPFOELGING);
-            if (nyeBrukereResponse != null && nyeBrukereResponse.getNyBrukerFeilList() != null && !nyeBrukereResponse.getNyBrukerFeilList().isEmpty()) {
-                nyeBrukereResponse.getNyBrukerFeilList().forEach(nyBrukerFeil ->
-                        log.error("Kunne ikke opprette ny bruker med fnr {} i arena: {}", nyBrukerFeil.getPersonident(), nyBrukerFeil.getMelding())
-                );
+        if (arbeidssoekerIkkeOpprettetIArena(personident)) {
+            var nyeBrukereResponse = brukereService.sendArbeidssoekereTilArenaForvalter(Collections.singletonList(personident), miljoe, kvalifiseringsgruppe, INGEN_OPPFOELGING);
+            if (nyeBrukereResponse == null) {
+                log.error("Kunne ikke opprette ny bruker med fnr {} i Arena: {}", personident, "Ukjent feil.");
+                throw new ArbeidssoekerException("Kunne ikke opprette bruker i Arena");
+            } else if (nyeBrukereResponse.getNyBrukerFeilList() != null && !nyeBrukereResponse.getNyBrukerFeilList().isEmpty()) {
+                log.error("Kunne ikke opprette ny bruker med fnr {} i Arena: {}", personident, nyeBrukereResponse.getNyBrukerFeilList().get(0).getMelding());
+                throw new ArbeidssoekerException("Kunne ikke opprette bruker i Arena");
             }
         }
     }
+
 
     private Kvalifiseringsgrupper velgKvalifiseringsgruppeBasertPaaFormidlingsgruppe(String aktivitetsfase, String formidlingsgruppe) {
         if (formidlingsgruppe.equals("IARBS")) {

@@ -1,8 +1,7 @@
 package no.nav.registre.testnorge.arena.consumer.rs;
 
 import static no.nav.registre.testnorge.arena.testutils.ResourceUtils.getResourceFileContent;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetRequest;
 import okhttp3.mockwebserver.Dispatcher;
@@ -58,8 +57,8 @@ public class RettighetTiltakBrukereArenaForvalterConsumerTest {
 
         var response = consumer.opprettRettighet(rettigheter);
 
-        assertThat(response.get(fnr1).get(0).getFeiledeRettigheter().size(), equalTo(0));
-        assertThat(response.get(fnr1).get(1).getNyeRettigheterTiltak().size(), equalTo(1));
+        assertThat(response.get(fnr1).get(0).getFeiledeRettigheter()).isEmpty();
+        assertThat(response.get(fnr1).get(1).getNyeRettigheterTiltak()).hasSize(1);
     }
 
     private void stubArenaForvalterOpprettRettighet() {
