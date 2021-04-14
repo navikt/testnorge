@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public interface IdentRepository extends PagingAndSortingRepository<Testident, String> {
 
@@ -45,6 +46,16 @@ public interface IdentRepository extends PagingAndSortingRepository<Testident, S
             "and bp.id = (select max(bps.id) from BestillingProgress bps where bps.ident = ti.ident) " +
             "order by bp.id desc")
     Page<Testident> getTestidentByTestgruppeIdOrderByBestillingProgressIdDesc(@Param(value = "gruppeId") Long gruppeId, Pageable pageable);
+
+    @Query(value = "select idx-1 from ( " +
+            "         select ti.*, count(*) over (order by bp.id desc ) as idx " +
+            "         from test_ident ti, bestilling_progress bp " +
+            "         where ti.ident = bp.ident " +
+            "         and ti.tilhoerer_gruppe = :gruppeId " +
+            "         and bp.id = (select max(bps.id) from bestilling_progress bps where bps.ident = ti.ident) " +
+            "     ) x where ident = :ident",
+            nativeQuery = true)
+    Optional<Integer> getPaginertTestidentIndex(@Param("ident") String ident, @Param("gruppeId") Long gruppe);
 
     interface GruppeBestillingIdent {
 

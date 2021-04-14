@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
@@ -103,6 +104,11 @@ public class IdentService {
     public Page<Testident> getBestillingerFromGruppePaginert(Long gruppeId, Integer pageNo, Integer pageSize) {
 
         return identRepository.getTestidentByTestgruppeIdOrderByBestillingProgressIdDesc(gruppeId, PageRequest.of(pageNo, pageSize));
+    }
+
+    public Optional<Integer> getPaginertIdentIndex(String ident, Long gruppeId) {
+
+        return identRepository.getPaginertTestidentIndex(ident, gruppeId);
     }
 
     public Testident getTestIdent(String ident) {

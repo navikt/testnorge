@@ -15,12 +15,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
 import static java.lang.String.format;
-import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -65,7 +63,7 @@ public class OpenAmControllerTest {
                 Bestilling.builder()
                         .miljoer(format("%s,%s", MILJOE1, MILJOE2))
                         .gruppe(Testgruppe.builder()
-                                .testidenter(new HashSet<>(asList(Testident.builder().ident(IDENT1)
+                                .testidenter(List.of(Testident.builder().ident(IDENT1)
                                                 .bestillingProgress(singletonList(BestillingProgress.builder()
                                                         .bestilling(Bestilling.builder().id(BESTILLING_ID).build())
                                                         .build()))
@@ -74,7 +72,7 @@ public class OpenAmControllerTest {
                                                 .bestillingProgress(singletonList(BestillingProgress.builder()
                                                         .bestilling(Bestilling.builder().id(BESTILLING_ID).build())
                                                         .build()))
-                                                .build())))
+                                                .build()))
                                 .build())
                         .build()));
         when(openAmService.opprettIdenter(anyList(), anyString())).thenReturn(openAmResponse);

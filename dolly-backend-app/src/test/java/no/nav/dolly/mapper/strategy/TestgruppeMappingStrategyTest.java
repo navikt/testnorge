@@ -1,13 +1,13 @@
 package no.nav.dolly.mapper.strategy;
 
-import static java.util.Collections.singletonList;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.common.TestidentBuilder;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
+import no.nav.dolly.domain.resultset.entity.testident.RsTestident;
+import no.nav.dolly.mapper.utils.MapperTestUtils;
 import org.apache.http.entity.ContentType;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -17,14 +17,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.common.TestidentBuilder;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
-import no.nav.dolly.domain.resultset.entity.testident.RsTestident;
-import no.nav.dolly.mapper.utils.MapperTestUtils;
+import java.time.LocalDate;
+import java.util.List;
+
+import static java.util.Collections.singletonList;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class TestgruppeMappingStrategyTest {
 
@@ -53,7 +51,7 @@ public class TestgruppeMappingStrategyTest {
     public void mappingFromTestgruppeToRsTestgruppe() {
         Bruker bruker = Bruker.builder().brukerId(BRUKERID).build();
         Testident testident = TestidentBuilder.builder().ident("1").build().convertToRealTestident();
-        Set<Testident> identer = new HashSet<>(singletonList(testident));
+        List<Testident> identer = singletonList(testident);
 
         Testgruppe testgruppe = Testgruppe.builder()
                 .sistEndretAv(bruker)

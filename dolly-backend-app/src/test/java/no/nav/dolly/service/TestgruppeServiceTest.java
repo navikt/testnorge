@@ -3,6 +3,7 @@ package no.nav.dolly.service;
 import no.nav.dolly.common.TestidentBuilder;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
@@ -28,7 +29,6 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -95,11 +95,11 @@ public class TestgruppeServiceTest {
     @Before
     public void setup() {
 
-        Set gruppe = new HashSet<>(
-                asList(
+        List<Testident> gruppe =
+                List.of(
                         TestidentBuilder.builder().ident(IDENT_ONE).build().convertToRealTestident(),
                         TestidentBuilder.builder().ident(IDENT_TWO).build().convertToRealTestident()
-                ));
+                );
         testGruppe = Testgruppe.builder().id(GROUP_ID).testidenter(gruppe).hensikt("test").build();
     }
 

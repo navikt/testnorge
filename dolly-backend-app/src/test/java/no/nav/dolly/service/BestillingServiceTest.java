@@ -27,7 +27,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -156,7 +155,7 @@ public class BestillingServiceTest {
 
         when(bestillingRepository.findById(BEST_ID)).thenReturn(Optional.of(Bestilling.builder()
                 .gruppe(Testgruppe.builder()
-                        .testidenter(new HashSet<>(asList(Testident.builder().build()))).build())
+                        .testidenter(List.of(Testident.builder().build())).build())
                 .ferdig(true).build()));
         when(brukerService.fetchOrCreateBruker(BRUKERID)).thenReturn(Bruker.builder().build());
 

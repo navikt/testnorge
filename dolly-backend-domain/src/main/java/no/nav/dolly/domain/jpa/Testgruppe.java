@@ -1,11 +1,15 @@
 package no.nav.dolly.domain.jpa;
 
-import static java.util.Objects.isNull;
-import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,16 +21,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import static java.util.Objects.isNull;
+import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
 @Entity
 @Getter
@@ -65,7 +67,7 @@ public class Testgruppe {
 
     @OneToMany(mappedBy = "testgruppe", fetch = FetchType.LAZY)
     @Column(unique = true)
-    private Set<Testident> testidenter;
+    private List<Testident> testidenter;
 
     @ManyToMany(mappedBy = "favoritter", fetch = FetchType.LAZY)
     private Set<Bruker> favorisertAv;
@@ -80,9 +82,9 @@ public class Testgruppe {
     @Column(name = "LAAST_BESKRIVELSE")
     private String laastBeskrivelse;
 
-    public Set<Testident> getTestidenter() {
+    public List<Testident> getTestidenter() {
         if (isNull(testidenter)) {
-            testidenter = new HashSet<>();
+            testidenter = new ArrayList<>();
         }
         return testidenter;
     }

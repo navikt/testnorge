@@ -1,16 +1,5 @@
 package no.nav.dolly.common;
 
-import static java.util.Arrays.asList;
-
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
 import no.nav.dolly.common.repository.BestillingProgressTestRepository;
 import no.nav.dolly.common.repository.BestillingTestRepository;
 import no.nav.dolly.common.repository.BrukerTestRepository;
@@ -20,6 +9,14 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.provider.api.TestpersonController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 @Component
 @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -82,18 +79,18 @@ public class TestdataFactory {
         return saved;
     }
 
-    private Set<Testident> buildTestIdenter(Testgruppe testgruppe) {
-        return new HashSet<>(asList(
+    private List<Testident> buildTestIdenter(Testgruppe testgruppe) {
+        return List.of(
                 identTestRepository.save(Testident.builder().ident("123").testgruppe(testgruppe).build()),
                 identTestRepository.save(Testident.builder().ident("234").testgruppe(testgruppe).build()),
                 identTestRepository.save(Testident.builder().ident("345").testgruppe(testgruppe).build())
-        ));
+        );
     }
 
     public Testgruppe addTestidenterToTestgruppe(Testgruppe testgruppe, Testident... testidenter) {
         Optional<Testgruppe> tg = gruppeTestRepository.findById(testgruppe.getId());
         return tg.map(t -> {
-            t.setTestidenter(new HashSet<>(asList(testidenter)));
+            t.setTestidenter(List.of(testidenter));
             return gruppeTestRepository.save(t);
         }).orElseThrow(() -> new RuntimeException("Testgruppe ikke funnet"));
     }
