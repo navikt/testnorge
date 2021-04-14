@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.netty.http.client.HttpClient;
+import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -107,17 +108,15 @@ public class KubernetesController {
     }
 
     public boolean isAlive(String appName) {
-        try {
-            String response = webClient.get()
-                    .uri(isAliveUrl.replace("{appName}", appName))
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
-            return "1".equals(response);
-        } catch (WebClientResponseException.ServiceUnavailable | WebClientResponseException.NotFound e) {
-            log.info(e.toString());
-            return false;
-        }
+        String response = webClient.get()
+                .uri(isAliveUrl.replace("{appName}", appName))
+                .retrieve()
+                .bodyToMono(String.class)
+                .retryWhen(Retry.fixedDelay(maxRetries, Duration.ofSeconds(retryDelay))
+                        .filter(e -> e instanceof WebClientResponseException.ServiceUnavailable ||
+                                e instanceof WebClientResponseException.NotFound))
+                .block();
+        return "1".equals(response);
     }
 
     public boolean existsOnCluster(String appName) throws ApiException {
@@ -147,19 +146,15 @@ public class KubernetesController {
 
     private void waitForDeployment(String appName) throws InterruptedException, ApiException {
         log.info("Checking '{}'s deployment status...", appName);
-        int numRetries = 0;
-
         log.info("Waiting for '{}' to deploy... (max {} seconds)", appName, (maxRetries * retryDelay));
-        while (!isAlive(appName)) {
-            if (numRetries < maxRetries) {
-                TimeUnit.SECONDS.sleep(retryDelay);
-            } else {
-                log.error("Application '{}' failed to deploy. Terminating...", appName);
-                takedownImage(appName);
-                return;
-            }
-            numRetries++;
+        if (!isAlive(appName)) {
+            TimeUnit.SECONDS.sleep(retryDelay);
+        } else {
+            log.error("Application '{}' failed to deploy. Terminating...", appName);
+            takedownImage(appName);
+            return;
         }
+
         log.info("Application '{}' deployed successfully!", appName);
     }
 }
