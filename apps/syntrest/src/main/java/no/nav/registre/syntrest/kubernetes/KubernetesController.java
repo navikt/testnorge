@@ -115,7 +115,7 @@ public class KubernetesController {
                     .block();
             return "1".equals(response);
         } catch (WebClientResponseException.ServiceUnavailable | WebClientResponseException.NotFound e) {
-            log.info("ServiceUnavailable or Not found when checking if {} is alive.\n{}", appName, Arrays.stream(e.getStackTrace()).toArray());
+            log.info(e.toString());
             return false;
         }
     }
