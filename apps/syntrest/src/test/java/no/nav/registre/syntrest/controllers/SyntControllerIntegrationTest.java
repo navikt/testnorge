@@ -142,8 +142,14 @@ public class SyntControllerIntegrationTest {
                 "]}";
         JsonNode jsonNode = objectMapper.readTree(jsonMap);
         Map<String, Object> clusterMap = objectMapper.convertValue(jsonNode, new TypeReference<>() {});
+
+        String emptyJsonMap = "{\"items\": []}";
+        JsonNode emptyNode = objectMapper.readTree(emptyJsonMap);
+        Map<String, Object> emptyMap = objectMapper.convertValue(emptyNode, new TypeReference<>() {});
+
         Mockito.when(api.listNamespacedCustomObject(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
                 Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+                .thenReturn(emptyMap)
                 .thenReturn(clusterMap);
     }
 }
