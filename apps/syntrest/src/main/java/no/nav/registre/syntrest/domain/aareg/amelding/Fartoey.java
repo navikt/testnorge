@@ -1,9 +1,8 @@
-package no.nav.registre.syntrest.domain.amelding;
+package no.nav.registre.syntrest.domain.aareg.amelding;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,17 +16,14 @@ import lombok.Setter;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Avvik {
+public class Fartoey {
 
-    @JsonAlias({"ID", "id"})
-    private String id;
+    @JsonAlias({"SKIPSREGISTER", "skipsregister"})
+    private String skipsregister;
 
-    @JsonAlias({"DETALJER", "detaljer"})
-    private String detaljer;
+    @JsonAlias({"SKIPSTYPE", "skipstype"})
+    private String skipstype;
 
-    @JsonAlias({"NAVN", "navn"})
-    private String navn;
-
-    @JsonAlias({"ALVORLIGHETSGRAD", "alvorlighetsgrad"})
-    private String alvorlighetsgrad;
+    @JsonAlias({"FARTSOMRAADE", "fartsomraade"})
+    private String fartsomraade;
 }

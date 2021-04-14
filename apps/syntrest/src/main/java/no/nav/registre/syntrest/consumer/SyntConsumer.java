@@ -2,75 +2,71 @@ package no.nav.registre.syntrest.consumer;
 
 import io.kubernetes.client.ApiException;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.reactive.function.client.WebClient;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Arrays;
 
-@Slf4j
-public class SyntConsumer {
+import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 
-    final ApplicationManager applicationManager;
-    final String appName;
+
+@Slf4j
+public abstract class SyntConsumer {
+    /**
+     * The SyntConsumer class talks to the synt-package once it has been deployed to the cluster.
+     */
+
+    protected final ApplicationManager applicationManager;
+    protected final WebClient webClient;
+    protected final boolean shutdown;
+    protected final String appName;
+
+    protected URL url;
 
     @Value("${synth-package-unused-uptime}")
     private long shutdownTimeDelaySeconds;
 
-    @Autowired
-    private RestTemplate restTemplate;
 
-    public SyntConsumer(ApplicationManager applicationManager, String name) {
+    protected SyntConsumer(ApplicationManager applicationManager, String name, String uri, boolean shutdown, WebClient.Builder webClientBuilder) throws MalformedURLException {
         this.applicationManager = applicationManager;
         this.appName = name;
+        this.shutdown = shutdown;
+        this.url = new URL(uri);
+
+        var baseUrl = this.url.getProtocol() + "://" + this.url.getAuthority();
+        this.webClient = webClientBuilder.baseUrl(baseUrl).build();
     }
 
-    public synchronized Object synthesizeData(RequestEntity request) throws ResponseStatusException {
+    protected void scheduleIfShutdown() {
+        if (shutdown) {
+            applicationManager.scheduleShutdown(this, shutdownTimeDelaySeconds);
+        }
+    }
 
+    public void shutdownApplication() {
+            applicationManager.shutdownApplication(appName);
+    }
+
+    public void startApplication() throws InterruptedException, ApiException {
         try {
             applicationManager.startApplication(this);
-        } catch (ApiException | InterruptedException e) {
-            log.error("Could access synth package {}: {}", this.appName, e.getMessage());
-            return null;
-        }
-
-        return getDataFromSyntPackage(request);
-    }
-
-    private synchronized Object getDataFromSyntPackage(RequestEntity request) throws RestClientException {
-        try {
-            ResponseEntity response = restTemplate.exchange(request, Object.class);
-
-            if (response.getStatusCode() != HttpStatus.OK) {
-                log.warn("Unexpected synth response: {}", response.getStatusCode());
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                        String.format("Unexpected synth response: %s", response.getStatusCode().toString()));
-            }
-            return response.getBody();
-        } catch (RestClientException e) {
-            log.error("Unexpected Rest Client Exception: {}", Arrays.toString(e.getStackTrace()));
+        } catch(InterruptedException | ApiException e) {
+            log.error("Could not access synth package {}: \n{}", appName, Arrays.toString(e.getStackTrace()));
             throw e;
-        } finally {
-            scheduleShutdown(shutdownTimeDelaySeconds);
         }
-    }
-
-    synchronized void scheduleShutdown(long shutdownTimeDelaySeconds) {
-        applicationManager.scheduleShutdown(this, shutdownTimeDelaySeconds);
-    }
-
-    public synchronized void shutdownApplication() {
-        applicationManager.shutdownApplication(appName);
     }
 
     public String getAppName() {
         return this.appName;
+    }
+
+    public void addQueryParameter(String parameterName, Object parameterValue) throws MalformedURLException {
+        var querys = this.url.getQuery();
+        var paramSeparator = querys.contains("?") ? "&" : "?";
+        var newQueyParam = paramSeparator + parameterName + "=" + parameterValue.toString();
+        this.url = new URL(this.url.toString() + newQueyParam);
     }
 }
