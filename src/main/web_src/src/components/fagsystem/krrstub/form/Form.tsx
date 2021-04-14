@@ -1,6 +1,6 @@
 import React from 'react'
 import * as Yup from 'yup'
-import { requiredBoolean } from '~/utils/YupValidations'
+import { ifPresent, requiredBoolean } from '~/utils/YupValidations'
 import _get from 'lodash/get'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
@@ -116,7 +116,7 @@ KrrstubForm.validation = {
 		sdpAdresse: Yup.string(),
 		sdpLeverandoer: Yup.string(),
 		spraak: Yup.string(),
-		registrert: requiredBoolean,
+		registrert: ifPresent('$krrstub.registrert', requiredBoolean),
 		reservert: Yup.boolean().nullable()
 	})
 }
