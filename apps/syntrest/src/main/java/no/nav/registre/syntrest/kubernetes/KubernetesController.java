@@ -145,16 +145,12 @@ public class KubernetesController {
     }
 
     private void waitForDeployment(String appName) throws InterruptedException, ApiException {
-        log.info("Checking '{}'s deployment status...", appName);
         log.info("Waiting for '{}' to deploy... (max {} seconds)", appName, (maxRetries * retryDelay));
         if (!isAlive(appName)) {
-            TimeUnit.SECONDS.sleep(retryDelay);
-        } else {
             log.error("Application '{}' failed to deploy. Terminating...", appName);
             takedownImage(appName);
             return;
         }
-
         log.info("Application '{}' deployed successfully!", appName);
     }
 }
