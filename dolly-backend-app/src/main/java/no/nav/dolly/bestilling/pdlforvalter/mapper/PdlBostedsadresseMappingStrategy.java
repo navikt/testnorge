@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -39,7 +40,9 @@ public class PdlBostedsadresseMappingStrategy implements MappingStrategy {
 
     private static void fixGyldigTilDato(List<BoAdresse> bostedsadresse) {
         for (var i = 0; i < bostedsadresse.size(); i++) {
-            if (i + 1 < bostedsadresse.size()) {
+            if (i + 1 < bostedsadresse.size() &&
+                    bostedsadresse.get(i + 1).getFlyttedato().minusDays(1).isAfter(
+                            bostedsadresse.get(i).getFlyttedato())) {
                 bostedsadresse.get(i).setGyldigTilOgMed(
                         bostedsadresse.get(i + 1).getFlyttedato().minusDays(1));
             }
@@ -55,7 +58,7 @@ public class PdlBostedsadresseMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Person person, PdlBostedsadresseHistorikk historikk, MappingContext context) {
 
                         List<BoAdresse> bostedsadresse = new ArrayList<>(person.getBoadresse());
-                        Collections.reverse(bostedsadresse);
+                        Collections.sort(bostedsadresse, Comparator.comparing(BoAdresse::getFlyttedato));
                         fixGyldigTilDato(bostedsadresse);
 
                         historikk.getPdlAdresser().addAll(

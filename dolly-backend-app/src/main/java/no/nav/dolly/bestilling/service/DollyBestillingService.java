@@ -171,6 +171,11 @@ public class DollyBestillingService {
         return isNotBlank(value) && !SUCCESS.equals(value);
     }
 
+    protected static Boolean isSyntetisk(String ident) {
+
+        return Integer.valueOf(ident.charAt(2)) >= 4;
+    }
+
     @Async
     public void oppdaterPersonAsync(RsDollyUpdateRequest request, Bestilling bestilling) {
 
@@ -182,8 +187,8 @@ public class DollyBestillingService {
             BestillingProgress progress = new BestillingProgress(bestilling, bestilling.getIdent(), testident.getMaster());
             TpsfBestilling tpsfBestilling = nonNull(request.getTpsf()) ? mapperFacade.map(request.getTpsf(), TpsfBestilling.class) : new TpsfBestilling();
             tpsfBestilling.setAntall(1);
-            tpsfBestilling.setNavSyntetiskIdent(bestilling.getNavSyntetiskIdent());
-            request.setNavSyntetiskIdent(bestilling.getNavSyntetiskIdent());
+            tpsfBestilling.setNavSyntetiskIdent(isSyntetisk(bestilling.getIdent()));
+            request.setNavSyntetiskIdent(tpsfBestilling.getNavSyntetiskIdent());
 
             AtomicReference<DollyPerson> dollyPerson = new AtomicReference<>(null);
             if (testident.isTpsf()) {
