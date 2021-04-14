@@ -42,7 +42,7 @@ public class GitHubConsumer {
         WebClient.Builder builder = webClientBuilder.clone();
 
         if (!isNull(proxy)) {
-            log.info("Setter opp proxy host {} for Client Credentials", proxy);
+            log.info("Setter opp proxy host {} for GitHub Consumer", proxy);
             var uri = URI.create(proxy);
 
             HttpClient httpClient = HttpClient.create()

@@ -16,6 +16,7 @@ import reactor.netty.http.client.HttpClient;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -114,6 +115,7 @@ public class KubernetesController {
                     .block();
             return "1".equals(response);
         } catch (WebClientResponseException.ServiceUnavailable | WebClientResponseException.NotFound e) {
+            log.info("ServiceUnavailable or Not found when checking if {} is alive.\n{}", appName, Arrays.stream(e.getStackTrace()).toArray());
             return false;
         }
     }
