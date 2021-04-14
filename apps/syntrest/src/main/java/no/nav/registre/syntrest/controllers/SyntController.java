@@ -270,7 +270,7 @@ public class SyntController {
     public ResponseEntity<List<ArbeidsforholdAmelding>> generateArbeidforholdHistorikk(
             @RequestBody ArbeidsforholdAmelding tidligereArbeidsforhold
     ) throws InterruptedException, ApiException {
-        var response = ameldingConsumer.synthesizeArbeidsforholdHistorikk(tidligereArbeidsforhold, "/arbeidsforhold");
+        var response = ameldingConsumer.synthesizeArbeidsforholdHistorikk(tidligereArbeidsforhold);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -281,7 +281,7 @@ public class SyntController {
     public ResponseEntity<List<ArbeidsforholdAmelding>> generateArbeidforholdStart(
             @RequestBody List<String> startdatoer
     ) throws InterruptedException, ApiException {
-        var response = ameldingConsumer.synthesizeArbeidsforholdStart(startdatoer, "/arbeidsforhold/start");
+        var response = ameldingConsumer.synthesizeArbeidsforholdStart(startdatoer);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -295,7 +295,7 @@ public class SyntController {
             @RequestBody ArbeidsforholdPeriode request
     ) throws InterruptedException, ApiException {
         InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.ARBEIDSFORHOLD_TYPE, arbeidsforholdType);
-        var response = ameldingConsumer.synthesizeArbeidsforholdStart(request, String.format("/arbeidsforhold/start/%s", arbeidsforholdType));
+        var response = ameldingConsumer.synthesizeArbeidsforholdStart(request, arbeidsforholdType);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);

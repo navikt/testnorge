@@ -227,7 +227,7 @@ public class SyntConsumerConfig {
                 applicationManager,
                 "synthdata-amelding",
                 ameldingUrl,
-                true,
+                false,
                 webClientBuilder);
     }
 }
