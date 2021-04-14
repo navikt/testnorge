@@ -10,7 +10,6 @@ import io.kubernetes.client.apis.CustomObjectsApi;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -37,7 +35,9 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
-
+import static java.util.Objects.isNull;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -68,8 +68,8 @@ public class SyntControllerIntegrationTest {
 
     @Test
     public void applicationContextTest() {
-        assert Arrays.asList(applicationContext.getBeanDefinitionNames())
-                .containsAll(Arrays.asList("customObjectsApi", "kubernetesController", "naisYaml", "applicationManager"));
+        assertThat(Arrays.asList(applicationContext.getBeanDefinitionNames())
+                .containsAll(Arrays.asList("customObjectsApi", "kubernetesController", "naisYaml", "applicationManager")), is(true));
     }
 
     @Test
@@ -85,8 +85,35 @@ public class SyntControllerIntegrationTest {
 
         // var result = mockMvc.perform(MockMvcRequestBuilders.get("/nav/Z010").queryParam("numToGenerate", "2"));
         var result = syntController.generateNavEndringsmelding("Z010", 2);
-        System.out.println(result);
+        assertThat(!isNull(result.getBody()), is(true));
+        assertThat(result.getBody().size(), is(2));
+    }
 
+    @Test
+    public void postConsumerTest() throws Exception {
+        launchApplicationStubs("synthdata-popp");
+        mockApiMethods();
+        stubFor(post(urlEqualTo("/generate_popp"))
+                .willReturn(
+                        aResponse().withStatus(200)
+                                .withHeader("Content-Type", "application/json")
+                                .withBody("[{"
+                                        + "\"grunnlag\": [{\"tekniskNavn\": \"Mr.Roboto\", \"verdi\": \"9001\"}], "
+                                        + "\"inntektsaar\": \"1994\", "
+                                        + "\"personidentifikator\": \"10101010101\", "
+                                        + "\"testdataEier\": \"Mulberry House\", "
+                                        + "\"tjeneste\": \"integrasjonstesting\""
+                                        + "},{"
+                                        + "\"grunnlag\": [{\"tekniskNavn\": \"MegaMan\", \"verdi\": \"402\"}], "
+                                        + "\"inntektsaar\": \"2001\", "
+                                        + "\"personidentifikator\": \"20202020202\", "
+                                        + "\"testdataEier\": \"Frankenstein Division\", "
+                                        + "\"tjeneste\": \"ekstra\""
+                                        + "}]")
+                ));
+        var result = syntController.generateInntektsmelding(Arrays.asList("10101010101", "20202020202"));
+        assertThat(!isNull(result.getBody()), is(true));
+        assertThat(result.getBody().size(), is(2));
     }
 
 

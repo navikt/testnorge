@@ -24,7 +24,7 @@ public class GitHubConsumer {
      * The GitHub Consumer provides an interface to GitHub, primarily to retrieve package tags.
      */
 
-    private final WebClient.Builder webClientBuilder;
+    private final WebClient webClient;
     private final URL url;
     private final String username;
     private final String password;
@@ -38,7 +38,6 @@ public class GitHubConsumer {
             WebClient.Builder webClientBuilder
     ) throws MalformedURLException {
         this.url = new URL(githubUrl);
-        this.webClientBuilder = webClientBuilder.baseUrl(githubUrl);
 
         if (!"local".equals(proxyUrl) && proxyPort != 0) {
             HttpClient httpClient = HttpClient.create()
@@ -48,11 +47,13 @@ public class GitHubConsumer {
                             .port(proxyPort)));
 
             ReactorClientHttpConnector connector = new ReactorClientHttpConnector(httpClient);
-            this.webClientBuilder.clientConnector(connector);
+            webClientBuilder.clientConnector(connector);
         }
 
         this.username = username;
         this.password = password;
+        var baseUrl = this.url.getProtocol() + "://" + this.url.getAuthority();
+        this.webClient = webClientBuilder.baseUrl(baseUrl).build();
     }
 
     public String getApplicationTag(String appName) {
@@ -60,7 +61,7 @@ public class GitHubConsumer {
         String queryString = "query {repository(owner:\"navikt\", name:\"testnorge-syntetiseringspakker\") {packages(names:[\"" +
                 packageName + "\"] last:1) {nodes {latestVersion{version}} }}}";
 
-        JsonNode queryAnswer = webClientBuilder.build()
+        JsonNode queryAnswer = webClient
                 .post()
                 .uri(this.url.getPath())
                 .headers(headers -> {

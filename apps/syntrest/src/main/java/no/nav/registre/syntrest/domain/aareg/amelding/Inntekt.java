@@ -11,7 +11,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.registre.syntrest.domain.aareg.amelding.Avvik;
 
 @Getter
 @Setter
