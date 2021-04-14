@@ -34,10 +34,9 @@ public class GitHubConsumer {
             @Value("${github_password}") String password,
             @Value("${github_url}") String githubUrl,
             @Value("${proxy-url") String proxyUrl,
-            @Value("${proxy-port}") int proxyPort
+            @Value("${proxy-port}") int proxyPort,
+            WebClient.Builder webClientBuilder
     ) throws MalformedURLException {
-
-        WebClient.Builder webClientBuilder = WebClient.builder();
         this.url = new URL(githubUrl);
 
         if (!"local".equals(proxyUrl) && proxyPort != 0) {
