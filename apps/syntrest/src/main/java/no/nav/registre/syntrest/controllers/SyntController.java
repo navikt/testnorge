@@ -11,6 +11,7 @@ import no.nav.registre.syntrest.consumer.domain.SyntAmeldingConsumer;
 import no.nav.registre.syntrest.consumer.SyntGetConsumer;
 import no.nav.registre.syntrest.consumer.SyntPostConsumer;
 import no.nav.registre.syntrest.utils.UrlUtils;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,7 +59,7 @@ public class SyntController {
     private final SyntPostConsumer<List<String>, List<Inntektsmelding>> poppConsumer;
     private final SyntGetConsumer<List<SamMelding>> samConsumer;
     private final SyntPostConsumer<Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>,
-                Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>> inntektConsumer;
+            Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>> inntektConsumer;
     private final SyntGetConsumer<List<TPmelding>> tpConsumer;
     private final SyntGetConsumer<List<SkdMelding>> tpsConsumer;
     private final SyntPostConsumer<Map<String, Integer>, Map<String, List<FrikortKvittering>>> frikortConsumer;
@@ -147,7 +148,7 @@ public class SyntController {
         InputValidator.validateInput(numToGenerate);
         InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.MELDEGRUPPE, meldegruppe);
 
-        var queryString = createQueryString("arbeidstimer", arbeidstimer.toString(), "");
+        var queryString = createQueryString("arbeidstimer", isNull(arbeidstimer) ? null : arbeidstimer.toString(), "");
         var expandedPath = urlUtils.expandPath(meldekortConsumer.getUrl(), String.valueOf(numToGenerate), meldegruppe);
         var response = meldekortConsumer.synthesizeData(expandedPath, queryString);
         doResponseValidation(response);
@@ -275,9 +276,16 @@ public class SyntController {
     @PostMapping("/amelding/arbeidsforhold")
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-amelding" })
     public ResponseEntity<List<ArbeidsforholdAmelding>> generateArbeidforholdHistorikk(
-            @RequestBody ArbeidsforholdAmelding tidligereArbeidsforhold
+            @RequestBody ArbeidsforholdAmelding tidligereArbeidsforhold,
+            @ApiParam(value = "Verdi bestemmer om det skal være mulig at avvik blir generert i arbeidforhold.")
+            @RequestParam(required = false) String avvik,
+            @ApiParam(value = "Verdi bestemmer om det skal være mulig at sluttdato blir generert i arbeidforhold.")
+            @RequestParam(required = false) String sluttdato
     ) throws InterruptedException, ApiException {
-        var response = ameldingConsumer.synthesizeArbeidsforholdHistorikk(tidligereArbeidsforhold);
+        var queryString = createQueryString("avvik", avvik, "");
+        queryString = createQueryString("sluttdato", sluttdato, queryString);
+
+        var response = ameldingConsumer.synthesizeArbeidsforholdHistorikk(tidligereArbeidsforhold, queryString);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -286,9 +294,12 @@ public class SyntController {
     @PostMapping("/amelding/arbeidsforhold/start")
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-amelding" })
     public ResponseEntity<List<ArbeidsforholdAmelding>> generateArbeidforholdStart(
-            @RequestBody List<String> startdatoer
+            @RequestBody List<String> startdatoer,
+            @ApiParam(value = "Verdi bestemmer om det skal være mulig at avvik blir generert i arbeidforhold.")
+            @RequestParam(required = false) String avvik
     ) throws InterruptedException, ApiException {
-        var response = ameldingConsumer.synthesizeArbeidsforholdStart(startdatoer);
+        var queryString = createQueryString("avvik", avvik, "");
+        var response = ameldingConsumer.synthesizeArbeidsforholdStart(startdatoer, queryString);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -299,10 +310,13 @@ public class SyntController {
     public ResponseEntity<ArbeidsforholdAmelding> generateArbeidforholdMedType(
             @ApiParam(value = "Arbeidsforhold type.", required = true)
             @PathVariable String arbeidsforholdType,
-            @RequestBody ArbeidsforholdPeriode request
+            @RequestBody ArbeidsforholdPeriode request,
+            @ApiParam(value = "Verdi bestemmer om det skal være mulig at avvik blir generert i arbeidforhold.")
+            @RequestParam(required = false) String avvik
     ) throws InterruptedException, ApiException {
         InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.ARBEIDSFORHOLD_TYPE, arbeidsforholdType);
-        var response = ameldingConsumer.synthesizeArbeidsforholdStart(request, arbeidsforholdType);
+        var queryString = createQueryString("avvik", avvik, "");
+        var response = ameldingConsumer.synthesizeArbeidsforholdStart(request, arbeidsforholdType, queryString);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);

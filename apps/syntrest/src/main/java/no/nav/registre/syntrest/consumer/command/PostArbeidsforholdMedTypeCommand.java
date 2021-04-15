@@ -17,11 +17,13 @@ public class PostArbeidsforholdMedTypeCommand implements Callable<Arbeidsforhold
     private final WebClient webClient;
     private final ArbeidsforholdPeriode request;
     private final String syntAmeldingUrlPath;
+    private final String queryString;
 
-    public PostArbeidsforholdMedTypeCommand(ArbeidsforholdPeriode request, String syntAmeldingUrlPath, WebClient webClient) {
+    public PostArbeidsforholdMedTypeCommand(ArbeidsforholdPeriode request, String syntAmeldingUrlPath, String queryString, WebClient webClient) {
         this.webClient = webClient;
         this.request = request;
         this.syntAmeldingUrlPath = syntAmeldingUrlPath;
+        this.queryString = queryString;
     }
 
     @Override
@@ -30,7 +32,10 @@ public class PostArbeidsforholdMedTypeCommand implements Callable<Arbeidsforhold
             var body = BodyInserters.fromPublisher(Mono.just(request), ArbeidsforholdPeriode.class);
 
             return webClient.post()
-                    .uri(builder -> builder.path(syntAmeldingUrlPath).build())
+                    .uri(builder -> builder
+                            .path(syntAmeldingUrlPath)
+                            .query(queryString)
+                            .build())
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .body(body)
                     .retrieve()
