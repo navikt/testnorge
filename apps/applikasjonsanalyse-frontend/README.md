@@ -1,3 +1,9 @@
+---
+layout: default
+title: Frontend
+parent: Avhengighetsanalyse
+---
+
 # Avhengighetsanalyse-Frontend
 Frontend for avhengighets analyse.
 
