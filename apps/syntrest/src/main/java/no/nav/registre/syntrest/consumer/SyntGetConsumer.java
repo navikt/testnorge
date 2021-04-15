@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriBuilderFactory;
 
 import java.net.MalformedURLException;
 
@@ -23,10 +22,9 @@ public class SyntGetConsumer<T> extends SyntConsumer {
             String uri,
             boolean shutdown,
             ParameterizedTypeReference<T> responseType,
-            UriBuilderFactory uriFactory,
             WebClient.Builder webClientBuilder
     ) throws MalformedURLException {
-        super(applicationManager, name, uri, shutdown, webClientBuilder, uriFactory);
+        super(applicationManager, name, uri, shutdown, webClientBuilder);
         this.responseType = responseType;
     }
 

@@ -12,7 +12,6 @@ import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriBuilderFactory;
 
 import java.net.MalformedURLException;
 import java.util.Arrays;
@@ -31,10 +30,9 @@ public class SyntAmeldingConsumer extends SyntConsumer {
             String appName,
             String uri,
             boolean shutdown,
-            WebClient.Builder webClientBuilder,
-            UriBuilderFactory uriFactory
+            WebClient.Builder webClientBuilder
     ) throws MalformedURLException {
-        super(applicationManager, appName, uri, shutdown, webClientBuilder.baseUrl(uri), uriFactory);
+        super(applicationManager, appName, uri, shutdown, webClientBuilder);
         this.historikkPath = this.url.getPath() + "/arbeidsforhold";
         this.startPath = this.url.getPath() + "/arbeidsforhold/start";
         this.startSpesifikkPath = this.url.getPath() + "/arbeidsforhold/start/%s";

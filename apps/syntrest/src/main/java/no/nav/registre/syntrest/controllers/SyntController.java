@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.consumer.domain.SyntAmeldingConsumer;
 import no.nav.registre.syntrest.consumer.SyntGetConsumer;
 import no.nav.registre.syntrest.consumer.SyntPostConsumer;
+import no.nav.registre.syntrest.utils.UrlUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,6 +41,7 @@ import no.nav.registre.syntrest.domain.tps.SkdMelding;
 import no.nav.registre.syntrest.utils.InputValidator;
 
 import static java.util.Objects.isNull;
+import static no.nav.registre.syntrest.utils.UrlUtils.createQueryString;
 
 @Slf4j
 @RestController
@@ -63,6 +65,7 @@ public class SyntController {
     private final SyntPostConsumer<Map<String, Integer>, Map<String, List<FrikortKvittering>>> frikortConsumer;
     private final SyntAmeldingConsumer ameldingConsumer;
 
+    private final UrlUtils urlUtils;
 
     @PostMapping("/aareg")
     @ApiOperation(value = "Aareg", notes = "Genererer syntetiske arbeidshistorikker bestående av meldinger på AAREG format.")
@@ -87,7 +90,7 @@ public class SyntController {
     ) throws ApiException, InterruptedException {
 
         InputValidator.validateInput(numToGenerate);
-        var expandedPath = bisysConsumer.expandedPath(String.valueOf(numToGenerate));
+        var expandedPath = urlUtils.expandPath(bisysConsumer.getUrl(), String.valueOf(numToGenerate));
         var response = bisysConsumer.synthesizeData(expandedPath);
         doResponseValidation(response);
         return ResponseEntity.ok(response);
@@ -102,7 +105,7 @@ public class SyntController {
     ) throws ApiException, InterruptedException {
 
         InputValidator.validateInput(numToGenerate);
-        var expandedPath = instConsumer.expandedPath(String.valueOf(numToGenerate));
+        var expandedPath = urlUtils.expandPath(instConsumer.getUrl(), String.valueOf(numToGenerate));
         var response = instConsumer.synthesizeData(expandedPath);
         doResponseValidation(response);
         return ResponseEntity.ok(response);
@@ -118,7 +121,7 @@ public class SyntController {
     ) throws ApiException, InterruptedException {
 
         InputValidator.validateInput(numToGenerate);
-        var expandedPath = medlConsumer.expandedPath(String.valueOf(numToGenerate));
+        var expandedPath = urlUtils.expandPath(medlConsumer.getUrl(), String.valueOf(numToGenerate));
         var response = medlConsumer.synthesizeData(expandedPath);
         doResponseValidation(response);
         return ResponseEntity.ok(response);
@@ -146,7 +149,7 @@ public class SyntController {
         InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.MELDEGRUPPE, meldegruppe);
 
         var queryString = createQueryString("arbeidstimer", arbeidstimer.toString(), "");
-        var expandedPath = meldekortConsumer.expandedPath(String.valueOf(numToGenerate), meldegruppe);
+        var expandedPath = urlUtils.expandPath(meldekortConsumer.getUrl(), String.valueOf(numToGenerate), meldegruppe);
         var response = meldekortConsumer.synthesizeData(expandedPath, queryString);
         doResponseValidation(response);
         return ResponseEntity.ok(response);
@@ -165,7 +168,7 @@ public class SyntController {
 
         InputValidator.validateInput(numToGenerate);
         InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.ENDRINGSKODE_NAV, endringskode);
-        var expandedPath = navConsumer.expandedPath(String.valueOf(numToGenerate), endringskode);
+        var expandedPath = urlUtils.expandPath(navConsumer.getUrl(), String.valueOf(numToGenerate), endringskode);
         var response = navConsumer.synthesizeData(expandedPath);
         doResponseValidation(response);
 
@@ -197,7 +200,7 @@ public class SyntController {
             @RequestParam int numToGenerate
     ) throws ApiException, InterruptedException {
         InputValidator.validateInput(numToGenerate);
-        var expandedPath = samConsumer.expandedPath(String.valueOf(numToGenerate));
+        var expandedPath = urlUtils.expandPath(samConsumer.getUrl(), String.valueOf(numToGenerate));
         var response = samConsumer.synthesizeData(expandedPath);
         doResponseValidation(response);
 
@@ -231,7 +234,7 @@ public class SyntController {
             @RequestParam int numToGenerate
     ) throws ApiException, InterruptedException {
         InputValidator.validateInput(numToGenerate);
-        var expandedPath = tpConsumer.expandedPath(String.valueOf(numToGenerate));
+        var expandedPath = urlUtils.expandPath(tpConsumer.getUrl(), String.valueOf(numToGenerate));
         var response = tpConsumer.synthesizeData(expandedPath);
         doResponseValidation(response);
 
@@ -249,7 +252,7 @@ public class SyntController {
     ) throws ApiException, InterruptedException {
         InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.ENDRINGSKODE, endringskode);
         InputValidator.validateInput(numToGenerate);
-        var expandedPath = tpsConsumer.expandedPath(String.valueOf(numToGenerate), endringskode);
+        var expandedPath = urlUtils.expandPath(tpsConsumer.getUrl(), String.valueOf(numToGenerate), endringskode);
         var response = tpsConsumer.synthesizeData(expandedPath);
         doResponseValidation(response);
 
@@ -306,18 +309,9 @@ public class SyntController {
         return ResponseEntity.ok(response);
     }
 
-
     private void doResponseValidation(Object response) {
         if (isNull(response)) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Syntetisering feilet.");
         }
-    }
-
-    private static String createQueryString(String parameterName, String parameterValue, String existingQuery) {
-        if (isNull(parameterValue)) {
-            return existingQuery;
-        }
-        var paramSeparator = (isNull(existingQuery) || "".equals(existingQuery)) ? "" : "&";
-        return existingQuery + paramSeparator + parameterName + "=" + parameterValue;
     }
 }

@@ -11,7 +11,6 @@ import java.net.URL;
 import java.util.Arrays;
 
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
-import org.springframework.web.util.UriBuilderFactory;
 
 @Slf4j
 public abstract class SyntConsumer {
@@ -28,7 +27,6 @@ public abstract class SyntConsumer {
 
     @Value("${synth-package-unused-uptime}")
     private long shutdownTimeDelaySeconds;
-    private final UriBuilderFactory uriFactory;
 
 
     protected SyntConsumer(
@@ -36,8 +34,7 @@ public abstract class SyntConsumer {
             String name,
             String uri,
             boolean shutdown,
-            WebClient.Builder webClientBuilder,
-            UriBuilderFactory uriFactory
+            WebClient.Builder webClientBuilder
     ) throws MalformedURLException {
         this.applicationManager = applicationManager;
         this.appName = name;
@@ -46,7 +43,6 @@ public abstract class SyntConsumer {
 
         var baseUrl = this.url.getProtocol() + "://" + this.url.getAuthority();
         this.webClient = webClientBuilder.baseUrl(baseUrl).build();
-        this.uriFactory = uriFactory;
     }
 
     protected void scheduleIfShutdown() {
@@ -72,7 +68,7 @@ public abstract class SyntConsumer {
         return this.appName;
     }
 
-    public String expandedPath(String... parameters) {
-        return uriFactory.builder().path(url.getPath()).build((Object[]) parameters).toString();
+    public URL getUrl() {
+        return this.url;
     }
 }
