@@ -1,7 +1,8 @@
 import React from 'react'
 import * as Yup from 'yup'
 import _get from 'lodash/get'
-import { requiredDate, ifPresent, requiredString } from '~/utils/YupValidations'
+import { isAfter } from 'date-fns'
+import { requiredDate, ifPresent, requiredString, messages } from '~/utils/YupValidations'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import Panel from '~/components/ui/panel/Panel'
 import { panelError } from '~/components/ui/form/formUtils'
@@ -62,7 +63,15 @@ const validation = Yup.object({
 	aap: Yup.array().of(
 		Yup.object({
 			fraDato: requiredDate,
-			tilDato: requiredDate
+			tilDato: Yup.string()
+				.test('etter-fradato', 'Til-dato må være etter fra-dato', function validDate(tildato) {
+					const values = this.options.context
+					const fradato = values.arenaforvalter.aap[0].fraDato
+					if (!fradato || !tildato) return true
+					return isAfter(new Date(tildato), new Date(fradato))
+				})
+				.required(messages.required)
+				.nullable()
 		})
 	),
 	aap115: Yup.array().of(
