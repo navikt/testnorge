@@ -17,11 +17,13 @@ public class PostArbeidsforholdHistorikkCommand implements Callable<List<Arbeids
     private final WebClient webClient;
     private final ArbeidsforholdAmelding arbeidsforhold;
     private final String syntAmeldingUrlPath;
+    private final String queryString;
 
-    public PostArbeidsforholdHistorikkCommand(ArbeidsforholdAmelding arbeidsforhold, String syntAmeldingUrlPath, WebClient webClient) {
+    public PostArbeidsforholdHistorikkCommand(ArbeidsforholdAmelding arbeidsforhold, String syntAmeldingUrlPath, String queryString, WebClient webClient) {
         this.webClient = webClient;
         this.arbeidsforhold = arbeidsforhold;
         this.syntAmeldingUrlPath = syntAmeldingUrlPath;
+        this.queryString = queryString;
     }
 
     @Override
@@ -31,7 +33,10 @@ public class PostArbeidsforholdHistorikkCommand implements Callable<List<Arbeids
             var body = BodyInserters.fromPublisher(Mono.just(arbeidsforhold), ArbeidsforholdAmelding.class);
 
             response = webClient.post()
-                    .uri(builder -> builder.path(syntAmeldingUrlPath).build())
+                    .uri(builder -> builder
+                            .path(syntAmeldingUrlPath)
+                            .query(queryString)
+                            .build())
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .body(body)
                     .retrieve()

@@ -38,10 +38,13 @@ public class SyntAmeldingConsumer extends SyntConsumer {
         this.startSpesifikkPath = this.url.getPath() + "/arbeidsforhold/start/%s";
     }
 
-    public List<ArbeidsforholdAmelding> synthesizeArbeidsforholdStart(List<String> datoer) throws ApiException, InterruptedException {
+    public List<ArbeidsforholdAmelding> synthesizeArbeidsforholdStart(
+            List<String> datoer,
+            String queryString
+    ) throws ApiException, InterruptedException {
         startApplication();
         try {
-            return new PostArbeidsforholdStartCommand(datoer, startPath, webClient).call();
+            return new PostArbeidsforholdStartCommand(datoer, startPath, queryString, webClient).call();
         } catch (RestClientException e) {
             log.error(REST_CLIENT_EXCEPTION_MESSAGE, Arrays.toString(e.getStackTrace()));
             throw e;
@@ -52,11 +55,12 @@ public class SyntAmeldingConsumer extends SyntConsumer {
 
     public ArbeidsforholdAmelding synthesizeArbeidsforholdStart(
             ArbeidsforholdPeriode request,
-            String arbeidsforholdType
+            String arbeidsforholdType,
+            String queryString
     ) throws ApiException, InterruptedException {
         startApplication();
         try {
-            return new PostArbeidsforholdMedTypeCommand(request, String.format(startSpesifikkPath, arbeidsforholdType), webClient).call();
+            return new PostArbeidsforholdMedTypeCommand(request, String.format(startSpesifikkPath, arbeidsforholdType) , queryString, webClient).call();
         } catch (RestClientException e) {
             log.error(REST_CLIENT_EXCEPTION_MESSAGE, Arrays.toString(e.getStackTrace()));
             throw e;
@@ -66,11 +70,12 @@ public class SyntAmeldingConsumer extends SyntConsumer {
     }
 
     public List<ArbeidsforholdAmelding> synthesizeArbeidsforholdHistorikk(
-            ArbeidsforholdAmelding tidligereArbeidsforhold
+            ArbeidsforholdAmelding tidligereArbeidsforhold,
+            String queryString
     ) throws ApiException, InterruptedException {
         startApplication();
         try {
-            return new PostArbeidsforholdHistorikkCommand(tidligereArbeidsforhold, historikkPath, webClient).call();
+            return new PostArbeidsforholdHistorikkCommand(tidligereArbeidsforhold, historikkPath, queryString, webClient).call();
         } catch (RestClientException e) {
             log.error(REST_CLIENT_EXCEPTION_MESSAGE, Arrays.toString(e.getStackTrace()));
             throw e;
