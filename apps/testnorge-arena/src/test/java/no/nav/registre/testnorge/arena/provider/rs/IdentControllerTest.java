@@ -16,8 +16,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import no.nav.registre.testnorge.arena.service.IdentService;
-
 @RunWith(MockitoJUnitRunner.class)
 public class IdentControllerTest {
 
