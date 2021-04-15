@@ -36,11 +36,11 @@ spec:
     enabled: true
   resources:
     requests:
-      cpu: 200m
-      memory: 4000Mi
-    limits:
       cpu: 500m
-      memory: 5000Mi
+      memory: 1024Mi
+    limits:
+      cpu: 800m
+      memory: 2048Mi
   ingresses:
     - "https://mn-synt-arbeidsforhold-service.dev.adeo.no"
     - "https://mn-synt-arbeidsforhold-service.dev.intern.nav.no"
