@@ -41,6 +41,7 @@ spec:
       enabled: true
       tenant: nav.no
       replyURLs:
+        - "https://testnav-miljoer-service.dev.intern.nav.no/login/oauth2/code/aad"
         - "https://miljoer-service.dev.intern.nav.no/login/oauth2/code/aad"
         - "http://localhost:8080/login/oauth2/code/aad"
       claims:
@@ -69,3 +70,4 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://miljoer-service.dev.intern.nav.no"
+    - "https://testnav-miljoer-service.dev.intern.nav.no"
