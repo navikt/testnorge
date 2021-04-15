@@ -1,6 +1,8 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
 consumers:
+  hodejegeren:
+    url: https://testnorge-hodejegeren.dev.intern.nav.no
   arbeidsforholdapi:
     clientId: 1b2f24c8-a426-47b1-8ff1-7905d6dfddb5
     cluster: dev-fss
