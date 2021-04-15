@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Frontend
+title: Service
 parent: Avhengighetsanalyse
 ---
 
