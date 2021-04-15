@@ -1,4 +1,4 @@
-## Testnorge-Avhengighetsanalyse-Service
+# Avhengighetsanalyse-Service
 API for avhengighets analyse.
 
 ### Swagger
