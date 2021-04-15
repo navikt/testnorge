@@ -4,7 +4,7 @@ import { OrganisasjonForm } from './form';
 
 export default () => (
   <Page>
-    <h1>Faste organisajoner</h1>
+    <h1>Faste organisasjoner</h1>
     <OrganisasjonForm />
   </Page>
 );

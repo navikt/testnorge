@@ -2,8 +2,8 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 
 spring:
   application:
-    name: endringsmelding-frontend
-    description: App for å sende inn endringsmeldinger til tps
+    name: testnav-faste-data-frontend
+    description: App for å se faste datasett
   main:
     banner-mode: off
   security:

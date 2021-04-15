@@ -38,7 +38,7 @@ export default () => {
             <>
               {compared.isMismatch ? (
                 <>
-                  <WarningAlertstripe label="Det er en mismatch i mellom dataene settene." />
+                  <WarningAlertstripe label="Det er en mismatch mellom datasettene." />
                   <h2>Mismatch</h2>
                   <MismatchTable
                     labels={{
@@ -51,7 +51,7 @@ export default () => {
               ) : (
                 <SuccessAlertstripe label="Datasettene er funksjonelt like." />
               )}
-              <h2>Code</h2>
+              <h2>Kode</h2>
               <CompareCodeView
                 left={{
                   code: data.left,

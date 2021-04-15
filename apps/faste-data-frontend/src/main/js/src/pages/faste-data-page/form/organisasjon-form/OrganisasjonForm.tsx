@@ -64,14 +64,14 @@ export default () => {
   const [miljo, setMiljo] = useState<string>('q1');
   const [loading, setLoading] = useState<boolean>(false);
   const [tag, setTag] = useState<string>('');
-  const [opprinelse, setOpprinelse] = useState<string>('');
+  const [opprinnelse, setOpprinnelse] = useState<string>('');
 
   const onSearch = (gruppe: Gruppe) => {
     setLoading(true);
     OrganisasjonFasteDataService.fetchOrganisasjoner(
       gruppe,
       !tag ? null : tag,
-      !opprinelse ? null : opprinelse
+      !opprinnelse ? null : opprinnelse
     )
       .then((response) => {
         setOrganisasjoner(response);
@@ -82,19 +82,19 @@ export default () => {
 
   useEffect(() => {
     setOrganisasjoner(null);
-  }, [gruppe, miljo, tag, opprinelse]);
+  }, [gruppe, miljo, tag, opprinnelse]);
 
   return (
     <Form>
       <Line>
         <SelectFormItem
-          label="Grupp"
+          label="Gruppe"
           htmlId="gruppe-selec"
           onChange={(value: Gruppe) => setGruppe(value)}
           options={toOptions(grupper)}
         />
         <SelectFormItem
-          label="Miljo"
+          label="Miljø"
           htmlId="miljo-select"
           onChange={(value: string) => setMiljo(value)}
           options={toOptions(miljoer)}
@@ -109,10 +109,10 @@ export default () => {
       </Line>
       <Line>
         <Input
-          label="Opprinelse"
-          value={opprinelse}
+          label="Opprinnelse"
+          value={opprinnelse}
           onChange={(e) => {
-            setOpprinelse(e.target.value);
+            setOpprinnelse(e.target.value);
           }}
         />
         <Knapp
