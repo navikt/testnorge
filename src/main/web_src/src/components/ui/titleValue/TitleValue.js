@@ -26,7 +26,7 @@ export const TitleValue = ({ kodeverk = null, ...restProps }) => {
 			<P_TitleValue {...rest}>
 				<KodeverkConnector navn={kodeverk} value={value}>
 					{(kodeverkValues, kodeverkValue) => {
-						if (!kodeverkValue) return <Loading />
+						if (!kodeverkValue) return !kodeverkValues ? <Loading /> : value
 						return _isFunction(restProps.children)
 							? restProps.children(kodeverkValue)
 							: kodeverkValue.label

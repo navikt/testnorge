@@ -15,7 +15,7 @@ export enum VergemaalKodeverk {
 }
 
 export enum FullmaktKodeverk {
-	tema = 'Tema'
+	Tema = 'Tema'
 }
 
 export enum AdresseKodeverk {

@@ -23,15 +23,17 @@ export const Fullmakt = () => {
 		<Vis attributt={Object.values(paths)} formik>
 			<div className="flexbox--flex-wrap">
 				<FormikTextInput name={paths.kilde} label="Kilde" size="xlarge" />
-				<FormikSelect
-					name={paths.omraader}
-					label="Områder"
-					options={fullmaktOptions}
-					size="xlarge"
-					isMulti={true}
-					isClearable={false}
-					fastfield={false}
-				/>
+				<div className="flexbox--full-width">
+					<FormikSelect
+						name={paths.omraader}
+						label="Områder"
+						options={fullmaktOptions}
+						size="grow"
+						isMulti={true}
+						isClearable={false}
+						fastfield={false}
+					/>
+				</div>
 				<FormikDatepicker name={paths.gyldigFom} label="Gyldig fra og med" />
 				<FormikDatepicker name={paths.gyldigTom} label="Gyldig til og med" />
 				<FormikSelect

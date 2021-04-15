@@ -3,8 +3,8 @@ import { VergemaalKodeverk } from '~/config/kodeverk'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
-import { Historikk } from '~/components/ui/historikk/Historikk'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 
 type Data = {
 	data: VergemaalData
@@ -20,6 +20,7 @@ type VergemaalData = {
 	sakType: string
 	vedtakDato: string
 	verge: Verge
+	id: number
 }
 
 type Verge = {
@@ -32,7 +33,7 @@ type Verge = {
 }
 
 export const Visning = ({ data }: Data) => {
-	const verge = data.verge
+	const { etternavn, fornavn, ident, identtype, kjonn, mellomnavn } = data.verge
 	return (
 		<>
 			<div className="person-visning_content">
@@ -53,11 +54,11 @@ export const Visning = ({ data }: Data) => {
 			</div>
 			<h4 style={{ marginTop: '0px' }}>Verge</h4>
 			<div className="person-visning_content">
-				<TitleValue title={verge.identtype} value={verge.ident} />
-				<TitleValue title="Fornavn" value={verge.fornavn} />
-				<TitleValue title="Mellomnavn" value={verge.mellomnavn} />
-				<TitleValue title="Etternavn" value={verge.etternavn} />
-				<TitleValue title="Kjønn" value={Formatters.kjonnToString(verge.kjonn)} />
+				<TitleValue title={identtype} value={ident} />
+				<TitleValue title="Fornavn" value={fornavn} />
+				<TitleValue title="Mellomnavn" value={mellomnavn} />
+				<TitleValue title="Etternavn" value={etternavn} />
+				<TitleValue title="Kjønn" value={Formatters.kjonnToString(kjonn)} />
 			</div>
 		</>
 	)
@@ -68,8 +69,10 @@ export const Vergemaal = ({ data }: DataListe) => {
 	return (
 		<div>
 			<SubOverskrift label="Vergemål" iconKind="vergemaal" />
-			{/* @ts-ignore */}
-			<Historikk component={Visning} data={data} />
+
+			<DollyFieldArray data={data} nested>
+				{(vergemaal: VergemaalData) => <Visning key={vergemaal.id} data={vergemaal} />}
+			</DollyFieldArray>
 		</div>
 	)
 }

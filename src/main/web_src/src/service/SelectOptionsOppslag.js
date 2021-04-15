@@ -135,12 +135,17 @@ SelectOptionsOppslag.formatOptions = (type, data) => {
 		return options
 	} else if (type === 'fullmaktOmraader') {
 		const omraader = data.value ? Object.entries(data.value.data.koder) : []
+		const ugyldigeKoder = ['BII', 'KLA', 'KNA', 'KOM', 'LGA', 'MOT', 'OVR']
 		const options = []
 		options.push({ value: '*', label: '* (Alle)' })
-		omraader.forEach(omraade => {
-			data = omraade[1]
-			options.push({ value: data.value, label: data.label })
-		})
+		omraader
+			.filter(omr => {
+				return !ugyldigeKoder.includes(omr[1].value)
+			})
+			.forEach(omraade => {
+				data = omraade[1]
+				options.push({ value: data.value, label: data.label })
+			})
 		return options
 	}
 }
