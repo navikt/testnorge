@@ -67,6 +67,8 @@ public class SyntController {
 
     private final UrlUtils urlUtils;
 
+    private static final String AVVIK_PARAM = "avvik";
+
     @PostMapping("/aareg")
     @ApiOperation(value = "Aareg", notes = "Genererer syntetiske arbeidshistorikker bestående av meldinger på AAREG format.")
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-aareg" })
@@ -150,6 +152,7 @@ public class SyntController {
 
         var queryString = isNull(arbeidstimer) ? "" : createQueryString("arbeidstimer", arbeidstimer.toString(), "");
         var expandedPath = urlUtils.expandPath(meldekortConsumer.getUrl(), String.valueOf(numToGenerate), meldegruppe);
+
         var response = meldekortConsumer.synthesizeData(expandedPath, queryString);
         doResponseValidation(response);
         return ResponseEntity.ok(response);
@@ -282,7 +285,7 @@ public class SyntController {
             @ApiParam(value = "Verdi bestemmer om det skal være mulig at sluttdato blir generert i arbeidforhold.")
             @RequestParam(required = false) String sluttdato
     ) throws InterruptedException, ApiException {
-        var queryString = createQueryString("avvik", avvik, "");
+        var queryString = createQueryString(AVVIK_PARAM, avvik, "");
         queryString = createQueryString("sluttdato", sluttdato, queryString);
 
         var response = ameldingConsumer.synthesizeArbeidsforholdHistorikk(tidligereArbeidsforhold, queryString);
@@ -298,7 +301,7 @@ public class SyntController {
             @ApiParam(value = "Verdi bestemmer om det skal være mulig at avvik blir generert i arbeidforhold.")
             @RequestParam(required = false) String avvik
     ) throws InterruptedException, ApiException {
-        var queryString = createQueryString("avvik", avvik, "");
+        var queryString = createQueryString(AVVIK_PARAM, avvik, "");
         var response = ameldingConsumer.synthesizeArbeidsforholdStart(startdatoer, queryString);
         doResponseValidation(response);
 
@@ -315,7 +318,7 @@ public class SyntController {
             @RequestParam(required = false) String avvik
     ) throws InterruptedException, ApiException {
         InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.ARBEIDSFORHOLD_TYPE, arbeidsforholdType);
-        var queryString = createQueryString("avvik", avvik, "");
+        var queryString = createQueryString(AVVIK_PARAM, avvik, "");
         var response = ameldingConsumer.synthesizeArbeidsforholdStart(request, arbeidsforholdType, queryString);
         doResponseValidation(response);
 
