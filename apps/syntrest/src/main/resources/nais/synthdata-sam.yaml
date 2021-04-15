@@ -34,4 +34,5 @@ spec:
       memory: 31000Mi
   ingresses:
     - "https://nais-synthdata-sam.nais.preprod.local"
+    - "https://nais-synthdata-sam.dev.adeo.no"
     - "https://nais-synthdata-sam.dev.intern.nav.no"
