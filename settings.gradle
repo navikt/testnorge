@@ -289,3 +289,6 @@ project(":security-token-service").projectDir = file('libs/security-token-servic
 
 include 'organisasjon-faste-data-service'
 project(":organisasjon-faste-data-service").projectDir = file('apps/organisasjon-faste-data-service')
+
+include 'faste-data-frontend'
+project(":faste-data-frontend").projectDir = file('apps/faste-data-frontend')
