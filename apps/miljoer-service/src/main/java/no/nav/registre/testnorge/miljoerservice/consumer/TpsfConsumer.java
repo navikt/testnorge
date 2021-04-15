@@ -47,7 +47,7 @@ public class TpsfConsumer {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken.getTokenValue())
                 .retrieve()
                 .toEntity(MiljoerResponse.class)
-                .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(7)))
+                .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(3)))
                 .block();
 
         if (response == null || isNull(response.getBody()) || isNull(response.getBody().getEnvironments())) {
