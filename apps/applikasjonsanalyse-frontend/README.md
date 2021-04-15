@@ -1,8 +1,8 @@
-# Avhengighetsanalyse-Service
+# Avhengighetsanalyse-Frontend
 Frontend for avhengighets analyse.
 
 ### Swagger
-Swagger finnes under [/api](https://testnorge-avhengighetsanalyse-frontend.nais.preprod.local/api) -endepunktet til applikasjonen.
+Swagger finnes under [/api](https://testnav-applikasjonsanalyse-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
 
 
 ### Lokal kjøring
