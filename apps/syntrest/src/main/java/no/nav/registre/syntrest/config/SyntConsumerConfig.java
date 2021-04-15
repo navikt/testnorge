@@ -19,7 +19,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriBuilderFactory;
 
 import java.net.MalformedURLException;
 import java.util.List;
@@ -58,7 +57,6 @@ public class SyntConsumerConfig {
     private String ameldingUrl;
 
     private final ApplicationManager applicationManager;
-    private final UriBuilderFactory uriFactory;
     private final WebClient.Builder webClientBuilder;
 
     // Request/Response types
@@ -96,7 +94,6 @@ public class SyntConsumerConfig {
                 bisysUrl,
                 true,
                 BARNEBIDRAGSMELDING_LIST_TYPE,
-                uriFactory,
                 webClientBuilder);
     }
 
@@ -108,7 +105,6 @@ public class SyntConsumerConfig {
                 instUrl,
                 true,
                 INSTITUSJONSMELDING_LIST_TYPE,
-                uriFactory,
                 webClientBuilder
         );
     }
@@ -121,7 +117,6 @@ public class SyntConsumerConfig {
                 medlUrl,
                 true,
                 MEDLEMSKAPSMELDING_LIST_TYPE,
-                uriFactory,
                 webClientBuilder);
     }
 
@@ -133,7 +128,6 @@ public class SyntConsumerConfig {
                 arenaMeldekortUrl,
                 false,
                 STRING_LIST_TYPE,
-                uriFactory,
                 webClientBuilder);
     }
 
@@ -145,7 +139,6 @@ public class SyntConsumerConfig {
                 navEndringsmeldingUrl,
                 true,
                 STRING_LIST_TYPE,
-                uriFactory,
                 webClientBuilder);
     }
     @Bean
@@ -168,7 +161,6 @@ public class SyntConsumerConfig {
                 samUrl,
                 true,
                 SAM_MELDING_LIST_TYPE,
-                uriFactory,
                 webClientBuilder);
     }
 
@@ -193,7 +185,6 @@ public class SyntConsumerConfig {
                 tpUrl,
                 true,
                 TP_MELDING_LIST_TYPE,
-                uriFactory,
                 webClientBuilder);
     }
 
@@ -205,7 +196,6 @@ public class SyntConsumerConfig {
                 tpsUrl,
                 true,
                 SKD_MELDING_LIST_TYPE,
-                uriFactory,
                 webClientBuilder);
     }
 

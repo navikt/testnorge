@@ -32,7 +32,7 @@ public class SyntAmeldingConsumer extends SyntConsumer {
             boolean shutdown,
             WebClient.Builder webClientBuilder
     ) throws MalformedURLException {
-        super(applicationManager, appName, uri, shutdown, webClientBuilder.baseUrl(uri));
+        super(applicationManager, appName, uri, shutdown, webClientBuilder);
         this.historikkPath = this.url.getPath() + "/arbeidsforhold";
         this.startPath = this.url.getPath() + "/arbeidsforhold/start";
         this.startSpesifikkPath = this.url.getPath() + "/arbeidsforhold/start/%s";

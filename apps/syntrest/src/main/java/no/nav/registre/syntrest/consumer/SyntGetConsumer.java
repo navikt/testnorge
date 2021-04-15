@@ -5,10 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriBuilderFactory;
 
 import java.net.MalformedURLException;
-import java.net.URI;
 
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 
@@ -16,8 +14,7 @@ import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 @Slf4j
 public class SyntGetConsumer<T> extends SyntConsumer {
 
-    private final ParameterizedTypeReference<T> responseClass;
-    private final UriBuilderFactory uriFactory;
+    private final ParameterizedTypeReference<T> responseType;
 
     public SyntGetConsumer(
             ApplicationManager applicationManager,
@@ -25,30 +22,36 @@ public class SyntGetConsumer<T> extends SyntConsumer {
             String uri,
             boolean shutdown,
             ParameterizedTypeReference<T> responseType,
-            UriBuilderFactory uriFactory,
             WebClient.Builder webClientBuilder
     ) throws MalformedURLException {
         super(applicationManager, name, uri, shutdown, webClientBuilder);
-        this.responseClass = responseType;
-        this.uriFactory = uriFactory;
+        this.responseType = responseType;
     }
 
-    public synchronized T synthesizeData(String... parameters) throws InterruptedException, ApiException {
+    public synchronized T synthesizeData(String path) throws InterruptedException, ApiException {
         startApplication();
-        var path = url.getPath();
-        var querys = url.getQuery();
-        URI requestPath = uriFactory.builder()
-                .path(path)
-                .build((Object[]) parameters);
-
         var response = webClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .path(requestPath.toString())
-                        .query(querys)
+                        .path(path)
                         .build())
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .bodyToMono(responseClass)
+                .bodyToMono(responseType)
+                .block();
+        scheduleIfShutdown();
+        return response;
+    }
+
+    public synchronized T synthesizeData(String path, String queries) throws InterruptedException, ApiException {
+        startApplication();
+        var response = webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path(path)
+                        .query(queries)
+                        .build())
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .bodyToMono(responseType)
                 .block();
         scheduleIfShutdown();
         return response;

@@ -40,7 +40,6 @@ public class SyntPostConsumer<Q, A> extends SyntConsumer {
         A response = webClient.post()
                 .uri(uriBuilder -> uriBuilder
                         .path(url.getPath())
-                        .query(url.getQuery())
                         .build())
                 .body(Mono.just(body), requestType)
                 .retrieve()
