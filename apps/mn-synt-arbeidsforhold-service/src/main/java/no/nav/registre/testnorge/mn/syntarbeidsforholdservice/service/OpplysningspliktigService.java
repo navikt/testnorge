@@ -23,7 +23,8 @@ public class OpplysningspliktigService {
     private final MNOrganisasjonConsumer organisasjonConsumer;
 
 
-    private List<Organisajon> getOpplysningspliktigeorganisasjoner(String miljo) {
+    private List<Organisajon> getOpplysningspliktigeOrganisasjoner(String miljo) {
+        log.info("Henter opplysningspliktige organisasjoner...");
         List<Organisajon> organisajoner = organisasjonConsumer
                 .getOrganisajoner(miljo)
                 .stream()
@@ -34,6 +35,8 @@ public class OpplysningspliktigService {
         if (organisajoner.isEmpty()) {
             throw new MNOrganisasjonException("Fant ingen opplysningspliktige i Mini-Norge som driver virksomheter.");
         }
+
+        log.info("Fant {} opplysningspliktige organisasjoner.", organisajoner.size());
         return organisajoner;
     }
 
@@ -49,7 +52,7 @@ public class OpplysningspliktigService {
     }
 
     public List<Opplysningspliktig> getAllOpplysningspliktig(LocalDate kalendermaaned, String miljo) {
-        var list = getOpplysningspliktigeorganisasjoner(miljo);
+        var list = getOpplysningspliktigeOrganisasjoner(miljo);
         log.info("Fant {} opplysningspliktig i Mini-Norge Ereg.", list.stream().map(Organisajon::getOrgnummer).collect(Collectors.joining(", ")));
         return list.stream().map(organisajon -> getOpplysningspliktig(organisajon, kalendermaaned, miljo)).collect(Collectors.toList());
     }

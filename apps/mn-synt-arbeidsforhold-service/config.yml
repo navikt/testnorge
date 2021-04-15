@@ -42,5 +42,4 @@ spec:
       cpu: 800m
       memory: 2048Mi
   ingresses:
-    - "https://mn-synt-arbeidsforhold-service.dev.adeo.no"
     - "https://mn-synt-arbeidsforhold-service.dev.intern.nav.no"
