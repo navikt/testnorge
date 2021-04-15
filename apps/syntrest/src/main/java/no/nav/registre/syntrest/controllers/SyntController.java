@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -144,7 +143,7 @@ public class SyntController {
             @RequestParam int numToGenerate,
             @ApiParam(value = "Verdi som vil overskrive alle ArbeidetTimerSum i meldekort")
             @RequestParam(required = false) Double arbeidstimer
-    ) throws ApiException, InterruptedException, MalformedURLException {
+    ) throws ApiException, InterruptedException {
         InputValidator.validateInput(numToGenerate);
         InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.MELDEGRUPPE, meldegruppe);
 
