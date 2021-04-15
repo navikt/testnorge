@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
 
@@ -67,7 +66,7 @@ public abstract class SyntConsumer {
         return this.appName;
     }
 
-    public void addQueryParameter(String parameterName, Object parameterValue) throws MalformedURLException, URISyntaxException {
+    public void addQueryParameter(String parameterName, Object parameterValue) throws MalformedURLException {
         var querys = this.url.getQuery();
         var paramSeparator = isNull(querys) ? "?" : "&";
         var newQuery = paramSeparator + parameterName + "=" + parameterValue.toString();
