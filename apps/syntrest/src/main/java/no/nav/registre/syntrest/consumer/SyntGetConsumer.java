@@ -17,7 +17,6 @@ import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 public class SyntGetConsumer<T> extends SyntConsumer {
 
     private final ParameterizedTypeReference<T> responseClass;
-    private final UriBuilderFactory uriFactory;
 
     public SyntGetConsumer(
             ApplicationManager applicationManager,
@@ -28,23 +27,30 @@ public class SyntGetConsumer<T> extends SyntConsumer {
             UriBuilderFactory uriFactory,
             WebClient.Builder webClientBuilder
     ) throws MalformedURLException {
-        super(applicationManager, name, uri, shutdown, webClientBuilder);
+        super(applicationManager, name, uri, shutdown, webClientBuilder, uriFactory);
         this.responseClass = responseType;
-        this.uriFactory = uriFactory;
     }
 
-    public synchronized T synthesizeData(String... parameters) throws InterruptedException, ApiException {
+    public synchronized T synthesizeData(String path) throws InterruptedException, ApiException {
         startApplication();
-        var path = url.getPath();
-        var querys = url.getQuery();
-        URI requestPath = uriFactory.builder()
-                .path(path)
-                .build((Object[]) parameters);
-
         var response = webClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .path(requestPath.toString())
-                        .query(querys)
+                        .path(path)
+                        .build())
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .bodyToMono(responseClass)
+                .block();
+        scheduleIfShutdown();
+        return response;
+    }
+
+    public synchronized T synthesizeData(String path, String queries) throws InterruptedException, ApiException {
+        startApplication();
+        var response = webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path(path)
+                        .query(queries)
                         .build())
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()

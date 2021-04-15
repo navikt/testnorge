@@ -85,7 +85,8 @@ public class SyntConsumerConfig {
                 true,
                 STRING_LIST_TYPE,
                 ARBEIDSFORHOLDSMELDING_LIST_TYPE,
-                webClientBuilder);
+                webClientBuilder,
+                uriFactory);
     }
 
     @Bean
@@ -157,7 +158,8 @@ public class SyntConsumerConfig {
                 true,
                 STRING_LIST_TYPE,
                 INNTEKTSMELDING_POPP_LIST_TYPE,
-                webClientBuilder);
+                webClientBuilder,
+                uriFactory);
     }
 
     @Bean
@@ -182,7 +184,8 @@ public class SyntConsumerConfig {
                 true,
                 INNTEKTSMELDING_MAP_TYPE,
                 INNTEKTSMELDING_MAP_TYPE,
-                webClientBuilder);
+                webClientBuilder,
+                uriFactory);
     }
 
     @Bean
@@ -218,7 +221,8 @@ public class SyntConsumerConfig {
                 true,
                 STRING_INTEGER_MAP_TYPE,
                 STRING_FRIKORT_KVITTERING_MAP_TYPE,
-                webClientBuilder);
+                webClientBuilder,
+                uriFactory);
     }
 
     @Bean
@@ -228,6 +232,7 @@ public class SyntConsumerConfig {
                 "synthdata-amelding",
                 ameldingUrl,
                 false,
-                webClientBuilder);
+                webClientBuilder,
+                uriFactory);
     }
 }

@@ -4,6 +4,7 @@ import io.kubernetes.client.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriBuilderFactory;
 import reactor.core.publisher.Mono;
 import java.net.MalformedURLException;
 
@@ -27,9 +28,10 @@ public class SyntPostConsumer<Q, A> extends SyntConsumer {
             boolean shutdown,
             ParameterizedTypeReference<Q> requestType,
             ParameterizedTypeReference<A> responseType,
-            WebClient.Builder webClientBuilder
+            WebClient.Builder webClientBuilder,
+            UriBuilderFactory uriFactory
     ) throws MalformedURLException {
-        super(applicationManager, name, uri, shutdown, webClientBuilder);
+        super(applicationManager, name, uri, shutdown, webClientBuilder, uriFactory);
         this.requestType = requestType;
         this.responseType = responseType;
     }
@@ -40,7 +42,6 @@ public class SyntPostConsumer<Q, A> extends SyntConsumer {
         A response = webClient.post()
                 .uri(uriBuilder -> uriBuilder
                         .path(url.getPath())
-                        .query(url.getQuery())
                         .build())
                 .body(Mono.just(body), requestType)
                 .retrieve()

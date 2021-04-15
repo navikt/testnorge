@@ -11,8 +11,7 @@ import java.net.URL;
 import java.util.Arrays;
 
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
-
-import static java.util.Objects.isNull;
+import org.springframework.web.util.UriBuilderFactory;
 
 @Slf4j
 public abstract class SyntConsumer {
@@ -29,10 +28,16 @@ public abstract class SyntConsumer {
 
     @Value("${synth-package-unused-uptime}")
     private long shutdownTimeDelaySeconds;
+    private final UriBuilderFactory uriFactory;
 
 
     protected SyntConsumer(
-            ApplicationManager applicationManager, String name, String uri, boolean shutdown, WebClient.Builder webClientBuilder
+            ApplicationManager applicationManager,
+            String name,
+            String uri,
+            boolean shutdown,
+            WebClient.Builder webClientBuilder,
+            UriBuilderFactory uriFactory
     ) throws MalformedURLException {
         this.applicationManager = applicationManager;
         this.appName = name;
@@ -41,6 +46,7 @@ public abstract class SyntConsumer {
 
         var baseUrl = this.url.getProtocol() + "://" + this.url.getAuthority();
         this.webClient = webClientBuilder.baseUrl(baseUrl).build();
+        this.uriFactory = uriFactory;
     }
 
     protected void scheduleIfShutdown() {
@@ -66,10 +72,7 @@ public abstract class SyntConsumer {
         return this.appName;
     }
 
-    public void addQueryParameter(String parameterName, Object parameterValue) throws MalformedURLException {
-        var querys = this.url.getQuery();
-        var paramSeparator = isNull(querys) ? "?" : "&";
-        var newQuery = paramSeparator + parameterName + "=" + parameterValue.toString();
-        this.url = new URL(this.url.toString() + newQuery);
+    public String expandedPath(String... parameters) {
+        return uriFactory.builder().path(url.getPath()).build((Object[]) parameters).toString();
     }
 }

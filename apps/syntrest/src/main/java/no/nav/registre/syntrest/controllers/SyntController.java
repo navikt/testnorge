@@ -87,7 +87,8 @@ public class SyntController {
     ) throws ApiException, InterruptedException {
 
         InputValidator.validateInput(numToGenerate);
-        var response = bisysConsumer.synthesizeData(String.valueOf(numToGenerate));
+        var expandedPath = bisysConsumer.expandedPath(String.valueOf(numToGenerate));
+        var response = bisysConsumer.synthesizeData(expandedPath);
         doResponseValidation(response);
         return ResponseEntity.ok(response);
     }
@@ -101,7 +102,8 @@ public class SyntController {
     ) throws ApiException, InterruptedException {
 
         InputValidator.validateInput(numToGenerate);
-        var response = instConsumer.synthesizeData(String.valueOf(numToGenerate));
+        var expandedPath = instConsumer.expandedPath(String.valueOf(numToGenerate));
+        var response = instConsumer.synthesizeData(expandedPath);
         doResponseValidation(response);
         return ResponseEntity.ok(response);
     }
@@ -116,7 +118,8 @@ public class SyntController {
     ) throws ApiException, InterruptedException {
 
         InputValidator.validateInput(numToGenerate);
-        var response = medlConsumer.synthesizeData(String.valueOf(numToGenerate));
+        var expandedPath = medlConsumer.expandedPath(String.valueOf(numToGenerate));
+        var response = medlConsumer.synthesizeData(expandedPath);
         doResponseValidation(response);
         return ResponseEntity.ok(response);
     }
@@ -142,11 +145,9 @@ public class SyntController {
         InputValidator.validateInput(numToGenerate);
         InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.MELDEGRUPPE, meldegruppe);
 
-        if (!isNull(arbeidstimer)) {
-            meldekortConsumer.addQueryParameter("arbeidstimer", arbeidstimer);
-        }
-
-        var response = meldekortConsumer.synthesizeData(String.valueOf(numToGenerate), meldegruppe);
+        var queryString = createQueryString("arbeidstimer", arbeidstimer.toString(), "");
+        var expandedPath = meldekortConsumer.expandedPath(String.valueOf(numToGenerate), meldegruppe);
+        var response = meldekortConsumer.synthesizeData(expandedPath, queryString);
         doResponseValidation(response);
         return ResponseEntity.ok(response);
     }
@@ -164,7 +165,8 @@ public class SyntController {
 
         InputValidator.validateInput(numToGenerate);
         InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.ENDRINGSKODE_NAV, endringskode);
-        var response = navConsumer.synthesizeData(String.valueOf(numToGenerate), endringskode);
+        var expandedPath = navConsumer.expandedPath(String.valueOf(numToGenerate), endringskode);
+        var response = navConsumer.synthesizeData(expandedPath);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -195,7 +197,8 @@ public class SyntController {
             @RequestParam int numToGenerate
     ) throws ApiException, InterruptedException {
         InputValidator.validateInput(numToGenerate);
-        var response = samConsumer.synthesizeData(String.valueOf(numToGenerate));
+        var expandedPath = samConsumer.expandedPath(String.valueOf(numToGenerate));
+        var response = samConsumer.synthesizeData(expandedPath);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -228,7 +231,8 @@ public class SyntController {
             @RequestParam int numToGenerate
     ) throws ApiException, InterruptedException {
         InputValidator.validateInput(numToGenerate);
-        var response = tpConsumer.synthesizeData(String.valueOf(numToGenerate));
+        var expandedPath = tpConsumer.expandedPath(String.valueOf(numToGenerate));
+        var response = tpConsumer.synthesizeData(expandedPath);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -245,7 +249,8 @@ public class SyntController {
     ) throws ApiException, InterruptedException {
         InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.ENDRINGSKODE, endringskode);
         InputValidator.validateInput(numToGenerate);
-        var response = tpsConsumer.synthesizeData(String.valueOf(numToGenerate), endringskode);
+        var expandedPath = tpsConsumer.expandedPath(String.valueOf(numToGenerate), endringskode);
+        var response = tpsConsumer.synthesizeData(expandedPath);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -306,5 +311,13 @@ public class SyntController {
         if (isNull(response)) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Syntetisering feilet.");
         }
+    }
+
+    private static String createQueryString(String parameterName, String parameterValue, String existingQuery) {
+        if (isNull(parameterValue)) {
+            return existingQuery;
+        }
+        var paramSeparator = (isNull(existingQuery) || "".equals(existingQuery)) ? "" : "&";
+        return existingQuery + paramSeparator + parameterName + "=" + parameterValue;
     }
 }
