@@ -1,7 +1,6 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
-consumers:
-  tps-forvalteren-proxy:
+consumers.tps-forvalteren-proxy:
     url: https://tps-forvalteren-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
     namespace: dolly
