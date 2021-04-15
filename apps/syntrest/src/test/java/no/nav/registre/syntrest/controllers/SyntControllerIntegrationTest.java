@@ -116,6 +116,19 @@ public class SyntControllerIntegrationTest {
         assertThat(result.getBody().size(), is(2));
     }
 
+    @Test
+    public void addQueryParamTest() throws Exception {
+        launchApplicationStubs("synthdata-arena-meldekort");
+        mockApiMethods();
+        stubFor(get(urlEqualTo("/generate_meldekort/2/ATTF?arbeidstimer=3.0"))
+                .willReturn(aResponse().withStatus(200)
+                .withHeader("Content-Type", "application/json")
+                .withBody("[\"Meldekort_XML_1\", \"Meldekort_XML_2\"]")));
+        var result = syntController.generateMeldekort("ATTF", 2, 3.0);
+        assertThat(!isNull(result.getBody()), is(true));
+        assertThat(result.getBody().size(), is(2));
+    }
+
 
     private void launchApplicationStubs(String appName) {
         stubFor(post("/graphql")
