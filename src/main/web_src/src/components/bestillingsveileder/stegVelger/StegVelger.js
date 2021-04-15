@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useContext } from 'react'
+import React, { Fragment, useContext, useState } from 'react'
 import { Formik } from 'formik'
 import Stegindikator from 'nav-frontend-stegindikator'
 import { Navigation } from './Navigation/Navigation'
@@ -6,12 +6,11 @@ import { stateModifierFns } from '../stateModifier'
 import { validate } from '~/utils/YupValidations'
 import { BestillingsveilederHeader } from '../BestillingsveilederHeader'
 
-import DisplayFormikState from '~/utils/DisplayFormikState'
-
 import { Steg1 } from './steg/steg1/Steg1'
 import { Steg2 } from './steg/steg2/Steg2'
 import { Steg3 } from './steg/steg3/Steg3'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
+import DisplayFormikState from '~/utils/DisplayFormikState'
 
 const STEPS = [Steg1, Steg2, Steg3]
 
@@ -51,15 +50,21 @@ export const StegVelger = ({ initialValues, onSubmit, children }) => {
 		<Formik initialValues={initialValues} validate={_validate} onSubmit={_handleSubmit}>
 			{formikBag => {
 				const stateModifier = stateModifierFns(formikBag.values, formikBag.setValues, opts)
+				const erLokalt = window.location.hostname.includes('localhost')
+
 				return (
 					<Fragment>
 						<Stegindikator aktivtSteg={step} steg={labels} visLabel kompakt />
 
 						<BestillingsveilederHeader />
 
-						<CurrentStepComponent formikBag={formikBag} stateModifier={stateModifier} />
+						<CurrentStepComponent
+							formikBag={formikBag}
+							stateModifier={stateModifier}
+							erNyIdent={!personFoerLeggTil}
+						/>
 
-						{/* <DisplayFormikState {...formikBag} /> */}
+						{erLokalt && <DisplayFormikState {...formikBag} />}
 
 						<Navigation
 							showPrevious={step > 0}

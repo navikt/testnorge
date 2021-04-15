@@ -7,7 +7,7 @@ import { MalForm } from './MalForm'
 import { BestillingInfoboks } from './BestillingInfoboks'
 import { IdentVelger } from './IdentVelger'
 
-export const Steg3 = ({ formikBag }) => {
+export const Steg3 = ({ formikBag, erNyIdent }) => {
 	const erOrganisasjon = formikBag.values.hasOwnProperty('organisasjon')
 
 	return (
@@ -18,7 +18,7 @@ export const Steg3 = ({ formikBag }) => {
 					<BestillingInfoboks bestillingsdata={formikBag.values} />
 				</div>
 			)}
-			{!erOrganisasjon && <IdentVelger formikBag={formikBag} />}
+			{!erOrganisasjon && erNyIdent && <IdentVelger formikBag={formikBag} />}
 			<MiljoVelger bestillingsdata={formikBag.values} heading="Hvilke miljøer vil du opprette i?" />
 			{!erOrganisasjon && <MalForm formikBag={formikBag} />}
 		</div>
