@@ -35,11 +35,17 @@ public class SyntGetConsumer<T> extends SyntConsumer {
 
     public synchronized T synthesizeData(String... parameters) throws InterruptedException, ApiException {
         startApplication();
-        var path = url.getFile();
-        URI requestUri = uriFactory.builder().path(path).build(parameters);
+        var path = url.getPath();
+        var querys = url.getQuery();
+        URI requestPath = uriFactory.builder()
+                .path(path)
+                .build((Object[]) parameters);
 
         var response = webClient.get()
-                .uri(uriBuilder -> uriBuilder.path(requestUri.toString()).build())
+                .uri(uriBuilder -> uriBuilder
+                        .path(requestPath.toString())
+                        .query(querys)
+                        .build())
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(responseClass)

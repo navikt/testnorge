@@ -12,6 +12,7 @@ import java.util.Arrays;
 
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 
+import static java.util.Objects.isNull;
 
 @Slf4j
 public abstract class SyntConsumer {
@@ -30,7 +31,9 @@ public abstract class SyntConsumer {
     private long shutdownTimeDelaySeconds;
 
 
-    protected SyntConsumer(ApplicationManager applicationManager, String name, String uri, boolean shutdown, WebClient.Builder webClientBuilder) throws MalformedURLException {
+    protected SyntConsumer(
+            ApplicationManager applicationManager, String name, String uri, boolean shutdown, WebClient.Builder webClientBuilder
+    ) throws MalformedURLException {
         this.applicationManager = applicationManager;
         this.appName = name;
         this.shutdown = shutdown;
@@ -65,8 +68,8 @@ public abstract class SyntConsumer {
 
     public void addQueryParameter(String parameterName, Object parameterValue) throws MalformedURLException {
         var querys = this.url.getQuery();
-        var paramSeparator = querys.contains("?") ? "&" : "?";
-        var newQueyParam = paramSeparator + parameterName + "=" + parameterValue.toString();
-        this.url = new URL(this.url.toString() + newQueyParam);
+        var paramSeparator = isNull(querys) ? "?" : "&";
+        var newQuery = paramSeparator + parameterName + "=" + parameterValue.toString();
+        this.url = new URL(this.url.toString() + newQuery);
     }
 }
