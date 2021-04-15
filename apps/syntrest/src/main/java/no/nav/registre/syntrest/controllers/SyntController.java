@@ -148,7 +148,7 @@ public class SyntController {
         InputValidator.validateInput(numToGenerate);
         InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.MELDEGRUPPE, meldegruppe);
 
-        var queryString = createQueryString("arbeidstimer", isNull(arbeidstimer) ? null : arbeidstimer.toString(), "");
+        var queryString = isNull(arbeidstimer) ? "" : createQueryString("arbeidstimer", arbeidstimer.toString(), "");
         var expandedPath = urlUtils.expandPath(meldekortConsumer.getUrl(), String.valueOf(numToGenerate), meldegruppe);
         var response = meldekortConsumer.synthesizeData(expandedPath, queryString);
         doResponseValidation(response);
