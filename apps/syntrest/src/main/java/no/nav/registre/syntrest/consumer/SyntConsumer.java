@@ -3,12 +3,10 @@ package no.nav.registre.syntrest.consumer;
 import io.kubernetes.client.ApiException;
 import lombok.extern.slf4j.Slf4j;
 
-import org.apache.http.client.utils.URIBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
