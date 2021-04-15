@@ -8,7 +8,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriBuilderFactory;
 
 import java.net.MalformedURLException;
-import java.net.URI;
 
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 
@@ -16,7 +15,7 @@ import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 @Slf4j
 public class SyntGetConsumer<T> extends SyntConsumer {
 
-    private final ParameterizedTypeReference<T> responseClass;
+    private final ParameterizedTypeReference<T> responseType;
 
     public SyntGetConsumer(
             ApplicationManager applicationManager,
@@ -28,7 +27,7 @@ public class SyntGetConsumer<T> extends SyntConsumer {
             WebClient.Builder webClientBuilder
     ) throws MalformedURLException {
         super(applicationManager, name, uri, shutdown, webClientBuilder, uriFactory);
-        this.responseClass = responseType;
+        this.responseType = responseType;
     }
 
     public synchronized T synthesizeData(String path) throws InterruptedException, ApiException {
@@ -39,7 +38,7 @@ public class SyntGetConsumer<T> extends SyntConsumer {
                         .build())
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .bodyToMono(responseClass)
+                .bodyToMono(responseType)
                 .block();
         scheduleIfShutdown();
         return response;
@@ -54,7 +53,7 @@ public class SyntGetConsumer<T> extends SyntConsumer {
                         .build())
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .bodyToMono(responseClass)
+                .bodyToMono(responseType)
                 .block();
         scheduleIfShutdown();
         return response;
