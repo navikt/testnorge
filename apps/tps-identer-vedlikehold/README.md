@@ -1,3 +1,9 @@
+---
+layout: default
+title: TPS Ident Vedlikehold
+parent: Applikasjoner
+---
+
 # TPS-Identer-Vedlikehold
 TPS-Identer-Vedlikehold gir mulighet for sletting av overflødige identer. 
 Identer kan slettes mot TPSF som sletter videre mot TPS og Ident-Pool.
