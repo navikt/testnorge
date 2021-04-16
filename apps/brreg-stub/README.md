@@ -17,9 +17,9 @@ Det er tjenesten **hentRoller** og **hentRolleutskrift**/Rolleoversikt som ekspo
 
 Data opprettes via REST-tjenesten
 
-For dokumentasjon av applikasjonen sine endepunkter: `/api`
-
-`WSDL: /ws`
+For dokumentasjon av applikasjonen sine endepunkter:
+ - `/api`
+ - `WSDL: /ws`
 
 ## Deployment
 

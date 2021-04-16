@@ -8,9 +8,7 @@ grand_parent: Applikasjoner
 # Avhengighetsanalyse-Frontend
 Frontend for avhengighets analyse.
 
-### Swagger
-Swagger finnes under [/api](https://testnav-applikasjonsanalyse-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
-
+Endepunkt: https://testnav-applikasjonsanalyse.dev.intern.nav.no/
 
 ### Lokal kjøring
 Kjør AvhengighetsanalysteFrontendApplicationStarter med følgende argumenter:
