@@ -1,3 +1,10 @@
+---
+layout: default
+title: Service
+parent: Oppsummeringsdokument
+grand_parent: Applikasjoner
+---
+
 # Oppsummeringsdokument
 
 ## Lokal utvikling
