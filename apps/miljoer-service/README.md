@@ -1,3 +1,9 @@
+---
+layout: default
+title: Miljøer service
+parent: Applikasjoner
+---
+
 # Miljoer-service
 App for å sjekke hvilke miljøer i test og preprod som er tilgjengelige nå.
 
@@ -6,5 +12,7 @@ Swagger finnes under [/swagger](https://miljoer-service.dev.adeo.no/swagger) -en
 
 ## Lokal kjøring
 Kjør ApplicationStarter med følgende argumenter:
- - -Dspring.cloud.vault.token=[vault-token]
- - -Dspring.profiles.active=dev
+```
+-Dspring.cloud.vault.token=[vault-token]
+-Dspring.profiles.active=dev
+```
