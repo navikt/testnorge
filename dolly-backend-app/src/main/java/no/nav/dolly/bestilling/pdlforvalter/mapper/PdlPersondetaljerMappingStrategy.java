@@ -21,6 +21,8 @@ import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdresse.Master.FREG;
+import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdresse.Master.PDL;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.FORTROLIG;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.STRENGT_FORTROLIG_UTLAND;
@@ -89,10 +91,13 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
 
                         if ("SPSF".equals(person.getSpesreg())) {
                             adressebeskyttelse.setGradering(STRENGT_FORTROLIG);
-                        } else if ("SFU".equals(person.getSpesreg())) {
-                            adressebeskyttelse.setGradering(STRENGT_FORTROLIG_UTLAND);
+                            adressebeskyttelse.setMaster(FREG);
                         } else if ("SPFO".equals(person.getSpesreg())) {
                             adressebeskyttelse.setGradering(FORTROLIG);
+                            adressebeskyttelse.setMaster(FREG);
+                        } else if ("SFU".equals(person.getSpesreg())) {
+                            adressebeskyttelse.setGradering(STRENGT_FORTROLIG_UTLAND);
+                            adressebeskyttelse.setMaster(PDL);
                         } else {
                             adressebeskyttelse.setGradering(UGRADERT);
                         }

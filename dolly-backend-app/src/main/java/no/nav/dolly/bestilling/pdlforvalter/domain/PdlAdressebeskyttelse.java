@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdresse.Master;
 
 @Getter
 @Setter
@@ -17,4 +18,5 @@ public class PdlAdressebeskyttelse {
 
     private AdresseBeskyttelse gradering;
     private String kilde;
+    private Master master;
 }
