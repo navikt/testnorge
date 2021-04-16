@@ -1,3 +1,9 @@
+---
+layout: default
+title: Testnorge AAreg
+parent: Applikasjoner
+---
+
 ## Testnorge-Aareg
 
 Testnorge-aareg er en applikasjon som håndterer arbeidsforhold,
@@ -17,13 +23,14 @@ så lenge Dolly har en U2-instans.
 
 ### Lokal kjøring
 
-* #### Utviklerimage
+#### Utviklerimage
 
 For øyeblikket er det problemer med å få kjørt testnorge-aareg lokalt i utviklerimage, 
 da man ikke får tak i alle dependencies. 
 
-* #### Med Naisdevice
+#### Med Naisdevice
 
 Kjør ApplicationStarter med følgende argumenter:
- 
- - -Dspring.cloud.vault.token=[vault-token]
+``` 
+-Dspring.cloud.vault.token=[vault-token]
+```
