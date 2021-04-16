@@ -2,6 +2,7 @@
 layout: default
 title: Frontend
 parent: Avhengighetsanalyse
+grand_parent: Applikasjoner
 ---
 
 # Avhengighetsanalyse-Frontend
