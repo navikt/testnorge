@@ -2,6 +2,7 @@
 layout: default
 title: Service
 parent: Avhengighetsanalyse
+grand_parent: Applikasjoner
 ---
 
 # Avhengighetsanalyse-Service
