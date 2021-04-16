@@ -1,3 +1,11 @@
+---
+layout: default
+title: Original Populasjon
+parent: Mini Norge
+grand_parent: Applikasjoner
+---
+
+
 # mn-original-populasjon
 Mini-Norge-app som oppretter persondokumenter for et gitt antall personer. Aldersfordelt
 
