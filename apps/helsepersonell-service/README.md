@@ -5,10 +5,10 @@ parent: Applikasjoner
 ---
 
 # Helsepersonell-service
-API for helsepersonell.
+API for helsepersonell. Finner helsepersonell via Hodejegeren og Samhandlerregisteret.
 
 ## Swagger
-Swagger finnes under [/api](https://testnav-helsepersonell-service.dev.intern.nav.no/api) -endepunktet til applikasjonen.
+Swagger finnes under [/api](https://testnav-helsepersonell-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 

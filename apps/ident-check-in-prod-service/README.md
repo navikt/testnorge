@@ -5,7 +5,7 @@ parent: Applikasjoner
 ---
 
 # ident-check-in-prod-service
-App som sjekker om ident finnes i prod på identer benyttet av Dolly og Orkestrator
+App som sjekker om de gitte identene finnes i prod. Blir benyttet av Dolly og Orkestratoren.
 
 ## Swagger
 Swagger finnes under [/swagger](https://testnorge-ident-check-in-prod-service.dev.adeo.no/swagger) -endepunktet til applikasjonen.

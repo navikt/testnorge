@@ -4,7 +4,7 @@ title: EREG batch-status Service
 parent: Applikasjoner
 ---
 
-# ereg-batch-status-service
+# Ereg Batch-status Service
 App for å hente ut batch status.
 
 ## Swagger

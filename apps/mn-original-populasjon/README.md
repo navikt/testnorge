@@ -6,11 +6,11 @@ grand_parent: Applikasjoner
 ---
 
 
-# mn-original-populasjon
+# Mini-Norge Original-populasjon
 Mini-Norge-app som oppretter persondokumenter for et gitt antall personer. Aldersfordelt
 
 ## Swagger
-Swagger finnes under [/swagger](https://mn-original-populasjon.dev.adeo.no/swagger) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://mn-original-populasjon.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
  
 ## Lokal kjøring
   

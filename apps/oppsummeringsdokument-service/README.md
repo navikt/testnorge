@@ -7,6 +7,10 @@ grand_parent: Applikasjoner
 
 # Oppsummeringsdokument
 
+API for å sende inn oppsummeringsdokumenter til AAreg, og søke i de innsendte dokumentene.
+
+Applikasjonen kan nås fra [/swagger](https://oppsummeringsdokument-service.dev.intern.nav.no/swagger) -endepunktet.
+
 ## Lokal utvikling
 
 Kjør opp en lokal version av en elasticsearch instance

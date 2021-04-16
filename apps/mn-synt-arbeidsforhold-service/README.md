@@ -5,10 +5,12 @@ parent: Mini Norge
 grand_parent: Applikasjoner
 ---
 
-# mn-synt-arbeidsforhold-service
+# Mini-Norge Syntetisk Arbeidsforhold Service
+
+Oppretter syntetiske arbeidsforhold i Mini-Norge
 
 ## Swagger
-Swagger finnes under [/swagger](https://mn-synt-arbeidsforhold-service.dev.adeo.no/swagger) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://mn-synt-arbeidsforhold-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
  
 ## Lokal kjøring
   
