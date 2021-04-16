@@ -1,3 +1,10 @@
+---
+layout: default
+title: Testnorge SKD
+parent: Applikasjoner
+---
+
+
 # Testnorge-Skd
 Testnorge-skd er en applikasjon som henter syntetiske skd-meldinger og fyller disse med passende identer. Disse meldingene legges inn i en avspillergruppe i TPSF, før de "spilles av" og sendes til TPS.
 
