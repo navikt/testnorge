@@ -9,11 +9,15 @@ Lenke https://testnorge-oversikt-frontend.dev.adeo.no/
    
 ### Utviklerimage
 Kjør SykemeldingApiApplicationStarter med følgende argumenter:
- - -Djavax.net.ssl.trustStore=[path til lokal truststore]
- - -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
- - -Dspring.cloud.vault.token=[kopier token fra vault]
- - -Dspring.profiles.active=dev
-    
+```
+-Djavax.net.ssl.trustStore=[path til lokal truststore]
+-Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
+-Dspring.cloud.vault.token=[kopier token fra vault]
+-Dspring.profiles.active=dev
+```
+
 ### Utenfor utviklerimage
- - -Dspring.cloud.vault.token=[kopier token fra vault]
- - -Dspring.profiles.active=dev
+```
+-Dspring.cloud.vault.token=[kopier token fra vault]
+-Dspring.profiles.active=dev
+```
