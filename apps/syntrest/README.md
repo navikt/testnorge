@@ -1,3 +1,9 @@
+---
+layout: default
+title: Synt REST
+parent: Applikasjoner
+---
+
 # SyntRest API
 Syntrest kontrollerer start og stopp av de forskjellige synt-pakkene på NAIS.
 
