@@ -1,4 +1,11 @@
-# endringsmelding-service
+---
+layout: default
+title: Service
+parent: Endringsmelding
+grand_parent: Applikasjoner
+---
+
+# Endringsmelding-service
 
 ## Swagger
 Swagger finnes under [/swagger](https://endringsmelding-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
