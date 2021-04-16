@@ -19,7 +19,7 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
         @DependencyOn("testnorge-profil-api"),
         @DependencyOn("testnorge-varslinger-api"),
         @DependencyOn("organisasjon-forvalter"),
-        @DependencyOn("testnorge-miljoer-service"),
+        @DependencyOn("testnav-miljoer-service"),
         @DependencyOn("udi-stub-dev")
 })
 public class ApplicationConfig {
@@ -53,7 +53,7 @@ public class ApplicationConfig {
 
     @Bean
     public AddAuthorizationToRouteFilter miljoerServiceAddAuthorizationToRouteFilter() {
-        return createFilterFrom("testnorge-miljoer-service");
+        return createFilterFrom("testnav-miljoer-service");
     }
 
     @Bean
