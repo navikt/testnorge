@@ -1,3 +1,9 @@
+---
+layout: default
+title: Testnorge Statisk Data Forvalter
+parent: Applikasjoner
+---
+
 # testnorge-statisk-data-forvalter
 
 Statisk data forvalter er en applikasjon som har som ansvar å forvalte faste test-data i NAV. 
@@ -51,7 +57,7 @@ sterkt anbefalt å følge. Disse applikasjonen er ansvarlige for å opprette man
 
 ## Bygg og deploy
 
-CircleCI håndterer bygg og deploy til nais via [deployment-cli](https://github.com/navikt/deployment-cli). Github packages er brukt for å hoste docker image som blir generert og et personlig access token + brukernavn må legges til i CircleCI prosjektet. 
+~~CircleCI håndterer bygg og deploy til nais via [deployment-cli](https://github.com/navikt/deployment-cli). Github packages er brukt for å hoste docker image som blir generert og et personlig access token + brukernavn må legges til i CircleCI prosjektet. ~~
 
 ## Swagger
 Swagger finnes under [/api](https://testnorge-statisk-data-forvalter.nais.preprod.local/api) -endepunktet til applikasjonen.
@@ -60,10 +66,12 @@ Swagger finnes under [/api](https://testnorge-statisk-data-forvalter.nais.prepro
       
 ### Utviklerimage
 Kjør ApplicationStarter med følgende argumenter:
-- -Djavax.net.ssl.trustStore=[path til lokal truststore]
-- -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
-- -Dspring.profiles.active=dev
-- -Dspring.cloud.vault.token=[Kopier token fra vault]
+```
+-Djavax.net.ssl.trustStore=[path til lokal truststore]
+-Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
+-Dspring.profiles.active=dev
+-Dspring.cloud.vault.token=[Kopier token fra vault]
+```
    
 ### Utenfor utviklerimage
    
@@ -72,7 +80,8 @@ Ha BIG-IP Edge Client kjørende og kjør ApplicationStarter med samme argumenter
        
 #### Mac
 Ha Nav-Tunnel kjørende og kjør ApplicationStarter med samme argumenter som for utviklerimage og legg til følgende argumenter:
-- -DsocksProxyHost=127.0.0.1
-- -DsocksProxyPort=14122
-- -DsocksNonProxyHosts=127.0.0.1|dl.bintray.com|repo.maven.apache.org|maven.adeo.no|packages.confluent.io|confluent.io|maven.xwiki.org|maven.repository.redhat.com
-       
+```
+-DsocksProxyHost=127.0.0.1
+-DsocksProxyPort=14122
+-DsocksNonProxyHosts=127.0.0.1|dl.bintray.com|repo.maven.apache.org|maven.adeo.no|packages.confluent.io|confluent.io|maven.xwiki.org|maven.repository.redhat.com
+```
