@@ -1,3 +1,9 @@
+---
+layout: default
+title: Testnorge TSS
+parent: Applikasjoner
+---
+
 # testnorge-tss
 Testnorge-TSS er en applikasjon som oppretter samhandlere i TSS databasen. 
 
@@ -18,6 +24,8 @@ Swagger finnes under [/api](https://testnorge-tss.nais.preprod.local/api) -endep
 
 ## Lokal kjøring
 Kjør ApplicationStarter med følgende argumenter:
- - -Djavax.net.ssl.trustStore=[path til lokal truststore]
- - -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
- - -Dspring.profiles.active=local
+```
+-Djavax.net.ssl.trustStore=[path til lokal truststore]
+-Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
+-Dspring.profiles.active=local
+```
