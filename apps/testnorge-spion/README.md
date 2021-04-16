@@ -1,3 +1,9 @@
+---
+layout: default
+title: Testnorge Spion
+parent: Applikasjoner
+---
+
 # testnorge-spion
 Testnorge-spion tilbyr endepunkt for å lage syntetiske vedtak og legge dem på Kafka kø til SPION.
 
