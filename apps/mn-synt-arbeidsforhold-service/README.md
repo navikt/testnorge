@@ -1,3 +1,10 @@
+---
+layout: default
+title: Syntetisk Arbeidsforhold Service
+parent: Mini Norge
+grand_parent: Applikasjoner
+---
+
 # mn-synt-arbeidsforhold-service
 
 ## Swagger
@@ -7,9 +14,11 @@ Swagger finnes under [/swagger](https://mn-synt-arbeidsforhold-service.dev.adeo.
   
 ### Utviklerimage
 Kjør MNSyntArbeidsforholdServiceApplicationStarter med følgende argumenter:
- - -Dspring.cloud.vault.token=[Copy token fra Vault]
- - -Dspring.profiles.active=dev
-   
+```
+-Dspring.cloud.vault.token=[Copy token fra Vault]
+-Dspring.profiles.active=dev
+```
+
 ### Utenfor utviklerimage
    
 #### Windows
@@ -17,6 +26,8 @@ Ha BIG-IP Edge Client eller Naisdevice kjørende og kjør MNSyntArbeidsforholdSe
    
 #### Mac
 Ha Nav-Tunnel kjørende og kjør MNSyntArbeidsforholdServiceApplicationStarter med samme argumenter som for utviklerimage og legg til følgende argumenter:
-- -DsocksProxyHost=127.0.0.1
-- -DsocksProxyPort=14122
-- -DsocksNonProxyHosts=127.0.0.1|dl.bintray.com|repo.maven.apache.org|maven.adeo.no|packages.confluent.io|confluent.io|maven.xwiki.org|maven.repository.redhat.com
+```
+-DsocksProxyHost=127.0.0.1
+-DsocksProxyPort=14122
+-DsocksNonProxyHosts=127.0.0.1|dl.bintray.com|repo.maven.apache.org|maven.adeo.no|packages.confluent.io|confluent.io|maven.xwiki.org|maven.repository.redhat.com
+```
