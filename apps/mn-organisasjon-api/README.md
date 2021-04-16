@@ -1,3 +1,10 @@
+---
+layout: default
+title: Organisasjon API
+parent: Mini Norge
+grand_parent: Applikasjoner
+---
+
 # mn-organisasjon-api
 Applikasjon for å opprette Mini-Norge organisasjoner.
 
@@ -6,5 +13,7 @@ Swagger finnes under [/swagger](https://mn-organisasjon-api.dev.adeo.no/swagger)
 
 ## Lokal kjøring
 Kjør ApplicationStarter med følgende argumenter:
- - -Dspring.cloud.vault.token=[vault-token]
- - -Dspring.profiles.active=dev
+```
+-Dspring.cloud.vault.token=[vault-token]
+-Dspring.profiles.active=dev
+```
