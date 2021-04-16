@@ -1,10 +1,5 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
-miljoer:
-  service:
-    url: https://miljoer-service.dev.intern.nav.no
-    client:
-      id: 30003084-1585-4629-a017-686b4387b12e
 organisasjon:
   bestilling:
     url: https://organisasjon-bestilling-service.dev.intern.nav.no
@@ -35,5 +30,10 @@ consumers:
   testnav-organisasjon-service:
     url: https://testnav-organisasjon-service.dev.intern.nav.no
     name: testnav-organisasjon-service
+    cluster: dev-gcp
+    namespace: dolly
+  testnav-miljoer-service:
+    url: https://testnav-miljoer-service.dev.intern.nav.no
+    name: testnav-miljoer-service
     cluster: dev-gcp
     namespace: dolly
