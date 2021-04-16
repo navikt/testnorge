@@ -1,3 +1,9 @@
+---
+layout: default
+title: UDI Stub
+parent: Applikasjoner
+---
+
 Master: [![CircleCI](https://circleci.com/gh/navikt/udi-stub/tree/master.svg?style=svg)](https://circleci.com/gh/navikt/udi-stub/tree/master)
 # UDI-stub
 
