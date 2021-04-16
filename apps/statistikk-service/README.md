@@ -1,3 +1,9 @@
+---
+layout: default
+title: Statistikk Service
+parent: Applikasjoner
+---
+
 # testnav-statistikk-service
 API for statistikk.
 
