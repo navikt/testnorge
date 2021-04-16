@@ -1,3 +1,9 @@
+---
+layout: default
+title: Arbeidsforhold Export API
+parent: Applikasjoner
+---
+
 # testnorge-arbeidsforhold-export-api
 Api for å eksportere personer.
 
@@ -6,5 +12,7 @@ Swagger finnes under [/swagger](https://testnorge-person-export-api.dev.adeo.no/
 
 ## Lokal kjøring
 Kjør ApplicationStarter med følgende argumenter:
- - -Dspring.cloud.vault.token=[vault-token]
- - -Dspring.profiles.active=dev
+```
+-Dspring.cloud.vault.token=[vault-token]
+-Dspring.profiles.active=dev
+```
