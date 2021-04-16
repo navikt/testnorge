@@ -1,4 +1,10 @@
-# testnorge-oversikt-frontend
+---
+layout: default
+title: Team Token Frontend
+parent: Applikasjoner
+---
+
+# team-token-frontend
 
 Appliaksjon for bruk av Team Dolly til å kunne genere personlige tokens til bruk i apper som ikke støtter Client Credential (service brukere).
 Det er kun team dolly som bruker denne appen. 
