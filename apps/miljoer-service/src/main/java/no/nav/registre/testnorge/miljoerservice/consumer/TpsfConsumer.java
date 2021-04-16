@@ -43,7 +43,7 @@ public class TpsfConsumer {
         var accessToken = accessTokenService.generateToken(serverProperties);
         ResponseEntity<MiljoerResponse> response = webClient
                 .get()
-                .uri(uriBuilder -> uriBuilder.path("/v1/environments").build())
+                .uri(uriBuilder -> uriBuilder.path("/api/v1/environments").build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken.getTokenValue())
                 .retrieve()
                 .toEntity(MiljoerResponse.class)
