@@ -1,3 +1,10 @@
+---
+layout: default
+title: Person Service
+parent: Mini Norge
+grand_parent: Applikasjoner
+---
+
 # mn-person-service
 
 ## Swagger
