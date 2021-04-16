@@ -1,7 +1,7 @@
 ﻿apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: testnorge-miljoer-service
+  name: testnav-miljoer-service
   namespace: dolly
   labels:
     team: dolly
@@ -17,28 +17,45 @@ spec:
         - application: team-dolly-lokal-app
           cluster: dev-fss
         - application: testnorge-oversikt-frontend
+          cluster: dev-fss
         - application: dolly-frontend
+          cluster: dev-fss
         - application: dolly-frontend-dev
+          cluster: dev-fss
         - application: dolly-backend
+          cluster: dev-fss
         - application: dolly-backend-dev
+          cluster: dev-fss
         - application: testnorge-aareg
+          cluster: dev-fss
         - application: organisasjon-orgnummer-service
+          cluster: dev-fss
         - application: organisasjon-forvalter
+          cluster: dev-fss
         - application: testnav-faste-data-frontend
           cluster: dev-gcp
+    outbound:
+      external:
+        - host: tps-forvalteren-proxy.dev-fss-pub.nais.io
   azure:
     application:
       enabled: true
       tenant: nav.no
+      replyURLs:
+        - "https://testnav-miljoer-service.dev.intern.nav.no/login/oauth2/code/aad"
+        - "https://miljoer-service.dev.intern.nav.no/login/oauth2/code/aad"
+        - "http://localhost:8080/login/oauth2/code/aad"
+      claims:
+        groups:
+          - id: 9c7efec1-1599-4216-a67e-6fd53a6a951c
   liveness:
     path: /internal/isAlive
-    initialDelay: 4
-    periodSeconds: 5
+    initialDelay: 30
+    periodSeconds: 30
     failureThreshold: 500
   readiness:
     path: /internal/isReady
-    initialDelay: 4
-    periodSeconds: 5
+    initialDelay: 30
     failureThreshold: 500
   replicas:
     min: 1
@@ -54,3 +71,4 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://miljoer-service.dev.intern.nav.no"
+    - "https://testnav-miljoer-service.dev.intern.nav.no"
