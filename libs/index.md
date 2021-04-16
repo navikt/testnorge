@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Biblioteker
+has_children: true
 ---
 
 # Biblioteker
