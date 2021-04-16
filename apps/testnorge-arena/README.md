@@ -1,3 +1,9 @@
+---
+layout: default
+title: Testnorge Arena
+parent: Applikasjoner
+---
+
 # Testnorge-Arena
 
 Testnorge-Arena applikasjonen som henter syntetiske vedtak, og velger ut identer som skal inn i disse vedtakene, før de sendes til Arena.
