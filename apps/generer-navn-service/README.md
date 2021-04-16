@@ -1,3 +1,9 @@
+---
+layout: default
+title: Generer Navn Service
+parent: Applikasjoner
+---
+
 # generer-navn-service
 App for å generere fiktive navn.
 
