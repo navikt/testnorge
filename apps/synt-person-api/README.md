@@ -1,3 +1,9 @@
+---
+layout: default
+title: Synt Person API
+parent: Applikasjoner
+---
+
 ## Testnorge-Synt-person-api
 API for syntetisering av personer
 
