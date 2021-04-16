@@ -1,3 +1,10 @@
+---
+layout: default
+title: Arbeidsforhold Service
+parent: Applikasjoner
+---
+
+
 # testnav-arbeidsforhold-service
 API for arbeidsforhold.
 
