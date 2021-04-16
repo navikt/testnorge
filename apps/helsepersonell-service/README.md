@@ -14,11 +14,13 @@ Swagger finnes under [/api](https://testnav-helsepersonell-service.dev.intern.na
 
 ### Utviklerimage
 Kjør HelsepersonellApiApplicationStarter med følgende argumenter:
- - -Djavax.net.ssl.trustStore=[path til lokal truststore]
- - -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
- - -Dspring.cloud.vault.token=[Copy token fra Vault]
- - -Dspring.profiles.active=dev
- 
+```
+-Djavax.net.ssl.trustStore=[path til lokal truststore]
+-Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
+-Dspring.cloud.vault.token=[Copy token fra Vault]
+-Dspring.profiles.active=dev
+```
+
 ### Utenfor utviklerimage
  
 #### Windows
