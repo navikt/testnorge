@@ -5,8 +5,8 @@ import { MiljoeApi, TpsfApi } from '~/service/Api'
 
 export const { getEnvironments } = createActions(
 	{
-		// getEnvironments: MiljoeApi.getAktiveMiljoer
-		getEnvironments: TpsfApi.getTilgjengligeMiljoer
+		getEnvironments: MiljoeApi.getAktiveMiljoer
+		// getEnvironments: TpsfApi.getTilgjengligeMiljoer
 	},
 	{ prefix: 'env' }
 )
@@ -18,8 +18,8 @@ const initialState = {
 export default handleActions(
 	{
 		[onSuccess(getEnvironments)](state, action) {
-			// state.data = _getEnvironmentsSortedByType(action.payload.data)
-			state.data = _getEnvironmentsSortedByType(action.payload.data.environments)
+			state.data = _getEnvironmentsSortedByType(action.payload.data)
+			// state.data = _getEnvironmentsSortedByType(action.payload.data.environments)
 		}
 	},
 	initialState
