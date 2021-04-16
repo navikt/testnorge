@@ -4,10 +4,9 @@ import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
+import no.nav.organisasjonforvalter.config.credentials.MiljoerServiceProperties;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -33,16 +32,16 @@ public class MiljoerServiceConsumer {
     private static final String MILJOER_URL = "/api/v1/miljoer";
 
     private final AccessTokenService accessTokenService;
-    private final AccessScopes accessScopes;
     private final WebClient webClient;
+    private final MiljoerServiceProperties serviceProperties;
 
     public MiljoerServiceConsumer(
-            @Value("${miljoer.service.url}") String baseUrl,
-            @Value("${miljoer.service.client.id}") String clientId,
+            MiljoerServiceProperties serviceProperties,
             AccessTokenService accessTokenService) {
 
+        this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder()
-                .baseUrl(baseUrl)
+                .baseUrl(serviceProperties.getUrl())
                 .clientConnector(new ReactorClientHttpConnector(
                         HttpClient.create()
                                 .tcpConfiguration(tcpClient -> tcpClient
@@ -53,19 +52,17 @@ public class MiljoerServiceConsumer {
                                                         .addHandlerLast(new WriteTimeoutHandler(TIMEOUT_S))))))
                 .build();
         this.accessTokenService = accessTokenService;
-        this.accessScopes = new AccessScopes("api://" + clientId + "/.default");
     }
 
     public Set<String> getOrgMiljoer() {
 
         try {
-            AccessToken accessToken = accessTokenService.generateToken(accessScopes);
+            AccessToken accessToken = accessTokenService.generateToken(serviceProperties);
             ResponseEntity<String[]> response = webClient.get()
                     .uri(MILJOER_URL)
                     .header("Nav-Consumer-Id", "Testnorge")
                     .header("Nav-Call-Id", UUID.randomUUID().toString())
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " +
-                            accessToken.getTokenValue())
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken.getTokenValue())
                     .retrieve()
                     .toEntity(String[].class)
                     .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(10)))
