@@ -129,20 +129,20 @@ public class IdentService {
     ) {
         var identerUtenArenabruker = filtrerEksisterendeBrukereIArena(identer, miljoe);
         var identerPartisjonert = partisjonerListe(identerUtenArenabruker, PAGE_SIZE);
-        List<String> identerMedAktoerId = new ArrayList<>();
+        List<String> utvalgteIdenter = new ArrayList<>(antallNyeIdenter);
         for (var partisjon : identerPartisjonert) {
             var aktoerIdenter = aktoerRegisteretConsumer.hentAktoerIderTilIdenter(partisjon, miljoe);
             for (String key : aktoerIdenter.keySet()) {
                 if (tidligsteDatoBosatt == null || tpsForvalterService.identHarPersonstatusBosatt(key, miljoe, tidligsteDatoBosatt)) {
-                    identerMedAktoerId.add(key);
-                    if (identerMedAktoerId.size() >= antallNyeIdenter) {
-                        return identerMedAktoerId;
+                    utvalgteIdenter.add(key);
+                    if (utvalgteIdenter.size() >= antallNyeIdenter) {
+                        return utvalgteIdenter;
                     }
                 }
             }
 
         }
-        return identerMedAktoerId;
+        return utvalgteIdenter;
     }
 
     private List<String> filtrerIdenterUtenAktoerIdOgBarnUnder18(
