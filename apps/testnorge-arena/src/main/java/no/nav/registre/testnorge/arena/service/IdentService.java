@@ -13,7 +13,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -129,20 +128,20 @@ public class IdentService {
     ) {
         var identerUtenArenabruker = filtrerEksisterendeBrukereIArena(identer, miljoe);
         var identerPartisjonert = partisjonerListe(identerUtenArenabruker, PAGE_SIZE);
-        Map<String, String> identerMedAktoerId = new HashMap<>();
+        List<String> utvalgteIdenter = new ArrayList<>(antallNyeIdenter);
         for (var partisjon : identerPartisjonert) {
             var aktoerIdenter = aktoerRegisteretConsumer.hentAktoerIderTilIdenter(partisjon, miljoe);
-            if (tidligsteDatoBosatt != null) {
-                aktoerIdenter = aktoerIdenter.entrySet().stream()
-                        .filter(x -> tpsForvalterService.identHarPersonstatusBosatt(x.getKey(), miljoe, tidligsteDatoBosatt))
-                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            for (String key : aktoerIdenter.keySet()) {
+                if (tidligsteDatoBosatt == null || tpsForvalterService.identHarPersonstatusBosatt(key, miljoe, tidligsteDatoBosatt)) {
+                    utvalgteIdenter.add(key);
+                    if (utvalgteIdenter.size() >= antallNyeIdenter) {
+                        return utvalgteIdenter;
+                    }
+                }
             }
-            identerMedAktoerId.putAll(aktoerIdenter);
-            if (identerMedAktoerId.size() >= antallNyeIdenter) {
-                break;
-            }
+
         }
-        return new ArrayList<>(identerMedAktoerId.keySet()).subList(0, antallNyeIdenter);
+        return utvalgteIdenter;
     }
 
     private List<String> filtrerIdenterUtenAktoerIdOgBarnUnder18(
