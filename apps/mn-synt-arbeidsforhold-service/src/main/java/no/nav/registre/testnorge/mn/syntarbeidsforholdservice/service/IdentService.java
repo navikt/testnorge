@@ -22,7 +22,7 @@ public class IdentService {
     private final TpsIdentAdapter tpsIdentAdapter;
 
     public Set<String> getIdenterMedArbeidsforhold(String miljo) {
-        return arbeidsforholdConsumer
+        var identer = arbeidsforholdConsumer
                 .getAlleOpplysningspliktig(miljo)
                 .stream()
                 .map(Opplysningspliktig::getDriverVirksomheter)
@@ -31,6 +31,8 @@ public class IdentService {
                 .flatMap(Collection::stream)
                 .map(PersonDTO::getIdent)
                 .collect(Collectors.toSet());
+        log.info("Fant {} identer i {}.", identer, miljo);
+        return identer;
     }
 
     public Set<String> getIdenterUtenArbeidsforhold(String mijlo, int max) {

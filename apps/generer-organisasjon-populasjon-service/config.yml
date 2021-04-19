@@ -1,14 +1,13 @@
 ﻿apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: organisasjon-orgnummer-service
+  name: testnav-generer-organisasjon-populasjon-service
   namespace: dolly
   labels:
     team: dolly
 spec:
   image: {{ image }}
   port: 8080
-  webproxy: true
   azure:
     application:
       enabled: true
@@ -18,12 +17,20 @@ spec:
       rules:
         - application: team-dolly-lokal-app
           cluster: dev-fss
-        - application: testnav-generer-organisasjon-populasjon-service
-          cluster: dev-gcp
-        - application: organisasjon-forvalter
-          cluster: dev-fss
         - application: testnorge-oversikt-frontend
           cluster: dev-fss
+        - application: mn-synt-arbeidsforhold-service
+          cluster: dev-fss
+    outbound:
+      rules:
+        - application: generer-navn-service
+      external:
+        - host: https://organisasjon-orgnummer-service.dev-fss-pub.nais.io
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_12
+        databases:
+          - name: testnav-generer-organisasjon-populasjon-db
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -37,15 +44,16 @@ spec:
   replicas:
     min: 1
     max: 1
-  vault:
-    enabled: true
   resources:
     requests:
       cpu: 200m
-      memory: 4000Mi
+      memory: 1024Mi
     limits:
       cpu: 500m
-      memory: 5000Mi
+      memory: 2048Mi
+  envFrom:
+    - secret: google-sql-testnav-generer-organisasjon-populasjon-service
   ingresses:
-    - "https://organisasjon-orgnummer-service.dev.intern.nav.no"
-    - "https://organisasjon-orgnummer-service.dev-fss-pub.nais.io"
+    - "https://testnav-generer-organisasjon-populasjon-service.dev.intern.nav.no"
+  kafka:
+    pool: nav-dev

@@ -295,3 +295,6 @@ project(":organisasjon-faste-data-service").projectDir = file('apps/organisasjon
 
 include 'faste-data-frontend'
 project(":faste-data-frontend").projectDir = file('apps/faste-data-frontend')
+
+include 'generer-organisasjon-populasjon-service'
+project(":generer-organisasjon-populasjon-service").projectDir = file('apps/generer-organisasjon-populasjon-service')

@@ -2,6 +2,7 @@ package no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
@@ -28,6 +29,7 @@ import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.config.credentials
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Opplysningspliktig;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Organisajon;
 
+@Slf4j
 @Component
 public class OppsummeringsdokumentConsumer {
     private static final int BYTE_COUNT = 16 * 1024 * 1024;
@@ -87,8 +89,10 @@ public class OppsummeringsdokumentConsumer {
     }
 
     public List<Opplysningspliktig> getAlleOpplysningspliktig(String miljo) {
+        log.info("Henter alle opplysningspliktig fra {}...", miljo);
         AccessToken accessToken = accessTokenService.generateToken(properties);
         var list = new GetOppsummeringsdokumenterCommand(webClient, accessToken.getTokenValue(), miljo).call();
+        log.info("Fant {} opplysningspliktig fra {}.", list.size(), miljo);
         //TODO: Fix empty array of driver virksomheter
         return list.stream().map(value -> new Opplysningspliktig(value, new ArrayList<>())).collect(Collectors.toList());
     }

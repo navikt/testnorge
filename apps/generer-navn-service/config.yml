@@ -22,6 +22,8 @@ spec:
           cluster: dev-fss
         - application: testnorge-statisk-data-forvalter
           cluster: dev-fss
+        - application: testnav-generer-organisasjon-populasjon-service
+          cluster: dev-gcp
   azure:
     application:
       enabled: true
