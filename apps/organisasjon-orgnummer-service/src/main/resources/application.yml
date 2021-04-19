@@ -3,7 +3,6 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 spring:
   application:
     name: organisasjon-orgnummer-service
-    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     description: Genererer gyldige organisasjonsnummer. Sjekker at det ikke finnes i q1.
 
 
@@ -14,6 +13,8 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     threads: 5
-  miljoer-service:
-    url: https://miljoer-service.dev.intern.nav.no/api
-    client_id: 30003084-1585-4629-a017-686b4387b12e
+  testnav-miljoer-service:
+    url: https://testnav-miljoer-service.dev.intern.nav.no
+    name: testnav-miljoer-service
+    cluster: dev-gcp
+    namespace: dolly
