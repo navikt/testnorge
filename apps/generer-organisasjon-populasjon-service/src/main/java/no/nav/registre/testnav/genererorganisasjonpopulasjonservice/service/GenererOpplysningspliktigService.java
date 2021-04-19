@@ -33,7 +33,7 @@ public class GenererOpplysningspliktigService {
         for (int index = 0; index < futures.size(); index++) {
             try {
                 var organisasjon = futures.get(index).get(12, TimeUnit.MINUTES);
-                log.info("{}/{} organisasjoner opprettet.", index, futures.size());
+                log.info("{}/{} organisasjoner opprettet.", index + 1, futures.size());
                 organisasjoner.add(organisasjon);
             } catch (Exception e) {
                 log.warn("Klarer ikke å opprette organiasjon.", e);
