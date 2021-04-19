@@ -129,20 +129,20 @@ public class IdentService {
     ) {
         var identerUtenArenabruker = filtrerEksisterendeBrukereIArena(identer, miljoe);
         var identerPartisjonert = partisjonerListe(identerUtenArenabruker, PAGE_SIZE);
-        Map<String, String> identerMedAktoerId = new HashMap<>();
+        List<String> identerMedAktoerId = new ArrayList<>();
         for (var partisjon : identerPartisjonert) {
             var aktoerIdenter = aktoerRegisteretConsumer.hentAktoerIderTilIdenter(partisjon, miljoe);
-            if (tidligsteDatoBosatt != null) {
-                aktoerIdenter = aktoerIdenter.entrySet().stream()
-                        .filter(x -> tpsForvalterService.identHarPersonstatusBosatt(x.getKey(), miljoe, tidligsteDatoBosatt))
-                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            for (String key : aktoerIdenter.keySet()) {
+                if (tidligsteDatoBosatt == null || tpsForvalterService.identHarPersonstatusBosatt(key, miljoe, tidligsteDatoBosatt)) {
+                    identerMedAktoerId.add(key);
+                    if (identerMedAktoerId.size() >= antallNyeIdenter) {
+                        return identerMedAktoerId;
+                    }
+                }
             }
-            identerMedAktoerId.putAll(aktoerIdenter);
-            if (identerMedAktoerId.size() >= antallNyeIdenter) {
-                break;
-            }
+
         }
-        return new ArrayList<>(identerMedAktoerId.keySet()).subList(0, antallNyeIdenter);
+        return identerMedAktoerId;
     }
 
     private List<String> filtrerIdenterUtenAktoerIdOgBarnUnder18(
