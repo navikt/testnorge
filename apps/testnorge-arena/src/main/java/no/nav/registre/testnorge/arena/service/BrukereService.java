@@ -5,7 +5,6 @@ import static java.lang.Math.floor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import no.nav.registre.testnorge.arena.service.util.IdenterUtils;
 import no.nav.registre.testnorge.arena.consumer.rs.BrukereArenaForvalterConsumer;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.NyBruker;
@@ -36,7 +35,7 @@ public class BrukereService {
 
     private final HodejegerenConsumer hodejegerenConsumer;
     private final BrukereArenaForvalterConsumer brukereArenaForvalterConsumer;
-    private final IdenterUtils identerUtils;
+    private final IdentService identService;
     private final Random random;
 
     public NyeBrukereResponse opprettArbeidsoekere(
@@ -45,7 +44,7 @@ public class BrukereService {
             String miljoe
     ) {
         var levendeIdenter = hentLevendeIdenter(avspillergruppeId);
-        var arbeidsoekerIdenter = identerUtils.hentEksisterendeArbeidsoekerIdenter(true);
+        var arbeidsoekerIdenter = identService.hentEksisterendeArbeidsoekerIdenter(true);
 
         if (antallNyeIdenter == null) {
             var antallArbeidsoekereAaOpprette = getAntallBrukereForAaFylleArenaForvalteren(levendeIdenter.size(), arbeidsoekerIdenter.size());
@@ -70,7 +69,7 @@ public class BrukereService {
             boolean useCache
     ) {
         var levendeIdenter = hentLevendeIdenter(avspillergruppeId);
-        var arbeidsoekerIdenter = identerUtils.hentEksisterendeArbeidsoekerIdenter(useCache);
+        var arbeidsoekerIdenter = identService.hentEksisterendeArbeidsoekerIdenter(useCache);
 
         if (arbeidsoekerIdenter.contains(ident)) {
             log.info("Ident {} er allerede registrert som arbeidsøker.", ident.replaceAll("[\r\n]", ""));
@@ -147,7 +146,7 @@ public class BrukereService {
             Long avspillergruppeId,
             String miljoe
     ) {
-        var identer = identerUtils
+        var identer = identService
                 .getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallIdenter, MINIMUM_ALDER, MAKSIMUM_ALDER, miljoe, null);
 
         Map<String, NyeBrukereResponse> responses = new HashMap<>();

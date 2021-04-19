@@ -1,14 +1,14 @@
-package no.nav.registre.testnorge.arena.service.util;
+package no.nav.registre.testnorge.arena.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.arena.service.BrukereService;
-import no.nav.registre.testnorge.arena.service.InnsatsService;
 import no.nav.registre.testnorge.arena.service.exception.ArbeidssoekerException;
 import no.nav.registre.testnorge.arena.service.exception.VedtakshistorikkException;
+import no.nav.registre.testnorge.arena.service.util.KodeMedSannsynlighet;
+import no.nav.registre.testnorge.arena.service.util.ServiceUtils;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
@@ -28,7 +28,7 @@ import java.util.Random;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ArbeidssoekerUtils {
+public class ArbeidssoekerService {
 
     private static final Map<String, List<KodeMedSannsynlighet>> aktivitestsfaserMedInnsatsARBS;
     private static final Map<String, List<KodeMedSannsynlighet>> aktivitestsfaserMedInnsatsIARBS;
@@ -40,7 +40,7 @@ public class ArbeidssoekerUtils {
     private final BrukereService brukereService;
     private final ServiceUtils serviceUtils;
     private final InnsatsService innsatsService;
-    private final IdenterUtils identerUtils;
+    private final IdentService identService;
 
     static {
         aktivitestsfaserMedInnsatsARBS = new HashMap<>();
@@ -68,7 +68,7 @@ public class ArbeidssoekerUtils {
 
 
     public boolean arbeidssoekerIkkeOpprettetIArena(String personident) {
-        var identerIArena = identerUtils.hentEksisterendeArbeidsoekerIdent(personident, false);
+        var identerIArena = identService.hentEksisterendeArbeidsoekerIdent(personident, false);
         return !identerIArena.contains(personident);
     }
 

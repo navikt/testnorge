@@ -36,9 +36,7 @@ import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTiltakspenge
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTvungenForvaltningRequest;
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetUngUfoerRequest;
 import no.nav.registre.testnorge.arena.consumer.rs.VedtakshistorikkSyntConsumer;
-import no.nav.registre.testnorge.arena.service.util.ArbeidssoekerUtils;
 import no.nav.registre.testnorge.arena.service.util.DatoUtils;
-import no.nav.registre.testnorge.arena.service.util.IdenterUtils;
 import no.nav.registre.testnorge.arena.service.util.ServiceUtils;
 
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
@@ -61,8 +59,8 @@ public class VedtakshistorikkService {
 
     private final VedtakshistorikkSyntConsumer vedtakshistorikkSyntConsumer;
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
-    private final IdenterUtils identerUtils;
-    private final ArbeidssoekerUtils arbeidsoekerUtils;
+    private final IdentService identService;
+    private final ArbeidssoekerService arbeidsoekerUtils;
     private final RettighetAapService rettighetAapService;
     private final RettighetTiltakService rettighetTiltakService;
     private final DatoUtils datoUtils;
@@ -162,9 +160,9 @@ public class VedtakshistorikkService {
 
             List<String> identer;
             if (tidligsteDatoBarnetillegg != null) {
-                identer = identerUtils.getUtvalgteIdenterIAldersgruppeMedBarnUnder18(avspillergruppeId, 1, minimumAlder, maksimumAlder, miljoe, tidligsteDatoBosatt, tidligsteDatoBarnetillegg);
+                identer = identService.getUtvalgteIdenterIAldersgruppeMedBarnUnder18(avspillergruppeId, 1, minimumAlder, maksimumAlder, miljoe, tidligsteDatoBosatt, tidligsteDatoBarnetillegg);
             } else {
-                identer = identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, 1, minimumAlder, maksimumAlder, miljoe, tidligsteDatoBosatt);
+                identer = identService.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, 1, minimumAlder, maksimumAlder, miljoe, tidligsteDatoBosatt);
             }
 
             return identer.isEmpty() ? null : identer.get(0);
@@ -185,7 +183,7 @@ public class VedtakshistorikkService {
         List<KontoinfoResponse> identerMedKontonummer = new ArrayList<>();
         if (vedtakshistorikk.getTvungenForvaltning() != null && !vedtakshistorikk.getTvungenForvaltning().isEmpty()) {
             var antallTvungenForvaltning = vedtakshistorikk.getTvungenForvaltning().size();
-            identerMedKontonummer = identerUtils.getIdenterMedKontoinformasjon(avspillergruppeId, miljoe, antallTvungenForvaltning);
+            identerMedKontonummer = identService.getIdenterMedKontoinformasjon(avspillergruppeId, miljoe, antallTvungenForvaltning);
         }
 
         List<RettighetRequest> rettigheter = new ArrayList<>();
