@@ -1,0 +1,11 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+spring:
+  main:
+    banner-mode: off
+  application:
+    name: testnav-generer-synt-amelding-service
+    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra Gradle
+    description: App for å generere syntetiske ameldinger.
+    cluster: dev-gcp
+    namespace: dolly
