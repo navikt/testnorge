@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -46,11 +47,7 @@ public class OrganisasjonConsumer {
         );
     }
 
-    public OrganisasjonDTO getOrganisjon(String orgnummer, String miljo) {
-        AccessToken accessToken = accessTokenService.generateToken(serviceProperties);
-        return new GetOrganisasjonCommand(webClient, accessToken.getTokenValue(), orgnummer, miljo).call();
-    }
-
+    @Cacheable("Mini-Norge-EREG")
     public List<OrganisasjonDTO> getOrganisasjoner(Set<String> orgnummerListe, String miljo) {
         AccessToken accessToken = accessTokenService.generateToken(serviceProperties);
         var futures = orgnummerListe.stream().map(value -> getFutureOrganisasjon(value, accessToken, miljo)).collect(Collectors.toList());
