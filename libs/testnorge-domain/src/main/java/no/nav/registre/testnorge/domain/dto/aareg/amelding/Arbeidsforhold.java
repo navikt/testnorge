@@ -1,4 +1,4 @@
-package no.nav.registre.syntrest.domain.aareg.amelding;
+package no.nav.registre.testnorge.domain.dto.aareg.amelding;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ import lombok.Setter;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ArbeidsforholdAmelding {
+public class Arbeidsforhold {
 
     @JsonAlias({ "RAPPORTERINGSMAANED", "rapporteringsmaaned" })
     private String rapporteringsmaaned;

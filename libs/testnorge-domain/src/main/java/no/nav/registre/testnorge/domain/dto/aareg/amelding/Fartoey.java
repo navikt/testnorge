@@ -1,10 +1,8 @@
-package no.nav.registre.syntrest.domain.aareg.amelding;
+package no.nav.registre.testnorge.domain.dto.aareg.amelding;
 
-import java.time.LocalDate;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,11 +16,14 @@ import lombok.Setter;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ArbeidsforholdPeriode {
+public class Fartoey {
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private LocalDate startdato;
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private LocalDate sluttdato;
+    @JsonAlias({"SKIPSREGISTER", "skipsregister"})
+    private String skipsregister;
+
+    @JsonAlias({"SKIPSTYPE", "skipstype"})
+    private String skipstype;
+
+    @JsonAlias({"FARTSOMRAADE", "fartsomraade"})
+    private String fartsomraade;
 }
-

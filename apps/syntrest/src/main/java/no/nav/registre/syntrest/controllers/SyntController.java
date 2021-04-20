@@ -28,8 +28,6 @@ import java.util.List;
 import java.util.Map;
 
 import no.nav.registre.syntrest.domain.aareg.Arbeidsforholdsmelding;
-import no.nav.registre.syntrest.domain.aareg.amelding.ArbeidsforholdAmelding;
-import no.nav.registre.syntrest.domain.aareg.amelding.ArbeidsforholdPeriode;
 import no.nav.registre.syntrest.domain.bisys.Barnebidragsmelding;
 import no.nav.registre.syntrest.domain.frikort.FrikortKvittering;
 import no.nav.registre.syntrest.domain.inst.Institusjonsmelding;
@@ -39,6 +37,9 @@ import no.nav.registre.syntrest.domain.sam.SamMelding;
 import no.nav.registre.syntrest.domain.tp.TPmelding;
 import no.nav.registre.syntrest.domain.tps.SkdMelding;
 import no.nav.registre.syntrest.utils.InputValidator;
+
+import no.nav.registre.testnorge.domain.dto.aareg.amelding.Arbeidsforhold;
+import no.nav.registre.testnorge.domain.dto.aareg.amelding.ArbeidsforholdPeriode;
 
 import static java.util.Objects.isNull;
 import static no.nav.registre.syntrest.utils.UrlUtils.createQueryString;
@@ -280,8 +281,8 @@ public class SyntController {
 
     @PostMapping("/amelding/arbeidsforhold")
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-amelding" })
-    public ResponseEntity<List<ArbeidsforholdAmelding>> generateArbeidforholdHistorikk(
-            @RequestBody ArbeidsforholdAmelding tidligereArbeidsforhold,
+    public ResponseEntity<List<Arbeidsforhold>> generateArbeidforholdHistorikk(
+            @RequestBody Arbeidsforhold tidligereArbeidsforhold,
             @ApiParam(value = "Verdi bestemmer om det skal være mulig at avvik blir generert i arbeidforhold.")
             @RequestParam(required = false) String avvik,
             @ApiParam(value = "Verdi bestemmer om det skal være mulig at sluttdato blir generert i arbeidforhold.")
@@ -298,7 +299,7 @@ public class SyntController {
 
     @PostMapping("/amelding/arbeidsforhold/start")
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-amelding" })
-    public ResponseEntity<List<ArbeidsforholdAmelding>> generateArbeidforholdStart(
+    public ResponseEntity<List<Arbeidsforhold>> generateArbeidforholdStart(
             @RequestBody List<String> startdatoer,
             @ApiParam(value = "Verdi bestemmer om det skal være mulig at avvik blir generert i arbeidforhold.")
             @RequestParam(required = false) String avvik
@@ -312,7 +313,7 @@ public class SyntController {
 
     @PostMapping("/amelding/arbeidsforhold/start/{arbeidsforholdType}")
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-amelding" })
-    public ResponseEntity<ArbeidsforholdAmelding> generateArbeidforholdMedType(
+    public ResponseEntity<Arbeidsforhold> generateArbeidforholdMedType(
             @ApiParam(value = "Arbeidsforhold type.", required = true)
             @PathVariable String arbeidsforholdType,
             @RequestBody ArbeidsforholdPeriode request,

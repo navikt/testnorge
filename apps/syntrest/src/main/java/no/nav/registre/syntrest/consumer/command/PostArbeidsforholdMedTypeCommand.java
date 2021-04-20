@@ -7,12 +7,12 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.syntrest.domain.aareg.amelding.ArbeidsforholdAmelding;
-import no.nav.registre.syntrest.domain.aareg.amelding.ArbeidsforholdPeriode;
+import no.nav.registre.testnorge.domain.dto.aareg.amelding.Arbeidsforhold;
+import no.nav.registre.testnorge.domain.dto.aareg.amelding.ArbeidsforholdPeriode;
 import reactor.core.publisher.Mono;
 
 @Slf4j
-public class PostArbeidsforholdMedTypeCommand implements Callable<ArbeidsforholdAmelding> {
+public class PostArbeidsforholdMedTypeCommand implements Callable<Arbeidsforhold> {
 
     private final WebClient webClient;
     private final ArbeidsforholdPeriode request;
@@ -27,7 +27,7 @@ public class PostArbeidsforholdMedTypeCommand implements Callable<Arbeidsforhold
     }
 
     @Override
-    public ArbeidsforholdAmelding call() {
+    public Arbeidsforhold call() {
         try {
             var body = BodyInserters.fromPublisher(Mono.just(request), ArbeidsforholdPeriode.class);
 
@@ -39,7 +39,7 @@ public class PostArbeidsforholdMedTypeCommand implements Callable<Arbeidsforhold
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .body(body)
                     .retrieve()
-                    .bodyToMono(ArbeidsforholdAmelding.class)
+                    .bodyToMono(Arbeidsforhold.class)
                     .block();
         } catch (Exception e) {
             log.error("Unexpected Rest Client Exception.", e);
