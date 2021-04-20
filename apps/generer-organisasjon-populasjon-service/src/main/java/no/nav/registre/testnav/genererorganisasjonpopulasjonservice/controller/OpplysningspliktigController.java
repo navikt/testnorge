@@ -3,6 +3,7 @@ package no.nav.registre.testnav.genererorganisasjonpopulasjonservice.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -33,6 +34,12 @@ public class OpplysningspliktigController {
     @GetMapping
     public ResponseEntity<Set<String>> getOpplysningsplikitgOrgnummer(@RequestHeader String miljo) {
         return ResponseEntity.ok(opplysningspliktigService.getOpplysningspliktigOrgnummer(miljo));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<?> delete(@RequestHeader String miljo) {
+        opplysningspliktigService.deleteBy(miljo);
+        return ResponseEntity.notFound().build();
     }
 }
 

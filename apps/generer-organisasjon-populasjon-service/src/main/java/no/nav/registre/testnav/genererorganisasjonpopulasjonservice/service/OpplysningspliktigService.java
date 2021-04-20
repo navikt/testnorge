@@ -49,4 +49,7 @@ public class OpplysningspliktigService {
                 .collect(Collectors.toSet());
     }
 
+    public void deleteBy(String miljo) {
+        repository.deleteAllByMiljo(miljo);
+    }
 }

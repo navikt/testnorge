@@ -10,4 +10,6 @@ import no.nav.registre.testnav.genererorganisasjonpopulasjonservice.repository.m
 @Repository
 public interface OpplysningspliktigRepository extends CrudRepository<OpplysningspliktigModel, String> {
     List<OpplysningspliktigModel> findAllByMiljo(String miljo);
+
+    void deleteAllByMiljo(String miljo);
 }

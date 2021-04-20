@@ -22,7 +22,7 @@ import java.util.Date;
 @EntityListeners(AuditingEntityListener.class)
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "ORGANISASJON")
+@Table(name = "OPPLYSNINGSPLIKTIG")
 public class OpplysningspliktigModel {
 
     @Id
