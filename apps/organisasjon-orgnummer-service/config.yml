@@ -42,10 +42,10 @@ spec:
   resources:
     requests:
       cpu: 200m
-      memory: 4000Mi
+      memory: 1024Mi
     limits:
       cpu: 500m
-      memory: 5000Mi
+      memory: 2048Mi
   ingresses:
     - "https://organisasjon-orgnummer-service.dev.intern.nav.no"
     - "https://organisasjon-orgnummer-service.dev-fss-pub.nais.io"

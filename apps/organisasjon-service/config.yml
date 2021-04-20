@@ -35,6 +35,8 @@ spec:
           cluster: dev-fss
         - application: testnav-faste-data-frontend
           cluster: dev-gcp
+        - application: mn-synt-arbeidsforhold-service
+          cluster: dev-fss
     outbound:
       external:
         - host: testnav-ereg-proxy.dev-fss-pub.nais.io

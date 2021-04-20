@@ -23,6 +23,17 @@ consumers:
     namespace: dolly
     name: oppsummeringsdokument-service
     url: https://oppsummeringsdokument-service.dev.intern.nav.no
+  testnav-generer-organisasjon-populasjon-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-generer-organisasjon-populasjon-service
+    url: https://testnav-generer-organisasjon-populasjon-service.dev.intern.nav.no
+  testnav-organisasjon-service:
+    url: https://testnav-organisasjon-service.dev.intern.nav.no
+    name: testnav-organisasjon-service
+    cluster: dev-gcp
+    namespace: dolly
+    threads: 7
 
 spring:
   main:

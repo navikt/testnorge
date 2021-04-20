@@ -9,35 +9,27 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.MNOrganisasjonConsumer;
+import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.GenererOrganisasjonPopulasjonConsumer;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.OppsummeringsdokumentConsumer;
+import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.OrganisasjonConsumer;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Opplysningspliktig;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Organisajon;
-import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.exception.MNOrganisasjonException;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class OpplysningspliktigService {
     private final OppsummeringsdokumentConsumer oppsummeringsdokumentConsumer;
-    private final MNOrganisasjonConsumer organisasjonConsumer;
+    private final OrganisasjonConsumer organisasjonConssumer;
+    private final GenererOrganisasjonPopulasjonConsumer genererOrganisasjonPopulasjonConsumer;
 
-
-    private List<Organisajon> getOpplysningspliktigeOrganisasjoner(String miljo) {
-        log.info("Henter opplysningspliktige organisasjoner...");
-        List<Organisajon> organisajoner = organisasjonConsumer
-                .getOrganisajoner(miljo)
+    public List<Organisajon> getOpplysningspliktigeOrganisasjoner(String miljo) {
+        var opplysningspliktigOrgnummer = genererOrganisasjonPopulasjonConsumer.getOpplysningspliktig(miljo);
+        return organisasjonConssumer
+                .getOrganisasjoner(opplysningspliktigOrgnummer, miljo)
                 .stream()
-                .filter(Organisajon::isOpplysningspliktig)
-                .filter(Organisajon::isDriverVirksomheter)
+                .map(Organisajon::new)
                 .collect(Collectors.toList());
-
-        if (organisajoner.isEmpty()) {
-            throw new MNOrganisasjonException("Fant ingen opplysningspliktige i Mini-Norge som driver virksomheter.");
-        }
-
-        log.info("Fant {} opplysningspliktige organisasjoner.", organisajoner.size());
-        return organisajoner;
     }
 
     private Opplysningspliktig getOpplysningspliktig(Organisajon organisajon, LocalDate kalendermaaned, String miljo) {

@@ -43,6 +43,11 @@ public class GenererOpplysningspliktigService {
             log.warn("Bare {}/{} organiasjoner opprettet.", organisasjoner.size(), futures.size());
         }
 
+
+        if(organisasjoner.isEmpty()){
+            throw new RuntimeException("Klarer ikke å opprette organisasjoner.");
+        }
+
         return organisasjoner;
     }
 
