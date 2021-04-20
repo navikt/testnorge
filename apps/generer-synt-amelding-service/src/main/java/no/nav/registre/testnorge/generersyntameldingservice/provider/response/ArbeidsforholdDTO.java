@@ -21,7 +21,6 @@ public class ArbeidsforholdDTO {
     private String rapporteringsmaaned;
     private String arbeidsforholdType;
     private LocalDate startdato;
-    private LocalDate sluttdato;
     private float antallTimerPerUkeSomEnFullStillingTilsvarer;
     private String yrke;
     private String arbeidstidsordning;
@@ -33,12 +32,9 @@ public class ArbeidsforholdDTO {
     private List<Inntekt> inntekter;
 
     public ArbeidsforholdDTO(Arbeidsforhold arbeidsforhold){
-        var enddate = arbeidsforhold.getSluttdato();
-
         this.rapporteringsmaaned = arbeidsforhold.getRapporteringsmaaned();
         this.arbeidsforholdType = arbeidsforhold.getArbeidsforholdType();
         this.startdato = LocalDate.parse(arbeidsforhold.getStartdato());
-        this.sluttdato = enddate == null || enddate.isEmpty() ? null : LocalDate.parse(enddate);
         this.antallTimerPerUkeSomEnFullStillingTilsvarer = arbeidsforhold.getAntallTimerPerUkeSomEnFullStillingTilsvarer();
         this.yrke = arbeidsforhold.getYrke();
         this.arbeidstidsordning = arbeidsforhold.getArbeidstidsordning();
