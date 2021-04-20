@@ -48,7 +48,11 @@ public class JenkinsConsumer {
         }
         JenkinsCrumb jenkinsCrumb = new GetCrumbCommand(webClient, accessToken.getTokenValue()).call();
         var id = new StartBEREG007Command(webClient, accessToken.getTokenValue(), server, miljo, jenkinsCrumb, flatFile).call();
-        jenkinsBatchStatusConsumer.registerBestilling(uuid, miljo, id);
+        try {
+            jenkinsBatchStatusConsumer.registerBestilling(uuid, miljo, id);
+        } catch (Exception e) {
+            log.error("Klarer ikke å registere til bestilling med id {}.", id, e);
+        }
         log.info("Bestilling sendt til jenkins {}.", uuid);
     }
 }
