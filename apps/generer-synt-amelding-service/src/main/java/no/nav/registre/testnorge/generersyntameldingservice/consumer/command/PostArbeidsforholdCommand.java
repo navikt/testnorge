@@ -40,7 +40,7 @@ public class PostArbeidsforholdCommand implements Callable<Arbeidsforhold> {
                     .bodyToMono(Arbeidsforhold.class)
                     .block();
         } catch (Exception e) {
-            log.error("Unexpected Rest Client Exception.", e);
+            log.error("Unexpected Rest Client Exception: " + e.getMessage());
             throw e;
         }
     }

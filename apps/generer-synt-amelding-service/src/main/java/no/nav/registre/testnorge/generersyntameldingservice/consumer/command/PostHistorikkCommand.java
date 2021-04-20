@@ -40,7 +40,7 @@ public class PostHistorikkCommand implements Callable<List<Arbeidsforhold>> {
                     .collectList()
                     .block();
         } catch (Exception e) {
-            log.error("Unexpected Rest Client Exception.", e);
+            log.error("Unexpected Rest Client Exception: " + e.getMessage());
             throw e;
         }
     }

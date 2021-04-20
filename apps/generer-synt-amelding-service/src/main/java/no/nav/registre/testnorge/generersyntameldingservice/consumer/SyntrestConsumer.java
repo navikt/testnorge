@@ -16,6 +16,8 @@ import no.nav.registre.testnorge.generersyntameldingservice.consumer.command.Pos
 public class SyntrestConsumer {
 
     private final WebClient webClient;
+    private static final String ORDINAERT_PATH_VALUE = "ordinaert";
+    private static final String MARITIMT_PATH_VALUE = "maritimt";
 
     public SyntrestConsumer(
             @Value("${syntrest.rest-api.url}") String syntrestServerUrl
@@ -24,11 +26,21 @@ public class SyntrestConsumer {
     }
 
     public Arbeidsforhold getEnkeltArbeidsforhold(ArbeidsforholdPeriode periode, String arbeidsforholdType){
-        return new PostArbeidsforholdCommand(periode, webClient, arbeidsforholdType).call();
+
+        return new PostArbeidsforholdCommand(periode, webClient, getArbeidsforholdTypePathValue(arbeidsforholdType)).call();
     }
 
     public List<Arbeidsforhold> getHistorikk(Arbeidsforhold arbeidsforhold){
         return new PostHistorikkCommand(arbeidsforhold, webClient).call();
     }
 
+
+    private String getArbeidsforholdTypePathValue(String arbeidsforholdType){
+        if (arbeidsforholdType.contains(ORDINAERT_PATH_VALUE)){
+            return ORDINAERT_PATH_VALUE;
+        }else if (arbeidsforholdType.contains(MARITIMT_PATH_VALUE)){
+            return MARITIMT_PATH_VALUE;
+        }
+        return "";
+    }
 }
