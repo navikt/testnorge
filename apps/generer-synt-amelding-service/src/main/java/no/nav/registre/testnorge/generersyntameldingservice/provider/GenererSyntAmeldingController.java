@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.registre.testnorge.generersyntameldingservice.provider.request.SyntAmeldingRequest;
-import no.nav.registre.testnorge.generersyntameldingservice.provider.response.SyntAmeldingResponse;
+import no.nav.registre.testnorge.generersyntameldingservice.provider.response.ArbeidsforholdDTO;
 import no.nav.registre.testnorge.generersyntameldingservice.service.GenererSyntAmeldingService;
 
 @RestController
@@ -19,7 +19,7 @@ public class GenererSyntAmeldingController {
     private final GenererSyntAmeldingService genererSyntAmeldingService;
 
     @PostMapping
-    public List<SyntAmeldingResponse> generateSyntheticAmeldinger(
+    public List<ArbeidsforholdDTO> generateSyntheticAmeldinger(
             @RequestBody SyntAmeldingRequest request
     ) {
         return genererSyntAmeldingService.generateAmeldinger(request);

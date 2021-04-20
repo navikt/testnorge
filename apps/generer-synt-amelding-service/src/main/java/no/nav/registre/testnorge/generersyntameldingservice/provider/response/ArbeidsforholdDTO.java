@@ -4,19 +4,19 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Value;
 import no.nav.registre.testnorge.domain.dto.aareg.amelding.Arbeidsforhold;
 import no.nav.registre.testnorge.domain.dto.aareg.amelding.Fartoey;
 import no.nav.registre.testnorge.domain.dto.aareg.amelding.Inntekt;
 import no.nav.registre.testnorge.domain.dto.aareg.amelding.Permisjon;
 
-@Getter
-@Setter
+@Value
+@Builder
 @AllArgsConstructor
-@NoArgsConstructor
-public class SyntAmeldingResponse {
+@NoArgsConstructor(force = true)
+public class ArbeidsforholdDTO {
 
     private String rapporteringsmaaned;
     private String arbeidsforholdType;
@@ -32,11 +32,10 @@ public class SyntAmeldingResponse {
     private Fartoey fartoey;
     private List<Inntekt> inntekter;
 
-    public SyntAmeldingResponse(Arbeidsforhold arbeidsforhold){
+    public ArbeidsforholdDTO(Arbeidsforhold arbeidsforhold){
         var enddate = arbeidsforhold.getSluttdato();
 
         this.rapporteringsmaaned = arbeidsforhold.getRapporteringsmaaned();
-        this.antallTimerPerUkeSomEnFullStillingTilsvarer = arbeidsforhold.getAntallTimerPerUkeSomEnFullStillingTilsvarer();
         this.arbeidsforholdType = arbeidsforhold.getArbeidsforholdType();
         this.startdato = LocalDate.parse(arbeidsforhold.getStartdato());
         this.sluttdato = enddate == null || enddate.isEmpty() ? null : LocalDate.parse(enddate);

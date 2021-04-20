@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.domain.dto.aareg.amelding.ArbeidsforholdPeriode;
 import no.nav.registre.testnorge.generersyntameldingservice.consumer.SyntrestConsumer;
 import no.nav.registre.testnorge.generersyntameldingservice.provider.request.SyntAmeldingRequest;
-import no.nav.registre.testnorge.generersyntameldingservice.provider.response.SyntAmeldingResponse;
+import no.nav.registre.testnorge.generersyntameldingservice.provider.response.ArbeidsforholdDTO;
 
 @Slf4j
 @Service
@@ -21,7 +21,7 @@ public class GenererSyntAmeldingService {
 
     private final SyntrestConsumer syntrestConsumer;
 
-    public List<SyntAmeldingResponse> generateAmeldinger(SyntAmeldingRequest request) {
+    public List<ArbeidsforholdDTO> generateAmeldinger(SyntAmeldingRequest request) {
         var antallMeldinger = getAntallEndringer(request.getStartdato(), request.getSluttdato());
 
         var initialAmelding = syntrestConsumer.getEnkeltArbeidsforhold(
@@ -37,10 +37,10 @@ public class GenererSyntAmeldingService {
 
             var response = syntrestConsumer.getHistorikk(initialAmelding);
             response.add(0, initialAmelding);
-            return response.stream().map(SyntAmeldingResponse::new).collect(Collectors.toList());
+            return response.stream().map(ArbeidsforholdDTO::new).collect(Collectors.toList());
         }
 
-        return Collections.singletonList(new SyntAmeldingResponse(initialAmelding));
+        return Collections.singletonList(new ArbeidsforholdDTO(initialAmelding));
     }
 
     private int getAntallEndringer(LocalDate startdato, LocalDate sluttdato) {
