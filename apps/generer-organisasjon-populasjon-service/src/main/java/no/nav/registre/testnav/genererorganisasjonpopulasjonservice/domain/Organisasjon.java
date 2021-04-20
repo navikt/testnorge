@@ -55,7 +55,7 @@ public class Organisasjon {
                 .newBuilder()
                 .setEnhetstype(enhetstype)
                 .setOrgnummer(orgnummer)
-                .setUnderenheter(virksomhenter.stream().map(Organisasjon::toAvroOrganiasjon).collect(Collectors.toList()))
+                .setUnderenheter(getVirksomhenter().stream().map(Organisasjon::toAvroOrganiasjon).collect(Collectors.toList()))
                 .setNavn(DetaljertNavn.newBuilder().setNavn1(name).setRedigertNavn(name).build())
                 .build();
     }
