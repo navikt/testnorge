@@ -1,41 +1,43 @@
 @import (reference) '~lessVars';
 
 .ny-ident-form {
-	> h3 {
-		margin: 20px 0 0;
-	}
+  > h3 {
+    margin: 10px 0 0;
+  }
 
-	&_selects {
-		display: flex;
-		padding: 20px 0 0;
-	}
+  &_selects {
+    display: flex;
+    padding: 20px 0 0;
+  }
 
-	&_maler {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		background-color: #eee;
-		margin: 10px -20px;
-		padding: 0 0 0 20px;
+  &_maler {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 10px -20px;
+    padding: 0 0 0 20px;
 
-		.mal-admin {
-			margin: 20px 0 16px;
-			a {
-				text-decoration: none;
-				color: @navBla;
-			}
-			svg {
-				stroke: @navBla;
-			}
-		}
+    .mal-admin {
+      margin: 20px 0 16px;
 
-		> div {
-			h3 {
-				margin-right: 10px;
-			}
-			display: flex;
-			width: 100%;
-			align-items: center;
-		}
-	}
+      a {
+        text-decoration: none;
+        color: @navBla;
+      }
+
+      svg {
+        stroke: @navBla;
+      }
+    }
+
+    > div {
+      h3 {
+        margin-right: 10px;
+      }
+
+      display: flex;
+      width: 100%;
+      align-items: center;
+    }
+  }
 }

@@ -13,12 +13,21 @@ import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import ModalActionKnapper from '~/components/ui/modal/ModalActionKnapper'
 
 import './nyIdent.less'
+import styled from 'styled-components'
 
 const initialValues = {
 	antall: 1,
 	identtype: Options('identtype')[0].value,
 	mal: null
 }
+
+const StyledH3 = styled.h3`
+	margin-bottom: 10px;
+`
+
+const InputDiv = styled.div`
+	margin-top: 20px;
+`
 
 const validationSchema = yup.object({
 	antall: yup
@@ -40,10 +49,23 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 	const zIdentOptions = state.value ? getZIdentOptions(state.value.malbestillinger) : []
 	const malOptions = state.value ? getMalOptions(state.value.malbestillinger, zIdent) : []
 
+	const handleMalChange = formikbag => {
+		toggleMalAktiv()
+		if (formikbag.values.mal) {
+			formikbag.setFieldValue('mal', null)
+		}
+	}
+
+	const handleBrukerChange = (event, formikbag) => {
+		setZIdent(event.value)
+		formikbag.setFieldValue('mal', null)
+	}
+
 	const preSubmit = (values, formikBag) => {
 		if (values.mal) values.mal = malOptions.find(m => m.value === values.mal).data
 		return onSubmit(values, formikBag)
 	}
+
 	return (
 		<Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={preSubmit}>
 			{formikBag => (
@@ -60,19 +82,24 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 						<FormikTextInput name="antall" label="Antall" type="number" size="medium" />
 					</div>
 					<div className="ny-ident-form_maler">
-						<div className="ny-ident-form_maler_header">
-							<h3>Maler</h3>
-							<DollyCheckbox name="aktiver-maler" onChange={toggleMalAktiv} label="Vis" isSwitch />
+						<div>
+							<StyledH3>Opprett fra mal</StyledH3>
+							<DollyCheckbox
+								name="aktiver-maler"
+								onChange={() => handleMalChange(formikBag)}
+								label="Vis"
+								isSwitch
+							/>
 						</div>
 
-						<div>
+						<InputDiv>
 							<DollySelect
 								name="zIdent"
 								label="Bruker"
 								isLoading={state.loading}
 								options={zIdentOptions}
 								size="medium"
-								onChange={e => setZIdent(e.value)}
+								onChange={e => handleBrukerChange(e, formikBag)}
 								value={zIdent}
 								isClearable={false}
 								disabled={!malAktiv}
@@ -86,7 +113,7 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 								fastfield={false}
 								disabled={!malAktiv}
 							/>
-						</div>
+						</InputDiv>
 						<div className="mal-admin">
 							<Button kind="maler" onClick={() => {}}>
 								<NavLink to="/minside">Administrer maler</NavLink>
