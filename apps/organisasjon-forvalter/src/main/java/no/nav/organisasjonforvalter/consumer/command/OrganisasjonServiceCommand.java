@@ -5,7 +5,6 @@ import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.UUID;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
@@ -23,8 +22,6 @@ public class OrganisasjonServiceCommand implements Callable<OrganisasjonDTO> {
     public OrganisasjonDTO call() {
         return webClient.get()
                 .uri(STATUS_URL.replace("{orgnummer}", orgnummer))
-                .header("Nav-Consumer-Id", "Testnorge")
-                .header("Nav-Call-Id", UUID.randomUUID().toString())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(MILJOE, miljoe)
                 .retrieve()
