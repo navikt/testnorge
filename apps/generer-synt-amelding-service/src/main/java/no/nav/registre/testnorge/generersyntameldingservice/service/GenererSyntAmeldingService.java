@@ -43,7 +43,7 @@ public class GenererSyntAmeldingService {
         return Collections.singletonList(new ArbeidsforholdDTO(initialAmelding));
     }
 
-    private int getAntallEndringer(LocalDate startdato, LocalDate sluttdato) {
+    int getAntallEndringer(LocalDate startdato, LocalDate sluttdato) {
         int antallEndringer = 0;
         while (startdato.isBefore(sluttdato.plusDays(1))) {
             antallEndringer += 1;
