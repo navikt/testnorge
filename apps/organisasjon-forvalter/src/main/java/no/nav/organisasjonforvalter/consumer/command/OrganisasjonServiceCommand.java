@@ -15,7 +15,7 @@ public class OrganisasjonServiceCommand implements Callable<OrganisasjonDTO> {
 
     private final WebClient webClient;
     private final String orgnummer;
-    private final String miljoe;
+    private final String environment;
     private final String token;
 
     @Override
@@ -24,7 +24,7 @@ public class OrganisasjonServiceCommand implements Callable<OrganisasjonDTO> {
         return webClient.get()
                 .uri(STATUS_URL.replace("{orgnummer}", orgnummer))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header(MILJOE, miljoe)
+                .header(MILJOE, environment)
                 .retrieve()
                 .bodyToMono(OrganisasjonDTO.class)
                 .block();

@@ -17,6 +17,7 @@ import java.util.stream.Stream;
 
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
+import static java.util.Objects.requireNonNull;
 
 @Slf4j
 @Service
@@ -49,7 +50,7 @@ public class OrganisasjonBestillingConsumer {
 
         } catch (WebClientResponseException e) {
             log.error(e.getMessage(), e);
-            throw new HttpClientErrorException(e.getStatusCode(), e.getMessage());
+            throw new HttpClientErrorException(e.getStatusCode(), requireNonNull(e.getMessage()));
 
         } catch (RuntimeException e) {
 
