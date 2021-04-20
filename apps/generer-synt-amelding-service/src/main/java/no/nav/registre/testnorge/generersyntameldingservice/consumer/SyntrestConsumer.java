@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.generersyntameldingservice.consumer;
 
 import java.util.List;
+import javax.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -26,7 +27,6 @@ public class SyntrestConsumer {
     }
 
     public Arbeidsforhold getEnkeltArbeidsforhold(ArbeidsforholdPeriode periode, String arbeidsforholdType){
-
         return new PostArbeidsforholdCommand(periode, webClient, getArbeidsforholdTypePathValue(arbeidsforholdType)).call();
     }
 
@@ -41,6 +41,6 @@ public class SyntrestConsumer {
         }else if (arbeidsforholdType.contains(MARITIMT_PATH_VALUE)){
             return MARITIMT_PATH_VALUE;
         }
-        return "";
+        throw new ValidationException("Invalid arbeidsforhold type: " + arbeidsforholdType);
     }
 }
