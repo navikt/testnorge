@@ -9,3 +9,7 @@ spring:
     description: App for å generere syntetiske ameldinger.
     cluster: dev-gcp
     namespace: dolly
+
+syntrest:
+  rest-api:
+    url: https://syntrest.dev.intern.nav.no/api

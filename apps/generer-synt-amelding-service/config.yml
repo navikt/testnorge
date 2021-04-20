@@ -19,6 +19,10 @@ spec:
           cluster: dev-fss
         - application: testnorge-oversikt-frontend
           cluster: dev-fss
+    outbound:
+      rules:
+        - application: syntrest
+          cluster: dev-fss
   azure:
     application:
       enabled: true
