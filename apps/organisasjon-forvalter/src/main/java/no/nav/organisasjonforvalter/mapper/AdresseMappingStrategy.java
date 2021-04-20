@@ -3,10 +3,11 @@ package no.nav.organisasjonforvalter.mapper;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.organisasjonforvalter.consumer.TpsfAdresseConsumer.GyldigeAdresserResponse.AdresseData;
+import no.nav.organisasjonforvalter.dto.requests.BestillingRequest.AdresseRequest;
+import no.nav.organisasjonforvalter.dto.responses.AdresseResponse;
+import no.nav.organisasjonforvalter.dto.responses.PdlAdresseResponse;
+import no.nav.organisasjonforvalter.dto.responses.RsAdresse;
 import no.nav.organisasjonforvalter.jpa.entity.Adresse;
-import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest.AdresseRequest;
-import no.nav.organisasjonforvalter.provider.rs.responses.RsAdresse;
 import no.nav.registre.testnorge.libs.dto.organisasjon.v1.AdresseDTO;
 import org.springframework.stereotype.Component;
 
@@ -19,11 +20,6 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 public class AdresseMappingStrategy implements MappingStrategy {
 
     private static final String NORGE = "NO";
-
-    private static String fixHusnummer(String husnummer) {
-        // Remove leading zeros
-        return husnummer.replaceAll("^0+(?!$)", "");
-    }
 
     @Override
     public void register(MapperFactory factory) {
@@ -46,14 +42,17 @@ public class AdresseMappingStrategy implements MappingStrategy {
                 .byDefault()
                 .register();
 
-        factory.classMap(AdresseData.class, AdresseRequest.class)
+        factory.classMap(AdresseResponse.class, AdresseRequest.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(AdresseData adresse, AdresseRequest request, MappingContext context) {
+                    public void mapAtoB(AdresseResponse adresse, AdresseRequest request, MappingContext context) {
 
-                        request.getAdresselinjer().add(String.format("%s %s", adresse.getAdrnavn(), fixHusnummer(adresse.getHusnrfra())));
-                        request.setPostnr(adresse.getPnr());
-                        request.setKommunenr(adresse.getKnr());
+                        PdlAdresseResponse.Vegadresse vegadresse = adresse.getVegadresser().stream().findFirst().get();
+                        request.setVegadresseId(vegadresse.getMatrikkelId());
+                        request.getAdresselinjer().add(String.format("%s %d", vegadresse.getAdressenavn(),
+                                vegadresse.getHusnummer()));
+                        request.setPostnr(vegadresse.getPostnummer());
+                        request.setKommunenr(vegadresse.getKommunenummer());
                         request.setLandkode(NORGE);
                     }
                 })

@@ -6,10 +6,10 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.organisasjonforvalter.consumer.OrganisasjonBestillingStatusConsumer;
-import no.nav.organisasjonforvalter.consumer.OrganisasjonBestillingStatusConsumer.ItemDto;
-import no.nav.organisasjonforvalter.provider.rs.responses.DeployResponse.EnvStatus;
-import no.nav.organisasjonforvalter.provider.rs.responses.DeployResponse.Status;
+import no.nav.organisasjonforvalter.consumer.OrganisasjonBestillingConsumer;
+import no.nav.organisasjonforvalter.dto.responses.DeployResponse.EnvStatus;
+import no.nav.organisasjonforvalter.dto.responses.DeployResponse.Status;
+import no.nav.organisasjonforvalter.dto.responses.ItemDto;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -19,9 +19,9 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
-import static no.nav.organisasjonforvalter.consumer.OrganisasjonBestillingStatusConsumer.ItemStatus.COMPLETED;
-import static no.nav.organisasjonforvalter.consumer.OrganisasjonBestillingStatusConsumer.ItemStatus.ERROR;
-import static no.nav.organisasjonforvalter.consumer.OrganisasjonBestillingStatusConsumer.ItemStatus.FAILED;
+import static no.nav.organisasjonforvalter.dto.responses.ItemDto.ItemStatus.COMPLETED;
+import static no.nav.organisasjonforvalter.dto.responses.ItemDto.ItemStatus.ERROR;
+import static no.nav.organisasjonforvalter.dto.responses.ItemDto.ItemStatus.FAILED;
 
 @Slf4j
 @Service
@@ -31,7 +31,7 @@ public class DeployStatusService {
     private static final long MAX_TIMEOUT_NO_PROGRESS = 1000L * 60 * 3;
     private static final long SLEEP_TIME_MS = 10000L;
 
-    private final OrganisasjonBestillingStatusConsumer bestillingStatusConsumer;
+    private final OrganisasjonBestillingConsumer bestillingStatusConsumer;
 
     private static boolean isDone(List<ItemDto> items) {
 

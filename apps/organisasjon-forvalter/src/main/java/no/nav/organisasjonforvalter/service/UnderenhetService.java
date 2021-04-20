@@ -1,9 +1,9 @@
 package no.nav.organisasjonforvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.organisasjonforvalter.dto.responses.UnderenhetResponse;
 import no.nav.organisasjonforvalter.jpa.entity.Organisasjon;
 import no.nav.organisasjonforvalter.jpa.repository.OrganisasjonRepository;
-import no.nav.organisasjonforvalter.provider.rs.responses.UnderenhetResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
