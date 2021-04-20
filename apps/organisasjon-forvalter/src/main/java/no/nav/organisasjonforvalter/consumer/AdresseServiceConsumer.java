@@ -38,7 +38,7 @@ public class AdresseServiceConsumer {
         return AdresseResponse.builder()
                 .vegadresser(List.of(
                         PdlAdresseResponse.Vegadresse.builder()
-                                .matrikkelId(null)
+                                .matrikkelId("285693617")
                                 .adressenavn("FYRSTIKKALLÉEN")
                                 .postnummer("0661")
                                 .husnummer(1)
