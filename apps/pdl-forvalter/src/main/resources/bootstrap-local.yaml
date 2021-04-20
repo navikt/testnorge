@@ -10,12 +10,16 @@ spring:
       read-timeout: 30000
       generic:
         enabled: false
+      database:
+        backend: postgresql/preprod-fss
+        enabled: true
+        role: pdl-forvalter-test-admin
   flyway:
     enabled: true # Disabled by default as you should probably think twice before running Flyway-migrations
     locations: classpath:db/migration
     baseline-on-migrate: true
   datasource:
-    url: jdbc:postgresql://b27dbvl024.preprod.local:5432/pdl-forvalter-test
+    url: jdbc:postgresql://dev-pg.intern.nav.no:5432/pdl-forvalter-test?gssEncMode=disable
     hikari:
       maximum-pool-size: 3
       minimum-idle: 1
@@ -24,9 +28,25 @@ spring:
     properties:
       hibernate:
         default-schema: public
+        dialect: no.nav.pdl.forvalter.domain.entity.PostgreSQLDialectExtended
   security:
     oauth2:
       resourceserver:
         jwt:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+#  h2:
+#    console:
+#      enabled: true
+#      path: /h2
+#  flyway:
+#    enabled: true
+#  datasource:
+#    url: jdbc:h2:mem:testdb?useUnicode=yes&characterEncoding=UTF-8
+#    username: sa
+#    password:
+#    driverClassName: org.h2.Driver
+#  jpa:
+#    properties:
+#      hibernate:
+#        dialect: no.nav.pdl.forvalter.domain.entity.H2DialectExtended

@@ -1,7 +1,17 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
 consumers:
-  pdl-services:
+  adresse-service:
+    url: https://testnav-adresse-service.dev-fss-pub.nais.io
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-adresse-service
+  genener-navn-service:
+    url: https://generer-navn-service.dev.intern.nav.no
+    cluster: dev-gcp
+    namespace: dolly
+    name: generer-navn-service
+  pdl-service:
     url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
     namespace: dolly

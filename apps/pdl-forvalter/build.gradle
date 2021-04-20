@@ -35,7 +35,7 @@ dependencies {
     implementation 'org.aspectj:aspectjweaver:1.9.6'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
 
-    implementation 'com.zaxxer:HikariCP'
+    implementation 'com.h2database:h2:1.4.200'
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.postgresql:postgresql'
 

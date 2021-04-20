@@ -3,7 +3,9 @@ package no.nav.pdl.forvalter.provider;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import no.nav.pdl.forvalter.domain.entity.DbPerson;
 import no.nav.pdl.forvalter.dto.BestillingRequest;
+import no.nav.pdl.forvalter.dto.PersonUpdateRequest;
 import no.nav.pdl.forvalter.service.PersonService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,7 +39,7 @@ public class PersonController {
 
     @PutMapping(value = "/{ident}")
     @Operation(description = "Endre, legg-til på person")
-    public JsonNode updatePerson(@PathVariable String ident, @RequestBody BestillingRequest request) {
+    public DbPerson updatePerson(@PathVariable String ident, @RequestBody PersonUpdateRequest request) {
 
         return personService.updatePerson(ident, request);
     }

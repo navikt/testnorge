@@ -6,6 +6,6 @@ import org.springframework.context.annotation.Configuration;
 
 
 @Configuration
-@ConfigurationProperties(prefix = "consumers.pdl-service")
-public class PdlServiceProperties extends NaisServerProperties {
+@ConfigurationProperties(prefix = "consumers.adresse-service")
+public class AdresseServiceProperties extends NaisServerProperties {
 }

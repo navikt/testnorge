@@ -1,36 +1,35 @@
 package no.nav.pdl.forvalter.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import no.nav.pdl.forvalter.dto.BestillingRequest;
-import no.nav.pdl.forvalter.dto.PdlPerson;
+import lombok.extern.slf4j.Slf4j;
+import ma.glasnost.orika.MapperFacade;
+import no.nav.pdl.forvalter.domain.PdlPerson;
+import no.nav.pdl.forvalter.domain.entity.DbPerson;
+import no.nav.pdl.forvalter.dto.PersonUpdateRequest;
 import no.nav.pdl.forvalter.repository.PersonRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PersonService {
 
     private final PersonRepository personRepository;
-    private final ObjectMapper objectMapper;
+    private final MapperFacade mapperFacade;
 
-    public JsonNode updatePerson(String ident, BestillingRequest request){
+    public DbPerson updatePerson(String ident, PersonUpdateRequest request) {
 
-        var person = personRepository.findByIdent(ident);
+        var dbPerson = personRepository.findByIdent(ident)
+                .orElse(DbPerson.builder()
+                        .ident(ident)
+                        .person(new PdlPerson())
+                        .build());
 
-        if (person.isPresent()) {
-            try {
-                var pdlPerson = objectMapper.readValue(person.get().getBody(), PdlPerson.class);
+        dbPerson.setPerson(new MergeService(request.getPdlPerson(), dbPerson.getPerson(), mapperFacade).call());
+        dbPerson.setUpdated(LocalDateTime.now());
 
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-
-        }
-
-
-        return null;
+        return personRepository.save(dbPerson);
     }
 }

@@ -1,0 +1,16 @@
+package no.nav.pdl.forvalter.dto;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import no.nav.pdl.forvalter.domain.PdlPerson;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class PersonUpdateRequest {
+
+    private PdlPerson pdlPerson;
+}
