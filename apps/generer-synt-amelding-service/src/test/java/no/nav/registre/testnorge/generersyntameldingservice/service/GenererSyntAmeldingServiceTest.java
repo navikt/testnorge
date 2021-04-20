@@ -16,7 +16,7 @@ public class GenererSyntAmeldingServiceTest {
     private GenererSyntAmeldingService service;
 
     @Test
-    public void shouldGetCorrectAntallMeldinger() {
+    public void shouldGetCorrectAntallEndringer() {
         assertThat(service.getAntallEndringer(LocalDate.now(), LocalDate.now().plusDays(7))).isEqualTo(1);
         assertThat(service.getAntallEndringer(LocalDate.now(), LocalDate.now().minusDays(7))).isZero();
         assertThat(service.getAntallEndringer(LocalDate.now(), LocalDate.now().plusYears(1))).isEqualTo(13);
