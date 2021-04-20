@@ -44,7 +44,7 @@ public class GenererOpplysningspliktigService {
         }
 
 
-        if(organisasjoner.isEmpty()){
+        if (organisasjoner.isEmpty()) {
             throw new RuntimeException("Klarer ikke å opprette organisasjoner.");
         }
 
@@ -69,6 +69,7 @@ public class GenererOpplysningspliktigService {
         var organisasjon = new Organisasjon();
         organisasjon.setName(navn.getAdjektiv() + " " + navn.getSubstantiv() + (enhetstype.equals("AS") ? " AS" : ""));
         organisasjon.setOrgnummer(orgnummer);
+        organisasjon.setEnhetstype(enhetstype);
         return organisasjon;
     }
 
