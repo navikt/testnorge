@@ -13,5 +13,5 @@ import java.util.List;
 @AllArgsConstructor
 public class AdresseResponse {
 
-    private List<PdlAdresseResponse.Vegadresse> vegadresser;
+    private List<PdlVegAdresse> vegadresser;
 }

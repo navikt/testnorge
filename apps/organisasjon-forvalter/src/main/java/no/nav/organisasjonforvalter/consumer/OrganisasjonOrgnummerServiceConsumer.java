@@ -3,7 +3,6 @@ package no.nav.organisasjonforvalter.consumer;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.organisasjonforvalter.config.credentials.OrganisasjonOrgnummerServiceProperties;
 import no.nav.organisasjonforvalter.consumer.command.OrganisasjonOrgnummerServiceCommand;
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -41,8 +40,8 @@ public class OrganisasjonOrgnummerServiceConsumer {
 
         long startTime = currentTimeMillis();
         try {
-            AccessToken accessToken = accessTokenService.generateToken(serviceProperties);
-            String[] response = new OrganisasjonOrgnummerServiceCommand(webClient, antall, accessToken.getTokenValue()).call();
+            var accessToken = accessTokenService.generateToken(serviceProperties);
+            var response = new OrganisasjonOrgnummerServiceCommand(webClient, antall, accessToken.getTokenValue()).call();
 
             log.info("Orgnummer-service svarte etter {} ms", currentTimeMillis() - startTime);
 
@@ -61,7 +60,7 @@ public class OrganisasjonOrgnummerServiceConsumer {
 
     public String getOrgnummer() {
 
-        List<String> orgnummer = getOrgnummer(1);
+        var orgnummer = getOrgnummer(1);
         return orgnummer.isEmpty() ? null : orgnummer.get(0);
     }
 }

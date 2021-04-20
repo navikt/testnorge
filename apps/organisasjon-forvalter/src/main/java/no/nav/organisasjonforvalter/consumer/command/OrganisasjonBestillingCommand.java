@@ -18,6 +18,7 @@ public class OrganisasjonBestillingCommand implements Callable<ItemDto[]> {
 
     @Override
     public ItemDto[] call()  {
+
         return webClient.get()
                 .uri(STATUS_URL.replace("{uuid}", uuid))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)

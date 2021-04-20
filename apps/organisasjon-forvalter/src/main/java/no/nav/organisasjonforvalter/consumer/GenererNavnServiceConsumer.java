@@ -3,8 +3,6 @@ package no.nav.organisasjonforvalter.consumer;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.organisasjonforvalter.config.credentials.GenererNavnServiceProperties;
 import no.nav.registre.testnorge.libs.common.command.generernavnservice.v1.GenererNavnCommand;
-import no.nav.registre.testnorge.libs.dto.generernavnservice.v1.NavnDTO;
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -42,8 +40,8 @@ public class GenererNavnServiceConsumer {
 
         long startTime = currentTimeMillis();
         try {
-            AccessToken accessToken = accessTokenService.generateToken(serviceProperties);
-            NavnDTO[] navn = new GenererNavnCommand(webClient, accessToken.getTokenValue(), antall).call();
+            var accessToken = accessTokenService.generateToken(serviceProperties);
+            var navn = new GenererNavnCommand(webClient, accessToken.getTokenValue(), antall).call();
 
             log.info("Generer-navn-service svarte etter {} ms", currentTimeMillis() - startTime);
             return Arrays.stream(navn)

@@ -3,7 +3,6 @@ package no.nav.organisasjonforvalter.consumer;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.organisasjonforvalter.config.credentials.MiljoerServiceProperties;
 import no.nav.organisasjonforvalter.consumer.command.MiljoerServiceCommand;
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -36,8 +35,8 @@ public class MiljoerServiceConsumer {
     public Set<String> getOrgMiljoer() {
 
         try {
-            AccessToken accessToken = accessTokenService.generateToken(serviceProperties);
-            String[] response = new MiljoerServiceCommand(webClient, accessToken.getTokenValue()).call();
+            var accessToken = accessTokenService.generateToken(serviceProperties);
+            var response = new MiljoerServiceCommand(webClient, accessToken.getTokenValue()).call();
 
             return Stream.of(response)
                             .filter(env -> !env.equals("u5") && !env.equals("qx"))

@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.organisasjonforvalter.config.credentials.OrganisasjonBestillingServiceProperties;
 import no.nav.organisasjonforvalter.consumer.command.OrganisasjonBestillingCommand;
 import no.nav.organisasjonforvalter.dto.responses.ItemDto;
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -42,8 +41,8 @@ public class OrganisasjonBestillingConsumer {
 
         long startTime = currentTimeMillis();
         try {
-            AccessToken accessToken = accessTokenService.generateToken(serviceProperties);
-            ItemDto[] response =
+            var accessToken = accessTokenService.generateToken(serviceProperties);
+            var response =
                     new OrganisasjonBestillingCommand(webClient, uuid, accessToken.getTokenValue()).call();
 
             return Stream.of(response).collect(Collectors.toList());
@@ -54,7 +53,7 @@ public class OrganisasjonBestillingConsumer {
 
         } catch (RuntimeException e) {
 
-            String error = format("Organisasjon-Bestilling-Service svarte ikke etter %d ms", currentTimeMillis() - startTime);
+            var error = format("Organisasjon-Bestilling-Service svarte ikke etter %d ms", currentTimeMillis() - startTime);
             log.error(error, e);
             throw new HttpClientErrorException(HttpStatus.GATEWAY_TIMEOUT, error);
         }

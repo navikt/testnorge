@@ -4,8 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.organisasjonforvalter.config.credentials.AdresseServiceProperties;
 import no.nav.organisasjonforvalter.consumer.command.AdresseServiceCommand;
 import no.nav.organisasjonforvalter.dto.responses.AdresseResponse;
-import no.nav.organisasjonforvalter.dto.responses.PdlAdresseResponse;
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
+import no.nav.organisasjonforvalter.dto.responses.PdlVegAdresse;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -37,7 +36,7 @@ public class AdresseServiceConsumer {
 
         return AdresseResponse.builder()
                 .vegadresser(List.of(
-                        PdlAdresseResponse.Vegadresse.builder()
+                        PdlVegAdresse.builder()
                                 .matrikkelId("285693617")
                                 .adressenavn("FYRSTIKKALLÉEN")
                                 .postnummer("0661")
@@ -52,8 +51,8 @@ public class AdresseServiceConsumer {
         long startTime = currentTimeMillis();
 
         try {
-            AccessToken accessToken = accessTokenService.generateToken(serviceProperties);
-            AdresseResponse adresseResponse =
+            var accessToken = accessTokenService.generateToken(serviceProperties);
+            var adresseResponse =
                     new AdresseServiceCommand(webClient, postnr, kommunenr, accessToken.getTokenValue()).call();
 
             log.info("Adresseoppslag tok {} ms", currentTimeMillis() - startTime);

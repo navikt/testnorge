@@ -20,6 +20,7 @@ public class OrganisasjonServiceCommand implements Callable<OrganisasjonDTO> {
 
     @Override
     public OrganisasjonDTO call() {
+
         return webClient.get()
                 .uri(STATUS_URL.replace("{orgnummer}", orgnummer))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)

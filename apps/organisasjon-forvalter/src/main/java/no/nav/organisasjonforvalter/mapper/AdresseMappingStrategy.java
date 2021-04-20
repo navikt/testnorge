@@ -5,7 +5,6 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.organisasjonforvalter.dto.requests.BestillingRequest.AdresseRequest;
 import no.nav.organisasjonforvalter.dto.responses.AdresseResponse;
-import no.nav.organisasjonforvalter.dto.responses.PdlAdresseResponse;
 import no.nav.organisasjonforvalter.dto.responses.RsAdresse;
 import no.nav.organisasjonforvalter.jpa.entity.Adresse;
 import no.nav.registre.testnorge.libs.dto.organisasjon.v1.AdresseDTO;
@@ -27,6 +26,7 @@ public class AdresseMappingStrategy implements MappingStrategy {
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(AdresseRequest request, Adresse adresse, MappingContext context) {
+
                         adresse.setAdresse(String.join(",", request.getAdresselinjer()));
                     }
                 })
@@ -36,6 +36,7 @@ public class AdresseMappingStrategy implements MappingStrategy {
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(Adresse adresse, RsAdresse rsAdresse, MappingContext context) {
+
                         rsAdresse.setAdresselinjer(List.of(adresse.getAdresse().split(",")));
                     }
                 })
@@ -47,7 +48,7 @@ public class AdresseMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(AdresseResponse adresse, AdresseRequest request, MappingContext context) {
 
-                        PdlAdresseResponse.Vegadresse vegadresse = adresse.getVegadresser().stream().findFirst().get();
+                        var vegadresse = adresse.getVegadresser().stream().findFirst().get();
                         request.setVegadresseId(vegadresse.getMatrikkelId());
                         request.getAdresselinjer().add(String.format("%s %d", vegadresse.getAdressenavn(),
                                 vegadresse.getHusnummer()));
@@ -63,7 +64,8 @@ public class AdresseMappingStrategy implements MappingStrategy {
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(Adresse source, no.nav.registre.testnorge.libs.avro.organisasjon.v1.Adresse target, MappingContext context) {
-                        String[] adresselinjer = source.getAdresse().split(",");
+
+                        var adresselinjer = source.getAdresse().split(",");
                         target.setPostadresse1(adresselinjer.length > 0 ? adresselinjer[0] : null);
                         target.setPostadresse2(adresselinjer.length > 1 ? adresselinjer[1] : null);
                         target.setPostadresse3(adresselinjer.length > 2 ? adresselinjer[2] : null);
@@ -78,7 +80,8 @@ public class AdresseMappingStrategy implements MappingStrategy {
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(AdresseDTO source, RsAdresse target, MappingContext context) {
-                        List<String> adresselinjer = new ArrayList<>();
+
+                        var adresselinjer = new ArrayList<String>();
                         adresselinjer.add(source.getAdresselinje1());
                         if (isNotBlank(source.getAdresselinje2())) {
                             adresselinjer.add(source.getAdresselinje2());
