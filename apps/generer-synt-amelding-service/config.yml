@@ -24,7 +24,7 @@ spec:
           cluster: dev-fss
     outbound:
       external:
-        - host: syntrest.dev.intern.nav.no
+        - host: testnav-syntrest-proxy.dev-fss-pub.nais.io
   azure:
     application:
       enabled: true
