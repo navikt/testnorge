@@ -24,7 +24,7 @@ spec:
           cluster: dev-fss
     outbound:
       external:
-        - host: https://syntrest.dev.intern.nav.no
+        - host: syntrest.dev.intern.nav.no
   azure:
     application:
       enabled: true
