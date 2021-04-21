@@ -2,6 +2,7 @@ name: Deploy generer-synt-amelding-service
 
 on:
   push:
+    branches: master
     paths:
       - apps/generer-synt-amelding-service/**
       - libs/testnorge-core/**
