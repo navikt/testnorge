@@ -54,6 +54,11 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 						)
 					}
 
+					if (bestillingsdata.sykemelding && !isChecked('q1') && !isChecked('q2')) {
+						push('q1')
+						push('q2')
+					}
+
 					return order.map(type => {
 						const category = filteredEnvironments[type]
 						if (!category) return null
