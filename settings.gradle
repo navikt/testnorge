@@ -295,3 +295,7 @@ project(":organisasjon-faste-data-service").projectDir = file('apps/organisasjon
 
 include 'faste-data-frontend'
 project(":faste-data-frontend").projectDir = file('apps/faste-data-frontend')
+
+include 'syntrest-proxy'
+project(":syntrest-proxy").projectDir = file('proxies/syntrest-proxy')
+
