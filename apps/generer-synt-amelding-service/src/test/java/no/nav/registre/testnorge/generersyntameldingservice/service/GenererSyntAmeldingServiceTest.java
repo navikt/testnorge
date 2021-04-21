@@ -16,11 +16,11 @@ public class GenererSyntAmeldingServiceTest {
     private GenererSyntAmeldingService service;
 
     @Test
-    public void shouldGetCorrectAntallEndringer() {
-        assertThat(service.getAntallEndringer(LocalDate.now(), LocalDate.now().plusDays(7))).isEqualTo(1);
-        assertThat(service.getAntallEndringer(LocalDate.now(), LocalDate.now().minusDays(7))).isZero();
-        assertThat(service.getAntallEndringer(LocalDate.now(), LocalDate.now().plusYears(1))).isEqualTo(13);
-        assertThat(service.getAntallEndringer(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 10, 15))).isEqualTo(10);
-        assertThat(service.getAntallEndringer(LocalDate.of(2020, 1, 1), LocalDate.of(2021, 7, 23))).isEqualTo(19);
+    public void shouldGetCorrectAntallMeldinger() {
+        assertThat(service.getAntallMeldinger(LocalDate.now(), LocalDate.now().plusDays(7))).isEqualTo(1);
+        assertThat(service.getAntallMeldinger(LocalDate.now(), LocalDate.now().minusDays(7))).isZero();
+        assertThat(service.getAntallMeldinger(LocalDate.now(), LocalDate.now().plusYears(1))).isEqualTo(13);
+        assertThat(service.getAntallMeldinger(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 10, 15))).isEqualTo(10);
+        assertThat(service.getAntallMeldinger(LocalDate.of(2020, 1, 1), LocalDate.of(2021, 7, 23))).isEqualTo(19);
     }
 }

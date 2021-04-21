@@ -22,7 +22,7 @@ public class GenererSyntAmeldingService {
     private final SyntrestConsumer syntrestConsumer;
 
     public List<ArbeidsforholdDTO> generateAmeldinger(SyntAmeldingRequest request) {
-        var antallMeldinger = getAntallEndringer(request.getStartdato(), request.getSluttdato());
+        var antallMeldinger = getAntallMeldinger(request.getStartdato(), request.getSluttdato());
 
         var initialAmelding = syntrestConsumer.getEnkeltArbeidsforhold(
                 ArbeidsforholdPeriode.builder()
@@ -43,13 +43,13 @@ public class GenererSyntAmeldingService {
         return Collections.singletonList(new ArbeidsforholdDTO(initialAmelding));
     }
 
-    int getAntallEndringer(LocalDate startdato, LocalDate sluttdato) {
-        int antallEndringer = 0;
+    int getAntallMeldinger(LocalDate startdato, LocalDate sluttdato) {
+        var antallMeldinger = 0;
         while (startdato.isBefore(sluttdato.plusDays(1))) {
-            antallEndringer += 1;
+            antallMeldinger += 1;
             startdato = startdato.plusMonths(1);
         }
-        return antallEndringer;
+        return antallMeldinger;
     }
 
 }
