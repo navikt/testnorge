@@ -18,8 +18,6 @@ spec:
       rules:
         - application: team-dolly-lokal-app
           cluster: dev-fss
-        - application: testnorge-oversikt-frontend
-          cluster: dev-fss
         - application: testnav-generer-synt-amelding-service
           cluster: dev-gcp
   liveness:
