@@ -38,9 +38,9 @@ spec:
   resources:
     requests:
       cpu: 200m
-      memory: 1025Mi
+      memory: 4000Mi
     limits:
       cpu: 500m
-      memory: 2048Mi
+      memory: 5000Mi
   ingresses:
     - "https://testnav-syntrest-proxy.dev-fss-pub.nais.io"
