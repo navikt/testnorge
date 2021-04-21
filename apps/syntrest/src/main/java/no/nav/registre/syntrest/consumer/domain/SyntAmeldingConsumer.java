@@ -6,9 +6,10 @@ import no.nav.registre.syntrest.consumer.SyntConsumer;
 import no.nav.registre.syntrest.consumer.command.PostArbeidsforholdHistorikkCommand;
 import no.nav.registre.syntrest.consumer.command.PostArbeidsforholdMedTypeCommand;
 import no.nav.registre.syntrest.consumer.command.PostArbeidsforholdStartCommand;
-import no.nav.registre.syntrest.domain.aareg.amelding.ArbeidsforholdAmelding;
-import no.nav.registre.syntrest.domain.aareg.amelding.ArbeidsforholdPeriode;
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
+
+import no.nav.registre.testnorge.domain.dto.aareg.amelding.Arbeidsforhold;
+import no.nav.registre.testnorge.domain.dto.aareg.amelding.ArbeidsforholdPeriode;
 
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -38,7 +39,7 @@ public class SyntAmeldingConsumer extends SyntConsumer {
         this.startSpesifikkPath = this.url.getPath() + "/arbeidsforhold/start/%s";
     }
 
-    public List<ArbeidsforholdAmelding> synthesizeArbeidsforholdStart(
+    public List<Arbeidsforhold> synthesizeArbeidsforholdStart(
             List<String> datoer,
             String queryString
     ) throws ApiException, InterruptedException {
@@ -53,7 +54,7 @@ public class SyntAmeldingConsumer extends SyntConsumer {
         }
     }
 
-    public ArbeidsforholdAmelding synthesizeArbeidsforholdStart(
+    public Arbeidsforhold synthesizeArbeidsforholdStart(
             ArbeidsforholdPeriode request,
             String arbeidsforholdType,
             String queryString
@@ -69,8 +70,8 @@ public class SyntAmeldingConsumer extends SyntConsumer {
         }
     }
 
-    public List<ArbeidsforholdAmelding> synthesizeArbeidsforholdHistorikk(
-            ArbeidsforholdAmelding tidligereArbeidsforhold,
+    public List<Arbeidsforhold> synthesizeArbeidsforholdHistorikk(
+            Arbeidsforhold tidligereArbeidsforhold,
             String queryString
     ) throws ApiException, InterruptedException {
         startApplication();

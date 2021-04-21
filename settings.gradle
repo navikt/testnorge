@@ -221,6 +221,9 @@ project(":endringsmelding-service").projectDir = file('apps/endringsmelding-serv
 include 'generer-navn-service'
 project(":generer-navn-service").projectDir = file('apps/generer-navn-service')
 
+include 'generer-synt-amelding-service'
+project(":generer-synt-amelding-service").projectDir = file('apps/generer-synt-amelding-service')
+
 include 'miljoer-service'
 project(":miljoer-service").projectDir = file('apps/miljoer-service')
 

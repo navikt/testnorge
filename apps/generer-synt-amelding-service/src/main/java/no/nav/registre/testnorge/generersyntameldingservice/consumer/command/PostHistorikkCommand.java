@@ -1,4 +1,4 @@
-package no.nav.registre.syntrest.consumer.command;
+package no.nav.registre.testnorge.generersyntameldingservice.consumer.command;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -12,18 +12,14 @@ import no.nav.registre.testnorge.domain.dto.aareg.amelding.Arbeidsforhold;
 import reactor.core.publisher.Mono;
 
 @Slf4j
-public class PostArbeidsforholdHistorikkCommand implements Callable<List<Arbeidsforhold>> {
+public class PostHistorikkCommand implements Callable<List<Arbeidsforhold>> {
 
     private final WebClient webClient;
     private final Arbeidsforhold arbeidsforhold;
-    private final String syntAmeldingUrlPath;
-    private final String queryString;
 
-    public PostArbeidsforholdHistorikkCommand(Arbeidsforhold arbeidsforhold, String syntAmeldingUrlPath, String queryString, WebClient webClient) {
+    public PostHistorikkCommand(Arbeidsforhold arbeidsforhold, WebClient webClient) {
         this.webClient = webClient;
         this.arbeidsforhold = arbeidsforhold;
-        this.syntAmeldingUrlPath = syntAmeldingUrlPath;
-        this.queryString = queryString;
     }
 
     @Override
@@ -33,8 +29,9 @@ public class PostArbeidsforholdHistorikkCommand implements Callable<List<Arbeids
 
             return webClient.post()
                     .uri(builder -> builder
-                            .path(syntAmeldingUrlPath)
-                            .query(queryString)
+                            .path("/v1/generate/amelding/arbeidsforhold")
+                            .queryParam("avvik", "false")
+                            .queryParam("sluttdato", "false")
                             .build())
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .body(body)
@@ -43,7 +40,7 @@ public class PostArbeidsforholdHistorikkCommand implements Callable<List<Arbeids
                     .collectList()
                     .block();
         } catch (Exception e) {
-            log.error("Unexpected Rest Client Exception.", e);
+            log.error("Unexpected Rest Client Exception: " + e.getMessage());
             throw e;
         }
     }
