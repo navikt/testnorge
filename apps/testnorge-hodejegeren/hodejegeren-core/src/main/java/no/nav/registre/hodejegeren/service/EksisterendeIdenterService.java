@@ -19,7 +19,7 @@ import no.nav.registre.testnorge.libs.core.util.IdentUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -291,7 +291,7 @@ public class EksisterendeIdenterService {
             var statusQuoTilIdent = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_PERSDATA, AKSJONSKODE, miljoe, ident);
             log.trace("Status Quo til identen: {}", statusQuoTilIdent);
             if (statusQuoTilIdent.toString().contains("PERSON IKKE FUNNET")) {
-                throw new HttpClientErrorException(HttpStatus.NOT_FOUND, String.format("Fant ingen personer med ident: %s", ident));
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Fant ingen personer med ident: %s", ident));
             }
             return PersondataResponse.builder()
                     .fnr(statusQuoTilIdent.findValue("fnr").asText())
