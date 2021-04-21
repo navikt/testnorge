@@ -1,11 +1,5 @@
 package no.nav.registre.hodejegeren.service;
 
-import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.DATO_DO;
-import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.NAV_ENHET;
-import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.NAV_ENHET_BESKRIVELSE;
-import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.STATSBORGER;
-import static no.nav.registre.hodejegeren.service.TpsStatusQuoService.AKSJONSKODE;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,6 +7,15 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
+import no.nav.registre.hodejegeren.exception.IdentIOException;
+import no.nav.registre.hodejegeren.exception.ManglendeInfoITpsException;
+import no.nav.registre.hodejegeren.provider.rs.responses.NavEnhetResponse;
+import no.nav.registre.hodejegeren.provider.rs.responses.kontoinfo.KontoinfoResponse;
+import no.nav.registre.hodejegeren.provider.rs.responses.persondata.PersondataResponse;
+import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.Relasjon;
+import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.RelasjonsResponse;
+import no.nav.registre.testnorge.libs.core.util.IdentUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,15 +30,11 @@ import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
-import no.nav.registre.hodejegeren.exception.IdentIOException;
-import no.nav.registre.hodejegeren.exception.ManglendeInfoITpsException;
-import no.nav.registre.hodejegeren.provider.rs.responses.NavEnhetResponse;
-import no.nav.registre.hodejegeren.provider.rs.responses.kontoinfo.KontoinfoResponse;
-import no.nav.registre.hodejegeren.provider.rs.responses.persondata.PersondataResponse;
-import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.Relasjon;
-import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.RelasjonsResponse;
-import no.nav.registre.testnorge.libs.core.util.IdentUtil;
+import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.DATO_DO;
+import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.NAV_ENHET;
+import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.NAV_ENHET_BESKRIVELSE;
+import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.STATSBORGER;
+import static no.nav.registre.hodejegeren.service.TpsStatusQuoService.AKSJONSKODE;
 
 @Service
 @Slf4j
@@ -288,6 +287,7 @@ public class EksisterendeIdenterService {
     ) {
         try {
             var statusQuoTilIdent = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_PERSDATA, AKSJONSKODE, miljoe, ident);
+            log.info("Status Quo til ident: {}", statusQuoTilIdent);
             return PersondataResponse.builder()
                     .fnr(statusQuoTilIdent.findValue("fnr").asText())
                     .kortnavn(statusQuoTilIdent.findValue(KORTNAVN).asText())
@@ -304,7 +304,7 @@ public class EksisterendeIdenterService {
                     .innvandretFra(statusQuoTilIdent.findValue("innvandretFra").asText())
                     .datoInnvandret(statusQuoTilIdent.findValue("datoInnvandret").asText())
                     .build();
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error(STATUS_QUO_FEILMELDING, ident, e);
             throw new IdentIOException("Kunne ikke hente status quo på ident " + ident, e);
         }
