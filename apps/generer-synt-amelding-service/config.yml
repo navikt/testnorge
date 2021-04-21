@@ -23,9 +23,8 @@ spec:
         - application: testnorge-oversikt-frontend
           cluster: dev-fss
     outbound:
-      rules:
-        - application: syntrest
-          cluster: dev-fss
+      external:
+        - host: https://syntrest.dev.intern.nav.no
   azure:
     application:
       enabled: true
