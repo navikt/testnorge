@@ -287,7 +287,7 @@ public class EksisterendeIdenterService {
     ) {
         try {
             var statusQuoTilIdent = tpsStatusQuoService.getInfoOnRoutineName(ROUTINE_PERSDATA, AKSJONSKODE, miljoe, ident);
-            log.info("Status Quo til ident: {}", statusQuoTilIdent);
+            log.info("Status Quo til identen: {}", statusQuoTilIdent);
             return PersondataResponse.builder()
                     .fnr(statusQuoTilIdent.findValue("fnr").asText())
                     .kortnavn(statusQuoTilIdent.findValue(KORTNAVN).asText())
