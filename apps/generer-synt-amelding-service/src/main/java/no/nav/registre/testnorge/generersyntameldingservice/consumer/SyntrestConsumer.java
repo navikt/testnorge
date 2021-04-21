@@ -11,6 +11,7 @@ import no.nav.registre.testnorge.domain.dto.aareg.amelding.ArbeidsforholdPeriode
 import no.nav.registre.testnorge.generersyntameldingservice.config.credentials.SyntrestProperties;
 import no.nav.registre.testnorge.generersyntameldingservice.consumer.command.PostArbeidsforholdCommand;
 import no.nav.registre.testnorge.generersyntameldingservice.consumer.command.PostHistorikkCommand;
+import no.nav.registre.testnorge.generersyntameldingservice.domain.ArbeidsforholdType;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 
@@ -31,7 +32,7 @@ public class SyntrestConsumer {
         this.webClient = WebClient.builder().baseUrl(properties.getUrl()).build();
     }
 
-    public Arbeidsforhold getEnkeltArbeidsforhold(ArbeidsforholdPeriode periode, String arbeidsforholdType) {
+    public Arbeidsforhold getEnkeltArbeidsforhold(ArbeidsforholdPeriode periode, ArbeidsforholdType arbeidsforholdType) {
         var accessToken = accessTokenService.generateToken(properties);
         return new PostArbeidsforholdCommand(periode, webClient, getArbeidsforholdTypePathValue(arbeidsforholdType), accessToken.getTokenValue()).call();
     }
@@ -41,12 +42,12 @@ public class SyntrestConsumer {
         return new PostHistorikkCommand(webClient, arbeidsforhold, accessToken.getTokenValue()).call();
     }
 
-    private String getArbeidsforholdTypePathValue(String arbeidsforholdType) {
-        if (arbeidsforholdType.contains(ORDINAERT_PATH_VALUE)) {
+    private String getArbeidsforholdTypePathValue(ArbeidsforholdType arbeidsforholdType) {
+        if (arbeidsforholdType==ArbeidsforholdType.ordinaertArbeidsforhold) {
             return ORDINAERT_PATH_VALUE;
-        } else if (arbeidsforholdType.contains(MARITIMT_PATH_VALUE)) {
+        } else if (arbeidsforholdType==ArbeidsforholdType.maritimtArbeidsforhold) {
             return MARITIMT_PATH_VALUE;
         }
-        throw new ValidationException("Invalid arbeidsforhold type: " + arbeidsforholdType);
+        throw new ValidationException("No support implemented for arbeidsforhold type: " + arbeidsforholdType.toString());
     }
 }
