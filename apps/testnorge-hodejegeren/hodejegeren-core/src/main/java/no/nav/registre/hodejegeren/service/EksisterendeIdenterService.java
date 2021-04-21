@@ -309,7 +309,7 @@ public class EksisterendeIdenterService {
                     .innvandretFra(statusQuoTilIdent.findValue("innvandretFra").asText())
                     .datoInnvandret(statusQuoTilIdent.findValue("datoInnvandret").asText())
                     .build();
-        } catch (Exception e) {
+        } catch (IOException e) {
             log.error(STATUS_QUO_FEILMELDING, ident, e);
             throw new IdentIOException("Kunne ikke hente status quo på ident " + ident, e);
         }
