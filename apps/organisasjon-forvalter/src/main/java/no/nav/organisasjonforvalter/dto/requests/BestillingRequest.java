@@ -1,4 +1,4 @@
-package no.nav.organisasjonforvalter.provider.rs.requests;
+package no.nav.organisasjonforvalter.dto.requests;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

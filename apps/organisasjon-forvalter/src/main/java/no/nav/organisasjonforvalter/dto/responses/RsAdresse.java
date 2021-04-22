@@ -1,4 +1,4 @@
-package no.nav.organisasjonforvalter.provider.rs.responses;
+package no.nav.organisasjonforvalter.dto.responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

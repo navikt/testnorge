@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.Set;
 
 @Data
 @Builder
@@ -15,6 +14,7 @@ import java.util.Set;
 @NoArgsConstructor(force = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OrganisasjonDTO {
+
     private final String orgnummer;
     private final String enhetType;
     private final String navn;

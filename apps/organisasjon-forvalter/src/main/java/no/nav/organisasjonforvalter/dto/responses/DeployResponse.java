@@ -1,4 +1,4 @@
-package no.nav.organisasjonforvalter.provider.rs.responses;
+package no.nav.organisasjonforvalter.dto.responses;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Objects.isNull;
-import static no.nav.organisasjonforvalter.provider.rs.responses.DeployResponse.Status.ERROR;
-import static no.nav.organisasjonforvalter.provider.rs.responses.DeployResponse.Status.OK;
+import static no.nav.organisasjonforvalter.dto.responses.DeployResponse.Status.ERROR;
+import static no.nav.organisasjonforvalter.dto.responses.DeployResponse.Status.OK;
 
 @Data
 @Builder

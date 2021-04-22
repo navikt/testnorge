@@ -1,17 +1,17 @@
-package no.nav.organisasjonforvalter.provider.rs.responses;
+package no.nav.organisasjonforvalter.dto.responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BestillingResponse {
+public class AdresseResponse {
 
-    private Set<String> orgnummer;
+    private List<PdlVegAdresse> vegadresser;
 }

@@ -1,4 +1,4 @@
-package no.nav.organisasjonforvalter.provider.rs;
+package no.nav.organisasjonforvalter.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

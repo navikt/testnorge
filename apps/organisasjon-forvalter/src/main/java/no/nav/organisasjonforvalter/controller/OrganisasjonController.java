@@ -1,14 +1,14 @@
-package no.nav.organisasjonforvalter.provider.rs;
+package no.nav.organisasjonforvalter.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
-import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest;
-import no.nav.organisasjonforvalter.provider.rs.requests.DeployRequest;
-import no.nav.organisasjonforvalter.provider.rs.responses.BestillingResponse;
-import no.nav.organisasjonforvalter.provider.rs.responses.DeployResponse;
-import no.nav.organisasjonforvalter.provider.rs.responses.RsOrganisasjon;
-import no.nav.organisasjonforvalter.provider.rs.responses.UnderenhetResponse;
+import no.nav.organisasjonforvalter.dto.requests.BestillingRequest;
+import no.nav.organisasjonforvalter.dto.requests.DeployRequest;
+import no.nav.organisasjonforvalter.dto.responses.BestillingResponse;
+import no.nav.organisasjonforvalter.dto.responses.DeployResponse;
+import no.nav.organisasjonforvalter.dto.responses.RsOrganisasjon;
+import no.nav.organisasjonforvalter.dto.responses.UnderenhetResponse;
 import no.nav.organisasjonforvalter.service.BestillingService;
 import no.nav.organisasjonforvalter.service.DeploymentService;
 import no.nav.organisasjonforvalter.service.ImportService;

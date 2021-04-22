@@ -1,4 +1,4 @@
-package no.nav.organisasjonforvalter.provider.rs.requests;
+package no.nav.organisasjonforvalter.dto.requests;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
