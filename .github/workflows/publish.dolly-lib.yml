@@ -12,14 +12,18 @@ jobs:
           node-version: '11.x'
           registry-url: https://npm.pkg.github.com/
           scope: '@navikt'
-      - name: Create image tag
-        run: echo ::set-env name=VERSJON::$(cat package.json | grep version | cut -d\" -f4)
-        working-directory: frontend-libs/dolly-lib/
       - name: Build code
         run: |
           npx tsc --init
           npm ci
           npm run build
+        working-directory: frontend-libs/dolly-lib/
+      - name: Bump version
+        run: |
+          git config --global user.email "dolly@nav.no"
+          git config --global user.name $GITHUB_ACTOR
+          COMMIT_MESSAGE=`git log -1 --pretty=%B`
+          npm version patch -m "%s, $COMMIT_MESSAGE, [skip ci]"
         working-directory: frontend-libs/dolly-lib/
       - name: npm publish
         run: npm publish --access public
