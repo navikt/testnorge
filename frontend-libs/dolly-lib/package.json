@@ -15,5 +15,8 @@
   "license": "MIT",
   "devDependencies": {
     "typescript": "^4.2.4"
+  },
+  "publishConfig": {
+    "registry":"https://npm.pkg.github.com/@navikt"
   }
 }
