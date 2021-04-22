@@ -38,7 +38,7 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: frontend-libs
+          branch: ${{ github.ref }}
       - name: npm publish
         run: npm publish --access public
         working-directory: frontend-libs/dolly-lib/
