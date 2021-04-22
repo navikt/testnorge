@@ -5,7 +5,9 @@
   "main": "build/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc -p ."
+    "build": "tsc -p .",
+    "version": "git add package.json",
+    "postversion": "git push && git push --tags"
   },
   "types": "lib",
   "author": {
@@ -22,5 +24,6 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/navikt/testnorge.git"
-  }
+  },
+
 }
