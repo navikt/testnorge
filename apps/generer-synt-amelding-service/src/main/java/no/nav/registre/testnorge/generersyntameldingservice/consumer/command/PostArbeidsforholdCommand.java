@@ -17,11 +17,13 @@ public class PostArbeidsforholdCommand implements Callable<Arbeidsforhold> {
     private final WebClient webClient;
     private final ArbeidsforholdPeriode periode;
     private final String path;
+    private final String token;
 
-    public PostArbeidsforholdCommand(ArbeidsforholdPeriode periode, WebClient webClient, String arbeidsforholdType) {
+    public PostArbeidsforholdCommand(ArbeidsforholdPeriode periode, WebClient webClient, String arbeidsforholdType, String token) {
         this.webClient = webClient;
         this.periode = periode;
-        this.path = String.format("/v1/generate/amelding/arbeidsforhold/start/%s", arbeidsforholdType);
+        this.token = token;
+        this.path = String.format("/api/v1/generate/amelding/arbeidsforhold/start/%s", arbeidsforholdType);
     }
 
     @Override
@@ -35,6 +37,7 @@ public class PostArbeidsforholdCommand implements Callable<Arbeidsforhold> {
                             .queryParam("avvik", "false")
                             .build())
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .body(body)
                     .retrieve()
                     .bodyToMono(Arbeidsforhold.class)

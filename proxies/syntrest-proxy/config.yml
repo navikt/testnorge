@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: testnav-generer-synt-amelding-service
+  name: testnav-syntrest-proxy
   namespace: dolly
   labels:
     team: dolly
@@ -9,26 +9,17 @@ spec:
   image: {{ image }}
   port: 8080
   webproxy: true
-  tracing:
-    enabled: true
+  azure:
+    application:
+      enabled: true
+      tenant: nav.no
   accessPolicy:
     inbound:
       rules:
         - application: team-dolly-lokal-app
           cluster: dev-fss
-        - application: dolly-frontend
-          cluster: dev-fss
-        - application: dolly-frontend-dev
-          cluster: dev-fss
-        - application: testnorge-oversikt-frontend
-          cluster: dev-fss
-    outbound:
-      external:
-        - host: testnav-syntrest-proxy.dev-fss-pub.nais.io
-  azure:
-    application:
-      enabled: true
-      tenant: nav.no
+        - application: testnav-generer-synt-amelding-service
+          cluster: dev-gcp
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -42,8 +33,6 @@ spec:
   replicas:
     min: 1
     max: 1
-  vault:
-    enabled: true
   resources:
     requests:
       cpu: 200m
@@ -52,4 +41,4 @@ spec:
       cpu: 500m
       memory: 2048Mi
   ingresses:
-    - "https://testnav-generer-synt-amelding-service.dev.intern.nav.no"
+    - "https://testnav-syntrest-proxy.dev-fss-pub.nais.io"
