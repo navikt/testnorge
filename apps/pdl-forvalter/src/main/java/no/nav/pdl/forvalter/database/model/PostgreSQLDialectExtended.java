@@ -1,4 +1,4 @@
-package no.nav.pdl.forvalter.domain.entity;
+package no.nav.pdl.forvalter.database.model;
 
 import org.hibernate.dialect.PostgreSQL10Dialect;
 

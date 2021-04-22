@@ -3,7 +3,7 @@ package no.nav.pdl.forvalter.provider;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import no.nav.pdl.forvalter.domain.entity.DbPerson;
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.dto.BestillingRequest;
 import no.nav.pdl.forvalter.dto.PersonUpdateRequest;
 import no.nav.pdl.forvalter.service.PersonService;
@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PersonController {
 
     private final PersonService personService;
+    private final PdlOrdreService pdlOrdreService;
 
     @GetMapping(value = "/{ident}")
     @Operation(description = "Hent person")
@@ -46,15 +47,15 @@ public class PersonController {
 
     @DeleteMapping(value = "/{ident}")
     @Operation(description = "Slett person")
-    public JsonNode deletePerson(@PathVariable String ident) {
+    public void deletePerson(@PathVariable String ident) {
 
-        return null;
+        personService.deletePerson(ident);
     }
 
     @PostMapping(value = "/{ident}/ordre")
     @Operation(description = "Send person til PDL (ordre)")
     public JsonNode createPerson(@PathVariable String ident) {
 
-        return null;
+        return pdlOrdreService.sendTilPdl(ident);
     }
 }

@@ -2,7 +2,7 @@ package no.nav.pdl.forvalter.consumer;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import no.nav.pdl.forvalter.config.credentials.AdresseServiceProperties;
-import no.nav.pdl.forvalter.consumer.command.PdlTestdataCommand;
+import no.nav.pdl.forvalter.consumer.command.AdresseServiceCommand;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import org.springframework.stereotype.Service;
@@ -26,6 +26,6 @@ public class AddressServiceConsumer {
 
     public JsonNode sendPdlAdresseSoek(String url, String ident, Object body) {
         var accessToken = accessTokenService.generateToken(properties);
-        return new PdlTestdataCommand(webClient, url, ident, body, accessToken.getTokenValue()).call();
+        return new AdresseServiceCommand(webClient, url, body, accessToken.getTokenValue()).call();
     }
 }

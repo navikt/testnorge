@@ -1,6 +1,6 @@
 package no.nav.pdl.forvalter.domain;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonFilter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,8 +12,8 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class PdlDbVersjon implements Serializable {
+@JsonFilter("filterId")
+public abstract class PdlDbVersjon implements Serializable {
 
     private Integer id;
 }

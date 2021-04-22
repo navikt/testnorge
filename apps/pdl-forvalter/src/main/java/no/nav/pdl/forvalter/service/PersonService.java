@@ -3,10 +3,10 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.pdl.forvalter.database.model.DbPerson;
+import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.domain.PdlPerson;
-import no.nav.pdl.forvalter.domain.entity.DbPerson;
 import no.nav.pdl.forvalter.dto.PersonUpdateRequest;
-import no.nav.pdl.forvalter.repository.PersonRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -31,5 +31,10 @@ public class PersonService {
         dbPerson.setUpdated(LocalDateTime.now());
 
         return personRepository.save(dbPerson);
+    }
+
+    public void deletePerson(String ident) {
+
+        personRepository.deleteByIdent(ident);
     }
 }
