@@ -2,6 +2,7 @@ package no.nav.registre.testnorge.mn.syntarbeidsforholdservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -9,32 +10,28 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.MNOrganisasjonConsumer;
+import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.GenererOrganisasjonPopulasjonConsumer;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.OppsummeringsdokumentConsumer;
+import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.OrganisasjonConsumer;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Opplysningspliktig;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Organisajon;
-import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.exception.MNOrganisasjonException;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class OpplysningspliktigService {
     private final OppsummeringsdokumentConsumer oppsummeringsdokumentConsumer;
-    private final MNOrganisasjonConsumer organisasjonConsumer;
+    private final OrganisasjonConsumer organisasjonConssumer;
+    private final GenererOrganisasjonPopulasjonConsumer genererOrganisasjonPopulasjonConsumer;
 
-
-    private List<Organisajon> getOpplysningspliktigeorganisasjoner(String miljo) {
-        List<Organisajon> organisajoner = organisasjonConsumer
-                .getOrganisajoner(miljo)
+    public List<Organisajon> getOpplysningspliktigeOrganisasjoner(String miljo) {
+        var opplysningspliktigOrgnummer = genererOrganisasjonPopulasjonConsumer.getOpplysningspliktig(miljo);
+        return organisasjonConssumer
+                .getOrganisasjoner(opplysningspliktigOrgnummer, miljo)
                 .stream()
-                .filter(Organisajon::isOpplysningspliktig)
-                .filter(Organisajon::isDriverVirksomheter)
+                .filter(value -> !value.getDriverVirksomheter().isEmpty())
+                .map(Organisajon::new)
                 .collect(Collectors.toList());
-
-        if (organisajoner.isEmpty()) {
-            throw new MNOrganisasjonException("Fant ingen opplysningspliktige i Mini-Norge som driver virksomheter.");
-        }
-        return organisajoner;
     }
 
     private Opplysningspliktig getOpplysningspliktig(Organisajon organisajon, LocalDate kalendermaaned, String miljo) {
@@ -49,7 +46,7 @@ public class OpplysningspliktigService {
     }
 
     public List<Opplysningspliktig> getAllOpplysningspliktig(LocalDate kalendermaaned, String miljo) {
-        var list = getOpplysningspliktigeorganisasjoner(miljo);
+        var list = getOpplysningspliktigeOrganisasjoner(miljo);
         log.info("Fant {} opplysningspliktig i Mini-Norge Ereg.", list.stream().map(Organisajon::getOrgnummer).collect(Collectors.joining(", ")));
         return list.stream().map(organisajon -> getOpplysningspliktig(organisajon, kalendermaaned, miljo)).collect(Collectors.toList());
     }

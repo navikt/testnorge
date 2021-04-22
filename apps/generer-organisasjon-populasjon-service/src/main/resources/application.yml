@@ -1,0 +1,27 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+spring:
+  application:
+    name: testnav-generer-organisasjon-populasjon-service
+    description: Tjeneste for å opprette organisasjon-populasjon
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+
+kafka:
+  groupid: generer-organisasjon-populasjon-service-v1
+
+consumers:
+  generer-navn-service:
+    url: http://generer-navn-service.dolly.svc.cluster.local
+    cluster: dev-gcp
+    namespace: dolly
+    name: generer-navn-service
+  organisasjon-orgnummer-service:
+    url: https://organisasjon-orgnummer-service.dev-fss-pub.nais.io
+    cluster: dev-fss
+    namespace: dolly
+    name: organisasjon-orgnummer-service

@@ -22,20 +22,22 @@ public class GetOrganisasjonCommand implements Callable<OrganisasjonDTO> {
 
     @Override
     public OrganisasjonDTO call() {
-        log.info("Henter organisasjon med orgnummer {}.", orgnummer);
+        log.info("Henter organisasjon med orgnummer {} fra {}...", orgnummer, miljo);
         try {
-            return webClient
+            var organiasjon = webClient
                     .get()
                     .uri(builder -> builder
                             .path("/api/v1/organisasjoner/{orgnummer}")
                             .build(orgnummer)
                     )
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                    .header("miljo", miljo)
+                    .header("miljo", this.miljo)
                     .retrieve()
                     .bodyToMono(OrganisasjonDTO.class)
-                    .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(3)))
+                    .retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(3)))
                     .block();
+            log.info("Organisasjon {} hentet fra {}.", orgnummer, miljo);
+            return organiasjon;
         } catch (WebClientResponseException.NotFound e) {
             log.warn("Organisasjon med orgnummer {} ikke funnet.", orgnummer);
             return null;

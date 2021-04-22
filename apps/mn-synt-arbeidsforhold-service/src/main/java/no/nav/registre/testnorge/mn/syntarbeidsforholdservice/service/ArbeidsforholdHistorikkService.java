@@ -106,14 +106,17 @@ public class ArbeidsforholdHistorikkService {
     private List<ArbeidsforholdMap> getArbeidsforholdMapList(Set<String> identer, Set<LocalDate> dates) {
         var futures = identer.stream().map(ident -> futureMap(ident, dates)).collect(Collectors.toList());
         var list = new ArrayList<ArbeidsforholdMap>();
-        for (var future : futures) {
+
+        for (int index = 0; index < futures.size(); index++) {
             try {
-                var map = future.get(10, TimeUnit.MINUTES);
+                var map = futures.get(index).get(12, TimeUnit.MINUTES);
+                log.info("{}/{} arbeidsforhold historikk generert.", index + 1, futures.size());
                 list.add(map);
             } catch (Exception e) {
                 log.error("Feil ved generering av syntetisk historikk. Fortsetter uten.", e);
             }
         }
+
         if (list.isEmpty()) {
             log.warn("Fikk ikke syntentisert {} identer pga tidligere feil.", futures.size());
         } else if (futures.size() > list.size()) {

@@ -18,8 +18,12 @@ spec:
       rules:
         - application: team-dolly-lokal-app
           cluster: dev-fss
+        - application: testnav-generer-organisasjon-populasjon-service
+          cluster: dev-gcp
         - application: organisasjon-forvalter
+          cluster: dev-fss
         - application: testnorge-oversikt-frontend
+          cluster: dev-fss
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -38,9 +42,10 @@ spec:
   resources:
     requests:
       cpu: 200m
-      memory: 4000Mi
+      memory: 1024Mi
     limits:
       cpu: 500m
-      memory: 5000Mi
+      memory: 2048Mi
   ingresses:
     - "https://organisasjon-orgnummer-service.dev.intern.nav.no"
+    - "https://organisasjon-orgnummer-service.dev-fss-pub.nais.io"

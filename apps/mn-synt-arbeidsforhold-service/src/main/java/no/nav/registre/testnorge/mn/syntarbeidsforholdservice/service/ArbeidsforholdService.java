@@ -13,44 +13,27 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.config.SyntetiseringProperties;
-import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.MNOrganisasjonConsumer;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.OppsummeringsdokumentConsumer;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.SyntrestConsumer;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Arbeidsforhold;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Opplysningspliktig;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Organisajon;
-import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.exception.MNOrganisasjonException;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ArbeidsforholdService {
-    private final MNOrganisasjonConsumer mnorganisasjonConsumer;
+    private final OpplysningspliktigService opplysningspliktigService;
     private final OppsummeringsdokumentConsumer oppsummeringsdokumentConsumer;
     private final SyntrestConsumer syntrestConsumer;
     private final SyntetiseringProperties syntetiseringProperties;
     private final Random random = new Random();
 
-    private List<Organisajon> getOpplysningspliktigeorganisasjoner(String miljo) {
-        List<Organisajon> organisajoner = mnorganisasjonConsumer
-                .getOrganisajoner(miljo)
-                .stream()
-                .filter(Organisajon::isOpplysningspliktig)
-                .filter(Organisajon::isDriverVirksomheter)
-                .collect(Collectors.toList());
-
-        if (organisajoner.isEmpty()) {
-            throw new MNOrganisasjonException("Fant ingen opplysningspliktige i Mini-Norge som driver virksomheter.");
-        }
-        return organisajoner;
-    }
-
 
     public void reportAll(LocalDate kalendermaaned, String miljo) {
-        List<Organisajon> organisajoner = getOpplysningspliktigeorganisasjoner(miljo);
+        List<Organisajon> organisajoner = opplysningspliktigService.getOpplysningspliktigeOrganisasjoner(miljo);
         for (var organisajon : organisajoner) {
             syntHistory(organisajon, kalendermaaned, miljo);
         }
@@ -62,7 +45,7 @@ public class ArbeidsforholdService {
 
     public void startArbeidsforhold(String ident, LocalDate fom, LocalDate tom, String miljo) {
 
-        List<Organisajon> organisajoner = getOpplysningspliktigeorganisasjoner(miljo);
+        List<Organisajon> organisajoner = opplysningspliktigService.getOpplysningspliktigeOrganisasjoner(miljo);
         Organisajon organisajon = organisajoner.get(random.nextInt(organisajoner.size()));
         String virksomhetsnummer = organisajon.getRandomVirksomhetsnummer();
         Opplysningspliktig opplysningspliktig = getOpplysningspliktig(organisajon, fom, miljo);
@@ -211,7 +194,7 @@ public class ArbeidsforholdService {
             Arbeidsforhold next = syntrestConsumer.getFirstArbeidsforhold(kalendermaaned, previous.getIdent(), previous.getVirksomhetsnummer());
             log.info("Nytt arbeidsforhold id {} for person {}.", next.getArbeidsforholdId(), next.getIdent());
 
-            List<Organisajon> opplysningspliktigeorganisasjoner = getOpplysningspliktigeorganisasjoner(miljo);
+            List<Organisajon> opplysningspliktigeorganisasjoner = opplysningspliktigService.getOpplysningspliktigeOrganisasjoner(miljo);
             Organisajon newOpplysningspliktigOrganisajon = opplysningspliktigeorganisasjoner.get(random.nextInt(opplysningspliktigeorganisasjoner.size()));
             String virksomhetsnummer = newOpplysningspliktigOrganisajon.getRandomVirksomhetsnummer();
             next.setVirksomhetsnummer(virksomhetsnummer);

@@ -16,6 +16,7 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.listener.BatchLoggingErrorHandler;
 import org.springframework.kafka.listener.SeekToCurrentErrorHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.util.backoff.FixedBackOff;
@@ -86,11 +87,9 @@ public class KafkaConfig {
                 shutdownService.initiateShutdown(0);
             }
         });
+        factory.setBatchListener(true);
         factory.setConsumerFactory(consumerFactory);
-        factory.setErrorHandler(new SeekToCurrentErrorHandler(
-                (consumer, exception) -> log.error("Klarer ikke å opprette bestilling med uuid: {}", consumer.key(), exception),
-                new FixedBackOff(30 * 1000, 3)
-        ));
+        factory.setBatchErrorHandler(new BatchLoggingErrorHandler());
         return factory;
     }
 }
