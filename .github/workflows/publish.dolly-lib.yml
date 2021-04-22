@@ -1,0 +1,28 @@
+name: Publish dolly-lib
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '11.x'
+          registry-url: https://npm.pkg.github.com/
+          scope: '@navikt'
+      - name: Create image tag
+        run: echo ::set-env name=VERSJON::$(cat package.json | grep version | cut -d\" -f4)
+        working-directory: frontend-libs/dolly-lib/
+      - name: Build code
+        run: |
+          npx tsc --init
+          npm ci
+          npm run build
+        working-directory: frontend-libs/dolly-lib/
+      - name: npm publish
+        run: npm publish --access public
+        working-directory: frontend-libs/dolly-lib/
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
