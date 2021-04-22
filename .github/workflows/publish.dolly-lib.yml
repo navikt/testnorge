@@ -16,6 +16,8 @@ jobs:
           registry-url: https://npm.pkg.github.com/
           scope: '@navikt'
       - name: Build code
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npx tsc --init
           npm ci
