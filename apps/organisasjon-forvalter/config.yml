@@ -63,4 +63,4 @@ spec:
   kafka:
     pool: nav-dev
   envFrom:
-    - secret: google-sql-testnav-organisasjon-forvalter
+    - secret: google-sql-organisasjon-forvalter
