@@ -2,6 +2,7 @@ name: Publish dolly-lib
 
 on:
   push:
+    branches: master
     paths:
       - frontend-libs/dolly-lib/**
 
@@ -31,7 +32,7 @@ jobs:
           npm version patch
           git add package.json && git add package-lock.json
           PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]')
-          git commit -m "$PACKAGE_VERSION, $COMMIT_MESSAGE, [skip ci]"
+          git commit -m "Bump version $PACKAGE_VERSION, $COMMIT_MESSAGE, [skip ci]"
           git tag $PACKAGE_VERSION
         working-directory: frontend-libs/dolly-lib/
       - name: Push changes
