@@ -20,6 +20,14 @@ spec:
         - application: testnorge-statisk-data-forvalter
         - application: team-dolly-lokal-app
           cluster: dev-fss
+    outbound:
+      rules:
+        - application: organisasjon-bestilling-service
+        - application: generer-navn-service
+        - application: organisasjon-orgnummer-service
+        - application: testnav-adresse-service
+        - application: testnav-organisasjon-service
+        - application: testnav-miljoer-service
   azure:
     application:
       enabled: true
@@ -50,7 +58,6 @@ spec:
       cpu: 300m
       memory: 500Mi
   ingresses:
-    - "https://organisasjon-forvalter.dev.adeo.no"
     - "https://organisasjon-forvalter.dev.intern.nav.no"
   kafka:
     pool: nav-dev
