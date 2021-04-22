@@ -1,11 +1,10 @@
-package no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2;
+package no.nav.registre.testnorge.libs.dto.ameldingservice.v1;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Value;
 
 import java.util.List;
 
@@ -13,9 +12,9 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class VirksomhetDTO {
+public class PersonDTO {
     @JsonProperty(required = true)
-    private String organisajonsnummer;
+    private final String ident;
     @JsonProperty(required = true)
-    private List<PersonDTO> personer;
+    private List<ArbeidsforholdDTO> arbeidsforhold;
 }

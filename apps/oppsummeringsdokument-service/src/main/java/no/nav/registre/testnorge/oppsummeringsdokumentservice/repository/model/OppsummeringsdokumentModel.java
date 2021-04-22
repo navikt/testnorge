@@ -15,9 +15,11 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
+
 @Setter
 @Getter
-@Document(indexName = "oppsummeringsdokument-6")
+@Document(indexName = "oppsummeringsdokument-7")
 public class OppsummeringsdokumentModel implements Persistable<String> {
 
     @Id
@@ -30,6 +32,7 @@ public class OppsummeringsdokumentModel implements Persistable<String> {
     private List<VirksomhetModel> virksomheter;
     private String miljo;
     private String origin;
+    private Populasjon populasjon;
 
     @CreatedDate
     @Field(type = FieldType.Date, format = DateFormat.basic_date_time)

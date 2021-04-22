@@ -22,6 +22,7 @@ import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumentCom
 import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumenterCommand;
 import no.nav.registre.testnorge.libs.common.command.SaveOppsummeringsdokumenterCommand;
 import no.nav.registre.testnorge.libs.core.config.ApplicationProperties;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
@@ -46,7 +47,7 @@ public class OppsummeringsdokumentConsumer {
             ApplicationProperties applicationProperties
     ) {
         this.applicationProperties = applicationProperties;
-        this.executor = Executors.newFixedThreadPool(5);
+        this.executor = Executors.newFixedThreadPool(20);
         this.accessTokenService = accessTokenService;
         this.properties = properties;
         this.webClient = WebClient
@@ -64,7 +65,7 @@ public class OppsummeringsdokumentConsumer {
                 .build();
     }
 
-    private CompletableFuture<Void> saveOpplysningspliktig(Opplysningspliktig opplysningspliktig, String miljo) {
+    private CompletableFuture<String> saveOpplysningspliktig(Opplysningspliktig opplysningspliktig, String miljo) {
         AccessToken accessToken = accessTokenService.generateToken(properties);
         return CompletableFuture.supplyAsync(
                 () -> new SaveOppsummeringsdokumenterCommand(
@@ -72,7 +73,8 @@ public class OppsummeringsdokumentConsumer {
                         accessToken.getTokenValue(),
                         opplysningspliktig.toDTO(),
                         miljo,
-                        applicationProperties.getName()
+                        applicationProperties.getName(),
+                        Populasjon.MINI_NORGE
                 ).call(),
                 executor
         );
