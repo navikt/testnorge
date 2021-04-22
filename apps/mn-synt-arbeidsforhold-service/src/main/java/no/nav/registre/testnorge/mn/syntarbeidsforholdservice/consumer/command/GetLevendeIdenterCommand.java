@@ -35,7 +35,7 @@ public class GetLevendeIdenterCommand implements Callable<Set<String>> {
                 .bodyToMono(String[].class)
                 .block();
 
-        log.info("Fant {} idetner i {}.", response.length, miljo);
+        log.info("Fant {} identer i {}.", response.length, miljo);
         return Arrays.stream(response).collect(Collectors.toSet());
     }
 }

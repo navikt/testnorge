@@ -36,11 +36,11 @@ public class GenererOpplysningspliktigService {
                 log.info("{}/{} organisasjoner opprettet.", index + 1, futures.size());
                 organisasjoner.add(organisasjon);
             } catch (Exception e) {
-                log.warn("Klarer ikke å opprette organiasjon.", e);
+                log.warn("Klarer ikke å opprette organisasjon.", e);
             }
         }
         if (futures.size() > organisasjoner.size()) {
-            log.warn("Bare {}/{} organiasjoner opprettet.", organisasjoner.size(), futures.size());
+            log.warn("Bare {}/{} organisasjoner opprettet.", organisasjoner.size(), futures.size());
         }
 
 
@@ -56,7 +56,7 @@ public class GenererOpplysningspliktigService {
         return CompletableFuture.supplyAsync(() -> {
             var opplysningspliktig = generer("AS");
             for (int index = 0; index <= random.nextInt(5); index++) {
-                opplysningspliktig.getVirksomhenter().add(generer("BEDR"));
+                opplysningspliktig.getVirksomheter().add(generer("BEDR"));
             }
             return opplysningspliktig;
         }, executor);

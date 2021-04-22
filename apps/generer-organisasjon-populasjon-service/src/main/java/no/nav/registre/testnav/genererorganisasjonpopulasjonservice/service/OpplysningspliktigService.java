@@ -30,7 +30,7 @@ public class OpplysningspliktigService {
     private void create(Organisasjon organisasjon, UUID uuid, String miljo) {
         var opprettelsesdokument = Opprettelsesdokument
                 .newBuilder()
-                .setOrganisasjon(organisasjon.toAvroOrganiasjon())
+                .setOrganisasjon(organisasjon.toAvroOrganisasjon())
                 .setMetadata(Metadata.newBuilder().setMiljo(miljo).build())
                 .build();
         opprettelsesdokumentProducer.send(uuid.toString(), opprettelsesdokument);

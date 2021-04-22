@@ -89,7 +89,7 @@ public class OppsummeringsdokumentConsumer {
     }
 
     public List<Opplysningspliktig> getAlleOpplysningspliktig(String miljo) {
-        log.info("Henter alle opplysningspliktig fra {}...", miljo);
+        log.info("Henter alle opplysningspliktige fra {}...", miljo);
         AccessToken accessToken = accessTokenService.generateToken(properties);
         var list = new GetOppsummeringsdokumenterCommand(webClient, accessToken.getTokenValue(), miljo).call();
         log.info("Fant {} opplysningspliktig fra {}.", list.size(), miljo);

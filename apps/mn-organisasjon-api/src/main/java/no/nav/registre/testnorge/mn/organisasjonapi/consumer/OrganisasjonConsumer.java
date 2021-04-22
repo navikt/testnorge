@@ -61,7 +61,7 @@ public class OrganisasjonConsumer {
             try {
                 list.add(future.get());
             } catch (Exception e) {
-                throw new RuntimeException("Klarer ikke å hente ut alle oragnisasjoner", e);
+                throw new RuntimeException("Klarer ikke å hente ut alle organisasjoner", e);
             }
         }
         return list;
