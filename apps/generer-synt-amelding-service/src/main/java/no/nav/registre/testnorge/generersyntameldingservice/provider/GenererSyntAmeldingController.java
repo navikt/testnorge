@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static no.nav.registre.testnorge.generersyntameldingservice.utils.InputValidator.validateInput;
-
 @RestController
 @RequestMapping("/api/v1/amelding")
 @RequiredArgsConstructor
@@ -26,7 +24,6 @@ public class GenererSyntAmeldingController {
     public List<ArbeidsforholdDTO> generateSyntheticAmeldinger(
             @RequestBody SyntAmeldingRequest request
     ) {
-        validateInput(request.getArbeidsforholdType());
         return genererSyntAmeldingService.generateAmeldinger(request);
     }
 
