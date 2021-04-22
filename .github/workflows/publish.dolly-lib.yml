@@ -1,6 +1,9 @@
 name: Publish dolly-lib
 
-on: push
+on:
+  push:
+    paths:
+      - frontend-libs/dolly-lib/**
 
 jobs:
   build:
@@ -25,6 +28,11 @@ jobs:
           COMMIT_MESSAGE=`git log -1 --pretty=%B`
           npm version patch -m "%s, $COMMIT_MESSAGE, [skip ci]"
         working-directory: frontend-libs/dolly-lib/
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
       - name: npm publish
         run: npm publish --access public
         working-directory: frontend-libs/dolly-lib/
