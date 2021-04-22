@@ -17,6 +17,7 @@
     "typescript": "^4.2.4"
   },
   "publishConfig": {
+    "acccess": "public",
     "registry":"https://npm.pkg.github.com/@navikt"
   }
 }
