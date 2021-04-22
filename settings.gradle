@@ -221,6 +221,9 @@ project(":endringsmelding-service").projectDir = file('apps/endringsmelding-serv
 include 'generer-navn-service'
 project(":generer-navn-service").projectDir = file('apps/generer-navn-service')
 
+include 'generer-synt-amelding-service'
+project(":generer-synt-amelding-service").projectDir = file('apps/generer-synt-amelding-service')
+
 include 'miljoer-service'
 project(":miljoer-service").projectDir = file('apps/miljoer-service')
 
@@ -292,3 +295,7 @@ project(":organisasjon-faste-data-service").projectDir = file('apps/organisasjon
 
 include 'faste-data-frontend'
 project(":faste-data-frontend").projectDir = file('apps/faste-data-frontend')
+
+include 'syntrest-proxy'
+project(":syntrest-proxy").projectDir = file('proxies/syntrest-proxy')
+

@@ -9,11 +9,11 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.syntrest.domain.aareg.amelding.ArbeidsforholdAmelding;
+import no.nav.registre.testnorge.domain.dto.aareg.amelding.Arbeidsforhold;
 import reactor.core.publisher.Mono;
 
 @Slf4j
-public class PostArbeidsforholdStartCommand implements Callable<List<ArbeidsforholdAmelding>> {
+public class PostArbeidsforholdStartCommand implements Callable<List<Arbeidsforhold>> {
 
     private final WebClient webClient;
     private final List<String> startdatoer;
@@ -22,7 +22,7 @@ public class PostArbeidsforholdStartCommand implements Callable<List<Arbeidsforh
 
     private static final ParameterizedTypeReference<List<String>> REQUEST_TYPE = new ParameterizedTypeReference<>() {
     };
-    private static final ParameterizedTypeReference<List<ArbeidsforholdAmelding>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
+    private static final ParameterizedTypeReference<List<Arbeidsforhold>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
     public PostArbeidsforholdStartCommand(List<String> startdatoer, String syntAmeldingUrlPath, String queryString, WebClient webClient) {
@@ -33,12 +33,11 @@ public class PostArbeidsforholdStartCommand implements Callable<List<Arbeidsforh
     }
 
     @Override
-    public List<ArbeidsforholdAmelding> call() {
-        List<ArbeidsforholdAmelding> response;
+    public List<Arbeidsforhold> call() {
         try {
             var body = BodyInserters.fromPublisher(Mono.just(startdatoer), REQUEST_TYPE);
 
-            response = webClient.post()
+            return webClient.post()
                     .uri(builder -> builder
                             .path(syntAmeldingUrlPath)
                             .query(queryString)
@@ -52,7 +51,6 @@ public class PostArbeidsforholdStartCommand implements Callable<List<Arbeidsforh
             log.error("Unexpected Rest Client Exception.", e);
             throw e;
         }
-        return response;
     }
 
 }

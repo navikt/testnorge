@@ -1,4 +1,4 @@
-package no.nav.registre.syntrest.domain.aareg.amelding;
+package no.nav.registre.testnorge.domain.dto.aareg.amelding;
 
 import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonAlias;

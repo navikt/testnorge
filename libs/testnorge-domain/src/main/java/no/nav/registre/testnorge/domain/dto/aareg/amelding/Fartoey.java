@@ -1,4 +1,4 @@
-package no.nav.registre.syntrest.domain.aareg.amelding;
+package no.nav.registre.testnorge.domain.dto.aareg.amelding;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

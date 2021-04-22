@@ -1,4 +1,4 @@
-package no.nav.registre.syntrest.consumer.command;
+package no.nav.registre.testnorge.generersyntameldingservice.consumer.command;
 
 import java.util.concurrent.Callable;
 import org.springframework.http.HttpHeaders;
@@ -12,37 +12,38 @@ import no.nav.registre.testnorge.domain.dto.aareg.amelding.ArbeidsforholdPeriode
 import reactor.core.publisher.Mono;
 
 @Slf4j
-public class PostArbeidsforholdMedTypeCommand implements Callable<Arbeidsforhold> {
+public class PostArbeidsforholdCommand implements Callable<Arbeidsforhold> {
 
     private final WebClient webClient;
-    private final ArbeidsforholdPeriode request;
-    private final String syntAmeldingUrlPath;
-    private final String queryString;
+    private final ArbeidsforholdPeriode periode;
+    private final String path;
+    private final String token;
 
-    public PostArbeidsforholdMedTypeCommand(ArbeidsforholdPeriode request, String syntAmeldingUrlPath, String queryString, WebClient webClient) {
+    public PostArbeidsforholdCommand(ArbeidsforholdPeriode periode, WebClient webClient, String arbeidsforholdType, String token) {
         this.webClient = webClient;
-        this.request = request;
-        this.syntAmeldingUrlPath = syntAmeldingUrlPath;
-        this.queryString = queryString;
+        this.periode = periode;
+        this.token = token;
+        this.path = String.format("/api/v1/generate/amelding/arbeidsforhold/start/%s", arbeidsforholdType);
     }
 
     @Override
     public Arbeidsforhold call() {
         try {
-            var body = BodyInserters.fromPublisher(Mono.just(request), ArbeidsforholdPeriode.class);
+            var body = BodyInserters.fromPublisher(Mono.just(periode), ArbeidsforholdPeriode.class);
 
             return webClient.post()
                     .uri(builder -> builder
-                            .path(syntAmeldingUrlPath)
-                            .query(queryString)
+                            .path(path)
+                            .queryParam("avvik", "false")
                             .build())
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .body(body)
                     .retrieve()
                     .bodyToMono(Arbeidsforhold.class)
                     .block();
         } catch (Exception e) {
-            log.error("Unexpected Rest Client Exception.", e);
+            log.error("Unexpected Rest Client Exception: " + e.getMessage());
             throw e;
         }
     }

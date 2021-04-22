@@ -1,13 +1,14 @@
-name: Deploy testnorge-hodejegeren
+name: Deploy generer-synt-amelding-service
 
 on:
   push:
+    branches: master
     paths:
-      - apps/testnorge-hodejegeren/**
+      - apps/generer-synt-amelding-service/**
       - libs/testnorge-core/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/hodejegeren:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/generer-synt-amelding-service:${{ github.sha }}
 
 jobs:
   build_and_deploy:
@@ -30,18 +31,19 @@ jobs:
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew :hodejegeren-core:build
+        run: ./gradlew :generer-synt-amelding-service:build
       - name: Build and publish Docker image
+        working-directory: apps/generer-synt-amelding-service/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          docker build --tag ${IMAGE} . -f ./apps/testnorge-hodejegeren/Dockerfile
-          docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
-          docker push ${IMAGE}
+          docker build --tag $IMAGE .
+          docker login docker.pkg.github.com -u $GITHUB_REPOSITORY -p $GITHUB_TOKEN
+          docker push $IMAGE
       - name: Deploy to nais
         timeout-minutes: 5
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-          CLUSTER: dev-fss
-          RESOURCE: apps/testnorge-hodejegeren/nais.yaml
+          CLUSTER: dev-gcp
+          RESOURCE: apps/generer-synt-amelding-service/config.yml

@@ -1,5 +1,6 @@
-package no.nav.registre.syntrest.domain.aareg.amelding;
+package no.nav.registre.testnorge.domain.dto.aareg.amelding;
 
+import java.util.Collections;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
@@ -19,7 +20,7 @@ import lombok.Setter;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ArbeidsforholdAmelding {
+public class Arbeidsforhold {
 
     @JsonAlias({ "RAPPORTERINGSMAANED", "rapporteringsmaaned" })
     private String rapporteringsmaaned;
@@ -89,4 +90,14 @@ public class ArbeidsforholdAmelding {
 
     @JsonAlias({"AVVIK", "avvik"})
     private Avvik avvik;
+
+    public void emptyPermisjoner(){
+        this.setPermisjon(0);
+        this.setPermisjonMedForeldrepenger(0);
+        this.setPermisjonVedMilitaertjeneste(0);
+        this.setPermittering(0);
+        this.setUtdanningspermisjon(0);
+        this.setVelferdspermisjon(0);
+        this.permisjoner = Collections.emptyList();
+    }
 }
