@@ -31,7 +31,7 @@ public class IdentService {
                 .flatMap(Collection::stream)
                 .map(PersonDTO::getIdent)
                 .collect(Collectors.toSet());
-        log.info("Fant {} identer i {}.", identer, miljo);
+        log.info("Fant {} identer i {}.", identer.size(), miljo);
         return identer;
     }
 

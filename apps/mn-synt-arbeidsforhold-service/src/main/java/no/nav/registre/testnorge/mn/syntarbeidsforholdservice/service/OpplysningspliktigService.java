@@ -2,6 +2,7 @@ package no.nav.registre.testnorge.mn.syntarbeidsforholdservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -28,6 +29,7 @@ public class OpplysningspliktigService {
         return organisasjonConssumer
                 .getOrganisasjoner(opplysningspliktigOrgnummer, miljo)
                 .stream()
+                .filter(value -> !value.getDriverVirksomheter().isEmpty())
                 .map(Organisajon::new)
                 .collect(Collectors.toList());
     }
