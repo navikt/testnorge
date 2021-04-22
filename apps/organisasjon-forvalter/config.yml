@@ -24,10 +24,11 @@ spec:
       rules:
         - application: organisasjon-bestilling-service
         - application: generer-navn-service
-        - application: organisasjon-orgnummer-service
         - application: testnav-adresse-service
         - application: testnav-organisasjon-service
         - application: testnav-miljoer-service
+      external:
+        - host: https://organisasjon-orgnummer-service.dev-fss-pub.nais.io
   azure:
     application:
       enabled: true
