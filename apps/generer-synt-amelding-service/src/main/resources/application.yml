@@ -16,3 +16,7 @@ consumers.syntrest-proxy:
   cluster: dev-fss
   namespace: dolly
   name: testnav-syntrest-proxy
+
+server:
+  error:
+    include-message: always

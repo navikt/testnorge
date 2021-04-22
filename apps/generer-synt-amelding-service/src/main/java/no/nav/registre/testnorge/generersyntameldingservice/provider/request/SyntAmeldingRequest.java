@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.registre.testnorge.generersyntameldingservice.domain.ArbeidsforholdType;
 
 @Getter
 @Setter
@@ -19,7 +18,7 @@ import no.nav.registre.testnorge.generersyntameldingservice.domain.Arbeidsforhol
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SyntAmeldingRequest {
 
-    private ArbeidsforholdType arbeidsforholdType;
+    private String arbeidsforholdType;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private LocalDate startdato;
