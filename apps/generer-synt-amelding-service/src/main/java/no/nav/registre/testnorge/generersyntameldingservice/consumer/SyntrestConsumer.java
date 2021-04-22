@@ -28,9 +28,9 @@ public class SyntrestConsumer {
         this.webClient = WebClient.builder().baseUrl(properties.getUrl()).build();
     }
 
-    public Arbeidsforhold getEnkeltArbeidsforhold(ArbeidsforholdPeriode periode, String arbeidsforholdType) {
+    public Arbeidsforhold getEnkeltArbeidsforhold(ArbeidsforholdPeriode periode, ArbeidsforholdType arbeidsforholdType) {
         var accessToken = accessTokenService.generateToken(properties);
-        return new PostArbeidsforholdCommand(periode, webClient, ArbeidsforholdType.getPath(arbeidsforholdType), accessToken.getTokenValue()).call();
+        return new PostArbeidsforholdCommand(periode, webClient, arbeidsforholdType.getPath(), accessToken.getTokenValue()).call();
     }
 
     public List<Arbeidsforhold> getHistorikk(Arbeidsforhold arbeidsforhold) {
