@@ -45,7 +45,8 @@ public class GenererSyntAmeldingService {
 
     int getAntallMeldinger(LocalDate startdato, LocalDate sluttdato) {
         var antallMeldinger = 0;
-        while (startdato.isBefore(sluttdato.plusDays(1))) {
+        var enddate = sluttdato.withDayOfMonth(sluttdato.withDayOfMonth(1).lengthOfMonth());
+        while (startdato.isBefore(enddate.plusDays(1))) {
             antallMeldinger += 1;
             startdato = startdato.plusMonths(1);
         }
