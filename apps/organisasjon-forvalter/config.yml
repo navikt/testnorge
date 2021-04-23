@@ -1,7 +1,7 @@
 ﻿apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: organisasjon-forvalter
+  name: testnav-organisasjon-forvalter
   namespace: dolly
   labels:
     team: dolly
@@ -63,4 +63,4 @@ spec:
   kafka:
     pool: nav-dev
   envFrom:
-    - secret: google-sql-organisasjon-forvalter
+    - secret: google-sql-testnav-organisasjon-forvalter
