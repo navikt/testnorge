@@ -9,6 +9,7 @@
 
 # production
 *frontend/build/
+*frontend-libs/*/lib/
 
 *.DS_Store
 

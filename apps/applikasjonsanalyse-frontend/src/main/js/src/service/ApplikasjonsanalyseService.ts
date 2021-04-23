@@ -1,4 +1,4 @@
-import Api from '@/api';
+import { Api } from '@navikt/dolly-lib';
 
 export type Avhengighet = {
   name: string;

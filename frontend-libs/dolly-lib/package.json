@@ -1,0 +1,25 @@
+{
+  "name": "@navikt/dolly-lib",
+  "version": "1.0.0",
+  "description": "Bibliotek for dolly funksjoner.",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc -p ."
+  },
+  "types": "lib",
+  "author": {
+    "name": "Team dolly",
+    "email": "dolly@nav.no"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^4.2.4"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/navikt/testnorge.git"
+  }
+}

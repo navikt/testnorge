@@ -1,0 +1,47 @@
+name: Publish dolly-lib
+
+on:
+  push:
+    branches: master
+    paths:
+      - frontend-libs/dolly-lib/**
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '11.x'
+          registry-url: https://npm.pkg.github.com/
+          scope: '@navikt'
+      - name: Build code
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npm ci
+          npm run build
+        working-directory: frontend-libs/dolly-lib/
+      - name: Bump version
+        run: |
+          git config --global user.email "dolly@nav.no"
+          git config --global user.name $GITHUB_ACTOR
+          COMMIT_MESSAGE=`git log -1 --pretty=%B`
+          npm version patch
+          git add package.json && git add package-lock.json
+          PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]')
+          git commit -m "Bump version $PACKAGE_VERSION, $COMMIT_MESSAGE, [skip ci]"
+          git tag $PACKAGE_VERSION
+        working-directory: frontend-libs/dolly-lib/
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+      - name: npm publish
+        run: npm publish --access public
+        working-directory: frontend-libs/dolly-lib/
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
