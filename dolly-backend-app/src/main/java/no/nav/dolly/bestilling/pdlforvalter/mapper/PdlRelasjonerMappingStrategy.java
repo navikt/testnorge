@@ -43,7 +43,12 @@ public class PdlRelasjonerMappingStrategy implements MappingStrategy {
                         familierelasjon.setRelatertPerson(relasjon.getPersonRelasjonMed().getIdent());
                         familierelasjon.setRelatertPersonsRolle(decode(relasjon.getRelasjonTypeNavn()));
                         familierelasjon.setMinRolleForPerson(decode(relasjon.getPersonRelasjonTil().getRelasjoner().stream()
-                            .filter(relasjon2 -> relasjon.getPersonRelasjonMed().getIdent().equals(relasjon2.getPerson().getIdent()))
+                                .filter(relasjon2 -> relasjon.getPersonRelasjonMed().getIdent().equals(relasjon2.getPerson().getIdent()) &&
+                                        !(relasjon.isForelder() && relasjon2.isForelder()) &&
+                                        !(relasjon.isBarn() && relasjon2.isBarn()) &&
+                                        !(relasjon.isPartner() && relasjon2.isBarn()) &&
+                                        !(relasjon.isBarn() && relasjon2.isPartner())
+                                )
                                 .map(Relasjon::getRelasjonTypeNavn)
                                 .findFirst().orElse(null)));
                         familierelasjon.setKilde(CONSUMER);
@@ -91,27 +96,27 @@ public class PdlRelasjonerMappingStrategy implements MappingStrategy {
             return UOPPGITT;
         } else {
             switch (sivilstatus) {
-            case UGIF:
-                return UGIFT;
-            case GIFT:
-                return GIFT;
-            case ENKE:
-                return ENKE_ELLER_ENKEMANN;
-            case SKIL:
-                return SKILT;
-            case SEPR:
-                return SEPARERT_PARTNER;
-            case REPA:
-                return REGISTRERT_PARTNER;
-            case SEPA:
-                return SEPARERT;
-            case SKPA:
-                return SKILT_PARTNER;
-            case GJPA:
-                return GJENLEVENDE_PARTNER;
-            case SAMB:
-            default:
-                return UOPPGITT;
+                case UGIF:
+                    return UGIFT;
+                case GIFT:
+                    return GIFT;
+                case ENKE:
+                    return ENKE_ELLER_ENKEMANN;
+                case SKIL:
+                    return SKILT;
+                case SEPR:
+                    return SEPARERT_PARTNER;
+                case REPA:
+                    return REGISTRERT_PARTNER;
+                case SEPA:
+                    return SEPARERT;
+                case SKPA:
+                    return SKILT_PARTNER;
+                case GJPA:
+                    return GJENLEVENDE_PARTNER;
+                case SAMB:
+                default:
+                    return UOPPGITT;
             }
         }
     }
