@@ -17,11 +17,17 @@ spec:
     inbound:
       rules:
         - application: testnorge-oversikt-frontend
+          cluster: dev-fss
         - application: dolly-backend
+          cluster: dev-fss
         - application: dolly-backend-dev
+          cluster: dev-fss
         - application: dolly-frontend
+          cluster: dev-fss
         - application: dolly-frontend-dev
+          cluster: dev-fss
         - application: testnorge-statisk-data-forvalter
+          cluster: dev-fss
         - application: team-dolly-lokal-app
           cluster: dev-fss
     outbound:
