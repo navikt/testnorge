@@ -1,14 +1,14 @@
-
-consumers:
-  generer-navn-service:
-    url: https://generer-navn-service.dolly.svc.cluster.local
-  organisasjon-orgnummer-service:
-    url: https://organisasjon-orgnummer-service.dev-fss-pub.nais.io
-  organisasjon-bestilling-service:
-    url: https://organisasjon-bestilling-service.dolly.svc.cluster.local
-  testnav-adresse-service:
-    url: https://testnav-adresse-service.dolly.svc.cluster.local
-  testnav-organisasjon-service:
-    url: https://testnav-organisasjon-service.dolly.svc.cluster.local
-  testnav-miljoer-service:
-    url: https://testnav-miljoer-service.dolly.svc.cluster.local
+#
+#consumers:
+#  generer-navn-service:
+#    url: https://generer-navn-service.dolly.svc.cluster.local
+#  organisasjon-orgnummer-service:
+#    url: https://organisasjon-orgnummer-service.dev-fss-pub.nais.io
+#  organisasjon-bestilling-service:
+#    url: https://organisasjon-bestilling-service.dolly.svc.cluster.local
+#  testnav-adresse-service:
+#    url: https://testnav-adresse-service.dolly.svc.cluster.local
+#  testnav-organisasjon-service:
+#    url: https://testnav-organisasjon-service.dolly.svc.cluster.local
+#  testnav-miljoer-service:
+#    url: https://testnav-miljoer-service.dolly.svc.cluster.local
