@@ -2,7 +2,7 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 
 spring:
   application:
-    name: Organisasjon-Forvalter
+    name: Testnav-Organisasjon-Forvalter
     version: 1.0
     description: Bestilling, persistering og opphenting av testorganisasjoner
 
