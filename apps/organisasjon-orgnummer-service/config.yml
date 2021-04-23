@@ -20,8 +20,8 @@ spec:
           cluster: dev-fss
         - application: testnav-generer-organisasjon-populasjon-service
           cluster: dev-gcp
-        - application: organisasjon-forvalter
-          cluster: dev-fss
+        - application: testnav-organisasjon-forvalter
+          cluster: dev-gcp
         - application: testnorge-oversikt-frontend
           cluster: dev-fss
   liveness:

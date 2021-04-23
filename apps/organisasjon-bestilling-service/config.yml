@@ -19,8 +19,8 @@ spec:
           cluster: dev-fss
         - application: testnorge-oversikt-frontend
           cluster: dev-fss
-        - application: organisasjon-forvalter
-          cluster: dev-fss
+        - application: testnav-organisasjon-forvalter
+          cluster: dev-gcp
         - application: jenkins-batch-status-service
           cluster: dev-fss
         - application: testnav-jenkins-batch-status-service

@@ -30,8 +30,8 @@ spec:
           cluster: dev-fss
         - application: organisasjon-orgnummer-service
           cluster: dev-fss
-        - application: organisasjon-forvalter
-          cluster: dev-fss
+        - application: testnav-organisasjon-forvalter
+          cluster: dev-gcp
         - application: testnav-faste-data-frontend
           cluster: dev-gcp
     outbound:

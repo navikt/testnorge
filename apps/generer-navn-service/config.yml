@@ -15,8 +15,8 @@ spec:
       rules:
         - application: team-dolly-lokal-app
           cluster: dev-fss
-        - application: organisasjon-forvalter
-          cluster: dev-fss
+        - application: testnav-organisasjon-forvalter
+          cluster: dev-gcp
         - application: testnorge-oversikt-frontend
           cluster: dev-fss
         - application: testnorge-statisk-data-forvalter

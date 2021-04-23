@@ -25,8 +25,8 @@ spec:
           cluster: dev-fss
         - application: testnorge-synt-sykemelding-api
           cluster: dev-fss
-        - application: organisasjon-forvalter
-          cluster: dev-fss
+        - application: testnav-organisasjon-forvalter
+          cluster: dev-gcp
         - application: testnorge-oversikt-frontend
           cluster: dev-fss
         - application: dolly-backend-dev
