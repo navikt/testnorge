@@ -1,4 +1,4 @@
-name: Deploy organisasjon-forvalter
+name: Deploy testnav-organisasjon-forvalter
 
 on:
   push:

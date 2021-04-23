@@ -9,6 +9,10 @@ spec:
   image: {{ image }}
   port: 8080
   webproxy: true
+  azure:
+    application:
+      enabled: true
+      tenant: nav.no
   accessPolicy:
     inbound:
       rules:
@@ -34,10 +38,6 @@ spec:
       - type: POSTGRES_12
         databases:
           - name: organisasjon-forvalter-db
-  azure:
-    application:
-      enabled: true
-      tenant: nav.no
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -54,12 +54,12 @@ spec:
   resources:
     requests:
       cpu: 200m
-      memory: 400Mi
-    limits:
-      cpu: 300m
       memory: 500Mi
+    limits:
+      cpu: 500m
+      memory: 2000Mi
   ingresses:
-    - "https://organisasjon-forvalter.dev.intern.nav.no"
+    - "https://testnav-organisasjon-forvalter.dev.intern.nav.no"
   kafka:
     pool: nav-dev
   envFrom:
