@@ -5,7 +5,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +46,9 @@ public class GenererSyntAmeldingService {
     }
 
     int getAntallMeldinger(LocalDate startdato, LocalDate sluttdato) {
+        if (sluttdato.isBefore(startdato)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sluttdato må være lik eller etter startdato.");
+        }
         var antallMeldinger = 0;
         var enddate = sluttdato.withDayOfMonth(sluttdato.withDayOfMonth(1).lengthOfMonth());
         while (startdato.isBefore(enddate.plusDays(1))) {
