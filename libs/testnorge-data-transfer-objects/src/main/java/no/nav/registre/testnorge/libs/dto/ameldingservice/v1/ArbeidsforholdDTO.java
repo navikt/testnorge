@@ -15,31 +15,19 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class ArbeidsforholdDTO {
-    @JsonProperty
+
     String arbeidsforholdId;
-    @JsonProperty
-    String typeArbeidsforhold;
-    @JsonProperty(required = true)
+    String arbeidsforholdType;
     LocalDate startdato;
-    @JsonProperty
     LocalDate sluttdato;
-    @JsonProperty
     Float antallTimerPerUke;
-    @JsonProperty(required = true)
     String yrke;
-    @JsonProperty
     String arbeidstidsordning;
-    @JsonProperty
     Float stillingsprosent;
-    @JsonProperty
     LocalDate sisteLoennsendringsdato;
-    @JsonProperty
     List<PermisjonDTO> permisjoner;
-    @JsonProperty
     FartoeyDTO fartoey;
-    @JsonProperty
     List<InntektDTO> inntekter;
-    @JsonProperty
     List<AvvikDTO> avvik;
 
     public List<AvvikDTO> getAvvik() {

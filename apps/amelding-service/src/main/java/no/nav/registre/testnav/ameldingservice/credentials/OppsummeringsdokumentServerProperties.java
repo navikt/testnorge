@@ -9,5 +9,5 @@ import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 @Getter
 @Configuration
 @ConfigurationProperties(prefix = "consumers.oppsummeringsdokument-service")
-public class OppsummeringsdokuemntServerProperties extends NaisServerProperties {
+public class OppsummeringsdokumentServerProperties extends NaisServerProperties {
 }

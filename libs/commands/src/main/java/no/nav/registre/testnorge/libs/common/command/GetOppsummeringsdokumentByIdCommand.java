@@ -13,7 +13,7 @@ import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.Oppsum
 
 @Slf4j
 @RequiredArgsConstructor
-public class GetOppsummeringsdoukumentByIdCommand implements Callable<OppsummeringsdokumentDTO> {
+public class GetOppsummeringsdokumentByIdCommand implements Callable<OppsummeringsdokumentDTO> {
     private final WebClient webClient;
     private final String accessToken;
     private final String id;
@@ -34,6 +34,7 @@ public class GetOppsummeringsdoukumentByIdCommand implements Callable<Oppsummeri
                     .bodyToMono(OppsummeringsdokumentDTO.class)
                     .block();
         } catch (WebClientResponseException.NotFound e) {
+            log.warn("Fant ikke oppsummeringsdokument med id {}.", id);
             return null;
         }
     }

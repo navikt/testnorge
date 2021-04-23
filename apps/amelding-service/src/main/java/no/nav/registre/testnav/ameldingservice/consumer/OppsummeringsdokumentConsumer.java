@@ -9,11 +9,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDate;
 import java.util.Optional;
-import java.util.concurrent.Executors;
 
-import no.nav.registre.testnav.ameldingservice.credentials.OppsummeringsdokuemntServerProperties;
+import no.nav.registre.testnav.ameldingservice.credentials.OppsummeringsdokumentServerProperties;
 import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumentCommand;
-import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdoukumentByIdCommand;
+import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumentByIdCommand;
 import no.nav.registre.testnorge.libs.common.command.SaveOppsummeringsdokumenterCommand;
 import no.nav.registre.testnorge.libs.core.config.ApplicationProperties;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
@@ -32,7 +31,7 @@ public class OppsummeringsdokumentConsumer {
 
     public OppsummeringsdokumentConsumer(
             AccessTokenService accessTokenService,
-            OppsummeringsdokuemntServerProperties properties,
+            OppsummeringsdokumentServerProperties properties,
             ObjectMapper objectMapper,
             ApplicationProperties applicationProperties
     ) {
@@ -81,7 +80,7 @@ public class OppsummeringsdokumentConsumer {
 
     public Optional<OppsummeringsdokumentDTO> get(String id) {
         AccessToken accessToken = accessTokenService.generateToken(properties);
-        var dto = new GetOppsummeringsdoukumentByIdCommand(webClient, accessToken.getTokenValue(), id).call();
+        var dto = new GetOppsummeringsdokumentByIdCommand(webClient, accessToken.getTokenValue(), id).call();
         return Optional.ofNullable(dto);
     }
 

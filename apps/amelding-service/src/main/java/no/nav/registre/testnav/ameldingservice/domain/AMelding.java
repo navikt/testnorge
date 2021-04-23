@@ -103,7 +103,7 @@ public class AMelding {
         target.setStartdato(other.getStartdato());
         target.setSisteLoennsendringsdato(other.getSisteLoennsendringsdato());
         target.setStillingsprosent(other.getStillingsprosent());
-        target.setTypeArbeidsforhold(other.getTypeArbeidsforhold());
+        target.setTypeArbeidsforhold(other.getArbeidsforholdType());
         target.setYrke(other.getYrke());
     }
 
@@ -176,7 +176,7 @@ public class AMelding {
                 .sluttdato(arbeidsforholdDTO.getSluttdato())
                 .startdato(arbeidsforholdDTO.getStartdato())
                 .stillingsprosent(arbeidsforholdDTO.getStillingsprosent())
-                .typeArbeidsforhold(arbeidsforholdDTO.getTypeArbeidsforhold())
+                .typeArbeidsforhold(arbeidsforholdDTO.getArbeidsforholdType())
                 .yrke(arbeidsforholdDTO.getYrke())
                 .inntekter(arbeidsforholdDTO.getInntekter().stream().map(this::create).collect(Collectors.toList()))
                 .permisjoner(arbeidsforholdDTO.getPermisjoner().stream().map(this::create).collect(Collectors.toList()))
@@ -195,7 +195,7 @@ public class AMelding {
                 .sluttdato(arbeidsforholdDTO.getSluttdato())
                 .startdato(arbeidsforholdDTO.getStartdato())
                 .stillingsprosent(arbeidsforholdDTO.getStillingsprosent())
-                .typeArbeidsforhold(arbeidsforholdDTO.getTypeArbeidsforhold())
+                .arbeidsforholdType(arbeidsforholdDTO.getTypeArbeidsforhold())
                 .yrke(arbeidsforholdDTO.getYrke())
                 .inntekter(arbeidsforholdDTO.getInntekter().stream().map(this::create).collect(Collectors.toList()))
                 .permisjoner(arbeidsforholdDTO.getPermisjoner().stream().map(this::create).collect(Collectors.toList()))
