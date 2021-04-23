@@ -1,9 +1,8 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
 applications:
-  testnorge-profil-api-dev: f73bfcd0-a1f5-4d3f-bfb4-4d0361191438
-  dolly-backend-dev: f0174d28-cb33-44f9-a7b5-09e52582e601
   dolly-backend: 787eb670-2731-49b4-8be1-2385990370a9
+  dolly-backend-dev: f0174d28-cb33-44f9-a7b5-09e52582e601
   testnorge-varslinger-api: a1dca941-bdd5-4705-a1a4-04cf76473040
   testnorge-tilbakemelding-api: 0f8c4430-19e4-4628-8e89-1dd89a1d613d
   testnorge-arbeidsforhold-export-api: 06c9b9c1-d370-40ea-8181-2c4a6858392f
@@ -19,7 +18,6 @@ applications:
   organisasjon-bestilling-service: 213b750d-7a71-40bb-ada6-81530e61dcd5
   organisasjon-orgnummer-service: cc5eab78-8ec7-4f4f-8b2f-7e6f46870a48
   ereg-batch-status-service: 67f507ff-399c-4853-9eb3-3dc6aabc8289
-  organisasjon-forvalter: 80f07134-375b-4df8-be48-2ba877774c6c
   testnorge-arbeidsforhold-api: 90e047cc-cc80-4da3-abb2-87ea2e98beed
   organisasjon-mottak-service: 9da0741a-ff41-4046-8635-6742298d74a4
   jenkins-batch-status-service: 34c2e87a-0711-4ef1-b644-55d86a375e7a
@@ -31,6 +29,7 @@ applications:
   mn-organiasasjon-api: a9109f54-8cae-4af2-98e3-8c56a1f5c9ad
   udi-stub-dev: 4426ef7d-f148-4d19-8a03-b0d07a451938
   udi-stub: f4620953-c7af-4e60-8cbb-03de57554b86
+  testnav-organisasjon-forvalter: dev-gcp.dolly.testnav-organisasjon-forvalter
   person-search-service: dev-fss.dolly.person-search-service
   mn-original-populasjon: dev-fss.dolly.mn-original-populasjon
   testnav-statistikk-service: dev-gcp.dolly.testnav-statistikk-service
@@ -50,6 +49,7 @@ applications:
   testnav-organisasjon-faste-data-service: dev-gcp.dolly.testnav-organisasjon-faste-data-service
   testnav-generer-organisasjon-populasjon-service: dev-gcp.dolly.testnav-generer-organisasjon-populasjon-service
   testnav-generer-synt-amelding-service: dev-gcp.dolly.testnav-generer-synt-amelding-service
+  testnorge-profil-api-dev: f73bfcd0-a1f5-4d3f-bfb4-4d0361191438
 
 zuul:
   routes:
