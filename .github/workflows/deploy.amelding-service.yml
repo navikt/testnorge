@@ -45,4 +45,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
-          RESOURCE: apps/amelding-service/nais.yml
+          RESOURCE: apps/amelding-service/config.yml
