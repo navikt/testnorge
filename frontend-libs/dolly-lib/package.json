@@ -1,7 +1,7 @@
 {
   "name": "@navikt/dolly-lib",
   "version": "1.0.0",
-  "description": "Bibliotek for dolly funsjoner.",
+  "description": "Bibliotek for dolly funksjoner.",
   "main": "lib/index.js",
   "scripts": {
     "build": "tsc -p ."
