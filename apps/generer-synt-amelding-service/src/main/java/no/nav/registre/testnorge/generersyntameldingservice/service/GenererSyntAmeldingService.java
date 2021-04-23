@@ -50,8 +50,8 @@ public class GenererSyntAmeldingService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sluttdato kan ikke være før startdato.");
         }
         var antallMeldinger = 0;
-        var enddate = sluttdato.withDayOfMonth(sluttdato.withDayOfMonth(1).lengthOfMonth());
-        while (startdato.isBefore(enddate.plusDays(1))) {
+        var lastDayInEnddateMonth = sluttdato.withDayOfMonth(sluttdato.withDayOfMonth(1).lengthOfMonth());
+        while (startdato.isBefore(lastDayInEnddateMonth.plusDays(1))) {
             antallMeldinger += 1;
             startdato = startdato.plusMonths(1);
         }
