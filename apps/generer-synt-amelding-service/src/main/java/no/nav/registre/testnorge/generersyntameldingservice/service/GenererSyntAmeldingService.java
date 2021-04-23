@@ -47,7 +47,7 @@ public class GenererSyntAmeldingService {
 
     int getAntallMeldinger(LocalDate startdato, LocalDate sluttdato) {
         if (sluttdato.isBefore(startdato)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sluttdato må være lik eller etter startdato.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sluttdato kan ikke være før startdato.");
         }
         var antallMeldinger = 0;
         var enddate = sluttdato.withDayOfMonth(sluttdato.withDayOfMonth(1).lengthOfMonth());
