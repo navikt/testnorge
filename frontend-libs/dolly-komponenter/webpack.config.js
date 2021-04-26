@@ -17,11 +17,7 @@ module.exports = {
       },
       {
         test: /\.(png|jpe?g|gif|svg)$/i,
-        use: [
-          {
-            loader: 'file-loader',
-          },
-        ],
+        loader: 'file-loader',
       },
       {
         test: /\.tsx?$/,
@@ -51,6 +47,6 @@ module.exports = {
     path: path.resolve(__dirname, 'lib'),
   },
   optimization: {
-    minimize: true,
+    minimize: false,
   },
 };
