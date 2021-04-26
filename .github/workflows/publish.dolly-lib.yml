@@ -35,8 +35,8 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref }}
-      - name: Publish to npmjs
-        uses: JS-DevTools/npm-publish@v1
-        with:
-          access: public
-          token: ${{ secrets.NPM_TOKEN }}
+      - name: npm publish
+        run: npm publish --access public
+        working-directory: frontend-libs/dolly-lib/
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
