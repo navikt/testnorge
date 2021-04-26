@@ -4,7 +4,7 @@
   "description": "Bibliotek for dolly komponeter.",
   "main": "lib/index.js",
   "scripts": {
-    "build": "tsc -p ."
+    "build": "webpack"
   },
   "types": "lib",
   "author": {
@@ -51,8 +51,17 @@
     "@types/react-router-dom": "^5.1.5",
     "@types/react-select": "^4.0.13",
     "@types/styled-components": "^5.1.7",
+    "prettier": "2.2.1",
+    "ts-loader": "^9.1.1",
     "typescript": "^4.2.4",
-    "prettier": "2.2.1"
+    "webpack": "^5.35.1",
+    "webpack-cli": "^4.6.0",
+    "css-loader": "^4.3.0",
+    "file-loader": "^6.2.0",
+    "less": "^3.12.2",
+    "less-loader": "^7.0.1",
+    "mini-css-extract-plugin": "^0.11.2",
+    "optimize-css-assets-webpack-plugin": "^5.0.4"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
