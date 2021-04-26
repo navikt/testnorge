@@ -301,3 +301,7 @@ project(":generer-organisasjon-populasjon-service").projectDir = file('apps/gene
 
 include 'syntrest-proxy'
 project(":syntrest-proxy").projectDir = file('proxies/syntrest-proxy')
+
+include 'amelding-service'
+project(":amelding-service").projectDir = file('apps/amelding-service')
+

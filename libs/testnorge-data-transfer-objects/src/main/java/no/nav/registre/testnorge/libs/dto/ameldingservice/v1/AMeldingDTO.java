@@ -1,21 +1,23 @@
-package no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2;
+package no.nav.registre.testnorge.libs.dto.ameldingservice.v1;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Value;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class VirksomhetDTO {
+public class AMeldingDTO {
     @JsonProperty(required = true)
-    private String organisajonsnummer;
+    private LocalDate kalendermaaned;
     @JsonProperty(required = true)
-    private List<PersonDTO> personer;
+    private String opplysningspliktigOrganisajonsnummer;
+    @JsonProperty(required = true)
+    private List<VirksomhetDTO> virksomheter;
 }

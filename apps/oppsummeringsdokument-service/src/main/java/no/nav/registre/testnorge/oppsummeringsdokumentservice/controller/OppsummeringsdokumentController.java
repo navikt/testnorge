@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.adapter.OppsummeringsdokumentAdapter;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.domain.Oppsummeringsdokument;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,7 +32,7 @@ public class OppsummeringsdokumentController {
     private final OppsummeringsdokumentAdapter adapter;
 
     @GetMapping
-    public ResponseEntity<List<OppsummeringsdokumentDTO>> getAll(@RequestHeader("miljo") String miljo){
+    public ResponseEntity<List<OppsummeringsdokumentDTO>> getAll(@RequestHeader("miljo") String miljo) {
         var documents = adapter.getAllCurrentDocumentsBy(miljo);
         return ResponseEntity.ok(documents.stream().map(Oppsummeringsdokument::toDTO).collect(Collectors.toList()));
     }
@@ -62,9 +63,10 @@ public class OppsummeringsdokumentController {
     public ResponseEntity<HttpStatus> save(
             @RequestBody OppsummeringsdokumentDTO dto,
             @RequestHeader("miljo") String miljo,
-            @RequestHeader("origin") String origin
+            @RequestHeader("origin") String origin,
+            @RequestHeader Populasjon populasjon
     ) {
-        var opplysningspliktig = new Oppsummeringsdokument(dto);
+        var opplysningspliktig = new Oppsummeringsdokument(dto, populasjon);
         var id = adapter.save(opplysningspliktig, miljo, origin);
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -72,12 +74,15 @@ public class OppsummeringsdokumentController {
                 .buildAndExpand(id)
                 .toUri();
 
-        return ResponseEntity.created(uri).build();
+        return ResponseEntity.created(uri).header("ID", id).build();
     }
 
     @DeleteMapping
-    public ResponseEntity<HttpStatus> delete() {
-        adapter.deleteAll();
+    public ResponseEntity<HttpStatus> delete(
+            @RequestHeader("miljo") String miljo,
+            @RequestHeader Populasjon populasjon
+    ) {
+        adapter.deleteAllBy(miljo, populasjon);
         return ResponseEntity.noContent().build();
     }
 }

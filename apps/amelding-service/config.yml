@@ -1,0 +1,54 @@
+﻿apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: testnav-amelding-service
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  image: {{ image }}
+  port: 8080
+  accessPolicy:
+    inbound:
+      rules:
+        - application: team-dolly-lokal-app
+          cluster: dev-fss
+        - application: testnorge-oversikt-frontend
+          cluster: dev-fss
+        - application: dolly-backend-dev
+          cluster: dev-fss
+        - application: dolly-backend
+          cluster: dev-fss
+        - application: dolly-frontend-dev
+          cluster: dev-fss
+        - application: dolly-frontend
+          cluster: dev-fss
+    outbound:
+      rules:
+        - application: oppsummeringsdokument-service
+  azure:
+    application:
+      enabled: true
+      tenant: nav.no
+  liveness:
+    path: /internal/isAlive
+    initialDelay: 4
+    periodSeconds: 5
+    failureThreshold: 500
+  readiness:
+    path: /internal/isReady
+    initialDelay: 4
+    periodSeconds: 5
+    failureThreshold: 500
+  replicas:
+    min: 1
+    max: 1
+  resources:
+    requests:
+      cpu: 200m
+      memory: 1024Mi
+    limits:
+      cpu: 500m
+      memory: 2048Mi
+  ingresses:
+    - "https://testnav-amelding-service.dev.intern.nav.no"

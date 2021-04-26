@@ -14,8 +14,6 @@ consumers:
     namespace: dolly
     name: mn-organisasjon-api
     url: https://mn-organisasjon-api.dev.adeo.no
-  kodeverk:
-    url: https://kodeverk.dev.adeo.no
   syntrest:
     url: https://syntrest.dev.adeo.no
   oppsummeringsdokument-service:
