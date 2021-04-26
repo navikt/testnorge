@@ -1,6 +1,7 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
   entry: './src/index.ts',
@@ -43,10 +44,13 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: '[name].[contenthash:8].css',
     }),
+    new CleanWebpackPlugin(),
   ],
   output: {
     filename: 'bundle.[contenthash:8].js',
     path: path.resolve(__dirname, 'lib'),
+    library: 'dolly-komponenter',
+    libraryTarget: 'umd',
   },
   optimization: {
     minimize: false,
