@@ -1,2 +1,2 @@
 export * as Api from './api';
-export * from './error';
+export { NotFoundError } from './error';
