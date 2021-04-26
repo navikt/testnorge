@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { navLogo } from '../../assets';
+import { navLogo } from './../../assets';
 
 const Header = styled.header`
   padding: 15px 40px;

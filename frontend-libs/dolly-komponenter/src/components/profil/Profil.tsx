@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { dollyLogo } from '../../assets';
+import { dollyLogo } from './../../assets';
 
 type Props = {
   profilbilde?: Response;
