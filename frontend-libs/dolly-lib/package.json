@@ -1,6 +1,6 @@
 {
   "name": "@navikt/dolly-lib",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Bibliotek for dolly funksjoner.",
   "main": "lib/index.js",
   "scripts": {
@@ -23,4 +23,3 @@
     "url": "git+https://github.com/navikt/testnorge.git"
   }
 }
-
