@@ -33,10 +33,15 @@ spec:
     outbound:
       rules:
         - application: organisasjon-bestilling-service
+          cluster: dev-gcp
         - application: generer-navn-service
+          cluster: dev-gcp
         - application: testnav-adresse-service
+          cluster: dev-gcp
         - application: testnav-organisasjon-service
+          cluster: dev-gcp
         - application: testnav-miljoer-service
+          cluster: dev-gcp
       external:
         - host: https://organisasjon-orgnummer-service.dev-fss-pub.nais.io
   gcp:
