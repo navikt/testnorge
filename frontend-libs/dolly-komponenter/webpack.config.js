@@ -20,9 +20,11 @@ module.exports = {
         loader: 'file-loader',
       },
       {
-        test: /\.tsx?$/,
-        use: 'ts-loader',
+        test: /\.js|.ts(x?)$/,
         exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+        },
       },
     ],
   },

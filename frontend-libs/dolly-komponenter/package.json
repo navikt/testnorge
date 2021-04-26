@@ -51,6 +51,7 @@
     "@types/react-router-dom": "^5.1.5",
     "@types/react-select": "^4.0.13",
     "@types/styled-components": "^5.1.7",
+    "babel-loader": "^8.2.2",
     "prettier": "2.2.1",
     "ts-loader": "^9.1.1",
     "typescript": "^4.2.4",
