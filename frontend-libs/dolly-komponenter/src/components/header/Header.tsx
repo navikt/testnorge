@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 // @ts-ignore
-import navLogo from '@/assets/nav-logo-hvit.png';
+import navLogo from '../../assets/nav-logo-hvit.png';
 
 const Header = styled.header`
   padding: 15px 40px;

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 // @ts-ignore
-import dollyLogo from '@/assets/dolly.svg';
+import dollyLogo from '../../assets/dolly.svg';
 
 type Props = {
   profilbilde?: Response;
