@@ -40,7 +40,7 @@ public class ImportService {
 
                 miljoerServiceConsumer.getOrgMiljoer();
 
-        return miljoerAaSjekke.parallelStream()
+        return miljoerAaSjekke.stream()
                 .filter(StringUtils::isNotBlank)
                 .map(env -> OrganisasjonMiljoe.builder()
                         .organisasjon(acquireOrganisasjon(orgnummer, env))
@@ -57,7 +57,7 @@ public class ImportService {
             return null;
         }
         RsOrganisasjon organisasjon = mapperFacade.map(organisasjonDto, RsOrganisasjon.class);
-        organisasjon.setUnderenheter(organisasjonDto.getDriverVirksomheter().parallelStream()
+        organisasjon.setUnderenheter(organisasjonDto.getDriverVirksomheter().stream()
                 .map(orgnr -> acquireOrganisasjon(orgnr, environment))
                 .collect(Collectors.toList()));
         return organisasjon;
