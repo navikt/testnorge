@@ -1,6 +1,6 @@
 {
   "name": "@navikt/dolly-lib",
-  "version": "1.0.1",
+  "version": "1.0.5",
   "description": "Bibliotek for dolly funksjoner.",
   "main": "lib/index.js",
   "scripts": {
@@ -16,7 +16,7 @@
     "typescript": "^4.2.4"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "registry": "https://registry.npmjs.org"
   },
   "repository": {
     "type": "git",
