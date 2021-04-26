@@ -2,7 +2,6 @@ name: Publish dolly-lib
 
 on:
   push:
-    branches: master
     paths:
       - frontend-libs/dolly-lib/**
 
@@ -15,11 +14,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '11.x'
-          registry-url: https://npm.pkg.github.com/
-          scope: '@navikt'
       - name: Build code
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npm ci
           npm run build
@@ -32,7 +27,7 @@ jobs:
           npm version patch
           git add package.json && git add package-lock.json
           PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]')
-          git commit -m "Bump version $PACKAGE_VERSION, $COMMIT_MESSAGE, [skip ci]"
+          git commit -m "Bump to version $PACKAGE_VERSION, $COMMIT_MESSAGE, [skip ci]"
           git tag $PACKAGE_VERSION
         working-directory: frontend-libs/dolly-lib/
       - name: Push changes
@@ -40,8 +35,8 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref }}
-      - name: npm publish
-        run: npm publish --access public
-        working-directory: frontend-libs/dolly-lib/
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish to npmjs
+      - uses: JS-DevTools/npm-publish@v1
+        with:
+          access: public
+          token: ${{ secrets.NPM_TOKEN }}
