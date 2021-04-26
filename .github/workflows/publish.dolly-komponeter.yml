@@ -1,9 +1,9 @@
-name: Publish dolly-komponeter
+name: Publish dolly-komponenter
 
 on:
   push:
     paths:
-      - frontend-libs/dolly-komponeter/**
+      - frontend-libs/dolly-komponenter/**
 
 jobs:
   build:
@@ -19,7 +19,7 @@ jobs:
         run: |
           npm ci
           npm run build
-        working-directory: frontend-libs/dolly-komponeter/
+        working-directory: frontend-libs/dolly-komponenter/
       - name: Bump version
         run: |
           git config --global user.email "dolly@nav.no"
@@ -30,7 +30,7 @@ jobs:
           PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]')
           git commit -m "Bump to version $PACKAGE_VERSION, $COMMIT_MESSAGE, [skip ci]"
           git tag $PACKAGE_VERSION
-        working-directory: frontend-libs/dolly-komponeter/
+        working-directory: frontend-libs/dolly-komponenter/
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
@@ -38,6 +38,6 @@ jobs:
           branch: ${{ github.ref }}
       - name: Publish
         run: npm publish --access public
-        working-directory: frontend-libs/dolly-komponeter/
+        working-directory: frontend-libs/dolly-komponenter/
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
