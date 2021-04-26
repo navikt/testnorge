@@ -6,7 +6,7 @@ import no.nav.dolly.bestilling.organisasjonforvalter.domain.BestillingResponse;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployRequest;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployResponse;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDetaljer;
-import no.nav.dolly.config.credentials.OrganisasjonServiceProperties;
+import no.nav.dolly.config.credentials.OrganisasjonForvalterProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.oauth2.domain.AccessToken;
 import no.nav.dolly.security.oauth2.service.TokenService;
@@ -34,9 +34,9 @@ public class OrganisasjonConsumer {
 
     private final TokenService tokenService;
     private final WebClient webClient;
-    private final OrganisasjonServiceProperties serviceProperties;
+    private final OrganisasjonForvalterProperties serviceProperties;
 
-    public OrganisasjonConsumer(TokenService tokenService, OrganisasjonServiceProperties serviceProperties) {
+    public OrganisasjonConsumer(TokenService tokenService, OrganisasjonForvalterProperties serviceProperties) {
         this.tokenService = tokenService;
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder()

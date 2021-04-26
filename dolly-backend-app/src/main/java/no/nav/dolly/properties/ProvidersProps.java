@@ -39,7 +39,6 @@ public class ProvidersProps {
     private DetaljertSykemelding detaljertSykemelding = new DetaljertSykemelding();
     private Helsepersonell helsepersonell = new Helsepersonell();
     private Joark joark = new Joark();
-    private OrganisasjonForvalter organisasjonForvalter = new OrganisasjonForvalter();
 
     @Getter
     @Setter
@@ -286,16 +285,6 @@ public class ProvidersProps {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Joark {
-
-        private String url;
-    }
-
-    @Getter
-    @Setter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class OrganisasjonForvalter {
 
         private String url;
     }
