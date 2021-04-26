@@ -15,6 +15,9 @@
   "devDependencies": {
     "typescript": "^4.2.4"
   },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/navikt/testnorge.git"
