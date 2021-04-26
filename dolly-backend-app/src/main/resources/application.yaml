@@ -18,11 +18,11 @@ consumers:
     url: https://testnav-helsepersonell-service.dev.intern.nav.no
     cluster: dev-gcp
 
-  testnav-organisasjon-forvalter:
-    name: organisasjon-forvalter
+  testnav-organisasjon-service:
+    name: testnav-organisasjon-service
     namespace: dolly
-    url: https://organisasjon-forvalter.dev.intern.nav.no
-    cluster: dev-fss
+    url: https://testnav-organisasjon-service.dev.intern.nav.no
+    cluster: dev-gcp
 
 #### APP DB ####
 ? app.datasource.onsHosts

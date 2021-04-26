@@ -6,6 +6,6 @@ import org.springframework.context.annotation.Configuration;
 
 
 @Configuration
-@ConfigurationProperties(prefix = "consumers.testnav-organisasjon-forvalter")
-public class OrganisasjonForvalterProperties extends NaisServerProperties {
+@ConfigurationProperties(prefix = "consumers.testnav-organisasjon-service")
+public class OrganisasjonServiceProperties extends NaisServerProperties {
 }
