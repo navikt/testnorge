@@ -2,6 +2,7 @@ package no.nav.registre.testnorge.libs.common.command.organisasjonservice.v1;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -9,8 +10,6 @@ import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.concurrent.Callable;
-
-import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -34,12 +33,13 @@ public class GetOrganisasjonCommand implements Callable<OrganisasjonDTO> {
                     .header("miljo", this.miljo)
                     .retrieve()
                     .bodyToMono(OrganisasjonDTO.class)
-                    .retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(3)))
-                    .block();
+                    .retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(3))
+                            .filter(throwable -> !(throwable instanceof WebClientResponseException.NotFound))
+                    ).block();
             log.info("Organisasjon {} hentet fra {}.", orgnummer, miljo);
             return organiasjon;
         } catch (WebClientResponseException.NotFound e) {
-            log.warn("Organisasjon med orgnummer {} ikke funnet.", orgnummer);
+            log.warn("Organisasjon med orgnummer {} ikke funnet i {}.", orgnummer, miljo);
             return null;
         }
     }
