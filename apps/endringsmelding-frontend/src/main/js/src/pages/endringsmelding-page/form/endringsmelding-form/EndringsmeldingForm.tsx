@@ -2,10 +2,10 @@ import React, { useReducer } from 'react';
 import { Search } from '@/components/search';
 import { Hovedknapp } from 'nav-frontend-knapper';
 
-import { Form, Line } from '@/components/form';
+import { Form, Line } from '@navikt/dolly-komponenter';
 import EndringsmeldingService from '@/service/EndringsmeldingService';
 import { State, reducer, Action } from './EndringsmeldingReducer';
-import { ErrorAlertstripe, SuccessAlertstripe } from '@/components/alertstripe';
+import { ErrorAlertstripe, SuccessAlertstripe } from '@navikt/dolly-komponenter';
 
 type Props<T> = {
   children: React.ReactNode;

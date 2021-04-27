@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@navikt/dolly-komponenter": "0.0.17",
+    "@navikt/dolly-komponenter": "0.0.20",
     "@navikt/dolly-lib": "^1.0.6",
     "@navikt/ds-icons": "^0.1.5",
     "@navikt/fnrvalidator": "^1.1.3",
