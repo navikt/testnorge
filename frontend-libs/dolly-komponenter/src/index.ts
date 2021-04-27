@@ -4,3 +4,4 @@ export { DatePicker } from './date-picker';
 export { Header } from './header';
 export { Page } from './page';
 export { Profil } from './profil';
+export { Select } from './select';
