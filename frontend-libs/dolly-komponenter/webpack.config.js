@@ -5,7 +5,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
   entry: './src/index.ts',
-  devtool: 'source-map',
+  devtool: 'inline-source-map',
   module: {
     rules: [
       {
@@ -31,6 +31,20 @@ module.exports = {
       },
     ],
   },
+  externals: {
+    react: {
+      root: 'React',
+      commonjs2: 'react',
+      commonjs: 'react',
+      amd: 'react',
+    },
+    'react-dom': {
+      root: 'ReactDOM',
+      commonjs2: 'react-dom',
+      commonjs: 'react-dom',
+      amd: 'react-dom',
+    },
+  },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
   },
@@ -55,6 +69,6 @@ module.exports = {
     libraryTarget: 'umd',
   },
   optimization: {
-    minimize: true,
+    minimize: false,
   },
 };

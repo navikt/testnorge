@@ -1,12 +1,13 @@
 import React from 'react';
 
-import { Header } from '@/components/header';
-import { ProfilLoader } from '@/components/profil';
+import { Header } from '@navikt/dolly-komponenter';
 import { EndringsmeldingPage } from '@/pages';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import LoginPage from '@/pages/login-page/LoginPage';
 
 function App() {
+  console.log(Header);
+
   return (
     <Router>
       <Switch>
@@ -15,9 +16,7 @@ function App() {
           <LoginPage />
         </Route>
         <Route path="/">
-          <Header>
-            <ProfilLoader />
-          </Header>
+          <Header />
           <EndringsmeldingPage />
         </Route>
       </Switch>
