@@ -7,4 +7,5 @@ export {
   DatePicker,
   Header,
   Page,
+  Profil,
 } from './components';

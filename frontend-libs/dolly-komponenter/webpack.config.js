@@ -49,12 +49,12 @@ module.exports = {
     new CleanWebpackPlugin(),
   ],
   output: {
-    filename: 'bundle.[contenthash:8].js',
+    filename: 'index.js',
     path: path.resolve(__dirname, 'lib'),
     library: 'dolly-komponenter',
     libraryTarget: 'umd',
   },
   optimization: {
-    minimize: false,
+    minimize: true,
   },
 };
