@@ -1,3 +1,4 @@
-import * as logoHvit from "./nav-logo-hvit.png";
+import * as navLogo from "./nav-logo-hvit.png";
+import * as dollyLogo from "./dolly.svg";
 
-export { logoHvit };
+export { navLogo, dollyLogo };
