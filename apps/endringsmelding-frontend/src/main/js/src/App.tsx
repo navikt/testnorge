@@ -7,8 +7,6 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import LoginPage from '@/pages/login-page/LoginPage';
 
 function App() {
-  console.log(Header);
-
   return (
     <Router>
       <Switch>

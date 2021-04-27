@@ -4,7 +4,10 @@ const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
-  entry: './src/index.ts',
+  entry: {
+    main: './src/index.ts',
+    profil: './src/profil/index.ts',
+  },
   devtool: 'inline-source-map',
   module: {
     rules: [
@@ -63,12 +66,9 @@ module.exports = {
     new CleanWebpackPlugin(),
   ],
   output: {
-    filename: 'index.js',
+    filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'lib'),
     library: 'dolly-komponenter',
     libraryTarget: 'umd',
-  },
-  optimization: {
-    minimize: false,
   },
 };

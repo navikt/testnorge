@@ -2,7 +2,7 @@
   "name": "@navikt/dolly-komponenter",
   "version": "0.0.14",
   "description": "Bibliotek for dolly komponeter.",
-  "main": "lib/index.js",
+  "main": "lib/main.bundle.js",
   "scripts": {
     "build": "webpack"
   },
@@ -40,7 +40,6 @@
     "nav-frontend-typografi-style": "^1.0.34",
     "prop-types": "^15.7.2",
     "react-day-picker": "^7.4.8",
-    "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
     "react-select": "^4.1.0",
     "react": "^16.14.0",
@@ -50,7 +49,6 @@
   "devDependencies": {
     "@types/react": "^16.9.49",
     "@types/react-dom": "^16.9.8",
-    "@types/react-router-dom": "^5.1.5",
     "@types/react-select": "^4.0.13",
     "@types/styled-components": "^5.1.7",
     "clean-webpack-plugin": "^4.0.0-alpha.0",
