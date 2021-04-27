@@ -14,11 +14,11 @@ module.exports = {
     rules: [
       {
         test: /\.png/,
-        type: "asset/resource",
+        type: "asset/inline",
       },
       {
         test: /\.svg/,
-        type: "asset/resource",
+        type: "asset/inline",
       },
     ],
   },

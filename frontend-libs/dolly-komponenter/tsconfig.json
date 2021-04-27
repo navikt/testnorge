@@ -66,6 +66,5 @@
     "forceConsistentCasingInFileNames": true,       /* Disallow inconsistently-cased references to the same file. */
     "jsx": "react"
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "lib", "react", "react-dom"]
+  "include": ["src"]
 }

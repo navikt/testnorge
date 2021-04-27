@@ -18,11 +18,11 @@ module.exports = {
       },
       {
         test: /\.png/,
-        type: 'asset/source',
+        type: 'asset/inline',
       },
       {
         test: /\.svg/,
-        type: 'asset/source',
+        type: 'asset/inline',
       },
       {
         test: /\.js|.ts(x?)$/,
@@ -32,7 +32,7 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js', ''],
+    extensions: ['.tsx', '.ts', '.js'],
   },
   plugins: [
     new OptimizeCssAssetsPlugin({
@@ -51,9 +51,8 @@ module.exports = {
   output: {
     filename: 'bundle.[contenthash:8].js',
     path: path.resolve(__dirname, 'lib'),
-    library: '@navikt/dolly-komponenter',
+    library: 'dolly-komponenter',
     libraryTarget: 'umd',
-    umdNamedDefine: true,
   },
   optimization: {
     minimize: false,
