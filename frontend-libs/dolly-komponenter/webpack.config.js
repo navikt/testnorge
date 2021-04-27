@@ -6,7 +6,6 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 module.exports = {
   entry: {
     main: './src/index.ts',
-    profil: './src/profil/index.ts',
   },
   devtool: 'inline-source-map',
   module: {
@@ -68,7 +67,5 @@ module.exports = {
   output: {
     filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'lib'),
-    library: 'dolly-komponenter',
-    libraryTarget: 'umd',
   },
 };
