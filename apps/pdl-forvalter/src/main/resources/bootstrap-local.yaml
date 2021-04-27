@@ -19,7 +19,7 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
   datasource:
-    url: jdbc:postgresql://dev-pg.intern.nav.no:5432/pdl-forvalter-test?gssEncMode=disable
+    url: jdbc:postgresql://dev-pg.intern.nav.no:5432/pdl-forvalter-test
     hikari:
       maximum-pool-size: 3
       minimum-idle: 1
