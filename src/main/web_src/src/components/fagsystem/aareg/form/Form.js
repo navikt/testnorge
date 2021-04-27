@@ -6,6 +6,7 @@ import { panelError } from '~/components/ui/form/formUtils'
 import { erForste } from '~/components/ui/form/formUtils'
 import { validation } from './validation'
 import { ArbeidsforholdForm } from './partials/arbeidsforholdForm'
+import { ArbeidsforholdToggle } from './partials/arbeidsforholdToggle'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { initialValues } from './initialValues'
 
@@ -19,16 +20,18 @@ export const AaregForm = ({ formikBag }) => (
 			iconType="arbeid"
 			startOpen={() => erForste(formikBag.values, [aaregAttributt])}
 		>
-			<FormikDollyFieldArray
+			<ArbeidsforholdToggle formikBag={formikBag} />
+			{/* <FormikDollyFieldArray
 				name="aareg"
 				header="Arbeidsforhold"
 				newEntry={initialValues[0]}
 				canBeEmpty={false}
 			>
 				{(path, idx) => <ArbeidsforholdForm path={path} key={idx} formikBag={formikBag} />}
-			</FormikDollyFieldArray>
+			</FormikDollyFieldArray> */}
 		</Panel>
 	</Vis>
 )
 
-AaregForm.validation = validation
+//TODO: skriv ny validation
+// AaregForm.validation = validation

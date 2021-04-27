@@ -24,33 +24,35 @@ export const ArbeidsavtaleForm = ({ formikBag, path }) => {
 
 	const [visning, setVisning] = useState(initialValue(path, formikBag))
 
-	const handleToggleChange = event => {
-		const { value } = event.target
-		setVisning(avtaleValg[value])
+	console.log('arbeidsavtalePath :>> ', arbeidsavtalePath)
 
-		arbeidsavtale.avtaltArbeidstimerPerUke == '' && visning === avtaleValg.avtaltArbeidstimerPerUke
-			? formikBag.setFieldValue(`${path}.arbeidsavtale.antallKonverterteTimer`, '')
-			: formikBag.setFieldValue(`${path}.arbeidsavtale.avtaltArbeidstimerPerUke`, '')
+	// const handleToggleChange = event => {
+	// 	const { value } = event.target
+	// 	setVisning(avtaleValg[value])
 
-		arbeidsavtale.antallKonverterteTimer == '' && visning === avtaleValg.antallKonverterteTimer
-			? formikBag.setFieldValue(`${path}.arbeidsavtale.avtaltArbeidstimerPerUke`, '')
-			: formikBag.setFieldValue(`${path}.arbeidsavtale.antallKonverterteTimer`, '')
-	}
+	// 	arbeidsavtale.avtaltArbeidstimerPerUke == '' && visning === avtaleValg.avtaltArbeidstimerPerUke
+	// 		? formikBag.setFieldValue(`${path}.arbeidsavtale.antallKonverterteTimer`, '')
+	// 		: formikBag.setFieldValue(`${path}.arbeidsavtale.avtaltArbeidstimerPerUke`, '')
 
-	const toggleValues = [
-		{
-			value: avtaleValg.avtaltArbeidstimerPerUke,
-			label: 'Avtalte arbeidstimer per uke'
-		},
-		{
-			value: avtaleValg.antallKonverterteTimer,
-			label: 'Antall konverterte timer'
-		}
-	]
+	// 	arbeidsavtale.antallKonverterteTimer == '' && visning === avtaleValg.antallKonverterteTimer
+	// 		? formikBag.setFieldValue(`${path}.arbeidsavtale.avtaltArbeidstimerPerUke`, '')
+	// 		: formikBag.setFieldValue(`${path}.arbeidsavtale.antallKonverterteTimer`, '')
+	// }
+
+	// const toggleValues = [
+	// 	{
+	// 		value: avtaleValg.avtaltArbeidstimerPerUke,
+	// 		label: 'Avtalte arbeidstimer per uke'
+	// 	},
+	// 	{
+	// 		value: avtaleValg.antallKonverterteTimer,
+	// 		label: 'Antall konverterte timer'
+	// 	}
+	// ]
 
 	return (
 		<div>
-			<h3>Arbeidsavtale</h3>
+			<h3>Ansettelsesdetaljer</h3>
 			<div className="flexbox--flex-wrap">
 				<FormikSelect
 					name={`${arbeidsavtalePath}.yrke`}
@@ -59,6 +61,11 @@ export const ArbeidsavtaleForm = ({ formikBag, path }) => {
 					size="xxlarge"
 					isClearable={false}
 					optionHeight={50}
+				/>
+				<FormikSelect
+					name={`${arbeidsavtalePath}.ansettelsesform`}
+					label="Ansettelsesform"
+					kodeverk={ArbeidKodeverk.AnsettelsesformAareg}
 				/>
 				<FormikTextInput
 					name={`${arbeidsavtalePath}.stillingsprosent`}
@@ -69,6 +76,10 @@ export const ArbeidsavtaleForm = ({ formikBag, path }) => {
 					name={`${arbeidsavtalePath}.endringsdatoStillingsprosent`}
 					label="Endringsdato stillingsprosent"
 				/>
+				<FormikDatepicker
+					name={`${arbeidsavtalePath}.endringsdatoLoenn`}
+					label="Endringsdato lønn"
+				/>
 				<FormikSelect
 					name={`${arbeidsavtalePath}.arbeidstidsordning`}
 					label="Arbeidstidsordning"
@@ -76,7 +87,13 @@ export const ArbeidsavtaleForm = ({ formikBag, path }) => {
 					size="xxlarge"
 					isClearable={false}
 				/>
-				<div className="toggle--wrapper">
+				<FormikTextInput
+					name={`${arbeidsavtalePath}.avtaltArbeidstimerPerUke`}
+					label="Avtalte arbeidstimer per uke"
+					type="number"
+					isclearable="true"
+				/>
+				{/* <div className="toggle--wrapper">
 					<ToggleGruppe onChange={handleToggleChange} name={arbeidsavtalePath}>
 						{toggleValues.map(val => (
 							<ToggleKnapp key={val.value} value={val.value} checked={visning === val.value}>
@@ -93,11 +110,11 @@ export const ArbeidsavtaleForm = ({ formikBag, path }) => {
 						type="number"
 						isclearable="true"
 					/>
-				</div>
-				<Hjelpetekst hjelpetekstFor="Avtalte arbeidstimer per uke og antall konverterte timer">
+				</div> */}
+				{/* <Hjelpetekst hjelpetekstFor="Avtalte arbeidstimer per uke og antall konverterte timer">
 					Antall konverterte timer og avtalte timer per uke kan ikke bli satt samtidig. Hvis feltet
 					er tomt blir det automatisk generert avhengig av stillingsprosentet.
-				</Hjelpetekst>
+				</Hjelpetekst> */}
 			</div>
 		</div>
 	)
