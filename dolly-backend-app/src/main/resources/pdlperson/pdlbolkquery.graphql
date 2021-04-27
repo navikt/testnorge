@@ -462,10 +462,6 @@ query($identer: [ID!]!) {
             sivilstand(historikk: false) {
                 type,
                 gyldigFraOgMed,
-                myndighet,
-                kommune,
-                sted,
-                utland,
                 relatertVedSivilstand,
                 bekreftelsesdato,
                 folkeregistermetadata {

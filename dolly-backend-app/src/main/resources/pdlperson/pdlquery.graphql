@@ -474,10 +474,6 @@ query($ident: ID!, $historikk: Boolean!) {
         sivilstand(historikk: $historikk) {
             type,
             gyldigFraOgMed,
-            myndighet,
-            kommune,
-            sted,
-            utland,
             relatertVedSivilstand,
             bekreftelsesdato,
             folkeregistermetadata {
