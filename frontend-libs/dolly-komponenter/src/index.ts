@@ -11,6 +11,5 @@ export {
   DatePickerFormItem,
   Header,
   Page,
-  Profil,
 } from './components';
 export * as Assets from './assets';

@@ -5,7 +5,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
   entry: './src/index.ts',
-  devtool: 'inline-source-map',
+  devtool: 'source-map',
   module: {
     rules: [
       {
@@ -17,20 +17,22 @@ module.exports = {
         use: [MiniCssExtractPlugin.loader, 'css-loader', 'less-loader'],
       },
       {
-        test: /\.(png|jpe?g|gif|svg)$/i,
-        loader: 'url-loader',
+        test: /\.png/,
+        type: 'asset/source',
+      },
+      {
+        test: /\.svg/,
+        type: 'asset/source',
       },
       {
         test: /\.js|.ts(x?)$/,
         exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-        },
+        loader: 'ts-loader',
       },
     ],
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
+    extensions: ['.tsx', '.ts', '.js', ''],
   },
   plugins: [
     new OptimizeCssAssetsPlugin({
@@ -49,8 +51,9 @@ module.exports = {
   output: {
     filename: 'bundle.[contenthash:8].js',
     path: path.resolve(__dirname, 'lib'),
-    library: 'dolly-komponenter',
+    library: '@navikt/dolly-komponenter',
     libraryTarget: 'umd',
+    umdNamedDefine: true,
   },
   optimization: {
     minimize: false,

@@ -14,6 +14,7 @@
   "license": "MIT",
   "dependencies": {
     "@navikt/ds-icons": "^0.1.5",
+    "@navikt/dolly-assets": "0.0.0",
     "@navikt/fnrvalidator": "^1.1.3",
     "classnames": "^2.2.6",
     "dayjs": "^1.10.4",
@@ -51,7 +52,6 @@
     "@types/react-router-dom": "^5.1.5",
     "@types/react-select": "^4.0.13",
     "@types/styled-components": "^5.1.7",
-    "babel-loader": "^8.2.2",
     "clean-webpack-plugin": "^4.0.0-alpha.0",
     "css-loader": "^4.3.0",
     "file-loader": "^6.2.0",
@@ -62,7 +62,6 @@
     "prettier": "2.2.1",
     "ts-loader": "^9.1.1",
     "typescript": "^4.2.4",
-    "url-loader": "^4.1.1",
     "webpack": "^5.35.1",
     "webpack-cli": "^4.6.0"
   },
