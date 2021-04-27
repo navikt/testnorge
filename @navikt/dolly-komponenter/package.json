@@ -1,7 +1,7 @@
 {
   "name": "@navikt/dolly-komponenter",
   "version": "1.0.0",
-  "description": "Bibliotek for dolly komponeter.",
+  "description": "Bibliotek for dolly komponenter.",
   "main": "lib/main.bundle.js",
   "scripts": {
     "build": "webpack"
