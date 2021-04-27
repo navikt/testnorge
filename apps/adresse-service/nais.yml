@@ -40,6 +40,10 @@ spec:
           cluster: dev-fss
         - application: team-dolly-lokal-app
           cluster: dev-fss
+        - application: testnav-organisajon-forvalter
+          cluster: dev-gcp
+        - application: testnav-pdl-forvalter
+          cluster: dev-gcp
     outbound:
       external:
         - host: https://testnav-pdl-proxy.dev-fss-pub.nais.io
