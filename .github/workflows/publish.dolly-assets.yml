@@ -2,7 +2,6 @@ name: Publish dolly-assets til npmjs
 
 on:
   push:
-    branches: master
     paths:
       - /@navikt/dolly-assets/**
 
