@@ -12,11 +12,6 @@
     "email": "dolly@nav.no"
   },
   "license": "MIT",
-  "peerDependencies": {
-    "react": "^16.14.0",
-    "styled-components": "^5.1.0",
-    "react-dom": "^16.14.0"
-  },
   "dependencies": {
     "@navikt/dolly-assets": "0.0.2",
     "@navikt/ds-icons": "^0.1.5",
@@ -47,7 +42,10 @@
     "react-day-picker": "^7.4.8",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
-    "react-select": "^4.1.0"
+    "react-select": "^4.1.0",
+    "react": "^16.14.0",
+    "styled-components": "^5.1.0",
+    "react-dom": "^16.14.0"
   },
   "devDependencies": {
     "@types/react": "^16.9.49",
