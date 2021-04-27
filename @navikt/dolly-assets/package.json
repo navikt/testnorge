@@ -1,19 +1,20 @@
 {
-  "name": "@navikt/dolly-lib",
-  "version": "1.0.6",
-  "description": "Bibliotek for dolly funksjoner.",
+  "name": "@navikt/dolly-assets",
+  "version": "1.0.0",
+  "description": "Dolly assets",
   "main": "lib/index.js",
   "scripts": {
-    "build": "tsc -p ."
+    "build": "webpack"
   },
-  "types": "lib",
   "author": {
     "name": "Team dolly",
     "email": "dolly@nav.no"
   },
   "license": "MIT",
   "devDependencies": {
-    "typescript": "^4.2.4"
+    "webpack": "^5.35.1",
+    "prettier": "2.2.1",
+    "webpack-cli": "^4.6.0"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
@@ -21,5 +22,11 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/navikt/testnorge.git"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "semi": true,
+    "tabWidth": 2,
+    "printWidth": 100
   }
 }

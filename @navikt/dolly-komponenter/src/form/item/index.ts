@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Input } from 'nav-frontend-skjema';
-import { Select } from '@/components/select';
-import { DatePicker } from '@/components/date-picker';
+import { Select } from '../../select';
+import { DatePicker } from '../../date-picker';
 
 const InputFormItem = styled(Input)`
   width: 50%;

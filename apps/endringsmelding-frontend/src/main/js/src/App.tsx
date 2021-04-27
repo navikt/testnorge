@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Header } from '@/components/header';
+import { Header } from '@navikt/dolly-komponenter';
 import { ProfilLoader } from '@/components/profil';
 import { EndringsmeldingPage } from '@/pages';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
