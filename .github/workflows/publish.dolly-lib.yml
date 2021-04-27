@@ -2,9 +2,8 @@ name: Publish dolly-lib til npmjs
 
 on:
   push:
-    branches: master
     paths:
-      - /@navikt/dolly-lib/**
+      - \@navikt/dolly-lib/**
 
 jobs:
   build:
@@ -20,7 +19,7 @@ jobs:
         run: |
           npm ci
           npm run build
-        working-directory: /@navikt/dolly-lib/
+        working-directory: /\@navikt/dolly-lib/
       - name: Bump version
         run: |
           git config --global user.email "dolly@nav.no"
@@ -31,7 +30,7 @@ jobs:
           PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]')
           git commit -m "Bump to version $PACKAGE_VERSION, $COMMIT_MESSAGE, [skip ci]"
           git tag $PACKAGE_VERSION
-        working-directory: /@navikt/dolly-lib/
+        working-directory: /\@navikt/dolly-lib/
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
@@ -39,6 +38,6 @@ jobs:
           branch: ${{ github.ref }}
       - name: Publish
         run: npm publish --access public
-        working-directory: /@navikt/dolly-lib/
+        working-directory: /\@navikt/dolly-lib/
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
