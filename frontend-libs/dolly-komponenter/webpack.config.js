@@ -67,5 +67,7 @@ module.exports = {
   output: {
     filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'lib'),
+    library: 'dolly-komponenter',
+    libraryTarget: 'umd',
   },
 };
