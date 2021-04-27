@@ -9,7 +9,7 @@
 
 # production
 *frontend/build/
-@navikt/*/lib/
+navikt/*/lib/
 
 *.DS_Store
 
