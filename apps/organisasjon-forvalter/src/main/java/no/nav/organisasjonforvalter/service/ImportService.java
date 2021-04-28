@@ -9,30 +9,39 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.organisasjonforvalter.consumer.MiljoerServiceConsumer;
 import no.nav.organisasjonforvalter.consumer.OrganisasjonServiceConsumer;
 import no.nav.organisasjonforvalter.dto.responses.RsOrganisasjon;
+import no.nav.organisasjonforvalter.jpa.entity.Organisasjon;
+import no.nav.organisasjonforvalter.jpa.repository.OrganisasjonRepository;
 import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
-import static org.apache.logging.log4j.util.Strings.isBlank;
 
 @Service
 @RequiredArgsConstructor
 public class ImportService {
 
     private final MiljoerServiceConsumer miljoerServiceConsumer;
-    private final OrganisasjonServiceConsumer organisasjonApiConsumer;
+    private final OrganisasjonServiceConsumer organisasjonServiceConsumer;
     private final MapperFacade mapperFacade;
+    private final OrganisasjonRepository organisasjonRepository;
+
+    private static Set<String> getAllOrgnr(Organisasjon organisasjon, Set<String> orgnr) {
+
+        orgnr.add(organisasjon.getOrganisasjonsnummer());
+        organisasjon.getUnderenheter().forEach(org -> getAllOrgnr(org, orgnr));
+        return orgnr;
+    }
 
     public Map<String, RsOrganisasjon> getOrganisasjoner(String orgnummer, Set<String> miljoer) {
 
-        Set<String> miljoerAaSjekke = nonNull(miljoer) &&
+        var miljoerAaSjekke = nonNull(miljoer) &&
                 miljoer.stream().anyMatch(miljoe ->
-                                miljoerServiceConsumer.getOrgMiljoer().stream().anyMatch(miljoe2 -> miljoe2.equals(miljoe))) ?
+                        miljoerServiceConsumer.getOrgMiljoer().stream().anyMatch(miljoe2 -> miljoe2.equals(miljoe))) ?
 
                 miljoer.stream().filter(miljoe ->
                         miljoerServiceConsumer.getOrgMiljoer().stream().anyMatch(miljoe2 -> miljoe2.equals(miljoe)))
@@ -40,26 +49,35 @@ public class ImportService {
 
                 miljoerServiceConsumer.getOrgMiljoer();
 
-        return miljoerAaSjekke.stream()
-                .filter(StringUtils::isNotBlank)
+        var dbOrganisasjon = organisasjonRepository.findByOrganisasjonsnummer(orgnummer);
+
+        var organisasjoner =
+                organisasjonServiceConsumer.getStatus(dbOrganisasjon.isPresent() ?
+                        getAllOrgnr(dbOrganisasjon.get(), new HashSet<>()) : Set.of(orgnummer), miljoerAaSjekke);
+
+        return organisasjoner.keySet().stream()
+                .filter(env -> !organisasjoner.get(env).entrySet().isEmpty())
                 .map(env -> OrganisasjonMiljoe.builder()
-                        .organisasjon(acquireOrganisasjon(orgnummer, env))
+                        .organisasjon(acquireOrganisasjon(env, orgnummer, organisasjoner))
                         .miljoe(env)
                         .build())
                 .filter(org -> nonNull(org.getOrganisasjon()))
                 .collect(Collectors.toMap(OrganisasjonMiljoe::getMiljoe, OrganisasjonMiljoe::getOrganisasjon));
     }
 
-    private RsOrganisasjon acquireOrganisasjon(String orgnummer, String environment) {
+    private RsOrganisasjon acquireOrganisasjon(String env, String orgnummer,
+                                               Map<String, Map<String, OrganisasjonDTO>> organisasjoner) {
 
-        OrganisasjonDTO organisasjonDto = organisasjonApiConsumer.getStatus(orgnummer, environment);
-        if (isBlank(organisasjonDto.getOrgnummer())) {
-            return null;
-        }
+        var organisasjonDto = organisasjoner.get(env).containsKey(orgnummer) ?
+                organisasjoner.get(env).get(orgnummer) :
+                organisasjonServiceConsumer.getStatus(orgnummer, env);
+
         RsOrganisasjon organisasjon = mapperFacade.map(organisasjonDto, RsOrganisasjon.class);
-        organisasjon.setUnderenheter(organisasjonDto.getDriverVirksomheter().stream()
-                .map(orgnr -> acquireOrganisasjon(orgnr, environment))
-                .collect(Collectors.toList()));
+        if (nonNull(organisasjonDto.getDriverVirksomheter())) {
+            organisasjon.setUnderenheter(organisasjonDto.getDriverVirksomheter().stream()
+                    .map(orgnr -> acquireOrganisasjon(env, orgnr, organisasjoner))
+                    .collect(Collectors.toList()));
+        }
         return organisasjon;
     }
 

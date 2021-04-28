@@ -34,7 +34,7 @@ public class DeploymentService {
     private final OrganisasjonRepository organisasjonRepository;
     private final OrganisasjonMottakConsumer organisasjonMottakConsumer;
     private final DeployStatusService deployStatusService;
-    private final OrganisasjonServiceConsumer organisasjonApiConsumer;
+    private final OrganisasjonServiceConsumer organisasjonServiceConsumer;
     private final MapperFacade mapperFacade;
 
     public DeployResponse deploy(DeployRequest request) {
@@ -74,7 +74,7 @@ public class DeploymentService {
     private void deployOrganisasjon(String uuid, Organisasjon organisasjon, String env) {
 
         if (!organisasjon.getOrganisasjonsnummer().equals(
-                organisasjonApiConsumer.getStatus(organisasjon.getOrganisasjonsnummer(), env).getOrgnummer())) {
+                organisasjonServiceConsumer.getStatus(organisasjon.getOrganisasjonsnummer(), env).getOrgnummer())) {
 
             organisasjonMottakConsumer.opprettOrganisasjon(uuid, organisasjon, env);
         } else {
