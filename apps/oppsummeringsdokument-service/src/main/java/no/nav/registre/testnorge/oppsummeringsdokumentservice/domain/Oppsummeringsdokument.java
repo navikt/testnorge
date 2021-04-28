@@ -119,6 +119,7 @@ public class Oppsummeringsdokument {
                 .stillingsprosent(value.getStillingsprosent())
                 .yrke(value.getYrke())
                 .permisjoner(value.getPermisjoner().stream().map(mapPermisjonDTO()).collect(Collectors.toList()))
+                .historikk(value.getHistorikk())
                 .fartoey(value.getFartoey() != null ? FartoeyDTO
                         .builder()
                         .skipstype(value.getFartoey().getSkipstype())
@@ -195,6 +196,7 @@ public class Oppsummeringsdokument {
             model.setSisteLoennsendringsdato(value.getSisteLoennsendringsdato());
             model.setStillingsprosent(value.getStillingsprosent());
             model.setYrke(value.getYrke());
+            model.setHistorikk(value.getHistorikk());
             if (value.getFartoey() != null) {
                 FartoeyModel fartoey = new FartoeyModel();
                 fartoey.setFartsomraade(value.getFartoey().getFartsomraade());
@@ -386,7 +388,6 @@ public class Oppsummeringsdokument {
         arbeidsforhold.setStillingsprosent(dto.getStillingsprosent() != null ? BigDecimal.valueOf(dto.getStillingsprosent()) : null);
         arbeidsforhold.setSisteLoennsendringsdato(toXMLGregorianCalendar(dto.getSisteLoennsendringsdato()));
         arbeidsforhold.getAvvik().addAll(dto.getAvvik().stream().map(mapDTOToAvvik()).collect(Collectors.toList()));
-
         if (dto.getPermisjoner() != null) {
             var permisjoner = dto.getPermisjoner().stream().map(permisjonDTO -> {
                 Permisjon permisjon = new Permisjon();

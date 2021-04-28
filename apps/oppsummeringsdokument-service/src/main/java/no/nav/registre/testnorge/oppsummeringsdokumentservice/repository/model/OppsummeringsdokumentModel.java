@@ -19,7 +19,7 @@ import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.Popula
 
 @Setter
 @Getter
-@Document(indexName = "oppsummeringsdokument-7")
+@Document(indexName = "oppsummeringsdokument-8")
 public class OppsummeringsdokumentModel implements Persistable<String> {
 
     @Id

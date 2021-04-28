@@ -21,13 +21,6 @@ import no.nav.registre.testnorge.libs.dto.syntrest.v1.PermisjonDTO;
 @Slf4j
 public class Arbeidsforhold {
 
-    public Arbeidsforhold(ArbeidsforholdDTO dto, String ident, String virksomhetsnummer, String historikk) {
-        this.dto = dto;
-        this.ident = ident;
-        this.virksomhetsnummer = virksomhetsnummer;
-        this.historikk = historikk;
-    }
-
     private final ArbeidsforholdDTO dto;
     private final String ident;
     private final String historikk;
@@ -85,6 +78,7 @@ public class Arbeidsforhold {
                 .sluttdato(response.getSluttdato().equals("") ? null : LocalDate.parse(response.getSluttdato()))
                 .arbeidsforholdId(arbeidsforholdId)
                 .permisjoner(permisjoner)
+                .historikk(historikk)
                 .fartoey(response.getFartoey() != null ? FartoeyDTO.builder()
                         .fartsomraade(response.getFartoey().getFartsomraade())
                         .skipsregister(response.getFartoey().getSkipsregister())
