@@ -18,10 +18,10 @@ public class TpsIdentAdapter implements IdentAdapter {
 
     @Override
     public Set<String> getIdenter(String miljo, int antall) {
-        if (antall / 10000 <= 1) {
+        if (antall <= MAX) {
             return hodejegerenConsumer.getIdenter(miljo, antall);
         }
-        log.warn("Splitter opp hening av identer i hodejegern, men pageing er ikke implemetert.");
+        log.warn("Splitter opp henting av identer i hodejegern, men pageing er ikke implementert.");
         var identer = new HashSet<String>();
         for (int index = 0; index < (int) Math.floor((float) antall / MAX); index++) {
             identer.addAll(hodejegerenConsumer.getIdenter(miljo, MAX));
