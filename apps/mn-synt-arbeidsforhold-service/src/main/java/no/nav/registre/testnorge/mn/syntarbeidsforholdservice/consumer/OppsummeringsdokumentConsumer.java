@@ -47,7 +47,7 @@ public class OppsummeringsdokumentConsumer {
             ApplicationProperties applicationProperties
     ) {
         this.applicationProperties = applicationProperties;
-        this.executor = Executors.newFixedThreadPool(20);
+        this.executor = Executors.newFixedThreadPool(10);
         this.accessTokenService = accessTokenService;
         this.properties = properties;
         this.webClient = WebClient

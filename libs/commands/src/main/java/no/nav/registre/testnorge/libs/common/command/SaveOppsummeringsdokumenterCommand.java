@@ -30,7 +30,7 @@ public class SaveOppsummeringsdokumenterCommand implements Callable<String> {
                 opplysningspliktigDTO.getOpplysningspliktigOrganisajonsnummer(),
                 opplysningspliktigDTO.getKalendermaaned()
         );
-        return webClient
+        var responseId = webClient
                 .put()
                 .uri(builder -> builder.path("/api/v1/oppsummeringsdokumenter").build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
@@ -42,10 +42,20 @@ public class SaveOppsummeringsdokumenterCommand implements Callable<String> {
                 .flatMap(response -> {
                     var id = response.headers().header("ID").stream().findFirst();
                     if (id.isEmpty()) {
-                        return Mono.error(new RuntimeException("Klarer ikke å finne iden fra opplysningspliktigsdokument."));
+                        return Mono.error(
+                                new RuntimeException("Klarer ikke å finne iden fra opplysningspliktigsdokument "  + opplysningspliktigDTO.getOpplysningspliktigOrganisajonsnummer() + " den " + opplysningspliktigDTO.getKalendermaaned() + ".")
+                        );
                     }
                     return Mono.just(id.get());
                 })
                 .block();
+
+        log.info(
+                "Opplysningspliktig {} sendt inn den {} med id {}",
+                opplysningspliktigDTO.getOpplysningspliktigOrganisajonsnummer(),
+                opplysningspliktigDTO.getKalendermaaned(),
+                responseId
+        );
+        return responseId;
     }
 }
