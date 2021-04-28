@@ -78,6 +78,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                                     TpsfBestilling tpsfBestilling = nonNull(bestKriterier.getTpsf()) ?
                                             mapperFacade.map(bestKriterier.getTpsf(), TpsfBestilling.class) : new TpsfBestilling();
                                     tpsfBestilling.setOpprettFraIdenter(new ArrayList<>(List.of(identStatus.getIdent())));
+                                    tpsfBestilling.setAntall(tpsfBestilling.getOpprettFraIdenter().size());
                                     List<String> leverteIdenter = tpsfService.opprettIdenterTpsf(tpsfBestilling);
 
                                     sendIdenterTilTPS(new ArrayList<>(List.of(bestilling.getMiljoer().split(","))),
