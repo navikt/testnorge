@@ -74,8 +74,8 @@ public class OrganisasjonController {
     }
 
     @Cacheable(CACHE_BEDRIFT)
-    @GetMapping("/underenheter")
-    @Operation(description = "Hent underenheter av type BEDR og AAFY fra database. Kun disse typer kan ha ansatte")
+    @GetMapping("/virksomheter")
+    @Operation(description = "Hent virksomheter av type BEDR og AAFY fra database. Kun disse typer kan ha ansatte")
     public List<UnderenhetResponse> getUnderenheter(@Parameter(description = "BrukerId fra Azure") @RequestParam String brukerid){
 
         return underenhetService.getUnderenheter(brukerid);
