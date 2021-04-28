@@ -35,6 +35,7 @@ consumers:
     name: testnav-organisasjon-service
     cluster: dev-gcp
     namespace: dolly
+    threads: 10
   testnav-miljoer-service:
     url: https://testnav-miljoer-service.dev.intern.nav.no
     name: testnav-miljoer-service

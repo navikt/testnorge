@@ -9,4 +9,5 @@ import org.springframework.context.annotation.Import;
         SecureOAuth2ServerToServerConfiguration.class})
 @Configuration
 public class ApplicationConfig {
+
 }
