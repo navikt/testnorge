@@ -49,7 +49,7 @@ public class OrganisasjonServiceConsumer {
         try {
             return getStatus(Set.of(orgnummer), Set.of(miljoe)).get(miljoe).get(orgnummer);
         } catch (RuntimeException e) {
-            return null;
+            return new OrganisasjonDTO();
         }
     }
 
@@ -61,7 +61,7 @@ public class OrganisasjonServiceConsumer {
 
         var completables = miljoer.stream()
                 .map(miljoe -> OrgFutureDTO.builder()
-                        .mijoe(miljoe)
+                        .miljoe(miljoe)
                         .futureDto(orgnummer.stream()
                                 .map(orgnr -> FutureDTO.builder()
                                         .orgnr(orgnr)
@@ -72,7 +72,7 @@ public class OrganisasjonServiceConsumer {
                                         .build())
                                 .collect(Collectors.toMap(entry -> entry.getOrgnr(), entry -> entry.getCompletableFuture())))
                         .build())
-                .collect(Collectors.toMap(entry -> entry.getMijoe(), entry -> entry.getFutureDto()));
+                .collect(Collectors.toMap(entry -> entry.getMiljoe(), entry -> entry.getFutureDto()));
 
         var organisasjoner = completables.keySet().stream()
                 .map(miljoe -> MiljoeOrgnrOrgDTO.builder()
@@ -105,9 +105,9 @@ public class OrganisasjonServiceConsumer {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class OrgFutureDTO {
+    private static class OrgFutureDTO {
 
-        private String mijoe;
+        private String miljoe;
         private Map<String, CompletableFuture<OrganisasjonDTO>> futureDto;
     }
 
@@ -115,7 +115,7 @@ public class OrganisasjonServiceConsumer {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class FutureDTO {
+    private static class FutureDTO {
 
         private String orgnr;
         private CompletableFuture<OrganisasjonDTO> completableFuture;
@@ -125,7 +125,7 @@ public class OrganisasjonServiceConsumer {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class MiljoeOrgnrOrgDTO {
+    private static class MiljoeOrgnrOrgDTO {
 
         private String miljoe;
         private Map<String, OrganisasjonDTO> orgnrOrgDTO;
@@ -135,7 +135,7 @@ public class OrganisasjonServiceConsumer {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class OrgnrOrgDTO {
+    private static class OrgnrOrgDTO {
 
         private String orgnr;
         private OrganisasjonDTO organisasjonDTO;
