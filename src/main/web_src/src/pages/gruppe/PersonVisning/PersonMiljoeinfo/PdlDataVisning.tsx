@@ -15,14 +15,28 @@ type PdlData = {
 }
 
 type Data = {
-	hentIdenter: object
+	hentIdenter: { identer: [Ident] }
 	hentPerson: HentPerson
 	hentGeografiskTilknytning: object
 }
 
+type Ident = {
+	gruppe: string
+	ident: string
+	historisk: boolean
+}
+
 type HentPerson = {
 	bostedsadresse: [object]
-	fullmakt: [object]
+	fullmakt: [FullmaktData]
+}
+
+type FullmaktData = {
+	gyldigFraOgMed: Date
+	gyldigTilOgMed: Date
+	motpartsPersonident: string
+	motpartsRolle: string
+	omraader: []
 }
 
 export const PdlDataVisning = ({ data }: PdlData) => {
@@ -40,7 +54,7 @@ export const PdlDataVisning = ({ data }: PdlData) => {
 		return (
 			<div className="boks">
 				<PdlPersonInfo data={identInfo.hentPerson} />
-				<IdentInfo data={identInfo.hentIdenter} />
+				<IdentInfo pdlResponse={identInfo.hentIdenter} />
 				<GeografiskTilknytning data={identInfo.hentGeografiskTilknytning} />
 				<PdlNasjonalitet data={identInfo.hentPerson} />
 				<PdlBoadresse data={gjeldendeAdresse(identInfo.hentPerson.bostedsadresse)} />

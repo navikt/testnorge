@@ -11,7 +11,7 @@ UDI_STUB_CLIENT_ID: 4426ef7d-f148-4d19-8a03-b0d07a451938
 DOLLY_BACKEND_HOST: https://dolly-backend-dev.dev.adeo.no
 UDI_STUB_HOST: https://udi-stub-dev.dev.adeo.no
 TESTNORGE_PROFIL_API_HOST: https://testnorge-profil-api-dev.dev.intern.nav.no
-ORGANISASJON_FORVALTER_HOST: https://organisasjon-forvalter.dev.intern.nav.no
+ORGANISASJON_FORVALTER_HOST: https://testnav-organisasjon-forvalter.dev.intern.nav.no
 
 
 zuul:

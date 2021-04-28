@@ -49,7 +49,6 @@ export default function GruppeOversikt({
 					</Hjelpetekst>
 				</div>
 			</div>
-
 			<div className="toolbar">
 				<NavButton type="hoved" onClick={visNyGruppe}>
 					Ny gruppe

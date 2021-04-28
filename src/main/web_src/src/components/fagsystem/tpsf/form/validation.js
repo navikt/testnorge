@@ -480,7 +480,8 @@ export const validation = {
 			relasjoner: Yup.object({
 				partnere: ifPresent('$tpsf.relasjoner.partnere', partnere),
 				barn: ifPresent('$tpsf.relasjoner.barn', barn)
-			})
+			}),
+			identtype: ifPresent('$tpsf.identtype', requiredString)
 		})
 	)
 }

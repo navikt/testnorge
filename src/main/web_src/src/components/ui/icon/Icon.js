@@ -56,6 +56,8 @@ import ChevronLeft from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-le
 import ChevronRight from '~/assets/icons/nav-ikoner/filled/SVG/46-arrows/arrow-right-8.svg'
 import PiggyBank from '~/assets/icons/nav-ikoner/line/SVG/24-business-finance/piggy-bank.svg'
 import Plaster from '~/assets/icons/nav-ikoner/line/SVG/40-health/first-aid-plaster.svg'
+import Link from '~/assets/icons/nav-ikoner/filled/SVG/01-edition/link-2.svg'
+import LinkBroken from '~/assets/icons/nav-ikoner/filled/SVG/01-edition/link-broken-1.svg'
 
 import ProblemTriangle from '~/assets/icons/custom/ProblemTriangle.svg'
 import Details from '~/assets/icons/custom/Details.svg'
@@ -146,7 +148,9 @@ export const icons = {
 	visOrgData: Search,
 	organisasjon: Hierarchy3,
 	organisasjonLight: Hierarchy3Light,
-	fullmakt: Group2
+	fullmakt: Group2,
+	link: Link,
+	linkBroken: LinkBroken
 }
 
 const px = v => `${v}px`
