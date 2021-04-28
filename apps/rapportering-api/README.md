@@ -11,26 +11,15 @@ API for rapportering av tilbakemeldinger til slack.
 Swagger finnes under [/api](https://testnorge-rapportering-api.nais.preprod.local/api) -endepunktet til applikasjonen.
  
 ## Lokal kjøring
-  
-### Utviklerimage
-Kjør PersonApiApplicationStarter med følgende argumenter:
+Ha naisdevice kjørende og kjør RapporteringApiApplicationStarter med følgende argumenter:
 ```
--Djavax.net.ssl.trustStore=[path til lokal truststore]
--Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
 -Dspring.cloud.vault.token=[Copy token fra Vault]
 -Dspring.profiles.active=dev
 ```
 
-### Utenfor utviklerimage
-   
-#### Windows
-Ha BIG-IP Edge Client kjørende og kjør RapporteringApiApplicationStarter med samme argumenter som for utviklerimage.
-   
-#### Mac
-Ha Nav-Tunnel kjørende og kjør RapporteringApiApplicationStarter med samme argumenter som for utviklerimage og legg til følgende argumenter:
+### Utviklerimage
+I utviklerimage brukes ikke naisdevice og du må i tillegg ha følgende argumenter:
 ```
--DsocksProxyHost=127.0.0.1
--DsocksProxyPort=14122
--DsocksNonProxyHosts=slack.com
--Dhttp.nonProxyHosts=slack.com
+-Djavax.net.ssl.trustStore=[path til lokal truststore]
+-Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
 ```

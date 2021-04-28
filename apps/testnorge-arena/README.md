@@ -14,8 +14,6 @@ Applikasjonen har også støtte for å opprette syntetiske historiske vedtak, gj
 Swagger finnes under [/api](https://testnorge-arena.nais.preprod.local/api) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
-    
-### Utenfor utviklerimage
 Ha naisdevice kjørende og kjør ApplicationStarter med følgende argumenter:
 ```
 -Dspring.cloud.vault.token=[Kopi av token fra vault]

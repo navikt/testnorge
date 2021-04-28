@@ -14,9 +14,15 @@ Foreløpig er bare 201812 format støttet.
 Swagger finnes under [/api](https://testnav-inntektsmelding-generator-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
-Kjør ApplicationStarter med følgende argumenter:
+Ha naisdevice kjørende og kjør InntektsmeldingGeneratorApplicationStarter med følgende argumenter:
+```
+-Dspring.cloud.vault.token=[Copy token fra Vault]
+-Dspring.profiles.active=dev
+```
+
+### Utviklerimage
+I utviklerimage brukes ikke naisdevice og du må i tillegg ha følgende argumenter:
 ```
 -Djavax.net.ssl.trustStore=[path til lokal truststore]
 -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
--Dspring.profiles.active=dev
 ```

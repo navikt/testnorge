@@ -11,26 +11,16 @@ API for sykemeldinger.
 Swagger finnes under [/api](https://testnorge-sykemelding-api.nais.preprod.local/api) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
-   
-### Utviklerimage
-Kjør SykemeldingApiApplicationStarter med følgende argumenter:
+Ha naisdevice kjørende og kjør SykemeldingApiApplicationStarter med følgende argumenter:
 ```
--Djavax.net.ssl.trustStore=[path til lokal truststore]
--Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
 -Dspring.cloud.vault.token=[kopier token fra vault]
 -Dspring.profiles.active=dev
 ```
 
-### Utenfor utviklerimage
-
-#### Windows
-Ha BIG-IP Edge Client kjørende og kjør SykemeldingApiApplicationStarter med samme argumenter som for utviklerimage.
-    
-#### Mac
-Ha Nav-Tunnel kjørende og kjør SykemeldingApiApplicationStarter med samme argumenter som for utviklerimage og legg til følgende argumenter:
+### Utviklerimage
+I utviklerimage brukes ikke naisdevice og du må i tillegg ha følgende argumenter:
 ```
--DsocksProxyHost=127.0.0.1
--DsocksProxyPort=14122
--DsocksNonProxyHosts=127.0.0.1|dl.bintray.com|repo.maven.apache.org|maven.adeo.no|packages.confluent.io|confluent.io|maven.xwiki.org|maven.repository.redhat.com
+-Djavax.net.ssl.trustStore=[path til lokal truststore]
+-Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
 ```
     

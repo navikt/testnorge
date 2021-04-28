@@ -12,18 +12,15 @@ Det er kun team dolly som bruker denne appen.
 Lenke https://testnorge-oversikt-frontend.dev.adeo.no/ 
 
 ## Lokal kjøring
-   
-### Utviklerimage
-Kjør SykemeldingApiApplicationStarter med følgende argumenter:
+Ha naisdevice kjørende og kjør OversiktFrontendApplicationStarter med følgende argumenter:
 ```
--Djavax.net.ssl.trustStore=[path til lokal truststore]
--Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
 -Dspring.cloud.vault.token=[kopier token fra vault]
 -Dspring.profiles.active=dev
 ```
 
-### Utenfor utviklerimage
+### Utviklerimage
+I utviklerimage brukes ikke naisdevice og du må i tillegg ha følgende argumenter:
 ```
--Dspring.cloud.vault.token=[kopier token fra vault]
--Dspring.profiles.active=dev
+-Djavax.net.ssl.trustStore=[path til lokal truststore]
+-Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
 ```
