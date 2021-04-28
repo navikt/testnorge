@@ -51,6 +51,7 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 				/>
 			</AttributtKategori>
 			<AttributtKategori title="Diverse">
+				<Attributt attr={sm.attrs.identtype} vis={leggTil} />
 				<Attributt attr={sm.attrs.identHistorikk} />
 				<Attributt attr={sm.attrs.kjonn} vis={!opprettFraEksisterende && !leggTil} />
 				<Attributt attr={sm.attrs.harMellomnavn} />
@@ -216,6 +217,12 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has }) => {
 			remove() {
 				del(['tpsf.spesreg', 'tpsf.utenFastBopel'])
 			}
+		},
+		identtype: {
+			label: 'Identtype',
+			checked: has('tpsf.identtype'),
+			add: () => setMulti(['tpsf.identtype', ''], ['tpsf.alder', personFoerLeggTil.tpsf.alder]),
+			remove: () => del(['tpsf.identtype', 'tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer'])
 		},
 		vergemaal: {
 			label: 'Vergemål',

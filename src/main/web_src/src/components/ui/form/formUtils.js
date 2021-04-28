@@ -20,6 +20,7 @@ export const SyntEvent = (name, value) => ({ target: { name, value } })
 export const erForste = (values, attributt) => {
 	const rootPaths = [
 		'tpsf.alder',
+		'tpsf.identtype',
 		'tpsf.foedtEtter',
 		'tpsf.foedtFoer',
 		'tpsf.doedsdato',

@@ -21,6 +21,7 @@ const nasjonalitetPaths = [
 
 const diversePaths = [
 	'tpsf.kjonn',
+	'tpsf.identtype',
 	'tpsf.harMellomnavn',
 	'tpsf.sivilstand',
 	'tpsf.sprakKode',

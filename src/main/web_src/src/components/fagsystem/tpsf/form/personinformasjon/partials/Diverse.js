@@ -29,6 +29,14 @@ export const Diverse = ({ formikBag }) => {
 	return (
 		<React.Fragment>
 			<FormikSelect
+				name="tpsf.identtype"
+				label="Identtype"
+				options={Options('identtype')}
+				visHvisAvhuket
+				isClearable={false}
+			/>
+
+			<FormikSelect
 				name="tpsf.kjonn"
 				label="Kjønn"
 				kodeverk={PersoninformasjonKodeverk.Kjoennstyper}
