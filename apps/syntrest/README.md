@@ -155,4 +155,4 @@ Dersom ApplicationStarter ikke vil kjøre sjekk at du fremdeles har gyldig Kubec
 
 ## Kubeconfig
 I vault er det lagret en kubeconfig fil som syntrest bruker til å kunne deploye/shutdown appene. Hvis denne filen må 
-lages på nytt må dette gjøres for team synt.
+lages på nytt må dette gjøres for team Dolly.
