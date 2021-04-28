@@ -2,6 +2,8 @@ name: Deploy testnav-organisasjon-forvalter
 
 on:
   push:
+    branches:
+      - master
     paths:
       - apps/organisasjon-forvalter/**
       - libs/kafka-config/**
