@@ -55,7 +55,7 @@ public class OpplysningspliktigService {
     public void send(List<Opplysningspliktig> list, String miljo) {
         var opplysningspliktige = list.stream().filter(value -> {
             if (!value.isChanged()) {
-                log.info(
+                log.trace(
                         "Raporter ikke for opplysningspliktig {} siden det ikke er en endring den {}.",
                         value.getOrgnummer(),
                         value.getKalendermaaned()

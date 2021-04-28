@@ -47,7 +47,6 @@ public class Opplysningspliktig {
         return dto.getVirksomheter();
     }
 
-    //TODO: Fiks muting av object
     public void addArbeidsforhold(Arbeidsforhold arbeidsforhold) {
         changed = true;
         String virksomhetsnummer = arbeidsforhold.getVirksomhetsnummer();

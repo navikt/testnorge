@@ -63,7 +63,7 @@ public class Arbeidsforhold {
                 ).collect(Collectors.toList());
 
         if (!permisjoner.isEmpty()) {
-            log.info("Permisjoner registert på arbeidsforhold id {}.", arbeidsforholdId);
+            log.trace("Permisjoner registert på arbeidsforhold id {}.", arbeidsforholdId);
         }
 
         this.dto = ArbeidsforholdDTO
@@ -220,10 +220,6 @@ public class Arbeidsforhold {
 
     private no.nav.registre.testnorge.libs.dto.syntrest.v1.AvvikDTO getAvvik(List<no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.AvvikDTO> list) {
         return list.stream().findFirst().map(avvik -> no.nav.registre.testnorge.libs.dto.syntrest.v1.AvvikDTO.builder().alvorlighetsgrad(avvik.getAlvorlighetsgrad()).navn(avvik.getNavn()).id(avvik.getId()).build()).orElse(null);
-    }
-
-    public ArbeidsforholdHistorikk toHistorikk(String miljo) {
-        return new ArbeidsforholdHistorikk(getArbeidsforholdId(), historikk, miljo);
     }
 
     private Float nullToEmpty(Float value) {
