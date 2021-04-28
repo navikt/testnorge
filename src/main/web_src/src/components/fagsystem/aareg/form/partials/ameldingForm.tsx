@@ -8,12 +8,14 @@ import NavButton from '~/components/ui/button/NavButton/NavButton'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import {
 	initialValues,
+	initialAmelding,
 	initialArbeidsforhold,
 	initialForenkletOppgjoersordning
 } from '../initialValues'
 import { ArbeidsforholdForm } from './arbeidsforholdForm'
 import { ForenkletOppgjoersordningForm } from './forenkletOppgjoersordningForm'
 import { Monthpicker } from '~/components/ui/form/inputs/monthpicker/Monthpicker'
+import DollyKjede from '~/components/dollyKjede/DollyKjede'
 
 export const AmeldingForm = ({ formikBag }) => {
 	const type = _get(formikBag.values, 'aareg[0].arbeidsforholdstype')
@@ -21,6 +23,10 @@ export const AmeldingForm = ({ formikBag }) => {
 	const [fom, setFom] = useState(null)
 	const [tom, setTom] = useState(null)
 	const [periode, setPeriode] = useState([])
+
+	const [selectedIndex, setSelectedIndex] = useState(0)
+
+	console.log('selectedIndex :>> ', selectedIndex)
 
 	useEffect(() => {
 		if (fom && tom) {
@@ -39,10 +45,11 @@ export const AmeldingForm = ({ formikBag }) => {
 	//TODO hver måned kan ha flere arbeidsforhold, må kanskje wrappe alt i en måned-/amelding-komponent?
 	useEffect(() => {
 		periode.forEach((mnd, idx) => {
-			console.log('mnd :>> ', mnd)
-			formikBag.setFieldValue(`aareg[0].arbeidsforhold[${idx}]`, {
+			// console.log('mnd :>> ', mnd)
+			formikBag.setFieldValue(`aareg[0].amelding[${idx}]`, {
 				maaned: mnd,
-				...initialArbeidsforhold
+				arbeidsforhold: [initialArbeidsforhold]
+				// ...initialArbeidsforhold
 			})
 		})
 	}, [periode])
@@ -50,7 +57,8 @@ export const AmeldingForm = ({ formikBag }) => {
 	const handleArbeidsforholdstypeChange = event => {
 		formikBag.setFieldValue('aareg[0].arbeidsforholdstype', event.value)
 		if (event.value === 'ordinaertArbeidsforhold' || event.value === 'maritimtArbeidsforhold') {
-			formikBag.setFieldValue('aareg[0].arbeidsforhold', [initialArbeidsforhold])
+			formikBag.setFieldValue('aareg[0].amelding', initialAmelding)
+			// formikBag.setFieldValue('aareg[0].arbeidsforhold', [initialArbeidsforhold])
 		} else if (event.value === 'forenkletOppgjoersordning') {
 			formikBag.setFieldValue('aareg[0].arbeidsforhold', [initialForenkletOppgjoersordning])
 		}
@@ -100,14 +108,25 @@ export const AmeldingForm = ({ formikBag }) => {
 							Fyll felter automatisk
 						</NavButton>
 						{periode.length > 0 && (
-							<FormikDollyFieldArray
-								name="aareg[0].arbeidsforhold"
-								header="Arbeidsforhold"
-								newEntry={initialArbeidsforhold}
-								canBeEmpty={false}
-							>
-								{(path, idx) => <ArbeidsforholdForm path={path} key={idx} formikBag={formikBag} />}
-							</FormikDollyFieldArray>
+							<>
+								{/* //TODO Når kjedekomponent er lenket må alle måneder endres ved endring av felt */}
+								<DollyKjede
+									objectList={periode}
+									itemLimit={10}
+									selectedIndex={selectedIndex}
+									setSelectedIndex={setSelectedIndex}
+								/>
+								<FormikDollyFieldArray
+									name={`aareg[0].amelding[${selectedIndex}].arbeidsforhold`}
+									header="Arbeidsforhold"
+									newEntry={initialArbeidsforhold}
+									canBeEmpty={false}
+								>
+									{(path, idx) => (
+										<ArbeidsforholdForm path={path} key={idx} formikBag={formikBag} />
+									)}
+								</FormikDollyFieldArray>
+							</>
 						)}
 					</>
 				)}

@@ -24,7 +24,7 @@ export const ArbeidsavtaleForm = ({ formikBag, path }) => {
 
 	const [visning, setVisning] = useState(initialValue(path, formikBag))
 
-	console.log('arbeidsavtalePath :>> ', arbeidsavtalePath)
+	// console.log('arbeidsavtalePath :>> ', arbeidsavtalePath)
 
 	// const handleToggleChange = event => {
 	// 	const { value } = event.target

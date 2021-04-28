@@ -15,7 +15,7 @@ import Hjelpetekst from '~/components/hjelpetekst'
 export const ArbeidsforholdForm = ({ path, formikBag }) => {
 	const arbeidsforhold = _get(formikBag.values, path)
 	// console.log('arbeidsforhold :>> ', arbeidsforhold)
-	console.log('path :>> ', path)
+	// console.log('path :>> ', path)
 
 	// const clearOrgnrIdent = aktoer => {
 	// 	formikBag.setFieldValue(`${path}.arbeidsgiver.aktoertype`, aktoer.value)
@@ -29,10 +29,12 @@ export const ArbeidsforholdForm = ({ path, formikBag }) => {
 	// 	_get(formikBag.values, 'aareg[0].ansettelsesPeriode.tom')
 	// )
 
-	console.log(
-		'get(formikBag.values, `${path}.ansettelsesPeriode.tom`)  :>> ',
-		_get(formikBag.values, `${path}.ansettelsesPeriode.tom`)
-	)
+	// console.log(
+	// 	'get(formikBag.values, `${path}.ansettelsesPeriode.tom`)  :>> ',
+	// 	_get(formikBag.values, `${path}.ansettelsesPeriode.tom`)
+	// )
+
+	console.log('path :>> ', path)
 
 	return (
 		<React.Fragment>
@@ -44,6 +46,7 @@ export const ArbeidsforholdForm = ({ path, formikBag }) => {
 					size="xxlarge"
 					isClearable={false}
 				/>
+				{/* //TODO arbeidsforholdId blir ikke oppdatert */}
 				<FormikTextInput name={`${path}.arbeidsforholdId`} label="Arbeidsforhold-ID" type="text" />
 				<FormikDatepicker name={`${path}.ansettelsesPeriode.fom`} label="Ansatt fra" />
 				<FormikDatepicker name={`${path}.ansettelsesPeriode.tom`} label="Ansatt til" />

@@ -12,14 +12,22 @@ export const initialValues = [
 		genererPeriode: {
 			fom: null,
 			tom: null
-		},
-		arbeidsforhold: []
+		}
+		// ,
+		// arbeidsforhold: []
 		// arbeidsgiver: {
 		// 	aktoertype: 'ORG',
 		// 	orgnummer: '',
 		// 	ident: ''
 		// },
 		// arbeidsforhold: initialArbeidsforhold
+	}
+]
+
+export const initialAmelding = [
+	{
+		maaned: null,
+		arbeidsforhold: []
 	}
 ]
 
