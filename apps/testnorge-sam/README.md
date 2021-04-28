@@ -11,11 +11,14 @@ Testnorge-Sam er adapteren mellom orkestratoren og Sam for opprettelse av syntet
 Swagger finnes under [/api](https://testnorge-sam.nais.preprod.local/api) -endepunktet til applikasjonen.
   
 ## Lokal kjøring
-      
+Ha naisdevice kjørende og kjør LocalApplicationStarter med følgende argumenter:
+```
+-Dspring.cloud.vault.token=[kopier token fra vault]
+```
+
 ### Utviklerimage
-Kjør LocalApplicationStarter med følgende argumenter:
+I utviklerimage brukes ikke naisdevice og du må i tillegg ha følgende argumenter:
 ```
 -Djavax.net.ssl.trustStore=[path til lokal truststore]
 -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
--Dspring.cloud.vault.token=[Kopier token fra vault]
 ```

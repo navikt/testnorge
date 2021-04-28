@@ -12,12 +12,15 @@ En applikasjon som lytter på hendelser fra PDl og trekker ut identer som tilhø
 Swagger finnes under [/api](https://testnorge-populasjoner.nais.preprod.local/api) -endepunktet til applikasjonen.
  
 ## Lokal kjøring
-      
+Ha naisdevice kjørende og kjør ApplicationStarter med følgende argumenter:
+```
+-Dspring.cloud.vault.token=[kopier token fra vault]
+-Dspring.profiles.active=dev
+```
+
 ### Utviklerimage
-Kjør ApplicationStarter med følgende argumenter:
+I utviklerimage brukes ikke naisdevice og du må i tillegg ha følgende argumenter:
 ```
 -Djavax.net.ssl.trustStore=[path til lokal truststore]
 -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
--Dspring.profiles.active=local
--Dspring.cloud.vault.token=[Kopier token fra vault]
 ```

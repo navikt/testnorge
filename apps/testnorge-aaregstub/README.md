@@ -11,9 +11,17 @@ Testnorge-aaregstub lagrer syntetiserte arbeidsforhold som har blitt sendt/kan s
 Swagger finnes under [/api](https://testnorge-aaregstub.nais.preprod.local/api) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
-Kjør ApplicationStarter med følgende argumenter:
+Ha naisdevice kjørende og kjør ApplicationStarter med følgende argumenter:
+```
+-Dspring.cloud.vault.token=[kopier token fra vault]
+-Dspring.profiles.active=dev
+```
+
+### Utviklerimage
+I utviklerimage brukes ikke naisdevice og du må i tillegg ha følgende argumenter:
 ```
 -Djavax.net.ssl.trustStore=[path til lokal truststore]
 -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
--Dspring.profiles.active=dev
 ```
+    
+
