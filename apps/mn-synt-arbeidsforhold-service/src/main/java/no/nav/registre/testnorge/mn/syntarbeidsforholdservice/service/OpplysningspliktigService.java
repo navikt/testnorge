@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -29,7 +30,7 @@ public class OpplysningspliktigService {
         return organisasjonConssumer
                 .getOrganisasjoner(opplysningspliktigOrgnummer, miljo)
                 .stream()
-                .filter(value -> !value.getDriverVirksomheter().isEmpty())
+                .filter(value ->  !value.getDriverVirksomheter().isEmpty())
                 .map(Organisajon::new)
                 .collect(Collectors.toList());
     }
@@ -54,7 +55,7 @@ public class OpplysningspliktigService {
     public void send(List<Opplysningspliktig> list, String miljo) {
         var opplysningspliktige = list.stream().filter(value -> {
             if (!value.isChanged()) {
-                log.info(
+                log.trace(
                         "Raporter ikke for opplysningspliktig {} siden det ikke er en endring den {}.",
                         value.getOrgnummer(),
                         value.getKalendermaaned()

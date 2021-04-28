@@ -47,7 +47,7 @@ public class OppsummeringsdokumentConsumer {
             ApplicationProperties applicationProperties
     ) {
         this.applicationProperties = applicationProperties;
-        this.executor = Executors.newFixedThreadPool(20);
+        this.executor = Executors.newFixedThreadPool(8);
         this.accessTokenService = accessTokenService;
         this.properties = properties;
         this.webClient = WebClient
@@ -95,7 +95,6 @@ public class OppsummeringsdokumentConsumer {
         AccessToken accessToken = accessTokenService.generateToken(properties);
         var list = new GetOppsummeringsdokumenterCommand(webClient, accessToken.getTokenValue(), miljo).call();
         log.info("Fant {} opplysningspliktig fra {}.", list.size(), miljo);
-        //TODO: Fix empty array of driver virksomheter
         return list.stream().map(value -> new Opplysningspliktig(value, new ArrayList<>())).collect(Collectors.toList());
     }
 

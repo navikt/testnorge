@@ -8,6 +8,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -62,6 +63,6 @@ public class OrganisasjonConsumer {
                 log.warn("Klarer ikke å hente ut alle oragnisasjoner", e);
             }
         }
-        return list;
+        return list.stream().filter(Objects::nonNull).collect(Collectors.toList());
     }
 }

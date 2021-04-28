@@ -19,6 +19,10 @@ public class IdentController {
 
     @GetMapping
     public ResponseEntity<Set<String>> get(@RequestHeader("miljo") String miljo) {
-        return ResponseEntity.ok(identService.getIdenterMedArbeidsforhold(miljo));
+        var identerMedArbeidsforhold = identService.getIdenterMedArbeidsforhold(miljo);
+        return ResponseEntity
+                .ok()
+                .header("COUNT", String.valueOf(identerMedArbeidsforhold.size()))
+                .body(identerMedArbeidsforhold);
     }
 }

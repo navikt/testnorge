@@ -21,13 +21,6 @@ import no.nav.registre.testnorge.libs.dto.syntrest.v1.PermisjonDTO;
 @Slf4j
 public class Arbeidsforhold {
 
-    public Arbeidsforhold(ArbeidsforholdDTO dto, String ident, String virksomhetsnummer, String historikk) {
-        this.dto = dto;
-        this.ident = ident;
-        this.virksomhetsnummer = virksomhetsnummer;
-        this.historikk = historikk;
-    }
-
     private final ArbeidsforholdDTO dto;
     private final String ident;
     private final String historikk;
@@ -70,7 +63,7 @@ public class Arbeidsforhold {
                 ).collect(Collectors.toList());
 
         if (!permisjoner.isEmpty()) {
-            log.info("Permisjoner registert på arbeidsforhold id {}.", arbeidsforholdId);
+            log.trace("Permisjoner registert på arbeidsforhold id {}.", arbeidsforholdId);
         }
 
         this.dto = ArbeidsforholdDTO
@@ -85,6 +78,7 @@ public class Arbeidsforhold {
                 .sluttdato(response.getSluttdato().equals("") ? null : LocalDate.parse(response.getSluttdato()))
                 .arbeidsforholdId(arbeidsforholdId)
                 .permisjoner(permisjoner)
+                .historikk(historikk)
                 .fartoey(response.getFartoey() != null ? FartoeyDTO.builder()
                         .fartsomraade(response.getFartoey().getFartsomraade())
                         .skipsregister(response.getFartoey().getSkipsregister())
@@ -226,10 +220,6 @@ public class Arbeidsforhold {
 
     private no.nav.registre.testnorge.libs.dto.syntrest.v1.AvvikDTO getAvvik(List<no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.AvvikDTO> list) {
         return list.stream().findFirst().map(avvik -> no.nav.registre.testnorge.libs.dto.syntrest.v1.AvvikDTO.builder().alvorlighetsgrad(avvik.getAlvorlighetsgrad()).navn(avvik.getNavn()).id(avvik.getId()).build()).orElse(null);
-    }
-
-    public ArbeidsforholdHistorikk toHistorikk(String miljo) {
-        return new ArbeidsforholdHistorikk(getArbeidsforholdId(), historikk, miljo);
     }
 
     private Float nullToEmpty(Float value) {
