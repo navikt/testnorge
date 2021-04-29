@@ -13,25 +13,15 @@ Mini-Norge-app som oppretter persondokumenter for et gitt antall personer. Alder
 Swagger finnes under [/swagger](https://mn-original-populasjon.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
  
 ## Lokal kjøring
-  
-### Utviklerimage
-Kjør PersonApiApplicationStarter med følgende argumenter:
+Ha naisdevice kjørende og kjør OriginalPopulasjonApplicationStarter med følgende argumenter:
 ```
--Djavax.net.ssl.trustStore=[path til lokal truststore]
--Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
 -Dspring.cloud.vault.token=[Copy token fra Vault]
 -Dspring.profiles.active=dev
 ```
 
-### Utenfor utviklerimage
-   
-#### Windows
-Ha BIG-IP Edge Client eller Naisdevice kjørende og kjør OriginalPopulasjonApplicationStarter med samme argumenter som for utviklerimage.
-   
-#### Mac
-Ha Nav-Tunnel kjørende og kjør OriginalPopulasjonApplicationStarter med samme argumenter som for utviklerimage og legg til følgende argumenter:
+### Utviklerimage
+I utviklerimage brukes ikke naisdevice og du må legge til følgende ekstra argumenter:
 ```
--DsocksProxyHost=127.0.0.1
--DsocksProxyPort=14122
--DsocksNonProxyHosts=127.0.0.1|dl.bintray.com|repo.maven.apache.org|maven.adeo.no|packages.confluent.io|confluent.io|maven.xwiki.org|maven.repository.redhat.com
-```   
+-Djavax.net.ssl.trustStore=[path til lokal truststore]
+-Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
+```

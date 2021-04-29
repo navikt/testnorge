@@ -12,10 +12,15 @@ Swagger finnes under [/swagger](https://endringsmelding-service.dev.intern.nav.n
 For å kunne bruke endringsmelding-endepunktet må det innsendte tokenet ha tilgang via azure applikasjonen `dev-gcp:dolly:endringsmelding-frontend`.
  
 ## Lokal kjøring
-  
-### Utviklerimage
-Kjør ApplicationStarter med følgende argumenter:
+Ha naisdevice kjørende og kjør EndringsmeldingServiceApplicationStarter med følgende argumenter:
 ```
 -Dspring.cloud.vault.token=[Copy token fra Vault]
 -Dspring.profiles.active=dev
+```
+
+### Utviklerimage
+I utviklerimage brukes ikke naisdevice og du må legge til følgende ekstra argumenter:
+```
+-Djavax.net.ssl.trustStore=[path til lokal truststore]
+-Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
 ```

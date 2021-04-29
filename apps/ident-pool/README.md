@@ -11,20 +11,26 @@ Spesifikke identer kan også allokeres.
 Identer kan frigjøres og benyttes om igjen
  
 ## Swagger
-Swagger finnes under [/api](https://ident-pool.dev.adeo.no/swagger) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://ident-pool.dev.adeo.no/swagger) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
+
    
 ### Utenfor utviklerimage
-Kjør LocalApplicationStarter med følgende argumenter:
+Ha naisdevice kjørende og kjør IdentPoolApplicationStarter med følgende argumenter:
 ```
--Djavax.net.ssl.trustStore=[path til lokal truststore]
--Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
+-Dspring.profiles.active=local
 -Dspring.cloud.vault.token=[Kopier token fra vault]
 ```
  
 ### Utviklerimage 
-I utviklerimage kan du måtte ha disse i tillegg:
+I utviklerimage brukes ikke naisdevice og du må legge til følgende ekstra argumenter:
+```
+-Djavax.net.ssl.trustStore=[path til lokal truststore]
+-Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
+```
+
+Det kan være nødvendig å ha disse også:
 ```
 -Dhttp.proxyHost=webproxy-utvikler.nav.no
 -Dhttps.proxyHost=webproxy-utvikler.nav.no 
