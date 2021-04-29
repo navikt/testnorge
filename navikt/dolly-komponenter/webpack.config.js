@@ -2,6 +2,7 @@ const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const nodeExternals = require('webpack-node-externals');
 
 module.exports = {
   entry: {
@@ -33,10 +34,7 @@ module.exports = {
       },
     ],
   },
-  externals: {
-    react: 'React',
-    'react-dom': 'ReactDOM',
-  },
+  externals: [nodeExternals()],
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
   },
@@ -58,6 +56,6 @@ module.exports = {
     filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'lib'),
     library: '@navikt/dolly-komponenter',
-    libraryTarget: 'umd',
+    libraryTarget: 'commonjs',
   },
 };
