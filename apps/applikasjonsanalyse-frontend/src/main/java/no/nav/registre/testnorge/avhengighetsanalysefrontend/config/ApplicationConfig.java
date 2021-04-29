@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 
 import no.nav.registre.testnorge.avhengighetsanalysefrontend.config.credentials.ApplikasjonsanalyseServiceProperties;
+import no.nav.registre.testnorge.avhengighetsanalysefrontend.config.credentials.ProfilApiServiceProperties;
 import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
 import no.nav.registre.testnorge.libs.frontend.filter.AddAuthorizationToRouteFilter;
 import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2FrontendConfiguration;
@@ -23,12 +24,21 @@ public class ApplicationConfig {
 
     private final AccessTokenService tokenService;
     private final ApplikasjonsanalyseServiceProperties applikasjonsanalyseServiceProperties;
+    private final ProfilApiServiceProperties profilApiServiceProperties;
 
     @Bean
     public AddAuthorizationToRouteFilter dollyBackendAddAuthorizationToRouteFilter() {
         return new AddAuthorizationToRouteFilter(
                 () -> tokenService.generateToken(applikasjonsanalyseServiceProperties).getTokenValue(),
                 "avhengighetsanalyse-service"
+        );
+    }
+
+    @Bean
+    public AddAuthorizationToRouteFilter addProfilApiAuthorizationToRouteFilter() {
+        return new AddAuthorizationToRouteFilter(
+                () -> tokenService.generateToken(profilApiServiceProperties).getTokenValue(),
+                "profil"
         );
     }
 }

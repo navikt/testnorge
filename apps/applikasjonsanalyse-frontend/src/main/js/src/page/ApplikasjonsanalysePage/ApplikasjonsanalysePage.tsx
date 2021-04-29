@@ -1,5 +1,5 @@
 import React from 'react';
-import { LoadableComponent } from '@/component';
+import { LoadableComponent } from '@navikt/dolly-komponenter';
 import { Applikasjonsanalyse, fetchDependencies } from '@/service/ApplikasjonsanalyseService';
 import AvhengighetsGraph from '@/page/ApplikasjonsanalysePage/AvhengighetsGraph';
 

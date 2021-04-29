@@ -11,7 +11,12 @@ module.exports = merge(common, {
     contentBase: path.join(__dirname, 'public'),
     historyApiFallback: true,
     proxy: {
-      '/api': {
+      '/applikasjonsanalyse-service/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/testnorge-profil-api/api': {
         target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
