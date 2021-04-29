@@ -2,6 +2,7 @@ name: Deploy faste-data-frontend
 
 on:
   push:
+    branches: master
     paths:
       - apps/faste-data-frontend/**
       - libs/testnorge-core/**

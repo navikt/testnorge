@@ -1,14 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Page } from '@/components/page';
 import { LoadableComponent } from '@/components/loadable-component';
 import { useParams } from 'react-router-dom';
 import { OrganisasjonFasteDataService, OrganisasjonService } from '@/service';
 import { CompareCodeView } from '@/components/compare-code-view';
 import { OrganisasjonComperator } from '@/comperator';
-import { SuccessAlertstripe } from '@navikt/dolly-komponenter';
-//TODO
-import WarningAlertstripe from '@navikt/dolly-komponenter/lib/alertstripe/WarningAlertstripe';
+import { SuccessAlertstripe, WarningAlertstripe } from '@/components/alertstripe';
 import { MismatchTable } from '@/components/mismatch-table';
+import { WarningAlert } from '@/components/alert';
 
 export default () => {
   const { orgnummer, miljo } = useParams<{ orgnummer: string; miljo: string }>();
