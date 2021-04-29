@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Map;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -44,16 +44,17 @@ public class OrganisasjonServiceConsumer {
         this.executorService = Executors.newFixedThreadPool(serviceProperties.getThreads());
     }
 
-    public OrganisasjonDTO getStatus(String orgnummer, String miljoe) {
+    public Optional<OrganisasjonDTO> getStatus(String orgnummer, String miljoe) {
 
         try {
             return getStatus(Set.of(orgnummer), Set.of(miljoe)).get(miljoe).get(orgnummer);
         } catch (RuntimeException e) {
-            return new OrganisasjonDTO();
+            log.error(e.getMessage(), e);
+            return Optional.empty();
         }
     }
 
-    public Map<String, Map<String, OrganisasjonDTO>> getStatus(Set<String> orgnummer, Set<String> miljoer) {
+    public Map<String, Map<String, Optional<OrganisasjonDTO>>> getStatus(Set<String> orgnummer, Set<String> miljoer) {
 
         long startTime = currentTimeMillis();
 
@@ -79,19 +80,11 @@ public class OrganisasjonServiceConsumer {
                         .miljoe(miljoe)
                         .orgnrOrgDTO(
                                 completables.get(miljoe).keySet().stream()
-                                        .map(orgnr -> {
-                                            try {
-                                                return OrganisasjonServiceConsumer.OrgnrOrgDTO.builder()
+                                        .map(orgnr ->
+                                                OrganisasjonServiceConsumer.OrgnrOrgDTO.builder()
                                                         .orgnr(orgnr)
-                                                        .organisasjonDTO(completables.get(miljoe).get(orgnr).get())
-                                                        .build();
-                                            } catch (Exception e) {
-                                                log.error(e.getMessage(), e);
-                                            }
-                                            return null;
-                                        })
-                                        .filter(Objects::nonNull)
-                                        .filter(org -> nonNull(org.getOrganisasjonDTO()))
+                                                        .organisasjonDTO(resolveCompleteable(completables.get(miljoe).get(orgnr)))
+                                                        .build())
                                         .collect(Collectors.toMap(entry -> entry.getOrgnr(), entry -> entry.getOrganisasjonDTO())))
                         .build())
                 .collect(Collectors.toMap(entry -> entry.getMiljoe(), entry -> entry.getOrgnrOrgDTO()));
@@ -99,6 +92,17 @@ public class OrganisasjonServiceConsumer {
         log.info("Organisasjon-Service svarte med funnet etter {} ms", currentTimeMillis() - startTime);
 
         return organisasjoner;
+    }
+
+    private Optional<OrganisasjonDTO> resolveCompleteable(CompletableFuture<OrganisasjonDTO> future) {
+
+        try {
+            var result = future.get();
+            return nonNull(result) ? Optional.of(result) : Optional.empty();
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return Optional.empty();
+        }
     }
 
     @Data
@@ -128,7 +132,7 @@ public class OrganisasjonServiceConsumer {
     private static class MiljoeOrgnrOrgDTO {
 
         private String miljoe;
-        private Map<String, OrganisasjonDTO> orgnrOrgDTO;
+        private Map<String, Optional<OrganisasjonDTO>> orgnrOrgDTO;
     }
 
     @Data
@@ -138,6 +142,6 @@ public class OrganisasjonServiceConsumer {
     private static class OrgnrOrgDTO {
 
         private String orgnr;
-        private OrganisasjonDTO organisasjonDTO;
+        private Optional<OrganisasjonDTO> organisasjonDTO;
     }
 }

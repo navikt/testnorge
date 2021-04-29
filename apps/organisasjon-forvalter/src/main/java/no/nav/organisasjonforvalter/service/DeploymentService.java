@@ -73,10 +73,9 @@ public class DeploymentService {
 
     private void deployOrganisasjon(String uuid, Organisasjon organisasjon, String env) {
 
-        if (!organisasjon.getOrganisasjonsnummer().equals(
-                organisasjonServiceConsumer.getStatus(organisasjon.getOrganisasjonsnummer(), env).getOrgnummer())) {
-
+        if (organisasjonServiceConsumer.getStatus(organisasjon.getOrganisasjonsnummer(), env).isEmpty()) {
             organisasjonMottakConsumer.opprettOrganisasjon(uuid, organisasjon, env);
+
         } else {
             organisasjonMottakConsumer.endreOrganisasjon(uuid, organisasjon, env);
         }

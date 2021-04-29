@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -58,24 +59,36 @@ public class ImportService {
         return organisasjoner.keySet().stream()
                 .filter(env -> !organisasjoner.get(env).entrySet().isEmpty())
                 .map(env -> OrganisasjonMiljoe.builder()
-                        .organisasjon(acquireOrganisasjon(env, orgnummer, organisasjoner))
+                        .organisasjon(getOrganisasjon(env, orgnummer, organisasjoner))
                         .miljoe(env)
                         .build())
                 .filter(org -> nonNull(org.getOrganisasjon()))
                 .collect(Collectors.toMap(OrganisasjonMiljoe::getMiljoe, OrganisasjonMiljoe::getOrganisasjon));
     }
 
-    private RsOrganisasjon acquireOrganisasjon(String env, String orgnummer,
-                                               Map<String, Map<String, OrganisasjonDTO>> organisasjoner) {
+    private RsOrganisasjon getOrganisasjon(String env, String orgnummer,
+                                           Map<String, Map<String, Optional<OrganisasjonDTO>>> organisasjoner) {
 
-        var organisasjonDto = organisasjoner.get(env).containsKey(orgnummer) ?
-                organisasjoner.get(env).get(orgnummer) :
-                organisasjonServiceConsumer.getStatus(orgnummer, env);
+        OrganisasjonDTO organisasjonDto;
+        if (organisasjoner.get(env).containsKey(orgnummer)) {
+            if (organisasjoner.get(env).get(orgnummer).isPresent()) {
+                organisasjonDto = organisasjoner.get(env).get(orgnummer).get();
+            } else {
+                return null;
+            }
+        } else {
+            var organisasjon = organisasjonServiceConsumer.getStatus(orgnummer, env);
+            if (organisasjon.isPresent()) {
+                organisasjonDto = organisasjon.get();
+            } else {
+                return null;
+            }
+        }
 
         RsOrganisasjon organisasjon = mapperFacade.map(organisasjonDto, RsOrganisasjon.class);
         if (nonNull(organisasjonDto.getDriverVirksomheter())) {
             organisasjon.setUnderenheter(organisasjonDto.getDriverVirksomheter().stream()
-                    .map(orgnr -> acquireOrganisasjon(env, orgnr, organisasjoner))
+                    .map(orgnr -> getOrganisasjon(env, orgnr, organisasjoner))
                     .collect(Collectors.toList()));
         }
         return organisasjon;

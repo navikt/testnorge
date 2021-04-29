@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class UnderenhetService {
+public class DrivervirksomheterService {
 
     private final OrganisasjonRepository organisasjonRepository;
 
