@@ -18,7 +18,7 @@ Ha naisdevice kjørende og kjør HelsepersonellApiApplicationStarter med følgen
 ```
 
 ### Utviklerimage
-I utviklerimage brukes ikke naisdevice og du må i tillegg ha følgende argumenter:
+I utviklerimage brukes ikke naisdevice og du må legge til følgende ekstra argumenter:
 ```
 -Djavax.net.ssl.trustStore=[path til lokal truststore]
 -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
