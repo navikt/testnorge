@@ -1,6 +1,6 @@
 {
   "name": "@navikt/dolly-komponenter",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Bibliotek for dolly komponenter.",
   "main": "lib/main.bundle.js",
   "scripts": {
