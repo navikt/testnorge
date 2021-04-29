@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Addresse Service
+title: Adresse Service
 parent: Applikasjoner
 ---
 

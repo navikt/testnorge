@@ -6,7 +6,7 @@ grand_parent: Applikasjoner
 ---
 
 # Avhengighetsanalyse-Frontend
-Frontend for avhengighets analyse.
+Frontend for avhengighetsanalyse.
 
 Endepunkt: https://testnav-applikasjonsanalyse.dev.intern.nav.no/
 
