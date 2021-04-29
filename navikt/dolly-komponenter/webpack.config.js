@@ -56,6 +56,6 @@ module.exports = {
     filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'lib'),
     library: '@navikt/dolly-komponenter',
-    libraryTarget: 'commonjs',
+    libraryTarget: 'umd',
   },
 };
