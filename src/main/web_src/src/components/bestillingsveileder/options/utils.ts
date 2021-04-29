@@ -129,6 +129,18 @@ export const initialValues = {
 		statsborgerskapRegdato: '',
 		statsborgerskapTildato: ''
 	},
+	foreldre: {
+		identtype: 'FNR',
+		kjonn: '',
+		harFellesAdresse: false,
+		foreldreType: '',
+		// @ts-ignore
+		spesreg: '',
+		utenFastBopel: false,
+		statsborgerskap: '',
+		statsborgerskapRegdato: '',
+		statsborgerskapTildato: ''
+	},
 	statborgerskap: {
 		statborgerskap: '',
 		// @ts-ignore

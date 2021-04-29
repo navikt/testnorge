@@ -295,6 +295,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		if (relasjoner) {
 			const partnere = relasjoner.partner || relasjoner.partnere
 			const barn = relasjoner.barn
+			const foreldre = relasjoner.foreldre
+
 			if (partnere) {
 				const partner = {
 					header: 'Partner',
@@ -354,6 +356,30 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				})
 
 				data.push(barn)
+			}
+			if (foreldre && foreldre.length > 0) {
+				const foreldreRows = {
+					header: 'Foreldre',
+					itemRows: []
+				}
+
+				relasjoner.foreldre.forEach((item, i) => {
+					foreldreRows.itemRows.push([
+						{
+							label: '',
+							value: `#${i + 1}`,
+							width: 'x-small'
+						},
+						..._getTpsfBestillingData(item),
+						obj('Fnr/dnr/bost', item.ident),
+						obj('ForeldreType', Formatters.showLabel('foreldreType', item.foreldreType)),
+						obj('Foreldre bor sammen', Formatters.oversettBoolean(item.harFellesAdresse)),
+						obj('Diskresjonskoder', item.spesreg !== 'UFB' && item.spesreg, 'Diskresjonskoder'),
+						obj('Fødselsdato', Formatters.formatDate(item.foedselsdato))
+					])
+				})
+
+				data.push(foreldreRows)
 			}
 		}
 

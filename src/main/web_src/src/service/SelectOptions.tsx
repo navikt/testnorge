@@ -27,6 +27,11 @@ const selectOptions: SelectOptions = {
 		{ value: 'FELLES', label: 'Begge' }
 	],
 
+	foreldreType: [
+		{ value: 'MOR', label: 'Mor' },
+		{ value: 'FAR', label: 'Far' }
+	],
+
 	barnBorHos: [
 		{ value: 'MEG', label: 'Hovedperson' },
 		{ value: 'DEG', label: 'Partner' },
