@@ -21,9 +21,9 @@ function LoadableComponent<T>({ onFetch, render, onNotFound }: Props<T>) {
         setData(response);
         setLoading(false);
       })
-      .catch((e: unknown) => {
+      .catch((e: Error) => {
         setLoading(false);
-        if (e instanceof NotFoundError) {
+        if (e instanceof NotFoundError || e.name == 'NotFoundError') {
           setNotFound(true);
         } else {
           setError(true);

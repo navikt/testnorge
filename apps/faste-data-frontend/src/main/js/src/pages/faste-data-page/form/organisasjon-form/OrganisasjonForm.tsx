@@ -1,11 +1,9 @@
-import { Form, Line, SelectFormItem } from '@navikt/dolly-komponenter';
+import { Form, Line, SelectFormItem, Pageable, Knapp } from '@navikt/dolly-komponenter';
 import React, { useEffect, useState } from 'react';
 import { OrganisasjonFasteDataService, OrganisasjonService } from '@/service';
 import { Organisasjon as FasteDataOrganisasjon } from '@/service/OrganisasjonFasteDataService';
-import { Knapp } from '@/components/knapp';
 import { CompareTable } from '@/components/compare-table';
 import { OrganisasjonComperator } from '@/comperator';
-import { Pageable } from '@/components/pagable';
 import { Input } from 'nav-frontend-skjema';
 
 type Gruppe =

@@ -1,11 +1,14 @@
 import React from 'react';
-import { Page } from '@/components/page';
-import { LoadableComponent } from '@navikt/dolly-komponenter';
 import { useParams } from 'react-router-dom';
 import { OrganisasjonFasteDataService, OrganisasjonService } from '@/service';
 import { CompareCodeView } from '@/components/compare-code-view';
 import { OrganisasjonComperator } from '@/comperator';
-import { SuccessAlertstripe, WarningAlertstripe } from '@navikt/dolly-komponenter';
+import {
+  SuccessAlertstripe,
+  WarningAlertstripe,
+  LoadableComponent,
+  Page,
+} from '@navikt/dolly-komponenter';
 import { MismatchTable } from '@/components/mismatch-table';
 
 export default () => {

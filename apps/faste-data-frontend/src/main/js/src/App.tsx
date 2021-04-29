@@ -1,5 +1,5 @@
 import React from 'react';
-import { Header } from '@/components/header';
+import { Header } from '@navikt/dolly-komponenter';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import { FasteDataPage } from '@/pages';
 import { ProfilLoader } from '@/components/profil';
