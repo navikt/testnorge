@@ -1,7 +1,6 @@
 package no.nav.registre.testnorge.arena.provider.rs;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
@@ -52,7 +51,7 @@ public class IdentControllerTest {
                 .thenReturn(Arrays.asList(fnr1, fnr3, fnr4));
 
         ResponseEntity<List<String>> response = identController.slettBrukereIArenaForvalter(miljoe, Arrays.asList(fnr1, fnr2, fnr3, fnr4));
-        assertThat(response.getBody(), is(Arrays.asList(fnr1, fnr3, fnr4)));
+        assertThat(response.getBody()).hasSize(3).contains(fnr1, fnr3, fnr4);
     }
 
     @Test
@@ -62,8 +61,8 @@ public class IdentControllerTest {
                 .thenReturn(Collections.singletonList(arbeidsoeker));
 
         ResponseEntity<List<Arbeidsoeker>> response = identController.hentBrukereFraArenaForvalter(eier, miljoe, fnr1);
-        assertThat(response.getBody().size(), is(1));
-        assertThat(response.getBody().get(0).getPersonident(), is(fnr1));
+        assertThat(response.getBody()).hasSize(1);
+        assertThat(response.getBody().get(0).getPersonident()).isEqualTo(fnr1);
     }
 
 }

@@ -21,7 +21,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.adapter.ArbeidsforholdHistorikkAdapter;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.SyntrestConsumer;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Arbeidsforhold;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.ArbeidsforholdMap;
@@ -36,8 +35,6 @@ public class ArbeidsforholdHistorikkService {
     private final IdentService identService;
     private final OpplysningspliktigService opplysningspliktigService;
     private final Random random = new Random();
-    private final ArbeidsforholdHistorikkAdapter historikkAdapter;
-
 
     private Map<LocalDate, Arbeidsforhold> createArbeidsforholdHistorikk(final String ident, Iterator<LocalDate> dates) {
         var map = new HashMap<LocalDate, Arbeidsforhold>();
@@ -106,14 +103,17 @@ public class ArbeidsforholdHistorikkService {
     private List<ArbeidsforholdMap> getArbeidsforholdMapList(Set<String> identer, Set<LocalDate> dates) {
         var futures = identer.stream().map(ident -> futureMap(ident, dates)).collect(Collectors.toList());
         var list = new ArrayList<ArbeidsforholdMap>();
-        for (var future : futures) {
+
+        for (int index = 0; index < futures.size(); index++) {
             try {
-                var map = future.get(10, TimeUnit.MINUTES);
+                var map = futures.get(index).get(12, TimeUnit.MINUTES);
+                log.info("{}/{} arbeidsforhold historikk generert.", index + 1, futures.size());
                 list.add(map);
             } catch (Exception e) {
                 log.error("Feil ved generering av syntetisk historikk. Fortsetter uten.", e);
             }
         }
+
         if (list.isEmpty()) {
             log.warn("Fikk ikke syntentisert {} identer pga tidligere feil.", futures.size());
         } else if (futures.size() > list.size()) {
@@ -158,7 +158,7 @@ public class ArbeidsforholdHistorikkService {
         var opplysningspliktige = opplysningspliktigService.getAllOpplysningspliktig(kalenermnd, miljo);
         for (var arbeidsforholdMap : arbeidsforholdMapList) {
             var arbeidsforhold = arbeidsforholdMap.getArbeidsforhold(kalenermnd);
-            log.info("Legger til arbeidsforhold for {} den {}.", arbeidsforhold.getIdent(), kalenermnd);
+            log.trace("Legger til arbeidsforhold for {} den {}.", arbeidsforhold.getIdent(), kalenermnd);
             if (arbeidsforholdMap.isNewArbeidsforhold(kalenermnd)
                     || arbeidsforhold.isForenklet() && !arbeidsforholdMap.contains(kalenermnd.minusMonths(1))) {
                 var opplysningspliktig = opplysningspliktige.get(random.nextInt(opplysningspliktige.size()));
@@ -173,7 +173,6 @@ public class ArbeidsforholdHistorikkService {
             }
             var opplysningspliktig = findOpplysningspliktigForVirksomhet(arbeidsforhold.getVirksomhetsnummer(), opplysningspliktige);
             opplysningspliktig.addArbeidsforhold(arbeidsforhold);
-            historikkAdapter.save(arbeidsforhold.toHistorikk(miljo));
         }
         opplysningspliktigService.send(opplysningspliktige, miljo);
     }

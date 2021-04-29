@@ -47,6 +47,17 @@ public class Adresse {
                 .build();
     }
 
+    public no.nav.registre.testnorge.libs.dto.organisasjonfastedataservice.v1.AdresseDTO toDTOv2() {
+        return no.nav.registre.testnorge.libs.dto.organisasjonfastedataservice.v1.AdresseDTO
+                .builder()
+                .adresselinje1(adresse)
+                .postnr(postnr)
+                .kommunenr(kommunenr)
+                .landkode(landkode)
+                .poststed(poststed)
+                .build();
+    }
+
     public Adresse(AdresseDTO dto) {
         adresse = dto.getAdresselinje1();
         postnr = dto.getPostnr();

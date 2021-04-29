@@ -223,6 +223,9 @@ project(":endringsmelding-service").projectDir = file('apps/endringsmelding-serv
 include 'generer-navn-service'
 project(":generer-navn-service").projectDir = file('apps/generer-navn-service')
 
+include 'generer-synt-amelding-service'
+project(":generer-synt-amelding-service").projectDir = file('apps/generer-synt-amelding-service')
+
 include 'miljoer-service'
 project(":miljoer-service").projectDir = file('apps/miljoer-service')
 
@@ -288,3 +291,19 @@ project(":aareg-proxy").projectDir = file('proxies/aareg-proxy')
 
 include 'security-token-service'
 project(":security-token-service").projectDir = file('libs/security-token-service')
+
+include 'organisasjon-faste-data-service'
+project(":organisasjon-faste-data-service").projectDir = file('apps/organisasjon-faste-data-service')
+
+include 'faste-data-frontend'
+project(":faste-data-frontend").projectDir = file('apps/faste-data-frontend')
+
+include 'generer-organisasjon-populasjon-service'
+project(":generer-organisasjon-populasjon-service").projectDir = file('apps/generer-organisasjon-populasjon-service')
+
+include 'syntrest-proxy'
+project(":syntrest-proxy").projectDir = file('proxies/syntrest-proxy')
+
+include 'amelding-service'
+project(":amelding-service").projectDir = file('apps/amelding-service')
+

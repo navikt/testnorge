@@ -2,6 +2,7 @@ package no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
@@ -21,6 +22,7 @@ import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumentCom
 import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumenterCommand;
 import no.nav.registre.testnorge.libs.common.command.SaveOppsummeringsdokumenterCommand;
 import no.nav.registre.testnorge.libs.core.config.ApplicationProperties;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
@@ -28,6 +30,7 @@ import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.config.credentials
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Opplysningspliktig;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Organisajon;
 
+@Slf4j
 @Component
 public class OppsummeringsdokumentConsumer {
     private static final int BYTE_COUNT = 16 * 1024 * 1024;
@@ -44,7 +47,7 @@ public class OppsummeringsdokumentConsumer {
             ApplicationProperties applicationProperties
     ) {
         this.applicationProperties = applicationProperties;
-        this.executor = Executors.newFixedThreadPool(5);
+        this.executor = Executors.newFixedThreadPool(8);
         this.accessTokenService = accessTokenService;
         this.properties = properties;
         this.webClient = WebClient
@@ -62,7 +65,7 @@ public class OppsummeringsdokumentConsumer {
                 .build();
     }
 
-    private CompletableFuture<Void> saveOpplysningspliktig(Opplysningspliktig opplysningspliktig, String miljo) {
+    private CompletableFuture<String> saveOpplysningspliktig(Opplysningspliktig opplysningspliktig, String miljo) {
         AccessToken accessToken = accessTokenService.generateToken(properties);
         return CompletableFuture.supplyAsync(
                 () -> new SaveOppsummeringsdokumenterCommand(
@@ -70,7 +73,8 @@ public class OppsummeringsdokumentConsumer {
                         accessToken.getTokenValue(),
                         opplysningspliktig.toDTO(),
                         miljo,
-                        applicationProperties.getName()
+                        applicationProperties.getName(),
+                        Populasjon.MINI_NORGE
                 ).call(),
                 executor
         );
@@ -87,9 +91,10 @@ public class OppsummeringsdokumentConsumer {
     }
 
     public List<Opplysningspliktig> getAlleOpplysningspliktig(String miljo) {
+        log.info("Henter alle opplysningspliktige fra {}...", miljo);
         AccessToken accessToken = accessTokenService.generateToken(properties);
         var list = new GetOppsummeringsdokumenterCommand(webClient, accessToken.getTokenValue(), miljo).call();
-        //TODO: Fix empty array of driver virksomheter
+        log.info("Fant {} opplysningspliktig fra {}.", list.size(), miljo);
         return list.stream().map(value -> new Opplysningspliktig(value, new ArrayList<>())).collect(Collectors.toList());
     }
 

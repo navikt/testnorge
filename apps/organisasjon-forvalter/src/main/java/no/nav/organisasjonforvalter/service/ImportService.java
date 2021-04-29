@@ -7,32 +7,42 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.organisasjonforvalter.consumer.MiljoerServiceConsumer;
-import no.nav.organisasjonforvalter.consumer.OrganisasjonConsumer;
-import no.nav.organisasjonforvalter.provider.rs.responses.RsOrganisasjon;
+import no.nav.organisasjonforvalter.consumer.OrganisasjonServiceConsumer;
+import no.nav.organisasjonforvalter.dto.responses.RsOrganisasjon;
+import no.nav.organisasjonforvalter.jpa.entity.Organisasjon;
+import no.nav.organisasjonforvalter.jpa.repository.OrganisasjonRepository;
 import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
-import static org.apache.logging.log4j.util.Strings.isBlank;
 
 @Service
 @RequiredArgsConstructor
 public class ImportService {
 
     private final MiljoerServiceConsumer miljoerServiceConsumer;
-    private final OrganisasjonConsumer organisasjonApiConsumer;
+    private final OrganisasjonServiceConsumer organisasjonServiceConsumer;
     private final MapperFacade mapperFacade;
+    private final OrganisasjonRepository organisasjonRepository;
+
+    private static Set<String> getAllOrgnr(Organisasjon organisasjon, Set<String> orgnr) {
+
+        orgnr.add(organisasjon.getOrganisasjonsnummer());
+        organisasjon.getUnderenheter().forEach(org -> getAllOrgnr(org, orgnr));
+        return orgnr;
+    }
 
     public Map<String, RsOrganisasjon> getOrganisasjoner(String orgnummer, Set<String> miljoer) {
 
-        Set<String> miljoerAaSjekke = nonNull(miljoer) &&
+        var miljoerAaSjekke = nonNull(miljoer) &&
                 miljoer.stream().anyMatch(miljoe ->
-                                miljoerServiceConsumer.getOrgMiljoer().stream().anyMatch(miljoe2 -> miljoe2.equals(miljoe))) ?
+                        miljoerServiceConsumer.getOrgMiljoer().stream().anyMatch(miljoe2 -> miljoe2.equals(miljoe))) ?
 
                 miljoer.stream().filter(miljoe ->
                         miljoerServiceConsumer.getOrgMiljoer().stream().anyMatch(miljoe2 -> miljoe2.equals(miljoe)))
@@ -40,26 +50,47 @@ public class ImportService {
 
                 miljoerServiceConsumer.getOrgMiljoer();
 
-        return miljoerAaSjekke.parallelStream()
-                .filter(StringUtils::isNotBlank)
+        var dbOrganisasjon = organisasjonRepository.findByOrganisasjonsnummer(orgnummer);
+
+        var organisasjoner =
+                organisasjonServiceConsumer.getStatus(dbOrganisasjon.isPresent() ?
+                        getAllOrgnr(dbOrganisasjon.get(), new HashSet<>()) : Set.of(orgnummer), miljoerAaSjekke);
+
+        return organisasjoner.keySet().stream()
+                .filter(env -> !organisasjoner.get(env).entrySet().isEmpty())
                 .map(env -> OrganisasjonMiljoe.builder()
-                        .organisasjon(acquireOrganisasjon(orgnummer, env))
+                        .organisasjon(getOrganisasjon(env, orgnummer, organisasjoner))
                         .miljoe(env)
                         .build())
                 .filter(org -> nonNull(org.getOrganisasjon()))
                 .collect(Collectors.toMap(OrganisasjonMiljoe::getMiljoe, OrganisasjonMiljoe::getOrganisasjon));
     }
 
-    private RsOrganisasjon acquireOrganisasjon(String orgnummer, String environment) {
+    private RsOrganisasjon getOrganisasjon(String env, String orgnummer,
+                                           Map<String, Map<String, Optional<OrganisasjonDTO>>> organisasjoner) {
 
-        OrganisasjonDTO organisasjonDto = organisasjonApiConsumer.getStatus(orgnummer, environment);
-        if (isBlank(organisasjonDto.getOrgnummer())) {
-            return null;
+        OrganisasjonDTO organisasjonDto;
+        if (organisasjoner.get(env).containsKey(orgnummer)) {
+            if (organisasjoner.get(env).get(orgnummer).isPresent()) {
+                organisasjonDto = organisasjoner.get(env).get(orgnummer).get();
+            } else {
+                return null;
+            }
+        } else {
+            var organisasjon = organisasjonServiceConsumer.getStatus(orgnummer, env);
+            if (organisasjon.isPresent()) {
+                organisasjonDto = organisasjon.get();
+            } else {
+                return null;
+            }
         }
+
         RsOrganisasjon organisasjon = mapperFacade.map(organisasjonDto, RsOrganisasjon.class);
-        organisasjon.setUnderenheter(organisasjonDto.getDriverVirksomheter().parallelStream()
-                .map(orgnr -> acquireOrganisasjon(orgnr, environment))
-                .collect(Collectors.toList()));
+        if (nonNull(organisasjonDto.getDriverVirksomheter())) {
+            organisasjon.setUnderenheter(organisasjonDto.getDriverVirksomheter().stream()
+                    .map(orgnr -> getOrganisasjon(env, orgnr, organisasjoner))
+                    .collect(Collectors.toList()));
+        }
         return organisasjon;
     }
 

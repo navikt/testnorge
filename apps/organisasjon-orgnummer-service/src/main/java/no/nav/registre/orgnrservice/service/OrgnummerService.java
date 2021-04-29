@@ -1,17 +1,16 @@
 package no.nav.registre.orgnrservice.service;
 
 import lombok.AllArgsConstructor;
+import no.nav.registre.orgnrservice.adapter.OrgnummerAdapter;
+import no.nav.registre.orgnrservice.consumer.OrganisasjonApiConsumer;
+import no.nav.registre.orgnrservice.domain.Organisasjon;
+import no.nav.registre.testnorge.libs.core.util.OrgnummerUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import no.nav.registre.orgnrservice.adapter.OrgnummerAdapter;
-import no.nav.registre.orgnrservice.consumer.OrganisasjonApiConsumer;
-import no.nav.registre.orgnrservice.domain.Organisasjon;
-import no.nav.registre.testnorge.libs.core.util.OrgnummerUtil;
 
 @Service
 @AllArgsConstructor
@@ -33,6 +32,7 @@ public class OrgnummerService {
                     genererteOrganisasjoner.stream()
             ).map(Organisasjon::getOrgnummer).collect(Collectors.toList());
         }
+
 
         List<String> orgnummer = hentedeOrgnummer
                 .subList(0, antall)

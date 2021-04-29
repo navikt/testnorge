@@ -27,12 +27,9 @@ public class ApplicationConfig {
 
     @Bean
     public FilterRegistrationBean<SessionTimeoutCookieFilter> loggingFilter(){
-        FilterRegistrationBean<SessionTimeoutCookieFilter> registrationBean
-                = new FilterRegistrationBean<>();
-
+        FilterRegistrationBean<SessionTimeoutCookieFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new SessionTimeoutCookieFilter());
         registrationBean.addUrlPatterns("/*");
-
         return registrationBean;
     }
 

@@ -9,8 +9,11 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Endringsdokument;
@@ -44,23 +47,31 @@ public class OrganaisjonMottakListener {
 
 
     @KafkaListener(topics = OrganisasjonTopic.ORGANISASJON_OPPRETT_ORGANISASJON)
-    public void create(ConsumerRecord<String, Opprettelsesdokument> record) {
-        var key = record.key();
-        var organisasjon = record.value().getOrganisasjon();
-        log.info("Oppretter ny organisasjon {} med uuid: {}.", organisasjon.getOrgnummer(), key);
-        save(key, record.value().getMetadata().getMiljo(), organisasjon, false);
+    public void create(List<ConsumerRecord<String, Opprettelsesdokument>> records) {
+        records.stream().collect(Collectors.groupingBy(value -> value.value().getMetadata().getMiljo())).forEach((miljo, list) -> {
+            var organisasjoner = list.stream().map(value -> value.value().getOrganisasjon()).collect(Collectors.toList());
+            var ids = list.stream().map(ConsumerRecord::key).collect(Collectors.toSet());
+            save(organisasjoner, miljo, false, ids);
+        });
     }
 
     @KafkaListener(topics = OrganisasjonTopic.ORGANISASJON_ENDRE_ORGANISASJON)
-    public void update(ConsumerRecord<String, Endringsdokument> record) {
-        var key = record.key();
-        var organisasjon = record.value().getOrganisasjon();
-        log.info("Endrer organisasjon {} med uuid: {}.", organisasjon.getOrgnummer(), key);
-        save(key, record.value().getMetadata().getMiljo(), organisasjon, true);
+    public void update(List<ConsumerRecord<String, Endringsdokument>> records) {
+        records.stream().collect(Collectors.groupingBy(value -> value.value().getMetadata().getMiljo())).forEach((miljo, list) -> {
+            var organisasjoner = list.stream().map(value -> value.value().getOrganisasjon()).collect(Collectors.toList());
+            var ids = list.stream().map(ConsumerRecord::key).collect(Collectors.toSet());
+            save(organisasjoner, miljo, true, ids);
+        });
     }
 
-    private void save(String uuid, String miljo, Organisasjon organisasjon, boolean update) {
-        jenkinsConsumer.send(Flatfil.create(createRecords(organisasjon, update)), miljo, uuid);
+    private void save(List<Organisasjon> organisasjoner, String miljo, boolean update, Set<String> ids) {
+        var lines = organisasjoner
+                .stream()
+                .map(organisajon -> createRecords(organisajon, update))
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+
+        jenkinsConsumer.send(Flatfil.create(lines), miljo, ids);
     }
 
     private List<Record> createRecords(Organisasjon organisasjon, boolean update) {

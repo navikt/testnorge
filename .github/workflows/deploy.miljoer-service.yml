@@ -2,7 +2,6 @@ name: Deploy miljoer-service
 
 on:
   push:
-    branches: master
     paths:
       - apps/miljoer-service/**
       - libs/testnorge-core/**
@@ -45,5 +44,5 @@ jobs:
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-          CLUSTER: dev-fss
+          CLUSTER: dev-gcp
           RESOURCE: apps/miljoer-service/config.yml

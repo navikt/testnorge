@@ -1,11 +1,29 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
-tps-forvalteren.rest-api.url: https://tps-forvalteren.dev.adeo.no/api
+consumers.tps-forvalteren-proxy:
+    url: https://tps-forvalteren-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+    namespace: dolly
+    name: tps-forvalteren-proxy
 
 spring:
   main:
     banner-mode: off
   application:
     name: miljoer-service
-    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     description: App for å sjekke hvilke miljøer i test og preprod som er tilgjengelige nå.
+  security:
+    oauth2:
+      client:
+        registration:
+          aad:
+            client-id: ${azure.app.client.id}
+            client-secret: ${azure.app.client.secret}
+            authorization-grant-type: authorization_code
+            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+            scope: openid, ${azure.app.client.id}/.default
+        provider:
+          aad:
+            authorization-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/authorize
+            token-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/token
+            jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys

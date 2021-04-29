@@ -1,0 +1,6 @@
+azure.app.client.id: ${client_id}
+azure.app.client.secret: ${client_secret}
+
+consumers:
+  oppsummeringsdokument-service:
+    url: https://oppsummeringsdokument-service.dev.intern.nav.no

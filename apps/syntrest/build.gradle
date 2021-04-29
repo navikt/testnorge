@@ -11,6 +11,7 @@ dependencies {
     compile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '9.4.32.v20200930'
 
     implementation project(':testnorge-core')
+    implementation project(':testnorge-domain')
 
     implementation 'org.springframework.boot:spring-boot-starter-web:2.3.4.RELEASE'
     implementation 'org.apache.httpcomponents:httpclient:4.5.12'
@@ -30,6 +31,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator:2.3.4.RELEASE'
     implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
     implementation 'org.springframework.boot:spring-boot-starter-webflux:2.3.2.RELEASE'
+    implementation 'io.projectreactor:reactor-core:3.3.9.RELEASE'
     testImplementation 'junit:junit:4.13'
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.3.4.RELEASE'
     testImplementation 'com.github.tomakehurst:wiremock:2.23.2'

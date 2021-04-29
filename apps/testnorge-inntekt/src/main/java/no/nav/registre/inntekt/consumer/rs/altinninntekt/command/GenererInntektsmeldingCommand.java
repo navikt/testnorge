@@ -24,8 +24,12 @@ public class GenererInntektsmeldingCommand implements Callable<String> {
 
     @Override
     public String call() {
+        var arbeidsgiver = dto.getArbeidsgiver() == null
+                ? dto.getArbeidsgiverPrivat().getArbeidsgiverFnr()
+                : dto.getArbeidsgiver().getVirksomhetsnummer();
+
         try {
-            log.info("Gennerer inntektsmelding...");
+            log.info("Gennerer inntektsmelding for arbeidsgiver {}...", arbeidsgiver);
             var response = webClient
                     .post()
                     .uri("/api/v2/inntektsmelding/2018/12/11")
@@ -33,9 +37,9 @@ public class GenererInntektsmeldingCommand implements Callable<String> {
                     .body(BodyInserters.fromPublisher(Mono.just(dto), RsInntektsmelding.class))
                     .retrieve()
                     .bodyToMono(String.class)
-                    .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(3)))
+                    .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(2)))
                     .block();
-            log.info("Inntektsmelding generert.");
+            log.info("Inntektsmelding generert for arbeidsgiver {}.", arbeidsgiver);
             return response;
 
         } catch (WebClientResponseException e) {

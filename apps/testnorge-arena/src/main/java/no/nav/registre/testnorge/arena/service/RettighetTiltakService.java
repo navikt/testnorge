@@ -11,8 +11,6 @@ import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetEndreDeltake
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetFinnTiltakRequest;
 import no.nav.registre.testnorge.arena.consumer.rs.util.ConsumerUtils;
 import no.nav.registre.testnorge.arena.service.util.ServiceUtils;
-import no.nav.registre.testnorge.arena.service.util.ArbeidssoekerUtils;
-import no.nav.registre.testnorge.arena.service.util.IdenterUtils;
 import no.nav.registre.testnorge.arena.service.util.KodeMedSannsynlighet;
 
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Deltakerstatuser;
@@ -56,8 +54,8 @@ public class RettighetTiltakService {
     private final TiltakSyntConsumer tiltakSyntConsumer;
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
     private final ServiceUtils serviceUtils;
-    private final IdenterUtils identerUtils;
-    private final ArbeidssoekerUtils arbeidsoekerUtils;
+    private final IdentService identService;
+    private final ArbeidssoekerService arbeidsoekerUtils;
     private final TiltakArenaForvalterConsumer tiltakArenaForvalterConsumer;
     private final Random rand;
 
@@ -451,7 +449,7 @@ public class RettighetTiltakService {
             String miljoe,
             int antallNyeIdenter
     ) {
-        var utvalgteIdenter = identerUtils.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
+        var utvalgteIdenter = identService.getUtvalgteIdenter(avspillergruppeId, antallNyeIdenter, miljoe);
 
         var syntRequest = consumerUtils.createSyntRequest(utvalgteIdenter.size());
         var syntetiserteRettigheter = tiltakSyntConsumer.opprettTiltaksaktivitet(syntRequest);

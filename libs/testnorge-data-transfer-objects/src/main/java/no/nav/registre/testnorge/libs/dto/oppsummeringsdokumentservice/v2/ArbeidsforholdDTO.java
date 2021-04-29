@@ -41,6 +41,7 @@ public class ArbeidsforholdDTO {
     List<InntektDTO> inntekter;
     @JsonProperty
     List<AvvikDTO> avvik;
+    String historikk;
 
     public List<AvvikDTO> getAvvik() {
         if (avvik == null) {

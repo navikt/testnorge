@@ -3,13 +3,13 @@ package no.nav.organisasjonforvalter.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.organisasjonforvalter.consumer.OrganisasjonConsumer;
 import no.nav.organisasjonforvalter.consumer.OrganisasjonMottakConsumer;
+import no.nav.organisasjonforvalter.consumer.OrganisasjonServiceConsumer;
+import no.nav.organisasjonforvalter.dto.requests.DeployRequest;
+import no.nav.organisasjonforvalter.dto.responses.DeployResponse;
+import no.nav.organisasjonforvalter.dto.responses.DeployResponse.EnvStatus;
 import no.nav.organisasjonforvalter.jpa.entity.Organisasjon;
 import no.nav.organisasjonforvalter.jpa.repository.OrganisasjonRepository;
-import no.nav.organisasjonforvalter.provider.rs.requests.DeployRequest;
-import no.nav.organisasjonforvalter.provider.rs.responses.DeployResponse;
-import no.nav.organisasjonforvalter.provider.rs.responses.DeployResponse.EnvStatus;
 import no.nav.organisasjonforvalter.service.DeployStatusService.DeployEntry;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -23,8 +23,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
-import static no.nav.organisasjonforvalter.provider.rs.responses.DeployResponse.Status.ERROR;
-import static no.nav.organisasjonforvalter.provider.rs.responses.DeployResponse.Status.OK;
+import static no.nav.organisasjonforvalter.dto.responses.DeployResponse.Status.ERROR;
+import static no.nav.organisasjonforvalter.dto.responses.DeployResponse.Status.OK;
 
 @Slf4j
 @Service
@@ -34,7 +34,7 @@ public class DeploymentService {
     private final OrganisasjonRepository organisasjonRepository;
     private final OrganisasjonMottakConsumer organisasjonMottakConsumer;
     private final DeployStatusService deployStatusService;
-    private final OrganisasjonConsumer organisasjonApiConsumer;
+    private final OrganisasjonServiceConsumer organisasjonServiceConsumer;
     private final MapperFacade mapperFacade;
 
     public DeployResponse deploy(DeployRequest request) {
@@ -73,10 +73,9 @@ public class DeploymentService {
 
     private void deployOrganisasjon(String uuid, Organisasjon organisasjon, String env) {
 
-        if (!organisasjon.getOrganisasjonsnummer().equals(
-                organisasjonApiConsumer.getStatus(organisasjon.getOrganisasjonsnummer(), env).getOrgnummer())) {
-
+        if (organisasjonServiceConsumer.getStatus(organisasjon.getOrganisasjonsnummer(), env).isEmpty()) {
             organisasjonMottakConsumer.opprettOrganisasjon(uuid, organisasjon, env);
+
         } else {
             organisasjonMottakConsumer.endreOrganisasjon(uuid, organisasjon, env);
         }

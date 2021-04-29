@@ -8,7 +8,6 @@ metadata:
 spec:
   image: {{ image }}
   port: 8080
-  webproxy: true
   tracing:
     enabled: true
   accessPolicy:
@@ -16,10 +15,14 @@ spec:
       rules:
         - application: team-dolly-lokal-app
           cluster: dev-fss
-        - application: organisasjon-forvalter
-          cluster: dev-fss
+        - application: testnav-organisasjon-forvalter
+          cluster: dev-gcp
         - application: testnorge-oversikt-frontend
           cluster: dev-fss
+        - application: testnorge-statisk-data-forvalter
+          cluster: dev-fss
+        - application: testnav-generer-organisasjon-populasjon-service
+          cluster: dev-gcp
   azure:
     application:
       enabled: true
@@ -37,14 +40,12 @@ spec:
   replicas:
     min: 1
     max: 1
-  vault:
-    enabled: true
   resources:
     requests:
       cpu: 200m
-      memory: 4000Mi
+      memory: 1024Mi
     limits:
       cpu: 500m
-      memory: 5000Mi
+      memory: 2048Mi
   ingresses:
     - "https://generer-navn-service.dev.intern.nav.no"

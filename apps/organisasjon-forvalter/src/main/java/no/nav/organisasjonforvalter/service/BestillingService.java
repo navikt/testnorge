@@ -3,16 +3,16 @@ package no.nav.organisasjonforvalter.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.organisasjonforvalter.consumer.OrganisasjonNavnConsumer;
-import no.nav.organisasjonforvalter.consumer.OrganisasjonNummerConsumer;
-import no.nav.organisasjonforvalter.consumer.TpsfAdresseConsumer;
+import no.nav.organisasjonforvalter.consumer.AdresseServiceConsumer;
+import no.nav.organisasjonforvalter.consumer.GenererNavnServiceConsumer;
+import no.nav.organisasjonforvalter.consumer.OrganisasjonOrgnummerServiceConsumer;
+import no.nav.organisasjonforvalter.dto.requests.BestillingRequest;
+import no.nav.organisasjonforvalter.dto.requests.BestillingRequest.AdresseRequest;
+import no.nav.organisasjonforvalter.dto.requests.BestillingRequest.AdresseType;
+import no.nav.organisasjonforvalter.dto.requests.BestillingRequest.OrganisasjonRequest;
+import no.nav.organisasjonforvalter.dto.responses.BestillingResponse;
 import no.nav.organisasjonforvalter.jpa.entity.Organisasjon;
 import no.nav.organisasjonforvalter.jpa.repository.OrganisasjonRepository;
-import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest;
-import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest.AdresseRequest;
-import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest.AdresseType;
-import no.nav.organisasjonforvalter.provider.rs.requests.BestillingRequest.OrganisasjonRequest;
-import no.nav.organisasjonforvalter.provider.rs.responses.BestillingResponse;
 import no.nav.organisasjonforvalter.util.CurrentAuthentication;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -26,10 +26,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BestillingService {
 
-    private final OrganisasjonNavnConsumer organisasjonNavnConsumer;
-    private final OrganisasjonNummerConsumer organisasjonNummerConsumer;
+    private final AdresseServiceConsumer adresseServiceConsumer;
+    private final GenererNavnServiceConsumer genererNavnServiceConsumer;
+    private final OrganisasjonOrgnummerServiceConsumer organisasjonOrgnummerServiceConsumer;
     private final OrganisasjonRepository organisasjonRepository;
-    private final TpsfAdresseConsumer tpsfAdresseConsumer;
     private final MapperFacade mapperFacade;
 
     public BestillingResponse execute(BestillingRequest request) {
@@ -49,8 +49,8 @@ public class BestillingService {
         fixAdresseFallback(orgRequest);
 
         Organisasjon organisasjon = mapperFacade.map(orgRequest, Organisasjon.class);
-        organisasjon.setOrganisasjonsnummer(organisasjonNummerConsumer.getOrgnummer());
-        organisasjon.setOrganisasjonsnavn(organisasjonNavnConsumer.getOrgName());
+        organisasjon.setOrganisasjonsnummer(organisasjonOrgnummerServiceConsumer.getOrgnummer());
+        organisasjon.setOrganisasjonsnavn(genererNavnServiceConsumer.getOrgName());
         organisasjon.setUnderenheter(mapperFacade.mapAsList(organisasjon.getUnderenheter(), Organisasjon.class));
         organisasjon.setParent(parent);
         organisasjon.setBrukerId(CurrentAuthentication.getUserId());
@@ -74,7 +74,7 @@ public class BestillingService {
         orgRequest.getAdresser().forEach(adresse -> {
             if (adresse.getAdresselinjer().stream().noneMatch(StringUtils::isNotBlank)) {
                 adresse.setAdresselinjer(new ArrayList<>());
-                mapperFacade.map(tpsfAdresseConsumer.getAdresser(adresse.getPostnr(), adresse.getKommunenr()), adresse);
+                mapperFacade.map(adresseServiceConsumer.getAdresser(adresse.getPostnr(), adresse.getKommunenr()), adresse);
             }
         });
     }
