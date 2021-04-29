@@ -60,7 +60,7 @@ sterkt anbefalt å følge. Disse applikasjonen er ansvarlige for å opprette man
 ~~CircleCI håndterer bygg og deploy til nais via [deployment-cli](https://github.com/navikt/deployment-cli). Github packages er brukt for å hoste docker image som blir generert og et personlig access token + brukernavn må legges til i CircleCI prosjektet. ~~
 
 ## Swagger
-Swagger finnes under [/api](https://testnorge-statisk-data-forvalter.nais.preprod.local/api) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://testnorge-statisk-data-forvalter.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør ApplicationStarter med følgende argumenter:

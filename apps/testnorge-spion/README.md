@@ -10,7 +10,7 @@ Testnorge-spion tilbyr endepunkt for å lage syntetiske vedtak og legge dem på 
 ## Dokumentasjon
 
 ### Swagger
-Swagger finnes under [/api](https://testnorge-spion.nais.preprod.local/api) -endepunktet til applikasjonen.
+Swagger finnes under [/api](https://testnorge-spion.dev.intern.nav.no/api) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør ApplicationStarter med følgende argumenter:

@@ -15,7 +15,7 @@ Altinn inntekt gjør kall til [inntektsmelding-stub](https://github.com/navikt/t
 [kodeverk](https://github.com/navikt/tjenestespesifikasjoner/tree/master/nav-altinn-inntektsmelding/src/main/xsd) og legger dem så inn i Joark.
 
 ## Swagger
-Swagger finnes under [/api](https://testnorge-inntekt.nais.preprod.local/api) -endepunktet til applikasjonen.
+Swagger finnes under [/api](https://testnorge-inntekt.dev.intern.nav.no/api) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør ApplicationStarter med følgende argumenter:

@@ -8,7 +8,7 @@ parent: Applikasjoner
 API for rapportering av tilbakemeldinger til slack.
 
 ## Swagger
-Swagger finnes under [/api](https://testnorge-rapportering-api.nais.preprod.local/api) -endepunktet til applikasjonen.
+Swagger finnes under [/api](https://testnorge-rapportering-api.dev.intern.nav.no/api) -endepunktet til applikasjonen.
  
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør RapporteringApiApplicationStarter med følgende argumenter:

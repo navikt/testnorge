@@ -8,7 +8,7 @@ parent: Applikasjoner
 Testnorge-TP (Tjeneste Pensjon) er integrasjonen mellom Orkestratoren og TJPEN databasen. Testnorge-TP går mot TJPEN i gitte miljøer.
  
 ## Swagger
-Swagger finnes under [/api](https://testnorge-tp.nais.preprod.local/swagger-ui.html) -endepunktet til applikasjonen.
+Swagger finnes under [/api](https://testnorge-tp.dev.intern.nav.no/api) -endepunktet til applikasjonen.
  
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør LocalApplicationStarter med følgende argumenter:

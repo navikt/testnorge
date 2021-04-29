@@ -8,7 +8,7 @@ parent: Applikasjoner
 API for person.
 
 ## Swagger
-Swagger finnes under [/swagger](https://testnorge-person-api.nais.preprod.local/swagger) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://testnorge-person-api.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
  
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør PersonApiApplicationStarter med følgende argumenter:

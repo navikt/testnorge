@@ -11,7 +11,7 @@ Microservice for å mappe inntektsmeldinger i JSON format til XML format basert 
 Foreløpig er bare 201812 format støttet.
 
 ## Swagger
-Swagger finnes under [/api](https://testnav-inntektsmelding-generator-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://testnav-inntektsmelding-generator-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør InntektsmeldingGeneratorApplicationStarter med følgende argumenter:

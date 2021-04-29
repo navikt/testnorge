@@ -11,7 +11,7 @@ Testnorge-skd er en applikasjon som henter syntetiske skd-meldinger og fyller di
 Skd-meldingene har ulike typer, og forårsaker forskjellige endringer på personer i TPS. Det er slik mininorge berikes med nye identer og endringer på eksisterende identer.
 
 ## Swagger
-Swagger finnes under [/api](https://testnorge-skd.nais.preprod.local/api) -endepunktet til applikasjonen.
+Swagger finnes under [/api](https://testnorge-skd.dev.intern.nav.no/api) -endepunktet til applikasjonen.
  
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør LocalApplicationStarter med følgende argumenter:

@@ -8,7 +8,7 @@ parent: Applikasjoner
 Testnorge-Inst er en applikasjon som henter syntetiske institusjonsforholdsmeldinger og populerer disse med identer før den sender meldingene til Inst.
 
 ## Swagger
-Swagger finnes under [/api](https://testnorge-inst.nais.preprod.local/api) -endepunktet til applikasjonen.
+Swagger finnes under [/api](https://testnorge-inst.dev.intern.nav.no/api) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør LocalApplicationStarter med følgende argumenter:

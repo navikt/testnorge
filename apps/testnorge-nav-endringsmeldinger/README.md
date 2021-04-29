@@ -8,7 +8,7 @@ parent: Applikasjoner
 Testnorge-Nav-Endringsmeldinger er adapteren for opprettelse av nav-endringsmeldinger som sendes til TPS som XML-meldinger gjennom TPSF.
 
 ## Swagger
-Swagger finnes under [/api](https://testnorge-nav-endringsmeldinger.nais.preprod.local/api) -endepunktet til applikasjonen.
+Swagger finnes under [/api](https://testnorge-nav-endringsmeldinger.dev.intern.nav.no/api) -endepunktet til applikasjonen.
  
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør LocalApplicationStarter med følgende argumenter:

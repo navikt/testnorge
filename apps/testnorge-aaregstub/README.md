@@ -8,7 +8,7 @@ parent: Applikasjoner
 Testnorge-aaregstub lagrer syntetiserte arbeidsforhold som har blitt sendt/kan sendes til aareg.
 
 ## Swagger
-Swagger finnes under [/api](https://testnorge-aaregstub.nais.preprod.local/api) -endepunktet til applikasjonen.
+Swagger finnes under [/api](https://testnorge-aaregstub.dev.intern.nav.no/api) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør ApplicationStarter med følgende argumenter:

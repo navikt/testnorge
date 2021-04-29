@@ -8,7 +8,7 @@ parent: Applikasjoner
 Testnorge-Sigrun er adapteren for opprettelse av pensjonsopptjeningsmeldinger som legges inn i sigrun-skd-stub.
 
 ### Swagger
-Swagger finnes under [/api](https://testnorge-sigrun.nais.preprod.local/api) -endepunktet til applikasjonen.
+Swagger finnes under [/api](https://testnorge-sigrun.dev.intern.nav.no/api) -endepunktet til applikasjonen.
 
 ### Lokal kjøring
 Ha naisdevice kjørende og kjør LocalApplicationStarter med følgende argumenter:

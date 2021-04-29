@@ -9,7 +9,7 @@ grand_parent: Applikasjoner
 App for å hente gyldige organisasjonsnummer som ikke er i bruk i EREG.
 
 ## Swagger
-Swagger finnes under [/swagger](https://organisasjon-orgnummer-dev.dev.adeo.no/swagger) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://organisasjon-orgnummer-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
 
 
 ## Lokal kjøring

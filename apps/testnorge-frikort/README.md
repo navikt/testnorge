@@ -8,7 +8,7 @@ parent: Applikasjoner
 Testnorge-frikort tilbyr endepunkt for å lage syntetiske egenandelsmeldinger.
 
 ## Swagger
-Swagger finnes under [/api](https://testnorge-frikort.nais.preprod.local/api) -endepunktet til applikasjonen.
+Swagger finnes under [/api](https://testnorge-frikort.dev.intern.nav.no/api) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør ApplicationStarter med følgende argumenter:

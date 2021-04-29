@@ -8,7 +8,7 @@ parent: Applikasjoner
 Token provider for testnorge. 
 
 ## Swagger
-Swagger finnes under [/swagger-ui.html](https://testnorge-token-provider.nais.preprod.local/swagger-ui.html) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger-ui.html](https://testnorge-token-provider.dev.intern.nav.no/swagger-ui.html) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør ApplicationStarter med følgende argumenter:

@@ -11,7 +11,7 @@ Spesifikke identer kan også allokeres.
 Identer kan frigjøres og benyttes om igjen
  
 ## Swagger
-Swagger finnes under [/api](https://ident-pool.dev.adeo.no/swagger) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://ident-pool.dev.adeo.no/swagger) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 

@@ -9,7 +9,7 @@ parent: Applikasjoner
 Api for henting av profil (navn, e-post og avdeling) og profilbilde for innlogget bruker.
 
 ## Swagger
-Swagger finnes under [/swagger](https://testnorge-profil-api.dev.adeo.no/swagger) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://testnorge-profil-api.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør ProfilApiApplicationStarter med følgende argumenter:

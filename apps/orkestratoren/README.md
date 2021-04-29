@@ -8,7 +8,7 @@ parent: Applikasjoner
 Orkestratoren er applikasjonen som orkestrerer opprettelse av syntetiske hendelser i den syntetiske populasjonen "mininorge".
 
 ## Swagger
-Swagger finnes under [/api](https://orkestratoren.nais.preprod.local/api) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://orkestratoren.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 Ha naisedevice kjørende og kjør LocalApplicationStarter med følgende argumenter:

@@ -8,7 +8,7 @@ parent: Applikasjoner
 Testnorge-Medl er en applikasjon som henter syntetiske medlemskap (medlem i folketrygden) og populerer disse med identer før den legger medlemskapene inn i medl-databasen.
 
 ## Swagger
-Swagger finnes under [/api](https://testnorge-medl.nais.preprod.local/api) -endepunktet til applikasjonen.
+Swagger finnes under [/api](https://testnorge-medl.dev.intern.nav.no/api) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør LocalApplicationStarter med følgende argumenter:

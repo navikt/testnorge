@@ -8,7 +8,7 @@ parent: Applikasjoner
 Testnorge-Sam er adapteren mellom orkestratoren og Sam for opprettelse av syntetiske samordningsmeldinger.
 
 ## Swagger
-Swagger finnes under [/api](https://testnorge-sam.nais.preprod.local/api) -endepunktet til applikasjonen.
+Swagger finnes under [/api](https://testnorge-sam.dev.intern.nav.no/api) -endepunktet til applikasjonen.
   
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør LocalApplicationStarter med følgende argumenter:

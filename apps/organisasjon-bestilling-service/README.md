@@ -10,7 +10,7 @@ App for å opprette organiasjoner i EREG som lytter fra en kafka kø.
 
 
 ## Swagger
-Swagger finnes under [/api](https://organisasjon-bestilling-service.dev.intern.nav.no/api) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://organisasjon-bestilling-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør ApplicationStarter med følgende argumenter:

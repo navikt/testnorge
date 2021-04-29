@@ -9,7 +9,7 @@ parent: Applikasjoner
 En applikasjon som lytter på hendelser fra PDl og trekker ut identer som tilhører TENOR, som lagres i database og som enkelt kan hentes fra andre applikasjoner gjennom REST-api.
 
 ## Swagger
-Swagger finnes under [/api](https://testnorge-populasjoner.nais.preprod.local/api) -endepunktet til applikasjonen.
+Swagger finnes under [/api](https://testnorge-populasjoner.dev.intern.nav.no/api) -endepunktet til applikasjonen.
  
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør ApplicationStarter med følgende argumenter:

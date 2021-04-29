@@ -8,7 +8,7 @@ parent: Applikasjoner
 API for sykemeldinger.
 
 ## Swagger
-Swagger finnes under [/api](https://testnorge-sykemelding-api.nais.preprod.local/api) -endepunktet til applikasjonen.
+Swagger finnes under [/api](https://testnorge-sykemelding-api.dev.intern.nav.no/api) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør SykemeldingApiApplicationStarter med følgende argumenter:

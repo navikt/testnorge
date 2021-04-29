@@ -11,7 +11,7 @@ Testnorge-Arena applikasjonen som henter syntetiske vedtak, og velger ut identer
 Applikasjonen har også støtte for å opprette syntetiske historiske vedtak, gjennom vedtakshistorikkendepunktet.
 
 ## Swagger
-Swagger finnes under [/api](https://testnorge-arena.nais.preprod.local/api) -endepunktet til applikasjonen.
+Swagger finnes under [/api](https://testnorge-arena.dev.intern.nav.no/api) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør ApplicationStarter med følgende argumenter:

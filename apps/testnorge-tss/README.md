@@ -20,7 +20,7 @@ NAV samhandlere vil bli hentet ut fra q0. Disse blir ikke opprettet av applikasj
 INST samhandlere er ikke mulig å opprette via applikasjonen ettersom de krever en institusjons id som ikke enda er støttet.
 
 ## Swagger
-Swagger finnes under [/api](https://testnorge-tss.nais.preprod.local/api) -endepunktet til applikasjonen.
+Swagger finnes under [/api](https://testnorge-tss.dev.intern.nav.no/api) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør ApplicationStarter med følgende argumenter:

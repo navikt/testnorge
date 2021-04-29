@@ -8,7 +8,7 @@ parent: Applikasjoner
 API for statistikk.
 
 ## Swagger
-Swagger finnes under [/api](https://testnav-statistikk-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://testnav-statistikk-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør StatistikkServiceApplicationStarter med følgende argumenter:
