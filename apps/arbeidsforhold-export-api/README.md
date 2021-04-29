@@ -13,7 +13,7 @@ Api for å eksportere arbeidsforhold fra database.
 Swagger finnes under [/swagger](https://testnorge-arbeidsforhold-export-api.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
-Kjør ArbeidsforholdExportApiApplicationStarter med følgende argumenter:
+Ha naisdevice kjørende og kjør ArbeidsforholdExportApiApplicationStarter med følgende argumenter:
 ```
 -Dspring.cloud.vault.token=[vault-token]
 -Dspring.profiles.active=dev

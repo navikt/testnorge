@@ -12,7 +12,7 @@ Det er vurdert at sammenstillingen av slike navn er forskjellig nok fra ekte nav
 Swagger finnes under [/swagger](https://generer-navn-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
-Kjør GenererNavnServiceApplicationStarter med følgende argumenter:
+Ha naisdevice kjørende og kjør GenererNavnServiceApplicationStarter med følgende argumenter:
 ```
 -Dspring.cloud.vault.token=[vault-token]
 -Dspring.profiles.active=dev

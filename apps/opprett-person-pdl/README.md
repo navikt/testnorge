@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Oppret Person PDL
+title: Opprett Person PDL
 parent: Applikasjoner
 ---
 

@@ -12,7 +12,7 @@ Swagger finnes under [/swagger](https://endringsmelding-service.dev.intern.nav.n
 For å kunne bruke endringsmelding-endepunktet må det innsendte tokenet ha tilgang via azure applikasjonen `dev-gcp:dolly:endringsmelding-frontend`.
  
 ## Lokal kjøring
-Kjør EndringsmeldingServiceApplicationStarter med følgende argumenter:
+Ha naisdevice kjørende og kjør EndringsmeldingServiceApplicationStarter med følgende argumenter:
 ```
 -Dspring.cloud.vault.token=[Copy token fra Vault]
 -Dspring.profiles.active=dev
