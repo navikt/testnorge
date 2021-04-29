@@ -64,7 +64,7 @@ function CompareTable<T extends Item>({
           rows.map((row, index) => (
             <tr key={index}>
               <td>{row.id}</td>
-              <td>{row.miljo.toUpperCase()}</td>
+              <td>{row.miljo}</td>
               <td>{row.component}</td>
               <td>
                 <Link

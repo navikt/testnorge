@@ -1,4 +1,4 @@
-import { Form, Line, SelectFormItem } from '@/components/form';
+import { Form, Line, SelectFormItem } from '@navikt/dolly-komponenter';
 import React, { useEffect, useState } from 'react';
 import { OrganisasjonFasteDataService, OrganisasjonService } from '@/service';
 import { Organisasjon as FasteDataOrganisasjon } from '@/service/OrganisasjonFasteDataService';

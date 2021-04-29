@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 // @ts-ignore
-import { navLogo } from '@navikt/dolly-assets';
+import navLogo from '@/assets/nav-logo-hvit.png';
 
 const Header = styled.header`
   padding: 15px 40px;
@@ -29,14 +29,15 @@ const Title = styled.h1`
 `;
 
 type Props = {
+  title: string;
   children?: React.ReactNode;
 };
 
-export default ({ children }: Props) => (
+export default ({ children, title }: Props) => (
   <Header>
     <Logo src={navLogo} alt="Nav logo" />
     <VerticalLine />
-    <Title>Endringsmeldinger</Title>
+    <Title>{title}</Title>
     {React.Children.map(children, (child) => (
       <>
         <VerticalLine />
