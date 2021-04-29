@@ -4,7 +4,7 @@
   "description": "Bibliotek for dolly komponenter.",
   "main": "lib/main.bundle.js",
   "scripts": {
-    "build": "webpack "
+    "build": "webpack && tsc --emitDeclarationOnly"
   },
   "types": "lib",
   "author": {

@@ -7,7 +7,7 @@ module.exports = {
   entry: {
     main: './src/index.ts',
   },
-  devtool: 'inline-source-map',
+  devtool: 'source-map',
   module: {
     rules: [
       {
