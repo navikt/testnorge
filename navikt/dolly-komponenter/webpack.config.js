@@ -2,7 +2,6 @@ const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const nodeExternals = require('webpack-node-externals');
 
 module.exports = {
   entry: {
@@ -34,7 +33,9 @@ module.exports = {
       },
     ],
   },
-  externals: [nodeExternals()],
+  externals: {
+    react: 'react',
+  },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
   },
