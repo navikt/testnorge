@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import "./App.less";
 // @ts-ignore
 import { fetchApplications } from "./api";
-import Header from "@/components/Header";
 import NavigationBar from "@/components/NavigationBar";
 
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
@@ -10,6 +9,7 @@ import MagicTokenPage from "@/pages/MagicTokenPage";
 import AccessTokenPage from "@/pages/AccessTokenPage";
 import NavFrontendSpinner from "nav-frontend-spinner";
 import SessionTimer from "@/components/SessionTimer";
+import { Header } from "@navikt/dolly-komponenter";
 
 function App() {
   const [items, setItems] = useState<string[] | null>(null);
@@ -24,7 +24,7 @@ function App() {
 
   return (
     <div className="app">
-      <Header />
+      <Header title="Oversikt" />
       <SessionTimer />
       {loading ? (
         <NavFrontendSpinner />

@@ -31,6 +31,8 @@ spec:
           cluster: dev-gcp
         - application: testnav-applikasjonsanalyse-frontend
           cluster: dev-gcp
+        - application: testnorge-oversikt-frontend
+          cluster: dev-gcp
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -49,9 +51,9 @@ spec:
   resources:
     requests:
       cpu: 200m
-      memory: 4000Mi
+      memory: 1024Mi
     limits:
       cpu: 500m
-      memory: 5000Mi
+      memory: 2048Mi
   ingresses:
     - "https://testnorge-profil-api.dev.intern.nav.no"
