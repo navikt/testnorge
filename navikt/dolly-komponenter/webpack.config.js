@@ -7,7 +7,7 @@ module.exports = {
   entry: {
     main: './src/index.ts',
   },
-  devtool: 'inline-source-map',
+  devtool: 'source-map',
   module: {
     rules: [
       {
@@ -33,9 +33,24 @@ module.exports = {
       },
     ],
   },
-  externals: {
-    react: 'react',
-  },
+  externals: [
+    {
+      react: {
+        root: 'React',
+        commonjs2: 'react',
+        commonjs: 'react',
+        amd: 'react',
+      },
+    },
+    {
+      'react-dom': {
+        root: 'ReactDOM',
+        commonjs2: 'react-dom',
+        commonjs: 'react-dom',
+        amd: 'react-dom',
+      },
+    },
+  ],
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
   },
@@ -56,7 +71,7 @@ module.exports = {
   output: {
     filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'lib'),
-    library: '@navikt/dolly-komponenter',
+    library: 'dolly-komponenter',
     libraryTarget: 'umd',
   },
 };
