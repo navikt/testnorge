@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Input as NavInput } from 'nav-frontend-skjema';
 import { Knapp as NavKnapp } from 'nav-frontend-knapper';
-import { ErrorAlert, SuccessAlert, WarningAlert } from '@/components/alert';
-import { NotFoundError } from '@/error';
+import { ErrorAlert, SuccessAlert, WarningAlert } from '@navikt/dolly-komponenter';
+import { NotFoundError } from '@navikt/dolly-lib';
 
 const Search = styled.div`
   display: flex;

@@ -1,13 +1,9 @@
 import { Form, Line, SelectFormItem } from '@/components/form';
 import React, { useEffect, useState } from 'react';
 import { OrganisasjonFasteDataService, OrganisasjonService } from '@/service';
-import {
-  Adresse as FasteDataAdresse,
-  Organisasjon as FasteDataOrganisasjon,
-} from '@/service/OrganisasjonFasteDataService';
+import { Organisasjon as FasteDataOrganisasjon } from '@/service/OrganisasjonFasteDataService';
 import { Knapp } from '@/components/knapp';
 import { CompareTable } from '@/components/compare-table';
-import { Adresse, Organisasjon } from '@/service/OrganisasjonService';
 import { OrganisasjonComperator } from '@/comperator';
 import { Pageable } from '@/components/pagable';
 import { Input } from 'nav-frontend-skjema';

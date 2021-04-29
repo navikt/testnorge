@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import 'nav-frontend-tabell-style';
-import { SuccessAlert, WarningAlert } from '@/components/alert';
+import { SuccessAlert, WarningAlert } from '@navikt/dolly-komponenter';
 import { LoadableComponent } from '@/components/loadable-component';
 import { Link } from 'react-router-dom';
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Loading from './Loading';
-import { NotFoundError } from '@/error';
-import { ErrorAlert, WarningAlert } from '@/components/alert';
+import { NotFoundError } from '@navikt/dolly-lib';
+import { ErrorAlert, WarningAlert } from '@navikt/dolly-komponenter';
 
 type Props<T> = {
   onFetch: () => Promise<T>;

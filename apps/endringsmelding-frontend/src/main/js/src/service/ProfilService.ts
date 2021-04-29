@@ -1,4 +1,4 @@
-import Api from '@/api';
+import { Api } from '@navikt/dolly-lib';
 
 const fetchBilde = () => Api.fetch('/api/v1/profil/bilde', { method: 'GET' });
 
