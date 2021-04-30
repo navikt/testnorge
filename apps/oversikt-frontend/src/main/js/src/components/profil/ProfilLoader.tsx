@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import Profil from "./Profil";
 import ProfilService from "@/services/ProfilService";
+import { Profil } from "@navikt/dolly-komponenter";
 
 export default () => {
   const [navn, setNavn] = useState<string>();

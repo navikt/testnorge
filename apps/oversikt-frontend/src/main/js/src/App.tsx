@@ -3,12 +3,7 @@ import "./App.less";
 // @ts-ignore
 import ApplicationService from "@/services/ApplicationService";
 
-import {
-  HashRouter as Router,
-  Route,
-  Switch,
-  useLocation,
-} from "react-router-dom";
+import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import MagicTokenPage from "@/pages/MagicTokenPage";
 import AccessTokenPage from "@/pages/AccessTokenPage";
 import {
@@ -27,7 +22,7 @@ export default () => {
       <Header title="Generer token" profile={<ProfilLoader />}>
         <HeaderLinkGroup>
           <HeaderLink
-            to="/magic-token"
+            href="#/magic-token"
             isActive={() =>
               window.location.hash === "/" ||
               window.location.hash.includes("/magic-token")
@@ -36,7 +31,7 @@ export default () => {
             Magic Token
           </HeaderLink>
           <HeaderLink
-            to="/access-token/dolly-backend"
+            href="#/access-token/dolly-backend"
             isActive={() => window.location.hash.includes("/access-token")}
           >
             Access Token

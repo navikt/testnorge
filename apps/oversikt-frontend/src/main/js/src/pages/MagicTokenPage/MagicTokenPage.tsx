@@ -1,8 +1,8 @@
 import React from "react";
 
 import FetchAccessToken from "@/components/FetchAccessToken";
-import { Page } from "@/components/page";
 import styled from "styled-components";
+import { Page } from "@navikt/dolly-komponenter";
 
 const MagicTokenPage = styled(Page)`
   display: flex;
