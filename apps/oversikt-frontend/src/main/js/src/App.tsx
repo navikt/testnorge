@@ -20,7 +20,8 @@ import {
 import { ProfilLoader } from "@/components/profil";
 
 export default () => {
-  const { pathname } = useLocation();
+  console.log(window.location);
+
   return (
     <Router>
       <Header title="Generer token" profile={<ProfilLoader />}>
@@ -28,14 +29,15 @@ export default () => {
           <HeaderLink
             to="/magic-token"
             isActive={() =>
-              pathename === "/" || pathename.includes("/magic-token")
+              window.location.hash === "/" ||
+              window.location.hash.includes("/magic-token")
             }
           >
             Magic Token
           </HeaderLink>
           <HeaderLink
             to="/access-token/dolly-backend"
-            isActive={() => pathename.includes("/access-token")}
+            isActive={() => window.location.hash.includes("/access-token")}
           >
             Access Token
           </HeaderLink>

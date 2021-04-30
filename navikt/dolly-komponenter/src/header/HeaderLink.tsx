@@ -1,8 +1,7 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-const HeaderLink = styled(Link)<{ isActive: () => boolean }>`
+const HeaderLink = styled.a<{ isActive: () => boolean }>`
   color: white;
   text-decoration: none;
   font-weight: normal;
@@ -17,13 +16,13 @@ const HeaderLink = styled(Link)<{ isActive: () => boolean }>`
 `;
 
 type Props = {
-  to: string;
+  href: string;
   children: string;
   isActive: () => boolean;
 };
 
-export default ({ to, children, isActive }: Props) => (
-  <HeaderLink to={to} isActive={isActive}>
+export default ({ href, children, isActive }: Props) => (
+  <HeaderLink href={href} isActive={isActive}>
     {children}
   </HeaderLink>
 );
