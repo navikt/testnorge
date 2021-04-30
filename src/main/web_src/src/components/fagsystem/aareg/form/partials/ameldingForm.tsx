@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react'
+import styled from 'styled-components'
+import useBoolean from '~/utils/hooks/useBoolean'
 import _get from 'lodash/get'
 import { format, eachMonthOfInterval } from 'date-fns'
 import Hjelpetekst from '~/components/hjelpetekst'
@@ -13,9 +15,18 @@ import {
 	initialForenkletOppgjoersordning
 } from '../initialValues'
 import { ArbeidsforholdForm } from './arbeidsforholdForm'
+import ArbeidsforholdConnector from './arbeidsforholdConnector'
 import { ForenkletOppgjoersordningForm } from './forenkletOppgjoersordningForm'
 import { Monthpicker } from '~/components/ui/form/inputs/monthpicker/Monthpicker'
 import DollyKjede from '~/components/dollyKjede/DollyKjede'
+import KjedeIcon from '~/components/dollyKjede/KjedeIcon'
+
+const KjedeContainer = styled.div`
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+`
 
 export const AmeldingForm = ({ formikBag }) => {
 	const type = _get(formikBag.values, 'aareg[0].arbeidsforholdstype')
@@ -24,9 +35,11 @@ export const AmeldingForm = ({ formikBag }) => {
 	const [tom, setTom] = useState(null)
 	const [periode, setPeriode] = useState([])
 
+	const [erLenket, setErLenket, setErIkkeLenket] = useBoolean(true)
+
 	const [selectedIndex, setSelectedIndex] = useState(0)
 
-	console.log('selectedIndex :>> ', selectedIndex)
+	// console.log('selectedIndex :>> ', selectedIndex)
 
 	useEffect(() => {
 		if (fom && tom) {
@@ -42,7 +55,6 @@ export const AmeldingForm = ({ formikBag }) => {
 		}
 	}, [fom, tom])
 
-	//TODO hver måned kan ha flere arbeidsforhold, må kanskje wrappe alt i en måned-/amelding-komponent?
 	useEffect(() => {
 		periode.forEach((mnd, idx) => {
 			// console.log('mnd :>> ', mnd)
@@ -54,6 +66,21 @@ export const AmeldingForm = ({ formikBag }) => {
 		})
 	}, [periode])
 
+	// useEffect(() => {
+	// 	// gjør noe
+	// }, [formikBag.values])
+
+	// function useLocalStorageState(key, defaultValue = true) {
+	// 	const [state, setState] = React.useState(() => defaultValue)
+	// 	React.useEffect(() => {
+	// 		window.localStorage.setItem(key, state)
+	// 	}, [key, state])
+
+	// 	return [state, setState]
+	// }
+
+	// const [erLenket, setErLenket] = useLocalStorageState('erLenket', true)
+
 	const handleArbeidsforholdstypeChange = event => {
 		formikBag.setFieldValue('aareg[0].arbeidsforholdstype', event.value)
 		if (event.value === 'ordinaertArbeidsforhold' || event.value === 'maritimtArbeidsforhold') {
@@ -63,6 +90,8 @@ export const AmeldingForm = ({ formikBag }) => {
 			formikBag.setFieldValue('aareg[0].arbeidsforhold', [initialForenkletOppgjoersordning])
 		}
 	}
+
+	console.log('erLenket 1:>> ', erLenket)
 
 	return (
 		<>
@@ -110,12 +139,19 @@ export const AmeldingForm = ({ formikBag }) => {
 						{periode.length > 0 && (
 							<>
 								{/* //TODO Når kjedekomponent er lenket må alle måneder endres ved endring av felt */}
-								<DollyKjede
-									objectList={periode}
-									itemLimit={10}
-									selectedIndex={selectedIndex}
-									setSelectedIndex={setSelectedIndex}
-								/>
+								<KjedeContainer>
+									<DollyKjede
+										objectList={periode}
+										itemLimit={10}
+										selectedIndex={selectedIndex}
+										setSelectedIndex={setSelectedIndex}
+										isLocked={erLenket}
+									/>
+									<KjedeIcon locked={erLenket} onClick={erLenket ? setErIkkeLenket : setErLenket} />
+								</KjedeContainer>
+								{/* <NavButton onClick={erLenket ? setErIkkeLenket : setErLenket}>
+									{erLenket ? 'LÅS OPP' : 'LÅS'}
+								</NavButton> */}
 								<FormikDollyFieldArray
 									name={`aareg[0].amelding[${selectedIndex}].arbeidsforhold`}
 									header="Arbeidsforhold"
@@ -123,7 +159,13 @@ export const AmeldingForm = ({ formikBag }) => {
 									canBeEmpty={false}
 								>
 									{(path, idx) => (
-										<ArbeidsforholdForm path={path} key={idx} formikBag={formikBag} />
+										// <ArbeidsforholdForm path={path} key={idx} formikBag={formikBag} />
+										<ArbeidsforholdConnector
+											path={path}
+											key={idx}
+											formikBag={formikBag}
+											erLenket={erLenket}
+										/>
 									)}
 								</FormikDollyFieldArray>
 							</>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import KjedePagination from '~/components/dollyKjede/KjedePagination'
@@ -9,14 +9,15 @@ export interface DollyKjedeProps {
 	itemLimit: number
 	selectedIndex: number
 	setSelectedIndex: (index: number) => void
+	isLocked: boolean
 }
 
-const Container = styled.div`
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	align-items: center;
-`
+// const Container = styled.div`
+// 	display: flex;
+// 	flex-direction: row;
+// 	justify-content: center;
+// 	align-items: center;
+// `
 
 const getCenterIndices = (index: number, antallItems: number, itemLimit: number) => {
 	if (antallItems < 3) {
@@ -63,11 +64,25 @@ const getInitialPaginationIndex = (antallItems: number, maxShownItems: number) =
 	return antallItems >= maxShownItems ? maxShownItems - 4 : antallItems - 2
 }
 
-export default ({ objectList, itemLimit, selectedIndex, setSelectedIndex }: DollyKjedeProps) => {
+export default ({
+	objectList,
+	itemLimit,
+	selectedIndex,
+	setSelectedIndex,
+	isLocked
+}: DollyKjedeProps) => {
+	console.log('isLocked :>> ', isLocked)
+
+	useEffect(() => {
+		setLocked(isLocked)
+	}, [isLocked])
+
 	const antallItems = objectList.length
 	const maxShownItems = getMaxShownItems(itemLimit)
 
-	const [locked, setLocked] = useState(true)
+	const [locked, setLocked] = useState(isLocked)
+	console.log('locked :>> ', locked)
+	// const [locked, setLocked] = useState(true)
 	const [paginationIndex, setPaginationIndex] = useState(
 		getInitialPaginationIndex(antallItems, maxShownItems)
 	)
@@ -106,16 +121,16 @@ export default ({ objectList, itemLimit, selectedIndex, setSelectedIndex }: Doll
 	}
 
 	return (
-		<Container>
-			<KjedePagination
-				selectedIndex={selectedIndex}
-				objectList={objectList}
-				centerIndices={centerIndices}
-				disabled={locked}
-				handlePagination={handlePagination}
-				handleClick={handleSelection}
-			/>
-			<KjedeIcon locked={locked} onClick={handleLocked} />
-		</Container>
+		// <Container>
+		<KjedePagination
+			selectedIndex={selectedIndex}
+			objectList={objectList}
+			centerIndices={centerIndices}
+			disabled={locked}
+			handlePagination={handlePagination}
+			handleClick={handleSelection}
+		/>
+		// {/* <KjedeIcon locked={locked} onClick={handleLocked} /> */}
+		// </Container>
 	)
 }

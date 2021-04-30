@@ -2,6 +2,7 @@ import React from 'react'
 import _get from 'lodash/get'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
+import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { TimeloennetForm } from './timeloennetForm'
@@ -12,8 +13,33 @@ import { OrgnummerToggle } from './orgnummerToggle'
 import { ArbeidKodeverk } from '~/config/kodeverk'
 import Hjelpetekst from '~/components/hjelpetekst'
 
-export const ArbeidsforholdForm = ({ path, formikBag }) => {
+// export const ArbeidsforholdForm = ({ path, formikBag, brukerId }) => {
+export const ArbeidsforholdForm = ({ path, formikBag, erLenket, brukerId }) => {
+	// const erLenket = window.localStorage.getItem('erLenket')
 	const arbeidsforhold = _get(formikBag.values, path)
+
+	console.log('erLenket 2:>> ', erLenket)
+
+	const arbeidsforholdIndex = path.charAt(path.length - 1)
+
+	const virksomheter = SelectOptionsOppslag.hentVirksomheterFraOrgforvalter(brukerId)
+	const virksomheterOptions = SelectOptionsOppslag.formatOptions('virksomheter', virksomheter)
+
+	const onChangeLenket = (field, fieldPath) => {
+		const amelding = _get(formikBag.values, 'aareg[0].amelding')
+		// console.log('`${fieldPath}.${path}`, :>> ', `${path}.${fieldPath}`)
+		console.log('erLenket 3:>> ', erLenket)
+		if (erLenket) {
+			amelding.forEach((maaned, idx) => {
+				formikBag.setFieldValue(
+					`aareg[0].amelding[${idx}].arbeidsforhold[${arbeidsforholdIndex}].${fieldPath}`,
+					field.value
+				)
+			})
+		} else {
+			formikBag.setFieldValue(`${path}.${fieldPath}`, field.value)
+		}
+	}
 	// console.log('arbeidsforhold :>> ', arbeidsforhold)
 	// console.log('path :>> ', path)
 
@@ -34,15 +60,16 @@ export const ArbeidsforholdForm = ({ path, formikBag }) => {
 	// 	_get(formikBag.values, `${path}.ansettelsesPeriode.tom`)
 	// )
 
-	console.log('path :>> ', path)
+	// console.log('path :>> ', path)
 
 	return (
 		<React.Fragment>
 			<div className="flexbox--flex-wrap">
-				{/* //TODO hent egne orgnr */}
 				<FormikSelect
 					name={`${path}.arbeidsgiver.orgnummer`}
 					label="Organisasjonsnummer"
+					//TODO: Laster ikke med en gang
+					options={virksomheterOptions}
 					size="xxlarge"
 					isClearable={false}
 				/>
@@ -55,6 +82,7 @@ export const ArbeidsforholdForm = ({ path, formikBag }) => {
 					label="Sluttårsak"
 					kodeverk={ArbeidKodeverk.SluttaarsakAareg}
 					size="xlarge"
+					onChange={field => onChangeLenket(field, 'ansettelsesPeriode.sluttaarsak')}
 					disabled={
 						_get(formikBag.values, `${path}.ansettelsesPeriode.tom`) === null ? true : false
 					}

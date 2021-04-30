@@ -1,5 +1,5 @@
 import { useAsync } from 'react-use'
-import { BrregstubApi, DollyApi, KrrApi } from '~/service/Api'
+import { BrregstubApi, DollyApi, KrrApi, OrgforvalterApi } from '~/service/Api'
 import config from '~/config'
 import Api from '~/api'
 import _isNil from 'lodash/isNil'
@@ -68,6 +68,14 @@ export const SelectOptionsOppslag = {
 			return response
 		}, [BrregstubApi.getUnderstatus])
 		return understatusInfo
+	},
+
+	hentVirksomheterFraOrgforvalter: ident => {
+		const virksomheter = useAsync(async () => {
+			const response = await OrgforvalterApi.getVirksomheterPaaBruker(ident)
+			return response
+		}, [OrgforvalterApi.getVirksomheterPaaBruker])
+		return virksomheter
 	}
 }
 
@@ -146,6 +154,16 @@ SelectOptionsOppslag.formatOptions = (type, data) => {
 				data = omraade[1]
 				options.push({ value: data.value, label: data.label })
 			})
+		return options
+	} else if (type === 'virksomheter') {
+		const virksomheter = data.value ? data.value.data : []
+		const options = []
+		virksomheter.forEach(virksomhet => {
+			options.push({
+				value: virksomhet.orgnummer,
+				label: `${virksomhet.orgnummer} (${virksomhet.enhetstype}) - ${virksomhet.orgnavn}`
+			})
+		})
 		return options
 	}
 }
