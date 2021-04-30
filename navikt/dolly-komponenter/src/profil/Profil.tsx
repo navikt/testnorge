@@ -10,6 +10,7 @@ type Props = {
 
 const Profil = styled.div`
   height: 30px;
+  padding: 20px 10px;
   display: flex;
 `;
 
@@ -21,10 +22,10 @@ const VisningsNavn = styled.p`
 
 const Logo = styled.img`
   width: 30px;
+  margin: 0 20px;
   height: 30px;
   border-radius: 50%;
   border: 2px solid white;
-  margin-right: 7px;
 `;
 
 export default ({ profilbilde, visningsnavn }: Props) => (

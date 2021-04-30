@@ -1,39 +1,45 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 // @ts-ignore
-import { navLogo } from '@navikt/dolly-assets';
+import { navLogo } from "@navikt/dolly-assets";
 
 const Header = styled.header`
-  padding: 15px 40px;
   display: flex;
   background-color: #3e3832;
-  border: solid transparent;
 `;
 
 const Logo = styled.img`
+  padding: 20px 10px;
+  margin: 0 20px;
   height: 30px;
 `;
 
 const VerticalLine = styled.div`
-  height: 30px;
   border-right: 2px solid #88b1d6;
-  margin-left: 40px;
-  margin-right: 40px;
+  margin: 15px 20px;
 `;
 
 const Title = styled.h1`
   margin: 0;
-  width: 100%;
+  padding: 20px 10px;
+  white-space: nowrap;
   font-size: 1.6rem;
   color: white;
 `;
 
+const ProfileContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+`;
+
 type Props = {
   title: string;
+  profile?: React.ReactNode;
   children?: React.ReactNode;
 };
 
-export default ({ children, title }: Props) => (
+export default ({ children, title, profile }: Props) => (
   <Header>
     <Logo src={navLogo} alt="Nav logo" />
     <VerticalLine />
@@ -44,5 +50,13 @@ export default ({ children, title }: Props) => (
         {child}
       </>
     ))}
+    {profile && (
+      <>
+        <ProfileContainer>
+          <VerticalLine />
+          {profile}
+        </ProfileContainer>
+      </>
+    )}
   </Header>
 );
