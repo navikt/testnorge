@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 
 import Pagination from 'paginering';
 
-type Props<T> = {
+export type PaginationProps<T> = {
   items: T[];
   render: (items: T[], index: number) => any;
 };
 
 const ITEMS_PER_PAGE = 10;
 
-function Pageable<T>({ items, render }: Props<T>) {
+function Pageable<T>({ items, render }: PaginationProps<T>) {
   const [position, setPosition] = useState<number>(0);
   return (
     <>
@@ -29,5 +29,7 @@ function Pageable<T>({ items, render }: Props<T>) {
     </>
   );
 }
+
+Pageable.displayName = 'Pageable';
 
 export default Pageable;

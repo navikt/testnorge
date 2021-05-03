@@ -1,12 +1,15 @@
 import React from 'react';
 import { WarningFilled } from '@navikt/ds-icons';
-import Alert from "./Alert";
+import Alert from './Alert';
 
-type Props = {
-    label?: string;
+export type WarningAlertProps = {
+  label?: string;
 };
 
-export default ({ label }: Props) => (
-    <Alert color="#FF9100" label={label} Icon={WarningFilled}/>
+const WarningAlert = ({ label }: WarningAlertProps) => (
+  <Alert color="#FF9100" label={label} Icon={WarningFilled} />
 );
 
+WarningAlert.displayName = 'WarningAlert';
+
+export default WarningAlert;

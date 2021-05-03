@@ -3,13 +3,13 @@ import { Loading } from '../loading';
 import { NotFoundError } from '@navikt/dolly-lib';
 import { ErrorAlert, WarningAlert } from '../alert';
 
-type Props<T> = {
+export type LoadableComponentProps<T> = {
   onFetch: () => Promise<T>;
   render: (value: T) => any;
-  onNotFound?: () => any;
+  onNotFound?: React.ReactNode;
 };
 
-function LoadableComponent<T>({ onFetch, render, onNotFound }: Props<T>) {
+function LoadableComponent<T>({ onFetch, render, onNotFound }: LoadableComponentProps<T>) {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<T>();
   const [notFound, setNotFound] = useState<boolean>(false);
@@ -23,7 +23,7 @@ function LoadableComponent<T>({ onFetch, render, onNotFound }: Props<T>) {
       })
       .catch((e: Error) => {
         setLoading(false);
-        if (e instanceof NotFoundError || e.name == 'NotFoundError') {
+        if (e && (e instanceof NotFoundError || e.name == 'NotFoundError')) {
           setNotFound(true);
         } else {
           setError(true);
@@ -32,7 +32,7 @@ function LoadableComponent<T>({ onFetch, render, onNotFound }: Props<T>) {
   }, []);
 
   if (notFound == true) {
-    return onNotFound ? onNotFound() : <WarningAlert label="Ikke funnet" />;
+    return onNotFound ? onNotFound : <WarningAlert label="Ikke funnet" />;
   }
   if (error == true) {
     return <ErrorAlert label="Noe gikk galt" />;
@@ -41,6 +41,10 @@ function LoadableComponent<T>({ onFetch, render, onNotFound }: Props<T>) {
   if (loading) {
     return <Loading />;
   }
+
   return render(data);
 }
+
+LoadableComponent.displayName = 'LoadableComponent';
+
 export default LoadableComponent;

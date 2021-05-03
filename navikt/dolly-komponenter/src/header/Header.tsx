@@ -1,9 +1,9 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 // @ts-ignore
-import { navLogo } from "@navikt/dolly-assets";
+import { navLogo } from '@navikt/dolly-assets';
 
-const Header = styled.header`
+const HeaderStlye = styled.header`
   display: flex;
   background-color: #3e3832;
 `;
@@ -31,29 +31,37 @@ const Container = styled.div`
   width: 100%;
 `;
 
-type Props = {
+export type HeaderProps = {
   title: string;
   profile?: React.ReactNode;
   children?: React.ReactNode;
 };
 
-export default ({ children, title, profile }: Props) => (
-  <Header>
+const Header = ({ children, title, profile }: HeaderProps) => (
+  <HeaderStlye>
     <Logo src={navLogo} alt="Nav logo" />
     <VerticalLine />
     <Title>{title}</Title>
+    {React.Children.count(children) > 0 ? (
+      React.Children.map(children, (child) => (
+        <>
+          <VerticalLine />
+          <Container>{child}</Container>
+        </>
+      ))
+    ) : (
+      <Container />
+    )}
 
-    {React.Children.map(children, (child) => (
-      <>
-        <VerticalLine />
-        <Container>{child}</Container>
-      </>
-    ))}
     {profile && (
       <>
         <VerticalLine />
         {profile}
       </>
     )}
-  </Header>
+  </HeaderStlye>
 );
+
+Header.displayName = 'Header';
+
+export default Header;
