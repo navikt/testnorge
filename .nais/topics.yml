@@ -23,10 +23,13 @@ spec:
       application: testnorge-statisk-data-forvalter
       access: write
     - team: dolly
-      application: organisasjon-forvalter
+      application: testnav-organisasjon-forvalter
       access: write
     - team: dolly
       application: testnav-organisasjon-faste-data-service
+      access: write
+    - team: dolly
+      application: testnav-generer-organisasjon-populasjon-service
       access: write
 ---
 apiVersion: kafka.nais.io/v1
@@ -53,7 +56,7 @@ spec:
       application: testnorge-statisk-data-forvalter
       access: write
     - team: dolly
-      application: organisasjon-forvalter
+      application: testnav-organisasjon-forvalter
       access: write
     - team: dolly
       application: testnav-organisasjon-faste-data-service

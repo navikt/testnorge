@@ -31,4 +31,5 @@ public class ArbeidsforholdModel {
     private List<InntektModel> inntekter;
     @Field(type = FieldType.Nested, includeInParent = true)
     private List<AvvikModel> avvik;
+    private String historikk;
 }

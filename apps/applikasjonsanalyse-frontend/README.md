@@ -1,12 +1,25 @@
-## Testnorge-Avhengighetsanalyse-Service
-API for avhengighets analyse.
+---
+layout: default
+title: Frontend
+parent: Avhengighetsanalyse
+grand_parent: Applikasjoner
+---
 
-### Swagger
-Swagger finnes under [/api](https://testnorge-avhengighetsanalyse-frontend.nais.preprod.local/api) -endepunktet til applikasjonen.
+# Avhengighetsanalyse-Frontend
+Frontend for avhengighetsanalyse.
 
+Endepunkt: https://testnav-applikasjonsanalyse.dev.intern.nav.no/
 
 ### Lokal kjøring
-Kjør AvhengighetsanalysteFrontendApplicationStarter med følgende argumenter:
- - -Djavax.net.ssl.trustStore=[path til lokal truststore]
- - -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
- - -Dspring.profiles.active=dev
+Ha naisdevice kjørende og kjør AvhengighetsanalysteFrontendApplicationStarter med følgende argumenter:
+```
+-Dspring.cloud.vault.token=[Copy token fra Vault]
+-Dspring.profiles.active=dev
+```
+
+### Utviklerimage
+I utviklerimage brukes ikke naisdevice og du må legge til følgende ekstra argumenter:
+```
+-Djavax.net.ssl.trustStore=[path til lokal truststore]
+-Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
+```

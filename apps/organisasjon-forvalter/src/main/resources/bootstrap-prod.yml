@@ -6,28 +6,18 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
   datasource:
-    url: jdbc:postgresql://b27dbvl023.preprod.local:5432/organisasjon-forvalter-preprod
+    url: jdbc:postgresql://${NAIS_DATABASE_TESTNAV_ORGANISASJON_FORVALTER_ORGANISASJON_FORVALTER_DB_HOST}:${NAIS_DATABASE_TESTNAV_ORGANISASJON_FORVALTER_ORGANISASJON_FORVALTER_DB_PORT}/${NAIS_DATABASE_TESTNAV_ORGANISASJON_FORVALTER_ORGANISASJON_FORVALTER_DB_DATABASE}?user=${NAIS_DATABASE_TESTNAV_ORGANISASJON_FORVALTER_ORGANISASJON_FORVALTER_DB_USERNAME}&password=${NAIS_DATABASE_TESTNAV_ORGANISASJON_FORVALTER_ORGANISASJON_FORVALTER_DB_PASSWORD}
+    driverClassName: org.postgresql.Driver
     hikari:
       maximum-pool-size: 3
-      minimum-idle: 1
-    driver-class-name: org.postgresql.Driver
+      minimum-idle: 0
   jpa:
     properties:
       hibernate:
         default-schema: public
   cloud:
     vault:
-      host: vault.adeo.no
-      port: 443
-      fail-fast: true
-      connection-timeout: 15000
-      read-timeout: 30000
-      generic:
-        enabled: false
-      database:
-        backend: postgresql/preprod-fss
-        enabled: true
-        role: organisasjon-forvalter-preprod-admin
+      enabled: false
   security:
     oauth2:
       resourceserver:

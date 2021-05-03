@@ -1,7 +1,9 @@
-name: Deploy organisasjon-forvalter
+name: Deploy testnav-organisasjon-forvalter
 
 on:
   push:
+    branches:
+      - master
     paths:
       - apps/organisasjon-forvalter/**
       - libs/kafka-config/**
@@ -51,5 +53,5 @@ jobs:
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-          CLUSTER: dev-fss
+          CLUSTER: dev-gcp
           RESOURCE: apps/organisasjon-forvalter/config.yml

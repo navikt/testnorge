@@ -24,7 +24,7 @@ public class GetOppsummeringsdokumentCommand implements Callable<Oppsummeringsdo
     @SneakyThrows
     @Override
     public OppsummeringsdokumentDTO call() {
-        log.info("Henter oppsummeringsdokumentet med orgnummer {} den {}.", orgnummer, kalendermaaned);
+        log.info("Henter oppsummeringsdokumentet med orgnummer {} den {} i {}.", orgnummer, kalendermaaned, miljo);
         try {
             return webClient
                     .get()

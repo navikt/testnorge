@@ -5,6 +5,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Set;
+
 import no.nav.registre.testnorge.libs.common.command.GetCrumbCommand;
 import no.nav.registre.testnorge.libs.dto.jenkins.v1.JenkinsCrumb;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
@@ -39,7 +41,7 @@ public class JenkinsConsumer {
 
     }
 
-    public void send(Flatfil flatFile, String miljo, String uuid) {
+    public void send(Flatfil flatFile, String miljo, Set<String> uuids) {
         var accessToken = accessTokenService.generateClientCredentialAccessToken(properties);
 
         var server = env.getProperty("JENKINS_SERVER_" + miljo.toUpperCase());
@@ -48,7 +50,10 @@ public class JenkinsConsumer {
         }
         JenkinsCrumb jenkinsCrumb = new GetCrumbCommand(webClient, accessToken.getTokenValue()).call();
         var id = new StartBEREG007Command(webClient, accessToken.getTokenValue(), server, miljo, jenkinsCrumb, flatFile).call();
-        jenkinsBatchStatusConsumer.registerBestilling(uuid, miljo, id);
-        log.info("Bestilling sendt til jenkins {}.", uuid);
+
+        uuids.forEach(uuid -> {
+            jenkinsBatchStatusConsumer.registerBestilling(uuid, miljo, id);
+            log.info("Bestilling sendt til jenkins {}.", uuid);
+        });
     }
 }
