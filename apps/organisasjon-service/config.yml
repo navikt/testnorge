@@ -33,6 +33,10 @@ spec:
           cluster: dev-fss
         - application: dolly-backend
           cluster: dev-fss
+        - application: dolly-frontend-dev
+          cluster: dev-fss
+        - application: dolly-frontend
+          cluster: dev-fss
         - application: testnav-faste-data-frontend
           cluster: dev-gcp
     outbound:
