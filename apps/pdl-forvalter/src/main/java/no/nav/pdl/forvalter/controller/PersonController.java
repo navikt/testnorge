@@ -1,11 +1,14 @@
-package no.nav.pdl.forvalter.provider;
+package no.nav.pdl.forvalter.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.database.model.DbPerson;
+import no.nav.pdl.forvalter.domain.PdlPerson;
 import no.nav.pdl.forvalter.dto.BestillingRequest;
 import no.nav.pdl.forvalter.dto.PersonUpdateRequest;
+import no.nav.pdl.forvalter.service.PdlOrdreService;
 import no.nav.pdl.forvalter.service.PersonService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/personer")
 @RequiredArgsConstructor
@@ -26,9 +30,9 @@ public class PersonController {
 
     @GetMapping(value = "/{ident}")
     @Operation(description = "Hent person")
-    public JsonNode getPerson(@PathVariable String ident) {
+    public PdlPerson getPerson(@PathVariable String ident) {
 
-        return null;
+        return personService.getPerson(ident);
     }
 
     @PostMapping

@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -18,7 +18,7 @@ public class PdlOpphold extends PdlDbVersjon {
     public enum OppholdType {MIDLERTIDIG, PERMANENT, OPPLYSNING_MANGLER}
 
     private String kilde;
-    private LocalDate oppholdFra;
-    private LocalDate oppholdTil;
+    private LocalDateTime oppholdFra;
+    private LocalDateTime oppholdTil;
     private OppholdType type;
 }

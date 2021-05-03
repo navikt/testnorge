@@ -47,7 +47,7 @@ public class PdlTestdataConsumer {
             return true;
         }
     };
-    private static final FilterProvider filters = new SimpleFilterProvider().addFilter("myFilter", removeIdFilter);
+    private static final FilterProvider filters = new SimpleFilterProvider().addFilter("idFilter", removeIdFilter);
 
     private final WebClient webClient;
     private final AccessTokenService accessTokenService;

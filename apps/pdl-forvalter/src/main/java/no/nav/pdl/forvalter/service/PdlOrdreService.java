@@ -1,4 +1,4 @@
-package no.nav.pdl.forvalter.provider;
+package no.nav.pdl.forvalter.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -18,7 +18,6 @@ import static no.nav.pdl.forvalter.consumer.PdlTestDataUrls.PDL_BESTILLING_ADRES
 import static no.nav.pdl.forvalter.consumer.PdlTestDataUrls.PDL_BESTILLING_BOSTEDADRESSE_URL;
 import static no.nav.pdl.forvalter.consumer.PdlTestDataUrls.PDL_BESTILLING_DELTBOSTED_URL;
 import static no.nav.pdl.forvalter.consumer.PdlTestDataUrls.PDL_BESTILLING_DOEDSFALL_URL;
-import static no.nav.pdl.forvalter.consumer.PdlTestDataUrls.PDL_BESTILLING_FALSK_IDENTITET_URL;
 import static no.nav.pdl.forvalter.consumer.PdlTestDataUrls.PDL_BESTILLING_FAMILIERELASJON;
 import static no.nav.pdl.forvalter.consumer.PdlTestDataUrls.PDL_BESTILLING_FOEDSEL_URL;
 import static no.nav.pdl.forvalter.consumer.PdlTestDataUrls.PDL_BESTILLING_FOLKEREGISTERPERSONSTATUS_URL;
@@ -27,7 +26,6 @@ import static no.nav.pdl.forvalter.consumer.PdlTestDataUrls.PDL_BESTILLING_FULLM
 import static no.nav.pdl.forvalter.consumer.PdlTestDataUrls.PDL_BESTILLING_INNFLYTTING_URL;
 import static no.nav.pdl.forvalter.consumer.PdlTestDataUrls.PDL_BESTILLING_KJOENN_URL;
 import static no.nav.pdl.forvalter.consumer.PdlTestDataUrls.PDL_BESTILLING_KONTAKTADRESSE_URL;
-import static no.nav.pdl.forvalter.consumer.PdlTestDataUrls.PDL_BESTILLING_KONTAKTINFORMASJON_FOR_DODESDBO_URL;
 import static no.nav.pdl.forvalter.consumer.PdlTestDataUrls.PDL_BESTILLING_NAVN_URL;
 import static no.nav.pdl.forvalter.consumer.PdlTestDataUrls.PDL_BESTILLING_OPPHOLDSADRESSE_URL;
 import static no.nav.pdl.forvalter.consumer.PdlTestDataUrls.PDL_BESTILLING_OPPHOLD_URL;
@@ -74,11 +72,11 @@ public class PdlOrdreService {
         sendPdlArtifact(PDL_BESTILLING_TELEFONUMMER_URL, ident, pdlPerson.getPerson().getTelefonnummer());
         sendPdlArtifact(PDL_BESTILLING_OPPHOLD_URL, ident, pdlPerson.getPerson().getOpphold());
         sendPdlArtifact(PDL_BESTILLING_DOEDSFALL_URL, ident, pdlPerson.getPerson().getDoedsfall());
-        sendPdlArtifact(PDL_BESTILLING_KONTAKTINFORMASJON_FOR_DODESDBO_URL, ident,
-                pdlPerson.getPerson().getKontaktinformasjonForDoedsbo());
+//        sendPdlArtifact(PDL_BESTILLING_KONTAKTINFORMASJON_FOR_DODESDBO_URL, ident,
+//                pdlPerson.getPerson().getKontaktinformasjonForDoedsbo());
         sendPdlArtifact(PDL_BESTILLING_UTENLANDS_IDENTIFIKASJON_NUMMER_URL, ident,
                 pdlPerson.getPerson().getUtenlandskIdentifikasjonsnummer());
-        sendPdlArtifact(PDL_BESTILLING_FALSK_IDENTITET_URL, ident, pdlPerson.getPerson().getFalskIdentitet());
+//        sendPdlArtifact(PDL_BESTILLING_FALSK_IDENTITET_URL, ident, pdlPerson.getPerson().getFalskIdentitet());
         return null;
     }
 

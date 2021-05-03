@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -18,8 +18,8 @@ public abstract class PdlAdresse extends PdlDbVersjon {
 
     private String adresseIdentifikatorFraMatrikkelen;
     private Adressegradering adressegradering;
-    private LocalDate gyldigFraOgMed;
-    private LocalDate gyldigTilOgMed;
+    private LocalDateTime gyldigFraOgMed;
+    private LocalDateTime gyldigTilOgMed;
     private String coAdressenavn;
 
     @Schema(defaultValue = "Dolly")

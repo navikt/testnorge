@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
@@ -41,6 +42,8 @@ public class JSONUserType implements UserType {
 
     public JSONUserType() {
         objectMapper = new ObjectMapper();
+        objectMapper.setFilterProvider(new SimpleFilterProvider().setFailOnUnknownId(false));
+
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 
@@ -137,9 +140,8 @@ public class JSONUserType implements UserType {
             return;
         }
         try {
-            final ObjectMapper mapper = new ObjectMapper();
             final StringWriter w = new StringWriter();
-            mapper.writeValue(w, value);
+            objectMapper.writeValue(w, value);
             w.flush();
             ps.setObject(idx, w.toString(), Types.OTHER);
         } catch (final Exception ex) {

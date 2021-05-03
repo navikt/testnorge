@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -15,6 +15,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class PdlDoedsfall extends PdlDbVersjon {
 
-    private LocalDate doedsdato;
+    private LocalDateTime doedsdato;
     private String kilde;
 }

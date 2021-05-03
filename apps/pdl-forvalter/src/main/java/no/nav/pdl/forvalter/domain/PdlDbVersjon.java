@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonFilter("filterId")
+@JsonFilter("idFilter")
 public abstract class PdlDbVersjon implements Serializable {
 
     private Integer id;

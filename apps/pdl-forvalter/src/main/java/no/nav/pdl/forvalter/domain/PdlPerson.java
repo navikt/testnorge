@@ -1,10 +1,9 @@
 package no.nav.pdl.forvalter.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.pdl.forvalter.domain.doedsbo.PdlKontaktinformasjonForDoedsbo;
-import no.nav.pdl.forvalter.domain.falskidentitet.PdlFalskIdentitet;
 import no.nav.pdl.forvalter.domain.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
 
 import java.io.Serializable;
@@ -16,6 +15,7 @@ import static java.util.Objects.isNull;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class PdlPerson implements Serializable {
 
     private List<PdlFoedsel> foedsel;
@@ -29,9 +29,9 @@ public class PdlPerson implements Serializable {
     private List<PdlDeltBosted> deltBosted;
     private List<PdlFamilierelasjon> forelderBarnRelasjon;
     private List<PdlForeldreansvar> foreldreansvar;
-    private List<PdlKontaktinformasjonForDoedsbo> kontaktinformasjonForDoedsbo;
+//    private List<PdlKontaktinformasjonForDoedsbo> kontaktinformasjonForDoedsbo;
     private List<PdlUtenlandskIdentifikasjonsnummer> utenlandskIdentifikasjonsnummer;
-    private List<PdlFalskIdentitet> falskIdentitet;
+//    private List<PdlFalskIdentitet> falskIdentitet;
     private List<PdlAdressebeskyttelse> adressebeskyttelse;
     private List<PdlDoedsfall> doedsfall;
     private List<PdlFolkeregisterpersonstatus> folkeregisterpersonstatus;
@@ -46,102 +46,159 @@ public class PdlPerson implements Serializable {
     private List<PdlFullmakt> fullmakt;
     private List<PdlVergemaal> vergemaal;
 
-    private static <T> List<T> initOrGet(List<T> artifact) {
-        if (isNull(artifact)) {
-            artifact = new ArrayList<T>();
-        }
-        return artifact;
-    }
-
     public List<PdlBostedadresse> getBostedsadresse() {
-        return initOrGet(bostedsadresse);
+        if (isNull(bostedsadresse)) {
+            bostedsadresse = new ArrayList<>();
+        }
+        return bostedsadresse;
     }
 
     public List<PdlKontaktadresse> getKontaktadresse() {
-        return initOrGet(kontaktadresse);
+        if (isNull(kontaktadresse)) {
+            kontaktadresse = new ArrayList<>();
+        }
+        return kontaktadresse;
     }
 
     public List<PdlOppholdsadresse> getOppholdsadresse() {
-        return initOrGet(oppholdsadresse);
+        if (isNull(oppholdsadresse)) {
+            oppholdsadresse = new ArrayList<>();
+        }
+        return oppholdsadresse;
     }
 
     public List<PdlDeltBosted> getDeltBosted() {
-        return initOrGet(deltBosted);
+        if (isNull(deltBosted)) {
+            deltBosted = new ArrayList<>();
+        }
+        return deltBosted;
     }
 
     public List<PdlFamilierelasjon> getForelderBarnRelasjon() {
-        return initOrGet(forelderBarnRelasjon);
+        if (isNull(forelderBarnRelasjon)) {
+            forelderBarnRelasjon = new ArrayList<>();
+        }
+        return forelderBarnRelasjon;
+
     }
 
     public List<PdlAdressebeskyttelse> getAdressebeskyttelse() {
-        return initOrGet(adressebeskyttelse);
+        if (isNull(adressebeskyttelse)) {
+            adressebeskyttelse = new ArrayList<>();
+        }
+        return adressebeskyttelse;
     }
 
     public List<PdlFoedsel> getFoedsel() {
-        return initOrGet(foedsel);
+        if (isNull(foedsel)) {
+            foedsel = new ArrayList<>();
+        }
+        return foedsel;
     }
 
     public List<PdlDoedsfall> getDoedsfall() {
-        return initOrGet(doedsfall);
+        if (isNull(doedsfall)) {
+            doedsfall = new ArrayList<>();
+        }
+        return doedsfall;
     }
 
     public List<PdlKjoenn> getKjoenn() {
-        return initOrGet(kjoenn);
+        if (isNull(kjoenn)) {
+            kjoenn = new ArrayList<>();
+        }
+        return kjoenn;
     }
 
     public List<PdlNavn> getNavn() {
-        return initOrGet(navn);
+        if (isNull(navn)) {
+            navn = new ArrayList<>();
+        }
+        return navn;
     }
 
     public List<PdlFolkeregisterpersonstatus> getFolkeregisterpersonstatus() {
-        return initOrGet(folkeregisterpersonstatus);
+        if (isNull(folkeregisterpersonstatus)) {
+            folkeregisterpersonstatus = new ArrayList<>();
+        }
+        return folkeregisterpersonstatus;
     }
 
     public List<PdlFullmakt> getFullmakt() {
-        return initOrGet(fullmakt);
+        if (isNull(fullmakt)) {
+            fullmakt = new ArrayList<>();
+        }
+        return fullmakt;
     }
 
     public List<PdlStatsborgerskap> getStatsborgerskap() {
-        return initOrGet(statsborgerskap);
+        if (isNull(statsborgerskap)) {
+            statsborgerskap = new ArrayList<>();
+        }
+        return statsborgerskap;
     }
 
     public List<PdlOpphold> getOpphold() {
-        return initOrGet(opphold);
+        if (isNull(opphold)) {
+            opphold = new ArrayList<>();
+        }
+        return opphold;
     }
 
     public List<PdlSivilstand> getSivilstand() {
-        return initOrGet(sivilstand);
+        if (isNull(sivilstand)) {
+            sivilstand = new ArrayList<>();
+        }
+        return sivilstand;
     }
 
     public List<PdlTelefonnummer> getTelefonnummer() {
-        return initOrGet(telefonnummer);
+        if (isNull(telefonnummer)) {
+            telefonnummer = new ArrayList<>();
+        }
+        return telefonnummer;
     }
 
     public List<PdlInnflytting> getInnflytting() {
-        return initOrGet(innflytting);
+        if (isNull(innflytting)) {
+            innflytting = new ArrayList<>();
+        }
+        return innflytting;
     }
 
     public List<PdlUtflytting> getUtflytting() {
-        return initOrGet(utflytting);
+        if (isNull(utflytting)) {
+            utflytting = new ArrayList<>();
+        }
+        return utflytting;
     }
 
     public List<PdlForeldreansvar> getForeldreansvar() {
-        return initOrGet(foreldreansvar);
+        if (isNull(foreldreansvar)) {
+            foreldreansvar = new ArrayList<>();
+        }
+        return foreldreansvar;
     }
 
     public List<PdlVergemaal> getVergemaal() {
-        return initOrGet(vergemaal);
+        if (isNull(vergemaal)) {
+            vergemaal = new ArrayList<>();
+        }
+        return vergemaal;
     }
 
-    public List<PdlKontaktinformasjonForDoedsbo> getKontaktinformasjonForDoedsbo() {
-        return initOrGet(kontaktinformasjonForDoedsbo);
-    }
+//    public List<PdlKontaktinformasjonForDoedsbo> getKontaktinformasjonForDoedsbo() {
+//        return initOrGet(kontaktinformasjonForDoedsbo);
+//    }
 
     public List<PdlUtenlandskIdentifikasjonsnummer> getUtenlandskIdentifikasjonsnummer() {
-        return initOrGet(utenlandskIdentifikasjonsnummer);
+        if (isNull(utenlandskIdentifikasjonsnummer)) {
+            utenlandskIdentifikasjonsnummer = new ArrayList<>();
+        }
+        return utenlandskIdentifikasjonsnummer;
     }
 
-    public List<PdlFalskIdentitet> getFalskIdentitet() {
-        return initOrGet(falskIdentitet);
-    }
+//    public List<PdlFalskIdentitet> getFalskIdentitet() {
+//        return initOrGet(falskIdentitet);
+//    }
 }

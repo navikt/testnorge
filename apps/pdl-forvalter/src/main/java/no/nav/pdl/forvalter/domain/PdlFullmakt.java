@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -15,8 +15,8 @@ import java.util.List;
 public class PdlFullmakt extends PdlDbVersjon {
 
     private String fullmektig;
-    private LocalDate gyldigFom;
-    private LocalDate gyldigTom;
+    private LocalDateTime gyldigFom;
+    private LocalDateTime gyldigTom;
     private String kilde;
     private List<String> omraader;
 

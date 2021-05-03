@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.pdl.forvalter.domain.PdlDbVersjon;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -26,7 +26,7 @@ public class PdlKontaktinformasjonForDoedsbo extends PdlDbVersjon {
     private String postnummer;
     private String poststedsnavn;
     private PdlSkifteform skifteform;
-    private LocalDate utstedtDato;
+    private LocalDateTime utstedtDato;
 
     @Getter
     @Setter

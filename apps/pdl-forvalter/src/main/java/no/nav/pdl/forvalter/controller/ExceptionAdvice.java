@@ -1,4 +1,4 @@
-package no.nav.pdl.forvalter.provider;
+package no.nav.pdl.forvalter.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

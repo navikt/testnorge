@@ -5,7 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -23,9 +24,9 @@ public class PdlForeldreansvar extends PdlDbVersjon {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class RelatertBiPerson {
+    public static class RelatertBiPerson implements Serializable {
 
-        private LocalDate foedselsdato;
+        private LocalDateTime foedselsdato;
         private PdlKjoenn.Kjoenn kjoenn;
         private Personnavn navn;
         private String statsborgerskap;
@@ -35,7 +36,7 @@ public class PdlForeldreansvar extends PdlDbVersjon {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Personnavn {
+    public static class Personnavn implements Serializable {
 
         private String etternavn;
         private String fornavn;

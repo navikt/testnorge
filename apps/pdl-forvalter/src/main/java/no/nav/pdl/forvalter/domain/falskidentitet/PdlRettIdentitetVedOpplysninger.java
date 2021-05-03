@@ -9,7 +9,7 @@ import no.nav.pdl.forvalter.domain.PdlKjoenn;
 import no.nav.pdl.forvalter.domain.PdlPersonnavn;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -19,7 +19,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PdlRettIdentitetVedOpplysninger implements Serializable {
 
-    private LocalDate foedselsdato;
+    private LocalDateTime foedselsdato;
     private PdlKjoenn.Kjoenn kjoenn;
     private PdlPersonnavn personnavn;
     private List<String> statsborgerskap;

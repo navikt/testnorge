@@ -1,5 +1,6 @@
 package no.nav.pdl.forvalter.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +14,7 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PdlNavn extends PdlDbVersjon {
 
     private String etternavn;
@@ -27,7 +29,8 @@ public class PdlNavn extends PdlDbVersjon {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    private static class OriginaltNavn implements Serializable {
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class OriginaltNavn implements Serializable {
 
         private String etternavn;
         private String fornavn;

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,8 +27,8 @@ public class PdlDeltBosted extends PdlDbVersjon {
     private Folkeregistermetadata folkeregistermetadata;
     private String kilde;
     private String naerAdresseIdentifikatorFraMatrikkelen;
-    private LocalDate sluttdatoForKontrakt;
-    private LocalDate startdatoForKontrakt;
+    private LocalDateTime sluttdatoForKontrakt;
+    private LocalDateTime startdatoForKontrakt;
     private PdlVegadresse vegadresse;
     private UkjentBosted ukjentBosted;
     private PdlMatrikkeladresse matrikkeladresse;

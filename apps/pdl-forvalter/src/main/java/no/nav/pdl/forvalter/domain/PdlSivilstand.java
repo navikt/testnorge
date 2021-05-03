@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -26,13 +26,13 @@ public class PdlSivilstand extends PdlDbVersjon {
         GJENLEVENDE_PARTNER
     }
 
-    private LocalDate bekreftelsesdato;
+    private LocalDateTime bekreftelsesdato;
     private String kilde;
     private String kommune;
     private String master;
     private String myndighet;
     private String relatertVedSivilstand;
-    private LocalDate sivilstandsdato;
+    private LocalDateTime sivilstandsdato;
     private String sted;
     private Sivilstand type;
     private String utland;

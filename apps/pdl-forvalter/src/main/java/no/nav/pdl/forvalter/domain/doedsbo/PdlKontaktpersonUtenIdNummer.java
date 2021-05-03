@@ -9,7 +9,7 @@ import lombok.Setter;
 import no.nav.pdl.forvalter.domain.PdlPersonnavn;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -19,6 +19,6 @@ import java.time.LocalDate;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PdlKontaktpersonUtenIdNummer implements Serializable {
 
-    private LocalDate foedselsdato;
+    private LocalDateTime foedselsdato;
     private PdlPersonnavn navn;
 }

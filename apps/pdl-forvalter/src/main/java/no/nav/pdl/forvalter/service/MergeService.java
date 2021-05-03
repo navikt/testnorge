@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.domain.PdlDbVersjon;
 import no.nav.pdl.forvalter.domain.PdlPerson;
+import org.springframework.web.client.HttpClientErrorException;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -15,8 +15,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -43,27 +43,30 @@ public class MergeService implements Callable<PdlPerson> {
 
     public PdlPerson call() {
 
-        Field[] fields = request.getClass().getDeclaredFields();
-        Stream.of(fields).forEach(field -> {
+        Stream.of(request.getClass().getDeclaredFields()).forEach(field -> {
 
-            if (List.class.equals(field.getType())) {
+            if (List.class.equals(field.getType()) && !((List<PdlDbVersjon>) getValue(request, field.getName())).isEmpty()) {
 
-                List<PdlDbVersjon> infoElementRequest = (List<PdlDbVersjon>) getValue(request, field.getName());
-
-                List<PdlDbVersjon> infoElementDbPerson = (List<PdlDbVersjon>) getValue(dbPerson, field.getName());
-                AtomicInteger dbId = new AtomicInteger(infoElementDbPerson.isEmpty() ? 0 :
-                        infoElementDbPerson.stream().findFirst().get().getId());
+                var infoElementRequest = (List<PdlDbVersjon>) getValue(request, field.getName());
+                var infoElementDbPerson = (List<PdlDbVersjon>) getValue(dbPerson, field.getName());
+                var dbId = new AtomicInteger(infoElementDbPerson.stream()
+                        .mapToInt(PdlDbVersjon::getId)
+                        .max().orElse(0));
 
                 infoElementRequest.forEach(requestElement -> {
-                    if (isNull(requestElement.getId()) || requestElement.getId() == 0) {
-                        requestElement.setId(dbId.incrementAndGet());
-                        infoElementDbPerson.add(0, requestElement);
-                    } else if (requestElement.equals(infoElementRequest.stream().anyMatch(dbElement -> dbElement.equals(requestElement)))) {
+                    if (infoElementDbPerson.stream()
+                            .anyMatch(dbElement -> requestElement.getId() == dbElement.getId())) {
                         for (int i = 0; i < infoElementDbPerson.size(); i++) {
                             if (infoElementDbPerson.get(i).getId() == requestElement.getId()) {
                                 infoElementDbPerson.set(i, mapperFacade.map(requestElement, infoElementDbPerson.get(i).getClass()));
                             }
                         }
+                    } else if (requestElement.getId() > dbId.get()) {
+                        throw new HttpClientErrorException(BAD_REQUEST,
+                                format("Merge-error: id:%s ikke funnet for element:'%s'", requestElement.getId(), field.getName()));
+                    } else {
+                        requestElement.setId(dbId.incrementAndGet());
+                        infoElementDbPerson.add(0, mapperFacade.map(requestElement, requestElement.getClass()));
                     }
                 });
             }
