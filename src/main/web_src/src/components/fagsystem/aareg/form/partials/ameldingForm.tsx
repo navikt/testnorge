@@ -12,9 +12,9 @@ import {
 	initialValues,
 	initialAmelding,
 	initialArbeidsforhold,
-	initialForenkletOppgjoersordning
+	initialForenkletOppgjoersordning,
+	initialFartoy
 } from '../initialValues'
-import { ArbeidsforholdForm } from './arbeidsforholdForm'
 import ArbeidsforholdConnector from './arbeidsforholdConnector'
 import { ForenkletOppgjoersordningForm } from './forenkletOppgjoersordningForm'
 import { Monthpicker } from '~/components/ui/form/inputs/monthpicker/Monthpicker'
@@ -39,8 +39,6 @@ export const AmeldingForm = ({ formikBag }) => {
 
 	const [selectedIndex, setSelectedIndex] = useState(0)
 
-	// console.log('selectedIndex :>> ', selectedIndex)
-
 	useEffect(() => {
 		if (fom && tom) {
 			const maaneder = []
@@ -57,35 +55,20 @@ export const AmeldingForm = ({ formikBag }) => {
 
 	useEffect(() => {
 		periode.forEach((mnd, idx) => {
-			// console.log('mnd :>> ', mnd)
 			formikBag.setFieldValue(`aareg[0].amelding[${idx}]`, {
 				maaned: mnd,
 				arbeidsforhold: [initialArbeidsforhold]
-				// ...initialArbeidsforhold
 			})
+			if (type === 'maritimtArbeidsforhold') {
+				formikBag.setFieldValue(`aareg[0].amelding[${idx}].arbeidsforhold[0].fartoy`, initialFartoy)
+			}
 		})
 	}, [periode])
-
-	// useEffect(() => {
-	// 	// gjør noe
-	// }, [formikBag.values])
-
-	// function useLocalStorageState(key, defaultValue = true) {
-	// 	const [state, setState] = React.useState(() => defaultValue)
-	// 	React.useEffect(() => {
-	// 		window.localStorage.setItem(key, state)
-	// 	}, [key, state])
-
-	// 	return [state, setState]
-	// }
-
-	// const [erLenket, setErLenket] = useLocalStorageState('erLenket', true)
 
 	const handleArbeidsforholdstypeChange = event => {
 		formikBag.setFieldValue('aareg[0].arbeidsforholdstype', event.value)
 		if (event.value === 'ordinaertArbeidsforhold' || event.value === 'maritimtArbeidsforhold') {
 			formikBag.setFieldValue('aareg[0].amelding', initialAmelding)
-			// formikBag.setFieldValue('aareg[0].arbeidsforhold', [initialArbeidsforhold])
 		} else if (event.value === 'forenkletOppgjoersordning') {
 			formikBag.setFieldValue('aareg[0].arbeidsforhold', [initialForenkletOppgjoersordning])
 		}
@@ -138,7 +121,6 @@ export const AmeldingForm = ({ formikBag }) => {
 						</NavButton>
 						{periode.length > 0 && (
 							<>
-								{/* //TODO Når kjedekomponent er lenket må alle måneder endres ved endring av felt */}
 								<KjedeContainer>
 									<DollyKjede
 										objectList={periode}
@@ -149,9 +131,6 @@ export const AmeldingForm = ({ formikBag }) => {
 									/>
 									<KjedeIcon locked={erLenket} onClick={erLenket ? setErIkkeLenket : setErLenket} />
 								</KjedeContainer>
-								{/* <NavButton onClick={erLenket ? setErIkkeLenket : setErLenket}>
-									{erLenket ? 'LÅS OPP' : 'LÅS'}
-								</NavButton> */}
 								<FormikDollyFieldArray
 									name={`aareg[0].amelding[${selectedIndex}].arbeidsforhold`}
 									header="Arbeidsforhold"
@@ -159,7 +138,6 @@ export const AmeldingForm = ({ formikBag }) => {
 									canBeEmpty={false}
 								>
 									{(path, idx) => (
-										// <ArbeidsforholdForm path={path} key={idx} formikBag={formikBag} />
 										<ArbeidsforholdConnector
 											path={path}
 											key={idx}

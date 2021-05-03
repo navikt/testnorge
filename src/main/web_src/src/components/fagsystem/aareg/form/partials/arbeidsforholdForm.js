@@ -7,27 +7,27 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { TimeloennetForm } from './timeloennetForm'
 import { PermisjonForm } from './permisjonForm'
+import { PermitteringForm } from './permitteringForm'
 import { UtenlandsoppholdForm } from './utenlandsoppholdForm'
 import { ArbeidsavtaleForm } from './arbeidsavtaleForm'
+import { MaritimtArbeidsforholdForm } from './maritimtArbeidsforholdForm'
 import { OrgnummerToggle } from './orgnummerToggle'
 import { ArbeidKodeverk } from '~/config/kodeverk'
 import Hjelpetekst from '~/components/hjelpetekst'
 
-// export const ArbeidsforholdForm = ({ path, formikBag, brukerId }) => {
 export const ArbeidsforholdForm = ({ path, formikBag, erLenket, brukerId }) => {
-	// const erLenket = window.localStorage.getItem('erLenket')
 	const arbeidsforhold = _get(formikBag.values, path)
 
 	console.log('erLenket 2:>> ', erLenket)
 
 	const arbeidsforholdIndex = path.charAt(path.length - 1)
+	const arbeidsforholdstype = _get(formikBag.values, 'aareg[0].arbeidsforholdstype')
 
 	const virksomheter = SelectOptionsOppslag.hentVirksomheterFraOrgforvalter(brukerId)
 	const virksomheterOptions = SelectOptionsOppslag.formatOptions('virksomheter', virksomheter)
 
 	const onChangeLenket = (field, fieldPath) => {
 		const amelding = _get(formikBag.values, 'aareg[0].amelding')
-		// console.log('`${fieldPath}.${path}`, :>> ', `${path}.${fieldPath}`)
 		console.log('erLenket 3:>> ', erLenket)
 		if (erLenket) {
 			amelding.forEach((maaned, idx) => {
@@ -40,27 +40,6 @@ export const ArbeidsforholdForm = ({ path, formikBag, erLenket, brukerId }) => {
 			formikBag.setFieldValue(`${path}.${fieldPath}`, field.value)
 		}
 	}
-	// console.log('arbeidsforhold :>> ', arbeidsforhold)
-	// console.log('path :>> ', path)
-
-	// const clearOrgnrIdent = aktoer => {
-	// 	formikBag.setFieldValue(`${path}.arbeidsgiver.aktoertype`, aktoer.value)
-	// 	formikBag.setFieldValue(`${path}.arbeidsgiver.orgnummer`, '')
-	// 	formikBag.setFieldValue(`${path}.arbeidsgiver.ident`, '')
-	// }
-
-	// console.log('path :>> ', path)
-	// console.log(
-	// 	'_get(formikBag.values:>> ',
-	// 	_get(formikBag.values, 'aareg[0].ansettelsesPeriode.tom')
-	// )
-
-	// console.log(
-	// 	'get(formikBag.values, `${path}.ansettelsesPeriode.tom`)  :>> ',
-	// 	_get(formikBag.values, `${path}.ansettelsesPeriode.tom`)
-	// )
-
-	// console.log('path :>> ', path)
 
 	return (
 		<React.Fragment>
@@ -88,36 +67,20 @@ export const ArbeidsforholdForm = ({ path, formikBag, erLenket, brukerId }) => {
 					}
 					// TODO disabled funker ikke!
 				/>
-				{/* <FormikSelect
-					name={`${path}.arbeidsforholdstype`}
-					label="Type arbeidsforhold"
-					kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
-					size="large"
-					isClearable={false}
-				/> */}
-				{/* <FormikSelect
-					name={`${path}.arbeidsgiver.aktoertype`}
-					label="Type arbeidsgiver"
-					options={Options('aktoertype')}
-					onChange={clearOrgnrIdent}
-					size="medium"
-					isClearable={false}
-				/> */}
-				{/* {arbeidsforhold.arbeidsgiver.aktoertype === 'PERS' && (
-					<FormikTextInput name={`${path}.arbeidsgiver.ident`} label="Arbeidsgiver ident" />
-				)} */}
 			</div>
-			{/* {arbeidsforhold.arbeidsgiver.aktoertype === 'ORG' && (
-				<OrgnummerToggle formikBag={formikBag} path={`${path}.arbeidsgiver.orgnummer`} />
-			)} */}
 
 			<ArbeidsavtaleForm formikBag={formikBag} path={path} />
+			{arbeidsforholdstype === 'maritimtArbeidsforhold' && (
+				<MaritimtArbeidsforholdForm formikBag={formikBag} path={`${path}.fartoy`} />
+			)}
 
-			{/* <TimeloennetForm path={`${path}.antallTimerForTimeloennet`} />
+			<TimeloennetForm path={`${path}.antallTimerForTimeloennet`} />
+
+			<UtenlandsoppholdForm path={`${path}.utenlandsopphold`} />
 
 			<PermisjonForm path={`${path}.permisjon`} />
 
-			<UtenlandsoppholdForm path={`${path}.utenlandsopphold`} /> */}
+			<PermitteringForm path={`${path}.permittering`} />
 		</React.Fragment>
 	)
 }

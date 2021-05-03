@@ -20,7 +20,7 @@ export const PermisjonForm = ({ path }) => (
 		{(path, idx) => (
 			<React.Fragment key={idx}>
 				<FormikSelect
-					name={`${path}.permisjonOgPermittering`}
+					name={`${path}.permisjon`}
 					label="Permisjonstype"
 					kodeverk={ArbeidKodeverk.PermisjonsOgPermitteringsBeskrivelse}
 					isClearable={false}

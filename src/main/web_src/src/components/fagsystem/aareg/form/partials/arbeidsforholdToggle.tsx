@@ -1,9 +1,6 @@
 import React, { useState } from 'react'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { ArbeidsforholdForm } from './arbeidsforholdForm'
 import { AmeldingForm } from './ameldingForm'
-import { initialValues } from '../initialValues'
 
 enum ArbeidsforholdTyper {
 	egen = 'EGEN',
@@ -20,7 +17,7 @@ export const ArbeidsforholdToggle = ({ formikBag }) => {
 		if (value === 'PRIVAT') {
 			formikBag.setFieldValue('aareg[0].arbeidsforhold.arbeidsgiver.aktoertype', 'PERS')
 		} else {
-			//TODO må gå igjennom og settes på alle
+			//TODO må gå igjennom og settes på alle?
 			formikBag.setFieldValue('aareg[0].arbeidsforhold.arbeidsgiver.aktoertype', 'ORG')
 		}
 	}
@@ -61,21 +58,6 @@ export const ArbeidsforholdToggle = ({ formikBag }) => {
 				))}
 			</ToggleGruppe>
 			{typeArbeidsforhold === ArbeidsforholdTyper.egen && <AmeldingForm formikBag={formikBag} />}
-			{/* <FormikDollyFieldArray
-				name="aareg"
-				header="Arbeidsforhold"
-				newEntry={initialValues[0]}
-				canBeEmpty={false}
-			>
-				{(path, idx) => {
-					console.log('path :>> ', path)
-					console.log('typeArbeidsforhold :>> ', typeArbeidsforhold)
-					console.log('ArbeidsforholdTyper.felles :>> ', ArbeidsforholdTyper.felles)
-					typeArbeidsforhold === ArbeidsforholdTyper.felles && (
-						<ArbeidsforholdForm path={path} key={idx} formikBag={formikBag} />
-					)
-				}}
-			</FormikDollyFieldArray> */}
 		</div>
 	)
 }

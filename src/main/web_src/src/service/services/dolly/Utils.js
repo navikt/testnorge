@@ -132,5 +132,9 @@ export const SortKodeverkArray = data => {
 		}))
 	}
 
+	if (data.name === 'PermisjonsOgPermitteringsBeskrivelse') {
+		return kodeverk.filter(kode => kode.value !== 'permittering')
+	}
+
 	return kodeverk
 }

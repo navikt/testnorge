@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
-
 import KjedePagination from '~/components/dollyKjede/KjedePagination'
-import KjedeIcon from '~/components/dollyKjede/KjedeIcon'
 
 export interface DollyKjedeProps {
 	objectList: string[]
@@ -11,13 +8,6 @@ export interface DollyKjedeProps {
 	setSelectedIndex: (index: number) => void
 	isLocked: boolean
 }
-
-// const Container = styled.div`
-// 	display: flex;
-// 	flex-direction: row;
-// 	justify-content: center;
-// 	align-items: center;
-// `
 
 const getCenterIndices = (index: number, antallItems: number, itemLimit: number) => {
 	if (antallItems < 3) {
@@ -71,8 +61,6 @@ export default ({
 	setSelectedIndex,
 	isLocked
 }: DollyKjedeProps) => {
-	console.log('isLocked :>> ', isLocked)
-
 	useEffect(() => {
 		setLocked(isLocked)
 	}, [isLocked])
@@ -81,18 +69,13 @@ export default ({
 	const maxShownItems = getMaxShownItems(itemLimit)
 
 	const [locked, setLocked] = useState(isLocked)
-	console.log('locked :>> ', locked)
-	// const [locked, setLocked] = useState(true)
+
 	const [paginationIndex, setPaginationIndex] = useState(
 		getInitialPaginationIndex(antallItems, maxShownItems)
 	)
 	const [centerIndices, setCenterIndices] = useState(
 		getCenterIndices(paginationIndex, antallItems, maxShownItems)
 	)
-
-	const handleLocked = () => {
-		setLocked(!locked)
-	}
 
 	const handlePagination = (addValue: number) => {
 		if (centerIndices.length == maxShownItems - 3) {
@@ -121,7 +104,6 @@ export default ({
 	}
 
 	return (
-		// <Container>
 		<KjedePagination
 			selectedIndex={selectedIndex}
 			objectList={objectList}
@@ -130,7 +112,5 @@ export default ({
 			handlePagination={handlePagination}
 			handleClick={handleSelection}
 		/>
-		// {/* <KjedeIcon locked={locked} onClick={handleLocked} /> */}
-		// </Container>
 	)
 }

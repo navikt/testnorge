@@ -11,14 +11,18 @@ const infotekst =
 export const TimeloennetForm = ({ path }) => (
 	<FormikDollyFieldArray
 		name={path}
-		header="Antall timer for timelønnet"
+		header="Timer med timelønnet"
 		hjelpetekst={infotekst}
 		newEntry={initialTimeloennet}
 		nested
 	>
 		{(path, idx) => (
 			<div key={idx} className="flexbox">
-				<FormikTextInput name={`${path}.antallTimer`} label="Antall timer" type="number" />
+				<FormikTextInput
+					name={`${path}.antallTimer`}
+					label="Antall timer for timelønnet"
+					type="number"
+				/>
 				<FormikDatepicker name={`${path}.periode.fom`} label="Periode fra" />
 				<FormikDatepicker name={`${path}.periode.tom`} label="Periode til" />
 			</div>
