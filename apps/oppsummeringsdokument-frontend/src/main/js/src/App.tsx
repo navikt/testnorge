@@ -1,12 +1,12 @@
 import React from "react";
 import "./App.less";
 import { CodeSearch } from "@/components";
-import Header from "@/components/Header";
+import { Header } from "@navikt/dolly-komponenter";
 
 function App() {
   return (
     <div className="App">
-      <Header />
+      <Header title="Arbeidsforhold A-melding søk" />
       <CodeSearch />
     </div>
   );
