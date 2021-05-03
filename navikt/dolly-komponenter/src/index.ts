@@ -4,7 +4,6 @@ export * from './date-picker';
 export * from './header';
 export * from './page';
 export * from './profil';
-export * from './select';
 export * from './form';
 export * from './loadable-component';
 export * from './loading';
