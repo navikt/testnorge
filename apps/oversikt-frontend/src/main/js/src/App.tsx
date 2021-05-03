@@ -8,15 +8,13 @@ import MagicTokenPage from "@/pages/MagicTokenPage";
 import AccessTokenPage from "@/pages/AccessTokenPage";
 import {
   Header,
-  HeaderLinkGroup,
   HeaderLink,
+  HeaderLinkGroup,
   LoadableComponent,
 } from "@navikt/dolly-komponenter";
 import { ProfilLoader } from "@/components/profil";
 
 export default () => {
-  console.log(window.location);
-
   return (
     <Router>
       <Header title="Generer token" profile={<ProfilLoader />}>

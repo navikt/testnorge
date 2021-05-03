@@ -1,3 +1,3 @@
-import ProfilLoader from './ProfilLoader';
+import ProfilLoader from "./ProfilLoader";
 
 export { ProfilLoader };

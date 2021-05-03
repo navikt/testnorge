@@ -27,9 +27,7 @@ const Title = styled.h1`
   color: white;
 `;
 
-const ProfileContainer = styled.div`
-  display: flex;
-  justify-content: flex-end;
+const Container = styled.div`
   width: 100%;
 `;
 
@@ -44,18 +42,17 @@ export default ({ children, title, profile }: Props) => (
     <Logo src={navLogo} alt="Nav logo" />
     <VerticalLine />
     <Title>{title}</Title>
+
     {React.Children.map(children, (child) => (
       <>
         <VerticalLine />
-        {child}
+        <Container>{child}</Container>
       </>
     ))}
     {profile && (
       <>
-        <ProfileContainer>
-          <VerticalLine />
-          {profile}
-        </ProfileContainer>
+        <VerticalLine />
+        {profile}
       </>
     )}
   </Header>
