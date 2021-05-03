@@ -1,10 +1,12 @@
 {
   "name": "@navikt/dolly-komponenter",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "Bibliotek for dolly komponenter.",
   "main": "lib/index.js",
   "module": "lib/index.es.js",
-  "files": ["lib"],
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "build": "rollup -c"
   },
