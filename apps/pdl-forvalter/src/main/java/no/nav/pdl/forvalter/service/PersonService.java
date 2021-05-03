@@ -23,6 +23,7 @@ public class PersonService {
 
     private final PersonRepository personRepository;
     private final MapperFacade mapperFacade;
+    private final PersonArtifactService personArtifactService;
 
     @Transactional
     public DbPerson updatePerson(String ident, PersonUpdateRequest request) {
@@ -33,7 +34,8 @@ public class PersonService {
                         .person(new PdlPerson())
                         .build());
 
-        dbPerson.setPerson(new MergeService(request.getPdlPerson(), dbPerson.getPerson(), mapperFacade).call());
+        var compiledRequest = personArtifactService.buildPerson(request);
+        dbPerson.setPerson(new MergeService(compiledRequest, dbPerson.getPerson(), mapperFacade).call());
         dbPerson.setUpdated(LocalDateTime.now());
 
         return personRepository.save(dbPerson);

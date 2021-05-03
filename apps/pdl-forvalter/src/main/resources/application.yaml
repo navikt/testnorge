@@ -2,7 +2,7 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 
 consumers:
   adresse-service:
-    url: https://testnav-adresse-service.dev-fss-pub.nais.io
+    url: https://testnav-adresse-service.dev.intern.nav.no
     cluster: dev-gcp
     namespace: dolly
     name: testnav-adresse-service

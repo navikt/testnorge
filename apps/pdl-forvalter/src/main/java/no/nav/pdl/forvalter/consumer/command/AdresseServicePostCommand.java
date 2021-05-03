@@ -1,8 +1,8 @@
 package no.nav.pdl.forvalter.consumer.command;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.pdl.forvalter.dto.AdresseResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -11,34 +11,36 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 import java.util.concurrent.Callable;
 
+import static java.util.Objects.nonNull;
+
 @Slf4j
 @RequiredArgsConstructor
-public class AdresseServiceCommand implements Callable<JsonNode> {
+public class AdresseServicePostCommand implements Callable<AdresseResponse> {
 
     private final WebClient webClient;
     private final String url;
+    private final Integer antall;
     private final Object body;
     private final String token;
 
     @Override
-    public JsonNode call() {
+    public AdresseResponse call() {
 
         try {
             return webClient
                     .post()
-                    .uri(builder -> builder.path("/pdl-testdata/" + url).build())
-                    .body(BodyInserters.fromValue(body))
+                    .uri(builder -> builder.path(url).build())
+                    .header("antall", nonNull(antall) ? antall.toString() : "1")
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                    .body(BodyInserters.fromValue(body))
                     .retrieve()
-                    .bodyToMono(JsonNode.class)
+                    .bodyToMono(AdresseResponse.class)
                     .block();
 
-        } catch (
-                WebClientResponseException e) {
-            log.error("Feil ved skriving av PDL-testdata: {}.", e.getResponseBodyAsString());
-            log.error(body.toString());
-            throw e;
+        } catch (WebClientResponseException e) {
+            log.error("Feil ved henting av adresser: {}.", e.getResponseBodyAsString());
+            return null;
         }
     }
 }

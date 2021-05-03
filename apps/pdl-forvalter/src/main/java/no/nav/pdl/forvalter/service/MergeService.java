@@ -55,9 +55,9 @@ public class MergeService implements Callable<PdlPerson> {
 
                 infoElementRequest.forEach(requestElement -> {
                     if (infoElementDbPerson.stream()
-                            .anyMatch(dbElement -> requestElement.getId() == dbElement.getId())) {
+                            .anyMatch(dbElement -> requestElement.getId().equals(dbElement.getId()))) {
                         for (int i = 0; i < infoElementDbPerson.size(); i++) {
-                            if (infoElementDbPerson.get(i).getId() == requestElement.getId()) {
+                            if (infoElementDbPerson.get(i).getId().equals(requestElement.getId())) {
                                 infoElementDbPerson.set(i, mapperFacade.map(requestElement, infoElementDbPerson.get(i).getClass()));
                             }
                         }
