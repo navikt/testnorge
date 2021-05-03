@@ -9,21 +9,22 @@ type Props = {
 };
 
 const Profil = styled.div`
-  height: 30px;
   padding: 20px 10px;
   display: flex;
 `;
 
 const VisningsNavn = styled.p`
+  height: 30px;
+  display: flex;
   margin: 0;
   align-self: center;
   color: white;
 `;
 
 const Logo = styled.img`
-  width: 30px;
+  width: 28px;
   margin: 0 20px;
-  height: 30px;
+  height: 28px;
   border-radius: 50%;
   border: 2px solid white;
 `;

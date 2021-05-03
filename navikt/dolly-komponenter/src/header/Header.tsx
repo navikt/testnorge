@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { navLogo } from '@navikt/dolly-assets';
 
 const HeaderStlye = styled.header`
+  max-height: 70px;
   display: flex;
   background-color: #3e3832;
 `;
