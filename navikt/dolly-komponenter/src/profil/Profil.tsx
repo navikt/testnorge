@@ -15,6 +15,7 @@ const Profil = styled.div`
 
 const VisningsNavn = styled.p`
   height: 30px;
+  min-width: 140px;
   display: flex;
   margin: 0;
   align-self: center;
