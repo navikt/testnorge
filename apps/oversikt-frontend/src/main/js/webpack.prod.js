@@ -8,7 +8,7 @@ module.exports = merge(common, {
   devtool: "source-map",
   stats: "minimal",
   output: {
-    filename: "bundle.[contenthash:8].js",
+    filename: "[name].[contenthash:8].js",
     path: path.resolve(__dirname, "build"),
   },
   optimization: {
@@ -16,7 +16,7 @@ module.exports = merge(common, {
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: "[fullhash]-[name].css",
+      filename: "[name].[contenthash:8].css",
     }),
   ],
 });

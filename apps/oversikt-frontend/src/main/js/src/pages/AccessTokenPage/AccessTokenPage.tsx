@@ -12,18 +12,16 @@ const AccessTokenPage = ({ navigations }: Props) => {
   // @ts-ignore
   const { name } = useParams();
   return (
-    <Page>
-      <PageWithMenu navigations={navigations} menuTitle="Applikasjoner">
-        <FetchAccessToken
-          name={name}
-          labels={{
-            header: "Access Token",
-            subHeader: `Genrer token for ${name}`,
-            description: `Token som kan bruke til å logge på ${name}.`,
-          }}
-        />
-      </PageWithMenu>
-    </Page>
+    <PageWithMenu navigations={navigations} menuTitle="Applikasjoner">
+      <FetchAccessToken
+        name={name}
+        labels={{
+          header: "Access Token",
+          subHeader: `Generer token for ${name}`,
+          description: `Token som kan bruke til å logge på ${name}.`,
+        }}
+      />
+    </PageWithMenu>
   );
 };
 

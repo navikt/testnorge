@@ -15,7 +15,7 @@ export default () => (
       name="team-dolly-lokal-app"
       labels={{
         header: "Magic Token",
-        subHeader: "Genererer lokalt utviklingstoken",
+        subHeader: "Generer lokalt utviklingstoken",
         description:
           "Dette token skal fungere for alle apper som kjøres lokalt.",
       }}

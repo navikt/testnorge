@@ -26,6 +26,7 @@ export default ({ children, navigations, menuTitle }: Props) => {
         <ul>
           {navigations
             .filter((name) => name.label.includes(search))
+            .sort((first, second) => first.label.localeCompare(second.label))
             .map((navigation) => (
               <li key={navigation.label}>
                 <Navigation navigation={navigation} />
