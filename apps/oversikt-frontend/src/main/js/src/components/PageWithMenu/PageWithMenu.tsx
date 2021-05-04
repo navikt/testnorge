@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-import "./PageWithMenu.less";
 import Navigation from "@/components/Navigation";
+import "./PageWithMenu.less";
 
 type Props = {
   children: React.ReactNode;
@@ -22,9 +22,7 @@ export default ({ children, navigations, menuTitle }: Props) => {
           className="search"
           onChange={(event) => setSearch(event.target.value)}
         />
-
         <h3>{menuTitle}</h3>
-
         <ul>
           {navigations
             .filter((name) => name.label.includes(search))
