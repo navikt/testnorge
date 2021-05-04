@@ -47,6 +47,9 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
+    new MiniCssExtractPlugin({
+      filename: "[name].[contenthash:8].css",
+    }),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, "./public/index.html"), // template file
       filename: "index.html", // output file

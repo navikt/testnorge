@@ -14,9 +14,4 @@ module.exports = merge(common, {
   optimization: {
     minimize: true,
   },
-  plugins: [
-    new MiniCssExtractPlugin({
-      filename: "[name].[contenthash:8].css",
-    }),
-  ],
 });
