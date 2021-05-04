@@ -32,7 +32,7 @@ spec:
         - application: testnav-applikasjonsanalyse-frontend
           cluster: dev-gcp
         - application: testnorge-oversikt-frontend
-          cluster: dev-gcp
+          cluster: dev-fss
         - application: oppsummeringsdokument-frontend
           cluster: dev-gcp
   liveness:
