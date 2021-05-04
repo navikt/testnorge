@@ -15,7 +15,7 @@ export const PermitteringForm = ({ path }: Permittering) => (
 	<FormikDollyFieldArray
 		name={path}
 		header="Permittering"
-		infotekst={infotekst}
+		hjelpetekst={infotekst}
 		newEntry={initialPermittering}
 		nested
 	>

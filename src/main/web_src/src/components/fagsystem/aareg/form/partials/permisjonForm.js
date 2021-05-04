@@ -13,7 +13,7 @@ export const PermisjonForm = ({ path }) => (
 	<FormikDollyFieldArray
 		name={path}
 		header="Permisjon"
-		infotekst={infotekst}
+		hjelpetekst={infotekst}
 		newEntry={initialPermisjon}
 		nested
 	>
