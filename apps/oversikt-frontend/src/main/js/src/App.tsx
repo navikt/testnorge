@@ -11,13 +11,18 @@ import {
   HeaderLink,
   HeaderLinkGroup,
   LoadableComponent,
+  ProfilLoader,
 } from "@navikt/dolly-komponenter";
-import { ProfilLoader } from "@/components/profil";
+
+import ProfilService from "./services/ProfilService";
 
 export default () => {
   return (
     <Router>
-      <Header title="Generer token" profile={<ProfilLoader />}>
+      <Header
+        title="Generer token"
+        profile={<ProfilLoader {...ProfilService} />}
+      >
         <HeaderLinkGroup>
           <HeaderLink
             href="#/magic-token"
