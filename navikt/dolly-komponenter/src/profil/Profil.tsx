@@ -8,8 +8,8 @@ export type ProfilProps = {
   visningsnavn?: string;
 };
 
-const ProfilStyle = styled.div`
-  padding: 20px 10px;
+const StyledProfil = styled.div`
+  padding: 15px 10px;
   display: flex;
 `;
 
@@ -23,18 +23,18 @@ const VisningsNavn = styled.p`
 `;
 
 const Logo = styled.img`
-  width: 28px;
+  width: 40px;
   margin: 0 20px;
-  height: 28px;
+  height: 40px;
   border-radius: 50%;
   border: 2px solid white;
 `;
 
 const Profile = ({ url, visningsnavn }: ProfilProps) => (
-  <ProfilStyle>
+  <StyledProfil>
     <Logo alt="Profilbilde" src={url ? url : dollyLogo} />
     {visningsnavn && <VisningsNavn>{visningsnavn}</VisningsNavn>}
-  </ProfilStyle>
+  </StyledProfil>
 );
 
 export default Profile;

@@ -3,16 +3,15 @@ import styled from 'styled-components';
 // @ts-ignore
 import { navLogo } from '@navikt/dolly-assets';
 
-const HeaderStlye = styled.header`
+const StyledHeader = styled.header`
   max-height: 70px;
   display: flex;
   background-color: #3e3832;
 `;
 
 const Logo = styled.img`
-  padding: 20px 10px;
-  margin: 0 20px;
-  height: 30px;
+  margin: 15px;
+  height: 40px;
 `;
 
 const VerticalLine = styled.div`
@@ -39,7 +38,7 @@ export type HeaderProps = {
 };
 
 const Header = ({ children, title, profile }: HeaderProps) => (
-  <HeaderStlye>
+  <StyledHeader>
     <Logo src={navLogo} alt="Nav logo" />
     <VerticalLine />
     <Title>{title}</Title>
@@ -60,7 +59,7 @@ const Header = ({ children, title, profile }: HeaderProps) => (
         {profile}
       </>
     )}
-  </HeaderStlye>
+  </StyledHeader>
 );
 
 Header.displayName = 'Header';

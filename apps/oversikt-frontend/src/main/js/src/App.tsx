@@ -15,6 +15,11 @@ import {
 } from "@navikt/dolly-komponenter";
 
 import ProfilService from "./services/ProfilService";
+import styled from "styled-components";
+
+const Body = styled.div`
+  border-bottom: solid 1px #c6c2bf;
+`;
 
 export default () => {
   return (
@@ -41,7 +46,7 @@ export default () => {
           </HeaderLink>
         </HeaderLinkGroup>
       </Header>
-      <div className="body">
+      <Body>
         <Switch>
           <Route path="/access-token/:name">
             <LoadableComponent
@@ -60,7 +65,7 @@ export default () => {
             <MagicTokenPage />
           </Route>
         </Switch>
-      </div>
+      </Body>
     </Router>
   );
 };

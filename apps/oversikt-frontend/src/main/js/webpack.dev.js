@@ -1,10 +1,9 @@
-const path = require("path");
+const path = require("path-browserify");
 const { merge } = require("webpack-merge");
 const common = require("./webpack.common.js");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = merge(common, {
-  mode: "development",
+  mode: "production",
   devtool: "inline-source-map",
   devServer: {
     port: 3000,
@@ -21,13 +20,9 @@ module.exports = merge(common, {
       },
     },
   },
-  plugins: [
-    new MiniCssExtractPlugin({
-      filename: "[name].css",
-    }),
-  ],
   output: {
     path: path.join(__dirname, "dist"),
     filename: "bundle.js",
+    clean: true,
   },
 });

@@ -1,25 +1,16 @@
-const HtmlWebPackPlugin = require("html-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const path = require("path");
+const path = require("path-browserify");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
   module: {
     rules: [
       {
-        test: /\.css$/i,
-        use: [MiniCssExtractPlugin.loader, "css-loader"],
-      },
-      {
-        test: /\.less$/,
-        use: [MiniCssExtractPlugin.loader, "css-loader", "less-loader"],
+        test: /\.less$/i,
+        use: ["style-loader", "css-loader", "less-loader"],
       },
       {
         test: /\.(png|jpe?g|gif|svg)$/i,
-        use: [
-          {
-            loader: "file-loader",
-          },
-        ],
+        type: "asset/resource",
       },
       {
         test: /\.js|.ts(x?)$/,
@@ -28,30 +19,24 @@ module.exports = {
           loader: "babel-loader",
         },
       },
-      {
-        test: /\.html$/,
-        use: [
-          {
-            loader: "html-loader",
-          },
-        ],
-      },
     ],
   },
   resolve: {
+    fallback: {
+      os: require.resolve("os-browserify/browser"),
+      path: require.resolve("path-browserify"),
+      stream: require.resolve("stream-browserify"),
+    },
     alias: {
+      stream: "stream-browserify",
       "@": path.resolve(__dirname, "src"),
     },
     extensions: [".tsx", ".ts", ".js"],
   },
   plugins: [
-    new HtmlWebPackPlugin({
-      template: "./public/index.html",
-      filename: "./index.html",
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, "./public/index.html"), // template file
+      filename: "index.html", // output file
     }),
   ],
-  output: {
-    filename: "bundle.js",
-    path: path.resolve(__dirname, "dist"),
-  },
 };
