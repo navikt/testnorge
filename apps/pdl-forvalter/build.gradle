@@ -41,6 +41,10 @@ dependencies {
 
     implementation 'net.logstash.logback:logstash-logback-encoder:4.11'
     implementation 'org.springdoc:springdoc-openapi-ui:1.4.7'
+    implementation 'org.junit.jupiter:junit-jupiter:5.4.2'
+    implementation 'org.junit.jupiter:junit-jupiter:5.4.2'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 description = 'pdl-forvalter'

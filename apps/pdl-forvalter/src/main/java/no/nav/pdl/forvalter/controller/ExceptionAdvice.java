@@ -27,7 +27,7 @@ public class ExceptionAdvice {
             return ExceptionInformation.builder()
                     .error(exception.getStatusCode().getReasonPhrase())
                     .status(exception.getStatusCode().value())
-                    .message(exception.getMessage())
+                    .message(exception.getStatusText())
                     .path(urlPathHelper.getPathWithinApplication(httpServletRequest))
                     .timestamp(LocalDateTime.now())
                     .build();

@@ -12,12 +12,18 @@ import com.fasterxml.jackson.databind.ser.PropertyWriter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import no.nav.pdl.forvalter.config.credentials.PdlServiceProperties;
+import no.nav.pdl.forvalter.consumer.command.PdlCreatePersonCommand;
 import no.nav.pdl.forvalter.consumer.command.PdlDeletePersonCommand;
 import no.nav.pdl.forvalter.consumer.command.PdlTestdataCommand;
+import no.nav.pdl.forvalter.dto.PdlBestillingResponse;
+import no.nav.pdl.forvalter.dto.PdlDeleteResponse;
+import no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.bestillingUrl;
 
 @Service
 public class PdlTestdataConsumer {
@@ -67,12 +73,17 @@ public class PdlTestdataConsumer {
         this.objectMapper = objectMapper;
     }
 
-    public JsonNode sendTilPdl(String url, String ident, Object body) throws JsonProcessingException {
+    public PdlBestillingResponse sendArtifactToPdl(PdlArtifact artifact, String ident, Object body) throws JsonProcessingException {
         var accessToken = accessTokenService.generateToken(properties);
-        return new PdlTestdataCommand(webClient, url, ident, objectMapper.writer(filters).writeValueAsString(body), accessToken.getTokenValue()).call();
+        return new PdlTestdataCommand(webClient, bestillingUrl.get(artifact), ident, objectMapper.writer(filters).writeValueAsString(body), accessToken.getTokenValue()).call();
     }
 
-    public JsonNode deletePerson(String ident) {
+    public JsonNode createPerson(String ident) {
+        var accessToken = accessTokenService.generateToken(properties);
+        return new PdlCreatePersonCommand(webClient, ident, accessToken.getTokenValue()).call();
+    }
+
+    public PdlDeleteResponse deletePerson(String ident) {
         var accessToken = accessTokenService.generateToken(properties);
         return new PdlDeletePersonCommand(webClient, ident, accessToken.getTokenValue()).call();
     }

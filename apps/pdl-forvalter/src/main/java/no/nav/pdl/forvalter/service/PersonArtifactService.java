@@ -18,7 +18,7 @@ public class PersonArtifactService {
     public PdlPerson buildPerson(PersonUpdateRequest request) {
 
         return PdlPerson.builder()
-                .kontaktadresse(kontaktAdresseService.resolve(request.getPdlPerson().getKontaktadresse()))
+                .kontaktadresse(kontaktAdresseService.resolve(request.getPerson().getKontaktadresse()))
                 .build();
     }
 }

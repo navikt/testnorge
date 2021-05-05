@@ -1,4 +1,4 @@
-package no.nav.pdl.forvalter.database.model;
+package no.nav.pdl.forvalter.database;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -76,7 +76,7 @@ public class JSONUserType implements UserType {
             if (isBlank(node.asText())) {
                 return null;
             }
-            String dateTime = node.asText().length() > 10 ? node.asText().substring(0, 10) : node.asText();
+            var dateTime = node.asText().length() > 10 ? node.asText().substring(0, 10) : node.asText();
             return LocalDate.parse(dateTime);
         }
     }
@@ -88,7 +88,7 @@ public class JSONUserType implements UserType {
             if (isBlank(node.asText())) {
                 return null;
             }
-            String dateTime = node.asText().length() > 19 ? node.asText().substring(0, 19) : node.asText();
+            var dateTime = node.asText().length() > 19 ? node.asText().substring(0, 19) : node.asText();
             return dateTime.length() > 10 ? LocalDateTime.parse(dateTime) : LocalDate.parse(dateTime).atStartOfDay();
         }
     }

@@ -12,5 +12,5 @@ import no.nav.pdl.forvalter.domain.PdlPerson;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PersonUpdateRequest {
 
-    private PdlPerson pdlPerson;
+    private PdlPerson person;
 }

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.pdl.forvalter.domain.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
+import no.nav.pdl.forvalter.dto.RsKontaktadresse;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -24,16 +25,16 @@ public class PdlPerson implements Serializable {
     private List<PdlNavn> navn;
     private List<PdlKjoenn> kjoenn;
     private List<PdlBostedadresse> bostedsadresse;
-    private List<PdlKontaktadresse> kontaktadresse;
+    private List<RsKontaktadresse> kontaktadresse;
     private List<PdlOppholdsadresse> oppholdsadresse;
     private List<PdlInnflytting> innflytting;
     private List<PdlUtflytting> utflytting;
     private List<PdlDeltBosted> deltBosted;
     private List<PdlFamilierelasjon> forelderBarnRelasjon;
     private List<PdlForeldreansvar> foreldreansvar;
-//    private List<PdlKontaktinformasjonForDoedsbo> kontaktinformasjonForDoedsbo;
+    //    private List<PdlKontaktinformasjonForDoedsbo> kontaktinformasjonForDoedsbo;
     private List<PdlUtenlandskIdentifikasjonsnummer> utenlandskIdentifikasjonsnummer;
-//    private List<PdlFalskIdentitet> falskIdentitet;
+    //    private List<PdlFalskIdentitet> falskIdentitet;
     private List<PdlAdressebeskyttelse> adressebeskyttelse;
     private List<PdlDoedsfall> doedsfall;
     private List<PdlFolkeregisterpersonstatus> folkeregisterpersonstatus;
@@ -55,7 +56,7 @@ public class PdlPerson implements Serializable {
         return bostedsadresse;
     }
 
-    public List<PdlKontaktadresse> getKontaktadresse() {
+    public List<RsKontaktadresse> getKontaktadresse() {
         if (isNull(kontaktadresse)) {
             kontaktadresse = new ArrayList<>();
         }

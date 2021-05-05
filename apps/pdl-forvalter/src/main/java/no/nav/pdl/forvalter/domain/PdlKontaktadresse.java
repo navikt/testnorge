@@ -82,7 +82,7 @@ public class PdlKontaktadresse extends PdlAdresse {
 
         private String adressekode;
         private String adressenavn;
-        private String adressetillegsnavn;
+        private String adressetilleggsnavn;
         private String bruksenhetsnummer;
         private String husbokstav;
         private String husnummer;

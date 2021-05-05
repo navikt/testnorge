@@ -19,6 +19,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import java.util.Map;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/personer")
@@ -58,8 +61,8 @@ public class PersonController {
 
     @PostMapping(value = "/{ident}/ordre")
     @Operation(description = "Send person til PDL (ordre)")
-    public JsonNode createPerson(@PathVariable String ident) {
+    public Map<String, List<PdlOrdreService.PdlStatus>> createPerson(@PathVariable String ident) {
 
-        return pdlOrdreService.sendTilPdl(ident);
+        return Map.of(ident, pdlOrdreService.sendTilPdl(ident));
     }
 }

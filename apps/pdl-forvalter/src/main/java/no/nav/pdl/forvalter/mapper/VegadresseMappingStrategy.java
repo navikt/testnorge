@@ -1,32 +1,52 @@
 package no.nav.pdl.forvalter.mapper;
 
+import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
+import ma.glasnost.orika.MappingContext;
+import no.nav.pdl.forvalter.domain.PdlKontaktadresse;
+import no.nav.pdl.forvalter.domain.PdlVegadresse;
+import no.nav.pdl.forvalter.dto.PdlAdresseResponse;
 import org.springframework.stereotype.Component;
 
 @Component
 public class VegadresseMappingStrategy implements MappingStrategy {
 
 
+
     @Override
     public void register(MapperFactory factory) {
 
-//        factory.classMap(Hits.class, Vegadresse.class)
-//                .customize(new CustomMapper<>() {
-//                    @Override
-//                    public void mapAtoB(Hits hits, Vegadresse vegadresse, MappingContext context) {
-//
-//                        vegadresse.setMatrikkelId(hits.getVegadresse().getMatrikkelId());
-//                        vegadresse.setAdressenavn(hits.getVegadresse().getAdressenavn());
-//                        vegadresse.setHusnummer(hits.getVegadresse().getHusnummer());
-//                        vegadresse.setHusbokstav(hits.getVegadresse().getHusbokstav());
-//                        vegadresse.setPostnummer(hits.getVegadresse().getPostnummer());
-//                        vegadresse.setPoststed(hits.getVegadresse().getPoststed());
-//                        vegadresse.setKommunenummer(hits.getVegadresse().getKommunenummer());
-//                        vegadresse.setKommunenavn(hits.getVegadresse().getKommunenavn());
-//                        vegadresse.setBydelsnummer(hits.getVegadresse().getBydelsnummer());
-//                        vegadresse.setBydelsnavn(hits.getVegadresse().getBydelsnavn());
-//                        vegadresse.setTilleggsnavn(hits.getVegadresse().getTilleggsnavn());
-//                    }
-//                }).register();
+        factory.classMap(PdlAdresseResponse.Vegadresse.class, PdlVegadresse.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(PdlAdresseResponse.Vegadresse kildeAdresse, PdlVegadresse vegadresse, MappingContext context) {
+
+                        vegadresse.setAdressetilleggsnavn(kildeAdresse.getTilleggsnavn());
+                    }
+                })
+                .byDefault()
+                .register();
+
+        factory.classMap(PdlAdresseResponse.Vegadresse.class, PdlKontaktadresse.VegadresseForPost.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(PdlAdresseResponse.Vegadresse kildeAdresse, PdlKontaktadresse.VegadresseForPost vegadresse, MappingContext context) {
+
+                        vegadresse.setAdressetilleggsnavn(kildeAdresse.getTilleggsnavn());
+                    }
+                })
+                .byDefault()
+                .register();
+
+        factory.classMap(PdlVegadresse.class, PdlAdresseResponse.Vegadresse.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(PdlVegadresse kildeAdresse, PdlAdresseResponse.Vegadresse vegadresse, MappingContext context) {
+
+                        vegadresse.setTilleggsnavn(kildeAdresse.getAdressetilleggsnavn());
+                    }
+                })
+                .byDefault()
+                .register();
     }
 }

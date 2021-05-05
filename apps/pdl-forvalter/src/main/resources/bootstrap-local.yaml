@@ -28,7 +28,7 @@ spring:
     properties:
       hibernate:
         default-schema: public
-        dialect: no.nav.pdl.forvalter.database.model.PostgreSQLDialectExtended
+        dialect: no.nav.pdl.forvalter.database.PostgreSQLDialectExtended
   security:
     oauth2:
       resourceserver:

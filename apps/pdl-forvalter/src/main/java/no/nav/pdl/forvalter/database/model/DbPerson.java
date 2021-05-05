@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.pdl.forvalter.database.JSONUserType;
 import no.nav.pdl.forvalter.domain.PdlPerson;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;

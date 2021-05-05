@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 public abstract class PdlAdresse extends PdlDbVersjon {
 
     private String adresseIdentifikatorFraMatrikkelen;
-    private Adressegradering adressegradering;
     private LocalDateTime gyldigFraOgMed;
     private LocalDateTime gyldigTilOgMed;
     private String coAdressenavn;
@@ -29,8 +28,6 @@ public abstract class PdlAdresse extends PdlDbVersjon {
     private Master master;
 
     private String naerAdresseIdentifikatorFraMatrikkelen;
-
-    public enum Adressegradering {UGRADERT, KLIENTADRESSE, FORTROLIG, STRENGT_FORTROLIG, STRENGT_FORTROLIG_UTLAND}
 
     public enum Bruksenhetstype {BOLIG, ANNET_ENN_BOLIG, FRITIDSBOLIG, IKKE_GODKJENT_BOLIG, UNUMMERERT_BRUKSENHET}
 
