@@ -62,17 +62,15 @@ const myConfig = {
 };
 
 export default ({ data }: Props) => (
-  <div className="frame">
-    <Graph
-      id="testnorge-dependency-graph"
-      data={convert(
-        data.filter(
-          (value) =>
-            value.applicationName !== 'team-dolly-lokal-app' &&
-            value.applicationName !== 'testnorge-oversikt-frontend'
-        )
-      )}
-      config={myConfig}
-    />
-  </div>
+  <Graph
+    id="testnorge-dependency-graph"
+    data={convert(
+      data.filter(
+        (value) =>
+          value.applicationName !== 'team-dolly-lokal-app' &&
+          value.applicationName !== 'testnorge-oversikt-frontend'
+      )
+    )}
+    config={myConfig}
+  />
 );

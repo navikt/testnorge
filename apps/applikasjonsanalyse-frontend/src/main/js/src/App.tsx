@@ -1,20 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import TestnorgeDependencyPage from '@/page/ApplikasjonsanalysePage';
-import { ProfilLoader } from '@/components/profil';
-import { Header } from '@navikt/dolly-komponenter';
+import { Header, ProfilLoader } from '@navikt/dolly-komponenter';
+import ProfilService from './service/ProfilService';
 
-function App() {
+const App = () => {
   return (
     <div>
-      <Header title="Avheninghetsanalyse">
-        <ProfilLoader />
-      </Header>
-      <div className="body">
-        <TestnorgeDependencyPage />
-      </div>
+      <Header title="Avheninghetsanalyse" profile={<ProfilLoader {...ProfilService} />} />
+      <div className="body">{/*<TestnorgeDependencyPage />*/}</div>
     </div>
   );
-}
+};
 
 export default App;

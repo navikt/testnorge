@@ -51,8 +51,8 @@ module.exports = {
       filename: "[name].[contenthash:8].css",
     }),
     new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, "./public/index.html"), // template file
-      filename: "index.html", // output file
+      template: path.resolve(__dirname, "./public/index.html"),
+      filename: "index.html",
     }),
   ],
 };
