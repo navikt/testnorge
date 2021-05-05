@@ -4,11 +4,12 @@ const common = require("./webpack.common.js");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = merge(common, {
-  mode: "production",
+  mode: "development",
   devtool: "inline-source-map",
   devServer: {
     port: 3000,
     contentBase: path.join(__dirname, "public"),
+    hot: true,
     historyApiFallback: true,
     proxy: {
       "/api": {
