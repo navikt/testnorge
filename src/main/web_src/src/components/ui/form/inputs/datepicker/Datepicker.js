@@ -1,17 +1,17 @@
 import React from 'react'
 import ReactDatepicker, { registerLocale } from 'react-datepicker'
 import { FormikField } from '~/components/ui/form/FormikField'
-import { subYears, addYears } from 'date-fns'
+import { addYears, subYears } from 'date-fns'
 import locale_nb from 'date-fns/locale/nb'
 import { TextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { Label } from '~/components/ui/form/inputs/label/Label'
 import { InputWrapper } from '~/components/ui/form/inputWrapper/InputWrapper'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { fieldError, SyntEvent } from '~/components/ui/form/formUtils'
-registerLocale('nb', locale_nb)
-
 import 'react-datepicker/dist/react-datepicker.css'
 import './Datepicker.less'
+
+registerLocale('nb', locale_nb)
 
 export const Datepicker = ({
 	name,
@@ -61,6 +61,9 @@ const P_FormikDatepicker = ({ fastfield, ...props }) => (
 		{({ field, form, meta }) => {
 			const handleChange = date => {
 				form.setFieldTouched(props.name) // Need to trigger touched manually for Datepicker
+
+				if (props.afterChange) props.afterChange(date)
+
 				return field.onChange(SyntEvent(field.name, date))
 			}
 			const handleBlur = () => field.onBlur(SyntEvent(field.name, field.value))

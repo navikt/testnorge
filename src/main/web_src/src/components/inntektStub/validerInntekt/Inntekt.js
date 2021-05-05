@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import _get from 'lodash/get'
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
@@ -39,7 +39,15 @@ const booleanField = options => {
 	return options.length > 0 && typeof options[0] === 'boolean'
 }
 
-const fieldResolver = (field, options = [], handleChange, values, path, index) => {
+function optionsUtfylt(options) {
+	return (
+		(options.length === 2 && options.includes('<TOM>') && options.includes('<UTFYLT>')) ||
+		(options.length === 1 && options[0] === '<UTFYLT>')
+	)
+}
+
+const fieldResolver = (field, handleChange, formik, path, index, resetForm, options = []) => {
+	const values = formik.values
 	if (dateFields.includes(field)) {
 		return (
 			<FormikDatepicker
@@ -47,7 +55,7 @@ const fieldResolver = (field, options = [], handleChange, values, path, index) =
 				visHvisAvhuket={false}
 				name={field}
 				label={texts(field)}
-				onBlur={handleChange}
+				afterChange={handleChange}
 				feil={sjekkFelt(field, options, values, path)}
 			/>
 		)
@@ -64,10 +72,7 @@ const fieldResolver = (field, options = [], handleChange, values, path, index) =
 				feil={sjekkFelt(field, options, values, path)}
 			/>
 		)
-	} else if (
-		(options.length === 2 && options.includes('<TOM>') && options.includes('<UTFYLT>')) ||
-		(options.length === 1 && options[0] === '<UTFYLT>')
-	) {
+	} else if (optionsUtfylt(options)) {
 		return (
 			<FormikTextInput
 				key={index}
@@ -81,37 +86,54 @@ const fieldResolver = (field, options = [], handleChange, values, path, index) =
 			/>
 		)
 	}
+	const filteredOptions = options.map(option => ({ label: texts(option), value: option }))
+	const fieldPath = `${path}.${tilleggsinformasjonPaths(field)}`
+	if (
+		!resetForm &&
+		filteredOptions.length === 1 &&
+		_get(values, fieldPath) !== filteredOptions[0].value
+	) {
+		useEffect(() => {
+			formik.setFieldValue(fieldPath, filteredOptions[0].value)
+		})
+	}
 	return (
 		<FormikSelect
 			key={index}
 			name={field}
+			value={filteredOptions.length === 1 ? filteredOptions[0].value : _get(values, fieldPath)}
 			label={texts(field)}
-			options={options
-				.filter(option => option !== '<TOM>')
-				.map(option => ({ label: texts(option), value: option }))}
+			options={filteredOptions.filter(option => option.value !== '<TOM>')}
 			fastfield={false}
 			afterChange={handleChange}
 			size={booleanField(options) ? 'small' : wideFields.includes(field) ? 'xxlarge' : 'large'}
-			feil={sjekkFelt(field, options, values, path)}
-			isClearable={field !== 'inntektstype'}
+			feil={sjekkFelt(field, filteredOptions, values, path)}
+			isClearable={field !== 'inntektstype' && filteredOptions.length !== 1}
 		/>
 	)
 }
 
-const Inntekt = ({ fields = {}, onValidate, formikBag, path }) => (
+const Inntekt = ({ fields = {}, onValidate, formikBag, path, resetForm }) => (
 	<div className="flexbox--flex-wrap">
-		{fieldResolver(
-			'inntektstype',
-			['LOENNSINNTEKT', 'YTELSE_FRA_OFFENTLIGE', 'PENSJON_ELLER_TRYGD', 'NAERINGSINNTEKT'],
-			onValidate,
-			formikBag.values,
-			path
-		)}
+		{fieldResolver('inntektstype', onValidate, formikBag, path, `${path}.inntektstype`, resetForm, [
+			'LOENNSINNTEKT',
+			'YTELSE_FRA_OFFENTLIGE',
+			'PENSJON_ELLER_TRYGD',
+			'NAERINGSINNTEKT'
+		])}
 
 		{Object.keys(fields)
 			.filter(field => !(fields[field].length === 1 && fields[field][0] === '<TOM>'))
 			.map(field =>
-				fieldResolver(field, fields[field], onValidate, formikBag.values, path, `${path}.${field}`)
+				fieldResolver(
+					field,
+					onValidate,
+					formikBag,
+					path,
+					`${path}.${field}`,
+					resetForm,
+					fields[field]
+				)
 			)}
 	</div>
 )

@@ -68,7 +68,7 @@ export default ({ path, formikBag }: InntektsinformasjonForm) => {
 					type="number"
 				/>
 			</div>
-			<InntektstubVirksomhetToggle path={path} formikBag={formikBag} />
+			<InntektstubVirksomhetToggle formikBag={formikBag} path={path} />
 			<InntektsinformasjonLister formikBag={formikBag} path={path} />
 			<InntektsendringForm formikBag={formikBag} path={path} />
 		</div>
