@@ -8,9 +8,7 @@ function App() {
   return (
     <div className="App">
       <Header title="A-melding" profile={<ProfilLoader {...ProfilService} />} />
-      <Page>
-        <CodeSearch />
-      </Page>
+      <CodeSearch />
     </div>
   );
 }
