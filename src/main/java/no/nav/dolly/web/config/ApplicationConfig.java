@@ -18,7 +18,8 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
         @DependencyOn("dolly-backend"),
         @DependencyOn("testnorge-profil-api"),
         @DependencyOn("testnorge-varslinger-api"),
-        @DependencyOn("organisasjon-forvalter"),
+        @DependencyOn("testnav-organisasjon-forvalter"),
+        @DependencyOn("testnav-organisasjon-service"),
         @DependencyOn("testnav-miljoer-service"),
         @DependencyOn("udi-stub-dev")
 })
@@ -49,6 +50,11 @@ public class ApplicationConfig {
     @Bean
     public AddAuthorizationToRouteFilter organisasjonForvalterAddAuthorizationToRouteFilter() {
         return createFilterFrom("organisasjon-forvalter");
+    }
+
+    @Bean
+    public AddAuthorizationToRouteFilter organisasjonServiceAddAuthorizationToRouteFilter() {
+        return createFilterFrom("organisasjon-service");
     }
 
     @Bean

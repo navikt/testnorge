@@ -1,16 +1,40 @@
 import React, { useState } from 'react'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSelect'
+import { OrgserviceApi } from '~/service/Api'
+import { useBoolean } from 'react-use'
+import Icon from '~/components/ui/icon/Icon'
 
 const inputValg = { fraListe: 'velg', skrivSelv: 'skriv' }
 
-export const OrgnummerToggle = ({ formikBag, path }) => {
+export const OrgnummerToggle = ({ formikBag, path, opplysningspliktigPath }) => {
 	const [inputType, setInputType] = useState(inputValg.fraListe)
+	const [error, setError] = useState(null)
+	const [success, setSuccess] = useBoolean(false)
 
 	const handleToggleChange = event => {
 		setInputType(event.target.value)
 		formikBag.setFieldValue(path, '')
+	}
+
+	const handleChange = value => {
+		opplysningspliktigPath &&
+			formikBag.setFieldValue(`${opplysningspliktigPath}`, value.juridiskEnhet)
+		formikBag.setFieldValue(`${path}`, value.orgnr)
+	}
+
+	const handleBlur = event => {
+		setError(null)
+		setSuccess(false)
+		OrgserviceApi.getOrganisasjonInfo(event.target.value)
+			.then(response => {
+				setSuccess(true)
+				opplysningspliktigPath &&
+					formikBag.setFieldValue(`${opplysningspliktigPath}`, response.data.juridiskEnhet)
+				formikBag.setFieldValue(`${path}`, response.data.orgnummer)
+			})
+			.catch(err => setError(err))
 	}
 
 	return (
@@ -33,9 +57,23 @@ export const OrgnummerToggle = ({ formikBag, path }) => {
 			</ToggleGruppe>
 
 			{inputType === inputValg.fraListe ? (
-				<OrganisasjonMedArbeidsforholdSelect path={path} label={'Organisasjonsnummer'} />
+				<OrganisasjonMedArbeidsforholdSelect
+					afterChange={handleChange}
+					path={path}
+					label={'Organisasjonsnummer'}
+				/>
 			) : (
-				<FormikTextInput name={path} size="xlarge" />
+				<div className={'flexbox--align-center'}>
+					<DollyTextInput
+						name={path}
+						type={'number'}
+						size="xlarge"
+						label={'Organisasjonsnummer'}
+						onBlur={handleBlur}
+						feil={error && { feilmelding: 'Fant ikke organisasjonen i Q1' }}
+					/>
+					{success && <Icon kind="feedback-check-circle" />}
+				</div>
 			)}
 		</div>
 	)
