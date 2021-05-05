@@ -52,7 +52,6 @@
     "nav-frontend-typografi-style": "^1.1.1",
     "paginering": "^1.0.8",
     "prop-types": "^15.7.2",
-    "react": "^17.0.2",
     "react-day-picker": "^7.4.8",
     "react-select": "^4.1.0",
     "styled-components": "^5.1.0"
@@ -88,6 +87,7 @@
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-postcss": "^4.0.0",
     "rollup-plugin-typescript2": "^0.30.0",
+    "rollup-plugin-visualizer": "^5.5.0",
     "typescript": "^4.2.4"
   },
   "publishConfig": {

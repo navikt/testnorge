@@ -5,6 +5,7 @@ import typescript from 'rollup-plugin-typescript2';
 import image from '@rollup/plugin-image';
 import postcss from 'rollup-plugin-postcss';
 import NpmImport from 'less-plugin-npm-import';
+import { visualizer } from 'rollup-plugin-visualizer';
 const packageJson = require('./package.json');
 
 export default {
@@ -26,6 +27,7 @@ export default {
     resolve(),
     commonjs(),
     image(),
+    // visualizer(),
     postcss({
       use: [
         [
