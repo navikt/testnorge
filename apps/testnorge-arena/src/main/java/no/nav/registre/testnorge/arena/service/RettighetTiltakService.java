@@ -115,6 +115,8 @@ public class RettighetTiltakService {
             return vedtaksliste;
         }
 
+        var deltakelser = tiltaksdeltakelser.stream().filter(t -> t.getTiltakYtelse() != null && t.getTiltakYtelse().equals("J")).collect(Collectors.toList());
+
         List<NyttVedtakTiltak> nyVedtaksliste = new ArrayList<>();
 
         var vedtakSequences = getVedtakSequencesTiltak(vedtaksliste);
@@ -123,10 +125,10 @@ public class RettighetTiltakService {
         for (var sequence : vedtakSequences) {
             var initialFraDato = sequence.get(0).getFraDato();
 
-            var deltakelseIndex = finnNoedvendigTiltaksdeltakelse(tiltaksdeltakelser, brukteIndices);
+            var deltakelseIndex = finnNoedvendigTiltaksdeltakelse(deltakelser, brukteIndices);
             if (deltakelseIndex != null) {
                 brukteIndices.add(deltakelseIndex);
-                var deltakelse = tiltaksdeltakelser.get(deltakelseIndex);
+                var deltakelse = deltakelser.get(deltakelseIndex);
                 for (var vedtak : sequence) {
                     var nyttVedtak = shiftVedtakDatesBasertPaaTiltaksdeltakelse(vedtak, deltakelse, initialFraDato);
                     nyVedtaksliste.add(nyttVedtak);
