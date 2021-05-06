@@ -1,6 +1,8 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
 consumers:
+  hodejegeren:
+    url: https://testnorge-hodejegeren.dev.intern.nav.no
   arbeidsforholdapi:
     clientId: 1b2f24c8-a426-47b1-8ff1-7905d6dfddb5
     cluster: dev-fss
@@ -12,8 +14,6 @@ consumers:
     namespace: dolly
     name: mn-organisasjon-api
     url: https://mn-organisasjon-api.dev.adeo.no
-  kodeverk:
-    url: https://kodeverk.dev.adeo.no
   syntrest:
     url: https://syntrest.dev.adeo.no
   oppsummeringsdokument-service:
@@ -21,6 +21,17 @@ consumers:
     namespace: dolly
     name: oppsummeringsdokument-service
     url: https://oppsummeringsdokument-service.dev.intern.nav.no
+  testnav-generer-organisasjon-populasjon-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-generer-organisasjon-populasjon-service
+    url: https://testnav-generer-organisasjon-populasjon-service.dev.intern.nav.no
+  testnav-organisasjon-service:
+    url: https://testnav-organisasjon-service.dev.intern.nav.no
+    name: testnav-organisasjon-service
+    cluster: dev-gcp
+    namespace: dolly
+    threads: 7
 
 spring:
   main:

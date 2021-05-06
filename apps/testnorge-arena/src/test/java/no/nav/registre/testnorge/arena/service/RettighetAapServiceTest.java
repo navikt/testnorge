@@ -44,8 +44,6 @@ import no.nav.registre.testnorge.arena.consumer.rs.response.pensjon.PensjonTestd
 import no.nav.registre.testnorge.arena.consumer.rs.response.pensjon.PensjonTestdataStatus;
 import no.nav.registre.testnorge.arena.service.util.ServiceUtils;
 import no.nav.registre.testnorge.arena.service.util.DatoUtils;
-import no.nav.registre.testnorge.arena.service.util.ArbeidssoekerUtils;
-import no.nav.registre.testnorge.arena.service.util.IdenterUtils;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -61,10 +59,10 @@ public class RettighetAapServiceTest {
     private ServiceUtils serviceUtils;
 
     @Mock
-    private IdenterUtils identerUtils;
+    private IdentService identService;
 
     @Mock
-    private ArbeidssoekerUtils arbeidssoekerUtils;
+    private ArbeidssoekerService arbeidssoekerService;
 
     @Mock
     private DatoUtils datoUtils;
@@ -128,9 +126,9 @@ public class RettighetAapServiceTest {
         tvungenForvaltningRettigheter = new ArrayList<>(Collections.singletonList(nyRettighetTvungenForvaltning));
         fritakMeldekortRettigheter = new ArrayList<>(Collections.singletonList(nyRettighetFritakMeldekort));
 
-        when(identerUtils.getLevende(avspillergruppeId, miljoe)).thenReturn(identer);
-        when(identerUtils.getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt(), eq(miljoe), anyBoolean())).thenReturn(identer);
-        when(identerUtils.hentEksisterendeArbeidsoekerIdenter(anyBoolean())).thenReturn(new ArrayList<>(Collections.singletonList(fnr1)));
+        when(identService.getLevende(avspillergruppeId, miljoe)).thenReturn(identer);
+        when(identService.getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt(), eq(miljoe), eq(null))).thenReturn(identer);
+        when(identService.hentEksisterendeArbeidsoekerIdenter(anyBoolean())).thenReturn(new ArrayList<>(Collections.singletonList(fnr1)));
     }
 
     @Test
@@ -188,7 +186,7 @@ public class RettighetAapServiceTest {
         Map<String, List<NyttVedtakResponse>> expectedResponsesFromArenaForvalter = new HashMap<>();
         expectedResponsesFromArenaForvalter.put(fnr1, new ArrayList<>(Collections.singletonList(nyRettighetungUfoerResponse)));
 
-        when(identerUtils.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallIdenter, 18, 35, miljoe, false)).thenReturn(identer);
+        when(identService.getUtvalgteIdenterIAldersgruppe(avspillergruppeId, antallIdenter, 18, 35, miljoe, null)).thenReturn(identer);
         when(consumerUtils.createSyntRequest(antallIdenter, ARENA_AAP_UNG_UFOER_DATE_LIMIT)).thenReturn(syntRequest);
         when(aapSyntConsumer.syntetiserRettighetUngUfoer(syntRequest)).thenReturn(ungUfoerRettigheter);
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(expectedResponsesFromArenaForvalter);
@@ -204,7 +202,7 @@ public class RettighetAapServiceTest {
     public void shouldGenerereTvungenForvaltning() {
         var kontonummer = "12131843564";
         var forvalterFnr = "02020202020";
-        when(identerUtils.getIdenterMedKontoinformasjon(avspillergruppeId, miljoe, antallIdenter))
+        when(identService.getIdenterMedKontoinformasjon(avspillergruppeId, miljoe, antallIdenter))
                 .thenReturn(new ArrayList<>(Collections.singletonList(KontoinfoResponse.builder()
                         .fnr(forvalterFnr)
                         .kontonummer(kontonummer)
@@ -239,8 +237,8 @@ public class RettighetAapServiceTest {
         Map<String, List<NyttVedtakResponse>> expectedResponsesFromArenaForvalter = new HashMap<>();
         expectedResponsesFromArenaForvalter.put(fnr1, new ArrayList<>(Collections.singletonList(nyRettighetFritakMeldekortResponse)));
 
-        when(identerUtils.hentEksisterendeArbeidsoekerIdenter(anyBoolean())).thenReturn(identer);
-        when(identerUtils.getLevende(avspillergruppeId, miljoe)).thenReturn(identer);
+        when(identService.hentEksisterendeArbeidsoekerIdenter(anyBoolean())).thenReturn(identer);
+        when(identService.getLevende(avspillergruppeId, miljoe)).thenReturn(identer);
         when(consumerUtils.createSyntRequest(antallIdenter)).thenReturn(syntRequest);
         when(aapSyntConsumer.syntetiserRettighetFritakMeldekort(syntRequest)).thenReturn(fritakMeldekortRettigheter);
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(expectedResponsesFromArenaForvalter);

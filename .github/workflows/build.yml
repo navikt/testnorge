@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - master
+    paths-ignore:
+      - 'navikt/**'
   pull_request:
     types: [opened, synchronize, reopened]
 

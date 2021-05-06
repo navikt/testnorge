@@ -6,6 +6,7 @@ metadata:
   labels:
     team: dolly
 spec:
+  webproxy: true
   port: 8080
   liveness:
     path: /internal/isAlive

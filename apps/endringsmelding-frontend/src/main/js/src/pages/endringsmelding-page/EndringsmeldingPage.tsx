@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Tabs from 'nav-frontend-tabs';
-import { Page } from '@/components/page';
+import { Page } from '@navikt/dolly-komponenter';
 import { FodselsmeldingForm, DodsmeldingForm } from './form';
 import Panel from 'nav-frontend-paneler';
 

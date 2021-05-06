@@ -6,7 +6,6 @@ import no.nav.registre.testnorge.arena.consumer.rs.response.aktoer.AktoerRespons
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -49,7 +48,7 @@ public class GetAktoerIdTilIdenterCommand implements Callable<Map<String, Aktoer
                     .block();
         } catch (Exception e) {
             log.error("Kunne ikke hente aktør id for identer: {}", identer.toString().replaceAll("[\r\n]", ""), e);
-            return Collections.emptyMap();
+            throw e;
         }
     }
 

@@ -188,6 +188,7 @@ public class AapControllerIntegrationTest {
                 .withResponseBody(PersonstatusOgAdresse.builder()
                         .personStatus(Personstatus.builder()
                                 .kodePersonstatus("BOSA")
+                                .datoFom(LocalDate.now().minusYears(10))
                                 .build())
                         .build())
                 .stubGet();

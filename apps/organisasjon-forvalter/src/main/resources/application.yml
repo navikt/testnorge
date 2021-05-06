@@ -1,30 +1,8 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
-miljoer:
-  service:
-    url: https://miljoer-service.dev.intern.nav.no
-    client:
-      id: 30003084-1585-4629-a017-686b4387b12e
-organisasjon:
-  bestilling:
-    url: https://organisasjon-bestilling-service.dev.intern.nav.no
-    client:
-      id: 213b750d-7a71-40bb-ada6-81530e61dcd5
-  navn:
-    url: https://generer-navn-service.dev.intern.nav.no
-    client:
-      id: 92e61fa8-6fca-48e2-87b9-29d8bb6cf850
-  nummer:
-    url: https://organisasjon-orgnummer-service.dev.intern.nav.no
-    client:
-      id: cc5eab78-8ec7-4f4f-8b2f-7e6f46870a48
-
-tpsf:
-  url: https://tps-forvalteren.dev.adeo.no
-
 spring:
   application:
-    name: Organisasjon-Forvalter
+    name: Testnav-Organisasjon-Forvalter
     version: 1.0
     description: Bestilling, persistering og opphenting av testorganisasjoner
 
@@ -32,8 +10,34 @@ kafka:
   groupid: organisasjon-forvalter-v1
 
 consumers:
+  generer-navn-service:
+    url: https://generer-navn-service.dev.intern.nav.no
+    name: generer-navn-service
+    cluster: dev-gcp
+    namespace: dolly
+  organisasjon-orgnummer-service:
+    url: https://organisasjon-orgnummer-service.dev.intern.nav.no
+    name: organisasjon-orgnummer-service
+    cluster: dev-fss
+    namespace: dolly
+  organisasjon-bestilling-service:
+    url: https://organisasjon-bestilling-service.dev.intern.nav.no
+    name: organisasjon-bestilling-service
+    cluster: dev-gcp
+    namespace: dolly
+  testnav-adresse-service:
+    url: https://testnav-adresse-service.dev.intern.nav.no
+    name: testnav-adresse-service
+    cluster: dev-gcp
+    namespace: dolly
   testnav-organisasjon-service:
     url: https://testnav-organisasjon-service.dev.intern.nav.no
     name: testnav-organisasjon-service
+    cluster: dev-gcp
+    namespace: dolly
+    threads: 10
+  testnav-miljoer-service:
+    url: https://testnav-miljoer-service.dev.intern.nav.no
+    name: testnav-miljoer-service
     cluster: dev-gcp
     namespace: dolly

@@ -1,14 +1,12 @@
 package no.nav.registre.testnorge.arena.service;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 
-import no.nav.registre.testnorge.arena.service.util.IdenterUtils;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import org.junit.Before;
@@ -43,7 +41,7 @@ public class BrukereServiceTest {
     @Mock
     private Random random;
     @Mock
-    private IdenterUtils identerUtils;
+    private IdentService identService;
 
     @InjectMocks
     private BrukereService brukereService;
@@ -120,7 +118,7 @@ public class BrukereServiceTest {
 
     private NyeBrukereResponse opprettIdenter(Integer antallNyeIdenter, String miljoe) {
         doReturn(toIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER, MAKSIMUM_ALDER);
-        doReturn(toIdenterOverAlder).when(identerUtils).hentEksisterendeArbeidsoekerIdenter(anyBoolean());
+        doReturn(toIdenterOverAlder).when(identService).hentEksisterendeArbeidsoekerIdenter(anyBoolean());
         doReturn(enNyArbeidsoekerResponse).when(brukereArenaForvalterConsumer).sendTilArenaForvalter(anyList());
 
         return brukereService.opprettArbeidsoekere(antallNyeIdenter, avspillergruppeId, miljoe);
@@ -130,21 +128,21 @@ public class BrukereServiceTest {
     public void fyllOverfullArenaForvalter() {
         NyeBrukereResponse nyeIdenter = opprettIdenter(null, miljoe);
 
-        assertThat(nyeIdenter.getArbeidsoekerList(), is(Collections.EMPTY_LIST));
-        assertThat(nyeIdenter.getNyBrukerFeilList(), is(Collections.EMPTY_LIST));
+        assertThat(nyeIdenter.getArbeidsoekerList()).isEmpty();
+        assertThat(nyeIdenter.getNyBrukerFeilList()).isEmpty();
     }
 
     @Test
     public void fyllFraTomArenaForvalter() {
         doReturn(hundreIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER, MAKSIMUM_ALDER);
-        doReturn(Collections.EMPTY_LIST).when(identerUtils).hentEksisterendeArbeidsoekerIdenter(anyBoolean());
+        doReturn(Collections.EMPTY_LIST).when(identService).hentEksisterendeArbeidsoekerIdenter(anyBoolean());
         doReturn(tyveNyeArbeidsoekereResponse).when(brukereArenaForvalterConsumer).sendTilArenaForvalter(anyList());
 
         NyeBrukereResponse arbeidsokere =
                 brukereService.opprettArbeidsoekere(null, avspillergruppeId, miljoe);
-        assertThat(arbeidsokere.getArbeidsoekerList().size(), is(20));
-        assertThat(arbeidsokere.getArbeidsoekerList().get(0).getPersonident(), is(fnr1));
-        assertThat(arbeidsokere.getArbeidsoekerList().get(4).getPersonident(), is("50505050505"));
+        assertThat(arbeidsokere.getArbeidsoekerList()).hasSize(20);
+        assertThat(arbeidsokere.getArbeidsoekerList().get(0).getPersonident()).isEqualTo(fnr1);
+        assertThat(arbeidsokere.getArbeidsoekerList().get(4).getPersonident()).isEqualTo("50505050505");
 
     }
 
@@ -152,63 +150,63 @@ public class BrukereServiceTest {
     public void hentGyldigeIdenterTest() {
         NyeBrukereResponse nyeIdenter = opprettIdenter(1, miljoe);
 
-        assertThat(nyeIdenter.getArbeidsoekerList().size(), is(1));
-        assertThat(nyeIdenter.getArbeidsoekerList().get(0).getPersonident(), is(fnr2));
+        assertThat(nyeIdenter.getArbeidsoekerList()).hasSize(1);
+        assertThat(nyeIdenter.getArbeidsoekerList().get(0).getPersonident()).isEqualTo(fnr2);
     }
 
     @Test
     public void opprettForMangeNyeIdenter() {
         NyeBrukereResponse nyeIdenter = opprettIdenter(2, miljoe);
 
-        assertThat(nyeIdenter.getArbeidsoekerList().size(), is(1));
-        assertThat(nyeIdenter.getArbeidsoekerList().get(0).getPersonident(), is(fnr2));
+        assertThat(nyeIdenter.getArbeidsoekerList()).hasSize(1);
+        assertThat(nyeIdenter.getArbeidsoekerList().get(0).getPersonident()).isEqualTo(fnr2);
     }
 
     @Test
     public void fyllOppForvalterenTest() {
         doReturn(hundreIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER, MAKSIMUM_ALDER);
-        doReturn(femtenFnr).when(identerUtils).hentEksisterendeArbeidsoekerIdenter(anyBoolean());
+        doReturn(femtenFnr).when(identService).hentEksisterendeArbeidsoekerIdenter(anyBoolean());
         doReturn(opprettedeArbeidsoekereResponse).when(brukereArenaForvalterConsumer).sendTilArenaForvalter(anyList());
 
         NyeBrukereResponse arbeidsokere =
                 brukereService.opprettArbeidsoekere(null, avspillergruppeId, miljoe);
 
-        assertThat(arbeidsokere.getArbeidsoekerList().size(), is(5));
-        assertThat(arbeidsokere.getArbeidsoekerList().get(2).getPersonident(), is(fnr3));
-        assertThat(arbeidsokere.getArbeidsoekerList().get(3).getPersonident(), is("40404040404"));
+        assertThat(arbeidsokere.getArbeidsoekerList()).hasSize(5);
+        assertThat(arbeidsokere.getArbeidsoekerList().get(2).getPersonident()).isEqualTo(fnr3);
+        assertThat(arbeidsokere.getArbeidsoekerList().get(3).getPersonident()).isEqualTo("40404040404");
     }
 
     @Test
     public void opprettArbeidssoekerTest() {
         doReturn(toIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER, MAKSIMUM_ALDER);
-        doReturn(Collections.emptyList()).when(identerUtils).hentEksisterendeArbeidsoekerIdenter(anyBoolean());
+        doReturn(Collections.emptyList()).when(identService).hentEksisterendeArbeidsoekerIdenter(anyBoolean());
         doReturn(enNyArbeidsoekerResponse).when(brukereArenaForvalterConsumer).sendTilArenaForvalter(anyList());
 
         NyeBrukereResponse arbeidsoeker = brukereService.opprettArbeidssoeker(fnr2, avspillergruppeId, miljoe, true);
 
-        assertThat(arbeidsoeker.getArbeidsoekerList().size(), is(1));
-        assertThat(arbeidsoeker.getArbeidsoekerList().get(0).getPersonident(), is(fnr2));
+        assertThat(arbeidsoeker.getArbeidsoekerList()).hasSize(1);
+        assertThat(arbeidsoeker.getArbeidsoekerList().get(0).getPersonident()).isEqualTo(fnr2);
     }
 
     @Test
     public void opprettEksisterendeArbeidssoekerTest() {
         doReturn(toIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER, MAKSIMUM_ALDER);
-        doReturn(Collections.singletonList(fnr2)).when(identerUtils).hentEksisterendeArbeidsoekerIdenter(anyBoolean());
+        doReturn(Collections.singletonList(fnr2)).when(identService).hentEksisterendeArbeidsoekerIdenter(anyBoolean());
         doReturn(enNyArbeisoker).when(brukereArenaForvalterConsumer).hentArbeidsoekere(anyString(), eq(null), eq(null), anyBoolean());
 
         NyeBrukereResponse arbeidsoeker = brukereService.opprettArbeidssoeker(fnr2, avspillergruppeId, miljoe, true);
 
-        assertThat(arbeidsoeker.getArbeidsoekerList().size(), is(1));
-        assertThat(arbeidsoeker.getArbeidsoekerList().get(0).getPersonident(), is(fnr2));
+        assertThat(arbeidsoeker.getArbeidsoekerList()).hasSize(1);
+        assertThat(arbeidsoeker.getArbeidsoekerList().get(0).getPersonident()).isEqualTo(fnr2);
     }
 
     @Test
     public void opprettIkkeEksisterendeIdentTest() {
         doReturn(toIdenterOverAlder).when(hodejegerenConsumer).getLevende(avspillergruppeId, MINIMUM_ALDER, MAKSIMUM_ALDER);
-        doReturn(Collections.emptyList()).when(identerUtils).hentEksisterendeArbeidsoekerIdenter(anyBoolean());
+        doReturn(Collections.emptyList()).when(identService).hentEksisterendeArbeidsoekerIdenter(anyBoolean());
 
         NyeBrukereResponse arbeidsoeker = brukereService.opprettArbeidssoeker(fnr3, avspillergruppeId, miljoe, true);
 
-        assertThat(arbeidsoeker.getArbeidsoekerList(), is(Collections.EMPTY_LIST));
+        assertThat(arbeidsoeker.getArbeidsoekerList()).isEmpty();
     }
 }

@@ -30,7 +30,7 @@ public class AdresseRequest {
     private String bydelsnavn;
     private String tilleggsnavn;
 
-    @Schema(name = "Fritekstsøk", example= "Sannergata 2 0557 Oslo")
+    @Schema(description = "Fritekstsøk", example= "Sannergata 2 0557 Oslo")
     private String fritekst;
 
     @JsonIgnore

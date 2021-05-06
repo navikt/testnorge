@@ -1,12 +1,17 @@
 package no.nav.registre.syntrest.controllers;
 
+import io.kubernetes.client.ApiException;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Value;
+import no.nav.registre.syntrest.consumer.domain.SyntAmeldingConsumer;
+import no.nav.registre.syntrest.consumer.SyntGetConsumer;
+import no.nav.registre.syntrest.consumer.SyntPostConsumer;
+import no.nav.registre.syntrest.utils.UrlUtils;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,13 +26,8 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
-import no.nav.registre.syntrest.consumer.SyntAmeldingConsumer;
-import no.nav.registre.syntrest.consumer.SyntConsumer;
-import no.nav.registre.syntrest.consumer.UriExpander;
 import no.nav.registre.syntrest.domain.aareg.Arbeidsforholdsmelding;
-import no.nav.registre.syntrest.domain.amelding.ArbeidsforholdAmelding;
 import no.nav.registre.syntrest.domain.bisys.Barnebidragsmelding;
 import no.nav.registre.syntrest.domain.frikort.FrikortKvittering;
 import no.nav.registre.syntrest.domain.inst.Institusjonsmelding;
@@ -38,6 +38,12 @@ import no.nav.registre.syntrest.domain.tp.TPmelding;
 import no.nav.registre.syntrest.domain.tps.SkdMelding;
 import no.nav.registre.syntrest.utils.InputValidator;
 
+import no.nav.registre.testnorge.domain.dto.aareg.amelding.Arbeidsforhold;
+import no.nav.registre.testnorge.domain.dto.aareg.amelding.ArbeidsforholdPeriode;
+
+import static java.util.Objects.isNull;
+import static no.nav.registre.syntrest.utils.UrlUtils.createQueryString;
+
 @Slf4j
 @RestController
 @RequestMapping("api/v1/generate")
@@ -45,45 +51,22 @@ import no.nav.registre.syntrest.utils.InputValidator;
 public class SyntController {
 
     ///////////// SYNT CONSUMERS //////////////
-    private final SyntConsumer aaregConsumer;
-    private final SyntConsumer bisysConsumer;
-    private final SyntConsumer instConsumer;
-    private final SyntConsumer medlConsumer;
-    private final SyntConsumer meldekortConsumer;
-    private final SyntConsumer navConsumer;
-    private final SyntConsumer poppConsumer;
-    private final SyntConsumer samConsumer;
-    private final SyntConsumer inntektConsumer;
-    private final SyntConsumer tpConsumer;
-    private final SyntConsumer tpsConsumer;
-    private final SyntConsumer frikortConsumer;
+    private final SyntPostConsumer<List<String>, List<Arbeidsforholdsmelding>> aaregConsumer;
+    private final SyntGetConsumer<List<Barnebidragsmelding>> bisysConsumer;
+    private final SyntGetConsumer<List<Institusjonsmelding>> instConsumer;
+    private final SyntGetConsumer<List<Medlemskapsmelding>> medlConsumer;
+    private final SyntGetConsumer<List<String>> meldekortConsumer;
+    private final SyntGetConsumer<List<String>> navConsumer;
+    private final SyntPostConsumer<List<String>, List<Inntektsmelding>> poppConsumer;
+    private final SyntGetConsumer<List<SamMelding>> samConsumer;
+    private final SyntPostConsumer<Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>,
+            Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>> inntektConsumer;
+    private final SyntGetConsumer<List<TPmelding>> tpConsumer;
+    private final SyntGetConsumer<List<SkdMelding>> tpsConsumer;
+    private final SyntPostConsumer<Map<String, Integer>, Map<String, List<FrikortKvittering>>> frikortConsumer;
     private final SyntAmeldingConsumer ameldingConsumer;
 
-    ///////////// URLs //////////////
-    @Value("${synth-aareg-url}")
-    private String aaregUrl;
-    @Value("${synth-arena-bisys-url}")
-    private String bisysUrl;
-    @Value("${synth-inst-url}")
-    private String instUrl;
-    @Value("${synth-medl-url}")
-    private String medlUrl;
-    @Value("${synth-arena-meldekort-url}")
-    private String arenaMeldekortUrl;
-    @Value("${synth-nav-url}")
-    private String navEndringsmeldingUrl;
-    @Value("${synth-popp-url}")
-    private String poppUrl;
-    @Value("${synth-sam-url}")
-    private String samUrl;
-    @Value("${synth-inntekt-url}")
-    private String inntektUrl;
-    @Value("${synth-tp-url}")
-    private String tpUrl;
-    @Value("${synth-tps-url}")
-    private String tpsUrl;
-    @Value("${synth-frikort-url}")
-    private String frikortUrl;
+    private final UrlUtils urlUtils;
 
     @PostMapping("/aareg")
     @ApiOperation(value = "Aareg", notes = "Genererer syntetiske arbeidshistorikker bestående av meldinger på AAREG format.")
@@ -91,10 +74,9 @@ public class SyntController {
     public ResponseEntity<List<Arbeidsforholdsmelding>> generateAareg(
             @ApiParam(value = "Liste med identifikasjonsnumre for fikitve personer", required = true)
             @RequestBody List<String> fnrs
-    ) {
+    ) throws ApiException, InterruptedException {
         InputValidator.validateInput(fnrs);
-        List<Arbeidsforholdsmelding> response = (List<Arbeidsforholdsmelding>)
-                aaregConsumer.synthesizeData(UriExpander.createRequestEntity(aaregUrl, fnrs));
+        var response = aaregConsumer.synthesizeData(fnrs);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -106,12 +88,12 @@ public class SyntController {
     public ResponseEntity<List<Barnebidragsmelding>> generateBisys(
             @ApiParam(value = "Antall meldinger som skal genereres", required = true)
             @RequestParam int numToGenerate
-    ) {
-        InputValidator.validateInput(numToGenerate);
-        List<Barnebidragsmelding> response = (List<Barnebidragsmelding>)
-                bisysConsumer.synthesizeData(UriExpander.createRequestEntity(bisysUrl, numToGenerate));
-        doResponseValidation(response);
+    ) throws ApiException, InterruptedException {
 
+        InputValidator.validateInput(numToGenerate);
+        var expandedPath = urlUtils.expandPath(bisysConsumer.getUrl(), String.valueOf(numToGenerate));
+        var response = bisysConsumer.synthesizeData(expandedPath);
+        doResponseValidation(response);
         return ResponseEntity.ok(response);
     }
 
@@ -121,12 +103,12 @@ public class SyntController {
     public ResponseEntity<List<Institusjonsmelding>> generateInst(
             @ApiParam(value = "Antall institusjonsmeldinger", required = true)
             @RequestParam int numToGenerate
-    ) {
-        InputValidator.validateInput(numToGenerate);
-        List<Institusjonsmelding> response = (List<Institusjonsmelding>)
-                instConsumer.synthesizeData(UriExpander.createRequestEntity(instUrl, numToGenerate));
-        doResponseValidation(response);
+    ) throws ApiException, InterruptedException {
 
+        InputValidator.validateInput(numToGenerate);
+        var expandedPath = urlUtils.expandPath(instConsumer.getUrl(), String.valueOf(numToGenerate));
+        var response = instConsumer.synthesizeData(expandedPath);
+        doResponseValidation(response);
         return ResponseEntity.ok(response);
     }
 
@@ -137,12 +119,12 @@ public class SyntController {
     public ResponseEntity<List<Medlemskapsmelding>> generateMedl(
             @ApiParam(value = "Antall meldinger", required = true)
             @RequestParam int numToGenerate
-    ) {
-        InputValidator.validateInput(numToGenerate);
-        List<Medlemskapsmelding> response = (List<Medlemskapsmelding>)
-                medlConsumer.synthesizeData(UriExpander.createRequestEntity(medlUrl, numToGenerate));
-        doResponseValidation(response);
+    ) throws ApiException, InterruptedException {
 
+        InputValidator.validateInput(numToGenerate);
+        var expandedPath = urlUtils.expandPath(medlConsumer.getUrl(), String.valueOf(numToGenerate));
+        var response = medlConsumer.synthesizeData(expandedPath);
+        doResponseValidation(response);
         return ResponseEntity.ok(response);
     }
 
@@ -163,17 +145,19 @@ public class SyntController {
             @RequestParam int numToGenerate,
             @ApiParam(value = "Verdi som vil overskrive alle ArbeidetTimerSum i meldekort")
             @RequestParam(required = false) Double arbeidstimer
-    ) {
+    ) throws ApiException, InterruptedException {
         InputValidator.validateInput(numToGenerate);
         InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.MELDEGRUPPE, meldegruppe);
-        String url = Objects.isNull(arbeidstimer)
-                ? arenaMeldekortUrl
-                : arenaMeldekortUrl + "?arbeidstimer=" + arbeidstimer;
 
-        List<String> response = (List<String>)
-                meldekortConsumer.synthesizeData(UriExpander.createRequestEntity(url, meldegruppe, numToGenerate));
+        var expandedPath = urlUtils.expandPath(meldekortConsumer.getUrl(), String.valueOf(numToGenerate), meldegruppe);
+        List<String> response;
+        if (isNull(arbeidstimer)) {
+            response = meldekortConsumer.synthesizeData(expandedPath);
+        } else {
+            var queryString = createQueryString("arbeidstimer", arbeidstimer.toString(), "");
+            response = meldekortConsumer.synthesizeData(expandedPath, queryString);
+        }
         doResponseValidation(response);
-
         return ResponseEntity.ok(response);
     }
 
@@ -186,11 +170,12 @@ public class SyntController {
             @PathVariable String endringskode,
             @ApiParam(value = "Antall meldinger", required = true)
             @RequestParam int numToGenerate
-    ) {
+    ) throws ApiException, InterruptedException {
+
         InputValidator.validateInput(numToGenerate);
         InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.ENDRINGSKODE_NAV, endringskode);
-        List<String> response = (List<String>)
-                navConsumer.synthesizeData(UriExpander.createRequestEntity(navEndringsmeldingUrl, endringskode, numToGenerate));
+        var expandedPath = urlUtils.expandPath(navConsumer.getUrl(), String.valueOf(numToGenerate), endringskode);
+        var response = navConsumer.synthesizeData(expandedPath);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -205,10 +190,9 @@ public class SyntController {
     public ResponseEntity<List<Inntektsmelding>> generateInntektsmelding(
             @ApiParam(value = "Fnrs å opprette inntektsmeldinger på", required = true)
             @RequestBody List<String> fnrs
-    ) {
+    ) throws ApiException, InterruptedException {
         InputValidator.validateInput(fnrs);
-        List<Inntektsmelding> response = (List<Inntektsmelding>)
-                poppConsumer.synthesizeData(UriExpander.createRequestEntity(poppUrl, fnrs));
+        var response = poppConsumer.synthesizeData(fnrs);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -220,10 +204,10 @@ public class SyntController {
     public ResponseEntity<List<SamMelding>> generateSamMelding(
             @ApiParam(value = "Antall meldinger", required = true)
             @RequestParam int numToGenerate
-    ) {
+    ) throws ApiException, InterruptedException {
         InputValidator.validateInput(numToGenerate);
-        List<SamMelding> response = (List<SamMelding>)
-                samConsumer.synthesizeData(UriExpander.createRequestEntity(samUrl, numToGenerate));
+        var expandedPath = urlUtils.expandPath(samConsumer.getUrl(), String.valueOf(numToGenerate));
+        var response = samConsumer.synthesizeData(expandedPath);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -239,11 +223,9 @@ public class SyntController {
     public ResponseEntity<Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>> generateInntektsMelding(
             @ApiParam(value = "Map der key=fødselsnummer, value=liste med inntektsmeldinger", required = true)
             @RequestBody Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>> fnrInntektMap
-    ) {
+    ) throws InterruptedException, ApiException {
         InputValidator.validateInput(new ArrayList<>(fnrInntektMap.keySet()));
-        Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>> response =
-                (Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>)
-                        inntektConsumer.synthesizeData(UriExpander.createRequestEntity(inntektUrl, fnrInntektMap));
+        var response = inntektConsumer.synthesizeData(fnrInntektMap);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -256,10 +238,10 @@ public class SyntController {
     public ResponseEntity<List<TPmelding>> generateTPMelding(
             @ApiParam(value = "Antall meldinger", required = true)
             @RequestParam int numToGenerate
-    ) {
+    ) throws ApiException, InterruptedException {
         InputValidator.validateInput(numToGenerate);
-        List<TPmelding> response = (List<TPmelding>)
-                tpConsumer.synthesizeData(UriExpander.createRequestEntity(tpUrl, numToGenerate));
+        var expandedPath = urlUtils.expandPath(tpConsumer.getUrl(), String.valueOf(numToGenerate));
+        var response = tpConsumer.synthesizeData(expandedPath);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -273,11 +255,11 @@ public class SyntController {
             @PathVariable String endringskode,
             @ApiParam(value = "Antall meldinger", required = true)
             @RequestParam int numToGenerate
-    ) {
+    ) throws ApiException, InterruptedException {
         InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.ENDRINGSKODE, endringskode);
         InputValidator.validateInput(numToGenerate);
-        List<SkdMelding> response = (List<SkdMelding>)
-                tpsConsumer.synthesizeData(UriExpander.createRequestEntity(tpsUrl, endringskode, numToGenerate));
+        var expandedPath = urlUtils.expandPath(tpsConsumer.getUrl(), String.valueOf(numToGenerate), endringskode);
+        var response = tpsConsumer.synthesizeData(expandedPath);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -290,21 +272,26 @@ public class SyntController {
     public ResponseEntity<Map<String, List<FrikortKvittering>>> generateFrikort(
             @ApiParam(value = "Map der key=fødselsnummer og value er antall kvitteringer man ønsker å lage for denne identen.", required = true)
             @RequestBody Map<String, Integer> fnrAntMeldingMap
-    ) {
+    ) throws InterruptedException, ApiException {
         fnrAntMeldingMap.forEach((key, value) -> InputValidator.validateInput(value));
-        Map<String, List<FrikortKvittering>> response = (Map<String, List<FrikortKvittering>>)
-                frikortConsumer.synthesizeData(UriExpander.createRequestEntity(frikortUrl, fnrAntMeldingMap));
+        Map<String, List<FrikortKvittering>> response = frikortConsumer.synthesizeData(fnrAntMeldingMap);
         doResponseValidation(response);
-
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/amelding/arbeidsforhold")
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-amelding" })
-    public ResponseEntity<List<ArbeidsforholdAmelding>> generateArbeidforholdHistorikk(
-            @RequestBody ArbeidsforholdAmelding tidligereArbeidsforhold
-    ) {
-        var response = ameldingConsumer.synthesizeArbeidsforholdHistorikk(tidligereArbeidsforhold, "/arbeidsforhold");
+    public ResponseEntity<List<Arbeidsforhold>> generateArbeidforholdHistorikk(
+            @RequestBody Arbeidsforhold tidligereArbeidsforhold,
+            @ApiParam(value = "Verdi bestemmer om det skal være mulig at avvik blir generert i arbeidforhold.")
+            @RequestParam(required = false) String avvik,
+            @ApiParam(value = "Verdi bestemmer om det skal være mulig at sluttdato blir generert i arbeidforhold.")
+            @RequestParam(required = false) String sluttdato
+    ) throws InterruptedException, ApiException {
+        var queryString = createQueryString("avvik", avvik, "");
+        queryString = createQueryString("sluttdato", sluttdato, queryString);
+
+        var response = ameldingConsumer.synthesizeArbeidsforholdHistorikk(tidligereArbeidsforhold, queryString);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
@@ -312,17 +299,37 @@ public class SyntController {
 
     @PostMapping("/amelding/arbeidsforhold/start")
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-amelding" })
-    public ResponseEntity<List<ArbeidsforholdAmelding>> generateArbeidforholdStart(
-            @RequestBody List<String> startdatoer
-    ) {
-        var response = ameldingConsumer.synthesizeArbeidsforholdStart(startdatoer, "/arbeidsforhold/start");
+    public ResponseEntity<List<Arbeidsforhold>> generateArbeidforholdStart(
+            @RequestBody List<String> startdatoer,
+            @ApiParam(value = "Verdi bestemmer om det skal være mulig at avvik blir generert i arbeidforhold.")
+            @RequestParam(required = false) String avvik
+    ) throws InterruptedException, ApiException {
+        var queryString = createQueryString("avvik", avvik, "");
+        var response = ameldingConsumer.synthesizeArbeidsforholdStart(startdatoer, queryString);
+        doResponseValidation(response);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/amelding/arbeidsforhold/start/{arbeidsforholdType}")
+    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-amelding" })
+    public ResponseEntity<Arbeidsforhold> generateArbeidforholdMedType(
+            @ApiParam(value = "Arbeidsforhold type.", required = true)
+            @PathVariable String arbeidsforholdType,
+            @RequestBody ArbeidsforholdPeriode request,
+            @ApiParam(value = "Verdi bestemmer om det skal være mulig at avvik blir generert i arbeidforhold.")
+            @RequestParam(required = false) String avvik
+    ) throws InterruptedException, ApiException {
+        InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.ARBEIDSFORHOLD_TYPE, arbeidsforholdType);
+        var queryString = createQueryString("avvik", avvik, "");
+        var response = ameldingConsumer.synthesizeArbeidsforholdStart(request, arbeidsforholdType, queryString);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
     }
 
     private void doResponseValidation(Object response) {
-        if (Objects.isNull(response)) {
+        if (isNull(response)) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Syntetisering feilet.");
         }
     }

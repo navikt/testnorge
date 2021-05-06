@@ -24,16 +24,24 @@ public class GenererInntektsmeldingCommand implements Callable<String> {
 
     @Override
     public String call() {
+        var arbeidsgiver = dto.getArbeidsgiver() == null
+                ? dto.getArbeidsgiverPrivat().getArbeidsgiverFnr()
+                : dto.getArbeidsgiver().getVirksomhetsnummer();
+
         try {
-            return webClient
+            log.info("Gennerer inntektsmelding for arbeidsgiver {}...", arbeidsgiver);
+            var response = webClient
                     .post()
                     .uri("/api/v2/inntektsmelding/2018/12/11")
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .body(BodyInserters.fromPublisher(Mono.just(dto), RsInntektsmelding.class))
                     .retrieve()
                     .bodyToMono(String.class)
-                    .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(10)))
+                    .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(2)))
                     .block();
+            log.info("Inntektsmelding generert for arbeidsgiver {}.", arbeidsgiver);
+            return response;
+
         } catch (WebClientResponseException e) {
             log.error(
                     "Feil ved innsendelse av inntektsmelding. Feilmelding: {}.",

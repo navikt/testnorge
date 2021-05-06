@@ -2,8 +2,8 @@ package no.nav.organisasjonforvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.organisasjonforvalter.dto.responses.RsOrganisasjon;
 import no.nav.organisasjonforvalter.jpa.repository.OrganisasjonRepository;
-import no.nav.organisasjonforvalter.provider.rs.responses.RsOrganisasjon;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

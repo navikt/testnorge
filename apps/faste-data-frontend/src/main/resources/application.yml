@@ -1,0 +1,53 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+spring:
+  application:
+    name: testnav-faste-data-frontend
+    description: App for å se faste datasett
+  main:
+    banner-mode: off
+  security:
+    oauth2:
+      client:
+        registration:
+          aad:
+            client-id: ${azure.app.client.id}
+            client-secret: ${azure.app.client.secret}
+            authorization-grant-type: authorization_code
+            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+            scope: openid, ${azure.app.client.id}/.default
+        provider:
+          aad:
+            authorization-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/authorize
+            token-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/token
+            jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+zuul:
+  routes:
+    testnorge-profil-api:
+      path: /testnorge-profil-api/api/**
+      url: http://testnorge-profil-api.dolly.svc.cluster.local/api
+      sensitiveHeaders: Cookie,Set-Cookie
+    testnav-organisasjon-faste-data-service:
+      path: /testnav-organisasjon-faste-data-service/api/**
+      url: http://testnav-organisasjon-faste-data-service.dolly.svc.cluster.local/api
+      sensitiveHeaders: Cookie,Set-Cookie
+    testnav-organisasjon-service:
+      path: /testnav-organisasjon-service/api/**
+      url: http://testnav-organisasjon-service.dolly.svc.cluster.local/api
+      sensitiveHeaders: Cookie,Set-Cookie
+  host:
+    socket-timeout-millis: 40000
+
+consumers:
+  testnorge-profil-api:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnorge-profil-api
+  testnav-organisasjon-faste-data-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-organisasjon-faste-data-service
+  testnav-organisasjon-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-organisasjon-service

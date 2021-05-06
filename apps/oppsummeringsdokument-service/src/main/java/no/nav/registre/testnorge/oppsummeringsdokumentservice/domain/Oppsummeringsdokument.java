@@ -31,6 +31,7 @@ import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.Inntek
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.PermisjonDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.PersonDTO;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.VirksomhetDTO;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.ArbeidsforholdModel;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.AvvikModel;
@@ -41,11 +42,11 @@ import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.P
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.PersonModel;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.VirksomhetModel;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Alvorlighetsgrad;
-import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Avvik;
-import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Inntekt;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Arbeidsforhold;
+import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Avvik;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.EDAGM;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Fartoey;
+import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Inntekt;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Inntektsmottaker;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.JuridiskEntitet;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Kilde;
@@ -60,14 +61,17 @@ import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Virksomhet;
 @Slf4j
 public class Oppsummeringsdokument {
     private final OppsummeringsdokumentDTO dto;
+    private final Populasjon populasjon;
     private String id;
 
-    public Oppsummeringsdokument(OppsummeringsdokumentDTO dto) {
+    public Oppsummeringsdokument(OppsummeringsdokumentDTO dto, Populasjon populasjon) {
         this.dto = dto;
+        this.populasjon = populasjon;
     }
 
-    public Oppsummeringsdokument(OppsummeringsdokumentModel model){
+    public Oppsummeringsdokument(OppsummeringsdokumentModel model) {
         this.id = model.getId();
+        this.populasjon = model.getPopulasjon();
         this.dto = OppsummeringsdokumentDTO
                 .builder()
                 .kalendermaaned(model.getKalendermaaned())
@@ -77,11 +81,11 @@ public class Oppsummeringsdokument {
                 .build();
     }
 
-    public String getId(){
+    public String getId() {
         return id;
     }
 
-    public Long getVersion(){
+    public Long getVersion() {
         return dto.getVersion();
     }
 
@@ -115,6 +119,7 @@ public class Oppsummeringsdokument {
                 .stillingsprosent(value.getStillingsprosent())
                 .yrke(value.getYrke())
                 .permisjoner(value.getPermisjoner().stream().map(mapPermisjonDTO()).collect(Collectors.toList()))
+                .historikk(value.getHistorikk())
                 .fartoey(value.getFartoey() != null ? FartoeyDTO
                         .builder()
                         .skipstype(value.getFartoey().getSkipstype())
@@ -149,13 +154,14 @@ public class Oppsummeringsdokument {
     }
 
 
-    public OppsummeringsdokumentModel toModel(String miljo, String origin){
+    public OppsummeringsdokumentModel toModel(String miljo, String origin) {
         var model = new OppsummeringsdokumentModel();
         model.setKalendermaaned(dto.getKalendermaaned());
         model.setMiljo(miljo);
         model.setOpplysningspliktigOrganisajonsnummer(dto.getOpplysningspliktigOrganisajonsnummer());
         model.setVersion(dto.getVersion());
         model.setOrigin(origin);
+        model.setPopulasjon(populasjon);
         model.setVirksomheter(dto.getVirksomheter().stream().map(mapVirksomhetModel()).collect(Collectors.toList()));
         return model;
     }
@@ -190,7 +196,8 @@ public class Oppsummeringsdokument {
             model.setSisteLoennsendringsdato(value.getSisteLoennsendringsdato());
             model.setStillingsprosent(value.getStillingsprosent());
             model.setYrke(value.getYrke());
-            if(value.getFartoey() != null){
+            model.setHistorikk(value.getHistorikk());
+            if (value.getFartoey() != null) {
                 FartoeyModel fartoey = new FartoeyModel();
                 fartoey.setFartsomraade(value.getFartoey().getFartsomraade());
                 fartoey.setSkipsregister(value.getFartoey().getSkipsregister());
@@ -244,7 +251,7 @@ public class Oppsummeringsdokument {
     }
 
     @SneakyThrows
-    public String toXml(){
+    public String toXml() {
         JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
         ObjectFactory objectFactory = new ObjectFactory();
         JAXBElement<EDAGM> melding = objectFactory.createMelding(toEDAGM());
@@ -336,8 +343,8 @@ public class Oppsummeringsdokument {
         return virksomhet;
     }
 
-    private static List<Inntekt> createInntekter(ArbeidsforholdDTO dto){
-        if(dto.getInntekter() == null){
+    private static List<Inntekt> createInntekter(ArbeidsforholdDTO dto) {
+        if (dto.getInntekter() == null) {
             return Collections.emptyList();
         }
 
@@ -381,7 +388,6 @@ public class Oppsummeringsdokument {
         arbeidsforhold.setStillingsprosent(dto.getStillingsprosent() != null ? BigDecimal.valueOf(dto.getStillingsprosent()) : null);
         arbeidsforhold.setSisteLoennsendringsdato(toXMLGregorianCalendar(dto.getSisteLoennsendringsdato()));
         arbeidsforhold.getAvvik().addAll(dto.getAvvik().stream().map(mapDTOToAvvik()).collect(Collectors.toList()));
-
         if (dto.getPermisjoner() != null) {
             var permisjoner = dto.getPermisjoner().stream().map(permisjonDTO -> {
                 Permisjon permisjon = new Permisjon();
@@ -396,7 +402,7 @@ public class Oppsummeringsdokument {
             arbeidsforhold.getPermisjon().addAll(permisjoner);
         }
 
-        if(dto.getFartoey() != null) {
+        if (dto.getFartoey() != null) {
             Fartoey fartoey = new Fartoey();
             fartoey.setFartsomraade(dto.getFartoey().getFartsomraade());
             fartoey.setSkipsregister(dto.getFartoey().getSkipsregister());

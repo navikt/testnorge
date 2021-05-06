@@ -54,21 +54,20 @@ maven {
       }
 ```
 ## Dokumentasjon
-Enhver testnorge-applikasjon skal ha dokumentasjon i fila `<min-testnorge-app>/docs/Implementasjon.md`. Hver av disse filene må starte med
+Enhver applikasjon skal ha dokumentasjon i fila `<min-testnorge-app>/README.md`. Hver av disse filene må starte med
 ```
 ---
 layout: default
-title: min-testnorge-app
+title: min-app
 parent: Applikasjoner
 ---
 
-# min-testnorge-app
+# min-app
 [...]
 ```
 for å bli vist på riktig måte under https://navikt.github.io/testnorge.
-Implementasjonsfilen skal beskrive hvordan appen fungerer, sett i samspill med prosjektet som helhet.  
-
-Info om lokal kjøring osv. skal gis i appens `README.md` fil.
+README-filen skal beskrive kort hva appen er til, og hvordan den fungerer. Det er også fint om du beskriver kort
+info om lokal kjøring osv.
 
 ## Migrering inn i monorepo
 

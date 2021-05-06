@@ -1,3 +1,9 @@
+---
+layout: default
+title: Testnorge TSS
+parent: Applikasjoner
+---
+
 # testnorge-tss
 Testnorge-TSS er en applikasjon som oppretter samhandlere i TSS databasen. 
 
@@ -14,10 +20,19 @@ NAV samhandlere vil bli hentet ut fra q0. Disse blir ikke opprettet av applikasj
 INST samhandlere er ikke mulig å opprette via applikasjonen ettersom de krever en institusjons id som ikke enda er støttet.
 
 ## Swagger
-Swagger finnes under [/api](https://testnorge-tss.nais.preprod.local/api) -endepunktet til applikasjonen.
+Swagger finnes under [/api](https://testnorge-tss.dev.intern.nav.no/api) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
-Kjør ApplicationStarter med følgende argumenter:
- - -Djavax.net.ssl.trustStore=[path til lokal truststore]
- - -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
- - -Dspring.profiles.active=local
+Ha naisdevice kjørende og kjør ApplicationStarter med følgende argumenter:
+```
+-Dspring.cloud.vault.token=[kopier token fra vault]
+-Dspring.profiles.active=local
+```
+
+### Utviklerimage
+I utviklerimage brukes ikke naisdevice og du må legge til følgende ekstra argumenter:
+```
+-Djavax.net.ssl.trustStore=[path til lokal truststore]
+-Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
+```
+

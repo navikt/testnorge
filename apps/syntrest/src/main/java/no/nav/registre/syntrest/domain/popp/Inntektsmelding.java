@@ -34,6 +34,7 @@ public class Inntektsmelding {
     @Getter
     @Setter
     @AllArgsConstructor
+    @NoArgsConstructor
     private static class Grunnlag {
         @JsonProperty("tekniskNavn")
         private String tekniskNavn;

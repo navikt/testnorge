@@ -1,3 +1,9 @@
+---
+layout: default
+title: Personsøk Service
+parent: Applikasjoner
+---
+
 # person-search-service
 
 ## Lokal utvikling

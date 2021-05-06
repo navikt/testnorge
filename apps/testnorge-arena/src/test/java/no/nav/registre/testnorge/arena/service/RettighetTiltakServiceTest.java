@@ -12,8 +12,6 @@ import no.nav.registre.testnorge.arena.consumer.rs.RettighetArenaForvalterConsum
 import no.nav.registre.testnorge.arena.consumer.rs.TiltakSyntConsumer;
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTilleggRequest;
 import no.nav.registre.testnorge.arena.consumer.rs.util.ConsumerUtils;
-import no.nav.registre.testnorge.arena.service.util.IdenterUtils;
-import no.nav.registre.testnorge.arena.service.util.ArbeidssoekerUtils;
 import no.nav.registre.testnorge.arena.service.util.ServiceUtils;
 import no.nav.registre.testnorge.arena.service.util.KodeMedSannsynlighet;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
@@ -47,10 +45,10 @@ public class RettighetTiltakServiceTest {
     private ServiceUtils serviceUtils;
 
     @Mock
-    private IdenterUtils identerUtils;
+    private IdentService identService;
 
     @Mock
-    private ArbeidssoekerUtils arbeidssoekerUtils;
+    private ArbeidssoekerService arbeidssoekerService;
 
     @Mock
     private Random rand;

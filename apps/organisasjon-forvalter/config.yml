@@ -1,7 +1,7 @@
 ﻿apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: organisasjon-forvalter
+  name: testnav-organisasjon-forvalter
   namespace: dolly
   labels:
     team: dolly
@@ -9,21 +9,46 @@ spec:
   image: {{ image }}
   port: 8080
   webproxy: true
-  accessPolicy:
-    inbound:
-      rules:
-        - application: testnorge-oversikt-frontend
-        - application: dolly-backend
-        - application: dolly-backend-dev
-        - application: dolly-frontend
-        - application: dolly-frontend-dev
-        - application: testnorge-statisk-data-forvalter
-        - application: team-dolly-lokal-app
-          cluster: dev-fss
   azure:
     application:
       enabled: true
       tenant: nav.no
+  accessPolicy:
+    inbound:
+      rules:
+        - application: testnorge-oversikt-frontend
+          cluster: dev-fss
+        - application: dolly-backend
+          cluster: dev-fss
+        - application: dolly-backend-dev
+          cluster: dev-fss
+        - application: dolly-frontend
+          cluster: dev-fss
+        - application: dolly-frontend-dev
+          cluster: dev-fss
+        - application: testnorge-statisk-data-forvalter
+          cluster: dev-fss
+        - application: team-dolly-lokal-app
+          cluster: dev-fss
+    outbound:
+      rules:
+        - application: organisasjon-bestilling-service
+          cluster: dev-gcp
+        - application: generer-navn-service
+          cluster: dev-gcp
+        - application: testnav-adresse-service
+          cluster: dev-gcp
+        - application: testnav-organisasjon-service
+          cluster: dev-gcp
+        - application: testnav-miljoer-service
+          cluster: dev-gcp
+      external:
+        - host: https://organisasjon-orgnummer-service.dev-fss-pub.nais.io
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_12
+        databases:
+          - name: organisasjon-forvalter-db
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -37,20 +62,16 @@ spec:
   replicas:
     min: 1
     max: 1
-  vault:
-    enabled: true
-    paths:
-      - kvPath: /serviceuser/data/dev/srvtestnorge
-        mountPath: /var/run/secrets/nais.io/orgforvalter
   resources:
     requests:
       cpu: 200m
-      memory: 400Mi
-    limits:
-      cpu: 300m
       memory: 500Mi
+    limits:
+      cpu: 500m
+      memory: 2000Mi
   ingresses:
-    - "https://organisasjon-forvalter.dev.adeo.no"
-    - "https://organisasjon-forvalter.dev.intern.nav.no"
+    - "https://testnav-organisasjon-forvalter.dev.intern.nav.no"
   kafka:
     pool: nav-dev
+  envFrom:
+    - secret: google-sql-testnav-organisasjon-forvalter

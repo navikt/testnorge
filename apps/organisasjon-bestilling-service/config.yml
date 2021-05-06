@@ -19,8 +19,8 @@ spec:
           cluster: dev-fss
         - application: testnorge-oversikt-frontend
           cluster: dev-fss
-        - application: organisasjon-forvalter
-          cluster: dev-fss
+        - application: testnav-organisasjon-forvalter
+          cluster: dev-gcp
         - application: jenkins-batch-status-service
           cluster: dev-fss
         - application: testnav-jenkins-batch-status-service
@@ -29,6 +29,8 @@ spec:
           cluster: dev-fss
         - application: dolly-backend
           cluster: dev-fss
+        - application: testnav-organisasjon-faste-data-service
+          cluster: dev-gcp
     outbound:
       external:
         - host: ereg-batch-status-service.dev-fss-pub.nais.io

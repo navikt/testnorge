@@ -1,12 +1,12 @@
 package no.nav.registre.inntekt.factories;
 
-import static java.util.Objects.nonNull;
-
-import java.util.Map;
-
 import no.nav.registre.inntekt.consumer.rs.altinninntekt.dto.RsInntektsmeldingRequest;
 import no.nav.registre.inntekt.consumer.rs.altinninntekt.dto.enums.YtelseKodeListe;
 import no.nav.registre.inntekt.consumer.rs.dokmot.dto.RsJoarkMetadata;
+
+import java.util.Map;
+
+import static java.util.Objects.nonNull;
 
 public class RsJoarkMetadataFactory {
     private RsJoarkMetadataFactory() {
@@ -16,6 +16,8 @@ public class RsJoarkMetadataFactory {
             YtelseKodeListe.FORELDREPENGER, "FOR",
             YtelseKodeListe.SVANGERSKAPSPENGER, "FOR",
             YtelseKodeListe.PLEIEPENGER, "OMS",
+            YtelseKodeListe.PLEIEPENGER_BARN, "OMS",
+            YtelseKodeListe.PLEIEPENGER_NAERSTAAENDE, "OMS",
             YtelseKodeListe.OMSORGSPENGER, "OMS",
             YtelseKodeListe.OPPLAERINGSPENGER, "OMS",
             YtelseKodeListe.SYKEPENGER, "SYK");

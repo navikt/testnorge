@@ -3,11 +3,13 @@ package no.nav.registre.syntrest.domain.aareg;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class Arbeidsforholdsmelding {
 
     @JsonProperty
@@ -16,6 +18,7 @@ public class Arbeidsforholdsmelding {
     @Getter
     @Setter
     @AllArgsConstructor
+    @NoArgsConstructor
     private static class Arbeidsforhold {
         @JsonProperty
         AnsettelsesPeriode ansettelsesPeriode;
@@ -34,6 +37,7 @@ public class Arbeidsforholdsmelding {
     @Getter
     @Setter
     @AllArgsConstructor
+    @NoArgsConstructor
     private static class AnsettelsesPeriode {
         @JsonProperty
         String fom;
@@ -42,6 +46,7 @@ public class Arbeidsforholdsmelding {
     @Getter
     @Setter
     @AllArgsConstructor
+    @NoArgsConstructor
     private static class Arbeidsavtale {
         @JsonProperty
         String arbeidstidsordning;
@@ -58,6 +63,7 @@ public class Arbeidsforholdsmelding {
     @Getter
     @Setter
     @AllArgsConstructor
+    @NoArgsConstructor
     private static class Arbeidsgiver {
         @JsonProperty
         String aktoertype;
@@ -68,6 +74,7 @@ public class Arbeidsforholdsmelding {
     @Getter
     @Setter
     @AllArgsConstructor
+    @NoArgsConstructor
     private static class Arbeidstaker {
         @JsonProperty
         String aktoertype;

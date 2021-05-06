@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.consumer.AaregSyntConsumer;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.domain.Oppsummeringsdokument;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.OppsummeringsdokumentRepository;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.OppsummeringsdokumentModel;
 
@@ -36,8 +37,8 @@ public class OppsummeringsdokumentAdapter {
     private final ElasticsearchOperations operations;
     private final AaregSyntConsumer aaregSyntConsumer;
 
-    public void deleteAll() {
-        repository.deleteAll();
+    public void deleteAllBy(String miljo, Populasjon populasjon) {
+        repository.deleteAllByMiljoAndPopulasjon(miljo, populasjon);
     }
 
     public String save(Oppsummeringsdokument oppsummeringsdokument, String miljo, String origin) {

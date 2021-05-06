@@ -1,10 +1,5 @@
 package no.nav.registre.testnorge.arena.consumer.rs.command.tpsf;
 
-import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.CALL_ID;
-import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.CONSUMER_ID;
-import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.NAV_CALL_ID;
-import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.NAV_CONSUMER_ID;
-
 import java.util.concurrent.Callable;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -27,6 +22,7 @@ public class GetPersonstatusOgAdresseCommand implements Callable<PersonstatusOgA
     @Override
     public PersonstatusOgAdresse call() {
         try {
+            log.info("Henter personstatus og adresse for ident.");
             return webClient.get()
                     .uri(builder ->
                             builder.path("/tps/personstatus-og-adresse-person")
@@ -35,8 +31,6 @@ public class GetPersonstatusOgAdresseCommand implements Callable<PersonstatusOgA
                                     .queryParam("aksjonsKode", "A0")
                                     .build()
                     )
-                    .header(CALL_ID, NAV_CALL_ID)
-                    .header(CONSUMER_ID, NAV_CONSUMER_ID)
                     .retrieve()
                     .bodyToMono(PersonstatusOgAdresse.class)
                     .block();

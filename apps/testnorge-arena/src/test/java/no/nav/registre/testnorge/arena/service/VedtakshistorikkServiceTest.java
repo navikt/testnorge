@@ -1,7 +1,6 @@
 package no.nav.registre.testnorge.arena.service;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -13,8 +12,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static no.nav.registre.testnorge.arena.service.RettighetAapService.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
 
 import no.nav.registre.testnorge.arena.consumer.rs.VedtakshistorikkSyntConsumer;
-import no.nav.registre.testnorge.arena.service.util.IdenterUtils;
-import no.nav.registre.testnorge.arena.service.util.ArbeidssoekerUtils;
 import no.nav.registre.testnorge.arena.service.util.DatoUtils;
 import no.nav.registre.testnorge.arena.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.Saksopplysning;
@@ -34,7 +31,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 
@@ -45,10 +41,10 @@ public class VedtakshistorikkServiceTest {
     private VedtakshistorikkSyntConsumer vedtakshistorikkSyntConsumer;
 
     @Mock
-    private IdenterUtils identerUtils;
+    private IdentService identService;
 
     @Mock
-    private ArbeidssoekerUtils arbeidssoekerUtils;
+    private ArbeidssoekerService arbeidssoekerService;
 
     @Mock
     private DatoUtils datoUtils;
@@ -61,9 +57,6 @@ public class VedtakshistorikkServiceTest {
 
     @Mock
     private RettighetTiltakService rettighetTiltakService;
-
-    @Mock
-    private Random rand;
 
     @InjectMocks
     private VedtakshistorikkService vedtakshistorikkService;
@@ -111,14 +104,14 @@ public class VedtakshistorikkServiceTest {
 
         vedtakshistorikkListe = new ArrayList<>((Collections.singletonList(vedtakshistorikk)));
 
-        when(identerUtils.getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt(), eq(miljoe), anyBoolean())).thenReturn(identer);
+        when(identService.getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt(), eq(miljoe), eq(null))).thenReturn(identer);
     }
 
     @Test
     public void shouldGenerereVedtakshistorikk() {
         var kontonummer = "12131843564";
         var forvalterFnr = "02020202020";
-        when(identerUtils.getIdenterMedKontoinformasjon(avspillergruppeId, miljoe, antallIdenter))
+        when(identService.getIdenterMedKontoinformasjon(avspillergruppeId, miljoe, antallIdenter))
                 .thenReturn(new ArrayList<>(Collections.singletonList(KontoinfoResponse.builder()
                         .fnr(forvalterFnr)
                         .kontonummer(kontonummer)
@@ -156,7 +149,7 @@ public class VedtakshistorikkServiceTest {
 
         var response = vedtakshistorikkService.genererVedtakshistorikk(avspillergruppeId, miljoe, antallIdenter);
 
-        verify(identerUtils).getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt(), eq(miljoe), anyBoolean());
+        verify(identService).getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt(), eq(miljoe), eq(null));
         verify(vedtakshistorikkSyntConsumer).syntetiserVedtakshistorikk(antallIdenter);
         verify(rettighetAapService).opprettetPersonOgInntektIPopp(anyString(), anyString(), any(NyttVedtakAap.class));
         verify(rettighetArenaForvalterConsumer).opprettRettighet(anyList());

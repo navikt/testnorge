@@ -1,8 +1,7 @@
 package no.nav.registre.testnorge.arena.consumer.rs;
 
 import static no.nav.registre.testnorge.arena.testutils.ResourceUtils.getResourceFileContent;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetRequest;
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTilleggRequest;
@@ -50,7 +49,7 @@ public class RettighetTilleggBrukereArenaForvalterConsumerTest {
 
         var response = consumer.opprettRettighet(rettigheter);
 
-        assertThat(response.get(fnr).get(0).getNyeRettigheterTillegg().size(), equalTo(1));
+        assertThat(response.get(fnr).get(0).getNyeRettigheterTillegg()).hasSize(1);
     }
 
     private void stubArenaForvalterOpprettRettighetTilleggLaeremidler() {
