@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Profil from './Profil';
+import { Profil } from '@navikt/dolly-komponenter';
 import ProfilService from '@/service/ProfilService';
 
 export default () => {

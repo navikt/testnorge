@@ -1,13 +1,13 @@
-import React, {useState} from "react";
-import {Input, Label, SkjemaGruppe} from "nav-frontend-skjema";
-import {Datepicker} from "nav-datovelger";
+import React, { useState } from "react";
+import { Input, Label, SkjemaGruppe } from "nav-frontend-skjema";
+import { Datepicker } from "nav-datovelger";
 
 import "./CodeSearch.less";
-import Api from "@/api";
-import {FetchCode} from "@/components";
-import {Hovedknapp, Knapp} from "nav-frontend-knapper";
+import { Api } from "@navikt/dolly-lib";
+import { FetchCode } from "@/components";
+import { Hovedknapp, Knapp } from "nav-frontend-knapper";
 // @ts-ignore
-import {CopyToClipboard} from "react-copy-to-clipboard/lib/Component";
+import { CopyToClipboard } from "react-copy-to-clipboard/lib/Component";
 
 type FetchFromPosition = (position: number) => Promise<Response>;
 
@@ -34,7 +34,7 @@ export const CodeSearch = () => {
     if (tom && tom !== "") {
       param.push(["tom", tom]);
     }
-        if (ident && ident !== "") {
+    if (ident && ident !== "") {
       param.push(["ident", ident]);
     }
 
@@ -43,13 +43,16 @@ export const CodeSearch = () => {
     }
 
     return (page) => {
-      return Api.fetch({
-        url:
-          "/api/v1/oppsummeringsdokumenter/raw/items" +
+      return Api.fetch(
+        "/api/v1/oppsummeringsdokumenter/raw/items" +
           createQueryParam(param.concat([["page", page.toString()]])),
-        method: "GET",
-        headers: [["miljo", env]],
-      }).then((response) => {
+        {
+          method: "GET",
+          headers: {
+            miljo: env,
+          },
+        }
+      ).then((response) => {
         setId(response.headers.get("Element-Id"));
         return response;
       });
@@ -86,7 +89,7 @@ export const CodeSearch = () => {
               }
             }}
           />
-        <Input
+          <Input
             defaultValue=""
             label="Type Arbeidsforhold"
             onBlur={(e) => {

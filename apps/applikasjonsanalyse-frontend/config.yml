@@ -18,6 +18,7 @@ spec:
     outbound:
       rules:
         - application: applikasjonsanalyse-service
+        - application: testnorge-profil-api
   liveness:
     path: /internal/isAlive
     periodSeconds: 30

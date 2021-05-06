@@ -29,7 +29,7 @@ zuul:
       url: https://modapp-q3.adeo.no/ereg/api/
     modapp-q4:
       path: /api/q4/**
-      url: https://modapp-q3.adeo.no/ereg/api/
+      url: https://modapp-q4.adeo.no/ereg/api/
     modapp-q5:
       path: /api/q5/**
       url: https://modapp-q5.adeo.no/ereg/api/

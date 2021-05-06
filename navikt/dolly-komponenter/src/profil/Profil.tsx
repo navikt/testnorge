@@ -3,33 +3,38 @@ import styled from 'styled-components';
 // @ts-ignore
 import { dollyLogo } from '@navikt/dolly-assets';
 
-type Props = {
-  profilbilde?: Response;
+export type ProfilProps = {
+  url?: string;
   visningsnavn?: string;
 };
 
-const Profil = styled.div`
-  height: 30px;
+const StyledProfil = styled.div`
+  padding: 15px 10px;
   display: flex;
 `;
 
 const VisningsNavn = styled.p`
+  height: 30px;
+  min-width: 140px;
+  display: flex;
   margin: 0;
   align-self: center;
   color: white;
 `;
 
 const Logo = styled.img`
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  margin: 0 20px;
+  height: 40px;
   border-radius: 50%;
   border: 2px solid white;
-  margin-right: 7px;
 `;
 
-export default ({ profilbilde, visningsnavn }: Props) => (
-  <Profil>
-    <Logo alt="Profilbilde" src={profilbilde ? profilbilde.url : dollyLogo} />
+const Profile = ({ url, visningsnavn }: ProfilProps) => (
+  <StyledProfil>
+    <Logo alt="Profilbilde" src={url ? url : dollyLogo} />
     {visningsnavn && <VisningsNavn>{visningsnavn}</VisningsNavn>}
-  </Profil>
+  </StyledProfil>
 );
+
+export default Profile;

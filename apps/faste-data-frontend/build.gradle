@@ -36,5 +36,4 @@ dependencies {
     implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
 }
 
-
 description = 'faste-data-frontend'

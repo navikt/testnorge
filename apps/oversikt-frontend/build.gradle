@@ -13,7 +13,6 @@ dependencyManagement {
     }
 }
 
-
 dependencies {
     implementation project(':frontend')
     implementation project(':local-development')

@@ -21,6 +21,6 @@ spring:
 zuul:
   routes:
     avhengighetsanalyse-service:
-      path: /api/**
       url: https://testnav-applikasjonsanalyse-service.dev.intern.nav.no/api
-      sensitiveHeaders: Cookie,Set-Cookie
+    profil:
+      url: https://testnorge-profil-api.dev.intern.nav.no/api

@@ -14,8 +14,12 @@ spring:
 zuul:
   routes:
     avhengighetsanalyse-service:
-      path: /api/**
+      path: /applikasjonsanalyse-service/api/**
       url: http://applikasjonsanalyse-service.dolly.svc.cluster.local/api
+      sensitiveHeaders: Cookie,Set-Cookie
+    profil:
+      path: /testnorge-profil-api/api/**
+      url: http://testnorge-profil-api.dolly.svc.cluster.local/api
       sensitiveHeaders: Cookie,Set-Cookie
   host:
     socket-timeout-millis: 30000
@@ -25,3 +29,7 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: applikasjonsanalyse-service
+  testnorge-profil-api:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnorge-profil-api

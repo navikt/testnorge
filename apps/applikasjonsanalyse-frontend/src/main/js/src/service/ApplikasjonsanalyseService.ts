@@ -11,4 +11,6 @@ export type Applikasjonsanalyse = {
 };
 
 export const fetchDependencies = () =>
-  Api.fetchJson<Applikasjonsanalyse[]>('/api/v1/dependencies', { method: 'GET' });
+  Api.fetchJson<Applikasjonsanalyse[]>('/applikasjonsanalyse-service/api/v1/dependencies', {
+    method: 'GET',
+  });

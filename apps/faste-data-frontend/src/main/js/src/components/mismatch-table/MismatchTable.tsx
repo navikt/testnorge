@@ -1,7 +1,6 @@
 import React from 'react';
 import 'nav-frontend-tabell-style';
 import styled from 'styled-components';
-import { Input as NavInput } from 'nav-frontend-skjema';
 
 type Mismatch = {
   left: Field;

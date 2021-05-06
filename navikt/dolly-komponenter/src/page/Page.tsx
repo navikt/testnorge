@@ -12,4 +12,4 @@ type Props = {
   children?: React.ReactNode;
 };
 
-export default ({ children }: Props) => <Page>{children}</Page>;
+export default ({ children, ...props }: Props) => <Page {...props}>{children}</Page>;
