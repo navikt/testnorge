@@ -11,9 +11,9 @@ import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
 import no.nav.registre.testnorge.libs.frontend.filter.AddAuthorizationToRouteFilter;
 import no.nav.registre.testnorge.libs.frontend.filter.SessionTimeoutCookieFilter;
 import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2FrontendConfiguration;
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import no.nav.registre.testnorge.oversiktfrontend.config.credentials.ProfilApiServiceProperties;
+import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 
 @Configuration
 @Import({
@@ -23,7 +23,6 @@ import no.nav.registre.testnorge.oversiktfrontend.config.credentials.ProfilApiSe
 @RequiredArgsConstructor
 @EnableZuulProxy
 public class ApplicationConfig {
-
     private final AccessTokenService tokenService;
     private final ProfilApiServiceProperties profilApiServiceProperties;
 
@@ -35,12 +34,21 @@ public class ApplicationConfig {
         return registrationBean;
     }
 
-
     @Bean
     public AddAuthorizationToRouteFilter addProfilApiAuthorizationToRouteFilter() {
         return new AddAuthorizationToRouteFilter(
                 () -> tokenService.generateToken(profilApiServiceProperties).getTokenValue(),
                 "profil"
+        );
+    }
+
+    @Bean
+    public AddAuthorizationToRouteFilter addAuthorizationToRouteFilter() {
+        return new AddAuthorizationToRouteFilter(
+                () -> tokenService.generateToken(
+                        new AccessScopes("api://06c9b9c1-d370-40ea-8181-2c4a6858392f/.default")
+                ).getTokenValue(),
+                "testnorge-arbeidsforhold-export-api"
         );
     }
 }
