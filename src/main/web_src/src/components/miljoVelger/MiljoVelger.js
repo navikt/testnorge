@@ -54,7 +54,12 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 						)
 					}
 
-					if (bestillingsdata && bestillingsdata.sykemelding && !isChecked('q1') && !isChecked('q2')) {
+					if (
+						bestillingsdata &&
+						bestillingsdata.sykemelding &&
+						!isChecked('q1') &&
+						!isChecked('q2')
+					) {
 						push('q1')
 						push('q2')
 					}
