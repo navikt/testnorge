@@ -1,4 +1,4 @@
-package no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain;
+package no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.v2_0;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

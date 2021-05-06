@@ -1,4 +1,4 @@
-package no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain;
+package no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.v2_0;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
