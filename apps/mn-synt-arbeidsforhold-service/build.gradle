@@ -18,6 +18,9 @@ test {
 }
 
 dependencies {
+
+    implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.4.5'
+
     implementation project(':local-development')
     implementation project(':testnorge-core')
     implementation project(':testnorge-oauth2')
