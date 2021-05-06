@@ -18,7 +18,7 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 	const environments = useSelector(state => state.environments.data)
 
 	if (!environments) return null
-	const erOrganisasjon = bestillingsdata.hasOwnProperty('organisasjon')
+	const erOrganisasjon = bestillingsdata?.hasOwnProperty('organisasjon')
 	const filteredEnvironments = filterEnvironments(environments, erOrganisasjon)
 
 	const order = ['T', 'Q']
