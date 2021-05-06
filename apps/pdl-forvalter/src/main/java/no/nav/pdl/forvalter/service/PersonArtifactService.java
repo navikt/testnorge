@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 public class PersonArtifactService {
 
     private final KontaktAdresseService kontaktAdresseService;
+    private final OppholdsadresseService oppholdsadresseService;
+    private final BostedAdresseService bostedAdresseService;
     private final MapperFacade mapperFacade;
     private final AddressServiceConsumer adresseServiceConsumer;
 
@@ -19,6 +21,8 @@ public class PersonArtifactService {
 
         return PdlPerson.builder()
                 .kontaktadresse(kontaktAdresseService.resolve(request.getPerson().getKontaktadresse()))
+                .oppholdsadresse(oppholdsadresseService.resolve(request.getPerson().getOppholdsadresse()))
+                .bostedsadresse(bostedAdresseService.resolve(request.getPerson().getBostedsadresse()))
                 .build();
     }
 }

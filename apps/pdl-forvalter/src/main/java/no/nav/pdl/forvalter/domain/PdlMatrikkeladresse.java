@@ -17,7 +17,6 @@ public class PdlMatrikkeladresse implements Serializable {
 
     private String adressetilleggsnavn;
     private String bruksenhetsnummer;
-    private PdlAdresse.Bruksenhetstype bruksenhetstype;
     private Integer bruksnummer;
     private Integer festenummer;
     private Integer gaardsnummer;

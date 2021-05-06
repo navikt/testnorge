@@ -121,7 +121,7 @@ public class JSONUserType implements UserType {
     public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner)
             throws HibernateException, SQLException {
 
-        final String cellContent = rs.getString(names[0]);
+        var cellContent = rs.getString(names[0]);
         if (cellContent == null) {
             return null;
         }
@@ -140,10 +140,10 @@ public class JSONUserType implements UserType {
             return;
         }
         try {
-            final StringWriter w = new StringWriter();
-            objectMapper.writeValue(w, value);
-            w.flush();
-            ps.setObject(idx, w.toString(), Types.OTHER);
+            var writer = new StringWriter();
+            objectMapper.writeValue(writer, value);
+            writer.flush();
+            ps.setObject(idx, writer.toString(), Types.OTHER);
         } catch (final Exception ex) {
             throw new RuntimeException("Failed to convert Invoice to String: " + ex.getMessage(), ex);
         }
@@ -155,14 +155,14 @@ public class JSONUserType implements UserType {
 
         try {
             // use serialization to create a deep copy
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ObjectOutputStream oos = new ObjectOutputStream(bos);
+            var bos = new ByteArrayOutputStream();
+            var oos = new ObjectOutputStream(bos);
             oos.writeObject(value);
             oos.flush();
             oos.close();
             bos.close();
 
-            ByteArrayInputStream bais = new ByteArrayInputStream(bos.toByteArray());
+            var bais = new ByteArrayInputStream(bos.toByteArray());
             return new ObjectInputStream(bais).readObject();
         } catch (ClassNotFoundException | IOException ex) {
             throw new HibernateException(ex);

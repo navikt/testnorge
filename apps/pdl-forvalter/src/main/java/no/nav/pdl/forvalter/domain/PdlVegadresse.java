@@ -21,7 +21,6 @@ public class PdlVegadresse implements Serializable {
     private String adressenavn;
     private String adressetilleggsnavn;
     private String bruksenhetsnummer;
-    private PdlAdresse.Bruksenhetstype bruksenhetstype;
     private String husbokstav;
     private String husnummer;
     private String kommunenummer;

@@ -5,7 +5,29 @@ import lombok.experimental.UtilityClass;
 import java.util.HashMap;
 import java.util.Map;
 
-import static java.util.Collections.unmodifiableMap;
+import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_ADRESSEBESKYTTELSE;
+import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_BOSTEDADRESSE;
+import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_DELTBOSTED;
+import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_DOEDSFALL;
+import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_FALSK_IDENTITET;
+import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_FAMILIERELASJON;
+import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_FOEDSEL;
+import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_FOLKEREGISTER_PERSONSTATUS;
+import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_FORELDREANSVAR;
+import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_FULLMAKT;
+import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_INNFLYTTING;
+import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_KJOENN;
+import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_KONTAKTADRESSE;
+import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_KONTAKTINFORMASJON_FOR_DODESDBO;
+import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_NAVN;
+import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_OPPHOLD;
+import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_OPPHOLDSADRESSE;
+import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_SIVILSTAND;
+import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_STATSBORGERSKAP;
+import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_TELEFONUMMER;
+import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_UTENLANDS_IDENTIFIKASJON_NUMMER;
+import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_UTFLYTTING;
+import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_VERGEMAAL;
 
 @UtilityClass
 public class PdlTestDataUrls {
@@ -43,31 +65,30 @@ public class PdlTestDataUrls {
     public static Map<PdlArtifact, String> bestillingUrl;
 
     static {
-        bestillingUrl = unmodifiableMap(new HashMap<>() {{
-            put(PdlArtifact.PDL_KONTAKTINFORMASJON_FOR_DODESDBO, PDL_BESTILLING_KONTAKTINFORMASJON_FOR_DODESDBO_URL);
-            put(PdlArtifact.PDL_UTENLANDS_IDENTIFIKASJON_NUMMER, PDL_BESTILLING_UTENLANDS_IDENTIFIKASJON_NUMMER_URL);
-            put(PdlArtifact.PDL_FALSK_IDENTITET, PDL_BESTILLING_FALSK_IDENTITET_URL);
-            put(PdlArtifact.PDL_FOEDSEL, PDL_BESTILLING_FOEDSEL_URL);
-            put(PdlArtifact.PDL_FAMILIERELASJON, PDL_BESTILLING_FAMILIERELASJON_URL);
-            put(PdlArtifact.PDL_DOEDSFALL, PDL_BESTILLING_DOEDSFALL_URL);
-            put(PdlArtifact.PDL_ADRESSEBESKYTTELSE, PDL_BESTILLING_ADRESSEBESKYTTELSE_URL);
-            put(PdlArtifact.PDL_NAVN, PDL_BESTILLING_NAVN_URL);
-            put(PdlArtifact.PDL_KJOENN, PDL_BESTILLING_KJOENN_URL);
-            put(PdlArtifact.PDL_KONTAKTADRESSE, PDL_BESTILLING_KONTAKTADRESSE_URL);
-            put(PdlArtifact.PDL_STATSBORGERSKAP, PDL_BESTILLING_STATSBORGERSKAP_URL);
-            put(PdlArtifact.PDL_TELEFONUMMER, PDL_BESTILLING_TELEFONUMMER_URL);
-            put(PdlArtifact.PDL_SIVILSTAND, PDL_BESTILLING_SIVILSTAND_URL);
-            put(PdlArtifact.PDL_OPPHOLDSADRESSE, PDL_BESTILLING_OPPHOLDSADRESSE_URL);
-            put(PdlArtifact.PDL_BOSTEDADRESSE, PDL_BESTILLING_BOSTEDADRESSE_URL);
-            put(PdlArtifact.PDL_DELTBOSTED, PDL_BESTILLING_DELTBOSTED_URL);
-            put(PdlArtifact.PDL_INNFLYTTING, PDL_BESTILLING_INNFLYTTING_URL);
-            put(PdlArtifact.PDL_UTFLYTTING, PDL_BESTILLING_UTFLYTTING_URL);
-            put(PdlArtifact.PDL_FORELDREANSVAR, PDL_BESTILLING_FORELDREANSVAR_URL);
-            put(PdlArtifact.PDL_OPPHOLD, PDL_BESTILLING_OPPHOLD_URL);
-            put(PdlArtifact.PDL_VERGEMAAL, PDL_BESTILLING_VERGEMAAL_URL);
-            put(PdlArtifact.PDL_FULLMAKT, PDL_BESTILLING_FULLMAKT_URL);
-            put(PdlArtifact.PDL_FOLKEREGISTER_PERSONSTATUS, PDL_BESTILLING_FOLKEREGISTER_PERSONSTATUS_URL);
-        }});
+        bestillingUrl = new HashMap<>();
+        bestillingUrl.put(PDL_KONTAKTINFORMASJON_FOR_DODESDBO, PDL_BESTILLING_KONTAKTINFORMASJON_FOR_DODESDBO_URL);
+        bestillingUrl.put(PDL_UTENLANDS_IDENTIFIKASJON_NUMMER, PDL_BESTILLING_UTENLANDS_IDENTIFIKASJON_NUMMER_URL);
+        bestillingUrl.put(PDL_FALSK_IDENTITET, PDL_BESTILLING_FALSK_IDENTITET_URL);
+        bestillingUrl.put(PDL_FOEDSEL, PDL_BESTILLING_FOEDSEL_URL);
+        bestillingUrl.put(PDL_FAMILIERELASJON, PDL_BESTILLING_FAMILIERELASJON_URL);
+        bestillingUrl.put(PDL_DOEDSFALL, PDL_BESTILLING_DOEDSFALL_URL);
+        bestillingUrl.put(PDL_ADRESSEBESKYTTELSE, PDL_BESTILLING_ADRESSEBESKYTTELSE_URL);
+        bestillingUrl.put(PDL_NAVN, PDL_BESTILLING_NAVN_URL);
+        bestillingUrl.put(PDL_KJOENN, PDL_BESTILLING_KJOENN_URL);
+        bestillingUrl.put(PDL_KONTAKTADRESSE, PDL_BESTILLING_KONTAKTADRESSE_URL);
+        bestillingUrl.put(PDL_STATSBORGERSKAP, PDL_BESTILLING_STATSBORGERSKAP_URL);
+        bestillingUrl.put(PDL_TELEFONUMMER, PDL_BESTILLING_TELEFONUMMER_URL);
+        bestillingUrl.put(PDL_SIVILSTAND, PDL_BESTILLING_SIVILSTAND_URL);
+        bestillingUrl.put(PDL_OPPHOLDSADRESSE, PDL_BESTILLING_OPPHOLDSADRESSE_URL);
+        bestillingUrl.put(PDL_BOSTEDADRESSE, PDL_BESTILLING_BOSTEDADRESSE_URL);
+        bestillingUrl.put(PDL_DELTBOSTED, PDL_BESTILLING_DELTBOSTED_URL);
+        bestillingUrl.put(PDL_INNFLYTTING, PDL_BESTILLING_INNFLYTTING_URL);
+        bestillingUrl.put(PDL_UTFLYTTING, PDL_BESTILLING_UTFLYTTING_URL);
+        bestillingUrl.put(PDL_FORELDREANSVAR, PDL_BESTILLING_FORELDREANSVAR_URL);
+        bestillingUrl.put(PDL_OPPHOLD, PDL_BESTILLING_OPPHOLD_URL);
+        bestillingUrl.put(PDL_VERGEMAAL, PDL_BESTILLING_VERGEMAAL_URL);
+        bestillingUrl.put(PDL_FULLMAKT, PDL_BESTILLING_FULLMAKT_URL);
+        bestillingUrl.put(PDL_FOLKEREGISTER_PERSONSTATUS, PDL_BESTILLING_FOLKEREGISTER_PERSONSTATUS_URL);
     }
 
     public enum PdlArtifact {

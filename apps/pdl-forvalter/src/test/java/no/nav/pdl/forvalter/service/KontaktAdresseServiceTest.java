@@ -120,20 +120,6 @@ class KontaktAdresseServiceTest {
     }
 
     @Test
-    void whenBruksenhetsnummerOKWithoutGyldigFomAndTom_thenThrowExecption() {
-
-        Exception exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.resolve(List.of(RsKontaktadresse.builder()
-                        .vegadresse(PdlVegadresse.builder()
-                                .bruksenhetsnummer("H1234")
-                                .build())
-                        .build())));
-
-        assertThat(exception.getMessage(), containsString(
-                "Feltene gyldigFraOgMed og gyldigTilOgMed må ha verdi for vegadresse uten matrikkelId"));
-    }
-
-    @Test
     void whenVegadresseWithOKParam_thenLookupAdresse() {
 
         var vegadresse = Vegadresse.builder()

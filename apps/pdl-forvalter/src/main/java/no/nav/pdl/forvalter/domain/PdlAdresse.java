@@ -29,8 +29,6 @@ public abstract class PdlAdresse extends PdlDbVersjon {
 
     private String naerAdresseIdentifikatorFraMatrikkelen;
 
-    public enum Bruksenhetstype {BOLIG, ANNET_ENN_BOLIG, FRITIDSBOLIG, IKKE_GODKJENT_BOLIG, UNUMMERERT_BRUKSENHET}
-
     public enum Master {FREG, PDL}
 
     public enum OppholdAnnetSted {MILITAER, UTENRIKS, PAA_SVALBARD, PENDLER}

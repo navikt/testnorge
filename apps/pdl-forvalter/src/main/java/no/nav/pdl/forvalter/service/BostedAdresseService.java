@@ -3,7 +3,7 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.artifact.VegadresseService;
-import no.nav.pdl.forvalter.dto.RsKontaktadresse;
+import no.nav.pdl.forvalter.domain.PdlBostedadresse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -11,7 +11,7 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.pdl.forvalter.domain.PdlAdresse.Master.PDL;
+import static no.nav.pdl.forvalter.domain.PdlAdresse.Master.FREG;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.count;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
@@ -19,22 +19,23 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
 @RequiredArgsConstructor
-public class KontaktAdresseService extends AdresseService<RsKontaktadresse> {
+public class BostedAdresseService extends AdresseService<PdlBostedadresse> {
 
     private static final String VALIDATION_AMBIGUITY_ERROR = "Kun én adresse skal være satt (vegadresse, " +
-            "postboksadresse, utenlandskAdresse)";
+            "matrikkeladresse, ukjentbosted, utenlandskAdresse)";
+    private static final String VALIDATION_MASTER_PDL_ERROR = "Utenlandsk Adresse krever at master er PDL";
 
     private final MapperFacade mapperFacade;
     private final VegadresseService vegadresseService;
 
-    protected void validateAdresse(RsKontaktadresse adresse) {
-        if (count(adresse.getPostboksadresse()) +
+    protected void validateAdresse(PdlBostedadresse adresse) {
+        if (count(adresse.getMatrikkeladresse()) +
                 count(adresse.getUtenlandskAdresse()) +
-                count(adresse.getVegadresse()) > 1) {
+                count(adresse.getVegadresse()) +
+                count(adresse.getUkjentBosted()) > 1) {
             throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_AMBIGUITY_ERROR);
         }
-        if (PDL.equals(adresse.getMaster()) &&
-                (isNull(adresse.getGyldigFraOgMed()) || isNull(adresse.getGyldigTilOgMed()))) {
+        if (FREG.equals(adresse.getMaster()) && (nonNull(adresse.getUtenlandskAdresse()))) {
             throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_MASTER_PDL_ERROR);
         }
         if (nonNull(adresse.getVegadresse()) && isNotBlank(adresse.getVegadresse().getBruksenhetsnummer())) {
@@ -44,23 +45,10 @@ public class KontaktAdresseService extends AdresseService<RsKontaktadresse> {
                 nonNull(adresse.getVegadresse()) && nonNull(adresse.getVegadresse().getAdressenavn())) {
             validateMasterPdl(adresse);
         }
-        if (nonNull(adresse.getPostboksadresse())) {
-            validatePostBoksAdresse(adresse.getPostboksadresse());
-        }
-    }
-
-    private static void validatePostBoksAdresse(RsKontaktadresse.Postboksadresse postboksadresse) {
-        if (isBlank(postboksadresse.getPostboks())) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_POSTBOKS_ERROR);
-        }
-        if (isBlank(postboksadresse.getPostnummer()) ||
-                isNotBlank(postboksadresse.getPostnummer().replaceAll("[0-9]{4}", ""))) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_POSTNUMMER_ERROR);
-        }
     }
 
     @Override
-    public List<RsKontaktadresse> resolve(List<RsKontaktadresse> request) {
+    public List<PdlBostedadresse> resolve(List<PdlBostedadresse> request) {
 
         for (var kontaktadresse : request) {
 
