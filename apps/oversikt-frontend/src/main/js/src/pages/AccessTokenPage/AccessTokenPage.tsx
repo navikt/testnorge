@@ -18,7 +18,7 @@ const AccessTokenPage = ({ navigations }: Props) => {
         labels={{
           header: "Access Token",
           subHeader: `Generer token for ${name}`,
-          description: `Token som kan bruke til å logge på ${name}.`,
+          description: `Token som kan brukes til å logge på ${name}.`,
         }}
       />
     </PageWithMenu>
