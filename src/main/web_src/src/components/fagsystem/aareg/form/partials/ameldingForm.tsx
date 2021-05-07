@@ -9,9 +9,8 @@ import { ArbeidKodeverk } from '~/config/kodeverk'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import {
-	initialValues,
 	initialAmelding,
-	initialArbeidsforhold,
+	initialArbeidsforholdOrg,
 	initialForenkletOppgjoersordning,
 	initialFartoy
 } from '../initialValues'
@@ -57,7 +56,7 @@ export const AmeldingForm = ({ formikBag }) => {
 		periode.forEach((mnd, idx) => {
 			formikBag.setFieldValue(`aareg[0].amelding[${idx}]`, {
 				maaned: mnd,
-				arbeidsforhold: [initialArbeidsforhold]
+				arbeidsforhold: [initialArbeidsforholdOrg]
 			})
 			if (type === 'maritimtArbeidsforhold') {
 				formikBag.setFieldValue(`aareg[0].amelding[${idx}].arbeidsforhold[0].fartoy`, initialFartoy)
@@ -68,13 +67,13 @@ export const AmeldingForm = ({ formikBag }) => {
 	const handleArbeidsforholdstypeChange = event => {
 		formikBag.setFieldValue('aareg[0].arbeidsforholdstype', event.value)
 		if (event.value === 'ordinaertArbeidsforhold' || event.value === 'maritimtArbeidsforhold') {
+			formikBag.setFieldValue('aareg[0].arbeidsforhold', undefined)
 			formikBag.setFieldValue('aareg[0].amelding', initialAmelding)
 		} else if (event.value === 'forenkletOppgjoersordning') {
+			formikBag.setFieldValue('aareg[0].amelding', undefined)
 			formikBag.setFieldValue('aareg[0].arbeidsforhold', [initialForenkletOppgjoersordning])
 		}
 	}
-
-	console.log('erLenket 1:>> ', erLenket)
 
 	return (
 		<>
@@ -134,7 +133,7 @@ export const AmeldingForm = ({ formikBag }) => {
 								<FormikDollyFieldArray
 									name={`aareg[0].amelding[${selectedIndex}].arbeidsforhold`}
 									header="Arbeidsforhold"
-									newEntry={initialArbeidsforhold}
+									newEntry={initialArbeidsforholdOrg}
 									canBeEmpty={false}
 								>
 									{(path, idx) => (
@@ -142,6 +141,7 @@ export const AmeldingForm = ({ formikBag }) => {
 											path={path}
 											key={idx}
 											formikBag={formikBag}
+											arbeidsgiverType={'EGEN'}
 											erLenket={erLenket}
 										/>
 									)}

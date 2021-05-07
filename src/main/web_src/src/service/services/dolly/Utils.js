@@ -76,7 +76,11 @@ export const SortKodeverkArray = data => {
 	if (data.name === 'Arbeidsforholdstyper') {
 		// Kodeverket for arbeidsforholdstyper har en type som AAREG per i dag ikke støtter
 		const arbeidsforhold = kodeverk
-			.filter(kode => kode.value !== 'pensjonOgAndreTyperYtelserUtenAnsettelsesforhold')
+			.filter(
+				kode =>
+					kode.value !== 'pensjonOgAndreTyperYtelserUtenAnsettelsesforhold' &&
+					kode.value !== 'frilanserOppdragstakerHonorarPersonerMm'
+			)
 			.map(kode => {
 				if (kode.value === 'frilanserOppdragstakerHonorarPersonerMm') {
 					return {

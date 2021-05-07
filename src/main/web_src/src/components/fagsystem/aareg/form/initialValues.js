@@ -28,10 +28,34 @@ export const initialForenkletOppgjoersordning = {
 	}
 }
 
-export const initialArbeidsforhold = {
+export const initialArbeidsforholdOrg = {
+	arbeidsforholdstype: '',
 	arbeidsgiver: {
 		aktoertype: 'ORG',
-		orgnummer: '',
+		orgnummer: ''
+	},
+	arbeidsforholdId: '',
+	ansettelsesPeriode: {
+		fom: subYears(new Date(), 20),
+		tom: null,
+		sluttaarsak: null
+	},
+	arbeidsavtale: {
+		yrke: '',
+		ansettelsesform: 'fast',
+		stillingsprosent: 100,
+		endringsdatoStillingsprosent: null,
+		endringsdatoLoenn: null,
+		arbeidstidsordning: 'ikkeSkift',
+		avtaltArbeidstimerPerUke: 37.5
+	},
+	fartoy: []
+}
+
+export const initialArbeidsforholdPers = {
+	arbeidsforholdstype: '',
+	arbeidsgiver: {
+		aktoertype: 'PERS',
 		ident: ''
 	},
 	arbeidsforholdId: '',

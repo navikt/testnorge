@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 // import ReactSelect from 'react-select'
 import { Select as ReactSelect } from 'react-select-virtualized'
+import { useField } from 'formik'
 import { FormikField } from '~/components/ui/form/FormikField'
 import cn from 'classnames'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
@@ -8,7 +9,6 @@ import { Label } from '~/components/ui/form/inputs/label/Label'
 import { InputWrapper } from '~/components/ui/form/inputWrapper/InputWrapper'
 import { fieldError, SyntEvent } from '~/components/ui/form/formUtils'
 import KodeverkConnector from '~/components/kodeverk/KodeverkConnector'
-
 import './Select.less'
 
 export const Select = ({
@@ -84,45 +84,41 @@ export const DollySelect = props => (
 	</InputWrapper>
 )
 
-const P_FormikSelect = ({ fastfield, feil, ...props }) => (
-	<FormikField name={props.name} fastfield={fastfield}>
-		{({ field, form, meta }) => {
-			const handleChange = (selected, meta) => {
-				let value
-				if (props.isMulti) {
-					if (meta.action === 'set-value') {
-						value = Array.isArray(field.value)
-							? field.value.concat(selected.value)
-							: [selected.value]
-					}
-					if (meta.action === 'remove-value') {
-						// When removing last value, value is null
-						value = selected ? selected.map(v => v.value) : []
-					}
-				} else {
-					value = selected && selected.value
-				}
+const P_FormikSelect = ({ fastfield, feil, ...props }) => {
+	const [field, meta] = useField(props)
 
-				field.onChange(SyntEvent(field.name, value))
-
-				if (props.afterChange) props.afterChange(selected)
+	const handleChange = (selected, meta) => {
+		let value
+		if (props.isMulti) {
+			if (meta.action === 'set-value') {
+				value = Array.isArray(field.value) ? field.value.concat(selected.value) : [selected.value]
 			}
+			if (meta.action === 'remove-value') {
+				// When removing last value, value is null
+				value = selected ? selected.map(v => v.value) : []
+			}
+		} else {
+			value = selected && selected.value
+		}
 
-			const handleBlur = () => field.onBlur(SyntEvent(field.name))
+		field.onChange(SyntEvent(field.name, value))
 
-			return (
-				<DollySelect
-					name={field.name}
-					value={field.value}
-					onChange={handleChange}
-					onBlur={handleBlur}
-					feil={feil || fieldError(meta)}
-					{...props}
-				/>
-			)
-		}}
-	</FormikField>
-)
+		if (props.afterChange) props.afterChange(selected)
+	}
+
+	const handleBlur = () => field.onBlur(SyntEvent(field.name))
+
+	return (
+		<DollySelect
+			name={field.name}
+			value={field.value}
+			onChange={handleChange}
+			onBlur={handleBlur}
+			feil={feil || fieldError(meta)}
+			{...props}
+		/>
+	)
+}
 
 export const FormikSelect = ({ visHvisAvhuket = false, ...props }) => {
 	const component = <P_FormikSelect {...props} />
