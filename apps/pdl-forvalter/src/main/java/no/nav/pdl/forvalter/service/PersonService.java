@@ -7,6 +7,7 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.domain.PdlPerson;
 import no.nav.pdl.forvalter.dto.PersonUpdateRequest;
+import no.nav.pdl.forvalter.service.command.MergeCommand;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
@@ -35,7 +36,7 @@ public class PersonService {
                         .build());
 
         var compiledRequest = personArtifactService.buildPerson(request);
-        dbPerson.setPerson(new MergeService(compiledRequest, dbPerson.getPerson(), mapperFacade).call());
+        dbPerson.setPerson(new MergeCommand(compiledRequest, dbPerson.getPerson(), mapperFacade).call());
         dbPerson.setUpdated(LocalDateTime.now());
 
         return personRepository.save(dbPerson);

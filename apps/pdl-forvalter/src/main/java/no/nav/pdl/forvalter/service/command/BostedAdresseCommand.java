@@ -1,32 +1,37 @@
-package no.nav.pdl.forvalter.service;
+package no.nav.pdl.forvalter.service.command;
 
-import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.artifact.VegadresseService;
 import no.nav.pdl.forvalter.domain.PdlBostedadresse;
-import org.springframework.stereotype.Service;
+import no.nav.pdl.forvalter.service.PdlArtifactService;
 import org.springframework.web.client.HttpClientErrorException;
+
+import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.domain.PdlAdresse.Master.FREG;
 import static no.nav.pdl.forvalter.domain.PdlAdresse.Master.PDL;
-import static no.nav.pdl.forvalter.service.AdresseServiceUtil.validateBruksenhet;
-import static no.nav.pdl.forvalter.service.AdresseServiceUtil.validateMasterPdl;
+import static no.nav.pdl.forvalter.utils.AdresseServiceUtil.validateBruksenhet;
+import static no.nav.pdl.forvalter.utils.AdresseServiceUtil.validateMasterPdl;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.count;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
-@Service
-@RequiredArgsConstructor
-public class BostedAdresseService extends PdlArtifactService<PdlBostedadresse> {
+public class BostedAdresseCommand extends PdlArtifactService<PdlBostedadresse> {
 
     private static final String VALIDATION_AMBIGUITY_ERROR = "Kun én adresse skal være satt (vegadresse, " +
             "matrikkeladresse, ukjentbosted, utenlandskAdresse)";
     private static final String VALIDATION_MASTER_PDL_ERROR = "Utenlandsk Adresse krever at master er PDL";
 
-    private final MapperFacade mapperFacade;
     private final VegadresseService vegadresseService;
+    private final MapperFacade mapperFacade;
+
+    public BostedAdresseCommand(List<PdlBostedadresse> request, VegadresseService vegadresseService, MapperFacade mapperFacade) {
+        super(request);
+        this.vegadresseService = vegadresseService;
+        this.mapperFacade = mapperFacade;
+    }
 
     protected void validate(PdlBostedadresse adresse) {
         if (count(adresse.getMatrikkeladresse()) +

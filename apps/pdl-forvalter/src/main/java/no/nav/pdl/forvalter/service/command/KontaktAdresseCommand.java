@@ -1,32 +1,37 @@
-package no.nav.pdl.forvalter.service;
+package no.nav.pdl.forvalter.service.command;
 
-import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.artifact.VegadresseService;
 import no.nav.pdl.forvalter.dto.RsKontaktadresse;
-import org.springframework.stereotype.Service;
+import no.nav.pdl.forvalter.service.PdlArtifactService;
+import no.nav.pdl.forvalter.utils.AdresseServiceUtil;
 import org.springframework.web.client.HttpClientErrorException;
+
+import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.domain.PdlAdresse.Master.PDL;
-import static no.nav.pdl.forvalter.service.AdresseServiceUtil.VALIDATION_MASTER_PDL_ERROR;
-import static no.nav.pdl.forvalter.service.AdresseServiceUtil.validateBruksenhet;
-import static no.nav.pdl.forvalter.service.AdresseServiceUtil.validateMasterPdl;
+import static no.nav.pdl.forvalter.utils.AdresseServiceUtil.validateBruksenhet;
+import static no.nav.pdl.forvalter.utils.AdresseServiceUtil.validateMasterPdl;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.count;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
-@Service
-@RequiredArgsConstructor
-public class KontaktAdresseService extends PdlArtifactService<RsKontaktadresse> {
+public class KontaktAdresseCommand extends PdlArtifactService<RsKontaktadresse> {
 
     private static final String VALIDATION_AMBIGUITY_ERROR = "Kun én adresse skal være satt (vegadresse, " +
             "postboksadresse, utenlandskAdresse)";
 
-    private final MapperFacade mapperFacade;
     private final VegadresseService vegadresseService;
+    private final MapperFacade mapperFacade;
+
+    public KontaktAdresseCommand(List<RsKontaktadresse> request, VegadresseService vegadresseService, MapperFacade mapperFacade) {
+        super(request);
+        this.vegadresseService = vegadresseService;
+        this.mapperFacade = mapperFacade;
+    }
 
     protected static void validatePostBoksAdresse(RsKontaktadresse.Postboksadresse postboksadresse) {
         if (isBlank(postboksadresse.getPostboks())) {
@@ -47,7 +52,7 @@ public class KontaktAdresseService extends PdlArtifactService<RsKontaktadresse> 
         }
         if (PDL.equals(adresse.getMaster()) &&
                 (isNull(adresse.getGyldigFraOgMed()) || isNull(adresse.getGyldigTilOgMed()))) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_MASTER_PDL_ERROR);
+            throw new HttpClientErrorException(BAD_REQUEST, AdresseServiceUtil.VALIDATION_MASTER_PDL_ERROR);
         }
         if (nonNull(adresse.getVegadresse()) && isNotBlank(adresse.getVegadresse().getBruksenhetsnummer())) {
             validateBruksenhet(adresse.getVegadresse().getBruksenhetsnummer());

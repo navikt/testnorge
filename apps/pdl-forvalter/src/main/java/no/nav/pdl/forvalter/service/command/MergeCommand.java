@@ -1,4 +1,4 @@
-package no.nav.pdl.forvalter.service;
+package no.nav.pdl.forvalter.service.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Slf4j
 @RequiredArgsConstructor
-public class MergeService implements Callable<PdlPerson> {
+public class MergeCommand implements Callable<PdlPerson> {
 
     private final PdlPerson request;
     private final PdlPerson dbPerson;

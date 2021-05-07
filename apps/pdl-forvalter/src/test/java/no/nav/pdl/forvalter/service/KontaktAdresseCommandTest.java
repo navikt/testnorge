@@ -7,6 +7,7 @@ import no.nav.pdl.forvalter.domain.PdlVegadresse;
 import no.nav.pdl.forvalter.dto.PdlAdresseResponse.Vegadresse;
 import no.nav.pdl.forvalter.dto.RsKontaktadresse;
 import no.nav.pdl.forvalter.dto.RsKontaktadresse.Postboksadresse;
+import no.nav.pdl.forvalter.service.command.KontaktAdresseCommand;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,7 +31,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class KontaktAdresseServiceTest {
+class KontaktAdresseCommandTest {
 
     @Mock
     private VegadresseService vegadresseService;
@@ -39,13 +40,13 @@ class KontaktAdresseServiceTest {
     private MapperFacade mapperFacade;
 
     @InjectMocks
-    private KontaktAdresseService kontaktAdresseService;
+    private KontaktAdresseCommand kontaktAdresseCommand;
 
     @Test
     void whenTooFewDigitsInPostnummer_thenThrowExecption() {
 
         Exception exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.resolve(List.of(RsKontaktadresse.builder()
+                kontaktAdresseCommand.resolve(List.of(RsKontaktadresse.builder()
                         .postboksadresse(Postboksadresse.builder()
                                 .postboks("123")
                                 .build())
@@ -58,7 +59,7 @@ class KontaktAdresseServiceTest {
     void whenPostboksadresseAndPostboksIsOmitted_thenThrowExecption() {
 
         Exception exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.resolve(List.of(RsKontaktadresse.builder()
+                kontaktAdresseCommand.resolve(List.of(RsKontaktadresse.builder()
                         .postboksadresse(Postboksadresse.builder()
                                 .build())
                         .build())));
@@ -70,7 +71,7 @@ class KontaktAdresseServiceTest {
     void whenMultipleAdressesProvided_thenThrowExecption() {
 
         Exception exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.resolve(List.of(RsKontaktadresse.builder()
+                kontaktAdresseCommand.resolve(List.of(RsKontaktadresse.builder()
                         .vegadresse(new PdlVegadresse())
                         .utenlandskAdresse(new PdlUtenlandskAdresse())
                         .build())));
@@ -85,7 +86,7 @@ class KontaktAdresseServiceTest {
         kontaktAdresse.setMaster(PDL);
 
         Exception exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.resolve(List.of(kontaktAdresse)));
+                kontaktAdresseCommand.resolve(List.of(kontaktAdresse)));
 
         assertThat(exception.getMessage(), containsString(
                 "Feltene gyldigFraOgMed og gyldigTilOgMed må ha verdi hvis master er PDL"));
@@ -95,7 +96,7 @@ class KontaktAdresseServiceTest {
     void whenPDLAdresseWithoutGyldighet_thenThrowExecption() {
 
         Exception exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.resolve(List.of(RsKontaktadresse.builder()
+                kontaktAdresseCommand.resolve(List.of(RsKontaktadresse.builder()
                         .vegadresse(PdlVegadresse.builder()
                                 .adressenavn("Denne veien")
                                 .build())
@@ -109,7 +110,7 @@ class KontaktAdresseServiceTest {
     void whenAdresseHasUgyldigBruksenhetsnummer_thenThrowExecption() {
 
         Exception exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.resolve(List.of(RsKontaktadresse.builder()
+                kontaktAdresseCommand.resolve(List.of(RsKontaktadresse.builder()
                         .vegadresse(PdlVegadresse.builder()
                                 .bruksenhetsnummer("W12345")
                                 .build())
@@ -133,7 +134,7 @@ class KontaktAdresseServiceTest {
         doNothing().when(mapperFacade).map(eq(vegadresse), any(PdlVegadresse.class));
 
         var kontaktadresse =
-                kontaktAdresseService.resolve(List.of(RsKontaktadresse.builder()
+                kontaktAdresseCommand.resolve(List.of(RsKontaktadresse.builder()
                         .vegadresse(PdlVegadresse.builder()
                                 .postnummer("1234")
                                 .build())

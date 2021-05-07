@@ -1,15 +1,20 @@
 package no.nav.pdl.forvalter.service;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.domain.PdlDbVersjon;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import static java.util.Objects.isNull;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 
-public abstract class PdlArtifactService<T extends PdlDbVersjon> {
+@RequiredArgsConstructor
+public abstract class PdlArtifactService<T extends PdlDbVersjon> implements Callable<List<T>> {
 
-    public List<T> resolve(List<T> request) {
+    private final List<T> request;
+
+    public List<T> call() {
 
         for (var type : request) {
 
