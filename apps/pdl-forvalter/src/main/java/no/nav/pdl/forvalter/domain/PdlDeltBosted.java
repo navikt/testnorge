@@ -25,7 +25,6 @@ public class PdlDeltBosted extends PdlDbVersjon {
     private String adresseIdentifikatorFraMatrikkelen;
     private String coAdressenavn;
     private Folkeregistermetadata folkeregistermetadata;
-    private String kilde;
     private String naerAdresseIdentifikatorFraMatrikkelen;
     private LocalDateTime sluttdatoForKontrakt;
     private LocalDateTime startdatoForKontrakt;

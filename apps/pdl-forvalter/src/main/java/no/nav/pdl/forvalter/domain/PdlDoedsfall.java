@@ -16,5 +16,4 @@ import java.time.LocalDateTime;
 public class PdlDoedsfall extends PdlDbVersjon {
 
     private LocalDateTime doedsdato;
-    private String kilde;
 }

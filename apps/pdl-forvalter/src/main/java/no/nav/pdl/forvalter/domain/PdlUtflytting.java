@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 public class PdlUtflytting extends PdlDbVersjon {
 
     private Folkeregistermetadata folkeregistermetadata;
-    private String kilde;
     private String tilflyttingsland;
     private String tilflyttingsstedIUtlandet;
 }

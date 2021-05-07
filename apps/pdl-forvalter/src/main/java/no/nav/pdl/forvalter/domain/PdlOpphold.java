@@ -17,7 +17,6 @@ public class PdlOpphold extends PdlDbVersjon {
 
     public enum OppholdType {MIDLERTIDIG, PERMANENT, OPPLYSNING_MANGLER}
 
-    private String kilde;
     private LocalDateTime oppholdFra;
     private LocalDateTime oppholdTil;
     private OppholdType type;

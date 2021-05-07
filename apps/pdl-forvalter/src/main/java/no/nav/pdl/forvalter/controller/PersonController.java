@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.domain.PdlPerson;
 import no.nav.pdl.forvalter.dto.BestillingRequest;
+import no.nav.pdl.forvalter.dto.PdlOrdreResponse;
 import no.nav.pdl.forvalter.dto.PersonUpdateRequest;
 import no.nav.pdl.forvalter.service.PdlOrdreService;
 import no.nav.pdl.forvalter.service.PersonService;
@@ -18,9 +19,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -61,8 +59,11 @@ public class PersonController {
 
     @PostMapping(value = "/{ident}/ordre")
     @Operation(description = "Send person til PDL (ordre)")
-    public Map<String, List<PdlOrdreService.PdlStatus>> createPerson(@PathVariable String ident) {
+    public PdlOrdreResponse createPerson(@PathVariable String ident) {
 
-        return Map.of(ident, pdlOrdreService.sendTilPdl(ident));
+        return PdlOrdreResponse.builder()
+                .ident(ident)
+                .ordrer(pdlOrdreService.sendTilPdl(ident))
+                .build();
     }
 }

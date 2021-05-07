@@ -20,5 +20,4 @@ public class PdlFoedsel extends PdlDbVersjon {
     private String foedested;
     private Integer foedselsaar;
     private LocalDateTime foedselsdato;
-    private String kilde;
 }

@@ -1,19 +1,15 @@
 package no.nav.pdl.forvalter.service;
 
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 import no.nav.pdl.forvalter.domain.PdlAdresse;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
-
-import java.util.List;
 
 import static java.util.Objects.isNull;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
-@Service
-@NoArgsConstructor
-public abstract class AdresseService<T extends PdlAdresse> {
+@UtilityClass
+public class AdresseServiceUtil {
 
     protected static final String VALIDATION_MASTER_PDL_ERROR = "Feltene gyldigFraOgMed og gyldigTilOgMed må ha verdi " +
             "hvis master er PDL";
@@ -35,8 +31,4 @@ public abstract class AdresseService<T extends PdlAdresse> {
             throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_BRUKSENHET_ERROR);
         }
     }
-
-    protected abstract void validateAdresse(T adresse);
-
-    public abstract List<T> resolve(List<T> request);
 }

@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class PdlStatsborgerskap extends PdlDbVersjon{
 
-    private String kilde;
     private String landkode;
     private LocalDateTime gyldigFom;
     private LocalDateTime gyldigTom;

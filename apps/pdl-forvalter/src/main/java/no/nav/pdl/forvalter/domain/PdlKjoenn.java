@@ -13,7 +13,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PdlKjoenn extends PdlDbVersjon {
 
-    private String kilde;
     private Kjoenn kjoenn;
 
     public enum Kjoenn {

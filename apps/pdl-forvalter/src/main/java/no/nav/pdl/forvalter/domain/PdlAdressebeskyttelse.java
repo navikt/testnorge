@@ -17,6 +17,5 @@ public class PdlAdressebeskyttelse extends PdlDbVersjon {
     public enum AdresseBeskyttelse {STRENGT_FORTROLIG_UTLAND, STRENGT_FORTROLIG, FORTROLIG, UGRADERT}
 
     private AdresseBeskyttelse gradering;
-    private String kilde;
     private Master master;
 }

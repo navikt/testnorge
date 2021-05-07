@@ -44,7 +44,9 @@ public class PersonService {
     @Transactional
     public void deletePerson(String ident) {
 
-        personRepository.deleteByIdent(ident);
+        if (personRepository.deleteByIdent(ident) == 0) {
+            throw new HttpClientErrorException(NOT_FOUND, format("Ident %s ble ikke funnet", ident));
+        }
     }
 
     @Transactional

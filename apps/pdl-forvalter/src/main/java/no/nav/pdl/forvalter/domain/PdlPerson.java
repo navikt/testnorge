@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.pdl.forvalter.domain.doedsbo.PdlKontaktinformasjonForDoedsbo;
+import no.nav.pdl.forvalter.domain.falskidentitet.PdlFalskIdentitet;
 import no.nav.pdl.forvalter.domain.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
 import no.nav.pdl.forvalter.dto.RsKontaktadresse;
 
@@ -32,9 +34,9 @@ public class PdlPerson implements Serializable {
     private List<PdlDeltBosted> deltBosted;
     private List<PdlFamilierelasjon> forelderBarnRelasjon;
     private List<PdlForeldreansvar> foreldreansvar;
-    //    private List<PdlKontaktinformasjonForDoedsbo> kontaktinformasjonForDoedsbo;
+    private List<PdlKontaktinformasjonForDoedsbo> kontaktinformasjonForDoedsbo;
     private List<PdlUtenlandskIdentifikasjonsnummer> utenlandskIdentifikasjonsnummer;
-    //    private List<PdlFalskIdentitet> falskIdentitet;
+    private List<PdlFalskIdentitet> falskIdentitet;
     private List<PdlAdressebeskyttelse> adressebeskyttelse;
     private List<PdlDoedsfall> doedsfall;
     private List<PdlFolkeregisterpersonstatus> folkeregisterpersonstatus;
@@ -190,9 +192,12 @@ public class PdlPerson implements Serializable {
         return vergemaal;
     }
 
-//    public List<PdlKontaktinformasjonForDoedsbo> getKontaktinformasjonForDoedsbo() {
-//        return initOrGet(kontaktinformasjonForDoedsbo);
-//    }
+    public List<PdlKontaktinformasjonForDoedsbo> getKontaktinformasjonForDoedsbo() {
+        if (isNull(kontaktinformasjonForDoedsbo)) {
+            kontaktinformasjonForDoedsbo = new ArrayList<>();
+        }
+        return kontaktinformasjonForDoedsbo;
+    }
 
     public List<PdlUtenlandskIdentifikasjonsnummer> getUtenlandskIdentifikasjonsnummer() {
         if (isNull(utenlandskIdentifikasjonsnummer)) {
@@ -201,7 +206,10 @@ public class PdlPerson implements Serializable {
         return utenlandskIdentifikasjonsnummer;
     }
 
-//    public List<PdlFalskIdentitet> getFalskIdentitet() {
-//        return initOrGet(falskIdentitet);
-//    }
+    public List<PdlFalskIdentitet> getFalskIdentitet() {
+        if (isNull(falskIdentitet)) {
+            falskIdentitet = new ArrayList<>();
+        }
+        return falskIdentitet;
+    }
 }

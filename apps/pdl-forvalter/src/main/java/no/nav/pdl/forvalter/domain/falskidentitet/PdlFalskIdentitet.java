@@ -17,7 +17,6 @@ import no.nav.pdl.forvalter.domain.PdlDbVersjon;
 public class PdlFalskIdentitet extends PdlDbVersjon {
 
     private Boolean erFalsk;
-    private String kilde;
     private PdlRettIdentitet rettIdentitet;
 
     @Getter

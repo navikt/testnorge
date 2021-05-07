@@ -31,8 +31,7 @@ public class MergeService implements Callable<PdlPerson> {
         Method method = null;
         try {
             method = object.getClass().getMethod(
-                    format("get%s%s", field.substring(0, 1).toUpperCase(), field.substring(1)),
-                    null);
+                    format("get%s%s", field.substring(0, 1).toUpperCase(), field.substring(1)), null);
             return method.invoke(object, null);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
 
@@ -55,13 +54,13 @@ public class MergeService implements Callable<PdlPerson> {
 
                 infoElementRequest.forEach(requestElement -> {
                     if (infoElementDbPerson.stream()
-                            .anyMatch(dbElement -> requestElement.getId().equals(dbElement.getId()))) {
-                        for (int i = 0; i < infoElementDbPerson.size(); i++) {
+                            .anyMatch(dbElement -> nonNull(requestElement.getId()) && requestElement.getId().equals(dbElement.getId()))) {
+                        for (var i = 0; i < infoElementDbPerson.size(); i++) {
                             if (infoElementDbPerson.get(i).getId().equals(requestElement.getId())) {
                                 infoElementDbPerson.set(i, mapperFacade.map(requestElement, infoElementDbPerson.get(i).getClass()));
                             }
                         }
-                    } else if (requestElement.getId() > dbId.get()) {
+                    } else if (nonNull(requestElement.getId()) && requestElement.getId() > dbId.get()) {
                         throw new HttpClientErrorException(BAD_REQUEST,
                                 format("Merge-error: id:%s ikke funnet for element:'%s'", requestElement.getId(), field.getName()));
                     } else {

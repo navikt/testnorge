@@ -21,7 +21,6 @@ public class PdlKontaktinformasjonForDoedsbo extends PdlDbVersjon {
     private Adressat adressat;
     private String adresselinje1;
     private String adresselinje2;
-    private String kilde;
     private String landkode;
     private String postnummer;
     private String poststedsnavn;

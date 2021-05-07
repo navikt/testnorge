@@ -14,5 +14,4 @@ public class PdlInnflytting extends PdlDbVersjon {
     private Folkeregistermetadata folkeregistermetadata;
     private String fraflyttingsland;
     private String fraflyttingsstedIUtlandet;
-    private String kilde;
 }

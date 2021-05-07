@@ -17,7 +17,5 @@ public class PdlFullmakt extends PdlDbVersjon {
     private String fullmektig;
     private LocalDateTime gyldigFom;
     private LocalDateTime gyldigTom;
-    private String kilde;
     private List<String> omraader;
-
 }

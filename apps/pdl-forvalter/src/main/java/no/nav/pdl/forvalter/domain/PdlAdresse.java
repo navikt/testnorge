@@ -21,9 +21,6 @@ public abstract class PdlAdresse extends PdlDbVersjon {
     private LocalDateTime gyldigTilOgMed;
     private String coAdressenavn;
 
-    @Schema(defaultValue = "Dolly")
-    private String kilde;
-
     @Schema(defaultValue = "FREG")
     private Master master;
 

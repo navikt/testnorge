@@ -23,6 +23,5 @@ public class PdlFolkeregisterpersonstatus extends PdlDbVersjon {
         INAKTIV
     }
 
-    private String kilde;
     private Folkeregisterpersonstatus status;
 }

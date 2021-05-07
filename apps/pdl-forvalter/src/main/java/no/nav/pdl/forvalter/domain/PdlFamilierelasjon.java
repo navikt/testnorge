@@ -11,7 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PdlFamilierelasjon extends PdlDbVersjon {
 
-    private String kilde;
     private ROLLE minRolleForPerson;
     private String relatertPerson;
     private ROLLE relatertPersonsRolle;

@@ -7,11 +7,12 @@ import no.nav.pdl.forvalter.dto.RsKontaktadresse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.util.List;
-
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.domain.PdlAdresse.Master.PDL;
+import static no.nav.pdl.forvalter.service.AdresseServiceUtil.VALIDATION_MASTER_PDL_ERROR;
+import static no.nav.pdl.forvalter.service.AdresseServiceUtil.validateBruksenhet;
+import static no.nav.pdl.forvalter.service.AdresseServiceUtil.validateMasterPdl;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.count;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
@@ -19,7 +20,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
 @RequiredArgsConstructor
-public class KontaktAdresseService extends AdresseService<RsKontaktadresse> {
+public class KontaktAdresseService extends PdlArtifactService<RsKontaktadresse> {
 
     private static final String VALIDATION_AMBIGUITY_ERROR = "Kun én adresse skal være satt (vegadresse, " +
             "postboksadresse, utenlandskAdresse)";
@@ -27,7 +28,18 @@ public class KontaktAdresseService extends AdresseService<RsKontaktadresse> {
     private final MapperFacade mapperFacade;
     private final VegadresseService vegadresseService;
 
-    protected void validateAdresse(RsKontaktadresse adresse) {
+    protected static void validatePostBoksAdresse(RsKontaktadresse.Postboksadresse postboksadresse) {
+        if (isBlank(postboksadresse.getPostboks())) {
+            throw new HttpClientErrorException(BAD_REQUEST, AdresseServiceUtil.VALIDATION_POSTBOKS_ERROR);
+        }
+        if (isBlank(postboksadresse.getPostnummer()) ||
+                isNotBlank(postboksadresse.getPostnummer().replaceAll("[0-9]{4}", ""))) {
+            throw new HttpClientErrorException(BAD_REQUEST, AdresseServiceUtil.VALIDATION_POSTNUMMER_ERROR);
+        }
+    }
+
+    @Override
+    protected void validate(RsKontaktadresse adresse) {
         if (count(adresse.getPostboksadresse()) +
                 count(adresse.getUtenlandskAdresse()) +
                 count(adresse.getVegadresse()) > 1) {
@@ -49,35 +61,13 @@ public class KontaktAdresseService extends AdresseService<RsKontaktadresse> {
         }
     }
 
-    private static void validatePostBoksAdresse(RsKontaktadresse.Postboksadresse postboksadresse) {
-        if (isBlank(postboksadresse.getPostboks())) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_POSTBOKS_ERROR);
-        }
-        if (isBlank(postboksadresse.getPostnummer()) ||
-                isNotBlank(postboksadresse.getPostnummer().replaceAll("[0-9]{4}", ""))) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_POSTNUMMER_ERROR);
-        }
-    }
-
     @Override
-    public List<RsKontaktadresse> resolve(List<RsKontaktadresse> request) {
-
-        for (var kontaktadresse : request) {
-
-            if (isNull(kontaktadresse.getId()) || kontaktadresse.getId().equals(0)) {
-                validateAdresse(kontaktadresse);
-
-                if (nonNull(kontaktadresse.getVegadresse())) {
-                    var vegadresse =
-                            vegadresseService.get(kontaktadresse.getVegadresse(), kontaktadresse.getAdresseIdentifikatorFraMatrikkelen());
-                    kontaktadresse.setAdresseIdentifikatorFraMatrikkelen(vegadresse.getMatrikkelId());
-                    mapperFacade.map(vegadresse, kontaktadresse.getVegadresse());
-                }
-                if (isBlank(kontaktadresse.getKilde())) {
-                    kontaktadresse.setKilde("Dolly");
-                }
-            }
+    public void handle(RsKontaktadresse kontaktadresse) {
+        if (nonNull(kontaktadresse.getVegadresse())) {
+            var vegadresse =
+                    vegadresseService.get(kontaktadresse.getVegadresse(), kontaktadresse.getAdresseIdentifikatorFraMatrikkelen());
+            kontaktadresse.setAdresseIdentifikatorFraMatrikkelen(vegadresse.getMatrikkelId());
+            mapperFacade.map(vegadresse, kontaktadresse.getVegadresse());
         }
-        return request;
     }
 }

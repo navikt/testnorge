@@ -33,7 +33,6 @@ public class PdlVergemaal extends PdlDbVersjon {
 
     private String embete;
     private Folkeregistermetadata folkeregistermetadata;
-    private String kilde;
     private VergemaalType type;
     private VergeEllerFullmektig vergeEllerFullmektig;
 

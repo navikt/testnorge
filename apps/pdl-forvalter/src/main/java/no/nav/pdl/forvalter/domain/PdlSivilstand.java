@@ -27,7 +27,6 @@ public class PdlSivilstand extends PdlDbVersjon {
     }
 
     private LocalDateTime bekreftelsesdato;
-    private String kilde;
     private String kommune;
     private String master;
     private String myndighet;

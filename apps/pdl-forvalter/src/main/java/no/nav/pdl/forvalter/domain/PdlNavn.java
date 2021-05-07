@@ -20,7 +20,6 @@ public class PdlNavn extends PdlDbVersjon {
     private String etternavn;
     private String forkortetNavn;
     private String fornavn;
-    private String kilde;
     private String mellomnavn;
     private OriginaltNavn originaltNavn;
 

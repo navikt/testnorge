@@ -16,7 +16,6 @@ public class PdlForeldreansvar extends PdlDbVersjon {
 
     private Ansvar ansvar;
     private String ansvarlig;
-    private String kilde;
     private RelatertBiPerson ansvarligUtenIdentifikator;
     public enum Ansvar {FELLES, MOR, FAR, MEDMOR, ANDRE, UKJENT}
 

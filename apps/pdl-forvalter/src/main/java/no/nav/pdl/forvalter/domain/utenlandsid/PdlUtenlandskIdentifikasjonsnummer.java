@@ -22,10 +22,6 @@ public class PdlUtenlandskIdentifikasjonsnummer extends PdlDbVersjon {
     private String identifikasjonsnummer;
 
     @Schema(required = true,
-            description = "Dataens opprinnelse")
-    private String kilde;
-
-    @Schema(required = true,
             description = "Er det utenlandske identifikasjonsnummeret opphørt?")
     private Boolean opphoert;
 
