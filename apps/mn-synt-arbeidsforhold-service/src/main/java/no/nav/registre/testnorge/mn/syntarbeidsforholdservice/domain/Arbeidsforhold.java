@@ -1,5 +1,7 @@
 package no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
@@ -19,11 +21,11 @@ import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdResponse;
 import no.nav.registre.testnorge.libs.dto.syntrest.v1.PermisjonDTO;
 
 @Slf4j
+@AllArgsConstructor
 public class Arbeidsforhold {
 
     private final ArbeidsforholdDTO dto;
     private final String ident;
-    private final String historikk;
     private String virksomhetsnummer;
 
     public Arbeidsforhold(
@@ -34,7 +36,6 @@ public class Arbeidsforhold {
     ) {
         this.virksomhetsnummer = virksomhetsnummer;
         this.ident = ident;
-        this.historikk = response.getHistorikk();
 
         var permisjoner = Optional.ofNullable(response.getPermisjoner()).orElse(Collections.emptyList())
                 .stream()
@@ -78,7 +79,7 @@ public class Arbeidsforhold {
                 .sluttdato(response.getSluttdato().equals("") ? null : LocalDate.parse(response.getSluttdato()))
                 .arbeidsforholdId(arbeidsforholdId)
                 .permisjoner(permisjoner)
-                .historikk(historikk)
+                .historikk(response.getHistorikk())
                 .fartoey(response.getFartoey() != null ? FartoeyDTO.builder()
                         .fartsomraade(response.getFartoey().getFartsomraade())
                         .skipsregister(response.getFartoey().getSkipsregister())
@@ -187,7 +188,7 @@ public class Arbeidsforhold {
                 .utdanningspermisjon(utdanningspermisjon)
                 .yrke(nullToEmpty(dto.getYrke()))
                 .velferdspermisjon(velferdspermisjon)
-                .historikk(historikk)
+                .historikk(dto.getHistorikk())
                 .numEndringer(count)
                 .fartoey(dto.getFartoey() != null ? no.nav.registre.testnorge.libs.dto.syntrest.v1.FartoeyDTO
                         .builder()

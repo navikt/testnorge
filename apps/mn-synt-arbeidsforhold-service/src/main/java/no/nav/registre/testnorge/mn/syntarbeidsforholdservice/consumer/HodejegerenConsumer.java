@@ -3,8 +3,8 @@ package no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 
-import java.util.Set;
 
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command.GetLevendeIdenterCommand;
 
@@ -22,7 +22,7 @@ public class HodejegerenConsumer {
                 .build();
     }
 
-    public Set<String> getIdenter(String miljo, int antall) {
+    public Flux<String> getIdenter(String miljo, int antall) {
         return new GetLevendeIdenterCommand(webClient, miljo, antall).call();
     }
 }

@@ -50,16 +50,6 @@ public class SyntrestConsumer {
     }
 
     @SneakyThrows
-    private ArbeidsforholdResponse getNesteArbeidsforholdResponse(Arbeidsforhold arbeidsforhold, LocalDate kalendermaaned) {
-        var dto = arbeidsforhold.toSyntrestDTO(kalendermaaned, null);
-        try {
-            return new GenerateNextArbeidsforholdCommand(webClient, dto).call();
-        } catch (WebClientResponseException.InternalServerError e) {
-            throw new SyntetiseringException(OPPRETTELSE_FEILMELDING + objectMapper.writeValueAsString(dto), e);
-        }
-    }
-
-    @SneakyThrows
     private List<ArbeidsforholdResponse> getArbeidsforholdHistorikkResponse(Arbeidsforhold arbeidsforhold, LocalDate kalendermaaned, Integer count) {
         var dto = arbeidsforhold.toSyntrestDTO(kalendermaaned, count);
         try {
@@ -67,19 +57,6 @@ public class SyntrestConsumer {
         } catch (WebClientResponseException.InternalServerError e) {
             throw new SyntetiseringException(OPPRETTELSE_FEILMELDING + objectMapper.writeValueAsString(dto), e);
         }
-    }
-
-
-    @SneakyThrows
-    public Arbeidsforhold getNesteArbeidsforhold(Arbeidsforhold arbeidsforhold, LocalDate kalendermaaned) {
-        log.info("Finner neste arbeidsforhold den {}.", kalendermaaned.plusMonths(1));
-        ArbeidsforholdResponse response = getNesteArbeidsforholdResponse(arbeidsforhold, kalendermaaned);
-        return new Arbeidsforhold(
-                response,
-                arbeidsforhold.getIdent(),
-                arbeidsforhold.getArbeidsforholdId(),
-                arbeidsforhold.getVirksomhetsnummer()
-        );
     }
 
     public List<Arbeidsforhold> getArbeidsforholdHistorikk(Arbeidsforhold arbeidsforhold, LocalDate kalendermaaned) {

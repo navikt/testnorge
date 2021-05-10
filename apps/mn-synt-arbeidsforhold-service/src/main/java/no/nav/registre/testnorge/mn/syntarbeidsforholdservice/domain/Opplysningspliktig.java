@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.ArbeidsforholdDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
@@ -34,11 +35,11 @@ public class Opplysningspliktig {
                 .build();
     }
 
-    public String getRandomVirksomhetsnummer(){
+    public String getRandomVirksomhetsnummer() {
         return driverVirksomheter.get(RANDOM.nextInt(driverVirksomheter.size()));
     }
 
-    public boolean driverVirksomhet(String virksomhetesnummer){
+    public boolean driverVirksomhet(String virksomhetesnummer) {
         return driverVirksomheter.stream().anyMatch(value -> value.equals(virksomhetesnummer));
     }
 
@@ -48,6 +49,12 @@ public class Opplysningspliktig {
     }
 
     public void addArbeidsforhold(Arbeidsforhold arbeidsforhold) {
+
+        if (arbeidsforhold.getVirksomhetsnummer() == null) {
+            arbeidsforhold.setVirksomhetsnummer(getRandomVirksomhetsnummer());
+        }
+
+
         changed = true;
         String virksomhetsnummer = arbeidsforhold.getVirksomhetsnummer();
         VirksomhetDTO virksomhet = dto.getVirksomheter()
@@ -87,11 +94,21 @@ public class Opplysningspliktig {
         }
     }
 
-    public String getOrgnummer(){
+    public List<Arbeidsforhold> getArbeidsforhold() {
+        return dto.getVirksomheter().stream().flatMap(
+                virksomhet -> virksomhet.getPersoner().stream().flatMap(
+                        person -> person.getArbeidsforhold().stream().map(
+                                arbeidsforhold -> new Arbeidsforhold(arbeidsforhold, person.getIdent(), virksomhet.getOrganisajonsnummer())
+                        )
+                )
+        ).collect(Collectors.toList());
+    }
+
+    public String getOrgnummer() {
         return dto.getOpplysningspliktigOrganisajonsnummer();
     }
 
-    public LocalDate getKalendermaaned(){
+    public LocalDate getKalendermaaned() {
         return dto.getKalendermaaned();
     }
 
@@ -111,7 +128,7 @@ public class Opplysningspliktig {
         return dto;
     }
 
-    public boolean isChanged(){
+    public boolean isChanged() {
         return changed;
     }
 

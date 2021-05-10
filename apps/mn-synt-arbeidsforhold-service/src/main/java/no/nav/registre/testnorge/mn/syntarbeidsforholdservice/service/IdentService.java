@@ -3,6 +3,7 @@ package no.nav.registre.testnorge.mn.syntarbeidsforholdservice.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.util.Collection;
 import java.util.Set;
@@ -35,22 +36,13 @@ public class IdentService {
         return identer;
     }
 
-    public Set<String> getIdenterUtenArbeidsforhold(String miljo, int max) {
+    public Flux<String> getIdenterUtenArbeidsforhold(String miljo, int max) {
         var identer = tpsIdentAdapter.getIdenter(miljo, max);
 
         var identerMedArbeidsforhold = getIdenterMedArbeidsforhold(miljo);
-        var identerUtenArbeidsforhold = identer
-                .parallelStream()
-                .filter(ident -> !identerMedArbeidsforhold.contains(ident))
-                .limit(max)
-                .collect(Collectors.toSet());
 
-        if (identerUtenArbeidsforhold.isEmpty()) {
-            log.warn("Prøvde å finne {} identer men fant ingen uten arbeidsforhold. Prøv å øke antall personer som kan ha arbeidsforhold i Mini-Norge.", max);
-        } else {
-            log.info("Fant {}/{} identer uten arbeidsforhold i {}.", identerUtenArbeidsforhold.size(), max, miljo);
-        }
-        return identerUtenArbeidsforhold;
+
+        return identer.filter(ident -> !identerMedArbeidsforhold.contains(ident));
     }
 
 }
