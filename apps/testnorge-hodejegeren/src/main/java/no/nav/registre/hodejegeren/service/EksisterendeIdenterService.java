@@ -83,7 +83,7 @@ public class EksisterendeIdenterService {
             Integer henteAntall,
             Integer minimumAlder
     ) {
-        log.info("Henter med minimum alder {}...", minimumAlder);
+        log.info("Henter identer med minimum alder {}...", minimumAlder);
         var gyldigeIdenter = finnAlleIdenterOverAlder(gruppeId, minimumAlder);
         log.info("{} identer hentet.", gyldigeIdenter.size());
         List<String> utvalgteIdenter;
