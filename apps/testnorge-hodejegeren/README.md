@@ -13,7 +13,7 @@ Applikasjonen tilbyr også en søkefunksjon, der man kan søke etter visse egens
 Swagger finnes under [/api](https://testnorge-hodejegeren.dev.intern.nav.no/api) -endepunktet til applikasjonen.
  
 ## Lokal kjøring
-Ha naisdevice kjørende og kjør LocalApplicationStarter med følgende argumenter:
+Ha naisdevice kjørende og kjør HodejegerenApplicationStarter med følgende argumenter:
 ```
 -Dspring.cloud.vault.token=[kopier token fra vault]
 ```

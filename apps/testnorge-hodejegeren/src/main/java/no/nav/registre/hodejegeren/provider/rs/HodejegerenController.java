@@ -3,12 +3,14 @@ package no.nav.registre.hodejegeren.provider.rs;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -16,7 +18,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import no.nav.registre.hodejegeren.consumer.dto.ServiceRoutineDTO;
+import no.nav.registre.hodejegeren.domain.Person;
 import no.nav.registre.hodejegeren.provider.rs.responses.NavEnhetResponse;
 import no.nav.registre.hodejegeren.provider.rs.responses.kontoinfo.KontoinfoResponse;
 import no.nav.registre.hodejegeren.provider.rs.responses.persondata.PersondataResponse;
@@ -84,7 +89,26 @@ public class HodejegerenController {
         if (minimumAlder == null || minimumAlder < MIN_ALDER) {
             minimumAlder = MIN_ALDER;
         }
-        return eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(avspillergruppeId, miljoe, antallIdenter, minimumAlder);
+        return eksisterendeIdenterService
+                .hentLevendeIdenter(avspillergruppeId, miljoe, antallIdenter, minimumAlder)
+                .collectList()
+                .block();
+    }
+
+    @ApiOperation(value = "Her kan et gitt antall levende identer hentes fra en gitt avspillergruppe i TPSF. "
+            + "Systemet sjekker status-quo på personen i det angitte miljø. En minimum alder på personene kan oppgis.")
+    @GetMapping(value = "api/v2/levende-identer/{avspillergruppeId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<String> hentLevendeIdenterV2(
+            @PathVariable("avspillergruppeId") Long avspillergruppeId,
+            @RequestParam("miljoe") String miljoe,
+            @RequestParam(value = "max", required = false) Integer antallIdenter,
+            @RequestParam(value = "minimumAlder", required = false) Integer minimumAlder
+    ) {
+        if (minimumAlder == null || minimumAlder < MIN_ALDER) {
+            minimumAlder = MIN_ALDER;
+        }
+        return eksisterendeIdenterService
+                .hentLevendeIdenter(avspillergruppeId, miljoe, antallIdenter, minimumAlder);
     }
 
     @ApiOperation(value = "Her kan man hente ut alle levende identer over en viss alder.")
@@ -119,7 +143,10 @@ public class HodejegerenController {
             @RequestParam("miljoe") String miljoe,
             @RequestParam("antallIdenter") int antallIdenter
     ) {
-        var myndigeIdenter = eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(avspillergruppeId, miljoe, antallIdenter, 18);
+        var myndigeIdenter = eksisterendeIdenterService
+                .hentLevendeIdenter(avspillergruppeId, miljoe, antallIdenter, 18)
+                .collectList()
+                .block();
         return eksisterendeIdenterService.hentFnrMedNavKontor(miljoe, myndigeIdenter);
     }
 

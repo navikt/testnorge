@@ -1,5 +1,11 @@
 package no.nav.registre.hodejegeren.service;
 
+import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.DATO_DO;
+import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.NAV_ENHET;
+import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.NAV_ENHET_BESKRIVELSE;
+import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.STATSBORGER;
+import static no.nav.registre.hodejegeren.service.TpsStatusQuoService.AKSJONSKODE;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,19 +13,12 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
-import no.nav.registre.hodejegeren.exception.IdentIOException;
-import no.nav.registre.hodejegeren.exception.ManglendeInfoITpsException;
-import no.nav.registre.hodejegeren.provider.rs.responses.NavEnhetResponse;
-import no.nav.registre.hodejegeren.provider.rs.responses.kontoinfo.KontoinfoResponse;
-import no.nav.registre.hodejegeren.provider.rs.responses.persondata.PersondataResponse;
-import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.Relasjon;
-import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.RelasjonsResponse;
-import no.nav.registre.testnorge.libs.core.util.IdentUtil;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Flux;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -32,11 +31,17 @@ import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.DATO_DO;
-import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.NAV_ENHET;
-import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.NAV_ENHET_BESKRIVELSE;
-import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.STATSBORGER;
-import static no.nav.registre.hodejegeren.service.TpsStatusQuoService.AKSJONSKODE;
+import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
+import no.nav.registre.hodejegeren.consumer.dto.ServiceRoutineDTO;
+import no.nav.registre.hodejegeren.domain.Person;
+import no.nav.registre.hodejegeren.exception.IdentIOException;
+import no.nav.registre.hodejegeren.exception.ManglendeInfoITpsException;
+import no.nav.registre.hodejegeren.provider.rs.responses.NavEnhetResponse;
+import no.nav.registre.hodejegeren.provider.rs.responses.kontoinfo.KontoinfoResponse;
+import no.nav.registre.hodejegeren.provider.rs.responses.persondata.PersondataResponse;
+import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.Relasjon;
+import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.RelasjonsResponse;
+import no.nav.registre.testnorge.libs.core.util.IdentUtil;
 
 @Service
 @Slf4j
@@ -72,15 +77,15 @@ public class EksisterendeIdenterService {
     @Autowired
     private Random rand;
 
-    public List<String> hentLevendeIdenterIGruppeOgSjekkStatusQuo(
+    public Flux<String> hentLevendeIdenter(
             Long gruppeId,
             String miljoe,
             Integer henteAntall,
             Integer minimumAlder
     ) {
-        log.info("Henter levende identer med minimum alder {}...", minimumAlder);
+        log.info("Henter identer med minimum alder {}...", minimumAlder);
         var gyldigeIdenter = finnAlleIdenterOverAlder(gruppeId, minimumAlder);
-        log.info("{} levende identer hentet.", gyldigeIdenter.size());
+        log.info("{} identer hentet.", gyldigeIdenter.size());
         List<String> utvalgteIdenter;
 
         if (henteAntall != null) {
@@ -96,23 +101,20 @@ public class EksisterendeIdenterService {
             utvalgteIdenter = new ArrayList<>(gyldigeIdenter);
         }
 
+
         if (utvalgteIdenter.isEmpty()) {
-            return Collections.emptyList();
+            return Flux.empty();
         }
 
-        return utvalgteIdenter.parallelStream().filter(gyldigIdent -> {
-            Map<String, String> status = null;
-            try {
-                status = tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, Arrays.asList(DATO_DO, STATSBORGER), miljoe, gyldigIdent);
-            } catch (IOException e) {
-                log.warn(e.getMessage(), e);
-            } catch (ManglendeInfoITpsException e) {
-                log.warn(e.getMessage());
-            }
-
-            return status != null && (status.get(DATO_DO) == null || status.get(DATO_DO).isEmpty());
-        }).collect(Collectors.toList());
+        return utvalgteIdenter
+                .parallelStream()
+                .map(ident -> tpsfConsumer.getTpsServiceRoutineV2(ROUTINE_PERSDATA, AKSJONSKODE, miljoe, ident))
+                .reduce(Flux.empty(), Flux::concat)
+                .filter(value -> value.getResponse().getData1().getDatoDo() == null || Strings.isBlank(value.getResponse().getData1().getDatoDo()))
+                .filter(value -> value.getResponse().getData1().getFnr() != null)
+                .map(value -> value.getResponse().getData1().getFnr());
     }
+
 
     public List<NavEnhetResponse> hentFnrMedNavKontor(
             String miljoe,
