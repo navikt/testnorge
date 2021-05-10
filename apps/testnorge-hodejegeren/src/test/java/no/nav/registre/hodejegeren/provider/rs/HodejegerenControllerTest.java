@@ -100,29 +100,6 @@ public class HodejegerenControllerTest {
     }
 
     /**
-     * Scenario: HVIS hodejeger-controlleren får et request om å hente levende identer i gruppe i angitt miljø, skal metoden kalle på
-     * {@link EksisterendeIdenterService#hentLevendeIdenterIGruppeOgSjekkStatusQuo}
-     */
-    @Test
-    public void shouldHenteLevendeIdenterIGruppeAndCheckStatusQuo() {
-        hodejegerenController.hentLevendeIdenter(avspillergruppeId, miljoe, antallIdenter, minimumAlder);
-        verify(eksisterendeIdenterService).hentLevendeIdenterIGruppeOgSjekkStatusQuo(avspillergruppeId, miljoe, antallIdenter, minimumAlder);
-    }
-
-    /**
-     * Scenario: HVIS hodejeger-controlleren får et request om å hente myndige identer i gruppe med tilknyttet nav-enhet i angitt miljø, skal metoden kalle på
-     * {@link EksisterendeIdenterService#hentLevendeIdenterIGruppeOgSjekkStatusQuo} for å finne myndige identer, og deretter {@link EksisterendeIdenterService#hentFnrMedNavKontor}
-     * for å finne tilknyttet nav-enhet
-     */
-    @Test
-    public void shouldHenteMyndigeIdenterMedNavEnhetIGruppeAndCheckStatusQuo() {
-        when(eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(avspillergruppeId, miljoe, antallIdenter, minimumAlder)).thenReturn(myndigeIdenter);
-        hodejegerenController.hentEksisterendeMyndigeIdenterMedNavKontor(avspillergruppeId, miljoe, antallIdenter);
-        verify(eksisterendeIdenterService).hentLevendeIdenterIGruppeOgSjekkStatusQuo(avspillergruppeId, miljoe, antallIdenter, minimumAlder);
-        verify(eksisterendeIdenterService).hentFnrMedNavKontor(miljoe, myndigeIdenter);
-    }
-
-    /**
      * Scenario: HVIS hodejeger-controlleren får et request om å hente hente status quo på et fnr i et miljø med en viss endringskode, skal metoden kalle på
      * {@link EndringskodeTilFeltnavnMapperService#getStatusQuoFraAarsakskode}
      */

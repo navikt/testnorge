@@ -91,24 +91,6 @@ public class EksisterendeIdenterServiceTest {
 
         Map<String, String> status = new HashMap<>();
         status.put(DATO_DO, "");
-
-        when(tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, statusFelter, miljoe, "20044249945")).thenReturn(status);
-        when(tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, statusFelter, miljoe, "20044249946")).thenReturn(status);
-        when(tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, statusFelter, miljoe, "20044249947")).thenReturn(status);
-        when(tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, statusFelter, miljoe, "20044249948")).thenReturn(status);
-    }
-
-    /**
-     * Scenario:
-     * Henter et varierende antall FNR 0-2
-     */
-    @Test
-    public void hentMyndigeIdenterIGruppeTest() {
-        when(cacheService.hentLevendeIdenterCache(avspillergruppeId1)).thenReturn(levendeIdenter);
-        for (int i = 0; i < 3; i++) {
-            var identer = eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(avspillergruppeId1, miljoe, i, MINIMUM_ALDER);
-            assertEquals(i, identer.size());
-        }
     }
 
     /**
@@ -117,48 +99,10 @@ public class EksisterendeIdenterServiceTest {
      */
     @Test
     public void hentMyndigeIdenterIGruppeIngenIdenterTest() {
-        var identer = eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(2L, miljoe, 2, MINIMUM_ALDER);
+        var identer = eksisterendeIdenterService.hentLevendeIdenter(2L, miljoe, 2, MINIMUM_ALDER).collectList().block();
         assertTrue(identer.isEmpty());
     }
 
-    /**
-     * Scenario:
-     * Henter for mange identer i forhold til hvor mange som eksisterer i avspillergruppa
-     */
-    @Test
-    public void hentMyndigeIdenterIGruppeForMangeAaHenteTest() {
-        when(cacheService.hentLevendeIdenterCache(avspillergruppeId1)).thenReturn(levendeIdenter);
-        var identer = eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(avspillergruppeId1, miljoe, 6, MINIMUM_ALDER);
-        assertEquals(4, identer.size());
-        assertThat(identer, containsInAnyOrder(
-                "20044249945",
-                "20044249946",
-                "20044249947",
-                "20044249948"
-        ));
-    }
-
-    /**
-     * Scenario:
-     * Henter identer, men en ident er ikke synkronisert med tps og har mottatt en dødsmelding
-     *
-     * @throws IOException
-     */
-    @Test
-    public void hentMyndigeIdenterIGruppeEnDoedITPS() throws IOException {
-        Map<String, String> statusDoed = new HashMap<>();
-        statusDoed.put(DATO_DO, "12312");
-        when(cacheService.hentLevendeIdenterCache(avspillergruppeId1)).thenReturn(levendeIdenter);
-        when(tpsStatusQuoService.hentStatusQuo(ROUTINE_PERSDATA, statusFelter, miljoe, "20044249948")).thenReturn(statusDoed);
-        var identer = eksisterendeIdenterService.hentLevendeIdenterIGruppeOgSjekkStatusQuo(avspillergruppeId1, miljoe, 10, MINIMUM_ALDER);
-        assertEquals(3, identer.size());
-        assertThat(identer, containsInAnyOrder(
-                "20044249945",
-                "20044249946",
-                "20044249947"
-        ));
-
-    }
 
     /**
      * Scenario:
