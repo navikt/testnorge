@@ -1,10 +1,10 @@
-package no.nav.pdl.forvalter.service.command;
+package no.nav.pdl.forvalter.service.command.pdlartifact;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.artifact.VegadresseService;
 import no.nav.pdl.forvalter.dto.RsKontaktadresse;
 import no.nav.pdl.forvalter.service.PdlArtifactService;
-import no.nav.pdl.forvalter.utils.AdresseServiceUtil;
+import no.nav.pdl.forvalter.utils.ArtifactUtils;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
@@ -12,9 +12,9 @@ import java.util.List;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.domain.PdlAdresse.Master.PDL;
-import static no.nav.pdl.forvalter.utils.AdresseServiceUtil.validateBruksenhet;
-import static no.nav.pdl.forvalter.utils.AdresseServiceUtil.validateMasterPdl;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.count;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.validateBruksenhet;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.validateMasterPdl;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -35,11 +35,11 @@ public class KontaktAdresseCommand extends PdlArtifactService<RsKontaktadresse> 
 
     protected static void validatePostBoksAdresse(RsKontaktadresse.Postboksadresse postboksadresse) {
         if (isBlank(postboksadresse.getPostboks())) {
-            throw new HttpClientErrorException(BAD_REQUEST, AdresseServiceUtil.VALIDATION_POSTBOKS_ERROR);
+            throw new HttpClientErrorException(BAD_REQUEST, ArtifactUtils.VALIDATION_POSTBOKS_ERROR);
         }
         if (isBlank(postboksadresse.getPostnummer()) ||
                 isNotBlank(postboksadresse.getPostnummer().replaceAll("[0-9]{4}", ""))) {
-            throw new HttpClientErrorException(BAD_REQUEST, AdresseServiceUtil.VALIDATION_POSTNUMMER_ERROR);
+            throw new HttpClientErrorException(BAD_REQUEST, ArtifactUtils.VALIDATION_POSTNUMMER_ERROR);
         }
     }
 
@@ -52,7 +52,7 @@ public class KontaktAdresseCommand extends PdlArtifactService<RsKontaktadresse> 
         }
         if (PDL.equals(adresse.getMaster()) &&
                 (isNull(adresse.getGyldigFraOgMed()) || isNull(adresse.getGyldigTilOgMed()))) {
-            throw new HttpClientErrorException(BAD_REQUEST, AdresseServiceUtil.VALIDATION_MASTER_PDL_ERROR);
+            throw new HttpClientErrorException(BAD_REQUEST, ArtifactUtils.VALIDATION_MASTER_PDL_ERROR);
         }
         if (nonNull(adresse.getVegadresse()) && isNotBlank(adresse.getVegadresse().getBruksenhetsnummer())) {
             validateBruksenhet(adresse.getVegadresse().getBruksenhetsnummer());

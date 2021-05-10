@@ -25,6 +25,7 @@ import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_OPPHOLD
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_SIVILSTAND;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_STATSBORGERSKAP;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_TELEFONUMMER;
+import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_TILRETTELAGT_KOMMUNIKASJON;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_UTENLANDS_IDENTIFIKASJON_NUMMER;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_UTFLYTTING;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_VERGEMAAL;
@@ -58,6 +59,7 @@ public class PdlTestDataUrls {
     private static final String PDL_BESTILLING_OPPHOLD_URL = PDL_BESTILLING_URL + "/opphold";
     private static final String PDL_BESTILLING_VERGEMAAL_URL = PDL_BESTILLING_URL + "/vergemaal";
     private static final String PDL_BESTILLING_FULLMAKT_URL = PDL_BESTILLING_URL + "/fullmakt";
+    private static final String PDL_BESTILLING_TILRETTELAGT_KOMMUNIKASJON_URL = PDL_BESTILLING_URL + "/tilrettelagtkommunikasjon";
     private static final String PDL_IDENTHISTORIKK_PARAMS = "?historiskePersonidenter=";
     private static final String PDL_IDENTHISTORIKK_PARAMS_2 = "&historiskePersonidenter=";
     private static final String PDL_BESTILLING_FOLKEREGISTER_PERSONSTATUS_URL = PDL_BESTILLING_URL + "/folkeregisterpersonstatus";
@@ -89,6 +91,7 @@ public class PdlTestDataUrls {
         bestillingUrl.put(PDL_VERGEMAAL, PDL_BESTILLING_VERGEMAAL_URL);
         bestillingUrl.put(PDL_FULLMAKT, PDL_BESTILLING_FULLMAKT_URL);
         bestillingUrl.put(PDL_FOLKEREGISTER_PERSONSTATUS, PDL_BESTILLING_FOLKEREGISTER_PERSONSTATUS_URL);
+        bestillingUrl.put(PDL_TILRETTELAGT_KOMMUNIKASJON, PDL_BESTILLING_TILRETTELAGT_KOMMUNIKASJON_URL);
     }
 
     public enum PdlArtifact {
@@ -114,7 +117,8 @@ public class PdlTestDataUrls {
         PDL_FORELDREANSVAR,
         PDL_OPPHOLD,
         PDL_VERGEMAAL,
-        PDL_FULLMAKT
+        PDL_FULLMAKT,
+        PDL_TILRETTELAGT_KOMMUNIKASJON
     }
 
     public enum TemaGrunnlag {GEN, PEN}

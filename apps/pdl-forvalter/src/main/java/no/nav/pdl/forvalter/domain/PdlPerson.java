@@ -9,6 +9,7 @@ import no.nav.pdl.forvalter.domain.doedsbo.PdlKontaktinformasjonForDoedsbo;
 import no.nav.pdl.forvalter.domain.falskidentitet.PdlFalskIdentitet;
 import no.nav.pdl.forvalter.domain.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
 import no.nav.pdl.forvalter.dto.RsKontaktadresse;
+import no.nav.pdl.forvalter.dto.RsTilrettelagtKommunikasjon;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class PdlPerson implements Serializable {
     private List<PdlDoedsfall> doedsfall;
     private List<PdlFolkeregisterpersonstatus> folkeregisterpersonstatus;
     //    private List<PdlIdentitetsgrunnlag> identitetsgrunnlag;
-//    private List<PdlTilrettelagtKommunikasjon> tilrettelagtKommunikasjon;
+    private List<RsTilrettelagtKommunikasjon> tilrettelagtKommunikasjon;
 //    private List<PdlFolkeregisteridentifikator> folkeregisteridentifikator;
     private List<PdlStatsborgerskap> statsborgerskap;
     //    private List<PdlSikkerhetstiltak> sikkerhetstiltak;
@@ -211,5 +212,13 @@ public class PdlPerson implements Serializable {
             falskIdentitet = new ArrayList<>();
         }
         return falskIdentitet;
+    }
+
+    public List<RsTilrettelagtKommunikasjon> getTilrettelagtKommunikasjon() {
+        if (isNull(tilrettelagtKommunikasjon)) {
+            tilrettelagtKommunikasjon = new ArrayList<>();
+        }
+
+        return tilrettelagtKommunikasjon;
     }
 }

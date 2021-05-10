@@ -1,5 +1,6 @@
 package no.nav.pdl.forvalter.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,6 +12,9 @@ import no.nav.pdl.forvalter.domain.PdlPerson;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PersonUpdateRequest {
+
+    @JsonIgnore
+    private String ident;
 
     private PdlPerson person;
 }

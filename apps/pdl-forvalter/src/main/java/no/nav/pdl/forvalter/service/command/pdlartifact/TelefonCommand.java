@@ -1,4 +1,4 @@
-package no.nav.pdl.forvalter.service.command;
+package no.nav.pdl.forvalter.service.command.pdlartifact;
 
 import no.nav.pdl.forvalter.domain.PdlTelefonnummer;
 import no.nav.pdl.forvalter.service.PdlArtifactService;

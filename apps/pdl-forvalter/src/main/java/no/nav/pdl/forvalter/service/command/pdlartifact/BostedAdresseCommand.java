@@ -1,4 +1,4 @@
-package no.nav.pdl.forvalter.service.command;
+package no.nav.pdl.forvalter.service.command.pdlartifact;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.artifact.VegadresseService;
@@ -12,9 +12,9 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.domain.PdlAdresse.Master.FREG;
 import static no.nav.pdl.forvalter.domain.PdlAdresse.Master.PDL;
-import static no.nav.pdl.forvalter.utils.AdresseServiceUtil.validateBruksenhet;
-import static no.nav.pdl.forvalter.utils.AdresseServiceUtil.validateMasterPdl;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.count;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.validateBruksenhet;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.validateMasterPdl;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 

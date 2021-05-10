@@ -6,6 +6,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.PdlTestdataConsumer;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.domain.PdlKontaktadresse;
+import no.nav.pdl.forvalter.domain.PdlTilrettelagtKommunikasjon;
 import no.nav.pdl.forvalter.dto.PdlOrdreResponse;
 import no.nav.pdl.forvalter.service.command.PdlDeployCommand;
 import org.springframework.http.HttpStatus;
@@ -36,6 +37,7 @@ import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_OPPHOLD
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_SIVILSTAND;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_STATSBORGERSKAP;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_TELEFONUMMER;
+import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_TILRETTELAGT_KOMMUNIKASJON;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_UTENLANDS_IDENTIFIKASJON_NUMMER;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_UTFLYTTING;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_VERGEMAAL;
@@ -83,6 +85,8 @@ public class PdlOrdreService {
         status.addAll(new PdlDeployCommand(PDL_UTENLANDS_IDENTIFIKASJON_NUMMER, ident,
                 pdlPerson.getPerson().getUtenlandskIdentifikasjonsnummer(), pdlTestdataConsumer).call());
         status.addAll(new PdlDeployCommand(PDL_FALSK_IDENTITET, ident, pdlPerson.getPerson().getFalskIdentitet(), pdlTestdataConsumer).call());
+        status.addAll(new PdlDeployCommand(PDL_TILRETTELAGT_KOMMUNIKASJON, ident,
+                mapperFacade.mapAsList(pdlPerson.getPerson().getTilrettelagtKommunikasjon(), PdlTilrettelagtKommunikasjon.class), pdlTestdataConsumer).call());
 
         return status;
     }

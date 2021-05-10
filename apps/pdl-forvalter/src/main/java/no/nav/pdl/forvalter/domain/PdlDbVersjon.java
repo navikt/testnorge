@@ -16,8 +16,7 @@ import java.io.Serializable;
 @JsonFilter("idFilter")
 public abstract class PdlDbVersjon implements Serializable {
 
-    @Schema(required = true,
-            description = "Versjon av informasjonselement")
+    @Schema(description = "Versjon av informasjonselement. Fravær av denne eller 0 betyr nytt element")
     private Integer id;
     @Schema(defaultValue = "Dolly",
             description = "Dataens opprinnelse")
