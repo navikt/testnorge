@@ -2,13 +2,13 @@ package no.nav.pdl.forvalter.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import no.nav.pdl.forvalter.domain.PdlDbVersjon;
 
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class RsTilrettelagtKommunikasjon extends PdlDbVersjon {

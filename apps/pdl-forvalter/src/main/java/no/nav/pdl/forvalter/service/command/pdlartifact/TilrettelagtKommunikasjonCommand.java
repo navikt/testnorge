@@ -41,7 +41,12 @@ public class TilrettelagtKommunikasjonCommand extends PdlArtifactService<RsTilre
     }
 
     @Override
-    public void handle(RsTilrettelagtKommunikasjon tilrettelagtKommunikasjon) {
+    protected void handle(RsTilrettelagtKommunikasjon tilrettelagtKommunikasjon) {
+
+    }
+
+    @Override
+    protected void enforceIntegrity(List<RsTilrettelagtKommunikasjon> type) {
 
     }
 }

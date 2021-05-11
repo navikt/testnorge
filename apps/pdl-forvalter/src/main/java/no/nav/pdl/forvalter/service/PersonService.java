@@ -35,8 +35,9 @@ public class PersonService {
                         .person(new PdlPerson())
                         .build());
 
-        var compiledRequest = personArtifactService.buildPerson(request);
-        dbPerson.setPerson(new MergeCommand(compiledRequest, dbPerson.getPerson(), mapperFacade).call());
+        var mergedPerson = new MergeCommand(request.getPerson(), dbPerson.getPerson(), mapperFacade).call();
+        var extendedArtifacts = personArtifactService.buildPerson(mergedPerson, ident);
+        dbPerson.setPerson(extendedArtifacts);
         dbPerson.setUpdated(LocalDateTime.now());
 
         return personRepository.save(dbPerson);

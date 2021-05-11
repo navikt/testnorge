@@ -26,7 +26,12 @@ public class TelefonCommand extends PdlArtifactService<PdlTelefonnummer> {
     }
 
     @Override
-    public void handle(PdlTelefonnummer type) {
+    protected void handle(PdlTelefonnummer type) {
+
+    }
+
+    @Override
+    protected void enforceIntegrity(List<PdlTelefonnummer> type) {
 
     }
 }

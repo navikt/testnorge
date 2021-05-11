@@ -9,7 +9,6 @@ import no.nav.pdl.forvalter.dto.RsKontaktadresse;
 import no.nav.pdl.forvalter.dto.RsKontaktadresse.Postboksadresse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.HttpClientErrorException;
@@ -38,9 +37,6 @@ class KontaktAdresseCommandTest {
     @Mock
     private MapperFacade mapperFacade;
 
-    @InjectMocks
-    private KontaktAdresseCommand kontaktAdresseCommand;
-
     @Test
     void whenTooFewDigitsInPostnummer_thenThrowExecption() {
 
@@ -49,6 +45,7 @@ class KontaktAdresseCommandTest {
                         .postboksadresse(Postboksadresse.builder()
                                 .postboks("123")
                                 .build())
+                        .isNew(true)
                         .build()), vegadresseService, mapperFacade).call());
 
         assertThat(exception.getMessage(), containsString("Postnummer består av fire sifre"));
@@ -61,6 +58,7 @@ class KontaktAdresseCommandTest {
                 new KontaktAdresseCommand(List.of(RsKontaktadresse.builder()
                         .postboksadresse(Postboksadresse.builder()
                                 .build())
+                        .isNew(true)
                         .build()), vegadresseService, mapperFacade).call());
 
         assertThat(exception.getMessage(), containsString("Kan ikke være tom"));
@@ -73,6 +71,7 @@ class KontaktAdresseCommandTest {
                 new KontaktAdresseCommand(List.of(RsKontaktadresse.builder()
                         .vegadresse(new PdlVegadresse())
                         .utenlandskAdresse(new PdlUtenlandskAdresse())
+                        .isNew(true)
                         .build()), vegadresseService, mapperFacade).call());
 
         assertThat(exception.getMessage(), containsString("Kun én adresse skal være satt"));
@@ -81,11 +80,11 @@ class KontaktAdresseCommandTest {
     @Test
     void whenMasterPDLWithoutGyldighet_thenThrowExecption() {
 
-        var kontaktAdresse = new RsKontaktadresse();
-        kontaktAdresse.setMaster(PDL);
-
         Exception exception = assertThrows(HttpClientErrorException.class, () ->
-                new KontaktAdresseCommand(List.of(kontaktAdresse), vegadresseService, mapperFacade).call());
+                new KontaktAdresseCommand(List.of(RsKontaktadresse.builder()
+                        .master(PDL)
+                        .isNew(true)
+                        .build()), vegadresseService, mapperFacade).call());
 
         assertThat(exception.getMessage(), containsString(
                 "Feltene gyldigFraOgMed og gyldigTilOgMed må ha verdi hvis master er PDL"));
@@ -99,6 +98,7 @@ class KontaktAdresseCommandTest {
                         .vegadresse(PdlVegadresse.builder()
                                 .adressenavn("Denne veien")
                                 .build())
+                        .isNew(true)
                         .build()), vegadresseService, mapperFacade).call());
 
         assertThat(exception.getMessage(), containsString(
@@ -113,6 +113,7 @@ class KontaktAdresseCommandTest {
                         .vegadresse(PdlVegadresse.builder()
                                 .bruksenhetsnummer("W12345")
                                 .build())
+                        .isNew(true)
                         .build()), vegadresseService, mapperFacade).call());
 
         assertThat(exception.getMessage(), containsString(
@@ -137,6 +138,7 @@ class KontaktAdresseCommandTest {
                         .vegadresse(PdlVegadresse.builder()
                                 .postnummer("1234")
                                 .build())
+                        .isNew(true)
                         .build()), vegadresseService, mapperFacade).call().get(0);
 
         verify(vegadresseService).get(any(PdlVegadresse.class), nullable(String.class));

@@ -24,10 +24,15 @@ public class KjoennCommand extends PdlArtifactService<PdlKjoenn> {
     }
 
     @Override
-    public void handle(PdlKjoenn kjoenn) {
+    protected void handle(PdlKjoenn kjoenn) {
 
         if (isNull(kjoenn.getKjoenn())) {
             kjoenn.setKjoenn(new KjoennFraIdentCommand(ident).call());
         }
+    }
+
+    @Override
+    protected void enforceIntegrity(List<PdlKjoenn> type) {
+
     }
 }

@@ -4,6 +4,7 @@ import no.nav.pdl.forvalter.domain.Identtype;
 import no.nav.pdl.forvalter.domain.PdlInnflytting;
 import no.nav.pdl.forvalter.domain.PdlStatsborgerskap;
 import no.nav.pdl.forvalter.service.PdlArtifactService;
+import no.nav.pdl.forvalter.service.command.DatoFraIdentCommand;
 import no.nav.pdl.forvalter.service.command.IdenttypeFraIdentCommand;
 import no.nav.pdl.forvalter.service.command.TilfeldigLandCommand;
 import org.springframework.web.client.HttpClientErrorException;
@@ -43,7 +44,7 @@ public class StatsborgerskapCommand extends PdlArtifactService<PdlStatsborgerska
     }
 
     @Override
-    public void handle(PdlStatsborgerskap statsborgerskap) {
+    protected void handle(PdlStatsborgerskap statsborgerskap) {
 
         if (isBlank(statsborgerskap.getLandkode())) {
             if (nonNull(innflytting)) {
@@ -58,5 +59,10 @@ public class StatsborgerskapCommand extends PdlArtifactService<PdlStatsborgerska
         if (isNull(statsborgerskap.getGyldigFom())) {
             statsborgerskap.setGyldigFom(new DatoFraIdentCommand(ident).call().atStartOfDay());
         }
+    }
+
+    @Override
+    protected void enforceIntegrity(List<PdlStatsborgerskap> type) {
+
     }
 }

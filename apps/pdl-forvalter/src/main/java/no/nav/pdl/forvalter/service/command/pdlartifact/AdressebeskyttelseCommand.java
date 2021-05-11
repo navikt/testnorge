@@ -29,10 +29,15 @@ public class AdressebeskyttelseCommand extends PdlArtifactService<PdlAdressebesk
     }
 
     @Override
-    public void handle(PdlAdressebeskyttelse adressebeskyttelse) {
+    protected void handle(PdlAdressebeskyttelse adressebeskyttelse) {
 
         if (STRENGT_FORTROLIG_UTLAND.equals(adressebeskyttelse.getGradering())) {
             adressebeskyttelse.setMaster(PDL);
         }
+    }
+
+    @Override
+    protected void enforceIntegrity(List<PdlAdressebeskyttelse> type) {
+
     }
 }

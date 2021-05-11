@@ -53,7 +53,7 @@ public class OppholdsadresseCommand extends PdlArtifactService<PdlOppholdsadress
     }
 
     @Override
-    public void handle(PdlOppholdsadresse oppholdsadresse) {
+    protected void handle(PdlOppholdsadresse oppholdsadresse) {
 
         if (nonNull(oppholdsadresse.getVegadresse())) {
             var vegadresse =
@@ -61,5 +61,10 @@ public class OppholdsadresseCommand extends PdlArtifactService<PdlOppholdsadress
             oppholdsadresse.setAdresseIdentifikatorFraMatrikkelen(vegadresse.getMatrikkelId());
             mapperFacade.map(vegadresse, oppholdsadresse.getVegadresse());
         }
+    }
+
+    @Override
+    protected void enforceIntegrity(List<PdlOppholdsadresse> type) {
+
     }
 }

@@ -6,7 +6,6 @@ import no.nav.pdl.forvalter.domain.PdlDbVersjon;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static java.util.Objects.isNull;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 
 @RequiredArgsConstructor
@@ -18,7 +17,7 @@ public abstract class PdlArtifactService<T extends PdlDbVersjon> implements Call
 
         for (var type : request) {
 
-            if (isNull(type.getId()) || type.getId().equals(0)) {
+            if (type.isNew()) {
                 validate(type);
 
                 handle(type);
@@ -27,10 +26,13 @@ public abstract class PdlArtifactService<T extends PdlDbVersjon> implements Call
                 }
             }
         }
+        enforceIntegrity(request);
         return request;
     }
 
     protected abstract void validate(T type);
 
-    public abstract void handle(T type);
+    protected abstract void handle(T type);
+
+    protected abstract void enforceIntegrity(List<T> type);
 }

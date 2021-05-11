@@ -53,7 +53,7 @@ public class BostedAdresseCommand extends PdlArtifactService<PdlBostedadresse> {
     }
 
     @Override
-    public void handle(PdlBostedadresse bostedadresse) {
+    protected void handle(PdlBostedadresse bostedadresse) {
         if (nonNull(bostedadresse.getVegadresse())) {
             var vegadresse =
                     vegadresseService.get(bostedadresse.getVegadresse(), bostedadresse.getAdresseIdentifikatorFraMatrikkelen());
@@ -64,4 +64,10 @@ public class BostedAdresseCommand extends PdlArtifactService<PdlBostedadresse> {
             bostedadresse.setMaster(PDL);
         }
     }
+
+    @Override
+    protected void enforceIntegrity(List<PdlBostedadresse> type) {
+
+    }
+
 }

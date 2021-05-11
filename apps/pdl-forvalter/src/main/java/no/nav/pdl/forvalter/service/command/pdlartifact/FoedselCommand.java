@@ -5,6 +5,7 @@ import no.nav.pdl.forvalter.domain.PdlBostedadresse;
 import no.nav.pdl.forvalter.domain.PdlFoedsel;
 import no.nav.pdl.forvalter.domain.PdlInnflytting;
 import no.nav.pdl.forvalter.service.PdlArtifactService;
+import no.nav.pdl.forvalter.service.command.DatoFraIdentCommand;
 import no.nav.pdl.forvalter.service.command.IdenttypeFraIdentCommand;
 import no.nav.pdl.forvalter.service.command.TilfeldigKommuneCommand;
 import no.nav.pdl.forvalter.service.command.TilfeldigLandCommand;
@@ -66,5 +67,10 @@ public class FoedselCommand extends PdlArtifactService<PdlFoedsel> {
                 foedsel.setFodekommune(new TilfeldigKommuneCommand().call());
             }
         }
+    }
+
+    @Override
+    protected void enforceIntegrity(List<PdlFoedsel> type) {
+
     }
 }

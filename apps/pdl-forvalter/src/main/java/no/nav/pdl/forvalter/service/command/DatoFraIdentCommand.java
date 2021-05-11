@@ -1,4 +1,4 @@
-package no.nav.pdl.forvalter.service.command.pdlartifact;
+package no.nav.pdl.forvalter.service.command;
 
 import lombok.RequiredArgsConstructor;
 

@@ -67,12 +67,17 @@ public class KontaktAdresseCommand extends PdlArtifactService<RsKontaktadresse> 
     }
 
     @Override
-    public void handle(RsKontaktadresse kontaktadresse) {
+    protected void handle(RsKontaktadresse kontaktadresse) {
         if (nonNull(kontaktadresse.getVegadresse())) {
             var vegadresse =
                     vegadresseService.get(kontaktadresse.getVegadresse(), kontaktadresse.getAdresseIdentifikatorFraMatrikkelen());
             kontaktadresse.setAdresseIdentifikatorFraMatrikkelen(vegadresse.getMatrikkelId());
             mapperFacade.map(vegadresse, kontaktadresse.getVegadresse());
         }
+    }
+
+    @Override
+    protected void enforceIntegrity(List<RsKontaktadresse> type) {
+
     }
 }

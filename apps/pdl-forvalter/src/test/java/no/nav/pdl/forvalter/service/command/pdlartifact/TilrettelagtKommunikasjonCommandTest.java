@@ -17,6 +17,7 @@ class TilrettelagtKommunikasjonCommandTest {
 
         Exception exception = assertThrows(HttpClientErrorException.class, () ->
                 new TilrettelagtKommunikasjonCommand(List.of(RsTilrettelagtKommunikasjon.builder()
+                        .isNew(true)
                         .build())).call());
 
         assertThat(exception.getMessage(), containsString("Enten språk for taletolk og/eller tegnspråktolk må oppgis"));
@@ -28,6 +29,7 @@ class TilrettelagtKommunikasjonCommandTest {
         Exception exception = assertThrows(HttpClientErrorException.class, () ->
                 new TilrettelagtKommunikasjonCommand(List.of(RsTilrettelagtKommunikasjon.builder()
                         .spraakForTaletolk("svensk")
+                        .isNew(true)
                         .build())).call());
 
         assertThat(exception.getMessage(), containsString("Språk for taletolk er ugyldig: forventet 2 tegn i hht kodeverk Språk"));
@@ -39,6 +41,7 @@ class TilrettelagtKommunikasjonCommandTest {
         Exception exception = assertThrows(HttpClientErrorException.class, () ->
                 new TilrettelagtKommunikasjonCommand(List.of(RsTilrettelagtKommunikasjon.builder()
                         .spraakForTegnspraakTolk("kyrgisistansk")
+                        .isNew(true)
                         .build())).call());
 
         assertThat(exception.getMessage(), containsString("Språk for tegnspråktolk er ugyldig: forventet 2 tegn i hht kodeverk Språk"));

@@ -14,7 +14,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 public class InnflyttingCommand extends PdlArtifactService<PdlInnflytting> {
 
-    private static final String VALIDATION_LANDKODE_ERROR = "Landkode må oppgis i fraflyttingsland";
+    private static final String VALIDATION_LANDKODE_ERROR = "Landkode må oppgis i hht ISO-3 Landkoder på fraflyttingsland";
 
     public InnflyttingCommand(List<PdlInnflytting> request) {
         super(request);
@@ -34,5 +34,10 @@ public class InnflyttingCommand extends PdlArtifactService<PdlInnflytting> {
         if (isBlank(innflytting.getFraflyttingsland())) {
             innflytting.setFraflyttingsland(new TilfeldigLandCommand().call());
         }
+    }
+
+    @Override
+    protected void enforceIntegrity(List<PdlInnflytting> type) {
+
     }
 }

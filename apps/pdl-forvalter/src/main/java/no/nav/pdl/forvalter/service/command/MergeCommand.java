@@ -65,6 +65,7 @@ public class MergeCommand implements Callable<PdlPerson> {
                                 format("Merge-error: id:%s ikke funnet for element:'%s'", requestElement.getId(), field.getName()));
                     } else {
                         requestElement.setId(dbId.incrementAndGet());
+                        requestElement.setNew(true);
                         infoElementDbPerson.add(0, mapperFacade.map(requestElement, requestElement.getClass()));
                     }
                 });
