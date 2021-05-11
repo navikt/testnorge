@@ -23,7 +23,7 @@ public class InputValidator {
     private static final List<String> navEndringskoder = new ArrayList<>(Arrays.asList("Z010", "Z510", "Z310", "ZM10", "Z610",
             "ZV10", "ZD10", "1810", "Z810"));
 
-    private static final List<String> arbeidsforholdTyper = new ArrayList<>(Arrays.asList("ordinaert", "maritimt", "forenklet"));
+    private static final List<String> arbeidsforholdTyper = new ArrayList<>(Arrays.asList("ordinaert", "maritimt", "forenklet", "frilanser"));
 
     public static void validateInput(Integer numToGenerate) {
         if (Objects.isNull(numToGenerate)) {

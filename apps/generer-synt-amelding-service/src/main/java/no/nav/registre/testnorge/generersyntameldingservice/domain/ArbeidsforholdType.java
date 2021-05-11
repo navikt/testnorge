@@ -8,7 +8,8 @@ import lombok.RequiredArgsConstructor;
 public enum ArbeidsforholdType {
 
     maritimtArbeidsforhold("maritimt"),
-    ordinaertArbeidsforhold("ordinaert");
+    ordinaertArbeidsforhold("ordinaert"),
+    frilanserOppdragstakerHonorarPersonerMm("frilanser");
 
     private final String path;
 }
