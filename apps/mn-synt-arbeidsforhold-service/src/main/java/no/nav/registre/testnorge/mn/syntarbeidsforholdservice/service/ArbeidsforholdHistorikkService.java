@@ -40,7 +40,7 @@ public class ArbeidsforholdHistorikkService {
         var kalenermnd = dates.stream().findFirst();
 
         if (kalenermnd.isEmpty()) {
-            log.warn("Kalenermnd finnes ikke. Stopper genrering.");
+            log.warn("Kalenermnd finnes ikke. Stopper generering.");
             return map;
         }
         var organisasjoner = opplysningspliktigService.getOpplysningspliktigeOrganisasjoner(miljo);
@@ -64,7 +64,7 @@ public class ArbeidsforholdHistorikkService {
                         }
                     });
                 } catch (Exception e) {
-                    log.error("Feil med utviukling av populasjon.", e);
+                    log.error("Feil med utvikling av populasjon.", e);
                 }
             }
         });
