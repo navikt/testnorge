@@ -30,6 +30,8 @@ public class ArbeidsforholdDTO {
     private List<Permisjon> permisjoner;
     private Fartoey fartoey;
     private List<Inntekt> inntekter;
+    private String formForAnsettelse;
+    private String aarsakTilSluttdato;
 
     public ArbeidsforholdDTO(Arbeidsforhold arbeidsforhold){
         this.rapporteringsmaaned = arbeidsforhold.getRapporteringsmaaned();
@@ -44,6 +46,8 @@ public class ArbeidsforholdDTO {
         this.permisjoner = arbeidsforhold.getPermisjoner() == null ? Collections.emptyList() : arbeidsforhold.getPermisjoner();
         this.fartoey = arbeidsforhold.getFartoey();
         this.inntekter = arbeidsforhold.getInntekter() == null ? Collections.emptyList() : arbeidsforhold.getInntekter();
+        this.formForAnsettelse = arbeidsforhold.getFormForAnsettelse();
+        this.aarsakTilSluttdato = arbeidsforhold.getAarsakTilSluttdato();
     }
 
 }
