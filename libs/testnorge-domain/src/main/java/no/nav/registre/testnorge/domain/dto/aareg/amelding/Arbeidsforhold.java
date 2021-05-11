@@ -91,6 +91,12 @@ public class Arbeidsforhold {
     @JsonAlias({"AVVIK", "avvik"})
     private Avvik avvik;
 
+    @JsonAlias({"AARSAK_TIL_SLUTTDATO", "aarsakTilSluttdato", "sluttaarsak"})
+    private String aarsakTilSluttdato;
+
+    @JsonAlias({"FORM_FOR_ANSETTELSE", "formForAnsettelse", "ansettelsesform"})
+    private String formForAnsettelse;
+
     public void emptyPermisjoner(){
         this.setPermisjon(0);
         this.setPermisjonMedForeldrepenger(0);
