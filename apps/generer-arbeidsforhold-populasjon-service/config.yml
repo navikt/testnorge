@@ -1,14 +1,13 @@
-apiVersion: "nais.io/v1alpha1"
+﻿apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: testnav-syntrest-proxy
+  name: testnav-generer-arbeidsforhold-populasjon-service
   namespace: dolly
   labels:
     team: dolly
 spec:
   image: {{ image }}
   port: 8080
-  webproxy: true
   azure:
     application:
       enabled: true
@@ -18,10 +17,11 @@ spec:
       rules:
         - application: team-dolly-lokal-app
           cluster: dev-fss
-        - application: testnav-generer-synt-amelding-service
-          cluster: dev-gcp
-        - application: testnav-generer-arbeidsforhold-populasjon-service
-          cluster: dev-gcp
+        - application: testnorge-oversikt-frontend
+          cluster: dev-fss
+    outbound:
+      external:
+        - host: testnav-syntrest-proxy.dev-fss-pub.nais.io
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -43,4 +43,4 @@ spec:
       cpu: 500m
       memory: 2048Mi
   ingresses:
-    - "https://testnav-syntrest-proxy.dev-fss-pub.nais.io"
+    - "https://testnav-generer-arbeidsforhold-populasjon-service.dev.intern.nav.no"
