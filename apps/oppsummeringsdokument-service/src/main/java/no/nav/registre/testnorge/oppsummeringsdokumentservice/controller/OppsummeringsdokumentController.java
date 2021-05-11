@@ -46,6 +46,7 @@ public class OppsummeringsdokumentController {
         return ResponseEntity.ok(oppsummeringsdokument.toDTO());
     }
 
+
     @GetMapping("/{orgnummer}/{kalendermaaned}")
     public ResponseEntity<OppsummeringsdokumentDTO> getOpplysningspliktigFromKalendermaaned(
             @PathVariable("orgnummer") String orgnummer,
@@ -75,6 +76,12 @@ public class OppsummeringsdokumentController {
                 .toUri();
 
         return ResponseEntity.created(uri).header("ID", id).build();
+    }
+
+    @GetMapping("/identer/{ident}")
+    public ResponseEntity<List<OppsummeringsdokumentDTO>> getAllBy(@RequestHeader("miljo") String miljo, @PathVariable("ident") String ident) {
+        var documents = adapter.getAllCurrentDocumentsBy(miljo, ident);
+        return ResponseEntity.ok(documents.stream().map(Oppsummeringsdokument::toDTO).collect(Collectors.toList()));
     }
 
     @DeleteMapping

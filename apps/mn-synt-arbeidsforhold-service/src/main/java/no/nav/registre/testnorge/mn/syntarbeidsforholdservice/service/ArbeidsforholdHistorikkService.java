@@ -3,6 +3,7 @@ package no.nav.registre.testnorge.mn.syntarbeidsforholdservice.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,7 +14,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
@@ -21,26 +21,107 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.SyntrestConsumer;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Arbeidsforhold;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.ArbeidsforholdMap;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Opplysningspliktig;
+import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Organisajon;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ArbeidsforholdHistorikkService {
     private final Executor executor;
-    private final SyntrestConsumer syntrestConsumer;
     private final IdentService identService;
     private final OpplysningspliktigService opplysningspliktigService;
-    private final Random random = new Random();
+    private final ArbeidsforholdSyntService arbeidsforholdSyntService;
 
-    private Map<LocalDate, Arbeidsforhold> createArbeidsforholdHistorikk(final String ident, Iterator<LocalDate> dates) {
+    private Map<LocalDate, List<Arbeidsforhold>> developArbeidsforhold(Set<LocalDate> dates, String miljo) {
+        var map = new HashMap<LocalDate, List<Arbeidsforhold>>();
+        var kalenermnd = dates.stream().findFirst();
+
+        if (kalenermnd.isEmpty()) {
+            log.warn("Kalenermnd finnes ikke. Stopper generering.");
+            return map;
+        }
+        var organisasjoner = opplysningspliktigService.getOpplysningspliktigeOrganisasjoner(miljo);
+        var opplysningspliktigList = opplysningspliktigService.getAllOpplysningspliktig(kalenermnd.get().minusMonths(1), miljo);
+
+        opplysningspliktigList.forEach(opplysningspliktig -> {
+            var futures = opplysningspliktig.getArbeidsforhold()
+                    .stream()
+                    .map(arbeidsforhold -> futureMap(dates.iterator(), arbeidsforhold, organisasjoner))
+                    .collect(Collectors.toList());
+
+            for (var future : futures) {
+                try {
+                    future.get().forEach((key, value) -> {
+                        if (map.containsKey(key)) {
+                            map.get(key).add(value);
+                        } else {
+                            var list = new ArrayList<Arbeidsforhold>();
+                            list.add(value);
+                            map.put(key, list);
+                        }
+                    });
+                } catch (Exception e) {
+                    log.error("Feil med utvikling av populasjon.", e);
+                }
+            }
+        });
+        return map;
+    }
+
+    private Map<LocalDate, Arbeidsforhold> develop(Iterator<LocalDate> dates, Arbeidsforhold previous, List<Organisajon> organisajoner) {
+        var map = new HashMap<LocalDate, Arbeidsforhold>();
+        Iterator<Arbeidsforhold> historikk = Collections.emptyIterator();
+
+        if (!dates.hasNext()) {
+            return map;
+        }
+
+        while (dates.hasNext()) {
+            LocalDate kalendermaaned = dates.next();
+            log.info("Generer for {} den {}.", previous.getIdent(), kalendermaaned);
+
+            boolean isNewArbeidsforhold = previous.getSluttdato() != null
+                    && previous.getSluttdato().getMonth() == kalendermaaned.minusMonths(1).getMonth()
+                    && previous.getSluttdato().getYear() == kalendermaaned.minusMonths(1).getYear();
+
+            if (previous.getSluttdato() != null) {
+                log.info("Sluttdato er satt til {} og neste mnd er {}.",
+                        previous.getSluttdato(),
+                        kalendermaaned
+                );
+            }
+
+            if (isNewArbeidsforhold || previous.getSluttdato() != null && previous.getSluttdato().isBefore(kalendermaaned) || previous.isForenklet()) {
+                log.info("Genererer nytt arbeidsforhold for {} den {}.", previous.getIdent(), kalendermaaned);
+                Arbeidsforhold next = arbeidsforholdSyntService.getFirstArbeidsforhold(organisajoner, kalendermaaned, previous.getIdent());
+                historikk = Collections.emptyIterator();
+                map.put(kalendermaaned, next);
+                previous = next;
+            } else {
+                if (!historikk.hasNext()) {
+                    historikk = arbeidsforholdSyntService.getArbeidsforholdHistorikk(previous, kalendermaaned.minusMonths(1), null).iterator();
+                    if (!historikk.hasNext()) {
+                        log.warn("Forsetter ikke pa arbeidsforhold da historikk ikke finnes for {}.", previous.getIdent());
+                        return map;
+                    }
+                }
+                var next = historikk.next();
+                map.put(kalendermaaned, next);
+                previous = next;
+            }
+        }
+        log.info("Syntetisk historikk generert for {}.", previous.getIdent());
+        return map;
+    }
+
+    private Map<LocalDate, Arbeidsforhold> createArbeidsforholdHistorikk(final String ident, Iterator<LocalDate> dates, List<Organisajon> organisajoner) {
         var map = new HashMap<LocalDate, Arbeidsforhold>();
         var startdato = dates.next();
         log.info("Generer for {} den {}.", ident, startdato);
-        var first = syntrestConsumer.getFirstArbeidsforhold(startdato, ident, null);
+        var first = arbeidsforholdSyntService.getFirstArbeidsforhold(organisajoner, startdato, ident);
         map.put(startdato, first);
 
         if (!dates.hasNext()) {
@@ -48,13 +129,13 @@ public class ArbeidsforholdHistorikkService {
         }
 
         if (first.isForenklet()) {
-            map.putAll(createArbeidsforholdHistorikk(ident, dates));
+            map.putAll(createArbeidsforholdHistorikk(ident, dates, organisajoner));
             return map;
         }
 
 
         var previous = first;
-        var historikk = syntrestConsumer.getArbeidsforholdHistorikk(previous, startdato).iterator();
+        var historikk = arbeidsforholdSyntService.getArbeidsforholdHistorikk(previous, startdato, null).iterator();
 
         while (dates.hasNext()) {
             LocalDate kalendermaaned = dates.next();
@@ -73,13 +154,13 @@ public class ArbeidsforholdHistorikkService {
 
             if (isNewArbeidsforhold || previous.getSluttdato() != null && previous.getSluttdato().isBefore(kalendermaaned)) {
                 log.info("Genererer nytt arbeidsforhold for {} den {}.", ident, kalendermaaned);
-                Arbeidsforhold next = syntrestConsumer.getFirstArbeidsforhold(kalendermaaned, ident, null);
+                Arbeidsforhold next = arbeidsforholdSyntService.getFirstArbeidsforhold(organisajoner, kalendermaaned, ident);
                 historikk = Collections.emptyIterator();
                 map.put(kalendermaaned, next);
                 previous = next;
             } else {
                 if (!historikk.hasNext()) {
-                    historikk = syntrestConsumer.getArbeidsforholdHistorikk(previous, kalendermaaned.minusMonths(1)).iterator();
+                    historikk = arbeidsforholdSyntService.getArbeidsforholdHistorikk(previous, kalendermaaned.minusMonths(1), null).iterator();
                     if (!historikk.hasNext()) {
                         log.warn("Forsetter ikke pa arbeidsforhold da historikk ikke finnes for {}.", ident);
                         return map;
@@ -94,14 +175,22 @@ public class ArbeidsforholdHistorikkService {
         return map;
     }
 
-    private CompletableFuture<ArbeidsforholdMap> futureMap(final String ident, Set<LocalDate> dates) {
+
+    private CompletableFuture<Map<LocalDate, Arbeidsforhold>> futureMap(Iterator<LocalDate> dates, Arbeidsforhold previous, List<Organisajon> organisajoner) {
+        return CompletableFuture.supplyAsync(() -> develop(dates, previous, organisajoner), executor);
+    }
+
+    private CompletableFuture<ArbeidsforholdMap> futureMap(final String ident, Set<LocalDate> dates, List<Organisajon> organisajoner) {
         return CompletableFuture.supplyAsync(
-                () -> createArbeidsforholdHistorikk(ident, dates.iterator()), executor
+                () -> createArbeidsforholdHistorikk(ident, dates.iterator(), organisajoner), executor
         ).thenApply(map -> new ArbeidsforholdMap(ident, map));
     }
 
-    private List<ArbeidsforholdMap> getArbeidsforholdMapList(Set<String> identer, Set<LocalDate> dates) {
-        var futures = identer.stream().map(ident -> futureMap(ident, dates)).collect(Collectors.toList());
+    private List<ArbeidsforholdMap> getArbeidsforholdMapList(Flux<String> identer, Set<LocalDate> dates, String miljo) {
+        var organisasjoner = opplysningspliktigService.getOpplysningspliktigeOrganisasjoner(miljo);
+
+        var futures = identer.map(ident -> futureMap(ident, dates, organisasjoner)).collectList().block();
+
         var list = new ArrayList<ArbeidsforholdMap>();
 
         for (int index = 0; index < futures.size(); index++) {
@@ -122,20 +211,15 @@ public class ArbeidsforholdHistorikkService {
         return list;
     }
 
-    public List<String> reportAll(LocalDate fom, LocalDate tom, int maxIdenter, String miljo) {
-
+    public List<String> populate(LocalDate fom, LocalDate tom, int maxIdenter, String miljo) {
         var startTimeStamp = LocalDateTime.now();
-
         log.info("Starter syntetisering ({}).", startTimeStamp);
+
         var dates = findAllDatesBetween(fom, tom);
         var identer = identService.getIdenterUtenArbeidsforhold(miljo, maxIdenter);
-        if (identer.isEmpty()) {
-            log.warn("Fant ingen identer. Avslutter syntetisering...");
-            return Collections.emptyList();
-        }
 
-        log.info("Syntentiser for {} person(er) mellom {} - {}...", identer.size(), fom, tom);
-        var arbeidsforholdMapList = getArbeidsforholdMapList(identer, dates);
+        log.info("Syntentiser for person(er) mellom {} - {}...", fom, tom);
+        var arbeidsforholdMapList = getArbeidsforholdMapList(identer, dates, miljo);
 
         if (arbeidsforholdMapList.isEmpty()) {
             log.warn("Fikk ikke opprettet syntetisk arbeidsforhold. Avslutter syntetisering...");
@@ -145,13 +229,31 @@ public class ArbeidsforholdHistorikkService {
         for (var kalenermnd : dates) {
             report(arbeidsforholdMapList, kalenermnd, miljo);
         }
-        log.info("Syntetisering ferdig for {}/{} person(er) ({} - {}).",
+        log.info("Syntetisering ferdig for {} person(er) ({} - {}).",
                 arbeidsforholdMapList.size(),
-                identer.size(),
                 startTimeStamp,
                 LocalDateTime.now()
         );
         return arbeidsforholdMapList.stream().map(ArbeidsforholdMap::getIdent).collect(Collectors.toList());
+    }
+
+    public void develop(LocalDate fom, LocalDate tom, String miljo) {
+        var startTimeStamp = LocalDateTime.now();
+        log.info("Starter utvikling av populasjon ({}).", startTimeStamp);
+
+        developArbeidsforhold(findAllDatesBetween(fom, tom), miljo).forEach((kalenermnd, list) -> {
+            var opplysningspliktigList = opplysningspliktigService.getAllOpplysningspliktig(kalenermnd, miljo);
+            list.forEach(arbeidsforhold -> {
+                var opplysningspliktig = findOpplysningspliktigForVirksomhet(arbeidsforhold.getVirksomhetsnummer(), opplysningspliktigList);
+                opplysningspliktig.addArbeidsforhold(arbeidsforhold);
+            });
+            opplysningspliktigService.send(opplysningspliktigList, miljo);
+        });
+
+        log.info("Utvikling av populasjon ferdig ({} - {}).",
+                startTimeStamp,
+                LocalDateTime.now()
+        );
     }
 
     private void report(List<ArbeidsforholdMap> arbeidsforholdMapList, LocalDate kalenermnd, String miljo) {
@@ -159,18 +261,7 @@ public class ArbeidsforholdHistorikkService {
         for (var arbeidsforholdMap : arbeidsforholdMapList) {
             var arbeidsforhold = arbeidsforholdMap.getArbeidsforhold(kalenermnd);
             log.trace("Legger til arbeidsforhold for {} den {}.", arbeidsforhold.getIdent(), kalenermnd);
-            if (arbeidsforholdMap.isNewArbeidsforhold(kalenermnd)
-                    || arbeidsforhold.isForenklet() && !arbeidsforholdMap.contains(kalenermnd.minusMonths(1))) {
-                var opplysningspliktig = opplysningspliktige.get(random.nextInt(opplysningspliktige.size()));
-                arbeidsforhold.setVirksomhetsnummer(opplysningspliktig.getRandomVirksomhetsnummer());
-                log.info("{} starter nytt arbeidsforhold den {}.", arbeidsforhold.getIdent(), kalenermnd);
-            } else {
-                var virksomhetsnummer = arbeidsforholdMap.getArbeidsforhold(kalenermnd.minusMonths(1)).getVirksomhetsnummer();
-                if (virksomhetsnummer == null) {
-                    throw new RuntimeException("Finner ikke forrige virksomhetsnummer");
-                }
-                arbeidsforhold.setVirksomhetsnummer(virksomhetsnummer);
-            }
+
             var opplysningspliktig = findOpplysningspliktigForVirksomhet(arbeidsforhold.getVirksomhetsnummer(), opplysningspliktige);
             opplysningspliktig.addArbeidsforhold(arbeidsforhold);
         }
@@ -203,3 +294,5 @@ public class ArbeidsforholdHistorikkService {
     }
 
 }
+
+

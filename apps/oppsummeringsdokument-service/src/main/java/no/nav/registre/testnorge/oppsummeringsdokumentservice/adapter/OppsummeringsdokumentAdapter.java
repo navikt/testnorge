@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.consumer.AaregSyntConsumer;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.domain.Oppsummeringsdokument;
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.OppsummeringsdokumentRepository;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.OppsummeringsdokumentModel;
 
@@ -83,6 +83,17 @@ public class OppsummeringsdokumentAdapter {
                 )
         );
     }
+
+
+    public List<Oppsummeringsdokument> getAllCurrentDocumentsBy(String miljo, String ident) {
+        var queryBuilders = new ArrayList<QueryBuilder>();
+        queryBuilders.add(QueryBuilders.matchQuery("miljo", miljo));
+
+        queryBuilders.add(QueryBuilders.matchQuery("virksomheter.personer.ident", ident));
+
+        return getAllCurrentDocumentsBy(new NativeSearchQueryBuilder().withQuery(combinedOnANDOperator(queryBuilders)));
+    }
+
 
     public Page<Oppsummeringsdokument> getAllCurrentDocumentsBy(
             String miljo,
