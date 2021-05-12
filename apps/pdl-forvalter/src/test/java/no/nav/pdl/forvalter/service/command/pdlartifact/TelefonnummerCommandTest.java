@@ -75,7 +75,8 @@ class TelefonnummerCommandTest {
                         .landskode("-6332")
                         .isNew(true).build())).call());
 
-        assertThat(exception.getMessage(), containsString("Landkode har format 1 til 4 sifre, eventuelt med ledende plusstegn (+)"));
+        assertThat(exception.getMessage(), containsString("Telefonnummer: Landkode består av ledende + " +
+                "(plusstegn) fulgt av  1 til 5 sifre"));
     }
 
     @Test

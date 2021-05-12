@@ -38,7 +38,7 @@ public class KontaktAdresseCommand extends PdlArtifactService<RsKontaktadresse> 
             throw new HttpClientErrorException(BAD_REQUEST, ArtifactUtils.VALIDATION_POSTBOKS_ERROR);
         }
         if (isBlank(postboksadresse.getPostnummer()) ||
-                isNotBlank(postboksadresse.getPostnummer().replaceAll("[0-9]{4}", ""))) {
+                !postboksadresse.getPostnummer().matches("[0-9]{4}")) {
             throw new HttpClientErrorException(BAD_REQUEST, ArtifactUtils.VALIDATION_POSTNUMMER_ERROR);
         }
     }

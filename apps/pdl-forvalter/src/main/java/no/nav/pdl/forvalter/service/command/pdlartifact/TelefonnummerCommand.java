@@ -17,7 +17,8 @@ public class TelefonnummerCommand extends PdlArtifactService<PdlTelefonnummer> {
     private static final String VALIDATION_PRIORITET_AMBIGUOUS = "Telefonnummer: prioritet 1 og prioritet 2 kan kun benyttes 1 gang hver";
     private static final String VALIDATION_NUMMER_REQUIRED = "Telefonnummer: nummer er påkrevd felt";
     private static final String VALIDATION_LANDSKODE_REQUIRED = "Telefonnummer: landskode er påkrevd felt";
-    private static final String VALIDATION_LANDKODE_INVALID_FORMAT = "Telefonnummer: Landkode har format 1 til 4 sifre, eventuelt med ledende plusstegn (+)";
+    private static final String VALIDATION_LANDKODE_INVALID_FORMAT = "Telefonnummer: Landkode består av ledende + " +
+            "(plusstegn) fulgt av  1 til 5 sifre";
     private static final String VALIDATION_NUMMER_INVALID_FORMAT = "Telefonnummer: nummer kan kun inneholde tallsifre";
     private static final String VALIDATION_NUMMER_INVALID_LENGTH = "Telefonnummer: nummer kan ha lengde fra 3 til 16 sifre";
 
@@ -38,7 +39,7 @@ public class TelefonnummerCommand extends PdlArtifactService<PdlTelefonnummer> {
 
         if (isNull(telefonnummer.getLandskode())) {
             throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_LANDSKODE_REQUIRED);
-        } else if (!telefonnummer.getLandskode().matches("\\+{0,1}[0-9]{1,4}")) {
+        } else if (!telefonnummer.getLandskode().matches("\\+[0-9]{1,5}")) {
             throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_LANDKODE_INVALID_FORMAT);
         }
 

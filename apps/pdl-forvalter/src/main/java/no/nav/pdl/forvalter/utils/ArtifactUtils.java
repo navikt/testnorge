@@ -30,7 +30,7 @@ public class ArtifactUtils {
     }
 
     public static void validateBruksenhet(String bruksenhet) {
-        if (isNotBlank(bruksenhet.replaceAll("[HULK][0-9]{4}", ""))) {
+        if (!bruksenhet.matches("[HULK][0-9]{4}")) {
             throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_BRUKSENHET_ERROR);
         }
     }
@@ -42,12 +42,12 @@ public class ArtifactUtils {
     public static boolean isLandkode(String landkode) {
 
         return isNotBlank(landkode) &&
-                (landkode.replaceAll("[A-Z]{3}", "").length() == 0 ||
+                (landkode.matches("[A-Z]{3}") ||
                         "???".equals(landkode));
     }
 
     public static boolean isSpraak(String spraak) {
 
-        return isNotBlank(spraak) && spraak.replaceAll("[A-Z]{2}", "").length() == 0;
+        return isNotBlank(spraak) && spraak.matches("[A-Z]{2}");
     }
 }
