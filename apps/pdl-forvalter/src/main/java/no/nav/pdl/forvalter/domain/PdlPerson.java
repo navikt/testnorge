@@ -8,8 +8,10 @@ import lombok.NoArgsConstructor;
 import no.nav.pdl.forvalter.domain.doedsbo.PdlKontaktinformasjonForDoedsbo;
 import no.nav.pdl.forvalter.domain.falskidentitet.PdlFalskIdentitet;
 import no.nav.pdl.forvalter.domain.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
+import no.nav.pdl.forvalter.dto.RsInnflytting;
 import no.nav.pdl.forvalter.dto.RsKontaktadresse;
 import no.nav.pdl.forvalter.dto.RsTilrettelagtKommunikasjon;
+import no.nav.pdl.forvalter.dto.RsUtflytting;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -30,8 +32,8 @@ public class PdlPerson implements Serializable {
     private List<PdlBostedadresse> bostedsadresse;
     private List<RsKontaktadresse> kontaktadresse;
     private List<PdlOppholdsadresse> oppholdsadresse;
-    private List<PdlInnflytting> innflytting;
-    private List<PdlUtflytting> utflytting;
+    private List<RsInnflytting> innflytting;
+    private List<RsUtflytting> utflytting;
     private List<PdlDeltBosted> deltBosted;
     private List<PdlFamilierelasjon> forelderBarnRelasjon;
     private List<PdlForeldreansvar> foreldreansvar;
@@ -165,14 +167,14 @@ public class PdlPerson implements Serializable {
         return telefonnummer;
     }
 
-    public List<PdlInnflytting> getInnflytting() {
+    public List<RsInnflytting> getInnflytting() {
         if (isNull(innflytting)) {
             innflytting = new ArrayList<>();
         }
         return innflytting;
     }
 
-    public List<PdlUtflytting> getUtflytting() {
+    public List<RsUtflytting> getUtflytting() {
         if (isNull(utflytting)) {
             utflytting = new ArrayList<>();
         }

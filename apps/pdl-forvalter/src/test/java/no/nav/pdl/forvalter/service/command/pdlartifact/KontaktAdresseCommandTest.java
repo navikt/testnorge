@@ -40,7 +40,7 @@ class KontaktAdresseCommandTest {
     @Test
     void whenTooFewDigitsInPostnummer_thenThrowExecption() {
 
-        Exception exception = assertThrows(HttpClientErrorException.class, () ->
+        var exception = assertThrows(HttpClientErrorException.class, () ->
                 new KontaktAdresseCommand(List.of(RsKontaktadresse.builder()
                         .postboksadresse(Postboksadresse.builder()
                                 .postboks("123")
@@ -54,7 +54,7 @@ class KontaktAdresseCommandTest {
     @Test
     void whenPostboksadresseAndPostboksIsOmitted_thenThrowExecption() {
 
-        Exception exception = assertThrows(HttpClientErrorException.class, () ->
+        var exception = assertThrows(HttpClientErrorException.class, () ->
                 new KontaktAdresseCommand(List.of(RsKontaktadresse.builder()
                         .postboksadresse(Postboksadresse.builder()
                                 .build())
@@ -67,7 +67,7 @@ class KontaktAdresseCommandTest {
     @Test
     void whenMultipleAdressesProvided_thenThrowExecption() {
 
-        Exception exception = assertThrows(HttpClientErrorException.class, () ->
+        var exception = assertThrows(HttpClientErrorException.class, () ->
                 new KontaktAdresseCommand(List.of(RsKontaktadresse.builder()
                         .vegadresse(new PdlVegadresse())
                         .utenlandskAdresse(new PdlUtenlandskAdresse())
@@ -80,7 +80,7 @@ class KontaktAdresseCommandTest {
     @Test
     void whenMasterPDLWithoutGyldighet_thenThrowExecption() {
 
-        Exception exception = assertThrows(HttpClientErrorException.class, () ->
+        var exception = assertThrows(HttpClientErrorException.class, () ->
                 new KontaktAdresseCommand(List.of(RsKontaktadresse.builder()
                         .master(PDL)
                         .isNew(true)
@@ -93,7 +93,7 @@ class KontaktAdresseCommandTest {
     @Test
     void whenPDLAdresseWithoutGyldighet_thenThrowExecption() {
 
-        Exception exception = assertThrows(HttpClientErrorException.class, () ->
+        var exception = assertThrows(HttpClientErrorException.class, () ->
                 new KontaktAdresseCommand(List.of(RsKontaktadresse.builder()
                         .vegadresse(PdlVegadresse.builder()
                                 .adressenavn("Denne veien")
@@ -108,7 +108,7 @@ class KontaktAdresseCommandTest {
     @Test
     void whenAdresseHasUgyldigBruksenhetsnummer_thenThrowExecption() {
 
-        Exception exception = assertThrows(HttpClientErrorException.class, () ->
+        var exception = assertThrows(HttpClientErrorException.class, () ->
                 new KontaktAdresseCommand(List.of(RsKontaktadresse.builder()
                         .vegadresse(PdlVegadresse.builder()
                                 .bruksenhetsnummer("W12345")

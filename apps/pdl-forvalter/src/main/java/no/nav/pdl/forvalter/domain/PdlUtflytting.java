@@ -11,6 +11,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class PdlUtflytting extends PdlDbVersjon {
 
+    private Folkeregistermetadata folkeregistermetadata;
     private String tilflyttingsland;
     private String tilflyttingsstedIUtlandet;
 }

@@ -21,7 +21,7 @@ class OppholdCommandTest {
     @Test
     void whenGyldigFraIsMissing_thenThrowExecption() {
 
-        Exception exception = assertThrows(HttpClientErrorException.class, () ->
+        var exception = assertThrows(HttpClientErrorException.class, () ->
                 new OppholdCommand(List.of(PdlOpphold.builder()
                         .type(PERMANENT)
                         .isNew(true)
@@ -33,7 +33,7 @@ class OppholdCommandTest {
     @Test
     void whenInvalidDateInterval_thenThrowExecption() {
 
-        Exception exception = assertThrows(HttpClientErrorException.class, () ->
+        var exception = assertThrows(HttpClientErrorException.class, () ->
                 new OppholdCommand(List.of(PdlOpphold.builder()
                         .oppholdFra(LocalDate.of(2020, 1, 1).atStartOfDay())
                         .oppholdTil(LocalDate.of(2018, 1, 1).atStartOfDay())
@@ -47,7 +47,7 @@ class OppholdCommandTest {
     @Test
     void whenDatesAreEqual_thenThrowExecption() {
 
-        Exception exception = assertThrows(HttpClientErrorException.class, () ->
+        var exception = assertThrows(HttpClientErrorException.class, () ->
                 new OppholdCommand(List.of(PdlOpphold.builder()
                         .oppholdFra(LocalDate.of(2020, 1, 1).atStartOfDay())
                         .oppholdTil(LocalDate.of(2020, 1, 1).atStartOfDay())
@@ -61,7 +61,7 @@ class OppholdCommandTest {
     @Test
     void whenTypeIsEmpty_thenThrowExecption() {
 
-        Exception exception = assertThrows(HttpClientErrorException.class, () ->
+        var exception = assertThrows(HttpClientErrorException.class, () ->
                 new OppholdCommand(List.of(PdlOpphold.builder()
                         .oppholdFra(LocalDate.of(2020, 1, 1).atStartOfDay())
                         .isNew(true)
@@ -73,7 +73,7 @@ class OppholdCommandTest {
     @Test
     void whenOverlappingDateIntervalsInInput_thenThrowExecption() {
 
-        Exception exception = assertThrows(HttpClientErrorException.class, () ->
+        var exception = assertThrows(HttpClientErrorException.class, () ->
                 new OppholdCommand(List.of(PdlOpphold.builder()
                                 .oppholdFra(LocalDate.of(2020, 1, 2).atStartOfDay())
                                 .type(OPPLYSNING_MANGLER)
@@ -92,7 +92,7 @@ class OppholdCommandTest {
     @Test
     void whenOverlappingDateIntervalsInInput2_thenThrowExecption() {
 
-        Exception exception = assertThrows(HttpClientErrorException.class, () ->
+        var exception = assertThrows(HttpClientErrorException.class, () ->
                 new OppholdCommand(List.of(PdlOpphold.builder()
                                 .oppholdFra(LocalDate.of(2020, 2, 3).atStartOfDay())
                                 .type(OPPLYSNING_MANGLER)

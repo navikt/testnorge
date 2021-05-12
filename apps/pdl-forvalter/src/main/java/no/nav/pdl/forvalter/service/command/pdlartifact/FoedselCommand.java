@@ -3,7 +3,7 @@ package no.nav.pdl.forvalter.service.command.pdlartifact;
 import no.nav.pdl.forvalter.domain.Identtype;
 import no.nav.pdl.forvalter.domain.PdlBostedadresse;
 import no.nav.pdl.forvalter.domain.PdlFoedsel;
-import no.nav.pdl.forvalter.domain.PdlInnflytting;
+import no.nav.pdl.forvalter.dto.RsInnflytting;
 import no.nav.pdl.forvalter.service.PdlArtifactService;
 import no.nav.pdl.forvalter.service.command.DatoFraIdentCommand;
 import no.nav.pdl.forvalter.service.command.IdenttypeFraIdentCommand;
@@ -21,12 +21,12 @@ public class FoedselCommand extends PdlArtifactService<PdlFoedsel> {
 
     private final String ident;
     private final PdlBostedadresse bostedadresse;
-    private final PdlInnflytting innflytting;
+    private final RsInnflytting innflytting;
 
     public FoedselCommand(List<PdlFoedsel> request,
                           String ident,
                           PdlBostedadresse bostedadresse,
-                          PdlInnflytting innflytting) {
+                          RsInnflytting innflytting) {
         super(request);
         this.ident = ident;
         this.bostedadresse = bostedadresse;

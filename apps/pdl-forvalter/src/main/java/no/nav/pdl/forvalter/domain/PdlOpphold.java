@@ -1,5 +1,6 @@
 package no.nav.pdl.forvalter.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PdlOpphold extends PdlDbVersjon {
 
     public enum OppholdType {MIDLERTIDIG, PERMANENT, OPPLYSNING_MANGLER}

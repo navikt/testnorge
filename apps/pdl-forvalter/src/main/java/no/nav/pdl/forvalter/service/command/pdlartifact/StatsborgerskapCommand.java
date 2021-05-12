@@ -1,8 +1,8 @@
 package no.nav.pdl.forvalter.service.command.pdlartifact;
 
 import no.nav.pdl.forvalter.domain.Identtype;
-import no.nav.pdl.forvalter.domain.PdlInnflytting;
 import no.nav.pdl.forvalter.domain.PdlStatsborgerskap;
+import no.nav.pdl.forvalter.dto.RsInnflytting;
 import no.nav.pdl.forvalter.service.PdlArtifactService;
 import no.nav.pdl.forvalter.service.command.DatoFraIdentCommand;
 import no.nav.pdl.forvalter.service.command.IdenttypeFraIdentCommand;
@@ -24,9 +24,9 @@ public class StatsborgerskapCommand extends PdlArtifactService<PdlStatsborgerska
     private static final String VALIDATION_OPPHOLD_ERROR = "Ugyldig datointervall: gyldigFom må være før gyldigTom";
 
     private final String ident;
-    private final PdlInnflytting innflytting;
+    private final RsInnflytting innflytting;
 
-    public StatsborgerskapCommand(List<PdlStatsborgerskap> request, String ident, PdlInnflytting innflytting) {
+    public StatsborgerskapCommand(List<PdlStatsborgerskap> request, String ident, RsInnflytting innflytting) {
         super(request);
         this.ident = ident;
         this.innflytting = innflytting;

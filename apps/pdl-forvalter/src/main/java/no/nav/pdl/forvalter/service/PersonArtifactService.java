@@ -13,7 +13,7 @@ import no.nav.pdl.forvalter.service.command.pdlartifact.KontaktAdresseCommand;
 import no.nav.pdl.forvalter.service.command.pdlartifact.OppholdCommand;
 import no.nav.pdl.forvalter.service.command.pdlartifact.OppholdsadresseCommand;
 import no.nav.pdl.forvalter.service.command.pdlartifact.StatsborgerskapCommand;
-import no.nav.pdl.forvalter.service.command.pdlartifact.TelefonCommand;
+import no.nav.pdl.forvalter.service.command.pdlartifact.TelefonnummerCommand;
 import no.nav.pdl.forvalter.service.command.pdlartifact.TilrettelagtKommunikasjonCommand;
 import no.nav.pdl.forvalter.service.command.pdlartifact.UtflyttingCommand;
 import org.springframework.stereotype.Service;
@@ -39,7 +39,7 @@ public class PersonArtifactService {
                 .kontaktadresse(new KontaktAdresseCommand(person.getKontaktadresse(), vegadresseService, mapperFacade).call())
                 .oppholdsadresse(new OppholdsadresseCommand(person.getOppholdsadresse(), vegadresseService, mapperFacade).call())
                 .adressebeskyttelse(new AdressebeskyttelseCommand(person.getAdressebeskyttelse()).call())
-                .telefonnummer(new TelefonCommand(person.getTelefonnummer()).call())
+                .telefonnummer(new TelefonnummerCommand(person.getTelefonnummer()).call())
                 .utflytting(new UtflyttingCommand(person.getUtflytting()).call())
                 .opphold(new OppholdCommand(person.getOpphold()).call())
                 .tilrettelagtKommunikasjon(new TilrettelagtKommunikasjonCommand(person.getTilrettelagtKommunikasjon()).call())

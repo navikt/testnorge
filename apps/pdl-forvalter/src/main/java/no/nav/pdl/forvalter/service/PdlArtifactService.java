@@ -35,4 +35,8 @@ public abstract class PdlArtifactService<T extends PdlDbVersjon> implements Call
     protected abstract void handle(T type);
 
     protected abstract void enforceIntegrity(List<T> type);
+
+    protected boolean isInitial() {
+        return request.size() == 1;
+    }
 }

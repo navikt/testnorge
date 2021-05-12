@@ -5,8 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.PdlTestdataConsumer;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
+import no.nav.pdl.forvalter.domain.PdlInnflytting;
 import no.nav.pdl.forvalter.domain.PdlKontaktadresse;
 import no.nav.pdl.forvalter.domain.PdlTilrettelagtKommunikasjon;
+import no.nav.pdl.forvalter.domain.PdlUtflytting;
 import no.nav.pdl.forvalter.dto.PdlOrdreResponse;
 import no.nav.pdl.forvalter.service.command.PdlDeployCommand;
 import org.springframework.http.HttpStatus;
@@ -69,8 +71,10 @@ public class PdlOrdreService {
         status.addAll(new PdlDeployCommand(PDL_BOSTEDADRESSE, ident, pdlPerson.getPerson().getBostedsadresse(), pdlTestdataConsumer).call());
         status.addAll(new PdlDeployCommand(PDL_OPPHOLDSADRESSE, ident, pdlPerson.getPerson().getOppholdsadresse(), pdlTestdataConsumer).call());
         status.addAll(new PdlDeployCommand(PDL_ADRESSEBESKYTTELSE, ident, pdlPerson.getPerson().getAdressebeskyttelse(), pdlTestdataConsumer).call());
-        status.addAll(new PdlDeployCommand(PDL_INNFLYTTING, ident, pdlPerson.getPerson().getInnflytting(), pdlTestdataConsumer).call());
-        status.addAll(new PdlDeployCommand(PDL_UTFLYTTING, ident, pdlPerson.getPerson().getUtflytting(), pdlTestdataConsumer).call());
+        status.addAll(new PdlDeployCommand(PDL_INNFLYTTING, ident,
+                mapperFacade.mapAsList(pdlPerson.getPerson().getInnflytting(), PdlInnflytting.class), pdlTestdataConsumer).call());
+        status.addAll(new PdlDeployCommand(PDL_UTFLYTTING, ident,
+                mapperFacade.mapAsList(pdlPerson.getPerson().getUtflytting(), PdlUtflytting.class), pdlTestdataConsumer).call());
         status.addAll(new PdlDeployCommand(PDL_DELTBOSTED, ident, pdlPerson.getPerson().getDeltBosted(), pdlTestdataConsumer).call());
         status.addAll(new PdlDeployCommand(PDL_FORELDREANSVAR, ident, pdlPerson.getPerson().getForeldreansvar(), pdlTestdataConsumer).call());
         status.addAll(new PdlDeployCommand(PDL_FAMILIERELASJON, ident, pdlPerson.getPerson().getForelderBarnRelasjon(), pdlTestdataConsumer).call());

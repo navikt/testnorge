@@ -15,7 +15,7 @@ class TilrettelagtKommunikasjonCommandTest {
     @Test
     void whenNoSpraakGiven_thenThrowExecption() {
 
-        Exception exception = assertThrows(HttpClientErrorException.class, () ->
+        var exception = assertThrows(HttpClientErrorException.class, () ->
                 new TilrettelagtKommunikasjonCommand(List.of(RsTilrettelagtKommunikasjon.builder()
                         .isNew(true)
                         .build())).call());
@@ -26,7 +26,7 @@ class TilrettelagtKommunikasjonCommandTest {
     @Test
     void whenInvalidSpraakTaletolkGiven_thenThrowExecption() {
 
-        Exception exception = assertThrows(HttpClientErrorException.class, () ->
+        var exception = assertThrows(HttpClientErrorException.class, () ->
                 new TilrettelagtKommunikasjonCommand(List.of(RsTilrettelagtKommunikasjon.builder()
                         .spraakForTaletolk("svensk")
                         .isNew(true)
@@ -38,7 +38,7 @@ class TilrettelagtKommunikasjonCommandTest {
     @Test
     void whenInvalidSpraakTegnspraakTolkGiven_thenThrowExecption() {
 
-        Exception exception = assertThrows(HttpClientErrorException.class, () ->
+        var exception = assertThrows(HttpClientErrorException.class, () ->
                 new TilrettelagtKommunikasjonCommand(List.of(RsTilrettelagtKommunikasjon.builder()
                         .spraakForTegnspraakTolk("kyrgisistansk")
                         .isNew(true)

@@ -20,7 +20,7 @@ class AdressebeskyttelseCommandTest {
     @Test
     void whenStrengtFortroligUtlandAndMasterIsFreg_thenThrowExecption() {
 
-        Exception exception = assertThrows(HttpClientErrorException.class, () ->
+        var exception = assertThrows(HttpClientErrorException.class, () ->
                 new AdressebeskyttelseCommand(List.of(PdlAdressebeskyttelse.builder()
                         .gradering(STRENGT_FORTROLIG_UTLAND)
                         .master(FREG)
