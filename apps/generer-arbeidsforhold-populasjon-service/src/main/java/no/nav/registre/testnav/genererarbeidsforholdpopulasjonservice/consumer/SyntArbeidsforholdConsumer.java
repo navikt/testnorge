@@ -6,6 +6,7 @@ import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -46,13 +47,15 @@ public class SyntArbeidsforholdConsumer {
                 .build();
     }
 
-    public ArbeidsforholdResponse genererStartArbeidsforhold(LocalDate startdato) {
-        var accessToken = accessTokenService.generateToken(properties);
-        return new GenererStartArbeidsforholdCommand(webClient, startdato, accessToken.getTokenValue()).call();
+    public Mono<ArbeidsforholdResponse> genererStartArbeidsforhold(LocalDate startdato) {
+        return accessTokenService
+                .generateNonBlockedToken(properties)
+                .flatMap(accessToken -> new GenererStartArbeidsforholdCommand(webClient, startdato, accessToken.getTokenValue()).call());
     }
 
-    public List<ArbeidsforholdResponse> genererArbeidsforholdHistorikk(ArbeidsforholdRequest request) {
-        var accessToken = accessTokenService.generateToken(properties);
-        return new GenererArbeidsforholdHistorikkCommand(webClient, request, accessToken.getTokenValue()).call();
+    public Mono<List<ArbeidsforholdResponse>> genererArbeidsforholdHistorikk(ArbeidsforholdRequest request) {
+        return accessTokenService
+                .generateNonBlockedToken(properties)
+                .flatMap(accessToken -> new GenererArbeidsforholdHistorikkCommand(webClient, request, accessToken.getTokenValue()).call());
     }
 }

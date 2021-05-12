@@ -36,7 +36,7 @@ public class GetOrganisasjonCommand implements Callable<OrganisasjonDTO> {
                     .retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(3))
                             .filter(throwable -> !(throwable instanceof WebClientResponseException.NotFound))
                     ).block();
-            log.trace("Organisasjon {} hentet fra {}", orgnummer, miljo);
+            log.info("Organisasjon {} hentet fra {}", orgnummer, miljo);
             return organiasjon;
         } catch (WebClientResponseException.NotFound e) {
             log.trace("Organisasjon med orgnummer {} ikke funnet i {}", orgnummer, miljo);

@@ -17,13 +17,13 @@ import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdResponse;
 
 @Slf4j
 @RequiredArgsConstructor
-public class GenererArbeidsforholdHistorikkCommand implements Callable<List<ArbeidsforholdResponse>> {
+public class GenererArbeidsforholdHistorikkCommand implements Callable<Mono<List<ArbeidsforholdResponse>>> {
     private final WebClient webClient;
     private final ArbeidsforholdRequest request;
     private final String token;
 
     @Override
-    public List<ArbeidsforholdResponse> call() {
+    public Mono<List<ArbeidsforholdResponse>> call() {
         log.info("Genererer arbeidsforhold historikk.");
         return webClient
                 .post()
@@ -32,7 +32,7 @@ public class GenererArbeidsforholdHistorikkCommand implements Callable<List<Arbe
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<ArbeidsforholdResponse>>(){})
-                .block();
+                .bodyToMono(new ParameterizedTypeReference<>() {
+                });
     }
 }

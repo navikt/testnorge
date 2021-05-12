@@ -8,12 +8,12 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 
 import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
-import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2ServerToServerConfiguration;
+import no.nav.registre.testnorge.libs.oauth2.config.InsecureOAuth2ServerToServerConfiguration;
 
 @Configuration
 @Import({
         ApplicationCoreConfig.class,
-        SecureOAuth2ServerToServerConfiguration.class
+        InsecureOAuth2ServerToServerConfiguration.class
 })
 public class ApplicationConfig {
 
@@ -21,8 +21,8 @@ public class ApplicationConfig {
     @Bean
     public TaskExecutor executor() {
         final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setMaxPoolSize(20);
-        executor.setCorePoolSize(10);
+        executor.setMaxPoolSize(100);
+        executor.setCorePoolSize(50);
         executor.setThreadNamePrefix("thread-pool-with-security-context-");
         executor.initialize();
         return new DelegatingSecurityContextAsyncTaskExecutor(executor);

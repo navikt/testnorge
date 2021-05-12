@@ -19,4 +19,4 @@ zuul:
       path: /**
       url: https://testnorge-hodejegeren.dev.intern.nav.no/
   host:
-    socket-timeout-millis: 30000
+    socket-timeout-millis: 360000

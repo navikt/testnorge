@@ -2,6 +2,7 @@ package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -9,35 +10,32 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.concurrent.Callable;
 
 import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdResponse;
 
 @Slf4j
 @RequiredArgsConstructor
-public class GenererStartArbeidsforholdCommand implements Callable<ArbeidsforholdResponse> {
+public class GenererStartArbeidsforholdCommand implements Callable<Mono<ArbeidsforholdResponse>> {
     private final WebClient webClient;
     private final LocalDate startdate;
     private final String token;
 
     @Override
-    public ArbeidsforholdResponse call() {
+    public Mono<ArbeidsforholdResponse> call() {
         log.info("Generer nytt arbeidsforhold den {}.", startdate);
-
-        ArbeidsforholdResponse[] response = webClient
+        return webClient
                 .post()
                 .uri("/api/v1/generate/amelding/arbeidsforhold/start")
                 .body(BodyInserters.fromPublisher(Mono.just(new LocalDate[]{startdate}), LocalDate[].class))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
-                .bodyToMono(ArbeidsforholdResponse[].class)
-                .block();
-
-        if (response == null || response.length < 1) {
-            throw new RuntimeException("Fikk ikke generert start arbeidsforhold for dato " + startdate.toString());
-        }
-
-        return response[0];
+                .bodyToMono(new ParameterizedTypeReference<ArrayList<ArbeidsforholdResponse>>() {
+                }).map(value -> {
+                    log.info("Nytt arbeidsforhold generert.");
+                    return value.get(0);
+                });
     }
 }

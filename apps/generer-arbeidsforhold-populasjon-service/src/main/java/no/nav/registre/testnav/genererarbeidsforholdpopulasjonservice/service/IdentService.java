@@ -3,6 +3,7 @@ package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.util.Collection;
 import java.util.Set;
@@ -10,7 +11,6 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.adapter.TpsIdentAdapter;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.OppsummeringsdokumentConsumer;
-import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.amelding.Opplysningspliktig;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.PersonDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.VirksomhetDTO;
@@ -24,7 +24,7 @@ public class IdentService {
 
     public Set<String> getIdenterMedArbeidsforhold(String miljo) {
         var identer = arbeidsforholdConsumer
-                .getAlleOpplysningspliktig(miljo)
+                .getAll(miljo)
                 .stream()
                 .map(OppsummeringsdokumentDTO::getVirksomheter)
                 .flatMap(Collection::stream)
@@ -36,22 +36,12 @@ public class IdentService {
         return identer;
     }
 
-    public Set<String> getIdenterUtenArbeidsforhold(String miljo, int max) {
+    public Flux<String> getIdenterUtenArbeidsforhold(String miljo, int max) {
         var identer = tpsIdentAdapter.getIdenter(miljo, max);
 
         var identerMedArbeidsforhold = getIdenterMedArbeidsforhold(miljo);
-        var identerUtenArbeidsforhold = identer
-                .parallelStream()
-                .filter(ident -> !identerMedArbeidsforhold.contains(ident))
-                .limit(max)
-                .collect(Collectors.toSet());
 
-        if (identerUtenArbeidsforhold.isEmpty()) {
-            log.warn("Prøvde å finne {} identer men fant ingen uten arbeidsforhold. Prøv å øke antall personer som kan ha arbeidsforhold i Mini-Norge.", max);
-        } else {
-            log.info("Fant {}/{} identer uten arbeidsforhold i {}.", identerUtenArbeidsforhold.size(), max, miljo);
-        }
-        return identerUtenArbeidsforhold;
+        return identer.filter(ident -> !identerMedArbeidsforhold.contains(ident));
     }
 
 }

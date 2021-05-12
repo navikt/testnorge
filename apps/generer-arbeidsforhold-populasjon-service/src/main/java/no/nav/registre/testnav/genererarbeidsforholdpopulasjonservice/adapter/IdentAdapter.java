@@ -1,7 +1,7 @@
 package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.adapter;
 
-import java.util.Set;
+import reactor.core.publisher.Flux;
 
 public interface IdentAdapter {
-    Set<String> getIdenter(String miljo, int antall);
+    Flux<String> getIdenter(String miljo, int antall);
 }

@@ -10,13 +10,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.tcp.ProxyProvider;
 
 import java.net.URI;
 import java.util.Map;
 
-import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 import no.nav.registre.testnorge.libs.oauth2.config.Scopeable;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
@@ -68,8 +68,16 @@ public class AccessTokenService {
         return generateToken(new AccessScopes(scopeable.toScope()));
     }
 
-
     public AccessToken generateToken(AccessScopes accessScopes) {
+        return generateNonBlockedToken(accessScopes).block();
+    }
+
+
+    public Mono<AccessToken> generateNonBlockedToken(Scopeable scopeable) {
+        return generateNonBlockedToken(new AccessScopes(scopeable));
+    }
+
+    public Mono<AccessToken> generateNonBlockedToken(AccessScopes accessScopes) {
         tokenResolver.verifyAuthentication();
 
         if (accessScopes.getScopes().isEmpty()) {
@@ -83,6 +91,7 @@ public class AccessTokenService {
         return generateOnBehalfOfAccessToken(accessScopes);
     }
 
+
     /**
      * Skal kun brukes av operasjoner startet av batcher/kafka.
      *
@@ -91,16 +100,16 @@ public class AccessTokenService {
      */
     @Deprecated
     public AccessToken generateClientCredentialAccessToken(String clientId) {
-        return generateClientCredentialAccessToken(new AccessScopes("api://" + clientId + "/.default"));
+        return generateClientCredentialAccessToken(new AccessScopes("api://" + clientId + "/.default")).block();
     }
 
 
     public AccessToken generateClientCredentialAccessToken(Scopeable serverProperties) {
-        return generateClientCredentialAccessToken(new AccessScopes(serverProperties.toScope()));
+        return generateClientCredentialAccessToken(new AccessScopes(serverProperties.toScope())).block();
     }
 
 
-    private AccessToken generateClientCredentialAccessToken(AccessScopes accessScopes) {
+    private Mono<AccessToken> generateClientCredentialAccessToken(AccessScopes accessScopes) {
         log.trace("Henter OAuth2 access token fra client credential...");
 
         var body = BodyInserters
@@ -110,11 +119,10 @@ public class AccessTokenService {
                 .with("grant_type", "client_credentials");
 
         try {
-            AccessToken token = webClient.post()
+            var token = webClient.post()
                     .body(body)
                     .retrieve()
-                    .bodyToMono(AccessToken.class)
-                    .block();
+                    .bodyToMono(AccessToken.class);
             log.trace("Access token opprettet for OAuth 2.0 Client Credentials flow.");
             return token;
         } catch (WebClientResponseException e) {
@@ -127,7 +135,7 @@ public class AccessTokenService {
         }
     }
 
-    private AccessToken generateOnBehalfOfAccessToken(AccessScopes accessScopes) {
+    private Mono<AccessToken> generateOnBehalfOfAccessToken(AccessScopes accessScopes) {
         String oid = tokenResolver.getOid();
         if (oid != null) {
             Map<String, String> contextMap = MDC.getCopyOfContextMap();
@@ -151,11 +159,10 @@ public class AccessTokenService {
                 .with("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
 
         try {
-            AccessToken accessToken = webClient.post()
+            var accessToken = webClient.post()
                     .body(body)
                     .retrieve()
-                    .bodyToMono(AccessToken.class)
-                    .block();
+                    .bodyToMono(AccessToken.class);
 
             log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow");
             return accessToken;

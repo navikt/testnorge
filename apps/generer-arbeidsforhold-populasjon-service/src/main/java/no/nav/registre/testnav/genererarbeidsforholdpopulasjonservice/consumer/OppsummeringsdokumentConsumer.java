@@ -7,10 +7,12 @@ import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.credentials.OppsummeringsdokuemntServerProperties;
+import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumenterByIdentCommand;
 import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumenterCommand;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
@@ -48,11 +50,18 @@ public class OppsummeringsdokumentConsumer {
     }
 
 
-    public List<OppsummeringsdokumentDTO> getAlleOpplysningspliktig(String miljo) {
-        log.info("Henter alle opplysningspliktige fra {}...", miljo);
+    public List<OppsummeringsdokumentDTO> getAll(String miljo) {
+        log.info("Henter alle oppsummeringsdokument fra {}...", miljo);
         AccessToken accessToken = accessTokenService.generateToken(properties);
         var list = new GetOppsummeringsdokumenterCommand(webClient, accessToken.getTokenValue(), miljo).call();
         log.info("Fant {} opplysningspliktig fra {}.", list.size(), miljo);
         return list;
     }
+
+    public Mono<List<OppsummeringsdokumentDTO>> getAllForIdent(String ident, String miljo) {
+        log.info("Henter alle oppsummeringsdokument for {} i {}...",ident, miljo);
+        return accessTokenService.generateNonBlockedToken(properties)
+                .flatMap(accessToken -> new GetOppsummeringsdokumenterByIdentCommand(webClient, accessToken.getTokenValue(), ident, miljo).call());
+    }
+
 }

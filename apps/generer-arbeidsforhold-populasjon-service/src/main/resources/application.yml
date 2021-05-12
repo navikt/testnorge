@@ -22,3 +22,30 @@ consumers:
     namespace: dolly
     name: testnav-hodejegeren-proxy
     url: https://testnav-hodejegeren-proxy.dev-fss-pub.nais.io
+  arbeidsforholdapi:
+    clientId: 1b2f24c8-a426-47b1-8ff1-7905d6dfddb5
+    cluster: dev-fss
+    namespace: dolly
+    name: testnorge-arbeidsforhold-api
+    url: https://testnorge-arbeidsforhold-api.dev.adeo.no
+  mnorganisasjonapi:
+    cluster: dev-fss
+    namespace: dolly
+    name: mn-organisasjon-api
+    url: https://mn-organisasjon-api.dev.adeo.no
+  oppsummeringsdokument-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: oppsummeringsdokument-service
+    url: https://oppsummeringsdokument-service.dev.intern.nav.no
+  testnav-generer-organisasjon-populasjon-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-generer-organisasjon-populasjon-service
+    url: https://testnav-generer-organisasjon-populasjon-service.dev.intern.nav.no
+  testnav-organisasjon-service:
+    url: https://testnav-organisasjon-service.dev.intern.nav.no
+    name: testnav-organisasjon-service
+    cluster: dev-gcp
+    namespace: dolly
+    threads: 10
