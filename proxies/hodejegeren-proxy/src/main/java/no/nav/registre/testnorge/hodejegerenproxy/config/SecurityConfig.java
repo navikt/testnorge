@@ -65,7 +65,7 @@ public class SecurityConfig {
         http.csrf().disable()
                 .authorizeExchange()
                 .pathMatchers("/internal/isReady", "/internal/isAlive").permitAll()
-                .anyExchange().permitAll()
+                .anyExchange().authenticated()
                 .and()
                 .oauth2ResourceServer()
                 .jwt()
