@@ -51,18 +51,22 @@ public class FoedselCommand extends PdlArtifactService<PdlFoedsel> {
                 foedsel.setFoedeland(NORGE);
             } else if (nonNull(innflytting)) {
                 foedsel.setFoedeland(innflytting.getFraflyttingsland());
+            } else if (nonNull(bostedadresse) && nonNull(bostedadresse.getUtenlandskAdresse())) {
+                foedsel.setFoedeland(bostedadresse.getUtenlandskAdresse().getLandkode());
             } else {
                 foedsel.setFoedeland(new TilfeldigLandCommand().call());
             }
         }
 
         if (NORGE.equals(foedsel.getFoedeland()) && isBlank(foedsel.getFodekommune())) {
-            if (nonNull(bostedadresse.getVegadresse())) {
-                foedsel.setFodekommune(bostedadresse.getVegadresse().getKommunenummer());
-            } else if (nonNull(bostedadresse.getMatrikkeladresse())) {
-                foedsel.setFodekommune(bostedadresse.getMatrikkeladresse().getKommunenummer());
-            } else if (nonNull(bostedadresse.getUkjentBosted())) {
-                foedsel.setFodekommune(bostedadresse.getUkjentBosted().getBostedskommune());
+            if (nonNull(bostedadresse)) {
+                if (nonNull(bostedadresse.getVegadresse())) {
+                    foedsel.setFodekommune(bostedadresse.getVegadresse().getKommunenummer());
+                } else if (nonNull(bostedadresse.getMatrikkeladresse())) {
+                    foedsel.setFodekommune(bostedadresse.getMatrikkeladresse().getKommunenummer());
+                } else if (nonNull(bostedadresse.getUkjentBosted())) {
+                    foedsel.setFodekommune(bostedadresse.getUkjentBosted().getBostedskommune());
+                }
             } else {
                 foedsel.setFodekommune(new TilfeldigKommuneCommand().call());
             }

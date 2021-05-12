@@ -2,31 +2,29 @@ package no.nav.pdl.forvalter.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 
-@Getter
-@Setter
+@Data
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PdlBostedadresse extends PdlAdresse {
 
     private PdlVegadresse vegadresse;
-    private UkjentBosted ukjentBosted;
+    private PdlUkjentBosted ukjentBosted;
     private PdlMatrikkeladresse matrikkeladresse;
     private PdlUtenlandskAdresse utenlandskAdresse;
 
-    @Getter
-    @Setter
-    @Builder
+    @Data
+    @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class UkjentBosted implements Serializable {
+    public static class PdlUkjentBosted implements Serializable {
 
         private String bostedskommune;
     }
