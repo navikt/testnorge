@@ -1,9 +1,11 @@
 package no.nav.registre.testnorge.hodejegerenproxy.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
@@ -11,28 +13,37 @@ import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidatorResult;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoders;
 import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.NimbusReactiveJwtDecoder;
 import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.security.oauth2.jwt.ReactiveJwtDecoders;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.tcp.ProxyProvider;
 
+import java.net.URI;
 import java.util.List;
 
 
+@Slf4j
 @Configuration
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
     private final OAuth2ResourceServerProperties oAuth2ResourceServerProperties;
     private final List<String> acceptedAudience;
+    private final String proxyHost;
 
     public SecurityConfig(
             OAuth2ResourceServerProperties oAuth2ResourceServerProperties,
-            @Value("${spring.security.oauth2.resourceserver.jwt.accepted-audience}") List<String> acceptedAudience
+            @Value("${spring.security.oauth2.resourceserver.jwt.accepted-audience}") List<String> acceptedAudience,
+            @Value("${http.proxy:#{null}}") String proxyHost
     ) {
         this.oAuth2ResourceServerProperties = oAuth2ResourceServerProperties;
         this.acceptedAudience = acceptedAudience;
+        this.proxyHost = proxyHost;
     }
 
 
@@ -45,10 +56,31 @@ public class SecurityConfig {
         }
     }
 
+    public WebClient webClient() {
+        var builder = WebClient.builder();
+        if (proxyHost != null) {
+            log.info("Setter opp proxy host {} for Client Credentials", proxyHost);
+            var uri = URI.create(proxyHost);
+
+            HttpClient httpClient = HttpClient
+                    .create()
+                    .tcpConfiguration(tcpClient -> tcpClient.proxy(proxy -> proxy
+                            .type(ProxyProvider.Proxy.HTTP)
+                            .host(uri.getHost())
+                            .port(uri.getPort())
+                    ));
+            builder.clientConnector(new ReactorClientHttpConnector(httpClient));
+        }
+        return builder.build();
+    }
+
 
     private ReactiveJwtDecoder jwtDecoder() {
-        NimbusReactiveJwtDecoder jwtDecoder = (NimbusReactiveJwtDecoder)
-                ReactiveJwtDecoders.fromOidcIssuerLocation(oAuth2ResourceServerProperties.getJwt().getIssuerUri());
+        NimbusReactiveJwtDecoder jwtDecoder = NimbusReactiveJwtDecoder
+                .withJwkSetUri(oAuth2ResourceServerProperties.getJwt().getJwkSetUri())
+                .webClient(webClient())
+                .build();
+
 
         OAuth2TokenValidator<Jwt> audienceValidator = new AudienceValidator();
         OAuth2TokenValidator<Jwt> withIssuer = JwtValidators.createDefaultWithIssuer(oAuth2ResourceServerProperties.getJwt().getIssuerUri());
