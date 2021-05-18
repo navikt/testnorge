@@ -14,11 +14,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.command.GetOppsummeringsdokumentCommand;
+import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.command.SaveOppsummeringsdokumenterCommand;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.credentials.OppsummeringsdokuemntServerProperties;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.amelding.Oppsummeringsdokument;
 import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumenterByIdentCommand;
 import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumenterCommand;
+import no.nav.registre.testnorge.libs.core.config.ApplicationProperties;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
@@ -30,12 +33,15 @@ public class OppsummeringsdokumentConsumer {
     private final WebClient webClient;
     private final AccessTokenService accessTokenService;
     private final NaisServerProperties properties;
+    private final ApplicationProperties applicationProperties;
 
     public OppsummeringsdokumentConsumer(
             AccessTokenService accessTokenService,
             OppsummeringsdokuemntServerProperties properties,
-            ObjectMapper objectMapper
+            ObjectMapper objectMapper,
+            ApplicationProperties applicationProperties
     ) {
+        this.applicationProperties = applicationProperties;
         this.accessTokenService = accessTokenService;
         this.properties = properties;
         this.webClient = WebClient
@@ -53,6 +59,20 @@ public class OppsummeringsdokumentConsumer {
                 .build();
     }
 
+
+    public Mono<String> save(OppsummeringsdokumentDTO dto, String miljo) {
+        return accessTokenService
+                .generateNonBlockedToken(properties)
+                .flatMap(accessToken -> new SaveOppsummeringsdokumenterCommand(
+                                webClient,
+                                accessToken.getTokenValue(),
+                                dto,
+                                miljo,
+                                applicationProperties.getName(),
+                                Populasjon.MINI_NORGE
+                        ).call()
+                );
+    }
 
     public List<OppsummeringsdokumentDTO> getAll(String miljo) {
         log.info("Henter alle oppsummeringsdokument fra {}...", miljo);

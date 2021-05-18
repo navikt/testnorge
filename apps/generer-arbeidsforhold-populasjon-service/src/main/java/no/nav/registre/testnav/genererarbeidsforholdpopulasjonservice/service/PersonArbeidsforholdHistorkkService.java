@@ -102,11 +102,15 @@ public class PersonArbeidsforholdHistorkkService {
         List<LocalDate> dateList = new ArrayList<>();
         dates.forEachRemaining(dateList::add);
         dates = dateList.iterator();
-        var kalendermnd = dates.next();
 
-        var historikk = arbeidsforholdHistorikkService.genererHistorikk(previous, kalendermnd, dateList.size()).block().iterator();
+        var historikk = arbeidsforholdHistorikkService.genererHistorikk(
+                previous,
+                dateList.iterator().next(),
+                dateList.size()
+        ).block().iterator();
 
         while (dates.hasNext()) {
+            var kalendermnd = dates.next();
             var arbeidsforhold = historikk.next();
 
             boolean isNewArbeidsforhold = previous.getSluttdato() != null
@@ -122,7 +126,6 @@ public class PersonArbeidsforholdHistorkkService {
 
             map.put(kalendermnd, arbeidsforhold);
             previous = arbeidsforhold;
-            kalendermnd = dates.next();
         }
         return map;
     }

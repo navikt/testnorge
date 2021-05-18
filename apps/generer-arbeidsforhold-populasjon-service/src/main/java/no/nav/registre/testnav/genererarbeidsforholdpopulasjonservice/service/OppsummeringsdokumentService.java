@@ -8,10 +8,12 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.OppsummeringsdokumentConsumer;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.Person;
@@ -25,15 +27,18 @@ public class OppsummeringsdokumentService {
 
     private final OppsummeringsdokumentConsumer oppsummeringsdokumentConsumer;
 
-
     public void save(Flux<Person> personer, String miljo, LocalDate fom, LocalDate tom) {
         save(personer.collectList().block(), miljo, fom, tom);
     }
 
     public void save(List<Person> personer, String miljo, LocalDate fom, LocalDate tom) {
-        var oppsummeringsdokuments = oppdaterOppsumeringsdokument(personer, fom, miljo);
+        var dokumenter = findAllDatesBetween(fom, tom)
+                .stream()
+                .map(date -> oppdaterOppsumeringsdokument(personer, date, miljo))
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+        int i = 0;
     }
-
 
     private List<Oppsummeringsdokument> oppdaterOppsumeringsdokument(List<Person> personer, LocalDate kalendermnd, String miljo) {
         log.info("Finner arbeidsforhold som skal fjernes fra opplysningsplkiktige...");
