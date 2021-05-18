@@ -2,6 +2,7 @@
 layout: default
 title: Hodejegeren
 parent: Applikasjoner
+nav_order: 3
 ---
 
 # Testnorge-Hodejegeren
