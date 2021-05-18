@@ -8,11 +8,9 @@
 
 # testnorge
 
-## Avhenighetsanalyse
 
-https://testnav-applikasjonsanalyse.dev.intern.nav.no
-
-## Kjør lokalt
+## Bygging/Kjøring
+### Kjør lokalt
 
 **NB: `navtunnel` må kjøre, eller man må være logget inn med `naisdevice`**
 
@@ -27,7 +25,7 @@ export NAV_TOKEN=xxxx-yyyy-zzzz
 Gradle følger med prosjektet og `./gradlew build` vil derfor fungere. `gradle build` bruker lokalt installert Gradle.
 
 
-## Utviklerimage
+### Utviklerimage
 - Opprett Personal access tokens i Github og legg til token som systemvariabelen NAV_TOKEN (se forklaring over)
 - Opprett `gradle.properties` under `C:/Users/%USERNAME%/.gradle` med innhold (bytt ut truststorepassord og -path):
 ```
