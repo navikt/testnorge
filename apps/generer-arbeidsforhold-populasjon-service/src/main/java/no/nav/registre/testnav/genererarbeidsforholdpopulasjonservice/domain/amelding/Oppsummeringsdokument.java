@@ -1,6 +1,5 @@
 package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.amelding;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
@@ -15,9 +14,13 @@ import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.Person
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.VirksomhetDTO;
 
 @Slf4j
-@RequiredArgsConstructor
 public class Oppsummeringsdokument {
     private final OppsummeringsdokumentDTO dto;
+
+    public Oppsummeringsdokument(OppsummeringsdokumentDTO dto) {
+        this.dto = dto;
+        this.dto.setVersion(this.dto.getVersion() == null ? 1L : this.dto.getVersion() + 1);
+    }
 
     public Oppsummeringsdokument(String orgnummer, LocalDate kalendermaand) {
         dto = OppsummeringsdokumentDTO
@@ -93,6 +96,10 @@ public class Oppsummeringsdokument {
             list.add(arbeidsforhold.toDTO());
             personDTO.setArbeidsforhold(list);
         }
+    }
+
+    public OppsummeringsdokumentDTO toDTO() {
+        return dto;
     }
 
 }

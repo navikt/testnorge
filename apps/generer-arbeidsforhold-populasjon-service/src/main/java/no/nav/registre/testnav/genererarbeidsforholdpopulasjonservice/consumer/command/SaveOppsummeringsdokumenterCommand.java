@@ -38,24 +38,15 @@ public class SaveOppsummeringsdokumenterCommand implements Callable<Mono<String>
                 .header("populasjon", populasjon.toString())
                 .body(BodyInserters.fromPublisher(Mono.just(dto), OppsummeringsdokumentDTO.class))
                 .exchange()
-                .flatMap(response -> {
-                    var id = response.headers().header("ID").stream().findFirst();
-                    if (id.isEmpty()) {
-                        return Mono.error(
-                                new RuntimeException(
-                                        String.format("Klarer ikke å finne iden fra opplysningspliktigsdokument %s den %s .",
-                                                dto.getOpplysningspliktigOrganisajonsnummer(),
-                                                dto.getKalendermaaned())
-                                )
-                        );
-                    }
+                .map(response -> {
+                    var id = response.headers().header("ID").stream().findFirst().orElseThrow();
                     log.info(
                             "Opplysningspliktig {} sendt inn den {} med id {}",
                             dto.getOpplysningspliktigOrganisajonsnummer(),
                             dto.getKalendermaaned(),
                             id
                     );
-                    return Mono.just(id.get());
+                    return id;
                 });
     }
 }

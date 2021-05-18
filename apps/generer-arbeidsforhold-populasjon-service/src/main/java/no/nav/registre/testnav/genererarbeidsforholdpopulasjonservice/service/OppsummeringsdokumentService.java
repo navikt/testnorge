@@ -8,12 +8,10 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.OppsummeringsdokumentConsumer;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.Person;
@@ -32,17 +30,17 @@ public class OppsummeringsdokumentService {
     }
 
     public void save(List<Person> personer, String miljo, LocalDate fom, LocalDate tom) {
-        var dokumenter = findAllDatesBetween(fom, tom)
-                .stream()
-                .map(date -> oppdaterOppsumeringsdokument(personer, date, miljo))
-                .flatMap(Collection::stream)
+        var dokumenter = findAllDatesBetween(fom, tom).stream()
+                .flatMap(kalendermnd -> getOppdatertOppsumeringsdokument(personer, kalendermnd, miljo).stream())
+                .map(Oppsummeringsdokument::toDTO)
                 .collect(Collectors.toList());
-        int i = 0;
+        log.info("Lager {} oppsummeringsdokumentene i {}...", dokumenter.size(), miljo);
+        oppsummeringsdokumentConsumer.saveAll(dokumenter, miljo);
+        log.info("Oppsummeringsdokumentene {} lagret i {}", dokumenter.size(), miljo);
     }
 
-    private List<Oppsummeringsdokument> oppdaterOppsumeringsdokument(List<Person> personer, LocalDate kalendermnd, String miljo) {
+    private List<Oppsummeringsdokument> getOppdatertOppsumeringsdokument(List<Person> personer, LocalDate kalendermnd, String miljo) {
         log.info("Finner arbeidsforhold som skal fjernes fra opplysningsplkiktige...");
-
         var oppsummeringsdokumentWithRemovedArbeidsforhold = Flux.concat(personer.stream()
                 .flatMap(person -> person.getArbeidsforholdToRemoveOn(kalendermnd).stream())
                 .collect(Collectors.groupingBy(Arbeidsforhold::getOpplysningspliktig))
@@ -51,7 +49,6 @@ public class OppsummeringsdokumentService {
                 .map(entry -> oppsummeringsdokumentConsumer.getOppsummeringsdokument(entry.getKey(), kalendermnd, miljo))
                 .collect(Collectors.toList())
         ).collectList().block();
-
         log.info("Fant {} arbeidsforhold som skal fjernes fra opplysningsplikitge.", oppsummeringsdokumentWithRemovedArbeidsforhold.size());
 
         log.info("Oppdaterer arbeidsforhold på opplysningspliktig...");

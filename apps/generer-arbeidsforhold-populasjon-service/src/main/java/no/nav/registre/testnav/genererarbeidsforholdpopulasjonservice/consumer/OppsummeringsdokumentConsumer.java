@@ -1,6 +1,7 @@
 package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
@@ -12,6 +13,9 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.stream.Collectors;
 
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.command.GetOppsummeringsdokumentCommand;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.command.SaveOppsummeringsdokumenterCommand;
@@ -34,16 +38,18 @@ public class OppsummeringsdokumentConsumer {
     private final AccessTokenService accessTokenService;
     private final NaisServerProperties properties;
     private final ApplicationProperties applicationProperties;
+    private final Executor executor;
 
     public OppsummeringsdokumentConsumer(
             AccessTokenService accessTokenService,
             OppsummeringsdokuemntServerProperties properties,
             ObjectMapper objectMapper,
-            ApplicationProperties applicationProperties
-    ) {
+            ApplicationProperties applicationProperties,
+            Executor executor) {
         this.applicationProperties = applicationProperties;
         this.accessTokenService = accessTokenService;
         this.properties = properties;
+        this.executor = executor;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(properties.getUrl())
@@ -59,19 +65,30 @@ public class OppsummeringsdokumentConsumer {
                 .build();
     }
 
+    @SneakyThrows
+    public List<String> saveAll(List<OppsummeringsdokumentDTO> list, String miljo) {
+        var ids = new ArrayList<String>();
+        var futures = list.stream().map(dto -> save(dto, miljo)).collect(Collectors.toList());
+        for (var future : futures) {
+            ids.add(future.get());
+        }
+        return ids;
+    }
 
-    public Mono<String> save(OppsummeringsdokumentDTO dto, String miljo) {
-        return accessTokenService
-                .generateNonBlockedToken(properties)
-                .flatMap(accessToken -> new SaveOppsummeringsdokumenterCommand(
-                                webClient,
-                                accessToken.getTokenValue(),
-                                dto,
-                                miljo,
-                                applicationProperties.getName(),
-                                Populasjon.MINI_NORGE
-                        ).call()
-                );
+
+    private CompletableFuture<String> save(OppsummeringsdokumentDTO dto, String miljo) {
+        AccessToken accessToken = accessTokenService.generateToken(properties);
+        return CompletableFuture.supplyAsync(
+                () -> new SaveOppsummeringsdokumenterCommand(
+                        webClient,
+                        accessToken.getTokenValue(),
+                        dto,
+                        miljo,
+                        applicationProperties.getName(),
+                        Populasjon.MINI_NORGE
+                ).call().block(),
+                executor
+        );
     }
 
     public List<OppsummeringsdokumentDTO> getAll(String miljo) {
@@ -107,5 +124,4 @@ public class OppsummeringsdokumentConsumer {
                                 .build()
                 ).map(Oppsummeringsdokument::new);
     }
-
 }
