@@ -14,19 +14,27 @@ public class Fartoey {
     String skipstype;
     String fartsomraade;
 
-    public Fartoey(no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.FartoeyDTO dto){
+    public Fartoey(no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.FartoeyDTO dto) {
         skipsregister = dto.getSkipsregister();
         skipstype = dto.getSkipstype();
         fartsomraade = dto.getFartsomraade();
     }
 
-    public Fartoey(FartoeyDTO dto){
+    public Fartoey(FartoeyDTO dto) {
         skipsregister = dto.getSkipsregister();
         skipstype = dto.getSkipstype();
         fartsomraade = dto.getFartsomraade();
     }
 
-    public FartoeyDTO toSynt(){
+    public no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.FartoeyDTO toDTO() {
+        return no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.FartoeyDTO.builder()
+                .fartsomraade(fartsomraade)
+                .skipsregister(skipsregister)
+                .skipstype(skipstype)
+                .build();
+    }
+
+    public FartoeyDTO toSynt() {
         return FartoeyDTO
                 .builder()
                 .skipsregister(skipsregister)

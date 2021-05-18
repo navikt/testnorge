@@ -24,14 +24,14 @@ public class GenererArbeidsforholdController {
 
     private final OrkestratorService orkestratorService;
 
-    @PostMapping(value = "/populate", produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
-    public Flux<Person> populate(
+    @PostMapping(value = "/populate")
+    public void populate(
             @RequestHeader String miljo,
             @RequestHeader Integer max,
             @RequestParam("fom") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fom,
             @RequestParam("tom") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate tom
     ) {
-        return orkestratorService.orkester(max, miljo, fom, tom);
+        orkestratorService.orkester(max, miljo, fom, tom);
     }
 
 }

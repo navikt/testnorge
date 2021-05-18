@@ -36,7 +36,8 @@ public class ArbeidsforholdSerivce {
                                                 new Arbeidsforhold(
                                                         arbeidsforhold,
                                                         virksomhet.getOrganisajonsnummer(),
-                                                        oppsummeringsdokument.getOpplysningspliktigOrganisajonsnummer()
+                                                        oppsummeringsdokument.getOpplysningspliktigOrganisajonsnummer(),
+                                                        person.getIdent()
                                                 )
                                         )
                                 )

@@ -44,6 +44,18 @@ public class Permisjon extends Generated {
         avvik = dto.getAvvik() == null ? new ArrayList<>() : Collections.singletonList(new Avvik(dto.getAvvik()));
     }
 
+    public no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.PermisjonDTO toDTO() {
+        return no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.PermisjonDTO
+                .builder()
+                .permisjonId(UUID.randomUUID().toString())
+                .beskrivelse(beskrivelse)
+                .permisjonsprosent(permisjonsprosent)
+                .sluttdato(sluttdato)
+                .startdato(startdato)
+                .avvik(avvik == null ? null : avvik.stream().map(Avvik::toDTO).collect(Collectors.toList()))
+                .build();
+    }
+
     public PermisjonDTO toSynt() {
         return PermisjonDTO
                 .builder()

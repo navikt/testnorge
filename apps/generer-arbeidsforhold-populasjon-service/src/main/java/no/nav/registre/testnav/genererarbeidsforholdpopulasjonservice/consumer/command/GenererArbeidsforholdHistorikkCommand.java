@@ -7,8 +7,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -32,7 +35,9 @@ public class GenererArbeidsforholdHistorikkCommand implements Callable<Mono<List
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<>() {
-                });
+                .bodyToMono(new ParameterizedTypeReference<List<ArbeidsforholdResponse>>() {
+                }).retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(1))
+                        .filter(throwable -> !(throwable instanceof WebClientResponseException.NotFound))
+                );
     }
 }

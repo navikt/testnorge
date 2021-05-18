@@ -43,4 +43,5 @@ abstract class Generated {
     no.nav.registre.testnorge.libs.dto.syntrest.v1.AvvikDTO toSyntAvvik(List<Avvik> list) {
         return list == null ? null : list.stream().findFirst().map(Avvik::toSynt).orElse(null);
     }
+
 }

@@ -106,6 +106,7 @@ public class EksisterendeIdenterService {
             return Flux.empty();
         }
 
+        log.info("Fjerner personer som er død...");
         return utvalgteIdenter
                 .parallelStream()
                 .map(ident -> tpsfConsumer.getTpsServiceRoutineV2(ROUTINE_PERSDATA, AKSJONSKODE, miljoe, ident))

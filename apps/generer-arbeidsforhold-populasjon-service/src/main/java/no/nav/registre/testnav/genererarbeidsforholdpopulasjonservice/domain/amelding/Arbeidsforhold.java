@@ -40,10 +40,12 @@ public class Arbeidsforhold extends Generated implements Id {
     List<Inntekt> inntekter;
     String virksomhetsnummer;
     String opplysningspliktig;
+    String ident;
 
-    public Arbeidsforhold(ArbeidsforholdDTO dto, String virksomhetsnummer, String opplysningspliktig) {
+    public Arbeidsforhold(ArbeidsforholdDTO dto, String virksomhetsnummer, String opplysningspliktig, String ident) {
         this.virksomhetsnummer = virksomhetsnummer;
         this.opplysningspliktig = opplysningspliktig;
+        this.ident = ident;
         id = dto.getArbeidsforholdId();
         type = dto.getTypeArbeidsforhold();
         startdato = dto.getStartdato();
@@ -60,16 +62,17 @@ public class Arbeidsforhold extends Generated implements Id {
         inntekter = dto.getInntekter().stream().map(Inntekt::new).collect(Collectors.toList());
     }
 
-    public Arbeidsforhold(ArbeidsforholdResponse response, String id, String virksomhetsnummer, String opplysningspliktig) {
+    public Arbeidsforhold(ArbeidsforholdResponse response, String id, String virksomhetsnummer, String opplysningspliktig, String ident) {
         this.id = id;
         this.virksomhetsnummer = virksomhetsnummer;
         this.opplysningspliktig = opplysningspliktig;
-        type = response.getArbeidsforholdType();
+        this.ident = ident;
+        type = emptyToNull(response.getArbeidsforholdType());
         startdato = response.getStartdato();
         sluttdato = format(response.getSluttdato());
-        antallTimerPerUke = response.getAntallTimerPerUkeSomEnFullStillingTilsvarer();
-        yrke = response.getYrke();
-        arbeidstidsordning = response.getArbeidstidsordning();
+        antallTimerPerUke = emptyToNull(response.getAntallTimerPerUkeSomEnFullStillingTilsvarer());
+        yrke = emptyToNull(response.getYrke());
+        arbeidstidsordning = emptyToNull(response.getArbeidstidsordning());
         stillingsprosent = response.getStillingsprosent();
         sisteLoennsendringsdato = response.getSisteLoennsendringsdato();
         permisjoner = response.getPermisjoner() == null
@@ -113,6 +116,26 @@ public class Arbeidsforhold extends Generated implements Id {
                 .inntekter(inntekter == null ? null : inntekter.stream().map(Inntekt::toSynt).collect(Collectors.toList()))
                 .antallInntekter(inntekter == null ? 0 : inntekter.size())
                 .avvik(toSyntAvvik(avvik))
+                .build();
+    }
+
+    public ArbeidsforholdDTO toDTO() {
+        return ArbeidsforholdDTO
+                .builder()
+                .typeArbeidsforhold(type)
+                .antallTimerPerUke(antallTimerPerUke)
+                .arbeidstidsordning(arbeidstidsordning)
+                .sisteLoennsendringsdato(sisteLoennsendringsdato)
+                .stillingsprosent(stillingsprosent)
+                .yrke(yrke)
+                .startdato(startdato)
+                .sluttdato(sluttdato)
+                .arbeidsforholdId(id)
+                .permisjoner(permisjoner == null ? null : permisjoner.stream().map(Permisjon::toDTO).collect(Collectors.toList()))
+                .historikk(historikk)
+                .fartoey(fartoey == null ? null : fartoey.toDTO())
+                .inntekter(inntekter == null ? null : inntekter.stream().map(Inntekt::toDTO).collect(Collectors.toList()))
+                .avvik(avvik == null ? null : avvik.stream().map(Avvik::toDTO).collect(Collectors.toList()))
                 .build();
     }
 

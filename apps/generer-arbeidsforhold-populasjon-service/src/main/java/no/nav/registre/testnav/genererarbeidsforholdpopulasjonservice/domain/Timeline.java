@@ -50,6 +50,13 @@ public class Timeline<T extends Id> {
         timeline.forEach((date, entries) -> action.accept(date, entries.getAll()));
     }
 
+    public Set<T> getHistory(LocalDate date) {
+        if (!timeline.containsKey(date)) {
+            return Collections.emptySet();
+        }
+        return timeline.get(date).getAll();
+    }
+
     public Set<T> get(LocalDate date) {
         if (!timeline.containsKey(date)) {
             return Collections.emptySet();

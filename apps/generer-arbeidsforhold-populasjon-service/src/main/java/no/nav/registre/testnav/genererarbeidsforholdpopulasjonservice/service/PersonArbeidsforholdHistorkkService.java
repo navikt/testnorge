@@ -45,8 +45,8 @@ public class PersonArbeidsforholdHistorkkService {
                 .findTimelineFor(ident, miljo)
                 .flatMap(timeline -> {
                     var person = new Person(ident, timeline);
-                    var previous = person.getArbeidsforholdDen(fom.minusMonths(1)).stream().findFirst().orElse(null);
-                    var map = getArbeidsforholdMap(previous, organisajoner, findAllDatesBetween(fom, tom).iterator());
+                    var previous = person.getArbeidsforholdOn(fom.minusMonths(1)).stream().findFirst().orElse(null);
+                    var map = getArbeidsforholdMap(previous, organisajoner, ident, findAllDatesBetween(fom, tom).iterator());
                     return map.map(value -> {
                         person.updateTimeline(new Timeline<>(value));
                         log.info("Person {} ferdig generert.", person.getIdent());
@@ -59,10 +59,11 @@ public class PersonArbeidsforholdHistorkkService {
     private Mono<Map<LocalDate, Arbeidsforhold>> getArbeidsforholdMap(
             Arbeidsforhold previous,
             List<Organisajon> organisajoner,
+            String ident,
             Iterator<LocalDate> dates
     ) {
         return Mono.fromFuture(CompletableFuture.supplyAsync(
-                () -> generer(previous, organisajoner, dates),
+                () -> generer(previous, organisajoner, ident, dates),
                 executor
         ));
     }
@@ -71,6 +72,7 @@ public class PersonArbeidsforholdHistorkkService {
     private Map<LocalDate, Arbeidsforhold> generer(
             Arbeidsforhold previous,
             List<Organisajon> organisajoner,
+            String ident,
             Iterator<LocalDate> dates
     ) {
         var map = new HashMap<LocalDate, Arbeidsforhold>();
@@ -78,7 +80,12 @@ public class PersonArbeidsforholdHistorkkService {
         if (previous == null || previous.isForenklet()) {
             var startdato = dates.next();
             var organisajon = organisajoner.get(random.nextInt(organisajoner.size()));
-            var arbeidsforhold = arbeidsforholdHistorikkService.genererStart(startdato, organisajon.getRandomVirksomhetsnummer(), organisajon.getOrgnummer()).block();
+            var arbeidsforhold = arbeidsforholdHistorikkService.genererStart(
+                    startdato,
+                    organisajon.getRandomVirksomhetsnummer(),
+                    organisajon.getOrgnummer(),
+                    ident
+            ).block();
             map.put(startdato, arbeidsforhold);
             previous = arbeidsforhold;
         }
@@ -88,7 +95,7 @@ public class PersonArbeidsforholdHistorkkService {
         }
 
         if (previous.isForenklet()) {
-            map.putAll(generer(previous, organisajoner, dates));
+            map.putAll(generer(previous, organisajoner, ident, dates));
             return map;
         }
 
@@ -109,7 +116,7 @@ public class PersonArbeidsforholdHistorkkService {
 
 
             if (isNewArbeidsforhold) {
-                map.putAll(generer(null, organisajoner, dates));
+                map.putAll(generer(null, organisajoner, ident, dates));
                 return map;
             }
 

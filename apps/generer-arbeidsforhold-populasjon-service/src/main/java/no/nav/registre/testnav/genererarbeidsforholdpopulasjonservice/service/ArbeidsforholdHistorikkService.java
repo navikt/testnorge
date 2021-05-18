@@ -17,9 +17,9 @@ import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.ame
 public class ArbeidsforholdHistorikkService {
     private final SyntArbeidsforholdConsumer syntArbeidsforholdConsumer;
 
-    public Mono<Arbeidsforhold> genererStart(LocalDate startdato, String virksomhetsnummer, String opplysningspliktig) {
+    public Mono<Arbeidsforhold> genererStart(LocalDate startdato, String virksomhetsnummer, String opplysningspliktig, String ident) {
         var response = syntArbeidsforholdConsumer.genererStartArbeidsforhold(startdato);
-        return response.map(item -> new Arbeidsforhold(item, UUID.randomUUID().toString(), virksomhetsnummer, opplysningspliktig));
+        return response.map(item -> new Arbeidsforhold(item, UUID.randomUUID().toString(), virksomhetsnummer, opplysningspliktig, ident));
     }
 
     public Mono<List<Arbeidsforhold>> genererHistorikk(Arbeidsforhold previous, LocalDate kaldermnd, int antall) {
@@ -30,7 +30,8 @@ public class ArbeidsforholdHistorikkService {
                         value,
                         previous.getId(),
                         previous.getVirksomhetsnummer(),
-                        previous.getOpplysningspliktig()
+                        previous.getOpplysningspliktig(),
+                        previous.getIdent()
                 ))
                 .collect(Collectors.toList())
         );

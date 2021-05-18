@@ -9,9 +9,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
+import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.command.GetOppsummeringsdokumentCommand;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.credentials.OppsummeringsdokuemntServerProperties;
+import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.amelding.Oppsummeringsdokument;
 import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumenterByIdentCommand;
 import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumenterCommand;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
@@ -59,9 +63,29 @@ public class OppsummeringsdokumentConsumer {
     }
 
     public Mono<List<OppsummeringsdokumentDTO>> getAllForIdent(String ident, String miljo) {
-        log.info("Henter alle oppsummeringsdokument for {} i {}...",ident, miljo);
         return accessTokenService.generateNonBlockedToken(properties)
                 .flatMap(accessToken -> new GetOppsummeringsdokumenterByIdentCommand(webClient, accessToken.getTokenValue(), ident, miljo).call());
+    }
+
+    public Mono<Oppsummeringsdokument> getOppsummeringsdokument(String opplysningspliktigOrgnummer, LocalDate kalendermaaned, String miljo) {
+        return accessTokenService
+                .generateNonBlockedToken(properties)
+                .flatMap(accessToken -> new GetOppsummeringsdokumentCommand(
+                        webClient,
+                        accessToken.getTokenValue(),
+                        opplysningspliktigOrgnummer,
+                        kalendermaaned,
+                        miljo
+                ).call())
+                .defaultIfEmpty(
+                        OppsummeringsdokumentDTO
+                                .builder()
+                                .version(1L)
+                                .kalendermaaned(kalendermaaned)
+                                .opplysningspliktigOrganisajonsnummer(opplysningspliktigOrgnummer)
+                                .virksomheter(new ArrayList<>())
+                                .build()
+                ).map(Oppsummeringsdokument::new);
     }
 
 }

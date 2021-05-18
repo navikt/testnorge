@@ -26,6 +26,15 @@ public class Avvik {
         alvorlighetsgrad = dto.getAlvorlighetsgrad();
     }
 
+    public no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.AvvikDTO toDTO(){
+        return no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.AvvikDTO
+                .builder()
+                .navn(navn)
+                .id(id)
+                .alvorlighetsgrad(alvorlighetsgrad)
+                .build();
+    }
+
     public AvvikDTO toSynt(){
         return AvvikDTO
                 .builder()

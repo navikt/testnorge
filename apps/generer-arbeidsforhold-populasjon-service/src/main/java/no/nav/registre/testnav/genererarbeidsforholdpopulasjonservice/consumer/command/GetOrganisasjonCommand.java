@@ -25,7 +25,7 @@ public class GetOrganisasjonCommand implements Callable<Mono<OrganisasjonDTO>> {
 
     @Override
     public Mono<OrganisasjonDTO> call() {
-        log.info("Henter organisasjon med orgnummer {} fra {}...", orgnummer, miljo);
+        log.trace("Henter organisasjon med orgnummer {} fra {}...", orgnummer, miljo);
         return webClient
                 .get()
                 .uri(builder -> builder

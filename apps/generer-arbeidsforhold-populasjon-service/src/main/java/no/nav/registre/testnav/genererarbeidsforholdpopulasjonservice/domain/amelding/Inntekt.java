@@ -15,8 +15,6 @@ import no.nav.registre.testnorge.libs.dto.syntrest.v1.InntektDTO;
 
 @Value
 @EqualsAndHashCode(callSuper = false)
-@RequiredArgsConstructor
-@NoArgsConstructor(force = true)
 public class Inntekt extends Generated {
     LocalDate startdatoOpptjeningsperiode;
     LocalDate sluttdatoOpptjeningsperiode;
@@ -50,4 +48,16 @@ public class Inntekt extends Generated {
                 .avvik(toSyntAvvik(avvik))
                 .build();
     }
+
+    public no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.InntektDTO toDTO(){
+        return no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.InntektDTO
+                .builder()
+                .startdatoOpptjeningsperiode(startdatoOpptjeningsperiode)
+                .sluttdatoOpptjeningsperiode(sluttdatoOpptjeningsperiode)
+                .opptjeningsland(opptjeningsland)
+                .antall(antall)
+                .avvik(avvik == null ? null : avvik.stream().map(Avvik::toDTO).collect(Collectors.toList()))
+                .build();
+    }
+
 }

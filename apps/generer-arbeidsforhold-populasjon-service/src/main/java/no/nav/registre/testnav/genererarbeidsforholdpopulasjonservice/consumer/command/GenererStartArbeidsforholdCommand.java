@@ -7,8 +7,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
@@ -33,7 +36,9 @@ public class GenererStartArbeidsforholdCommand implements Callable<Mono<Arbeidsf
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<ArrayList<ArbeidsforholdResponse>>() {
-                }).map(value -> {
+                }).retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(1))
+                        .filter(throwable -> !(throwable instanceof WebClientResponseException.NotFound))
+                ).map(value -> {
                     log.info("Nytt arbeidsforhold generert.");
                     return value.get(0);
                 });

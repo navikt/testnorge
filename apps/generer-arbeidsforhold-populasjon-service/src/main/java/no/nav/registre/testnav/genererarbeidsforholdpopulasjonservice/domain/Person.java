@@ -6,6 +6,7 @@ import lombok.Value;
 
 import java.time.LocalDate;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.amelding.Arbeidsforhold;
 
@@ -25,12 +26,18 @@ public class Person {
         return ident;
     }
 
-    public Set<Arbeidsforhold> getArbeidsforholdDen(LocalDate date) {
+    public Set<Arbeidsforhold> getArbeidsforholdOn(LocalDate date) {
         return timeline.get(date);
     }
 
+    public Set<Arbeidsforhold> getArbeidsforholdToRemoveOn(LocalDate date) {
+        var history = timeline.getHistory(date);
+        var current = timeline.get(date);
+        return history.stream().filter(value -> !current.contains(value)).collect(Collectors.toSet());
+    }
+
     public void updateTimeline(Timeline<Arbeidsforhold> timeline) {
-        timeline.update(timeline);
+        this.timeline.update(timeline);
     }
 
 
