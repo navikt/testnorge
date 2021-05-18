@@ -4,6 +4,7 @@ import io.kubernetes.client.ApiException;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.net.MalformedURLException;
@@ -42,7 +43,12 @@ public abstract class SyntConsumer {
         this.url = new URL(uri);
 
         var baseUrl = this.url.getProtocol() + "://" + this.url.getAuthority();
-        this.webClient = webClientBuilder.baseUrl(baseUrl).build();
+        this.webClient = webClientBuilder.exchangeStrategies(ExchangeStrategies.builder()
+                .codecs(configurer -> configurer
+                        .defaultCodecs()
+                        .maxInMemorySize(16 * 1024 * 1024))
+                .build())
+                .baseUrl(baseUrl).build();
     }
 
     protected void scheduleIfShutdown() {
