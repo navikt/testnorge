@@ -8,6 +8,7 @@
 
 # testnorge
 
+Info/lenker til Team Dollys interne verktøy finnes [her](https://navikt.github.io/dolly/).
 
 ## Bygging/Kjøring
 ### Kjør lokalt
