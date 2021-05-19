@@ -4,16 +4,13 @@ import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.domain.PdlDbVersjon;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import static org.apache.logging.log4j.util.Strings.isBlank;
 
 @RequiredArgsConstructor
-public abstract class PdlArtifactService<T extends PdlDbVersjon> implements Callable<List<T>> {
+public abstract class PdlArtifactService<T extends PdlDbVersjon> {
 
-    private final List<T> request;
-
-    public List<T> call() {
+    public List<T> convert(List<T> request) {
 
         for (var type : request) {
 
@@ -35,8 +32,4 @@ public abstract class PdlArtifactService<T extends PdlDbVersjon> implements Call
     protected abstract void handle(T type);
 
     protected abstract void enforceIntegrity(List<T> type);
-
-    protected boolean isInitial() {
-        return request.size() == 1;
-    }
 }

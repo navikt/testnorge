@@ -1,7 +1,8 @@
-package no.nav.pdl.forvalter.service.command.pdlartifact;
+package no.nav.pdl.forvalter.service;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.domain.PdlAdressebeskyttelse;
-import no.nav.pdl.forvalter.service.PdlArtifactService;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
@@ -11,13 +12,11 @@ import static no.nav.pdl.forvalter.domain.PdlAdresse.Master.PDL;
 import static no.nav.pdl.forvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.STRENGT_FORTROLIG_UTLAND;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
-public class AdressebeskyttelseCommand extends PdlArtifactService<PdlAdressebeskyttelse> {
+@Service
+@RequiredArgsConstructor
+public class AdressebeskyttelseService extends PdlArtifactService<PdlAdressebeskyttelse> {
 
     private static final String VALIDATION_UTLAND_MASTER_ERROR = "Gradering STRENGT_FORTROLIG_UTLAND kan kun settes hvis master er PDL";
-
-    public AdressebeskyttelseCommand(List<PdlAdressebeskyttelse> request) {
-        super(request);
-    }
 
     @Override
     protected void validate(PdlAdressebeskyttelse adressebeskyttelse) {

@@ -1,7 +1,10 @@
-package no.nav.pdl.forvalter.service.command.pdlartifact;
+package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.domain.PdlKjoenn;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
@@ -11,15 +14,19 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
-class KjoennCommandTest {
+@ExtendWith(MockitoExtension.class)
+class KjoennServiceTest {
 
     private static final String IDENT_MANN = "12345678901";
     private static final String IDENT_KVINNE = "12345678801";
 
+    @InjectMocks
+    private KjoennService kjoennService;
+
     @Test
     void whenEmptyAndIdentIsKvinne_thenProvideKjoennIsKvinne() {
 
-        var target = new KjoennCommand(List.of(PdlKjoenn.builder().isNew(true).build()), IDENT_KVINNE).call().get(0);
+        var target = kjoennService.convert(List.of(PdlKjoenn.builder().isNew(true).build()), IDENT_KVINNE).get(0);
 
         assertThat(target.getKjoenn(), is(equalTo(KVINNE)));
     }
@@ -27,7 +34,7 @@ class KjoennCommandTest {
     @Test
     void whenEmptyAndIdentIsMann_thenProvideKjoennIsMann() {
 
-        var target = new KjoennCommand(List.of(PdlKjoenn.builder().isNew(true).build()), IDENT_MANN).call().get(0);
+        var target = kjoennService.convert(List.of(PdlKjoenn.builder().isNew(true).build()), IDENT_MANN).get(0);
 
         assertThat(target.getKjoenn(), is(equalTo(MANN)));
     }
@@ -35,10 +42,10 @@ class KjoennCommandTest {
     @Test
     void whenKjoennIsMannAndIdentIsKvinne_thenProvideKjoennIsMann() {
 
-        var target = new KjoennCommand(List.of(PdlKjoenn.builder()
+        var target = kjoennService.convert(List.of(PdlKjoenn.builder()
                 .kjoenn(MANN)
                 .isNew(true)
-                .build()), IDENT_KVINNE).call().get(0);
+                .build()), IDENT_KVINNE).get(0);
 
         assertThat(target.getKjoenn(), is(equalTo(MANN)));
     }
@@ -46,10 +53,10 @@ class KjoennCommandTest {
     @Test
     void whenKjoennIsKvinneAndIdentIsMann_thenProvideKjoennIsKvinne() {
 
-        var target = new KjoennCommand(List.of(PdlKjoenn.builder()
+        var target = kjoennService.convert(List.of(PdlKjoenn.builder()
                 .kjoenn(KVINNE)
                 .isNew(true)
-                .build()), IDENT_MANN).call().get(0);
+                .build()), IDENT_MANN).get(0);
 
         assertThat(target.getKjoenn(), is(equalTo(KVINNE)));
     }

@@ -1,7 +1,8 @@
-package no.nav.pdl.forvalter.service.command.pdlartifact;
+package no.nav.pdl.forvalter.service;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.domain.PdlOpphold;
-import no.nav.pdl.forvalter.service.PdlArtifactService;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
@@ -10,16 +11,14 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
-public class OppholdCommand extends PdlArtifactService<PdlOpphold> {
+@Service
+@RequiredArgsConstructor
+public class OppholdService extends PdlArtifactService<PdlOpphold> {
 
     private static final String VALIDATION_OPPHOLD_FRA_ERROR = "Opphold med oppholdFra må angis";
     private static final String VALIDATION_UGYLDIG_INTERVAL_ERROR = "Ugyldig datointervall: oppholdFra må være før oppholdTil";
     private static final String VALIDATION_TYPE_ERROR = "Type av opphold må angis";
     private static final String VALIDATION_OPPHOLD_OVELAP_ERROR = "Feil: Overlappende opphold er detektert";
-
-    public OppholdCommand(List<PdlOpphold> request) {
-        super(request);
-    }
 
     @Override
     protected void validate(PdlOpphold opphold) {

@@ -1,7 +1,10 @@
-package no.nav.pdl.forvalter.service.command.pdlartifact;
+package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.dto.RsInnflytting;
+import no.nav.pdl.forvalter.dto.RsUtflytting;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDate;
@@ -12,37 +15,39 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasLength;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class InnflyttingCommandTest {
+@ExtendWith(MockitoExtension.class)
+class UtflyttingServiceTest {
+
+    @InjectMocks
+    private UtflyttingService utflyttingService;
 
     @Test
     void whenInvalidLandkode_thenThrowExecption() {
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                new InnflyttingCommand(List.of(RsInnflytting.builder()
-                        .fraflyttingsland("Finnland")
+                utflyttingService.convert(List.of(RsUtflytting.builder()
+                        .tilflyttingsland("Mali")
                         .isNew(true)
-                        .build()))
-                        .call());
+                        .build())));
 
-        assertThat(exception.getMessage(), containsString("Landkode må oppgis i hht ISO-3 Landkoder på fraflyttingsland"));
+        assertThat(exception.getMessage(), containsString("Landkode må oppgis i hht ISO-3 Landkoder for tilflyttingsland"));
     }
 
     @Test
     void whenInvalidFlyttedatoSequence_thenThrowExecption() {
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                new InnflyttingCommand(List.of(RsInnflytting.builder()
-                                .fraflyttingsland("AUS")
+                utflyttingService.convert(List.of(RsUtflytting.builder()
+                                .tilflyttingsland("USA")
                                 .flyttedato(LocalDate.of(2015, 12, 31).atStartOfDay())
                                 .isNew(true)
                                 .build(),
-                        RsInnflytting.builder()
-                                .fraflyttingsland("RUS")
+                        RsUtflytting.builder()
+                                .tilflyttingsland("CAN")
                                 .flyttedato(LocalDate.of(2015, 12, 31).atStartOfDay())
                                 .isNew(true)
                                 .build()
-                ))
-                        .call());
+                )));
 
         assertThat(exception.getMessage(), containsString("Ugyldig flyttedato, ny dato må være etter en eksisterende"));
     }
@@ -50,11 +55,8 @@ class InnflyttingCommandTest {
     @Test
     void whenEmptyLandkode_thenProvideRandomCountry() {
 
-        var target = new InnflyttingCommand(List.of(RsInnflytting.builder()
-                .isNew(true)
-                .build()))
-                .call().get(0);
+        var target = utflyttingService.convert(List.of(RsUtflytting.builder().isNew(true).build())).get(0);
 
-        assertThat(target.getFraflyttingsland(), hasLength(3));
+        assertThat(target.getTilflyttingsland(), hasLength(3));
     }
 }

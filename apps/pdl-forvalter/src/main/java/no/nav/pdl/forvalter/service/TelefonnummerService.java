@@ -1,7 +1,6 @@
-package no.nav.pdl.forvalter.service.command.pdlartifact;
+package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.domain.PdlTelefonnummer;
-import no.nav.pdl.forvalter.service.PdlArtifactService;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
@@ -9,7 +8,7 @@ import java.util.List;
 import static java.util.Objects.isNull;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
-public class TelefonnummerCommand extends PdlArtifactService<PdlTelefonnummer> {
+public class TelefonnummerService extends PdlArtifactService<PdlTelefonnummer> {
 
     private static final String VALIDATION_PRIORITET_REQUIRED = "Telefonnummer: prioritet er påkrevd";
     private static final String VALIDATION_PRIORITET_ERROR = "Telefonnummerets prioritet må være 1 eller 2";
@@ -21,10 +20,6 @@ public class TelefonnummerCommand extends PdlArtifactService<PdlTelefonnummer> {
             "(plusstegn) fulgt av  1 til 5 sifre";
     private static final String VALIDATION_NUMMER_INVALID_FORMAT = "Telefonnummer: nummer kan kun inneholde tallsifre";
     private static final String VALIDATION_NUMMER_INVALID_LENGTH = "Telefonnummer: nummer kan ha lengde fra 3 til 16 sifre";
-
-    public TelefonnummerCommand(List<PdlTelefonnummer> request) {
-        super(request);
-    }
 
     @Override
     protected void validate(PdlTelefonnummer telefonnummer) {

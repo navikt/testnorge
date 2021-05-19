@@ -1,4 +1,4 @@
-package no.nav.pdl.forvalter.service.command.pdlartifact;
+package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.domain.PdlBostedadresse;
 import no.nav.pdl.forvalter.domain.PdlFoedsel;
@@ -7,6 +7,9 @@ import no.nav.pdl.forvalter.domain.PdlUtenlandskAdresse;
 import no.nav.pdl.forvalter.domain.PdlVegadresse;
 import no.nav.pdl.forvalter.dto.RsInnflytting;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,7 +19,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasLength;
 import static org.hamcrest.Matchers.is;
 
-class FoedselCommandTest {
+@ExtendWith(MockitoExtension.class)
+class FoedselServiceTest {
 
     private static final String FNR_IDENT ="12105628901";
     private static final String DNR_IDENT ="41056828901";
@@ -37,13 +41,16 @@ class FoedselCommandTest {
             .fraflyttingsland("JPN")
             .build();
 
+    @InjectMocks
+    private FoedselService foedselService;
+
     @Test
     void whenIdentIsFnrAndVegadresseConveysKommune_thenCaptureFoedekommune() {
 
-        var target = new FoedselCommand(List.of(PdlFoedsel.builder()
+        var target = foedselService.convert(List.of(PdlFoedsel.builder()
                 .isNew(true)
                 .build()), FNR_IDENT, vegadresse, null)
-                .call().get(0);
+                .get(0);
 
         assertThat(target.getFoedselsdato(), is(equalTo(LocalDate.of(1956, 10,12).atStartOfDay())));
         assertThat(target.getFoedselsaar(), is(equalTo(1956)));
@@ -54,10 +61,10 @@ class FoedselCommandTest {
     @Test
     void whenIdentIsFnrAndMatrikkeldresseConveysKommune_thenCaptureFoedekommune() {
 
-        var target = new FoedselCommand(List.of(PdlFoedsel.builder()
+        var target = foedselService.convert(List.of(PdlFoedsel.builder()
                 .isNew(true)
                 .build()), FNR_IDENT, matrikkeladresse, null)
-                .call().get(0);
+                .get(0);
 
         assertThat(target.getFoedselsdato(), is(equalTo(LocalDate.of(1956, 10,12).atStartOfDay())));
         assertThat(target.getFoedselsaar(), is(equalTo(1956)));
@@ -68,10 +75,10 @@ class FoedselCommandTest {
     @Test
     void whenIdentIsFnrAndUkjentBostedConveysKommune_thenCaptureFoedekommune() {
 
-        var target = new FoedselCommand(List.of(PdlFoedsel.builder()
+        var target = foedselService.convert(List.of(PdlFoedsel.builder()
                 .isNew(true)
                 .build()), FNR_IDENT, ukjentBosted, null)
-                .call().get(0);
+                .get(0);
 
         assertThat(target.getFoedselsdato(), is(equalTo(LocalDate.of(1956, 10,12).atStartOfDay())));
         assertThat(target.getFoedselsaar(), is(equalTo(1956)));
@@ -82,10 +89,10 @@ class FoedselCommandTest {
     @Test
     void whenIdentIsFnrAndKommuneOfBirthIsUnknown_thenProvideRandomFoedekommune() {
 
-        var target = new FoedselCommand(List.of(PdlFoedsel.builder()
+        var target = foedselService.convert(List.of(PdlFoedsel.builder()
                 .isNew(true)
                 .build()), FNR_IDENT, null, null)
-                .call().get(0);
+                .get(0);
 
         assertThat(target.getFoedselsdato(), is(equalTo(LocalDate.of(1956, 10,12).atStartOfDay())));
         assertThat(target.getFoedselsaar(), is(equalTo(1956)));
@@ -96,10 +103,10 @@ class FoedselCommandTest {
     @Test
     void whenIdentIsDnrAndUtenLandskAdresseConveysCountry_thenCapturLandkode() {
 
-        var target = new FoedselCommand(List.of(PdlFoedsel.builder()
+        var target = foedselService.convert(List.of(PdlFoedsel.builder()
                 .isNew(true)
                 .build()), DNR_IDENT, utenlandskBoadresse, null)
-                .call().get(0);
+                .get(0);
 
         assertThat(target.getFoedselsdato(), is(equalTo(LocalDate.of(1968, 5,1).atStartOfDay())));
         assertThat(target.getFoedselsaar(), is(equalTo(1968)));
@@ -109,10 +116,10 @@ class FoedselCommandTest {
     @Test
     void whenIdentIsDnrAndInnflyttingConveysCountry_thenCapturLandkode() {
 
-        var target = new FoedselCommand(List.of(PdlFoedsel.builder()
+        var target = foedselService.convert(List.of(PdlFoedsel.builder()
                 .isNew(true)
                 .build()), DNR_IDENT, null, innflytting)
-                .call().get(0);
+                .get(0);
 
         assertThat(target.getFoedselsdato(), is(equalTo(LocalDate.of(1968, 5,1).atStartOfDay())));
         assertThat(target.getFoedselsaar(), is(equalTo(1968)));
@@ -122,10 +129,10 @@ class FoedselCommandTest {
     @Test
     void whenIdentIsDnrAndLandOfBirthUnkown_thenProvideRandomLandkode() {
 
-        var target = new FoedselCommand(List.of(PdlFoedsel.builder()
+        var target = foedselService.convert(List.of(PdlFoedsel.builder()
                 .isNew(true)
                 .build()), DNR_IDENT, null, null)
-                .call().get(0);
+                .get(0);
 
         assertThat(target.getFoedselsdato(), is(equalTo(LocalDate.of(1968, 5,1).atStartOfDay())));
         assertThat(target.getFoedselsaar(), is(equalTo(1968)));

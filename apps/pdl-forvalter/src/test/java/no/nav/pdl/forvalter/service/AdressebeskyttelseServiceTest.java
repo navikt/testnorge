@@ -1,7 +1,10 @@
-package no.nav.pdl.forvalter.service.command.pdlartifact;
+package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.domain.PdlAdressebeskyttelse;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
@@ -15,17 +18,21 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class AdressebeskyttelseCommandTest {
+@ExtendWith(MockitoExtension.class)
+class AdressebeskyttelseServiceTest {
+
+    @InjectMocks
+    private AdressebeskyttelseService adressebeskyttelseService;
 
     @Test
     void whenStrengtFortroligUtlandAndMasterIsFreg_thenThrowExecption() {
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                new AdressebeskyttelseCommand(List.of(PdlAdressebeskyttelse.builder()
+                adressebeskyttelseService.convert(List.of(PdlAdressebeskyttelse.builder()
                         .gradering(STRENGT_FORTROLIG_UTLAND)
                         .master(FREG)
                         .isNew(true)
-                        .build())).call());
+                        .build())));
 
         assertThat(exception.getMessage(), containsString("Gradering STRENGT_FORTROLIG_UTLAND kan kun settes hvis master er PDL"));
     }
@@ -33,10 +40,10 @@ class AdressebeskyttelseCommandTest {
     @Test
     void whenStrengtFortroligUtlandSetMasterToPdl_thenThrowExecption() {
 
-        var target = new AdressebeskyttelseCommand(List.of(PdlAdressebeskyttelse.builder()
+        var target = adressebeskyttelseService.convert(List.of(PdlAdressebeskyttelse.builder()
                 .gradering(STRENGT_FORTROLIG_UTLAND)
                 .isNew(true)
-                .build())).call().get(0);
+                .build())).get(0);
 
         assertThat(target.getMaster(), is(equalTo(PDL)));
     }

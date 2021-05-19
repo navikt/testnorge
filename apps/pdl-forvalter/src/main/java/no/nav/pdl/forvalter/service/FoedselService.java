@@ -1,14 +1,15 @@
-package no.nav.pdl.forvalter.service.command.pdlartifact;
+package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.domain.Identtype;
 import no.nav.pdl.forvalter.domain.PdlBostedadresse;
 import no.nav.pdl.forvalter.domain.PdlFoedsel;
 import no.nav.pdl.forvalter.dto.RsInnflytting;
-import no.nav.pdl.forvalter.service.PdlArtifactService;
 import no.nav.pdl.forvalter.service.command.DatoFraIdentCommand;
 import no.nav.pdl.forvalter.service.command.IdenttypeFraIdentCommand;
 import no.nav.pdl.forvalter.service.command.TilfeldigKommuneCommand;
 import no.nav.pdl.forvalter.service.command.TilfeldigLandCommand;
+import org.apache.logging.log4j.util.Strings;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -17,29 +18,30 @@ import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.NORGE;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-public class FoedselCommand extends PdlArtifactService<PdlFoedsel> {
+@Service
+public class FoedselService extends PdlArtifactService<PdlFoedsel> {
 
-    private final String ident;
-    private final PdlBostedadresse bostedadresse;
-    private final RsInnflytting innflytting;
+    public List<PdlFoedsel> convert(List<PdlFoedsel> request,
+                                       String ident,
+                                       PdlBostedadresse bostedadresse,
+                                       RsInnflytting innflytting) {
 
-    public FoedselCommand(List<PdlFoedsel> request,
-                          String ident,
-                          PdlBostedadresse bostedadresse,
-                          RsInnflytting innflytting) {
-        super(request);
-        this.ident = ident;
-        this.bostedadresse = bostedadresse;
-        this.innflytting = innflytting;
+        for (var type : request) {
+
+            if (type.isNew()) {
+                validate(type);
+
+                handle(type, ident, bostedadresse, innflytting);
+                if (Strings.isBlank(type.getKilde())) {
+                    type.setKilde("Dolly");
+                }
+            }
+        }
+        enforceIntegrity(request);
+        return request;
     }
 
-    @Override
-    protected void validate(PdlFoedsel foedsel) {
-
-    }
-
-    @Override
-    public void handle(PdlFoedsel foedsel) {
+    public void handle(PdlFoedsel foedsel, String ident, PdlBostedadresse bostedadresse, RsInnflytting innflytting) {
 
         if (isNull(foedsel.getFoedselsdato())) {
             foedsel.setFoedselsdato(new DatoFraIdentCommand(ident).call().atStartOfDay());
@@ -71,6 +73,16 @@ public class FoedselCommand extends PdlArtifactService<PdlFoedsel> {
                 foedsel.setFodekommune(new TilfeldigKommuneCommand().call());
             }
         }
+    }
+
+    @Override
+    protected void validate(PdlFoedsel foedsel) {
+
+    }
+
+    @Override
+    protected void handle(PdlFoedsel type) {
+
     }
 
     @Override

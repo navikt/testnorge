@@ -1,7 +1,8 @@
-package no.nav.pdl.forvalter.service.command.pdlartifact;
+package no.nav.pdl.forvalter.service;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.dto.RsTilrettelagtKommunikasjon;
-import no.nav.pdl.forvalter.service.PdlArtifactService;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
@@ -11,15 +12,13 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
-public class TilrettelagtKommunikasjonCommand extends PdlArtifactService<RsTilrettelagtKommunikasjon> {
+@Service
+@RequiredArgsConstructor
+public class TilrettelagtKommunikasjonService extends PdlArtifactService<RsTilrettelagtKommunikasjon> {
 
     private static final String VALIDATION_NO_SPRAAK_ERROR = "Enten språk for taletolk og/eller tegnspråktolk må oppgis";
     private static final String VALIDATION_TOLKESPRAAK_ERROR = "Språk for taletolk er ugyldig: forventet 2 tegn i hht kodeverk Språk";
     private static final String VALIDATION_TEGNSPRAAK_ERROR = "Språk for tegnspråktolk er ugyldig: forventet 2 tegn i hht kodeverk Språk";
-
-    public TilrettelagtKommunikasjonCommand(List<RsTilrettelagtKommunikasjon> request) {
-        super(request);
-    }
 
     @Override
     protected void validate(RsTilrettelagtKommunikasjon tilrettelagtKommunikasjon) {
