@@ -20,8 +20,13 @@ spec:
         - application: testnorge-oversikt-frontend
           cluster: dev-fss
     outbound:
+      rules:
+        - application: oppsummeringsdokument-service
+        - application: testnav-generer-organisasjon-populasjon-service
+        - application: testnav-organisasjon-service
       external:
         - host: testnav-syntrest-proxy.dev-fss-pub.nais.io
+        - host: testnav-hodejegeren-proxy.dev-fss-pub.nais.io
   liveness:
     path: /internal/isAlive
     initialDelay: 4

@@ -4,12 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +53,11 @@ public class OppsummeringsdokumentConsumer {
         this.accessTokenService = accessTokenService;
         this.properties = properties;
         this.executor = executor;
+
+
+        HttpClient client = HttpClient.create()
+                .responseTimeout(Duration.ofMinutes(10));
+
         this.webClient = WebClient
                 .builder()
                 .baseUrl(properties.getUrl())
@@ -62,6 +70,7 @@ public class OppsummeringsdokumentConsumer {
                             .defaultCodecs()
                             .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
                 })
+                .clientConnector(new ReactorClientHttpConnector(client))
                 .build();
     }
 

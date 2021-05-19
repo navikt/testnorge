@@ -86,11 +86,15 @@ public class Oppsummeringsdokument {
         return id;
     }
 
+    public String getOpplysningspliktigOrganisajonsnummer() {
+        return dto.getOpplysningspliktigOrganisajonsnummer();
+    }
+
     public Long getVersion() {
         return dto.getVersion();
     }
 
-    public Set<String> getIdenter(){
+    public Set<String> getIdenter() {
         return dto.getVirksomheter()
                 .stream()
                 .flatMap(virksomhet -> virksomhet.getPersoner().stream().map(PersonDTO::getIdent))

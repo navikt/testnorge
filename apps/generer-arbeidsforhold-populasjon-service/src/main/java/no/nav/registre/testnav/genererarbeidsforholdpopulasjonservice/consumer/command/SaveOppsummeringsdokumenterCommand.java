@@ -38,16 +38,20 @@ public class SaveOppsummeringsdokumenterCommand implements Callable<Mono<String>
                 .header("populasjon", populasjon.toString())
                 .body(BodyInserters.fromPublisher(Mono.just(dto), OppsummeringsdokumentDTO.class))
                 .exchange()
+                .flatMap(response -> response.toEntity(String.class))
                 .map(response -> {
-                    if (!response.statusCode().is2xxSuccessful()) {
+
+
+                    if (!response.getStatusCode().is2xxSuccessful()) {
                         throw new RuntimeException(String.format(
-                                "Feil med opprettelse av opplysningspliktig %s. Status code: %s.",
+                                "Feil med opprettelse av opplysningspliktig %s. Error: %s Status code: %s.",
                                 dto.getOpplysningspliktigOrganisajonsnummer(),
-                                response.rawStatusCode()
+                                response.getBody(),
+                                response.getStatusCodeValue()
                         ));
                     }
 
-                    var id = response.headers().header("ID").stream().findFirst().orElseThrow();
+                    var id = response.getHeaders().get("ID").stream().findFirst().orElseThrow();
                     log.info(
                             "Opplysningspliktig {} sendt inn den {} med id {}",
                             dto.getOpplysningspliktigOrganisajonsnummer(),

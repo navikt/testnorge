@@ -19,6 +19,8 @@ spec:
           cluster: dev-fss
         - application: oppsummeringsdokument-frontend
           cluster: dev-gcp
+        - application: testnav-generer-arbeidsforhold-populasjon-service
+          cluster: dev-gcp
     outbound:
       external:
         - host: aareg-synt-services-proxy.dev-fss-pub.nais.io
