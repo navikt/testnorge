@@ -55,7 +55,7 @@ public class RettighetTiltakService {
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
     private final ServiceUtils serviceUtils;
     private final IdentService identService;
-    private final ArbeidssoekerService arbeidsoekerUtils;
+    private final ArbeidssoekerService arbeidssoekerService;
     private final TiltakArenaForvalterConsumer tiltakArenaForvalterConsumer;
     private final Random rand;
 
@@ -460,7 +460,7 @@ public class RettighetTiltakService {
         for (var syntetisertRettighet : syntetiserteRettigheter) {
             var utvalgtIdent = utvalgteIdenter.remove(utvalgteIdenter.size() - 1);
 
-            arbeidsoekerUtils.opprettArbeidssoekerTiltak(utvalgtIdent, miljoe);
+            arbeidssoekerService.opprettArbeidssoekerTiltak(utvalgtIdent, miljoe, syntetisertRettighet.getFraDato());
 
             var rettighetRequest = new RettighetTiltaksaktivitetRequest(Collections.singletonList(syntetisertRettighet));
 
