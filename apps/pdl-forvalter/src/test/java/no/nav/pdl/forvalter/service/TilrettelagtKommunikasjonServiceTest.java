@@ -22,22 +22,26 @@ class TilrettelagtKommunikasjonServiceTest {
     @Test
     void whenNoSpraakGiven_thenThrowExecption() {
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                tilrettelagtKommunikasjonService.convert(List.of(RsTilrettelagtKommunikasjon.builder()
-                        .isNew(true)
-                        .build())));
+        var request = List.of(RsTilrettelagtKommunikasjon.builder()
+                .isNew(true)
+                .build());
 
-        assertThat(exception.getMessage(), containsString("Enten språk for taletolk og/eller tegnspråktolk må oppgis"));
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+                tilrettelagtKommunikasjonService.convert(request));
+
+        assertThat(exception.getMessage(), containsString("Språk for taletolk og/eller tegnspråktolk må oppgis"));
     }
 
     @Test
     void whenInvalidSpraakTaletolkGiven_thenThrowExecption() {
 
+        var request = List.of(RsTilrettelagtKommunikasjon.builder()
+                .spraakForTaletolk("svensk")
+                .isNew(true)
+                .build());
+
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                tilrettelagtKommunikasjonService.convert(List.of(RsTilrettelagtKommunikasjon.builder()
-                        .spraakForTaletolk("svensk")
-                        .isNew(true)
-                        .build())));
+                tilrettelagtKommunikasjonService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Språk for taletolk er ugyldig: forventet 2 tegn i hht kodeverk Språk"));
     }
@@ -45,11 +49,13 @@ class TilrettelagtKommunikasjonServiceTest {
     @Test
     void whenInvalidSpraakTegnspraakTolkGiven_thenThrowExecption() {
 
+        var request = List.of(RsTilrettelagtKommunikasjon.builder()
+                .spraakForTegnspraakTolk("kyrgisistansk")
+                .isNew(true)
+                .build());
+
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                tilrettelagtKommunikasjonService.convert(List.of(RsTilrettelagtKommunikasjon.builder()
-                        .spraakForTegnspraakTolk("kyrgisistansk")
-                        .isNew(true)
-                        .build())));
+                tilrettelagtKommunikasjonService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Språk for tegnspråktolk er ugyldig: forventet 2 tegn i hht kodeverk Språk"));
     }

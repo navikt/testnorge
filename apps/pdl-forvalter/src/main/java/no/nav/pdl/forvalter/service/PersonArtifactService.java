@@ -28,12 +28,12 @@ public class PersonArtifactService {
                 .innflytting(innflyttingService.convert(person.getInnflytting()))
                 .statsborgerskap(statsborgerskapService.convert(person.getStatsborgerskap(), ident,
                         person.getInnflytting().stream().reduce((a, b) -> b).orElse(null)))
-                .bostedsadresse(bostedAdresseService.accept(person.getBostedsadresse()))
+                .bostedsadresse(bostedAdresseService.convert(person.getBostedsadresse()))
                 .foedsel(foedselService.convert(person.getFoedsel(), ident,
                         person.getBostedsadresse().stream().reduce((a, b) -> b).orElse(null),
                         person.getInnflytting().stream().reduce((a, b) -> b).orElse(null)))
-                .kontaktadresse(kontaktAdresseService.accept(person.getKontaktadresse()))
-                .oppholdsadresse(oppholdsadresseService.accept(person.getOppholdsadresse()))
+                .kontaktadresse(kontaktAdresseService.convert(person.getKontaktadresse()))
+                .oppholdsadresse(oppholdsadresseService.convert(person.getOppholdsadresse()))
                 .adressebeskyttelse(adressebeskyttelseService.convert(person.getAdressebeskyttelse()))
                 .telefonnummer(telefonnummerService.convert(person.getTelefonnummer()))
                 .utflytting(utflyttingService.convert(person.getUtflytting()))

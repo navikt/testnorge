@@ -1,7 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.pdl.forvalter.artifact.VegadresseService;
 import no.nav.pdl.forvalter.domain.PdlMatrikkeladresse;
 import no.nav.pdl.forvalter.domain.PdlOppholdsadresse;
 import no.nav.pdl.forvalter.domain.PdlUtenlandskAdresse;
@@ -42,12 +41,14 @@ class OppholdsadresseServiceTest {
     @Test
     void whenMultipleAdressesProvided_thenThrowExecption() {
 
+        var request = List.of(PdlOppholdsadresse.builder()
+                .vegadresse(new PdlVegadresse())
+                .matrikkeladresse(new PdlMatrikkeladresse())
+                .isNew(true)
+                .build());
+
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdsadresseService.accept(List.of(PdlOppholdsadresse.builder()
-                        .vegadresse(new PdlVegadresse())
-                        .matrikkeladresse(new PdlMatrikkeladresse())
-                        .isNew(true)
-                        .build())));
+                oppholdsadresseService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Kun én adresse skal være satt " +
                 "(vegadresse, matrikkeladresse, utenlandskAdresse)"));
@@ -56,10 +57,12 @@ class OppholdsadresseServiceTest {
     @Test
     void whenNoAdressProvided_thenThrowExecption() {
 
+        var request =List.of(PdlOppholdsadresse.builder()
+                .isNew(true)
+                .build());
+
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdsadresseService.accept(List.of(PdlOppholdsadresse.builder()
-                        .isNew(true)
-                        .build())));
+                oppholdsadresseService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Én av adressene må velges " +
                 "(vegadresse, matrikkeladresse, utenlandskAdresse)"));
@@ -68,12 +71,14 @@ class OppholdsadresseServiceTest {
     @Test
     void whenUtenlandskAdresseProvidedAndMasterIsFreg_thenThrowExecption() {
 
+        var request = List.of(PdlOppholdsadresse.builder()
+                .utenlandskAdresse(new PdlUtenlandskAdresse())
+                .master(FREG)
+                .isNew(true)
+                .build());
+
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdsadresseService.accept(List.of(PdlOppholdsadresse.builder()
-                        .utenlandskAdresse(new PdlUtenlandskAdresse())
-                        .master(FREG)
-                        .isNew(true)
-                        .build())));
+                oppholdsadresseService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Utenlandsk adresse krever at master er PDL"));
     }
@@ -81,13 +86,15 @@ class OppholdsadresseServiceTest {
     @Test
     void whenVegadresseWithBruksenhetsnummerInvalidFormat_thenThrowExecption() {
 
+        var request = List.of(PdlOppholdsadresse.builder()
+                .vegadresse(PdlVegadresse.builder()
+                        .bruksenhetsnummer("HK25419")
+                        .build())
+                .isNew(true)
+                .build());
+
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdsadresseService.accept(List.of(PdlOppholdsadresse.builder()
-                        .vegadresse(PdlVegadresse.builder()
-                                .bruksenhetsnummer("HK25419")
-                                .build())
-                        .isNew(true)
-                        .build())));
+                oppholdsadresseService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Gyldig format er Bokstaven H, L, U eller K etterfulgt av fire sifre"));
     }
@@ -95,13 +102,15 @@ class OppholdsadresseServiceTest {
     @Test
     void whenMatrikkeladresseWithBruksenhetsnummerInvalidFormat_thenThrowExecption() {
 
+        var request =List.of(PdlOppholdsadresse.builder()
+                .matrikkeladresse(PdlMatrikkeladresse.builder()
+                        .bruksenhetsnummer("F8021")
+                        .build())
+                .isNew(true)
+                .build());
+
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdsadresseService.accept(List.of(PdlOppholdsadresse.builder()
-                        .matrikkeladresse(PdlMatrikkeladresse.builder()
-                                .bruksenhetsnummer("F8021")
-                                .build())
-                        .isNew(true)
-                        .build())));
+                oppholdsadresseService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Gyldig format er Bokstaven H, L, U eller K etterfulgt av fire sifre"));
     }
@@ -109,13 +118,15 @@ class OppholdsadresseServiceTest {
     @Test
     void whenInvalidDateInterval_thenThrowExecption() {
 
+        var request = List.of(PdlOppholdsadresse.builder()
+                .vegadresse(new PdlVegadresse())
+                .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
+                .gyldigTilOgMed(LocalDate.of(2018, 1, 1).atStartOfDay())
+                .isNew(true)
+                .build());
+
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdsadresseService.accept(List.of(PdlOppholdsadresse.builder()
-                        .vegadresse(new PdlVegadresse())
-                        .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
-                        .gyldigTilOgMed(LocalDate.of(2018, 1, 1).atStartOfDay())
-                        .isNew(true)
-                        .build())));
+                oppholdsadresseService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Feil: Overlappende adressedatoer er ikke lov"));
     }
@@ -123,19 +134,21 @@ class OppholdsadresseServiceTest {
     @Test
     void whenOverlappingDateIntervalsInInput_thenThrowExecption() {
 
+        var request = List.of(PdlOppholdsadresse.builder()
+                        .vegadresse(new PdlVegadresse())
+                        .gyldigFraOgMed(LocalDate.of(2020, 1, 2).atStartOfDay())
+                        .isNew(true)
+                        .build(),
+                PdlOppholdsadresse.builder()
+                        .matrikkeladresse(new PdlMatrikkeladresse())
+                        .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
+                        .isNew(true)
+                        .build());
+
         when(vegadresseService.get(any(PdlVegadresse.class), isNull())).thenReturn(new Vegadresse());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdsadresseService.accept(List.of(PdlOppholdsadresse.builder()
-                                .vegadresse(new PdlVegadresse())
-                                .gyldigFraOgMed(LocalDate.of(2020, 1, 2).atStartOfDay())
-                                .isNew(true)
-                                .build(),
-                        PdlOppholdsadresse.builder()
-                                .matrikkeladresse(new PdlMatrikkeladresse())
-                                .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
-                                .isNew(true)
-                                .build())));
+                oppholdsadresseService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Feil: Overlappende adressedatoer er ikke lov"));
     }
@@ -143,18 +156,20 @@ class OppholdsadresseServiceTest {
     @Test
     void whenOverlappingDateIntervalsInInput2_thenThrowExecption() {
 
+        var request = List.of(PdlOppholdsadresse.builder()
+                        .gyldigFraOgMed(LocalDate.of(2020, 2, 3).atStartOfDay())
+                        .matrikkeladresse(new PdlMatrikkeladresse())
+                        .isNew(true)
+                        .build(),
+                PdlOppholdsadresse.builder()
+                        .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
+                        .gyldigTilOgMed(LocalDate.of(2020, 2, 3).atStartOfDay())
+                        .utenlandskAdresse(new PdlUtenlandskAdresse())
+                        .isNew(true)
+                        .build());
+
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdsadresseService.accept(List.of(PdlOppholdsadresse.builder()
-                                .gyldigFraOgMed(LocalDate.of(2020, 2, 3).atStartOfDay())
-                                .matrikkeladresse(new PdlMatrikkeladresse())
-                                .isNew(true)
-                                .build(),
-                        PdlOppholdsadresse.builder()
-                                .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
-                                .gyldigTilOgMed(LocalDate.of(2020, 2, 3).atStartOfDay())
-                                .utenlandskAdresse(new PdlUtenlandskAdresse())
-                                .isNew(true)
-                                .build())));
+                oppholdsadresseService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Feil: Overlappende adressedatoer er ikke lov"));
     }
@@ -162,7 +177,7 @@ class OppholdsadresseServiceTest {
     @Test
     void whenFraDatoAndEmptyTilDato_thenAcceptRequest() {
 
-        var target = oppholdsadresseService.accept(List.of(PdlOppholdsadresse.builder()
+        var target = oppholdsadresseService.convert(List.of(PdlOppholdsadresse.builder()
                 .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
                 .matrikkeladresse(new PdlMatrikkeladresse())
                 .isNew(true)
@@ -176,7 +191,7 @@ class OppholdsadresseServiceTest {
 
         when(vegadresseService.get(any(PdlVegadresse.class), isNull())).thenReturn(new Vegadresse());
 
-        var target = oppholdsadresseService.accept(List.of(PdlOppholdsadresse.builder()
+        var target = oppholdsadresseService.convert(List.of(PdlOppholdsadresse.builder()
                         .gyldigFraOgMed(LocalDate.of(2020, 2, 4).atStartOfDay())
                         .vegadresse(new PdlVegadresse())
                         .isNew(true)

@@ -6,6 +6,8 @@ import no.nav.pdl.forvalter.domain.PdlMatrikkeladresse;
 import no.nav.pdl.forvalter.domain.PdlUtenlandskAdresse;
 import no.nav.pdl.forvalter.domain.PdlVegadresse;
 import no.nav.pdl.forvalter.dto.RsInnflytting;
+import no.nav.pdl.forvalter.utils.TilfeldigKommuneService;
+import no.nav.pdl.forvalter.utils.TilfeldigLandService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

@@ -2,6 +2,7 @@ package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.domain.PdlStatsborgerskap;
 import no.nav.pdl.forvalter.dto.RsInnflytting;
+import no.nav.pdl.forvalter.utils.TilfeldigLandService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -35,11 +36,13 @@ class StatsborgerskapServiceTest {
     @Test
     void whenUgyldigLandkode_thenThrowExecption() {
 
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                statsborgerskapService.convert(List.of(PdlStatsborgerskap.builder()
+        var request = List.of(PdlStatsborgerskap.builder()
                         .landkode("Uruguay")
                         .isNew(true)
-                        .build()), FNR_IDENT, null));
+                        .build());
+
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+                statsborgerskapService.convert(request, FNR_IDENT, null));
 
         assertThat(exception.getMessage(), containsString("Ugyldig landkode, må være i hht ISO-3 Landkoder"));
     }
@@ -47,12 +50,14 @@ class StatsborgerskapServiceTest {
     @Test
     void whenInvalidDateInterval_thenThrowExecption() {
 
+        var request = List.of(PdlStatsborgerskap.builder()
+                .gyldigFom(LocalDate.of(2020, 1, 1).atStartOfDay())
+                .gyldigTom(LocalDate.of(2018, 1, 1).atStartOfDay())
+                .isNew(true)
+                .build());
+
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                statsborgerskapService.convert(List.of(PdlStatsborgerskap.builder()
-                        .gyldigFom(LocalDate.of(2020, 1, 1).atStartOfDay())
-                        .gyldigTom(LocalDate.of(2018, 1, 1).atStartOfDay())
-                        .isNew(true)
-                        .build()), FNR_IDENT, null));
+                statsborgerskapService.convert(request, FNR_IDENT, null));
 
         assertThat(exception.getMessage(), containsString("Ugyldig datointervall: gyldigFom må være før gyldigTom"));
     }
@@ -60,9 +65,12 @@ class StatsborgerskapServiceTest {
     @Test
     void whenLandkodeIsEmptyAndAvailFromInnflytting_thenPickLandkodeFromInnflytting() {
 
-        var target = statsborgerskapService.convert(List.of(PdlStatsborgerskap.builder()
+        var request = List.of(PdlStatsborgerskap.builder()
                 .isNew(true)
-                .build()), FNR_IDENT, RsInnflytting.builder()
+                .build());
+
+        var target = statsborgerskapService.convert(request,
+                FNR_IDENT, RsInnflytting.builder()
                 .fraflyttingsland("GER")
                 .build())
                 .get(0);

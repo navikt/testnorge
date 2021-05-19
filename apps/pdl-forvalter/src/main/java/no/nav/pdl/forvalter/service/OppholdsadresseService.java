@@ -2,7 +2,6 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.pdl.forvalter.artifact.VegadresseService;
 import no.nav.pdl.forvalter.domain.PdlOppholdsadresse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;

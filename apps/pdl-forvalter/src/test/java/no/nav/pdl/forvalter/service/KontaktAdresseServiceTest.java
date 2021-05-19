@@ -1,7 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.pdl.forvalter.artifact.VegadresseService;
 import no.nav.pdl.forvalter.domain.PdlUtenlandskAdresse;
 import no.nav.pdl.forvalter.domain.PdlVegadresse;
 import no.nav.pdl.forvalter.dto.PdlAdresseResponse.Vegadresse;
@@ -44,13 +43,15 @@ class KontaktAdresseServiceTest {
     @Test
     void whenTooFewDigitsInPostnummer_thenThrowExecption() {
 
+        var request = List.of(RsKontaktadresse.builder()
+                .postboksadresse(Postboksadresse.builder()
+                        .postboks("123")
+                        .build())
+                .isNew(true)
+                .build());
+
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.accept(List.of(RsKontaktadresse.builder()
-                        .postboksadresse(Postboksadresse.builder()
-                                .postboks("123")
-                                .build())
-                        .isNew(true)
-                        .build())));
+                kontaktAdresseService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Postnummer består av fire sifre"));
     }
@@ -58,12 +59,14 @@ class KontaktAdresseServiceTest {
     @Test
     void whenPostboksadresseAndPostboksIsOmitted_thenThrowExecption() {
 
+        var request = List.of(RsKontaktadresse.builder()
+                .postboksadresse(Postboksadresse.builder()
+                        .build())
+                .isNew(true)
+                .build());
+
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.accept(List.of(RsKontaktadresse.builder()
-                        .postboksadresse(Postboksadresse.builder()
-                                .build())
-                        .isNew(true)
-                        .build())));
+                kontaktAdresseService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Kan ikke være tom"));
     }
@@ -71,12 +74,14 @@ class KontaktAdresseServiceTest {
     @Test
     void whenMultipleAdressesProvided_thenThrowExecption() {
 
+        var request = List.of(RsKontaktadresse.builder()
+                .vegadresse(new PdlVegadresse())
+                .utenlandskAdresse(new PdlUtenlandskAdresse())
+                .isNew(true)
+                .build());
+
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.accept(List.of(RsKontaktadresse.builder()
-                        .vegadresse(new PdlVegadresse())
-                        .utenlandskAdresse(new PdlUtenlandskAdresse())
-                        .isNew(true)
-                        .build())));
+                kontaktAdresseService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Kun én adresse skal være satt"));
     }
@@ -84,11 +89,13 @@ class KontaktAdresseServiceTest {
     @Test
     void whenMasterPDLWithoutGyldighet_thenThrowExecption() {
 
+        var request = List.of(RsKontaktadresse.builder()
+                .master(PDL)
+                .isNew(true)
+                .build());
+
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.accept(List.of(RsKontaktadresse.builder()
-                        .master(PDL)
-                        .isNew(true)
-                        .build())));
+                kontaktAdresseService.convert(request));
 
         assertThat(exception.getMessage(), containsString(
                 "Feltene gyldigFraOgMed og gyldigTilOgMed må ha verdi hvis master er PDL"));
@@ -97,13 +104,15 @@ class KontaktAdresseServiceTest {
     @Test
     void whenPDLAdresseWithoutGyldighet_thenThrowExecption() {
 
+        var request = List.of(RsKontaktadresse.builder()
+                .vegadresse(PdlVegadresse.builder()
+                        .adressenavn("Denne veien")
+                        .build())
+                .isNew(true)
+                .build());
+
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.accept(List.of(RsKontaktadresse.builder()
-                        .vegadresse(PdlVegadresse.builder()
-                                .adressenavn("Denne veien")
-                                .build())
-                        .isNew(true)
-                        .build())));
+                kontaktAdresseService.convert(request));
 
         assertThat(exception.getMessage(), containsString(
                 "Feltene gyldigFraOgMed og gyldigTilOgMed må ha verdi for vegadresse uten matrikkelId"));
@@ -112,13 +121,15 @@ class KontaktAdresseServiceTest {
     @Test
     void whenAdresseHasUgyldigBruksenhetsnummer_thenThrowExecption() {
 
+        var request = List.of(RsKontaktadresse.builder()
+                .vegadresse(PdlVegadresse.builder()
+                        .bruksenhetsnummer("W12345")
+                        .build())
+                .isNew(true)
+                .build());
+
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.accept(List.of(RsKontaktadresse.builder()
-                        .vegadresse(PdlVegadresse.builder()
-                                .bruksenhetsnummer("W12345")
-                                .build())
-                        .isNew(true)
-                        .build())));
+                kontaktAdresseService.convert(request));
 
         assertThat(exception.getMessage(), containsString(
                 "Gyldig format er Bokstaven H, L, U eller K etterfulgt av fire sifre"));
@@ -138,7 +149,7 @@ class KontaktAdresseServiceTest {
         doNothing().when(mapperFacade).map(eq(vegadresse), any(PdlVegadresse.class));
 
         var kontaktadresse =
-                kontaktAdresseService.accept(List.of(RsKontaktadresse.builder()
+                kontaktAdresseService.convert(List.of(RsKontaktadresse.builder()
                         .vegadresse(PdlVegadresse.builder()
                                 .postnummer("1234")
                                 .build())

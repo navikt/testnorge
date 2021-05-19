@@ -28,11 +28,13 @@ class OppholdServiceTest {
     @Test
     void whenGyldigFraIsMissing_thenThrowExecption() {
 
+        var request = List.of(PdlOpphold.builder()
+                .type(PERMANENT)
+                .isNew(true)
+                .build());
+
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdService.convert(List.of(PdlOpphold.builder()
-                        .type(PERMANENT)
-                        .isNew(true)
-                        .build())));
+                oppholdService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Opphold med oppholdFra må angis"));
     }
@@ -40,13 +42,15 @@ class OppholdServiceTest {
     @Test
     void whenInvalidDateInterval_thenThrowExecption() {
 
+        var request = List.of(PdlOpphold.builder()
+                .oppholdFra(LocalDate.of(2020, 1, 1).atStartOfDay())
+                .oppholdTil(LocalDate.of(2018, 1, 1).atStartOfDay())
+                .type(MIDLERTIDIG)
+                .isNew(true)
+                .build());
+
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdService.convert(List.of(PdlOpphold.builder()
-                        .oppholdFra(LocalDate.of(2020, 1, 1).atStartOfDay())
-                        .oppholdTil(LocalDate.of(2018, 1, 1).atStartOfDay())
-                        .type(MIDLERTIDIG)
-                        .isNew(true)
-                        .build())));
+                oppholdService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Ugyldig datointervall: oppholdFra må være før oppholdTil"));
     }
@@ -54,11 +58,13 @@ class OppholdServiceTest {
     @Test
     void whenTypeIsEmpty_thenThrowExecption() {
 
+        var request = List.of(PdlOpphold.builder()
+                .oppholdFra(LocalDate.of(2020, 1, 1).atStartOfDay())
+                .isNew(true)
+                .build());
+
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdService.convert(List.of(PdlOpphold.builder()
-                        .oppholdFra(LocalDate.of(2020, 1, 1).atStartOfDay())
-                        .isNew(true)
-                        .build())));
+                oppholdService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Type av opphold må angis"));
     }
@@ -66,17 +72,19 @@ class OppholdServiceTest {
     @Test
     void whenOverlappingDateIntervalsInInput_thenThrowExecption() {
 
+        var request = List.of(PdlOpphold.builder()
+                        .oppholdFra(LocalDate.of(2020, 1, 2).atStartOfDay())
+                        .type(OPPLYSNING_MANGLER)
+                        .isNew(true)
+                        .build(),
+                PdlOpphold.builder()
+                        .oppholdFra(LocalDate.of(2020, 1, 1).atStartOfDay())
+                        .type(MIDLERTIDIG)
+                        .isNew(true)
+                        .build());
+
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdService.convert(List.of(PdlOpphold.builder()
-                                .oppholdFra(LocalDate.of(2020, 1, 2).atStartOfDay())
-                                .type(OPPLYSNING_MANGLER)
-                                .isNew(true)
-                                .build(),
-                        PdlOpphold.builder()
-                                .oppholdFra(LocalDate.of(2020, 1, 1).atStartOfDay())
-                                .type(MIDLERTIDIG)
-                                .isNew(true)
-                                .build())));
+                oppholdService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Feil: Overlappende opphold er detektert"));
     }
@@ -84,18 +92,20 @@ class OppholdServiceTest {
     @Test
     void whenOverlappingDateIntervalsInInput2_thenThrowExecption() {
 
+        var request = List.of(PdlOpphold.builder()
+                        .oppholdFra(LocalDate.of(2020, 2, 3).atStartOfDay())
+                        .type(OPPLYSNING_MANGLER)
+                        .isNew(true)
+                        .build(),
+                PdlOpphold.builder()
+                        .oppholdFra(LocalDate.of(2020, 1, 1).atStartOfDay())
+                        .oppholdTil(LocalDate.of(2020, 2, 3).atStartOfDay())
+                        .type(MIDLERTIDIG)
+                        .isNew(true)
+                        .build());
+
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdService.convert(List.of(PdlOpphold.builder()
-                                .oppholdFra(LocalDate.of(2020, 2, 3).atStartOfDay())
-                                .type(OPPLYSNING_MANGLER)
-                                .isNew(true)
-                                .build(),
-                        PdlOpphold.builder()
-                                .oppholdFra(LocalDate.of(2020, 1, 1).atStartOfDay())
-                                .oppholdTil(LocalDate.of(2020, 2, 3).atStartOfDay())
-                                .type(MIDLERTIDIG)
-                                .isNew(true)
-                                .build())));
+                oppholdService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Feil: Overlappende opphold er detektert"));
     }

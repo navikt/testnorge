@@ -22,9 +22,11 @@ class TelefonnummerServiceTest {
     @Test
     void whenTelefonnummerIsAbsent_thenThrowException() {
 
+        var request = List.of(PdlTelefonnummer.builder()
+                .isNew(true).build());
+
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                telefonnummerService.convert(List.of(PdlTelefonnummer.builder()
-                        .isNew(true).build())));
+                telefonnummerService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Telefonnummer: nummer er påkrevd felt"));
     }
@@ -32,10 +34,12 @@ class TelefonnummerServiceTest {
     @Test
     void whenTelefonnummerContainsNonDigitCharacters_thenThrowException() {
 
+        var request = List.of(PdlTelefonnummer.builder()
+                .nummer("ABC123")
+                .isNew(true).build());
+
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                telefonnummerService.convert(List.of(PdlTelefonnummer.builder()
-                        .nummer("ABC123")
-                        .isNew(true).build())));
+                telefonnummerService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Telefonnummer: nummer kan kun inneholde tallsifre"));
     }
@@ -43,10 +47,12 @@ class TelefonnummerServiceTest {
     @Test
     void whenTelefonnummerContainsTooFewDigits_thenThrowException() {
 
+        var request = List.of(PdlTelefonnummer.builder()
+                .nummer("23")
+                .isNew(true).build());
+
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                telefonnummerService.convert(List.of(PdlTelefonnummer.builder()
-                        .nummer("23")
-                        .isNew(true).build())));
+                telefonnummerService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Telefonnummer: nummer kan ha lengde fra 3 til 16 sifre"));
     }
@@ -54,10 +60,12 @@ class TelefonnummerServiceTest {
     @Test
     void whenTelefonnummerContainsTooManyDigits_thenThrowException() {
 
+        var request = List.of(PdlTelefonnummer.builder()
+                .nummer("12345678901234567")
+                .isNew(true).build());
+
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                telefonnummerService.convert(List.of(PdlTelefonnummer.builder()
-                        .nummer("12345678901234567")
-                        .isNew(true).build())));
+                telefonnummerService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Telefonnummer: nummer kan ha lengde fra 3 til 16 sifre"));
     }
@@ -65,10 +73,12 @@ class TelefonnummerServiceTest {
     @Test
     void whenLandskodeIsAbsent_thenThrowException() {
 
+        var request = List.of(PdlTelefonnummer.builder()
+                .nummer("1213123")
+                .isNew(true).build());
+
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                telefonnummerService.convert(List.of(PdlTelefonnummer.builder()
-                        .nummer("1213123")
-                        .isNew(true).build())));
+                telefonnummerService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Telefonnummer: landskode er påkrevd felt"));
     }
@@ -76,11 +86,13 @@ class TelefonnummerServiceTest {
     @Test
     void whenLandskodeInvalidFormat_thenThrowException() {
 
+        var request = List.of(PdlTelefonnummer.builder()
+                .nummer("123123")
+                .landskode("-6332")
+                .isNew(true).build());
+
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                telefonnummerService.convert(List.of(PdlTelefonnummer.builder()
-                        .nummer("123123")
-                        .landskode("-6332")
-                        .isNew(true).build())));
+                telefonnummerService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Telefonnummer: Landkode består av ledende + " +
                 "(plusstegn) fulgt av  1 til 5 sifre"));
@@ -89,11 +101,13 @@ class TelefonnummerServiceTest {
     @Test
     void whenPriorityIsMissing_thenThrowException() {
 
+        var request = List.of(PdlTelefonnummer.builder()
+                .nummer("243442")
+                .landskode("+323")
+                .isNew(true).build());
+
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                telefonnummerService.convert(List.of(PdlTelefonnummer.builder()
-                        .nummer("243442")
-                        .landskode("+323")
-                        .isNew(true).build())));
+                telefonnummerService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Telefonnummer: prioritet er påkrevd"));
     }
@@ -101,13 +115,15 @@ class TelefonnummerServiceTest {
     @Test
     void whenPriorityOtherThan1or2_thenThrowException() {
 
+        var request = List.of(PdlTelefonnummer.builder()
+                .nummer("243442")
+                .landskode("+323")
+                .prioritet(3)
+                .isNew(true)
+                .build());
+
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                telefonnummerService.convert(List.of(PdlTelefonnummer.builder()
-                        .nummer("243442")
-                        .landskode("+323")
-                        .prioritet(3)
-                        .isNew(true)
-                        .build())));
+                telefonnummerService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Telefonnummerets prioritet må være 1 eller 2"));
     }
@@ -115,13 +131,15 @@ class TelefonnummerServiceTest {
     @Test
     void whenPriority2ExistsBefore1_thenThrowException() {
 
+        var request = List.of(PdlTelefonnummer.builder()
+                .nummer("243442")
+                .landskode("+323")
+                .prioritet(2)
+                .isNew(true)
+                .build());
+
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                telefonnummerService.convert(List.of(PdlTelefonnummer.builder()
-                        .nummer("243442")
-                        .landskode("+323")
-                        .prioritet(2)
-                        .isNew(true)
-                        .build())));
+                telefonnummerService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Telefonnummer: prioritet 1 må angis før 2 kan benyttes"));
     }
@@ -129,19 +147,21 @@ class TelefonnummerServiceTest {
     @Test
     void whenGivenPriorityExistsMultipleTimes_thenThrowException() {
 
+        var request = List.of(PdlTelefonnummer.builder()
+                        .nummer("243442")
+                        .landskode("+323")
+                        .prioritet(1)
+                        .isNew(true)
+                        .build(),
+                PdlTelefonnummer.builder()
+                        .nummer("2432343242442")
+                        .landskode("+1")
+                        .prioritet(1)
+                        .isNew(true)
+                        .build());
+
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                telefonnummerService.convert(List.of(PdlTelefonnummer.builder()
-                                .nummer("243442")
-                                .landskode("+323")
-                                .prioritet(1)
-                                .isNew(true)
-                                .build(),
-                        PdlTelefonnummer.builder()
-                                .nummer("2432343242442")
-                                .landskode("+1")
-                                .prioritet(1)
-                                .isNew(true)
-                                .build())));
+                telefonnummerService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Telefonnummer: prioritet 1 og prioritet 2 kan kun benyttes 1 gang hver"));
     }

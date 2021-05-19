@@ -1,4 +1,4 @@
-package no.nav.pdl.forvalter.artifact;
+package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;

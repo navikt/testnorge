@@ -2,6 +2,7 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.dto.RsInnflytting;
+import no.nav.pdl.forvalter.utils.TilfeldigLandService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 

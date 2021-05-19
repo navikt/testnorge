@@ -38,7 +38,7 @@ public abstract class AdresseService<T extends PdlAdresse> {
         return nonNull(artifact) ? 1 : 0;
     }
 
-    public List<T> accept(List<T> request) {
+    public List<T> convert(List<T> request) {
 
         for (var type : request) {
 

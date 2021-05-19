@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.dto.RsInnflytting;
+import no.nav.pdl.forvalter.utils.TilfeldigLandService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -31,11 +32,13 @@ class InnflyttingServiceTest {
     @Test
     void whenInvalidLandkode_thenThrowExecption() {
 
+        var request = List.of(RsInnflytting.builder()
+                .fraflyttingsland("Finnland")
+                .isNew(true)
+                .build());
+
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                innflyttingService.convert(List.of(RsInnflytting.builder()
-                        .fraflyttingsland("Finnland")
-                        .isNew(true)
-                        .build())));
+                innflyttingService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Landkode må oppgis i hht ISO-3 Landkoder på fraflyttingsland"));
     }
@@ -43,18 +46,19 @@ class InnflyttingServiceTest {
     @Test
     void whenInvalidFlyttedatoSequence_thenThrowExecption() {
 
+        var request = List.of(RsInnflytting.builder()
+                        .fraflyttingsland("AUS")
+                        .flyttedato(LocalDate.of(2015, 12, 31).atStartOfDay())
+                        .isNew(true)
+                        .build(),
+                RsInnflytting.builder()
+                        .fraflyttingsland("RUS")
+                        .flyttedato(LocalDate.of(2015, 12, 31).atStartOfDay())
+                        .isNew(true)
+                        .build());
+
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                innflyttingService.convert(List.of(RsInnflytting.builder()
-                                .fraflyttingsland("AUS")
-                                .flyttedato(LocalDate.of(2015, 12, 31).atStartOfDay())
-                                .isNew(true)
-                                .build(),
-                        RsInnflytting.builder()
-                                .fraflyttingsland("RUS")
-                                .flyttedato(LocalDate.of(2015, 12, 31).atStartOfDay())
-                                .isNew(true)
-                                .build()
-                )));
+                innflyttingService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Ugyldig flyttedato, ny dato må være etter en eksisterende"));
     }

@@ -16,7 +16,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @RequiredArgsConstructor
 public class TilrettelagtKommunikasjonService extends PdlArtifactService<RsTilrettelagtKommunikasjon> {
 
-    private static final String VALIDATION_NO_SPRAAK_ERROR = "Enten språk for taletolk og/eller tegnspråktolk må oppgis";
+    private static final String VALIDATION_NO_SPRAAK_ERROR = "Språk for taletolk og/eller tegnspråktolk må oppgis";
     private static final String VALIDATION_TOLKESPRAAK_ERROR = "Språk for taletolk er ugyldig: forventet 2 tegn i hht kodeverk Språk";
     private static final String VALIDATION_TEGNSPRAAK_ERROR = "Språk for tegnspråktolk er ugyldig: forventet 2 tegn i hht kodeverk Språk";
 

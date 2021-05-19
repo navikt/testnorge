@@ -6,6 +6,7 @@ import no.nav.pdl.forvalter.domain.PdlStatsborgerskap;
 import no.nav.pdl.forvalter.dto.RsInnflytting;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
+import no.nav.pdl.forvalter.utils.TilfeldigLandService;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
