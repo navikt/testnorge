@@ -2,6 +2,7 @@
 layout: default
 title: Ident Pool
 parent: Applikasjoner
+nav_order: 2
 ---
 
 # Ident-Pool

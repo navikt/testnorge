@@ -2,10 +2,11 @@
 layout: default
 title: Orkestratoren
 parent: Applikasjoner
+nav_order: 1
 ---
 
 # Orkestratoren
-Orkestratoren er applikasjonen som orkestrerer opprettelse av syntetiske hendelser i den syntetiske populasjonen "mininorge".
+Orkestratoren er applikasjonen som orkestrerer opprettelse av syntetiske hendelser i den syntetiske nav-populasjonen "mininorge".
 
 ## Swagger
 Swagger finnes under [/swagger](https://orkestratoren.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
