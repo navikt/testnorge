@@ -161,8 +161,15 @@ public class AccessTokenService {
         try {
             var accessToken = webClient.post()
                     .body(body)
-                    .retrieve()
-                    .bodyToMono(AccessToken.class);
+                    .exchange()
+                    .flatMap(response -> {
+                        if (response.statusCode().is2xxSuccessful()) {
+                            return response.bodyToMono(AccessToken.class);
+                        }
+                        return response
+                                .bodyToMono(String.class)
+                                .map(value -> Mono.error(new RuntimeException("Feil med opprettelse av accessToken: " + value)));
+                    });
 
             log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow");
             return accessToken;
