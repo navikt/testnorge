@@ -13,7 +13,6 @@ import reactor.core.publisher.Flux;
 
 import java.time.LocalDate;
 
-import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.Person;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.service.OrkestratorService;
 
 @Slf4j
@@ -24,14 +23,22 @@ public class GenererArbeidsforholdController {
 
     private final OrkestratorService orkestratorService;
 
-    @PostMapping(value = "/populate")
-    public void populate(
+    @PostMapping(value = "/populate", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<String> populate(
             @RequestHeader String miljo,
             @RequestHeader Integer max,
             @RequestParam("fom") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fom,
             @RequestParam("tom") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate tom
     ) {
-        orkestratorService.orkester(max, miljo, fom, tom);
+        return orkestratorService.orkesterUtenArbeidsforhold(max, miljo, fom, tom);
     }
 
+    @PostMapping(value = "/develop", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<String> populate(
+            @RequestHeader String miljo,
+            @RequestParam("fom") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fom,
+            @RequestParam("tom") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate tom
+    ) {
+        return orkestratorService.orkesterMedArbeidsforhold(miljo, fom, tom);
+    }
 }

@@ -17,7 +17,6 @@ import no.nav.registre.testnorge.libs.oauth2.config.InsecureOAuth2ServerToServer
 })
 public class ApplicationConfig {
 
-
     @Bean
     public TaskExecutor executor() {
         final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();

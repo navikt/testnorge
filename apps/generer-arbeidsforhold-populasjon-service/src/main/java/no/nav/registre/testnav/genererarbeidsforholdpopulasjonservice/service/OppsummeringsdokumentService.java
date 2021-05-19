@@ -25,21 +25,19 @@ public class OppsummeringsdokumentService {
 
     private final OppsummeringsdokumentConsumer oppsummeringsdokumentConsumer;
 
-    public void save(Flux<Person> personer, String miljo, LocalDate fom, LocalDate tom) {
-        save(personer.collectList().block(), miljo, fom, tom);
+    public Flux<String> save(Flux<Person> personer, String miljo, LocalDate fom, LocalDate tom) {
+        return save(personer.collectList().block(), miljo, fom, tom);
     }
 
-    public void save(List<Person> personer, String miljo, LocalDate fom, LocalDate tom) {
-        var dokumenter = findAllDatesBetween(fom, tom).stream()
-                .flatMap(kalendermnd -> getOppdatertOppsumeringsdokument(personer, kalendermnd, miljo).stream())
-                .map(Oppsummeringsdokument::toDTO)
-                .collect(Collectors.toList());
-        log.info("Lager {} oppsummeringsdokumentene i {}...", dokumenter.size(), miljo);
-        oppsummeringsdokumentConsumer.saveAll(dokumenter, miljo);
-        log.info("Oppsummeringsdokumentene {} lagret i {}", dokumenter.size(), miljo);
+    public Flux<String> save(List<Person> personer, String miljo, LocalDate fom, LocalDate tom) {
+        return findAllDatesBetween(fom, tom)
+                .stream()
+                .map(kalendermnd -> getOppdatertOppsumeringsdokument(personer, kalendermnd, miljo))
+                .reduce(Flux.empty(), Flux::concat)
+                .flatMap(oppsummeringsdokument -> oppsummeringsdokumentConsumer.save(oppsummeringsdokument.toDTO(), miljo));
     }
 
-    private List<Oppsummeringsdokument> getOppdatertOppsumeringsdokument(List<Person> personer, LocalDate kalendermnd, String miljo) {
+    private Flux<Oppsummeringsdokument> getOppdatertOppsumeringsdokument(List<Person> personer, LocalDate kalendermnd, String miljo) {
         log.info("Finner arbeidsforhold som skal fjernes fra opplysningsplkiktige...");
         var oppsummeringsdokumentWithRemovedArbeidsforhold = Flux.concat(personer.stream()
                 .flatMap(person -> person.getArbeidsforholdToRemoveOn(kalendermnd).stream())
@@ -77,7 +75,7 @@ public class OppsummeringsdokumentService {
                 oppsummeringsdokumenter.add(oppsummeringsdokument);
             }
         }
-        return oppsummeringsdokumenter;
+        return Flux.fromStream(oppsummeringsdokumenter.stream());
     }
 
     private Mono<Oppsummeringsdokument> find(List<Oppsummeringsdokument> list, String opplysningspliktigOrgnummer, LocalDate kalendermnd, String miljo) {

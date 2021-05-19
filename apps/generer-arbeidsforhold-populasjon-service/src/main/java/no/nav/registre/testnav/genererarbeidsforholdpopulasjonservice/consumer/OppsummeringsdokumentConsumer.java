@@ -66,9 +66,9 @@ public class OppsummeringsdokumentConsumer {
     }
 
     @SneakyThrows
-    public List<String> saveAll(List<OppsummeringsdokumentDTO> list, String miljo) {
-        var ids = new ArrayList<String>();
-        var futures = list.stream().map(dto -> save(dto, miljo)).collect(Collectors.toList());
+    public List<Mono<String>> saveAll(List<OppsummeringsdokumentDTO> list, String miljo) {
+        var ids = new ArrayList<Mono<String>>();
+        var futures = list.stream().map(dto -> saveFuture(dto, miljo)).collect(Collectors.toList());
         for (var future : futures) {
             ids.add(future.get());
         }
@@ -76,17 +76,24 @@ public class OppsummeringsdokumentConsumer {
     }
 
 
-    private CompletableFuture<String> save(OppsummeringsdokumentDTO dto, String miljo) {
-        AccessToken accessToken = accessTokenService.generateToken(properties);
-        return CompletableFuture.supplyAsync(
-                () -> new SaveOppsummeringsdokumenterCommand(
+    public Mono<String> save(OppsummeringsdokumentDTO dto, String miljo) {
+        return accessTokenService
+                .generateNonBlockedToken(properties)
+                .flatMap(accessToken -> new SaveOppsummeringsdokumenterCommand(
                         webClient,
                         accessToken.getTokenValue(),
                         dto,
                         miljo,
                         applicationProperties.getName(),
                         Populasjon.MINI_NORGE
-                ).call().block(),
+                ).call());
+    }
+
+
+    private CompletableFuture<Mono<String>> saveFuture(OppsummeringsdokumentDTO dto, String miljo) {
+        AccessToken accessToken = accessTokenService.generateToken(properties);
+        return CompletableFuture.supplyAsync(
+                () -> save(dto, miljo),
                 executor
         );
     }

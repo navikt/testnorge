@@ -2,6 +2,7 @@ package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.time.LocalDate;
 
@@ -12,10 +13,16 @@ public class OrkestratorService {
     private final PersonArbeidsforholdHistorkkService personArbeidsforholdHistorkkService;
     private final OppsummeringsdokumentService oppsummeringsdokumentService;
 
-    public void orkester(int max, String miljo, LocalDate fom, LocalDate tom) {
+    public Flux<String> orkesterUtenArbeidsforhold(int max, String miljo, LocalDate fom, LocalDate tom) {
         var identerUtenArbeidsforhold = identService.getIdenterUtenArbeidsforhold(miljo, max);
         var personer = personArbeidsforholdHistorkkService.generer(identerUtenArbeidsforhold, miljo, fom, tom);
-        oppsummeringsdokumentService.save(personer, miljo, fom, tom);
+        return oppsummeringsdokumentService.save(personer, miljo, fom, tom);
+    }
+
+    public Flux<String> orkesterMedArbeidsforhold(String miljo, LocalDate fom, LocalDate tom) {
+        var identerMedArbeidsforhold = identService.getIdenterMedArbeidsforhold(miljo);
+        var personer = personArbeidsforholdHistorkkService.generer(Flux.fromStream(identerMedArbeidsforhold.stream()), miljo, fom, tom);
+        return oppsummeringsdokumentService.save(personer, miljo, fom, tom);
     }
 
 }
