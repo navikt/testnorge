@@ -5,6 +5,7 @@ import no.nav.pdl.forvalter.dto.RsInnflytting;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -14,16 +15,20 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasLength;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class StatsborgerskapServiceTest {
 
     private static final String FNR_IDENT = "12045612301";
     private static final String DNR_IDENT = "42045612301";
-    
+
+    @Mock
+    private TilfeldigLandService tilfeldigLandService;
+
     @InjectMocks
     private StatsborgerskapService statsborgerskapService;
 
@@ -77,14 +82,18 @@ class StatsborgerskapServiceTest {
     }
 
     @Test
-    void whenLandkodeIsEmptyAndUnavailFromInnflyttingAndIdenttypeDNR_thenSetRandomLandkode() {
+    void whenLandkodeIsEmptyAndUnavailFromInnflyttingAndIdenttypeDNR_thenTilfeldigLandServiceIsCalled() {
+
+        when(tilfeldigLandService.getLand()).thenReturn("CHL");
 
         var target = statsborgerskapService.convert(List.of(PdlStatsborgerskap.builder()
                 .isNew(true)
                 .build()), DNR_IDENT, null)
                 .get(0);
 
-        assertThat(target.getLandkode(), hasLength(3));
+        verify(tilfeldigLandService).getLand();
+
+        assertThat(target.getLandkode(), is(equalTo("CHL")));
     }
 
     @Test

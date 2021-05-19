@@ -4,9 +4,8 @@ import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.domain.Identtype;
 import no.nav.pdl.forvalter.domain.PdlStatsborgerskap;
 import no.nav.pdl.forvalter.dto.RsInnflytting;
-import no.nav.pdl.forvalter.service.command.DatoFraIdentCommand;
-import no.nav.pdl.forvalter.service.command.IdenttypeFraIdentCommand;
-import no.nav.pdl.forvalter.service.command.TilfeldigLandCommand;
+import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
+import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -26,6 +25,8 @@ public class StatsborgerskapService extends PdlArtifactService<PdlStatsborgerska
 
     private static final String VALIDATION_LANDKODE_ERROR = "Ugyldig landkode, må være i hht ISO-3 Landkoder";
     private static final String VALIDATION_DATOINTERVALL_ERROR = "Ugyldig datointervall: gyldigFom må være før gyldigTom";
+
+    private final TilfeldigLandService tilfeldigLandService;
 
     public List<PdlStatsborgerskap> convert(List<PdlStatsborgerskap> request,
                                             String ident,
@@ -64,15 +65,15 @@ public class StatsborgerskapService extends PdlArtifactService<PdlStatsborgerska
         if (isBlank(statsborgerskap.getLandkode())) {
             if (nonNull(innflytting)) {
                 statsborgerskap.setLandkode(innflytting.getFraflyttingsland());
-            } else if (Identtype.FNR.equals(new IdenttypeFraIdentCommand(ident).call())) {
+            } else if (Identtype.FNR.equals(IdenttypeFraIdentUtility.getIdenttype(ident))) {
                 statsborgerskap.setLandkode(NORGE);
             } else {
-                statsborgerskap.setLandkode(new TilfeldigLandCommand().call());
+                statsborgerskap.setLandkode(tilfeldigLandService.getLand());
             }
         }
 
         if (isNull(statsborgerskap.getGyldigFom())) {
-            statsborgerskap.setGyldigFom(new DatoFraIdentCommand(ident).call().atStartOfDay());
+            statsborgerskap.setGyldigFom(DatoFraIdentUtility.getDato(ident).atStartOfDay());
         }
     }
 

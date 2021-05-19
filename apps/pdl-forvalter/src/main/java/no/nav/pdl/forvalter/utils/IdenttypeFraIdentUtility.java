@@ -1,9 +1,7 @@
-package no.nav.pdl.forvalter.service.command;
+package no.nav.pdl.forvalter.utils;
 
-import lombok.RequiredArgsConstructor;
+import lombok.experimental.UtilityClass;
 import no.nav.pdl.forvalter.domain.Identtype;
-
-import java.util.concurrent.Callable;
 
 import static java.lang.Integer.parseInt;
 import static no.nav.pdl.forvalter.domain.Identtype.BOST;
@@ -11,13 +9,10 @@ import static no.nav.pdl.forvalter.domain.Identtype.DNR;
 import static no.nav.pdl.forvalter.domain.Identtype.FDAT;
 import static no.nav.pdl.forvalter.domain.Identtype.FNR;
 
-@RequiredArgsConstructor
-public class IdenttypeFraIdentCommand implements Callable<Identtype> {
+@UtilityClass
+public class IdenttypeFraIdentUtility {
 
-    private final String ident;
-
-    @Override
-    public Identtype call() {
+    public Identtype getIdenttype(String ident) {
 
         if (parseInt(ident.substring(6, 10)) == 0) {
             return FDAT;

@@ -1,9 +1,8 @@
-package no.nav.pdl.forvalter.service.command;
+package no.nav.pdl.forvalter.utils;
 
-import lombok.RequiredArgsConstructor;
+import lombok.experimental.UtilityClass;
 
 import java.time.LocalDate;
-import java.util.concurrent.Callable;
 
 import static java.lang.Integer.parseInt;
 
@@ -13,13 +12,10 @@ import static java.lang.Integer.parseInt;
  * INDIVID(POS 7-9) 900-999 OG AAR > 39 => AARHUNDRE = 1900
  * INDIVID(POS 7-9) 500-999 OG AAR < 40 => AARHUNDRE = 2000
  */
-@RequiredArgsConstructor
-public class DatoFraIdentCommand implements Callable<LocalDate> {
+@UtilityClass
+public class DatoFraIdentUtility {
 
-    private final String ident;
-
-    @Override
-    public LocalDate call() {
+    public LocalDate getDato(String ident) {
 
         int year = parseInt(ident.substring(4, 6));
         int individ = parseInt(ident.substring(6, 9));

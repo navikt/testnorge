@@ -1,29 +1,31 @@
-package no.nav.pdl.forvalter.service.command;
+package no.nav.pdl.forvalter.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.SecureRandom;
 import java.util.Properties;
-import java.util.concurrent.Callable;
 
 @Slf4j
-public class TilfeldigLandCommand implements Callable<String> {
+@Service
+public class TilfeldigLandService {
 
-    @Override
-    public String call() {
+    private static final Properties landkoder = new Properties();
 
+    static {
         var resource = new ClassPathResource("landkoder/landkoder.yaml");
-        var landkoder = new Properties();
 
         try (final InputStream stream = resource.getInputStream()) {
             landkoder.load(stream);
         } catch (IOException e) {
             log.error("Lesing av landkoder feilet", e);
         }
+    }
 
+    public String getLand() {
         return landkoder.keySet().stream()
                 .skip(new SecureRandom().nextInt(landkoder.size()))
                 .map(String.class::cast)

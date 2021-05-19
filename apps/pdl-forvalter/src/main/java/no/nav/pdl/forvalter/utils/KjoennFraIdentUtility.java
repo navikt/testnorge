@@ -1,24 +1,20 @@
-package no.nav.pdl.forvalter.service.command;
+package no.nav.pdl.forvalter.utils;
 
-import lombok.RequiredArgsConstructor;
+import lombok.experimental.UtilityClass;
 
 import java.security.SecureRandom;
-import java.util.concurrent.Callable;
 
 import static java.lang.Integer.parseInt;
 import static no.nav.pdl.forvalter.domain.PdlKjoenn.Kjoenn;
 import static no.nav.pdl.forvalter.domain.PdlKjoenn.Kjoenn.KVINNE;
 import static no.nav.pdl.forvalter.domain.PdlKjoenn.Kjoenn.MANN;
 
-@RequiredArgsConstructor
-public class KjoennFraIdentCommand implements Callable<Kjoenn> {
+@UtilityClass
+public class KjoennFraIdentUtility {
 
     private static final SecureRandom secureRandom = new SecureRandom();
 
-    private final String ident;
-
-    @Override
-    public Kjoenn call() {
+    public Kjoenn get(String ident) {
 
         if (parseInt(ident.substring(6, 10)) == 0) {
             return secureRandom.nextBoolean() ? MANN : KVINNE;

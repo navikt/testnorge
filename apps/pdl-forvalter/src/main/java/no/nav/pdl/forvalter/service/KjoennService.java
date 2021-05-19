@@ -2,7 +2,7 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.domain.PdlKjoenn;
-import no.nav.pdl.forvalter.service.command.KjoennFraIdentCommand;
+import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,7 +35,7 @@ public class KjoennService extends PdlArtifactService<PdlKjoenn> {
     private void handle(PdlKjoenn kjoenn, String ident) {
 
         if (isNull(kjoenn.getKjoenn())) {
-            kjoenn.setKjoenn(new KjoennFraIdentCommand(ident).call());
+            kjoenn.setKjoenn(KjoennFraIdentUtility.get(ident));
         }
     }
 

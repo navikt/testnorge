@@ -1,4 +1,4 @@
-package no.nav.pdl.forvalter.service.command;
+package no.nav.pdl.forvalter.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;

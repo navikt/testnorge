@@ -2,7 +2,6 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.dto.RsUtflytting;
-import no.nav.pdl.forvalter.service.command.TilfeldigLandCommand;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -21,6 +20,8 @@ public class UtflyttingService extends PdlArtifactService<RsUtflytting> {
     private static final String VALIDATION_LANDKODE_ERROR = "Landkode må oppgis i hht ISO-3 Landkoder for tilflyttingsland";
     private static final String VALIDATION_UTFLYTTING_DATO_ERROR = "Ugyldig flyttedato, ny dato må være etter en eksisterende";
 
+    private final TilfeldigLandService tilfeldigLandService;
+
     @Override
     protected void validate(RsUtflytting utflytting) {
 
@@ -33,7 +34,7 @@ public class UtflyttingService extends PdlArtifactService<RsUtflytting> {
     protected void handle(RsUtflytting utflytting) {
 
         if (isBlank(utflytting.getTilflyttingsland())) {
-            utflytting.setTilflyttingsland(new TilfeldigLandCommand().call());
+            utflytting.setTilflyttingsland(tilfeldigLandService.getLand());
         }
     }
 

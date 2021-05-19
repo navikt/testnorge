@@ -9,7 +9,6 @@ import no.nav.pdl.forvalter.domain.PdlKontaktadresse;
 import no.nav.pdl.forvalter.domain.PdlTilrettelagtKommunikasjon;
 import no.nav.pdl.forvalter.domain.PdlUtflytting;
 import no.nav.pdl.forvalter.dto.PdlOrdreResponse;
-import no.nav.pdl.forvalter.service.command.DeployServie;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
