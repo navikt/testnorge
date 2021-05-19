@@ -23,7 +23,7 @@ import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.bestillingUrl;
+import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.getBestillingUrl;
 
 @Service
 public class PdlTestdataConsumer {
@@ -75,7 +75,7 @@ public class PdlTestdataConsumer {
 
     public PdlBestillingResponse sendArtifactToPdl(PdlArtifact artifact, String ident, Object body) throws JsonProcessingException {
         var accessToken = accessTokenService.generateToken(properties);
-        return new PdlTestdataCommand(webClient, bestillingUrl.get(artifact), ident, objectMapper.writer(filters).writeValueAsString(body), accessToken.getTokenValue()).call();
+        return new PdlTestdataCommand(webClient, getBestillingUrl().get(artifact), ident, objectMapper.writer(filters).writeValueAsString(body), accessToken.getTokenValue()).call();
     }
 
     public JsonNode createPerson(String ident) {

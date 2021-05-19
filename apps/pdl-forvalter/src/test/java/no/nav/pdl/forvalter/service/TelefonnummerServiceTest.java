@@ -3,6 +3,8 @@ package no.nav.pdl.forvalter.service;
 import no.nav.pdl.forvalter.domain.PdlTelefonnummer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.HttpClientErrorException;
@@ -18,7 +20,7 @@ class TelefonnummerServiceTest {
 
     @InjectMocks
     private TelefonnummerService telefonnummerService;
-    
+
     @Test
     void whenTelefonnummerIsAbsent_thenThrowException() {
 
@@ -44,24 +46,12 @@ class TelefonnummerServiceTest {
         assertThat(exception.getMessage(), containsString("Telefonnummer: nummer kan kun inneholde tallsifre"));
     }
 
-    @Test
-    void whenTelefonnummerContainsTooFewDigits_thenThrowException() {
+    @ParameterizedTest
+    @ValueSource(strings = {"23", "12345678901234567"})
+    void whenTelefonnummerContainsTooFewDigits_thenThrowException(String input) {
 
         var request = List.of(PdlTelefonnummer.builder()
-                .nummer("23")
-                .isNew(true).build());
-
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                telefonnummerService.convert(request));
-
-        assertThat(exception.getMessage(), containsString("Telefonnummer: nummer kan ha lengde fra 3 til 16 sifre"));
-    }
-
-    @Test
-    void whenTelefonnummerContainsTooManyDigits_thenThrowException() {
-
-        var request = List.of(PdlTelefonnummer.builder()
-                .nummer("12345678901234567")
+                .nummer(input)
                 .isNew(true).build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->

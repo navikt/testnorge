@@ -2,7 +2,7 @@ package no.nav.pdl.forvalter.utils;
 
 import lombok.experimental.UtilityClass;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_ADRESSEBESKYTTELSE;
@@ -64,10 +64,9 @@ public class PdlTestDataUrls {
     private static final String PDL_IDENTHISTORIKK_PARAMS_2 = "&historiskePersonidenter=";
     private static final String PDL_BESTILLING_FOLKEREGISTER_PERSONSTATUS_URL = PDL_BESTILLING_URL + "/folkeregisterpersonstatus";
 
-    public static Map<PdlArtifact, String> bestillingUrl;
+    private static final Map<PdlArtifact, String> bestillingUrl = new EnumMap<>(PdlArtifact.class);
 
     static {
-        bestillingUrl = new HashMap<>();
         bestillingUrl.put(PDL_KONTAKTINFORMASJON_FOR_DODESDBO, PDL_BESTILLING_KONTAKTINFORMASJON_FOR_DODESDBO_URL);
         bestillingUrl.put(PDL_UTENLANDS_IDENTIFIKASJON_NUMMER, PDL_BESTILLING_UTENLANDS_IDENTIFIKASJON_NUMMER_URL);
         bestillingUrl.put(PDL_FALSK_IDENTITET, PDL_BESTILLING_FALSK_IDENTITET_URL);
@@ -124,4 +123,8 @@ public class PdlTestDataUrls {
     public enum TemaGrunnlag {GEN, PEN}
 
     public enum PdlStatus {OK, FEIL}
+
+    public static Map<PdlArtifact, String> getBestillingUrl() {
+        return bestillingUrl;
+    }
 }
