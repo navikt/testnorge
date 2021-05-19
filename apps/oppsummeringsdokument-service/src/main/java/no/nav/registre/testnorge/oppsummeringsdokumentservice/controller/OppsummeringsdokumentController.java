@@ -85,7 +85,7 @@ public class OppsummeringsdokumentController {
     }
 
     @GetMapping("/identer")
-    public ResponseEntity<List<String>> getIdenter(@RequestHeader("miljo") String miljo) {
+    public ResponseEntity<Set<String>> getIdenter(@RequestHeader("miljo") String miljo) {
         return ResponseEntity.ok(
                 adapter.getAllCurrentDocumentsBy(miljo)
                         .stream()
