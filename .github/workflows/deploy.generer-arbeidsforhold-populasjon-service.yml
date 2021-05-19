@@ -1,13 +1,13 @@
-name: Deploy testnav-generer-arbeidsforhold-populasjon-service
+name: Deploy generer-arbeidsforhold-populasjon-service
 
 on:
   push:
     paths:
-      - apps/testnav-generer-arbeidsforhold-populasjon-service/**
+      - apps/generer-arbeidsforhold-populasjon-service/**
       - libs/testnorge-core/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/testnav-generer-arbeidsforhold-populasjon-service:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/generer-arbeidsforhold-populasjon-service:${{ github.sha }}
 
 jobs:
   build_and_deploy:
@@ -30,9 +30,9 @@ jobs:
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew :testnav-generer-arbeidsforhold-populasjon-service:build
+        run: ./gradlew :generer-arbeidsforhold-populasjon-service:build
       - name: Build and publish Docker image
-        working-directory: apps/testnav-generer-arbeidsforhold-populasjon-service/
+        working-directory: apps/generer-arbeidsforhold-populasjon-service/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -45,4 +45,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
-          RESOURCE: apps/testnav-generer-arbeidsforhold-populasjon-service/config.yml
+          RESOURCE: apps/generer-arbeidsforhold-populasjon-service/config.yml
