@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
@@ -162,14 +163,8 @@ public class AccessTokenService {
             var accessToken = webClient.post()
                     .body(body)
                     .exchange()
-                    .flatMap(response -> {
-                        if (response.statusCode().is2xxSuccessful()) {
-                            return response.bodyToMono(AccessToken.class);
-                        }
-                        return response
-                                .bodyToMono(String.class)
-                                .map(value -> Mono.error(new RuntimeException("Feil med opprettelse av accessToken: " + value)));
-                    });
+                    .doOnError(error -> log.error("Feil ved henting av access token.", error))
+                    .flatMap(response -> response.bodyToMono(AccessToken.class));
 
             log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow");
             return accessToken;
