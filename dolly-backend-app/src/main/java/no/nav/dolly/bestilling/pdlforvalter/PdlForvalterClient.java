@@ -30,6 +30,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.pdlforvalter.Pdldata;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
+import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.Relasjon;
 import no.nav.dolly.domain.resultset.tpsf.adresse.IdentHistorikk;
@@ -232,7 +233,7 @@ public class PdlForvalterClient implements ClientRegister {
     private void sendFamilierelasjoner(Person person) {
 
         person.getRelasjoner().forEach(relasjon -> {
-            if (!relasjon.isPartner() && nonNull(relasjon.getPersonRelasjonTil())) {
+            if (!relasjon.isPartner() || nonNull(relasjon.getPersonRelasjonTil())) {
                 pdlForvalterConsumer.postFamilierelasjon(mapperFacade.map(relasjon, PdlFamilierelasjon.class),
                         person.getIdent());
             }
