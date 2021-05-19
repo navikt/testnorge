@@ -77,6 +77,10 @@ public class PersonArbeidsforholdHistorkkService {
     ) {
         var map = new HashMap<LocalDate, Arbeidsforhold>();
 
+        if (!dates.hasNext()) {
+            return map;
+        }
+
         if (previous == null || previous.isForenklet()) {
             var startdato = dates.next();
             var organisajon = organisajoner.get(random.nextInt(organisajoner.size()));

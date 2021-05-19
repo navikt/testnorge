@@ -41,6 +41,10 @@ public class OppsummeringsdokumentAdapter {
         repository.deleteAllByMiljoAndPopulasjon(miljo, populasjon);
     }
 
+    public void deleteAllBy(String miljo) {
+        repository.deleteAllByMiljo(miljo);
+    }
+
     public String save(Oppsummeringsdokument oppsummeringsdokument, String miljo, String origin) {
         log.info("Oppretter oppsummeringsdokument i {}", miljo);
         aaregSyntConsumer.saveOpplysningspliktig(oppsummeringsdokument);

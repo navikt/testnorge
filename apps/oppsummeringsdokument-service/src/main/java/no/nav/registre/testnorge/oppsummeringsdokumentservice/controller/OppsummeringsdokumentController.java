@@ -20,9 +20,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.adapter.OppsummeringsdokumentAdapter;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.domain.Oppsummeringsdokument;
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
 
 @RestController
 @RequiredArgsConstructor
@@ -87,8 +87,12 @@ public class OppsummeringsdokumentController {
     @DeleteMapping
     public ResponseEntity<HttpStatus> delete(
             @RequestHeader("miljo") String miljo,
-            @RequestHeader Populasjon populasjon
+            @RequestHeader(required = false) Populasjon populasjon
     ) {
+        if (populasjon == null) {
+            adapter.deleteAllBy(miljo);
+        }
+
         adapter.deleteAllBy(miljo, populasjon);
         return ResponseEntity.noContent().build();
     }
