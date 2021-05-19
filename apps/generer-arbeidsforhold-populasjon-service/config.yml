@@ -42,10 +42,10 @@ spec:
     max: 1
   resources:
     requests:
-      cpu: 200m
+      cpu: 500m
       memory: 1024Mi
     limits:
-      cpu: 500m
+      cpu: 800m
       memory: 2048Mi
   ingresses:
     - "https://testnav-generer-arbeidsforhold-populasjon-service.dev.intern.nav.no"
