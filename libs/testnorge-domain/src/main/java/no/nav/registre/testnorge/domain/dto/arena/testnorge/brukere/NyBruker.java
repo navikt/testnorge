@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @Builder
@@ -19,4 +21,5 @@ public class NyBruker {
     private UtenServicebehov utenServicebehov;
     private Boolean automatiskInnsendingAvMeldekort;
     private String oppfolging;
+    private LocalDate aktiveringsDato;
 }

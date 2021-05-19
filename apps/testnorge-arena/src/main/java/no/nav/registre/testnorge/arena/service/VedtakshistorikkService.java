@@ -60,7 +60,7 @@ public class VedtakshistorikkService {
     private final VedtakshistorikkSyntConsumer vedtakshistorikkSyntConsumer;
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
     private final IdentService identService;
-    private final ArbeidssoekerService arbeidsoekerUtils;
+    private final ArbeidssoekerService arbeidsoekerService;
     private final RettighetAapService rettighetAapService;
     private final RettighetTiltakService rettighetTiltakService;
     private final DatoUtils datoUtils;
@@ -123,7 +123,7 @@ public class VedtakshistorikkService {
             } else {
                 var utvalgtIdent = getUtvalgtIdentIAldersgruppe(avspillergruppeId, miljoe, vedtakshistorikk, tidligsteDatoBarnetillegg, minimumAlder, maksimumAlder);
                 if (utvalgtIdent != null) {
-                    responses.putAll(opprettHistorikkOgSendTilArena(avspillergruppeId, utvalgtIdent, miljoe, vedtakshistorikk));
+                    responses.putAll(opprettHistorikkOgSendTilArena(avspillergruppeId, utvalgtIdent, miljoe, vedtakshistorikk, tidligsteDato));
                 }
             }
         }
@@ -178,7 +178,8 @@ public class VedtakshistorikkService {
             Long avspillergruppeId,
             String personident,
             String miljoe,
-            Vedtakshistorikk vedtakshistorikk
+            Vedtakshistorikk vedtakshistorikk,
+            LocalDate tidligsteDato
     ) {
         List<KontoinfoResponse> identerMedKontonummer = new ArrayList<>();
         if (vedtakshistorikk.getTvungenForvaltning() != null && !vedtakshistorikk.getTvungenForvaltning().isEmpty()) {
@@ -204,7 +205,7 @@ public class VedtakshistorikkService {
         opprettVedtakUngUfoer(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakTvungenForvaltning(vedtakshistorikk, personident, miljoe, rettigheter, identerMedKontonummer);
         opprettVedtakFritakMeldekort(vedtakshistorikk, personident, miljoe, rettigheter);
-        oppdaterTiltaksdeltakelse(vedtakshistorikk, personident, miljoe, tiltak, senesteVedtak);
+        oppdaterTiltaksdeltakelse(vedtakshistorikk, personident, miljoe, tiltak, senesteVedtak, tidligsteDato);
         opprettVedtakTiltaksdeltakelse(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettFoersteVedtakEndreDeltakerstatus(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakTiltakspenger(vedtakshistorikk, personident, miljoe, rettigheter);
@@ -214,7 +215,7 @@ public class VedtakshistorikkService {
 
         if (!rettigheter.isEmpty()) {
             try {
-                arbeidsoekerUtils.opprettArbeidssoekerVedtakshistorikk(personident, miljoe, senesteVedtak);
+                arbeidsoekerService.opprettArbeidssoekerVedtakshistorikk(personident, miljoe, senesteVedtak, tidligsteDato);
             } catch (Exception e) {
                 log.error(e.getMessage());
                 return Collections.emptyMap();
@@ -419,13 +420,14 @@ public class VedtakshistorikkService {
             String personident,
             String miljoe,
             List<NyttVedtakTiltak> tiltaksliste,
-            NyttVedtak senesteVedtak
+            NyttVedtak senesteVedtak,
+            LocalDate tidligsteDato
     ) {
         var tiltaksdeltakelser = historikk.getTiltaksdeltakelse();
         if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty()) {
             Kvalifiseringsgrupper kvalifiseringsgruppe;
             try {
-                kvalifiseringsgruppe = arbeidsoekerUtils.opprettArbeidssoekerTiltaksdeltakelse(personident, miljoe, senesteVedtak);
+                kvalifiseringsgruppe = arbeidsoekerService.opprettArbeidssoekerTiltaksdeltakelse(personident, miljoe, senesteVedtak, tidligsteDato);
             } catch (Exception e) {
                 historikk.setTiltaksdeltakelse(Collections.emptyList());
                 return;
