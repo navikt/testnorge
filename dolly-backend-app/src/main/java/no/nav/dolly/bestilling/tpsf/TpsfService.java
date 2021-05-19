@@ -101,6 +101,9 @@ public class TpsfService {
 
     @Timed(name = "providers", tags = { "operation", "tpsf_hentTestpersoner" })
     public List<Person> hentTestpersoner(List<String> identer) {
+        if (identer.isEmpty()) {
+            return emptyList();
+        }
         ResponseEntity<Object> response = postToTpsf(TPSF_HENT_PERSONER_URL, identer);
         if (isBodyNotNull(response)) {
             return new ArrayList<>(List.of(objectMapper.convertValue(response.getBody(), Person[].class)));

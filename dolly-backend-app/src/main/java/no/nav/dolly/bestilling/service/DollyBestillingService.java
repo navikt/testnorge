@@ -173,7 +173,7 @@ public class DollyBestillingService {
 
     protected static Boolean isSyntetisk(String ident) {
 
-        return Integer.valueOf(ident.charAt(2)) >= 4;
+        return Integer.parseInt(String.valueOf(ident.charAt(2))) >= 4;
     }
 
     @Async
