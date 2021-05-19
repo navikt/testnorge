@@ -90,7 +90,7 @@ public class OppsummeringsdokumentController {
                 adapter.getAllCurrentDocumentsBy(miljo)
                         .stream()
                         .flatMap(document -> document.getIdenter().stream())
-                        .collect(Collectors.toList())
+                        .collect(Collectors.toSet())
         );
     }
 
