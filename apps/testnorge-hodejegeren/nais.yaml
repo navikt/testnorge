@@ -20,10 +20,10 @@ spec:
     enabled: true
   resources:
     requests:
-      cpu: 500m
+      cpu: 800m
       memory: 1024Mi
     limits:
-      cpu: 1000m
+      cpu: 1200m
       memory: 2048Mi
   image: {{ image }}
   ingresses:
