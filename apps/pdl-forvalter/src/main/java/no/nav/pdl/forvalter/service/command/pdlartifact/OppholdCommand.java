@@ -13,7 +13,6 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 public class OppholdCommand extends PdlArtifactService<PdlOpphold> {
 
     private static final String VALIDATION_OPPHOLD_FRA_ERROR = "Opphold med oppholdFra må angis";
-    private static final String VALIDATION_OPPHOLD_TIL_ERROR = "Ugyldig datointervall: oppholdTil må være etter oppholdFra";
     private static final String VALIDATION_UGYLDIG_INTERVAL_ERROR = "Ugyldig datointervall: oppholdFra må være før oppholdTil";
     private static final String VALIDATION_TYPE_ERROR = "Type av opphold må angis";
     private static final String VALIDATION_OPPHOLD_OVELAP_ERROR = "Feil: Overlappende opphold er detektert";
@@ -34,11 +33,8 @@ public class OppholdCommand extends PdlArtifactService<PdlOpphold> {
 
         } else if (nonNull(opphold.getOppholdTil())) {
 
-            if (opphold.getOppholdFra().isAfter(opphold.getOppholdTil())) {
+            if (!opphold.getOppholdFra().isBefore(opphold.getOppholdTil())) {
                 throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_UGYLDIG_INTERVAL_ERROR);
-            }
-            if (opphold.getOppholdTil().equals(opphold.getOppholdFra())) {
-                throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_OPPHOLD_TIL_ERROR);
             }
         }
     }

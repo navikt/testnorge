@@ -45,20 +45,6 @@ class OppholdCommandTest {
     }
 
     @Test
-    void whenDatesAreEqual_thenThrowExecption() {
-
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                new OppholdCommand(List.of(PdlOpphold.builder()
-                        .oppholdFra(LocalDate.of(2020, 1, 1).atStartOfDay())
-                        .oppholdTil(LocalDate.of(2020, 1, 1).atStartOfDay())
-                        .type(MIDLERTIDIG)
-                        .isNew(true)
-                        .build())).call());
-
-        assertThat(exception.getMessage(), containsString("Ugyldig datointervall: oppholdTil må være etter oppholdFra"));
-    }
-
-    @Test
     void whenTypeIsEmpty_thenThrowExecption() {
 
         var exception = assertThrows(HttpClientErrorException.class, () ->

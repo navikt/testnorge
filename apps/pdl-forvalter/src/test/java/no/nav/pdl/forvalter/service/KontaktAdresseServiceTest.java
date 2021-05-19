@@ -1,4 +1,4 @@
-package no.nav.pdl.forvalter.service.command.pdlartifact;
+package no.nav.pdl.forvalter.service;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.artifact.VegadresseService;
@@ -9,6 +9,7 @@ import no.nav.pdl.forvalter.dto.RsKontaktadresse;
 import no.nav.pdl.forvalter.dto.RsKontaktadresse.Postboksadresse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.HttpClientErrorException;
@@ -29,7 +30,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class KontaktAdresseCommandTest {
+class KontaktAdresseServiceTest {
 
     @Mock
     private VegadresseService vegadresseService;
@@ -37,16 +38,19 @@ class KontaktAdresseCommandTest {
     @Mock
     private MapperFacade mapperFacade;
 
+    @InjectMocks
+    private KontaktAdresseService kontaktAdresseService;
+
     @Test
     void whenTooFewDigitsInPostnummer_thenThrowExecption() {
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                new KontaktAdresseCommand(List.of(RsKontaktadresse.builder()
+                kontaktAdresseService.accept(List.of(RsKontaktadresse.builder()
                         .postboksadresse(Postboksadresse.builder()
                                 .postboks("123")
                                 .build())
                         .isNew(true)
-                        .build()), vegadresseService, mapperFacade).call());
+                        .build())));
 
         assertThat(exception.getMessage(), containsString("Postnummer består av fire sifre"));
     }
@@ -55,11 +59,11 @@ class KontaktAdresseCommandTest {
     void whenPostboksadresseAndPostboksIsOmitted_thenThrowExecption() {
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                new KontaktAdresseCommand(List.of(RsKontaktadresse.builder()
+                kontaktAdresseService.accept(List.of(RsKontaktadresse.builder()
                         .postboksadresse(Postboksadresse.builder()
                                 .build())
                         .isNew(true)
-                        .build()), vegadresseService, mapperFacade).call());
+                        .build())));
 
         assertThat(exception.getMessage(), containsString("Kan ikke være tom"));
     }
@@ -68,11 +72,11 @@ class KontaktAdresseCommandTest {
     void whenMultipleAdressesProvided_thenThrowExecption() {
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                new KontaktAdresseCommand(List.of(RsKontaktadresse.builder()
+                kontaktAdresseService.accept(List.of(RsKontaktadresse.builder()
                         .vegadresse(new PdlVegadresse())
                         .utenlandskAdresse(new PdlUtenlandskAdresse())
                         .isNew(true)
-                        .build()), vegadresseService, mapperFacade).call());
+                        .build())));
 
         assertThat(exception.getMessage(), containsString("Kun én adresse skal være satt"));
     }
@@ -81,10 +85,10 @@ class KontaktAdresseCommandTest {
     void whenMasterPDLWithoutGyldighet_thenThrowExecption() {
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                new KontaktAdresseCommand(List.of(RsKontaktadresse.builder()
+                kontaktAdresseService.accept(List.of(RsKontaktadresse.builder()
                         .master(PDL)
                         .isNew(true)
-                        .build()), vegadresseService, mapperFacade).call());
+                        .build())));
 
         assertThat(exception.getMessage(), containsString(
                 "Feltene gyldigFraOgMed og gyldigTilOgMed må ha verdi hvis master er PDL"));
@@ -94,12 +98,12 @@ class KontaktAdresseCommandTest {
     void whenPDLAdresseWithoutGyldighet_thenThrowExecption() {
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                new KontaktAdresseCommand(List.of(RsKontaktadresse.builder()
+                kontaktAdresseService.accept(List.of(RsKontaktadresse.builder()
                         .vegadresse(PdlVegadresse.builder()
                                 .adressenavn("Denne veien")
                                 .build())
                         .isNew(true)
-                        .build()), vegadresseService, mapperFacade).call());
+                        .build())));
 
         assertThat(exception.getMessage(), containsString(
                 "Feltene gyldigFraOgMed og gyldigTilOgMed må ha verdi for vegadresse uten matrikkelId"));
@@ -109,12 +113,12 @@ class KontaktAdresseCommandTest {
     void whenAdresseHasUgyldigBruksenhetsnummer_thenThrowExecption() {
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                new KontaktAdresseCommand(List.of(RsKontaktadresse.builder()
+                kontaktAdresseService.accept(List.of(RsKontaktadresse.builder()
                         .vegadresse(PdlVegadresse.builder()
                                 .bruksenhetsnummer("W12345")
                                 .build())
                         .isNew(true)
-                        .build()), vegadresseService, mapperFacade).call());
+                        .build())));
 
         assertThat(exception.getMessage(), containsString(
                 "Gyldig format er Bokstaven H, L, U eller K etterfulgt av fire sifre"));
@@ -134,12 +138,12 @@ class KontaktAdresseCommandTest {
         doNothing().when(mapperFacade).map(eq(vegadresse), any(PdlVegadresse.class));
 
         var kontaktadresse =
-                new KontaktAdresseCommand(List.of(RsKontaktadresse.builder()
+                kontaktAdresseService.accept(List.of(RsKontaktadresse.builder()
                         .vegadresse(PdlVegadresse.builder()
                                 .postnummer("1234")
                                 .build())
                         .isNew(true)
-                        .build()), vegadresseService, mapperFacade).call().get(0);
+                        .build())).get(0);
 
         verify(vegadresseService).get(any(PdlVegadresse.class), nullable(String.class));
         verify(mapperFacade).map(eq(vegadresse), any(PdlVegadresse.class));

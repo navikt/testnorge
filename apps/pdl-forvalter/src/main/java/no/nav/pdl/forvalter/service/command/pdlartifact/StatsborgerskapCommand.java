@@ -20,8 +20,8 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 public class StatsborgerskapCommand extends PdlArtifactService<PdlStatsborgerskap> {
 
-    private static final String VALIDATION_LANDKODE_ERROR = "Landkode må oppgis i statsborgerskap";
-    private static final String VALIDATION_OPPHOLD_ERROR = "Ugyldig datointervall: gyldigFom må være før gyldigTom";
+    private static final String VALIDATION_LANDKODE_ERROR = "Ugyldig landkode, må være i hht ISO-3 Landkoder";
+    private static final String VALIDATION_DATOINTERVALL_ERROR = "Ugyldig datointervall: gyldigFom må være før gyldigTom";
 
     private final String ident;
     private final RsInnflytting innflytting;
@@ -35,11 +35,13 @@ public class StatsborgerskapCommand extends PdlArtifactService<PdlStatsborgerska
     @Override
     protected void validate(PdlStatsborgerskap statsborgerskap) {
 
-        if (!isLandkode(statsborgerskap.getLandkode())) {
+        if (nonNull(statsborgerskap.getLandkode()) && !isLandkode(statsborgerskap.getLandkode())) {
             throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_LANDKODE_ERROR);
         }
-        if (statsborgerskap.getGyldigFom().isAfter(statsborgerskap.getGyldigTom())) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_OPPHOLD_ERROR);
+
+        if (nonNull(statsborgerskap.getGyldigFom()) && nonNull(statsborgerskap.getGyldigTom()) &&
+                !statsborgerskap.getGyldigFom().isBefore(statsborgerskap.getGyldigTom())) {
+            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_DATOINTERVALL_ERROR);
         }
     }
 

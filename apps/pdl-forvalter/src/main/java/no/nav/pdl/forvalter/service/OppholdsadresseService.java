@@ -1,43 +1,46 @@
-package no.nav.pdl.forvalter.service.command.pdlartifact;
+package no.nav.pdl.forvalter.service;
 
+import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.artifact.VegadresseService;
 import no.nav.pdl.forvalter.domain.PdlOppholdsadresse;
-import no.nav.pdl.forvalter.service.PdlArtifactService;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
-
-import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.pdl.forvalter.domain.PdlAdresse.Master.FREG;
 import static no.nav.pdl.forvalter.domain.PdlAdresse.Master.PDL;
-import static no.nav.pdl.forvalter.utils.ArtifactUtils.VALIDATION_MASTER_PDL_ERROR;
-import static no.nav.pdl.forvalter.utils.ArtifactUtils.count;
-import static no.nav.pdl.forvalter.utils.ArtifactUtils.validateBruksenhet;
-import static no.nav.pdl.forvalter.utils.ArtifactUtils.validateMasterPdl;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
-public class OppholdsadresseCommand extends PdlArtifactService<PdlOppholdsadresse> {
+@Service
+@RequiredArgsConstructor
+public class OppholdsadresseService extends AdresseService<PdlOppholdsadresse> {
 
     private static final String VALIDATION_AMBIGUITY_ERROR = "Kun én adresse skal være satt (vegadresse, " +
             "matrikkeladresse, utenlandskAdresse)";
-
+    private static final String VALIDATION_ADDRESS_ABSENT_ERROR = "Én av adressene må velges (vegadresse, " +
+            "matrikkeladresse, utenlandskAdresse)";
+    private static final String VALIDATION_MASTER_PDL_ERROR = "Utenlandsk adresse krever at master er PDL";
     private final VegadresseService vegadresseService;
     private final MapperFacade mapperFacade;
 
-    public OppholdsadresseCommand(List<PdlOppholdsadresse> request, VegadresseService vegadresseService, MapperFacade mapperFacade) {
-        super(request);
-        this.vegadresseService = vegadresseService;
-        this.mapperFacade = mapperFacade;
-    }
-
     @Override
     protected void validate(PdlOppholdsadresse adresse) {
+
         if (count(adresse.getVegadresse()) +
                 count(adresse.getMatrikkeladresse()) +
                 count(adresse.getUtenlandskAdresse()) > 1) {
             throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_AMBIGUITY_ERROR);
+
+        } else if (count(adresse.getMatrikkeladresse()) +
+                count(adresse.getUtenlandskAdresse()) +
+                count(adresse.getVegadresse()) == 0) {
+            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_ADDRESS_ABSENT_ERROR);
+        }
+        if (FREG.equals(adresse.getMaster()) && (nonNull(adresse.getUtenlandskAdresse()))) {
+            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_MASTER_PDL_ERROR);
         }
         if (PDL.equals(adresse.getMaster()) &&
                 (isNull(adresse.getGyldigFraOgMed()) || isNull(adresse.getGyldigTilOgMed()))) {
@@ -46,9 +49,12 @@ public class OppholdsadresseCommand extends PdlArtifactService<PdlOppholdsadress
         if (nonNull(adresse.getVegadresse()) && isNotBlank(adresse.getVegadresse().getBruksenhetsnummer())) {
             validateBruksenhet(adresse.getVegadresse().getBruksenhetsnummer());
         }
-        if (isNull(adresse.getAdresseIdentifikatorFraMatrikkelen()) &&
-                nonNull(adresse.getVegadresse()) && nonNull(adresse.getVegadresse().getAdressenavn())) {
-            validateMasterPdl(adresse);
+        if (nonNull(adresse.getMatrikkeladresse()) && isNotBlank(adresse.getMatrikkeladresse().getBruksenhetsnummer())) {
+            validateBruksenhet(adresse.getMatrikkeladresse().getBruksenhetsnummer());
+        }
+        if (nonNull(adresse.getGyldigFraOgMed()) && nonNull(adresse.getGyldigTilOgMed()) &&
+                !adresse.getGyldigFraOgMed().isBefore(adresse.getGyldigTilOgMed())) {
+            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_ADRESSE_OVELAP_ERROR);
         }
     }
 
@@ -61,10 +67,5 @@ public class OppholdsadresseCommand extends PdlArtifactService<PdlOppholdsadress
             oppholdsadresse.setAdresseIdentifikatorFraMatrikkelen(vegadresse.getMatrikkelId());
             mapperFacade.map(vegadresse, oppholdsadresse.getVegadresse());
         }
-    }
-
-    @Override
-    protected void enforceIntegrity(List<PdlOppholdsadresse> type) {
-
     }
 }

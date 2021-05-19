@@ -7,13 +7,13 @@ import no.nav.pdl.forvalter.consumer.PdlTestdataConsumer;
 import no.nav.pdl.forvalter.domain.PdlDbVersjon;
 import no.nav.pdl.forvalter.dto.PdlOrdreResponse;
 import no.nav.pdl.forvalter.utils.PdlTestDataUrls;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
@@ -21,18 +21,17 @@ import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlStatus.FEIL;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlStatus.OK;
 
 @Slf4j
+@Service
 @RequiredArgsConstructor
-public class PdlDeployCommand implements Callable<List<PdlOrdreResponse.PdlStatus>> {
+public class DeployServie {
 
     private static final String PDL_ERROR_TEXT = "Feil ved skriving av PDL-testdata. {}";
 
-    private final PdlTestDataUrls.PdlArtifact type;
-    private final String ident;
-    private final List<? extends PdlDbVersjon> artifact;
     private final PdlTestdataConsumer pdlTestdataConsumer;
 
-    @Override
-    public List<PdlOrdreResponse.PdlStatus> call() {
+    public List<PdlOrdreResponse.PdlStatus> put(PdlTestDataUrls.PdlArtifact type,
+                                                String ident,
+                                                List<? extends PdlDbVersjon> artifact) {
 
         var status = new ArrayList<PdlOrdreResponse.Hendelse>();
         if (!artifact.isEmpty()) {
@@ -77,5 +76,15 @@ public class PdlDeployCommand implements Callable<List<PdlOrdreResponse.PdlStatu
                 .infoElement(type)
                 .hendelser(status)
                 .build());
+    }
+
+    public List<PdlOrdreResponse.PdlStatus> create(String ident) {
+        pdlTestdataConsumer.createPerson(ident);
+        return null;
+    }
+
+    public List<PdlOrdreResponse.PdlStatus> delete(String ident) {
+        pdlTestdataConsumer.deletePerson(ident);
+        return null;
     }
 }
