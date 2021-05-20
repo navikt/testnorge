@@ -11,5 +11,6 @@ import lombok.Value;
 @NoArgsConstructor(force = true)
 public class NavnDTO {
     String adjektiv;
+    String adverb;
     String substantiv;
 }
