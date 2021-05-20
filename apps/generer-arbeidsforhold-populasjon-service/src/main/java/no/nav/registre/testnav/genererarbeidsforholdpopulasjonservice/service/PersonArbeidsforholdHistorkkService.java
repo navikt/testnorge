@@ -3,7 +3,6 @@ package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -108,21 +107,11 @@ public class PersonArbeidsforholdHistorkkService {
         dates.forEachRemaining(dateList::add);
         dates = dateList.iterator();
 
-        Iterator<Arbeidsforhold> historikk;
-
-        try {
-            historikk = arbeidsforholdHistorikkService.genererHistorikk(
-                    previous,
-                    dateList.iterator().next(),
-                    dateList.size()
-            ).block().iterator();
-        } catch (WebClientResponseException e) {
-            log.error(
-                    "Feil ved henting av access token.\nError: \n{}.",
-                    e.getResponseBodyAsString()
-            );
-            throw e;
-        }
+        var historikk = arbeidsforholdHistorikkService.genererHistorikk(
+                previous,
+                dateList.iterator().next(),
+                dateList.size()
+        ).block().iterator();
 
         while (dates.hasNext()) {
             var kalendermnd = dates.next();

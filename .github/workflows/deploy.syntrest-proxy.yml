@@ -2,7 +2,6 @@ name: Deploy syntrest-proxy
 
 on:
   push:
-    branches: master
     paths:
       - proxies/syntrest-proxy/**
       - libs/testnorge-core/**
