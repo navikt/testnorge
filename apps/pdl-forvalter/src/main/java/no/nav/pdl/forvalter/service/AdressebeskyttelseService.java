@@ -1,6 +1,5 @@
 package no.nav.pdl.forvalter.service;
 
-import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.domain.PdlAdressebeskyttelse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -13,7 +12,6 @@ import static no.nav.pdl.forvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttel
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
-@RequiredArgsConstructor
 public class AdressebeskyttelseService extends PdlArtifactService<PdlAdressebeskyttelse> {
 
     private static final String VALIDATION_UTLAND_MASTER_ERROR = "Gradering STRENGT_FORTROLIG_UTLAND kan kun settes hvis master er PDL";

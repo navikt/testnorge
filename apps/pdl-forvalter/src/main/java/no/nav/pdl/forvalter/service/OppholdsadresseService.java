@@ -22,6 +22,7 @@ public class OppholdsadresseService extends AdresseService<PdlOppholdsadresse> {
     private static final String VALIDATION_ADDRESS_ABSENT_ERROR = "Én av adressene må velges (vegadresse, " +
             "matrikkeladresse, utenlandskAdresse)";
     private static final String VALIDATION_MASTER_PDL_ERROR = "Utenlandsk adresse krever at master er PDL";
+
     private final VegadresseService vegadresseService;
     private final MapperFacade mapperFacade;
 

@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.domain.PdlTelefonnummer;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.List;
 import static java.util.Objects.isNull;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
+@Service
 public class TelefonnummerService extends PdlArtifactService<PdlTelefonnummer> {
 
     private static final String VALIDATION_PRIORITET_REQUIRED = "Telefonnummer: prioritet er påkrevd";

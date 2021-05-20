@@ -1,6 +1,5 @@
 package no.nav.pdl.forvalter.service;
 
-import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.domain.PdlOpphold;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -12,7 +11,6 @@ import static java.util.Objects.nonNull;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
-@RequiredArgsConstructor
 public class OppholdService extends PdlArtifactService<PdlOpphold> {
 
     private static final String VALIDATION_OPPHOLD_FRA_ERROR = "Opphold med oppholdFra må angis";

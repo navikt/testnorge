@@ -1,6 +1,5 @@
 package no.nav.pdl.forvalter.service;
 
-import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.dto.RsTilrettelagtKommunikasjon;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -13,7 +12,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
-@RequiredArgsConstructor
 public class TilrettelagtKommunikasjonService extends PdlArtifactService<RsTilrettelagtKommunikasjon> {
 
     private static final String VALIDATION_NO_SPRAAK_ERROR = "Språk for taletolk og/eller tegnspråktolk må oppgis";

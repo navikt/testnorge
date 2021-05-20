@@ -1,6 +1,5 @@
 package no.nav.pdl.forvalter.service;
 
-import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.domain.PdlKjoenn;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import org.springframework.stereotype.Service;
@@ -11,7 +10,6 @@ import static java.util.Objects.isNull;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 
 @Service
-@RequiredArgsConstructor
 public class KjoennService {
 
     public List<PdlKjoenn> convert(List<PdlKjoenn> request,
