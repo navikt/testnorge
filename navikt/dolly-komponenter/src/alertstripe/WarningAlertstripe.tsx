@@ -1,8 +1,14 @@
 import React from 'react';
 import Alertstripe from './Alertstripe';
 
-type Props = {
+export type WarningAlertstripeProps = {
   label: string;
 };
 
-export default ({ label }: Props) => <Alertstripe label={label} type="advarsel" />;
+const WarningAlertstripe = ({ label }: WarningAlertstripeProps) => (
+  <Alertstripe label={label} type="advarsel" />
+);
+
+WarningAlertstripe.displayName = 'WarningAlertstripe';
+
+export default WarningAlertstripe;

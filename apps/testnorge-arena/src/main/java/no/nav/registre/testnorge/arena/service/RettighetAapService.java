@@ -50,7 +50,7 @@ public class RettighetAapService {
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
     private final ServiceUtils serviceUtils;
     private final IdentService identService;
-    private final ArbeidssoekerService arbeidsoekerUtils;
+    private final ArbeidssoekerService arbeidssoekerService;
     private final DatoUtils datoUtils;
     private final PensjonTestdataFacadeConsumer pensjonTestdataFacadeConsumer;
     private final Random rand;
@@ -78,7 +78,7 @@ public class RettighetAapService {
                 return Collections.emptyMap();
             }
 
-            arbeidsoekerUtils.opprettArbeidssoekerAap(ident, miljoe);
+            arbeidssoekerService.opprettArbeidssoekerAap(ident, miljoe, syntetisertRettighet.getFraDato());
 
             var aap115Rettighet = getAap115RettighetRequest(syntetisertRettighet.getFraDato().minusDays(1), syntetisertRettighet.getTilDato(), ident, miljoe);
             aap115Rettigheter.add(aap115Rettighet);
@@ -126,7 +126,7 @@ public class RettighetAapService {
             datoUtils.setDatoPeriodeVedtakInnenforMaxAntallMaaneder(rettighetRequest.getNyeAap().get(0), SYKEPENGEERSTATNING_MAKS_PERIODE);
         }
 
-        arbeidsoekerUtils.opprettArbeidssoekerAap(ident, miljoe);
+        arbeidssoekerService.opprettArbeidssoekerAap(ident, miljoe, syntetisertRettighet.getFraDato());
 
         return rettighetArenaForvalterConsumer.opprettRettighet(Collections.singletonList(rettighetRequest));
     }
@@ -164,7 +164,7 @@ public class RettighetAapService {
                 return Collections.emptyMap();
             }
 
-            arbeidsoekerUtils.opprettArbeidssoekerAap(utvalgtIdent, miljoe);
+            arbeidssoekerService.opprettArbeidssoekerAap(utvalgtIdent, miljoe, syntetisertRettighet.getFraDato());
 
             syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
             var rettighetRequest = new RettighetAap115Request(Collections.singletonList(syntetisertRettighet));
@@ -194,7 +194,7 @@ public class RettighetAapService {
         for (var syntetisertRettighet : syntetiserteRettigheter) {
             var utvalgtIdent = utvalgteIdenter.remove(utvalgteIdenter.size() - 1);
 
-            arbeidsoekerUtils.opprettArbeidssoekerAap(utvalgtIdent, miljoe);
+            arbeidssoekerService.opprettArbeidssoekerAap(utvalgtIdent, miljoe, syntetisertRettighet.getFraDato());
 
             syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
             var rettighetRequest = new RettighetUngUfoerRequest(Collections.singletonList(syntetisertRettighet));
@@ -225,7 +225,7 @@ public class RettighetAapService {
         for (var syntetisertRettighet : syntetiserteRettigheter) {
             var utvalgtIdent = utvalgteIdenter.remove(utvalgteIdenter.size() - 1);
 
-            arbeidsoekerUtils.opprettArbeidssoekerAap(utvalgtIdent, miljoe);
+            arbeidssoekerService.opprettArbeidssoekerAap(utvalgtIdent, miljoe, syntetisertRettighet.getFraDato());
 
             syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
             syntetisertRettighet.setForvalter(ServiceUtils.buildForvalter(identerMedKontonummer.remove(identerMedKontonummer.size() - 1)));
@@ -260,7 +260,7 @@ public class RettighetAapService {
         for (var syntetisertRettighet : syntetiserteRettigheter) {
             var utvalgtIdent = utvalgteIdenter.remove(utvalgteIdenter.size() - 1);
 
-            arbeidsoekerUtils.opprettArbeidssoekerAap(utvalgtIdent, miljoe);
+            arbeidssoekerService.opprettArbeidssoekerAap(utvalgtIdent, miljoe, syntetisertRettighet.getFraDato());
 
             syntetisertRettighet.setBegrunnelse(BEGRUNNELSE);
             var rettighetRequest = new RettighetFritakMeldekortRequest(Collections.singletonList(syntetisertRettighet));

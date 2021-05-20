@@ -5,7 +5,6 @@ import { a11yDark as customStyle } from "react-syntax-highlighter/dist/esm/style
 import Alertstripe from "nav-frontend-alertstriper";
 
 import "./CodeView.less";
-import { SkjemaGruppe } from "nav-frontend-skjema";
 
 type Props = {
   code?: string;

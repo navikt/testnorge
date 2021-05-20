@@ -1,3 +1,9 @@
+---
+layout: default
+title: BRREG Stub
+parent: Applikasjoner
+---
+
 # brreg-stub
 Stub av tjenester NAV bruker mot BRREG. Stubben har også endepunkt for å se, slette og opprette testdata.
 
@@ -11,9 +17,9 @@ Det er tjenesten **hentRoller** og **hentRolleutskrift**/Rolleoversikt som ekspo
 
 Data opprettes via REST-tjenesten
 
-For dokumentasjon av applikasjonen sine endepunkter: `/api`
-
-`WSDL: /ws`
+For dokumentasjon av applikasjonen sine endepunkter:
+ - `/api`
+ - `WSDL: /ws`
 
 ## Deployment
 

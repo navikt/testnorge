@@ -8,11 +8,10 @@
 
 # testnorge
 
-## Avhenighetsanalyse
+Info/lenker til Team Dollys interne verktøy finnes [her](https://navikt.github.io/dolly/).
 
-https://testnav-applikasjonsanalyse.dev.intern.nav.no
-
-## Kjør lokalt
+## Bygging/Kjøring
+### Kjør lokalt
 
 **NB: `navtunnel` må kjøre, eller man må være logget inn med `naisdevice`**
 
@@ -27,7 +26,7 @@ export NAV_TOKEN=xxxx-yyyy-zzzz
 Gradle følger med prosjektet og `./gradlew build` vil derfor fungere. `gradle build` bruker lokalt installert Gradle.
 
 
-## Utviklerimage
+### Utviklerimage
 - Opprett Personal access tokens i Github og legg til token som systemvariabelen NAV_TOKEN (se forklaring over)
 - Opprett `gradle.properties` under `C:/Users/%USERNAME%/.gradle` med innhold (bytt ut truststorepassord og -path):
 ```
@@ -54,21 +53,20 @@ maven {
       }
 ```
 ## Dokumentasjon
-Enhver testnorge-applikasjon skal ha dokumentasjon i fila `<min-testnorge-app>/docs/Implementasjon.md`. Hver av disse filene må starte med
+Enhver applikasjon skal ha dokumentasjon i fila `<min-testnorge-app>/README.md`. Hver av disse filene må starte med
 ```
 ---
 layout: default
-title: min-testnorge-app
+title: min-app
 parent: Applikasjoner
 ---
 
-# min-testnorge-app
+# min-app
 [...]
 ```
 for å bli vist på riktig måte under https://navikt.github.io/testnorge.
-Implementasjonsfilen skal beskrive hvordan appen fungerer, sett i samspill med prosjektet som helhet.  
-
-Info om lokal kjøring osv. skal gis i appens `README.md` fil.
+README-filen skal beskrive kort hva appen er til, og hvordan den fungerer. Det er også fint om du beskriver kort
+info om lokal kjøring osv.
 
 ## Migrering inn i monorepo
 

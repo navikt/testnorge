@@ -50,14 +50,3 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
           RESOURCE: apps/testnorge-token-provider/nais.yaml
-  deploy-t6:
-    name: "Deploy t6"
-    needs: build-jar
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-          CLUSTER: dev-fss
-          RESOURCE: apps/testnorge-token-provider/nais_t6.yaml

@@ -1,8 +1,14 @@
 import React from 'react';
-import Alertstripe from "./Alertstripe";
+import Alertstripe from './Alertstripe';
 
-type Props ={
-    label: string
-}
+export type SuccessAlertstripeProps = {
+  label: string;
+};
 
-export default ({ label }: Props) => <Alertstripe label={label} type="suksess"/>
+const SuccessAlertstripe = ({ label }: SuccessAlertstripeProps) => (
+  <Alertstripe label={label} type="suksess" />
+);
+
+SuccessAlertstripe.displayName = 'SuccessAlertstripe';
+
+export default SuccessAlertstripe;

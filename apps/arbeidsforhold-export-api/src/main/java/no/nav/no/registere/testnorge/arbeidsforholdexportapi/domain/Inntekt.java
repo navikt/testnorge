@@ -1,61 +1,24 @@
 package no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain;
 
-import lombok.RequiredArgsConstructor;
-
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
-public class Inntekt {
-    private final no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0.Inntekt inntekt;
-    private final String typeArbeidsforhold;
-    private final String kalendermaaned;
 
-    public LocalDate getStartdatoOpptjeningsperiode() {
-        return toLocalDate(inntekt.getStartdatoOpptjeningsperiode());
-    }
+public interface Inntekt {
 
-    public LocalDate getSluttdatoOpptjeningsperiode() {
-        return toLocalDate(inntekt.getSluttdatoOpptjeningsperiode());
-    }
+    LocalDate getStartdatoOpptjeningsperiode();
 
-    public Float getAntall() {
-        return inntekt.getLoennsinntekt() != null && inntekt.getLoennsinntekt().getAntall() != null
-                ? inntekt.getLoennsinntekt().getAntall().floatValue()
-                : null;
-    }
+    LocalDate getSluttdatoOpptjeningsperiode();
 
-    public String getOpptjeningsland() {
-        return inntekt.getLoennsinntekt() != null && inntekt.getLoennsinntekt().getSpesifikasjon() != null
-                ? inntekt.getLoennsinntekt().getSpesifikasjon().getOpptjeningsland()
-                : null;
-    }
+    Float getAntall();
 
-    public String getKalendermaaned() {
-        return kalendermaaned;
-    }
+    String getOpptjeningsland();
 
-    public String getTypeArbeidsforhold() {
-        return typeArbeidsforhold;
-    }
+    String getKalendermaaned();
 
-    private static LocalDate toLocalDate(XMLGregorianCalendar calendar) {
-        if (calendar == null) {
-            return null;
-        }
-        return LocalDate.of(calendar.getYear(), calendar.getMonth(), calendar.getDay());
-    }
+    String getTypeArbeidsforhold();
 
-    public List<Avvik> getAvvikList(){
-        return inntekt.getAvvik() != null
-                ? inntekt.getAvvik().stream().map(value -> new Avvik(value, "INNTEKT", typeArbeidsforhold)).collect(Collectors.toList())
-                : Collections.emptyList();
-    }
+    List<? extends Avvik> getAvvikList();
 
-    public boolean hasAvvik() {
-        return !getAvvikList().isEmpty();
-    }
+    boolean hasAvvik();
 }

@@ -41,6 +41,8 @@ public class ArbeidsforholdSyntetiseringCsvPrinterConverter extends CsvPrinterCo
         FARTSOMRAADE("FARTSOMRAADE"),
         KILDEREFERANSE("KILDEREFERANSE"),
         UTDANNINGSPERMISJON("UTDANNINGSPERMISJON"),
+        AARSAK_TIL_SLUTTDATO("AARSAK_TIL_SLUTTDATO"),
+        FORM_FOR_ANSETTELSE("FORM_FOR_ANSETTELSE"),
         ANTALL_INNTEKTER("ANTALL_INNTEKTER");
 
         private final String header;
@@ -84,6 +86,8 @@ public class ArbeidsforholdSyntetiseringCsvPrinterConverter extends CsvPrinterCo
             map.put(Headers.SKIPSTYPE.getValue(), arbeidsforhold.getSkipstype());
             map.put(Headers.FARTSOMRAADE.getValue(), arbeidsforhold.getFartsomraade());
             map.put(Headers.ANTALL_INNTEKTER.getValue(), arbeidsforhold.getAntallInntekter());
+            map.put(Headers.AARSAK_TIL_SLUTTDATO.getValue(), arbeidsforhold.getAarsakTilSluttdato());
+            map.put(Headers.FORM_FOR_ANSETTELSE.getValue(), arbeidsforhold.getFormForAnsettelse());
             map.put(Headers.KILDEREFERANSE.getValue(), arbeidsforhold.getKildereferanse());
             return map;
         };

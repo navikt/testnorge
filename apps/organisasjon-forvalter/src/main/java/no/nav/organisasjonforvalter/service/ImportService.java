@@ -13,6 +13,7 @@ import no.nav.organisasjonforvalter.jpa.entity.Organisasjon;
 import no.nav.organisasjonforvalter.jpa.repository.OrganisasjonRepository;
 import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -38,6 +39,7 @@ public class ImportService {
         return orgnr;
     }
 
+    @Transactional
     public Map<String, RsOrganisasjon> getOrganisasjoner(String orgnummer, Set<String> miljoer) {
 
         var miljoerAaSjekke = nonNull(miljoer) &&

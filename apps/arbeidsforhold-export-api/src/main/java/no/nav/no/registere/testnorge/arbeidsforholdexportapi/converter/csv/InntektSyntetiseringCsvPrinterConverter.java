@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.Inntekt;
-import no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.Permisjon;
 import no.nav.registre.testnorge.libs.csvconverter.CsvHeader;
 import no.nav.registre.testnorge.libs.csvconverter.CsvPrinterConverter;
 import no.nav.registre.testnorge.libs.csvconverter.ObjectConverter;

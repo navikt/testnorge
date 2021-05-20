@@ -3,45 +3,65 @@ import styled from 'styled-components';
 // @ts-ignore
 import { navLogo } from '@navikt/dolly-assets';
 
-const Header = styled.header`
-  padding: 15px 40px;
+const StyledHeader = styled.header`
+  max-height: 70px;
   display: flex;
   background-color: #3e3832;
-  border: solid transparent;
 `;
 
 const Logo = styled.img`
-  height: 30px;
+  margin: 15px;
+  height: 40px;
 `;
 
 const VerticalLine = styled.div`
-  height: 30px;
   border-right: 2px solid #88b1d6;
-  margin-left: 40px;
-  margin-right: 40px;
+  margin: 15px 20px;
 `;
 
 const Title = styled.h1`
   margin: 0;
-  width: 100%;
+  padding: 20px 10px;
+  white-space: nowrap;
   font-size: 1.6rem;
   color: white;
 `;
 
-type Props = {
+const Container = styled.div`
+  width: 100%;
+`;
+
+export type HeaderProps = {
+  title: string;
+  profile?: React.ReactNode;
   children?: React.ReactNode;
 };
 
-export default ({ children }: Props) => (
-  <Header>
+const Header = ({ children, title, profile }: HeaderProps) => (
+  <StyledHeader>
     <Logo src={navLogo} alt="Nav logo" />
     <VerticalLine />
-    <Title>Endringsmeldinger</Title>
-    {React.Children.map(children, (child) => (
+    <Title>{title}</Title>
+    {React.Children.count(children) > 0 ? (
+      React.Children.map(children, (child) => (
+        <>
+          <VerticalLine />
+          <Container>{child}</Container>
+        </>
+      ))
+    ) : (
+      <Container />
+    )}
+
+    {profile && (
       <>
         <VerticalLine />
-        {child}
+        {profile}
       </>
-    ))}
-  </Header>
+    )}
+  </StyledHeader>
 );
+
+Header.displayName = 'Header';
+
+export default Header;

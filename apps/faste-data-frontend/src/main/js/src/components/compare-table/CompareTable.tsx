@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import 'nav-frontend-tabell-style';
-import { SuccessAlert, WarningAlert } from '@/components/alert';
-import { LoadableComponent } from '@/components/loadable-component';
+import { SuccessAlert, WarningAlert, LoadableComponent } from '@navikt/dolly-komponenter';
 import { Link } from 'react-router-dom';
 
 type Item = {
@@ -64,7 +63,7 @@ function CompareTable<T extends Item>({
           rows.map((row, index) => (
             <tr key={index}>
               <td>{row.id}</td>
-              <td>{row.miljo.toUpperCase()}</td>
+              <td>{row.miljo}</td>
               <td>{row.component}</td>
               <td>
                 <Link

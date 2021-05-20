@@ -1,54 +1,58 @@
-const HtmlWebPackPlugin = require("html-webpack-plugin");
+const path = require("path-browserify");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const path = require("path");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 module.exports = {
-    module: {
-        rules: [
-            {
-                test: /\.css$/i,
-                use: [MiniCssExtractPlugin.loader, "css-loader"],
-            },
-            {
-                test: /\.less$/,
-                use: [
-                    MiniCssExtractPlugin.loader,
-                    'css-loader',
-                    'less-loader'
-                ]
-            },
-
-            {
-                test: /\.js|.ts(x?)$/,
-                exclude: /node_modules/,
-                use: {
-                    loader: "babel-loader",
-                },
-            },
-            {
-                test: /\.html$/,
-                use: [
-                    {
-                        loader: "html-loader",
-                    },
-                ],
-            },
+  module: {
+    rules: [
+      {
+        test: /\.less$/i,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+          },
+          {
+            loader: "css-loader",
+          },
+          {
+            loader: "less-loader",
+          },
         ],
-    },
-    resolve: {
-        alias: {
-            "@": path.resolve(__dirname, "src"),
+      },
+      {
+        test: /\.(png|jpe?g|gif|svg)$/i,
+        type: "asset/resource",
+      },
+      {
+        test: /\.js|.ts(x?)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader",
         },
-        extensions: [".tsx", ".ts", ".js"],
-    },
-    plugins: [
-        new HtmlWebPackPlugin({
-            template: "./public/index.html",
-            filename: "./index.html",
-        }),
+      },
     ],
-    output: {
-        filename: "bundle.js",
-        path: path.resolve(__dirname, "dist"),
+  },
+  resolve: {
+    fallback: {
+      os: require.resolve("os-browserify/browser"),
+      path: require.resolve("path-browserify"),
+      stream: require.resolve("stream-browserify"),
     },
+    alias: {
+      stream: "stream-browserify",
+      "@": path.resolve(__dirname, "src"),
+    },
+    extensions: [".tsx", ".ts", ".js"],
+  },
+  plugins: [
+    new CleanWebpackPlugin(),
+    new MiniCssExtractPlugin({
+      filename: "[name].[contenthash:8].css",
+    }),
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, "./public/index.html"),
+      filename: "index.html",
+    }),
+  ],
 };

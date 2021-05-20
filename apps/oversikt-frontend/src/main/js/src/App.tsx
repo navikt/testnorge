@@ -1,64 +1,71 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "./App.less";
 // @ts-ignore
-import { fetchApplications } from "./api";
-import Header from "@/components/Header";
-import NavigationBar from "@/components/NavigationBar";
+import ApplicationService from "@/services/ApplicationService";
 
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import MagicTokenPage from "@/pages/MagicTokenPage";
 import AccessTokenPage from "@/pages/AccessTokenPage";
-import NavFrontendSpinner from "nav-frontend-spinner";
-import SessionTimer from "@/components/SessionTimer";
+import {
+  Header,
+  HeaderLink,
+  HeaderLinkGroup,
+  LoadableComponent,
+  ProfilLoader,
+} from "@navikt/dolly-komponenter";
 
-function App() {
-  const [items, setItems] = useState<string[] | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+import ProfilService from "./services/ProfilService";
+import styled from "styled-components";
 
-  useEffect(() => {
-    fetchApplications().then((response: string[]) => {
-      setItems(response);
-      setLoading(false);
-    });
-  }, []);
+const Body = styled.div`
+  border-bottom: solid 1px #c6c2bf;
+`;
 
+export default () => {
   return (
-    <div className="app">
-      <Header />
-      <SessionTimer />
-      {loading ? (
-        <NavFrontendSpinner />
-      ) : (
-        <Router>
-          <NavigationBar
-            navigations={[
-              {
-                href: "/",
-                label: "Magic Token",
-              },
-              {
-                href: "/access-token/" + items[0],
-                label: "Access token",
-              },
-            ]}
-          />
-          <Switch>
-            <Route path="/access-token/:name">
-              <AccessTokenPage
-                navigations={items.map((item: string) => ({
-                  href: "/access-token/" + item,
-                  label: item,
-                }))}
-              />
-            </Route>
-            <Route path="/">
-              <MagicTokenPage />
-            </Route>
-          </Switch>
-        </Router>
-      )}
-    </div>
+    <Router>
+      <Header
+        title="Generer token"
+        profile={<ProfilLoader {...ProfilService} />}
+      >
+        <HeaderLinkGroup>
+          <HeaderLink
+            href="#/magic-token"
+            isActive={() =>
+              window.location.hash === "/" ||
+              window.location.hash.includes("/magic-token")
+            }
+          >
+            Magic Token
+          </HeaderLink>
+          <HeaderLink
+            href="#/access-token/dolly-backend"
+            isActive={() => window.location.hash.includes("/access-token")}
+          >
+            Access Token
+          </HeaderLink>
+        </HeaderLinkGroup>
+      </Header>
+      <Body>
+        <Switch>
+          <Route path="/access-token/:name">
+            <LoadableComponent
+              onFetch={ApplicationService.fetchApplications}
+              render={(items) => (
+                <AccessTokenPage
+                  navigations={items.map((item: string) => ({
+                    href: "/access-token/" + item,
+                    label: item,
+                  }))}
+                />
+              )}
+            />
+          </Route>
+          <Route path="/">
+            <MagicTokenPage />
+          </Route>
+        </Switch>
+      </Body>
+    </Router>
   );
-}
-
-export default App;
+};

@@ -57,3 +57,13 @@ zuul:
       path: /api/v1/files/**
       url: https://testnorge-arbeidsforhold-export-api.dev.intern.nav.no/api/v1/files
       sensitiveHeaders: Cookie,Set-Cookie
+    profil:
+      path: /testnorge-profil-api/api/**
+      url: https://testnorge-profil-api.dev.intern.nav.no/api
+      sensitiveHeaders: Cookie,Set-Cookie
+
+consumers:
+  testnorge-profil-api:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnorge-profil-api

@@ -30,6 +30,7 @@ spec:
     outbound:
       rules:
         - application: oppsummeringsdokument-service
+        - application: testnorge-profil-api
   resources:
     limits:
       cpu: 1000m

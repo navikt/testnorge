@@ -4,9 +4,9 @@ azure.app.client.secret: ${client_secret}
 zuul:
   routes:
     oppsummeringsdokument-service:
-      path: /api/**
       url: https://oppsummeringsdokument-service.dev.intern.nav.no/api
-      sensitiveHeaders: Cookie,Set-Cookie
+    profil:
+      url: https://testnorge-profil-api.dev.intern.nav.no/api
 
 spring:
   security:

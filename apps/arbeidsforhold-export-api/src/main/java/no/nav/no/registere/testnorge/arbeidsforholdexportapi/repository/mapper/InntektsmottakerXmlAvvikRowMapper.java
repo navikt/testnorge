@@ -9,21 +9,30 @@ import java.sql.SQLException;
 import java.util.List;
 
 import no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.Avvik;
-import no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.Opplysningspliktig;
-import no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.Permisjon;
 
 @Slf4j
 @RequiredArgsConstructor
-public class InntektsmottakerXmlAvvikRowMapper implements RowMapper<List<Avvik>> {
+public class InntektsmottakerXmlAvvikRowMapper implements RowMapper<List<? extends Avvik>> {
     private final Integer page;
     private final Integer total;
 
+    private boolean isV2_1(String xml) {
+        return xml.contains("urn:nav:a-arbeidsforhold:v2_1");
+    }
+
     @Override
-    public List<Avvik> mapRow(ResultSet rs, int rowNum) throws SQLException {
+    public List<? extends Avvik> mapRow(ResultSet rs, int rowNum) throws SQLException {
         if ((rowNum + 1 + page) % 10000 == 0 || (rowNum + 1 + page) == total) {
             log.info("Antall rader behandlet {}/{}.", rowNum + 1 + page, total);
         }
-        Opplysningspliktig opplysningspliktig = Opplysningspliktig.from(rs.getString("INNTEKTSMOTTAKER_XML"));
-        return opplysningspliktig.toAvvik();
+
+        String xml = rs.getString("INNTEKTSMOTTAKER_XML");
+        if (isV2_1(xml)) {
+            var opplysningspliktig = no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.v2_1.Opplysningspliktig.from(xml);
+            return opplysningspliktig.toAvvik();
+        } else {
+            var opplysningspliktig = no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.v2_0.Opplysningspliktig.from(xml);
+            return opplysningspliktig.toAvvik();
+        }
     }
 }

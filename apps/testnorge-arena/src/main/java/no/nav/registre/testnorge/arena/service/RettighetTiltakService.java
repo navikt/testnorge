@@ -55,7 +55,7 @@ public class RettighetTiltakService {
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
     private final ServiceUtils serviceUtils;
     private final IdentService identService;
-    private final ArbeidssoekerService arbeidsoekerUtils;
+    private final ArbeidssoekerService arbeidssoekerService;
     private final TiltakArenaForvalterConsumer tiltakArenaForvalterConsumer;
     private final Random rand;
 
@@ -115,6 +115,8 @@ public class RettighetTiltakService {
             return vedtaksliste;
         }
 
+        var deltakelser = tiltaksdeltakelser.stream().filter(t -> t.getTiltakYtelse() != null && t.getTiltakYtelse().equals("J")).collect(Collectors.toList());
+
         List<NyttVedtakTiltak> nyVedtaksliste = new ArrayList<>();
 
         var vedtakSequences = getVedtakSequencesTiltak(vedtaksliste);
@@ -123,10 +125,10 @@ public class RettighetTiltakService {
         for (var sequence : vedtakSequences) {
             var initialFraDato = sequence.get(0).getFraDato();
 
-            var deltakelseIndex = finnNoedvendigTiltaksdeltakelse(tiltaksdeltakelser, brukteIndices);
+            var deltakelseIndex = finnNoedvendigTiltaksdeltakelse(deltakelser, brukteIndices);
             if (deltakelseIndex != null) {
                 brukteIndices.add(deltakelseIndex);
-                var deltakelse = tiltaksdeltakelser.get(deltakelseIndex);
+                var deltakelse = deltakelser.get(deltakelseIndex);
                 for (var vedtak : sequence) {
                     var nyttVedtak = shiftVedtakDatesBasertPaaTiltaksdeltakelse(vedtak, deltakelse, initialFraDato);
                     nyVedtaksliste.add(nyttVedtak);
@@ -458,7 +460,7 @@ public class RettighetTiltakService {
         for (var syntetisertRettighet : syntetiserteRettigheter) {
             var utvalgtIdent = utvalgteIdenter.remove(utvalgteIdenter.size() - 1);
 
-            arbeidsoekerUtils.opprettArbeidssoekerTiltak(utvalgtIdent, miljoe);
+            arbeidssoekerService.opprettArbeidssoekerTiltak(utvalgtIdent, miljoe, syntetisertRettighet.getFraDato());
 
             var rettighetRequest = new RettighetTiltaksaktivitetRequest(Collections.singletonList(syntetisertRettighet));
 

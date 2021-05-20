@@ -11,8 +11,9 @@ import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
 import no.nav.registre.testnorge.libs.frontend.filter.AddAuthorizationToRouteFilter;
 import no.nav.registre.testnorge.libs.frontend.filter.SessionTimeoutCookieFilter;
 import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2FrontendConfiguration;
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.registre.testnorge.oversiktfrontend.config.credentials.ProfilApiServiceProperties;
+import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 
 @Configuration
 @Import({
@@ -22,8 +23,8 @@ import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 @RequiredArgsConstructor
 @EnableZuulProxy
 public class ApplicationConfig {
-
     private final AccessTokenService tokenService;
+    private final ProfilApiServiceProperties profilApiServiceProperties;
 
     @Bean
     public FilterRegistrationBean<SessionTimeoutCookieFilter> loggingFilter(){
@@ -31,6 +32,14 @@ public class ApplicationConfig {
         registrationBean.setFilter(new SessionTimeoutCookieFilter());
         registrationBean.addUrlPatterns("/*");
         return registrationBean;
+    }
+
+    @Bean
+    public AddAuthorizationToRouteFilter addProfilApiAuthorizationToRouteFilter() {
+        return new AddAuthorizationToRouteFilter(
+                () -> tokenService.generateToken(profilApiServiceProperties).getTokenValue(),
+                "profil"
+        );
     }
 
     @Bean
@@ -42,5 +51,4 @@ public class ApplicationConfig {
                 "testnorge-arbeidsforhold-export-api"
         );
     }
-
 }

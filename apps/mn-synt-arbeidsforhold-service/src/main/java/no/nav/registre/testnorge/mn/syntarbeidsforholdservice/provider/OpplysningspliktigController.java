@@ -2,6 +2,7 @@ package no.nav.registre.testnorge.mn.syntarbeidsforholdservice.provider;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -21,14 +22,14 @@ public class OpplysningspliktigController {
 
     private final ArbeidsforholdHistorikkService arbeidsforholdHistorikkService;
 
-    @PostMapping("/historikk")
-    public ResponseEntity<List<String>> generateHistorikk(
+    @PostMapping("/populate")
+    public ResponseEntity<List<String>> populate(
             @RequestHeader("miljo") String miljo,
             @RequestParam("maxIdenter") Integer maxIdenter,
             @RequestParam("fom") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fom,
             @RequestParam("tom") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate tom
     ) {
-        var identer = arbeidsforholdHistorikkService.reportAll(fom, tom, maxIdenter, miljo);
+        var identer = arbeidsforholdHistorikkService.populate(fom, tom, maxIdenter, miljo);
 
         if (identer.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -36,4 +37,15 @@ public class OpplysningspliktigController {
 
         return ResponseEntity.ok(identer);
     }
+
+    @PostMapping("/develop")
+    public ResponseEntity<HttpStatus> develop(
+            @RequestHeader("miljo") String miljo,
+            @RequestParam("fom") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fom,
+            @RequestParam("tom") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate tom
+    ) {
+        arbeidsforholdHistorikkService.develop(fom, tom, miljo);
+        return ResponseEntity.noContent().build();
+    }
+
 }

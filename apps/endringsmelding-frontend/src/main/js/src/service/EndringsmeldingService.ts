@@ -1,4 +1,4 @@
-import Api from '@/api';
+import { Api } from '@navikt/dolly-lib';
 
 const fetchMiljoer = (ident: string) =>
   Api.fetchJson<string[]>(`/api/v1/identer/${ident}/miljoer`, { method: 'GET' });
@@ -25,12 +25,12 @@ const sendDodsmelding = (dodsmelding: Dodsmelding, miljoer: string[]) =>
     dodsmelding
   );
 
-const sendFodselsmelding = (fodselsmelding: Fodselsmelding, miljoer: string[]) =>
-  Api.fetchText(
+const sendFodselsmelding = (fodselsmelding: Fodselsmelding, miljoer: string[]): Promise<string> =>
+  Api.fetch(
     '/api/v1/endringsmelding/foedeselsmelding',
     { method: 'POST', headers: { miljoer: miljoer.join(','), 'Content-Type': 'application/json' } },
     fodselsmelding
-  );
+  ).then((response) => response.text() as Promise<string>);
 
 export default {
   fetchMiljoer,

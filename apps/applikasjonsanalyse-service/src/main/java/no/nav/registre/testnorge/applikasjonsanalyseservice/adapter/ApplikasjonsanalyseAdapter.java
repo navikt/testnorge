@@ -26,7 +26,7 @@ public class ApplikasjonsanalyseAdapter {
     }
 
     public TopicAnalyseList findTopics(String path) {
-        var blob = githubConsumer.getBlobFromPathAndRef(path, "avien-kafka");
+        var blob = githubConsumer.getBlobFromPathAndRef(path, "master");
         return new TopicAnalyseList(new String(blob));
     }
 

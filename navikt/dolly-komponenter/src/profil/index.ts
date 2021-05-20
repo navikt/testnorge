@@ -1,3 +1,2 @@
-import Profil from './Profil';
-
-export { Profil };
+export { default as Profil } from './Profil';
+export { default as ProfilLoader } from './ProfilLoader';

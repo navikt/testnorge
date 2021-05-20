@@ -1,12 +1,13 @@
 import React from "react";
 import "./App.less";
 import { CodeSearch } from "@/components";
-import Header from "@/components/Header";
+import { Header, Page, ProfilLoader } from "@navikt/dolly-komponenter";
+import ProfilService from "./service/ProfilService";
 
 function App() {
   return (
     <div className="App">
-      <Header />
+      <Header title="A-melding" profile={<ProfilLoader {...ProfilService} />} />
       <CodeSearch />
     </div>
   );

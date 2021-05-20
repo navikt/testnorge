@@ -12,6 +12,7 @@ import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereRes
 
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -97,6 +98,27 @@ public class BrukereService {
                         .kvalifiseringsgruppe(kvalifiseringsgruppe)
                         .automatiskInnsendingAvMeldekort(true)
                         .oppfolging(oppfolging)
+                        .build())
+                .collect(Collectors.toList());
+
+        return brukereArenaForvalterConsumer.sendTilArenaForvalter(nyeBrukere);
+    }
+
+    public NyeBrukereResponse sendArbeidssoekereTilArenaForvalter(
+            List<String> identer,
+            String miljoe,
+            Kvalifiseringsgrupper kvalifiseringsgruppe,
+            String oppfolging,
+            LocalDate aktiveringsDato
+    ) {
+        var nyeBrukere = identer.stream().map(ident ->
+                NyBruker.builder()
+                        .personident(ident)
+                        .miljoe(miljoe)
+                        .kvalifiseringsgruppe(kvalifiseringsgruppe)
+                        .automatiskInnsendingAvMeldekort(true)
+                        .oppfolging(oppfolging)
+                        .aktiveringsDato(aktiveringsDato)
                         .build())
                 .collect(Collectors.toList());
 

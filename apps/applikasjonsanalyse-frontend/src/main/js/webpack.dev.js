@@ -1,4 +1,4 @@
-const path = require('path');
+const path = require('path-browserify');
 const { merge } = require('webpack-merge');
 const common = require('./webpack.common.js');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -8,23 +8,24 @@ module.exports = merge(common, {
   devtool: 'inline-source-map',
   devServer: {
     port: 3000,
-    contentBase: path.join(__dirname, 'public'),
-    historyApiFallback: true,
+    contentBase: './build',
+    hot: true,
     proxy: {
-      '/api': {
+      '/applikasjonsanalyse-service/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/testnorge-profil-api/api': {
         target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
       },
     },
   },
-  plugins: [
-    new MiniCssExtractPlugin({
-      filename: '[name].css',
-    }),
-  ],
+  plugins: [new MiniCssExtractPlugin()],
   output: {
-    path: path.join(__dirname, 'dist'),
+    path: path.join(__dirname, 'build'),
     filename: 'bundle.js',
   },
 });
