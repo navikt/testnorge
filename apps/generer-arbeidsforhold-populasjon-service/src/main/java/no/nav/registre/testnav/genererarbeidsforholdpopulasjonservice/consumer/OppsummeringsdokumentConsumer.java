@@ -55,8 +55,6 @@ public class OppsummeringsdokumentConsumer {
         this.executor = executor;
 
 
-        HttpClient client = HttpClient.create()
-                .responseTimeout(Duration.ofMinutes(10));
 
         this.webClient = WebClient
                 .builder()
@@ -70,7 +68,6 @@ public class OppsummeringsdokumentConsumer {
                             .defaultCodecs()
                             .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
                 })
-                .clientConnector(new ReactorClientHttpConnector(client))
                 .build();
     }
 

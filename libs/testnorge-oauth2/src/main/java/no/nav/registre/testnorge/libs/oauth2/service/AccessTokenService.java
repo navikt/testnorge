@@ -13,8 +13,10 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.tcp.ProxyProvider;
+import reactor.util.retry.Retry;
 
 import java.net.URI;
+import java.time.Duration;
 import java.util.Map;
 
 import no.nav.registre.testnorge.libs.oauth2.config.Scopeable;
@@ -133,7 +135,11 @@ public class AccessTokenService {
             var token = webClient.post()
                     .body(body)
                     .retrieve()
-                    .bodyToMono(AccessToken.class);
+                    .bodyToMono(AccessToken.class)
+                    .retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(1))
+                            .filter(throwable -> !(throwable instanceof WebClientResponseException.BadRequest))
+                            .doAfterRetry(value -> log.warn("Prøver å opprette tilbobling til azure på nytt."))
+                    );
             log.trace("Access token opprettet for OAuth 2.0 Client Credentials flow.");
             return token;
         } catch (WebClientResponseException e) {
