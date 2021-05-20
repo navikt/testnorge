@@ -3,6 +3,8 @@ kind: "Application"
 metadata:
   name: oppsummeringsdokument-service
   namespace: dolly
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "1200"
   labels:
     team: dolly
 spec:
@@ -48,7 +50,7 @@ spec:
       cpu: 500m
       memory: 1024Mi
     limits:
-      cpu: 800m
+      cpu: 1000m
       memory: 2048Mi
   envFrom:
     - secret: teamdolly-elastic
