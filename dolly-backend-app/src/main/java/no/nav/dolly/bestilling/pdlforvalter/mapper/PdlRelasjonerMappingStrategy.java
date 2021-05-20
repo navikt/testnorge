@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
@@ -29,6 +30,7 @@ import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand.Sivilsta
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand.Sivilstand.UOPPGITT;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 
+@Slf4j
 @Component
 public class PdlRelasjonerMappingStrategy implements MappingStrategy {
 
@@ -52,6 +54,7 @@ public class PdlRelasjonerMappingStrategy implements MappingStrategy {
                                 .map(Relasjon::getRelasjonTypeNavn)
                                 .findFirst().orElse(null)));
                         familierelasjon.setKilde(CONSUMER);
+                        log.info(familierelasjon.toString());
                     }
                 })
                 .register();
