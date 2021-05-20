@@ -13,13 +13,15 @@ public class VerifyNavnService {
     private static final List<String> ADVERBER = FileReader.readLinesFromResources("static/adverb.csv");
     private static final List<String> SUBSTANTIVER = FileReader.readLinesFromResources("static/substantiv.csv");
 
+    private static boolean verify(String value, List<String> approvedValues) {
+
+        return isNull(value) || approvedValues.stream().anyMatch(validValue -> validValue.equalsIgnoreCase(value));
+    }
+
     public boolean verifyNavn(NavnDTO navnDTO) {
 
-        return (isNull(navnDTO.getAdjektiv()) ||
-                ADJEKTIVER.stream().anyMatch(adjektiv -> adjektiv.equalsIgnoreCase(navnDTO.getAdjektiv()))) &&
-                (isNull(navnDTO.getAdverb()) ||
-                        ADVERBER.stream().anyMatch(adverb -> adverb.equalsIgnoreCase(navnDTO.getAdverb()))) &&
-                (isNull(navnDTO.getSubstantiv()) ||
-                        SUBSTANTIVER.stream().anyMatch(substantiv -> substantiv.equalsIgnoreCase(navnDTO.getSubstantiv())));
+        return verify(navnDTO.getAdjektiv(), ADJEKTIVER) &&
+                verify(navnDTO.getAdverb(), ADVERBER) &&
+                verify(navnDTO.getSubstantiv(), SUBSTANTIVER);
     }
 }
