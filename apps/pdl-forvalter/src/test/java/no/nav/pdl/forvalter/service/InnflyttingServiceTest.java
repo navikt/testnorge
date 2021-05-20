@@ -38,7 +38,7 @@ class InnflyttingServiceTest {
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                innflyttingService.convert(request));
+                innflyttingService.convert((List<RsInnflytting>) request));
 
         assertThat(exception.getMessage(), containsString("Landkode må oppgis i hht ISO-3 Landkoder på fraflyttingsland"));
     }

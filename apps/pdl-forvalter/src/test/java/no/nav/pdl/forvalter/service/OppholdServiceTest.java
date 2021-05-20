@@ -34,7 +34,7 @@ class OppholdServiceTest {
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdService.convert(request));
+                oppholdService.convert((List<PdlOpphold>) request));
 
         assertThat(exception.getMessage(), containsString("Opphold med oppholdFra må angis"));
     }
@@ -50,7 +50,7 @@ class OppholdServiceTest {
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdService.convert(request));
+                oppholdService.convert((List<PdlOpphold>) request));
 
         assertThat(exception.getMessage(), containsString("Ugyldig datointervall: oppholdFra må være før oppholdTil"));
     }
@@ -64,7 +64,7 @@ class OppholdServiceTest {
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdService.convert(request));
+                oppholdService.convert((List<PdlOpphold>) request));
 
         assertThat(exception.getMessage(), containsString("Type av opphold må angis"));
     }

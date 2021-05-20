@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -20,7 +22,7 @@ public class PdlTilrettelagtKommunikasjon extends PdlDbVersjon {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Tolk {
+    public static class Tolk implements Serializable {
 
         private String spraak;
     }

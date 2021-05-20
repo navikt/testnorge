@@ -22,7 +22,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
 @RequiredArgsConstructor
-public class StatsborgerskapService extends PdlArtifactService<PdlStatsborgerskap> {
+public class StatsborgerskapService {
 
     private static final String VALIDATION_LANDKODE_ERROR = "Ugyldig landkode, må være i hht ISO-3 Landkoder";
     private static final String VALIDATION_DATOINTERVALL_ERROR = "Ugyldig datointervall: gyldigFom må være før gyldigTom";
@@ -44,12 +44,10 @@ public class StatsborgerskapService extends PdlArtifactService<PdlStatsborgerska
                 }
             }
         }
-        enforceIntegrity(request);
         return request;
     }
 
-    @Override
-    protected void validate(PdlStatsborgerskap statsborgerskap) {
+    private void validate(PdlStatsborgerskap statsborgerskap) {
 
         if (nonNull(statsborgerskap.getLandkode()) && !isLandkode(statsborgerskap.getLandkode())) {
             throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_LANDKODE_ERROR);
@@ -76,15 +74,5 @@ public class StatsborgerskapService extends PdlArtifactService<PdlStatsborgerska
         if (isNull(statsborgerskap.getGyldigFom())) {
             statsborgerskap.setGyldigFom(DatoFraIdentUtility.getDato(ident).atStartOfDay());
         }
-    }
-
-    @Override
-    protected void handle(PdlStatsborgerskap type) {
-
-    }
-
-    @Override
-    protected void enforceIntegrity(List<PdlStatsborgerskap> type) {
-
     }
 }

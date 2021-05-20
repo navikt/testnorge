@@ -42,7 +42,7 @@ class StatsborgerskapServiceTest {
                         .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                statsborgerskapService.convert(request, FNR_IDENT, null));
+                statsborgerskapService.convert((List<PdlStatsborgerskap>) request, FNR_IDENT, null));
 
         assertThat(exception.getMessage(), containsString("Ugyldig landkode, må være i hht ISO-3 Landkoder"));
     }
@@ -57,7 +57,7 @@ class StatsborgerskapServiceTest {
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                statsborgerskapService.convert(request, FNR_IDENT, null));
+                statsborgerskapService.convert((List<PdlStatsborgerskap>) request, FNR_IDENT, null));
 
         assertThat(exception.getMessage(), containsString("Ugyldig datointervall: gyldigFom må være før gyldigTom"));
     }
@@ -69,7 +69,7 @@ class StatsborgerskapServiceTest {
                 .isNew(true)
                 .build());
 
-        var target = statsborgerskapService.convert(request,
+        var target = statsborgerskapService.convert((List<PdlStatsborgerskap>) request,
                 FNR_IDENT, RsInnflytting.builder()
                 .fraflyttingsland("GER")
                 .build())

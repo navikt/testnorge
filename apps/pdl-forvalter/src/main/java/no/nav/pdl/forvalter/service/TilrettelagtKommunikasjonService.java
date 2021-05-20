@@ -42,10 +42,12 @@ public class TilrettelagtKommunikasjonService extends PdlArtifactService<RsTilre
     @Override
     protected void handle(RsTilrettelagtKommunikasjon tilrettelagtKommunikasjon) {
 
+        //Ingen håndtering for enkeltpost
     }
 
     @Override
     protected void enforceIntegrity(List<RsTilrettelagtKommunikasjon> type) {
 
+        //Ingen validering for liste
     }
 }

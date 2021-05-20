@@ -28,7 +28,7 @@ class TelefonnummerServiceTest {
                 .isNew(true).build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                telefonnummerService.convert(request));
+                telefonnummerService.convert((List<PdlTelefonnummer>) request));
 
         assertThat(exception.getMessage(), containsString("Telefonnummer: nummer er påkrevd felt"));
     }
@@ -41,7 +41,7 @@ class TelefonnummerServiceTest {
                 .isNew(true).build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                telefonnummerService.convert(request));
+                telefonnummerService.convert((List<PdlTelefonnummer>) request));
 
         assertThat(exception.getMessage(), containsString("Telefonnummer: nummer kan kun inneholde tallsifre"));
     }
@@ -55,7 +55,7 @@ class TelefonnummerServiceTest {
                 .isNew(true).build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                telefonnummerService.convert(request));
+                telefonnummerService.convert((List<PdlTelefonnummer>) request));
 
         assertThat(exception.getMessage(), containsString("Telefonnummer: nummer kan ha lengde fra 3 til 16 sifre"));
     }
@@ -68,7 +68,7 @@ class TelefonnummerServiceTest {
                 .isNew(true).build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                telefonnummerService.convert(request));
+                telefonnummerService.convert((List<PdlTelefonnummer>) request));
 
         assertThat(exception.getMessage(), containsString("Telefonnummer: landskode er påkrevd felt"));
     }
@@ -82,7 +82,7 @@ class TelefonnummerServiceTest {
                 .isNew(true).build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                telefonnummerService.convert(request));
+                telefonnummerService.convert((List<PdlTelefonnummer>) request));
 
         assertThat(exception.getMessage(), containsString("Telefonnummer: Landkode består av ledende + " +
                 "(plusstegn) fulgt av  1 til 5 sifre"));
@@ -97,7 +97,7 @@ class TelefonnummerServiceTest {
                 .isNew(true).build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                telefonnummerService.convert(request));
+                telefonnummerService.convert((List<PdlTelefonnummer>) request));
 
         assertThat(exception.getMessage(), containsString("Telefonnummer: prioritet er påkrevd"));
     }
@@ -113,7 +113,7 @@ class TelefonnummerServiceTest {
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                telefonnummerService.convert(request));
+                telefonnummerService.convert((List<PdlTelefonnummer>) request));
 
         assertThat(exception.getMessage(), containsString("Telefonnummerets prioritet må være 1 eller 2"));
     }
@@ -129,7 +129,7 @@ class TelefonnummerServiceTest {
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                telefonnummerService.convert(request));
+                telefonnummerService.convert((List<PdlTelefonnummer>) request));
 
         assertThat(exception.getMessage(), containsString("Telefonnummer: prioritet 1 må angis før 2 kan benyttes"));
     }

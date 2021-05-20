@@ -34,7 +34,7 @@ class AdressebeskyttelseServiceTest {
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                adressebeskyttelseService.convert(request));
+                adressebeskyttelseService.convert((List<PdlAdressebeskyttelse>) request));
 
         assertThat(exception.getMessage(), containsString("Gradering STRENGT_FORTROLIG_UTLAND kan kun settes hvis master er PDL"));
     }

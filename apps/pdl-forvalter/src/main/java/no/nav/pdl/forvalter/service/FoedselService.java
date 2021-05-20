@@ -21,7 +21,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
 @RequiredArgsConstructor
-public class FoedselService extends PdlArtifactService<PdlFoedsel> {
+public class FoedselService {
 
     private final TilfeldigKommuneService tilfeldigKommuneService;
     private final TilfeldigLandService tilfeldigLandService;
@@ -34,7 +34,6 @@ public class FoedselService extends PdlArtifactService<PdlFoedsel> {
         for (var type : request) {
 
             if (type.isNew()) {
-                validate(type);
 
                 handle(type, ident, bostedadresse, innflytting);
                 if (Strings.isBlank(type.getKilde())) {
@@ -42,17 +41,22 @@ public class FoedselService extends PdlArtifactService<PdlFoedsel> {
                 }
             }
         }
-        enforceIntegrity(request);
         return request;
     }
 
-    public void handle(PdlFoedsel foedsel, String ident, PdlBostedadresse bostedadresse, RsInnflytting innflytting) {
+    private void handle(PdlFoedsel foedsel, String ident, PdlBostedadresse bostedadresse, RsInnflytting innflytting) {
 
         if (isNull(foedsel.getFoedselsdato())) {
             foedsel.setFoedselsdato(DatoFraIdentUtility.getDato(ident).atStartOfDay());
         }
         foedsel.setFoedselsaar(foedsel.getFoedselsdato().getYear());
 
+        setFoedeland(foedsel, ident, bostedadresse, innflytting);
+
+        setFodekommune(foedsel, bostedadresse);
+    }
+
+    private void setFoedeland(PdlFoedsel foedsel, String ident, PdlBostedadresse bostedadresse, RsInnflytting innflytting) {
         if (isNull(foedsel.getFoedeland())) {
             if (Identtype.FNR.equals(IdenttypeFraIdentUtility.getIdenttype(ident))) {
                 foedsel.setFoedeland(NORGE);
@@ -64,7 +68,9 @@ public class FoedselService extends PdlArtifactService<PdlFoedsel> {
                 foedsel.setFoedeland(tilfeldigLandService.getLand());
             }
         }
+    }
 
+    private void setFodekommune(PdlFoedsel foedsel, PdlBostedadresse bostedadresse) {
         if (NORGE.equals(foedsel.getFoedeland()) && isBlank(foedsel.getFodekommune())) {
             if (nonNull(bostedadresse)) {
                 if (nonNull(bostedadresse.getVegadresse())) {
@@ -78,20 +84,5 @@ public class FoedselService extends PdlArtifactService<PdlFoedsel> {
                 foedsel.setFodekommune(tilfeldigKommuneService.getKommune());
             }
         }
-    }
-
-    @Override
-    protected void validate(PdlFoedsel foedsel) {
-
-    }
-
-    @Override
-    protected void handle(PdlFoedsel type) {
-
-    }
-
-    @Override
-    protected void enforceIntegrity(List<PdlFoedsel> type) {
-
     }
 }

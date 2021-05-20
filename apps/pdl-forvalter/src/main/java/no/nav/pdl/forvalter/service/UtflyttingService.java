@@ -43,13 +43,11 @@ public class UtflyttingService extends PdlArtifactService<RsUtflytting> {
     protected void enforceIntegrity(List<RsUtflytting> utflytting) {
 
         for (var i = 0; i < utflytting.size(); i++) {
-            if (i + 1 < utflytting.size()) {
-                if (nonNull(utflytting.get(i + 1).getFlyttedato()) &&
-                        nonNull(utflytting.get(i).getFlyttedato()) &&
-                        !utflytting.get(i).getFlyttedato()
-                                .isAfter(utflytting.get(i + 1).getFlyttedato())) {
-                    throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_UTFLYTTING_DATO_ERROR);
-                }
+            if (i + 1 < utflytting.size() && nonNull(utflytting.get(i + 1).getFlyttedato()) &&
+                    nonNull(utflytting.get(i).getFlyttedato()) &&
+                    !utflytting.get(i).getFlyttedato()
+                            .isAfter(utflytting.get(i + 1).getFlyttedato())) {
+                throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_UTFLYTTING_DATO_ERROR);
             }
         }
     }

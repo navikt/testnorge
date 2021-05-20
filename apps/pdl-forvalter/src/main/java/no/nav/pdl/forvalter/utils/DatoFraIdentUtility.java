@@ -17,8 +17,8 @@ public class DatoFraIdentUtility {
 
     public LocalDate getDato(String ident) {
 
-        int year = parseInt(ident.substring(4, 6));
-        int individ = parseInt(ident.substring(6, 9));
+        var year = parseInt(ident.substring(4, 6));
+        var individ = parseInt(ident.substring(6, 9));
 
         // Find century
         int century;

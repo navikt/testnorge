@@ -30,17 +30,15 @@ public class OppholdService extends PdlArtifactService<PdlOpphold> {
         if (isNull(opphold.getOppholdFra())) {
             throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_OPPHOLD_FRA_ERROR);
 
-        } else if (nonNull(opphold.getOppholdTil())) {
-
-            if (!opphold.getOppholdFra().isBefore(opphold.getOppholdTil())) {
-                throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_UGYLDIG_INTERVAL_ERROR);
-            }
+        } else if (nonNull(opphold.getOppholdTil()) && !opphold.getOppholdFra().isBefore(opphold.getOppholdTil())) {
+            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_UGYLDIG_INTERVAL_ERROR);
         }
     }
 
     @Override
     protected void handle(PdlOpphold type) {
 
+        // Ingen håndtering for enkeltpost
     }
 
     @Override

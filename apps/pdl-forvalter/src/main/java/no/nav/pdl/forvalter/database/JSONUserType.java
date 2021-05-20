@@ -12,10 +12,12 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.domain.PdlPerson;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
+import org.springframework.web.client.HttpServerErrorException;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -35,7 +37,9 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
+@Slf4j
 public class JSONUserType implements UserType {
 
     private final ObjectMapper objectMapper;
@@ -47,7 +51,7 @@ public class JSONUserType implements UserType {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 
-        SimpleModule simpleModule = new SimpleModule();
+        var simpleModule = new SimpleModule();
         simpleModule.addDeserializer(LocalDateTime.class, new TestnavLocalDateTimeDeserializer());
         simpleModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME));
         simpleModule.addDeserializer(LocalDate.class, new TestnavLocalDateDeserializer());
@@ -56,41 +60,6 @@ public class JSONUserType implements UserType {
         simpleModule.addSerializer(ZonedDateTime.class, new ZonedDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME));
 
         objectMapper.registerModule(simpleModule);
-    }
-
-    private static class TestnavZonedDateTimeDeserializer extends JsonDeserializer<ZonedDateTime> {
-
-        @Override public ZonedDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-            JsonNode node = jsonParser.getCodec().readTree(jsonParser);
-            if (isBlank(node.asText())) {
-                return null;
-            }
-            return ZonedDateTime.parse(node.asText(), DateTimeFormatter.ISO_DATE_TIME);
-        }
-    }
-
-    private static class TestnavLocalDateDeserializer extends JsonDeserializer<LocalDate> {
-
-        @Override public LocalDate deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-            JsonNode node = jsonParser.getCodec().readTree(jsonParser);
-            if (isBlank(node.asText())) {
-                return null;
-            }
-            var dateTime = node.asText().length() > 10 ? node.asText().substring(0, 10) : node.asText();
-            return LocalDate.parse(dateTime);
-        }
-    }
-
-    private static class TestnavLocalDateTimeDeserializer extends JsonDeserializer<LocalDateTime> {
-
-        @Override public LocalDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-            JsonNode node = jsonParser.getCodec().readTree(jsonParser);
-            if (isBlank(node.asText())) {
-                return null;
-            }
-            var dateTime = node.asText().length() > 19 ? node.asText().substring(0, 19) : node.asText();
-            return dateTime.length() > 10 ? LocalDateTime.parse(dateTime) : LocalDate.parse(dateTime).atStartOfDay();
-        }
     }
 
     @Override
@@ -128,7 +97,8 @@ public class JSONUserType implements UserType {
         try {
             return objectMapper.readValue(cellContent.getBytes(StandardCharsets.UTF_8), returnedClass());
         } catch (final Exception ex) {
-            throw new RuntimeException("Failed to convert String to Invoice: " + ex.getMessage(), ex);
+            log.error("Kunne ikke mappe String til PdlPerson: {}", ex.getMessage(), ex);
+            throw new HttpServerErrorException(INTERNAL_SERVER_ERROR, "Kunne ikke mappe String til PdlPerson: " + ex.getMessage());
         }
     }
 
@@ -145,7 +115,8 @@ public class JSONUserType implements UserType {
             writer.flush();
             ps.setObject(idx, writer.toString(), Types.OTHER);
         } catch (final Exception ex) {
-            throw new RuntimeException("Failed to convert Invoice to String: " + ex.getMessage(), ex);
+            log.error("Kunne ikke mappe PdlPerson til String {}", ex.getMessage(), ex);
+            throw new HttpServerErrorException(INTERNAL_SERVER_ERROR, "Kunne ikke mappe PdlPerson til String: " + ex.getMessage());
         }
 
     }
@@ -187,5 +158,43 @@ public class JSONUserType implements UserType {
     @Override
     public Object replace(Object original, Object target, Object owner) throws HibernateException {
         return this.deepCopy(original);
+    }
+
+    private static class TestnavZonedDateTimeDeserializer extends JsonDeserializer<ZonedDateTime> {
+
+        @Override
+        public ZonedDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
+            JsonNode node = jsonParser.getCodec().readTree(jsonParser);
+            if (isBlank(node.asText())) {
+                return null;
+            }
+            return ZonedDateTime.parse(node.asText(), DateTimeFormatter.ISO_DATE_TIME);
+        }
+    }
+
+    private static class TestnavLocalDateDeserializer extends JsonDeserializer<LocalDate> {
+
+        @Override
+        public LocalDate deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
+            JsonNode node = jsonParser.getCodec().readTree(jsonParser);
+            if (isBlank(node.asText())) {
+                return null;
+            }
+            var dateTime = node.asText().length() > 10 ? node.asText().substring(0, 10) : node.asText();
+            return LocalDate.parse(dateTime);
+        }
+    }
+
+    private static class TestnavLocalDateTimeDeserializer extends JsonDeserializer<LocalDateTime> {
+
+        @Override
+        public LocalDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
+            JsonNode node = jsonParser.getCodec().readTree(jsonParser);
+            if (isBlank(node.asText())) {
+                return null;
+            }
+            var dateTime = node.asText().length() > 19 ? node.asText().substring(0, 19) : node.asText();
+            return dateTime.length() > 10 ? LocalDateTime.parse(dateTime) : LocalDate.parse(dateTime).atStartOfDay();
+        }
     }
 }

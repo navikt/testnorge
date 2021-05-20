@@ -48,7 +48,7 @@ class OppholdsadresseServiceTest {
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdsadresseService.convert(request));
+                oppholdsadresseService.convert((List<PdlOppholdsadresse>) request));
 
         assertThat(exception.getMessage(), containsString("Kun én adresse skal være satt " +
                 "(vegadresse, matrikkeladresse, utenlandskAdresse)"));
@@ -62,7 +62,7 @@ class OppholdsadresseServiceTest {
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdsadresseService.convert(request));
+                oppholdsadresseService.convert((List<PdlOppholdsadresse>) request));
 
         assertThat(exception.getMessage(), containsString("Én av adressene må velges " +
                 "(vegadresse, matrikkeladresse, utenlandskAdresse)"));
@@ -78,7 +78,7 @@ class OppholdsadresseServiceTest {
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdsadresseService.convert(request));
+                oppholdsadresseService.convert((List<PdlOppholdsadresse>) request));
 
         assertThat(exception.getMessage(), containsString("Utenlandsk adresse krever at master er PDL"));
     }
@@ -94,7 +94,7 @@ class OppholdsadresseServiceTest {
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdsadresseService.convert(request));
+                oppholdsadresseService.convert((List<PdlOppholdsadresse>) request));
 
         assertThat(exception.getMessage(), containsString("Gyldig format er Bokstaven H, L, U eller K etterfulgt av fire sifre"));
     }
@@ -110,7 +110,7 @@ class OppholdsadresseServiceTest {
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdsadresseService.convert(request));
+                oppholdsadresseService.convert((List<PdlOppholdsadresse>) request));
 
         assertThat(exception.getMessage(), containsString("Gyldig format er Bokstaven H, L, U eller K etterfulgt av fire sifre"));
     }
@@ -126,7 +126,7 @@ class OppholdsadresseServiceTest {
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdsadresseService.convert(request));
+                oppholdsadresseService.convert((List<PdlOppholdsadresse>) request));
 
         assertThat(exception.getMessage(), containsString("Feil: Overlappende adressedatoer er ikke lov"));
     }

@@ -12,7 +12,7 @@ import static org.apache.logging.log4j.util.Strings.isBlank;
 
 @Service
 @RequiredArgsConstructor
-public class KjoennService extends PdlArtifactService<PdlKjoenn> {
+public class KjoennService {
 
     public List<PdlKjoenn> convert(List<PdlKjoenn> request,
                          String ident) {
@@ -20,7 +20,6 @@ public class KjoennService extends PdlArtifactService<PdlKjoenn> {
         for (var type : request) {
 
             if (type.isNew()) {
-                validate(type);
 
                 handle(type, ident);
                 if (isBlank(type.getKilde())) {
@@ -28,29 +27,13 @@ public class KjoennService extends PdlArtifactService<PdlKjoenn> {
                 }
             }
         }
-        enforceIntegrity(request);
         return request;
     }
 
     private void handle(PdlKjoenn kjoenn, String ident) {
 
         if (isNull(kjoenn.getKjoenn())) {
-            kjoenn.setKjoenn(KjoennFraIdentUtility.get(ident));
+            kjoenn.setKjoenn(KjoennFraIdentUtility.getKjoenn(ident));
         }
-    }
-
-    @Override
-    protected void validate(PdlKjoenn kjoenn) {
-
-    }
-
-    @Override
-    protected void handle(PdlKjoenn type) {
-
-    }
-
-    @Override
-    protected void enforceIntegrity(List<PdlKjoenn> type) {
-
     }
 }

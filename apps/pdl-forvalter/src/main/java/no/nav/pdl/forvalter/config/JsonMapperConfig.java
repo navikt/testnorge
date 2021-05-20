@@ -75,7 +75,7 @@ public class JsonMapperConfig {
         FilterProvider filters = new SimpleFilterProvider().addFilter("idFilter", idFilter);
         objectMapper.setFilterProvider(filters);
 
-        SimpleModule simpleModule = new SimpleModule();
+        var simpleModule = new SimpleModule();
         simpleModule.addDeserializer(LocalDateTime.class, new TestnavLocalDateTimeDeserializer());
         simpleModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME));
         simpleModule.addDeserializer(LocalDate.class, new TestnavLocalDateDeserializer());

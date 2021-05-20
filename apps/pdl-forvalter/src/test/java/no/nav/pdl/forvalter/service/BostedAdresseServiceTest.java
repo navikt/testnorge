@@ -49,7 +49,7 @@ class BostedAdresseServiceTest {
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.convert(request));
+                bostedAdresseService.convert((List<PdlBostedadresse>) request));
 
         assertThat(exception.getMessage(), containsString("Kun én adresse skal være satt (vegadresse, " +
                 "matrikkeladresse, ukjentbosted, utenlandskAdresse)"));
@@ -63,7 +63,7 @@ class BostedAdresseServiceTest {
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.convert(request));
+                bostedAdresseService.convert((List<PdlBostedadresse>) request));
 
         assertThat(exception.getMessage(), containsString("Én av adressene må velges " +
                 "(vegadresse, matrikkeladresse, ukjentbosted, utenlandskAdresse)"));
@@ -79,7 +79,7 @@ class BostedAdresseServiceTest {
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.convert(request));
+                bostedAdresseService.convert((List<PdlBostedadresse>) request));
 
         assertThat(exception.getMessage(), containsString("Utenlandsk adresse krever at master er PDL"));
     }
@@ -95,7 +95,7 @@ class BostedAdresseServiceTest {
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.convert(request));
+                bostedAdresseService.convert((List<PdlBostedadresse>) request));
 
         assertThat(exception.getMessage(), containsString("Gyldig format er Bokstaven H, L, U eller K etterfulgt av fire sifre"));
     }
@@ -111,7 +111,7 @@ class BostedAdresseServiceTest {
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.convert(request));
+                bostedAdresseService.convert((List<PdlBostedadresse>) request));
 
         assertThat(exception.getMessage(), containsString("Gyldig format er Bokstaven H, L, U eller K etterfulgt av fire sifre"));
     }
@@ -127,7 +127,7 @@ class BostedAdresseServiceTest {
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.convert(request));
+                bostedAdresseService.convert((List<PdlBostedadresse>) request));
 
         assertThat(exception.getMessage(), containsString("Feil: Overlappende adressedatoer er ikke lov"));
     }

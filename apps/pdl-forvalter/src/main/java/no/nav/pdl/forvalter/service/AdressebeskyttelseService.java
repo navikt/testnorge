@@ -38,5 +38,6 @@ public class AdressebeskyttelseService extends PdlArtifactService<PdlAdressebesk
     @Override
     protected void enforceIntegrity(List<PdlAdressebeskyttelse> type) {
 
+        // Ingen integritet å ivareta
     }
 }

@@ -3,13 +3,15 @@ package no.nav.pdl.forvalter.domain.falskidentitet;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.pdl.forvalter.domain.PdlDbVersjon;
 
-@Getter
-@Setter
+import java.io.Serializable;
+
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,7 +26,7 @@ public class PdlFalskIdentitet extends PdlDbVersjon {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class PdlRettIdentitet {
+    public static class PdlRettIdentitet implements Serializable {
 
         private Boolean rettIdentitetErUkjent;
         private String rettIdentitetVedIdentifikasjonsnummer;

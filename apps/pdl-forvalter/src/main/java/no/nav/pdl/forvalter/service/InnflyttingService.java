@@ -32,7 +32,7 @@ public class InnflyttingService extends PdlArtifactService<RsInnflytting> {
     }
 
     @Override
-    public void handle(RsInnflytting innflytting) {
+    protected void handle(RsInnflytting innflytting) {
 
         if (isBlank(innflytting.getFraflyttingsland())) {
             innflytting.setFraflyttingsland(tilfeldigLandService.getLand());
@@ -43,13 +43,11 @@ public class InnflyttingService extends PdlArtifactService<RsInnflytting> {
     protected void enforceIntegrity(List<RsInnflytting> innflytting) {
 
         for (var i = 0; i < innflytting.size(); i++) {
-            if (i + 1 < innflytting.size()) {
-                if (nonNull(innflytting.get(i + 1).getFlyttedato()) &&
-                        nonNull(innflytting.get(i).getFlyttedato()) &&
-                        !innflytting.get(i).getFlyttedato()
-                                .isAfter(innflytting.get(i + 1).getFlyttedato())) {
-                    throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_INNFLYTTING_DATO_ERROR);
-                }
+            if (i + 1 < innflytting.size() && nonNull(innflytting.get(i + 1).getFlyttedato()) &&
+                    nonNull(innflytting.get(i).getFlyttedato()) &&
+                    !innflytting.get(i).getFlyttedato()
+                            .isAfter(innflytting.get(i + 1).getFlyttedato())) {
+                throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_INNFLYTTING_DATO_ERROR);
             }
         }
     }

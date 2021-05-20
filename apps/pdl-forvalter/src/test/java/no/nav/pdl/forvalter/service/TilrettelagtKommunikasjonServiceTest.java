@@ -27,7 +27,7 @@ class TilrettelagtKommunikasjonServiceTest {
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                tilrettelagtKommunikasjonService.convert(request));
+                tilrettelagtKommunikasjonService.convert((List<RsTilrettelagtKommunikasjon>) request));
 
         assertThat(exception.getMessage(), containsString("Språk for taletolk og/eller tegnspråktolk må oppgis"));
     }
@@ -41,7 +41,7 @@ class TilrettelagtKommunikasjonServiceTest {
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                tilrettelagtKommunikasjonService.convert(request));
+                tilrettelagtKommunikasjonService.convert((List<RsTilrettelagtKommunikasjon>) request));
 
         assertThat(exception.getMessage(), containsString("Språk for taletolk er ugyldig: forventet 2 tegn i hht kodeverk Språk"));
     }
@@ -55,7 +55,7 @@ class TilrettelagtKommunikasjonServiceTest {
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                tilrettelagtKommunikasjonService.convert(request));
+                tilrettelagtKommunikasjonService.convert((List<RsTilrettelagtKommunikasjon>) request));
 
         assertThat(exception.getMessage(), containsString("Språk for tegnspråktolk er ugyldig: forventet 2 tegn i hht kodeverk Språk"));
     }

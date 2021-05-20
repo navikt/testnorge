@@ -36,7 +36,6 @@ public class PdlTestdataConsumer {
             if (include(writer)) {
                 if (!writer.getName().equals("id")) {
                     writer.serializeAsField(pojo, jgen, provider);
-                    return;
                 }
             } else if (!jgen.canOmitFields()) {
                 writer.serializeAsOmittedField(pojo, jgen, provider);

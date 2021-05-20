@@ -80,11 +80,11 @@ public class DeployServie {
 
     public List<PdlOrdreResponse.PdlStatus> create(String ident) {
         pdlTestdataConsumer.createPerson(ident);
-        return null;
+        return emptyList();
     }
 
     public List<PdlOrdreResponse.PdlStatus> delete(String ident) {
         pdlTestdataConsumer.deletePerson(ident);
-        return null;
+        return emptyList();
     }
 }

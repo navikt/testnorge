@@ -48,6 +48,7 @@ public class TelefonnummerService extends PdlArtifactService<PdlTelefonnummer> {
     @Override
     protected void handle(PdlTelefonnummer type) {
 
+        // Ingen håndtering for enkeltpost
     }
 
     @Override
