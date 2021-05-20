@@ -233,7 +233,7 @@ public class PdlForvalterClient implements ClientRegister {
     private void sendFamilierelasjoner(Person person) {
 
         person.getRelasjoner().forEach(relasjon -> {
-            if (!relasjon.isPartner() || nonNull(relasjon.getPersonRelasjonTil())) {
+            if (!relasjon.isPartner() && nonNull(relasjon.getPersonRelasjonTil())) {
                 pdlForvalterConsumer.postFamilierelasjon(mapperFacade.map(relasjon, PdlFamilierelasjon.class),
                         person.getIdent());
             }
