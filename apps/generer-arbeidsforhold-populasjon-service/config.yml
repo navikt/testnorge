@@ -3,6 +3,8 @@ kind: "Application"
 metadata:
   name: testnav-generer-arbeidsforhold-populasjon-service
   namespace: dolly
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "1200"
   labels:
     team: dolly
 spec:
