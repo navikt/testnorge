@@ -6,7 +6,7 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-adresse-service
-  genener-navn-service:
+  generer-navn-service:
     url: https://generer-navn-service.dev.intern.nav.no
     cluster: dev-gcp
     namespace: dolly

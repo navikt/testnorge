@@ -10,10 +10,12 @@ public class PersonArtifactService {
 
     private final AdressebeskyttelseService adressebeskyttelseService;
     private final BostedAdresseService bostedAdresseService;
+    private final DoedsfallService doedsfallService;
     private final FoedselService foedselService;
     private final KjoennService kjoennService;
     private final KontaktAdresseService kontaktAdresseService;
     private final InnflyttingService innflyttingService;
+    private final NavnService navnService;
     private final OppholdsadresseService oppholdsadresseService;
     private final OppholdService oppholdService;
     private final StatsborgerskapService statsborgerskapService;
@@ -33,12 +35,14 @@ public class PersonArtifactService {
                         person.getBostedsadresse().stream().reduce((a, b) -> b).orElse(null),
                         person.getInnflytting().stream().reduce((a, b) -> b).orElse(null)))
                 .kontaktadresse(kontaktAdresseService.convert(person.getKontaktadresse()))
+                .navn(navnService.convert(person.getNavn()))
                 .oppholdsadresse(oppholdsadresseService.convert(person.getOppholdsadresse()))
                 .adressebeskyttelse(adressebeskyttelseService.convert(person.getAdressebeskyttelse()))
                 .telefonnummer(telefonnummerService.convert(person.getTelefonnummer()))
                 .utflytting(utflyttingService.convert(person.getUtflytting()))
                 .opphold(oppholdService.convert(person.getOpphold()))
                 .tilrettelagtKommunikasjon(tilrettelagtKommunikasjonService.convert(person.getTilrettelagtKommunikasjon()))
+                .doedsfall(doedsfallService.convert(person.getDoedsfall()))
                 .build();
     }
 }
