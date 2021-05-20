@@ -26,7 +26,7 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: oppsummeringsdokument-service
-    url: http://oppsummeringsdokument-service.dev.dolly.svc.cluster.local
+    url: http://oppsummeringsdokument-service.dolly.svc.cluster.local
   testnav-generer-organisasjon-populasjon-service:
     cluster: dev-gcp
     namespace: dolly
