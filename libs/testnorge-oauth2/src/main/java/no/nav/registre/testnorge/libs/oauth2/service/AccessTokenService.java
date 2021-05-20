@@ -138,7 +138,7 @@ public class AccessTokenService {
                     .bodyToMono(AccessToken.class)
                     .retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(1))
                             .filter(throwable -> !(throwable instanceof WebClientResponseException.BadRequest))
-                            .doAfterRetry(value -> log.warn("Prøver å opprette tilbobling til azure på nytt."))
+                            .doBeforeRetry(value -> log.warn("Prøver å opprette tilbobling til azure på nytt."))
                     );
             log.trace("Access token opprettet for OAuth 2.0 Client Credentials flow.");
             return token;

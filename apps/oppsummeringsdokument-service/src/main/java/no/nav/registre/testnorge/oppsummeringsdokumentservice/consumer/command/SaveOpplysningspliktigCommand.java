@@ -24,7 +24,7 @@ public class SaveOpplysningspliktigCommand implements Runnable {
         try {
             webClient
                     .post()
-                    .uri(builder -> builder.path("/oppsummeringsdokument").build())
+                    .uri(builder -> builder.path("/oppsummeringsdokument").queryParam("targetEnvironment", "u5").build())
                     .body(BodyInserters.fromPublisher(Mono.just(xml), String.class))
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)

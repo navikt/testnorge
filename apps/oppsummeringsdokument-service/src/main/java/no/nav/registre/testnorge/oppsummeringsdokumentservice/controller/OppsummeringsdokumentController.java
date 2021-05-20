@@ -62,13 +62,27 @@ public class OppsummeringsdokumentController {
     }
 
     @PutMapping
-    public ResponseEntity<HttpStatus> save(
+    public ResponseEntity<?> save(
             @RequestBody OppsummeringsdokumentDTO dto,
             @RequestHeader("miljo") String miljo,
             @RequestHeader("origin") String origin,
             @RequestHeader Populasjon populasjon
     ) {
+        var previous = adapter.getCurrentDocumentBy(dto.getKalendermaaned(), dto.getOpplysningspliktigOrganisajonsnummer(), miljo);
+
+        if(previous != null && previous.getVersion().equals(dto.getVersion())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(String.format(
+                            "Oppsummeringsdokument for %s den %s med version %s i %s finnes allerde. Bump versjonen.",
+                            dto.getOpplysningspliktigOrganisajonsnummer(),
+                            dto.getKalendermaaned(),
+                            dto.getVersion(),
+                            miljo
+                    ));
+        }
         var opplysningspliktig = new Oppsummeringsdokument(dto, populasjon);
+
         var id = adapter.save(opplysningspliktig, miljo, origin);
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()

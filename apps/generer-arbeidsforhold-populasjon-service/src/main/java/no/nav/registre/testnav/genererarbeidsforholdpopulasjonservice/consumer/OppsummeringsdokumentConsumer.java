@@ -4,21 +4,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.netty.http.client.HttpClient;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.stream.Collectors;
 
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.command.GetOppsummeringsdokumentCommand;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.command.SaveOppsummeringsdokumenterCommand;
@@ -54,8 +50,6 @@ public class OppsummeringsdokumentConsumer {
         this.properties = properties;
         this.executor = executor;
 
-
-
         this.webClient = WebClient
                 .builder()
                 .baseUrl(properties.getUrl())
@@ -71,35 +65,27 @@ public class OppsummeringsdokumentConsumer {
                 .build();
     }
 
+    /**
+     * Bruker future til å sette en limit på antall samtidige requests.
+     */
     @SneakyThrows
-    public List<Mono<String>> saveAll(List<OppsummeringsdokumentDTO> list, String miljo) {
-        var ids = new ArrayList<Mono<String>>();
-        var futures = list.stream().map(dto -> saveFuture(dto, miljo)).collect(Collectors.toList());
-        for (var future : futures) {
-            ids.add(future.get());
-        }
-        return ids;
-    }
-
-
     public Mono<String> save(OppsummeringsdokumentDTO dto, String miljo) {
-        return accessTokenService
-                .generateNonBlockedToken(properties)
-                .flatMap(accessToken -> new SaveOppsummeringsdokumenterCommand(
-                        webClient,
-                        accessToken.getTokenValue(),
-                        dto,
-                        miljo,
-                        applicationProperties.getName(),
-                        Populasjon.MINI_NORGE
-                ).call());
+        return Mono.fromFuture(saveFuture(dto, miljo));
     }
 
-
-    private CompletableFuture<Mono<String>> saveFuture(OppsummeringsdokumentDTO dto, String miljo) {
-        AccessToken accessToken = accessTokenService.generateToken(properties);
+    private CompletableFuture<String> saveFuture(OppsummeringsdokumentDTO dto, String miljo) {
         return CompletableFuture.supplyAsync(
-                () -> save(dto, miljo),
+                () -> accessTokenService
+                        .generateNonBlockedToken(properties)
+                        .flatMap(accessToken -> new SaveOppsummeringsdokumenterCommand(
+                                webClient,
+                                accessToken.getTokenValue(),
+                                dto,
+                                miljo,
+                                applicationProperties.getName(),
+                                Populasjon.MINI_NORGE
+                        ).call())
+                        .block(),
                 executor
         );
     }
