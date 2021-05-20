@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
@@ -70,7 +69,18 @@ public class AccessTokenService {
     }
 
     public AccessToken generateToken(AccessScopes accessScopes) {
-        return generateNonBlockedToken(accessScopes).block();
+        try {
+            return generateNonBlockedToken(accessScopes).block();
+        } catch (WebClientResponseException e) {
+            var secret = clientCredentials.getClientSecret().substring(0, 3) + "******************";
+            log.error(
+                    "Feil ved henting av access token for {} med client secret: {}.\nError: \n{}.",
+                    String.join(" ", accessScopes.getScopes()),
+                    secret,
+                    e.getResponseBodyAsString()
+            );
+            throw e;
+        }
     }
 
 
@@ -159,24 +169,13 @@ public class AccessTokenService {
                 .with("requested_token_use", "on_behalf_of")
                 .with("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
 
-        try {
-            var accessToken = webClient.post()
-                    .body(body)
-                    .exchange()
-                    .flatMap(response -> response.bodyToMono(AccessToken.class))
-                    .doOnError(error -> log.error("Feil ved henting av access token.", error));
+        var accessToken = webClient.post()
+                .body(body)
+                .exchange()
+                .flatMap(response -> response.bodyToMono(AccessToken.class))
+                .doOnError(error -> log.error("Feil ved henting av access token.", error));
 
-            log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow");
-            return accessToken;
-        } catch (WebClientResponseException e) {
-            var secret = clientCredentials.getClientSecret().substring(0, 3) + "******************";
-            log.error(
-                    "Feil ved henting av access token for {} med client secret: {}.\nError: \n{}.",
-                    String.join(" ", accessScopes.getScopes()),
-                    secret,
-                    e.getResponseBodyAsString()
-            );
-            throw e;
-        }
+        log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow");
+        return accessToken;
     }
 }
