@@ -10,6 +10,7 @@ import no.nav.pdl.forvalter.domain.falskidentitet.PdlFalskIdentitet;
 import no.nav.pdl.forvalter.domain.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
 import no.nav.pdl.forvalter.dto.RsInnflytting;
 import no.nav.pdl.forvalter.dto.RsKontaktadresse;
+import no.nav.pdl.forvalter.dto.RsNavn;
 import no.nav.pdl.forvalter.dto.RsTilrettelagtKommunikasjon;
 import no.nav.pdl.forvalter.dto.RsUtflytting;
 
@@ -27,7 +28,7 @@ import static java.util.Objects.isNull;
 public class PdlPerson implements Serializable {
 
     private List<PdlFoedsel> foedsel;
-    private List<PdlNavn> navn;
+    private List<RsNavn> navn;
     private List<PdlKjoenn> kjoenn;
     private List<PdlBostedadresse> bostedsadresse;
     private List<RsKontaktadresse> kontaktadresse;
@@ -118,7 +119,7 @@ public class PdlPerson implements Serializable {
         return kjoenn;
     }
 
-    public List<PdlNavn> getNavn() {
+    public List<RsNavn> getNavn() {
         if (isNull(navn)) {
             navn = new ArrayList<>();
         }
