@@ -1,10 +1,8 @@
 package no.nav.organisasjonforvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.organisasjonforvalter.dto.responses.AdresseResponse;
+import no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.concurrent.Callable;
@@ -13,7 +11,7 @@ import static java.lang.String.format;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @RequiredArgsConstructor
-public class AdresseServiceCommand implements Callable<AdresseResponse> {
+public class AdresseServiceCommand implements Callable<VegadresseDTO[]> {
 
     private static final String ADRESSE_URL = "/api/v1/adresser";
 
@@ -32,7 +30,7 @@ public class AdresseServiceCommand implements Callable<AdresseResponse> {
     }
 
     @Override
-    public AdresseResponse call() {
+    public VegadresseDTO[] call() {
 
         return isNotBlank(postnummer) || isNotBlank(kommunenummer) ?
 
@@ -40,16 +38,14 @@ public class AdresseServiceCommand implements Callable<AdresseResponse> {
                         .uri(format("%s%s", ADRESSE_URL, getSuffix(postnummer, kommunenummer)))
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                         .retrieve()
-                        .bodyToMono(AdresseResponse.class)
+                        .bodyToMono(VegadresseDTO[].class)
                         .block() :
 
-                webClient.post()
+                webClient.get()
                         .uri(format("%s/auto", ADRESSE_URL))
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .body(BodyInserters.fromValue("{}"))
                         .retrieve()
-                        .bodyToMono(AdresseResponse.class)
+                        .bodyToMono(VegadresseDTO[].class)
                         .block();
     }
 }

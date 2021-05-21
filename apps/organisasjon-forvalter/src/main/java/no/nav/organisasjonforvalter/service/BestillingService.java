@@ -74,7 +74,8 @@ public class BestillingService {
         orgRequest.getAdresser().forEach(adresse -> {
             if (adresse.getAdresselinjer().stream().noneMatch(StringUtils::isNotBlank)) {
                 adresse.setAdresselinjer(new ArrayList<>());
-                mapperFacade.map(adresseServiceConsumer.getAdresser(adresse.getPostnr(), adresse.getKommunenr()), adresse);
+                mapperFacade.map(adresseServiceConsumer.getAdresser(adresse.getPostnr(),
+                        adresse.getKommunenr()).stream().findFirst().get(), adresse);
             }
         });
     }

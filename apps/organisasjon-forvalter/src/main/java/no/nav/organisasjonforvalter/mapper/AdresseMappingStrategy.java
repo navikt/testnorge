@@ -4,9 +4,9 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.organisasjonforvalter.dto.requests.BestillingRequest.AdresseRequest;
-import no.nav.organisasjonforvalter.dto.responses.AdresseResponse;
 import no.nav.organisasjonforvalter.dto.responses.RsAdresse;
 import no.nav.organisasjonforvalter.jpa.entity.Adresse;
+import no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO;
 import no.nav.registre.testnorge.libs.dto.organisasjon.v1.AdresseDTO;
 import org.springframework.stereotype.Component;
 
@@ -43,12 +43,11 @@ public class AdresseMappingStrategy implements MappingStrategy {
                 .byDefault()
                 .register();
 
-        factory.classMap(AdresseResponse.class, AdresseRequest.class)
+        factory.classMap(VegadresseDTO.class, AdresseRequest.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(AdresseResponse adresse, AdresseRequest request, MappingContext context) {
+                    public void mapAtoB(VegadresseDTO vegadresse, AdresseRequest request, MappingContext context) {
 
-                        var vegadresse = adresse.getVegadresser().stream().findFirst().get();
                         request.setVegadresseId(vegadresse.getMatrikkelId());
                         request.getAdresselinjer().add(String.format("%s %d", vegadresse.getAdressenavn(),
                                 vegadresse.getHusnummer()));
