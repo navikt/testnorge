@@ -13,4 +13,4 @@ zuul:
       path: /**
       url: https://aareg-synt-services.dev.adeo.no
   host:
-    socket-timeout-millis: 120000
+    socket-timeout-millis: 600000

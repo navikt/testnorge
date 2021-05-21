@@ -301,3 +301,6 @@ project(":syntrest-proxy").projectDir = file('proxies/syntrest-proxy')
 include 'amelding-service'
 project(":amelding-service").projectDir = file('apps/amelding-service')
 
+include 'generer-arbeidsforhold-populasjon-service'
+project(":generer-arbeidsforhold-populasjon-service").projectDir = file('apps/generer-arbeidsforhold-populasjon-service')
+

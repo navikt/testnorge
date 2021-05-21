@@ -1,0 +1,39 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+spring:
+  application:
+    name: testnav-generer-arbeidsforhold-populasjon-service
+    description: Tjeneste for å opprette arbeidsforhold-populasjon
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+
+consumers:
+  syntrest-proxy:
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-syntrest-proxy
+    url: https://testnav-syntrest-proxy.dev-fss-pub.nais.io
+  testnav-hodejegeren-proxy:
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-hodejegeren-proxy
+    url: https://testnav-hodejegeren-proxy.dev-fss-pub.nais.io
+  oppsummeringsdokument-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: oppsummeringsdokument-service
+    url: http://oppsummeringsdokument-service.dolly.svc.cluster.local
+  testnav-generer-organisasjon-populasjon-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-generer-organisasjon-populasjon-service
+    url: http://testnav-generer-organisasjon-populasjon-service.dolly.svc.cluster.local
+  testnav-organisasjon-service:
+    name: testnav-organisasjon-service
+    cluster: dev-gcp
+    namespace: dolly
+    url: http://testnav-organisasjon-service.dolly.svc.cluster.local

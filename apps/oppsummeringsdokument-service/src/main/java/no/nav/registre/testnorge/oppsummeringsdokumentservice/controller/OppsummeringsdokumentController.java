@@ -17,12 +17,13 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.adapter.OppsummeringsdokumentAdapter;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.domain.Oppsummeringsdokument;
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
 
 @RestController
 @RequiredArgsConstructor
@@ -61,13 +62,27 @@ public class OppsummeringsdokumentController {
     }
 
     @PutMapping
-    public ResponseEntity<HttpStatus> save(
+    public ResponseEntity<?> save(
             @RequestBody OppsummeringsdokumentDTO dto,
             @RequestHeader("miljo") String miljo,
             @RequestHeader("origin") String origin,
             @RequestHeader Populasjon populasjon
     ) {
+        var previous = adapter.getCurrentDocumentBy(dto.getKalendermaaned(), dto.getOpplysningspliktigOrganisajonsnummer(), miljo);
+
+        if(previous != null && previous.getVersion().equals(dto.getVersion())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(String.format(
+                            "Oppsummeringsdokument for %s den %s med version %s i %s finnes allerde. Bump versjonen.",
+                            dto.getOpplysningspliktigOrganisajonsnummer(),
+                            dto.getKalendermaaned(),
+                            dto.getVersion(),
+                            miljo
+                    ));
+        }
         var opplysningspliktig = new Oppsummeringsdokument(dto, populasjon);
+
         var id = adapter.save(opplysningspliktig, miljo, origin);
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -79,16 +94,30 @@ public class OppsummeringsdokumentController {
     }
 
     @GetMapping("/identer/{ident}")
-    public ResponseEntity<List<OppsummeringsdokumentDTO>> getAllBy(@RequestHeader("miljo") String miljo, @PathVariable("ident") String ident) {
+    public ResponseEntity<List<OppsummeringsdokumentDTO>> getIdent(@RequestHeader("miljo") String miljo, @PathVariable("ident") String ident) {
         var documents = adapter.getAllCurrentDocumentsBy(miljo, ident);
         return ResponseEntity.ok(documents.stream().map(Oppsummeringsdokument::toDTO).collect(Collectors.toList()));
+    }
+
+    @GetMapping("/identer")
+    public ResponseEntity<Set<String>> getIdenter(@RequestHeader("miljo") String miljo) {
+        return ResponseEntity.ok(
+                adapter.getAllCurrentDocumentsBy(miljo)
+                        .stream()
+                        .flatMap(document -> document.getIdenter().stream())
+                        .collect(Collectors.toSet())
+        );
     }
 
     @DeleteMapping
     public ResponseEntity<HttpStatus> delete(
             @RequestHeader("miljo") String miljo,
-            @RequestHeader Populasjon populasjon
+            @RequestHeader(required = false) Populasjon populasjon
     ) {
+        if (populasjon == null) {
+            adapter.deleteAllBy(miljo);
+        }
+
         adapter.deleteAllBy(miljo, populasjon);
         return ResponseEntity.noContent().build();
     }
