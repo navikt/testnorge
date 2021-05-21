@@ -138,6 +138,7 @@ public class DollyPersonCache {
         return fetchIfEmpty(DollyPerson.builder()
                 .hovedperson(person.getIdent())
                 .persondetaljer(personer)
+                .master(Master.TPSF)
                 .build());
     }
 
