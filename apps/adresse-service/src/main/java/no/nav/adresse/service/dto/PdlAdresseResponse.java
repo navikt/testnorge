@@ -48,6 +48,7 @@ public class PdlAdresseResponse {
     public static class Vegadresse {
 
         private String matrikkelId;
+        private String adressekode;
         private String adressenavn;
         private Integer husnummer;
         private String husbokstav;
@@ -58,5 +59,7 @@ public class PdlAdresseResponse {
         private String bydelsnummer;
         private String bydelsnavn;
         private String tilleggsnavn;
+        private String fylkesnummer;
+        private String fylkesnavn;
     }
 }

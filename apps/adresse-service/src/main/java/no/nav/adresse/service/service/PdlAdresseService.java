@@ -1,16 +1,14 @@
 package no.nav.adresse.service.service;
 
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.adresse.service.consumer.PdlAdresseConsumer;
 import no.nav.adresse.service.dto.AdresseRequest;
 import no.nav.adresse.service.dto.GraphQLRequest;
-import no.nav.adresse.service.dto.PdlAdresseResponse;
 import no.nav.adresse.service.dto.PdlAdresseResponse.Data;
 import no.nav.adresse.service.dto.PdlAdresseResponse.Hits;
-import no.nav.adresse.service.dto.PdlAdresseResponse.Vegadresse;
 import no.nav.adresse.service.dto.PdlSearchRule;
+import no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO;
 import org.apache.http.Consts;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
@@ -62,7 +60,7 @@ public class PdlAdresseService {
 
     private static String getQueryFromFile() {
 
-        val resource = new ClassPathResource("pdladresse/pdlquery.graphql");
+        var resource = new ClassPathResource("pdladresse/pdlquery.graphql");
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), Consts.UTF_8))) {
             return reader.lines().collect(Collectors.joining("\n"));
 
@@ -74,8 +72,8 @@ public class PdlAdresseService {
 
     private static Properties getKommunerFromFile() {
 
-        val resource = new ClassPathResource("kommuner/kommuner.yml");
-        val kommuner = new Properties();
+        var resource = new ClassPathResource("kommuner/kommuner.yml");
+        var kommuner = new Properties();
 
         try (final InputStream stream = resource.getInputStream()) {
             kommuner.load(stream);
@@ -87,6 +85,7 @@ public class PdlAdresseService {
     }
 
     private static GraphQLRequest.Criteria buildCriteria(String name, String value, PdlSearchRule rule) {
+
         return isNotBlank(value) ?
                 GraphQLRequest.Criteria.builder()
                         .fieldName(name)
@@ -95,6 +94,7 @@ public class PdlAdresseService {
     }
 
     private static String serialize(AdresseRequest request) {
+
         return String.format("%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s",
                 request.getMatrikkelId(),
                 request.getAdressenavn(),
@@ -110,7 +110,7 @@ public class PdlAdresseService {
                 request.getFritekst());
     }
 
-    public List<Vegadresse> getAdressePostnummer(String postStedNummer, Long antall) {
+    public List<VegadresseDTO> getAdressePostnummer(String postStedNummer, Long antall) {
 
         return getAdresseAutoComplete(
                 AdresseRequest.builder()
@@ -120,7 +120,7 @@ public class PdlAdresseService {
                 antall);
     }
 
-    public List<Vegadresse> getAdresseKommunenummer(String kommune, String bydel, Long antall) {
+    public List<VegadresseDTO> getAdresseKommunenummer(String kommune, String bydel, Long antall) {
 
         return getAdresseAutoComplete(
                 AdresseRequest.builder()
@@ -132,7 +132,7 @@ public class PdlAdresseService {
                 antall);
     }
 
-    public List<Vegadresse> getAdresseAutoComplete(AdresseRequest request, Long antall) {
+    public List<VegadresseDTO> getAdresseAutoComplete(AdresseRequest request, Long antall) {
 
         if (isNull(request) || request.isEmpty()) {
             request = AdresseRequest.builder()
@@ -140,16 +140,16 @@ public class PdlAdresseService {
                     .build();
         }
 
-        Long pageNumber = 0L;
-        Long resultsPerPage = INITIAL_PAGESIZE;
+        var pageNumber = 0L;
+        var resultsPerPage = INITIAL_PAGESIZE;
 
-        Long hits = hitsCache.getOrDefault(serialize(request), null);
+        var hits = hitsCache.getOrDefault(serialize(request), null);
         if (nonNull(hits)) {
             pageNumber = (long) (Math.floor(secureRandom.nextFloat() * hits / antall) % ((double) hits / antall - antall));
             resultsPerPage = antall;
         }
 
-        PdlAdresseResponse response = pdlAdresseConsumer.sendPdlAdresseSoek(GraphQLRequest.builder()
+        var response = pdlAdresseConsumer.sendPdlAdresseSoek(GraphQLRequest.builder()
                 .query(pdlAdresseQuery)
                 .variables(Map.of(
                         "paging", GraphQLRequest.Paging.builder()
@@ -177,7 +177,7 @@ public class PdlAdresseService {
         if (nonNull(response.getData().getSokAdresse())) {
             hitsCache.put(serialize(request), response.getData().getSokAdresse().getTotalHits());
         }
-        return mapperFacade.mapAsList(getSublist(response.getData(), antall, request), Vegadresse.class);
+        return mapperFacade.mapAsList(getSublist(response.getData(), antall, request), VegadresseDTO.class);
     }
 
     private List<Hits> getSublist(Data data, long antall, AdresseRequest request) {
@@ -189,8 +189,9 @@ public class PdlAdresseService {
             return data.getSokAdresse().getHits();
 
         } else {
-            int startIndex = (int) Math.floor(secureRandom.nextFloat() * (data.getSokAdresse().getHits().size() - antall));
-            return data.getSokAdresse().getHits().subList(startIndex, startIndex + (int) antall);
+            var length = Math.min(antall, data.getSokAdresse().getHits().size());
+            int startIndex = (int) Math.floor(secureRandom.nextFloat() * (data.getSokAdresse().getHits().size() - length));
+            return data.getSokAdresse().getHits().subList(startIndex, startIndex + (int) length);
         }
     }
 }
