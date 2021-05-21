@@ -11,11 +11,6 @@ public class Timeline<T extends Id> {
     private final Map<LocalDate, TimelineEntries<T>> timeline;
     private final Map<LocalDate, TimelineEntries<T>> history;
 
-    public Timeline() {
-        timeline = new HashMap<>();
-        history = new HashMap<>();
-    }
-
     public Timeline(Map<LocalDate, T> map) {
         timeline = new HashMap<>();
         history = new HashMap<>();
@@ -51,10 +46,10 @@ public class Timeline<T extends Id> {
     }
 
     public Set<T> getHistory(LocalDate date) {
-        if (!timeline.containsKey(date)) {
+        if (!history.containsKey(date)) {
             return Collections.emptySet();
         }
-        return timeline.get(date).getAll();
+        return history.get(date).getAll();
     }
 
     public Set<T> get(LocalDate date) {

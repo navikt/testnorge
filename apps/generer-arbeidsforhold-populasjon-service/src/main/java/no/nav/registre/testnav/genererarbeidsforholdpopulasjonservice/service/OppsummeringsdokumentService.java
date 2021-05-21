@@ -2,6 +2,7 @@ package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -31,6 +32,10 @@ public class OppsummeringsdokumentService {
     }
 
     public Flux<String> save(List<Person> personer, String miljo, LocalDate fom, LocalDate tom) {
+        log.info(
+                "Legger til arbeidsforhold for {}.",
+                personer.stream().map(Person::getIdent).collect(Collectors.joining(","))
+        );
         return findAllDatesBetween(fom, tom)
                 .stream()
                 .map(kalendermnd -> getOppdatertOppsumeringsdokument(personer, kalendermnd, miljo))
