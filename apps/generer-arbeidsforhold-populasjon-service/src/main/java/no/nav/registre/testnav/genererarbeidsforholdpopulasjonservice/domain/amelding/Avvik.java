@@ -7,8 +7,6 @@ import lombok.Value;
 import no.nav.registre.testnorge.libs.dto.syntrest.v1.AvvikDTO;
 
 @Value
-@RequiredArgsConstructor
-@NoArgsConstructor(force = true)
 public class Avvik {
     String id;
     String navn;

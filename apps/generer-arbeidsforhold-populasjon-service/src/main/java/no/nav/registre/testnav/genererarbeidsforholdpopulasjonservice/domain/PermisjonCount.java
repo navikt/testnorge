@@ -21,8 +21,6 @@ public class PermisjonCount {
         if (permisjoner == null) {
             return;
         }
-
-
         for (var permisjon : permisjoner) {
             switch (permisjon.getBeskrivelse()) {
                 case "velferdspermisjon":

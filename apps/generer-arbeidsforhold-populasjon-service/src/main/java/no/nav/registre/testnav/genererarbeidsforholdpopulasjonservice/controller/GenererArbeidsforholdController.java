@@ -30,7 +30,7 @@ public class GenererArbeidsforholdController {
             @RequestParam("fom") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fom,
             @RequestParam("tom") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate tom
     ) {
-        return orkestratorService.orkesterUtenArbeidsforhold(max, miljo, fom, tom);
+        return orkestratorService.orkestrerUtenArbeidsforhold(max, miljo, fom, tom);
     }
 
     @PostMapping(value = "/develop", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
@@ -39,6 +39,6 @@ public class GenererArbeidsforholdController {
             @RequestParam("fom") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fom,
             @RequestParam("tom") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate tom
     ) {
-        return orkestratorService.orkesterMedArbeidsforhold(miljo, fom, tom);
+        return orkestratorService.orkestrerMedArbeidsforhold(miljo, fom, tom);
     }
 }

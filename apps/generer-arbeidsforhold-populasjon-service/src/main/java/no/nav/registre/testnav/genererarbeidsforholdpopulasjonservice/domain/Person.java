@@ -1,8 +1,6 @@
 package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.NoArgsConstructor;
-import lombok.Value;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -10,8 +8,6 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.amelding.Arbeidsforhold;
 
-@Value
-@NoArgsConstructor(force = true)
 public class Person {
     private final String ident;
     @JsonIgnore

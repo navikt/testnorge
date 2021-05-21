@@ -21,8 +21,6 @@ import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdResponse;
 @Value
 @Slf4j
 @EqualsAndHashCode(callSuper = false)
-@RequiredArgsConstructor
-@NoArgsConstructor(force = true)
 public class Arbeidsforhold extends Generated implements Id {
     String id;
     String type;

@@ -7,8 +7,6 @@ import lombok.Value;
 import no.nav.registre.testnorge.libs.dto.syntrest.v1.FartoeyDTO;
 
 @Value
-@RequiredArgsConstructor
-@NoArgsConstructor(force = true)
 public class Fartoey {
     String skipsregister;
     String skipstype;

@@ -16,8 +16,6 @@ import no.nav.registre.testnorge.libs.dto.syntrest.v1.PermisjonDTO;
 
 @Value
 @EqualsAndHashCode(callSuper = false)
-@RequiredArgsConstructor
-@NoArgsConstructor(force = true)
 public class Permisjon extends Generated {
     String id;
     String beskrivelse;

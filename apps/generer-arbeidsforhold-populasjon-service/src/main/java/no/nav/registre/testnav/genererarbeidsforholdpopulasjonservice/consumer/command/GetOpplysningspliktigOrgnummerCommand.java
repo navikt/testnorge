@@ -30,7 +30,5 @@ public class GetOpplysningspliktigOrgnummerCommand implements Callable<Mono<Set<
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<>() {
                 });
-
-
     }
 }
