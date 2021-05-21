@@ -304,3 +304,5 @@ project(":amelding-service").projectDir = file('apps/amelding-service')
 include 'generer-arbeidsforhold-populasjon-service'
 project(":generer-arbeidsforhold-populasjon-service").projectDir = file('apps/generer-arbeidsforhold-populasjon-service')
 
+include 'ident-pool-proxy'
+project(":ident-pool-proxy").projectDir = file('proxies/ident-pool-proxy')
