@@ -8,4 +8,6 @@ import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.O
 
 public interface OppsummeringsdokumentRepository extends ElasticsearchRepository<OppsummeringsdokumentModel, String> {
     void deleteAllByMiljoAndPopulasjon(String miljo, Populasjon populasjon);
+
+    void deleteAllByMiljo(String miljo);
 }

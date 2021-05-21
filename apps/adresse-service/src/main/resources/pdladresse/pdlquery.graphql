@@ -4,6 +4,7 @@ query ($paging:Paging, $criteria:[Criterion]) {
             score,
             vegadresse {
                 matrikkelId
+                adressekode
                 adressenavn
                 husnummer
                 husbokstav
@@ -14,6 +15,8 @@ query ($paging:Paging, $criteria:[Criterion]) {
                 bydelsnummer
                 bydelsnavn
                 tilleggsnavn
+                fylkesnavn
+                fylkesnummer
             },
         }
         pageNumber,

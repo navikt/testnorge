@@ -4,30 +4,15 @@ schema {
     query: Query
 }
 
-type Adresse {
-    adressenavn: String
-    bydelsnavn: String
-    bydelsnummer: String
-    fylkesnavn: String
-    fylkesnummer: String
-    husbokstav: String
-    husnummer: Int
-    kommunenavn: String
-    kommunenummer: String
-    matrikkelId: String
-    postnummer: String
-    poststed: String
-    tilleggsnavn: String
-}
-
 type AdresseCompletionResult {
-    addressFound: Adresse
+    addressFound: CompletionAdresse
     suggestions: [String!]!
 }
 
 type AdresseSearchHit {
+    matrikkeladresse: MatrikkeladresseResult
     score: Float
-    vegadresse: Adresse
+    vegadresse: VegadresseResult
 }
 
 type AdresseSearchResult {
@@ -54,6 +39,11 @@ type Bostedsadresse {
     ukjentBosted: UkjentBosted
     utenlandskAdresse: UtenlandskAdresse
     vegadresse: Vegadresse
+}
+
+type CompletionAdresse {
+    matrikkeladresse: MatrikkeladresseResult
+    vegadresse: VegadresseResult
 }
 
 type DeltBosted {
@@ -160,15 +150,16 @@ type Folkeregisterpersonstatus {
 type ForelderBarnRelasjon {
     folkeregistermetadata: Folkeregistermetadata
     metadata: Metadata!
-    minRolleForPerson: Familierelasjonsrolle
+    minRolleForPerson: ForelderBarnRelasjonRolle
     relatertPersonsIdent: String!
-    relatertPersonsRolle: Familierelasjonsrolle!
+    relatertPersonsRolle: ForelderBarnRelasjonRolle!
 }
 
 type Foreldreansvar {
     ansvar: String
     ansvarlig: String
     ansvarligUtenIdentifikator: RelatertBiPerson
+    ansvarssubjekt: String
     folkeregistermetadata: Folkeregistermetadata
     metadata: Metadata!
 }
@@ -295,6 +286,16 @@ type Matrikkeladresse {
     koordinater: Koordinater
     matrikkelId: Long
     postnummer: String
+    tilleggsnavn: String
+}
+
+type MatrikkeladresseResult {
+    bruksnummer: String
+    gardsnummer: String
+    kommunenummer: String
+    matrikkelId: String
+    postnummer: String
+    poststed: String
     tilleggsnavn: String
 }
 
@@ -498,16 +499,12 @@ type SikkerhetstiltakKontaktperson {
 }
 
 type Sivilstand {
-    bekreftelsesdato: String
+    bekreftelsesdato: Date
     folkeregistermetadata: Folkeregistermetadata
     gyldigFraOgMed: Date
-    kommune: String @deprecated(reason : "Feltene myndighet, kommune, sted og utland fjernes i nær fremtid")
     metadata: Metadata!
-    myndighet: String @deprecated(reason : "Feltene myndighet, kommune, sted og utland fjernes i nær fremtid")
     relatertVedSivilstand: String
-    sted: String @deprecated(reason : "Feltene myndighet, kommune, sted og utland fjernes i nær fremtid")
     type: Sivilstandstype!
-    utland: String @deprecated(reason : "Feltene myndighet, kommune, sted og utland fjernes i nær fremtid")
 }
 
 type Statsborgerskap {
@@ -588,6 +585,23 @@ type Vegadresse {
     tilleggsnavn: String
 }
 
+type VegadresseResult {
+    adressekode: String
+    adressenavn: String
+    bydelsnavn: String
+    bydelsnummer: String
+    fylkesnavn: String
+    fylkesnummer: String
+    husbokstav: String
+    husnummer: Int
+    kommunenavn: String
+    kommunenummer: String
+    matrikkelId: String
+    postnummer: String
+    poststed: String
+    tilleggsnavn: String
+}
+
 type VergeEllerFullmektig {
     motpartsPersonident: String
     navn: Personnavn
@@ -622,6 +636,13 @@ enum Endringstype {
 }
 
 enum Familierelasjonsrolle {
+    BARN
+    FAR
+    MEDMOR
+    MOR
+}
+
+enum ForelderBarnRelasjonRolle {
     BARN
     FAR
     MEDMOR

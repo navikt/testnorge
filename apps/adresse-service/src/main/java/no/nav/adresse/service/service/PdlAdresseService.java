@@ -158,18 +158,18 @@ public class PdlAdresseService {
                                 .build(),
                         "criteria",
                         Stream.of(
-                                buildCriteria("adressenavn", request.getAdressenavn(), FUZZY),
-                                buildCriteria("husnummer", request.getHusnummer(), EQUALS),
-                                buildCriteria("husbokstav", request.getHusbokstav(), EQUALS),
-                                buildCriteria("postnummer", request.getPostnummer(), EQUALS),
-                                buildCriteria("poststed", request.getPoststed(), FUZZY),
-                                buildCriteria("kommunenummer", request.getKommunenummer(), EQUALS),
-                                buildCriteria("kommunenavn", request.getKommunenavn(), FUZZY),
-                                buildCriteria("bydelsnummer", request.getBydelsnummer(), EQUALS),
-                                buildCriteria("bydelsnavn", request.getBydelsnavn(), FUZZY),
-                                buildCriteria("tilleggsnavn", request.getTilleggsnavn(), FUZZY),
-                                buildCriteria("matrikkelId", request.getMatrikkelId(), EQUALS),
-                                buildCriteria("fritekst", request.getFritekst(), CONTAINS)
+                                buildCriteria("vegadresse.adressenavn", request.getAdressenavn(), FUZZY),
+                                buildCriteria("vegadresse.husnummer", request.getHusnummer(), EQUALS),
+                                buildCriteria("vegadresse.husbokstav", request.getHusbokstav(), EQUALS),
+                                buildCriteria("vegadresse.postnummer", request.getPostnummer(), EQUALS),
+                                buildCriteria("vegadresse.poststed", request.getPoststed(), FUZZY),
+                                buildCriteria("vegadresse.kommunenummer", request.getKommunenummer(), EQUALS),
+                                buildCriteria("vegadresse.kommunenavn", request.getKommunenavn(), FUZZY),
+                                buildCriteria("vegadresse.bydelsnummer", request.getBydelsnummer(), EQUALS),
+                                buildCriteria("vegadresse.bydelsnavn", request.getBydelsnavn(), FUZZY),
+                                buildCriteria("vegadresse.tilleggsnavn", request.getTilleggsnavn(), FUZZY),
+                                buildCriteria("vegadresse.matrikkelId", request.getMatrikkelId(), EQUALS),
+                                buildCriteria("vegadresse.fritekst", request.getFritekst(), CONTAINS)
                         )
                                 .filter(Objects::nonNull)
                                 .collect(Collectors.toList())))
