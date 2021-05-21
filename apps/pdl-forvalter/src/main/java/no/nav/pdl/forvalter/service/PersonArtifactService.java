@@ -12,6 +12,7 @@ public class PersonArtifactService {
     private final BostedAdresseService bostedAdresseService;
     private final DoedsfallService doedsfallService;
     private final FoedselService foedselService;
+    private final FolkeregisterPersonstatusService folkeregisterPersonstatusService;
     private final KjoennService kjoennService;
     private final KontaktAdresseService kontaktAdresseService;
     private final InnflyttingService innflyttingService;
@@ -43,6 +44,11 @@ public class PersonArtifactService {
                 .opphold(oppholdService.convert(person.getOpphold()))
                 .tilrettelagtKommunikasjon(tilrettelagtKommunikasjonService.convert(person.getTilrettelagtKommunikasjon()))
                 .doedsfall(doedsfallService.convert(person.getDoedsfall()))
+                .folkeregisterpersonstatus(folkeregisterPersonstatusService.convert(person.getFolkeregisterpersonstatus(),
+                        person.getBostedsadresse().stream().findFirst().orElse(null),
+                        person.getUtflytting().stream().findFirst().orElse(null),
+                        person.getOpphold().stream().findFirst().orElse(null),
+                        person.getDoedsfall().stream().findFirst().orElse(null)))
                 .build();
     }
 }

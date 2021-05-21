@@ -153,6 +153,6 @@ class TelefonnummerServiceTest {
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 telefonnummerService.convert(request));
 
-        assertThat(exception.getMessage(), containsString("Telefonnummer: prioritet 1 og prioritet 2 kan kun benyttes 1 gang hver"));
+        assertThat(exception.getMessage(), containsString("Telefonnummer: prioritet 1 og prioritet 2 kan kun benyttes én gang hver"));
     }
 }

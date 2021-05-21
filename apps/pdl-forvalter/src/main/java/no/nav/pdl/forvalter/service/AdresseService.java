@@ -65,12 +65,13 @@ public abstract class AdresseService<T extends PdlAdresse> {
         for (var i = 0; i < adresse.size(); i++) {
             if (i + 1 < adresse.size()) {
                 if (isNull(adresse.get(i + 1).getGyldigTilOgMed()) &&
+                        nonNull(adresse.get(i).getGyldigFraOgMed()) && nonNull(adresse.get(i+i).getGyldigFraOgMed()) &&
                         !adresse.get(i).getGyldigFraOgMed().isAfter(adresse.get(i + 1).getGyldigFraOgMed().plusDays(1)) ||
                         (nonNull(adresse.get(i + 1).getGyldigTilOgMed()) &&
                                 !adresse.get(i).getGyldigFraOgMed().isAfter(adresse.get(i + 1).getGyldigTilOgMed()))) {
                     throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_ADRESSE_OVELAP_ERROR);
                 }
-                if (isNull(adresse.get(i + 1).getGyldigTilOgMed())) {
+                if (isNull(adresse.get(i + 1).getGyldigTilOgMed()) && nonNull(adresse.get(i).getGyldigFraOgMed())) {
                     adresse.get(i + 1).setGyldigTilOgMed(adresse.get(i).getGyldigFraOgMed().minusDays(1));
                 }
             }
