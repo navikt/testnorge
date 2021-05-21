@@ -42,3 +42,4 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://testnav-ident-pool-proxy.dev-fss-pub.nais.io"
+
