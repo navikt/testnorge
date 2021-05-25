@@ -33,7 +33,7 @@ public class BestillingService {
     private final OrganisasjonRepository organisasjonRepository;
     private final MapperFacade mapperFacade;
 
-    private static String queryBuilder(AdresseRequest adresse) {
+    private static String adresseQuery(AdresseRequest adresse) {
 
         return new StringBuilder("postnummer=")
                 .append(isNotBlank(adresse.getPostnr()) ? adresse.getPostnr() : "")
@@ -58,7 +58,7 @@ public class BestillingService {
 
     private Organisasjon processOrganisasjon(OrganisasjonRequest orgRequest, Organisasjon parent) {
 
-        fixAdresseFallback(orgRequest);
+        getAdresse(orgRequest);
 
         Organisasjon organisasjon = mapperFacade.map(orgRequest, Organisasjon.class);
         organisasjon.setOrganisasjonsnummer(organisasjonOrgnummerServiceConsumer.getOrgnummer());
@@ -75,7 +75,7 @@ public class BestillingService {
         return organisasjon;
     }
 
-    private void fixAdresseFallback(OrganisasjonRequest orgRequest) {
+    private void getAdresse(OrganisasjonRequest orgRequest) {
 
         if (orgRequest.getAdresser().isEmpty()) {
             orgRequest.getAdresser().add(AdresseRequest.builder()
@@ -84,7 +84,7 @@ public class BestillingService {
         }
 
         orgRequest.getAdresser().forEach(adresse -> {
-            String query = queryBuilder(adresse);
+            String query = adresseQuery(adresse);
             adresse.setAdresselinjer(new ArrayList<>());
             mapperFacade.map(adresseServiceConsumer.getAdresser(query).stream().findFirst().get(), adresse);
         });
