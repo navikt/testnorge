@@ -43,14 +43,14 @@ public class AdresseServiceConsumer {
                 .build();
     }
 
-    public List<VegadresseDTO> getAdresser(String postnr, String kommunenr) {
+    public List<VegadresseDTO> getAdresser(String query) {
 
         long startTime = currentTimeMillis();
 
         try {
             var accessToken = accessTokenService.generateToken(serviceProperties);
             var adresseResponse =
-                    new AdresseServiceCommand(webClient, postnr, kommunenr, accessToken.getTokenValue()).call();
+                    new AdresseServiceCommand(webClient, query, accessToken.getTokenValue()).call();
 
             log.info("Adresseoppslag tok {} ms", currentTimeMillis() - startTime);
             return Arrays.asList(adresseResponse);
