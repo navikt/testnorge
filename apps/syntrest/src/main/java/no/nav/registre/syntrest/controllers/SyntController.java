@@ -297,6 +297,24 @@ public class SyntController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/amelding/arbeidsforhold/historikk")
+    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-amelding" })
+    public ResponseEntity<List<List<Arbeidsforhold>>> generateArbeidforholdHistorikkV2(
+            @RequestBody List<Arbeidsforhold> tidligereArbeidsforhold,
+            @ApiParam(value = "Verdi bestemmer om det skal være mulig at avvik blir generert i arbeidforhold.")
+            @RequestParam(required = false) String avvik,
+            @ApiParam(value = "Verdi bestemmer om det skal være mulig at sluttdato blir generert i arbeidforhold.")
+            @RequestParam(required = false) String sluttdato
+    ) throws InterruptedException, ApiException {
+        var queryString = createQueryString("avvik", avvik, "");
+        queryString = createQueryString("sluttdato", sluttdato, queryString);
+
+        var response = ameldingConsumer.synthesizeArbeidsforholdHistorikk(tidligereArbeidsforhold, queryString);
+        doResponseValidation(response);
+
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("/amelding/arbeidsforhold/start")
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-amelding" })
     public ResponseEntity<List<Arbeidsforhold>> generateArbeidforholdStart(
@@ -323,6 +341,20 @@ public class SyntController {
         InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.ARBEIDSFORHOLD_TYPE, arbeidsforholdType);
         var queryString = createQueryString("avvik", avvik, "");
         var response = ameldingConsumer.synthesizeArbeidsforholdStart(request, arbeidsforholdType, queryString);
+        doResponseValidation(response);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/amelding/arbeidsforhold/initial")
+    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-amelding" })
+    public ResponseEntity<List<Arbeidsforhold>> generateArbeidforholdStartV2(
+            @RequestBody ArbeidsforholdPeriode request,
+            @ApiParam(value = "Verdi bestemmer om det skal være mulig at avvik blir generert i arbeidforhold.")
+            @RequestParam(required = false) String avvik
+    ) throws InterruptedException, ApiException {
+        var queryString = createQueryString("avvik", avvik, "");
+        var response = ameldingConsumer.synthesizeArbeidsforholdStart(request, queryString);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);
