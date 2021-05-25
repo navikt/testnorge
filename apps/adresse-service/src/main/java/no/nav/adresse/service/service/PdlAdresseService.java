@@ -33,8 +33,6 @@ import static java.util.Objects.nonNull;
 import static no.nav.adresse.service.dto.PdlSearchRule.CONTAINS;
 import static no.nav.adresse.service.dto.PdlSearchRule.EQUALS;
 import static no.nav.adresse.service.dto.PdlSearchRule.FUZZY;
-import static org.apache.commons.lang3.StringUtils.isAlpha;
-import static org.apache.commons.lang3.StringUtils.isNumeric;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Slf4j
@@ -110,29 +108,7 @@ public class PdlAdresseService {
                 request.getFritekst());
     }
 
-    public List<VegadresseDTO> getAdressePostnummer(String postStedNummer, Long antall) {
-
-        return getAdresseAutoComplete(
-                AdresseRequest.builder()
-                        .postnummer(isNumeric(postStedNummer) ? postStedNummer : null)
-                        .poststed(isAlpha(postStedNummer) ? postStedNummer : null)
-                        .build(),
-                antall);
-    }
-
-    public List<VegadresseDTO> getAdresseKommunenummer(String kommune, String bydel, Long antall) {
-
-        return getAdresseAutoComplete(
-                AdresseRequest.builder()
-                        .kommunenummer(isNumeric(kommune) ? kommune : null)
-                        .kommunenavn(isAlpha(kommune) ? kommune : null)
-                        .bydelsnummer(isNotBlank(bydel) && isNumeric(bydel) ? bydel : null)
-                        .bydelsnavn(isNotBlank(bydel) && isAlpha(bydel) ? bydel : null)
-                        .build(),
-                antall);
-    }
-
-    public List<VegadresseDTO> getAdresseAutoComplete(AdresseRequest request, Long antall) {
+    public List<VegadresseDTO> getVegadresse(AdresseRequest request, Long antall) {
 
         if (isNull(request) || request.isEmpty()) {
             request = AdresseRequest.builder()
@@ -158,15 +134,15 @@ public class PdlAdresseService {
                                 .build(),
                         "criteria",
                         Stream.of(
-                                buildCriteria("vegadresse.adressenavn", request.getAdressenavn(), FUZZY),
+                                buildCriteria("vegadresse.adressenavn", request.getAdressenavn(), EQUALS),
                                 buildCriteria("vegadresse.husnummer", request.getHusnummer(), EQUALS),
                                 buildCriteria("vegadresse.husbokstav", request.getHusbokstav(), EQUALS),
                                 buildCriteria("vegadresse.postnummer", request.getPostnummer(), EQUALS),
-                                buildCriteria("vegadresse.poststed", request.getPoststed(), FUZZY),
+                                buildCriteria("vegadresse.poststed", request.getPoststed(), EQUALS),
                                 buildCriteria("vegadresse.kommunenummer", request.getKommunenummer(), EQUALS),
-                                buildCriteria("vegadresse.kommunenavn", request.getKommunenavn(), FUZZY),
+                                buildCriteria("vegadresse.kommunenavn", request.getKommunenavn(), EQUALS),
                                 buildCriteria("vegadresse.bydelsnummer", request.getBydelsnummer(), EQUALS),
-                                buildCriteria("vegadresse.bydelsnavn", request.getBydelsnavn(), FUZZY),
+                                buildCriteria("vegadresse.bydelsnavn", request.getBydelsnavn(), EQUALS),
                                 buildCriteria("vegadresse.tilleggsnavn", request.getTilleggsnavn(), FUZZY),
                                 buildCriteria("vegadresse.matrikkelId", request.getMatrikkelId(), EQUALS),
                                 buildCriteria("vegadresse.fritekst", request.getFritekst(), CONTAINS)

@@ -1,4 +1,4 @@
-package no.nav.adresse.service.provider;
+package no.nav.adresse.service.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
