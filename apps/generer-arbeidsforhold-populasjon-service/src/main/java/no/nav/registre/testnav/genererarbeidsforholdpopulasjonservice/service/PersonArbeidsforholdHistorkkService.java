@@ -34,10 +34,35 @@ public class PersonArbeidsforholdHistorkkService {
     private final Executor executor;
     private final Random random = new Random();
 
+    public Flux<Person> generer(Flux<String> identer, String miljo, int months) {
+        var organisasjoner = organisasjonService.getOpplysningspliktigeOrganisasjoner(miljo, true);
+        return identer.flatMap(ident -> generer(ident, miljo, months, organisasjoner));
+    }
 
     public Flux<Person> generer(Flux<String> identer, String miljo, LocalDate fom, LocalDate tom) {
-        var organisasjoner = organisasjonService.getOpplysningspliktigeOrganisasjoner(miljo);
+        var organisasjoner = organisasjonService.getOpplysningspliktigeOrganisasjoner(miljo, false);
         return identer.flatMap(ident -> generer(ident, miljo, fom, tom, organisasjoner));
+    }
+
+    private Mono<Person> generer(String ident, String miljo, int months, List<Organisajon> organisajoner) {
+        return arbeidsforholdSerivce
+                .findTimelineFor(ident, miljo)
+                .flatMap(timeline -> {
+                    var lastDate = timeline.getLastDate();
+                    var person = new Person(ident, timeline);
+                    var previous = person.getArbeidsforholdOn(lastDate).stream().findFirst().orElse(null);
+                    var map = getArbeidsforholdMap(
+                            previous,
+                            organisajoner,
+                            ident,
+                            findAllDatesBetween(lastDate.plusMonths(1), lastDate.plusMonths(months)).iterator()
+                    );
+                    return map.map(value -> {
+                        person.updateTimeline(new Timeline<>(value));
+                        log.info("Person {} ferdig generert.", person.getIdent());
+                        return person;
+                    });
+                });
     }
 
     private Mono<Person> generer(String ident, String miljo, LocalDate fom, LocalDate tom, List<Organisajon> organisajoner) {

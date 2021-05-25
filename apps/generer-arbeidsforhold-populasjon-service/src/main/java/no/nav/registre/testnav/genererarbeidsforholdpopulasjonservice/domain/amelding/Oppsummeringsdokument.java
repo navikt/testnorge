@@ -8,13 +8,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.Id;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.ArbeidsforholdDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.PersonDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.VirksomhetDTO;
 
 @Slf4j
-public class Oppsummeringsdokument {
+public class Oppsummeringsdokument implements Id {
     private final OppsummeringsdokumentDTO dto;
 
     public Oppsummeringsdokument(OppsummeringsdokumentDTO dto) {
@@ -22,25 +23,16 @@ public class Oppsummeringsdokument {
         this.dto.setVersion(this.dto.getVersion() == null ? 1L : this.dto.getVersion() + 1);
     }
 
-    public Oppsummeringsdokument(String orgnummer, LocalDate kalendermaand) {
-        dto = OppsummeringsdokumentDTO
-                .builder()
-                .version(1L)
-                .kalendermaaned(kalendermaand)
-                .opplysningspliktigOrganisajonsnummer(orgnummer)
-                .virksomheter(new ArrayList<>())
-                .build();
-    }
-
     public String getOpplysningspliktigOrganisajonsnummer() {
         return dto.getOpplysningspliktigOrganisajonsnummer();
     }
 
-    public void removeAll(List<Arbeidsforhold> arbeidsforhold) {
-        arbeidsforhold.forEach(this::remove);
+    public LocalDate getKalendermaaned() {
+        return dto.getKalendermaaned();
     }
 
-    private void remove(Arbeidsforhold arbeidsforhold) {
+    public void remove(Arbeidsforhold arbeidsforhold) {
+        log.info("Fjerner arbeidsforhold med id {}.", arbeidsforhold.getId());
         var person = dto.getVirksomheter()
                 .stream()
                 .filter(value -> value.getOrganisajonsnummer().equals(arbeidsforhold.getVirksomhetsnummer()))
@@ -102,4 +94,8 @@ public class Oppsummeringsdokument {
         return dto;
     }
 
+    @Override
+    public String getId() {
+        return getOpplysningspliktigOrganisajonsnummer();
+    }
 }

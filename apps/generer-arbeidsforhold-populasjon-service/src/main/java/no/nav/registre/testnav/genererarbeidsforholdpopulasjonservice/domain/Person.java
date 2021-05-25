@@ -36,5 +36,9 @@ public class Person {
         this.timeline.update(timeline);
     }
 
+    public Timeline<Arbeidsforhold> getTimeline(){
+        return timeline;
+    }
+
 
 }
