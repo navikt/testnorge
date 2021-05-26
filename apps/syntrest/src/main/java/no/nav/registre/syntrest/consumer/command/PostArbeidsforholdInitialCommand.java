@@ -10,32 +10,31 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.domain.dto.aareg.amelding.Arbeidsforhold;
+import no.nav.registre.testnorge.domain.dto.aareg.amelding.ArbeidsforholdPeriode;
 import reactor.core.publisher.Mono;
 
 @Slf4j
-public class PostArbeidsforholdHistorikkCommand implements Callable<List<List<Arbeidsforhold>>> {
+public class PostArbeidsforholdInitialCommand implements Callable<List<Arbeidsforhold>> {
 
     private final WebClient webClient;
-    private final List<Arbeidsforhold> arbeidsforhold;
+    private final ArbeidsforholdPeriode periode;
     private final String syntAmeldingUrlPath;
     private final String queryString;
 
-    private static final ParameterizedTypeReference<List<List<Arbeidsforhold>>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
-    };
-    private static final ParameterizedTypeReference<List<Arbeidsforhold>> REQUEST_TYPE = new ParameterizedTypeReference<>() {
+    private static final ParameterizedTypeReference<List<Arbeidsforhold>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
-    public PostArbeidsforholdHistorikkCommand(List<Arbeidsforhold> arbeidsforhold, String syntAmeldingUrlPath, String queryString, WebClient webClient) {
+    public PostArbeidsforholdInitialCommand(ArbeidsforholdPeriode periode, String syntAmeldingUrlPath, String queryString, WebClient webClient) {
         this.webClient = webClient;
-        this.arbeidsforhold = arbeidsforhold;
+        this.periode = periode;
         this.syntAmeldingUrlPath = syntAmeldingUrlPath;
         this.queryString = queryString;
     }
 
     @Override
-    public List<List<Arbeidsforhold>> call() {
+    public List<Arbeidsforhold> call() {
         try {
-            var body = BodyInserters.fromPublisher(Mono.just(arbeidsforhold), REQUEST_TYPE);
+            var body = BodyInserters.fromPublisher(Mono.just(periode), ArbeidsforholdPeriode.class);
 
             return webClient.post()
                     .uri(builder -> builder
@@ -52,4 +51,5 @@ public class PostArbeidsforholdHistorikkCommand implements Callable<List<List<Ar
             throw e;
         }
     }
+
 }
