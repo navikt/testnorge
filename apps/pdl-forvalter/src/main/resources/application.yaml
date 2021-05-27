@@ -16,3 +16,8 @@ consumers:
     cluster: dev-fss
     namespace: dolly
     name: testnav-pdl-proxy
+  ident-pool:
+    url: https://testnav-ident-pool-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-ident-pool-proxy
