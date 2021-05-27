@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,28 +23,32 @@ public class OppsummeringsdokumentService {
 
     private final OppsummeringsdokumentConsumer oppsummeringsdokumentConsumer;
 
-    public List<String> save(Flux<Person> personer, String miljo) {
+    public void save(Flux<Person> personer, String miljo) {
         var list = personer.collectList().block();
-        return save(list, miljo);
+        save(list, miljo);
     }
 
-    public List<String> save(List<Person> personer, String miljo) {
+    public void save(List<Person> personer, String miljo) {
         log.info(
                 "Legger til arbeidsforhold for {}.",
                 personer.stream().map(Person::getIdent).collect(Collectors.joining(", "))
         );
-        return personer
-                .parallelStream()
-                .flatMap(person -> person.getTimeline().getUpdatedDates().stream().flatMap(kalendermnd -> getOppdatertOppsumeringsdokument(personer, kalendermnd, miljo).stream()))
+
+        var dates = personer
+                .stream()
+                .map(value -> value.getTimeline().getUpdatedDates())
+                .reduce(new HashSet<>(), (sub, item) -> {
+                    sub.addAll(item);
+                    return sub;
+                });
+
+        dates.parallelStream()
+                .flatMap(kalendermnd -> getOppdatertOppsumeringsdokument(personer, kalendermnd, miljo).stream())
                 .collect(Collectors.groupingBy(Oppsummeringsdokument::getId))
                 .values()
                 .parallelStream()
                 .map(OppsummeringsdokumentTimeline::new)
-                .map(timeline -> timeline.applyForAll((value) -> oppsummeringsdokumentConsumer.save(value.toDTO(), miljo).block()))
-                .reduce(new ArrayList<>(), (sub, item) -> {
-                    sub.addAll(item);
-                    return sub;
-                });
+                .forEach(timeline -> timeline.applyForAll((value) -> oppsummeringsdokumentConsumer.save(value.toDTO(), miljo).block()));
     }
 
     private List<Oppsummeringsdokument> getOppdatertOppsumeringsdokument(List<Person> personer, LocalDate kalendermnd, String miljo) {

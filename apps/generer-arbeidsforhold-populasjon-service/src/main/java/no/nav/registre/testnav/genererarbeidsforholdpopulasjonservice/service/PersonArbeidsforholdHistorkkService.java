@@ -107,7 +107,7 @@ public class PersonArbeidsforholdHistorkkService {
             return map;
         }
 
-        if (previous.isEmpty() || previous.get(0).isForenklet()) {
+        if (previous == null || previous.isEmpty() || previous.get(0).isForenklet()) {
             var startdato = dates.next();
             var organisajon = organisajoner.get(random.nextInt(organisajoner.size()));
             var arbeidsforhold = arbeidsforholdHistorikkService.genererStart(

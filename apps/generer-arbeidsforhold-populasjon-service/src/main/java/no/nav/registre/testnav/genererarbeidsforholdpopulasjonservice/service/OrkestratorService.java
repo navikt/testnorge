@@ -14,16 +14,16 @@ public class OrkestratorService {
     private final PersonArbeidsforholdHistorkkService personArbeidsforholdHistorkkService;
     private final OppsummeringsdokumentService oppsummeringsdokumentService;
 
-    public List<String> orkestrerUtenArbeidsforhold(int max, String miljo, LocalDate fom, LocalDate tom) {
+    public void orkestrerUtenArbeidsforhold(int max, String miljo, LocalDate fom, LocalDate tom) {
         var identerUtenArbeidsforhold = identService.getIdenterUtenArbeidsforhold(miljo, max);
         var personer = personArbeidsforholdHistorkkService.generer(identerUtenArbeidsforhold, miljo, fom, tom);
-        return oppsummeringsdokumentService.save(personer, miljo);
+        oppsummeringsdokumentService.save(personer, miljo);
     }
 
-    public List<String> orkestrerMedArbeidsforhold(String miljo, int months) {
+    public void orkestrerMedArbeidsforhold(String miljo, int months) {
         var identerMedArbeidsforhold = identService.getIdenterMedArbeidsforhold(miljo);
         var personer = personArbeidsforholdHistorkkService.generer(Flux.fromStream(identerMedArbeidsforhold.stream()), miljo, months);
-        return oppsummeringsdokumentService.save(personer, miljo);
+        oppsummeringsdokumentService.save(personer, miljo);
     }
 
 }

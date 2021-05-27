@@ -50,7 +50,7 @@ public class GenererStartArbeidsforholdCommand implements Callable<Mono<List<Arb
                 }).retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(1))
                         .filter(throwable -> !(throwable instanceof WebClientResponseException.NotFound))
                 ).map(value -> {
-                    log.info("Nytt arbeidsforhold generert. (Antall samtidige arbeidsforhold: {})", value.size());
+                    log.info("Nytt arbeidsforhold generert. (Antall: {})", value.size());
                     return value;
                 });
     }

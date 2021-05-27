@@ -23,20 +23,20 @@ public class GenererArbeidsforholdController {
     private final OrkestratorService orkestratorService;
 
     @PostMapping(value = "/populate")
-    public List<String> populate(
+    public void populate(
             @RequestHeader String miljo,
             @RequestHeader Integer max,
             @RequestParam("fom") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fom,
             @RequestParam("tom") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate tom
     ) {
-        return orkestratorService.orkestrerUtenArbeidsforhold(max, miljo, fom, tom);
+        orkestratorService.orkestrerUtenArbeidsforhold(max, miljo, fom, tom);
     }
 
     @PostMapping(value = "/develop")
-    public List<String> populate(
+    public void populate(
             @RequestHeader String miljo,
             @RequestParam Integer months
     ) {
-        return orkestratorService.orkestrerMedArbeidsforhold(miljo, months);
+        orkestratorService.orkestrerMedArbeidsforhold(miljo, months);
     }
 }
