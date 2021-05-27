@@ -75,6 +75,34 @@ export const AmeldingForm = ({ formikBag }) => {
 		}
 	}
 
+	const maaneder = _get(formikBag.values, 'aareg[0].amelding')
+
+	const handleNewEntry = () => {
+		maaneder.forEach((maaned, idMaaned) => {
+			if (!erLenket && idMaaned != selectedIndex) return
+			const currArbeidsforhold = _get(
+				formikBag.values,
+				`aareg[0].amelding[${idMaaned}].arbeidsforhold`
+			)
+			formikBag.setFieldValue(`aareg[0].amelding[${idMaaned}].arbeidsforhold`, [
+				...currArbeidsforhold,
+				initialArbeidsforholdOrg
+			])
+		})
+	}
+
+	const handleRemoveEntry = idArbeidsforhold => {
+		maaneder.forEach((maaned, idMaaned) => {
+			if (!erLenket && idMaaned != selectedIndex) return
+			const currArbeidsforhold = _get(
+				formikBag.values,
+				`aareg[0].amelding[${idMaaned}].arbeidsforhold`
+			)
+			currArbeidsforhold.splice(idArbeidsforhold, 1)
+			formikBag.setFieldValue(`aareg[0].amelding[${idMaaned}].arbeidsforhold`, currArbeidsforhold)
+		})
+	}
+
 	return (
 		<>
 			<div className="flexbox--flex-wrap">
@@ -135,6 +163,8 @@ export const AmeldingForm = ({ formikBag }) => {
 									header="Arbeidsforhold"
 									newEntry={initialArbeidsforholdOrg}
 									canBeEmpty={false}
+									handleNewEntry={handleNewEntry}
+									handleRemoveEntry={handleRemoveEntry}
 								>
 									{(path, idx) => (
 										<ArbeidsforholdConnector

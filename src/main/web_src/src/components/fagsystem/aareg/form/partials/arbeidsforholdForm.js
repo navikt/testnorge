@@ -4,7 +4,7 @@ import { FormikSelect, DollySelect } from '~/components/ui/form/inputs/select/Se
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { FormikTextInput, DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { TimeloennetForm } from './timeloennetForm'
 import { PermisjonForm } from './permisjonForm'
 import { PermitteringForm } from './permitteringForm'
@@ -18,25 +18,35 @@ import { ArbeidsgiverTyper } from '~/components/fagsystem/aareg/AaregTypes'
 
 export const ArbeidsforholdForm = ({ path, formikBag, erLenket, arbeidsgiverType, brukerId }) => {
 	const arbeidsforholdIndex = path.charAt(path.length - 1)
-	//TODO Må vise type for ikke A-melding også
-	const arbeidsforholdstype = _get(formikBag.values, 'aareg[0].arbeidsforholdstype')
+
+	const arbeidsforholdstype =
+		_get(formikBag.values, 'aareg[0].arbeidsforholdstype') ||
+		_get(formikBag.values, `${path}.arbeidsforholdstype`)
 
 	const virksomheter = SelectOptionsOppslag.hentVirksomheterFraOrgforvalter(brukerId)
 	const virksomheterOptions = SelectOptionsOppslag.formatOptions('virksomheter', virksomheter)
 
-	const onChangeLenket = (_erlenket, fieldPath) => {
+	const onChangeLenket = fieldPath => {
+		if (arbeidsgiverType !== ArbeidsgiverTyper.egen) {
+			return field => {
+				formikBag.setFieldValue(
+					`${path}.${fieldPath}`,
+					field?.value || field?.target?.value || field
+				)
+			}
+		}
+
 		return field => {
 			const amelding = _get(formikBag.values, 'aareg[0].amelding')
-			if (_erlenket) {
-				amelding.forEach((maaned, idx) => {
-					formikBag.setFieldValue(
-						`aareg[0].amelding[${idx}].arbeidsforhold[${arbeidsforholdIndex}].${fieldPath}`,
-						field.value
-					)
-				})
-			} else {
-				formikBag.setFieldValue(`${path}.${fieldPath}`, field.value)
-			}
+			const ameldingIndex = path.charAt(18)
+
+			amelding.forEach((maaned, idx) => {
+				if (!erLenket && idx < ameldingIndex) return
+				formikBag.setFieldValue(
+					`aareg[0].amelding[${idx}].arbeidsforhold[${arbeidsforholdIndex}].${fieldPath}`,
+					field?.value || field?.target?.value || field
+				)
+			})
 		}
 	}
 
@@ -56,10 +66,10 @@ export const ArbeidsforholdForm = ({ path, formikBag, erLenket, arbeidsgiverType
 					<FormikSelect
 						name={`${path}.arbeidsgiver.orgnummer`}
 						label="Organisasjonsnummer"
-						//TODO: Laster ikke med en gang
 						options={virksomheterOptions}
 						size="xxlarge"
 						isClearable={false}
+						onChange={onChangeLenket('arbeidsgiver.orgnummer')}
 					/>
 				)}
 				{arbeidsgiverType === ArbeidsgiverTyper.felles && (
@@ -78,35 +88,68 @@ export const ArbeidsforholdForm = ({ path, formikBag, erLenket, arbeidsgiverType
 				{arbeidsforholdstype === ArbeidsgiverTyper.privat && (
 					<FormikTextInput name={`${path}.arbeidsgiver.ident`} label="Arbeidsgiver ident" />
 				)}
-				<FormikTextInput name={`${path}.arbeidsforholdId`} label="Arbeidsforhold-ID" type="text" />
-				<FormikDatepicker name={`${path}.ansettelsesPeriode.fom`} label="Ansatt fra" />
-				<FormikDatepicker name={`${path}.ansettelsesPeriode.tom`} label="Ansatt til" />
+				<DollyTextInput
+					name={`${path}.arbeidsforholdId`}
+					label="Arbeidsforhold-ID"
+					type="text"
+					value={_get(formikBag.values, `${path}.arbeidsforholdId`)}
+					onChange={onChangeLenket('arbeidsforholdId')}
+				/>
+				<FormikDatepicker
+					name={`${path}.ansettelsesPeriode.fom`}
+					label="Ansatt fra"
+					onChange={onChangeLenket('ansettelsesPeriode.fom')}
+				/>
+				<FormikDatepicker
+					name={`${path}.ansettelsesPeriode.tom`}
+					label="Ansatt til"
+					onChange={onChangeLenket('ansettelsesPeriode.tom')}
+				/>
 				<FormikSelect
 					name={`${path}.ansettelsesPeriode.sluttaarsak`}
 					label="Sluttårsak"
 					kodeverk={ArbeidKodeverk.SluttaarsakAareg}
 					size="xlarge"
-					onChange={onChangeLenket(erLenket, 'ansettelsesPeriode.sluttaarsak')}
+					onChange={onChangeLenket('ansettelsesPeriode.sluttaarsak')}
 					disabled={
 						_get(formikBag.values, `${path}.ansettelsesPeriode.tom`) === null ? true : false
 					}
-					fastField={false}
 					// TODO disabled funker ikke!
 				/>
 			</div>
 
 			<ArbeidsavtaleForm formikBag={formikBag} path={path} />
 			{arbeidsforholdstype === 'maritimtArbeidsforhold' && (
-				<MaritimtArbeidsforholdForm formikBag={formikBag} path={`${path}.fartoy`} />
+				<MaritimtArbeidsforholdForm path={`${path}.fartoy`} onChangeLenket={onChangeLenket} />
 			)}
 
-			<TimeloennetForm path={`${path}.antallTimerForTimeloennet`} />
+			<TimeloennetForm
+				path={`${path}.antallTimerForTimeloennet`}
+				arbeidsforholdIndex={arbeidsforholdIndex}
+				formikBag={formikBag}
+				erLenket={erLenket}
+			/>
 
-			<UtenlandsoppholdForm path={`${path}.utenlandsopphold`} />
+			<UtenlandsoppholdForm
+				path={`${path}.utenlandsopphold`}
+				arbeidsforholdIndex={arbeidsforholdIndex}
+				formikBag={formikBag}
+				erLenket={erLenket}
+			/>
 
-			<PermisjonForm path={`${path}.permisjon`} />
+			<PermisjonForm
+				path={`${path}.permisjon`}
+				arbeidsforholdIndex={arbeidsforholdIndex}
+				formikBag={formikBag}
+				erLenket={erLenket}
+			/>
 
-			<PermitteringForm path={`${path}.permittering`} />
+			<PermitteringForm
+				path={`${path}.permittering`}
+				arbeidsforholdIndex={arbeidsforholdIndex}
+				formikBag={formikBag}
+				erLenket={erLenket}
+			/>
 		</React.Fragment>
 	)
 }

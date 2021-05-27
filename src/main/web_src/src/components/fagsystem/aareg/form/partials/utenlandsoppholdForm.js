@@ -9,26 +9,64 @@ import { initialUtenlandsopphold } from '../initialValues'
 const infotekst =
 	'Start- og sluttdato må både være innenfor samme kalendermåned i samme år og perioden til arbeidsforholdet'
 
-export const UtenlandsoppholdForm = ({ path }) => (
-	<FormikDollyFieldArray
-		name={path}
-		header="Utenlandsopphold"
-		hjelpetekst={infotekst}
-		newEntry={initialUtenlandsopphold}
-		nested
-	>
-		{(path, idx) => (
-			<div key={idx} className="flexbox">
-				<FormikSelect
-					name={`${path}.land`}
-					label="Land"
-					kodeverk={AdresseKodeverk.ArbeidOgInntektLand}
-					isClearable={false}
-					size="large"
-				/>
-				<FormikDatepicker name={`${path}.periode.fom`} label="Opphold fra" />
-				<FormikDatepicker name={`${path}.periode.tom`} label="Opphold til" />
-			</div>
-		)}
-	</FormikDollyFieldArray>
-)
+export const UtenlandsoppholdForm = ({ path, arbeidsforholdIndex, formikBag, erLenket }) => {
+	const maaneder = _get(formikBag.values, 'aareg[0].amelding')
+	const ameldingIndex = path.charAt(18)
+
+	const handleNewEntry = () => {
+		maaneder.forEach((maaned, idMaaned) => {
+			if (!erLenket && idMaaned != ameldingIndex) return
+			const currUtenlandsopphold = _get(
+				formikBag.values,
+				`aareg[0].amelding[${idMaaned}].arbeidsforhold[${arbeidsforholdIndex}].utenlandsopphold`
+			)
+			formikBag.setFieldValue(
+				`aareg[0].amelding[${idMaaned}].arbeidsforhold[${arbeidsforholdIndex}].utenlandsopphold`,
+				currUtenlandsopphold
+					? [...currUtenlandsopphold, initialUtenlandsopphold]
+					: [initialUtenlandsopphold]
+			)
+		})
+	}
+
+	const handleRemoveEntry = idUtenlandsopphold => {
+		maaneder.forEach((maaned, idMaaned) => {
+			if (!erLenket && idMaaned != ameldingIndex) return
+			const currUtenlandsopphold = _get(
+				formikBag.values,
+				`aareg[0].amelding[${idMaaned}].arbeidsforhold[${arbeidsforholdIndex}].utenlandsopphold`
+			)
+			currUtenlandsopphold.splice(idUtenlandsopphold, 1)
+			formikBag.setFieldValue(
+				`aareg[0].amelding[${idMaaned}].arbeidsforhold[${arbeidsforholdIndex}].utenlandsopphold`,
+				currUtenlandsopphold
+			)
+		})
+	}
+
+	return (
+		<FormikDollyFieldArray
+			name={path}
+			header="Utenlandsopphold"
+			hjelpetekst={infotekst}
+			newEntry={initialUtenlandsopphold}
+			nested
+			handleNewEntry={handleNewEntry}
+			handleRemoveEntry={handleRemoveEntry}
+		>
+			{(path, idx) => (
+				<div key={idx} className="flexbox">
+					<FormikSelect
+						name={`${path}.land`}
+						label="Land"
+						kodeverk={AdresseKodeverk.ArbeidOgInntektLand}
+						isClearable={false}
+						size="large"
+					/>
+					<FormikDatepicker name={`${path}.periode.fom`} label="Opphold fra" />
+					<FormikDatepicker name={`${path}.periode.tom`} label="Opphold til" />
+				</div>
+			)}
+		</FormikDollyFieldArray>
+	)
+}

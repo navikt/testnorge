@@ -8,24 +8,69 @@ import { initialTimeloennet } from '../initialValues'
 const infotekst =
 	'Start- og sluttdato må både være innenfor samme kalendermåned i samme år og perioden til arbeidsforholdet'
 
-export const TimeloennetForm = ({ path }) => (
-	<FormikDollyFieldArray
-		name={path}
-		header="Timer med timelønnet"
-		hjelpetekst={infotekst}
-		newEntry={initialTimeloennet}
-		nested
-	>
-		{(path, idx) => (
-			<div key={idx} className="flexbox">
-				<FormikTextInput
-					name={`${path}.antallTimer`}
-					label="Antall timer for timelønnet"
-					type="number"
-				/>
-				<FormikDatepicker name={`${path}.periode.fom`} label="Periode fra" />
-				<FormikDatepicker name={`${path}.periode.tom`} label="Periode til" />
-			</div>
-		)}
-	</FormikDollyFieldArray>
-)
+export const TimeloennetForm = ({ path, arbeidsforholdIndex, formikBag, erLenket }) => {
+	const maaneder = _get(formikBag.values, 'aareg[0].amelding')
+	const ameldingIndex = path.charAt(18)
+
+	const handleNewEntry = () => {
+		maaneder.forEach((maaned, idMaaned) => {
+			if (!erLenket && idMaaned != ameldingIndex) return
+			const currTimeloennet = _get(
+				formikBag.values,
+				`aareg[0].amelding[${idMaaned}].arbeidsforhold[${arbeidsforholdIndex}].antallTimerForTimeloennet`
+			)
+			formikBag.setFieldValue(
+				`aareg[0].amelding[${idMaaned}].arbeidsforhold[${arbeidsforholdIndex}].antallTimerForTimeloennet`,
+				currTimeloennet ? [...currTimeloennet, initialTimeloennet] : [initialTimeloennet]
+			)
+		})
+	}
+
+	const handleRemoveEntry = idTimeloennet => {
+		maaneder.forEach((maaned, idMaaned) => {
+			if (!erLenket && idMaaned != ameldingIndex) return
+			const currTimeloennet = _get(
+				formikBag.values,
+				`aareg[0].amelding[${idMaaned}].arbeidsforhold[${arbeidsforholdIndex}].antallTimerForTimeloennet`
+			)
+			currTimeloennet.splice(idTimeloennet, 1)
+			formikBag.setFieldValue(
+				`aareg[0].amelding[${idMaaned}].arbeidsforhold[${arbeidsforholdIndex}].antallTimerForTimeloennet`,
+				currTimeloennet
+			)
+		})
+	}
+
+	return (
+		<FormikDollyFieldArray
+			name={path}
+			header="Timer med timelønnet"
+			hjelpetekst={infotekst}
+			newEntry={initialTimeloennet}
+			nested
+			handleNewEntry={handleNewEntry}
+			handleRemoveEntry={handleRemoveEntry}
+		>
+			{(path, idx) => (
+				<div key={idx} className="flexbox">
+					<FormikTextInput
+						name={`${path}.antallTimer`}
+						label="Antall timer for timelønnet"
+						type="number"
+						// onChange={onChangeLenket(`antallTimerForTimeloennet[${idx}].antallTimer`)}
+					/>
+					<FormikDatepicker
+						name={`${path}.periode.fom`}
+						label="Periode fra"
+						// onChange={onChangeLenket(`antallTimerForTimeloennet[${idx}].periode.fom`)}
+					/>
+					<FormikDatepicker
+						name={`${path}.periode.tom`}
+						label="Periode til"
+						// onChange={onChangeLenket(`antallTimerForTimeloennet[${idx}].periode.tom`)}
+					/>
+				</div>
+			)}
+		</FormikDollyFieldArray>
+	)
+}

@@ -181,12 +181,17 @@ export const FormikDollyFieldArray = ({
 	disabled = false,
 	canBeEmpty = true,
 	tag,
-	isOrganisasjon = false
+	isOrganisasjon = false,
+	handleNewEntry = null,
+	handleRemoveEntry = null
 }) => (
 	<FieldArray name={name}>
 		{arrayHelpers => {
 			const values = _get(arrayHelpers.form.values, name, [])
-			const addNewEntry = () => arrayHelpers.push(newEntry)
+			const addNewEntry = () => {
+				handleNewEntry ? handleNewEntry() : arrayHelpers.push(newEntry)
+			}
+
 			return (
 				<ErrorBoundary>
 					<DollyFieldArrayWrapper header={header} hjelpetekst={hjelpetekst} nested={nested}>
@@ -194,7 +199,9 @@ export const FormikDollyFieldArray = ({
 							const showDeleteButton = canBeEmpty === true ? true : values.length >= 2
 							const path = `${name}.${idx}`
 							const number = tag ? `${tag}.${idx + 1}` : `${idx + 1}`
-							const handleRemove = () => arrayHelpers.remove(idx)
+							const handleRemove = () => {
+								handleRemoveEntry ? handleRemoveEntry(idx) : arrayHelpers.remove(idx)
+							}
 							return nested ? (
 								<DollyFaBlokkNested key={idx} idx={idx} handleRemove={handleRemove}>
 									{children(path, idx, curr)}
