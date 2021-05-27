@@ -3,12 +3,12 @@ package no.nav.organisasjonforvalter.consumer;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.organisasjonforvalter.config.credentials.AdresseServiceProperties;
 import no.nav.organisasjonforvalter.consumer.command.AdresseServiceCommand;
-import no.nav.organisasjonforvalter.dto.responses.AdresseResponse;
-import no.nav.organisasjonforvalter.dto.responses.PdlVegAdresse;
+import no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static java.lang.System.currentTimeMillis;
@@ -32,36 +32,33 @@ public class AdresseServiceConsumer {
         this.accessTokenService = accessTokenService;
     }
 
-    private static AdresseResponse getDefaultADresse() {
+    private static VegadresseDTO getDefaultAdresse() {
 
-        return AdresseResponse.builder()
-                .vegadresser(List.of(
-                        PdlVegAdresse.builder()
-                                .matrikkelId("285693617")
-                                .adressenavn("FYRSTIKKALLÉEN")
-                                .postnummer("0661")
-                                .husnummer(1)
-                                .kommunenummer("0301")
-                                .build()))
+        return VegadresseDTO.builder()
+                .matrikkelId("285693617")
+                .adressenavn("FYRSTIKKALLÉEN")
+                .postnummer("0661")
+                .husnummer(2)
+                .kommunenummer("0301")
                 .build();
     }
 
-    public AdresseResponse getAdresser(String postnr, String kommunenr) {
+    public List<VegadresseDTO> getAdresser(String query) {
 
         long startTime = currentTimeMillis();
 
         try {
             var accessToken = accessTokenService.generateToken(serviceProperties);
             var adresseResponse =
-                    new AdresseServiceCommand(webClient, postnr, kommunenr, accessToken.getTokenValue()).call();
+                    new AdresseServiceCommand(webClient, query, accessToken.getTokenValue()).call();
 
             log.info("Adresseoppslag tok {} ms", currentTimeMillis() - startTime);
-            return adresseResponse;
+            return Arrays.asList(adresseResponse);
 
         } catch (RuntimeException e) {
 
             log.error("Henting av adresse feilet", e);
-            return getDefaultADresse();
+            return List.of(getDefaultAdresse());
         }
     }
 }

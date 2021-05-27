@@ -14,12 +14,13 @@ import no.nav.organisasjonforvalter.dto.responses.BestillingResponse;
 import no.nav.organisasjonforvalter.jpa.entity.Organisasjon;
 import no.nav.organisasjonforvalter.jpa.repository.OrganisasjonRepository;
 import no.nav.organisasjonforvalter.util.CurrentAuthentication;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -31,6 +32,17 @@ public class BestillingService {
     private final OrganisasjonOrgnummerServiceConsumer organisasjonOrgnummerServiceConsumer;
     private final OrganisasjonRepository organisasjonRepository;
     private final MapperFacade mapperFacade;
+
+    private static String adresseQuery(AdresseRequest adresse) {
+
+        return new StringBuilder("postnummer=")
+                .append(isNotBlank(adresse.getPostnr()) ? adresse.getPostnr() : "")
+                .append("&kommunenummer=")
+                .append(isNotBlank(adresse.getKommunenr()) ? adresse.getKommunenr() : "")
+                .append("&fritekst=")
+                .append(adresse.getAdresselinjer().stream().findFirst().orElse(""))
+                .toString();
+    }
 
     public BestillingResponse execute(BestillingRequest request) {
 
@@ -46,7 +58,7 @@ public class BestillingService {
 
     private Organisasjon processOrganisasjon(OrganisasjonRequest orgRequest, Organisasjon parent) {
 
-        fixAdresseFallback(orgRequest);
+        getAdresse(orgRequest);
 
         Organisasjon organisasjon = mapperFacade.map(orgRequest, Organisasjon.class);
         organisasjon.setOrganisasjonsnummer(organisasjonOrgnummerServiceConsumer.getOrgnummer());
@@ -63,7 +75,7 @@ public class BestillingService {
         return organisasjon;
     }
 
-    private void fixAdresseFallback(OrganisasjonRequest orgRequest) {
+    private void getAdresse(OrganisasjonRequest orgRequest) {
 
         if (orgRequest.getAdresser().isEmpty()) {
             orgRequest.getAdresser().add(AdresseRequest.builder()
@@ -72,10 +84,9 @@ public class BestillingService {
         }
 
         orgRequest.getAdresser().forEach(adresse -> {
-            if (adresse.getAdresselinjer().stream().noneMatch(StringUtils::isNotBlank)) {
-                adresse.setAdresselinjer(new ArrayList<>());
-                mapperFacade.map(adresseServiceConsumer.getAdresser(adresse.getPostnr(), adresse.getKommunenr()), adresse);
-            }
+            String query = adresseQuery(adresse);
+            adresse.setAdresselinjer(new ArrayList<>());
+            mapperFacade.map(adresseServiceConsumer.getAdresser(query).stream().findFirst().get(), adresse);
         });
     }
 }

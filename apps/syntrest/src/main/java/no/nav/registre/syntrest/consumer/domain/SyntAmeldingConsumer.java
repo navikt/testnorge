@@ -4,6 +4,7 @@ import io.kubernetes.client.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.consumer.SyntConsumer;
 import no.nav.registre.syntrest.consumer.command.PostArbeidsforholdHistorikkCommand;
+import no.nav.registre.syntrest.consumer.command.PostArbeidsforholdInitialCommand;
 import no.nav.registre.syntrest.consumer.command.PostArbeidsforholdMedTypeCommand;
 import no.nav.registre.syntrest.consumer.command.PostArbeidsforholdStartCommand;
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
@@ -16,6 +17,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.net.MalformedURLException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -24,6 +26,7 @@ public class SyntAmeldingConsumer extends SyntConsumer {
     private static final String REST_CLIENT_EXCEPTION_MESSAGE = "Unexpected Rest Client Exception: {}";
     private final String historikkPath;
     private final String startPath;
+    private final String startPathV2;
     private final String startSpesifikkPath;
 
     public SyntAmeldingConsumer(
@@ -34,9 +37,10 @@ public class SyntAmeldingConsumer extends SyntConsumer {
             WebClient.Builder webClientBuilder
     ) throws MalformedURLException {
         super(applicationManager, appName, uri, shutdown, webClientBuilder);
-        this.historikkPath = this.url.getPath() + "/arbeidsforhold";
-        this.startPath = this.url.getPath() + "/arbeidsforhold/start";
-        this.startSpesifikkPath = this.url.getPath() + "/arbeidsforhold/start/%s";
+        this.historikkPath = this.url.getPath() + "/v2/generate/arbeidsforhold";
+        this.startPath = this.url.getPath() + "/v1/generate/arbeidsforhold/start";
+        this.startPathV2 = this.url.getPath() + "/v2/generate/arbeidsforhold/start";
+        this.startSpesifikkPath = this.url.getPath() + "/v1/generate/arbeidsforhold/start/%s";
     }
 
     public List<Arbeidsforhold> synthesizeArbeidsforholdStart(
@@ -70,8 +74,37 @@ public class SyntAmeldingConsumer extends SyntConsumer {
         }
     }
 
+    public List<Arbeidsforhold> synthesizeArbeidsforholdStart(
+            ArbeidsforholdPeriode request,
+            String queryString
+    ) throws ApiException, InterruptedException {
+        startApplication();
+        try {
+            return new PostArbeidsforholdInitialCommand(request, startPathV2 , queryString, webClient).call();
+        } catch (RestClientException e) {
+            log.error(REST_CLIENT_EXCEPTION_MESSAGE, Arrays.toString(e.getStackTrace()));
+            throw e;
+        } finally {
+            scheduleIfShutdown();
+        }
+    }
+
+
     public List<Arbeidsforhold> synthesizeArbeidsforholdHistorikk(
             Arbeidsforhold tidligereArbeidsforhold,
+            String queryString
+    ) throws ApiException, InterruptedException {
+        startApplication();
+        try {
+            return new PostArbeidsforholdHistorikkCommand(Collections.singletonList(tidligereArbeidsforhold), historikkPath, queryString, webClient).call().get(0);
+        } catch (RestClientException e) {
+            log.error(REST_CLIENT_EXCEPTION_MESSAGE, Arrays.toString(e.getStackTrace()));
+            throw e;
+        }
+    }
+
+    public List<List<Arbeidsforhold>> synthesizeArbeidsforholdHistorikk(
+            List<Arbeidsforhold> tidligereArbeidsforhold,
             String queryString
     ) throws ApiException, InterruptedException {
         startApplication();
