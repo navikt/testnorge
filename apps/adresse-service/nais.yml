@@ -44,6 +44,10 @@ spec:
           cluster: dev-gcp
         - application: testnav-pdl-forvalter
           cluster: dev-gcp
+        - application: tps-forvalteren-dev
+          cluster: dev-fss
+        - application: tps-forvalteren
+          cluster: dev-fss
     outbound:
       external:
         - host: https://testnav-pdl-proxy.dev-fss-pub.nais.io
