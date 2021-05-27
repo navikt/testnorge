@@ -23,7 +23,9 @@ export default ({
 
 	return (
 		<div className={css}>
-			<NavButton onClick={onAvbryt}>Avbryt</NavButton>
+			<NavButton type={'fare'} onClick={onAvbryt}>
+				Avbryt
+			</NavButton>
 			<NavButton type="hoved" onClick={onSubmit} disabled={disabled} title={submitTitle}>
 				{submitknapp}
 			</NavButton>

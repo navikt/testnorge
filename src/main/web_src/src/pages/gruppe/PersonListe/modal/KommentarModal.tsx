@@ -7,11 +7,9 @@ export const KommentarModal = ({ ident, closeModal, iLaastGruppe }) => {
 	return (
 		<ErrorBoundary>
 			<DollyModal isOpen closeModal={closeModal} width="50%" overflow="auto">
-				<div className="modal">
-					<h1>Endre kommentar</h1>
-					<br />
-					<BeskrivelseConnector ident={ident} iLaastGruppe={iLaastGruppe} closeModal={closeModal} />
-				</div>
+				<h1>Endre kommentar</h1>
+				<br />
+				<BeskrivelseConnector ident={ident} iLaastGruppe={iLaastGruppe} closeModal={closeModal} />
 			</DollyModal>
 		</ErrorBoundary>
 	)

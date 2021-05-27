@@ -23,6 +23,7 @@ const IdentVelgerField = styled.div`
 const Tittel = styled.div`
 	display: flex;
 	flex-wrap: wrap;
+
 	h2 {
 		margin: 0;
 		font-size: 1.4rem;
@@ -33,11 +34,18 @@ const TestpersonValg = styled(RadioPanelGruppe)`
 	legend {
 		.offscreen;
 	}
+
 	.inputPanelGruppe__inner {
+		.inputPanel {
+			margin-top: 10px;
+		}
+
 		display: flex;
 		justify-content: space-between;
+
 		label {
 			width: 49%;
+			margin-bottom: 0.5rem;
 		}
 	}
 `

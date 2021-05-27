@@ -71,7 +71,7 @@ export const LeggTilRelasjon = ({
 										/>
 									)}
 								<div className="action-knapper">
-									<NavButton type="standard" onClick={closeModal}>
+									<NavButton type="fare" onClick={closeModal}>
 										Avbryt
 									</NavButton>
 									<NavButton type="hoved" htmlType="submit">

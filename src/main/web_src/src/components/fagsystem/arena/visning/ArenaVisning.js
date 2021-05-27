@@ -46,11 +46,11 @@ export const ArenaVisning = ({ data, bestillinger, loading }) => {
 				brukertype: info.servicebehov ? 'Med servicebehov' : 'Uten servicebehov',
 				servicebehov: servicebehovKodeTilBeskrivelse(kvalifiseringsgruppe),
 				inaktiveringDato: Formatters.formatDate(inaktiveringDato),
-				harAap115: aap115 && 'Ja',
-				aap115FraDato: aap115 && Formatters.formatDate(aap115[0].fraDato),
-				harAap: aap && 'Ja',
-				aapFraDato: aap && Formatters.formatDate(aap[0].fraDato),
-				aapTilDato: aap && Formatters.formatDate(aap[0].tilDato)
+				harAap115: aap115?.[0] && 'Ja',
+				aap115FraDato: aap115?.[0] && Formatters.formatDate(aap115[0].fraDato),
+				harAap: aap?.[0] && 'Ja',
+				aapFraDato: aap?.[0] && Formatters.formatDate(aap[0].fraDato),
+				aapTilDato: aap?.[0] && Formatters.formatDate(aap[0].tilDato)
 			})
 		}
 	})

@@ -49,7 +49,7 @@ export const GjenopprettModal = ({
 								/>
 
 								<div className="dollymodal_buttons">
-									<NavButton autoFocus onClick={closeModal}>
+									<NavButton type={'fare'} onClick={closeModal}>
 										Avbryt
 									</NavButton>
 									<NavButton type="hoved" onClick={formikProps.submitForm}>

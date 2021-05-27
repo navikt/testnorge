@@ -35,7 +35,7 @@ export default function SendOpenAm({ closeModal, bestilling, getBestillinger }) 
 					<p>Sakene vil bli oppdatert i løpet av 2-3 minutter, og finnes da i kommentarfeltet.</p>
 
 					<div className="dollymodal_buttons">
-						<NavButton autoFocus onClick={close}>
+						<NavButton type={'fare'} autoFocus onClick={close}>
 							Lukk
 						</NavButton>
 					</div>
@@ -44,7 +44,7 @@ export default function SendOpenAm({ closeModal, bestilling, getBestillinger }) 
 
 			{!requestState.value && (
 				<div className="dollymodal_buttons">
-					<NavButton autoFocus onClick={closeModal}>
+					<NavButton type={'fare'} autoFocus onClick={closeModal}>
 						Avbryt
 					</NavButton>
 					<NavButton type="hoved" onClick={postOpenAm}>

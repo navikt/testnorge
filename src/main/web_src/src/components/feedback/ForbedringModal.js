@@ -29,42 +29,38 @@ export const ForbedringModal = ({ closeModal, brukerBilde }) => {
 	return (
 		<ErrorBoundary>
 			<DollyModal isOpen closeModal={closeModal} width="70%">
-				<div className="modal">
-					<h1>Ønske om forbedring eller ny funksjonalitet</h1>
-					<br />
-					<div className="modal-content">
-						{isAnonym ? (
-							<Icon kind="user" size={40} className="bruker-ikon" />
-						) : (
-							<img alt="Profilbilde" src={brukerBilde ? brukerBilde.url : dolly} />
-						)}
+				<h1>Ønske om forbedring eller ny funksjonalitet</h1>
+				<br />
+				<div className="modal-content">
+					{isAnonym ? (
+						<Icon kind="user" size={40} className="bruker-ikon" />
+					) : (
+						<img alt="Profilbilde" src={brukerBilde ? brukerBilde.url : dolly} />
+					)}
 
-						<div className="modal-input">
-							<Textarea
-								value={forbedring}
-								label={'Forbedring/funksjonalitet'}
-								placeholder={'Forsøk å være så spesifikk som mulig'}
-								maxLength={MAX_LENGTH}
-								onChange={event => setForbedring(event.target.value)}
-								feil={
-									forbedring.length > MAX_LENGTH
-										? { feilmelding: 'Tilbakemelding inneholder for mange tegn' }
-										: null
-								}
-							/>
-							<div className="skjemaelement textarea__container">
-								<DollyCheckbox label="Jeg ønsker å være anonym" onChange={toggleAnonym} />
-							</div>
+					<div className="modal-input">
+						<Textarea
+							value={forbedring}
+							label={'Forbedring/funksjonalitet'}
+							placeholder={'Forsøk å være så spesifikk som mulig'}
+							maxLength={MAX_LENGTH}
+							onChange={event => setForbedring(event.target.value)}
+							feil={
+								forbedring.length > MAX_LENGTH ? 'Tilbakemelding inneholder for mange tegn' : null
+							}
+						/>
+						<div className="skjemaelement textarea__container">
+							<DollyCheckbox label="Jeg ønsker å være anonym" onChange={toggleAnonym} />
 						</div>
 					</div>
-					<ModalActionKnapper
-						submitknapp="Send ønske"
-						disabled={forbedring === '' || forbedring.length > MAX_LENGTH}
-						onSubmit={sendForbedring}
-						onAvbryt={closeModal}
-						center
-					/>
 				</div>
+				<ModalActionKnapper
+					submitknapp="Send ønske"
+					disabled={forbedring === '' || forbedring.length > MAX_LENGTH}
+					onSubmit={sendForbedring}
+					onAvbryt={closeModal}
+					center
+				/>
 			</DollyModal>
 		</ErrorBoundary>
 	)

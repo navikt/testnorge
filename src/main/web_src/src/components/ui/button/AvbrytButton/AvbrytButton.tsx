@@ -16,7 +16,9 @@ export const AvbrytButton = ({ action, children }: data) => {
 
 	return (
 		<React.Fragment>
-			<NavButton onClick={openModal}>AVBRYT</NavButton>
+			<NavButton type={'fare'} onClick={openModal}>
+				AVBRYT
+			</NavButton>
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="fit-content" overflow="auto">
 				<div className="avbrytModal">
 					<div className="avbrytModal avbrytModal-content">

@@ -72,7 +72,11 @@ export const OrgnummerToggle = ({ formikBag, path, opplysningspliktigPath }) => 
 						onBlur={handleBlur}
 						feil={error && { feilmelding: 'Fant ikke organisasjonen i Q1' }}
 					/>
-					{success && <Icon kind="feedback-check-circle" />}
+					{success && (
+						<>
+							<Icon kind="feedback-check-circle" /> Organisasjon funnet
+						</>
+					)}
 				</div>
 			)}
 		</div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Tooltip from 'rc-tooltip'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import 'rc-tooltip/assets/bootstrap.css'
@@ -38,8 +38,28 @@ export default function PersonListe({
 	const [isKommentarModalOpen, openKommentarModal, closeKommentarModal] = useBoolean(false)
 	const [selectedIdent, setSelectedIdent] = useState(null)
 
+	const previousValues = useRef(identer)
+	const previousIdenter = Object.values(previousValues.current)
+
+	const iBrukEndret = () => {
+		if (!previousValues) return false
+		previousValues.current = identer
+		const prevIbruk = previousIdenter.map(ident => ({
+			ident: ident.ident,
+			ibruk: ident.ibruk
+		}))
+
+		return prevIbruk.some(id => {
+			if (id.ibruk !== identer[id.ident].ibruk) {
+				return true
+			}
+		})
+	}
+
 	useEffect(() => {
-		fetchTpsfPersoner()
+		if (!iBrukEndret()) {
+			fetchTpsfPersoner()
+		}
 	}, [identer])
 
 	if (isFetching) return <Loading label="laster personer" panel />

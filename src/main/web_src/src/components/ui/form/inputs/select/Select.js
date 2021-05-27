@@ -1,6 +1,5 @@
 import React from 'react'
-// import ReactSelect from 'react-select'
-import { Select as ReactSelect } from 'react-select-virtualized'
+import ReactSelect from 'react-select'
 import { FormikField } from '~/components/ui/form/FormikField'
 import cn from 'classnames'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
@@ -29,16 +28,9 @@ export const Select = ({
 	isMulti = false,
 	styles
 }) => {
-	let _value = options.filter(o => o.value === value)
-
-	/**
-	 * CUSTOM MULTI LOGIC
-	 * react-select-virtualized støtter foreløpig ikke multi-select
-	 * så denne biten må gjøres litt manuelt
-	 */
-	if (isMulti) {
-		_value = Array.isArray(value) ? options.filter(o => value.includes(o.value)) : []
-	}
+	let _value = isMulti
+		? options.filter(o => value?.some(el => el === o.value))
+		: options.filter(o => o.value === value)
 
 	return (
 		<ReactSelect
@@ -90,10 +82,10 @@ const P_FormikSelect = ({ fastfield, feil, ...props }) => (
 			const handleChange = (selected, meta) => {
 				let value
 				if (props.isMulti) {
-					if (meta.action === 'set-value') {
+					if (meta.action === 'select-option') {
 						value = Array.isArray(field.value)
-							? field.value.concat(selected.value)
-							: [selected.value]
+							? field.value.concat(meta.option.value)
+							: [meta.option.value]
 					}
 					if (meta.action === 'remove-value') {
 						// When removing last value, value is null

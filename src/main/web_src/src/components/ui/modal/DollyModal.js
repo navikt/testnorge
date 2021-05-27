@@ -32,7 +32,13 @@ export default class DollyModal extends PureComponent {
 		if (overflow && isOpen) customStyles.content.overflow = overflow
 
 		return (
-			<Modal isOpen={isOpen} shouldCloseOnEsc onRequestClose={closeModal} style={customStyles}>
+			<Modal
+				isOpen={isOpen}
+				shouldCloseOnEsc
+				onRequestClose={closeModal}
+				style={customStyles}
+				bodyOpenClassName={'ReactModal__Body'}
+			>
 				<div className="dollymodal">
 					{children}
 					{!noCloseButton && <Lukknapp onClick={closeModal} />}

@@ -4,6 +4,7 @@ const webpack = require('webpack')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const pkg = require('./package.json')
+const ESLintPlugin = require('eslint-webpack-plugin')
 
 require('core-js/stable')
 require('regenerator-runtime/runtime')
@@ -36,6 +37,7 @@ module.exports = {
 			appMountIds: ['root', 'react-select-root'],
 			lang: 'nb'
 		}),
+		new ESLintPlugin(),
 		new webpack.DefinePlugin({
 			BUILD: {
 				VERSION: JSON.stringify(pkg.version) || '""',
@@ -48,7 +50,7 @@ module.exports = {
 	resolve: {
 		alias: {
 			'~': path.resolve(__dirname, 'src'),
-			"@": path.resolve(__dirname, "src"),
+			'@': path.resolve(__dirname, 'src'),
 			lessVars: path.resolve(__dirname, 'src/styles/variables.less'),
 			lessUtils: path.resolve(__dirname, 'src/styles/utils.less')
 		},
@@ -60,7 +62,7 @@ module.exports = {
 				test: /\.js|.ts(x?)$/,
 				include: path.resolve(__dirname, 'src'),
 				exclude: /node_modules/,
-				use: ['babel-loader', "eslint-loader"]
+				use: ['babel-loader']
 			},
 			{
 				test: /\.svg$/,

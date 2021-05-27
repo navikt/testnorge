@@ -70,8 +70,7 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 
 PersoninformasjonPanel.heading = 'Personinformasjon'
 
-PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has }) => {
-	const opts = useContext(BestillingsveilederContext)
+PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 	const { personFoerLeggTil } = opts
 
 	return {
@@ -221,7 +220,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has }) => {
 		identtype: {
 			label: 'Identtype',
 			checked: has('tpsf.identtype'),
-			add: () => setMulti(['tpsf.identtype', ''], ['tpsf.alder', personFoerLeggTil.tpsf.alder]),
+			add: () => setMulti(['tpsf.identtype', ''], ['tpsf.alder', personFoerLeggTil?.tpsf?.alder]),
 			remove: () => del(['tpsf.identtype', 'tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer'])
 		},
 		vergemaal: {
