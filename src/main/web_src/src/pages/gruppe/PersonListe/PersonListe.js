@@ -50,7 +50,7 @@ export default function PersonListe({
 		}))
 
 		return prevIbruk.some(id => {
-			if (id.ibruk !== identer[id.ident].ibruk) {
+			if (id.ibruk !== identer?.[id.ident]?.ibruk) {
 				return true
 			}
 		})
