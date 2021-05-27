@@ -35,6 +35,7 @@ public class PdlBostedsadresseMappingStrategy implements MappingStrategy {
         bostedadresse.setGyldigFraOgMed(getDato(adresse.getFlyttedato()));
         bostedadresse.setGyldigTilOgMed(getDato(adresse.getGyldigTilOgMed()));
         bostedadresse.setCoAdressenavn(getCoadresse(adresse));
+        bostedadresse.setAdresseIdentifikatorFraMatrikkelen(adresse.getMatrikkelId());
         return bostedadresse;
     }
 

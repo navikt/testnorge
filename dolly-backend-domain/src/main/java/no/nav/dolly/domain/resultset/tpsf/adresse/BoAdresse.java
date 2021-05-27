@@ -38,6 +38,8 @@ public abstract class BoAdresse {
 
     private LocalDateTime gyldigTilOgMed;
 
+    private String matrikkelId;
+
     public abstract String getAdressetype();
 
     public boolean isGateadresse() {
