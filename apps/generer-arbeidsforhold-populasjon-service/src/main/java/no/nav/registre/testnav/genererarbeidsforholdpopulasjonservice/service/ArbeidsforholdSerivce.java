@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -22,26 +23,24 @@ public class ArbeidsforholdSerivce {
         return dokumenter.map(items -> new Timeline<>(map(ident, items)));
     }
 
-    private Map<LocalDate, Arbeidsforhold> map(String ident, java.util.List<no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO> items) {
-        return items.stream().flatMap(oppsummeringsdokument -> oppsummeringsdokument.getVirksomheter()
+    private Map<LocalDate, List<Arbeidsforhold>> map(String ident, java.util.List<no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO> items) {
+        return items.stream()
+                .flatMap(oppsummeringsdokument -> oppsummeringsdokument.getVirksomheter()
                 .stream()
                 .flatMap(virksomhet -> virksomhet.getPersoner()
                         .stream()
                         .filter(value -> value.getIdent().equals(ident))
-                        .flatMap(person -> person.getArbeidsforhold()
-                                .stream()
-                                .map(arbeidsforhold ->
-                                        Map.entry(
-                                                oppsummeringsdokument.getKalendermaaned(),
-                                                new Arbeidsforhold(
-                                                        arbeidsforhold,
-                                                        virksomhet.getOrganisajonsnummer(),
-                                                        oppsummeringsdokument.getOpplysningspliktigOrganisajonsnummer(),
-                                                        person.getIdent()
-                                                )
-                                        )
-                                )
-                        )
+                        .map(person -> Map.entry(
+                                oppsummeringsdokument.getKalendermaaned(),
+                                person.getArbeidsforhold()
+                                        .stream()
+                                        .map(arbeidsforhold -> new Arbeidsforhold(
+                                                arbeidsforhold,
+                                                virksomhet.getOrganisajonsnummer(),
+                                                oppsummeringsdokument.getOpplysningspliktigOrganisajonsnummer(),
+                                                person.getIdent()
+                                        )).collect(Collectors.toList())
+                        ))
                 ))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }

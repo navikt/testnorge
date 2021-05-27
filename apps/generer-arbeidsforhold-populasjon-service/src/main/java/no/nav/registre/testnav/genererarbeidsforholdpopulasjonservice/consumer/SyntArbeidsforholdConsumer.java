@@ -36,7 +36,6 @@ public class SyntArbeidsforholdConsumer {
                 .builder()
                 .baseUrl(properties.getUrl())
                 .codecs(clientDefaultCodecsConfigurer -> {
-                    ;
                     clientDefaultCodecsConfigurer
                             .defaultCodecs()
                             .jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper, MediaType.APPLICATION_JSON));
@@ -47,15 +46,15 @@ public class SyntArbeidsforholdConsumer {
                 .build();
     }
 
-    public Mono<ArbeidsforholdResponse> genererStartArbeidsforhold(LocalDate startdato) {
+    public Mono<List<ArbeidsforholdResponse>> genererStartArbeidsforhold(LocalDate startdato) {
         return accessTokenService
                 .generateNonBlockedToken(properties)
                 .flatMap(accessToken -> new GenererStartArbeidsforholdCommand(webClient, startdato, accessToken.getTokenValue()).call());
     }
 
-    public Mono<List<ArbeidsforholdResponse>> genererArbeidsforholdHistorikk(ArbeidsforholdRequest request) {
+    public Mono<List<List<ArbeidsforholdResponse>>> genererArbeidsforholdHistorikk(List<ArbeidsforholdRequest> requests) {
         return accessTokenService
                 .generateNonBlockedToken(properties)
-                .flatMap(accessToken -> new GenererArbeidsforholdHistorikkCommand(webClient, request, accessToken.getTokenValue()).call());
+                .flatMap(accessToken -> new GenererArbeidsforholdHistorikkCommand(webClient, requests, accessToken.getTokenValue()).call());
     }
 }

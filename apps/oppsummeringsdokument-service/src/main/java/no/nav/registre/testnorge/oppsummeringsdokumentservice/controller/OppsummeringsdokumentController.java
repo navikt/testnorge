@@ -100,13 +100,15 @@ public class OppsummeringsdokumentController {
     }
 
     @GetMapping("/identer")
-    public ResponseEntity<Set<String>> getIdenter(@RequestHeader("miljo") String miljo) {
-        return ResponseEntity.ok(
-                adapter.getAllCurrentDocumentsBy(miljo)
-                        .stream()
-                        .flatMap(document -> document.getIdenter().stream())
-                        .collect(Collectors.toSet())
-        );
+    public ResponseEntity<Set<String>> getIdenter(
+            @RequestHeader("miljo") String miljo,
+            @RequestHeader Populasjon populasjon
+    ) {
+        var collect = adapter.getAllCurrentDocumentsBy(miljo)
+                .stream()
+                .flatMap(document -> document.getIdenter().stream())
+                .collect(Collectors.toSet());
+        return ResponseEntity.ok(collect);
     }
 
     @DeleteMapping

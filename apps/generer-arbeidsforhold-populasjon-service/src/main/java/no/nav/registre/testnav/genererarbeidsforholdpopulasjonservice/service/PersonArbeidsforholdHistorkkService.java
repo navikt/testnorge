@@ -9,6 +9,7 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -50,9 +51,9 @@ public class PersonArbeidsforholdHistorkkService {
                 .flatMap(timeline -> {
                     var lastDate = timeline.getLastDate();
                     var person = new Person(ident, timeline);
-                    var previous = person.getArbeidsforholdOn(lastDate).stream().findFirst().orElse(null);
+                    var previous = person.getArbeidsforholdOn(lastDate);
                     var map = getArbeidsforholdMap(
-                            previous,
+                            new ArrayList<>(previous),
                             organisajoner,
                             ident,
                             findAllDatesBetween(lastDate.plusMonths(1), lastDate.plusMonths(months)).iterator()
@@ -70,8 +71,8 @@ public class PersonArbeidsforholdHistorkkService {
                 .findTimelineFor(ident, miljo)
                 .flatMap(timeline -> {
                     var person = new Person(ident, timeline);
-                    var previous = person.getArbeidsforholdOn(fom.minusMonths(1)).stream().findFirst().orElse(null);
-                    var map = getArbeidsforholdMap(previous, organisajoner, ident, findAllDatesBetween(fom, tom).iterator());
+                    var previous = person.getArbeidsforholdOn(fom.minusMonths(1));
+                    var map = getArbeidsforholdMap(new ArrayList<>(previous), organisajoner, ident, findAllDatesBetween(fom, tom).iterator());
                     return map.map(value -> {
                         person.updateTimeline(new Timeline<>(value));
                         log.info("Person {} ferdig generert.", person.getIdent());
@@ -81,8 +82,8 @@ public class PersonArbeidsforholdHistorkkService {
     }
 
 
-    private Mono<Map<LocalDate, Arbeidsforhold>> getArbeidsforholdMap(
-            Arbeidsforhold previous,
+    private Mono<Map<LocalDate, List<Arbeidsforhold>>> getArbeidsforholdMap(
+            List<Arbeidsforhold> previous,
             List<Organisajon> organisajoner,
             String ident,
             Iterator<LocalDate> dates
@@ -94,19 +95,19 @@ public class PersonArbeidsforholdHistorkkService {
     }
 
 
-    private Map<LocalDate, Arbeidsforhold> generer(
-            Arbeidsforhold previous,
+    private Map<LocalDate, List<Arbeidsforhold>> generer(
+            List<Arbeidsforhold> previous,
             List<Organisajon> organisajoner,
             String ident,
             Iterator<LocalDate> dates
     ) {
-        var map = new HashMap<LocalDate, Arbeidsforhold>();
+        var map = new HashMap<LocalDate, List<Arbeidsforhold>>();
 
         if (!dates.hasNext()) {
             return map;
         }
 
-        if (previous == null || previous.isForenklet()) {
+        if (previous.isEmpty() || previous.get(0).isForenklet()) {
             var startdato = dates.next();
             var organisajon = organisajoner.get(random.nextInt(organisajoner.size()));
             var arbeidsforhold = arbeidsforholdHistorikkService.genererStart(
@@ -123,7 +124,7 @@ public class PersonArbeidsforholdHistorkkService {
             return map;
         }
 
-        if (previous.isForenklet()) {
+        if (previous.get(0).isForenklet()) {
             map.putAll(generer(previous, organisajoner, ident, dates));
             return map;
         }
@@ -136,25 +137,32 @@ public class PersonArbeidsforholdHistorkkService {
                 previous,
                 dateList.iterator().next(),
                 dateList.size()
-        ).block().iterator();
+        ).block();
+
+        Iterator<Arbeidsforhold> left = historikk.get(0).stream().iterator();
+        Iterator<Arbeidsforhold> right = historikk.size() <= 1 ? Collections.emptyIterator() : historikk.get(1).stream().iterator();
 
         while (dates.hasNext()) {
             var kalendermnd = dates.next();
-            var arbeidsforhold = historikk.next();
 
-            boolean isNewArbeidsforhold = previous.getSluttdato() != null
-                    && previous.getSluttdato().getMonth() == kalendermnd.minusMonths(1).getMonth()
-                    && previous.getSluttdato().getYear() == kalendermnd.minusMonths(1).getYear()
-                    || previous.getSluttdato() != null && previous.getSluttdato().isBefore(kalendermnd);
-
+            boolean isNewArbeidsforhold = previous.get(0).getSluttdato() != null
+                    && previous.get(0).getSluttdato().getMonth() == kalendermnd.minusMonths(1).getMonth()
+                    && previous.get(0).getSluttdato().getYear() == kalendermnd.minusMonths(1).getYear()
+                    || previous.get(0).getSluttdato() != null && previous.get(0).getSluttdato().isBefore(kalendermnd);
 
             if (isNewArbeidsforhold) {
                 map.putAll(generer(null, organisajoner, ident, dates));
                 return map;
             }
 
-            map.put(kalendermnd, arbeidsforhold);
-            previous = arbeidsforhold;
+            var arbeidsforholds = new ArrayList<Arbeidsforhold>();
+            arbeidsforholds.add(left.next());
+            if (right.hasNext()) {
+                arbeidsforholds.add(right.next());
+            }
+
+            map.put(kalendermnd, arbeidsforholds);
+            previous = arbeidsforholds;
         }
         return map;
     }
