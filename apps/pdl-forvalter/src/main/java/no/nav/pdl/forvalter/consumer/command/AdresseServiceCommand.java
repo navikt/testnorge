@@ -2,40 +2,36 @@ package no.nav.pdl.forvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.pdl.forvalter.dto.AdresseResponse;
+import no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.concurrent.Callable;
 
-import static java.util.Objects.nonNull;
-
 @Slf4j
 @RequiredArgsConstructor
-public class AdresseServicePostCommand implements Callable<AdresseResponse> {
+public class AdresseServiceCommand implements Callable<VegadresseDTO[]> {
+
+    private static final String ADRESSER_VEG_URL = "/api/v1/adresser/veg";
 
     private final WebClient webClient;
-    private final String url;
-    private final Integer antall;
-    private final Object body;
+    private final String query;
     private final String token;
 
     @Override
-    public AdresseResponse call() {
+    public VegadresseDTO[] call() {
 
         try {
             return webClient
-                    .post()
-                    .uri(builder -> builder.path(url).build())
-                    .header("antall", nonNull(antall) ? antall.toString() : "1")
+                    .get()
+                    .uri(builder -> builder.path(ADRESSER_VEG_URL).query(query).build())
+                    .header("antall", "1")
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                    .body(BodyInserters.fromValue(body))
                     .retrieve()
-                    .bodyToMono(AdresseResponse.class)
+                    .bodyToMono(VegadresseDTO[].class)
                     .block();
 
         } catch (WebClientResponseException e) {

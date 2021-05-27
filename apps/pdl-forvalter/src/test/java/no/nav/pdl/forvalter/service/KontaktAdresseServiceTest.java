@@ -1,11 +1,12 @@
 package no.nav.pdl.forvalter.service;
 
 import ma.glasnost.orika.MapperFacade;
+import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.pdl.forvalter.domain.PdlUtenlandskAdresse;
 import no.nav.pdl.forvalter.domain.PdlVegadresse;
-import no.nav.pdl.forvalter.dto.PdlAdresseResponse.Vegadresse;
 import no.nav.pdl.forvalter.dto.RsKontaktadresse;
 import no.nav.pdl.forvalter.dto.RsKontaktadresse.Postboksadresse;
+import no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,7 +33,7 @@ import static org.mockito.Mockito.when;
 class KontaktAdresseServiceTest {
 
     @Mock
-    private VegadresseService vegadresseService;
+    private AdresseServiceConsumer adresseServiceConsumer;
 
     @Mock
     private MapperFacade mapperFacade;
@@ -138,14 +139,14 @@ class KontaktAdresseServiceTest {
     @Test
     void whenVegadresseWithOKParam_thenLookupAdresse() {
 
-        var vegadresse = Vegadresse.builder()
+        var vegadresse = VegadresseDTO.builder()
                 .adressenavn("Veien")
                 .husnummer(1)
                 .postnummer("1234")
                 .kommunenummer("5678")
                 .matrikkelId("111111111")
                 .build();
-        when(vegadresseService.get(any(PdlVegadresse.class), nullable(String.class))).thenReturn(vegadresse);
+        when(adresseServiceConsumer.getAdresse(any(PdlVegadresse.class), nullable(String.class))).thenReturn(vegadresse);
         doNothing().when(mapperFacade).map(eq(vegadresse), any(PdlVegadresse.class));
 
         var kontaktadresse =
@@ -156,7 +157,7 @@ class KontaktAdresseServiceTest {
                         .isNew(true)
                         .build())).get(0);
 
-        verify(vegadresseService).get(any(PdlVegadresse.class), nullable(String.class));
+        verify(adresseServiceConsumer).getAdresse(any(PdlVegadresse.class), nullable(String.class));
         verify(mapperFacade).map(eq(vegadresse), any(PdlVegadresse.class));
         assertThat(kontaktadresse.getAdresseIdentifikatorFraMatrikkelen(), is(equalTo(vegadresse.getMatrikkelId())));
         assertThat(kontaktadresse.getKilde(), is(equalTo("Dolly")));

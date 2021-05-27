@@ -2,6 +2,7 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.pdl.forvalter.dto.RsKontaktadresse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -20,7 +21,7 @@ public class KontaktAdresseService extends AdresseService<RsKontaktadresse> {
     private static final String VALIDATION_AMBIGUITY_ERROR = "Kun én adresse skal være satt (vegadresse, " +
             "postboksadresse, utenlandskAdresse)";
 
-    private final VegadresseService vegadresseService;
+    private final AdresseServiceConsumer adresseServiceConsumer;
     private final MapperFacade mapperFacade;
 
     private static void validatePostBoksAdresse(RsKontaktadresse.Postboksadresse postboksadresse) {
@@ -60,7 +61,7 @@ public class KontaktAdresseService extends AdresseService<RsKontaktadresse> {
     protected void handle(RsKontaktadresse kontaktadresse) {
         if (nonNull(kontaktadresse.getVegadresse())) {
             var vegadresse =
-                    vegadresseService.get(kontaktadresse.getVegadresse(), kontaktadresse.getAdresseIdentifikatorFraMatrikkelen());
+                    adresseServiceConsumer.getAdresse(kontaktadresse.getVegadresse(), kontaktadresse.getAdresseIdentifikatorFraMatrikkelen());
             kontaktadresse.setAdresseIdentifikatorFraMatrikkelen(vegadresse.getMatrikkelId());
             mapperFacade.map(vegadresse, kontaktadresse.getVegadresse());
         }

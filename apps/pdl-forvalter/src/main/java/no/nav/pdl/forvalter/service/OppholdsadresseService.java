@@ -2,6 +2,7 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.pdl.forvalter.domain.PdlOppholdsadresse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -23,7 +24,7 @@ public class OppholdsadresseService extends AdresseService<PdlOppholdsadresse> {
             "matrikkeladresse, utenlandskAdresse)";
     private static final String VALIDATION_MASTER_PDL_ERROR = "Utenlandsk adresse krever at master er PDL";
 
-    private final VegadresseService vegadresseService;
+    private final AdresseServiceConsumer adresseServiceConsumer;
     private final MapperFacade mapperFacade;
 
     @Override
@@ -63,7 +64,7 @@ public class OppholdsadresseService extends AdresseService<PdlOppholdsadresse> {
 
         if (nonNull(oppholdsadresse.getVegadresse())) {
             var vegadresse =
-                    vegadresseService.get(oppholdsadresse.getVegadresse(), oppholdsadresse.getAdresseIdentifikatorFraMatrikkelen());
+                    adresseServiceConsumer.getAdresse(oppholdsadresse.getVegadresse(), oppholdsadresse.getAdresseIdentifikatorFraMatrikkelen());
             oppholdsadresse.setAdresseIdentifikatorFraMatrikkelen(vegadresse.getMatrikkelId());
             mapperFacade.map(vegadresse, oppholdsadresse.getVegadresse());
         }

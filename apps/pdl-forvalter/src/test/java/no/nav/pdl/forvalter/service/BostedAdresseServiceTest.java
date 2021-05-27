@@ -1,12 +1,13 @@
 package no.nav.pdl.forvalter.service;
 
 import ma.glasnost.orika.MapperFacade;
+import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.pdl.forvalter.domain.PdlBostedadresse;
 import no.nav.pdl.forvalter.domain.PdlBostedadresse.PdlUkjentBosted;
 import no.nav.pdl.forvalter.domain.PdlMatrikkeladresse;
 import no.nav.pdl.forvalter.domain.PdlUtenlandskAdresse;
 import no.nav.pdl.forvalter.domain.PdlVegadresse;
-import no.nav.pdl.forvalter.dto.PdlAdresseResponse.Vegadresse;
+import no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -31,7 +32,7 @@ import static org.mockito.Mockito.when;
 class BostedAdresseServiceTest {
 
     @Mock
-    private VegadresseService vegadresseService;
+    private AdresseServiceConsumer adresseServiceConsumer;
 
     @Mock
     private MapperFacade mapperFacade;
@@ -146,7 +147,7 @@ class BostedAdresseServiceTest {
                         .isNew(true)
                         .build());
 
-        when(vegadresseService.get(any(PdlVegadresse.class), isNull())).thenReturn(new Vegadresse());
+        when(adresseServiceConsumer.getAdresse(any(PdlVegadresse.class), isNull())).thenReturn(new VegadresseDTO());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 bostedAdresseService.convert(request));
@@ -190,7 +191,7 @@ class BostedAdresseServiceTest {
     @Test
     void whenPreviousOppholdHasEmptyTilDato_thenFixPreviousOppholdTilDato() {
 
-        when(vegadresseService.get(any(PdlVegadresse.class), isNull())).thenReturn(new Vegadresse());
+        when(adresseServiceConsumer.getAdresse(any(PdlVegadresse.class), isNull())).thenReturn(new VegadresseDTO());
 
         var target = bostedAdresseService.convert(List.of(PdlBostedadresse.builder()
                         .gyldigFraOgMed(LocalDate.of(2020, 2, 4).atStartOfDay())
