@@ -20,7 +20,6 @@ public class SaveOpplysningspliktigCommand implements Runnable {
     @SneakyThrows
     @Override
     public void run() {
-
         try {
             webClient
                     .post()

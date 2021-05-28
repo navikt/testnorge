@@ -1,9 +1,7 @@
 package no.nav.registre.hodejegeren.service;
 
-import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.DATO_DO;
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.NAV_ENHET;
 import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.NAV_ENHET_BESKRIVELSE;
-import static no.nav.registre.hodejegeren.service.EndringskodeTilFeltnavnMapperService.STATSBORGER;
 import static no.nav.registre.hodejegeren.service.TpsStatusQuoService.AKSJONSKODE;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -29,11 +27,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import no.nav.registre.hodejegeren.consumer.TpsfConsumer;
-import no.nav.registre.hodejegeren.consumer.dto.ServiceRoutineDTO;
-import no.nav.registre.hodejegeren.domain.Person;
 import no.nav.registre.hodejegeren.exception.IdentIOException;
 import no.nav.registre.hodejegeren.exception.ManglendeInfoITpsException;
 import no.nav.registre.hodejegeren.provider.rs.responses.NavEnhetResponse;
@@ -106,14 +103,21 @@ public class EksisterendeIdenterService {
             return Flux.empty();
         }
 
+        var count = new AtomicInteger();
         log.info("Fjerner personer som er død...");
         return utvalgteIdenter
-                .stream()
-                .map(ident -> tpsfConsumer.getTpsServiceRoutineV2(ROUTINE_PERSDATA, AKSJONSKODE, miljoe, ident))
+                .parallelStream()
+                .map(ident -> Flux.from(tpsfConsumer.getTpsServiceRoutineV2(ROUTINE_PERSDATA, AKSJONSKODE, miljoe, ident)))
                 .reduce(Flux.empty(), Flux::concat)
                 .filter(value -> value.getResponse().getData1().getDatoDo() == null || Strings.isBlank(value.getResponse().getData1().getDatoDo()))
                 .filter(value -> value.getResponse().getData1().getFnr() != null)
-                .map(value -> value.getResponse().getData1().getFnr());
+                .map(value -> {
+                    var index = count.incrementAndGet();
+                    if(index % 10 == 0) {
+                        log.info("Hentet {}", index);
+                    }
+                    return value.getResponse().getData1().getFnr();
+                });
     }
 
 
