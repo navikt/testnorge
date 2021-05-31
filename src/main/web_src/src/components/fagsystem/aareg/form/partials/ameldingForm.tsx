@@ -7,6 +7,7 @@ import Hjelpetekst from '~/components/hjelpetekst'
 import { FormikSelect, DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { ArbeidKodeverk } from '~/config/kodeverk'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
+import Button from '~/components/ui/button/Button'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import {
 	initialAmelding,
@@ -103,6 +104,24 @@ export const AmeldingForm = ({ formikBag }) => {
 		})
 	}
 
+	const handleFjernMaaned = () => {
+		const currAmelding = _get(formikBag.values, 'aareg[0].amelding')
+		currAmelding.splice(selectedIndex, 1)
+		formikBag.setFieldValue('aareg[0].amelding', currAmelding)
+
+		const nyPeriode = periode
+		nyPeriode.splice(selectedIndex, 1)
+		setPeriode(nyPeriode)
+
+		if (periode.length === 1) {
+			setSelectedIndex(0)
+		} else if (selectedIndex > 0) {
+			setSelectedIndex(selectedIndex - 1)
+		} else {
+			setSelectedIndex(selectedIndex)
+		}
+	}
+
 	return (
 		<>
 			<div className="flexbox--flex-wrap">
@@ -126,7 +145,9 @@ export const AmeldingForm = ({ formikBag }) => {
 				{type === 'forenkletOppgjoersordning' && (
 					<ForenkletOppgjoersordningForm formikBag={formikBag} />
 				)}
-				{(type === 'ordinaertArbeidsforhold' || type === 'maritimtArbeidsforhold') && (
+				{(type === 'ordinaertArbeidsforhold' ||
+					type === 'maritimtArbeidsforhold' ||
+					type === 'frilanserOppdragstakerHonorarPersonerMm') && (
 					<>
 						<Monthpicker
 							formikBag={formikBag}
@@ -158,6 +179,11 @@ export const AmeldingForm = ({ formikBag }) => {
 									/>
 									<KjedeIcon locked={erLenket} onClick={erLenket ? setErIkkeLenket : setErLenket} />
 								</KjedeContainer>
+								{type === 'frilanserOppdragstakerHonorarPersonerMm' && periode.length > 1 && (
+									<Button kind="trashcan" onClick={handleFjernMaaned} style={{ margin: '10px 0' }}>
+										Fjern måned
+									</Button>
+								)}
 								<FormikDollyFieldArray
 									name={`aareg[0].amelding[${selectedIndex}].arbeidsforhold`}
 									header="Arbeidsforhold"

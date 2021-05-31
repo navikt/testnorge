@@ -39,6 +39,7 @@ const getCenterIndices = (index: number, antallItems: number, itemLimit: number)
 	if (indices.includes(0)) {
 		indices = indices.slice(1)
 	}
+
 	if (indices.includes(antallItems - 1)) {
 		indices = indices.slice(0, indices.length - 1)
 	}
@@ -76,6 +77,10 @@ export default ({
 	const [centerIndices, setCenterIndices] = useState(
 		getCenterIndices(paginationIndex, antallItems, maxShownItems)
 	)
+
+	useEffect(() => {
+		setCenterIndices(getCenterIndices(paginationIndex, antallItems, maxShownItems))
+	}, [antallItems])
 
 	const handlePagination = (addValue: number) => {
 		if (centerIndices.length == maxShownItems - 3) {
