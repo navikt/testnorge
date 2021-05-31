@@ -5,6 +5,7 @@ import no.nav.pdl.forvalter.domain.PdlBostedadresse;
 import no.nav.pdl.forvalter.domain.PdlDoedsfall;
 import no.nav.pdl.forvalter.domain.PdlFolkeregisterpersonstatus;
 import no.nav.pdl.forvalter.domain.PdlOpphold;
+import no.nav.pdl.forvalter.domain.PdlPerson;
 import no.nav.pdl.forvalter.dto.RsUtflytting;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
@@ -24,23 +25,23 @@ import static no.nav.pdl.forvalter.domain.PdlFolkeregisterpersonstatus.Folkeregi
 @RequiredArgsConstructor
 public class FolkeregisterPersonstatusService {
 
-    public List<PdlFolkeregisterpersonstatus> convert(List<PdlFolkeregisterpersonstatus> request,
-                                                      PdlBostedadresse bostedadresse,
-                                                      RsUtflytting utflytting,
-                                                      PdlOpphold opphold,
-                                                      PdlDoedsfall doedsfall) {
+    public List<PdlFolkeregisterpersonstatus> convert(PdlPerson person) {
 
-        for (var type : request) {
+        for (var type : person.getFolkeregisterpersonstatus()) {
 
             if (type.isNew()) {
-                handle(type, bostedadresse, utflytting, opphold, doedsfall);
+                handle(type,
+                        person.getBostedsadresse().stream().findFirst().orElse(null),
+                        person.getUtflytting().stream().findFirst().orElse(null),
+                        person.getOpphold().stream().findFirst().orElse(null),
+                        person.getDoedsfall().stream().findFirst().orElse(null));
 
                 if (Strings.isBlank(type.getKilde())) {
                     type.setKilde("Dolly");
                 }
             }
         }
-        return request;
+        return person.getFolkeregisterpersonstatus();
     }
 
     private void handle(PdlFolkeregisterpersonstatus status,

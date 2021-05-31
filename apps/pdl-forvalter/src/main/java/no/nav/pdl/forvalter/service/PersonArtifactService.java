@@ -23,19 +23,18 @@ public class PersonArtifactService {
     private final TelefonnummerService telefonnummerService;
     private final TilrettelagtKommunikasjonService tilrettelagtKommunikasjonService;
     private final UtflyttingService utflyttingService;
+    private final FullmaktService fullmaktService;
+    private final UtenlandsidentifikasjonsnummerService utenlandsidentifikasjonsnummerService;
 
     public PdlPerson buildPerson(PdlPerson person, String ident) {
 
+        person.setIdent(ident);
         return PdlPerson.builder()
-                .kjoenn(kjoennService.convert(person.getKjoenn(), ident))
+                .kjoenn(kjoennService.convert(person))
                 .innflytting(innflyttingService.convert(person.getInnflytting()))
-                .statsborgerskap(statsborgerskapService.convert(person.getStatsborgerskap(), ident,
-                        person.getInnflytting().stream().reduce((a, b) -> b).orElse(null)))
+                .statsborgerskap(statsborgerskapService.convert(person))
                 .bostedsadresse(bostedAdresseService.convert(person.getBostedsadresse()))
-                .foedsel(foedselService.convert(person.getFoedsel(), ident,
-                        person.getBostedsadresse().stream().reduce((a, b) -> b).orElse(null),
-                        person.getInnflytting().stream().reduce((a, b) -> b).orElse(null)))
-                .kontaktadresse(kontaktAdresseService.convert(person.getKontaktadresse()))
+                .foedsel(foedselService.convert(person))
                 .navn(navnService.convert(person.getNavn()))
                 .oppholdsadresse(oppholdsadresseService.convert(person.getOppholdsadresse()))
                 .adressebeskyttelse(adressebeskyttelseService.convert(person.getAdressebeskyttelse()))
@@ -44,11 +43,11 @@ public class PersonArtifactService {
                 .opphold(oppholdService.convert(person.getOpphold()))
                 .tilrettelagtKommunikasjon(tilrettelagtKommunikasjonService.convert(person.getTilrettelagtKommunikasjon()))
                 .doedsfall(doedsfallService.convert(person.getDoedsfall()))
-                .folkeregisterpersonstatus(folkeregisterPersonstatusService.convert(person.getFolkeregisterpersonstatus(),
-                        person.getBostedsadresse().stream().findFirst().orElse(null),
-                        person.getUtflytting().stream().findFirst().orElse(null),
-                        person.getOpphold().stream().findFirst().orElse(null),
-                        person.getDoedsfall().stream().findFirst().orElse(null)))
+                .folkeregisterpersonstatus(folkeregisterPersonstatusService.convert(person))
+                .fullmakt(fullmaktService.convert(person))
+                .kontaktadresse(person.getKontaktadresse())
+                .utenlandskIdentifikasjonsnummer(utenlandsidentifikasjonsnummerService
+                        .convert(person.getUtenlandskIdentifikasjonsnummer()))
                 .build();
     }
 }

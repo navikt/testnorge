@@ -2,6 +2,7 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.domain.Identtype;
+import no.nav.pdl.forvalter.domain.PdlPerson;
 import no.nav.pdl.forvalter.domain.PdlStatsborgerskap;
 import no.nav.pdl.forvalter.dto.RsInnflytting;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
@@ -29,22 +30,20 @@ public class StatsborgerskapService {
 
     private final TilfeldigLandService tilfeldigLandService;
 
-    public List<PdlStatsborgerskap> convert(List<PdlStatsborgerskap> request,
-                                            String ident,
-                                            RsInnflytting innflytting) {
+    public List<PdlStatsborgerskap> convert(PdlPerson person) {
 
-        for (var type : request) {
+        for (var type : person.getStatsborgerskap()) {
 
             if (type.isNew()) {
                 validate(type);
 
-                handle(type, ident, innflytting);
+                handle(type, person.getIdent(), person.getInnflytting().stream().reduce((a, b) -> b).orElse(null));
                 if (Strings.isBlank(type.getKilde())) {
                     type.setKilde("Dolly");
                 }
             }
         }
-        return request;
+        return person.getStatsborgerskap();
     }
 
     private void validate(PdlStatsborgerskap statsborgerskap) {

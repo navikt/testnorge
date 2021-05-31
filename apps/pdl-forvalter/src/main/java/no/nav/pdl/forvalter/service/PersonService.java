@@ -2,12 +2,10 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.domain.PdlPerson;
 import no.nav.pdl.forvalter.dto.PersonUpdateRequest;
-import no.nav.pdl.forvalter.service.command.MergeCommand;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
@@ -23,7 +21,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class PersonService {
 
     private final PersonRepository personRepository;
-    private final MapperFacade mapperFacade;
+    private final MergeService mergeService;
     private final PersonArtifactService personArtifactService;
 
     @Transactional
@@ -35,10 +33,10 @@ public class PersonService {
                         .person(new PdlPerson())
                         .build());
 
-        var mergedPerson = new MergeCommand(request.getPerson(), dbPerson.getPerson(), mapperFacade).call();
+        var mergedPerson = mergeService.merge(request.getPerson(), dbPerson.getPerson());
         var extendedArtifacts = personArtifactService.buildPerson(mergedPerson, ident);
         dbPerson.setPerson(extendedArtifacts);
-        dbPerson.setUpdated(LocalDateTime.now());
+        dbPerson.setSistOppdatert(LocalDateTime.now());
 
         return personRepository.save(dbPerson);
     }

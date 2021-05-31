@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.domain.Identtype;
 import no.nav.pdl.forvalter.domain.PdlBostedadresse;
 import no.nav.pdl.forvalter.domain.PdlFoedsel;
+import no.nav.pdl.forvalter.domain.PdlPerson;
 import no.nav.pdl.forvalter.dto.RsInnflytting;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
@@ -26,22 +27,21 @@ public class FoedselService {
     private final TilfeldigKommuneService tilfeldigKommuneService;
     private final TilfeldigLandService tilfeldigLandService;
 
-    public List<PdlFoedsel> convert(List<PdlFoedsel> request,
-                                    String ident,
-                                    PdlBostedadresse bostedadresse,
-                                    RsInnflytting innflytting) {
+    public List<PdlFoedsel> convert(PdlPerson person) {
 
-        for (var type : request) {
+        for (var type : person.getFoedsel()) {
 
             if (type.isNew()) {
 
-                handle(type, ident, bostedadresse, innflytting);
+                handle(type, person.getIdent(),
+                        person.getBostedsadresse().stream().reduce((a, b) -> b).orElse(null),
+                        person.getInnflytting().stream().reduce((a, b) -> b).orElse(null));
                 if (Strings.isBlank(type.getKilde())) {
                     type.setKilde("Dolly");
                 }
             }
         }
-        return request;
+        return person.getFoedsel();
     }
 
     private void handle(PdlFoedsel foedsel, String ident, PdlBostedadresse bostedadresse, RsInnflytting innflytting) {

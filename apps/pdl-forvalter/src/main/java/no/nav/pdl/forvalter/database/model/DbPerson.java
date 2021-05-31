@@ -2,9 +2,8 @@ package no.nav.pdl.forvalter.database.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import no.nav.pdl.forvalter.database.JSONUserType;
 import no.nav.pdl.forvalter.domain.PdlPerson;
 import org.hibernate.annotations.GenericGenerator;
@@ -12,14 +11,21 @@ import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-@Setter
-@Getter
+import static java.util.Objects.isNull;
+
+@Data
 @Entity
 @Table(name = "person")
 @Builder
@@ -31,17 +37,28 @@ public class DbPerson {
     public static final String SEQUENCE_STYLE_GENERATOR = "org.hibernate.id.enhanced.SequenceStyleGenerator";
 
     @Id
-    @GeneratedValue(generator = "bestillingKontrollIdGenerator")
-    @GenericGenerator(name = "bestillingKontrollIdGenerator", strategy = SEQUENCE_STYLE_GENERATOR, parameters = {
+    @GeneratedValue(generator = "personIdGenerator")
+    @GenericGenerator(name = "personIdGenerator", strategy = SEQUENCE_STYLE_GENERATOR, parameters = {
             @Parameter(name = "sequence_name", value = "person_sequence"),
             @Parameter(name = "initial_value", value = "1"),
             @Parameter(name = "increment_size", value = "1")
     })
     private Long id;
 
-    private LocalDateTime updated;
+    private LocalDateTime sistOppdatert;
     private String ident;
 
     @Type(type = "JsonType")
     private PdlPerson person;
+
+    @OrderBy("relasjonType desc, id desc")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "person", cascade = CascadeType.ALL)
+    private List<DbRelasjon> relasjoner;
+
+    public List<DbRelasjon> getRelasjoner() {
+        if (isNull(relasjoner)) {
+            relasjoner = new ArrayList<>();
+        }
+        return relasjoner;
+    }
 }

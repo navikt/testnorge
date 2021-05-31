@@ -15,7 +15,9 @@ import java.util.List;
 @AllArgsConstructor
 public class RsFullmakt extends PdlDbVersjon {
 
-    private RsPersonRequest fullmektig;
+    private RsPersonRequest nyFullmektig;
+
+    private String fullmektig;
     private LocalDateTime gyldigFom;
     private LocalDateTime gyldigTom;
     private List<String> omraader;

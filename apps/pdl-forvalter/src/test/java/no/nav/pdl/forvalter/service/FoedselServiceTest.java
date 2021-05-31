@@ -3,6 +3,7 @@ package no.nav.pdl.forvalter.service;
 import no.nav.pdl.forvalter.domain.PdlBostedadresse;
 import no.nav.pdl.forvalter.domain.PdlFoedsel;
 import no.nav.pdl.forvalter.domain.PdlMatrikkeladresse;
+import no.nav.pdl.forvalter.domain.PdlPerson;
 import no.nav.pdl.forvalter.domain.PdlUtenlandskAdresse;
 import no.nav.pdl.forvalter.domain.PdlVegadresse;
 import no.nav.pdl.forvalter.dto.RsInnflytting;
@@ -57,9 +58,13 @@ class FoedselServiceTest {
     @Test
     void whenIdentIsFnrAndVegadresseConveysKommune_thenCaptureFoedekommune() {
 
-        var target = foedselService.convert(List.of(PdlFoedsel.builder()
-                .isNew(true)
-                .build()), FNR_IDENT, vegadresse, null)
+        var target = foedselService.convert(PdlPerson.builder()
+                .foedsel(List.of(PdlFoedsel.builder()
+                        .isNew(true)
+                        .build()))
+                .ident(FNR_IDENT)
+                .bostedsadresse(List.of(vegadresse))
+                .build())
                 .get(0);
 
         assertThat(target.getFoedselsdato(), is(equalTo(LocalDate.of(1956, 10, 12).atStartOfDay())));
@@ -71,9 +76,13 @@ class FoedselServiceTest {
     @Test
     void whenIdentIsFnrAndMatrikkeldresseConveysKommune_thenCaptureFoedekommune() {
 
-        var target = foedselService.convert(List.of(PdlFoedsel.builder()
-                .isNew(true)
-                .build()), FNR_IDENT, matrikkeladresse, null)
+        var target = foedselService.convert(PdlPerson.builder()
+                .foedsel(List.of(PdlFoedsel.builder()
+                        .isNew(true)
+                        .build()))
+                .ident(FNR_IDENT)
+                .bostedsadresse(List.of(matrikkeladresse))
+                .build())
                 .get(0);
 
         assertThat(target.getFoedselsdato(), is(equalTo(LocalDate.of(1956, 10, 12).atStartOfDay())));
@@ -85,9 +94,13 @@ class FoedselServiceTest {
     @Test
     void whenIdentIsFnrAndUkjentBostedConveysKommune_thenCaptureFoedekommune() {
 
-        var target = foedselService.convert(List.of(PdlFoedsel.builder()
-                .isNew(true)
-                .build()), FNR_IDENT, ukjentBosted, null)
+        var target = foedselService.convert(PdlPerson.builder()
+                .foedsel(List.of(PdlFoedsel.builder()
+                        .isNew(true)
+                        .build()))
+                .ident(FNR_IDENT)
+                .bostedsadresse(List.of(ukjentBosted))
+                .build())
                 .get(0);
 
         assertThat(target.getFoedselsdato(), is(equalTo(LocalDate.of(1956, 10, 12).atStartOfDay())));
@@ -101,9 +114,12 @@ class FoedselServiceTest {
 
         when(tilfeldigKommuneService.getKommune()).thenReturn("4777");
 
-        var target = foedselService.convert(List.of(PdlFoedsel.builder()
-                .isNew(true)
-                .build()), FNR_IDENT, null, null)
+        var target = foedselService.convert(PdlPerson.builder()
+                .foedsel(List.of(PdlFoedsel.builder()
+                        .isNew(true)
+                        .build()))
+                .ident(FNR_IDENT)
+                .build())
                 .get(0);
 
         verify(tilfeldigKommuneService).getKommune();
@@ -117,9 +133,13 @@ class FoedselServiceTest {
     @Test
     void whenIdentIsDnrAndUtenLandskAdresseConveysCountry_thenCaptureLandkode() {
 
-        var target = foedselService.convert(List.of(PdlFoedsel.builder()
-                .isNew(true)
-                .build()), DNR_IDENT, utenlandskBoadresse, null)
+        var target = foedselService.convert(PdlPerson.builder()
+                .foedsel(List.of(PdlFoedsel.builder()
+                        .isNew(true)
+                        .build()))
+                .ident(DNR_IDENT)
+                .bostedsadresse(List.of(utenlandskBoadresse))
+                .build())
                 .get(0);
 
         assertThat(target.getFoedselsdato(), is(equalTo(LocalDate.of(1968, 5, 1).atStartOfDay())));
@@ -130,9 +150,13 @@ class FoedselServiceTest {
     @Test
     void whenIdentIsDnrAndInnflyttingConveysCountry_thenCapturLandkode() {
 
-        var target = foedselService.convert(List.of(PdlFoedsel.builder()
-                .isNew(true)
-                .build()), DNR_IDENT, null, innflytting)
+        var target = foedselService.convert(PdlPerson.builder()
+                .foedsel(List.of(PdlFoedsel.builder()
+                        .isNew(true)
+                        .build()))
+                .ident(DNR_IDENT)
+                .innflytting(List.of(innflytting))
+                .build())
                 .get(0);
 
         assertThat(target.getFoedselsdato(), is(equalTo(LocalDate.of(1968, 5, 1).atStartOfDay())));
@@ -145,9 +169,12 @@ class FoedselServiceTest {
 
         when(tilfeldigLandService.getLand()).thenReturn("COL");
 
-        var target = foedselService.convert(List.of(PdlFoedsel.builder()
-                .isNew(true)
-                .build()), DNR_IDENT, null, null)
+        var target = foedselService.convert(PdlPerson.builder()
+                .foedsel(List.of(PdlFoedsel.builder()
+                        .isNew(true)
+                        .build()))
+                .ident(DNR_IDENT)
+                .build())
                 .get(0);
 
         verify(tilfeldigLandService).getLand();

@@ -8,7 +8,7 @@ import static org.apache.logging.log4j.util.Strings.isBlank;
 
 public abstract class PdlArtifactService<T extends PdlDbVersjon> {
 
-    public List<T> convert(List<T> request) {
+    protected List<T> convert(List<T> request) {
 
         for (var type : request) {
 

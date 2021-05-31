@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import no.nav.pdl.forvalter.domain.doedsbo.PdlKontaktinformasjonForDoedsbo;
 import no.nav.pdl.forvalter.domain.falskidentitet.PdlFalskIdentitet;
 import no.nav.pdl.forvalter.domain.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
+import no.nav.pdl.forvalter.dto.RsFullmakt;
 import no.nav.pdl.forvalter.dto.RsInnflytting;
 import no.nav.pdl.forvalter.dto.RsKontaktadresse;
 import no.nav.pdl.forvalter.dto.RsNavn;
@@ -27,6 +28,7 @@ import static java.util.Objects.isNull;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class PdlPerson implements Serializable {
 
+    private String ident;
     private List<PdlFoedsel> foedsel;
     private List<RsNavn> navn;
     private List<PdlKjoenn> kjoenn;
@@ -52,7 +54,7 @@ public class PdlPerson implements Serializable {
     private List<PdlOpphold> opphold;
     private List<PdlSivilstand> sivilstand;
     private List<PdlTelefonnummer> telefonnummer;
-    private List<PdlFullmakt> fullmakt;
+    private List<RsFullmakt> fullmakt;
     private List<PdlVergemaal> vergemaal;
 
     public List<PdlBostedadresse> getBostedsadresse() {
@@ -133,7 +135,7 @@ public class PdlPerson implements Serializable {
         return folkeregisterpersonstatus;
     }
 
-    public List<PdlFullmakt> getFullmakt() {
+    public List<RsFullmakt> getFullmakt() {
         if (isNull(fullmakt)) {
             fullmakt = new ArrayList<>();
         }

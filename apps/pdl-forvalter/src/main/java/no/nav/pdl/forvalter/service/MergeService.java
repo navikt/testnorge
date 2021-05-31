@@ -1,16 +1,16 @@
-package no.nav.pdl.forvalter.service.command;
+package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.domain.PdlDbVersjon;
 import no.nav.pdl.forvalter.domain.PdlPerson;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
@@ -19,11 +19,10 @@ import static java.util.Objects.nonNull;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Slf4j
+@Service
 @RequiredArgsConstructor
-public class MergeCommand implements Callable<PdlPerson> {
+public class MergeService {
 
-    private final PdlPerson request;
-    private final PdlPerson dbPerson;
     private final MapperFacade mapperFacade;
 
     private static Object getValue(Object object, String field) {
@@ -40,7 +39,7 @@ public class MergeCommand implements Callable<PdlPerson> {
         }
     }
 
-    public PdlPerson call() {
+    public PdlPerson merge(PdlPerson request, PdlPerson dbPerson) {
 
         Stream.of(request.getClass().getDeclaredFields()).forEach(field -> {
 

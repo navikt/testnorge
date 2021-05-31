@@ -5,6 +5,7 @@ import no.nav.pdl.forvalter.domain.PdlDoedsfall;
 import no.nav.pdl.forvalter.domain.PdlFolkeregisterpersonstatus;
 import no.nav.pdl.forvalter.domain.PdlMatrikkeladresse;
 import no.nav.pdl.forvalter.domain.PdlOpphold;
+import no.nav.pdl.forvalter.domain.PdlPerson;
 import no.nav.pdl.forvalter.domain.PdlUtenlandskAdresse;
 import no.nav.pdl.forvalter.domain.PdlVegadresse;
 import no.nav.pdl.forvalter.dto.RsUtflytting;
@@ -37,10 +38,12 @@ class FolkeregisterPersonstatusServiceTest {
     void whenValueProvided_thenKeepValue() {
 
         var target = folkeregisterPersonstatusService.convert(
-                List.of(PdlFolkeregisterpersonstatus.builder()
-                        .status(FORSVUNNET)
-                        .isNew(true)
-                        .build()), null, null, null, null).get(0);
+                PdlPerson.builder()
+                        .folkeregisterpersonstatus(List.of(PdlFolkeregisterpersonstatus.builder()
+                                .status(FORSVUNNET)
+                                .isNew(true)
+                                .build()))
+                        .build()).get(0);
 
         assertThat(target.getStatus(), is(equalTo(FORSVUNNET)));
     }
@@ -49,11 +52,15 @@ class FolkeregisterPersonstatusServiceTest {
     void whenDoedsfallExists_thenUseDoedsfall() {
 
         var target = folkeregisterPersonstatusService.convert(
-                List.of(PdlFolkeregisterpersonstatus.builder()
-                        .isNew(true)
-                        .build()), null, null, null,
-                PdlDoedsfall.builder()
-                        .doedsdato(LocalDateTime.now())
+                PdlPerson.builder()
+                        .folkeregisterpersonstatus(
+                                List.of(PdlFolkeregisterpersonstatus.builder()
+                                        .isNew(true)
+                                        .build()))
+                        .doedsfall(List.of(
+                                PdlDoedsfall.builder()
+                                        .doedsdato(LocalDateTime.now())
+                                        .build()))
                         .build()).get(0);
 
         assertThat(target.getStatus(), is(equalTo(DOED)));
@@ -63,11 +70,15 @@ class FolkeregisterPersonstatusServiceTest {
     void whenOppholdExists_thenUseOpphold() {
 
         var target = folkeregisterPersonstatusService.convert(
-                List.of(PdlFolkeregisterpersonstatus.builder()
-                        .isNew(true)
-                        .build()), null, null, PdlOpphold.builder()
-                        .type(PdlOpphold.OppholdType.OPPLYSNING_MANGLER)
-                        .build(), null).get(0);
+                PdlPerson.builder()
+                        .folkeregisterpersonstatus(
+                                List.of(PdlFolkeregisterpersonstatus.builder()
+                                        .isNew(true)
+                                        .build()))
+                        .opphold(List.of(PdlOpphold.builder()
+                                .type(PdlOpphold.OppholdType.OPPLYSNING_MANGLER)
+                                .build()))
+                        .build()).get(0);
 
         assertThat(target.getStatus(), is(equalTo(MIDLERTIDIG)));
     }
@@ -76,12 +87,15 @@ class FolkeregisterPersonstatusServiceTest {
     void whenUtflyttingExists_thenUseUpphold() {
 
         var target = folkeregisterPersonstatusService.convert(
-                List.of(PdlFolkeregisterpersonstatus.builder()
-                        .isNew(true)
-                        .build()), null,
-                RsUtflytting.builder()
-                        .tilflyttingsland("FRA")
-                        .build(), null, null).get(0);
+                PdlPerson.builder()
+                        .folkeregisterpersonstatus(
+                                List.of(PdlFolkeregisterpersonstatus.builder()
+                                        .isNew(true)
+                                        .build()))
+                        .utflytting(List.of(RsUtflytting.builder()
+                                .tilflyttingsland("FRA")
+                                .build()))
+                        .build()).get(0);
 
         assertThat(target.getStatus(), is(equalTo(UTFLYTTET)));
     }
@@ -90,13 +104,15 @@ class FolkeregisterPersonstatusServiceTest {
     void whenBostedsadresseVegadresseExists_thenUseVegadresse() {
 
         var target = folkeregisterPersonstatusService.convert(
-                List.of(PdlFolkeregisterpersonstatus.builder()
-                        .isNew(true)
-                        .build()),
-                PdlBostedadresse.builder()
-                .vegadresse(new PdlVegadresse())
-                .build(),
-                null,null, null).get(0);
+                PdlPerson.builder()
+                        .folkeregisterpersonstatus(
+                                List.of(PdlFolkeregisterpersonstatus.builder()
+                                        .isNew(true)
+                                        .build()))
+                        .bostedsadresse(List.of(PdlBostedadresse.builder()
+                                .vegadresse(new PdlVegadresse())
+                                .build()))
+                        .build()).get(0);
 
         assertThat(target.getStatus(), is(equalTo(BOSATT)));
     }
@@ -105,13 +121,15 @@ class FolkeregisterPersonstatusServiceTest {
     void whenBostedsadresseMatrikkeladresseExists_thenUseMatrikkeladresse() {
 
         var target = folkeregisterPersonstatusService.convert(
-                List.of(PdlFolkeregisterpersonstatus.builder()
-                        .isNew(true)
-                        .build()),
-                PdlBostedadresse.builder()
-                        .matrikkeladresse(new PdlMatrikkeladresse())
-                        .build(),
-                null,null, null).get(0);
+                PdlPerson.builder()
+                        .folkeregisterpersonstatus(
+                                List.of(PdlFolkeregisterpersonstatus.builder()
+                                        .isNew(true)
+                                        .build()))
+                        .bostedsadresse(List.of(PdlBostedadresse.builder()
+                                .matrikkeladresse(new PdlMatrikkeladresse())
+                                .build()))
+                        .build()).get(0);
 
         assertThat(target.getStatus(), is(equalTo(BOSATT)));
     }
@@ -120,13 +138,15 @@ class FolkeregisterPersonstatusServiceTest {
     void whenBostedsadresseUtenlandsadresseExists_thenUseUtenlandsadresse() {
 
         var target = folkeregisterPersonstatusService.convert(
-                List.of(PdlFolkeregisterpersonstatus.builder()
-                        .isNew(true)
-                        .build()),
-                PdlBostedadresse.builder()
-                        .utenlandskAdresse(new PdlUtenlandskAdresse())
-                        .build(),
-                null,null, null).get(0);
+                PdlPerson.builder()
+                        .folkeregisterpersonstatus(
+                                List.of(PdlFolkeregisterpersonstatus.builder()
+                                        .isNew(true)
+                                        .build()))
+                        .bostedsadresse(List.of(PdlBostedadresse.builder()
+                                .utenlandskAdresse(new PdlUtenlandskAdresse())
+                                .build()))
+                        .build()).get(0);
 
         assertThat(target.getStatus(), is(equalTo(IKKE_BOSATT)));
     }
@@ -135,10 +155,12 @@ class FolkeregisterPersonstatusServiceTest {
     void whenNoOtherInformation_thenUseDefault() {
 
         var target = folkeregisterPersonstatusService.convert(
-                List.of(PdlFolkeregisterpersonstatus.builder()
-                        .isNew(true)
-                        .build()),
-                null, null,null, null).get(0);
+                PdlPerson.builder()
+                        .folkeregisterpersonstatus(
+                                List.of(PdlFolkeregisterpersonstatus.builder()
+                                        .isNew(true)
+                                        .build()))
+                        .build()).get(0);
 
         assertThat(target.getStatus(), is(equalTo(FOEDSELSREGISTRERT)));
     }
