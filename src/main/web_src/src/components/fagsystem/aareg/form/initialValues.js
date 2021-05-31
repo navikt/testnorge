@@ -49,7 +49,7 @@ export const initialArbeidsforholdOrg = {
 		arbeidstidsordning: 'ikkeSkift',
 		avtaltArbeidstimerPerUke: 37.5
 	},
-	fartoy: []
+	fartoy: {}
 }
 
 export const initialArbeidsforholdPers = {
@@ -73,7 +73,7 @@ export const initialArbeidsforholdPers = {
 		arbeidstidsordning: 'ikkeSkift',
 		avtaltArbeidstimerPerUke: 37.5
 	},
-	fartoy: []
+	fartoy: {}
 }
 
 export const initialFartoy = {
