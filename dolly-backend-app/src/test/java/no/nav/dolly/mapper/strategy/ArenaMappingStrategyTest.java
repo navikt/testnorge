@@ -1,15 +1,5 @@
 package no.nav.dolly.mapper.strategy;
 
-import static java.util.Collections.singletonList;
-import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaBrukertype.MED_SERVICEBEHOV;
-import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaBrukertype.UTEN_SERVICEBEHOV;
-import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaKvalifiseringsgruppe.IKVAL;
-import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaKvalifiseringsgruppe.VARIG;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
@@ -22,6 +12,16 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDateTime;
+
+import static java.util.Collections.singletonList;
+import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaBrukertype.MED_SERVICEBEHOV;
+import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaBrukertype.UTEN_SERVICEBEHOV;
+import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaKvalifiseringsgruppe.IKVAL;
+import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaKvalifiseringsgruppe.VARIG;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ArenaMappingStrategyTest {
@@ -69,6 +69,7 @@ public class ArenaMappingStrategyTest {
                 .build(), no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker.class);
 
         assertThat(arenaNyBruker.getUtenServicebehov(), is(nullValue()));
+        assertThat(arenaNyBruker.getAktiveringsDato(), is(nullValue()));
         assertThat(arenaNyBruker.getKvalifiseringsgruppe(), is(equalTo(VARIG)));
     }
 
@@ -92,5 +93,6 @@ public class ArenaMappingStrategyTest {
         assertThat(arenaNyBruker.getAap115().get(0).getFraDato(), is(equalTo(OLD_TIMES.toLocalDate())));
         assertThat(arenaNyBruker.getAap().get(0).getFraDato(), is(equalTo(PAST_TIME.toLocalDate())));
         assertThat(arenaNyBruker.getAap().get(0).getTilDato(), is(equalTo(TIME_NOW.toLocalDate())));
+        assertThat(arenaNyBruker.getAktiveringsDato(), is(equalTo(OLD_TIMES.toLocalDate())));
     }
 }
