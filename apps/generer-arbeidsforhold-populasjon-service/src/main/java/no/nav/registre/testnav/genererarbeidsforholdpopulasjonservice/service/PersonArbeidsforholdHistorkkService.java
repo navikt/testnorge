@@ -14,11 +14,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.Organisajon;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.Person;
@@ -46,6 +48,7 @@ public class PersonArbeidsforholdHistorkkService {
     }
 
     private Mono<Person> generer(String ident, String miljo, int months, List<Organisajon> organisajoner) {
+        var count = new AtomicInteger();
         return arbeidsforholdSerivce
                 .findTimelineFor(ident, miljo)
                 .flatMap(timeline -> {
@@ -58,27 +61,33 @@ public class PersonArbeidsforholdHistorkkService {
                             ident,
                             findAllDatesBetween(lastDate.plusMonths(1), lastDate.plusMonths(months)).iterator()
                     );
-                    return map.map(value -> {
-                        person.updateTimeline(new Timeline<>(value));
-                        log.info("Person {} ferdig generert.", person.getIdent());
-                        return person;
-                    });
-                });
+                    return updatePerson(count, person, map);
+                }).filter(Objects::nonNull);
     }
 
     private Mono<Person> generer(String ident, String miljo, LocalDate fom, LocalDate tom, List<Organisajon> organisajoner) {
+        var count = new AtomicInteger();
         return arbeidsforholdSerivce
                 .findTimelineFor(ident, miljo)
                 .flatMap(timeline -> {
                     var person = new Person(ident, timeline);
                     var previous = person.getArbeidsforholdOn(fom.minusMonths(1));
                     var map = getArbeidsforholdMap(new ArrayList<>(previous), organisajoner, ident, findAllDatesBetween(fom, tom).iterator());
-                    return map.map(value -> {
-                        person.updateTimeline(new Timeline<>(value));
-                        log.info("Person {} ferdig generert.", person.getIdent());
-                        return person;
-                    });
-                });
+
+                    return updatePerson(count, person, map);
+                }).filter(Objects::nonNull);
+    }
+
+    private Mono<Person> updatePerson(AtomicInteger count, Person person, Mono<Map<LocalDate, List<Arbeidsforhold>>> map) {
+        return map.map(value -> {
+            count.incrementAndGet();
+            if (value == null) {
+                return null;
+            }
+            person.updateTimeline(new Timeline<>(value));
+            log.info("Person {} ferdig generert. (Total: {})", person.getIdent(), count.get());
+            return person;
+        });
     }
 
 
@@ -125,7 +134,14 @@ public class PersonArbeidsforholdHistorkkService {
         }
 
         if (previous.get(0).isForenklet()) {
-            map.putAll(generer(previous, organisajoner, ident, dates));
+
+            var generert = generer(previous, organisajoner, ident, dates);
+
+            if (generert == null) {
+                return null;
+            }
+
+            map.putAll(generert);
             return map;
         }
 
@@ -133,11 +149,17 @@ public class PersonArbeidsforholdHistorkkService {
         dates.forEachRemaining(dateList::add);
         dates = dateList.iterator();
 
-        var historikk = arbeidsforholdHistorikkService.genererHistorikk(
-                previous,
-                dateList.iterator().next(),
-                dateList.size()
-        ).block();
+        List<List<Arbeidsforhold>> historikk;
+        try {
+            historikk = arbeidsforholdHistorikkService.genererHistorikk(
+                    previous,
+                    dateList.iterator().next(),
+                    dateList.size()
+            ).block();
+        } catch (Exception ex) {
+            return null;
+        }
+
 
         Iterator<Arbeidsforhold> left = historikk.get(0).stream().iterator();
         Iterator<Arbeidsforhold> right = historikk.size() <= 1 ? Collections.emptyIterator() : historikk.get(1).stream().iterator();
