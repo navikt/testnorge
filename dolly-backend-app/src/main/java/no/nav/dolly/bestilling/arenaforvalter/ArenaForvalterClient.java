@@ -53,6 +53,7 @@ public class ArenaForvalterClient implements ClientRegister {
                 }
 
                 ArenaNyeBrukere arenaNyeBrukere = new ArenaNyeBrukere();
+                List<ArenaDagpenger> dagpengerListe = new ArrayList<>();
                 availEnvironments.forEach(environment -> {
                     ArenaNyBruker arenaNyBruker = mapperFacade.map(bestilling.getArenaforvalter(), ArenaNyBruker.class);
                     arenaNyBruker.setPersonident(dollyPerson.getHovedperson());
@@ -63,12 +64,12 @@ public class ArenaForvalterClient implements ClientRegister {
                         ArenaDagpenger arenaDagpenger = mapperFacade.map(bestilling.getArenaforvalter(), ArenaDagpenger.class);
                         arenaDagpenger.setPersonident(dollyPerson.getHovedperson());
                         arenaDagpenger.setMiljoe(environment);
-                        sendArenadagpenger(arenaDagpenger, status);
+                        dagpengerListe.add(arenaDagpenger);
                     }
-
                 });
 
                 sendArenadata(arenaNyeBrukere, status);
+                dagpengerListe.forEach(dagpenger -> sendArenadagpenger(dagpenger, status));
 
             }
 
