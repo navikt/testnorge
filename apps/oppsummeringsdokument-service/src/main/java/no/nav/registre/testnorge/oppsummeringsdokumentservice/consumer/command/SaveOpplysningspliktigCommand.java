@@ -16,6 +16,7 @@ public class SaveOpplysningspliktigCommand implements Runnable {
     private final WebClient webClient;
     private final String xml;
     private final String token;
+    private final String miljo;
 
     @SneakyThrows
     @Override
@@ -23,7 +24,7 @@ public class SaveOpplysningspliktigCommand implements Runnable {
         try {
             webClient
                     .post()
-                    .uri(builder -> builder.path("/oppsummeringsdokument").queryParam("targetEnvironment", "u5").build())
+                    .uri(builder -> builder.path("/oppsummeringsdokument").queryParam("targetEnvironment", miljo).build())
                     .body(BodyInserters.fromPublisher(Mono.just(xml), String.class))
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
