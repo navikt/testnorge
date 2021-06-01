@@ -135,13 +135,13 @@ public class PersonArbeidsforholdHistorkkService {
 
         if (previous.get(0).isForenklet()) {
 
-            var generet = generer(previous, organisajoner, ident, dates);
+            var generert = generer(previous, organisajoner, ident, dates);
 
-            if (generet == null) {
+            if (generert == null) {
                 return null;
             }
 
-            map.putAll(generet);
+            map.putAll(generert);
             return map;
         }
 
