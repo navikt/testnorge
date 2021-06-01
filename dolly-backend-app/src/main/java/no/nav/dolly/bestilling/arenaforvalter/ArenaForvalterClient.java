@@ -122,7 +122,7 @@ public class ArenaForvalterClient implements ClientRegister {
             ResponseEntity<ArenaNyeDagpengerResponse> response = arenaForvalterConsumer.postArenaDagpenger(arenaNyeDagpenger);
             log.info("Dagpenger mottatt: \n" + Json.pretty(response));
             if (response.hasBody()) {
-                if (nonNull(response.getBody().getNyeDagpFeilList())) {
+                if (nonNull(response.getBody().getNyeDagpFeilList()) && !response.getBody().getNyeDagpFeilList().isEmpty()) {
                     response.getBody().getNyeDagpFeilList().forEach(brukerfeil -> {
                         status.append(',')
                                 .append(brukerfeil.getMiljoe())
@@ -135,10 +135,13 @@ public class ArenaForvalterClient implements ClientRegister {
                 } else {
                     status.append(',')
                             .append(arenaNyeDagpenger.getMiljoe())
-                            .append("Feilstatus: Mottok ugyldig svar fra Arena");
+                            .append(":OK");
                 }
+            } else {
+                status.append(',')
+                        .append(arenaNyeDagpenger.getMiljoe())
+                        .append("Feilstatus: Mottok ugyldig svar fra Arena");
             }
-
         } catch (RuntimeException e) {
 
             status.append(',')
