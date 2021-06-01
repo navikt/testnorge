@@ -1,5 +1,6 @@
 package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.command;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -27,24 +28,32 @@ public class GenererArbeidsforholdHistorikkCommand implements Callable<Mono<List
     private final WebClient webClient;
     private final List<ArbeidsforholdRequest> requests;
     private final String token;
+    private final ObjectMapper objectMapper;
 
     @SneakyThrows
     @Override
     public Mono<List<List<ArbeidsforholdResponse>>> call() {
         log.info("Genererer arbeidsforhold historikk.");
+        var body = requests.toArray(new ArbeidsforholdRequest[requests.size()]);
         return webClient
                 .post()
                 .uri("/api/v1/generate/amelding/arbeidsforhold/historikk")
-                .body(BodyInserters.fromPublisher(Mono.just( requests.toArray(new ArbeidsforholdRequest[requests.size()])), ArbeidsforholdRequest[].class))
+                .body(BodyInserters.fromPublisher(Mono.just(body), ArbeidsforholdRequest[].class))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<List<ArbeidsforholdResponse>>>() {
-                }).retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(1))
+                }).retryWhen(Retry.max(1)
                         .filter(throwable -> !(
                                 throwable instanceof WebClientResponseException.NotFound
                                         || throwable instanceof WebClientResponseException.BadRequest
                         ))
-                );
+                ).doOnError(error -> {
+                    try {
+                        log.error("Feil ved opprettelse av historikk med body: {}.", objectMapper.writeValueAsString(body), error);
+                    } catch (JsonProcessingException e) {
+                        log.error("Feil ved convertering av body til string.", e);
+                    }
+                });
     }
 }

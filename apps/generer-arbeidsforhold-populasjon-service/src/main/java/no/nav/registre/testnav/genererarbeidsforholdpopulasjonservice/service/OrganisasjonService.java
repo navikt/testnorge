@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.GenererOrganisasjonPopulasjonConsumer;
@@ -32,7 +33,7 @@ public class OrganisasjonService {
                 .getOrganisasjoner(opplysningspliktigOrgnummer, miljo)
                 .collectList()
                 .block();
-        log.info("Funnet {} opplysningspliktige organiasjoner.", list.size());
+        log.info("Funnet {} opplysningspliktige organiasjon(er).", list.size());
         return list
                 .stream()
                 .filter(value -> !oppsummeringsdokuments

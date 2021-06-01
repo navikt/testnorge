@@ -24,6 +24,7 @@ public class SyntArbeidsforholdConsumer {
     private final AccessTokenService accessTokenService;
     private final NaisServerProperties properties;
     private final WebClient webClient;
+    private final ObjectMapper objectMapper;
 
     public SyntArbeidsforholdConsumer(
             AccessTokenService accessTokenService,
@@ -32,6 +33,7 @@ public class SyntArbeidsforholdConsumer {
     ) {
         this.accessTokenService = accessTokenService;
         this.properties = properties;
+        this.objectMapper = objectMapper;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(properties.getUrl())
@@ -55,6 +57,6 @@ public class SyntArbeidsforholdConsumer {
     public Mono<List<List<ArbeidsforholdResponse>>> genererArbeidsforholdHistorikk(List<ArbeidsforholdRequest> requests) {
         return accessTokenService
                 .generateNonBlockedToken(properties)
-                .flatMap(accessToken -> new GenererArbeidsforholdHistorikkCommand(webClient, requests, accessToken.getTokenValue()).call());
+                .flatMap(accessToken -> new GenererArbeidsforholdHistorikkCommand(webClient, requests, accessToken.getTokenValue(), objectMapper).call());
     }
 }

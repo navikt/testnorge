@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.command.GetOppsummeringsdokumentCommand;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.command.SaveOppsummeringsdokumenterCommand;
@@ -43,12 +44,11 @@ public class OppsummeringsdokumentConsumer {
             AccessTokenService accessTokenService,
             OppsummeringsdokuemntServerProperties properties,
             ObjectMapper objectMapper,
-            ApplicationProperties applicationProperties,
-            Executor executor) {
+            ApplicationProperties applicationProperties) {
         this.applicationProperties = applicationProperties;
         this.accessTokenService = accessTokenService;
         this.properties = properties;
-        this.executor = executor;
+        this.executor = Executors.newFixedThreadPool(20);
 
         this.webClient = WebClient
                 .builder()
