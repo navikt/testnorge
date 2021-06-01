@@ -116,7 +116,7 @@ public class ArenaDagpenger {
     @AllArgsConstructor
     public static class TaptArbeidstid {
 
-        private String anvedtRegelKode;
+        private String anvendtRegelKode;
         private Integer fastsattArbeidstid;
         private Integer naavaerendeArbeidstid;
     }

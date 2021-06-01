@@ -94,13 +94,13 @@ public class ArenaMappingStrategy implements MappingStrategy {
                                 .build());
 
                         dagpenger.setGodkjenningerReellArbeidssoker(ArenaDagpenger.GodkjenningerReellArbeidssoker.builder()
-                                .godkjentDeltidssoker("N")
-                                .godkjentLokalArbeidssoker("N")
+                                .godkjentDeltidssoker("J")
+                                .godkjentLokalArbeidssoker("J")
                                 .godkjentUtdanning("J")
                                 .build());
 
                         dagpenger.setTaptArbeidstid(ArenaDagpenger.TaptArbeidstid.builder()
-                                .anvedtRegelKode("GJSNITT12MND")
+                                .anvendtRegelKode("GJSNITT12MND")
                                 .fastsattArbeidstid(30)
                                 .naavaerendeArbeidstid(0)
                                 .build());
