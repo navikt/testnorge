@@ -124,6 +124,7 @@ public class ArenaForvalterClient implements ClientRegister {
             if (response.hasBody()) {
                 if (nonNull(response.getBody().getNyeDagpFeilList()) && !response.getBody().getNyeDagpFeilList().isEmpty()) {
                     response.getBody().getNyeDagpFeilList().forEach(brukerfeil -> {
+                        log.info("Brukerfeil inneholder: " + Json.pretty(brukerfeil));
                         status.append(',')
                                 .append(brukerfeil.getMiljoe())
                                 .append("$Feilstatus: \"")
