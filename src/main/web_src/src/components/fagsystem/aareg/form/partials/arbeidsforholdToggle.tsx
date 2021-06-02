@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import styled from 'styled-components'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { AmeldingForm } from './ameldingForm'
 import { ArbeidsforholdForm } from './arbeidsforholdForm'
@@ -18,6 +19,11 @@ import { ArbeidsgiverTyper } from '~/components/fagsystem/aareg/AaregTypes'
 // 	fritekst = 'FRITEKST',
 // 	privat = 'PRIVAT'
 // }
+
+const ToggleArbeidsgiver = styled(ToggleGruppe)`
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+`
 
 export const ArbeidsforholdToggle = ({ formikBag }) => {
 	const [typeArbeidsforhold, setTypeArbeidsforhold] = useState('EGEN')
@@ -58,7 +64,7 @@ export const ArbeidsforholdToggle = ({ formikBag }) => {
 
 	return (
 		<div className="toggle--wrapper">
-			<ToggleGruppe
+			<ToggleArbeidsgiver
 				onChange={event => handleToggleChange(event.target.value)}
 				name={'arbeidsforhold'}
 			>
@@ -71,7 +77,7 @@ export const ArbeidsforholdToggle = ({ formikBag }) => {
 						{type.label}
 					</ToggleKnapp>
 				))}
-			</ToggleGruppe>
+			</ToggleArbeidsgiver>
 			{typeArbeidsforhold === ArbeidsgiverTyper.egen ? (
 				<AmeldingForm formikBag={formikBag} />
 			) : (

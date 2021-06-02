@@ -24,8 +24,16 @@ import KjedeIcon from '~/components/dollyKjede/KjedeIcon'
 const KjedeContainer = styled.div`
 	display: flex;
 	flex-direction: row;
-	justify-content: center;
 	align-items: center;
+	width: 100%;
+`
+
+const Fyllknapp = styled(NavButton)`
+	margin-bottom: 10px;
+`
+
+const Slettknapp = styled(Button)`
+	margin: 10px 0;
 `
 
 export const AmeldingForm = ({ formikBag }) => {
@@ -124,7 +132,7 @@ export const AmeldingForm = ({ formikBag }) => {
 
 	return (
 		<>
-			<div className="flexbox--flex-wrap">
+			<div className="flexbox--align-center">
 				<h3>A-melding</h3>
 				<Hjelpetekst hjelpetekstFor="A-melding">
 					Om du har opprettet dine egne testorganisasjoner kan du sende A-meldinger til disse
@@ -137,7 +145,7 @@ export const AmeldingForm = ({ formikBag }) => {
 					name={`aareg[0].arbeidsforholdstype`}
 					label="Type arbeidsforhold"
 					kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
-					size="large"
+					size="xlarge"
 					isClearable={false}
 					onChange={handleArbeidsforholdstypeChange}
 					value={type}
@@ -163,10 +171,12 @@ export const AmeldingForm = ({ formikBag }) => {
 							date={tom}
 							handleDateChange={dato => setTom(dato)}
 						/>
-						{/* //TODO lag onClick for å fylle felter */}
-						<NavButton mini onClick={null} disabled={!fom || !tom}>
-							Fyll felter automatisk
-						</NavButton>
+						<div className="flexbox--full-width">
+							{/* //TODO lag onClick for å fylle felter */}
+							<Fyllknapp mini onClick={null} disabled={!fom || !tom}>
+								Fyll felter automatisk
+							</Fyllknapp>
+						</div>
 						{periode.length > 0 && (
 							<>
 								<KjedeContainer>
@@ -180,9 +190,9 @@ export const AmeldingForm = ({ formikBag }) => {
 									<KjedeIcon locked={erLenket} onClick={erLenket ? setErIkkeLenket : setErLenket} />
 								</KjedeContainer>
 								{type === 'frilanserOppdragstakerHonorarPersonerMm' && periode.length > 1 && (
-									<Button kind="trashcan" onClick={handleFjernMaaned} style={{ margin: '10px 0' }}>
+									<Slettknapp kind="trashcan" onClick={handleFjernMaaned}>
 										Fjern måned
-									</Button>
+									</Slettknapp>
 								)}
 								<FormikDollyFieldArray
 									name={`aareg[0].amelding[${selectedIndex}].arbeidsforhold`}
