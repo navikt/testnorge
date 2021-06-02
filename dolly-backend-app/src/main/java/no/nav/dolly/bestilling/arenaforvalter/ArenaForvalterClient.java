@@ -68,7 +68,7 @@ public class ArenaForvalterClient implements ClientRegister {
                     }
                 });
 
-                sendArenadata(arenaNyeBrukere, status);
+                sendArenadata(arenaNyeBrukere, status, dagpengerListe.isEmpty());
                 dagpengerListe.forEach(dagpenger -> sendArenadagpenger(dagpenger, status));
 
             }
@@ -154,7 +154,7 @@ public class ArenaForvalterClient implements ClientRegister {
         log.info("status for dagpenger er: " + Json.pretty(status));
     }
 
-    private void sendArenadata(ArenaNyeBrukere arenaNyeBrukere, StringBuilder status) {
+    private void sendArenadata(ArenaNyeBrukere arenaNyeBrukere, StringBuilder status, boolean harIkkeDagpenger) {
 
         try {
             log.info("Sender Arenadata: \n" + Json.pretty(arenaNyeBrukere));
@@ -162,7 +162,7 @@ public class ArenaForvalterClient implements ClientRegister {
             if (response.hasBody()) {
                 if (nonNull((response.getBody().getArbeidsokerList()))) {
                     response.getBody().getArbeidsokerList().forEach(arbeidsoker -> {
-                        if ("OK".equals(arbeidsoker.getStatus())) {
+                        if ("OK".equals(arbeidsoker.getStatus()) && harIkkeDagpenger) {
                             status.append(',')
                                     .append(arbeidsoker.getMiljoe())
                                     .append('$')
