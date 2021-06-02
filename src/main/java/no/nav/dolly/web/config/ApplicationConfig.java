@@ -6,6 +6,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
+import no.nav.dolly.web.config.credentials.NaisServerProperties;
+import no.nav.dolly.web.config.credentials.Scopeable;
+import no.nav.dolly.web.config.credentials.TestnavOrganisasjonFasteDataServiceProperties;
 import no.nav.dolly.web.config.filters.AddAuthorizationToRouteFilter;
 import no.nav.dolly.web.security.TokenService;
 import no.nav.dolly.web.security.domain.AccessScopes;
@@ -26,10 +29,16 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
 public class ApplicationConfig {
     private final RemoteApplicationsProperties properties;
     private final TokenService tokenService;
+    private final TestnavOrganisasjonFasteDataServiceProperties testnavOrganisasjonFasteDataServiceProperties;
 
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
+    }
+
+    @Bean
+    public AddAuthorizationToRouteFilter testnavOrganisasjonFasteDataServiceAddAuthorizationToRouteFilter() {
+        return createFilterFrom(testnavOrganisasjonFasteDataServiceProperties);
     }
 
     @Bean
@@ -82,6 +91,13 @@ public class ApplicationConfig {
         return new AddAuthorizationToRouteFilter(
                 () -> tokenService.getAccessToken(new AccessScopes(properties.get(route))).getTokenValue(),
                 route
+        );
+    }
+
+    private AddAuthorizationToRouteFilter createFilterFrom(NaisServerProperties serverProperties) {
+        return new AddAuthorizationToRouteFilter(
+                () -> tokenService.getAccessToken(new AccessScopes(serverProperties)).getTokenValue(),
+                serverProperties.getName()
         );
     }
 

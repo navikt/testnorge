@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { OrganisasjonLoader } from './OrganisasjonLoader'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { EregResponse } from '~/service/Responses'
 
 export type OrganisasjonSelectProps = {
 	path: string
@@ -9,7 +8,7 @@ export type OrganisasjonSelectProps = {
 	isClearable?: boolean
 	afterChange?: Function
 	valueNavn?: boolean
-	filter?: (value: EregResponse) => boolean
+	kanHaArbeidsforhold?: boolean
 }
 
 export const OrganisasjonSelect = ({
@@ -17,12 +16,12 @@ export const OrganisasjonSelect = ({
 	label,
 	afterChange = null,
 	valueNavn = false,
-	filter = () => true
+	kanHaArbeidsforhold
 }: OrganisasjonSelectProps) => (
 	<OrganisasjonLoader
-		filter={filter}
+		kanHaArbeidsforhold={kanHaArbeidsforhold}
 		valueNavn={valueNavn}
-		render={(liste, feilmelding) => (
+		render={liste => (
 			<FormikSelect
 				name={path}
 				label={label}
@@ -31,7 +30,6 @@ export const OrganisasjonSelect = ({
 				size="xlarge"
 				isClearable={false}
 				optionHeight={50}
-				feil={feilmelding}
 				afterChange={afterChange}
 			/>
 		)}

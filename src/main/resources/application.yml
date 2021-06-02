@@ -37,6 +37,10 @@ zuul:
       path: /api/person/search/**
       url: https://person-search-service.dev.intern.nav.no/api/v1/person
       sensitiveHeaders: Cookie,Set-Cookie
+    testnav-organisasjon-faste-data-service:
+      path: /testnav-organisasjon-faste-data-service/api/**
+      url: https://testnav-organisasjon-faste-data-service.dev.intern.nav.no/api
+      sensitiveHeaders: Cookie,Set-Cookie
 
 applications:
   testnorge-profil-api: ${TESTNORGE_PROFIL_API_CLIENT_ID}
@@ -54,6 +58,10 @@ application:
 consumers:
   testnorge-tilbakemelding-api.baseUrl: https://testnorge-tilbakemelding-api.dev.intern.nav.no
   testnav-miljoer-service.baseUrl: https://testnav-miljoer-service.dev.intern.nav.no
+  testnav-organisasjon-faste-data-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-organisasjon-faste-data-service
 
 spring:
   application:

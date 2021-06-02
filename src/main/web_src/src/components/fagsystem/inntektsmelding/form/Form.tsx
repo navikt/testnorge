@@ -153,14 +153,6 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingForm) => {
 										kodeverk={Kodeverk.Ytelse}
 										formikBag={formikBag}
 									/>
-									{typeArbeidsgiver === TypeArbeidsgiver.VIRKSOMHET && (
-										<OrganisasjonMedArbeidsforholdSelect
-											path={`${path}.arbeidsgiver.virksomhetsnummer`}
-											label="Arbeidsgiver (orgnr)"
-											//@ts-ignore
-											isClearable={false}
-										/>
-									)}
 									{typeArbeidsgiver === TypeArbeidsgiver.PRIVATPERSON && (
 										<FormikTextInput
 											name={`${path}.arbeidsgiverPrivat.arbeidsgiverFnr`}
@@ -171,6 +163,14 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingForm) => {
 										name={`${path}.avsendersystem.innsendingstidspunkt`}
 										label="Innsendingstidspunkt"
 									/>
+									{typeArbeidsgiver === TypeArbeidsgiver.VIRKSOMHET && (
+										<OrganisasjonMedArbeidsforholdSelect
+											path={`${path}.arbeidsgiver.virksomhetsnummer`}
+											label="Arbeidsgiver (orgnr)"
+											//@ts-ignore
+											isClearable={false}
+										/>
+									)}
 									<FormikCheckbox
 										name={`${path}.naerRelasjon`}
 										label="Nær relasjon"

@@ -35,6 +35,11 @@ module.exports = env =>
 				'/session/ping': {
 					target: env.backend,
 					secure: false
+				},
+				'/testnav-organisasjon-faste-data-service/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false
 				}
 			}
 		},

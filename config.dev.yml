@@ -13,9 +13,10 @@ spec:
       # enum of {trygdeetaten.no, nav.no}
       tenant: nav.no
       replyURLs:
-        - "https://dolly-frontend-dev.dev.intern.nav.no/login/oauth2/code/aad"
-        - "https://dolly-frontend-dev.dev.adeo.no/login/oauth2/code/aad"
-        - "http://localhost:8020/login/oauth2/code/aad"
+        - https://dolly-frontend-dev.dev.intern.nav.no/login/oauth2/code/aad
+        - https://dolly-frontend-dev.dev.adeo.no/login/oauth2/code/aad
+        - http://localhost:8080/login/oauth2/code/aad
+        - http://localhost:3000/login/oauth2/code/aad
   replicas:
     min: 1
     max: 2

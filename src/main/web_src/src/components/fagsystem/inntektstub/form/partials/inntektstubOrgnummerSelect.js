@@ -5,7 +5,7 @@ import { OrgnummerToggle } from '~/components/fagsystem/aareg/form/partials/orgn
 export const InntektstubOrgnummerSelect = ({ path, formikBag }) => {
 	return (
 		<OrganisasjonLoader
-			filter={response => response.kanHaArbeidsforhold}
+			kanHaArbeidsforhold={true}
 			render={() => (
 				<OrgnummerToggle
 					formikBag={formikBag}

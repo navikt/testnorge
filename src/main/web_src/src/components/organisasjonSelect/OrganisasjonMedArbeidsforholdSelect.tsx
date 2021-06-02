@@ -9,5 +9,5 @@ type OrganisasjonMedArbeidsforholdSelect = {
 }
 
 export const OrganisasjonMedArbeidsforholdSelect = (props: OrganisasjonMedArbeidsforholdSelect) => (
-	<OrganisasjonSelect {...props} filter={org => org.kanHaArbeidsforhold} />
+	<OrganisasjonSelect {...props} kanHaArbeidsforhold={true} />
 )
