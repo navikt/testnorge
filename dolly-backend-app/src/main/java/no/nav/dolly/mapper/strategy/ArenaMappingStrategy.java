@@ -100,7 +100,7 @@ public class ArenaMappingStrategy implements MappingStrategy {
                                 .build());
 
                         dagpenger.setTaptArbeidstid(ArenaDagpenger.TaptArbeidstid.builder()
-                                .anvedtRegelKode("GJSNITT12MND")
+                                .anvendtRegelKode("GJSNITT12MND")
                                 .fastsattArbeidstid(30)
                                 .naavaerendeArbeidstid(0)
                                 .build());

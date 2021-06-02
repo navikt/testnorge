@@ -151,7 +151,6 @@ public class ArenaForvalterClient implements ClientRegister {
             appendErrorText(status, e);
             log.error("Feilet å legge til dagpenger i ArenaForvalter: ", e);
         }
-        log.info("status for dagpenger er: " + Json.pretty(status));
     }
 
     private void sendArenadata(ArenaNyeBrukere arenaNyeBrukere, StringBuilder status, boolean harIkkeDagpenger) {
