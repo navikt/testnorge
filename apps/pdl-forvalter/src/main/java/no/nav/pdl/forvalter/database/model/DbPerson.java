@@ -34,14 +34,12 @@ import static java.util.Objects.isNull;
 @TypeDef(name = "JsonType", typeClass = JSONUserType.class)
 public class DbPerson {
 
-    public static final String SEQUENCE_STYLE_GENERATOR = "org.hibernate.id.enhanced.SequenceStyleGenerator";
+    private static final String SEQUENCE_STYLE_GENERATOR = "org.hibernate.id.enhanced.SequenceStyleGenerator";
 
     @Id
     @GeneratedValue(generator = "personIdGenerator")
     @GenericGenerator(name = "personIdGenerator", strategy = SEQUENCE_STYLE_GENERATOR, parameters = {
-            @Parameter(name = "sequence_name", value = "person_sequence"),
-            @Parameter(name = "initial_value", value = "1"),
-            @Parameter(name = "increment_size", value = "1")
+            @Parameter(name = "sequence_name", value = "person_sequence")
     })
     private Long id;
 

@@ -8,7 +8,6 @@ import no.nav.pdl.forvalter.domain.PdlDbVersjon;
 import no.nav.pdl.forvalter.dto.PdlOrdreResponse;
 import no.nav.pdl.forvalter.utils.PdlTestDataUrls;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.ArrayList;
@@ -23,15 +22,15 @@ import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlStatus.OK;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class DeployServie {
+public class DeployService {
 
-    private static final String PDL_ERROR_TEXT = "Feil ved skriving av PDL-testdata. {}";
+    private static final String PDL_ERROR_TEXT = "Feil ved skriving av data {} status: {}";
 
     private final PdlTestdataConsumer pdlTestdataConsumer;
 
-    public List<PdlOrdreResponse.PdlStatus> put(PdlTestDataUrls.PdlArtifact type,
-                                                String ident,
-                                                List<? extends PdlDbVersjon> artifact) {
+    public List<PdlOrdreResponse.PdlStatus> send(PdlTestDataUrls.PdlArtifact type,
+                                                 String ident,
+                                                 List<? extends PdlDbVersjon> artifact) {
 
         var status = new ArrayList<PdlOrdreResponse.Hendelse>();
         if (!artifact.isEmpty()) {
@@ -43,30 +42,24 @@ public class DeployServie {
                                     status.add(PdlOrdreResponse.Hendelse.builder()
                                             .id(element.getId())
                                             .status(OK)
-                                            .hendelseId(pdlTestdataConsumer.sendArtifactToPdl(type, ident, element)
+                                            .hendelseId(pdlTestdataConsumer
+                                                    .send(type, ident, element)
                                                     .getHendelseId())
                                             .build());
-                                } catch (HttpClientErrorException e) {
-                                    status.add(PdlOrdreResponse.Hendelse.builder()
-                                            .id(element.getId())
-                                            .status(FEIL)
-                                            .error(e.getResponseBodyAsString())
-                                            .build());
-                                    log.error(PDL_ERROR_TEXT, e.getResponseBodyAsString());
                                 } catch (WebClientResponseException e) {
                                     status.add(PdlOrdreResponse.Hendelse.builder()
                                             .id(element.getId())
                                             .status(FEIL)
                                             .error(e.getResponseBodyAsString())
                                             .build());
-                                    log.error(PDL_ERROR_TEXT, e.getResponseBodyAsString());
+                                    log.error(PDL_ERROR_TEXT, type, e.getResponseBodyAsString());
                                 } catch (JsonProcessingException e) {
                                     status.add(PdlOrdreResponse.Hendelse.builder()
                                             .id(element.getId())
                                             .status(FEIL)
                                             .error(e.getMessage())
                                             .build());
-                                    log.error(PDL_ERROR_TEXT, e.getMessage(), e);
+                                    log.error(PDL_ERROR_TEXT, type, e.getMessage(), e);
                                 }
                             }
                     );
@@ -76,15 +69,5 @@ public class DeployServie {
                 .infoElement(type)
                 .hendelser(status)
                 .build());
-    }
-
-    public List<PdlOrdreResponse.PdlStatus> create(String ident) {
-        pdlTestdataConsumer.createPerson(ident);
-        return emptyList();
-    }
-
-    public List<PdlOrdreResponse.PdlStatus> delete(String ident) {
-        pdlTestdataConsumer.deletePerson(ident);
-        return emptyList();
     }
 }

@@ -2,7 +2,6 @@ package no.nav.pdl.forvalter.consumer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
@@ -11,20 +10,22 @@ import com.fasterxml.jackson.databind.ser.PropertyFilter;
 import com.fasterxml.jackson.databind.ser.PropertyWriter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.config.credentials.PdlServiceProperties;
-import no.nav.pdl.forvalter.consumer.command.PdlCreatePersonCommand;
-import no.nav.pdl.forvalter.consumer.command.PdlDeletePersonCommand;
 import no.nav.pdl.forvalter.consumer.command.PdlTestdataCommand;
 import no.nav.pdl.forvalter.dto.PdlBestillingResponse;
-import no.nav.pdl.forvalter.dto.PdlDeleteResponse;
 import no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+
+import java.util.List;
 
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.getBestillingUrl;
 
+@Slf4j
 @Service
 public class PdlTestdataConsumer {
 
@@ -72,18 +73,24 @@ public class PdlTestdataConsumer {
         this.objectMapper = objectMapper;
     }
 
-    public PdlBestillingResponse sendArtifactToPdl(PdlArtifact artifact, String ident, Object body) throws JsonProcessingException {
+    public PdlBestillingResponse send(PdlArtifact artifact, String ident, Object body) throws JsonProcessingException {
+
         var accessToken = accessTokenService.generateToken(properties);
-        return new PdlTestdataCommand(webClient, getBestillingUrl().get(artifact), ident, objectMapper.writer(filters).writeValueAsString(body), accessToken.getTokenValue()).call();
+        return new PdlTestdataCommand(webClient, getBestillingUrl().get(artifact), ident,
+                objectMapper.writer(filters).writeValueAsString(body), accessToken.getTokenValue()).call();
     }
 
-    public JsonNode createPerson(String ident) {
-        var accessToken = accessTokenService.generateToken(properties);
-        return new PdlCreatePersonCommand(webClient, ident, accessToken.getTokenValue()).call();
-    }
+    public void delete(List<String> identer) {
 
-    public PdlDeleteResponse deletePerson(String ident) {
         var accessToken = accessTokenService.generateToken(properties);
-        return new PdlDeletePersonCommand(webClient, ident, accessToken.getTokenValue()).call();
+        identer.forEach(ident -> {
+            try {
+                new PdlTestdataCommand(webClient, getBestillingUrl().get(PdlArtifact.PDL_SLETTING), ident,
+                        null, accessToken.getTokenValue()).call();
+
+            } catch (WebClientResponseException e) {
+                log.error("Sletting av person feilet mot pdl {} ", e.getResponseBodyAsString(), e);
+            }
+        });
     }
 }

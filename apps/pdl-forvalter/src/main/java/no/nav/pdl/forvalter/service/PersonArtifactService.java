@@ -26,10 +26,10 @@ public class PersonArtifactService {
     private final FullmaktService fullmaktService;
     private final UtenlandsidentifikasjonsnummerService utenlandsidentifikasjonsnummerService;
 
-    public PdlPerson buildPerson(PdlPerson person, String ident) {
+    public PdlPerson buildPerson(PdlPerson person) {
 
-        person.setIdent(ident);
         return PdlPerson.builder()
+                .ident(person.getIdent())
                 .kjoenn(kjoennService.convert(person))
                 .innflytting(innflyttingService.convert(person.getInnflytting()))
                 .statsborgerskap(statsborgerskapService.convert(person))
@@ -45,7 +45,7 @@ public class PersonArtifactService {
                 .doedsfall(doedsfallService.convert(person.getDoedsfall()))
                 .folkeregisterpersonstatus(folkeregisterPersonstatusService.convert(person))
                 .fullmakt(fullmaktService.convert(person))
-                .kontaktadresse(person.getKontaktadresse())
+                .kontaktadresse(kontaktAdresseService.convert(person.getKontaktadresse()))
                 .utenlandskIdentifikasjonsnummer(utenlandsidentifikasjonsnummerService
                         .convert(person.getUtenlandskIdentifikasjonsnummer()))
                 .build();

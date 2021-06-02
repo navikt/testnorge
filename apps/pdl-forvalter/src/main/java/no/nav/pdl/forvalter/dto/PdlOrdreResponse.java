@@ -15,8 +15,18 @@ import java.util.List;
 @AllArgsConstructor
 public class PdlOrdreResponse {
 
-    private String ident;
-    private List<PdlStatus> ordrer;
+    private PersonHendelser hovedperson;
+    private List<PersonHendelser> relasjoner;
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PersonHendelser {
+
+        private String ident;
+        private List<PdlStatus> ordrer;
+    }
 
     @Data
     @Builder

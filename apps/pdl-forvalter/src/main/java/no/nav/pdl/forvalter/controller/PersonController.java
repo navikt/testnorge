@@ -4,11 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.pdl.forvalter.database.model.DbPerson;
-import no.nav.pdl.forvalter.domain.PdlPerson;
 import no.nav.pdl.forvalter.dto.BestillingRequest;
 import no.nav.pdl.forvalter.dto.PdlOrdreResponse;
 import no.nav.pdl.forvalter.dto.PersonUpdateRequest;
+import no.nav.pdl.forvalter.dto.RsPerson;
 import no.nav.pdl.forvalter.service.PdlOrdreService;
 import no.nav.pdl.forvalter.service.PersonService;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,7 +30,7 @@ public class PersonController {
 
     @GetMapping(value = "/{ident}")
     @Operation(description = "Hent person")
-    public PdlPerson getPerson(@PathVariable String ident) {
+    public RsPerson getPerson(@PathVariable String ident) {
 
         return personService.getPerson(ident);
     }
@@ -45,7 +44,7 @@ public class PersonController {
 
     @PutMapping(value = "/{ident}")
     @Operation(description = "Endre, legg-til på person")
-    public DbPerson updatePerson(@PathVariable String ident, @RequestBody PersonUpdateRequest request) {
+    public RsPerson updatePerson(@PathVariable String ident, @RequestBody PersonUpdateRequest request) {
 
         return personService.updatePerson(ident, request);
     }
@@ -59,11 +58,8 @@ public class PersonController {
 
     @PostMapping(value = "/{ident}/ordre")
     @Operation(description = "Send person til PDL (ordre)")
-    public PdlOrdreResponse createPerson(@PathVariable String ident) {
+    public PdlOrdreResponse sendPersonTilPdl(@PathVariable String ident) {
 
-        return PdlOrdreResponse.builder()
-                .ident(ident)
-                .ordrer(pdlOrdreService.sendTilPdl(ident))
-                .build();
+        return pdlOrdreService.send(ident);
     }
 }

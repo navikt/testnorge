@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class DbRelasjon {
 
-    public static final String SEQUENCE_STYLE_GENERATOR = "org.hibernate.id.enhanced.SequenceStyleGenerator";
+    private static final String SEQUENCE_STYLE_GENERATOR = "org.hibernate.id.enhanced.SequenceStyleGenerator";
 
     @Id
     @GeneratedValue(generator = "relasjonIdGenerator")

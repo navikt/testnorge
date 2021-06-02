@@ -58,9 +58,7 @@ public class CreatePersonService {
                         .statsborgerskap(List.of(PdlStatsborgerskap.builder().isNew(true).build()))
                         .folkeregisterpersonstatus(List.of(PdlFolkeregisterpersonstatus.builder().isNew(true).build()))
                         .build(),
-                new PdlPerson());
-
-        mergedPerson.setIdent(ident);
+                PdlPerson.builder().ident(ident).build());
 
         kjoennService.convert(mergedPerson);
         navnService.convert(mergedPerson.getNavn());

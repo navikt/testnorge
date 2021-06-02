@@ -2,24 +2,20 @@ package no.nav.pdl.forvalter.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.isNull;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PdlOpprettPerson implements Serializable {
+public class PdlOpprettPerson extends PdlDbVersjon {
 
-    private String opprettetIdent;
     private List<String> historiskeIdenter;
 
     public List<String> getHistoriskeIdenter() {

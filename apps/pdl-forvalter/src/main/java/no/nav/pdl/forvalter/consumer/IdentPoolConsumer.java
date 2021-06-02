@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -19,6 +22,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 public class IdentPoolConsumer {
 
     private static final String ACQUIRE_IDENTS_URL = "/api/v1/identifikator";
+    private static final String RELEASE_IDENTS_URL = ACQUIRE_IDENTS_URL + "/frigjoer";
 
     private final WebClient webClient;
     private final AccessTokenService accessTokenService;
@@ -41,14 +45,32 @@ public class IdentPoolConsumer {
             var accessToken = accessTokenService.generateToken(properties);
             var idents = new IdentpoolPostCommand(webClient, ACQUIRE_IDENTS_URL, request, accessToken.getTokenValue()).call();
 
-            log.info("Oppslag til identpool tok {} ms", currentTimeMillis() - startTime);
+            log.info("Identpool allokering av identer tok {} ms", currentTimeMillis() - startTime);
             return idents;
 
-        } catch (RuntimeException e) {
+        } catch (HttpClientErrorException e) {
 
-            log.info("Oppslag til identpool feilet etter {} ms", currentTimeMillis() - startTime);
-            throw new HttpClientErrorException(INTERNAL_SERVER_ERROR, format("Forspørsel til ident-pool feilet: %s",
-                    request.toString()));
+            log.info("Oppslag til identpool feilet etter {} ms {}", currentTimeMillis() - startTime, e.getResponseBodyAsString());
+            throw new HttpClientErrorException(INTERNAL_SERVER_ERROR, format("Forspørsel %s til ident-pool feilet: %s",
+                    request.toString(), e.getResponseBodyAsString()));
+        }
+    }
+
+    public void releaseIdents(List<String> identer) {
+
+        var startTime = currentTimeMillis();
+
+        try {
+            var accessToken = accessTokenService.generateToken(properties);
+            var idents = new IdentpoolPostCommand(webClient, RELEASE_IDENTS_URL, identer, accessToken.getTokenValue()).call();
+
+            log.info("Identpool frigjoering av identer tok {} ms", currentTimeMillis() - startTime);
+
+        } catch (HttpClientErrorException e) {
+
+            log.info("Oppslag til identpool feilet etter {} ms {}", currentTimeMillis() - startTime, e.getResponseBodyAsString());
+            throw new HttpClientErrorException(INTERNAL_SERVER_ERROR, format("Forspørsel %s til ident-pool feilet: %s",
+                    identer.stream().collect(Collectors.joining(",")), e.getResponseBodyAsString()));
         }
     }
 }

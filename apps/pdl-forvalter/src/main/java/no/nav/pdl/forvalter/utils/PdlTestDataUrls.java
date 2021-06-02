@@ -22,7 +22,9 @@ import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_KONTAKT
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_NAVN;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_OPPHOLD;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_OPPHOLDSADRESSE;
+import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_OPPRETT_PERSON;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_SIVILSTAND;
+import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_SLETTING;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_STATSBORGERSKAP;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_TELEFONUMMER;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_TILRETTELAGT_KOMMUNIKASJON;
@@ -33,9 +35,9 @@ import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_VERGEMA
 @UtilityClass
 public class PdlTestDataUrls {
 
-    public static final String PDL_BESTILLING_SLETTING_URL = "/pdl-testdata/api/v1/personident";
+    private static final String PDL_SLETTING_URL = "/pdl-testdata/api/v1/personident";
     private static final String PDL_BESTILLING_URL = "/pdl-testdata/api/v1/bestilling";
-    public static final String PDL_BESTILLING_OPPRETT_PERSON_URL = PDL_BESTILLING_URL + "/opprettperson";
+    private static final String PDL_BESTILLING_OPPRETT_PERSON_URL = PDL_BESTILLING_URL + "/opprettperson";
 
     private static final String PDL_BESTILLING_KONTAKTINFORMASJON_FOR_DODESDBO_URL = PDL_BESTILLING_URL + "/kontaktinformasjonfordoedsbo";
     private static final String PDL_BESTILLING_UTENLANDS_IDENTIFIKASJON_NUMMER_URL = PDL_BESTILLING_URL + "/utenlandsidentifikasjonsnummer";
@@ -60,8 +62,6 @@ public class PdlTestDataUrls {
     private static final String PDL_BESTILLING_VERGEMAAL_URL = PDL_BESTILLING_URL + "/vergemaal";
     private static final String PDL_BESTILLING_FULLMAKT_URL = PDL_BESTILLING_URL + "/fullmakt";
     private static final String PDL_BESTILLING_TILRETTELAGT_KOMMUNIKASJON_URL = PDL_BESTILLING_URL + "/tilrettelagtkommunikasjon";
-    private static final String PDL_IDENTHISTORIKK_PARAMS = "?historiskePersonidenter=";
-    private static final String PDL_IDENTHISTORIKK_PARAMS_2 = "&historiskePersonidenter=";
     private static final String PDL_BESTILLING_FOLKEREGISTER_PERSONSTATUS_URL = PDL_BESTILLING_URL + "/folkeregisterpersonstatus";
 
     private static final Map<PdlArtifact, String> bestillingUrl = new EnumMap<>(PdlArtifact.class);
@@ -91,6 +91,8 @@ public class PdlTestDataUrls {
         bestillingUrl.put(PDL_FULLMAKT, PDL_BESTILLING_FULLMAKT_URL);
         bestillingUrl.put(PDL_FOLKEREGISTER_PERSONSTATUS, PDL_BESTILLING_FOLKEREGISTER_PERSONSTATUS_URL);
         bestillingUrl.put(PDL_TILRETTELAGT_KOMMUNIKASJON, PDL_BESTILLING_TILRETTELAGT_KOMMUNIKASJON_URL);
+        bestillingUrl.put(PDL_SLETTING, PDL_SLETTING_URL);
+        bestillingUrl.put(PDL_OPPRETT_PERSON, PDL_BESTILLING_OPPRETT_PERSON_URL);
     }
 
     public enum PdlArtifact {
@@ -117,7 +119,9 @@ public class PdlTestDataUrls {
         PDL_OPPHOLD,
         PDL_VERGEMAAL,
         PDL_FULLMAKT,
-        PDL_TILRETTELAGT_KOMMUNIKASJON
+        PDL_TILRETTELAGT_KOMMUNIKASJON,
+        PDL_SLETTING,
+        PDL_OPPRETT_PERSON
     }
 
     public enum TemaGrunnlag {GEN, PEN}
