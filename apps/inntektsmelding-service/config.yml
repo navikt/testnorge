@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: testnav-inntektsmelding-generator-service
+  name: testnav-inntektsmelding-service
   namespace: dolly
   labels:
     team: dolly
@@ -21,8 +21,16 @@ spec:
           cluster: dev-fss
         - application: testnorge-inntekt
           cluster: dev-fss
-        - application: testnav-inntektsmelding-service
-          cluster: dev-gcp
+    outbound:
+      rules:
+        - application: testnav-inntektsmelding-generator-service
+      external:
+        - host: https://testnav-dokarkiv-proxy.dev-fss-pub.nais.io
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_12
+        databases:
+          - name: testnav-inntektsmelding-service-db
   liveness:
     path: /internal/isAlive
     periodSeconds: 30
@@ -43,4 +51,4 @@ spec:
       cpu: 200m
       memory: 1024Mi
   ingresses:
-    - "https://testnav-inntektsmelding-generator-service.dev.intern.nav.no"
+    - "https://testnav-inntektsmelding-service.dev.intern.nav.no"

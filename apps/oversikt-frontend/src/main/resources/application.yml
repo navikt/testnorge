@@ -51,6 +51,7 @@ applications:
   testnav-generer-synt-amelding-service: dev-gcp.dolly.testnav-generer-synt-amelding-service
   testnorge-profil-api-dev: f73bfcd0-a1f5-4d3f-bfb4-4d0361191438
   testnav-generer-arbeidsforhold-populasjon-service: dev-gcp.dolly.testnav-generer-arbeidsforhold-populasjon-service
+  testnav-inntektsmelding-service: dev-gcp.dolly.testnav-inntektsmelding-service
 
 zuul:
   routes:

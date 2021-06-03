@@ -1,0 +1,73 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+spring:
+  application:
+    name: testnav-dokarkiv-proxy
+    desciption: Proxy for dokarkiv som legger på sikkerhet og redirecter til riktig miljø.
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+
+sts:
+  preprod:
+    token:
+      provider:
+        url: ${STS_PREPROD_TOKEN_PROVIDER_URL}
+        username: ${STS_PREPROD_PROVIDER_USERNAME}
+        password: ${STS_PREPROD_PROVIDER_PASSWORD}
+  test:
+    token:
+      provider:
+        url: ${STS_TEST_PROVIDER_URL}
+        username: ${STS_TEST_PROVIDER_USERNAME}
+        password: ${STS_TEST_PROVIDER_PASSWORD}
+
+zuul:
+  sensitiveHeaders: Cookie,Set-Cookie
+  ignoredPatterns: /internal/isReady, /internal/isAlive
+  set-content-length: true
+  routes:
+    dokarkiv-q1:
+      path: /api/q1/**
+      url: https://dokarkiv-q1.adeo.no/rest/journalpostapi
+    dokarkiv-q2:
+      path: /api/q2/**
+      url: https://dokarkiv-q2.adeo.no/rest/journalpostapi
+    dokarkiv-q4:
+      path: /api/q4/**
+      url: https://dokarkiv-q3.adeo.no/rest/journalpostapi
+    dokarkiv-q5:
+      path: /api/q5/**
+      url: https://dokarkiv-q5.adeo.no/rest/journalpostapi
+    dokarkiv-qx:
+      path: /api/qx/**
+      url: https://dokarkiv-qx.adeo.no/rest/journalpostapi
+    dokarkiv-t0:
+      path: /api/t0/**
+      url: https://dokarkiv-t0.adeo.no/rest/journalpostapi
+    dokarkiv-t1:
+      path: /api/t1/**
+      url: https://dokarkiv-t1.adeo.no/rest/journalpostapi
+    dokarkiv-t2:
+      path: /api/t2/**
+      url: https://dokarkiv-t2.adeo.no/rest/journalpostapi
+    dokarkiv-t3:
+      path: /api/t3/**
+      url: https://dokarkiv-t3.adeo.no/rest/journalpostapi
+    dokarkiv-t4:
+      path: /api/t4/**
+      url: https://dokarkiv-t4.adeo.no/rest/journalpostapi
+    dokarkiv-t5:
+      path: /api/t5/**
+      url: https://dokarkiv-t5.adeo.no/rest/journalpostapi
+    dokarkiv-t6:
+      path: /api/t6/**
+      url: https://dokarkiv-t6.adeo.no/rest/journalpostapi
+    dokarkiv-t13:
+      path: /api/t13/**
+      url: https://dokarkiv-t13.adeo.no/rest/journalpostapi
+  host:
+    socket-timeout-millis: 120000
