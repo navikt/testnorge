@@ -13,6 +13,7 @@ import no.nav.pdl.forvalter.domain.PdlOpprettPerson;
 import no.nav.pdl.forvalter.domain.PdlPerson;
 import no.nav.pdl.forvalter.domain.PdlTilrettelagtKommunikasjon;
 import no.nav.pdl.forvalter.domain.PdlUtflytting;
+import no.nav.pdl.forvalter.domain.PdlVergemaal;
 import no.nav.pdl.forvalter.dto.PdlOrdreResponse;
 import no.nav.pdl.forvalter.dto.PdlOrdreResponse.PersonHendelser;
 import org.springframework.http.HttpStatus;
@@ -103,7 +104,8 @@ public class PdlOrdreService {
         status.addAll(deployService.send(PDL_FORELDREANSVAR, person.getIdent(), person.getForeldreansvar()));
         status.addAll(deployService.send(PDL_FAMILIERELASJON, person.getIdent(), person.getForelderBarnRelasjon()));
         status.addAll(deployService.send(PDL_SIVILSTAND, person.getIdent(), person.getSivilstand()));
-        status.addAll(deployService.send(PDL_VERGEMAAL, person.getIdent(), person.getVergemaal()));
+        status.addAll(deployService.send(PDL_VERGEMAAL, person.getIdent(),
+                mapperFacade.mapAsList(person.getVergemaal(), PdlVergemaal.class)));
         status.addAll(deployService.send(PDL_FULLMAKT, person.getIdent(), person.getFullmakt()));
         status.addAll(deployService.send(PDL_TELEFONUMMER, person.getIdent(), person.getTelefonnummer()));
         status.addAll(deployService.send(PDL_OPPHOLD, person.getIdent(), person.getOpphold()));

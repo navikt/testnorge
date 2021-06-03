@@ -25,6 +25,7 @@ public class PersonArtifactService {
     private final UtflyttingService utflyttingService;
     private final FullmaktService fullmaktService;
     private final UtenlandsidentifikasjonsnummerService utenlandsidentifikasjonsnummerService;
+    private final VergemaalService vergemaalService;
 
     public PdlPerson buildPerson(PdlPerson person) {
 
@@ -48,6 +49,7 @@ public class PersonArtifactService {
                 .kontaktadresse(kontaktAdresseService.convert(person.getKontaktadresse()))
                 .utenlandskIdentifikasjonsnummer(utenlandsidentifikasjonsnummerService
                         .convert(person.getUtenlandskIdentifikasjonsnummer()))
+                .vergemaal(vergemaalService.convert(person))
                 .build();
     }
 }

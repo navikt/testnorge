@@ -42,10 +42,10 @@ public class DbRelasjon {
     private RelasjonType relasjonType;
 
     @ManyToOne
-    @JoinColumn(name = "person_id", nullable = false)
+    @JoinColumn(name = "person_id", nullable = false, updatable = false)
     private DbPerson person;
 
     @ManyToOne
-    @JoinColumn(name = "relatert_person_id", nullable = false)
+    @JoinColumn(name = "relatert_person_id", nullable = false, updatable = false)
     private DbPerson relatertPerson;
 }

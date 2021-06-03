@@ -8,12 +8,12 @@ import lombok.NoArgsConstructor;
 import no.nav.pdl.forvalter.domain.doedsbo.PdlKontaktinformasjonForDoedsbo;
 import no.nav.pdl.forvalter.domain.falskidentitet.PdlFalskIdentitet;
 import no.nav.pdl.forvalter.domain.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
-import no.nav.pdl.forvalter.dto.RsFullmakt;
 import no.nav.pdl.forvalter.dto.RsInnflytting;
 import no.nav.pdl.forvalter.dto.RsKontaktadresse;
 import no.nav.pdl.forvalter.dto.RsNavn;
 import no.nav.pdl.forvalter.dto.RsTilrettelagtKommunikasjon;
 import no.nav.pdl.forvalter.dto.RsUtflytting;
+import no.nav.pdl.forvalter.dto.RsVergemaal;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -54,8 +54,8 @@ public class PdlPerson implements Serializable {
     private List<PdlOpphold> opphold;
     private List<PdlSivilstand> sivilstand;
     private List<PdlTelefonnummer> telefonnummer;
-    private List<RsFullmakt> fullmakt;
-    private List<PdlVergemaal> vergemaal;
+    private List<PdlFullmakt> fullmakt;
+    private List<RsVergemaal> vergemaal;
 
     public List<PdlBostedadresse> getBostedsadresse() {
         if (isNull(bostedsadresse)) {
@@ -135,7 +135,7 @@ public class PdlPerson implements Serializable {
         return folkeregisterpersonstatus;
     }
 
-    public List<RsFullmakt> getFullmakt() {
+    public List<PdlFullmakt> getFullmakt() {
         if (isNull(fullmakt)) {
             fullmakt = new ArrayList<>();
         }
@@ -191,7 +191,7 @@ public class PdlPerson implements Serializable {
         return foreldreansvar;
     }
 
-    public List<PdlVergemaal> getVergemaal() {
+    public List<RsVergemaal> getVergemaal() {
         if (isNull(vergemaal)) {
             vergemaal = new ArrayList<>();
         }

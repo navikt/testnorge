@@ -14,7 +14,7 @@ create table relasjon
     id                 bigint      not null primary key,
     relasjon_type      varchar(30) not null,
     person_id          bigint      not null references person (id),
-    relatert_person_id bigint      not null references person (id),
+    relatert_person_id bigint      not null,
     sist_oppdatert     timestamp   not null
 );
 

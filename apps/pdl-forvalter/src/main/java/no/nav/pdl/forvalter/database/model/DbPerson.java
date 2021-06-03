@@ -50,7 +50,7 @@ public class DbPerson {
     private PdlPerson person;
 
     @OrderBy("relasjonType desc, id desc")
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "person", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DbRelasjon> relasjoner;
 
     public List<DbRelasjon> getRelasjoner() {

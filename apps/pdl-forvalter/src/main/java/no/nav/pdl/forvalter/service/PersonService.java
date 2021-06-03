@@ -62,12 +62,15 @@ public class PersonService {
         var dbPerson = personRepository.findByIdent(ident).orElseThrow(() ->
                 new HttpClientErrorException(NOT_FOUND, format("Ident %s ble ikke funnet", ident)));
 
-        var identer = Stream.of(List.of(dbPerson.getIdent()),
+        var personer = Stream.of(List.of(dbPerson),
                 dbPerson.getRelasjoner().stream()
                         .map(DbRelasjon::getRelatertPerson)
-                        .map(DbPerson::getIdent)
                         .collect(Collectors.toList()))
                 .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+
+        var identer = personer.stream()
+                .map(DbPerson::getIdent)
                 .collect(Collectors.toList());
 
         pdlTestdataConsumer.delete(identer);
@@ -75,7 +78,7 @@ public class PersonService {
         personRepository.deleteByIdentIn(identer);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public RsPerson getPerson(String ident) {
 
         return mapperFacade.map(getDbPerson(ident), RsPerson.class);

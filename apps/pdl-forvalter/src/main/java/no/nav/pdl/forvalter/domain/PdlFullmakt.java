@@ -1,18 +1,23 @@
 package no.nav.pdl.forvalter.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+import no.nav.pdl.forvalter.dto.RsPersonRequest;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PdlFullmakt extends PdlDbVersjon {
+
+    private RsPersonRequest nyFullmektig;
 
     private String fullmektig;
     private LocalDateTime gyldigFom;

@@ -15,6 +15,7 @@ public class IdentpoolPostCommand implements Callable<String[]> {
 
     private final WebClient webClient;
     private final String url;
+    private final String query;
     private final Object body;
     private final String token;
 
@@ -23,7 +24,7 @@ public class IdentpoolPostCommand implements Callable<String[]> {
 
         return webClient
                 .post()
-                .uri(builder -> builder.path(url).build())
+                .uri(builder -> builder.path(url).query(query).build())
                 .body(BodyInserters.fromValue(body))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)

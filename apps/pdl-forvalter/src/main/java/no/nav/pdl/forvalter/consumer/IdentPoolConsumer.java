@@ -23,6 +23,7 @@ public class IdentPoolConsumer {
 
     private static final String ACQUIRE_IDENTS_URL = "/api/v1/identifikator";
     private static final String RELEASE_IDENTS_URL = ACQUIRE_IDENTS_URL + "/frigjoer";
+    private static final String REKVIRERT_AV = "rekvirertAv=PDLF";
 
     private final WebClient webClient;
     private final AccessTokenService accessTokenService;
@@ -43,7 +44,7 @@ public class IdentPoolConsumer {
 
         try {
             var accessToken = accessTokenService.generateToken(properties);
-            var idents = new IdentpoolPostCommand(webClient, ACQUIRE_IDENTS_URL, request, accessToken.getTokenValue()).call();
+            var idents = new IdentpoolPostCommand(webClient, ACQUIRE_IDENTS_URL, null, request, accessToken.getTokenValue()).call();
 
             log.info("Identpool allokering av identer tok {} ms", currentTimeMillis() - startTime);
             return idents;
@@ -62,7 +63,7 @@ public class IdentPoolConsumer {
 
         try {
             var accessToken = accessTokenService.generateToken(properties);
-            var idents = new IdentpoolPostCommand(webClient, RELEASE_IDENTS_URL, identer, accessToken.getTokenValue()).call();
+            var idents = new IdentpoolPostCommand(webClient, RELEASE_IDENTS_URL, REKVIRERT_AV, identer, accessToken.getTokenValue()).call();
 
             log.info("Identpool frigjoering av identer tok {} ms", currentTimeMillis() - startTime);
 

@@ -35,8 +35,8 @@ public class RelasjonService {
                 .findFirst().orElseThrow(() -> new HttpClientErrorException(INTERNAL_SERVER_ERROR,
                         String.format(DB_ERROR, identRelasjon)));
 
-        createRelasjon(hovedperson, relasjonPerson, relasjon);
-        createRelasjon(relasjonPerson, hovedperson, reverseRelasjon);
+        createRelasjon(relasjonPerson, hovedperson, relasjon);
+        createRelasjon(hovedperson, relasjonPerson, reverseRelasjon);
     }
 
     private void createRelasjon(DbPerson person1, DbPerson person2, RelasjonType relasjon) {

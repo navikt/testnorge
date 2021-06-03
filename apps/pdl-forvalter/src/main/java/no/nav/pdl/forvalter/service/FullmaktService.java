@@ -3,8 +3,8 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.database.model.RelasjonType;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
+import no.nav.pdl.forvalter.domain.PdlFullmakt;
 import no.nav.pdl.forvalter.domain.PdlPerson;
-import no.nav.pdl.forvalter.dto.RsFullmakt;
 import no.nav.pdl.forvalter.dto.RsPersonRequest;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
@@ -33,7 +33,7 @@ public class FullmaktService {
     private final CreatePersonService createPersonService;
     private final RelasjonService relasjonService;
 
-    public List<RsFullmakt> convert(PdlPerson person) {
+    public List<PdlFullmakt> convert(PdlPerson person) {
 
         for (var type : person.getFullmakt()) {
 
@@ -49,7 +49,7 @@ public class FullmaktService {
         return person.getFullmakt();
     }
 
-    private void validate(RsFullmakt fullmakt) {
+    private void validate(PdlFullmakt fullmakt) {
 
         if (isNull(fullmakt.getOmraader())) {
             throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_OMRAADER_ERROR);
@@ -71,7 +71,7 @@ public class FullmaktService {
         }
     }
 
-    private void handle(RsFullmakt fullmakt, String ident) {
+    private void handle(PdlFullmakt fullmakt, String ident) {
 
         if (isBlank(fullmakt.getFullmektig())) {
 
@@ -90,6 +90,7 @@ public class FullmaktService {
             fullmakt.setFullmektig(createPersonService.execute(fullmakt.getNyFullmektig()));
             relasjonService.setRelasjoner(ident, RelasjonType.FULLMAKTSGIVER,
                     fullmakt.getFullmektig(), RelasjonType.FULLMEKTIG);
+            fullmakt.setNyFullmektig(null);
         }
     }
 }
