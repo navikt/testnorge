@@ -25,4 +25,6 @@ public class RsPersonRequest implements Serializable {
     private LocalDateTime foedtFoer;
     private Integer alder;
     private Boolean syntetisk;
+
+    private Boolean harMellomnavn;
 }

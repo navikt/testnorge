@@ -48,15 +48,14 @@ public class CreatePersonService {
                         String.format("Ident kunne ikke levere forespørsel: %s", request.toString())));
 
         var mergedPerson = mergeService.merge(PdlPerson.builder()
-                        .kjoenn(List.of(PdlKjoenn.builder().isNew(true).build()))
-                        .foedsel(List.of(PdlFoedsel.builder().isNew(true).build()))
-                        .navn(List.of(RsNavn.builder().isNew(true).build()))
+                        .kjoenn(List.of(PdlKjoenn.builder().build()))
+                        .foedsel(List.of(PdlFoedsel.builder().build()))
+                        .navn(List.of(RsNavn.builder().hasMellomnavn(request.getHarMellomnavn()).build()))
                         .bostedsadresse(List.of(PdlBostedadresse.builder()
                                 .vegadresse(new PdlVegadresse())
-                                .isNew(true)
                                 .build()))
-                        .statsborgerskap(List.of(PdlStatsborgerskap.builder().isNew(true).build()))
-                        .folkeregisterpersonstatus(List.of(PdlFolkeregisterpersonstatus.builder().isNew(true).build()))
+                        .statsborgerskap(List.of(PdlStatsborgerskap.builder().build()))
+                        .folkeregisterpersonstatus(List.of(PdlFolkeregisterpersonstatus.builder().build()))
                         .build(),
                 PdlPerson.builder().ident(ident).build());
 

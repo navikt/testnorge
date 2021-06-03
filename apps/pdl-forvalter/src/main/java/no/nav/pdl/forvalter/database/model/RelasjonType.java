@@ -4,6 +4,6 @@ public enum RelasjonType {
 
     FULLMEKTIG,
     FULLMAKTSGIVER,
-    VERGE_FULLMEKTIG,
+    VERGE,
     VERGE_MOTTAKER
 }

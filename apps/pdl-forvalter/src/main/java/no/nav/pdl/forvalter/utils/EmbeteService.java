@@ -15,7 +15,7 @@ public class EmbeteService {
     private static final Properties embeter = new Properties();
 
     static {
-        var resource = new ClassPathResource("embeter/embeter.yaml");
+        var resource = new ClassPathResource("vergemaal/embeter.yaml");
 
         try (final InputStream stream = resource.getInputStream()) {
             embeter.load(stream);

@@ -26,7 +26,7 @@ public class VergemaalService {
 
     private static final String VALIDATION_UGYLDIG_INTERVAL_ERROR = "Ugyldig datointervall: gyldigFom må være før gyldigTom";
     private static final String VALIDATION_EMBETE_ERROR = "Embete for vergemål må angis";
-    private static final String VALIDATION_TYPE_ERROR = "Type av vergemål må angis";
+    private static final String VALIDATION_TYPE_ERROR = "Sakstype av vergemål må angis";
     private static final String VALIDATION_VERGEMAAL_ERROR = "Vergeperson med ident %s ikke funnet i database";
 
     private final PersonRepository personRepository;
@@ -60,7 +60,7 @@ public class VergemaalService {
             throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_UGYLDIG_INTERVAL_ERROR);
         }
 
-        if (isNull(vergemaal.getType())) {
+        if (isNull(vergemaal.getSakType())) {
             throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_TYPE_ERROR);
         }
 
@@ -88,7 +88,7 @@ public class VergemaalService {
 
             fullmakt.setVergeIdent(createPersonService.execute(fullmakt.getNyVergeIdent()));
             relasjonService.setRelasjoner(ident, RelasjonType.VERGE_MOTTAKER,
-                    fullmakt.getVergeIdent(), RelasjonType.VERGE_FULLMEKTIG);
+                    fullmakt.getVergeIdent(), RelasjonType.VERGE);
             fullmakt.setNyVergeIdent(null);
         }
     }

@@ -26,15 +26,15 @@ public class NavnService extends PdlArtifactService<RsNavn> {
     }
 
     @Override
-    protected void validate(RsNavn pdlNavn) {
+    protected void validate(RsNavn navn) {
 
-        if ((isNotBlank(pdlNavn.getFornavn()) ||
-                isNotBlank(pdlNavn.getMellomnavn()) ||
-                isNotBlank(pdlNavn.getEtternavn())) &&
+        if ((isNotBlank(navn.getFornavn()) ||
+                isNotBlank(navn.getMellomnavn()) ||
+                isNotBlank(navn.getEtternavn())) &&
                 !genererNavnServiceConsumer.verifyNavn(NavnDTO.builder()
-                        .adjektiv(pdlNavn.getFornavn())
-                        .adverb(pdlNavn.getMellomnavn())
-                        .substantiv(pdlNavn.getEtternavn())
+                        .adjektiv(navn.getFornavn())
+                        .adverb(navn.getMellomnavn())
+                        .substantiv(navn.getEtternavn())
                         .build())) {
 
             throw new HttpClientErrorException(BAD_REQUEST, NAVN_INVALID_ERROR);
@@ -42,18 +42,19 @@ public class NavnService extends PdlArtifactService<RsNavn> {
     }
 
     @Override
-    protected void handle(RsNavn pdlNavn) {
+    protected void handle(RsNavn navn) {
 
-        if (isBlank(pdlNavn.getFornavn()) || isBlank(pdlNavn.getEtternavn()) ||
-                (isBlank(pdlNavn.getMellomnavn()) && isTrue(pdlNavn.getHasMellomnavn()))) {
+        if (isBlank(navn.getFornavn()) || isBlank(navn.getEtternavn()) ||
+                (isBlank(navn.getMellomnavn()) && isTrue(navn.getHasMellomnavn()))) {
 
-            var navn = genererNavnServiceConsumer.getNavn(1);
-            if (navn.isPresent()) {
-                pdlNavn.setFornavn(blankCheck(pdlNavn.getFornavn(), navn.get().getAdjektiv()));
-                pdlNavn.setEtternavn(blankCheck(pdlNavn.getEtternavn(), navn.get().getSubstantiv()));
-                pdlNavn.setMellomnavn(blankCheck(pdlNavn.getMellomnavn(),
-                        isTrue(pdlNavn.getHasMellomnavn()) ? navn.get().getAdverb() : null));
+            var nyttNavn = genererNavnServiceConsumer.getNavn(1);
+            if (nyttNavn.isPresent()) {
+                navn.setFornavn(blankCheck(navn.getFornavn(), nyttNavn.get().getAdjektiv()));
+                navn.setEtternavn(blankCheck(navn.getEtternavn(), nyttNavn.get().getSubstantiv()));
+                navn.setMellomnavn(blankCheck(navn.getMellomnavn(),
+                        isTrue(navn.getHasMellomnavn()) ? nyttNavn.get().getAdverb() : null));
             }
+            navn.setHasMellomnavn(null);
         }
     }
 

@@ -14,7 +14,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static java.lang.String.format;
-import static no.nav.pdl.forvalter.domain.PdlVergemaal.VergemaalType.ENSLIG_MINDREAARIG_FLYKTNING;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -50,7 +49,7 @@ class VergemaalServiceTest {
     void whenTypeIsMissing_thenThrowExecption() {
 
         var request = List.of(RsVergemaal.builder()
-                .embete("Oslo tingrett")
+                .embete("Statsforvalteren i Agder")
                 .isNew(true)
                 .build());
 
@@ -59,14 +58,14 @@ class VergemaalServiceTest {
                         .vergemaal((List<RsVergemaal>) request)
                         .build()));
 
-        assertThat(exception.getMessage(), containsString("Ugyldig datointervall: gyldigFom må være før gyldigTom"));
+        assertThat(exception.getMessage(), containsString("Sakstype av vergemål må angis"));
     }
 
     @Test
     void whenUgyldigDatoInterval_thenThrowExecption() {
 
         var request = List.of(RsVergemaal.builder()
-                .embete("Oslo tingrett")
+                .embete("Statsforvalteren i Oslo og Viken")
                 .gyldigFom(LocalDate.of(2012, 04, 05).atStartOfDay())
                 .gyldigTom(LocalDate.of(2012, 04, 04).atStartOfDay())
                 .isNew(true)
@@ -86,8 +85,8 @@ class VergemaalServiceTest {
         when(personRepository.existsByIdent(IDENT)).thenReturn(false);
 
         var request = List.of(RsVergemaal.builder()
-                .embete("Asker- og Bærum tingrett")
-                .type(ENSLIG_MINDREAARIG_FLYKTNING)
+                .embete("Statsforvalteren i Trøndelag")
+                .sakType("Voksen midlertidig")
                 .vergeIdent(IDENT)
                 .isNew(true)
                 .build());

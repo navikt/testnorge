@@ -17,10 +17,12 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 public class HentIdenterRequest {
+
     private Identtype identtype;
     private LocalDate foedtEtter;
     private LocalDate foedtFoer;
     private PdlKjoenn.Kjoenn kjoenn;
+
     @NotNull
     private int antall;
     private String rekvirertAv;

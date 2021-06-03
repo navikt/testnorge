@@ -18,8 +18,5 @@ public interface PersonRepository extends CrudRepository<DbPerson, Long> {
     @Modifying
     int deleteByIdentIn(List<String> ident);
 
-    @Modifying
-    int deleteByIdent(String ident);
-
     boolean existsByIdent(String ident);
 }

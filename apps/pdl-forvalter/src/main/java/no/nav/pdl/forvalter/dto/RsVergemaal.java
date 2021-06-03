@@ -1,11 +1,11 @@
 package no.nav.pdl.forvalter.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import no.nav.pdl.forvalter.domain.PdlDbVersjon;
-import no.nav.pdl.forvalter.domain.PdlVergemaal;
 
 import java.time.LocalDateTime;
 
@@ -13,14 +13,15 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RsVergemaal extends PdlDbVersjon {
 
     private String embete;
-    private PdlVergemaal.VergemaalType type;
+    private String sakType;
     private LocalDateTime gyldigFom;
     private LocalDateTime gyldigTom;
 
     private RsPersonRequest nyVergeIdent;
     private String vergeIdent;
-    private PdlVergemaal.Omfang omfang;
+    private String mandatType;
 }
