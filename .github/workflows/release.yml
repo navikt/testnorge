@@ -3,8 +3,8 @@ name: Release
 on:
   push:
     branches: bugfix/fix-release
-    paths:
-      - libs/**
+#    paths:
+#      - libs/**
 
 jobs:
   release:
