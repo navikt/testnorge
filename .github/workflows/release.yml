@@ -2,7 +2,9 @@ name: Release
 
 on:
   push:
-    branches: bugfix/fix-release
+    branches: master
+    paths:
+      - libs/**
 
 jobs:
   release:
