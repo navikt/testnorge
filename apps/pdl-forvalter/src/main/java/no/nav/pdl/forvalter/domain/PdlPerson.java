@@ -6,8 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.pdl.forvalter.domain.doedsbo.PdlKontaktinformasjonForDoedsbo;
-import no.nav.pdl.forvalter.domain.falskidentitet.PdlFalskIdentitet;
 import no.nav.pdl.forvalter.domain.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
+import no.nav.pdl.forvalter.dto.RsFalskIdentitet;
 import no.nav.pdl.forvalter.dto.RsInnflytting;
 import no.nav.pdl.forvalter.dto.RsKontaktadresse;
 import no.nav.pdl.forvalter.dto.RsNavn;
@@ -42,7 +42,7 @@ public class PdlPerson implements Serializable {
     private List<PdlForeldreansvar> foreldreansvar;
     private List<PdlKontaktinformasjonForDoedsbo> kontaktinformasjonForDoedsbo;
     private List<PdlUtenlandskIdentifikasjonsnummer> utenlandskIdentifikasjonsnummer;
-    private List<PdlFalskIdentitet> falskIdentitet;
+    private List<RsFalskIdentitet> falskIdentitet;
     private List<PdlAdressebeskyttelse> adressebeskyttelse;
     private List<PdlDoedsfall> doedsfall;
     private List<PdlFolkeregisterpersonstatus> folkeregisterpersonstatus;
@@ -212,7 +212,7 @@ public class PdlPerson implements Serializable {
         return utenlandskIdentifikasjonsnummer;
     }
 
-    public List<PdlFalskIdentitet> getFalskIdentitet() {
+    public List<RsFalskIdentitet> getFalskIdentitet() {
         if (isNull(falskIdentitet)) {
             falskIdentitet = new ArrayList<>();
         }

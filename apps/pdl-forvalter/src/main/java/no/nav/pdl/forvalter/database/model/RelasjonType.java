@@ -5,5 +5,7 @@ public enum RelasjonType {
     FULLMEKTIG,
     FULLMAKTSGIVER,
     VERGE,
-    VERGE_MOTTAKER
+    VERGE_MOTTAKER,
+    RIKTIG_IDENTITET,
+    FALSK_IDENTITET
 }

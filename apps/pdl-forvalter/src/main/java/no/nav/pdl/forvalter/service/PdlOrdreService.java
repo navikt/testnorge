@@ -7,6 +7,7 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.domain.PdlDelete;
+import no.nav.pdl.forvalter.domain.PdlFalskIdentitet;
 import no.nav.pdl.forvalter.domain.PdlInnflytting;
 import no.nav.pdl.forvalter.domain.PdlKontaktadresse;
 import no.nav.pdl.forvalter.domain.PdlOpprettPerson;
@@ -114,7 +115,8 @@ public class PdlOrdreService {
                 person.getKontaktinformasjonForDoedsbo()));
         status.addAll(deployService.send(PDL_UTENLANDS_IDENTIFIKASJON_NUMMER, person.getIdent(),
                 person.getUtenlandskIdentifikasjonsnummer()));
-        status.addAll(deployService.send(PDL_FALSK_IDENTITET, person.getIdent(), person.getFalskIdentitet()));
+        status.addAll(deployService.send(PDL_FALSK_IDENTITET, person.getIdent(),
+                mapperFacade.mapAsList(person.getFalskIdentitet(), PdlFalskIdentitet.class)));
         status.addAll(deployService.send(PDL_TILRETTELAGT_KOMMUNIKASJON, person.getIdent(),
                 mapperFacade.mapAsList(person.getTilrettelagtKommunikasjon(), PdlTilrettelagtKommunikasjon.class)));
         return status;

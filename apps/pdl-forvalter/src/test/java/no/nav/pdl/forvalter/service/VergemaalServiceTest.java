@@ -98,5 +98,4 @@ class VergemaalServiceTest {
 
         assertThat(exception.getMessage(), containsString(format("Vergeperson med ident %s ikke funnet i database", IDENT)));
     }
-
 }
