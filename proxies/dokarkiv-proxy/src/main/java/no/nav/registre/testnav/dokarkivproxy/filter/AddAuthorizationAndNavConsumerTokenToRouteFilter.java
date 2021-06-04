@@ -9,7 +9,6 @@ import java.util.Set;
 
 @Slf4j
 public class AddAuthorizationAndNavConsumerTokenToRouteFilter extends ZuulFilter {
-    public static final String HEADER_NAV_CONSUMER_TOKEN = "Nav-Consumer-Token";
 
     private final GenerateToken generateToken;
     private final Set<String> routes;
@@ -40,9 +39,8 @@ public class AddAuthorizationAndNavConsumerTokenToRouteFilter extends ZuulFilter
         RequestContext ctx = RequestContext.getCurrentContext();
 
         var token = generateToken.getToken();
-        log.info("Injecter bearer token i requesten ({}...)...", token.substring(0, 3));
+        log.info("Injecter Bearer token i requesten [{}...]...", token.substring(0, 3));
         ctx.addZuulRequestHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token);
-        ctx.addZuulRequestHeader(HEADER_NAV_CONSUMER_TOKEN, "Bearer " + token);
         log.info("Token injectert i requesten.");
         return null;
     }
