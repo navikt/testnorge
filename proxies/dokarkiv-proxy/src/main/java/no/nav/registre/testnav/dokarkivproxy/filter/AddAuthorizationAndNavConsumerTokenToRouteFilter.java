@@ -39,7 +39,7 @@ public class AddAuthorizationAndNavConsumerTokenToRouteFilter extends ZuulFilter
         RequestContext ctx = RequestContext.getCurrentContext();
 
         var token = generateToken.getToken();
-        log.info("Injecter Bearer token i requesten [{}...]...", token.substring(0, 3));
+        log.info("Injecter Bearer token [{}...] i requesten...", token.substring(0, 3));
         ctx.addZuulRequestHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token);
         log.info("Token injectert i requesten.");
         return null;
