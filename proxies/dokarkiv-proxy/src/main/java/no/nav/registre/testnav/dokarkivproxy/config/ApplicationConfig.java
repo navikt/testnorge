@@ -53,7 +53,7 @@ public class ApplicationConfig {
     public AddAuthorizationAndNavConsumerTokenToRouteFilter stsTestAddAuthorizationToRouteFilter(StsOidcTokenService stsTestOidcTokenService) {
         return new AddAuthorizationAndNavConsumerTokenToRouteFilter(
                 stsTestOidcTokenService::getToken,
-                "dokarkiv-t0:",
+                "dokarkiv-t0",
                 "dokarkiv-t1",
                 "dokarkiv-t2",
                 "dokarkiv-t3",
