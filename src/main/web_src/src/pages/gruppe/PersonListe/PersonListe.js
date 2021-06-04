@@ -57,7 +57,7 @@ export default function PersonListe({
 	}
 
 	useEffect(() => {
-		if (!iBrukEndret() || !identer[previousIdenter[0].ident]) {
+		if (!iBrukEndret() || !identer[previousIdenter[previousIdenter.length - 1]?.ident]) {
 			fetchTpsfPersoner()
 			previousValues.current = identer
 		}

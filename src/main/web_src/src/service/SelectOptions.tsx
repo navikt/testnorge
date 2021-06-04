@@ -125,6 +125,14 @@ const selectOptions: SelectOptions = {
 		{ value: 'VARIG', label: 'VARIG - Varig tilpasset innsats' }
 	],
 
+	rettighetKode: [
+		{ value: 'DAGO', label: 'DAGO - Ordinære dagpenger' },
+		{ value: 'PERM', label: 'PERM - Dagpenger under permittering' },
+		{ value: 'FISK', label: 'FISK - Dagpenger under permittering fra fiskeindustri' },
+		{ value: 'LONN', label: 'LONN - Lønnsgarantimidler' },
+		{ value: 'DEKS', label: 'DEKS - Eksport - dagpenger' }
+	],
+
 	//KRRSTUB
 	spraaktype: [
 		{ value: 'nb', label: 'Norsk Bokmål' },
