@@ -46,7 +46,7 @@ class NavnServiceTest {
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 navnService.convert((List<RsNavn>) request));
 
-        assertThat(exception.getMessage(), containsString("Navn er ikke liste over gyldige verdier"));
+        assertThat(exception.getMessage(), containsString("Navn er ikke i liste over gyldige verdier"));
     }
 
     @Test

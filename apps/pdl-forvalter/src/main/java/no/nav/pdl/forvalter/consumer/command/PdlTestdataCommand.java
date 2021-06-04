@@ -64,7 +64,7 @@ public class PdlTestdataCommand implements Callable<PdlBestillingResponse> {
 
         } else {
 
-            return webClient
+            var response = webClient
                     .delete()
                     .uri(builder -> builder.path(url).build())
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -72,8 +72,9 @@ public class PdlTestdataCommand implements Callable<PdlBestillingResponse> {
                     .header(TEMA, GEN.name())
                     .header(HEADER_NAV_PERSON_IDENT, ident)
                     .retrieve()
-                    .bodyToMono(PdlBestillingResponse.class)
+                    .bodyToMono(String.class)
                     .block();
+            return new PdlBestillingResponse();
         }
     }
 }

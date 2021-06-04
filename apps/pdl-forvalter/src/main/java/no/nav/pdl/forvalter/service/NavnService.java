@@ -18,7 +18,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @RequiredArgsConstructor
 public class NavnService extends PdlArtifactService<RsNavn> {
 
-    private static final String NAVN_INVALID_ERROR = "Navn er i ikke liste over gyldige verdier";
+    private static final String NAVN_INVALID_ERROR = "Navn er ikke i liste over gyldige verdier";
     private final GenererNavnServiceConsumer genererNavnServiceConsumer;
 
     private static String blankCheck(String value, String defaultValue) {

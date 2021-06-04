@@ -1,6 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.domain.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
+import no.nav.pdl.forvalter.domain.PdlUtenlandskIdentifikasjonsnummer;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 

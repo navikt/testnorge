@@ -9,9 +9,7 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PdlBestillingResponse {
-
-    private String hendelseId;
+public class SlettPersonResponse {
 
     private Map<String, String> deletedOpplysninger;
     private String feilmelding;

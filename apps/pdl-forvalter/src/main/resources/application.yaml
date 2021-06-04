@@ -21,3 +21,8 @@ consumers:
     cluster: dev-fss
     namespace: dolly
     name: testnav-ident-pool-proxy
+  org-forvalter:
+    url: https://testnav-organisasjon-forvalter.dev.intern.nav.no
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-organisasjon-forvalter

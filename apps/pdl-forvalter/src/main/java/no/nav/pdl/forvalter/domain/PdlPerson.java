@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.pdl.forvalter.domain.doedsbo.PdlKontaktinformasjonForDoedsbo;
-import no.nav.pdl.forvalter.domain.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
 import no.nav.pdl.forvalter.dto.RsFalskIdentitet;
 import no.nav.pdl.forvalter.dto.RsInnflytting;
 import no.nav.pdl.forvalter.dto.RsKontaktadresse;
