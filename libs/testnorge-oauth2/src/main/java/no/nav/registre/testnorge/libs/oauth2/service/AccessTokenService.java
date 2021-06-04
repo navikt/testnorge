@@ -181,7 +181,7 @@ public class AccessTokenService {
                 .flatMap(response -> response.bodyToMono(AccessToken.class))
                 .doOnError(error -> log.error("Feil ved henting av access token.", error));
 
-        log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow");
+        log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow. \n scope {}", accessScopes.getScopes());
         return accessToken;
     }
 }

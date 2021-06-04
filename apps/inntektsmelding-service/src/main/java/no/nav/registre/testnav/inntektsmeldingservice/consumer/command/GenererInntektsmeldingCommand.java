@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
@@ -30,6 +31,9 @@ public class GenererInntektsmeldingCommand implements Callable<Mono<String>> {
                 .body(BodyInserters.fromPublisher(Mono.just(dto), RsInntektsmelding.class))
                 .retrieve()
                 .bodyToMono(String.class)
-                .retryWhen(Retry.fixedDelay(1, Duration.ofSeconds(2)));
+                .retryWhen(Retry.fixedDelay(1, Duration.ofSeconds(2)).filter(throwable -> !(
+                        throwable instanceof WebClientResponseException.NotFound
+                                || throwable instanceof WebClientResponseException.Unauthorized
+                )));
     }
 }

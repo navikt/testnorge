@@ -8,7 +8,6 @@ import no.nav.registre.testnav.inntektsmeldingservice.config.credentials.Inntekt
 import no.nav.registre.testnav.inntektsmeldingservice.consumer.command.GenererInntektsmeldingCommand;
 import no.nav.registre.testnav.inntektsmeldingservice.consumer.dto.inntektsmeldinggenerator.v1.rs.RsInntektsmelding;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 
 @Slf4j
