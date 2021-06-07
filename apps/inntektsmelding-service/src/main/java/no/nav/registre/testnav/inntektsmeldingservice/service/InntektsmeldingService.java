@@ -19,7 +19,7 @@ import no.nav.registre.testnorge.libs.dto.dokarkiv.v1.ProsessertInntektDokument;
 import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.RsInntektsmeldingRequest;
 import no.nav.registre.testnav.inntektsmeldingservice.factories.RsAltinnInntektsmeldingFactory;
 import no.nav.registre.testnav.inntektsmeldingservice.factories.RsJoarkMetadataFactory;
-import no.nav.registre.testnav.inntektsmeldingservice.repository.InntektsmedlingRepository;
+import no.nav.registre.testnav.inntektsmeldingservice.repository.InntektsmeldingRepository;
 import no.nav.registre.testnav.inntektsmeldingservice.repository.model.InntektsmeldingModel;
 import no.nav.registre.testnorge.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
 
@@ -30,7 +30,7 @@ public class InntektsmeldingService {
 
     private final GenererInntektsmeldingConsumer genererInntektsmeldingConsumer;
     private final DokmotConsumer dokmotConsumer;
-    private final InntektsmedlingRepository repository;
+    private final InntektsmeldingRepository repository;
 
     public List<ProsessertInntektDokument> opprettInntektsmelding(
             String navCallId,
@@ -52,6 +52,7 @@ public class InntektsmeldingService {
         var xmlString = genererInntektsmeldingConsumer.getInntektsmeldingXml201812(RsAltinnInntektsmeldingFactory.create(rsInntektsmelding, ident));
         log.trace(xmlString);
         InntektsmeldingModel model = repository.save(new InntektsmeldingModel());
+        log.info("Inntektsmelding generert med id: {}.", model.getId());
 
         return InntektDokument.builder()
                 .arbeidstakerFnr(ident)

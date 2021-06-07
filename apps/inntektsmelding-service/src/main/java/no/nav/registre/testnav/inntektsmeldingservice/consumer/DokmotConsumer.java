@@ -35,7 +35,7 @@ public class DokmotConsumer {
     }
 
     public List<ProsessertInntektDokument> opprettJournalpost(String miljoe, List<InntektDokument> inntektDokumenter, String navCallId) {
-        log.info("Oppretter {} journalpost(er) i miljø {} for inntektsdokument(er). Nav-Call-Id: {}", inntektDokumenter.size(), miljoe, navCallId);
+        log.info("Oppretter {} journalpost(er) i miljø {} for inntektsdokument(er).\nNav-Call-Id: {}", inntektDokumenter.size(), miljoe, navCallId);
         var pdf = FilLaster.instans().hentDummyPDF();
 
         return accessTokenService
