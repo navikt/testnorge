@@ -11,9 +11,9 @@ import { SelectOptionsDiagnoser } from './SelectOptionsDiagnoser'
 import HelsepersonellSelect from './HelsepersonellSelect'
 import { ArbeidKodeverk } from '~/config/kodeverk'
 import {
-	SykemeldingForm,
+	Arbeidsgiver,
 	Helsepersonell,
-	Arbeidsgiver
+	SykemeldingForm
 } from '~/components/fagsystem/sykdom/SykemeldingTypes'
 
 type DiagnoseSelect = {
@@ -134,7 +134,7 @@ export const DetaljertSykemelding = ({ formikBag }: SykemeldingForm) => {
 					name="sykemelding.detaljertSykemelding.arbeidsgiver.yrkesbetegnelse"
 					label="Yrkesbetegnelse"
 					kodeverk={ArbeidKodeverk.Yrker}
-					size="xxlarge"
+					size="xxxlarge"
 					isClearable={false}
 					optionHeight={50}
 				/>

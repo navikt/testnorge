@@ -56,7 +56,7 @@ export const ArbeidsavtaleForm = ({ formikBag, path }) => {
 					name={`${arbeidsavtalePath}.yrke`}
 					label="Yrke"
 					kodeverk={ArbeidKodeverk.Yrker}
-					size="xxlarge"
+					size="xxxlarge"
 					isClearable={false}
 					optionHeight={50}
 				/>
