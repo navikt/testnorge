@@ -4,8 +4,10 @@ plugins {
 
 dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.11.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.2'
     implementation 'javax.validation:validation-api:2.0.1.Final'
     implementation 'org.projectlombok:lombok:1.18.12'
+    implementation 'no.nav.tjenestespesifikasjoner:nav-altinn-inntektsmelding:1.2019.08.16-13.46-35cbdfd492d4'
 }
 
 group = 'no.nav.registre.testnorge.libs'

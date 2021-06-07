@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 
-import no.nav.registre.testnav.dokarkivproxy.filter.AddAuthorizationAndNavConsumerTokenToRouteFilter;
+import no.nav.registre.testnav.dokarkivproxy.filter.AddAuthorizationToRouteFilter;
 import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
 import no.nav.registre.testnorge.libs.service.StsOidcTokenService;
 
@@ -38,8 +38,8 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public AddAuthorizationAndNavConsumerTokenToRouteFilter stsPreprodAddAuthorizationToRouteFilter(StsOidcTokenService stsPreprodOidcTokenService) {
-        return new AddAuthorizationAndNavConsumerTokenToRouteFilter(
+    public AddAuthorizationToRouteFilter stsPreprodAddAuthorizationToRouteFilter(StsOidcTokenService stsPreprodOidcTokenService) {
+        return new AddAuthorizationToRouteFilter(
                 stsPreprodOidcTokenService::getToken,
                 "dokarkiv-q1",
                 "dokarkiv-q2",
@@ -50,8 +50,8 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public AddAuthorizationAndNavConsumerTokenToRouteFilter stsTestAddAuthorizationToRouteFilter(StsOidcTokenService stsTestOidcTokenService) {
-        return new AddAuthorizationAndNavConsumerTokenToRouteFilter(
+    public AddAuthorizationToRouteFilter stsTestAddAuthorizationToRouteFilter(StsOidcTokenService stsTestOidcTokenService) {
+        return new AddAuthorizationToRouteFilter(
                 stsTestOidcTokenService::getToken,
                 "dokarkiv-t0",
                 "dokarkiv-t1",

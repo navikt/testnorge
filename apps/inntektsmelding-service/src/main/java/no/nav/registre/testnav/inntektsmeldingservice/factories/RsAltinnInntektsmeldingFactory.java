@@ -1,8 +1,8 @@
 package no.nav.registre.testnav.inntektsmeldingservice.factories;
 
 
-import no.nav.registre.testnav.inntektsmeldingservice.consumer.dto.inntektsmeldinggenerator.v1.RsInntektsmeldingRequest;
-import no.nav.registre.testnav.inntektsmeldingservice.consumer.dto.inntektsmeldinggenerator.v1.rs.RsInntektsmelding;
+import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.RsInntektsmeldingRequest;
+import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsInntektsmelding;
 
 public class RsAltinnInntektsmeldingFactory {
 
@@ -10,8 +10,8 @@ public class RsAltinnInntektsmeldingFactory {
 
     public static RsInntektsmelding create(RsInntektsmeldingRequest request, String ident) {
         return RsInntektsmelding.builder()
-                .ytelse(request.getYtelse())
-                .aarsakTilInnsending(request.getAarsakTilInnsending())
+                .ytelse(request.getYtelse().getValue())
+                .aarsakTilInnsending(request.getAarsakTilInnsending().getValue())
                 .arbeidstakerFnr(ident)
                 .naerRelasjon(request.isNaerRelasjon())
                 .avsendersystem(request.getAvsendersystem())

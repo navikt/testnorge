@@ -9,11 +9,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
-import java.net.URI;
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnav.inntektsmeldingservice.consumer.dto.dovarkiv.v1.DokmotRequest;
-import no.nav.registre.testnav.inntektsmeldingservice.consumer.dto.dovarkiv.v1.DokmotResponse;
+import no.nav.registre.testnorge.libs.dto.dokarkiv.v1.DokmotRequest;
+import no.nav.registre.testnorge.libs.dto.dokarkiv.v1.DokmotResponse;
 
 
 @Slf4j

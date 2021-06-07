@@ -21,8 +21,11 @@ dependencies {
     implementation project(':testnorge-core')
     implementation project(':testnorge-database')
     implementation project(':testnorge-domain')
-    implementation project(':testnorge-domain')
+    implementation project(':testnorge-data-transfer-objects')
 
+
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-zuul'
+    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
 
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
