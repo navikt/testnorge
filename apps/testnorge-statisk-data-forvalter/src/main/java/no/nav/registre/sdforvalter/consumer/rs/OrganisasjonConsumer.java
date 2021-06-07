@@ -38,7 +38,7 @@ public class OrganisasjonConsumer {
     }
 
     private CompletableFuture<Organisasjon> getOrganisasjon(String orgnummer, String miljo, Executor executor) {
-        AccessToken accessToken = accessTokenService.generateToken(serverProperties);
+        AccessToken accessToken = accessTokenService.generateToken(serverProperties).block();
         return CompletableFuture.supplyAsync(
                 () -> {
                     try {

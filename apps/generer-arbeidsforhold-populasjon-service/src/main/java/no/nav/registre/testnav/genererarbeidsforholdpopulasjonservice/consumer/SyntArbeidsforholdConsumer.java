@@ -50,13 +50,13 @@ public class SyntArbeidsforholdConsumer {
 
     public Mono<List<ArbeidsforholdResponse>> genererStartArbeidsforhold(LocalDate startdato) {
         return accessTokenService
-                .generateNonBlockedToken(properties)
+                .generateToken(properties)
                 .flatMap(accessToken -> new GenererStartArbeidsforholdCommand(webClient, startdato, accessToken.getTokenValue()).call());
     }
 
     public Mono<List<List<ArbeidsforholdResponse>>> genererArbeidsforholdHistorikk(List<ArbeidsforholdRequest> requests) {
         return accessTokenService
-                .generateNonBlockedToken(properties)
+                .generateToken(properties)
                 .flatMap(accessToken -> new GenererArbeidsforholdHistorikkCommand(webClient, requests, accessToken.getTokenValue(), objectMapper).call());
     }
 }

@@ -37,7 +37,7 @@ public class ApplicationsController {
 
         AccessToken accessToken = accessTokenService.generateToken(
                 new AccessScopes("api://" + scope + "//.default")
-        );
+        ).block();
 
         if (accessToken.getTokenValue() == null) {
             return ResponseEntity.notFound().build();

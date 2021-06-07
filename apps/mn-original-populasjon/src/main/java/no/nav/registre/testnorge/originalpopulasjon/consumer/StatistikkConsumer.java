@@ -33,7 +33,7 @@ public class StatistikkConsumer {
 
     public StatistikkDTO getStatistikk(StatistikkType statistikkType) {
         log.info("Henter statistikk {}...", statistikkType);
-        AccessToken accessToken = accessTokenService.generateToken(serviceProperties);
+        AccessToken accessToken = accessTokenService.generateToken(serviceProperties).block();
         return new GetStatistikkCommand(webClient, statistikkType, accessToken.getTokenValue()).call();
     }
 }

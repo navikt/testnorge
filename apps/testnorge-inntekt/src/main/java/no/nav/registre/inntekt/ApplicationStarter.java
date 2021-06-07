@@ -29,7 +29,7 @@ public class ApplicationStarter {
             InntektsmeldingServiceProperties properties
     ) {
         return new AddAuthorizationToRouteFilter(
-                () -> accessTokenService.generateToken(properties).getTokenValue(),
+                () -> accessTokenService.generateToken(properties).block().getTokenValue(),
                 "testnav-inntektsmelding-service"
         );
     }

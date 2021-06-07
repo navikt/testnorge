@@ -52,7 +52,7 @@ public class OrganisasjonConsumer {
 
     @Cacheable("Mini-Norge-EREG")
     public List<OrganisasjonDTO> getOrganisasjoner(Set<String> orgnummerListe, String miljo) {
-        AccessToken accessToken = accessTokenService.generateToken(serviceProperties);
+        AccessToken accessToken = accessTokenService.generateToken(serviceProperties).block();
         var futures = orgnummerListe.stream().map(value -> getFutureOrganisasjon(value, accessToken, miljo)).collect(Collectors.toList());
         List<OrganisasjonDTO> list = new ArrayList<>();
 

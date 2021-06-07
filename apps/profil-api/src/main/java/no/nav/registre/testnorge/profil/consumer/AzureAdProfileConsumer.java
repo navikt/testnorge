@@ -62,13 +62,13 @@ public class AzureAdProfileConsumer {
     }
 
     public Profil getProfil() {
-        AccessToken accessToken = accessTokenService.generateToken(accessScopes);
+        AccessToken accessToken = accessTokenService.generateToken(accessScopes).block();
         ProfileDTO dto = new GetProfileCommand(webClient, accessToken.getTokenValue()).call();
         return new Profil(dto);
     }
 
     public byte[] getProfilImage() {
-        AccessToken accessToken = accessTokenService.generateToken(accessScopes);
+        AccessToken accessToken = accessTokenService.generateToken(accessScopes).block();
         return new GetProfileImageCommand(webClient, accessToken.getTokenValue()).call();
     }
 

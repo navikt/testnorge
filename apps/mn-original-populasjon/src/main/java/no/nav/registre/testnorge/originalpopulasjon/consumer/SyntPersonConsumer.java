@@ -36,7 +36,7 @@ public class SyntPersonConsumer {
 
 
     public List<SyntPersonDTO> getPersonInfo(Integer antall) {
-        AccessToken accessToken = accessTokenService.generateToken(serviceProperties);
+        AccessToken accessToken = accessTokenService.generateToken(serviceProperties).block();
 
         log.info("Henter personopplysninger for {} personer", antall);
         var response = webClient

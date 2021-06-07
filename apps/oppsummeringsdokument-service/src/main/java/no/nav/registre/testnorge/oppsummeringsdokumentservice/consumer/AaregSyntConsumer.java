@@ -27,7 +27,7 @@ public class AaregSyntConsumer {
     }
 
     public void saveOpplysningspliktig(Oppsummeringsdokument oppsummeringsdokument, String miljo) {
-        var accessToken = accessTokenService.generateToken(properties);
+        var accessToken = accessTokenService.generateToken(properties).block();
         new SaveOpplysningspliktigCommand(
                 webClient,
                 oppsummeringsdokument.toXml(),

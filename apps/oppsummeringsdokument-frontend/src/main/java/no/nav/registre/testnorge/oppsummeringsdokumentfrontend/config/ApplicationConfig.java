@@ -29,7 +29,7 @@ public class ApplicationConfig {
     @Bean
     public AddAuthorizationToRouteFilter dollyBackendAddAuthorizationToRouteFilter() {
         return new AddAuthorizationToRouteFilter(
-                () -> tokenService.generateToken(properties).getTokenValue(),
+                () -> tokenService.generateToken(properties).block().getTokenValue(),
                 "oppsummeringsdokument-service"
         );
     }
@@ -37,7 +37,7 @@ public class ApplicationConfig {
     @Bean
     public AddAuthorizationToRouteFilter addProfilApiAuthorizationToRouteFilter() {
         return new AddAuthorizationToRouteFilter(
-                () -> tokenService.generateToken(profilApiServiceProperties).getTokenValue(),
+                () -> tokenService.generateToken(profilApiServiceProperties).block().getTokenValue(),
                 "profil"
         );
     }

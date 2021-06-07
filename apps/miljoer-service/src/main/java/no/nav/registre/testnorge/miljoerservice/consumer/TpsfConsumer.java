@@ -1,10 +1,8 @@
 package no.nav.registre.testnorge.miljoerservice.consumer;
 
+import static java.util.Objects.isNull;
+
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
-import no.nav.registre.testnorge.miljoerservice.config.credentias.TpsForvalterenProxyServiceProperties;
-import no.nav.registre.testnorge.miljoerservice.response.MiljoerResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +13,10 @@ import reactor.util.retry.Retry;
 
 import java.time.Duration;
 
-import static java.util.Objects.isNull;
+import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
+import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.registre.testnorge.miljoerservice.config.credentias.TpsForvalterenProxyServiceProperties;
+import no.nav.registre.testnorge.miljoerservice.response.MiljoerResponse;
 
 @Service
 @Slf4j
@@ -40,7 +41,7 @@ public class TpsfConsumer {
 
     public MiljoerResponse getAktiveMiljoer() {
         log.info("Henter aktive miljøer fra TPSF.");
-        var accessToken = accessTokenService.generateToken(serverProperties);
+        var accessToken = accessTokenService.generateToken(serverProperties).block();
         ResponseEntity<MiljoerResponse> response = webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder.path("/api/v1/environments").build())

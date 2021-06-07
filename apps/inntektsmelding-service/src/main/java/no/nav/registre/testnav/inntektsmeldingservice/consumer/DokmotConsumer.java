@@ -39,14 +39,18 @@ public class DokmotConsumer {
         var pdf = FilLaster.instans().hentDummyPDF();
 
         return accessTokenService
-                .generateNonBlockedToken(properties)
+                .generateToken(properties)
                 .flatMapMany(token -> Flux.concat(
                         inntektDokumenter
                                 .stream()
                                 .map(inntektDokument -> new OpprettJournalpostCommand(webClient, token.getTokenValue(), new DokmotRequest(inntektDokument, pdf), navCallId, miljoe)
                                         .call()
                                         .map(response -> {
-                                            log.info("Lagt inn dokument i joark med journalpostId: {} og eksternReferanseId: {}", response.getJournalpostId(), inntektDokument.getMetadata().getEksternReferanseId());
+                                            log.info(
+                                                    "Lagt inn dokument i joark med journalpostId: {} og eksternReferanseId: {}",
+                                                    response.getJournalpostId(),
+                                                    inntektDokument.getMetadata().getEksternReferanseId()
+                                            );
                                             return new ProsessertInntektDokument(inntektDokument, response);
                                         })
                                 ).collect(Collectors.toList())

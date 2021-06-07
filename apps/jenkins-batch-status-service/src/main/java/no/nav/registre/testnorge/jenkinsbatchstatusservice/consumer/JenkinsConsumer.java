@@ -30,18 +30,18 @@ public class JenkinsConsumer {
     }
 
     private JenkinsCrumb getCrumb() {
-        AccessToken accessToken = accessTokenService.generateToken(properties);
+        AccessToken accessToken = accessTokenService.generateToken(properties).block();
         return new GetCrumbCommand(webClient, accessToken.getTokenValue()).call();
     }
 
     public Long getJobNumber(Long itemId) {
-        AccessToken accessToken = accessTokenService.generateToken(properties);
+        AccessToken accessToken = accessTokenService.generateToken(properties).block();
         var dto = new GetQueueItemCommand(webClient, accessToken.getTokenValue(), getCrumb(), itemId).call();
         return dto.getNumber();
     }
 
     public String getJobLog(Long jobNumber) {
-        AccessToken accessToken = accessTokenService.generateToken(properties);
+        AccessToken accessToken = accessTokenService.generateToken(properties).block();
         return new GetBEREG007LogCommand(webClient, accessToken.getTokenValue(), jobNumber).call();
     }
 }

@@ -32,13 +32,12 @@ public class ProfilApiConsumer {
     }
 
     public ProfilDTO getBruker() {
-        AccessToken accessToken = accessTokenService.generateToken(accessScopes);
         log.info("Henter bruker fra Azure.");
-        return webClient.get()
+        return accessTokenService.generateToken(accessScopes).flatMap(accessToken -> webClient.get()
                 .uri("/api/v1/profil")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken.getTokenValue())
                 .retrieve()
                 .bodyToMono(ProfilDTO.class)
-                .block();
+        ).block();
     }
 }

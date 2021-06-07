@@ -28,7 +28,7 @@ public class GenererInntektsmeldingConsumer {
     }
 
     public String getInntektsmeldingXml201812(RsInntektsmelding inntektsmelding) {
-        return accessTokenService.generateNonBlockedToken(properties)
+        return accessTokenService.generateToken(properties)
                 .flatMap(token -> new GenererInntektsmeldingCommand(webClient, inntektsmelding, token.getTokenValue()).call())
                 .block();
     }
