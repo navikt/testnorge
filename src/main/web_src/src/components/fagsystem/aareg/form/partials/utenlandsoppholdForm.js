@@ -9,9 +9,14 @@ import { initialUtenlandsopphold } from '../initialValues'
 const infotekst =
 	'Start- og sluttdato må både være innenfor samme kalendermåned i samme år og perioden til arbeidsforholdet'
 
-export const UtenlandsoppholdForm = ({ path, arbeidsforholdIndex, formikBag, erLenket }) => {
+export const UtenlandsoppholdForm = ({
+	path,
+	ameldingIndex,
+	arbeidsforholdIndex,
+	formikBag,
+	erLenket
+}) => {
 	const maaneder = _get(formikBag.values, 'aareg[0].amelding')
-	const ameldingIndex = path.charAt(18)
 
 	const handleNewEntry = () => {
 		maaneder.forEach((maaned, idMaaned) => {

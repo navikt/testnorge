@@ -17,12 +17,12 @@ const infotekst = 'Start- og sluttdato må være innenfor perioden til arbeidsfo
 
 export const PermitteringForm = ({
 	path,
+	ameldingIndex,
 	arbeidsforholdIndex,
 	formikBag,
 	erLenket
 }: Permittering) => {
 	const maaneder = _get(formikBag.values, 'aareg[0].amelding')
-	const ameldingIndex = path.charAt(18)
 
 	const handleNewEntry = () => {
 		maaneder.forEach((maaned, idMaaned) => {

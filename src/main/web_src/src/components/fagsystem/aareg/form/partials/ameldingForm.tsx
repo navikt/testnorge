@@ -71,7 +71,6 @@ export const AmeldingForm = ({ formikBag }) => {
 				const currMaaned = _get(formikBag.values, 'aareg[0].amelding').find(
 					element => element.maaned == mnd
 				)
-				console.log('currMaaned :>> ', currMaaned)
 				formikBag.setFieldValue(`aareg[0].amelding[${idx}]`, {
 					maaned: mnd,
 					arbeidsforhold: currMaaned ? currMaaned.arbeidsforhold : [initialArbeidsforholdOrg]
@@ -224,6 +223,8 @@ export const AmeldingForm = ({ formikBag }) => {
 										<ArbeidsforholdConnector
 											path={path}
 											key={idx}
+											ameldingIndex={selectedIndex}
+											arbeidsforholdIndex={idx}
 											formikBag={formikBag}
 											arbeidsgiverType={'EGEN'}
 											erLenket={erLenket}

@@ -16,9 +16,15 @@ import { ArbeidKodeverk } from '~/config/kodeverk'
 import Hjelpetekst from '~/components/hjelpetekst'
 import { ArbeidsgiverTyper } from '~/components/fagsystem/aareg/AaregTypes'
 
-export const ArbeidsforholdForm = ({ path, formikBag, erLenket, arbeidsgiverType, brukerId }) => {
-	const arbeidsforholdIndex = path.charAt(path.length - 1)
-
+export const ArbeidsforholdForm = ({
+	path,
+	ameldingIndex,
+	arbeidsforholdIndex,
+	formikBag,
+	erLenket,
+	arbeidsgiverType,
+	brukerId
+}) => {
 	const arbeidsforholdstype =
 		_get(formikBag.values, 'aareg[0].arbeidsforholdstype') ||
 		_get(formikBag.values, `${path}.arbeidsforholdstype`)
@@ -38,7 +44,6 @@ export const ArbeidsforholdForm = ({ path, formikBag, erLenket, arbeidsgiverType
 
 		return field => {
 			const amelding = _get(formikBag.values, 'aareg[0].amelding')
-			const ameldingIndex = path.charAt(18)
 
 			amelding.forEach((maaned, idx) => {
 				if (!erLenket && idx < ameldingIndex) return
@@ -125,6 +130,7 @@ export const ArbeidsforholdForm = ({ path, formikBag, erLenket, arbeidsgiverType
 
 			<TimeloennetForm
 				path={`${path}.antallTimerForTimeloennet`}
+				ameldingIndex={ameldingIndex}
 				arbeidsforholdIndex={arbeidsforholdIndex}
 				formikBag={formikBag}
 				erLenket={erLenket}
@@ -132,6 +138,7 @@ export const ArbeidsforholdForm = ({ path, formikBag, erLenket, arbeidsgiverType
 
 			<UtenlandsoppholdForm
 				path={`${path}.utenlandsopphold`}
+				ameldingIndex={ameldingIndex}
 				arbeidsforholdIndex={arbeidsforholdIndex}
 				formikBag={formikBag}
 				erLenket={erLenket}
@@ -139,6 +146,7 @@ export const ArbeidsforholdForm = ({ path, formikBag, erLenket, arbeidsgiverType
 
 			<PermisjonForm
 				path={`${path}.permisjon`}
+				ameldingIndex={ameldingIndex}
 				arbeidsforholdIndex={arbeidsforholdIndex}
 				formikBag={formikBag}
 				erLenket={erLenket}
@@ -146,6 +154,7 @@ export const ArbeidsforholdForm = ({ path, formikBag, erLenket, arbeidsgiverType
 
 			<PermitteringForm
 				path={`${path}.permittering`}
+				ameldingIndex={ameldingIndex}
 				arbeidsforholdIndex={arbeidsforholdIndex}
 				formikBag={formikBag}
 				erLenket={erLenket}
