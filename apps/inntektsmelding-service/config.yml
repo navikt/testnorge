@@ -21,6 +21,10 @@ spec:
           cluster: dev-fss
         - application: testnorge-inntekt
           cluster: dev-fss
+        - application: dolly-backend
+          cluster: dev-fss
+        - application: dolly-backend-dev
+          cluster: dev-fss
     outbound:
       rules:
         - application: testnav-inntektsmelding-generator-service

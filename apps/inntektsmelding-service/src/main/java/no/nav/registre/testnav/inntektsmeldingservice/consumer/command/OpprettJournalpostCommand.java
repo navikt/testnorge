@@ -36,12 +36,12 @@ public class OpprettJournalpostCommand implements Callable<Mono<DokmotResponse>>
                 .doOnError(error -> {
                     if (error instanceof WebClientResponseException) {
                         log.error(
-                                "Feil ved oppretelse av journalpost av med body: {}.",
+                                "Feil ved opprettelse av journalpost av med body: {}.",
                                 ((WebClientResponseException) error).getResponseBodyAsString(),
                                 error
                         );
                     } else {
-                        log.error("Feil ved oppretelse av journalpost.", error);
+                        log.error("Feil ved opprettelse av journalpost.", error);
                     }
                 });
     }

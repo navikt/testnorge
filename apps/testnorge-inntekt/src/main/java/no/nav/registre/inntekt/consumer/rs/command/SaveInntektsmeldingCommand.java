@@ -35,7 +35,7 @@ public class SaveInntektsmeldingCommand implements Callable<Mono<Inntektsmelding
                 .doOnError(error -> {
                     if (error instanceof WebClientResponseException) {
                         log.error(
-                                "Feil ved lagring av inntektsmelding av med body: {}.",
+                                "Feil ved lagring av inntektsmelding med body: \n{}.",
                                 ((WebClientResponseException) error).getResponseBodyAsString(),
                                 error
                         );
