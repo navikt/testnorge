@@ -1,13 +1,15 @@
 import subYears from 'date-fns/subYears'
 
+export const initialPeriode = {
+	fom: null,
+	tom: null,
+	periode: []
+}
+
 export const initialValues = [
 	{
 		arbeidsforholdstype: '',
-		genererPeriode: {
-			fom: null,
-			tom: null,
-			periode: []
-		}
+		genererPeriode: initialPeriode
 	}
 ]
 

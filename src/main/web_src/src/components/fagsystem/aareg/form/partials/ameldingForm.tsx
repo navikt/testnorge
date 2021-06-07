@@ -10,6 +10,7 @@ import NavButton from '~/components/ui/button/NavButton/NavButton'
 import Button from '~/components/ui/button/Button'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import {
+	initialPeriode,
 	initialAmelding,
 	initialArbeidsforholdOrg,
 	initialForenkletOppgjoersordning,
@@ -37,7 +38,7 @@ const Slettknapp = styled(Button)`
 `
 
 export const AmeldingForm = ({ formikBag }) => {
-	const type = _get(formikBag.values, 'aareg[0].arbeidsforholdstype')
+	const arbeidsforholdstype = _get(formikBag.values, 'aareg[0].arbeidsforholdstype')
 
 	const [fom, setFom] = useState(_get(formikBag.values, 'aareg[0].genererPeriode.fom'))
 	const [tom, setTom] = useState(_get(formikBag.values, 'aareg[0].genererPeriode.tom'))
@@ -75,7 +76,7 @@ export const AmeldingForm = ({ formikBag }) => {
 					maaned: mnd,
 					arbeidsforhold: currMaaned ? currMaaned.arbeidsforhold : [initialArbeidsforholdOrg]
 				})
-				if (type === 'maritimtArbeidsforhold') {
+				if (arbeidsforholdstype === 'maritimtArbeidsforhold') {
 					formikBag.setFieldValue(
 						`aareg[0].amelding[${idx}].arbeidsforhold[0].fartoy`,
 						initialFartoy
@@ -86,18 +87,23 @@ export const AmeldingForm = ({ formikBag }) => {
 	}
 
 	const handleArbeidsforholdstypeChange = event => {
-		formikBag.setFieldValue('aareg[0].arbeidsforholdstype', event.value)
-		if (
-			event.value === 'ordinaertArbeidsforhold' ||
-			event.value === 'maritimtArbeidsforhold' ||
-			event.value === 'frilanserOppdragstakerHonorarPersonerMm'
-		) {
-			formikBag.setFieldValue('aareg[0].arbeidsforhold', undefined)
-			formikBag.setFieldValue('aareg[0].amelding', initialAmelding)
-		} else if (event.value === 'forenkletOppgjoersordning') {
-			formikBag.setFieldValue('aareg[0].amelding', undefined)
-			formikBag.setFieldValue('aareg[0].arbeidsforhold', [initialForenkletOppgjoersordning])
+		if (event.value === 'forenkletOppgjoersordning') {
+			if (arbeidsforholdstype !== 'forenkletOppgjoersordning') {
+				formikBag.setFieldValue('aareg[0].genererPeriode', initialPeriode)
+				formikBag.setFieldValue('aareg[0].amelding', undefined)
+				formikBag.setFieldValue('aareg[0].arbeidsforhold', [initialForenkletOppgjoersordning])
+				setFom(null)
+				setTom(null)
+				setPeriode([])
+			}
+		} else {
+			if (arbeidsforholdstype === 'forenkletOppgjoersordning' || arbeidsforholdstype === '') {
+				formikBag.setFieldValue('aareg[0].genererPeriode', initialPeriode)
+				formikBag.setFieldValue('aareg[0].arbeidsforhold', undefined)
+				formikBag.setFieldValue('aareg[0].amelding', initialAmelding)
+			}
 		}
+		formikBag.setFieldValue('aareg[0].arbeidsforholdstype', event.value)
 	}
 
 	const maaneder = _get(formikBag.values, 'aareg[0].amelding')
@@ -165,14 +171,14 @@ export const AmeldingForm = ({ formikBag }) => {
 					size="xlarge"
 					isClearable={false}
 					onChange={handleArbeidsforholdstypeChange}
-					value={type}
+					value={arbeidsforholdstype}
 				/>
-				{type === 'forenkletOppgjoersordning' && (
+				{arbeidsforholdstype === 'forenkletOppgjoersordning' && (
 					<ForenkletOppgjoersordningForm formikBag={formikBag} />
 				)}
-				{(type === 'ordinaertArbeidsforhold' ||
-					type === 'maritimtArbeidsforhold' ||
-					type === 'frilanserOppdragstakerHonorarPersonerMm') && (
+				{(arbeidsforholdstype === 'ordinaertArbeidsforhold' ||
+					arbeidsforholdstype === 'maritimtArbeidsforhold' ||
+					arbeidsforholdstype === 'frilanserOppdragstakerHonorarPersonerMm') && (
 					<>
 						<Monthpicker
 							formikBag={formikBag}
@@ -206,11 +212,12 @@ export const AmeldingForm = ({ formikBag }) => {
 									/>
 									<KjedeIcon locked={erLenket} onClick={erLenket ? setErIkkeLenket : setErLenket} />
 								</KjedeContainer>
-								{type === 'frilanserOppdragstakerHonorarPersonerMm' && periode.length > 1 && (
-									<Slettknapp kind="trashcan" onClick={handleFjernMaaned}>
-										Fjern måned
-									</Slettknapp>
-								)}
+								{arbeidsforholdstype === 'frilanserOppdragstakerHonorarPersonerMm' &&
+									periode.length > 1 && (
+										<Slettknapp kind="trashcan" onClick={handleFjernMaaned}>
+											Fjern måned
+										</Slettknapp>
+									)}
 								<FormikDollyFieldArray
 									name={`aareg[0].amelding[${selectedIndex}].arbeidsforhold`}
 									header="Arbeidsforhold"
