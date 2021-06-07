@@ -39,21 +39,21 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import no.nav.registre.inntektsmeldinggeneratorservice.provider.Melding;
-import no.nav.registre.inntektsmeldinggeneratorservice.provider.rs.RsArbeidsforhold;
-import no.nav.registre.inntektsmeldinggeneratorservice.provider.rs.RsArbeidsgiver;
-import no.nav.registre.inntektsmeldinggeneratorservice.provider.rs.RsArbeidsgiverPrivat;
-import no.nav.registre.inntektsmeldinggeneratorservice.provider.rs.RsAvsendersystem;
-import no.nav.registre.inntektsmeldinggeneratorservice.provider.rs.RsDelvisFravaer;
-import no.nav.registre.inntektsmeldinggeneratorservice.provider.rs.RsEndringIRefusjon;
-import no.nav.registre.inntektsmeldinggeneratorservice.provider.rs.RsGraderingIForeldrepenger;
-import no.nav.registre.inntektsmeldinggeneratorservice.provider.rs.RsInntekt;
-import no.nav.registre.inntektsmeldinggeneratorservice.provider.rs.RsInntektsmelding;
-import no.nav.registre.inntektsmeldinggeneratorservice.provider.rs.RsNaturaYtelseDetaljer;
-import no.nav.registre.inntektsmeldinggeneratorservice.provider.rs.RsOmsorgspenger;
-import no.nav.registre.inntektsmeldinggeneratorservice.provider.rs.RsPeriode;
-import no.nav.registre.inntektsmeldinggeneratorservice.provider.rs.RsRefusjon;
-import no.nav.registre.inntektsmeldinggeneratorservice.provider.rs.RsSykepengerIArbeidsgiverperioden;
-import no.nav.registre.inntektsmeldinggeneratorservice.provider.rs.RsUtsettelseAvForeldrepenger;
+import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsArbeidsforhold;
+import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsArbeidsgiver;
+import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsArbeidsgiverPrivat;
+import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsAvsendersystem;
+import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsDelvisFravaer;
+import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsEndringIRefusjon;
+import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsGraderingIForeldrepenger;
+import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsInntekt;
+import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsInntektsmelding;
+import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsNaturalytelseDetaljer;
+import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsOmsorgspenger;
+import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsPeriode;
+import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsRefusjon;
+import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsSykepengerIArbeidsgiverperioden;
+import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsUtsettelseAvForeldrepenger;
 
 public class XmlInntektsmelding201812 {
 
@@ -140,22 +140,22 @@ public class XmlInntektsmelding201812 {
         return new XMLAvsendersystem(system.getSystemnavn(), system.getSystemversjon(),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "innsendingstidspunkt"),
                         LocalDateTime.class,
-                        system.getInnsendingstidspunkt().orElse(null)));
+                        system.getInnsendingstidspunkt()));
     }
 
-    private static XMLGjenopptakelseNaturalytelseListe createGjenopptakelseNaturalytelseListe(List<RsNaturaYtelseDetaljer> liste) {
+    private static XMLGjenopptakelseNaturalytelseListe createGjenopptakelseNaturalytelseListe(List<RsNaturalytelseDetaljer> liste) {
         if (Objects.isNull(liste) || liste.isEmpty()) { return null; }
         return new XMLGjenopptakelseNaturalytelseListe(
                 liste.stream().map(XmlInntektsmelding201812::createNaturalytelse).collect(Collectors.toList()));
     }
 
-    private static XMLOpphoerAvNaturalytelseListe createOpphoerAvNaturalytelseListe(List<RsNaturaYtelseDetaljer> liste) {
+    private static XMLOpphoerAvNaturalytelseListe createOpphoerAvNaturalytelseListe(List<RsNaturalytelseDetaljer> liste) {
         if (Objects.isNull(liste) || liste.isEmpty()) { return null; }
         return new XMLOpphoerAvNaturalytelseListe(
                 liste.stream().map(XmlInntektsmelding201812::createNaturalytelse).collect(Collectors.toList()));
     }
 
-    private static XMLNaturalytelseDetaljer createNaturalytelse(RsNaturaYtelseDetaljer detaljer) {
+    private static XMLNaturalytelseDetaljer createNaturalytelse(RsNaturalytelseDetaljer detaljer) {
         BigDecimal beloep = detaljer.getBeloepPrMnd().map(BigDecimal::valueOf).orElse(null);
         return new XMLNaturalytelseDetaljer(
                 new JAXBElement<>(new QName(NAMESPACE_URI, "naturalytelseType"), String.class, detaljer.getNaturaytelseType().orElse(null)),

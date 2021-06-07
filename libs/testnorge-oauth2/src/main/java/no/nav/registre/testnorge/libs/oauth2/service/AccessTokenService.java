@@ -167,8 +167,9 @@ public class AccessTokenService {
             log.error("Client secret er null.");
         }
 
+        var scopes = String.join(" ", accessScopes.getScopes());
         var body = BodyInserters
-                .fromFormData("scope", String.join(" ", accessScopes.getScopes()))
+                .fromFormData("scope", scopes)
                 .with("client_id", clientCredentials.getClientId())
                 .with("client_secret", clientCredentials.getClientSecret())
                 .with("assertion", token)
@@ -181,7 +182,7 @@ public class AccessTokenService {
                 .flatMap(response -> response.bodyToMono(AccessToken.class))
                 .doOnError(error -> log.error("Feil ved henting av access token.", error));
 
-        log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow");
+        log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow. \nScopes: {}.", scopes);
         return accessToken;
     }
 }

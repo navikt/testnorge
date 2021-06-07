@@ -4,9 +4,10 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import no.nav.registre.inntekt.consumer.rs.altinninntekt.dto.enums.AltinnEnum;
 
 import java.io.IOException;
+
+import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.enums.AltinnEnum;
 
 public class JsonAltinnEnumSerializer extends StdSerializer<AltinnEnum> {
 
@@ -23,7 +24,7 @@ public class JsonAltinnEnumSerializer extends StdSerializer<AltinnEnum> {
             AltinnEnum altinnEnum,
             JsonGenerator generator,
             SerializerProvider provider
-    ) throws IOException, JsonProcessingException {
+    ) throws IOException {
         generator.writeString(altinnEnum.getValue());
     }
 }

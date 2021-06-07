@@ -21,6 +21,8 @@ spec:
           cluster: dev-fss
         - application: testnorge-inntekt
           cluster: dev-fss
+        - application: testnav-inntektsmelding-service
+          cluster: dev-gcp
   liveness:
     path: /internal/isAlive
     periodSeconds: 30

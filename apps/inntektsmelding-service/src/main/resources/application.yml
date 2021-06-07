@@ -1,0 +1,25 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+spring:
+  main:
+    banner-mode: off
+  application:
+    name: testnav-inntektsmelding-service
+    description: Tjeneste for sende inntektsmelding til dokarkiv.
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+
+consumers:
+  inntektsmelding-generator-service:
+    url: http://testnav-inntektsmelding-generator-service.dolly.svc.cluster.local
+    name: testnav-inntektsmelding-generator-service
+    cluster: dev-gcp
+    namespace: dolly
+  testnav-dokarkiv-proxy:
+    url: https://testnav-dokarkiv-proxy.dev-fss-pub.nais.io
+    name: testnav-dokarkiv-proxy
+    cluster: dev-fss
+    namespace: dolly

@@ -27,10 +27,22 @@ public class ApplicationsController {
     }
 
     @GetMapping(value = "{name}/token/on-behalf-of")
-    public ResponseEntity<TokenDTO> helloWorld(@PathVariable("name") String name) {
+    public ResponseEntity<TokenDTO> onBehalfOf(@PathVariable("name") String name) {
+
+        var scope = properties.getApplications().get(name);
+
+        if (scope == null) {
+            return ResponseEntity.notFound().build();
+        }
+
         AccessToken accessToken = accessTokenService.generateToken(
-                new AccessScopes("api://" + properties.getApplications().get(name) + "//.default")
+                new AccessScopes("api://" + scope + "//.default")
         );
+
+        if (accessToken.getTokenValue() == null) {
+            return ResponseEntity.notFound().build();
+        }
+
         return ResponseEntity.ok(new TokenDTO(accessToken));
     }
 }

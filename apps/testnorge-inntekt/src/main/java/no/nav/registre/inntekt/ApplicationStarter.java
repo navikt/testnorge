@@ -1,12 +1,16 @@
 package no.nav.registre.inntekt;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
+import org.springframework.context.annotation.Bean;
 
+import no.nav.registre.inntekt.config.credentials.InntektsmeldingServiceProperties;
+import no.nav.registre.inntekt.filter.AddAuthorizationToRouteFilter;
 import no.nav.registre.testnorge.libs.core.util.VaultUtil;
+import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 
-@Slf4j
+@EnableZuulProxy
 @SpringBootApplication
 public class ApplicationStarter {
 
@@ -17,4 +21,17 @@ public class ApplicationStarter {
 
         SpringApplication.run(ApplicationStarter.class, args);
     }
+
+
+    @Bean
+    public AddAuthorizationToRouteFilter addAuthorizationToRouteFilter(
+            AccessTokenService accessTokenService,
+            InntektsmeldingServiceProperties properties
+    ) {
+        return new AddAuthorizationToRouteFilter(
+                () -> accessTokenService.generateToken(properties).getTokenValue(),
+                "testnav-inntektsmelding-service"
+        );
+    }
+
 }

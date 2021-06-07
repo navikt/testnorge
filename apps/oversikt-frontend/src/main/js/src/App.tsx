@@ -16,6 +16,7 @@ import {
 
 import ProfilService from "./services/ProfilService";
 import styled from "styled-components";
+import { ScopeAccessTokenPage } from "@/pages/ScopeAccessTokenPage";
 
 const Body = styled.div`
   border-bottom: solid 1px #c6c2bf;
@@ -48,6 +49,10 @@ export default () => {
       </Header>
       <Body>
         <Switch>
+          <Route path="/access-token/scope/:scope">
+            <ScopeAccessTokenPage />
+          </Route>
+
           <Route path="/access-token/:name">
             <LoadableComponent
               onFetch={ApplicationService.fetchApplications}
