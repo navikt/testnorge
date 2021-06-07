@@ -14,15 +14,15 @@ dependencyManagement {
 }
 
 dependencies {
-    compile('com.google.guava:guava') {
+    implementation('com.google.guava:guava') {
         version {
             strictly '20.0'
         }
     }
 
-    compile 'javax.xml.bind:jaxb-api'
-    compile 'javax.activation:activation:1.1'
-    compile 'org.glassfish.jaxb:jaxb-runtime'
+    implementation 'javax.xml.bind:jaxb-api'
+    implementation 'javax.activation:activation:1.1'
+    implementation 'org.glassfish.jaxb:jaxb-runtime'
 
     implementation project(':local-development')
     implementation project(':testnorge-core')

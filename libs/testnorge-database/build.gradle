@@ -7,7 +7,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases:2.2.5.RELEASE'
     implementation 'org.springframework.vault:spring-vault-core:2.2.0.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.3.4.RELEASE'
-    compileOnly 'org.projectlombok:lombok:1.18.12'
+    implementation 'org.projectlombok:lombok:1.18.12'
 }
 
 group = 'no.nav.registre.testnorge.libs'

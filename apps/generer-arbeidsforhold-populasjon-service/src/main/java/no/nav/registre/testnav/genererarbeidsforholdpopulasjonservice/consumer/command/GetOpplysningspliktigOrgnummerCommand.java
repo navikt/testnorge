@@ -28,7 +28,7 @@ public class GetOpplysningspliktigOrgnummerCommand implements Callable<Mono<Set<
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .header("miljo", miljo)
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<>() {
+                .bodyToMono(new ParameterizedTypeReference<Set<String>>() {
                 });
     }
 }

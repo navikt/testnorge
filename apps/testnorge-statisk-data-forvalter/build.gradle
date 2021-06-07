@@ -9,7 +9,7 @@ bootJar {
 
 dependencies {
     //TODO remove
-    compile group: 'com.google.guava', name: 'guava', version: '30.0-jre'
+    implementation group: 'com.google.guava', name: 'guava', version: '30.0-jre'
 
     implementation project(':local-development')
     implementation project(':kafka-config')

@@ -18,6 +18,7 @@ repositories {
     }
     maven {
         url = uri('http://packages.confluent.io/maven/')
+        allowInsecureProtocol = true
     }
 }
 
@@ -26,6 +27,8 @@ dependencies {
     implementation 'org.projectlombok:lombok:1.18.16'
     annotationProcessor 'org.projectlombok:lombok:1.18.16'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.16'
+
+    implementation group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
 }
 
 group = 'no.nav.registre.testnorge'
