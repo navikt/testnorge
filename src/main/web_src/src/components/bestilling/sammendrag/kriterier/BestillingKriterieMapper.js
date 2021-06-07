@@ -399,50 +399,52 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			aareg.itemRows.push([
 				{
 					numberHeader: `Arbeidsforhold ${i + 1}`
-				},
-				obj('Startdato', Formatters.formatDate(arbeidsforhold.ansettelsesPeriode.fom)),
-				obj('Sluttdato', Formatters.formatDate(arbeidsforhold.ansettelsesPeriode.tom)),
-				{
-					label: 'Type arbeidsforhold',
-					value: arbeidsforhold.arbeidsforholdstype,
-					apiKodeverkId: ArbeidKodeverk.Arbeidsforholdstyper
-				},
-				obj('Type av arbeidsgiver', arbeidsforhold.arbeidsgiver.aktoertype),
-				obj('Orgnummer', arbeidsforhold.arbeidsgiver.orgnummer),
-				obj('Arbeidsgiver Ident', arbeidsforhold.arbeidsgiver.ident),
-				{
-					label: 'Yrke',
-					value: arbeidsforhold.arbeidsavtale.yrke,
-					apiKodeverkId: ArbeidKodeverk.Yrker,
-					width: 'xlarge',
-					showKodeverkValue: true
-				},
-				obj(
-					'Stillingprosent',
-					arbeidsforhold.arbeidsavtale.stillingsprosent === 0
-						? '0'
-						: arbeidsforhold.arbeidsavtale.stillingsprosent
-				),
-				obj(
-					'Endringsdato stillingprosent',
-					Formatters.formatDate(arbeidsforhold.arbeidsavtale.endringsdatoStillingsprosent)
-				),
-				{
-					label: 'Arbeidstidsordning',
-					value: arbeidsforhold.arbeidsavtale.arbeidstidsordning,
-					apiKodeverkId: ArbeidKodeverk.Arbeidstidsordninger
-				},
-				obj('Antall konverterte timer', arbeidsforhold.arbeidsavtale.antallKonverterteTimer),
-				obj('Avtalte timer per uke', arbeidsforhold.arbeidsavtale.avtaltArbeidstimerPerUke),
-				obj(
-					'Perioder med antall timer for timelønnet',
-					arbeidsforhold.permisjon && arbeidsforhold.permisjon.length
-				),
-				obj('Perioder med permisjon', arbeidsforhold.permisjon && arbeidsforhold.permisjon.length),
-				obj(
-					'Perioder med utenlandsopphold',
-					arbeidsforhold.utenlandsopphold && arbeidsforhold.utenlandsopphold.length
-				)
+				}
+				//TODO: Fiks denne når bestillingsrequest er avklart
+				// ,
+				// obj('Startdato', Formatters.formatDate(arbeidsforhold.ansettelsesPeriode.fom)),
+				// obj('Sluttdato', Formatters.formatDate(arbeidsforhold.ansettelsesPeriode.tom)),
+				// {
+				// 	label: 'Type arbeidsforhold',
+				// 	value: arbeidsforhold.arbeidsforholdstype,
+				// 	apiKodeverkId: ArbeidKodeverk.Arbeidsforholdstyper
+				// },
+				// obj('Type av arbeidsgiver', arbeidsforhold.arbeidsgiver.aktoertype),
+				// obj('Orgnummer', arbeidsforhold.arbeidsgiver.orgnummer),
+				// obj('Arbeidsgiver Ident', arbeidsforhold.arbeidsgiver.ident),
+				// {
+				// 	label: 'Yrke',
+				// 	value: arbeidsforhold.arbeidsavtale.yrke,
+				// 	apiKodeverkId: ArbeidKodeverk.Yrker,
+				// 	width: 'xlarge',
+				// 	showKodeverkValue: true
+				// },
+				// obj(
+				// 	'Stillingprosent',
+				// 	arbeidsforhold.arbeidsavtale.stillingsprosent === 0
+				// 		? '0'
+				// 		: arbeidsforhold.arbeidsavtale.stillingsprosent
+				// ),
+				// obj(
+				// 	'Endringsdato stillingprosent',
+				// 	Formatters.formatDate(arbeidsforhold.arbeidsavtale.endringsdatoStillingsprosent)
+				// ),
+				// {
+				// 	label: 'Arbeidstidsordning',
+				// 	value: arbeidsforhold.arbeidsavtale.arbeidstidsordning,
+				// 	apiKodeverkId: ArbeidKodeverk.Arbeidstidsordninger
+				// },
+				// obj('Antall konverterte timer', arbeidsforhold.arbeidsavtale.antallKonverterteTimer),
+				// obj('Avtalte timer per uke', arbeidsforhold.arbeidsavtale.avtaltArbeidstimerPerUke),
+				// obj(
+				// 	'Perioder med antall timer for timelønnet',
+				// 	arbeidsforhold.permisjon && arbeidsforhold.permisjon.length
+				// ),
+				// obj('Perioder med permisjon', arbeidsforhold.permisjon && arbeidsforhold.permisjon.length),
+				// obj(
+				// 	'Perioder med utenlandsopphold',
+				// 	arbeidsforhold.utenlandsopphold && arbeidsforhold.utenlandsopphold.length
+				// )
 			])
 		})
 		data.push(aareg)

@@ -5,7 +5,8 @@ export const initialValues = [
 		arbeidsforholdstype: '',
 		genererPeriode: {
 			fom: null,
-			tom: null
+			tom: null,
+			periode: []
 		}
 	}
 ]

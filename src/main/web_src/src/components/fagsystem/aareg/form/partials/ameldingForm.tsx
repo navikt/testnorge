@@ -39,43 +39,60 @@ const Slettknapp = styled(Button)`
 export const AmeldingForm = ({ formikBag }) => {
 	const type = _get(formikBag.values, 'aareg[0].arbeidsforholdstype')
 
-	const [fom, setFom] = useState(null)
-	const [tom, setTom] = useState(null)
-	const [periode, setPeriode] = useState([])
+	const [fom, setFom] = useState(_get(formikBag.values, 'aareg[0].genererPeriode.fom'))
+	const [tom, setTom] = useState(_get(formikBag.values, 'aareg[0].genererPeriode.tom'))
+	const [periode, setPeriode] = useState(_get(formikBag.values, 'aareg[0].genererPeriode.periode'))
 
 	const [erLenket, setErLenket, setErIkkeLenket] = useBoolean(true)
 
 	const [selectedIndex, setSelectedIndex] = useState(0)
 
-	useEffect(() => {
-		if (fom && tom) {
+	const handlePeriodeChange = (dato, type) => {
+		formikBag.setFieldValue(`aareg[0].genererPeriode.${type}`, dato)
+		if (type === 'fom') {
+			setFom(dato)
+		} else if (type === 'tom') {
+			setTom(dato)
+		}
+
+		if ((type === 'tom' && fom) || (type === 'fom' && tom)) {
 			const maaneder = []
 			const maanederTmp = eachMonthOfInterval({
-				start: new Date(fom),
-				end: new Date(tom)
+				start: new Date(type === 'fom' ? dato : fom),
+				end: new Date(type === 'tom' ? dato : tom)
 			})
 			maanederTmp.forEach(maaned => {
 				maaneder.push(format(maaned, 'yyyy-MM'))
 			})
+			formikBag.setFieldValue('aareg[0].genererPeriode.periode', maaneder)
 			setPeriode(maaneder)
-		}
-	}, [fom, tom])
 
-	useEffect(() => {
-		periode.forEach((mnd, idx) => {
-			formikBag.setFieldValue(`aareg[0].amelding[${idx}]`, {
-				maaned: mnd,
-				arbeidsforhold: [initialArbeidsforholdOrg]
+			maaneder.forEach((mnd, idx) => {
+				const currMaaned = _get(formikBag.values, 'aareg[0].amelding').find(
+					element => element.maaned == mnd
+				)
+				console.log('currMaaned :>> ', currMaaned)
+				formikBag.setFieldValue(`aareg[0].amelding[${idx}]`, {
+					maaned: mnd,
+					arbeidsforhold: currMaaned ? currMaaned.arbeidsforhold : [initialArbeidsforholdOrg]
+				})
+				if (type === 'maritimtArbeidsforhold') {
+					formikBag.setFieldValue(
+						`aareg[0].amelding[${idx}].arbeidsforhold[0].fartoy`,
+						initialFartoy
+					)
+				}
 			})
-			if (type === 'maritimtArbeidsforhold') {
-				formikBag.setFieldValue(`aareg[0].amelding[${idx}].arbeidsforhold[0].fartoy`, initialFartoy)
-			}
-		})
-	}, [periode])
+		}
+	}
 
 	const handleArbeidsforholdstypeChange = event => {
 		formikBag.setFieldValue('aareg[0].arbeidsforholdstype', event.value)
-		if (event.value === 'ordinaertArbeidsforhold' || event.value === 'maritimtArbeidsforhold') {
+		if (
+			event.value === 'ordinaertArbeidsforhold' ||
+			event.value === 'maritimtArbeidsforhold' ||
+			event.value === 'frilanserOppdragstakerHonorarPersonerMm'
+		) {
 			formikBag.setFieldValue('aareg[0].arbeidsforhold', undefined)
 			formikBag.setFieldValue('aareg[0].amelding', initialAmelding)
 		} else if (event.value === 'forenkletOppgjoersordning') {
@@ -119,6 +136,7 @@ export const AmeldingForm = ({ formikBag }) => {
 
 		const nyPeriode = periode
 		nyPeriode.splice(selectedIndex, 1)
+		formikBag.setFieldValue('aareg[0].genererPeriode.periode', nyPeriode)
 		setPeriode(nyPeriode)
 
 		if (periode.length === 1) {
@@ -162,14 +180,14 @@ export const AmeldingForm = ({ formikBag }) => {
 							name="aareg[0].genererPeriode.fom"
 							label="F.o.m. kalendermåned"
 							date={fom}
-							handleDateChange={dato => setFom(dato)}
+							handleDateChange={dato => handlePeriodeChange(dato, 'fom')}
 						/>
 						<Monthpicker
 							formikBag={formikBag}
 							name="aareg[0].genererPeriode.tom"
 							label="T.o.m. kalendermåned"
 							date={tom}
-							handleDateChange={dato => setTom(dato)}
+							handleDateChange={dato => handlePeriodeChange(dato, 'tom')}
 						/>
 						<div className="flexbox--full-width">
 							{/* //TODO lag onClick for å fylle felter */}
