@@ -2,8 +2,8 @@ plugins {
     id 'no.nav.registre.testnorge.java-conventions'
     id "uk.co.boothen.gradle.wsimport" version "0.16"
     id 'com.ewerk.gradle.plugins.jaxb2' version '1.0.10'
-    id 'org.springframework.boot' version '2.3.4.RELEASE'
-    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'io.spring.dependency-management' version "${springDependencyManagement}"
 }
 
 bootJar {
