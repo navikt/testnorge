@@ -121,11 +121,11 @@ public class UdiStubConsumer {
     private String getBearerToken() {
         String tokenValue = accessTokenService.generateToken(
                 new AccessScopes("api://" + clientId + "/.default")
-        ).getTokenValue();
+        ).block().getTokenValue();
         return "Bearer " + tokenValue;
     }
 
     private static String getNavCallId() {
-        return format("%s %s", CONSUMER, UUID.randomUUID().toString());
+        return format("%s %s", CONSUMER, UUID.randomUUID());
     }
 }

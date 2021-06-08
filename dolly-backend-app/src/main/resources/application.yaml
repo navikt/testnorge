@@ -17,12 +17,17 @@ consumers:
     namespace: dolly
     url: https://testnav-helsepersonell-service.dev.intern.nav.no
     cluster: dev-gcp
-
   testnav-organisasjon-forvalter:
     name: testnav-organisasjon-forvalter
     namespace: dolly
     url: https://testnav-organisasjon-forvalter.dev.intern.nav.no
     cluster: dev-gcp
+  testnav-inntektsmelding-service:
+    url: https://testnav-inntektsmelding-service.dev.intern.nav.no
+    name: testnav-inntektsmelding-service
+    cluster: dev-gcp
+    namespace: dolly
+
 
 #### APP DB ####
 ? app.datasource.onsHosts
