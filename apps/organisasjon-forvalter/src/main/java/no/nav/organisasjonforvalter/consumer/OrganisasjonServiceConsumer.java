@@ -58,7 +58,7 @@ public class OrganisasjonServiceConsumer {
 
         long startTime = currentTimeMillis();
 
-        var token = accessTokenService.generateToken(serviceProperties).getTokenValue();
+        var token = accessTokenService.generateToken(serviceProperties).block().getTokenValue();
 
         var completables = miljoer.stream()
                 .map(miljoe -> OrgFutureDTO.builder()

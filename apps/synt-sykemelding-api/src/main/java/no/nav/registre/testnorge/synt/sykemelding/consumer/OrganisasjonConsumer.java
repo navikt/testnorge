@@ -29,7 +29,7 @@ public class OrganisasjonConsumer {
 
 
     public OrganisasjonDTO getOrganisasjon(String orgnummer) {
-        AccessToken accessToken = accessTokenService.generateToken(serviceProperties);
+        AccessToken accessToken = accessTokenService.generateToken(serviceProperties).block();
         return new GetOrganisasjonCommand(webClient, accessToken.getTokenValue(), orgnummer, "q1").call();
     }
 }

@@ -21,7 +21,7 @@ public class TokenController {
     public ResponseEntity<TokenDTO> helloWorld(@PathVariable("scope") String scope) {
         AccessToken accessToken = accessTokenService.generateToken(
                 new AccessScopes("api://" + scope + "//.default")
-        );
+        ).block();
 
         if (accessToken.getTokenValue() == null) {
             return ResponseEntity.notFound().build();

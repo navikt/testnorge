@@ -53,7 +53,7 @@ public class AaregConsumer {
     }
 
     private List<Arbeidsforhold> getArbeidsforholds(String ident, String miljo) {
-        var accessToken = accessTokenService.generateToken(serverProperties);
+        var accessToken = accessTokenService.generateToken(serverProperties).block();
         return new GetArbeidstakerArbeidsforholdCommand(webClient, miljo, accessToken.getTokenValue(), ident).call();
     }
 

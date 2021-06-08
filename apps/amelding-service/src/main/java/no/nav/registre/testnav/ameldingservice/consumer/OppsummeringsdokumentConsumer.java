@@ -54,7 +54,7 @@ public class OppsummeringsdokumentConsumer {
     }
 
     public String saveOpplysningspliktig(OppsummeringsdokumentDTO dto, String miljo) {
-        AccessToken accessToken = accessTokenService.generateToken(properties);
+        AccessToken accessToken = accessTokenService.generateToken(properties).block();
         return new SaveOppsummeringsdokumenterCommand(
                 webClient,
                 accessToken.getTokenValue(),
@@ -67,7 +67,7 @@ public class OppsummeringsdokumentConsumer {
 
 
     public Optional<OppsummeringsdokumentDTO> get(String opplysningsplikitgOrgnummer, LocalDate kalendermaaned, String miljo) {
-        AccessToken accessToken = accessTokenService.generateToken(properties);
+        AccessToken accessToken = accessTokenService.generateToken(properties).block();
         var dto = new GetOppsummeringsdokumentCommand(
                 webClient,
                 accessToken.getTokenValue(),
@@ -79,7 +79,7 @@ public class OppsummeringsdokumentConsumer {
     }
 
     public Optional<OppsummeringsdokumentDTO> get(String id) {
-        AccessToken accessToken = accessTokenService.generateToken(properties);
+        AccessToken accessToken = accessTokenService.generateToken(properties).block();
         var dto = new GetOppsummeringsdokumentByIdCommand(webClient, accessToken.getTokenValue(), id).call();
         return Optional.ofNullable(dto);
     }

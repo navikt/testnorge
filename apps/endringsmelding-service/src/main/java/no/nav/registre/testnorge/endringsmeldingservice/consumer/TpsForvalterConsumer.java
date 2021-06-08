@@ -53,12 +53,12 @@ public class TpsForvalterConsumer {
     }
 
     public Set<String> hentMiljoer(String ident) {
-        var accessToken = accessTokenService.generateToken(serverProperties);
+        var accessToken = accessTokenService.generateToken(serverProperties).block();
         return new GetIdentEnvironmentsCommand(webClient, ident, accessToken.getTokenValue()).call();
     }
 
     public String sendFoedselsmelding(FoedselsmeldingDTO dto, Set<String> miljoer) {
-        var accessToken = accessTokenService.generateToken(serverProperties);
+        var accessToken = accessTokenService.generateToken(serverProperties).block();
         var response = new SendFoedselsmeldingCommand(
                 webClient,
                 new TpsFoedselsmeldingRequest(dto, miljoer),
@@ -68,7 +68,7 @@ public class TpsForvalterConsumer {
     }
 
     public void sendDoedsmelding(DoedsmeldingDTO dto, Set<String> miljoer) {
-        var accessToken = accessTokenService.generateToken(serverProperties);
+        var accessToken = accessTokenService.generateToken(serverProperties).block();
         new SendDoedsmeldingCommand(
                 webClient,
                 new TpsDoedsmeldingDTO(dto, miljoer),

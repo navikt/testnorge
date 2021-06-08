@@ -27,7 +27,7 @@ public class EregBatchStatusConsumer {
     }
 
     public Long getStatusKode(Order order) {
-        var accessToken = accessTokenService.generateToken(serviceProperties);
+        var accessToken = accessTokenService.generateToken(serviceProperties).block();
         var command = new GetEregBatchStatusCommand(
                 webClient,
                 order.getBatchId(),

@@ -42,7 +42,7 @@ public class OrganisasjonOrgnummerServiceConsumer {
         long startTime = currentTimeMillis();
         try {
             var accessToken = accessTokenService.generateToken(serviceProperties);
-            var response = new OrganisasjonOrgnummerServiceCommand(webClient, antall, accessToken.getTokenValue()).call();
+            var response = new OrganisasjonOrgnummerServiceCommand(webClient, antall, accessToken.block().getTokenValue()).call();
 
             log.info("Orgnummer-service svarte etter {} ms", currentTimeMillis() - startTime);
 

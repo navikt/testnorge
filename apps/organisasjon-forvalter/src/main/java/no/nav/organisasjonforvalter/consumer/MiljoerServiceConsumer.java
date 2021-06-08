@@ -35,7 +35,7 @@ public class MiljoerServiceConsumer {
     public Set<String> getOrgMiljoer() {
 
         try {
-            var accessToken = accessTokenService.generateToken(serviceProperties);
+            var accessToken = accessTokenService.generateToken(serviceProperties).block();
             var response = new MiljoerServiceCommand(webClient, accessToken.getTokenValue()).call();
 
             return Stream.of(response)

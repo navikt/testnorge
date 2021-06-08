@@ -24,7 +24,7 @@ public class GenererNavnConsumer {
     }
 
     public NavnDTO genereNavn(){
-        var accessToken = accessTokenService.generateToken(properties);
+        var accessToken = accessTokenService.generateToken(properties).block();
         GenererNavnCommand command = new GenererNavnCommand(webClient, accessToken.getTokenValue(), 1);
         return command.call()[0];
     }

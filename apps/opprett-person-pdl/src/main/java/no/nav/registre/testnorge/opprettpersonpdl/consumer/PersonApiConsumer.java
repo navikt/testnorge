@@ -47,7 +47,7 @@ public class PersonApiConsumer {
 
 
     public void createPerson(Person person) {
-        AccessToken accessToken = accessTokenService.generateToken(serviceProperties);
+        AccessToken accessToken = accessTokenService.generateToken(serviceProperties).block();
         new CreatePersonCommand(webClient, person.toDTO(), accessToken.getTokenValue(), person.toKommaseparerteTags()).run();
     }
 }
