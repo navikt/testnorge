@@ -39,4 +39,4 @@ dependencies {
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }
 
-description = 'generer-arbeidsforhold-service'
+description = 'generer-arbeidsforhold-populasjon-service'

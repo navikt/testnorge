@@ -9,7 +9,7 @@ bootJar {
 
 dependencies {
 
-    compile('com.google.guava:guava') {
+    implementation('com.google.guava:guava') {
         version {
             strictly '20.0'
         }

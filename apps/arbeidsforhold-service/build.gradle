@@ -14,22 +14,22 @@ dependencyManagement {
 }
 
 dependencies {
-    compile('com.google.guava:guava') {
+    implementation('com.google.guava:guava') {
         version {
             strictly '20.0'
         }
     }
     implementation project(':local-development')
-    compile 'javax.xml.bind:jaxb-api'
-    compile 'javax.activation:activation:1.1'
-    compile 'org.glassfish.jaxb:jaxb-runtime'
+    implementation 'javax.xml.bind:jaxb-api'
+    implementation 'javax.activation:activation:1.1'
+    implementation 'org.glassfish.jaxb:jaxb-runtime'
 
     implementation project(':testnorge-core')
     implementation project(':testnorge-data-transfer-objects')
     implementation project(':commands')
     implementation project(':testnorge-oauth2')
 
-    compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
 
     implementation group: 'javax.annotation', name: 'javax.annotation-api', version: '1.3.2'

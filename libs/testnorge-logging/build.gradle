@@ -6,7 +6,7 @@ dependencies {
     implementation 'org.projectlombok:lombok:1.18.12'
     implementation 'org.springframework:spring-webmvc:5.2.9.RELEASE'
     implementation 'com.papertrailapp:logback-syslog4j:1.0.0'
-    compileOnly 'javax.servlet:servlet-api:2.5'
+    implementation 'javax.servlet:servlet-api:2.5'
 }
 
 group = 'no.nav.registre.testnorge.libs'
