@@ -7,7 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Builder
@@ -41,15 +43,17 @@ public class RsArbeidsforhold {
         return Optional.ofNullable(beregnetInntekt);
     }
 
-    public Optional<List<RsPeriode>> getAvtaltFerieListe() {
-        return Optional.ofNullable(avtaltFerieListe);
+    public List<RsPeriode> getAvtaltFerieListe() {
+        return Objects.requireNonNullElse(avtaltFerieListe, Collections.emptyList());
     }
 
-    public Optional<List<RsUtsettelseAvForeldrepenger>> getUtsettelseAvForeldrepengerListe() {
-        return Optional.ofNullable(utsettelseAvForeldrepengerListe);
+    public List<RsUtsettelseAvForeldrepenger> getUtsettelseAvForeldrepengerListe() {
+        return Objects.requireNonNullElse(utsettelseAvForeldrepengerListe, Collections.emptyList());
     }
 
-    public Optional<List<RsGraderingIForeldrepenger>> getGraderingIForeldrepengerListe() {
-        return Optional.ofNullable(graderingIForeldrepengerListe);
+    public List<RsGraderingIForeldrepenger> getGraderingIForeldrepengerListe() {
+        return Objects.requireNonNullElse(graderingIForeldrepengerListe, Collections.emptyList());
     }
+
+
 }

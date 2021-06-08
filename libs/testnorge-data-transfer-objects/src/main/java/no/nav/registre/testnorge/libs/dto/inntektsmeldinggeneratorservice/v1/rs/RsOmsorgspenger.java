@@ -6,7 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Builder
@@ -26,11 +28,11 @@ public class RsOmsorgspenger {
         return Optional.ofNullable(harUtbetaltPliktigeDager);
     }
 
-    public Optional<List<RsPeriode>> getFravaersPerioder() {
-        return Optional.ofNullable(fravaersPerioder);
+    public List<RsPeriode> getFravaersPerioder() {
+        return Objects.requireNonNullElse(fravaersPerioder, Collections.emptyList());
     }
 
-    public Optional<List<RsDelvisFravaer>> getDelvisFravaersListe() {
-        return Optional.ofNullable(delvisFravaersListe);
+    public List<RsDelvisFravaer> getDelvisFravaersListe() {
+        return Objects.requireNonNullElse(delvisFravaersListe, Collections.emptyList());
     }
 }

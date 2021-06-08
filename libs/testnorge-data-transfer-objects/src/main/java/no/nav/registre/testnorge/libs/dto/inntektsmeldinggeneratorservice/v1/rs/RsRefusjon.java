@@ -7,7 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Builder
@@ -31,7 +33,7 @@ public class RsRefusjon {
         return Optional.ofNullable(refusjonsopphoersdato);
     }
 
-    public Optional<List<RsEndringIRefusjon>> getEndringIRefusjonListe() {
-        return Optional.ofNullable(endringIRefusjonListe);
+    public List<RsEndringIRefusjon> getEndringIRefusjonListe() {
+        return Objects.requireNonNullElse(endringIRefusjonListe, Collections.emptyList());
     }
 }

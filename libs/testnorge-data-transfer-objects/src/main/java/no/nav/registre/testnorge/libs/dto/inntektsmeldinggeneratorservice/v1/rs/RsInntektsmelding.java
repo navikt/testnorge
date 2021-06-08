@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Builder
@@ -68,23 +70,27 @@ public class RsInntektsmelding {
         return Optional.ofNullable(omsorgspenger);
     }
 
+    public RsAvsendersystem getAvsendersystem() {
+        return Objects.requireNonNullElse(avsendersystem, new RsAvsendersystem());
+    }
+
+    public List<RsNaturalytelseDetaljer> getOpphoerAvNaturalytelseListe() {
+        return Objects.requireNonNullElse(opphoerAvNaturalytelseListe, Collections.emptyList());
+    }
+
+    public List<RsNaturalytelseDetaljer> getGjenopptakelseNaturalytelseListe() {
+        return Objects.requireNonNullElse(gjenopptakelseNaturalytelseListe, Collections.emptyList());
+    }
+
+    public List<RsPeriode> getPleiepengerPerioder() {
+        return Objects.requireNonNullElse(pleiepengerPerioder, Collections.emptyList());
+    }
+
     public Optional<RsSykepengerIArbeidsgiverperioden> getSykepengerIArbeidsgiverPerioden() {
         return Optional.ofNullable(sykepengerIArbeidsgiverperioden);
     }
 
     public Optional<LocalDate> getStartdatoForeldrepengeperiode() {
         return Optional.ofNullable(startdatoForeldrepengeperiode);
-    }
-
-    public Optional<List<RsNaturalytelseDetaljer>> getOpphoerAvNaturalytelseListe() {
-        return Optional.ofNullable(opphoerAvNaturalytelseListe);
-    }
-
-    public Optional<List<RsNaturalytelseDetaljer>> getGjenopptakelseNaturalytelseListe() {
-        return Optional.ofNullable(gjenopptakelseNaturalytelseListe);
-    }
-
-    public Optional<List<RsPeriode>> getPleiepengerPerioder() {
-        return Optional.ofNullable(pleiepengerPerioder);
     }
 }

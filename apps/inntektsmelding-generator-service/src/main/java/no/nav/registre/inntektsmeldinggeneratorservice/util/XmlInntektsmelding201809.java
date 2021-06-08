@@ -82,14 +82,14 @@ public class XmlInntektsmelding201809 {
                         LocalDate.class, melding.getStartdatoForeldrepengeperiode().orElse(null)),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "opphoerAvNaturalyrelseListe"),
                         XMLOpphoerAvNaturalytelseListe.class,
-                        createOpphoerAvNaturalytelseListe(melding.getOpphoerAvNaturalytelseListe().orElse(null))),
+                        createOpphoerAvNaturalytelseListe(melding.getOpphoerAvNaturalytelseListe())),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "gjenopptakelseNaturalytelseListe"),
                         XMLGjenopptakelseNaturalytelseListe.class,
-                        createGjenopptakelseNaturalytelseListe(melding.getGjenopptakelseNaturalytelseListe().orElse(null))),
+                        createGjenopptakelseNaturalytelseListe(melding.getGjenopptakelseNaturalytelseListe())),
                 createAvsendersystem(melding.getAvsendersystem()),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "pleiepengerPeriodeListe"),
                         XMLPleiepengerPeriodeListe.class,
-                        createPleiepengerPeriodeListe(melding.getPleiepengerPerioder().orElse(null))),
+                        createPleiepengerPeriodeListe(melding.getPleiepengerPerioder())),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "omsorgspenger"),
                         XMLOmsorgspenger.class,
                         createOmsorgspenger(melding.getOmsorgspenger().orElse(null)))),
@@ -101,9 +101,9 @@ public class XmlInntektsmelding201809 {
         return new XMLOmsorgspenger(
                 new JAXBElement<>(new QName(NAMESPACE_URI, "harUtbetaltPliktigeDager"), Boolean.class, omsorgspenger.getHarUtbetaltPliktigeDager().orElse(null)),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "fravaersPerioder"),
-                        XMLFravaersPeriodeListe.class, createFravaersPeriodeListe(omsorgspenger.getFravaersPerioder().orElse(null))),
+                        XMLFravaersPeriodeListe.class, createFravaersPeriodeListe(omsorgspenger.getFravaersPerioder())),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "delvisFravaersListe"),
-                        XMLDelvisFravaersListe.class, createDelvisFravaerListe(omsorgspenger.getDelvisFravaersListe().orElse(null))));
+                        XMLDelvisFravaersListe.class, createDelvisFravaerListe(omsorgspenger.getDelvisFravaersListe())));
     }
 
     private static XMLFravaersPeriodeListe createFravaersPeriodeListe(List<RsPeriode> perioder) {
@@ -187,7 +187,7 @@ public class XmlInntektsmelding201809 {
                 new JAXBElement<>(
                         new QName(NAMESPACE_URI, "endringIRefusjonListe"),
                         XMLEndringIRefusjonsListe.class,
-                        createEndringIRefusjonsListe(refusjon.getEndringIRefusjonListe().orElse(null))));
+                        createEndringIRefusjonsListe(refusjon.getEndringIRefusjonListe())));
     }
 
     private static XMLEndringIRefusjonsListe createEndringIRefusjonsListe(List<RsEndringIRefusjon> liste) {
@@ -210,15 +210,15 @@ public class XmlInntektsmelding201809 {
                 new JAXBElement<>(new QName(NAMESPACE_URI, "arbeidsforholdId"), String.class, arbeidsforhold.getArbeidsforholdId().orElse(null)),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "foersteFravaersdag"), LocalDate.class, arbeidsforhold.getFoersteFravaersdag().orElse(null)),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "beregnetInntekt"), XMLInntekt.class, createInntekt(arbeidsforhold.getBeregnetInntekt().orElse(null))),
-                new JAXBElement<>(new QName(NAMESPACE_URI, "avtaltFerieListe"), XMLAvtaltFerieListe.class, createAvtaltFerieListe(arbeidsforhold.getAvtaltFerieListe().orElse(null))),
+                new JAXBElement<>(new QName(NAMESPACE_URI, "avtaltFerieListe"), XMLAvtaltFerieListe.class, createAvtaltFerieListe(arbeidsforhold.getAvtaltFerieListe())),
                 new JAXBElement<>(
                         new QName(NAMESPACE_URI, "utsettelseAvForeldrepengerListe"),
                         XMLUtsettelseAvForeldrepengerListe.class,
-                        createUtsettelseAvForeldrepengerListe(arbeidsforhold.getUtsettelseAvForeldrepengerListe().orElse(null))),
+                        createUtsettelseAvForeldrepengerListe(arbeidsforhold.getUtsettelseAvForeldrepengerListe())),
                 new JAXBElement<>(
                         new QName(NAMESPACE_URI, "graderingIForeldrepengerListe"),
                         XMLGraderingIForeldrepengerListe.class,
-                        createGraderingIForeldrepengerListe(arbeidsforhold.getGraderingIForeldrepengerListe().orElse(null))));
+                        createGraderingIForeldrepengerListe(arbeidsforhold.getGraderingIForeldrepengerListe())));
     }
 
     private static XMLGraderingIForeldrepengerListe createGraderingIForeldrepengerListe(List<RsGraderingIForeldrepenger> liste) {
