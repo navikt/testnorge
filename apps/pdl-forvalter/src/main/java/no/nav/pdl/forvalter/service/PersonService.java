@@ -37,7 +37,7 @@ public class PersonService {
     private final PdlTestdataConsumer pdlTestdataConsumer;
 
     @Transactional
-    public RsPerson updatePerson(String ident, PersonUpdateRequest request) {
+    public void updatePerson(String ident, PersonUpdateRequest request) {
 
         var dbPerson = personRepository.findByIdent(ident)
                 .orElseGet(() -> personRepository.save(DbPerson.builder()
@@ -53,7 +53,7 @@ public class PersonService {
         dbPerson.setPerson(extendedArtifacts);
         dbPerson.setSistOppdatert(now());
 
-        return mapperFacade.map(personRepository.save(dbPerson), RsPerson.class);
+        personRepository.save(dbPerson);
     }
 
     @Transactional

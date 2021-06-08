@@ -27,6 +27,7 @@ public class PersonArtifactService {
     private final UtenlandsidentifikasjonsnummerService utenlandsidentifikasjonsnummerService;
     private final VergemaalService vergemaalService;
     private final FalskIdentitetService falskIdentitetService;
+    private final KontaktinformasjonForDoedsboService kontaktinformasjonForDoedsboService;
 
     public PdlPerson buildPerson(PdlPerson person) {
 
@@ -52,6 +53,7 @@ public class PersonArtifactService {
                         .convert(person.getUtenlandskIdentifikasjonsnummer()))
                 .vergemaal(vergemaalService.convert(person))
                 .falskIdentitet(falskIdentitetService.convert(person))
+                .kontaktinformasjonForDoedsbo(kontaktinformasjonForDoedsboService.convert(person))
                 .build();
     }
 }

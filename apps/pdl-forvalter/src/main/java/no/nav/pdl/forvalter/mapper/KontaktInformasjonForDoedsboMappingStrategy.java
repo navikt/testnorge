@@ -38,7 +38,8 @@ public class KontaktInformasjonForDoedsboMappingStrategy implements MappingStrat
                     public void mapAtoB(PdlBostedadresse kilde, PdlKontaktinformasjonForDoedsbo destinasjon, MappingContext context) {
 
                         if (nonNull(kilde.getVegadresse())) {
-                            destinasjon.setAdresselinje1(kilde.getVegadresse().getAdressenavn());
+                            destinasjon.setAdresselinje1(format("%s %s", kilde.getVegadresse().getAdressenavn(),
+                                    kilde.getVegadresse().getHusnummer()));
                             destinasjon.setPostnummer(kilde.getVegadresse().getPostnummer());
                             destinasjon.setPoststedsnavn(postnummerService.getNavn(kilde.getVegadresse().getPostnummer()));
                             destinasjon.setLandkode(LANDKODE_NORGE);
@@ -74,7 +75,7 @@ public class KontaktInformasjonForDoedsboMappingStrategy implements MappingStrat
                     @Override
                     public void mapAtoB(VegadresseDTO kilde, PdlKontaktinformasjonForDoedsbo destinasjon, MappingContext context) {
 
-                       destinasjon.setAdresselinje1(kilde.getAdressenavn());
+                       destinasjon.setAdresselinje1(format("%s %d", kilde.getAdressenavn(), kilde.getHusnummer()));
                        destinasjon.setPostnummer(kilde.getPostnummer());
                        destinasjon.setPoststedsnavn(kilde.getPoststed());
                        destinasjon.setLandkode(LANDKODE_NORGE);

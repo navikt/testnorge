@@ -39,12 +39,12 @@ public class DeployService {
                     .descendingIterator()
                     .forEachRemaining(element -> {
                                 try {
+                                    var response = pdlTestdataConsumer.send(type, ident, element);
                                     status.add(PdlOrdreResponse.Hendelse.builder()
                                             .id(element.getId())
                                             .status(OK)
-                                            .hendelseId(pdlTestdataConsumer
-                                                    .send(type, ident, element)
-                                                    .getHendelseId())
+                                            .hendelseId(response.getHendelseId())
+                                            .deletedOpplysninger(response.getDeletedOpplysninger())
                                             .build());
                                 } catch (WebClientResponseException e) {
                                     status.add(PdlOrdreResponse.Hendelse.builder()

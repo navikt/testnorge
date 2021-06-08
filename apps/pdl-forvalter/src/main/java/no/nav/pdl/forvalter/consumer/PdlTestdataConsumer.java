@@ -21,8 +21,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import static java.util.Objects.isNull;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.getBestillingUrl;
 
 @Slf4j
@@ -61,6 +63,9 @@ public class PdlTestdataConsumer {
     private final NaisServerProperties properties;
     private final ObjectMapper objectMapper;
 
+    private static String token;
+    private static LocalDateTime timestamp;
+
     public PdlTestdataConsumer(AccessTokenService accessTokenService,
                                PdlServiceProperties properties,
                                ObjectMapper objectMapper) {
@@ -76,22 +81,29 @@ public class PdlTestdataConsumer {
 
     public PdlBestillingResponse send(PdlArtifact artifact, String ident, Object body) throws JsonProcessingException {
 
-        var accessToken = accessTokenService.generateToken(properties);
         return new PdlTestdataCommand(webClient, getBestillingUrl().get(artifact), ident,
-                objectMapper.writer(filters).writeValueAsString(body), accessToken.getTokenValue()).call();
+                objectMapper.writer(filters).writeValueAsString(body), getToken()).call();
     }
 
     public void delete(List<String> identer) {
 
-        var accessToken = accessTokenService.generateToken(properties);
         identer.forEach(ident -> {
             try {
                 new PdlTestdataCommand(webClient, getBestillingUrl().get(PdlArtifact.PDL_SLETTING), ident,
-                        null, accessToken.getTokenValue()).call();
+                        null, getToken()).call();
 
             } catch (WebClientResponseException e) {
                 log.error("Sletting av person feilet mot pdl {} ", e.getResponseBodyAsString(), e);
             }
         });
+    }
+
+    private String getToken() {
+
+        if (isNull(timestamp) || timestamp.plusMinutes(10).isBefore(LocalDateTime.now()))         {
+            token = accessTokenService.generateToken(properties).getTokenValue();
+            timestamp = LocalDateTime.now();
+        }
+        return token;
     }
 }

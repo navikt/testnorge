@@ -7,10 +7,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.Callable;
 
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.TemaGrunnlag.GEN;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -72,9 +76,17 @@ public class PdlTestdataCommand implements Callable<PdlBestillingResponse> {
                     .header(TEMA, GEN.name())
                     .header(HEADER_NAV_PERSON_IDENT, ident)
                     .retrieve()
-                    .bodyToMono(String.class)
+                    .bodyToMono(PdlBestillingResponse.class)
                     .block();
-            return new PdlBestillingResponse();
+
+            if (isBlank(response.getFeilmelding())) {
+                return response;
+
+            } else {
+                throw new WebClientResponseException(BAD_REQUEST.value(), "Sletting feilet",
+                        null, ("Sletting feilet: " + response.getFeilmelding()).getBytes(StandardCharsets.UTF_8),
+                        StandardCharsets.UTF_8);
+            }
         }
     }
 }

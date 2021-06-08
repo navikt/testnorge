@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import no.nav.pdl.forvalter.dto.RsNavn;
 import no.nav.pdl.forvalter.dto.RsPersonRequest;
 
 import java.io.Serializable;
@@ -49,6 +48,11 @@ public class PdlKontaktinformasjonForDoedsbo extends PdlDbVersjon {
 
     private Adressat adressat;
 
+    public enum PdlSkifteform {
+
+        OFFENTLIG, ANNET
+    }
+
     @Data
     @Builder
     @NoArgsConstructor
@@ -56,7 +60,7 @@ public class PdlKontaktinformasjonForDoedsbo extends PdlDbVersjon {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Adressat implements Serializable {
 
-        private PdlAdvokat advokatSomAdressat;
+        private PdlOrganisasjon advokatSomAdressat;
         private PdlKontaktpersonMedIdNummer kontaktpersonMedIdNummerSomAdressat;
         private PdlKontaktpersonUtenIdNummer kontaktpersonUtenIdNummerSomAdressat;
         private PdlOrganisasjon organisasjonSomAdressat;
@@ -67,19 +71,7 @@ public class PdlKontaktinformasjonForDoedsbo extends PdlDbVersjon {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class PdlAdvokat implements Serializable {
-
-        private RsNavn kontaktperson;
-        private String organisasjonsnavn;
-        private String organisasjonsnummer;
-    }
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class PdlKontaktpersonMedIdNummer implements Serializable{
+    public static class PdlKontaktpersonMedIdNummer implements Serializable {
 
         private String idnummer;
         private RsPersonRequest nyKontaktPerson;
@@ -93,7 +85,7 @@ public class PdlKontaktinformasjonForDoedsbo extends PdlDbVersjon {
     public static class PdlKontaktpersonUtenIdNummer implements Serializable {
 
         private LocalDateTime foedselsdato;
-        private RsNavn navn;
+        private PersonNavn navn;
     }
 
     @Data
@@ -103,13 +95,21 @@ public class PdlKontaktinformasjonForDoedsbo extends PdlDbVersjon {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class PdlOrganisasjon implements Serializable {
 
-        private RsNavn kontaktperson;
+        private PersonNavn kontaktperson;
         private String organisasjonsnavn;
         private String organisasjonsnummer;
     }
 
-    public enum PdlSkifteform {
+    @Data
+    @SuperBuilder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class PersonNavn implements Serializable {
 
-        OFFENTLIG, ANNET
+        private String etternavn;
+        private String fornavn;
+        private String mellomnavn;
+        private Boolean hasMellomnavn;
     }
 }

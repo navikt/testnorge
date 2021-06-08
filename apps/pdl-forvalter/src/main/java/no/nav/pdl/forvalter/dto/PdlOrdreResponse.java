@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import no.nav.pdl.forvalter.utils.PdlTestDataUrls;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
@@ -49,5 +50,6 @@ public class PdlOrdreResponse {
         private PdlTestDataUrls.PdlStatus status;
         private String hendelseId;
         private String error;
+        private Map<String, String> deletedOpplysninger;
     }
 }
