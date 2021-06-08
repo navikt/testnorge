@@ -29,7 +29,7 @@ public class ApplicationConfig {
     @Bean
     public AddAuthorizationToRouteFilter addEndringsmeldingAuthorizationToRouteFilter() {
         return new AddAuthorizationToRouteFilter(
-                () -> tokenService.generateToken(endringsmeldingServiceProperties).getTokenValue(),
+                () -> tokenService.generateToken(endringsmeldingServiceProperties).block().getTokenValue(),
                 "endringsmelding"
         );
     }
@@ -37,7 +37,7 @@ public class ApplicationConfig {
     @Bean
     public AddAuthorizationToRouteFilter addIdenterAuthorizationToRouteFilter() {
         return new AddAuthorizationToRouteFilter(
-                () -> tokenService.generateToken(endringsmeldingServiceProperties).getTokenValue(),
+                () -> tokenService.generateToken(endringsmeldingServiceProperties).block().getTokenValue(),
                 "identer"
         );
     }
@@ -45,7 +45,7 @@ public class ApplicationConfig {
     @Bean
     public AddAuthorizationToRouteFilter addProfilApiAuthorizationToRouteFilter() {
         return new AddAuthorizationToRouteFilter(
-                () -> tokenService.generateToken(profilApiServiceProperties).getTokenValue(),
+                () -> tokenService.generateToken(profilApiServiceProperties).block().getTokenValue(),
                 "profil"
         );
     }

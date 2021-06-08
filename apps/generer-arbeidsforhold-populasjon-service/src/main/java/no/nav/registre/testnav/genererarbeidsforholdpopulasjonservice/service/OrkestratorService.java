@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -13,16 +14,16 @@ public class OrkestratorService {
     private final PersonArbeidsforholdHistorkkService personArbeidsforholdHistorkkService;
     private final OppsummeringsdokumentService oppsummeringsdokumentService;
 
-    public Flux<String> orkestrerUtenArbeidsforhold(int max, String miljo, LocalDate fom, LocalDate tom) {
+    public void orkestrerUtenArbeidsforhold(int max, String miljo, LocalDate fom, LocalDate tom) {
         var identerUtenArbeidsforhold = identService.getIdenterUtenArbeidsforhold(miljo, max);
         var personer = personArbeidsforholdHistorkkService.generer(identerUtenArbeidsforhold, miljo, fom, tom);
-        return oppsummeringsdokumentService.save(personer, miljo, fom, tom);
+        oppsummeringsdokumentService.save(personer, miljo);
     }
 
-    public Flux<String> orkestrerMedArbeidsforhold(String miljo, LocalDate fom, LocalDate tom) {
+    public void orkestrerMedArbeidsforhold(String miljo, int months) {
         var identerMedArbeidsforhold = identService.getIdenterMedArbeidsforhold(miljo);
-        var personer = personArbeidsforholdHistorkkService.generer(Flux.fromStream(identerMedArbeidsforhold.stream()), miljo, fom, tom);
-        return oppsummeringsdokumentService.save(personer, miljo, fom, tom);
+        var personer = personArbeidsforholdHistorkkService.generer(Flux.fromStream(identerMedArbeidsforhold.stream()), miljo, months);
+        oppsummeringsdokumentService.save(personer, miljo);
     }
 
 }

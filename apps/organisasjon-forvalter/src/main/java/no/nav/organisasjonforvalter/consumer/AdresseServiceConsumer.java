@@ -50,7 +50,7 @@ public class AdresseServiceConsumer {
         try {
             var accessToken = accessTokenService.generateToken(serviceProperties);
             var adresseResponse =
-                    new AdresseServiceCommand(webClient, query, accessToken.getTokenValue()).call();
+                    new AdresseServiceCommand(webClient, query, accessToken.block().getTokenValue()).call();
 
             log.info("Adresseoppslag tok {} ms", currentTimeMillis() - startTime);
             return Arrays.asList(adresseResponse);

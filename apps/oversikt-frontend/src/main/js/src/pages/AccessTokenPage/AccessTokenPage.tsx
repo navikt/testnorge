@@ -2,7 +2,6 @@ import React from "react";
 import PageWithMenu from "@/components/PageWithMenu";
 import FetchAccessToken from "@/components/FetchAccessToken";
 import { useParams } from "react-router-dom";
-import { Page } from "@navikt/dolly-komponenter";
 
 type Props = {
   navigations: Navigation[];

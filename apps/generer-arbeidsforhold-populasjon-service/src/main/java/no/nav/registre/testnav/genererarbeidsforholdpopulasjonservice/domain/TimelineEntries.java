@@ -3,13 +3,14 @@ package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 public class TimelineEntries<T extends Id> {
     private final Map<String, T> entires;
 
     public TimelineEntries() {
-        entires = new HashMap<>();
+        entires = new TreeMap<>();
     }
 
     public void put(T value) {

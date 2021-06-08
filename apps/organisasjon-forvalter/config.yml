@@ -30,6 +30,8 @@ spec:
           cluster: dev-fss
         - application: team-dolly-lokal-app
           cluster: dev-fss
+        - application: testnav-pdl-forvalter
+          cluster: dev-gcp
     outbound:
       rules:
         - application: organisasjon-bestilling-service
@@ -41,6 +43,8 @@ spec:
         - application: testnav-organisasjon-service
           cluster: dev-gcp
         - application: testnav-miljoer-service
+          cluster: dev-gcp
+        - application: testnav-pdl-forvalter
           cluster: dev-gcp
       external:
         - host: https://organisasjon-orgnummer-service.dev-fss-pub.nais.io

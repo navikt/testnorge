@@ -61,36 +61,12 @@ public class AccessTokenService {
         this.clientCredentials = clientCredentials;
     }
 
-    @Deprecated
-    public AccessToken generateToken(String clientId) {
-        return generateToken(new AccessScopes("api://" + clientId + "/.default"));
+
+    public Mono<AccessToken> generateToken(Scopeable scopeable) {
+        return generateToken(new AccessScopes(scopeable));
     }
 
-    public AccessToken generateToken(Scopeable scopeable) {
-        return generateToken(new AccessScopes(scopeable.toScope()));
-    }
-
-    public AccessToken generateToken(AccessScopes accessScopes) {
-        try {
-            return generateNonBlockedToken(accessScopes).block();
-        } catch (WebClientResponseException e) {
-            var secret = clientCredentials.getClientSecret().substring(0, 3) + "******************";
-            log.error(
-                    "Feil ved henting av access token for {} med client secret: {}.\nError: \n{}.",
-                    String.join(" ", accessScopes.getScopes()),
-                    secret,
-                    e.getResponseBodyAsString()
-            );
-            throw e;
-        }
-    }
-
-
-    public Mono<AccessToken> generateNonBlockedToken(Scopeable scopeable) {
-        return generateNonBlockedToken(new AccessScopes(scopeable));
-    }
-
-    public Mono<AccessToken> generateNonBlockedToken(AccessScopes accessScopes) {
+    public Mono<AccessToken> generateToken(AccessScopes accessScopes) {
         tokenResolver.verifyAuthentication();
 
         if (accessScopes.getScopes().isEmpty()) {
@@ -104,19 +80,6 @@ public class AccessTokenService {
         return generateOnBehalfOfAccessToken(accessScopes);
     }
 
-
-    /**
-     * Skal kun brukes av operasjoner startet av batcher/kafka.
-     *
-     * @param clientId appen som skal kontaktes
-     * @return access token som tilsvarer appen som skal kontaktes.
-     */
-    @Deprecated
-    public AccessToken generateClientCredentialAccessToken(String clientId) {
-        return generateClientCredentialAccessToken(new AccessScopes("api://" + clientId + "/.default")).block();
-    }
-
-
     public AccessToken generateClientCredentialAccessToken(Scopeable serverProperties) {
         return generateClientCredentialAccessToken(new AccessScopes(serverProperties.toScope())).block();
     }
@@ -125,31 +88,33 @@ public class AccessTokenService {
     private Mono<AccessToken> generateClientCredentialAccessToken(AccessScopes accessScopes) {
         log.trace("Henter OAuth2 access token fra client credential...");
 
+        var scope = String.join(" ", accessScopes.getScopes());
         var body = BodyInserters
-                .fromFormData("scope", String.join(" ", accessScopes.getScopes()))
+                .fromFormData("scope", scope)
                 .with("client_id", clientCredentials.getClientId())
                 .with("client_secret", clientCredentials.getClientSecret())
                 .with("grant_type", "client_credentials");
 
-        try {
-            var token = webClient.post()
-                    .body(body)
-                    .retrieve()
-                    .bodyToMono(AccessToken.class)
-                    .retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(1))
-                            .filter(throwable -> !(throwable instanceof WebClientResponseException.BadRequest))
-                            .doBeforeRetry(value -> log.warn("Prøver å opprette tilbobling til azure på nytt."))
-                    );
-            log.trace("Access token opprettet for OAuth 2.0 Client Credentials flow.");
-            return token;
-        } catch (WebClientResponseException e) {
-            log.error(
-                    "Feil ved henting av access token for {}. Feilmelding: {}.",
-                    String.join(" ", accessScopes.getScopes()),
-                    e.getResponseBodyAsString()
-            );
-            throw e;
-        }
+        log.trace("Access token opprettet for OAuth 2.0 Client Credentials flow.");
+        return webClient.post()
+                .body(body)
+                .retrieve()
+                .bodyToMono(AccessToken.class)
+                .retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(1))
+                        .filter(throwable -> !(throwable instanceof WebClientResponseException.BadRequest))
+                        .doBeforeRetry(value -> log.warn("Prøver å opprette tilkobling til azure på nytt."))
+                ).doOnError(error -> {
+                    if (error instanceof WebClientResponseException) {
+                        log.error(
+                                "Feil ved henting av access token for {}. Feilmelding: {}.",
+                                scope,
+                                ((WebClientResponseException) error).getResponseBodyAsString()
+                        );
+                    } else {
+                        log.error("Feil ved henting av access token for {}", scope, error);
+                    }
+                });
+
     }
 
     private Mono<AccessToken> generateOnBehalfOfAccessToken(AccessScopes accessScopes) {
@@ -167,21 +132,30 @@ public class AccessTokenService {
             log.error("Client secret er null.");
         }
 
+        var scope = String.join(" ", accessScopes.getScopes());
         var body = BodyInserters
-                .fromFormData("scope", String.join(" ", accessScopes.getScopes()))
+                .fromFormData("scope", scope)
                 .with("client_id", clientCredentials.getClientId())
                 .with("client_secret", clientCredentials.getClientSecret())
                 .with("assertion", token)
                 .with("requested_token_use", "on_behalf_of")
                 .with("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
 
-        var accessToken = webClient.post()
+        log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow. \nScope: {}.", scope);
+        return webClient.post()
                 .body(body)
                 .exchange()
                 .flatMap(response -> response.bodyToMono(AccessToken.class))
-                .doOnError(error -> log.error("Feil ved henting av access token.", error));
-
-        log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow");
-        return accessToken;
+                .doOnError(error -> {
+                    if (error instanceof WebClientResponseException) {
+                        log.error(
+                                "Feil ved henting av access token for {}. Feilmelding: {}.",
+                                scope,
+                                ((WebClientResponseException) error).getResponseBodyAsString()
+                        );
+                    } else {
+                        log.error("Feil ved henting av access token for {}", scope, error);
+                    }
+                });
     }
 }

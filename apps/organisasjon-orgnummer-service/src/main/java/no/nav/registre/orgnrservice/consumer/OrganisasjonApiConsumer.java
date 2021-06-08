@@ -57,7 +57,7 @@ public class OrganisasjonApiConsumer {
         List<String> miljoer = miljoerConsumer.hentMiljoer().getEnvironments();
         Set<String> ekskluderteMiljoer = Set.of("qx", "u5");
 
-        var token = accessTokenService.generateToken(serviceProperties).getTokenValue();
+        var token = accessTokenService.generateToken(serviceProperties).block().getTokenValue();
 
         var futures = miljoer.stream()
                 .filter(miljoe -> !ekskluderteMiljoer.contains(miljoe))

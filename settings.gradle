@@ -308,3 +308,9 @@ project(":generer-arbeidsforhold-populasjon-service").projectDir = file('apps/ge
 
 include 'ident-pool-proxy'
 project(":ident-pool-proxy").projectDir = file('proxies/ident-pool-proxy')
+
+include 'inntektsmelding-service'
+project(':inntektsmelding-service').projectDir = file('apps/inntektsmelding-service')
+
+include 'dokarkiv-proxy'
+project(":dokarkiv-proxy").projectDir = file('proxies/dokarkiv-proxy')

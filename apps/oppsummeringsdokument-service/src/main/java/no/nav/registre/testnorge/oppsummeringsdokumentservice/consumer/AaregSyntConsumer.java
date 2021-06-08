@@ -26,8 +26,13 @@ public class AaregSyntConsumer {
                 .build();
     }
 
-    public void saveOpplysningspliktig(Oppsummeringsdokument oppsummeringsdokument) {
-        var accessToken = accessTokenService.generateToken(properties);
-        new SaveOpplysningspliktigCommand(webClient, oppsummeringsdokument.toXml(), accessToken.getTokenValue()).run();
+    public void saveOpplysningspliktig(Oppsummeringsdokument oppsummeringsdokument, String miljo) {
+        var accessToken = accessTokenService.generateToken(properties).block();
+        new SaveOpplysningspliktigCommand(
+                webClient,
+                oppsummeringsdokument.toXml(),
+                accessToken.getTokenValue(),
+                miljo.equals("t4") ? "u5" : miljo //TODO fix redirect from t4 to u5
+        ).run();
     }
 }

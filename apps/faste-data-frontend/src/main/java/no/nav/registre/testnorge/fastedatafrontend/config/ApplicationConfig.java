@@ -31,7 +31,7 @@ public class ApplicationConfig {
     @Bean
     public AddAuthorizationToRouteFilter addProfilApiAuthorizationToRouteFilter() {
         return new AddAuthorizationToRouteFilter(
-                () -> tokenService.generateToken(profilApiServiceProperties).getTokenValue(),
+                () -> tokenService.generateToken(profilApiServiceProperties).block().getTokenValue(),
                 "testnorge-profil-api"
         );
     }
@@ -39,7 +39,7 @@ public class ApplicationConfig {
     @Bean
     public AddAuthorizationToRouteFilter addOrganisasjonFasteDataServiceAuthorizationToRouteFilter() {
         return new AddAuthorizationToRouteFilter(
-                () -> tokenService.generateToken(organisasjonFasteDataServiceProperties).getTokenValue(),
+                () -> tokenService.generateToken(organisasjonFasteDataServiceProperties).block().getTokenValue(),
                 "testnav-organisasjon-faste-data-service"
         );
     }
@@ -47,7 +47,7 @@ public class ApplicationConfig {
     @Bean
     public AddAuthorizationToRouteFilter addOrganisasjonServiceAuthorizationToRouteFilter() {
         return new AddAuthorizationToRouteFilter(
-                () -> tokenService.generateToken(organisasjonServiceProperties).getTokenValue(),
+                () -> tokenService.generateToken(organisasjonServiceProperties).block().getTokenValue(),
                 "testnav-organisasjon-service"
         );
     }

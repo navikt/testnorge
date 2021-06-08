@@ -1,7 +1,5 @@
 package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.amelding;
 
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
 import no.nav.registre.testnorge.libs.dto.syntrest.v1.FartoeyDTO;

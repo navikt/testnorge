@@ -7,8 +7,8 @@ bootJar {
     archiveFileName = "app.jar"
 }
 dependencies {
-    compile group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.4.32.v20200930'
-    compile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '9.4.32.v20200930'
+    implementation group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.4.32.v20200930'
+    implementation group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '9.4.32.v20200930'
 
     implementation project(':testnorge-core')
     implementation project(':testnorge-domain')

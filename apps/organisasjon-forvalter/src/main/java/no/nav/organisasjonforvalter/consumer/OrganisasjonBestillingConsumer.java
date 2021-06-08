@@ -42,7 +42,7 @@ public class OrganisasjonBestillingConsumer {
 
         long startTime = currentTimeMillis();
         try {
-            var accessToken = accessTokenService.generateToken(serviceProperties);
+            var accessToken = accessTokenService.generateToken(serviceProperties).block();
             var response =
                     new OrganisasjonBestillingCommand(webClient, uuid, accessToken.getTokenValue()).call();
 

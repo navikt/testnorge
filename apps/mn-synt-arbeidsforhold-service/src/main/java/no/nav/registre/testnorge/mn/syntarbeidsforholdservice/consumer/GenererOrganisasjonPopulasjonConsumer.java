@@ -30,7 +30,7 @@ public class GenererOrganisasjonPopulasjonConsumer {
     }
 
     public Set<String> getOpplysningspliktig(String miljo) {
-        var accessToken = accessTokenService.generateToken(properties);
+        var accessToken = accessTokenService.generateToken(properties).block();
         return new GetOpplysningspliktigOrgnummerCommand(webClient, accessToken.getTokenValue(), miljo).call();
     }
 }

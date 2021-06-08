@@ -26,7 +26,7 @@ public class PdlAdresseConsumer {
     }
 
     public PdlAdresseResponse sendPdlAdresseSoek(GraphQLRequest adresseQuery) {
-        var accessToken = accessTokenService.generateToken(properties);
+        var accessToken = accessTokenService.generateToken(properties).block();
         return new PdlAdresseSoekCommand(webClient, adresseQuery, accessToken.getTokenValue()).call();
     }
 }

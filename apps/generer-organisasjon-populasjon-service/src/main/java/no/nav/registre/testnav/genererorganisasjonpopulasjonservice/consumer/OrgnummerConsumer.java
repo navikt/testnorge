@@ -26,7 +26,7 @@ public class OrgnummerConsumer {
     }
 
     public String getOrgnummer() {
-        var tokenValue = accessTokenService.generateToken(properties).getTokenValue();
+        var tokenValue = accessTokenService.generateToken(properties).block().getTokenValue();
         return new GetOrgnummerCommand(webClient, tokenValue, 1).call().stream().findFirst().orElseThrow();
     }
 

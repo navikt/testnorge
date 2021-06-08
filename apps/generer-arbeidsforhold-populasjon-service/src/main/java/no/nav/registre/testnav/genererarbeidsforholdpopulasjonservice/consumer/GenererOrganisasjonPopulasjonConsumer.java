@@ -9,6 +9,7 @@ import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.c
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.credentials.GenererOrganisasjonPopulasjonServerProperties;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+
 @Component
 public class GenererOrganisasjonPopulasjonConsumer {
     private final WebClient webClient;
@@ -28,7 +29,12 @@ public class GenererOrganisasjonPopulasjonConsumer {
     }
 
     public Set<String> getOpplysningspliktig(String miljo) {
-        var accessToken = accessTokenService.generateToken(properties);
-        return new GetOpplysningspliktigOrgnummerCommand(webClient, accessToken.getTokenValue(), miljo).call().block();
+        return accessTokenService.generateToken(properties)
+                .flatMap(accessToken -> new GetOpplysningspliktigOrgnummerCommand(
+                                webClient,
+                                accessToken.getTokenValue(),
+                                miljo
+                        ).call()
+                ).block();
     }
 }

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.command.GetOppsummeringsdokumentCommand;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.command.SaveOppsummeringsdokumenterCommand;
@@ -43,12 +44,11 @@ public class OppsummeringsdokumentConsumer {
             AccessTokenService accessTokenService,
             OppsummeringsdokuemntServerProperties properties,
             ObjectMapper objectMapper,
-            ApplicationProperties applicationProperties,
-            Executor executor) {
+            ApplicationProperties applicationProperties) {
         this.applicationProperties = applicationProperties;
         this.accessTokenService = accessTokenService;
         this.properties = properties;
-        this.executor = executor;
+        this.executor = Executors.newFixedThreadPool(20);
 
         this.webClient = WebClient
                 .builder()
@@ -76,7 +76,7 @@ public class OppsummeringsdokumentConsumer {
     private CompletableFuture<String> saveFuture(OppsummeringsdokumentDTO dto, String miljo) {
         return CompletableFuture.supplyAsync(
                 () -> accessTokenService
-                        .generateNonBlockedToken(properties)
+                        .generateToken(properties)
                         .flatMap(accessToken -> new SaveOppsummeringsdokumenterCommand(
                                 webClient,
                                 accessToken.getTokenValue(),
@@ -92,20 +92,20 @@ public class OppsummeringsdokumentConsumer {
 
     public List<OppsummeringsdokumentDTO> getAll(String miljo) {
         log.info("Henter alle oppsummeringsdokument fra {}...", miljo);
-        AccessToken accessToken = accessTokenService.generateToken(properties);
+        AccessToken accessToken = accessTokenService.generateToken(properties).block();
         var list = new GetOppsummeringsdokumenterCommand(webClient, accessToken.getTokenValue(), miljo).call();
         log.info("Fant {} opplysningspliktig fra {}.", list.size(), miljo);
         return list;
     }
 
     public Mono<List<OppsummeringsdokumentDTO>> getAllForIdent(String ident, String miljo) {
-        return accessTokenService.generateNonBlockedToken(properties)
+        return accessTokenService.generateToken(properties)
                 .flatMap(accessToken -> new GetOppsummeringsdokumenterByIdentCommand(webClient, accessToken.getTokenValue(), ident, miljo).call());
     }
 
     public Mono<Oppsummeringsdokument> getOppsummeringsdokument(String opplysningspliktigOrgnummer, LocalDate kalendermaaned, String miljo) {
         return accessTokenService
-                .generateNonBlockedToken(properties)
+                .generateToken(properties)
                 .flatMap(accessToken -> new GetOppsummeringsdokumentCommand(
                         webClient,
                         accessToken.getTokenValue(),

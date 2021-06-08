@@ -37,7 +37,7 @@ public class ApplicationConfig {
     @Bean
     public AddAuthorizationToRouteFilter addProfilApiAuthorizationToRouteFilter() {
         return new AddAuthorizationToRouteFilter(
-                () -> tokenService.generateToken(profilApiServiceProperties).getTokenValue(),
+                () -> tokenService.generateToken(profilApiServiceProperties).block().getTokenValue(),
                 "profil"
         );
     }
@@ -47,7 +47,7 @@ public class ApplicationConfig {
         return new AddAuthorizationToRouteFilter(
                 () -> tokenService.generateToken(
                         new AccessScopes("api://06c9b9c1-d370-40ea-8181-2c4a6858392f/.default")
-                ).getTokenValue(),
+                ).block().getTokenValue(),
                 "testnorge-arbeidsforhold-export-api"
         );
     }
