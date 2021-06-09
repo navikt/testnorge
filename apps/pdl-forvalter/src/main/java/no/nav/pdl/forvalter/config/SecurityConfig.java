@@ -4,7 +4,6 @@ import no.nav.registre.testnorge.libs.oauth2.config.OAuth2ResourceServerConfigur
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -14,7 +13,6 @@ import java.util.List;
 
 @EnableWebSecurity
 @Configuration
-@Profile({"prod", "local"})
 @Order(1)
 public class SecurityConfig extends OAuth2ResourceServerConfiguration {
 
