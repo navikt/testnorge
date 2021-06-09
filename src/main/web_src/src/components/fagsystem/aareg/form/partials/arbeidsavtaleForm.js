@@ -27,6 +27,7 @@ export const ArbeidsavtaleForm = ({ formikBag, path, onChangeLenket }) => {
 					label="Ansettelsesform"
 					kodeverk={ArbeidKodeverk.AnsettelsesformAareg}
 					onChange={onChangeLenket('arbeidsavtale.ansettelsesform')}
+					isClearable={false}
 				/>
 				<FormikTextInput
 					name={`${path}.stillingsprosent`}

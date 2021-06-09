@@ -6,19 +6,12 @@ import { ArbeidsforholdForm } from './arbeidsforholdForm'
 import ArbeidsforholdConnector from './arbeidsforholdConnector'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import {
+	initialPeriode,
 	initialAmelding,
 	initialArbeidsforholdOrg,
 	initialArbeidsforholdPers
 } from '../initialValues'
 import { ArbeidsgiverTyper } from '~/components/fagsystem/aareg/AaregTypes'
-
-//TODO: Bytte navn - er noe annet som heter arbeidsforholdstype
-// enum ArbeidsforholdTyper {
-// 	egen = 'EGEN',
-// 	felles = 'FELLES',
-// 	fritekst = 'FRITEKST',
-// 	privat = 'PRIVAT'
-// }
 
 const ToggleArbeidsgiver = styled(ToggleGruppe)`
 	display: grid;
@@ -53,12 +46,15 @@ export const ArbeidsforholdToggle = ({ formikBag }) => {
 		if (value === ArbeidsgiverTyper.privat) {
 			formikBag.setFieldValue('aareg[0].amelding', undefined)
 			formikBag.setFieldValue('aareg[0].arbeidsforhold', [initialArbeidsforholdPers])
+			formikBag.setFieldValue('aareg[0].genererPeriode', undefined)
 		} else if (value === ArbeidsgiverTyper.felles || value === ArbeidsgiverTyper.fritekst) {
 			formikBag.setFieldValue('aareg[0].amelding', undefined)
 			formikBag.setFieldValue('aareg[0].arbeidsforhold', [initialArbeidsforholdOrg])
+			formikBag.setFieldValue('aareg[0].genererPeriode', undefined)
 		} else if (value === ArbeidsgiverTyper.egen) {
 			formikBag.setFieldValue('aareg[0].arbeidsforhold', undefined)
 			formikBag.setFieldValue('aareg[0].amelding', initialAmelding)
+			formikBag.setFieldValue('aareg[0].genererPeriode', initialPeriode)
 		}
 	}
 
