@@ -1,0 +1,9 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+consumers:
+  adresse-service:
+    url: https://testnav-adresse-service.dolly.svc.cluster.local
+  generer-navn-service:
+    url: https://generer-navn-service.dolly.svc.cluster.local
+  org-forvalter:
+    url: https://testnav-organisasjon-forvalter.dolly.svc.cluster.local

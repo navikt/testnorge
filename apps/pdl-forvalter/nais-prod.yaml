@@ -1,14 +1,14 @@
 apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
-  name: testnav-pdl-forvalter-dev
+  name: testnav-pdl-forvalter
   namespace: dolly
   labels:
     team: dolly
 spec:
   env:
     - name: spring.profiles.active
-      value: dev
+      value: prod
   image: {{ image }}
   webproxy: true
   azure:
@@ -16,7 +16,7 @@ spec:
       enabled: true
       tenant: nav.no
   ingresses:
-    - "https://testnav-pdl-forvalter-dev.dev.intern.nav.no"
+    - "https://testnav-pdl-forvalter.dev.intern.nav.no"
   liveness:
     path: /internal/isAlive
     periodSeconds: 30
@@ -68,4 +68,4 @@ spec:
     sqlInstances:
       - type: POSTGRES_12
         databases:
-          - name: testnav-pdl-forvalter-dev-db
+          - name: testnav-pdl-forvalter-db
