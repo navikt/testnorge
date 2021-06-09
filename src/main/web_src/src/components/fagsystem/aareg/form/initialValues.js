@@ -32,7 +32,6 @@ export const initialForenkletOppgjoersordning = {
 }
 
 export const initialArbeidsforholdOrg = {
-	arbeidsforholdstype: '',
 	arbeidsgiver: {
 		aktoertype: 'ORG',
 		orgnummer: ''
@@ -56,7 +55,6 @@ export const initialArbeidsforholdOrg = {
 }
 
 export const initialArbeidsforholdPers = {
-	arbeidsforholdstype: '',
 	arbeidsgiver: {
 		aktoertype: 'PERS',
 		ident: ''

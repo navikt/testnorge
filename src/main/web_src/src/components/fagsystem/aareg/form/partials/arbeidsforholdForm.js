@@ -123,7 +123,11 @@ export const ArbeidsforholdForm = ({
 				/>
 			</div>
 
-			<ArbeidsavtaleForm formikBag={formikBag} path={path} />
+			<ArbeidsavtaleForm
+				formikBag={formikBag}
+				path={`${path}.arbeidsavtale`}
+				onChangeLenket={onChangeLenket}
+			/>
 			{arbeidsforholdstype === 'maritimtArbeidsforhold' && (
 				<MaritimtArbeidsforholdForm path={`${path}.fartoy`} onChangeLenket={onChangeLenket} />
 			)}
