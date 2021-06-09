@@ -37,6 +37,10 @@ dependencies {
     implementation 'org.springframework:spring-messaging:5.2.10.RELEASE'
     implementation 'org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config:2.2.4.RELEASE'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:2.2.4.RELEASE'
+    testImplementation project(':testnorge-testing')
 }
 
 description = 'ident-check-in-prod-service'

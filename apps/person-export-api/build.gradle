@@ -28,6 +28,9 @@ dependencies {
     implementation 'org.springframework.security:spring-security-web:5.3.4.RELEASE'
     implementation 'org.springframework.security:spring-security-config:5.3.4.RELEASE'
     implementation 'org.springframework.security:spring-security-core:5.3.4.RELEASE'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.3.4.RELEASE'
+    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:2.2.4.RELEASE'
 }
 
 description = 'person-export-api'

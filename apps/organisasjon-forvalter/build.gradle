@@ -57,6 +57,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.11.2'
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
+    testImplementation 'com.h2database:h2:1.4.200'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation project(':testnorge-testing')
 }

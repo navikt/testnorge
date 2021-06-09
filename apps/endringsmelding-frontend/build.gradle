@@ -36,6 +36,10 @@ dependencies {
 
     implementation 'org.projectlombok:lombok:1.18.12'
     implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:2.2.5.RELEASE'
+    testImplementation project(':testnorge-testing')
 }
 
 description = 'endringsmelding-frontend'

@@ -55,6 +55,9 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-ui:1.4.6'
     implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
     implementation 'no.nav.freg:freg-security-oidc:2c24d35d'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }
 
 description = 'oppsummeringsdokument-service'
