@@ -65,18 +65,9 @@ const datoIkkeMellom = (nyDatoFra, gjeldendeDatoFra, gjeldendeDatoTil) => {
 	)
 }
 
-function tilDatoValidation(erDagpenger) {
-	return Yup.string()
-		.test('etter-fradato', 'Til-dato må være etter fra-dato', function validDate(tildato) {
-			const values = this.options.context
-			const fradato = erDagpenger
-				? values.arenaforvalter.dagpenger[0].fraDato
-				: values.arenaforvalter.aap[0].fraDato
-			if (!fradato || !tildato) return true
-			return isAfter(new Date(tildato), new Date(fradato))
-		})
-		.nullable()
-		.required('Feltet er påkrevd')
+function validTildato(fradato, tildato) {
+	if (!fradato || !tildato) return true
+	return isAfter(new Date(tildato), new Date(fradato))
 }
 
 function harGjeldendeVedtakValidation(vedtakType) {
@@ -102,14 +93,20 @@ function harGjeldendeVedtakValidation(vedtakType) {
 			}
 		)
 		.nullable()
-		.required('Feltet er påkrevd')
+		.required(messages.required)
 }
 
 const validation = Yup.object({
 	aap: Yup.array().of(
 		Yup.object({
 			fraDato: harGjeldendeVedtakValidation('aap'),
-			tilDato: tilDatoValidation(false)
+			tilDato: Yup.string()
+				.test('etter-fradato', 'Til-dato må være etter fra-dato', function validDate(tildato) {
+					const fradato = this.options.context.arenaforvalter.aap[0].fraDato
+					return validTildato(fradato, tildato)
+				})
+				.nullable()
+				.required(messages.required)
 		})
 	),
 	aap115: Yup.array().of(
@@ -134,7 +131,12 @@ const validation = Yup.object({
 		Yup.object({
 			rettighetKode: Yup.string().required(messages.required),
 			fraDato: harGjeldendeVedtakValidation('dagpenger'),
-			tilDato: tilDatoValidation(true),
+			tilDato: Yup.string()
+				.test('etter-fradato', 'Til-dato må være etter fra-dato', function validDate(tildato) {
+					const fradato = this.options.context.arenaforvalter.dagpenger[0].fraDato
+					return validTildato(fradato, tildato)
+				})
+				.nullable(),
 			mottattDato: Yup.date().nullable()
 		})
 	)
