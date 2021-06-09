@@ -34,13 +34,17 @@ public class GenererNavnServiceConsumer {
     }
 
     public Optional<NavnDTO> getNavn(Integer antall) {
-        var accessToken = accessTokenService.generateToken(properties);
-        return Arrays.asList(new GenererNavnServiceCommand(webClient, NAVN_URL, antall, accessToken.getTokenValue()).call())
+
+        return Arrays.asList(accessTokenService.generateToken(properties).flatMap(
+                token -> new GenererNavnServiceCommand(webClient, NAVN_URL, antall, token.getTokenValue()).call())
+                .block())
                 .stream().findFirst();
     }
 
     public Boolean verifyNavn(NavnDTO navn) {
-        var accessToken = accessTokenService.generateToken(properties);
-        return new VerifiserNavnServiceCommand(webClient, NAVN_CHECK_URL, navn, accessToken.getTokenValue()).call();
+
+        return accessTokenService.generateToken(properties).flatMap(
+                token -> new VerifiserNavnServiceCommand(webClient, NAVN_CHECK_URL, navn, token.getTokenValue()).call())
+                .block();
     }
 }

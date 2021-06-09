@@ -7,12 +7,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
 @Slf4j
 @RequiredArgsConstructor
-public class GenererNavnServiceCommand implements Callable<NavnDTO[]> {
+public class GenererNavnServiceCommand implements Callable<Mono<NavnDTO[]>> {
 
     private final WebClient webClient;
     private final String url;
@@ -20,7 +21,7 @@ public class GenererNavnServiceCommand implements Callable<NavnDTO[]> {
     private final String token;
 
     @Override
-    public NavnDTO[] call() {
+    public Mono<NavnDTO[]> call() {
 
         try {
             return webClient
@@ -29,8 +30,7 @@ public class GenererNavnServiceCommand implements Callable<NavnDTO[]> {
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .retrieve()
-                    .bodyToMono(NavnDTO[].class)
-                    .block();
+                    .bodyToMono(NavnDTO[].class);
 
         } catch (
                 WebClientResponseException e) {

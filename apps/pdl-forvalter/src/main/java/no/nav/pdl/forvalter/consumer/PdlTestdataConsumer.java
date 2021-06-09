@@ -93,7 +93,9 @@ public class PdlTestdataConsumer {
                         null, getToken()).call();
 
             } catch (WebClientResponseException e) {
-                log.error("Sletting av person feilet mot pdl {} ", e.getResponseBodyAsString(), e);
+                if (!e.getResponseBodyAsString().contains("Finner ikke forespurt ident i pdl-api")) {
+                    log.error("Sletting av person feilet mot pdl {} ", e.getResponseBodyAsString(), e);
+                }
             }
         });
     }
@@ -101,7 +103,7 @@ public class PdlTestdataConsumer {
     private String getToken() {
 
         if (isNull(timestamp) || timestamp.plusMinutes(10).isBefore(LocalDateTime.now()))         {
-            token = accessTokenService.generateToken(properties).getTokenValue();
+            token = accessTokenService.generateToken(properties).block().getTokenValue();
             timestamp = LocalDateTime.now();
         }
         return token;

@@ -5,13 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.Map;
 import java.util.concurrent.Callable;
 
 @Slf4j
 @RequiredArgsConstructor
-public class OrganisasjonForvalterCommand implements Callable<Map<String, Map<String, String>>> {
+public class OrganisasjonForvalterCommand implements Callable<Mono<Map>> {
 
     private final WebClient webClient;
     private final String url;
@@ -19,7 +20,7 @@ public class OrganisasjonForvalterCommand implements Callable<Map<String, Map<St
     private final String token;
 
     @Override
-    public Map<String, Map<String, String>> call() {
+    public Mono<Map> call() {
 
         return webClient
                 .get()
@@ -27,7 +28,6 @@ public class OrganisasjonForvalterCommand implements Callable<Map<String, Map<St
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
-                .bodyToMono(Map.class)
-                .block();
+                .bodyToMono(Map.class);
     }
 }

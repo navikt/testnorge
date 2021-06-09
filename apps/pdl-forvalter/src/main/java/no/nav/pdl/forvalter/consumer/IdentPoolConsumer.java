@@ -43,8 +43,10 @@ public class IdentPoolConsumer {
         var startTime = currentTimeMillis();
 
         try {
-            var accessToken = accessTokenService.generateToken(properties);
-            var idents = new IdentpoolPostCommand(webClient, ACQUIRE_IDENTS_URL, null, request, accessToken.getTokenValue()).call();
+            var idents = accessTokenService.generateToken(properties).flatMap(
+                    token -> new IdentpoolPostCommand(webClient, ACQUIRE_IDENTS_URL, null, request,
+                            token.getTokenValue()).call())
+                    .block();
 
             log.info("Identpool allokering av identer tok {} ms", currentTimeMillis() - startTime);
             return idents;
@@ -62,8 +64,10 @@ public class IdentPoolConsumer {
         var startTime = currentTimeMillis();
 
         try {
-            var accessToken = accessTokenService.generateToken(properties);
-            var idents = new IdentpoolPostCommand(webClient, RELEASE_IDENTS_URL, REKVIRERT_AV, identer, accessToken.getTokenValue()).call();
+            accessTokenService.generateToken(properties).flatMap(
+                    token -> new IdentpoolPostCommand(webClient, RELEASE_IDENTS_URL, REKVIRERT_AV, identer,
+                            token.getTokenValue()).call())
+                    .block();
 
             log.info("Identpool frigjoering av identer tok {} ms", currentTimeMillis() - startTime);
 

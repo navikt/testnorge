@@ -68,8 +68,9 @@ public class AdresseServiceConsumer {
                 .toString();
 
         try {
-            var accessToken = accessTokenService.generateToken(properties);
-            var adresser = new AdresseServiceCommand(webClient, query, accessToken.getTokenValue()).call();
+            var adresser = accessTokenService.generateToken(properties).flatMap(
+                    token -> new AdresseServiceCommand(webClient, query, token.getTokenValue()).call())
+                    .block();
 
             log.info("Oppslag til adresseservice tok {} ms", currentTimeMillis() - startTime);
             return Stream.of(adresser).findFirst().orElse(getDefaultAdresse());

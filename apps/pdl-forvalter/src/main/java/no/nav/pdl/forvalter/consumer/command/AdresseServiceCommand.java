@@ -7,12 +7,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
 @Slf4j
 @RequiredArgsConstructor
-public class AdresseServiceCommand implements Callable<VegadresseDTO[]> {
+public class AdresseServiceCommand implements Callable<Mono<VegadresseDTO[]>> {
 
     private static final String ADRESSER_VEG_URL = "/api/v1/adresser/veg";
 
@@ -21,7 +22,7 @@ public class AdresseServiceCommand implements Callable<VegadresseDTO[]> {
     private final String token;
 
     @Override
-    public VegadresseDTO[] call() {
+    public Mono<VegadresseDTO[]> call() {
 
         try {
             return webClient
@@ -31,8 +32,7 @@ public class AdresseServiceCommand implements Callable<VegadresseDTO[]> {
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .retrieve()
-                    .bodyToMono(VegadresseDTO[].class)
-                    .block();
+                    .bodyToMono(VegadresseDTO[].class);
 
         } catch (WebClientResponseException e) {
             log.error("Feil ved henting av adresser: {}.", e.getResponseBodyAsString());

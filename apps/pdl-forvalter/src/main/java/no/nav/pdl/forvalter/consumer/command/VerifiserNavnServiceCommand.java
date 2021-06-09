@@ -8,12 +8,13 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
 @Slf4j
 @RequiredArgsConstructor
-public class VerifiserNavnServiceCommand implements Callable<Boolean> {
+public class VerifiserNavnServiceCommand implements Callable<Mono<Boolean>> {
 
     private final WebClient webClient;
     private final String url;
@@ -21,7 +22,7 @@ public class VerifiserNavnServiceCommand implements Callable<Boolean> {
     private final String token;
 
     @Override
-    public Boolean call() {
+    public Mono<Boolean> call() {
 
         try {
             return webClient
@@ -31,8 +32,7 @@ public class VerifiserNavnServiceCommand implements Callable<Boolean> {
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .retrieve()
-                    .bodyToMono(Boolean.class)
-                    .block();
+                    .bodyToMono(Boolean.class);
 
         } catch (
                 WebClientResponseException e) {
