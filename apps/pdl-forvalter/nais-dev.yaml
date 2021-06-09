@@ -7,6 +7,8 @@ metadata:
     team: dolly
 spec:
   env:
+    - name: JAVA_OPTS
+      value: "-Dspring.profiles.active=dev"
     - name: SPRING_PROFILES_ACTIVE
       value: dev
   image: {{ image }}
