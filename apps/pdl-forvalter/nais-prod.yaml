@@ -69,5 +69,3 @@ spec:
       - type: POSTGRES_12
         databases:
           - name: testnav-pdl-forvalter-db
-  envFrom:
-    - secret: google-sql-testnav-pdl-forvalter
