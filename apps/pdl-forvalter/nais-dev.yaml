@@ -65,6 +65,6 @@ spec:
     sqlInstances:
       - type: POSTGRES_12
         databases:
-          - name: pdl-forvalter-dev-db
+          - name: testnav-pdl-forvalter-dev-db
   envFrom:
     - secret: google-sql-testnav-pdl-forvalter-dev

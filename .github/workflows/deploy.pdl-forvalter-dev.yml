@@ -9,7 +9,7 @@ on:
       - libs/testnorge-core/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/pdl-forvalter:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/testnav-pdl-forvalter:${{ github.sha }}
 
 jobs:
   build_and_deploy:
