@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 
 @Getter
@@ -15,6 +16,9 @@ import java.util.Optional;
 @AllArgsConstructor
 public class RsAvsendersystem {
 
+    private static final String DEFAULT_SYSTEMNAVN = "ORKESTRATOREN";
+    private static final String DEFAULT_SYSTEMVERSJON = "1";
+
     @JsonProperty
     private String systemnavn;
     @JsonProperty
@@ -22,7 +26,17 @@ public class RsAvsendersystem {
     @JsonProperty
     private LocalDateTime innsendingstidspunkt;
 
-    public LocalDateTime getInnsendingstidspunkt() {
-        return innsendingstidspunkt;
+
+    public String getSystemnavn() {
+        return Objects.requireNonNullElse(systemnavn, DEFAULT_SYSTEMNAVN);
     }
+
+    public String getSystemversjon() {
+        return Objects.requireNonNullElse(systemversjon, DEFAULT_SYSTEMVERSJON);
+    }
+
+    public LocalDateTime getInnsendingstidspunkt() {
+        return Objects.requireNonNullElse(innsendingstidspunkt, LocalDateTime.now());
+    }
+
 }
