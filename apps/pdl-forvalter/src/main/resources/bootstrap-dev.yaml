@@ -5,7 +5,7 @@ spring:
     vault:
       enabled: false
   datasource:
-    url: jdbc:postgresql://${nais.database.testnav.pdl.forvalter.pdl.forvalter.dev.db.host}:${nais.database.testnav.pdl.forvalter.pdl.forvalter.dev.db.port}/${nais.database.testnav.pdl.forvalter.pdl.forvalter.dev.db.database}?user=${nais.database.testnav.pdl.forvalter.pdl.forvalter.dev.db.username}&password=${nais.database.testnav.pdl.forvalter.pdl.forvalter.dev.db.password}
+    url: jdbc:postgresql://${nais.database.testnav.pdl.forvalter.dev.pdl.forvalter.dev.db.host}:${nais.database.testnav.pdl.forvalter.dev.pdl.forvalter.dev.db.port}/${nais.database.testnav.pdl.forvalter.dev.pdl.forvalter.dev.db.database}?user=${nais.database.testnav.pdl.forvalter.dev.pdl.forvalter.dev.db.username}&password=${nais.database.testnav.pdl.forvalter.dev.pdl.forvalter.dev.db.password}
     driverClassName: org.postgresql.Driver
     hikari:
       maximum-pool-size: 3
