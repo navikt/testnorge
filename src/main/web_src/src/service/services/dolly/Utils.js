@@ -24,7 +24,8 @@ export const SortKodeverkArray = data => {
 	if (data.name === 'Diskresjonskoder') {
 		const diskresjonskoder = [
 			...kodeverk,
-			{ label: 'KODE 19 - Strengt fortrolig utland', value: 'SFU' }
+			{ label: 'KODE 19 - Strengt fortrolig utland', value: 'SFU' },
+			{ label: 'Opphev diskresjonskode', value: 'UGRADERT' }
 		]
 		return diskresjonskoder
 			.map(kode => {
