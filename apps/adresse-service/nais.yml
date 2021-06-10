@@ -44,6 +44,8 @@ spec:
           cluster: dev-gcp
         - application: testnav-pdl-forvalter
           cluster: dev-gcp
+        - application: testnav-pdl-forvalter-dev
+          cluster: dev-gcp
         - application: tps-forvalteren-dev
           cluster: dev-fss
         - application: tps-forvalteren
