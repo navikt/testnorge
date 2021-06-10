@@ -19,6 +19,7 @@ export const UtenlandsoppholdForm = ({
 	const maaneder = _get(formikBag.values, 'aareg[0].amelding')
 
 	const handleNewEntry = () => {
+		if (!maaneder) return
 		maaneder.forEach((maaned, idMaaned) => {
 			if (!erLenket && idMaaned != ameldingIndex) return
 			const currUtenlandsopphold = _get(
@@ -35,6 +36,7 @@ export const UtenlandsoppholdForm = ({
 	}
 
 	const handleRemoveEntry = idUtenlandsopphold => {
+		if (!maaneder) return
 		maaneder.forEach((maaned, idMaaned) => {
 			if (!erLenket && idMaaned != ameldingIndex) return
 			const currUtenlandsopphold = _get(
@@ -56,8 +58,8 @@ export const UtenlandsoppholdForm = ({
 			hjelpetekst={infotekst}
 			newEntry={initialUtenlandsopphold}
 			nested
-			handleNewEntry={handleNewEntry}
-			handleRemoveEntry={handleRemoveEntry}
+			handleNewEntry={maaneder ? handleNewEntry : null}
+			handleRemoveEntry={maaneder ? handleRemoveEntry : null}
 		>
 			{(path, idx) => (
 				<div key={idx} className="flexbox">

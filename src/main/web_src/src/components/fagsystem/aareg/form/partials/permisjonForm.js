@@ -19,6 +19,7 @@ export const PermisjonForm = ({
 	const maaneder = _get(formikBag.values, 'aareg[0].amelding')
 
 	const handleNewEntry = () => {
+		if (!maaneder) return
 		maaneder.forEach((maaned, idMaaned) => {
 			if (!erLenket && idMaaned != ameldingIndex) return
 			const currPermisjon = _get(
@@ -33,6 +34,7 @@ export const PermisjonForm = ({
 	}
 
 	const handleRemoveEntry = idPermisjon => {
+		if (!maaneder) return
 		maaneder.forEach((maaned, idMaaned) => {
 			if (!erLenket && idMaaned != ameldingIndex) return
 			const currPermisjon = _get(
@@ -54,8 +56,8 @@ export const PermisjonForm = ({
 			hjelpetekst={infotekst}
 			newEntry={initialPermisjon}
 			nested
-			handleNewEntry={handleNewEntry}
-			handleRemoveEntry={handleRemoveEntry}
+			handleNewEntry={maaneder ? handleNewEntry : null}
+			handleRemoveEntry={maaneder ? handleRemoveEntry : null}
 		>
 			{(path, idx) => (
 				<React.Fragment key={idx}>

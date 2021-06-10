@@ -18,6 +18,7 @@ export const TimeloennetForm = ({
 	const maaneder = _get(formikBag.values, 'aareg[0].amelding')
 
 	const handleNewEntry = () => {
+		if (!maaneder) return
 		maaneder.forEach((maaned, idMaaned) => {
 			if (!erLenket && idMaaned != ameldingIndex) return
 			const currTimeloennet = _get(
@@ -32,6 +33,7 @@ export const TimeloennetForm = ({
 	}
 
 	const handleRemoveEntry = idTimeloennet => {
+		if (!maaneder) return
 		maaneder.forEach((maaned, idMaaned) => {
 			if (!erLenket && idMaaned != ameldingIndex) return
 			const currTimeloennet = _get(
@@ -53,8 +55,8 @@ export const TimeloennetForm = ({
 			hjelpetekst={infotekst}
 			newEntry={initialTimeloennet}
 			nested
-			handleNewEntry={handleNewEntry}
-			handleRemoveEntry={handleRemoveEntry}
+			handleNewEntry={maaneder ? handleNewEntry : null}
+			handleRemoveEntry={maaneder ? handleRemoveEntry : null}
 		>
 			{(path, idx) => (
 				<div key={idx} className="flexbox">
@@ -62,18 +64,9 @@ export const TimeloennetForm = ({
 						name={`${path}.antallTimer`}
 						label="Antall timer for timelønnet"
 						type="number"
-						// onChange={onChangeLenket(`antallTimerForTimeloennet[${idx}].antallTimer`)}
 					/>
-					<FormikDatepicker
-						name={`${path}.periode.fom`}
-						label="Periode fra"
-						// onChange={onChangeLenket(`antallTimerForTimeloennet[${idx}].periode.fom`)}
-					/>
-					<FormikDatepicker
-						name={`${path}.periode.tom`}
-						label="Periode til"
-						// onChange={onChangeLenket(`antallTimerForTimeloennet[${idx}].periode.tom`)}
-					/>
+					<FormikDatepicker name={`${path}.periode.fom`} label="Periode fra" />
+					<FormikDatepicker name={`${path}.periode.tom`} label="Periode til" />
 				</div>
 			)}
 		</FormikDollyFieldArray>

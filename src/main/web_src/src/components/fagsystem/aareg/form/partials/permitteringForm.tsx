@@ -8,7 +8,8 @@ import { FormikProps } from 'formik'
 
 type Permittering = {
 	path: string
-	arbeidsforholdIndex: boolean
+	ameldingIndex: number
+	arbeidsforholdIndex: number
 	formikBag: FormikProps<{}>
 	erLenket: boolean
 }
@@ -25,6 +26,7 @@ export const PermitteringForm = ({
 	const maaneder = _get(formikBag.values, 'aareg[0].amelding')
 
 	const handleNewEntry = () => {
+		if (!maaneder) return
 		maaneder.forEach((maaned, idMaaned) => {
 			if (!erLenket && idMaaned != ameldingIndex) return
 			const currPermittering = _get(
@@ -39,6 +41,7 @@ export const PermitteringForm = ({
 	}
 
 	const handleRemoveEntry = idPermittering => {
+		if (!maaneder) return
 		maaneder.forEach((maaned, idMaaned) => {
 			if (!erLenket && idMaaned != ameldingIndex) return
 			const currPermittering = _get(
@@ -60,8 +63,8 @@ export const PermitteringForm = ({
 			hjelpetekst={infotekst}
 			newEntry={initialPermittering}
 			nested
-			handleNewEntry={handleNewEntry}
-			handleRemoveEntry={handleRemoveEntry}
+			handleNewEntry={maaneder ? handleNewEntry : null}
+			handleRemoveEntry={maaneder ? handleRemoveEntry : null}
 		>
 			{(path, idx) => (
 				<React.Fragment key={idx}>
