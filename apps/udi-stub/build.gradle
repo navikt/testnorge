@@ -25,20 +25,20 @@ dependencies {
     implementation project(':testnorge-oauth2')
     implementation project(':local-development')
     implementation project(':testnorge-database')
+
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web-services'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-actuator-autoconfigure'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-    implementation 'org.springframework.security:spring-security-web'
-    implementation 'org.springframework.vault:spring-vault-core'
-    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config:2.2.5.RELEASE'
-    implementation 'org.springframework.cloud:spring-cloud-vault-config-databases:2.2.5.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+    implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
 
     implementation 'org.springframework.ws:spring-ws-security'
     implementation 'org.springframework.boot:spring-boot-test'
 
-    implementation 'org.projectlombok:lombok:1.18.16'
     implementation 'ma.glasnost.orika:orika-core:1.5.2'
     implementation 'org.springdoc:springdoc-openapi-ui:1.4.6'
     implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
@@ -50,13 +50,13 @@ dependencies {
     implementation 'javax.validation:validation-api:2.0.1.Final'
     implementation 'wsdl4j:wsdl4j:1.6.3'
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'javax.inject:javax.inject:1'
     testImplementation 'org.junit.vintage:junit-vintage-engine:5.6.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
     testImplementation 'org.mockito:mockito-junit-jupiter:3.3.3'
     testImplementation 'com.h2database:h2:1.4.200'
-    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:2.2.4.RELEASE'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }
 
 description = 'udi-stub'

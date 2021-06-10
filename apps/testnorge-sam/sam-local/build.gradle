@@ -7,12 +7,18 @@ bootJar {
     archiveFileName = "app.jar"
 }
 
+dependencyManagement {
+    imports {
+        mavenBom  "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+
 dependencies {
     implementation project(':sam-core')
-    implementation 'org.projectlombok:lombok:1.18.12'
-    implementation 'org.springframework.boot:spring-boot-autoconfigure:2.3.4.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
     implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.3.4.RELEASE'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 description = 'sam-local'

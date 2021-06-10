@@ -19,7 +19,8 @@ dependencies {
     implementation project(':testnorge-core')
     implementation project(':testnorge-oauth2')
 
-    implementation 'org.springframework.boot:spring-boot-starter-web:2.3.4.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
     implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-zuul'
 

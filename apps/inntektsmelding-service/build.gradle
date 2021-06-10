@@ -20,27 +20,23 @@ dependencies {
     implementation project(':testnorge-data-transfer-objects')
     implementation project(':testnorge-oauth2')
 
-    implementation 'org.projectlombok:lombok:1.18.12'
-    implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
-
+    implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
-
-    implementation 'org.springframework.security:spring-security-web'
-    implementation 'org.springframework.security:spring-security-config'
-    implementation 'org.springframework.security:spring-security-core'
-    implementation 'org.springframework.security:spring-security-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     implementation 'org.springdoc:springdoc-openapi-ui:1.4.6'
-
+    implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
     implementation 'org.aspectj:aspectjweaver:1.9.6'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
     implementation 'javax.validation:validation-api:2.0.1.Final'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.11.2'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator:2.3.4.RELEASE'
+
     implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
     implementation 'no.nav.tjenestespesifikasjoner:nav-altinn-inntektsmelding:1.2019.08.16-13.46-35cbdfd492d4'
 
@@ -50,7 +46,6 @@ dependencies {
     implementation 'javax.activation:activation:1.1'
     implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.3'
 
-    implementation 'org.springframework.cloud:spring-cloud-vault-config-databases:2.2.5.RELEASE'
     implementation 'org.flywaydb:flyway-core:6.4.4'
     implementation 'com.h2database:h2:1.4.200'
     implementation 'org.postgresql:postgresql:42.2.16'

@@ -4,6 +4,12 @@ plugins {
     id 'io.spring.dependency-management' version "${springDependencyManagement}"
 }
 
+dependencyManagement {
+    imports {
+        mavenBom  "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
 bootJar {
     archiveFileName = "app.jar"
 }
@@ -15,18 +21,24 @@ dependencies {
     implementation project(':local-development')
     implementation project(':testnorge-database')
 
-    implementation 'org.springframework.boot:spring-boot-autoconfigure:2.3.4.RELEASE'
-    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config:2.2.4.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-configuration-processor'
+
+    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+    implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
+
     implementation 'org.aspectj:aspectjweaver:1.9.6'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator:2.3.4.RELEASE'
-    implementation 'org.springframework.boot:spring-boot-starter-web:2.3.4.RELEASE'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.3.4.RELEASE'
-    implementation 'org.springframework.boot:spring-boot-starter-security:2.3.4.RELEASE'
+
     implementation 'org.springframework.retry:spring-retry:1.2.5.RELEASE'
     implementation 'javax:javaee-api:8.0'
     implementation 'com.h2database:h2:1.4.200'
-    implementation 'org.springframework.boot:spring-boot-starter-validation:2.3.4.RELEASE'
+
     implementation 'org.flywaydb:flyway-core:6.4.4'
     implementation 'org.postgresql:postgresql:42.2.16'
     implementation 'com.google.guava:guava:18.0'
@@ -38,10 +50,8 @@ dependencies {
     implementation 'net.logstash.logback:logstash-logback-encoder:4.11'
     implementation 'no.nav.repository.fellesreg.tpsws:nav-repository-fellesregister-jaxb-tps-m201-domain:2020.08.27-09.53-183ead3d81eb'
     implementation 'org.springdoc:springdoc-openapi-ui:1.4.7'
-    implementation 'org.springframework.boot:spring-boot-configuration-processor:2.3.4.RELEASE'
-    implementation 'org.springframework.vault:spring-vault-core:2.2.0.RELEASE'
-    implementation 'org.springframework.cloud:spring-cloud-vault-config-databases:2.2.5.RELEASE'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.3.4.RELEASE'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation project(':testnorge-testing')
 }
 

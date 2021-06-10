@@ -3,29 +3,40 @@ plugins {
     id 'org.springframework.boot' version "${springBootVersion}"
     id 'io.spring.dependency-management' version "${springDependencyManagement}"
 }
+
+dependencyManagement {
+    imports {
+        mavenBom  "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
 bootJar {
     archiveFileName = "app.jar"
 }
 
 dependencies {
-    implementation group: 'org.springframework', name: 'spring-tx', version: '5.2.9.RELEASE'
-
     implementation project(':testnorge-core')
-    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth:2.2.5.RELEASE'
+
+    implementation 'org.springframework:spring-tx:5.2.9.RELEASE'
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+
     implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
+
     implementation 'io.springfox:springfox-swagger2:2.9.2'
     implementation 'io.springfox:springfox-swagger-ui:2.9.2'
-    implementation 'org.projectlombok:lombok:1.18.12'
-    implementation 'org.springframework.boot:spring-boot-starter-web:2.3.4.RELEASE'
+
     implementation 'no.nav.registre:testnorge-consumers:1.12.0-RELEASE'
     implementation 'com.ibm.mq:mq-jms-spring-boot-starter:2.0.0'
-    implementation 'junit:junit:4.13'
     implementation 'org.mockito:mockito-core:3.3.3'
     implementation 'org.apache.httpcomponents:httpclient:4.5.12'
     implementation 'commons-codec:commons-codec:1.14'
     implementation 'com.opencsv:opencsv:4.6'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.3.4.RELEASE'
-    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:2.2.4.RELEASE'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }
 
 description = 'testnorge-tss'

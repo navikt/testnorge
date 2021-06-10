@@ -25,12 +25,13 @@ dependencies {
     implementation project(':kafka-producers')
     implementation project(':testnorge-avro-schema')
 
-    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
 
     implementation 'io.confluent:kafka-avro-serializer:6.1.0'
@@ -38,18 +39,15 @@ dependencies {
     implementation 'org.flywaydb:flyway-core:6.4.4'
     implementation 'com.h2database:h2:1.4.200'
     implementation 'com.zaxxer:HikariCP:3.4.5'
-    implementation 'org.projectlombok:lombok:1.18.12'
     implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
     implementation 'org.springdoc:springdoc-openapi-ui:1.4.6'
     implementation 'org.projectreactor:reactor-spring:1.0.1.RELEASE'
     implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
     implementation 'org.postgresql:postgresql:42.2.16'
 
-    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:2.2.4.RELEASE'
     testImplementation project(':testnorge-testing')
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
-    testImplementation 'org.assertj:assertj-core:3.16.1'
 }
 
 description = 'organisasjon-faste-data-service'

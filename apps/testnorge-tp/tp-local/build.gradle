@@ -6,10 +6,17 @@ plugins {
 bootJar {
     archiveFileName = "app.jar"
 }
+
+dependencyManagement {
+    imports {
+        mavenBom  "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
 dependencies {
     implementation project(':tp-core')
-    implementation 'org.springframework.boot:spring-boot-starter-web:2.3.4.RELEASE'
-    implementation 'org.springframework.boot:spring-boot-configuration-processor:2.3.4.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-configuration-processor'
     implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
     runtimeOnly 'com.oracle.database.jdbc:ojdbc8:19.7.0.0'
 }

@@ -6,6 +6,12 @@ plugins {
     id 'io.spring.dependency-management' version "${springDependencyManagement}"
 }
 
+dependencyManagement {
+    imports {
+        mavenBom  "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
 bootJar {
     archiveFileName = "app.jar"
 }
@@ -32,26 +38,29 @@ jaxb2 {
 }
 
 dependencies {
-    implementation 'org.projectlombok:lombok:1.18.12'
-    implementation 'org.springframework.boot:spring-boot-starter-web:2.3.4.RELEASE'
-    implementation 'org.springframework.boot:spring-boot-starter-web-services:2.3.4.RELEASE'
-    implementation 'org.springframework.vault:spring-vault-core:2.2.0.RELEASE'
+
+    implementation project(':testnorge-database')
+    implementation project(':testnorge-core')
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-web-services'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+    implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
 
     jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics-runtime:0.9.5'
     jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics-ant:0.9.5'
     jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics:0.9.5'
-
     // default JAXB libs added by the plugin
     jaxb2 'com.sun.xml.bind:jaxb-core:2.2.11'
     jaxb2 'com.sun.xml.bind:jaxb-xjc:2.2.11'
     jaxb2 'com.sun.xml.bind:jaxb-impl:2.2.11'
-
     jaxb2 'javax.xml.bind:jaxb-api:2.3.1'
-
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.3.4.RELEASE'
+    
     implementation 'org.postgresql:postgresql:42.2.16'
     implementation 'com.zaxxer:HikariCP:3.4.5'
-    implementation 'org.springframework.cloud:spring-cloud-vault-config-databases:2.2.5.RELEASE'
+
     implementation 'org.flywaydb:flyway-core:6.4.4'
     implementation 'com.h2database:h2:1.4.200'
 
@@ -66,11 +75,8 @@ dependencies {
     implementation 'com.h2database:h2:1.4.200'
     implementation 'jakarta.jws:jakarta.jws-api:2.1.0'
 
-    implementation project(':testnorge-database')
-    implementation project(':testnorge-core')
-
-    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:2.2.4.RELEASE'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.3.4.RELEASE'
+    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation project(':testnorge-testing')
 }
 

@@ -127,7 +127,6 @@ public class AccessTokenService {
 
         var token = tokenResolver.getTokenValue();
 
-
         if (clientCredentials.getClientSecret() == null) {
             log.error("Client secret er null.");
         }
