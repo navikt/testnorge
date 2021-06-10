@@ -13,6 +13,10 @@ export const Visning = ({ data }) => {
 			<TitleValue title="Brukertype" value={data.brukertype} />
 			<TitleValue title="Servicebehov" value={data.servicebehov} />
 			<TitleValue title="Inaktiv fra dato" value={data.inaktiveringDato} />
+			<TitleValue
+				title="Automatisk innsending av meldekort"
+				value={data.automatiskInnsendingAvMeldekort}
+			/>
 			<TitleValue title="Har 11-5-vedtak" value={data.harAap115} />
 			<TitleValue title="11-5 fra dato" value={data.aap115FraDato} />
 			<TitleValue title="Har AAP vedtak UA - positivt utfall" value={data.harAap} />
@@ -42,13 +46,19 @@ export const ArenaVisning = ({ data, bestillinger, loading }) => {
 	const visningData = []
 
 	const fyllVisningData = (idx, info) => {
-		const { kvalifiseringsgruppe, inaktiveringDato, aap115, aap, dagpenger } = arenaBestillinger[
-			idx
-		].data.arenaforvalter
+		const {
+			kvalifiseringsgruppe,
+			inaktiveringDato,
+			automatiskInnsendingAvMeldekort,
+			aap115,
+			aap,
+			dagpenger
+		} = arenaBestillinger[idx].data.arenaforvalter
 		visningData.push({
 			brukertype: info.servicebehov ? 'Med servicebehov' : 'Uten servicebehov',
 			servicebehov: servicebehovKodeTilBeskrivelse(kvalifiseringsgruppe),
 			inaktiveringDato: Formatters.formatDate(inaktiveringDato),
+			automatiskInnsendingAvMeldekort: Formatters.oversettBoolean(automatiskInnsendingAvMeldekort),
 			harAap115: aap115?.[0] && 'Ja',
 			aap115FraDato: aap115?.[0] && Formatters.formatDate(aap115[0].fraDato),
 			harAap: aap?.[0] && 'Ja',

@@ -30,7 +30,9 @@ export const ArenaPanel = ({ stateModifier }) => {
 
 ArenaPanel.heading = 'Arbeidsytelser'
 
-ArenaPanel.initialValues = ({ setMulti, del, delMulti, has }) => ({
+const MED_SERVICEBEHOV = ['arenaforvalter.arenaBrukertype', 'MED_SERVICEBEHOV']
+const AUTOMATISK_INNSENDING_MELDEKORT = ['arenaforvalter.automatiskInnsendingAvMeldekort', true]
+ArenaPanel.initialValues = ({ set, setMulti, del, has }) => ({
 	aap115: {
 		label: '11.5-vedtak',
 		checked: has('arenaforvalter.aap115'),
@@ -43,7 +45,8 @@ ArenaPanel.initialValues = ({ setMulti, del, delMulti, has }) => ({
 						tilDato: null
 					}
 				],
-				['arenaforvalter.arenaBrukertype', 'MED_SERVICEBEHOV']
+				MED_SERVICEBEHOV,
+				AUTOMATISK_INNSENDING_MELDEKORT
 			)
 		},
 		remove() {
@@ -64,7 +67,8 @@ ArenaPanel.initialValues = ({ setMulti, del, delMulti, has }) => ({
 						tilDato: null
 					}
 				],
-				['arenaforvalter.arenaBrukertype', 'MED_SERVICEBEHOV']
+				MED_SERVICEBEHOV,
+				AUTOMATISK_INNSENDING_MELDEKORT
 			)
 		},
 		remove() {
@@ -88,7 +92,8 @@ ArenaPanel.initialValues = ({ setMulti, del, delMulti, has }) => ({
 						mottattDato: null
 					}
 				],
-				['arenaforvalter.arenaBrukertype', 'MED_SERVICEBEHOV']
+				MED_SERVICEBEHOV,
+				AUTOMATISK_INNSENDING_MELDEKORT
 			)
 		},
 		remove() {
@@ -101,10 +106,11 @@ ArenaPanel.initialValues = ({ setMulti, del, delMulti, has }) => ({
 		label: 'Har ikke servicebehov',
 		checked: has('arenaforvalter.inaktiveringDato'),
 		add() {
-			setMulti(
-				['arenaforvalter.arenaBrukertype', 'UTEN_SERVICEBEHOV'],
-				['arenaforvalter.inaktiveringDato', null]
-			)
+			set('arenaforvalter', {
+				inaktiveringDato: null,
+				automatiskInnsendingAvMeldekort: true,
+				arenaBrukertype: 'UTEN_SERVICEBEHOV'
+			})
 		},
 		remove() {
 			del(['arenaforvalter.arenaBrukertype', 'arenaforvalter.inaktiveringDato'])

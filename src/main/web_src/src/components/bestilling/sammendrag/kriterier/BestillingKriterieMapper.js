@@ -849,6 +849,10 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					Formatters.uppercaseAndUnderscoreToCapitalized(arenaKriterier.arenaBrukertype)
 				),
 				obj('Servicebehov', arenaKriterier.kvalifiseringsgruppe),
+				obj(
+					'Automatisk innsending av meldekort',
+					Formatters.oversettBoolean(arenaKriterier.automatiskInnsendingAvMeldekort)
+				),
 				obj('Inaktiv fra dato', Formatters.formatDate(arenaKriterier.inaktiveringDato)),
 				obj('Har 11-5 vedtak', Formatters.oversettBoolean(arenaKriterier.aap115?.[0] && true)),
 				obj(

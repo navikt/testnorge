@@ -10,6 +10,7 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { MedServicebehov } from './partials/MedServicebehov'
 import { AlertInntektskomponentenRequired } from '~/components/ui/brukerAlert/AlertInntektskomponentenRequired'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
+import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 
 const arenaAttributt = 'arenaforvalter'
 
@@ -52,6 +53,11 @@ export const ArenaForm = ({ formikBag }) => {
 					/>
 				)}
 				{servicebehovAktiv && <MedServicebehov formikBag={formikBag} />}
+				<FormikCheckbox
+					name="arenaforvalter.automatiskInnsendingAvMeldekort"
+					label="Automatisk innsending av meldekort"
+					size="large"
+				/>
 			</Panel>
 		</Vis>
 	)
@@ -121,6 +127,7 @@ const validation = Yup.object({
 			is: 'UTEN_SERVICEBEHOV',
 			then: requiredDate
 		}),
+	automatiskInnsendingAvMeldekort: Yup.boolean(),
 	kvalifiseringsgruppe: Yup.string()
 		.nullable()
 		.when('arenaBrukertype', {
