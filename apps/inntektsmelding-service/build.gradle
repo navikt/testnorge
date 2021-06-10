@@ -30,7 +30,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
-    implementation 'org.springdoc:springdoc-openapi-ui:1.4.6'
+    implementation "org.springdoc:springdoc-openapi-ui:${springdocOpenapiUi}"
     implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
     implementation 'org.aspectj:aspectjweaver:1.9.6'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'

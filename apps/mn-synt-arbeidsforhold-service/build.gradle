@@ -45,7 +45,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
 
     implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
-    implementation 'org.springdoc:springdoc-openapi-ui:1.4.6'
+    implementation "org.springdoc:springdoc-openapi-ui:${springdocOpenapiUi}"
     implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
 
     testImplementation project(':testnorge-testing')

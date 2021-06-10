@@ -28,7 +28,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
 
     implementation 'org.springframework:spring-context:5.2.9.RELEASE'
-    implementation 'org.springdoc:springdoc-openapi-ui:1.4.6'
+    implementation "org.springdoc:springdoc-openapi-ui:${springdocOpenapiUi}"
     implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
     implementation 'no.nav.freg:freg-security-oidc:2c24d35d'
     implementation 'javax.validation:validation-api:2.0.1.Final'

@@ -40,7 +40,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-test'
 
     implementation 'ma.glasnost.orika:orika-core:1.5.2'
-    implementation 'org.springdoc:springdoc-openapi-ui:1.4.6'
+    implementation "org.springdoc:springdoc-openapi-ui:${springdocOpenapiUi}"
     implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
 
     implementation 'org.flywaydb:flyway-core:6.4.4'

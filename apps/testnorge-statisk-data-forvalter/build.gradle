@@ -53,7 +53,7 @@ dependencies {
     implementation project(':testnorge-oauth2')
     implementation 'org.apache.httpcomponents:httpclient:4.5.12'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
-    implementation 'org.springdoc:springdoc-openapi-ui:1.4.6'
+    implementation "org.springdoc:springdoc-openapi-ui:${springdocOpenapiUi}"
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config:2.2.5.RELEASE'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:2.2.4.RELEASE'
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.3.5.RELEASE'

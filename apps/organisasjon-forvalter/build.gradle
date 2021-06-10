@@ -42,7 +42,7 @@ dependencies {
     implementation 'org.flywaydb:flyway-core:6.4.4'
     implementation 'io.projectreactor.addons:reactor-extra:3.4.2'
     implementation 'org.postgresql:postgresql:42.2.16'
-    implementation 'org.springdoc:springdoc-openapi-ui:1.4.6'
+    implementation "org.springdoc:springdoc-openapi-ui:${springdocOpenapiUi}"
     implementation 'org.projectlombok:lombok:1.18.12'
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
     implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
