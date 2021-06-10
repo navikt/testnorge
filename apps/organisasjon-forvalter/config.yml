@@ -46,6 +46,8 @@ spec:
           cluster: dev-gcp
         - application: testnav-pdl-forvalter
           cluster: dev-gcp
+        - application: testnav-pdl-forvalter-dev
+          cluster: dev-gcp
       external:
         - host: https://organisasjon-orgnummer-service.dev-fss-pub.nais.io
   gcp:
