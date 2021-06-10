@@ -28,6 +28,9 @@ public class Arenadata {
     @Schema(required = true)
     private ArenaKvalifiseringsgruppe kvalifiseringsgruppe;
 
+    @Schema(description = "Automatisk innsending av meldekort")
+    private Boolean automatiskInnsendingAvMeldekort;
+
     @Schema(type = "LocalDateTime")
     private LocalDateTime inaktiveringDato;
 

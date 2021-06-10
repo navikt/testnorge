@@ -23,6 +23,7 @@ public class ArenaNyBruker {
     private LocalDate aktiveringsDato;
     private ArenaKvalifiseringsgruppe kvalifiseringsgruppe;
     private ArenaBrukerUtenServicebehov utenServicebehov;
+    private Boolean automatiskInnsendingAvMeldekort;
     private List<ArenaAap115> aap115;
     private List<ArenaAap> aap;
 }
