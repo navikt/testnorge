@@ -44,10 +44,9 @@ public class PersonController {
 
     @PutMapping(value = "/{ident}")
     @Operation(description = "Endre, legg-til på person")
-    public RsPerson updatePerson(@PathVariable String ident, @RequestBody PersonUpdateRequest request) {
+    public String updatePerson(@PathVariable String ident, @RequestBody PersonUpdateRequest request) {
 
-        personService.updatePerson(ident, request);
-        return personService.getPerson(ident);
+        return personService.updatePerson(ident, request);
     }
 
     @DeleteMapping(value = "/{ident}")

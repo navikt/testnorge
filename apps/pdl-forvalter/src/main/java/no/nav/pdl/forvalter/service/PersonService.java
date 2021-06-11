@@ -37,7 +37,7 @@ public class PersonService {
     private final PdlTestdataConsumer pdlTestdataConsumer;
 
     @Transactional
-    public void updatePerson(String ident, PersonUpdateRequest request) {
+    public String updatePerson(String ident, PersonUpdateRequest request) {
 
         var dbPerson = personRepository.findByIdent(ident)
                 .orElseGet(() -> personRepository.save(DbPerson.builder()
@@ -51,9 +51,10 @@ public class PersonService {
         var mergedPerson = mergeService.merge(request.getPerson(), dbPerson.getPerson());
         var extendedArtifacts = personArtifactService.buildPerson(mergedPerson);
         dbPerson.setPerson(extendedArtifacts);
+        dbPerson.setIdent(extendedArtifacts.getIdent());
         dbPerson.setSistOppdatert(now());
 
-        personRepository.save(dbPerson);
+        return personRepository.save(dbPerson).getIdent();
     }
 
     @Transactional

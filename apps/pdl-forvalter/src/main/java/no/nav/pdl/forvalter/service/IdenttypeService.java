@@ -14,10 +14,11 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Random;
 
 import static java.util.Objects.nonNull;
+import static no.nav.pdl.forvalter.database.model.RelasjonType.GAMMEL_IDENTITET;
+import static no.nav.pdl.forvalter.database.model.RelasjonType.NY_IDENTITET;
 import static no.nav.pdl.forvalter.domain.Identtype.BOST;
 import static no.nav.pdl.forvalter.domain.Identtype.DNR;
 import static no.nav.pdl.forvalter.domain.Identtype.FNR;
@@ -83,7 +84,7 @@ public class IdenttypeService {
                 LocalDateTime.now().minusYears(67);
     }
 
-    public List<PdlIdentRequest> convert(PdlPerson person) {
+    public String convert(PdlPerson person) {
 
         var ident = person.getIdent();
         for (var type : person.getNyident()) {
@@ -91,7 +92,7 @@ public class IdenttypeService {
             if (type.isNew()) {
                 validate(type);
 
-                ident = handle(type, person.getIdent()));
+                ident = handle(type, person.getIdent());
                 if (isBlank(type.getKilde())) {
                     type.setKilde("Dolly");
                 }
@@ -135,10 +136,10 @@ public class IdenttypeService {
                 .foedtEtter(getFoedtEtter(request, ident))
                 .foedtFoer(getFoedtFoer(request, ident))
                 .harMellomnavn(request.getHarMellomnavn())
-                .
+                .syntetisk(request.getSyntetisk())
                 .build());
 
-        relasjonService.setRelasjoner(nyPerson, RelasjonType.NY_IDENTITET, ident, GAMMEL_IDENTITET);
+        relasjonService.setRelasjoner(nyPerson, NY_IDENTITET, ident, GAMMEL_IDENTITET);
 
         return nyPerson;
     }
