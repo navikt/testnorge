@@ -28,11 +28,11 @@ public class PersonArtifactService {
     private final VergemaalService vergemaalService;
     private final FalskIdentitetService falskIdentitetService;
     private final KontaktinformasjonForDoedsboService kontaktinformasjonForDoedsboService;
+    private final IdenttypeService identtypeService;
 
     public PdlPerson buildPerson(PdlPerson person) {
 
         return PdlPerson.builder()
-                .ident(person.getIdent())
                 .kjoenn(kjoennService.convert(person))
                 .innflytting(innflyttingService.convert(person.getInnflytting()))
                 .statsborgerskap(statsborgerskapService.convert(person))
@@ -54,6 +54,7 @@ public class PersonArtifactService {
                 .vergemaal(vergemaalService.convert(person))
                 .falskIdentitet(falskIdentitetService.convert(person))
                 .kontaktinformasjonForDoedsbo(kontaktinformasjonForDoedsboService.convert(person))
+                .ident(identtypeService.convert(person))
                 .build();
     }
 }

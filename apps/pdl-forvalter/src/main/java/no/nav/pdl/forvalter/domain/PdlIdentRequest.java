@@ -1,22 +1,19 @@
-package no.nav.pdl.forvalter.dto;
+package no.nav.pdl.forvalter.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.pdl.forvalter.domain.Identtype;
-import no.nav.pdl.forvalter.domain.PdlKjoenn;
+import lombok.experimental.SuperBuilder;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RsPersonRequest implements Serializable {
+public class PdlIdentRequest extends PdlDbVersjon {
 
     // All fields are optional
     private Identtype identtype;
