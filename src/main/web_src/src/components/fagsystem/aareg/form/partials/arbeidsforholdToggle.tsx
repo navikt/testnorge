@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
+import _get from 'lodash/get'
 import styled from 'styled-components'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { AmeldingForm } from './ameldingForm'
-import { ArbeidsforholdForm } from './arbeidsforholdForm'
 import ArbeidsforholdConnector from './arbeidsforholdConnector'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import {
@@ -18,8 +18,32 @@ const ToggleArbeidsgiver = styled(ToggleGruppe)`
 	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 `
 
+// Har hardkodet liste over felles Dolly-arbeidsgivere, fordi det tar for lang tid å hente ut fra API
+const fellesOrg = [
+	'972674818',
+	'896929119',
+	'839942907',
+	'967170232',
+	'805824352',
+	'907670201',
+	'947064649'
+]
+
 export const ArbeidsforholdToggle = ({ formikBag }) => {
-	const [typeArbeidsforhold, setTypeArbeidsforhold] = useState('EGEN')
+	const getArbeidsgiverType =
+		_get(formikBag.values, 'aareg[0].arbeidsforhold') &&
+		_get(formikBag.values, 'aareg[0].arbeidsforholdstype') !== 'forenkletOppgjoersordning'
+			? _get(formikBag.values, 'aareg[0].arbeidsforhold[0].arbeidsgiver.aktoertype') === 'PERS'
+				? ArbeidsgiverTyper.privat
+				: fellesOrg.some(
+						org =>
+							org === _get(formikBag.values, 'aareg[0].arbeidsforhold[0].arbeidsgiver.orgnummer')
+				  )
+				? ArbeidsgiverTyper.felles
+				: ArbeidsgiverTyper.fritekst
+			: ArbeidsgiverTyper.egen
+
+	const [typeArbeidsgiver, setTypeArbeidsgiver] = useState(getArbeidsgiverType)
 
 	const toggleValues = [
 		{
@@ -41,7 +65,7 @@ export const ArbeidsforholdToggle = ({ formikBag }) => {
 	]
 
 	const handleToggleChange = value => {
-		setTypeArbeidsforhold(value)
+		setTypeArbeidsgiver(value)
 		formikBag.setFieldValue('aareg[0].arbeidsforholdstype', '')
 		if (value === ArbeidsgiverTyper.privat) {
 			formikBag.setFieldValue('aareg[0].amelding', undefined)
@@ -68,20 +92,20 @@ export const ArbeidsforholdToggle = ({ formikBag }) => {
 					<ToggleKnapp
 						key={type.value}
 						value={type.value}
-						checked={type.value === typeArbeidsforhold}
+						checked={type.value === typeArbeidsgiver}
 					>
 						{type.label}
 					</ToggleKnapp>
 				))}
 			</ToggleArbeidsgiver>
-			{typeArbeidsforhold === ArbeidsgiverTyper.egen ? (
+			{typeArbeidsgiver === ArbeidsgiverTyper.egen ? (
 				<AmeldingForm formikBag={formikBag} />
 			) : (
 				<FormikDollyFieldArray
 					name={`aareg[0].arbeidsforhold`}
 					header="Arbeidsforhold"
 					newEntry={
-						typeArbeidsforhold === ArbeidsgiverTyper.privat
+						typeArbeidsgiver === ArbeidsgiverTyper.privat
 							? initialArbeidsforholdPers
 							: initialArbeidsforholdOrg
 					}
@@ -93,7 +117,7 @@ export const ArbeidsforholdToggle = ({ formikBag }) => {
 							key={idx}
 							formikBag={formikBag}
 							erLenket={null}
-							arbeidsgiverType={typeArbeidsforhold}
+							arbeidsgiverType={typeArbeidsgiver}
 						/>
 					)}
 				</FormikDollyFieldArray>

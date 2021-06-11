@@ -90,7 +90,7 @@ export const ArbeidsforholdForm = ({
 						size="xlarge"
 					/>
 				)}
-				{arbeidsforholdstype === ArbeidsgiverTyper.privat && (
+				{arbeidsgiverType === ArbeidsgiverTyper.privat && (
 					<FormikTextInput name={`${path}.arbeidsgiver.ident`} label="Arbeidsgiver ident" />
 				)}
 				<DollyTextInput
