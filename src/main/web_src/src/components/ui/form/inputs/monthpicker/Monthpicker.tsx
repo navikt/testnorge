@@ -21,7 +21,7 @@ export const Monthpicker = ({ formikBag, name, label, date, handleDateChange }: 
 	}
 
 	return (
-		<InputWrapper>
+		<InputWrapper size={'medium'}>
 			{/* @ts-ignore */}
 			<Label name={name} label={label} feil={getFeilmelding(formikBag, name)}>
 				<ReactDatepicker

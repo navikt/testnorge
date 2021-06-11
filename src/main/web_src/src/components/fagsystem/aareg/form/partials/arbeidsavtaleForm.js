@@ -17,7 +17,7 @@ export const ArbeidsavtaleForm = ({ formikBag, path, onChangeLenket }) => {
 					name={`${path}.yrke`}
 					label="Yrke"
 					kodeverk={ArbeidKodeverk.Yrker}
-					size="xxlarge"
+					size="xxxlarge"
 					isClearable={false}
 					optionHeight={50}
 					onChange={onChangeLenket('arbeidsavtale.yrke')}

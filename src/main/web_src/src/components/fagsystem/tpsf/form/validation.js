@@ -376,6 +376,27 @@ const barn = Yup.array()
 	)
 	.nullable()
 
+const foreldre = Yup.array()
+	.of(
+		Yup.object({
+			identtype: Yup.string(),
+			kjonn: Yup.string().nullable(),
+			foreldreType: ifPresent('$tpsf.relasjoner.foreldre[0].foreldreType', requiredString),
+			alder: Yup.number()
+				.transform(num => (isNaN(num) ? undefined : num))
+				.min(0, 'Alder må være et positivt tall')
+				.max(119, 'Alder må være under 120'),
+			foedtEtter: foedtFoerOgEtterTest(Yup.date().nullable(), false),
+			foedtFoer: foedtFoerOgEtterTest(Yup.date().nullable(), true),
+			spesreg: Yup.string(),
+			boadresse: Yup.object({
+				kommunenr: Yup.string().nullable()
+			}),
+			doedsdato: Yup.date().nullable()
+		})
+	)
+	.nullable()
+
 const testTelefonnummer = nr =>
 	Yup.string()
 		.max(20, 'Telefonnummer kan ikke ha mer enn 20 sifre')
@@ -479,7 +500,8 @@ export const validation = {
 			),
 			relasjoner: Yup.object({
 				partnere: ifPresent('$tpsf.relasjoner.partnere', partnere),
-				barn: ifPresent('$tpsf.relasjoner.barn', barn)
+				barn: ifPresent('$tpsf.relasjoner.barn', barn),
+				foreldre: ifPresent('$tpsf.relasjoner.foreldre', foreldre)
 			}),
 			identtype: ifPresent('$tpsf.identtype', requiredString)
 		})

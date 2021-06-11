@@ -1,8 +1,7 @@
 import * as Yup from 'yup'
 import _get from 'lodash/get'
-import _isNil from 'lodash/isNil'
-import { areIntervalsOverlapping, subMonths, addDays } from 'date-fns'
-import { requiredDate, requiredString, requiredNumber, messages } from '~/utils/YupValidations'
+import { addDays, areIntervalsOverlapping, subMonths } from 'date-fns'
+import { messages, requiredDate, requiredNumber, requiredString } from '~/utils/YupValidations'
 
 const unikOrgMndTest = validation => {
 	const errorMsg = 'Kombinasjonen av år, måned og virksomhet er ikke unik'
@@ -18,12 +17,6 @@ const unikOrgMndTest = validation => {
 		const currInntektsinformasjon = _get(values, currInntektsinformasjonPath)
 		if (!currInntektsinformasjon.sisteAarMaaned) return true
 
-		if (tidligereInntekterOverlapperMedNy(values.personFoerLeggTil, currInntektsinformasjon)) {
-			return this.createError({
-				message: `Det finnes allerede inntekter for denne organisasjonen i dette tidsrommet fra en tidligere bestilling.`,
-				path: this.options.path
-			})
-		}
 		return !nyeInntekterOverlapper(alleInntekter, currInntektsinformasjon)
 	})
 }
@@ -41,23 +34,6 @@ const nyeInntekterOverlapper = (alleInntekter, currInntektsinformasjon) => {
 
 	const tidsrom = finnTidsrom(maaneder)
 	return finnesOverlappendeDato(tidsrom, likeOrgnrIndex)
-}
-
-const tidligereInntekterOverlapperMedNy = (personFoerLeggTil, currInntektsinformasjon) => {
-	const tidligereInntekter = _get(personFoerLeggTil, 'inntektstub')
-	if (!tidligereInntekter) return false
-
-	const likeVirksomheter = tidligereInntekter.filter(
-		inntekt => inntekt.virksomhet === currInntektsinformasjon.virksomhet
-	)
-
-	return likeVirksomheter.some(inntekt => {
-		const tidligereDato = dato(inntekt.aarMaaned)
-		return areIntervalsOverlapping(
-			{ start: tidligereDato, end: addDays(tidligereDato, 1) },
-			getInterval(currInntektsinformasjon)
-		)
-	})
 }
 
 const indexOfLikeOrgnr = (virksomheter, orgnr) => {

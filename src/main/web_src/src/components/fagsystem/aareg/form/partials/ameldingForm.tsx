@@ -168,7 +168,7 @@ export const AmeldingForm = ({ formikBag }) => {
 					name={`aareg[0].arbeidsforholdstype`}
 					label="Type arbeidsforhold"
 					kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
-					size="xlarge"
+					size="large-plus"
 					isClearable={false}
 					onChange={handleArbeidsforholdstypeChange}
 					value={arbeidsforholdstype}

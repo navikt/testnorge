@@ -295,6 +295,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		if (relasjoner) {
 			const partnere = relasjoner.partner || relasjoner.partnere
 			const barn = relasjoner.barn
+			const foreldre = relasjoner.foreldre
+
 			if (partnere) {
 				const partner = {
 					header: 'Partner',
@@ -354,6 +356,30 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				})
 
 				data.push(barn)
+			}
+			if (foreldre && foreldre.length > 0) {
+				const foreldreRows = {
+					header: 'Foreldre',
+					itemRows: []
+				}
+
+				relasjoner.foreldre.forEach((item, i) => {
+					foreldreRows.itemRows.push([
+						{
+							label: '',
+							value: `#${i + 1}`,
+							width: 'x-small'
+						},
+						..._getTpsfBestillingData(item),
+						obj('Fnr/dnr/bost', item.ident),
+						obj('ForeldreType', Formatters.showLabel('foreldreType', item.foreldreType)),
+						obj('Foreldre bor sammen', Formatters.oversettBoolean(item.harFellesAdresse)),
+						obj('Diskresjonskoder', item.spesreg !== 'UFB' && item.spesreg, 'Diskresjonskoder'),
+						obj('Fødselsdato', Formatters.formatDate(item.foedselsdato))
+					])
+				})
+
+				data.push(foreldreRows)
 			}
 		}
 
@@ -818,25 +844,54 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 
 	if (arenaKriterier) {
 		const arenaforvalter = {
-			header: 'Arena',
+			header: 'Arbeidsytelser',
 			items: [
 				obj(
 					'Brukertype',
 					Formatters.uppercaseAndUnderscoreToCapitalized(arenaKriterier.arenaBrukertype)
 				),
 				obj('Servicebehov', arenaKriterier.kvalifiseringsgruppe),
-				obj('Inaktiv fra dato', Formatters.formatDate(arenaKriterier.inaktiveringDato)),
-				obj('Har 11-5 vedtak', Formatters.oversettBoolean(arenaKriterier.aap115 && true)),
 				obj(
-					'Fra dato',
-					arenaKriterier.aap115 && Formatters.formatDate(arenaKriterier.aap115[0].fraDato)
+					'Automatisk innsending av meldekort',
+					Formatters.oversettBoolean(arenaKriterier.automatiskInnsendingAvMeldekort)
+				),
+				obj('Inaktiv fra dato', Formatters.formatDate(arenaKriterier.inaktiveringDato)),
+				obj('Har 11-5 vedtak', Formatters.oversettBoolean(arenaKriterier.aap115?.[0] && true)),
+				obj(
+					'AAP 11-5 fra dato',
+					arenaKriterier.aap115?.[0] && Formatters.formatDate(arenaKriterier.aap115[0].fraDato)
 				),
 				obj(
 					'Har AAP vedtak UA - positivt utfall',
-					Formatters.oversettBoolean(arenaKriterier.aap && true)
+					Formatters.oversettBoolean(arenaKriterier.aap?.[0] && true)
 				),
-				obj('Fra dato', arenaKriterier.aap && Formatters.formatDate(arenaKriterier.aap[0].fraDato)),
-				obj('Til dato', arenaKriterier.aap && Formatters.formatDate(arenaKriterier.aap[0].tilDato))
+				obj(
+					'AAP fra dato',
+					arenaKriterier.aap?.[0] && Formatters.formatDate(arenaKriterier.aap[0].fraDato)
+				),
+				obj(
+					'AAP til dato',
+					arenaKriterier.aap?.[0] && Formatters.formatDate(arenaKriterier.aap[0].tilDato)
+				),
+				obj(
+					'Har dagpengevedtak',
+					Formatters.oversettBoolean(arenaKriterier.dagpenger?.[0] && true)
+				),
+				obj(
+					'RettighetKode',
+					arenaKriterier.dagpenger?.[0] &&
+						Formatters.showLabel('rettighetKode', arenaKriterier.dagpenger[0].rettighetKode)
+				),
+				obj(
+					'Dagpenger fra dato',
+					arenaKriterier.dagpenger?.[0] &&
+						Formatters.formatDate(arenaKriterier.dagpenger[0].fraDato)
+				),
+				obj(
+					'Dagpenger til dato',
+					arenaKriterier.dagpenger?.[0] &&
+						Formatters.formatDate(arenaKriterier.dagpenger[0].tilDato)
+				)
 			]
 		}
 		data.push(arenaforvalter)
@@ -1135,7 +1190,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				obj('Brevkode', dokarkivKriterier.dokumenter[0].brevkode),
 				obj('Tittel', dokarkivKriterier.tittel),
 				obj('Tema', dokarkivKriterier.tema),
-				obj('Journalførende enhet', dokarkivKriterier.journalfoerendeEnhet)
+				obj('Journalførende enhet', dokarkivKriterier.journalfoerendeEnhet),
+				obj('Antall vedlegg', dokarkivKriterier.dokumenter.length)
 			]
 		}
 

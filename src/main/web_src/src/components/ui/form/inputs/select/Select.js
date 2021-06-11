@@ -1,8 +1,6 @@
-import React, { useEffect } from 'react'
-// import ReactSelect from 'react-select'
-import { Select as ReactSelect } from 'react-select-virtualized'
+import React from 'react'
 import { useField } from 'formik'
-import { FormikField } from '~/components/ui/form/FormikField'
+import { createFilter, default as ReactSelect } from 'react-select'
 import cn from 'classnames'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { Label } from '~/components/ui/form/inputs/label/Label'
@@ -10,6 +8,8 @@ import { InputWrapper } from '~/components/ui/form/inputWrapper/InputWrapper'
 import { fieldError, SyntEvent } from '~/components/ui/form/formUtils'
 import KodeverkConnector from '~/components/kodeverk/KodeverkConnector'
 import './Select.less'
+import MenuList from '~/components/ui/form/inputs/select/MenuList'
+import Option from '~/components/ui/form/inputs/select/Option'
 
 export const Select = ({
 	id,
@@ -29,16 +29,9 @@ export const Select = ({
 	isMulti = false,
 	styles
 }) => {
-	let _value = options.filter(o => o.value === value)
-
-	/**
-	 * CUSTOM MULTI LOGIC
-	 * react-select-virtualized støtter foreløpig ikke multi-select
-	 * så denne biten må gjøres litt manuelt
-	 */
-	if (isMulti) {
-		_value = Array.isArray(value) ? options.filter(o => value.includes(o.value)) : []
-	}
+	let _value = isMulti
+		? options.filter(o => value?.some(el => el === o.value))
+		: options.filter(o => o.value === value)
 
 	return (
 		<ReactSelect
@@ -46,11 +39,16 @@ export const Select = ({
 			options={options}
 			name={name}
 			inputId={id || name}
+			filterOption={createFilter({ ignoreAccents: false })}
 			onChange={onChange}
 			onBlur={onBlur}
 			placeholder={placeholder}
 			className={cn('basic-single', className)}
 			classNamePrefix={classNamePrefix}
+			components={{
+				MenuList,
+				Option
+			}}
 			isDisabled={disabled}
 			isSearchable={isSearchable}
 			isLoading={isLoading}
@@ -86,12 +84,13 @@ export const DollySelect = props => (
 
 const P_FormikSelect = ({ fastfield, feil, ...props }) => {
 	const [field, meta] = useField(props)
-
 	const handleChange = (selected, meta) => {
 		let value
 		if (props.isMulti) {
-			if (meta.action === 'set-value') {
-				value = Array.isArray(field.value) ? field.value.concat(selected.value) : [selected.value]
+			if (meta.action === 'select-option') {
+				value = Array.isArray(field.value)
+					? field.value.concat(meta.option.value)
+					: [meta.option.value]
 			}
 			if (meta.action === 'remove-value') {
 				// When removing last value, value is null
@@ -100,9 +99,7 @@ const P_FormikSelect = ({ fastfield, feil, ...props }) => {
 		} else {
 			value = selected && selected.value
 		}
-
 		field.onChange(SyntEvent(field.name, value))
-
 		if (props.afterChange) props.afterChange(selected)
 	}
 

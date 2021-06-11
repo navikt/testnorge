@@ -8,10 +8,6 @@ export const SyntSykemelding = () => {
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikDatepicker name="sykemelding.syntSykemelding.startDato" label="Startdato" />
-			<OrganisasjonMedArbeidsforholdSelect
-				path="sykemelding.syntSykemelding.orgnummer"
-				label="Organisasjonsnummer"
-			/>
 			<FormikTextInput
 				name="sykemelding.syntSykemelding.arbeidsforholdId"
 				label="Arbeidsforhold-ID"
@@ -26,6 +22,10 @@ export const SyntSykemelding = () => {
 					La feltet være blankt for å bruke første gyldige arbeidsforhold
 				</Hjelpetekst>
 			</div>
+			<OrganisasjonMedArbeidsforholdSelect
+				path="sykemelding.syntSykemelding.orgnummer"
+				label="Organisasjonsnummer"
+			/>
 		</div>
 	)
 }

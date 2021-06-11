@@ -3,7 +3,7 @@ import _get from 'lodash/get'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { FormikSelect, DollySelect } from '~/components/ui/form/inputs/select/Select'
+import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { ArbeidKodeverk } from '~/config/kodeverk'
 
@@ -70,7 +70,7 @@ export const ArbeidsforholdForm = ({ formikBag, inntektsinformasjonPath }) => {
 						name={`${path}.yrke`}
 						label="Yrke"
 						kodeverk={ArbeidKodeverk.Yrker}
-						size="xxlarge"
+						size="xxxlarge"
 						optionHeight={50}
 					/>
 					<FormikSelect

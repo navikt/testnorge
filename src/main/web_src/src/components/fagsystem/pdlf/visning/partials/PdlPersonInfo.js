@@ -5,6 +5,7 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { UtenlandsId } from '~/components/fagsystem/pdlf/visning/partials/UtenlandsId'
 import { FalskIdentitet } from '~/components/fagsystem/pdlf/visning/partials/FalskIdentitet'
 import { KontaktinformasjonForDoedsbo } from '~/components/fagsystem/pdlf/visning/partials/KontaktinformasjonForDoedsbo'
+import Formatters from '~/utils/DataFormatter'
 
 export const PdlPersonInfo = ({ data, visTittel = true }) => {
 	if (!data) {
@@ -31,15 +32,22 @@ export const PdlPersonInfo = ({ data, visTittel = true }) => {
 					{adressebeskyttelse && (
 						<div className="person-visning_content">
 							<h4 style={{ marginTop: '0px' }}>Adressebeskyttelse</h4>
-							<TitleValue
-								title="Gradering (Diskresjonskode)"
-								value={adressebeskyttelse?.gradering}
-							/>
-							<TitleValue title="Kilde" value={adressebeskyttelse?.folkeregistermetadata?.kilde} />
-							<TitleValue
-								title="Gyldighetstidspunkt"
-								value={adressebeskyttelse?.folkeregistermetadata?.gyldighetstidspunkt}
-							/>
+							<div className="person-visning_content">
+								<TitleValue
+									title="Gradering (Diskresjonskode)"
+									value={adressebeskyttelse?.gradering}
+								/>
+								<TitleValue
+									title="Kilde"
+									value={adressebeskyttelse?.folkeregistermetadata?.kilde}
+								/>
+								<TitleValue
+									title="Gyldighetstidspunkt"
+									value={Formatters.formatDate(
+										adressebeskyttelse?.folkeregistermetadata?.gyldighetstidspunkt
+									)}
+								/>
+							</div>
 						</div>
 					)}
 				</div>

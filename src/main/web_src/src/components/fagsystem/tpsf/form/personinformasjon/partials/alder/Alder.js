@@ -38,6 +38,7 @@ export const Alder = ({ basePath, formikBag, title, handleDoed }) => {
 		setAlderType(alderValg[value])
 
 		const barn = basePath.includes('barn')
+		const forelder = basePath.includes('foreldre')
 
 		formikBag.setValues(_omit(formikBag.values, Object.values(paths)))
 		formikBag.setFieldValue(paths.doedsdato, _get(formikBag.values, `${basePath}.doedsdato`))
@@ -45,6 +46,8 @@ export const Alder = ({ basePath, formikBag, title, handleDoed }) => {
 		if (value === alderValg.alder) {
 			if (barn) {
 				formikBag.setFieldValue(paths.alder, Formatters.randomIntInRange(0, 17))
+			} else if (forelder) {
+				formikBag.setFieldValue(paths.alder, Formatters.randomIntInRange(65, 100))
 			} else {
 				formikBag.setFieldValue(paths.alder, Formatters.randomIntInRange(30, 60))
 			}
@@ -52,6 +55,9 @@ export const Alder = ({ basePath, formikBag, title, handleDoed }) => {
 			if (barn) {
 				formikBag.setFieldValue(paths.foedtEtter, subYears(new Date(), 17))
 				formikBag.setFieldValue(paths.foedtFoer, new Date())
+			} else if (forelder) {
+				formikBag.setFieldValue(paths.foedtEtter, subYears(new Date(), 100))
+				formikBag.setFieldValue(paths.foedtFoer, subYears(new Date(), 65))
 			} else {
 				formikBag.setFieldValue(paths.foedtEtter, subYears(new Date(), 60))
 				formikBag.setFieldValue(paths.foedtFoer, subYears(new Date(), 30))

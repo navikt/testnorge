@@ -1,51 +1,53 @@
 @import (reference) '~lessVars';
 
+
 .attributt-velger {
-	&_search {
-		width: 40%;
-	}
+  &_search {
+    width: 40%;
+  }
 
-	&_panels {
-		width: 65%;
-		padding-right: 30px;
-		border-right: 1px solid @color-darkblue;
+  &_checkboks-label {
+    font-size: 1em;
+    text-transform: uppercase;
+  }
 
-		h3 {
-			font-size: 1rem;
-			margin: 0 0 12px;
-		}
-	}
+  &_panels {
+    width: 65%;
+    padding-right: 30px;
+    border-right: 1px solid @color-darkblue;
 
-	&_panelsubcontent {
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
+    h3 {
+      font-size: 1rem;
+      margin: 0 0 12px;
+    }
+  }
 
-		// Ekspanderer grid column for å fylle ut row
-		// css-irl.info/controlling-leftover-grid-items
-		> div:last-child:nth-child(3n - 1) {
-			grid-column: span 2;
-		}
+  &_panelsubcontent {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
 
-		> div:last-child:nth-child(3n - 2) {
-			grid-column: span 3;
-		}
-	}
+    // Ekspanderer grid column for å fylle ut row
+    // css-irl.info/controlling-leftover-grid-items
+    > div:last-child:nth-child(3n - 1) {
+      grid-column: span 2;
+    }
 
-	&_panelsubcontent:not(:last-child) {
-		margin-bottom: 20px;
-	}
+    > div:last-child:nth-child(3n - 2) {
+      grid-column: span 3;
+    }
+  }
 
-	&_radiogruppe {
-		display: flex;
-		width: 100%;
-		flex-wrap: wrap;
-		> * {
-			margin-right: 30px;
-		}
-	}
+  &_panelsubcontent:not(:last-child) {
+    margin-bottom: 20px;
+  }
 
-	.skjemaelement__label {
-		font-size: 1rem;
-		text-transform: none;
-	}
+  &_radiogruppe {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+
+    > * {
+      margin-right: 30px;
+    }
+  }
 }

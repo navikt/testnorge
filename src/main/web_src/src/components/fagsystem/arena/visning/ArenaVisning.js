@@ -13,11 +13,20 @@ export const Visning = ({ data }) => {
 			<TitleValue title="Brukertype" value={data.brukertype} />
 			<TitleValue title="Servicebehov" value={data.servicebehov} />
 			<TitleValue title="Inaktiv fra dato" value={data.inaktiveringDato} />
+			<TitleValue
+				title="Automatisk innsending av meldekort"
+				value={data.automatiskInnsendingAvMeldekort}
+			/>
 			<TitleValue title="Har 11-5-vedtak" value={data.harAap115} />
-			<TitleValue title="Fra dato" value={data.aap115FraDato} />
+			<TitleValue title="11-5 fra dato" value={data.aap115FraDato} />
 			<TitleValue title="Har AAP vedtak UA - positivt utfall" value={data.harAap} />
-			<TitleValue title="Fra dato" value={data.aapFraDato} />
-			<TitleValue title="Til dato" value={data.aapTilDato} />
+			<TitleValue title="Aap fra dato" value={data.aapFraDato} />
+			<TitleValue title="Aap til dato" value={data.aapTilDato} />
+			<TitleValue title="Har dagpengevedtak" value={data.harDagpenger} />
+			<TitleValue title="RettighetKode" value={data.dagpengerRettighetKode} />
+			<TitleValue title="Dagpenger fra dato" value={data.dagpengerFraDato} />
+			<TitleValue title="Dagpenger til dato" value={data.dagpengerTilDato} />
+			<TitleValue title="Dagpenger mottatt dato" value={data.dagpengerMottattDato} />
 		</>
 	)
 }
@@ -36,28 +45,44 @@ export const ArenaVisning = ({ data, bestillinger, loading }) => {
 
 	const visningData = []
 
+	const fyllVisningData = (idx, info) => {
+		const {
+			kvalifiseringsgruppe,
+			inaktiveringDato,
+			automatiskInnsendingAvMeldekort,
+			aap115,
+			aap,
+			dagpenger
+		} = arenaBestillinger[idx].data.arenaforvalter
+		visningData.push({
+			brukertype: info.servicebehov ? 'Med servicebehov' : 'Uten servicebehov',
+			servicebehov: servicebehovKodeTilBeskrivelse(kvalifiseringsgruppe),
+			inaktiveringDato: Formatters.formatDate(inaktiveringDato),
+			automatiskInnsendingAvMeldekort: Formatters.oversettBoolean(automatiskInnsendingAvMeldekort),
+			harAap115: aap115?.[0] && 'Ja',
+			aap115FraDato: aap115?.[0] && Formatters.formatDate(aap115[0].fraDato),
+			harAap: aap?.[0] && 'Ja',
+			aapFraDato: aap?.[0] && Formatters.formatDate(aap[0].fraDato),
+			aapTilDato: aap?.[0] && Formatters.formatDate(aap[0].tilDato),
+			harDagpenger: dagpenger?.[0] && 'Ja',
+			dagpengerFraDato: dagpenger?.[0] && Formatters.formatDate(dagpenger[0].fraDato),
+			dagpengerTilDato: dagpenger?.[0] && Formatters.formatDate(dagpenger[0].tilDato),
+			dagpengerMottattDato: dagpenger?.[0] && Formatters.formatDate(dagpenger[0].mottattDato),
+			dagpengerRettighetKode:
+				dagpenger?.[0] && Formatters.showLabel('rettighetKode', dagpenger[0].rettighetKode)
+		})
+	}
+
 	// Arenaforvalternen returnerer veldig lite informasjon, bruker derfor data fra bestillingen i tillegg
 	sortedData.forEach((info, idx) => {
 		if (_get(arenaBestillinger, `[${idx}].data.arenaforvalter`) !== undefined) {
-			const { kvalifiseringsgruppe, inaktiveringDato, aap115, aap } = arenaBestillinger[
-				idx
-			].data.arenaforvalter
-			visningData.push({
-				brukertype: info.servicebehov ? 'Med servicebehov' : 'Uten servicebehov',
-				servicebehov: servicebehovKodeTilBeskrivelse(kvalifiseringsgruppe),
-				inaktiveringDato: Formatters.formatDate(inaktiveringDato),
-				harAap115: aap115 && 'Ja',
-				aap115FraDato: aap115 && Formatters.formatDate(aap115[0].fraDato),
-				harAap: aap && 'Ja',
-				aapFraDato: aap && Formatters.formatDate(aap[0].fraDato),
-				aapTilDato: aap && Formatters.formatDate(aap[0].tilDato)
-			})
+			fyllVisningData(idx, info)
 		}
 	})
 
 	return (
 		<div>
-			<SubOverskrift label="Arena" iconKind="arena" />
+			<SubOverskrift label="Arbeidsytelser" iconKind="arena" />
 			<div className="person-visning_content">
 				<Historikk component={Visning} data={visningData} />
 			</div>

@@ -20,7 +20,10 @@ export default function FagsystemStatus({ statusrapport }) {
 			: 'feedback-check-circle'
 	}
 
-	if (statusrapport.some(status => status.navn === 'Forvalter av syntetiske organisasjoner')) {
+	if (
+		statusrapport &&
+		statusrapport.some(status => status.navn === 'Forvalter av syntetiske organisasjoner')
+	) {
 		return (
 			<ErrorBoundary>
 				<table className="fagsystemstatus">

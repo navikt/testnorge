@@ -4,8 +4,9 @@ import Logger from '../../logger'
 import { Rating } from '../../logger/types'
 // @ts-ignore
 import Icon from '~/components/ui/icon/Icon'
-import NavButton from '../../components/ui/button/NavButton/NavButton'
+import NavButton from '../ui/button/NavButton/NavButton'
 import './ThumbsRating.less'
+import styled from 'styled-components'
 
 interface ThumbsRatingProps {
 	label: string
@@ -14,6 +15,19 @@ interface ThumbsRatingProps {
 	onClick?: (rating: Rating) => void
 	children?: React.ReactNode
 }
+
+const ThumbsButton = styled(NavButton)`
+	&& {
+		border: 0;
+		padding: 0 8px;
+		border-radius: 50%;
+		margin-left: 7px;
+	}
+	&& :focus {
+		outline: none;
+		box-shadow: 0 0 2px @color-nav-black;
+	}
+`
 
 interface IconButton {
 	className?: string
@@ -53,20 +67,12 @@ export const ThumbsRating = ({ label, ratingFor, onClick, uuid, children }: Thum
 	return (
 		<div className="thumbs-rating flexbox--all-center">
 			<p>{label}</p>
-			<NavButton
-				form="kompakt"
-				className="thumbs-rating__button"
-				onClick={() => _onClick(Rating.Positive)}
-			>
+			<ThumbsButton form="kompakt" onClick={() => _onClick(Rating.Positive)}>
 				<ThumpsUp className="thumbs-rating__icon thumbs-rating__icon__left" />
-			</NavButton>
-			<NavButton
-				form="kompakt"
-				className="thumbs-rating__button"
-				onClick={() => _onClick(Rating.Negative)}
-			>
+			</ThumbsButton>
+			<ThumbsButton form="kompakt" onClick={() => _onClick(Rating.Negative)}>
 				<ThumpsDown className="thumbs-rating__icon thumbs-rating__icon__right" />
-			</NavButton>
+			</ThumbsButton>
 		</div>
 	)
 }

@@ -36,6 +36,7 @@ export const StegVelger = ({ initialValues, onSubmit, children }) => {
 			return
 		}
 
+		sessionStorage.clear()
 		return onSubmit(values, formikBag)
 	}
 

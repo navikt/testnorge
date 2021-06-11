@@ -17,14 +17,14 @@ export default function FagsystemStatus({ bestilling }) {
 		else if (
 			statuser.some(
 				status =>
-					status.melding.includes('TIDSAVBRUDD') ||
-					status.melding.includes('Tidsavbrudd') ||
-					status.melding.includes('tidsavbrudd')
+					status?.melding.includes('TIDSAVBRUDD') ||
+					status?.melding.includes('Tidsavbrudd') ||
+					status?.melding.includes('tidsavbrudd')
 			)
 		)
 			return iconTypes.avvik
 		// Avvik eller Error
-		return statuser.some(status => status.melding === 'OK') ? iconTypes.avvik : iconTypes.feil
+		return statuser.some(status => status?.melding === 'OK') ? iconTypes.avvik : iconTypes.feil
 	}
 
 	return (

@@ -1,9 +1,9 @@
 import React from 'react'
-import { isBefore, addDays } from 'date-fns'
+import { addDays, isBefore } from 'date-fns'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
-import { PersoninformasjonKodeverk, GtKodeverk } from '~/config/kodeverk'
+import { GtKodeverk, PersoninformasjonKodeverk } from '~/config/kodeverk'
 
 export const Personinfo = ({ data, visTittel = true }) => {
 	return (
@@ -81,15 +81,27 @@ export const Personinfo = ({ data, visTittel = true }) => {
 					size="medium"
 				/>
 				{data.egenAnsattDatoFom && (
-					<TitleValue
-						title="Har skjerming"
-						value={
-							data.egenAnsattDatoTom &&
-							isBefore(new Date(data.egenAnsattDatoTom), addDays(new Date(), -1))
-								? 'NEI'
-								: 'JA'
-						}
-					/>
+					<>
+						<TitleValue
+							title="Har skjerming"
+							value={
+								data.egenAnsattDatoTom &&
+								isBefore(new Date(data.egenAnsattDatoTom), addDays(new Date(), -1))
+									? 'NEI'
+									: 'JA'
+							}
+						/>
+						<TitleValue
+							title="Skjerming fra"
+							value={Formatters.formatDate(data.egenAnsattDatoFom)}
+						/>
+						{data.egenAnsattDatoTom && (
+							<TitleValue
+								title="Skjerming til"
+								value={Formatters.formatDate(data.egenAnsattDatoTom)}
+							/>
+						)}
+					</>
 				)}
 			</div>
 		</div>

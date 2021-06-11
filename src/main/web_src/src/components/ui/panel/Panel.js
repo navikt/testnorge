@@ -21,8 +21,8 @@ export default function Panel({
 }) {
 	const [isOpen, toggleOpen] = useToggle(startOpen)
 
-	const panelClass = cn('panel', {
-		'panel-open': isOpen
+	const panelClass = cn('dolly-panel', {
+		'dolly-panel-open': isOpen
 	})
 
 	const renderContent = children ? children : content
@@ -39,7 +39,7 @@ export default function Panel({
 
 	return (
 		<div className={panelClass}>
-			<div className="panel-heading" onClick={toggleOpen}>
+			<div className="dolly-panel-heading" onClick={toggleOpen}>
 				{iconType && <Icon size={45} kind={iconType} className="header-icon" />}
 				<h2>{heading}</h2>
 
@@ -47,18 +47,18 @@ export default function Panel({
 					<Hjelpetekst hjelpetekstFor={heading}>{informasjonstekst}</Hjelpetekst>
 				)}
 				{hasErrors && (
-					<div className="panel-heading_error">
+					<div className="dolly-panel-heading_error">
 						<Icon size={16} kind="report-problem-triangle" />
 						Feil i felter
 					</div>
 				)}
-				<span className="panel-heading_buttons">
+				<span className="dolly-panel-heading_buttons">
 					{checkAttributeArray && <LinkButton text="Velg alle" onClick={check} />}
 					{uncheckAttributeArray && <LinkButton text="Fjern alle" onClick={uncheck} />}
 					<ExpandButton expanded={isOpen} onClick={toggleOpen} />
 				</span>
 			</div>
-			{isOpen && <div className="panel-content">{renderContent}</div>}
+			{isOpen && <div className="dolly-panel-content">{renderContent}</div>}
 		</div>
 	)
 }

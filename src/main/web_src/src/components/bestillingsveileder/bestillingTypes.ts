@@ -14,6 +14,7 @@ export type Bestillingsdata = {
 export type Relasjoner = {
 	barn?: Array<Barn>
 	partnere?: Array<Partnere>
+	foreldre?: Array<Foreldre>
 }
 
 export type Barn = {
@@ -21,5 +22,9 @@ export type Barn = {
 }
 
 export type Partnere = {
+	spesreg?: string
+}
+
+export type Foreldre = {
 	spesreg?: string
 }

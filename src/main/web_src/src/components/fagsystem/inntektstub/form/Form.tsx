@@ -50,6 +50,7 @@ export const InntektstubForm = ({ formikBag }: InntektstubForm) => (
 		>
 			<div className="flexbox--flex-wrap">
 				<FormikDollyFieldArray
+					tag={undefined}
 					name={inntektstubPath}
 					header="Inntektsinformasjon"
 					newEntry={initialValues}

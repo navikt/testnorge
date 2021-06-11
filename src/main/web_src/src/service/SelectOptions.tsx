@@ -27,6 +27,11 @@ const selectOptions: SelectOptions = {
 		{ value: 'FELLES', label: 'Begge' }
 	],
 
+	foreldreType: [
+		{ value: 'MOR', label: 'Mor' },
+		{ value: 'FAR', label: 'Far' }
+	],
+
 	barnBorHos: [
 		{ value: 'MEG', label: 'Hovedperson' },
 		{ value: 'DEG', label: 'Partner' },
@@ -118,6 +123,14 @@ const selectOptions: SelectOptions = {
 		{ value: 'BFORM', label: 'BFORM - Situasjonsbestemt innsats' },
 		{ value: 'BATT', label: 'BATT - Spesielt tilpasset innsats' },
 		{ value: 'VARIG', label: 'VARIG - Varig tilpasset innsats' }
+	],
+
+	rettighetKode: [
+		{ value: 'DAGO', label: 'DAGO - Ordinære dagpenger' },
+		{ value: 'PERM', label: 'PERM - Dagpenger under permittering' },
+		{ value: 'FISK', label: 'FISK - Dagpenger under permittering fra fiskeindustri' },
+		{ value: 'LONN', label: 'LONN - Lønnsgarantimidler' },
+		{ value: 'DEKS', label: 'DEKS - Eksport - dagpenger' }
 	],
 
 	//KRRSTUB

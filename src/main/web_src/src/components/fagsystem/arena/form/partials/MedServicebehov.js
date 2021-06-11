@@ -1,26 +1,11 @@
 import React from 'react'
-import _get from 'lodash/get'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 
 export const MedServicebehov = ({ formikBag }) => {
 	const { arenaforvalter } = formikBag.values
-
-	const handleChange115 = event => {
-		formikBag.setFieldValue(
-			'arenaforvalter.aap115',
-			event.target.checked ? [{ fraDato: null }] : null
-		)
-	}
-	const handleChangeAAP = event => {
-		formikBag.setFieldValue(
-			'arenaforvalter.aap',
-			event.target.checked ? [{ fraDato: null, tilDato: null }] : null
-		)
-	}
 
 	return (
 		<React.Fragment>
@@ -30,29 +15,37 @@ export const MedServicebehov = ({ formikBag }) => {
 				options={Options('kvalifiseringsgruppe')}
 				size="large"
 			/>
-			<Kategori title="11-5-vedtak">
-				<DollyCheckbox
-					id="har115vedtak"
-					label="Har 11-5-vedtak"
-					checked={Boolean(arenaforvalter.aap115)}
-					onChange={handleChange115}
-					checkboxMargin
-				/>
+			{arenaforvalter.aap115 && (
+				<Kategori title="11-5-vedtak">
+					<FormikDatepicker name="arenaforvalter.aap115[0].fraDato" label="Fra dato" />
+				</Kategori>
+			)}
 
-				<FormikDatepicker name="arenaforvalter.aap115[0].fraDato" label="Fra dato" />
-			</Kategori>
+			{arenaforvalter.aap && (
+				<Kategori title="AAP-vedtak UA - positivt utfall">
+					<FormikDatepicker name="arenaforvalter.aap[0].fraDato" label="Fra dato" />
+					<FormikDatepicker name="arenaforvalter.aap[0].tilDato" label="Til dato" />
+				</Kategori>
+			)}
 
-			<Kategori title="AAP-vedtak UA - positivt utfall">
-				<DollyCheckbox
-					id="harAAPvedtak"
-					label="Har AAP-vedtak"
-					checked={Boolean(arenaforvalter.aap)}
-					onChange={handleChangeAAP}
-					checkboxMargin
-				/>
-				<FormikDatepicker name="arenaforvalter.aap[0].fraDato" label="Fra dato" />
-				<FormikDatepicker name="arenaforvalter.aap[0].tilDato" label="Til dato" />
-			</Kategori>
+			{arenaforvalter.dagpenger && (
+				<Kategori
+					hjelpetekst={'Foreløpig er kun ordinære dagpenger støttet'}
+					title="Dagpengevedtak"
+				>
+					<FormikSelect
+						name="arenaforvalter.dagpenger[0].rettighetKode"
+						options={Options('rettighetKode')}
+						disabled={true}
+						value={'DAGO'} // Endre disabled og denne når flere koder blir støttet
+						label="Rettighetskode"
+						size={'xlarge'}
+					/>
+					<FormikDatepicker name="arenaforvalter.dagpenger[0].fraDato" label="Fra dato" />
+					<FormikDatepicker name="arenaforvalter.dagpenger[0].tilDato" label="Til dato" />
+					<FormikDatepicker name="arenaforvalter.dagpenger[0].mottattDato" label="Mottatt dato" />
+				</Kategori>
+			)}
 		</React.Fragment>
 	)
 }
