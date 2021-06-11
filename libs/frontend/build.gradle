@@ -10,7 +10,7 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation 'org.projectlombok:lombok:1.18.12'
+
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-zuul'
 }
 

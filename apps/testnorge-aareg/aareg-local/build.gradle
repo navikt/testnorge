@@ -15,7 +15,7 @@ dependencyManagement {
 
 dependencies {
     implementation project(':aareg-core')
-    implementation 'org.projectlombok:lombok:1.18.12'
+
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.boot:spring-boot-autoconfigure'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

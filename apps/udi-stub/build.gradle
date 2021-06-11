@@ -41,12 +41,12 @@ dependencies {
 
     implementation 'ma.glasnost.orika:orika-core:1.5.2'
     implementation "org.springdoc:springdoc-openapi-ui:${springdocOpenapiUi}"
-    implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
+    implementation "net.logstash.logback:logstash-logback-encoder:${logstashLogbackEncoder}"
 
     implementation 'org.flywaydb:flyway-core:6.4.4'
     implementation 'org.postgresql:postgresql:42.2.16'
 
-    implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
+    implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'javax.validation:validation-api:2.0.1.Final'
     implementation 'wsdl4j:wsdl4j:1.6.3'
 
@@ -55,6 +55,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
     testImplementation 'org.mockito:mockito-junit-jupiter:3.3.3'
     testImplementation 'com.h2database:h2:1.4.200'
+    
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }

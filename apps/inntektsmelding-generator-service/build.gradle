@@ -27,7 +27,7 @@ dependencies {
 
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
 
-    implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
+    implementation 'org.hibernate.validator:hibernate-validator'
     implementation "org.springdoc:springdoc-openapi-ui:${springdocOpenapiUi}"
 
     implementation 'org.aspectj:aspectjweaver:1.9.6'
@@ -35,7 +35,7 @@ dependencies {
     implementation 'javax.validation:validation-api:2.0.1.Final'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.11.2'
 
-    implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
+    implementation "net.logstash.logback:logstash-logback-encoder:${logstashLogbackEncoder}"
     implementation 'no.nav.tjenestespesifikasjoner:nav-altinn-inntektsmelding:1.2019.08.16-13.46-35cbdfd492d4'
 
     implementation 'javax.xml.bind:jaxb-api:2.3.1'

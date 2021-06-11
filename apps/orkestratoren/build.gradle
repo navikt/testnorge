@@ -30,11 +30,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
-    implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
+    implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'javax.validation:validation-api:2.0.1.Final'
     implementation 'org.aspectj:aspectjweaver:1.9.6'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
-    implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
+    implementation "net.logstash.logback:logstash-logback-encoder:${logstashLogbackEncoder}"
     implementation "org.springdoc:springdoc-openapi-ui:${springdocOpenapiUi}"
     implementation 'com.ibm.mq:mq-jms-spring-boot-starter:2.0.0'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.11.2'

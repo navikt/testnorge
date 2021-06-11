@@ -9,7 +9,7 @@ bootJar {
 
 dependencies {
     implementation project(':medl-core')
-    implementation 'org.projectlombok:lombok:1.18.12'
+
     implementation 'org.springframework.boot:spring-boot-autoconfigure:2.3.4.RELEASE'
     implementation 'com.h2database:h2:1.4.200'
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.3.4.RELEASE'

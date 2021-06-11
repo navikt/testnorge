@@ -29,10 +29,10 @@ dependencies {
 
     implementation 'org.springframework:spring-context:5.2.9.RELEASE'
     implementation "org.springdoc:springdoc-openapi-ui:${springdocOpenapiUi}"
-    implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
+    implementation "net.logstash.logback:logstash-logback-encoder:${logstashLogbackEncoder}"
     implementation 'no.nav.freg:freg-security-oidc:2c24d35d'
     implementation 'javax.validation:validation-api:2.0.1.Final'
-    implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
+    implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'org.hibernate.validator:hibernate-validator-annotation-processor:6.1.5.Final'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

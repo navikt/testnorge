@@ -17,7 +17,7 @@ dependencyManagement {
 dependencies {
     implementation project(':sam-core')
     implementation 'org.springframework.boot:spring-boot-autoconfigure'
-    implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
+    implementation 'org.hibernate.validator:hibernate-validator'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
