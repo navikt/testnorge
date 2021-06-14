@@ -16,4 +16,5 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: oppsummeringsdokument-service
-    url: http://oppsummeringsdokument-service.dolly.svc.cluster.local
+#    url: http://oppsummeringsdokument-service.dolly.svc.cluster.local
+    url: https://oppsummeringsdokument-service.dev.intern.nav.no
