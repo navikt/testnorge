@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.domain.Identtype;
 import no.nav.pdl.forvalter.domain.PdlIdentRequest;
 import no.nav.pdl.forvalter.domain.PdlKjoenn.Kjoenn;
@@ -9,6 +10,7 @@ import no.nav.pdl.forvalter.dto.RsPersonRequest;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
+import no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -43,6 +45,7 @@ public class IdenttypeService {
     private static final Random secureRandom = new SecureRandom();
 
     private final CreatePersonService createPersonService;
+    private final PersonRepository personRepository;
     private final RelasjonService relasjonService;
 
     private static Identtype getIdenttype(PdlIdentRequest request, String ident) {
@@ -82,6 +85,11 @@ public class IdenttypeService {
         }
         return (nonNull(ident)) ? DatoFraIdentUtility.getDato(ident).minusMonths(1).atStartOfDay() :
                 LocalDateTime.now().minusYears(67);
+    }
+
+    private static boolean isSyntetisk(PdlIdentRequest request, String ident) {
+        return nonNull(request.getSyntetisk()) ? request.getSyntetisk() :
+                SyntetiskFraIdentUtility.isSyntetisk(ident);
     }
 
     public String convert(PdlPerson person) {
@@ -136,8 +144,10 @@ public class IdenttypeService {
                 .foedtEtter(getFoedtEtter(request, ident))
                 .foedtFoer(getFoedtFoer(request, ident))
                 .harMellomnavn(request.getHarMellomnavn())
-                .syntetisk(request.getSyntetisk())
+                .syntetisk(isSyntetisk(request, ident))
                 .build());
+
+
 
         relasjonService.setRelasjoner(nyPerson, NY_IDENTITET, ident, GAMMEL_IDENTITET);
 
