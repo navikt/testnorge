@@ -1,10 +1,6 @@
 package no.nav.registre.testnav.ameldingservice.domain;
 
 import lombok.RequiredArgsConstructor;
-
-import java.time.LocalDate;
-import java.util.stream.Collectors;
-
 import no.nav.registre.testnorge.libs.dto.ameldingservice.v1.AMeldingDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.ArbeidsforholdDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.AvvikDTO;
@@ -14,6 +10,11 @@ import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.Oppsum
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.PermisjonDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.PersonDTO;
 import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.VirksomhetDTO;
+
+import java.time.LocalDate;
+import java.util.stream.Collectors;
+
+import static java.util.Objects.nonNull;
 
 @RequiredArgsConstructor
 public class AMelding {
@@ -171,7 +172,7 @@ public class AMelding {
                 .arbeidsforholdId(arbeidsforholdDTO.getArbeidsforholdId())
                 .arbeidstidsordning(arbeidsforholdDTO.getArbeidstidsordning())
                 .avvik(arbeidsforholdDTO.getAvvik().stream().map(this::create).collect(Collectors.toList()))
-                .fartoey(create(arbeidsforholdDTO.getFartoey()))
+                .fartoey(nonNull(arbeidsforholdDTO.getFartoey()) ? create(arbeidsforholdDTO.getFartoey()) : null)
                 .sisteLoennsendringsdato(arbeidsforholdDTO.getSisteLoennsendringsdato())
                 .sluttdato(arbeidsforholdDTO.getSluttdato())
                 .startdato(arbeidsforholdDTO.getStartdato())
