@@ -1,10 +1,10 @@
 plugins {
     id 'no.nav.registre.testnorge.java-conventions'
-    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'io.spring.dependency-management' version "${springDependencyManagement}"
 }
 
 dependencies {
-    implementation 'org.projectlombok:lombok:1.18.12'
+
 }
 
 description = 'medl-domain'
