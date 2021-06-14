@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<configuration>
 
     <springProfile name="prod,dev">
         <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
