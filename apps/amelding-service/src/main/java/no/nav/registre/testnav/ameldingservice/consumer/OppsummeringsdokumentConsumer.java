@@ -1,6 +1,16 @@
 package no.nav.registre.testnav.ameldingservice.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.registre.testnav.ameldingservice.credentials.OppsummeringsdokumentServerProperties;
+import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumentByIdCommand;
+import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumentCommand;
+import no.nav.registre.testnorge.libs.common.command.SaveOppsummeringsdokumenterCommand;
+import no.nav.registre.testnorge.libs.core.config.ApplicationProperties;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
+import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
+import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
+import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
@@ -9,17 +19,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDate;
 import java.util.Optional;
-
-import no.nav.registre.testnav.ameldingservice.credentials.OppsummeringsdokumentServerProperties;
-import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumentCommand;
-import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumentByIdCommand;
-import no.nav.registre.testnorge.libs.common.command.SaveOppsummeringsdokumenterCommand;
-import no.nav.registre.testnorge.libs.core.config.ApplicationProperties;
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
-import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 
 @Component
 public class OppsummeringsdokumentConsumer {
@@ -66,12 +65,12 @@ public class OppsummeringsdokumentConsumer {
     }
 
 
-    public Optional<OppsummeringsdokumentDTO> get(String opplysningsplikitgOrgnummer, LocalDate kalendermaaned, String miljo) {
+    public Optional<OppsummeringsdokumentDTO> get(String opplysningspliktigOrgnummer, LocalDate kalendermaaned, String miljo) {
         AccessToken accessToken = accessTokenService.generateToken(properties).block();
         var dto = new GetOppsummeringsdokumentCommand(
                 webClient,
                 accessToken.getTokenValue(),
-                opplysningsplikitgOrgnummer,
+                opplysningspliktigOrgnummer,
                 kalendermaaned,
                 miljo
         ).call();
