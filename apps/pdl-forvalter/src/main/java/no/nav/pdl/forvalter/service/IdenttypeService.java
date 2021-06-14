@@ -1,7 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.domain.Identtype;
 import no.nav.pdl.forvalter.domain.PdlIdentRequest;
 import no.nav.pdl.forvalter.domain.PdlKjoenn.Kjoenn;
@@ -45,8 +44,8 @@ public class IdenttypeService {
     private static final Random secureRandom = new SecureRandom();
 
     private final CreatePersonService createPersonService;
-    private final PersonRepository personRepository;
     private final RelasjonService relasjonService;
+    private final SwopIdentsService swopIdentsService;
 
     private static Identtype getIdenttype(PdlIdentRequest request, String ident) {
 
@@ -147,7 +146,7 @@ public class IdenttypeService {
                 .syntetisk(isSyntetisk(request, ident))
                 .build());
 
-
+        swopIdentsService.execute(ident, nyPerson);
 
         relasjonService.setRelasjoner(nyPerson, NY_IDENTITET, ident, GAMMEL_IDENTITET);
 
