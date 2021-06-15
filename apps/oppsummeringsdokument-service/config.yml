@@ -24,10 +24,13 @@ spec:
         - application: testnav-generer-arbeidsforhold-populasjon-service
           cluster: dev-gcp
     outbound:
-      rules:
-        - application: elastic
       external:
         - host: aareg-synt-services-proxy.dev-fss-pub.nais.io
+        - host: dolly-testdata-gjeter-nav-dev.aivencloud.com
+          ports:
+            - name: https
+              port: 26482
+              protocol: TCP
   elastic:
     instance: testdata-gjeter
   azure:
