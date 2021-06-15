@@ -13,7 +13,6 @@ import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2ServerToServerCo
         ApplicationCoreConfig.class,
         SecureOAuth2ServerToServerConfiguration.class
 })
-@Profile({"dev", "prod"})
 @RequiredArgsConstructor
 public class ApplicationConfig {
 }

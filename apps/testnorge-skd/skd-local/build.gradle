@@ -1,17 +1,22 @@
 plugins {
     id 'no.nav.registre.testnorge.java-conventions'
-    id 'org.springframework.boot' version '2.3.4.RELEASE'
-    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'io.spring.dependency-management' version "${springDependencyManagement}"
 }
 bootJar {
     archiveFileName = "app.jar"
 }
 
+dependencyManagement {
+    imports {
+        mavenBom  "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
 dependencies {
     implementation project(':skd-core')
-    implementation 'org.projectlombok:lombok:1.18.12'
-    implementation 'org.springframework.boot:spring-boot-autoconfigure:2.3.4.RELEASE'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.3.4.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 description = 'skd-local'

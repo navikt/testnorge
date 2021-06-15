@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    implementation 'org.projectlombok:lombok:1.18.12'
+
 }
 
 description = 'tp-domain'

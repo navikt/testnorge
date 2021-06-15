@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    implementation 'org.projectlombok:lombok:1.18.12'
+
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.9.0'
 }
 

@@ -10,7 +10,7 @@ dependencies {
     implementation 'org.apache.kafka:kafka-clients:2.5.1'
     implementation 'io.confluent:kafka-avro-serializer:6.1.0'
     implementation 'org.springframework.boot:spring-boot-starter-web:2.3.4.RELEASE'
-    implementation 'org.projectlombok:lombok:1.18.12'
+
 }
 
 group = 'no.nav.registre.testnorge.libs'

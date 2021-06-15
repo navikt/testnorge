@@ -1,38 +1,44 @@
 plugins {
     id 'no.nav.registre.testnorge.java-conventions'
-    id 'org.springframework.boot' version '2.3.4.RELEASE'
-    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'io.spring.dependency-management' version "${springDependencyManagement}"
 }
 bootJar {
     archiveFileName = "app.jar"
+}
+dependencyManagement {
+    imports {
+        mavenBom  "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
 }
 
 dependencies {
     implementation project(':testnorge-core')
     implementation project(':testnorge-domain')
 
+    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
 
-    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth:2.2.5.RELEASE'
-    implementation 'org.springframework.boot:spring-boot-starter-web:2.3.4.RELEASE'
-    implementation 'org.springframework.boot:spring-boot-starter-webflux:2.3.2.RELEASE'
-    implementation 'org.projectlombok:lombok:1.18.12'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
     implementation 'com.fasterxml.jackson.core:jackson-core:2.11.2'
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.11.2'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.2'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
     implementation 'org.aspectj:aspectjweaver:1.9.6'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator:2.3.4.RELEASE'
+
     implementation 'no.nav.registre:testnorge-consumers:1.12.0-RELEASE'
 
     implementation 'com.squareup.okhttp3:okhttp:4.7.2'
     implementation 'io.springfox:springfox-swagger2:2.9.2'
     implementation 'io.springfox:springfox-swagger-ui:2.9.2'
-    implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
-    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config:2.2.5.RELEASE'
-    implementation 'org.hibernate.validator:hibernate-validator:6.1.5.Final'
-    testImplementation 'junit:junit:4.13'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.3.4.RELEASE'
-    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:2.1.2.RELEASE'
+    implementation "net.logstash.logback:logstash-logback-encoder:${logstashLogbackEncoder}"
+
+    implementation 'org.hibernate.validator:hibernate-validator'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation project(':testnorge-testing')
     testImplementation 'com.squareup.okhttp3:mockwebserver:4.7.2'
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class AdresseController {
 
     @GetMapping(value = "/veg")
     @Operation(description = "Henter tilfeldige vegadresse(r) basert på parametre inn, tom forespørsel gir helt tilfeldig vegadresse")
+    @ResponseBody
     public List<VegadresseDTO> getVegadresse(@RequestParam(required = false) String matrikkelId,
                                              @RequestParam(required = false) String adressenavn,
                                              @RequestParam(required = false) String husnummer,
