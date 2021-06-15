@@ -61,6 +61,7 @@ public abstract class MidlertidigAdresse {
         private String gatenavn;
         private String gatekode;
         private String husnr;
+        private String matrikkelId;
 
         @Override public MidlertidigAdressetype getAdressetype() {
             return MidlertidigAdressetype.GATE;

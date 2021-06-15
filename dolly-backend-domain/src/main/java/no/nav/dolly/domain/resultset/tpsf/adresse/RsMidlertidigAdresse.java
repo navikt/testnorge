@@ -1,12 +1,12 @@
 package no.nav.dolly.domain.resultset.tpsf.adresse;
 
-import java.time.LocalDateTime;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -58,6 +58,9 @@ public class RsMidlertidigAdresse {
 
         @Schema(description = "Relevant for GATE-adresse")
         private String husnr;
+
+        @Schema(description = "Relevant for GATE-adresse")
+        private String matrikkelId;
 
         @Schema(description = "Må fylles ut for STED-adresse")
         private String eiendomsnavn;

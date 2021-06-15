@@ -52,6 +52,10 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
         kontaktadresse.setKilde(CONSUMER);
         kontaktadresse.setGyldigFraOgMed(LocalDate.now());
         kontaktadresse.setGyldigTilOgMed(getDato(midlertidigAdresse.getGyldigTom()));
+        if (midlertidigAdresse.isGateAdr()) {
+            kontaktadresse.setAdresseIdentifikatorFraMatrikkelen(
+                    ((MidlertidigGateAdresse)midlertidigAdresse).getMatrikkelId());
+        }
         return kontaktadresse;
     }
 
