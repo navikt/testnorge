@@ -1,15 +1,15 @@
 package no.nav.dolly.domain.resultset.tpsf.adresse;
 
-import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "adressetype")
 @JsonSubTypes({
@@ -35,6 +35,9 @@ public abstract class RsAdresse {
     @Schema(required = true,
             description = "Kommunenummer for adresse")
     private String kommunenr;
+
+    @Schema(description = "Entydig adressereferanse til Kartverket")
+    private String matrikkelId;
 
     @Schema(type = "LocalDateTime",
             description = "Flyttedato for adresse. Hvis tomt blir flyttedato identisk med fødselsdato"
