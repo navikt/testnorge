@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
@@ -47,16 +48,7 @@ public class CreatePersonService {
                 .findFirst().orElseThrow(() -> new HttpClientErrorException(INTERNAL_SERVER_ERROR,
                         String.format("Ident kunne ikke levere forespørsel: %s", request.toString())));
 
-        var mergedPerson = mergeService.merge(PdlPerson.builder()
-                        .kjoenn(List.of(PdlKjoenn.builder().build()))
-                        .foedsel(List.of(PdlFoedsel.builder().build()))
-                        .navn(List.of(RsNavn.builder().hasMellomnavn(request.getHarMellomnavn()).build()))
-                        .bostedsadresse(List.of(PdlBostedadresse.builder()
-                                .vegadresse(new PdlVegadresse())
-                                .build()))
-                        .statsborgerskap(List.of(PdlStatsborgerskap.builder().build()))
-                        .folkeregisterpersonstatus(List.of(PdlFolkeregisterpersonstatus.builder().build()))
-                        .build(),
+        var mergedPerson = mergeService.merge(buildPerson(request),
                 PdlPerson.builder().ident(ident).build());
 
         kjoennService.convert(mergedPerson);
@@ -73,5 +65,22 @@ public class CreatePersonService {
                 .build());
 
         return ident;
+    }
+
+    private static PdlPerson buildPerson(RsPersonRequest request) {
+
+        return PdlPerson.builder()
+                .kjoenn(List.of(PdlKjoenn.builder().build()))
+                .foedsel(List.of(PdlFoedsel.builder().build()))
+                .navn(nonNull(request.getNyttNavn()) ?
+                        List.of(RsNavn.builder().hasMellomnavn(request.getNyttNavn().isHarMellomnavn()).build()):
+                        emptyList())
+                .bostedsadresse(request.isHarBostadsadresse() ? List.of(PdlBostedadresse.builder()
+                        .vegadresse(new PdlVegadresse()).build()) : emptyList())
+                .statsborgerskap(request.isHarStatsborgerskap() ?
+                        List.of(PdlStatsborgerskap.builder().build()) : emptyList())
+                .folkeregisterpersonstatus(request.isHarFolkeregisterPersonstatus() ?
+                        List.of(PdlFolkeregisterpersonstatus.builder().build()) : emptyList())
+                .build();
     }
 }

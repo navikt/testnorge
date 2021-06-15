@@ -25,6 +25,19 @@ public class RsPersonRequest implements Serializable {
     private LocalDateTime foedtFoer;
     private Integer alder;
     private Boolean syntetisk;
+    
+    private NyttNavn nyttNavn;
+    private boolean harBostadsadresse;
+    private boolean harStatsborgerskap;
+    private boolean harFolkeregisterPersonstatus;
 
-    private Boolean harMellomnavn;
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class NyttNavn {
+
+        private boolean harMellomnavn;
+    }
 }

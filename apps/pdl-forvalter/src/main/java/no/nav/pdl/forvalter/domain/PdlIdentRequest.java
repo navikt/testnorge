@@ -2,6 +2,7 @@ package no.nav.pdl.forvalter.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -23,5 +24,15 @@ public class PdlIdentRequest extends PdlDbVersjon {
     private Integer alder;
     private Boolean syntetisk;
 
-    private Boolean harMellomnavn;
+    private NyttNavn nyttNavn;
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class NyttNavn {
+
+        private Boolean harMellomnavn;
+    }
 }

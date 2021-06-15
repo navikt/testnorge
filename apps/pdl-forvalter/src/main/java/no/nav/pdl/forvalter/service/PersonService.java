@@ -7,6 +7,7 @@ import no.nav.pdl.forvalter.consumer.IdentPoolConsumer;
 import no.nav.pdl.forvalter.consumer.PdlTestdataConsumer;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.model.DbRelasjon;
+import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.domain.PdlPerson;
 import no.nav.pdl.forvalter.dto.PersonUpdateRequest;
@@ -35,6 +36,7 @@ public class PersonService {
     private final MapperFacade mapperFacade;
     private final IdentPoolConsumer identPoolConsumer;
     private final PdlTestdataConsumer pdlTestdataConsumer;
+    private final AliasRepository aliasRepository;
 
     @Transactional
     public String updatePerson(String ident, PersonUpdateRequest request) {
@@ -51,7 +53,6 @@ public class PersonService {
         var mergedPerson = mergeService.merge(request.getPerson(), dbPerson.getPerson());
         var extendedArtifacts = personArtifactService.buildPerson(mergedPerson);
         dbPerson.setPerson(extendedArtifacts);
-        dbPerson.setIdent(extendedArtifacts.getIdent());
         dbPerson.setSistOppdatert(now());
 
         return personRepository.save(dbPerson).getIdent();
@@ -82,7 +83,12 @@ public class PersonService {
     @Transactional(readOnly = true)
     public RsPerson getPerson(String ident) {
 
-        return mapperFacade.map(getDbPerson(ident), RsPerson.class);
+        var aliasPerson = aliasRepository.findByTidligereIdent(ident);
+        if (aliasPerson.isPresent()) {
+            return mapperFacade.map(aliasPerson.get().getPerson(), RsPerson.class);
+        } else {
+            return mapperFacade.map(getDbPerson(ident), RsPerson.class);
+        }
     }
 
     private DbPerson getDbPerson(String ident) {

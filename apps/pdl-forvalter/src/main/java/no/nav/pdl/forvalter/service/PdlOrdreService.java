@@ -10,7 +10,6 @@ import no.nav.pdl.forvalter.domain.PdlDelete;
 import no.nav.pdl.forvalter.domain.PdlFalskIdentitet;
 import no.nav.pdl.forvalter.domain.PdlInnflytting;
 import no.nav.pdl.forvalter.domain.PdlKontaktadresse;
-import no.nav.pdl.forvalter.domain.PdlOpprettPerson;
 import no.nav.pdl.forvalter.domain.PdlPerson;
 import no.nav.pdl.forvalter.domain.PdlTilrettelagtKommunikasjon;
 import no.nav.pdl.forvalter.domain.PdlUtflytting;
@@ -68,25 +67,27 @@ public class PdlOrdreService {
                 .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND, format("Ident %s ikke funnet", ident)));
 
         return PdlOrdreResponse.builder()
-                .hovedperson(PersonHendelser.builder()
-                        .ident(ident)
-                        .ordrer(sendAlleInformasjonselementer(dbPerson.getPerson()))
-                        .build())
                 .relasjoner(dbPerson.getRelasjoner().stream()
                         .map(DbRelasjon::getRelatertPerson)
                         .map(DbPerson::getPerson)
                         .map(person -> PersonHendelser.builder()
                                 .ident(person.getIdent())
-                                .ordrer(sendAlleInformasjonselementer(person))
+                                .ordrer(sendAlleInformasjonselementer(person, true))
                                 .build())
                         .collect(Collectors.toList()))
+                .hovedperson(PersonHendelser.builder()
+                        .ident(ident)
+                        .ordrer(sendAlleInformasjonselementer(dbPerson.getPerson(), false))
+                        .build())
                 .build();
     }
 
-    private List<PdlOrdreResponse.PdlStatus> sendAlleInformasjonselementer(PdlPerson person) {
+    private List<PdlOrdreResponse.PdlStatus> sendAlleInformasjonselementer(PdlPerson person, boolean isRelasjon) {
         var status = new ArrayList<PdlOrdreResponse.PdlStatus>();
-        status.addAll(deployService.send(PDL_SLETTING, person.getIdent(), List.of(new PdlDelete())));
-        status.addAll(deployService.send(PDL_OPPRETT_PERSON, person.getIdent(), List.of(new PdlOpprettPerson())));
+        if (isRelasjon) {
+            status.addAll(deployService.send(PDL_SLETTING, person.getIdent(), List.of(new PdlDelete())));
+            status.addAll(deployService.send(PDL_OPPRETT_PERSON, person.getIdent(), person.getNyident()));
+        }
         status.addAll(deployService.send(PDL_NAVN, person.getIdent(), person.getNavn()));
         status.addAll(deployService.send(PDL_KJOENN, person.getIdent(), person.getKjoenn()));
         status.addAll(deployService.send(PDL_FOEDSEL, person.getIdent(), person.getFoedsel()));

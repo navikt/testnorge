@@ -1,11 +1,13 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.domain.Identtype;
 import no.nav.pdl.forvalter.domain.PdlIdentRequest;
 import no.nav.pdl.forvalter.domain.PdlKjoenn.Kjoenn;
 import no.nav.pdl.forvalter.domain.PdlPerson;
 import no.nav.pdl.forvalter.dto.RsPersonRequest;
+import no.nav.pdl.forvalter.dto.RsPersonRequest.NyttNavn;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
@@ -46,6 +48,7 @@ public class IdenttypeService {
     private final CreatePersonService createPersonService;
     private final RelasjonService relasjonService;
     private final SwopIdentsService swopIdentsService;
+    private final MapperFacade mapperFacade;
 
     private static Identtype getIdenttype(PdlIdentRequest request, String ident) {
 
@@ -142,11 +145,11 @@ public class IdenttypeService {
                 .kjoenn(getKjoenn(request, ident))
                 .foedtEtter(getFoedtEtter(request, ident))
                 .foedtFoer(getFoedtFoer(request, ident))
-                .harMellomnavn(request.getHarMellomnavn())
+                .nyttNavn(mapperFacade.map(request.getNyttNavn(), NyttNavn.class))
                 .syntetisk(isSyntetisk(request, ident))
                 .build());
 
-        swopIdentsService.execute(ident, nyPerson);
+        swopIdentsService.execute(ident, nyPerson, nonNull(request.getNyttNavn()));
 
         relasjonService.setRelasjoner(nyPerson, NY_IDENTITET, ident, GAMMEL_IDENTITET);
 
