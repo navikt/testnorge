@@ -102,6 +102,19 @@ export const AmeldingForm = ({ formikBag }) => {
 				formikBag.setFieldValue('aareg[0].arbeidsforhold', undefined)
 				formikBag.setFieldValue('aareg[0].amelding', initialAmelding)
 			}
+			if (event.value === 'maritimtArbeidsforhold') {
+				periode.forEach((maaned, idx) => {
+					console.log('maaned :>> ', maaned)
+					formikBag.setFieldValue(
+						`aareg[0].amelding[${idx}].arbeidsforhold[0].fartoy`,
+						initialFartoy
+					)
+				})
+			} else {
+				periode.forEach((maaned, idx) => {
+					formikBag.setFieldValue(`aareg[0].amelding[${idx}].arbeidsforhold[0].fartoy`, undefined)
+				})
+			}
 		}
 		formikBag.setFieldValue('aareg[0].arbeidsforholdstype', event.value)
 	}
@@ -168,6 +181,7 @@ export const AmeldingForm = ({ formikBag }) => {
 					name={`aareg[0].arbeidsforholdstype`}
 					label="Type arbeidsforhold"
 					kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
+					// options={[{ label: 'ordinææær', value: 'ordinaertArbeidsforhold' }]}
 					size="large-plus"
 					isClearable={false}
 					onChange={handleArbeidsforholdstypeChange}

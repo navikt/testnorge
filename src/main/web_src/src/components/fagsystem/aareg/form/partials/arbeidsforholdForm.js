@@ -63,7 +63,7 @@ export const ArbeidsforholdForm = ({
 						name={`${path}.arbeidsforholdstype`}
 						label="Type arbeidsforhold"
 						kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
-						size="large"
+						size="large-plus"
 						isClearable={false}
 					/>
 				)}
@@ -94,11 +94,11 @@ export const ArbeidsforholdForm = ({
 					<FormikTextInput name={`${path}.arbeidsgiver.ident`} label="Arbeidsgiver ident" />
 				)}
 				<DollyTextInput
-					name={`${path}.arbeidsforholdId`}
+					name={`${path}.arbeidsforholdID`}
 					label="Arbeidsforhold-ID"
 					type="text"
-					value={_get(formikBag.values, `${path}.arbeidsforholdId`)}
-					onChange={onChangeLenket('arbeidsforholdId')}
+					value={_get(formikBag.values, `${path}.arbeidsforholdID`)}
+					onChange={onChangeLenket('arbeidsforholdID')}
 				/>
 				<FormikDatepicker
 					name={`${path}.ansettelsesPeriode.fom`}

@@ -66,7 +66,7 @@ export const PermisjonForm = ({
 						label="Permisjonstype"
 						kodeverk={ArbeidKodeverk.PermisjonsOgPermitteringsBeskrivelse}
 						isClearable={false}
-						size="medium"
+						size="large"
 					/>
 					<FormikDatepicker name={`${path}.permisjonsPeriode.fom`} label="Permisjon fra" />
 					<FormikDatepicker name={`${path}.permisjonsPeriode.tom`} label="Permisjon til" />

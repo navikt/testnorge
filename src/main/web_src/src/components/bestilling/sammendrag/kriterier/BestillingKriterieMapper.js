@@ -414,67 +414,120 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		}
 	}
 
-	const aaregKriterier = bestillingData.aareg
+	const aaregKriterier = bestillingData.aareg?.[0]
 	if (aaregKriterier) {
 		const aareg = {
 			header: 'Arbeidsforhold (Aareg)',
-			itemRows: []
+			items: [],
+			itemRows: [],
+			paginering: [],
+			pagineringPages: []
 		}
 
-		aaregKriterier.forEach((arbeidsforhold, i) => {
-			aareg.itemRows.push([
+		const harAmelding = _has(aaregKriterier, 'amelding')
+
+		const arbeidsforholdVisning = (arbeidsforhold, i) => [
+			{
+				numberHeader: `Arbeidsforhold ${i + 1}`
+			},
+			{
+				label: 'Type arbeidsforhold',
+				value: arbeidsforhold.arbeidsforholdstype,
+				apiKodeverkId: ArbeidKodeverk.Arbeidsforholdstyper
+			},
+			obj('Orgnummer', arbeidsforhold.arbeidsgiver?.orgnummer),
+			obj('Arbeidsgiver ident', arbeidsforhold.arbeidsgiver?.ident),
+			obj('Arbeidsforhold-ID', arbeidsforhold.arbeidsforholdID),
+			obj('Ansatt fra', Formatters.formatDate(arbeidsforhold.ansettelsesPeriode?.fom)),
+			obj('Ansatt til', Formatters.formatDate(arbeidsforhold.ansettelsesPeriode?.tom)),
+			{
+				label: 'Sluttårsak',
+				value: arbeidsforhold.ansettelsesPeriode?.sluttaarsak,
+				apiKodeverkId: ArbeidKodeverk.SluttaarsakAareg
+			},
+			{
+				label: 'Yrke',
+				value: arbeidsforhold.arbeidsavtale?.yrke,
+				apiKodeverkId: ArbeidKodeverk.Yrker
+			},
+			{
+				label: 'Ansettelsesform',
+				value: arbeidsforhold.arbeidsavtale?.ansettelsesform,
+				apiKodeverkId: ArbeidKodeverk.AnsettelsesformAareg
+			},
+			obj(
+				'Stillingprosent',
+				arbeidsforhold.arbeidsavtale?.stillingsprosent === 0
+					? '0'
+					: arbeidsforhold.arbeidsavtale?.stillingsprosent
+			),
+			obj(
+				'Endringsdato stillingprosent',
+				Formatters.formatDate(arbeidsforhold.arbeidsavtale?.endringsdatoStillingsprosent)
+			),
+			obj(
+				'Endringsdato lønn',
+				Formatters.formatDate(arbeidsforhold.arbeidsavtale?.endringsdatoLoenn)
+			),
+			{
+				label: 'Arbeidstidsordning',
+				value: arbeidsforhold.arbeidsavtale?.arbeidstidsordning,
+				apiKodeverkId: ArbeidKodeverk.Arbeidstidsordninger
+			},
+			obj('Avtalte arbeidstimer per uke', arbeidsforhold.arbeidsavtale?.avtaltArbeidstimerPerUke),
+			{
+				label: 'Skipsregister',
+				value: arbeidsforhold.fartoy?.skipsregister,
+				apiKodeverkId: ArbeidKodeverk.Skipsregistre
+			},
+			{
+				label: 'Fartøystype',
+				value: arbeidsforhold.fartoy?.fartoystype,
+				apiKodeverkId: ArbeidKodeverk.Skipstyper
+			},
+			{
+				label: 'Fartsområde',
+				value: arbeidsforhold.fartoy?.fartsomraade,
+				apiKodeverkId: ArbeidKodeverk.Fartsområder
+			},
+			obj(
+				'Perioder med antall timer for timelønnet',
+				arbeidsforhold.antallTimerForTimeloennet?.length
+			),
+			obj('Perioder med utenlandsopphold', arbeidsforhold.utenlandsopphold?.length),
+			obj('Perioder med permisjon', arbeidsforhold.permisjon?.length),
+			obj('Perioder med permittering', arbeidsforhold.permittering?.length)
+		]
+
+		if (harAmelding) {
+			aareg.items.push(
 				{
-					numberHeader: `Arbeidsforhold ${i + 1}`
+					label: 'Type arbeidsforhold',
+					value: aaregKriterier.arbeidsforholdstype,
+					apiKodeverkId: ArbeidKodeverk.Arbeidsforholdstyper
+				},
+				obj('F.o.m. kalendermåned', Formatters.formatDate(aaregKriterier.genererPeriode?.fom)),
+				obj('T.o.m. kalendermåned', Formatters.formatDate(aaregKriterier.genererPeriode?.tom))
+			)
+			aaregKriterier.amelding.forEach(maaned => {
+				const data = {
+					itemRows: []
 				}
-				//TODO: Fiks denne når bestillingsrequest er avklart
-				// ,
-				// obj('Startdato', Formatters.formatDate(arbeidsforhold.ansettelsesPeriode.fom)),
-				// obj('Sluttdato', Formatters.formatDate(arbeidsforhold.ansettelsesPeriode.tom)),
-				// {
-				// 	label: 'Type arbeidsforhold',
-				// 	value: arbeidsforhold.arbeidsforholdstype,
-				// 	apiKodeverkId: ArbeidKodeverk.Arbeidsforholdstyper
-				// },
-				// obj('Type av arbeidsgiver', arbeidsforhold.arbeidsgiver.aktoertype),
-				// obj('Orgnummer', arbeidsforhold.arbeidsgiver.orgnummer),
-				// obj('Arbeidsgiver Ident', arbeidsforhold.arbeidsgiver.ident),
-				// {
-				// 	label: 'Yrke',
-				// 	value: arbeidsforhold.arbeidsavtale.yrke,
-				// 	apiKodeverkId: ArbeidKodeverk.Yrker,
-				// 	width: 'xlarge',
-				// 	showKodeverkValue: true
-				// },
-				// obj(
-				// 	'Stillingprosent',
-				// 	arbeidsforhold.arbeidsavtale.stillingsprosent === 0
-				// 		? '0'
-				// 		: arbeidsforhold.arbeidsavtale.stillingsprosent
-				// ),
-				// obj(
-				// 	'Endringsdato stillingprosent',
-				// 	Formatters.formatDate(arbeidsforhold.arbeidsavtale.endringsdatoStillingsprosent)
-				// ),
-				// {
-				// 	label: 'Arbeidstidsordning',
-				// 	value: arbeidsforhold.arbeidsavtale.arbeidstidsordning,
-				// 	apiKodeverkId: ArbeidKodeverk.Arbeidstidsordninger
-				// },
-				// obj('Antall konverterte timer', arbeidsforhold.arbeidsavtale.antallKonverterteTimer),
-				// obj('Avtalte timer per uke', arbeidsforhold.arbeidsavtale.avtaltArbeidstimerPerUke),
-				// obj(
-				// 	'Perioder med antall timer for timelønnet',
-				// 	arbeidsforhold.permisjon && arbeidsforhold.permisjon.length
-				// ),
-				// obj('Perioder med permisjon', arbeidsforhold.permisjon && arbeidsforhold.permisjon.length),
-				// obj(
-				// 	'Perioder med utenlandsopphold',
-				// 	arbeidsforhold.utenlandsopphold && arbeidsforhold.utenlandsopphold.length
-				// )
-			])
-		})
+				maaned.arbeidsforhold.forEach((arbeidsforhold, i) => {
+					data.itemRows.push(arbeidsforholdVisning(arbeidsforhold, i))
+				})
+				aareg.pagineringPages.push(maaned.maaned)
+				aareg.paginering.push(data)
+			})
+		} else {
+			aaregKriterier.arbeidsforhold.forEach((arbeidsforhold, i) => {
+				aareg.itemRows.push(arbeidsforholdVisning(arbeidsforhold, i))
+			})
+		}
+
 		data.push(aareg)
 	}
+
 	const sigrunStubKriterier = bestillingData.sigrunstub
 
 	if (sigrunStubKriterier) {

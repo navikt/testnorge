@@ -36,7 +36,7 @@ export const initialArbeidsforholdOrg = {
 		aktoertype: 'ORG',
 		orgnummer: ''
 	},
-	arbeidsforholdId: '',
+	arbeidsforholdID: '',
 	ansettelsesPeriode: {
 		fom: subYears(new Date(), 20),
 		tom: null,
@@ -50,8 +50,7 @@ export const initialArbeidsforholdOrg = {
 		endringsdatoLoenn: null,
 		arbeidstidsordning: 'ikkeSkift',
 		avtaltArbeidstimerPerUke: 37.5
-	},
-	fartoy: {}
+	}
 }
 
 export const initialArbeidsforholdPers = {
@@ -59,7 +58,7 @@ export const initialArbeidsforholdPers = {
 		aktoertype: 'PERS',
 		ident: ''
 	},
-	arbeidsforholdId: '',
+	arbeidsforholdID: '',
 	ansettelsesPeriode: {
 		fom: subYears(new Date(), 20),
 		tom: null,
@@ -73,8 +72,7 @@ export const initialArbeidsforholdPers = {
 		endringsdatoLoenn: null,
 		arbeidstidsordning: 'ikkeSkift',
 		avtaltArbeidstimerPerUke: 37.5
-	},
-	fartoy: {}
+	}
 }
 
 export const initialFartoy = {
