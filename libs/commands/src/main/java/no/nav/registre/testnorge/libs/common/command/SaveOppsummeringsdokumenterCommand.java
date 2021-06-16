@@ -40,7 +40,7 @@ public class SaveOppsummeringsdokumenterCommand implements Callable<String> {
                 .exchange()
                 .flatMap(response -> {
                     if (!response.statusCode().is2xxSuccessful()) {
-                        return response.createException();
+                        return response.createException().flatMap(Mono::error);
                     }
                     var id = response.headers().header("ID").stream().findFirst();
                     if (id.isEmpty()) {
