@@ -41,6 +41,10 @@ zuul:
       path: /testnav-organisasjon-faste-data-service/api/**
       url: https://testnav-organisasjon-faste-data-service.dev.intern.nav.no/api
       sensitiveHeaders: Cookie,Set-Cookie
+    testnav-adresse-service:
+      path: /testnav-adresse-service/api/**
+      url: https://testnav-adresse-service.dev.intern.nav.no/api
+      sensitiveHeaders: Cookie,Set-Cookie
 
 applications:
   testnorge-profil-api: ${TESTNORGE_PROFIL_API_CLIENT_ID}
@@ -51,6 +55,7 @@ applications:
   organisasjon-forvalter: dev-gcp.dolly.testnav-organisasjon-forvalter
   organisasjon-service: dev-gcp.dolly.testnav-organisasjon-service
   testnav-miljoer-service: dev-gcp.dolly.testnav-miljoer-service
+  testnav-adresse-service: dev-gcp.dolly.testnav-adresse-service
 
 application:
   basepackage: no.nav.dolly.web

@@ -34,8 +34,10 @@ export const DollyTextInput = (props: {
 	name: string
 	label?: string
 	feil?: any
+	value: any
 	onBlur?: Function
 	onSubmit?: Function
+	onChange?: Function
 }) => (
 	<InputWrapper {...props}>
 		{/*@ts-ignore*/}

@@ -2,28 +2,29 @@ import React from 'react'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
-import { GyldigAdresseVelger } from './GyldigAdresseVelger/GyldigAdresseVelger'
 import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { AdresseKodeverk } from '~/config/kodeverk'
 import './Boadresse.less'
 import { DollyApi } from '~/service/Api'
 import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { AdresseVelger } from '~/components/adresseVelger'
 
 export const Boadresse = ({ formikBag }) => {
 	const settBoadresse = adresse => {
 		formikBag.setFieldValue('tpsf.boadresse', {
 			bolignr: formikBag.values.tpsf.boadresse.bolignr,
 			flyttedato: formikBag.values.tpsf.boadresse.flyttedato,
-			tilleggsadresse: formikBag.values.tpsf.boadresse.tilleggsadresse
+			tilleggsadresse: formikBag.values.tpsf.boadresse.tilleggsadresse,
+			adressetype: 'GATE',
+			matrikkelId: adresse.matrikkelId,
+			postnr: adresse.postnummer,
+			poststed: adresse.poststed,
+			gateadresse: adresse.adressenavn,
+			gatekode: adresse.adressekode,
+			husnummer: adresse.husnummer,
+			kommunenr: adresse.kommunenummer
 		})
-		formikBag.setFieldValue('tpsf.boadresse.adressetype', 'GATE')
-		formikBag.setFieldValue('tpsf.boadresse.gateadresse', adresse.gateadresse)
-		formikBag.setFieldValue('tpsf.boadresse.postnr', adresse.postnr)
-		formikBag.setFieldValue('tpsf.boadresse.poststed', adresse.poststed)
-		formikBag.setFieldValue('tpsf.boadresse.kommunenr', adresse.kommunenr)
-		formikBag.setFieldValue('tpsf.boadresse.gatekode', adresse.gatekode)
-		formikBag.setFieldValue('tpsf.boadresse.husnummer', adresse.husnummer)
 	}
 
 	const renderAdresse = postnummerListe => {
@@ -52,11 +53,10 @@ export const Boadresse = ({ formikBag }) => {
 			return { feilmelding: _get(formikBag.errors, 'tpsf.boadresse.gateadresse') }
 		} else return feil
 	}
-
 	return (
 		<Kategori title="Gateadresse">
 			<div className="gateadresse">
-				<GyldigAdresseVelger settBoadresse={settBoadresse} formikBag={formikBag} />
+				<AdresseVelger onSelect={settBoadresse} formikBag={formikBag} />
 				<ErrorBoundary>
 					<LoadableComponent
 						onFetch={() => DollyApi.getKodeverkByNavn(AdresseKodeverk.PostnummerUtenPostboks)}
