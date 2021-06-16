@@ -250,6 +250,9 @@ public class AMelding {
 
 
     private FartoeyDTO create(no.nav.registre.testnorge.libs.dto.ameldingservice.v1.FartoeyDTO fartoeyDTO) {
+        if (fartoeyDTO == null) {
+            return null;
+        }
         return FartoeyDTO
                 .builder()
                 .fartsomraade(fartoeyDTO.getFartsomraade())
@@ -259,6 +262,9 @@ public class AMelding {
     }
 
     private no.nav.registre.testnorge.libs.dto.ameldingservice.v1.FartoeyDTO create(FartoeyDTO fartoeyDTO) {
+        if (fartoeyDTO == null) {
+            return null;
+        }
         return no.nav.registre.testnorge.libs.dto.ameldingservice.v1.FartoeyDTO
                 .builder()
                 .fartsomraade(fartoeyDTO.getFartsomraade())
