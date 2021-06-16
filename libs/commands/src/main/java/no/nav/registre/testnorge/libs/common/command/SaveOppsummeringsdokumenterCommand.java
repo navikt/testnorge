@@ -3,7 +3,6 @@ package no.nav.registre.testnorge.libs.common.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -40,10 +39,13 @@ public class SaveOppsummeringsdokumenterCommand implements Callable<String> {
                 .body(BodyInserters.fromPublisher(Mono.just(opplysningspliktigDTO), OppsummeringsdokumentDTO.class))
                 .exchange()
                 .flatMap(response -> {
+                    if (!response.statusCode().is2xxSuccessful()) {
+                        return response.createException();
+                    }
                     var id = response.headers().header("ID").stream().findFirst();
                     if (id.isEmpty()) {
                         return Mono.error(
-                                new RuntimeException("Klarer ikke å finne iden fra opplysningspliktigsdokument "  + opplysningspliktigDTO.getOpplysningspliktigOrganisajonsnummer() + " den " + opplysningspliktigDTO.getKalendermaaned() + ".")
+                                new RuntimeException("Klarer ikke å finne iden fra opplysningspliktigsdokument " + opplysningspliktigDTO.getOpplysningspliktigOrganisajonsnummer() + " den " + opplysningspliktigDTO.getKalendermaaned() + ".")
                         );
                     }
                     return Mono.just(id.get());
