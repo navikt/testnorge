@@ -25,34 +25,19 @@ public class SwopIdentsService {
                 .toString();
     }
 
-    private static void swopName(DbPerson person1, DbPerson person2) {
-
-        var navn = person1.getPerson().getNavn();
-        person1.getPerson().setNavn(person2.getPerson().getNavn());
-        person2.getPerson().setNavn(navn);
-    }
-
-    private static void swopFoedsel(DbPerson person1, DbPerson person2) {
-
-        var foedsel = person1.getPerson().getFoedsel();
-        person1.getPerson().setFoedsel(person2.getPerson().getFoedsel());
-        person2.getPerson().setFoedsel(foedsel);
-    }
-
-    private static void swopKjoenn(DbPerson person1, DbPerson person2) {
-
-        var kjoenn = person1.getPerson().getKjoenn();
-        person1.getPerson().setKjoenn(person2.getPerson().getKjoenn());
-        person2.getPerson().setKjoenn(kjoenn);
-    }
-
-    private static void swopIdent(DbPerson person1, DbPerson person2) {
+    private static void swopOpplysninger(DbPerson person1, DbPerson person2, boolean newNavn) {
 
         var ident = person1.getPerson().getIdent();
         person1.setIdent(person2.getPerson().getIdent());
-        person1.getPerson().setIdent(person2.getPerson().getIdent());
         person2.setIdent(ident);
         person2.getPerson().setIdent(ident);
+
+        if (newNavn) {
+            person2.getPerson().setNavn(person1.getPerson().getNavn());
+        }
+        person2.getPerson().setFoedsel(person1.getPerson().getFoedsel());
+        person2.getPerson().setKjoenn(person1.getPerson().getKjoenn());
+        person2.getPerson().setNyident(person1.getPerson().getNyident());
     }
 
     public void execute(String ident1, String ident2, boolean newNavn) {
@@ -79,12 +64,7 @@ public class SwopIdentsService {
                     .filter(person -> person2.get().getId().equals(person.getId()))
                     .findFirst().get();
 
-            swopIdent(oppdatertPerson1, oppdatertPerson2);
-            swopKjoenn(oppdatertPerson1, oppdatertPerson2);
-            swopFoedsel(oppdatertPerson1, oppdatertPerson2);
-            if (newNavn) {
-                swopName(oppdatertPerson1, oppdatertPerson2);
-            }
+            swopOpplysninger(oppdatertPerson1, oppdatertPerson2, newNavn);
 
             personRepository.saveAll(List.of(person1.get(), person2.get()));
 

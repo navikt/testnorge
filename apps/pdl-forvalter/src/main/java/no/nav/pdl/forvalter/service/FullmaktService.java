@@ -87,7 +87,7 @@ public class FullmaktService {
                 fullmakt.getNyFullmektig().setFoedtEtter(LocalDateTime.now().minusYears(75));
             }
 
-            fullmakt.setFullmektig(createPersonService.execute(fullmakt.getNyFullmektig()));
+            fullmakt.setFullmektig(createPersonService.execute(fullmakt.getNyFullmektig()).getIdent());
             relasjonService.setRelasjoner(ident, RelasjonType.FULLMAKTSGIVER,
                     fullmakt.getFullmektig(), RelasjonType.FULLMEKTIG);
             fullmakt.setNyFullmektig(null);

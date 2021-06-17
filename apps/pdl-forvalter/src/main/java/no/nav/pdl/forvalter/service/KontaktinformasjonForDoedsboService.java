@@ -271,7 +271,7 @@ public class KontaktinformasjonForDoedsboService {
         }
 
         adressat.setIdnummer(
-                createPersonService.execute(adressat.getNyKontaktPerson()));
+                createPersonService.execute(adressat.getNyKontaktPerson()).getIdent());
         relasjonService.setRelasjoner(person.getIdent(), RelasjonType.AVDOEDD_SIN_ADRESSAT,
                 adressat.getIdnummer(), RelasjonType.ADRESSAT_FOR_DOEDSBO);
         adressat.setNyKontaktPerson(null);

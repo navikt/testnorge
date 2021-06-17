@@ -41,7 +41,24 @@ public class CreatePersonService {
     private final NavnService navnService;
     private final FolkeregisterPersonstatusService folkeregisterPersonstatusService;
 
-    public String execute(RsPersonRequest request) {
+    private static PdlPerson buildPerson(RsPersonRequest request) {
+
+        return PdlPerson.builder()
+                .kjoenn(List.of(PdlKjoenn.builder().build()))
+                .foedsel(List.of(PdlFoedsel.builder().build()))
+                .navn(nonNull(request.getNyttNavn()) ?
+                        List.of(RsNavn.builder().hasMellomnavn(request.getNyttNavn().isHarMellomnavn()).build()) :
+                        emptyList())
+                .bostedsadresse(request.isHarBostadsadresse() ? List.of(PdlBostedadresse.builder()
+                        .vegadresse(new PdlVegadresse()).build()) : emptyList())
+                .statsborgerskap(request.isHarStatsborgerskap() ?
+                        List.of(PdlStatsborgerskap.builder().build()) : emptyList())
+                .folkeregisterpersonstatus(request.isHarFolkeregisterPersonstatus() ?
+                        List.of(PdlFolkeregisterpersonstatus.builder().build()) : emptyList())
+                .build();
+    }
+
+    public PdlPerson execute(RsPersonRequest request) {
 
         var ident = Stream.of(identPoolConsumer.getIdents(
                 mapperFacade.map(nonNull(request) ? request : new RsPersonRequest(), HentIdenterRequest.class)))
@@ -58,29 +75,11 @@ public class CreatePersonService {
         foedselService.convert(mergedPerson);
         folkeregisterPersonstatusService.convert(mergedPerson);
 
-        personRepository.save(DbPerson.builder()
+        return personRepository.save(DbPerson.builder()
                 .person(mergedPerson)
                 .ident(ident)
                 .sistOppdatert(LocalDateTime.now())
-                .build());
-
-        return ident;
-    }
-
-    private static PdlPerson buildPerson(RsPersonRequest request) {
-
-        return PdlPerson.builder()
-                .kjoenn(List.of(PdlKjoenn.builder().build()))
-                .foedsel(List.of(PdlFoedsel.builder().build()))
-                .navn(nonNull(request.getNyttNavn()) ?
-                        List.of(RsNavn.builder().hasMellomnavn(request.getNyttNavn().isHarMellomnavn()).build()):
-                        emptyList())
-                .bostedsadresse(request.isHarBostadsadresse() ? List.of(PdlBostedadresse.builder()
-                        .vegadresse(new PdlVegadresse()).build()) : emptyList())
-                .statsborgerskap(request.isHarStatsborgerskap() ?
-                        List.of(PdlStatsborgerskap.builder().build()) : emptyList())
-                .folkeregisterpersonstatus(request.isHarFolkeregisterPersonstatus() ?
-                        List.of(PdlFolkeregisterpersonstatus.builder().build()) : emptyList())
-                .build();
+                .build())
+                .getPerson();
     }
 }

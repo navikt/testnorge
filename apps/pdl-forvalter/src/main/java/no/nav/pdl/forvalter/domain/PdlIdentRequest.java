@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
@@ -31,7 +32,7 @@ public class PdlIdentRequest extends PdlDbVersjon {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class NyttNavn {
+    public static class NyttNavn implements Serializable {
 
         private Boolean harMellomnavn;
     }

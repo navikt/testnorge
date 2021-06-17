@@ -124,7 +124,8 @@ public class FalskIdentitetService {
                 identitet.getNyFalskIdentitetPerson().setFoedtEtter(LocalDateTime.now().minusYears(75));
             }
 
-            identitet.setRettIdentitetVedIdentifikasjonsnummer(createPersonService.execute(identitet.getNyFalskIdentitetPerson()));
+            identitet.setRettIdentitetVedIdentifikasjonsnummer(
+                    createPersonService.execute(identitet.getNyFalskIdentitetPerson()).getIdent());
             relasjonService.setRelasjoner(ident, RelasjonType.FALSK_IDENTITET,
                     identitet.getRettIdentitetVedIdentifikasjonsnummer(), RelasjonType.RIKTIG_IDENTITET);
             identitet.setNyFalskIdentitetPerson(null);

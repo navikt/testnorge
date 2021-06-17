@@ -27,7 +27,6 @@ import static java.util.Objects.isNull;
 public class PdlPerson implements Serializable {
 
     private String ident;
-    private List<PdlIdentRequest> nyident;
     private List<PdlFoedsel> foedsel;
     private List<RsNavn> navn;
     private List<PdlKjoenn> kjoenn;
@@ -55,6 +54,7 @@ public class PdlPerson implements Serializable {
     private List<PdlTelefonnummer> telefonnummer;
     private List<PdlFullmakt> fullmakt;
     private List<RsVergemaal> vergemaal;
+    private List<PdlIdentRequest> nyident;
 
     public List<PdlIdentRequest> getNyident() {
         if (isNull(nyident)) {

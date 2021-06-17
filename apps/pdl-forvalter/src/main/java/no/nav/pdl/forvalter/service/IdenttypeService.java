@@ -102,7 +102,7 @@ public class IdenttypeService {
             if (type.isNew()) {
                 validate(type);
 
-                ident = handle(type, person.getIdent());
+                ident = handle(type, person);
                 if (isBlank(type.getKilde())) {
                     type.setKilde("Dolly");
                 }
@@ -138,21 +138,28 @@ public class IdenttypeService {
         }
     }
 
-    private String handle(PdlIdentRequest request, String ident) {
+    private String handle(PdlIdentRequest request, PdlPerson person) {
 
         var nyPerson = createPersonService.execute(RsPersonRequest.builder()
-                .identtype(getIdenttype(request, ident))
-                .kjoenn(getKjoenn(request, ident))
-                .foedtEtter(getFoedtEtter(request, ident))
-                .foedtFoer(getFoedtFoer(request, ident))
+                .identtype(getIdenttype(request, person.getIdent()))
+                .kjoenn(getKjoenn(request, person.getIdent()))
+                .foedtEtter(getFoedtEtter(request, person.getIdent()))
+                .foedtFoer(getFoedtFoer(request, person.getIdent()))
                 .nyttNavn(mapperFacade.map(request.getNyttNavn(), NyttNavn.class))
-                .syntetisk(isSyntetisk(request, ident))
+                .syntetisk(isSyntetisk(request, person.getIdent()))
                 .build());
 
-        swopIdentsService.execute(ident, nyPerson, nonNull(request.getNyttNavn()));
+        swopIdentsService.execute(person.getIdent(), nyPerson.getIdent(), nonNull(request.getNyttNavn()));
 
-        relasjonService.setRelasjoner(nyPerson, NY_IDENTITET, ident, GAMMEL_IDENTITET);
+        relasjonService.setRelasjoner(nyPerson.getIdent(), NY_IDENTITET, person.getIdent(), GAMMEL_IDENTITET);
 
-        return nyPerson;
+        person.setFoedsel(nyPerson.getFoedsel());
+        person.setKjoenn(nyPerson.getKjoenn());
+        if (!nyPerson.getNavn().isEmpty()) {
+            person.setNavn(nyPerson.getNavn());
+        }
+        person.setNyident(null);
+
+        return nyPerson.getIdent();
     }
 }

@@ -86,7 +86,7 @@ public class VergemaalService {
                 fullmakt.getNyVergeIdent().setFoedtEtter(LocalDateTime.now().minusYears(75));
             }
 
-            fullmakt.setVergeIdent(createPersonService.execute(fullmakt.getNyVergeIdent()));
+            fullmakt.setVergeIdent(createPersonService.execute(fullmakt.getNyVergeIdent()).getIdent());
             relasjonService.setRelasjoner(ident, RelasjonType.VERGE_MOTTAKER,
                     fullmakt.getVergeIdent(), RelasjonType.VERGE);
             fullmakt.setNyVergeIdent(null);

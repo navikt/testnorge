@@ -23,12 +23,15 @@ import java.util.stream.Stream;
 
 import static java.lang.String.format;
 import static java.time.LocalDateTime.now;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class PersonService {
+
+    private static final String VIOLATION_ALIAS_EXISTS = "Utgått ident kan ikke endres. Benytt gjeldende ident %s for denne operasjonen";
 
     private final PersonRepository personRepository;
     private final MergeService mergeService;
@@ -41,6 +44,7 @@ public class PersonService {
     @Transactional
     public String updatePerson(String ident, PersonUpdateRequest request) {
 
+        checkAlias(ident);
         var dbPerson = personRepository.findByIdent(ident)
                 .orElseGet(() -> personRepository.save(DbPerson.builder()
                         .ident(ident)
@@ -61,6 +65,7 @@ public class PersonService {
     @Transactional
     public void deletePerson(String ident) {
 
+        checkAlias(ident);
         var dbPerson = personRepository.findByIdent(ident).orElseThrow(() ->
                 new HttpClientErrorException(NOT_FOUND, format("Ident %s ble ikke funnet", ident)));
 
@@ -95,5 +100,14 @@ public class PersonService {
 
         return personRepository.findByIdent(ident)
                 .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, format("Ident %s ble ikke funnet", ident)));
+    }
+
+    private void checkAlias(String ident) {
+
+        var alias = aliasRepository.findByTidligereIdent(ident);
+        if (alias.isPresent()) {
+            throw new HttpClientErrorException(BAD_REQUEST,
+                    format(VIOLATION_ALIAS_EXISTS, alias.get().getPerson().getIdent()));
+        }
     }
 }

@@ -32,29 +32,30 @@ public class PersonArtifactService {
 
     public PdlPerson buildPerson(PdlPerson person) {
 
-        return PdlPerson.builder()
-                .kjoenn(kjoennService.convert(person))
-                .innflytting(innflyttingService.convert(person.getInnflytting()))
-                .statsborgerskap(statsborgerskapService.convert(person))
-                .bostedsadresse(bostedAdresseService.convert(person.getBostedsadresse()))
-                .foedsel(foedselService.convert(person))
-                .navn(navnService.convert(person.getNavn()))
-                .oppholdsadresse(oppholdsadresseService.convert(person.getOppholdsadresse()))
-                .adressebeskyttelse(adressebeskyttelseService.convert(person.getAdressebeskyttelse()))
-                .telefonnummer(telefonnummerService.convert(person.getTelefonnummer()))
-                .utflytting(utflyttingService.convert(person.getUtflytting()))
-                .opphold(oppholdService.convert(person.getOpphold()))
-                .tilrettelagtKommunikasjon(tilrettelagtKommunikasjonService.convert(person.getTilrettelagtKommunikasjon()))
-                .doedsfall(doedsfallService.convert(person.getDoedsfall()))
-                .folkeregisterpersonstatus(folkeregisterPersonstatusService.convert(person))
-                .fullmakt(fullmaktService.convert(person))
-                .kontaktadresse(kontaktAdresseService.convert(person.getKontaktadresse()))
-                .utenlandskIdentifikasjonsnummer(utenlandsidentifikasjonsnummerService
-                        .convert(person.getUtenlandskIdentifikasjonsnummer()))
-                .vergemaal(vergemaalService.convert(person))
-                .falskIdentitet(falskIdentitetService.convert(person))
-                .kontaktinformasjonForDoedsbo(kontaktinformasjonForDoedsboService.convert(person))
-                .ident(identtypeService.convert(person))
-                .build();
+        // Orders below matters to some degree, don´t rearrange without checking consequences
+        person.setKjoenn(kjoennService.convert(person));
+        person.setInnflytting(innflyttingService.convert(person.getInnflytting()));
+        person.setStatsborgerskap(statsborgerskapService.convert(person));
+        person.setBostedsadresse(bostedAdresseService.convert(person.getBostedsadresse()));
+        person.setFoedsel(foedselService.convert(person));
+        person.setNavn(navnService.convert(person.getNavn()));
+        person.setOppholdsadresse(oppholdsadresseService.convert(person.getOppholdsadresse()));
+        person.setAdressebeskyttelse(adressebeskyttelseService.convert(person.getAdressebeskyttelse()));
+        person.setTelefonnummer(telefonnummerService.convert(person.getTelefonnummer()));
+        person.setUtflytting(utflyttingService.convert(person.getUtflytting()));
+        person.setOpphold(oppholdService.convert(person.getOpphold()));
+        person.setTilrettelagtKommunikasjon(tilrettelagtKommunikasjonService.convert(person.getTilrettelagtKommunikasjon()));
+        person.setDoedsfall(doedsfallService.convert(person.getDoedsfall()));
+        person.setFolkeregisterpersonstatus(folkeregisterPersonstatusService.convert(person));
+        person.setFullmakt(fullmaktService.convert(person));
+        person.setKontaktadresse(kontaktAdresseService.convert(person.getKontaktadresse()));
+        person.setUtenlandskIdentifikasjonsnummer(utenlandsidentifikasjonsnummerService
+                .convert(person.getUtenlandskIdentifikasjonsnummer()));
+        person.setVergemaal(vergemaalService.convert(person));
+        person.setFalskIdentitet(falskIdentitetService.convert(person));
+        person.setKontaktinformasjonForDoedsbo(kontaktinformasjonForDoedsboService.convert(person));
+        person.setIdent(identtypeService.convert(person));
+
+        return person;
     }
 }

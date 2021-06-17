@@ -12,7 +12,10 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.config.credentials.PdlServiceProperties;
+import no.nav.pdl.forvalter.consumer.command.PdlDeleteCommand;
+import no.nav.pdl.forvalter.consumer.command.PdlOpprettPersonCommand;
 import no.nav.pdl.forvalter.consumer.command.PdlTestdataCommand;
+import no.nav.pdl.forvalter.dto.HistoriskIdent;
 import no.nav.pdl.forvalter.dto.PdlBestillingResponse;
 import no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
@@ -57,14 +60,12 @@ public class PdlTestdataConsumer {
     };
 
     private static final FilterProvider filters = new SimpleFilterProvider().addFilter("idFilter", removeIdFilter);
-
+    private static String token;
+    private static LocalDateTime timestamp;
     private final WebClient webClient;
     private final AccessTokenService accessTokenService;
     private final NaisServerProperties properties;
     private final ObjectMapper objectMapper;
-
-    private static String token;
-    private static LocalDateTime timestamp;
 
     public PdlTestdataConsumer(AccessTokenService accessTokenService,
                                PdlServiceProperties properties,
@@ -81,16 +82,25 @@ public class PdlTestdataConsumer {
 
     public PdlBestillingResponse send(PdlArtifact artifact, String ident, Object body) throws JsonProcessingException {
 
-        return new PdlTestdataCommand(webClient, getBestillingUrl().get(artifact), ident,
-                objectMapper.writer(filters).writeValueAsString(body), getToken()).call();
+        switch (artifact) {
+            case PDL_SLETTING:
+                return new PdlDeleteCommand(webClient, getBestillingUrl().get(artifact), ident, getToken()).call();
+
+            case PDL_OPPRETT_PERSON:
+                return new PdlOpprettPersonCommand(webClient, getBestillingUrl().get(artifact), ident,
+                        (HistoriskIdent) body, getToken()).call();
+            default:
+                return new PdlTestdataCommand(webClient, getBestillingUrl().get(artifact), ident,
+                        objectMapper.writer(filters).writeValueAsString(body), getToken()).call();
+        }
     }
 
     public void delete(List<String> identer) {
 
         identer.forEach(ident -> {
             try {
-                new PdlTestdataCommand(webClient, getBestillingUrl().get(PdlArtifact.PDL_SLETTING), ident,
-                        null, getToken()).call();
+                new PdlDeleteCommand(webClient, getBestillingUrl().get(PdlArtifact.PDL_SLETTING),
+                        ident, getToken()).call();
 
             } catch (WebClientResponseException e) {
                 if (!e.getResponseBodyAsString().contains("Finner ikke forespurt ident i pdl-api")) {
@@ -102,7 +112,7 @@ public class PdlTestdataConsumer {
 
     private String getToken() {
 
-        if (isNull(timestamp) || timestamp.plusMinutes(10).isBefore(LocalDateTime.now()))         {
+        if (isNull(timestamp) || timestamp.plusMinutes(10).isBefore(LocalDateTime.now())) {
             token = accessTokenService.generateToken(properties).block().getTokenValue();
             timestamp = LocalDateTime.now();
         }

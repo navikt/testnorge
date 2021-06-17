@@ -1,5 +1,6 @@
 package no.nav.pdl.forvalter.database.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -53,10 +54,21 @@ public class DbPerson {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DbRelasjon> relasjoner;
 
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DbAlias> alias;
+
     public List<DbRelasjon> getRelasjoner() {
         if (isNull(relasjoner)) {
             relasjoner = new ArrayList<>();
         }
         return relasjoner;
+    }
+
+    public List<DbAlias> getAlias() {
+        if(isNull(alias)) {
+            alias = new ArrayList<>();
+        }
+        return alias;
     }
 }
