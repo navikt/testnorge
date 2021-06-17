@@ -55,4 +55,4 @@ dependencies {
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }
 
-description = 'oppsummeringsdokument-service'
+description = 'oppsummeringsdokument-service'testnav-amelding-service
