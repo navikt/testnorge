@@ -25,9 +25,10 @@ public class SaveOppsummeringsdokumenterCommand implements Callable<String> {
     @Override
     public String call() {
         log.info(
-                "Sender inn opplysningspliktig {} den {}.",
+                "Sender inn opplysningspliktig {} den {} i {}.",
                 opplysningspliktigDTO.getOpplysningspliktigOrganisajonsnummer(),
-                opplysningspliktigDTO.getKalendermaaned()
+                opplysningspliktigDTO.getKalendermaaned(),
+                miljo
         );
         var responseId = webClient
                 .put()
