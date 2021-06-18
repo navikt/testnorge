@@ -312,3 +312,6 @@ project(':inntektsmelding-service').projectDir = file('apps/inntektsmelding-serv
 
 include 'dokarkiv-proxy'
 project(":dokarkiv-proxy").projectDir = file('proxies/dokarkiv-proxy')
+
+include 'saf-proxy'
+project(":saf-proxy").projectDir = file('proxies/saf-proxy')

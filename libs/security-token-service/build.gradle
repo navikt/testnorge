@@ -1,10 +1,11 @@
 plugins {
     id 'no.nav.registre.testnorge.java-conventions'
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'io.spring.dependency-management' version "${springDependencyManagement}"
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-webflux:2.3.2.RELEASE'
-    implementation 'org.springframework.boot:spring-boot-starter-web:2.3.4.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
 }
 
 group = 'no.nav.registre.testnorge.libs'
