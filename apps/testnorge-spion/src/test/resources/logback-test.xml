@@ -6,7 +6,7 @@
         <encoder>
             <pattern>%date [%-5level] %logger{1} -- %message%n</pattern>
         </encoder>
-        <filter class="ch.qos.logback.classic.no.nav.testnav.safproxy.filter.ThresholdFilter">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>OFF</level>
         </filter>
     </appender>

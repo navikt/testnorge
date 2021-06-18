@@ -44,7 +44,6 @@ public class SafProxyApplicationStarter {
         SpringApplication.run(SafProxyApplicationStarter.class, args);
     }
 
-
     private GatewayFilter addAuthenticationHeaderFilter(Supplier<String> tokenService) {
         var getHeader = new GetHeader(() -> HttpHeaders.AUTHORIZATION, () -> "Bearer " + tokenService.get());
         return new AddRequestHeaderGatewayFilterFactory().apply(getHeader);
