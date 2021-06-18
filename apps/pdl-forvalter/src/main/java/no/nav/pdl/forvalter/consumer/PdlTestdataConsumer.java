@@ -1,5 +1,8 @@
 package no.nav.pdl.forvalter.consumer;
 
+import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlStatus.FEIL;
+import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.getBestillingUrl;
+
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,21 +14,22 @@ import com.fasterxml.jackson.databind.ser.PropertyWriter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.pdl.forvalter.config.credentials.PdlServiceProperties;
-import no.nav.pdl.forvalter.consumer.command.PdlTestdataCommand;
-import no.nav.pdl.forvalter.dto.PdlBestillingResponse;
-import no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact;
-import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static java.util.Objects.isNull;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.getBestillingUrl;
+import no.nav.pdl.forvalter.config.credentials.PdlServiceProperties;
+import no.nav.pdl.forvalter.consumer.command.pdl.PdlTestdataCommand;
+import no.nav.pdl.forvalter.consumer.command.pdl.DeletePersonCommand;
+import no.nav.pdl.forvalter.domain.ArtifactValues;
+import no.nav.pdl.forvalter.dto.PdlOrdreResponse;
+import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
+import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
+import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 
 @Slf4j
 @Service
@@ -63,9 +67,6 @@ public class PdlTestdataConsumer {
     private final NaisServerProperties properties;
     private final ObjectMapper objectMapper;
 
-    private static String token;
-    private static LocalDateTime timestamp;
-
     public PdlTestdataConsumer(AccessTokenService accessTokenService,
                                PdlServiceProperties properties,
                                ObjectMapper objectMapper) {
@@ -79,33 +80,53 @@ public class PdlTestdataConsumer {
         this.objectMapper = objectMapper;
     }
 
-    public PdlBestillingResponse send(PdlArtifact artifact, String ident, Object body) throws JsonProcessingException {
+    public Flux<PdlOrdreResponse.Hendelse> send(List<ArtifactValues> artifactList) {
+        return accessTokenService
+                .generateToken(properties)
+                .flatMapMany(accessToken -> artifactList
+                        .stream()
+                        .map(values -> send(values, accessToken))
+                        .reduce(Flux.empty(), Flux::concat)
+                );
 
-        return new PdlTestdataCommand(webClient, getBestillingUrl().get(artifact), ident,
-                objectMapper.writer(filters).writeValueAsString(body), getToken()).call();
+    }
+
+
+    private Flux<PdlOrdreResponse.Hendelse> send(ArtifactValues values, AccessToken accessToken) {
+        String body;
+        try {
+            body = objectMapper.writer(filters).writeValueAsString(values.getBody());
+        } catch (JsonProcessingException e) {
+            return Flux.from(Mono.just(
+                    PdlOrdreResponse.Hendelse.builder()
+                            .id(values.getBody().getId())
+                            .status(FEIL)
+                            .error(e.getMessage())
+                            .build()
+            ));
+        }
+
+        return Flux.from(
+                new PdlTestdataCommand(
+                        webClient,
+                        getBestillingUrl().get(values.getArtifact()),
+                        values.getIdent(),
+                        body,
+                        accessToken.getTokenValue(),
+                        values.getBody().getId()
+                ).call()
+        );
     }
 
     public void delete(List<String> identer) {
-
-        identer.forEach(ident -> {
-            try {
-                new PdlTestdataCommand(webClient, getBestillingUrl().get(PdlArtifact.PDL_SLETTING), ident,
-                        null, getToken()).call();
-
-            } catch (WebClientResponseException e) {
-                if (!e.getResponseBodyAsString().contains("Finner ikke forespurt ident i pdl-api")) {
-                    log.error("Sletting av person feilet mot pdl {} ", e.getResponseBodyAsString(), e);
-                }
-            }
-        });
-    }
-
-    private String getToken() {
-
-        if (isNull(timestamp) || timestamp.plusMinutes(10).isBefore(LocalDateTime.now()))         {
-            token = accessTokenService.generateToken(properties).block().getTokenValue();
-            timestamp = LocalDateTime.now();
-        }
-        return token;
+        accessTokenService
+                .generateToken(properties)
+                .flatMapMany(accessToken -> identer
+                        .stream()
+                        .map(ident -> Flux.from(new DeletePersonCommand(webClient, ident, accessToken.getTokenValue(), null).call()))
+                        .reduce(Flux.empty(), Flux::concat)
+                )
+                .collectList()
+                .block();
     }
 }
