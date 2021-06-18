@@ -16,12 +16,12 @@ sts:
   preprod:
     token:
       provider:
-        url: ${STS_PREPROD_TOKEN_PROVIDER_URL}
+        url: https://security-token-service.dev.adeo.no/rest/v1/sts/token
         username: ${STS_PREPROD_PROVIDER_USERNAME}
         password: ${STS_PREPROD_PROVIDER_PASSWORD}
   test:
     token:
       provider:
-        url: ${STS_TEST_PROVIDER_URL}
+        url: http://security-token-service.t4.svc.nais.local/rest/v1/sts/token
         username: ${STS_TEST_PROVIDER_USERNAME}
         password: ${STS_TEST_PROVIDER_PASSWORD}
