@@ -140,7 +140,7 @@ public class ArenaForvalterClient implements ClientRegister {
                             .append(
                                     response.getBody().getNyeDagp().get(0).getNyeDagpResponse().getUtfall().equals("JA")
                                             ? "$OK"
-                                            : "Feil dagpenger: " + response.getBody().getNyeDagp().get(0).getNyeDagpResponse().getBegrunnelse());
+                                            : "$Feil dagpenger: " + response.getBody().getNyeDagp().get(0).getNyeDagpResponse().getBegrunnelse());
                 } else {
                     status.append(',')
                             .append(arenaNyeDagpenger.getMiljoe())
