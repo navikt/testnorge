@@ -8,11 +8,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
-
 import no.nav.registre.aareg.util.JsonDateDeserializer;
 import no.nav.registre.aareg.util.JsonDateSerializer;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -37,4 +36,5 @@ public class RsArbeidsavtale {
 
     private Double stillingsprosent;
     private String yrke;
+    private String ansettelsesform;
 }
