@@ -1,12 +1,12 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.pdl.forvalter.domain.PdlBostedadresse;
-import no.nav.pdl.forvalter.domain.PdlDoedsfall;
-import no.nav.pdl.forvalter.domain.PdlFolkeregisterpersonstatus;
-import no.nav.pdl.forvalter.domain.PdlOpphold;
-import no.nav.pdl.forvalter.domain.PdlPerson;
-import no.nav.pdl.forvalter.dto.RsUtflytting;
+import no.nav.pdl.forvalter.domain.BostedadresseDTO;
+import no.nav.pdl.forvalter.domain.DoedsfallDTO;
+import no.nav.pdl.forvalter.domain.FolkeregisterpersonstatusDTO;
+import no.nav.pdl.forvalter.domain.OppholdDTO;
+import no.nav.pdl.forvalter.domain.PersonDTO;
+import no.nav.pdl.forvalter.domain.UtflyttingDTO;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 
@@ -14,18 +14,18 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.pdl.forvalter.domain.PdlFolkeregisterpersonstatus.Folkeregisterpersonstatus.BOSATT;
-import static no.nav.pdl.forvalter.domain.PdlFolkeregisterpersonstatus.Folkeregisterpersonstatus.DOED;
-import static no.nav.pdl.forvalter.domain.PdlFolkeregisterpersonstatus.Folkeregisterpersonstatus.FOEDSELSREGISTRERT;
-import static no.nav.pdl.forvalter.domain.PdlFolkeregisterpersonstatus.Folkeregisterpersonstatus.IKKE_BOSATT;
-import static no.nav.pdl.forvalter.domain.PdlFolkeregisterpersonstatus.Folkeregisterpersonstatus.MIDLERTIDIG;
-import static no.nav.pdl.forvalter.domain.PdlFolkeregisterpersonstatus.Folkeregisterpersonstatus.UTFLYTTET;
+import static no.nav.pdl.forvalter.domain.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.BOSATT;
+import static no.nav.pdl.forvalter.domain.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.DOED;
+import static no.nav.pdl.forvalter.domain.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.FOEDSELSREGISTRERT;
+import static no.nav.pdl.forvalter.domain.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.IKKE_BOSATT;
+import static no.nav.pdl.forvalter.domain.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.MIDLERTIDIG;
+import static no.nav.pdl.forvalter.domain.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.UTFLYTTET;
 
 @Service
 @RequiredArgsConstructor
 public class FolkeregisterPersonstatusService {
 
-    public List<PdlFolkeregisterpersonstatus> convert(PdlPerson person) {
+    public List<FolkeregisterpersonstatusDTO> convert(PersonDTO person) {
 
         for (var type : person.getFolkeregisterpersonstatus()) {
 
@@ -44,11 +44,11 @@ public class FolkeregisterPersonstatusService {
         return person.getFolkeregisterpersonstatus();
     }
 
-    private void handle(PdlFolkeregisterpersonstatus status,
-                        PdlBostedadresse bostedadresse,
-                        RsUtflytting utflytting,
-                        PdlOpphold opphold,
-                        PdlDoedsfall doedsfall) {
+    private void handle(FolkeregisterpersonstatusDTO status,
+                        BostedadresseDTO bostedadresse,
+                        UtflyttingDTO utflytting,
+                        OppholdDTO opphold,
+                        DoedsfallDTO doedsfall) {
 
         if (isNull(status.getStatus())) {
 

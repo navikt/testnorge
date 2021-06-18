@@ -2,12 +2,11 @@ package no.nav.pdl.forvalter.service;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
-import no.nav.pdl.forvalter.domain.PdlBostedadresse;
-import no.nav.pdl.forvalter.domain.PdlBostedadresse.PdlUkjentBosted;
-import no.nav.pdl.forvalter.domain.PdlMatrikkeladresse;
-import no.nav.pdl.forvalter.domain.PdlUtenlandskAdresse;
-import no.nav.pdl.forvalter.domain.PdlVegadresse;
-import no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO;
+import no.nav.pdl.forvalter.domain.BostedadresseDTO;
+import no.nav.pdl.forvalter.domain.BostedadresseDTO.UkjentBostedDTO;
+import no.nav.pdl.forvalter.domain.MatrikkeladresseDTO;
+import no.nav.pdl.forvalter.domain.UtenlandskAdresseDTO;
+import no.nav.pdl.forvalter.domain.VegadresseDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,7 +17,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import java.time.LocalDate;
 import java.util.List;
 
-import static no.nav.pdl.forvalter.domain.PdlAdresse.Master.FREG;
+import static no.nav.pdl.forvalter.domain.AdresseDTO.Master.FREG;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -43,14 +42,14 @@ class BostedAdresseServiceTest {
     @Test
     void whenMultipleAdressesProvided_thenThrowExecption() {
 
-        var request = List.of(PdlBostedadresse.builder()
-                .vegadresse(new PdlVegadresse())
-                .matrikkeladresse(new PdlMatrikkeladresse())
+        var request = List.of(BostedadresseDTO.builder()
+                .vegadresse(new VegadresseDTO())
+                .matrikkeladresse(new MatrikkeladresseDTO())
                 .isNew(true)
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.convert((List<PdlBostedadresse>) request));
+                bostedAdresseService.convert((List<BostedadresseDTO>) request));
 
         assertThat(exception.getMessage(), containsString("Kun én adresse skal være satt (vegadresse, " +
                 "matrikkeladresse, ukjentbosted, utenlandskAdresse)"));
@@ -59,12 +58,12 @@ class BostedAdresseServiceTest {
     @Test
     void whenNoAdressProvided_thenThrowExecption() {
 
-        var request = List.of(PdlBostedadresse.builder()
+        var request = List.of(BostedadresseDTO.builder()
                 .isNew(true)
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.convert((List<PdlBostedadresse>) request));
+                bostedAdresseService.convert((List<BostedadresseDTO>) request));
 
         assertThat(exception.getMessage(), containsString("Én av adressene må velges " +
                 "(vegadresse, matrikkeladresse, ukjentbosted, utenlandskAdresse)"));
@@ -73,14 +72,14 @@ class BostedAdresseServiceTest {
     @Test
     void whenUtenlandskAdresseProvidedAndMasterIsFreg_thenThrowExecption() {
 
-        var request = List.of(PdlBostedadresse.builder()
-                .utenlandskAdresse(new PdlUtenlandskAdresse())
+        var request = List.of(BostedadresseDTO.builder()
+                .utenlandskAdresse(new UtenlandskAdresseDTO())
                 .master(FREG)
                 .isNew(true)
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.convert((List<PdlBostedadresse>) request));
+                bostedAdresseService.convert((List<BostedadresseDTO>) request));
 
         assertThat(exception.getMessage(), containsString("Utenlandsk adresse krever at master er PDL"));
     }
@@ -88,15 +87,15 @@ class BostedAdresseServiceTest {
     @Test
     void whenVegadresseWithBruksenhetsnummerInvalidFormat_thenThrowExecption() {
 
-        var request = List.of(PdlBostedadresse.builder()
-                .vegadresse(PdlVegadresse.builder()
+        var request = List.of(BostedadresseDTO.builder()
+                .vegadresse(VegadresseDTO.builder()
                         .bruksenhetsnummer("HK25419")
                         .build())
                 .isNew(true)
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.convert((List<PdlBostedadresse>) request));
+                bostedAdresseService.convert((List<BostedadresseDTO>) request));
 
         assertThat(exception.getMessage(), containsString("Gyldig format er Bokstaven H, L, U eller K etterfulgt av fire sifre"));
     }
@@ -104,15 +103,15 @@ class BostedAdresseServiceTest {
     @Test
     void whenMatrikkeladresseWithBruksenhetsnummerInvalidFormat_thenThrowExecption() {
 
-        var request = List.of(PdlBostedadresse.builder()
-                .matrikkeladresse(PdlMatrikkeladresse.builder()
+        var request = List.of(BostedadresseDTO.builder()
+                .matrikkeladresse(MatrikkeladresseDTO.builder()
                         .bruksenhetsnummer("F8021")
                         .build())
                 .isNew(true)
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.convert((List<PdlBostedadresse>) request));
+                bostedAdresseService.convert((List<BostedadresseDTO>) request));
 
         assertThat(exception.getMessage(), containsString("Gyldig format er Bokstaven H, L, U eller K etterfulgt av fire sifre"));
     }
@@ -120,15 +119,15 @@ class BostedAdresseServiceTest {
     @Test
     void whenInvalidDateInterval_thenThrowExecption() {
 
-        var request = List.of(PdlBostedadresse.builder()
-                .vegadresse(new PdlVegadresse())
+        var request = List.of(BostedadresseDTO.builder()
+                .vegadresse(new VegadresseDTO())
                 .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
                 .gyldigTilOgMed(LocalDate.of(2018, 1, 1).atStartOfDay())
                 .isNew(true)
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.convert((List<PdlBostedadresse>) request));
+                bostedAdresseService.convert((List<BostedadresseDTO>) request));
 
         assertThat(exception.getMessage(), containsString("Feil: Overlappende adressedatoer er ikke lov"));
     }
@@ -136,18 +135,18 @@ class BostedAdresseServiceTest {
     @Test
     void whenOverlappingDateIntervalsInInput_thenThrowExecption() {
 
-        var request = List.of(PdlBostedadresse.builder()
-                        .vegadresse(new PdlVegadresse())
+        var request = List.of(BostedadresseDTO.builder()
+                        .vegadresse(new VegadresseDTO())
                         .gyldigFraOgMed(LocalDate.of(2020, 1, 2).atStartOfDay())
                         .isNew(true)
                         .build(),
-                PdlBostedadresse.builder()
-                        .matrikkeladresse(new PdlMatrikkeladresse())
+                BostedadresseDTO.builder()
+                        .matrikkeladresse(new MatrikkeladresseDTO())
                         .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
                         .isNew(true)
                         .build());
 
-        when(adresseServiceConsumer.getAdresse(any(PdlVegadresse.class), isNull())).thenReturn(new VegadresseDTO());
+        when(adresseServiceConsumer.getAdresse(any(VegadresseDTO.class), isNull())).thenReturn(new no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 bostedAdresseService.convert(request));
@@ -158,15 +157,15 @@ class BostedAdresseServiceTest {
     @Test
     void whenOverlappingDateIntervalsInInput2_thenThrowExecption() {
 
-        var request = List.of(PdlBostedadresse.builder()
+        var request = List.of(BostedadresseDTO.builder()
                         .gyldigFraOgMed(LocalDate.of(2020, 2, 3).atStartOfDay())
-                        .matrikkeladresse(new PdlMatrikkeladresse())
+                        .matrikkeladresse(new MatrikkeladresseDTO())
                         .isNew(true)
                         .build(),
-                PdlBostedadresse.builder()
+                BostedadresseDTO.builder()
                         .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
                         .gyldigTilOgMed(LocalDate.of(2020, 2, 3).atStartOfDay())
-                        .utenlandskAdresse(new PdlUtenlandskAdresse())
+                        .utenlandskAdresse(new UtenlandskAdresseDTO())
                         .isNew(true)
                         .build());
 
@@ -179,9 +178,9 @@ class BostedAdresseServiceTest {
     @Test
     void whenFraDatoAndEmptyTilDato_thenAcceptRequest() {
 
-        var target = bostedAdresseService.convert(List.of(PdlBostedadresse.builder()
+        var target = bostedAdresseService.convert(List.of(BostedadresseDTO.builder()
                 .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
-                .ukjentBosted(new PdlUkjentBosted())
+                .ukjentBosted(new UkjentBostedDTO())
                 .isNew(true)
                 .build())).get(0);
 
@@ -191,20 +190,19 @@ class BostedAdresseServiceTest {
     @Test
     void whenPreviousOppholdHasEmptyTilDato_thenFixPreviousOppholdTilDato() {
 
-        when(adresseServiceConsumer.getAdresse(any(PdlVegadresse.class), isNull())).thenReturn(new VegadresseDTO());
+        when(adresseServiceConsumer.getAdresse(any(VegadresseDTO.class), isNull())).thenReturn(new no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO());
 
-        var target = bostedAdresseService.convert(List.of(PdlBostedadresse.builder()
+        var target = bostedAdresseService.convert(List.of(BostedadresseDTO.builder()
                         .gyldigFraOgMed(LocalDate.of(2020, 2, 4).atStartOfDay())
-                        .vegadresse(new PdlVegadresse())
+                        .vegadresse(new VegadresseDTO())
                         .isNew(true)
                         .build(),
-                PdlBostedadresse.builder()
+                BostedadresseDTO.builder()
                         .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
-                        .utenlandskAdresse(new PdlUtenlandskAdresse())
+                        .utenlandskAdresse(new UtenlandskAdresseDTO())
                         .isNew(true)
                         .build()));
 
         assertThat(target.get(1).getGyldigTilOgMed(), is(equalTo(LocalDate.of(2020, 2, 3).atStartOfDay())));
     }
-
 }

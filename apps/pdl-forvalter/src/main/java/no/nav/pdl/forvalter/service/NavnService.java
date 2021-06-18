@@ -2,8 +2,7 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
-import no.nav.pdl.forvalter.dto.RsNavn;
-import no.nav.registre.testnorge.libs.dto.generernavnservice.v1.NavnDTO;
+import no.nav.pdl.forvalter.domain.NavnDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -16,7 +15,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
 @RequiredArgsConstructor
-public class NavnService extends PdlArtifactService<RsNavn> {
+public class NavnService extends PdlArtifactService<NavnDTO> {
 
     private static final String NAVN_INVALID_ERROR = "Navn er ikke i liste over gyldige verdier";
     private final GenererNavnServiceConsumer genererNavnServiceConsumer;
@@ -26,12 +25,12 @@ public class NavnService extends PdlArtifactService<RsNavn> {
     }
 
     @Override
-    protected void validate(RsNavn navn) {
+    protected void validate(NavnDTO navn) {
 
         if ((isNotBlank(navn.getFornavn()) ||
                 isNotBlank(navn.getMellomnavn()) ||
                 isNotBlank(navn.getEtternavn())) &&
-                !genererNavnServiceConsumer.verifyNavn(NavnDTO.builder()
+                !genererNavnServiceConsumer.verifyNavn(no.nav.registre.testnorge.libs.dto.generernavnservice.v1.NavnDTO.builder()
                         .adjektiv(navn.getFornavn())
                         .adverb(navn.getMellomnavn())
                         .substantiv(navn.getEtternavn())
@@ -42,7 +41,7 @@ public class NavnService extends PdlArtifactService<RsNavn> {
     }
 
     @Override
-    protected void handle(RsNavn navn) {
+    protected void handle(NavnDTO navn) {
 
         if (isBlank(navn.getFornavn()) || isBlank(navn.getEtternavn()) ||
                 (isBlank(navn.getMellomnavn()) && isTrue(navn.getHasMellomnavn()))) {
@@ -59,7 +58,7 @@ public class NavnService extends PdlArtifactService<RsNavn> {
     }
 
     @Override
-    protected void enforceIntegrity(List<RsNavn> type) {
+    protected void enforceIntegrity(List<NavnDTO> type) {
 
         // Ingen listeintegritet å ivareta
     }

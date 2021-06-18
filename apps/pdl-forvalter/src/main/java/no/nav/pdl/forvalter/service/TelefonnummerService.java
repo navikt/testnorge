@@ -1,6 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.domain.PdlTelefonnummer;
+import no.nav.pdl.forvalter.domain.TelefonnummerDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -10,7 +10,7 @@ import static java.util.Objects.isNull;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
-public class TelefonnummerService extends PdlArtifactService<PdlTelefonnummer> {
+public class TelefonnummerService extends PdlArtifactService<TelefonnummerDTO> {
 
     private static final String VALIDATION_PRIORITET_REQUIRED = "Telefonnummer: prioritet er påkrevd";
     private static final String VALIDATION_PRIORITET_ERROR = "Telefonnummerets prioritet må være 1 eller 2";
@@ -24,7 +24,7 @@ public class TelefonnummerService extends PdlArtifactService<PdlTelefonnummer> {
     private static final String VALIDATION_NUMMER_INVALID_LENGTH = "Telefonnummer: nummer kan ha lengde fra 3 til 16 sifre";
 
     @Override
-    protected void validate(PdlTelefonnummer telefonnummer) {
+    protected void validate(TelefonnummerDTO telefonnummer) {
 
         if (isNull(telefonnummer.getNummer())) {
             throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_NUMMER_REQUIRED);
@@ -48,13 +48,13 @@ public class TelefonnummerService extends PdlArtifactService<PdlTelefonnummer> {
     }
 
     @Override
-    protected void handle(PdlTelefonnummer type) {
+    protected void handle(TelefonnummerDTO type) {
 
         // Ingen håndtering for enkeltpost
     }
 
     @Override
-    protected void enforceIntegrity(List<PdlTelefonnummer> telefonnummer) {
+    protected void enforceIntegrity(List<TelefonnummerDTO> telefonnummer) {
 
         var pri1 = 0;
         var pri2 = 0;

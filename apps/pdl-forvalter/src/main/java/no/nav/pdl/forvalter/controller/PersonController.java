@@ -4,10 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.pdl.forvalter.domain.FullPersonDTO;
+import no.nav.pdl.forvalter.domain.PersonUpdateRequestDTO;
 import no.nav.pdl.forvalter.dto.BestillingRequest;
 import no.nav.pdl.forvalter.dto.PdlOrdreResponse;
-import no.nav.pdl.forvalter.dto.PersonUpdateRequest;
-import no.nav.pdl.forvalter.dto.RsPerson;
 import no.nav.pdl.forvalter.service.PdlOrdreService;
 import no.nav.pdl.forvalter.service.PersonService;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,7 +30,7 @@ public class PersonController {
 
     @GetMapping(value = "/{ident}")
     @Operation(description = "Hent person")
-    public RsPerson getPerson(@PathVariable String ident) {
+    public FullPersonDTO getPerson(@PathVariable String ident) {
 
         return personService.getPerson(ident);
     }
@@ -44,7 +44,7 @@ public class PersonController {
 
     @PutMapping(value = "/{ident}")
     @Operation(description = "Endre, legg-til på person")
-    public String updatePerson(@PathVariable String ident, @RequestBody PersonUpdateRequest request) {
+    public String updatePerson(@PathVariable String ident, @RequestBody PersonUpdateRequestDTO request) {
 
         return personService.updatePerson(ident, request);
     }

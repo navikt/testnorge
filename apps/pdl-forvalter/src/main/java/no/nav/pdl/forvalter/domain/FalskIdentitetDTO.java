@@ -1,0 +1,49 @@
+package no.nav.pdl.forvalter.domain;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Data
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class FalskIdentitetDTO extends DbVersjonDTO {
+
+    @Schema(description = "Informasjon om rett identitet for folkeregisterperson som er opphørt som fiktiv, eller falsk. " +
+            "Rett identitet er gitt ved en av følgende: rettIdentitetVedOpplysninger, rettIdentitetErUkjent eller " +
+            "rettIdentitetVedIdentifikasjonsnummer. Maksimalt en av disse skal være satt. Hvis ingen angitt eller " +
+            "nyFalskIdentitet er satt vil ny person oppreettes og bli satt til rettIdentitetVedIdentifikasjonsnummer.")
+
+    private Boolean erFalsk;
+    private LocalDateTime gyldigFom;
+    private LocalDateTime gyldigTom;
+
+    private PersonRequestDTO nyFalskIdentitetPerson;
+
+    private Boolean rettIdentitetErUkjent;
+    private String rettIdentitetVedIdentifikasjonsnummer;
+    private IdentifiserendeInformasjonDTO rettIdentitetVedOpplysninger;
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class IdentifiserendeInformasjonDTO implements Serializable {
+
+        private LocalDateTime foedselsdato;
+        private KjoennDTO.Kjoenn kjoenn;
+        private NavnDTO personnavn;
+        private List<String> statsborgerskap;
+    }
+}

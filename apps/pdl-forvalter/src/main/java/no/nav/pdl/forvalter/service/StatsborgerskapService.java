@@ -2,9 +2,9 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.domain.Identtype;
-import no.nav.pdl.forvalter.domain.PdlPerson;
-import no.nav.pdl.forvalter.domain.PdlStatsborgerskap;
-import no.nav.pdl.forvalter.dto.RsInnflytting;
+import no.nav.pdl.forvalter.domain.InnflyttingDTO;
+import no.nav.pdl.forvalter.domain.PersonDTO;
+import no.nav.pdl.forvalter.domain.StatsborgerskapDTO;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
 import no.nav.pdl.forvalter.utils.TilfeldigLandService;
@@ -30,7 +30,7 @@ public class StatsborgerskapService {
 
     private final TilfeldigLandService tilfeldigLandService;
 
-    public List<PdlStatsborgerskap> convert(PdlPerson person) {
+    public List<StatsborgerskapDTO> convert(PersonDTO person) {
 
         for (var type : person.getStatsborgerskap()) {
 
@@ -46,7 +46,7 @@ public class StatsborgerskapService {
         return person.getStatsborgerskap();
     }
 
-    private void validate(PdlStatsborgerskap statsborgerskap) {
+    private void validate(StatsborgerskapDTO statsborgerskap) {
 
         if (nonNull(statsborgerskap.getLandkode()) && !isLandkode(statsborgerskap.getLandkode())) {
             throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_LANDKODE_ERROR);
@@ -58,7 +58,7 @@ public class StatsborgerskapService {
         }
     }
 
-    private void handle(PdlStatsborgerskap statsborgerskap, String ident, RsInnflytting innflytting) {
+    private void handle(StatsborgerskapDTO statsborgerskap, String ident, InnflyttingDTO innflytting) {
 
         if (isBlank(statsborgerskap.getLandkode())) {
             if (nonNull(innflytting)) {

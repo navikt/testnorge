@@ -3,19 +3,19 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
-import no.nav.pdl.forvalter.domain.PdlBostedadresse;
+import no.nav.pdl.forvalter.domain.BostedadresseDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 import static java.util.Objects.nonNull;
-import static no.nav.pdl.forvalter.domain.PdlAdresse.Master.FREG;
-import static no.nav.pdl.forvalter.domain.PdlAdresse.Master.PDL;
+import static no.nav.pdl.forvalter.domain.AdresseDTO.Master.FREG;
+import static no.nav.pdl.forvalter.domain.AdresseDTO.Master.PDL;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
 @RequiredArgsConstructor
-public class BostedAdresseService extends AdresseService<PdlBostedadresse> {
+public class BostedAdresseService extends AdresseService<BostedadresseDTO> {
 
     private static final String VALIDATION_AMBIGUITY_ERROR = "Kun én adresse skal være satt (vegadresse, " +
             "matrikkeladresse, ukjentbosted, utenlandskAdresse)";
@@ -27,7 +27,7 @@ public class BostedAdresseService extends AdresseService<PdlBostedadresse> {
     private final MapperFacade mapperFacade;
 
     @Override
-    protected void validate(PdlBostedadresse adresse) {
+    protected void validate(BostedadresseDTO adresse) {
 
         if (count(adresse.getMatrikkeladresse()) +
                 count(adresse.getUtenlandskAdresse()) +
@@ -58,7 +58,7 @@ public class BostedAdresseService extends AdresseService<PdlBostedadresse> {
     }
 
     @Override
-    protected void handle(PdlBostedadresse bostedadresse) {
+    protected void handle(BostedadresseDTO bostedadresse) {
         if (nonNull(bostedadresse.getVegadresse())) {
             var vegadresse =
                     adresseServiceConsumer.getAdresse(bostedadresse.getVegadresse(), bostedadresse.getAdresseIdentifikatorFraMatrikkelen());

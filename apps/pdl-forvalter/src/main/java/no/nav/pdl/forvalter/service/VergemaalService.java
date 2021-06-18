@@ -3,9 +3,9 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.database.model.RelasjonType;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
-import no.nav.pdl.forvalter.domain.PdlPerson;
-import no.nav.pdl.forvalter.dto.RsPersonRequest;
-import no.nav.pdl.forvalter.dto.RsVergemaal;
+import no.nav.pdl.forvalter.domain.PersonDTO;
+import no.nav.pdl.forvalter.domain.PersonRequestDTO;
+import no.nav.pdl.forvalter.dto.VergemaalDTO;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -33,7 +33,7 @@ public class VergemaalService {
     private final CreatePersonService createPersonService;
     private final RelasjonService relasjonService;
 
-    public List<RsVergemaal> convert(PdlPerson person) {
+    public List<VergemaalDTO> convert(PersonDTO person) {
 
         for (var type : person.getVergemaal()) {
 
@@ -49,7 +49,7 @@ public class VergemaalService {
         return person.getVergemaal();
     }
 
-    private void validate(RsVergemaal vergemaal) {
+    private void validate(VergemaalDTO vergemaal) {
 
         if (isNull(vergemaal.getEmbete())) {
             throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_EMBETE_ERROR);
@@ -70,12 +70,12 @@ public class VergemaalService {
         }
     }
 
-    private void handle(RsVergemaal fullmakt, String ident) {
+    private void handle(VergemaalDTO fullmakt, String ident) {
 
         if (isBlank(fullmakt.getVergeIdent())) {
 
             if (isNull(fullmakt.getNyVergeIdent())) {
-                fullmakt.setNyVergeIdent(new RsPersonRequest());
+                fullmakt.setNyVergeIdent(new PersonRequestDTO());
             }
 
             if (isNull(fullmakt.getNyVergeIdent().getAlder()) &&

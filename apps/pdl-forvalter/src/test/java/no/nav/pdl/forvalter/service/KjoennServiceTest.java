@@ -1,7 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.domain.PdlKjoenn;
-import no.nav.pdl.forvalter.domain.PdlPerson;
+import no.nav.pdl.forvalter.domain.KjoennDTO;
+import no.nav.pdl.forvalter.domain.PersonDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -9,8 +9,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
-import static no.nav.pdl.forvalter.domain.PdlKjoenn.Kjoenn.KVINNE;
-import static no.nav.pdl.forvalter.domain.PdlKjoenn.Kjoenn.MANN;
+import static no.nav.pdl.forvalter.domain.KjoennDTO.Kjoenn.KVINNE;
+import static no.nav.pdl.forvalter.domain.KjoennDTO.Kjoenn.MANN;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -28,8 +28,8 @@ class KjoennServiceTest {
     void whenEmptyAndIdentIsKvinne_thenProvideKjoennIsKvinne() {
 
         var target = kjoennService.convert(
-                PdlPerson.builder()
-                        .kjoenn(List.of(PdlKjoenn.builder().isNew(true).build()))
+                PersonDTO.builder()
+                        .kjoenn(List.of(KjoennDTO.builder().isNew(true).build()))
                         .ident(IDENT_KVINNE)
                         .build()).get(0);
 
@@ -40,8 +40,8 @@ class KjoennServiceTest {
     void whenEmptyAndIdentIsMann_thenProvideKjoennIsMann() {
 
         var target = kjoennService.convert(
-                PdlPerson.builder()
-                        .kjoenn(List.of(PdlKjoenn.builder().isNew(true).build()))
+                PersonDTO.builder()
+                        .kjoenn(List.of(KjoennDTO.builder().isNew(true).build()))
                         .ident(IDENT_MANN)
                         .build()).get(0);
 
@@ -52,8 +52,8 @@ class KjoennServiceTest {
     void whenKjoennIsMannAndIdentIsKvinne_thenProvideKjoennIsMann() {
 
         var target = kjoennService.convert(
-                PdlPerson.builder()
-                        .kjoenn(List.of(PdlKjoenn.builder()
+                PersonDTO.builder()
+                        .kjoenn(List.of(KjoennDTO.builder()
                                 .kjoenn(MANN)
                                 .isNew(true)
                                 .build()))
@@ -67,8 +67,8 @@ class KjoennServiceTest {
     void whenKjoennIsKvinneAndIdentIsMann_thenProvideKjoennIsKvinne() {
 
         var target = kjoennService.convert(
-                PdlPerson.builder()
-                        .kjoenn(List.of(PdlKjoenn.builder()
+                PersonDTO.builder()
+                        .kjoenn(List.of(KjoennDTO.builder()
                                 .kjoenn(KVINNE)
                                 .isNew(true)
                                 .build()))

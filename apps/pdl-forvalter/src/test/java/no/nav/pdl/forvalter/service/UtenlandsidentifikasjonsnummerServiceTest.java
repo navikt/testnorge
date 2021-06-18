@@ -1,6 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.domain.PdlUtenlandskIdentifikasjonsnummer;
+import no.nav.pdl.forvalter.domain.UtenlandskIdentifikasjonsnummerDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,12 +22,12 @@ class UtenlandsidentifikasjonsnummerServiceTest {
     @Test
     void whenIdentifikasjonsnummerIkkeIfylt_thenThrowExecption() {
 
-        var request = List.of(PdlUtenlandskIdentifikasjonsnummer.builder()
+        var request = List.of(UtenlandskIdentifikasjonsnummerDTO.builder()
                 .isNew(true)
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                utenlandsidentifikasjonsnummerService.convert((List<PdlUtenlandskIdentifikasjonsnummer>) request));
+                utenlandsidentifikasjonsnummerService.convert((List<UtenlandskIdentifikasjonsnummerDTO>) request));
 
         assertThat(exception.getMessage(), containsString("Utenlandsk identifikasjonsnummer må oppgis"));
     }
@@ -35,13 +35,13 @@ class UtenlandsidentifikasjonsnummerServiceTest {
     @Test
     void whenOpphoertIkkeIfylt_thenThrowExecption() {
 
-        var request = List.of(PdlUtenlandskIdentifikasjonsnummer.builder()
+        var request = List.of(UtenlandskIdentifikasjonsnummerDTO.builder()
                 .identifikasjonsnummer("1233123")
                 .isNew(true)
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                utenlandsidentifikasjonsnummerService.convert((List<PdlUtenlandskIdentifikasjonsnummer>) request));
+                utenlandsidentifikasjonsnummerService.convert((List<UtenlandskIdentifikasjonsnummerDTO>) request));
 
         assertThat(exception.getMessage(), containsString("Er utenlandsk identifikasjonsnummer opphørt? Må angis"));
     }
@@ -49,14 +49,14 @@ class UtenlandsidentifikasjonsnummerServiceTest {
     @Test
     void whenUtstederlandIkkeIfylt_thenThrowExecption() {
 
-        var request = List.of(PdlUtenlandskIdentifikasjonsnummer.builder()
+        var request = List.of(UtenlandskIdentifikasjonsnummerDTO.builder()
                 .identifikasjonsnummer("1233123")
                 .opphoert(true)
                 .isNew(true)
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                utenlandsidentifikasjonsnummerService.convert((List<PdlUtenlandskIdentifikasjonsnummer>) request));
+                utenlandsidentifikasjonsnummerService.convert((List<UtenlandskIdentifikasjonsnummerDTO>) request));
 
         assertThat(exception.getMessage(), containsString("Utsteder land må oppgis"));
     }
@@ -64,7 +64,7 @@ class UtenlandsidentifikasjonsnummerServiceTest {
     @Test
     void whenUtstederlandIllegalFormat_thenThrowExecption() {
 
-        var request = List.of(PdlUtenlandskIdentifikasjonsnummer.builder()
+        var request = List.of(UtenlandskIdentifikasjonsnummerDTO.builder()
                 .identifikasjonsnummer("1233123")
                 .opphoert(true)
                 .utstederland("Uganda")
@@ -72,7 +72,7 @@ class UtenlandsidentifikasjonsnummerServiceTest {
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                utenlandsidentifikasjonsnummerService.convert((List<PdlUtenlandskIdentifikasjonsnummer>) request));
+                utenlandsidentifikasjonsnummerService.convert((List<UtenlandskIdentifikasjonsnummerDTO>) request));
 
         assertThat(exception.getMessage(), containsString("Trebokstavers landkode er forventet på utstederland"));
     }

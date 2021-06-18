@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.pdl.forvalter.domain.PdlBostedadresse;
-import no.nav.pdl.forvalter.domain.PdlKontaktinformasjonForDoedsbo;
+import no.nav.pdl.forvalter.domain.BostedadresseDTO;
+import no.nav.pdl.forvalter.domain.KontaktinformasjonForDoedsboDTO;
 import no.nav.pdl.forvalter.utils.PostnummerService;
 import no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO;
 import org.springframework.stereotype.Component;
@@ -31,11 +31,11 @@ public class KontaktInformasjonForDoedsboMappingStrategy implements MappingStrat
     @Override
     public void register(MapperFactory factory) {
 
-        factory.classMap(PdlBostedadresse.class, PdlKontaktinformasjonForDoedsbo.class)
+        factory.classMap(BostedadresseDTO.class, KontaktinformasjonForDoedsboDTO.class)
                 .customize(new CustomMapper<>() {
 
                     @Override
-                    public void mapAtoB(PdlBostedadresse kilde, PdlKontaktinformasjonForDoedsbo destinasjon, MappingContext context) {
+                    public void mapAtoB(BostedadresseDTO kilde, KontaktinformasjonForDoedsboDTO destinasjon, MappingContext context) {
 
                         if (nonNull(kilde.getVegadresse())) {
                             destinasjon.setAdresselinje1(format("%s %s", kilde.getVegadresse().getAdressenavn(),
@@ -69,11 +69,11 @@ public class KontaktInformasjonForDoedsboMappingStrategy implements MappingStrat
                 })
                 .register();
 
-        factory.classMap(VegadresseDTO.class, PdlKontaktinformasjonForDoedsbo.class)
+        factory.classMap(VegadresseDTO.class, KontaktinformasjonForDoedsboDTO.class)
                 .customize(new CustomMapper<>() {
 
                     @Override
-                    public void mapAtoB(VegadresseDTO kilde, PdlKontaktinformasjonForDoedsbo destinasjon, MappingContext context) {
+                    public void mapAtoB(VegadresseDTO kilde, KontaktinformasjonForDoedsboDTO destinasjon, MappingContext context) {
 
                        destinasjon.setAdresselinje1(format("%s %d", kilde.getAdressenavn(), kilde.getHusnummer()));
                        destinasjon.setPostnummer(kilde.getPostnummer());

@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.pdl.forvalter.domain.Identtype;
-import no.nav.pdl.forvalter.domain.PdlKjoenn;
+import no.nav.pdl.forvalter.domain.KjoennDTO;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -21,7 +21,7 @@ public class HentIdenterRequest {
     private Identtype identtype;
     private LocalDate foedtEtter;
     private LocalDate foedtFoer;
-    private PdlKjoenn.Kjoenn kjoenn;
+    private KjoennDTO.Kjoenn kjoenn;
 
     @NotNull
     private int antall;

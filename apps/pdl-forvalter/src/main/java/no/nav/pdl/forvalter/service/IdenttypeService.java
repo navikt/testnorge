@@ -2,12 +2,12 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.pdl.forvalter.domain.IdentRequestDTO;
 import no.nav.pdl.forvalter.domain.Identtype;
-import no.nav.pdl.forvalter.domain.PdlIdentRequest;
-import no.nav.pdl.forvalter.domain.PdlKjoenn.Kjoenn;
-import no.nav.pdl.forvalter.domain.PdlPerson;
-import no.nav.pdl.forvalter.dto.RsPersonRequest;
-import no.nav.pdl.forvalter.dto.RsPersonRequest.NyttNavn;
+import no.nav.pdl.forvalter.domain.KjoennDTO.Kjoenn;
+import no.nav.pdl.forvalter.domain.PersonDTO;
+import no.nav.pdl.forvalter.domain.PersonRequestDTO;
+import no.nav.pdl.forvalter.domain.PersonRequestDTO.NyttNavnDTO;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
@@ -25,9 +25,9 @@ import static no.nav.pdl.forvalter.database.model.RelasjonType.NY_IDENTITET;
 import static no.nav.pdl.forvalter.domain.Identtype.BOST;
 import static no.nav.pdl.forvalter.domain.Identtype.DNR;
 import static no.nav.pdl.forvalter.domain.Identtype.FNR;
-import static no.nav.pdl.forvalter.domain.PdlKjoenn.Kjoenn.KVINNE;
-import static no.nav.pdl.forvalter.domain.PdlKjoenn.Kjoenn.MANN;
-import static no.nav.pdl.forvalter.domain.PdlKjoenn.Kjoenn.UKJENT;
+import static no.nav.pdl.forvalter.domain.KjoennDTO.Kjoenn.KVINNE;
+import static no.nav.pdl.forvalter.domain.KjoennDTO.Kjoenn.MANN;
+import static no.nav.pdl.forvalter.domain.KjoennDTO.Kjoenn.UKJENT;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
@@ -50,7 +50,7 @@ public class IdenttypeService {
     private final SwopIdentsService swopIdentsService;
     private final MapperFacade mapperFacade;
 
-    private static Identtype getIdenttype(PdlIdentRequest request, String ident) {
+    private static Identtype getIdenttype(IdentRequestDTO request, String ident) {
 
         if (nonNull(request.getIdenttype())) {
             return request.getIdenttype();
@@ -58,7 +58,7 @@ public class IdenttypeService {
         return nonNull(ident) ? IdenttypeFraIdentUtility.getIdenttype(ident) : FNR;
     }
 
-    private static Kjoenn getKjoenn(PdlIdentRequest request, String ident) {
+    private static Kjoenn getKjoenn(IdentRequestDTO request, String ident) {
 
         if (nonNull(request.getKjoenn()) && request.getKjoenn() != UKJENT) {
             return request.getKjoenn();
@@ -67,7 +67,7 @@ public class IdenttypeService {
                 secureRandom.nextBoolean() ? MANN : KVINNE;
     }
 
-    private static LocalDateTime getFoedtFoer(PdlIdentRequest request, String ident) {
+    private static LocalDateTime getFoedtFoer(IdentRequestDTO request, String ident) {
 
         if (nonNull(request.getFoedtFoer())) {
             return request.getFoedtFoer();
@@ -78,7 +78,7 @@ public class IdenttypeService {
                 LocalDateTime.now().minusYears(18);
     }
 
-    private static LocalDateTime getFoedtEtter(PdlIdentRequest request, String ident) {
+    private static LocalDateTime getFoedtEtter(IdentRequestDTO request, String ident) {
 
         if (nonNull(request.getFoedtEtter())) {
             return request.getFoedtEtter();
@@ -89,12 +89,12 @@ public class IdenttypeService {
                 LocalDateTime.now().minusYears(67);
     }
 
-    private static boolean isSyntetisk(PdlIdentRequest request, String ident) {
+    private static boolean isSyntetisk(IdentRequestDTO request, String ident) {
         return nonNull(request.getSyntetisk()) ? request.getSyntetisk() :
                 SyntetiskFraIdentUtility.isSyntetisk(ident);
     }
 
-    public String convert(PdlPerson person) {
+    public String convert(PersonDTO person) {
 
         var ident = person.getIdent();
         for (var type : person.getNyident()) {
@@ -111,7 +111,7 @@ public class IdenttypeService {
         return ident;
     }
 
-    private void validate(PdlIdentRequest request) {
+    private void validate(IdentRequestDTO request) {
 
         if (nonNull(request.getIdenttype()) & FNR != request.getIdenttype() &&
                 DNR != request.getIdenttype() && BOST != request.getIdenttype()) {
@@ -138,14 +138,14 @@ public class IdenttypeService {
         }
     }
 
-    private String handle(PdlIdentRequest request, PdlPerson person) {
+    private String handle(IdentRequestDTO request, PersonDTO person) {
 
-        var nyPerson = createPersonService.execute(RsPersonRequest.builder()
+        var nyPerson = createPersonService.execute(PersonRequestDTO.builder()
                 .identtype(getIdenttype(request, person.getIdent()))
                 .kjoenn(getKjoenn(request, person.getIdent()))
                 .foedtEtter(getFoedtEtter(request, person.getIdent()))
                 .foedtFoer(getFoedtFoer(request, person.getIdent()))
-                .nyttNavn(mapperFacade.map(request.getNyttNavn(), NyttNavn.class))
+                .nyttNavn(mapperFacade.map(request.getNyttNavn(), NyttNavnDTO.class))
                 .syntetisk(isSyntetisk(request, person.getIdent()))
                 .build());
 

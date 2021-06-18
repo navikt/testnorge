@@ -2,11 +2,10 @@ package no.nav.pdl.forvalter.service;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
-import no.nav.pdl.forvalter.domain.PdlUtenlandskAdresse;
-import no.nav.pdl.forvalter.domain.PdlVegadresse;
-import no.nav.pdl.forvalter.dto.RsKontaktadresse;
-import no.nav.pdl.forvalter.dto.RsKontaktadresse.Postboksadresse;
-import no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO;
+import no.nav.pdl.forvalter.domain.KontaktadresseDTO;
+import no.nav.pdl.forvalter.domain.KontaktadresseDTO.PostboksadresseDTO;
+import no.nav.pdl.forvalter.domain.UtenlandskAdresseDTO;
+import no.nav.pdl.forvalter.domain.VegadresseDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,7 +15,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
-import static no.nav.pdl.forvalter.domain.PdlAdresse.Master.PDL;
+import static no.nav.pdl.forvalter.domain.AdresseDTO.Master.PDL;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -44,15 +43,15 @@ class KontaktAdresseServiceTest {
     @Test
     void whenTooFewDigitsInPostnummer_thenThrowExecption() {
 
-        var request = List.of(RsKontaktadresse.builder()
-                .postboksadresse(Postboksadresse.builder()
+        var request = List.of(KontaktadresseDTO.builder()
+                .postboksadresse(PostboksadresseDTO.builder()
                         .postboks("123")
                         .build())
                 .isNew(true)
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.convert((List<RsKontaktadresse>) request));
+                kontaktAdresseService.convert((List<KontaktadresseDTO>) request));
 
         assertThat(exception.getMessage(), containsString("Postnummer består av fire sifre"));
     }
@@ -60,14 +59,14 @@ class KontaktAdresseServiceTest {
     @Test
     void whenPostboksadresseAndPostboksIsOmitted_thenThrowExecption() {
 
-        var request = List.of(RsKontaktadresse.builder()
-                .postboksadresse(Postboksadresse.builder()
+        var request = List.of(KontaktadresseDTO.builder()
+                .postboksadresse(PostboksadresseDTO.builder()
                         .build())
                 .isNew(true)
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.convert((List<RsKontaktadresse>) request));
+                kontaktAdresseService.convert((List<KontaktadresseDTO>) request));
 
         assertThat(exception.getMessage(), containsString("Kan ikke være tom"));
     }
@@ -75,14 +74,14 @@ class KontaktAdresseServiceTest {
     @Test
     void whenMultipleAdressesProvided_thenThrowExecption() {
 
-        var request = List.of(RsKontaktadresse.builder()
-                .vegadresse(new PdlVegadresse())
-                .utenlandskAdresse(new PdlUtenlandskAdresse())
+        var request = List.of(KontaktadresseDTO.builder()
+                .vegadresse(new VegadresseDTO())
+                .utenlandskAdresse(new UtenlandskAdresseDTO())
                 .isNew(true)
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.convert((List<RsKontaktadresse>) request));
+                kontaktAdresseService.convert((List<KontaktadresseDTO>) request));
 
         assertThat(exception.getMessage(), containsString("Kun én adresse skal være satt"));
     }
@@ -90,13 +89,13 @@ class KontaktAdresseServiceTest {
     @Test
     void whenMasterPDLWithoutGyldighet_thenThrowExecption() {
 
-        var request = List.of(RsKontaktadresse.builder()
+        var request = List.of(KontaktadresseDTO.builder()
                 .master(PDL)
                 .isNew(true)
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.convert((List<RsKontaktadresse>) request));
+                kontaktAdresseService.convert((List<KontaktadresseDTO>) request));
 
         assertThat(exception.getMessage(), containsString(
                 "Feltene gyldigFraOgMed og gyldigTilOgMed må ha verdi hvis master er PDL"));
@@ -105,15 +104,15 @@ class KontaktAdresseServiceTest {
     @Test
     void whenPDLAdresseWithoutGyldighet_thenThrowExecption() {
 
-        var request = List.of(RsKontaktadresse.builder()
-                .vegadresse(PdlVegadresse.builder()
+        var request = List.of(KontaktadresseDTO.builder()
+                .vegadresse(VegadresseDTO.builder()
                         .adressenavn("Denne veien")
                         .build())
                 .isNew(true)
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.convert((List<RsKontaktadresse>) request));
+                kontaktAdresseService.convert((List<KontaktadresseDTO>) request));
 
         assertThat(exception.getMessage(), containsString(
                 "Feltene gyldigFraOgMed og gyldigTilOgMed må ha verdi for vegadresse uten matrikkelId"));
@@ -122,15 +121,15 @@ class KontaktAdresseServiceTest {
     @Test
     void whenAdresseHasUgyldigBruksenhetsnummer_thenThrowExecption() {
 
-        var request = List.of(RsKontaktadresse.builder()
-                .vegadresse(PdlVegadresse.builder()
+        var request = List.of(KontaktadresseDTO.builder()
+                .vegadresse(VegadresseDTO.builder()
                         .bruksenhetsnummer("W12345")
                         .build())
                 .isNew(true)
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.convert((List<RsKontaktadresse>) request));
+                kontaktAdresseService.convert((List<KontaktadresseDTO>) request));
 
         assertThat(exception.getMessage(), containsString(
                 "Gyldig format er Bokstaven H, L, U eller K etterfulgt av fire sifre"));
@@ -139,26 +138,26 @@ class KontaktAdresseServiceTest {
     @Test
     void whenVegadresseWithOKParam_thenLookupAdresse() {
 
-        var vegadresse = VegadresseDTO.builder()
+        var vegadresse = no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO.builder()
                 .adressenavn("Veien")
                 .husnummer(1)
                 .postnummer("1234")
                 .kommunenummer("5678")
                 .matrikkelId("111111111")
                 .build();
-        when(adresseServiceConsumer.getAdresse(any(PdlVegadresse.class), nullable(String.class))).thenReturn(vegadresse);
-        doNothing().when(mapperFacade).map(eq(vegadresse), any(PdlVegadresse.class));
+        when(adresseServiceConsumer.getAdresse(any(VegadresseDTO.class), nullable(String.class))).thenReturn(vegadresse);
+        doNothing().when(mapperFacade).map(eq(vegadresse), any(VegadresseDTO.class));
 
         var kontaktadresse =
-                kontaktAdresseService.convert(List.of(RsKontaktadresse.builder()
-                        .vegadresse(PdlVegadresse.builder()
+                kontaktAdresseService.convert(List.of(KontaktadresseDTO.builder()
+                        .vegadresse(VegadresseDTO.builder()
                                 .postnummer("1234")
                                 .build())
                         .isNew(true)
                         .build())).get(0);
 
-        verify(adresseServiceConsumer).getAdresse(any(PdlVegadresse.class), nullable(String.class));
-        verify(mapperFacade).map(eq(vegadresse), any(PdlVegadresse.class));
+        verify(adresseServiceConsumer).getAdresse(any(VegadresseDTO.class), nullable(String.class));
+        verify(mapperFacade).map(eq(vegadresse), any(VegadresseDTO.class));
         assertThat(kontaktadresse.getAdresseIdentifikatorFraMatrikkelen(), is(equalTo(vegadresse.getMatrikkelId())));
         assertThat(kontaktadresse.getKilde(), is(equalTo("Dolly")));
     }

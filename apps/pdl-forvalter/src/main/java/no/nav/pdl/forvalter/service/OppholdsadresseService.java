@@ -3,20 +3,20 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
-import no.nav.pdl.forvalter.domain.PdlOppholdsadresse;
+import no.nav.pdl.forvalter.domain.OppholdsadresseDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.pdl.forvalter.domain.PdlAdresse.Master.FREG;
-import static no.nav.pdl.forvalter.domain.PdlAdresse.Master.PDL;
+import static no.nav.pdl.forvalter.domain.AdresseDTO.Master.FREG;
+import static no.nav.pdl.forvalter.domain.AdresseDTO.Master.PDL;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
 @RequiredArgsConstructor
-public class OppholdsadresseService extends AdresseService<PdlOppholdsadresse> {
+public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO> {
 
     private static final String VALIDATION_AMBIGUITY_ERROR = "Kun én adresse skal være satt (vegadresse, " +
             "matrikkeladresse, utenlandskAdresse)";
@@ -28,7 +28,7 @@ public class OppholdsadresseService extends AdresseService<PdlOppholdsadresse> {
     private final MapperFacade mapperFacade;
 
     @Override
-    protected void validate(PdlOppholdsadresse adresse) {
+    protected void validate(OppholdsadresseDTO adresse) {
 
         if (count(adresse.getVegadresse()) +
                 count(adresse.getMatrikkeladresse()) +
@@ -60,7 +60,7 @@ public class OppholdsadresseService extends AdresseService<PdlOppholdsadresse> {
     }
 
     @Override
-    protected void handle(PdlOppholdsadresse oppholdsadresse) {
+    protected void handle(OppholdsadresseDTO oppholdsadresse) {
 
         if (nonNull(oppholdsadresse.getVegadresse())) {
             var vegadresse =

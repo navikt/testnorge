@@ -1,8 +1,8 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.domain.PdlPerson;
-import no.nav.pdl.forvalter.domain.PdlStatsborgerskap;
-import no.nav.pdl.forvalter.dto.RsInnflytting;
+import no.nav.pdl.forvalter.domain.InnflyttingDTO;
+import no.nav.pdl.forvalter.domain.PersonDTO;
+import no.nav.pdl.forvalter.domain.StatsborgerskapDTO;
 import no.nav.pdl.forvalter.utils.TilfeldigLandService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,14 +37,14 @@ class StatsborgerskapServiceTest {
     @Test
     void whenUgyldigLandkode_thenThrowExecption() {
 
-        var request = List.of(PdlStatsborgerskap.builder()
+        var request = List.of(StatsborgerskapDTO.builder()
                 .landkode("Uruguay")
                 .isNew(true)
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                statsborgerskapService.convert(PdlPerson.builder()
-                        .statsborgerskap((List<PdlStatsborgerskap>) request)
+                statsborgerskapService.convert(PersonDTO.builder()
+                        .statsborgerskap((List<StatsborgerskapDTO>) request)
                         .ident(FNR_IDENT)
                         .build()));
 
@@ -54,15 +54,15 @@ class StatsborgerskapServiceTest {
     @Test
     void whenInvalidDateInterval_thenThrowExecption() {
 
-        var request = List.of(PdlStatsborgerskap.builder()
+        var request = List.of(StatsborgerskapDTO.builder()
                 .gyldigFom(LocalDate.of(2020, 1, 1).atStartOfDay())
                 .gyldigTom(LocalDate.of(2018, 1, 1).atStartOfDay())
                 .isNew(true)
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                statsborgerskapService.convert(PdlPerson.builder()
-                        .statsborgerskap((List<PdlStatsborgerskap>) request)
+                statsborgerskapService.convert(PersonDTO.builder()
+                        .statsborgerskap((List<StatsborgerskapDTO>) request)
                         .ident(FNR_IDENT)
                         .build()));
 
@@ -72,12 +72,12 @@ class StatsborgerskapServiceTest {
     @Test
     void whenLandkodeIsEmptyAndAvailFromInnflytting_thenPickLandkodeFromInnflytting() {
 
-        var target = statsborgerskapService.convert(PdlPerson.builder()
-                .statsborgerskap(List.of(PdlStatsborgerskap.builder()
+        var target = statsborgerskapService.convert(PersonDTO.builder()
+                .statsborgerskap(List.of(StatsborgerskapDTO.builder()
                         .isNew(true)
                         .build()))
                 .ident(FNR_IDENT)
-                .innflytting(List.of(RsInnflytting.builder()
+                .innflytting(List.of(InnflyttingDTO.builder()
                         .fraflyttingsland("GER")
                         .build()))
                 .build())
@@ -89,8 +89,8 @@ class StatsborgerskapServiceTest {
     @Test
     void whenLandkodeIsEmptyAndUnavailFromInnflyttingAndIdenttypeFNR_thenSetLandkodeNorge() {
 
-        var target = statsborgerskapService.convert(PdlPerson.builder()
-                .statsborgerskap(List.of(PdlStatsborgerskap.builder()
+        var target = statsborgerskapService.convert(PersonDTO.builder()
+                .statsborgerskap(List.of(StatsborgerskapDTO.builder()
                         .isNew(true)
                         .build()))
                 .ident(FNR_IDENT)
@@ -105,8 +105,8 @@ class StatsborgerskapServiceTest {
 
         when(tilfeldigLandService.getLand()).thenReturn("CHL");
 
-        var target = statsborgerskapService.convert(PdlPerson.builder()
-                .statsborgerskap(List.of(PdlStatsborgerskap.builder()
+        var target = statsborgerskapService.convert(PersonDTO.builder()
+                .statsborgerskap(List.of(StatsborgerskapDTO.builder()
                         .isNew(true)
                         .build()))
                 .ident(DNR_IDENT)
@@ -121,8 +121,8 @@ class StatsborgerskapServiceTest {
     @Test
     void whenGyldigFomNotProvided_thenDeriveGyldigFomFromBirthdate() {
 
-        var target = statsborgerskapService.convert(PdlPerson.builder()
-                .statsborgerskap(List.of(PdlStatsborgerskap.builder()
+        var target = statsborgerskapService.convert(PersonDTO.builder()
+                .statsborgerskap(List.of(StatsborgerskapDTO.builder()
                         .isNew(true)
                         .build()))
                 .ident(FNR_IDENT)

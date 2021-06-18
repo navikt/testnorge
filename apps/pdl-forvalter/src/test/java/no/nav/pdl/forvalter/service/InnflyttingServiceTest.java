@@ -1,6 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.dto.RsInnflytting;
+import no.nav.pdl.forvalter.domain.InnflyttingDTO;
 import no.nav.pdl.forvalter.utils.TilfeldigLandService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,13 +32,13 @@ class InnflyttingServiceTest {
     @Test
     void whenInvalidLandkode_thenThrowExecption() {
 
-        var request = List.of(RsInnflytting.builder()
+        var request = List.of(InnflyttingDTO.builder()
                 .fraflyttingsland("Finnland")
                 .isNew(true)
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                innflyttingService.convert((List<RsInnflytting>) request));
+                innflyttingService.convert((List<InnflyttingDTO>) request));
 
         assertThat(exception.getMessage(), containsString("Landkode må oppgis i hht ISO-3 Landkoder på fraflyttingsland"));
     }
@@ -46,12 +46,12 @@ class InnflyttingServiceTest {
     @Test
     void whenInvalidFlyttedatoSequence_thenThrowExecption() {
 
-        var request = List.of(RsInnflytting.builder()
+        var request = List.of(InnflyttingDTO.builder()
                         .fraflyttingsland("AUS")
                         .flyttedato(LocalDate.of(2015, 12, 31).atStartOfDay())
                         .isNew(true)
                         .build(),
-                RsInnflytting.builder()
+                InnflyttingDTO.builder()
                         .fraflyttingsland("RUS")
                         .flyttedato(LocalDate.of(2015, 12, 31).atStartOfDay())
                         .isNew(true)
@@ -68,7 +68,7 @@ class InnflyttingServiceTest {
 
         when(tilfeldigLandService.getLand()).thenReturn("IND");
 
-        var target = innflyttingService.convert(List.of(RsInnflytting.builder()
+        var target = innflyttingService.convert(List.of(InnflyttingDTO.builder()
                 .isNew(true)
                 .build()))
                 .get(0);

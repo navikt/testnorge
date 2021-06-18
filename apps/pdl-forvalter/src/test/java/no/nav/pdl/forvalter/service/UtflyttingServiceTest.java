@@ -1,6 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.dto.RsUtflytting;
+import no.nav.pdl.forvalter.domain.UtflyttingDTO;
 import no.nav.pdl.forvalter.utils.TilfeldigLandService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,13 +32,13 @@ class UtflyttingServiceTest {
     @Test
     void whenInvalidLandkode_thenThrowExecption() {
 
-        var request = List.of(RsUtflytting.builder()
+        var request = List.of(UtflyttingDTO.builder()
                 .tilflyttingsland("Mali")
                 .isNew(true)
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                utflyttingService.convert((List<RsUtflytting>) request));
+                utflyttingService.convert((List<UtflyttingDTO>) request));
 
         assertThat(exception.getMessage(), containsString("Landkode må oppgis i hht ISO-3 Landkoder for tilflyttingsland"));
     }
@@ -46,12 +46,12 @@ class UtflyttingServiceTest {
     @Test
     void whenInvalidFlyttedatoSequence_thenThrowExecption() {
 
-        var request = List.of(RsUtflytting.builder()
+        var request = List.of(UtflyttingDTO.builder()
                         .tilflyttingsland("USA")
                         .flyttedato(LocalDate.of(2015, 12, 31).atStartOfDay())
                         .isNew(true)
                         .build(),
-                RsUtflytting.builder()
+                UtflyttingDTO.builder()
                         .tilflyttingsland("CAN")
                         .flyttedato(LocalDate.of(2015, 12, 31).atStartOfDay())
                         .isNew(true)
@@ -68,7 +68,7 @@ class UtflyttingServiceTest {
 
         when(tilfeldigLandService.getLand()).thenReturn("TGW");
 
-        var target = utflyttingService.convert(List.of(RsUtflytting.builder().isNew(true).build())).get(0);
+        var target = utflyttingService.convert(List.of(UtflyttingDTO.builder().isNew(true).build())).get(0);
 
         verify(tilfeldigLandService).getLand();
         assertThat(target.getTilflyttingsland(), is(equalTo("TGW")));

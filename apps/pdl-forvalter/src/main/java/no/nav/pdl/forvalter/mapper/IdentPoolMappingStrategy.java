@@ -4,8 +4,8 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.pdl.forvalter.domain.Identtype;
+import no.nav.pdl.forvalter.domain.PersonRequestDTO;
 import no.nav.pdl.forvalter.dto.HentIdenterRequest;
-import no.nav.pdl.forvalter.dto.RsPersonRequest;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -21,10 +21,10 @@ public class IdentPoolMappingStrategy implements MappingStrategy {
     @Override
     public void register(MapperFactory factory) {
 
-        factory.classMap(RsPersonRequest.class, HentIdenterRequest.class)
+        factory.classMap(PersonRequestDTO.class, HentIdenterRequest.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(RsPersonRequest kilde, HentIdenterRequest destinasjon, MappingContext context) {
+                    public void mapAtoB(PersonRequestDTO kilde, HentIdenterRequest destinasjon, MappingContext context) {
 
                         if (isNull(kilde.getIdenttype())) {
                             destinasjon.setIdenttype(Identtype.FNR);

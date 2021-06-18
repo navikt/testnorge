@@ -5,16 +5,16 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.IdentPoolConsumer;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
-import no.nav.pdl.forvalter.domain.PdlBostedadresse;
-import no.nav.pdl.forvalter.domain.PdlFoedsel;
-import no.nav.pdl.forvalter.domain.PdlFolkeregisterpersonstatus;
-import no.nav.pdl.forvalter.domain.PdlKjoenn;
-import no.nav.pdl.forvalter.domain.PdlPerson;
-import no.nav.pdl.forvalter.domain.PdlStatsborgerskap;
-import no.nav.pdl.forvalter.domain.PdlVegadresse;
+import no.nav.pdl.forvalter.domain.BostedadresseDTO;
+import no.nav.pdl.forvalter.domain.FoedselDTO;
+import no.nav.pdl.forvalter.domain.FolkeregisterpersonstatusDTO;
+import no.nav.pdl.forvalter.domain.KjoennDTO;
+import no.nav.pdl.forvalter.domain.NavnDTO;
+import no.nav.pdl.forvalter.domain.PersonDTO;
+import no.nav.pdl.forvalter.domain.PersonRequestDTO;
+import no.nav.pdl.forvalter.domain.StatsborgerskapDTO;
+import no.nav.pdl.forvalter.domain.VegadresseDTO;
 import no.nav.pdl.forvalter.dto.HentIdenterRequest;
-import no.nav.pdl.forvalter.dto.RsNavn;
-import no.nav.pdl.forvalter.dto.RsPersonRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -41,32 +41,32 @@ public class CreatePersonService {
     private final NavnService navnService;
     private final FolkeregisterPersonstatusService folkeregisterPersonstatusService;
 
-    private static PdlPerson buildPerson(RsPersonRequest request) {
+    private static PersonDTO buildPerson(PersonRequestDTO request) {
 
-        return PdlPerson.builder()
-                .kjoenn(List.of(PdlKjoenn.builder().build()))
-                .foedsel(List.of(PdlFoedsel.builder().build()))
+        return PersonDTO.builder()
+                .kjoenn(List.of(KjoennDTO.builder().build()))
+                .foedsel(List.of(FoedselDTO.builder().build()))
                 .navn(nonNull(request.getNyttNavn()) ?
-                        List.of(RsNavn.builder().hasMellomnavn(request.getNyttNavn().isHarMellomnavn()).build()) :
+                        List.of(NavnDTO.builder().hasMellomnavn(request.getNyttNavn().isHarMellomnavn()).build()) :
                         emptyList())
-                .bostedsadresse(request.isHarBostadsadresse() ? List.of(PdlBostedadresse.builder()
-                        .vegadresse(new PdlVegadresse()).build()) : emptyList())
-                .statsborgerskap(request.isHarStatsborgerskap() ?
-                        List.of(PdlStatsborgerskap.builder().build()) : emptyList())
-                .folkeregisterpersonstatus(request.isHarFolkeregisterPersonstatus() ?
-                        List.of(PdlFolkeregisterpersonstatus.builder().build()) : emptyList())
+                .bostedsadresse(List.of(BostedadresseDTO.builder()
+                        .vegadresse(new VegadresseDTO())
+                        .build()))
+                .statsborgerskap(List.of(StatsborgerskapDTO.builder().build()))
+                .folkeregisterpersonstatus(
+                        List.of(FolkeregisterpersonstatusDTO.builder().build()))
                 .build();
     }
 
-    public PdlPerson execute(RsPersonRequest request) {
+    public PersonDTO execute(PersonRequestDTO request) {
 
         var ident = Stream.of(identPoolConsumer.getIdents(
-                mapperFacade.map(nonNull(request) ? request : new RsPersonRequest(), HentIdenterRequest.class)))
+                mapperFacade.map(nonNull(request) ? request : new PersonRequestDTO(), HentIdenterRequest.class)))
                 .findFirst().orElseThrow(() -> new HttpClientErrorException(INTERNAL_SERVER_ERROR,
                         String.format("Ident kunne ikke levere forespørsel: %s", request.toString())));
 
         var mergedPerson = mergeService.merge(buildPerson(request),
-                PdlPerson.builder().ident(ident).build());
+                PersonDTO.builder().ident(ident).build());
 
         kjoennService.convert(mergedPerson);
         navnService.convert(mergedPerson.getNavn());

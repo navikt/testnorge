@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.consumer.PdlTestdataConsumer;
-import no.nav.pdl.forvalter.domain.PdlDbVersjon;
+import no.nav.pdl.forvalter.domain.DbVersjonDTO;
 import no.nav.pdl.forvalter.dto.PdlOrdreResponse;
 import no.nav.pdl.forvalter.utils.PdlTestDataUrls;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,7 @@ public class DeployService {
 
     public List<PdlOrdreResponse.PdlStatus> send(PdlTestDataUrls.PdlArtifact type,
                                                  String ident,
-                                                 List<? extends PdlDbVersjon> artifact) {
+                                                 List<? extends DbVersjonDTO> artifact) {
 
         var status = new ArrayList<PdlOrdreResponse.Hendelse>();
         if (!artifact.isEmpty()) {

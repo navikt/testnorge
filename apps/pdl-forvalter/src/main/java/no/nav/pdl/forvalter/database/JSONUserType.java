@@ -13,7 +13,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.pdl.forvalter.domain.PdlPerson;
+import no.nav.pdl.forvalter.domain.PersonDTO;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
@@ -68,8 +68,8 @@ public class JSONUserType implements UserType {
     }
 
     @Override
-    public Class<PdlPerson> returnedClass() {
-        return PdlPerson.class;
+    public Class<PersonDTO> returnedClass() {
+        return PersonDTO.class;
     }
 
     @Override

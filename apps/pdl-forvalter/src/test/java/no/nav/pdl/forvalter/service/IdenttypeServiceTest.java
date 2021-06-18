@@ -1,8 +1,8 @@
 package no.nav.pdl.forvalter.service;
 
+import no.nav.pdl.forvalter.domain.IdentRequestDTO;
 import no.nav.pdl.forvalter.domain.Identtype;
-import no.nav.pdl.forvalter.domain.PdlIdentRequest;
-import no.nav.pdl.forvalter.domain.PdlPerson;
+import no.nav.pdl.forvalter.domain.PersonDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,8 +25,8 @@ class IdenttypeServiceTest {
     @Test
     void whenIllegalIdenttype_thenThrowError() {
 
-        var request = PdlPerson.builder()
-                .nyident(List.of(PdlIdentRequest.builder()
+        var request = PersonDTO.builder()
+                .nyident(List.of(IdentRequestDTO.builder()
                         .identtype(Identtype.FDAT)
                         .isNew(true)
                         .build()))
@@ -41,8 +41,8 @@ class IdenttypeServiceTest {
     @Test
     void whenFutureDatoIsProvided_thenThrowError() {
 
-        var request = PdlPerson.builder()
-                .nyident(List.of(PdlIdentRequest.builder()
+        var request = PersonDTO.builder()
+                .nyident(List.of(IdentRequestDTO.builder()
                         .foedtEtter(LocalDateTime.now().plusDays(1))
                         .isNew(true)
                         .build()))
@@ -58,8 +58,8 @@ class IdenttypeServiceTest {
     @Test
     void whenPre1900DatoIsProvided_thenThrowError() {
 
-        var request = PdlPerson.builder()
-                .nyident(List.of(PdlIdentRequest.builder()
+        var request = PersonDTO.builder()
+                .nyident(List.of(IdentRequestDTO.builder()
                         .foedtFoer(LocalDateTime.of(1870, 1, 1, 0, 0))
                         .isNew(true)
                         .build()))
@@ -75,8 +75,8 @@ class IdenttypeServiceTest {
     @Test
     void whenIllegalDatoIntervalIsProvided_thenThrowError() {
 
-        var request = PdlPerson.builder()
-                .nyident(List.of(PdlIdentRequest.builder()
+        var request = PersonDTO.builder()
+                .nyident(List.of(IdentRequestDTO.builder()
                         .identtype(Identtype.FNR)
                         .foedtEtter(LocalDateTime.of(1980, 1, 1, 1, 0, 0))
                         .foedtFoer(LocalDateTime.of(1970, 1, 1, 0, 0))
@@ -94,8 +94,8 @@ class IdenttypeServiceTest {
     @Test
     void whenAlderIsOutsideBoundaries_thenThrowError() {
 
-        var request = PdlPerson.builder()
-                .nyident(List.of(PdlIdentRequest.builder()
+        var request = PersonDTO.builder()
+                .nyident(List.of(IdentRequestDTO.builder()
                         .alder(-1)
                         .isNew(true)
                         .build()))
@@ -110,8 +110,8 @@ class IdenttypeServiceTest {
     @Test
     void whenAlderIsOutsideBoundaries2_thenThrowError() {
 
-        var request = PdlPerson.builder()
-                .nyident(List.of(PdlIdentRequest.builder()
+        var request = PersonDTO.builder()
+                .nyident(List.of(IdentRequestDTO.builder()
                         .alder(-1)
                         .isNew(true)
                         .build()))

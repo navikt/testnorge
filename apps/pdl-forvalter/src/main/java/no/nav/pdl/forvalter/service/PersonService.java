@@ -9,9 +9,9 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
-import no.nav.pdl.forvalter.domain.PdlPerson;
-import no.nav.pdl.forvalter.dto.PersonUpdateRequest;
-import no.nav.pdl.forvalter.dto.RsPerson;
+import no.nav.pdl.forvalter.domain.FullPersonDTO;
+import no.nav.pdl.forvalter.domain.PersonDTO;
+import no.nav.pdl.forvalter.domain.PersonUpdateRequestDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
@@ -42,13 +42,13 @@ public class PersonService {
     private final AliasRepository aliasRepository;
 
     @Transactional
-    public String updatePerson(String ident, PersonUpdateRequest request) {
+    public String updatePerson(String ident, PersonUpdateRequestDTO request) {
 
         checkAlias(ident);
         var dbPerson = personRepository.findByIdent(ident)
                 .orElseGet(() -> personRepository.save(DbPerson.builder()
                         .ident(ident)
-                        .person(PdlPerson.builder()
+                        .person(PersonDTO.builder()
                                 .ident(ident)
                                 .build())
                         .sistOppdatert(now())
@@ -86,13 +86,13 @@ public class PersonService {
     }
 
     @Transactional(readOnly = true)
-    public RsPerson getPerson(String ident) {
+    public FullPersonDTO getPerson(String ident) {
 
         var aliasPerson = aliasRepository.findByTidligereIdent(ident);
         if (aliasPerson.isPresent()) {
-            return mapperFacade.map(aliasPerson.get().getPerson(), RsPerson.class);
+            return mapperFacade.map(aliasPerson.get().getPerson(), FullPersonDTO.class);
         } else {
-            return mapperFacade.map(getDbPerson(ident), RsPerson.class);
+            return mapperFacade.map(getDbPerson(ident), FullPersonDTO.class);
         }
     }
 

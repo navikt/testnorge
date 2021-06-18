@@ -3,8 +3,8 @@ package no.nav.pdl.forvalter.mapper;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.pdl.forvalter.domain.PdlTilrettelagtKommunikasjon;
-import no.nav.pdl.forvalter.dto.RsTilrettelagtKommunikasjon;
+import no.nav.pdl.forvalter.domain.TilrettelagtKommunikasjonDTO;
+import no.nav.pdl.forvalter.dto.PdlTilrettelagtKommunikasjon;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,10 +15,10 @@ public class TilrettelagtKommunikasjonMappingStrategy implements MappingStrategy
     @Override
     public void register(MapperFactory factory) {
 
-        factory.classMap(RsTilrettelagtKommunikasjon.class, PdlTilrettelagtKommunikasjon.class)
+        factory.classMap(TilrettelagtKommunikasjonDTO.class, PdlTilrettelagtKommunikasjon.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(RsTilrettelagtKommunikasjon kilde, PdlTilrettelagtKommunikasjon kommunikasjon, MappingContext context) {
+                    public void mapAtoB(TilrettelagtKommunikasjonDTO kilde, PdlTilrettelagtKommunikasjon kommunikasjon, MappingContext context) {
 
                         kommunikasjon.setTalespraaktolk(PdlTilrettelagtKommunikasjon.Tolk.builder()
                                 .spraak(kilde.getSpraakForTaletolk())

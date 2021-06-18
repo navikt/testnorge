@@ -1,11 +1,11 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.pdl.forvalter.domain.BostedadresseDTO;
+import no.nav.pdl.forvalter.domain.FoedselDTO;
 import no.nav.pdl.forvalter.domain.Identtype;
-import no.nav.pdl.forvalter.domain.PdlBostedadresse;
-import no.nav.pdl.forvalter.domain.PdlFoedsel;
-import no.nav.pdl.forvalter.domain.PdlPerson;
-import no.nav.pdl.forvalter.dto.RsInnflytting;
+import no.nav.pdl.forvalter.domain.InnflyttingDTO;
+import no.nav.pdl.forvalter.domain.PersonDTO;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
 import no.nav.pdl.forvalter.utils.TilfeldigKommuneService;
@@ -27,7 +27,7 @@ public class FoedselService {
     private final TilfeldigKommuneService tilfeldigKommuneService;
     private final TilfeldigLandService tilfeldigLandService;
 
-    public List<PdlFoedsel> convert(PdlPerson person) {
+    public List<FoedselDTO> convert(PersonDTO person) {
 
         for (var type : person.getFoedsel()) {
 
@@ -44,7 +44,7 @@ public class FoedselService {
         return person.getFoedsel();
     }
 
-    private void handle(PdlFoedsel foedsel, String ident, PdlBostedadresse bostedadresse, RsInnflytting innflytting) {
+    private void handle(FoedselDTO foedsel, String ident, BostedadresseDTO bostedadresse, InnflyttingDTO innflytting) {
 
         if (isNull(foedsel.getFoedselsdato())) {
             foedsel.setFoedselsdato(DatoFraIdentUtility.getDato(ident).atStartOfDay());
@@ -56,7 +56,7 @@ public class FoedselService {
         setFodekommune(foedsel, bostedadresse);
     }
 
-    private void setFoedeland(PdlFoedsel foedsel, String ident, PdlBostedadresse bostedadresse, RsInnflytting innflytting) {
+    private void setFoedeland(FoedselDTO foedsel, String ident, BostedadresseDTO bostedadresse, InnflyttingDTO innflytting) {
         if (isNull(foedsel.getFoedeland())) {
             if (Identtype.FNR.equals(IdenttypeFraIdentUtility.getIdenttype(ident))) {
                 foedsel.setFoedeland(NORGE);
@@ -70,7 +70,7 @@ public class FoedselService {
         }
     }
 
-    private void setFodekommune(PdlFoedsel foedsel, PdlBostedadresse bostedadresse) {
+    private void setFodekommune(FoedselDTO foedsel, BostedadresseDTO bostedadresse) {
         if (NORGE.equals(foedsel.getFoedeland()) && isBlank(foedsel.getFodekommune())) {
             if (nonNull(bostedadresse)) {
                 if (nonNull(bostedadresse.getVegadresse())) {

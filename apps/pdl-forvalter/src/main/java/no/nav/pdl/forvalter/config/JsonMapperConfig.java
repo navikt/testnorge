@@ -19,7 +19,7 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
-import no.nav.pdl.forvalter.domain.PdlDbVersjon;
+import no.nav.pdl.forvalter.domain.DbVersjonDTO;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -45,7 +45,7 @@ public class JsonMapperConfig {
                     writer.serializeAsField(pojo, jgen, provider);
                     return;
                 }
-                int intValue = ((PdlDbVersjon) pojo).getId();
+                int intValue = ((DbVersjonDTO) pojo).getId();
                 if (intValue > 0) {
                     writer.serializeAsField(pojo, jgen, provider);
                 }

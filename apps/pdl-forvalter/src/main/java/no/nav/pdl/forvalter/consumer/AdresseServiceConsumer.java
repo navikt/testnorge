@@ -3,12 +3,12 @@ package no.nav.pdl.forvalter.consumer;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.config.credentials.AdresseServiceProperties;
 import no.nav.pdl.forvalter.consumer.command.AdresseServiceCommand;
-import no.nav.pdl.forvalter.domain.PdlVegadresse;
-import no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO;
+import no.nav.pdl.forvalter.domain.VegadresseDTO;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.stream.Stream;
 
@@ -36,9 +36,9 @@ public class AdresseServiceConsumer {
         return isNotBlank(artifact) ? artifact : "";
     }
 
-    private static VegadresseDTO getDefaultAdresse() {
+    private static no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO getDefaultAdresse() {
 
-        return VegadresseDTO.builder()
+        return no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO.builder()
                 .matrikkelId("285693617")
                 .adressenavn("FYRSTIKKALLÉEN")
                 .postnummer("0661")
@@ -47,7 +47,7 @@ public class AdresseServiceConsumer {
                 .build();
     }
 
-    public VegadresseDTO getAdresse(PdlVegadresse vegadresse, String matrikkelId) {
+    public no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO getAdresse(VegadresseDTO vegadresse, String matrikkelId) {
 
         var startTime = currentTimeMillis();
         var query = new StringBuilder()
@@ -75,9 +75,10 @@ public class AdresseServiceConsumer {
             log.info("Oppslag til adresseservice tok {} ms", currentTimeMillis() - startTime);
             return Stream.of(adresser).findFirst().orElse(getDefaultAdresse());
 
-        } catch (RuntimeException e) {
+        } catch (WebClientResponseException e) {
 
-            log.info("Oppslag til adresseservice feilet etter {} ms", currentTimeMillis() - startTime);
+            log.info("Oppslag til adresseservice feilet etter {} ms, {}, request: {}", currentTimeMillis() - startTime,
+                    e.getResponseBodyAsString(), query);
             return getDefaultAdresse();
         }
     }

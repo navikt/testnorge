@@ -1,6 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.dto.RsTilrettelagtKommunikasjon;
+import no.nav.pdl.forvalter.domain.TilrettelagtKommunikasjonDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -12,14 +12,14 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
-public class TilrettelagtKommunikasjonService extends PdlArtifactService<RsTilrettelagtKommunikasjon> {
+public class TilrettelagtKommunikasjonService extends PdlArtifactService<TilrettelagtKommunikasjonDTO> {
 
     private static final String VALIDATION_NO_SPRAAK_ERROR = "Språk for taletolk og/eller tegnspråktolk må oppgis";
     private static final String VALIDATION_TOLKESPRAAK_ERROR = "Språk for taletolk er ugyldig: forventet 2 tegn i hht kodeverk Språk";
     private static final String VALIDATION_TEGNSPRAAK_ERROR = "Språk for tegnspråktolk er ugyldig: forventet 2 tegn i hht kodeverk Språk";
 
     @Override
-    protected void validate(RsTilrettelagtKommunikasjon tilrettelagtKommunikasjon) {
+    protected void validate(TilrettelagtKommunikasjonDTO tilrettelagtKommunikasjon) {
 
         if (isBlank(tilrettelagtKommunikasjon.getSpraakForTaletolk()) &&
                 isBlank(tilrettelagtKommunikasjon.getSpraakForTegnspraakTolk())) {
@@ -38,13 +38,13 @@ public class TilrettelagtKommunikasjonService extends PdlArtifactService<RsTilre
     }
 
     @Override
-    protected void handle(RsTilrettelagtKommunikasjon tilrettelagtKommunikasjon) {
+    protected void handle(TilrettelagtKommunikasjonDTO tilrettelagtKommunikasjon) {
 
         //Ingen håndtering for enkeltpost
     }
 
     @Override
-    protected void enforceIntegrity(List<RsTilrettelagtKommunikasjon> type) {
+    protected void enforceIntegrity(List<TilrettelagtKommunikasjonDTO> type) {
 
         //Ingen validering for liste
     }

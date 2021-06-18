@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.pdl.forvalter.database.JSONUserType;
-import no.nav.pdl.forvalter.domain.PdlPerson;
+import no.nav.pdl.forvalter.domain.PersonDTO;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
@@ -48,7 +48,7 @@ public class DbPerson {
     private String ident;
 
     @Type(type = "JsonType")
-    private PdlPerson person;
+    private PersonDTO person;
 
     @OrderBy("relasjonType desc, id desc")
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)

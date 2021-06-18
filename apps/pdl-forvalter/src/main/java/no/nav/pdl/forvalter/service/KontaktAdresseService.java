@@ -3,20 +3,20 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
-import no.nav.pdl.forvalter.dto.RsKontaktadresse;
+import no.nav.pdl.forvalter.domain.KontaktadresseDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.pdl.forvalter.domain.PdlAdresse.Master.PDL;
+import static no.nav.pdl.forvalter.domain.AdresseDTO.Master.PDL;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
 @RequiredArgsConstructor
-public class KontaktAdresseService extends AdresseService<RsKontaktadresse> {
+public class KontaktAdresseService extends AdresseService<KontaktadresseDTO> {
 
     private static final String VALIDATION_AMBIGUITY_ERROR = "Kun én adresse skal være satt (vegadresse, " +
             "postboksadresse, utenlandskAdresse)";
@@ -24,7 +24,7 @@ public class KontaktAdresseService extends AdresseService<RsKontaktadresse> {
     private final AdresseServiceConsumer adresseServiceConsumer;
     private final MapperFacade mapperFacade;
 
-    private static void validatePostBoksAdresse(RsKontaktadresse.Postboksadresse postboksadresse) {
+    private static void validatePostBoksAdresse(KontaktadresseDTO.PostboksadresseDTO postboksadresse) {
         if (isBlank(postboksadresse.getPostboks())) {
             throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_POSTBOKS_ERROR);
         }
@@ -35,7 +35,7 @@ public class KontaktAdresseService extends AdresseService<RsKontaktadresse> {
     }
 
     @Override
-    protected void validate(RsKontaktadresse adresse) {
+    protected void validate(KontaktadresseDTO adresse) {
         if (count(adresse.getPostboksadresse()) +
                 count(adresse.getUtenlandskAdresse()) +
                 count(adresse.getVegadresse()) > 1) {
@@ -58,7 +58,7 @@ public class KontaktAdresseService extends AdresseService<RsKontaktadresse> {
     }
 
     @Override
-    protected void handle(RsKontaktadresse kontaktadresse) {
+    protected void handle(KontaktadresseDTO kontaktadresse) {
         if (nonNull(kontaktadresse.getVegadresse())) {
             var vegadresse =
                     adresseServiceConsumer.getAdresse(kontaktadresse.getVegadresse(), kontaktadresse.getAdresseIdentifikatorFraMatrikkelen());

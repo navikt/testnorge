@@ -1,7 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.pdl.forvalter.dto.RsInnflytting;
+import no.nav.pdl.forvalter.domain.InnflyttingDTO;
 import no.nav.pdl.forvalter.utils.TilfeldigLandService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -16,7 +16,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
 @RequiredArgsConstructor
-public class InnflyttingService extends PdlArtifactService<RsInnflytting> {
+public class InnflyttingService extends PdlArtifactService<InnflyttingDTO> {
 
     private static final String VALIDATION_LANDKODE_ERROR = "Landkode må oppgis i hht ISO-3 Landkoder på fraflyttingsland";
     private static final String VALIDATION_INNFLYTTING_DATO_ERROR = "Ugyldig flyttedato, ny dato må være etter en eksisterende";
@@ -24,7 +24,7 @@ public class InnflyttingService extends PdlArtifactService<RsInnflytting> {
     private final TilfeldigLandService tilfeldigLandService;
 
     @Override
-    protected void validate(RsInnflytting innflytting) {
+    protected void validate(InnflyttingDTO innflytting) {
 
         if (isNotBlank(innflytting.getFraflyttingsland()) && !isLandkode(innflytting.getFraflyttingsland())) {
             throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_LANDKODE_ERROR);
@@ -32,7 +32,7 @@ public class InnflyttingService extends PdlArtifactService<RsInnflytting> {
     }
 
     @Override
-    protected void handle(RsInnflytting innflytting) {
+    protected void handle(InnflyttingDTO innflytting) {
 
         if (isBlank(innflytting.getFraflyttingsland())) {
             innflytting.setFraflyttingsland(tilfeldigLandService.getLand());
@@ -40,7 +40,7 @@ public class InnflyttingService extends PdlArtifactService<RsInnflytting> {
     }
 
     @Override
-    protected void enforceIntegrity(List<RsInnflytting> innflytting) {
+    protected void enforceIntegrity(List<InnflyttingDTO> innflytting) {
 
         for (var i = 0; i < innflytting.size(); i++) {
             if (i + 1 < innflytting.size() && nonNull(innflytting.get(i + 1).getFlyttedato()) &&

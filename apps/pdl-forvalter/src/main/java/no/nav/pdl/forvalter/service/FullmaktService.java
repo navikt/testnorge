@@ -3,9 +3,9 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.database.model.RelasjonType;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
-import no.nav.pdl.forvalter.domain.PdlFullmakt;
-import no.nav.pdl.forvalter.domain.PdlPerson;
-import no.nav.pdl.forvalter.dto.RsPersonRequest;
+import no.nav.pdl.forvalter.domain.FullmaktDTO;
+import no.nav.pdl.forvalter.domain.PersonDTO;
+import no.nav.pdl.forvalter.domain.PersonRequestDTO;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -33,7 +33,7 @@ public class FullmaktService {
     private final CreatePersonService createPersonService;
     private final RelasjonService relasjonService;
 
-    public List<PdlFullmakt> convert(PdlPerson person) {
+    public List<FullmaktDTO> convert(PersonDTO person) {
 
         for (var type : person.getFullmakt()) {
 
@@ -49,7 +49,7 @@ public class FullmaktService {
         return person.getFullmakt();
     }
 
-    private void validate(PdlFullmakt fullmakt) {
+    private void validate(FullmaktDTO fullmakt) {
 
         if (isNull(fullmakt.getOmraader())) {
             throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_OMRAADER_ERROR);
@@ -71,12 +71,12 @@ public class FullmaktService {
         }
     }
 
-    private void handle(PdlFullmakt fullmakt, String ident) {
+    private void handle(FullmaktDTO fullmakt, String ident) {
 
         if (isBlank(fullmakt.getFullmektig())) {
 
             if (isNull(fullmakt.getNyFullmektig())) {
-                fullmakt.setNyFullmektig(new RsPersonRequest());
+                fullmakt.setNyFullmektig(new PersonRequestDTO());
             }
 
             if (isNull(fullmakt.getNyFullmektig().getAlder()) &&

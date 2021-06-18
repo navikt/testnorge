@@ -1,8 +1,8 @@
 package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
-import no.nav.pdl.forvalter.domain.PdlFullmakt;
-import no.nav.pdl.forvalter.domain.PdlPerson;
+import no.nav.pdl.forvalter.domain.FullmaktDTO;
+import no.nav.pdl.forvalter.domain.PersonDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -33,13 +33,13 @@ class FullmaktServiceTest {
     @Test
     void whenOmraaderIsMissing_thenThrowExecption() {
 
-        var request = List.of(PdlFullmakt.builder()
+        var request = List.of(FullmaktDTO.builder()
                 .isNew(true)
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                fullmaktService.convert(PdlPerson.builder()
-                        .fullmakt((List<PdlFullmakt>) request)
+                fullmaktService.convert(PersonDTO.builder()
+                        .fullmakt((List<FullmaktDTO>) request)
                         .build()));
 
         assertThat(exception.getMessage(), containsString("Omraader for fullmakt må angis"));
@@ -48,14 +48,14 @@ class FullmaktServiceTest {
     @Test
     void whenGyldigFomIsMissing_thenThrowExecption() {
 
-        var request = List.of(PdlFullmakt.builder()
+        var request = List.of(FullmaktDTO.builder()
                 .omraader(List.of("OMRAADE"))
                 .isNew(true)
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                fullmaktService.convert(PdlPerson.builder()
-                        .fullmakt((List<PdlFullmakt>) request)
+                fullmaktService.convert(PersonDTO.builder()
+                        .fullmakt((List<FullmaktDTO>) request)
                         .build()));
 
         assertThat(exception.getMessage(), containsString("Fullmakt med gyldigFom må angis"));
@@ -64,15 +64,15 @@ class FullmaktServiceTest {
     @Test
     void whenGyldigTomIsMissing_thenThrowExecption() {
 
-        var request = List.of(PdlFullmakt.builder()
+        var request = List.of(FullmaktDTO.builder()
                 .omraader(List.of("OMRAADE"))
                 .gyldigFom(LocalDate.of(2012, 04, 05).atStartOfDay())
                 .isNew(true)
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                fullmaktService.convert(PdlPerson.builder()
-                        .fullmakt((List<PdlFullmakt>) request)
+                fullmaktService.convert(PersonDTO.builder()
+                        .fullmakt((List<FullmaktDTO>) request)
                         .build()));
 
         assertThat(exception.getMessage(), containsString("Fullmakt med gyldigTom må angis"));
@@ -81,7 +81,7 @@ class FullmaktServiceTest {
     @Test
     void whenUgyldigDatoInterval_thenThrowExecption() {
 
-        var request = List.of(PdlFullmakt.builder()
+        var request = List.of(FullmaktDTO.builder()
                 .omraader(List.of("OMRAADE"))
                 .gyldigFom(LocalDate.of(2012, 04, 05).atStartOfDay())
                 .gyldigTom(LocalDate.of(2012, 04, 04).atStartOfDay())
@@ -89,8 +89,8 @@ class FullmaktServiceTest {
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                fullmaktService.convert(PdlPerson.builder()
-                        .fullmakt((List<PdlFullmakt>) request)
+                fullmaktService.convert(PersonDTO.builder()
+                        .fullmakt((List<FullmaktDTO>) request)
                         .build()));
 
         assertThat(exception.getMessage(), containsString("Ugyldig datointervall: gyldigFom må være før gyldigTom"));
@@ -101,7 +101,7 @@ class FullmaktServiceTest {
 
         when(personRepository.existsByIdent(IDENT)).thenReturn(false);
 
-        var request = List.of(PdlFullmakt.builder()
+        var request = List.of(FullmaktDTO.builder()
                 .omraader(List.of("OMRAADE"))
                 .gyldigFom(LocalDate.of(2012, 04, 05).atStartOfDay())
                 .gyldigTom(LocalDate.of(2012, 04, 06).atStartOfDay())
@@ -110,8 +110,8 @@ class FullmaktServiceTest {
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                fullmaktService.convert(PdlPerson.builder()
-                        .fullmakt((List<PdlFullmakt>) request)
+                fullmaktService.convert(PersonDTO.builder()
+                        .fullmakt((List<FullmaktDTO>) request)
                         .build()));
 
         assertThat(exception.getMessage(), containsString(format("Fullmektig: person %s ikke funnet i database", IDENT)));

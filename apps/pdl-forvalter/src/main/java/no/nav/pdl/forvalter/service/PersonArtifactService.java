@@ -1,7 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.pdl.forvalter.domain.PdlPerson;
+import no.nav.pdl.forvalter.domain.PersonDTO;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,7 +30,7 @@ public class PersonArtifactService {
     private final KontaktinformasjonForDoedsboService kontaktinformasjonForDoedsboService;
     private final IdenttypeService identtypeService;
 
-    public PdlPerson buildPerson(PdlPerson person) {
+    public PersonDTO buildPerson(PersonDTO person) {
 
         // Orders below matters to some degree, don´t rearrange without checking consequences
         person.setKjoenn(kjoennService.convert(person));

@@ -1,6 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.domain.PdlOpphold;
+import no.nav.pdl.forvalter.domain.OppholdDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,9 +10,9 @@ import org.springframework.web.client.HttpClientErrorException;
 import java.time.LocalDate;
 import java.util.List;
 
-import static no.nav.pdl.forvalter.domain.PdlOpphold.OppholdType.MIDLERTIDIG;
-import static no.nav.pdl.forvalter.domain.PdlOpphold.OppholdType.OPPLYSNING_MANGLER;
-import static no.nav.pdl.forvalter.domain.PdlOpphold.OppholdType.PERMANENT;
+import static no.nav.pdl.forvalter.domain.OppholdDTO.OppholdType.MIDLERTIDIG;
+import static no.nav.pdl.forvalter.domain.OppholdDTO.OppholdType.OPPLYSNING_MANGLER;
+import static no.nav.pdl.forvalter.domain.OppholdDTO.OppholdType.PERMANENT;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -28,13 +28,13 @@ class OppholdServiceTest {
     @Test
     void whenGyldigFraIsMissing_thenThrowExecption() {
 
-        var request = List.of(PdlOpphold.builder()
+        var request = List.of(OppholdDTO.builder()
                 .type(PERMANENT)
                 .isNew(true)
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdService.convert((List<PdlOpphold>) request));
+                oppholdService.convert((List<OppholdDTO>) request));
 
         assertThat(exception.getMessage(), containsString("Opphold med oppholdFra må angis"));
     }
@@ -42,7 +42,7 @@ class OppholdServiceTest {
     @Test
     void whenInvalidDateInterval_thenThrowExecption() {
 
-        var request = List.of(PdlOpphold.builder()
+        var request = List.of(OppholdDTO.builder()
                 .oppholdFra(LocalDate.of(2020, 1, 1).atStartOfDay())
                 .oppholdTil(LocalDate.of(2018, 1, 1).atStartOfDay())
                 .type(MIDLERTIDIG)
@@ -50,7 +50,7 @@ class OppholdServiceTest {
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdService.convert((List<PdlOpphold>) request));
+                oppholdService.convert((List<OppholdDTO>) request));
 
         assertThat(exception.getMessage(), containsString("Ugyldig datointervall: oppholdFra må være før oppholdTil"));
     }
@@ -58,13 +58,13 @@ class OppholdServiceTest {
     @Test
     void whenTypeIsEmpty_thenThrowExecption() {
 
-        var request = List.of(PdlOpphold.builder()
+        var request = List.of(OppholdDTO.builder()
                 .oppholdFra(LocalDate.of(2020, 1, 1).atStartOfDay())
                 .isNew(true)
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdService.convert((List<PdlOpphold>) request));
+                oppholdService.convert((List<OppholdDTO>) request));
 
         assertThat(exception.getMessage(), containsString("Type av opphold må angis"));
     }
@@ -72,12 +72,12 @@ class OppholdServiceTest {
     @Test
     void whenOverlappingDateIntervalsInInput_thenThrowExecption() {
 
-        var request = List.of(PdlOpphold.builder()
+        var request = List.of(OppholdDTO.builder()
                         .oppholdFra(LocalDate.of(2020, 1, 2).atStartOfDay())
                         .type(OPPLYSNING_MANGLER)
                         .isNew(true)
                         .build(),
-                PdlOpphold.builder()
+                OppholdDTO.builder()
                         .oppholdFra(LocalDate.of(2020, 1, 1).atStartOfDay())
                         .type(MIDLERTIDIG)
                         .isNew(true)
@@ -92,12 +92,12 @@ class OppholdServiceTest {
     @Test
     void whenOverlappingDateIntervalsInInput2_thenThrowExecption() {
 
-        var request = List.of(PdlOpphold.builder()
+        var request = List.of(OppholdDTO.builder()
                         .oppholdFra(LocalDate.of(2020, 2, 3).atStartOfDay())
                         .type(OPPLYSNING_MANGLER)
                         .isNew(true)
                         .build(),
-                PdlOpphold.builder()
+                OppholdDTO.builder()
                         .oppholdFra(LocalDate.of(2020, 1, 1).atStartOfDay())
                         .oppholdTil(LocalDate.of(2020, 2, 3).atStartOfDay())
                         .type(MIDLERTIDIG)
@@ -113,7 +113,7 @@ class OppholdServiceTest {
     @Test
     void whenFraDatoAndEmptyTilDato_thenAcceptRequest() {
 
-        var target = oppholdService.convert(List.of(PdlOpphold.builder()
+        var target = oppholdService.convert(List.of(OppholdDTO.builder()
                 .oppholdFra(LocalDate.of(2020, 1, 1).atStartOfDay())
                 .type(OPPLYSNING_MANGLER)
                 .isNew(true)
@@ -125,12 +125,12 @@ class OppholdServiceTest {
     @Test
     void whenPreviousOppholdHasEmptyTilDato_thenFixPreviousOppholdTilDato() {
 
-        var target = oppholdService.convert(List.of(PdlOpphold.builder()
+        var target = oppholdService.convert(List.of(OppholdDTO.builder()
                         .oppholdFra(LocalDate.of(2020, 2, 4).atStartOfDay())
                         .type(OPPLYSNING_MANGLER)
                         .isNew(true)
                         .build(),
-                PdlOpphold.builder()
+                OppholdDTO.builder()
                         .oppholdFra(LocalDate.of(2020, 1, 1).atStartOfDay())
                         .type(MIDLERTIDIG)
                         .isNew(true)

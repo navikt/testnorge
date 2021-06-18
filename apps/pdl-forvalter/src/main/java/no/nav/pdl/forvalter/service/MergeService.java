@@ -3,8 +3,8 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.pdl.forvalter.domain.PdlDbVersjon;
-import no.nav.pdl.forvalter.domain.PdlPerson;
+import no.nav.pdl.forvalter.domain.DbVersjonDTO;
+import no.nav.pdl.forvalter.domain.PersonDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -39,16 +39,16 @@ public class MergeService {
         }
     }
 
-    public PdlPerson merge(PdlPerson request, PdlPerson dbPerson) {
+    public PersonDTO merge(PersonDTO request, PersonDTO dbPerson) {
 
         Stream.of(request.getClass().getDeclaredFields()).forEach(field -> {
 
-            if (List.class.equals(field.getType()) && !((List<PdlDbVersjon>) getValue(request, field.getName())).isEmpty()) {
+            if (List.class.equals(field.getType()) && !((List<DbVersjonDTO>) getValue(request, field.getName())).isEmpty()) {
 
-                var infoElementRequest = (List<PdlDbVersjon>) getValue(request, field.getName());
-                var infoElementDbPerson = (List<PdlDbVersjon>) getValue(dbPerson, field.getName());
+                var infoElementRequest = (List<DbVersjonDTO>) getValue(request, field.getName());
+                var infoElementDbPerson = (List<DbVersjonDTO>) getValue(dbPerson, field.getName());
                 var dbId = new AtomicInteger(infoElementDbPerson.stream()
-                        .mapToInt(PdlDbVersjon::getId)
+                        .mapToInt(DbVersjonDTO::getId)
                         .max().orElse(0));
 
                 infoElementRequest.forEach(requestElement -> {

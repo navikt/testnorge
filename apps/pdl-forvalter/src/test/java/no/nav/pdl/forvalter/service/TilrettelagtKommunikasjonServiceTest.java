@@ -1,6 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.dto.RsTilrettelagtKommunikasjon;
+import no.nav.pdl.forvalter.domain.TilrettelagtKommunikasjonDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,12 +22,12 @@ class TilrettelagtKommunikasjonServiceTest {
     @Test
     void whenNoSpraakGiven_thenThrowExecption() {
 
-        var request = List.of(RsTilrettelagtKommunikasjon.builder()
+        var request = List.of(TilrettelagtKommunikasjonDTO.builder()
                 .isNew(true)
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                tilrettelagtKommunikasjonService.convert((List<RsTilrettelagtKommunikasjon>) request));
+                tilrettelagtKommunikasjonService.convert((List<TilrettelagtKommunikasjonDTO>) request));
 
         assertThat(exception.getMessage(), containsString("Språk for taletolk og/eller tegnspråktolk må oppgis"));
     }
@@ -35,13 +35,13 @@ class TilrettelagtKommunikasjonServiceTest {
     @Test
     void whenInvalidSpraakTaletolkGiven_thenThrowExecption() {
 
-        var request = List.of(RsTilrettelagtKommunikasjon.builder()
+        var request = List.of(TilrettelagtKommunikasjonDTO.builder()
                 .spraakForTaletolk("svensk")
                 .isNew(true)
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                tilrettelagtKommunikasjonService.convert((List<RsTilrettelagtKommunikasjon>) request));
+                tilrettelagtKommunikasjonService.convert((List<TilrettelagtKommunikasjonDTO>) request));
 
         assertThat(exception.getMessage(), containsString("Språk for taletolk er ugyldig: forventet 2 tegn i hht kodeverk Språk"));
     }
@@ -49,13 +49,13 @@ class TilrettelagtKommunikasjonServiceTest {
     @Test
     void whenInvalidSpraakTegnspraakTolkGiven_thenThrowExecption() {
 
-        var request = List.of(RsTilrettelagtKommunikasjon.builder()
+        var request = List.of(TilrettelagtKommunikasjonDTO.builder()
                 .spraakForTegnspraakTolk("kyrgisistansk")
                 .isNew(true)
                 .build());
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                tilrettelagtKommunikasjonService.convert((List<RsTilrettelagtKommunikasjon>) request));
+                tilrettelagtKommunikasjonService.convert((List<TilrettelagtKommunikasjonDTO>) request));
 
         assertThat(exception.getMessage(), containsString("Språk for tegnspråktolk er ugyldig: forventet 2 tegn i hht kodeverk Språk"));
     }

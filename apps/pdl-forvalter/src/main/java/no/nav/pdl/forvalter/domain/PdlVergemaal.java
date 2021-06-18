@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.pdl.forvalter.dto.Folkeregistermetadata;
 
 import java.io.Serializable;
 
@@ -11,7 +12,7 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PdlVergemaal extends PdlDbVersjon {
+public class PdlVergemaal extends DbVersjonDTO {
 
     public enum VergemaalType {
         ENSLIG_MINDREAARIG_ASYLSOEKER,

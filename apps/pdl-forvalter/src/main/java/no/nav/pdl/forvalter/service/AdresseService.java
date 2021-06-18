@@ -1,6 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.domain.PdlAdresse;
+import no.nav.pdl.forvalter.domain.AdresseDTO;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
@@ -10,7 +10,7 @@ import static java.util.Objects.nonNull;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
-public abstract class AdresseService<T extends PdlAdresse> {
+public abstract class AdresseService<T extends AdresseDTO> {
 
     public static final String VALIDATION_MASTER_PDL_ERROR = "Feltene gyldigFraOgMed og gyldigTilOgMed må ha verdi " +
             "hvis master er PDL";
@@ -22,7 +22,7 @@ public abstract class AdresseService<T extends PdlAdresse> {
             "verdi for vegadresse uten matrikkelId";
     protected static final String VALIDATION_ADRESSE_OVELAP_ERROR = "Feil: Overlappende adressedatoer er ikke lov";
 
-    protected static void validateMasterPdl(PdlAdresse adresse) {
+    protected static void validateMasterPdl(AdresseDTO adresse) {
         if (isNull(adresse.getGyldigFraOgMed()) || isNull(adresse.getGyldigTilOgMed())) {
             throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_GYLDIGHET_ABSENT_ERROR);
         }
@@ -65,10 +65,10 @@ public abstract class AdresseService<T extends PdlAdresse> {
         for (var i = 0; i < adresse.size(); i++) {
             if (i + 1 < adresse.size()) {
                 if (isNull(adresse.get(i + 1).getGyldigTilOgMed()) &&
-                        nonNull(adresse.get(i).getGyldigFraOgMed()) && nonNull(adresse.get(i+i).getGyldigFraOgMed()) &&
-                        !adresse.get(i).getGyldigFraOgMed().isAfter(adresse.get(i + 1).getGyldigFraOgMed().plusDays(1)) ||
+                        nonNull(adresse.get(i).getGyldigFraOgMed()) && nonNull(adresse.get(i+1).getGyldigFraOgMed()) &&
+                        (!adresse.get(i).getGyldigFraOgMed().isAfter(adresse.get(i + 1).getGyldigFraOgMed().plusDays(1)) ||
                         (nonNull(adresse.get(i + 1).getGyldigTilOgMed()) &&
-                                !adresse.get(i).getGyldigFraOgMed().isAfter(adresse.get(i + 1).getGyldigTilOgMed()))) {
+                                !adresse.get(i).getGyldigFraOgMed().isAfter(adresse.get(i + 1).getGyldigTilOgMed())))) {
                     throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_ADRESSE_OVELAP_ERROR);
                 }
                 if (isNull(adresse.get(i + 1).getGyldigTilOgMed()) && nonNull(adresse.get(i).getGyldigFraOgMed())) {

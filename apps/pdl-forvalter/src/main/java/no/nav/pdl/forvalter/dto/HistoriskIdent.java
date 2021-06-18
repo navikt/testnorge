@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.pdl.forvalter.domain.PdlDbVersjon;
+import no.nav.pdl.forvalter.domain.DbVersjonDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ import static java.util.Objects.isNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class HistoriskIdent extends PdlDbVersjon {
+public class HistoriskIdent extends DbVersjonDTO {
 
     private List<String> identer;
 

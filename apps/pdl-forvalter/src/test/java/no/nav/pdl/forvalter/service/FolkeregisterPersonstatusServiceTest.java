@@ -1,14 +1,14 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.domain.PdlBostedadresse;
-import no.nav.pdl.forvalter.domain.PdlDoedsfall;
-import no.nav.pdl.forvalter.domain.PdlFolkeregisterpersonstatus;
-import no.nav.pdl.forvalter.domain.PdlMatrikkeladresse;
-import no.nav.pdl.forvalter.domain.PdlOpphold;
-import no.nav.pdl.forvalter.domain.PdlPerson;
-import no.nav.pdl.forvalter.domain.PdlUtenlandskAdresse;
-import no.nav.pdl.forvalter.domain.PdlVegadresse;
-import no.nav.pdl.forvalter.dto.RsUtflytting;
+import no.nav.pdl.forvalter.domain.BostedadresseDTO;
+import no.nav.pdl.forvalter.domain.DoedsfallDTO;
+import no.nav.pdl.forvalter.domain.FolkeregisterpersonstatusDTO;
+import no.nav.pdl.forvalter.domain.MatrikkeladresseDTO;
+import no.nav.pdl.forvalter.domain.OppholdDTO;
+import no.nav.pdl.forvalter.domain.PersonDTO;
+import no.nav.pdl.forvalter.domain.UtenlandskAdresseDTO;
+import no.nav.pdl.forvalter.domain.UtflyttingDTO;
+import no.nav.pdl.forvalter.domain.VegadresseDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,13 +17,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static no.nav.pdl.forvalter.domain.PdlFolkeregisterpersonstatus.Folkeregisterpersonstatus.BOSATT;
-import static no.nav.pdl.forvalter.domain.PdlFolkeregisterpersonstatus.Folkeregisterpersonstatus.DOED;
-import static no.nav.pdl.forvalter.domain.PdlFolkeregisterpersonstatus.Folkeregisterpersonstatus.FOEDSELSREGISTRERT;
-import static no.nav.pdl.forvalter.domain.PdlFolkeregisterpersonstatus.Folkeregisterpersonstatus.FORSVUNNET;
-import static no.nav.pdl.forvalter.domain.PdlFolkeregisterpersonstatus.Folkeregisterpersonstatus.IKKE_BOSATT;
-import static no.nav.pdl.forvalter.domain.PdlFolkeregisterpersonstatus.Folkeregisterpersonstatus.MIDLERTIDIG;
-import static no.nav.pdl.forvalter.domain.PdlFolkeregisterpersonstatus.Folkeregisterpersonstatus.UTFLYTTET;
+import static no.nav.pdl.forvalter.domain.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.BOSATT;
+import static no.nav.pdl.forvalter.domain.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.DOED;
+import static no.nav.pdl.forvalter.domain.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.FOEDSELSREGISTRERT;
+import static no.nav.pdl.forvalter.domain.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.FORSVUNNET;
+import static no.nav.pdl.forvalter.domain.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.IKKE_BOSATT;
+import static no.nav.pdl.forvalter.domain.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.MIDLERTIDIG;
+import static no.nav.pdl.forvalter.domain.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.UTFLYTTET;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -38,8 +38,8 @@ class FolkeregisterPersonstatusServiceTest {
     void whenValueProvided_thenKeepValue() {
 
         var target = folkeregisterPersonstatusService.convert(
-                PdlPerson.builder()
-                        .folkeregisterpersonstatus(List.of(PdlFolkeregisterpersonstatus.builder()
+                PersonDTO.builder()
+                        .folkeregisterpersonstatus(List.of(FolkeregisterpersonstatusDTO.builder()
                                 .status(FORSVUNNET)
                                 .isNew(true)
                                 .build()))
@@ -52,13 +52,13 @@ class FolkeregisterPersonstatusServiceTest {
     void whenDoedsfallExists_thenUseDoedsfall() {
 
         var target = folkeregisterPersonstatusService.convert(
-                PdlPerson.builder()
+                PersonDTO.builder()
                         .folkeregisterpersonstatus(
-                                List.of(PdlFolkeregisterpersonstatus.builder()
+                                List.of(FolkeregisterpersonstatusDTO.builder()
                                         .isNew(true)
                                         .build()))
                         .doedsfall(List.of(
-                                PdlDoedsfall.builder()
+                                DoedsfallDTO.builder()
                                         .doedsdato(LocalDateTime.now())
                                         .build()))
                         .build()).get(0);
@@ -70,13 +70,13 @@ class FolkeregisterPersonstatusServiceTest {
     void whenOppholdExists_thenUseOpphold() {
 
         var target = folkeregisterPersonstatusService.convert(
-                PdlPerson.builder()
+                PersonDTO.builder()
                         .folkeregisterpersonstatus(
-                                List.of(PdlFolkeregisterpersonstatus.builder()
+                                List.of(FolkeregisterpersonstatusDTO.builder()
                                         .isNew(true)
                                         .build()))
-                        .opphold(List.of(PdlOpphold.builder()
-                                .type(PdlOpphold.OppholdType.OPPLYSNING_MANGLER)
+                        .opphold(List.of(OppholdDTO.builder()
+                                .type(OppholdDTO.OppholdType.OPPLYSNING_MANGLER)
                                 .build()))
                         .build()).get(0);
 
@@ -87,12 +87,12 @@ class FolkeregisterPersonstatusServiceTest {
     void whenUtflyttingExists_thenUseUpphold() {
 
         var target = folkeregisterPersonstatusService.convert(
-                PdlPerson.builder()
+                PersonDTO.builder()
                         .folkeregisterpersonstatus(
-                                List.of(PdlFolkeregisterpersonstatus.builder()
+                                List.of(FolkeregisterpersonstatusDTO.builder()
                                         .isNew(true)
                                         .build()))
-                        .utflytting(List.of(RsUtflytting.builder()
+                        .utflytting(List.of(UtflyttingDTO.builder()
                                 .tilflyttingsland("FRA")
                                 .build()))
                         .build()).get(0);
@@ -104,13 +104,13 @@ class FolkeregisterPersonstatusServiceTest {
     void whenBostedsadresseVegadresseExists_thenUseVegadresse() {
 
         var target = folkeregisterPersonstatusService.convert(
-                PdlPerson.builder()
+                PersonDTO.builder()
                         .folkeregisterpersonstatus(
-                                List.of(PdlFolkeregisterpersonstatus.builder()
+                                List.of(FolkeregisterpersonstatusDTO.builder()
                                         .isNew(true)
                                         .build()))
-                        .bostedsadresse(List.of(PdlBostedadresse.builder()
-                                .vegadresse(new PdlVegadresse())
+                        .bostedsadresse(List.of(BostedadresseDTO.builder()
+                                .vegadresse(new VegadresseDTO())
                                 .build()))
                         .build()).get(0);
 
@@ -121,13 +121,13 @@ class FolkeregisterPersonstatusServiceTest {
     void whenBostedsadresseMatrikkeladresseExists_thenUseMatrikkeladresse() {
 
         var target = folkeregisterPersonstatusService.convert(
-                PdlPerson.builder()
+                PersonDTO.builder()
                         .folkeregisterpersonstatus(
-                                List.of(PdlFolkeregisterpersonstatus.builder()
+                                List.of(FolkeregisterpersonstatusDTO.builder()
                                         .isNew(true)
                                         .build()))
-                        .bostedsadresse(List.of(PdlBostedadresse.builder()
-                                .matrikkeladresse(new PdlMatrikkeladresse())
+                        .bostedsadresse(List.of(BostedadresseDTO.builder()
+                                .matrikkeladresse(new MatrikkeladresseDTO())
                                 .build()))
                         .build()).get(0);
 
@@ -138,13 +138,13 @@ class FolkeregisterPersonstatusServiceTest {
     void whenBostedsadresseUtenlandsadresseExists_thenUseUtenlandsadresse() {
 
         var target = folkeregisterPersonstatusService.convert(
-                PdlPerson.builder()
+                PersonDTO.builder()
                         .folkeregisterpersonstatus(
-                                List.of(PdlFolkeregisterpersonstatus.builder()
+                                List.of(FolkeregisterpersonstatusDTO.builder()
                                         .isNew(true)
                                         .build()))
-                        .bostedsadresse(List.of(PdlBostedadresse.builder()
-                                .utenlandskAdresse(new PdlUtenlandskAdresse())
+                        .bostedsadresse(List.of(BostedadresseDTO.builder()
+                                .utenlandskAdresse(new UtenlandskAdresseDTO())
                                 .build()))
                         .build()).get(0);
 
@@ -155,9 +155,9 @@ class FolkeregisterPersonstatusServiceTest {
     void whenNoOtherInformation_thenUseDefault() {
 
         var target = folkeregisterPersonstatusService.convert(
-                PdlPerson.builder()
+                PersonDTO.builder()
                         .folkeregisterpersonstatus(
-                                List.of(PdlFolkeregisterpersonstatus.builder()
+                                List.of(FolkeregisterpersonstatusDTO.builder()
                                         .isNew(true)
                                         .build()))
                         .build()).get(0);

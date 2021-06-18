@@ -1,7 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.domain.PdlKjoenn;
-import no.nav.pdl.forvalter.domain.PdlPerson;
+import no.nav.pdl.forvalter.domain.KjoennDTO;
+import no.nav.pdl.forvalter.domain.PersonDTO;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +13,7 @@ import static org.apache.logging.log4j.util.Strings.isBlank;
 @Service
 public class KjoennService {
 
-    public List<PdlKjoenn> convert(PdlPerson person) {
+    public List<KjoennDTO> convert(PersonDTO person) {
 
         for (var type : person.getKjoenn()) {
 
@@ -28,7 +28,7 @@ public class KjoennService {
         return person.getKjoenn();
     }
 
-    private void handle(PdlKjoenn kjoenn, String ident) {
+    private void handle(KjoennDTO kjoenn, String ident) {
 
         if (isNull(kjoenn.getKjoenn())) {
             kjoenn.setKjoenn(KjoennFraIdentUtility.getKjoenn(ident));

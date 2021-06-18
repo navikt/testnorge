@@ -3,9 +3,9 @@ package no.nav.pdl.forvalter.utils;
 import lombok.experimental.UtilityClass;
 
 import static java.lang.Integer.parseInt;
-import static no.nav.pdl.forvalter.domain.PdlKjoenn.Kjoenn;
-import static no.nav.pdl.forvalter.domain.PdlKjoenn.Kjoenn.KVINNE;
-import static no.nav.pdl.forvalter.domain.PdlKjoenn.Kjoenn.MANN;
+import static no.nav.pdl.forvalter.domain.KjoennDTO.Kjoenn;
+import static no.nav.pdl.forvalter.domain.KjoennDTO.Kjoenn.KVINNE;
+import static no.nav.pdl.forvalter.domain.KjoennDTO.Kjoenn.MANN;
 
 @UtilityClass
 public class KjoennFraIdentUtility {

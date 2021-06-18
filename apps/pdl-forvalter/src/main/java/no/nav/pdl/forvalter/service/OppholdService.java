@@ -1,6 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.domain.PdlOpphold;
+import no.nav.pdl.forvalter.domain.OppholdDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -11,7 +11,7 @@ import static java.util.Objects.nonNull;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
-public class OppholdService extends PdlArtifactService<PdlOpphold> {
+public class OppholdService extends PdlArtifactService<OppholdDTO> {
 
     private static final String VALIDATION_OPPHOLD_FRA_ERROR = "Opphold med oppholdFra må angis";
     private static final String VALIDATION_UGYLDIG_INTERVAL_ERROR = "Ugyldig datointervall: oppholdFra må være før oppholdTil";
@@ -19,7 +19,7 @@ public class OppholdService extends PdlArtifactService<PdlOpphold> {
     private static final String VALIDATION_OPPHOLD_OVELAP_ERROR = "Feil: Overlappende opphold er detektert";
 
     @Override
-    protected void validate(PdlOpphold opphold) {
+    protected void validate(OppholdDTO opphold) {
 
         if (isNull(opphold.getType())) {
             throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_TYPE_ERROR);
@@ -34,13 +34,13 @@ public class OppholdService extends PdlArtifactService<PdlOpphold> {
     }
 
     @Override
-    protected void handle(PdlOpphold type) {
+    protected void handle(OppholdDTO type) {
 
         // Ingen håndtering for enkeltpost
     }
 
     @Override
-    protected void enforceIntegrity(List<PdlOpphold> opphold) {
+    protected void enforceIntegrity(List<OppholdDTO> opphold) {
 
         for (var i = 0; i < opphold.size(); i++) {
             if (i + 1 < opphold.size()) {

@@ -1,12 +1,12 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.domain.PdlBostedadresse;
-import no.nav.pdl.forvalter.domain.PdlFoedsel;
-import no.nav.pdl.forvalter.domain.PdlMatrikkeladresse;
-import no.nav.pdl.forvalter.domain.PdlPerson;
-import no.nav.pdl.forvalter.domain.PdlUtenlandskAdresse;
-import no.nav.pdl.forvalter.domain.PdlVegadresse;
-import no.nav.pdl.forvalter.dto.RsInnflytting;
+import no.nav.pdl.forvalter.domain.BostedadresseDTO;
+import no.nav.pdl.forvalter.domain.FoedselDTO;
+import no.nav.pdl.forvalter.domain.InnflyttingDTO;
+import no.nav.pdl.forvalter.domain.MatrikkeladresseDTO;
+import no.nav.pdl.forvalter.domain.PersonDTO;
+import no.nav.pdl.forvalter.domain.UtenlandskAdresseDTO;
+import no.nav.pdl.forvalter.domain.VegadresseDTO;
 import no.nav.pdl.forvalter.utils.TilfeldigKommuneService;
 import no.nav.pdl.forvalter.utils.TilfeldigLandService;
 import org.junit.jupiter.api.Test;
@@ -30,19 +30,19 @@ class FoedselServiceTest {
     private static final String FNR_IDENT = "12105628901";
     private static final String DNR_IDENT = "41056828901";
 
-    private static final PdlBostedadresse vegadresse = PdlBostedadresse.builder()
-            .vegadresse(PdlVegadresse.builder().kommunenummer("3025").build())
+    private static final BostedadresseDTO vegadresse = BostedadresseDTO.builder()
+            .vegadresse(VegadresseDTO.builder().kommunenummer("3025").build())
             .build();
-    private static final PdlBostedadresse matrikkeladresse = PdlBostedadresse.builder()
-            .matrikkeladresse(PdlMatrikkeladresse.builder().kommunenummer("3024").build())
+    private static final BostedadresseDTO matrikkeladresse = BostedadresseDTO.builder()
+            .matrikkeladresse(MatrikkeladresseDTO.builder().kommunenummer("3024").build())
             .build();
-    private static final PdlBostedadresse ukjentBosted = PdlBostedadresse.builder()
-            .ukjentBosted(PdlBostedadresse.PdlUkjentBosted.builder().bostedskommune("4644").build())
+    private static final BostedadresseDTO ukjentBosted = BostedadresseDTO.builder()
+            .ukjentBosted(BostedadresseDTO.UkjentBostedDTO.builder().bostedskommune("4644").build())
             .build();
-    private static final PdlBostedadresse utenlandskBoadresse = PdlBostedadresse.builder()
-            .utenlandskAdresse(PdlUtenlandskAdresse.builder().landkode("BRA").build())
+    private static final BostedadresseDTO utenlandskBoadresse = BostedadresseDTO.builder()
+            .utenlandskAdresse(UtenlandskAdresseDTO.builder().landkode("BRA").build())
             .build();
-    private static final RsInnflytting innflytting = RsInnflytting.builder()
+    private static final InnflyttingDTO innflytting = InnflyttingDTO.builder()
             .fraflyttingsland("JPN")
             .build();
 
@@ -58,8 +58,8 @@ class FoedselServiceTest {
     @Test
     void whenIdentIsFnrAndVegadresseConveysKommune_thenCaptureFoedekommune() {
 
-        var target = foedselService.convert(PdlPerson.builder()
-                .foedsel(List.of(PdlFoedsel.builder()
+        var target = foedselService.convert(PersonDTO.builder()
+                .foedsel(List.of(FoedselDTO.builder()
                         .isNew(true)
                         .build()))
                 .ident(FNR_IDENT)
@@ -76,8 +76,8 @@ class FoedselServiceTest {
     @Test
     void whenIdentIsFnrAndMatrikkeldresseConveysKommune_thenCaptureFoedekommune() {
 
-        var target = foedselService.convert(PdlPerson.builder()
-                .foedsel(List.of(PdlFoedsel.builder()
+        var target = foedselService.convert(PersonDTO.builder()
+                .foedsel(List.of(FoedselDTO.builder()
                         .isNew(true)
                         .build()))
                 .ident(FNR_IDENT)
@@ -94,8 +94,8 @@ class FoedselServiceTest {
     @Test
     void whenIdentIsFnrAndUkjentBostedConveysKommune_thenCaptureFoedekommune() {
 
-        var target = foedselService.convert(PdlPerson.builder()
-                .foedsel(List.of(PdlFoedsel.builder()
+        var target = foedselService.convert(PersonDTO.builder()
+                .foedsel(List.of(FoedselDTO.builder()
                         .isNew(true)
                         .build()))
                 .ident(FNR_IDENT)
@@ -114,8 +114,8 @@ class FoedselServiceTest {
 
         when(tilfeldigKommuneService.getKommune()).thenReturn("4777");
 
-        var target = foedselService.convert(PdlPerson.builder()
-                .foedsel(List.of(PdlFoedsel.builder()
+        var target = foedselService.convert(PersonDTO.builder()
+                .foedsel(List.of(FoedselDTO.builder()
                         .isNew(true)
                         .build()))
                 .ident(FNR_IDENT)
@@ -133,8 +133,8 @@ class FoedselServiceTest {
     @Test
     void whenIdentIsDnrAndUtenLandskAdresseConveysCountry_thenCaptureLandkode() {
 
-        var target = foedselService.convert(PdlPerson.builder()
-                .foedsel(List.of(PdlFoedsel.builder()
+        var target = foedselService.convert(PersonDTO.builder()
+                .foedsel(List.of(FoedselDTO.builder()
                         .isNew(true)
                         .build()))
                 .ident(DNR_IDENT)
@@ -150,8 +150,8 @@ class FoedselServiceTest {
     @Test
     void whenIdentIsDnrAndInnflyttingConveysCountry_thenCapturLandkode() {
 
-        var target = foedselService.convert(PdlPerson.builder()
-                .foedsel(List.of(PdlFoedsel.builder()
+        var target = foedselService.convert(PersonDTO.builder()
+                .foedsel(List.of(FoedselDTO.builder()
                         .isNew(true)
                         .build()))
                 .ident(DNR_IDENT)
@@ -169,8 +169,8 @@ class FoedselServiceTest {
 
         when(tilfeldigLandService.getLand()).thenReturn("COL");
 
-        var target = foedselService.convert(PdlPerson.builder()
-                .foedsel(List.of(PdlFoedsel.builder()
+        var target = foedselService.convert(PersonDTO.builder()
+                .foedsel(List.of(FoedselDTO.builder()
                         .isNew(true)
                         .build()))
                 .ident(DNR_IDENT)

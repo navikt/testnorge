@@ -1,7 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.pdl.forvalter.dto.RsUtflytting;
+import no.nav.pdl.forvalter.domain.UtflyttingDTO;
 import no.nav.pdl.forvalter.utils.TilfeldigLandService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -16,7 +16,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
 @RequiredArgsConstructor
-public class UtflyttingService extends PdlArtifactService<RsUtflytting> {
+public class UtflyttingService extends PdlArtifactService<UtflyttingDTO> {
 
     private static final String VALIDATION_LANDKODE_ERROR = "Landkode må oppgis i hht ISO-3 Landkoder for tilflyttingsland";
     private static final String VALIDATION_UTFLYTTING_DATO_ERROR = "Ugyldig flyttedato, ny dato må være etter en eksisterende";
@@ -24,7 +24,7 @@ public class UtflyttingService extends PdlArtifactService<RsUtflytting> {
     private final TilfeldigLandService tilfeldigLandService;
 
     @Override
-    protected void validate(RsUtflytting utflytting) {
+    protected void validate(UtflyttingDTO utflytting) {
 
         if (isNotBlank(utflytting.getTilflyttingsland()) && !isLandkode(utflytting.getTilflyttingsland())) {
             throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_LANDKODE_ERROR);
@@ -32,7 +32,7 @@ public class UtflyttingService extends PdlArtifactService<RsUtflytting> {
     }
 
     @Override
-    protected void handle(RsUtflytting utflytting) {
+    protected void handle(UtflyttingDTO utflytting) {
 
         if (isBlank(utflytting.getTilflyttingsland())) {
             utflytting.setTilflyttingsland(tilfeldigLandService.getLand());
@@ -40,7 +40,7 @@ public class UtflyttingService extends PdlArtifactService<RsUtflytting> {
     }
 
     @Override
-    protected void enforceIntegrity(List<RsUtflytting> utflytting) {
+    protected void enforceIntegrity(List<UtflyttingDTO> utflytting) {
 
         for (var i = 0; i < utflytting.size(); i++) {
             if (i + 1 < utflytting.size() && nonNull(utflytting.get(i + 1).getFlyttedato()) &&

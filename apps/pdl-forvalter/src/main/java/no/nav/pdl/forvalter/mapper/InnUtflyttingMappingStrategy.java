@@ -3,11 +3,11 @@ package no.nav.pdl.forvalter.mapper;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.pdl.forvalter.domain.Folkeregistermetadata;
-import no.nav.pdl.forvalter.domain.PdlInnflytting;
-import no.nav.pdl.forvalter.domain.PdlUtflytting;
-import no.nav.pdl.forvalter.dto.RsInnflytting;
-import no.nav.pdl.forvalter.dto.RsUtflytting;
+import no.nav.pdl.forvalter.domain.InnflyttingDTO;
+import no.nav.pdl.forvalter.domain.UtflyttingDTO;
+import no.nav.pdl.forvalter.dto.Folkeregistermetadata;
+import no.nav.pdl.forvalter.dto.PdlInnflytting;
+import no.nav.pdl.forvalter.dto.PdlUtflytting;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,10 +17,10 @@ public class InnUtflyttingMappingStrategy implements MappingStrategy {
     @Override
     public void register(MapperFactory factory) {
 
-        factory.classMap(RsInnflytting.class, PdlInnflytting.class)
+        factory.classMap(InnflyttingDTO.class, PdlInnflytting.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(RsInnflytting kilde, PdlInnflytting destinasjon, MappingContext context) {
+                    public void mapAtoB(InnflyttingDTO kilde, PdlInnflytting destinasjon, MappingContext context) {
 
                         destinasjon.setFolkeregistermetadata(Folkeregistermetadata.builder()
                                 .gyldighetstidspunkt(kilde.getFlyttedato())
@@ -30,10 +30,10 @@ public class InnUtflyttingMappingStrategy implements MappingStrategy {
                 .byDefault()
                 .register();
 
-        factory.classMap(RsUtflytting.class, PdlUtflytting.class)
+        factory.classMap(UtflyttingDTO.class, PdlUtflytting.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(RsUtflytting kilde, PdlUtflytting destinasjon, MappingContext context) {
+                    public void mapAtoB(UtflyttingDTO kilde, PdlUtflytting destinasjon, MappingContext context) {
 
                         destinasjon.setFolkeregistermetadata(Folkeregistermetadata.builder()
                                 .gyldighetstidspunkt(kilde.getFlyttedato())

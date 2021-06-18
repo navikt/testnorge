@@ -1,6 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.domain.PdlUtenlandskIdentifikasjonsnummer;
+import no.nav.pdl.forvalter.domain.UtenlandskIdentifikasjonsnummerDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -11,7 +11,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
-public class UtenlandsidentifikasjonsnummerService extends PdlArtifactService<PdlUtenlandskIdentifikasjonsnummer> {
+public class UtenlandsidentifikasjonsnummerService extends PdlArtifactService<UtenlandskIdentifikasjonsnummerDTO> {
 
     private static final String VALIDATION_ID_NUMMER_MISSING = "Utenlandsk identifikasjonsnummer må oppgis";
     private static final String VALIDATION_OPPHOERT_MISSING = "Er utenlandsk identifikasjonsnummer opphørt? Må angis";
@@ -19,7 +19,7 @@ public class UtenlandsidentifikasjonsnummerService extends PdlArtifactService<Pd
     private static final String VALIDATION_LANDKODE_ILLEGAL_FORMAT = "Trebokstavers landkode er forventet på utstederland";
 
     @Override
-    protected void validate(PdlUtenlandskIdentifikasjonsnummer identifikasjon) {
+    protected void validate(UtenlandskIdentifikasjonsnummerDTO identifikasjon) {
 
         if (isBlank(identifikasjon.getIdentifikasjonsnummer())) {
             throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_ID_NUMMER_MISSING);
@@ -39,13 +39,13 @@ public class UtenlandsidentifikasjonsnummerService extends PdlArtifactService<Pd
     }
 
     @Override
-    protected void handle(PdlUtenlandskIdentifikasjonsnummer innflytting) {
+    protected void handle(UtenlandskIdentifikasjonsnummerDTO innflytting) {
 
         // Ingen håndtering av data
     }
 
     @Override
-    protected void enforceIntegrity(List<PdlUtenlandskIdentifikasjonsnummer> innflytting) {
+    protected void enforceIntegrity(List<UtenlandskIdentifikasjonsnummerDTO> innflytting) {
 
         // Ingen referanseintegritet å håndtere
     }

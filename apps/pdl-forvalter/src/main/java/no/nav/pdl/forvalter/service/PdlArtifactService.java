@@ -1,12 +1,12 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.domain.PdlDbVersjon;
+import no.nav.pdl.forvalter.domain.DbVersjonDTO;
 
 import java.util.List;
 
 import static org.apache.logging.log4j.util.Strings.isBlank;
 
-public abstract class PdlArtifactService<T extends PdlDbVersjon> {
+public abstract class PdlArtifactService<T extends DbVersjonDTO> {
 
     protected List<T> convert(List<T> request) {
 

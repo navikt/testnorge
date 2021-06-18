@@ -4,11 +4,10 @@ import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.database.model.RelasjonType;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
-import no.nav.pdl.forvalter.domain.PdlPerson;
-import no.nav.pdl.forvalter.dto.RsFalskIdentitet;
-import no.nav.pdl.forvalter.dto.RsNavn;
-import no.nav.pdl.forvalter.dto.RsPersonRequest;
-import no.nav.registre.testnorge.libs.dto.generernavnservice.v1.NavnDTO;
+import no.nav.pdl.forvalter.domain.FalskIdentitetDTO;
+import no.nav.pdl.forvalter.domain.NavnDTO;
+import no.nav.pdl.forvalter.domain.PersonDTO;
+import no.nav.pdl.forvalter.domain.PersonRequestDTO;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -49,12 +48,12 @@ public class FalskIdentitetService {
         return isNotBlank(value) ? value : defaultValue;
     }
 
-    private static boolean isNavnUpdateRequired(RsNavn navn) {
+    private static boolean isNavnUpdateRequired(NavnDTO navn) {
         return isBlank(navn.getFornavn()) || isBlank(navn.getEtternavn()) ||
                 (isBlank(navn.getMellomnavn()) && isTrue(navn.getHasMellomnavn()));
     }
 
-    public List<RsFalskIdentitet> convert(PdlPerson person) {
+    public List<FalskIdentitetDTO> convert(PersonDTO person) {
 
         for (var type : person.getFalskIdentitet()) {
 
@@ -70,7 +69,7 @@ public class FalskIdentitetService {
         return person.getFalskIdentitet();
     }
 
-    private void validate(RsFalskIdentitet identitet) {
+    private void validate(FalskIdentitetDTO identitet) {
 
         if (isNull(identitet.getErFalsk())) {
             throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_FALSK_IDENTITET_ER_FALSK_MISSING);
@@ -94,7 +93,7 @@ public class FalskIdentitetService {
 
         if (nonNull(identitet.getRettIdentitetVedOpplysninger()) &&
                 nonNull(identitet.getRettIdentitetVedOpplysninger().getPersonnavn()) &&
-                !genererNavnServiceConsumer.verifyNavn(NavnDTO.builder()
+                !genererNavnServiceConsumer.verifyNavn(no.nav.registre.testnorge.libs.dto.generernavnservice.v1.NavnDTO.builder()
                         .adjektiv(identitet.getRettIdentitetVedOpplysninger().getPersonnavn().getFornavn())
                         .adverb(identitet.getRettIdentitetVedOpplysninger().getPersonnavn().getMellomnavn())
                         .substantiv(identitet.getRettIdentitetVedOpplysninger().getPersonnavn().getEtternavn())
@@ -108,12 +107,12 @@ public class FalskIdentitetService {
         }
     }
 
-    private void handle(RsFalskIdentitet identitet, String ident) {
+    private void handle(FalskIdentitetDTO identitet, String ident) {
 
         if (isBlank(identitet.getRettIdentitetVedIdentifikasjonsnummer())) {
 
             if (isNull(identitet.getNyFalskIdentitetPerson())) {
-                identitet.setNyFalskIdentitetPerson(new RsPersonRequest());
+                identitet.setNyFalskIdentitetPerson(new PersonRequestDTO());
             }
 
             if (isNull(identitet.getNyFalskIdentitetPerson().getAlder()) &&
