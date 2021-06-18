@@ -1,36 +1,37 @@
 package no.nav.pdl.forvalter.utils;
 
 import lombok.experimental.UtilityClass;
+import no.nav.pdl.forvalter.domain.PdlArtifact;
 
 import java.util.EnumMap;
 import java.util.Map;
 
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_ADRESSEBESKYTTELSE;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_BOSTEDADRESSE;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_DELTBOSTED;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_DOEDSFALL;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_FALSK_IDENTITET;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_FAMILIERELASJON;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_FOEDSEL;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_FOLKEREGISTER_PERSONSTATUS;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_FORELDREANSVAR;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_FULLMAKT;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_INNFLYTTING;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_KJOENN;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_KONTAKTADRESSE;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_KONTAKTINFORMASJON_FOR_DODESDBO;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_NAVN;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_OPPHOLD;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_OPPHOLDSADRESSE;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_OPPRETT_PERSON;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_SIVILSTAND;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_SLETTING;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_STATSBORGERSKAP;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_TELEFONUMMER;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_TILRETTELAGT_KOMMUNIKASJON;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_UTENLANDS_IDENTIFIKASJON_NUMMER;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_UTFLYTTING;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_VERGEMAAL;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_ADRESSEBESKYTTELSE;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_BOSTEDADRESSE;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_DELTBOSTED;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_DOEDSFALL;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_FALSK_IDENTITET;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_FAMILIERELASJON;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_FOEDSEL;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_FOLKEREGISTER_PERSONSTATUS;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_FORELDREANSVAR;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_FULLMAKT;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_INNFLYTTING;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_KJOENN;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_KONTAKTADRESSE;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_KONTAKTINFORMASJON_FOR_DODESDBO;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_NAVN;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_OPPHOLD;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_OPPHOLDSADRESSE;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_OPPRETT_PERSON;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_SIVILSTAND;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_SLETTING;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_STATSBORGERSKAP;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_TELEFONUMMER;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_TILRETTELAGT_KOMMUNIKASJON;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_UTENLANDS_IDENTIFIKASJON_NUMMER;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_UTFLYTTING;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_VERGEMAAL;
 
 @UtilityClass
 public class PdlTestDataUrls {
@@ -95,40 +96,9 @@ public class PdlTestDataUrls {
         bestillingUrl.put(PDL_OPPRETT_PERSON, PDL_BESTILLING_OPPRETT_PERSON_URL);
     }
 
-    public enum PdlArtifact {
-        PDL_KONTAKTINFORMASJON_FOR_DODESDBO,
-        PDL_UTENLANDS_IDENTIFIKASJON_NUMMER,
-        PDL_FOLKEREGISTER_PERSONSTATUS,
-        PDL_FALSK_IDENTITET,
-        PDL_FOEDSEL,
-        PDL_FAMILIERELASJON,
-        PDL_DOEDSFALL,
-        PDL_ADRESSEBESKYTTELSE,
-        PDL_NAVN,
-        PDL_KJOENN,
-        PDL_STATSBORGERSKAP,
-        PDL_TELEFONUMMER,
-        PDL_SIVILSTAND,
-        PDL_OPPHOLDSADRESSE,
-        PDL_KONTAKTADRESSE,
-        PDL_BOSTEDADRESSE,
-        PDL_DELTBOSTED,
-        PDL_INNFLYTTING,
-        PDL_UTFLYTTING,
-        PDL_FORELDREANSVAR,
-        PDL_OPPHOLD,
-        PDL_VERGEMAAL,
-        PDL_FULLMAKT,
-        PDL_TILRETTELAGT_KOMMUNIKASJON,
-        PDL_SLETTING,
-        PDL_OPPRETT_PERSON
-    }
-
-    public enum TemaGrunnlag {GEN, PEN}
-
-    public enum PdlStatus {OK, FEIL}
-
     public static Map<PdlArtifact, String> getBestillingUrl() {
         return bestillingUrl;
     }
+
+    public enum TemaGrunnlag {GEN, PEN}
 }

@@ -5,9 +5,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.domain.FullPersonDTO;
+import no.nav.pdl.forvalter.domain.OrdreResponseDTO;
 import no.nav.pdl.forvalter.domain.PersonUpdateRequestDTO;
 import no.nav.pdl.forvalter.dto.BestillingRequest;
-import no.nav.pdl.forvalter.dto.PdlOrdreResponse;
 import no.nav.pdl.forvalter.service.PdlOrdreService;
 import no.nav.pdl.forvalter.service.PersonService;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -58,7 +58,7 @@ public class PersonController {
 
     @PostMapping(value = "/{ident}/ordre")
     @Operation(description = "Send person til PDL (ordre)")
-    public PdlOrdreResponse sendPersonTilPdl(@PathVariable String ident) {
+    public OrdreResponseDTO sendPersonTilPdl(@PathVariable String ident) {
 
         return pdlOrdreService.send(ident);
     }

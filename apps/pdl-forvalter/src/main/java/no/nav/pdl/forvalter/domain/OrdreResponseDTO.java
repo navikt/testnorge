@@ -1,11 +1,10 @@
-package no.nav.pdl.forvalter.dto;
+package no.nav.pdl.forvalter.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.pdl.forvalter.utils.PdlTestDataUrls;
 
 import java.util.List;
 import java.util.Map;
@@ -14,29 +13,29 @@ import java.util.Map;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PdlOrdreResponse {
+public class OrdreResponseDTO {
 
-    private PersonHendelser hovedperson;
-    private List<PersonHendelser> relasjoner;
+    private PersonHendelserDTO hovedperson;
+    private List<PersonHendelserDTO> relasjoner;
 
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class PersonHendelser {
+    public static class PersonHendelserDTO {
 
         private String ident;
-        private List<PdlStatus> ordrer;
+        private List<PdlStatusDTO> ordrer;
     }
 
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class PdlStatus {
+    public static class PdlStatusDTO {
 
-        private PdlTestDataUrls.PdlArtifact infoElement;
-        private List<Hendelse> hendelser;
+        private PdlArtifact infoElement;
+        private List<HendelseDTO> hendelser;
     }
 
     @Data
@@ -44,10 +43,10 @@ public class PdlOrdreResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class Hendelse {
+    public static class HendelseDTO {
 
         private Integer id;
-        private PdlTestDataUrls.PdlStatus status;
+        private PdlStatus status;
         private String hendelseId;
         private String error;
         private Map<String, String> deletedOpplysninger;

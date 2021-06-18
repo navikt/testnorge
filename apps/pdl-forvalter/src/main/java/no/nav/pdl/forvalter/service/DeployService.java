@@ -5,8 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.consumer.PdlTestdataConsumer;
 import no.nav.pdl.forvalter.domain.DbVersjonDTO;
-import no.nav.pdl.forvalter.dto.PdlOrdreResponse;
-import no.nav.pdl.forvalter.utils.PdlTestDataUrls;
+import no.nav.pdl.forvalter.domain.OrdreResponseDTO;
+import no.nav.pdl.forvalter.domain.PdlArtifact;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlStatus.FEIL;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlStatus.OK;
+import static no.nav.pdl.forvalter.domain.PdlStatus.FEIL;
+import static no.nav.pdl.forvalter.domain.PdlStatus.OK;
 
 @Slf4j
 @Service
@@ -28,11 +28,11 @@ public class DeployService {
 
     private final PdlTestdataConsumer pdlTestdataConsumer;
 
-    public List<PdlOrdreResponse.PdlStatus> send(PdlTestDataUrls.PdlArtifact type,
-                                                 String ident,
-                                                 List<? extends DbVersjonDTO> artifact) {
+    public List<OrdreResponseDTO.PdlStatusDTO> send(PdlArtifact type,
+                                                    String ident,
+                                                    List<? extends DbVersjonDTO> artifact) {
 
-        var status = new ArrayList<PdlOrdreResponse.Hendelse>();
+        var status = new ArrayList<OrdreResponseDTO.HendelseDTO>();
         if (!artifact.isEmpty()) {
             artifact.stream()
                     .collect(Collectors.toCollection(LinkedList::new))
@@ -40,21 +40,21 @@ public class DeployService {
                     .forEachRemaining(element -> {
                                 try {
                                     var response = pdlTestdataConsumer.send(type, ident, element);
-                                    status.add(PdlOrdreResponse.Hendelse.builder()
+                                    status.add(OrdreResponseDTO.HendelseDTO.builder()
                                             .id(element.getId())
                                             .status(OK)
                                             .hendelseId(response.getHendelseId())
                                             .deletedOpplysninger(response.getDeletedOpplysninger())
                                             .build());
                                 } catch (WebClientResponseException e) {
-                                    status.add(PdlOrdreResponse.Hendelse.builder()
+                                    status.add(OrdreResponseDTO.HendelseDTO.builder()
                                             .id(element.getId())
                                             .status(FEIL)
                                             .error(e.getResponseBodyAsString())
                                             .build());
                                     log.error(PDL_ERROR_TEXT, type, e.getResponseBodyAsString());
                                 } catch (JsonProcessingException e) {
-                                    status.add(PdlOrdreResponse.Hendelse.builder()
+                                    status.add(OrdreResponseDTO.HendelseDTO.builder()
                                             .id(element.getId())
                                             .status(FEIL)
                                             .error(e.getMessage())
@@ -65,7 +65,7 @@ public class DeployService {
                     );
         }
 
-        return status.isEmpty() ? emptyList() : List.of(PdlOrdreResponse.PdlStatus.builder()
+        return status.isEmpty() ? emptyList() : List.of(OrdreResponseDTO.PdlStatusDTO.builder()
                 .infoElement(type)
                 .hendelser(status)
                 .build());

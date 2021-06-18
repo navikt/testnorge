@@ -1,10 +1,10 @@
-package no.nav.pdl.forvalter.domain;
+package no.nav.pdl.forvalter.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.pdl.forvalter.dto.Folkeregistermetadata;
+import no.nav.pdl.forvalter.domain.DbVersjonDTO;
 
 import java.io.Serializable;
 

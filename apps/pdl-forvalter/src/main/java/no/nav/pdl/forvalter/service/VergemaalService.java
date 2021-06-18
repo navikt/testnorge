@@ -5,7 +5,7 @@ import no.nav.pdl.forvalter.database.model.RelasjonType;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.domain.PersonDTO;
 import no.nav.pdl.forvalter.domain.PersonRequestDTO;
-import no.nav.pdl.forvalter.dto.VergemaalDTO;
+import no.nav.pdl.forvalter.domain.VergemaalDTO;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;

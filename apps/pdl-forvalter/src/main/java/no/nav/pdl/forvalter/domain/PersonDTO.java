@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.pdl.forvalter.dto.VergemaalDTO;
 
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -1,12 +1,10 @@
-package no.nav.pdl.forvalter.dto;
+package no.nav.pdl.forvalter.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import no.nav.pdl.forvalter.domain.DbVersjonDTO;
-import no.nav.pdl.forvalter.domain.PersonRequestDTO;
 
 import java.time.LocalDateTime;
 

@@ -5,12 +5,12 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
-import no.nav.pdl.forvalter.domain.PdlVergemaal;
-import no.nav.pdl.forvalter.domain.PdlVergemaal.Omfang;
-import no.nav.pdl.forvalter.domain.PdlVergemaal.Personnavn;
-import no.nav.pdl.forvalter.domain.PdlVergemaal.VergemaalType;
+import no.nav.pdl.forvalter.domain.VergemaalDTO;
 import no.nav.pdl.forvalter.dto.Folkeregistermetadata;
-import no.nav.pdl.forvalter.dto.VergemaalDTO;
+import no.nav.pdl.forvalter.dto.PdlVergemaal;
+import no.nav.pdl.forvalter.dto.PdlVergemaal.Omfang;
+import no.nav.pdl.forvalter.dto.PdlVergemaal.Personnavn;
+import no.nav.pdl.forvalter.dto.PdlVergemaal.VergemaalType;
 import no.nav.pdl.forvalter.utils.EmbeteService;
 import org.springframework.stereotype.Component;
 

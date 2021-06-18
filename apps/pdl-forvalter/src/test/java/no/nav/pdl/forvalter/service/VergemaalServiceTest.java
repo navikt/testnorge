@@ -2,7 +2,7 @@ package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.domain.PersonDTO;
-import no.nav.pdl.forvalter.dto.VergemaalDTO;
+import no.nav.pdl.forvalter.domain.VergemaalDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

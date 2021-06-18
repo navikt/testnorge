@@ -8,15 +8,15 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.domain.KontaktadresseDTO;
-import no.nav.pdl.forvalter.domain.PdlVergemaal;
+import no.nav.pdl.forvalter.domain.OrdreResponseDTO;
+import no.nav.pdl.forvalter.domain.OrdreResponseDTO.PersonHendelserDTO;
 import no.nav.pdl.forvalter.dto.HistoriskIdent;
 import no.nav.pdl.forvalter.dto.PdlDelete;
 import no.nav.pdl.forvalter.dto.PdlFalskIdentitet;
 import no.nav.pdl.forvalter.dto.PdlInnflytting;
-import no.nav.pdl.forvalter.dto.PdlOrdreResponse;
-import no.nav.pdl.forvalter.dto.PdlOrdreResponse.PersonHendelser;
 import no.nav.pdl.forvalter.dto.PdlTilrettelagtKommunikasjon;
 import no.nav.pdl.forvalter.dto.PdlUtflytting;
+import no.nav.pdl.forvalter.dto.PdlVergemaal;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -26,32 +26,32 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_ADRESSEBESKYTTELSE;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_BOSTEDADRESSE;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_DELTBOSTED;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_DOEDSFALL;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_FALSK_IDENTITET;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_FAMILIERELASJON;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_FOEDSEL;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_FOLKEREGISTER_PERSONSTATUS;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_FORELDREANSVAR;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_FULLMAKT;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_INNFLYTTING;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_KJOENN;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_KONTAKTADRESSE;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_KONTAKTINFORMASJON_FOR_DODESDBO;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_NAVN;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_OPPHOLD;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_OPPHOLDSADRESSE;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_OPPRETT_PERSON;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_SIVILSTAND;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_SLETTING;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_STATSBORGERSKAP;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_TELEFONUMMER;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_TILRETTELAGT_KOMMUNIKASJON;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_UTENLANDS_IDENTIFIKASJON_NUMMER;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_UTFLYTTING;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.PdlArtifact.PDL_VERGEMAAL;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_ADRESSEBESKYTTELSE;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_BOSTEDADRESSE;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_DELTBOSTED;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_DOEDSFALL;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_FALSK_IDENTITET;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_FAMILIERELASJON;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_FOEDSEL;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_FOLKEREGISTER_PERSONSTATUS;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_FORELDREANSVAR;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_FULLMAKT;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_INNFLYTTING;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_KJOENN;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_KONTAKTADRESSE;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_KONTAKTINFORMASJON_FOR_DODESDBO;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_NAVN;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_OPPHOLD;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_OPPHOLDSADRESSE;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_OPPRETT_PERSON;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_SIVILSTAND;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_SLETTING;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_STATSBORGERSKAP;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_TELEFONUMMER;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_TILRETTELAGT_KOMMUNIKASJON;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_UTENLANDS_IDENTIFIKASJON_NUMMER;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_UTFLYTTING;
+import static no.nav.pdl.forvalter.domain.PdlArtifact.PDL_VERGEMAAL;
 
 @Slf4j
 @Service
@@ -62,28 +62,28 @@ public class PdlOrdreService {
     private final PersonRepository personRepository;
     private final MapperFacade mapperFacade;
 
-    public PdlOrdreResponse send(String ident) {
+    public OrdreResponseDTO send(String ident) {
 
         var dbPerson = personRepository.findByIdent(ident)
                 .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND, format("Ident %s ikke funnet", ident)));
 
-        return PdlOrdreResponse.builder()
+        return OrdreResponseDTO.builder()
                 .relasjoner(dbPerson.getRelasjoner().stream()
                         .map(DbRelasjon::getRelatertPerson)
-                        .map(person -> PersonHendelser.builder()
+                        .map(person -> PersonHendelserDTO.builder()
                                 .ident(person.getIdent())
                                 .ordrer(sendAlleInformasjonselementer(person, true))
                                 .build())
                         .collect(Collectors.toList()))
-                .hovedperson(PersonHendelser.builder()
+                .hovedperson(PersonHendelserDTO.builder()
                         .ident(ident)
                         .ordrer(sendAlleInformasjonselementer(dbPerson, false))
                         .build())
                 .build();
     }
 
-    private List<PdlOrdreResponse.PdlStatus> sendAlleInformasjonselementer(DbPerson person, boolean isRelasjon) {
-        var status = new ArrayList<PdlOrdreResponse.PdlStatus>();
+    private List<OrdreResponseDTO.PdlStatusDTO> sendAlleInformasjonselementer(DbPerson person, boolean isRelasjon) {
+        var status = new ArrayList<OrdreResponseDTO.PdlStatusDTO>();
         if (isRelasjon) {
             status.addAll(deployService.send(PDL_SLETTING, person.getIdent(), List.of(new PdlDelete())));
         }
