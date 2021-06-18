@@ -1,7 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.domain.InnflyttingDTO;
 import no.nav.pdl.forvalter.utils.TilfeldigLandService;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.InnflyttingDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,7 +28,7 @@ class InnflyttingServiceTest {
 
     @InjectMocks
     private InnflyttingService innflyttingService;
-    
+
     @Test
     void whenInvalidLandkode_thenThrowExecption() {
 

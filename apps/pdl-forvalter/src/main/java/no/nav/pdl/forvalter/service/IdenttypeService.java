@@ -2,16 +2,15 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.pdl.forvalter.domain.IdentRequestDTO;
-import no.nav.pdl.forvalter.domain.Identtype;
-import no.nav.pdl.forvalter.domain.KjoennDTO.Kjoenn;
-import no.nav.pdl.forvalter.domain.PersonDTO;
-import no.nav.pdl.forvalter.domain.PersonRequestDTO;
-import no.nav.pdl.forvalter.domain.PersonRequestDTO.NyttNavnDTO;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.IdentRequestDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.Identtype;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonRequestDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonRequestDTO.NyttNavnDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -20,14 +19,15 @@ import java.time.LocalDateTime;
 import java.util.Random;
 
 import static java.util.Objects.nonNull;
-import static no.nav.pdl.forvalter.database.model.RelasjonType.GAMMEL_IDENTITET;
-import static no.nav.pdl.forvalter.database.model.RelasjonType.NY_IDENTITET;
-import static no.nav.pdl.forvalter.domain.Identtype.BOST;
-import static no.nav.pdl.forvalter.domain.Identtype.DNR;
-import static no.nav.pdl.forvalter.domain.Identtype.FNR;
-import static no.nav.pdl.forvalter.domain.KjoennDTO.Kjoenn.KVINNE;
-import static no.nav.pdl.forvalter.domain.KjoennDTO.Kjoenn.MANN;
-import static no.nav.pdl.forvalter.domain.KjoennDTO.Kjoenn.UKJENT;
+import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.Identtype.BOST;
+import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.Identtype.DNR;
+import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.Identtype.FNR;
+import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn;
+import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.KVINNE;
+import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.MANN;
+import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.UKJENT;
+import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.RelasjonType.GAMMEL_IDENTITET;
+import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.RelasjonType.NY_IDENTITET;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 

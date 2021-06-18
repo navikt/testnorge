@@ -1,16 +1,16 @@
 package no.nav.pdl.forvalter.utils;
 
 import lombok.experimental.UtilityClass;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KjoennDTO;
 
 import static java.lang.Integer.parseInt;
-import static no.nav.pdl.forvalter.domain.KjoennDTO.Kjoenn;
-import static no.nav.pdl.forvalter.domain.KjoennDTO.Kjoenn.KVINNE;
-import static no.nav.pdl.forvalter.domain.KjoennDTO.Kjoenn.MANN;
+import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.KVINNE;
+import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.MANN;
 
 @UtilityClass
 public class KjoennFraIdentUtility {
 
-    public Kjoenn getKjoenn(String ident) {
+    public KjoennDTO.Kjoenn getKjoenn(String ident) {
 
         var kjoennNummer = parseInt(ident.substring(8, 9));
         return kjoennNummer % 2 == 0 ? KVINNE : MANN;

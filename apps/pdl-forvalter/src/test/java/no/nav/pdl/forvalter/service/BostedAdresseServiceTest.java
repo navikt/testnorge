@@ -2,11 +2,11 @@ package no.nav.pdl.forvalter.service;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
-import no.nav.pdl.forvalter.domain.BostedadresseDTO;
-import no.nav.pdl.forvalter.domain.BostedadresseDTO.UkjentBostedDTO;
-import no.nav.pdl.forvalter.domain.MatrikkeladresseDTO;
-import no.nav.pdl.forvalter.domain.UtenlandskAdresseDTO;
-import no.nav.pdl.forvalter.domain.VegadresseDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.BostedadresseDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.BostedadresseDTO.UkjentBostedDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,7 +17,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import java.time.LocalDate;
 import java.util.List;
 
-import static no.nav.pdl.forvalter.domain.AdresseDTO.Master.FREG;
+import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.AdresseDTO.Master.FREG;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;

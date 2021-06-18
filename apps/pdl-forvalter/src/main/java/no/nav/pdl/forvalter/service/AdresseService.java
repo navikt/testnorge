@@ -1,6 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.domain.AdresseDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.AdresseDTO;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
@@ -65,10 +65,10 @@ public abstract class AdresseService<T extends AdresseDTO> {
         for (var i = 0; i < adresse.size(); i++) {
             if (i + 1 < adresse.size()) {
                 if (isNull(adresse.get(i + 1).getGyldigTilOgMed()) &&
-                        nonNull(adresse.get(i).getGyldigFraOgMed()) && nonNull(adresse.get(i+1).getGyldigFraOgMed()) &&
-                        (!adresse.get(i).getGyldigFraOgMed().isAfter(adresse.get(i + 1).getGyldigFraOgMed().plusDays(1)) ||
-                        (nonNull(adresse.get(i + 1).getGyldigTilOgMed()) &&
-                                !adresse.get(i).getGyldigFraOgMed().isAfter(adresse.get(i + 1).getGyldigTilOgMed())))) {
+                        nonNull(adresse.get(i).getGyldigFraOgMed()) && nonNull(adresse.get(i + 1).getGyldigFraOgMed()) &&
+                        !adresse.get(i).getGyldigFraOgMed().isAfter(adresse.get(i + 1).getGyldigFraOgMed().plusDays(1)) ||
+                        nonNull(adresse.get(i + 1).getGyldigTilOgMed()) && nonNull(adresse.get(i).getGyldigFraOgMed()) &&
+                                !adresse.get(i).getGyldigFraOgMed().isAfter(adresse.get(i + 1).getGyldigTilOgMed())) {
                     throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_ADRESSE_OVELAP_ERROR);
                 }
                 if (isNull(adresse.get(i + 1).getGyldigTilOgMed()) && nonNull(adresse.get(i).getGyldigFraOgMed())) {

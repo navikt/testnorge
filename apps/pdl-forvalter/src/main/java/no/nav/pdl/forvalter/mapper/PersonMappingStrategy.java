@@ -5,7 +5,7 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.model.DbRelasjon;
-import no.nav.pdl.forvalter.domain.FullPersonDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import org.springframework.stereotype.Component;
 
 @Component

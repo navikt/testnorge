@@ -1,13 +1,12 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.pdl.forvalter.domain.Identtype;
-import no.nav.pdl.forvalter.domain.InnflyttingDTO;
-import no.nav.pdl.forvalter.domain.PersonDTO;
-import no.nav.pdl.forvalter.domain.StatsborgerskapDTO;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
 import no.nav.pdl.forvalter.utils.TilfeldigLandService;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.InnflyttingDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -18,6 +17,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.NORGE;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.isLandkode;
+import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.Identtype.FNR;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
@@ -63,7 +63,7 @@ public class StatsborgerskapService {
         if (isBlank(statsborgerskap.getLandkode())) {
             if (nonNull(innflytting)) {
                 statsborgerskap.setLandkode(innflytting.getFraflyttingsland());
-            } else if (Identtype.FNR.equals(IdenttypeFraIdentUtility.getIdenttype(ident))) {
+            } else if (FNR.equals(IdenttypeFraIdentUtility.getIdenttype(ident))) {
                 statsborgerskap.setLandkode(NORGE);
             } else {
                 statsborgerskap.setLandkode(tilfeldigLandService.getLand());

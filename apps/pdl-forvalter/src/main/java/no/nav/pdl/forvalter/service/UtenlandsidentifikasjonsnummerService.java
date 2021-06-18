@@ -1,6 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.domain.UtenlandskIdentifikasjonsnummerDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.UtenlandskIdentifikasjonsnummerDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 

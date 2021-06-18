@@ -3,10 +3,10 @@ package no.nav.pdl.forvalter.mapper;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.pdl.forvalter.domain.FalskIdentitetDTO;
 import no.nav.pdl.forvalter.dto.Folkeregistermetadata;
 import no.nav.pdl.forvalter.dto.PdlFalskIdentitet;
 import no.nav.pdl.forvalter.dto.PdlFalskIdentitet.IdentifiserendeInformasjon;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.FalskIdentitetDTO;
 import org.springframework.stereotype.Component;
 
 import static java.util.Objects.nonNull;

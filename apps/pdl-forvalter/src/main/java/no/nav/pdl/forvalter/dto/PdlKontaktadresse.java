@@ -7,9 +7,9 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.pdl.forvalter.domain.AdresseDTO;
-import no.nav.pdl.forvalter.domain.UtenlandskAdresseDTO;
-import no.nav.pdl.forvalter.domain.VegadresseDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.AdresseDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.VegadresseDTO;
 
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -3,7 +3,7 @@ package no.nav.pdl.forvalter.consumer;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.config.credentials.AdresseServiceProperties;
 import no.nav.pdl.forvalter.consumer.command.AdresseServiceCommand;
-import no.nav.pdl.forvalter.domain.VegadresseDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import org.springframework.stereotype.Service;

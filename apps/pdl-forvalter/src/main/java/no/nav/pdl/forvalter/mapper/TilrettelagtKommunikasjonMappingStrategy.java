@@ -3,13 +3,12 @@ package no.nav.pdl.forvalter.mapper;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.pdl.forvalter.domain.TilrettelagtKommunikasjonDTO;
 import no.nav.pdl.forvalter.dto.PdlTilrettelagtKommunikasjon;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.TilrettelagtKommunikasjonDTO;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TilrettelagtKommunikasjonMappingStrategy implements MappingStrategy {
-
 
 
     @Override

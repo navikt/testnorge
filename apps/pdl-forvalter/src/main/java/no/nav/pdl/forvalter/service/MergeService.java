@@ -3,8 +3,8 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.pdl.forvalter.domain.DbVersjonDTO;
-import no.nav.pdl.forvalter.domain.PersonDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 

@@ -5,13 +5,13 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
-import no.nav.pdl.forvalter.domain.VergemaalDTO;
 import no.nav.pdl.forvalter.dto.Folkeregistermetadata;
 import no.nav.pdl.forvalter.dto.PdlVergemaal;
 import no.nav.pdl.forvalter.dto.PdlVergemaal.Omfang;
 import no.nav.pdl.forvalter.dto.PdlVergemaal.Personnavn;
 import no.nav.pdl.forvalter.dto.PdlVergemaal.VergemaalType;
 import no.nav.pdl.forvalter.utils.EmbeteService;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.VergemaalDTO;
 import org.springframework.stereotype.Component;
 
 import static java.util.Objects.isNull;
@@ -22,37 +22,6 @@ public class VergemaalMappingStrategy implements MappingStrategy {
 
     private final EmbeteService embeteService;
     private final PersonRepository personRepository;
-
-    @Override
-    public void register(MapperFactory factory) {
-
-        factory.classMap(VergemaalDTO.class, PdlVergemaal.class)
-                .customize(new CustomMapper<>() {
-                    @Override
-                    public void mapAtoB(VergemaalDTO kilde, PdlVergemaal destinasjon, MappingContext context) {
-
-                        destinasjon.setEmbete(embeteService.getNavn(kilde.getEmbete()));
-                        destinasjon.setType(getSakstype(kilde.getSakType()));
-
-                        destinasjon.setFolkeregistermetadata(Folkeregistermetadata.builder()
-                                .gyldighetstidspunkt(kilde.getGyldigFom())
-                                .opphoerstidspunkt(kilde.getGyldigTom())
-                                .build());
-
-                        var personNavn = personRepository.findByIdent(kilde.getVergeIdent()).get()
-                                .getPerson().getNavn().stream().findFirst().get();
-
-                        destinasjon.setVergeEllerFullmektig(PdlVergemaal.VergeEllerFullmektig.builder()
-                                .motpartsPersonident(kilde.getVergeIdent())
-                                .navn(mapperFacade.map(personNavn, Personnavn.class))
-                                .omfang(getOmfang(kilde.getMandatType()))
-                                .omfangetErInnenPersonligOmraade(!"FIN".equals(kilde.getMandatType()))
-                                .build());
-                    }
-                })
-                .byDefault()
-                .register();
-    }
 
     private static Omfang getOmfang(String mandatType) {
 
@@ -101,5 +70,36 @@ public class VergemaalMappingStrategy implements MappingStrategy {
             default:
                 return null;
         }
+    }
+
+    @Override
+    public void register(MapperFactory factory) {
+
+        factory.classMap(VergemaalDTO.class, PdlVergemaal.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(VergemaalDTO kilde, PdlVergemaal destinasjon, MappingContext context) {
+
+                        destinasjon.setEmbete(embeteService.getNavn(kilde.getEmbete()));
+                        destinasjon.setType(getSakstype(kilde.getSakType()));
+
+                        destinasjon.setFolkeregistermetadata(Folkeregistermetadata.builder()
+                                .gyldighetstidspunkt(kilde.getGyldigFom())
+                                .opphoerstidspunkt(kilde.getGyldigTom())
+                                .build());
+
+                        var personNavn = personRepository.findByIdent(kilde.getVergeIdent()).get()
+                                .getPerson().getNavn().stream().findFirst().get();
+
+                        destinasjon.setVergeEllerFullmektig(PdlVergemaal.VergeEllerFullmektig.builder()
+                                .motpartsPersonident(kilde.getVergeIdent())
+                                .navn(mapperFacade.map(personNavn, Personnavn.class))
+                                .omfang(getOmfang(kilde.getMandatType()))
+                                .omfangetErInnenPersonligOmraade(!"FIN".equals(kilde.getMandatType()))
+                                .build());
+                    }
+                })
+                .byDefault()
+                .register();
     }
 }

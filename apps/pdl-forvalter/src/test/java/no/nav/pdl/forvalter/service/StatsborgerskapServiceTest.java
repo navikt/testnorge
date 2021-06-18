@@ -1,9 +1,9 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.domain.InnflyttingDTO;
-import no.nav.pdl.forvalter.domain.PersonDTO;
-import no.nav.pdl.forvalter.domain.StatsborgerskapDTO;
 import no.nav.pdl.forvalter.utils.TilfeldigLandService;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.InnflyttingDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

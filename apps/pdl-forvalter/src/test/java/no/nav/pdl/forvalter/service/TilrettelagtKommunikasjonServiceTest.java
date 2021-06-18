@@ -1,6 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.domain.TilrettelagtKommunikasjonDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.TilrettelagtKommunikasjonDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

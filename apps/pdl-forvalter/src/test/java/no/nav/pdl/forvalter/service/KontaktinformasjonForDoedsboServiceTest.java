@@ -3,14 +3,11 @@ package no.nav.pdl.forvalter.service;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.consumer.OrganisasjonForvalterConsumer;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
-import no.nav.pdl.forvalter.domain.KontaktinformasjonForDoedsboDTO;
-import no.nav.pdl.forvalter.domain.KontaktinformasjonForDoedsboDTO.AdressatDTO;
-import no.nav.pdl.forvalter.domain.KontaktinformasjonForDoedsboDTO.KontaktpersonMedIdNummerDTO;
-import no.nav.pdl.forvalter.domain.KontaktinformasjonForDoedsboDTO.KontaktpersonUtenIdNummerDTO;
-import no.nav.pdl.forvalter.domain.KontaktinformasjonForDoedsboDTO.OrganisasjonDTO;
-import no.nav.pdl.forvalter.domain.KontaktinformasjonForDoedsboDTO.PersonNavnDTO;
-import no.nav.pdl.forvalter.domain.PersonDTO;
 import no.nav.registre.testnorge.libs.dto.generernavnservice.v1.NavnDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.AdressatDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.OrganisasjonDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,7 +21,11 @@ import java.util.List;
 import java.util.Map;
 
 import static java.lang.String.format;
-import static no.nav.pdl.forvalter.domain.KontaktinformasjonForDoedsboDTO.PdlSkifteform.OFFENTLIG;
+import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.KontaktpersonMedIdNummerDTO;
+import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.KontaktpersonUtenIdNummerDTO;
+import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.PdlSkifteform.OFFENTLIG;
+import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.PersonNavnDTO;
+import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.builder;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -52,7 +53,7 @@ class KontaktinformasjonForDoedsboServiceTest {
     @Test
     void whenSkifteformIsMissing_thenThrowExecption() {
 
-        var request = List.of(KontaktinformasjonForDoedsboDTO.builder()
+        var request = List.of(builder()
                 .isNew(true)
                 .build());
 
@@ -67,7 +68,7 @@ class KontaktinformasjonForDoedsboServiceTest {
     @Test
     void whenAdressatIsMissing_thenThrowExecption() {
 
-        var request = List.of(KontaktinformasjonForDoedsboDTO.builder()
+        var request = List.of(builder()
                 .skifteform(OFFENTLIG)
                 .isNew(true)
                 .build());
@@ -83,7 +84,7 @@ class KontaktinformasjonForDoedsboServiceTest {
     @Test
     void whenMultipleAdressatExist_thenThrowExecption() {
 
-        var request = List.of(KontaktinformasjonForDoedsboDTO.builder()
+        var request = List.of(builder()
                 .skifteform(OFFENTLIG)
                 .adressat(AdressatDTO.builder()
                         .advokatSomAdressat(new OrganisasjonDTO())
@@ -107,7 +108,7 @@ class KontaktinformasjonForDoedsboServiceTest {
 
         when(personRepository.existsByIdent(IDENT)).thenReturn(false);
 
-        var request = List.of(KontaktinformasjonForDoedsboDTO.builder()
+        var request = List.of(builder()
                 .skifteform(OFFENTLIG)
                 .adressat(AdressatDTO.builder()
                         .kontaktpersonMedIdNummerSomAdressat(KontaktpersonMedIdNummerDTO.builder()
@@ -129,7 +130,7 @@ class KontaktinformasjonForDoedsboServiceTest {
     @Test
     void whenAdressatUtenIdnumberLacksFoedselsdato_thenThrowExecption() {
 
-        var request = List.of(KontaktinformasjonForDoedsboDTO.builder()
+        var request = List.of(builder()
                 .skifteform(OFFENTLIG)
                 .adressat(AdressatDTO.builder()
                         .kontaktpersonUtenIdNummerSomAdressat(new KontaktpersonUtenIdNummerDTO())
@@ -151,7 +152,7 @@ class KontaktinformasjonForDoedsboServiceTest {
 
         when(genererNavnServiceConsumer.verifyNavn(any(NavnDTO.class))).thenReturn(false);
 
-        var request = List.of(KontaktinformasjonForDoedsboDTO.builder()
+        var request = List.of(builder()
                 .skifteform(OFFENTLIG)
                 .adressat(AdressatDTO.builder()
                         .kontaktpersonUtenIdNummerSomAdressat(KontaktpersonUtenIdNummerDTO.builder()
@@ -175,7 +176,7 @@ class KontaktinformasjonForDoedsboServiceTest {
 
         when(genererNavnServiceConsumer.verifyNavn(any(NavnDTO.class))).thenReturn(false);
 
-        var request = List.of(KontaktinformasjonForDoedsboDTO.builder()
+        var request = List.of(builder()
                 .skifteform(OFFENTLIG)
                 .adressat(AdressatDTO.builder()
                         .advokatSomAdressat(OrganisasjonDTO.builder()
@@ -198,7 +199,7 @@ class KontaktinformasjonForDoedsboServiceTest {
 
         when(genererNavnServiceConsumer.verifyNavn(any(NavnDTO.class))).thenReturn(false);
 
-        var request = List.of(KontaktinformasjonForDoedsboDTO.builder()
+        var request = List.of(builder()
                 .skifteform(OFFENTLIG)
                 .adressat(AdressatDTO.builder()
                         .organisasjonSomAdressat(OrganisasjonDTO.builder()
@@ -219,7 +220,7 @@ class KontaktinformasjonForDoedsboServiceTest {
     @Test
     void whenOrganisasjonSomAddressatHasOrgNavnWithoutOrgNumber_thenThrowExecption() {
 
-        var request = List.of(KontaktinformasjonForDoedsboDTO.builder()
+        var request = List.of(builder()
                 .skifteform(OFFENTLIG)
                 .adressat(AdressatDTO.builder()
                         .organisasjonSomAdressat(OrganisasjonDTO.builder()
@@ -244,7 +245,7 @@ class KontaktinformasjonForDoedsboServiceTest {
         when(genererNavnServiceConsumer.verifyNavn(any(NavnDTO.class))).thenReturn(true);
         when(organisasjonForvalterConsumer.get(anyString())).thenReturn(new HashMap<>());
 
-        var request = List.of(KontaktinformasjonForDoedsboDTO.builder()
+        var request = List.of(builder()
                 .skifteform(OFFENTLIG)
                 .adressat(AdressatDTO.builder()
                         .advokatSomAdressat(OrganisasjonDTO.builder()
@@ -271,7 +272,7 @@ class KontaktinformasjonForDoedsboServiceTest {
         when(organisasjonForvalterConsumer.get(anyString())).thenReturn(Map.of("q1",
                 Map.of("organisasjonsnavn", "Toys")));
 
-        var request = List.of(KontaktinformasjonForDoedsboDTO.builder()
+        var request = List.of(builder()
                 .skifteform(OFFENTLIG)
                 .adressat(AdressatDTO.builder()
                         .advokatSomAdressat(OrganisasjonDTO.builder()
@@ -289,6 +290,6 @@ class KontaktinformasjonForDoedsboServiceTest {
                         .build()));
 
         assertThat(exception.getMessage(), containsString("KontaktinformasjonForDoedsbo: organisajonsnummer er tomt " +
-        "og/eller angitt organisasjon finnes ikke i miljø"));
+                "og/eller angitt organisasjon finnes ikke i miljø"));
     }
 }

@@ -3,9 +3,9 @@ package no.nav.pdl.forvalter.mapper;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.pdl.forvalter.domain.Identtype;
-import no.nav.pdl.forvalter.domain.PersonRequestDTO;
 import no.nav.pdl.forvalter.dto.HentIdenterRequest;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.Identtype;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;

@@ -1,8 +1,8 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.domain.IdentRequestDTO;
-import no.nav.pdl.forvalter.domain.Identtype;
-import no.nav.pdl.forvalter.domain.PersonDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.IdentRequestDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.Identtype;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -12,6 +12,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.Identtype.FDAT;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -27,7 +28,7 @@ class IdenttypeServiceTest {
 
         var request = PersonDTO.builder()
                 .nyident(List.of(IdentRequestDTO.builder()
-                        .identtype(Identtype.FDAT)
+                        .identtype(FDAT)
                         .isNew(true)
                         .build()))
                 .build();

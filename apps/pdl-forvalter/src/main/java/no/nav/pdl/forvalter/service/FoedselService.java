@@ -1,15 +1,14 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.pdl.forvalter.domain.BostedadresseDTO;
-import no.nav.pdl.forvalter.domain.FoedselDTO;
-import no.nav.pdl.forvalter.domain.Identtype;
-import no.nav.pdl.forvalter.domain.InnflyttingDTO;
-import no.nav.pdl.forvalter.domain.PersonDTO;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
 import no.nav.pdl.forvalter.utils.TilfeldigKommuneService;
 import no.nav.pdl.forvalter.utils.TilfeldigLandService;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.BostedadresseDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.FoedselDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.InnflyttingDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +17,7 @@ import java.util.List;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.NORGE;
+import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.Identtype.FNR;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
@@ -58,7 +58,7 @@ public class FoedselService {
 
     private void setFoedeland(FoedselDTO foedsel, String ident, BostedadresseDTO bostedadresse, InnflyttingDTO innflytting) {
         if (isNull(foedsel.getFoedeland())) {
-            if (Identtype.FNR.equals(IdenttypeFraIdentUtility.getIdenttype(ident))) {
+            if (FNR.equals(IdenttypeFraIdentUtility.getIdenttype(ident))) {
                 foedsel.setFoedeland(NORGE);
             } else if (nonNull(innflytting)) {
                 foedsel.setFoedeland(innflytting.getFraflyttingsland());

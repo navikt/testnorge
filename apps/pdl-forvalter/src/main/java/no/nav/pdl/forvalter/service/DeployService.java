@@ -4,9 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.consumer.PdlTestdataConsumer;
-import no.nav.pdl.forvalter.domain.DbVersjonDTO;
-import no.nav.pdl.forvalter.domain.OrdreResponseDTO;
-import no.nav.pdl.forvalter.domain.PdlArtifact;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PdlArtifact;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
-import static no.nav.pdl.forvalter.domain.PdlStatus.FEIL;
-import static no.nav.pdl.forvalter.domain.PdlStatus.OK;
+import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PdlStatus.FEIL;
+import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PdlStatus.OK;
 
 @Slf4j
 @Service

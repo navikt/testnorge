@@ -1,14 +1,14 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.domain.AdressebeskyttelseDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
-import static no.nav.pdl.forvalter.domain.AdresseDTO.Master.FREG;
-import static no.nav.pdl.forvalter.domain.AdresseDTO.Master.PDL;
-import static no.nav.pdl.forvalter.domain.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG_UTLAND;
+import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.AdresseDTO.Master.FREG;
+import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.AdresseDTO.Master.PDL;
+import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG_UTLAND;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service

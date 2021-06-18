@@ -1,6 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.domain.OppholdDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.OppholdDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 

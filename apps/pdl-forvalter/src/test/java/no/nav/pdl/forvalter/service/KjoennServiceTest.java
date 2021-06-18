@@ -1,7 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.domain.KjoennDTO;
-import no.nav.pdl.forvalter.domain.PersonDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KjoennDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -9,8 +9,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
-import static no.nav.pdl.forvalter.domain.KjoennDTO.Kjoenn.KVINNE;
-import static no.nav.pdl.forvalter.domain.KjoennDTO.Kjoenn.MANN;
+import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.KVINNE;
+import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.MANN;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;

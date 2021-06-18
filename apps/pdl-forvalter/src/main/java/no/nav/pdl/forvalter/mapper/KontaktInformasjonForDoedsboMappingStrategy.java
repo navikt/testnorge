@@ -4,10 +4,10 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.pdl.forvalter.domain.BostedadresseDTO;
-import no.nav.pdl.forvalter.domain.KontaktinformasjonForDoedsboDTO;
 import no.nav.pdl.forvalter.utils.PostnummerService;
 import no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.BostedadresseDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -75,10 +75,10 @@ public class KontaktInformasjonForDoedsboMappingStrategy implements MappingStrat
                     @Override
                     public void mapAtoB(VegadresseDTO kilde, KontaktinformasjonForDoedsboDTO destinasjon, MappingContext context) {
 
-                       destinasjon.setAdresselinje1(format("%s %d", kilde.getAdressenavn(), kilde.getHusnummer()));
-                       destinasjon.setPostnummer(kilde.getPostnummer());
-                       destinasjon.setPoststedsnavn(kilde.getPoststed());
-                       destinasjon.setLandkode(LANDKODE_NORGE);
+                        destinasjon.setAdresselinje1(format("%s %d", kilde.getAdressenavn(), kilde.getHusnummer()));
+                        destinasjon.setPostnummer(kilde.getPostnummer());
+                        destinasjon.setPoststedsnavn(kilde.getPoststed());
+                        destinasjon.setLandkode(LANDKODE_NORGE);
                     }
                 })
                 .register();

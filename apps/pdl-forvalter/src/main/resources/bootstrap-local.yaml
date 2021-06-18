@@ -49,4 +49,4 @@ spring:
 #  jpa:
 #    properties:
 #      hibernate:
-#        dialect: no.nav.pdl.forvalter.domain.entity.H2DialectExtended
+#        dialect: no.nav.registre.testnorge.domain.dto.pdlforvalter.domain.entity.H2DialectExtended

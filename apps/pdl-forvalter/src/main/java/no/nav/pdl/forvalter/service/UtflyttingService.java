@@ -1,8 +1,8 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.pdl.forvalter.domain.UtflyttingDTO;
 import no.nav.pdl.forvalter.utils.TilfeldigLandService;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 

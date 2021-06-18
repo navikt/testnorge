@@ -2,10 +2,10 @@ package no.nav.pdl.forvalter.service;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
-import no.nav.pdl.forvalter.domain.KontaktadresseDTO;
-import no.nav.pdl.forvalter.domain.KontaktadresseDTO.PostboksadresseDTO;
-import no.nav.pdl.forvalter.domain.UtenlandskAdresseDTO;
-import no.nav.pdl.forvalter.domain.VegadresseDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KontaktadresseDTO.PostboksadresseDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,7 +15,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
-import static no.nav.pdl.forvalter.domain.AdresseDTO.Master.PDL;
+import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.AdresseDTO.Master.PDL;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import no.nav.pdl.forvalter.domain.DbVersjonDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 
 @Data
 @SuperBuilder

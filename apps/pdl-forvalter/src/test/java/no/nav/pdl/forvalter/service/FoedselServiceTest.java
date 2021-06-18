@@ -1,14 +1,14 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.domain.BostedadresseDTO;
-import no.nav.pdl.forvalter.domain.FoedselDTO;
-import no.nav.pdl.forvalter.domain.InnflyttingDTO;
-import no.nav.pdl.forvalter.domain.MatrikkeladresseDTO;
-import no.nav.pdl.forvalter.domain.PersonDTO;
-import no.nav.pdl.forvalter.domain.UtenlandskAdresseDTO;
-import no.nav.pdl.forvalter.domain.VegadresseDTO;
 import no.nav.pdl.forvalter.utils.TilfeldigKommuneService;
 import no.nav.pdl.forvalter.utils.TilfeldigLandService;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.BostedadresseDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.FoedselDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.InnflyttingDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

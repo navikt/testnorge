@@ -1,8 +1,8 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.domain.KjoennDTO;
-import no.nav.pdl.forvalter.domain.PersonDTO;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KjoennDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

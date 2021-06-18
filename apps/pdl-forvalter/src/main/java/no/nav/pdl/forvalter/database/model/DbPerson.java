@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.pdl.forvalter.database.JSONUserType;
-import no.nav.pdl.forvalter.domain.PersonDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
@@ -66,7 +66,7 @@ public class DbPerson {
     }
 
     public List<DbAlias> getAlias() {
-        if(isNull(alias)) {
+        if (isNull(alias)) {
             alias = new ArrayList<>();
         }
         return alias;

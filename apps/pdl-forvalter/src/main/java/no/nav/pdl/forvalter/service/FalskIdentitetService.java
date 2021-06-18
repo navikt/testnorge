@@ -2,12 +2,12 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
-import no.nav.pdl.forvalter.database.model.RelasjonType;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
-import no.nav.pdl.forvalter.domain.FalskIdentitetDTO;
-import no.nav.pdl.forvalter.domain.NavnDTO;
-import no.nav.pdl.forvalter.domain.PersonDTO;
-import no.nav.pdl.forvalter.domain.PersonRequestDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.FalskIdentitetDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.NavnDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonRequestDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.RelasjonType;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
