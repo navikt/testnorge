@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - IM-v2
+      - feature/dagpenger-vedtak-response-utfall
 
 
 env:

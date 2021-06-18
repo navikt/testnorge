@@ -32,8 +32,19 @@ public class ArenaNyeDagpengerResponse {
     @AllArgsConstructor
     public static class Dagp {
 
-        private String utfall;
         private List<Vilkaar> vilkaar;
+        private NyeDagpResponse nyeDagpResponse;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class NyeDagpResponse {
+
+        private String utfall;
+        private String begrunnelse;
     }
 
     @Getter
