@@ -20,10 +20,12 @@ import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.OrdreResponseDTO.Perso
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.lang.String.format;
 import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_ADRESSEBESKYTTELSE;
@@ -83,48 +85,57 @@ public class PdlOrdreService {
     }
 
     private List<OrdreResponseDTO.PdlStatusDTO> sendAlleInformasjonselementer(DbPerson person, boolean isRelasjon) {
+
         var status = new ArrayList<OrdreResponseDTO.PdlStatusDTO>();
+
         if (isRelasjon) {
-            status.addAll(deployService.send(PDL_SLETTING, person.getIdent(), List.of(new PdlDelete())));
+            status.addAll(deployService.send(PDL_SLETTING, person.getIdent(), List.of(new PdlDelete())).collectList().block());
         }
-        status.addAll(deployService.send(PDL_OPPRETT_PERSON, person.getIdent(), List.of(HistoriskIdent.builder()
-                .identer(person.getAlias().stream()
-                        .map(DbAlias::getTidligereIdent)
-                        .collect(Collectors.toList()))
-                .build())));
-        status.addAll(deployService.send(PDL_NAVN, person.getIdent(), person.getPerson().getNavn()));
-        status.addAll(deployService.send(PDL_KJOENN, person.getIdent(), person.getPerson().getKjoenn()));
-        status.addAll(deployService.send(PDL_FOEDSEL, person.getIdent(), person.getPerson().getFoedsel()));
-        status.addAll(deployService.send(PDL_FOLKEREGISTER_PERSONSTATUS, person.getIdent(),
-                person.getPerson().getFolkeregisterpersonstatus()));
-        status.addAll(deployService.send(PDL_STATSBORGERSKAP, person.getIdent(), person.getPerson().getStatsborgerskap()));
-        status.addAll(deployService.send(PDL_KONTAKTADRESSE, person.getIdent(),
-                mapperFacade.mapAsList(person.getPerson().getKontaktadresse(), KontaktadresseDTO.class)));
-        status.addAll(deployService.send(PDL_BOSTEDADRESSE, person.getIdent(), person.getPerson().getBostedsadresse()));
-        status.addAll(deployService.send(PDL_OPPHOLDSADRESSE, person.getIdent(), person.getPerson().getOppholdsadresse()));
-        status.addAll(deployService.send(PDL_ADRESSEBESKYTTELSE, person.getIdent(), person.getPerson().getAdressebeskyttelse()));
-        status.addAll(deployService.send(PDL_INNFLYTTING, person.getIdent(),
-                mapperFacade.mapAsList(person.getPerson().getInnflytting(), PdlInnflytting.class)));
-        status.addAll(deployService.send(PDL_UTFLYTTING, person.getIdent(),
-                mapperFacade.mapAsList(person.getPerson().getUtflytting(), PdlUtflytting.class)));
-        status.addAll(deployService.send(PDL_DELTBOSTED, person.getIdent(), person.getPerson().getDeltBosted()));
-        status.addAll(deployService.send(PDL_FORELDREANSVAR, person.getIdent(), person.getPerson().getForeldreansvar()));
-        status.addAll(deployService.send(PDL_FAMILIERELASJON, person.getIdent(), person.getPerson().getForelderBarnRelasjon()));
-        status.addAll(deployService.send(PDL_SIVILSTAND, person.getIdent(), person.getPerson().getSivilstand()));
-        status.addAll(deployService.send(PDL_VERGEMAAL, person.getIdent(),
-                mapperFacade.mapAsList(person.getPerson().getVergemaal(), PdlVergemaal.class)));
-        status.addAll(deployService.send(PDL_FULLMAKT, person.getIdent(), person.getPerson().getFullmakt()));
-        status.addAll(deployService.send(PDL_TELEFONUMMER, person.getIdent(), person.getPerson().getTelefonnummer()));
-        status.addAll(deployService.send(PDL_OPPHOLD, person.getIdent(), person.getPerson().getOpphold()));
-        status.addAll(deployService.send(PDL_DOEDSFALL, person.getIdent(), person.getPerson().getDoedsfall()));
-        status.addAll(deployService.send(PDL_KONTAKTINFORMASJON_FOR_DODESDBO, person.getIdent(),
-                person.getPerson().getKontaktinformasjonForDoedsbo()));
-        status.addAll(deployService.send(PDL_UTENLANDS_IDENTIFIKASJON_NUMMER, person.getIdent(),
-                person.getPerson().getUtenlandskIdentifikasjonsnummer()));
-        status.addAll(deployService.send(PDL_FALSK_IDENTITET, person.getIdent(),
-                mapperFacade.mapAsList(person.getPerson().getFalskIdentitet(), PdlFalskIdentitet.class)));
-        status.addAll(deployService.send(PDL_TILRETTELAGT_KOMMUNIKASJON, person.getIdent(),
-                mapperFacade.mapAsList(person.getPerson().getTilrettelagtKommunikasjon(), PdlTilrettelagtKommunikasjon.class)));
-        return status;
+
+        var asyncStatus = List.of(
+                deployService.send(PDL_OPPRETT_PERSON, person.getIdent(), List.of(HistoriskIdent.builder()
+                        .identer(person.getAlias().stream()
+                                .map(DbAlias::getTidligereIdent)
+                                .collect(Collectors.toList()))
+                        .build())),
+                deployService.send(PDL_NAVN, person.getIdent(), person.getPerson().getNavn()),
+                deployService.send(PDL_KJOENN, person.getIdent(), person.getPerson().getKjoenn()),
+                deployService.send(PDL_FOEDSEL, person.getIdent(), person.getPerson().getFoedsel()),
+                deployService.send(PDL_FOLKEREGISTER_PERSONSTATUS, person.getIdent(),
+                        person.getPerson().getFolkeregisterpersonstatus()),
+                deployService.send(PDL_STATSBORGERSKAP, person.getIdent(), person.getPerson().getStatsborgerskap()),
+                deployService.send(PDL_KONTAKTADRESSE, person.getIdent(),
+                        mapperFacade.mapAsList(person.getPerson().getKontaktadresse(), KontaktadresseDTO.class)),
+                deployService.send(PDL_BOSTEDADRESSE, person.getIdent(), person.getPerson().getBostedsadresse()),
+                deployService.send(PDL_OPPHOLDSADRESSE, person.getIdent(), person.getPerson().getOppholdsadresse()),
+                deployService.send(PDL_ADRESSEBESKYTTELSE, person.getIdent(), person.getPerson().getAdressebeskyttelse()),
+                deployService.send(PDL_INNFLYTTING, person.getIdent(),
+                        mapperFacade.mapAsList(person.getPerson().getInnflytting(), PdlInnflytting.class)),
+                deployService.send(PDL_UTFLYTTING, person.getIdent(),
+                        mapperFacade.mapAsList(person.getPerson().getUtflytting(), PdlUtflytting.class)),
+                deployService.send(PDL_DELTBOSTED, person.getIdent(), person.getPerson().getDeltBosted()),
+                deployService.send(PDL_FORELDREANSVAR, person.getIdent(), person.getPerson().getForeldreansvar()),
+                deployService.send(PDL_FAMILIERELASJON, person.getIdent(), person.getPerson().getForelderBarnRelasjon()),
+                deployService.send(PDL_SIVILSTAND, person.getIdent(), person.getPerson().getSivilstand()),
+                deployService.send(PDL_VERGEMAAL, person.getIdent(),
+                        mapperFacade.mapAsList(person.getPerson().getVergemaal(), PdlVergemaal.class)),
+                deployService.send(PDL_FULLMAKT, person.getIdent(), person.getPerson().getFullmakt()),
+                deployService.send(PDL_TELEFONUMMER, person.getIdent(), person.getPerson().getTelefonnummer()),
+                deployService.send(PDL_OPPHOLD, person.getIdent(), person.getPerson().getOpphold()),
+                deployService.send(PDL_DOEDSFALL, person.getIdent(), person.getPerson().getDoedsfall()),
+                deployService.send(PDL_KONTAKTINFORMASJON_FOR_DODESDBO, person.getIdent(),
+                        person.getPerson().getKontaktinformasjonForDoedsbo()),
+                deployService.send(PDL_UTENLANDS_IDENTIFIKASJON_NUMMER, person.getIdent(),
+                        person.getPerson().getUtenlandskIdentifikasjonsnummer()),
+                deployService.send(PDL_FALSK_IDENTITET, person.getIdent(),
+                        mapperFacade.mapAsList(person.getPerson().getFalskIdentitet(), PdlFalskIdentitet.class)),
+                deployService.send(PDL_TILRETTELAGT_KOMMUNIKASJON, person.getIdent(),
+                        mapperFacade.mapAsList(person.getPerson().getTilrettelagtKommunikasjon(), PdlTilrettelagtKommunikasjon.class))
+        ).stream().reduce(Flux.empty(), Flux::concat).collectList();
+
+        return Stream.concat(
+                status.stream(),
+                asyncStatus.block().stream()
+        ).collect(Collectors.toList());
     }
 }

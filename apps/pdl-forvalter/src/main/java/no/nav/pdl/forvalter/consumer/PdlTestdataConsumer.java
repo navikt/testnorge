@@ -12,22 +12,22 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.config.credentials.PdlServiceProperties;
-import no.nav.pdl.forvalter.consumer.command.PdlDeleteCommand;
-import no.nav.pdl.forvalter.consumer.command.PdlOpprettPersonCommand;
-import no.nav.pdl.forvalter.consumer.command.PdlTestdataCommand;
+import no.nav.pdl.forvalter.consumer.command.PdlDeleteCommandPdl;
+import no.nav.pdl.forvalter.consumer.command.PdlOpprettArtifactCommandPdl;
+import no.nav.pdl.forvalter.consumer.command.PdlOpprettPersonCommandPdl;
+import no.nav.pdl.forvalter.domain.ArtifactValue;
 import no.nav.pdl.forvalter.dto.HistoriskIdent;
-import no.nav.pdl.forvalter.dto.PdlBestillingResponse;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PdlArtifact;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PdlStatus;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
+import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Flux;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
-import static java.util.Objects.isNull;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.getBestillingUrl;
 
 @Slf4j
@@ -60,8 +60,7 @@ public class PdlTestdataConsumer {
     };
 
     private static final FilterProvider filters = new SimpleFilterProvider().addFilter("idFilter", removeIdFilter);
-    private static String token;
-    private static LocalDateTime timestamp;
+
     private final WebClient webClient;
     private final AccessTokenService accessTokenService;
     private final NaisServerProperties properties;
@@ -80,42 +79,71 @@ public class PdlTestdataConsumer {
         this.objectMapper = objectMapper;
     }
 
-    public PdlBestillingResponse send(PdlArtifact artifact, String ident, Object body) throws JsonProcessingException {
+    public Flux<OrdreResponseDTO.HendelseDTO> send(List<ArtifactValue> artifacts) throws JsonProcessingException {
 
-        switch (artifact) {
-            case PDL_SLETTING:
-                return new PdlDeleteCommand(webClient, getBestillingUrl().get(artifact), ident, getToken()).call();
-
-            case PDL_OPPRETT_PERSON:
-                return new PdlOpprettPersonCommand(webClient, getBestillingUrl().get(artifact), ident,
-                        (HistoriskIdent) body, getToken()).call();
-            default:
-                return new PdlTestdataCommand(webClient, getBestillingUrl().get(artifact), ident,
-                        objectMapper.writer(filters).writeValueAsString(body), getToken()).call();
-        }
+        return accessTokenService
+                .generateToken(properties)
+                .flatMapMany(accessToken -> artifacts
+                        .stream()
+                        .map(values -> send(values, accessToken))
+                        .reduce(Flux.empty(), Flux::concat));
     }
 
     public void delete(List<String> identer) {
 
-        identer.forEach(ident -> {
-            try {
-                new PdlDeleteCommand(webClient, getBestillingUrl().get(PdlArtifact.PDL_SLETTING),
-                        ident, getToken()).call();
-
-            } catch (WebClientResponseException e) {
-                if (!e.getResponseBodyAsString().contains("Finner ikke forespurt ident i pdl-api")) {
-                    log.error("Sletting av person feilet mot pdl {} ", e.getResponseBodyAsString(), e);
-                }
-            }
-        });
+        accessTokenService
+                .generateToken(properties)
+                .flatMapMany(accessToken -> identer
+                        .stream()
+                        .map(ident -> Flux.from(new PdlDeleteCommandPdl(webClient, ident, accessToken.getTokenValue(), null).call()))
+                        .reduce(Flux.empty(), Flux::concat))
+                .collectList()
+                .block();
     }
 
-    private String getToken() {
+    private Flux<OrdreResponseDTO.HendelseDTO> send(ArtifactValue value, AccessToken accessToken) {
 
-        if (isNull(timestamp) || timestamp.plusMinutes(10).isBefore(LocalDateTime.now())) {
-            token = accessTokenService.generateToken(properties).block().getTokenValue();
-            timestamp = LocalDateTime.now();
+        String body;
+        try {
+            body = objectMapper.writer(filters).writeValueAsString(value.getBody());
+        } catch (JsonProcessingException e) {
+            return Flux.just(
+                    OrdreResponseDTO.HendelseDTO.builder()
+                            .id(value.getBody().getId())
+                            .status(PdlStatus.FEIL)
+                            .error(e.getMessage())
+                            .build()
+            );
         }
-        return token;
+
+        switch (value.getArtifact()) {
+            case PDL_SLETTING:
+                return Flux.from(
+                        new PdlDeleteCommandPdl(webClient,
+                                getBestillingUrl().get(value.getArtifact()),
+                                value.getIdent(),
+                                accessToken.getTokenValue()
+                        ).call());
+
+            case PDL_OPPRETT_PERSON:
+                return Flux.from(
+                        new PdlOpprettPersonCommandPdl(webClient,
+                                getBestillingUrl().get(value.getArtifact()),
+                                value.getIdent(),
+                                (HistoriskIdent) value.getBody(),
+                                accessToken.getTokenValue()
+                        ).call());
+
+            default:
+                return Flux.from(
+                        new PdlOpprettArtifactCommandPdl(
+                                webClient,
+                                getBestillingUrl().get(value.getArtifact()),
+                                value.getIdent(),
+                                body,
+                                accessToken.getTokenValue(),
+                                value.getBody().getId()
+                        ).call());
+        }
     }
 }
