@@ -1,18 +1,18 @@
 ---
-layout: default title: Miljøer service parent: Applikasjoner
+layout: default title: testnav-joark-dokument-service parent: Applikasjoner
 ---
 
-# Miljoer-service
+# testnav-joark-dokument-service
 
-App for å sjekke hvilke miljøer i test og preprod som er tilgjengelige nå.
+App for å hente ut joark dokumenter.
 
 ## Swagger
 
-Swagger finnes under [/swagger](https://miljoer-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://testnav-joark-dokument-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 
-Ha naisdevice kjørende og kjør MiljoerServiceApplicationStarter med følgende argumenter:
+Ha naisdevice kjørende og kjør JoarkDokuemntServiceApplicationStarter med følgende argumenter:
 
 ```
 -Dspring.cloud.vault.token=[vault-token]
