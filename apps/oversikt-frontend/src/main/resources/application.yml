@@ -72,6 +72,7 @@ applications:
   testnav-generer-arbeidsforhold-populasjon-service: dev-gcp.dolly.testnav-generer-arbeidsforhold-populasjon-service
   testnav-inntektsmelding-service: dev-gcp.dolly.testnav-inntektsmelding-service
   testnav-amelding-service: dev-gcp.dolly.testnav-amelding-service
+  testnav-joark-dokument-service: dev-gcp.dolly.testnav-joark-dokument-service
 
 zuul:
   routes:

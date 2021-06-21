@@ -1,0 +1,9 @@
+query journalpost($journalpostId: String!) {
+    journalpost(journalpostId: $journalpostId) {
+        journalpostId
+        dokumenter {
+            dokumentInfoId
+            tittel
+        }
+    }
+}
