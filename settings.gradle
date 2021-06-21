@@ -312,3 +312,9 @@ project(':inntektsmelding-service').projectDir = file('apps/inntektsmelding-serv
 
 include 'dokarkiv-proxy'
 project(":dokarkiv-proxy").projectDir = file('proxies/dokarkiv-proxy')
+
+include 'saf-proxy'
+project(":saf-proxy").projectDir = file('proxies/saf-proxy')
+
+include 'joark-dokument-service'
+project(':joark-dokument-service').projectDir = file('apps/joark-dokument-service')
