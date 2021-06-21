@@ -1,7 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.consumer.PdlTestdataConsumer;
 import no.nav.pdl.forvalter.domain.ArtifactValue;
@@ -21,7 +20,6 @@ public class DeployService {
 
     private final PdlTestdataConsumer pdlTestdataConsumer;
 
-    @SneakyThrows
     public Flux<OrdreResponseDTO.PdlStatusDTO> send(PdlArtifact type,
                                                     String ident,
                                                     List<? extends DbVersjonDTO> artifacter) {

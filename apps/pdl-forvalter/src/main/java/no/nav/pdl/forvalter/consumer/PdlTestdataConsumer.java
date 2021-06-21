@@ -79,7 +79,7 @@ public class PdlTestdataConsumer {
         this.objectMapper = objectMapper;
     }
 
-    public Flux<OrdreResponseDTO.HendelseDTO> send(List<ArtifactValue> artifacts) throws JsonProcessingException {
+    public Flux<OrdreResponseDTO.HendelseDTO> send(List<ArtifactValue> artifacts) {
 
         return accessTokenService
                 .generateToken(properties)
