@@ -25,4 +25,5 @@ public class UtenlandskIdentifikasjonsnummerDTO extends DbVersjonDTO {
     @Schema(required = true,
             description = "Land i hht kodeverk 'Landkoder'")
     private String utstederland;
+
 }
