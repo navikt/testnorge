@@ -1,13 +1,28 @@
 package no.nav.registre.aareg.service;
 
-import static java.util.stream.Collectors.toCollection;
-import static no.nav.registre.aareg.consumer.ws.AaregWsConsumer.STATUS_OK;
-import static no.nav.registre.aareg.util.ArbeidsforholdMappingUtil.getLocalDateTimeFromLocalDate;
-import static no.nav.registre.aareg.util.ArbeidsforholdMappingUtil.mapArbeidsforholdToRsArbeidsforhold;
-
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.aareg.AaregSaveInHodejegerenRequest;
+import no.nav.registre.aareg.IdentMedData;
+import no.nav.registre.aareg.consumer.rs.AaregSyntetisererenConsumer;
+import no.nav.registre.aareg.consumer.rs.AaregstubConsumer;
+import no.nav.registre.aareg.consumer.rs.HodejegerenHistorikkConsumer;
+import no.nav.registre.aareg.consumer.rs.KodeverkConsumer;
+import no.nav.registre.aareg.consumer.rs.response.KodeverkResponse;
+import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
+import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
+import no.nav.registre.aareg.domain.RsArbeidsavtale;
+import no.nav.registre.aareg.domain.RsArbeidsforhold;
+import no.nav.registre.aareg.domain.RsFartoy;
+import no.nav.registre.aareg.domain.RsOrganisasjon;
+import no.nav.registre.aareg.domain.RsPeriode;
+import no.nav.registre.aareg.domain.RsPersonAareg;
+import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
+import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
+import no.nav.registre.aareg.syntetisering.RsAaregSyntetiseringsRequest;
+import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.http.ResponseEntity;
@@ -27,25 +42,10 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import no.nav.registre.aareg.AaregSaveInHodejegerenRequest;
-import no.nav.registre.aareg.IdentMedData;
-import no.nav.registre.aareg.consumer.rs.AaregSyntetisererenConsumer;
-import no.nav.registre.aareg.consumer.rs.AaregstubConsumer;
-import no.nav.registre.aareg.consumer.rs.HodejegerenHistorikkConsumer;
-import no.nav.registre.aareg.consumer.rs.KodeverkConsumer;
-import no.nav.registre.aareg.consumer.rs.response.KodeverkResponse;
-import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
-import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
-import no.nav.registre.aareg.domain.RsArbeidsavtale;
-import no.nav.registre.aareg.domain.RsArbeidsforhold;
-import no.nav.registre.aareg.domain.RsOrganisasjon;
-import no.nav.registre.aareg.domain.RsPeriode;
-import no.nav.registre.aareg.domain.RsPersonAareg;
-import no.nav.registre.aareg.provider.rs.requests.SyntetiserAaregRequest;
-import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
-import no.nav.registre.aareg.syntetisering.RsAaregSyntetiseringsRequest;
-import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
-import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
+import static java.util.stream.Collectors.toCollection;
+import static no.nav.registre.aareg.consumer.ws.AaregWsConsumer.STATUS_OK;
+import static no.nav.registre.aareg.util.ArbeidsforholdMappingUtil.getLocalDateTimeFromLocalDate;
+import static no.nav.registre.aareg.util.ArbeidsforholdMappingUtil.mapArbeidsforholdToRsArbeidsforhold;
 
 @Service
 @Slf4j
@@ -292,6 +292,7 @@ public class SyntetiseringService {
                         .stillingsprosent(syntetiseringsRequest.getArbeidsforhold().getArbeidsavtale().getStillingsprosent())
                         .yrke(syntetiseringsRequest.getArbeidsforhold().getArbeidsavtale().getYrke())
                         .build())
+                .fartoy(List.of(RsFartoy.builder().build()))
                 .build();
         return RsAaregOpprettRequest.builder()
                 .arbeidsforhold(arbeidsforhold)
@@ -300,7 +301,7 @@ public class SyntetiseringService {
                 .build();
     }
 
-    @Timed(value = "aareg.resource.latency", extraTags = {"operation", "hodejegeren"})
+    @Timed(value = "aareg.resource.latency", extraTags = { "operation", "hodejegeren" })
     private List<String> hentLevendeIdenter(
             Long avspillergruppeId,
             int minimumAlder

@@ -3,6 +3,14 @@ package no.nav.registre.aareg.mapper.strategy;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
+import no.nav.registre.aareg.config.MappingStrategy;
+import no.nav.registre.aareg.domain.RsAktoerPerson;
+import no.nav.registre.aareg.domain.RsArbeidsavtale;
+import no.nav.registre.aareg.domain.RsArbeidsforhold;
+import no.nav.registre.aareg.domain.RsOrganisasjon;
+import no.nav.registre.aareg.domain.RsPermisjon;
+import no.nav.registre.aareg.domain.RsPersonAareg;
+import no.nav.registre.aareg.domain.RsUtenlandsopphold;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidsavtale;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidsforhold;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidsforholdstyper;
@@ -20,15 +28,6 @@ import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Utenlandsopp
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Yrker;
 import org.springframework.stereotype.Component;
 
-import no.nav.registre.aareg.config.MappingStrategy;
-import no.nav.registre.aareg.domain.RsAktoerPerson;
-import no.nav.registre.aareg.domain.RsArbeidsavtale;
-import no.nav.registre.aareg.domain.RsArbeidsforhold;
-import no.nav.registre.aareg.domain.RsOrganisasjon;
-import no.nav.registre.aareg.domain.RsPermisjon;
-import no.nav.registre.aareg.domain.RsPersonAareg;
-import no.nav.registre.aareg.domain.RsUtenlandsopphold;
-
 @Component
 public class AaregMappingStrategy implements MappingStrategy {
 
@@ -43,7 +42,7 @@ public class AaregMappingStrategy implements MappingStrategy {
     @Override
     public void register(MapperFactory factory) {
         factory.classMap(RsArbeidsforhold.class, Arbeidsforhold.class)
-                .customize(new CustomMapper<RsArbeidsforhold, Arbeidsforhold>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(
                             RsArbeidsforhold rsArbeidsforhold,
@@ -64,7 +63,7 @@ public class AaregMappingStrategy implements MappingStrategy {
                 .register();
 
         factory.classMap(RsArbeidsavtale.class, Arbeidsavtale.class)
-                .customize(new CustomMapper<RsArbeidsavtale, Arbeidsavtale>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(
                             RsArbeidsavtale rsArbeidsavtale,
@@ -81,7 +80,7 @@ public class AaregMappingStrategy implements MappingStrategy {
                 .register();
 
         factory.classMap(RsPermisjon.class, Permisjon.class)
-                .customize(new CustomMapper<RsPermisjon, Permisjon>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(
                             RsPermisjon rsPermisjon,
@@ -96,7 +95,7 @@ public class AaregMappingStrategy implements MappingStrategy {
                 .register();
 
         factory.classMap(RsUtenlandsopphold.class, Utenlandsopphold.class)
-                .customize(new CustomMapper<RsUtenlandsopphold, Utenlandsopphold>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(
                             RsUtenlandsopphold rsUtenlandsopphold,
@@ -111,7 +110,7 @@ public class AaregMappingStrategy implements MappingStrategy {
                 .register();
 
         factory.classMap(RsOrganisasjon.class, Organisasjon.class)
-                .customize(new CustomMapper<RsOrganisasjon, Organisasjon>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(
                             RsOrganisasjon rsOrganisasjon,
@@ -125,7 +124,7 @@ public class AaregMappingStrategy implements MappingStrategy {
                 .register();
 
         factory.classMap(RsAktoerPerson.class, Person.class)
-                .customize(new CustomMapper<RsAktoerPerson, Person>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(
                             RsAktoerPerson rsAktoerPerson,
