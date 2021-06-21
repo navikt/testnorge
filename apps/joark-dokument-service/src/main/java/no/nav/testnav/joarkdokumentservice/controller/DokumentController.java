@@ -18,7 +18,7 @@ import no.nav.testnav.joarkdokumentservice.service.DokumentService;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/{journalpostId}/dokumenter")
+@RequestMapping("/api/v1/journalpost/{journalpostId}/dokumenter")
 public class DokumentController {
 
     private final DokumentService service;
