@@ -16,9 +16,7 @@ import no.nav.testnav.joarkdokumentservice.service.DokumentService;
 @RestController
 @RequestMapping("/api/v2/journalpost/{journalpostId}")
 public class JournalpostController {
-
     private final DokumentService service;
-
 
     @GetMapping
     public ResponseEntity<JournalpostDTO> hentJournalpost(
