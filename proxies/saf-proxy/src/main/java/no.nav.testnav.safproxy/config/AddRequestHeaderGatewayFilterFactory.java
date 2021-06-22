@@ -1,4 +1,4 @@
-package no.nav.testnav.safproxy.filter;
+package no.nav.testnav.safproxy.config;
 
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;

@@ -1,4 +1,4 @@
-package no.nav.testnav.joarkdokumentservice.controller;
+package no.nav.testnav.joarkdokumentservice.controller.v1;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -11,9 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.testnav.joarkdokumentservice.controller.dto.DokumentInfoDTO;
+import no.nav.testnav.joarkdokumentservice.controller.v1.dto.DokumentInfoDTO;
 import no.nav.testnav.joarkdokumentservice.domain.DokuemntType;
-import no.nav.testnav.joarkdokumentservice.domain.DokumentInfo;
 import no.nav.testnav.joarkdokumentservice.service.DokumentService;
 
 @RequiredArgsConstructor
@@ -28,8 +27,14 @@ public class DokumentController {
             @RequestHeader("miljo") String miljo,
             @PathVariable("journalpostId") Integer journalpostId
     ) {
-        var dokumentInfoList = service.getDokumentInfoList(journalpostId, miljo);
-        return ResponseEntity.ok(dokumentInfoList.stream().map(DokumentInfo::toDTO).collect(Collectors.toList()));
+        var journalpost = service.getJournalpost(journalpostId, miljo);
+        var list = journalpost.getDokumenter().stream().map(dokument -> DokumentInfoDTO
+                .builder()
+                .journalpostId(journalpost.getJournalpostId())
+                .dokumentInfoId(dokument.getDokumentInfoId())
+                .build()
+        ).collect(Collectors.toList());
+        return ResponseEntity.ok(list);
     }
 
     @GetMapping("/{dokumentInfoId}")
@@ -41,5 +46,4 @@ public class DokumentController {
         var dokument = service.getDokument(journalpostId, dokumentInfoId, DokuemntType.ORIGINAL, miljo);
         return ResponseEntity.ok(dokument);
     }
-
 }

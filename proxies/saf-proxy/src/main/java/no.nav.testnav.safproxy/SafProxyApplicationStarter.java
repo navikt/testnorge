@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 
 import no.nav.registre.testnorge.libs.service.StsOidcTokenService;
 import no.nav.testnav.safproxy.config.GetHeader;
-import no.nav.testnav.safproxy.filter.AddRequestHeaderGatewayFilterFactory;
+import no.nav.testnav.safproxy.config.AddRequestHeaderGatewayFilterFactory;
 
 @SpringBootApplication
 public class SafProxyApplicationStarter {
