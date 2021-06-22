@@ -45,6 +45,10 @@ zuul:
       path: /testnav-adresse-service/api/**
       url: https://testnav-adresse-service.dev.intern.nav.no/api
       sensitiveHeaders: Cookie,Set-Cookie
+    testnav-joark-dokument-service:
+      path: /testnav-joark-dokument-service/api/**
+      url: https://testnav-joark-dokument-service.dev.intern.nav.no/api
+      sensitiveHeaders: Cookie,Set-Cookie
 
 applications:
   testnorge-profil-api: ${TESTNORGE_PROFIL_API_CLIENT_ID}
@@ -67,6 +71,10 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-organisasjon-faste-data-service
+  testnav-joark-dokument-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-joark-dokument-service
 
 spring:
   application:

@@ -5,16 +5,16 @@ import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import {
 	Bestilling,
 	BestillingData,
-	Dokumentinfo,
 	Inntekt,
 	Journalpost,
 	TransaksjonId
 } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import { EnkelInntektsmeldingVisning } from './partials/enkelInntektsmeldingVisning'
-import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 import { DollyApi } from '~/service/Api'
 import { erGyldig } from '~/components/transaksjonid/GyldigeBestillinger'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import JoarkDokumentService, { Dokument } from '~/service/services/JoarkDokumentService'
+import LoadableComponentWithRetry from '~/components/ui/loading/LoadableComponentWithRetry'
 
 interface InntektsmeldingVisning {
 	liste: Array<BestillingData>
@@ -25,33 +25,30 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisning)
 	//Viser data fra bestillingen
 	if (!liste || liste.length < 1) return null
 
+	const getDokumenter = (bestilling: TransaksjonId): Promise<Dokument[]> => {
+		return JoarkDokumentService.hentDokumenter(
+			bestilling.transaksjonId.journalpostId,
+			bestilling.miljoe
+		)
+	}
+
 	return (
 		<div>
 			<ErrorBoundary>
-				<LoadableComponent
+				<LoadableComponentWithRetry
 					onFetch={() =>
 						DollyApi.getTransaksjonid('INNTKMELD', ident)
 							.then(({ data }: { data: Array<TransaksjonId> }) => {
 								return data.map((bestilling: TransaksjonId) => {
-									return DollyApi.getInntektsmeldingDokumentinfo(
-										bestilling.transaksjonId.journalpostId,
-										bestilling.transaksjonId.dokumentInfoId,
-										bestilling.miljoe
-									)
-										.then((response: Dokumentinfo) => {
-											if (response) {
-												if (response.data[0].feil || !response.data[0].data) {
-													return response.data[0]
-												}
-												return {
-													bestillingId: bestilling.bestillingId,
-													miljoe: bestilling.miljoe,
-													journalpost: response.data[0].data.journalpost,
-													skjemainnhold: response.data[1] && response.data[1].Skjemainnhold
-												}
+									return getDokumenter(bestilling).then(response => {
+										if (response) {
+											return {
+												bestillingId: bestilling.bestillingId,
+												miljoe: bestilling.miljoe,
+												dokumenter: response
 											}
-										})
-										.catch(error => console.error(error))
+										}
+									})
 								})
 							})
 							.then((data: Array<Promise<any>>) => {
@@ -61,9 +58,7 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisning)
 					render={(data: Array<Journalpost>) => {
 						if (data && data.length > 0) {
 							const gyldigeBestillinger = liste.filter(bestilling =>
-								data
-									.filter(dokument => dokument != undefined && dokument.journalpost != null)
-									.find(x => (x && x.bestillingId ? x.bestillingId === bestilling.id : x))
+								data.find(x => (x && x.bestillingId ? x.bestillingId === bestilling.id : x))
 							)
 							if (gyldigeBestillinger && gyldigeBestillinger.length > 0) {
 								return (

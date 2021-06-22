@@ -120,31 +120,28 @@ export type Periode = {
 
 export type EnkelInntektsmelding = {
 	bestilling: BestillingData
-	data: Array<Journalpost>
+	data: Journalpost[]
+}
+
+export type Dokument = {
+	journalpostId: number
+	dokumentInfoId: number
+	dokument: string
 }
 
 export type TransaksjonId = {
 	miljoe: string
 	transaksjonId: {
-		journalpostId: string
-		dokumentInfoId: string
+		journalpostId: number
+		dokumentInfoId: number
 	}
 	bestillingId: string
-}
-
-export type Dokumentinfo = {
-	data: Array<any>
 }
 
 export type Journalpost = {
 	bestillingId?: number
 	miljoe?: string
-	journalpost?: {
-		dokumenter: Array<any>
-		journalpostId: string
-	}
-	skjemainnhold?: Inntekt
-	feil: string
+	dokumenter: Dokument[]
 }
 
 export type BestillingData = {

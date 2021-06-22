@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
 import no.nav.dolly.web.config.credentials.NaisServerProperties;
+import no.nav.dolly.web.config.credentials.TestnavJoarkDokumentServiceProperties;
 import no.nav.dolly.web.config.credentials.TestnavOrganisasjonFasteDataServiceProperties;
 import no.nav.dolly.web.config.filters.AddAuthorizationToRouteFilter;
 import no.nav.dolly.web.security.TokenService;
@@ -29,6 +30,7 @@ public class ApplicationConfig {
     private final RemoteApplicationsProperties properties;
     private final TokenService tokenService;
     private final TestnavOrganisasjonFasteDataServiceProperties testnavOrganisasjonFasteDataServiceProperties;
+    private final TestnavJoarkDokumentServiceProperties testnavJoarkDokumentServiceProperties;
 
     @Bean
     public RestTemplate restTemplate() {
@@ -38,6 +40,11 @@ public class ApplicationConfig {
     @Bean
     public AddAuthorizationToRouteFilter testnavOrganisasjonFasteDataServiceAddAuthorizationToRouteFilter() {
         return createFilterFrom(testnavOrganisasjonFasteDataServiceProperties);
+    }
+
+    @Bean
+    public AddAuthorizationToRouteFilter testnavJoarkDokumentServiceAddAuthorizationToRouteFilter() {
+        return createFilterFrom(testnavJoarkDokumentServiceProperties);
     }
 
     @Bean

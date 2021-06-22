@@ -16,6 +16,7 @@ import {
 	Journalpost
 } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { CodeView } from '~/components/codeView'
 
 const getHeader = (data: Inntekt) => {
 	const arbeidsgiver = data.arbeidsgiver
@@ -91,42 +92,17 @@ export const EnkelInntektsmeldingVisning = ({ bestilling, data }: EnkelInntektsm
 			<ErrorBoundary>
 				<DollyFieldArray data={journalpostidPaaBestilling} header="Journalpost-ID" nested>
 					{(id: Journalpost, idx: number) => {
-						if (id.feil) {
-							return <p style={{ margin: 0 }}>{id.feil}</p>
-						}
-						if (!id.journalpost) {
-							return <p style={{ margin: 0 }}>Tom journalpost</p>
-						}
-
 						const [viserSkjemainnhold, vis, skjul] = useBoolean(false)
-						const feilmelding = 'Kan ikke hente dokument fra SAF.'
-
 						return (
 							<div key={idx} className="person-visning_content">
 								<TitleValue title="Miljø" value={id.miljoe.toUpperCase()} />
-								<TitleValue title="Journalpost-id" value={id.journalpost.journalpostId} />
-								<TitleValue
-									title="Dokumentinfo-id"
-									value={id.journalpost.dokumenter[0].dokumentInfoId}
-								/>
-								{!viserSkjemainnhold && (
-									<Button onClick={vis} kind="">
-										VIS SKJEMAINNHOLD
-									</Button>
-								)}
-								{viserSkjemainnhold && (
-									<Button onClick={skjul} kind="">
-										SKJUL SKJEMAINNHOLD
-									</Button>
-								)}
-								{viserSkjemainnhold && (
-									<div
-										className="person-visning_content"
-										style={{ whiteSpace: 'pre', color: '#59514B' }}
-									>
-										{id.skjemainnhold ? JSON.stringify(id.skjemainnhold, null, 4) : feilmelding}
-									</div>
-								)}
+								<TitleValue title="Journalpost-id" value={id.dokumenter[0].journalpostId} />
+								<TitleValue title="Dokumentinfo-id" value={id.dokumenter[0].dokumentInfoId} />
+
+								<Button onClick={viserSkjemainnhold ? skjul : vis} kind="">
+									{(viserSkjemainnhold ? 'SKJUL ' : 'VIS ') + 'SKJEMAINNHOLD'}
+								</Button>
+								{viserSkjemainnhold && <CodeView language="xml" code={id.dokumenter[0].dokument} />}
 							</div>
 						)
 					}}
