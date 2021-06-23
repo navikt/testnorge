@@ -1,17 +1,16 @@
-package no.nav.testnav.joarkdokumentservice.consumer.dto;
+package no.nav.testnav.joarkdokumentservice.controller.v1.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
-import java.util.List;
-
 @Value
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class JournalpostDTO {
+public class DokumentInfoDTO {
     Integer journalpostId;
+    Integer dokumentInfoId;
     String tittel;
-    String temanavn;
-    List<DokuemntDTO> dokumenter;
 }
