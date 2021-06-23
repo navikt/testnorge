@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import no.nav.testnav.joarkdokumentservice.controller.v1.dto.DokumentInfoDTO;
-import no.nav.testnav.joarkdokumentservice.domain.DokuemntType;
+import no.nav.testnav.joarkdokumentservice.domain.DokumentType;
 import no.nav.testnav.joarkdokumentservice.service.DokumentService;
 
 @RequiredArgsConstructor
@@ -43,7 +43,7 @@ public class DokumentController {
             @PathVariable("dokumentInfoId") Integer dokumentInfoId,
             @PathVariable("journalpostId") Integer journalpostId
     ) {
-        var dokument = service.getDokument(journalpostId, dokumentInfoId, DokuemntType.ORIGINAL, miljo);
+        var dokument = service.getDokument(journalpostId, dokumentInfoId, DokumentType.ORIGINAL, miljo);
         return ResponseEntity.ok(dokument);
     }
 }

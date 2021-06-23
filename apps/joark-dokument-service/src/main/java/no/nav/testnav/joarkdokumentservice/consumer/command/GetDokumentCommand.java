@@ -3,11 +3,12 @@ package no.nav.testnav.joarkdokumentservice.consumer.command;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
-import no.nav.testnav.joarkdokumentservice.domain.DokuemntType;
+import no.nav.testnav.joarkdokumentservice.domain.DokumentType;
 
 @RequiredArgsConstructor
 public class GetDokumentCommand implements Callable<Mono<String>> {
@@ -16,7 +17,7 @@ public class GetDokumentCommand implements Callable<Mono<String>> {
     private final Integer journalpostId;
     private final Integer dokumentInfoId;
     private final String miljo;
-    private final DokuemntType type;
+    private final DokumentType type;
 
     @Override
     public Mono<String> call() {
@@ -28,6 +29,10 @@ public class GetDokumentCommand implements Callable<Mono<String>> {
                 )
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
-                .bodyToMono(String.class);
+                .bodyToMono(String.class)
+                .onErrorResume(
+                        throwable -> throwable instanceof WebClientResponseException.NotFound,
+                        throwable -> Mono.empty()
+                );
     }
 }

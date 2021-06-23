@@ -6,10 +6,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.testnav.joarkdokumentservice.controller.v2.dto.JournalpostDTO;
-import no.nav.testnav.joarkdokumentservice.domain.DokuemntType;
+import no.nav.testnav.joarkdokumentservice.domain.DokumentType;
 import no.nav.testnav.joarkdokumentservice.service.DokumentService;
 
 @RequiredArgsConstructor
@@ -28,12 +29,18 @@ public class JournalpostController {
     }
 
     @GetMapping("/dokumenter/{dokumentInfoId}")
-    public ResponseEntity<String> hentDokument(
+    public ResponseEntity<?> hentDokument(
             @RequestHeader("miljo") String miljo,
             @PathVariable("dokumentInfoId") Integer dokumentInfoId,
-            @PathVariable("journalpostId") Integer journalpostId
+            @PathVariable("journalpostId") Integer journalpostId,
+            @RequestParam DokumentType dokumentType
     ) {
-        var dokument = service.getDokument(journalpostId, dokumentInfoId, DokuemntType.ORIGINAL, miljo);
+        var dokument = service.getDokument(journalpostId, dokumentInfoId, dokumentType, miljo);
+
+        if (dokument == null) {
+            return ResponseEntity.notFound().build();
+        }
+
         return ResponseEntity.ok(dokument);
     }
 }
