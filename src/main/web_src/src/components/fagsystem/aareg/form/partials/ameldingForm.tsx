@@ -187,7 +187,6 @@ export const AmeldingForm = ({ formikBag }) => {
 					name={`aareg[0].arbeidsforholdstype`}
 					label="Type arbeidsforhold"
 					kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
-					// options={[{ label: 'ordinææær', value: 'ordinaertArbeidsforhold' }]}
 					size="large-plus"
 					isClearable={false}
 					onChange={handleArbeidsforholdstypeChange}
@@ -215,10 +214,25 @@ export const AmeldingForm = ({ formikBag }) => {
 							handleDateChange={dato => handlePeriodeChange(dato, 'tom')}
 						/>
 						<div className="flexbox--full-width">
-							{/* //TODO lag onClick for å fylle felter */}
-							<Fyllknapp mini onClick={null} disabled={!fom || !tom}>
-								Fyll felter automatisk
-							</Fyllknapp>
+							<div className="flexbox--flex-wrap">
+								{/* //TODO lag onClick for å fylle felter */}
+								{/* <Fyllknapp mini onClick={null} disabled={!fom || !tom}> */}
+								<Fyllknapp
+									mini
+									onClick={null}
+									disabled={true}
+									title="Denne funksjonaliteten er foreløpig ikke tilgjengelig"
+								>
+									Fyll felter automatisk
+								</Fyllknapp>
+								<Hjelpetekst hjelpetekstFor="Fyllknapp">
+									Når du har fylt ut perioden du ønsker å opprette A-meldinger for, vil det
+									genereres et skjema for hver måned. Du kan velge om du ønsker å fylle ut alt selv,
+									eller fylle feltene automatisk. Ved automatisk utfylling vil det bli generert en
+									logisk historikk for A-meldingene i perioden. OBS! Denne funksjonaliteten er
+									foreløpig ikke tilgjengelig, men vi jobber med saken.
+								</Hjelpetekst>
+							</div>
 						</div>
 						{periode.length > 0 && (
 							<>
@@ -231,6 +245,14 @@ export const AmeldingForm = ({ formikBag }) => {
 										isLocked={erLenket}
 									/>
 									<KjedeIcon locked={erLenket} onClick={erLenket ? setErIkkeLenket : setErLenket} />
+									<Hjelpetekst hjelpetekstFor="DollyKjede">
+										Når du ser et lenke-symbol til høyre for månedsoversikten er alle måneder lenket
+										sammen. Det vil si at om du gjør endringer på én måned vil disse bli gjort på
+										alle månedene. Om du trykker på lenken vises en brutt lenke og månedene vil være
+										uavhengige av hverandre. Ihvertfall nesten - endringer som gjøres på én måned
+										ikke vil kun påvirke den valgte måneden og månedene som kommer etter den i
+										perioden.
+									</Hjelpetekst>
 								</KjedeContainer>
 								{arbeidsforholdstype === 'frilanserOppdragstakerHonorarPersonerMm' &&
 									periode.length > 1 && (
