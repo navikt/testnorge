@@ -17,6 +17,7 @@ import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.AntallTime
 import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsavtale;
 import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
 import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Bruksperiode;
+import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Fartoey;
 import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Gyldighetsperiode;
 import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.OpplysningspliktigArbeidsgiver;
 import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Organisasjon;
@@ -136,6 +137,14 @@ public class ArbeidsforholdMappingUtil {
                 .build();
     }
 
+    private static Fartoey mapFartoey(JsonNode fartoy) {
+        return Fartoey.builder()
+                .skipsregister(findStringNullSafe(fartoy, "skipsregister"))
+                .skipstype(findStringNullSafe(fartoy, "skipstype"))
+                .fartsomraade(findStringNullSafe(fartoy, "fartsomraade"))
+                .build();
+    }
+
     private static Gyldighetsperiode mapGyldighetsperiode(JsonNode gyldighetsperiode) {
         return Gyldighetsperiode.builder()
                 .fom(findLocalDateNullSafe(gyldighetsperiode, "fom"))
@@ -155,6 +164,7 @@ public class ArbeidsforholdMappingUtil {
         return Arbeidsavtale.builder()
                 .arbeidstidsordning(findStringNullSafe(arbeidsavtale, "arbeidstidsordning"))
                 .yrke(findStringNullSafe(arbeidsavtale, "yrke"))
+                .fartoey(mapFartoey(arbeidsavtale.get("fartoey")))
                 .stillingsprosent(findDoubleNullSafe(arbeidsavtale, "stillingsprosent"))
                 .antallTimerPrUke(findDoubleNullSafe(arbeidsavtale, "antallTimerPrUke"))
                 .beregnetAntallTimerPrUke(findDoubleNullSafe(arbeidsavtale, "beregnetAntallTimerPrUke"))
