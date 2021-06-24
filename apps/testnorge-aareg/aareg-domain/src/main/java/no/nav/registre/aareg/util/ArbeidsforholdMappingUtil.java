@@ -138,6 +138,9 @@ public class ArbeidsforholdMappingUtil {
     }
 
     private static Fartoey mapFartoey(JsonNode fartoy) {
+        if (fartoy == null) {
+            return null;
+        }
         return Fartoey.builder()
                 .skipsregister(findStringNullSafe(fartoy, "skipsregister"))
                 .skipstype(findStringNullSafe(fartoy, "skipstype"))
