@@ -10,7 +10,7 @@ import { InstVisning } from '~/components/fagsystem/inst/visning/InstVisning'
 import { PensjonVisning } from '~/components/fagsystem/pensjon/visning/PensjonVisning'
 import { BrregVisning } from '~/components/fagsystem/brregstub/visning/BrregVisning'
 import { TpsfVisning } from '~/components/fagsystem/tpsf/visning/Visning'
-import { DokarkivVisning } from '~/components/fagsystem/dokarkiv/visning/Visning'
+import { DokarkivVisning } from '~/components/fagsystem/dokarkiv/visning'
 import { SykemeldingVisning } from '~/components/fagsystem/sykdom/visning/Visning'
 
 export {
