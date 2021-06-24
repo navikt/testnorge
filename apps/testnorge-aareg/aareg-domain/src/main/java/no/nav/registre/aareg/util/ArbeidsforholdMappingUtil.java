@@ -137,14 +137,14 @@ public class ArbeidsforholdMappingUtil {
                 .build();
     }
 
-    private static Fartoey mapFartoey(JsonNode fartoy) {
-        if (fartoy == null) {
+    private static Fartoey mapFartoey(JsonNode fartoey) {
+        if (fartoey == null) {
             return null;
         }
         return Fartoey.builder()
-                .skipsregister(findStringNullSafe(fartoy, "skipsregister"))
-                .skipstype(findStringNullSafe(fartoy, "skipstype"))
-                .fartsomraade(findStringNullSafe(fartoy, "fartsomraade"))
+                .skipsregister(findStringNullSafe(fartoey, "skipsregister"))
+                .skipstype(findStringNullSafe(fartoey, "skipstype"))
+                .fartsomraade(findStringNullSafe(fartoey, "fartsomraade"))
                 .build();
     }
 
