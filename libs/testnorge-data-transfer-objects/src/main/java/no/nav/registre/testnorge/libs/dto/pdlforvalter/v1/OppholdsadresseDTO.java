@@ -15,5 +15,4 @@ public class OppholdsadresseDTO extends AdresseDTO {
     private VegadresseDTO vegadresse;
     private UtenlandskAdresseDTO utenlandskAdresse;
     private MatrikkeladresseDTO matrikkeladresse;
-
 }

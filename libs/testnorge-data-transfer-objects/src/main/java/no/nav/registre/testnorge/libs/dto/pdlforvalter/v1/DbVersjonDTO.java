@@ -25,5 +25,5 @@ public abstract class DbVersjonDTO implements Serializable {
     private String kilde;
 
     @JsonIgnore
-    private boolean isNew;
+    private Boolean isNew;
 }
