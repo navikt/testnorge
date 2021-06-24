@@ -432,7 +432,9 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			},
 			{
 				label: 'Type arbeidsforhold',
-				value: arbeidsforhold.arbeidsforholdstype,
+				value:
+					arbeidsforhold.arbeidsforholdstype ||
+					(!harAmelding && aaregKriterier.arbeidsforholdstype),
 				apiKodeverkId: ArbeidKodeverk.Arbeidsforholdstyper
 			},
 			obj('Orgnummer', arbeidsforhold.arbeidsgiver?.orgnummer),
@@ -477,17 +479,17 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			obj('Avtalte arbeidstimer per uke', arbeidsforhold.arbeidsavtale?.avtaltArbeidstimerPerUke),
 			{
 				label: 'Skipsregister',
-				value: arbeidsforhold.fartoy?.skipsregister,
+				value: arbeidsforhold.fartoy?.[0].skipsregister,
 				apiKodeverkId: ArbeidKodeverk.Skipsregistre
 			},
 			{
 				label: 'Fartøystype',
-				value: arbeidsforhold.fartoy?.fartoystype,
+				value: arbeidsforhold.fartoy?.[0].skipstype,
 				apiKodeverkId: ArbeidKodeverk.Skipstyper
 			},
 			{
 				label: 'Fartsområde',
-				value: arbeidsforhold.fartoy?.fartsomraade,
+				value: arbeidsforhold.fartoy?.[0].fartsomraade,
 				apiKodeverkId: ArbeidKodeverk.Fartsområder
 			},
 			obj(

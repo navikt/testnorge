@@ -16,19 +16,19 @@ export const MaritimtArbeidsforholdForm = ({ path, onChangeLenket }: MaritimtArb
 					name={`${path}.skipsregister`}
 					label="Skipsregister"
 					kodeverk={ArbeidKodeverk.Skipsregistre}
-					onChange={onChangeLenket('fartoy.skipsregister')}
+					onChange={onChangeLenket('fartoy[0].skipsregister')}
 				/>
 				<FormikSelect
-					name={`${path}.fartoystype`}
+					name={`${path}.skipstype`}
 					label="Fartøystype"
 					kodeverk={ArbeidKodeverk.Skipstyper}
-					onChange={onChangeLenket('fartoy.fartoystype')}
+					onChange={onChangeLenket('fartoy[0].skipstype')}
 				/>
 				<FormikSelect
 					name={`${path}.fartsomraade`}
 					label="Fartsområde"
 					kodeverk={ArbeidKodeverk.Fartsområder}
-					onChange={onChangeLenket('fartoy.fartsomraade')}
+					onChange={onChangeLenket('fartoy[0].fartsomraade')}
 				/>
 			</div>
 		</div>

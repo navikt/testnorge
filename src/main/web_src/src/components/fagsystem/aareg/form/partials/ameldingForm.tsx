@@ -13,7 +13,7 @@ import {
 	initialPeriode,
 	initialAmelding,
 	initialArbeidsforholdOrg,
-	initialForenkletOppgjoersordning,
+	initialForenkletOppgjoersordningOrg,
 	initialFartoy
 } from '../initialValues'
 import ArbeidsforholdConnector from './arbeidsforholdConnector'
@@ -57,6 +57,7 @@ export const AmeldingForm = ({ formikBag }) => {
 		}
 
 		if ((type === 'tom' && fom) || (type === 'fom' && tom)) {
+			const maanederPrev = _get(formikBag.values, 'aareg[0].amelding')
 			const maaneder = []
 			const maanederTmp = eachMonthOfInterval({
 				start: new Date(type === 'fom' ? dato : fom),
@@ -68,21 +69,26 @@ export const AmeldingForm = ({ formikBag }) => {
 			formikBag.setFieldValue('aareg[0].genererPeriode.periode', maaneder)
 			setPeriode(maaneder)
 
-			maaneder.forEach((mnd, idx) => {
-				const currMaaned = _get(formikBag.values, 'aareg[0].amelding').find(
-					element => element.maaned == mnd
-				)
-				formikBag.setFieldValue(`aareg[0].amelding[${idx}]`, {
-					maaned: mnd,
-					arbeidsforhold: currMaaned ? currMaaned.arbeidsforhold : [initialArbeidsforholdOrg]
-				})
-				if (arbeidsforholdstype === 'maritimtArbeidsforhold') {
-					formikBag.setFieldValue(
-						`aareg[0].amelding[${idx}].arbeidsforhold[0].fartoy`,
-						initialFartoy
+			if (maaneder.length < maanederPrev.length) {
+				const maanederFiltered = maanederPrev.filter(maaned => maaneder.includes(maaned.maaned))
+				formikBag.setFieldValue('aareg[0].amelding', maanederFiltered)
+			} else {
+				maaneder.forEach((mnd, idx) => {
+					const currMaaned = _get(formikBag.values, 'aareg[0].amelding').find(
+						element => element.maaned == mnd
 					)
-				}
-			})
+					formikBag.setFieldValue(`aareg[0].amelding[${idx}]`, {
+						maaned: mnd,
+						arbeidsforhold: currMaaned ? currMaaned.arbeidsforhold : [initialArbeidsforholdOrg]
+					})
+					if (arbeidsforholdstype === 'maritimtArbeidsforhold') {
+						formikBag.setFieldValue(
+							`aareg[0].amelding[${idx}].arbeidsforhold[0].fartoy`,
+							initialFartoy
+						)
+					}
+				})
+			}
 		}
 	}
 
@@ -91,7 +97,7 @@ export const AmeldingForm = ({ formikBag }) => {
 			if (arbeidsforholdstype !== 'forenkletOppgjoersordning') {
 				formikBag.setFieldValue('aareg[0].genererPeriode', initialPeriode)
 				formikBag.setFieldValue('aareg[0].amelding', undefined)
-				formikBag.setFieldValue('aareg[0].arbeidsforhold', [initialForenkletOppgjoersordning])
+				formikBag.setFieldValue('aareg[0].arbeidsforhold', [initialForenkletOppgjoersordningOrg])
 				setFom(null)
 				setTom(null)
 				setPeriode([])

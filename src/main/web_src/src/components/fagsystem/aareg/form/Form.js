@@ -22,5 +22,4 @@ export const AaregForm = ({ formikBag }) => (
 	</Vis>
 )
 
-//TODO: skriv ny validation
 // AaregForm.validation = validation

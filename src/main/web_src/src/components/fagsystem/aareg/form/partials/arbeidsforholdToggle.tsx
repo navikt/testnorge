@@ -115,6 +115,7 @@ export const ArbeidsforholdToggle = ({ formikBag }) => {
 						<ArbeidsforholdConnector
 							path={path}
 							key={idx}
+							arbeidsforholdIndex={idx}
 							formikBag={formikBag}
 							erLenket={null}
 							arbeidsgiverType={typeArbeidsgiver}

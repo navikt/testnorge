@@ -20,7 +20,26 @@ export const initialAmelding = [
 	}
 ]
 
-export const initialForenkletOppgjoersordning = {
+export const initialForenkletOppgjoersordningOrg = {
+	arbeidsgiver: {
+		aktoertype: 'ORG',
+		orgnummer: ''
+	},
+	ansettelsesPeriode: {
+		fom: subYears(new Date(), 20),
+		tom: null,
+		sluttaarsak: null
+	},
+	arbeidsavtale: {
+		yrke: ''
+	}
+}
+
+export const initialForenkletOppgjoersordningPers = {
+	arbeidsgiver: {
+		aktoertype: 'PERS',
+		ident: ''
+	},
 	ansettelsesPeriode: {
 		fom: subYears(new Date(), 20),
 		tom: null,
@@ -75,11 +94,13 @@ export const initialArbeidsforholdPers = {
 	}
 }
 
-export const initialFartoy = {
-	skipsregister: '',
-	fartoystype: '',
-	fartsomraade: ''
-}
+export const initialFartoy = [
+	{
+		skipsregister: '',
+		skipstype: '',
+		fartsomraade: ''
+	}
+]
 
 export const initialTimeloennet = {
 	periode: {

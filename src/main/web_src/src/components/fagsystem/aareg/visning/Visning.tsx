@@ -80,29 +80,34 @@ export const AaregVisning = ({ liste, loading }: AaregVisning) => {
 									/>
 								)}
 
+								<TitleValue title="Arbeidsforhold-ID" value={arbeidsforhold.arbeidsforholdId} />
+
 								{arbeidsforhold.ansettelsesperiode && arbeidsforhold.ansettelsesperiode.periode && (
 									<TitleValue
-										title="Startdato"
+										title="Ansatt fra"
 										value={Formatters.formatDate(arbeidsforhold.ansettelsesperiode.periode.fom)}
 									/>
 								)}
 								{arbeidsforhold.ansettelsesperiode && arbeidsforhold.ansettelsesperiode.periode && (
 									<TitleValue
-										title="Sluttdato"
+										title="Ansatt til"
 										value={Formatters.formatDate(arbeidsforhold.ansettelsesperiode.periode.tom)}
 									/>
 								)}
+								{/* //TODO: Sluttårsak  */}
 							</div>
-
-							<AntallTimerForTimeloennet data={arbeidsforhold.antallTimerForTimeloennet} />
-
-							<Arbeidsavtaler data={arbeidsforhold.arbeidsavtaler} />
 
 							<Arbeidsgiver data={arbeidsforhold.arbeidsgiver} />
 
-							<PermisjonPermitteringer data={arbeidsforhold.permisjonPermitteringer} />
+							<Arbeidsavtaler data={arbeidsforhold.arbeidsavtaler} />
+
+							{/* //TODO: Fartøy */}
+
+							<AntallTimerForTimeloennet data={arbeidsforhold.antallTimerForTimeloennet} />
 
 							<Utenlandsopphold data={arbeidsforhold.utenlandsopphold} />
+
+							<PermisjonPermitteringer data={arbeidsforhold.permisjonPermitteringer} />
 						</React.Fragment>
 					)}
 				</DollyFieldArray>
