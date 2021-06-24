@@ -3,7 +3,7 @@ import _get from 'lodash/get'
 import styled from 'styled-components'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { AmeldingForm } from './ameldingForm'
-import ArbeidsforholdConnector from './arbeidsforholdConnector'
+import { ArbeidsforholdForm } from './arbeidsforholdForm'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import {
 	initialPeriode,
@@ -112,7 +112,7 @@ export const ArbeidsforholdToggle = ({ formikBag }) => {
 					canBeEmpty={false}
 				>
 					{(path, idx) => (
-						<ArbeidsforholdConnector
+						<ArbeidsforholdForm
 							path={path}
 							key={idx}
 							arbeidsforholdIndex={idx}

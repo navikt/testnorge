@@ -16,7 +16,7 @@ import {
 	initialForenkletOppgjoersordningOrg,
 	initialFartoy
 } from '../initialValues'
-import ArbeidsforholdConnector from './arbeidsforholdConnector'
+import { ArbeidsforholdForm } from './arbeidsforholdForm'
 import { ForenkletOppgjoersordningForm } from './forenkletOppgjoersordningForm'
 import { Monthpicker } from '~/components/ui/form/inputs/monthpicker/Monthpicker'
 import DollyKjede from '~/components/dollyKjede/DollyKjede'
@@ -247,7 +247,7 @@ export const AmeldingForm = ({ formikBag }) => {
 									handleRemoveEntry={handleRemoveEntry}
 								>
 									{(path, idx) => (
-										<ArbeidsforholdConnector
+										<ArbeidsforholdForm
 											path={path}
 											key={idx}
 											ameldingIndex={selectedIndex}
