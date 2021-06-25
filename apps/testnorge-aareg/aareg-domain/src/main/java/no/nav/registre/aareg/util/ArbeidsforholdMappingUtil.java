@@ -1,7 +1,6 @@
 package no.nav.registre.aareg.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.aareg.domain.RsAktoer;
 import no.nav.registre.aareg.domain.RsAktoerPerson;
 import no.nav.registre.aareg.domain.RsAntallTimerForTimeloennet;
@@ -18,7 +17,6 @@ import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.AntallTime
 import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsavtale;
 import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
 import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Bruksperiode;
-import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Fartoey;
 import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Gyldighetsperiode;
 import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.OpplysningspliktigArbeidsgiver;
 import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Organisasjon;
@@ -35,7 +33,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@Slf4j
 public class ArbeidsforholdMappingUtil {
 
     private static final String SPORINGSINFO = "sporingsinformasjon";
@@ -45,7 +42,6 @@ public class ArbeidsforholdMappingUtil {
     }
 
     public static Arbeidsforhold mapToArbeidsforhold(JsonNode arbeidsforholdNode) {
-        log.info("Arbeidsforhold mottatt fra Aareg: \n" + arbeidsforholdNode.toPrettyString());
         return Arbeidsforhold.builder()
                 .navArbeidsforholdId(findLongNullSafe(arbeidsforholdNode, "navArbeidsforholdId"))
                 .arbeidsforholdId(findStringNullSafe(arbeidsforholdNode, "arbeidsforholdId"))
@@ -140,17 +136,6 @@ public class ArbeidsforholdMappingUtil {
                 .build();
     }
 
-    private static Fartoey mapFartoey(JsonNode fartoey) {
-        if (fartoey == null) {
-            return null;
-        }
-        return Fartoey.builder()
-                .skipsregister(findStringNullSafe(fartoey, "skipsregister"))
-                .skipstype(findStringNullSafe(fartoey, "skipstype"))
-                .fartsomraade(findStringNullSafe(fartoey, "fartsomraade"))
-                .build();
-    }
-
     private static Gyldighetsperiode mapGyldighetsperiode(JsonNode gyldighetsperiode) {
         return Gyldighetsperiode.builder()
                 .fom(findLocalDateNullSafe(gyldighetsperiode, "fom"))
@@ -170,7 +155,6 @@ public class ArbeidsforholdMappingUtil {
         return Arbeidsavtale.builder()
                 .arbeidstidsordning(findStringNullSafe(arbeidsavtale, "arbeidstidsordning"))
                 .yrke(findStringNullSafe(arbeidsavtale, "yrke"))
-                .fartoey(mapFartoey(arbeidsavtale.get("fartoey")))
                 .stillingsprosent(findDoubleNullSafe(arbeidsavtale, "stillingsprosent"))
                 .antallTimerPrUke(findDoubleNullSafe(arbeidsavtale, "antallTimerPrUke"))
                 .beregnetAntallTimerPrUke(findDoubleNullSafe(arbeidsavtale, "beregnetAntallTimerPrUke"))
