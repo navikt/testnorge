@@ -18,6 +18,7 @@ import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.NORGE;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.isLandkode;
 import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.Identtype.FNR;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
@@ -34,7 +35,7 @@ public class StatsborgerskapService {
 
         for (var type : person.getStatsborgerskap()) {
 
-            if (type.isNew()) {
+            if (isTrue(type.getIsNew())) {
                 validate(type);
 
                 handle(type, person.getIdent(), person.getInnflytting().stream().reduce((a, b) -> b).orElse(null));

@@ -16,6 +16,7 @@ import java.util.List;
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -37,7 +38,7 @@ public class VergemaalService {
 
         for (var type : person.getVergemaal()) {
 
-            if (type.isNew()) {
+            if (isTrue(type.getIsNew())) {
                 validate(type);
 
                 handle(type, person.getIdent());

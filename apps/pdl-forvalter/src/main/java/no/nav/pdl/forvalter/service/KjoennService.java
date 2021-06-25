@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static java.util.Objects.isNull;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 
 @Service
@@ -17,7 +18,7 @@ public class KjoennService {
 
         for (var type : person.getKjoenn()) {
 
-            if (type.isNew()) {
+            if (isTrue(type.getIsNew())) {
 
                 handle(type, person.getIdent());
                 if (isBlank(type.getKilde())) {

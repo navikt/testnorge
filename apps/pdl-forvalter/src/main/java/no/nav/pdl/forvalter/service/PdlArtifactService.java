@@ -4,6 +4,7 @@ import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 
 import java.util.List;
 
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 
 public abstract class PdlArtifactService<T extends DbVersjonDTO> {
@@ -12,7 +13,7 @@ public abstract class PdlArtifactService<T extends DbVersjonDTO> {
 
         for (var type : request) {
 
-            if (type.isNew()) {
+            if (isTrue(type.getIsNew())) {
                 validate(type);
 
                 handle(type);

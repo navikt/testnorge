@@ -18,6 +18,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.NORGE;
 import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.Identtype.FNR;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
@@ -31,7 +32,7 @@ public class FoedselService {
 
         for (var type : person.getFoedsel()) {
 
-            if (type.isNew()) {
+            if (isTrue(type.getIsNew())) {
 
                 handle(type, person.getIdent(),
                         person.getBostedsadresse().stream().reduce((a, b) -> b).orElse(null),

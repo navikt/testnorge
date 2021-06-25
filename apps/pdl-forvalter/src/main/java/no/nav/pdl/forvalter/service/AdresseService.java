@@ -7,6 +7,7 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
@@ -42,7 +43,7 @@ public abstract class AdresseService<T extends AdresseDTO> {
 
         for (var type : request) {
 
-            if (type.isNew()) {
+            if (isTrue(type.getIsNew())) {
                 validate(type);
 
                 handle(type);

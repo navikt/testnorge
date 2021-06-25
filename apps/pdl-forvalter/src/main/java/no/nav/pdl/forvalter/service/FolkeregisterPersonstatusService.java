@@ -20,6 +20,7 @@ import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.Folkeregisterpe
 import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.IKKE_BOSATT;
 import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.MIDLERTIDIG;
 import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.UTFLYTTET;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +30,7 @@ public class FolkeregisterPersonstatusService {
 
         for (var type : person.getFolkeregisterpersonstatus()) {
 
-            if (type.isNew()) {
+            if (isTrue(type.getIsNew())) {
                 handle(type,
                         person.getBostedsadresse().stream().findFirst().orElse(null),
                         person.getUtflytting().stream().findFirst().orElse(null),

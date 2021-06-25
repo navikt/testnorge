@@ -28,6 +28,7 @@ import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoen
 import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.UKJENT;
 import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.RelasjonType.GAMMEL_IDENTITET;
 import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.RelasjonType.NY_IDENTITET;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
@@ -99,7 +100,7 @@ public class IdenttypeService {
         var ident = person.getIdent();
         for (var type : person.getNyident()) {
 
-            if (type.isNew()) {
+            if (isTrue(type.getIsNew())) {
                 validate(type);
 
                 ident = handle(type, person);

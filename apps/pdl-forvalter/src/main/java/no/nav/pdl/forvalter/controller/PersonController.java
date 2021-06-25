@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -28,6 +29,7 @@ public class PersonController {
     private final PersonService personService;
     private final PdlOrdreService pdlOrdreService;
 
+    @ResponseBody
     @GetMapping(value = "/{ident}")
     @Operation(description = "Hent person")
     public FullPersonDTO getPerson(@PathVariable String ident) {
@@ -35,13 +37,15 @@ public class PersonController {
         return personService.getPerson(ident);
     }
 
+    @ResponseBody
     @PostMapping
     @Operation(description = "Opprett person")
     public JsonNode createPerson(@RequestBody BestillingRequest request) {
 
-        return null;
+        throw new UnsupportedOperationException("opprette person er ikke implementert");
     }
 
+    @ResponseBody
     @PutMapping(value = "/{ident}")
     @Operation(description = "Endre, legg-til på person")
     public String updatePerson(@PathVariable String ident, @RequestBody PersonUpdateRequestDTO request) {
@@ -49,6 +53,7 @@ public class PersonController {
         return personService.updatePerson(ident, request);
     }
 
+    @ResponseBody
     @DeleteMapping(value = "/{ident}")
     @Operation(description = "Slett person")
     public void deletePerson(@PathVariable String ident) {
@@ -56,6 +61,7 @@ public class PersonController {
         personService.deletePerson(ident);
     }
 
+    @ResponseBody
     @PostMapping(value = "/{ident}/ordre")
     @Operation(description = "Send person til PDL (ordre)")
     public OrdreResponseDTO sendPersonTilPdl(@PathVariable String ident) {

@@ -57,7 +57,7 @@ public class FalskIdentitetService {
 
         for (var type : person.getFalskIdentitet()) {
 
-            if (type.isNew()) {
+            if (isTrue(type.getIsNew())) {
                 validate(type);
 
                 handle(type, person.getIdent());

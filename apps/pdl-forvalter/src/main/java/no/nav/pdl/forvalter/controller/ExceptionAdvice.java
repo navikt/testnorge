@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.util.UrlPathHelper;
 
@@ -21,7 +20,6 @@ public class ExceptionAdvice {
         private final HttpServletRequest httpServletRequest;
         private final UrlPathHelper urlPathHelper;
 
-        @ResponseBody
         @ExceptionHandler(HttpClientErrorException.class)
         ExceptionInformation clientErrorException(HttpClientErrorException exception) {
             return ExceptionInformation.builder()

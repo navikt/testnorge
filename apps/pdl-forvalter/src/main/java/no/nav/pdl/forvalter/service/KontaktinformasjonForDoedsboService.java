@@ -70,7 +70,7 @@ public class KontaktinformasjonForDoedsboService {
 
         for (var type : person.getKontaktinformasjonForDoedsbo()) {
 
-            if (type.isNew()) {
+            if (isTrue(type.getIsNew())) {
                 validate(type);
 
                 handle(type, person);

@@ -64,7 +64,7 @@ public class MergeService {
                                 format("Merge-error: id:%s ikke funnet for element:'%s'", requestElement.getId(), field.getName()));
                     } else {
                         requestElement.setId(dbId.incrementAndGet());
-                        requestElement.setNew(true);
+                        requestElement.setIsNew(true);
                         infoElementDbPerson.add(0, mapperFacade.map(requestElement, requestElement.getClass()));
                     }
                 });
