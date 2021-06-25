@@ -7,8 +7,16 @@ import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
+import no.nav.testnav.libs.proxyconfig.config.DevConfig;
+import no.nav.testnav.libs.proxyconfig.config.SecurityConfig;
+import no.nav.testnav.libs.proxyconfig.router.InternalHandler;
+import no.nav.testnav.libs.proxyconfig.router.InternalRouter;
+
 @Import({
-        De
+        DevConfig.class,
+        SecurityConfig.class,
+        InternalHandler.class,
+        InternalRouter.class
 })
 @SpringBootApplication
 public class TpsForvaterenProxyApplicationStarter {
