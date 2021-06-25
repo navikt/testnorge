@@ -208,6 +208,7 @@ export const ArbeidsforholdForm = ({
 						arbeidsforholdIndex={arbeidsforholdIndex}
 						formikBag={formikBag}
 						erLenket={erLenket}
+						onChangeLenket={onChangeLenket}
 					/>
 
 					<UtenlandsoppholdForm
@@ -216,6 +217,7 @@ export const ArbeidsforholdForm = ({
 						arbeidsforholdIndex={arbeidsforholdIndex}
 						formikBag={formikBag}
 						erLenket={erLenket}
+						onChangeLenket={onChangeLenket}
 					/>
 
 					<PermisjonForm
@@ -224,6 +226,7 @@ export const ArbeidsforholdForm = ({
 						arbeidsforholdIndex={arbeidsforholdIndex}
 						formikBag={formikBag}
 						erLenket={erLenket}
+						onChangeLenket={onChangeLenket}
 					/>
 
 					<PermitteringForm
@@ -232,6 +235,7 @@ export const ArbeidsforholdForm = ({
 						arbeidsforholdIndex={arbeidsforholdIndex}
 						formikBag={formikBag}
 						erLenket={erLenket}
+						onChangeLenket={onChangeLenket}
 					/>
 				</>
 			)}

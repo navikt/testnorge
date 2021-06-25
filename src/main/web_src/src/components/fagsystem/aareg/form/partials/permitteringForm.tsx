@@ -21,7 +21,8 @@ export const PermitteringForm = ({
 	ameldingIndex,
 	arbeidsforholdIndex,
 	formikBag,
-	erLenket
+	erLenket,
+	onChangeLenket
 }: Permittering) => {
 	const maaneder = _get(formikBag.values, 'aareg[0].amelding')
 
@@ -68,12 +69,21 @@ export const PermitteringForm = ({
 		>
 			{(path, idx) => (
 				<React.Fragment key={idx}>
-					<FormikDatepicker name={`${path}.permitteringsPeriode.fom`} label="Permittering fra" />
-					<FormikDatepicker name={`${path}.permitteringsPeriode.tom`} label="Permittering til" />
+					<FormikDatepicker
+						name={`${path}.permitteringsPeriode.fom`}
+						label="Permittering fra"
+						onChange={onChangeLenket(`permittering[${idx}].permitteringsPeriode.fom`)}
+					/>
+					<FormikDatepicker
+						name={`${path}.permitteringsPeriode.tom`}
+						label="Permittering til"
+						onChange={onChangeLenket(`permittering[${idx}].permitteringsPeriode.tom`)}
+					/>
 					<FormikTextInput
 						name={`${path}.permitteringsprosent`}
 						label="Permitteringsprosent"
 						type="number"
+						onChange={onChangeLenket(`permittering[${idx}].permitteringsprosent`)}
 					/>
 				</React.Fragment>
 			)}

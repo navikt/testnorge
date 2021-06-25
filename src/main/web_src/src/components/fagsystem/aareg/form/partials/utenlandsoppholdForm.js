@@ -14,7 +14,8 @@ export const UtenlandsoppholdForm = ({
 	ameldingIndex,
 	arbeidsforholdIndex,
 	formikBag,
-	erLenket
+	erLenket,
+	onChangeLenket
 }) => {
 	const maaneder = _get(formikBag.values, 'aareg[0].amelding')
 
@@ -69,9 +70,18 @@ export const UtenlandsoppholdForm = ({
 						kodeverk={AdresseKodeverk.ArbeidOgInntektLand}
 						isClearable={false}
 						size="large"
+						onChange={onChangeLenket(`utenlandsopphold[${idx}].land`)}
 					/>
-					<FormikDatepicker name={`${path}.periode.fom`} label="Opphold fra" />
-					<FormikDatepicker name={`${path}.periode.tom`} label="Opphold til" />
+					<FormikDatepicker
+						name={`${path}.periode.fom`}
+						label="Opphold fra"
+						onChange={onChangeLenket(`utenlandsopphold[${idx}].periode.fom`)}
+					/>
+					<FormikDatepicker
+						name={`${path}.periode.tom`}
+						label="Opphold til"
+						onChange={onChangeLenket(`utenlandsopphold[${idx}].periode.tom`)}
+					/>
 				</div>
 			)}
 		</FormikDollyFieldArray>

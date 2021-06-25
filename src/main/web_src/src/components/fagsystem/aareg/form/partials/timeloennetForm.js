@@ -13,7 +13,8 @@ export const TimeloennetForm = ({
 	ameldingIndex,
 	arbeidsforholdIndex,
 	formikBag,
-	erLenket
+	erLenket,
+	onChangeLenket
 }) => {
 	const maaneder = _get(formikBag.values, 'aareg[0].amelding')
 
@@ -64,9 +65,18 @@ export const TimeloennetForm = ({
 						name={`${path}.antallTimer`}
 						label="Antall timer for timelønnet"
 						type="number"
+						onChange={onChangeLenket(`antallTimerForTimeloennet[${idx}].antallTimer`)}
 					/>
-					<FormikDatepicker name={`${path}.periode.fom`} label="Periode fra" />
-					<FormikDatepicker name={`${path}.periode.tom`} label="Periode til" />
+					<FormikDatepicker
+						name={`${path}.periode.fom`}
+						label="Periode fra"
+						onChange={onChangeLenket(`antallTimerForTimeloennet[${idx}].periode.fom`)}
+					/>
+					<FormikDatepicker
+						name={`${path}.periode.tom`}
+						label="Periode til"
+						onChange={onChangeLenket(`antallTimerForTimeloennet[${idx}].periode.tom`)}
+					/>
 				</div>
 			)}
 		</FormikDollyFieldArray>

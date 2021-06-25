@@ -14,7 +14,8 @@ export const PermisjonForm = ({
 	ameldingIndex,
 	arbeidsforholdIndex,
 	formikBag,
-	erLenket
+	erLenket,
+	onChangeLenket
 }) => {
 	const maaneder = _get(formikBag.values, 'aareg[0].amelding')
 
@@ -67,13 +68,23 @@ export const PermisjonForm = ({
 						kodeverk={ArbeidKodeverk.PermisjonsOgPermitteringsBeskrivelse}
 						isClearable={false}
 						size="large"
+						onChange={onChangeLenket(`permisjon[${idx}].permisjon`)}
 					/>
-					<FormikDatepicker name={`${path}.permisjonsPeriode.fom`} label="Permisjon fra" />
-					<FormikDatepicker name={`${path}.permisjonsPeriode.tom`} label="Permisjon til" />
+					<FormikDatepicker
+						name={`${path}.permisjonsPeriode.fom`}
+						label="Permisjon fra"
+						onChange={onChangeLenket(`permisjon[${idx}].permisjonsPeriode.fom`)}
+					/>
+					<FormikDatepicker
+						name={`${path}.permisjonsPeriode.tom`}
+						label="Permisjon til"
+						onChange={onChangeLenket(`permisjon[${idx}].permisjonsPeriode.tom`)}
+					/>
 					<FormikTextInput
 						name={`${path}.permisjonsprosent`}
 						label="Permisjonsprosent"
 						type="number"
+						onChange={onChangeLenket(`permisjon[${idx}].permisjonsprosent`)}
 					/>
 				</React.Fragment>
 			)}
