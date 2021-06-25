@@ -35,7 +35,7 @@
             <appender-ref ref="CONSOLE"/>
         </root>
     </springProfile>
-    <logger name="no.nav.registre.testnorge.arbeidsforholdservice.consumer.commnad.SaveOpplysningspliktigCommand">
+    <logger name="no.nav.registre.testnorge.arbeidsforholdservice.consumer.command.SaveOpplysningspliktigCommand">
         <level value="TRACE"/>
     </logger>
 </configuration>
