@@ -1,13 +1,12 @@
 package no.nav.pdl.forvalter.service;
 
+import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.TelefonnummerDTO;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
 import static java.util.Objects.isNull;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
 public class TelefonnummerService extends PdlArtifactService<TelefonnummerDTO> {
@@ -27,23 +26,23 @@ public class TelefonnummerService extends PdlArtifactService<TelefonnummerDTO> {
     protected void validate(TelefonnummerDTO telefonnummer) {
 
         if (isNull(telefonnummer.getNummer())) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_NUMMER_REQUIRED);
+            throw new InvalidRequestException(VALIDATION_NUMMER_REQUIRED);
         } else if (!telefonnummer.getNummer().matches("[0-9]*")) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_NUMMER_INVALID_FORMAT);
+            throw new InvalidRequestException(VALIDATION_NUMMER_INVALID_FORMAT);
         } else if (!telefonnummer.getNummer().matches("[0-9]{3,16}")) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_NUMMER_INVALID_LENGTH);
+            throw new InvalidRequestException(VALIDATION_NUMMER_INVALID_LENGTH);
         }
 
         if (isNull(telefonnummer.getLandskode())) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_LANDSKODE_REQUIRED);
+            throw new InvalidRequestException(VALIDATION_LANDSKODE_REQUIRED);
         } else if (!telefonnummer.getLandskode().matches("\\+[0-9]{1,5}")) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_LANDKODE_INVALID_FORMAT);
+            throw new InvalidRequestException(VALIDATION_LANDKODE_INVALID_FORMAT);
         }
 
         if (isNull(telefonnummer.getPrioritet())) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_PRIORITET_REQUIRED);
+            throw new InvalidRequestException(VALIDATION_PRIORITET_REQUIRED);
         } else if (telefonnummer.getPrioritet() < 1 || telefonnummer.getPrioritet() > 2) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_PRIORITET_ERROR);
+            throw new InvalidRequestException(VALIDATION_PRIORITET_ERROR);
         }
     }
 
@@ -67,10 +66,10 @@ public class TelefonnummerService extends PdlArtifactService<TelefonnummerDTO> {
             }
         }
         if (pri2 > 0 && pri1 == 0) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_PRIORITET_INVALID);
+            throw new InvalidRequestException(VALIDATION_PRIORITET_INVALID);
         }
         if (pri1 > 1 || pri2 > 1) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_PRIORITET_AMBIGUOUS);
+            throw new InvalidRequestException(VALIDATION_PRIORITET_AMBIGUOUS);
         }
     }
 }

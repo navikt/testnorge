@@ -2,16 +2,15 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
+import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.NavnDTO;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +35,7 @@ public class NavnService extends PdlArtifactService<NavnDTO> {
                         .substantiv(navn.getEtternavn())
                         .build())) {
 
-            throw new HttpClientErrorException(BAD_REQUEST, NAVN_INVALID_ERROR);
+            throw new InvalidRequestException(NAVN_INVALID_ERROR);
         }
     }
 

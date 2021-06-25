@@ -13,11 +13,11 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.pdl.forvalter.exception.InternalServerException;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
-import org.springframework.web.client.HttpServerErrorException;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -37,7 +37,6 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @Slf4j
 public class JSONUserType implements UserType {
@@ -98,7 +97,7 @@ public class JSONUserType implements UserType {
             return objectMapper.readValue(cellContent.getBytes(StandardCharsets.UTF_8), returnedClass());
         } catch (final Exception ex) {
             log.error("Kunne ikke mappe String til PdlPerson: {}", ex.getMessage(), ex);
-            throw new HttpServerErrorException(INTERNAL_SERVER_ERROR, "Kunne ikke mappe String til PdlPerson: " + ex.getMessage());
+            throw new InternalServerException("Kunne ikke mappe String til PdlPerson: " + ex.getMessage());
         }
     }
 
@@ -116,7 +115,7 @@ public class JSONUserType implements UserType {
             ps.setObject(idx, writer.toString(), Types.OTHER);
         } catch (final Exception ex) {
             log.error("Kunne ikke mappe PdlPerson til String {}", ex.getMessage(), ex);
-            throw new HttpServerErrorException(INTERNAL_SERVER_ERROR, "Kunne ikke mappe PdlPerson til String: " + ex.getMessage());
+            throw new InternalServerException("Kunne ikke mappe PdlPerson til String: " + ex.getMessage());
         }
 
     }

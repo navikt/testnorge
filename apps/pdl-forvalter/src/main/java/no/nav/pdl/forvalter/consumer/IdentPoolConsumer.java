@@ -4,18 +4,18 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.config.credentials.IdentPoolProperties;
 import no.nav.pdl.forvalter.consumer.command.IdentpoolPostCommand;
 import no.nav.pdl.forvalter.dto.HentIdenterRequest;
+import no.nav.pdl.forvalter.exception.InternalServerException;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @Slf4j
 @Service
@@ -51,10 +51,10 @@ public class IdentPoolConsumer {
             log.info("Identpool allokering av identer tok {} ms", currentTimeMillis() - startTime);
             return idents;
 
-        } catch (HttpClientErrorException e) {
+        } catch (WebClientResponseException e) {
 
             log.info("Oppslag til identpool feilet etter {} ms {}", currentTimeMillis() - startTime, e.getResponseBodyAsString());
-            throw new HttpClientErrorException(INTERNAL_SERVER_ERROR, format("Forspørsel %s til ident-pool feilet: %s",
+            throw new InternalServerException(format("Forspørsel %s til ident-pool feilet: %s",
                     request.toString(), e.getResponseBodyAsString()));
         }
     }
@@ -71,10 +71,10 @@ public class IdentPoolConsumer {
 
             log.info("Identpool frigjoering av identer tok {} ms", currentTimeMillis() - startTime);
 
-        } catch (HttpClientErrorException e) {
+        } catch (WebClientResponseException e) {
 
             log.info("Oppslag til identpool feilet etter {} ms {}", currentTimeMillis() - startTime, e.getResponseBodyAsString());
-            throw new HttpClientErrorException(INTERNAL_SERVER_ERROR, format("Forspørsel %s til ident-pool feilet: %s",
+            throw new InternalServerException(format("Forspørsel %s til ident-pool feilet: %s",
                     identer.stream().collect(Collectors.joining(",")), e.getResponseBodyAsString()));
         }
     }

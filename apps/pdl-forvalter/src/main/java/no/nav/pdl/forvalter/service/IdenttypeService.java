@@ -2,6 +2,7 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
@@ -12,7 +13,6 @@ import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonRequestDTO.NyttNavnDTO;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
@@ -30,7 +30,6 @@ import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.RelasjonType.GA
 import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.RelasjonType.NY_IDENTITET;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.logging.log4j.util.Strings.isBlank;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
 @RequiredArgsConstructor
@@ -116,26 +115,26 @@ public class IdenttypeService {
 
         if (nonNull(request.getIdenttype()) & FNR != request.getIdenttype() &&
                 DNR != request.getIdenttype() && BOST != request.getIdenttype()) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_IDENTTYPE_INVALID);
+            throw new InvalidRequestException(VALIDATION_IDENTTYPE_INVALID);
         }
 
         if (nonNull(request.getFoedtEtter()) && (START_OF_ERA.isAfter(request.getFoedtEtter()) ||
                 LocalDateTime.now().isBefore(request.getFoedtEtter()))) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_DATO_INVALID);
+            throw new InvalidRequestException(VALIDATION_DATO_INVALID);
         }
 
         if (nonNull(request.getFoedtFoer()) && (START_OF_ERA.isAfter(request.getFoedtFoer()) ||
                 LocalDateTime.now().isBefore(request.getFoedtFoer()))) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_DATO_INVALID);
+            throw new InvalidRequestException(VALIDATION_DATO_INVALID);
         }
 
         if (nonNull(request.getFoedtFoer()) && nonNull(request.getFoedtFoer()) &&
                 request.getFoedtEtter().isAfter(request.getFoedtFoer())) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_DATO_INTERVAL_INVALID);
+            throw new InvalidRequestException(VALIDATION_DATO_INTERVAL_INVALID);
         }
 
         if (nonNull(request.getAlder()) && (request.getAlder() < 0 || request.getAlder() > 120)) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_ALDER_NOT_ALLOWED);
+            throw new InvalidRequestException(VALIDATION_ALDER_NOT_ALLOWED);
         }
     }
 

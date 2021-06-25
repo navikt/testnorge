@@ -9,12 +9,13 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
+import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Collection;
 import java.util.List;
@@ -23,8 +24,6 @@ import java.util.stream.Stream;
 
 import static java.lang.String.format;
 import static java.time.LocalDateTime.now;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Slf4j
 @Service
@@ -67,7 +66,7 @@ public class PersonService {
 
         checkAlias(ident);
         var dbPerson = personRepository.findByIdent(ident).orElseThrow(() ->
-                new HttpClientErrorException(NOT_FOUND, format("Ident %s ble ikke funnet", ident)));
+                new NotFoundException(format("Ident %s ble ikke funnet", ident)));
 
         var personer = Stream.of(List.of(dbPerson),
                 dbPerson.getRelasjoner().stream()
@@ -99,14 +98,14 @@ public class PersonService {
     private DbPerson getDbPerson(String ident) {
 
         return personRepository.findByIdent(ident)
-                .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, format("Ident %s ble ikke funnet", ident)));
+                .orElseThrow(() -> new NotFoundException(format("Ident %s ble ikke funnet", ident)));
     }
 
     private void checkAlias(String ident) {
 
         var alias = aliasRepository.findByTidligereIdent(ident);
         if (alias.isPresent()) {
-            throw new HttpClientErrorException(BAD_REQUEST,
+            throw new InvalidRequestException(
                     format(VIOLATION_ALIAS_EXISTS, alias.get().getPerson().getIdent()));
         }
     }

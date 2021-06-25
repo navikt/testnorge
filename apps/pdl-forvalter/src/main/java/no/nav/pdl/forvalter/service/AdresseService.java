@@ -1,7 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
+import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.AdresseDTO;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
@@ -9,7 +9,6 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.logging.log4j.util.Strings.isBlank;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 public abstract class AdresseService<T extends AdresseDTO> {
 
@@ -25,13 +24,13 @@ public abstract class AdresseService<T extends AdresseDTO> {
 
     protected static void validateMasterPdl(AdresseDTO adresse) {
         if (isNull(adresse.getGyldigFraOgMed()) || isNull(adresse.getGyldigTilOgMed())) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_GYLDIGHET_ABSENT_ERROR);
+            throw new InvalidRequestException(VALIDATION_GYLDIGHET_ABSENT_ERROR);
         }
     }
 
     protected static void validateBruksenhet(String bruksenhet) {
         if (!bruksenhet.matches("[HULK][0-9]{4}")) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_BRUKSENHET_ERROR);
+            throw new InvalidRequestException(VALIDATION_BRUKSENHET_ERROR);
         }
     }
 
@@ -70,7 +69,7 @@ public abstract class AdresseService<T extends AdresseDTO> {
                         !adresse.get(i).getGyldigFraOgMed().isAfter(adresse.get(i + 1).getGyldigFraOgMed().plusDays(1)) ||
                         nonNull(adresse.get(i + 1).getGyldigTilOgMed()) && nonNull(adresse.get(i).getGyldigFraOgMed()) &&
                                 !adresse.get(i).getGyldigFraOgMed().isAfter(adresse.get(i + 1).getGyldigTilOgMed())) {
-                    throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_ADRESSE_OVELAP_ERROR);
+                    throw new InvalidRequestException(VALIDATION_ADRESSE_OVELAP_ERROR);
                 }
                 if (isNull(adresse.get(i + 1).getGyldigTilOgMed()) && nonNull(adresse.get(i).getGyldigFraOgMed())) {
                     adresse.get(i + 1).setGyldigTilOgMed(adresse.get(i).getGyldigFraOgMed().minusDays(1));

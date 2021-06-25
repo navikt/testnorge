@@ -1,14 +1,13 @@
 package no.nav.pdl.forvalter.service;
 
+import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.OppholdDTO;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
 public class OppholdService extends PdlArtifactService<OppholdDTO> {
@@ -22,14 +21,14 @@ public class OppholdService extends PdlArtifactService<OppholdDTO> {
     protected void validate(OppholdDTO opphold) {
 
         if (isNull(opphold.getType())) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_TYPE_ERROR);
+            throw new InvalidRequestException(VALIDATION_TYPE_ERROR);
         }
 
         if (isNull(opphold.getOppholdFra())) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_OPPHOLD_FRA_ERROR);
+            throw new InvalidRequestException(VALIDATION_OPPHOLD_FRA_ERROR);
 
         } else if (nonNull(opphold.getOppholdTil()) && !opphold.getOppholdFra().isBefore(opphold.getOppholdTil())) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_UGYLDIG_INTERVAL_ERROR);
+            throw new InvalidRequestException(VALIDATION_UGYLDIG_INTERVAL_ERROR);
         }
     }
 
@@ -48,7 +47,7 @@ public class OppholdService extends PdlArtifactService<OppholdDTO> {
                         !opphold.get(i).getOppholdFra().isAfter(opphold.get(i + 1).getOppholdFra().plusDays(1)) ||
                         (nonNull(opphold.get(i + 1).getOppholdTil()) &&
                                 !opphold.get(i).getOppholdFra().isAfter(opphold.get(i + 1).getOppholdTil()))) {
-                    throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_OPPHOLD_OVELAP_ERROR);
+                    throw new InvalidRequestException(VALIDATION_OPPHOLD_OVELAP_ERROR);
                 }
                 if (isNull(opphold.get(i + 1).getOppholdTil())) {
                     opphold.get(i + 1).setOppholdTil(opphold.get(i).getOppholdFra().minusDays(1));

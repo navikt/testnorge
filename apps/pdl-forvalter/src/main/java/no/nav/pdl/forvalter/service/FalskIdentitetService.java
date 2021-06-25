@@ -3,6 +3,7 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
+import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.FalskIdentitetDTO;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonDTO;
@@ -10,7 +11,6 @@ import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.RelasjonType;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,7 +21,6 @@ import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
 @RequiredArgsConstructor
@@ -72,22 +71,22 @@ public class FalskIdentitetService {
     private void validate(FalskIdentitetDTO identitet) {
 
         if (isNull(identitet.getErFalsk())) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_FALSK_IDENTITET_ER_FALSK_MISSING);
+            throw new InvalidRequestException(VALIDATION_FALSK_IDENTITET_ER_FALSK_MISSING);
         }
 
         if (nonNull(identitet.getGyldigFom()) && nonNull(identitet.getGyldigTom()) &&
                 !identitet.getGyldigFom().isBefore(identitet.getGyldigTom())) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_UGYLDIG_INTERVAL_ERROR);
+            throw new InvalidRequestException(VALIDATION_UGYLDIG_INTERVAL_ERROR);
         }
 
         if (count(identitet.getRettIdentitetErUkjent()) + count(identitet.getRettIdentitetVedIdentifikasjonsnummer()) +
                 count(identitet.getRettIdentitetVedOpplysninger()) + count(identitet.getNyFalskIdentitetPerson()) > 1) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_TOO_MANY_RETT_IDENTIT);
+            throw new InvalidRequestException(VALIDATION_TOO_MANY_RETT_IDENTIT);
         }
 
         if (isNotBlank(identitet.getRettIdentitetVedIdentifikasjonsnummer()) &&
                 !personRepository.existsByIdent(identitet.getRettIdentitetVedIdentifikasjonsnummer())) {
-            throw new HttpClientErrorException(BAD_REQUEST,
+            throw new InvalidRequestException(
                     format(VALIDATION_FALSK_IDENTITET_ERROR, identitet.getRettIdentitetVedIdentifikasjonsnummer()));
         }
 
@@ -98,12 +97,12 @@ public class FalskIdentitetService {
                         .adverb(identitet.getRettIdentitetVedOpplysninger().getPersonnavn().getMellomnavn())
                         .substantiv(identitet.getRettIdentitetVedOpplysninger().getPersonnavn().getEtternavn())
                         .build())) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_UGYLDIG_NAVN_ERROR);
+            throw new InvalidRequestException(VALIDATION_UGYLDIG_NAVN_ERROR);
         }
 
         if (nonNull(identitet.getRettIdentitetVedOpplysninger()) &&
                 isNull(identitet.getRettIdentitetVedOpplysninger().getStatsborgerskap())) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_STATSBORGERSKAP_MISSING);
+            throw new InvalidRequestException(VALIDATION_STATSBORGERSKAP_MISSING);
         }
     }
 

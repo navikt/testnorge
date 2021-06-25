@@ -1,10 +1,10 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.TilfeldigLandService;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.InnflyttingDTO;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
@@ -12,7 +12,6 @@ import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.isLandkode;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +26,7 @@ public class InnflyttingService extends PdlArtifactService<InnflyttingDTO> {
     protected void validate(InnflyttingDTO innflytting) {
 
         if (isNotBlank(innflytting.getFraflyttingsland()) && !isLandkode(innflytting.getFraflyttingsland())) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_LANDKODE_ERROR);
+            throw new InvalidRequestException(VALIDATION_LANDKODE_ERROR);
         }
     }
 
@@ -47,7 +46,7 @@ public class InnflyttingService extends PdlArtifactService<InnflyttingDTO> {
                     nonNull(innflytting.get(i).getFlyttedato()) &&
                     !innflytting.get(i).getFlyttedato()
                             .isAfter(innflytting.get(i + 1).getFlyttedato())) {
-                throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_INNFLYTTING_DATO_ERROR);
+                throw new InvalidRequestException(VALIDATION_INNFLYTTING_DATO_ERROR);
             }
         }
     }

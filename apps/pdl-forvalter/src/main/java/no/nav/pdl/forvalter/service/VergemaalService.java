@@ -2,13 +2,13 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
+import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.RelasjonType;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.VergemaalDTO;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,7 +19,6 @@ import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
 @RequiredArgsConstructor
@@ -53,21 +52,21 @@ public class VergemaalService {
     private void validate(VergemaalDTO vergemaal) {
 
         if (isNull(vergemaal.getEmbete())) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_EMBETE_ERROR);
+            throw new InvalidRequestException(VALIDATION_EMBETE_ERROR);
         }
 
         if (nonNull(vergemaal.getGyldigFom()) && nonNull(vergemaal.getGyldigTom()) &&
                 !vergemaal.getGyldigFom().isBefore(vergemaal.getGyldigTom())) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_UGYLDIG_INTERVAL_ERROR);
+            throw new InvalidRequestException(VALIDATION_UGYLDIG_INTERVAL_ERROR);
         }
 
         if (isNull(vergemaal.getSakType())) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_TYPE_ERROR);
+            throw new InvalidRequestException(VALIDATION_TYPE_ERROR);
         }
 
         if (isNotBlank(vergemaal.getVergeIdent()) &&
                 !personRepository.existsByIdent(vergemaal.getVergeIdent())) {
-            throw new HttpClientErrorException(BAD_REQUEST, format(VALIDATION_VERGEMAAL_ERROR, vergemaal.getVergeIdent()));
+            throw new InvalidRequestException(format(VALIDATION_VERGEMAAL_ERROR, vergemaal.getVergeIdent()));
         }
     }
 

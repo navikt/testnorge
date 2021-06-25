@@ -14,12 +14,11 @@ import no.nav.pdl.forvalter.dto.PdlInnflytting;
 import no.nav.pdl.forvalter.dto.PdlTilrettelagtKommunikasjon;
 import no.nav.pdl.forvalter.dto.PdlUtflytting;
 import no.nav.pdl.forvalter.dto.PdlVergemaal;
+import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.OrdreResponseDTO.PersonHendelserDTO;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
@@ -67,7 +66,7 @@ public class PdlOrdreService {
     public OrdreResponseDTO send(String ident) {
 
         var dbPerson = personRepository.findByIdent(ident)
-                .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND, format("Ident %s ikke funnet", ident)));
+                .orElseThrow(() -> new NotFoundException(format("Ident %s ikke funnet", ident)));
 
         return OrdreResponseDTO.builder()
                 .relasjoner(dbPerson.getRelasjoner().stream()

@@ -2,13 +2,13 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
+import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.RelasjonType;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,7 +18,6 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
 @RequiredArgsConstructor
@@ -53,22 +52,22 @@ public class FullmaktService {
     private void validate(FullmaktDTO fullmakt) {
 
         if (isNull(fullmakt.getOmraader())) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_OMRAADER_ERROR);
+            throw new InvalidRequestException(VALIDATION_OMRAADER_ERROR);
         }
 
         if (isNull(fullmakt.getGyldigFom())) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_GYLDIG_FOM_ERROR);
+            throw new InvalidRequestException(VALIDATION_GYLDIG_FOM_ERROR);
 
         } else if (isNull(fullmakt.getGyldigTom())) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_GYLDIG_TOM_ERROR);
+            throw new InvalidRequestException(VALIDATION_GYLDIG_TOM_ERROR);
 
         } else if (!fullmakt.getGyldigFom().isBefore(fullmakt.getGyldigTom())) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_UGYLDIG_INTERVAL_ERROR);
+            throw new InvalidRequestException(VALIDATION_UGYLDIG_INTERVAL_ERROR);
         }
 
         if (nonNull(fullmakt.getFullmektig()) &&
                 !personRepository.existsByIdent(fullmakt.getFullmektig())) {
-            throw new HttpClientErrorException(BAD_REQUEST, format(VALIDATION_FULLMEKTIG_ERROR, fullmakt.getFullmektig()));
+            throw new InvalidRequestException(format(VALIDATION_FULLMEKTIG_ERROR, fullmakt.getFullmektig()));
         }
     }
 

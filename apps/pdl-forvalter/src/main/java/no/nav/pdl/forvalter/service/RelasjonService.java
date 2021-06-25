@@ -5,14 +5,12 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
+import no.nav.pdl.forvalter.exception.InternalServerException;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.RelasjonType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @Service
 @RequiredArgsConstructor
@@ -28,11 +26,11 @@ public class RelasjonService {
         var dbPersoner = personRepository.findByIdentIn(List.of(ident, identRelasjon));
         var hovedperson = dbPersoner.stream()
                 .filter(person -> person.getIdent().equals(ident))
-                .findFirst().orElseThrow(() -> new HttpClientErrorException(INTERNAL_SERVER_ERROR,
+                .findFirst().orElseThrow(() -> new InternalServerException(
                         String.format(DB_ERROR, ident)));
         var relasjonPerson = dbPersoner.stream()
                 .filter(person -> person.getIdent().equals(identRelasjon))
-                .findFirst().orElseThrow(() -> new HttpClientErrorException(INTERNAL_SERVER_ERROR,
+                .findFirst().orElseThrow(() -> new InternalServerException(
                         String.format(DB_ERROR, identRelasjon)));
 
         createRelasjon(relasjonPerson, hovedperson, relasjon);

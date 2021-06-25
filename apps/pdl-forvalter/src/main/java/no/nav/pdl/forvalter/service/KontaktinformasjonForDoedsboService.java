@@ -6,6 +6,7 @@ import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.consumer.OrganisasjonForvalterConsumer;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
+import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.registre.testnorge.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.AdressatDTO;
@@ -18,7 +19,6 @@ import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.RelasjonType;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,7 +29,6 @@ import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
 @RequiredArgsConstructor
@@ -85,40 +84,40 @@ public class KontaktinformasjonForDoedsboService {
     private void validate(KontaktinformasjonForDoedsboDTO kontaktinfo) {
 
         if (isNull(kontaktinfo.getSkifteform())) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_SKIFTEFORM_MISSING);
+            throw new InvalidRequestException(VALIDATION_SKIFTEFORM_MISSING);
         }
 
         if (isNull(kontaktinfo.getAdressat())) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_ADRESSAT_MISSING);
+            throw new InvalidRequestException(VALIDATION_ADRESSAT_MISSING);
 
         } else {
             if (count(kontaktinfo.getAdressat().getAdvokatSomAdressat()) +
                     count(kontaktinfo.getAdressat().getKontaktpersonMedIdNummerSomAdressat()) +
                     count(kontaktinfo.getAdressat().getKontaktpersonUtenIdNummerSomAdressat()) +
                     count(kontaktinfo.getAdressat().getOrganisasjonSomAdressat()) > 1) {
-                throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_ADRESSAT_AMBIGOUS);
+                throw new InvalidRequestException(VALIDATION_ADRESSAT_AMBIGOUS);
             }
             if (nonNull(kontaktinfo.getAdressat().getKontaktpersonMedIdNummerSomAdressat()) &&
                     isNotBlank(kontaktinfo.getAdressat().getKontaktpersonMedIdNummerSomAdressat().getIdnummer()) &&
                     !personRepository.existsByIdent(kontaktinfo.getAdressat().getKontaktpersonMedIdNummerSomAdressat().getIdnummer())) {
-                throw new HttpClientErrorException(BAD_REQUEST, format(VALIDATION_IDNUMBER_INVALID,
+                throw new InvalidRequestException(format(VALIDATION_IDNUMBER_INVALID,
                         kontaktinfo.getAdressat().getKontaktpersonMedIdNummerSomAdressat().getIdnummer()));
             }
             if (nonNull(kontaktinfo.getAdressat().getKontaktpersonUtenIdNummerSomAdressat()) &&
                     isNull(kontaktinfo.getAdressat().getKontaktpersonUtenIdNummerSomAdressat().getFoedselsdato())) {
-                throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_FOEDSELSDATO_MISSING);
+                throw new InvalidRequestException(VALIDATION_FOEDSELSDATO_MISSING);
             }
             if (!isValidPersonnavn(kontaktinfo.getAdressat())) {
-                throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_PERSONNAVN_INVALID);
+                throw new InvalidRequestException(VALIDATION_PERSONNAVN_INVALID);
             }
             if (!isValidOrganisasjonName(kontaktinfo.getAdressat())) {
-                throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_ORGANISASJON_NAVN_INVALID);
+                throw new InvalidRequestException(VALIDATION_ORGANISASJON_NAVN_INVALID);
             }
             if (nonNull(kontaktinfo.getAdressat().getAdvokatSomAdressat())
                     && !isValidOrgnummerOgNavn(kontaktinfo.getAdressat().getAdvokatSomAdressat()) ||
                     nonNull(kontaktinfo.getAdressat().getOrganisasjonSomAdressat()) &&
                             !isValidOrgnummerOgNavn(kontaktinfo.getAdressat().getOrganisasjonSomAdressat())) {
-                throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_ORGANISASJON_NUMMER_OR_NAME_INVALID);
+                throw new InvalidRequestException(VALIDATION_ORGANISASJON_NUMMER_OR_NAME_INVALID);
             }
         }
     }

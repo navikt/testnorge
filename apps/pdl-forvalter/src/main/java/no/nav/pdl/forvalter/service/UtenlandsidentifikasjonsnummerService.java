@@ -1,14 +1,13 @@
 package no.nav.pdl.forvalter.service;
 
+import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.UtenlandskIdentifikasjonsnummerDTO;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
 import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
 public class UtenlandsidentifikasjonsnummerService extends PdlArtifactService<UtenlandskIdentifikasjonsnummerDTO> {
@@ -22,19 +21,19 @@ public class UtenlandsidentifikasjonsnummerService extends PdlArtifactService<Ut
     protected void validate(UtenlandskIdentifikasjonsnummerDTO identifikasjon) {
 
         if (isBlank(identifikasjon.getIdentifikasjonsnummer())) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_ID_NUMMER_MISSING);
+            throw new InvalidRequestException(VALIDATION_ID_NUMMER_MISSING);
         }
 
         if (isNull(identifikasjon.getOpphoert())) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_OPPHOERT_MISSING);
+            throw new InvalidRequestException(VALIDATION_OPPHOERT_MISSING);
         }
 
         if (isNull(identifikasjon.getUtstederland())) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_UTSTEDER_LAND_MISSING);
+            throw new InvalidRequestException(VALIDATION_UTSTEDER_LAND_MISSING);
         }
 
         if (!identifikasjon.getUtstederland().matches("[0-9]{3}")) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_LANDKODE_ILLEGAL_FORMAT);
+            throw new InvalidRequestException(VALIDATION_LANDKODE_ILLEGAL_FORMAT);
         }
     }
 

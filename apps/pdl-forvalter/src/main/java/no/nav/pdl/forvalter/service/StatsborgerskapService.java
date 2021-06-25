@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
 import no.nav.pdl.forvalter.utils.TilfeldigLandService;
@@ -9,7 +10,6 @@ import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
@@ -20,7 +20,6 @@ import static no.nav.pdl.forvalter.utils.ArtifactUtils.isLandkode;
 import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.Identtype.FNR;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
 @RequiredArgsConstructor
@@ -50,12 +49,12 @@ public class StatsborgerskapService {
     private void validate(StatsborgerskapDTO statsborgerskap) {
 
         if (nonNull(statsborgerskap.getLandkode()) && !isLandkode(statsborgerskap.getLandkode())) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_LANDKODE_ERROR);
+            throw new InvalidRequestException(VALIDATION_LANDKODE_ERROR);
         }
 
         if (nonNull(statsborgerskap.getGyldigFom()) && nonNull(statsborgerskap.getGyldigTom()) &&
                 !statsborgerskap.getGyldigFom().isBefore(statsborgerskap.getGyldigTom())) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_DATOINTERVALL_ERROR);
+            throw new InvalidRequestException(VALIDATION_DATOINTERVALL_ERROR);
         }
     }
 

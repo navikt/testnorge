@@ -3,10 +3,10 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -16,7 +16,6 @@ import java.util.stream.Stream;
 
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Slf4j
 @Service
@@ -60,7 +59,7 @@ public class MergeService {
                             }
                         }
                     } else if (nonNull(requestElement.getId()) && requestElement.getId() > dbId.get()) {
-                        throw new HttpClientErrorException(BAD_REQUEST,
+                        throw new InvalidRequestException(
                                 format("Merge-error: id:%s ikke funnet for element:'%s'", requestElement.getId(), field.getName()));
                     } else {
                         requestElement.setId(dbId.incrementAndGet());

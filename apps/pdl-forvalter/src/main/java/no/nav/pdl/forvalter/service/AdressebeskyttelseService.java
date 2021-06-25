@@ -1,15 +1,14 @@
 package no.nav.pdl.forvalter.service;
 
+import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
 import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.AdresseDTO.Master.FREG;
 import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.AdresseDTO.Master.PDL;
 import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG_UTLAND;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
 public class AdressebeskyttelseService extends PdlArtifactService<AdressebeskyttelseDTO> {
@@ -21,7 +20,7 @@ public class AdressebeskyttelseService extends PdlArtifactService<Adressebeskytt
 
         if (STRENGT_FORTROLIG_UTLAND.equals(adressebeskyttelse.getGradering()) &&
                 FREG.equals(adressebeskyttelse.getMaster())) {
-            throw new HttpClientErrorException(BAD_REQUEST, VALIDATION_UTLAND_MASTER_ERROR);
+            throw new InvalidRequestException(VALIDATION_UTLAND_MASTER_ERROR);
         }
     }
 

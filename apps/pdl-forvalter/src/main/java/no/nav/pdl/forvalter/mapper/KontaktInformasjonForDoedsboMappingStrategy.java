@@ -4,17 +4,16 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
+import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.PostnummerService;
 import no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
 
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Component
 @RequiredArgsConstructor
@@ -63,7 +62,7 @@ public class KontaktInformasjonForDoedsboMappingStrategy implements MappingStrat
 
                         } else {
 
-                            throw new HttpClientErrorException(BAD_REQUEST, ADRESSE_TYPE_NOT_SUPPORTED);
+                            throw new InvalidRequestException(ADRESSE_TYPE_NOT_SUPPORTED);
                         }
                     }
                 })
