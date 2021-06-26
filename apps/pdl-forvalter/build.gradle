@@ -13,6 +13,10 @@ dependencyManagement {
     }
 }
 
+properties {
+    compileJava.options.encoding = 'UTF-8'
+}
+
 dependencies {
     implementation project(':testnorge-logging')
     implementation project(':testnorge-core')
