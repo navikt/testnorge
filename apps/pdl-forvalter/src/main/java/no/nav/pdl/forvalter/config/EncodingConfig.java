@@ -19,9 +19,9 @@ public class EncodingConfig {
     }
 
     @Bean
-    public FilterRegistrationBean registrationBean() {
+    public FilterRegistrationBean<CharacterEncodingFilter> registrationBean() {
 
-        var registrationBean = new FilterRegistrationBean();
+        var registrationBean = new FilterRegistrationBean<CharacterEncodingFilter>();
         registrationBean.setFilter(characterEncodingFilter());
         return registrationBean;
     }
