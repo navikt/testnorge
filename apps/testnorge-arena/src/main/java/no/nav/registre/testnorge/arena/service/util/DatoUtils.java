@@ -172,4 +172,12 @@ public class DatoUtils {
             }
         }
     }
+
+    public boolean datoerOverlapper(LocalDate fraDatoA, LocalDate tilDatoA, LocalDate fraDatoB, LocalDate tilDatoB) {
+        try {
+            return fraDatoA.isBefore(tilDatoB) && fraDatoB.isBefore(tilDatoA);
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }
