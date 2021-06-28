@@ -11,6 +11,10 @@ spring:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+  cloud:
+    gateway:
+      httpclient:
+        response-timeout: 30s
 
 sts:
   token:
