@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,13 +82,13 @@ public class Arbeidsforhold {
     public static class RsPeriodeAareg {
 
         @Schema(description = "Dato fra-og-med",
-                type = "LocalDateTime",
+                type = "LocalDate",
                 required = true)
-        private LocalDate fom;
+        private String fom;
 
         @Schema(description = "Dato til-og-med",
                 type = "LocalDateTime")
-        private LocalDate tom;
+        private String tom;
 
         @Schema(description = "Samlet liste over periode",
                 type = "List")
@@ -122,10 +121,10 @@ public class Arbeidsforhold {
 
         private String avloenningstype;
 
-        @Schema(type = "LocalDateTime")
-        private LocalDate endringsdatoStillingsprosent;
+        @Schema(type = "LocalDate")
+        private String endringsdatoStillingsprosent;
 
-        private LocalDate sisteLoennsendringsdato;
+        private String sisteLoennsendringsdato;
 
         private Double stillingsprosent;
 
@@ -139,7 +138,7 @@ public class Arbeidsforhold {
         private String ansettelsesform;
 
         @Schema(type = "LocalDateTime")
-        private LocalDate endringsdatoLoenn;
+        private String endringsdatoLoenn;
     }
 
     @Getter
