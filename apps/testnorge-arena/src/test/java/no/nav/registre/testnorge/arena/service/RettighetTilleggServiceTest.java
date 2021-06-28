@@ -29,6 +29,9 @@ public class RettighetTilleggServiceTest {
     @Mock
     private DatoUtils datoUtils;
 
+    @Mock
+    private RettighetTiltakService rettighetTiltakService;
+
     @InjectMocks
     private RettighetTilleggService rettighetTilleggService;
 

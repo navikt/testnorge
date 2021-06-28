@@ -35,6 +35,7 @@ public class RettighetTilleggService {
 
     private final DatoUtils datoUtils;
     private final ServiceUtils serviceUtils;
+    private final RettighetTiltakService rettighetTiltakService;
 
     private static final Map<String, List<KodeMedSannsynlighet>> vedtakMedAktitivetskode;
 
@@ -56,16 +57,11 @@ public class RettighetTilleggService {
     }
 
     List<List<NyttVedtakTillegg>> getTilleggSekvenser(List<NyttVedtakTillegg> tilleggsliste) {
-
         List<List<NyttVedtakTillegg>> sekvenser = new ArrayList<>();
-        List<NyttVedtakTillegg> currentSekvens = new ArrayList<>();
+        var indices = rettighetTiltakService.getIndicesForVedtakSequences(tilleggsliste);
 
-        for (var tillegg : tilleggsliste) {
-            if (tillegg.getRettighetType().equals("O") && !currentSekvens.isEmpty()) {
-                sekvenser.add(currentSekvens);
-                currentSekvens = new ArrayList<>();
-            }
-            currentSekvens.add(tillegg);
+        for (var i = 0; i < indices.size() - 1; i++) {
+            sekvenser.add(tilleggsliste.subList(indices.get(i), indices.get(i + 1)));
         }
 
         return sekvenser;
