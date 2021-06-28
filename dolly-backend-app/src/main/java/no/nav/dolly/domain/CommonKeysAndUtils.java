@@ -1,10 +1,10 @@
 package no.nav.dolly.domain;
 
+import lombok.experimental.UtilityClass;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public final class CommonKeysAndUtils {
@@ -19,7 +19,7 @@ public final class CommonKeysAndUtils {
     public static final String HEADER_NAV_PERSON_IDENTER = "Nav-Personidenter";
     public static final String CONSUMER = "Dolly";
 
-    private static final String[] SYNTH_ENV = { "q1", "q2" };
+    private static final String[] SYNTH_ENV = { "q1", "q2", "q4" };
 
     public static String getSynthEnv() {
 
