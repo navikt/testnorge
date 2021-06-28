@@ -17,6 +17,8 @@ spec:
       rules:
         - application: team-dolly-lokal-app
           cluster: dev-fss
+        - application: testnorge-aareg
+          cluster: dev-fss
         - application: testnorge-oversikt-frontend
           cluster: dev-fss
         - application: testnorge-synt-sykemelding-api

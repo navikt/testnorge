@@ -1,4 +1,4 @@
-package no.nav.registre.aareg.provider.rs;
+package no.nav.registre.aareg.provider.rs.v1;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.core.util.Json;

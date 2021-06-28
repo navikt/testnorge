@@ -4,6 +4,7 @@ import no.nav.registre.aareg.consumer.rs.MiljoerConsumer;
 import no.nav.registre.aareg.consumer.rs.response.MiljoerResponse;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
+import no.nav.registre.aareg.provider.rs.v1.ArbeidsforholdController;
 import no.nav.registre.aareg.service.AaregService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
