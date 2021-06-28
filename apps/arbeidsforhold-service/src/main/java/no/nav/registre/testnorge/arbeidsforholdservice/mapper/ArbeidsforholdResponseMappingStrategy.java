@@ -10,7 +10,7 @@ import no.nav.registre.testnorge.arbeidsforholdservice.consumer.dto.Utenlandsopp
 import no.nav.registre.testnorge.arbeidsforholdservice.domain.v2.Arbeidsforhold;
 import no.nav.registre.testnorge.arbeidsforholdservice.domain.v2.Arbeidsforhold.RsFartoy;
 import no.nav.registre.testnorge.arbeidsforholdservice.domain.v2.Arbeidsforhold.RsUtenlandsopphold;
-import no.nav.registre.testnorge.libs.dto.ameldingservice.v1.PermisjonDTO;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.PermisjonDTO;
 import org.springframework.stereotype.Component;
 
 import static java.util.Collections.singletonList;
