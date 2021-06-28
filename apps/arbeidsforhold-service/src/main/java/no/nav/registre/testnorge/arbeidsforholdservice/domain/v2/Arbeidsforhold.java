@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.registre.testnorge.arbeidsforholdservice.consumer.dto.PeriodeDTO;
-import no.nav.registre.testnorge.libs.dto.ameldingservice.v1.PermisjonDTO;
+import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.PermisjonDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
