@@ -1,31 +1,12 @@
 package no.nav.dolly.provider.api;
 
+import static java.util.Arrays.asList;
+import static no.nav.dolly.config.CachingConfig.CACHE_KODEVERK;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.bestilling.aareg.AaregConsumer;
-import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdResponse;
-import no.nav.dolly.bestilling.inntektstub.InntektstubConsumer;
-import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
-import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer;
-import no.nav.dolly.bestilling.sykemelding.HelsepersonellConsumer;
-import no.nav.dolly.bestilling.sykemelding.domain.dto.HelsepersonellListeDTO;
-import no.nav.dolly.consumer.fastedatasett.DatasettType;
-import no.nav.dolly.consumer.fastedatasett.FasteDatasettConsumer;
-import no.nav.dolly.consumer.identpool.IdentpoolConsumer;
-import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
-import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
-import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse;
-import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
-import no.nav.dolly.consumer.saf.SafConsumer;
-import no.nav.dolly.consumer.saf.domain.SafRequest.VariantFormat;
-import no.nav.dolly.domain.resultset.SystemTyper;
-import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
-import no.nav.dolly.service.InntektsmeldingEnumService;
-import no.nav.dolly.service.InntektsmeldingEnumService.EnumTypes;
-import no.nav.dolly.service.RsTransaksjonMapping;
-import no.nav.dolly.service.TransaksjonMappingService;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -42,8 +23,26 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.asList;
-import static no.nav.dolly.config.CachingConfig.CACHE_KODEVERK;
+import no.nav.dolly.bestilling.aareg.AaregConsumer;
+import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdResponse;
+import no.nav.dolly.bestilling.inntektstub.InntektstubConsumer;
+import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
+import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer;
+import no.nav.dolly.bestilling.sykemelding.HelsepersonellConsumer;
+import no.nav.dolly.bestilling.sykemelding.domain.dto.HelsepersonellListeDTO;
+import no.nav.dolly.consumer.fastedatasett.DatasettType;
+import no.nav.dolly.consumer.fastedatasett.FasteDatasettConsumer;
+import no.nav.dolly.consumer.identpool.IdentpoolConsumer;
+import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
+import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
+import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse;
+import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
+import no.nav.dolly.domain.resultset.SystemTyper;
+import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
+import no.nav.dolly.service.InntektsmeldingEnumService;
+import no.nav.dolly.service.InntektsmeldingEnumService.EnumTypes;
+import no.nav.dolly.service.RsTransaksjonMapping;
+import no.nav.dolly.service.TransaksjonMappingService;
 
 @RestController
 @RequiredArgsConstructor
@@ -61,7 +60,6 @@ public class OppslagController {
     private final InntektsmeldingEnumService inntektsmeldingEnumService;
     private final TransaksjonMappingService transaksjonMappingService;
     private final HelsepersonellConsumer helsepersonellConsumer;
-    private final SafConsumer safConsumer;
 
     @Cacheable(CACHE_KODEVERK)
     @GetMapping("/kodeverk/{kodeverkNavn}")
@@ -175,17 +173,4 @@ public class OppslagController {
         return transaksjonMappingService.getTransaksjonMapping(system, ident, bestillingId);
     }
 
-    @GetMapping("/inntektsmelding/{journalpostId}/{miljoe}")
-    @Operation(description = "Henter dokumentinformasjon for inntektsmelding fra Joark")
-    public List<JsonNode> getInntektsmeldingDokumentinfo(@PathVariable String journalpostId, @RequestParam(required = false) String dokumentInfoId,
-            @RequestParam VariantFormat variantFormat,
-            @PathVariable String miljoe) {
-        return safConsumer.getInntektsmeldingDokumentinfo(miljoe, journalpostId, dokumentInfoId, variantFormat.name());
-    }
-
-    @GetMapping("/dokarkiv/{journalpostId}")
-    @Operation(description = "Henter dokumentinformasjon for dokarkiv fra Joark")
-    public JsonNode getDokarkivDokumentinfo(@PathVariable String journalpostId, @RequestParam(required = false) String miljoe) {
-        return safConsumer.getDokarkivDokumentinfo(miljoe, journalpostId);
-    }
 }
