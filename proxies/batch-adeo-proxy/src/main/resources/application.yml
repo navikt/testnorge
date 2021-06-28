@@ -4,18 +4,10 @@ spring:
   application:
     name: testnorge-batch-adeo-proxy
     desciption: Proxy for batch.adeo.no som legger på sikkerhet.
-
-consumers:
-  tpsforvalter:
-    url: https://tps-forvalteren.dev.adeo.no
-
-zuul:
-  ignoredPatterns: /internal/isReady, /internal/isAlive
-  set-content-length: true
-  routes:
-    batch-adeo:
-      path: /**
-      url: https://batch.adeo.no
-
-  host:
-    socket-timeout-millis: 30000
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}

@@ -9,14 +9,5 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
-
-zuul:
-  ignoredPatterns: /internal/isReady, /internal/isAlive
-  set-content-length: true
-  routes:
-    syntrest:
-      path: /**
-      url: https://syntrest.dev.intern.nav.no/
-  host:
-    socket-timeout-millis: 180000
