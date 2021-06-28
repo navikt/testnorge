@@ -17,7 +17,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -67,6 +66,6 @@ public class ArbeidsforholdServiceConsumer {
         if (response == null) {
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Fant ingen arbeidsforhold");
         }
-        return new ArrayList<>();
+        return response;
     }
 }
