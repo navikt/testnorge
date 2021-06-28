@@ -8,8 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.time.LocalDate;
-
 @Data
 @Builder
 @ToString
@@ -21,9 +19,9 @@ public class PermisjonDTO {
     @JsonProperty
     String beskrivelse;
     @JsonProperty
-    LocalDate startdato;
+    String startdato;
     @JsonProperty
-    LocalDate sluttdato;
+    String sluttdato;
     @JsonProperty
     Float permisjonsprosent;
 }
