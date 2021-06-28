@@ -1,12 +1,11 @@
-package no.nav.registre.testnorge.arbeidsforholdservice.domain;
+package no.nav.registre.testnorge.arbeidsforholdservice.domain.v1;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-
-import java.time.LocalDate;
-
 import no.nav.registre.testnorge.arbeidsforholdservice.consumer.dto.ArbeidsforholdDTO;
 import no.nav.registre.testnorge.arbeidsforholdservice.exception.ArbeidsforholdNotFoundException;
+
+import java.time.LocalDate;
 
 
 @Slf4j

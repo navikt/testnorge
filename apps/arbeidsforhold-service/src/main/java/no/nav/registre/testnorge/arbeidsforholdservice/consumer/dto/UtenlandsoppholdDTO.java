@@ -9,8 +9,8 @@ import lombok.Value;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class ArbeidsgiverDTO {
-    String type;
-    String organisasjonsnummer;
-    String ident;
+public class UtenlandsoppholdDTO {
+    String landkode;
+    PeriodeDTO periode;
+    String rapporteringsperiode;
 }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arbeidsforholdservice.config.credentials.AaregServiceProperties;
 import no.nav.registre.testnorge.arbeidsforholdservice.consumer.command.v2.GetArbeidstakerArbeidsforholdCommandV2;
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.ArbeidsforholdDTO;
+import no.nav.registre.testnorge.arbeidsforholdservice.consumer.dto.ArbeidsforholdDTO;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import org.springframework.http.MediaType;

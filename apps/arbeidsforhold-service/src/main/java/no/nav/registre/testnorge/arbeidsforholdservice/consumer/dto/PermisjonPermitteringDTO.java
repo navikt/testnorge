@@ -9,8 +9,9 @@ import lombok.Value;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class ArbeidsgiverDTO {
+public class PermisjonPermitteringDTO {
+    String permisjonPermitteringId;
+    PeriodeDTO periode;
+    Float prosent;
     String type;
-    String organisasjonsnummer;
-    String ident;
 }

@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Value
@@ -18,4 +19,7 @@ public class ArbeidsforholdDTO {
     List<ArbeidsavtaleDTO> arbeidsavtaler;
     ArbeidstakerDTO arbeidstaker;
     String type;
+    List<PermisjonPermitteringDTO> permisjonPermitteringer;
+    LocalDateTime registrert;
+    List<UtenlandsoppholdDTO> utenlandsopphold;
 }

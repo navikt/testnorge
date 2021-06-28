@@ -3,9 +3,10 @@ package no.nav.registre.testnorge.arbeidsforholdservice.provider.v2;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ma.glasnost.orika.MapperFacade;
+import no.nav.registre.testnorge.arbeidsforholdservice.consumer.dto.ArbeidsforholdDTO;
 import no.nav.registre.testnorge.arbeidsforholdservice.consumer.v2.AaregConsumerV2;
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.ArbeidsforholdDTO;
+import no.nav.registre.testnorge.arbeidsforholdservice.domain.v2.Arbeidsforhold;
+import no.nav.registre.testnorge.arbeidsforholdservice.service.ArbeidsforholdService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -25,15 +26,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ArbeidsforholdControllerV2 {
     private final AaregConsumerV2 aaregConsumer;
-    private final MapperFacade mapperFacade;
+    private final ArbeidsforholdService arbeidsforholdService;
 
-    @GetMapping("/{arbeidstaker}/arbeidsforhold")
-    public ResponseEntity<List<ArbeidsforholdDTO>> getArbeidsforhold(
+    @GetMapping("/arbeidstaker/{arbeidstaker}/arbeidsforhold")
+    public ResponseEntity<List<Arbeidsforhold>> getArbeidsforhold(
             @PathVariable("arbeidstaker") String ident,
             @RequestHeader("miljo") String miljo
     ) {
-        var arbeidsforhold = aaregConsumer.getArbeidsforholds(ident, miljo);
-        return ResponseEntity.ok(mapperFacade.mapAsList(arbeidsforhold, ArbeidsforholdDTO.class));
+        List<ArbeidsforholdDTO> arbeidsforhold = aaregConsumer.getArbeidsforholds(ident, miljo);
+        return ResponseEntity.ok(arbeidsforholdService.getArbeidsforhold(arbeidsforhold));
     }
 
     @ControllerAdvice
