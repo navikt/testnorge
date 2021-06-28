@@ -11,11 +11,11 @@ import no.nav.pdl.forvalter.dto.HistoriskIdent;
 import no.nav.pdl.forvalter.dto.PdlDelete;
 import no.nav.pdl.forvalter.dto.PdlFalskIdentitet;
 import no.nav.pdl.forvalter.dto.PdlInnflytting;
+import no.nav.pdl.forvalter.dto.PdlKontaktadresse;
 import no.nav.pdl.forvalter.dto.PdlTilrettelagtKommunikasjon;
 import no.nav.pdl.forvalter.dto.PdlUtflytting;
 import no.nav.pdl.forvalter.dto.PdlVergemaal;
 import no.nav.pdl.forvalter.exception.NotFoundException;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.OrdreResponseDTO.PersonHendelserDTO;
 import org.springframework.stereotype.Service;
@@ -104,7 +104,7 @@ public class PdlOrdreService {
                         person.getPerson().getFolkeregisterpersonstatus()),
                 deployService.send(PDL_STATSBORGERSKAP, person.getIdent(), person.getPerson().getStatsborgerskap()),
                 deployService.send(PDL_KONTAKTADRESSE, person.getIdent(),
-                        mapperFacade.mapAsList(person.getPerson().getKontaktadresse(), KontaktadresseDTO.class)),
+                        mapperFacade.mapAsList(person.getPerson().getKontaktadresse(), PdlKontaktadresse.class)),
                 deployService.send(PDL_BOSTEDADRESSE, person.getIdent(), person.getPerson().getBostedsadresse()),
                 deployService.send(PDL_OPPHOLDSADRESSE, person.getIdent(), person.getPerson().getOppholdsadresse()),
                 deployService.send(PDL_ADRESSEBESKYTTELSE, person.getIdent(), person.getPerson().getAdressebeskyttelse()),

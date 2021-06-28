@@ -29,6 +29,7 @@ import reactor.core.publisher.Flux;
 import java.util.List;
 
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.getBestillingUrl;
+import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_SLETTING;
 
 @Slf4j
 @Service
@@ -95,7 +96,7 @@ public class PdlTestdataConsumer {
                 .generateToken(properties)
                 .flatMapMany(accessToken -> identer
                         .stream()
-                        .map(ident -> Flux.from(new PdlDeleteCommandPdl(webClient, ident, accessToken.getTokenValue(), null).call()))
+                        .map(ident -> Flux.from(new PdlDeleteCommandPdl(webClient, getBestillingUrl().get(PDL_SLETTING), ident, accessToken.getTokenValue()).call()))
                         .reduce(Flux.empty(), Flux::concat))
                 .collectList()
                 .block();

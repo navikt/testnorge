@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -15,4 +16,14 @@ public class PdlBestillingResponse {
 
     private Map<String, String> deletedOpplysninger;
     private String feilmelding;
+    private String message;
+    private List<Object> details;
+
+//    @Data
+//    @NoArgsConstructor
+//    @AllArgsConstructor
+//    public static class ErrorDetails {
+//
+//        private Map<String, String> detail;
+//    }
 }
