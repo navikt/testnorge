@@ -36,5 +36,4 @@ public class RsArbeidsavtale {
 
     private Double stillingsprosent;
     private String yrke;
-    private String ansettelsesform;
 }

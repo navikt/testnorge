@@ -45,13 +45,11 @@ public class ArbeidsforholdResponseMappingStrategy implements MappingStrategy {
                                 .periode(ArbeidsforholdResponse.Periode.builder()
                                         .fom(nonNull(arbeidsforholdResponse.getAnsettelsesperiode())
                                                 && nonNull(arbeidsforholdResponse.getAnsettelsesperiode().getPeriode())
-                                                && nonNull(arbeidsforholdResponse.getAnsettelsesperiode().getPeriode().getFom())
-                                                ? arbeidsforholdResponse.getAnsettelsesperiode().getPeriode().getFom().atStartOfDay()
+                                                ? arbeidsforholdResponse.getAnsettelsesperiode().getPeriode().getFom()
                                                 : null)
                                         .tom(nonNull(arbeidsforholdResponse.getAnsettelsesperiode())
                                                 && nonNull(arbeidsforholdResponse.getAnsettelsesperiode().getPeriode())
-                                                && nonNull(arbeidsforholdResponse.getAnsettelsesperiode().getPeriode().getTom())
-                                                ? arbeidsforholdResponse.getAnsettelsesperiode().getPeriode().getTom().atStartOfDay()
+                                                ? arbeidsforholdResponse.getAnsettelsesperiode().getPeriode().getTom()
                                                 : null)
 
                                         .build())
@@ -92,12 +90,8 @@ public class ArbeidsforholdResponseMappingStrategy implements MappingStrategy {
                         permisjonDTO.setProsent(permisjonPermitteringDTO.getProsent().doubleValue());
                         if (nonNull(permisjonPermitteringDTO.getPeriode())) {
                             permisjonDTO.setPeriode(ArbeidsforholdResponse.Periode.builder()
-                                    .fom(nonNull(permisjonPermitteringDTO.getPeriode().getFom())
-                                            ? permisjonPermitteringDTO.getPeriode().getFom().atStartOfDay()
-                                            : null)
-                                    .tom(nonNull(permisjonPermitteringDTO.getPeriode().getTom())
-                                            ? permisjonPermitteringDTO.getPeriode().getTom().atStartOfDay()
-                                            : null)
+                                    .fom(permisjonPermitteringDTO.getPeriode().getFom())
+                                    .tom(permisjonPermitteringDTO.getPeriode().getTom())
                                     .build());
                         }
                     }
@@ -112,12 +106,8 @@ public class ArbeidsforholdResponseMappingStrategy implements MappingStrategy {
                         rsUtenlandsopphold.setLandkode(utenlandsoppholdDTO.getLandkode());
                         if (nonNull(utenlandsoppholdDTO.getPeriode())) {
                             rsUtenlandsopphold.setPeriode(new ArbeidsforholdResponse.Periode(
-                                    nonNull(utenlandsoppholdDTO.getPeriode().getFom())
-                                            ? utenlandsoppholdDTO.getPeriode().getFom().atStartOfDay()
-                                            : null,
-                                    nonNull(utenlandsoppholdDTO.getPeriode().getTom())
-                                            ? utenlandsoppholdDTO.getPeriode().getTom().atStartOfDay()
-                                            : null));
+                                    utenlandsoppholdDTO.getPeriode().getFom(),
+                                    utenlandsoppholdDTO.getPeriode().getTom()));
                             rsUtenlandsopphold.setRapporteringsperiode(utenlandsoppholdDTO.getRapporteringsperiode());
                         }
                     }

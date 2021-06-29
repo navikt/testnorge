@@ -42,7 +42,7 @@ public class AaregMappingStrategy implements MappingStrategy {
     @Override
     public void register(MapperFactory factory) {
         factory.classMap(RsArbeidsforhold.class, Arbeidsforhold.class)
-                .customize(new CustomMapper<>() {
+                .customize(new CustomMapper<RsArbeidsforhold, Arbeidsforhold>() {
                     @Override
                     public void mapAtoB(
                             RsArbeidsforhold rsArbeidsforhold,
@@ -63,7 +63,7 @@ public class AaregMappingStrategy implements MappingStrategy {
                 .register();
 
         factory.classMap(RsArbeidsavtale.class, Arbeidsavtale.class)
-                .customize(new CustomMapper<>() {
+                .customize(new CustomMapper<RsArbeidsavtale, Arbeidsavtale>() {
                     @Override
                     public void mapAtoB(
                             RsArbeidsavtale rsArbeidsavtale,
@@ -80,7 +80,7 @@ public class AaregMappingStrategy implements MappingStrategy {
                 .register();
 
         factory.classMap(RsPermisjon.class, Permisjon.class)
-                .customize(new CustomMapper<>() {
+                .customize(new CustomMapper<RsPermisjon, Permisjon>() {
                     @Override
                     public void mapAtoB(
                             RsPermisjon rsPermisjon,
@@ -95,7 +95,7 @@ public class AaregMappingStrategy implements MappingStrategy {
                 .register();
 
         factory.classMap(RsUtenlandsopphold.class, Utenlandsopphold.class)
-                .customize(new CustomMapper<>() {
+                .customize(new CustomMapper<RsUtenlandsopphold, Utenlandsopphold>() {
                     @Override
                     public void mapAtoB(
                             RsUtenlandsopphold rsUtenlandsopphold,
@@ -110,7 +110,7 @@ public class AaregMappingStrategy implements MappingStrategy {
                 .register();
 
         factory.classMap(RsOrganisasjon.class, Organisasjon.class)
-                .customize(new CustomMapper<>() {
+                .customize(new CustomMapper<RsOrganisasjon, Organisasjon>() {
                     @Override
                     public void mapAtoB(
                             RsOrganisasjon rsOrganisasjon,
@@ -124,7 +124,7 @@ public class AaregMappingStrategy implements MappingStrategy {
                 .register();
 
         factory.classMap(RsAktoerPerson.class, Person.class)
-                .customize(new CustomMapper<>() {
+                .customize(new CustomMapper<RsAktoerPerson, Person>() {
                     @Override
                     public void mapAtoB(
                             RsAktoerPerson rsAktoerPerson,

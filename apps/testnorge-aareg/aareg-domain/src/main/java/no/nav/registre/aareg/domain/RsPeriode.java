@@ -11,10 +11,6 @@ import no.nav.registre.aareg.util.JsonDateDeserializer;
 import no.nav.registre.aareg.util.JsonDateSerializer;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import static java.util.Objects.isNull;
 
 @Getter
 @Setter
@@ -30,13 +26,4 @@ public class RsPeriode {
     @JsonSerialize(using = JsonDateSerializer.class)
     @JsonDeserialize(using = JsonDateDeserializer.class)
     private LocalDateTime tom;
-
-    private List<String> periode;
-
-    public List<String> getPeriode() {
-        if (isNull(periode)) {
-            periode = new ArrayList<>();
-        }
-        return periode;
-    }
 }

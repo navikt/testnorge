@@ -142,8 +142,8 @@ public class ArbeidsforholdResponse {
     @AllArgsConstructor
     public static class Periode {
 
-        private LocalDateTime fom;
-        private LocalDateTime tom;
+        private LocalDate fom;
+        private LocalDate tom;
     }
 }
 

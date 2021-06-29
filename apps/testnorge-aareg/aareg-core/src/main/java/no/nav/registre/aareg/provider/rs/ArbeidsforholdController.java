@@ -1,9 +1,7 @@
-package no.nav.registre.aareg.provider.rs.v1;
+package no.nav.registre.aareg.provider.rs;
 
 import io.swagger.annotations.ApiOperation;
-import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.aareg.consumer.rs.MiljoerConsumer;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
@@ -26,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@Slf4j
 @CrossOrigin
 @RequestMapping("api/v1/arbeidsforhold")
 @RequiredArgsConstructor
@@ -43,7 +40,6 @@ public class ArbeidsforholdController {
     public RsAaregResponse opprettArbeidsforhold(
             @RequestBody RsAaregOpprettRequest request
     ) {
-        log.info("Request: " + Json.pretty(request));
         if (request.getArkivreferanse() == null) {
             request.setArkivreferanse(NAV_CALL_ID);
         }

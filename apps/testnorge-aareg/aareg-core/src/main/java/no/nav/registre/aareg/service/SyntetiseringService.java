@@ -14,7 +14,6 @@ import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
 import no.nav.registre.aareg.domain.RsArbeidsavtale;
 import no.nav.registre.aareg.domain.RsArbeidsforhold;
-import no.nav.registre.aareg.domain.RsFartoy;
 import no.nav.registre.aareg.domain.RsOrganisasjon;
 import no.nav.registre.aareg.domain.RsPeriode;
 import no.nav.registre.aareg.domain.RsPersonAareg;
@@ -292,7 +291,6 @@ public class SyntetiseringService {
                         .stillingsprosent(syntetiseringsRequest.getArbeidsforhold().getArbeidsavtale().getStillingsprosent())
                         .yrke(syntetiseringsRequest.getArbeidsforhold().getArbeidsavtale().getYrke())
                         .build())
-                .fartoy(List.of(RsFartoy.builder().build()))
                 .build();
         return RsAaregOpprettRequest.builder()
                 .arbeidsforhold(arbeidsforhold)
@@ -301,7 +299,7 @@ public class SyntetiseringService {
                 .build();
     }
 
-    @Timed(value = "aareg.resource.latency", extraTags = { "operation", "hodejegeren" })
+    @Timed(value = "aareg.resource.latency", extraTags = {"operation", "hodejegeren"})
     private List<String> hentLevendeIdenter(
             Long avspillergruppeId,
             int minimumAlder
