@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Deltakerstatuser;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 import org.springframework.stereotype.Service;
@@ -28,6 +28,10 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoUnit.DAYS;
+import static no.nav.registre.testnorge.arena.service.util.DatoUtils.datoerOverlapper;
+import static no.nav.registre.testnorge.arena.service.util.DatoUtils.vedtakOverlapperIkkeVedtaksperioder;
+import static no.nav.registre.testnorge.arena.service.util.VedtakUtils.getVedtakperioderForAapSekvenser;
+import static no.nav.registre.testnorge.arena.service.util.VedtakUtils.getTiltakSekvenser;
 
 @Slf4j
 @Service
@@ -35,7 +39,6 @@ import static java.time.temporal.ChronoUnit.DAYS;
 public class TiltakUtils {
 
     private final Random rand;
-    private final DatoUtils datoUtils;
     private final ServiceUtils serviceUtils;
 
     private static final Map<String, List<KodeMedSannsynlighet>> adminkodeTilDeltakerstatus;
@@ -78,7 +81,7 @@ public class TiltakUtils {
 
         List<NyttVedtakTiltak> nyVedtaksliste = new ArrayList<>();
 
-        var vedtakSequences = getVedtakSequencesTiltak(vedtaksliste);
+        var vedtakSequences = getTiltakSekvenser(vedtaksliste);
         var brukteIndices = new ArrayList<Integer>();
 
         for (var sequence : vedtakSequences) {
@@ -133,18 +136,18 @@ public class TiltakUtils {
             List<NyttVedtakTiltak> vedtaksliste,
             List<NyttVedtakAap> aapVedtak
     ) {
-
         if (vedtaksliste == null || vedtaksliste.isEmpty()) {
             return vedtaksliste;
         }
 
-        var relatedVedtak = getVedtakForSequencesAap(aapVedtak);
+        var relatedVedtak = getVedtakperioderForAapSekvenser(aapVedtak);
 
         List<NyttVedtakTiltak> nyeVedtak = new ArrayList<>();
 
         for (var vedtak : vedtaksliste) {
-            if (nyeVedtak.isEmpty() || (harIkkeOverlappendeVedtak(vedtak, relatedVedtak) &&
-                    harIkkeOverlappendeTiltakOver100Prosent(vedtak, nyeVedtak))) {
+            var vedtaksperiode = new Vedtaksperiode(vedtak.getFraDato(), vedtak.getTilDato());
+            if (nyeVedtak.isEmpty() || (vedtakOverlapperIkkeVedtaksperioder(vedtaksperiode, relatedVedtak) &&
+                    vedtakHarIkkeOverlappOver100Prosent(vedtak, nyeVedtak))) {
                 nyeVedtak.add(vedtak);
             }
         }
@@ -152,25 +155,24 @@ public class TiltakUtils {
         return nyeVedtak;
     }
 
+
     public List<NyttVedtakTiltak> removeOverlappingTiltakSequences(List<NyttVedtakTiltak> vedtaksliste) {
         if (vedtaksliste == null || vedtaksliste.isEmpty()) {
             return vedtaksliste;
         }
 
         List<NyttVedtakTiltak> oppdatertVedtaksliste = new ArrayList<>();
-        List<NyttVedtakTiltak> sekvensVedtak = new ArrayList<>();
+        List<Vedtaksperiode> sekvensVedtak = new ArrayList<>();
 
-        var vedtakSequences = getVedtakSequencesTiltak(vedtaksliste);
+        var vedtakSequences = getTiltakSekvenser(vedtaksliste);
 
         for (var sequence : vedtakSequences) {
             var fraDato = sequence.stream().map(NyttVedtakTiltak::getFraDato).filter(Objects::nonNull).min(LocalDate::compareTo).orElse(null);
             var tilDato = sequence.stream().map(NyttVedtakTiltak::getTilDato).filter(Objects::nonNull).max(LocalDate::compareTo).orElse(null);
 
-            var vedtak = new NyttVedtakTiltak();
-            vedtak.setFraDato(fraDato);
-            vedtak.setTilDato(tilDato);
+            var vedtak = new Vedtaksperiode(fraDato, tilDato);
 
-            if (oppdatertVedtaksliste.isEmpty() || harIkkeOverlappendeVedtak(vedtak, sekvensVedtak)) {
+            if (oppdatertVedtaksliste.isEmpty() || vedtakOverlapperIkkeVedtaksperioder(vedtak, sekvensVedtak)) {
                 sekvensVedtak.add(vedtak);
                 oppdatertVedtaksliste.addAll(sequence);
             }
@@ -179,22 +181,8 @@ public class TiltakUtils {
         return oppdatertVedtaksliste;
     }
 
-    private boolean harIkkeOverlappendeVedtak(NyttVedtakTiltak vedtak, List<? extends NyttVedtak> vedtaksliste) {
-        if (vedtaksliste == null || vedtaksliste.isEmpty()) {
-            return true;
-        }
-        var fraDato = vedtak.getFraDato();
-        var tilDato = vedtak.getTilDato();
 
-        for (var item : vedtaksliste) {
-            if (datoUtils.datoerOverlapper(fraDato, tilDato, item.getFraDato(), item.getTilDato())) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean harIkkeOverlappendeTiltakOver100Prosent(
+    private boolean vedtakHarIkkeOverlappOver100Prosent(
             NyttVedtakTiltak vedtak,
             List<NyttVedtakTiltak> vedtaksliste
     ) {
@@ -203,7 +191,7 @@ public class TiltakUtils {
         var tilDato = vedtak.getTilDato();
 
         for (var item : vedtaksliste) {
-            if (datoUtils.datoerOverlapper(fraDato, tilDato, item.getFraDato(), item.getTilDato())) {
+            if (datoerOverlapper(fraDato, tilDato, item.getFraDato(), item.getTilDato())) {
                 prosent += item.getTiltakProsentDeltid();
                 if (prosent > 100) {
                     return false;
@@ -211,61 +199,6 @@ public class TiltakUtils {
             }
         }
         return true;
-    }
-
-    private List<List<NyttVedtakTiltak>> getVedtakSequencesTiltak(List<NyttVedtakTiltak> vedtak) {
-        List<List<NyttVedtakTiltak>> vedtakSequences = new ArrayList<>();
-        var indices = getIndicesForVedtakSequences(vedtak);
-
-        for (int j = 0; j < indices.size() - 1; j++) {
-            vedtakSequences.add(vedtak.subList(indices.get(j), indices.get(j + 1)));
-        }
-
-        return vedtakSequences;
-    }
-
-    private List<NyttVedtakAap> getVedtakForSequencesAap(List<NyttVedtakAap> aapVedtak) {
-        if (aapVedtak == null || aapVedtak.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        List<NyttVedtakAap> vedtakForSequences = new ArrayList<>();
-        var indices = getIndicesForVedtakSequences(aapVedtak);
-
-        for (int j = 0; j < indices.size() - 1; j++) {
-            var sequence = aapVedtak.subList(indices.get(j), indices.get(j + 1));
-
-            var fraDato = sequence.stream().map(NyttVedtakAap::getFraDato).filter(Objects::nonNull).min(LocalDate::compareTo).orElse(null);
-            var tilDato = sequence.stream().map(NyttVedtakAap::getTilDato).filter(Objects::nonNull).max(LocalDate::compareTo).orElse(null);
-
-            var vedtak = new NyttVedtakAap();
-            vedtak.setFraDato(fraDato);
-            vedtak.setTilDato(tilDato);
-            vedtakForSequences.add(vedtak);
-        }
-
-        return vedtakForSequences;
-    }
-
-    public List<Integer> getIndicesForVedtakSequences(
-            List<? extends NyttVedtak> vedtak
-    ) {
-        List<Integer> nyRettighetIndices = new ArrayList<>();
-
-        if (vedtak.size() == 1) {
-            nyRettighetIndices = Arrays.asList(0, 1);
-        } else {
-            for (int i = 0; i < vedtak.size(); i++) {
-                if (vedtak.get(i).getVedtaktype().equals("O")) {
-                    nyRettighetIndices.add(i);
-                }
-                if (i == vedtak.size() - 1) {
-                    nyRettighetIndices.add(i + 1);
-                }
-            }
-        }
-
-        return nyRettighetIndices;
     }
 
     public boolean canSetDeltakelseTilGjennomfoeres(NyttVedtakTiltak tiltaksdeltakelse) {

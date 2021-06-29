@@ -25,11 +25,10 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arena.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetRequest;
 import no.nav.registre.testnorge.arena.consumer.rs.VedtakshistorikkSyntConsumer;
-import no.nav.registre.testnorge.arena.service.util.DatoUtils;
 import no.nav.registre.testnorge.arena.service.util.RequestUtils;
-
 import no.nav.registre.testnorge.arena.service.util.TilleggUtils;
 import no.nav.registre.testnorge.arena.service.util.TiltakUtils;
+
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Deltakerstatuser;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
@@ -53,6 +52,13 @@ import static no.nav.registre.testnorge.arena.service.util.RequestUtils.getRetti
 import static no.nav.registre.testnorge.arena.service.util.RequestUtils.getRettighetTvungenForvaltningRequest;
 import static no.nav.registre.testnorge.arena.service.util.RequestUtils.getRettighetUngUfoerRequest;
 
+import static no.nav.registre.testnorge.arena.service.util.DatoUtils.finnSenesteVedtak;
+import static no.nav.registre.testnorge.arena.service.util.DatoUtils.finnTidligsteDato;
+import static no.nav.registre.testnorge.arena.service.util.DatoUtils.finnTidligsteDatoAap;
+import static no.nav.registre.testnorge.arena.service.util.DatoUtils.finnTidligeDatoBarnetillegg;
+import static no.nav.registre.testnorge.arena.service.util.DatoUtils.setDatoPeriodeVedtakInnenforMaxAntallMaaneder;
+import static no.nav.registre.testnorge.arena.service.util.VedtakUtils.getTilleggSekvenser;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -66,7 +72,6 @@ public class VedtakshistorikkService {
     private final PensjonService pensjonService;
     private final ArbeidssoekerService arbeidsoekerService;
 
-    private final DatoUtils datoUtils;
     private final RequestUtils requestUtils;
     private final TilleggUtils tilleggUtils;
     private final TiltakUtils tiltakUtils;
@@ -114,8 +119,8 @@ public class VedtakshistorikkService {
             vedtakshistorikk.setUngUfoer(fjernAapUngUfoerMedUgyldigeDatoer(vedtakshistorikk.getUngUfoer()));
             oppdaterAapSykepengeerstatningDatoer(vedtakshistorikk.getAap());
 
-            LocalDate tidligsteDato = datoUtils.finnTidligsteDato(vedtakshistorikk);
-            LocalDate tidligsteDatoBarnetillegg = datoUtils.finnTidligeDatoBarnetillegg(vedtakshistorikk.getBarnetillegg());
+            LocalDate tidligsteDato = finnTidligsteDato(vedtakshistorikk);
+            LocalDate tidligsteDatoBarnetillegg = finnTidligeDatoBarnetillegg(vedtakshistorikk.getBarnetillegg());
 
             if (tidligsteDato == null) {
                 return;
@@ -162,7 +167,7 @@ public class VedtakshistorikkService {
     ) {
         try {
             var maaVaereBosatt = vedtakshistorikk.getAap() != null && !vedtakshistorikk.getAap().isEmpty();
-            LocalDate tidligsteDatoBosatt = maaVaereBosatt ? datoUtils.finnTidligsteDatoAap(vedtakshistorikk.getAap()) : null;
+            LocalDate tidligsteDatoBosatt = maaVaereBosatt ? finnTidligsteDatoAap(vedtakshistorikk.getAap()) : null;
 
             List<String> identer;
             if (tidligsteDatoBarnetillegg != null) {
@@ -203,7 +208,7 @@ public class VedtakshistorikkService {
             return Collections.emptyMap();
         }
 
-        var senesteVedtak = datoUtils.finnSenesteVedtak(vedtakshistorikk.getAlleVedtak());
+        var senesteVedtak = finnSenesteVedtak(vedtakshistorikk.getAlleVedtak());
 
         opprettVedtakAap115(ikkeAvluttendeAap115, personident, miljoe, rettigheter);
         opprettVedtakAap(vedtakshistorikk, personident, miljoe, rettigheter);
@@ -244,7 +249,7 @@ public class VedtakshistorikkService {
                         vedtak.setTilDato(vedtak.getTilDato().minusDays(antallDagerEndret));
 
                         var originalTilDato = vedtak.getTilDato();
-                        datoUtils.setDatoPeriodeVedtakInnenforMaxAntallMaaneder(vedtak, SYKEPENGEERSTATNING_MAKS_PERIODE);
+                        setDatoPeriodeVedtakInnenforMaxAntallMaaneder(vedtak, SYKEPENGEERSTATNING_MAKS_PERIODE);
                         var nyTilDato = vedtak.getTilDato();
 
                         antallDagerEndret += ChronoUnit.DAYS.between(nyTilDato, originalTilDato);
@@ -572,7 +577,7 @@ public class VedtakshistorikkService {
 
         if (tillegg != null && !tillegg.isEmpty() && !rettigheter.isEmpty()) {
 
-            var tilleggSekvenser = tilleggUtils.getTilleggSekvenser(tillegg);
+            var tilleggSekvenser = getTilleggSekvenser(tillegg);
 
             for (var sekvens : tilleggSekvenser) {
                 if (tilleggUtils.tilleggSekvensManglerTiltak(sekvens, tiltak)) {

@@ -2,7 +2,7 @@ package no.nav.registre.testnorge.arena.service.util;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetRequest;
+import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTiltaksaktivitetRequest;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
@@ -10,33 +10,20 @@ import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTil
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static no.nav.registre.testnorge.arena.service.util.DatoUtils.datoErInnenforPeriode;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class TilleggUtils {
 
-    private final DatoUtils datoUtils;
     private final RequestUtils requestUtils;
-    private final TiltakUtils tiltakUtils;
 
-    public List<List<NyttVedtakTillegg>> getTilleggSekvenser(List<NyttVedtakTillegg> tilleggsliste) {
-        List<List<NyttVedtakTillegg>> sekvenser = new ArrayList<>();
-        var indices = tiltakUtils.getIndicesForVedtakSequences(tilleggsliste);
-
-        for (var i = 0; i < indices.size() - 1; i++) {
-            sekvenser.add(tilleggsliste.subList(indices.get(i), indices.get(i + 1)));
-        }
-
-        return sekvenser;
-    }
-
-    public RettighetRequest getTiltaksaktivitetForTilleggSekvens(
+    public RettighetTiltaksaktivitetRequest getTiltaksaktivitetForTilleggSekvens(
             String personident,
             String miljoe,
             List<NyttVedtakTillegg> sekvens
@@ -47,6 +34,18 @@ public class TilleggUtils {
         return requestUtils.getRettighetTiltaksaktivitetRequest(personident, miljoe, rettighetKode, vedtaksperiode);
     }
 
+    public boolean tilleggSekvensManglerTiltak(List<NyttVedtakTillegg> sekvens, List<NyttVedtakTiltak> tiltak) {
+        var vedtaksperiode = getVedtaksperiodeForTilleggSekvens(sekvens);
+
+        for (var vedtak : tiltak) {
+            if (datoErInnenforPeriode(vedtaksperiode.getFom(), vedtak.getFraDato(), vedtak.getTilDato()) &&
+                    (vedtaksperiode.getTom() == null || datoErInnenforPeriode(vedtaksperiode.getTom(), vedtak.getFraDato(), vedtak.getTilDato()))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private Vedtaksperiode getVedtaksperiodeForTilleggSekvens(List<NyttVedtakTillegg> sekvens) {
         var perioder = sekvens.stream().map(NyttVedtakTillegg::getVedtaksperiode).collect(Collectors.toList());
 
@@ -55,20 +54,6 @@ public class TilleggUtils {
 
         return new Vedtaksperiode(startdato, sluttdato);
     }
-
-
-    public boolean tilleggSekvensManglerTiltak(List<NyttVedtakTillegg> sekvens, List<NyttVedtakTiltak> tiltak) {
-        var vedtaksperiode = getVedtaksperiodeForTilleggSekvens(sekvens);
-
-        for (var vedtak : tiltak) {
-            if (datoUtils.datoErInnenforPeriode(vedtaksperiode.getFom(), vedtak.getFraDato(), vedtak.getTilDato()) &&
-                    (vedtaksperiode.getTom() == null || datoUtils.datoErInnenforPeriode(vedtaksperiode.getTom(), vedtak.getFraDato(), vedtak.getTilDato()))) {
-                return false;
-            }
-        }
-        return true;
-    }
-
 
     public List<NyttVedtakTillegg> filtrerBortTilleggMedUoensketMaalgruppekode(
             List<NyttVedtakTillegg> vedtak,
@@ -111,7 +96,7 @@ public class TilleggUtils {
             var fraDatoItem = item.getFraDato();
             var tilDatoItem = item.getTilDato();
 
-            if (datoUtils.datoErInnenforPeriode(fraDato, fraDatoItem, tilDatoItem)) {
+            if (datoErInnenforPeriode(fraDato, fraDatoItem, tilDatoItem)) {
                 return true;
             }
         }

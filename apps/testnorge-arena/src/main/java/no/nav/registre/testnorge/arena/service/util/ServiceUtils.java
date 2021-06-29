@@ -37,10 +37,10 @@ public class ServiceUtils {
 
 
     public static Forvalter buildForvalter(KontoinfoResponse identMedKontoinfo) {
-        Konto konto = Konto.builder()
+        var konto = Konto.builder()
                 .kontonr(identMedKontoinfo.getKontonummer())
                 .build();
-        Adresse adresse = Adresse.builder()
+        var adresse = Adresse.builder()
                 .adresseLinje1(identMedKontoinfo.getAdresseLinje1())
                 .adresseLinje2(identMedKontoinfo.getAdresseLinje2())
                 .adresseLinje3(identMedKontoinfo.getAdresseLinje3())
@@ -56,14 +56,14 @@ public class ServiceUtils {
     }
 
     public KodeMedSannsynlighet velgKodeBasertPaaSannsynlighet(List<KodeMedSannsynlighet> koder) {
-        int totalSum = 0;
+        var totalSum = 0;
         for (var a : koder) {
             totalSum += a.getSannsynlighet();
         }
 
-        int index = rand.nextInt(totalSum);
-        int sum = 0;
-        int i = 0;
+        var index = rand.nextInt(totalSum);
+        var sum = 0;
+        var i = 0;
         while (sum < index) {
             sum += koder.get(i++).getSannsynlighet();
         }

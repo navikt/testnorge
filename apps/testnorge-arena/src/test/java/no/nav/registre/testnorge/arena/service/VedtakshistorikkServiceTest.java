@@ -12,7 +12,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static no.nav.registre.testnorge.arena.service.RettighetAapService.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
 
 import no.nav.registre.testnorge.arena.consumer.rs.VedtakshistorikkSyntConsumer;
-import no.nav.registre.testnorge.arena.service.util.DatoUtils;
 import no.nav.registre.testnorge.arena.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.testnorge.arena.service.util.RequestUtils;
 import no.nav.registre.testnorge.arena.service.util.TilleggUtils;
@@ -55,8 +54,6 @@ public class VedtakshistorikkServiceTest {
     @Mock
     private ArbeidssoekerService arbeidsoekerService;
 
-    @Mock
-    private DatoUtils datoUtils;
     @Mock
     private RequestUtils requestUtils;
     @Mock
@@ -110,7 +107,7 @@ public class VedtakshistorikkServiceTest {
 
         vedtakshistorikkListe = new ArrayList<>((Collections.singletonList(vedtakshistorikk)));
 
-        when(identService.getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt(), eq(miljoe), eq(null))).thenReturn(identer);
+        when(identService.getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt(), eq(miljoe), any(LocalDate.class))).thenReturn(identer);
     }
 
     @Test
@@ -123,7 +120,6 @@ public class VedtakshistorikkServiceTest {
                         .kontonummer(kontonummer)
                         .build())));
         when(vedtakshistorikkSyntConsumer.syntetiserVedtakshistorikk(antallIdenter)).thenReturn(vedtakshistorikkListe);
-        when(datoUtils.finnTidligsteDato(vedtakshistorikkListe.get(0))).thenReturn(ARENA_AAP_UNG_UFOER_DATE_LIMIT.minusDays(7));
 
         var nyRettighetAapResponse = NyttVedtakResponse.builder()
                 .nyeRettigheterAap(aapRettigheter)
@@ -155,7 +151,7 @@ public class VedtakshistorikkServiceTest {
 
         var response = vedtakshistorikkService.genererVedtakshistorikk(avspillergruppeId, miljoe, antallIdenter);
 
-        verify(identService).getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt(), eq(miljoe), eq(null));
+        verify(identService).getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt(), eq(miljoe), eq(ARENA_AAP_UNG_UFOER_DATE_LIMIT.minusDays(7)));
         verify(vedtakshistorikkSyntConsumer).syntetiserVedtakshistorikk(antallIdenter);
         verify(pensjonService).opprettetPersonOgInntektIPopp(anyString(), anyString(), any(LocalDate.class));
         verify(rettighetArenaForvalterConsumer).opprettRettighet(anyList());
