@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PdlAdresseResponse {
+public class VegAdresseResponse {
 
     private Data data;
 

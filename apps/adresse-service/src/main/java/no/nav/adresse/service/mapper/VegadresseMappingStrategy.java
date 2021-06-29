@@ -3,7 +3,7 @@ package no.nav.adresse.service.mapper;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.adresse.service.dto.PdlAdresseResponse.Hits;
+import no.nav.adresse.service.dto.VegAdresseResponse.Hits;
 import no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO;
 import org.springframework.stereotype.Component;
 

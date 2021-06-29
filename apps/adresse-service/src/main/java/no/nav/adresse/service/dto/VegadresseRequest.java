@@ -3,17 +3,17 @@ package no.nav.adresse.service.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AdresseRequest {
+public class VegadresseRequest {
 
     private String matrikkelId;
 
@@ -22,12 +22,14 @@ public class AdresseRequest {
     private String husbokstav;
 
     private String postnummer;
-    private String kommunenummer;
-    private String bydelsnummer;
-
     private String poststed;
+
     private String kommunenavn;
+    private String kommunenummer;
+
+    private String bydelsnummer;
     private String bydelsnavn;
+
     private String tilleggsnavn;
 
     @Schema(description = "Fritekstsøk", example= "Sannergata 2 0557 Oslo")
