@@ -1,6 +1,5 @@
 package no.nav.registre.aareg.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
 import no.nav.registre.testnorge.libs.oauth2.config.InsecureOAuth2ServerToServerConfiguration;
@@ -26,11 +25,6 @@ public class AppConfig {
     @Bean
     public Random rand() {
         return new Random();
-    }
-
-    @Bean
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper();
     }
 
     @Bean
