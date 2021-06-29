@@ -1,5 +1,6 @@
 package no.nav.registre.aareg.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,6 +19,7 @@ import static java.util.Objects.isNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ArbeidsforholdResponse {
 
         private Ansettelsesperiode ansettelsesperiode;
@@ -48,6 +50,7 @@ public class ArbeidsforholdResponse {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Utenlandsopphold {
 
         private String landkode;
@@ -60,6 +63,7 @@ public class ArbeidsforholdResponse {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class PermisjonPermittering {
 
         private Periode periode;
@@ -73,6 +77,7 @@ public class ArbeidsforholdResponse {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Arbeidsgiver {
 
         private Aktoer type;
@@ -85,6 +90,7 @@ public class ArbeidsforholdResponse {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Arbeidstaker {
 
         private Aktoer type;
@@ -97,6 +103,7 @@ public class ArbeidsforholdResponse {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Arbeidsavtale {
 
         private Double antallTimerPrUke;
@@ -115,6 +122,7 @@ public class ArbeidsforholdResponse {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class AntallTimerForTimeloennet {
 
         private Double antallTimer;
@@ -127,6 +135,7 @@ public class ArbeidsforholdResponse {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Ansettelsesperiode {
 
         private Periode bruksperiode;
@@ -138,6 +147,7 @@ public class ArbeidsforholdResponse {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Periode {
 
         private LocalDateTime fom;
