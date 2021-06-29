@@ -51,8 +51,8 @@ public class ArbeidsforholdResponseMappingStrategy implements MappingStrategy {
                                                 && nonNull(arbeidsforholdResponse.getAnsettelsesperiode().getPeriode())
                                                 ? arbeidsforholdResponse.getAnsettelsesperiode().getPeriode().getTom()
                                                 : null)
-
                                         .build())
+                                .sluttaarsak(arbeidsforholdResponse.getAnsettelsesperiode().getSluttaarsak())
                                 .build());
                         if (nonNull(arbeidsforholdResponse.getArbeidsavtaler()) && !arbeidsforholdResponse.getArbeidsavtaler().isEmpty()) {
                             arbeidsforhold.setArbeidsavtaler(mapperFacade.mapAsList(arbeidsforholdResponse.getArbeidsavtaler(), Arbeidsavtale.class));
