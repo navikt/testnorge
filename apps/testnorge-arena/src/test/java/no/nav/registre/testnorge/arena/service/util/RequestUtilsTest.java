@@ -1,12 +1,9 @@
-package no.nav.registre.testnorge.arena.service;
+package no.nav.registre.testnorge.arena.service.util;
 
 import java.time.LocalDate;
 import java.util.Collections;
 
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTilleggRequest;
-import no.nav.registre.testnorge.arena.service.util.DatoUtils;
-import no.nav.registre.testnorge.arena.service.util.ServiceUtils;
-import no.nav.registre.testnorge.arena.service.util.KodeMedSannsynlighet;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 
@@ -21,7 +18,7 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class RettighetTilleggServiceTest {
+public class RequestUtilsTest {
 
     @Mock
     private ServiceUtils serviceUtils;
@@ -29,11 +26,8 @@ public class RettighetTilleggServiceTest {
     @Mock
     private DatoUtils datoUtils;
 
-    @Mock
-    private RettighetTiltakService rettighetTiltakService;
-
     @InjectMocks
-    private RettighetTilleggService rettighetTilleggService;
+    private RequestUtils requestUtils;
 
     @Test
     public void shouldOppretteRettighetTiltaksaktivitetRequest() {
@@ -52,7 +46,7 @@ public class RettighetTilleggServiceTest {
 
         when(serviceUtils.velgKodeBasertPaaSannsynlighet(anyList())).thenReturn(aktivitetskodeMedSannsynlighet);
 
-        var request = rettighetTilleggService.opprettRettighetTiltaksaktivitetRequest("", "", nyttVedtakTillegg.getRettighetKode(), nyttVedtakTillegg.getVedtaksperiode());
+        var request = requestUtils.getRettighetTiltaksaktivitetRequest("", "", nyttVedtakTillegg.getRettighetKode(), nyttVedtakTillegg.getVedtaksperiode());
 
         assertThat(request.getVedtakTiltak()).hasSize(1);
         assertThat(request.getVedtakTiltak().get(0).getFraDato()).isEqualTo(LocalDate.now().minusMonths(1));

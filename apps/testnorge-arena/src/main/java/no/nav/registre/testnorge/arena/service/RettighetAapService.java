@@ -43,17 +43,16 @@ import no.nav.registre.testnorge.libs.core.util.IdentUtil;
 @RequiredArgsConstructor
 public class RettighetAapService {
 
-    private static final String REGEX_RN = "[\r\n]";
 
     private final AapSyntConsumer aapSyntConsumer;
+    private final ArbeidssoekerService arbeidssoekerService;
+    private final PensjonService pensjonService;
+    private final IdentService identService;
+    private final DatoUtils datoUtils;
+    private final ServiceUtils serviceUtils;
     private final ConsumerUtils consumerUtils;
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
-    private final ServiceUtils serviceUtils;
-    private final IdentService identService;
-    private final ArbeidssoekerService arbeidssoekerService;
-    private final DatoUtils datoUtils;
-    private final PensjonTestdataFacadeConsumer pensjonTestdataFacadeConsumer;
-    private final Random rand;
+
 
     public static final int SYKEPENGEERSTATNING_MAKS_PERIODE = 6;
     public static final LocalDate ARENA_AAP_UNG_UFOER_DATE_LIMIT = LocalDate.of(2020, 1, 31);
@@ -73,7 +72,7 @@ public class RettighetAapService {
         for (var syntetisertRettighet : syntetiserteRettigheter) {
             var ident = utvalgteIdenter.remove(utvalgteIdenter.size() - 1);
 
-            var poppStatus = opprettetPersonOgInntektIPopp(ident, miljoe, syntetisertRettighet);
+            var poppStatus = pensjonService.opprettetPersonOgInntektIPopp(ident, miljoe, syntetisertRettighet.getFraDato());
             if (!poppStatus) {
                 return Collections.emptyMap();
             }
@@ -112,7 +111,7 @@ public class RettighetAapService {
         var syntRequestAap = consumerUtils.createSyntRequest(1);
         var syntetisertRettighet = aapSyntConsumer.syntetiserRettighetAap(syntRequestAap).get(0);
 
-        var poppStatus = opprettetPersonOgInntektIPopp(ident, miljoe, syntetisertRettighet);
+        var poppStatus = pensjonService.opprettetPersonOgInntektIPopp(ident, miljoe, syntetisertRettighet.getFraDato());
         if (!poppStatus) {
             return Collections.emptyMap();
         }
@@ -159,7 +158,7 @@ public class RettighetAapService {
         for (var syntetisertRettighet : syntetiserteRettigheter) {
             var utvalgtIdent = utvalgteIdenter.remove(utvalgteIdenter.size() - 1);
 
-            var poppStatus = opprettetPersonOgInntektIPopp(utvalgtIdent, miljoe, syntetisertRettighet);
+            var poppStatus = pensjonService.opprettetPersonOgInntektIPopp(utvalgtIdent, miljoe, syntetisertRettighet.getFraDato());
             if (!poppStatus) {
                 return Collections.emptyMap();
             }
@@ -275,74 +274,5 @@ public class RettighetAapService {
         serviceUtils.lagreIHodejegeren(identerMedOpprettedeRettigheter);
 
         return identerMedOpprettedeRettigheter;
-    }
-
-    boolean opprettetPersonOgInntektIPopp(
-            String ident,
-            String miljoe,
-            NyttVedtakAap syntetisertRettighet
-    ) {
-        return opprettPersonIPopp(ident, miljoe) && opprettInntektIPopp(ident, miljoe, syntetisertRettighet);
-    }
-
-    private boolean opprettPersonIPopp(
-            String ident,
-            String miljoe
-    ) {
-        var opprettPersonStatus = pensjonTestdataFacadeConsumer.opprettPerson(PensjonTestdataPerson.builder()
-                .bostedsland("NOR")
-                .fodselsDato(IdentUtil.getFoedselsdatoFraIdent(ident))
-                .miljoer(Collections.singletonList(miljoe))
-                .fnr(ident)
-                .build());
-
-        if (opprettPersonStatus.getStatus().isEmpty()) {
-            return false;
-        }
-
-        for (var response : opprettPersonStatus.getStatus()) {
-            if (response.getResponse().getHttpStatus().getStatus() != 200) {
-                log.error(
-                        "Kunne ikke opprette ident {} i popp i miljø {}. Feilmelding: {}",
-                        ident.replaceAll(REGEX_RN, ""),
-                        response.getMiljo().replaceAll(REGEX_RN, ""),
-                        response.getResponse().getMessage().replaceAll(REGEX_RN, "")
-                );
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean opprettInntektIPopp(
-            String ident,
-            String miljoe,
-            NyttVedtakAap syntetisertRettighet
-    ) {
-        var opprettInntektStatus = pensjonTestdataFacadeConsumer.opprettInntekt(PensjonTestdataInntekt.builder()
-                .belop(rand.nextInt(650_000) + 450_000)
-                .fnr(ident)
-                .fomAar(syntetisertRettighet.getFraDato().minusYears(4).getYear())
-                .miljoer(Collections.singletonList(miljoe))
-                .redusertMedGrunnbelop(true)
-                .tomAar(syntetisertRettighet.getFraDato().minusYears(1).getYear())
-                .build());
-
-        if (opprettInntektStatus.getStatus().isEmpty()) {
-            return false;
-        }
-
-        for (var response : opprettInntektStatus.getStatus()) {
-            if (response.getResponse().getHttpStatus().getStatus() != 200) {
-                log.error(
-                        "Kunne ikke opprette inntekt på ident {} i popp i miljø {}. Feilmelding: {}",
-                        ident.replaceAll(REGEX_RN, ""),
-                        response.getMiljo().replaceAll(REGEX_RN, ""),
-                        response.getResponse().getMessage().replaceAll(REGEX_RN, "")
-                );
-                return false;
-            }
-        }
-        return true;
     }
 }

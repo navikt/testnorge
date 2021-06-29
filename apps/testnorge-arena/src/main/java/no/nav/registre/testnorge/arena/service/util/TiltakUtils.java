@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.arena.service;
+package no.nav.registre.testnorge.arena.service.util;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,12 +6,6 @@ import com.google.common.io.Resources;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.arena.consumer.rs.TiltakArenaForvalterConsumer;
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetEndreDeltakerstatusRequest;
-import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetFinnTiltakRequest;
-import no.nav.registre.testnorge.arena.service.util.DatoUtils;
-import no.nav.registre.testnorge.arena.service.util.ServiceUtils;
-import no.nav.registre.testnorge.arena.service.util.KodeMedSannsynlighet;
 
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Deltakerstatuser;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
@@ -34,30 +28,22 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoUnit.DAYS;
-import static no.nav.registre.testnorge.arena.service.util.ServiceUtils.BEGRUNNELSE;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class RettighetTiltakService {
+public class TiltakUtils {
 
-    private final ServiceUtils serviceUtils;
-    private final DatoUtils datoUtils;
-    private final TiltakArenaForvalterConsumer tiltakArenaForvalterConsumer;
     private final Random rand;
+    private final DatoUtils datoUtils;
+    private final ServiceUtils serviceUtils;
 
-    private static final Map<String, List<String>> deltakerstatuskoderMedAarsakkoder;
     private static final Map<String, List<KodeMedSannsynlighet>> adminkodeTilDeltakerstatus;
     private static final Map<String, Map<String, List<String>>> innsatsTilTiltakKoder;
 
     private static final List<String> AVBRUTT_TILTAK_STATUSER = new ArrayList<>(Arrays.asList("AVLYST", "AVBRUTT"));
 
     static {
-        deltakerstatuskoderMedAarsakkoder = new HashMap<>();
-        deltakerstatuskoderMedAarsakkoder.put(Deltakerstatuser.NEITAKK.toString(), Arrays.asList("ANN", "BEGA", "FRISM", "FTOAT", "HENLU", "SYK", "UTV"));
-        deltakerstatuskoderMedAarsakkoder.put(Deltakerstatuser.IKKEM.toString(), Arrays.asList("ANN", "BEGA", "SYK"));
-        deltakerstatuskoderMedAarsakkoder.put(Deltakerstatuser.DELAVB.toString(), Arrays.asList("ANN", "BEGA", "FTOAT", "SYK"));
-
         adminkodeTilDeltakerstatus = new HashMap<>();
         innsatsTilTiltakKoder = new HashMap<>();
 
@@ -141,48 +127,6 @@ public class RettighetTiltakService {
             }
         }
         return null;
-    }
-
-    public NyttVedtakTiltak finnTiltak(String personident, String miljoe, NyttVedtakTiltak tiltaksdeltakelse) {
-        var finnTiltak = getVedtakForFinnTiltakRequest(tiltaksdeltakelse);
-
-        NyttVedtakTiltak tiltak = null;
-        var rettighetRequest = new RettighetFinnTiltakRequest(Collections.singletonList(finnTiltak));
-
-        rettighetRequest.setPersonident(personident);
-        rettighetRequest.setMiljoe(miljoe);
-        var response = tiltakArenaForvalterConsumer.finnTiltak(rettighetRequest);
-        if (response != null && !response.getNyeRettigheterTiltak().isEmpty()) {
-            tiltak = response.getNyeRettigheterTiltak().get(0);
-        } else {
-            log.info("Fant ikke tiltak for tiltakdeltakelse.");
-        }
-        return tiltak;
-    }
-
-    public NyttVedtakTiltak getVedtakForTiltaksdeltakelseRequest(NyttVedtakTiltak syntetiskDeltakelse) {
-        var nyTiltaksdeltakelse = NyttVedtakTiltak.builder()
-                .lagOppgave(syntetiskDeltakelse.getLagOppgave())
-                .tiltakId(syntetiskDeltakelse.getTiltakId())
-                .build();
-        nyTiltaksdeltakelse.setBegrunnelse(BEGRUNNELSE);
-        nyTiltaksdeltakelse.setTilDato(syntetiskDeltakelse.getTilDato());
-        nyTiltaksdeltakelse.setFraDato(syntetiskDeltakelse.getFraDato());
-
-        return nyTiltaksdeltakelse;
-    }
-
-    private NyttVedtakTiltak getVedtakForFinnTiltakRequest(NyttVedtakTiltak tiltaksdeltakelse) {
-        var vedtak = NyttVedtakTiltak.builder()
-                .tiltakKode(tiltaksdeltakelse.getTiltakKode())
-                .tiltakProsentDeltid(tiltaksdeltakelse.getTiltakProsentDeltid())
-                .tiltakVedtak(tiltaksdeltakelse.getTiltakVedtak())
-                .tiltakYtelse(tiltaksdeltakelse.getTiltakYtelse())
-                .tiltakAdminKode(tiltaksdeltakelse.getTiltakAdminKode())
-                .build();
-        vedtak.setFraDato(tiltaksdeltakelse.getFraDato());
-        vedtak.setTilDato(tiltaksdeltakelse.getTilDato());
-        return vedtak;
     }
 
     public List<NyttVedtakTiltak> removeOverlappingTiltakVedtak(
@@ -376,29 +320,6 @@ public class RettighetTiltakService {
         }
     }
 
-    public RettighetEndreDeltakerstatusRequest opprettRettighetEndreDeltakerstatusRequest(
-            String ident,
-            String miljoe,
-            NyttVedtakTiltak tiltaksdeltakelse,
-            String deltakerstatuskode
-    ) {
-        NyttVedtakTiltak vedtak = new NyttVedtakTiltak();
-        vedtak.setDeltakerstatusKode(deltakerstatuskode);
-        vedtak.setTiltakId(tiltaksdeltakelse.getTiltakId());
-
-        if (deltakerstatuskoderMedAarsakkoder.containsKey(deltakerstatuskode)) {
-            List<String> aarsakkoder = deltakerstatuskoderMedAarsakkoder.get(deltakerstatuskode);
-            String aarsakkode = aarsakkoder.get(rand.nextInt(aarsakkoder.size()));
-            vedtak.setAarsakKode(aarsakkode);
-        }
-
-        var rettighetRequest = new RettighetEndreDeltakerstatusRequest(Collections.singletonList(vedtak));
-
-        rettighetRequest.setPersonident(ident);
-        rettighetRequest.setMiljoe(miljoe);
-        return rettighetRequest;
-    }
-
     public boolean harIkkeGyldigTiltakKode(NyttVedtakTiltak tiltak, Kvalifiseringsgrupper kvalifiseringsgruppe) {
         var adminKode = tiltak.getTiltakAdminKode();
         var tiltakKode = tiltak.getTiltakKode();
@@ -410,5 +331,4 @@ public class RettighetTiltakService {
         var gyldigeTiltakKoder = innsatsTilTiltakKoder.get(kvalifiseringsgruppe.toString()).get(adminKode);
         return gyldigeTiltakKoder.get(rand.nextInt(gyldigeTiltakKoder.size()));
     }
-
 }
