@@ -135,6 +135,8 @@ public class ArbeidsforholdResponseMappingStrategy implements MappingStrategy {
                         arbeidsavtale.setStillingsprosent(nonNull(arbeidsavtaleDTO.getStillingsprosent())
                                 ? arbeidsavtaleDTO.getStillingsprosent().doubleValue()
                                 : null);
+                        arbeidsavtale.setSistStillingsendring(arbeidsavtaleDTO.getSistStillingsendring());
+
                     }
                 })
                 .exclude("antallTimerPrUke")

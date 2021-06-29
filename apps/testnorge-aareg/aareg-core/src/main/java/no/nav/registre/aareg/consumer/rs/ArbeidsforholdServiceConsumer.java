@@ -53,6 +53,7 @@ public class ArbeidsforholdServiceConsumer {
 
         log.info("Genererer AccessToken for {}", serviceProperties.getName());
         AccessToken accessToken = accessTokenService.generateToken(serviceProperties).block();
+        log.info("Henter arbeidsforhold fra ");
         List<ArbeidsforholdResponse> response = webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder.path(String.format("%s/%s/arbeidsforhold", ARBEIDSTAKER_URL, ident)).build())

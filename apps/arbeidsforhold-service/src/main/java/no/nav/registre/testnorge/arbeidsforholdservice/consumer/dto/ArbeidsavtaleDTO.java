@@ -21,4 +21,5 @@ public class ArbeidsavtaleDTO {
     String skipstype;
     Float antallTimerPrUke;
     LocalDate sistLoennsendring;
+    LocalDate sistStillingsendring;
 }

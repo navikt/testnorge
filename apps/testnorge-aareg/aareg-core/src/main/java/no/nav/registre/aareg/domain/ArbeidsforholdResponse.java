@@ -107,6 +107,7 @@ public class ArbeidsforholdResponse {
     public static class Arbeidsavtale {
 
         private Double antallTimerPrUke;
+        private String ansettelsesform;
         private String arbeidstidsordning;
         private Double beregnetAntallTimerPrUke;
         private Periode bruksperiode;
@@ -140,6 +141,7 @@ public class ArbeidsforholdResponse {
 
         private Periode bruksperiode;
         private Periode periode;
+        private String sluttaarsak;
     }
 
     @Getter
