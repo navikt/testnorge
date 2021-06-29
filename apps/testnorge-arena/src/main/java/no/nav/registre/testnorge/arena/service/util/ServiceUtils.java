@@ -4,19 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
-
-import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
-import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
-import no.nav.registre.testnorge.consumers.hodejegeren.response.internal.DataRequest;
-import no.nav.registre.testnorge.consumers.hodejegeren.response.internal.HistorikkRequest;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Adresse;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Forvalter;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Konto;
 
 @Slf4j
 @Service
@@ -28,32 +18,14 @@ public class ServiceUtils {
     public static final int MAX_ALDER_AAP = 67;
     public static final int MIN_ALDER_UNG_UFOER = 18;
     public static final int MAX_ALDER_UNG_UFOER = 36;
-    private static final String KILDE_ARENA = "arena";
+    public static final String EIER = "ORKESTRATOREN";
 
+    public static final int SYKEPENGEERSTATNING_MAKS_PERIODE = 6;
+    public static final LocalDate ARENA_AAP_UNG_UFOER_DATE_LIMIT = LocalDate.of(2020, 1, 31);
     public static final String AKTIVITETSFASE_SYKEPENGEERSTATNING = "SPE";
 
-    private final HodejegerenConsumer hodejegerenConsumer;
     private final Random rand;
 
-
-    public static Forvalter buildForvalter(KontoinfoResponse identMedKontoinfo) {
-        var konto = Konto.builder()
-                .kontonr(identMedKontoinfo.getKontonummer())
-                .build();
-        var adresse = Adresse.builder()
-                .adresseLinje1(identMedKontoinfo.getAdresseLinje1())
-                .adresseLinje2(identMedKontoinfo.getAdresseLinje2())
-                .adresseLinje3(identMedKontoinfo.getAdresseLinje3())
-                .fodselsnr(identMedKontoinfo.getFnr())
-                .landkode(identMedKontoinfo.getLandkode())
-                .navn(identMedKontoinfo.getLandkode())
-                .postnr(identMedKontoinfo.getPostnr())
-                .build();
-        return Forvalter.builder()
-                .gjeldendeKontonr(konto)
-                .utbetalingsadresse(adresse)
-                .build();
-    }
 
     public KodeMedSannsynlighet velgKodeBasertPaaSannsynlighet(List<KodeMedSannsynlighet> koder) {
         var totalSum = 0;
@@ -69,33 +41,6 @@ public class ServiceUtils {
         }
 
         return koder.get(Math.max(0, i - 1));
-    }
-
-    public void lagreIHodejegeren(Map<String, List<NyttVedtakResponse>> identerMedOpprettedeRettigheter) {
-        List<DataRequest> identMedData = new ArrayList<>();
-        for (var identMedRettigheter : identerMedOpprettedeRettigheter.entrySet()) {
-            var rettigheterSomObject = new ArrayList<>();
-            for (var nyttVedtakResponse : identMedRettigheter.getValue()) {
-                var nyeRettigheterAap = nyttVedtakResponse.getNyeRettigheterAap();
-                if (nyeRettigheterAap != null) {
-                    rettigheterSomObject.addAll(nyeRettigheterAap);
-                }
-            }
-            if (!rettigheterSomObject.isEmpty()) {
-                var dataRequest = new DataRequest();
-                dataRequest.setId(identMedRettigheter.getKey());
-                dataRequest.setData(rettigheterSomObject);
-                identMedData.add(dataRequest);
-            } else {
-                log.warn("Kunne ikke opprette historikk i hodejegeren på ident {}", identMedRettigheter.getKey());
-            }
-        }
-        if (!identMedData.isEmpty()) {
-            var historikkRequest = new HistorikkRequest();
-            historikkRequest.setKilde(KILDE_ARENA);
-            historikkRequest.setIdentMedData(identMedData);
-            hodejegerenConsumer.saveHistory(historikkRequest);
-        }
     }
 
 }

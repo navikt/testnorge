@@ -23,6 +23,9 @@ import no.nav.registre.testnorge.domain.dto.arena.testnorge.tilleggsstoenad.Vedt
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Adresse;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Forvalter;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Konto;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -39,7 +42,6 @@ import java.util.Random;
 import static no.nav.registre.testnorge.arena.service.util.ServiceUtils.BEGRUNNELSE;
 import static no.nav.registre.testnorge.arena.service.util.ServiceUtils.MAX_ALDER_UNG_UFOER;
 import static no.nav.registre.testnorge.arena.service.util.ServiceUtils.MIN_ALDER_UNG_UFOER;
-import static no.nav.registre.testnorge.arena.service.util.ServiceUtils.buildForvalter;
 
 @Slf4j
 @Service
@@ -282,6 +284,25 @@ public class RequestUtils {
         rettighetRequest.setMiljoe(miljoe);
 
         return rettighetRequest;
+    }
+
+    private static Forvalter buildForvalter(KontoinfoResponse identMedKontoinfo) {
+        var konto = Konto.builder()
+                .kontonr(identMedKontoinfo.getKontonummer())
+                .build();
+        var adresse = Adresse.builder()
+                .adresseLinje1(identMedKontoinfo.getAdresseLinje1())
+                .adresseLinje2(identMedKontoinfo.getAdresseLinje2())
+                .adresseLinje3(identMedKontoinfo.getAdresseLinje3())
+                .fodselsnr(identMedKontoinfo.getFnr())
+                .landkode(identMedKontoinfo.getLandkode())
+                .navn(identMedKontoinfo.getLandkode())
+                .postnr(identMedKontoinfo.getPostnr())
+                .build();
+        return Forvalter.builder()
+                .gjeldendeKontonr(konto)
+                .utbetalingsadresse(adresse)
+                .build();
     }
 
 }

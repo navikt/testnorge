@@ -9,7 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import static no.nav.registre.testnorge.arena.service.RettighetAapService.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
+import static no.nav.registre.testnorge.arena.service.util.ServiceUtils.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
 
 import no.nav.registre.testnorge.arena.consumer.rs.VedtakshistorikkSyntConsumer;
 import no.nav.registre.testnorge.arena.consumer.rs.RettighetArenaForvalterConsumer;

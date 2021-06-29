@@ -23,9 +23,6 @@ public class RequestUtilsTest {
     @Mock
     private ServiceUtils serviceUtils;
 
-    @Mock
-    private DatoUtils datoUtils;
-
     @InjectMocks
     private RequestUtils requestUtils;
 

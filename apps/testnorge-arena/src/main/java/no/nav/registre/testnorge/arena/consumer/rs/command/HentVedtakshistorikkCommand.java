@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.arena.consumer.rs.command.synt;
+package no.nav.registre.testnorge.arena.consumer.rs.command;
 
 import java.util.Collections;
 import java.util.List;

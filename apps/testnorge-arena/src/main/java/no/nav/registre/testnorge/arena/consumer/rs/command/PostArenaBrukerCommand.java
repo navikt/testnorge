@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import static no.nav.registre.testnorge.arena.consumer.rs.util.ConsumerUtils.EIER;
+import static no.nav.registre.testnorge.arena.service.util.ServiceUtils.EIER;
 import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.CALL_ID;
 import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.CONSUMER_ID;
 import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.NAV_CALL_ID;
