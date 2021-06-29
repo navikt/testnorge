@@ -1,12 +1,5 @@
 package no.nav.testnav.proxies.aaregproxy;
 
-import no.nav.registre.testnorge.libs.service.StsOidcTokenService;
-import no.nav.testnav.libs.proxyconfig.config.DevConfig;
-import no.nav.testnav.libs.proxyconfig.config.SecurityConfig;
-import no.nav.testnav.libs.proxyconfig.filter.AddRequestHeadersGatewayFilterFactory;
-import no.nav.testnav.libs.proxyconfig.filter.GetHeader;
-import no.nav.testnav.libs.proxyconfig.router.InternalHandler;
-import no.nav.testnav.libs.proxyconfig.router.InternalRouter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -21,6 +14,14 @@ import org.springframework.http.HttpHeaders;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import no.nav.registre.testnorge.libs.service.StsOidcTokenService;
+import no.nav.testnav.libs.proxyconfig.config.DevConfig;
+import no.nav.testnav.libs.proxyconfig.config.SecurityConfig;
+import no.nav.testnav.libs.proxyconfig.filter.AddRequestHeadersGatewayFilterFactory;
+import no.nav.testnav.libs.proxyconfig.filter.GetHeader;
+import no.nav.testnav.libs.proxyconfig.router.InternalHandler;
+import no.nav.testnav.libs.proxyconfig.router.InternalRouter;
 
 @Import({
         DevConfig.class,
