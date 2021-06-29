@@ -87,6 +87,9 @@ public class ArbeidsforholdResponseMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(PermisjonPermitteringDTO permisjonPermitteringDTO, PermisjonPermittering permisjonDTO, MappingContext context) {
 
+                        permisjonDTO.setPermisjonPermitteringId(permisjonPermitteringDTO.getPermisjonPermitteringId());
+                        permisjonDTO.setType(permisjonPermitteringDTO.getType());
+                        permisjonDTO.setProsent(permisjonPermitteringDTO.getProsent().doubleValue());
                         if (nonNull(permisjonPermitteringDTO.getPeriode())) {
                             permisjonDTO.setPeriode(ArbeidsforholdResponse.Periode.builder()
                                     .fom(nonNull(permisjonPermitteringDTO.getPeriode().getFom())
@@ -99,7 +102,6 @@ public class ArbeidsforholdResponseMappingStrategy implements MappingStrategy {
                         }
                     }
                 })
-                .byDefault()
                 .register();
 
         factory.classMap(UtenlandsoppholdDTO.class, Utenlandsopphold.class)
