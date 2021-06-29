@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arbeidsforholdservice.consumer.dto.ArbeidsforholdDTO;
 import no.nav.registre.testnorge.arbeidsforholdservice.consumer.v2.AaregConsumerV2;
-import no.nav.registre.testnorge.arbeidsforholdservice.domain.v2.Arbeidsforhold;
+import no.nav.registre.testnorge.arbeidsforholdservice.domain.v2.ArbeidsforholdResponse;
 import no.nav.registre.testnorge.arbeidsforholdservice.service.ArbeidsforholdService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +29,7 @@ public class ArbeidsforholdControllerV2 {
     private final ArbeidsforholdService arbeidsforholdService;
 
     @GetMapping("/arbeidstaker/{arbeidstaker}/arbeidsforhold")
-    public ResponseEntity<List<Arbeidsforhold>> getArbeidsforhold(
+    public ResponseEntity<List<ArbeidsforholdResponse>> getArbeidsforhold(
             @PathVariable("arbeidstaker") String ident,
             @RequestHeader("miljo") String miljo
     ) {

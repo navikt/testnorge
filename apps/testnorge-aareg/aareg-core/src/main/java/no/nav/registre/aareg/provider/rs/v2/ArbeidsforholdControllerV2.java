@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.aareg.consumer.rs.ArbeidsforholdServiceConsumer;
-import no.nav.registre.aareg.domain.Arbeidsforhold;
+import no.nav.registre.aareg.domain.ArbeidsforholdResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +25,7 @@ public class ArbeidsforholdControllerV2 {
 
     @GetMapping
     @ApiOperation(value = "Hent arbeidsforhold fra aareg.")
-    public ResponseEntity<List<Arbeidsforhold>> hentArbeidsforhold(
+    public ResponseEntity<List<ArbeidsforholdResponse>> hentArbeidsforhold(
             @RequestParam String ident,
             @RequestParam String miljoe
     ) {

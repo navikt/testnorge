@@ -5,7 +5,7 @@ import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.aareg.config.credentials.ArbeidsforholdServiceProperties;
-import no.nav.registre.aareg.domain.Arbeidsforhold;
+import no.nav.registre.aareg.domain.ArbeidsforholdResponse;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import org.springframework.core.ParameterizedTypeReference;
@@ -49,17 +49,17 @@ public class ArbeidsforholdServiceConsumer {
         this.accessTokenService = accessTokenService;
     }
 
-    public List<Arbeidsforhold> hentArbeidsforhold(String ident, String miljoe) {
+    public List<ArbeidsforholdResponse> hentArbeidsforhold(String ident, String miljoe) {
 
         log.info("Genererer AccessToken for {}", serviceProperties.getName());
         AccessToken accessToken = accessTokenService.generateToken(serviceProperties).block();
-        List<Arbeidsforhold> response = webClient
+        List<ArbeidsforholdResponse> response = webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder.path(String.format("%s/%s/arbeidsforhold", ARBEIDSTAKER_URL, ident)).build())
                 .header("miljo", miljoe)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken.getTokenValue())
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<Arbeidsforhold>>() {
+                .bodyToMono(new ParameterizedTypeReference<List<ArbeidsforholdResponse>>() {
                 })
                 .block();
 
