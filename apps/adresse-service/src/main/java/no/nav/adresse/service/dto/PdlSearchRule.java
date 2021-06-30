@@ -10,7 +10,8 @@ public enum PdlSearchRule {
     FROM("from"),
     TO("to"),
     CONTAINS("contains"),
-    RANDOM("random");
+    RANDOM("random"),
+    EXISTS("exists");
 
     PdlSearchRule(String name) {
         this.name = name;

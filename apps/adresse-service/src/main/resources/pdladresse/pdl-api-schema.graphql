@@ -291,7 +291,7 @@ type Matrikkeladresse {
 
 type MatrikkeladresseResult {
     bruksnummer: String
-    gardsnummer: String
+    gaardsnummer: String
     kommunenummer: String
     matrikkelId: String
     postnummer: String

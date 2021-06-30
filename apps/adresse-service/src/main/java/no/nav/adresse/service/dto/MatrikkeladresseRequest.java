@@ -19,7 +19,7 @@ public class MatrikkeladresseRequest {
     private String tilleggsnavn;
 
     private String kommunenummer;
-    private String gardsnummer;
+    private String gaardsnummer;
     private String brukesnummer;
 
     private String postnummer;
@@ -29,7 +29,7 @@ public class MatrikkeladresseRequest {
     public boolean isEmpty() {
         return isBlank(getMatrikkelId()) &&
                 isBlank(getKommunenummer()) &&
-                isBlank(getGardsnummer()) &&
+                isBlank(getGaardsnummer()) &&
                 isBlank(getBrukesnummer()) &&
                 isBlank(getPostnummer()) &&
                 isBlank(getPoststed()) &&

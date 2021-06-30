@@ -3,10 +3,10 @@ package no.nav.adresse.service.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
-import no.nav.adresse.service.dto.MatrikkeladresseDTO;
 import no.nav.adresse.service.dto.MatrikkeladresseRequest;
 import no.nav.adresse.service.dto.VegadresseRequest;
 import no.nav.adresse.service.service.PdlAdresseService;
+import no.nav.registre.testnorge.libs.dto.adresseservice.v1.MatrikkeladresseDTO;
 import no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -75,7 +75,7 @@ public class AdresseController {
         return pdlAdresseService.getMatrikkelAdresse(MatrikkeladresseRequest.builder()
                 .matrikkelId(matrikkelId)
                 .kommunenummer(kommunenummer)
-                .gardsnummer(gardsnummer)
+                .gaardsnummer(gardsnummer)
                 .brukesnummer(bruksnummer)
                 .postnummer(postnummer)
                 .poststed(poststed)
