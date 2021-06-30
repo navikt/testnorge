@@ -253,9 +253,6 @@ project(":aareg-synt-services-proxy").projectDir = file('proxies/aareg-synt-serv
 include 'oppsummeringsdokument-service'
 project(":oppsummeringsdokument-service").projectDir = file('apps/oppsummeringsdokument-service')
 
-include 'oppsummeringsdokument-frontend'
-project(":oppsummeringsdokument-frontend").projectDir = file('apps/oppsummeringsdokument-frontend')
-
 include 'tps-forvalteren-proxy'
 project(":tps-forvalteren-proxy").projectDir = file('proxies/tps-forvalteren-proxy')
 
