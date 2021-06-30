@@ -128,7 +128,7 @@ public class IdenttypeService {
             throw new InvalidRequestException(VALIDATION_DATO_INVALID);
         }
 
-        if (nonNull(request.getFoedtFoer()) && nonNull(request.getFoedtFoer()) &&
+        if (nonNull(request.getFoedtEtter()) && nonNull(request.getFoedtFoer()) &&
                 request.getFoedtEtter().isAfter(request.getFoedtFoer())) {
             throw new InvalidRequestException(VALIDATION_DATO_INTERVAL_INVALID);
         }

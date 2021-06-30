@@ -11,6 +11,7 @@ import no.nav.pdl.forvalter.dto.PdlVergemaal.Omfang;
 import no.nav.pdl.forvalter.dto.PdlVergemaal.Personnavn;
 import no.nav.pdl.forvalter.dto.PdlVergemaal.VergemaalType;
 import no.nav.pdl.forvalter.utils.EmbeteService;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.VergemaalDTO;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.VergemaalMandattype;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.VergemaalSakstype;
@@ -90,12 +91,15 @@ public class VergemaalMappingStrategy implements MappingStrategy {
                                 .opphoerstidspunkt(kilde.getGyldigTom())
                                 .build());
 
-                        var personNavn = personRepository.findByIdent(kilde.getVergeIdent()).get()
-                                .getPerson().getNavn().stream().findFirst().get();
+                        var person = personRepository.findByIdent(kilde.getVergeIdent());
+                        NavnDTO personnavn = new NavnDTO();
+                        if (person.isPresent()) {
+                            personnavn = person.get().getPerson().getNavn().stream().findFirst().orElse(new NavnDTO());
+                        }
 
                         destinasjon.setVergeEllerFullmektig(PdlVergemaal.VergeEllerFullmektig.builder()
                                 .motpartsPersonident(kilde.getVergeIdent())
-                                .navn(mapperFacade.map(personNavn, Personnavn.class))
+                                .navn(mapperFacade.map(personnavn, Personnavn.class))
                                 .omfang(getOmfang(kilde.getMandatType()))
                                 .omfangetErInnenPersonligOmraade(!"FIN".equals(kilde.getMandatType()))
                                 .build());

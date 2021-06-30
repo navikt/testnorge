@@ -64,7 +64,7 @@ public class CreatePersonService {
                 .findFirst().orElseThrow(() -> new InternalServerException(
                         String.format("Ident kunne ikke levere forespørsel: %s", request.toString())));
 
-        var mergedPerson = mergeService.merge(buildPerson(request),
+        var mergedPerson = mergeService.merge(buildPerson(nonNull(request) ? request : new PersonRequestDTO()),
                 PersonDTO.builder().ident(ident).build());
 
         kjoennService.convert(mergedPerson);

@@ -169,11 +169,14 @@ public class KontaktinformasjonForDoedsboService {
     private void leggTilOrganisasjonsnavn(OrganisasjonDTO pdlOrganisasjon) {
 
         if (isBlank(pdlOrganisasjon.getOrganisasjonsnavn())) {
-            var organisasjon = organisasjonForvalterConsumer.get(pdlOrganisasjon.getOrganisasjonsnummer());
-            pdlOrganisasjon.setOrganisasjonsnavn(organisasjon.entrySet().stream()
+            var organisasjonsnavn = organisasjonForvalterConsumer.get(pdlOrganisasjon.getOrganisasjonsnummer())
+            .entrySet().stream()
                     .filter(entry -> "q1".equals(entry.getKey()) || "q2".equals(entry.getKey()))
                     .map(entry -> entry.getValue().get("organisasjonsnavn"))
-                    .findFirst().get());
+                    .findFirst();
+
+            pdlOrganisasjon.setOrganisasjonsnavn(organisasjonsnavn.isPresent() ?
+                    organisasjonsnavn.get() : "Organisajonsnavn ikke funnet");
         }
     }
 
@@ -251,8 +254,8 @@ public class KontaktinformasjonForDoedsboService {
             return false;
         }
         return isBlank(pdlOrganisasjon.getOrganisasjonsnavn()) ||
-                pdlOrganisasjon.getOrganisasjonsnavn().equals(organisasjoner.values().stream()
-                        .anyMatch(organisasjon -> pdlOrganisasjon.getOrganisasjonsnavn().equals(organisasjon.get("organisasjonsnavn"))));
+                organisasjoner.values().stream()
+                        .anyMatch(organisasjon -> pdlOrganisasjon.getOrganisasjonsnavn().equals(organisasjon.get("organisasjonsnavn")));
     }
 
     private void leggTilNyAddressat(KontaktpersonMedIdNummerDTO adressat, PersonDTO person) {
