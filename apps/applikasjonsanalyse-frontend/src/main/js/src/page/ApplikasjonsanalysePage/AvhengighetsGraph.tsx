@@ -61,22 +61,16 @@ const myConfig = {
   focusZoom: 1,
 };
 
-export default ({ data }: Props) => {
-  if (!data) {
-    return null;
-  }
-
-  return (
-    <Graph
-      id="testnorge-dependency-graph"
-      data={convert(
-        data.filter(
-          (value) =>
-            value.applicationName !== 'team-dolly-lokal-app' &&
-            value.applicationName !== 'testnorge-oversikt-frontend'
-        )
-      )}
-      config={myConfig}
-    />
-  );
-};
+export default ({ data }: Props) => (
+  <Graph
+    id="testnorge-dependency-graph"
+    data={convert(
+      data.filter(
+        (value) =>
+          value.applicationName !== 'team-dolly-lokal-app' &&
+          value.applicationName !== 'testnorge-oversikt-frontend'
+      )
+    )}
+    config={myConfig}
+  />
+);

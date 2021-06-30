@@ -1,22 +1,25 @@
 package no.nav.registre.testnorge.oversiktfrontend.config;
 
-import org.springframework.context.annotation.Bean;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
-import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
-
+@Slf4j
 @Configuration
-@EnableWebFluxSecurity
-public class SecurityConfig {
+@Order(1)
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Bean
-    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-        http.authorizeExchange()
-                .pathMatchers("/internal/isReady", "/internal/isAlive").permitAll()
-                .anyExchange().authenticated()
-                .and().oauth2Login();
-        return http.build();
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+                .anyRequest()
+                .fullyAuthenticated()
+                .and()
+                .oauth2Client()
+                .and()
+                .oauth2Login();
     }
 }
