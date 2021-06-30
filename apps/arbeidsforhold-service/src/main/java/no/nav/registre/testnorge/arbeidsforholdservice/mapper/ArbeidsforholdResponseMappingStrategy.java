@@ -61,11 +61,13 @@ public class ArbeidsforholdResponseMappingStrategy implements MappingStrategy {
                         if (nonNull(arbeidsforholdResponse.getArbeidsavtaler()) && !arbeidsforholdResponse.getArbeidsavtaler().isEmpty()) {
                             arbeidsforhold.setArbeidsavtaler(mapperFacade.mapAsList(arbeidsforholdResponse.getArbeidsavtaler(), Arbeidsavtale.class));
 
-                            arbeidsforhold.setFartoy(Fartoy.builder()
-                                    .skipsregister(arbeidsforholdResponse.getArbeidsavtaler().get(0).getSkipsregister())
-                                    .skipstype(arbeidsforholdResponse.getArbeidsavtaler().get(0).getSkipstype())
-                                    .fartsomraade(arbeidsforholdResponse.getArbeidsavtaler().get(0).getFartsomraade())
-                                    .build());
+                            if (nonNull(arbeidsforholdResponse.getArbeidsavtaler().get(0).getSkipstype())) {
+                                arbeidsforhold.setFartoy(Fartoy.builder()
+                                        .skipsregister(arbeidsforholdResponse.getArbeidsavtaler().get(0).getSkipsregister())
+                                        .skipstype(arbeidsforholdResponse.getArbeidsavtaler().get(0).getSkipstype())
+                                        .fartsomraade(arbeidsforholdResponse.getArbeidsavtaler().get(0).getFartsomraade())
+                                        .build());
+                            }
                         }
 
                         arbeidsforhold.setArbeidstaker(ArbeidsforholdResponse.Arbeidstaker.builder()
