@@ -2,8 +2,7 @@ name: Deploy adresse-service
 
 on:
   push:
-    branches:
-      - feature/legge_til_matrikkel_adresse
+    branches: master
     paths:
       - apps/adresse-service/**
       - libs/testnorge-core/**
