@@ -21,33 +21,20 @@ spring:
             authorization-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/authorize
             token-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/token
             jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
-zuul:
-  routes:
-    testnorge-profil-api:
-      path: /testnorge-profil-api/api/**
-      url: http://testnorge-profil-api.dolly.svc.cluster.local/api
-      sensitiveHeaders: Cookie,Set-Cookie
-    testnav-organisasjon-faste-data-service:
-      path: /testnav-organisasjon-faste-data-service/api/**
-      url: http://testnav-organisasjon-faste-data-service.dolly.svc.cluster.local/api
-      sensitiveHeaders: Cookie,Set-Cookie
-    testnav-organisasjon-service:
-      path: /testnav-organisasjon-service/api/**
-      url: http://testnav-organisasjon-service.dolly.svc.cluster.local/api
-      sensitiveHeaders: Cookie,Set-Cookie
-  host:
-    socket-timeout-millis: 40000
 
 consumers:
   testnorge-profil-api:
     cluster: dev-gcp
     namespace: dolly
     name: testnorge-profil-api
+    url: http://testnorge-profil-api.dolly.svc.cluster.local/api
   testnav-organisasjon-faste-data-service:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-organisasjon-faste-data-service
+    url: http://testnav-organisasjon-faste-data-service.dolly.svc.cluster.local/api
   testnav-organisasjon-service:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-organisasjon-service
+    url: http://testnav-organisasjon-service.dolly.svc.cluster.local/api
