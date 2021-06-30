@@ -51,7 +51,7 @@ public class VergemaalService {
 
     private void validate(VergemaalDTO vergemaal) {
 
-        if (isNull(vergemaal.getEmbete())) {
+        if (isNull(vergemaal.getVergemaalEmbete())) {
             throw new InvalidRequestException(VALIDATION_EMBETE_ERROR);
         }
 

@@ -15,12 +15,12 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class VergemaalDTO extends DbVersjonDTO {
 
-    private String embete;
-    private String sakType;
+    private VergemaalEmbete vergemaalEmbete;
+    private VergemaalSakstype sakType;
     private LocalDateTime gyldigFom;
     private LocalDateTime gyldigTom;
 
     private PersonRequestDTO nyVergeIdent;
     private String vergeIdent;
-    private String mandatType;
+    private VergemaalMandattype mandatType;
 }

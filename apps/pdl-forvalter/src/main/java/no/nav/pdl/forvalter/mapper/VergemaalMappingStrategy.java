@@ -12,6 +12,8 @@ import no.nav.pdl.forvalter.dto.PdlVergemaal.Personnavn;
 import no.nav.pdl.forvalter.dto.PdlVergemaal.VergemaalType;
 import no.nav.pdl.forvalter.utils.EmbeteService;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.VergemaalDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.VergemaalMandattype;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.VergemaalSakstype;
 import org.springframework.stereotype.Component;
 
 import static java.util.Objects.isNull;
@@ -23,49 +25,49 @@ public class VergemaalMappingStrategy implements MappingStrategy {
     private final EmbeteService embeteService;
     private final PersonRepository personRepository;
 
-    private static Omfang getOmfang(String mandatType) {
+    private static Omfang getOmfang(VergemaalMandattype mandatType) {
 
         if (isNull(mandatType)) {
             return null;
         }
 
         switch (mandatType) {
-            case "FOR":
+            case FOR:
                 return Omfang.UTLENDINGSSAKER_PERSONLIGE_OG_OEKONOMISKE_INTERESSER;
-            case "CMB":
+            case CMB:
                 return Omfang.PERSONLIGE_OG_OEKONOMISKE_INTERESSER;
-            case "FIN":
+            case FIN:
                 return Omfang.OEKONOMISKE_INTERESSER;
-            case "PER":
+            case PER:
                 return Omfang.PERSONLIGE_INTERESSER;
-            case "ADP":
+            case ADP:
             default:
                 return null;
         }
     }
 
-    private static VergemaalType getSakstype(String vergemaalType) {
+    private static VergemaalType getSakstype(VergemaalSakstype vergemaalType) {
 
         if (isNull(vergemaalType)) {
             return null;
         }
 
         switch (vergemaalType) {
-            case "MIM":
+            case MIM:
                 return VergemaalType.MIDLERTIDIG_FOR_MINDREAARIG;
-            case "ANN":
+            case ANN:
                 return VergemaalType.FORVALTNING_UTENFOR_VERGEMAAL;
-            case "VOK":
+            case VOK:
                 return VergemaalType.VOKSEN;
-            case "MIN":
+            case MIN:
                 return VergemaalType.MINDREAARIG;
-            case "VOM":
+            case VOM:
                 return VergemaalType.MIDLERTIDIG_FOR_VOKSEN;
-            case "FRE":
+            case FRE:
                 return VergemaalType.STADFESTET_FREMTIDSFULLMAKT;
-            case "EMA":
+            case EMA:
                 return VergemaalType.ENSLIG_MINDREAARIG_ASYLSOEKER;
-            case "EMF":
+            case EMF:
                 return VergemaalType.ENSLIG_MINDREAARIG_FLYKTNING;
             default:
                 return null;
@@ -80,7 +82,7 @@ public class VergemaalMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(VergemaalDTO kilde, PdlVergemaal destinasjon, MappingContext context) {
 
-                        destinasjon.setEmbete(embeteService.getNavn(kilde.getEmbete()));
+                        destinasjon.setEmbete(embeteService.getNavn(kilde.getVergemaalEmbete().name()));
                         destinasjon.setType(getSakstype(kilde.getSakType()));
 
                         destinasjon.setFolkeregistermetadata(Folkeregistermetadata.builder()

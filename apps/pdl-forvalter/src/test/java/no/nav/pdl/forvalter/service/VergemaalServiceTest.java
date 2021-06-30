@@ -49,7 +49,7 @@ class VergemaalServiceTest {
     void whenTypeIsMissing_thenThrowExecption() {
 
         var request = List.of(VergemaalDTO.builder()
-                .embete("Statsforvalteren i Agder")
+                .vergemaalEmbete("Statsforvalteren i Agder")
                 .isNew(true)
                 .build());
 
@@ -65,7 +65,7 @@ class VergemaalServiceTest {
     void whenUgyldigDatoInterval_thenThrowExecption() {
 
         var request = List.of(VergemaalDTO.builder()
-                .embete("Statsforvalteren i Oslo og Viken")
+                .vergemaalEmbete("Statsforvalteren i Oslo og Viken")
                 .gyldigFom(LocalDate.of(2012, 04, 05).atStartOfDay())
                 .gyldigTom(LocalDate.of(2012, 04, 04).atStartOfDay())
                 .isNew(true)
@@ -85,7 +85,7 @@ class VergemaalServiceTest {
         when(personRepository.existsByIdent(IDENT)).thenReturn(false);
 
         var request = List.of(VergemaalDTO.builder()
-                .embete("Statsforvalteren i Trøndelag")
+                .vergemaalEmbete("Statsforvalteren i Trøndelag")
                 .sakType("Voksen midlertidig")
                 .vergeIdent(IDENT)
                 .isNew(true)

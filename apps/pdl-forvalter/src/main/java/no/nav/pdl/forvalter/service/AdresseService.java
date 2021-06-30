@@ -59,16 +59,11 @@ public abstract class AdresseService<T extends AdresseDTO> {
 
     protected abstract void handle(T type);
 
-
     protected void enforceIntegrity(List<T> adresse) {
 
         for (var i = 0; i < adresse.size(); i++) {
             if (i + 1 < adresse.size()) {
-                if (isNull(adresse.get(i + 1).getGyldigTilOgMed()) &&
-                        nonNull(adresse.get(i).getGyldigFraOgMed()) && nonNull(adresse.get(i + 1).getGyldigFraOgMed()) &&
-                        !adresse.get(i).getGyldigFraOgMed().isAfter(adresse.get(i + 1).getGyldigFraOgMed().plusDays(1)) ||
-                        nonNull(adresse.get(i + 1).getGyldigTilOgMed()) && nonNull(adresse.get(i).getGyldigFraOgMed()) &&
-                                !adresse.get(i).getGyldigFraOgMed().isAfter(adresse.get(i + 1).getGyldigTilOgMed())) {
+                if (isOverlapGyldigTom(adresse, i) || isOverlapGyldigFom(adresse, i)) {
                     throw new InvalidRequestException(VALIDATION_ADRESSE_OVELAP_ERROR);
                 }
                 if (isNull(adresse.get(i + 1).getGyldigTilOgMed()) && nonNull(adresse.get(i).getGyldigFraOgMed())) {
@@ -76,5 +71,16 @@ public abstract class AdresseService<T extends AdresseDTO> {
                 }
             }
         }
+    }
+
+    private boolean isOverlapGyldigFom(List<T> adresse, int i) {
+        return nonNull(adresse.get(i + 1).getGyldigTilOgMed()) && nonNull(adresse.get(i).getGyldigFraOgMed()) &&
+                !adresse.get(i).getGyldigFraOgMed().isAfter(adresse.get(i + 1).getGyldigTilOgMed());
+    }
+
+    private boolean isOverlapGyldigTom(List<T> adresse, int i) {
+        return isNull(adresse.get(i + 1).getGyldigTilOgMed()) &&
+                nonNull(adresse.get(i).getGyldigFraOgMed()) && nonNull(adresse.get(i + 1).getGyldigFraOgMed()) &&
+                !adresse.get(i).getGyldigFraOgMed().isAfter(adresse.get(i + 1).getGyldigFraOgMed().plusDays(1));
     }
 }
