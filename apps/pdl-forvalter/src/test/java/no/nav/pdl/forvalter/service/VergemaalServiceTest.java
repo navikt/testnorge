@@ -3,6 +3,8 @@ package no.nav.pdl.forvalter.service;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.VergemaalDTO;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.VergemaalEmbete;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.VergemaalSakstype;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -49,7 +51,7 @@ class VergemaalServiceTest {
     void whenTypeIsMissing_thenThrowExecption() {
 
         var request = List.of(VergemaalDTO.builder()
-                .vergemaalEmbete("Statsforvalteren i Agder")
+                .vergemaalEmbete(VergemaalEmbete.FMAV)
                 .isNew(true)
                 .build());
 
@@ -65,7 +67,7 @@ class VergemaalServiceTest {
     void whenUgyldigDatoInterval_thenThrowExecption() {
 
         var request = List.of(VergemaalDTO.builder()
-                .vergemaalEmbete("Statsforvalteren i Oslo og Viken")
+                .vergemaalEmbete(VergemaalEmbete.FMIN)
                 .gyldigFom(LocalDate.of(2012, 04, 05).atStartOfDay())
                 .gyldigTom(LocalDate.of(2012, 04, 04).atStartOfDay())
                 .isNew(true)
@@ -85,8 +87,8 @@ class VergemaalServiceTest {
         when(personRepository.existsByIdent(IDENT)).thenReturn(false);
 
         var request = List.of(VergemaalDTO.builder()
-                .vergemaalEmbete("Statsforvalteren i Trøndelag")
-                .sakType("Voksen midlertidig")
+                .vergemaalEmbete(VergemaalEmbete.FMNO)
+                .sakType(VergemaalSakstype.EMF)
                 .vergeIdent(IDENT)
                 .isNew(true)
                 .build());
