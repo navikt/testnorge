@@ -76,7 +76,6 @@ public class StartBEREG007Command implements Callable<Long> {
 
         String crumb = this.crumb.getCrumb();
 
-
         try {
             log.info("Sender inn bestilling til jenkins");
             var id = webClient
