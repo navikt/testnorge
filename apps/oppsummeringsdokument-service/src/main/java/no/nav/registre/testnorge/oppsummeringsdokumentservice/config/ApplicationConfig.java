@@ -16,8 +16,6 @@ import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2ServerToServerCo
         ApplicationCoreConfig.class,
         SecureOAuth2ServerToServerConfiguration.class
 })
-@EnableElasticsearchRepositories(basePackages = "no.nav.registre.testnorge.oppsummeringsdokumentservice.repository")
-@EnableElasticsearchAuditing
 @RequiredArgsConstructor
 public class ApplicationConfig {
 }

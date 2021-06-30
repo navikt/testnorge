@@ -50,6 +50,10 @@ spec:
           cluster: dev-fss
         - application: tps-forvalteren
           cluster: dev-fss
+        - application: dolly-frontend-dev
+          cluster: dev-fss
+        - application: dolly-frontend
+          cluster: dev-fss
     outbound:
       external:
         - host: https://testnav-pdl-proxy.dev-fss-pub.nais.io

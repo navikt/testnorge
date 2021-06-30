@@ -1,0 +1,27 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+spring:
+  application:
+    name: testnav-saf-proxy
+    desciption: Proxy for dokarkiv som legger på sikkerhet og redirecter til riktig miljø.
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+
+sts:
+  preprod:
+    token:
+      provider:
+        url: https://security-token-service.dev.adeo.no/rest/v1/sts/token
+        username: ${STS_PREPROD_PROVIDER_USERNAME}
+        password: ${STS_PREPROD_PROVIDER_PASSWORD}
+  test:
+    token:
+      provider:
+        url: http://security-token-service.t4.svc.nais.local/rest/v1/sts/token
+        username: ${STS_TEST_PROVIDER_USERNAME}
+        password: ${STS_TEST_PROVIDER_PASSWORD}

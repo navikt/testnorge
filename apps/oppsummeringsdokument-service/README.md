@@ -13,7 +13,7 @@ Applikasjonen kan nås fra [/swagger](https://oppsummeringsdokument-service.dev.
 
 ## Lokal utvikling
 
-Kjør opp en lokal version av en elasticsearch instance
 ```
-docker run -d --name es762 -p 9200:9200 -e "discovery.type=single-node" elasticsearch:7.10.1
+-Dspring.cloud.vault.token={VAULT_TOKEN} -Dspring.profiles.active=dev -DELASTIC_USERNAME={USERNMAE} -DELASTIC_PASSWORD={PASSWORD} -DELASTIC_HOST={HOST} -DELASTIC_PORT={PORT}
+Se teamdolly-elastic secret i kubernetes
 ```
