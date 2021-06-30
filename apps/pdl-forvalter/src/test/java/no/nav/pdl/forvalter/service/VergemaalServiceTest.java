@@ -35,14 +35,14 @@ class VergemaalServiceTest {
     @Test
     void whenEmbeteIsMissing_thenThrowExecption() {
 
-        var request = List.of(VergemaalDTO.builder()
-                .isNew(true)
-                .build());
+        var request = PersonDTO.builder()
+                .vergemaal(List.of(VergemaalDTO.builder()
+                        .isNew(true)
+                        .build()))
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                vergemaalService.convert(PersonDTO.builder()
-                        .vergemaal((List<VergemaalDTO>) request)
-                        .build()));
+                vergemaalService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Embete for vergemål må angis"));
     }
@@ -50,15 +50,15 @@ class VergemaalServiceTest {
     @Test
     void whenTypeIsMissing_thenThrowExecption() {
 
-        var request = List.of(VergemaalDTO.builder()
-                .vergemaalEmbete(VergemaalEmbete.FMAV)
-                .isNew(true)
-                .build());
+        var request = PersonDTO.builder()
+                .vergemaal(List.of(VergemaalDTO.builder()
+                        .vergemaalEmbete(VergemaalEmbete.FMAV)
+                        .isNew(true)
+                        .build()))
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                vergemaalService.convert(PersonDTO.builder()
-                        .vergemaal((List<VergemaalDTO>) request)
-                        .build()));
+                vergemaalService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Sakstype av vergemål må angis"));
     }
@@ -66,17 +66,17 @@ class VergemaalServiceTest {
     @Test
     void whenUgyldigDatoInterval_thenThrowExecption() {
 
-        var request = List.of(VergemaalDTO.builder()
-                .vergemaalEmbete(VergemaalEmbete.FMIN)
-                .gyldigFom(LocalDate.of(2012, 04, 05).atStartOfDay())
-                .gyldigTom(LocalDate.of(2012, 04, 04).atStartOfDay())
-                .isNew(true)
-                .build());
+        var request = PersonDTO.builder()
+                .vergemaal(List.of(VergemaalDTO.builder()
+                        .vergemaalEmbete(VergemaalEmbete.FMIN)
+                        .gyldigFom(LocalDate.of(2012, 04, 05).atStartOfDay())
+                        .gyldigTom(LocalDate.of(2012, 04, 04).atStartOfDay())
+                        .isNew(true)
+                        .build()))
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                vergemaalService.convert(PersonDTO.builder()
-                        .vergemaal((List<VergemaalDTO>) request)
-                        .build()));
+                vergemaalService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Ugyldig datointervall: gyldigFom må være før gyldigTom"));
     }
@@ -86,17 +86,17 @@ class VergemaalServiceTest {
 
         when(personRepository.existsByIdent(IDENT)).thenReturn(false);
 
-        var request = List.of(VergemaalDTO.builder()
-                .vergemaalEmbete(VergemaalEmbete.FMNO)
-                .sakType(VergemaalSakstype.EMF)
-                .vergeIdent(IDENT)
-                .isNew(true)
-                .build());
+        var request = PersonDTO.builder()
+                .vergemaal(List.of(VergemaalDTO.builder()
+                        .vergemaalEmbete(VergemaalEmbete.FMNO)
+                        .sakType(VergemaalSakstype.EMF)
+                        .vergeIdent(IDENT)
+                        .isNew(true)
+                        .build()))
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                vergemaalService.convert(PersonDTO.builder()
-                        .vergemaal((List<VergemaalDTO>) request)
-                        .build()));
+                vergemaalService.convert(request));
 
         assertThat(exception.getMessage(), containsString(format("Vergeperson med ident %s ikke funnet i database", IDENT)));
     }

@@ -91,7 +91,7 @@ public class PdlOrdreService {
             status.addAll(deployService.send(PDL_SLETTING, person.getIdent(), List.of(new PdlDelete())).collectList().block());
         }
 
-        var asyncStatus = List.of(
+        var asyncStatus = Stream.of(
                 deployService.send(PDL_OPPRETT_PERSON, person.getIdent(), List.of(HistoriskIdent.builder()
                         .identer(person.getAlias().stream()
                                 .map(DbAlias::getTidligereIdent)
@@ -130,11 +130,14 @@ public class PdlOrdreService {
                         mapperFacade.mapAsList(person.getPerson().getFalskIdentitet(), PdlFalskIdentitet.class)),
                 deployService.send(PDL_TILRETTELAGT_KOMMUNIKASJON, person.getIdent(),
                         mapperFacade.mapAsList(person.getPerson().getTilrettelagtKommunikasjon(), PdlTilrettelagtKommunikasjon.class))
-        ).stream().reduce(Flux.empty(), Flux::concat).collectList();
+        )
+                .reduce(Flux.empty(), Flux::concat)
+                .collectList()
+                .block();
 
         return Stream.concat(
                 status.stream(),
-                asyncStatus.block().stream()
+                asyncStatus.stream()
         ).collect(Collectors.toList());
     }
 }

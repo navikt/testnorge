@@ -101,7 +101,7 @@ public class VergemaalMappingStrategy implements MappingStrategy {
                                 .motpartsPersonident(kilde.getVergeIdent())
                                 .navn(mapperFacade.map(personnavn, Personnavn.class))
                                 .omfang(getOmfang(kilde.getMandatType()))
-                                .omfangetErInnenPersonligOmraade(!"FIN".equals(kilde.getMandatType()))
+                                .omfangetErInnenPersonligOmraade(VergemaalMandattype.FIN != kilde.getMandatType())
                                 .build());
                     }
                 })

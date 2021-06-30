@@ -59,20 +59,22 @@ public class SwopIdentsService {
             var oppdatertePersoner = personRepository.findByIdIn(List.of(person1.get().getId(), person2.get().getId()));
             var oppdatertPerson1 = oppdatertePersoner.stream()
                     .filter(person -> person1.get().getId().equals(person.getId()))
-                    .findFirst().get();
+                    .findFirst();
             var oppdatertPerson2 = oppdatertePersoner.stream()
                     .filter(person -> person2.get().getId().equals(person.getId()))
-                    .findFirst().get();
+                    .findFirst();
 
-            swopOpplysninger(oppdatertPerson1, oppdatertPerson2, newNavn);
+            if (oppdatertPerson1.isPresent() && oppdatertPerson2.isPresent()) {
+                swopOpplysninger(oppdatertPerson1.get(), oppdatertPerson2.get(), newNavn);
 
-            personRepository.saveAll(List.of(person1.get(), person2.get()));
+                personRepository.saveAll(List.of(person1.get(), person2.get()));
 
-            aliasRepository.save(DbAlias.builder()
-                    .tidligereIdent(ident1)
-                    .person(oppdatertPerson1)
-                    .sistOppdatert(LocalDateTime.now())
-                    .build());
+                aliasRepository.save(DbAlias.builder()
+                        .tidligereIdent(ident1)
+                        .person(oppdatertPerson1.get())
+                        .sistOppdatert(LocalDateTime.now())
+                        .build());
+            }
         }
     }
 }
