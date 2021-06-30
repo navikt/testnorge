@@ -75,6 +75,7 @@ applications:
   testnav-amelding-service: dev-gcp.dolly.testnav-amelding-service
   testnav-joark-dokument-service: dev-gcp.dolly.testnav-joark-dokument-service
 
+
 zuul:
   routes:
     testnorge-arbeidsforhold-export-api:
