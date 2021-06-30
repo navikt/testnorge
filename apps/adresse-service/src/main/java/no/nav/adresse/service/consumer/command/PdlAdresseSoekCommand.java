@@ -4,17 +4,19 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.adresse.service.dto.GraphQLRequest;
 import no.nav.adresse.service.dto.PdlAdresseResponse;
+import no.nav.adresse.service.exception.BadRequestException;
+import no.nav.adresse.service.exception.NotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PdlAdresseSoekCommand implements Callable<PdlAdresseResponse> {
+public class PdlAdresseSoekCommand implements Callable<Mono<PdlAdresseResponse>> {
 
     private static final String TEMA = "Tema";
 
@@ -23,27 +25,27 @@ public class PdlAdresseSoekCommand implements Callable<PdlAdresseResponse> {
     private final String token;
 
     @Override
-    public PdlAdresseResponse call() {
+    public Mono<PdlAdresseResponse> call() {
 
-        try {
-            return webClient
-                    .post()
-                    .uri(builder -> builder.path("/pdl-api/graphql").build())
-                    .body(BodyInserters.fromValue(query))
-                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                    .header(TEMA, TemaGrunnlag.GEN.name())
-                    .retrieve()
-                    .bodyToMono(PdlAdresseResponse.class)
-                    .block();
-
-        } catch (
-                WebClientResponseException e) {
-            log.error("Feil ved henting av adressedata: {}.", e.getResponseBodyAsString());
-            log.error(query.toString());
-            throw e;
-        }
+        return webClient
+                .post()
+                .uri(builder -> builder.path("/pdl-api/graphql").build())
+                .body(BodyInserters.fromValue(query))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .header(TEMA, TemaGrunnlag.GEN.name())
+                .retrieve()
+                .bodyToMono(PdlAdresseResponse.class)
+                .map(value -> {
+                    if (!value.getErrors().isEmpty()) {
+                        throw new BadRequestException("Spørring inneholder feil: " + value.getErrors().toString());
+                    } else if (value.getData().getSokAdresse().getHits().isEmpty()) {
+                        throw new NotFoundException("Ingen adresse funnet: " + query.getVariables().get("criteria"));
+                    } else {
+                        return value;
+                    }
+                });
     }
 
-    public enum TemaGrunnlag {GEN, PEN}
+    private enum TemaGrunnlag {GEN, PEN}
 }
