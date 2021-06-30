@@ -42,12 +42,19 @@ export const OrgnummerToggle = ({ formikBag, path, opplysningspliktigPath }) => 
 		setSuccess(false)
 		OrgserviceApi.getOrganisasjonInfo(org, miljo)
 			.then(response => {
+				if (
+					!response.data.enhetType.includes('BEDR') &&
+					!response.data.enhetType.includes('AAFY')
+				) {
+					setError('Organisasjonen må være av type BEDR eller AAFY')
+					return
+				}
 				setSuccess(true)
 				opplysningspliktigPath &&
 					formikBag.setFieldValue(`${opplysningspliktigPath}`, response.data.juridiskEnhet)
 				formikBag.setFieldValue(`${path}`, response.data.orgnummer)
 			})
-			.catch(err => setError(err))
+			.catch(() => setError('Fant ikke organisasjonen i ' + (miljo ? miljo : 'q1')))
 	}
 
 	return (
@@ -89,7 +96,7 @@ export const OrgnummerToggle = ({ formikBag, path, opplysningspliktigPath }) => 
 						}}
 						feil={
 							error && {
-								feilmelding: 'Fant ikke organisasjonen i ' + (environment ? environment : 'q1')
+								feilmelding: error
 							}
 						}
 					/>
