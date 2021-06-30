@@ -20,6 +20,11 @@ module.exports = merge(common, {
         target: "http://localhost:8080",
         changeOrigin: true,
       },
+      "/oauth2/authorization/aad": {
+        target: "http://localhost:8080",
+        changeOrigin: true,
+        secure: false,
+      },
     },
   },
   plugins: [new MiniCssExtractPlugin()],
