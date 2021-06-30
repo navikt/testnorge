@@ -521,7 +521,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				aareg.pagineringPages.push(maaned.maaned)
 				aareg.paginering.push(data)
 			})
-		} else {
+		} else if (aaregKriterier.arbeidsforhold) {
 			aaregKriterier.arbeidsforhold.forEach((arbeidsforhold, i) => {
 				aareg.itemRows.push(arbeidsforholdVisning(arbeidsforhold, i))
 			})

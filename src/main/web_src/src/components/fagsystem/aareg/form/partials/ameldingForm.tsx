@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import useBoolean from '~/utils/hooks/useBoolean'
 import _get from 'lodash/get'
+import _has from 'lodash/has'
 import { format, eachMonthOfInterval } from 'date-fns'
 import Hjelpetekst from '~/components/hjelpetekst'
 import { FormikSelect, DollySelect } from '~/components/ui/form/inputs/select/Select'
@@ -172,6 +173,17 @@ export const AmeldingForm = ({ formikBag }) => {
 		}
 	}
 
+	const feilmelding = () => {
+		if (
+			!_get(formikBag.values, 'aareg[0].arbeidsforholdstype') &&
+			_has(formikBag.touched, 'aareg[0].arbeidsforholdstype')
+		) {
+			return {
+				feilmelding: _get(formikBag.errors, 'aareg[0].arbeidsforholdstype')
+			}
+		}
+	}
+
 	return (
 		<>
 			<div className="flexbox--align-center">
@@ -191,6 +203,7 @@ export const AmeldingForm = ({ formikBag }) => {
 					isClearable={false}
 					onChange={handleArbeidsforholdstypeChange}
 					value={arbeidsforholdstype}
+					feil={feilmelding()}
 				/>
 				{arbeidsforholdstype === 'forenkletOppgjoersordning' && (
 					<ForenkletOppgjoersordningForm formikBag={formikBag} />

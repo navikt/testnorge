@@ -1,7 +1,7 @@
 import * as Yup from 'yup'
 import _get from 'lodash/get'
 import _isNil from 'lodash/isNil'
-import { isWithinInterval, getMonth } from 'date-fns'
+import { isWithinInterval, getMonth, getYear } from 'date-fns'
 import { ifPresent, requiredDate, requiredString, messages } from '~/utils/YupValidations'
 import { yupToFormErrors } from 'formik'
 
@@ -23,10 +23,16 @@ const innenforAnsettelsesforholdTest = (validation, validateFomMonth) => {
 			if (validateFomMonth) {
 				const fomPath = path.replace('.tom', '.fom')
 				const fomMonth = _get(values, fomPath)
-				if (getMonth(dateValue) !== getMonth(new Date(fomMonth))) return false
+				if (
+					getMonth(dateValue) !== getMonth(new Date(fomMonth)) ||
+					getYear(dateValue) !== getYear(new Date(fomMonth))
+				)
+					return false
 			}
-
-			const arrayPos = path.split('.')[0] // feks: aareg[1]
+			// TODO Må hente rigtig path
+			const arrayPos = _get(values, 'aareg[0].amelding')
+				? 'aareg[0].amelding[0].arbeidsforhold[0]'
+				: 'aareg[0].arbeidsforhold[0]'
 
 			const ansattFom = _get(values, `${arrayPos}.ansettelsesPeriode.fom`)
 			const ansattTom = _get(values, `${arrayPos}.ansettelsesPeriode.tom`)
@@ -38,6 +44,12 @@ const innenforAnsettelsesforholdTest = (validation, validateFomMonth) => {
 		}
 	)
 }
+
+// const getPath = () => {
+// 	const path = this.path
+// 	console.log('path :>> ', path)
+// 	return path
+// }
 
 const antallTimerForTimeloennet = Yup.array().of(
 	Yup.object({
@@ -55,7 +67,7 @@ const utenlandsopphold = Yup.array().of(
 	Yup.object({
 		periode: Yup.object({
 			fom: innenforAnsettelsesforholdTest(requiredDate),
-			tom: innenforAnsettelsesforholdTest(Yup.date().nullable(), true)
+			tom: innenforAnsettelsesforholdTest(requiredDate, true)
 		}),
 		land: requiredString
 	})
@@ -88,13 +100,42 @@ const permittering = Yup.array().of(
 	})
 )
 
-const arbeidsforhold = Yup.array().of(
+const arbeidsforholdForenklet = Yup.array().of(
 	Yup.object({
+		arbeidsgiver: Yup.object({
+			aktoertype: requiredString,
+			orgnummer: Yup.string().when('aktoertype', {
+				is: 'ORG',
+				then: Yup.string()
+					.matches(/^[0-9]*$/, 'Orgnummer må være et tall med 9 sifre')
+					.test('len', 'Orgnummer må være et tall med 9 sifre', val => val && val.length === 9)
+			}),
+			ident: Yup.string().when('aktoertype', {
+				is: 'PERS',
+				then: Yup.string()
+					.matches(/^[0-9]*$/, 'Ident må være et tall med 11 sifre')
+					.test('len', 'Ident må være et tall med 11 sifre', val => val && val.length === 11)
+			})
+		}),
 		ansettelsesPeriode: Yup.object({
 			fom: requiredDate,
 			tom: Yup.date().nullable()
 		}),
-		arbeidsforholdstype: requiredString, // TODO: Maa settes i formikbag ved togglechange
+		arbeidsavtale: Yup.object({
+			yrke: requiredString
+		})
+	})
+)
+
+const arbeidsforhold = Yup.array().of(
+	Yup.object({
+		ansettelsesPeriode: Yup.object({
+			fom: requiredDate,
+			tom: Yup.date().nullable(),
+			sluttaarsak: Yup.string().nullable()
+		}),
+		arbeidsforholdstype: ifPresent('$aareg[0].arbeidsforhold', requiredString), // TODO: Maa settes i formikbag ved togglechange??
+		arbeidsforholdID: Yup.string(),
 		arbeidsgiver: Yup.object({
 			aktoertype: requiredString,
 			orgnummer: Yup.string().when('aktoertype', {
@@ -126,6 +167,16 @@ const arbeidsforhold = Yup.array().of(
 				.min(1, 'Kan ikke være mindre enn ${min}')
 				.max(75, 'Kan ikke være større enn ${max}')
 		}),
+		fartoy: Yup.array().of(
+			Yup.object({
+				// skipsregister: ifPresent('$aareg[0].amelding[0].arbeidsforhold[0].fartoy', requiredString),
+				// skipstype: ifPresent('$aareg[0].amelding[0].arbeidsforhold[0].fartoy', requiredString),
+				// fartsomraade: ifPresent('$aareg[0].amelding[0].arbeidsforhold[0].fartoy', requiredString)
+				skipsregister: requiredString,
+				skipstype: requiredString,
+				fartsomraade: requiredString
+			})
+		),
 		antallTimerForTimeloennet: antallTimerForTimeloennet,
 		utenlandsopphold: utenlandsopphold,
 		permisjon: permisjon,
@@ -139,13 +190,46 @@ const amelding = Yup.array().of(
 	})
 )
 
+const requiredPeriode = Yup.mixed()
+	.when('$aareg[0].arbeidsforholdstype', {
+		is: 'frilanserOppdragstakerHonorarPersonerMm',
+		then: requiredString
+	})
+	.when('$aareg[0].arbeidsforholdstype', {
+		is: 'maritimtArbeidsforhold',
+		then: requiredString
+	})
+	.when('$aareg[0].arbeidsforholdstype', {
+		is: 'ordinaertArbeidsforhold',
+		then: requiredString
+	})
+	.nullable()
+
+const arbeidsforholdVelger = Yup.mixed()
+	.when('$aareg[0].arbeidsforholdstype', {
+		is: 'ordinaertArbeidsforhold',
+		then: arbeidsforhold
+	})
+	.when('$aareg[0].arbeidsforholdstype', {
+		is: 'maritimtArbeidsforhold',
+		then: arbeidsforhold
+	})
+	.when('$aareg[0].arbeidsforholdstype', {
+		is: 'forenkletOppgjoersordning',
+		then: arbeidsforholdForenklet
+	})
+
 export const validation = {
 	aareg: Yup.array().of(
 		Yup.object({
-			arbeidsforhold: ifPresent('$aareg[0].arbeidsforhold', arbeidsforhold),
+			arbeidsforhold: ifPresent('$aareg[0].arbeidsforhold', arbeidsforholdVelger),
+			// arbeidsforhold: ifPresent('$aareg[0].arbeidsforhold', arbeidsforhold),
 			amelding: ifPresent('$aareg[0].amelding', amelding),
-			// arbeidsforholdstype: ifPresent('$aareg[0].amelding', requiredString)
-			arbeidsforholdstype: requiredString
+			arbeidsforholdstype: ifPresent('$aareg[0].amelding', requiredString),
+			genererPeriode: Yup.object({
+				fom: requiredPeriode,
+				tom: requiredPeriode
+			})
 		})
 	)
 }

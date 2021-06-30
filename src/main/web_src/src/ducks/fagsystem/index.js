@@ -4,7 +4,6 @@ import _get from 'lodash/get'
 import _last from 'lodash/last'
 import _isEmpty from 'lodash/isEmpty'
 import {
-	AaregApi,
 	ArenaApi,
 	BrregstubApi,
 	DollyApi,
@@ -62,7 +61,7 @@ export const actions = createActions(
 			})
 		],
 		getAareg: [
-			AaregApi.getArbeidsforhold,
+			DollyApi.getArbeidsforhold,
 			ident => ({
 				ident
 			})

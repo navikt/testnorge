@@ -18,36 +18,36 @@ export const TimeloennetForm = ({
 }) => {
 	const maaneder = _get(formikBag.values, 'aareg[0].amelding')
 
-	const handleNewEntry = () => {
-		if (!maaneder) return
-		maaneder.forEach((maaned, idMaaned) => {
-			if (!erLenket && idMaaned != ameldingIndex) return
-			const currTimeloennet = _get(
-				formikBag.values,
-				`aareg[0].amelding[${idMaaned}].arbeidsforhold[${arbeidsforholdIndex}].antallTimerForTimeloennet`
-			)
-			formikBag.setFieldValue(
-				`aareg[0].amelding[${idMaaned}].arbeidsforhold[${arbeidsforholdIndex}].antallTimerForTimeloennet`,
-				currTimeloennet ? [...currTimeloennet, initialTimeloennet] : [initialTimeloennet]
-			)
-		})
-	}
+	// const handleNewEntry = () => {
+	// 	if (!maaneder) return
+	// 	maaneder.forEach((maaned, idMaaned) => {
+	// 		if (!erLenket && idMaaned != ameldingIndex) return
+	// 		const currTimeloennet = _get(
+	// 			formikBag.values,
+	// 			`aareg[0].amelding[${idMaaned}].arbeidsforhold[${arbeidsforholdIndex}].antallTimerForTimeloennet`
+	// 		)
+	// 		formikBag.setFieldValue(
+	// 			`aareg[0].amelding[${idMaaned}].arbeidsforhold[${arbeidsforholdIndex}].antallTimerForTimeloennet`,
+	// 			currTimeloennet ? [...currTimeloennet, initialTimeloennet] : [initialTimeloennet]
+	// 		)
+	// 	})
+	// }
 
-	const handleRemoveEntry = idTimeloennet => {
-		if (!maaneder) return
-		maaneder.forEach((maaned, idMaaned) => {
-			if (!erLenket && idMaaned != ameldingIndex) return
-			const currTimeloennet = _get(
-				formikBag.values,
-				`aareg[0].amelding[${idMaaned}].arbeidsforhold[${arbeidsforholdIndex}].antallTimerForTimeloennet`
-			)
-			currTimeloennet.splice(idTimeloennet, 1)
-			formikBag.setFieldValue(
-				`aareg[0].amelding[${idMaaned}].arbeidsforhold[${arbeidsforholdIndex}].antallTimerForTimeloennet`,
-				currTimeloennet
-			)
-		})
-	}
+	// const handleRemoveEntry = idTimeloennet => {
+	// 	if (!maaneder) return
+	// 	maaneder.forEach((maaned, idMaaned) => {
+	// 		if (!erLenket && idMaaned != ameldingIndex) return
+	// 		const currTimeloennet = _get(
+	// 			formikBag.values,
+	// 			`aareg[0].amelding[${idMaaned}].arbeidsforhold[${arbeidsforholdIndex}].antallTimerForTimeloennet`
+	// 		)
+	// 		currTimeloennet.splice(idTimeloennet, 1)
+	// 		formikBag.setFieldValue(
+	// 			`aareg[0].amelding[${idMaaned}].arbeidsforhold[${arbeidsforholdIndex}].antallTimerForTimeloennet`,
+	// 			currTimeloennet
+	// 		)
+	// 	})
+	// }
 
 	return (
 		<FormikDollyFieldArray
@@ -56,8 +56,8 @@ export const TimeloennetForm = ({
 			hjelpetekst={infotekst}
 			newEntry={initialTimeloennet}
 			nested
-			handleNewEntry={maaneder ? handleNewEntry : null}
-			handleRemoveEntry={maaneder ? handleRemoveEntry : null}
+			// handleNewEntry={maaneder ? handleNewEntry : null}
+			// handleRemoveEntry={maaneder ? handleRemoveEntry : null}
 		>
 			{(path, idx) => (
 				<div key={idx} className="flexbox">
@@ -65,17 +65,17 @@ export const TimeloennetForm = ({
 						name={`${path}.antallTimer`}
 						label="Antall timer for timelønnet"
 						type="number"
-						onChange={onChangeLenket(`antallTimerForTimeloennet[${idx}].antallTimer`)}
+						// onChange={onChangeLenket(`antallTimerForTimeloennet[${idx}].antallTimer`)}
 					/>
 					<FormikDatepicker
 						name={`${path}.periode.fom`}
 						label="Periode fra"
-						onChange={onChangeLenket(`antallTimerForTimeloennet[${idx}].periode.fom`)}
+						// onChange={onChangeLenket(`antallTimerForTimeloennet[${idx}].periode.fom`)}
 					/>
 					<FormikDatepicker
 						name={`${path}.periode.tom`}
 						label="Periode til"
-						onChange={onChangeLenket(`antallTimerForTimeloennet[${idx}].periode.tom`)}
+						// onChange={onChangeLenket(`antallTimerForTimeloennet[${idx}].periode.tom`)}
 					/>
 				</div>
 			)}

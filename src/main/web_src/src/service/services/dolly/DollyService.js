@@ -164,6 +164,10 @@ export default {
 		return Request.get(Endpoints.getTransaksjonsid(system, ident, bestillingsid))
 	},
 
+	getArbeidsforhold(ident, miljoe) {
+		return Request.get(Endpoints.getArbeidsforhold(ident, miljoe))
+	},
+
 	//* Joark
 	getInntektsmeldingDokumentinfo(journalpostId, dokumentinfoId, miljoe) {
 		return Request.get(Endpoints.inntektsmeldingDokumentinfo(journalpostId, dokumentinfoId, miljoe))

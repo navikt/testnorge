@@ -6,6 +6,7 @@ import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { Arbeidsavtaler } from './partials/Arbeidsavtaler'
 import { Arbeidsgiver } from './partials/Arbeidsgiver'
+import { Fartoy } from './partials/Fartoy'
 import { PermisjonPermitteringer } from './partials/PermisjonPermitteringer'
 import { AntallTimerForTimeloennet } from './partials/AntallTimerForTimeloennet'
 import { Utenlandsopphold } from './partials/Utenlandsopphold'
@@ -23,6 +24,7 @@ type Arbeidsforhold = {
 	antallTimerForTimeloennet?: Array<unknown>
 	arbeidsavtaler?: Array<unknown>
 	arbeidsgiver?: Arbeidsgiver
+	fartoy?: Array<any>
 	permisjonPermitteringer?: Array<unknown>
 	utenlandsopphold?: Array<unknown>
 	arbeidsforholdId?: string
@@ -94,14 +96,14 @@ export const AaregVisning = ({ liste, loading }: AaregVisning) => {
 										value={Formatters.formatDate(arbeidsforhold.ansettelsesperiode.periode.tom)}
 									/>
 								)}
-								{/* //TODO: Sluttårsak  */}
+								{/* //TODO: Sluttårsak mangler fra Aareg */}
 							</div>
 
 							<Arbeidsgiver data={arbeidsforhold.arbeidsgiver} />
 
 							<Arbeidsavtaler data={arbeidsforhold.arbeidsavtaler} />
 
-							{/* //TODO: Fartøy */}
+							<Fartoy data={arbeidsforhold.fartoy} />
 
 							<AntallTimerForTimeloennet data={arbeidsforhold.antallTimerForTimeloennet} />
 

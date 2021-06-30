@@ -6,17 +6,18 @@ export const initialPeriode = {
 	periode: []
 }
 
-export const initialValues = [
-	{
-		arbeidsforholdstype: '',
-		genererPeriode: initialPeriode
-	}
-]
-
 export const initialAmelding = [
 	{
 		maaned: null,
 		arbeidsforhold: []
+	}
+]
+
+export const initialValues = [
+	{
+		arbeidsforholdstype: '',
+		genererPeriode: initialPeriode,
+		amelding: initialAmelding
 	}
 ]
 

@@ -15,12 +15,12 @@ export const Arbeidsavtaler = ({ data }) => {
 			<ErrorBoundary>
 				<div className="person-visning_content">
 					<TitleValue title="Yrke" value={detaljer.yrke} kodeverk={ArbeidKodeverk.Yrker} />
-					{/* //TODO: Ansettelsesform */}
+					{/* //TODO: Ansettelsesform mangler fra Aareg */}
 					<TitleValue
 						title="Stillingsprosent"
 						value={detaljer.stillingsprosent === 0 ? '0' : detaljer.stillingsprosent}
 					/>
-					{/* //TODO: Endringsdato stillingsprosent */}
+					{/* //TODO: Endringsdato stillingsprosent mangler fra Aareg */}
 					<TitleValue
 						title="Endringsdato lønn"
 						value={Formatters.formatStringDates(detaljer.sistLoennsendring)}
