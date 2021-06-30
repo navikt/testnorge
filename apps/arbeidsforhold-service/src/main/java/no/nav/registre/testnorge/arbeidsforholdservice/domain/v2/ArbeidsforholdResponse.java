@@ -20,21 +20,21 @@ import static java.util.Objects.isNull;
 @AllArgsConstructor
 public class ArbeidsforholdResponse {
 
-        private Ansettelsesperiode ansettelsesperiode;
-        private List<AntallTimerForTimeloennet> antallTimerForTimeloennet;
-        private List<Arbeidsavtale> arbeidsavtaler;
-        private String arbeidsforholdId;
-        private Arbeidsgiver arbeidsgiver;
-        private Arbeidstaker arbeidstaker;
-        private boolean innrapportertEtterAOrdningen;
-        private Long navArbeidsforholdId;
-        private Arbeidsgiver opplysningspliktig;
-        private Fartoy fartoy;
-        private List<PermisjonPermittering> permisjonPermitteringer;
-        private LocalDateTime registrert;
-        private LocalDateTime sistBekreftet;
-        private String type;
-        private List<Utenlandsopphold> utenlandsopphold;
+    private Ansettelsesperiode ansettelsesperiode;
+    private List<AntallTimerForTimeloennet> antallTimerForTimeloennet;
+    private List<Arbeidsavtale> arbeidsavtaler;
+    private String arbeidsforholdId;
+    private Arbeidsgiver arbeidsgiver;
+    private Arbeidstaker arbeidstaker;
+    private boolean innrapportertEtterAOrdningen;
+    private Long navArbeidsforholdId;
+    private Arbeidsgiver opplysningspliktig;
+    private Fartoy fartoy;
+    private List<PermisjonPermittering> permisjonPermitteringer;
+    private LocalDateTime registrert;
+    private LocalDateTime sistBekreftet;
+    private String type;
+    private List<Utenlandsopphold> utenlandsopphold;
 
     public List<PermisjonPermittering> getPermisjonPermitteringer() {
         if (isNull(permisjonPermitteringer)) {

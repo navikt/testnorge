@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor(force = true)
 public class ArbeidsforholdDTO {
     AnsettelsesperiodeDTO ansettelsesperiode;
+    List<AntallTimerForTimeloennetDTO> antallTimerForTimeloennet;
     String arbeidsforholdId;
     ArbeidsgiverDTO arbeidsgiver;
     List<ArbeidsavtaleDTO> arbeidsavtaler;

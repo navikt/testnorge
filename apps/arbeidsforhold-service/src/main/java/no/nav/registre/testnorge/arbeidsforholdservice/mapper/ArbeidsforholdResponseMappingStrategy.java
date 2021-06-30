@@ -3,12 +3,14 @@ package no.nav.registre.testnorge.arbeidsforholdservice.mapper;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
+import no.nav.registre.testnorge.arbeidsforholdservice.consumer.dto.AntallTimerForTimeloennetDTO;
 import no.nav.registre.testnorge.arbeidsforholdservice.consumer.dto.ArbeidsavtaleDTO;
 import no.nav.registre.testnorge.arbeidsforholdservice.consumer.dto.ArbeidsforholdDTO;
 import no.nav.registre.testnorge.arbeidsforholdservice.consumer.dto.PermisjonPermitteringDTO;
 import no.nav.registre.testnorge.arbeidsforholdservice.consumer.dto.UtenlandsoppholdDTO;
 import no.nav.registre.testnorge.arbeidsforholdservice.domain.v2.Aktoer;
 import no.nav.registre.testnorge.arbeidsforholdservice.domain.v2.ArbeidsforholdResponse;
+import no.nav.registre.testnorge.arbeidsforholdservice.domain.v2.ArbeidsforholdResponse.AntallTimerForTimeloennet;
 import no.nav.registre.testnorge.arbeidsforholdservice.domain.v2.ArbeidsforholdResponse.Arbeidsavtale;
 import no.nav.registre.testnorge.arbeidsforholdservice.domain.v2.ArbeidsforholdResponse.PermisjonPermittering;
 import no.nav.registre.testnorge.arbeidsforholdservice.domain.v2.ArbeidsforholdResponse.Utenlandsopphold;
@@ -29,6 +31,8 @@ public class ArbeidsforholdResponseMappingStrategy implements MappingStrategy {
 
                         arbeidsforhold.setType(arbeidsforholdResponse.getType());
                         arbeidsforhold.setArbeidsforholdId(arbeidsforholdResponse.getArbeidsforholdId());
+
+                        arbeidsforhold.setAntallTimerForTimeloennet(mapperFacade.mapAsList(arbeidsforholdResponse.getAntallTimerForTimeloennet(), AntallTimerForTimeloennet.class));
 
                         arbeidsforhold.setArbeidsgiver(arbeidsforholdResponse.getArbeidsgiver().getType().equals("Organisasjon")
                                 ? ArbeidsforholdResponse.Arbeidsgiver.builder()
@@ -113,6 +117,11 @@ public class ArbeidsforholdResponseMappingStrategy implements MappingStrategy {
                     }
                 })
                 .register();
+
+        factory.classMap(AntallTimerForTimeloennetDTO.class, AntallTimerForTimeloennet.class)
+                .byDefault()
+                .register();
+
 
         factory.classMap(ArbeidsavtaleDTO.class, Arbeidsavtale.class)
                 .customize(new CustomMapper<>() {
