@@ -37,7 +37,6 @@ public class OversiktFrontendApplicationStarter {
         SpringApplication.run(OversiktFrontendApplicationStarter.class, args);
     }
 
-
     private GatewayFilter filterFrom(Scopeable scopeable) {
         return AddRequestHeaderGatewayFilterFactory
                 .createAuthenticationHeaderFilter(

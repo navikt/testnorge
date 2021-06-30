@@ -14,7 +14,6 @@ spec:
       enabled: true
       tenant: nav.no
       replyURLs:
-       - "https://testnorge-oversikt-frontend.dev.intern.nav.no/login/oauth2/code/aad"
        - "https://testnav-oversikt.dev.intern.nav.no/login/oauth2/code/aad"
        - "http://localhost:8080/login/oauth2/code/aad"
       claims:
@@ -43,5 +42,4 @@ spec:
       cpu: 500m
       memory: 5000Mi
   ingresses:
-    - "https://testnorge-oversikt-frontend.dev.intern.nav.no"
     - "https://testnav-oversikt.dev.intern.nav.no"

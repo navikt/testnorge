@@ -9,6 +9,7 @@ spring:
             client-id: ${azure.app.client.id}
             client-secret: ${azure.app.client.secret}
             authorization-grant-type: authorization_code
+            redirect-uri-template: '{baseUrl}/login/oauth2/code/{registrationId}'
             redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
             scope: openid, ${azure.app.client.id}/.default
         provider:
