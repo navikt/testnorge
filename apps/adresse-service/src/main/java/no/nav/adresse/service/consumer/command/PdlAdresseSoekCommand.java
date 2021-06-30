@@ -34,18 +34,17 @@ public class PdlAdresseSoekCommand implements Callable<Mono<PdlAdresseResponse>>
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(TEMA, TemaGrunnlag.GEN.name())
-                .exchange()
-                .flatMap(response -> response.bodyToMono(PdlAdresseResponse.class)
-                        .map(value -> {
-                            if (!value.getErrors().isEmpty()) {
-                                throw new BadRequestException("Spørring inneholder feil: " + value.getErrors().toString());
-                            } else if (value.getData().getSokAdresse().getHits().isEmpty()) {
-                                throw new NotFoundException("Ingen adresse funnet: " + query.getVariables().get("criteria"));
-                            } else {
-                                return value;
-                            }
-                        })
-                );
+                .retrieve()
+                .bodyToMono(PdlAdresseResponse.class)
+                .map(value -> {
+                    if (!value.getErrors().isEmpty()) {
+                        throw new BadRequestException("Spørring inneholder feil: " + value.getErrors().toString());
+                    } else if (value.getData().getSokAdresse().getHits().isEmpty()) {
+                        throw new NotFoundException("Ingen adresse funnet: " + query.getVariables().get("criteria"));
+                    } else {
+                        return value;
+                    }
+                });
     }
 
     private enum TemaGrunnlag {GEN, PEN}

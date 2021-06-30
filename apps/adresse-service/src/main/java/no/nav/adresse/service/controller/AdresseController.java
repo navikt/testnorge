@@ -60,7 +60,7 @@ public class AdresseController {
                 .build(), nonNull(antall) ? antall : 1);
     }
 
-    @GetMapping(value = "/matrikkel")
+    @GetMapping(value = "/matrikkeladresse")
     @Operation(description = "Henter tilfeldige matrikkeladresse(r) basert på parametre inn, tom forespørsel gir helt tilfeldig matrikkeladresse")
     @ResponseBody
     public List<MatrikkeladresseDTO> getMatrikkeladresse(@RequestParam(required = false) String matrikkelId,
