@@ -18,12 +18,4 @@ public class PdlBestillingResponse {
     private String feilmelding;
     private String message;
     private List<Object> details;
-
-//    @Data
-//    @NoArgsConstructor
-//    @AllArgsConstructor
-//    public static class ErrorDetails {
-//
-//        private Map<String, String> detail;
-//    }
 }

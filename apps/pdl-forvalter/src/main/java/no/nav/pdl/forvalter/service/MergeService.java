@@ -50,9 +50,7 @@ public class MergeService {
                         .mapToInt(DbVersjonDTO::getId)
                         .max().orElse(0));
 
-                infoElementRequest.forEach(requestElement -> {
-                    mergeElements(field, infoElementDbPerson, dbId, requestElement);
-                });
+                infoElementRequest.forEach(requestElement -> mergeElements(field, infoElementDbPerson, dbId, requestElement));
             }
         });
 

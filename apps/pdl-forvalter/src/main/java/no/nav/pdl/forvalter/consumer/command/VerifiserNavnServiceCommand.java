@@ -7,7 +7,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
@@ -24,20 +23,13 @@ public class VerifiserNavnServiceCommand implements Callable<Mono<Boolean>> {
     @Override
     public Mono<Boolean> call() {
 
-        try {
-            return webClient
-                    .post()
-                    .uri(builder -> builder.path(url).build())
-                    .body(BodyInserters.fromValue(body))
-                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                    .retrieve()
-                    .bodyToMono(Boolean.class);
-
-        } catch (
-                WebClientResponseException e) {
-            log.error("Verifisering av navn fra navneservice feilet {}.", e.getResponseBodyAsString(), e);
-            throw e;
-        }
+        return webClient
+                .post()
+                .uri(builder -> builder.path(url).build())
+                .body(BodyInserters.fromValue(body))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .retrieve()
+                .bodyToMono(Boolean.class);
     }
 }

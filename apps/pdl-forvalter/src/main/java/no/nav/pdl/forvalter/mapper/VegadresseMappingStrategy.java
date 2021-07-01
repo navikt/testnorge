@@ -3,7 +3,6 @@ package no.nav.pdl.forvalter.mapper;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.pdl.forvalter.dto.PdlAdresseResponse.Vegadresse;
 import no.nav.pdl.forvalter.dto.PdlKontaktadresse.VegadresseForPost;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Component;
