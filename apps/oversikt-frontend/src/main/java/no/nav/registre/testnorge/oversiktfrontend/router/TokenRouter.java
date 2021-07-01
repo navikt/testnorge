@@ -13,7 +13,7 @@ public class TokenRouter {
     public RouterFunction<ServerResponse> tokenRoute(TokenHandler handler) {
         return RouterFunctions
                 .route(
-                        RequestPredicates.GET("/api/v1/applications/{scope}/token/on-behalf-of"),
+                        RequestPredicates.GET("/api/v1/tokens/{scope}/token/on-behalf-of"),
                         handler::onBehalfOf
                 );
     }
