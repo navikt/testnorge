@@ -1,24 +1,27 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: testnorge-oversikt-frontend
+  name: testnav-oversikt-frontend
   namespace: dolly
   labels:
     team: dolly
 spec:
   image: {{ image }}
   port: 8080
-  webproxy: true
   azure:
     application:
       enabled: true
       tenant: nav.no
       replyURLs:
-       - "https://testnav-oversikt.dev.intern.nav.no/login/oauth2/code/aad"
+       - "https://testnav-oversikt-frontend.dev.intern.nav.no/login/oauth2/code/aad"
        - "http://localhost:8080/login/oauth2/code/aad"
       claims:
         groups:
           - id: 9c7efec1-1599-4216-a67e-6fd53a6a951c
+  accessPolicy:
+    outbound:
+      rules:
+        - application: testnorge-profil-api
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -32,8 +35,6 @@ spec:
   replicas:
     min: 1
     max: 1
-  vault:
-    enabled: true
   resources:
     requests:
       cpu: 200m
@@ -42,4 +43,4 @@ spec:
       cpu: 500m
       memory: 5000Mi
   ingresses:
-    - "https://testnav-oversikt.dev.intern.nav.no"
+    - "https://testnav-oversikt-frontend.dev.intern.nav.no"

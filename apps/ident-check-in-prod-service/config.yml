@@ -20,7 +20,8 @@ spec:
           cluster: dev-fss
         - application: dolly-backend-dev
         - application: dolly-backend
-        - application: testnorge-oversikt-frontend
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
         - application: ida
   liveness:
     path: /internal/isAlive

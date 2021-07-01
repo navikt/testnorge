@@ -20,8 +20,8 @@ spec:
           cluster: dev-fss
         - application: dolly-frontend-dev
           cluster: dev-fss
-        - application: testnorge-oversikt-frontend
-          cluster: dev-fss
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
     outbound:
       external:
         - host: testnav-syntrest-proxy.dev-fss-pub.nais.io

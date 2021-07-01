@@ -73,7 +73,7 @@ export default ({ data }: Props) => {
         data.filter(
           (value) =>
             value.applicationName !== 'team-dolly-lokal-app' &&
-            value.applicationName !== 'testnorge-oversikt-frontend'
+            value.applicationName !== 'testnav-oversikt-frontend'
         )
       )}
       config={myConfig}

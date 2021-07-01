@@ -19,7 +19,8 @@ spec:
         - application: team-dolly-lokal-app
           cluster: dev-fss
         - application: mn-synt-arbeidsforhold-service
-        - application: testnorge-oversikt-frontend
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
   liveness:
     path: /internal/isAlive
     initialDelay: 4

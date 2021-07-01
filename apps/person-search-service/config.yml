@@ -17,7 +17,8 @@ spec:
     inbound:
       rules:
         - application: team-dolly-lokal-app
-        - application: testnorge-oversikt-frontend
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
         - application: dolly-frontend-dev
         - application: dolly-frontend
   liveness:

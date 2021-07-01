@@ -27,8 +27,8 @@ spec:
           cluster: dev-fss
         - application: testnav-organisasjon-forvalter
           cluster: dev-gcp
-        - application: testnorge-oversikt-frontend
-          cluster: dev-fss
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
         - application: dolly-backend-dev
           cluster: dev-fss
         - application: dolly-backend
