@@ -32,7 +32,9 @@ public class ArbeidsforholdResponseMappingStrategy implements MappingStrategy {
                         arbeidsforhold.setType(arbeidsforholdResponse.getType());
                         arbeidsforhold.setArbeidsforholdId(arbeidsforholdResponse.getArbeidsforholdId());
 
-                        arbeidsforhold.setAntallTimerForTimeloennet(mapperFacade.mapAsList(arbeidsforholdResponse.getAntallTimerForTimeloennet(), AntallTimerForTimeloennet.class));
+                        if (nonNull(arbeidsforholdResponse.getAntallTimerForTimeloennet()) && !arbeidsforholdResponse.getAntallTimerForTimeloennet().isEmpty()) {
+                            arbeidsforhold.setAntallTimerForTimeloennet(mapperFacade.mapAsList(arbeidsforholdResponse.getAntallTimerForTimeloennet(), AntallTimerForTimeloennet.class));
+                        }
 
                         arbeidsforhold.setArbeidsgiver(arbeidsforholdResponse.getArbeidsgiver().getType().equals("Organisasjon")
                                 ? ArbeidsforholdResponse.Arbeidsgiver.builder()
