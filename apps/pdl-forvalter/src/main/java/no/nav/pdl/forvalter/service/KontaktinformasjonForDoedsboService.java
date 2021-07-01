@@ -135,7 +135,7 @@ public class KontaktinformasjonForDoedsboService {
                 mapperFacade.map(bostedadresse.get(), kontaktinfo);
 
             } else {
-                mapperFacade.map(adresseServiceConsumer.getAdresse(VegadresseDTO.builder()
+                mapperFacade.map(adresseServiceConsumer.getVegadresse(VegadresseDTO.builder()
                         .postnummer(kontaktinfo.getPostnummer())
                         .build(), null), kontaktinfo);
             }

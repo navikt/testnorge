@@ -72,6 +72,19 @@ class KontaktAdresseServiceTest {
     }
 
     @Test
+    void whenNoAdressProvided_thenThrowExecption() {
+
+        var request = List.of(KontaktadresseDTO.builder()
+                .isNew(true)
+                .build());
+
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+                kontaktAdresseService.convert((List<KontaktadresseDTO>) request));
+
+        assertThat(exception.getMessage(), containsString("Én av adressene må velges"));
+    }
+
+    @Test
     void whenMultipleAdressesProvided_thenThrowExecption() {
 
         var request = List.of(KontaktadresseDTO.builder()
@@ -145,7 +158,7 @@ class KontaktAdresseServiceTest {
                 .kommunenummer("5678")
                 .matrikkelId("111111111")
                 .build();
-        when(adresseServiceConsumer.getAdresse(any(VegadresseDTO.class), nullable(String.class))).thenReturn(vegadresse);
+        when(adresseServiceConsumer.getVegadresse(any(VegadresseDTO.class), nullable(String.class))).thenReturn(vegadresse);
         doNothing().when(mapperFacade).map(eq(vegadresse), any(VegadresseDTO.class));
 
         var kontaktadresse =
@@ -156,7 +169,7 @@ class KontaktAdresseServiceTest {
                         .isNew(true)
                         .build())).get(0);
 
-        verify(adresseServiceConsumer).getAdresse(any(VegadresseDTO.class), nullable(String.class));
+        verify(adresseServiceConsumer).getVegadresse(any(VegadresseDTO.class), nullable(String.class));
         verify(mapperFacade).map(eq(vegadresse), any(VegadresseDTO.class));
         assertThat(kontaktadresse.getAdresseIdentifikatorFraMatrikkelen(), is(equalTo(vegadresse.getMatrikkelId())));
         assertThat(kontaktadresse.getKilde(), is(equalTo("Dolly")));

@@ -2,7 +2,9 @@ package no.nav.pdl.forvalter.consumer;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.config.credentials.AdresseServiceProperties;
-import no.nav.pdl.forvalter.consumer.command.AdresseServiceCommand;
+import no.nav.pdl.forvalter.consumer.command.MatrikkeladresseServiceCommand;
+import no.nav.pdl.forvalter.consumer.command.VegadresseServiceCommand;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
@@ -13,7 +15,6 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import java.util.stream.Stream;
 
 import static java.lang.System.currentTimeMillis;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -32,54 +33,45 @@ public class AdresseServiceConsumer {
                 .build();
     }
 
-    private static String filterArtifact(String artifact) {
-        return isNotBlank(artifact) ? artifact : "";
-    }
-
-    private static no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO getDefaultAdresse() {
-
-        return no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO.builder()
-                .matrikkelId("285693617")
-                .adressenavn("FYRSTIKKALLÉEN")
-                .postnummer("0661")
-                .husnummer(2)
-                .kommunenummer("0301")
-                .build();
-    }
-
-    public no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO getAdresse(VegadresseDTO vegadresse, String matrikkelId) {
+    public no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO getVegadresse(VegadresseDTO vegadresse, String matrikkelId) {
 
         var startTime = currentTimeMillis();
-        var query = new StringBuilder()
-                .append("matrikkelId=")
-                .append(filterArtifact(matrikkelId))
-                .append("&adressenavn=")
-                .append(filterArtifact(vegadresse.getAdressenavn()))
-                .append("&husnummer=")
-                .append(filterArtifact(vegadresse.getHusnummer()))
-                .append("&husbokstav=")
-                .append(filterArtifact(vegadresse.getHusbokstav()))
-                .append("&postnummer=")
-                .append(filterArtifact(vegadresse.getPostnummer()))
-                .append("&kommunenummer=")
-                .append(filterArtifact(vegadresse.getKommunenummer()))
-                .append("&tilleggsnavn=")
-                .append(filterArtifact(vegadresse.getAdressetilleggsnavn()))
-                .toString();
 
         try {
             var adresser = accessTokenService.generateToken(properties).flatMap(
-                    token -> new AdresseServiceCommand(webClient, query, token.getTokenValue()).call())
+                    token -> new VegadresseServiceCommand(webClient, vegadresse, matrikkelId, token.getTokenValue()).call())
                     .block();
 
             log.info("Oppslag til adresseservice tok {} ms", currentTimeMillis() - startTime);
-            return Stream.of(adresser).findFirst().orElse(getDefaultAdresse());
+            return Stream.of(adresser).findFirst()
+                    .orElse(VegadresseServiceCommand.defaultAdresse());
 
         } catch (WebClientResponseException e) {
 
             log.info("Oppslag til adresseservice feilet etter {} ms, {}, request: {}", currentTimeMillis() - startTime,
-                    e.getResponseBodyAsString(), query);
-            return getDefaultAdresse();
+                    e.getResponseBodyAsString(), vegadresse.toString());
+            return VegadresseServiceCommand.defaultAdresse();
+        }
+    }
+
+    public no.nav.registre.testnorge.libs.dto.adresseservice.v1.MatrikkeladresseDTO getMatrikkeladresse(MatrikkeladresseDTO adresse, String matrikkelId) {
+
+        var startTime = currentTimeMillis();
+
+        try {
+            var adresser = accessTokenService.generateToken(properties).flatMap(
+                    token -> new MatrikkeladresseServiceCommand(webClient, adresse, matrikkelId, token.getTokenValue()).call())
+                    .block();
+
+            log.info("Oppslag til adresseservice tok {} ms", currentTimeMillis() - startTime);
+            return Stream.of(adresser).findFirst()
+                    .orElse(MatrikkeladresseServiceCommand.defaultAdresse());
+
+        } catch (WebClientResponseException e) {
+
+            log.info("Oppslag til adresseservice feilet etter {} ms, {}, request: {}", currentTimeMillis() - startTime,
+                    e.getResponseBodyAsString(), adresse.toString());
+            return MatrikkeladresseServiceCommand.defaultAdresse();
         }
     }
 }

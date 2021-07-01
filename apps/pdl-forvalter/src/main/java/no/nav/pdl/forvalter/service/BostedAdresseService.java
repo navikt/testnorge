@@ -58,13 +58,20 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO> {
 
     @Override
     protected void handle(BostedadresseDTO bostedadresse) {
+
         if (nonNull(bostedadresse.getVegadresse())) {
             var vegadresse =
-                    adresseServiceConsumer.getAdresse(bostedadresse.getVegadresse(), bostedadresse.getAdresseIdentifikatorFraMatrikkelen());
+                    adresseServiceConsumer.getVegadresse(bostedadresse.getVegadresse(), bostedadresse.getAdresseIdentifikatorFraMatrikkelen());
             bostedadresse.setAdresseIdentifikatorFraMatrikkelen(vegadresse.getMatrikkelId());
             mapperFacade.map(vegadresse, bostedadresse.getVegadresse());
-        }
-        if (nonNull(bostedadresse.getUtenlandskAdresse())) {
+
+        } else if (nonNull(bostedadresse.getMatrikkeladresse())) {
+            var matrikkeladresse =
+                    adresseServiceConsumer.getMatrikkeladresse(bostedadresse.getMatrikkeladresse(), bostedadresse.getAdresseIdentifikatorFraMatrikkelen());
+            bostedadresse.setAdresseIdentifikatorFraMatrikkelen(matrikkeladresse.getMatrikkelId());
+            mapperFacade.map(matrikkeladresse, bostedadresse.getMatrikkeladresse());
+
+        } else if (nonNull(bostedadresse.getUtenlandskAdresse())) {
             bostedadresse.setMaster(PDL);
         }
     }

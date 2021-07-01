@@ -17,6 +17,8 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 @RequiredArgsConstructor
 public class KontaktAdresseService extends AdresseService<KontaktadresseDTO> {
 
+    private static final String VALIDATION_ADDRESS_ABSENT_ERROR = "Én av adressene må velges (vegadresse, " +
+            "postboksadresse, utenlandskAdresse)";
     private static final String VALIDATION_AMBIGUITY_ERROR = "Kun én adresse skal være satt (vegadresse, " +
             "postboksadresse, utenlandskAdresse)";
 
@@ -35,6 +37,11 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO> {
 
     @Override
     protected void validate(KontaktadresseDTO adresse) {
+        if (count(adresse.getPostboksadresse()) +
+                count(adresse.getUtenlandskAdresse()) +
+                count(adresse.getVegadresse()) == 0) {
+            throw new InvalidRequestException(VALIDATION_ADDRESS_ABSENT_ERROR);
+        }
         if (count(adresse.getPostboksadresse()) +
                 count(adresse.getUtenlandskAdresse()) +
                 count(adresse.getVegadresse()) > 1) {
@@ -60,7 +67,7 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO> {
     protected void handle(KontaktadresseDTO kontaktadresse) {
         if (nonNull(kontaktadresse.getVegadresse())) {
             var vegadresse =
-                    adresseServiceConsumer.getAdresse(kontaktadresse.getVegadresse(), kontaktadresse.getAdresseIdentifikatorFraMatrikkelen());
+                    adresseServiceConsumer.getVegadresse(kontaktadresse.getVegadresse(), kontaktadresse.getAdresseIdentifikatorFraMatrikkelen());
             kontaktadresse.setAdresseIdentifikatorFraMatrikkelen(vegadresse.getMatrikkelId());
             mapperFacade.map(vegadresse, kontaktadresse.getVegadresse());
         }

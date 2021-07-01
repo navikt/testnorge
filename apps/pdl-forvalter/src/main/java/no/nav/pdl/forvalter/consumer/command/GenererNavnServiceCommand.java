@@ -6,7 +6,6 @@ import no.nav.registre.testnorge.libs.dto.generernavnservice.v1.NavnDTO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
@@ -23,19 +22,12 @@ public class GenererNavnServiceCommand implements Callable<Mono<NavnDTO[]>> {
     @Override
     public Mono<NavnDTO[]> call() {
 
-        try {
-            return webClient
-                    .get()
-                    .uri(builder -> builder.path(url).queryParam("antall", antall).build())
-                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                    .retrieve()
-                    .bodyToMono(NavnDTO[].class);
-
-        } catch (
-                WebClientResponseException e) {
-            log.error("Feil ved henting av navn fra navneservice {}.", e.getResponseBodyAsString(), e);
-            throw e;
-        }
+        return webClient
+                .get()
+                .uri(builder -> builder.path(url).queryParam("antall", antall).build())
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .retrieve()
+                .bodyToMono(NavnDTO[].class);
     }
 }

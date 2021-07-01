@@ -63,9 +63,15 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO> {
 
         if (nonNull(oppholdsadresse.getVegadresse())) {
             var vegadresse =
-                    adresseServiceConsumer.getAdresse(oppholdsadresse.getVegadresse(), oppholdsadresse.getAdresseIdentifikatorFraMatrikkelen());
+                    adresseServiceConsumer.getVegadresse(oppholdsadresse.getVegadresse(), oppholdsadresse.getAdresseIdentifikatorFraMatrikkelen());
             oppholdsadresse.setAdresseIdentifikatorFraMatrikkelen(vegadresse.getMatrikkelId());
             mapperFacade.map(vegadresse, oppholdsadresse.getVegadresse());
+
+        } else if (nonNull(oppholdsadresse.getMatrikkeladresse())) {
+            var matrikkeladresse =
+                    adresseServiceConsumer.getMatrikkeladresse(oppholdsadresse.getMatrikkeladresse(), oppholdsadresse.getAdresseIdentifikatorFraMatrikkelen());
+            oppholdsadresse.setAdresseIdentifikatorFraMatrikkelen(matrikkeladresse.getMatrikkelId());
+            mapperFacade.map(matrikkeladresse, oppholdsadresse.getMatrikkeladresse());
         }
     }
 }
