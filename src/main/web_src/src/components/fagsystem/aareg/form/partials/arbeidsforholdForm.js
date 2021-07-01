@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import _get from 'lodash/get'
+import _has from 'lodash/has'
 import { FormikSelect, DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikTextInput, DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
@@ -109,6 +110,23 @@ export const ArbeidsforholdForm = ({
 		}
 	}
 
+	const feilmelding = () => {
+		if (
+			!_get(
+				formikBag.values,
+				`aareg[0].arbeidsforhold[${arbeidsforholdIndex}].arbeidsforholdstype`
+			) &&
+			_has(formikBag.touched, `aareg[0].arbeidsforhold[${arbeidsforholdIndex}].arbeidsforholdstype`)
+		) {
+			return {
+				feilmelding: _get(
+					formikBag.errors,
+					`aareg[0].arbeidsforhold[${arbeidsforholdIndex}].arbeidsforholdstype`
+				)
+			}
+		}
+	}
+
 	return (
 		<React.Fragment>
 			<div className="flexbox--flex-wrap">
@@ -120,6 +138,7 @@ export const ArbeidsforholdForm = ({
 						size="large-plus"
 						isClearable={false}
 						onChange={handleArbeidsforholdstypeChange}
+						feil={feilmelding()}
 					/>
 				)}
 				{arbeidsgiverType === ArbeidsgiverTyper.egen && (
@@ -179,7 +198,7 @@ export const ArbeidsforholdForm = ({
 				)}
 				{arbeidsforholdstype === 'forenkletOppgjoersordning' && (
 					<FormikSelect
-						name={`${path}.yrke`}
+						name={`${path}.arbeidsavtale.yrke`}
 						label="Yrke"
 						kodeverk={ArbeidKodeverk.Yrker}
 						size="xxxlarge"

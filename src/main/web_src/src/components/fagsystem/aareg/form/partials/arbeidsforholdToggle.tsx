@@ -70,10 +70,12 @@ export const ArbeidsforholdToggle = ({ formikBag }) => {
 		if (value === ArbeidsgiverTyper.privat) {
 			formikBag.setFieldValue('aareg[0].amelding', undefined)
 			formikBag.setFieldValue('aareg[0].arbeidsforhold', [initialArbeidsforholdPers])
+			formikBag.setFieldValue('aareg[0].arbeidsforhold[0].arbeidsforholdstype', '')
 			formikBag.setFieldValue('aareg[0].genererPeriode', undefined)
 		} else if (value === ArbeidsgiverTyper.felles || value === ArbeidsgiverTyper.fritekst) {
 			formikBag.setFieldValue('aareg[0].amelding', undefined)
 			formikBag.setFieldValue('aareg[0].arbeidsforhold', [initialArbeidsforholdOrg])
+			formikBag.setFieldValue('aareg[0].arbeidsforhold[0].arbeidsforholdstype', '')
 			formikBag.setFieldValue('aareg[0].genererPeriode', undefined)
 		} else if (value === ArbeidsgiverTyper.egen) {
 			formikBag.setFieldValue('aareg[0].arbeidsforhold', undefined)
