@@ -20,7 +20,7 @@ public class TokenHandler {
     public Mono<ServerResponse> onBehalfOf(ServerRequest request) {
         var scope = request.pathVariable("scope");
         return accessTokenService
-                .generateToken(new AccessScopes("api://" + scope + "//.default"))
+                .generateToken(new AccessScopes("api://" + scope + "/.default"))
                 .flatMap(token -> ServerResponse.ok().body(BodyInserters.fromValue(new TokenDTO(token))));
     }
 }
