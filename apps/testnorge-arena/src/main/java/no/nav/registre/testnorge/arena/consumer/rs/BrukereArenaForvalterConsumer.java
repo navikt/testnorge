@@ -29,10 +29,8 @@ import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereRes
 public class BrukereArenaForvalterConsumer {
 
     private final WebClient webClient;
-
-    private ArbeidssoekerCacheUtil arbeidssoekerCacheUtil;
-
-    private UriTemplate hentBrukere;
+    private final ArbeidssoekerCacheUtil arbeidssoekerCacheUtil;
+    private final UriTemplate hentBrukere;
 
 
     public BrukereArenaForvalterConsumer(
@@ -88,7 +86,7 @@ public class BrukereArenaForvalterConsumer {
     ) {
         List<Arbeidsoeker> arbeidssoekere = new ArrayList<>(antallSider * initialLength);
 
-        for (int page = 0; page < antallSider; page++) {
+        for (var page = 0; page < antallSider; page++) {
             var queryParams = getQueryParams(personident, eier, miljoe, page + "");
             var response = new GetArenaBrukereCommand(queryParams, webClient).call();
             if (response != null) {

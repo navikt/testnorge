@@ -116,14 +116,6 @@ public class ArbeidssoekerService {
     public void opprettArbeidssoekerAap(
             String personident,
             String miljoe,
-            LocalDate aktiveringsDato
-    ) {
-        opprettArbeidssoeker(personident, miljoe, rand.nextBoolean() ? Kvalifiseringsgrupper.BATT : Kvalifiseringsgrupper.VARIG, aktiveringsDato);
-    }
-
-    public void opprettArbeidssoekerAap(
-            String personident,
-            String miljoe,
             String aktivitetsfase,
             LocalDate aktiveringsDato
     ) {

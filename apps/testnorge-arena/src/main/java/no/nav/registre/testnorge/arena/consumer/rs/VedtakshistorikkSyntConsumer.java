@@ -35,7 +35,7 @@ public class VedtakshistorikkSyntConsumer {
     public List<Vedtakshistorikk> syntetiserVedtakshistorikk(int antallIdenter) {
         List<String> oppstartsdatoer = new ArrayList<>(antallIdenter);
 
-        for (int i = 0; i < antallIdenter; i++) {
+        for (var i = 0; i < antallIdenter; i++) {
             var dato = LocalDate.now().minusMonths(rand.nextInt(Math.toIntExact(ChronoUnit.MONTHS.between(MINIMUM_DATE, LocalDate.now()))));
             oppstartsdatoer.add(dato.toString());
         }

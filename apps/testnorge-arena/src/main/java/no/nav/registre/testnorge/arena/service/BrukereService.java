@@ -144,7 +144,7 @@ public class BrukereService {
         }
 
         List<String> nyeIdenter = new ArrayList<>(antallIdenter);
-        for (int i = 0; i < antallIdenter; i++) {
+        for (var i = 0; i < antallIdenter; i++) {
             nyeIdenter.add(identerIkkeIArena.remove(random.nextInt(identerIkkeIArena.size())));
         }
         return nyeIdenter;

@@ -65,23 +65,6 @@ public class IdentService {
         return slettedeIdenter;
     }
 
-    public List<String> getLevende(
-            Long avspillergruppeId,
-            String miljoe
-    ) {
-        var levendeIdenterAsSet = new HashSet<>(hodejegerenConsumer.getLevende(avspillergruppeId));
-        return filtrerEksisterendeBrukereIArena(levendeIdenterAsSet, miljoe);
-    }
-
-    public List<String> getUtvalgteIdenter(
-            Long avspillergruppeId,
-            int antallNyeIdenter,
-            String miljoe
-    ) {
-        var levendeIdenter = new HashSet<>(hodejegerenConsumer.getLevende(avspillergruppeId));
-        return filtrerIdenterUtenAktoerId(levendeIdenter, miljoe, antallNyeIdenter, null);
-    }
-
     public List<String> getUtvalgteIdenterIAldersgruppe(
             Long avspillergruppeId,
             int antallNyeIdenter,
@@ -127,7 +110,7 @@ public class IdentService {
             LocalDate tidligsteDatoBosatt
     ) {
         var identerUtenArenabruker = filtrerEksisterendeBrukereIArena(identer, miljoe);
-        var identerPartisjonert = partisjonerListe(identerUtenArenabruker, PAGE_SIZE);
+        var identerPartisjonert = partisjonerListe(identerUtenArenabruker);
         List<String> utvalgteIdenter = new ArrayList<>(antallNyeIdenter);
         for (var partisjon : identerPartisjonert) {
             var aktoerIdenter = aktoerRegisteretConsumer.hentAktoerIderTilIdenter(partisjon, miljoe);
@@ -153,7 +136,7 @@ public class IdentService {
     ) {
         var identerUtenArenabruker = filtrerEksisterendeBrukereIArena(identer, miljoe);
 
-        var identerPartisjonert = partisjonerListe(identerUtenArenabruker, PAGE_SIZE);
+        var identerPartisjonert = partisjonerListe(identerUtenArenabruker);
 
         List<String> utvalgteIdenter = new ArrayList<>(antallNyeIdenter);
 
@@ -197,7 +180,7 @@ public class IdentService {
 
             var barnFnr = relasjon.getFnrRelasjon();
 
-            int alder = Math.toIntExact(ChronoUnit.YEARS.between(IdentUtil.getFoedselsdatoFraIdent(barnFnr), tidspunkt));
+            var alder = Math.toIntExact(ChronoUnit.YEARS.between(IdentUtil.getFoedselsdatoFraIdent(barnFnr), tidspunkt));
 
             return alder > -1 && alder < 18;
         }
@@ -223,13 +206,12 @@ public class IdentService {
     }
 
     private <T> Collection<List<T>> partisjonerListe(
-            List<T> list,
-            long partitionSize
+            List<T> list
     ) {
-        AtomicInteger counter = new AtomicInteger(0);
+        var counter = new AtomicInteger(0);
         return list
                 .stream()
-                .collect(Collectors.groupingBy(it -> counter.getAndIncrement() / partitionSize))
+                .collect(Collectors.groupingBy(it -> counter.getAndIncrement() / PAGE_SIZE))
                 .values();
     }
 
