@@ -576,7 +576,6 @@ public class VedtakshistorikkService {
         var tillegg = oppdaterVedtakTillegg(historikk);
 
         if (tillegg != null && !tillegg.isEmpty() && !rettigheter.isEmpty()) {
-
             var tilleggSekvenser = getTilleggSekvenser(tillegg);
 
             for (var sekvens : tilleggSekvenser) {

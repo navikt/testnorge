@@ -3,8 +3,10 @@ package no.nav.adresse.service.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
-import no.nav.adresse.service.dto.AdresseRequest;
+import no.nav.adresse.service.dto.MatrikkeladresseRequest;
+import no.nav.adresse.service.dto.VegadresseRequest;
 import no.nav.adresse.service.service.PdlAdresseService;
+import no.nav.registre.testnorge.libs.dto.adresseservice.v1.MatrikkeladresseDTO;
 import no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -42,7 +44,7 @@ public class AdresseController {
                                              @RequestParam(required = false) String fritekst,
                                              @Schema(defaultValue = "1") @RequestHeader(required = false) Long antall) {
 
-        return pdlAdresseService.getVegadresse(AdresseRequest.builder()
+        return pdlAdresseService.getVegadresse(VegadresseRequest.builder()
                 .matrikkelId(matrikkelId)
                 .adressenavn(adressenavn)
                 .husnummer(husnummer)
@@ -55,6 +57,29 @@ public class AdresseController {
                 .bydelsnavn(bydelsnavn)
                 .tilleggsnavn(tilleggsnavn)
                 .fritekst(fritekst)
+                .build(), nonNull(antall) ? antall : 1);
+    }
+
+    @GetMapping(value = "/matrikkeladresse")
+    @Operation(description = "Henter tilfeldige matrikkeladresse(r) basert på parametre inn, tom forespørsel gir helt tilfeldig matrikkeladresse")
+    @ResponseBody
+    public List<MatrikkeladresseDTO> getMatrikkeladresse(@RequestParam(required = false) String matrikkelId,
+                                                         @RequestParam(required = false) String kommunenummer,
+                                                         @RequestParam(required = false) String gardsnummer,
+                                                         @RequestParam(required = false) String bruksnummer,
+                                                         @RequestParam(required = false) String postnummer,
+                                                         @RequestParam(required = false) String poststed,
+                                                         @RequestParam(required = false) String tilleggsnavn,
+                                                         @Schema(defaultValue = "1") @RequestHeader(required = false) Long antall) {
+
+        return pdlAdresseService.getMatrikkelAdresse(MatrikkeladresseRequest.builder()
+                .matrikkelId(matrikkelId)
+                .kommunenummer(kommunenummer)
+                .gaardsnummer(gardsnummer)
+                .brukesnummer(bruksnummer)
+                .postnummer(postnummer)
+                .poststed(poststed)
+                .tilleggsnavn(tilleggsnavn)
                 .build(), nonNull(antall) ? antall : 1);
     }
 }

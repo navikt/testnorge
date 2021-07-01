@@ -11,5 +11,7 @@ import java.util.List;
 @NoArgsConstructor(force = true)
 public class JournalpostDTO {
     Integer journalpostId;
+    String tittel;
+    String temanavn;
     List<DokuemntDTO> dokumenter;
 }

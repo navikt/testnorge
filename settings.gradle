@@ -318,3 +318,6 @@ project(":saf-proxy").projectDir = file('proxies/saf-proxy')
 
 include 'joark-dokument-service'
 project(':joark-dokument-service').projectDir = file('apps/joark-dokument-service')
+
+include 'proxy-config'
+project(":proxy-config").projectDir = file('libs/proxy-config')

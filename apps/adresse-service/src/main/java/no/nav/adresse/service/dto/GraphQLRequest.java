@@ -44,6 +44,6 @@ public class GraphQLRequest {
     public static class Criteria {
 
         private String fieldName;
-        private Map<String, String> searchRule;
+        private Map<String, Object> searchRule;
     }
 }

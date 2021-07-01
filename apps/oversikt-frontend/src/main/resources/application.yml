@@ -60,6 +60,7 @@ applications:
   testnav-organisasjon-service: dev-gcp.dolly.testnav-organisasjon-service
   testnav-pdl-proxy: dev-fss.dolly.testnav-pdl-proxy
   testnav-aareg-proxy: dev-fss.dolly.testnav-aareg-proxy
+  testnav-syntrest-proxy: dev-fss.dolly.testnav-syntrest-proxy
   testnav-saf-proxy: dev-fss.dolly.testnav-saf-proxy
   testnav-arbeidsforhold-service: dev-gcp.dolly.testnav-arbeidsforhold-service
   testnav-adresse-service: dev-gcp.dolly.testnav-adresse-service
@@ -73,6 +74,7 @@ applications:
   testnav-inntektsmelding-service: dev-gcp.dolly.testnav-inntektsmelding-service
   testnav-amelding-service: dev-gcp.dolly.testnav-amelding-service
   testnav-joark-dokument-service: dev-gcp.dolly.testnav-joark-dokument-service
+
 
 zuul:
   routes:

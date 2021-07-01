@@ -9,25 +9,16 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+  cloud:
+    gateway:
+      httpclient:
+        response-timeout: 30s
 
 sts:
   token:
     provider:
-      url: ${STS_TOKEN_PROVIDER_URL}
+      url: https://security-token-service.dev.adeo.no/rest/v1/sts/token
       username: ${STS_TOKEN_PROVIDER_USERNAME}
       password: ${STS_TOKEN_PROVIDER_PASSWORD}
-
-zuul:
-  ignoredPatterns: /internal/isReady, /internal/isAlive
-  set-content-length: true
-  sensitiveHeaders: Cookie,Set-Cookie
-  routes:
-    pdl-api:
-      path: /pdl-api/**
-      url: https://pdl-api.dev.adeo.no/
-    pdl-testdata:
-      path: /pdl-testdata/**
-      url: https://pdl-testdata.dev.adeo.no/
-  host:
-    socket-timeout-millis: 30000
