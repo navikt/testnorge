@@ -30,7 +30,10 @@ public class GetArbeidstakerArbeidsforholdCommandV2 implements Callable<List<Arb
         try {
             var arbeidsforhold = webClient
                     .get()
-                    .uri(builder -> builder.path("/api/{miljo}/v1/arbeidstaker/arbeidsforhold").build(miljo))
+                    .uri(builder -> builder
+                            .path("/api/{miljo}/v1/arbeidstaker/arbeidsforhold")
+                            .queryParam("arbeidsforholdtype", "forenkletOppgjoersordning,frilanserOppdragstakerHonorarPersonerMm,maritimtArbeidsforhold,ordinaertArbeidsforhold")
+                            .build(miljo))
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .header(NAV_PERSON_IDENT, ident)
                     .retrieve()
