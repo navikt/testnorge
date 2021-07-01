@@ -38,11 +38,10 @@ applications:
   ereg-batch-status-service: 67f507ff-399c-4853-9eb3-3dc6aabc8289
   testnorge-arbeidsforhold-api: 90e047cc-cc80-4da3-abb2-87ea2e98beed
   organisasjon-mottak-service: 9da0741a-ff41-4046-8635-6742298d74a4
-  jenkins-batch-status-service: 34c2e87a-0711-4ef1-b644-55d86a375e7a
   testnav-miljoer-service: dev-gcp.dolly.testnav-miljoer-service
   testnorge-organisasjon-api: f4167796-bf43-438b-a282-a480e8108d0c
   team-dolly-lokal-app: dev-fss.dolly.team-dolly-lokal-app
-  applikasjonsanalyse-service: 4c17d59e-ba09-4923-a917-47efebf82cc0
+  applikasjonsanalyse-service: dev-gcp.dolly.applikasjonsanalyse-service
   oppsummeringsdokument-service: 411963e3-5693-4ae8-8a2b-4d42dbeed5ee
   mn-organiasasjon-api: a9109f54-8cae-4af2-98e3-8c56a1f5c9ad
   udi-stub-dev: 4426ef7d-f148-4d19-8a03-b0d07a451938
@@ -70,7 +69,8 @@ applications:
   testnav-organisasjon-faste-data-service: dev-gcp.dolly.testnav-organisasjon-faste-data-service
   testnav-generer-organisasjon-populasjon-service: dev-gcp.dolly.testnav-generer-organisasjon-populasjon-service
   testnav-generer-synt-amelding-service: dev-gcp.dolly.testnav-generer-synt-amelding-service
-  testnorge-profil-api-dev: f73bfcd0-a1f5-4d3f-bfb4-4d0361191438
+  testnorge-profil-api-dev: dev-gcp.dolly.testnorge-profil-api-dev
+  testnorge-profil-api: dev-gcp.dolly.testnorge-profil-api
   testnav-generer-arbeidsforhold-populasjon-service: dev-gcp.dolly.testnav-generer-arbeidsforhold-populasjon-service
   testnav-inntektsmelding-service: dev-gcp.dolly.testnav-inntektsmelding-service
   testnav-amelding-service: dev-gcp.dolly.testnav-amelding-service
