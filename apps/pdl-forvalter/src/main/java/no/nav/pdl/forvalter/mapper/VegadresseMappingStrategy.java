@@ -14,10 +14,11 @@ public class VegadresseMappingStrategy implements MappingStrategy {
     @Override
     public void register(MapperFactory factory) {
 
-        factory.classMap(Vegadresse.class, VegadresseDTO.class)
+        factory.classMap(no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO.class, VegadresseDTO.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(Vegadresse kildeAdresse, VegadresseDTO vegadresse, MappingContext context) {
+                    public void mapAtoB(no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO kildeAdresse,
+                                        VegadresseDTO vegadresse, MappingContext context) {
 
                         vegadresse.setAdressetilleggsnavn(kildeAdresse.getTilleggsnavn());
                     }
@@ -25,10 +26,11 @@ public class VegadresseMappingStrategy implements MappingStrategy {
                 .byDefault()
                 .register();
 
-        factory.classMap(Vegadresse.class, VegadresseForPost.class)
+        factory.classMap(no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO.class, VegadresseForPost.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(Vegadresse kildeAdresse, VegadresseForPost vegadresse, MappingContext context) {
+                    public void mapAtoB(no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO kildeAdresse,
+                                        VegadresseForPost vegadresse, MappingContext context) {
 
                         vegadresse.setAdressetilleggsnavn(kildeAdresse.getTilleggsnavn());
                     }
@@ -36,10 +38,11 @@ public class VegadresseMappingStrategy implements MappingStrategy {
                 .byDefault()
                 .register();
 
-        factory.classMap(VegadresseDTO.class, Vegadresse.class)
+        factory.classMap(VegadresseDTO.class, no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(VegadresseDTO kildeAdresse, Vegadresse vegadresse, MappingContext context) {
+                    public void mapAtoB(VegadresseDTO kildeAdresse,
+                                        no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO vegadresse, MappingContext context) {
 
                         vegadresse.setTilleggsnavn(kildeAdresse.getAdressetilleggsnavn());
                     }

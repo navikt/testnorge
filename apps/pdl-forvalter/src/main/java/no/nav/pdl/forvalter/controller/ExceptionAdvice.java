@@ -25,50 +25,42 @@ public class ExceptionAdvice {
     private final HttpServletRequest httpServletRequest;
     private final UrlPathHelper urlPathHelper;
 
+    private ExceptionInformation getExceptionInformation(HttpStatus statusCode, String statusText) {
+        return ExceptionInformation.builder()
+                .error(statusCode.getReasonPhrase())
+                .status(statusCode.value())
+                .message(statusText)
+                .path(urlPathHelper.getPathWithinApplication(httpServletRequest))
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidRequestException.class)
     public ExceptionInformation clientErrorException(InvalidRequestException exception) {
-        return ExceptionInformation.builder()
-                .error(exception.getStatusCode().getReasonPhrase())
-                .status(exception.getStatusCode().value())
-                .message(exception.getStatusText())
-                .path(urlPathHelper.getPathWithinApplication(httpServletRequest))
-                .timestamp(LocalDateTime.now())
-                .build();
+        return getExceptionInformation(exception.getStatusCode(), exception.getStatusText());
     }
 
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NotFoundException.class)
     public ExceptionInformation clientErrorException(NotFoundException exception) {
-        return ExceptionInformation.builder()
-                .error(exception.getStatusCode().getReasonPhrase())
-                .status(exception.getStatusCode().value())
-                .message(exception.getStatusText())
-                .path(urlPathHelper.getPathWithinApplication(httpServletRequest))
-                .timestamp(LocalDateTime.now())
-                .build();
+        return getExceptionInformation(exception.getStatusCode(), exception.getStatusText());
     }
 
     @ResponseBody
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(InternalServerException.class)
     public ExceptionInformation clientErrorException(InternalServerException exception) {
-        return ExceptionInformation.builder()
-                .error(exception.getStatusCode().getReasonPhrase())
-                .status(exception.getStatusCode().value())
-                .message(exception.getStatusText())
-                .path(urlPathHelper.getPathWithinApplication(httpServletRequest))
-                .timestamp(LocalDateTime.now())
-                .build();
+        return getExceptionInformation(exception.getStatusCode(), exception.getStatusText());
     }
 
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ExceptionInformation {
+    private static class ExceptionInformation {
 
         private String message;
         private String error;

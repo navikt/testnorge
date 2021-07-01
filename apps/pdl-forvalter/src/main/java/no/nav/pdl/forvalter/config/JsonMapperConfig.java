@@ -11,14 +11,12 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
-import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.PropertyFilter;
 import com.fasterxml.jackson.databind.ser.PropertyWriter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +24,6 @@ import org.springframework.context.annotation.Configuration;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -72,32 +69,17 @@ public class JsonMapperConfig {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 
-        FilterProvider filters = new SimpleFilterProvider().addFilter("idFilter", idFilter);
-        objectMapper.setFilterProvider(filters);
+        objectMapper.setFilterProvider(new SimpleFilterProvider().addFilter("idFilter", idFilter));
 
         var simpleModule = new SimpleModule();
         simpleModule.addDeserializer(LocalDateTime.class, new TestnavLocalDateTimeDeserializer());
         simpleModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME));
         simpleModule.addDeserializer(LocalDate.class, new TestnavLocalDateDeserializer());
         simpleModule.addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ISO_DATE));
-        simpleModule.addDeserializer(ZonedDateTime.class, new TestnavZonedDateTimeDeserializer());
-        simpleModule.addSerializer(ZonedDateTime.class, new ZonedDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME));
 
         objectMapper.registerModule(simpleModule);
 
         return objectMapper;
-    }
-
-    private static class TestnavZonedDateTimeDeserializer extends JsonDeserializer<ZonedDateTime> {
-
-        @Override
-        public ZonedDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-            JsonNode node = jsonParser.getCodec().readTree(jsonParser);
-            if (isBlank(node.asText())) {
-                return null;
-            }
-            return ZonedDateTime.parse(node.asText(), DateTimeFormatter.ISO_DATE_TIME);
-        }
     }
 
     private static class TestnavLocalDateDeserializer extends JsonDeserializer<LocalDate> {
