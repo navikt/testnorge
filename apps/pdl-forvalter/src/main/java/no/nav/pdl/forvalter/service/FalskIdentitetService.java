@@ -18,6 +18,7 @@ import java.util.List;
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -92,11 +93,11 @@ public class FalskIdentitetService {
 
         if (nonNull(identitet.getRettIdentitetVedOpplysninger()) &&
                 nonNull(identitet.getRettIdentitetVedOpplysninger().getPersonnavn()) &&
-                !genererNavnServiceConsumer.verifyNavn(no.nav.registre.testnorge.libs.dto.generernavnservice.v1.NavnDTO.builder()
+                isFalse(genererNavnServiceConsumer.verifyNavn(no.nav.registre.testnorge.libs.dto.generernavnservice.v1.NavnDTO.builder()
                         .adjektiv(identitet.getRettIdentitetVedOpplysninger().getPersonnavn().getFornavn())
                         .adverb(identitet.getRettIdentitetVedOpplysninger().getPersonnavn().getMellomnavn())
                         .substantiv(identitet.getRettIdentitetVedOpplysninger().getPersonnavn().getEtternavn())
-                        .build())) {
+                        .build()))) {
             throw new InvalidRequestException(VALIDATION_UGYLDIG_NAVN_ERROR);
         }
 

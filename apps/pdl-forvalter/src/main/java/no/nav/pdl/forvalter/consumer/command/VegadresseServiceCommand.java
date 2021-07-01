@@ -62,8 +62,8 @@ public class VegadresseServiceCommand implements Callable<Mono<VegadresseDTO[]>>
 
     private MultiValueMap<String, String> getQuery() {
 
-        return new LinkedMultiValueMap(
-                new LinkedHashMap(Map.of(
+        return new LinkedMultiValueMap<>(
+                new LinkedHashMap<>(Map.of(
                         "matrikkelId", filterArtifact(matrikkelId),
                         "adressenavn", filterArtifact(query.getAdressenavn()),
                         "husnummer", filterArtifact(query.getHusnummer()),
@@ -73,6 +73,6 @@ public class VegadresseServiceCommand implements Callable<Mono<VegadresseDTO[]>>
                         "tilleggsnavn", filterArtifact(query.getAdressetilleggsnavn()))
                         .entrySet().stream()
                         .filter(entry -> isNotBlank(entry.getValue()))
-                        .collect(Collectors.toMap(entry -> entry.getKey(), entry -> List.of(entry.getValue())))));
+                        .collect(Collectors.toMap(Map.Entry::getKey, entry -> List.of(entry.getValue())))));
     }
 }

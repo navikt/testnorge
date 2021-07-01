@@ -15,10 +15,8 @@ public class DoedsfallService {
 
         for (var type : request) {
 
-            if (isTrue(type.getIsNew())) {
-                if (isBlank(type.getKilde())) {
-                    type.setKilde("Dolly");
-                }
+            if (isTrue(type.getIsNew()) && isBlank(type.getKilde())) {
+                type.setKilde("Dolly");
             }
         }
 

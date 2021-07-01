@@ -70,7 +70,7 @@ public class MatrikkeladresseServiceCommand implements Callable<Mono<Matrikkelad
     private MultiValueMap<String, String> getQuery() {
 
         return new LinkedMultiValueMap<>(
-                new LinkedHashMap(
+                new LinkedHashMap<>(
                         Map.of("matrikkelId", filterArtifact(matrikkelId),
                                 "kommunenummer", filterArtifact(query.getKommunenummer()),
                                 "gaardsnummer", filterArtifact(nullcheck(query.getGaardsnummer())),
@@ -79,6 +79,6 @@ public class MatrikkeladresseServiceCommand implements Callable<Mono<Matrikkelad
                                 "tilleggsnavn", filterArtifact(query.getAdressetilleggsnavn()))
                                 .entrySet().stream()
                                 .filter(entry -> isNotBlank(entry.getValue()))
-                                .collect(Collectors.toMap(entry -> entry.getKey(), entry -> List.of(entry.getValue())))));
+                                .collect(Collectors.toMap(Map.Entry::getKey, entry -> List.of(entry.getValue())))));
     }
 }

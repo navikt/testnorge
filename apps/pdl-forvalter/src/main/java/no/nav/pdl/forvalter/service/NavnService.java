@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -29,11 +30,11 @@ public class NavnService extends PdlArtifactService<NavnDTO> {
         if ((isNotBlank(navn.getFornavn()) ||
                 isNotBlank(navn.getMellomnavn()) ||
                 isNotBlank(navn.getEtternavn())) &&
-                !genererNavnServiceConsumer.verifyNavn(no.nav.registre.testnorge.libs.dto.generernavnservice.v1.NavnDTO.builder()
+                isFalse(genererNavnServiceConsumer.verifyNavn(no.nav.registre.testnorge.libs.dto.generernavnservice.v1.NavnDTO.builder()
                         .adjektiv(navn.getFornavn())
                         .adverb(navn.getMellomnavn())
                         .substantiv(navn.getEtternavn())
-                        .build())) {
+                        .build()))) {
 
             throw new InvalidRequestException(NAVN_INVALID_ERROR);
         }

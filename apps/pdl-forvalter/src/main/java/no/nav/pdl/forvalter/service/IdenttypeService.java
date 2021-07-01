@@ -58,13 +58,17 @@ public class IdenttypeService {
         return nonNull(ident) ? IdenttypeFraIdentUtility.getIdenttype(ident) : FNR;
     }
 
+    private static Kjoenn getTilfeldigKjoenn() {
+
+        return secureRandom.nextBoolean() ? MANN : KVINNE;
+    }
+
     private static Kjoenn getKjoenn(IdentRequestDTO request, String ident) {
 
         if (nonNull(request.getKjoenn()) && request.getKjoenn() != UKJENT) {
             return request.getKjoenn();
         }
-        return nonNull(ident) ? KjoennFraIdentUtility.getKjoenn(ident) :
-                secureRandom.nextBoolean() ? MANN : KVINNE;
+        return nonNull(ident) ? KjoennFraIdentUtility.getKjoenn(ident) : getTilfeldigKjoenn();
     }
 
     private static LocalDateTime getFoedtFoer(IdentRequestDTO request, String ident) {
@@ -113,7 +117,7 @@ public class IdenttypeService {
 
     private void validate(IdentRequestDTO request) {
 
-        if (nonNull(request.getIdenttype()) & FNR != request.getIdenttype() &&
+        if (nonNull(request.getIdenttype()) && FNR != request.getIdenttype() &&
                 DNR != request.getIdenttype() && BOST != request.getIdenttype()) {
             throw new InvalidRequestException(VALIDATION_IDENTTYPE_INVALID);
         }

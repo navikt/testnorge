@@ -23,7 +23,7 @@ public class PersonRequestDTO implements Serializable {
     private LocalDateTime foedtFoer;
     private Integer alder;
     private Boolean syntetisk;
-    
+
     private NyttNavnDTO nyttNavn;
 
     @Data
@@ -31,7 +31,7 @@ public class PersonRequestDTO implements Serializable {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class NyttNavnDTO {
+    public static class NyttNavnDTO implements Serializable {
 
         private boolean harMellomnavn;
     }

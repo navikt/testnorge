@@ -51,25 +51,30 @@ public class MergeService {
                         .max().orElse(0));
 
                 infoElementRequest.forEach(requestElement -> {
-                    if (infoElementDbPerson.stream()
-                            .anyMatch(dbElement -> nonNull(requestElement.getId()) && requestElement.getId().equals(dbElement.getId()))) {
-                        for (var i = 0; i < infoElementDbPerson.size(); i++) {
-                            if (infoElementDbPerson.get(i).getId().equals(requestElement.getId())) {
-                                infoElementDbPerson.set(i, mapperFacade.map(requestElement, infoElementDbPerson.get(i).getClass()));
-                            }
-                        }
-                    } else if (nonNull(requestElement.getId()) && requestElement.getId() > dbId.get()) {
-                        throw new InvalidRequestException(
-                                format("Merge-error: id:%s ikke funnet for element:'%s'", requestElement.getId(), field.getName()));
-                    } else {
-                        requestElement.setId(dbId.incrementAndGet());
-                        requestElement.setIsNew(true);
-                        infoElementDbPerson.add(0, mapperFacade.map(requestElement, requestElement.getClass()));
-                    }
+                    mergeElements(field, infoElementDbPerson, dbId, requestElement);
                 });
             }
         });
 
         return dbPerson;
+    }
+
+    private void mergeElements(java.lang.reflect.Field field, List<DbVersjonDTO> infoElementDbPerson, AtomicInteger dbId, DbVersjonDTO requestElement) {
+
+        if (infoElementDbPerson.stream()
+                .anyMatch(dbElement -> nonNull(requestElement.getId()) && requestElement.getId().equals(dbElement.getId()))) {
+            for (var i = 0; i < infoElementDbPerson.size(); i++) {
+                if (infoElementDbPerson.get(i).getId().equals(requestElement.getId())) {
+                    infoElementDbPerson.set(i, mapperFacade.map(requestElement, infoElementDbPerson.get(i).getClass()));
+                }
+            }
+        } else if (nonNull(requestElement.getId()) && requestElement.getId() > dbId.get()) {
+            throw new InvalidRequestException(
+                    format("Merge-error: id:%s ikke funnet for element:'%s'", requestElement.getId(), field.getName()));
+        } else {
+            requestElement.setId(dbId.incrementAndGet());
+            requestElement.setIsNew(true);
+            infoElementDbPerson.add(0, mapperFacade.map(requestElement, requestElement.getClass()));
+        }
     }
 }
