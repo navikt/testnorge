@@ -52,6 +52,9 @@ export const UtenlandsoppholdForm = ({
 		})
 	}
 
+	//! Har disablet changehandlers fordi de mest sannsynlig ikke er nødvendige, og de kompliserer skjemaet mye.
+	//! Lar dem bli liggende en stund i tilfelle det blir behov for dem.
+
 	return (
 		<FormikDollyFieldArray
 			name={path}
@@ -59,8 +62,8 @@ export const UtenlandsoppholdForm = ({
 			hjelpetekst={infotekst}
 			newEntry={initialUtenlandsopphold}
 			nested
-			handleNewEntry={maaneder ? handleNewEntry : null}
-			handleRemoveEntry={maaneder ? handleRemoveEntry : null}
+			// handleNewEntry={maaneder ? handleNewEntry : null}
+			// handleRemoveEntry={maaneder ? handleRemoveEntry : null}
 		>
 			{(path, idx) => (
 				<div key={idx} className="flexbox">
@@ -70,17 +73,17 @@ export const UtenlandsoppholdForm = ({
 						kodeverk={AdresseKodeverk.ArbeidOgInntektLand}
 						isClearable={false}
 						size="large"
-						onChange={onChangeLenket(`utenlandsopphold[${idx}].land`)}
+						// onChange={onChangeLenket(`utenlandsopphold[${idx}].land`)}
 					/>
 					<FormikDatepicker
 						name={`${path}.periode.fom`}
 						label="Opphold fra"
-						onChange={onChangeLenket(`utenlandsopphold[${idx}].periode.fom`)}
+						// onChange={onChangeLenket(`utenlandsopphold[${idx}].periode.fom`)}
 					/>
 					<FormikDatepicker
 						name={`${path}.periode.tom`}
 						label="Opphold til"
-						onChange={onChangeLenket(`utenlandsopphold[${idx}].periode.tom`)}
+						// onChange={onChangeLenket(`utenlandsopphold[${idx}].periode.tom`)}
 					/>
 				</div>
 			)}

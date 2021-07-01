@@ -12,6 +12,7 @@ import {
 	initialArbeidsforholdPers
 } from '../initialValues'
 import { ArbeidsgiverTyper } from '~/components/fagsystem/aareg/AaregTypes'
+import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 
 const ToggleArbeidsgiver = styled(ToggleGruppe)`
 	display: grid;
@@ -103,27 +104,34 @@ export const ArbeidsforholdToggle = ({ formikBag }) => {
 			{typeArbeidsgiver === ArbeidsgiverTyper.egen ? (
 				<AmeldingForm formikBag={formikBag} />
 			) : (
-				<FormikDollyFieldArray
-					name={`aareg[0].arbeidsforhold`}
-					header="Arbeidsforhold"
-					newEntry={
-						typeArbeidsgiver === ArbeidsgiverTyper.privat
-							? initialArbeidsforholdPers
-							: initialArbeidsforholdOrg
-					}
-					canBeEmpty={false}
-				>
-					{(path, idx) => (
-						<ArbeidsforholdForm
-							path={path}
-							key={idx}
-							arbeidsforholdIndex={idx}
-							formikBag={formikBag}
-							erLenket={null}
-							arbeidsgiverType={typeArbeidsgiver}
-						/>
-					)}
-				</FormikDollyFieldArray>
+				<>
+					<AlertStripeInfo>
+						For denne typen arbeidsgiver er det ikke mulig å registrere nye attributter som
+						sluttårsak, ansettelsesform, endringsdato lønn og fartøy. For å bestille testbrukere med
+						disse attributtene må du bruke egen organisasjon for å opprette A-meldinger.
+					</AlertStripeInfo>
+					<FormikDollyFieldArray
+						name={`aareg[0].arbeidsforhold`}
+						header="Arbeidsforhold"
+						newEntry={
+							typeArbeidsgiver === ArbeidsgiverTyper.privat
+								? initialArbeidsforholdPers
+								: initialArbeidsforholdOrg
+						}
+						canBeEmpty={false}
+					>
+						{(path, idx) => (
+							<ArbeidsforholdForm
+								path={path}
+								key={idx}
+								arbeidsforholdIndex={idx}
+								formikBag={formikBag}
+								erLenket={null}
+								arbeidsgiverType={typeArbeidsgiver}
+							/>
+						)}
+					</FormikDollyFieldArray>
+				</>
 			)}
 		</div>
 	)

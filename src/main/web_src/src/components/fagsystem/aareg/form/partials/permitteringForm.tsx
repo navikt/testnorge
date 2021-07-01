@@ -57,6 +57,9 @@ export const PermitteringForm = ({
 		})
 	}
 
+	//! Har disablet changehandlers fordi de mest sannsynlig ikke er nødvendige, og de kompliserer skjemaet mye.
+	//! Lar dem bli liggende en stund i tilfelle det blir behov for dem.
+
 	return (
 		<FormikDollyFieldArray
 			name={path}
@@ -64,26 +67,26 @@ export const PermitteringForm = ({
 			hjelpetekst={infotekst}
 			newEntry={initialPermittering}
 			nested
-			handleNewEntry={maaneder ? handleNewEntry : null}
-			handleRemoveEntry={maaneder ? handleRemoveEntry : null}
+			// handleNewEntry={maaneder ? handleNewEntry : null}
+			// handleRemoveEntry={maaneder ? handleRemoveEntry : null}
 		>
 			{(path, idx) => (
 				<React.Fragment key={idx}>
 					<FormikDatepicker
 						name={`${path}.permitteringsPeriode.fom`}
 						label="Permittering fra"
-						onChange={onChangeLenket(`permittering[${idx}].permitteringsPeriode.fom`)}
+						// onChange={onChangeLenket(`permittering[${idx}].permitteringsPeriode.fom`)}
 					/>
 					<FormikDatepicker
 						name={`${path}.permitteringsPeriode.tom`}
 						label="Permittering til"
-						onChange={onChangeLenket(`permittering[${idx}].permitteringsPeriode.tom`)}
+						// onChange={onChangeLenket(`permittering[${idx}].permitteringsPeriode.tom`)}
 					/>
 					<FormikTextInput
 						name={`${path}.permitteringsprosent`}
 						label="Permitteringsprosent"
 						type="number"
-						onChange={onChangeLenket(`permittering[${idx}].permitteringsprosent`)}
+						// onChange={onChangeLenket(`permittering[${idx}].permitteringsprosent`)}
 					/>
 				</React.Fragment>
 			)}

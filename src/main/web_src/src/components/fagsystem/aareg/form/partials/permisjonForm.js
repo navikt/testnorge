@@ -50,6 +50,9 @@ export const PermisjonForm = ({
 		})
 	}
 
+	//! Har disablet changehandlers fordi de mest sannsynlig ikke er nødvendige, og de kompliserer skjemaet mye.
+	//! Lar dem bli liggende en stund i tilfelle det blir behov for dem.
+
 	return (
 		<FormikDollyFieldArray
 			name={path}
@@ -57,8 +60,8 @@ export const PermisjonForm = ({
 			hjelpetekst={infotekst}
 			newEntry={initialPermisjon}
 			nested
-			handleNewEntry={maaneder ? handleNewEntry : null}
-			handleRemoveEntry={maaneder ? handleRemoveEntry : null}
+			// handleNewEntry={maaneder ? handleNewEntry : null}
+			// handleRemoveEntry={maaneder ? handleRemoveEntry : null}
 		>
 			{(path, idx) => (
 				<React.Fragment key={idx}>
@@ -68,23 +71,23 @@ export const PermisjonForm = ({
 						kodeverk={ArbeidKodeverk.PermisjonsOgPermitteringsBeskrivelse}
 						isClearable={false}
 						size="large"
-						onChange={onChangeLenket(`permisjon[${idx}].permisjon`)}
+						// onChange={onChangeLenket(`permisjon[${idx}].permisjon`)}
 					/>
 					<FormikDatepicker
 						name={`${path}.permisjonsPeriode.fom`}
 						label="Permisjon fra"
-						onChange={onChangeLenket(`permisjon[${idx}].permisjonsPeriode.fom`)}
+						// onChange={onChangeLenket(`permisjon[${idx}].permisjonsPeriode.fom`)}
 					/>
 					<FormikDatepicker
 						name={`${path}.permisjonsPeriode.tom`}
 						label="Permisjon til"
-						onChange={onChangeLenket(`permisjon[${idx}].permisjonsPeriode.tom`)}
+						// onChange={onChangeLenket(`permisjon[${idx}].permisjonsPeriode.tom`)}
 					/>
 					<FormikTextInput
 						name={`${path}.permisjonsprosent`}
 						label="Permisjonsprosent"
 						type="number"
-						onChange={onChangeLenket(`permisjon[${idx}].permisjonsprosent`)}
+						// onChange={onChangeLenket(`permisjon[${idx}].permisjonsprosent`)}
 					/>
 				</React.Fragment>
 			)}

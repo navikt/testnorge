@@ -18,36 +18,39 @@ export const TimeloennetForm = ({
 }) => {
 	const maaneder = _get(formikBag.values, 'aareg[0].amelding')
 
-	// const handleNewEntry = () => {
-	// 	if (!maaneder) return
-	// 	maaneder.forEach((maaned, idMaaned) => {
-	// 		if (!erLenket && idMaaned != ameldingIndex) return
-	// 		const currTimeloennet = _get(
-	// 			formikBag.values,
-	// 			`aareg[0].amelding[${idMaaned}].arbeidsforhold[${arbeidsforholdIndex}].antallTimerForTimeloennet`
-	// 		)
-	// 		formikBag.setFieldValue(
-	// 			`aareg[0].amelding[${idMaaned}].arbeidsforhold[${arbeidsforholdIndex}].antallTimerForTimeloennet`,
-	// 			currTimeloennet ? [...currTimeloennet, initialTimeloennet] : [initialTimeloennet]
-	// 		)
-	// 	})
-	// }
+	const handleNewEntry = () => {
+		if (!maaneder) return
+		maaneder.forEach((maaned, idMaaned) => {
+			if (!erLenket && idMaaned != ameldingIndex) return
+			const currTimeloennet = _get(
+				formikBag.values,
+				`aareg[0].amelding[${idMaaned}].arbeidsforhold[${arbeidsforholdIndex}].antallTimerForTimeloennet`
+			)
+			formikBag.setFieldValue(
+				`aareg[0].amelding[${idMaaned}].arbeidsforhold[${arbeidsforholdIndex}].antallTimerForTimeloennet`,
+				currTimeloennet ? [...currTimeloennet, initialTimeloennet] : [initialTimeloennet]
+			)
+		})
+	}
 
-	// const handleRemoveEntry = idTimeloennet => {
-	// 	if (!maaneder) return
-	// 	maaneder.forEach((maaned, idMaaned) => {
-	// 		if (!erLenket && idMaaned != ameldingIndex) return
-	// 		const currTimeloennet = _get(
-	// 			formikBag.values,
-	// 			`aareg[0].amelding[${idMaaned}].arbeidsforhold[${arbeidsforholdIndex}].antallTimerForTimeloennet`
-	// 		)
-	// 		currTimeloennet.splice(idTimeloennet, 1)
-	// 		formikBag.setFieldValue(
-	// 			`aareg[0].amelding[${idMaaned}].arbeidsforhold[${arbeidsforholdIndex}].antallTimerForTimeloennet`,
-	// 			currTimeloennet
-	// 		)
-	// 	})
-	// }
+	const handleRemoveEntry = idTimeloennet => {
+		if (!maaneder) return
+		maaneder.forEach((maaned, idMaaned) => {
+			if (!erLenket && idMaaned != ameldingIndex) return
+			const currTimeloennet = _get(
+				formikBag.values,
+				`aareg[0].amelding[${idMaaned}].arbeidsforhold[${arbeidsforholdIndex}].antallTimerForTimeloennet`
+			)
+			currTimeloennet.splice(idTimeloennet, 1)
+			formikBag.setFieldValue(
+				`aareg[0].amelding[${idMaaned}].arbeidsforhold[${arbeidsforholdIndex}].antallTimerForTimeloennet`,
+				currTimeloennet
+			)
+		})
+	}
+
+	//! Har disablet changehandlers fordi de mest sannsynlig ikke er nødvendige, og de kompliserer skjemaet mye.
+	//! Lar dem bli liggende en stund i tilfelle det blir behov for dem.
 
 	return (
 		<FormikDollyFieldArray
