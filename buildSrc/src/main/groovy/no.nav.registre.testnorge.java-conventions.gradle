@@ -16,6 +16,7 @@ repositories {
             username 'token'
         }
     }
+    maven { url 'https://jitpack.io' }
     maven {
         url = uri('http://packages.confluent.io/maven/')
         allowInsecureProtocol = true

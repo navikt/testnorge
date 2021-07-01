@@ -25,6 +25,7 @@ public class RsArbeidsavtale {
     private String arbeidstidsordning;
     private String avloenningstype;
     private Double avtaltArbeidstimerPerUke;
+    private String ansettelsesform;
 
     @JsonSerialize(using = JsonDateSerializer.class)
     @JsonDeserialize(using = JsonDateDeserializer.class)
@@ -33,6 +34,10 @@ public class RsArbeidsavtale {
     @JsonSerialize(using = JsonDateSerializer.class)
     @JsonDeserialize(using = JsonDateDeserializer.class)
     private LocalDateTime sisteLoennsendringsdato;
+
+    @JsonSerialize(using = JsonDateSerializer.class)
+    @JsonDeserialize(using = JsonDateDeserializer.class)
+    private LocalDateTime endringsdatoLoenn;
 
     private Double stillingsprosent;
     private String yrke;

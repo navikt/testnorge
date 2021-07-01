@@ -11,6 +11,7 @@ import no.nav.registre.aareg.util.JsonDateDeserializer;
 import no.nav.registre.aareg.util.JsonDateSerializer;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -26,4 +27,6 @@ public class RsPeriode {
     @JsonSerialize(using = JsonDateSerializer.class)
     @JsonDeserialize(using = JsonDateDeserializer.class)
     private LocalDateTime tom;
+
+    private List<String> periode;
 }

@@ -24,6 +24,7 @@ public class RsArbeidsforhold {
     private Long arbeidsforholdIDnav;
     private String arbeidsforholdstype;
     private RsAktoer arbeidsgiver;
+    private List<RsFartoy> fartoy;
     private RsPersonAareg arbeidstaker;
     private List<RsPermisjon> permisjon;
     private List<RsUtenlandsopphold> utenlandsopphold;
