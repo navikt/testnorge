@@ -104,6 +104,7 @@ class KontaktAdresseServiceTest {
 
         var request = List.of(KontaktadresseDTO.builder()
                 .master(PDL)
+                .postboksadresse(new PostboksadresseDTO())
                 .isNew(true)
                 .build());
 

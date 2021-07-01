@@ -134,6 +134,11 @@ class OppholdsadresseServiceTest {
     @Test
     void whenOverlappingDateIntervalsInInput_thenThrowExecption() {
 
+        when(adresseServiceConsumer.getVegadresse(any(VegadresseDTO.class), isNull()))
+                .thenReturn(new no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO());
+        when(adresseServiceConsumer.getMatrikkeladresse(any(MatrikkeladresseDTO.class), any()))
+                .thenReturn(new no.nav.registre.testnorge.libs.dto.adresseservice.v1.MatrikkeladresseDTO());
+
         var request = List.of(OppholdsadresseDTO.builder()
                         .vegadresse(new VegadresseDTO())
                         .gyldigFraOgMed(LocalDate.of(2020, 1, 2).atStartOfDay())
@@ -145,8 +150,6 @@ class OppholdsadresseServiceTest {
                         .isNew(true)
                         .build());
 
-        when(adresseServiceConsumer.getVegadresse(any(VegadresseDTO.class), isNull())).thenReturn(new no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO());
-
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 oppholdsadresseService.convert(request));
 
@@ -155,6 +158,9 @@ class OppholdsadresseServiceTest {
 
     @Test
     void whenOverlappingDateIntervalsInInput2_thenThrowExecption() {
+
+        when(adresseServiceConsumer.getMatrikkeladresse(any(MatrikkeladresseDTO.class), any()))
+                .thenReturn(new no.nav.registre.testnorge.libs.dto.adresseservice.v1.MatrikkeladresseDTO());
 
         var request = List.of(OppholdsadresseDTO.builder()
                         .gyldigFraOgMed(LocalDate.of(2020, 2, 3).atStartOfDay())
@@ -176,6 +182,9 @@ class OppholdsadresseServiceTest {
 
     @Test
     void whenFraDatoAndEmptyTilDato_thenAcceptRequest() {
+
+        when(adresseServiceConsumer.getMatrikkeladresse(any(MatrikkeladresseDTO.class), any()))
+                .thenReturn(new no.nav.registre.testnorge.libs.dto.adresseservice.v1.MatrikkeladresseDTO());
 
         var target = oppholdsadresseService.convert(List.of(OppholdsadresseDTO.builder()
                 .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())

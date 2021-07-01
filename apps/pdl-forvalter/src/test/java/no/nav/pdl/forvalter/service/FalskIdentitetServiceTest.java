@@ -40,14 +40,14 @@ class FalskIdentitetServiceTest {
     @Test
     void whenAttributeErFalskIsMissing_thenThrowExecption() {
 
-        var request = List.of(FalskIdentitetDTO.builder()
-                .isNew(true)
-                .build());
+        var request = PersonDTO.builder()
+                .falskIdentitet(List.of(FalskIdentitetDTO.builder()
+                        .isNew(true)
+                        .build()))
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                falskIdentitetService.convert(PersonDTO.builder()
-                        .falskIdentitet((List<FalskIdentitetDTO>) request)
-                        .build()));
+                falskIdentitetService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Falskidentitet: attribute erFalsk må oppgis"));
     }
@@ -55,17 +55,17 @@ class FalskIdentitetServiceTest {
     @Test
     void whenUgyldigDatoInterval_thenThrowExecption() {
 
-        var request = List.of(FalskIdentitetDTO.builder()
-                .erFalsk(true)
-                .gyldigFom(LocalDate.of(2012, 04, 05).atStartOfDay())
-                .gyldigTom(LocalDate.of(2012, 04, 04).atStartOfDay())
-                .isNew(true)
-                .build());
+        var request = PersonDTO.builder()
+                .falskIdentitet(List.of(FalskIdentitetDTO.builder()
+                        .erFalsk(true)
+                        .gyldigFom(LocalDate.of(2012, 04, 05).atStartOfDay())
+                        .gyldigTom(LocalDate.of(2012, 04, 04).atStartOfDay())
+                        .isNew(true)
+                        .build()))
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                falskIdentitetService.convert(PersonDTO.builder()
-                        .falskIdentitet((List<FalskIdentitetDTO>) request)
-                        .build()));
+                falskIdentitetService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Ugyldig datointervall: gyldigFom må være før gyldigTom"));
     }
@@ -73,17 +73,17 @@ class FalskIdentitetServiceTest {
     @Test
     void whenTooManyRettIdenitetStated_thenThrowExecption() {
 
-        var request = List.of(FalskIdentitetDTO.builder()
-                .erFalsk(true)
-                .rettIdentitetErUkjent(true)
-                .rettIdentitetVedOpplysninger(new FalskIdentitetDTO.IdentifiserendeInformasjonDTO())
-                .isNew(true)
-                .build());
+        var request = PersonDTO.builder()
+                .falskIdentitet(List.of(FalskIdentitetDTO.builder()
+                        .erFalsk(true)
+                        .rettIdentitetErUkjent(true)
+                        .rettIdentitetVedOpplysninger(new FalskIdentitetDTO.IdentifiserendeInformasjonDTO())
+                        .isNew(true)
+                        .build()))
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                falskIdentitetService.convert(PersonDTO.builder()
-                        .falskIdentitet((List<FalskIdentitetDTO>) request)
-                        .build()));
+                falskIdentitetService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Falsk identitet: Maksimalt en av disse skal være satt: " +
                 "rettIdentitetVedOpplysninger, rettIdentitetErUkjent, rettIdentitetVedIdentifikasjonsnummer eller nyFalskIdentitet"));
@@ -94,16 +94,16 @@ class FalskIdentitetServiceTest {
 
         when(personRepository.existsByIdent(IDENT)).thenReturn(false);
 
-        var request = List.of(FalskIdentitetDTO.builder()
-                .erFalsk(true)
-                .rettIdentitetVedIdentifikasjonsnummer(IDENT)
-                .isNew(true)
-                .build());
+        var request = PersonDTO.builder()
+                .falskIdentitet(List.of(FalskIdentitetDTO.builder()
+                        .erFalsk(true)
+                        .rettIdentitetVedIdentifikasjonsnummer(IDENT)
+                        .isNew(true)
+                        .build()))
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                falskIdentitetService.convert(PersonDTO.builder()
-                        .falskIdentitet((List<FalskIdentitetDTO>) request)
-                        .build()));
+                falskIdentitetService.convert(request));
 
         assertThat(exception.getMessage(), containsString(format("Oppgitt person for falsk identitet %s ikke funnet i database", IDENT)));
     }
@@ -111,16 +111,16 @@ class FalskIdentitetServiceTest {
     @Test
     void whenStatsborgerskapDoesNotExist_thenThrowExecption() {
 
-        var request = List.of(FalskIdentitetDTO.builder()
-                .erFalsk(true)
-                .rettIdentitetVedOpplysninger(new FalskIdentitetDTO.IdentifiserendeInformasjonDTO())
-                .isNew(true)
-                .build());
+        var request = PersonDTO.builder()
+                .falskIdentitet(List.of(FalskIdentitetDTO.builder()
+                        .erFalsk(true)
+                        .rettIdentitetVedOpplysninger(new FalskIdentitetDTO.IdentifiserendeInformasjonDTO())
+                        .isNew(true)
+                        .build()))
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                falskIdentitetService.convert(PersonDTO.builder()
-                        .falskIdentitet((List<FalskIdentitetDTO>) request)
-                        .build()));
+                falskIdentitetService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Falsk identitet: statborgerskap må oppgis"));
     }
@@ -130,18 +130,18 @@ class FalskIdentitetServiceTest {
 
         when(genererNavnServiceConsumer.verifyNavn(any(no.nav.registre.testnorge.libs.dto.generernavnservice.v1.NavnDTO.class))).thenReturn(false);
 
-        var request = List.of(FalskIdentitetDTO.builder()
-                .erFalsk(true)
-                .rettIdentitetVedOpplysninger(FalskIdentitetDTO.IdentifiserendeInformasjonDTO.builder()
-                        .personnavn(NavnDTO.builder().etternavn(INVALID_NAME).build())
-                        .build())
-                .isNew(true)
-                .build());
+        var request = PersonDTO.builder()
+                .falskIdentitet(List.of(FalskIdentitetDTO.builder()
+                        .erFalsk(true)
+                        .rettIdentitetVedOpplysninger(FalskIdentitetDTO.IdentifiserendeInformasjonDTO.builder()
+                                .personnavn(NavnDTO.builder().etternavn(INVALID_NAME).build())
+                                .build())
+                        .isNew(true)
+                        .build()))
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                falskIdentitetService.convert(PersonDTO.builder()
-                        .falskIdentitet((List<FalskIdentitetDTO>) request)
-                        .build()));
+                falskIdentitetService.convert(request));
 
         assertThat(exception.getMessage(), containsString("Falsik identitet: Navn er ikke i liste over gyldige verdier"));
     }

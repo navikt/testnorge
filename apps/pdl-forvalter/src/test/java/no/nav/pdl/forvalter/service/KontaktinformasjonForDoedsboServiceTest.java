@@ -25,7 +25,6 @@ import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.Kontaktinformas
 import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.KontaktpersonUtenIdNummerDTO;
 import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.PdlSkifteform.OFFENTLIG;
 import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.PersonNavnDTO;
-import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.builder;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -53,14 +52,14 @@ class KontaktinformasjonForDoedsboServiceTest {
     @Test
     void whenSkifteformIsMissing_thenThrowExecption() {
 
-        var request = List.of(builder()
-                .isNew(true)
-                .build());
+        var request = PersonDTO.builder()
+                .kontaktinformasjonForDoedsbo(List.of(KontaktinformasjonForDoedsboDTO.builder()
+                        .isNew(true)
+                        .build()))
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktinformasjonForDoedsboService.convert(PersonDTO.builder()
-                        .kontaktinformasjonForDoedsbo((List<KontaktinformasjonForDoedsboDTO>) request)
-                        .build()));
+                kontaktinformasjonForDoedsboService.convert(request));
 
         assertThat(exception.getMessage(), containsString("KontaktinformasjonForDoedsbo: Skifteform må angis"));
     }
@@ -68,15 +67,15 @@ class KontaktinformasjonForDoedsboServiceTest {
     @Test
     void whenAdressatIsMissing_thenThrowExecption() {
 
-        var request = List.of(builder()
-                .skifteform(OFFENTLIG)
-                .isNew(true)
-                .build());
+        var request = PersonDTO.builder()
+                .kontaktinformasjonForDoedsbo(List.of(KontaktinformasjonForDoedsboDTO.builder()
+                        .skifteform(OFFENTLIG)
+                        .isNew(true)
+                        .build()))
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktinformasjonForDoedsboService.convert(PersonDTO.builder()
-                        .kontaktinformasjonForDoedsbo((List<KontaktinformasjonForDoedsboDTO>) request)
-                        .build()));
+                kontaktinformasjonForDoedsboService.convert(request));
 
         assertThat(exception.getMessage(), containsString("KontaktinformasjonForDoedsbo: addressat må oppgis"));
     }
@@ -84,19 +83,19 @@ class KontaktinformasjonForDoedsboServiceTest {
     @Test
     void whenMultipleAdressatExist_thenThrowExecption() {
 
-        var request = List.of(builder()
-                .skifteform(OFFENTLIG)
-                .adressat(AdressatDTO.builder()
-                        .advokatSomAdressat(new OrganisasjonDTO())
-                        .organisasjonSomAdressat(new OrganisasjonDTO())
-                        .build())
-                .isNew(true)
-                .build());
+        var request = PersonDTO.builder()
+                .kontaktinformasjonForDoedsbo(List.of(KontaktinformasjonForDoedsboDTO.builder()
+                        .skifteform(OFFENTLIG)
+                        .adressat(AdressatDTO.builder()
+                                .advokatSomAdressat(new OrganisasjonDTO())
+                                .organisasjonSomAdressat(new OrganisasjonDTO())
+                                .build())
+                        .isNew(true)
+                        .build()))
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktinformasjonForDoedsboService.convert(PersonDTO.builder()
-                        .kontaktinformasjonForDoedsbo((List<KontaktinformasjonForDoedsboDTO>) request)
-                        .build()));
+                kontaktinformasjonForDoedsboService.convert(request));
 
         assertThat(exception.getMessage(), containsString("KontaktinformasjonForDoedsbo: kun en av disse " +
                 "adressater skal oppgis: advokatSomAdressat, kontaktpersonMedIdNummerSomAdressat, " +
@@ -108,20 +107,20 @@ class KontaktinformasjonForDoedsboServiceTest {
 
         when(personRepository.existsByIdent(IDENT)).thenReturn(false);
 
-        var request = List.of(builder()
-                .skifteform(OFFENTLIG)
-                .adressat(AdressatDTO.builder()
-                        .kontaktpersonMedIdNummerSomAdressat(KontaktpersonMedIdNummerDTO.builder()
-                                .idnummer(IDENT)
+        var request = PersonDTO.builder()
+                .kontaktinformasjonForDoedsbo(List.of(KontaktinformasjonForDoedsboDTO.builder()
+                        .skifteform(OFFENTLIG)
+                        .adressat(AdressatDTO.builder()
+                                .kontaktpersonMedIdNummerSomAdressat(KontaktpersonMedIdNummerDTO.builder()
+                                        .idnummer(IDENT)
+                                        .build())
                                 .build())
-                        .build())
-                .isNew(true)
-                .build());
+                        .isNew(true)
+                        .build()))
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktinformasjonForDoedsboService.convert(PersonDTO.builder()
-                        .kontaktinformasjonForDoedsbo((List<KontaktinformasjonForDoedsboDTO>) request)
-                        .build()));
+                kontaktinformasjonForDoedsboService.convert(request));
 
         assertThat(exception.getMessage(), containsString(format("KontaktinformasjonForDoedsbo: adressat med idnummer %s " +
                 "ikke funnet i database", IDENT)));
@@ -130,18 +129,18 @@ class KontaktinformasjonForDoedsboServiceTest {
     @Test
     void whenAdressatUtenIdnumberLacksFoedselsdato_thenThrowExecption() {
 
-        var request = List.of(builder()
-                .skifteform(OFFENTLIG)
-                .adressat(AdressatDTO.builder()
-                        .kontaktpersonUtenIdNummerSomAdressat(new KontaktpersonUtenIdNummerDTO())
-                        .build())
-                .isNew(true)
-                .build());
+        var request = PersonDTO.builder()
+                .kontaktinformasjonForDoedsbo(List.of(KontaktinformasjonForDoedsboDTO.builder()
+                        .skifteform(OFFENTLIG)
+                        .adressat(AdressatDTO.builder()
+                                .kontaktpersonUtenIdNummerSomAdressat(new KontaktpersonUtenIdNummerDTO())
+                                .build())
+                        .isNew(true)
+                        .build()))
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktinformasjonForDoedsboService.convert(PersonDTO.builder()
-                        .kontaktinformasjonForDoedsbo((List<KontaktinformasjonForDoedsboDTO>) request)
-                        .build()));
+                kontaktinformasjonForDoedsboService.convert(request));
 
         assertThat(exception.getMessage(), containsString("KontaktinformasjonForDoedsbo: adressat uten idnummer " +
                 "behøver fødselsdato"));
@@ -152,21 +151,21 @@ class KontaktinformasjonForDoedsboServiceTest {
 
         when(genererNavnServiceConsumer.verifyNavn(any(NavnDTO.class))).thenReturn(false);
 
-        var request = List.of(builder()
-                .skifteform(OFFENTLIG)
-                .adressat(AdressatDTO.builder()
-                        .kontaktpersonUtenIdNummerSomAdressat(KontaktpersonUtenIdNummerDTO.builder()
-                                .foedselsdato(LocalDate.of(1984, 1, 1).atStartOfDay())
-                                .navn(PersonNavnDTO.builder().etternavn("Blæh").build())
+        var request = PersonDTO.builder()
+                .kontaktinformasjonForDoedsbo(List.of(KontaktinformasjonForDoedsboDTO.builder()
+                        .skifteform(OFFENTLIG)
+                        .adressat(AdressatDTO.builder()
+                                .kontaktpersonUtenIdNummerSomAdressat(KontaktpersonUtenIdNummerDTO.builder()
+                                        .foedselsdato(LocalDate.of(1984, 1, 1).atStartOfDay())
+                                        .navn(PersonNavnDTO.builder().etternavn("Blæh").build())
+                                        .build())
                                 .build())
-                        .build())
-                .isNew(true)
-                .build());
+                        .isNew(true)
+                        .build()))
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktinformasjonForDoedsboService.convert(PersonDTO.builder()
-                        .kontaktinformasjonForDoedsbo((List<KontaktinformasjonForDoedsboDTO>) request)
-                        .build()));
+                kontaktinformasjonForDoedsboService.convert(request));
 
         assertThat(exception.getMessage(), containsString("KontaktinformasjonForDoedsbo: adressat har ugyldig personnavn"));
     }
@@ -176,20 +175,20 @@ class KontaktinformasjonForDoedsboServiceTest {
 
         when(genererNavnServiceConsumer.verifyNavn(any(NavnDTO.class))).thenReturn(false);
 
-        var request = List.of(builder()
-                .skifteform(OFFENTLIG)
-                .adressat(AdressatDTO.builder()
-                        .advokatSomAdressat(OrganisasjonDTO.builder()
-                                .kontaktperson(PersonNavnDTO.builder().etternavn("Blæh").build())
+        var request = PersonDTO.builder()
+                .kontaktinformasjonForDoedsbo(List.of(KontaktinformasjonForDoedsboDTO.builder()
+                        .skifteform(OFFENTLIG)
+                        .adressat(AdressatDTO.builder()
+                                .advokatSomAdressat(OrganisasjonDTO.builder()
+                                        .kontaktperson(PersonNavnDTO.builder().etternavn("Blæh").build())
+                                        .build())
                                 .build())
-                        .build())
-                .isNew(true)
-                .build());
+                        .isNew(true)
+                        .build()))
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktinformasjonForDoedsboService.convert(PersonDTO.builder()
-                        .kontaktinformasjonForDoedsbo((List<KontaktinformasjonForDoedsboDTO>) request)
-                        .build()));
+                kontaktinformasjonForDoedsboService.convert(request));
 
         assertThat(exception.getMessage(), containsString("KontaktinformasjonForDoedsbo: adressat har ugyldig personnavn"));
     }
@@ -199,20 +198,20 @@ class KontaktinformasjonForDoedsboServiceTest {
 
         when(genererNavnServiceConsumer.verifyNavn(any(NavnDTO.class))).thenReturn(false);
 
-        var request = List.of(builder()
-                .skifteform(OFFENTLIG)
-                .adressat(AdressatDTO.builder()
-                        .organisasjonSomAdressat(OrganisasjonDTO.builder()
-                                .kontaktperson(PersonNavnDTO.builder().etternavn("Blæh").build())
+        var request = PersonDTO.builder()
+                .kontaktinformasjonForDoedsbo(List.of(KontaktinformasjonForDoedsboDTO.builder()
+                        .skifteform(OFFENTLIG)
+                        .adressat(AdressatDTO.builder()
+                                .organisasjonSomAdressat(OrganisasjonDTO.builder()
+                                        .kontaktperson(PersonNavnDTO.builder().etternavn("Blæh").build())
+                                        .build())
                                 .build())
-                        .build())
-                .isNew(true)
-                .build());
+                        .isNew(true)
+                        .build()))
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktinformasjonForDoedsboService.convert(PersonDTO.builder()
-                        .kontaktinformasjonForDoedsbo((List<KontaktinformasjonForDoedsboDTO>) request)
-                        .build()));
+                kontaktinformasjonForDoedsboService.convert(request));
 
         assertThat(exception.getMessage(), containsString("KontaktinformasjonForDoedsbo: adressat har ugyldig personnavn"));
     }
@@ -220,20 +219,20 @@ class KontaktinformasjonForDoedsboServiceTest {
     @Test
     void whenOrganisasjonSomAddressatHasOrgNavnWithoutOrgNumber_thenThrowExecption() {
 
-        var request = List.of(builder()
-                .skifteform(OFFENTLIG)
-                .adressat(AdressatDTO.builder()
-                        .organisasjonSomAdressat(OrganisasjonDTO.builder()
-                                .organisasjonsnavn("Tada")
+        var request = PersonDTO.builder()
+                .kontaktinformasjonForDoedsbo(List.of(KontaktinformasjonForDoedsboDTO.builder()
+                        .skifteform(OFFENTLIG)
+                        .adressat(AdressatDTO.builder()
+                                .organisasjonSomAdressat(OrganisasjonDTO.builder()
+                                        .organisasjonsnavn("Tada")
+                                        .build())
                                 .build())
-                        .build())
-                .isNew(true)
-                .build());
+                        .isNew(true)
+                        .build()))
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktinformasjonForDoedsboService.convert(PersonDTO.builder()
-                        .kontaktinformasjonForDoedsbo((List<KontaktinformasjonForDoedsboDTO>) request)
-                        .build()));
+                kontaktinformasjonForDoedsboService.convert(request));
 
         assertThat(exception.getMessage(), containsString("KontaktinformasjonForDoedsbo: organisajonsnavn kan " +
                 "ikke oppgis uten at organisasjonsnummer finnes"));
@@ -245,21 +244,21 @@ class KontaktinformasjonForDoedsboServiceTest {
         when(genererNavnServiceConsumer.verifyNavn(any(NavnDTO.class))).thenReturn(true);
         when(organisasjonForvalterConsumer.get(anyString())).thenReturn(new HashMap<>());
 
-        var request = List.of(builder()
-                .skifteform(OFFENTLIG)
-                .adressat(AdressatDTO.builder()
-                        .advokatSomAdressat(OrganisasjonDTO.builder()
-                                .kontaktperson(PersonNavnDTO.builder().etternavn("Blæh").build())
-                                .organisasjonsnummer("123456789")
+        var request = PersonDTO.builder()
+                .kontaktinformasjonForDoedsbo(List.of(KontaktinformasjonForDoedsboDTO.builder()
+                        .skifteform(OFFENTLIG)
+                        .adressat(AdressatDTO.builder()
+                                .advokatSomAdressat(OrganisasjonDTO.builder()
+                                        .kontaktperson(PersonNavnDTO.builder().etternavn("Blæh").build())
+                                        .organisasjonsnummer("123456789")
+                                        .build())
                                 .build())
-                        .build())
-                .isNew(true)
-                .build());
+                        .isNew(true)
+                        .build()))
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktinformasjonForDoedsboService.convert(PersonDTO.builder()
-                        .kontaktinformasjonForDoedsbo((List<KontaktinformasjonForDoedsboDTO>) request)
-                        .build()));
+                kontaktinformasjonForDoedsboService.convert(request));
 
         assertThat(exception.getMessage(), containsString("KontaktinformasjonForDoedsbo: organisajonsnummer er " +
                 "tomt og/eller angitt organisasjon finnes ikke i miljø"));
@@ -272,22 +271,22 @@ class KontaktinformasjonForDoedsboServiceTest {
         when(organisasjonForvalterConsumer.get(anyString())).thenReturn(Map.of("q1",
                 Map.of("organisasjonsnavn", "Toys")));
 
-        var request = List.of(builder()
-                .skifteform(OFFENTLIG)
-                .adressat(AdressatDTO.builder()
-                        .advokatSomAdressat(OrganisasjonDTO.builder()
-                                .kontaktperson(PersonNavnDTO.builder().etternavn("Blæh").build())
-                                .organisasjonsnummer("123456789")
-                                .organisasjonsnavn("Tull")
+        var request = PersonDTO.builder()
+                .kontaktinformasjonForDoedsbo(List.of(KontaktinformasjonForDoedsboDTO.builder()
+                        .skifteform(OFFENTLIG)
+                        .adressat(AdressatDTO.builder()
+                                .advokatSomAdressat(OrganisasjonDTO.builder()
+                                        .kontaktperson(PersonNavnDTO.builder().etternavn("Blæh").build())
+                                        .organisasjonsnummer("123456789")
+                                        .organisasjonsnavn("Tull")
+                                        .build())
                                 .build())
-                        .build())
-                .isNew(true)
-                .build());
+                        .isNew(true)
+                        .build()))
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktinformasjonForDoedsboService.convert(PersonDTO.builder()
-                        .kontaktinformasjonForDoedsbo((List<KontaktinformasjonForDoedsboDTO>) request)
-                        .build()));
+                kontaktinformasjonForDoedsboService.convert(request));
 
         assertThat(exception.getMessage(), containsString("KontaktinformasjonForDoedsbo: organisajonsnummer er tomt " +
                 "og/eller angitt organisasjon finnes ikke i miljø"));

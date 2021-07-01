@@ -135,6 +135,11 @@ class BostedAdresseServiceTest {
     @Test
     void whenOverlappingDateIntervalsInInput_thenThrowExecption() {
 
+        when(adresseServiceConsumer.getVegadresse(any(VegadresseDTO.class), isNull()))
+                .thenReturn(new no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO());
+        when(adresseServiceConsumer.getMatrikkeladresse(any(MatrikkeladresseDTO.class), any()))
+                .thenReturn(new no.nav.registre.testnorge.libs.dto.adresseservice.v1.MatrikkeladresseDTO());
+
         var request = List.of(BostedadresseDTO.builder()
                         .vegadresse(new VegadresseDTO())
                         .gyldigFraOgMed(LocalDate.of(2020, 1, 2).atStartOfDay())
@@ -146,8 +151,6 @@ class BostedAdresseServiceTest {
                         .isNew(true)
                         .build());
 
-        when(adresseServiceConsumer.getVegadresse(any(VegadresseDTO.class), isNull())).thenReturn(new no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO());
-
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 bostedAdresseService.convert(request));
 
@@ -156,6 +159,9 @@ class BostedAdresseServiceTest {
 
     @Test
     void whenOverlappingDateIntervalsInInput2_thenThrowExecption() {
+
+         when(adresseServiceConsumer.getMatrikkeladresse(any(MatrikkeladresseDTO.class), any()))
+                .thenReturn(new no.nav.registre.testnorge.libs.dto.adresseservice.v1.MatrikkeladresseDTO());
 
         var request = List.of(BostedadresseDTO.builder()
                         .gyldigFraOgMed(LocalDate.of(2020, 2, 3).atStartOfDay())

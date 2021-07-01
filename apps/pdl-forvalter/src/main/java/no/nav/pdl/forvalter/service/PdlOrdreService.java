@@ -22,7 +22,9 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -135,9 +137,11 @@ public class PdlOrdreService {
                 .collectList()
                 .block();
 
-        return Stream.concat(
-                status.stream(),
-                asyncStatus.stream()
-        ).collect(Collectors.toList());
+        return Stream.of(
+                status,
+                asyncStatus)
+                .filter(Objects::nonNull)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
 }
