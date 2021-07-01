@@ -291,7 +291,7 @@ type Matrikkeladresse {
 
 type MatrikkeladresseResult {
     bruksnummer: String
-    gardsnummer: String
+    gaardsnummer: String
     kommunenummer: String
     matrikkelId: String
     postnummer: String
@@ -783,6 +783,8 @@ input SearchRule {
     lessThan: String
     " Filtrerer bort treff hvor felt inneholder input verdi"
     notEquals: String
+    " Søk som gir tilfeldig poengsum til hvert treff (kun men til generering av testdata)"
+    random: String
     " Regex søk for spesielle situasjoner (Dette er en treg opprasjon og bør ikke brukes)"
     regex: String
     " Gir treff når opgitt feltstarter med opgitt verdi."
