@@ -50,8 +50,7 @@ dependencies {
 
     implementation 'com.jayway.jsonpath:json-path:2.4.0'
     implementation "net.logstash.logback:logstash-logback-encoder:${logstashLogbackEncoder}"
-//    implementation 'no.nav.tjenestespesifikasjoner:nav-fim-behandleArbeidsforhold-v1-tjenestespesifikasjon:1.2020.04.30-11.45-a45e1248c063'
-    implementation 'com.github.navikt.tjenestespesifikasjoner:nav-fim-behandlearbeidsforhold-v1-tjenestespesifikasjon:2560.d18f9c7'
+    implementation 'no.nav.tjenestespesifikasjoner:nav-fim-behandleArbeidsforhold-v1-tjenestespesifikasjon:1.2020.04.30-11.45-a45e1248c063'
     implementation 'org.apache.neethi:neethi:3.1.1'
     implementation 'no.nav.registre:testnorge-consumers:1.12.0-RELEASE'
     implementation 'org.apache.cxf:cxf-spring-boot-starter-jaxws:3.3.3'
