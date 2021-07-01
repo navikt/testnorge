@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.arena.service;
 
 import no.nav.registre.testnorge.arena.consumer.rs.BrukereArenaForvalterConsumer;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -21,7 +22,6 @@ public class IdentServiceTest {
 
     @InjectMocks
     private IdentService identService;
-
 
     @Test
     public void slettBrukereTest() {

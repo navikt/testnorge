@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.arena.service.util;
 
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -16,7 +17,7 @@ import java.time.LocalDate;
 public class DatoUtilsTest {
 
     @Test
-    public void shouldCheckIfDatoErInnenforPeriode(){
+    public void shouldCheckIfDatoErInnenforPeriode() {
         var dagensDato = LocalDate.now();
         var periodeASlutt = LocalDate.now().plusDays(7);
         var periodeBSlutt = LocalDate.now().minusDays(7);
@@ -33,7 +34,7 @@ public class DatoUtilsTest {
     }
 
     @Test
-    public void shouldSetDatoPeriodeVedtakInnenforMaxAntallMaaneder(){
+    public void shouldSetDatoPeriodeVedtakInnenforMaxAntallMaaneder() {
         var ugyldigTilDato = LocalDate.now().plusMonths(SYKEPENGEERSTATNING_MAKS_PERIODE + 1);
         var gyldigTilDato = LocalDate.now().plusMonths(SYKEPENGEERSTATNING_MAKS_PERIODE - 1);
         var tilDatoEtterEndring = LocalDate.now().plusMonths(6);

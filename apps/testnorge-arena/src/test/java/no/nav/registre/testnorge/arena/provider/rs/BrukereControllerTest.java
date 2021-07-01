@@ -4,6 +4,7 @@ import no.nav.registre.testnorge.arena.provider.rs.request.SyntetiserArenaReques
 import no.nav.registre.testnorge.arena.service.BrukereService;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
-
 @RunWith(MockitoJUnitRunner.class)
 public class BrukereControllerTest {
 
@@ -34,17 +34,17 @@ public class BrukereControllerTest {
     private SyntetiserArenaRequest syntetiserArenaRequest;
     private SyntetiserArenaRequest syntetiserArenaRequestSingle;
 
-    private String miljoe = "q2";
-    private Long avspillegruppeId = 10L;
-    private int antallNyeIdenter = 3;
+    private final String miljoe = "q2";
+    private final Long avspillegruppeId = 10L;
+    private final int antallNyeIdenter = 3;
 
-    private String fnr1 = "10101010101";
-    private String fnr2 = "20202020202";
-    private String fnr3 = "30303030303";
+    private final String fnr1 = "10101010101";
+    private final String fnr2 = "20202020202";
+    private final String fnr3 = "30303030303";
 
-    private Arbeidsoeker arb1 = Arbeidsoeker.builder().personident(fnr1).build();
-    private Arbeidsoeker arb2 = Arbeidsoeker.builder().personident(fnr2).build();
-    private Arbeidsoeker arb3 = Arbeidsoeker.builder().personident(fnr3).build();
+    private final Arbeidsoeker arb1 = Arbeidsoeker.builder().personident(fnr1).build();
+    private final Arbeidsoeker arb2 = Arbeidsoeker.builder().personident(fnr2).build();
+    private final Arbeidsoeker arb3 = Arbeidsoeker.builder().personident(fnr3).build();
 
     private NyeBrukereResponse response;
     private NyeBrukereResponse singleResponse;
@@ -63,7 +63,6 @@ public class BrukereControllerTest {
         oppfoelgingResponse = new HashMap<>();
         oppfoelgingResponse.put(fnr1, singleResponse);
     }
-
 
     @Test
     public void registrerAntallIdenterIArenaForvalter() {

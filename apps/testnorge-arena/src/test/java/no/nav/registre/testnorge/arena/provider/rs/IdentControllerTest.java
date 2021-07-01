@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,9 +28,9 @@ public class IdentControllerTest {
     @InjectMocks
     private IdentController identController;
 
-    private String miljoe = "q2";
-    private String eier = "ORKESTRATOREN";
-    private String fnr1 = "10101010101";
+    private final String miljoe = "q2";
+    private final String eier = "ORKESTRATOREN";
+    private final String fnr1 = "10101010101";
     private Arbeidsoeker arbeidsoeker;
 
     @Before

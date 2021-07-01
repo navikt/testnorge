@@ -6,6 +6,7 @@ import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -15,12 +16,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-
 @Slf4j
 @Service
 public class VedtakUtils {
 
-    private VedtakUtils(){}
+    private VedtakUtils() {
+    }
 
     static List<List<NyttVedtakTiltak>> getTiltakSekvenser(List<NyttVedtakTiltak> vedtak) {
         List<List<NyttVedtakTiltak>> sekvenser = new ArrayList<>();

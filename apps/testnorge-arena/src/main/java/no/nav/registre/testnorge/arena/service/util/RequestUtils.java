@@ -3,6 +3,7 @@ package no.nav.registre.testnorge.arena.service.util;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetAap115Request;
@@ -26,6 +27,7 @@ import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTil
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Adresse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Forvalter;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Konto;
+
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -155,7 +157,6 @@ public class RequestUtils {
         return rettighetRequest;
     }
 
-
     public static RettighetTiltaksdeltakelseRequest getRettighetTiltaksdeltakelseRequest(
             String personident,
             String miljoe,
@@ -193,7 +194,6 @@ public class RequestUtils {
 
         return rettighetRequest;
     }
-
 
     public RettighetEndreDeltakerstatusRequest getRettighetEndreDeltakerstatusRequest(
             String ident,
@@ -246,7 +246,6 @@ public class RequestUtils {
         return rettighetRequest;
     }
 
-
     public RettighetTiltaksaktivitetRequest getRettighetTiltaksaktivitetRequest(
             String personident,
             String miljoe,
@@ -270,7 +269,6 @@ public class RequestUtils {
 
         return rettighetRequest;
     }
-
 
     public static RettighetTilleggRequest getRettighetTilleggRequest(
             String personident,

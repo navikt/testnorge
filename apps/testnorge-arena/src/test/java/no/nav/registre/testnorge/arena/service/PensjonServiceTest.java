@@ -34,7 +34,7 @@ public class PensjonServiceTest {
     private PensjonService pensjonService;
 
     @Test
-    public void shouldOpprettePersonOgInntektIPopp(){
+    public void shouldOpprettePersonOgInntektIPopp() {
         var miljoe = "TEST";
         var ident = "01016412345";
 

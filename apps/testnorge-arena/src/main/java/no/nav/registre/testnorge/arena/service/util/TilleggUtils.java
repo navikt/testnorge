@@ -7,6 +7,7 @@ import no.nav.registre.testnorge.domain.dto.arena.testnorge.tilleggsstoenad.Vedt
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

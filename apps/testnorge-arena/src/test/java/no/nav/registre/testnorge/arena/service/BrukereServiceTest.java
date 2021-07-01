@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -92,7 +93,6 @@ public class BrukereServiceTest {
 
         for (int i = 1; i < ANTALL_LEVENDE_IDENTER + 1; i++)
             hundreIdenterOverAlder.add(buildFnr(i));
-
 
     }
 

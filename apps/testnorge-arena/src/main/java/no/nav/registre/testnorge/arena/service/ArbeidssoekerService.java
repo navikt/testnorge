@@ -3,6 +3,7 @@ package no.nav.registre.testnorge.arena.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arena.service.exception.ArbeidssoekerException;
@@ -14,6 +15,7 @@ import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereRes
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.RettighetType;
+
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -25,7 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-
 
 @Slf4j
 @Service
@@ -68,12 +69,10 @@ public class ArbeidssoekerService {
         }
     }
 
-
     public boolean arbeidssoekerIkkeOpprettetIArena(String personident) {
         var identerIArena = identService.hentEksisterendeArbeidsoekerIdent(personident, false);
         return !identerIArena.contains(personident);
     }
-
 
     public void opprettArbeidssoekerVedtakshistorikk(
             String personident,

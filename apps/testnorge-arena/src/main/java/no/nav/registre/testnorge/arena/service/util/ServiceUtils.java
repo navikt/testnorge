@@ -2,6 +2,7 @@ package no.nav.registre.testnorge.arena.service.util;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -25,7 +26,6 @@ public class ServiceUtils {
     public static final String AKTIVITETSFASE_SYKEPENGEERSTATNING = "SPE";
 
     private final Random rand;
-
 
     public KodeMedSannsynlighet velgKodeBasertPaaSannsynlighet(List<KodeMedSannsynlighet> koder) {
         var totalSum = 0;

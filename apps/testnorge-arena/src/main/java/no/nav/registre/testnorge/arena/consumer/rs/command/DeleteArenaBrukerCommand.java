@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.arena.consumer.rs.command;
 
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -17,8 +18,7 @@ public class DeleteArenaBrukerCommand implements Callable<Boolean> {
     private final String personident;
     private final String miljoe;
 
-    public DeleteArenaBrukerCommand(String personident,
-                                    String miljoe, WebClient webClient) {
+    public DeleteArenaBrukerCommand(String personident, String miljoe, WebClient webClient) {
         this.webClient = webClient;
         this.personident = personident;
         this.miljoe = miljoe;

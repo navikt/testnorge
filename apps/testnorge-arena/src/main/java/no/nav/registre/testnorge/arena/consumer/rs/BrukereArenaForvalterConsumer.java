@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arena.consumer.rs.command.DeleteArenaBrukerCommand;
 import no.nav.registre.testnorge.arena.consumer.rs.command.GetArenaBrukereCommand;
 import no.nav.registre.testnorge.arena.consumer.rs.command.PostArenaBrukerCommand;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -32,7 +33,6 @@ public class BrukereArenaForvalterConsumer {
     private final ArbeidssoekerCacheUtil arbeidssoekerCacheUtil;
     private final UriTemplate hentBrukere;
 
-
     public BrukereArenaForvalterConsumer(
             ArbeidssoekerCacheUtil arbeidssoekerCacheUtil,
             @Value("${arena-forvalteren.rest-api.url}") String arenaForvalterServerUrl
@@ -42,14 +42,14 @@ public class BrukereArenaForvalterConsumer {
         this.arbeidssoekerCacheUtil = arbeidssoekerCacheUtil;
     }
 
-    @Timed(value = "testnorge.arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
+    @Timed(value = "testnorge.arena.resource.latency", extraTags = { "operation", "arena-forvalteren" })
     public NyeBrukereResponse sendTilArenaForvalter(
             List<NyBruker> nyeBrukere
     ) {
         return new PostArenaBrukerCommand(nyeBrukere, webClient).call();
     }
 
-    @Timed(value = "testnorge.arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
+    @Timed(value = "testnorge.arena.resource.latency", extraTags = { "operation", "arena-forvalteren" })
     public List<Arbeidsoeker> hentArbeidsoekere(
             String personident,
             String eier,
@@ -96,7 +96,6 @@ public class BrukereArenaForvalterConsumer {
 
         return arbeidssoekere;
     }
-
 
     private MultiValueMap<String, String> getQueryParams(
             String personident,
@@ -148,7 +147,7 @@ public class BrukereArenaForvalterConsumer {
         return baseUrl.toString();
     }
 
-    @Timed(value = "testnorge.arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
+    @Timed(value = "testnorge.arena.resource.latency", extraTags = { "operation", "arena-forvalteren" })
     public boolean slettBruker(
             String personident,
             String miljoe

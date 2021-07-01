@@ -20,6 +20,7 @@ import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysnin
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -103,7 +104,6 @@ public class VedtakshistorikkServiceTest {
                 .tvungenForvaltning(tvungenForvaltningRettigheter)
                 .fritakMeldekort(fritakMeldekortRettigheter)
                 .build();
-
 
         vedtakshistorikkListe = new ArrayList<>((Collections.singletonList(vedtakshistorikk)));
 

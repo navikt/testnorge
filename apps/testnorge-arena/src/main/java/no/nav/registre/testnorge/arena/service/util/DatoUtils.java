@@ -148,7 +148,6 @@ public class DatoUtils {
         }
     }
 
-
     public static void setDatoPeriodeVedtakInnenforMaxAntallMaaneder(
             NyttVedtak vedtak,
             int antallMaaneder

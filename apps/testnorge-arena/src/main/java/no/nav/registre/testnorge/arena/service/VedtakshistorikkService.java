@@ -156,7 +156,6 @@ public class VedtakshistorikkService {
         return maksimumAlder;
     }
 
-
     private String getUtvalgtIdentIAldersgruppe(
             Long avspillergruppeId,
             String miljoe,
@@ -183,7 +182,6 @@ public class VedtakshistorikkService {
             return null;
         }
     }
-
 
     private Map<String, List<NyttVedtakResponse>> opprettHistorikkOgSendTilArena(
             Long avspillergruppeId,

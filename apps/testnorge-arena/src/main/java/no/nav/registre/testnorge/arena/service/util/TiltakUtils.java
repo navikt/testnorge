@@ -12,6 +12,7 @@ import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiserin
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
+
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -155,7 +156,6 @@ public class TiltakUtils {
         return nyeVedtak;
     }
 
-
     public List<NyttVedtakTiltak> removeOverlappingTiltakSequences(List<NyttVedtakTiltak> vedtaksliste) {
         if (vedtaksliste == null || vedtaksliste.isEmpty()) {
             return vedtaksliste;
@@ -180,7 +180,6 @@ public class TiltakUtils {
 
         return oppdatertVedtaksliste;
     }
-
 
     private boolean vedtakHarIkkeOverlappOver100Prosent(
             NyttVedtakTiltak vedtak,

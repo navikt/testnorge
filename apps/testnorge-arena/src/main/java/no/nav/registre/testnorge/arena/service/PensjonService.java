@@ -6,6 +6,7 @@ import no.nav.registre.testnorge.arena.consumer.rs.PensjonTestdataFacadeConsumer
 import no.nav.registre.testnorge.arena.consumer.rs.request.pensjon.PensjonTestdataInntekt;
 import no.nav.registre.testnorge.arena.consumer.rs.request.pensjon.PensjonTestdataPerson;
 import no.nav.registre.testnorge.libs.core.util.IdentUtil;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
