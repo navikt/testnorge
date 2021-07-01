@@ -19,8 +19,8 @@ spring:
             jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
 
 applications:
-  dolly-backend: 787eb670-2731-49b4-8be1-2385990370a9
-  dolly-backend-dev: f0174d28-cb33-44f9-a7b5-09e52582e601
+  dolly-backend: dev-fss.dolly.dolly-backend
+  dolly-backend-dev: dev-fss.dolly.dolly-backend-dev
   testnorge-varslinger-api: a1dca941-bdd5-4705-a1a4-04cf76473040
   testnorge-tilbakemelding-api: 0f8c4430-19e4-4628-8e89-1dd89a1d613d
   testnorge-arbeidsforhold-export-api: 06c9b9c1-d370-40ea-8181-2c4a6858392f
