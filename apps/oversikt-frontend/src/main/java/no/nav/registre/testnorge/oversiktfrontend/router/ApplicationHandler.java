@@ -32,7 +32,7 @@ public class ApplicationHandler {
         }
 
         return accessTokenService
-                .generateToken(new AccessScopes("api://" + scope + "//.default"))
+                .generateToken(new AccessScopes("api://" + scope + "/.default"))
                 .flatMap(token -> ServerResponse.ok().body(BodyInserters.fromValue(new TokenDTO(token))));
     }
 }
