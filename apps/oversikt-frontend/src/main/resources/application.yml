@@ -41,7 +41,7 @@ applications:
   jenkins-batch-status-service: 34c2e87a-0711-4ef1-b644-55d86a375e7a
   testnav-miljoer-service: dev-gcp.dolly.testnav-miljoer-service
   testnorge-organisasjon-api: f4167796-bf43-438b-a282-a480e8108d0c
-  team-dolly-lokal-app: dev-fss:dolly:team-dolly-lokal-app
+  team-dolly-lokal-app: dev-fss.dolly.team-dolly-lokal-app
   applikasjonsanalyse-service: 4c17d59e-ba09-4923-a917-47efebf82cc0
   oppsummeringsdokument-service: 411963e3-5693-4ae8-8a2b-4d42dbeed5ee
   mn-organiasasjon-api: a9109f54-8cae-4af2-98e3-8c56a1f5c9ad
