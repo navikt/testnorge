@@ -1,10 +1,10 @@
 package no.nav.testnav.libs.security.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
 import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
@@ -41,5 +41,11 @@ public class SecureOAuth2AuthenticationTokenResolver implements AuthenticationTo
 
     @Override
     public void verifyAuthentication() {
+        oauth2AuthenticationToken()
+                .doOnSuccess(oAuth2AuthenticationToken -> {
+                    if (!oAuth2AuthenticationToken.isAuthenticated()) {
+                        throw new CredentialsExpiredException("Token er utloept");
+                    }
+                });
     }
 }
