@@ -10,7 +10,8 @@ spec:
     inbound:
       rules:
         - application: dolly-frontend
-        - application: testnorge-oversikt-frontend
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
   webproxy: true
   azure:
     application:
