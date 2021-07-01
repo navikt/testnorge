@@ -43,7 +43,7 @@ public class GetArbeidstakerArbeidsforholdCommandV2 implements Callable<List<Arb
             return Arrays.stream(arbeidsforhold).collect(Collectors.toList());
         } catch (WebClientResponseException e) {
             log.error(
-                    "Klarer ikke å hente arbeidsforhold for {}. Feilmelding: {}.",
+                    "Klarer ikke å hente arbeidsforhold for ident: {}. Feilmelding: {}.",
                     ident,
                     e.getResponseBodyAsString()
             );
