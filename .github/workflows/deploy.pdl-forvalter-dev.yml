@@ -3,7 +3,7 @@ name: Deploy pdl-forvalter-dev
 on:
   push:
     branches:
-      - feature/pdl-forvalter
+      - master
     paths:
       - apps/pdl-forvalter/**
       - libs/testnorge-core/**
