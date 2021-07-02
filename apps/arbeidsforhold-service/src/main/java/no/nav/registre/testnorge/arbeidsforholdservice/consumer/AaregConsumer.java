@@ -51,9 +51,8 @@ public class AaregConsumer {
     }
 
     public List<ArbeidsforholdDTO> getArbeidsforholds(String ident, String miljo) {
-        var accessToken = accessTokenService.generateToken(serverProperties).block();
-
-        return new GetArbeidstakerArbeidsforholdCommand(webClient, miljo, accessToken.getTokenValue(), ident).call();
+        return accessTokenService.generateToken(serverProperties)
+                .map(token -> new GetArbeidstakerArbeidsforholdCommand(webClient, miljo, token.getTokenValue(), ident).call()).block();
     }
 
     private List<ArbeidsforholdDTO> getArbeidsforholds(String ident, String orgnummer, String miljo) {
