@@ -9,6 +9,7 @@ spring:
             client-id: ${azure.app.client.id}
             client-secret: ${azure.app.client.secret}
             authorization-grant-type: authorization_code
+            redirect-uri-template: '{baseUrl}/login/oauth2/code/{registrationId}'
             redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
             scope: openid, ${azure.app.client.id}/.default
         provider:
@@ -18,8 +19,8 @@ spring:
             jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
 
 applications:
-  dolly-backend: 787eb670-2731-49b4-8be1-2385990370a9
-  dolly-backend-dev: f0174d28-cb33-44f9-a7b5-09e52582e601
+  dolly-backend: dev-fss.dolly.dolly-backend
+  dolly-backend-dev: dev-fss.dolly.dolly-backend-dev
   testnorge-varslinger-api: a1dca941-bdd5-4705-a1a4-04cf76473040
   testnorge-tilbakemelding-api: 0f8c4430-19e4-4628-8e89-1dd89a1d613d
   testnorge-arbeidsforhold-export-api: 06c9b9c1-d370-40ea-8181-2c4a6858392f
@@ -37,11 +38,10 @@ applications:
   ereg-batch-status-service: 67f507ff-399c-4853-9eb3-3dc6aabc8289
   testnorge-arbeidsforhold-api: 90e047cc-cc80-4da3-abb2-87ea2e98beed
   organisasjon-mottak-service: 9da0741a-ff41-4046-8635-6742298d74a4
-  jenkins-batch-status-service: 34c2e87a-0711-4ef1-b644-55d86a375e7a
   testnav-miljoer-service: dev-gcp.dolly.testnav-miljoer-service
   testnorge-organisasjon-api: f4167796-bf43-438b-a282-a480e8108d0c
-  team-dolly-lokal-app: 99862a5d-72f4-4286-8e58-458a9ff1f964
-  applikasjonsanalyse-service: 4c17d59e-ba09-4923-a917-47efebf82cc0
+  team-dolly-lokal-app: dev-fss.dolly.team-dolly-lokal-app
+  applikasjonsanalyse-service: dev-gcp.dolly.applikasjonsanalyse-service
   oppsummeringsdokument-service: 411963e3-5693-4ae8-8a2b-4d42dbeed5ee
   mn-organiasasjon-api: a9109f54-8cae-4af2-98e3-8c56a1f5c9ad
   udi-stub-dev: 4426ef7d-f148-4d19-8a03-b0d07a451938
@@ -69,26 +69,16 @@ applications:
   testnav-organisasjon-faste-data-service: dev-gcp.dolly.testnav-organisasjon-faste-data-service
   testnav-generer-organisasjon-populasjon-service: dev-gcp.dolly.testnav-generer-organisasjon-populasjon-service
   testnav-generer-synt-amelding-service: dev-gcp.dolly.testnav-generer-synt-amelding-service
-  testnorge-profil-api-dev: f73bfcd0-a1f5-4d3f-bfb4-4d0361191438
+  testnorge-profil-api-dev: dev-gcp.dolly.testnorge-profil-api-dev
+  testnorge-profil-api: dev-gcp.dolly.testnorge-profil-api
   testnav-generer-arbeidsforhold-populasjon-service: dev-gcp.dolly.testnav-generer-arbeidsforhold-populasjon-service
   testnav-inntektsmelding-service: dev-gcp.dolly.testnav-inntektsmelding-service
   testnav-amelding-service: dev-gcp.dolly.testnav-amelding-service
   testnav-joark-dokument-service: dev-gcp.dolly.testnav-joark-dokument-service
-
-
-zuul:
-  routes:
-    testnorge-arbeidsforhold-export-api:
-      path: /api/v1/files/**
-      url: https://testnorge-arbeidsforhold-export-api.dev.intern.nav.no/api/v1/files
-      sensitiveHeaders: Cookie,Set-Cookie
-    profil:
-      path: /testnorge-profil-api/api/**
-      url: https://testnorge-profil-api.dev.intern.nav.no/api
-      sensitiveHeaders: Cookie,Set-Cookie
 
 consumers:
   testnorge-profil-api:
     cluster: dev-gcp
     namespace: dolly
     name: testnorge-profil-api
+    url: https://testnorge-profil-api.dev.intern.nav.no/api

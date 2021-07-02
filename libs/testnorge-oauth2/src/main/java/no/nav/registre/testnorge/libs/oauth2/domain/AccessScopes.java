@@ -7,7 +7,7 @@ import java.util.List;
 import no.nav.registre.testnorge.libs.oauth2.config.Scopeable;
 
 public class AccessScopes {
-    final private List<String> scopes;
+    private final List<String> scopes;
 
     public AccessScopes(List<String> scopes) {
         this.scopes = scopes;
