@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSelect'
-import { OrgserviceApi } from '~/service/Api'
+import { MiljoeApi, OrgserviceApi } from '~/service/Api'
 import { useBoolean } from 'react-use'
 import Icon from '~/components/ui/icon/Icon'
+import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 
 const inputValg = { fraListe: 'velg', skrivSelv: 'skriv' }
 
@@ -12,6 +13,17 @@ export const OrgnummerToggle = ({ formikBag, path, opplysningspliktigPath }) => 
 	const [inputType, setInputType] = useState(inputValg.fraListe)
 	const [error, setError] = useState(null)
 	const [success, setSuccess] = useBoolean(false)
+	const [aktiveMiljoer, setAktiveMiljoer] = useState(null)
+	const [environment, setEnvironment] = useState(null)
+	const [orgnummer, setOrgnummer] = useState(null)
+
+	useEffect(() => {
+		const fetchData = async () => {
+			const resp = await MiljoeApi.getAktiveMiljoer()
+			setAktiveMiljoer(resp.data)
+		}
+		fetchData()
+	}, [])
 
 	const handleToggleChange = event => {
 		setInputType(event.target.value)
@@ -24,17 +36,25 @@ export const OrgnummerToggle = ({ formikBag, path, opplysningspliktigPath }) => 
 		formikBag.setFieldValue(`${path}`, value.orgnr)
 	}
 
-	const handleBlur = event => {
+	const handleManualOrgChange = (org, miljo) => {
+		if (!orgnummer) return
 		setError(null)
 		setSuccess(false)
-		OrgserviceApi.getOrganisasjonInfo(event.target.value)
+		OrgserviceApi.getOrganisasjonInfo(org, miljo)
 			.then(response => {
+				if (
+					!response.data.enhetType.includes('BEDR') &&
+					!response.data.enhetType.includes('AAFY')
+				) {
+					setError('Organisasjonen må være av type BEDR eller AAFY')
+					return
+				}
 				setSuccess(true)
 				opplysningspliktigPath &&
 					formikBag.setFieldValue(`${opplysningspliktigPath}`, response.data.juridiskEnhet)
 				formikBag.setFieldValue(`${path}`, response.data.orgnummer)
 			})
-			.catch(err => setError(err))
+			.catch(() => setError('Fant ikke organisasjonen i ' + (miljo ? miljo : 'q1')))
 	}
 
 	return (
@@ -69,8 +89,43 @@ export const OrgnummerToggle = ({ formikBag, path, opplysningspliktigPath }) => 
 						type={'number'}
 						size="xlarge"
 						label={'Organisasjonsnummer'}
-						onBlur={handleBlur}
-						feil={error && { feilmelding: 'Fant ikke organisasjonen i Q1' }}
+						onBlur={event => {
+							const org = event.target.value
+							setOrgnummer(org)
+							handleManualOrgChange(org, environment)
+						}}
+						feil={
+							error && {
+								feilmelding: error
+							}
+						}
+					/>
+					<DollySelect
+						name={path}
+						size={'small'}
+						isClearable={false}
+						fastfield={false}
+						label={'Organisasjon Miljø'}
+						options={
+							aktiveMiljoer &&
+							aktiveMiljoer
+								.sort((a, b) =>
+									a.localeCompare(b, undefined, {
+										numeric: true,
+										sensitivity: 'base'
+									})
+								)
+								.map(value => ({
+									value: value,
+									label: value.toUpperCase()
+								}))
+						}
+						placeholder={'q1'}
+						value={environment}
+						onChange={event => {
+							setEnvironment(event.value)
+							handleManualOrgChange(orgnummer, event.value)
+						}}
 					/>
 					{success && (
 						<>

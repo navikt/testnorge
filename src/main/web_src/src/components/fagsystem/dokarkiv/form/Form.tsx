@@ -72,7 +72,7 @@ export const DokarkivForm = ({ formikBag }: Form) => {
 			dokumentvarianter: [
 				{
 					filtype: 'PDFA',
-					fysiskDokument: 'kapplah', //vedl.content.base64,
+					fysiskDokument: vedl.content.base64,
 					variantformat: 'ARKIV'
 				}
 			]

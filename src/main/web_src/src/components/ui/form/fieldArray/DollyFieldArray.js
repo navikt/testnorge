@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Children } from 'react'
 import { FieldArray } from 'formik'
 import _get from 'lodash/get'
 import Button from '~/components/ui/button/Button'
@@ -136,6 +136,7 @@ export const DollyFaBlokkNested = ({ idx, handleRemove, children }) => (
 )
 
 export const DollyFieldArray = ({
+	ignoreOnSingleElement = false,
 	header = null,
 	hjelpetekst = null,
 	data,
@@ -143,32 +144,38 @@ export const DollyFieldArray = ({
 	children,
 	expandable = false,
 	getHeader = null
-}) => (
-	<ErrorBoundary>
-		<DollyFieldArrayWrapper header={header} hjelpetekst={hjelpetekst} nested={nested}>
-			{data.map((curr, idx) => {
-				return nested ? (
-					<DollyFaBlokkNested key={idx} idx={idx}>
-						{children(curr, idx)}
-					</DollyFaBlokkNested>
-				) : expandable ? (
-					<ExpandableBlokk
-						key={idx}
-						idx={idx}
-						getHeader={getHeader ? getHeader : () => header}
-						data={curr}
-					>
-						{children(curr, idx)}
-					</ExpandableBlokk>
-				) : (
-					<DollyFaBlokk key={idx} idx={idx} header={header} hjelpetekst={hjelpetekst}>
-						{children(curr, idx)}
-					</DollyFaBlokk>
-				)
-			})}
-		</DollyFieldArrayWrapper>
-	</ErrorBoundary>
-)
+}) => {
+	if (ignoreOnSingleElement && data.length === 1) {
+		return children(data[0], 0)
+	}
+
+	return (
+		<ErrorBoundary>
+			<DollyFieldArrayWrapper header={header} hjelpetekst={hjelpetekst} nested={nested}>
+				{data.map((curr, idx) => {
+					return nested ? (
+						<DollyFaBlokkNested key={idx} idx={idx}>
+							{children(curr, idx)}
+						</DollyFaBlokkNested>
+					) : expandable ? (
+						<ExpandableBlokk
+							key={idx}
+							idx={idx}
+							getHeader={getHeader ? getHeader : () => header}
+							data={curr}
+						>
+							{children(curr, idx)}
+						</ExpandableBlokk>
+					) : (
+						<DollyFaBlokk key={idx} idx={idx} header={header} hjelpetekst={hjelpetekst}>
+							{children(curr, idx)}
+						</DollyFaBlokk>
+					)
+				})}
+			</DollyFieldArrayWrapper>
+		</ErrorBoundary>
+	)
+}
 
 export const FormikDollyFieldArray = ({
 	name,

@@ -33,7 +33,8 @@ function LoadableComponentWithRetry<T>({ onFetch, render }: LoadableComponent<T>
 				setData(response)
 				setLoading(false)
 			})
-			.catch(() => {
+			.catch(e => {
+				console.error(e)
 				setError(true)
 				setLoading(false)
 			})

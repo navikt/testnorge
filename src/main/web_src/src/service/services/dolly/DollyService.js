@@ -152,6 +152,10 @@ export default {
 		return Request.get(Endpoints.fasteOrgnummer())
 	},
 
+	getArbeidsforhold(ident, miljoe) {
+		return Request.get(Endpoints.getArbeidsforhold(ident, miljoe))
+	},
+
 	getFasteDatasettGruppe(gruppe) {
 		return Request.get(Endpoints.getFasteDatasettTPSGruppe(gruppe))
 	},
@@ -162,15 +166,6 @@ export default {
 
 	getTransaksjonid(system, ident, bestillingsid) {
 		return Request.get(Endpoints.getTransaksjonsid(system, ident, bestillingsid))
-	},
-
-	getArbeidsforhold(ident, miljoe) {
-		return Request.get(Endpoints.getArbeidsforhold(ident, miljoe))
-	},
-
-	//* Joark
-	getInntektsmeldingDokumentinfo(journalpostId, dokumentinfoId, miljoe) {
-		return Request.get(Endpoints.inntektsmeldingDokumentinfo(journalpostId, dokumentinfoId, miljoe))
 	},
 
 	getDokarkivDokumentinfo(journalpostId, miljoe) {
