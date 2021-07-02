@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.arbeidsforholdservice.consumer.command.v1;
+package no.nav.registre.testnorge.arbeidsforholdservice.consumer.v1.command;
 
 
 import lombok.RequiredArgsConstructor;

@@ -1,7 +1,6 @@
-package no.nav.registre.testnorge.arbeidsforholdservice.consumer.command.v2;
+package no.nav.registre.testnorge.arbeidsforholdservice.consumer.v2.command;
 
 
-import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -32,16 +31,21 @@ public class GetArbeidstakerArbeidsforholdCommandV2 implements Callable<List<Arb
                     .get()
                     .uri(builder -> builder
                             .path("/api/{miljo}/v1/arbeidstaker/arbeidsforhold")
-                            .queryParam("arbeidsforholdtype", "forenkletOppgjoersordning,frilanserOppdragstakerHonorarPersonerMm,maritimtArbeidsforhold,ordinaertArbeidsforhold")
+                            .queryParam("arbeidsforholdtype", "forenkletOppgjoersordning", "frilanserOppdragstakerHonorarPersonerMm", "maritimtArbeidsforhold", "ordinaertArbeidsforhold")
                             .build(miljo))
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .header(NAV_PERSON_IDENT, ident)
                     .retrieve()
                     .bodyToMono(ArbeidsforholdDTO[].class)
                     .block();
-            log.info("Hentet arbeidsforhold fra Aareg: " + Json.pretty(arbeidsforhold));
+            log.info("Hentet arbeidsforhold fra Aareg: " + arbeidsforhold);
             return Arrays.stream(arbeidsforhold).collect(Collectors.toList());
-        } catch (WebClientResponseException e) {
+        }
+        catch (WebClientResponseException.NotFound e){
+            log.warn("Fant ikke arbeidsforhold for ident {} i miljø {}", ident, miljo);
+            return null;
+        }
+        catch (WebClientResponseException e) {
             log.error(
                     "Klarer ikke å hente arbeidsforhold for ident: {}. Feilmelding: {}.",
                     ident,
