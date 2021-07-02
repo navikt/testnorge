@@ -11,7 +11,7 @@ public class Arbeidstaker {
     public no.nav.registre.testnorge.arbeidsforholdservice.provider.v2.dto.ArbeidstakerDTO toDTO() {
 
         return no.nav.registre.testnorge.arbeidsforholdservice.provider.v2.dto.ArbeidstakerDTO.builder()
-                .type(dto.getType().equals("Person") ? Aktoer.Person : Aktoer.Organisasjon)
+                .type(dto.getType().equals("Person") ? Aktoer.PERSON : Aktoer.ORGANISASJON)
                 .offentligIdent(dto.getOffentligIdent())
                 .build();
     }

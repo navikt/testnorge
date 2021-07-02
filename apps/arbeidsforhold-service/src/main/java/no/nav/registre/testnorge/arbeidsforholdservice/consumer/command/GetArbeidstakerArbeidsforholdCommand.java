@@ -10,6 +10,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
@@ -43,7 +44,7 @@ public class GetArbeidstakerArbeidsforholdCommand implements Callable<List<Arbei
         }
         catch (WebClientResponseException.NotFound e){
             log.warn("Fant ikke arbeidsforhold for ident {} i miljø {}", ident, miljo);
-            return null;
+            return Collections.emptyList();
         }
         catch (WebClientResponseException e) {
             log.error(
