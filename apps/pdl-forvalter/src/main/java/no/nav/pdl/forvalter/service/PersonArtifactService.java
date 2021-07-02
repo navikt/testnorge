@@ -1,0 +1,61 @@
+package no.nav.pdl.forvalter.service;
+
+import lombok.RequiredArgsConstructor;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonDTO;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class PersonArtifactService {
+
+    private final AdressebeskyttelseService adressebeskyttelseService;
+    private final BostedAdresseService bostedAdresseService;
+    private final DoedsfallService doedsfallService;
+    private final FoedselService foedselService;
+    private final FolkeregisterPersonstatusService folkeregisterPersonstatusService;
+    private final KjoennService kjoennService;
+    private final KontaktAdresseService kontaktAdresseService;
+    private final InnflyttingService innflyttingService;
+    private final NavnService navnService;
+    private final OppholdsadresseService oppholdsadresseService;
+    private final OppholdService oppholdService;
+    private final StatsborgerskapService statsborgerskapService;
+    private final TelefonnummerService telefonnummerService;
+    private final TilrettelagtKommunikasjonService tilrettelagtKommunikasjonService;
+    private final UtflyttingService utflyttingService;
+    private final FullmaktService fullmaktService;
+    private final UtenlandsidentifikasjonsnummerService utenlandsidentifikasjonsnummerService;
+    private final VergemaalService vergemaalService;
+    private final FalskIdentitetService falskIdentitetService;
+    private final KontaktinformasjonForDoedsboService kontaktinformasjonForDoedsboService;
+    private final IdenttypeService identtypeService;
+
+    public PersonDTO buildPerson(PersonDTO person) {
+
+        // Orders below matters to some degree, don´t rearrange without checking consequences
+        person.setKjoenn(kjoennService.convert(person));
+        person.setInnflytting(innflyttingService.convert(person.getInnflytting()));
+        person.setStatsborgerskap(statsborgerskapService.convert(person));
+        person.setBostedsadresse(bostedAdresseService.convert(person.getBostedsadresse()));
+        person.setFoedsel(foedselService.convert(person));
+        person.setNavn(navnService.convert(person.getNavn()));
+        person.setOppholdsadresse(oppholdsadresseService.convert(person.getOppholdsadresse()));
+        person.setAdressebeskyttelse(adressebeskyttelseService.convert(person.getAdressebeskyttelse()));
+        person.setTelefonnummer(telefonnummerService.convert(person.getTelefonnummer()));
+        person.setUtflytting(utflyttingService.convert(person.getUtflytting()));
+        person.setOpphold(oppholdService.convert(person.getOpphold()));
+        person.setTilrettelagtKommunikasjon(tilrettelagtKommunikasjonService.convert(person.getTilrettelagtKommunikasjon()));
+        person.setDoedsfall(doedsfallService.convert(person.getDoedsfall()));
+        person.setFolkeregisterpersonstatus(folkeregisterPersonstatusService.convert(person));
+        person.setFullmakt(fullmaktService.convert(person));
+        person.setKontaktadresse(kontaktAdresseService.convert(person.getKontaktadresse()));
+        person.setUtenlandskIdentifikasjonsnummer(utenlandsidentifikasjonsnummerService
+                .convert(person.getUtenlandskIdentifikasjonsnummer()));
+        person.setVergemaal(vergemaalService.convert(person));
+        person.setFalskIdentitet(falskIdentitetService.convert(person));
+        person.setKontaktinformasjonForDoedsbo(kontaktinformasjonForDoedsboService.convert(person));
+        person.setIdent(identtypeService.convert(person));
+
+        return person;
+    }
+}
