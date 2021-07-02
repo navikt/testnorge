@@ -6,6 +6,7 @@ import no.nav.registre.testnorge.arbeidsforholdservice.config.credentials.AaregS
 import no.nav.registre.testnorge.arbeidsforholdservice.consumer.command.GetArbeidstakerArbeidsforholdCommand;
 import no.nav.registre.testnorge.arbeidsforholdservice.consumer.dto.ArbeidsforholdDTO;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
+import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
@@ -14,10 +15,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @Component
@@ -51,8 +55,11 @@ public class AaregConsumer {
     }
 
     public List<ArbeidsforholdDTO> getArbeidsforholds(String ident, String miljo) {
-        return accessTokenService.generateToken(serverProperties)
-                .map(token -> new GetArbeidstakerArbeidsforholdCommand(webClient, miljo, token.getTokenValue(), ident).call()).block();
+        AccessToken token = accessTokenService.generateToken(serverProperties).block();
+        if (nonNull(token)) {
+            return new GetArbeidstakerArbeidsforholdCommand(webClient, miljo, token.getTokenValue(), ident).call();
+        }
+        return new ArrayList<>();
     }
 
     private List<ArbeidsforholdDTO> getArbeidsforholds(String ident, String orgnummer, String miljo) {

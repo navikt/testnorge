@@ -39,14 +39,13 @@ public class GetArbeidstakerArbeidsforholdCommand implements Callable<List<Arbei
                     .retrieve()
                     .bodyToMono(ArbeidsforholdDTO[].class)
                     .block();
-            log.info("Hentet arbeidsforhold fra Aareg: " + arbeidsforhold);
+
+            log.info("Hentet arbeidsforhold fra Aareg: " + Arrays.toString(arbeidsforhold));
             return Arrays.stream(arbeidsforhold).collect(Collectors.toList());
-        }
-        catch (WebClientResponseException.NotFound e){
+        } catch (WebClientResponseException.NotFound e) {
             log.warn("Fant ikke arbeidsforhold for ident {} i miljø {}", ident, miljo);
             return Collections.emptyList();
-        }
-        catch (WebClientResponseException e) {
+        } catch (WebClientResponseException e) {
             log.error(
                     "Klarer ikke å hente arbeidsforhold for ident: {}. Feilmelding: {}.",
                     ident,
