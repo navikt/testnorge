@@ -145,20 +145,20 @@ public class KontaktinformasjonForDoedsboService {
                 isBlank(kontaktinfo.getAdressat().getKontaktpersonMedIdNummerSomAdressat().getIdnummer())) {
 
             leggTilNyAddressat(kontaktinfo.getAdressat().getKontaktpersonMedIdNummerSomAdressat(), person);
-        }
-        if (nonNull(kontaktinfo.getAdressat().getKontaktpersonUtenIdNummerSomAdressat())) {
+
+        } else  if (nonNull(kontaktinfo.getAdressat().getKontaktpersonUtenIdNummerSomAdressat())) {
 
             kontaktinfo.getAdressat().getKontaktpersonUtenIdNummerSomAdressat().setNavn(
                     leggTilPersonnavn(kontaktinfo.getAdressat().getKontaktpersonUtenIdNummerSomAdressat().getNavn()));
             leggTilPersonnavn(kontaktinfo.getAdressat().getKontaktpersonUtenIdNummerSomAdressat().getNavn());
-        }
-        if (nonNull(kontaktinfo.getAdressat().getAdvokatSomAdressat())) {
+
+        } else if (nonNull(kontaktinfo.getAdressat().getAdvokatSomAdressat())) {
 
             kontaktinfo.getAdressat().getAdvokatSomAdressat().setKontaktperson(
                     leggTilPersonnavn(kontaktinfo.getAdressat().getAdvokatSomAdressat().getKontaktperson()));
             leggTilOrganisasjonsnavn(kontaktinfo.getAdressat().getAdvokatSomAdressat());
-        }
-        if (nonNull(kontaktinfo.getAdressat().getOrganisasjonSomAdressat())) {
+
+        } else if (nonNull(kontaktinfo.getAdressat().getOrganisasjonSomAdressat())) {
 
             kontaktinfo.getAdressat().getOrganisasjonSomAdressat().setKontaktperson(
                     leggTilPersonnavn(kontaktinfo.getAdressat().getOrganisasjonSomAdressat().getKontaktperson()));

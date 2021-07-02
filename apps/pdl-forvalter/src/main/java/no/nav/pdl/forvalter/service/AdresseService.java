@@ -30,7 +30,7 @@ public abstract class AdresseService<T extends AdresseDTO> {
 
     private final GenererNavnServiceConsumer genererNavnServiceConsumer;
 
-    public AdresseService(GenererNavnServiceConsumer genererNavnServiceConsumer) {
+    protected AdresseService(GenererNavnServiceConsumer genererNavnServiceConsumer) {
         this.genererNavnServiceConsumer = genererNavnServiceConsumer;
     }
 
@@ -78,16 +78,20 @@ public abstract class AdresseService<T extends AdresseDTO> {
                             isTrue(coNavn.getHarMellomnavn()) ? nyttNavn.get().getAdverb() : null));
                 }
             }
-            return new StringBuilder()
-                    .append("c/o ")
-                    .append(coNavn.getFornavn())
-                    .append(' ')
-                    .append(isTrue(coNavn.getHarMellomnavn()) ? coNavn.getMellomnavn() : "")
-                    .append(isTrue(coNavn.getHarMellomnavn()) ? ' ' : "")
-                    .append(coNavn.getEtternavn())
-                    .toString();
+            return buildNavn(coNavn);
         }
         return null;
+    }
+
+    private String buildNavn(AdresseDTO.CoNavnDTO coNavn) {
+        return new StringBuilder()
+                .append("c/o ")
+                .append(coNavn.getFornavn())
+                .append(' ')
+                .append(isTrue(coNavn.getHarMellomnavn()) ? coNavn.getMellomnavn() : "")
+                .append(isTrue(coNavn.getHarMellomnavn()) ? ' ' : "")
+                .append(coNavn.getEtternavn())
+                .toString();
     }
 
     protected static <T> int count(T artifact) {

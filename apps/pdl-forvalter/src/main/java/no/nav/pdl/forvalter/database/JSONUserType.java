@@ -11,7 +11,6 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.exception.InternalServerException;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonDTO;
@@ -33,7 +32,6 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -55,8 +53,6 @@ public class JSONUserType implements UserType {
         simpleModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME));
         simpleModule.addDeserializer(LocalDate.class, new TestnavLocalDateDeserializer());
         simpleModule.addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ISO_DATE));
-        simpleModule.addDeserializer(ZonedDateTime.class, new TestnavZonedDateTimeDeserializer());
-        simpleModule.addSerializer(ZonedDateTime.class, new ZonedDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME));
 
         objectMapper.registerModule(simpleModule);
     }
@@ -157,18 +153,6 @@ public class JSONUserType implements UserType {
     @Override
     public Object replace(Object original, Object target, Object owner) throws HibernateException {
         return this.deepCopy(original);
-    }
-
-    private static class TestnavZonedDateTimeDeserializer extends JsonDeserializer<ZonedDateTime> {
-
-        @Override
-        public ZonedDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-            JsonNode node = jsonParser.getCodec().readTree(jsonParser);
-            if (isBlank(node.asText())) {
-                return null;
-            }
-            return ZonedDateTime.parse(node.asText(), DateTimeFormatter.ISO_DATE_TIME);
-        }
     }
 
     private static class TestnavLocalDateDeserializer extends JsonDeserializer<LocalDate> {
