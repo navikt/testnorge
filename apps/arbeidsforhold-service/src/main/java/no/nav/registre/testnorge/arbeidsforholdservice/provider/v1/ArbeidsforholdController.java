@@ -28,7 +28,7 @@ public class ArbeidsforholdController {
         var arbeidsforhold = arbeidsforholdService.getArbeidsforhold(ident, orgnummer, arbeidsforholdId, miljo);
         return arbeidsforhold
                 .map(value -> ResponseEntity.ok(value.toV1DTO()))
-                .orElse(ResponseEntity.notFound().build())
+                .orElse(ResponseEntity.notFound().build());
     }
 
 }
