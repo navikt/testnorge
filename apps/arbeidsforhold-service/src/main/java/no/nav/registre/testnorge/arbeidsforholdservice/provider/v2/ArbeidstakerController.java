@@ -3,7 +3,7 @@ package no.nav.registre.testnorge.arbeidsforholdservice.provider.v2;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.arbeidsforholdservice.domain.v2.Arbeidsforhold;
+import no.nav.registre.testnorge.arbeidsforholdservice.domain.Arbeidsforhold;
 import no.nav.registre.testnorge.arbeidsforholdservice.service.ArbeidsforholdService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +33,6 @@ public class ArbeidstakerController {
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(arbeidsforhold.stream().map(Arbeidsforhold::toDTO).collect(Collectors.toList()));
+        return ResponseEntity.ok(arbeidsforhold.stream().map(Arbeidsforhold::toV2DTO).collect(Collectors.toList()));
     }
 }

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
-import no.nav.registre.testnorge.arbeidsforholdservice.domain.v2.Aktoer;
+import no.nav.registre.testnorge.arbeidsforholdservice.domain.Aktoer;
 
 @Value
 @Builder

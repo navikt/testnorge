@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.arbeidsforholdservice.domain.v2;
+package no.nav.registre.testnorge.arbeidsforholdservice.domain;
 
 import lombok.AllArgsConstructor;
 import no.nav.registre.testnorge.arbeidsforholdservice.consumer.dto.ArbeidstakerDTO;
