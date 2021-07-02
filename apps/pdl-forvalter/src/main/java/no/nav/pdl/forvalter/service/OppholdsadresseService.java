@@ -1,8 +1,8 @@
 package no.nav.pdl.forvalter.service;
 
-import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
+import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.OppholdsadresseDTO;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,6 @@ import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.AdresseDTO.Mast
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Service
-@RequiredArgsConstructor
 public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO> {
 
     private static final String VALIDATION_AMBIGUITY_ERROR = "Kun én adresse skal være satt (vegadresse, " +
@@ -25,6 +24,13 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO> {
 
     private final AdresseServiceConsumer adresseServiceConsumer;
     private final MapperFacade mapperFacade;
+
+    public OppholdsadresseService(GenererNavnServiceConsumer genererNavnServiceConsumer,
+                                  AdresseServiceConsumer adresseServiceConsumer, MapperFacade mapperFacade) {
+        super(genererNavnServiceConsumer);
+        this.adresseServiceConsumer = adresseServiceConsumer;
+        this.mapperFacade = mapperFacade;
+    }
 
     @Override
     protected void validate(OppholdsadresseDTO adresse) {
@@ -56,6 +62,9 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO> {
                 !adresse.getGyldigFraOgMed().isBefore(adresse.getGyldigTilOgMed())) {
             throw new InvalidRequestException(VALIDATION_ADRESSE_OVELAP_ERROR);
         }
+        if (nonNull(adresse.getOpprettCoAdresseNavn())) {
+            validateCoAdresseNavn(adresse.getOpprettCoAdresseNavn());
+        }
     }
 
     @Override
@@ -73,5 +82,8 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO> {
             oppholdsadresse.setAdresseIdentifikatorFraMatrikkelen(matrikkeladresse.getMatrikkelId());
             mapperFacade.map(matrikkeladresse, oppholdsadresse.getMatrikkeladresse());
         }
+
+        oppholdsadresse.setCoAdressenavn(genererCoNavn(oppholdsadresse.getOpprettCoAdresseNavn()));
+        oppholdsadresse.setOpprettCoAdresseNavn(null);
     }
 }

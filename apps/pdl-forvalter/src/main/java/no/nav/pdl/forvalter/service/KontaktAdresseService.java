@@ -1,8 +1,8 @@
 package no.nav.pdl.forvalter.service;
 
-import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
+import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,6 @@ import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Service
-@RequiredArgsConstructor
 public class KontaktAdresseService extends AdresseService<KontaktadresseDTO> {
 
     private static final String VALIDATION_ADDRESS_ABSENT_ERROR = "Én av adressene må velges (vegadresse, " +
@@ -24,6 +23,12 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO> {
 
     private final AdresseServiceConsumer adresseServiceConsumer;
     private final MapperFacade mapperFacade;
+
+    public KontaktAdresseService(GenererNavnServiceConsumer genererNavnServiceConsumer, AdresseServiceConsumer adresseServiceConsumer, MapperFacade mapperFacade) {
+        super(genererNavnServiceConsumer);
+        this.adresseServiceConsumer = adresseServiceConsumer;
+        this.mapperFacade = mapperFacade;
+    }
 
     private static void validatePostBoksAdresse(KontaktadresseDTO.PostboksadresseDTO postboksadresse) {
         if (isBlank(postboksadresse.getPostboks())) {
@@ -61,6 +66,9 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO> {
         if (nonNull(adresse.getPostboksadresse())) {
             validatePostBoksAdresse(adresse.getPostboksadresse());
         }
+        if (nonNull(adresse.getOpprettCoAdresseNavn())) {
+            validateCoAdresseNavn(adresse.getOpprettCoAdresseNavn());
+        }
     }
 
     @Override
@@ -71,5 +79,8 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO> {
             kontaktadresse.setAdresseIdentifikatorFraMatrikkelen(vegadresse.getMatrikkelId());
             mapperFacade.map(vegadresse, kontaktadresse.getVegadresse());
         }
+
+        kontaktadresse.setCoAdressenavn(genererCoNavn(kontaktadresse.getOpprettCoAdresseNavn()));
+        kontaktadresse.setOpprettCoAdresseNavn(null);
     }
 }

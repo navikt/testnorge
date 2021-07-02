@@ -1,8 +1,8 @@
 package no.nav.pdl.forvalter.service;
 
-import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
+import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,6 @@ import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.AdresseDTO.Mast
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Service
-@RequiredArgsConstructor
 public class BostedAdresseService extends AdresseService<BostedadresseDTO> {
 
     private static final String VALIDATION_AMBIGUITY_ERROR = "Kun én adresse skal være satt (vegadresse, " +
@@ -24,6 +23,12 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO> {
 
     private final AdresseServiceConsumer adresseServiceConsumer;
     private final MapperFacade mapperFacade;
+
+    public BostedAdresseService(GenererNavnServiceConsumer genererNavnServiceConsumer, AdresseServiceConsumer adresseServiceConsumer, MapperFacade mapperFacade) {
+        super(genererNavnServiceConsumer);
+        this.adresseServiceConsumer = adresseServiceConsumer;
+        this.mapperFacade = mapperFacade;
+    }
 
     @Override
     protected void validate(BostedadresseDTO adresse) {
@@ -54,6 +59,9 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO> {
                 !adresse.getGyldigFraOgMed().isBefore(adresse.getGyldigTilOgMed())) {
             throw new InvalidRequestException(VALIDATION_ADRESSE_OVELAP_ERROR);
         }
+        if (nonNull(adresse.getOpprettCoAdresseNavn())) {
+            validateCoAdresseNavn(adresse.getOpprettCoAdresseNavn());
+        }
     }
 
     @Override
@@ -74,5 +82,8 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO> {
         } else if (nonNull(bostedadresse.getUtenlandskAdresse())) {
             bostedadresse.setMaster(PDL);
         }
+
+        bostedadresse.setCoAdressenavn(genererCoNavn(bostedadresse.getOpprettCoAdresseNavn()));
+        bostedadresse.setOpprettCoAdresseNavn(null);
     }
 }
