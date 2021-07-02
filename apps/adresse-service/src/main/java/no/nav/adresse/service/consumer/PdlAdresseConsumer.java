@@ -12,6 +12,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Service
 public class PdlAdresseConsumer {
 
+
+
     private final WebClient webClient;
     private final AccessTokenService accessTokenService;
     private final NaisServerProperties properties;
@@ -25,8 +27,11 @@ public class PdlAdresseConsumer {
                 .build();
     }
 
-    public PdlAdresseResponse sendPdlAdresseSoek(GraphQLRequest adresseQuery) {
-        var accessToken = accessTokenService.generateToken(properties).block();
-        return new PdlAdresseSoekCommand(webClient, adresseQuery, accessToken.getTokenValue()).call();
+    public PdlAdresseResponse sendAdressesoek(GraphQLRequest adresseQuery) {
+
+        return accessTokenService.generateToken(properties)
+                .flatMap(token -> new PdlAdresseSoekCommand(webClient, adresseQuery, token.getTokenValue()).call())
+                .block();
     }
+
 }

@@ -14,7 +14,8 @@ spec:
       rules:
         - application: dolly-frontend-dev
         - application: dolly-frontend
-        - application: testnorge-oversikt-frontend
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
         - application: team-dolly-lokal-app
           cluster: dev-fss
   azure:

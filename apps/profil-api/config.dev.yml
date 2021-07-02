@@ -25,8 +25,8 @@ spec:
           cluster: dev-fss
         - application: dolly-frontend-dev
           cluster: dev-fss
-        - application: testnorge-oversikt-frontend
-          cluster: dev-fss
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
         - application: testnav-faste-data-frontend
           cluster: dev-gcp
   liveness:

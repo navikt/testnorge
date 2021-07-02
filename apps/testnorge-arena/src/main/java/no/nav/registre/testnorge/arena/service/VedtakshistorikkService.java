@@ -63,6 +63,7 @@ public class VedtakshistorikkService {
     private final ArbeidssoekerService arbeidsoekerService;
     private final RettighetAapService rettighetAapService;
     private final RettighetTiltakService rettighetTiltakService;
+    private final RettighetTilleggService rettighetTilleggService;
     private final DatoUtils datoUtils;
 
     private static final String MAALGRUPPEKODE_TILKNYTTET_AAP = "NEDSARBEVN";
@@ -211,7 +212,7 @@ public class VedtakshistorikkService {
         opprettVedtakTiltakspenger(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettVedtakBarnetillegg(vedtakshistorikk, personident, miljoe, rettigheter);
         opprettAvsluttendeVedtakEndreDeltakerstatus(vedtakshistorikk, personident, miljoe, rettigheter, tiltak);
-        opprettVedtakTillegg(vedtakshistorikk, personident, miljoe, rettigheter);
+        opprettVedtakTillegg(vedtakshistorikk, personident, miljoe, rettigheter, tiltak);
 
         if (!rettigheter.isEmpty()) {
             try {
@@ -598,17 +599,21 @@ public class VedtakshistorikkService {
             Vedtakshistorikk historikk,
             String personident,
             String miljoe,
-            List<RettighetRequest> rettigheter
+            List<RettighetRequest> rettigheter,
+            List<NyttVedtakTiltak> tiltak
     ) {
         var tillegg = oppdaterVedtakTillegg(historikk);
 
         if (tillegg != null && !tillegg.isEmpty() && !rettigheter.isEmpty()) {
 
-            var tiltaksaktiviteter = rettighetTiltakService.getTiltaksaktivitetRettigheter(personident, miljoe, tillegg);
-            if (tiltaksaktiviteter != null && !tiltaksaktiviteter.isEmpty()) {
-                rettigheter.addAll(tiltaksaktiviteter);
+            var tilleggSekvenser = rettighetTilleggService.getTilleggSekvenser(tillegg);
 
-                for (var vedtak : tillegg) {
+            for (var sekvens : tilleggSekvenser) {
+                if (rettighetTilleggService.tilleggSekvensManglerTiltak(sekvens, tiltak)) {
+                    rettigheter.add(rettighetTilleggService.getTiltaksaktivitetForTilleggSekvens(personident, miljoe, sekvens));
+                }
+
+                for (var vedtak : sekvens) {
                     vedtak.setBegrunnelse(BEGRUNNELSE);
                     var rettighetRequest = new RettighetTilleggRequest(Collections.singletonList(vedtak));
                     rettighetRequest.setPersonident(personident);

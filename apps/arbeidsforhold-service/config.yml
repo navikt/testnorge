@@ -21,8 +21,8 @@ spec:
           cluster: dev-fss
         - application: dolly-backend-dev
           cluster: dev-fss
-        - application: testnorge-oversikt-frontend
-          cluster: dev-fss
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
         - application: testnorge-synt-sykemelding-api
           cluster: dev-fss
     outbound:
