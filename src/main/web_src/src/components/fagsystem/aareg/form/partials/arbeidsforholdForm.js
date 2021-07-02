@@ -193,7 +193,6 @@ export const ArbeidsforholdForm = ({
 						disabled={
 							_get(formikBag.values, `${path}.ansettelsesPeriode.tom`) === null ? true : false
 						}
-						// TODO disabled funker ikke!
 					/>
 				)}
 				{arbeidsforholdstype === 'forenkletOppgjoersordning' && (

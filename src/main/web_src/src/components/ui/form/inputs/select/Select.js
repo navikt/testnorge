@@ -63,14 +63,7 @@ export const Select = ({
 
 export const SelectMedKodeverk = ({ kodeverk, ...rest }) => (
 	<KodeverkConnector navn={kodeverk}>
-		{kodeverkVerdier => (
-			<Select
-				{...rest}
-				isLoading={!kodeverkVerdier}
-				disabled={!kodeverkVerdier}
-				options={kodeverkVerdier}
-			/>
-		)}
+		{kodeverkVerdier => <Select {...rest} isLoading={!kodeverkVerdier} options={kodeverkVerdier} />}
 	</KodeverkConnector>
 )
 

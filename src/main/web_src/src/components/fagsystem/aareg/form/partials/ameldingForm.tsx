@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import useBoolean from '~/utils/hooks/useBoolean'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
 import { format, eachMonthOfInterval } from 'date-fns'
 import Hjelpetekst from '~/components/hjelpetekst'
-import { FormikSelect, DollySelect } from '~/components/ui/form/inputs/select/Select'
+import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { ArbeidKodeverk } from '~/config/kodeverk'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import Button from '~/components/ui/button/Button'
@@ -41,21 +41,16 @@ const Slettknapp = styled(Button)`
 export const AmeldingForm = ({ formikBag }) => {
 	const arbeidsforholdstype = _get(formikBag.values, 'aareg[0].arbeidsforholdstype')
 
-	const [fom, setFom] = useState(_get(formikBag.values, 'aareg[0].genererPeriode.fom'))
-	const [tom, setTom] = useState(_get(formikBag.values, 'aareg[0].genererPeriode.tom'))
-	const [periode, setPeriode] = useState(_get(formikBag.values, 'aareg[0].genererPeriode.periode'))
+	const fom = _get(formikBag.values, 'aareg[0].genererPeriode.fom')
+	const tom = _get(formikBag.values, 'aareg[0].genererPeriode.tom')
+	const periode = _get(formikBag.values, 'aareg[0].genererPeriode.periode')
+	const ameldinger = _get(formikBag.values, 'aareg[0].amelding')
 
 	const [erLenket, setErLenket, setErIkkeLenket] = useBoolean(true)
-
 	const [selectedIndex, setSelectedIndex] = useState(0)
 
 	const handlePeriodeChange = (dato, type) => {
 		formikBag.setFieldValue(`aareg[0].genererPeriode.${type}`, dato)
-		if (type === 'fom') {
-			setFom(dato)
-		} else if (type === 'tom') {
-			setTom(dato)
-		}
 
 		if ((type === 'tom' && fom) || (type === 'fom' && tom)) {
 			const maanederPrev = _get(formikBag.values, 'aareg[0].amelding')
@@ -68,7 +63,6 @@ export const AmeldingForm = ({ formikBag }) => {
 				maaneder.push(format(maaned, 'yyyy-MM'))
 			})
 			formikBag.setFieldValue('aareg[0].genererPeriode.periode', maaneder)
-			setPeriode(maaneder)
 
 			if (maaneder.length < maanederPrev.length) {
 				const maanederFiltered = maanederPrev.filter(maaned => maaneder.includes(maaned.maaned))
@@ -99,9 +93,6 @@ export const AmeldingForm = ({ formikBag }) => {
 				formikBag.setFieldValue('aareg[0].genererPeriode', initialPeriode)
 				formikBag.setFieldValue('aareg[0].amelding', undefined)
 				formikBag.setFieldValue('aareg[0].arbeidsforhold', [initialForenkletOppgjoersordningOrg])
-				setFom(null)
-				setTom(null)
-				setPeriode([])
 			}
 		} else {
 			if (arbeidsforholdstype === 'forenkletOppgjoersordning' || arbeidsforholdstype === '') {
@@ -111,7 +102,6 @@ export const AmeldingForm = ({ formikBag }) => {
 			}
 			if (event.value === 'maritimtArbeidsforhold') {
 				periode.forEach((maaned, idx) => {
-					console.log('maaned :>> ', maaned)
 					formikBag.setFieldValue(
 						`aareg[0].amelding[${idx}].arbeidsforhold[0].fartoy`,
 						initialFartoy
@@ -126,10 +116,8 @@ export const AmeldingForm = ({ formikBag }) => {
 		formikBag.setFieldValue('aareg[0].arbeidsforholdstype', event.value)
 	}
 
-	const maaneder = _get(formikBag.values, 'aareg[0].amelding')
-
 	const handleNewEntry = () => {
-		maaneder.forEach((maaned, idMaaned) => {
+		ameldinger.forEach((maaned, idMaaned) => {
 			if (!erLenket && idMaaned != selectedIndex) return
 			const currArbeidsforhold = _get(
 				formikBag.values,
@@ -143,7 +131,7 @@ export const AmeldingForm = ({ formikBag }) => {
 	}
 
 	const handleRemoveEntry = idArbeidsforhold => {
-		maaneder.forEach((maaned, idMaaned) => {
+		ameldinger.forEach((maaned, idMaaned) => {
 			if (!erLenket && idMaaned != selectedIndex) return
 			const currArbeidsforhold = _get(
 				formikBag.values,
@@ -162,7 +150,6 @@ export const AmeldingForm = ({ formikBag }) => {
 		const nyPeriode = periode
 		nyPeriode.splice(selectedIndex, 1)
 		formikBag.setFieldValue('aareg[0].genererPeriode.periode', nyPeriode)
-		setPeriode(nyPeriode)
 
 		if (periode.length === 1) {
 			setSelectedIndex(0)
