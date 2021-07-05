@@ -323,3 +323,6 @@ project(":proxy-config").projectDir = file('libs/proxy-config')
 
 include 'security'
 project(":security").projectDir = file('libs/security')
+
+include 'core'
+project(":core").projectDir = file('libs/core')

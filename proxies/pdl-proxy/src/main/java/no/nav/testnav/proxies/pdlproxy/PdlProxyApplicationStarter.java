@@ -16,18 +16,16 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import no.nav.registre.testnorge.libs.service.StsOidcTokenService;
+import no.nav.testnav.libs.core.config.CoreConfig;
 import no.nav.testnav.libs.proxyconfig.config.DevConfig;
 import no.nav.testnav.libs.proxyconfig.config.SecurityConfig;
 import no.nav.testnav.libs.proxyconfig.filter.AddRequestHeadersGatewayFilterFactory;
 import no.nav.testnav.libs.proxyconfig.filter.GetHeader;
-import no.nav.testnav.libs.proxyconfig.router.InternalHandler;
-import no.nav.testnav.libs.proxyconfig.router.InternalRouter;
 
 @Import({
+        CoreConfig.class,
         DevConfig.class,
-        SecurityConfig.class,
-        InternalHandler.class,
-        InternalRouter.class
+        SecurityConfig.class
 })
 @SpringBootApplication
 public class PdlProxyApplicationStarter {

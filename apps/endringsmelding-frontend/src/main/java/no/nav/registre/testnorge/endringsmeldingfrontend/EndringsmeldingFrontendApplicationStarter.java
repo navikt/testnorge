@@ -15,6 +15,7 @@ import java.util.function.Function;
 
 import no.nav.registre.testnorge.endringsmeldingfrontend.credentials.EndringsmeldingServiceProperties;
 import no.nav.registre.testnorge.endringsmeldingfrontend.credentials.ProfilApiServiceProperties;
+import no.nav.testnav.libs.core.config.CoreConfig;
 import no.nav.testnav.libs.frontend.config.FrontendConfig;
 import no.nav.testnav.libs.frontend.filter.AddRequestHeaderGatewayFilterFactory;
 import no.nav.testnav.libs.security.config.SecureOAuth2FrontendConfiguration;
@@ -23,6 +24,7 @@ import no.nav.testnav.libs.security.domain.Scopeable;
 import no.nav.testnav.libs.security.service.AccessTokenService;
 
 @Import({
+        CoreConfig.class,
         SecureOAuth2FrontendConfiguration.class,
         FrontendConfig.class
 })

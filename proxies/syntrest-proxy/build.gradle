@@ -19,6 +19,7 @@ test {
 
 dependencies {
 
+    implementation project(':core')
     implementation project(':proxy-config')
 
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'

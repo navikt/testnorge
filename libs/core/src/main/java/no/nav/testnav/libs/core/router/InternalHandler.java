@@ -1,4 +1,4 @@
-package no.nav.testnav.libs.proxyconfig.router;
+package no.nav.testnav.libs.core.router;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
