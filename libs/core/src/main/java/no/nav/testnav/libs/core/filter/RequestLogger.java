@@ -22,15 +22,16 @@ public class RequestLogger implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+        if (exchange.getRequest().getPath().toString().contains("/internal")) {
+            return chain.filter(exchange);
+        }
         logRequest(exchange.getRequest());
 
         exchange.getResponse().beforeCommit(() -> {
             logResponse(exchange.getResponse(), exchange.getRequest());
             return Mono.empty();
         });
-
-        var filter = chain.filter(exchange);
-        return filter;
+        return chain.filter(exchange);
     }
 
     private void logRequest(ServerHttpRequest request) {
@@ -59,7 +60,7 @@ public class RequestLogger implements WebFilter {
             contextMap.put("URI", uri);
 
             MDC.setContextMap(contextMap);
-            log.trace("Request - method:{} - uri:{} - host:{} - query:{}", method, uri, host, queryParrams);
+            log.trace("[Request ] {} {}{}", method, host, uri);
         } catch (Exception e) {
             log.error("Feil med logging av request.", e);
         }
@@ -93,7 +94,7 @@ public class RequestLogger implements WebFilter {
             contextMap.put("URI", uri);
 
             MDC.setContextMap(contextMap);
-            log.trace("Response - method:{} - HTTP:{} - host:{} - uri:{} - query:{}", method, statusCode, host, uri, queryParrams);
+            log.trace("[Response] {} {}{} HTTP:{}", method, host, uri, statusCode);
         } catch (Exception e) {
             log.error("Feil med logging av response.", e);
         }
