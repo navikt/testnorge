@@ -1,4 +1,4 @@
-package no.nav.testnav.libs.frontend.router;
+package no.nav.testnav.libs.core.router;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

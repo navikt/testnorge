@@ -18,6 +18,8 @@ test {
 }
 
 dependencies {
+
+    implementation project(':core')
     implementation project(':proxy-config')
     implementation project(':security-token-service')
 

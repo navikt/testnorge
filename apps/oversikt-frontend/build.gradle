@@ -14,9 +14,11 @@ dependencyManagement {
 }
 
 dependencies {
+    implementation project(':core')
     implementation project(':security')
     implementation project(':frontend')
 
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
