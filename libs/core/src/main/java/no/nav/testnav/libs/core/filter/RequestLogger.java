@@ -22,7 +22,7 @@ public class RequestLogger implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        if (exchange.getRequest().getPath().toString().contains("/internal")) {
+        if (!exchange.getRequest().getPath().toString().contains("/api")) {
             return chain.filter(exchange);
         }
         logRequest(exchange.getRequest());
