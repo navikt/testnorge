@@ -34,7 +34,7 @@ public class RequestLogger implements WebFilter {
     }
 
     private void logRequest(ServerHttpRequest request) {
-        if(!log.isTraceEnabled()){
+        if (!log.isTraceEnabled()) {
             return;
         }
 
@@ -47,7 +47,11 @@ public class RequestLogger implements WebFilter {
 
             contextMap.put("Transaction-Type", "request");
             contextMap.put("Method", method);
-            contextMap.put(HttpHeaders.CONTENT_TYPE, request.getHeaders().getContentType().getType());
+            var contentType = request.getHeaders().getContentType();
+
+            if (contentType != null) {
+                contextMap.put(HttpHeaders.CONTENT_TYPE, contentType.getType());
+            }
             contextMap.put(HttpHeaders.HOST, host);
             contextMap.put(HttpHeaders.ORIGIN, request.getHeaders().getOrigin());
             contextMap.put(HttpHeaders.ACCEPT, request.getHeaders().getAccept().toString());
@@ -64,7 +68,7 @@ public class RequestLogger implements WebFilter {
 
 
     private void logResponse(ServerHttpResponse response, ServerHttpRequest request) {
-        if(!log.isTraceEnabled()){
+        if (!log.isTraceEnabled()) {
             return;
         }
 
