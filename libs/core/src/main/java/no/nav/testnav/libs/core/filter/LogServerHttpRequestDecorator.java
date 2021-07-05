@@ -42,10 +42,13 @@ public class LogServerHttpRequestDecorator extends ServerHttpRequestDecorator {
         var uri = request.getPath().toString();
         var queryParrams = request.getQueryParams().isEmpty() ? null : request.getQueryParams().toString();
         var host = request.getHeaders().getHost().toString();
+        var contentType = request.getHeaders().getContentType();
 
         contextMap.put("Transaction-Type", "request");
         contextMap.put("Method", method);
-        contextMap.put(HttpHeaders.CONTENT_TYPE, request.getHeaders().getContentType().getType());
+        if (contentType != null) {
+            contextMap.put(HttpHeaders.CONTENT_TYPE, contentType.getType());
+        }
         contextMap.put(HttpHeaders.HOST, host);
         contextMap.put(HttpHeaders.ORIGIN, request.getHeaders().getOrigin());
         contextMap.put(HttpHeaders.ACCEPT, request.getHeaders().getAccept().toString());
@@ -54,7 +57,7 @@ public class LogServerHttpRequestDecorator extends ServerHttpRequestDecorator {
         contextMap.put("URI", uri);
 
         MDC.setContextMap(contextMap);
-        log.info("Request - method:{} - uri:{} - host:{} - query:{}", method, uri, host, queryParrams);
+        log.trace("[Request ] {} {}{}", method, host, uri);
 
     }
 }

@@ -61,6 +61,6 @@ public class LogServerHttpResponseDecorator extends ServerHttpResponseDecorator 
         contextMap.put("URI", uri);
 
         MDC.setContextMap(contextMap);
-        log.info("Response - method:{} - HTTP:{} - host:{} - uri:{} - query:{}", method, statusCode, host, uri, queryParrams);
+        log.trace("[Response] {} {}{} HTTP:{}", method, host, uri, statusCode);
     }
 }
