@@ -30,6 +30,11 @@ public class PersonService {
                 .map(PersonEntity::getPerson);
     }
 
+
+    public void delete(String ident) {
+        repository.deleteById(ident);
+    }
+
     public List<Person> getBy(Gruppe gruppe, String opprinnelse, String tag) {
         var stream = gruppe != null
                 ? repository.findAllByGruppe(gruppe).stream()

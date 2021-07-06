@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -39,8 +40,6 @@ public class PersonController {
             ServerHttpRequest serverHttpRequest
     ) {
         var person = personService.save(new Person(personDTO), gruppe);
-
-
         var requestUri = serverHttpRequest.getURI();
 
         if (!allowedHosts.getHosts().contains(requestUri.getHost())) {
@@ -67,12 +66,16 @@ public class PersonController {
     }
 
     @GetMapping("/{ident}")
-    public ResponseEntity<PersonDTO> get(
-            @PathVariable String ident
-    ) {
+    public ResponseEntity<PersonDTO> get(@PathVariable String ident) {
         var person = personService.get(ident);
         return person
                 .map(value -> ResponseEntity.ok(value.toDTO()))
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{ident}")
+    public ResponseEntity<?> delete(@PathVariable String ident) {
+        personService.delete(ident);
+        return ResponseEntity.noContent().build();
     }
 }
