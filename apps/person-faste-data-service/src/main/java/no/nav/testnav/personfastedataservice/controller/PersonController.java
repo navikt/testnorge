@@ -44,11 +44,15 @@ public class PersonController {
         var requestUri = serverHttpRequest.getURI();
 
         if (!allowedHosts.getHosts().contains(requestUri.getHost())) {
-            return ResponseEntity.status(403).body("Host " + requestUri.getHost() + " er ikke tilatt. Tilatt hosts er " + allowedHosts.getHosts() + ".");
+            return ResponseEntity
+                    .status(403)
+                    .body("Host " + requestUri.getHost() + " er ikke tilatt. Tilatt hosts er " + allowedHosts.getHosts() + ".");
         }
 
         var uri = new URI(requestUri + "/" + person.getIdent());
-        return ResponseEntity.created(uri).body(person.toDTO());
+        return ResponseEntity
+                .created(uri)
+                .body(person.toDTO());
     }
 
     @GetMapping
@@ -58,7 +62,6 @@ public class PersonController {
             @RequestParam(required = false) String tag,
             ServerHttpRequest serverHttpRequest
     ) {
-        log.info(serverHttpRequest.getURI().toString());
         var personer = personService.getBy(gruppe, opprinnelse, tag);
         return ResponseEntity.ok(personer.stream().map(Person::toDTO).collect(Collectors.toList()));
     }
