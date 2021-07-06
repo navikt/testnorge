@@ -23,6 +23,7 @@ import no.nav.testnav.libs.security.domain.AccessScopes;
 import no.nav.testnav.libs.security.domain.AccessToken;
 import no.nav.testnav.libs.security.domain.AzureClientCredentials;
 import no.nav.testnav.libs.security.domain.Scopeable;
+import no.nav.testnav.libs.security.domain.Token;
 
 @Slf4j
 @Service
@@ -66,17 +67,19 @@ public class AccessTokenService {
     }
 
     public Mono<AccessToken> generateToken(AccessScopes accessScopes) {
-        tokenResolver.verifyAuthentication();
 
         if (accessScopes.getScopes().isEmpty()) {
             throw new RuntimeException("Kan ikke opprette accessToken uten scopes (clienter).");
         }
 
-        if (tokenResolver.isClientCredentials()) {
-            return generateClientCredentialAccessToken(accessScopes);
-        }
-
-        return generateOnBehalfOfAccessToken(accessScopes);
+        return tokenResolver
+                .getToken()
+                .flatMap(token -> {
+                    if (token.isClientCredentials()) {
+                        return generateClientCredentialAccessToken(accessScopes);
+                    }
+                    return generateOnBehalfOfAccessToken(token, accessScopes);
+                });
     }
 
     private Mono<AccessToken> generateClientCredentialAccessToken(AccessScopes accessScopes) {
@@ -111,8 +114,8 @@ public class AccessTokenService {
 
     }
 
-    private Mono<AccessToken> generateOnBehalfOfAccessToken(AccessScopes accessScopes) {
-        String oid = tokenResolver.getOid();
+    private Mono<AccessToken> generateOnBehalfOfAccessToken(Token token, AccessScopes accessScopes) {
+        String oid = token.getOid();
         if (oid != null) {
             Map<String, String> contextMap = MDC.getCopyOfContextMap();
             contextMap.put("oid", oid);
@@ -125,32 +128,31 @@ public class AccessTokenService {
 
         var scope = String.join(" ", accessScopes.getScopes());
 
-        return tokenResolver.getTokenValue().flatMap(token -> {
-            var body = BodyInserters
-                    .fromFormData("scope", scope)
-                    .with("client_id", clientCredentials.getClientId())
-                    .with("client_secret", clientCredentials.getClientSecret())
-                    .with("assertion", token)
-                    .with("requested_token_use", "on_behalf_of")
-                    .with("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
+        var body = BodyInserters
+                .fromFormData("scope", scope)
+                .with("client_id", clientCredentials.getClientId())
+                .with("client_secret", clientCredentials.getClientSecret())
+                .with("assertion", token.getValue())
+                .with("requested_token_use", "on_behalf_of")
+                .with("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
 
-            log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow. \nScope: {}.", scope);
-            return webClient
-                    .post()
-                    .body(body)
-                    .retrieve()
-                    .bodyToMono(AccessToken.class)
-                    .doOnError(error -> {
-                        if (error instanceof WebClientResponseException) {
-                            log.error(
-                                    "Feil ved henting av access token for {}. Feilmelding: {}.",
-                                    scope,
-                                    ((WebClientResponseException) error).getResponseBodyAsString()
-                            );
-                        } else {
-                            log.error("Feil ved henting av access token for {}", scope, error);
-                        }
-                    });
-        });
+        log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow. \nScope: {}.", scope);
+        return webClient
+                .post()
+                .body(body)
+                .retrieve()
+                .bodyToMono(AccessToken.class)
+                .doOnError(error -> {
+                    if (error instanceof WebClientResponseException) {
+                        log.error(
+                                "Feil ved henting av access token for {}. Feilmelding: {}.",
+                                scope,
+                                ((WebClientResponseException) error).getResponseBodyAsString()
+                        );
+                    } else {
+                        log.error("Feil ved henting av access token for {}", scope, error);
+                    }
+                });
+
     }
 }

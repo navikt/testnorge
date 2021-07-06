@@ -10,7 +10,8 @@ import no.nav.testnav.libs.core.router.InternalRouter;
 @Import({
         RequestLogger.class,
         InternalHandler.class,
-        InternalRouter.class
+        InternalRouter.class,
+        ApplicationProperties.class
 })
 @Configuration
 public class CoreConfig {

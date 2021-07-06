@@ -12,7 +12,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 public class InternalRouter {
 
     @Bean
-    public RouterFunction<ServerResponse> route(InternalHandler internalHandler) {
+    public RouterFunction<ServerResponse> internalRoute(InternalHandler internalHandler) {
         return RouterFunctions
                 .route(
                         RequestPredicates.GET("/internal/isAlive").and(RequestPredicates.accept(MediaType.TEXT_PLAIN)),

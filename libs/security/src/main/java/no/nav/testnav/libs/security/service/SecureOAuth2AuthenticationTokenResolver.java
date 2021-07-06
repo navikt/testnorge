@@ -7,6 +7,8 @@ import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClient
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import reactor.core.publisher.Mono;
 
+import no.nav.testnav.libs.security.domain.Token;
+
 @RequiredArgsConstructor
 public class SecureOAuth2AuthenticationTokenResolver implements AuthenticationTokenResolver {
 
@@ -17,35 +19,27 @@ public class SecureOAuth2AuthenticationTokenResolver implements AuthenticationTo
         return ReactiveSecurityContextHolder
                 .getContext()
                 .map(securityContext -> securityContext.getAuthentication())
-                .map(OAuth2AuthenticationToken.class::cast);
-    }
-
-    @Override
-    public Mono<String> getTokenValue() {
-        return oauth2AuthenticationToken()
-                .flatMap(oAuth2AuthenticationToken -> auth2AuthorizedClientService.loadAuthorizedClient(
-                        oAuth2AuthenticationToken.getAuthorizedClientRegistrationId(),
-                        oAuth2AuthenticationToken.getPrincipal().getName()
-                ).map(client -> client.getAccessToken().getTokenValue()));
-    }
-
-    @Override
-    public boolean isClientCredentials() {
-        return false;
-    }
-
-    @Override
-    public String getOid() {
-        return null;
-    }
-
-    @Override
-    public void verifyAuthentication() {
-        oauth2AuthenticationToken()
+                .map(OAuth2AuthenticationToken.class::cast)
                 .doOnSuccess(oAuth2AuthenticationToken -> {
                     if (!oAuth2AuthenticationToken.isAuthenticated()) {
                         throw new CredentialsExpiredException("Token er utloept");
                     }
                 });
+    }
+
+    @Override
+    public Mono<Token> getToken() {
+        return oauth2AuthenticationToken()
+
+                .flatMap(oAuth2AuthenticationToken -> auth2AuthorizedClientService.loadAuthorizedClient(
+                        oAuth2AuthenticationToken.getAuthorizedClientRegistrationId(),
+                        oAuth2AuthenticationToken.getPrincipal().getName()
+                ).map(client -> client.getAccessToken().getTokenValue()))
+                .map(token -> Token.builder()
+                        .value(token)
+                        .clientCredentials(false)
+                        .oid(null)
+                        .build()
+                );
     }
 }
