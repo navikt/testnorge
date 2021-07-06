@@ -2,6 +2,7 @@ package no.nav.testnav.personfastedataservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,7 @@ import no.nav.testnav.personfastedataservice.domain.Gruppe;
 import no.nav.testnav.personfastedataservice.domain.Person;
 import no.nav.testnav.personfastedataservice.service.PersonService;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/personer")
@@ -43,8 +45,10 @@ public class PersonController {
     public ResponseEntity<List<PersonDTO>> get(
             @RequestParam(required = false) Gruppe gruppe,
             @RequestParam(required = false) String opprinnelse,
-            @RequestParam(required = false) String tag
+            @RequestParam(required = false) String tag,
+            ServerHttpRequest serverHttpRequest
     ) {
+        log.info(serverHttpRequest.getURI());
         var personer = personService.getBy(gruppe, opprinnelse, tag);
         return ResponseEntity.ok(personer.stream().map(Person::toDTO).collect(Collectors.toList()));
     }
