@@ -16,3 +16,4 @@ testnav:
   config:
     hosts:
       - testnav-person-faste-data-service.dev.intern.nav.no
+      - testnav-person-faste-data-service.dolly.svc.cluster.local
