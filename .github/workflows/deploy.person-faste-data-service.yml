@@ -3,7 +3,7 @@ name: Deploy testnav-person-faste-data-service
 on:
   push:
     paths:
-      - apps/testnav-person-faste-data-service/**
+      - apps/person-faste-data-service/**
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/testnav-person-faste-data-service:${{ github.sha }}
