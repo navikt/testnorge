@@ -48,7 +48,7 @@ public class PersonController {
             @RequestParam(required = false) String tag,
             ServerHttpRequest serverHttpRequest
     ) {
-        log.info(serverHttpRequest.getURI());
+        log.info(serverHttpRequest.getURI().toString());
         var personer = personService.getBy(gruppe, opprinnelse, tag);
         return ResponseEntity.ok(personer.stream().map(Person::toDTO).collect(Collectors.toList()));
     }
