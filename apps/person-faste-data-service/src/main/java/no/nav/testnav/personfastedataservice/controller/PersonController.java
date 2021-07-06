@@ -17,6 +17,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import no.nav.testnav.personfastedataservice.config.AllowedHosts;
 import no.nav.testnav.personfastedataservice.controller.dto.PersonDTO;
 import no.nav.testnav.personfastedataservice.domain.Gruppe;
 import no.nav.testnav.personfastedataservice.domain.Person;
@@ -28,16 +29,25 @@ import no.nav.testnav.personfastedataservice.service.PersonService;
 @RequestMapping("/api/v1/personer")
 public class PersonController {
     private final PersonService personService;
+    private final AllowedHosts allowedHosts;
 
     @SneakyThrows
     @PutMapping
-    public ResponseEntity<PersonDTO> save(
+    public ResponseEntity<?> save(
             @RequestBody PersonDTO personDTO,
             @RequestParam Gruppe gruppe,
             ServerHttpRequest serverHttpRequest
     ) {
         var person = personService.save(new Person(personDTO), gruppe);
-        var uri = new URI(serverHttpRequest.getURI() + "/" + person.getIdent());
+
+
+        var requestUri = serverHttpRequest.getURI();
+
+        if (!allowedHosts.getHosts().contains(requestUri.getHost())) {
+            return ResponseEntity.status(403).body("Host " + requestUri.getHost() + " er ikke tilatt. Tilatt hosts er " + allowedHosts.getHosts() + ".");
+        }
+
+        var uri = new URI(requestUri + "/" + person.getIdent());
         return ResponseEntity.created(uri).body(person.toDTO());
     }
 

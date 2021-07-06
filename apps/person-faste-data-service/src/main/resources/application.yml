@@ -11,3 +11,8 @@ spring:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+
+testnav:
+  config:
+    hosts:
+      - testnav-person-faste-data-service.dev.intern.nav.no
