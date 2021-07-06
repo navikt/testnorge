@@ -326,3 +326,6 @@ project(":security").projectDir = file('libs/security')
 
 include 'core'
 project(":core").projectDir = file('libs/core')
+
+include 'person-faste-data-service'
+project(':person-faste-data-service').projectDir = file('apps/person-faste-data-service')
