@@ -2,8 +2,8 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 
 spring:
   application:
-    name: testnav-tps-ident-faste-data-service
-    description: Tjeneste for å bestille og holde kontroll på faste data i tps
+    name: testnav-person-faste-data-service
+    description: Tjeneste for å bestille og holde kontroll på faste data
   security:
     oauth2:
       resourceserver:

@@ -1,8 +1,7 @@
 ---
 layout: default
-title: Faste Data Service
-parent: Organisasjon
-grand_parent: Applikasjoner
+title: Person Faste Data Service
+parent: Applikasjoner
 ---
 
-# Tps Ident Faste data service
+# Person Faste Data Service

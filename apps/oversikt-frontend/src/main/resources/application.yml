@@ -76,6 +76,7 @@ applications:
   testnav-amelding-service: dev-gcp.dolly.testnav-amelding-service
   testnav-joark-dokument-service: dev-gcp.dolly.testnav-joark-dokument-service
   synthdata-tps-gcp: dev-gcp.dolly.synthdata-tps-gcp-tmp
+  testnav-person-faste-data-service: dev-gcp.dolly.testnav-person-faste-data-service
 
 consumers:
   testnorge-profil-api:

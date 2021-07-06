@@ -1,4 +1,4 @@
-name: Deploy testnav-person-faste-data-service
+name: Deploy person-faste-data-service
 
 on:
   push:
