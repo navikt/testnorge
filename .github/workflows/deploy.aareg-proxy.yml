@@ -20,7 +20,7 @@ jobs:
         with:
           path: |
             ~/.gradle
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          key: ${{ runner.os }}-gradle-aareg-proxy-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
       - uses: actions/setup-java@v1
