@@ -1,4 +1,4 @@
-package no.nav.testnav.personfastedataservice.controller.dto;
+package no.nav.testnav.dto.personfastedataservice.v1;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

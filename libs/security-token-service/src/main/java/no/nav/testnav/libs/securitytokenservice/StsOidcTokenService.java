@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.libs.service;
+package no.nav.testnav.libs.securitytokenservice;
 
 import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;

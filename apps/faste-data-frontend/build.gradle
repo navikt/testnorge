@@ -13,7 +13,7 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation project(':core')
+    implementation 'no.nav.testnav.libs:core'
     implementation project(':security')
     implementation project(':frontend')
 

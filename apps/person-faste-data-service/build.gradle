@@ -14,8 +14,10 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation project(':core')
     implementation project(':security')
+
+    implementation 'no.nav.testnav.libs:core'
+    implementation 'no.nav.testnav.libs:data-transfer-objects'
 
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
@@ -36,4 +38,4 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }
-description = 'person-faste-data-service'
+description = 'data-transfer-objects'

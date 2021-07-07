@@ -16,7 +16,7 @@ import org.springframework.http.HttpHeaders;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import no.nav.registre.testnorge.libs.service.StsOidcTokenService;
+import no.nav.testnav.libs.securitytokenservice.StsOidcTokenService;
 import no.nav.testnav.libs.proxyconfig.config.DevConfig;
 import no.nav.testnav.libs.proxyconfig.config.SecurityConfig;
 import no.nav.testnav.libs.proxyconfig.filter.AddRequestHeadersGatewayFilterFactory;
