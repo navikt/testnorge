@@ -7,10 +7,12 @@ import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
+import no.nav.testnav.libs.core.config.CoreConfig;
 import no.nav.testnav.libs.proxyconfig.config.DevConfig;
 import no.nav.testnav.libs.proxyconfig.config.SecurityConfig;
 
 @Import({
+        CoreConfig.class,
         DevConfig.class,
         SecurityConfig.class
 })
