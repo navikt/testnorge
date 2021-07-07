@@ -22,7 +22,7 @@ jobs:
             ~/.gradle
           key: ${{ runner.os }}-gradle-aareg-proxy-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
-            ${{ runner.os }}-gradle-
+            ${{ runner.os }}-gradle-aareg-proxy
       - uses: actions/setup-java@v1
         with:
           java-version: '11.x'
