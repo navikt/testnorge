@@ -3,7 +3,6 @@ package no.nav.registre.testnorge.arena.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arena.consumer.rs.BrukereArenaForvalterConsumer;
-import no.nav.registre.testnorge.arena.consumer.rs.AktoerRegisteretConsumer;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 
 import org.springframework.stereotype.Service;
@@ -38,7 +37,7 @@ public class IdentService {
 
     private final HodejegerenConsumer hodejegerenConsumer;
     private final BrukereArenaForvalterConsumer brukereArenaForvalterConsumer;
-    private final AktoerRegisteretConsumer aktoerRegisteretConsumer;
+    private final PdlPersonService pdlPersonService;
     private final TpsForvalterService tpsForvalterService;
 
     public List<Arbeidsoeker> hentArbeidsoekere(
@@ -113,7 +112,7 @@ public class IdentService {
         var identerPartisjonert = partisjonerListe(identerUtenArenabruker);
         List<String> utvalgteIdenter = new ArrayList<>(antallNyeIdenter);
         for (var partisjon : identerPartisjonert) {
-            var aktoerIdenter = aktoerRegisteretConsumer.hentAktoerIderTilIdenter(partisjon, miljoe);
+            var aktoerIdenter = pdlPersonService.getAktoerIderTilIdenter(partisjon);
             for (String key : aktoerIdenter.keySet()) {
                 if (tidligsteDatoBosatt == null || tpsForvalterService.identHarPersonstatusBosatt(key, miljoe, tidligsteDatoBosatt)) {
                     utvalgteIdenter.add(key);
@@ -141,7 +140,7 @@ public class IdentService {
         List<String> utvalgteIdenter = new ArrayList<>(antallNyeIdenter);
 
         for (var partisjon : identerPartisjonert) {
-            Map<String, String> identerMedAktoerId = aktoerRegisteretConsumer.hentAktoerIderTilIdenter(partisjon, miljoe);
+            Map<String, String> identerMedAktoerId = pdlPersonService.getAktoerIderTilIdenter(partisjon);
 
             for (var ident : identerMedAktoerId.keySet()) {
                 var relasjonsResponse = getRelasjonerTilIdent(ident, miljoe);
