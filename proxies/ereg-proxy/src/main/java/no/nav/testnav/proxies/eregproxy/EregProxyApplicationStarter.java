@@ -11,10 +11,12 @@ import org.springframework.context.annotation.Import;
 
 import java.util.function.Function;
 
+import no.nav.testnav.libs.core.config.CoreConfig;
 import no.nav.testnav.libs.proxyconfig.config.DevConfig;
 import no.nav.testnav.libs.proxyconfig.config.SecurityConfig;
 
 @Import({
+        CoreConfig.class,
         DevConfig.class,
         SecurityConfig.class
 })

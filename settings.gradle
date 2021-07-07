@@ -1,4 +1,3 @@
-
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -16,7 +15,7 @@ plugins {
     id "com.gradle.enterprise" version "3.4.1"
 }
 
-rootProject.name = 'testnorge'
+rootProject.name = 'testnav'
 
 gradleEnterprise {
     buildScan {
@@ -24,6 +23,26 @@ gradleEnterprise {
         termsOfServiceAgree = "yes"
     }
 }
+
+includeBuild './proxies/aareg-proxy'
+includeBuild './proxies/batch-adeo-proxy'
+includeBuild './proxies/ident-pool-proxy'
+includeBuild './proxies/saf-proxy'
+includeBuild './proxies/dokarkiv-proxy'
+includeBuild './proxies/syntrest-proxy'
+includeBuild './proxies/tps-forvalteren-proxy'
+includeBuild './proxies/aareg-synt-services-proxy'
+includeBuild './proxies/pdl-proxy'
+includeBuild './proxies/samhandlerregisteret-proxy'
+includeBuild './proxies/hodejegeren-proxy'
+includeBuild './proxies/ereg-proxy'
+
+includeBuild './libs/security-token-service'
+includeBuild './libs/data-transfer-objects'
+includeBuild './libs/proxy-config'
+includeBuild './libs/core'
+
+includeBuild './gradlePlugins'
 
 include(':proxies')
 include(':inntektsmelding-generator-service')
@@ -243,20 +262,11 @@ project(":jenkins-batch-status-service").projectDir = file('apps/jenkins-batch-s
 include 'local-development'
 project(":local-development").projectDir = file('libs/local-development')
 
-include 'batch-adeo-proxy'
-project(":batch-adeo-proxy").projectDir = file('proxies/batch-adeo-proxy')
-
 include 'applikasjonsanalyse-service'
 project(":applikasjonsanalyse-service").projectDir = file('apps/applikasjonsanalyse-service')
 
-include 'aareg-synt-services-proxy'
-project(":aareg-synt-services-proxy").projectDir = file('proxies/aareg-synt-services-proxy')
-
 include 'oppsummeringsdokument-service'
 project(":oppsummeringsdokument-service").projectDir = file('apps/oppsummeringsdokument-service')
-
-include 'tps-forvalteren-proxy'
-project(":tps-forvalteren-proxy").projectDir = file('proxies/tps-forvalteren-proxy')
 
 include 'endringsmelding-frontend'
 project(":endringsmelding-frontend").projectDir = file('apps/endringsmelding-frontend')
@@ -267,23 +277,6 @@ project(":person-search-service").projectDir = file('apps/person-search-service'
 include 'frontend'
 project(":frontend").projectDir = file('libs/frontend')
 
-include 'ereg-proxy'
-project(":ereg-proxy").projectDir = file('proxies/ereg-proxy')
-
-include 'hodejegeren-proxy'
-project(":hodejegeren-proxy").projectDir = file('proxies/hodejegeren-proxy')
-
-include 'samhandlerregisteret-proxy'
-project(":samhandlerregisteret-proxy").projectDir = file('proxies/samhandlerregisteret-proxy')
-
-include 'pdl-proxy'
-project(":pdl-proxy").projectDir = file('proxies/pdl-proxy')
-
-include 'aareg-proxy'
-project(":aareg-proxy").projectDir = file('proxies/aareg-proxy')
-
-include 'security-token-service'
-project(":security-token-service").projectDir = file('libs/security-token-service')
 
 include 'organisasjon-faste-data-service'
 project(":organisasjon-faste-data-service").projectDir = file('apps/organisasjon-faste-data-service')
@@ -294,8 +287,6 @@ project(":faste-data-frontend").projectDir = file('apps/faste-data-frontend')
 include 'generer-organisasjon-populasjon-service'
 project(":generer-organisasjon-populasjon-service").projectDir = file('apps/generer-organisasjon-populasjon-service')
 
-include 'syntrest-proxy'
-project(":syntrest-proxy").projectDir = file('proxies/syntrest-proxy')
 
 include 'amelding-service'
 project(":amelding-service").projectDir = file('apps/amelding-service')
@@ -303,29 +294,15 @@ project(":amelding-service").projectDir = file('apps/amelding-service')
 include 'generer-arbeidsforhold-populasjon-service'
 project(":generer-arbeidsforhold-populasjon-service").projectDir = file('apps/generer-arbeidsforhold-populasjon-service')
 
-include 'ident-pool-proxy'
-project(":ident-pool-proxy").projectDir = file('proxies/ident-pool-proxy')
-
 include 'inntektsmelding-service'
 project(':inntektsmelding-service').projectDir = file('apps/inntektsmelding-service')
 
-include 'dokarkiv-proxy'
-project(":dokarkiv-proxy").projectDir = file('proxies/dokarkiv-proxy')
-
-include 'saf-proxy'
-project(":saf-proxy").projectDir = file('proxies/saf-proxy')
 
 include 'joark-dokument-service'
 project(':joark-dokument-service').projectDir = file('apps/joark-dokument-service')
 
-include 'proxy-config'
-project(":proxy-config").projectDir = file('libs/proxy-config')
-
 include 'security'
 project(":security").projectDir = file('libs/security')
-
-include 'core'
-project(":core").projectDir = file('libs/core')
 
 include 'person-faste-data-service'
 project(':person-faste-data-service').projectDir = file('apps/person-faste-data-service')

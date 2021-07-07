@@ -15,13 +15,15 @@ import org.springframework.http.HttpHeaders;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import no.nav.registre.testnorge.libs.service.StsOidcTokenService;
+import no.nav.testnav.libs.core.config.CoreConfig;
+import no.nav.testnav.libs.securitytokenservice.StsOidcTokenService;
 import no.nav.testnav.libs.proxyconfig.config.DevConfig;
 import no.nav.testnav.libs.proxyconfig.config.SecurityConfig;
 import no.nav.testnav.libs.proxyconfig.filter.AddRequestHeadersGatewayFilterFactory;
 import no.nav.testnav.libs.proxyconfig.filter.GetHeader;
 
 @Import({
+        CoreConfig.class,
         DevConfig.class,
         SecurityConfig.class
 })
@@ -29,7 +31,6 @@ import no.nav.testnav.libs.proxyconfig.filter.GetHeader;
 public class AaregProxyApplicationStarter {
 
     public static final String HEADER_NAV_CONSUMER_TOKEN = "Nav-Consumer-Token";
-
 
     public static void main(String[] args) {
         SpringApplication.run(AaregProxyApplicationStarter.class, args);
