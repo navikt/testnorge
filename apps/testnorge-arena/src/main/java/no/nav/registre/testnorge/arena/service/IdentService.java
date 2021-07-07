@@ -109,20 +109,18 @@ public class IdentService {
             LocalDate tidligsteDatoBosatt
     ) {
         var identerUtenArenabruker = filtrerEksisterendeBrukereIArena(identer, miljoe);
-        var identerPartisjonert = partisjonerListe(identerUtenArenabruker);
         List<String> utvalgteIdenter = new ArrayList<>(antallNyeIdenter);
-        for (var partisjon : identerPartisjonert) {
-            var aktoerIdenter = pdlPersonService.getAktoerIderTilIdenter(partisjon);
-            for (String key : aktoerIdenter.keySet()) {
-                if (tidligsteDatoBosatt == null || tpsForvalterService.identHarPersonstatusBosatt(key, miljoe, tidligsteDatoBosatt)) {
-                    utvalgteIdenter.add(key);
-                    if (utvalgteIdenter.size() >= antallNyeIdenter) {
-                        return utvalgteIdenter;
-                    }
+
+        for (var ident : identerUtenArenabruker) {
+            var aktoerId = pdlPersonService.getAktoerIdTilIdent(ident);
+            if (aktoerId != null && (tidligsteDatoBosatt == null || tpsForvalterService.identHarPersonstatusBosatt(ident, miljoe, tidligsteDatoBosatt))) {
+                utvalgteIdenter.add(ident);
+                if (utvalgteIdenter.size() >= antallNyeIdenter) {
+                    return utvalgteIdenter;
                 }
             }
-
         }
+
         return utvalgteIdenter;
     }
 
@@ -135,17 +133,12 @@ public class IdentService {
     ) {
         var identerUtenArenabruker = filtrerEksisterendeBrukereIArena(identer, miljoe);
 
-        var identerPartisjonert = partisjonerListe(identerUtenArenabruker);
-
         List<String> utvalgteIdenter = new ArrayList<>(antallNyeIdenter);
-
-        for (var partisjon : identerPartisjonert) {
-            Map<String, String> identerMedAktoerId = pdlPersonService.getAktoerIderTilIdenter(partisjon);
-
-            for (var ident : identerMedAktoerId.keySet()) {
+        for (var ident : identerUtenArenabruker) {
+            var aktoerId = pdlPersonService.getAktoerIdTilIdent(ident);
+            if (aktoerId != null && (tidligsteDatoBosatt == null || tpsForvalterService.identHarPersonstatusBosatt(ident, miljoe, tidligsteDatoBosatt))) {
                 var relasjonsResponse = getRelasjonerTilIdent(ident, miljoe);
-                if (inneholderBarnUnder18VedTidspunkt(relasjonsResponse, tidligsteDatoBarn) &&
-                        (tidligsteDatoBosatt == null || tpsForvalterService.identHarPersonstatusBosatt(ident, miljoe, tidligsteDatoBosatt))) {
+                if (inneholderBarnUnder18VedTidspunkt(relasjonsResponse, tidligsteDatoBarn)) {
                     utvalgteIdenter.add(ident);
                     if (utvalgteIdenter.size() >= antallNyeIdenter) {
                         return utvalgteIdenter;

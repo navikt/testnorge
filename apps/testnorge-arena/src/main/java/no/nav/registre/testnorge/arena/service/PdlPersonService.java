@@ -1,8 +1,5 @@
 package no.nav.registre.testnorge.arena.service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -17,7 +14,7 @@ public class PdlPersonService {
 
     private final PdlPersonConsumer pdlPersonConsumer;
 
-    private String getAktoerIdTilIdent(String ident) {
+    public String getAktoerIdTilIdent(String ident) {
         var personData = pdlPersonConsumer.getPdlPerson(ident);
         if (personData != null && personData.getData().getHentIdenter() != null) {
             var identInfo = personData.getData().getHentIdenter().getIdenter();
@@ -29,19 +26,6 @@ public class PdlPersonService {
         }
         log.info("Fant ikke aktørid for ident");
         return null;
-    }
-
-    public Map<String, String> getAktoerIderTilIdenter(List<String> identer) {
-        Map<String, String> aktoerFnr = new HashMap<>();
-
-        for (var ident : identer) {
-            var aktoerId = getAktoerIdTilIdent(ident);
-            if (aktoerId != null) {
-                aktoerFnr.put(ident, aktoerId);
-            }
-        }
-
-        return aktoerFnr;
     }
 
 }
