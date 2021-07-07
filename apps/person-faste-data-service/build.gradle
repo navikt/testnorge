@@ -38,4 +38,4 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }
-description = 'data-transfer-objects'
+description = 'person-faste-data-service'
