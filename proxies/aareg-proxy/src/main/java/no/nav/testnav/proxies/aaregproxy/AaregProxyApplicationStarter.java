@@ -32,7 +32,6 @@ public class AaregProxyApplicationStarter {
 
     public static final String HEADER_NAV_CONSUMER_TOKEN = "Nav-Consumer-Token";
 
-
     public static void main(String[] args) {
         SpringApplication.run(AaregProxyApplicationStarter.class, args);
     }

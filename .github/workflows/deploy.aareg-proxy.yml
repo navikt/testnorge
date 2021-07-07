@@ -1,9 +1,4 @@
-
-env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/aareg-proxy:${{ github.sha }}
-  KEY: aareg-proxy
-
-name: Deploy ${env.KEY}
+name: Deploy aareg-proxy
 
 on:
   push:
@@ -11,6 +6,8 @@ on:
       - proxies/aareg-proxy/**
       - libs/testnorge-core/**
 
+env:
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/aareg-proxy:${{ github.sha }}
 
 jobs:
   build_and_deploy:
@@ -23,7 +20,7 @@ jobs:
         with:
           path: |
             ~/.gradle
-          key: ${{ runner.os }}-gradle-aareg-proxy-${{ hashFiles('**/*.gradle*') }}
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
             ${{ runner.os }}-gradle-aareg-proxy
       - uses: actions/setup-java@v1

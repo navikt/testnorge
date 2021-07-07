@@ -16,13 +16,16 @@ dependencyManagement {
     }
 }
 
+test {
+    useJUnitPlatform()
+}
+
 repositories {
     maven {
         url = uri('https://repo1.maven.org/maven2/')
     }
     mavenLocal()
 }
-
 
 dependencies {
 
@@ -43,5 +46,3 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }
-
-description = 'aareg-proxy'
