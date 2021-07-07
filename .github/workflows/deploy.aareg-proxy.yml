@@ -15,14 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Gradle cache
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle
-          key: ${{ runner.os }}-gradle-aareg-proxy-${{ hashFiles('**/*.gradle*') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-aareg-proxy
       - uses: actions/setup-java@v1
         with:
           java-version: '11.x'
