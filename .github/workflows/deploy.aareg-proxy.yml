@@ -1,4 +1,9 @@
-name: Deploy aareg-proxy
+
+env:
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/aareg-proxy:${{ github.sha }}
+  KEY: aareg-proxy
+
+name: Deploy ${env.KEY}
 
 on:
   push:
@@ -6,8 +11,6 @@ on:
       - proxies/aareg-proxy/**
       - libs/testnorge-core/**
 
-env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/aareg-proxy:${{ github.sha }}
 
 jobs:
   build_and_deploy:
@@ -15,6 +18,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
+      - name: Gradle cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle
+          key: ${{ runner.os }}-gradle-aareg-proxy-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-aareg-proxy
       - uses: actions/setup-java@v1
         with:
           java-version: '11.x'
