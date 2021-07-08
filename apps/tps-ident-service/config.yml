@@ -12,7 +12,8 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: testnorge-oversikt-frontend
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
   azure:
     application:
       enabled: true

@@ -21,8 +21,8 @@ spec:
           cluster: dev-gcp
         - application: testnav-pdl-forvalter-dev
           cluster: dev-gcp
-        - application: testnorge-oversikt-frontend
-          cluster: dev-fss
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
         - application: testnorge-statisk-data-forvalter
           cluster: dev-fss
         - application: testnav-generer-organisasjon-populasjon-service

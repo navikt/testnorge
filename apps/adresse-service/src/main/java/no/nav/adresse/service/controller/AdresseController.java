@@ -65,7 +65,7 @@ public class AdresseController {
     @ResponseBody
     public List<MatrikkeladresseDTO> getMatrikkeladresse(@RequestParam(required = false) String matrikkelId,
                                                          @RequestParam(required = false) String kommunenummer,
-                                                         @RequestParam(required = false) String gardsnummer,
+                                                         @RequestParam(required = false) String gaardsnummer,
                                                          @RequestParam(required = false) String bruksnummer,
                                                          @RequestParam(required = false) String postnummer,
                                                          @RequestParam(required = false) String poststed,
@@ -75,7 +75,7 @@ public class AdresseController {
         return pdlAdresseService.getMatrikkelAdresse(MatrikkeladresseRequest.builder()
                 .matrikkelId(matrikkelId)
                 .kommunenummer(kommunenummer)
-                .gaardsnummer(gardsnummer)
+                .gaardsnummer(gaardsnummer)
                 .brukesnummer(bruksnummer)
                 .postnummer(postnummer)
                 .poststed(poststed)

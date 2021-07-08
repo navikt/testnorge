@@ -1,0 +1,50 @@
+import no.nav.testnav.dependencies.gradle.DependenciesPlugin
+
+plugins {
+    id 'no.nav.testnav.dependencies'
+    id 'java-library'
+    id 'maven-publish'
+}
+
+group = 'no.nav.testnav.libs'
+
+repositories {
+    maven {
+        url = uri('https://repo1.maven.org/maven2/')
+    }
+    mavenLocal()
+}
+
+dependencies {
+    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+}
+
+if (project.hasProperty("releaseVersion")) {
+    version = releaseVersion
+}
+
+java.sourceCompatibility = JavaVersion.VERSION_11
+
+publishing {
+    repositories {
+        maven {
+            name = "github"
+            url = uri('https://maven.pkg.github.com/navikt/testnorge')
+            credentials(PasswordCredentials) {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+    publications {
+        gpr(MavenPublication) {
+            from(components.java)
+        }
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}

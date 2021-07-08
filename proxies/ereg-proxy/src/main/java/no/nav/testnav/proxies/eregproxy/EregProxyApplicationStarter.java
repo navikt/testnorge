@@ -11,16 +11,14 @@ import org.springframework.context.annotation.Import;
 
 import java.util.function.Function;
 
+import no.nav.testnav.libs.core.config.CoreConfig;
 import no.nav.testnav.libs.proxyconfig.config.DevConfig;
 import no.nav.testnav.libs.proxyconfig.config.SecurityConfig;
-import no.nav.testnav.libs.proxyconfig.router.InternalHandler;
-import no.nav.testnav.libs.proxyconfig.router.InternalRouter;
 
 @Import({
+        CoreConfig.class,
         DevConfig.class,
-        SecurityConfig.class,
-        InternalHandler.class,
-        InternalRouter.class
+        SecurityConfig.class
 })
 @SpringBootApplication
 public class EregProxyApplicationStarter {

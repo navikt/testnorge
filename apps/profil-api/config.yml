@@ -31,8 +31,8 @@ spec:
           cluster: dev-gcp
         - application: testnav-applikasjonsanalyse-frontend
           cluster: dev-gcp
-        - application: testnorge-oversikt-frontend
-          cluster: dev-fss
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
         - application: oppsummeringsdokument-frontend
           cluster: dev-gcp
   liveness:

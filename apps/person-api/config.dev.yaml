@@ -20,7 +20,8 @@ spec:
         - application: team-dolly-lokal-app
           cluster: dev-fss
         - application: orkestratoren
-        - application: testnorge-oversikt-frontend
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
   liveness:
     path: /internal/isAlive
     initialDelay: 4

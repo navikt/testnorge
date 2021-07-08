@@ -27,10 +27,11 @@ jobs:
         with:
           java-version: '11.x'
       - name: Compile
+        working-directory: proxies/dokarkiv-proxy/
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew :dokarkiv-proxy:build
+        run: ./gradlew build
       - name: Build and publish Docker image
         working-directory: proxies/dokarkiv-proxy/
         env:

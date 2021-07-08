@@ -20,8 +20,8 @@ spec:
           cluster: dev-fss
         - application: dolly-frontend
           cluster: dev-fss
-        - application: testnorge-oversikt-frontend
-          cluster: dev-fss
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
   liveness:
     path: /internal/isAlive
     periodSeconds: 30
