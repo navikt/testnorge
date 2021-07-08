@@ -19,14 +19,7 @@ import no.nav.testnav.dto.personservice.v1.Persondatasystem;
 @RequestMapping("/api/v1/personer")
 @RequiredArgsConstructor
 public class PersonController {
-
     private final PersonService service;
-
-    @GetMapping
-    public ResponseEntity<Object> getPerson() {
-        var test = Mono.just("Hei").flatMap(value -> ReactiveSecurityContextHolder.getContext().map(test2 -> test2.getAuthentication().getPrincipal()));
-        return ResponseEntity.ok(test);
-    }
 
     @GetMapping("/{ident}")
     public Mono<ResponseEntity<?>> getPerson(
