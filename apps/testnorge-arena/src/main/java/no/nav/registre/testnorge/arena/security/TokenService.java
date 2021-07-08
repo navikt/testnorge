@@ -5,21 +5,16 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import lombok.RequiredArgsConstructor;
-
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
-import java.net.URI;
 import java.time.LocalDateTime;
 
 @Component
-@RequiredArgsConstructor
 public class TokenService {
 
-    private final RestTemplate restTemplate;
+    private final WebClient webClient;
 
     @Value("${ida.username}")
     private String username;
@@ -27,15 +22,17 @@ public class TokenService {
     @Value("${ida.password}")
     private String password;
 
-    @Value("${testnorge-token-provider.url}")
-    private String tokenProviderUrl;
-
     private String idToken;
     private LocalDateTime expiry;
 
+    public TokenService(
+            @Value("${testnorge-token-provider.url}") String tokenProviderUrl
+    ) {
+        this.webClient = WebClient.builder().baseUrl(tokenProviderUrl).build();
+    }
+
     public String getIdToken() {
         updateTokenIfNeeded();
-
         return idToken;
     }
 
@@ -64,15 +61,15 @@ public class TokenService {
     }
 
     private void updateToken() {
-        String url = tokenProviderUrl;
-        RequestEntity<?> getRequest = RequestEntity
-                .get(URI.create(url))
+        var result = webClient
+                .get()
                 .header(ACCEPT, APPLICATION_JSON_VALUE)
                 .header("username", username)
                 .header("password", password)
-                .build();
+                .retrieve()
+                .bodyToMono(JsonNode.class)
+                .block();
 
-        JsonNode result = restTemplate.exchange(getRequest, JsonNode.class).getBody();
         if (result == null) {
             return;
         }

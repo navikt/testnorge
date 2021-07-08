@@ -3,7 +3,6 @@ package no.nav.registre.testnorge.arena.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arena.consumer.rs.BrukereArenaForvalterConsumer;
-import no.nav.registre.testnorge.arena.consumer.rs.AktoerRegisteretConsumer;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 
 import org.springframework.stereotype.Service;
@@ -15,7 +14,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -38,7 +36,7 @@ public class IdentService {
 
     private final HodejegerenConsumer hodejegerenConsumer;
     private final BrukereArenaForvalterConsumer brukereArenaForvalterConsumer;
-    private final AktoerRegisteretConsumer aktoerRegisteretConsumer;
+    private final PdlPersonService pdlPersonService;
     private final TpsForvalterService tpsForvalterService;
 
     public List<Arbeidsoeker> hentArbeidsoekere(
@@ -110,20 +108,18 @@ public class IdentService {
             LocalDate tidligsteDatoBosatt
     ) {
         var identerUtenArenabruker = filtrerEksisterendeBrukereIArena(identer, miljoe);
-        var identerPartisjonert = partisjonerListe(identerUtenArenabruker);
         List<String> utvalgteIdenter = new ArrayList<>(antallNyeIdenter);
-        for (var partisjon : identerPartisjonert) {
-            var aktoerIdenter = aktoerRegisteretConsumer.hentAktoerIderTilIdenter(partisjon, miljoe);
-            for (String key : aktoerIdenter.keySet()) {
-                if (tidligsteDatoBosatt == null || tpsForvalterService.identHarPersonstatusBosatt(key, miljoe, tidligsteDatoBosatt)) {
-                    utvalgteIdenter.add(key);
-                    if (utvalgteIdenter.size() >= antallNyeIdenter) {
-                        return utvalgteIdenter;
-                    }
+
+        for (var ident : identerUtenArenabruker) {
+            var aktoerId = pdlPersonService.getAktoerIdTilIdent(ident);
+            if (aktoerId != null && (tidligsteDatoBosatt == null || tpsForvalterService.identHarPersonstatusBosatt(ident, miljoe, tidligsteDatoBosatt))) {
+                utvalgteIdenter.add(ident);
+                if (utvalgteIdenter.size() >= antallNyeIdenter) {
+                    return utvalgteIdenter;
                 }
             }
-
         }
+
         return utvalgteIdenter;
     }
 
@@ -136,17 +132,12 @@ public class IdentService {
     ) {
         var identerUtenArenabruker = filtrerEksisterendeBrukereIArena(identer, miljoe);
 
-        var identerPartisjonert = partisjonerListe(identerUtenArenabruker);
-
         List<String> utvalgteIdenter = new ArrayList<>(antallNyeIdenter);
-
-        for (var partisjon : identerPartisjonert) {
-            Map<String, String> identerMedAktoerId = aktoerRegisteretConsumer.hentAktoerIderTilIdenter(partisjon, miljoe);
-
-            for (var ident : identerMedAktoerId.keySet()) {
+        for (var ident : identerUtenArenabruker) {
+            var aktoerId = pdlPersonService.getAktoerIdTilIdent(ident);
+            if (aktoerId != null && (tidligsteDatoBosatt == null || tpsForvalterService.identHarPersonstatusBosatt(ident, miljoe, tidligsteDatoBosatt))) {
                 var relasjonsResponse = getRelasjonerTilIdent(ident, miljoe);
-                if (inneholderBarnUnder18VedTidspunkt(relasjonsResponse, tidligsteDatoBarn) &&
-                        (tidligsteDatoBosatt == null || tpsForvalterService.identHarPersonstatusBosatt(ident, miljoe, tidligsteDatoBosatt))) {
+                if (inneholderBarnUnder18VedTidspunkt(relasjonsResponse, tidligsteDatoBarn)) {
                     utvalgteIdenter.add(ident);
                     if (utvalgteIdenter.size() >= antallNyeIdenter) {
                         return utvalgteIdenter;
