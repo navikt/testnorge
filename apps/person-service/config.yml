@@ -15,10 +15,10 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: testnorge-opprett-person-pdl
         - application: team-dolly-lokal-app
           cluster: dev-fss
-        - application: orkestratoren
+        - application: testnav-faste-data-frontend
+          cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
     outbound:
