@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arena.consumer.rs.command.pdl.GetPdlPersonCommand;
 import no.nav.registre.testnorge.arena.consumer.rs.response.pdl.PdlPerson;
 
-import no.nav.registre.testnorge.libs.service.StsOidcTokenService;
+import no.nav.testnav.libs.securitytokenservice.StsOidcTokenService;
 
 @Slf4j
 @Service
