@@ -9,8 +9,6 @@ includeBuild '../../gradlePlugins'
 includeBuild '../../libs/reactive-core'
 includeBuild '../../libs/reactive-security'
 includeBuild '../../libs/data-transfer-objects'
-includeBuild '../../libs/proxy-config'
-includeBuild '../../libs/security-token-service'
 
 gradleEnterprise {
     buildScan {
