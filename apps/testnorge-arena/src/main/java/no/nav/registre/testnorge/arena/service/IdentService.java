@@ -10,12 +10,10 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
@@ -31,7 +29,6 @@ import static no.nav.registre.testnorge.arena.service.util.ServiceUtils.EIER;
 @RequiredArgsConstructor
 public class IdentService {
 
-    private static final int PAGE_SIZE = 10;
     private static final String RELASJON_BARN = "BARN";
 
     private final HodejegerenConsumer hodejegerenConsumer;
@@ -194,16 +191,6 @@ public class IdentService {
             String miljoe
     ) {
         return hodejegerenConsumer.getRelasjoner(ident, miljoe);
-    }
-
-    private <T> Collection<List<T>> partisjonerListe(
-            List<T> list
-    ) {
-        var counter = new AtomicInteger(0);
-        return list
-                .stream()
-                .collect(Collectors.groupingBy(it -> counter.getAndIncrement() / PAGE_SIZE))
-                .values();
     }
 
     public List<String> hentEksisterendeArbeidsoekerIdenter(boolean useCache) {

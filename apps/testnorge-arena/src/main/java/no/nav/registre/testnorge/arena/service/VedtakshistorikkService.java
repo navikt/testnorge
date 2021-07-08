@@ -1,5 +1,6 @@
 package no.nav.registre.testnorge.arena.service;
 
+import static no.nav.registre.testnorge.arena.service.util.RequestUtils.getRettighetFinnTiltakRequest;
 import static no.nav.registre.testnorge.arena.service.util.ServiceUtils.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
 import static no.nav.registre.testnorge.arena.service.util.ServiceUtils.SYKEPENGEERSTATNING_MAKS_PERIODE;
 import static no.nav.registre.testnorge.arena.service.util.ServiceUtils.AKTIVITETSFASE_SYKEPENGEERSTATNING;
@@ -68,7 +69,6 @@ public class VedtakshistorikkService {
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
 
     private final IdentService identService;
-    private final TiltakService tiltakService;
     private final PensjonService pensjonService;
     private final ArbeidssoekerService arbeidsoekerService;
 
@@ -424,7 +424,7 @@ public class VedtakshistorikkService {
                 deltakelse.setTiltakYtelse("J");
             });
             tiltaksdeltakelser.forEach(deltakelse -> {
-                var tiltak = tiltakService.finnTiltak(personident, miljoe, deltakelse);
+                var tiltak = finnTiltak(personident, miljoe, deltakelse);
 
                 if (tiltak != null) {
                     deltakelse.setTiltakId(tiltak.getTiltakId());
@@ -442,6 +442,16 @@ public class VedtakshistorikkService {
             nyeTiltaksdeltakelser = tiltakUtils.removeOverlappingTiltakVedtak(nyeTiltaksdeltakelser, historikk.getAap());
 
             historikk.setTiltaksdeltakelse(nyeTiltaksdeltakelser);
+        }
+    }
+
+    private NyttVedtakTiltak finnTiltak(String personident, String miljoe, NyttVedtakTiltak tiltaksdeltakelse) {
+        var response = rettighetArenaForvalterConsumer.finnTiltak(getRettighetFinnTiltakRequest(personident, miljoe, tiltaksdeltakelse));
+        if (response != null && !response.getNyeRettigheterTiltak().isEmpty()) {
+            return response.getNyeRettigheterTiltak().get(0);
+        } else {
+            log.info("Fant ikke tiltak for tiltakdeltakelse.");
+            return null;
         }
     }
 

@@ -49,8 +49,6 @@ public class VedtakshistorikkServiceTest {
     @Mock
     private IdentService identService;
     @Mock
-    private TiltakService tiltakService;
-    @Mock
     private PensjonService pensjonService;
     @Mock
     private ArbeidssoekerService arbeidsoekerService;

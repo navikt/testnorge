@@ -6,8 +6,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.testnorge.arena.consumer.rs.BrukereArenaForvalterConsumer;
+import no.nav.registre.testnorge.arena.consumer.rs.request.EndreInnsatsbehovRequest;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.NyBruker;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.NyEndreInnsatsbehov;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 
 import org.springframework.stereotype.Service;
@@ -33,6 +35,7 @@ public class BrukereService {
     private static final int MAKSIMUM_ALDER = 67;
     private static final String INGEN_OPPFOELGING = "N";
     private static final String MED_OPPFOELGING = "J";
+    private static final String IARBS_HOVEDMAAL = "BEHOLDEA";
 
     private final HodejegerenConsumer hodejegerenConsumer;
     private final BrukereArenaForvalterConsumer brukereArenaForvalterConsumer;
@@ -193,5 +196,18 @@ public class BrukereService {
             return Kvalifiseringsgrupper.IKVAL;
         }
         return r > 0.2 ? Kvalifiseringsgrupper.BFORM : Kvalifiseringsgrupper.BKART;
+    }
+
+    public void endreFormidlingsgruppeForBrukerTilIarbs(String personident, String miljoe, Kvalifiseringsgrupper kvalifiseringsgruppe) {
+        log.info("Endrer formidlingsgruppe til IARBS for ident: " + personident);
+        var request = EndreInnsatsbehovRequest.builder()
+                .personident(personident)
+                .miljoe(miljoe)
+                .nyeEndreInnsatsbehov(Collections.singletonList(NyEndreInnsatsbehov.builder()
+                        .kvalifiseringsgruppe(kvalifiseringsgruppe)
+                        .hovedmaal(IARBS_HOVEDMAAL)
+                        .build()))
+                .build();
+        brukereArenaForvalterConsumer.endreInnsatsbehovForBruker(request);
     }
 }

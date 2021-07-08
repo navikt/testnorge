@@ -42,7 +42,6 @@ public class ArbeidssoekerService {
     private final Random rand;
     private final BrukereService brukereService;
     private final ServiceUtils serviceUtils;
-    private final InnsatsService innsatsService;
     private final IdentService identService;
 
     static {
@@ -132,7 +131,7 @@ public class ArbeidssoekerService {
                     Thread.currentThread().interrupt();
                     log.warn("Thread interrupted");
                 }
-                innsatsService.endreTilFormidlingsgruppeIarbs(personident, miljoe, kvalifiseringsgruppe);
+                brukereService.endreFormidlingsgruppeForBrukerTilIarbs(personident, miljoe, kvalifiseringsgruppe);
             }
         }
     }

@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import no.nav.registre.testnorge.arena.consumer.rs.command.PostEndreInnsatsbehovCommand;
+import no.nav.registre.testnorge.arena.consumer.rs.request.EndreInnsatsbehovRequest;
 import no.nav.registre.testnorge.arena.consumer.rs.util.ArbeidssoekerCacheUtil;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.NyBruker;
@@ -153,5 +155,14 @@ public class BrukereArenaForvalterConsumer {
             String miljoe
     ) {
         return new DeleteArenaBrukerCommand(personident, miljoe, webClient).call();
+    }
+
+    public void endreInnsatsbehovForBruker(EndreInnsatsbehovRequest endreRequest) {
+        var response = new PostEndreInnsatsbehovCommand(endreRequest, webClient).call();
+
+        if (response == null || (response.getNyeEndreInnsatsbehovFeilList() != null &&
+                !response.getNyeEndreInnsatsbehovFeilList().isEmpty())) {
+            log.info(String.format("Endring av innsatsbehov for ident %s feilet", endreRequest.getPersonident()));
+        }
     }
 }
