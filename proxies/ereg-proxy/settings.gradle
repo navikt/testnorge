@@ -6,7 +6,7 @@ rootProject.name = 'ereg-proxy'
 
 includeBuild '../../gradlePlugins'
 
-includeBuild '../../libs/core'
+includeBuild '../../libs/reactive-core'
 includeBuild '../../libs/proxy-config'
 
 gradleEnterprise {
