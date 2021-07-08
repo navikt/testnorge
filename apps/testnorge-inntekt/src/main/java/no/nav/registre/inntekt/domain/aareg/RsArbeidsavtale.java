@@ -30,6 +30,11 @@ public class RsArbeidsavtale {
     @JsonDeserialize(using = JsonDateDeserializer.class)
     private LocalDateTime endringsdatoStillingsprosent;
 
+
+    @JsonSerialize(using = JsonDateSerializer.class)
+    @JsonDeserialize(using = JsonDateDeserializer.class)
+    private LocalDateTime endringsdatoLoenn;
+
     @JsonSerialize(using = JsonDateSerializer.class)
     @JsonDeserialize(using = JsonDateDeserializer.class)
     private LocalDateTime sisteLoennsendringsdato;

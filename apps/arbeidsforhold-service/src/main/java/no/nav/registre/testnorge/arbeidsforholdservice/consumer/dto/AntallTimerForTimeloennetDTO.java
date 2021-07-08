@@ -4,13 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
+import no.nav.registre.testnorge.arbeidsforholdservice.provider.v2.dto.PeriodeDTO;
 
 @Value
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class ArbeidsgiverDTO {
-    String type;
-    String organisasjonsnummer;
-    String ident;
+public class AntallTimerForTimeloennetDTO {
+    Double antallTimer;
+    PeriodeDTO periode;
+    String rapporteringsperiode;
 }

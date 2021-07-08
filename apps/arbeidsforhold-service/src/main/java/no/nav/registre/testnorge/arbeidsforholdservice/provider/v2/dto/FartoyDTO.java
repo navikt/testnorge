@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.arbeidsforholdservice.consumer.dto;
+package no.nav.registre.testnorge.arbeidsforholdservice.provider.v2.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,9 @@ import lombok.Value;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class ArbeidsgiverDTO {
-    String type;
-    String organisasjonsnummer;
-    String ident;
+public class FartoyDTO {
+
+    String skipsregister;
+    String skipstype;
+    String fartsomraade;
 }

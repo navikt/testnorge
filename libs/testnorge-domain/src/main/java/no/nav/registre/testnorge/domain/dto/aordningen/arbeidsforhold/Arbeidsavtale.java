@@ -47,6 +47,10 @@ public class Arbeidsavtale {
             notes = "Antall timer per uke",
             example = "37.5"
     )
+    private Fartoey fartoey;
+    @ApiModelProperty(
+            notes = "Fartøy i maritimt arbeidsforhold"
+    )
     private Double antallTimerPrUke;
     @ApiModelProperty(
             notes = "Beregnet antall timer per uke",
