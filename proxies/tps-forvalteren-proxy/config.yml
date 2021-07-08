@@ -22,6 +22,8 @@ spec:
           cluster: dev-gcp
         - application: testnav-miljoer-service
           cluster: dev-gcp
+        - application: testnav-person-service
+          cluster: dev-gcp
   liveness:
     path: /internal/isAlive
     initialDelay: 4

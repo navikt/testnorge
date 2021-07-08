@@ -25,7 +25,7 @@ repositories {
 
 dependencies {
 
-    implementation 'no.nav.testnav.libs:core'
+    implementation 'no.nav.testnav.libs:reactive-core'
     implementation 'no.nav.testnav.libs:proxy-config'
 
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
