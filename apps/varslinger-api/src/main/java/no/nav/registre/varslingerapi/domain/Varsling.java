@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 
-import no.nav.registre.testnorge.libs.dto.varslingerapi.v1.VarslingDTO;
+import no.nav.testnav.libs.dto.varslingerapi.v1.VarslingDTO;
 import no.nav.registre.varslingerapi.repository.model.VarslingModel;
 
 @Value

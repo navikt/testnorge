@@ -25,7 +25,7 @@ dependencies {
     implementation 'org.glassfish.jaxb:jaxb-runtime'
 
     implementation project(':testnorge-core')
-    implementation project(':testnorge-data-transfer-objects')
+    implementation 'no.nav.testnav.libs:data-transfer-objects'
     implementation project(':commands')
     implementation project(':testnorge-oauth2')
 

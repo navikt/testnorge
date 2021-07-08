@@ -1,7 +1,6 @@
 package no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain;
 
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
@@ -12,13 +11,13 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.ArbeidsforholdDTO;
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.AvvikDTO;
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.FartoeyDTO;
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.InntektDTO;
-import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdRequest;
-import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdResponse;
-import no.nav.registre.testnorge.libs.dto.syntrest.v1.PermisjonDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.ArbeidsforholdDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.AvvikDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.FartoeyDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.InntektDTO;
+import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdRequest;
+import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdResponse;
+import no.nav.testnav.libs.dto.syntrest.v1.PermisjonDTO;
 
 @Slf4j
 @AllArgsConstructor
@@ -39,7 +38,7 @@ public class Arbeidsforhold {
 
         var permisjoner = Optional.ofNullable(response.getPermisjoner()).orElse(Collections.emptyList())
                 .stream()
-                .map(dto -> no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.PermisjonDTO
+                .map(dto -> no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.PermisjonDTO
                         .builder()
                         .permisjonId(UUID.randomUUID().toString())
                         .beskrivelse(dto.getBeskrivelse())
@@ -91,7 +90,7 @@ public class Arbeidsforhold {
                 .build();
     }
 
-    private List<AvvikDTO> getAvvik(no.nav.registre.testnorge.libs.dto.syntrest.v1.AvvikDTO avvik) {
+    private List<AvvikDTO> getAvvik(no.nav.testnav.libs.dto.syntrest.v1.AvvikDTO avvik) {
         return avvik != null ? Collections.singletonList(AvvikDTO.builder()
                 .id(avvik.getId())
                 .alvorlighetsgrad(avvik.getAlvorlighetsgrad())
@@ -190,7 +189,7 @@ public class Arbeidsforhold {
                 .velferdspermisjon(velferdspermisjon)
                 .historikk(dto.getHistorikk())
                 .numEndringer(count)
-                .fartoey(dto.getFartoey() != null ? no.nav.registre.testnorge.libs.dto.syntrest.v1.FartoeyDTO
+                .fartoey(dto.getFartoey() != null ? no.nav.testnav.libs.dto.syntrest.v1.FartoeyDTO
                         .builder()
                         .fartsomraade(dto.getFartoey().getFartsomraade())
                         .skipsregister(dto.getFartoey().getSkipsregister())
@@ -205,7 +204,7 @@ public class Arbeidsforhold {
                         value.getSluttdato(),
                         getAvvik(value.getAvvik())
                 )).collect(Collectors.toList()))
-                .inntekter(dto.getInntekter().stream().map(value -> no.nav.registre.testnorge.libs.dto.syntrest.v1.InntektDTO
+                .inntekter(dto.getInntekter().stream().map(value -> no.nav.testnav.libs.dto.syntrest.v1.InntektDTO
                         .builder()
                         .antall(value.getAntall())
                         .opptjeningsland(value.getOpptjeningsland())
@@ -219,8 +218,8 @@ public class Arbeidsforhold {
                 .build();
     }
 
-    private no.nav.registre.testnorge.libs.dto.syntrest.v1.AvvikDTO getAvvik(List<no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.AvvikDTO> list) {
-        return list.stream().findFirst().map(avvik -> no.nav.registre.testnorge.libs.dto.syntrest.v1.AvvikDTO.builder().alvorlighetsgrad(avvik.getAlvorlighetsgrad()).navn(avvik.getNavn()).id(avvik.getId()).build()).orElse(null);
+    private no.nav.testnav.libs.dto.syntrest.v1.AvvikDTO getAvvik(List<AvvikDTO> list) {
+        return list.stream().findFirst().map(avvik -> no.nav.testnav.libs.dto.syntrest.v1.AvvikDTO.builder().alvorlighetsgrad(avvik.getAlvorlighetsgrad()).navn(avvik.getNavn()).id(avvik.getId()).build()).orElse(null);
     }
 
     private Float nullToEmpty(Float value) {

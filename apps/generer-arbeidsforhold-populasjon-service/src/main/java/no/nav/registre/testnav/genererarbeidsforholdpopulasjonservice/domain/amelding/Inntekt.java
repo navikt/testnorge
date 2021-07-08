@@ -1,8 +1,6 @@
 package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.amelding;
 
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
 import java.time.LocalDate;
@@ -11,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.dto.syntrest.v1.InntektDTO;
+import no.nav.testnav.libs.dto.syntrest.v1.InntektDTO;
 
 @Value
 @EqualsAndHashCode(callSuper = false)
@@ -22,7 +20,7 @@ public class Inntekt extends Generated {
     String opptjeningsland;
     List<Avvik> avvik;
 
-    public Inntekt(no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.InntektDTO dto){
+    public Inntekt(no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.InntektDTO dto){
         sluttdatoOpptjeningsperiode = dto.getSluttdatoOpptjeningsperiode();
         startdatoOpptjeningsperiode = dto.getStartdatoOpptjeningsperiode();
         antall = dto.getAntall();
@@ -49,8 +47,8 @@ public class Inntekt extends Generated {
                 .build();
     }
 
-    public no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.InntektDTO toDTO(){
-        return no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.InntektDTO
+    public no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.InntektDTO toDTO(){
+        return no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.InntektDTO
                 .builder()
                 .startdatoOpptjeningsperiode(startdatoOpptjeningsperiode)
                 .sluttdatoOpptjeningsperiode(sluttdatoOpptjeningsperiode)

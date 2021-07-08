@@ -12,7 +12,7 @@ import reactor.netty.http.client.HttpClient;
 import no.nav.registre.testnorge.jenkinsbatchstatusservice.config.credentials.OrganisasjonBestillingServiceProperties;
 import no.nav.registre.testnorge.jenkinsbatchstatusservice.consumer.command.SaveOrganisasjonBestillingCommand;
 import no.nav.registre.testnorge.jenkinsbatchstatusservice.consumer.command.UpdateOrganisasjonBestillingCommand;
-import no.nav.registre.testnorge.libs.dto.organiasjonbestilling.v1.OrderDTO;
+import no.nav.testnav.libs.dto.organiasjonbestilling.v1.OrderDTO;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;

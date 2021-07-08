@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.registre.testnorge.libs.core.config.ApplicationProperties;
-import no.nav.registre.testnorge.libs.dto.identpool.v1.FiktiveNavnDTO;
+import no.nav.testnav.libs.dto.identpool.v1.FiktiveNavnDTO;
 
 @Slf4j
 @Component

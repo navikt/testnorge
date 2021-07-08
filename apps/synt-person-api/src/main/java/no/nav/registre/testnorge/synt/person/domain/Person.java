@@ -1,7 +1,7 @@
 package no.nav.registre.testnorge.synt.person.domain;
 
-import no.nav.registre.testnorge.libs.dto.person.v1.AdresseDTO;
-import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
+import no.nav.testnav.libs.dto.person.v1.AdresseDTO;
+import no.nav.testnav.libs.dto.person.v1.PersonDTO;
 import no.nav.registre.testnorge.synt.person.consumer.dto.SyntPersonDTO;
 
 public class Person {

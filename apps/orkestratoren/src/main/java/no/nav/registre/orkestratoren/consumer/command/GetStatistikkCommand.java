@@ -8,8 +8,8 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.libs.dto.statistikkservice.v1.StatistikkDTO;
-import no.nav.registre.testnorge.libs.dto.statistikkservice.v1.StatistikkType;
+import no.nav.testnav.libs.dto.statistikkservice.v1.StatistikkDTO;
+import no.nav.testnav.libs.dto.statistikkservice.v1.StatistikkType;
 
 @Slf4j
 @RequiredArgsConstructor

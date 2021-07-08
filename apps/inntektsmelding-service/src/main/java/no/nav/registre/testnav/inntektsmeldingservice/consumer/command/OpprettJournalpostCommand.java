@@ -11,8 +11,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.libs.dto.dokarkiv.v1.DokmotRequest;
-import no.nav.registre.testnorge.libs.dto.dokarkiv.v1.DokmotResponse;
+import no.nav.testnav.libs.dto.dokarkiv.v1.DokmotRequest;
+import no.nav.testnav.libs.dto.dokarkiv.v1.DokmotResponse;
 
 
 @Slf4j

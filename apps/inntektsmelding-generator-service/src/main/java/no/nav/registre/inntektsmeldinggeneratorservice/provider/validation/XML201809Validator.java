@@ -1,6 +1,6 @@
 package no.nav.registre.inntektsmeldinggeneratorservice.provider.validation;
 
-import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsInntektsmelding;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsInntektsmelding;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;

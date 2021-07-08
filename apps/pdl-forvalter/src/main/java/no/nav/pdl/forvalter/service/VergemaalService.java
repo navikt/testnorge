@@ -3,10 +3,10 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonDTO;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonRequestDTO;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.RelasjonType;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.VergemaalDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 

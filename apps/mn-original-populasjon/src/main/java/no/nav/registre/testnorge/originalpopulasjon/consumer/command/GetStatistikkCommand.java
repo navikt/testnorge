@@ -6,8 +6,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.libs.dto.statistikkservice.v1.StatistikkDTO;
-import no.nav.registre.testnorge.libs.dto.statistikkservice.v1.StatistikkType;
+import no.nav.testnav.libs.dto.statistikkservice.v1.StatistikkDTO;
+import no.nav.testnav.libs.dto.statistikkservice.v1.StatistikkType;
 
 @RequiredArgsConstructor
 public class GetStatistikkCommand implements Callable<StatistikkDTO> {

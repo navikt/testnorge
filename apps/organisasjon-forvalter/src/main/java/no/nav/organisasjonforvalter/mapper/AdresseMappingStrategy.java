@@ -6,8 +6,8 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.organisasjonforvalter.dto.requests.BestillingRequest.AdresseRequest;
 import no.nav.organisasjonforvalter.dto.responses.RsAdresse;
 import no.nav.organisasjonforvalter.jpa.entity.Adresse;
-import no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO;
-import no.nav.registre.testnorge.libs.dto.organisasjon.v1.AdresseDTO;
+import no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO;
+import no.nav.testnav.libs.dto.organisasjon.v1.AdresseDTO;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

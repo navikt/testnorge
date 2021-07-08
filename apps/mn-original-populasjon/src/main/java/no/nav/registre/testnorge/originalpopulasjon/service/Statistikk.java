@@ -1,6 +1,6 @@
 package no.nav.registre.testnorge.originalpopulasjon.service;
 
-import no.nav.registre.testnorge.libs.dto.statistikkservice.v1.StatistikkType;
+import no.nav.testnav.libs.dto.statistikkservice.v1.StatistikkType;
 
 public class Statistikk {
 

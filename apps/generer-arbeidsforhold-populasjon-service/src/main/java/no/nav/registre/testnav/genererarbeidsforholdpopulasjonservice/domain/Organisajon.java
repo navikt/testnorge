@@ -3,7 +3,7 @@ package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain;
 import java.util.List;
 import java.util.Random;
 
-import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 
 public class Organisajon {
     private static final Random RANDOM = new Random();

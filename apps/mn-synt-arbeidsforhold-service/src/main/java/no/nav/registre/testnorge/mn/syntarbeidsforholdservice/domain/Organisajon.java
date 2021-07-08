@@ -1,6 +1,6 @@
 package no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain;
 
-import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 
 import java.util.List;
 import java.util.Random;

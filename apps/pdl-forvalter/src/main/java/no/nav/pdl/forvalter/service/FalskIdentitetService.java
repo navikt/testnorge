@@ -4,11 +4,12 @@ import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.FalskIdentitetDTO;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.NavnDTO;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonDTO;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonRequestDTO;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.RelasjonType;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FalskIdentitetDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
+
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 
@@ -93,7 +94,7 @@ public class FalskIdentitetService {
 
         if (nonNull(identitet.getRettIdentitetVedOpplysninger()) &&
                 nonNull(identitet.getRettIdentitetVedOpplysninger().getPersonnavn()) &&
-                isFalse(genererNavnServiceConsumer.verifyNavn(no.nav.registre.testnorge.libs.dto.generernavnservice.v1.NavnDTO.builder()
+                isFalse(genererNavnServiceConsumer.verifyNavn(no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO.builder()
                         .adjektiv(identitet.getRettIdentitetVedOpplysninger().getPersonnavn().getFornavn())
                         .adverb(identitet.getRettIdentitetVedOpplysninger().getPersonnavn().getMellomnavn())
                         .substantiv(identitet.getRettIdentitetVedOpplysninger().getPersonnavn().getEtternavn())

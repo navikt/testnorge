@@ -9,11 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.SyntArbeidsforholdConsumer;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.amelding.Arbeidsforhold;
-import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdResponse;
+import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdResponse;
 
 @Service
 @RequiredArgsConstructor

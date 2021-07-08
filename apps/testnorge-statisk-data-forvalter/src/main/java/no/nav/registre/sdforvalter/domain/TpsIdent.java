@@ -14,9 +14,8 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.sdforvalter.database.model.TagModel;
 import no.nav.registre.sdforvalter.database.model.TpsIdentModel;
-import no.nav.registre.sdforvalter.database.model.TpsIdentTagModel;
-import no.nav.registre.testnorge.libs.dto.person.v1.AdresseDTO;
-import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
+import no.nav.testnav.libs.dto.person.v1.AdresseDTO;
+import no.nav.testnav.libs.dto.person.v1.PersonDTO;
 
 @Value
 @NoArgsConstructor(force = true)

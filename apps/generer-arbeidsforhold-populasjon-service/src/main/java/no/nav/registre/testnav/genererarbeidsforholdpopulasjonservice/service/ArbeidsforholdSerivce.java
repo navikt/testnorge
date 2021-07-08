@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.OppsummeringsdokumentConsumer;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.Timeline;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.amelding.Arbeidsforhold;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +24,7 @@ public class ArbeidsforholdSerivce {
         return dokumenter.map(items -> new Timeline<>(map(ident, items)));
     }
 
-    private Map<LocalDate, List<Arbeidsforhold>> map(String ident, java.util.List<no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO> items) {
+    private Map<LocalDate, List<Arbeidsforhold>> map(String ident, java.util.List<OppsummeringsdokumentDTO> items) {
         return items.stream()
                 .flatMap(oppsummeringsdokument -> oppsummeringsdokument.getVirksomheter()
                 .stream()

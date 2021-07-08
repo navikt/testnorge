@@ -5,15 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.dto.organisasjonfastedataservice.v1.Gruppe;
-import no.nav.registre.testnorge.libs.dto.organisasjonfastedataservice.v1.OrganisasjonDTO;
+import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.Gruppe;
+import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.OrganisasjonDTO;
 import no.nav.registre.testnorge.organisasjonfastedataservice.repository.model.OrganisasjonModel;
 
 @Value

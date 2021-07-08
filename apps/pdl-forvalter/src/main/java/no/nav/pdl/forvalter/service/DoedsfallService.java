@@ -1,6 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.DoedsfallDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DoedsfallDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

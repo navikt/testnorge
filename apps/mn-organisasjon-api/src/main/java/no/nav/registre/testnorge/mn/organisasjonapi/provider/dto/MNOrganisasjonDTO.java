@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.List;
 
-import no.nav.registre.testnorge.libs.dto.organisasjon.v1.AdresseDTO;
-import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.testnav.libs.dto.organisasjon.v1.AdresseDTO;
+import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 
 public class MNOrganisasjonDTO extends OrganisasjonDTO {
     public MNOrganisasjonDTO(OrganisasjonDTO dto, Boolean active) {

@@ -23,7 +23,7 @@ public class Adresse {
         this.poststed = dto.getPoststed();
     }
 
-    public Adresse(no.nav.registre.testnorge.libs.dto.organisasjon.v1.AdresseDTO dto) {
+    public Adresse(no.nav.testnav.libs.dto.organisasjon.v1.AdresseDTO dto) {
         this.kommunenummer = dto.getKommunenummer();
         this.adresselinje1 = dto.getAdresselinje1();
         this.adresselinje2 = dto.getAdresselinje2();
@@ -33,8 +33,8 @@ public class Adresse {
         this.poststed = dto.getPoststed();
     }
 
-    public no.nav.registre.testnorge.libs.dto.organisasjon.v1.AdresseDTO toDTO() {
-        return no.nav.registre.testnorge.libs.dto.organisasjon.v1.AdresseDTO.builder()
+    public no.nav.testnav.libs.dto.organisasjon.v1.AdresseDTO toDTO() {
+        return no.nav.testnav.libs.dto.organisasjon.v1.AdresseDTO.builder()
                 .kommunenummer(kommunenummer)
                 .adresselinje1(adresselinje1)
                 .adresselinje2(adresselinje2)
@@ -46,8 +46,8 @@ public class Adresse {
     }
 
 
-    public no.nav.registre.testnorge.libs.dto.eregmapper.v1.AdresseDTO toAdresseDTO() {
-        return no.nav.registre.testnorge.libs.dto.eregmapper.v1.AdresseDTO
+    public no.nav.testnav.libs.dto.eregmapper.v1.AdresseDTO toAdresseDTO() {
+        return no.nav.testnav.libs.dto.eregmapper.v1.AdresseDTO
                 .builder()
                 .adresser(Arrays.asList(
                         adresselinje1,

@@ -11,9 +11,9 @@ import java.util.stream.Collectors;
 import no.nav.registre.testnav.inntektsmeldingservice.config.credentials.DokarkivProxyServiceProperties;
 import no.nav.registre.testnav.inntektsmeldingservice.consumer.command.OpprettJournalpostCommand;
 import no.nav.registre.testnav.inntektsmeldingservice.domain.FilLaster;
-import no.nav.registre.testnorge.libs.dto.dokarkiv.v1.DokmotRequest;
-import no.nav.registre.testnorge.libs.dto.dokarkiv.v1.InntektDokument;
-import no.nav.registre.testnorge.libs.dto.dokarkiv.v1.ProsessertInntektDokument;
+import no.nav.testnav.libs.dto.dokarkiv.v1.DokmotRequest;
+import no.nav.testnav.libs.dto.dokarkiv.v1.InntektDokument;
+import no.nav.testnav.libs.dto.dokarkiv.v1.ProsessertInntektDokument;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 

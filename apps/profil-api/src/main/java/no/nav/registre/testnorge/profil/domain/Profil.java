@@ -2,7 +2,7 @@ package no.nav.registre.testnorge.profil.domain;
 
 import lombok.RequiredArgsConstructor;
 
-import no.nav.registre.testnorge.libs.dto.profil.v1.ProfilDTO;
+import no.nav.testnav.libs.dto.profil.v1.ProfilDTO;
 import no.nav.registre.testnorge.profil.consumer.dto.ProfileDTO;
 
 @RequiredArgsConstructor

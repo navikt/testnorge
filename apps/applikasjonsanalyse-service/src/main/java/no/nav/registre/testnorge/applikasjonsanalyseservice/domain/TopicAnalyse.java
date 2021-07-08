@@ -1,15 +1,13 @@
 package no.nav.registre.testnorge.applikasjonsanalyseservice.domain;
 
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
-import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.applikasjonsanalyseservice.domain.yml.topic.v1.KindTopic;
 import no.nav.registre.testnorge.applikasjonsanalyseservice.util.YAMLUtil;
-import no.nav.registre.testnorge.libs.dto.dependencyanalysis.v1.ApplicationDependenciesDTO;
-import no.nav.registre.testnorge.libs.dto.dependencyanalysis.v1.DependencyDTO;
+import no.nav.testnav.libs.dto.dependencyanalysis.v1.ApplicationDependenciesDTO;
+import no.nav.testnav.libs.dto.dependencyanalysis.v1.DependencyDTO;
 
 public class TopicAnalyse {
     private final KindTopic topic;

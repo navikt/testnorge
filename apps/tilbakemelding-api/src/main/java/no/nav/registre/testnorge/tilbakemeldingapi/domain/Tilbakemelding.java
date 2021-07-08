@@ -3,8 +3,8 @@ package no.nav.registre.testnorge.tilbakemeldingapi.domain;
 import java.util.ArrayList;
 
 import lombok.Value;
-import no.nav.registre.testnorge.libs.dto.tilbakemeldingapi.v1.Rating;
-import no.nav.registre.testnorge.libs.dto.tilbakemeldingapi.v1.TilbakemeldingDTO;
+import no.nav.testnav.libs.dto.tilbakemeldingapi.v1.Rating;
+import no.nav.testnav.libs.dto.tilbakemeldingapi.v1.TilbakemeldingDTO;
 import no.nav.registre.testnorge.libs.slack.dto.Attachment;
 import no.nav.registre.testnorge.libs.slack.dto.Block;
 import no.nav.registre.testnorge.libs.slack.dto.Divider;

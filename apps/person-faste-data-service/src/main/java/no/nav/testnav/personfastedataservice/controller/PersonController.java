@@ -18,7 +18,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.testnav.dto.personfastedataservice.v1.PersonDTO;
+import no.nav.testnav.libs.dto.v1.PersonDTO;
 import no.nav.testnav.personfastedataservice.config.AllowedHosts;
 import no.nav.testnav.personfastedataservice.domain.Gruppe;
 import no.nav.testnav.personfastedataservice.domain.Person;

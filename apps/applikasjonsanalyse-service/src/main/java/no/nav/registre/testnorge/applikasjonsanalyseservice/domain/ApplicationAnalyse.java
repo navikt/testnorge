@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 
 import no.nav.registre.testnorge.applikasjonsanalyseservice.domain.yml.application.v1.KindApplikasjon;
 import no.nav.registre.testnorge.applikasjonsanalyseservice.util.YAMLUtil;
-import no.nav.registre.testnorge.libs.dto.dependencyanalysis.v1.DependencyDTO;
+import no.nav.testnav.libs.dto.dependencyanalysis.v1.DependencyDTO;
 
 public class ApplicationAnalyse {
     private final KindApplikasjon kindApplikasjon;

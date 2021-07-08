@@ -1,14 +1,14 @@
 package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.AdresseDTO.Master.FREG;
-import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.AdresseDTO.Master.PDL;
-import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG_UTLAND;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO.Master.FREG;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO.Master.PDL;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG_UTLAND;
 
 @Service
 public class AdressebeskyttelseService extends PdlArtifactService<AdressebeskyttelseDTO> {

@@ -1,8 +1,6 @@
 package no.nav.registre.orgnrservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -18,7 +16,7 @@ import java.util.stream.Collectors;
 import no.nav.registre.orgnrservice.config.credentials.OrganisasjonServiceProperties;
 import no.nav.registre.orgnrservice.consumer.exceptions.OrganisasjonApiException;
 import no.nav.registre.testnorge.libs.common.command.organisasjonservice.v1.GetOrganisasjonCommand;
-import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 
 @Slf4j

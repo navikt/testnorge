@@ -11,7 +11,7 @@ import java.util.List;
 
 import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.Vegadresse;
 import no.nav.testnav.apps.personservice.consumer.dto.tpsf.Boadresse;
-import no.nav.testnav.dto.personservice.v1.AdresseDTO;
+import no.nav.testnav.libs.dto.v1.AdresseDTO;
 
 @Getter
 @Builder

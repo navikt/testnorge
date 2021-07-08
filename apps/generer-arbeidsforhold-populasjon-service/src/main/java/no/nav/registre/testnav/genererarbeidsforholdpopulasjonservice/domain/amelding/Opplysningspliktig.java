@@ -3,7 +3,7 @@ package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.am
 import java.time.LocalDate;
 import java.util.List;
 
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.VirksomhetDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.VirksomhetDTO;
 
 public class Opplysningspliktig {
     private LocalDate kalendermaaned;

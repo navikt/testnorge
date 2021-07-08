@@ -1,8 +1,6 @@
 package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.amelding;
 
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
 import java.time.LocalDate;
@@ -12,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.dto.syntrest.v1.PermisjonDTO;
+import no.nav.testnav.libs.dto.syntrest.v1.PermisjonDTO;
 
 @Value
 @EqualsAndHashCode(callSuper = false)
@@ -24,7 +22,7 @@ public class Permisjon extends Generated {
     Float permisjonsprosent;
     List<Avvik> avvik;
 
-    public Permisjon(no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.PermisjonDTO dto) {
+    public Permisjon(no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.PermisjonDTO dto) {
         id = UUID.randomUUID().toString();
         beskrivelse = dto.getBeskrivelse();
         startdato = dto.getStartdato();
@@ -42,8 +40,8 @@ public class Permisjon extends Generated {
         avvik = dto.getAvvik() == null ? new ArrayList<>() : Collections.singletonList(new Avvik(dto.getAvvik()));
     }
 
-    public no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.PermisjonDTO toDTO() {
-        return no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.PermisjonDTO
+    public no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.PermisjonDTO toDTO() {
+        return no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.PermisjonDTO
                 .builder()
                 .permisjonId(UUID.randomUUID().toString())
                 .beskrivelse(beskrivelse)

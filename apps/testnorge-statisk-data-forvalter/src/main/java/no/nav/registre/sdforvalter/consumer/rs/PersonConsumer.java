@@ -27,7 +27,7 @@ import no.nav.registre.sdforvalter.domain.person.Person;
 import no.nav.registre.sdforvalter.exception.UgyldigIdentException;
 import no.nav.registre.testnorge.libs.common.command.CreatePersonCommand;
 import no.nav.registre.testnorge.libs.common.command.GetPersonCommand;
-import no.nav.registre.testnorge.libs.dto.person.v1.Persondatasystem;
+import no.nav.testnav.libs.dto.person.v1.Persondatasystem;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;

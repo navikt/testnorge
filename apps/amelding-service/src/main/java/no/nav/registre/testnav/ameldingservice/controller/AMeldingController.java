@@ -15,7 +15,7 @@ import java.net.URI;
 
 import no.nav.registre.testnav.ameldingservice.domain.AMelding;
 import no.nav.registre.testnav.ameldingservice.service.AMeldingService;
-import no.nav.registre.testnorge.libs.dto.ameldingservice.v1.AMeldingDTO;
+import no.nav.testnav.libs.dto.ameldingservice.v1.AMeldingDTO;
 
 @RestController
 @RequiredArgsConstructor

@@ -4,10 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.config.credentials.AdresseServiceProperties;
 import no.nav.pdl.forvalter.consumer.command.MatrikkeladresseServiceCommand;
 import no.nav.pdl.forvalter.consumer.command.VegadresseServiceCommand;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.VegadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -33,7 +34,7 @@ public class AdresseServiceConsumer {
                 .build();
     }
 
-    public no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO getVegadresse(VegadresseDTO vegadresse, String matrikkelId) {
+    public no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO getVegadresse(VegadresseDTO vegadresse, String matrikkelId) {
 
         var startTime = currentTimeMillis();
 
@@ -54,7 +55,7 @@ public class AdresseServiceConsumer {
         }
     }
 
-    public no.nav.registre.testnorge.libs.dto.adresseservice.v1.MatrikkeladresseDTO getMatrikkeladresse(MatrikkeladresseDTO adresse, String matrikkelId) {
+    public no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO getMatrikkeladresse(MatrikkeladresseDTO adresse, String matrikkelId) {
 
         var startTime = currentTimeMillis();
 

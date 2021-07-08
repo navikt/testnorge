@@ -14,10 +14,10 @@ import javax.validation.ValidationException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.dto.dokarkiv.v1.ProsessertInntektDokument;
+import no.nav.testnav.libs.dto.dokarkiv.v1.ProsessertInntektDokument;
 import no.nav.registre.testnav.inntektsmeldingservice.service.InntektsmeldingService;
-import no.nav.registre.testnorge.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
-import no.nav.registre.testnorge.libs.dto.inntektsmeldingservice.v1.response.InntektsmeldingResponse;
+import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
+import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.response.InntektsmeldingResponse;
 
 @Slf4j
 @RestController
