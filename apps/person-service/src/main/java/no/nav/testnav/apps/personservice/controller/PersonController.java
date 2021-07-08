@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 import javax.validation.constraints.Size;
 
 import no.nav.testnav.apps.personservice.service.PersonService;
-import no.nav.testnav.libs.dto.v1.Persondatasystem;
+import no.nav.testnav.libs.dto.personservice.v1.Persondatasystem;
 
 @RestController
 @RequestMapping("/api/v1/personer")

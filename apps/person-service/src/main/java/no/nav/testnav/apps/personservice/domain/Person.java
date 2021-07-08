@@ -17,7 +17,7 @@ import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.HentPerson;
 import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.Navn;
 import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.PdlPerson;
 import no.nav.testnav.apps.personservice.consumer.dto.tpsf.TpsPerson;
-import no.nav.testnav.libs.dto.v1.PersonDTO;
+import no.nav.testnav.libs.dto.personservice.v1.PersonDTO;
 
 @Getter
 @Setter
