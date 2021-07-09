@@ -8,9 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.registre.sdforvalter.adapter.EregAdapter;
 import no.nav.registre.sdforvalter.adapter.TpsIdenterAdapter;
-import no.nav.registre.sdforvalter.consumer.rs.OrganisasjonFasteDataConsumer;
 import no.nav.registre.sdforvalter.consumer.rs.PersonFasteDataConsumer;
 
 @RestController

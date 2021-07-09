@@ -23,7 +23,7 @@ public class SavePersonFasteDataCommand implements Callable<Mono<Void>> {
 
     @Override
     public Mono<Void> call() {
-        webClient
+        return webClient
                 .put()
                 .uri("/api/v1/personer")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
