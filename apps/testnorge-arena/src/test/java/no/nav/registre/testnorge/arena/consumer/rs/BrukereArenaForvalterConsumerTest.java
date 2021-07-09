@@ -26,7 +26,7 @@ public class BrukereArenaForvalterConsumerTest {
 
     private MockWebServer mockWebServer;
 
-    private String miljoe = "q2";
+    private final String miljoe = "q2";
 
     @Before
     public void setUp() throws IOException {

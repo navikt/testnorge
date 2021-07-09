@@ -13,6 +13,7 @@ import static no.nav.registre.testnorge.arena.service.util.ServiceUtils.ARENA_AA
 
 import no.nav.registre.testnorge.arena.consumer.rs.VedtakshistorikkSyntConsumer;
 import no.nav.registre.testnorge.arena.consumer.rs.RettighetArenaForvalterConsumer;
+import no.nav.registre.testnorge.arena.service.util.ArenaBrukerUtils;
 import no.nav.registre.testnorge.arena.service.util.RequestUtils;
 import no.nav.registre.testnorge.arena.service.util.TilleggUtils;
 import no.nav.registre.testnorge.arena.service.util.TiltakUtils;
@@ -51,7 +52,7 @@ public class VedtakshistorikkServiceTest {
     @Mock
     private PensjonService pensjonService;
     @Mock
-    private ArbeidssoekerService arbeidsoekerService;
+    private ArenaBrukerService arenaBrukerService;
 
     @Mock
     private RequestUtils requestUtils;

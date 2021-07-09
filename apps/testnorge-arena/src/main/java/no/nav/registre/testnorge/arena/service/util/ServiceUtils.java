@@ -15,10 +15,16 @@ import java.util.Random;
 public class ServiceUtils {
 
     public static final String BEGRUNNELSE = "Syntetisert rettighet";
+
+    public static final int MINIMUM_ALDER = 16;
+    public static final int MAKSIMUM_ALDER = 67;
+
     public static final int MIN_ALDER_AAP = 18;
     public static final int MAX_ALDER_AAP = 67;
+
     public static final int MIN_ALDER_UNG_UFOER = 18;
     public static final int MAX_ALDER_UNG_UFOER = 36;
+
     public static final String EIER = "ORKESTRATOREN";
 
     public static final int SYKEPENGEERSTATNING_MAKS_PERIODE = 6;

@@ -70,7 +70,7 @@ public class VedtakshistorikkService {
 
     private final IdentService identService;
     private final PensjonService pensjonService;
-    private final ArbeidssoekerService arbeidsoekerService;
+    private final ArenaBrukerService arenaBrukerService;
 
     private final RequestUtils requestUtils;
     private final TilleggUtils tilleggUtils;
@@ -224,7 +224,7 @@ public class VedtakshistorikkService {
 
         if (!rettigheter.isEmpty()) {
             try {
-                arbeidsoekerService.opprettArbeidssoekerVedtakshistorikk(personident, miljoe, senesteVedtak, tidligsteDato);
+                arenaBrukerService.opprettArbeidssoekerVedtakshistorikk(personident, miljoe, senesteVedtak, tidligsteDato);
             } catch (Exception e) {
                 log.error(e.getMessage());
                 return Collections.emptyMap();
@@ -410,7 +410,7 @@ public class VedtakshistorikkService {
         if (tiltaksdeltakelser != null && !tiltaksdeltakelser.isEmpty()) {
             Kvalifiseringsgrupper kvalifiseringsgruppe;
             try {
-                kvalifiseringsgruppe = arbeidsoekerService.opprettArbeidssoekerTiltaksdeltakelse(personident, miljoe, senesteVedtak, tidligsteDato);
+                kvalifiseringsgruppe = arenaBrukerService.opprettArbeidssoekerTiltaksdeltakelse(personident, miljoe, senesteVedtak.getRettighetType(), tidligsteDato);
             } catch (Exception e) {
                 historikk.setTiltaksdeltakelse(Collections.emptyList());
                 return;

@@ -2,8 +2,6 @@ package no.nav.registre.testnorge.arena.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.arena.consumer.rs.BrukereArenaForvalterConsumer;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 
 import org.springframework.stereotype.Service;
 
@@ -14,7 +12,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
@@ -32,33 +29,9 @@ public class IdentService {
     private static final String RELASJON_BARN = "BARN";
 
     private final HodejegerenConsumer hodejegerenConsumer;
-    private final BrukereArenaForvalterConsumer brukereArenaForvalterConsumer;
     private final PdlPersonService pdlPersonService;
     private final TpsForvalterService tpsForvalterService;
-
-    public List<Arbeidsoeker> hentArbeidsoekere(
-            String eier,
-            String miljoe,
-            String personident,
-            boolean useCache
-    ) {
-        return brukereArenaForvalterConsumer.hentArbeidsoekere(personident, eier, miljoe, useCache);
-    }
-
-    public List<String> slettBrukereIArenaForvalter(
-            List<String> identerToDelete,
-            String miljoe
-    ) {
-        List<String> slettedeIdenter = new ArrayList<>();
-
-        for (var personident : identerToDelete) {
-            if (brukereArenaForvalterConsumer.slettBruker(personident, miljoe)) {
-                slettedeIdenter.add(personident);
-            }
-        }
-
-        return slettedeIdenter;
-    }
+    private final ArenaBrukerService arenaBrukerService;
 
     public List<String> getUtvalgteIdenterIAldersgruppe(
             Long avspillergruppeId,
@@ -179,7 +152,7 @@ public class IdentService {
             Set<String> identerAsSet,
             String miljoe
     ) {
-        var eksisterendeBrukere = new HashSet<>(hentEksisterendeArbeidsoekerIdenter(EIER, miljoe, true));
+        var eksisterendeBrukere = new HashSet<>(arenaBrukerService.hentEksisterendeArbeidsoekerIdenter(EIER, miljoe, true));
         identerAsSet.removeAll(eksisterendeBrukere);
         var identer = new ArrayList<>(identerAsSet);
         Collections.shuffle(identer);
@@ -191,31 +164,6 @@ public class IdentService {
             String miljoe
     ) {
         return hodejegerenConsumer.getRelasjoner(ident, miljoe);
-    }
-
-    public List<String> hentEksisterendeArbeidsoekerIdenter(boolean useCache) {
-        var arbeidsoekere = brukereArenaForvalterConsumer.hentArbeidsoekere(null, null, null, useCache);
-        return hentIdentListe(arbeidsoekere);
-    }
-
-    public List<String> hentEksisterendeArbeidsoekerIdent(String personident, boolean useCache) {
-        var arbeidsoekere = brukereArenaForvalterConsumer.hentArbeidsoekere(personident, null, null, useCache);
-        return hentIdentListe(arbeidsoekere);
-    }
-
-    public List<String> hentEksisterendeArbeidsoekerIdenter(String eier, String miljoe, boolean useCache) {
-        var arbeidsoekere = brukereArenaForvalterConsumer.hentArbeidsoekere(null, eier, miljoe, useCache);
-        return hentIdentListe(arbeidsoekere);
-    }
-
-    private List<String> hentIdentListe(
-            List<Arbeidsoeker> arbeidsoekere
-    ) {
-        if (arbeidsoekere.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        return arbeidsoekere.stream().map(Arbeidsoeker::getPersonident).collect(Collectors.toList());
     }
 
 }

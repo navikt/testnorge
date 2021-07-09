@@ -1,7 +1,8 @@
 package no.nav.registre.testnorge.arena.provider.rs;
 
 import no.nav.registre.testnorge.arena.provider.rs.request.SyntetiserArenaRequest;
-import no.nav.registre.testnorge.arena.service.BrukereService;
+import no.nav.registre.testnorge.arena.service.ArenaBrukerService;
+import no.nav.registre.testnorge.arena.service.IdentService;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 
@@ -19,14 +20,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
+
+import static no.nav.registre.testnorge.arena.service.util.ServiceUtils.MAKSIMUM_ALDER;
+import static no.nav.registre.testnorge.arena.service.util.ServiceUtils.MINIMUM_ALDER;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BrukereControllerTest {
 
     @Mock
-    private BrukereService brukereService;
+    private ArenaBrukerService arenaBrukerService;
+    @Mock
+    private IdentService identService;
 
     @InjectMocks
     private BrukereController brukereController;
@@ -66,7 +71,7 @@ public class BrukereControllerTest {
 
     @Test
     public void registrerAntallIdenterIArenaForvalter() {
-        when(brukereService
+        when(arenaBrukerService
                 .opprettArbeidsoekere(antallNyeIdenter, avspillegruppeId, miljoe))
                 .thenReturn(response);
 
@@ -77,8 +82,7 @@ public class BrukereControllerTest {
 
     @Test
     public void registrerIdentIArenaForvalter() {
-        doReturn(singleResponse).when(brukereService)
-                .opprettArbeidssoeker(fnr1, avspillegruppeId, miljoe, false);
+        when(arenaBrukerService.opprettArbeidssoeker(fnr1, avspillegruppeId, miljoe, false)).thenReturn(singleResponse);
 
         ResponseEntity<NyeBrukereResponse> response = brukereController.registrerBrukereIArenaForvalter(fnr1, syntetiserArenaRequest);
         assertThat(response.getBody().getArbeidsoekerList()).hasSize(1);
@@ -87,8 +91,11 @@ public class BrukereControllerTest {
 
     @Test
     public void registrerAntallIdenterMedOppfoelgingIArenaForvalter() {
-        when(brukereService
-                .opprettArbeidssoekereUtenVedtak(1, avspillegruppeId, miljoe))
+        var identer = Collections.singletonList(fnr1);
+
+        when(identService.getUtvalgteIdenterIAldersgruppe(avspillegruppeId, 1, MINIMUM_ALDER, MAKSIMUM_ALDER, miljoe, null)).thenReturn(identer);
+        when(arenaBrukerService
+                .opprettArbeidssoekereUtenVedtak(identer, miljoe))
                 .thenReturn(oppfoelgingResponse);
 
         ResponseEntity<Map<String, NyeBrukereResponse>> result = brukereController.registrerBrukereIArenaForvalterMedOppfoelging(syntetiserArenaRequestSingle);
