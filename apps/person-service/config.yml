@@ -17,6 +17,8 @@ spec:
       rules:
         - application: team-dolly-lokal-app
           cluster: dev-fss
+        - application: testnorge-statisk-data-forvalter
+          cluster: dev-fss
         - application: testnav-faste-data-frontend
           cluster: dev-gcp
         - application: testnav-oversikt-frontend

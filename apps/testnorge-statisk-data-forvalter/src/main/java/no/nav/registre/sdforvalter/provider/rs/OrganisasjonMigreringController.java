@@ -14,7 +14,7 @@ import no.nav.registre.sdforvalter.consumer.rs.OrganisasjonFasteDataConsumer;
 @RestController
 @RequestMapping("/api/v1/organisasjon/migrering")
 @RequiredArgsConstructor
-public class OrganisasjonMigereringController {
+public class OrganisasjonMigreringController {
     private final EregAdapter eregAdapter;
     private final OrganisasjonFasteDataConsumer fasteDataConsumer;
 
