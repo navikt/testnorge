@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.fastedatafrontend;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -26,6 +27,7 @@ import no.nav.testnav.libs.security.domain.AccessToken;
 import no.nav.testnav.libs.security.domain.Scopeable;
 import no.nav.testnav.libs.security.service.AccessTokenService;
 
+@Slf4j
 @Import({
         CoreConfig.class,
         SecureOAuth2FrontendConfiguration.class,
@@ -91,6 +93,7 @@ public class FasteDataFrontendApplicationStarter {
     }
 
     private Function<PredicateSpec, Route.AsyncBuilder> createRoute(String segment, String host, GatewayFilter filter) {
+        log.info("Redirct fra segment {} til host {}.", segment, host);
         return spec -> spec
                 .path("/" + segment + "/**")
                 .filters(filterSpec -> filterSpec
