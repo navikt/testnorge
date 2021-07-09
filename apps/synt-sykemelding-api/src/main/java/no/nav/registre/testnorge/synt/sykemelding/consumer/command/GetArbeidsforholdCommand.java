@@ -13,7 +13,7 @@ import reactor.util.retry.Retry;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO;
 
 @Slf4j
 @RequiredArgsConstructor

@@ -5,9 +5,9 @@ import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
 import no.nav.pdl.forvalter.utils.TilfeldigLandService;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.InnflyttingDTO;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonDTO;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.NORGE;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.isLandkode;
-import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.Identtype.FNR;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FNR;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 

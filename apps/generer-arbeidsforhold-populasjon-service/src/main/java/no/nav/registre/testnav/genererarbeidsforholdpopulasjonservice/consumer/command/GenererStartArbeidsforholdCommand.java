@@ -1,7 +1,5 @@
 package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.command;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
@@ -16,11 +14,10 @@ import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdResponse;
+import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdResponse;
 
 @Slf4j
 @RequiredArgsConstructor

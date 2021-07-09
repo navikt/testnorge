@@ -2,10 +2,11 @@ package no.nav.pdl.forvalter.service;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.OppholdsadresseDTO;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.VegadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdsadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,7 +17,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import java.time.LocalDate;
 import java.util.List;
 
-import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.AdresseDTO.Master.FREG;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO.Master.FREG;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -135,9 +136,9 @@ class OppholdsadresseServiceTest {
     void whenOverlappingDateIntervalsInInput_thenThrowExecption() {
 
         when(adresseServiceConsumer.getVegadresse(any(VegadresseDTO.class), isNull()))
-                .thenReturn(new no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO());
+                .thenReturn(new no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO());
         when(adresseServiceConsumer.getMatrikkeladresse(any(MatrikkeladresseDTO.class), any()))
-                .thenReturn(new no.nav.registre.testnorge.libs.dto.adresseservice.v1.MatrikkeladresseDTO());
+                .thenReturn(new no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO());
 
         var request = List.of(OppholdsadresseDTO.builder()
                         .vegadresse(new VegadresseDTO())
@@ -160,7 +161,7 @@ class OppholdsadresseServiceTest {
     void whenOverlappingDateIntervalsInInput2_thenThrowExecption() {
 
         when(adresseServiceConsumer.getMatrikkeladresse(any(MatrikkeladresseDTO.class), any()))
-                .thenReturn(new no.nav.registre.testnorge.libs.dto.adresseservice.v1.MatrikkeladresseDTO());
+                .thenReturn(new no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO());
 
         var request = List.of(OppholdsadresseDTO.builder()
                         .gyldigFraOgMed(LocalDate.of(2020, 2, 3).atStartOfDay())
@@ -184,7 +185,7 @@ class OppholdsadresseServiceTest {
     void whenFraDatoAndEmptyTilDato_thenAcceptRequest() {
 
         when(adresseServiceConsumer.getMatrikkeladresse(any(MatrikkeladresseDTO.class), any()))
-                .thenReturn(new no.nav.registre.testnorge.libs.dto.adresseservice.v1.MatrikkeladresseDTO());
+                .thenReturn(new no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO());
 
         var target = oppholdsadresseService.convert(List.of(OppholdsadresseDTO.builder()
                 .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
@@ -198,7 +199,7 @@ class OppholdsadresseServiceTest {
     @Test
     void whenPreviousOppholdHasEmptyTilDato_thenFixPreviousOppholdTilDato() {
 
-        when(adresseServiceConsumer.getVegadresse(any(VegadresseDTO.class), isNull())).thenReturn(new no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO());
+        when(adresseServiceConsumer.getVegadresse(any(VegadresseDTO.class), isNull())).thenReturn(new no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO());
 
         var target = oppholdsadresseService.convert(List.of(OppholdsadresseDTO.builder()
                         .gyldigFraOgMed(LocalDate.of(2020, 2, 4).atStartOfDay())

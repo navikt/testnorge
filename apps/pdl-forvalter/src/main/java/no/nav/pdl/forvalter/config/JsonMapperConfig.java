@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

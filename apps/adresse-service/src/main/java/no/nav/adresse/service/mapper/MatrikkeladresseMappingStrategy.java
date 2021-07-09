@@ -4,7 +4,7 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.adresse.service.dto.PdlAdresseResponse;
-import no.nav.registre.testnorge.libs.dto.adresseservice.v1.MatrikkeladresseDTO;
+import no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO;
 import org.springframework.stereotype.Component;
 
 @Component

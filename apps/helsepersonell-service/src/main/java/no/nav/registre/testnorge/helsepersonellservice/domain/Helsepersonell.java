@@ -2,7 +2,7 @@ package no.nav.registre.testnorge.helsepersonellservice.domain;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.HelsepersonellDTO;
+import no.nav.testnav.libs.dto.helsepersonell.v1.HelsepersonellDTO;
 
 import java.util.concurrent.CompletableFuture;
 

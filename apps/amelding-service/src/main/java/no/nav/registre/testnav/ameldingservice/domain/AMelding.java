@@ -5,15 +5,15 @@ import lombok.RequiredArgsConstructor;
 import java.time.LocalDate;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.dto.ameldingservice.v1.AMeldingDTO;
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.ArbeidsforholdDTO;
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.AvvikDTO;
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.FartoeyDTO;
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.InntektDTO;
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.PermisjonDTO;
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.PersonDTO;
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.VirksomhetDTO;
+import no.nav.testnav.libs.dto.ameldingservice.v1.AMeldingDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.ArbeidsforholdDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.AvvikDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.FartoeyDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.InntektDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.PermisjonDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.PersonDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.VirksomhetDTO;
 
 @RequiredArgsConstructor
 public class AMelding {
@@ -59,7 +59,7 @@ public class AMelding {
 
     private void merge(
             VirksomhetDTO target,
-            no.nav.registre.testnorge.libs.dto.ameldingservice.v1.VirksomhetDTO other
+            no.nav.testnav.libs.dto.ameldingservice.v1.VirksomhetDTO other
     ) {
         other.getPersoner().forEach(newPerson -> {
             var result = target.getPersoner()
@@ -77,7 +77,7 @@ public class AMelding {
         });
     }
 
-    private void merge(PersonDTO target, no.nav.registre.testnorge.libs.dto.ameldingservice.v1.PersonDTO other) {
+    private void merge(PersonDTO target, no.nav.testnav.libs.dto.ameldingservice.v1.PersonDTO other) {
         other.getArbeidsforhold().forEach(newArbeidsforhold -> {
             var result = target.getArbeidsforhold()
                     .stream()
@@ -92,7 +92,7 @@ public class AMelding {
         });
     }
 
-    private void merge(ArbeidsforholdDTO target, no.nav.registre.testnorge.libs.dto.ameldingservice.v1.ArbeidsforholdDTO other) {
+    private void merge(ArbeidsforholdDTO target, no.nav.testnav.libs.dto.ameldingservice.v1.ArbeidsforholdDTO other) {
         target.setArbeidstidsordning(other.getArbeidstidsordning());
         target.setAvvik(other.getAvvik().stream().map(this::create).collect(Collectors.toList()));
         target.setFartoey(create(other.getFartoey()));
@@ -107,7 +107,7 @@ public class AMelding {
         target.setYrke(other.getYrke());
     }
 
-    private boolean isEqual(ArbeidsforholdDTO first, no.nav.registre.testnorge.libs.dto.ameldingservice.v1.ArbeidsforholdDTO second) {
+    private boolean isEqual(ArbeidsforholdDTO first, no.nav.testnav.libs.dto.ameldingservice.v1.ArbeidsforholdDTO second) {
         return first.getArbeidsforholdId() == null && second.getArbeidsforholdId() == null
                 || first.getArbeidsforholdId() != null && second.getArbeidsforholdId() != null && first.getArbeidsforholdId().equals(second.getArbeidsforholdId());
     }
@@ -132,7 +132,7 @@ public class AMelding {
                 .build();
     }
 
-    private VirksomhetDTO create(no.nav.registre.testnorge.libs.dto.ameldingservice.v1.VirksomhetDTO virksomhet) {
+    private VirksomhetDTO create(no.nav.testnav.libs.dto.ameldingservice.v1.VirksomhetDTO virksomhet) {
         return VirksomhetDTO
                 .builder()
                 .organisajonsnummer(virksomhet.getOrganisajonsnummer())
@@ -140,15 +140,15 @@ public class AMelding {
                 .build();
     }
 
-    private no.nav.registre.testnorge.libs.dto.ameldingservice.v1.VirksomhetDTO create(VirksomhetDTO virksomhet) {
-        return no.nav.registre.testnorge.libs.dto.ameldingservice.v1.VirksomhetDTO
+    private no.nav.testnav.libs.dto.ameldingservice.v1.VirksomhetDTO create(VirksomhetDTO virksomhet) {
+        return no.nav.testnav.libs.dto.ameldingservice.v1.VirksomhetDTO
                 .builder()
                 .organisajonsnummer(virksomhet.getOrganisajonsnummer())
                 .personer(virksomhet.getPersoner().stream().map(this::create).collect(Collectors.toList()))
                 .build();
     }
 
-    private PersonDTO create(no.nav.registre.testnorge.libs.dto.ameldingservice.v1.PersonDTO personDTO) {
+    private PersonDTO create(no.nav.testnav.libs.dto.ameldingservice.v1.PersonDTO personDTO) {
         return PersonDTO
                 .builder()
                 .ident(personDTO.getIdent())
@@ -156,15 +156,15 @@ public class AMelding {
                 .build();
     }
 
-    private no.nav.registre.testnorge.libs.dto.ameldingservice.v1.PersonDTO create(PersonDTO personDTO) {
-        return no.nav.registre.testnorge.libs.dto.ameldingservice.v1.PersonDTO
+    private no.nav.testnav.libs.dto.ameldingservice.v1.PersonDTO create(PersonDTO personDTO) {
+        return no.nav.testnav.libs.dto.ameldingservice.v1.PersonDTO
                 .builder()
                 .ident(personDTO.getIdent())
                 .arbeidsforhold(personDTO.getArbeidsforhold().stream().map(this::create).collect(Collectors.toList()))
                 .build();
     }
 
-    private ArbeidsforholdDTO create(no.nav.registre.testnorge.libs.dto.ameldingservice.v1.ArbeidsforholdDTO arbeidsforholdDTO) {
+    private ArbeidsforholdDTO create(no.nav.testnav.libs.dto.ameldingservice.v1.ArbeidsforholdDTO arbeidsforholdDTO) {
         return ArbeidsforholdDTO
                 .builder()
                 .antallTimerPerUke(arbeidsforholdDTO.getAntallTimerPerUke())
@@ -183,8 +183,8 @@ public class AMelding {
                 .build();
     }
 
-    private no.nav.registre.testnorge.libs.dto.ameldingservice.v1.ArbeidsforholdDTO create(ArbeidsforholdDTO arbeidsforholdDTO) {
-        return no.nav.registre.testnorge.libs.dto.ameldingservice.v1.ArbeidsforholdDTO
+    private no.nav.testnav.libs.dto.ameldingservice.v1.ArbeidsforholdDTO create(ArbeidsforholdDTO arbeidsforholdDTO) {
+        return no.nav.testnav.libs.dto.ameldingservice.v1.ArbeidsforholdDTO
                 .builder()
                 .antallTimerPerUke(arbeidsforholdDTO.getAntallTimerPerUke())
                 .arbeidsforholdId(arbeidsforholdDTO.getArbeidsforholdId())
@@ -202,7 +202,7 @@ public class AMelding {
                 .build();
     }
 
-    private PermisjonDTO create(no.nav.registre.testnorge.libs.dto.ameldingservice.v1.PermisjonDTO permisjonDTO) {
+    private PermisjonDTO create(no.nav.testnav.libs.dto.ameldingservice.v1.PermisjonDTO permisjonDTO) {
         return PermisjonDTO
                 .builder()
                 .avvik(permisjonDTO.getAvvik().stream().map(this::create).collect(Collectors.toList()))
@@ -214,8 +214,8 @@ public class AMelding {
                 .build();
     }
 
-    private no.nav.registre.testnorge.libs.dto.ameldingservice.v1.PermisjonDTO create(PermisjonDTO permisjonDTO) {
-        return no.nav.registre.testnorge.libs.dto.ameldingservice.v1.PermisjonDTO
+    private no.nav.testnav.libs.dto.ameldingservice.v1.PermisjonDTO create(PermisjonDTO permisjonDTO) {
+        return no.nav.testnav.libs.dto.ameldingservice.v1.PermisjonDTO
                 .builder()
                 .avvik(permisjonDTO.getAvvik().stream().map(this::create).collect(Collectors.toList()))
                 .beskrivelse(permisjonDTO.getBeskrivelse())
@@ -226,7 +226,7 @@ public class AMelding {
                 .build();
     }
 
-    private InntektDTO create(no.nav.registre.testnorge.libs.dto.ameldingservice.v1.InntektDTO inntektDTO) {
+    private InntektDTO create(no.nav.testnav.libs.dto.ameldingservice.v1.InntektDTO inntektDTO) {
         return InntektDTO
                 .builder()
                 .antall(inntektDTO.getAntall())
@@ -237,8 +237,8 @@ public class AMelding {
                 .build();
     }
 
-    private no.nav.registre.testnorge.libs.dto.ameldingservice.v1.InntektDTO create(InntektDTO inntektDTO) {
-        return no.nav.registre.testnorge.libs.dto.ameldingservice.v1.InntektDTO
+    private no.nav.testnav.libs.dto.ameldingservice.v1.InntektDTO create(InntektDTO inntektDTO) {
+        return no.nav.testnav.libs.dto.ameldingservice.v1.InntektDTO
                 .builder()
                 .antall(inntektDTO.getAntall())
                 .avvik(inntektDTO.getAvvik().stream().map(this::create).collect(Collectors.toList()))
@@ -249,7 +249,7 @@ public class AMelding {
     }
 
 
-    private FartoeyDTO create(no.nav.registre.testnorge.libs.dto.ameldingservice.v1.FartoeyDTO fartoeyDTO) {
+    private FartoeyDTO create(no.nav.testnav.libs.dto.ameldingservice.v1.FartoeyDTO fartoeyDTO) {
         if (fartoeyDTO == null) {
             return null;
         }
@@ -261,11 +261,11 @@ public class AMelding {
                 .build();
     }
 
-    private no.nav.registre.testnorge.libs.dto.ameldingservice.v1.FartoeyDTO create(FartoeyDTO fartoeyDTO) {
+    private no.nav.testnav.libs.dto.ameldingservice.v1.FartoeyDTO create(FartoeyDTO fartoeyDTO) {
         if (fartoeyDTO == null) {
             return null;
         }
-        return no.nav.registre.testnorge.libs.dto.ameldingservice.v1.FartoeyDTO
+        return no.nav.testnav.libs.dto.ameldingservice.v1.FartoeyDTO
                 .builder()
                 .fartsomraade(fartoeyDTO.getFartsomraade())
                 .skipsregister(fartoeyDTO.getSkipsregister())
@@ -273,7 +273,7 @@ public class AMelding {
                 .build();
     }
 
-    private AvvikDTO create(no.nav.registre.testnorge.libs.dto.ameldingservice.v1.AvvikDTO avvikDTO) {
+    private AvvikDTO create(no.nav.testnav.libs.dto.ameldingservice.v1.AvvikDTO avvikDTO) {
         return AvvikDTO
                 .builder()
                 .id(avvikDTO.getId())
@@ -282,8 +282,8 @@ public class AMelding {
                 .build();
     }
 
-    private no.nav.registre.testnorge.libs.dto.ameldingservice.v1.AvvikDTO create(AvvikDTO avvikDTO) {
-        return no.nav.registre.testnorge.libs.dto.ameldingservice.v1.AvvikDTO
+    private no.nav.testnav.libs.dto.ameldingservice.v1.AvvikDTO create(AvvikDTO avvikDTO) {
+        return no.nav.testnav.libs.dto.ameldingservice.v1.AvvikDTO
                 .builder()
                 .id(avvikDTO.getId())
                 .alvorlighetsgrad(avvikDTO.getAlvorlighetsgrad())

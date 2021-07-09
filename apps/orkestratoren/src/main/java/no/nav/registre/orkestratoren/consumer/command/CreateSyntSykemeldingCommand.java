@@ -9,8 +9,8 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO;
-import no.nav.registre.testnorge.libs.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO;
+import no.nav.testnav.libs.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
 
 @Slf4j
 @RequiredArgsConstructor

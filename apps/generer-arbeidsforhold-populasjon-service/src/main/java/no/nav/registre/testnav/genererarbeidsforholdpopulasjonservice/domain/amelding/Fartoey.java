@@ -2,7 +2,7 @@ package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.am
 
 import lombok.Value;
 
-import no.nav.registre.testnorge.libs.dto.syntrest.v1.FartoeyDTO;
+import no.nav.testnav.libs.dto.syntrest.v1.FartoeyDTO;
 
 @Value
 public class Fartoey {
@@ -10,7 +10,7 @@ public class Fartoey {
     String skipstype;
     String fartsomraade;
 
-    public Fartoey(no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.FartoeyDTO dto) {
+    public Fartoey(no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.FartoeyDTO dto) {
         skipsregister = dto.getSkipsregister();
         skipstype = dto.getSkipstype();
         fartsomraade = dto.getFartsomraade();
@@ -22,8 +22,8 @@ public class Fartoey {
         fartsomraade = dto.getFartsomraade();
     }
 
-    public no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.FartoeyDTO toDTO() {
-        return no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.FartoeyDTO.builder()
+    public no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.FartoeyDTO toDTO() {
+        return no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.FartoeyDTO.builder()
                 .fartsomraade(fartsomraade)
                 .skipsregister(skipsregister)
                 .skipstype(skipstype)

@@ -3,7 +3,7 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.TilfeldigLandService;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.InnflyttingDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

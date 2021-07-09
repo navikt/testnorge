@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Optional;
 
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.Id;
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.ArbeidsforholdDTO;
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.PersonDTO;
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.VirksomhetDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.ArbeidsforholdDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.PersonDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.VirksomhetDTO;
 
 @Slf4j
 public class Oppsummeringsdokument implements Id {

@@ -2,7 +2,6 @@ package no.nav.testnav.apps.personservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -13,7 +12,7 @@ import reactor.core.publisher.Mono;
 import javax.validation.constraints.Size;
 
 import no.nav.testnav.apps.personservice.service.PersonService;
-import no.nav.testnav.dto.personservice.v1.Persondatasystem;
+import no.nav.testnav.libs.dto.personservice.v1.Persondatasystem;
 
 @RestController
 @RequestMapping("/api/v1/personer")

@@ -11,9 +11,9 @@ import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.FullPersonDTO;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonDTO;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Value;
 
 import no.nav.registre.sdforvalter.domain.Ereg;
-import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 
 @Value
 @Builder

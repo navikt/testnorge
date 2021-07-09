@@ -2,7 +2,7 @@ package no.nav.registre.testnorge.helsepersonellservice.domain;
 
 import lombok.RequiredArgsConstructor;
 
-import no.nav.registre.testnorge.libs.dto.hodejegeren.v1.PersondataDTO;
+import no.nav.testnav.libs.dto.hodejegeren.v1.PersondataDTO;
 
 @RequiredArgsConstructor
 public class Persondata {

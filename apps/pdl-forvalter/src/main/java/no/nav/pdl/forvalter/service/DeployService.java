@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.consumer.PdlTestdataConsumer;
 import no.nav.pdl.forvalter.domain.ArtifactValue;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.DbVersjonDTO;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PdlArtifact;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 

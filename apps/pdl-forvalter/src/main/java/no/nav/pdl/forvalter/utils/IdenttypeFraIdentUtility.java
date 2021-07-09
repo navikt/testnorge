@@ -1,13 +1,13 @@
 package no.nav.pdl.forvalter.utils;
 
 import lombok.experimental.UtilityClass;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.Identtype;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
 
 import static java.lang.Integer.parseInt;
-import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.Identtype.BOST;
-import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.Identtype.DNR;
-import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.Identtype.FDAT;
-import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.Identtype.FNR;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.BOST;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.DNR;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FDAT;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FNR;
 
 @UtilityClass
 public class IdenttypeFraIdentUtility {

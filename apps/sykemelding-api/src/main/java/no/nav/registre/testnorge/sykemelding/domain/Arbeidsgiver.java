@@ -3,7 +3,7 @@ package no.nav.registre.testnorge.sykemelding.domain;
 import no.kith.xmlstds.XMLCS;
 import no.kith.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLHelseOpplysningerArbeidsuforhet;
 
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.ArbeidsgiverDTO;
+import no.nav.testnav.libs.dto.sykemelding.v1.ArbeidsgiverDTO;
 
 public class Arbeidsgiver {
     private XMLHelseOpplysningerArbeidsuforhet.Arbeidsgiver xmlArbeidsgiver;

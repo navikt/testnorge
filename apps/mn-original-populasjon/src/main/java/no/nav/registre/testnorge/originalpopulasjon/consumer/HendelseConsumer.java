@@ -9,8 +9,8 @@ import java.util.ArrayList;
 
 import no.nav.registre.testnorge.libs.avro.person.Adresse;
 import no.nav.registre.testnorge.libs.avro.person.Person;
-import no.nav.registre.testnorge.libs.dto.person.v1.AdresseDTO;
-import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
+import no.nav.testnav.libs.dto.person.v1.AdresseDTO;
+import no.nav.testnav.libs.dto.person.v1.PersonDTO;
 
 @Slf4j
 @Component

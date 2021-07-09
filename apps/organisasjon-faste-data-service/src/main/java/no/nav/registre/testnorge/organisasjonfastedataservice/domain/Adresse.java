@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
-import no.nav.registre.testnorge.libs.dto.organisasjonfastedataservice.v1.AdresseDTO;
+import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.AdresseDTO;
 
 
 @Value

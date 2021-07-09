@@ -14,14 +14,14 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.testnav.inntektsmeldingservice.consumer.DokmotConsumer;
 import no.nav.registre.testnav.inntektsmeldingservice.consumer.GenererInntektsmeldingConsumer;
-import no.nav.registre.testnorge.libs.dto.dokarkiv.v1.InntektDokument;
-import no.nav.registre.testnorge.libs.dto.dokarkiv.v1.ProsessertInntektDokument;
-import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.RsInntektsmeldingRequest;
+import no.nav.testnav.libs.dto.dokarkiv.v1.InntektDokument;
+import no.nav.testnav.libs.dto.dokarkiv.v1.ProsessertInntektDokument;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.RsInntektsmeldingRequest;
 import no.nav.registre.testnav.inntektsmeldingservice.factories.RsAltinnInntektsmeldingFactory;
 import no.nav.registre.testnav.inntektsmeldingservice.factories.RsJoarkMetadataFactory;
 import no.nav.registre.testnav.inntektsmeldingservice.repository.InntektsmeldingRepository;
 import no.nav.registre.testnav.inntektsmeldingservice.repository.model.InntektsmeldingModel;
-import no.nav.registre.testnorge.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
+import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
 
 @Slf4j
 @Service

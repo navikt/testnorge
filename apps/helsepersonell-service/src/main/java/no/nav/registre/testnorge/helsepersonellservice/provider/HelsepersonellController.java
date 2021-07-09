@@ -1,7 +1,7 @@
 package no.nav.registre.testnorge.helsepersonellservice.provider;
 
 import no.nav.registre.testnorge.helsepersonellservice.adapter.HelsepersonellAdapter;
-import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.HelsepersonellListeDTO;
+import no.nav.testnav.libs.dto.helsepersonell.v1.HelsepersonellListeDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;

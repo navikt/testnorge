@@ -3,8 +3,8 @@ package no.nav.pdl.forvalter.consumer.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.dto.PdlBestillingResponse;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PdlStatus;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlStatus;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono;
 import java.util.stream.Collectors;
 
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.TemaGrunnlag.GEN;
-import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PdlStatus.FEIL;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlStatus.FEIL;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 

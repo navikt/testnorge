@@ -49,8 +49,8 @@ public class Arbeidsforhold {
         type = dto.getType();
     }
 
-    public no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO toDTO() {
-        return no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO
+    public no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO toDTO() {
+        return no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO
                 .builder()
                 .arbeidsforholdId(arbeidsforholdId)
                 .orgnummer(orgnummer)

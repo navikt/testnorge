@@ -5,8 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.Identtype;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KjoennDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;

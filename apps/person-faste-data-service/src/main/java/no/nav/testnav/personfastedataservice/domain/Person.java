@@ -6,7 +6,7 @@ import lombok.Value;
 
 import java.util.Set;
 
-import no.nav.testnav.dto.personfastedataservice.v1.PersonDTO;
+import no.nav.testnav.libs.dto.v1.PersonDTO;
 import no.nav.testnav.personfastedataservice.repository.model.PersonEntity;
 
 @Value

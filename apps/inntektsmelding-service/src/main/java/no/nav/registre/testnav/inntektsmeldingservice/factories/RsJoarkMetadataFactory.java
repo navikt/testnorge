@@ -4,9 +4,9 @@ import static java.util.Objects.nonNull;
 
 import java.util.Map;
 
-import no.nav.registre.testnorge.libs.dto.dokarkiv.v1.RsJoarkMetadata;
-import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.RsInntektsmeldingRequest;
-import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.enums.YtelseKodeListe;
+import no.nav.testnav.libs.dto.dokarkiv.v1.RsJoarkMetadata;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.RsInntektsmeldingRequest;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums.YtelseKodeListe;
 
 public class RsJoarkMetadataFactory {
     private RsJoarkMetadataFactory() {

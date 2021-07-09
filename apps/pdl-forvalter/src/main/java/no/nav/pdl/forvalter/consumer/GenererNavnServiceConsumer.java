@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.config.credentials.GenererNavnServiceProperties;
 import no.nav.pdl.forvalter.consumer.command.GenererNavnServiceCommand;
 import no.nav.pdl.forvalter.consumer.command.VerifiserNavnServiceCommand;
-import no.nav.registre.testnorge.libs.dto.generernavnservice.v1.NavnDTO;
+import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import org.springframework.stereotype.Service;

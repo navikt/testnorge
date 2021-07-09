@@ -6,7 +6,7 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.pdl.forvalter.dto.Folkeregistermetadata;
 import no.nav.pdl.forvalter.dto.PdlFalskIdentitet;
 import no.nav.pdl.forvalter.dto.PdlFalskIdentitet.IdentifiserendeInformasjon;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.FalskIdentitetDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FalskIdentitetDTO;
 import org.springframework.stereotype.Component;
 
 import static java.util.Objects.nonNull;

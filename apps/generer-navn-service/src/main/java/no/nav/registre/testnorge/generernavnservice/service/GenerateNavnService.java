@@ -1,6 +1,6 @@
 package no.nav.registre.testnorge.generernavnservice.service;
 
-import no.nav.registre.testnorge.libs.dto.generernavnservice.v1.NavnDTO;
+import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;

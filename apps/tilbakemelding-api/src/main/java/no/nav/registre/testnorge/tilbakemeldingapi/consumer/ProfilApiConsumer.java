@@ -6,9 +6,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 
-import no.nav.registre.testnorge.libs.dto.profil.v1.ProfilDTO;
+import no.nav.testnav.libs.dto.profil.v1.ProfilDTO;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import no.nav.registre.testnorge.tilbakemeldingapi.config.credentials.ProfilServiceProperties;
 

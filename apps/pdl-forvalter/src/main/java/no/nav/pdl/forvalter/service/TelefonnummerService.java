@@ -1,7 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.TelefonnummerDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.TelefonnummerDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

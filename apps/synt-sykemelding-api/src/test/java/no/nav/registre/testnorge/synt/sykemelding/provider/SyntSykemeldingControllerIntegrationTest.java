@@ -35,12 +35,12 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Map;
 
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO;
-import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.HelsepersonellListeDTO;
-import no.nav.registre.testnorge.libs.dto.hodejegeren.v1.PersondataDTO;
-import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.SykemeldingDTO;
-import no.nav.registre.testnorge.libs.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO;
+import no.nav.testnav.libs.dto.helsepersonell.v1.HelsepersonellListeDTO;
+import no.nav.testnav.libs.dto.hodejegeren.v1.PersondataDTO;
+import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.testnav.libs.dto.sykemelding.v1.SykemeldingDTO;
+import no.nav.testnav.libs.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
 import no.nav.registre.testnorge.synt.sykemelding.consumer.dto.SyntSykemeldingHistorikkDTO;

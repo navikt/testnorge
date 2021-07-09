@@ -10,8 +10,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
-import no.nav.registre.testnorge.libs.dto.inntektsmeldingservice.v1.response.InntektsmeldingResponse;
+import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
+import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.response.InntektsmeldingResponse;
 
 @Slf4j
 @RequiredArgsConstructor

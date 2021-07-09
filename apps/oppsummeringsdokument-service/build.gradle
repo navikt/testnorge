@@ -26,7 +26,7 @@ dependencies {
 
     implementation project(':local-development')
     implementation project(':testnorge-core')
-    implementation project(':testnorge-data-transfer-objects')
+    implementation 'no.nav.testnav.libs:data-transfer-objects'
     implementation project(':testnorge-oauth2')
     implementation project(':arbeidsforhold-xsd')
 

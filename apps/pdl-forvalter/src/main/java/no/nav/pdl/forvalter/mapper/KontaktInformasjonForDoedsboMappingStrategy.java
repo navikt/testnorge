@@ -6,9 +6,9 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.PostnummerService;
-import no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.BostedadresseDTO;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
+import no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
 import org.springframework.stereotype.Component;
 
 import static java.lang.String.format;

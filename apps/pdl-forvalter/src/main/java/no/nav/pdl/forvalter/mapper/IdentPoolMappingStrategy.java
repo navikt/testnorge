@@ -4,8 +4,8 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.pdl.forvalter.dto.HentIdenterRequest;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.Identtype;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;

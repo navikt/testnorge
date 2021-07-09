@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import no.nav.registre.testnorge.libs.dto.rapprtering.v1.EntryStatus;
+import no.nav.testnav.libs.dto.rapprtering.v1.EntryStatus;
 import no.nav.registre.testnorge.libs.reporting.domin.Config;
 import no.nav.registre.testnorge.libs.reporting.domin.Entry;
 

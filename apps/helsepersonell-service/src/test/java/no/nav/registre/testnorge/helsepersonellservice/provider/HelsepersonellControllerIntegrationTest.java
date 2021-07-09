@@ -21,11 +21,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.HelsepersonellDTO;
-import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.HelsepersonellListeDTO;
-import no.nav.registre.testnorge.libs.dto.hodejegeren.v1.PersondataDTO;
-import no.nav.registre.testnorge.libs.dto.samhandlerregisteret.v1.IdentDTO;
-import no.nav.registre.testnorge.libs.dto.samhandlerregisteret.v1.SamhandlerDTO;
+import no.nav.testnav.libs.dto.helsepersonell.v1.HelsepersonellDTO;
+import no.nav.testnav.libs.dto.helsepersonell.v1.HelsepersonellListeDTO;
+import no.nav.testnav.libs.dto.hodejegeren.v1.PersondataDTO;
+import no.nav.testnav.libs.dto.samhandlerregisteret.v1.IdentDTO;
+import no.nav.testnav.libs.dto.samhandlerregisteret.v1.SamhandlerDTO;
 import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
 
 

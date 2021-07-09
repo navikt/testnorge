@@ -6,9 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.DbVersjonDTO;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KjoennDTO;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.NavnDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

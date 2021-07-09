@@ -2,15 +2,11 @@ package no.nav.registre.testnorge.organisasjonservice.domain;
 
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.Strings;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.dto.eregmapper.v1.EregMapperDTO;
-import no.nav.registre.testnorge.libs.dto.eregmapper.v1.NavnDTO;
 import no.nav.registre.testnorge.organisasjonservice.consumer.dto.OrganisasjonDTO;
 
 
@@ -57,8 +53,8 @@ public class Organisasjon {
         }
     }
 
-    public no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO toDTO() {
-        return no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO.builder()
+    public no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO toDTO() {
+        return no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO.builder()
                 .navn(navn)
                 .enhetType(enhetType)
                 .orgnummer(orgnummer)

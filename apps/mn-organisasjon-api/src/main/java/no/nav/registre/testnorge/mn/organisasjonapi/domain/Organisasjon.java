@@ -2,7 +2,7 @@ package no.nav.registre.testnorge.mn.organisasjonapi.domain;
 
 import lombok.RequiredArgsConstructor;
 
-import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import no.nav.registre.testnorge.mn.organisasjonapi.provider.dto.MNOrganisasjonDTO;
 import no.nav.registre.testnorge.mn.organisasjonapi.repository.model.OrganisasjonModel;
 

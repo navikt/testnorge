@@ -2,8 +2,8 @@ package no.nav.registre.testnorge.synt.sykemelding.domain;
 
 import lombok.Getter;
 
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO;
-import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO;
+import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 
 @Getter
 public class Arbeidsforhold {

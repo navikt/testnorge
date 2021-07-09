@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 
-import no.nav.registre.testnorge.libs.dto.rapprtering.v1.EntryStatus;
+import no.nav.testnav.libs.dto.rapprtering.v1.EntryStatus;
 import no.nav.registre.testnorge.libs.reporting.domin.Config;
 import no.nav.registre.testnorge.libs.reporting.domin.Entry;
 import no.nav.registre.testnorge.libs.reporting.domin.Report;

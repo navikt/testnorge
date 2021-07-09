@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import no.nav.registre.testnav.ameldingservice.consumer.OppsummeringsdokumentConsumer;
 import no.nav.registre.testnav.ameldingservice.domain.AMelding;
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
 
 @Service
 @RequiredArgsConstructor

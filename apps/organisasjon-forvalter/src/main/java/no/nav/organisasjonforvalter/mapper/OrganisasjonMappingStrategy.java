@@ -15,8 +15,8 @@ import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Internettadresse;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Naeringskode;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Stiftelsesdato;
 import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Telefon;
-import no.nav.registre.testnorge.libs.dto.organisasjon.v1.AdresseDTO;
-import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.testnav.libs.dto.organisasjon.v1.AdresseDTO;
+import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;

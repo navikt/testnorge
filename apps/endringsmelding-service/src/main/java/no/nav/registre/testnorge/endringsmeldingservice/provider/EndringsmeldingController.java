@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Set;
 
 import no.nav.registre.testnorge.endringsmeldingservice.consumer.TpsForvalterConsumer;
-import no.nav.registre.testnorge.libs.dto.endringsmelding.v1.DoedsmeldingDTO;
-import no.nav.registre.testnorge.libs.dto.endringsmelding.v1.FoedselsmeldingDTO;
+import no.nav.testnav.libs.dto.endringsmelding.v1.DoedsmeldingDTO;
+import no.nav.testnav.libs.dto.endringsmelding.v1.FoedselsmeldingDTO;
 
 @RestController
 @RequestMapping("/api/v1/endringsmelding")

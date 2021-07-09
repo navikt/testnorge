@@ -6,17 +6,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.AdresseDTO;
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.Aktivitet;
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.AktivitetDTO;
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.ArbeidsgiverDTO;
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.DetaljerDTO;
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.DiagnoseDTO;
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.OrganisasjonDTO;
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.PasientDTO;
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.PeriodeDTO;
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.SykemeldingDTO;
-import no.nav.registre.testnorge.libs.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
+import no.nav.testnav.libs.dto.sykemelding.v1.AdresseDTO;
+import no.nav.testnav.libs.dto.sykemelding.v1.Aktivitet;
+import no.nav.testnav.libs.dto.sykemelding.v1.AktivitetDTO;
+import no.nav.testnav.libs.dto.sykemelding.v1.ArbeidsgiverDTO;
+import no.nav.testnav.libs.dto.sykemelding.v1.DetaljerDTO;
+import no.nav.testnav.libs.dto.sykemelding.v1.DiagnoseDTO;
+import no.nav.testnav.libs.dto.sykemelding.v1.OrganisasjonDTO;
+import no.nav.testnav.libs.dto.sykemelding.v1.PasientDTO;
+import no.nav.testnav.libs.dto.sykemelding.v1.PeriodeDTO;
+import no.nav.testnav.libs.dto.sykemelding.v1.SykemeldingDTO;
+import no.nav.testnav.libs.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
 import no.nav.registre.testnorge.synt.sykemelding.consumer.dto.SyntDiagnoserDTO;
 import no.nav.registre.testnorge.synt.sykemelding.consumer.dto.SyntSykemeldingHistorikkDTO;
 

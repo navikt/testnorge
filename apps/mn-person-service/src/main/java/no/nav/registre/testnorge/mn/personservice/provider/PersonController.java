@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
+import no.nav.testnav.libs.dto.person.v1.PersonDTO;
 import no.nav.registre.testnorge.mn.personservice.domain.Person;
 import no.nav.registre.testnorge.mn.personservice.service.PersonService;
 

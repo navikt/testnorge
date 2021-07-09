@@ -21,11 +21,11 @@ import no.nav.helse.msgHead.XMLIdent;
 import no.nav.helse.msgHead.XMLMsgHead;
 import no.nav.helse.msgHead.XMLOrganisation;
 import no.nav.helse.msgHead.XMLPatient;
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.AdresseDTO;
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.HelsepersonellDTO;
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.OrganisasjonDTO;
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.PasientDTO;
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.SykemeldingDTO;
+import no.nav.testnav.libs.dto.sykemelding.v1.AdresseDTO;
+import no.nav.testnav.libs.dto.sykemelding.v1.HelsepersonellDTO;
+import no.nav.testnav.libs.dto.sykemelding.v1.OrganisasjonDTO;
+import no.nav.testnav.libs.dto.sykemelding.v1.PasientDTO;
+import no.nav.testnav.libs.dto.sykemelding.v1.SykemeldingDTO;
 import no.nav.registre.testnorge.sykemelding.util.JAXBSykemeldingConverter;
 import no.nav.registre.testnorge.sykemelding.util.StaticResourceLoader;
 

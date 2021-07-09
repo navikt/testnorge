@@ -17,11 +17,10 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.dto.organisasjonfastedataservice.v1.Gruppe;
-import no.nav.registre.testnorge.libs.dto.organisasjonfastedataservice.v1.OrganisasjonDTO;
+import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.Gruppe;
+import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.OrganisasjonDTO;
 import no.nav.registre.testnorge.organisasjonfastedataservice.domain.Organisasjon;
 import no.nav.registre.testnorge.organisasjonfastedataservice.service.OrganisasjonService;
 

@@ -4,12 +4,12 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.BostedadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import org.springframework.stereotype.Service;
 
 import static java.util.Objects.nonNull;
-import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.AdresseDTO.Master.FREG;
-import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.AdresseDTO.Master.PDL;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO.Master.FREG;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO.Master.PDL;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Service

@@ -17,8 +17,8 @@ import no.nav.pdl.forvalter.consumer.command.PdlOpprettArtifactCommandPdl;
 import no.nav.pdl.forvalter.consumer.command.PdlOpprettPersonCommandPdl;
 import no.nav.pdl.forvalter.domain.ArtifactValue;
 import no.nav.pdl.forvalter.dto.HistoriskIdent;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PdlStatus;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlStatus;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
@@ -29,7 +29,7 @@ import reactor.core.publisher.Flux;
 import java.util.List;
 
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.getBestillingUrl;
-import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_SLETTING;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_SLETTING;
 
 @Slf4j
 @Service

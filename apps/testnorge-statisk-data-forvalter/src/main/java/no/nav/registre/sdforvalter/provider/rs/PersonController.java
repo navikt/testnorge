@@ -15,7 +15,7 @@ import java.util.List;
 import no.nav.registre.sdforvalter.domain.person.Person;
 import no.nav.registre.sdforvalter.domain.person.PersonStatusMap;
 import no.nav.registre.sdforvalter.service.PersonService;
-import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
+import no.nav.testnav.libs.dto.person.v1.PersonDTO;
 
 @Slf4j
 @RestController

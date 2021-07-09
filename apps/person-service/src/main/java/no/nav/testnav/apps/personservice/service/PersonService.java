@@ -10,7 +10,7 @@ import java.util.Optional;
 import no.nav.testnav.apps.personservice.adapter.PdlPersonAdapter;
 import no.nav.testnav.apps.personservice.adapter.TpsPersonAdapter;
 import no.nav.testnav.apps.personservice.domain.Person;
-import no.nav.testnav.dto.personservice.v1.Persondatasystem;
+import no.nav.testnav.libs.dto.personservice.v1.Persondatasystem;
 
 @Service
 @Slf4j

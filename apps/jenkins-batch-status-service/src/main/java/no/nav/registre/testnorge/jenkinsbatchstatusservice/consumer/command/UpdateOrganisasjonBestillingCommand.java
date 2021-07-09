@@ -6,7 +6,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import no.nav.registre.testnorge.libs.dto.organiasjonbestilling.v1.OrderDTO;
+import no.nav.testnav.libs.dto.organiasjonbestilling.v1.OrderDTO;
 
 @RequiredArgsConstructor
 public class UpdateOrganisasjonBestillingCommand implements Runnable {

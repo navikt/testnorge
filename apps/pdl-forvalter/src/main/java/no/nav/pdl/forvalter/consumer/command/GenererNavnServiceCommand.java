@@ -2,7 +2,7 @@ package no.nav.pdl.forvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.libs.dto.generernavnservice.v1.NavnDTO;
+import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;

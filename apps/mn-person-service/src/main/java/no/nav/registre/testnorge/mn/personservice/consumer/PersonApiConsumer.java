@@ -18,8 +18,8 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.libs.common.command.GetPersonCommand;
-import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
-import no.nav.registre.testnorge.libs.dto.person.v1.Persondatasystem;
+import no.nav.testnav.libs.dto.person.v1.PersonDTO;
+import no.nav.testnav.libs.dto.person.v1.Persondatasystem;
 import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
 import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateAccessTokenService;
 import no.nav.registre.testnorge.mn.personservice.credentials.PersonApiClientProperties;

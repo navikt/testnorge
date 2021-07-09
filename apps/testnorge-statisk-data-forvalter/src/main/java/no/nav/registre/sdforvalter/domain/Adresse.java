@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Value;
 
 import no.nav.registre.sdforvalter.database.model.AdresseModel;
-import no.nav.registre.testnorge.libs.dto.statiskedataforvalter.v1.AdresseDTO;
+import no.nav.testnav.libs.dto.statiskedataforvalter.v1.AdresseDTO;
 
 @Value
 @AllArgsConstructor
@@ -47,8 +47,8 @@ public class Adresse {
                 .build();
     }
 
-    public no.nav.registre.testnorge.libs.dto.organisasjonfastedataservice.v1.AdresseDTO toDTOv2() {
-        return no.nav.registre.testnorge.libs.dto.organisasjonfastedataservice.v1.AdresseDTO
+    public no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.AdresseDTO toDTOv2() {
+        return no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.AdresseDTO
                 .builder()
                 .adresselinje1(adresse)
                 .postnr(postnr)

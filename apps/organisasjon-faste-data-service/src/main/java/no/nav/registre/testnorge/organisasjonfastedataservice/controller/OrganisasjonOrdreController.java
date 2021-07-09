@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -13,12 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.ws.rs.HeaderParam;
 import java.net.URI;
 import java.util.List;
 
-import no.nav.registre.testnorge.libs.dto.organiasjonbestilling.v1.ItemDTO;
-import no.nav.registre.testnorge.libs.dto.organisasjonfastedataservice.v1.Gruppe;
+import no.nav.testnav.libs.dto.organiasjonbestilling.v1.ItemDTO;
+import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.Gruppe;
 import no.nav.registre.testnorge.organisasjonfastedataservice.service.OrganisasjonOrdreService;
 import no.nav.registre.testnorge.organisasjonfastedataservice.service.OrganisasjonService;
 

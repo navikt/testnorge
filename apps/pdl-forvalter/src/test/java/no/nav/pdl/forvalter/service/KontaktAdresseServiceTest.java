@@ -2,10 +2,11 @@ package no.nav.pdl.forvalter.service;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KontaktadresseDTO.PostboksadresseDTO;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.VegadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO.PostboksadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,7 +16,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
-import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.AdresseDTO.Master.PDL;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO.Master.PDL;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -152,7 +153,7 @@ class KontaktAdresseServiceTest {
     @Test
     void whenVegadresseWithOKParam_thenLookupAdresse() {
 
-        var vegadresse = no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO.builder()
+        var vegadresse = no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO.builder()
                 .adressenavn("Veien")
                 .husnummer(1)
                 .postnummer("1234")

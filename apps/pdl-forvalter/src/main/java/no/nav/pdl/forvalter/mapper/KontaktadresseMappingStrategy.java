@@ -5,12 +5,12 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.pdl.forvalter.dto.PdlKontaktadresse;
 import no.nav.pdl.forvalter.dto.PdlKontaktadresse.VegadresseForPost;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import org.springframework.stereotype.Component;
 
 import static java.util.Objects.nonNull;
-import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.AdresseDTO.Master.FREG;
-import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.AdresseDTO.Master.PDL;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO.Master.FREG;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO.Master.PDL;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Component

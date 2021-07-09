@@ -7,20 +7,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.command.GetOrganisasjonCommand;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.credentials.OrganisasjonServiceProperties;
-import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
+import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 
 @Slf4j

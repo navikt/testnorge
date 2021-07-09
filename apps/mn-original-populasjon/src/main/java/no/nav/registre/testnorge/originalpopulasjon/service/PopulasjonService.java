@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import no.nav.registre.testnorge.libs.core.util.IdentUtil;
-import no.nav.registre.testnorge.libs.dto.syntperson.v1.SyntPersonDTO;
+import no.nav.testnav.libs.dto.syntperson.v1.SyntPersonDTO;
 import no.nav.registre.testnorge.originalpopulasjon.consumer.SyntPersonConsumer;
 import no.nav.registre.testnorge.originalpopulasjon.domain.Adresse;
 import no.nav.registre.testnorge.originalpopulasjon.domain.Person;

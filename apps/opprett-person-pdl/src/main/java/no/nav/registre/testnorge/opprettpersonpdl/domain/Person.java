@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
+import no.nav.testnav.libs.dto.person.v1.PersonDTO;
 
 @Value
 public class Person {

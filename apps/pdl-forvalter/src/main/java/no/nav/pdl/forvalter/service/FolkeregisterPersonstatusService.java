@@ -1,12 +1,12 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.BostedadresseDTO;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.DoedsfallDTO;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.OppholdDTO;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonDTO;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.UtflyttingDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DoedsfallDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +14,12 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.BOSATT;
-import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.DOED;
-import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.FOEDSELSREGISTRERT;
-import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.IKKE_BOSATT;
-import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.MIDLERTIDIG;
-import static no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.UTFLYTTET;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.BOSATT;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.DOED;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.FOEDSELSREGISTRERT;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.IKKE_BOSATT;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.MIDLERTIDIG;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.UTFLYTTET;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Service

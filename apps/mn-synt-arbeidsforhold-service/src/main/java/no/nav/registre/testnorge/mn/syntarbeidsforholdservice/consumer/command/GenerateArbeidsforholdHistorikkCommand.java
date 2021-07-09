@@ -10,8 +10,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdRequest;
-import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdResponse;
+import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdRequest;
+import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdResponse;
 import reactor.core.publisher.Mono;
 
 @Slf4j

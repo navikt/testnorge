@@ -1,7 +1,7 @@
 package no.nav.organisasjonforvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 

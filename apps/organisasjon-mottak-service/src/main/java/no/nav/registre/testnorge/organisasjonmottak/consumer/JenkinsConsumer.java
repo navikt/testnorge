@@ -8,7 +8,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.Set;
 
 import no.nav.registre.testnorge.libs.common.command.GetCrumbCommand;
-import no.nav.registre.testnorge.libs.dto.jenkins.v1.JenkinsCrumb;
+import no.nav.testnav.libs.dto.jenkins.v1.JenkinsCrumb;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import no.nav.registre.testnorge.organisasjonmottak.config.properties.JenkinsServiceProperties;

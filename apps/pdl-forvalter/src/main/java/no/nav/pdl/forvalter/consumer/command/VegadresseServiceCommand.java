@@ -2,7 +2,7 @@ package no.nav.pdl.forvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO;
+import no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
@@ -26,7 +26,7 @@ public class VegadresseServiceCommand implements Callable<Mono<VegadresseDTO[]>>
     private static final String ADRESSER_VEG_URL = "/api/v1/adresser/veg";
 
     private final WebClient webClient;
-    private final no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.VegadresseDTO query;
+    private final no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO query;
     private final String matrikkelId;
     private final String token;
 

@@ -6,7 +6,7 @@ import org.springframework.web.util.UriTemplate;
 
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.libs.dto.hodejegeren.v1.PersondataDTO;
+import no.nav.testnav.libs.dto.hodejegeren.v1.PersondataDTO;
 
 @Slf4j
 public class GetPersondataCommand implements Callable<PersondataDTO> {
