@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 
-import no.nav.registre.testnorge.arena.service.IdentService;
-
 @RestController
 @RequestMapping("api/v1/ident")
 @RequiredArgsConstructor
