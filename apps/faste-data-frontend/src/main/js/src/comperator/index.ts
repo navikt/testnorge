@@ -1,3 +1,4 @@
 import OrganisasjonComperator from '@/comperator/OrganisasjonComperator';
+import PersonComperator from '@/comperator/PersonComperator';
 
-export { OrganisasjonComperator };
+export { OrganisasjonComperator, PersonComperator };

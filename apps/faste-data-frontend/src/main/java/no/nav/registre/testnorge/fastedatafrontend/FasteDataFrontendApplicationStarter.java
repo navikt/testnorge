@@ -15,6 +15,8 @@ import java.util.function.Function;
 
 import no.nav.registre.testnorge.fastedatafrontend.credentials.OrganisasjonFasteDataServiceProperties;
 import no.nav.registre.testnorge.fastedatafrontend.credentials.OrganisasjonServiceProperties;
+import no.nav.registre.testnorge.fastedatafrontend.credentials.PersonFasteDataServiceProperties;
+import no.nav.registre.testnorge.fastedatafrontend.credentials.PersonServiceProperties;
 import no.nav.registre.testnorge.fastedatafrontend.credentials.ProfilApiServiceProperties;
 import no.nav.testnav.libs.core.config.CoreConfig;
 import no.nav.testnav.libs.frontend.config.FrontendConfig;
@@ -36,7 +38,8 @@ public class FasteDataFrontendApplicationStarter {
     private final ProfilApiServiceProperties profilApiServiceProperties;
     private final OrganisasjonServiceProperties organisasjonServiceProperties;
     private final OrganisasjonFasteDataServiceProperties organisasjonFasteDataServiceProperties;
-
+    private final PersonServiceProperties personServiceProperties;
+    private final PersonFasteDataServiceProperties personFasteDataServiceProperties;
 
     public static void main(String[] args) {
         SpringApplication.run(FasteDataFrontendApplicationStarter.class, args);
@@ -73,6 +76,16 @@ public class FasteDataFrontendApplicationStarter {
                         "testnorge-profil-api",
                         profilApiServiceProperties.getUrl(),
                         filterFrom(profilApiServiceProperties)
+                ))
+                .route(createRoute(
+                        "testnav-person-service",
+                        personServiceProperties.getUrl(),
+                        filterFrom(personServiceProperties)
+                ))
+                .route(createRoute(
+                        "testnav-person-faste-data-service",
+                        personFasteDataServiceProperties.getUrl(),
+                        filterFrom(personFasteDataServiceProperties)
                 ))
                 .build();
     }
