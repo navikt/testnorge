@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,9 +19,9 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.testnav.libs.dto.v1.PersonDTO;
+import no.nav.testnav.libs.dto.personservice.v1.PersonDTO;
+import no.nav.testnav.libs.dto.personservice.v1.Gruppe;
 import no.nav.testnav.personfastedataservice.config.AllowedHosts;
-import no.nav.testnav.personfastedataservice.domain.Gruppe;
 import no.nav.testnav.personfastedataservice.domain.Person;
 import no.nav.testnav.personfastedataservice.service.PersonService;
 
@@ -36,7 +37,7 @@ public class PersonController {
     @PutMapping
     public ResponseEntity<?> save(
             @RequestBody PersonDTO personDTO,
-            @RequestParam Gruppe gruppe,
+            @RequestHeader Gruppe gruppe,
             ServerHttpRequest serverHttpRequest
     ) {
         var person = personService.save(new Person(personDTO), gruppe);
@@ -58,8 +59,7 @@ public class PersonController {
     public ResponseEntity<List<PersonDTO>> get(
             @RequestParam(required = false) Gruppe gruppe,
             @RequestParam(required = false) String opprinnelse,
-            @RequestParam(required = false) String tag,
-            ServerHttpRequest serverHttpRequest
+            @RequestParam(required = false) String tag
     ) {
         var personer = personService.getBy(gruppe, opprinnelse, tag);
         return ResponseEntity.ok(personer.stream().map(Person::toDTO).collect(Collectors.toList()));

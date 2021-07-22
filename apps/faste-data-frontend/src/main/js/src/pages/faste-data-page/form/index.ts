@@ -1,3 +1,4 @@
 import { OrganisasjonForm } from './organisasjon-form';
+import { PersonForm } from './person-form';
 
-export { OrganisasjonForm };
+export { OrganisasjonForm, PersonForm };

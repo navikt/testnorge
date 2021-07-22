@@ -6,7 +6,8 @@ import lombok.Value;
 
 import java.util.Set;
 
-import no.nav.testnav.libs.dto.v1.PersonDTO;
+import no.nav.testnav.libs.dto.personservice.v1.PersonDTO;
+import no.nav.testnav.libs.dto.personservice.v1.Gruppe;
 import no.nav.testnav.personfastedataservice.repository.model.PersonEntity;
 
 @Value
@@ -18,9 +19,7 @@ public class Person {
         ident = dto.getIdent();
         fornavn = dto.getFornavn();
         etternavn = dto.getEtternavn();
-        adresse = dto.getAdresse();
-        postnr = dto.getPostnr();
-        by = dto.getBy();
+        adresse = dto.getAdresse() == null ? null : new Adresse(dto.getAdresse());
         opprinnelse = dto.getOpprinnelse();
         tags = dto.getTags();
     }
@@ -28,9 +27,7 @@ public class Person {
     String ident;
     String fornavn;
     String etternavn;
-    String adresse;
-    String postnr;
-    String by;
+    Adresse adresse;
     String opprinnelse;
     Set<String> tags;
 
@@ -40,9 +37,7 @@ public class Person {
                 .ident(ident)
                 .fornavn(fornavn)
                 .etternavn(etternavn)
-                .adresse(adresse)
-                .postnr(postnr)
-                .by(by)
+                .adresse(adresse == null ? null : adresse.toDTO())
                 .opprinnelse(opprinnelse)
                 .tags(tags)
                 .build();

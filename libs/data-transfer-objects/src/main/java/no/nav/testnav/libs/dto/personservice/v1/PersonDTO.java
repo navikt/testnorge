@@ -19,8 +19,6 @@ public class PersonDTO {
     String etternavn;
     LocalDate foedselsdato;
     AdresseDTO adresse;
-    String postnr;
-    String by;
     String opprinnelse;
     Set<String> tags;
 }

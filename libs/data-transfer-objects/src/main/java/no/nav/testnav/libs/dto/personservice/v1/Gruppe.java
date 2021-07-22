@@ -1,4 +1,4 @@
-package no.nav.testnav.personfastedataservice.domain;
+package no.nav.testnav.libs.dto.personservice.v1;
 
 public enum Gruppe {
     DOLLY,
