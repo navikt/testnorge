@@ -39,6 +39,7 @@ public class NyeIdenterService {
         for (int i = 0; i < antallNyeIdenter; i++) {
             putFnrInnIMelding((RsMeldingstype1Felter) meldinger.get(i), identer.get(i));
             if (Endringskoder.INNVANDRING.getAarsakskode().equals(meldinger.get(i).getAarsakskode())) {
+                meldinger.get(i).setAarsakskode(Endringskoder.ANNEN_TILGANG_TILDELDINGSKODE_2.getAarsakskode());
                 meldinger.add(opprettStatsborgerendringsmelding((RsMeldingstype1Felter) meldinger.get(i)));
             }
             if ("UTENFASTBOSTED".equals(((RsMeldingstype1Felter) meldinger.get(i)).getAdresse1())) {

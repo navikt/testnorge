@@ -12,6 +12,9 @@ import static org.mockito.Mockito.when;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import no.nav.registre.skd.consumer.HodejegerenConsumerSkd;
+import no.nav.registre.skd.consumer.dto.Relasjon;
+import no.nav.registre.skd.consumer.response.RelasjonsResponse;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -37,6 +40,9 @@ public class FoedselServiceTest {
     private IdentPoolConsumer identPoolConsumer;
 
     @Mock
+    private HodejegerenConsumerSkd hodejegerenConsumerSkd;
+
+    @Mock
     private Random rand;
 
     @InjectMocks
@@ -56,6 +62,7 @@ public class FoedselServiceTest {
         levendeIdenterINorge.add("03030303030");
 
         when(rand.nextInt(anyInt())).thenReturn(0);
+        when(hodejegerenConsumerSkd.getRelasjoner(any(), any())).thenReturn(RelasjonsResponse.builder().relasjoner(Collections.singletonList(Relasjon.builder().build())).build());
 
         var potensielleMoedre = foedselService.findMoedre(1, levendeIdenterINorge, "0");
 
@@ -73,6 +80,7 @@ public class FoedselServiceTest {
         var barnFnr = "10101054321";
 
         when(identPoolConsumer.hentNyeIdenter(any())).thenReturn(Collections.singletonList(barnFnr));
+        when(hodejegerenConsumerSkd.getRelasjoner(any(), any())).thenReturn(RelasjonsResponse.builder().relasjoner(Collections.singletonList(Relasjon.builder().build())).build());
 
         var opprettedeBarn = foedselService.behandleFoedselsmeldinger(FNR, meldinger, levendeIdenterINorge);
 
@@ -86,6 +94,8 @@ public class FoedselServiceTest {
      */
     @Test
     public void shouldFindFatherForChild() {
+        when(hodejegerenConsumerSkd.getRelasjoner(any(), any())).thenReturn(RelasjonsResponse.builder().relasjoner(Collections.singletonList(Relasjon.builder().build())).build());
+
         var morFnr = "22060156889";
         var levendeIdenterINorge = new ArrayList<>(Arrays.asList("22060156889", "22050167791", "30111757809", "26101767990"));
         var moedre = new ArrayList<>(Arrays.asList("22060156889", "30111657809"));
@@ -116,6 +126,7 @@ public class FoedselServiceTest {
         logger.addAppender(listAppender);
 
         when(identPoolConsumer.hentNyeIdenter(any())).thenThrow(HttpClientErrorException.class);
+        when(hodejegerenConsumerSkd.getRelasjoner(any(), any())).thenReturn(RelasjonsResponse.builder().relasjoner(Collections.singletonList(Relasjon.builder().build())).build());
 
         var opprettedeBarn = foedselService.behandleFoedselsmeldinger(FNR, meldinger, levendeIdenterINorge);
 

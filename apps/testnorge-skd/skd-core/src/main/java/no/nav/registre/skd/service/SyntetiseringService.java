@@ -2,6 +2,7 @@ package no.nav.registre.skd.service;
 
 import static no.nav.registre.skd.consumer.requests.HentIdenterRequest.IdentType.DNR;
 import static no.nav.registre.skd.consumer.requests.HentIdenterRequest.IdentType.FNR;
+import static no.nav.registre.skd.service.Endringskoder.ANNEN_TILGANG_TILDELDINGSKODE_2;
 import static no.nav.registre.skd.service.Endringskoder.FOEDSELSMELDING;
 import static no.nav.registre.skd.service.Endringskoder.FOEDSELSNUMMERKORREKSJON;
 import static no.nav.registre.skd.service.Endringskoder.INNVANDRING;
@@ -16,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import no.nav.registre.skd.consumer.HodejegerenConsumerSkd;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,7 +54,7 @@ public class SyntetiseringService {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
-    private HodejegerenConsumer hodejegerenConsumer;
+    private HodejegerenConsumerSkd hodejegerenConsumerSkd;
 
     @Autowired
     private TpsfConsumer tpsfConsumer;
@@ -223,7 +225,7 @@ public class SyntetiseringService {
                     .append(e.getMessage())
                     .append(" - Endringskode: ")
                     .append(endringskode.getEndringskode());
-            if (Arrays.asList(INNVANDRING, FOEDSELSNUMMERKORREKSJON, TILDELING_DNUMMER, FOEDSELSMELDING).contains(endringskode)) {
+            if (Arrays.asList(INNVANDRING, ANNEN_TILGANG_TILDELDINGSKODE_2, FOEDSELSNUMMERKORREKSJON, TILDELING_DNUMMER, FOEDSELSMELDING).contains(endringskode)) {
                 message.append(" - Rekvirerte fødselsnumre i denne batchen: ");
                 for (var rs : syntetiserteSkdmeldinger) {
                     message.append(((RsMeldingstype1Felter) rs).getFodselsdato())
@@ -355,26 +357,26 @@ public class SyntetiseringService {
     private List<String> finnLevendeIdenter(
             Long avspillergruppeId
     ) {
-        return hodejegerenConsumer.getLevende(avspillergruppeId);
+        return hodejegerenConsumerSkd.getLevende(avspillergruppeId);
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "hodejegeren" })
     private List<String> finnDoedeOgUtvandredeIdenter(
             Long avspillergruppeId
     ) {
-        return hodejegerenConsumer.getDoedeOgUtvandrede(avspillergruppeId);
+        return hodejegerenConsumerSkd.getDoedeOgUtvandrede(avspillergruppeId);
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "hodejegeren" })
     private List<String> finnGifteIdenter(
             Long avspillergruppeId
     ) {
-        return hodejegerenConsumer.getGifte(avspillergruppeId);
+        return hodejegerenConsumerSkd.getGifte(avspillergruppeId);
     }
 
     private List<String> finnFoedteIdenter(
             Long avspillergruppeId
     ) {
-        return hodejegerenConsumer.getFoedte(avspillergruppeId, 0, 18);
+        return hodejegerenConsumerSkd.getFoedte(avspillergruppeId, 0, 18);
     }
 }

@@ -1,4 +1,4 @@
-package no.nav.registre.skd.commands;
+package no.nav.registre.skd.commands.hodejegeren;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +10,7 @@ import java.util.concurrent.Callable;
 
 @Slf4j
 @RequiredArgsConstructor
-public class HodejegerenStatusQuoCommand implements Callable<Map<String, String>> {
+public class StatusQuoCommand implements Callable<Map<String, String>> {
     private final WebClient webClient;
     private final String ident;
     private final String endringskode;

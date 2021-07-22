@@ -64,7 +64,7 @@ public class NyeIdenterServiceTest {
         service.settInnNyeIdenterITrans1Meldinger(FNR, meldinger);
 
         assertEquals(2, meldinger.size());
-        assertEquals("02", meldinger.get(0).getAarsakskode());
+        assertEquals("52", meldinger.get(0).getAarsakskode());
         assertEquals("35", meldinger.get(1).getAarsakskode());
     }
 }
