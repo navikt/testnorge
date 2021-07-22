@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arena.consumer.rs.command.DeleteArenaBrukerCommand;
 import no.nav.registre.testnorge.arena.consumer.rs.command.GetArenaBrukereCommand;
 import no.nav.registre.testnorge.arena.consumer.rs.command.PostArenaBrukerCommand;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -19,6 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import no.nav.registre.testnorge.arena.consumer.rs.command.PostEndreInnsatsbehovCommand;
+import no.nav.registre.testnorge.arena.consumer.rs.request.EndreInnsatsbehovRequest;
 import no.nav.registre.testnorge.arena.consumer.rs.util.ArbeidssoekerCacheUtil;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.NyBruker;
@@ -29,11 +32,8 @@ import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereRes
 public class BrukereArenaForvalterConsumer {
 
     private final WebClient webClient;
-
-    private ArbeidssoekerCacheUtil arbeidssoekerCacheUtil;
-
-    private UriTemplate hentBrukere;
-
+    private final ArbeidssoekerCacheUtil arbeidssoekerCacheUtil;
+    private final UriTemplate hentBrukere;
 
     public BrukereArenaForvalterConsumer(
             ArbeidssoekerCacheUtil arbeidssoekerCacheUtil,
@@ -44,14 +44,14 @@ public class BrukereArenaForvalterConsumer {
         this.arbeidssoekerCacheUtil = arbeidssoekerCacheUtil;
     }
 
-    @Timed(value = "testnorge.arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
+    @Timed(value = "testnorge.arena.resource.latency", extraTags = { "operation", "arena-forvalteren" })
     public NyeBrukereResponse sendTilArenaForvalter(
             List<NyBruker> nyeBrukere
     ) {
         return new PostArenaBrukerCommand(nyeBrukere, webClient).call();
     }
 
-    @Timed(value = "testnorge.arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
+    @Timed(value = "testnorge.arena.resource.latency", extraTags = { "operation", "arena-forvalteren" })
     public List<Arbeidsoeker> hentArbeidsoekere(
             String personident,
             String eier,
@@ -88,7 +88,7 @@ public class BrukereArenaForvalterConsumer {
     ) {
         List<Arbeidsoeker> arbeidssoekere = new ArrayList<>(antallSider * initialLength);
 
-        for (int page = 0; page < antallSider; page++) {
+        for (var page = 0; page < antallSider; page++) {
             var queryParams = getQueryParams(personident, eier, miljoe, page + "");
             var response = new GetArenaBrukereCommand(queryParams, webClient).call();
             if (response != null) {
@@ -98,7 +98,6 @@ public class BrukereArenaForvalterConsumer {
 
         return arbeidssoekere;
     }
-
 
     private MultiValueMap<String, String> getQueryParams(
             String personident,
@@ -150,11 +149,20 @@ public class BrukereArenaForvalterConsumer {
         return baseUrl.toString();
     }
 
-    @Timed(value = "testnorge.arena.resource.latency", extraTags = {"operation", "arena-forvalteren"})
+    @Timed(value = "testnorge.arena.resource.latency", extraTags = { "operation", "arena-forvalteren" })
     public boolean slettBruker(
             String personident,
             String miljoe
     ) {
         return new DeleteArenaBrukerCommand(personident, miljoe, webClient).call();
+    }
+
+    public void endreInnsatsbehovForBruker(EndreInnsatsbehovRequest endreRequest) {
+        var response = new PostEndreInnsatsbehovCommand(endreRequest, webClient).call();
+
+        if (response == null || (response.getNyeEndreInnsatsbehovFeilList() != null &&
+                !response.getNyeEndreInnsatsbehovFeilList().isEmpty())) {
+            log.info(String.format("Endring av innsatsbehov for ident %s feilet", endreRequest.getPersonident()));
+        }
     }
 }

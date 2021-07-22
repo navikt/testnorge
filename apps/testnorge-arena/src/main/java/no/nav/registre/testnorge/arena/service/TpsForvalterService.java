@@ -17,7 +17,6 @@ public class TpsForvalterService {
 
     private final TpsForvalterConsumer tpsForvalterConsumer;
 
-
     public boolean identHarPersonstatusBosatt(String ident, String miljoe, LocalDate datoLimit) {
         var status = tpsForvalterConsumer.getPersonstatus(ident, miljoe);
 

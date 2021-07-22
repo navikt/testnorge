@@ -28,7 +28,7 @@ public class RettighetTilleggBrukereArenaForvalterConsumerTest {
     private MockWebServer mockWebServer;
 
     private List<RettighetRequest> rettigheter;
-    private String fnr = "270699494213";
+    private final String fnr = "270699494213";
 
     @Before
     public void setUp() throws IOException {

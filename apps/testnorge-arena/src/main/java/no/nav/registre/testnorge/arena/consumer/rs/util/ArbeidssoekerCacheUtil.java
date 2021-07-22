@@ -17,7 +17,7 @@ public class ArbeidssoekerCacheUtil {
 
     private static final int OPPDATERINGSINTERVALL_I_SEKUNDER = 3600;
 
-    private Map<String, ArbeidssoekerCacheElement> eksisterendeArbeidssoekereCache;
+    private final Map<String, ArbeidssoekerCacheElement> eksisterendeArbeidssoekereCache;
 
     public ArbeidssoekerCacheUtil() {
         this.eksisterendeArbeidssoekereCache = new HashMap<>();

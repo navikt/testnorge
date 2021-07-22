@@ -2,23 +2,16 @@ package no.nav.registre.testnorge.arena.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.arena.consumer.rs.BrukereArenaForvalterConsumer;
-import no.nav.registre.testnorge.arena.consumer.rs.AktoerRegisteretConsumer;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
@@ -26,61 +19,19 @@ import no.nav.registre.testnorge.consumers.hodejegeren.response.Relasjon;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.RelasjonsResponse;
 import no.nav.registre.testnorge.libs.core.util.IdentUtil;
 
-import static no.nav.registre.testnorge.arena.consumer.rs.util.ConsumerUtils.EIER;
+import static no.nav.registre.testnorge.arena.service.util.ServiceUtils.EIER;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class IdentService {
 
-    private static final int PAGE_SIZE = 10;
     private static final String RELASJON_BARN = "BARN";
 
     private final HodejegerenConsumer hodejegerenConsumer;
-    private final BrukereArenaForvalterConsumer brukereArenaForvalterConsumer;
-    private final AktoerRegisteretConsumer aktoerRegisteretConsumer;
+    private final PdlPersonService pdlPersonService;
     private final TpsForvalterService tpsForvalterService;
-
-    public List<Arbeidsoeker> hentArbeidsoekere(
-            String eier,
-            String miljoe,
-            String personident,
-            boolean useCache
-    ) {
-        return brukereArenaForvalterConsumer.hentArbeidsoekere(personident, eier, miljoe, useCache);
-    }
-
-    public List<String> slettBrukereIArenaForvalter(
-            List<String> identerToDelete,
-            String miljoe
-    ) {
-        List<String> slettedeIdenter = new ArrayList<>();
-
-        for (var personident : identerToDelete) {
-            if (brukereArenaForvalterConsumer.slettBruker(personident, miljoe)) {
-                slettedeIdenter.add(personident);
-            }
-        }
-
-        return slettedeIdenter;
-    }
-
-    public List<String> getLevende(
-            Long avspillergruppeId,
-            String miljoe
-    ) {
-        var levendeIdenterAsSet = new HashSet<>(hodejegerenConsumer.getLevende(avspillergruppeId));
-        return filtrerEksisterendeBrukereIArena(levendeIdenterAsSet, miljoe);
-    }
-
-    public List<String> getUtvalgteIdenter(
-            Long avspillergruppeId,
-            int antallNyeIdenter,
-            String miljoe
-    ) {
-        var levendeIdenter = new HashSet<>(hodejegerenConsumer.getLevende(avspillergruppeId));
-        return filtrerIdenterUtenAktoerId(levendeIdenter, miljoe, antallNyeIdenter, null);
-    }
+    private final ArenaBrukerService arenaBrukerService;
 
     public List<String> getUtvalgteIdenterIAldersgruppe(
             Long avspillergruppeId,
@@ -127,20 +78,18 @@ public class IdentService {
             LocalDate tidligsteDatoBosatt
     ) {
         var identerUtenArenabruker = filtrerEksisterendeBrukereIArena(identer, miljoe);
-        var identerPartisjonert = partisjonerListe(identerUtenArenabruker, PAGE_SIZE);
         List<String> utvalgteIdenter = new ArrayList<>(antallNyeIdenter);
-        for (var partisjon : identerPartisjonert) {
-            var aktoerIdenter = aktoerRegisteretConsumer.hentAktoerIderTilIdenter(partisjon, miljoe);
-            for (String key : aktoerIdenter.keySet()) {
-                if (tidligsteDatoBosatt == null || tpsForvalterService.identHarPersonstatusBosatt(key, miljoe, tidligsteDatoBosatt)) {
-                    utvalgteIdenter.add(key);
-                    if (utvalgteIdenter.size() >= antallNyeIdenter) {
-                        return utvalgteIdenter;
-                    }
+
+        for (var ident : identerUtenArenabruker) {
+            var aktoerId = pdlPersonService.getAktoerIdTilIdent(ident);
+            if (aktoerId != null && (tidligsteDatoBosatt == null || tpsForvalterService.identHarPersonstatusBosatt(ident, miljoe, tidligsteDatoBosatt))) {
+                utvalgteIdenter.add(ident);
+                if (utvalgteIdenter.size() >= antallNyeIdenter) {
+                    return utvalgteIdenter;
                 }
             }
-
         }
+
         return utvalgteIdenter;
     }
 
@@ -153,17 +102,12 @@ public class IdentService {
     ) {
         var identerUtenArenabruker = filtrerEksisterendeBrukereIArena(identer, miljoe);
 
-        var identerPartisjonert = partisjonerListe(identerUtenArenabruker, PAGE_SIZE);
-
         List<String> utvalgteIdenter = new ArrayList<>(antallNyeIdenter);
-
-        for (var partisjon : identerPartisjonert) {
-            Map<String, String> identerMedAktoerId = aktoerRegisteretConsumer.hentAktoerIderTilIdenter(partisjon, miljoe);
-
-            for (var ident : identerMedAktoerId.keySet()) {
+        for (var ident : identerUtenArenabruker) {
+            var aktoerId = pdlPersonService.getAktoerIdTilIdent(ident);
+            if (aktoerId != null && (tidligsteDatoBosatt == null || tpsForvalterService.identHarPersonstatusBosatt(ident, miljoe, tidligsteDatoBosatt))) {
                 var relasjonsResponse = getRelasjonerTilIdent(ident, miljoe);
-                if (inneholderBarnUnder18VedTidspunkt(relasjonsResponse, tidligsteDatoBarn) &&
-                        (tidligsteDatoBosatt == null || tpsForvalterService.identHarPersonstatusBosatt(ident, miljoe, tidligsteDatoBosatt))) {
+                if (inneholderBarnUnder18VedTidspunkt(relasjonsResponse, tidligsteDatoBarn)) {
                     utvalgteIdenter.add(ident);
                     if (utvalgteIdenter.size() >= antallNyeIdenter) {
                         return utvalgteIdenter;
@@ -197,7 +141,7 @@ public class IdentService {
 
             var barnFnr = relasjon.getFnrRelasjon();
 
-            int alder = Math.toIntExact(ChronoUnit.YEARS.between(IdentUtil.getFoedselsdatoFraIdent(barnFnr), tidspunkt));
+            var alder = Math.toIntExact(ChronoUnit.YEARS.between(IdentUtil.getFoedselsdatoFraIdent(barnFnr), tidspunkt));
 
             return alder > -1 && alder < 18;
         }
@@ -208,7 +152,7 @@ public class IdentService {
             Set<String> identerAsSet,
             String miljoe
     ) {
-        var eksisterendeBrukere = new HashSet<>(hentEksisterendeArbeidsoekerIdenter(EIER, miljoe, true));
+        var eksisterendeBrukere = new HashSet<>(arenaBrukerService.hentEksisterendeArbeidsoekerIdenter(EIER, miljoe, true));
         identerAsSet.removeAll(eksisterendeBrukere);
         var identer = new ArrayList<>(identerAsSet);
         Collections.shuffle(identer);
@@ -220,42 +164,6 @@ public class IdentService {
             String miljoe
     ) {
         return hodejegerenConsumer.getRelasjoner(ident, miljoe);
-    }
-
-    private <T> Collection<List<T>> partisjonerListe(
-            List<T> list,
-            long partitionSize
-    ) {
-        AtomicInteger counter = new AtomicInteger(0);
-        return list
-                .stream()
-                .collect(Collectors.groupingBy(it -> counter.getAndIncrement() / partitionSize))
-                .values();
-    }
-
-    public List<String> hentEksisterendeArbeidsoekerIdenter(boolean useCache) {
-        var arbeidsoekere = brukereArenaForvalterConsumer.hentArbeidsoekere(null, null, null, useCache);
-        return hentIdentListe(arbeidsoekere);
-    }
-
-    public List<String> hentEksisterendeArbeidsoekerIdent(String personident, boolean useCache) {
-        var arbeidsoekere = brukereArenaForvalterConsumer.hentArbeidsoekere(personident, null, null, useCache);
-        return hentIdentListe(arbeidsoekere);
-    }
-
-    public List<String> hentEksisterendeArbeidsoekerIdenter(String eier, String miljoe, boolean useCache) {
-        var arbeidsoekere = brukereArenaForvalterConsumer.hentArbeidsoekere(null, eier, miljoe, useCache);
-        return hentIdentListe(arbeidsoekere);
-    }
-
-    private List<String> hentIdentListe(
-            List<Arbeidsoeker> arbeidsoekere
-    ) {
-        if (arbeidsoekere.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        return arbeidsoekere.stream().map(Arbeidsoeker::getPersonident).collect(Collectors.toList());
     }
 
 }

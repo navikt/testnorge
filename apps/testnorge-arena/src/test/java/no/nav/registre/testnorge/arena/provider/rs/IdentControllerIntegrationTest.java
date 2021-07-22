@@ -120,7 +120,7 @@ public class IdentControllerIntegrationTest {
 
         String[] resultat = objectMapper.readValue(mvcResultat, String[].class);
 
-        assertThat(resultat).isEqualTo(new String[]{ident});
+        assertThat(resultat).isEqualTo(new String[] { ident });
     }
 
     @AfterEach

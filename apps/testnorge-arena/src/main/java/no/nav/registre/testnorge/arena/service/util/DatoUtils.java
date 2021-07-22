@@ -1,9 +1,9 @@
 package no.nav.registre.testnorge.arena.service.util;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.GensakKoder;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
+import no.nav.registre.testnorge.domain.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
@@ -14,25 +14,25 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.List;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class DatoUtils {
 
-    public LocalDate finnTidligsteDato(Vedtakshistorikk vedtakshistorikken) {
+    private DatoUtils() {
+    }
 
+    public static LocalDate finnTidligsteDato(Vedtakshistorikk vedtakshistorikken) {
         LocalDate tidligsteDato;
-        var aap = finnUtfyltAap(vedtakshistorikken);
+        var aap = vedtakshistorikken.getAap();
         var aapType = vedtakshistorikken.getAlleAapVedtak();
         var tiltak = vedtakshistorikken.getAlleTiltakVedtak();
         var tillegg = vedtakshistorikken.getAlleTilleggVedtak();
 
-        if (!aap.isEmpty()) {
+        if (aap != null && !aap.isEmpty()) {
             tidligsteDato = finnTidligsteDatoAap(aap);
         } else if (!aapType.isEmpty()) {
             tidligsteDato = finnTidligsteDatoAapType(aapType);
@@ -46,14 +46,14 @@ public class DatoUtils {
         return tidligsteDato;
     }
 
-    public LocalDate finnTidligeDatoBarnetillegg(List<NyttVedtakTiltak> barnetillegg) {
+    public static LocalDate finnTidligeDatoBarnetillegg(List<NyttVedtakTiltak> barnetillegg) {
         if (barnetillegg != null && !barnetillegg.isEmpty()) {
             return finnTidligsteDatoTiltak(barnetillegg);
         }
         return null;
     }
 
-    public LocalDate finnTidligsteDatoAap(List<NyttVedtakAap> vedtak) {
+    public static LocalDate finnTidligsteDatoAap(List<NyttVedtakAap> vedtak) {
         var tidligsteDato = LocalDate.now();
         for (var vedtaket : vedtak) {
             tidligsteDato = finnTidligsteDatoAvTo(tidligsteDato, vedtaket.getFraDato());
@@ -75,7 +75,7 @@ public class DatoUtils {
         return tidligsteDato;
     }
 
-    private LocalDate finnTidligsteDatoAapType(List<NyttVedtakAap> vedtak) {
+    private static LocalDate finnTidligsteDatoAapType(List<NyttVedtakAap> vedtak) {
         var tidligsteDato = LocalDate.now();
         for (var vedtaket : vedtak) {
             tidligsteDato = finnTidligsteDatoAvTo(tidligsteDato, vedtaket.getFraDato());
@@ -83,7 +83,7 @@ public class DatoUtils {
         return tidligsteDato;
     }
 
-    private LocalDate finnTidligsteDatoTiltak(List<NyttVedtakTiltak> vedtak) {
+    private static LocalDate finnTidligsteDatoTiltak(List<NyttVedtakTiltak> vedtak) {
         var tidligsteDato = LocalDate.now();
         for (var vedtaket : vedtak) {
             tidligsteDato = finnTidligsteDatoAvTo(tidligsteDato, vedtaket.getFraDato());
@@ -91,7 +91,7 @@ public class DatoUtils {
         return tidligsteDato;
     }
 
-    private LocalDate finnTidligsteDatoTillegg(List<NyttVedtakTillegg> vedtak) {
+    private static LocalDate finnTidligsteDatoTillegg(List<NyttVedtakTillegg> vedtak) {
         var tidligsteDato = LocalDate.now();
         for (var vedtaket : vedtak) {
             tidligsteDato = finnTidligsteDatoAvTo(tidligsteDato, vedtaket.getFraDato());
@@ -100,7 +100,7 @@ public class DatoUtils {
         return tidligsteDato;
     }
 
-    private LocalDate finnTidligsteDatoAvTo(
+    private static LocalDate finnTidligsteDatoAvTo(
             LocalDate date1,
             LocalDate date2
     ) {
@@ -114,7 +114,7 @@ public class DatoUtils {
         }
     }
 
-    public NyttVedtak finnSenesteVedtak(List<? extends NyttVedtak> vedtak) {
+    public static NyttVedtak finnSenesteVedtak(List<? extends NyttVedtak> vedtak) {
         var senesteDato = LocalDate.MIN;
         NyttVedtak senesteVedtak = null;
         for (var vedtaket : vedtak) {
@@ -132,17 +132,7 @@ public class DatoUtils {
         return senesteVedtak;
     }
 
-    private List<NyttVedtakAap> finnUtfyltAap(Vedtakshistorikk vedtakshistorikk) {
-        var aap = vedtakshistorikk.getAap();
-
-        if (aap != null && !aap.isEmpty()) {
-            return aap;
-        }
-
-        return Collections.emptyList();
-    }
-
-    public boolean datoErInnenforPeriode(LocalDate vedtakDato, LocalDate periodeStart, LocalDate periodeSlutt) {
+    public static boolean datoErInnenforPeriode(LocalDate vedtakDato, LocalDate periodeStart, LocalDate periodeSlutt) {
         if (periodeStart == null || vedtakDato == null) {
             return false;
         }
@@ -158,8 +148,7 @@ public class DatoUtils {
         }
     }
 
-
-    public void setDatoPeriodeVedtakInnenforMaxAntallMaaneder(
+    public static void setDatoPeriodeVedtakInnenforMaxAntallMaaneder(
             NyttVedtak vedtak,
             int antallMaaneder
     ) {
@@ -173,11 +162,27 @@ public class DatoUtils {
         }
     }
 
-    public boolean datoerOverlapper(LocalDate fraDatoA, LocalDate tilDatoA, LocalDate fraDatoB, LocalDate tilDatoB) {
+    public static boolean datoerOverlapper(LocalDate fraDatoA, LocalDate tilDatoA, LocalDate fraDatoB, LocalDate tilDatoB) {
         try {
             return fraDatoA.isBefore(tilDatoB) && fraDatoB.isBefore(tilDatoA);
         } catch (Exception e) {
             return false;
         }
     }
+
+    public static boolean vedtakOverlapperIkkeVedtaksperioder(Vedtaksperiode vedtak, List<Vedtaksperiode> vedtaksliste) {
+        if (vedtaksliste == null || vedtaksliste.isEmpty()) {
+            return true;
+        }
+        var fraDato = vedtak.getFom();
+        var tilDato = vedtak.getTom();
+
+        for (var item : vedtaksliste) {
+            if (datoerOverlapper(fraDato, tilDato, item.getFom(), item.getTom())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

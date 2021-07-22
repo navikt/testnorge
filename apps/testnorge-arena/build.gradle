@@ -15,6 +15,7 @@ dependencyManagement {
 dependencies {
     implementation project(':testnorge-core')
     implementation project(':testnorge-domain')
+    implementation 'no.nav.testnav.libs:security-token-service'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'

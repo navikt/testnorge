@@ -5,10 +5,8 @@ parent: Applikasjoner
 ---
 
 # Testnorge-Arena
-
-Testnorge-Arena applikasjonen som henter syntetiske vedtak, og velger ut identer som skal inn i disse vedtakene, før de sendes til Arena.
-
-Applikasjonen har også støtte for å opprette syntetiske historiske vedtak, gjennom vedtakshistorikkendepunktet.
+Testnorge-Arena applikasjonen henter syntetisk vedtakshistorikk, velger ut passende identer for historikken, registrerer
+nødvendig annen informasjon på utvalgt ident og sender historikken til Arena.
 
 ## Swagger
 Swagger finnes under [/api](https://testnorge-arena.dev.intern.nav.no/api) -endepunktet til applikasjonen.
