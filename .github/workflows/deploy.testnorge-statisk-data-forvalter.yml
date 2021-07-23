@@ -5,6 +5,7 @@ on:
     paths:
       - apps/testnorge-statisk-data-forvalter/**
       - libs/testnorge-core/**
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/statisk-data-forvalter:${{ github.sha }}
