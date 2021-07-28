@@ -7,6 +7,7 @@ import io.kubernetes.client.apis.CustomObjectsApi;
 import io.kubernetes.client.models.V1DeleteOptions;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.consumer.GitHubConsumer;
+import no.nav.registre.syntrest.kubernetes.exception.KubernetesException;
 import no.nav.registre.syntrest.utils.NaisYaml;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -120,16 +121,20 @@ public class KubernetesController {
         }
     }
 
-    private boolean pollApplication(String appName) {
+    private void pollApplication(String appName) {
         String response = webClient.get()
                 .uri(isAliveUrl.replace("{appName}", appName))
                 .retrieve()
                 .bodyToMono(String.class)
                 .retryWhen(Retry.fixedDelay(maxRetries, Duration.ofSeconds(retryDelay))
                         .filter(e -> e instanceof WebClientResponseException.ServiceUnavailable ||
-                                e instanceof WebClientResponseException.NotFound))
+                                e instanceof WebClientResponseException.NotFound)
+                        .onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> new KubernetesException("Failed to poll application: too many retries.")))
                 .block();
-        return "1".equals(response);
+
+        if (!"1".equals(response)) {
+            throw new KubernetesException("Application failed to deploy.");
+        }
     }
 
     public boolean existsOnCluster(String appName) throws ApiException {
@@ -160,7 +165,7 @@ public class KubernetesController {
         log.info("Waiting for '{}' to deploy... (max {} seconds)", appName, (maxRetries * retryDelay));
         try {
             pollApplication(appName);
-        } catch (RuntimeException e) { // RetryExhaustedException
+        } catch (RuntimeException e) {
             log.error("Application '{}' failed to deploy. Terminating...", appName);
             takedownImage(appName);
             throw e;
