@@ -27,7 +27,7 @@ public class InputValidator {
 
     public static void validateInput(Integer numToGenerate) {
         if (Objects.isNull(numToGenerate)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Input \'null\' ikke tillatt");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Input 'null' ikke tillatt");
         }
     }
 
@@ -42,25 +42,25 @@ public class InputValidator {
         case MELDEGRUPPE:
             if (!meldegrupper.contains(value)) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        String.format("Ikke en gyldig meldegruppe. Må være en av %s.", meldegrupper.toString()));
+                        String.format("Ikke en gyldig meldegruppe. Må være en av %s.", meldegrupper));
             }
             break;
         case ENDRINGSKODE:
             if (!endringskoder.contains(value)) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        String.format("Ikke en gyldig endringskode (!). Må være en av %s.", endringskoder.toString()));
+                        String.format("Ikke en gyldig endringskode (!). Må være en av %s.", endringskoder));
             }
             break;
         case ENDRINGSKODE_NAV:
             if (!navEndringskoder.contains(value)) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        String.format("Ikke en gyldig nav endringskode (!). Må være en av %s.", navEndringskoder.toString()));
+                        String.format("Ikke en gyldig nav endringskode (!). Må være en av %s.", navEndringskoder));
             }
             break;
         case ARBEIDSFORHOLD_TYPE:
-            if(!arbeidsforholdTyper.contains(value)) {
+            if (!arbeidsforholdTyper.contains(value)) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        String.format("Ikke en gyldig arbeidsforhold type (!). Må være en av %s.", arbeidsforholdTyper.toString()));
+                        String.format("Ikke en gyldig arbeidsforhold type (!). Må være en av %s.", arbeidsforholdTyper));
             }
         }
     }

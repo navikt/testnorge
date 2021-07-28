@@ -1,17 +1,20 @@
 package no.nav.registre.syntrest.kubernetes;
 
 import com.google.gson.JsonSyntaxException;
+
 import io.kubernetes.client.ApiException;
 import io.kubernetes.client.apis.CustomObjectsApi;
 import io.kubernetes.client.models.V1DeleteOptions;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.consumer.GitHubConsumer;
 import no.nav.registre.syntrest.utils.NaisYaml;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+
 import reactor.netty.http.client.HttpClient;
 import reactor.util.retry.Retry;
 
@@ -42,7 +45,6 @@ public class KubernetesController {
 
     private final WebClient webClient;
 
-
     public KubernetesController(
             CustomObjectsApi customObjectsApi,
             NaisYaml naisYaml,
@@ -59,9 +61,9 @@ public class KubernetesController {
         this.retryDelay = retryDelay;
         this.api = customObjectsApi;
 
-        HttpClient httpClient = HttpClient.create()
+        var httpClient = HttpClient.create()
                 .responseTimeout(Duration.ofMillis(TIMEOUT_IN_MILLISECONSDS));
-        ReactorClientHttpConnector connector = new ReactorClientHttpConnector(httpClient);
+        var connector = new ReactorClientHttpConnector(httpClient);
         this.webClient = WebClient.builder().clientConnector(connector).build();
     }
 
@@ -81,7 +83,7 @@ public class KubernetesController {
     public void takedownImage(String appName) throws ApiException {
 
         if (existsOnCluster(appName)) {
-            V1DeleteOptions deleteOptions = new V1DeleteOptions();
+            var deleteOptions = new V1DeleteOptions();
             try {
                 api.deleteNamespacedCustomObject(GROUP, VERSION, NAMESPACE, PLURAL, appName, deleteOptions,
                         null, null, null);
@@ -135,7 +137,6 @@ public class KubernetesController {
         return applications.contains(appName);
     }
 
-
     private List<String> listApplicationsOnCluster() throws ApiException {
 
         List<String> applications = new ArrayList<>();
@@ -159,7 +160,7 @@ public class KubernetesController {
         log.info("Waiting for '{}' to deploy... (max {} seconds)", appName, (maxRetries * retryDelay));
         try {
             pollApplication(appName);
-        } catch (RuntimeException e){ // RetryExhaustedException
+        } catch (RuntimeException e) { // RetryExhaustedException
             log.error("Application '{}' failed to deploy. Terminating...", appName);
             takedownImage(appName);
             throw e;

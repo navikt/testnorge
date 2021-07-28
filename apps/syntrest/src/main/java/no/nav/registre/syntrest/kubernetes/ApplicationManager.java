@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 @Component
-@DependsOn({"kubernetesController", "scheduledExecutorService"})
+@DependsOn({ "kubernetesController", "scheduledExecutorService" })
 public class ApplicationManager {
 
     private final KubernetesController kubernetesController;
