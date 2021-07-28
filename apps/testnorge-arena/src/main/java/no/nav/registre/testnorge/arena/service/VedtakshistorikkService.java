@@ -165,8 +165,9 @@ public class VedtakshistorikkService {
             int maksimumAlder
     ) {
         try {
-            var maaVaereBosatt = vedtakshistorikk.getAap() != null && !vedtakshistorikk.getAap().isEmpty();
-            LocalDate tidligsteDatoBosatt = maaVaereBosatt ? finnTidligsteDatoAap(vedtakshistorikk.getAap()) : null;
+            var aapVedtak = vedtakshistorikk.getAlleAapVedtak();
+            var maaVaereBosatt = aapVedtak != null && !aapVedtak.isEmpty();
+            LocalDate tidligsteDatoBosatt = maaVaereBosatt ? finnTidligsteDatoAap(aapVedtak) : null;
 
             List<String> identer;
             if (tidligsteDatoBarnetillegg != null) {
