@@ -99,7 +99,7 @@ public class SyntControllerIntegrationTest {
                                         + "\"tjeneste\": \"ekstra\""
                                         + "}]")
                 ));
-        var result = syntController.generateInntektsmelding(Arrays.asList("10101010101", "20202020202"));
+        var result = syntController.generateInntektsmeldingPopp(Arrays.asList("10101010101", "20202020202"));
         assertThat(!isNull(result.getBody()), is(true));
         assertThat(result.getBody().size(), is(2));
     }
