@@ -60,11 +60,6 @@ De filene som må endres når man legger til synt-pakkene er:
 ## Oversikt over synt-pakker
  - **Aareg**\
    _Genererer syntetiske arbeidshistorikker bestående av meldinger på AAREG format._
- - **Aap** 
-   - **11_5**\
-   _Generer et antall AAP11_5 meldinger_
-   - **NyRettighet**\
-   _Generer et antall nye rettigheter_
  - **Bisys**\
    _API for å generere syntetiserte bisysmeldinger._
  - **Inst**\
@@ -108,9 +103,6 @@ De filene som må endres når man legger til synt-pakkene er:
    _Lager SKD meldinger for ulike endringskoder_
  - **Frikort**\
    _Lager et spesifisert antall kvitteringer for hvert personnummersom sendes inn._
- - **Eia**\
-   _Lager en legeerklæring for hvert objekt i forespørselen. Returnerer et map med_
-   _key=personnummer for pasienten, value=xml for legeerklæringen_
 
 ## Lokal kjøring
 
