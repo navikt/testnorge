@@ -113,6 +113,11 @@ Kjør så ApplicationStarter med følgende argumenter:
 ```
  -Djavax.net.ssl.trustStore=[path til lokal truststore]
  -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
+ -Dhttp.proxyHost=webproxy-utvikler.nav.no
+ -Dhttps.proxyHost=webproxy-utvikler.nav.no
+ -Dhttp.proxyPort=8088
+ -Dhttps.proxyPort=8088
+ -Dhttp.nonProxyHosts=localhost|127.0.0.1|10.254.0.1|*.local|*.adeo.no|*.nav.no|*.aetat.no|*.devillo.no|*.oera.no|*.nais.io
  -Dspring.profiles.active=utviklerimage
  -DGITHUB_USERNAME=[github brukernavn, kan finnes i syntrest secrets i vault]
  -DGITHUB_PASSWORD=[github passord, kan finnes i syntrest secrets i vault]
@@ -124,7 +129,7 @@ Dersom ApplicationStarter ikke vil kjøre sjekk at du fremdeles har gyldig Kubec
 Når syntrest kjøres lokalt i utviklerimage så klarer den ikke alltid å hente korrekt/siste image tag fra github for synt-applikasjon som skal deployes. 
 En manuell fiks for dette er å gå til [packages](https://github.com/orgs/navikt/packages?repo_name=testnorge-syntetiseringspakker) og hente siste versjon for ønsket 
 applikasjon og bytte ut `latest` med denne versjonen i image-delen i relevant nais.yaml (resources/nais/{app-name}.yaml). Deretter må følgende kode kommenteres ut i 
-`KubernetesController` `prepareYaml`-metode:
+`utils/NaisYaml` `provideYaml`-metode:
 ```java
 Map<String, Object> spec = (Map) manifestFile.get("spec");
 String imageBase = spec.get("image").toString();
