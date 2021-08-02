@@ -104,14 +104,15 @@ public class ErrorStatusDecoder {
     }
 
     private void appendStatusMessage(String responseBody, StringBuilder builder) {
+
         if (responseBody.contains("{")) {
             try {
                 Map<String, Object> status = objectMapper.readValue(responseBody, Map.class);
                 if (status.containsKey(ERROR) && isNotBlank((String) status.get(ERROR))) {
-                    builder.append("error=").append(status.get(ERROR)).append(';');
+                    builder.append("error=").append(status.get(ERROR)).append("; ");
                 }
                 if (status.containsKey(MESSAGE) && isNotBlank((String) status.get(MESSAGE))) {
-                    builder.append("message=").append(encodeStatus((String) status.get(MESSAGE))).append(';');
+                    builder.append("message=").append(encodeStatus((String) status.get(MESSAGE))).append("; ");
                 }
                 if (status.containsKey(DETAILS) && status.get(DETAILS) instanceof List) {
                     StringBuilder meldinger = new StringBuilder("=");

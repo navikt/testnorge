@@ -1,5 +1,6 @@
 package no.nav.dolly.mapper.strategy;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
@@ -26,7 +27,8 @@ import static no.nav.dolly.mapper.BestillingInntektsmeldingStatusMapper.buildInn
 import static no.nav.dolly.mapper.BestillingInntektstubStatusMapper.buildInntektstubStatusMap;
 import static no.nav.dolly.mapper.BestillingInstdataStatusMapper.buildInstdataStatusMap;
 import static no.nav.dolly.mapper.BestillingKrrStubStatusMapper.buildKrrStubStatusMap;
-import static no.nav.dolly.mapper.BestillingPdlForvalterStatusMapper.buildPdldataStatusMap;
+import static no.nav.dolly.mapper.BestillingPdlDataStatusMapper.buildPdlDataStatusMap;
+import static no.nav.dolly.mapper.BestillingPdlForvalterStatusMapper.buildPdlForvalterStatusMap;
 import static no.nav.dolly.mapper.BestillingPensjonforvalterStatusMapper.buildPensjonforvalterStatusMap;
 import static no.nav.dolly.mapper.BestillingSigrunStubStatusMapper.buildSigrunStubStatusMap;
 import static no.nav.dolly.mapper.BestillingSkjermingsRegisterStatusMapper.buildSkjermingsRegisterStatusMap;
@@ -41,6 +43,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class BestillingStatusMappingStrategy implements MappingStrategy {
 
     private final JsonBestillingMapper jsonBestillingMapper;
+    private final ObjectMapper objectMapper;
 
     private static List<String> mapIdents(String idents) {
         return isNotBlank(idents) ? Arrays.asList(idents.split(",")) : Collections.emptyList();
@@ -62,7 +65,8 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildSigrunStubStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildAaregStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildArenaStatusMap(bestilling.getProgresser()));
-                        bestillingStatus.getStatus().addAll(buildPdldataStatusMap(bestilling.getProgresser()));
+                        bestillingStatus.getStatus().addAll(buildPdlForvalterStatusMap(bestilling.getProgresser()));
+                        bestillingStatus.getStatus().addAll(buildPdlDataStatusMap(bestilling.getProgresser(), objectMapper));
                         bestillingStatus.getStatus().addAll(buildInstdataStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildUdiStubStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildInntektstubStatusMap(bestilling.getProgresser()));
@@ -76,6 +80,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildSkjermingsRegisterStatusMap(bestilling.getProgresser()));
                         bestillingStatus.setBestilling(RsBestillingStatus.RsBestilling.builder()
                                 .pdlforvalter(bestillingRequest.getPdlforvalter())
+                                .pdlData(bestillingRequest.getPdldata())
                                 .aareg(bestillingRequest.getAareg())
                                 .krrstub(bestillingRequest.getKrrstub())
                                 .arenaforvalter(bestillingRequest.getArenaforvalter())

@@ -57,7 +57,7 @@ public class BestillingController {
         return mapperFacade.mapAsList(bestillingService.fetchBestillingerByGruppeId(gruppeId), RsBestillingStatus.class);
     }
 
-    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
+    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @DeleteMapping("/stop/{bestillingId}")
     @Operation(description = "Stopp en Bestilling med bestillingsId")
     public RsBestillingStatus stopBestillingProgress(@PathVariable("bestillingId") Long bestillingId) {
@@ -65,7 +65,7 @@ public class BestillingController {
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 
-    @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
+    @CacheEvict(value = {CACHE_BESTILLING, CACHE_GRUPPE}, allEntries = true)
     @PostMapping("/gjenopprett/{bestillingId}")
     @Operation(description = "Gjenopprett en bestilling med bestillingsId, for en liste med miljoer")
     public RsBestillingStatus gjenopprettBestilling(@PathVariable("bestillingId") Long bestillingId, @RequestParam(value = "miljoer", required = false) String miljoer) {

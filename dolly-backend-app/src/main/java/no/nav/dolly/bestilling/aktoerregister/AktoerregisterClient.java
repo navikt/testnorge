@@ -16,7 +16,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.containsSynthEnv;
 
 @Slf4j
 @Service
-@Order(2)
+@Order(3)
 @RequiredArgsConstructor
 public class AktoerregisterClient implements ClientRegister {
 
