@@ -1,10 +1,9 @@
-import { Form, Line, SelectFormItem, Pageable, Knapp } from '@navikt/dolly-komponenter';
+import { Form, Knapp, Line, Pageable, SelectFormItem } from '@navikt/dolly-komponenter';
 import React, { useEffect, useState } from 'react';
-import { OrganisasjonFasteDataService, OrganisasjonService } from '@/service';
-import { Organisasjon as FasteDataOrganisasjon } from '@/service/OrganisasjonFasteDataService';
+import { PersonFasteDataService, PersonService } from '@/service';
 import { CompareTable } from '@/components/compare-table';
-import { OrganisasjonComperator } from '@/comperator';
 import { Input } from 'nav-frontend-skjema';
+import { PersonComperator } from '@/comperator';
 
 const grupper = [
   'DOLLY',
@@ -42,7 +41,7 @@ const toOptions = (options: string[]) =>
   }));
 
 export default () => {
-  const [organisasjoner, setOrganisasjoner] = useState<FasteDataOrganisasjon[]>();
+  const [personer, setPersoner] = useState<Person[]>();
   const [gruppe, setGruppe] = useState<Gruppe>('DOLLY');
   const [miljo, setMiljo] = useState<string>('q1');
   const [loading, setLoading] = useState<boolean>(false);
@@ -51,25 +50,25 @@ export default () => {
 
   const onSearch = (gruppe: Gruppe) => {
     setLoading(true);
-    OrganisasjonFasteDataService.fetchOrganisasjoner(
+    PersonFasteDataService.fetchPersoner(
       gruppe,
       !tag ? null : tag,
       !opprinnelse ? null : opprinnelse
     )
       .then((response) => {
-        setOrganisasjoner(response);
+        setPersoner(response);
         setLoading(false);
       })
       .catch(() => setLoading(false));
   };
 
   useEffect(() => {
-    setOrganisasjoner(null);
+    setPersoner(null);
   }, [gruppe, miljo, tag, opprinnelse]);
 
   return (
     <Form>
-      <h2>Organisasjon</h2>
+      <h2>Person</h2>
       <Line>
         <SelectFormItem
           label="Gruppe"
@@ -109,11 +108,11 @@ export default () => {
           Søk
         </Knapp>
       </Line>
-      {organisasjoner && (
+      {personer && (
         <Pageable
-          items={organisasjoner.map((organisasjon) => ({
-            ...organisasjon,
-            id: organisasjon.orgnummer,
+          items={personer.map((person) => ({
+            ...person,
+            id: person.ident,
           }))}
           render={(items, index) => (
             <CompareTable
@@ -121,8 +120,8 @@ export default () => {
               miljo={miljo}
               linkPath="organisasjon"
               fetchCompare={(miljo, item) =>
-                OrganisasjonService.fetchOrganisasjon(item.orgnummer, miljo).then(
-                  (response) => !OrganisasjonComperator.compare(item, response).isMismatch
+                PersonService.fetchPerson(item.ident, miljo).then(
+                  (response) => !PersonComperator.compare(item, response).isMismatch
                 )
               }
               items={items}

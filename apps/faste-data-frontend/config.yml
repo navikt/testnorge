@@ -23,6 +23,8 @@ spec:
         - application: testnorge-profil-api
         - application: testnav-organisasjon-faste-data-service
         - application: testnav-organisasjon-service
+        - application: testnav-person-faste-data-service
+        - application: testnav-person-service
   liveness:
     path: /internal/isAlive
     periodSeconds: 30

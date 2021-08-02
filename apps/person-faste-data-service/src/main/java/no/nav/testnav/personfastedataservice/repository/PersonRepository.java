@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import no.nav.testnav.personfastedataservice.domain.Gruppe;
+import no.nav.testnav.libs.dto.personservice.v1.Gruppe;
 import no.nav.testnav.personfastedataservice.repository.model.PersonEntity;
 
 @Repository

@@ -70,4 +70,27 @@ public class TpsIdent extends FasteData {
                 .adresse(address != null ? new AdresseDTO(address, postNr, city, null) : null)
                 .build();
     }
+
+
+    public no.nav.testnav.libs.dto.personservice.v1.AdresseDTO toAdresseDTO(){
+        return no.nav.testnav.libs.dto.personservice.v1.AdresseDTO
+                .builder()
+                .gatenavn(address)
+                .postnummer(postNr)
+                .poststed(city)
+                .build();
+    }
+
+    public no.nav.testnav.libs.dto.personservice.v1.PersonDTO toDTOV2(){
+        return no.nav.testnav.libs.dto.personservice.v1.PersonDTO
+                .builder()
+                .ident(fnr)
+                .fornavn(firstName)
+                .etternavn(lastName)
+                .opprinnelse(getOpprinnelse())
+                .tags(tags)
+                .adresse(toAdresseDTO())
+                .build();
+    }
+
 }

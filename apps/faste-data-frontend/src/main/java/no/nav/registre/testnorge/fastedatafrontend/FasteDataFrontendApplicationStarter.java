@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.fastedatafrontend;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -15,6 +16,8 @@ import java.util.function.Function;
 
 import no.nav.registre.testnorge.fastedatafrontend.credentials.OrganisasjonFasteDataServiceProperties;
 import no.nav.registre.testnorge.fastedatafrontend.credentials.OrganisasjonServiceProperties;
+import no.nav.registre.testnorge.fastedatafrontend.credentials.PersonFasteDataServiceProperties;
+import no.nav.registre.testnorge.fastedatafrontend.credentials.PersonServiceProperties;
 import no.nav.registre.testnorge.fastedatafrontend.credentials.ProfilApiServiceProperties;
 import no.nav.testnav.libs.core.config.CoreConfig;
 import no.nav.testnav.libs.frontend.config.FrontendConfig;
@@ -24,6 +27,7 @@ import no.nav.testnav.libs.security.domain.AccessToken;
 import no.nav.testnav.libs.security.domain.Scopeable;
 import no.nav.testnav.libs.security.service.AccessTokenService;
 
+@Slf4j
 @Import({
         CoreConfig.class,
         SecureOAuth2FrontendConfiguration.class,
@@ -36,7 +40,8 @@ public class FasteDataFrontendApplicationStarter {
     private final ProfilApiServiceProperties profilApiServiceProperties;
     private final OrganisasjonServiceProperties organisasjonServiceProperties;
     private final OrganisasjonFasteDataServiceProperties organisasjonFasteDataServiceProperties;
-
+    private final PersonServiceProperties personServiceProperties;
+    private final PersonFasteDataServiceProperties personFasteDataServiceProperties;
 
     public static void main(String[] args) {
         SpringApplication.run(FasteDataFrontendApplicationStarter.class, args);
@@ -74,10 +79,21 @@ public class FasteDataFrontendApplicationStarter {
                         profilApiServiceProperties.getUrl(),
                         filterFrom(profilApiServiceProperties)
                 ))
+                .route(createRoute(
+                        "testnav-person-service",
+                        personServiceProperties.getUrl(),
+                        filterFrom(personServiceProperties)
+                ))
+                .route(createRoute(
+                        "testnav-person-faste-data-service",
+                        personFasteDataServiceProperties.getUrl(),
+                        filterFrom(personFasteDataServiceProperties)
+                ))
                 .build();
     }
 
     private Function<PredicateSpec, Route.AsyncBuilder> createRoute(String segment, String host, GatewayFilter filter) {
+        log.info("Redirect fra segment {} til host {}.", segment, host);
         return spec -> spec
                 .path("/" + segment + "/**")
                 .filters(filterSpec -> filterSpec

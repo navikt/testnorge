@@ -8,19 +8,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.registre.sdforvalter.adapter.EregAdapter;
-import no.nav.registre.sdforvalter.consumer.rs.OrganisasjonFasteDataConsumer;
+import no.nav.registre.sdforvalter.adapter.TpsIdenterAdapter;
+import no.nav.registre.sdforvalter.consumer.rs.PersonFasteDataConsumer;
 
 @RestController
-@RequestMapping("/api/v1/organisasjon/migrering")
+@RequestMapping("/api/v1/person/migrering")
 @RequiredArgsConstructor
-public class OrganisasjonMigereringController {
-    private final EregAdapter eregAdapter;
-    private final OrganisasjonFasteDataConsumer fasteDataConsumer;
+public class PersonMigreringController {
+    private final TpsIdenterAdapter tpsIdenterAdapter;
+    private final PersonFasteDataConsumer fasteDataConsumer;
 
     @PostMapping
     public ResponseEntity<HttpStatus> opprett(@RequestParam(required = false) String gruppe) {
-        var eregListe = gruppe == null ? eregAdapter.fetchAll() : eregAdapter.fetchBy(gruppe);
+        var eregListe = gruppe == null ? tpsIdenterAdapter.fetchAll() : tpsIdenterAdapter.fetchBy(gruppe);
         fasteDataConsumer.opprett(eregListe);
         return ResponseEntity.noContent().build();
     }
