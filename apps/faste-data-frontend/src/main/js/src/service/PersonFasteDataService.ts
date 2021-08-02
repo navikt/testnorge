@@ -11,7 +11,7 @@ const fetchPersoner = (gruppe: string, tag?: string, opprinnelse?: string) =>
   );
 
 const fetchPerson = (ident: string) =>
-  Api.fetchJson<Person>(`/testnav-person-faste-data-service/api/v1/organisasjoner/${ident}`, {
+  Api.fetchJson<Person>(`/testnav-person-faste-data-service/api/v1/personer/${ident}`, {
     method: 'GET',
   });
 

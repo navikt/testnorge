@@ -110,7 +110,7 @@ export default () => {
       </Line>
       {personer && (
         <Pageable
-          items={personer.slice(0, 0).map((person) => ({
+          items={personer.map((person) => ({
             ...person,
             id: person.ident,
           }))}
