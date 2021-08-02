@@ -17,7 +17,7 @@ public class IgnoreSetCookieFilter implements WebFilter {
 
             if (exchange.getResponse().getHeaders().containsKey("set-cookie")) {
                 exchange.getResponse().getHeaders().remove("set-cookie");
-                log.warn("Fjerner 'set-cookie' fra remote response siden vi ønsker at frontend skal håntere cookies selv, ikke fra en remote app.");
+                log.warn("Fjerner 'set-cookie' fra remote response siden vi ønsker at frontend skal håndtere cookies selv, ikke fra en remote app.");
             }
 
             return Mono.empty();

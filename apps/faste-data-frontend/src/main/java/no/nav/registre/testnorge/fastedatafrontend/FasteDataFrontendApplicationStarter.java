@@ -93,7 +93,7 @@ public class FasteDataFrontendApplicationStarter {
     }
 
     private Function<PredicateSpec, Route.AsyncBuilder> createRoute(String segment, String host, GatewayFilter filter) {
-        log.info("Redirct fra segment {} til host {}.", segment, host);
+        log.info("Redirect fra segment {} til host {}.", segment, host);
         return spec -> spec
                 .path("/" + segment + "/**")
                 .filters(filterSpec -> filterSpec
