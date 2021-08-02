@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -14,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arena.consumer.rs.command.pdl.GetPdlPersonCommand;
 import no.nav.registre.testnorge.arena.consumer.rs.response.pdl.PdlPerson;
 
+import no.nav.registre.testnorge.arena.domain.FilLaster;
 import no.nav.testnav.libs.securitytokenservice.StsOidcTokenService;
 
 @Slf4j
@@ -41,8 +41,7 @@ public class PdlPersonConsumer {
     }
 
     private static String getSinglePersonQueryFromFile() {
-        var resource = new ClassPathResource(SINGLE_PERSON_QUERY);
-        try (var reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))) {
+        try (var reader = new BufferedReader(new InputStreamReader(FilLaster.instans().lastRessurs(SINGLE_PERSON_QUERY), StandardCharsets.UTF_8))) {
             return reader.lines().collect(Collectors.joining("\n"));
 
         } catch (IOException e) {
