@@ -6,7 +6,12 @@ on:
     paths:
       - apps/testnorge-skd/**
       - libs/testnorge-core/**
-  workflow_dispatch
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/skd:${{ github.sha }}
