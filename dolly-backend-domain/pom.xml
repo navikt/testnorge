@@ -27,6 +27,12 @@
             <artifactId>springdoc-openapi-ui</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>no.nav.registre.testnorge.libs</groupId>
+            <artifactId>testnorge-data-transfer-objects</artifactId>
+            <version>2021.07.02-10.26-2f84a9ae5eef</version>
+        </dependency>
+
     </dependencies>
 
 </project>

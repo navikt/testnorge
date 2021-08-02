@@ -20,6 +20,8 @@ spec:
       tenant: nav.no
   image: {{ image }}
   env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: dev
     - name: UDI_CLIENT_ID
       value: 4426ef7d-f148-4d19-8a03-b0d07a451938
   replicas:

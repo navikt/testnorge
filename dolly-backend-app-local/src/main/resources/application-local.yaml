@@ -1,8 +1,5 @@
-#    url: http://localhost:8050
 
-#spring:
-#  jpa:
-#    show-sql: true
-#    properties:
-#      hibernate:
-#        format_sql: true
+consumers:
+  testnav-pdl-forvalter:
+    url: https://testnav-pdl-forvalter-dev.dev.intern.nav.no
+    name: testnav-pdl-forvalter-dev

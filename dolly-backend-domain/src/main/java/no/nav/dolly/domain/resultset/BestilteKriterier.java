@@ -1,10 +1,6 @@
 package no.nav.dolly.domain.resultset;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include;
-
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,6 +19,11 @@ import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
+import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonDTO;
+
+import java.util.List;
+
+import static com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @Getter
 @Setter
@@ -38,6 +39,7 @@ public class BestilteKriterier {
     private List<OpprettSkattegrunnlag> sigrunstub;
     private Arenadata arenaforvalter;
     private RsPdldata pdlforvalter;
+    private PersonDTO pdldata;
     private List<RsInstdata> instdata;
     private InntektMultiplierWrapper inntektstub;
     private PensjonData pensjonforvalter;

@@ -23,7 +23,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
 
 @Slf4j
-@Order(3)
+@Order(4)
 @Service
 @RequiredArgsConstructor
 public class AaregClient implements ClientRegister {
