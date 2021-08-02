@@ -25,8 +25,8 @@ import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
+@Order(4)
 @Service
-@Order(5)
 @RequiredArgsConstructor
 public class InntektstubClient implements ClientRegister {
 

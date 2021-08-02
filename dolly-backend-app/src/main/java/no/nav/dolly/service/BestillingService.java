@@ -347,7 +347,6 @@ public class BestillingService {
                 .sigrunstub(request.getSigrunstub())
                 .arenaforvalter(request.getArenaforvalter())
                 .pdlforvalter(request.getPdlforvalter())
-                .pdldata(request.getPdldata())
                 .instdata(request.getInstdata())
                 .inntektstub(request.getInntektstub())
                 .pensjonforvalter(request.getPensjonforvalter())

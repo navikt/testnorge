@@ -97,8 +97,6 @@ public class BestillingProgress {
     @Column(name = "PDL_IMPORT_STATUS")
     private String pdlImportStatus;
 
-    @Column(name = "PDL_DATA_STATUS")
-    private String pdlDataStatus;
 
     @Column(name = "master")
     @Enumerated(EnumType.STRING)

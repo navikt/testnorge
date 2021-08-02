@@ -20,7 +20,6 @@ import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +41,6 @@ public class RsDollyBestilling {
     private String malBestillingNavn;
 
     private RsPdldata pdlforvalter;
-
-    private PersonDTO pdldata;
 
     private RsDigitalKontaktdata krrstub;
 

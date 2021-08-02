@@ -23,15 +23,11 @@ consumers:
     url: https://testnav-organisasjon-forvalter.dev.intern.nav.no
     cluster: dev-gcp
   testnav-inntektsmelding-service:
-    name: testnav-inntektsmelding-service
-    namespace: dolly
     url: https://testnav-inntektsmelding-service.dev.intern.nav.no
+    name: testnav-inntektsmelding-service
     cluster: dev-gcp
-  testnav-pdl-forvalter:
-    name: testnav-pdl-forvalter
     namespace: dolly
-    url: https://testnav-pdl-forvalter.dev.intern.nav.no
-    cluster: dev-gcp
+
 
 #### APP DB ####
 ? app.datasource.onsHosts

@@ -1,18 +1,6 @@
 package no.nav.dolly.mapper;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient;
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsStatusRapport;
-import no.nav.dolly.domain.resultset.SystemTyper;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
+import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.FALSK_IDENTITET;
 import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.KONTAKTINFORMASJON_DOEDSBO;
@@ -23,10 +11,23 @@ import static no.nav.dolly.domain.resultset.SystemTyper.PDL_FORVALTER;
 import static no.nav.dolly.domain.resultset.SystemTyper.PDL_UTENLANDSID;
 import static no.nav.dolly.mapper.BestillingMeldingStatusIdentMapper.resolveStatus;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient;
+import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsStatusRapport;
+import no.nav.dolly.domain.resultset.SystemTyper;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingPdlForvalterStatusMapper {
 
-    public static List<RsStatusRapport> buildPdlForvalterStatusMap(List<BestillingProgress> progressList) {
+    public static List<RsStatusRapport> buildPdldataStatusMap(List<BestillingProgress> progressList) {
 
         //  melding     status      ident
         Map<String, Map<String, List<String>>> msgStatusIdents = new HashMap();
@@ -53,8 +54,11 @@ public final class BestillingPdlForvalterStatusMapper {
                 .map(entry -> RsStatusRapport.builder().id(type).navn(type.getBeskrivelse())
                         .statuser(entry.getValue().entrySet().stream()
                                 .map(entry1 -> RsStatusRapport.Status.builder()
-                                        .melding(entry1.getKey().replace(';', ',').replace('=', ':'))
-                                        .identer(entry1.getValue())
+                                        .melding(entry1.getKey().replace(';',',').replace('=', ':'))
+                                        .detaljert(singletonList(RsStatusRapport.Detaljert.builder()
+                                                .miljo("PDL")
+                                                .identer(entry1.getValue())
+                                                .build()))
                                         .build())
                                 .collect(Collectors.toList()))
                         .build())
