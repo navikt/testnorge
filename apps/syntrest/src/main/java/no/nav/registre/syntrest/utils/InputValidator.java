@@ -21,7 +21,7 @@ public class InputValidator {
             "4110", "4310", "4410", "4710", "4910", "5110", "5610", "9110"));
 
     private static final List<String> navEndringskoder = new ArrayList<>(Arrays.asList("Z010", "Z510", "Z310", "ZM10", "Z610",
-            "ZV10", "ZD10", "1810", "Z810"));
+            "ZV10", "ZD10", "Z810"));
 
     private static final List<String> arbeidsforholdTyper = new ArrayList<>(Arrays.asList("ordinaert", "maritimt", "forenklet"));
 
