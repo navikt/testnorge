@@ -5,12 +5,13 @@ import java.util.concurrent.Callable;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arena.consumer.rs.request.EndreInnsatsbehovRequest;
 import no.nav.registre.testnorge.arena.consumer.rs.response.EndreInnsatsbehovResponse;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
+import reactor.core.publisher.Mono;
 
 import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.CALL_ID;
 import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.CONSUMER_ID;

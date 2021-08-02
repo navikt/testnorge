@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.arena.testnorge;
+package no.nav.registre.testnorge.arena;
 
 
 import org.junit.Test;

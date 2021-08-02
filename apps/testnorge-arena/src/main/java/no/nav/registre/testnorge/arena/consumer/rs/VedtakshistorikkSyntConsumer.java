@@ -1,8 +1,9 @@
 package no.nav.registre.testnorge.arena.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.arena.consumer.rs.command.synt.HentVedtakshistorikkCommand;
+import no.nav.registre.testnorge.arena.consumer.rs.command.HentVedtakshistorikkCommand;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -35,7 +36,7 @@ public class VedtakshistorikkSyntConsumer {
     public List<Vedtakshistorikk> syntetiserVedtakshistorikk(int antallIdenter) {
         List<String> oppstartsdatoer = new ArrayList<>(antallIdenter);
 
-        for (int i = 0; i < antallIdenter; i++) {
+        for (var i = 0; i < antallIdenter; i++) {
             var dato = LocalDate.now().minusMonths(rand.nextInt(Math.toIntExact(ChronoUnit.MONTHS.between(MINIMUM_DATE, LocalDate.now()))));
             oppstartsdatoer.add(dato.toString());
         }
