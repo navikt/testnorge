@@ -6,6 +6,8 @@ metadata:
   labels:
     team: dolly
 spec:
+  - name: SPRING_PROFILES_ACTIVE
+    value: prod
   accessPolicy:
     inbound:
       rules:
