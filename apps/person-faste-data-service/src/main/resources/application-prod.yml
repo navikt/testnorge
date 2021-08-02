@@ -11,6 +11,6 @@ spring:
   jpa:
     database: POSTGRESQL
     properties:
+      default-schema: public
       hibernate:
-        default-schema: public
-        dialect: no.nav.pdl.forvalter.database.PostgreSQLDialectExtended
+        dialect: org.hibernate.dialect.PostgreSQLDialect
