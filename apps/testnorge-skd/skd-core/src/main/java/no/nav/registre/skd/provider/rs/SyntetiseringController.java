@@ -67,7 +67,7 @@ public class SyntetiseringController {
                 throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Valideringsfeil: Fødselsdato må være på format DDMMYY.");
             }
             if (fastMelding.getPersonnummer().length() != 5) {
-                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Valideringsfeil: Personnummer må ha en lengde på 5. (" + fastMelding.getPersonnummer() + ")");
+                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Valideringsfeil: Personnummer må ha en lengde på 5 (" + fastMelding.getFoedselsdato() + fastMelding.getPersonnummer() + ").");
             }
         }
         return fasteMeldingerService.opprettMeldingerOgLeggIGruppe(avspillergruppeId, fasteMeldinger, opprettEndringStatsborgerskap);
