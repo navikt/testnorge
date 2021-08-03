@@ -39,11 +39,16 @@ includeBuild './proxies/ereg-proxy'
 
 includeBuild './libs/security-token-service'
 includeBuild './libs/data-transfer-objects'
-includeBuild './libs/proxy-config'
+includeBuild './libs/reactive-proxy'
 includeBuild './libs/reactive-core'
 includeBuild './libs/reactive-security'
+includeBuild './libs/reactive-frontend'
 
 includeBuild './apps/person-service'
+includeBuild './apps/faste-data-frontend'
+includeBuild './apps/oversikt-frontend'
+includeBuild './apps/endringsmelding-frontend'
+includeBuild './apps/applikasjonsanalyse-frontend'
 
 includeBuild './gradlePlugins'
 include(':proxies')
@@ -106,7 +111,6 @@ include(':sigrun-domain')
 include(':libs')
 include(':testnorge-inst')
 include(':testnorge-spion')
-include(':oversikt-frontend')
 include(':opprett-person-pdl')
 include(':varslinger-api')
 include(':commands')
@@ -115,7 +119,6 @@ include(':inst-local')
 include(':arbeidsforhold-service')
 include(':tp-core')
 include(':testnorge-aareg')
-include(':applikasjonsanalyse-frontend')
 include(':syntrest')
 include(':synt-person-api')
 include(':skd-core')
@@ -194,7 +197,6 @@ project(":brreg-stub").projectDir = file('apps/brreg-stub')
 project(":sigrun-domain").projectDir = file('apps/testnorge-sigrun/sigrun-domain')
 project(":testnorge-inst").projectDir = file('apps/testnorge-inst')
 project(":testnorge-spion").projectDir = file('apps/testnorge-spion')
-project(":oversikt-frontend").projectDir = file('apps/oversikt-frontend')
 project(":opprett-person-pdl").projectDir = file('apps/opprett-person-pdl')
 project(":varslinger-api").projectDir = file('apps/varslinger-api')
 project(":commands").projectDir = file('libs/commands')
@@ -203,7 +205,6 @@ project(":inst-local").projectDir = file('apps/testnorge-inst/inst-local')
 project(":arbeidsforhold-service").projectDir = file('apps/arbeidsforhold-service')
 project(":tp-core").projectDir = file('apps/testnorge-tp/tp-core')
 project(":testnorge-aareg").projectDir = file('apps/testnorge-aareg')
-project(":applikasjonsanalyse-frontend").projectDir = file('apps/applikasjonsanalyse-frontend')
 project(":syntrest").projectDir = file('apps/syntrest')
 project(":synt-person-api").projectDir = file('apps/synt-person-api')
 project(":skd-core").projectDir = file('apps/testnorge-skd/skd-core')
@@ -268,21 +269,11 @@ project(":applikasjonsanalyse-service").projectDir = file('apps/applikasjonsanal
 include 'oppsummeringsdokument-service'
 project(":oppsummeringsdokument-service").projectDir = file('apps/oppsummeringsdokument-service')
 
-include 'endringsmelding-frontend'
-project(":endringsmelding-frontend").projectDir = file('apps/endringsmelding-frontend')
-
 include 'person-search-service'
 project(":person-search-service").projectDir = file('apps/person-search-service')
 
-include 'frontend'
-project(":frontend").projectDir = file('libs/frontend')
-
-
 include 'organisasjon-faste-data-service'
 project(":organisasjon-faste-data-service").projectDir = file('apps/organisasjon-faste-data-service')
-
-include 'faste-data-frontend'
-project(":faste-data-frontend").projectDir = file('apps/faste-data-frontend')
 
 include 'generer-organisasjon-populasjon-service'
 project(":generer-organisasjon-populasjon-service").projectDir = file('apps/generer-organisasjon-populasjon-service')

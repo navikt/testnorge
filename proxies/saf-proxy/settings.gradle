@@ -7,7 +7,7 @@ rootProject.name = 'saf-proxy'
 includeBuild '../../gradlePlugins'
 
 includeBuild '../../libs/reactive-core'
-includeBuild '../../libs/proxy-config'
+includeBuild '../../libs/reactive-proxy'
 includeBuild '../../libs/security-token-service'
 
 gradleEnterprise {

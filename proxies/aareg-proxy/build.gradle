@@ -30,7 +30,7 @@ repositories {
 dependencies {
 
     implementation 'no.nav.testnav.libs:reactive-core'
-    implementation 'no.nav.testnav.libs:proxy-config'
+    implementation 'no.nav.testnav.libs:reactive-proxy'
     implementation 'no.nav.testnav.libs:security-token-service'
 
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
