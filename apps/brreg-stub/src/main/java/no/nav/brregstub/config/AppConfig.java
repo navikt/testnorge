@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
+import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
 import no.nav.registre.testnorge.libs.database.config.FlywayConfiguration;
 import no.nav.registre.testnorge.libs.database.config.VaultHikariConfiguration;
 

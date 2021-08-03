@@ -25,7 +25,7 @@ dependencies {
     implementation 'org.glassfish.jaxb:jaxb-runtime'
 
     implementation project(':local-development')
-    implementation project(':testnorge-core')
+    implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
     implementation project(':testnorge-oauth2')
     implementation project(':arbeidsforhold-xsd')

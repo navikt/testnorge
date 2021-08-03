@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Import;
 import java.util.function.Function;
 
 import no.nav.testnav.apps.oversiktfrontend.credentials.ProfilApiServiceProperties;
-import no.nav.testnav.libs.core.config.CoreConfig;
+import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.frontend.config.FrontendConfig;
 import no.nav.testnav.libs.frontend.filter.AddRequestHeaderGatewayFilterFactory;
 import no.nav.testnav.libs.security.config.SecureOAuth2FrontendConfiguration;

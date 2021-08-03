@@ -17,7 +17,7 @@ bootJar {
 dependencies {
     implementation project(':testnorge-oauth2')
     implementation project(':local-development')
-    implementation project(':testnorge-core')
+    implementation 'no.nav.testnav.libs:servlet-core'
 
     implementation 'org.springframework.data:spring-data-elasticsearch:4.0.3.RELEASE'
 

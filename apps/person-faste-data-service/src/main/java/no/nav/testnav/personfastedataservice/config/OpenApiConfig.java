@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.Arrays;
 
-import no.nav.testnav.libs.core.config.ApplicationProperties;
+import no.nav.testnav.libs.reactivecore.config.ApplicationProperties;
 
 
 @Configuration

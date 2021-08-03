@@ -16,7 +16,7 @@ dependencyManagement {
 dependencies {
     implementation project(':local-development')
     implementation project(':arbeidsforhold-xsd')
-    implementation project(':testnorge-core')
+    implementation 'no.nav.testnav.libs:servlet-core'
     implementation project(':testnorge-csv-converter')
     implementation project(':testnorge-oauth2')
 

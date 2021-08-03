@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import no.nav.registre.frikort.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.frikort.provider.rs.request.SyntetiserFrikortRequest;
 import no.nav.registre.frikort.provider.rs.response.SyntetiserFrikortResponse;
-import no.nav.registre.testnorge.libs.core.util.IdentUtil;
+import no.nav.testnav.libs.servletcore.util.IdentUtil;
 import no.nav.registre.frikort.service.util.ServiceUtils;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;

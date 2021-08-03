@@ -41,6 +41,7 @@ includeBuild './libs/security-token-service'
 includeBuild './libs/data-transfer-objects'
 includeBuild './libs/reactive-proxy'
 includeBuild './libs/reactive-core'
+includeBuild './libs/servlet-core'
 includeBuild './libs/reactive-security'
 includeBuild './libs/reactive-frontend'
 
@@ -63,7 +64,6 @@ include(':aareg-local')
 include(':mn-original-populasjon')
 include(':medl-local')
 include(':sigrun-local')
-include(':testnorge-core')
 include(':testnorge-oauth2')
 include(':testnorge-nav-endringsmeldinger')
 include(':testnorge-frikort')
@@ -123,7 +123,6 @@ include(':syntrest')
 include(':synt-person-api')
 include(':skd-core')
 include(':testnorge-sam')
-include(':testnorge-logging')
 include(':inst-core')
 include(':inst-domain')
 include(':testnorge-skd')
@@ -151,7 +150,6 @@ project(":aareg-local").projectDir = file('apps/testnorge-aareg/aareg-local')
 project(":mn-original-populasjon").projectDir = file('apps/mn-original-populasjon')
 project(":medl-local").projectDir = file('apps/testnorge-medl/medl-local')
 project(":sigrun-local").projectDir = file('apps/testnorge-sigrun/sigrun-local')
-project(":testnorge-core").projectDir = file('libs/testnorge-core')
 project(":testnorge-oauth2").projectDir = file('libs/testnorge-oauth2')
 project(":testnorge-nav-endringsmeldinger").projectDir = file('apps/testnorge-nav-endringsmeldinger')
 project(":testnorge-frikort").projectDir = file('apps/testnorge-frikort')
@@ -209,7 +207,6 @@ project(":syntrest").projectDir = file('apps/syntrest')
 project(":synt-person-api").projectDir = file('apps/synt-person-api')
 project(":skd-core").projectDir = file('apps/testnorge-skd/skd-core')
 project(":testnorge-sam").projectDir = file('apps/testnorge-sam')
-project(":testnorge-logging").projectDir = file('libs/testnorge-logging')
 project(":inst-core").projectDir = file('apps/testnorge-inst/inst-core')
 project(":inst-domain").projectDir = file('apps/testnorge-inst/inst-domain')
 project(":testnorge-skd").projectDir = file('apps/testnorge-skd')

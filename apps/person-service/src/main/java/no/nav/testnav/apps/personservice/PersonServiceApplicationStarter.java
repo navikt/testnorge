@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 import org.springframework.web.reactive.config.EnableWebFlux;
 
-import no.nav.testnav.libs.core.config.CoreConfig;
+import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.security.config.SecureOAuth2ServerToServerConfiguration;
 
 @Import({

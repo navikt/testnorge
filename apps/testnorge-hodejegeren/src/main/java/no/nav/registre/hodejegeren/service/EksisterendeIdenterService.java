@@ -38,7 +38,7 @@ import no.nav.registre.hodejegeren.provider.rs.responses.kontoinfo.KontoinfoResp
 import no.nav.registre.hodejegeren.provider.rs.responses.persondata.PersondataResponse;
 import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.Relasjon;
 import no.nav.registre.hodejegeren.provider.rs.responses.relasjon.RelasjonsResponse;
-import no.nav.registre.testnorge.libs.core.util.IdentUtil;
+import no.nav.testnav.libs.servletcore.util.IdentUtil;
 
 @Service
 @Slf4j

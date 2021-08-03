@@ -15,7 +15,7 @@ import java.util.function.Function;
 
 import no.nav.testnav.apps.endringsmeldingfrontend.credentials.EndringsmeldingServiceProperties;
 import no.nav.testnav.apps.endringsmeldingfrontend.credentials.ProfilApiServiceProperties;
-import no.nav.testnav.libs.core.config.CoreConfig;
+import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.frontend.config.FrontendConfig;
 import no.nav.testnav.libs.frontend.filter.AddRequestHeaderGatewayFilterFactory;
 import no.nav.testnav.libs.security.config.SecureOAuth2FrontendConfiguration;

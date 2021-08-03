@@ -16,7 +16,7 @@ dependencyManagement {
 
 dependencies {
     implementation project(':local-development')
-    implementation project(':testnorge-core')
+    implementation 'no.nav.testnav.libs:servlet-core'
     implementation project(':commands')
     implementation project(':testnorge-avro-schema')
     implementation project(':testnorge-oauth2')

@@ -40,7 +40,7 @@ jaxb2 {
 dependencies {
 
     implementation project(':testnorge-database')
-    implementation project(':testnorge-core')
+    implementation 'no.nav.testnav.libs:servlet-core'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-web-services'

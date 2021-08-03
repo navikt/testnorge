@@ -19,7 +19,7 @@ import no.nav.testnav.apps.fastedatafrontend.credentials.OrganisasjonServiceProp
 import no.nav.testnav.apps.fastedatafrontend.credentials.PersonFasteDataServiceProperties;
 import no.nav.testnav.apps.fastedatafrontend.credentials.PersonServiceProperties;
 import no.nav.testnav.apps.fastedatafrontend.credentials.ProfilApiServiceProperties;
-import no.nav.testnav.libs.core.config.CoreConfig;
+import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.frontend.config.FrontendConfig;
 import no.nav.testnav.libs.frontend.filter.AddRequestHeaderGatewayFilterFactory;
 import no.nav.testnav.libs.security.config.SecureOAuth2FrontendConfiguration;

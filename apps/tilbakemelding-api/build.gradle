@@ -16,7 +16,7 @@ bootJar {
 
 dependencies {
 
-    implementation project(':testnorge-core')
+    implementation 'no.nav.testnav.libs:servlet-core'
     implementation project(':testnorge-slack')
     implementation project(':testnorge-oauth2')
     implementation project(':local-development')
