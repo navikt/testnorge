@@ -14,7 +14,7 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation project(':local-development')
+
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation project(':testnorge-oauth2')
     implementation project(':commands')

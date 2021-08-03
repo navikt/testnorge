@@ -14,7 +14,7 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation project(':local-development')
+
     implementation project(':arbeidsforhold-xsd')
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation project(':testnorge-csv-converter')

@@ -15,7 +15,7 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation project(':local-development')
+
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation project(':commands')
     implementation project(':testnorge-avro-schema')
@@ -26,6 +26,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
 
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'

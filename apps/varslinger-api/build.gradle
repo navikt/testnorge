@@ -26,7 +26,7 @@ dependencies {
     implementation 'no.nav.testnav.libs:data-transfer-objects'
     implementation project(':testnorge-oauth2')
     implementation project(':testnorge-avro-schema')
-    implementation project(':local-development')
+
 
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'

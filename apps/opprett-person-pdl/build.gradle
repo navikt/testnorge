@@ -20,7 +20,7 @@ dependencies {
         }
     }
 
-    implementation project(':local-development')
+
     implementation project(':commands')
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation project(':testnorge-oauth2')

@@ -22,7 +22,7 @@ bootJar {
 dependencies {
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation project(':testnorge-oauth2')
-    implementation project(':local-development')
+
     implementation project(':testnorge-database')
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'

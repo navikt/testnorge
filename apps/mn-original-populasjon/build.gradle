@@ -19,7 +19,7 @@ dependencies {
             strictly '20.0'
         }
     }
-    implementation project(':local-development')
+
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation project(':testnorge-oauth2')
     implementation project(':testnorge-avro-schema')

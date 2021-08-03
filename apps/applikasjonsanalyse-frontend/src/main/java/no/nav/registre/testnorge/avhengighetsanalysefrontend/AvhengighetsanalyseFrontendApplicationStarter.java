@@ -16,12 +16,12 @@ import java.util.function.Function;
 import no.nav.registre.testnorge.avhengighetsanalysefrontend.config.credentials.ApplikasjonsanalyseServiceProperties;
 import no.nav.registre.testnorge.avhengighetsanalysefrontend.config.credentials.ProfilApiServiceProperties;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
-import no.nav.testnav.libs.frontend.config.FrontendConfig;
-import no.nav.testnav.libs.frontend.filter.AddRequestHeaderGatewayFilterFactory;
-import no.nav.testnav.libs.security.config.SecureOAuth2FrontendConfiguration;
-import no.nav.testnav.libs.security.domain.AccessToken;
-import no.nav.testnav.libs.security.domain.Scopeable;
-import no.nav.testnav.libs.security.service.AccessTokenService;
+import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
+import no.nav.testnav.libs.reactivefrontend.filter.AddRequestHeaderGatewayFilterFactory;
+import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2FrontendConfiguration;
+import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
+import no.nav.testnav.libs.reactivesecurity.domain.Scopeable;
+import no.nav.testnav.libs.reactivesecurity.service.AccessTokenService;
 
 @Import({
         CoreConfig.class,

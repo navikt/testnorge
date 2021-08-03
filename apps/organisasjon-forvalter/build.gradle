@@ -21,7 +21,7 @@ dependencies {
     implementation project(':kafka-config')
     implementation project(':kafka-producers')
     implementation project(':testnorge-avro-schema')
-    implementation project(':local-development')
+
     implementation 'no.nav.testnav.libs:data-transfer-objects'
     implementation project(':commands')
 

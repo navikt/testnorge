@@ -257,9 +257,6 @@ project(":ereg-batch-status-service").projectDir = file('apps/ereg-batch-status-
 include 'jenkins-batch-status-service'
 project(":jenkins-batch-status-service").projectDir = file('apps/jenkins-batch-status-service')
 
-include 'local-development'
-project(":local-development").projectDir = file('libs/local-development')
-
 include 'applikasjonsanalyse-service'
 project(":applikasjonsanalyse-service").projectDir = file('apps/applikasjonsanalyse-service')
 

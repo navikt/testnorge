@@ -15,7 +15,7 @@ dependencyManagement {
 dependencies {
     implementation project(':kafka-config')
     implementation project(':kafka-producers')
-    implementation project(':local-development')
+
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation project(':testnorge-avro-schema')
     implementation project(':commands')

@@ -17,7 +17,7 @@ dependencyManagement {
 dependencies {
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation project(':testnorge-oauth2')
-    implementation project(':local-development')
+
     implementation project(':testnorge-slack')
     implementation 'no.nav.testnav.libs:data-transfer-objects'
 

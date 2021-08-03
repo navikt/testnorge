@@ -19,7 +19,7 @@ dependencies {
             strictly '20.0'
         }
     }
-    implementation project(':local-development')
+
     implementation 'javax.xml.bind:jaxb-api'
     implementation 'javax.activation:activation:1.1'
     implementation 'org.glassfish.jaxb:jaxb-runtime'

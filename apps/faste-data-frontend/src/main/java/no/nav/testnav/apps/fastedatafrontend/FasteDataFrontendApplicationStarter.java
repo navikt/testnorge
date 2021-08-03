@@ -20,12 +20,12 @@ import no.nav.testnav.apps.fastedatafrontend.credentials.PersonFasteDataServiceP
 import no.nav.testnav.apps.fastedatafrontend.credentials.PersonServiceProperties;
 import no.nav.testnav.apps.fastedatafrontend.credentials.ProfilApiServiceProperties;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
-import no.nav.testnav.libs.frontend.config.FrontendConfig;
-import no.nav.testnav.libs.frontend.filter.AddRequestHeaderGatewayFilterFactory;
-import no.nav.testnav.libs.security.config.SecureOAuth2FrontendConfiguration;
-import no.nav.testnav.libs.security.domain.AccessToken;
-import no.nav.testnav.libs.security.domain.Scopeable;
-import no.nav.testnav.libs.security.service.AccessTokenService;
+import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
+import no.nav.testnav.libs.reactivefrontend.filter.AddRequestHeaderGatewayFilterFactory;
+import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2FrontendConfiguration;
+import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
+import no.nav.testnav.libs.reactivesecurity.domain.Scopeable;
+import no.nav.testnav.libs.reactivesecurity.service.AccessTokenService;
 
 @Slf4j
 @Import({
