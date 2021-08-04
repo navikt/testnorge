@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.arbeidsforholdservice.consumer.dto;
+package no.nav.registre.testnorge.arbeidsforholdservice.provider.v2.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,14 +13,22 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class ArbeidsforholdDTO {
+
     AnsettelsesperiodeDTO ansettelsesperiode;
     List<AntallTimerForTimeloennetDTO> antallTimerForTimeloennet;
+    List<ArbeidsavtaleDTO> arbeidsavtaler;
     String arbeidsforholdId;
     ArbeidsgiverDTO arbeidsgiver;
-    List<ArbeidsavtaleDTO> arbeidsavtaler;
     ArbeidstakerDTO arbeidstaker;
-    String type;
+    boolean innrapportertEtterAOrdningen;
+    Long navArbeidsforholdId;
+    ArbeidsgiverDTO opplysningspliktig;
+    FartoyDTO fartoy;
     List<PermisjonPermitteringDTO> permisjonPermitteringer;
     LocalDateTime registrert;
+    LocalDateTime sistBekreftet;
+    String type;
     List<UtenlandsoppholdDTO> utenlandsopphold;
 }
+
+

@@ -1,14 +1,6 @@
 package no.nav.registre.aareg.util;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.YearMonth;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.fasterxml.jackson.databind.JsonNode;
-
 import no.nav.registre.aareg.domain.RsAktoer;
 import no.nav.registre.aareg.domain.RsAktoerPerson;
 import no.nav.registre.aareg.domain.RsAntallTimerForTimeloennet;
@@ -33,6 +25,13 @@ import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.PermisjonP
 import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Person;
 import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Sporingsinformasjon;
 import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Utenlandsopphold;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class ArbeidsforholdMappingUtil {
 

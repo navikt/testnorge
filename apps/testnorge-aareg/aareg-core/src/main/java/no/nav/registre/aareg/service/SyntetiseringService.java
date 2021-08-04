@@ -1,32 +1,8 @@
 package no.nav.registre.aareg.service;
 
-import static java.util.stream.Collectors.toCollection;
-import static no.nav.registre.aareg.consumer.ws.AaregWsConsumer.STATUS_OK;
-import static no.nav.registre.aareg.util.ArbeidsforholdMappingUtil.getLocalDateTimeFromLocalDate;
-import static no.nav.registre.aareg.util.ArbeidsforholdMappingUtil.mapArbeidsforholdToRsArbeidsforhold;
-
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpStatusCodeException;
-
-import java.beans.PropertyDescriptor;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import no.nav.registre.aareg.AaregSaveInHodejegerenRequest;
 import no.nav.registre.aareg.IdentMedData;
 import no.nav.registre.aareg.consumer.rs.AaregSyntetisererenConsumer;
@@ -46,6 +22,29 @@ import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
 import no.nav.registre.aareg.syntetisering.RsAaregSyntetiseringsRequest;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
+
+import java.beans.PropertyDescriptor;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toCollection;
+import static no.nav.registre.aareg.consumer.ws.AaregWsConsumer.STATUS_OK;
+import static no.nav.registre.aareg.util.ArbeidsforholdMappingUtil.getLocalDateTimeFromLocalDate;
+import static no.nav.registre.aareg.util.ArbeidsforholdMappingUtil.mapArbeidsforholdToRsArbeidsforhold;
 
 @Service
 @Slf4j

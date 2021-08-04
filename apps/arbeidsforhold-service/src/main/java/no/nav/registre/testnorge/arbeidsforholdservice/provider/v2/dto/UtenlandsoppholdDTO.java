@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.arbeidsforholdservice.consumer.dto;
+package no.nav.registre.testnorge.arbeidsforholdservice.provider.v2.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,9 @@ import lombok.Value;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class AnsettelsesperiodeDTO {
+public class UtenlandsoppholdDTO {
+
+    String landkode;
     PeriodeDTO periode;
-    String sluttaarsak;
+    String rapporteringsperiode; // yyyy-mm
 }
