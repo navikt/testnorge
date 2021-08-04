@@ -13,7 +13,7 @@ public class Arbeidsforhold {
 
     private final ArbeidsforholdDTO dto;
 
-    public  no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO toV1DTO() {
+    public  no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO toV1DTO() {
 
         if (dto.getArbeidsavtaler().isEmpty()) {
             throw new ArbeidsforholdNotFoundException("Finner ikke arbeidsforhold");
@@ -26,7 +26,7 @@ public class Arbeidsforhold {
 
         var arbeidsavtale = dto.getArbeidsavtaler().get(0);
 
-        return no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO
+        return no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO
                 .builder()
                 .arbeidsforholdId(dto.getArbeidsforholdId())
                 .stillingsprosent(arbeidsavtale.getStillingsprosent())
