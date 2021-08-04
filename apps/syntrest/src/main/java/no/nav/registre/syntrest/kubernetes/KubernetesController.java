@@ -7,6 +7,8 @@ import io.kubernetes.client.apis.CustomObjectsApi;
 import io.kubernetes.client.models.V1DeleteOptions;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.consumer.GitHubConsumer;
+import no.nav.registre.syntrest.kubernetes.command.GetIsAliveCommand;
+import no.nav.registre.syntrest.kubernetes.command.GetIsAliveWithRetryCommand;
 import no.nav.registre.syntrest.kubernetes.exception.KubernetesException;
 import no.nav.registre.syntrest.utils.NaisYaml;
 
@@ -14,10 +16,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import reactor.netty.http.client.HttpClient;
-import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -54,7 +54,6 @@ public class KubernetesController {
             @Value("${max-alive-retries}") int maxRetries,
             @Value("${alive-retry-delay}") int retryDelay
     ) {
-
         this.naisYaml = naisYaml;
         this.gitHubConsumer = gitHubConsumer;
         this.isAliveUrl = isAliveUrl;
@@ -62,13 +61,12 @@ public class KubernetesController {
         this.retryDelay = retryDelay;
         this.api = customObjectsApi;
 
-        var httpClient = HttpClient.create()
-                .responseTimeout(Duration.ofMillis(TIMEOUT_IN_MILLISECONSDS));
+        var httpClient = HttpClient.create().responseTimeout(Duration.ofMillis(TIMEOUT_IN_MILLISECONSDS));
         var connector = new ReactorClientHttpConnector(httpClient);
         this.webClient = WebClient.builder().clientConnector(connector).build();
     }
 
-    public void deployImage(String appName) throws ApiException, InterruptedException {
+    public void deployImage(String appName) throws ApiException {
         String imageTag = gitHubConsumer.getApplicationTag(appName);
         Map<String, Object> manifestFile = naisYaml.provideYaml(appName, imageTag);
 
@@ -109,28 +107,11 @@ public class KubernetesController {
     }
 
     public boolean isAlive(String appName) {
-        try {
-            String response = webClient.get()
-                    .uri(isAliveUrl.replace("{appName}", appName))
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
-            return "1".equals(response);
-        } catch (WebClientResponseException.ServiceUnavailable | WebClientResponseException.NotFound e) {
-            return false;
-        }
+        return new GetIsAliveCommand(webClient, isAliveUrl, appName).call();
     }
 
     private void pollApplication(String appName) {
-        String response = webClient.get()
-                .uri(isAliveUrl.replace("{appName}", appName))
-                .retrieve()
-                .bodyToMono(String.class)
-                .retryWhen(Retry.fixedDelay(maxRetries, Duration.ofSeconds(retryDelay))
-                        .filter(e -> e instanceof WebClientResponseException.ServiceUnavailable ||
-                                e instanceof WebClientResponseException.NotFound)
-                        .onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> new KubernetesException("Failed to poll application: too many retries.")))
-                .block();
+        String response = new GetIsAliveWithRetryCommand(webClient, isAliveUrl, appName, maxRetries, retryDelay).call();
 
         if (!"1".equals(response)) {
             throw new KubernetesException("Application failed to deploy.");
