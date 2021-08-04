@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import no.nav.registre.orgnrservice.adapter.OrgnummerAdapter;
 import no.nav.registre.orgnrservice.consumer.OrganisasjonApiConsumer;
 import no.nav.registre.orgnrservice.domain.Organisasjon;
-import no.nav.registre.testnorge.libs.core.util.OrgnummerUtil;
+import no.nav.testnav.libs.servletcore.util.OrgnummerUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

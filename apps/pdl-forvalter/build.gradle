@@ -18,10 +18,9 @@ properties {
 }
 
 dependencies {
-    implementation project(':testnorge-logging')
-    implementation project(':testnorge-core')
+    implementation 'no.nav.testnav.libs:servlet-core'
     implementation project(':testnorge-oauth2')
-    implementation project(':local-development')
+
     implementation project(':testnorge-database')
     implementation 'no.nav.testnav.libs:data-transfer-objects'
 

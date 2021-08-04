@@ -15,10 +15,10 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation project(':local-development')
+
     implementation project(':testnorge-database')
     implementation project(':testnorge-oauth2')
-    implementation project(':testnorge-core')
+    implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
     implementation project(':commands')
     implementation project(':kafka-config')

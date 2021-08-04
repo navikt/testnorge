@@ -21,8 +21,8 @@ dependencies {
 
     implementation 'io.projectreactor:reactor-core:3.4.5'
 
-    implementation project(':local-development')
-    implementation project(':testnorge-core')
+
+    implementation 'no.nav.testnav.libs:servlet-core'
     implementation project(':testnorge-oauth2')
     implementation project(':testnorge-database')
     implementation project(':commands')

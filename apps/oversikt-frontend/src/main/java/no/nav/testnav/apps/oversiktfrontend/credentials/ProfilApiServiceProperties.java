@@ -3,7 +3,7 @@ package no.nav.testnav.apps.oversiktfrontend.credentials;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import no.nav.testnav.libs.security.domain.NaisServerProperties;
+import no.nav.testnav.libs.reactivesecurity.domain.NaisServerProperties;
 
 
 @Configuration

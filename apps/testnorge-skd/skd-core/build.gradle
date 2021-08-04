@@ -17,7 +17,7 @@ dependencies {
 
     implementation project(':commands')
     implementation project(':testnorge-oauth2')
-    implementation project(':testnorge-core')
+    implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'

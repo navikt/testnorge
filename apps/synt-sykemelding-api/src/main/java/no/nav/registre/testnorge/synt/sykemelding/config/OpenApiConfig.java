@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import no.nav.registre.testnorge.libs.core.config.ApplicationProperties;
+import no.nav.testnav.libs.servletcore.config.ApplicationProperties;
 
 @Configuration
 @Import(ApplicationProperties.class)

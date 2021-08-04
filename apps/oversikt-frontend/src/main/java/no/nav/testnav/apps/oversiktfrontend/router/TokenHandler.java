@@ -8,8 +8,8 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import no.nav.testnav.apps.oversiktfrontend.router.dto.TokenDTO;
-import no.nav.testnav.libs.security.domain.AccessScopes;
-import no.nav.testnav.libs.security.service.AccessTokenService;
+import no.nav.testnav.libs.reactivesecurity.domain.AccessScopes;
+import no.nav.testnav.libs.reactivesecurity.service.AccessTokenService;
 
 @Component
 @RequiredArgsConstructor

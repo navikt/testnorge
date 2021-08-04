@@ -13,7 +13,7 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
-import no.nav.registre.testnorge.libs.core.config.ApplicationProperties;
+import no.nav.testnav.libs.servletcore.config.ApplicationProperties;
 
 @Configuration
 public class OpenApiConfig implements WebMvcConfigurer {

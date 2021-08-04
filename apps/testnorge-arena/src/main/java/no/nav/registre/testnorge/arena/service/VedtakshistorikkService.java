@@ -39,7 +39,7 @@ import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
-import no.nav.registre.testnorge.libs.core.util.IdentUtil;
+import no.nav.testnav.libs.servletcore.util.IdentUtil;
 
 import org.springframework.stereotype.Service;
 
