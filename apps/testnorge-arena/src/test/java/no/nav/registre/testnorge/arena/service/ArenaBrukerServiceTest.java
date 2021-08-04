@@ -11,8 +11,8 @@ import static org.mockito.Mockito.when;
 
 import no.nav.registre.testnorge.arena.service.util.ArenaBrukerUtils;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 
 import org.junit.Before;
 import org.junit.Test;

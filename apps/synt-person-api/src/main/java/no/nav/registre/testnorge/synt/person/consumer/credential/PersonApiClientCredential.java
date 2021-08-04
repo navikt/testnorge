@@ -3,7 +3,7 @@ package no.nav.registre.testnorge.synt.person.consumer.credential;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
-import no.nav.registre.testnorge.libs.oauth2.domain.ClientCredential;
+import no.nav.testnav.libs.servletsecurity.domain.ClientCredential;
 
 @Configuration
 public class PersonApiClientCredential extends ClientCredential {

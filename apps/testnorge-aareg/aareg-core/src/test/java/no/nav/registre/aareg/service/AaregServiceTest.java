@@ -7,12 +7,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Ansettelsesperiode;
-import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsavtale;
-import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
-import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Organisasjon;
-import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Periode;
-import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Person;
+import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Ansettelsesperiode;
+import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Arbeidsavtale;
+import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
+import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Organisasjon;
+import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Periode;
+import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Person;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

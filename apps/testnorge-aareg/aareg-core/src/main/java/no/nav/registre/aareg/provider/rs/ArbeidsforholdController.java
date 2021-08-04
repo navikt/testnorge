@@ -7,7 +7,6 @@ import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
 import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
 import no.nav.registre.aareg.service.AaregService;
-import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,6 +21,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+
+import no.nav.registre.aareg.consumer.rs.MiljoerConsumer;
+import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
+import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
+import no.nav.registre.aareg.provider.rs.response.RsAaregResponse;
+import no.nav.registre.aareg.service.AaregService;
+import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
 
 @RestController
 @CrossOrigin

@@ -4,8 +4,8 @@ import java.time.LocalDate;
 import java.util.Collections;
 
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTilleggRequest;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -3,7 +3,7 @@ package no.nav.registre.orkestratoren.consumer.rs;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 
-import no.nav.registre.testnorge.domain.dto.namespacetps.TpsPersonDokumentType;
+import no.nav.testnav.libs.domain.dto.namespacetps.TpsPersonDokumentType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;

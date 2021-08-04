@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import no.nav.registre.inntekt.config.credentials.InntektsmeldingServiceProperties;
 import no.nav.registre.inntekt.filter.AddAuthorizationToRouteFilter;
 import no.nav.testnav.libs.servletcore.util.VaultUtil;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 
 @EnableZuulProxy
 @SpringBootApplication

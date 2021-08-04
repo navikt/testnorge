@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 
 @Component
 public class ArbeidssoekerCacheUtil {

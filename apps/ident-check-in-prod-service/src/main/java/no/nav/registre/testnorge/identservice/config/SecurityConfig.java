@@ -1,6 +1,6 @@
 package no.nav.registre.testnorge.identservice.config;
 
-import no.nav.registre.testnorge.libs.oauth2.config.OAuth2ResourceServerConfiguration;
+import no.nav.testnav.libs.servletsecurity.config.OAuth2ResourceServerConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.context.annotation.Configuration;

@@ -5,10 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import no.nav.registre.testnorge.libs.common.command.GetHelsepersonellCommand;
+import no.nav.testnav.libs.commands.GetHelsepersonellCommand;
 import no.nav.testnav.libs.dto.helsepersonell.v1.HelsepersonellListeDTO;
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import no.nav.registre.testnorge.synt.sykemelding.config.credentials.HelsepersonellServiceProperties;
 import no.nav.registre.testnorge.synt.sykemelding.domain.HelsepersonellListe;
 

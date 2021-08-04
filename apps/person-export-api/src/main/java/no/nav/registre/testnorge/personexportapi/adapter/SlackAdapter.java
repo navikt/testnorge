@@ -3,7 +3,7 @@ package no.nav.registre.testnorge.personexportapi.adapter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import no.nav.registre.testnorge.libs.slack.consumer.SlackConsumer;
+import no.nav.testnav.libs.slack.consumer.SlackConsumer;
 
 @Component
 public class SlackAdapter {

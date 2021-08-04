@@ -3,7 +3,7 @@ package no.nav.registre.testnorge.arena.provider.rs;
 import lombok.RequiredArgsConstructor;
 import no.nav.registre.testnorge.arena.provider.rs.request.SyntetiserArenaRequest;
 import no.nav.registre.testnorge.arena.service.VedtakshistorikkService;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

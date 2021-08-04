@@ -5,8 +5,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.vault.annotation.VaultPropertySource;
 
-import no.nav.registre.testnorge.libs.database.config.FlywayConfiguration;
-import no.nav.registre.testnorge.libs.database.config.VaultHikariConfiguration;
+import no.nav.testnav.libs.database.config.FlywayConfiguration;
+import no.nav.testnav.libs.database.config.VaultHikariConfiguration;
 
 @Configuration
 @Profile("local")

@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 
-import no.nav.registre.testnorge.libs.avro.person.Adresse;
-import no.nav.registre.testnorge.libs.avro.person.Person;
+import no.nav.testnav.libs.avro.person.Adresse;
+import no.nav.testnav.libs.avro.person.Person;
 import no.nav.testnav.libs.dto.person.v1.AdresseDTO;
 import no.nav.testnav.libs.dto.person.v1.PersonDTO;
 

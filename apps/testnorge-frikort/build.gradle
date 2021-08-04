@@ -42,7 +42,7 @@ dependencies {
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation project(':testnorge-testing')
+    testImplementation 'no.nav.testnav.libs:testing'
 }
 
 description = 'testnorge-frikort'

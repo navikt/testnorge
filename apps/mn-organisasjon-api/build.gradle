@@ -17,10 +17,10 @@ bootJar {
 dependencies {
 
     implementation 'no.nav.testnav.libs:servlet-core'
-    implementation project(':commands')
+    implementation 'no.nav.testnav.libs:commands'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
-    implementation project(':testnorge-oauth2')
-    implementation project(':testnorge-database')
+    implementation 'no.nav.testnav.libs:servlet-security'
+    implementation 'no.nav.testnav.libs:database'
 
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
@@ -44,7 +44,7 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
-    testImplementation project(':testnorge-testing')
+    testImplementation 'no.nav.testnav.libs:testing'
 }
 
 description = 'mn-organisasjon-api'

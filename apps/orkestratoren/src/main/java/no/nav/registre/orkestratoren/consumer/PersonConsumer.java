@@ -17,13 +17,13 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.common.command.GetPersonCommand;
+import no.nav.testnav.libs.commands.GetPersonCommand;
 import no.nav.testnav.libs.dto.person.v1.PersonDTO;
 import no.nav.testnav.libs.dto.person.v1.Persondatasystem;
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
-import no.nav.registre.testnorge.libs.oauth2.domain.AzureClientCredentials;
-import no.nav.registre.testnorge.libs.oauth2.service.ClientCredentialGenerateAccessTokenService;
+import no.nav.testnav.libs.servletsecurity.domain.AccessScopes;
+import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
+import no.nav.testnav.libs.servletsecurity.domain.AzureClientCredentials;
+import no.nav.testnav.libs.servletsecurity.service.ClientCredentialGenerateAccessTokenService;
 
 @Slf4j
 @Component

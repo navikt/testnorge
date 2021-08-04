@@ -11,15 +11,15 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import no.nav.registre.testnav.ameldingservice.credentials.OppsummeringsdokumentServerProperties;
-import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumentCommand;
-import no.nav.registre.testnorge.libs.common.command.GetOppsummeringsdokumentByIdCommand;
-import no.nav.registre.testnorge.libs.common.command.SaveOppsummeringsdokumenterCommand;
+import no.nav.testnav.libs.commands.GetOppsummeringsdokumentCommand;
+import no.nav.testnav.libs.commands.GetOppsummeringsdokumentByIdCommand;
+import no.nav.testnav.libs.commands.SaveOppsummeringsdokumenterCommand;
 import no.nav.testnav.libs.servletcore.config.ApplicationProperties;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
-import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
+import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 
 @Component
 public class OppsummeringsdokumentConsumer {

@@ -3,7 +3,7 @@ package no.nav.registre.testnorge.tilbakemeldingapi.service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import no.nav.registre.testnorge.libs.slack.consumer.SlackConsumer;
+import no.nav.testnav.libs.slack.consumer.SlackConsumer;
 import no.nav.registre.testnorge.tilbakemeldingapi.consumer.ProfilApiConsumer;
 import no.nav.registre.testnorge.tilbakemeldingapi.domain.Tilbakemelding;
 

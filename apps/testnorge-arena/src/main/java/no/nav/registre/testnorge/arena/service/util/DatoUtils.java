@@ -1,14 +1,14 @@
 package no.nav.registre.testnorge.arena.service.util;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.GensakKoder;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.RettighetType;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.aap.gensaksopplysninger.GensakKoder;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtak;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.RettighetType;
 
 import org.springframework.stereotype.Service;
 

@@ -3,7 +3,7 @@ package no.nav.registre.testnorge.organisasjonmottak.domain;
 public class Internettadresse extends ToLine {
     private final String internettadresse;
 
-    public Internettadresse(no.nav.registre.testnorge.libs.avro.organisasjon.v1.Internettadresse internettadresse) {
+    public Internettadresse(no.nav.testnav.libs.avro.organisasjon.v1.Internettadresse internettadresse) {
         this.internettadresse = internettadresse.getInternettadresse();
     }
 

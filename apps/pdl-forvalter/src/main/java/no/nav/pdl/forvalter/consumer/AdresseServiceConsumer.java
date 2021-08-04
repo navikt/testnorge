@@ -6,8 +6,8 @@ import no.nav.pdl.forvalter.consumer.command.MatrikkeladresseServiceCommand;
 import no.nav.pdl.forvalter.consumer.command.VegadresseServiceCommand;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
-import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;

@@ -1,0 +1,23 @@
+{
+  "type": "record",
+  "name": "Naeringskode",
+  "namespace": "no.nav.testnav.libs.avro.organisasjon.v1",
+  "fields": [
+    {
+      "name": "kode",
+      "type": "string"
+    },
+    {
+      "name": "gyldighetsdato",
+      "default": null,
+      "type": [
+        "null",
+        "Dato"
+      ]
+    },
+    {
+      "name": "hjelpeenhet",
+       "type": "boolean"
+    }
+  ]
+}

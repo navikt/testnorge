@@ -1,13 +1,9 @@
 package no.nav.registre.testnorge.arbeidsforholdservice.consumer;
 
+import static java.util.Objects.nonNull;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.arbeidsforholdservice.config.credentials.AaregServiceProperties;
-import no.nav.registre.testnorge.arbeidsforholdservice.consumer.command.GetArbeidstakerArbeidsforholdCommand;
-import no.nav.registre.testnorge.arbeidsforholdservice.consumer.dto.ArbeidsforholdDTO;
-import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
@@ -21,7 +17,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.nonNull;
+import no.nav.registre.testnorge.arbeidsforholdservice.config.credentials.AaregServiceProperties;
+import no.nav.registre.testnorge.arbeidsforholdservice.consumer.command.GetArbeidstakerArbeidsforholdCommand;
+import no.nav.registre.testnorge.arbeidsforholdservice.consumer.dto.ArbeidsforholdDTO;
+import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
+import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 
 @Slf4j
 @Component

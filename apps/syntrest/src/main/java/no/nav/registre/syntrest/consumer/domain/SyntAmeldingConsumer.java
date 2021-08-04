@@ -9,8 +9,8 @@ import no.nav.registre.syntrest.consumer.command.PostArbeidsforholdMedTypeComman
 import no.nav.registre.syntrest.consumer.command.PostArbeidsforholdStartCommand;
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 
-import no.nav.registre.testnorge.domain.dto.aareg.amelding.Arbeidsforhold;
-import no.nav.registre.testnorge.domain.dto.aareg.amelding.ArbeidsforholdPeriode;
+import no.nav.testnav.libs.domain.dto.aareg.amelding.Arbeidsforhold;
+import no.nav.testnav.libs.domain.dto.aareg.amelding.ArbeidsforholdPeriode;
 
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.reactive.function.client.WebClient;

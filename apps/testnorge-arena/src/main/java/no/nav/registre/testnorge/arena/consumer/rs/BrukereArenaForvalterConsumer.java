@@ -23,9 +23,9 @@ import java.util.Map;
 import no.nav.registre.testnorge.arena.consumer.rs.command.PostEndreInnsatsbehovCommand;
 import no.nav.registre.testnorge.arena.consumer.rs.request.EndreInnsatsbehovRequest;
 import no.nav.registre.testnorge.arena.consumer.rs.util.ArbeidssoekerCacheUtil;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.NyBruker;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.NyBruker;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 
 @Component
 @Slf4j

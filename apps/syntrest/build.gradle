@@ -18,7 +18,7 @@ dependencies {
     implementation 'org.eclipse.jetty:jetty-servlet:9.4.32.v20200930'
 
     implementation 'no.nav.testnav.libs:servlet-core'
-    implementation project(':testnorge-domain')
+    implementation 'no.nav.testnav.libs:domain'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'

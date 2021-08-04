@@ -16,9 +16,9 @@ bootJar {
 dependencies {
 
     implementation 'no.nav.testnav.libs:servlet-core'
-    implementation project(':testnorge-csv-converter')
-    implementation project(':testnorge-slack')
-    implementation project(':testnorge-oauth2')
+    implementation 'no.nav.testnav.libs:csv-converter'
+    implementation 'no.nav.testnav.libs:slack'
+    implementation 'no.nav.testnav.libs:servlet-security'
 
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'

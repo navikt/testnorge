@@ -11,17 +11,17 @@ import no.nav.registre.sdforvalter.consumer.rs.domain.OrgTree;
 import no.nav.registre.sdforvalter.consumer.rs.domain.OrgTreeList;
 import no.nav.registre.sdforvalter.domain.Ereg;
 import no.nav.registre.sdforvalter.domain.EregListe;
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Adresse;
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.DetaljertNavn;
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Endringsdokument;
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Epost;
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Internettadresse;
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Metadata;
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Opprettelsesdokument;
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Organisasjon;
+import no.nav.testnav.libs.avro.organisasjon.v1.Adresse;
+import no.nav.testnav.libs.avro.organisasjon.v1.DetaljertNavn;
+import no.nav.testnav.libs.avro.organisasjon.v1.Endringsdokument;
+import no.nav.testnav.libs.avro.organisasjon.v1.Epost;
+import no.nav.testnav.libs.avro.organisasjon.v1.Internettadresse;
+import no.nav.testnav.libs.avro.organisasjon.v1.Metadata;
+import no.nav.testnav.libs.avro.organisasjon.v1.Opprettelsesdokument;
+import no.nav.testnav.libs.avro.organisasjon.v1.Organisasjon;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
-import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v2.EndringsdokumentV2Producer;
-import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v2.OpprettelsesdokumentV2Producer;
+import no.nav.testnav.libs.kafkaproducers.organisasjon.v2.EndringsdokumentV2Producer;
+import no.nav.testnav.libs.kafkaproducers.organisasjon.v2.OpprettelsesdokumentV2Producer;
 
 @Slf4j
 @Component
