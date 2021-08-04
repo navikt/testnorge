@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.consumer.AaregSyntConsumer;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.domain.Oppsummeringsdokument;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.OppsummeringsdokumentRepository;

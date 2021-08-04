@@ -10,8 +10,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import no.nav.registre.orkestratoren.consumer.command.GetHendelseCommand;
-import no.nav.registre.testnorge.libs.dto.hendelse.v1.HendelseDTO;
-import no.nav.registre.testnorge.libs.dto.hendelse.v1.HendelseType;
+import no.nav.testnav.libs.dto.hendelse.v1.HendelseDTO;
+import no.nav.testnav.libs.dto.hendelse.v1.HendelseType;
 
 @Slf4j
 @Component

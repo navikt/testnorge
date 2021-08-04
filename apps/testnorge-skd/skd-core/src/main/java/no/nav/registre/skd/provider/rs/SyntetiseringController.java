@@ -40,7 +40,7 @@ public class SyntetiseringController {
             "\tVed bestilling av endringskode 1410, genereres tilhørende endringsmelding 1410 til partner.\n\n" +
             "\tVed bestilling av endringskode 1810, genereres tilhørende endringsmelding 1810 til partner.\n\n" +
             "\tVed bestilling av endringskode 4310, genereres tilhørende endringsmelding 8510 på en eventuell partner.")
-    @ApiResponses(value = { @ApiResponse(code = 201, message = "De opprettede skdmeldingene ble lagret på disse id-ene i TPSF") })
+    @ApiResponses(value = {@ApiResponse(code = 201, message = "De opprettede skdmeldingene ble lagret på disse id-ene i TPSF")})
     @PostMapping(value = "/generer")
     public ResponseEntity<SkdMeldingerTilTpsRespons> genererSkdMeldinger(@RequestBody GenereringsOrdreRequest genereringsOrdreRequest) {
         return syntetiseringService.puttIdenterIMeldingerOgLagre(genereringsOrdreRequest);
@@ -67,7 +67,7 @@ public class SyntetiseringController {
                 throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Valideringsfeil: Fødselsdato må være på format DDMMYY.");
             }
             if (fastMelding.getPersonnummer().length() != 5) {
-                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Valideringsfeil: Personnummer må ha en lengde på 5.");
+                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Valideringsfeil: Personnummer må ha en lengde på 5 (" + fastMelding.getFoedselsdato() + fastMelding.getPersonnummer() + ").");
             }
         }
         return fasteMeldingerService.opprettMeldingerOgLeggIGruppe(avspillergruppeId, fasteMeldinger, opprettEndringStatsborgerskap);

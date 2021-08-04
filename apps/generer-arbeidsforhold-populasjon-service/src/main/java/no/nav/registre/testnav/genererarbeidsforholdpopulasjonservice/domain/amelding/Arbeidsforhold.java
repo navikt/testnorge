@@ -1,8 +1,6 @@
 package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.amelding;
 
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,9 +12,9 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.Id;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.PermisjonCount;
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.ArbeidsforholdDTO;
-import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdRequest;
-import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdResponse;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.ArbeidsforholdDTO;
+import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdRequest;
+import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdResponse;
 
 @Value
 @Slf4j

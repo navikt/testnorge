@@ -1,7 +1,7 @@
 package no.nav.registre.testnorge.tilbakemeldingapi.provider;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.registre.testnorge.libs.dto.tilbakemeldingapi.v1.TilbakemeldingDTO;
+import no.nav.testnav.libs.dto.tilbakemeldingapi.v1.TilbakemeldingDTO;
 import no.nav.registre.testnorge.tilbakemeldingapi.domain.Tilbakemelding;
 import no.nav.registre.testnorge.tilbakemeldingapi.service.TilbakemeldingService;
 import org.springframework.http.HttpStatus;

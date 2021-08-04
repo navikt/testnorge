@@ -4,17 +4,16 @@ import lombok.RequiredArgsConstructor;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
 import org.springframework.data.elasticsearch.client.RestClients;
+import org.springframework.vault.annotation.VaultPropertySource;
 
-import no.nav.registre.testnorge.libs.localdevelopment.LocalDevelopmentConfig;
 import no.nav.registre.testnorge.personsearchservice.config.credentials.ElasticSearchCredentials;
 
 @Configuration
 @Profile("dev")
-@Import(LocalDevelopmentConfig.class)
+@VaultPropertySource(value = "azuread/prod/creds/team-dolly-lokal-app", ignoreSecretNotFound = false)
 @RequiredArgsConstructor
 public class DevConfig {
 

@@ -7,8 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.registre.sdforvalter.database.model.EregModel;
-import no.nav.registre.testnorge.libs.dto.statiskedataforvalter.v1.OrganisasjonListeDTO;
+import no.nav.testnav.libs.dto.statiskedataforvalter.v1.OrganisasjonListeDTO;
 
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)

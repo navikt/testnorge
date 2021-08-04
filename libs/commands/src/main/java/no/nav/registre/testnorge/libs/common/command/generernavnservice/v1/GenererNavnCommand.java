@@ -1,7 +1,7 @@
 package no.nav.registre.testnorge.libs.common.command.generernavnservice.v1;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.registre.testnorge.libs.dto.generernavnservice.v1.NavnDTO;
+import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;

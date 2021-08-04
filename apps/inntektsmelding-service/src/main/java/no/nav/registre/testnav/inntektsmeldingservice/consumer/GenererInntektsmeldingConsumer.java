@@ -6,7 +6,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.registre.testnav.inntektsmeldingservice.config.credentials.InntektsmeldingGeneratorServiceProperties;
 import no.nav.registre.testnav.inntektsmeldingservice.consumer.command.GenererInntektsmeldingCommand;
-import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsInntektsmelding;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsInntektsmelding;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 

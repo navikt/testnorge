@@ -54,6 +54,8 @@ spec:
           cluster: dev-fss
         - application: dolly-frontend
           cluster: dev-fss
+        - application: synthdata-tps-gcp-tmp
+          cluster: dev-gcp
     outbound:
       external:
         - host: https://testnav-pdl-proxy.dev-fss-pub.nais.io

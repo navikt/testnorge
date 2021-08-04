@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.sdforvalter.database.model.EregModel;
 import no.nav.registre.sdforvalter.database.model.TagModel;
-import no.nav.registre.testnorge.libs.dto.statiskedataforvalter.v1.OrganisasjonDTO;
+import no.nav.testnav.libs.dto.statiskedataforvalter.v1.OrganisasjonDTO;
 
 
 @Value
@@ -117,8 +117,8 @@ public class Ereg extends FasteData {
                 .build();
     }
 
-    public no.nav.registre.testnorge.libs.dto.organisasjonfastedataservice.v1.OrganisasjonDTO toDTOv2(Supplier<String> generateDefaultName) {
-        return no.nav.registre.testnorge.libs.dto.organisasjonfastedataservice.v1.OrganisasjonDTO
+    public no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.OrganisasjonDTO toDTOv2(Supplier<String> generateDefaultName) {
+        return no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.OrganisasjonDTO
                 .builder()
                 .orgnummer(orgnr)
                 .enhetstype(enhetstype)

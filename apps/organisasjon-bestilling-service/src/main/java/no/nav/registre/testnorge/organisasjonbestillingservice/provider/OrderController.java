@@ -17,8 +17,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.Set;
 
-import no.nav.registre.testnorge.libs.dto.organiasjonbestilling.v1.ItemDTO;
-import no.nav.registre.testnorge.libs.dto.organiasjonbestilling.v1.OrderDTO;
+import no.nav.testnav.libs.dto.organiasjonbestilling.v1.ItemDTO;
+import no.nav.testnav.libs.dto.organiasjonbestilling.v1.OrderDTO;
 import no.nav.registre.testnorge.organisasjonbestillingservice.domain.Order;
 import no.nav.registre.testnorge.organisasjonbestillingservice.service.OrderService;
 

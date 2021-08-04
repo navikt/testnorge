@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.PeriodeDTO;
+import no.nav.testnav.libs.dto.sykemelding.v1.PeriodeDTO;
 
 class Aktivitet {
     private final XMLHelseOpplysningerArbeidsuforhet.Aktivitet xmlAktivitet;

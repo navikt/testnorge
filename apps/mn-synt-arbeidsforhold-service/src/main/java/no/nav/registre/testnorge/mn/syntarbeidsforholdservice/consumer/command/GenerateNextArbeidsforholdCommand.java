@@ -10,8 +10,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdRequest;
-import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdResponse;
+import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdRequest;
+import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdResponse;
 
 @Slf4j
 @RequiredArgsConstructor

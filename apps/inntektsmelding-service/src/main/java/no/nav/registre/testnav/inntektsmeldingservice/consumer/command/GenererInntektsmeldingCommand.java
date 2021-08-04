@@ -12,7 +12,7 @@ import reactor.util.retry.Retry;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsInntektsmelding;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsInntektsmelding;
 
 
 @Slf4j

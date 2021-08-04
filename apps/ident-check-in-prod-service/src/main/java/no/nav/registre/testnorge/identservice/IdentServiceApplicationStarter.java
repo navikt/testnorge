@@ -1,6 +1,6 @@
 package no.nav.registre.testnorge.identservice;
 
-import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
+import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
 import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2ServerToServerConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

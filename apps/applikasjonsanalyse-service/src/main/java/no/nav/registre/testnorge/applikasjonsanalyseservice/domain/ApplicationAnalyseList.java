@@ -7,8 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.dto.dependencyanalysis.v1.ApplicationDependenciesDTO;
-import no.nav.registre.testnorge.libs.dto.dependencyanalysis.v1.DependencyDTO;
+import no.nav.testnav.libs.dto.dependencyanalysis.v1.ApplicationDependenciesDTO;
+import no.nav.testnav.libs.dto.dependencyanalysis.v1.DependencyDTO;
 
 @RequiredArgsConstructor
 public class ApplicationAnalyseList {

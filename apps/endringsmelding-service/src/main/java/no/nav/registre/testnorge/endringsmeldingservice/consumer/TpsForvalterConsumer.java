@@ -16,9 +16,8 @@ import no.nav.registre.testnorge.endringsmeldingservice.consumer.command.SendDoe
 import no.nav.registre.testnorge.endringsmeldingservice.consumer.command.SendFoedselsmeldingCommand;
 import no.nav.registre.testnorge.endringsmeldingservice.consumer.dto.TpsDoedsmeldingDTO;
 import no.nav.registre.testnorge.endringsmeldingservice.consumer.request.TpsFoedselsmeldingRequest;
-import no.nav.registre.testnorge.endringsmeldingservice.consumer.response.TpsFoedselsmeldingResponse;
-import no.nav.registre.testnorge.libs.dto.endringsmelding.v1.DoedsmeldingDTO;
-import no.nav.registre.testnorge.libs.dto.endringsmelding.v1.FoedselsmeldingDTO;
+import no.nav.testnav.libs.dto.endringsmelding.v1.DoedsmeldingDTO;
+import no.nav.testnav.libs.dto.endringsmelding.v1.FoedselsmeldingDTO;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 

@@ -18,8 +18,8 @@ import no.nav.registre.sdforvalter.domain.Ereg;
 import no.nav.registre.sdforvalter.domain.EregListe;
 import no.nav.registre.sdforvalter.domain.status.ereg.OrganisasjonStatusMap;
 import no.nav.registre.sdforvalter.service.EregStatusService;
-import no.nav.registre.testnorge.libs.dto.statiskedataforvalter.v1.OrganisasjonDTO;
-import no.nav.registre.testnorge.libs.dto.statiskedataforvalter.v1.OrganisasjonListeDTO;
+import no.nav.testnav.libs.dto.statiskedataforvalter.v1.OrganisasjonDTO;
+import no.nav.testnav.libs.dto.statiskedataforvalter.v1.OrganisasjonListeDTO;
 
 @RestController
 @RequiredArgsConstructor

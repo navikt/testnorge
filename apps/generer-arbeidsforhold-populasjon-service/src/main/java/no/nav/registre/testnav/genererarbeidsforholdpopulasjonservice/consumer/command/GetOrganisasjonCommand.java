@@ -3,7 +3,6 @@ package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
@@ -11,9 +10,8 @@ import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.concurrent.Callable;
-import java.util.function.Function;
 
-import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 
 @Slf4j
 @RequiredArgsConstructor

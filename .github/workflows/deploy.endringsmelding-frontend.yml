@@ -42,10 +42,11 @@ jobs:
           mv build ../resources/static
         working-directory: ./apps/endringsmelding-frontend/src/main/js
       - name: Compile
+        working-directory: ./apps/endringsmelding-frontend/
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew :endringsmelding-frontend:build
+        run: ./gradlew build
       - name: Build and publish Docker image
         working-directory: ./apps/endringsmelding-frontend/
         env:

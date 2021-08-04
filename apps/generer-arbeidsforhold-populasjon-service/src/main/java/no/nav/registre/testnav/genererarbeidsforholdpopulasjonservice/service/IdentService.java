@@ -11,9 +11,9 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.adapter.TpsIdentAdapter;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.OppsummeringsdokumentConsumer;
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.PersonDTO;
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.VirksomhetDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.PersonDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.VirksomhetDTO;
 
 @Slf4j
 @Service

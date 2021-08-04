@@ -3,7 +3,7 @@ package no.nav.registre.testnorge.synt.sykemelding.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import no.nav.registre.testnorge.libs.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
+import no.nav.testnav.libs.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
 import no.nav.registre.testnorge.synt.sykemelding.adapter.ArbeidsforholdAdapter;
 import no.nav.registre.testnorge.synt.sykemelding.consumer.HelsepersonellConsumer;
 import no.nav.registre.testnorge.synt.sykemelding.consumer.HodejegerenConsumer;

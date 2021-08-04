@@ -8,7 +8,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.concurrent.Callable;
 
 import no.nav.registre.testnorge.helsepersonellservice.exception.IdentNotFoundException;
-import no.nav.registre.testnorge.libs.dto.samhandlerregisteret.v1.SamhandlerDTO;
+import no.nav.testnav.libs.dto.samhandlerregisteret.v1.SamhandlerDTO;
 
 @Slf4j
 @RequiredArgsConstructor

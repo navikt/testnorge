@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 
-import no.nav.registre.testnorge.libs.core.util.VaultUtil;
+import no.nav.testnav.libs.servletcore.util.VaultUtil;
 
 
 @SpringBootApplication

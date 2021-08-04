@@ -13,8 +13,8 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation project(':testnorge-data-transfer-objects')
-    implementation project(':testnorge-core')
+    implementation 'no.nav.testnav.libs:data-transfer-objects'
+    implementation 'no.nav.testnav.libs:servlet-core'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'

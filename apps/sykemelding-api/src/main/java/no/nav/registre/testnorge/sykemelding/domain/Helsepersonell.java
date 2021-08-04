@@ -6,7 +6,7 @@ import no.kith.xmlstds.felleskomponent1.XMLIdent;
 import no.kith.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLHelseOpplysningerArbeidsuforhet;
 import no.kith.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLNavnType;
 
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.HelsepersonellDTO;
+import no.nav.testnav.libs.dto.sykemelding.v1.HelsepersonellDTO;
 
 class Helsepersonell {
 

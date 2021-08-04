@@ -8,7 +8,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.concurrent.Callable;
 
 import no.nav.registre.testnorge.jenkinsbatchstatusservice.consumer.dto.ItemDTO;
-import no.nav.registre.testnorge.libs.dto.jenkins.v1.JenkinsCrumb;
+import no.nav.testnav.libs.dto.jenkins.v1.JenkinsCrumb;
 
 @Slf4j
 @RequiredArgsConstructor

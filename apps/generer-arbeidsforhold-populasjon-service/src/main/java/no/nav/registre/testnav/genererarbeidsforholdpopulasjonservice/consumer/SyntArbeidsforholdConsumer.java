@@ -14,8 +14,8 @@ import java.util.List;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.command.GenererArbeidsforholdHistorikkCommand;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.command.GenererStartArbeidsforholdCommand;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.credentials.SyntrestServiceProperties;
-import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdRequest;
-import no.nav.registre.testnorge.libs.dto.syntrest.v1.ArbeidsforholdResponse;
+import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdRequest;
+import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdResponse;
 import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 

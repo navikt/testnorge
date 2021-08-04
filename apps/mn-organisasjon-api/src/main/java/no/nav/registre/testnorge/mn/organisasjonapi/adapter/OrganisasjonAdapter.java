@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import no.nav.registre.testnorge.mn.organisasjonapi.consumer.OrganisasjonConsumer;
 import no.nav.registre.testnorge.mn.organisasjonapi.domain.Organisasjon;
 import no.nav.registre.testnorge.mn.organisasjonapi.repository.OrganisasjonRepository;

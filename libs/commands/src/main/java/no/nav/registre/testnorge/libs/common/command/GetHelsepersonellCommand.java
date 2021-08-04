@@ -9,7 +9,7 @@ import reactor.util.retry.Retry;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.libs.dto.helsepersonell.v1.HelsepersonellListeDTO;
+import no.nav.testnav.libs.dto.helsepersonell.v1.HelsepersonellListeDTO;
 
 @RequiredArgsConstructor
 public class GetHelsepersonellCommand implements Callable<HelsepersonellListeDTO> {

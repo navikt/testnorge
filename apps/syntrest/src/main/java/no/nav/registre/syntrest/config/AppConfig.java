@@ -6,7 +6,7 @@ import io.kubernetes.client.util.Config;
 import io.kubernetes.client.util.KubeConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
+import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
 
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.annotation.Value;

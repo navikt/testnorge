@@ -5,9 +5,9 @@ import lombok.Value;
 import java.time.LocalDate;
 import java.util.Set;
 
-import no.nav.registre.testnorge.libs.dto.endringsmelding.v1.AdresseFra;
-import no.nav.registre.testnorge.libs.dto.endringsmelding.v1.FoedselsmeldingDTO;
-import no.nav.registre.testnorge.libs.dto.endringsmelding.v1.Kjoenn;
+import no.nav.testnav.libs.dto.endringsmelding.v1.AdresseFra;
+import no.nav.testnav.libs.dto.endringsmelding.v1.FoedselsmeldingDTO;
+import no.nav.testnav.libs.dto.endringsmelding.v1.Kjoenn;
 
 @Value
 public class TpsFoedselsmeldingRequest {

@@ -46,6 +46,16 @@ public class TpsIdenterAdapter extends FasteDataAdapter {
         return new TpsIdentListe(list);
     }
 
+
+    public TpsIdentListe fetchAll() {
+        var tpsIdentModels = StreamSupport.stream(tpsIdenterRepository.findAll().spliterator(), false);
+        List<TpsIdent> liste = tpsIdentModels.map(tpsIdentModel -> {
+            List<TagModel> tagModels = fetchTagsByIdent(tpsIdentModel.getFnr());
+            return new TpsIdent(tpsIdentModel, tagModels);
+        }).collect(Collectors.toList());
+        return new TpsIdentListe(liste);
+    }
+
     public TpsIdentListe fetchBy(String gruppe) {
         log.info("Henter tps identer med gruppe {}", gruppe);
 

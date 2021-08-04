@@ -16,7 +16,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.dto.varslingerapi.v1.VarslingDTO;
+import no.nav.testnav.libs.dto.varslingerapi.v1.VarslingDTO;
 import no.nav.registre.varslingerapi.adapter.PersonVarslingAdapter;
 import no.nav.registre.varslingerapi.adapter.VarslingerAdapter;
 import no.nav.registre.varslingerapi.domain.Varsling;

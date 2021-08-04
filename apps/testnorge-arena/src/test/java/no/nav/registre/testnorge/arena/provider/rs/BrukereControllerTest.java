@@ -1,9 +1,11 @@
 package no.nav.registre.testnorge.arena.provider.rs;
 
 import no.nav.registre.testnorge.arena.provider.rs.request.SyntetiserArenaRequest;
-import no.nav.registre.testnorge.arena.service.BrukereService;
+import no.nav.registre.testnorge.arena.service.ArenaBrukerService;
+import no.nav.registre.testnorge.arena.service.IdentService;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,15 +20,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
+import static no.nav.registre.testnorge.arena.service.util.ServiceUtils.MAKSIMUM_ALDER;
+import static no.nav.registre.testnorge.arena.service.util.ServiceUtils.MINIMUM_ALDER;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BrukereControllerTest {
 
     @Mock
-    private BrukereService brukereService;
+    private ArenaBrukerService arenaBrukerService;
+    @Mock
+    private IdentService identService;
 
     @InjectMocks
     private BrukereController brukereController;
@@ -34,17 +39,17 @@ public class BrukereControllerTest {
     private SyntetiserArenaRequest syntetiserArenaRequest;
     private SyntetiserArenaRequest syntetiserArenaRequestSingle;
 
-    private String miljoe = "q2";
-    private Long avspillegruppeId = 10L;
-    private int antallNyeIdenter = 3;
+    private final String miljoe = "q2";
+    private final Long avspillegruppeId = 10L;
+    private final int antallNyeIdenter = 3;
 
-    private String fnr1 = "10101010101";
-    private String fnr2 = "20202020202";
-    private String fnr3 = "30303030303";
+    private final String fnr1 = "10101010101";
+    private final String fnr2 = "20202020202";
+    private final String fnr3 = "30303030303";
 
-    private Arbeidsoeker arb1 = Arbeidsoeker.builder().personident(fnr1).build();
-    private Arbeidsoeker arb2 = Arbeidsoeker.builder().personident(fnr2).build();
-    private Arbeidsoeker arb3 = Arbeidsoeker.builder().personident(fnr3).build();
+    private final Arbeidsoeker arb1 = Arbeidsoeker.builder().personident(fnr1).build();
+    private final Arbeidsoeker arb2 = Arbeidsoeker.builder().personident(fnr2).build();
+    private final Arbeidsoeker arb3 = Arbeidsoeker.builder().personident(fnr3).build();
 
     private NyeBrukereResponse response;
     private NyeBrukereResponse singleResponse;
@@ -64,10 +69,9 @@ public class BrukereControllerTest {
         oppfoelgingResponse.put(fnr1, singleResponse);
     }
 
-
     @Test
     public void registrerAntallIdenterIArenaForvalter() {
-        when(brukereService
+        when(arenaBrukerService
                 .opprettArbeidsoekere(antallNyeIdenter, avspillegruppeId, miljoe))
                 .thenReturn(response);
 
@@ -78,8 +82,7 @@ public class BrukereControllerTest {
 
     @Test
     public void registrerIdentIArenaForvalter() {
-        doReturn(singleResponse).when(brukereService)
-                .opprettArbeidssoeker(fnr1, avspillegruppeId, miljoe, false);
+        when(arenaBrukerService.opprettArbeidssoeker(fnr1, avspillegruppeId, miljoe, false)).thenReturn(singleResponse);
 
         ResponseEntity<NyeBrukereResponse> response = brukereController.registrerBrukereIArenaForvalter(fnr1, syntetiserArenaRequest);
         assertThat(response.getBody().getArbeidsoekerList()).hasSize(1);
@@ -88,8 +91,11 @@ public class BrukereControllerTest {
 
     @Test
     public void registrerAntallIdenterMedOppfoelgingIArenaForvalter() {
-        when(brukereService
-                .opprettArbeidssoekereUtenVedtak(1, avspillegruppeId, miljoe))
+        var identer = Collections.singletonList(fnr1);
+
+        when(identService.getUtvalgteIdenterIAldersgruppe(avspillegruppeId, 1, MINIMUM_ALDER, MAKSIMUM_ALDER, miljoe, null)).thenReturn(identer);
+        when(arenaBrukerService
+                .opprettArbeidssoekereUtenVedtak(identer, miljoe))
                 .thenReturn(oppfoelgingResponse);
 
         ResponseEntity<Map<String, NyeBrukereResponse>> result = brukereController.registrerBrukereIArenaForvalterMedOppfoelging(syntetiserArenaRequestSingle);

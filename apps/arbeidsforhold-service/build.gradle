@@ -19,13 +19,13 @@ dependencies {
             strictly '20.0'
         }
     }
-    implementation project(':local-development')
+
     implementation 'javax.xml.bind:jaxb-api'
     implementation 'javax.activation:activation:1.1'
     implementation 'org.glassfish.jaxb:jaxb-runtime'
 
-    implementation project(':testnorge-core')
-    implementation project(':testnorge-data-transfer-objects')
+    implementation 'no.nav.testnav.libs:servlet-core'
+    implementation 'no.nav.testnav.libs:data-transfer-objects'
     implementation project(':commands')
     implementation project(':testnorge-oauth2')
 

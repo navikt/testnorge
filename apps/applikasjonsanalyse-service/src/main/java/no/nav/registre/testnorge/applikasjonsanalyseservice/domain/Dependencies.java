@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import no.nav.registre.testnorge.libs.dto.dependencyanalysis.v1.ApplicationDependenciesDTO;
+import no.nav.testnav.libs.dto.dependencyanalysis.v1.ApplicationDependenciesDTO;
 
 public class Dependencies {
     private final Set<ApplicationDependenciesDTO> items;

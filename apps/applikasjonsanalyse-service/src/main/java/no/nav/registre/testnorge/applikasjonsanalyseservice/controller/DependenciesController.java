@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import no.nav.registre.testnorge.applikasjonsanalyseservice.domain.Properties;
 import no.nav.registre.testnorge.applikasjonsanalyseservice.service.ApplikasjonsanalyseService;
-import no.nav.registre.testnorge.libs.dto.dependencyanalysis.v1.ApplicationDependenciesDTO;
+import no.nav.testnav.libs.dto.dependencyanalysis.v1.ApplicationDependenciesDTO;
 
 @RestController
 @RequestMapping("/api/v1/dependencies")

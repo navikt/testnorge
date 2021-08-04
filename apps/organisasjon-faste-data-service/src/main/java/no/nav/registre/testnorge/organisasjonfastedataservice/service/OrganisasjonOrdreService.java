@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
-import no.nav.registre.testnorge.libs.dto.organiasjonbestilling.v1.ItemDTO;
-import no.nav.registre.testnorge.libs.dto.organisasjonfastedataservice.v1.Gruppe;
+import no.nav.testnav.libs.dto.organiasjonbestilling.v1.ItemDTO;
+import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.Gruppe;
 import no.nav.registre.testnorge.organisasjonfastedataservice.consumer.OrganisasjonBestillingConsumer;
 import no.nav.registre.testnorge.organisasjonfastedataservice.consumer.OrganisasjonMottakConsumer;
 import no.nav.registre.testnorge.organisasjonfastedataservice.domain.Organisasjon;

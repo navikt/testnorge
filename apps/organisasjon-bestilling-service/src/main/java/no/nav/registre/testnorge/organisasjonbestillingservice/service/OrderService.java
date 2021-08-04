@@ -9,8 +9,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import no.nav.registre.testnorge.libs.dto.organiasjonbestilling.v1.ItemDTO;
-import no.nav.registre.testnorge.libs.dto.organiasjonbestilling.v1.Status;
+import no.nav.testnav.libs.dto.organiasjonbestilling.v1.ItemDTO;
+import no.nav.testnav.libs.dto.organiasjonbestilling.v1.Status;
 import no.nav.registre.testnorge.organisasjonbestillingservice.consumer.EregBatchStatusConsumer;
 import no.nav.registre.testnorge.organisasjonbestillingservice.domain.Order;
 import no.nav.registre.testnorge.organisasjonbestillingservice.repository.OrderRepository;

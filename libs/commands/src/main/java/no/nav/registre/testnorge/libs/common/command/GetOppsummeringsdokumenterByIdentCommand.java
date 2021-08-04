@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
 
 @Slf4j
 @RequiredArgsConstructor

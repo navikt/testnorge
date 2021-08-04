@@ -1,7 +1,7 @@
 package no.nav.organisasjonforvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.registre.testnorge.libs.dto.adresseservice.v1.VegadresseDTO;
+import no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 

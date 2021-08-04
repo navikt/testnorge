@@ -4,7 +4,7 @@ import no.kith.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLHelseOpply
 
 import java.time.LocalDate;
 
-import no.nav.registre.testnorge.libs.dto.sykemelding.v1.SykemeldingDTO;
+import no.nav.testnav.libs.dto.sykemelding.v1.SykemeldingDTO;
 
 class Dokument {
     private final XMLHelseOpplysningerArbeidsuforhet xmlHelseOpplysningerArbeidsuforhet;

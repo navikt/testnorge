@@ -42,10 +42,11 @@ jobs:
           mv build ../resources/static
         working-directory: apps/oversikt-frontend/src/main/js
       - name: Compile
+        working-directory: ./apps/oversikt-frontend/
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew :oversikt-frontend:build
+        run: ./gradlew build
       - name: Build and publish Docker image
         working-directory: apps/oversikt-frontend/
         env:

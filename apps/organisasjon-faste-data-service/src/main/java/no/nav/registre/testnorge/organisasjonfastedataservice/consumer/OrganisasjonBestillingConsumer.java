@@ -5,7 +5,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 
-import no.nav.registre.testnorge.libs.dto.organiasjonbestilling.v1.ItemDTO;
+import no.nav.testnav.libs.dto.organiasjonbestilling.v1.ItemDTO;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 import no.nav.registre.testnorge.organisasjonfastedataservice.config.credentials.OrganisasjonBestillingServiceProperties;
 import no.nav.registre.testnorge.organisasjonfastedataservice.consumer.command.GetOrdreCommand;

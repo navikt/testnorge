@@ -16,10 +16,10 @@ bootJar {
 }
 
 dependencies {
-    implementation project(':local-development')
-    implementation project(':testnorge-core')
+
+    implementation 'no.nav.testnav.libs:servlet-core'
     implementation project(':testnorge-oauth2')
-    implementation project(':testnorge-data-transfer-objects')
+    implementation 'no.nav.testnav.libs:data-transfer-objects'
 
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -37,6 +37,7 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-ui:1.4.8'
 
     implementation 'org.hibernate.validator:hibernate-validator'
+    implementation "org.springdoc:springdoc-openapi-ui:${springdocOpenapiUi}"
     implementation "net.logstash.logback:logstash-logback-encoder:${logstashLogbackEncoder}"
 
     implementation 'com.oracle.database.jdbc:ojdbc8:19.8.0.0'

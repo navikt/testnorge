@@ -5,8 +5,8 @@ import lombok.RequiredArgsConstructor;
 import java.util.Optional;
 import java.util.Set;
 
-import no.nav.registre.testnorge.libs.dto.samhandlerregisteret.v1.IdentDTO;
-import no.nav.registre.testnorge.libs.dto.samhandlerregisteret.v1.SamhandlerDTO;
+import no.nav.testnav.libs.dto.samhandlerregisteret.v1.IdentDTO;
+import no.nav.testnav.libs.dto.samhandlerregisteret.v1.SamhandlerDTO;
 
 @RequiredArgsConstructor
 public class Samhandler {

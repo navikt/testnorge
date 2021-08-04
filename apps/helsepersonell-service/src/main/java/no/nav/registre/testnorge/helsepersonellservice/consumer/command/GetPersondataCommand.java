@@ -7,7 +7,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.concurrent.Callable;
 
-import no.nav.registre.testnorge.libs.dto.hodejegeren.v1.PersondataDTO;
+import no.nav.testnav.libs.dto.hodejegeren.v1.PersondataDTO;
 
 @Slf4j
 @RequiredArgsConstructor

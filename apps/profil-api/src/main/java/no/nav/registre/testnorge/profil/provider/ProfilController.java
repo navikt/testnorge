@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import no.nav.registre.testnorge.libs.dto.profil.v1.ProfilDTO;
+import no.nav.testnav.libs.dto.profil.v1.ProfilDTO;
 import no.nav.registre.testnorge.profil.consumer.AzureAdProfileConsumer;
 import no.nav.registre.testnorge.profil.domain.Profil;
 

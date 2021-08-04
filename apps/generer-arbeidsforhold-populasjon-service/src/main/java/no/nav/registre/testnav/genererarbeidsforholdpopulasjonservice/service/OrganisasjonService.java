@@ -5,17 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.GenererOrganisasjonPopulasjonConsumer;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.OppsummeringsdokumentConsumer;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.OrganisasjonConsumer;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.Organisajon;
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
-import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
 
 @Slf4j
 @Service

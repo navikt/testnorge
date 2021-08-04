@@ -1,10 +1,8 @@
 package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.amelding;
 
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
-import no.nav.registre.testnorge.libs.dto.syntrest.v1.AvvikDTO;
+import no.nav.testnav.libs.dto.syntrest.v1.AvvikDTO;
 
 @Value
 public class Avvik {
@@ -12,7 +10,7 @@ public class Avvik {
     String navn;
     String alvorlighetsgrad;
 
-    public Avvik(no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.AvvikDTO dto){
+    public Avvik(no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.AvvikDTO dto){
         id = dto.getId();
         navn = dto.getNavn();
         alvorlighetsgrad = dto.getAlvorlighetsgrad();
@@ -24,8 +22,8 @@ public class Avvik {
         alvorlighetsgrad = dto.getAlvorlighetsgrad();
     }
 
-    public no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.AvvikDTO toDTO(){
-        return no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.AvvikDTO
+    public no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.AvvikDTO toDTO(){
+        return no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.AvvikDTO
                 .builder()
                 .navn(navn)
                 .id(id)

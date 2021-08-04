@@ -8,7 +8,7 @@ import org.apache.logging.log4j.util.Strings;
 import java.time.LocalDate;
 import java.util.Set;
 
-import no.nav.registre.testnorge.libs.dto.person.v1.PersonDTO;
+import no.nav.testnav.libs.dto.person.v1.PersonDTO;
 
 @Value
 @Builder

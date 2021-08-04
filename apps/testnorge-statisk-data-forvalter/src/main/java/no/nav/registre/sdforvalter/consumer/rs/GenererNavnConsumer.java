@@ -5,7 +5,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.registre.sdforvalter.config.credentials.GenererNavnServiceProperties;
 import no.nav.registre.testnorge.libs.common.command.generernavnservice.v1.GenererNavnCommand;
-import no.nav.registre.testnorge.libs.dto.generernavnservice.v1.NavnDTO;
+import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
 
 @Component

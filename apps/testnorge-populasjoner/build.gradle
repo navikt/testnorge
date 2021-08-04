@@ -13,7 +13,7 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation project(':testnorge-core')
+    implementation 'no.nav.testnav.libs:servlet-core'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'

@@ -5,8 +5,8 @@ import lombok.Value;
 import java.time.LocalDate;
 import java.util.Set;
 
-import no.nav.registre.testnorge.libs.dto.endringsmelding.v1.DoedsmeldingDTO;
-import no.nav.registre.testnorge.libs.dto.endringsmelding.v1.Handling;
+import no.nav.testnav.libs.dto.endringsmelding.v1.DoedsmeldingDTO;
+import no.nav.testnav.libs.dto.endringsmelding.v1.Handling;
 
 @Value
 public class TpsDoedsmeldingDTO {

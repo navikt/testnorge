@@ -25,7 +25,7 @@ import java.nio.file.Path;
 import java.util.concurrent.Callable;
 import java.util.regex.Pattern;
 
-import no.nav.registre.testnorge.libs.dto.jenkins.v1.JenkinsCrumb;
+import no.nav.testnav.libs.dto.jenkins.v1.JenkinsCrumb;
 import no.nav.registre.testnorge.organisasjonmottak.domain.Flatfil;
 
 @Slf4j

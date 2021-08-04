@@ -13,23 +13,20 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 
-
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import no.nav.registre.testnorge.libs.service.StsOidcTokenService;
-import no.nav.testnav.libs.proxyconfig.config.DevConfig;
-import no.nav.testnav.libs.proxyconfig.config.SecurityConfig;
-import no.nav.testnav.libs.proxyconfig.filter.AddRequestHeadersGatewayFilterFactory;
-import no.nav.testnav.libs.proxyconfig.filter.GetHeader;
-import no.nav.testnav.libs.proxyconfig.router.InternalHandler;
-import no.nav.testnav.libs.proxyconfig.router.InternalRouter;
+import no.nav.testnav.libs.reactivecore.config.CoreConfig;
+import no.nav.testnav.libs.securitytokenservice.StsOidcTokenService;
+import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
+import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
+import no.nav.testnav.libs.reactiveproxy.filter.AddRequestHeadersGatewayFilterFactory;
+import no.nav.testnav.libs.reactiveproxy.filter.GetHeader;
 
 @Import({
+        CoreConfig.class,
         DevConfig.class,
-        SecurityConfig.class,
-        InternalHandler.class,
-        InternalRouter.class
+        SecurityConfig.class
 })
 @SpringBootApplication
 public class DokarkivProxyApplicationStarter {
@@ -82,7 +79,6 @@ public class DokarkivProxyApplicationStarter {
                 .route(createRoute("t13", testFilter))
                 .build();
     }
-
 
 
     private Function<PredicateSpec, Route.AsyncBuilder> createRoute(String miljo, GatewayFilter filter) {

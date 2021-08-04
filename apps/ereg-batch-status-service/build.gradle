@@ -15,9 +15,9 @@ dependencyManagement {
 
 dependencies {
 
-    implementation project(':local-development')
-    implementation project(':testnorge-core')
-    implementation project(':testnorge-data-transfer-objects')
+
+    implementation 'no.nav.testnav.libs:servlet-core'
+    implementation 'no.nav.testnav.libs:data-transfer-objects'
     implementation project(':testnorge-oauth2')
 
     implementation 'org.springframework.boot:spring-boot-starter-webflux'

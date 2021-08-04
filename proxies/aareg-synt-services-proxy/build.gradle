@@ -1,7 +1,10 @@
+import no.nav.testnav.dependencies.gradle.DependenciesPlugin
+
 plugins {
-    id 'no.nav.registre.testnorge.java-conventions'
-    id 'org.springframework.boot' version "${springBootVersion}"
-    id 'io.spring.dependency-management' version "${springDependencyManagement}"
+    id 'no.nav.testnav.dependencies'
+    id 'java'
+    id 'org.springframework.boot' version "2.3.4.RELEASE"
+    id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
 bootJar {
     archiveFileName = "app.jar"
@@ -9,12 +12,22 @@ bootJar {
 
 dependencyManagement {
     imports {
-        mavenBom  "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}" 
+        mavenBom  "org.springframework.cloud:spring-cloud-dependencies:${DependenciesPlugin.springCloud}"
     }
 }
 
+repositories {
+    maven {
+        url = uri('https://repo1.maven.org/maven2/')
+    }
+    mavenLocal()
+}
+
+
 dependencies {
-    implementation project(':proxy-config')
+
+    implementation 'no.nav.testnav.libs:reactive-core'
+    implementation 'no.nav.testnav.libs:reactive-proxy'
 
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
@@ -23,10 +36,9 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
 
-    implementation "net.logstash.logback:logstash-logback-encoder:${logstashLogbackEncoder}"
+    implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
     implementation 'org.hibernate.validator:hibernate-validator'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }
-description = 'aareg-synt-services-proxy'

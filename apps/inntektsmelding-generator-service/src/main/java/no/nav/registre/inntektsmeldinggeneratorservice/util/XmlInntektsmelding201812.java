@@ -39,21 +39,21 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import no.nav.registre.inntektsmeldinggeneratorservice.provider.Melding;
-import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsArbeidsforhold;
-import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsArbeidsgiver;
-import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsArbeidsgiverPrivat;
-import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsAvsendersystem;
-import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsDelvisFravaer;
-import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsEndringIRefusjon;
-import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsGraderingIForeldrepenger;
-import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsInntekt;
-import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsInntektsmelding;
-import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsNaturalytelseDetaljer;
-import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsOmsorgspenger;
-import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsPeriode;
-import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsRefusjon;
-import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsSykepengerIArbeidsgiverperioden;
-import no.nav.registre.testnorge.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsUtsettelseAvForeldrepenger;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsArbeidsforhold;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsArbeidsgiver;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsArbeidsgiverPrivat;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsAvsendersystem;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsDelvisFravaer;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsEndringIRefusjon;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsGraderingIForeldrepenger;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsInntekt;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsInntektsmelding;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsNaturalytelseDetaljer;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsOmsorgspenger;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsPeriode;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsRefusjon;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsSykepengerIArbeidsgiverperioden;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsUtsettelseAvForeldrepenger;
 
 public class XmlInntektsmelding201812 {
 

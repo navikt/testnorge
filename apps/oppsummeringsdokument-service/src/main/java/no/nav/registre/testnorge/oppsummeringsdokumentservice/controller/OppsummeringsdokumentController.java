@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
-import no.nav.registre.testnorge.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.adapter.OppsummeringsdokumentAdapter;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.domain.Oppsummeringsdokument;
 

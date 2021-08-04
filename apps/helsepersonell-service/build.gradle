@@ -14,10 +14,10 @@ bootJar {
 }
 
 dependencies {
-    implementation project(':local-development')
-    implementation project(':testnorge-core')
+
+    implementation 'no.nav.testnav.libs:servlet-core'
     implementation project(':testnorge-oauth2')
-    implementation project(':testnorge-data-transfer-objects')
+    implementation 'no.nav.testnav.libs:data-transfer-objects'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'

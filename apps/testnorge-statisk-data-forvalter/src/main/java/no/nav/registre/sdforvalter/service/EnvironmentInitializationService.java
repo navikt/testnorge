@@ -88,8 +88,13 @@ public class EnvironmentInitializationService {
 
     public void opprett(String environment, List<String> liste) {
         log.info("Oppretter organisasjoner {} i miljo {}.", String.join(", ", liste), environment);
-        var eregListe = new EregListe(liste.stream().map(eregAdapter::fetchByOrgnr).collect(Collectors.toList()));
-        organisasjonMottakServiceConsumer.create(eregListe, environment);
+        try {
+            var eregListe = new EregListe(liste.stream().map(eregAdapter::fetchByOrgnr).collect(Collectors.toList()));
+            organisasjonMottakServiceConsumer.create(eregListe, environment);
+        } catch(NullPointerException e) {
+            log.error("Kunne ikke slå opp orgnumre i ereg.");
+            throw e;
+        }
     }
 
     public void initializeKrr(String gruppe) {

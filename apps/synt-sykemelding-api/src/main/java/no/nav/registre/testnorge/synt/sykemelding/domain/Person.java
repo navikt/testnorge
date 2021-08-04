@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
 
-import no.nav.registre.testnorge.libs.dto.hodejegeren.v1.PersondataDTO;
+import no.nav.testnav.libs.dto.hodejegeren.v1.PersondataDTO;
 import no.nav.registre.testnorge.synt.sykemelding.util.IdentUtil;
 
 

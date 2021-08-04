@@ -2,7 +2,7 @@ package no.nav.registre.testnorge.synt.sykemelding.provider;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.libs.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
+import no.nav.testnav.libs.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
 import no.nav.registre.testnorge.synt.sykemelding.service.SykemeldingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

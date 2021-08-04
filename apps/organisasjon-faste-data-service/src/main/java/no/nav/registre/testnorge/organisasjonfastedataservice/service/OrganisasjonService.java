@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import no.nav.registre.testnorge.libs.dto.organisasjonfastedataservice.v1.Gruppe;
+import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.Gruppe;
 import no.nav.registre.testnorge.organisasjonfastedataservice.domain.Organisasjon;
 import no.nav.registre.testnorge.organisasjonfastedataservice.repository.OrganisasjonRepository;
 

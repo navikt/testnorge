@@ -12,8 +12,8 @@ import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker
 @Getter
 public class ArbeidssoekerCacheElement {
 
-    private LocalDateTime sistOppdatert;
-    private Set<Arbeidsoeker> arbeidssoekere;
+    private final LocalDateTime sistOppdatert;
+    private final Set<Arbeidsoeker> arbeidssoekere;
 
     public ArbeidssoekerCacheElement(List<Arbeidsoeker> arbeidssoekere) {
         this.sistOppdatert = LocalDateTime.now();

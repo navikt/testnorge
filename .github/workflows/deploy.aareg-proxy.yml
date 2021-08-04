@@ -22,15 +22,16 @@ jobs:
             ~/.gradle
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
-            ${{ runner.os }}-gradle-
+            ${{ runner.os }}-gradle-aareg-proxy
       - uses: actions/setup-java@v1
         with:
           java-version: '11.x'
       - name: Compile
+        working-directory: proxies/aareg-proxy/
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew :aareg-proxy:build
+        run: ./gradlew build
       - name: Build and publish Docker image
         working-directory: proxies/aareg-proxy/
         env:

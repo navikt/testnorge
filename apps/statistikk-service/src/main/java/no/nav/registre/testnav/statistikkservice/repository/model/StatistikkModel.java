@@ -18,8 +18,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.util.Date;
 
-import no.nav.registre.testnorge.libs.dto.statistikkservice.v1.StatistikkType;
-import no.nav.registre.testnorge.libs.dto.statistikkservice.v1.StatistikkValueType;
+import no.nav.testnav.libs.dto.statistikkservice.v1.StatistikkType;
+import no.nav.testnav.libs.dto.statistikkservice.v1.StatistikkValueType;
 
 
 @Builder

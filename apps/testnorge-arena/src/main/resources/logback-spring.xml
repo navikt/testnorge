@@ -39,7 +39,7 @@
     <logger name="no.nav.registre.testnorge.sykemelding.consumer.SyfoConsumer">
         <level value="TRACE"/>
     </logger>
-    <logger name="no.nav.registre.testnorge.libs.logging.LogRequestInterceptor">
+    <logger name="no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor">
         <level value="TRACE"/>
     </logger>
 </configuration>
