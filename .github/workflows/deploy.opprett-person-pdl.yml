@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - apps/opprett-person-pdl/**
-      - libs/testnorge-core/**
+
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/opprett-person-pdl:${{ github.sha }}

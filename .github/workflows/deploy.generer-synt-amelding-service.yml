@@ -5,7 +5,7 @@ on:
     branches: master
     paths:
       - apps/generer-synt-amelding-service/**
-      - libs/testnorge-core/**
+
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/generer-synt-amelding-service:${{ github.sha }}

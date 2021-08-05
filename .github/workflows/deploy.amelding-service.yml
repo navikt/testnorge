@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - apps/amelding-service/**
-      - libs/testnorge-core/**
+
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/amelding-service:${{ github.sha }}

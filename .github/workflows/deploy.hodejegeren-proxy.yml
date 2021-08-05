@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - proxies/hodejegeren-proxy/**
-      - libs/testnorge-core/**
+
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/hodejegeren-proxy:${{ github.sha }}

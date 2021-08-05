@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - proxies/tps-forvalteren-proxy/**
-      - libs/testnorge-core/**
+
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/tps-forvalteren-proxy:${{ github.sha }}
