@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 import java.util.Set;
 
@@ -22,26 +23,31 @@ public class EndringsmeldingController {
     private final TpsForvalterConsumer consumer;
 
     @PostMapping("/foedeselsmelding")
-    public ResponseEntity<?> sendFoedselsmelding(
+    public Mono<ResponseEntity<?>> sendFoedselsmelding(
             @RequestHeader Set<String> miljoer,
             @RequestBody FoedselsmeldingDTO dto
     ) {
-        var status = consumer.sendFoedselsmelding(dto, miljoer);
-        if (!status.isOk()) {
-            return ResponseEntity.badRequest().body(status.getErrors());
-        }
-        return ResponseEntity.ok(status.getPersonId());
+        return consumer.sendFoedselsmelding(dto, miljoer)
+                .map(status -> {
+                    if (!status.isOk()) {
+                        return ResponseEntity.badRequest().body(status.getErrors());
+                    }
+                    return ResponseEntity.ok(status.getPersonId());
+                });
+
     }
 
     @PostMapping("/doedsmelding")
-    public ResponseEntity<?> sendFoedselsmelding(
+    public Mono<ResponseEntity<?>> sendFoedselsmelding(
             @RequestHeader Set<String> miljoer,
             @RequestBody DoedsmeldingDTO dto
     ) {
-        var status = consumer.sendDoedsmelding(dto, miljoer);
-        if (!status.isOk()) {
-            return ResponseEntity.badRequest().body(status.getErrors());
-        }
-        return ResponseEntity.noContent().build();
+        return consumer.sendDoedsmelding(dto, miljoer)
+                .map(status -> {
+                    if (!status.isOk()) {
+                        return ResponseEntity.badRequest().body(status.getErrors());
+                    }
+                    return ResponseEntity.ok(status.getPersonId());
+                });
     }
 }

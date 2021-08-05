@@ -10,33 +10,34 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
-import no.nav.testnav.endringsmeldingservice.consumer.request.TpsFoedselsmeldingRequest;
+import no.nav.testnav.endringsmeldingservice.consumer.request.FoedselsmeldingRequest;
 import no.nav.testnav.endringsmeldingservice.consumer.response.EndringsmeldingResponse;
 
 @Slf4j
 @RequiredArgsConstructor
-public class SendFoedselsmeldingCommand implements Callable<EndringsmeldingResponse> {
+public class SendFoedselsmeldingCommand implements Callable<Mono<EndringsmeldingResponse>> {
     private final WebClient webClient;
-    private final TpsFoedselsmeldingRequest request;
+    private final FoedselsmeldingRequest request;
     private final String token;
 
     @Override
-    public EndringsmeldingResponse call() {
-        try {
-            return webClient
-                    .post()
-                    .uri("/api/v1/tpsmelding/foedselsmelding")
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                    .body(BodyInserters.fromPublisher(Mono.just(request), TpsFoedselsmeldingRequest.class))
-                    .retrieve()
-                    .bodyToMono(EndringsmeldingResponse.class)
-                    .block();
-        } catch (WebClientResponseException e) {
-            log.error(
-                    "Feil ved innsendelse av foedseslmelding. Feilmelding: {}.",
-                    e.getResponseBodyAsString()
-            );
-            throw e;
-        }
+    public Mono<EndringsmeldingResponse> call() {
+        return webClient
+                .post()
+                .uri("/api/v1/tpsmelding/foedselsmelding")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .body(BodyInserters.fromPublisher(Mono.just(request), FoedselsmeldingRequest.class))
+                .retrieve()
+                .bodyToMono(EndringsmeldingResponse.class)
+                .doOnError(error -> {
+                    if (error instanceof WebClientResponseException) {
+                        log.error(
+                                "Feil ved innsendelse av fødseslmelding. Feilmelding: {}.",
+                                ((WebClientResponseException) error).getResponseBodyAsString()
+                        );
+                    } else {
+                        log.error("Feil ved innsendelse av fødseslmelding.", error);
+                    }
+                });
     }
 }

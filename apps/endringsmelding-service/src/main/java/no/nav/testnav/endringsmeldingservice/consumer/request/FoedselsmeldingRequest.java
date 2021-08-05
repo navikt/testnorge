@@ -10,7 +10,7 @@ import no.nav.testnav.libs.dto.endringsmelding.v1.FoedselsmeldingDTO;
 import no.nav.testnav.libs.dto.endringsmelding.v1.Kjoenn;
 
 @Value
-public class TpsFoedselsmeldingRequest {
+public class FoedselsmeldingRequest {
 
     String identMor;
     String identFar;
@@ -20,7 +20,7 @@ public class TpsFoedselsmeldingRequest {
     String adresseFra;
     Set<String> miljoer;
 
-    public TpsFoedselsmeldingRequest(FoedselsmeldingDTO dto, Set<String> miljoer) {
+    public FoedselsmeldingRequest(FoedselsmeldingDTO dto, Set<String> miljoer) {
         identMor = dto.getIdentMor();
         identFar = dto.getIdentFar();
         identtype = dto.getIdenttype();

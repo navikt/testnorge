@@ -6,8 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Set;
+import reactor.core.publisher.Mono;
 
 import no.nav.testnav.endringsmeldingservice.consumer.TpsForvalterConsumer;
 
@@ -18,12 +17,14 @@ public class IdentMiljoeController {
     private final TpsForvalterConsumer consumer;
 
     @GetMapping
-    public ResponseEntity<Set<String>> getMiljoer(@PathVariable String ident) {
-        var miljoer = consumer.hentMiljoer(ident);
-        if (miljoer == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(miljoer);
+    public Mono<ResponseEntity<?>> getMiljoer(@PathVariable String ident) {
+        return consumer.hentMiljoer(ident)
+                .map(miljoer -> {
+                    if (miljoer == null) {
+                        return ResponseEntity.notFound().build();
+                    }
+                    return ResponseEntity.ok(miljoer);
+                });
     }
 
 }

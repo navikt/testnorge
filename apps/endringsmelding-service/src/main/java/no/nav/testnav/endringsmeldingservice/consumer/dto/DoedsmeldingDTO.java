@@ -5,18 +5,17 @@ import lombok.Value;
 import java.time.LocalDate;
 import java.util.Set;
 
-import no.nav.testnav.libs.dto.endringsmelding.v1.DoedsmeldingDTO;
 import no.nav.testnav.libs.dto.endringsmelding.v1.Handling;
 
 @Value
-public class TpsDoedsmeldingDTO {
+public class DoedsmeldingDTO {
 
     String ident;
     String handling;
     LocalDate doedsdato;
     Set<String> miljoer;
 
-    public TpsDoedsmeldingDTO(DoedsmeldingDTO dto, Set<String> miljoer) {
+    public DoedsmeldingDTO(no.nav.testnav.libs.dto.endringsmelding.v1.DoedsmeldingDTO dto, Set<String> miljoer) {
         ident = dto.getIdent();
         handling = convert(dto.getHandling());
         doedsdato = dto.getDoedsdato();

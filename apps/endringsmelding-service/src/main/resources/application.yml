@@ -5,6 +5,13 @@ spring:
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     name: endringsmelding-service
     desciption: Tjeneste for å sende endringsmeldinger
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
 
 consumers:
   tpsforvalter:

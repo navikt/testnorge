@@ -1,4 +1,4 @@
-package no.nav.testnav.apps.personservice.config;
+package no.nav.testnav.endringsmeldingservice.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +10,7 @@ import org.springframework.web.reactive.config.WebFluxConfigurer;
 
 @Configuration
 @RequiredArgsConstructor
-public class WebFluxConfig implements WebFluxConfigurer {
+public class JacksonConfig implements WebFluxConfigurer {
 
     private final ObjectMapper objectMapper;
 

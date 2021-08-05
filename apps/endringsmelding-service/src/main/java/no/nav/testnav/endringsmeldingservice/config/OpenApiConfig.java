@@ -9,17 +9,14 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
 
-import no.nav.testnav.libs.servletcore.config.ApplicationProperties;
+import no.nav.testnav.libs.reactivecore.config.ApplicationProperties;
+
 
 @Configuration
-@Import(ApplicationProperties.class)
-public class OpenApiConfig implements WebMvcConfigurer {
+public class OpenApiConfig {
 
     @Bean
     public OpenAPI openApi(ApplicationProperties applicationProperties) {
@@ -46,12 +43,7 @@ public class OpenApiConfig implements WebMvcConfigurer {
                         .license(new License()
                                 .name("MIT License")
                                 .url("https://opensource.org/licenses/MIT")
-                        ));
-    }
-
-
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/swagger").setViewName("redirect:/swagger-ui.html");
+                        )
+                );
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.Set;
 
@@ -14,13 +15,12 @@ import no.nav.testnav.endringsmeldingservice.config.credentias.TpsForvalterenPro
 import no.nav.testnav.endringsmeldingservice.consumer.command.GetIdentEnvironmentsCommand;
 import no.nav.testnav.endringsmeldingservice.consumer.command.SendDoedsmeldingCommand;
 import no.nav.testnav.endringsmeldingservice.consumer.command.SendFoedselsmeldingCommand;
-import no.nav.testnav.endringsmeldingservice.consumer.dto.TpsDoedsmeldingDTO;
-import no.nav.testnav.endringsmeldingservice.consumer.request.TpsFoedselsmeldingRequest;
+import no.nav.testnav.endringsmeldingservice.consumer.dto.DoedsmeldingDTO;
+import no.nav.testnav.endringsmeldingservice.consumer.request.FoedselsmeldingRequest;
 import no.nav.testnav.endringsmeldingservice.domain.Status;
-import no.nav.testnav.libs.dto.endringsmelding.v1.DoedsmeldingDTO;
 import no.nav.testnav.libs.dto.endringsmelding.v1.FoedselsmeldingDTO;
-import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import no.nav.testnav.libs.reactivesecurity.domain.NaisServerProperties;
+import no.nav.testnav.libs.reactivesecurity.service.AccessTokenService;
 
 @Component
 public class TpsForvalterConsumer {
@@ -52,28 +52,23 @@ public class TpsForvalterConsumer {
                 .build();
     }
 
-    public Set<String> hentMiljoer(String ident) {
-        var accessToken = accessTokenService.generateToken(serverProperties).block();
-        return new GetIdentEnvironmentsCommand(webClient, ident, accessToken.getTokenValue()).call();
+    public Mono<Set<String>> hentMiljoer(String ident) {
+        return accessTokenService
+                .generateToken(serverProperties)
+                .flatMap(accessToken -> new GetIdentEnvironmentsCommand(webClient, ident, accessToken.getTokenValue()).call());
     }
 
-    public Status sendFoedselsmelding(FoedselsmeldingDTO dto, Set<String> miljoer) {
-        var accessToken = accessTokenService.generateToken(serverProperties).block();
-        var response = new SendFoedselsmeldingCommand(
-                webClient,
-                new TpsFoedselsmeldingRequest(dto, miljoer),
-                accessToken.getTokenValue()
-        ).call();
-        return new Status(response);
+    public Mono<Status> sendFoedselsmelding(FoedselsmeldingDTO dto, Set<String> miljoer) {
+        return accessTokenService
+                .generateToken(serverProperties)
+                .flatMap(accessToken -> new SendFoedselsmeldingCommand(webClient, new FoedselsmeldingRequest(dto, miljoer), accessToken.getTokenValue()).call())
+                .map(Status::new);
     }
 
-    public Status sendDoedsmelding(DoedsmeldingDTO dto, Set<String> miljoer) {
-        var accessToken = accessTokenService.generateToken(serverProperties).block();
-        var response = new SendDoedsmeldingCommand(
-                webClient,
-                new TpsDoedsmeldingDTO(dto, miljoer),
-                accessToken.getTokenValue()
-        ).call();
-        return new Status(response);
+    public Mono<Status> sendDoedsmelding(no.nav.testnav.libs.dto.endringsmelding.v1.DoedsmeldingDTO dto, Set<String> miljoer) {
+        return accessTokenService
+                .generateToken(serverProperties)
+                .flatMap(accessToken -> new SendDoedsmeldingCommand(webClient, new DoedsmeldingDTO(dto, miljoer), accessToken.getTokenValue()).call())
+                .map(Status::new);
     }
 }
