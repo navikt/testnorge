@@ -5,7 +5,12 @@ import { Hovedknapp } from 'nav-frontend-knapper';
 import { Form, Line } from '@navikt/dolly-komponenter';
 import EndringsmeldingService from '@/service/EndringsmeldingService';
 import { State, reducer, Action } from './EndringsmeldingReducer';
-import { ErrorAlertstripe, SuccessAlertstripe } from '@navikt/dolly-komponenter';
+import {
+  ErrorAlertstripe,
+  SuccessAlertstripe,
+  WarningAlertstripe,
+} from '@navikt/dolly-komponenter';
+import { BadRequestError } from '@navikt/dolly-lib/lib/error';
 
 type Props<T> = {
   children: React.ReactNode;
@@ -58,10 +63,19 @@ export default <T extends {}>({
         .then((response) =>
           dispatch({ type: Action.SET_SUBMIT_SUCCESS, successMessage: getSuccessMessage(response) })
         )
-        .catch(() => dispatch({ type: Action.SET_SUBMIT_ERROR, errorMessage: getErrorMessage() }));
+        .catch((e) => {
+          if (e instanceof BadRequestError) {
+            return e.response
+              .json()
+              .then((body: string[]) =>
+                dispatch({ type: Action.SET_SUBMIT_WARRING, warringMessages: body })
+              );
+          }
+
+          return dispatch({ type: Action.SET_SUBMIT_ERROR, errorMessage: getErrorMessage() });
+        });
     }
   };
-
   return (
     <Form>
       <Search
@@ -82,7 +96,12 @@ export default <T extends {}>({
         <>
           {children}
           <Line reverse={true}>
-            <Hovedknapp onClick={onSubmit} htmlType="submit" disabled={state.loading} spinner={state.loading}>
+            <Hovedknapp
+              onClick={onSubmit}
+              htmlType="submit"
+              disabled={state.loading}
+              spinner={state.loading}
+            >
               {labels.submit}
             </Hovedknapp>
           </Line>
@@ -90,6 +109,10 @@ export default <T extends {}>({
       )}
       {!!state.successMessage && <SuccessAlertstripe label={state.successMessage} />}
       {!!state.errorMessage && <ErrorAlertstripe label={state.errorMessage} />}
+      {!!state.warringMessages &&
+        state.warringMessages.map((warring, index) => (
+          <WarningAlertstripe key={index} label={warring} />
+        ))}
     </Form>
   );
 };

@@ -3,6 +3,7 @@ type SetHentMiljoerErrorAction = 'SET_HENT_MILJOER_ERROR';
 type SubmitStartAction = 'SET_SUBMIT_START';
 type SubmitSuccessAction = 'SET_SUBMIT_SUCCESS';
 type SubmitErrorAction = 'SET_SUBMIT_ERROR';
+type SubmitWarringAction = 'SET_SUBMIT_WARRING';
 type SetIdentAction = 'SET_IDENT';
 
 type Actions =
@@ -24,6 +25,10 @@ type Actions =
       errorMessage: string;
     }
   | {
+      type: SubmitWarringAction;
+      warringMessages: string[];
+    }
+  | {
       type: SetIdentAction;
       value: string;
     };
@@ -33,6 +38,7 @@ export type State = {
   show: boolean;
   loading: boolean;
   errorMessage?: string;
+  warringMessages?: string[];
   successMessage?: string;
 };
 
@@ -44,6 +50,7 @@ export class Action {
   public static SET_SUBMIT_START: SubmitStartAction = 'SET_SUBMIT_START';
   public static SET_SUBMIT_SUCCESS: SubmitSuccessAction = 'SET_SUBMIT_SUCCESS';
   public static SET_SUBMIT_ERROR: SubmitErrorAction = 'SET_SUBMIT_ERROR';
+  public static SET_SUBMIT_WARRING: SubmitWarringAction = 'SET_SUBMIT_WARRING';
 }
 
 export const reducer = (state: State, action: Actions) => {
@@ -75,6 +82,13 @@ export const reducer = (state: State, action: Actions) => {
         loading: false,
         show: false,
         errorMessage: action.errorMessage,
+      };
+    case Action.SET_SUBMIT_WARRING:
+      return {
+        ...state,
+        loading: false,
+        show: true,
+        warringMessages: action.warringMessages,
       };
     case Action.SET_SUBMIT_SUCCESS:
       return {

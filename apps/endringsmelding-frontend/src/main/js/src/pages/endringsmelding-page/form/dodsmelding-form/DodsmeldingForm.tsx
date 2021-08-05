@@ -22,7 +22,10 @@ export default () => {
 
   const onValidate = () => {
     dispatch({ type: Action.SET_VALIDATE_ACTION, value: true });
-    return notEmptyString(state.doedsdato) && notEmptyList(state.miljoer);
+    return (
+      (state.handling === 'ANNULLERE_DOEDSDATO' || notEmptyString(state.doedsdato)) &&
+      notEmptyList(state.miljoer)
+    );
   };
 
   const onSend = () =>
@@ -35,6 +38,16 @@ export default () => {
       state.miljoer
     );
 
+  const getSuccessMessage = () => {
+    const miljoer = state.miljoer.join(', ');
+    if (state.handling === 'SETTE_DOEDSDATO') {
+      return `Send dødsmelding for ident ${state.ident} ble sendt i miljø ${miljoer}.`;
+    }
+    if (state.handling === 'ENDRET_DOEDSDATO') {
+      return `Endret dødsdato til ${state.doedsdato} for ident ${state.ident} ble sendt i miljø ${miljoer}.`;
+    }
+    return `Annullert dødsmelding for ident ${state.ident} ble sendt i miljø ${miljoer}.`;
+  };
   return (
     <EndringsmeldingForm
       labels={{
@@ -44,9 +57,7 @@ export default () => {
       onSend={onSend}
       valid={onValidate}
       setIdent={(ident) => dispatch({ type: Action.SET_IDENT_ACTION, value: ident })}
-      getSuccessMessage={() =>
-        `Dødsmelding for ident ${state.ident} ble sendt i miljø ${state.miljoer.join(', ')}.`
-      }
+      getSuccessMessage={getSuccessMessage}
       setMiljoer={(miljoer) =>
         dispatch({ type: Action.SET_MILJOER_OPTIONS_ACTION, value: miljoer })
       }
@@ -77,12 +88,14 @@ export default () => {
             },
           ]}
         />
-        <DatePickerFormItem
-          id="doedsdato-field"
-          label="Dødsdato*"
-          onBlur={(value) => dispatch({ type: Action.SET_DOEDSDATO_ACTION, value: value })}
-          error={state.validate && !notEmptyString(state.doedsdato) ? 'Påkrevd' : null}
-        />
+        {state.handling !== 'ANNULLERE_DOEDSDATO' && (
+          <DatePickerFormItem
+            id="doedsdato-field"
+            label="Dødsdato*"
+            onBlur={(value) => dispatch({ type: Action.SET_DOEDSDATO_ACTION, value: value })}
+            error={state.validate && !notEmptyString(state.doedsdato) ? 'Påkrevd' : null}
+          />
+        )}
         <SelectFormItem
           onChange={(value) => dispatch({ type: Action.SET_MILJOER_ACTION, value: value })}
           htmlId="miljo-dodsdato-select"

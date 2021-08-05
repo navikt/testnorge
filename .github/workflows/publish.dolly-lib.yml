@@ -2,6 +2,7 @@ name: Publish dolly-lib til npmjs
 
 on:
   push:
+    branches: master
     paths:
       - navikt/dolly-lib/**
 

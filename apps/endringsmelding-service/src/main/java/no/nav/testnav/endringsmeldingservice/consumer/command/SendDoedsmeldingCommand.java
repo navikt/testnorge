@@ -33,7 +33,7 @@ public class SendDoedsmeldingCommand implements Callable<EndringsmeldingResponse
                     .block();
         } catch (WebClientResponseException e) {
             log.error(
-                    "Feil ved innsendelse av foedseslmelding. Feilmelding: {}.",
+                    "Feil ved innsendelse av dødsmelding. Feilmelding: {}.",
                     e.getResponseBodyAsString()
             );
             throw e;
