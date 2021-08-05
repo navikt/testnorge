@@ -14,10 +14,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IdentControllerTest {
@@ -60,15 +57,6 @@ public class IdentControllerTest {
         identController.oppdaterInstitusjonsopphold(oppholdId, id, id, miljoe, institusjonsopphold);
 
         verify(identService).oppdaterInstitusjonsopphold(id, id, miljoe, oppholdId, institusjonsopphold);
-    }
-
-    @Test
-    public void shouldSletteInstitusjonsoppholdForIdent() {
-        when(identService.hentTokenTilInst2(miljoe)).thenReturn("Bearer 123");
-
-        identController.slettIdenter(id, id, miljoe, Collections.singletonList(fnr1));
-
-        verify(identService).slettOppholdMedIdent(anyString(), eq(id), eq(id), eq(miljoe), anyString());
     }
 
     @Test
