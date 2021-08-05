@@ -113,14 +113,9 @@ Kjør så ApplicationStarter med følgende argumenter:
 ```
  -Djavax.net.ssl.trustStore=[path til lokal truststore]
  -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
- -Dhttp.proxyHost=webproxy-utvikler.nav.no
- -Dhttps.proxyHost=webproxy-utvikler.nav.no
- -Dhttp.proxyPort=8088
- -Dhttps.proxyPort=8088
- -Dhttp.nonProxyHosts=localhost|127.0.0.1|10.254.0.1|*.local|*.adeo.no|*.nav.no|*.aetat.no|*.devillo.no|*.oera.no|*.nais.io
- -Dspring.profiles.active=utviklerimage
  -DGITHUB_USERNAME=[github brukernavn, kan finnes i syntrest secrets i vault]
  -DGITHUB_PASSWORD=[github passord, kan finnes i syntrest secrets i vault]
+ -Dspring.profiles.active=utviklerimage
 ```
 
 Dersom ApplicationStarter ikke vil kjøre sjekk at du fremdeles har gyldig Kubectl token (`kubectl get pods` kommando fungerer lokalt.)
