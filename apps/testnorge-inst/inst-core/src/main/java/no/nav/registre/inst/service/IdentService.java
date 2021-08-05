@@ -1,11 +1,11 @@
 package no.nav.registre.inst.service;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.registre.inst.Institusjonsopphold;
 import no.nav.registre.inst.consumer.rs.Inst2Consumer;
 import no.nav.registre.inst.exception.UkjentMiljoeException;
 import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
 import no.nav.registre.inst.security.TokenService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -13,13 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class IdentService {
 
-    @Autowired
-    private Inst2Consumer inst2Consumer;
-
-    @Autowired
-    private TokenService tokenService;
+    private final Inst2Consumer inst2Consumer;
+    private final TokenService tokenService;
 
     public List<OppholdResponse> opprettInstitusjonsopphold(
             String callId,
