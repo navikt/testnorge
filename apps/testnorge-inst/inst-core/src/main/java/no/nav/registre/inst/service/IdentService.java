@@ -1,6 +1,7 @@
 package no.nav.registre.inst.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.inst.Institusjonsopphold;
 import no.nav.registre.inst.consumer.rs.Inst2Consumer;
 import no.nav.registre.inst.exception.UkjentMiljoeException;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class IdentService {
 
@@ -39,6 +41,7 @@ public class IdentService {
             String miljoe,
             Institusjonsopphold opphold
     ) {
+        log.info("Sender institusjonsopphold til inst2: " + opphold);
         var oppholdResponse = inst2Consumer.leggTilInstitusjonsoppholdIInst2(
                 hentTokenTilInst2(miljoe),
                 callId,
