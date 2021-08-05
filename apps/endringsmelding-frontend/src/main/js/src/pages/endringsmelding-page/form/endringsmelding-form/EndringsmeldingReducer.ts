@@ -26,7 +26,7 @@ type Actions =
     }
   | {
       type: SubmitWarringAction;
-      warringMessages: string[];
+      warningMessages: string[];
     }
   | {
       type: SetIdentAction;
@@ -38,7 +38,7 @@ export type State = {
   show: boolean;
   loading: boolean;
   errorMessage?: string;
-  warringMessages?: string[];
+  warningMessages?: string[];
   successMessage?: string;
 };
 
@@ -50,7 +50,7 @@ export class Action {
   public static SET_SUBMIT_START: SubmitStartAction = 'SET_SUBMIT_START';
   public static SET_SUBMIT_SUCCESS: SubmitSuccessAction = 'SET_SUBMIT_SUCCESS';
   public static SET_SUBMIT_ERROR: SubmitErrorAction = 'SET_SUBMIT_ERROR';
-  public static SET_SUBMIT_WARRING: SubmitWarringAction = 'SET_SUBMIT_WARRING';
+  public static SET_SUBMIT_WARNING: SubmitWarringAction = 'SET_SUBMIT_WARRING';
 }
 
 export const reducer = (state: State, action: Actions) => {
@@ -79,7 +79,7 @@ export const reducer = (state: State, action: Actions) => {
         ...state,
         loading: true,
         successMessage: null,
-        warringMessages: null,
+        warningMessages: null,
         errorMessage: null,
       };
     case Action.SET_SUBMIT_ERROR:
@@ -89,12 +89,12 @@ export const reducer = (state: State, action: Actions) => {
         show: false,
         errorMessage: action.errorMessage,
       };
-    case Action.SET_SUBMIT_WARRING:
+    case Action.SET_SUBMIT_WARNING:
       return {
         ...state,
         loading: false,
         show: true,
-        warringMessages: action.warringMessages,
+        warningMessages: action.warningMessages,
       };
     case Action.SET_SUBMIT_SUCCESS:
       return {

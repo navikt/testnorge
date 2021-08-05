@@ -68,7 +68,7 @@ export default <T extends {}>({
             return e.response
               .json()
               .then((body: string[]) =>
-                dispatch({ type: Action.SET_SUBMIT_WARRING, warringMessages: body })
+                dispatch({ type: Action.SET_SUBMIT_WARNING, warningMessages: body })
               );
           }
 
@@ -109,8 +109,8 @@ export default <T extends {}>({
       )}
       {!!state.successMessage && <SuccessAlertstripe label={state.successMessage} />}
       {!!state.errorMessage && <ErrorAlertstripe label={state.errorMessage} />}
-      {!!state.warringMessages &&
-        state.warringMessages.map((warring, index) => (
+      {!!state.warningMessages &&
+        state.warningMessages.map((warring, index) => (
           <WarningAlertstripe key={index} label={warring} />
         ))}
     </Form>

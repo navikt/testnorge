@@ -32,11 +32,11 @@ public class SendDoedsmeldingCommand implements Callable<Mono<EndringsmeldingRes
                 .doOnError(error -> {
                     if (error instanceof WebClientResponseException) {
                         log.error(
-                                "Feil ved innsendelse av dødseslmelding. Feilmelding: {}.",
+                                "Feil ved innsendelse av dødsmelding. Feilmelding: {}.",
                                 ((WebClientResponseException) error).getResponseBodyAsString()
                         );
                     } else {
-                        log.error("Feil ved innsendelse av dødseslmelding.", error);
+                        log.error("Feil ved innsendelse av dødsmelding.", error);
                     }
                 });
     }
