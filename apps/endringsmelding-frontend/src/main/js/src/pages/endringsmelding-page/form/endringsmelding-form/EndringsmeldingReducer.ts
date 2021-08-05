@@ -75,7 +75,13 @@ export const reducer = (state: State, action: Actions) => {
         successMessage: null,
       };
     case Action.SET_SUBMIT_START:
-      return { ...state, loading: true };
+      return {
+        ...state,
+        loading: true,
+        successMessage: null,
+        warringMessages: null,
+        errorMessage: null,
+      };
     case Action.SET_SUBMIT_ERROR:
       return {
         ...state,
