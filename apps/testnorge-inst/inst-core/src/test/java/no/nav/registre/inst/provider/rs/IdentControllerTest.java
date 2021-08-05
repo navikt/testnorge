@@ -1,10 +1,7 @@
 package no.nav.registre.inst.provider.rs;
 
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
+import no.nav.registre.inst.Institusjonsopphold;
+import no.nav.registre.inst.service.IdentService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,8 +14,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import no.nav.registre.inst.Institusjonsopphold;
-import no.nav.registre.inst.service.IdentService;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IdentControllerTest {
@@ -64,12 +63,12 @@ public class IdentControllerTest {
     }
 
     @Test
-    public void shouldSletteInstitusjonsopphold() {
+    public void shouldSletteInstitusjonsoppholdForIdent() {
         when(identService.hentTokenTilInst2(miljoe)).thenReturn("Bearer 123");
 
-        identController.slettInstitusjonsopphold(id, id, miljoe, Collections.singletonList(oppholdId));
+        identController.slettIdenter(id, id, miljoe, Collections.singletonList(fnr1));
 
-        verify(identService).slettOppholdMedId(anyString(), eq(id), eq(id), eq(miljoe), eq(oppholdId));
+        verify(identService).slettOppholdMedIdent(anyString(), eq(id), eq(id), eq(miljoe), anyString());
     }
 
     @Test

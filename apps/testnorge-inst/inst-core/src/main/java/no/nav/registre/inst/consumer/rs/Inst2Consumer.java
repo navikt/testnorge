@@ -1,32 +1,29 @@
 package no.nav.registre.inst.consumer.rs;
 
-import static no.nav.registre.inst.properties.HttpRequestConstants.ACCEPT;
-import static no.nav.registre.inst.properties.HttpRequestConstants.AUTHORIZATION;
-import static no.nav.registre.inst.properties.HttpRequestConstants.HEADER_NAV_CALL_ID;
-import static no.nav.registre.inst.properties.HttpRequestConstants.HEADER_NAV_CONSUMER_ID;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.inst.Institusjonsopphold;
+import no.nav.registre.inst.exception.UgyldigIdentResponseException;
+import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriTemplate;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriTemplate;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import lombok.extern.slf4j.Slf4j;
-
-import no.nav.registre.inst.Institusjonsopphold;
-import no.nav.registre.inst.exception.UgyldigIdentResponseException;
-import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
+import static java.util.Collections.emptyList;
+import static java.util.Objects.nonNull;
+import static no.nav.registre.inst.properties.HttpRequestConstants.ACCEPT;
+import static no.nav.registre.inst.properties.HttpRequestConstants.AUTHORIZATION;
+import static no.nav.registre.inst.properties.HttpRequestConstants.HEADER_NAV_CALL_ID;
+import static no.nav.registre.inst.properties.HttpRequestConstants.HEADER_NAV_CONSUMER_ID;
 
 @Component
 @Slf4j
@@ -38,18 +35,20 @@ public class Inst2Consumer {
     private static final ParameterizedTypeReference<Object> RESPONSE_TYPE_OBJECT = new ParameterizedTypeReference<>() {
     };
 
-    @Autowired
-    private RestTemplate restTemplate;
+    private final WebClient webClient;
 
     private UriTemplate inst2WebApiServerUrl;
-    private UriTemplate inst2ServerUrl;
+    private String inst2NewServerUrl;
 
     public Inst2Consumer(
             @Value("${inst2.web.api.url}") String inst2WebApiServerUrl,
-            @Value("${inst2.api.url}") String inst2ServerUrl
+            @Value("${inst2.new.api.url}") String inst2NewServerUrl
     ) {
         this.inst2WebApiServerUrl = new UriTemplate(inst2WebApiServerUrl);
-        this.inst2ServerUrl = new UriTemplate(inst2ServerUrl);
+        this.inst2NewServerUrl = inst2NewServerUrl;
+        this.webClient = WebClient
+                .builder()
+                .build();
     }
 
     public List<Institusjonsopphold> hentInstitusjonsoppholdFraInst2(
@@ -59,16 +58,21 @@ public class Inst2Consumer {
             String miljoe,
             String ident
     ) {
-        var getRequest = RequestEntity.get(new UriTemplate(inst2WebApiServerUrl.expand(miljoe) + "/person/institusjonsopphold").expand())
-                .header(ACCEPT, "*/*")
-                .header(AUTHORIZATION, bearerToken)
-                .header(HEADER_NAV_CALL_ID, callId)
-                .header(HEADER_NAV_CONSUMER_ID, consumerId)
-                .header("Nav-Personident", ident)
-                .build();
         List<Institusjonsopphold> response;
         try {
-            response = restTemplate.exchange(getRequest, RESPONSE_TYPE_HENT_INSTITUSJONSOPPHOLD).getBody();
+            ResponseEntity<List<Institusjonsopphold>> listResponseEntity = webClient.get()
+                    .uri(new UriTemplate(inst2WebApiServerUrl.expand(miljoe) + "/person/institusjonsopphold").expand())
+                    .header(ACCEPT, "*/*")
+                    .header(AUTHORIZATION, bearerToken)
+                    .header(HEADER_NAV_CALL_ID, callId)
+                    .header(HEADER_NAV_CONSUMER_ID, consumerId)
+                    .header("Nav-Personident", ident)
+                    .retrieve()
+                    .toEntity(RESPONSE_TYPE_HENT_INSTITUSJONSOPPHOLD)
+                    .block();
+            response = nonNull(listResponseEntity)
+                    ? listResponseEntity.getBody()
+                    : emptyList();
         } catch (HttpStatusCodeException e) {
             assert e.getMessage() != null;
             if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
@@ -88,14 +92,19 @@ public class Inst2Consumer {
             String miljoe,
             Institusjonsopphold institusjonsopphold
     ) {
-        var postRequest = RequestEntity.post(new UriTemplate(inst2WebApiServerUrl.expand(miljoe) + "/person/institusjonsopphold?validatePeriod=true").expand())
-                .header(ACCEPT, "*/*")
-                .header(AUTHORIZATION, bearerToken)
-                .header(HEADER_NAV_CALL_ID, callId)
-                .header(HEADER_NAV_CONSUMER_ID, consumerId)
-                .body(institusjonsopphold);
         try {
-            var response = restTemplate.exchange(postRequest, RESPONSE_TYPE_OBJECT);
+            var response = webClient.post()
+                    .uri(uriBuilder -> uriBuilder
+                            .path(inst2NewServerUrl + "/v1/institusjonsopphold/person")
+                            .queryParam("environments", miljoe)
+                            .build())
+                    .header(ACCEPT, "*/*")
+                    .header(AUTHORIZATION, bearerToken)
+                    .header(HEADER_NAV_CALL_ID, callId)
+                    .header(HEADER_NAV_CONSUMER_ID, consumerId)
+                    .bodyValue(institusjonsopphold).retrieve().toEntity(RESPONSE_TYPE_OBJECT)
+                    .block();
+
             Institusjonsopphold institusjonsoppholdResponse = new ObjectMapper().convertValue(response.getBody(), Institusjonsopphold.class);
             return OppholdResponse.builder()
                     .status(response.getStatusCode())
@@ -118,37 +127,51 @@ public class Inst2Consumer {
             Long oppholdId,
             Institusjonsopphold institusjonsopphold
     ) {
-        var putRequest = RequestEntity.put(new UriTemplate(inst2WebApiServerUrl.expand(miljoe) + "/person/institusjonsopphold/{oppholdId}").expand(oppholdId))
-                .header(ACCEPT, "*/*")
-                .header(AUTHORIZATION, bearerToken)
-                .header(HEADER_NAV_CALL_ID, callId)
-                .header(HEADER_NAV_CONSUMER_ID, consumerId)
-                .body(institusjonsopphold);
         try {
-            var response = restTemplate.exchange(putRequest, RESPONSE_TYPE_OBJECT);
-            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+            var response = webClient.put().uri(new UriTemplate(inst2WebApiServerUrl.expand(miljoe) + "/person/institusjonsopphold/{oppholdId}").expand(oppholdId))
+                    .header(ACCEPT, "*/*")
+                    .header(AUTHORIZATION, bearerToken)
+                    .header(HEADER_NAV_CALL_ID, callId)
+                    .header(HEADER_NAV_CONSUMER_ID, consumerId)
+                    .bodyValue(institusjonsopphold)
+                    .retrieve()
+                    .toEntity(RESPONSE_TYPE_OBJECT)
+                    .block();
+
+            return nonNull(response)
+                    ? ResponseEntity.status(response.getStatusCode()).body(response.getBody())
+                    : ResponseEntity.notFound().build();
         } catch (HttpStatusCodeException e) {
             log.error("Kunne ikke oppdatere institusjonsopphold - {}", e.getResponseBodyAsString(), e);
             return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
         }
     }
 
-    public ResponseEntity<Object> slettInstitusjonsoppholdFraInst2(
+    public ResponseEntity<Object> slettInstitusjonsoppholdMedIdent(
             String bearerToken,
             String callId,
             String consumerId,
             String miljoe,
-            Long oppholdId
+            String ident
     ) {
-        var deleteRequest = RequestEntity.delete(new UriTemplate(inst2WebApiServerUrl.expand(miljoe) + "/person/institusjonsopphold/{oppholdId}").expand(oppholdId))
-                .header(ACCEPT, "*/*")
-                .header(AUTHORIZATION, bearerToken)
-                .header(HEADER_NAV_CALL_ID, callId)
-                .header(HEADER_NAV_CONSUMER_ID, consumerId)
-                .build();
         try {
-            var response = restTemplate.exchange(deleteRequest, RESPONSE_TYPE_OBJECT);
-            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+            var response = webClient.delete()
+                    .uri(uriBuilder -> uriBuilder
+                            .path(inst2NewServerUrl + "/v1/institusjonsopphold/person")
+                            .queryParam("environments", miljoe)
+                            .queryParam("norskIdent", ident)
+                            .build())
+                    .header(ACCEPT, "*/*")
+                    .header(AUTHORIZATION, bearerToken)
+                    .header(HEADER_NAV_CALL_ID, callId)
+                    .header(HEADER_NAV_CONSUMER_ID, consumerId)
+                    .retrieve()
+                    .toEntity(RESPONSE_TYPE_OBJECT)
+                    .block();
+
+            return nonNull(response)
+                    ? ResponseEntity.status(response.getStatusCode()).body(response.getBody())
+                    : ResponseEntity.notFound().build();
         } catch (HttpStatusCodeException e) {
             log.error("Kunne ikke slette institusjonsopphold - {}", e.getResponseBodyAsString(), e);
             return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
@@ -163,17 +186,18 @@ public class Inst2Consumer {
             String tssEksternId,
             LocalDate date
     ) {
-        var getRequest = RequestEntity.get(new UriTemplate(inst2WebApiServerUrl.expand(miljoe) + "/institusjon/oppslag/tssEksternId/{tssEksternId}?date={date}")
-                .expand(tssEksternId, date))
-                .header(ACCEPT, "*/*")
-                .header(AUTHORIZATION, bearerToken)
-                .header(HEADER_NAV_CALL_ID, callId)
-                .header(HEADER_NAV_CONSUMER_ID, consumerId)
-                .build();
-
         try {
-            var response = restTemplate.exchange(getRequest, RESPONSE_TYPE_OBJECT);
-            return response.getStatusCode();
+            var response = webClient.get().uri(new UriTemplate(inst2WebApiServerUrl.expand(miljoe) + "/institusjon/oppslag/tssEksternId/{tssEksternId}?date={date}")
+                            .expand(tssEksternId, date))
+                    .header(ACCEPT, "*/*")
+                    .header(AUTHORIZATION, bearerToken)
+                    .header(HEADER_NAV_CALL_ID, callId)
+                    .header(HEADER_NAV_CONSUMER_ID, consumerId)
+                    .retrieve()
+                    .toBodilessEntity()
+                    .block();
+
+            return nonNull(response) ? response.getStatusCode() : HttpStatus.NOT_FOUND;
         } catch (HttpStatusCodeException e) {
             log.debug("Institusjon med tssEksternId {} er ikke gyldig på dato {}.", tssEksternId, date);
             return e.getStatusCode();
@@ -181,10 +205,14 @@ public class Inst2Consumer {
     }
 
     public boolean isMiljoeTilgjengelig(String miljoe) {
-        var optionsRequest = RequestEntity.options(inst2ServerUrl.expand(miljoe)).build();
         try {
-            restTemplate.exchange(optionsRequest, Void.class);
-            return true;
+            ResponseEntity<List<String>> response = webClient.get().uri(uriBuilder ->
+                            uriBuilder.path(inst2NewServerUrl + "/v1/environment")
+                                    .build())
+                    .retrieve().toEntityList(String.class).block();
+            List<String> miljoer = nonNull(response) ? response.getBody() : emptyList();
+            log.info("Tilgjengelige inst2 miljøer: {}", String.join(",", miljoer));
+            return miljoer.stream().anyMatch(env -> env.equals(miljoe));
         } catch (HttpStatusCodeException e) {
             log.warn("Inst2 er ikke tilgjengelig i miljø {}", miljoe);
             return false;

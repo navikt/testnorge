@@ -1,9 +1,24 @@
 package no.nav.registre.inst.consumer.rs;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import no.nav.registre.inst.Institusjonsopphold;
+import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.http.HttpStatus;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import java.time.LocalDate;
+
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
@@ -12,32 +27,10 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static no.nav.registre.inst.testutils.ResourceUtils.getResourceFileContent;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
-import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.http.HttpStatus;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import java.time.LocalDate;
-
-import no.nav.registre.inst.Institusjonsopphold;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -102,17 +95,6 @@ public class Inst2ConsumerTest {
         var response = inst2Consumer.oppdaterInstitusjonsoppholdIInst2(token, id, id, miljoe, oppholdId, institusjonsopphold);
 
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
-    }
-
-    @Test
-    public void shouldDeleteOpphold() {
-        var oppholdId = 123L;
-
-        stubDeleteOpphold(oppholdId);
-
-        var result = inst2Consumer.slettInstitusjonsoppholdFraInst2(token, id, id, miljoe, oppholdId);
-
-        assertThat(result.getStatusCode(), is(HttpStatus.NO_CONTENT));
     }
 
     @Test

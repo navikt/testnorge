@@ -1,18 +1,16 @@
 package no.nav.registre.inst.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-
 import no.nav.registre.inst.Institusjonsopphold;
 import no.nav.registre.inst.consumer.rs.Inst2Consumer;
 import no.nav.registre.inst.exception.UkjentMiljoeException;
 import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
 import no.nav.registre.inst.security.TokenService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class IdentService {
@@ -64,27 +62,12 @@ public class IdentService {
         List<OppholdResponse> sletteOppholdResponses = new ArrayList<>(identer.size());
 
         for (var ident : identer) {
-            var institusjonsopphold = hentInstitusjonsoppholdFraInst2(bearerToken, callId, consumerId, miljoe, ident);
-            var oppholdResponse = OppholdResponse.builder()
+            var response = slettOppholdMedIdent(bearerToken, callId, consumerId, miljoe, ident);
+            sletteOppholdResponses.add(OppholdResponse.builder()
                     .personident(ident)
-                    .build();
-            if (institusjonsopphold.isEmpty()) {
-                oppholdResponse.setStatus(HttpStatus.NOT_FOUND);
-                oppholdResponse.setFeilmelding("Fant ingen institusjonsopphold på ident.");
-            } else {
-                for (var opphold : institusjonsopphold) {
-                    var response = slettOppholdMedId(bearerToken, callId, consumerId, miljoe, opphold.getOppholdId());
-                    if (response.getStatusCode().is2xxSuccessful()) {
-                        oppholdResponse.setStatus(HttpStatus.OK);
-                        oppholdResponse.setInstitusjonsopphold(opphold);
-                        oppholdResponse.getInstitusjonsopphold().setPersonident(null); // finnes allerede i respons - unngå dobbel personident
-                    } else {
-                        oppholdResponse.setStatus(response.getStatusCode());
-                        oppholdResponse.setFeilmelding(String.valueOf(response.getBody()));
-                    }
-                }
-            }
-            sletteOppholdResponses.add(oppholdResponse);
+                    .status(response.getStatusCode())
+                    .feilmelding(response.hasBody() ? String.valueOf(response.getBody()) : null)
+                    .build());
         }
 
         return sletteOppholdResponses;
@@ -101,14 +84,14 @@ public class IdentService {
         return inst2Consumer.oppdaterInstitusjonsoppholdIInst2(bearerToken, callId, consumerId, miljoe, oppholdId, institusjonsopphold);
     }
 
-    public ResponseEntity<Object> slettOppholdMedId(
+    public ResponseEntity<Object> slettOppholdMedIdent(
             String bearerToken,
             String callId,
             String consumerId,
             String miljoe,
-            Long oppholdId
+            String ident
     ) {
-        return inst2Consumer.slettInstitusjonsoppholdFraInst2(bearerToken, callId, consumerId, miljoe, oppholdId);
+        return inst2Consumer.slettInstitusjonsoppholdMedIdent(bearerToken, callId, consumerId, miljoe, ident);
     }
 
     public List<Institusjonsopphold> hentOppholdTilIdenter(

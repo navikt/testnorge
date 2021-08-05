@@ -1,11 +1,10 @@
 package no.nav.registre.inst.provider.rs;
 
-import static no.nav.registre.inst.properties.HttpRequestConstants.HEADER_NAV_CALL_ID;
-import static no.nav.registre.inst.properties.HttpRequestConstants.HEADER_NAV_CONSUMER_ID;
-
-import com.google.common.collect.Maps;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.inst.Institusjonsopphold;
+import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
+import no.nav.registre.inst.service.IdentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,11 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.constraints.NotBlank;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
-import no.nav.registre.inst.Institusjonsopphold;
-import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
-import no.nav.registre.inst.service.IdentService;
+import static no.nav.registre.inst.properties.HttpRequestConstants.HEADER_NAV_CALL_ID;
+import static no.nav.registre.inst.properties.HttpRequestConstants.HEADER_NAV_CONSUMER_ID;
 
 @Slf4j
 @RestController
@@ -80,22 +77,6 @@ public class IdentController {
             @RequestBody Institusjonsopphold institusjonsopphold
     ) {
         return identService.oppdaterInstitusjonsopphold(navCallId, navConsumerId, miljoe, oppholdId, institusjonsopphold);
-    }
-
-    @DeleteMapping("/ident")
-    @ApiOperation(value = "Her kan man slette alle institusjonsoppholdene med de angitte oppholdId-ene fra inst2.")
-    public Map<Long, ResponseEntity<Object>> slettInstitusjonsopphold(
-            @RequestHeader(HEADER_NAV_CALL_ID) @NotBlank String navCallId,
-            @RequestHeader(HEADER_NAV_CONSUMER_ID) @NotBlank String navConsumerId,
-            @RequestParam String miljoe,
-            @RequestParam List<Long> oppholdIder
-    ) {
-        var bearerToken = identService.hentTokenTilInst2(miljoe);
-        Map<Long, ResponseEntity<Object>> status = Maps.newHashMapWithExpectedSize(oppholdIder.size());
-        for (var oppholdId : oppholdIder) {
-            status.put(oppholdId, identService.slettOppholdMedId(bearerToken, navCallId, navConsumerId, miljoe, oppholdId));
-        }
-        return status;
     }
 
     @GetMapping("/miljoer")
