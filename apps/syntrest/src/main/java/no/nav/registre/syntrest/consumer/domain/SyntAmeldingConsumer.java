@@ -65,7 +65,7 @@ public class SyntAmeldingConsumer extends SyntConsumer {
     ) throws ApiException, InterruptedException {
         startApplication();
         try {
-            return new PostArbeidsforholdMedTypeCommand(request, String.format(startSpesifikkPath, arbeidsforholdType) , queryString, webClient).call();
+            return new PostArbeidsforholdMedTypeCommand(request, String.format(startSpesifikkPath, arbeidsforholdType), queryString, webClient).call();
         } catch (RestClientException e) {
             log.error(REST_CLIENT_EXCEPTION_MESSAGE, Arrays.toString(e.getStackTrace()));
             throw e;
@@ -80,7 +80,7 @@ public class SyntAmeldingConsumer extends SyntConsumer {
     ) throws ApiException, InterruptedException {
         startApplication();
         try {
-            return new PostArbeidsforholdInitialCommand(request, startPathV2 , queryString, webClient).call();
+            return new PostArbeidsforholdInitialCommand(request, startPathV2, queryString, webClient).call();
         } catch (RestClientException e) {
             log.error(REST_CLIENT_EXCEPTION_MESSAGE, Arrays.toString(e.getStackTrace()));
             throw e;
@@ -88,7 +88,6 @@ public class SyntAmeldingConsumer extends SyntConsumer {
             scheduleIfShutdown();
         }
     }
-
 
     public List<Arbeidsforhold> synthesizeArbeidsforholdHistorikk(
             Arbeidsforhold tidligereArbeidsforhold,

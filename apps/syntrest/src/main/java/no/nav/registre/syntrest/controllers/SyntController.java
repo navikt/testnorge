@@ -187,7 +187,7 @@ public class SyntController {
             "inntektsmelding basert på personens inntektsmelding forrige år. Hvis personen ikke har en inntektsmelding " +
             "vil det bli samplet en ny inntektsmelding fra en BeAn/CART-modell.")
     @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-popp" })
-    public ResponseEntity<List<Inntektsmelding>> generateInntektsmelding(
+    public ResponseEntity<List<Inntektsmelding>> generateInntektsmeldingPopp(
             @ApiParam(value = "Fnrs å opprette inntektsmeldinger på", required = true)
             @RequestBody List<String> fnrs
     ) throws ApiException, InterruptedException {

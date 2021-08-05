@@ -60,11 +60,6 @@ De filene som må endres når man legger til synt-pakkene er:
 ## Oversikt over synt-pakker
  - **Aareg**\
    _Genererer syntetiske arbeidshistorikker bestående av meldinger på AAREG format._
- - **Aap** 
-   - **11_5**\
-   _Generer et antall AAP11_5 meldinger_
-   - **NyRettighet**\
-   _Generer et antall nye rettigheter_
  - **Bisys**\
    _API for å generere syntetiserte bisysmeldinger._
  - **Inst**\
@@ -108,9 +103,6 @@ De filene som må endres når man legger til synt-pakkene er:
    _Lager SKD meldinger for ulike endringskoder_
  - **Frikort**\
    _Lager et spesifisert antall kvitteringer for hvert personnummersom sendes inn._
- - **Eia**\
-   _Lager en legeerklæring for hvert objekt i forespørselen. Returnerer et map med_
-   _key=personnummer for pasienten, value=xml for legeerklæringen_
 
 ## Lokal kjøring
 
@@ -121,9 +113,9 @@ Kjør så ApplicationStarter med følgende argumenter:
 ```
  -Djavax.net.ssl.trustStore=[path til lokal truststore]
  -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
- -Dspring.profiles.active=utviklerimage
  -DGITHUB_USERNAME=[github brukernavn, kan finnes i syntrest secrets i vault]
  -DGITHUB_PASSWORD=[github passord, kan finnes i syntrest secrets i vault]
+ -Dspring.profiles.active=utviklerimage
 ```
 
 Dersom ApplicationStarter ikke vil kjøre sjekk at du fremdeles har gyldig Kubectl token (`kubectl get pods` kommando fungerer lokalt.)
@@ -132,7 +124,7 @@ Dersom ApplicationStarter ikke vil kjøre sjekk at du fremdeles har gyldig Kubec
 Når syntrest kjøres lokalt i utviklerimage så klarer den ikke alltid å hente korrekt/siste image tag fra github for synt-applikasjon som skal deployes. 
 En manuell fiks for dette er å gå til [packages](https://github.com/orgs/navikt/packages?repo_name=testnorge-syntetiseringspakker) og hente siste versjon for ønsket 
 applikasjon og bytte ut `latest` med denne versjonen i image-delen i relevant nais.yaml (resources/nais/{app-name}.yaml). Deretter må følgende kode kommenteres ut i 
-`KubernetesController` `prepareYaml`-metode:
+`utils/NaisYaml` `provideYaml`-metode:
 ```java
 Map<String, Object> spec = (Map) manifestFile.get("spec");
 String imageBase = spec.get("image").toString();
