@@ -5,7 +5,7 @@ on:
     branches: master
     paths:
       - apps/ereg-batch-status-service/**
-      - libs/testnorge-core/**
+
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/ereg-batch-status-service:${{ github.sha }}

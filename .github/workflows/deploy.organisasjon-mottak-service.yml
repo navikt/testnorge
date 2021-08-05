@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - apps/organisasjon-mottak-service/**
-      - libs/testnorge-core/**
+
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/organisasjon-mottak-service:${{ github.sha }}

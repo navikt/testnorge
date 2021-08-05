@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - apps/oversikt-frontend/**
-      - libs/testnorge-core/**
+
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/oversikt-frontend:${{ github.sha }}

@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - apps/testnorge-statisk-data-forvalter/**
-      - libs/testnorge-core/**
+
   workflow_dispatch:
 
 env:

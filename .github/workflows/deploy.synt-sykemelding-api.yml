@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - apps/synt-sykemelding-api/**
-      - libs/testnorge-core/**
+
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/synt-sykemelding-api:${{ github.sha }}

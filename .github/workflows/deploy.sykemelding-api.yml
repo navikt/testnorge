@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - apps/sykemelding-api/**
-      - libs/testnorge-core/**
+
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/sykemelding-api:${{ github.sha }}

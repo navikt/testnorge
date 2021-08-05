@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - apps/tilbakemelding-api/**
-      - libs/testnorge-core/**
+
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/tilbakemelding-api:${{ github.sha }}

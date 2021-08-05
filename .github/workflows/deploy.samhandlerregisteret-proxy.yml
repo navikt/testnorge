@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - proxies/samhandlerregisteret-proxy/**
-      - libs/testnorge-core/**
+
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/samhandlerregisteret-proxy:${{ github.sha }}

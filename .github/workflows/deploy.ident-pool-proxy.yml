@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - proxies/ident-pool-proxy/**
-      - libs/testnorge-core/**
+
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/ident-pool-proxy:${{ github.sha }}

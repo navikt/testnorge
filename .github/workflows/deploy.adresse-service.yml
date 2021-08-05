@@ -2,10 +2,8 @@ name: Deploy adresse-service
 
 on:
   push:
-    branches: master
     paths:
       - apps/adresse-service/**
-      - libs/testnorge-core/**
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/adresse-service:${{ github.sha }}

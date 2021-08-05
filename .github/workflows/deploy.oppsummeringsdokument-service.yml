@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - apps/oppsummeringsdokument-service/**
-      - libs/testnorge-core/**
+
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/oppsummeringsdokument-service:${{ github.sha }}

@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - apps/endringsmelding-service/**
-      - libs/testnorge-core/**
+
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/endringsmelding-service:${{ github.sha }}

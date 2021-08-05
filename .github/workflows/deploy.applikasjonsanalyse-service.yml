@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - apps/applikasjonsanalyse-service/**
-      - libs/testnorge-core/**
+
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/applikasjonsanalyse-service:${{ github.sha }}
