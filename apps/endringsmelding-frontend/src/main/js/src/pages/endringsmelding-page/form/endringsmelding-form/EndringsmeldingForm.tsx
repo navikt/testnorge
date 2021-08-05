@@ -82,7 +82,7 @@ export default <T extends {}>({
         <>
           {children}
           <Line reverse={true}>
-            <Hovedknapp onClick={onSubmit} htmlType="submit" disabled={state.loading}>
+            <Hovedknapp onClick={onSubmit} htmlType="submit" disabled={state.loading} spinner={state.loading}>
               {labels.submit}
             </Hovedknapp>
           </Line>
