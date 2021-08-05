@@ -2,7 +2,6 @@ name: Deploy adresse-service
 
 on:
   push:
-    branches: master
     paths:
       - apps/adresse-service/**
 
