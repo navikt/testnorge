@@ -10,8 +10,8 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.util.UriTemplate;
 
 import java.time.LocalDate;
@@ -73,7 +73,7 @@ public class Inst2Consumer {
             response = nonNull(listResponseEntity)
                     ? listResponseEntity.getBody()
                     : emptyList();
-        } catch (HttpStatusCodeException e) {
+        } catch (WebClientResponseException e) {
             assert e.getMessage() != null;
             if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
                 return new ArrayList<>();
@@ -94,8 +94,8 @@ public class Inst2Consumer {
     ) {
         try {
             var response = webClient.post()
-                    .uri(uriBuilder -> uriBuilder
-                            .path(inst2NewServerUrl + "/v1/institusjonsopphold/person")
+                    .uri(inst2NewServerUrl, uriBuilder -> uriBuilder
+                            .path("/v1/institusjonsopphold/person")
                             .queryParam("environments", miljoe)
                             .build())
                     .header(ACCEPT, "*/*")
@@ -110,7 +110,7 @@ public class Inst2Consumer {
                     .status(response.getStatusCode())
                     .institusjonsopphold(institusjonsoppholdResponse)
                     .build();
-        } catch (HttpStatusCodeException e) {
+        } catch (WebClientResponseException e) {
             log.error("Kunne ikke legge til institusjonsopphold i inst2 på ident - {}", e.getResponseBodyAsString(), e);
             return OppholdResponse.builder()
                     .status(e.getStatusCode())
@@ -141,7 +141,7 @@ public class Inst2Consumer {
             return nonNull(response)
                     ? ResponseEntity.status(response.getStatusCode()).body(response.getBody())
                     : ResponseEntity.notFound().build();
-        } catch (HttpStatusCodeException e) {
+        } catch (WebClientResponseException e) {
             log.error("Kunne ikke oppdatere institusjonsopphold - {}", e.getResponseBodyAsString(), e);
             return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
         }
@@ -156,8 +156,8 @@ public class Inst2Consumer {
     ) {
         try {
             var response = webClient.delete()
-                    .uri(uriBuilder -> uriBuilder
-                            .path(inst2NewServerUrl + "/v1/institusjonsopphold/person")
+                    .uri(inst2NewServerUrl, uriBuilder -> uriBuilder
+                            .path("/v1/institusjonsopphold/person")
                             .queryParam("environments", miljoe)
                             .queryParam("norskIdent", ident)
                             .build())
@@ -172,7 +172,7 @@ public class Inst2Consumer {
             return nonNull(response)
                     ? ResponseEntity.status(response.getStatusCode()).body(response.getBody())
                     : ResponseEntity.notFound().build();
-        } catch (HttpStatusCodeException e) {
+        } catch (WebClientResponseException e) {
             log.error("Kunne ikke slette institusjonsopphold - {}", e.getResponseBodyAsString(), e);
             return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
         }
@@ -198,7 +198,7 @@ public class Inst2Consumer {
                     .block();
 
             return nonNull(response) ? response.getStatusCode() : HttpStatus.NOT_FOUND;
-        } catch (HttpStatusCodeException e) {
+        } catch (WebClientResponseException e) {
             log.debug("Institusjon med tssEksternId {} er ikke gyldig på dato {}.", tssEksternId, date);
             return e.getStatusCode();
         }
@@ -213,7 +213,7 @@ public class Inst2Consumer {
             List<String> miljoer = nonNull(response) ? response.getBody() : emptyList();
             log.info("Tilgjengelige inst2 miljøer: {}", String.join(",", miljoer));
             return miljoer.stream().anyMatch(env -> env.equals(miljoe));
-        } catch (HttpStatusCodeException e) {
+        } catch (WebClientResponseException e) {
             log.warn("Inst2 er ikke tilgjengelig i miljø {}", miljoe);
             return false;
         }

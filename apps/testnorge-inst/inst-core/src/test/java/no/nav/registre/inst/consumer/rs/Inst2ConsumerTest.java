@@ -17,7 +17,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.time.LocalDate;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
@@ -129,7 +128,8 @@ public class Inst2ConsumerTest {
     }
 
     private void stubAddInstitusjonsopphold() {
-        stubFor(post(urlPathMatching("(.*)/person/institusjonsopphold"))
+        stubFor(post(urlPathMatching("(.*)/v1/institusjonsopphold/person"))
+                .withQueryParam("environments", equalTo(miljoe))
                 .withHeader("accept", equalTo("*/*"))
                 .withHeader("Authorization", equalTo(token))
                 .withHeader("Nav-Call-Id", equalTo(id))
@@ -146,16 +146,6 @@ public class Inst2ConsumerTest {
                 .withHeader("Nav-Consumer-Id", equalTo(id))
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.OK.value())));
-    }
-
-    private void stubDeleteOpphold(Long oppholdId) {
-        stubFor(delete(urlEqualTo("/inst2/web/api/person/institusjonsopphold/" + oppholdId))
-                .withHeader("accept", equalTo("*/*"))
-                .withHeader("Authorization", equalTo(token))
-                .withHeader("Nav-Call-Id", equalTo(id))
-                .withHeader("Nav-Consumer-Id", equalTo(id))
-                .willReturn(aResponse()
-                        .withStatus(HttpStatus.NO_CONTENT.value())));
     }
 
     private void stubFindInstitusjon() {
