@@ -6,17 +6,6 @@ import { CompareTable } from '@/components/compare-table';
 import { OrganisasjonComperator } from '@/comperator';
 import { Input } from 'nav-frontend-skjema';
 
-type Gruppe =
-  | 'DOLLY'
-  | 'SAMHANDLER'
-  | 'ANDRE'
-  | 'OFFENTLIGE'
-  | 'EKSTERNE'
-  | 'OTP'
-  | 'INTERNE'
-  | 'HJELPEGRUPPE'
-  | 'WIP';
-
 const grupper = [
   'DOLLY',
   'SAMHANDLER',
@@ -80,6 +69,7 @@ export default () => {
 
   return (
     <Form>
+      <h2>Organisasjon</h2>
       <Line>
         <SelectFormItem
           label="Gruppe"

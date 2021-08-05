@@ -28,8 +28,8 @@ import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 
-import no.nav.registre.testnorge.libs.avro.application.Application;
-import no.nav.registre.testnorge.libs.avro.person.Person;
+import no.nav.testnav.libs.avro.application.Application;
+import no.nav.testnav.libs.avro.person.Person;
 
 @EnableKafka
 @Configuration

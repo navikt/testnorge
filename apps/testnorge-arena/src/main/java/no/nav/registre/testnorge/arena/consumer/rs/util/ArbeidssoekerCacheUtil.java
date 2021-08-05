@@ -10,14 +10,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 
 @Component
 public class ArbeidssoekerCacheUtil {
 
     private static final int OPPDATERINGSINTERVALL_I_SEKUNDER = 3600;
 
-    private Map<String, ArbeidssoekerCacheElement> eksisterendeArbeidssoekereCache;
+    private final Map<String, ArbeidssoekerCacheElement> eksisterendeArbeidssoekereCache;
 
     public ArbeidssoekerCacheUtil() {
         this.eksisterendeArbeidssoekereCache = new HashMap<>();

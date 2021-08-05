@@ -14,8 +14,8 @@ import no.nav.registre.testnav.inntektsmeldingservice.domain.FilLaster;
 import no.nav.testnav.libs.dto.dokarkiv.v1.DokmotRequest;
 import no.nav.testnav.libs.dto.dokarkiv.v1.InntektDokument;
 import no.nav.testnav.libs.dto.dokarkiv.v1.ProsessertInntektDokument;
-import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 
 @Slf4j
 @Component

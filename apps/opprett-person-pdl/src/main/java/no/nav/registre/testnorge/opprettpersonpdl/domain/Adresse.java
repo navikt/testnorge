@@ -6,7 +6,7 @@ import no.nav.testnav.libs.dto.person.v1.AdresseDTO;
 
 @Value
 public class Adresse {
-    public Adresse(no.nav.registre.testnorge.libs.avro.person.Adresse adresse) {
+    public Adresse(no.nav.testnav.libs.avro.person.Adresse adresse) {
         gatenavn = adresse.getGatenavn() != null ? adresse.getGatenavn().toString() : null;
         postnummer = adresse.getPostnummer() != null ? adresse.getPostnummer().toString() : null;
         poststed = adresse.getPoststed() != null ? adresse.getPoststed().toString() : null;

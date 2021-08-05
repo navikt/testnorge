@@ -39,11 +39,28 @@ includeBuild './proxies/ereg-proxy'
 
 includeBuild './libs/security-token-service'
 includeBuild './libs/data-transfer-objects'
-includeBuild './libs/proxy-config'
+includeBuild './libs/reactive-proxy'
 includeBuild './libs/reactive-core'
+includeBuild './libs/servlet-core'
+includeBuild './libs/servlet-security'
 includeBuild './libs/reactive-security'
+includeBuild './libs/reactive-frontend'
+includeBuild './libs/testing'
+includeBuild './libs/commands'
+includeBuild './libs/kafka-config'
+includeBuild './libs/kafka-producers'
+includeBuild './libs/avro-schema'
+includeBuild './libs/csv-converter'
+includeBuild './libs/database'
+includeBuild './libs/domain'
+includeBuild './libs/reporting'
+includeBuild './libs/slack'
 
 includeBuild './apps/person-service'
+includeBuild './apps/faste-data-frontend'
+includeBuild './apps/oversikt-frontend'
+includeBuild './apps/endringsmelding-frontend'
+includeBuild './apps/applikasjonsanalyse-frontend'
 
 includeBuild './gradlePlugins'
 include(':proxies')
@@ -58,8 +75,6 @@ include(':aareg-local')
 include(':mn-original-populasjon')
 include(':medl-local')
 include(':sigrun-local')
-include(':testnorge-core')
-include(':testnorge-oauth2')
 include(':testnorge-nav-endringsmeldinger')
 include(':testnorge-frikort')
 include(':testnorge-aaregstub')
@@ -68,33 +83,26 @@ include(':aareg-domain')
 include(':medl-domain')
 include(':testnorge-sigrun')
 include(':orkestratoren')
-include(':testnorge-reporting')
 include(':testnorge-arena')
 include(':testnorge-token-provider')
 include(':nav-endringsmeldinger-core')
 include(':synt-sykemelding-api')
-include(':testnorge-csv-converter')
 include(':testnorge-tp')
 include(':udi-stub')
 include(':arbeidsforhold-export-api')
 include(':testnorge-hodejegeren')
-include(':testnorge-slack')
 include(':sigrun-core')
 include(':testnorge-bisys')
 include(':testnorge-statisk-data-forvalter')
 include(':nav-endringsmeldinger-local')
-include(':testnorge-testing')
 include(':tp-local')
 include(':testnorge-populasjoner')
 include(':sam-core')
-include(':testnorge-domain')
 include(':tilbakemelding-api')
 include(':sam-local')
 include(':aareg-core')
-include(':testnorge-avro-schema')
 include(':mn-organisasjon-api')
 include(':organisasjon-service')
-include(':testnorge-database')
 include(':organisasjon-service')
 include(':token-provider-core')
 include(':arbeidsforhold-xsd')
@@ -106,21 +114,17 @@ include(':sigrun-domain')
 include(':libs')
 include(':testnorge-inst')
 include(':testnorge-spion')
-include(':oversikt-frontend')
 include(':opprett-person-pdl')
 include(':varslinger-api')
-include(':commands')
 include(':testnorge-inntekt')
 include(':inst-local')
 include(':arbeidsforhold-service')
 include(':tp-core')
 include(':testnorge-aareg')
-include(':applikasjonsanalyse-frontend')
 include(':syntrest')
 include(':synt-person-api')
 include(':skd-core')
 include(':testnorge-sam')
-include(':testnorge-logging')
 include(':inst-core')
 include(':inst-domain')
 include(':testnorge-skd')
@@ -148,8 +152,6 @@ project(":aareg-local").projectDir = file('apps/testnorge-aareg/aareg-local')
 project(":mn-original-populasjon").projectDir = file('apps/mn-original-populasjon')
 project(":medl-local").projectDir = file('apps/testnorge-medl/medl-local')
 project(":sigrun-local").projectDir = file('apps/testnorge-sigrun/sigrun-local')
-project(":testnorge-core").projectDir = file('libs/testnorge-core')
-project(":testnorge-oauth2").projectDir = file('libs/testnorge-oauth2')
 project(":testnorge-nav-endringsmeldinger").projectDir = file('apps/testnorge-nav-endringsmeldinger')
 project(":testnorge-frikort").projectDir = file('apps/testnorge-frikort')
 project(":testnorge-aaregstub").projectDir = file('apps/testnorge-aaregstub')
@@ -158,33 +160,26 @@ project(":aareg-domain").projectDir = file('apps/testnorge-aareg/aareg-domain')
 project(":medl-domain").projectDir = file('apps/testnorge-medl/medl-domain')
 project(":testnorge-sigrun").projectDir = file('apps/testnorge-sigrun')
 project(":orkestratoren").projectDir = file('apps/orkestratoren')
-project(":testnorge-reporting").projectDir = file('libs/testnorge-reporting')
 project(":testnorge-token-provider").projectDir = file('apps/testnorge-token-provider')
 project(":nav-endringsmeldinger-core").projectDir = file('apps/testnorge-nav-endringsmeldinger/nav-endringsmeldinger-core')
 project(":synt-sykemelding-api").projectDir = file('apps/synt-sykemelding-api')
-project(":testnorge-csv-converter").projectDir = file('libs/testnorge-csv-converter')
 project(":testnorge-tp").projectDir = file('apps/testnorge-tp')
 project(":udi-stub").projectDir = file('apps/udi-stub')
 project(":arbeidsforhold-export-api").projectDir = file('apps/arbeidsforhold-export-api')
 project(":testnorge-hodejegeren").projectDir = file('apps/testnorge-hodejegeren')
-project(":testnorge-slack").projectDir = file('libs/testnorge-slack')
 project(":testnorge-arena").projectDir = file('apps/testnorge-arena')
 project(":sigrun-core").projectDir = file('apps/testnorge-sigrun/sigrun-core')
 project(":testnorge-bisys").projectDir = file('apps/testnorge-bisys')
 project(":testnorge-statisk-data-forvalter").projectDir = file('apps/testnorge-statisk-data-forvalter')
 project(":nav-endringsmeldinger-local").projectDir = file('apps/testnorge-nav-endringsmeldinger/nav-endringsmeldinger-local')
-project(":testnorge-testing").projectDir = file('libs/testnorge-testing')
 project(":tp-local").projectDir = file('apps/testnorge-tp/tp-local')
 project(":testnorge-populasjoner").projectDir = file('apps/testnorge-populasjoner')
 project(":sam-core").projectDir = file('apps/testnorge-sam/sam-core')
-project(":testnorge-domain").projectDir = file('libs/testnorge-domain')
 project(":tilbakemelding-api").projectDir = file('apps/tilbakemelding-api')
 project(":sam-local").projectDir = file('apps/testnorge-sam/sam-local')
 project(":aareg-core").projectDir = file('apps/testnorge-aareg/aareg-core')
-project(":testnorge-avro-schema").projectDir = file('libs/testnorge-avro-schema')
 project(":mn-organisasjon-api").projectDir = file('apps/mn-organisasjon-api')
 project(":organisasjon-service").projectDir = file('apps/organisasjon-service')
-project(":testnorge-database").projectDir = file('libs/testnorge-database')
 project(":organisasjon-service").projectDir = file('apps/organisasjon-service')
 project(":token-provider-core").projectDir = file('apps/testnorge-token-provider/token-provider-core')
 project(":arbeidsforhold-xsd").projectDir = file('xsd/arbeidsforhold-xsd')
@@ -194,21 +189,17 @@ project(":brreg-stub").projectDir = file('apps/brreg-stub')
 project(":sigrun-domain").projectDir = file('apps/testnorge-sigrun/sigrun-domain')
 project(":testnorge-inst").projectDir = file('apps/testnorge-inst')
 project(":testnorge-spion").projectDir = file('apps/testnorge-spion')
-project(":oversikt-frontend").projectDir = file('apps/oversikt-frontend')
 project(":opprett-person-pdl").projectDir = file('apps/opprett-person-pdl')
 project(":varslinger-api").projectDir = file('apps/varslinger-api')
-project(":commands").projectDir = file('libs/commands')
 project(":testnorge-inntekt").projectDir = file('apps/testnorge-inntekt')
 project(":inst-local").projectDir = file('apps/testnorge-inst/inst-local')
 project(":arbeidsforhold-service").projectDir = file('apps/arbeidsforhold-service')
 project(":tp-core").projectDir = file('apps/testnorge-tp/tp-core')
 project(":testnorge-aareg").projectDir = file('apps/testnorge-aareg')
-project(":applikasjonsanalyse-frontend").projectDir = file('apps/applikasjonsanalyse-frontend')
 project(":syntrest").projectDir = file('apps/syntrest')
 project(":synt-person-api").projectDir = file('apps/synt-person-api')
 project(":skd-core").projectDir = file('apps/testnorge-skd/skd-core')
 project(":testnorge-sam").projectDir = file('apps/testnorge-sam')
-project(":testnorge-logging").projectDir = file('libs/testnorge-logging')
 project(":inst-core").projectDir = file('apps/testnorge-inst/inst-core')
 project(":inst-domain").projectDir = file('apps/testnorge-inst/inst-domain')
 project(":testnorge-skd").projectDir = file('apps/testnorge-skd')
@@ -244,12 +235,6 @@ project(":generer-synt-amelding-service").projectDir = file('apps/generer-synt-a
 include 'miljoer-service'
 project(":miljoer-service").projectDir = file('apps/miljoer-service')
 
-include 'kafka-config'
-project(":kafka-config").projectDir = file('libs/kafka-config')
-
-include 'kafka-producers'
-project(":kafka-producers").projectDir = file('libs/kafka-producers')
-
 include 'organisasjon-bestilling-service'
 project(":organisasjon-bestilling-service").projectDir = file('apps/organisasjon-bestilling-service')
 
@@ -259,30 +244,17 @@ project(":ereg-batch-status-service").projectDir = file('apps/ereg-batch-status-
 include 'jenkins-batch-status-service'
 project(":jenkins-batch-status-service").projectDir = file('apps/jenkins-batch-status-service')
 
-include 'local-development'
-project(":local-development").projectDir = file('libs/local-development')
-
 include 'applikasjonsanalyse-service'
 project(":applikasjonsanalyse-service").projectDir = file('apps/applikasjonsanalyse-service')
 
 include 'oppsummeringsdokument-service'
 project(":oppsummeringsdokument-service").projectDir = file('apps/oppsummeringsdokument-service')
 
-include 'endringsmelding-frontend'
-project(":endringsmelding-frontend").projectDir = file('apps/endringsmelding-frontend')
-
 include 'person-search-service'
 project(":person-search-service").projectDir = file('apps/person-search-service')
 
-include 'frontend'
-project(":frontend").projectDir = file('libs/frontend')
-
-
 include 'organisasjon-faste-data-service'
 project(":organisasjon-faste-data-service").projectDir = file('apps/organisasjon-faste-data-service')
-
-include 'faste-data-frontend'
-project(":faste-data-frontend").projectDir = file('apps/faste-data-frontend')
 
 include 'generer-organisasjon-populasjon-service'
 project(":generer-organisasjon-populasjon-service").projectDir = file('apps/generer-organisasjon-populasjon-service')

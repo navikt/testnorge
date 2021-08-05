@@ -7,10 +7,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Set;
 
-import no.nav.registre.testnorge.libs.common.command.GetCrumbCommand;
+import no.nav.testnav.libs.commands.GetCrumbCommand;
 import no.nav.testnav.libs.dto.jenkins.v1.JenkinsCrumb;
-import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import no.nav.registre.testnorge.organisasjonmottak.config.properties.JenkinsServiceProperties;
 import no.nav.registre.testnorge.organisasjonmottak.consumer.command.StartBEREG007Command;
 import no.nav.registre.testnorge.organisasjonmottak.domain.Flatfil;

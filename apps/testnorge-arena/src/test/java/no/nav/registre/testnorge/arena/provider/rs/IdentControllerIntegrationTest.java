@@ -8,9 +8,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
-import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
+import no.nav.testnav.libs.testing.JsonWiremockHelper;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -120,7 +120,7 @@ public class IdentControllerIntegrationTest {
 
         String[] resultat = objectMapper.readValue(mvcResultat, String[].class);
 
-        assertThat(resultat).isEqualTo(new String[]{ident});
+        assertThat(resultat).isEqualTo(new String[] { ident });
     }
 
     @AfterEach

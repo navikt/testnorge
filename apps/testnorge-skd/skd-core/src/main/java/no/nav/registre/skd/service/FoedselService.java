@@ -20,7 +20,7 @@ import no.nav.registre.skd.consumer.requests.HentIdenterRequest.IdentType;
 import no.nav.registre.skd.exceptions.ManglerEksisterendeIdentException;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
-import no.nav.registre.testnorge.libs.core.util.IdentUtil;
+import no.nav.testnav.libs.servletcore.util.IdentUtil;
 
 @Service
 @AllArgsConstructor

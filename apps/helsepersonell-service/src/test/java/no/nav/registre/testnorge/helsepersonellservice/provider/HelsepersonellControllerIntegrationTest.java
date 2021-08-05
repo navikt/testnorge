@@ -26,7 +26,7 @@ import no.nav.testnav.libs.dto.helsepersonell.v1.HelsepersonellListeDTO;
 import no.nav.testnav.libs.dto.hodejegeren.v1.PersondataDTO;
 import no.nav.testnav.libs.dto.samhandlerregisteret.v1.IdentDTO;
 import no.nav.testnav.libs.dto.samhandlerregisteret.v1.SamhandlerDTO;
-import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
+import no.nav.testnav.libs.testing.JsonWiremockHelper;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

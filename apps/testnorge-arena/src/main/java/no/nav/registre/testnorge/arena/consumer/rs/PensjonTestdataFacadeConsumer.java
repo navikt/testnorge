@@ -2,6 +2,7 @@ package no.nav.registre.testnorge.arena.consumer.rs;
 
 import no.nav.registre.testnorge.arena.consumer.rs.command.pensjon.PostPensjonTestdataInntektCommand;
 import no.nav.registre.testnorge.arena.consumer.rs.command.pensjon.PostPensjonTestdataPersonCommand;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;

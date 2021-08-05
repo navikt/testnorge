@@ -7,11 +7,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.client.RestTemplate;
 
-import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
-import no.nav.registre.testnorge.libs.database.config.FlywayConfiguration;
-import no.nav.registre.testnorge.libs.database.config.VaultHikariConfiguration;
-import no.nav.registre.testnorge.libs.kafkaconfig.config.KafkaProperties;
-import no.nav.registre.testnorge.libs.oauth2.config.InsecureOAuth2ServerToServerConfiguration;
+import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
+import no.nav.testnav.libs.database.config.FlywayConfiguration;
+import no.nav.testnav.libs.database.config.VaultHikariConfiguration;
+import no.nav.testnav.libs.servletsecurity.config.InsecureOAuth2ServerToServerConfiguration;
 
 @Configuration
 @EnableJpaAuditing

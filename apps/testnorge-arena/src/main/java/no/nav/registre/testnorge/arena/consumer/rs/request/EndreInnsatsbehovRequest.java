@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.NyEndreInnsatsbehov;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.NyEndreInnsatsbehov;
 
 
 @Getter

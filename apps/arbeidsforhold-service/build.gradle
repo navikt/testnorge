@@ -19,15 +19,15 @@ dependencies {
             strictly '20.0'
         }
     }
-    implementation project(':local-development')
+
     implementation 'javax.xml.bind:jaxb-api'
     implementation 'javax.activation:activation:1.1'
     implementation 'org.glassfish.jaxb:jaxb-runtime'
 
-    implementation project(':testnorge-core')
+    implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
-    implementation project(':commands')
-    implementation project(':testnorge-oauth2')
+    implementation 'no.nav.testnav.libs:commands'
+    implementation 'no.nav.testnav.libs:servlet-security'
 
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
 
@@ -46,7 +46,7 @@ dependencies {
 
     implementation 'org.hibernate.validator:hibernate-validator'
 
-    testImplementation project(':testnorge-testing')
+    testImplementation 'no.nav.testnav.libs:testing'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'

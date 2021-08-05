@@ -11,5 +11,6 @@ spring:
   jpa:
     database: POSTGRESQL
     properties:
+      default-schema: public
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect

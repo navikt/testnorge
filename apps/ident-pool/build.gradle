@@ -15,11 +15,10 @@ bootJar {
 }
 
 dependencies {
-    implementation project(':testnorge-logging')
-    implementation project(':testnorge-core')
-    implementation project(':testnorge-oauth2')
-    implementation project(':local-development')
-    implementation project(':testnorge-database')
+    implementation 'no.nav.testnav.libs:servlet-core'
+    implementation 'no.nav.testnav.libs:servlet-security'
+
+    implementation 'no.nav.testnav.libs:database'
 
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -52,7 +51,7 @@ dependencies {
     implementation "org.springdoc:springdoc-openapi-ui:${springdocOpenapiUi}"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation project(':testnorge-testing')
+    testImplementation 'no.nav.testnav.libs:testing'
 }
 
 description = 'ident-pool'

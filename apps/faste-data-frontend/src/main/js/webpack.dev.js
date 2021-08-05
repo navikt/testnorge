@@ -11,7 +11,17 @@ module.exports = merge(common, {
     contentBase: path.join(__dirname, 'public'),
     historyApiFallback: true,
     proxy: {
+      '/testnav-person-service': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        secure: false,
+      },
       '/testnav-organisasjon-faste-data-service': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/testnav-person-faste-data-service': {
         target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,
@@ -27,6 +37,11 @@ module.exports = merge(common, {
         secure: false,
       },
       '/oauth2/authorization/aad': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/login/oauth2/code/aad': {
         target: 'http://localhost:8080',
         changeOrigin: true,
         secure: false,

@@ -7,10 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
-import no.nav.registre.testnorge.domain.dto.aareg.amelding.Arbeidsforhold;
-import no.nav.registre.testnorge.domain.dto.aareg.amelding.Fartoey;
-import no.nav.registre.testnorge.domain.dto.aareg.amelding.Inntekt;
-import no.nav.registre.testnorge.domain.dto.aareg.amelding.Permisjon;
+import no.nav.testnav.libs.domain.dto.aareg.amelding.Arbeidsforhold;
+import no.nav.testnav.libs.domain.dto.aareg.amelding.Fartoey;
+import no.nav.testnav.libs.domain.dto.aareg.amelding.Inntekt;
+import no.nav.testnav.libs.domain.dto.aareg.amelding.Permisjon;
 
 @Value
 @Builder

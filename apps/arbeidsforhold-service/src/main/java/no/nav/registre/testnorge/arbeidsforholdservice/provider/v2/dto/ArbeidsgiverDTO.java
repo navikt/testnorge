@@ -1,0 +1,18 @@
+package no.nav.registre.testnorge.arbeidsforholdservice.provider.v2.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.Value;
+import no.nav.registre.testnorge.arbeidsforholdservice.domain.Aktoer;
+
+@Value
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor(force = true)
+public class ArbeidsgiverDTO {
+
+    Aktoer type;
+    String organisasjonsnummer;
+    String offentligIdent;
+}

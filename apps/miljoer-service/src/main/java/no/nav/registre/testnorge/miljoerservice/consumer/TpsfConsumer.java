@@ -13,8 +13,8 @@ import reactor.util.retry.Retry;
 
 import java.time.Duration;
 
-import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import no.nav.registre.testnorge.miljoerservice.config.credentias.TpsForvalterenProxyServiceProperties;
 import no.nav.registre.testnorge.miljoerservice.response.MiljoerResponse;
 

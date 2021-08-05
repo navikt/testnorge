@@ -1,0 +1,28 @@
+import no.nav.testnav.dependencies.gradle.DependenciesPlugin
+
+plugins {
+    id 'no.nav.testnav.dependencies'
+    id 'java-library'
+}
+
+group = 'no.nav.testnav.libs'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+java.sourceCompatibility = JavaVersion.VERSION_11
+
+dependencies {
+
+    implementation "org.springframework.boot:spring-boot-starter-web:${DependenciesPlugin.springBoot}"
+    implementation "org.springdoc:springdoc-openapi-ui:${DependenciesPlugin.springdocOpenapi}"
+    compileOnly "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+
+    testImplementation "org.springframework.boot:spring-boot-starter-test:${DependenciesPlugin.springBoot}"
+
+    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+}

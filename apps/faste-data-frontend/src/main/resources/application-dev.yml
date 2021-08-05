@@ -3,8 +3,12 @@ azure.app.client.secret: ${client_secret}
 
 consumers:
   testnorge-profil-api:
-    url: https://testnorge-profil-api.dev.intern.nav.no/api
+    url: https://testnorge-profil-api.dev.intern.nav.no
   testnav-organisasjon-faste-data-service:
-    url: https://testnav-organisasjon-faste-data-service.dev.intern.nav.no/api
+    url: https://testnav-organisasjon-faste-data-service.dev.intern.nav.no
   testnav-organisasjon-service:
-    url: https://testnav-organisasjon-service.dev.intern.nav.no/api
+    url: https://testnav-organisasjon-service.dev.intern.nav.no
+  testnav-person-faste-data-service:
+    url: https://testnav-person-faste-data-service.dev.intern.nav.no
+  testnav-person-service:
+    url: https://testnav-person-service.dev.intern.nav.no

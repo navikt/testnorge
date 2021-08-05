@@ -25,7 +25,7 @@ import no.nav.registre.sdforvalter.consumer.rs.request.aareg.Arbeidsforhold;
 import no.nav.registre.sdforvalter.database.model.AaregModel;
 import no.nav.registre.sdforvalter.database.repository.AaregRepository;
 import no.nav.registre.sdforvalter.domain.Aareg;
-import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
+import no.nav.testnav.libs.testing.JsonWiremockHelper;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

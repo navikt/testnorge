@@ -3,6 +3,14 @@ package no.nav.registre.aareg.mapper.strategy;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
+import no.nav.registre.aareg.config.MappingStrategy;
+import no.nav.registre.aareg.domain.RsAktoerPerson;
+import no.nav.registre.aareg.domain.RsArbeidsavtale;
+import no.nav.registre.aareg.domain.RsArbeidsforhold;
+import no.nav.registre.aareg.domain.RsOrganisasjon;
+import no.nav.registre.aareg.domain.RsPermisjon;
+import no.nav.registre.aareg.domain.RsPersonAareg;
+import no.nav.registre.aareg.domain.RsUtenlandsopphold;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidsavtale;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidsforhold;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidsforholdstyper;
@@ -19,15 +27,6 @@ import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Personidente
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Utenlandsopphold;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Yrker;
 import org.springframework.stereotype.Component;
-
-import no.nav.registre.aareg.config.MappingStrategy;
-import no.nav.registre.aareg.domain.RsAktoerPerson;
-import no.nav.registre.aareg.domain.RsArbeidsavtale;
-import no.nav.registre.aareg.domain.RsArbeidsforhold;
-import no.nav.registre.aareg.domain.RsOrganisasjon;
-import no.nav.registre.aareg.domain.RsPermisjon;
-import no.nav.registre.aareg.domain.RsPersonAareg;
-import no.nav.registre.aareg.domain.RsUtenlandsopphold;
 
 @Component
 public class AaregMappingStrategy implements MappingStrategy {

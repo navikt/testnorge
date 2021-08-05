@@ -3,7 +3,7 @@ package no.nav.registre.testnorge.organisasjonmottak.domain;
 public class Ansatte extends ToLine {
     private final boolean ansatte;
 
-    public Ansatte(no.nav.registre.testnorge.libs.avro.organisasjon.v1.Ansatte ansatte) {
+    public Ansatte(no.nav.testnav.libs.avro.organisasjon.v1.Ansatte ansatte) {
         this.ansatte = ansatte.getHarAnsatte();
     }
 

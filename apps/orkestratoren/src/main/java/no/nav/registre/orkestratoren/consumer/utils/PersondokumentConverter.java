@@ -1,7 +1,7 @@
 package no.nav.registre.orkestratoren.consumer.utils;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import no.nav.registre.testnorge.domain.dto.namespacetps.TpsPersonDokumentType;
+import no.nav.testnav.libs.domain.dto.namespacetps.TpsPersonDokumentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

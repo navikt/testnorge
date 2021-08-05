@@ -9,15 +9,18 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import static no.nav.registre.testnorge.arena.service.RettighetAapService.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
+import static no.nav.registre.testnorge.arena.service.util.ServiceUtils.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
 
 import no.nav.registre.testnorge.arena.consumer.rs.VedtakshistorikkSyntConsumer;
-import no.nav.registre.testnorge.arena.service.util.DatoUtils;
 import no.nav.registre.testnorge.arena.consumer.rs.RettighetArenaForvalterConsumer;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.aap.gensaksopplysninger.Saksopplysning;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
+import no.nav.registre.testnorge.arena.service.util.RequestUtils;
+import no.nav.registre.testnorge.arena.service.util.TilleggUtils;
+import no.nav.registre.testnorge.arena.service.util.TiltakUtils;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.aap.gensaksopplysninger.Saksopplysning;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,6 +28,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -39,32 +43,30 @@ public class VedtakshistorikkServiceTest {
 
     @Mock
     private VedtakshistorikkSyntConsumer vedtakshistorikkSyntConsumer;
-
-    @Mock
-    private IdentService identService;
-
-    @Mock
-    private ArbeidssoekerService arbeidssoekerService;
-
-    @Mock
-    private DatoUtils datoUtils;
-
     @Mock
     private RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
 
     @Mock
-    private RettighetAapService rettighetAapService;
+    private IdentService identService;
+    @Mock
+    private PensjonService pensjonService;
+    @Mock
+    private ArenaBrukerService arenaBrukerService;
 
     @Mock
-    private RettighetTiltakService rettighetTiltakService;
+    private RequestUtils requestUtils;
+    @Mock
+    private TilleggUtils tilleggUtils;
+    @Mock
+    private TiltakUtils tiltakUtils;
 
     @InjectMocks
     private VedtakshistorikkService vedtakshistorikkService;
 
-    private Long avspillergruppeId = 123L;
-    private String miljoe = "t1";
-    private int antallIdenter = 1;
-    private String fnr1 = "270699494213";
+    private final Long avspillergruppeId = 123L;
+    private final String miljoe = "t1";
+    private final int antallIdenter = 1;
+    private final String fnr1 = "270699494213";
     private List<Vedtakshistorikk> vedtakshistorikkListe;
     private List<NyttVedtakAap> aapRettigheter;
     private List<NyttVedtakAap> ungUfoerRettigheter;
@@ -101,10 +103,9 @@ public class VedtakshistorikkServiceTest {
                 .fritakMeldekort(fritakMeldekortRettigheter)
                 .build();
 
-
         vedtakshistorikkListe = new ArrayList<>((Collections.singletonList(vedtakshistorikk)));
 
-        when(identService.getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt(), eq(miljoe), eq(null))).thenReturn(identer);
+        when(identService.getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt(), eq(miljoe), any(LocalDate.class))).thenReturn(identer);
     }
 
     @Test
@@ -117,7 +118,6 @@ public class VedtakshistorikkServiceTest {
                         .kontonummer(kontonummer)
                         .build())));
         when(vedtakshistorikkSyntConsumer.syntetiserVedtakshistorikk(antallIdenter)).thenReturn(vedtakshistorikkListe);
-        when(datoUtils.finnTidligsteDato(vedtakshistorikkListe.get(0))).thenReturn(ARENA_AAP_UNG_UFOER_DATE_LIMIT.minusDays(7));
 
         var nyRettighetAapResponse = NyttVedtakResponse.builder()
                 .nyeRettigheterAap(aapRettigheter)
@@ -145,13 +145,13 @@ public class VedtakshistorikkServiceTest {
         responseAsMap.put(fnr1, expectedResponsesFromArenaForvalter);
 
         when(rettighetArenaForvalterConsumer.opprettRettighet(anyList())).thenReturn(responseAsMap);
-        when(rettighetAapService.opprettetPersonOgInntektIPopp(anyString(), anyString(), any(NyttVedtakAap.class))).thenReturn(true);
+        when(pensjonService.opprettetPersonOgInntektIPopp(anyString(), anyString(), any(LocalDate.class))).thenReturn(true);
 
         var response = vedtakshistorikkService.genererVedtakshistorikk(avspillergruppeId, miljoe, antallIdenter);
 
-        verify(identService).getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt(), eq(miljoe), eq(null));
+        verify(identService).getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt(), eq(miljoe), eq(ARENA_AAP_UNG_UFOER_DATE_LIMIT.minusDays(7)));
         verify(vedtakshistorikkSyntConsumer).syntetiserVedtakshistorikk(antallIdenter);
-        verify(rettighetAapService).opprettetPersonOgInntektIPopp(anyString(), anyString(), any(NyttVedtakAap.class));
+        verify(pensjonService).opprettetPersonOgInntektIPopp(anyString(), anyString(), any(LocalDate.class));
         verify(rettighetArenaForvalterConsumer).opprettRettighet(anyList());
 
         assertThat(response.get(fnr1)).hasSize(4);

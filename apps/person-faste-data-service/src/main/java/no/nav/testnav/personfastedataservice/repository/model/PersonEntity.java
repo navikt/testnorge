@@ -20,7 +20,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.util.Date;
 
-import no.nav.testnav.personfastedataservice.domain.Gruppe;
+import no.nav.testnav.libs.dto.personservice.v1.Gruppe;
 import no.nav.testnav.personfastedataservice.domain.Person;
 import no.nav.testnav.personfastedataservice.repository.converter.PersonJsonConverter;
 
@@ -30,7 +30,7 @@ import no.nav.testnav.personfastedataservice.repository.converter.PersonJsonConv
 @EntityListeners(AuditingEntityListener.class)
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "IDENT")
+@Table(name = "PERSON")
 public class PersonEntity {
 
     @Id

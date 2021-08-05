@@ -6,6 +6,7 @@ plugins {
     id 'org.springframework.boot' version "2.3.4.RELEASE"
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
+
 bootJar {
     archiveFileName = "app.jar"
 }
@@ -14,7 +15,6 @@ dependencyManagement {
         mavenBom  "org.springframework.cloud:spring-cloud-dependencies:${DependenciesPlugin.springCloud}"
     }
 }
-
 
 test {
     useJUnitPlatform()
@@ -52,6 +52,3 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
     testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
 }
-
-
-description = 'person-api'

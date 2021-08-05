@@ -14,7 +14,7 @@ import no.nav.registre.testnorge.helsepersonellservice.config.credentials.Hodeje
 import no.nav.registre.testnorge.helsepersonellservice.consumer.command.GetAlleIdenterCommand;
 import no.nav.registre.testnorge.helsepersonellservice.consumer.command.GetPersondataCommand;
 import no.nav.registre.testnorge.helsepersonellservice.domain.Persondata;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 
 @Slf4j
 @Component

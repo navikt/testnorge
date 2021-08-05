@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import no.nav.testnav.personfastedataservice.domain.Gruppe;
+import no.nav.testnav.libs.dto.personservice.v1.Gruppe;
 import no.nav.testnav.personfastedataservice.domain.Person;
 import no.nav.testnav.personfastedataservice.repository.PersonRepository;
 import no.nav.testnav.personfastedataservice.repository.model.PersonEntity;

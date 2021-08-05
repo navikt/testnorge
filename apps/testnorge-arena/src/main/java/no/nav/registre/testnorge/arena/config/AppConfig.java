@@ -9,8 +9,10 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Random;
 
-import no.nav.registre.testnorge.libs.core.config.ApplicationCoreConfig;
+import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
+
+import no.nav.testnav.libs.securitytokenservice.StsOidcTokenService;
 
 @Configuration
 @Import(ApplicationCoreConfig.class)
@@ -18,6 +20,15 @@ public class AppConfig {
 
     @Value("${testnorge-hodejegeren.rest-api.url}")
     private String hodejegerenUrl;
+
+    @Bean
+    public StsOidcTokenService stsOidcTokenService(
+            @Value("${sts.token.provider.url}") String url,
+            @Value("${sts.token.provider.username}") String username,
+            @Value("${sts.token.provider.password}") String password
+    ) {
+        return new StsOidcTokenService(url, username, password);
+    }
 
     @Bean
     public RestTemplate restTemplate() {

@@ -21,11 +21,11 @@ dependencies {
 
     implementation 'io.projectreactor:reactor-core:3.4.5'
 
-    implementation project(':local-development')
-    implementation project(':testnorge-core')
-    implementation project(':testnorge-oauth2')
-    implementation project(':testnorge-database')
-    implementation project(':commands')
+
+    implementation 'no.nav.testnav.libs:servlet-core'
+    implementation 'no.nav.testnav.libs:servlet-security'
+    implementation 'no.nav.testnav.libs:database'
+    implementation 'no.nav.testnav.libs:commands'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -48,7 +48,7 @@ dependencies {
     implementation "org.springdoc:springdoc-openapi-ui:${springdocOpenapiUi}"
     implementation "net.logstash.logback:logstash-logback-encoder:${logstashLogbackEncoder}"
 
-    testImplementation project(':testnorge-testing')
+    testImplementation 'no.nav.testnav.libs:testing'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'org.assertj:assertj-core:3.16.1'

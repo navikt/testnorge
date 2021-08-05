@@ -3,7 +3,7 @@ package no.nav.registre.testnorge.synt.sykemelding.consumer;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import no.nav.registre.testnorge.synt.sykemelding.config.credentials.ArbeidsforholdServiceProperties;
 import no.nav.registre.testnorge.synt.sykemelding.consumer.command.GetArbeidsforholdCommand;
 import org.springframework.stereotype.Component;

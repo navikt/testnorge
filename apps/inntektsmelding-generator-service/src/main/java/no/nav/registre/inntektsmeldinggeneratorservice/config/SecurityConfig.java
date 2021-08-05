@@ -10,7 +10,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 
 import java.util.List;
 
-import no.nav.registre.testnorge.libs.oauth2.config.OAuth2ResourceServerConfiguration;
+import no.nav.testnav.libs.servletsecurity.config.OAuth2ResourceServerConfiguration;
 
 @EnableWebSecurity
 @Configuration

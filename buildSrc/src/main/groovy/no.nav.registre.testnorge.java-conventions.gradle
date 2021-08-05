@@ -17,8 +17,7 @@ repositories {
         }
     }
     maven {
-        url = uri('http://packages.confluent.io/maven/')
-        allowInsecureProtocol = true
+        url = uri('https://packages.confluent.io/maven/')
     }
 }
 

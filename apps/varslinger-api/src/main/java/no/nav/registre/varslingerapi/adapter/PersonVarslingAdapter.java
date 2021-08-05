@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.avro.personinfo.PersonInfo;
-import no.nav.registre.testnorge.libs.oauth2.service.AuthenticationTokenResolver;
+import no.nav.testnav.libs.avro.personinfo.PersonInfo;
+import no.nav.testnav.libs.servletsecurity.service.AuthenticationTokenResolver;
 import no.nav.registre.varslingerapi.domain.Varsling;
 import no.nav.registre.varslingerapi.repository.BrukerRepository;
 import no.nav.registre.varslingerapi.repository.MottattVarslingRepository;

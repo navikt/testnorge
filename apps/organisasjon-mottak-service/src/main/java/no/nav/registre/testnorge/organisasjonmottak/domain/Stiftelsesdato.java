@@ -5,7 +5,7 @@ import java.time.LocalDate;
 public class Stiftelsesdato extends ToLine {
     private final LocalDate localDate;
 
-    public Stiftelsesdato(no.nav.registre.testnorge.libs.avro.organisasjon.v1.Stiftelsesdato stiftelsesdato) {
+    public Stiftelsesdato(no.nav.testnav.libs.avro.organisasjon.v1.Stiftelsesdato stiftelsesdato) {
         localDate = LocalDate.of(
                 stiftelsesdato.getDato().getAar(),
                 stiftelsesdato.getDato().getMaaned(),

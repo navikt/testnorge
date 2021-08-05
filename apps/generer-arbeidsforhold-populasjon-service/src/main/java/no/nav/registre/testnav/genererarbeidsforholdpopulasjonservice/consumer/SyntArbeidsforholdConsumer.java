@@ -16,8 +16,8 @@ import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.c
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.credentials.SyntrestServiceProperties;
 import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdRequest;
 import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdResponse;
-import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 
 @Component
 public class SyntArbeidsforholdConsumer {

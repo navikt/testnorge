@@ -2,7 +2,7 @@ package no.nav.registre.orkestratoren.consumer.rs;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.registre.testnorge.domain.dto.namespacetps.TpsPersonDokumentType;
+import no.nav.testnav.libs.domain.dto.namespacetps.TpsPersonDokumentType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

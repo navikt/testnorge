@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import no.nav.registre.testnorge.helsepersonellservice.config.credentials.SamhandlerregisteretServerProperties;
 import no.nav.registre.testnorge.helsepersonellservice.consumer.command.GetSamhandlerCommand;
 import no.nav.registre.testnorge.helsepersonellservice.domain.Samhandler;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 
 @Slf4j
 @Component

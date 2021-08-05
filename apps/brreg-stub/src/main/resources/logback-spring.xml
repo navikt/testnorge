@@ -12,7 +12,7 @@
     </root>
 
     <logger name="no.nav.brregstub" level="INFO"/>
-    <logger name="no.nav.registre.testnorge.libs.logging.LogRequestInterceptor">
+    <logger name="no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor">
         <level value="TRACE"/>
     </logger>
 </configuration>
