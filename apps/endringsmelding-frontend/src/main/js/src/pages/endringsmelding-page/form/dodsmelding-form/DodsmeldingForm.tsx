@@ -41,12 +41,12 @@ export default () => {
   const getSuccessMessage = () => {
     const miljoer = state.miljoer.join(', ');
     if (state.handling === 'SETTE_DOEDSDATO') {
-      return `Send dødsmelding for ident ${state.ident} ble sendt i miljø ${miljoer}.`;
+      return `Send dødsmelding for ident ${state.ident} ble sendt til miljø ${miljoer}.`;
     }
     if (state.handling === 'ENDRET_DOEDSDATO') {
-      return `Endret dødsdato til ${state.doedsdato} for ident ${state.ident} ble sendt i miljø ${miljoer}.`;
+      return `Endret dødsdato til ${state.doedsdato} for ident ${state.ident} ble sendt til miljø ${miljoer}.`;
     }
-    return `Annullert dødsmelding for ident ${state.ident} ble sendt i miljø ${miljoer}.`;
+    return `Annullert dødsmelding for ident ${state.ident} ble sendt til miljø ${miljoer}.`;
   };
   return (
     <EndringsmeldingForm
