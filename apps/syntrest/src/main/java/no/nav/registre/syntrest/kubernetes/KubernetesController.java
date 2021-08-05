@@ -113,7 +113,7 @@ public class KubernetesController {
     private void pollApplication(String appName) {
         var response = new GetIsAliveWithRetryCommand(webClient, isAliveUrl, appName, maxRetries, retryDelay).call();
 
-        if (!response) {
+        if (Boolean.FALSE.equals(response)) {
             throw new KubernetesException("Application failed to deploy.");
         }
     }
