@@ -29,7 +29,6 @@ public class GetIsAliveCommand implements Callable<Boolean> {
                     .block();
             return "1".equals(response);
         } catch (WebClientResponseException.ServiceUnavailable | WebClientResponseException.NotFound e) {
-            log.info(e.getMessage());
             return false;
         }
     }

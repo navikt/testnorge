@@ -8,7 +8,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import no.nav.registre.syntrest.kubernetes.exception.KubernetesException;
 import reactor.util.retry.Retry;
 
-public class GetIsAliveWithRetryCommand implements Callable<String> {
+public class GetIsAliveWithRetryCommand implements Callable<Boolean> {
 
     private final WebClient webClient;
     private final String isAliveUrl;
@@ -25,8 +25,8 @@ public class GetIsAliveWithRetryCommand implements Callable<String> {
     }
 
     @Override
-    public String call() {
-        return webClient.get()
+    public Boolean call() {
+        var response = webClient.get()
                 .uri(isAliveUrl.replace("{appName}", appName))
                 .retrieve()
                 .bodyToMono(String.class)
@@ -35,5 +35,6 @@ public class GetIsAliveWithRetryCommand implements Callable<String> {
                                 e instanceof WebClientResponseException.NotFound)
                         .onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> new KubernetesException("Failed to poll application: too many retries.")))
                 .block();
+        return "1".equals(response);
     }
 }
