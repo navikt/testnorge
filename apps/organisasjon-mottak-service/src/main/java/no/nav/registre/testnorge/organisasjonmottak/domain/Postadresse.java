@@ -2,7 +2,7 @@ package no.nav.registre.testnorge.organisasjonmottak.domain;
 
 public class Postadresse extends Adresse {
 
-    public Postadresse(no.nav.registre.testnorge.libs.avro.organisasjon.v1.Adresse postadresse) {
+    public Postadresse(no.nav.testnav.libs.avro.organisasjon.v1.Adresse postadresse) {
         super(
                 postadresse.getPostnummer(),
                 postadresse.getLandkode(),

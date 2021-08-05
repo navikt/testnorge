@@ -1,6 +1,6 @@
 package no.nav.registre.testnorge.arena.service.util;
 
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

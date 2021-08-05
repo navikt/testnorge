@@ -59,10 +59,10 @@ public class AdresseMappingStrategy implements MappingStrategy {
                 .byDefault()
                 .register();
 
-        factory.classMap(Adresse.class, no.nav.registre.testnorge.libs.avro.organisasjon.v1.Adresse.class)
+        factory.classMap(Adresse.class, no.nav.testnav.libs.avro.organisasjon.v1.Adresse.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(Adresse source, no.nav.registre.testnorge.libs.avro.organisasjon.v1.Adresse target, MappingContext context) {
+                    public void mapAtoB(Adresse source, no.nav.testnav.libs.avro.organisasjon.v1.Adresse target, MappingContext context) {
 
                         var adresselinjer = source.getAdresse().split(",");
                         target.setPostadresse1(adresselinjer.length > 0 ? adresselinjer[0] : null);

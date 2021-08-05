@@ -38,8 +38,8 @@ import no.nav.registre.syntrest.domain.tp.TPmelding;
 import no.nav.registre.syntrest.domain.tps.SkdMelding;
 import no.nav.registre.syntrest.utils.InputValidator;
 
-import no.nav.registre.testnorge.domain.dto.aareg.amelding.Arbeidsforhold;
-import no.nav.registre.testnorge.domain.dto.aareg.amelding.ArbeidsforholdPeriode;
+import no.nav.testnav.libs.domain.dto.aareg.amelding.Arbeidsforhold;
+import no.nav.testnav.libs.domain.dto.aareg.amelding.ArbeidsforholdPeriode;
 
 import static java.util.Objects.isNull;
 import static no.nav.registre.syntrest.utils.UrlUtils.createQueryString;

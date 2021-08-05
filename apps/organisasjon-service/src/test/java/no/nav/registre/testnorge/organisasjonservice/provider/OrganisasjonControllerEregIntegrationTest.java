@@ -8,7 +8,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import no.nav.registre.testnorge.organisasjonservice.consumer.dto.DetaljerDTO;
 import no.nav.registre.testnorge.organisasjonservice.consumer.dto.NavnDTO;
 import no.nav.registre.testnorge.organisasjonservice.consumer.dto.OrganisasjonDTO;
-import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
+import no.nav.testnav.libs.testing.JsonWiremockHelper;
 
 import org.junit.Before;
 import org.junit.Ignore;

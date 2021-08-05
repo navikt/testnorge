@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import no.nav.registre.testnorge.libs.database.config.FlywayConfiguration;
-import no.nav.registre.testnorge.libs.database.config.VaultHikariConfiguration;
+import no.nav.testnav.libs.database.config.FlywayConfiguration;
+import no.nav.testnav.libs.database.config.VaultHikariConfiguration;
 import no.nav.testnav.libs.servletcore.config.ApplicationProperties;
 import no.nav.testnav.libs.servletcore.config.LoggingWebConfig;
 import no.nav.testnav.libs.servletcore.provider.InternalController;

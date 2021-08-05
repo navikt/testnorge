@@ -16,8 +16,8 @@ dependencyManagement {
 dependencies {
 
     implementation 'no.nav.testnav.libs:servlet-core'
-    implementation project(':testnorge-oauth2')
-    implementation project(':commands')
+    implementation 'no.nav.testnav.libs:servlet-security'
+    implementation 'no.nav.testnav.libs:commands'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
 
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
@@ -36,5 +36,5 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
-    testImplementation project(':testnorge-testing')
+    testImplementation 'no.nav.testnav.libs:testing'
 }

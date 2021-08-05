@@ -17,13 +17,13 @@ bootJar {
 dependencies {
 
     implementation 'no.nav.testnav.libs:servlet-core'
-    implementation project(':testnorge-oauth2')
-    implementation project(':kafka-config')
-    implementation project(':kafka-producers')
-    implementation project(':testnorge-avro-schema')
+    implementation 'no.nav.testnav.libs:servlet-security'
+    implementation 'no.nav.testnav.libs:kafka-config'
+    implementation 'no.nav.testnav.libs:kafka-producers'
+    implementation 'no.nav.testnav.libs:avro-schema'
 
     implementation 'no.nav.testnav.libs:data-transfer-objects'
-    implementation project(':commands')
+    implementation 'no.nav.testnav.libs:commands'
 
     implementation 'org.springframework.kafka:spring-kafka:2.5.6.RELEASE'
     implementation 'org.apache.kafka:kafka-clients:2.5.1'
@@ -56,7 +56,7 @@ dependencies {
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'com.h2database:h2:1.4.200'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation project(':testnorge-testing')
+    testImplementation 'no.nav.testnav.libs:testing'
 }
 
 description = 'organisasjon-forvalter'

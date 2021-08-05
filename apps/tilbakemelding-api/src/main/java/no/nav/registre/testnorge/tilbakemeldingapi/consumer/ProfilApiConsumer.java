@@ -7,8 +7,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 
 import no.nav.testnav.libs.dto.profil.v1.ProfilDTO;
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.domain.AccessScopes;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import no.nav.registre.testnorge.tilbakemeldingapi.config.credentials.ProfilServiceProperties;
 
 @Slf4j

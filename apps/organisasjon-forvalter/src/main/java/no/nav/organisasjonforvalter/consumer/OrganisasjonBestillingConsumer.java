@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.organisasjonforvalter.config.credentials.OrganisasjonBestillingServiceProperties;
 import no.nav.organisasjonforvalter.consumer.command.OrganisasjonBestillingCommand;
 import no.nav.organisasjonforvalter.dto.responses.ItemDto;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;

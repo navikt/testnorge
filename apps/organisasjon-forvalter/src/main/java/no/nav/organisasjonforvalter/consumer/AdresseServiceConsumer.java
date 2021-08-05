@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.organisasjonforvalter.config.credentials.AdresseServiceProperties;
 import no.nav.organisasjonforvalter.consumer.command.AdresseServiceCommand;
 import no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 

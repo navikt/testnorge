@@ -4,9 +4,9 @@ import static no.nav.registre.inntekt.utils.CommonConstants.TYPE_ORGANISASJON;
 import static no.nav.registre.inntekt.utils.CommonConstants.TYPE_PERSON;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
-import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Organisasjon;
-import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Person;
+import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
+import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Organisasjon;
+import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Person;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

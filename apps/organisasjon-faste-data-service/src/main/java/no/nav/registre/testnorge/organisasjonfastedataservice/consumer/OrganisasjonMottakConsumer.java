@@ -5,17 +5,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.DetaljertNavn;
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Endringsdokument;
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Epost;
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Internettadresse;
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Metadata;
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Opprettelsesdokument;
-import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v2.EndringsdokumentV2Producer;
-import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v2.OpprettelsesdokumentV2Producer;
+import no.nav.testnav.libs.avro.organisasjon.v1.DetaljertNavn;
+import no.nav.testnav.libs.avro.organisasjon.v1.Endringsdokument;
+import no.nav.testnav.libs.avro.organisasjon.v1.Epost;
+import no.nav.testnav.libs.avro.organisasjon.v1.Internettadresse;
+import no.nav.testnav.libs.avro.organisasjon.v1.Metadata;
+import no.nav.testnav.libs.avro.organisasjon.v1.Opprettelsesdokument;
+import no.nav.testnav.libs.kafkaproducers.organisasjon.v2.EndringsdokumentV2Producer;
+import no.nav.testnav.libs.kafkaproducers.organisasjon.v2.OpprettelsesdokumentV2Producer;
 import no.nav.registre.testnorge.organisasjonfastedataservice.domain.Adresse;
 import no.nav.registre.testnorge.organisasjonfastedataservice.domain.Organisasjon;
 
@@ -60,8 +59,8 @@ public class OrganisasjonMottakConsumer {
         return ordreId;
     }
 
-    private no.nav.registre.testnorge.libs.avro.organisasjon.v1.Organisasjon create(Organisasjon organisasjon) {
-        var builder = no.nav.registre.testnorge.libs.avro.organisasjon.v1.Organisasjon.newBuilder();
+    private no.nav.testnav.libs.avro.organisasjon.v1.Organisasjon create(Organisasjon organisasjon) {
+        var builder = no.nav.testnav.libs.avro.organisasjon.v1.Organisasjon.newBuilder();
 
         Optional.ofNullable(organisasjon.getInternetAdresse())
                 .ifPresent(value -> builder.setInternettadresseBuilder(Internettadresse.newBuilder().setInternettadresse(value)));
@@ -83,7 +82,7 @@ public class OrganisasjonMottakConsumer {
     }
 
 
-    private no.nav.registre.testnorge.libs.avro.organisasjon.v1.Adresse create(Adresse adresse) {
+    private no.nav.testnav.libs.avro.organisasjon.v1.Adresse create(Adresse adresse) {
         if (adresse == null) {
             return null;
         }
@@ -93,7 +92,7 @@ public class OrganisasjonMottakConsumer {
             return null;
         }
 
-        return no.nav.registre.testnorge.libs.avro.organisasjon.v1.Adresse.newBuilder()
+        return no.nav.testnav.libs.avro.organisasjon.v1.Adresse.newBuilder()
                 .setPostadresse1(adresse.getAdresselinje1())
                 .setPostadresse2(adresse.getAdresselinje2())
                 .setPostadresse3(adresse.getAdresselinje3())

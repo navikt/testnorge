@@ -4,7 +4,7 @@ package no.nav.registre.testnorge.organisasjonmottak.domain;
 public class Sektorkode extends ToLine {
     private final String kode;
 
-    public Sektorkode(no.nav.registre.testnorge.libs.avro.organisasjon.v1.Sektorkode sektorkode) {
+    public Sektorkode(no.nav.testnav.libs.avro.organisasjon.v1.Sektorkode sektorkode) {
         this.kode = sektorkode.getSektorkode();
     }
 

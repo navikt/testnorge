@@ -30,7 +30,7 @@ import no.nav.registre.hodejegeren.provider.rs.requests.DataRequest;
 import no.nav.registre.hodejegeren.provider.rs.requests.HistorikkRequest;
 import no.nav.registre.hodejegeren.provider.rs.requests.skd.PersonDokumentWrapper;
 import no.nav.registre.hodejegeren.service.utilities.PersonDokumentUtility;
-import no.nav.registre.testnorge.domain.dto.namespacetps.TpsPersonDokumentType;
+import no.nav.testnav.libs.domain.dto.namespacetps.TpsPersonDokumentType;
 
 @RequiredArgsConstructor
 @Service

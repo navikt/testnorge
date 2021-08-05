@@ -4,7 +4,7 @@ package no.nav.registre.testnorge.organisasjonmottak.domain;
 public class Formaal extends ToLine {
     private final String formaal;
 
-    public Formaal(no.nav.registre.testnorge.libs.avro.organisasjon.v1.Formaal formaal) {
+    public Formaal(no.nav.testnav.libs.avro.organisasjon.v1.Formaal formaal) {
         this.formaal = formaal.getFormaal();
     }
 

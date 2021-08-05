@@ -11,7 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.domain.dto.aareg.amelding.ArbeidsforholdPeriode;
+import no.nav.testnav.libs.domain.dto.aareg.amelding.ArbeidsforholdPeriode;
 import no.nav.registre.testnorge.generersyntameldingservice.consumer.SyntrestConsumer;
 import no.nav.registre.testnorge.generersyntameldingservice.provider.request.SyntAmeldingRequest;
 import no.nav.registre.testnorge.generersyntameldingservice.provider.response.ArbeidsforholdDTO;

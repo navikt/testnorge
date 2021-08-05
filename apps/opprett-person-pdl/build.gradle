@@ -21,10 +21,10 @@ dependencies {
     }
 
 
-    implementation project(':commands')
+    implementation 'no.nav.testnav.libs:commands'
     implementation 'no.nav.testnav.libs:servlet-core'
-    implementation project(':testnorge-oauth2')
-    implementation project(':testnorge-avro-schema')
+    implementation 'no.nav.testnav.libs:servlet-security'
+    implementation 'no.nav.testnav.libs:avro-schema'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
 
     implementation 'org.springframework.boot:spring-boot-starter-webflux'

@@ -18,8 +18,8 @@ import no.nav.registre.testnorge.endringsmeldingservice.consumer.dto.TpsDoedsmel
 import no.nav.registre.testnorge.endringsmeldingservice.consumer.request.TpsFoedselsmeldingRequest;
 import no.nav.testnav.libs.dto.endringsmelding.v1.DoedsmeldingDTO;
 import no.nav.testnav.libs.dto.endringsmelding.v1.FoedselsmeldingDTO;
-import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 
 @Component
 public class TpsForvalterConsumer {

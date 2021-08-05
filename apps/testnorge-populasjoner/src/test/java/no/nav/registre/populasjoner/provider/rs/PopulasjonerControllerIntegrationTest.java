@@ -3,7 +3,7 @@ package no.nav.registre.populasjoner.provider.rs;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.registre.populasjoner.domain.Populasjon;
-import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
+import no.nav.testnav.libs.testing.JsonWiremockHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

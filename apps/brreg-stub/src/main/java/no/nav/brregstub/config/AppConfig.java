@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
-import no.nav.registre.testnorge.libs.database.config.FlywayConfiguration;
-import no.nav.registre.testnorge.libs.database.config.VaultHikariConfiguration;
+import no.nav.testnav.libs.database.config.FlywayConfiguration;
+import no.nav.testnav.libs.database.config.VaultHikariConfiguration;
 
 @Configuration
 @EnableJpaAuditing

@@ -4,8 +4,8 @@ import no.nav.adresse.service.config.credentials.PdlServiceProperties;
 import no.nav.adresse.service.consumer.command.PdlAdresseSoekCommand;
 import no.nav.adresse.service.dto.GraphQLRequest;
 import no.nav.adresse.service.dto.PdlAdresseResponse;
-import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 

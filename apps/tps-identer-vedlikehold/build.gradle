@@ -16,9 +16,9 @@ dependencyManagement {
 
 dependencies {
     implementation 'no.nav.testnav.libs:servlet-core'
-    implementation project(':testnorge-oauth2')
+    implementation 'no.nav.testnav.libs:servlet-security'
 
-    implementation project(':testnorge-slack')
+    implementation 'no.nav.testnav.libs:slack'
 
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'

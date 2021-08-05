@@ -11,9 +11,9 @@ import java.util.stream.Collectors;
 import no.nav.registre.testnav.genererorganisasjonpopulasjonservice.domain.Organisasjon;
 import no.nav.registre.testnav.genererorganisasjonpopulasjonservice.repository.OpplysningspliktigRepository;
 import no.nav.registre.testnav.genererorganisasjonpopulasjonservice.repository.model.OpplysningspliktigModel;
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Metadata;
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Opprettelsesdokument;
-import no.nav.registre.testnorge.libs.kafkaproducers.organisasjon.v2.OpprettelsesdokumentV2Producer;
+import no.nav.testnav.libs.avro.organisasjon.v1.Metadata;
+import no.nav.testnav.libs.avro.organisasjon.v1.Opprettelsesdokument;
+import no.nav.testnav.libs.kafkaproducers.organisasjon.v2.OpprettelsesdokumentV2Producer;
 
 @Service
 @RequiredArgsConstructor

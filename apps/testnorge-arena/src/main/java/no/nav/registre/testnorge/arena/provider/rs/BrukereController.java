@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import no.nav.registre.testnorge.arena.provider.rs.request.SyntetiserArenaRequest;
 import no.nav.registre.testnorge.arena.service.ArenaBrukerService;
 import no.nav.registre.testnorge.arena.service.IdentService;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

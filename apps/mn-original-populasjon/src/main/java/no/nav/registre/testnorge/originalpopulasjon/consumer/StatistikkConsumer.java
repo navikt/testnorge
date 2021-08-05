@@ -6,8 +6,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.testnav.libs.dto.statistikkservice.v1.StatistikkDTO;
 import no.nav.testnav.libs.dto.statistikkservice.v1.StatistikkType;
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import no.nav.registre.testnorge.originalpopulasjon.config.credentials.StatistikkServiceProperties;
 import no.nav.registre.testnorge.originalpopulasjon.consumer.command.GetStatistikkCommand;
 
