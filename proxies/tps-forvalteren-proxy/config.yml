@@ -24,6 +24,10 @@ spec:
           cluster: dev-gcp
         - application: testnav-person-service
           cluster: dev-gcp
+        - application: dolly-frontend
+          cluster: dev-fss
+        - application: dolly-frontend-dev
+          cluster: dev-fss
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -48,3 +52,4 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://tps-forvalteren-proxy.dev-fss-pub.nais.io"
+    - "https://tps-forvalteren-proxy.dev.intern.nav.no"
