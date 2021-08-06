@@ -21,7 +21,6 @@ repositories {
     mavenLocal()
 }
 
-
 dependencies {
 
     implementation 'no.nav.testnav.libs:reactive-core'
