@@ -64,13 +64,18 @@ includeBuild './apps/endringsmelding-service'
 includeBuild './apps/applikasjonsanalyse-frontend'
 includeBuild './apps/adresse-service'
 includeBuild './apps/syntrest'
+includeBuild './apps/amelding-service'
+includeBuild './apps/applikasjonsanalyse-service'
+includeBuild './apps/arbeidsforhold-export-api'
+includeBuild './apps/arbeidsforhold-service'
+
+includeBuild './xsd/arbeidsforhold-xsd'
 
 includeBuild './gradlePlugins'
 include(':proxies')
 include(':inntektsmelding-generator-service')
 include(':testnorge-tss')
 include(':profil-api')
-include(':xsd')
 include(':tp-domain')
 include(':sykemelding-api')
 include(':medl-core')
@@ -92,7 +97,6 @@ include(':nav-endringsmeldinger-core')
 include(':synt-sykemelding-api')
 include(':testnorge-tp')
 include(':udi-stub')
-include(':arbeidsforhold-export-api')
 include(':testnorge-hodejegeren')
 include(':sigrun-core')
 include(':testnorge-bisys')
@@ -108,7 +112,6 @@ include(':mn-organisasjon-api')
 include(':organisasjon-service')
 include(':organisasjon-service')
 include(':token-provider-core')
-include(':arbeidsforhold-xsd')
 include(':helsepersonell-service')
 include(':person-export-api')
 include(':apps')
@@ -121,7 +124,6 @@ include(':opprett-person-pdl')
 include(':varslinger-api')
 include(':testnorge-inntekt')
 include(':inst-local')
-include(':arbeidsforhold-service')
 include(':tp-core')
 include(':testnorge-aareg')
 include(':synt-person-api')
@@ -166,7 +168,6 @@ project(":nav-endringsmeldinger-core").projectDir = file('apps/testnorge-nav-end
 project(":synt-sykemelding-api").projectDir = file('apps/synt-sykemelding-api')
 project(":testnorge-tp").projectDir = file('apps/testnorge-tp')
 project(":udi-stub").projectDir = file('apps/udi-stub')
-project(":arbeidsforhold-export-api").projectDir = file('apps/arbeidsforhold-export-api')
 project(":testnorge-hodejegeren").projectDir = file('apps/testnorge-hodejegeren')
 project(":testnorge-arena").projectDir = file('apps/testnorge-arena')
 project(":sigrun-core").projectDir = file('apps/testnorge-sigrun/sigrun-core')
@@ -183,7 +184,6 @@ project(":mn-organisasjon-api").projectDir = file('apps/mn-organisasjon-api')
 project(":organisasjon-service").projectDir = file('apps/organisasjon-service')
 project(":organisasjon-service").projectDir = file('apps/organisasjon-service')
 project(":token-provider-core").projectDir = file('apps/testnorge-token-provider/token-provider-core')
-project(":arbeidsforhold-xsd").projectDir = file('xsd/arbeidsforhold-xsd')
 project(":helsepersonell-service").projectDir = file('apps/helsepersonell-service')
 project(":person-export-api").projectDir = file('apps/person-export-api')
 project(":brreg-stub").projectDir = file('apps/brreg-stub')
@@ -194,7 +194,6 @@ project(":opprett-person-pdl").projectDir = file('apps/opprett-person-pdl')
 project(":varslinger-api").projectDir = file('apps/varslinger-api')
 project(":testnorge-inntekt").projectDir = file('apps/testnorge-inntekt')
 project(":inst-local").projectDir = file('apps/testnorge-inst/inst-local')
-project(":arbeidsforhold-service").projectDir = file('apps/arbeidsforhold-service')
 project(":tp-core").projectDir = file('apps/testnorge-tp/tp-core')
 project(":testnorge-aareg").projectDir = file('apps/testnorge-aareg')
 project(":synt-person-api").projectDir = file('apps/synt-person-api')
@@ -240,9 +239,6 @@ project(":ereg-batch-status-service").projectDir = file('apps/ereg-batch-status-
 include 'jenkins-batch-status-service'
 project(":jenkins-batch-status-service").projectDir = file('apps/jenkins-batch-status-service')
 
-include 'applikasjonsanalyse-service'
-project(":applikasjonsanalyse-service").projectDir = file('apps/applikasjonsanalyse-service')
-
 include 'oppsummeringsdokument-service'
 project(":oppsummeringsdokument-service").projectDir = file('apps/oppsummeringsdokument-service')
 
@@ -254,10 +250,6 @@ project(":organisasjon-faste-data-service").projectDir = file('apps/organisasjon
 
 include 'generer-organisasjon-populasjon-service'
 project(":generer-organisasjon-populasjon-service").projectDir = file('apps/generer-organisasjon-populasjon-service')
-
-
-include 'amelding-service'
-project(":amelding-service").projectDir = file('apps/amelding-service')
 
 include 'generer-arbeidsforhold-populasjon-service'
 project(":generer-arbeidsforhold-populasjon-service").projectDir = file('apps/generer-arbeidsforhold-populasjon-service')

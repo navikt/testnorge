@@ -1,0 +1,21 @@
+plugins {
+    id "com.gradle.enterprise" version "3.4.1"
+}
+
+rootProject.name = 'arbeidsforhold-export-api'
+
+includeBuild '../../gradlePlugins'
+
+includeBuild '../../libs/servlet-core'
+includeBuild '../../libs/servlet-security'
+includeBuild '../../libs/csv-converter'
+includeBuild '../../libs/testing'
+
+includeBuild '../../xsd/arbeidsforhold-xsd'
+
+gradleEnterprise {
+    buildScan {
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
+    }
+}
