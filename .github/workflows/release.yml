@@ -24,7 +24,6 @@ jobs:
           git remote set-url origin https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git
           git config --global user.email "dolly@nav.no"
           git config --global user.name "$GITHUB_ACTOR"
-      -
       - name: Release
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
