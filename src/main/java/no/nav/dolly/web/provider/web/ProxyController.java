@@ -35,7 +35,6 @@ import no.nav.registre.testnorge.libs.dependencyanalysis.DependencyOn;
         @DependencyOn("testnorge-statisk-data-forvalter"),
         @DependencyOn("testnorge-hodejegeren"),
         @DependencyOn("testnorge-aareg"),
-        @DependencyOn("inntektstub"),
         @DependencyOn("brreg-stub"),
         @DependencyOn("udi-stub")
 })
@@ -183,18 +182,6 @@ public class ProxyController {
         String requestURL = createURL(request, poppUrl + API_URI, PROXY_URI + "/popp");
         HttpHeaders headers = proxyService.copyHeaders(request);
         headers.add(HttpHeaders.AUTHORIZATION, "Dolly");
-
-        return proxyService.proxyRequest(body, method, headers, requestURL);
-    }
-
-    @RequestMapping("/proxy/inntektstub/**")
-    public ResponseEntity<String> inntektstubProxy(
-            @RequestBody(required = false) String body,
-            HttpMethod method,
-            HttpServletRequest request) throws UnsupportedEncodingException {
-
-        String requestURL = createURL(request, inntektstubUrl + "/api/v2", PROXY_URI + "/inntektstub");
-        HttpHeaders headers = proxyService.copyHeaders(request);
 
         return proxyService.proxyRequest(body, method, headers, requestURL);
     }

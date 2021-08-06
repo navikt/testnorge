@@ -49,6 +49,10 @@ zuul:
       path: /testnav-joark-dokument-service/api/**
       url: https://testnav-joark-dokument-service.dev.intern.nav.no/api
       sensitiveHeaders: Cookie,Set-Cookie
+    testnav-inntektstub-proxy:
+      path: /testnav-inntektstub-proxy/api/**
+      url: https://testnav-inntektstub-proxy.dev.intern.nav.no/api
+      sensitiveHeaders: Cookie,Set-Cookie
 
 applications:
   testnorge-profil-api: ${TESTNORGE_PROFIL_API_CLIENT_ID}
@@ -75,6 +79,10 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-joark-dokument-service
+  testnav-inntektstub-proxy:
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-inntektstub-proxy
 
 spring:
   application:
