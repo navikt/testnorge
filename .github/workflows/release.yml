@@ -24,23 +24,48 @@ jobs:
           git remote set-url origin https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git
           git config --global user.email "dolly@nav.no"
           git config --global user.name "$GITHUB_ACTOR"
-      - name: Release
+      - name: Create version
         env:
-          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TIME=$(TZ="Europe/Oslo" date +%Y.%m.%d-%H.%M)
+          COMMIT=$(git rev-parse --short=12 HEAD)
+          export VERSION="$TIME-$COMMIT"
+          echo Set version=$VERSION
+      - name: Release avro-schema
+        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
         run: |
-          echo Release started by $GITHUB_ACTOR
-
-          TIME=$(TZ="Europe/Oslo" date +%Y.%m.%d-%H.%M)
-          COMMIT=$(git rev-parse --short=12 HEAD)
-          VERSION="$TIME-$COMMIT"
-
           ./gradlew :avro-schema:publish -PreleaseVersion=$VERSION
+      - name: Release data-transfer-objects
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
+        run: |
           ./gradlew :data-transfer-objects:publish -PreleaseVersion=$VERSION
+      - name: Release reactive-core
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
+        run: |
           ./gradlew :reactive-core:publish -PreleaseVersion=$VERSION
+      - name: Release reactive-proxy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
+        run: |
           ./gradlew :reactive-proxy:publish -PreleaseVersion=$VERSION
+      - name: Release reactive-security
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
+        run: |
           ./gradlew :reactive-security:publish -PreleaseVersion=$VERSION
-
+      - name: Git tag og push
+        env:
+          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
           git tag -a $VERSION -m "Tag release version"
           git push origin $VERSION
