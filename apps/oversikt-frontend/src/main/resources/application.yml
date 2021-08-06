@@ -78,6 +78,7 @@ applications:
   synthdata-tps-gcp: dev-gcp.dolly.synthdata-tps-gcp-tmp
   testnav-person-faste-data-service: dev-gcp.dolly.testnav-person-faste-data-service
   testnav-person-service: dev-gcp.dolly.testnav-person-service
+  testnav-inntektstub-proxy: dev-fss.dolly.testnav-inntektstub-proxy
 
 consumers:
   testnorge-profil-api:
