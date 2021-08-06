@@ -25,7 +25,7 @@ public class TpsForvaterenProxyApplicationStarter {
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route(spec -> spec.path("/**").uri("https://tps-forvalteren.dev.adeo.no"))
+                .route(spec -> spec.path("/**").uri(System.getProperty("PROXY_URL")))
                 .build();
     }
 
