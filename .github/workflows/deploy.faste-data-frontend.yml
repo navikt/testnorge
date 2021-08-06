@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - apps/faste-data-frontend/**
-      - libs/testnorge-core/**
+
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/faste-data-frontend:${{ github.sha }}
@@ -42,10 +42,11 @@ jobs:
           mv build ../resources/static
         working-directory: ./apps/faste-data-frontend/src/main/js
       - name: Compile
+        working-directory: ./apps/faste-data-frontend/
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew :faste-data-frontend:build
+        run: ./gradlew build
       - name: Build and publish Docker image
         working-directory: ./apps/faste-data-frontend/
         env:

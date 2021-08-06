@@ -15,6 +15,11 @@ public class ArbeidsavtaleDTO {
     Float stillingsprosent;
     String yrke;
     String arbeidstidsordning;
+    String ansettelsesform;
+    String fartsomraade;
+    String skipsregister;
+    String skipstype;
     Float antallTimerPrUke;
     LocalDate sistLoennsendring;
+    LocalDate sistStillingsendring;
 }

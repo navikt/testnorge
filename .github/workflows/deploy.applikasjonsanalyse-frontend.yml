@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - apps/applikasjonsanalyse-frontend/**
-      - libs/testnorge-core/**
+
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/applikasjonsanalyse-frontend:${{ github.sha }}
@@ -42,10 +42,11 @@ jobs:
           mv build ../resources/static
         working-directory: ./apps/applikasjonsanalyse-frontend/src/main/js
       - name: Compile
+        working-directory: ./apps/applikasjonsanalyse-frontend/
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew :applikasjonsanalyse-frontend:build
+        run: ./gradlew build
       - name: Build and publish Docker image
         working-directory: ./apps/applikasjonsanalyse-frontend/
         env:

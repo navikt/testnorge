@@ -1,19 +1,23 @@
 package no.nav.registre.syntrest.kubernetes;
 
 import com.google.gson.JsonSyntaxException;
+
 import io.kubernetes.client.ApiException;
 import io.kubernetes.client.apis.CustomObjectsApi;
 import io.kubernetes.client.models.V1DeleteOptions;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.syntrest.consumer.GitHubConsumer;
+import no.nav.registre.syntrest.kubernetes.command.GetIsAliveCommand;
+import no.nav.registre.syntrest.kubernetes.command.GetIsAliveWithRetryCommand;
+import no.nav.registre.syntrest.kubernetes.exception.KubernetesException;
 import no.nav.registre.syntrest.utils.NaisYaml;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
+
 import reactor.netty.http.client.HttpClient;
-import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -42,7 +46,6 @@ public class KubernetesController {
 
     private final WebClient webClient;
 
-
     public KubernetesController(
             CustomObjectsApi customObjectsApi,
             NaisYaml naisYaml,
@@ -51,7 +54,6 @@ public class KubernetesController {
             @Value("${max-alive-retries}") int maxRetries,
             @Value("${alive-retry-delay}") int retryDelay
     ) {
-
         this.naisYaml = naisYaml;
         this.gitHubConsumer = gitHubConsumer;
         this.isAliveUrl = isAliveUrl;
@@ -59,13 +61,12 @@ public class KubernetesController {
         this.retryDelay = retryDelay;
         this.api = customObjectsApi;
 
-        HttpClient httpClient = HttpClient.create()
-                .responseTimeout(Duration.ofMillis(TIMEOUT_IN_MILLISECONSDS));
-        ReactorClientHttpConnector connector = new ReactorClientHttpConnector(httpClient);
+        var httpClient = HttpClient.create().responseTimeout(Duration.ofMillis(TIMEOUT_IN_MILLISECONSDS));
+        var connector = new ReactorClientHttpConnector(httpClient);
         this.webClient = WebClient.builder().clientConnector(connector).build();
     }
 
-    public void deployImage(String appName) throws ApiException, InterruptedException {
+    public void deployImage(String appName) throws ApiException {
         String imageTag = gitHubConsumer.getApplicationTag(appName);
         Map<String, Object> manifestFile = naisYaml.provideYaml(appName, imageTag);
 
@@ -81,7 +82,7 @@ public class KubernetesController {
     public void takedownImage(String appName) throws ApiException {
 
         if (existsOnCluster(appName)) {
-            V1DeleteOptions deleteOptions = new V1DeleteOptions();
+            var deleteOptions = new V1DeleteOptions();
             try {
                 api.deleteNamespacedCustomObject(GROUP, VERSION, NAMESPACE, PLURAL, appName, deleteOptions,
                         null, null, null);
@@ -106,35 +107,21 @@ public class KubernetesController {
     }
 
     public boolean isAlive(String appName) {
-        try {
-            String response = webClient.get()
-                    .uri(isAliveUrl.replace("{appName}", appName))
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
-            return "1".equals(response);
-        } catch (WebClientResponseException.ServiceUnavailable | WebClientResponseException.NotFound e) {
-            return false;
-        }
+        return new GetIsAliveCommand(webClient, isAliveUrl, appName).call();
     }
 
-    private boolean pollApplication(String appName) {
-        String response = webClient.get()
-                .uri(isAliveUrl.replace("{appName}", appName))
-                .retrieve()
-                .bodyToMono(String.class)
-                .retryWhen(Retry.fixedDelay(maxRetries, Duration.ofSeconds(retryDelay))
-                        .filter(e -> e instanceof WebClientResponseException.ServiceUnavailable ||
-                                e instanceof WebClientResponseException.NotFound))
-                .block();
-        return "1".equals(response);
+    private void pollApplication(String appName) {
+        var response = new GetIsAliveWithRetryCommand(webClient, isAliveUrl, appName, maxRetries, retryDelay).call();
+
+        if (Boolean.FALSE.equals(response)) {
+            throw new KubernetesException("Application failed to deploy.");
+        }
     }
 
     public boolean existsOnCluster(String appName) throws ApiException {
         List<String> applications = listApplicationsOnCluster();
         return applications.contains(appName);
     }
-
 
     private List<String> listApplicationsOnCluster() throws ApiException {
 
@@ -159,7 +146,7 @@ public class KubernetesController {
         log.info("Waiting for '{}' to deploy... (max {} seconds)", appName, (maxRetries * retryDelay));
         try {
             pollApplication(appName);
-        } catch (RuntimeException e){ // RetryExhaustedException
+        } catch (RuntimeException e) {
             log.error("Application '{}' failed to deploy. Terminating...", appName);
             takedownImage(appName);
             throw e;

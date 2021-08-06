@@ -54,8 +54,11 @@ export class Action {
 export default (state: State, action: Actions) => {
   switch (action.type) {
     case Action.SET_IDENT_ACTION:
-      return { ...state, ident: action.value };
+      return { ...state, ident: action.value.trim() };
     case Action.SET_HANDLING_ACTION:
+      if (action.value === 'ANNULLERE_DOEDSDATO') {
+        return { ...state, doedsdato: null, handling: action.value };
+      }
       return { ...state, handling: action.value };
     case Action.SET_DOEDSDATO_ACTION:
       return { ...state, doedsdato: action.value };

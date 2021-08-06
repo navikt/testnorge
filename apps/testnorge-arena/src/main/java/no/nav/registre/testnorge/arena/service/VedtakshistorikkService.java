@@ -31,15 +31,15 @@ import no.nav.registre.testnorge.arena.service.util.TilleggUtils;
 import no.nav.registre.testnorge.arena.service.util.TiltakUtils;
 
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Deltakerstatuser;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
-import no.nav.registre.testnorge.libs.core.util.IdentUtil;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Deltakerstatuser;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtak;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
+import no.nav.testnav.libs.servletcore.util.IdentUtil;
 
 import org.springframework.stereotype.Service;
 

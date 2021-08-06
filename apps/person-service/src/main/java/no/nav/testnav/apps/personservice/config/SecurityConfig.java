@@ -12,7 +12,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 
 import java.util.List;
 
-import no.nav.testnav.libs.security.config.OAuth2ResourceServerConfiguration;
+import no.nav.testnav.libs.reactivesecurity.config.OAuth2ResourceServerConfiguration;
 
 
 @Slf4j

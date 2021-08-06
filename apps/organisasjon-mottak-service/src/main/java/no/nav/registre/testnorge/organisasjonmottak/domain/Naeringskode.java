@@ -8,7 +8,7 @@ public class Naeringskode extends ToLine {
     private final LocalDate gyldighetsdato;
     private final boolean hjelpeenhet;
 
-    public Naeringskode( no.nav.registre.testnorge.libs.avro.organisasjon.v1.Naeringskode naeringskode) {
+    public Naeringskode( no.nav.testnav.libs.avro.organisasjon.v1.Naeringskode naeringskode) {
         this.kode = naeringskode.getKode();
         this.gyldighetsdato = LocalDate.of(
                 naeringskode.getGyldighetsdato().getAar(),

@@ -4,7 +4,7 @@ package no.nav.registre.testnorge.organisasjonmottak.domain;
 public class Maalform extends ToLine {
     private final String maalform;
 
-    public Maalform( no.nav.registre.testnorge.libs.avro.organisasjon.v1.Maalform maalform) {
+    public Maalform( no.nav.testnav.libs.avro.organisasjon.v1.Maalform maalform) {
         this.maalform = maalform.getMaalform();
     }
 

@@ -5,7 +5,7 @@ on:
     branches: master
     paths:
       - apps/testnorge-bisys/**
-      - libs/testnorge-core/**
+
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/testnorge-bisys:${{ github.sha }}

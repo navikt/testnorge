@@ -6,8 +6,8 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-import no.nav.testnav.libs.core.config.CoreConfig;
-import no.nav.testnav.libs.security.config.SecureOAuth2ServerToServerConfiguration;
+import no.nav.testnav.libs.reactivecore.config.CoreConfig;
+import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
 
 @Import({
         CoreConfig.class,

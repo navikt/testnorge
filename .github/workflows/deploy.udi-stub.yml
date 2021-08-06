@@ -5,7 +5,7 @@ on:
     branches: master
     paths:
       - apps/udi-stub/**
-      - libs/testnorge-core/**
+
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/udi-stub-v2:${{ github.sha }}

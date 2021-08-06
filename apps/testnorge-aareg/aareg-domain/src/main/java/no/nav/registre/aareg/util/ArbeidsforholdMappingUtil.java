@@ -1,14 +1,6 @@
 package no.nav.registre.aareg.util;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.YearMonth;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.fasterxml.jackson.databind.JsonNode;
-
 import no.nav.registre.aareg.domain.RsAktoer;
 import no.nav.registre.aareg.domain.RsAktoerPerson;
 import no.nav.registre.aareg.domain.RsAntallTimerForTimeloennet;
@@ -20,19 +12,26 @@ import no.nav.registre.aareg.domain.RsPermisjon;
 import no.nav.registre.aareg.domain.RsPersonAareg;
 import no.nav.registre.aareg.domain.RsUtenlandsopphold;
 import no.nav.registre.aareg.exception.UkjentTypeException;
-import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Ansettelsesperiode;
-import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.AntallTimerForTimeloennet;
-import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsavtale;
-import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
-import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Bruksperiode;
-import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Gyldighetsperiode;
-import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.OpplysningspliktigArbeidsgiver;
-import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Organisasjon;
-import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Periode;
-import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.PermisjonPermittering;
-import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Person;
-import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Sporingsinformasjon;
-import no.nav.registre.testnorge.domain.dto.aordningen.arbeidsforhold.Utenlandsopphold;
+import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Ansettelsesperiode;
+import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.AntallTimerForTimeloennet;
+import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Arbeidsavtale;
+import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
+import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Bruksperiode;
+import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Gyldighetsperiode;
+import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.OpplysningspliktigArbeidsgiver;
+import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Organisasjon;
+import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Periode;
+import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.PermisjonPermittering;
+import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Person;
+import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Sporingsinformasjon;
+import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Utenlandsopphold;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class ArbeidsforholdMappingUtil {
 

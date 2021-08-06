@@ -5,7 +5,7 @@ on:
     branches: master
     paths:
       - apps/ident-check-in-prod-service/**
-      - libs/testnorge-core/**
+
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/ident-check-in-prod-service:${{ github.sha }}

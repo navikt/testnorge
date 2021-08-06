@@ -5,7 +5,7 @@ on:
     branches: master
     paths:
       - apps/testnorge-tss/**
-      - libs/testnorge-core/**
+
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/tss:${{ github.sha }}

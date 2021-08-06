@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - apps/synt-person-api/**
-      - libs/testnorge-core/**
+
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/synt-person-api:${{ github.sha }}

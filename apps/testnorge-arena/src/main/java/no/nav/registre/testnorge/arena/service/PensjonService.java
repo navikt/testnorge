@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arena.consumer.rs.PensjonTestdataFacadeConsumer;
 import no.nav.registre.testnorge.arena.consumer.rs.request.pensjon.PensjonTestdataInntekt;
 import no.nav.registre.testnorge.arena.consumer.rs.request.pensjon.PensjonTestdataPerson;
-import no.nav.registre.testnorge.libs.core.util.IdentUtil;
+import no.nav.testnav.libs.servletcore.util.IdentUtil;
 
 import org.springframework.stereotype.Service;
 

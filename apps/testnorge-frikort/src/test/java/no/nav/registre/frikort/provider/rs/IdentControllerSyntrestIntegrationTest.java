@@ -27,7 +27,7 @@ import no.nav.registre.frikort.consumer.rs.response.SyntFrikortResponse;
 import no.nav.registre.frikort.provider.rs.request.IdentMedAntallFrikort;
 import no.nav.registre.frikort.provider.rs.request.IdentRequest;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.PersondataResponse;
-import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
+import no.nav.testnav.libs.testing.JsonWiremockHelper;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

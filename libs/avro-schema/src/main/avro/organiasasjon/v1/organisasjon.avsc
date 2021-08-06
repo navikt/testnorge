@@ -1,0 +1,129 @@
+{
+  "type": "record",
+  "name": "Organisasjon",
+  "namespace": "no.nav.testnav.libs.avro.organisasjon.v1",
+  "fields": [
+    {
+      "name": "orgnummer",
+      "type": "string"
+    },
+    {
+      "name": "enhetstype",
+      "type": "string"
+    },
+    {
+      "name": "navn",
+      "default": null,
+      "type": [
+        "null",
+        "DetaljertNavn"
+      ]
+    },
+    {
+      "name": "ansatte",
+      "default": null,
+      "type": [
+        "null",
+        "Ansatte"
+      ]
+    },
+    {
+      "name": "internettadresse",
+      "default": null,
+      "type": [
+        "null",
+        "Internettadresse"
+      ]
+    },
+    {
+      "name": "epost",
+      "default": null,
+      "type": [
+        "null",
+        "Epost"
+      ]
+    },
+    {
+      "name": "sektorkode",
+      "default": null,
+      "type": [
+        "null",
+        "Sektorkode"
+      ]
+    },
+    {
+      "name": "stiftelsesdato",
+      "default": null,
+      "type": [
+        "null",
+        "Stiftelsesdato"
+      ]
+    },
+    {
+      "name": "mobiltelefon",
+      "default": null,
+      "type": [
+        "null",
+        "Telefon"
+      ]
+    },
+    {
+      "name": "naeringskode",
+      "default": null,
+      "type": [
+        "null",
+        "Naeringskode"
+      ]
+    },
+    {
+      "name": "maalform",
+      "default": null,
+      "type": [
+        "null",
+        "Maalform"
+      ]
+    },
+    {
+      "name": "telefon",
+      "default": null,
+      "type": [
+        "null",
+        "Telefon"
+      ]
+    },
+    {
+      "name": "formaal",
+      "default": null,
+      "type": [
+        "null",
+        "Formaal"
+      ]
+    },
+    {
+      "name": "underenheter",
+      "type": {
+        "type": "array",
+        "items": {
+          "name": "underenhet",
+          "type": "Organisasjon"
+        }
+      }
+    },
+    {
+      "name": "forretningsadresse",
+      "default": null,
+      "type": [
+        "null",
+        "Adresse"
+      ]
+    },
+    {
+      "name": "postadresse",
+      "default": null,
+      "type": [
+        "null",
+        "Adresse"
+      ]
+    }
+  ]
+}

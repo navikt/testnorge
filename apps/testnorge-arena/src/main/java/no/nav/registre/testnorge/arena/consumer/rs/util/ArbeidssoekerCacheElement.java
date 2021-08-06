@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 
 @Getter
 public class ArbeidssoekerCacheElement {

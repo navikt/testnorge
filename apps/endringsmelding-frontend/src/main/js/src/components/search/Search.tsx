@@ -78,7 +78,7 @@ export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => 
           setValue(e.target.value);
         }}
       />
-      <Knapp onClick={() => _onSearch(value)} disabled={loading}>
+      <Knapp onClick={() => _onSearch(value)} disabled={loading} spinner={loading}>
         {labels.button}
       </Knapp>
       <Alert>

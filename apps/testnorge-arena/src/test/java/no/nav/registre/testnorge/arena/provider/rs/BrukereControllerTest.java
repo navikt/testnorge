@@ -3,8 +3,8 @@ package no.nav.registre.testnorge.arena.provider.rs;
 import no.nav.registre.testnorge.arena.provider.rs.request.SyntetiserArenaRequest;
 import no.nav.registre.testnorge.arena.service.ArenaBrukerService;
 import no.nav.registre.testnorge.arena.service.IdentService;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 
 import org.junit.Before;
 import org.junit.Test;

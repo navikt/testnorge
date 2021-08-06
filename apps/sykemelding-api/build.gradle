@@ -14,8 +14,8 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation project(':testnorge-core')
-    implementation project(':testnorge-avro-schema')
+    implementation 'no.nav.testnav.libs:servlet-core'
+    implementation 'no.nav.testnav.libs:avro-schema'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -38,7 +38,7 @@ dependencies {
     
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
-    testImplementation project(':testnorge-testing')
+    testImplementation 'no.nav.testnav.libs:testing'
 }
 
 description = 'sykemelding-api'

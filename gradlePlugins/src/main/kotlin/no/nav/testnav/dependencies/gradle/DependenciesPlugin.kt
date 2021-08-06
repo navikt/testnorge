@@ -11,7 +11,9 @@ class DependenciesPlugin : Plugin<Project> {
         val lombokVersion = "1.18.20"
         val springBoot = "2.3.4.RELEASE"
         val springCloud = "Hoxton.SR8"
+        val springSecurity = "5.3.4.RELEASE"
         val logstashLogbackEncoder = "6.6"
         val springdocOpenapi = "1.5.9"
+        val jackson = "2.11.2"
     }
 }

@@ -15,7 +15,7 @@ import java.util.Optional;
 import no.nav.testnav.apps.personservice.consumer.command.GetPdlPersonCommand;
 import no.nav.testnav.apps.personservice.credentials.PdlServiceProperties;
 import no.nav.testnav.apps.personservice.domain.Person;
-import no.nav.testnav.libs.security.service.AccessTokenService;
+import no.nav.testnav.libs.reactivesecurity.service.AccessTokenService;
 
 @Slf4j
 @Component

@@ -31,7 +31,7 @@
                 <charset>utf8</charset>
             </encoder>
         </appender>
-        <logger name="no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService">
+        <logger name="no.nav.testnav.libs.servletsecurity.service.AccessTokenService">
             <level value="ERROR"/>
         </logger>
         <root level="INFO">
@@ -39,7 +39,7 @@
         </root>
     </springProfile>
 
-    <logger name="no.nav.registre.testnorge.libs.logging.LogRequestInterceptor">
+    <logger name="no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor">
         <level value="TRACE"/>
     </logger>
 </configuration>

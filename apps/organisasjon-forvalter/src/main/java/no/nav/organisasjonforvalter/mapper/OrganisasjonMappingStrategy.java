@@ -8,13 +8,13 @@ import no.nav.organisasjonforvalter.dto.responses.RsAdresse;
 import no.nav.organisasjonforvalter.dto.responses.RsAdresse.AdresseType;
 import no.nav.organisasjonforvalter.dto.responses.RsOrganisasjon;
 import no.nav.organisasjonforvalter.jpa.entity.Organisasjon;
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Adresse;
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Dato;
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.DetaljertNavn;
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Internettadresse;
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Naeringskode;
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Stiftelsesdato;
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Telefon;
+import no.nav.testnav.libs.avro.organisasjon.v1.Adresse;
+import no.nav.testnav.libs.avro.organisasjon.v1.Dato;
+import no.nav.testnav.libs.avro.organisasjon.v1.DetaljertNavn;
+import no.nav.testnav.libs.avro.organisasjon.v1.Internettadresse;
+import no.nav.testnav.libs.avro.organisasjon.v1.Naeringskode;
+import no.nav.testnav.libs.avro.organisasjon.v1.Stiftelsesdato;
+import no.nav.testnav.libs.avro.organisasjon.v1.Telefon;
 import no.nav.testnav.libs.dto.organisasjon.v1.AdresseDTO;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import org.springframework.stereotype.Component;
@@ -70,10 +70,10 @@ public class OrganisasjonMappingStrategy implements MappingStrategy {
                 .byDefault()
                 .register();
 
-        factory.classMap(Organisasjon.class, no.nav.registre.testnorge.libs.avro.organisasjon.v1.Organisasjon.class)
+        factory.classMap(Organisasjon.class, no.nav.testnav.libs.avro.organisasjon.v1.Organisasjon.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(Organisasjon source, no.nav.registre.testnorge.libs.avro.organisasjon.v1.Organisasjon target, MappingContext context) {
+                    public void mapAtoB(Organisasjon source, no.nav.testnav.libs.avro.organisasjon.v1.Organisasjon target, MappingContext context) {
                         target.setOrgnummer(source.getOrganisasjonsnummer());
                         target.setNavn(DetaljertNavn.newBuilder().setNavn1(source.getOrganisasjonsnavn()).build());
                         target.setNaeringskode(getNaeringskode(source));
@@ -91,7 +91,7 @@ public class OrganisasjonMappingStrategy implements MappingStrategy {
                             }
                         });
 
-                        target.setUnderenheter(mapperFacade.mapAsList(source.getUnderenheter(), no.nav.registre.testnorge.libs.avro.organisasjon.v1.Organisasjon.class));
+                        target.setUnderenheter(mapperFacade.mapAsList(source.getUnderenheter(), no.nav.testnav.libs.avro.organisasjon.v1.Organisasjon.class));
                     }
                 })
                 .byDefault()

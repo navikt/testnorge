@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - apps/arbeidsforhold-export-api/**
-      - libs/testnorge-core/**
+
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/arbeidsforhold-export-api:${{ github.sha }}

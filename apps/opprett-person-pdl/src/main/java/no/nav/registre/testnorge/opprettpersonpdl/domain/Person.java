@@ -12,7 +12,7 @@ import no.nav.testnav.libs.dto.person.v1.PersonDTO;
 @Value
 public class Person {
 
-    public Person(no.nav.registre.testnorge.libs.avro.person.Person person) {
+    public Person(no.nav.testnav.libs.avro.person.Person person) {
         ident = person.getIdent().toString();
         foedselsdato = LocalDate.parse(person.getFoedselsdato());
         fornavn = person.getFornavn().toString();

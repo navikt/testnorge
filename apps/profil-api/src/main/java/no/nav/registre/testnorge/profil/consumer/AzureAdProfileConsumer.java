@@ -11,9 +11,9 @@ import reactor.netty.tcp.ProxyProvider;
 
 import java.net.URI;
 
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessScopes;
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.domain.AccessScopes;
+import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import no.nav.registre.testnorge.profil.consumer.command.GetProfileCommand;
 import no.nav.registre.testnorge.profil.consumer.command.GetProfileImageCommand;
 import no.nav.registre.testnorge.profil.consumer.dto.ProfileDTO;

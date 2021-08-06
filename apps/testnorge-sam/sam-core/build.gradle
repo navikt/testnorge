@@ -15,7 +15,7 @@ bootJar {
 }
 
 dependencies {
-    implementation project(':testnorge-core')
+    implementation 'no.nav.testnav.libs:servlet-core'
     implementation project(':sam-domain')
 
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'

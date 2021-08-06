@@ -2,8 +2,10 @@ package no.nav.registre.syntrest.kubernetes;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.google.gson.internal.LinkedTreeMap;
+
 import io.kubernetes.client.ApiException;
 import io.kubernetes.client.apis.CustomObjectsApi;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -36,11 +38,10 @@ import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
-
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application-test.properties")
-@ActiveProfiles({"test", "kubernetesTest"})
+@ActiveProfiles({ "test", "kubernetesTest" })
 public class KubernetesControllerTest {
 
     @Rule
@@ -54,16 +55,13 @@ public class KubernetesControllerTest {
     private KubernetesController kubernetesController;
     @Value("${isAlive}") String isAliveUrl;
 
-    private String GROUP = "nais.io",
+    private final String GROUP = "nais.io",
             VERSION = "v1alpha1",
             NAMESPACE = "dolly",
             PLURAL = "applications";
 
     @Before
     public void setup() throws ApiException {
-        LinkedTreeMap applicationsOnCluster = new LinkedTreeMap<String, List<LinkedTreeMap<String, String>>>();
-
-        List<LinkedTreeMap<String, LinkedTreeMap<String, String>>> items = new ArrayList<>();
         LinkedTreeMap<String, String>
                 frikortTree = new LinkedTreeMap<>(),
                 inntektTree = new LinkedTreeMap<>(),
@@ -71,6 +69,7 @@ public class KubernetesControllerTest {
         frikortTree.put("name", "synthdata-frikort");
         inntektTree.put("name", "synthdata-inntekt");
         meldekortTree.put("name", "synthdata-meldekort");
+
         LinkedTreeMap<String, LinkedTreeMap<String, String>>
                 frikortMeta = new LinkedTreeMap<>(),
                 inntektMeta = new LinkedTreeMap<>(),
@@ -78,13 +77,18 @@ public class KubernetesControllerTest {
         frikortMeta.put("metadata", frikortTree);
         inntektMeta.put("metadata", inntektTree);
         meldekortMeta.put("metadata", meldekortTree);
+
+        List<LinkedTreeMap<String, LinkedTreeMap<String, String>>> items = new ArrayList<>();
         items.add(frikortMeta);
         items.add(inntektMeta);
         items.add(meldekortMeta);
+
+        var applicationsOnCluster = new LinkedTreeMap<String, List<LinkedTreeMap<String, LinkedTreeMap<String, String>>>>();
         applicationsOnCluster.put("items", items);
+
         Mockito.when(customObjectsApi.listNamespacedCustomObject(
-                eq(GROUP), eq(VERSION), eq(NAMESPACE), eq(PLURAL),
-                eq(null), eq(null), eq(null), eq(null)))
+                GROUP, VERSION, NAMESPACE, PLURAL,
+                null, null, null, null))
                 .thenReturn(applicationsOnCluster);
     }
 
@@ -111,7 +115,6 @@ public class KubernetesControllerTest {
                         .withBody("404 Not Found")));
         assertThat(kubernetesController.isAlive("MYAPP"), is(false));
     }
-
 
     @Test(expected = RuntimeException.class)
     public void deployedButNotUp() throws InterruptedException, ApiException {

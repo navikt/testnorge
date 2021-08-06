@@ -20,11 +20,11 @@ public class NaisYaml {
     }
 
     public Map<String, Object> provideYaml(String appName, String tag) {
-        Yaml yaml = new Yaml();
+        var yaml = new Yaml();
         Map<String, Object> manifestFile = yaml.load(this.getClass().getResourceAsStream(manifestPath.replace("{appName}", appName)));
 
         Map<String, Object> spec = (Map) manifestFile.get("spec");
-        String imageBase = spec.get("image").toString();
+        var imageBase = spec.get("image").toString();
         String latestImage = imageBase.replace("latest", tag);
         spec.put("image", latestImage);
 

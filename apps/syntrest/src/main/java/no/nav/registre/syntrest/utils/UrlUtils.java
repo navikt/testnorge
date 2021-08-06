@@ -1,6 +1,7 @@
 package no.nav.registre.syntrest.utils;
 
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriBuilderFactory;
 
@@ -18,7 +19,7 @@ public class UrlUtils {
         return uriFactory.builder().path(url.getPath()).build((Object[]) paramters).toString();
     }
 
-     public static String createQueryString(String parameterName, String parameterValue, String existingQuery) {
+    public static String createQueryString(String parameterName, String parameterValue, String existingQuery) {
         if (isNull(parameterValue)) {
             return existingQuery;
         }

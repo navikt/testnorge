@@ -1,7 +1,9 @@
 package no.nav.registre.syntrest.consumer;
 
 import com.fasterxml.jackson.databind.JsonNode;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -9,6 +11,7 @@ import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
+
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.tcp.ProxyProvider;
@@ -16,7 +19,6 @@ import reactor.netty.tcp.ProxyProvider;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.util.Objects;
 
 import static java.util.Objects.isNull;
 
@@ -39,19 +41,19 @@ public class GitHubConsumer {
             @Value("${http.proxy:#{null}}") String proxy,
             WebClient.Builder webClientBuilder
     ) throws MalformedURLException {
-        WebClient.Builder builder = webClientBuilder.clone();
+        var builder = webClientBuilder.clone();
 
         if (!isNull(proxy)) {
             log.info("Setter opp proxy host {} for GitHub Consumer", proxy);
             var uri = URI.create(proxy);
 
-            HttpClient httpClient = HttpClient.create()
+            var httpClient = HttpClient.create()
                     .tcpConfiguration(tcpClient -> tcpClient.proxy(p -> p
                             .type(ProxyProvider.Proxy.HTTP)
                             .host(uri.getHost())
                             .port(uri.getPort())));
 
-            ReactorClientHttpConnector connector = new ReactorClientHttpConnector(httpClient);
+            var connector = new ReactorClientHttpConnector(httpClient);
             builder.clientConnector(connector);
         }
 
@@ -64,7 +66,7 @@ public class GitHubConsumer {
 
     public String getApplicationTag(String appName) {
         String packageName = getCorrectGithubPackageName(appName);
-        String queryString = "query {repository(owner:\"navikt\", name:\"testnorge-syntetiseringspakker\") {packages(names:[\"" +
+        var queryString = "query {repository(owner:\"navikt\", name:\"testnorge-syntetiseringspakker\") {packages(names:[\"" +
                 packageName + "\"] last:1) {nodes {latestVersion{version}} }}}";
 
         JsonNode queryAnswer = webClient
@@ -92,7 +94,7 @@ public class GitHubConsumer {
 
     private String getCorrectGithubPackageName(String appName) {
         int bindestrekIndex = appName.lastIndexOf("-");
-        String app = appName.substring(bindestrekIndex + 1);
+        var app = appName.substring(bindestrekIndex + 1);
         return "synt_" + app;
     }
 

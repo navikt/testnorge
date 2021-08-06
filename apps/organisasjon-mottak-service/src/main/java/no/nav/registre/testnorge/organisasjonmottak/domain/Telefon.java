@@ -3,7 +3,7 @@ package no.nav.registre.testnorge.organisasjonmottak.domain;
 public class Telefon extends ToLine {
     private final String tlf;
 
-    public Telefon(no.nav.registre.testnorge.libs.avro.organisasjon.v1.Telefon telefon) {
+    public Telefon(no.nav.testnav.libs.avro.organisasjon.v1.Telefon telefon) {
         this.tlf = telefon.getTlf();
     }
 

@@ -17,7 +17,7 @@ java.sourceCompatibility = JavaVersion.VERSION_11
 dependencies {
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:${DependenciesPlugin.springBoot}"
     implementation "org.springframework.boot:spring-boot-starter-webflux:${DependenciesPlugin.springBoot}"
-    implementation "org.springframework.security:spring-security-oauth2-client:5.3.4.RELEASE"
+    implementation "org.springframework.security:spring-security-oauth2-client:${DependenciesPlugin.springSecurity}"
 
     implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"

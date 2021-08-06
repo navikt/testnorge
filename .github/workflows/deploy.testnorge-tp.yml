@@ -5,7 +5,7 @@ on:
     branches: master
     paths:
       - apps/testnorge-tp/**
-      - libs/testnorge-core/**
+
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/tp:${{ github.sha }}

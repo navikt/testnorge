@@ -19,14 +19,14 @@ import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTiltakspenge
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetTvungenForvaltningRequest;
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetUngUfoerRequest;
 import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoResponse;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Deltakerstatuser;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Adresse;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Forvalter;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.forvalter.Konto;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Deltakerstatuser;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.tilleggsstoenad.Vedtaksperiode;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakTillegg;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.forvalter.Adresse;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.forvalter.Forvalter;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.forvalter.Konto;
 
 import org.springframework.stereotype.Service;
 
