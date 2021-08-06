@@ -207,8 +207,8 @@ public class Inst2Consumer {
 
     public boolean isMiljoeTilgjengelig(String miljoe) {
         try {
-            ResponseEntity<List<String>> response = webClient.get().uri(uriBuilder ->
-                            uriBuilder.path(inst2NewServerUrl + "/v1/environment")
+            ResponseEntity<List<String>> response = webClient.get().uri(inst2NewServerUrl, uriBuilder ->
+                            uriBuilder.path("/v1/environment")
                                     .build())
                     .retrieve().toEntityList(String.class).block();
             List<String> miljoer = nonNull(response) ? response.getBody() : emptyList();
