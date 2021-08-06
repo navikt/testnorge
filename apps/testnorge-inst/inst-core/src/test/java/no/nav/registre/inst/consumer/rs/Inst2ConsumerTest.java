@@ -3,6 +3,7 @@ package no.nav.registre.inst.consumer.rs;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import no.nav.registre.inst.Institusjonsopphold;
+import no.nav.registre.inst.InstitusjonsoppholdV2;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -75,7 +76,7 @@ public class Inst2ConsumerTest {
 
     @Test
     public void shouldAddInstitusjonsoppholdTilInst2() throws JsonProcessingException {
-        var institusjonsopphold = Institusjonsopphold.builder().build();
+        var institusjonsopphold = InstitusjonsoppholdV2.builder().build();
 
         stubAddInstitusjonsopphold();
 

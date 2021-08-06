@@ -1,16 +1,16 @@
 package no.nav.registre.inst.service;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import no.nav.registre.inst.Institusjonsopphold;
+import no.nav.registre.inst.InstitusjonsoppholdV2;
+import no.nav.registre.inst.consumer.rs.HodejegerenHistorikkConsumer;
+import no.nav.registre.inst.consumer.rs.Inst2Consumer;
+import no.nav.registre.inst.consumer.rs.InstSyntetisererenConsumer;
+import no.nav.registre.inst.provider.rs.requests.SyntetiserInstRequest;
+import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
+import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,13 +26,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import no.nav.registre.inst.Institusjonsopphold;
-import no.nav.registre.inst.consumer.rs.HodejegerenHistorikkConsumer;
-import no.nav.registre.inst.consumer.rs.Inst2Consumer;
-import no.nav.registre.inst.consumer.rs.InstSyntetisererenConsumer;
-import no.nav.registre.inst.provider.rs.requests.SyntetiserInstRequest;
-import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
-import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SyntetiseringServiceTest {
@@ -65,6 +65,7 @@ public class SyntetiseringServiceTest {
     private SyntetiserInstRequest syntetiserInstRequest;
     private List<String> utvalgteIdenter;
     private List<Institusjonsopphold> meldinger;
+    private List<InstitusjonsoppholdV2> meldingerV2;
     private String id = "test";
 
     @Before
@@ -77,14 +78,20 @@ public class SyntetiseringServiceTest {
                 .startdato(LocalDate.of(2019, 1, 1))
                 .faktiskSluttdato(LocalDate.of(2019, 2, 1))
                 .build());
+        meldingerV2 = new ArrayList<>();
+        meldingerV2.add(InstitusjonsoppholdV2.builder()
+                .tssEksternId("123")
+                .startdato(LocalDate.of(2019, 1, 1))
+                .sluttdato(LocalDate.of(2019, 2, 1))
+                .build());
         when(identService.hentTokenTilInst2(miljoe)).thenReturn("Bearer 123");
     }
 
     @Test
     public void shouldOppretteInstitusjonsmeldinger() {
-        when(instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(antallMeldinger)).thenReturn(meldinger);
+        when(instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(antallMeldinger)).thenReturn(meldingerV2);
         when(hodejegerenConsumer.getLevende(avspillergruppeId)).thenReturn(utvalgteIdenter);
-        when(inst2Consumer.leggTilInstitusjonsoppholdIInst2(anyString(), eq(id), eq(id), eq(miljoe), eq(meldinger.get(0)))).thenReturn(OppholdResponse.builder()
+        when(inst2Consumer.leggTilInstitusjonsoppholdIInst2(anyString(), eq(id), eq(id), eq(miljoe), eq(meldingerV2.get(0)))).thenReturn(OppholdResponse.builder()
                 .status(HttpStatus.OK)
                 .build());
         when(inst2Consumer.finnesInstitusjonPaaDato(anyString(), eq(id), eq(id), eq(miljoe), anyString(), any())).thenReturn(HttpStatus.OK);
@@ -105,7 +112,7 @@ public class SyntetiseringServiceTest {
         listAppender.start();
         logger.addAppender(listAppender);
 
-        when(instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(antallMeldinger)).thenReturn(meldinger);
+        when(instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(antallMeldinger)).thenReturn(meldingerV2);
         when(hodejegerenConsumer.getLevende(avspillergruppeId)).thenReturn(utvalgteIdenter);
         when(identService.hentInstitusjonsoppholdFraInst2(anyString(), eq(id), eq(id), eq(miljoe), anyString())).thenReturn(meldinger);
         when(inst2Consumer.finnesInstitusjonPaaDato(anyString(), eq(id), eq(id), eq(miljoe), anyString(), any())).thenReturn(HttpStatus.OK);

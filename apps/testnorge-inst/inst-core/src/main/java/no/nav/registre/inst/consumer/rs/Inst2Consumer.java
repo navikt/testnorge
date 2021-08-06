@@ -3,6 +3,7 @@ package no.nav.registre.inst.consumer.rs;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.inst.Institusjonsopphold;
+import no.nav.registre.inst.InstitusjonsoppholdV2;
 import no.nav.registre.inst.exception.UgyldigIdentResponseException;
 import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -90,7 +91,7 @@ public class Inst2Consumer {
             String callId,
             String consumerId,
             String miljoe,
-            Institusjonsopphold institusjonsopphold
+            InstitusjonsoppholdV2 institusjonsopphold
     ) {
         try {
             var response = webClient.post()

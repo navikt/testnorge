@@ -3,6 +3,7 @@ package no.nav.registre.inst.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.inst.Institusjonsopphold;
+import no.nav.registre.inst.InstitusjonsoppholdV2;
 import no.nav.registre.inst.consumer.rs.Inst2Consumer;
 import no.nav.registre.inst.exception.UkjentMiljoeException;
 import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
@@ -25,7 +26,7 @@ public class IdentService {
             String callId,
             String consumerId,
             String miljoe,
-            List<Institusjonsopphold> oppholdene
+            List<InstitusjonsoppholdV2> oppholdene
     ) {
         List<OppholdResponse> statusFraInst2 = new ArrayList<>(oppholdene.size());
         for (var opphold : oppholdene) {
@@ -39,7 +40,7 @@ public class IdentService {
             String callId,
             String consumerId,
             String miljoe,
-            Institusjonsopphold opphold
+            InstitusjonsoppholdV2 opphold
     ) {
         log.info("Sender institusjonsopphold til inst2: " + opphold);
         var oppholdResponse = inst2Consumer.leggTilInstitusjonsoppholdIInst2(
@@ -48,7 +49,7 @@ public class IdentService {
                 consumerId,
                 miljoe,
                 opphold);
-        oppholdResponse.setPersonident(opphold.getPersonident());
+        oppholdResponse.setPersonident(opphold.getNorskident());
         return oppholdResponse;
     }
 

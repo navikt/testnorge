@@ -3,6 +3,7 @@ package no.nav.registre.inst.provider.rs;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.inst.Institusjonsopphold;
+import no.nav.registre.inst.InstitusjonsoppholdV2;
 import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
 import no.nav.registre.inst.service.IdentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,7 @@ public class IdentController {
             @RequestHeader(HEADER_NAV_CALL_ID) @NotBlank String navCallId,
             @RequestHeader(HEADER_NAV_CONSUMER_ID) @NotBlank String navConsumerId,
             @RequestParam String miljoe,
-            @RequestBody Institusjonsopphold institusjonsopphold
+            @RequestBody InstitusjonsoppholdV2 institusjonsopphold
     ) {
         return identService.sendTilInst2(navCallId, navConsumerId, miljoe, institusjonsopphold);
     }
@@ -91,7 +92,7 @@ public class IdentController {
             @RequestHeader(HEADER_NAV_CALL_ID) @NotBlank String navCallId,
             @RequestHeader(HEADER_NAV_CONSUMER_ID) @NotBlank String navConsumerId,
             @RequestParam String miljoe,
-            @RequestBody List<Institusjonsopphold> institusjonsopphold
+            @RequestBody List<InstitusjonsoppholdV2> institusjonsopphold
     ) {
         return identService.opprettInstitusjonsopphold(navCallId, navConsumerId, miljoe, institusjonsopphold);
     }

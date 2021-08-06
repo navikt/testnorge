@@ -1,6 +1,7 @@
 package no.nav.registre.inst.provider.rs;
 
 import no.nav.registre.inst.Institusjonsopphold;
+import no.nav.registre.inst.InstitusjonsoppholdV2;
 import no.nav.registre.inst.service.IdentService;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +33,7 @@ public class IdentControllerTest {
     private String fnr2 = "02020202020";
     private List<String> identer;
     private Institusjonsopphold institusjonsopphold = new Institusjonsopphold();
+    private InstitusjonsoppholdV2 institusjonsoppholdV2 = new InstitusjonsoppholdV2();
 
     @Before
     public void setUp() {
@@ -40,9 +42,9 @@ public class IdentControllerTest {
 
     @Test
     public void shouldOppretteInstitusjonsopphold() {
-        identController.opprettInstitusjonsopphold(id, id, miljoe, institusjonsopphold);
+        identController.opprettInstitusjonsopphold(id, id, miljoe, institusjonsoppholdV2);
 
-        verify(identService).sendTilInst2(id, id, miljoe, institusjonsopphold);
+        verify(identService).sendTilInst2(id, id, miljoe, institusjonsoppholdV2);
     }
 
     @Test
@@ -61,7 +63,7 @@ public class IdentControllerTest {
 
     @Test
     public void shouldOppretteFlereInstitusjonsopphold() {
-        List<Institusjonsopphold> institusjonsoppholdene = new ArrayList<>(Collections.singletonList(institusjonsopphold));
+        List<InstitusjonsoppholdV2> institusjonsoppholdene = new ArrayList<>(Collections.singletonList(institusjonsoppholdV2));
         identController.opprettFlereInstitusjonsopphold(id, id, miljoe, institusjonsoppholdene);
 
         verify(identService).opprettInstitusjonsopphold(id, id, miljoe, institusjonsoppholdene);

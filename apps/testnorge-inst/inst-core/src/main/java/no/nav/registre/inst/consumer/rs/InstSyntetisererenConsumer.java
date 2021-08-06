@@ -2,6 +2,7 @@ package no.nav.registre.inst.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.inst.InstitusjonsoppholdV2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -12,13 +13,11 @@ import org.springframework.web.util.UriTemplate;
 
 import java.util.List;
 
-import no.nav.registre.inst.Institusjonsopphold;
-
 @Component
 @Slf4j
 public class InstSyntetisererenConsumer {
 
-    private static final ParameterizedTypeReference<List<Institusjonsopphold>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
+    private static final ParameterizedTypeReference<List<InstitusjonsoppholdV2>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
     @Autowired
@@ -31,7 +30,7 @@ public class InstSyntetisererenConsumer {
     }
 
     @Timed(value = "inst.resource.latency", extraTags = { "operation", "inst-syntetisereren" })
-    public List<Institusjonsopphold> hentInstMeldingerFromSyntRest(int numToGenerate) {
+    public List<InstitusjonsoppholdV2> hentInstMeldingerFromSyntRest(int numToGenerate) {
         var getRequest = RequestEntity.get(url.expand(numToGenerate)).build();
         return restTemplate.exchange(getRequest, RESPONSE_TYPE).getBody();
     }
