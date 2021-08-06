@@ -7,8 +7,6 @@ on:
       - apps/syntrest/**
 
   workflow_dispatch:
-    paths:
-      - apps/syntrest/**
 
 
 env:

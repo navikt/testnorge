@@ -10,10 +10,10 @@ import java.util.concurrent.Executor;
 
 @SpringBootApplication
 @EnableAsync(proxyTargetClass = true)
-public class ApplicationStarter {
+public class SyntrestApplicationStarter {
 
     public static void main(String[] args) {
-        SpringApplication.run(ApplicationStarter.class, args);
+        SpringApplication.run(SyntrestApplicationStarter.class, args);
     }
 
     @Bean

@@ -63,6 +63,7 @@ includeBuild './apps/endringsmelding-frontend'
 includeBuild './apps/endringsmelding-service'
 includeBuild './apps/applikasjonsanalyse-frontend'
 includeBuild './apps/adresse-service'
+includeBuild './apps/syntrest'
 includeBuild './apps/amelding-service'
 includeBuild './apps/applikasjonsanalyse-service'
 includeBuild './apps/arbeidsforhold-export-api'
@@ -125,7 +126,6 @@ include(':testnorge-inntekt')
 include(':inst-local')
 include(':tp-core')
 include(':testnorge-aareg')
-include(':syntrest')
 include(':synt-person-api')
 include(':skd-core')
 include(':testnorge-sam')
@@ -196,7 +196,6 @@ project(":testnorge-inntekt").projectDir = file('apps/testnorge-inntekt')
 project(":inst-local").projectDir = file('apps/testnorge-inst/inst-local')
 project(":tp-core").projectDir = file('apps/testnorge-tp/tp-core')
 project(":testnorge-aareg").projectDir = file('apps/testnorge-aareg')
-project(":syntrest").projectDir = file('apps/syntrest')
 project(":synt-person-api").projectDir = file('apps/synt-person-api')
 project(":skd-core").projectDir = file('apps/testnorge-skd/skd-core')
 project(":testnorge-sam").projectDir = file('apps/testnorge-sam')
