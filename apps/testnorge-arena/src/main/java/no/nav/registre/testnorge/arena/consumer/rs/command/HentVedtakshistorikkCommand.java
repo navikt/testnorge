@@ -6,7 +6,7 @@ import java.util.concurrent.Callable;
 
 import lombok.extern.slf4j.Slf4j;
 
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;

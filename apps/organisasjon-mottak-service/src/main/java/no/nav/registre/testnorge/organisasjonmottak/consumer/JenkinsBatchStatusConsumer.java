@@ -3,8 +3,8 @@ package no.nav.registre.testnorge.organisasjonmottak.consumer;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import no.nav.registre.testnorge.organisasjonmottak.config.properties.JenkinsBatchStatusServiceProperties;
 import no.nav.registre.testnorge.organisasjonmottak.consumer.command.RegisterEregBestillingCommand;
 

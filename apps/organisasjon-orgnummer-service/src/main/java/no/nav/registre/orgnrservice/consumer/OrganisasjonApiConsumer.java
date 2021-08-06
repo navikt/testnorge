@@ -15,9 +15,9 @@ import java.util.stream.Collectors;
 
 import no.nav.registre.orgnrservice.config.credentials.OrganisasjonServiceProperties;
 import no.nav.registre.orgnrservice.consumer.exceptions.OrganisasjonApiException;
-import no.nav.registre.testnorge.libs.common.command.organisasjonservice.v1.GetOrganisasjonCommand;
+import no.nav.testnav.libs.commands.organisasjonservice.v1.GetOrganisasjonCommand;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 
 @Slf4j
 @Component

@@ -1,6 +1,6 @@
 package no.nav.registre.testnorge.organisasjonmottak.domain;
 
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.Organisasjon;
+import no.nav.testnav.libs.avro.organisasjon.v1.Organisasjon;
 
 public class Knytning extends ToLine {
     private final String juridiskEnhet;

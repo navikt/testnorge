@@ -18,14 +18,14 @@ dependencies {
     implementation 'com.google.guava:guava:30.0-jre'
 
 
-    implementation project(':kafka-config')
-    implementation project(':kafka-producers')
-    implementation project(':testnorge-avro-schema')
+    implementation 'no.nav.testnav.libs:kafka-config'
+    implementation 'no.nav.testnav.libs:kafka-producers'
+    implementation 'no.nav.testnav.libs:avro-schema'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
     implementation 'no.nav.testnav.libs:servlet-core'
-    implementation project(':testnorge-database')
-    implementation project(':commands')
-    implementation project(':testnorge-csv-converter')
+    implementation 'no.nav.testnav.libs:database'
+    implementation 'no.nav.testnav.libs:commands'
+    implementation 'no.nav.testnav.libs:csv-converter'
 
     implementation 'org.springframework.kafka:spring-kafka:2.5.6.RELEASE'
     implementation 'io.confluent:kafka-avro-serializer:6.1.0'
@@ -50,14 +50,14 @@ dependencies {
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'javax.validation:validation-api:2.0.1.Final'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
-    implementation project(':testnorge-oauth2')
+    implementation 'no.nav.testnav.libs:servlet-security'
     implementation 'org.apache.httpcomponents:httpclient:4.5.12'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation "org.springdoc:springdoc-openapi-ui:${springdocOpenapiUi}"
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config:2.2.5.RELEASE'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:2.2.4.RELEASE'
     testImplementation 'org.springframework.boot:spring-boot-starter-test:2.3.5.RELEASE'
-    testImplementation project(':testnorge-testing')
+    testImplementation 'no.nav.testnav.libs:testing'
 }
 
 description = 'testnorge-statisk-data-forvalter'

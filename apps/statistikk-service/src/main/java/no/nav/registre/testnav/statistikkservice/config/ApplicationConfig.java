@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
-import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2ServerToServerConfiguration;
+import no.nav.testnav.libs.servletsecurity.config.SecureOAuth2ServerToServerConfiguration;
 
 @EnableJpaAuditing
 @Configuration

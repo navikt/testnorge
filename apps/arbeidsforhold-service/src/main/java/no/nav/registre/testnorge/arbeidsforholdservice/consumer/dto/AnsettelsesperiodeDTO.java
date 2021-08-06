@@ -11,4 +11,5 @@ import lombok.Value;
 @NoArgsConstructor(force = true)
 public class AnsettelsesperiodeDTO {
     PeriodeDTO periode;
+    String sluttaarsak;
 }

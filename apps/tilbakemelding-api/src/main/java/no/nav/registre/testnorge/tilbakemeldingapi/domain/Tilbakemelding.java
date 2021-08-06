@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import lombok.Value;
 import no.nav.testnav.libs.dto.tilbakemeldingapi.v1.Rating;
 import no.nav.testnav.libs.dto.tilbakemeldingapi.v1.TilbakemeldingDTO;
-import no.nav.registre.testnorge.libs.slack.dto.Attachment;
-import no.nav.registre.testnorge.libs.slack.dto.Block;
-import no.nav.registre.testnorge.libs.slack.dto.Divider;
-import no.nav.registre.testnorge.libs.slack.dto.Message;
-import no.nav.registre.testnorge.libs.slack.dto.Section;
-import no.nav.registre.testnorge.libs.slack.dto.TextAttachment;
+import no.nav.testnav.libs.slack.dto.Attachment;
+import no.nav.testnav.libs.slack.dto.Block;
+import no.nav.testnav.libs.slack.dto.Divider;
+import no.nav.testnav.libs.slack.dto.Message;
+import no.nav.testnav.libs.slack.dto.Section;
+import no.nav.testnav.libs.slack.dto.TextAttachment;
 
 @Value
 public class Tilbakemelding {

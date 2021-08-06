@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Import;
 
 import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
 import no.nav.testnav.libs.servletcore.config.ApplicationProperties;
-import no.nav.registre.testnorge.libs.oauth2.config.SecureOAuth2ServerToServerConfiguration;
-import no.nav.registre.testnorge.libs.slack.consumer.SlackConsumer;
+import no.nav.testnav.libs.servletsecurity.config.SecureOAuth2ServerToServerConfiguration;
+import no.nav.testnav.libs.slack.consumer.SlackConsumer;
 
 @Configuration
 @Import({

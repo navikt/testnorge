@@ -21,7 +21,7 @@ public class PersonListener {
     private final PersonApiConsumer personApiConsumer;
 
     @KafkaListener(topics = "testnorge-opprett-person-v1")
-    public void register(@Payload no.nav.registre.testnorge.libs.avro.person.Person person) {
+    public void register(@Payload no.nav.testnav.libs.avro.person.Person person) {
         log.info("Ny person registert med ident {}", person.getIdent());
         personApiConsumer.createPerson(new Person(person));
     }

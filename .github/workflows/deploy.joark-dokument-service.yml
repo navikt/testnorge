@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - apps/joark-dokument-service/**
-      - libs/testnorge-core/**
+
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/joark-dokument-service:${{ github.sha }}

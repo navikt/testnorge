@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import no.nav.registre.testnorge.organisasjonservice.config.credentials.EregServiceProperties;
 import no.nav.registre.testnorge.organisasjonservice.consumer.command.GetOrganisasjonCommand;
 import no.nav.registre.testnorge.organisasjonservice.consumer.dto.OrganisasjonDTO;

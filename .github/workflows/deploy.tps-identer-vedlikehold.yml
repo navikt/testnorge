@@ -5,7 +5,7 @@ on:
     branches: master
     paths:
       - apps/tps-identer-vedlikehold/**
-      - libs/testnorge-core/**
+
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/tps-identer-vedlikehold:${{ github.sha }}

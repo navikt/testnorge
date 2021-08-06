@@ -29,7 +29,6 @@ public abstract class SyntConsumer {
     @Value("${synth-package-unused-uptime}")
     private long shutdownTimeDelaySeconds;
 
-
     protected SyntConsumer(
             ApplicationManager applicationManager,
             String name,
@@ -58,13 +57,13 @@ public abstract class SyntConsumer {
     }
 
     public void shutdownApplication() {
-            applicationManager.shutdownApplication(appName);
+        applicationManager.shutdownApplication(appName);
     }
 
     public void startApplication() throws InterruptedException, ApiException {
         try {
             applicationManager.startApplication(this);
-        } catch(InterruptedException | ApiException e) {
+        } catch (InterruptedException | ApiException e) {
             log.error("Could not access synth package {}: \n{}", appName, Arrays.toString(e.getStackTrace()));
             throw e;
         }

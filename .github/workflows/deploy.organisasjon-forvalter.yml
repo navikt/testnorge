@@ -9,7 +9,7 @@ on:
       - libs/kafka-config/**
       - libs/kafka-producers/**
       - libs/testnorge-avro-schema/**
-      - libs/testnorge-core/**
+
       - libs/testnorge-oauth2/**
 
 env:

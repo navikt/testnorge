@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - apps/inntektsmelding-service/**
-      - libs/testnorge-core/**
+
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/inntektsmelding-service:${{ github.sha }}

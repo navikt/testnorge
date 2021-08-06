@@ -5,8 +5,8 @@ import no.nav.pdl.forvalter.config.credentials.GenererNavnServiceProperties;
 import no.nav.pdl.forvalter.consumer.command.GenererNavnServiceCommand;
 import no.nav.pdl.forvalter.consumer.command.VerifiserNavnServiceCommand;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
-import no.nav.registre.testnorge.libs.oauth2.config.NaisServerProperties;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 

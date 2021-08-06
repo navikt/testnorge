@@ -1,6 +1,6 @@
 package no.nav.tpsidenter.vedlikehold.consumers;
 
-import no.nav.registre.testnorge.libs.slack.consumer.SlackConsumer;
+import no.nav.testnav.libs.slack.consumer.SlackConsumer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 

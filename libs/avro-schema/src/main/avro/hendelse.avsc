@@ -1,0 +1,26 @@
+{
+  "type": "record",
+  "name": "Hendelse",
+  "namespace": "no.nav.testnav.libs.avro.hendelse",
+  "fields": [
+    {
+      "name": "ident",
+      "type": "string"
+    },
+    {
+      "name": "fom",
+      "type": "string"
+    },
+    {
+      "name": "tom",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    {
+      "name": "type",
+      "type": "string"
+    }
+  ]
+}

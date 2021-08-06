@@ -8,7 +8,7 @@ public class DetaljertNavn extends ToLine {
     private final String navn5;
     private final String redigertNavn;
 
-    public DetaljertNavn(no.nav.registre.testnorge.libs.avro.organisasjon.v1.DetaljertNavn detaljertNavn) {
+    public DetaljertNavn(no.nav.testnav.libs.avro.organisasjon.v1.DetaljertNavn detaljertNavn) {
         this.navn1 = detaljertNavn.getNavn1();
         this.navn2 = detaljertNavn.getNavn2();
         this.navn3 = detaljertNavn.getNavn3();

@@ -14,6 +14,7 @@ import no.nav.registre.syntrest.domain.sam.SamMelding;
 import no.nav.registre.syntrest.domain.tp.TPmelding;
 import no.nav.registre.syntrest.domain.tps.SkdMelding;
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -60,19 +61,30 @@ public class SyntConsumerConfig {
     private final WebClient.Builder webClientBuilder;
 
     // Request/Response types
-    private static final ParameterizedTypeReference<List<String>> STRING_LIST_TYPE = new ParameterizedTypeReference<>() {};
-    private static final ParameterizedTypeReference<Map<String, Integer>> STRING_INTEGER_MAP_TYPE = new ParameterizedTypeReference<>() {};
-    private static final ParameterizedTypeReference<List<Arbeidsforholdsmelding>> ARBEIDSFORHOLDSMELDING_LIST_TYPE = new ParameterizedTypeReference<>() {};
-    private static final ParameterizedTypeReference<List<Barnebidragsmelding>> BARNEBIDRAGSMELDING_LIST_TYPE = new ParameterizedTypeReference<>() {};
-    private static final ParameterizedTypeReference<List<Institusjonsmelding>> INSTITUSJONSMELDING_LIST_TYPE = new ParameterizedTypeReference<>() {};
-    private static final ParameterizedTypeReference<List<Medlemskapsmelding>> MEDLEMSKAPSMELDING_LIST_TYPE = new ParameterizedTypeReference<>() {};
-    private static final ParameterizedTypeReference<List<Inntektsmelding>> INNTEKTSMELDING_POPP_LIST_TYPE = new ParameterizedTypeReference<>() {};
-    private static final ParameterizedTypeReference<List<SamMelding>> SAM_MELDING_LIST_TYPE = new ParameterizedTypeReference<>() {};
-    private static final ParameterizedTypeReference<Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>> INNTEKTSMELDING_MAP_TYPE = new ParameterizedTypeReference<>() {};
-    private static final ParameterizedTypeReference<List<TPmelding>> TP_MELDING_LIST_TYPE = new ParameterizedTypeReference<>() {};
-    private static final ParameterizedTypeReference<List<SkdMelding>> SKD_MELDING_LIST_TYPE = new ParameterizedTypeReference<>() {};
-    private static final ParameterizedTypeReference<Map<String, List<FrikortKvittering>>> STRING_FRIKORT_KVITTERING_MAP_TYPE = new ParameterizedTypeReference<>() {};
-
+    private static final ParameterizedTypeReference<List<String>> STRING_LIST_TYPE = new ParameterizedTypeReference<>() {
+    };
+    private static final ParameterizedTypeReference<Map<String, Integer>> STRING_INTEGER_MAP_TYPE = new ParameterizedTypeReference<>() {
+    };
+    private static final ParameterizedTypeReference<List<Arbeidsforholdsmelding>> ARBEIDSFORHOLDSMELDING_LIST_TYPE = new ParameterizedTypeReference<>() {
+    };
+    private static final ParameterizedTypeReference<List<Barnebidragsmelding>> BARNEBIDRAGSMELDING_LIST_TYPE = new ParameterizedTypeReference<>() {
+    };
+    private static final ParameterizedTypeReference<List<Institusjonsmelding>> INSTITUSJONSMELDING_LIST_TYPE = new ParameterizedTypeReference<>() {
+    };
+    private static final ParameterizedTypeReference<List<Medlemskapsmelding>> MEDLEMSKAPSMELDING_LIST_TYPE = new ParameterizedTypeReference<>() {
+    };
+    private static final ParameterizedTypeReference<List<Inntektsmelding>> INNTEKTSMELDING_POPP_LIST_TYPE = new ParameterizedTypeReference<>() {
+    };
+    private static final ParameterizedTypeReference<List<SamMelding>> SAM_MELDING_LIST_TYPE = new ParameterizedTypeReference<>() {
+    };
+    private static final ParameterizedTypeReference<Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>> INNTEKTSMELDING_MAP_TYPE = new ParameterizedTypeReference<>() {
+    };
+    private static final ParameterizedTypeReference<List<TPmelding>> TP_MELDING_LIST_TYPE = new ParameterizedTypeReference<>() {
+    };
+    private static final ParameterizedTypeReference<List<SkdMelding>> SKD_MELDING_LIST_TYPE = new ParameterizedTypeReference<>() {
+    };
+    private static final ParameterizedTypeReference<Map<String, List<FrikortKvittering>>> STRING_FRIKORT_KVITTERING_MAP_TYPE = new ParameterizedTypeReference<>() {
+    };
 
     @Bean
     SyntPostConsumer<List<String>, List<Arbeidsforholdsmelding>> aaregConsumer() throws MalformedURLException {
@@ -141,6 +153,7 @@ public class SyntConsumerConfig {
                 STRING_LIST_TYPE,
                 webClientBuilder);
     }
+
     @Bean
     SyntPostConsumer<List<String>, List<Inntektsmelding>> poppConsumer() throws MalformedURLException {
         return new SyntPostConsumer<>(
@@ -166,7 +179,7 @@ public class SyntConsumerConfig {
 
     @Bean
     SyntPostConsumer<Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>,
-                Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>> inntektConsumer() throws MalformedURLException {
+            Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>> inntektConsumer() throws MalformedURLException {
         return new SyntPostConsumer<>(
                 applicationManager,
                 "synthdata-inntekt",

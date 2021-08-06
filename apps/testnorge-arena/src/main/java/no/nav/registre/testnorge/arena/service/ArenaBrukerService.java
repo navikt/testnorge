@@ -19,14 +19,14 @@ import no.nav.registre.testnorge.arena.consumer.rs.request.EndreInnsatsbehovRequ
 import no.nav.registre.testnorge.arena.service.exception.VedtakshistorikkException;
 import no.nav.registre.testnorge.arena.service.util.ArenaBrukerUtils;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.NyBruker;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.brukere.NyEndreInnsatsbehov;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtak;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
-import no.nav.registre.testnorge.domain.dto.arena.testnorge.vedtak.RettighetType;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Kvalifiseringsgrupper;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.NyBruker;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.NyEndreInnsatsbehov;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtak;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
+import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.RettighetType;
 
 import static no.nav.registre.testnorge.arena.service.util.ArenaBrukerUtils.checkNyeBrukereResponse;
 import static no.nav.registre.testnorge.arena.service.util.ArenaBrukerUtils.hentIdentListe;

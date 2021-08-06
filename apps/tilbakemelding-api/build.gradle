@@ -17,8 +17,8 @@ bootJar {
 dependencies {
 
     implementation 'no.nav.testnav.libs:servlet-core'
-    implementation project(':testnorge-slack')
-    implementation project(':testnorge-oauth2')
+    implementation 'no.nav.testnav.libs:slack'
+    implementation 'no.nav.testnav.libs:servlet-security'
 
     implementation 'no.nav.testnav.libs:data-transfer-objects'
 

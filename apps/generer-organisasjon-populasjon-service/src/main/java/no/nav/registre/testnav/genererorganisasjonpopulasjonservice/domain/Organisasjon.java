@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.avro.organisasjon.v1.DetaljertNavn;
+import no.nav.testnav.libs.avro.organisasjon.v1.DetaljertNavn;
 
 @Data
 public class Organisasjon {
@@ -50,8 +50,8 @@ public class Organisasjon {
         this.virksomheter = virksomheter;
     }
 
-    public no.nav.registre.testnorge.libs.avro.organisasjon.v1.Organisasjon toAvroOrganisasjon() {
-        return no.nav.registre.testnorge.libs.avro.organisasjon.v1.Organisasjon
+    public no.nav.testnav.libs.avro.organisasjon.v1.Organisasjon toAvroOrganisasjon() {
+        return no.nav.testnav.libs.avro.organisasjon.v1.Organisasjon
                 .newBuilder()
                 .setEnhetstype(enhetstype)
                 .setOrgnummer(orgnummer)

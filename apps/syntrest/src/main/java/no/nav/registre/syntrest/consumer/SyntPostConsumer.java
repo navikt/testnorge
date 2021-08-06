@@ -2,15 +2,19 @@ package no.nav.registre.syntrest.consumer;
 
 import io.kubernetes.client.ApiException;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
+
 import reactor.core.publisher.Mono;
+
 import java.net.MalformedURLException;
 
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 
 /**
  * Class for synth-packages that require a post-request
+ *
  * @param <Q> Request object (Question)
  * @param <A> Response object (Answer)
  */

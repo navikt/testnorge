@@ -9,8 +9,8 @@ import no.nav.registre.syntrest.consumer.command.PostArbeidsforholdMedTypeComman
 import no.nav.registre.syntrest.consumer.command.PostArbeidsforholdStartCommand;
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 
-import no.nav.registre.testnorge.domain.dto.aareg.amelding.Arbeidsforhold;
-import no.nav.registre.testnorge.domain.dto.aareg.amelding.ArbeidsforholdPeriode;
+import no.nav.testnav.libs.domain.dto.aareg.amelding.Arbeidsforhold;
+import no.nav.testnav.libs.domain.dto.aareg.amelding.ArbeidsforholdPeriode;
 
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -65,7 +65,7 @@ public class SyntAmeldingConsumer extends SyntConsumer {
     ) throws ApiException, InterruptedException {
         startApplication();
         try {
-            return new PostArbeidsforholdMedTypeCommand(request, String.format(startSpesifikkPath, arbeidsforholdType) , queryString, webClient).call();
+            return new PostArbeidsforholdMedTypeCommand(request, String.format(startSpesifikkPath, arbeidsforholdType), queryString, webClient).call();
         } catch (RestClientException e) {
             log.error(REST_CLIENT_EXCEPTION_MESSAGE, Arrays.toString(e.getStackTrace()));
             throw e;
@@ -80,7 +80,7 @@ public class SyntAmeldingConsumer extends SyntConsumer {
     ) throws ApiException, InterruptedException {
         startApplication();
         try {
-            return new PostArbeidsforholdInitialCommand(request, startPathV2 , queryString, webClient).call();
+            return new PostArbeidsforholdInitialCommand(request, startPathV2, queryString, webClient).call();
         } catch (RestClientException e) {
             log.error(REST_CLIENT_EXCEPTION_MESSAGE, Arrays.toString(e.getStackTrace()));
             throw e;
@@ -88,7 +88,6 @@ public class SyntAmeldingConsumer extends SyntConsumer {
             scheduleIfShutdown();
         }
     }
-
 
     public List<Arbeidsforhold> synthesizeArbeidsforholdHistorikk(
             Arbeidsforhold tidligereArbeidsforhold,

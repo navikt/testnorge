@@ -27,8 +27,8 @@ import java.util.Collections;
 
 import no.nav.testnav.libs.dto.person.v1.AdresseDTO;
 import no.nav.testnav.libs.dto.person.v1.PersonDTO;
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
-import no.nav.registre.testnorge.libs.test.JsonWiremockHelper;
+import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
+import no.nav.testnav.libs.testing.JsonWiremockHelper;
 import no.nav.registre.testnorge.synt.person.consumer.dto.SyntPersonDTO;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

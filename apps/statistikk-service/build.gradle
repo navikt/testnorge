@@ -16,9 +16,9 @@ dependencyManagement {
 dependencies {
 
     implementation 'no.nav.testnav.libs:servlet-core'
-    implementation project(':testnorge-database')
+    implementation 'no.nav.testnav.libs:database'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
-    implementation project(':testnorge-oauth2')
+    implementation 'no.nav.testnav.libs:servlet-security'
 
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -42,7 +42,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'org.assertj:assertj-core:3.16.1'
-    testImplementation project(':testnorge-testing')
+    testImplementation 'no.nav.testnav.libs:testing'
 }
 
 description = 'statistikk-service'

@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - apps/testnorge-inst/**
-      - libs/testnorge-core/**
+
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/inst:${{ github.sha }}

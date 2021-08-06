@@ -12,4 +12,5 @@ import lombok.Value;
 public class ArbeidsgiverDTO {
     String type;
     String organisasjonsnummer;
+    String ident;
 }

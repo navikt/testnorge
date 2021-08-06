@@ -39,7 +39,7 @@ jaxb2 {
 
 dependencies {
 
-    implementation project(':testnorge-database')
+    implementation 'no.nav.testnav.libs:database'
     implementation 'no.nav.testnav.libs:servlet-core'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -77,7 +77,7 @@ dependencies {
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation project(':testnorge-testing')
+    testImplementation 'no.nav.testnav.libs:testing'
 }
 
 description = 'brreg-stub'

@@ -36,7 +36,7 @@ public class AppConfig {
 
     @Bean
     ScheduledExecutorService scheduledExecutorService() {
-        int executorPoolSize = 4;
+        var executorPoolSize = 4;
         return Executors.newScheduledThreadPool(executorPoolSize);
     }
 
@@ -53,11 +53,11 @@ public class AppConfig {
     @Bean
     ApiClient apiClient() {
         try {
-            KubeConfig kc = KubeConfig.loadKubeConfig(new FileReader(kubeConfigPath));
+            var kc = KubeConfig.loadKubeConfig(new FileReader(kubeConfigPath));
             kc.setContext("dev-fss");
             return Config.fromConfig(kc);
         } catch (IOException e) {
-            String errormsg = String.format("Could not apply configuration from %s", kubeConfigPath);
+            var errormsg = String.format("Could not apply configuration from %s", kubeConfigPath);
             log.error("Could not apply configuration from {}.", kubeConfigPath);
             throw new BeanCreationException(errormsg, e);
         }
@@ -66,7 +66,7 @@ public class AppConfig {
     @Bean
     @DependsOn("apiClient")
     CustomObjectsApi customObjectsApi() {
-        CustomObjectsApi api = new CustomObjectsApi();
+        var api = new CustomObjectsApi();
         api.setApiClient(apiClient());
         return api;
     }

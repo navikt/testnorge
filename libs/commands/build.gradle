@@ -1,13 +1,25 @@
+import no.nav.testnav.dependencies.gradle.DependenciesPlugin
+
 plugins {
-    id 'no.nav.registre.testnorge.java-conventions'
+    id 'no.nav.testnav.dependencies'
+    id 'java-library'
 }
+
+group = 'no.nav.testnav.libs'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+java.sourceCompatibility = JavaVersion.VERSION_11
 
 dependencies {
-    implementation 'no.nav.testnav.libs:data-transfer-objects'
-    implementation 'org.springframework.boot:spring-boot-starter-webflux:2.3.2.RELEASE'
-    implementation 'org.springframework.boot:spring-boot-starter-web:2.3.4.RELEASE'
+    implementation "no.nav.testnav.libs:data-transfer-objects"
+    implementation "org.springframework.boot:spring-boot-starter-webflux:${DependenciesPlugin.springBoot}"
+    implementation "org.springframework.boot:spring-boot-starter-web:${DependenciesPlugin.springBoot}"
 
+    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
 }
-
-group = 'no.nav.registre.testnorge.libs'
-description = 'commands'

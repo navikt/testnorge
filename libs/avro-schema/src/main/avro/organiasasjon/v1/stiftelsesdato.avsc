@@ -1,0 +1,11 @@
+{
+  "type": "record",
+  "name": "Stiftelsesdato",
+  "namespace": "no.nav.testnav.libs.avro.organisasjon.v1",
+  "fields": [
+    {
+      "name": "dato",
+      "type": "Dato"
+    }
+  ]
+}

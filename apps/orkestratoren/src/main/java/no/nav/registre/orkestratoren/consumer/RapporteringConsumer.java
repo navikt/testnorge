@@ -7,9 +7,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.libs.avro.report.Entry;
-import no.nav.registre.testnorge.libs.avro.report.Report;
-import no.nav.registre.testnorge.libs.reporting.ReportConsumer;
+import no.nav.testnav.libs.avro.report.Entry;
+import no.nav.testnav.libs.avro.report.Report;
+import no.nav.testnav.libs.reporting.ReportConsumer;
 
 @Component
 public class RapporteringConsumer implements ReportConsumer {
@@ -25,7 +25,7 @@ public class RapporteringConsumer implements ReportConsumer {
     }
 
     @Override
-    public void send(no.nav.registre.testnorge.libs.reporting.domin.Report report) {
+    public void send(no.nav.testnav.libs.reporting.domin.Report report) {
         var traceId = MDC.getCopyOfContextMap().getOrDefault("traceId", null);
         kafkaTemplate.send(
                 topic,

@@ -9,8 +9,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import no.nav.testnav.libs.dto.syntperson.v1.SyntPersonDTO;
-import no.nav.registre.testnorge.libs.oauth2.domain.AccessToken;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import no.nav.registre.testnorge.originalpopulasjon.config.credentials.SyntPersonServiceProperties;
 import no.nav.registre.testnorge.originalpopulasjon.exceptions.SyntetiseringAvPersonInfoException;
 

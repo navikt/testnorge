@@ -3,7 +3,7 @@ package no.nav.registre.testnorge.organisasjonmottak.domain;
 public class Epost extends ToLine {
     private final String epost;
 
-    public Epost(no.nav.registre.testnorge.libs.avro.organisasjon.v1.Epost epost) {
+    public Epost(no.nav.testnav.libs.avro.organisasjon.v1.Epost epost) {
         this.epost = epost.getEpost();
     }
 

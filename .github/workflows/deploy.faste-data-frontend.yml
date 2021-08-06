@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - apps/faste-data-frontend/**
-      - libs/testnorge-core/**
+
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/faste-data-frontend:${{ github.sha }}

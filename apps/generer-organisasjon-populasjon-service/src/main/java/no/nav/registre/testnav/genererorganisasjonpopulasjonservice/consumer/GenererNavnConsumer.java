@@ -4,9 +4,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.registre.testnav.genererorganisasjonpopulasjonservice.credentials.GenererNavnServiceProperties;
-import no.nav.registre.testnorge.libs.common.command.generernavnservice.v1.GenererNavnCommand;
+import no.nav.testnav.libs.commands.generernavnservice.v1.GenererNavnCommand;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 
 @Component
 public class GenererNavnConsumer {

@@ -5,7 +5,7 @@ on:
     branches: master
     paths:
       - apps/testnorge-token-provider/**
-      - libs/testnorge-core/**
+
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/token-provider:${{ github.sha }}

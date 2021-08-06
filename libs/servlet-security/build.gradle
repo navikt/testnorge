@@ -1,0 +1,27 @@
+import no.nav.testnav.dependencies.gradle.DependenciesPlugin
+
+plugins {
+    id 'no.nav.testnav.dependencies'
+    id 'java-library'
+}
+
+group = 'no.nav.testnav.libs'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+java.sourceCompatibility = JavaVersion.VERSION_11
+
+dependencies {
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:${DependenciesPlugin.springBoot}"
+    implementation "org.springframework.boot:spring-boot-starter-actuator:${DependenciesPlugin.springBoot}"
+    implementation "org.springframework.boot:spring-boot-starter-webflux:${DependenciesPlugin.springBoot}"
+    implementation "org.springframework.boot:spring-boot-starter-web:${DependenciesPlugin.springBoot}"
+    implementation "org.springframework.security:spring-security-oauth2-client:${DependenciesPlugin.springSecurity}"
+
+    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+}

@@ -3,11 +3,9 @@ package no.nav.registre.testnav.genererorganisasjonpopulasjonservice.consumer;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.Set;
-
 import no.nav.registre.testnav.genererorganisasjonpopulasjonservice.consumer.command.GetOrgnummerCommand;
 import no.nav.registre.testnav.genererorganisasjonpopulasjonservice.credentials.OrgnummerServiceProperties;
-import no.nav.registre.testnorge.libs.oauth2.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 
 @Component
 public class OrgnummerConsumer {

@@ -23,7 +23,7 @@ import no.nav.registre.hodejegeren.exception.SidetallOverMaksException;
 import no.nav.registre.hodejegeren.mongodb.SyntHistorikk;
 import no.nav.registre.hodejegeren.provider.rs.requests.HistorikkRequest;
 import no.nav.registre.hodejegeren.service.HistorikkService;
-import no.nav.registre.testnorge.domain.dto.namespacetps.TpsPersonDokumentType;
+import no.nav.testnav.libs.domain.dto.namespacetps.TpsPersonDokumentType;
 
 @Slf4j
 @RestController

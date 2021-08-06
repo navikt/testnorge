@@ -1,6 +1,7 @@
 package no.nav.registre.syntrest.domain.popp;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

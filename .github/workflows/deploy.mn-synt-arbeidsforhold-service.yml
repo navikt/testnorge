@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - apps/mn-synt-arbeidsforhold-service/**
-      - libs/testnorge-core/**
+
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/mn-synt-arbeidsforhold-service:${{ github.sha }}
