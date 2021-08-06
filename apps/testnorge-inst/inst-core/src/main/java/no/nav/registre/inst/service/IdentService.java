@@ -143,13 +143,7 @@ public class IdentService {
         }
     }
 
-    public List<String> hentTilgjengeligeMiljoer(List<String> aktuelleMiljoer) {
-        List<String> tilgjengeligeMiljoer = new ArrayList<>();
-        for (String miljoe : aktuelleMiljoer) {
-            if (inst2Consumer.isMiljoeTilgjengelig(miljoe)) {
-                tilgjengeligeMiljoer.add(miljoe);
-            }
-        }
-        return tilgjengeligeMiljoer;
+    public List<String> hentTilgjengeligeMiljoer() {
+        return inst2Consumer.hentInst2TilgjengeligeMiljoer();
     }
 }

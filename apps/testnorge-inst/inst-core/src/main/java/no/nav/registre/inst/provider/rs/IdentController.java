@@ -83,7 +83,7 @@ public class IdentController {
     @GetMapping("/miljoer")
     @ApiOperation(value = "Her kan man sjekke hvilke miljøer Inst2 er tilgjengelig i.")
     public List<String> hentTilgjengeligeMiljoer() {
-        return identService.hentTilgjengeligeMiljoer(miljoer);
+        return identService.hentTilgjengeligeMiljoer();
     }
 
     @PostMapping("/ident/batch")

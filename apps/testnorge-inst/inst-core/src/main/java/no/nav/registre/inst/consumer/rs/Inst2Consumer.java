@@ -6,6 +6,7 @@ import no.nav.registre.inst.Institusjonsopphold;
 import no.nav.registre.inst.InstitusjonsoppholdV2;
 import no.nav.registre.inst.exception.UgyldigIdentResponseException;
 import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
+import no.nav.registre.inst.provider.rs.responses.SupportedEnvironmentsResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
@@ -38,8 +39,8 @@ public class Inst2Consumer {
 
     private final WebClient webClient;
 
-    private UriTemplate inst2WebApiServerUrl;
-    private String inst2NewServerUrl;
+    private final UriTemplate inst2WebApiServerUrl;
+    private final String inst2NewServerUrl;
 
     public Inst2Consumer(
             @Value("${inst2.web.api.url}") String inst2WebApiServerUrl,
@@ -205,18 +206,18 @@ public class Inst2Consumer {
         }
     }
 
-    public boolean isMiljoeTilgjengelig(String miljoe) {
+    public List<String> hentInst2TilgjengeligeMiljoer() {
         try {
-            ResponseEntity<List<String>> response = webClient.get().uri(inst2NewServerUrl, uriBuilder ->
+            ResponseEntity<SupportedEnvironmentsResponse> response = webClient.get().uri(inst2NewServerUrl, uriBuilder ->
                             uriBuilder.path("/v1/environment")
                                     .build())
-                    .retrieve().toEntityList(String.class).block();
-            List<String> miljoer = nonNull(response) ? response.getBody() : emptyList();
+                    .retrieve().toEntity(SupportedEnvironmentsResponse.class).block();
+            List<String> miljoer = nonNull(response) && response.hasBody() ? response.getBody().getInstitusjonsoppholdEnvironments() : emptyList();
             log.info("Tilgjengelige inst2 miljøer: {}", String.join(",", miljoer));
-            return miljoer.stream().anyMatch(env -> env.equals(miljoe));
+            return miljoer;
         } catch (WebClientResponseException e) {
-            log.warn("Inst2 er ikke tilgjengelig i miljø {}", miljoe);
-            return false;
+            log.error("Henting av tilgjengelige miljøer i Inst2 feilet: ", e);
+            return new ArrayList<>();
         }
     }
 }
