@@ -2,12 +2,14 @@ package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO;
+import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
-
+import no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.util.Strings;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -50,6 +52,10 @@ public abstract class AdresseService<T extends AdresseDTO> {
         if (!bruksenhet.matches("[HULK][0-9]{4}")) {
             throw new InvalidRequestException(VALIDATION_BRUKSENHET_ERROR);
         }
+    }
+
+    protected static <T> int count(T artifact) {
+        return nonNull(artifact) ? 1 : 0;
     }
 
     protected void validateCoAdresseNavn(AdresseDTO.CoNavnDTO navn) {
@@ -96,30 +102,16 @@ public abstract class AdresseService<T extends AdresseDTO> {
                 .toString();
     }
 
-    protected static <T> int count(T artifact) {
-        return nonNull(artifact) ? 1 : 0;
-    }
+    protected void populateMiscFields(AdresseDTO adresse, PersonDTO person) {
 
-    public List<T> convert(List<T> request) {
-
-        for (var type : request) {
-
-            if (isTrue(type.getIsNew())) {
-                validate(type);
-
-                handle(type);
-                if (Strings.isBlank(type.getKilde())) {
-                    type.setKilde("Dolly");
-                }
-            }
+        if (isNull(adresse.getGyldigFraOgMed())) {
+            adresse.setGyldigFraOgMed(person.getBostedsadresse().stream().findFirst()
+                    .map(adr -> LocalDateTime.now())
+                    .orElse(DatoFraIdentUtility.getDato(person.getIdent()).atStartOfDay()));
         }
-        enforceIntegrity(request);
-        return request;
+        adresse.setKilde(StringUtils.isNotBlank(adresse.getKilde()) ? adresse.getKilde() : "Dolly");
+        adresse.setMaster(nonNull(adresse.getMaster()) ? adresse.getMaster() : DbVersjonDTO.Master.FREG);
     }
-
-    protected abstract void validate(T type);
-
-    protected abstract void handle(T type);
 
     protected void enforceIntegrity(List<T> adresse) {
 

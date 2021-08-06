@@ -59,9 +59,9 @@ public class SivilstandService {
             if (isTrue(type.getIsNew())) {
                 validate(type);
 
+                handle(type, person);
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
-                handle(type, person);
             }
         }
         enforceIntegrity(person.getSivilstand());
@@ -121,7 +121,8 @@ public class SivilstandService {
                             .orElse(BostedadresseDTO.builder()
                                     .vegadresse(mapperFacade.map(defaultAdresse(), VegadresseDTO.class))
                                     .build());
-                    relatertPerson.getBostedsadresse().add(fellesAdresse);
+                    fellesAdresse.setGyldigFraOgMed(sivilstand.getSivilstandsdato());
+                    relatertPerson.getBostedsadresse().add(0, fellesAdresse);
                 }
 
                 sivilstand.setRelatertVedSivilstand(relatertPerson.getIdent());

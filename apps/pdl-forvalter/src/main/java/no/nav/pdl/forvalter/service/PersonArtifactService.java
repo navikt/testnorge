@@ -37,10 +37,10 @@ public class PersonArtifactService {
         person.setKjoenn(kjoennService.convert(person));
         person.setInnflytting(innflyttingService.convert(person.getInnflytting()));
         person.setStatsborgerskap(statsborgerskapService.convert(person));
-        person.setBostedsadresse(bostedAdresseService.convert(person.getBostedsadresse()));
+        person.setBostedsadresse(bostedAdresseService.convert(person));
         person.setFoedsel(foedselService.convert(person));
         person.setNavn(navnService.convert(person.getNavn()));
-        person.setOppholdsadresse(oppholdsadresseService.convert(person.getOppholdsadresse()));
+        person.setOppholdsadresse(oppholdsadresseService.convert(person));
         person.setAdressebeskyttelse(adressebeskyttelseService.convert(person.getAdressebeskyttelse()));
         person.setTelefonnummer(telefonnummerService.convert(person.getTelefonnummer()));
         person.setUtflytting(utflyttingService.convert(person.getUtflytting()));
@@ -49,7 +49,7 @@ public class PersonArtifactService {
         person.setDoedsfall(doedsfallService.convert(person.getDoedsfall()));
         person.setFolkeregisterpersonstatus(folkeregisterPersonstatusService.convert(person));
         person.setFullmakt(fullmaktService.convert(person));
-        person.setKontaktadresse(kontaktAdresseService.convert(person.getKontaktadresse()));
+        person.setKontaktadresse(kontaktAdresseService.convert(person));
         person.setUtenlandskIdentifikasjonsnummer(utenlandsidentifikasjonsnummerService
                 .convert(person.getUtenlandskIdentifikasjonsnummer()));
         person.setVergemaal(vergemaalService.convert(person));

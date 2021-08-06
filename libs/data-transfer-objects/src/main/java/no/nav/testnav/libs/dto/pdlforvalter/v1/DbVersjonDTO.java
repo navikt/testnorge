@@ -2,6 +2,7 @@ package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,6 +16,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonFilter("idFilter")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class DbVersjonDTO implements Serializable {
 
     public enum Master {FREG, PDL}

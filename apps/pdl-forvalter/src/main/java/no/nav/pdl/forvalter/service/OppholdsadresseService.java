@@ -6,10 +6,14 @@ import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdsadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Service
@@ -31,7 +35,20 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO> {
         this.mapperFacade = mapperFacade;
     }
 
-    @Override
+    public List<OppholdsadresseDTO> convert(PersonDTO person) {
+
+        for (var adresse : person.getOppholdsadresse()) {
+
+            if (isTrue(adresse.getIsNew())) {
+                validate(adresse);
+
+                handle(adresse);
+                populateMiscFields(adresse, person);
+            }
+        }
+        return person.getOppholdsadresse();
+    }
+
     protected void validate(OppholdsadresseDTO adresse) {
 
         if (count(adresse.getVegadresse()) +
@@ -66,7 +83,6 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO> {
         }
     }
 
-    @Override
     protected void handle(OppholdsadresseDTO oppholdsadresse) {
 
         if (nonNull(oppholdsadresse.getVegadresse())) {

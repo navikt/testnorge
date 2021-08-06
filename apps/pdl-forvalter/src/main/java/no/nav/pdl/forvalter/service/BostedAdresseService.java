@@ -6,9 +6,13 @@ import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Service
@@ -29,8 +33,21 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO> {
         this.mapperFacade = mapperFacade;
     }
 
-    @Override
-    protected void validate(BostedadresseDTO adresse) {
+    public List<BostedadresseDTO> convert(PersonDTO person) {
+
+        for (var adresse : person.getBostedsadresse()) {
+
+            if (isTrue(adresse.getIsNew())) {
+                validate(adresse);
+
+                handle(adresse);
+                populateMiscFields(adresse, person);
+            }
+        }
+        return person.getBostedsadresse();
+    }
+
+    private void validate(BostedadresseDTO adresse) {
 
         if (count(adresse.getMatrikkeladresse()) +
                 count(adresse.getUtenlandskAdresse()) +
@@ -63,8 +80,7 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO> {
         }
     }
 
-    @Override
-    protected void handle(BostedadresseDTO bostedadresse) {
+    private void handle(BostedadresseDTO bostedadresse) {
 
         if (nonNull(bostedadresse.getVegadresse())) {
             var vegadresse =

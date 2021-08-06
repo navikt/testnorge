@@ -71,7 +71,7 @@ public class CreatePersonService {
         kjoennService.convert(mergedPerson);
         navnService.convert(mergedPerson.getNavn());
         statsborgerskapService.convert(mergedPerson);
-        bostedAdresseService.convert(mergedPerson.getBostedsadresse());
+        bostedAdresseService.convert(mergedPerson);
         foedselService.convert(mergedPerson);
         folkeregisterPersonstatusService.convert(mergedPerson);
 
