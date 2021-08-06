@@ -41,6 +41,7 @@ jobs:
           ./gradlew :data-transfer-objects:publish -PreleaseVersion=$VERSION
           ./gradlew :reactive-core:publish -PreleaseVersion=$VERSION
           ./gradlew :reactive-proxy:publish -PreleaseVersion=$VERSION
+          ./gradlew :reactive-security:publish -PreleaseVersion=$VERSION
 
           git tag -a $VERSION -m "Tag release version"
           git push origin $VERSION
