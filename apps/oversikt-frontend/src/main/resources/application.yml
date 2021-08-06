@@ -79,6 +79,7 @@ applications:
   testnav-person-faste-data-service: dev-gcp.dolly.testnav-person-faste-data-service
   testnav-person-service: dev-gcp.dolly.testnav-person-service
   testnav-inntektstub-proxy: dev-fss.dolly.testnav-inntektstub-proxy
+  tps-forvalteren-proxy: dev-fss.dolly.tps-forvalteren-proxy
 
 consumers:
   testnorge-profil-api:
