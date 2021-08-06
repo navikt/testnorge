@@ -3,6 +3,7 @@ import no.nav.testnav.dependencies.gradle.DependenciesPlugin
 plugins {
     id 'no.nav.testnav.dependencies'
     id 'java-library'
+    id 'maven-publish'
     id 'com.github.davidmc24.gradle.plugin.avro' version '1.2.0'
 }
 
