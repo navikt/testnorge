@@ -7,6 +7,7 @@ import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.consumer.OrganisasjonForvalterConsumer;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.AdressatDTO;
@@ -270,6 +271,10 @@ public class KontaktinformasjonForDoedsboService {
 
             adressat.getNyKontaktPerson().setFoedtFoer(LocalDateTime.now().minusYears(18));
             adressat.getNyKontaktPerson().setFoedtEtter(LocalDateTime.now().minusYears(67));
+        }
+
+        if (isNull(adressat.getNyKontaktPerson().getSyntetisk())) {
+            adressat.getNyKontaktPerson().setSyntetisk(SyntetiskFraIdentUtility.isSyntetisk(person.getIdent()));
         }
 
         adressat.setIdnummer(

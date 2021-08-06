@@ -27,13 +27,9 @@ public class SivilstandDTO extends DbVersjonDTO {
     }
 
     private LocalDateTime bekreftelsesdato;
-    private String kommune;
-    private String myndighet;
     private String relatertVedSivilstand;
     private LocalDateTime sivilstandsdato;
-    private String sted;
     private Sivilstand type;
-    private String utland;
 
     private Boolean borIkkeSammen;
     private PersonRequestDTO nyRelatertPerson;

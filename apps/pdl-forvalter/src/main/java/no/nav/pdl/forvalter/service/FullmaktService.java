@@ -3,6 +3,7 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
@@ -85,6 +86,10 @@ public class FullmaktService {
 
                 fullmakt.getNyFullmektig().setFoedtFoer(LocalDateTime.now().minusYears(18));
                 fullmakt.getNyFullmektig().setFoedtEtter(LocalDateTime.now().minusYears(75));
+            }
+
+            if (fullmakt.getNyFullmektig().getSyntetisk()) {
+                fullmakt.getNyFullmektig().setSyntetisk(SyntetiskFraIdentUtility.isSyntetisk(ident));
             }
 
             fullmakt.setFullmektig(createPersonService.execute(fullmakt.getNyFullmektig()).getIdent());
