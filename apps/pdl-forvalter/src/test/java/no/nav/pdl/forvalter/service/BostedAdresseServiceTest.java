@@ -4,10 +4,10 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO.UkjentBostedDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,7 +18,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import java.time.LocalDate;
 import java.util.List;
 
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO.Master.FREG;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -75,7 +74,7 @@ class BostedAdresseServiceTest {
 
         var request = List.of(BostedadresseDTO.builder()
                 .utenlandskAdresse(new UtenlandskAdresseDTO())
-                .master(FREG)
+                .master(DbVersjonDTO.Master.FREG)
                 .isNew(true)
                 .build());
 
@@ -161,7 +160,7 @@ class BostedAdresseServiceTest {
     @Test
     void whenOverlappingDateIntervalsInInput2_thenThrowExecption() {
 
-         when(adresseServiceConsumer.getMatrikkeladresse(any(MatrikkeladresseDTO.class), any()))
+        when(adresseServiceConsumer.getMatrikkeladresse(any(MatrikkeladresseDTO.class), any()))
                 .thenReturn(new no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO());
 
         var request = List.of(BostedadresseDTO.builder()

@@ -64,10 +64,11 @@ public class SivilstandService {
                 handle(type, person);
             }
         }
+        enforceIntegrity(person.getSivilstand());
         return person.getSivilstand();
     }
 
-    protected void validate(SivilstandDTO sivilstand) {
+    private void validate(SivilstandDTO sivilstand) {
 
         if (isNull(sivilstand.getType())) {
             throw new InvalidRequestException(TYPE_EMPTY_ERROR);
@@ -88,7 +89,7 @@ public class SivilstandService {
         }
     }
 
-    protected void handle(SivilstandDTO sivilstand, PersonDTO hovedperson) {
+    private void handle(SivilstandDTO sivilstand, PersonDTO hovedperson) {
 
         if (sivilstand.getType() == GIFT ||
                 sivilstand.getType() == REGISTRERT_PARTNER) {
@@ -139,6 +140,8 @@ public class SivilstandService {
         DbPerson relatertPerson = personRepository.findByIdent(sivilstand.getRelatertVedSivilstand()).get();
         SivilstandDTO relatertSivilstand = mapperFacade.map(sivilstand, SivilstandDTO.class);
         relatertSivilstand.setRelatertVedSivilstand(hovedperson);
+        relatertSivilstand.setBorIkkeSammen(null);
+        relatertSivilstand.setNyRelatertPerson(null);
         relatertPerson.getPerson().getSivilstand().add(relatertSivilstand);
         mergeService.merge(relatertPerson.getPerson(), relatertPerson.getPerson());
         personRepository.save(relatertPerson);
@@ -154,7 +157,7 @@ public class SivilstandService {
 
         for (var i = 0; i < sivilstand.size(); i++) {
             if (i + 1 < sivilstand.size() &&
-                sivilstand.get(i+1).getSivilstandsdato().isBefore(sivilstand.get(i).getSivilstandsdato())) {
+                sivilstand.get(i+1).getSivilstandsdato().isAfter(sivilstand.get(i).getSivilstandsdato())) {
 
                     throw new InvalidRequestException(SIVILSTAND_OVERLAPPENDE_DATOER_ERROR);
             }

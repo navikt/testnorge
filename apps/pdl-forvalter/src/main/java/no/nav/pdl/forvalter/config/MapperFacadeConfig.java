@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.config;
 
 import lombok.RequiredArgsConstructor;
+import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import no.nav.pdl.forvalter.mapper.MappingStrategy;
@@ -16,7 +17,7 @@ import static java.util.Objects.nonNull;
 public class MapperFacadeConfig {
 
     @Bean
-    MapperFacade mapperFacade(List<MappingStrategy> mappingStrategies) {
+    MapperFacade mapperFacade(List<MappingStrategy> mappingStrategies, List<CustomConverter> customConverters) {
         DefaultMapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
 
         if (nonNull(mappingStrategies)) {
@@ -25,6 +26,13 @@ public class MapperFacadeConfig {
             }
         }
 
+        if (nonNull(customConverters)) {
+            for (CustomConverter converter : customConverters) {
+                mapperFactory.getConverterFactory().registerConverter(converter);
+            }
+        }
+
         return mapperFactory.getMapperFacade();
+
     }
 }
