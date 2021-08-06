@@ -48,9 +48,12 @@ public class CreatePersonService {
                 .navn(nonNull(request.getNyttNavn()) ?
                         List.of(NavnDTO.builder().hasMellomnavn(request.getNyttNavn().isHarMellomnavn()).build()) :
                         emptyList())
-                .bostedsadresse(List.of(BostedadresseDTO.builder()
-                        .vegadresse(new VegadresseDTO())
-                        .build()))
+                .bostedsadresse(List.of(
+                        nonNull(request.getBostedadresseDTO()) ?
+                                request.getBostedadresseDTO() :
+                                BostedadresseDTO.builder()
+                                        .vegadresse(new VegadresseDTO())
+                                        .build()))
                 .statsborgerskap(List.of(StatsborgerskapDTO.builder().build()))
                 .folkeregisterpersonstatus(
                         List.of(FolkeregisterpersonstatusDTO.builder().build()))

@@ -4,12 +4,12 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import org.springframework.stereotype.Service;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO.Master.PDL;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
@@ -52,7 +52,7 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO> {
                 count(adresse.getVegadresse()) > 1) {
             throw new InvalidRequestException(VALIDATION_AMBIGUITY_ERROR);
         }
-        if (PDL.equals(adresse.getMaster()) &&
+        if (DbVersjonDTO.Master.PDL == adresse.getMaster() &&
                 (isNull(adresse.getGyldigFraOgMed()) || isNull(adresse.getGyldigTilOgMed()))) {
             throw new InvalidRequestException(VALIDATION_MASTER_PDL_ERROR);
         }

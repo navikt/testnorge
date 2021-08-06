@@ -27,13 +27,7 @@ public abstract class AdresseDTO extends DbVersjonDTO {
 
     private CoNavnDTO opprettCoAdresseNavn;
 
-    @Schema(defaultValue = "FREG")
-    private Master master;
-
-    public enum Master {FREG, PDL}
-
     public enum OppholdAnnetSted {MILITAER, UTENRIKS, PAA_SVALBARD, PENDLER}
-
 
     @Data
     @Builder

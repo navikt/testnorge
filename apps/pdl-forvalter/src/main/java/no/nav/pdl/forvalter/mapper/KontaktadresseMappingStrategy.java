@@ -5,12 +5,11 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.pdl.forvalter.dto.PdlKontaktadresse;
 import no.nav.pdl.forvalter.dto.PdlKontaktadresse.VegadresseForPost;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import org.springframework.stereotype.Component;
 
 import static java.util.Objects.nonNull;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO.Master.FREG;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO.Master.PDL;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Component
@@ -26,12 +25,12 @@ public class KontaktadresseMappingStrategy implements MappingStrategy {
                     public void mapAtoB(KontaktadresseDTO kildeAdresse, PdlKontaktadresse kontaktadresse, MappingContext context) {
 
                         if (isNotBlank(kontaktadresse.getAdresseIdentifikatorFraMatrikkelen())) {
-                            kontaktadresse.setMaster(FREG);
+                            kontaktadresse.setMaster(DbVersjonDTO.Master.FREG);
                             kontaktadresse.setVegadresseForPost(
                                     mapperFacade.map(kildeAdresse.getVegadresse(), VegadresseForPost.class));
                             kontaktadresse.setVegadresse(null);
                         } else if (nonNull(kontaktadresse.getVegadresse())) {
-                            kontaktadresse.setMaster(PDL);
+                            kontaktadresse.setMaster(DbVersjonDTO.Master.PDL);
                         }
                     }
                 })

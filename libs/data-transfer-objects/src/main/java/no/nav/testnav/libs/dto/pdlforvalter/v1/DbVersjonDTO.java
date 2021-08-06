@@ -17,12 +17,18 @@ import java.io.Serializable;
 @JsonFilter("idFilter")
 public abstract class DbVersjonDTO implements Serializable {
 
+    public enum Master {FREG, PDL}
+
     @Schema(description = "Versjon av informasjonselement. Fravær av denne eller 0 betyr nytt element")
     private Integer id;
 
     @Schema(defaultValue = "Dolly",
             description = "Dataens opprinnelse")
     private String kilde;
+
+    @Schema(defaultValue = "FREG",
+            description = "Hvem er master, FREG eller PDL?")
+    private Master master;
 
     @JsonIgnore
     private Boolean isNew;

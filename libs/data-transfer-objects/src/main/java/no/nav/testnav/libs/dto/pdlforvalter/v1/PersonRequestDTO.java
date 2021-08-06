@@ -26,6 +26,8 @@ public class PersonRequestDTO implements Serializable {
 
     private NyttNavnDTO nyttNavn;
 
+    private BostedadresseDTO bostedadresseDTO;
+
     @Data
     @Builder
     @NoArgsConstructor
