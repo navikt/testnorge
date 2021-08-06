@@ -24,6 +24,7 @@ jobs:
           git remote set-url origin https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git
           git config --global user.email "dolly@nav.no"
           git config --global user.name "$GITHUB_ACTOR"
+      -
       - name: Release
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
@@ -38,6 +39,8 @@ jobs:
 
           ./gradlew :avro-schema:publish -PreleaseVersion=$VERSION
           ./gradlew :data-transfer-objects:publish -PreleaseVersion=$VERSION
+          ./gradlew :reactive-core:publish -PreleaseVersion=$VERSION
+          ./gradlew :reactive-proxy:publish -PreleaseVersion=$VERSION
 
           git tag -a $VERSION -m "Tag release version"
           git push origin $VERSION
