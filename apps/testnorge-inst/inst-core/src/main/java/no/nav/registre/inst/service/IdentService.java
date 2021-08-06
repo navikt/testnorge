@@ -19,8 +19,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class IdentService {
 
+    private static final String KILDE = "Dolly";
+
     private final Inst2Consumer inst2Consumer;
     private final TokenService tokenService;
+
 
     public List<OppholdResponse> opprettInstitusjonsopphold(
             String callId,
@@ -30,6 +33,7 @@ public class IdentService {
     ) {
         List<OppholdResponse> statusFraInst2 = new ArrayList<>(oppholdene.size());
         for (var opphold : oppholdene) {
+            opphold.setRegistrertAv(KILDE);
             var oppholdResponse = sendTilInst2(callId, consumerId, miljoe, opphold);
             statusFraInst2.add(oppholdResponse);
         }
