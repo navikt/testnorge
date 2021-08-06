@@ -17,10 +17,11 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.11
-      - name: Setup git
+      - name: Setup
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          echo Release started by $GITHUB_ACTOR
           git remote set-url origin https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git
           git config --global user.email "dolly@nav.no"
           git config --global user.name "$GITHUB_ACTOR"
@@ -32,35 +33,41 @@ jobs:
           COMMIT=$(git rev-parse --short=12 HEAD)
           export VERSION="$TIME-$COMMIT"
           echo Set version=$VERSION
+          echo "::set-env name=VERSION::$FOO"
       - name: Release avro-schema
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
         run: |
+          echo Release version $VERSION of avro-schema
           ./gradlew :avro-schema:publish -PreleaseVersion=$VERSION
       - name: Release data-transfer-objects
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
         run: |
+          echo Release version $VERSION of data-transfer-objects
           ./gradlew :data-transfer-objects:publish -PreleaseVersion=$VERSION
       - name: Release reactive-core
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
         run: |
+          echo Release version $VERSION of reactive-core
           ./gradlew :reactive-core:publish -PreleaseVersion=$VERSION
       - name: Release reactive-proxy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
         run: |
+          echo Release version $VERSION of reactive-proxy
           ./gradlew :reactive-proxy:publish -PreleaseVersion=$VERSION
       - name: Release reactive-security
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
         run: |
+          echo Release version $VERSION of reactive-security
           ./gradlew :reactive-security:publish -PreleaseVersion=$VERSION
       - name: Git tag og push
         env:
