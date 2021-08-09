@@ -3,7 +3,6 @@ package no.nav.dolly.service;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -313,15 +312,12 @@ public class BestillingService {
 
     private static void fixAaregAbstractClassProblem(List<RsAareg> aaregdata) {
 
-        if (nonNull(aaregdata) && !aaregdata.isEmpty() && nonNull(aaregdata.get(0).getArbeidsforhold()) && !aaregdata.get(0).getArbeidsforhold().isEmpty()) {
-            aaregdata.get(0).getArbeidsforhold().forEach(arbeidforhold -> {
-                log.info("Arbeidsforhold: " + Json.pretty(arbeidforhold));
-                if (nonNull(arbeidforhold.getArbeidsgiver())) {
-                    arbeidforhold.getArbeidsgiver().setAktoertype(
-                            arbeidforhold.getArbeidsgiver() instanceof RsOrganisasjon ? "ORG" : "PERS");
-                }
-            });
-        }
+        aaregdata.forEach(arbeidforhold -> {
+            if (nonNull(arbeidforhold.getArbeidsgiver())) {
+                arbeidforhold.getArbeidsgiver().setAktoertype(
+                        arbeidforhold.getArbeidsgiver() instanceof RsOrganisasjon ? "ORG" : "PERS");
+            }
+        });
     }
 
     private static void fixPdlAbstractClassProblem(RsPdldata pdldata) {

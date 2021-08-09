@@ -26,70 +26,59 @@ public class RsAareg {
     @Schema(description = "Gyldige verdier finnes i kodeverk 'Arbeidsforholdstyper'")
     private String arbeidsforholdstype;
 
-    private List<RsAaregArbeidsforhold> arbeidsforhold;
+    private String arbeidsforholdId;
+
+    private RsPeriodeAareg ansettelsesPeriode;
+
+    private List<RsAntallTimerIPerioden> antallTimerForTimeloennet;
+
+    private RsArbeidsavtale arbeidsavtale;
+
+    private List<RsPermittering> permittering;
+
+    private List<RsPermisjon> permisjon;
+
+    private List<RsFartoy> fartoy;
+
+    private List<RsUtenlandsopphold> utenlandsopphold;
+
+    private RsAktoer arbeidsgiver;
+
+    public List<RsAntallTimerIPerioden> getAntallTimerForTimeloennet() {
+        if (isNull(antallTimerForTimeloennet)) {
+            antallTimerForTimeloennet = new ArrayList<>();
+        }
+        return antallTimerForTimeloennet;
+    }
+
+    public List<RsPermittering> getPermittering() {
+        if (isNull(permittering)) {
+            permittering = new ArrayList<>();
+        }
+        return permittering;
+    }
+
+    public List<RsPermisjon> getPermisjon() {
+        if (isNull(permisjon)) {
+            permisjon = new ArrayList<>();
+        }
+        return permisjon;
+    }
+
+    public List<RsFartoy> getFartoy() {
+        if (isNull(fartoy)) {
+            fartoy = new ArrayList<>();
+        }
+        return fartoy;
+    }
+
+    public List<RsUtenlandsopphold> getUtenlandsopphold() {
+        if (isNull(utenlandsopphold)) {
+            utenlandsopphold = new ArrayList<>();
+        }
+        return utenlandsopphold;
+    }
 
     private List<RsAmeldingRequest> amelding;
 
-    @Getter
-    @Setter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
-    public static class RsAaregArbeidsforhold {
-
-        private String arbeidsforholdId;
-        private String arbeidsforholdstype;
-
-        private RsPeriodeAareg ansettelsesPeriode;
-
-        private List<RsAntallTimerIPerioden> antallTimerForTimeloennet;
-
-        private RsArbeidsavtale arbeidsavtale;
-
-        private List<RsPermittering> permittering;
-
-        private List<RsPermisjon> permisjon;
-
-        private List<RsFartoy> fartoy;
-
-        private List<RsUtenlandsopphold> utenlandsopphold;
-
-        private RsAktoer arbeidsgiver;
-
-        public List<RsAntallTimerIPerioden> getAntallTimerForTimeloennet() {
-            if (isNull(antallTimerForTimeloennet)) {
-                antallTimerForTimeloennet = new ArrayList<>();
-            }
-            return antallTimerForTimeloennet;
-        }
-
-        public List<RsPermittering> getPermittering() {
-            if (isNull(permittering)) {
-                permittering = new ArrayList<>();
-            }
-            return permittering;
-        }
-
-        public List<RsPermisjon> getPermisjon() {
-            if (isNull(permisjon)) {
-                permisjon = new ArrayList<>();
-            }
-            return permisjon;
-        }
-
-        public List<RsFartoy> getFartoy() {
-            if (isNull(fartoy)) {
-                fartoy = new ArrayList<>();
-            }
-            return fartoy;
-        }
-
-        public List<RsUtenlandsopphold> getUtenlandsopphold() {
-            if (isNull(utenlandsopphold)) {
-                utenlandsopphold = new ArrayList<>();
-            }
-            return utenlandsopphold;
-        }
-    }
 }

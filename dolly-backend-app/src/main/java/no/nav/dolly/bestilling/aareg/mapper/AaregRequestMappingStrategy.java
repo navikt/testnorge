@@ -5,7 +5,7 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.aareg.domain.Arbeidsforhold;
 import no.nav.dolly.bestilling.aareg.domain.Arbeidsforhold.Periode;
-import no.nav.dolly.domain.resultset.aareg.RsAareg.RsAaregArbeidsforhold;
+import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsavtale;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
@@ -23,10 +23,10 @@ public class AaregRequestMappingStrategy implements MappingStrategy {
 
     @Override
     public void register(MapperFactory factory) {
-        factory.classMap(RsAaregArbeidsforhold.class, Arbeidsforhold.class)
+        factory.classMap(RsAareg.class, Arbeidsforhold.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(RsAaregArbeidsforhold rsArbeidsforhold,
+                    public void mapAtoB(RsAareg rsArbeidsforhold,
                                         Arbeidsforhold arbeidsforhold, MappingContext context) {
 
                         arbeidsforhold.setArbeidsforholdID(rsArbeidsforhold.getArbeidsforholdId());
@@ -84,5 +84,4 @@ public class AaregRequestMappingStrategy implements MappingStrategy {
                 })
                 .register();
     }
-
 }

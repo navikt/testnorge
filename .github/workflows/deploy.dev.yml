@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - feature/a-melding-oppsett
+      - aareg-arbeidsforhold-innsending-gammel
 
 
 env:

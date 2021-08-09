@@ -55,8 +55,8 @@ public class AaregConsumerTest {
     @Value("${providers.aaregdata.url}")
     private String serverUrl;
 
-    private String ident = "01010101010";
-    private String miljoe = "t0";
+    private final String ident = "01010101010";
+    private final String miljoe = "t0";
     private AaregOpprettRequest opprettRequest;
     private AaregResponse opprettResponse;
     private AaregResponse slettResponse;
