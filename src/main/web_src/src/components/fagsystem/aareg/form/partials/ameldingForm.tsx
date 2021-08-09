@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { ReactFragment, useState } from 'react'
 import styled from 'styled-components'
 import useBoolean from '~/utils/hooks/useBoolean'
 import _get from 'lodash/get'
@@ -22,6 +22,12 @@ import { ForenkletOppgjoersordningForm } from './forenkletOppgjoersordningForm'
 import { Monthpicker } from '~/components/ui/form/inputs/monthpicker/Monthpicker'
 import DollyKjede from '~/components/dollyKjede/DollyKjede'
 import KjedeIcon from '~/components/dollyKjede/KjedeIcon'
+import { FormikProps } from 'formik'
+import { Amelding, KodeverkValue, AaregListe } from '~/components/fagsystem/aareg/AaregTypes'
+
+interface AmeldingForm {
+	formikBag: FormikProps<{ aareg: AaregListe }>
+}
 
 const KjedeContainer = styled.div`
 	display: flex;
@@ -38,7 +44,7 @@ const Slettknapp = styled(Button)`
 	margin: 10px 0;
 `
 
-export const AmeldingForm = ({ formikBag }) => {
+export const AmeldingForm = ({ formikBag }: AmeldingForm): ReactFragment => {
 	const arbeidsforholdstype = _get(formikBag.values, 'aareg[0].arbeidsforholdstype')
 
 	const fom = _get(formikBag.values, 'aareg[0].genererPeriode.fom')
@@ -49,12 +55,12 @@ export const AmeldingForm = ({ formikBag }) => {
 	const [erLenket, setErLenket, setErIkkeLenket] = useBoolean(true)
 	const [selectedIndex, setSelectedIndex] = useState(0)
 
-	const handlePeriodeChange = (dato, type) => {
+	const handlePeriodeChange = (dato: string, type: string) => {
 		formikBag.setFieldValue(`aareg[0].genererPeriode.${type}`, dato)
 
 		if ((type === 'tom' && fom) || (type === 'fom' && tom)) {
-			const maanederPrev = _get(formikBag.values, 'aareg[0].amelding')
-			const maaneder = []
+			const maanederPrev: Array<Amelding> = _get(formikBag.values, 'aareg[0].amelding')
+			const maaneder: Array<string> = []
 			const maanederTmp = eachMonthOfInterval({
 				start: new Date(type === 'fom' ? dato : fom),
 				end: new Date(type === 'tom' ? dato : tom)
@@ -70,7 +76,7 @@ export const AmeldingForm = ({ formikBag }) => {
 			} else {
 				maaneder.forEach((mnd, idx) => {
 					const currMaaned = _get(formikBag.values, 'aareg[0].amelding').find(
-						element => element.maaned == mnd
+						(element: Amelding) => element.maaned == mnd
 					)
 					formikBag.setFieldValue(`aareg[0].amelding[${idx}]`, {
 						maaned: mnd,
@@ -87,7 +93,7 @@ export const AmeldingForm = ({ formikBag }) => {
 		}
 	}
 
-	const handleArbeidsforholdstypeChange = event => {
+	const handleArbeidsforholdstypeChange = (event: KodeverkValue) => {
 		if (event.value === 'forenkletOppgjoersordning') {
 			if (arbeidsforholdstype !== 'forenkletOppgjoersordning') {
 				formikBag.setFieldValue('aareg[0].genererPeriode', initialPeriode)
@@ -101,14 +107,14 @@ export const AmeldingForm = ({ formikBag }) => {
 				formikBag.setFieldValue('aareg[0].amelding', initialAmelding)
 			}
 			if (event.value === 'maritimtArbeidsforhold') {
-				periode.forEach((maaned, idx) => {
+				periode.forEach((maaned: string, idx: number) => {
 					formikBag.setFieldValue(
 						`aareg[0].amelding[${idx}].arbeidsforhold[0].fartoy`,
 						initialFartoy
 					)
 				})
 			} else {
-				periode.forEach((maaned, idx) => {
+				periode.forEach((maaned: string, idx: number) => {
 					formikBag.setFieldValue(`aareg[0].amelding[${idx}].arbeidsforhold[0].fartoy`, undefined)
 				})
 			}
@@ -117,7 +123,7 @@ export const AmeldingForm = ({ formikBag }) => {
 	}
 
 	const handleNewEntry = () => {
-		ameldinger.forEach((maaned, idMaaned) => {
+		ameldinger.forEach((maaned: Amelding, idMaaned: number) => {
 			if (!erLenket && idMaaned != selectedIndex) return
 			const currArbeidsforhold = _get(
 				formikBag.values,
@@ -130,8 +136,8 @@ export const AmeldingForm = ({ formikBag }) => {
 		})
 	}
 
-	const handleRemoveEntry = idArbeidsforhold => {
-		ameldinger.forEach((maaned, idMaaned) => {
+	const handleRemoveEntry = (idArbeidsforhold: number) => {
+		ameldinger.forEach((maaned: Amelding, idMaaned: number) => {
 			if (!erLenket && idMaaned != selectedIndex) return
 			const currArbeidsforhold = _get(
 				formikBag.values,
@@ -204,14 +210,14 @@ export const AmeldingForm = ({ formikBag }) => {
 							name="aareg[0].genererPeriode.fom"
 							label="F.o.m. kalendermåned"
 							date={fom}
-							handleDateChange={dato => handlePeriodeChange(dato, 'fom')}
+							handleDateChange={(dato: string) => handlePeriodeChange(dato, 'fom')}
 						/>
 						<Monthpicker
 							formikBag={formikBag}
 							name="aareg[0].genererPeriode.tom"
 							label="T.o.m. kalendermåned"
 							date={tom}
-							handleDateChange={dato => handlePeriodeChange(dato, 'tom')}
+							handleDateChange={(dato: string) => handlePeriodeChange(dato, 'tom')}
 						/>
 						<div className="flexbox--full-width">
 							<div className="flexbox--flex-wrap">
@@ -268,7 +274,7 @@ export const AmeldingForm = ({ formikBag }) => {
 									handleNewEntry={handleNewEntry}
 									handleRemoveEntry={handleRemoveEntry}
 								>
-									{(path, idx) => (
+									{(path: string, idx: number) => (
 										<ArbeidsforholdForm
 											path={path}
 											key={idx}

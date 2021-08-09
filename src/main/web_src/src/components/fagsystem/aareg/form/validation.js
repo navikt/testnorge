@@ -132,7 +132,7 @@ const arbeidsforhold = Yup.array().of(
 			sluttaarsak: Yup.string().nullable()
 		}),
 		arbeidsforholdstype: ifPresent('$aareg[0].arbeidsforhold', requiredString),
-		arbeidsforholdID: Yup.string(),
+		arbeidsforholdID: Yup.string().nullable(),
 		arbeidsgiver: arbeidsgiver,
 		arbeidsavtale: Yup.object({
 			yrke: requiredString,
@@ -145,8 +145,8 @@ const arbeidsforhold = Yup.array().of(
 			endringsdatoLoenn: Yup.date().nullable(),
 			arbeidstidsordning: requiredString,
 			avtaltArbeidstimerPerUke: Yup.number()
-				.transform((i, j) => (j === '' ? null : i))
-				.nullable()
+				// .transform((i, j) => (j === '' ? null : i))
+				// .nullable()
 				.min(1, 'Kan ikke være mindre enn ${min}')
 				.max(75, 'Kan ikke være større enn ${max}')
 		}),

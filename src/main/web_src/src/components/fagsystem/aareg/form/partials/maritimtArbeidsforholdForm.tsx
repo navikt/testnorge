@@ -4,7 +4,7 @@ import { ArbeidKodeverk } from '~/config/kodeverk'
 
 type MaritimtArbeidsforhold = {
 	path: string
-	onChangeLenket: Function
+	onChangeLenket: (fieldPath: string) => string
 }
 
 export const MaritimtArbeidsforholdForm = ({ path, onChangeLenket }: MaritimtArbeidsforhold) => {
@@ -17,18 +17,21 @@ export const MaritimtArbeidsforholdForm = ({ path, onChangeLenket }: MaritimtArb
 					label="Skipsregister"
 					kodeverk={ArbeidKodeverk.Skipsregistre}
 					onChange={onChangeLenket('fartoy[0].skipsregister')}
+					isClearable={false}
 				/>
 				<FormikSelect
 					name={`${path}.skipstype`}
 					label="Fartøystype"
 					kodeverk={ArbeidKodeverk.Skipstyper}
 					onChange={onChangeLenket('fartoy[0].skipstype')}
+					isClearable={false}
 				/>
 				<FormikSelect
 					name={`${path}.fartsomraade`}
 					label="Fartsområde"
 					kodeverk={ArbeidKodeverk.Fartsområder}
 					onChange={onChangeLenket('fartoy[0].fartsomraade')}
+					isClearable={false}
 				/>
 			</div>
 		</div>

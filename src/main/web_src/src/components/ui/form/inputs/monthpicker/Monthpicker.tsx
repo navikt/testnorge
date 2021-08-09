@@ -7,23 +7,22 @@ import { Label } from '~/components/ui/form/inputs/label/Label'
 import { TextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 
 interface Monthpicker {
-	formikBag: FormikProps<{}>
+	formikBag: FormikProps<any>
 	name: string
 	label: string
-	date: string
-	handleDateChange: Function
+	date: Date
+	handleDateChange: (dato: string, type: string) => void
 }
 
 export const Monthpicker = ({ formikBag, name, label, date, handleDateChange }: Monthpicker) => {
-	const getFeilmelding = (formikProps: FormikProps<{}>, formikPath: string) => {
+	const getFeilmelding = (formikProps: FormikProps<any>, formikPath: string) => {
 		const feilmelding = _get(formikProps.errors, formikPath)
 		return feilmelding ? { feilmelding: feilmelding } : null
 	}
 
 	return (
 		<InputWrapper size={'medium'}>
-			{/* @ts-ignore */}
-			<Label name={name} label={label} feil={getFeilmelding(formikBag, name)}>
+			<Label name={name} label={label} feil={getFeilmelding(formikBag, name)} containerClass={null}>
 				<ReactDatepicker
 					className={'skjemaelement__input'}
 					locale="nb"
@@ -32,7 +31,6 @@ export const Monthpicker = ({ formikBag, name, label, date, handleDateChange }: 
 					onChange={handleDateChange}
 					placeholderText={'yyyy-MM'}
 					showMonthYearPicker
-					// @ts-ignore
 					customInput={<TextInput icon="calendar" feil={getFeilmelding(formikBag, name)} />}
 					dropdownMode="select"
 					autoComplete="off"

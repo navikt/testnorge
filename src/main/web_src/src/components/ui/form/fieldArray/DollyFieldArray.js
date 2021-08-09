@@ -187,7 +187,7 @@ export const FormikDollyFieldArray = ({
 	children,
 	disabled = false,
 	canBeEmpty = true,
-	tag,
+	tag = null,
 	isOrganisasjon = false,
 	handleNewEntry = null,
 	handleRemoveEntry = null

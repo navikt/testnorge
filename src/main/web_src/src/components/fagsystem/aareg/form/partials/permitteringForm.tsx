@@ -5,12 +5,13 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { initialPermittering } from '../initialValues'
 import { FormikProps } from 'formik'
+import { AaregListe, Amelding } from '~/components/fagsystem/aareg/AaregTypes'
 
 type Permittering = {
 	path: string
 	ameldingIndex: number
 	arbeidsforholdIndex: number
-	formikBag: FormikProps<{}>
+	formikBag: FormikProps<{ aareg: AaregListe }>
 	erLenket: boolean
 }
 
@@ -28,7 +29,7 @@ export const PermitteringForm = ({
 
 	const handleNewEntry = () => {
 		if (!maaneder) return
-		maaneder.forEach((maaned, idMaaned) => {
+		maaneder.forEach((maaned: Amelding, idMaaned: number) => {
 			if (!erLenket && idMaaned != ameldingIndex) return
 			const currPermittering = _get(
 				formikBag.values,
@@ -41,9 +42,9 @@ export const PermitteringForm = ({
 		})
 	}
 
-	const handleRemoveEntry = idPermittering => {
+	const handleRemoveEntry = (idPermittering: number) => {
 		if (!maaneder) return
-		maaneder.forEach((maaned, idMaaned) => {
+		maaneder.forEach((maaned: Amelding, idMaaned: number) => {
 			if (!erLenket && idMaaned != ameldingIndex) return
 			const currPermittering = _get(
 				formikBag.values,
@@ -70,7 +71,7 @@ export const PermitteringForm = ({
 			// handleNewEntry={maaneder ? handleNewEntry : null}
 			// handleRemoveEntry={maaneder ? handleRemoveEntry : null}
 		>
-			{(path, idx) => (
+			{(path: string, idx: number) => (
 				<React.Fragment key={idx}>
 					<FormikDatepicker
 						name={`${path}.permitteringsPeriode.fom`}

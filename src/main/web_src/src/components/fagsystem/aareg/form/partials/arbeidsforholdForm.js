@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
-import { FormikSelect, DollySelect } from '~/components/ui/form/inputs/select/Select'
+import _set from 'lodash/set'
+import _cloneDeep from 'lodash/cloneDeep'
+import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikTextInput, DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { TimeloennetForm } from './timeloennetForm'
@@ -12,7 +14,6 @@ import { ArbeidsavtaleForm } from './arbeidsavtaleForm'
 import { MaritimtArbeidsforholdForm } from './maritimtArbeidsforholdForm'
 import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSelect'
 import { ArbeidKodeverk } from '~/config/kodeverk'
-import Hjelpetekst from '~/components/hjelpetekst'
 import { ArbeidsgiverTyper } from '~/components/fagsystem/aareg/AaregTypes'
 import EgenOrganisasjonConnector from '~/components/organisasjonSelect/EgenOrganisasjonConnector'
 import {
@@ -29,8 +30,7 @@ export const ArbeidsforholdForm = ({
 	arbeidsforholdIndex,
 	formikBag,
 	erLenket,
-	arbeidsgiverType,
-	brukerId
+	arbeidsgiverType
 }) => {
 	const arbeidsforholdstype =
 		_get(formikBag.values, 'aareg[0].arbeidsforholdstype') ||
@@ -41,21 +41,27 @@ export const ArbeidsforholdForm = ({
 			return field => {
 				formikBag.setFieldValue(
 					`${path}.${fieldPath}`,
-					field?.value || field?.target?.value || field
+					field?.value || field?.target?.value || field || null
 				)
 			}
-		}
-
-		return field => {
-			const amelding = _get(formikBag.values, 'aareg[0].amelding')
-
-			amelding.forEach((maaned, idx) => {
-				if (!erLenket && idx < ameldingIndex) return
-				formikBag.setFieldValue(
-					`aareg[0].amelding[${idx}].arbeidsforhold[${arbeidsforholdIndex}].${fieldPath}`,
-					field?.value || field?.target?.value || field
-				)
-			})
+		} else {
+			return field => {
+				const amelding = _get(formikBag.values, 'aareg[0].amelding')
+				amelding.forEach((maaned, idx) => {
+					if (!erLenket && idx < ameldingIndex) {
+						return
+					} else {
+						const arbeidsforholdClone = _cloneDeep(amelding[idx].arbeidsforhold)
+						_set(
+							arbeidsforholdClone[arbeidsforholdIndex],
+							fieldPath,
+							field?.value || field?.target?.value || field || null
+						)
+						_set(amelding[idx], `arbeidsforhold`, arbeidsforholdClone)
+					}
+				})
+				formikBag.setFieldValue('aareg[0].amelding', amelding)
+			}
 		}
 	}
 
@@ -177,11 +183,13 @@ export const ArbeidsforholdForm = ({
 					name={`${path}.ansettelsesPeriode.fom`}
 					label="Ansatt fra"
 					onChange={onChangeLenket('ansettelsesPeriode.fom')}
+					fastfield={false}
 				/>
 				<FormikDatepicker
 					name={`${path}.ansettelsesPeriode.tom`}
 					label="Ansatt til"
 					onChange={onChangeLenket('ansettelsesPeriode.tom')}
+					fastfield={false}
 				/>
 				{arbeidsforholdstype !== 'forenkletOppgjoersordning' && (
 					<FormikSelect
@@ -208,11 +216,7 @@ export const ArbeidsforholdForm = ({
 			</div>
 
 			{arbeidsforholdstype !== 'forenkletOppgjoersordning' && (
-				<ArbeidsavtaleForm
-					formikBag={formikBag}
-					path={`${path}.arbeidsavtale`}
-					onChangeLenket={onChangeLenket}
-				/>
+				<ArbeidsavtaleForm path={`${path}.arbeidsavtale`} onChangeLenket={onChangeLenket} />
 			)}
 			{arbeidsforholdstype === 'maritimtArbeidsforhold' && (
 				<MaritimtArbeidsforholdForm path={`${path}.fartoy[0]`} onChangeLenket={onChangeLenket} />

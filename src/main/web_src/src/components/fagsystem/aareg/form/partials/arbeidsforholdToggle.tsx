@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { ReactElement, ReactFragment, useState } from 'react'
 import _get from 'lodash/get'
 import styled from 'styled-components'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
@@ -13,6 +13,12 @@ import {
 } from '../initialValues'
 import { ArbeidsgiverTyper } from '~/components/fagsystem/aareg/AaregTypes'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
+import { FormikProps } from 'formik'
+import { AaregListe } from '~/components/fagsystem/aareg/AaregTypes'
+
+interface ArbeidsforholdToggle {
+	formikBag: FormikProps<{ aareg: AaregListe }>
+}
 
 const ToggleArbeidsgiver = styled(ToggleGruppe)`
 	display: grid;
@@ -30,7 +36,7 @@ const fellesOrg = [
 	'947064649'
 ]
 
-export const ArbeidsforholdToggle = ({ formikBag }) => {
+export const ArbeidsforholdToggle = ({ formikBag }: ArbeidsforholdToggle): ReactElement => {
 	const getArbeidsgiverType =
 		_get(formikBag.values, 'aareg[0].arbeidsforhold') &&
 		_get(formikBag.values, 'aareg[0].arbeidsforholdstype') !== 'forenkletOppgjoersordning'
@@ -65,7 +71,7 @@ export const ArbeidsforholdToggle = ({ formikBag }) => {
 		}
 	]
 
-	const handleToggleChange = value => {
+	const handleToggleChange = (value: ArbeidsgiverTyper) => {
 		setTypeArbeidsgiver(value)
 		formikBag.setFieldValue('aareg[0].arbeidsforholdstype', '')
 		if (value === ArbeidsgiverTyper.privat) {
@@ -120,7 +126,7 @@ export const ArbeidsforholdToggle = ({ formikBag }) => {
 						}
 						canBeEmpty={false}
 					>
-						{(path, idx) => (
+						{(path: string, idx: number) => (
 							<ArbeidsforholdForm
 								path={path}
 								key={idx}

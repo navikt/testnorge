@@ -2,7 +2,13 @@ import React from 'react'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { ArbeidKodeverk } from '~/config/kodeverk'
 
-export const Fartoy = ({ data }) => {
+type Fartoy = {
+	skipsregister: string
+	skipstype: string
+	fartsomraade: string
+}
+
+export const Fartoy = ({ data }: Fartoy) => {
 	if (!data || data.length === 0) return null
 
 	return (

@@ -5,7 +5,7 @@ import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 type EgenOrganisasjonSelect = {
 	name: string
 	isClearable?: boolean
-	onChange?: Function
+	onChange?: (selected: any) => void
 	brukerId?: string
 }
 

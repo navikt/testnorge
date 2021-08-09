@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { EgenOrganisasjonSelect } from './EgenOrganisasjonSelect'
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: any) => ({
 	brukerId: state.bruker.brukerData.brukerId
 })
 
