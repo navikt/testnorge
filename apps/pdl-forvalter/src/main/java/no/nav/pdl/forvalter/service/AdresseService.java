@@ -105,9 +105,11 @@ public abstract class AdresseService<T extends AdresseDTO> {
     protected void populateMiscFields(AdresseDTO adresse, PersonDTO person) {
 
         if (isNull(adresse.getGyldigFraOgMed())) {
-            adresse.setGyldigFraOgMed(person.getBostedsadresse().stream().findFirst()
-                    .map(adr -> LocalDateTime.now())
-                    .orElse(DatoFraIdentUtility.getDato(person.getIdent()).atStartOfDay()));
+            adresse.setGyldigFraOgMed(person.getBostedsadresse().stream()
+                    .reduce((a1, a2) -> a2)
+                    .filter(adr -> isNull(adr.getGyldigFraOgMed()))
+                    .map(adr -> DatoFraIdentUtility.getDato(person.getIdent()).atStartOfDay())
+                    .orElse(LocalDateTime.now()));
         }
         adresse.setKilde(StringUtils.isNotBlank(adresse.getKilde()) ? adresse.getKilde() : "Dolly");
         adresse.setMaster(nonNull(adresse.getMaster()) ? adresse.getMaster() : DbVersjonDTO.Master.FREG);

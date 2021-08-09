@@ -46,6 +46,7 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO> {
                 populateMiscFields(adresse, person);
             }
         }
+        enforceIntegrity(person.getOppholdsadresse());
         return person.getOppholdsadresse();
     }
 

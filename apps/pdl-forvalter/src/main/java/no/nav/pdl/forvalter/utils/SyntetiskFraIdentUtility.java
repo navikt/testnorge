@@ -1,11 +1,12 @@
 package no.nav.pdl.forvalter.utils;
 
-import lombok.experimental.UtilityClass;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-@UtilityClass
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SyntetiskFraIdentUtility {
 
-    public boolean isSyntetisk(String ident) {
+    public static boolean isSyntetisk(String ident) {
 
         return Integer.parseInt(String.valueOf(ident.charAt(2))) >= 4;
     }

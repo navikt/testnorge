@@ -44,6 +44,7 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO> {
                 populateMiscFields(adresse, person);
             }
         }
+        enforceIntegrity(person.getBostedsadresse());
         return person.getBostedsadresse();
     }
 

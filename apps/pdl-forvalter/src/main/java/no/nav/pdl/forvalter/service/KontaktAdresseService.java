@@ -55,6 +55,7 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO> {
                 populateMiscFields(adresse, person);
             }
         }
+        enforceIntegrity(person.getKontaktadresse());
         return person.getKontaktadresse();
     }
 
