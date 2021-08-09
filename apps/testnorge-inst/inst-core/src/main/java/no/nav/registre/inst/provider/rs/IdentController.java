@@ -7,13 +7,10 @@ import no.nav.registre.inst.InstitusjonsoppholdV2;
 import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
 import no.nav.registre.inst.service.IdentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,18 +63,6 @@ public class IdentController {
             @RequestParam List<String> identer
     ) {
         return identService.hentOppholdTilIdenter(navCallId, navConsumerId, miljoe, identer);
-    }
-
-    @PutMapping("/ident/{oppholdId}")
-    @ApiOperation(value = "Her kan man oppdatere et institusjonsopphold med angitt oppholdId i inst2.")
-    public ResponseEntity<Object> oppdaterInstitusjonsopphold(
-            @PathVariable Long oppholdId,
-            @RequestHeader(HEADER_NAV_CALL_ID) @NotBlank String navCallId,
-            @RequestHeader(HEADER_NAV_CONSUMER_ID) @NotBlank String navConsumerId,
-            @RequestParam String miljoe,
-            @RequestBody Institusjonsopphold institusjonsopphold
-    ) {
-        return identService.oppdaterInstitusjonsopphold(navCallId, navConsumerId, miljoe, oppholdId, institusjonsopphold);
     }
 
     @GetMapping("/miljoer")
