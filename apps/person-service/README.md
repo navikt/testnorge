@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Person API
+title: Person Service
 parent: Applikasjoner
 ---
 
@@ -8,10 +8,10 @@ parent: Applikasjoner
 API for person.
 
 ## Swagger
-Swagger finnes under [/swagger](https://testnorge-person-api.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger-ui.html](https://testnav-person-service.dev.intern.nav.no/swagger-ui.html) -endepunktet til applikasjonen.
  
 ## Lokal kjøring
-Ha naisdevice kjørende og kjør PersonApiApplicationStarter med følgende argumenter:
+Ha naisdevice kjørende og kjør PersonServiceApplicationStarter med følgende argumenter:
 ```
 -Dspring.cloud.vault.token=[Copy token fra Vault]
 -Dspring.profiles.active=dev
