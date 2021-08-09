@@ -6,6 +6,7 @@ plugins {
     id 'org.springframework.boot' version "2.3.4.RELEASE"
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
+
 bootJar {
     archiveFileName = "app.jar"
 }
@@ -17,9 +18,7 @@ dependencyManagement {
 }
 
 repositories {
-    maven {
-        url = uri('https://repo1.maven.org/maven2/')
-    }
+    mavenCentral()
     mavenLocal()
 }
 

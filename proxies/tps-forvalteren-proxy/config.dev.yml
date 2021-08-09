@@ -1,14 +1,14 @@
 ﻿apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: tps-forvalteren-proxy
+  name: tps-forvalteren-dev-proxy
   namespace: dolly
   labels:
     team: dolly
 spec:
   env:
     - name: PROXY_URL
-      value: https://tps-forvalteren.dev.adeo.no
+      value: https://tps-forvalteren-dev.dev.adeo.no
   image: {{ image }}
   port: 8080
   webproxy: true
@@ -27,7 +27,7 @@ spec:
           cluster: dev-gcp
         - application: testnav-person-service
           cluster: dev-gcp
-        - application: dolly-frontend
+        - application: dolly-frontend-dev
           cluster: dev-fss
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
@@ -54,5 +54,4 @@ spec:
       cpu: 500m
       memory: 2048Mi
   ingresses:
-    - "https://tps-forvalteren-proxy.dev-fss-pub.nais.io"
-    - "https://tps-forvalteren-proxy.dev.intern.nav.no"
+    - "https://tps-forvalteren-dev-proxy.dev.intern.nav.no"
