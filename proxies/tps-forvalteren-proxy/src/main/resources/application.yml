@@ -24,3 +24,4 @@ logging:
     org.springframework.security.oauth2: TRACE
     org.springframework.cloud.gateway: TRACE
     org.springframework.security.jwt: TRACE
+proxy.url: ${PROXY_URL}
