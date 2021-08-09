@@ -33,9 +33,11 @@ public class Inst2Consumer {
 
     private static final ParameterizedTypeReference<List<Institusjonsopphold>> RESPONSE_TYPE_HENT_INSTITUSJONSOPPHOLD = new ParameterizedTypeReference<>() {
     };
-
     private static final ParameterizedTypeReference<Object> RESPONSE_TYPE_OBJECT = new ParameterizedTypeReference<>() {
     };
+    private static final String INSTITUSJONSOPPHOLD_PERSON = "/v1/institusjonsopphold/person";
+    private static final String ENVIRONMENTS = "environments";
+    private static final String NORSKIDENT = "norskident";
 
     private final WebClient webClient;
 
@@ -63,12 +65,16 @@ public class Inst2Consumer {
         List<Institusjonsopphold> response;
         try {
             ResponseEntity<List<Institusjonsopphold>> listResponseEntity = webClient.get()
-                    .uri(new UriTemplate(inst2WebApiServerUrl.expand(miljoe) + "/person/institusjonsopphold").expand())
+                    .uri(inst2NewServerUrl,
+                            uriBuilder -> uriBuilder
+                                    .path(INSTITUSJONSOPPHOLD_PERSON)
+                                    .queryParam(ENVIRONMENTS, miljoe)
+                                    .build())
                     .header(ACCEPT, "*/*")
                     .header(AUTHORIZATION, bearerToken)
                     .header(HEADER_NAV_CALL_ID, callId)
                     .header(HEADER_NAV_CONSUMER_ID, consumerId)
-                    .header("Nav-Personident", ident)
+                    .header(NORSKIDENT, ident)
                     .retrieve()
                     .toEntity(RESPONSE_TYPE_HENT_INSTITUSJONSOPPHOLD)
                     .block();
@@ -97,8 +103,8 @@ public class Inst2Consumer {
         try {
             var response = webClient.post()
                     .uri(inst2NewServerUrl, uriBuilder -> uriBuilder
-                            .path("/v1/institusjonsopphold/person")
-                            .queryParam("environments", miljoe)
+                            .path(INSTITUSJONSOPPHOLD_PERSON)
+                            .queryParam(ENVIRONMENTS, miljoe)
                             .build())
                     .header(ACCEPT, "*/*")
                     .header(AUTHORIZATION, bearerToken)
@@ -121,34 +127,6 @@ public class Inst2Consumer {
         }
     }
 
-    public ResponseEntity<Object> oppdaterInstitusjonsoppholdIInst2(
-            String bearerToken,
-            String callId,
-            String consumerId,
-            String miljoe,
-            Long oppholdId,
-            Institusjonsopphold institusjonsopphold
-    ) {
-        try {
-            var response = webClient.put().uri(new UriTemplate(inst2WebApiServerUrl.expand(miljoe) + "/person/institusjonsopphold/{oppholdId}").expand(oppholdId))
-                    .header(ACCEPT, "*/*")
-                    .header(AUTHORIZATION, bearerToken)
-                    .header(HEADER_NAV_CALL_ID, callId)
-                    .header(HEADER_NAV_CONSUMER_ID, consumerId)
-                    .bodyValue(institusjonsopphold)
-                    .retrieve()
-                    .toEntity(RESPONSE_TYPE_OBJECT)
-                    .block();
-
-            return nonNull(response)
-                    ? ResponseEntity.status(response.getStatusCode()).body(response.getBody())
-                    : ResponseEntity.notFound().build();
-        } catch (WebClientResponseException e) {
-            log.error("Kunne ikke oppdatere institusjonsopphold - {}", e.getResponseBodyAsString(), e);
-            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsString());
-        }
-    }
-
     public ResponseEntity<Object> slettInstitusjonsoppholdMedIdent(
             String bearerToken,
             String callId,
@@ -159,14 +137,14 @@ public class Inst2Consumer {
         try {
             var response = webClient.delete()
                     .uri(inst2NewServerUrl, uriBuilder -> uriBuilder
-                            .path("/v1/institusjonsopphold/person")
-                            .queryParam("environments", miljoe)
-                            .queryParam("norskIdent", ident)
+                            .path(INSTITUSJONSOPPHOLD_PERSON)
+                            .queryParam(ENVIRONMENTS, miljoe)
                             .build())
                     .header(ACCEPT, "*/*")
                     .header(AUTHORIZATION, bearerToken)
                     .header(HEADER_NAV_CALL_ID, callId)
                     .header(HEADER_NAV_CONSUMER_ID, consumerId)
+                    .header(NORSKIDENT, ident)
                     .retrieve()
                     .toEntity(RESPONSE_TYPE_OBJECT)
                     .block();
