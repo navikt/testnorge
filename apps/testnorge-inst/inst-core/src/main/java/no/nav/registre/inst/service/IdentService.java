@@ -79,17 +79,6 @@ public class IdentService {
         return sletteOppholdResponses;
     }
 
-    public ResponseEntity<Object> oppdaterInstitusjonsopphold(
-            String callId,
-            String consumerId,
-            String miljoe,
-            Long oppholdId,
-            Institusjonsopphold institusjonsopphold
-    ) {
-        var bearerToken = hentTokenTilInst2(miljoe);
-        return inst2Consumer.oppdaterInstitusjonsoppholdIInst2(bearerToken, callId, consumerId, miljoe, oppholdId, institusjonsopphold);
-    }
-
     public ResponseEntity<Object> slettOppholdMedIdent(
             String bearerToken,
             String callId,
