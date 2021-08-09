@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.dolly.domain.resultset.aareg.RsAaregArbeidsforhold;
+import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
@@ -76,7 +76,7 @@ public class RsMalBestillingWrapper {
         private RsPdldata pdlforvalter;
         private RsDigitalKontaktdata krrstub;
         private List<RsInstdata> instdata;
-        private List<RsAaregArbeidsforhold> aareg;
+        private List<RsAareg> aareg;
         private List<OpprettSkattegrunnlag> sigrunstub;
         private InntektMultiplierWrapper inntektstub;
         private Arenadata arenaforvalter;

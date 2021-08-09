@@ -14,13 +14,11 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Permisjon {
+public class Permittering {
 
     private String permisjonsId;
 
-    private RsPeriodeAareg permisjonsPeriode;
+    private RsPeriodeAareg permitteringsPeriode;
 
-    private BigDecimal permisjonsprosent;
-
-    private String permisjonOgPermittering;
+    private BigDecimal permitteringsprosent;
 }

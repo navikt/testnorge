@@ -1,17 +1,12 @@
 package no.nav.dolly.consumer.aareg;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.dolly.bestilling.aareg.AaregConsumer;
+import no.nav.dolly.bestilling.aareg.domain.AaregOpprettRequest;
+import no.nav.dolly.bestilling.aareg.domain.AaregResponse;
+import no.nav.dolly.bestilling.aareg.domain.Arbeidsforhold;
+import no.nav.dolly.properties.ProvidersProps;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,19 +17,23 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-import no.nav.dolly.bestilling.aareg.AaregConsumer;
-import no.nav.dolly.bestilling.aareg.domain.AaregOpprettRequest;
-import no.nav.dolly.bestilling.aareg.domain.AaregResponse;
-import no.nav.dolly.bestilling.aareg.domain.Arbeidsforhold;
-import no.nav.dolly.properties.ProvidersProps;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 @RunWith(SpringRunner.class)
 @RestClientTest(AaregConsumer.class)
@@ -96,7 +95,7 @@ public class AaregConsumerTest {
 
     @Test
     public void hentArbeidsforhold() {
-        String expectedUri = serverUrl + "/api/v1/arbeidsforhold?ident={ident}&miljoe={miljoe}";
+        String expectedUri = serverUrl + "/api/v2/arbeidsforhold?ident={ident}&miljoe={miljoe}";
         stubHentArbeidsforhold(expectedUri);
 
         aaregConsumer.hentArbeidsforhold(ident, miljoe);

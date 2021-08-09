@@ -54,7 +54,7 @@ public class AaregMergeUtil {
     private static boolean isEqualOrgnummer(Arbeidsforhold nytt, ArbeidsforholdResponse eksisterende) {
 
         return "ORG".equals(nytt.getArbeidsgiver().getAktoertype()) &&
-                eksisterende.getArbeidsgiver().getType() == Aktoer.Organisasjon &&
+                eksisterende.getArbeidsgiver().getType() == Aktoer.ORGANISASJON &&
                 ((RsOrganisasjon) nytt.getArbeidsgiver()).getOrgnummer()
                         .equals(eksisterende.getArbeidsgiver().getOrganisasjonsnummer());
     }
@@ -62,7 +62,7 @@ public class AaregMergeUtil {
     private static boolean isEqualPersonnr(Arbeidsforhold nytt, ArbeidsforholdResponse eksisterende) {
 
         return "PERS".equals(nytt.getArbeidsgiver().getAktoertype()) &&
-                eksisterende.getArbeidsgiver().getType() == Aktoer.Person &&
+                eksisterende.getArbeidsgiver().getType() == Aktoer.PERSON &&
                 ((RsAktoerPerson) nytt.getArbeidsgiver()).getIdent()
                         .equals(eksisterende.getArbeidsgiver().getOffentligIdent());
     }
@@ -109,7 +109,7 @@ public class AaregMergeUtil {
                                 eksisterendeArbeidsforhold.get(i).getArbeidsforholdId() + i);
             }
             nyttArbeidsforhold.getPermisjon().forEach(permisjon ->
-                    permisjon.setPermisjonsId(Integer.toString(permisjonId.addAndGet(1))));
+                    permisjon.setPermisjonId(Integer.toString(permisjonId.addAndGet(1))));
             nyttArbeidsforhold.setArbeidstaker(RsPersonAareg.builder()
                     .ident(ident)
                     .build());

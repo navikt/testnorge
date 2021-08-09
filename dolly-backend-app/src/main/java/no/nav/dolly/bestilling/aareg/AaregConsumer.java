@@ -1,22 +1,5 @@
 package no.nav.dolly.bestilling.aareg;
 
-import static java.lang.String.format;
-import static java.util.Collections.emptyList;
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
-
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.aareg.domain.AaregOpprettRequest;
@@ -24,6 +7,23 @@ import no.nav.dolly.bestilling.aareg.domain.AaregResponse;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdResponse;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.properties.ProvidersProps;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
+
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import static java.lang.String.format;
+import static java.util.Collections.emptyList;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 
 @Slf4j
 @Component
@@ -31,8 +31,9 @@ import no.nav.dolly.properties.ProvidersProps;
 public class AaregConsumer {
 
     private static final String AAREGDATA_URL = "/api/v1/arbeidsforhold";
+    private static final String AAREGDATA_V2_URL = "/api/v2/arbeidsforhold";
     private static final String OPPRETT_ARBEIDSFORHOLD = "%s" + AAREGDATA_URL;
-    private static final String HENT_ARBEIDSFORHOLD = "%s" + AAREGDATA_URL + "?ident=%s&miljoe=%s";
+    private static final String HENT_ARBEIDSFORHOLD = "%s" + AAREGDATA_V2_URL + "?ident=%s&miljoe=%s";
     private static final String SLETT_ARBEIDSFORHOLD = "%s" + AAREGDATA_URL + "?ident=%s";
 
     private final RestTemplate restTemplate;

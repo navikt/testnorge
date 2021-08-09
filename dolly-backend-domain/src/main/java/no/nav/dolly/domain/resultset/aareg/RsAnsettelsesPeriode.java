@@ -8,18 +8,26 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RsUtenlandsopphold {
+public class RsAnsettelsesPeriode {
 
-    @Schema(required = true)
-    private RsPeriodeAareg periode;
-
-    @Schema(description = "Gyldige verdier finnes i kodeverk 'LandkoderISO2'",
+    @Schema(description = "Dato fra-og-med",
+            type = "LocalDateTime",
             required = true)
-    private String land;
+    private LocalDateTime fom;
+
+    @Schema(description = "Dato til-og-med",
+            type = "LocalDateTime")
+    private LocalDateTime tom;
+
+    @Schema(description = "Sluttårsak",
+            type = "String")
+    private String sluttaarsak;
 }

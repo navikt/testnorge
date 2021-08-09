@@ -3,6 +3,7 @@ package no.nav.dolly.service;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -17,7 +18,7 @@ import no.nav.dolly.domain.resultset.RsDollyImportFraPdlRequest;
 import no.nav.dolly.domain.resultset.RsDollyImportFraTpsRequest;
 import no.nav.dolly.domain.resultset.RsDollyRelasjonRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
-import no.nav.dolly.domain.resultset.aareg.RsAaregArbeidsforhold;
+import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfBasisBestilling;
@@ -156,7 +157,7 @@ public class BestillingService {
 
     @Transactional
     public Bestilling saveBestilling(Long gruppeId, RsDollyBestilling request, RsTpsfBasisBestilling tpsf, Integer antall,
-            List<String> opprettFraIdenter, Boolean navSyntetiskIdent) {
+                                     List<String> opprettFraIdenter, Boolean navSyntetiskIdent) {
         Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
         fixAaregAbstractClassProblem(request.getAareg());
         fixPdlAbstractClassProblem(request.getPdlforvalter());
@@ -310,10 +311,17 @@ public class BestillingService {
         });
     }
 
-    private static void fixAaregAbstractClassProblem(List<RsAaregArbeidsforhold> aaregdata) {
+    private static void fixAaregAbstractClassProblem(List<RsAareg> aaregdata) {
 
-        aaregdata.forEach(arbeidforhold -> arbeidforhold.getArbeidsgiver().setAktoertype(
-                arbeidforhold.getArbeidsgiver() instanceof RsOrganisasjon ? "ORG" : "PERS"));
+        if (nonNull(aaregdata) && !aaregdata.isEmpty() && nonNull(aaregdata.get(0).getArbeidsforhold()) && !aaregdata.get(0).getArbeidsforhold().isEmpty()) {
+            aaregdata.get(0).getArbeidsforhold().forEach(arbeidforhold -> {
+                log.info("Arbeidsforhold: " + Json.pretty(arbeidforhold));
+                if (nonNull(arbeidforhold.getArbeidsgiver())) {
+                    arbeidforhold.getArbeidsgiver().setAktoertype(
+                            arbeidforhold.getArbeidsgiver() instanceof RsOrganisasjon ? "ORG" : "PERS");
+                }
+            });
+        }
     }
 
     private static void fixPdlAbstractClassProblem(RsPdldata pdldata) {

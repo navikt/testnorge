@@ -22,6 +22,7 @@ public class ProvidersProps {
     private Norg2 norg2 = new Norg2();
     private Fasit fasit = new Fasit();
     private ArenaForvalter arenaForvalter = new ArenaForvalter();
+    private AmeldingService ameldingService = new AmeldingService();
     private PdlForvalter pdlForvalter = new PdlForvalter();
     private Instdata instdata = new Instdata();
     private Aaregdata aaregdata = new Aaregdata();
@@ -115,6 +116,16 @@ public class ProvidersProps {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ArenaForvalter {
+
+        private String url;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AmeldingService {
 
         private String url;
     }

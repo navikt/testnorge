@@ -1,8 +1,6 @@
 package no.nav.dolly.domain.resultset.aareg;
 
-import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,20 +8,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RsPeriode {
+public class RsPermittering {
 
-    @Schema(description = "Dato fra-og-med",
-            type = "LocalDateTime",
-            required = true)
-    private LocalDateTime fom;
+    @Schema(required = true)
+    private RsPeriodeAareg permitteringsPeriode;
 
-    @Schema(description = "Dato til-og-med",
-            type = "LocalDateTime")
-    private LocalDateTime tom;
+    @Schema(required = true)
+    private BigDecimal permitteringsprosent;
 }

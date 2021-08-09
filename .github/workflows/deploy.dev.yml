@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - feature/dagpenger-vedtak-response-utfall
+      - feature/a-melding-oppsett
 
 
 env:

@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
+import static no.nav.dolly.domain.resultset.SystemTyper.AAREG;
 import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
 import static no.nav.dolly.domain.resultset.SystemTyper.INNTKMELD;
 import static no.nav.dolly.domain.resultset.SystemTyper.SYKEMELDING;
@@ -76,6 +77,8 @@ public class TransaksjonMappingService {
             status = progress.get(0).getDokarkivStatus();
         } else if (INNTKMELD.name().equals(system)) {
             status = progress.get(0).getInntektsmeldingStatus();
+        } else if (AAREG.name().equals(system)) {
+            status = progress.get(0).getAaregStatus();
         } else {
             status = progress.get(0).getFeil();
         }

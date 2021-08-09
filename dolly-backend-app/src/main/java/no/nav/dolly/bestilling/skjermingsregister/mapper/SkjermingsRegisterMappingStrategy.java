@@ -1,7 +1,5 @@
 package no.nav.dolly.bestilling.skjermingsregister.mapper;
 
-import org.springframework.stereotype.Component;
-
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
@@ -9,6 +7,7 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.skjermingsregister.domain.BestillingPersonWrapper;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingsDataRequest;
 import no.nav.dolly.mapper.MappingStrategy;
+import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
@@ -18,7 +17,7 @@ public class SkjermingsRegisterMappingStrategy implements MappingStrategy {
     public void register(MapperFactory factory) {
 
         factory.classMap(BestillingPersonWrapper.class, SkjermingsDataRequest.class)
-                .customize(new CustomMapper<BestillingPersonWrapper, SkjermingsDataRequest>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(BestillingPersonWrapper wrapper, SkjermingsDataRequest request, MappingContext context) {
 

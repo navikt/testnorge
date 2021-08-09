@@ -1,10 +1,7 @@
 package no.nav.dolly.bestilling.aareg.domain;
 
-import static java.util.Objects.isNull;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,9 +10,15 @@ import lombok.Setter;
 import no.nav.dolly.domain.resultset.aareg.RsAktoer;
 import no.nav.dolly.domain.resultset.aareg.RsAntallTimerIPerioden;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsavtale;
-import no.nav.dolly.domain.resultset.aareg.RsPeriode;
 import no.nav.dolly.domain.resultset.aareg.RsPersonAareg;
 import no.nav.dolly.domain.resultset.aareg.RsUtenlandsopphold;
+import no.nav.registre.testnorge.libs.dto.ameldingservice.v1.PermisjonDTO;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Getter
 @Setter
@@ -24,25 +27,34 @@ import no.nav.dolly.domain.resultset.aareg.RsUtenlandsopphold;
 @AllArgsConstructor
 public class Arbeidsforhold {
 
-    private String arbeidsforholdID;
-
-    private Long arbeidsforholdIDnav;
-
-    private RsPeriode ansettelsesPeriode;
-
-    private String arbeidsforholdstype;
-
+    private Periode ansettelsesPeriode;
     private List<RsAntallTimerIPerioden> antallTimerForTimeloennet;
-
     private RsArbeidsavtale arbeidsavtale;
-
-    private List<Permisjon> permisjon;
-
+    private String arbeidsforholdID;
+    private Long arbeidsforholdIDnav;
+    private String arbeidsforholdstype;
+    private RsAktoer arbeidsgiver;
+    private RsPersonAareg arbeidstaker;
+    private List<PermisjonDTO> permisjon;
     private List<RsUtenlandsopphold> utenlandsopphold;
 
-    private RsAktoer arbeidsgiver;
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class Periode {
 
-    private RsPersonAareg arbeidstaker;
+        @Schema(description = "Dato fra-og-med",
+                type = "LocalDateTime",
+                required = true)
+        private LocalDateTime fom;
+
+        @Schema(description = "Dato til-og-med",
+                type = "LocalDateTime")
+        private LocalDateTime tom;
+    }
 
     public List<RsAntallTimerIPerioden> getAntallTimerForTimeloennet() {
         if (isNull(antallTimerForTimeloennet)) {
@@ -58,7 +70,7 @@ public class Arbeidsforhold {
         return utenlandsopphold;
     }
 
-    public List<Permisjon> getPermisjon() {
+    public List<PermisjonDTO> getPermisjon() {
         if (isNull(permisjon)) {
             permisjon = new ArrayList<>();
         }

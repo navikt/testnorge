@@ -1,14 +1,14 @@
 package no.nav.dolly.domain.resultset.aareg;
 
-import java.math.BigDecimal;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -19,7 +19,7 @@ import lombok.Setter;
 public class RsAntallTimerIPerioden {
 
     @Schema(required = true)
-    private RsPeriode periode;
+    private RsPeriodeAareg periode;
 
     @Schema(required = true)
     private BigDecimal antallTimer;
