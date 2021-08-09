@@ -15,3 +15,12 @@ spring:
     gateway:
       httpclient:
         response-timeout: 30s
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: TRACE
+    org.springframework.security: TRACE
+    org.springframework.security.oauth2: TRACE
+    org.springframework.cloud.gateway: TRACE
+    org.springframework.security.jwt: TRACE
