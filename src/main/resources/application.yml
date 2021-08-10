@@ -53,6 +53,12 @@ zuul:
       path: /testnav-inntektstub-proxy/api/**
       url: https://testnav-inntektstub-proxy.dev.intern.nav.no/api
       sensitiveHeaders: Cookie,Set-Cookie
+    tps-forvalteren-proxy:
+      path: /tps-forvalteren-proxy/api/**
+      url: ${TPS_FORVALTERN_PROXY_URL}/api
+      sensitiveHeaders: Cookie,Set-Cookie
+  debug:
+    request: true
 
 applications:
   testnorge-profil-api: ${TESTNORGE_PROFIL_API_CLIENT_ID}
@@ -83,6 +89,10 @@ consumers:
     cluster: dev-fss
     namespace: dolly
     name: testnav-inntektstub-proxy
+  tps-forvalteren-proxy:
+    cluster: dev-fss
+    namespace: dolly
+    name: ${TPS_FORVALTERN_PROXY_NAME}
 
 spring:
   application:

@@ -65,8 +65,9 @@ class OnBehalfOfGenerateAccessTokenService {
         }
         OAuth2AccessToken accessToken = tokenResolver.getToken();
 
+        var scope = String.join(" ", accessScopes.getScopes());
         var body = BodyInserters
-                .fromFormData("scope", String.join(" ", accessScopes.getScopes()))
+                .fromFormData("scope", scope)
                 .with("client_id", clientCredential.getClientId())
                 .with("client_secret", clientCredential.getClientSecret())
                 .with("assertion", accessToken.getTokenValue())
@@ -80,14 +81,14 @@ class OnBehalfOfGenerateAccessTokenService {
                     .bodyToMono(AccessToken.class)
                     .block();
 
-            log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow");
+            log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow [{}].", scope);
             return token;
 
         } catch (WebClientResponseException e) {
             var secret = clientCredential.getClientSecret().substring(0, 3) + "******************";
             log.error(
                     "Feil ved henting av access token for {} med client secret: {}.\nError: \n{}.",
-                    String.join(" ", accessScopes.getScopes()),
+                    scope,
                     secret,
                     e.getResponseBodyAsString()
             );
@@ -95,7 +96,7 @@ class OnBehalfOfGenerateAccessTokenService {
         } catch (Exception e) {
             log.error(
                     "Feil ved henting av access token for {}.\n Error: \n{}.",
-                    String.join(" ", accessScopes.getScopes()),
+                    scope,
                     e.getMessage(),
                     e);
             throw e;

@@ -6,6 +6,7 @@ metadata:
   labels:
     team: dolly
 spec:
+
   webproxy: true
   azure:
     application:
@@ -60,6 +61,10 @@ spec:
       value: https://testnorge-profil-api-dev.dev.intern.nav.no
     - name: ORGANISASJON_FORVALTER_HOST
       value: https://testnav-organisasjon-forvalter.dev.intern.nav.no
+    - name: TPS_FORVALTERN_PROXY_NAME
+      value: tps-forvalteren-dev-proxy
+    - name: TPS_FORVALTERN_PROXY_URL
+      value: https://tps-forvalteren-dev-proxy.dev.intern.nav.no
   vault:
     enabled: true
     paths:

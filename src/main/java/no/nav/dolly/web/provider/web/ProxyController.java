@@ -127,29 +127,6 @@ public class ProxyController {
         return proxyService.proxyRequest(null, method, headers, requestURL);
     }
 
-    @RequestMapping("/proxy/tpsf/**")
-    public ResponseEntity<String> tpsfProxy(
-            @RequestBody(required = false) String body,
-            HttpMethod method,
-            HttpServletRequest request) throws UnsupportedEncodingException {
-
-        String requestURL = createURL(request, tpsfUrl + API_URI, PROXY_URI + "/tpsf");
-        HttpHeaders headers = proxyService.copyHeaders(request);
-
-        return proxyService.proxyRequest(body, method, headers, requestURL);
-    }
-
-    @RequestMapping("/proxy/kontaktinfo/**")
-    public ResponseEntity<String> kontaktInfoProxy(
-            @RequestBody(required = false) String body,
-            HttpMethod method,
-            HttpServletRequest request) throws UnsupportedEncodingException {
-
-        String requestURL = createURL(request, tpsfUrl + "/api", PROXY_URI + "/kontaktinfo");
-        HttpHeaders headers = proxyService.copyHeaders(request);
-        return proxyService.proxyRequest(body, method, headers, requestURL);
-    }
-
     @RequestMapping("/proxy/udi/**")
     public ResponseEntity<String> udiProxy(
             @RequestBody(required = false) String body,

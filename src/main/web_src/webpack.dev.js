@@ -55,6 +55,11 @@ module.exports = env =>
 					target: env.backend,
 					changeOrigin: true,
 					secure: false
+				},
+				'/tps-forvalteren-proxy/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false
 				}
 			}
 		},
