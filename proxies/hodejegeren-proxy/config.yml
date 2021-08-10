@@ -50,3 +50,4 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://testnav-hodejegeren-proxy.dev-fss-pub.nais.io"
+    - "https://testnav-hodejegeren-proxy.dev.intern.nav.no"
