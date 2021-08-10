@@ -86,7 +86,7 @@ public class Inst2ConsumerTest {
                 .withHeader("Nav-Consumer-Id", equalTo(id))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
-                        .withBody(getResourceFileContent("institusjonsmelding.json"))));
+                        .withBody(getResourceFileContent("institusjonsmeldingResponse.json"))));
     }
 
     private void stubGetInstitusjonsoppholdWithBadRequest() {
