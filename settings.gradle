@@ -38,6 +38,7 @@ includeBuild './proxies/hodejegeren-proxy'
 includeBuild './proxies/ereg-proxy'
 includeBuild './proxies/inntektstub-proxy'
 includeBuild './proxies/brregstub-proxy'
+includeBuild './proxies/arena-forvalteren-proxy'
 
 includeBuild './libs/security-token-service'
 includeBuild './libs/data-transfer-objects'

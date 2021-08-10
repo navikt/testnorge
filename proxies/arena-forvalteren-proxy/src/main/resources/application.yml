@@ -2,8 +2,8 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 
 spring:
   application:
-    name: testnav-brregstub-proxy
-    desciption: Proxy for brregstub som legger på sikkerhet.
+    name: testnav-arena-forvateren-proxy
+    desciption: Proxy for arena-forvateren som legger på sikkerhet.
   security:
     oauth2:
       resourceserver:
