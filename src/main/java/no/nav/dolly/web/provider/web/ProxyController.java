@@ -163,18 +163,6 @@ public class ProxyController {
         return proxyService.proxyRequest(body, method, headers, requestURL);
     }
 
-    @RequestMapping("/proxy/brregstub/**")
-    public ResponseEntity<String> brregstubProxy(
-            @RequestBody(required = false) String body,
-            HttpMethod method,
-            HttpServletRequest request) throws UnsupportedEncodingException {
-
-        String requestURL = createURL(request, brregstubUrl + "/api/v2", PROXY_URI + "/brregstub");
-        HttpHeaders headers = proxyService.copyHeaders(request);
-
-        return proxyService.proxyRequest(body, method, headers, requestURL);
-    }
-
     private static String createURL(HttpServletRequest request, String host, String splitUri)
             throws UnsupportedEncodingException {
 

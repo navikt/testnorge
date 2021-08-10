@@ -53,6 +53,10 @@ zuul:
       path: /testnav-inntektstub-proxy/api/**
       url: https://testnav-inntektstub-proxy.dev.intern.nav.no/api
       sensitiveHeaders: Cookie,Set-Cookie
+    testnav-brregstub-proxy:
+      path: /testnav-brregstub-proxy/api/**
+      url: https://testnav-brregstub-proxy.dev.intern.nav.no/api
+      sensitiveHeaders: Cookie,Set-Cookie
     tps-forvalteren-proxy:
       path: /tps-forvalteren-proxy/api/**
       url: ${TPS_FORVALTERN_PROXY_URL}/api
@@ -87,6 +91,10 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-joark-dokument-service
+  testnav-brregstub-proxy:
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-brregstub-proxy
   testnav-inntektstub-proxy:
     cluster: dev-fss
     namespace: dolly

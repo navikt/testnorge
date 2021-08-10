@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
 import no.nav.dolly.web.config.credentials.NaisServerProperties;
+import no.nav.dolly.web.config.credentials.TestnavBrregstubProxyProperties;
 import no.nav.dolly.web.config.credentials.TestnavHodejegerenProxyProperties;
 import no.nav.dolly.web.config.credentials.TestnavInntektstubProxyProperties;
 import no.nav.dolly.web.config.credentials.TestnavJoarkDokumentServiceProperties;
@@ -39,6 +40,7 @@ public class ApplicationConfig {
     private final TestnavJoarkDokumentServiceProperties testnavJoarkDokumentServiceProperties;
     private final TestnavInntektstubProxyProperties testnavInntektstubProxyProperties;
     private final TpsForvalterenProxyProperties tpsForvalterenProxyProperties;
+    private final TestnavBrregstubProxyProperties testnavBrregstubProxyProperties;
     private final TestnavHodejegerenProxyProperties testnavHodejegerenProxyProperties;
 
     @Bean
@@ -68,6 +70,11 @@ public class ApplicationConfig {
     @Bean
     public AddAuthorizationToRouteFilter tpsForvalterenProxyAddAuthorizationToRouteFilter() {
         return createFilterFrom(tpsForvalterenProxyProperties, "tps-forvalteren-proxy");
+    }
+
+    @Bean
+    public AddAuthorizationToRouteFilter testnavBrregstubProxyAddAuthorizationToRouteFilter() {
+       return createFilterFrom(testnavBrregstubProxyProperties);
     }
 
     @Bean
