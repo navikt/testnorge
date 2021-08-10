@@ -19,9 +19,9 @@ spec:
         - application: team-dolly-lokal-app
           cluster: dev-fss
         - application: dolly-frontend
-          cluster: dev-gcp
+          cluster: dev-fss
         - application: dolly-frontend-dev
-          cluster: dev-gcp
+          cluster: dev-fss
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
   liveness:
