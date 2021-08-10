@@ -18,6 +18,10 @@ spec:
       rules:
         - application: team-dolly-lokal-app
           cluster: dev-fss
+        - application: dolly-frontend
+          cluster: dev-fss
+        - application: dolly-frontend-dev
+          cluster: dev-fss
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
         - application: testnav-helsepersonell-service
