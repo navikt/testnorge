@@ -26,7 +26,11 @@ public class TpsForvaterenProxyApplicationStarter {
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder, @Value("${proxy.url}") String url) {
         return builder.routes()
-                .route(spec -> spec.path("/**").uri(url))
+                .route(spec -> spec
+                        .path("/**")
+                        .filters(filterSpec -> filterSpec.removeRequestHeader("Origin"))
+                        .uri(url)
+                )
                 .build();
     }
 
