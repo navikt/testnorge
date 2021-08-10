@@ -2,6 +2,7 @@ package no.nav.registre.inst.consumer.rs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.inst.domain.InstitusjonResponse;
 import no.nav.registre.inst.domain.Institusjonsopphold;
 import no.nav.registre.inst.domain.InstitusjonsoppholdV2;
 import no.nav.registre.inst.exception.UgyldigIdentResponseException;
@@ -62,9 +63,9 @@ public class Inst2Consumer {
             String miljoe,
             String ident
     ) {
-        List<Institusjonsopphold> response;
+        InstitusjonResponse response;
         try {
-            ResponseEntity<List<Institusjonsopphold>> listResponseEntity = webClient.get()
+            ResponseEntity<InstitusjonResponse> listResponseEntity = webClient.get()
                     .uri(inst2NewServerUrl,
                             uriBuilder -> uriBuilder
                                     .path(INSTITUSJONSOPPHOLD_PERSON)
@@ -76,16 +77,17 @@ public class Inst2Consumer {
                     .header(HEADER_NAV_CONSUMER_ID, consumerId)
                     .header(NORSKIDENT, ident)
                     .retrieve()
-                    .toEntity(RESPONSE_TYPE_HENT_INSTITUSJONSOPPHOLD)
+                    .toEntity(InstitusjonResponse.class)
                     .block();
             response = nonNull(listResponseEntity)
                     ? listResponseEntity.getBody()
-                    : emptyList();
+                    : new InstitusjonResponse();
+            log.info("Hentet Inst2 opphold: " + response);
         } catch (WebClientResponseException e) {
             log.error("Kunne ikke hente ident fra inst2", e);
             throw new UgyldigIdentResponseException("Kunne ikke hente ident fra inst2", e);
         }
-        return response;
+        return response.getQ2(); //TODO: FIX!
     }
 
     public OppholdResponse leggTilInstitusjonsoppholdIInst2(
