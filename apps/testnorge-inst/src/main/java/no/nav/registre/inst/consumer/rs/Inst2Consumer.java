@@ -32,7 +32,7 @@ import static no.nav.registre.inst.properties.HttpRequestConstants.HEADER_NAV_CO
 @Slf4j
 public class Inst2Consumer {
 
-    private static final ParameterizedTypeReference<List<Institusjonsopphold>> RESPONSE_TYPE_HENT_INSTITUSJONSOPPHOLD = new ParameterizedTypeReference<>() {
+    private static final ParameterizedTypeReference<InstitusjonResponse> RESPONSE_TYPE_HENT_INSTITUSJONSOPPHOLD = new ParameterizedTypeReference<>() {
     };
     private static final ParameterizedTypeReference<Object> RESPONSE_TYPE_OBJECT = new ParameterizedTypeReference<>() {
     };
@@ -77,7 +77,7 @@ public class Inst2Consumer {
                     .header(HEADER_NAV_CONSUMER_ID, consumerId)
                     .header(NORSKIDENT, ident)
                     .retrieve()
-                    .toEntity(InstitusjonResponse.class)
+                    .toEntity(RESPONSE_TYPE_HENT_INSTITUSJONSOPPHOLD)
                     .block();
             response = nonNull(listResponseEntity)
                     ? listResponseEntity.getBody()
