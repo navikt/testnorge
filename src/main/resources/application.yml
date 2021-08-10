@@ -57,8 +57,10 @@ zuul:
       path: /tps-forvalteren-proxy/api/**
       url: ${TPS_FORVALTERN_PROXY_URL}/api
       sensitiveHeaders: Cookie,Set-Cookie
-  debug:
-    request: true
+    testnav-hodejegeren-proxy:
+      path: /testnav-hodejegeren-proxy/api/**
+      url: https://testnav-hodejegeren-proxy.dev.intern.nav.no/api
+      sensitiveHeaders: Cookie,Set-Cookie
 
 applications:
   testnorge-profil-api: ${TESTNORGE_PROFIL_API_CLIENT_ID}
@@ -93,6 +95,10 @@ consumers:
     cluster: dev-fss
     namespace: dolly
     name: ${TPS_FORVALTERN_PROXY_NAME}
+  testnav-hodejegeren-proxy:
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-hodejegeren-proxy
 
 spring:
   application:

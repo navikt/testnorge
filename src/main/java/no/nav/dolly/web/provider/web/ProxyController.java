@@ -175,18 +175,6 @@ public class ProxyController {
         return proxyService.proxyRequest(body, method, headers, requestURL);
     }
 
-    @RequestMapping("/proxy/hodejegeren/**")
-    public ResponseEntity<String> hodejegerenProxy(
-            @RequestBody(required = false) String body,
-            HttpMethod method,
-            HttpServletRequest request) throws UnsupportedEncodingException {
-
-        String requestURL = createURL(request, hodejegerenUrl + API_URI, PROXY_URI + "/hodejegeren");
-        HttpHeaders headers = proxyService.copyHeaders(request);
-
-        return proxyService.proxyRequest(body, method, headers, requestURL);
-    }
-
     private static String createURL(HttpServletRequest request, String host, String splitUri)
             throws UnsupportedEncodingException {
 
