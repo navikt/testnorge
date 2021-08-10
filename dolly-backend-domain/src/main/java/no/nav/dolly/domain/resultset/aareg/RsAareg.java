@@ -21,7 +21,7 @@ import static java.util.Objects.isNull;
 @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
 public class RsAareg {
 
-    private RsPeriodeAareg genererPeriode;
+    private RsPeriodeAmelding genererPeriode;
 
     @Schema(description = "Gyldige verdier finnes i kodeverk 'Arbeidsforholdstyper'")
     private String arbeidsforholdstype;
