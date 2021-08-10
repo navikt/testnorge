@@ -39,7 +39,7 @@ public class Inst2ConsumerTest {
     private final String id = "test";
     private final String fnr1 = "01010101010";
     private final String token = "Bearer abc";
-    private final String miljoe = "t1";
+    private final String miljoe = "q2";
 
     @Before
     public void before() {

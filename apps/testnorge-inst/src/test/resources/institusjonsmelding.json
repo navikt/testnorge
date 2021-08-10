@@ -1,24 +1,26 @@
-[
-  {
-    "dato_fom": "2013-07-03",
-    "dato_tom": "",
-    "dato_tom_forventet": "",
-    "k_kilde_inst_t": "IT",
-    "k_opphold_inst_t": "AS",
-    "k_pas_ka_inst_t": "A",
-    "k_varig_inst_t": "L",
-    "overfort": 0,
-    "tss_ekstern_id_fk": 440
-  },
-  {
-    "dato_fom": "2012-04-04",
-    "dato_tom": "",
-    "dato_tom_forventet": "2009-09-21",
-    "k_kilde_inst_t": "IT",
-    "k_opphold_inst_t": "AS",
-    "k_pas_ka_inst_t": "A",
-    "k_varig_inst_t": "L",
-    "overfort": 2,
-    "tss_ekstern_id_fk": 441
-  }
-]
+{
+  "q2": [
+    {
+      "dato_fom": "2013-07-03",
+      "dato_tom": "",
+      "dato_tom_forventet": "",
+      "k_kilde_inst_t": "IT",
+      "k_opphold_inst_t": "AS",
+      "k_pas_ka_inst_t": "A",
+      "k_varig_inst_t": "L",
+      "overfort": 0,
+      "tss_ekstern_id_fk": 440
+    },
+    {
+      "dato_fom": "2012-04-04",
+      "dato_tom": "",
+      "dato_tom_forventet": "2009-09-21",
+      "k_kilde_inst_t": "IT",
+      "k_opphold_inst_t": "AS",
+      "k_pas_ka_inst_t": "A",
+      "k_varig_inst_t": "L",
+      "overfort": 2,
+      "tss_ekstern_id_fk": 441
+    }
+  ]
+}
