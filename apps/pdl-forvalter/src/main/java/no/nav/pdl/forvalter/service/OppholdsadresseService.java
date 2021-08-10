@@ -4,13 +4,16 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdsadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO.Master.FREG;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO.Master.PDL;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Service
@@ -32,7 +35,21 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO> {
         this.mapperFacade = mapperFacade;
     }
 
-    @Override
+    public List<OppholdsadresseDTO> convert(PersonDTO person) {
+
+        for (var adresse : person.getOppholdsadresse()) {
+
+            if (isTrue(adresse.getIsNew())) {
+                validate(adresse);
+
+                handle(adresse);
+                populateMiscFields(adresse, person);
+            }
+        }
+        enforceIntegrity(person.getOppholdsadresse());
+        return person.getOppholdsadresse();
+    }
+
     protected void validate(OppholdsadresseDTO adresse) {
 
         if (count(adresse.getVegadresse()) +
@@ -45,10 +62,10 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO> {
                 count(adresse.getVegadresse()) == 0) {
             throw new InvalidRequestException(VALIDATION_ADDRESS_ABSENT_ERROR);
         }
-        if (FREG.equals(adresse.getMaster()) && (nonNull(adresse.getUtenlandskAdresse()))) {
+        if (DbVersjonDTO.Master.FREG == adresse.getMaster() && nonNull(adresse.getUtenlandskAdresse())) {
             throw new InvalidRequestException(VALIDATION_MASTER_PDL_ERROR);
         }
-        if (PDL.equals(adresse.getMaster()) &&
+        if (DbVersjonDTO.Master.PDL == adresse.getMaster() &&
                 (isNull(adresse.getGyldigFraOgMed()) || isNull(adresse.getGyldigTilOgMed()))) {
             throw new InvalidRequestException(VALIDATION_MASTER_PDL_ERROR);
         }
@@ -67,7 +84,6 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO> {
         }
     }
 
-    @Override
     protected void handle(OppholdsadresseDTO oppholdsadresse) {
 
         if (nonNull(oppholdsadresse.getVegadresse())) {

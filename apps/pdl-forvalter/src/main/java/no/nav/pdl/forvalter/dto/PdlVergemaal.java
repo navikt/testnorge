@@ -3,13 +3,16 @@ package no.nav.pdl.forvalter.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 
 import java.io.Serializable;
 
 @Data
-@Builder
+@SuperBuilder
+@EqualsAndHashCode(callSuper=true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class PdlVergemaal extends DbVersjonDTO {

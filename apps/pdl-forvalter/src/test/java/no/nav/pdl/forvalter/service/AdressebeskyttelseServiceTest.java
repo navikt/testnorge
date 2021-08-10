@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -9,8 +10,6 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO.Master.FREG;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO.Master.PDL;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG_UTLAND;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -29,7 +28,7 @@ class AdressebeskyttelseServiceTest {
 
         var request = List.of(AdressebeskyttelseDTO.builder()
                 .gradering(STRENGT_FORTROLIG_UTLAND)
-                .master(FREG)
+                .master(DbVersjonDTO.Master.FREG)
                 .isNew(true)
                 .build());
 
@@ -47,6 +46,6 @@ class AdressebeskyttelseServiceTest {
                 .isNew(true)
                 .build())).get(0);
 
-        assertThat(target.getMaster(), is(equalTo(PDL)));
+        assertThat(target.getMaster(), is(equalTo(DbVersjonDTO.Master.PDL)));
     }
 }
