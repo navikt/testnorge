@@ -56,7 +56,7 @@ public class Inst2Consumer {
                 .build();
     }
 
-    public List<Institusjonsopphold> hentInstitusjonsoppholdFraInst2(
+    public InstitusjonResponse hentInstitusjonsoppholdFraInst2(
             String bearerToken,
             String callId,
             String consumerId,
@@ -87,7 +87,7 @@ public class Inst2Consumer {
             log.error("Kunne ikke hente ident fra inst2", e);
             throw new UgyldigIdentResponseException("Kunne ikke hente ident fra inst2", e);
         }
-        return response.getQ2(); //TODO: FIX!
+        return response;
     }
 
     public OppholdResponse leggTilInstitusjonsoppholdIInst2(

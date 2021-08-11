@@ -17,10 +17,10 @@ import java.util.List;
 @ToString
 public class InstitusjonResponse {
 
-    private List<Institusjonsopphold> q1;
-    private List<Institusjonsopphold> q2;
-    private List<Institusjonsopphold> q4;
-    private List<Institusjonsopphold> t0;
-    private List<Institusjonsopphold> t4;
-    private List<Institusjonsopphold> t6;
+    private List<InstitusjonsoppholdV2> q1;
+    private List<InstitusjonsoppholdV2> q2;
+    private List<InstitusjonsoppholdV2> q4;
+    private List<InstitusjonsoppholdV2> t0;
+    private List<InstitusjonsoppholdV2> t4;
+    private List<InstitusjonsoppholdV2> t6;
 }

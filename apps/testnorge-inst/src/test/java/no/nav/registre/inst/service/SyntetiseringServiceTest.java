@@ -114,7 +114,7 @@ public class SyntetiseringServiceTest {
 
         when(instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(antallMeldinger)).thenReturn(meldingerV2);
         when(hodejegerenConsumer.getLevende(avspillergruppeId)).thenReturn(utvalgteIdenter);
-        when(identService.hentInstitusjonsoppholdFraInst2(anyString(), eq(id), eq(id), eq(miljoe), anyString())).thenReturn(meldinger);
+        when(identService.hentInstitusjonsoppholdFraInst2(anyString(), eq(id), eq(id), eq(miljoe), anyString())).thenReturn(meldingerV2);
         when(inst2Consumer.finnesInstitusjonPaaDato(anyString(), eq(id), eq(id), eq(miljoe), anyString(), any())).thenReturn(HttpStatus.OK);
 
         syntetiseringService.finnSyntetiserteMeldingerOgLagreIInst2(id, id, miljoe, syntetiserInstRequest);

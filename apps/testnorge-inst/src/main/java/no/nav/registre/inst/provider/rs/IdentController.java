@@ -3,7 +3,6 @@ package no.nav.registre.inst.provider.rs;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.inst.domain.Institusjonsopphold;
 import no.nav.registre.inst.domain.InstitusjonsoppholdV2;
 import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
 import no.nav.registre.inst.service.IdentService;
@@ -45,7 +44,7 @@ public class IdentController {
 
     @GetMapping("/ident")
     @ApiOperation(value = "Her kan man hente alle institusjonsoppholdene tilhørende angitte identer fra inst2.")
-    public List<Institusjonsopphold> hentInstitusjonsopphold(
+    public List<InstitusjonsoppholdV2> hentInstitusjonsopphold(
             @RequestHeader(HEADER_NAV_CALL_ID) @NotBlank String navCallId,
             @RequestHeader(HEADER_NAV_CONSUMER_ID) @NotBlank String navConsumerId,
             @RequestParam String miljoe,

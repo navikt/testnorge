@@ -52,10 +52,10 @@ public class Inst2ConsumerTest {
 
         var result = inst2Consumer.hentInstitusjonsoppholdFraInst2(token, id, id, miljoe, fnr1);
 
-        assertThat(result.get(0).getTssEksternId(), is("440"));
-        assertThat(result.get(0).getStartdato(), Matchers.equalTo(LocalDate.of(2013, 7, 3)));
-        assertThat(result.get(1).getTssEksternId(), is("441"));
-        assertThat(result.get(1).getStartdato(), Matchers.equalTo(LocalDate.of(2012, 4, 4)));
+        assertThat(result.getQ2().get(0).getTssEksternId(), is("440"));
+        assertThat(result.getQ2().get(0).getStartdato(), Matchers.equalTo(LocalDate.of(2013, 7, 3)));
+        assertThat(result.getQ2().get(1).getTssEksternId(), is("441"));
+        assertThat(result.getQ2().get(1).getStartdato(), Matchers.equalTo(LocalDate.of(2012, 4, 4)));
     }
 
     @Test(expected = UgyldigIdentResponseException.class)

@@ -3,7 +3,7 @@ package no.nav.registre.inst.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.inst.consumer.rs.Inst2Consumer;
-import no.nav.registre.inst.domain.Institusjonsopphold;
+import no.nav.registre.inst.domain.InstitusjonResponse;
 import no.nav.registre.inst.domain.InstitusjonsoppholdV2;
 import no.nav.registre.inst.exception.UkjentMiljoeException;
 import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -89,14 +90,14 @@ public class IdentService {
         return inst2Consumer.slettInstitusjonsoppholdMedIdent(bearerToken, callId, consumerId, miljoe, ident);
     }
 
-    public List<Institusjonsopphold> hentOppholdTilIdenter(
+    public List<InstitusjonsoppholdV2> hentOppholdTilIdenter(
             String callId,
             String consumerId,
             String miljoe,
             List<String> identer
     ) {
         var bearerToken = hentTokenTilInst2(miljoe);
-        List<Institusjonsopphold> alleInstitusjonsopphold = new ArrayList<>();
+        List<InstitusjonsoppholdV2> alleInstitusjonsopphold = new ArrayList<>();
         for (var ident : identer) {
             var institusjonsoppholdTilIdent = hentInstitusjonsoppholdFraInst2(bearerToken, callId, consumerId, miljoe, ident);
             alleInstitusjonsopphold.addAll(institusjonsoppholdTilIdent);
@@ -104,7 +105,7 @@ public class IdentService {
         return alleInstitusjonsopphold;
     }
 
-    public List<Institusjonsopphold> hentInstitusjonsoppholdFraInst2(
+    public List<InstitusjonsoppholdV2> hentInstitusjonsoppholdFraInst2(
             String bearerToken,
             String callId,
             String consumerId,
@@ -113,10 +114,13 @@ public class IdentService {
     ) {
         var institusjonsforholdsmeldinger = inst2Consumer.hentInstitusjonsoppholdFraInst2(bearerToken, callId, consumerId, miljoe, ident);
         if (institusjonsforholdsmeldinger != null) {
-            for (var melding : institusjonsforholdsmeldinger) {
-                melding.setPersonident(ident);
+            var opphold = getOppholdForMiljoe(institusjonsforholdsmeldinger, miljoe);
+            for (var melding : opphold) {
+                if (melding != null) {
+                    melding.setNorskident(ident);
+                }
             }
-            return new ArrayList<>(institusjonsforholdsmeldinger);
+            return opphold;
         } else {
             return new ArrayList<>();
         }
@@ -134,5 +138,26 @@ public class IdentService {
 
     public List<String> hentTilgjengeligeMiljoer() {
         return inst2Consumer.hentInst2TilgjengeligeMiljoer();
+    }
+
+    private List<InstitusjonsoppholdV2> getOppholdForMiljoe(InstitusjonResponse response, String miljoe) {
+        if ("q1".equals(miljoe)) {
+            return response.getQ1();
+        }
+        if ("q2".equals(miljoe)) {
+            return response.getQ2();
+        }
+        if ("q4".equals(miljoe)) {
+            return response.getQ4();
+        }
+        if ("t0".equals(miljoe)) {
+            return response.getT0();
+        }
+        if ("t4".equals(miljoe)) {
+            return response.getT4();
+        }
+        if ("t6".equals(miljoe)) {
+            return response.getT6();
+        } else return Collections.emptyList();
     }
 }
