@@ -6,6 +6,7 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
+import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
@@ -92,6 +93,38 @@ public class ForelderBarnRelasjonService {
 
     private void handle(ForelderBarnRelasjonDTO relasjon, PersonDTO hovedperson) {
 
+        setRelatertPerson(relasjon, hovedperson);
+
+        addForelderBarnRelasjon(relasjon, hovedperson);
+
+        if (isNotTrue(relasjon.getPartnerErIkkeForelder()) && hovedperson.getSivilstand().stream()
+                .anyMatch(sivilstand -> nonNull(sivilstand.getRelatertVedSivilstand()))) {
+
+            DbPerson partner = hovedperson.getSivilstand().stream()
+                    .filter(sivilstand -> nonNull(sivilstand.getRelatertVedSivilstand()))
+                    .map(sivilstand -> personRepository.findByIdent(sivilstand.getRelatertVedSivilstand()).get())
+                    .findFirst().get();
+
+            partner.getPerson().getForelderBarnRelasjon().add(
+                    addForelderBarnRelasjon(mapperFacade.map(relasjon, ForelderBarnRelasjonDTO.class), partner.getPerson()));
+            personRepository.save(partner);
+        }
+    }
+
+    private ForelderBarnRelasjonDTO addForelderBarnRelasjon(ForelderBarnRelasjonDTO relasjon, PersonDTO hovedperson) {
+
+        fixRoller(relasjon, hovedperson);
+        relasjonService.setRelasjoner(hovedperson.getIdent(),
+                relasjon.getRelatertPersonsRolle() == ROLLE.BARN ? FAMILIERELASJON_FORELDER : FAMILIERELASJON_BARN,
+                relasjon.getRelatertPerson(),
+                relasjon.getRelatertPersonsRolle() == ROLLE.BARN ? FAMILIERELASJON_BARN : FAMILIERELASJON_FORELDER);
+
+        createMotsattRelasjon(relasjon, hovedperson.getIdent());
+        return relasjon;
+    }
+
+    private String setRelatertPerson(ForelderBarnRelasjonDTO relasjon, PersonDTO hovedperson) {
+
         if (isBlank(relasjon.getRelatertPerson())) {
 
             if (isNull(relasjon.getNyRelatertPerson())) {
@@ -127,15 +160,27 @@ public class ForelderBarnRelasjonService {
 
             relasjon.setRelatertPerson(relatertPerson.getIdent());
         }
-        relasjonService.setRelasjoner(hovedperson.getIdent(),
-                relasjon.getRelatertPersonsRolle() == ROLLE.BARN ? FAMILIERELASJON_FORELDER : FAMILIERELASJON_BARN,
-                relasjon.getRelatertPerson(),
-                relasjon.getRelatertPersonsRolle() == ROLLE.BARN ? FAMILIERELASJON_BARN : FAMILIERELASJON_FORELDER);
 
         relasjon.setBorIkkeSammen(null);
         relasjon.setNyRelatertPerson(null);
+        return relasjon.getRelatertPerson();
+    }
 
-        createMotsattRelasjon(relasjon, hovedperson.getIdent());
+    private void fixRoller(ForelderBarnRelasjonDTO relasjon, PersonDTO person) {
+
+        if (relasjon.getRelatertPersonsRolle() == ROLLE.BARN) {
+            relasjon.setMinRolleForPerson(getRolle(person));
+        }
+        if (relasjon.getRelatertPersonsRolle() == ROLLE.FORELDER) {
+            //TBD
+        }
+    }
+
+    private ROLLE getRolle(PersonDTO person) {
+        return person.getKjoenn().stream().findFirst()
+                .map(KjoennDTO::getKjoenn)
+                .orElse(KjoennFraIdentUtility.getKjoenn(person.getIdent())) == MANN ?
+                ROLLE.FAR : ROLLE.MOR;
     }
 
     private LocalDateTime getMaxDato(LocalDateTime dato1, LocalDateTime dato2) {
@@ -157,6 +202,9 @@ public class ForelderBarnRelasjonService {
         ForelderBarnRelasjonDTO relatertFamilierelasjon = mapperFacade.map(relasjon, ForelderBarnRelasjonDTO.class);
         relatertFamilierelasjon.setRelatertPerson(hovedperson);
         swapRoller(relatertFamilierelasjon);
+        relatertFamilierelasjon.setId(relatertPerson.getPerson().getForelderBarnRelasjon().stream().findFirst()
+                .map(ForelderBarnRelasjonDTO::getId)
+                .orElse(0) + 1);
         relatertPerson.getPerson().getForelderBarnRelasjon().add(relatertFamilierelasjon);
         mergeService.merge(relatertPerson.getPerson(), relatertPerson.getPerson());
         personRepository.save(relatertPerson);

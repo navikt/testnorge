@@ -21,5 +21,5 @@ public class ForelderBarnRelasjonDTO extends DbVersjonDTO {
     private PersonRequestDTO nyRelatertPerson;
     private Boolean partnerErIkkeForelder;
 
-    public enum ROLLE {MOR, FAR, MEDMOR, BARN}
+    public enum ROLLE {BARN, FORELDER, MOR, FAR, MEDMOR}
 }

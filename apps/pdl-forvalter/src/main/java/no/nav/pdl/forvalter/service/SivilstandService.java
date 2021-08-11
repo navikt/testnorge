@@ -5,6 +5,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
@@ -106,8 +107,10 @@ public class SivilstandService {
                     sivilstand.getNyRelatertPerson().setFoedtEtter(LocalDateTime.now().minusYears(60));
                 }
                 if (isNull(sivilstand.getNyRelatertPerson().getKjoenn())) {
-                    KjoennDTO kjonn = hovedperson.getKjoenn().stream().findFirst().orElse(randomKjoenn());
-                    sivilstand.getNyRelatertPerson().setKjoenn(MANN == kjonn.getKjoenn() ? KVINNE : MANN);
+                    KjoennDTO.Kjoenn kjonn = hovedperson.getKjoenn().stream().findFirst()
+                            .map(KjoennDTO::getKjoenn)
+                            .orElse(KjoennFraIdentUtility.getKjoenn(hovedperson.getIdent()));
+                    sivilstand.getNyRelatertPerson().setKjoenn(kjonn == MANN ? KVINNE : MANN);
                 }
                 if (isNull(sivilstand.getNyRelatertPerson().getSyntetisk())) {
                     sivilstand.getNyRelatertPerson().setSyntetisk(isSyntetisk(hovedperson.getIdent()));
