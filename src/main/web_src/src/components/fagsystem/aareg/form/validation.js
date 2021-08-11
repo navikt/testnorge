@@ -46,6 +46,20 @@ const innenforAnsettelsesforholdTest = (validation, validateFomMonth) => {
 	)
 }
 
+const fullArbeidsforholdTest = validation => {
+	const fullArbeidsforholdTyper = ['', 'ordinaertArbeidsforhold', 'maritimtArbeidsforhold']
+	return validation.test('isRequired', 'Feltet er påkrevd', function checkRequired(val) {
+		let gyldig = true
+		const values = this.options.context
+		const index = this.options.index
+		const arbeidsforholdType = _get(values, `aareg[${index}].arbeidsforholdstype`)
+		if (fullArbeidsforholdTyper.some(value => value === arbeidsforholdType) && !val) {
+			gyldig = false
+		}
+		return gyldig
+	})
+}
+
 const antallTimerForTimeloennet = Yup.array().of(
 	Yup.object({
 		periode: Yup.object({
@@ -95,6 +109,12 @@ const permittering = Yup.array().of(
 	})
 )
 
+const ansettelsesPeriode = Yup.object({
+	fom: requiredDate,
+	tom: Yup.date().nullable(),
+	sluttaarsak: Yup.string().nullable()
+})
+
 const arbeidsgiver = Yup.object({
 	aktoertype: requiredString,
 	orgnummer: Yup.string().when('aktoertype', {
@@ -111,56 +131,31 @@ const arbeidsgiver = Yup.object({
 	})
 })
 
-const arbeidsforholdForenklet = Yup.array().of(
-	Yup.object({
-		arbeidsgiver: arbeidsgiver,
-		ansettelsesPeriode: Yup.object({
-			fom: requiredDate,
-			tom: Yup.date().nullable()
-		}),
-		arbeidsavtale: Yup.object({
-			yrke: requiredString
-		})
-	})
-)
+const arbeidsavtale = Yup.object({
+	yrke: fullArbeidsforholdTest(Yup.string()),
+	ansettelsesform: fullArbeidsforholdTest(Yup.string()),
+	stillingsprosent: fullArbeidsforholdTest(
+		Yup.number()
+			.min(0, 'Kan ikke være mindre enn ${min}')
+			.max(100, 'Kan ikke være større enn ${max}')
+			.typeError(messages.required)
+	),
+	endringsdatoStillingsprosent: Yup.date().nullable(),
+	endringsdatoLoenn: Yup.date().nullable(),
+	arbeidstidsordning: fullArbeidsforholdTest(Yup.string()),
+	avtaltArbeidstimerPerUke: fullArbeidsforholdTest(
+		Yup.number()
+			.min(1, 'Kan ikke være mindre enn ${min}')
+			.max(75, 'Kan ikke være større enn ${max}')
+			.typeError(messages.required)
+	)
+})
 
-const arbeidsforhold = Yup.array().of(
+const fartoy = Yup.array().of(
 	Yup.object({
-		ansettelsesPeriode: Yup.object({
-			fom: requiredDate,
-			tom: Yup.date().nullable(),
-			sluttaarsak: Yup.string().nullable()
-		}),
-		arbeidsforholdstype: ifPresent('$aareg[0].arbeidsforhold', requiredString),
-		arbeidsforholdID: Yup.string().nullable(),
-		arbeidsgiver: arbeidsgiver,
-		arbeidsavtale: Yup.object({
-			yrke: requiredString,
-			ansettelsesform: requiredString,
-			stillingsprosent: Yup.number()
-				.min(0, 'Kan ikke være mindre enn ${min}')
-				.max(100, 'Kan ikke være større enn ${max}')
-				.typeError(messages.required),
-			endringsdatoStillingsprosent: Yup.date().nullable(),
-			endringsdatoLoenn: Yup.date().nullable(),
-			arbeidstidsordning: requiredString,
-			avtaltArbeidstimerPerUke: Yup.number()
-				// .transform((i, j) => (j === '' ? null : i))
-				// .nullable()
-				.min(1, 'Kan ikke være mindre enn ${min}')
-				.max(75, 'Kan ikke være større enn ${max}')
-		}),
-		fartoy: Yup.array().of(
-			Yup.object({
-				skipsregister: requiredString,
-				skipstype: requiredString,
-				fartsomraade: requiredString
-			})
-		),
-		antallTimerForTimeloennet: antallTimerForTimeloennet,
-		utenlandsopphold: utenlandsopphold,
-		permisjon: permisjon,
-		permittering: permittering
+		skipsregister: requiredString,
+		skipstype: requiredString,
+		fartsomraade: requiredString
 	})
 )
 
@@ -179,70 +174,46 @@ const requiredPeriode = Yup.mixed()
 	})
 	.nullable()
 
-const arbeidsforholdVelgerAmelding = Yup.mixed()
-	.when('$aareg[0].arbeidsforholdstype', {
-		is: '',
-		then: arbeidsforhold
-	})
-	.when('$aareg[0].arbeidsforholdstype', {
-		is: 'ordinaertArbeidsforhold',
-		then: arbeidsforhold
-	})
-	.when('$aareg[0].arbeidsforholdstype', {
-		is: 'maritimtArbeidsforhold',
-		then: arbeidsforhold
-	})
-	.when('$aareg[0].arbeidsforholdstype', {
-		is: 'frilanserOppdragstakerHonorarPersonerMm',
-		then: arbeidsforholdForenklet
-	})
-	.when('$aareg[0].arbeidsforholdstype', {
-		is: 'forenkletOppgjoersordning',
-		then: arbeidsforholdForenklet
-	})
-
-const arbeidsforholdVelgerStandard = Yup.mixed()
-	.when('$aareg[0].arbeidsforhold[0].arbeidsforholdstype', {
-		is: '',
-		then: arbeidsforhold
-	})
-	.when('$aareg[0].arbeidsforhold[0].arbeidsforholdstype', {
-		is: 'ordinaertArbeidsforhold',
-		then: arbeidsforhold
-	})
-	.when('$aareg[0].arbeidsforhold[0].arbeidsforholdstype', {
-		is: 'maritimtArbeidsforhold',
-		then: arbeidsforhold
-	})
-	.when('$aareg[0].arbeidsforhold[0].arbeidsforholdstype', {
-		is: 'frilanserOppdragstakerHonorarPersonerMm',
-		then: arbeidsforholdForenklet
-	})
-	.when('$aareg[0].arbeidsforhold[0].arbeidsforholdstype', {
-		is: 'forenkletOppgjoersordning',
-		then: arbeidsforholdForenklet
-	})
-	.when('$aareg[0].arbeidsforhold[0].arbeidsforholdstype', {
-		is: undefined,
-		then: arbeidsforholdForenklet
-	})
-
-const amelding = Yup.array().of(
-	Yup.object({
-		arbeidsforhold: arbeidsforholdVelgerAmelding
-	})
-)
-
 export const validation = {
 	aareg: Yup.array().of(
 		Yup.object({
-			arbeidsforhold: ifPresent('$aareg[0].arbeidsforhold', arbeidsforholdVelgerStandard),
-			amelding: ifPresent('$aareg[0].amelding', amelding),
-			arbeidsforholdstype: ifPresent('$aareg[0].amelding', requiredString),
-			genererPeriode: Yup.object({
-				fom: requiredPeriode,
-				tom: requiredPeriode
-			})
+			ansettelsesPeriode: ifPresent('$aareg[0].arbeidsgiver', ansettelsesPeriode),
+			arbeidsforholdstype: requiredString,
+			arbeidsforholdID: Yup.string().nullable(),
+			arbeidsgiver: ifPresent('$aareg[0].arbeidsgiver', arbeidsgiver),
+			arbeidsavtale: ifPresent('$aareg[0].arbeidsgiver', arbeidsavtale),
+			fartoy: ifPresent('$aareg[0].fartoy', fartoy),
+			antallTimerForTimeloennet: antallTimerForTimeloennet,
+			utenlandsopphold: utenlandsopphold,
+			permisjon: permisjon,
+			permittering: permittering,
+			amelding: ifPresent(
+				'$aareg[0].amelding',
+				Yup.array().of(
+					Yup.object({
+						arbeidsforhold: Yup.array().of(
+							Yup.object({
+								ansettelsesPeriode: ansettelsesPeriode,
+								arbeidsforholdID: Yup.string().nullable(),
+								arbeidsgiver: arbeidsgiver,
+								arbeidsavtale: arbeidsavtale,
+								fartoy: fartoy,
+								antallTimerForTimeloennet: antallTimerForTimeloennet,
+								utenlandsopphold: utenlandsopphold,
+								permisjon: permisjon,
+								permittering: permittering
+							})
+						)
+					})
+				)
+			),
+			genererPeriode: ifPresent(
+				'$aareg[0].amelding',
+				Yup.object({
+					fom: requiredPeriode,
+					tom: requiredPeriode
+				})
+			)
 		})
 	)
 }

@@ -72,12 +72,12 @@ export const ArbeidsforholdForm = ({
 					arbeidsgiverType === ArbeidsgiverTyper.felles ||
 					arbeidsgiverType === ArbeidsgiverTyper.fritekst
 				) {
-					formikBag.setFieldValue(`aareg[0].arbeidsforhold[${arbeidsforholdIndex}]`, {
+					formikBag.setFieldValue(path, {
 						...initialForenkletOppgjoersordningOrg,
 						arbeidsforholdstype: event.value
 					})
 				} else if (arbeidsgiverType === ArbeidsgiverTyper.privat) {
-					formikBag.setFieldValue(`aareg[0].arbeidsforhold[${arbeidsforholdIndex}]`, {
+					formikBag.setFieldValue(path, {
 						...initialForenkletOppgjoersordningPers,
 						arbeidsforholdstype: event.value
 					})
@@ -89,46 +89,34 @@ export const ArbeidsforholdForm = ({
 					arbeidsgiverType === ArbeidsgiverTyper.felles ||
 					arbeidsgiverType === ArbeidsgiverTyper.fritekst
 				) {
-					formikBag.setFieldValue(`aareg[0].arbeidsforhold[${arbeidsforholdIndex}]`, {
+					formikBag.setFieldValue(path, {
 						...initialArbeidsforholdOrg,
 						arbeidsforholdstype: event.value
 					})
 				} else if (arbeidsgiverType === ArbeidsgiverTyper.privat) {
-					formikBag.setFieldValue(`aareg[0].arbeidsforhold[${arbeidsforholdIndex}]`, {
+					formikBag.setFieldValue(path, {
 						...initialArbeidsforholdPers,
 						arbeidsforholdstype: event.value
 					})
 				}
 			} else {
-				formikBag.setFieldValue(
-					`aareg[0].arbeidsforhold[${arbeidsforholdIndex}].arbeidsforholdstype`,
-					event.value
-				)
+				formikBag.setFieldValue(`${path}.arbeidsforholdstype`, event.value)
 			}
 			if (event.value === 'maritimtArbeidsforhold') {
-				formikBag.setFieldValue(
-					`aareg[0].arbeidsforhold[${arbeidsforholdIndex}].fartoy`,
-					initialFartoy
-				)
+				formikBag.setFieldValue(`${path}.fartoy`, initialFartoy)
 			} else {
-				formikBag.setFieldValue(`aareg[0].arbeidsforhold[${arbeidsforholdIndex}].fartoy`, undefined)
+				formikBag.setFieldValue(`${path}.fartoy`, undefined)
 			}
 		}
 	}
 
 	const feilmelding = () => {
 		if (
-			!_get(
-				formikBag.values,
-				`aareg[0].arbeidsforhold[${arbeidsforholdIndex}].arbeidsforholdstype`
-			) &&
-			_has(formikBag.touched, `aareg[0].arbeidsforhold[${arbeidsforholdIndex}].arbeidsforholdstype`)
+			!_get(formikBag.values, `${path}.arbeidsforholdstype`) &&
+			_has(formikBag.touched, `${path}.arbeidsforholdstype`)
 		) {
 			return {
-				feilmelding: _get(
-					formikBag.errors,
-					`aareg[0].arbeidsforhold[${arbeidsforholdIndex}].arbeidsforholdstype`
-				)
+				feilmelding: _get(formikBag.errors, `${path}.arbeidsforholdstype`)
 			}
 		}
 	}

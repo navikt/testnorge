@@ -13,13 +13,11 @@ export const initialAmelding = [
 	}
 ]
 
-export const initialValues = [
-	{
-		arbeidsforholdstype: '',
-		genererPeriode: initialPeriode,
-		amelding: initialAmelding
-	}
-]
+export const initialValues = {
+	arbeidsforholdstype: '',
+	genererPeriode: initialPeriode,
+	amelding: initialAmelding
+}
 
 export const initialForenkletOppgjoersordningOrg = {
 	arbeidsgiver: {
@@ -93,6 +91,16 @@ export const initialArbeidsforholdPers = {
 		arbeidstidsordning: 'ikkeSkift',
 		avtaltArbeidstimerPerUke: 37.5
 	}
+}
+
+export const initialAaregOrg = {
+	arbeidsforholdstype: '',
+	...initialArbeidsforholdOrg
+}
+
+export const initialAaregPers = {
+	arbeidsforholdstype: '',
+	...initialArbeidsforholdPers
 }
 
 export const initialFartoy = [

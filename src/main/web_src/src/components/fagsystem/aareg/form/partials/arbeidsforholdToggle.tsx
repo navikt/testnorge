@@ -6,10 +6,11 @@ import { AmeldingForm } from './ameldingForm'
 import { ArbeidsforholdForm } from './arbeidsforholdForm'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import {
-	initialPeriode,
-	initialAmelding,
+	initialValues,
+	initialAaregOrg,
 	initialArbeidsforholdOrg,
-	initialArbeidsforholdPers
+	initialArbeidsforholdPers,
+	initialAaregPers
 } from '../initialValues'
 import { ArbeidsgiverTyper } from '~/components/fagsystem/aareg/AaregTypes'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
@@ -38,17 +39,13 @@ const fellesOrg = [
 
 export const ArbeidsforholdToggle = ({ formikBag }: ArbeidsforholdToggle): ReactElement => {
 	const getArbeidsgiverType =
-		_get(formikBag.values, 'aareg[0].arbeidsforhold') &&
-		_get(formikBag.values, 'aareg[0].arbeidsforholdstype') !== 'forenkletOppgjoersordning'
-			? _get(formikBag.values, 'aareg[0].arbeidsforhold[0].arbeidsgiver.aktoertype') === 'PERS'
-				? ArbeidsgiverTyper.privat
-				: fellesOrg.some(
-						org =>
-							org === _get(formikBag.values, 'aareg[0].arbeidsforhold[0].arbeidsgiver.orgnummer')
-				  )
-				? ArbeidsgiverTyper.felles
-				: ArbeidsgiverTyper.fritekst
-			: ArbeidsgiverTyper.egen
+		_get(formikBag.values, 'aareg[0].amelding') || _get(formikBag.values, 'aareg[0].arbeidsforhold')
+			? ArbeidsgiverTyper.egen
+			: _get(formikBag.values, 'aareg[0].arbeidsgiver.aktoertype') === 'PERS'
+			? ArbeidsgiverTyper.privat
+			: fellesOrg.some(org => org === _get(formikBag.values, 'aareg[0].arbeidsgiver.orgnummer'))
+			? ArbeidsgiverTyper.felles
+			: ArbeidsgiverTyper.fritekst
 
 	const [typeArbeidsgiver, setTypeArbeidsgiver] = useState(getArbeidsgiverType)
 
@@ -73,21 +70,12 @@ export const ArbeidsforholdToggle = ({ formikBag }: ArbeidsforholdToggle): React
 
 	const handleToggleChange = (value: ArbeidsgiverTyper) => {
 		setTypeArbeidsgiver(value)
-		formikBag.setFieldValue('aareg[0].arbeidsforholdstype', '')
 		if (value === ArbeidsgiverTyper.privat) {
-			formikBag.setFieldValue('aareg[0].amelding', undefined)
-			formikBag.setFieldValue('aareg[0].arbeidsforhold', [initialArbeidsforholdPers])
-			formikBag.setFieldValue('aareg[0].arbeidsforhold[0].arbeidsforholdstype', '')
-			formikBag.setFieldValue('aareg[0].genererPeriode', undefined)
+			formikBag.setFieldValue('aareg', [initialAaregPers])
 		} else if (value === ArbeidsgiverTyper.felles || value === ArbeidsgiverTyper.fritekst) {
-			formikBag.setFieldValue('aareg[0].amelding', undefined)
-			formikBag.setFieldValue('aareg[0].arbeidsforhold', [initialArbeidsforholdOrg])
-			formikBag.setFieldValue('aareg[0].arbeidsforhold[0].arbeidsforholdstype', '')
-			formikBag.setFieldValue('aareg[0].genererPeriode', undefined)
+			formikBag.setFieldValue('aareg', [initialAaregOrg])
 		} else if (value === ArbeidsgiverTyper.egen) {
-			formikBag.setFieldValue('aareg[0].arbeidsforhold', undefined)
-			formikBag.setFieldValue('aareg[0].amelding', initialAmelding)
-			formikBag.setFieldValue('aareg[0].genererPeriode', initialPeriode)
+			formikBag.setFieldValue('aareg', [initialValues])
 		}
 	}
 
@@ -114,10 +102,10 @@ export const ArbeidsforholdToggle = ({ formikBag }: ArbeidsforholdToggle): React
 					<AlertStripeInfo>
 						For denne typen arbeidsgiver er det ikke mulig å registrere nye attributter som
 						sluttårsak, ansettelsesform, endringsdato lønn og fartøy. For å bestille testbrukere med
-						disse attributtene må du bruke egen organisasjon for å opprette A-meldinger.
+						disse attributtene må du bruke egen organisasjon for å oppr ette A-meldinger.
 					</AlertStripeInfo>
 					<FormikDollyFieldArray
-						name={`aareg[0].arbeidsforhold`}
+						name="aareg"
 						header="Arbeidsforhold"
 						newEntry={
 							typeArbeidsgiver === ArbeidsgiverTyper.privat

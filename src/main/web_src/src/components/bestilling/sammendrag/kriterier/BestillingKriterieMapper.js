@@ -414,7 +414,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		}
 	}
 
-	const aaregKriterier = bestillingData.aareg?.[0]
+	const aaregKriterier = bestillingData.aareg
 	if (aaregKriterier) {
 		const aareg = {
 			header: 'Arbeidsforhold (Aareg)',
@@ -424,8 +424,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			pagineringPages: []
 		}
 
-		const harAmelding = _has(aaregKriterier, 'amelding')
-
+		const harAmelding = _has(aaregKriterier[0], 'amelding')
 		const arbeidsforholdVisning = (arbeidsforhold, i) => [
 			{
 				numberHeader: `Arbeidsforhold ${i + 1}`
@@ -505,13 +504,13 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			aareg.items.push(
 				{
 					label: 'Type arbeidsforhold',
-					value: aaregKriterier.arbeidsforholdstype,
+					value: aaregKriterier[0]?.arbeidsforholdstype,
 					apiKodeverkId: ArbeidKodeverk.Arbeidsforholdstyper
 				},
-				obj('F.o.m. kalendermåned', Formatters.formatDate(aaregKriterier.genererPeriode?.fom)),
-				obj('T.o.m. kalendermåned', Formatters.formatDate(aaregKriterier.genererPeriode?.tom))
+				obj('F.o.m. kalendermåned', Formatters.formatDate(aaregKriterier[0]?.genererPeriode?.fom)),
+				obj('T.o.m. kalendermåned', Formatters.formatDate(aaregKriterier[0]?.genererPeriode?.tom))
 			)
-			aaregKriterier.amelding.forEach(maaned => {
+			aaregKriterier[0]?.amelding.forEach(maaned => {
 				const data = {
 					itemRows: []
 				}
@@ -521,8 +520,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				aareg.pagineringPages.push(maaned.maaned)
 				aareg.paginering.push(data)
 			})
-		} else if (aaregKriterier.arbeidsforhold) {
-			aaregKriterier.arbeidsforhold.forEach((arbeidsforhold, i) => {
+		} else if (aaregKriterier[0]?.arbeidsgiver) {
+			aaregKriterier.forEach((arbeidsforhold, i) => {
 				aareg.itemRows.push(arbeidsforholdVisning(arbeidsforhold, i))
 			})
 		}
