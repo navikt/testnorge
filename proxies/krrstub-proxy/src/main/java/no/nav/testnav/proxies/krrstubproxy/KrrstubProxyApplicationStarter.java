@@ -1,4 +1,4 @@
-package no.nav.testnav.proxies.inntektstubproxy;
+package no.nav.testnav.proxies.krrstubproxy;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,15 +17,15 @@ import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
         SecurityConfig.class
 })
 @SpringBootApplication
-public class InntektstubProxyApplicationStarter {
+public class KrrstubProxyApplicationStarter {
     public static void main(String[] args) {
-        SpringApplication.run(InntektstubProxyApplicationStarter.class, args);
+        SpringApplication.run(KrrstubProxyApplicationStarter.class, args);
     }
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route(spec -> spec.path("/**").uri("https://inntektstub.dev.adeo.no/"))
+                .route(spec -> spec.path("/**").uri("https://digdir-krr-stub.dev.intern.nav.no/"))
                 .build();
     }
 }

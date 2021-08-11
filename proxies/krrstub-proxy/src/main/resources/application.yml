@@ -2,8 +2,8 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 
 spring:
   application:
-    name: testnav-inntektstub-proxy
-    desciption: Proxy for inntektstub som legger på sikkerhet.
+    name: testnav-krrstub-proxy
+    desciption: Proxy for krr-stub som legger på sikkerhet.
   security:
     oauth2:
       resourceserver:
