@@ -16,16 +16,24 @@ public abstract class LogRequestInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if (log.isTraceEnabled() && shouldLogRequest(request)) {
             try {
+
+                var method = String.valueOf(request.getMethod());
+                var host = request.getHeader(HttpHeaders.HOST);
+                var uri = request.getRequestURI();
+
                 Map<String, String> contextMap = MDC.getCopyOfContextMap() != null ? MDC.getCopyOfContextMap() : new HashMap<>();
                 contextMap.put("Transaction-Type", "request");
-                contextMap.put("Method", String.valueOf(request.getMethod()));
+
+                contextMap.put("Method", method);
                 contextMap.put(HttpHeaders.CONTENT_TYPE, request.getContentType());
-                contextMap.put(HttpHeaders.HOST, request.getHeader(HttpHeaders.HOST));
+                contextMap.put(HttpHeaders.HOST, host);
                 contextMap.put(HttpHeaders.ORIGIN, request.getHeader(HttpHeaders.ORIGIN));
                 contextMap.put(HttpHeaders.REFERER, request.getHeader(HttpHeaders.REFERER));
-                contextMap.put("URI", request.getRequestURI());
+                contextMap.put(HttpHeaders.ACCEPT, request.getHeader(HttpHeaders.ACCEPT));
+                contextMap.put("URI", uri);
+
                 MDC.setContextMap(contextMap);
-                log.trace("[Registered request]");
+                log.trace("[Request ] {} {}{}", method, host, uri);
             } catch (Exception e) {
                 log.warn("Feil med logging av requests", e);
             }
