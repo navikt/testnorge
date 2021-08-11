@@ -4,7 +4,7 @@ on:
   push:
     branches: master
     paths:
-      - proxies/inntektstub-proxy/**
+      - proxies/krrstub-proxy/**
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/krrstub-proxy:${{ github.sha }}
