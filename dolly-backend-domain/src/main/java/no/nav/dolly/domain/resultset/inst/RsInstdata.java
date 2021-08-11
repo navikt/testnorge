@@ -1,14 +1,14 @@
 package no.nav.dolly.domain.resultset.inst;
 
-import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -35,6 +35,10 @@ public class RsInstdata {
     @Schema(type = "LocalDateTime",
             description = "Dato oppholdet var avsluttet")
     private LocalDateTime faktiskSluttdato;
+
+    @Schema(type = "LocalDateTime",
+            description = "Nytt Api har kun denne for slutt av opphold")
+    private LocalDateTime sluttdato;
 
     @Schema(description = "Kodeverdi for oppholdskategori. "
             + "Kan være kodeverdiene A (Alders- og sykehjem), D (Dagpasient), F (Ferieopphold), "
