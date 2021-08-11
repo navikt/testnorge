@@ -59,6 +59,7 @@ includeBuild './libs/slack'
 includeBuild './apps/person-service'
 includeBuild './apps/faste-data-frontend'
 includeBuild './apps/oversikt-frontend'
+includeBuild './apps/testnorge-inst'
 includeBuild './apps/endringsmelding-frontend'
 includeBuild './apps/endringsmelding-service'
 includeBuild './apps/applikasjonsanalyse-frontend'
@@ -118,7 +119,6 @@ include(':apps')
 include(':brreg-stub')
 include(':sigrun-domain')
 include(':libs')
-include(':testnorge-inst')
 include(':testnorge-spion')
 include(':opprett-person-pdl')
 include(':varslinger-api')
@@ -128,7 +128,6 @@ include(':testnorge-aareg')
 include(':synt-person-api')
 include(':skd-core')
 include(':testnorge-sam')
-include(':inst')
 include(':testnorge-skd')
 include(':statistikk-service')
 include(':skd-local')
@@ -186,7 +185,6 @@ project(":helsepersonell-service").projectDir = file('apps/helsepersonell-servic
 project(":person-export-api").projectDir = file('apps/person-export-api')
 project(":brreg-stub").projectDir = file('apps/brreg-stub')
 project(":sigrun-domain").projectDir = file('apps/testnorge-sigrun/sigrun-domain')
-project(":testnorge-inst").projectDir = file('apps/testnorge-inst')
 project(":testnorge-spion").projectDir = file('apps/testnorge-spion')
 project(":opprett-person-pdl").projectDir = file('apps/opprett-person-pdl')
 project(":varslinger-api").projectDir = file('apps/varslinger-api')
@@ -196,7 +194,6 @@ project(":testnorge-aareg").projectDir = file('apps/testnorge-aareg')
 project(":synt-person-api").projectDir = file('apps/synt-person-api')
 project(":skd-core").projectDir = file('apps/testnorge-skd/skd-core')
 project(":testnorge-sam").projectDir = file('apps/testnorge-sam')
-project(":inst").projectDir = file('apps/testnorge-inst')
 project(":testnorge-skd").projectDir = file('apps/testnorge-skd')
 project(":statistikk-service").projectDir = file('apps/statistikk-service')
 project(":skd-local").projectDir = file('apps/testnorge-skd/skd-local')

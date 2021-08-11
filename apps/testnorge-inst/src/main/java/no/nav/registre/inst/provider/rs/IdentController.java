@@ -1,12 +1,12 @@
 package no.nav.registre.inst.provider.rs;
 
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.inst.domain.Institusjonsopphold;
 import no.nav.registre.inst.domain.InstitusjonsoppholdV2;
 import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
 import no.nav.registre.inst.service.IdentService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,10 +27,10 @@ import static no.nav.registre.inst.properties.HttpRequestConstants.HEADER_NAV_CO
 @RestController
 @CrossOrigin
 @RequestMapping("api/v1")
+@RequiredArgsConstructor
 public class IdentController {
 
-    @Autowired
-    private IdentService identService;
+    private final IdentService identService;
 
     @PostMapping("/ident")
     @ApiOperation(value = "Her kan man opprette ett institusjonsopphold i inst2.")
@@ -54,7 +54,7 @@ public class IdentController {
         return identService.hentOppholdTilIdenter(navCallId, navConsumerId, miljoe, identer);
     }
 
-    @GetMapping("/miljoer")
+    @GetMapping("/environments")
     @ApiOperation(value = "Her kan man sjekke hvilke miljøer Inst2 er tilgjengelig i.")
     public List<String> hentTilgjengeligeMiljoer() {
         return identService.hentTilgjengeligeMiljoer();
