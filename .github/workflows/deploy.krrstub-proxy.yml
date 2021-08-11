@@ -2,7 +2,6 @@ name: Deploy krrstub-proxy
 
 on:
   push:
-    branches: master
     paths:
       - proxies/krrstub-proxy/**
 
