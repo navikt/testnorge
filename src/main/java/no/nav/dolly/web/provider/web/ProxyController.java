@@ -77,20 +77,6 @@ public class ProxyController {
 
     private final ProxyService proxyService;
 
-
-    @RequestMapping("/proxy/arena/**")
-    public ResponseEntity<String> arenaProxy(
-            @RequestBody(required = false) String body,
-            HttpMethod method,
-            HttpServletRequest request) throws UnsupportedEncodingException {
-
-        String requestURL = createURL(request, arenaUrl + API_URI, PROXY_URI + "/arena");
-        HttpHeaders headers = proxyService.copyHeaders(request);
-
-        return proxyService.proxyRequest(body, method, headers, requestURL);
-    }
-
-
     @RequestMapping("/proxy/inst/**")
     public ResponseEntity<String> instProxy(
             @RequestBody(required = false) String body,

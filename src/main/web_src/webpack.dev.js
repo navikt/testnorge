@@ -70,6 +70,11 @@ module.exports = env =>
 					target: env.backend,
 					changeOrigin: true,
 					secure: false
+				},
+				'/testnav-arena-forvalteren-proxy/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false
 				}
 			}
 		},

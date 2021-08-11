@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
 import no.nav.dolly.web.config.credentials.NaisServerProperties;
+import no.nav.dolly.web.config.credentials.TestnavArenaForvalterenProxyProperties;
 import no.nav.dolly.web.config.credentials.TestnavBrregstubProxyProperties;
 import no.nav.dolly.web.config.credentials.TestnavHodejegerenProxyProperties;
 import no.nav.dolly.web.config.credentials.TestnavInntektstubProxyProperties;
@@ -42,6 +43,7 @@ public class ApplicationConfig {
     private final TpsForvalterenProxyProperties tpsForvalterenProxyProperties;
     private final TestnavBrregstubProxyProperties testnavBrregstubProxyProperties;
     private final TestnavHodejegerenProxyProperties testnavHodejegerenProxyProperties;
+    private final TestnavArenaForvalterenProxyProperties testnavArenaForvalterenProxyProperties;
 
     @Bean
     public RestTemplate restTemplate() {
@@ -75,6 +77,11 @@ public class ApplicationConfig {
     @Bean
     public AddAuthorizationToRouteFilter testnavBrregstubProxyAddAuthorizationToRouteFilter() {
        return createFilterFrom(testnavBrregstubProxyProperties);
+    }
+
+    @Bean
+    public AddAuthorizationToRouteFilter testnavArenaForvalterenProxyPropertiesAddAuthorizationToRouteFilter() {
+       return createFilterFrom(testnavArenaForvalterenProxyProperties);
     }
 
     @Bean
