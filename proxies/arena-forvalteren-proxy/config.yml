@@ -1,7 +1,7 @@
 ﻿apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: testnav-arena-forvaltern-proxy
+  name: testnav-arena-forvalteren-proxy
   namespace: dolly
   labels:
     team: dolly
@@ -47,4 +47,4 @@ spec:
       cpu: 500m
       memory: 2048Mi
   ingresses:
-    - "https://testnav-arena-forvaltern-proxy.dev.intern.nav.no"
+    - "https://testnav-arena-forvalteren-proxy.dev.intern.nav.no"
