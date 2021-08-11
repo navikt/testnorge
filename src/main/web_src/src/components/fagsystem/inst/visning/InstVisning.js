@@ -40,7 +40,7 @@ export const InstVisning = ({ data, loading }) => {
 							/>
 							<TitleValue
 								title="Sluttdato"
-								value={Formatters.formatStringDates(opphold.faktiskSluttdato)}
+								value={Formatters.formatStringDates(opphold.sluttdato)}
 							/>
 						</div>
 					)}
