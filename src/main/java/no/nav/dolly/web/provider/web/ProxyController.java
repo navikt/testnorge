@@ -124,18 +124,6 @@ public class ProxyController {
         return proxyService.proxyRequest(body, method, headers, requestURL);
     }
 
-    @RequestMapping("/proxy/aareg/**")
-    public ResponseEntity<String> aaaregProxy(
-            @RequestBody(required = false) String body,
-            HttpMethod method,
-            HttpServletRequest request) throws UnsupportedEncodingException {
-
-        String requestURL = createURL(request, aaregUrl + API_URI, PROXY_URI + "/aareg");
-        HttpHeaders headers = proxyService.copyHeaders(request);
-
-        return proxyService.proxyRequest(body, method, headers, requestURL);
-    }
-
     @RequestMapping("/proxy/popp/**")
     public ResponseEntity<String> poppProxy(
             @RequestBody(required = false) String body,
