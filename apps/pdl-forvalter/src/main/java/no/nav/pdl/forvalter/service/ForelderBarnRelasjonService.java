@@ -40,9 +40,9 @@ public class ForelderBarnRelasjonService {
 
     private static final String INVALID_EMPTY_MIN_ROLLE_EXCEPTION = "ForelderBarnRelasjon: min rolle for person må oppgis";
     private static final String INVALID_EMPTY_RELATERT_PERSON_ROLLE_EXCEPTION = "ForelderBarnRelasjon: relatert persons rolle må oppgis";
-    private static final String AMBIGUOUS_PERSON_ROLLE_EXCEPTION = "ForelderBarnRelasjon: min rolle og relatert " +
+    private static final String AMBIGUOUS_PERSON_ROLLE_EXCEPTION = "ForelderBarnRelasjon: min rolle og relatert persons " +
             "rolle må være av type barn -- forelder, eller forelder -- barn";
-    private static final String INVALID_RELATERT_PERSON_EXCEPTION = "ForelderBarnRelasjon: Relatert person finnes ikke";
+    private static final String INVALID_RELATERT_PERSON_EXCEPTION = "ForelderBarnRelasjon: Relatert person %s finnes ikke";
 
     private static final Random RANDOM = new SecureRandom();
 
@@ -85,7 +85,8 @@ public class ForelderBarnRelasjonService {
         if (isNotBlank(relasjon.getRelatertPerson()) &&
                 !personRepository.existsByIdent(relasjon.getRelatertPerson())) {
 
-            throw new InvalidRequestException(INVALID_RELATERT_PERSON_EXCEPTION);
+            throw new InvalidRequestException(String.format(INVALID_RELATERT_PERSON_EXCEPTION,
+                    relasjon.getRelatertPerson()));
         }
     }
 
@@ -106,7 +107,7 @@ public class ForelderBarnRelasjonService {
                         relasjon.getMinRolleForPerson() == ROLLE.BARN ? 90 : 18));
             }
             if (isNull(relasjon.getNyRelatertPerson().getKjoenn())) {
-                relasjon.getNyRelatertPerson().setKjoenn(randomKjoenn(relasjon.getRelatertPersonsRolle()));
+                relasjon.getNyRelatertPerson().setKjoenn(getKjoenn(relasjon.getRelatertPersonsRolle()));
             }
             if (isNull(relasjon.getNyRelatertPerson().getSyntetisk())) {
                 relasjon.getNyRelatertPerson().setSyntetisk(isSyntetisk(hovedperson.getIdent()));
@@ -127,9 +128,9 @@ public class ForelderBarnRelasjonService {
             relasjon.setRelatertPerson(relatertPerson.getIdent());
         }
         relasjonService.setRelasjoner(hovedperson.getIdent(),
-                relasjon.getRelatertPersonsRolle() == ROLLE.BARN ? FAMILIERELASJON_BARN : FAMILIERELASJON_FORELDER,
+                relasjon.getRelatertPersonsRolle() == ROLLE.BARN ? FAMILIERELASJON_FORELDER : FAMILIERELASJON_BARN,
                 relasjon.getRelatertPerson(),
-                relasjon.getRelatertPersonsRolle() == ROLLE.BARN ? FAMILIERELASJON_FORELDER : FAMILIERELASJON_BARN);
+                relasjon.getRelatertPersonsRolle() == ROLLE.BARN ? FAMILIERELASJON_BARN : FAMILIERELASJON_FORELDER);
 
         relasjon.setBorIkkeSammen(null);
         relasjon.setNyRelatertPerson(null);
@@ -155,13 +156,13 @@ public class ForelderBarnRelasjonService {
         DbPerson relatertPerson = personRepository.findByIdent(relasjon.getRelatertPerson()).get();
         ForelderBarnRelasjonDTO relatertFamilierelasjon = mapperFacade.map(relasjon, ForelderBarnRelasjonDTO.class);
         relatertFamilierelasjon.setRelatertPerson(hovedperson);
-        swapRoller(relasjon);
+        swapRoller(relatertFamilierelasjon);
         relatertPerson.getPerson().getForelderBarnRelasjon().add(relatertFamilierelasjon);
         mergeService.merge(relatertPerson.getPerson(), relatertPerson.getPerson());
         personRepository.save(relatertPerson);
     }
 
-    private KjoennDTO.Kjoenn randomKjoenn(ROLLE rolle) {
+    private KjoennDTO.Kjoenn getKjoenn(ROLLE rolle) {
 
         switch (rolle) {
             case FAR:

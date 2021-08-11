@@ -95,7 +95,7 @@ class ForelderBarnRelasjonServiceTest {
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 forelderBarnRelasjonService.convert(request));
 
-        assertThat(exception.getMessage(), containsString("ForelderBarnRelasjon: min rolle og relatert rolle " +
+        assertThat(exception.getMessage(), containsString("ForelderBarnRelasjon: min rolle og relatert persons rolle " +
                 "må være av type barn -- forelder, eller forelder -- barn"));
     }
 
@@ -116,6 +116,7 @@ class ForelderBarnRelasjonServiceTest {
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 forelderBarnRelasjonService.convert(request));
 
-        assertThat(exception.getMessage(), containsString("ForelderBarnRelasjon: Relatert person finnes ikke"));
+        assertThat(exception.getMessage(),
+                containsString(String.format("ForelderBarnRelasjon: Relatert person %s finnes ikke", IDENT)));
     }
 }
