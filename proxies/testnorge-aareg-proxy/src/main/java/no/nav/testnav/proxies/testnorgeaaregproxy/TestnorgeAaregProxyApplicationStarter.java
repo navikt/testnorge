@@ -24,10 +24,12 @@ public class TestnorgeAaregProxyApplicationStarter {
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
-        return builder.routes()
+        return builder
+                .routes()
                 .route(spec -> spec
                         .path("/**")
-                        .uri("https://testnorge-aareg.dev.adeo.no/"))
+                        .uri("https://testnorge-aareg.dev.adeo.no/")
+                )
                 .build();
     }
 
