@@ -20,6 +20,7 @@ import org.springframework.web.util.UriTemplate;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
@@ -187,7 +188,12 @@ public class Inst2Consumer {
                             uriBuilder.path("/v1/environment")
                                     .build())
                     .retrieve().toEntity(SupportedEnvironmentsResponse.class).block();
-            List<String> miljoer = nonNull(response) && response.hasBody() ? response.getBody().getInstitusjonsoppholdEnvironments() : emptyList();
+            List<String> miljoer = nonNull(response) && response.hasBody() && nonNull(response.getBody().getInstitusjonsoppholdEnvironments())
+                    ? response.getBody().getInstitusjonsoppholdEnvironments()
+                    .stream()
+                    .sorted()
+                    .collect(Collectors.toList())
+                    : emptyList();
             log.info("Tilgjengelige inst2 miljøer: {}", String.join(",", miljoer));
             return miljoer;
         } catch (WebClientResponseException e) {
