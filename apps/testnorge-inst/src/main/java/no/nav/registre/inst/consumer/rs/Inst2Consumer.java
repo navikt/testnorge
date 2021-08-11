@@ -184,7 +184,7 @@ public class Inst2Consumer {
     public List<String> hentInst2TilgjengeligeMiljoer() {
         try {
             ResponseEntity<SupportedEnvironmentsResponse> response = webClient.get().uri(inst2NewServerUrl, uriBuilder ->
-                            uriBuilder.path("/v1/environment")
+                            uriBuilder.path("/v1/miljoer")
                                     .build())
                     .retrieve().toEntity(SupportedEnvironmentsResponse.class).block();
             List<String> miljoer = nonNull(response) && response.hasBody() ? response.getBody().getInstitusjonsoppholdEnvironments() : emptyList();
