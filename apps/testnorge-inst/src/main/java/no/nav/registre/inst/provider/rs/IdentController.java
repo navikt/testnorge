@@ -54,7 +54,7 @@ public class IdentController {
         return identService.hentOppholdTilIdenter(navCallId, navConsumerId, miljoe, identer);
     }
 
-    @GetMapping("/environments")
+    @GetMapping("/miljoer")
     @ApiOperation(value = "Her kan man sjekke hvilke miljøer Inst2 er tilgjengelig i.")
     public List<String> hentTilgjengeligeMiljoer() {
         return identService.hentTilgjengeligeMiljoer();
