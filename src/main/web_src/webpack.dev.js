@@ -90,6 +90,11 @@ module.exports = env =>
 					target: env.backend,
 					changeOrigin: true,
 					secure: false
+				},
+				'/testnav-sigrunstub-proxy/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false
 				}
 			}
 		},
