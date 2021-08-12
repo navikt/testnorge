@@ -77,18 +77,6 @@ public class ProxyController {
 
     private final ProxyService proxyService;
 
-    @RequestMapping("/proxy/inst/**")
-    public ResponseEntity<String> instProxy(
-            @RequestBody(required = false) String body,
-            HttpMethod method,
-            HttpServletRequest request) throws UnsupportedEncodingException {
-
-        String requestURL = createURL(request, instUrl + API_URI, PROXY_URI + "/inst");
-        HttpHeaders headers = proxyService.copyHeaders(request);
-
-        return proxyService.proxyRequest(body, method, headers, requestURL);
-    }
-
     @RequestMapping("/proxy/sigrun/**")
     public ResponseEntity<String> sigrunProxy(
             @RequestBody(required = false) String body,

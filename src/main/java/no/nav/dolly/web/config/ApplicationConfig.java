@@ -17,6 +17,7 @@ import no.nav.dolly.web.config.credentials.TestnavJoarkDokumentServiceProperties
 import no.nav.dolly.web.config.credentials.TestnavKrrstubProxyProperties;
 import no.nav.dolly.web.config.credentials.TestnavOrganisasjonFasteDataServiceProperties;
 import no.nav.dolly.web.config.credentials.TestnavTestnorgeAaregProxyProperties;
+import no.nav.dolly.web.config.credentials.TestnavTestnorgeInstProxyProperties;
 import no.nav.dolly.web.config.credentials.TpsForvalterenProxyProperties;
 import no.nav.dolly.web.config.filters.AddAuthorizationToRouteFilter;
 import no.nav.dolly.web.security.TokenService;
@@ -48,6 +49,7 @@ public class ApplicationConfig {
     private final TestnavArenaForvalterenProxyProperties testnavArenaForvalterenProxyProperties;
     private final TestnavTestnorgeAaregProxyProperties testnavTestnorgeAaregProxyProperties;
     private final TestnavKrrstubProxyProperties testnavKrrstubProxyProperties;
+    private final TestnavTestnorgeInstProxyProperties testnavTestnorgeInstProxyProperties;
 
     @Bean
     public RestTemplate restTemplate() {
@@ -86,6 +88,11 @@ public class ApplicationConfig {
     @Bean
     public AddAuthorizationToRouteFilter testnavArenaForvalterenProxyAddAuthorizationToRouteFilter() {
        return createFilterFrom(testnavArenaForvalterenProxyProperties);
+    }
+
+    @Bean
+    public AddAuthorizationToRouteFilter testnavTestnorgeInstProxyPropertiesAddAuthorizationToRouteFilter() {
+       return createFilterFrom(testnavTestnorgeInstProxyProperties);
     }
 
     @Bean
