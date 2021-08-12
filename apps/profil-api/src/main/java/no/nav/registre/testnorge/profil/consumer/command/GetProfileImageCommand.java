@@ -17,18 +17,24 @@ public class GetProfileImageCommand implements Callable<byte[]> {
 
     @Override
     public byte[] call() {
-        return webClient
-                .get()
-                .uri(builder -> builder.path("/v1.0/me/photos/240x240/$value").build())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
-                .retrieve()
-                .onStatus(
-                        HttpStatus::isError,
-                        clientResponse -> clientResponse
-                                .bodyToMono(String.class)
-                                .map(IllegalStateException::new)
-                )
-                .bodyToMono(byte[].class)
-                .block();
+
+        try {
+            return webClient
+                    .get()
+                    .uri(builder -> builder.path("/v1.0/me/photos/240x240/$value").build())
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                    .retrieve()
+                    .onStatus(
+                            HttpStatus::isError,
+                            clientResponse -> clientResponse
+                                    .bodyToMono(String.class)
+                                    .map(IllegalStateException::new)
+                    )
+                    .bodyToMono(byte[].class)
+                    .block();
+        } catch (IllegalStateException e) {
+            log.warn("Bilde for bruker ikke funnet, melding: ", e);
+            return new byte[0];
+        }
     }
 }
