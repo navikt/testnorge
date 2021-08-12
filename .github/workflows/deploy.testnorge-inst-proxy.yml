@@ -1,4 +1,4 @@
-name: Deploy inntektstub-proxy
+name: Deploy testnorge-inst-proxy
 
 on:
   push:
