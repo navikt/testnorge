@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.webjars.NotFoundException;
 
 import java.util.concurrent.Callable;
 
@@ -34,7 +35,7 @@ public class GetProfileImageCommand implements Callable<byte[]> {
                     .block();
         } catch (IllegalStateException e) {
             log.warn("Bilde for bruker ikke funnet, melding: ", e);
-            return new byte[0];
+            throw new NotFoundException("Bilde ikke funnet");
         }
     }
 }
