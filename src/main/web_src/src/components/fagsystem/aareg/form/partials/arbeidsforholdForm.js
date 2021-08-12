@@ -33,9 +33,9 @@ export const ArbeidsforholdForm = ({
 	arbeidsgiverType
 }) => {
 	const arbeidsforholdstype =
-		_get(formikBag.values, 'aareg[0].arbeidsforholdstype') ||
-		_get(formikBag.values, `${path}.arbeidsforholdstype`)
-
+		typeof ameldingIndex !== 'undefined'
+			? _get(formikBag.values, 'aareg[0].arbeidsforholdstype')
+			: _get(formikBag.values, `${path}.arbeidsforholdstype`)
 	const onChangeLenket = fieldPath => {
 		if (arbeidsgiverType !== ArbeidsgiverTyper.egen) {
 			return field => {
@@ -51,13 +51,15 @@ export const ArbeidsforholdForm = ({
 					if (!erLenket && idx < ameldingIndex) {
 						return
 					} else {
-						const arbeidsforholdClone = _cloneDeep(amelding[idx].arbeidsforhold)
+						const arbeidsforholdClone = _cloneDeep(
+							amelding[idx].arbeidsforhold[arbeidsforholdIndex]
+						)
 						_set(
-							arbeidsforholdClone[arbeidsforholdIndex],
+							arbeidsforholdClone,
 							fieldPath,
 							field?.value || field?.target?.value || field || null
 						)
-						_set(amelding[idx], `arbeidsforhold`, arbeidsforholdClone)
+						_set(amelding[idx], `arbeidsforhold[${arbeidsforholdIndex}]`, arbeidsforholdClone)
 					}
 				})
 				formikBag.setFieldValue('aareg[0].amelding', amelding)
@@ -199,6 +201,7 @@ export const ArbeidsforholdForm = ({
 						size="xxxlarge"
 						isClearable={false}
 						optionHeight={50}
+						onChange={onChangeLenket('arbeidsavtale.yrke')}
 					/>
 				)}
 			</div>

@@ -18,7 +18,6 @@ import {
 	initialFartoy
 } from '../initialValues'
 import { ArbeidsforholdForm } from './arbeidsforholdForm'
-import { ForenkletOppgjoersordningForm } from './forenkletOppgjoersordningForm'
 import { Monthpicker } from '~/components/ui/form/inputs/monthpicker/Monthpicker'
 import DollyKjede from '~/components/dollyKjede/DollyKjede'
 import KjedeIcon from '~/components/dollyKjede/KjedeIcon'
@@ -80,7 +79,11 @@ export const AmeldingForm = ({ formikBag }: AmeldingForm): ReactFragment => {
 					)
 					formikBag.setFieldValue(`aareg[0].amelding[${idx}]`, {
 						maaned: mnd,
-						arbeidsforhold: currMaaned ? currMaaned.arbeidsforhold : [initialArbeidsforholdOrg]
+						arbeidsforhold: currMaaned
+							? currMaaned.arbeidsforhold
+							: arbeidsforholdstype === 'forenkletOppgjoersordning'
+							? [initialForenkletOppgjoersordningOrg]
+							: [initialArbeidsforholdOrg]
 					})
 					if (arbeidsforholdstype === 'maritimtArbeidsforhold') {
 						formikBag.setFieldValue(
@@ -94,30 +97,25 @@ export const AmeldingForm = ({ formikBag }: AmeldingForm): ReactFragment => {
 	}
 
 	const handleArbeidsforholdstypeChange = (event: KodeverkValue) => {
-		if (event.value === 'forenkletOppgjoersordning') {
-			if (arbeidsforholdstype !== 'forenkletOppgjoersordning') {
-				formikBag.setFieldValue('aareg[0].genererPeriode', initialPeriode)
-				formikBag.setFieldValue('aareg[0].amelding', undefined)
-				formikBag.setFieldValue('aareg[0].arbeidsforhold', [initialForenkletOppgjoersordningOrg])
-			}
+		if (arbeidsforholdstype === '') {
+			formikBag.setFieldValue('aareg[0].genererPeriode', initialPeriode)
+			formikBag.setFieldValue('aareg[0].amelding', initialAmelding)
+		}
+		if (event.value === 'maritimtArbeidsforhold') {
+			periode.forEach((maaned: string, idx: number) => {
+				formikBag.setFieldValue(`aareg[0].amelding[${idx}].arbeidsforhold[0].fartoy`, initialFartoy)
+			})
 		} else {
-			if (arbeidsforholdstype === 'forenkletOppgjoersordning' || arbeidsforholdstype === '') {
-				formikBag.setFieldValue('aareg[0].genererPeriode', initialPeriode)
-				formikBag.setFieldValue('aareg[0].arbeidsforhold', undefined)
-				formikBag.setFieldValue('aareg[0].amelding', initialAmelding)
-			}
-			if (event.value === 'maritimtArbeidsforhold') {
-				periode.forEach((maaned: string, idx: number) => {
-					formikBag.setFieldValue(
-						`aareg[0].amelding[${idx}].arbeidsforhold[0].fartoy`,
-						initialFartoy
-					)
-				})
-			} else {
-				periode.forEach((maaned: string, idx: number) => {
-					formikBag.setFieldValue(`aareg[0].amelding[${idx}].arbeidsforhold[0].fartoy`, undefined)
-				})
-			}
+			periode.forEach((maaned: string, idx: number) => {
+				formikBag.setFieldValue(`aareg[0].amelding[${idx}].arbeidsforhold[0].fartoy`, undefined)
+			})
+		}
+		if (event.value === 'forenkletOppgjoersordning') {
+			periode.forEach((maaned: string, idx: number) => {
+				formikBag.setFieldValue(`aareg[0].amelding[${idx}].arbeidsforhold`, [
+					initialForenkletOppgjoersordningOrg
+				])
+			})
 		}
 		formikBag.setFieldValue('aareg[0].arbeidsforholdstype', event.value)
 	}
@@ -129,9 +127,15 @@ export const AmeldingForm = ({ formikBag }: AmeldingForm): ReactFragment => {
 				formikBag.values,
 				`aareg[0].amelding[${idMaaned}].arbeidsforhold`
 			)
+			const nyttArbeidsforhold =
+				arbeidsforholdstype === 'forenkletOppgjoersordning'
+					? initialForenkletOppgjoersordningOrg
+					: arbeidsforholdstype === 'maritimtArbeidsforhold'
+					? { ...initialArbeidsforholdOrg, fartoy: initialFartoy }
+					: initialArbeidsforholdOrg
 			formikBag.setFieldValue(`aareg[0].amelding[${idMaaned}].arbeidsforhold`, [
 				...currArbeidsforhold,
-				initialArbeidsforholdOrg
+				nyttArbeidsforhold
 			])
 		})
 	}
@@ -198,98 +202,94 @@ export const AmeldingForm = ({ formikBag }: AmeldingForm): ReactFragment => {
 					value={arbeidsforholdstype}
 					feil={feilmelding()}
 				/>
-				{arbeidsforholdstype === 'forenkletOppgjoersordning' && (
-					<ForenkletOppgjoersordningForm formikBag={formikBag} />
-				)}
-				{(arbeidsforholdstype === 'ordinaertArbeidsforhold' ||
-					arbeidsforholdstype === 'maritimtArbeidsforhold' ||
-					arbeidsforholdstype === 'frilanserOppdragstakerHonorarPersonerMm') && (
-					<>
-						<Monthpicker
-							formikBag={formikBag}
-							name="aareg[0].genererPeriode.fom"
-							label="F.o.m. kalendermåned"
-							date={fom}
-							handleDateChange={(dato: string) => handlePeriodeChange(dato, 'fom')}
-						/>
-						<Monthpicker
-							formikBag={formikBag}
-							name="aareg[0].genererPeriode.tom"
-							label="T.o.m. kalendermåned"
-							date={tom}
-							handleDateChange={(dato: string) => handlePeriodeChange(dato, 'tom')}
-						/>
-						<div className="flexbox--full-width">
-							<div className="flexbox--flex-wrap">
-								{/* //TODO lag onClick for å fylle felter */}
-								{/* <Fyllknapp mini onClick={null} disabled={!fom || !tom}> */}
-								<Fyllknapp
-									mini
-									onClick={null}
-									disabled={true}
-									title="Denne funksjonaliteten er foreløpig ikke tilgjengelig"
-								>
-									Fyll felter automatisk
-								</Fyllknapp>
-								<Hjelpetekst hjelpetekstFor="Fyllknapp">
-									Når du har fylt ut perioden du ønsker å opprette A-meldinger for, vil det
-									genereres et skjema for hver måned. Du kan velge om du ønsker å fylle ut alt selv,
-									eller fylle feltene automatisk. Ved automatisk utfylling vil det bli generert en
-									logisk historikk for A-meldingene i perioden. OBS! Denne funksjonaliteten er
-									foreløpig ikke tilgjengelig, men vi jobber med saken.
-								</Hjelpetekst>
-							</div>
+				<>
+					<Monthpicker
+						formikBag={formikBag}
+						name="aareg[0].genererPeriode.fom"
+						label="F.o.m. kalendermåned"
+						date={fom}
+						handleDateChange={(dato: string) => handlePeriodeChange(dato, 'fom')}
+					/>
+					<Monthpicker
+						formikBag={formikBag}
+						name="aareg[0].genererPeriode.tom"
+						label="T.o.m. kalendermåned"
+						date={tom}
+						handleDateChange={(dato: string) => handlePeriodeChange(dato, 'tom')}
+					/>
+					<div className="flexbox--full-width">
+						<div className="flexbox--flex-wrap">
+							{/* //TODO lag onClick for å fylle felter */}
+							{/* <Fyllknapp mini onClick={null} disabled={!fom || !tom}> */}
+							<Fyllknapp
+								mini
+								onClick={null}
+								disabled={true}
+								title="Denne funksjonaliteten er foreløpig ikke tilgjengelig"
+							>
+								Fyll felter automatisk
+							</Fyllknapp>
+							<Hjelpetekst hjelpetekstFor="Fyllknapp">
+								Når du har fylt ut perioden du ønsker å opprette A-meldinger for, vil det genereres
+								et skjema for hver måned. Du kan velge om du ønsker å fylle ut alt selv, eller fylle
+								feltene automatisk. Ved automatisk utfylling vil det bli generert en logisk
+								historikk for A-meldingene i perioden. OBS! Denne funksjonaliteten er foreløpig ikke
+								tilgjengelig, men vi jobber med saken.
+							</Hjelpetekst>
 						</div>
-						{periode.length > 0 && (
-							<>
-								<KjedeContainer>
-									<DollyKjede
-										objectList={periode}
-										itemLimit={10}
-										selectedIndex={selectedIndex}
-										setSelectedIndex={setSelectedIndex}
-										isLocked={erLenket}
+					</div>
+					{periode.length > 0 && (
+						<>
+							<KjedeContainer>
+								<DollyKjede
+									objectList={periode}
+									itemLimit={10}
+									selectedIndex={selectedIndex}
+									setSelectedIndex={setSelectedIndex}
+									isLocked={erLenket}
+								/>
+								<KjedeIcon locked={erLenket} onClick={erLenket ? setErIkkeLenket : setErLenket} />
+								<Hjelpetekst hjelpetekstFor="DollyKjede">
+									Når du ser et lenke-symbol til høyre for månedsoversikten er alle måneder lenket
+									sammen. Det vil si at om du gjør endringer på én måned vil disse bli gjort på alle
+									månedene. Om du trykker på lenken vises en brutt lenke og månedene vil være
+									uavhengige av hverandre. Ihvertfall nesten - endringer som gjøres på én måned ikke
+									vil kun påvirke den valgte måneden og månedene som kommer etter den i perioden.
+								</Hjelpetekst>
+							</KjedeContainer>
+							{arbeidsforholdstype === 'frilanserOppdragstakerHonorarPersonerMm' &&
+								periode.length > 1 && (
+									<Slettknapp kind="trashcan" onClick={handleFjernMaaned}>
+										Fjern måned
+									</Slettknapp>
+								)}
+							<FormikDollyFieldArray
+								name={`aareg[0].amelding[${selectedIndex}].arbeidsforhold`}
+								header="Arbeidsforhold"
+								newEntry={
+									arbeidsforholdstype === 'forenkletOppgjoersordning'
+										? initialForenkletOppgjoersordningOrg
+										: initialArbeidsforholdOrg
+								}
+								canBeEmpty={false}
+								handleNewEntry={handleNewEntry}
+								handleRemoveEntry={handleRemoveEntry}
+							>
+								{(path: string, idx: number) => (
+									<ArbeidsforholdForm
+										path={path}
+										key={idx}
+										ameldingIndex={selectedIndex}
+										arbeidsforholdIndex={idx}
+										formikBag={formikBag}
+										arbeidsgiverType={'EGEN'}
+										erLenket={erLenket}
 									/>
-									<KjedeIcon locked={erLenket} onClick={erLenket ? setErIkkeLenket : setErLenket} />
-									<Hjelpetekst hjelpetekstFor="DollyKjede">
-										Når du ser et lenke-symbol til høyre for månedsoversikten er alle måneder lenket
-										sammen. Det vil si at om du gjør endringer på én måned vil disse bli gjort på
-										alle månedene. Om du trykker på lenken vises en brutt lenke og månedene vil være
-										uavhengige av hverandre. Ihvertfall nesten - endringer som gjøres på én måned
-										ikke vil kun påvirke den valgte måneden og månedene som kommer etter den i
-										perioden.
-									</Hjelpetekst>
-								</KjedeContainer>
-								{arbeidsforholdstype === 'frilanserOppdragstakerHonorarPersonerMm' &&
-									periode.length > 1 && (
-										<Slettknapp kind="trashcan" onClick={handleFjernMaaned}>
-											Fjern måned
-										</Slettknapp>
-									)}
-								<FormikDollyFieldArray
-									name={`aareg[0].amelding[${selectedIndex}].arbeidsforhold`}
-									header="Arbeidsforhold"
-									newEntry={initialArbeidsforholdOrg}
-									canBeEmpty={false}
-									handleNewEntry={handleNewEntry}
-									handleRemoveEntry={handleRemoveEntry}
-								>
-									{(path: string, idx: number) => (
-										<ArbeidsforholdForm
-											path={path}
-											key={idx}
-											ameldingIndex={selectedIndex}
-											arbeidsforholdIndex={idx}
-											formikBag={formikBag}
-											arbeidsgiverType={'EGEN'}
-											erLenket={erLenket}
-										/>
-									)}
-								</FormikDollyFieldArray>
-							</>
-						)}
-					</>
-				)}
+								)}
+							</FormikDollyFieldArray>
+						</>
+					)}
+				</>
 			</div>
 		</>
 	)

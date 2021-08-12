@@ -109,8 +109,8 @@ export const ArbeidsforholdToggle = ({ formikBag }: ArbeidsforholdToggle): React
 						header="Arbeidsforhold"
 						newEntry={
 							typeArbeidsgiver === ArbeidsgiverTyper.privat
-								? initialArbeidsforholdPers
-								: initialArbeidsforholdOrg
+								? { ...initialArbeidsforholdPers, arbeidsforholdstype: '' }
+								: { ...initialArbeidsforholdOrg, arbeidsforholdstype: '' }
 						}
 						canBeEmpty={false}
 					>
