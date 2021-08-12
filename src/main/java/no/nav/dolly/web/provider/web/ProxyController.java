@@ -88,19 +88,6 @@ public class ProxyController {
         return proxyService.proxyRequest(body, method, headers, requestURL);
     }
 
-    @RequestMapping("/proxy/popp/**")
-    public ResponseEntity<String> poppProxy(
-            @RequestBody(required = false) String body,
-            HttpMethod method,
-            HttpServletRequest request) throws UnsupportedEncodingException {
-
-        String requestURL = createURL(request, poppUrl + API_URI, PROXY_URI + "/popp");
-        HttpHeaders headers = proxyService.copyHeaders(request);
-        headers.add(HttpHeaders.AUTHORIZATION, "Dolly");
-
-        return proxyService.proxyRequest(body, method, headers, requestURL);
-    }
-
     private static String createURL(HttpServletRequest request, String host, String splitUri)
             throws UnsupportedEncodingException {
 
