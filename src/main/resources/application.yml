@@ -73,6 +73,10 @@ zuul:
       path: /testnav-testnorge-aareg-proxy/api/**
       url: https://testnav-testnorge-aareg-proxy.dev.intern.nav.no/api
       sensitiveHeaders: Cookie,Set-Cookie
+    testnav-krrstub-proxy:
+      path: /testnav-krrstub-proxy/api/**
+      url: https://testnav-krrstub-proxy.dev.intern.nav.no/api
+      sensitiveHeaders: Cookie,Set-Cookie
 
 applications:
   testnorge-profil-api: ${TESTNORGE_PROFIL_API_CLIENT_ID}
@@ -123,6 +127,10 @@ consumers:
     cluster: dev-fss
     namespace: dolly
     name: testnav-testnorge-aareg-proxy
+  testnav-krrstub-proxy:
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-krrstub-proxy
 
 spring:
   application:
