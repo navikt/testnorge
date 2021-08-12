@@ -11,10 +11,15 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class FamilierelasjonDTO extends DbVersjonDTO {
+public class ForelderBarnRelasjonDTO extends DbVersjonDTO {
 
     private ROLLE minRolleForPerson;
     private String relatertPerson;
     private ROLLE relatertPersonsRolle;
-    public enum ROLLE {MOR, FAR, MEDMOR, BARN}
+
+    private Boolean borIkkeSammen;
+    private PersonRequestDTO nyRelatertPerson;
+    private Boolean partnerErIkkeForelder;
+
+    public enum ROLLE {BARN, FORELDER, MOR, FAR, MEDMOR}
 }

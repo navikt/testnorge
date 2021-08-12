@@ -5,6 +5,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
@@ -15,10 +16,8 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
 
-import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Random;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -44,13 +43,10 @@ public class SivilstandService {
     private static final String SIVILSTAND_DATO_REQUIRED = "Sivilstand: dato for sivilstand må oppgis";
     private static final String SIVILSTAND_OVERLAPPENDE_DATOER_ERROR = "Sivilstand: overlappende datoer er ikke gyldig";
 
-    private static final Random RANDOM = new SecureRandom();
-
     private final PersonRepository personRepository;
     private final CreatePersonService createPersonService;
     private final RelasjonService relasjonService;
     private final MapperFacade mapperFacade;
-    private final MergeService mergeService;
 
     public List<SivilstandDTO> convert(PersonDTO person) {
 
@@ -106,8 +102,10 @@ public class SivilstandService {
                     sivilstand.getNyRelatertPerson().setFoedtEtter(LocalDateTime.now().minusYears(60));
                 }
                 if (isNull(sivilstand.getNyRelatertPerson().getKjoenn())) {
-                    KjoennDTO kjonn = hovedperson.getKjoenn().stream().findFirst().orElse(randomKjoenn());
-                    sivilstand.getNyRelatertPerson().setKjoenn(MANN == kjonn.getKjoenn() ? KVINNE : MANN);
+                    KjoennDTO.Kjoenn kjonn = hovedperson.getKjoenn().stream().findFirst()
+                            .map(KjoennDTO::getKjoenn)
+                            .orElse(KjoennFraIdentUtility.getKjoenn(hovedperson.getIdent()));
+                    sivilstand.getNyRelatertPerson().setKjoenn(kjonn == MANN ? KVINNE : MANN);
                 }
                 if (isNull(sivilstand.getNyRelatertPerson().getSyntetisk())) {
                     sivilstand.getNyRelatertPerson().setSyntetisk(isSyntetisk(hovedperson.getIdent()));
@@ -125,15 +123,15 @@ public class SivilstandService {
                     relatertPerson.getBostedsadresse().add(0, fellesAdresse);
                 }
 
+                sivilstand.setBorIkkeSammen(null);
+                sivilstand.setNyRelatertPerson(null);
                 sivilstand.setRelatertVedSivilstand(relatertPerson.getIdent());
             }
-            relasjonService.setRelasjoner(hovedperson.getIdent(), RelasjonType.SIVILSTAND_RELATERT_PERSON,
-                    sivilstand.getRelatertVedSivilstand(), RelasjonType.SIVILSTAND_PERSON);
+
+            relasjonService.setRelasjoner(hovedperson.getIdent(), RelasjonType.EKTEFELLE_PARTNER,
+                    sivilstand.getRelatertVedSivilstand(), RelasjonType.EKTEFELLE_PARTNER);
             createRelatertSivilstand(sivilstand, hovedperson.getIdent());
         }
-
-        sivilstand.setBorIkkeSammen(null);
-        sivilstand.setNyRelatertPerson(null);
     }
 
     private void createRelatertSivilstand(SivilstandDTO sivilstand, String hovedperson) {
@@ -141,26 +139,21 @@ public class SivilstandService {
         DbPerson relatertPerson = personRepository.findByIdent(sivilstand.getRelatertVedSivilstand()).get();
         SivilstandDTO relatertSivilstand = mapperFacade.map(sivilstand, SivilstandDTO.class);
         relatertSivilstand.setRelatertVedSivilstand(hovedperson);
-        relatertSivilstand.setBorIkkeSammen(null);
-        relatertSivilstand.setNyRelatertPerson(null);
+        relatertSivilstand.setId(relatertPerson.getPerson().getSivilstand().stream()
+                .map(SivilstandDTO::getId)
+                .findFirst()
+                .orElse(0) + 1);
         relatertPerson.getPerson().getSivilstand().add(relatertSivilstand);
-        mergeService.merge(relatertPerson.getPerson(), relatertPerson.getPerson());
         personRepository.save(relatertPerson);
-    }
-
-    private KjoennDTO randomKjoenn() {
-        return KjoennDTO.builder()
-                .kjoenn(RANDOM.nextBoolean() ? MANN : KVINNE)
-                .build();
     }
 
     protected void enforceIntegrity(List<SivilstandDTO> sivilstand) {
 
         for (var i = 0; i < sivilstand.size(); i++) {
             if (i + 1 < sivilstand.size() &&
-                sivilstand.get(i+1).getSivilstandsdato().isAfter(sivilstand.get(i).getSivilstandsdato())) {
+                    sivilstand.get(i + 1).getSivilstandsdato().isAfter(sivilstand.get(i).getSivilstandsdato())) {
 
-                    throw new InvalidRequestException(SIVILSTAND_OVERLAPPENDE_DATOER_ERROR);
+                throw new InvalidRequestException(SIVILSTAND_OVERLAPPENDE_DATOER_ERROR);
             }
         }
     }
