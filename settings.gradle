@@ -43,6 +43,7 @@ includeBuild './proxies/testnorge-aareg-proxy'
 includeBuild './proxies/krrstub-proxy'
 includeBuild './proxies/testnorge-inst-proxy'
 includeBuild './proxies/sigrunstub-proxy'
+includeBuild './proxies/pensjon-testdata-facade-proxy'
 
 includeBuild './libs/security-token-service'
 includeBuild './libs/data-transfer-objects'
@@ -268,3 +269,4 @@ project(':joark-dokument-service').projectDir = file('apps/joark-dokument-servic
 
 include 'person-faste-data-service'
 project(':person-faste-data-service').projectDir = file('apps/person-faste-data-service')
+
