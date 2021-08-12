@@ -19,9 +19,11 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.consumer.command.VegadresseServiceCommand.defaultAdresse;
@@ -51,10 +53,10 @@ public class ForelderBarnRelasjonService {
     private final CreatePersonService createPersonService;
     private final RelasjonService relasjonService;
     private final MapperFacade mapperFacade;
-    private final MergeService mergeService;
 
     public List<ForelderBarnRelasjonDTO> convert(PersonDTO person) {
 
+        var nyeRelasjoner = new ArrayList<ForelderBarnRelasjonDTO>();
         for (var type : person.getForelderBarnRelasjon()) {
 
             if (isTrue(type.getIsNew())) {
@@ -62,9 +64,10 @@ public class ForelderBarnRelasjonService {
 
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
-                handle(type, person);
+                nyeRelasjoner.addAll(handle(type, person));
             }
         }
+        person.getForelderBarnRelasjon().addAll(nyeRelasjoner);
         return person.getForelderBarnRelasjon();
     }
 
@@ -91,13 +94,15 @@ public class ForelderBarnRelasjonService {
         }
     }
 
-    private void handle(ForelderBarnRelasjonDTO relasjon, PersonDTO hovedperson) {
+    private List<ForelderBarnRelasjonDTO> handle(ForelderBarnRelasjonDTO relasjon, PersonDTO hovedperson) {
+
+        var minRolle = relasjon.getMinRolleForPerson();
 
         setRelatertPerson(relasjon, hovedperson);
-
         addForelderBarnRelasjon(relasjon, hovedperson);
 
-        if (isNotTrue(relasjon.getPartnerErIkkeForelder()) && hovedperson.getSivilstand().stream()
+        if (relasjon.getRelatertPersonsRolle() == ROLLE.BARN &&
+                isNotTrue(relasjon.getPartnerErIkkeForelder()) && hovedperson.getSivilstand().stream()
                 .anyMatch(sivilstand -> nonNull(sivilstand.getRelatertVedSivilstand()))) {
 
             DbPerson partner = hovedperson.getSivilstand().stream()
@@ -109,11 +114,29 @@ public class ForelderBarnRelasjonService {
                     addForelderBarnRelasjon(mapperFacade.map(relasjon, ForelderBarnRelasjonDTO.class), partner.getPerson()));
             personRepository.save(partner);
         }
+        relasjon.setPartnerErIkkeForelder(null);
+
+        if (minRolle == ROLLE.BARN) {
+            ForelderBarnRelasjonDTO forelderRelasjon = mapperFacade.map(relasjon, ForelderBarnRelasjonDTO.class);
+            forelderRelasjon.setNyRelatertPerson(PersonRequestDTO.builder()
+                    .kjoenn(KjoennFraIdentUtility.getKjoenn(relasjon.getRelatertPerson()) == MANN ? KVINNE : MANN)
+                    .build());
+            forelderRelasjon.setRelatertPerson(null);
+
+            setRelatertPerson(forelderRelasjon, hovedperson);
+            addForelderBarnRelasjon(forelderRelasjon, hovedperson);
+            forelderRelasjon.setId(hovedperson.getForelderBarnRelasjon().stream()
+                    .map(ForelderBarnRelasjonDTO::getId)
+                    .findFirst()
+                    .orElse(0) + 1);
+            return List.of(forelderRelasjon);
+        }
+        return emptyList();
     }
 
     private ForelderBarnRelasjonDTO addForelderBarnRelasjon(ForelderBarnRelasjonDTO relasjon, PersonDTO hovedperson) {
 
-        fixRoller(relasjon, hovedperson);
+        getRolle(relasjon, hovedperson);
         relasjonService.setRelasjoner(hovedperson.getIdent(),
                 relasjon.getRelatertPersonsRolle() == ROLLE.BARN ? FAMILIERELASJON_FORELDER : FAMILIERELASJON_BARN,
                 relasjon.getRelatertPerson(),
@@ -135,7 +158,7 @@ public class ForelderBarnRelasjonService {
                     isNull(relasjon.getNyRelatertPerson().getFoedtFoer())) {
 
                 relasjon.getNyRelatertPerson().setFoedtFoer(LocalDateTime.now().minusYears(
-                        relasjon.getMinRolleForPerson() == ROLLE.BARN ? 60 : 0));
+                        relasjon.getMinRolleForPerson() == ROLLE.BARN ? 70 : 0));
                 relasjon.getNyRelatertPerson().setFoedtEtter(LocalDateTime.now().minusYears(
                         relasjon.getMinRolleForPerson() == ROLLE.BARN ? 90 : 18));
             }
@@ -166,21 +189,15 @@ public class ForelderBarnRelasjonService {
         return relasjon.getRelatertPerson();
     }
 
-    private void fixRoller(ForelderBarnRelasjonDTO relasjon, PersonDTO person) {
+    private void getRolle(ForelderBarnRelasjonDTO relasjon, PersonDTO person) {
 
         if (relasjon.getRelatertPersonsRolle() == ROLLE.BARN) {
-            relasjon.setMinRolleForPerson(getRolle(person));
+            relasjon.setMinRolleForPerson(
+                    KjoennFraIdentUtility.getKjoenn(person.getIdent()) == MANN ? ROLLE.FAR : ROLLE.MOR);
+        } else {
+            relasjon.setRelatertPersonsRolle(
+                    KjoennFraIdentUtility.getKjoenn(relasjon.getRelatertPerson()) == KVINNE ? ROLLE.MOR : ROLLE.FAR);
         }
-        if (relasjon.getRelatertPersonsRolle() == ROLLE.FORELDER) {
-            //TBD
-        }
-    }
-
-    private ROLLE getRolle(PersonDTO person) {
-        return person.getKjoenn().stream().findFirst()
-                .map(KjoennDTO::getKjoenn)
-                .orElse(KjoennFraIdentUtility.getKjoenn(person.getIdent())) == MANN ?
-                ROLLE.FAR : ROLLE.MOR;
     }
 
     private LocalDateTime getMaxDato(LocalDateTime dato1, LocalDateTime dato2) {
@@ -206,7 +223,6 @@ public class ForelderBarnRelasjonService {
                 .map(ForelderBarnRelasjonDTO::getId)
                 .orElse(0) + 1);
         relatertPerson.getPerson().getForelderBarnRelasjon().add(relatertFamilierelasjon);
-        mergeService.merge(relatertPerson.getPerson(), relatertPerson.getPerson());
         personRepository.save(relatertPerson);
     }
 
