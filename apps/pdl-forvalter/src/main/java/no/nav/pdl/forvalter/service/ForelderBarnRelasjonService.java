@@ -156,9 +156,9 @@ public class ForelderBarnRelasjonService {
                     isNull(relasjon.getNyRelatertPerson().getFoedtFoer())) {
 
                 relasjon.getNyRelatertPerson().setFoedtFoer(LocalDateTime.now().minusYears(
-                        relasjon.getMinRolleForPerson() == ROLLE.BARN ? 70 : 0));
+                        relasjon.getRelatertPersonsRolle() == ROLLE.BARN ? 0 : 70));
                 relasjon.getNyRelatertPerson().setFoedtEtter(LocalDateTime.now().minusYears(
-                        relasjon.getMinRolleForPerson() == ROLLE.BARN ? 90 : 18));
+                        relasjon.getRelatertPersonsRolle() == ROLLE.BARN ? 18 : 90));
             }
             if (isNull(relasjon.getNyRelatertPerson().getKjoenn())) {
                 relasjon.getNyRelatertPerson().setKjoenn(getKjoenn(relasjon.getRelatertPersonsRolle()));
