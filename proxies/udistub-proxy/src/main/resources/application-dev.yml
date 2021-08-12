@@ -1,0 +1,4 @@
+azure.app.client.id: ${client_id}
+azure.app.client.secret: ${client_secret}
+
+proxy.url: https://udi-stub-dev.dev.intern.nav.no
