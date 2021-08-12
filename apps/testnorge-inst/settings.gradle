@@ -6,9 +6,9 @@ rootProject.name = 'testnorge-inst'
 
 includeBuild '../../gradlePlugins'
 
-includeBuild '../../libs/reactive-core'
-includeBuild '../../libs/reactive-security'
-includeBuild '../../libs/reactive-frontend'
+includeBuild '../../libs/servlet-core'
+includeBuild '../../libs/servlet-security'
+
 
 gradleEnterprise {
     buildScan {

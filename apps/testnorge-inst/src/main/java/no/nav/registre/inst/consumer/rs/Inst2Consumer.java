@@ -2,10 +2,10 @@ package no.nav.registre.inst.consumer.rs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.inst.consumer.rs.command.GetInstitusjonsoppholdCommand;
 import no.nav.registre.inst.domain.InstitusjonResponse;
 import no.nav.registre.inst.domain.Institusjonsopphold;
 import no.nav.registre.inst.domain.InstitusjonsoppholdV2;
-import no.nav.registre.inst.exception.UgyldigIdentResponseException;
 import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
 import no.nav.registre.inst.provider.rs.responses.SupportedEnvironmentsResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static no.nav.registre.inst.properties.HttpRequestConstants.ACCEPT;
-import static no.nav.registre.inst.properties.HttpRequestConstants.AUTHORIZATION;
 import static no.nav.registre.inst.properties.HttpRequestConstants.HEADER_NAV_CALL_ID;
 import static no.nav.registre.inst.properties.HttpRequestConstants.HEADER_NAV_CONSUMER_ID;
 
@@ -33,8 +32,6 @@ import static no.nav.registre.inst.properties.HttpRequestConstants.HEADER_NAV_CO
 @Slf4j
 public class Inst2Consumer {
 
-    private static final ParameterizedTypeReference<InstitusjonResponse> RESPONSE_TYPE_HENT_INSTITUSJONSOPPHOLD = new ParameterizedTypeReference<>() {
-    };
     private static final ParameterizedTypeReference<Object> RESPONSE_TYPE_OBJECT = new ParameterizedTypeReference<>() {
     };
     private static final String INSTITUSJONSOPPHOLD_PERSON = "/v1/institusjonsopphold/person";
@@ -64,31 +61,7 @@ public class Inst2Consumer {
             String miljoe,
             String ident
     ) {
-        InstitusjonResponse response;
-        try {
-            ResponseEntity<InstitusjonResponse> listResponseEntity = webClient.get()
-                    .uri(inst2NewServerUrl,
-                            uriBuilder -> uriBuilder
-                                    .path(INSTITUSJONSOPPHOLD_PERSON)
-                                    .queryParam(ENVIRONMENTS, miljoe)
-                                    .build())
-                    .header(ACCEPT, "*/*")
-                    .header(AUTHORIZATION, bearerToken)
-                    .header(HEADER_NAV_CALL_ID, callId)
-                    .header(HEADER_NAV_CONSUMER_ID, consumerId)
-                    .header(NORSKIDENT, ident)
-                    .retrieve()
-                    .toEntity(RESPONSE_TYPE_HENT_INSTITUSJONSOPPHOLD)
-                    .block();
-            response = nonNull(listResponseEntity)
-                    ? listResponseEntity.getBody()
-                    : new InstitusjonResponse();
-            log.info("Hentet Inst2 opphold: " + response);
-        } catch (WebClientResponseException e) {
-            log.error("Kunne ikke hente ident fra inst2", e);
-            throw new UgyldigIdentResponseException("Kunne ikke hente ident fra inst2", e);
-        }
-        return response;
+        return new GetInstitusjonsoppholdCommand(webClient, inst2NewServerUrl, miljoe, bearerToken, ident, callId, consumerId).call();
     }
 
     public OppholdResponse leggTilInstitusjonsoppholdIInst2(
@@ -104,8 +77,7 @@ public class Inst2Consumer {
                             .path(INSTITUSJONSOPPHOLD_PERSON)
                             .queryParam(ENVIRONMENTS, miljoe)
                             .build())
-                    .header(ACCEPT, "*/*")
-                    .header(AUTHORIZATION, bearerToken)
+                    .header(ACCEPT, "application/json")
                     .header(HEADER_NAV_CALL_ID, callId)
                     .header(HEADER_NAV_CONSUMER_ID, consumerId)
                     .bodyValue(institusjonsopphold).retrieve().toEntity(RESPONSE_TYPE_OBJECT)
@@ -138,8 +110,7 @@ public class Inst2Consumer {
                             .path(INSTITUSJONSOPPHOLD_PERSON)
                             .queryParam(ENVIRONMENTS, miljoe)
                             .build())
-                    .header(ACCEPT, "*/*")
-                    .header(AUTHORIZATION, bearerToken)
+                    .header(ACCEPT, "application/json")
                     .header(HEADER_NAV_CALL_ID, callId)
                     .header(HEADER_NAV_CONSUMER_ID, consumerId)
                     .header(NORSKIDENT, ident)
@@ -167,8 +138,7 @@ public class Inst2Consumer {
         try {
             var response = webClient.get().uri(new UriTemplate(inst2WebApiServerUrl.expand(miljoe) + "/institusjon/oppslag/tssEksternId/{tssEksternId}?date={date}")
                             .expand(tssEksternId, date))
-                    .header(ACCEPT, "*/*")
-                    .header(AUTHORIZATION, bearerToken)
+                    .header(ACCEPT, "application/json")
                     .header(HEADER_NAV_CALL_ID, callId)
                     .header(HEADER_NAV_CONSUMER_ID, consumerId)
                     .retrieve()
