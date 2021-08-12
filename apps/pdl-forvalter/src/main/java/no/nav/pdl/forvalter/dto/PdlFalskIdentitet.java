@@ -12,6 +12,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -24,8 +25,9 @@ import java.util.List;
 public class PdlFalskIdentitet extends DbVersjonDTO {
 
     private Boolean erFalsk;
-    private Folkeregistermetadata folkeregistermetadata;
     private RettIdentitet rettIdentitet;
+    private LocalDate gyldigFraOgMed;
+    private LocalDate gyldigTilOgMed;
 
     @Data
     @Builder

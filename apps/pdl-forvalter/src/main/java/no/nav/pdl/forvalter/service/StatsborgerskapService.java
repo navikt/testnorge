@@ -52,8 +52,8 @@ public class StatsborgerskapService {
             throw new InvalidRequestException(VALIDATION_LANDKODE_ERROR);
         }
 
-        if (nonNull(statsborgerskap.getGyldigFom()) && nonNull(statsborgerskap.getGyldigTom()) &&
-                !statsborgerskap.getGyldigFom().isBefore(statsborgerskap.getGyldigTom())) {
+        if (nonNull(statsborgerskap.getGyldigFraOgMed()) && nonNull(statsborgerskap.getGyldigTilOgMed()) &&
+                !statsborgerskap.getGyldigFraOgMed().isBefore(statsborgerskap.getGyldigTilOgMed())) {
             throw new InvalidRequestException(VALIDATION_DATOINTERVALL_ERROR);
         }
     }
@@ -70,8 +70,8 @@ public class StatsborgerskapService {
             }
         }
 
-        if (isNull(statsborgerskap.getGyldigFom())) {
-            statsborgerskap.setGyldigFom(DatoFraIdentUtility.getDato(ident).atStartOfDay());
+        if (isNull(statsborgerskap.getGyldigFraOgMed())) {
+            statsborgerskap.setGyldigFraOgMed(DatoFraIdentUtility.getDato(ident).atStartOfDay());
         }
     }
 }

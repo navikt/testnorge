@@ -27,8 +27,8 @@ public class FalskIdentitetDTO extends DbVersjonDTO {
             "nyFalskIdentitet er satt vil ny person oppreettes og bli satt til rettIdentitetVedIdentifikasjonsnummer.")
 
     private Boolean erFalsk;
-    private LocalDateTime gyldigFom;
-    private LocalDateTime gyldigTom;
+    private LocalDateTime gyldigFraOgMed;
+    private LocalDateTime gyldigTilOgMed;
 
     private PersonRequestDTO nyFalskIdentitetPerson;
 

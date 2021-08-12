@@ -70,7 +70,7 @@ public class VegadresseServiceCommand implements Callable<Mono<VegadresseDTO[]>>
                         "husbokstav", filterArtifact(query.getHusbokstav()),
                         "postnummer", filterArtifact(query.getPostnummer()),
                         "kommunenummer", filterArtifact(query.getKommunenummer()),
-                        "tilleggsnavn", filterArtifact(query.getAdressetilleggsnavn()))
+                        "tilleggsnavn", filterArtifact(query.getTilleggsnavn()))
                         .entrySet().stream()
                         .filter(entry -> isNotBlank(entry.getValue()))
                         .collect(Collectors.toMap(Map.Entry::getKey, entry -> List.of(entry.getValue())))));

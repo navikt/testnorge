@@ -52,7 +52,7 @@ public class KontaktInformasjonForDoedsboMappingStrategy implements MappingStrat
                             destinasjon.setLandkode(kilde.getUtenlandskAdresse().getLandkode());
 
                         } else if (nonNull(kilde.getMatrikkeladresse())) {
-                            destinasjon.setAdresselinje1(kilde.getMatrikkeladresse().getAdressetilleggsnavn());
+                            destinasjon.setAdresselinje1(kilde.getMatrikkeladresse().getTilleggsnavn());
                             destinasjon.setAdresselinje2(format("Gårdsnummer: %s, bruksnummer: %s",
                                     kilde.getMatrikkeladresse().getGaardsnummer(),
                                     kilde.getMatrikkeladresse().getBruksnummer()));

@@ -10,10 +10,8 @@ import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.HistoriskIdent;
 import no.nav.pdl.forvalter.dto.PdlDelete;
 import no.nav.pdl.forvalter.dto.PdlFalskIdentitet;
-import no.nav.pdl.forvalter.dto.PdlInnflytting;
 import no.nav.pdl.forvalter.dto.PdlKontaktadresse;
 import no.nav.pdl.forvalter.dto.PdlTilrettelagtKommunikasjon;
-import no.nav.pdl.forvalter.dto.PdlUtflytting;
 import no.nav.pdl.forvalter.dto.PdlVergemaal;
 import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
@@ -34,10 +32,10 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_BOSTEDADRE
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_DELTBOSTED;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_DOEDSFALL;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_FALSK_IDENTITET;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_FAMILIERELASJON;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_FOEDSEL;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_FOLKEREGISTER_PERSONSTATUS;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_FORELDREANSVAR;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_FORELDRE_BARN_RELASJON;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_FULLMAKT;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_INNFLYTTING;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_KJOENN;
@@ -110,13 +108,11 @@ public class PdlOrdreService {
                 deployService.send(PDL_BOSTEDADRESSE, person.getIdent(), person.getPerson().getBostedsadresse()),
                 deployService.send(PDL_OPPHOLDSADRESSE, person.getIdent(), person.getPerson().getOppholdsadresse()),
                 deployService.send(PDL_ADRESSEBESKYTTELSE, person.getIdent(), person.getPerson().getAdressebeskyttelse()),
-                deployService.send(PDL_INNFLYTTING, person.getIdent(),
-                        mapperFacade.mapAsList(person.getPerson().getInnflytting(), PdlInnflytting.class)),
-                deployService.send(PDL_UTFLYTTING, person.getIdent(),
-                        mapperFacade.mapAsList(person.getPerson().getUtflytting(), PdlUtflytting.class)),
+                deployService.send(PDL_INNFLYTTING, person.getIdent(), person.getPerson().getInnflytting()),
+                deployService.send(PDL_UTFLYTTING, person.getIdent(), person.getPerson().getUtflytting()),
                 deployService.send(PDL_DELTBOSTED, person.getIdent(), person.getPerson().getDeltBosted()),
                 deployService.send(PDL_FORELDREANSVAR, person.getIdent(), person.getPerson().getForeldreansvar()),
-                deployService.send(PDL_FAMILIERELASJON, person.getIdent(), person.getPerson().getForelderBarnRelasjon()),
+                deployService.send(PDL_FORELDRE_BARN_RELASJON, person.getIdent(), person.getPerson().getForelderBarnRelasjon()),
                 deployService.send(PDL_SIVILSTAND, person.getIdent(), person.getPerson().getSivilstand()),
                 deployService.send(PDL_VERGEMAAL, person.getIdent(),
                         mapperFacade.mapAsList(person.getPerson().getVergemaal(), PdlVergemaal.class)),

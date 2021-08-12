@@ -17,7 +17,7 @@ public class VegadresseDTO implements Serializable {
 
     private String adressekode;
     private String adressenavn;
-    private String adressetilleggsnavn;
+    private String tilleggsnavn;
     private String bruksenhetsnummer;
     private String husbokstav;
     private String husnummer;

@@ -42,7 +42,7 @@ public class KontaktinformasjonForDoedsboDTO extends DbVersjonDTO {
     @Schema(required = true,
             type = "LocalDateTime",
             description = "Dato for utstedelse")
-    private LocalDateTime utstedtDato;
+    private LocalDateTime attestutstedelsesdato;
 
     private AdressatDTO adressat;
 
@@ -71,7 +71,7 @@ public class KontaktinformasjonForDoedsboDTO extends DbVersjonDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class KontaktpersonMedIdNummerDTO implements Serializable {
 
-        private String idnummer;
+        private String identifikasjonsnummer;
         private PersonRequestDTO nyKontaktPerson;
     }
 

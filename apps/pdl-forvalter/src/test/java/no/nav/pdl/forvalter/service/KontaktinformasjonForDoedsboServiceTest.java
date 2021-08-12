@@ -112,7 +112,7 @@ class KontaktinformasjonForDoedsboServiceTest {
                         .skifteform(OFFENTLIG)
                         .adressat(AdressatDTO.builder()
                                 .kontaktpersonMedIdNummerSomAdressat(KontaktpersonMedIdNummerDTO.builder()
-                                        .idnummer(IDENT)
+                                        .identifikasjonsnummer(IDENT)
                                         .build())
                                 .build())
                         .isNew(true)

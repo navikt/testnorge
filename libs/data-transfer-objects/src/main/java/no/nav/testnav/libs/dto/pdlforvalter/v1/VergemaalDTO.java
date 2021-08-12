@@ -19,8 +19,8 @@ public class VergemaalDTO extends DbVersjonDTO {
 
     private VergemaalEmbete vergemaalEmbete;
     private VergemaalSakstype sakType;
-    private LocalDateTime gyldigFom;
-    private LocalDateTime gyldigTom;
+    private LocalDateTime gyldigFraOgMed;
+    private LocalDateTime gyldigTilOgMed;
 
     private PersonRequestDTO nyVergeIdent;
     private String vergeIdent;

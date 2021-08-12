@@ -3,7 +3,6 @@ package no.nav.pdl.forvalter.mapper;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.pdl.forvalter.dto.Folkeregistermetadata;
 import no.nav.pdl.forvalter.dto.PdlFalskIdentitet;
 import no.nav.pdl.forvalter.dto.PdlFalskIdentitet.IdentifiserendeInformasjon;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FalskIdentitetDTO;
@@ -21,11 +20,6 @@ public class FalskIdentitetMappingStrategy implements MappingStrategy {
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(FalskIdentitetDTO kilde, PdlFalskIdentitet destinasjon, MappingContext context) {
-
-                        destinasjon.setFolkeregistermetadata(Folkeregistermetadata.builder()
-                                .gyldighetstidspunkt(kilde.getGyldigFom())
-                                .opphoerstidspunkt(kilde.getGyldigTom())
-                                .build());
 
                         destinasjon.setRettIdentitet(PdlFalskIdentitet.RettIdentitet.builder()
                                 .rettIdentitetErUkjent(kilde.getRettIdentitetErUkjent())

@@ -5,7 +5,6 @@ import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FalskIdentitetDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -59,8 +58,8 @@ class FalskIdentitetServiceTest {
         var request = PersonDTO.builder()
                 .falskIdentitet(List.of(FalskIdentitetDTO.builder()
                         .erFalsk(true)
-                        .gyldigFom(LocalDate.of(2012, 04, 05).atStartOfDay())
-                        .gyldigTom(LocalDate.of(2012, 04, 04).atStartOfDay())
+                        .gyldigFraOgMed(LocalDate.of(2012, 04, 05).atStartOfDay())
+                        .gyldigTilOgMed(LocalDate.of(2012, 04, 04).atStartOfDay())
                         .isNew(true)
                         .build()))
                 .build();

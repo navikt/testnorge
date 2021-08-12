@@ -56,8 +56,8 @@ class StatsborgerskapServiceTest {
 
         var request = PersonDTO.builder()
                 .statsborgerskap(List.of(StatsborgerskapDTO.builder()
-                        .gyldigFom(LocalDate.of(2020, 1, 1).atStartOfDay())
-                        .gyldigTom(LocalDate.of(2018, 1, 1).atStartOfDay())
+                        .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
+                        .gyldigTilOgMed(LocalDate.of(2018, 1, 1).atStartOfDay())
                         .isNew(true)
                         .build()))
                 .ident(FNR_IDENT)
@@ -129,6 +129,6 @@ class StatsborgerskapServiceTest {
                 .build())
                 .get(0);
 
-        assertThat(target.getGyldigFom(), is(equalTo(LocalDate.of(1956, 4, 12).atStartOfDay())));
+        assertThat(target.getGyldigFraOgMed(), is(equalTo(LocalDate.of(1956, 4, 12).atStartOfDay())));
     }
 }

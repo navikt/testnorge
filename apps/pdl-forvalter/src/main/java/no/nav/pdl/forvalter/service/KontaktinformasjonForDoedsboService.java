@@ -99,10 +99,10 @@ public class KontaktinformasjonForDoedsboService {
                 throw new InvalidRequestException(VALIDATION_ADRESSAT_AMBIGOUS);
             }
             if (nonNull(kontaktinfo.getAdressat().getKontaktpersonMedIdNummerSomAdressat()) &&
-                    isNotBlank(kontaktinfo.getAdressat().getKontaktpersonMedIdNummerSomAdressat().getIdnummer()) &&
-                    !personRepository.existsByIdent(kontaktinfo.getAdressat().getKontaktpersonMedIdNummerSomAdressat().getIdnummer())) {
+                    isNotBlank(kontaktinfo.getAdressat().getKontaktpersonMedIdNummerSomAdressat().getIdentifikasjonsnummer()) &&
+                    !personRepository.existsByIdent(kontaktinfo.getAdressat().getKontaktpersonMedIdNummerSomAdressat().getIdentifikasjonsnummer())) {
                 throw new InvalidRequestException(format(VALIDATION_IDNUMBER_INVALID,
-                        kontaktinfo.getAdressat().getKontaktpersonMedIdNummerSomAdressat().getIdnummer()));
+                        kontaktinfo.getAdressat().getKontaktpersonMedIdNummerSomAdressat().getIdentifikasjonsnummer()));
             }
             if (nonNull(kontaktinfo.getAdressat().getKontaktpersonUtenIdNummerSomAdressat()) &&
                     isNull(kontaktinfo.getAdressat().getKontaktpersonUtenIdNummerSomAdressat().getFoedselsdato())) {
@@ -125,8 +125,8 @@ public class KontaktinformasjonForDoedsboService {
 
     private void handle(KontaktinformasjonForDoedsboDTO kontaktinfo, PersonDTO person) {
 
-        if (isNull(kontaktinfo.getUtstedtDato())) {
-            kontaktinfo.setUtstedtDato(LocalDateTime.now());
+        if (isNull(kontaktinfo.getAttestutstedelsesdato())) {
+            kontaktinfo.setAttestutstedelsesdato(LocalDateTime.now());
         }
 
         if (isBlank(kontaktinfo.getAdresselinje1())) {
@@ -143,7 +143,7 @@ public class KontaktinformasjonForDoedsboService {
         }
 
         if (nonNull(kontaktinfo.getAdressat().getKontaktpersonMedIdNummerSomAdressat()) &&
-                isBlank(kontaktinfo.getAdressat().getKontaktpersonMedIdNummerSomAdressat().getIdnummer())) {
+                isBlank(kontaktinfo.getAdressat().getKontaktpersonMedIdNummerSomAdressat().getIdentifikasjonsnummer())) {
 
             leggTilNyAddressat(kontaktinfo.getAdressat().getKontaktpersonMedIdNummerSomAdressat(), person);
 
@@ -277,10 +277,10 @@ public class KontaktinformasjonForDoedsboService {
             adressat.getNyKontaktPerson().setSyntetisk(SyntetiskFraIdentUtility.isSyntetisk(person.getIdent()));
         }
 
-        adressat.setIdnummer(
+        adressat.setIdentifikasjonsnummer(
                 createPersonService.execute(adressat.getNyKontaktPerson()).getIdent());
         relasjonService.setRelasjoner(person.getIdent(), RelasjonType.AVDOEDD_SIN_ADRESSAT,
-                adressat.getIdnummer(), RelasjonType.ADRESSAT_FOR_DOEDSBO);
+                adressat.getIdentifikasjonsnummer(), RelasjonType.ADRESSAT_FOR_DOEDSBO);
         adressat.setNyKontaktPerson(null);
     }
 }

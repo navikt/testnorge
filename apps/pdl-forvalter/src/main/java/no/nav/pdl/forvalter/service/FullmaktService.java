@@ -56,25 +56,25 @@ public class FullmaktService {
             throw new InvalidRequestException(VALIDATION_OMRAADER_ERROR);
         }
 
-        if (isNull(fullmakt.getGyldigFom())) {
+        if (isNull(fullmakt.getGyldigFraOgMed())) {
             throw new InvalidRequestException(VALIDATION_GYLDIG_FOM_ERROR);
 
-        } else if (isNull(fullmakt.getGyldigTom())) {
+        } else if (isNull(fullmakt.getGyldigTilOgMed())) {
             throw new InvalidRequestException(VALIDATION_GYLDIG_TOM_ERROR);
 
-        } else if (!fullmakt.getGyldigFom().isBefore(fullmakt.getGyldigTom())) {
+        } else if (!fullmakt.getGyldigFraOgMed().isBefore(fullmakt.getGyldigTilOgMed())) {
             throw new InvalidRequestException(VALIDATION_UGYLDIG_INTERVAL_ERROR);
         }
 
-        if (nonNull(fullmakt.getFullmektig()) &&
-                !personRepository.existsByIdent(fullmakt.getFullmektig())) {
-            throw new InvalidRequestException(format(VALIDATION_FULLMEKTIG_ERROR, fullmakt.getFullmektig()));
+        if (nonNull(fullmakt.getMotpartsPersonident()) &&
+                !personRepository.existsByIdent(fullmakt.getMotpartsPersonident())) {
+            throw new InvalidRequestException(format(VALIDATION_FULLMEKTIG_ERROR, fullmakt.getMotpartsPersonident()));
         }
     }
 
     private void handle(FullmaktDTO fullmakt, String ident) {
 
-        if (isBlank(fullmakt.getFullmektig())) {
+        if (isBlank(fullmakt.getMotpartsPersonident())) {
 
             if (isNull(fullmakt.getNyFullmektig())) {
                 fullmakt.setNyFullmektig(new PersonRequestDTO());
@@ -92,9 +92,9 @@ public class FullmaktService {
                 fullmakt.getNyFullmektig().setSyntetisk(SyntetiskFraIdentUtility.isSyntetisk(ident));
             }
 
-            fullmakt.setFullmektig(createPersonService.execute(fullmakt.getNyFullmektig()).getIdent());
+            fullmakt.setMotpartsPersonident(createPersonService.execute(fullmakt.getNyFullmektig()).getIdent());
             relasjonService.setRelasjoner(ident, RelasjonType.FULLMAKTSGIVER,
-                    fullmakt.getFullmektig(), RelasjonType.FULLMEKTIG);
+                    fullmakt.getMotpartsPersonident(), RelasjonType.FULLMEKTIG);
             fullmakt.setNyFullmektig(null);
         }
     }

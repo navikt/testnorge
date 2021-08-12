@@ -16,6 +16,6 @@ import java.time.LocalDateTime;
 public class StatsborgerskapDTO extends DbVersjonDTO {
 
     private String landkode;
-    private LocalDateTime gyldigFom;
-    private LocalDateTime gyldigTom;
+    private LocalDateTime gyldigFraOgMed;
+    private LocalDateTime gyldigTilOgMed;
 }

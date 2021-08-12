@@ -20,8 +20,8 @@ public class FullmaktDTO extends DbVersjonDTO {
 
     private PersonRequestDTO nyFullmektig;
 
-    private String fullmektig;
-    private LocalDateTime gyldigFom;
-    private LocalDateTime gyldigTom;
+    private String motpartsPersonident;
+    private LocalDateTime gyldigFraOgMed;
+    private LocalDateTime gyldigTilOgMed;
     private List<String> omraader;
 }
