@@ -96,8 +96,6 @@ public class ForelderBarnRelasjonService {
 
     private List<ForelderBarnRelasjonDTO> handle(ForelderBarnRelasjonDTO relasjon, PersonDTO hovedperson) {
 
-        var minRolle = relasjon.getMinRolleForPerson();
-
         setRelatertPerson(relasjon, hovedperson);
         addForelderBarnRelasjon(relasjon, hovedperson);
 
@@ -116,7 +114,7 @@ public class ForelderBarnRelasjonService {
         }
         relasjon.setPartnerErIkkeForelder(null);
 
-        if (minRolle == ROLLE.BARN) {
+        if (relasjon.getMinRolleForPerson() == ROLLE.BARN) {
             ForelderBarnRelasjonDTO forelderRelasjon = mapperFacade.map(relasjon, ForelderBarnRelasjonDTO.class);
             forelderRelasjon.setNyRelatertPerson(PersonRequestDTO.builder()
                     .kjoenn(KjoennFraIdentUtility.getKjoenn(relasjon.getRelatertPerson()) == MANN ? KVINNE : MANN)
