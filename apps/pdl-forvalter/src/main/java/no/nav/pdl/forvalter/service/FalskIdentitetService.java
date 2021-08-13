@@ -75,8 +75,8 @@ public class FalskIdentitetService {
             throw new InvalidRequestException(VALIDATION_FALSK_IDENTITET_ER_FALSK_MISSING);
         }
 
-        if (nonNull(identitet.getGyldigFom()) && nonNull(identitet.getGyldigTom()) &&
-                !identitet.getGyldigFom().isBefore(identitet.getGyldigTom())) {
+        if (nonNull(identitet.getGyldigFraOgMed()) && nonNull(identitet.getGyldigTilOgMed()) &&
+                !identitet.getGyldigFraOgMed().isBefore(identitet.getGyldigTilOgMed())) {
             throw new InvalidRequestException(VALIDATION_UGYLDIG_INTERVAL_ERROR);
         }
 

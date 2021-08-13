@@ -55,8 +55,8 @@ public class VergemaalService {
             throw new InvalidRequestException(VALIDATION_EMBETE_ERROR);
         }
 
-        if (nonNull(vergemaal.getGyldigFom()) && nonNull(vergemaal.getGyldigTom()) &&
-                !vergemaal.getGyldigFom().isBefore(vergemaal.getGyldigTom())) {
+        if (nonNull(vergemaal.getGyldigFraOgMed()) && nonNull(vergemaal.getGyldigTilOgMed()) &&
+                !vergemaal.getGyldigFraOgMed().isBefore(vergemaal.getGyldigTilOgMed())) {
             throw new InvalidRequestException(VALIDATION_UGYLDIG_INTERVAL_ERROR);
         }
 

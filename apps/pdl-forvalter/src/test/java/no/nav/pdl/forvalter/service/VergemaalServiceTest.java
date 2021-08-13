@@ -69,8 +69,8 @@ class VergemaalServiceTest {
         var request = PersonDTO.builder()
                 .vergemaal(List.of(VergemaalDTO.builder()
                         .vergemaalEmbete(VergemaalEmbete.FMIN)
-                        .gyldigFom(LocalDate.of(2012, 04, 05).atStartOfDay())
-                        .gyldigTom(LocalDate.of(2012, 04, 04).atStartOfDay())
+                        .gyldigFraOgMed(LocalDate.of(2012, 04, 05).atStartOfDay())
+                        .gyldigTilOgMed(LocalDate.of(2012, 04, 04).atStartOfDay())
                         .isNew(true)
                         .build()))
                 .build();

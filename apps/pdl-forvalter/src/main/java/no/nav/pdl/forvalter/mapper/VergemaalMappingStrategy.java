@@ -5,7 +5,6 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
-import no.nav.pdl.forvalter.dto.Folkeregistermetadata;
 import no.nav.pdl.forvalter.dto.PdlVergemaal;
 import no.nav.pdl.forvalter.dto.PdlVergemaal.Omfang;
 import no.nav.pdl.forvalter.dto.PdlVergemaal.Personnavn;
@@ -85,11 +84,6 @@ public class VergemaalMappingStrategy implements MappingStrategy {
 
                         destinasjon.setEmbete(embeteService.getNavn(kilde.getVergemaalEmbete().name()));
                         destinasjon.setType(getSakstype(kilde.getSakType()));
-
-                        destinasjon.setFolkeregistermetadata(Folkeregistermetadata.builder()
-                                .gyldighetstidspunkt(kilde.getGyldigFom())
-                                .opphoerstidspunkt(kilde.getGyldigTom())
-                                .build());
 
                         var person = personRepository.findByIdent(kilde.getVergeIdent());
                         NavnDTO personnavn = new NavnDTO();
