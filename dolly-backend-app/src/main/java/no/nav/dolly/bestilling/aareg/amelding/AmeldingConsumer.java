@@ -16,6 +16,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Objects.nonNull;
@@ -40,19 +41,23 @@ public class AmeldingConsumer {
     public Map<String, ResponseEntity<Void>> putAmeldingList(Map<String, AMeldingDTO> ameldingList, String miljoe) {
 
         AccessToken accessToken = tokenService.generateToken(serverProperties).block();
+        Map<String, ResponseEntity<Void>> ameldingMap = new HashMap<>();
 
         log.info("Sender liste med Ameldinger: " + Json.pretty(ameldingList));
 
         if (nonNull(accessToken)) {
-            return ameldingList.values().stream().map(amelding -> putAmeldingdata(amelding, miljoe,
-                    amelding.getKalendermaaned().toString(), accessToken.getTokenValue())).findFirst().orElse(null);
+            ameldingList.values().forEach(amelding ->
+            {
+                ResponseEntity<Void> response = putAmeldingdata(amelding, miljoe, accessToken.getTokenValue());
+                ameldingMap.put(amelding.getKalendermaaned().toString(), response);
+            });
+            return ameldingMap;
         } else
             throw new DollyFunctionalException(String.format("Klarte ikke å hente accessToken for %s", serverProperties.getName()));
     }
 
     @Timed(name = "providers", tags = { "operation", "amelding_put" })
-    public Map<String, ResponseEntity<Void>> putAmeldingdata(AMeldingDTO amelding, String miljoe,
-                                                             String maaned, String accessTokenValue) {
+    public ResponseEntity<Void> putAmeldingdata(AMeldingDTO amelding, String miljoe, String accessTokenValue) {
 
         log.info("Sender enkel Amelding: " + Json.pretty(amelding));
         ResponseEntity<Void> response = webClient.put()
@@ -65,7 +70,7 @@ public class AmeldingConsumer {
                 .toBodilessEntity().block();
 
         if (nonNull(response)) {
-            return Map.of(maaned, response);
+            return response;
         } else
             throw new DollyFunctionalException("Feil under innsending til Amelding-service");
     }
