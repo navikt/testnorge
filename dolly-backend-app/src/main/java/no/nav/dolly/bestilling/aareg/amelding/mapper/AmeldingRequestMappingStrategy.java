@@ -34,6 +34,7 @@ import static java.util.Objects.nonNull;
 public class AmeldingRequestMappingStrategy implements MappingStrategy {
 
     private static final String PERMISJON_ID = "dolly-123456";
+    private static final Float DEFAULT_ARBEIDSTID = 37.5F;
 
     @Override
     public void register(MapperFactory factory) {
@@ -83,9 +84,9 @@ public class AmeldingRequestMappingStrategy implements MappingStrategy {
                                         .antallTimerPerUke(
                                                 !rsArbeidsforholdAareg.getAntallTimerForTimeloennet().isEmpty()
                                                         ? rsArbeidsforholdAareg.getAntallTimerForTimeloennet().get(0).getAntallTimer().floatValue()
-                                                        : nonNull(rsArbeidsforholdAareg.getArbeidsavtale().getAvtaltArbeidstimerPerUke())
+                                                        : nonNull(rsArbeidsforholdAareg.getArbeidsavtale()) && nonNull(rsArbeidsforholdAareg.getArbeidsavtale().getAvtaltArbeidstimerPerUke())
                                                         ? rsArbeidsforholdAareg.getArbeidsavtale().getAvtaltArbeidstimerPerUke().floatValue()
-                                                        : null)
+                                                        : DEFAULT_ARBEIDSTID)
                                         .arbeidsforholdId(nonNull(rsArbeidsforholdAareg.getArbeidsforholdID()) ? rsArbeidsforholdAareg.getArbeidsforholdID() : "1")
                                         .arbeidsforholdType((String) context.getProperty("arbeidsforholdstype"))
                                         .arbeidstidsordning(rsArbeidsforholdAareg.getArbeidsavtale().getArbeidstidsordning())
