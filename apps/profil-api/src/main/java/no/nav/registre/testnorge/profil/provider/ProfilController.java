@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-import org.webjars.NotFoundException;
 
 @RestController
 @RequestMapping("/api/v1/profil")
@@ -28,11 +27,9 @@ public class ProfilController {
 
     @GetMapping(value = "/bilde", produces = MediaType.IMAGE_JPEG_VALUE)
     public ResponseEntity<byte[]> getImage() {
-        try {
-            byte[] image = azureAdProfileConsumer.getProfilImage();
-            return ResponseEntity.ok(image);
-        } catch (NotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bilde ikke funnet for bruker", e);
-        }
+        byte[] image = azureAdProfileConsumer.getProfilImage().orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "Bilde ikke funnet for bruker")
+        );
+        return ResponseEntity.ok(image);
     }
 }

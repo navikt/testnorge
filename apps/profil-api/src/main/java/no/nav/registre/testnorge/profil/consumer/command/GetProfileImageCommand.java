@@ -3,23 +3,23 @@ package no.nav.registre.testnorge.profil.consumer.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.webjars.NotFoundException;
 
+import java.util.Optional;
 import java.util.concurrent.Callable;
 
 @Slf4j
 @RequiredArgsConstructor
-public class GetProfileImageCommand implements Callable<byte[]> {
+public class GetProfileImageCommand implements Callable<Optional<byte[]>> {
 
     private final WebClient webClient;
     private final String accessToken;
 
     @Override
-    public byte[] call() {
+    public Optional<byte[]> call() {
 
         try {
-            throw new NotFoundException("Bilde ikke funnet for bruker");
-//            return webClient
+            return Optional.empty();
+//            return Optional.of(webClient
 //                    .get()
 //                    .uri(builder -> builder.path("/v1.0/me/photos/240x240/$value").build())
 //                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
@@ -31,10 +31,10 @@ public class GetProfileImageCommand implements Callable<byte[]> {
 //                                    .map(IllegalStateException::new)
 //                    )
 //                    .bodyToMono(byte[].class)
-//                    .block();
+//                    .block());
         } catch (IllegalStateException e) {
             log.warn("Bilde for bruker ikke funnet, melding: ", e);
-            throw new NotFoundException("Bilde ikke funnet for bruker");
+            return Optional.empty();
         }
     }
 }
