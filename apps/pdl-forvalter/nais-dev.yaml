@@ -39,17 +39,11 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: testnorge-oversikt-frontend
-          cluster: dev-fss
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
         - application: team-dolly-lokal-app
           cluster: dev-fss
-        - application: testnorge-oversikt-frontend
-          cluster: dev-fss
-        - application: dolly-backend
-          cluster: dev-fss
         - application: dolly-backend-dev
-          cluster: dev-fss
-        - application: dolly-frontend
           cluster: dev-fss
         - application: dolly-frontend-dev
           cluster: dev-fss
