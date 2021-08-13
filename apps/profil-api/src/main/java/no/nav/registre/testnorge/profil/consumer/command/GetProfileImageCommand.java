@@ -20,7 +20,7 @@ public class GetProfileImageCommand implements Callable<Optional<byte[]>> {
     public Optional<byte[]> call() {
 
         try {
-            return Optional.of(webClient
+            return Optional.ofNullable(webClient
                     .get()
                     .uri(builder -> builder.path("/v1.0/me/photos/240x240/$value").build())
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
