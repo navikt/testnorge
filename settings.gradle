@@ -65,6 +65,7 @@ includeBuild './libs/reporting'
 includeBuild './libs/slack'
 
 includeBuild './apps/person-service'
+includeBuild './apps/profil-api'
 includeBuild './apps/faste-data-frontend'
 includeBuild './apps/oversikt-frontend'
 includeBuild './apps/endringsmelding-frontend'
@@ -84,7 +85,6 @@ includeBuild './gradlePlugins'
 include(':proxies')
 include(':inntektsmelding-generator-service')
 include(':testnorge-tss')
-include(':profil-api')
 include(':tp-domain')
 include(':sykemelding-api')
 include(':medl-core')
@@ -155,7 +155,6 @@ include(':tps-identer-vedlikehold')
 
 project(":inntektsmelding-generator-service").projectDir = file('apps/inntektsmelding-generator-service')
 project(":testnorge-tss").projectDir = file('apps/testnorge-tss')
-project(":profil-api").projectDir = file('apps/profil-api')
 project(":tp-domain").projectDir = file('apps/testnorge-tp/tp-domain')
 project(":sykemelding-api").projectDir = file('apps/sykemelding-api')
 project(":medl-core").projectDir = file('apps/testnorge-medl/medl-core')
