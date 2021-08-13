@@ -14,7 +14,7 @@ import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
 
 @Slf4j
 @RequiredArgsConstructor
-public class SaveOppsummeringsdokumenterCommand implements Callable<String> {
+public class SaveOppsummeringsdokumenterCommand implements Callable<Mono<String>> {
     private final WebClient webClient;
     private final String accessToken;
     private final OppsummeringsdokumentDTO opplysningspliktigDTO;
@@ -23,14 +23,14 @@ public class SaveOppsummeringsdokumenterCommand implements Callable<String> {
     private final Populasjon populasjon;
 
     @Override
-    public String call() {
+    public Mono<String> call() {
         log.info(
                 "Sender inn opplysningspliktig {} den {} i {}.",
                 opplysningspliktigDTO.getOpplysningspliktigOrganisajonsnummer(),
                 opplysningspliktigDTO.getKalendermaaned(),
                 miljo
         );
-        var responseId = webClient
+        return webClient
                 .put()
                 .uri(builder -> builder.path("/api/v1/oppsummeringsdokumenter").build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
@@ -46,19 +46,20 @@ public class SaveOppsummeringsdokumenterCommand implements Callable<String> {
                     var id = response.headers().header("ID").stream().findFirst();
                     if (id.isEmpty()) {
                         return Mono.error(
-                                new RuntimeException("Klarer ikke å finne iden fra opplysningspliktigsdokument " + opplysningspliktigDTO.getOpplysningspliktigOrganisajonsnummer() + " den " + opplysningspliktigDTO.getKalendermaaned() + ".")
+                                new RuntimeException(
+                                        "Klarer ikke å finne iden fra opplysningspliktigsdokument "
+                                                + opplysningspliktigDTO.getOpplysningspliktigOrganisajonsnummer()
+                                                + " den " + opplysningspliktigDTO.getKalendermaaned() + "."
+                                )
                         );
                     }
+                    log.info(
+                            "Opplysningspliktig {} sendt inn den {} med id {}",
+                            opplysningspliktigDTO.getOpplysningspliktigOrganisajonsnummer(),
+                            opplysningspliktigDTO.getKalendermaaned(),
+                            id.get()
+                    );
                     return Mono.just(id.get());
-                })
-                .block();
-
-        log.info(
-                "Opplysningspliktig {} sendt inn den {} med id {}",
-                opplysningspliktigDTO.getOpplysningspliktigOrganisajonsnummer(),
-                opplysningspliktigDTO.getKalendermaaned(),
-                responseId
-        );
-        return responseId;
+                });
     }
 }

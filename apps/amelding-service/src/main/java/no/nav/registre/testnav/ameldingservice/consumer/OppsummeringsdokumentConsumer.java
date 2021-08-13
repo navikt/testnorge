@@ -6,20 +6,19 @@ import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 import no.nav.registre.testnav.ameldingservice.credentials.OppsummeringsdokumentServerProperties;
-import no.nav.testnav.libs.commands.GetOppsummeringsdokumentCommand;
 import no.nav.testnav.libs.commands.GetOppsummeringsdokumentByIdCommand;
+import no.nav.testnav.libs.commands.GetOppsummeringsdokumentCommand;
 import no.nav.testnav.libs.commands.SaveOppsummeringsdokumenterCommand;
-import no.nav.testnav.libs.servletcore.config.ApplicationProperties;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
-import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
-import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import no.nav.testnav.libs.reactivecore.config.ApplicationProperties;
+import no.nav.testnav.libs.reactivesecurity.domain.NaisServerProperties;
+import no.nav.testnav.libs.reactivesecurity.service.AccessTokenService;
 
 @Component
 public class OppsummeringsdokumentConsumer {
@@ -53,35 +52,40 @@ public class OppsummeringsdokumentConsumer {
                 .build();
     }
 
-    public String saveOpplysningspliktig(OppsummeringsdokumentDTO dto, String miljo) {
-        AccessToken accessToken = accessTokenService.generateToken(properties).block();
-        return new SaveOppsummeringsdokumenterCommand(
-                webClient,
-                accessToken.getTokenValue(),
-                dto,
-                miljo,
-                applicationProperties.getName(),
-                Populasjon.DOLLY
-        ).call();
+    public Mono<String> save(OppsummeringsdokumentDTO dto, String miljo) {
+        return accessTokenService
+                .generateToken(properties)
+                .flatMap(accessToken -> new SaveOppsummeringsdokumenterCommand(
+                        webClient,
+                        accessToken.getTokenValue(),
+                        dto,
+                        miljo,
+                        applicationProperties.getName(),
+                        Populasjon.DOLLY
+                ).call());
     }
 
 
-    public Optional<OppsummeringsdokumentDTO> get(String opplysningsplikitgOrgnummer, LocalDate kalendermaaned, String miljo) {
-        AccessToken accessToken = accessTokenService.generateToken(properties).block();
-        var dto = new GetOppsummeringsdokumentCommand(
-                webClient,
-                accessToken.getTokenValue(),
-                opplysningsplikitgOrgnummer,
-                kalendermaaned,
-                miljo
-        ).call();
-        return Optional.ofNullable(dto);
+    public Mono<OppsummeringsdokumentDTO> get(String opplysningsplikitgOrgnummer, LocalDate kalendermaaned, String miljo) {
+        return accessTokenService
+                .generateToken(properties)
+                .flatMap(accessToken -> new GetOppsummeringsdokumentCommand(
+                        webClient,
+                        accessToken.getTokenValue(),
+                        opplysningsplikitgOrgnummer,
+                        kalendermaaned,
+                        miljo
+                ).call());
     }
 
-    public Optional<OppsummeringsdokumentDTO> get(String id) {
-        AccessToken accessToken = accessTokenService.generateToken(properties).block();
-        var dto = new GetOppsummeringsdokumentByIdCommand(webClient, accessToken.getTokenValue(), id).call();
-        return Optional.ofNullable(dto);
+    public Mono<OppsummeringsdokumentDTO> get(String id) {
+        return accessTokenService
+                .generateToken(properties)
+                .flatMap(accessToken -> new GetOppsummeringsdokumentByIdCommand(
+                        webClient,
+                        accessToken.getTokenValue(),
+                        id
+                ).call());
     }
 
 }

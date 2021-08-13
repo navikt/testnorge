@@ -72,8 +72,6 @@ public class AMelding {
             } else {
                 merge(result.get(), newPerson);
             }
-
-
         });
     }
 
