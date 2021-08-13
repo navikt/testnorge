@@ -3,6 +3,7 @@ import no.nav.testnav.dependencies.gradle.DependenciesPlugin
 plugins {
     id 'no.nav.testnav.dependencies'
     id 'java-library'
+    id 'maven-publish'
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
 
