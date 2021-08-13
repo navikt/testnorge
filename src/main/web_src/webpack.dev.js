@@ -100,6 +100,46 @@ module.exports = env =>
 					target: env.backend,
 					changeOrigin: true,
 					secure: false
+				},
+				'/dolly-backend/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false
+				},
+				'/testnorge-profil-api/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false
+				},
+				'/testnorge-varslinger-api/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false
+				},
+				'/testnav-organisasjon-forvalter/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false
+				},
+				'/testnav-organisasjon-service/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false
+				},
+				'/testnav-miljoer-service/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false
+				},
+				'/udi-stub/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false
+				},
+				'/person-search-service/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false
 				}
 			}
 		},

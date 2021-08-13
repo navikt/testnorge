@@ -1,10 +1,9 @@
 import { useAsync } from 'react-use'
 import { BrregstubApi, DollyApi, KrrApi } from '~/service/Api'
-import config from '~/config'
 import Api from '~/api'
 import _isNil from 'lodash/isNil'
 
-const uri = `${config.services.dollyBackend}`
+const uri = `/dolly-backend/api/v1`
 
 export const SelectOptionsOppslag = {
 	hentOrgnr: () => Api.fetchJson(`${uri}/orgnummer`, { method: 'GET' }),

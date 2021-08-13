@@ -1,41 +1,37 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 zuul:
   routes:
-    controller:
-      path: /api/dolly-logg/**
-      url: forward:/api/dolly-logg
-      sensitiveHeaders: Cookie,Set-Cookie
     dolly-backend:
-      path: /api/v1/**
-      url: ${DOLLY_BACKEND_HOST}/api/v1
+      path: /dolly-backend/api/**
+      url: ${DOLLY_BACKEND_URL}/api
       sensitiveHeaders: Cookie,Set-Cookie
     testnorge-profil-api:
-      path: /api/testnorge-profil-api/**
-      url: ${TESTNORGE_PROFIL_API_HOST}/api/v1
+      path: /testnorge-profil-api/api/**
+      url: https://testnorge-profil-api.dev.intern.nav.no/api
       sensitiveHeaders: Cookie,Set-Cookie
     testnorge-varslinger-api:
-      path: /api/testnorge-varslinger-api/**
-      url: https://testnorge-varslinger-api.dev.adeo.no/api/v1
+      path: /testnorge-varslinger-api/api/**
+      url: https://testnorge-varslinger-api.dev.adeo.no/api
       sensitiveHeaders: Cookie,Set-Cookie
-    organisasjon-forvalter:
-      path: /api/organisasjon-forvalter/**
-      url: https://testnav-organisasjon-forvalter.dev.intern.nav.no/api/v1
+    testnav-organisasjon-forvalter:
+      path: /testnav-organisasjon-forvalter/api/**
+      url: https://testnav-organisasjon-forvalter.dev.intern.nav.no/api
       sensitiveHeaders: Cookie,Set-Cookie
-    organisasjon-service:
-      path: /api/organisasjon-service/**
-      url: https://testnav-organisasjon-service.dev.intern.nav.no/api/v1
+    testnav-organisasjon-service:
+      path: /testnav-organisasjon-service/api/**
+      url: https://testnav-organisasjon-service.dev.intern.nav.no/api
       sensitiveHeaders: Cookie,Set-Cookie
     testnav-miljoer-service:
-      path: /api/testnav-miljoer-service/**
-      url: https://testnav-miljoer-service.dev.intern.nav.no/api/v1
+      path: /testnav-miljoer-service/api/**
+      url: https://testnav-miljoer-service.dev.intern.nav.no/api
       sensitiveHeaders: Cookie,Set-Cookie
     udi-stub:
-      path: /api/udi-stub/**
-      url: ${UDI_STUB_HOST}/api/v1
+      path: /udi-stub/api/**
+      url: ${UDI_STUB_URL}/api
       sensitiveHeaders: Cookie,Set-Cookie
     person-search-service:
-      path: /api/person/search/**
-      url: https://person-search-service.dev.intern.nav.no/api/v1/person
+      path: /person-search-service/api/**
+      url: https://person-search-service.dev.intern.nav.no/api
       sensitiveHeaders: Cookie,Set-Cookie
     testnav-organisasjon-faste-data-service:
       path: /testnav-organisasjon-faste-data-service/api/**
@@ -91,22 +87,14 @@ zuul:
       sensitiveHeaders: Cookie,Set-Cookie
 
 applications:
-  testnorge-profil-api: ${TESTNORGE_PROFIL_API_CLIENT_ID}
-  dolly-backend: ${DOLLY_BACKEND_API_CLIENT_ID}
   udi-stub: ${UDI_STUB_CLIENT_ID}
-  testnorge-varslinger-api: a1dca941-bdd5-4705-a1a4-04cf76473040
   testnorge-tilbakemelding-api: 0f8c4430-19e4-4628-8e89-1dd89a1d613d
-  organisasjon-forvalter: dev-gcp.dolly.testnav-organisasjon-forvalter
-  organisasjon-service: dev-gcp.dolly.testnav-organisasjon-service
-  testnav-miljoer-service: dev-gcp.dolly.testnav-miljoer-service
-  testnav-adresse-service: dev-gcp.dolly.testnav-adresse-service
 
 application:
   basepackage: no.nav.dolly.web
 
 consumers:
   testnorge-tilbakemelding-api.baseUrl: https://testnorge-tilbakemelding-api.dev.intern.nav.no
-  testnav-miljoer-service.baseUrl: https://testnav-miljoer-service.dev.intern.nav.no
   testnav-organisasjon-faste-data-service:
     cluster: dev-gcp
     namespace: dolly
@@ -155,6 +143,42 @@ consumers:
     cluster: dev-fss
     namespace: dolly
     name: testnav-pensjon-testdata-facade-proxy
+  dolly-backend:
+    cluster: dev-fss
+    namespace: dolly
+    name: ${DOLLY_BACKEND_NAME}
+  testnorge-profil-api:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnorge-profil-api
+  testnorge-varslinger-api:
+    cluster: dev-fss
+    namespace: dolly
+    name: testnorge-varslinger-api
+  testnav-organisasjon-forvalter:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-organisasjon-forvalter
+  testnav-organisasjon-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-organisasjon-service
+  testnav-miljoer-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-miljoer-service
+  udi-stub:
+    cluster: dev-fss
+    namespace: dolly
+    name: ${UDI_STUB_NAME}
+  person-search-service:
+    cluster: dev-fss
+    namespace: dolly
+    name: person-search-service
+  testnav-adresse-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-adresse-service
 
 spring:
   application:

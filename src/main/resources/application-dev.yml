@@ -4,17 +4,12 @@ server.port: 8020
 
 #fagsystem.tpsf.url: https://tps-forvalteren-u2.nais.preprod.local
 
-TESTNORGE_PROFIL_API_CLIENT_ID: f73bfcd0-a1f5-4d3f-bfb4-4d0361191438
-DOLLY_BACKEND_API_CLIENT_ID: f0174d28-cb33-44f9-a7b5-09e52582e601
 UDI_STUB_CLIENT_ID: 4426ef7d-f148-4d19-8a03-b0d07a451938
-
-DOLLY_BACKEND_HOST: https://dolly-backend-dev.dev.adeo.no
-UDI_STUB_HOST: https://udi-stub-dev.dev.adeo.no
+DOLLY_BACKEND_NAME: dolly-backend-dev
+DOLLY_BACKEND_URL: https://dolly-backend-dev.dev.adeo.no
+UDI_STUB_URL: https://udi-stub-dev.dev.adeo.no
+UDI_STUB_NAME: udi-stub-dev
 TESTNORGE_PROFIL_API_HOST: https://testnorge-profil-api-dev.dev.intern.nav.no
 ORGANISASJON_FORVALTER_HOST: https://testnav-organisasjon-forvalter.dev.intern.nav.no
 TPS_FORVALTERN_PROXY_NAME: tps-forvalteren-dev-proxy
 TPS_FORVALTERN_PROXY_URL:  https://tps-forvalteren-dev.dev.adeo.no
-
-zuul:
-  debug:
-    request: true

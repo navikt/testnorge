@@ -5,7 +5,7 @@ export type SearchResponse = { numerOfItems: number; items: Person[] }
 
 const search = (search: Search): Promise<SearchResponse> =>
 	Api.fetch(
-		'/api/person/search',
+		'/person-search-service/api/v1/person',
 		{ method: 'POST', headers: { 'Content-Type': 'application/json' } },
 		search
 	).then(response =>

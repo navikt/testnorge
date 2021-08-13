@@ -1,6 +1,6 @@
 import Request from '~/service/services/Request'
 
-const orgServiceUrl = '/api/organisasjon-service/organisasjoner'
+const orgServiceUrl = '/testnav-organisasjon-service/api/v1/organisasjoner'
 
 export default {
 	getOrganisasjonInfo(orgnummer: string, miljoe: string) {

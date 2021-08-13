@@ -1,6 +1,6 @@
 import Request from '~/service/services/Request'
 
-const orgForvalterUrl = '/api/organisasjon-forvalter/organisasjon'
+const orgForvalterUrl = '/testnav-organisasjon-forvalter/api/v1/organisasjon'
 
 export default {
 	getOrganisasjonerInfo(orgnummer: string[]) {
