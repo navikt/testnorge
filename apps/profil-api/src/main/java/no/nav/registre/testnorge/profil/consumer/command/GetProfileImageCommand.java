@@ -35,7 +35,7 @@ public class GetProfileImageCommand implements Callable<byte[]> {
                     .block();
         } catch (IllegalStateException e) {
             log.warn("Bilde for bruker ikke funnet, melding: ", e);
-            throw new NotFoundException("Bilde ikke funnet");
+            throw new NotFoundException("Bilde ikke funnet for bruker");
         }
     }
 }
