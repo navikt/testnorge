@@ -1,7 +1,9 @@
 package no.nav.registre.testnav.ameldingservice.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -9,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import reactor.core.publisher.Mono;
 
 import java.net.URI;
 
@@ -24,21 +26,25 @@ public class AMeldingController {
     private final AMeldingService service;
 
     @PutMapping
-    public ResponseEntity<?> save(@RequestHeader String miljo, @RequestBody AMeldingDTO dto) {
-        var id = service.save(new AMelding(dto), miljo);
-        URI uri = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(id)
-                .toUri();
-        return ResponseEntity.created(uri).header("ID", id).build();
+    public Mono<ResponseEntity<HttpStatus>> save(
+            @RequestHeader String miljo,
+            @RequestBody AMeldingDTO dto,
+            ServerHttpRequest serverHttpRequest
+    ) {
+        return service
+                .save(new AMelding(dto), miljo)
+                .map(id -> ResponseEntity
+                        .created(URI.create(serverHttpRequest.getURI() + "/" + id))
+                        .header("ID", id)
+                        .build()
+                );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> get(@PathVariable("id") String id) {
+    public Mono<ResponseEntity<AMeldingDTO>> get(@PathVariable("id") String id) {
         return service.get(id)
                 .map(value -> ResponseEntity.ok(value.toDTO()))
-                .orElse(ResponseEntity.notFound().build());
+                .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
     }
 
 }

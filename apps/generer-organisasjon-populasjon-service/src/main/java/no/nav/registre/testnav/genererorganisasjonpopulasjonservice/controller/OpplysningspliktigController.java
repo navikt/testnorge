@@ -32,7 +32,7 @@ public class OpplysningspliktigController {
     }
 
     @GetMapping
-    public ResponseEntity<Set<String>> getOpplysningsplikitgOrgnummer(@RequestHeader String miljo) {
+    public ResponseEntity<Set<String>> getOpplysningspliktigOrgnummer(@RequestHeader String miljo) {
         return ResponseEntity.ok(opplysningspliktigService.getOpplysningspliktigOrgnummer(miljo));
     }
 

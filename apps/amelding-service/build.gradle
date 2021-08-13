@@ -29,28 +29,28 @@ repositories {
 
 dependencies {
 
-    implementation 'no.nav.testnav.libs:servlet-core'
+    implementation 'no.nav.testnav.libs:reactive-core'
+    implementation 'no.nav.testnav.libs:reactive-security'
+
     implementation 'no.nav.testnav.libs:commands'
     implementation 'no.nav.testnav.libs:avro-schema'
-    implementation 'no.nav.testnav.libs:servlet-security'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
 
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
 
-    implementation 'org.hibernate.validator:hibernate-validator'
+    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
 
-    implementation "org.springdoc:springdoc-openapi-ui:${DependenciesPlugin.springdocOpenapi}"
+    implementation 'org.hibernate.validator:hibernate-validator'
+
+    implementation "org.springdoc:springdoc-openapi-webflux-ui:${DependenciesPlugin.springdocOpenapi}"
     implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'no.nav.testnav.libs:testing'
-    testImplementation 'org.assertj:assertj-core:3.16.1'
 
     implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
