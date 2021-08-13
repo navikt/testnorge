@@ -66,13 +66,13 @@ public class OppsummeringsdokumentConsumer {
     }
 
 
-    public Mono<OppsummeringsdokumentDTO> get(String opplysningsplikitgOrgnummer, LocalDate kalendermaaned, String miljo) {
+    public Mono<OppsummeringsdokumentDTO> get(String opplysningspliktigOrgnummer, LocalDate kalendermaaned, String miljo) {
         return accessTokenService
                 .generateToken(properties)
                 .flatMap(accessToken -> new GetOppsummeringsdokumentCommand(
                         webClient,
                         accessToken.getTokenValue(),
-                        opplysningsplikitgOrgnummer,
+                        opplysningspliktigOrgnummer,
                         kalendermaaned,
                         miljo
                 ).call());

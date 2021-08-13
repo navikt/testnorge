@@ -75,14 +75,14 @@ public class OppsummeringsdokumentConsumer {
                         miljo,
                         applicationProperties.getName(),
                         Populasjon.MINI_NORGE
-                ).call(),
+                ).call().block(),
                 executor
         );
     }
 
     public Optional<Opplysningspliktig> getOpplysningspliktig(Organisajon organisajon, LocalDate kalendermaaned, String miljo) {
         AccessToken accessToken = accessTokenService.generateToken(properties).block();
-        var dto = new GetOppsummeringsdokumentCommand(webClient, accessToken.getTokenValue(), organisajon.getOrgnummer(), kalendermaaned, miljo).call();
+        var dto = new GetOppsummeringsdokumentCommand(webClient, accessToken.getTokenValue(), organisajon.getOrgnummer(), kalendermaaned, miljo).call().block();
         if (dto == null) {
             return Optional.empty();
         }
