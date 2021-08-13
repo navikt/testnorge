@@ -1,5 +1,7 @@
 package no.nav.dolly.bestilling.aareg.amelding;
 
+import io.swagger.v3.core.util.Json;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.config.credentials.AmeldingServiceProperties;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.metrics.Timed;
@@ -20,6 +22,7 @@ import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
 
 @Service
+@Slf4j
 public class AmeldingConsumer {
 
     private final TokenService tokenService;
@@ -38,6 +41,8 @@ public class AmeldingConsumer {
 
         AccessToken accessToken = tokenService.generateToken(serverProperties).block();
 
+        log.info("Sender liste med Ameldinger: " + Json.pretty(ameldingList));
+
         if (nonNull(accessToken)) {
             return ameldingList.values().stream().map(amelding -> putAmeldingdata(amelding, miljoe,
                     amelding.getKalendermaaned().toString(), accessToken.getTokenValue())).findFirst().orElse(null);
@@ -48,6 +53,8 @@ public class AmeldingConsumer {
     @Timed(name = "providers", tags = { "operation", "amelding_put" })
     public Map<String, ResponseEntity<Void>> putAmeldingdata(AMeldingDTO amelding, String miljoe,
                                                              String maaned, String accessTokenValue) {
+
+        log.info("Sender enkel Amelding: " + Json.pretty(amelding));
         ResponseEntity<Void> response = webClient.put()
                 .uri(uriBuilder -> uriBuilder.path("/api/v1/amelding").build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessTokenValue)

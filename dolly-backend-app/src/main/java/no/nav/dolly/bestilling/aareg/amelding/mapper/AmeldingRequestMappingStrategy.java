@@ -51,10 +51,10 @@ public class AmeldingRequestMappingStrategy implements MappingStrategy {
 
                         List<Virksomhet> virksomheter = mapperFacade.mapAsList(rsAmelding.getArbeidsforhold(), Virksomhet.class, context);
                         List<VirksomhetDTO> ameldingVirksomheter = virksomheter.stream().map(virksomhet ->
-                                VirksomhetDTO.builder()
-                                        .organisajonsnummer(virksomhet.getOrganisajonsnummer())
-                                        .personer(virksomhet.getPersoner())
-                                        .build())
+                                        VirksomhetDTO.builder()
+                                                .organisajonsnummer(virksomhet.getOrganisajonsnummer())
+                                                .personer(virksomhet.getPersoner())
+                                                .build())
                                 .collect(Collectors.toList());
 
                         amelding.setVirksomheter(ameldingVirksomheter);
@@ -83,7 +83,9 @@ public class AmeldingRequestMappingStrategy implements MappingStrategy {
                                         .antallTimerPerUke(
                                                 !rsArbeidsforholdAareg.getAntallTimerForTimeloennet().isEmpty()
                                                         ? rsArbeidsforholdAareg.getAntallTimerForTimeloennet().get(0).getAntallTimer().floatValue()
-                                                        : rsArbeidsforholdAareg.getArbeidsavtale().getAvtaltArbeidstimerPerUke().floatValue())
+                                                        : nonNull(rsArbeidsforholdAareg.getArbeidsavtale().getAvtaltArbeidstimerPerUke())
+                                                        ? rsArbeidsforholdAareg.getArbeidsavtale().getAvtaltArbeidstimerPerUke().floatValue()
+                                                        : null)
                                         .arbeidsforholdId(nonNull(rsArbeidsforholdAareg.getArbeidsforholdID()) ? rsArbeidsforholdAareg.getArbeidsforholdID() : "1")
                                         .arbeidsforholdType((String) context.getProperty("arbeidsforholdstype"))
                                         .arbeidstidsordning(rsArbeidsforholdAareg.getArbeidsavtale().getArbeidstidsordning())
@@ -94,8 +96,8 @@ public class AmeldingRequestMappingStrategy implements MappingStrategy {
                                                 (nonNull(rsArbeidsforholdAareg.getUtenlandsopphold()) && !rsArbeidsforholdAareg.getUtenlandsopphold().isEmpty())
                                                         || (nonNull(rsArbeidsforholdAareg.getAntallTimerForTimeloennet()) && !rsArbeidsforholdAareg.getAntallTimerForTimeloennet().isEmpty())
                                                         ? Stream.of(
-                                                        mapperFacade.mapAsList(rsArbeidsforholdAareg.getAntallTimerForTimeloennet(), InntektDTO.class),
-                                                        mapperFacade.mapAsList(rsArbeidsforholdAareg.getUtenlandsopphold(), InntektDTO.class))
+                                                                mapperFacade.mapAsList(rsArbeidsforholdAareg.getAntallTimerForTimeloennet(), InntektDTO.class),
+                                                                mapperFacade.mapAsList(rsArbeidsforholdAareg.getUtenlandsopphold(), InntektDTO.class))
                                                         .flatMap(Collection::stream).collect(Collectors.toList())
                                                         : null)
                                         .yrke(rsArbeidsforholdAareg.getArbeidsavtale().getYrke())
@@ -105,8 +107,8 @@ public class AmeldingRequestMappingStrategy implements MappingStrategy {
                                         .permisjoner((nonNull(rsArbeidsforholdAareg.getPermisjon()) && !rsArbeidsforholdAareg.getPermisjon().isEmpty())
                                                 || (nonNull(rsArbeidsforholdAareg.getPermittering()) && !rsArbeidsforholdAareg.getPermittering().isEmpty())
                                                 ? Stream.of(
-                                                mapperFacade.mapAsList(rsArbeidsforholdAareg.getPermisjon(), PermisjonDTO.class),
-                                                mapperFacade.mapAsList(rsArbeidsforholdAareg.getPermittering(), PermisjonDTO.class))
+                                                        mapperFacade.mapAsList(rsArbeidsforholdAareg.getPermisjon(), PermisjonDTO.class),
+                                                        mapperFacade.mapAsList(rsArbeidsforholdAareg.getPermittering(), PermisjonDTO.class))
                                                 .flatMap(Collection::stream).collect(Collectors.toList())
                                                 : null)
                                         .avvik(null) // Settes dersom avvik kommer fra frontend
@@ -143,43 +145,43 @@ public class AmeldingRequestMappingStrategy implements MappingStrategy {
                 .register();
 
         factory.classMap(RsPermittering.class, PermisjonDTO.class).customize(new CustomMapper<>() {
-            @Override
-            public void mapAtoB(RsPermittering rsPermittering, PermisjonDTO permisjonDTO, MappingContext context) {
-                permisjonDTO.setPermisjonId(PERMISJON_ID);
-                permisjonDTO.setBeskrivelse("permittering");
-                permisjonDTO.setPermisjonsprosent(rsPermittering.getPermitteringsprosent().floatValue());
-                permisjonDTO.setStartdato(
-                        nonNull(rsPermittering.getPermitteringsPeriode()) && nonNull(rsPermittering.getPermitteringsPeriode().getFom())
-                                ? rsPermittering.getPermitteringsPeriode().getFom().toLocalDate()
-                                : null);
-                permisjonDTO.setSluttdato(
-                        nonNull(rsPermittering.getPermitteringsPeriode()) && nonNull(rsPermittering.getPermitteringsPeriode().getTom())
-                                ? rsPermittering.getPermitteringsPeriode().getTom().toLocalDate()
-                                : null);
-            }
-        })
+                    @Override
+                    public void mapAtoB(RsPermittering rsPermittering, PermisjonDTO permisjonDTO, MappingContext context) {
+                        permisjonDTO.setPermisjonId(PERMISJON_ID);
+                        permisjonDTO.setBeskrivelse("permittering");
+                        permisjonDTO.setPermisjonsprosent(rsPermittering.getPermitteringsprosent().floatValue());
+                        permisjonDTO.setStartdato(
+                                nonNull(rsPermittering.getPermitteringsPeriode()) && nonNull(rsPermittering.getPermitteringsPeriode().getFom())
+                                        ? rsPermittering.getPermitteringsPeriode().getFom().toLocalDate()
+                                        : null);
+                        permisjonDTO.setSluttdato(
+                                nonNull(rsPermittering.getPermitteringsPeriode()) && nonNull(rsPermittering.getPermitteringsPeriode().getTom())
+                                        ? rsPermittering.getPermitteringsPeriode().getTom().toLocalDate()
+                                        : null);
+                    }
+                })
                 .byDefault()
                 .register();
 
         factory.classMap(RsUtenlandsopphold.class, InntektDTO.class).customize(new CustomMapper<>() {
-            @Override
-            public void mapAtoB(RsUtenlandsopphold utenlandsopphold, InntektDTO inntekt, MappingContext context) {
-                inntekt.setStartdatoOpptjeningsperiode(nonNull(utenlandsopphold.getPeriode().getFom()) ? utenlandsopphold.getPeriode().getFom().toLocalDate() : null);
-                inntekt.setSluttdatoOpptjeningsperiode(nonNull(utenlandsopphold.getPeriode().getTom()) ? utenlandsopphold.getPeriode().getTom().toLocalDate() : null);
-                inntekt.setOpptjeningsland(utenlandsopphold.getLand());
-            }
-        })
+                    @Override
+                    public void mapAtoB(RsUtenlandsopphold utenlandsopphold, InntektDTO inntekt, MappingContext context) {
+                        inntekt.setStartdatoOpptjeningsperiode(nonNull(utenlandsopphold.getPeriode().getFom()) ? utenlandsopphold.getPeriode().getFom().toLocalDate() : null);
+                        inntekt.setSluttdatoOpptjeningsperiode(nonNull(utenlandsopphold.getPeriode().getTom()) ? utenlandsopphold.getPeriode().getTom().toLocalDate() : null);
+                        inntekt.setOpptjeningsland(utenlandsopphold.getLand());
+                    }
+                })
                 .byDefault()
                 .register();
 
         factory.classMap(RsAntallTimerIPerioden.class, InntektDTO.class).customize(new CustomMapper<>() {
-            @Override
-            public void mapAtoB(RsAntallTimerIPerioden antallTimerIPerioden, InntektDTO inntekt, MappingContext context) {
-                inntekt.setStartdatoOpptjeningsperiode(nonNull(antallTimerIPerioden.getPeriode().getFom()) ? antallTimerIPerioden.getPeriode().getFom().toLocalDate() : null);
-                inntekt.setSluttdatoOpptjeningsperiode(nonNull(antallTimerIPerioden.getPeriode().getTom()) ? antallTimerIPerioden.getPeriode().getTom().toLocalDate() : null);
-                inntekt.setAntall(antallTimerIPerioden.getAntallTimer().intValue());
-            }
-        })
+                    @Override
+                    public void mapAtoB(RsAntallTimerIPerioden antallTimerIPerioden, InntektDTO inntekt, MappingContext context) {
+                        inntekt.setStartdatoOpptjeningsperiode(nonNull(antallTimerIPerioden.getPeriode().getFom()) ? antallTimerIPerioden.getPeriode().getFom().toLocalDate() : null);
+                        inntekt.setSluttdatoOpptjeningsperiode(nonNull(antallTimerIPerioden.getPeriode().getTom()) ? antallTimerIPerioden.getPeriode().getTom().toLocalDate() : null);
+                        inntekt.setAntall(antallTimerIPerioden.getAntallTimer().intValue());
+                    }
+                })
                 .byDefault()
                 .register();
     }
