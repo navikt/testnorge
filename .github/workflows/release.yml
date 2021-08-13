@@ -70,6 +70,13 @@ jobs:
         run: |
           echo Release version ${{ env.VERSION }} of reactive-security
           ./gradlew :reactive-security:publish -PreleaseVersion=${{ env.VERSION }}
+      - name: Release reactive-frontend
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
+        run: |
+          echo Release version ${{ env.VERSION }} of reactive-frontend
+          ./gradlew :reactive-frontend:publish -PreleaseVersion=${{ env.VERSION }}
       - name: Git tag og push
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
