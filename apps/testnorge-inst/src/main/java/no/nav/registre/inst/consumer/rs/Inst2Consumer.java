@@ -4,26 +4,20 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.inst.consumer.rs.command.DeleteInstitusjonsoppholdCommand;
 import no.nav.registre.inst.consumer.rs.command.ExistsInstitusjonsoppholdCommand;
 import no.nav.registre.inst.consumer.rs.command.GetInstitusjonsoppholdCommand;
+import no.nav.registre.inst.consumer.rs.command.GetTilgjengeligeMiljoerCommand;
 import no.nav.registre.inst.consumer.rs.command.PostInstitusjonsoppholdCommand;
 import no.nav.registre.inst.domain.InstitusjonResponse;
 import no.nav.registre.inst.domain.InstitusjonsoppholdV2;
 import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
-import no.nav.registre.inst.provider.rs.responses.SupportedEnvironmentsResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.util.UriTemplate;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import static java.util.Collections.emptyList;
-import static java.util.Objects.nonNull;
 
 @Component
 @Slf4j
@@ -82,22 +76,6 @@ public class Inst2Consumer {
     }
 
     public List<String> hentInst2TilgjengeligeMiljoer() {
-        try {
-            ResponseEntity<SupportedEnvironmentsResponse> response = webClient.get().uri(inst2NewServerUrl, uriBuilder ->
-                            uriBuilder.path("/v1/environment")
-                                    .build())
-                    .retrieve().toEntity(SupportedEnvironmentsResponse.class).block();
-            List<String> miljoer = nonNull(response) && response.hasBody() && nonNull(response.getBody().getInstitusjonsoppholdEnvironments())
-                    ? response.getBody().getInstitusjonsoppholdEnvironments()
-                    .stream()
-                    .sorted()
-                    .collect(Collectors.toList())
-                    : emptyList();
-            log.info("Tilgjengelige inst2 miljøer: {}", String.join(",", miljoer));
-            return miljoer;
-        } catch (WebClientResponseException e) {
-            log.error("Henting av tilgjengelige miljøer i Inst2 feilet: ", e);
-            return new ArrayList<>();
-        }
+        return new GetTilgjengeligeMiljoerCommand(webClient, inst2NewServerUrl).call();
     }
 }
