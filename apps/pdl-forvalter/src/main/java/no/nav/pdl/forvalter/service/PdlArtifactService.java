@@ -1,11 +1,13 @@
 package no.nav.pdl.forvalter.service;
 
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 
 import java.util.List;
 
+import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
-import static org.apache.logging.log4j.util.Strings.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public abstract class PdlArtifactService<T extends DbVersjonDTO> {
 
@@ -16,10 +18,9 @@ public abstract class PdlArtifactService<T extends DbVersjonDTO> {
             if (isTrue(type.getIsNew())) {
                 validate(type);
 
+                type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
+                type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
                 handle(type);
-                if (isBlank(type.getKilde())) {
-                    type.setKilde("Dolly");
-                }
             }
         }
         enforceIntegrity(request);

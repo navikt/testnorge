@@ -76,7 +76,7 @@ public class MatrikkeladresseServiceCommand implements Callable<Mono<Matrikkelad
                                 "gaardsnummer", filterArtifact(nullcheck(query.getGaardsnummer())),
                                 "bruksnummer", filterArtifact(nullcheck(query.getBruksnummer())),
                                 "postnummer", filterArtifact(query.getPostnummer()),
-                                "tilleggsnavn", filterArtifact(query.getAdressetilleggsnavn()))
+                                "tilleggsnavn", filterArtifact(query.getTilleggsnavn()))
                                 .entrySet().stream()
                                 .filter(entry -> isNotBlank(entry.getValue()))
                                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> List.of(entry.getValue())))));

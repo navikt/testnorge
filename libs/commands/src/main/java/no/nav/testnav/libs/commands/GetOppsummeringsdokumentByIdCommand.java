@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
@@ -13,29 +14,28 @@ import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Oppsummeringsdoku
 
 @Slf4j
 @RequiredArgsConstructor
-public class GetOppsummeringsdokumentByIdCommand implements Callable<OppsummeringsdokumentDTO> {
+public class GetOppsummeringsdokumentByIdCommand implements Callable<Mono<OppsummeringsdokumentDTO>> {
     private final WebClient webClient;
     private final String accessToken;
     private final String id;
 
     @SneakyThrows
     @Override
-    public OppsummeringsdokumentDTO call() {
+    public Mono<OppsummeringsdokumentDTO> call() {
         log.info("Henter oppsummeringsdokumentet med id {}.", id);
-        try {
-            return webClient
-                    .get()
-                    .uri(builder -> builder
-                            .path("/api/v1/oppsummeringsdokumenter/{id}")
-                            .build(id)
-                    )
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
-                    .retrieve()
-                    .bodyToMono(OppsummeringsdokumentDTO.class)
-                    .block();
-        } catch (WebClientResponseException.NotFound e) {
-            log.warn("Fant ikke oppsummeringsdokument med id {}.", id);
-            return null;
-        }
+        return webClient
+                .get()
+                .uri(builder -> builder
+                        .path("/api/v1/oppsummeringsdokumenter/{id}")
+                        .build(id)
+                )
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .retrieve()
+                .bodyToMono(OppsummeringsdokumentDTO.class)
+                .onErrorResume(WebClientResponseException.NotFound.class, ex -> {
+                    log.info("Fant ikke oppsummeringsdokumentet med id {}.", id);
+                    return Mono.empty();
+                });
+
     }
 }

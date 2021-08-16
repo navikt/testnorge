@@ -4,12 +4,16 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO.Master.PDL;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
@@ -40,8 +44,22 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO> {
         }
     }
 
-    @Override
-    protected void validate(KontaktadresseDTO adresse) {
+    public List<KontaktadresseDTO> convert(PersonDTO person) {
+
+        for (var adresse : person.getKontaktadresse()) {
+
+            if (isTrue(adresse.getIsNew())) {
+                validate(adresse);
+
+                handle(adresse);
+                populateMiscFields(adresse, person);
+            }
+        }
+        enforceIntegrity(person.getKontaktadresse());
+        return person.getKontaktadresse();
+    }
+
+    private void validate(KontaktadresseDTO adresse) {
         if (count(adresse.getPostboksadresse()) +
                 count(adresse.getUtenlandskAdresse()) +
                 count(adresse.getVegadresse()) == 0) {
@@ -52,7 +70,7 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO> {
                 count(adresse.getVegadresse()) > 1) {
             throw new InvalidRequestException(VALIDATION_AMBIGUITY_ERROR);
         }
-        if (PDL.equals(adresse.getMaster()) &&
+        if (DbVersjonDTO.Master.PDL == adresse.getMaster() &&
                 (isNull(adresse.getGyldigFraOgMed()) || isNull(adresse.getGyldigTilOgMed()))) {
             throw new InvalidRequestException(VALIDATION_MASTER_PDL_ERROR);
         }
@@ -71,8 +89,8 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO> {
         }
     }
 
-    @Override
-    protected void handle(KontaktadresseDTO kontaktadresse) {
+    private void handle(KontaktadresseDTO kontaktadresse) {
+
         if (nonNull(kontaktadresse.getVegadresse())) {
             var vegadresse =
                     adresseServiceConsumer.getVegadresse(kontaktadresse.getVegadresse(), kontaktadresse.getAdresseIdentifikatorFraMatrikkelen());

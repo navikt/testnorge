@@ -4,13 +4,12 @@ import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FalskIdentitetDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
-
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,6 +18,7 @@ import java.util.List;
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility.isSyntetisk;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -62,9 +62,8 @@ public class FalskIdentitetService {
                 validate(type);
 
                 handle(type, person.getIdent());
-                if (Strings.isBlank(type.getKilde())) {
-                    type.setKilde("Dolly");
-                }
+                type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
+                type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : DbVersjonDTO.Master.FREG);
             }
         }
         return person.getFalskIdentitet();
@@ -76,8 +75,8 @@ public class FalskIdentitetService {
             throw new InvalidRequestException(VALIDATION_FALSK_IDENTITET_ER_FALSK_MISSING);
         }
 
-        if (nonNull(identitet.getGyldigFom()) && nonNull(identitet.getGyldigTom()) &&
-                !identitet.getGyldigFom().isBefore(identitet.getGyldigTom())) {
+        if (nonNull(identitet.getGyldigFraOgMed()) && nonNull(identitet.getGyldigTilOgMed()) &&
+                !identitet.getGyldigFraOgMed().isBefore(identitet.getGyldigTilOgMed())) {
             throw new InvalidRequestException(VALIDATION_UGYLDIG_INTERVAL_ERROR);
         }
 
@@ -122,6 +121,10 @@ public class FalskIdentitetService {
 
                 identitet.getNyFalskIdentitetPerson().setFoedtFoer(LocalDateTime.now().minusYears(18));
                 identitet.getNyFalskIdentitetPerson().setFoedtEtter(LocalDateTime.now().minusYears(75));
+            }
+
+            if (isNull(identitet.getNyFalskIdentitetPerson().getSyntetisk())) {
+                identitet.getNyFalskIdentitetPerson().setSyntetisk(isSyntetisk(ident));
             }
 
             identitet.setRettIdentitetVedIdentifikasjonsnummer(

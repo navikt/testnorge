@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
@@ -8,8 +9,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
-import static org.apache.logging.log4j.util.Strings.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 public class KjoennService {
@@ -21,9 +23,8 @@ public class KjoennService {
             if (isTrue(type.getIsNew())) {
 
                 handle(type, person.getIdent());
-                if (isBlank(type.getKilde())) {
-                    type.setKilde("Dolly");
-                }
+                type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
+                type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : DbVersjonDTO.Master.FREG);
             }
         }
         return person.getKjoenn();

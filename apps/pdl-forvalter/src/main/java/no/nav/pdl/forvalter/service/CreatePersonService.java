@@ -43,14 +43,15 @@ public class CreatePersonService {
     private static PersonDTO buildPerson(PersonRequestDTO request) {
 
         return PersonDTO.builder()
-                .kjoenn(List.of(KjoennDTO.builder().build()))
+                .kjoenn(List.of(KjoennDTO.builder().kjoenn(request.getKjoenn()).build()))
                 .foedsel(List.of(FoedselDTO.builder().build()))
                 .navn(nonNull(request.getNyttNavn()) ?
                         List.of(NavnDTO.builder().hasMellomnavn(request.getNyttNavn().isHarMellomnavn()).build()) :
                         emptyList())
-                .bostedsadresse(List.of(BostedadresseDTO.builder()
-                        .vegadresse(new VegadresseDTO())
-                        .build()))
+                .bostedsadresse(List.of(
+                                BostedadresseDTO.builder()
+                                        .vegadresse(new VegadresseDTO())
+                                        .build()))
                 .statsborgerskap(List.of(StatsborgerskapDTO.builder().build()))
                 .folkeregisterpersonstatus(
                         List.of(FolkeregisterpersonstatusDTO.builder().build()))
@@ -70,7 +71,7 @@ public class CreatePersonService {
         kjoennService.convert(mergedPerson);
         navnService.convert(mergedPerson.getNavn());
         statsborgerskapService.convert(mergedPerson);
-        bostedAdresseService.convert(mergedPerson.getBostedsadresse());
+        bostedAdresseService.convert(mergedPerson);
         foedselService.convert(mergedPerson);
         folkeregisterPersonstatusService.convert(mergedPerson);
 

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
@@ -11,10 +12,12 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,8 +25,9 @@ import java.util.List;
 public class PdlFalskIdentitet extends DbVersjonDTO {
 
     private Boolean erFalsk;
-    private Folkeregistermetadata folkeregistermetadata;
     private RettIdentitet rettIdentitet;
+    private LocalDate gyldigFraOgMed;
+    private LocalDate gyldigTilOgMed;
 
     @Data
     @Builder
@@ -37,6 +41,7 @@ public class PdlFalskIdentitet extends DbVersjonDTO {
     }
 
     @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)

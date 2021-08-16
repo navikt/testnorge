@@ -29,7 +29,7 @@ public class PersonDTO implements Serializable {
     private List<InnflyttingDTO> innflytting;
     private List<UtflyttingDTO> utflytting;
     private List<DeltBostedDTO> deltBosted;
-    private List<FamilierelasjonDTO> forelderBarnRelasjon;
+    private List<ForelderBarnRelasjonDTO> forelderBarnRelasjon;
     private List<ForeldreansvarDTO> foreldreansvar;
     private List<KontaktinformasjonForDoedsboDTO> kontaktinformasjonForDoedsbo;
     private List<UtenlandskIdentifikasjonsnummerDTO> utenlandskIdentifikasjonsnummer;
@@ -81,7 +81,7 @@ public class PersonDTO implements Serializable {
         return deltBosted;
     }
 
-    public List<FamilierelasjonDTO> getForelderBarnRelasjon() {
+    public List<ForelderBarnRelasjonDTO> getForelderBarnRelasjon() {
         if (isNull(forelderBarnRelasjon)) {
             forelderBarnRelasjon = new ArrayList<>();
         }

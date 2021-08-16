@@ -67,7 +67,7 @@ class FullmaktServiceTest {
         var request = PersonDTO.builder()
                 .fullmakt(List.of(FullmaktDTO.builder()
                         .omraader(List.of("OMRAADE"))
-                        .gyldigFom(LocalDate.of(2012, 04, 05).atStartOfDay())
+                        .gyldigFraOgMed(LocalDate.of(2012, 04, 05).atStartOfDay())
                         .isNew(true)
                         .build()))
                 .build();
@@ -84,8 +84,8 @@ class FullmaktServiceTest {
         var request = PersonDTO.builder()
                 .fullmakt(List.of(FullmaktDTO.builder()
                         .omraader(List.of("OMRAADE"))
-                        .gyldigFom(LocalDate.of(2012, 04, 05).atStartOfDay())
-                        .gyldigTom(LocalDate.of(2012, 04, 04).atStartOfDay())
+                        .gyldigFraOgMed(LocalDate.of(2012, 04, 05).atStartOfDay())
+                        .gyldigTilOgMed(LocalDate.of(2012, 04, 04).atStartOfDay())
                         .isNew(true)
                         .build()))
                 .build();
@@ -104,9 +104,9 @@ class FullmaktServiceTest {
         var request = PersonDTO.builder()
                 .fullmakt(List.of(FullmaktDTO.builder()
                         .omraader(List.of("OMRAADE"))
-                        .gyldigFom(LocalDate.of(2012, 04, 05).atStartOfDay())
-                        .gyldigTom(LocalDate.of(2012, 04, 06).atStartOfDay())
-                        .fullmektig(IDENT)
+                        .gyldigFraOgMed(LocalDate.of(2012, 04, 05).atStartOfDay())
+                        .gyldigTilOgMed(LocalDate.of(2012, 04, 06).atStartOfDay())
+                        .motpartsPersonident(IDENT)
                         .isNew(true)
                         .build()))
                 .build();

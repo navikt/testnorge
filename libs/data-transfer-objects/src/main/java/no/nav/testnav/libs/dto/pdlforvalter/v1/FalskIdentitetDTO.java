@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -14,6 +15,7 @@ import java.util.List;
 
 @Data
 @SuperBuilder
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -25,8 +27,8 @@ public class FalskIdentitetDTO extends DbVersjonDTO {
             "nyFalskIdentitet er satt vil ny person oppreettes og bli satt til rettIdentitetVedIdentifikasjonsnummer.")
 
     private Boolean erFalsk;
-    private LocalDateTime gyldigFom;
-    private LocalDateTime gyldigTom;
+    private LocalDateTime gyldigFraOgMed;
+    private LocalDateTime gyldigTilOgMed;
 
     private PersonRequestDTO nyFalskIdentitetPerson;
 

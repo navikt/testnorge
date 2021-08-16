@@ -5,11 +5,14 @@ import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static java.util.Objects.nonNull;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO.Master.FREG;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO.Master.PDL;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Service
@@ -30,8 +33,22 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO> {
         this.mapperFacade = mapperFacade;
     }
 
-    @Override
-    protected void validate(BostedadresseDTO adresse) {
+    public List<BostedadresseDTO> convert(PersonDTO person) {
+
+        for (var adresse : person.getBostedsadresse()) {
+
+            if (isTrue(adresse.getIsNew())) {
+                validate(adresse);
+
+                handle(adresse);
+                populateMiscFields(adresse, person);
+            }
+        }
+        enforceIntegrity(person.getBostedsadresse());
+        return person.getBostedsadresse();
+    }
+
+    private void validate(BostedadresseDTO adresse) {
 
         if (count(adresse.getMatrikkeladresse()) +
                 count(adresse.getUtenlandskAdresse()) +
@@ -46,7 +63,7 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO> {
             throw new InvalidRequestException(VALIDATION_ADDRESS_ABSENT_ERROR);
         }
 
-        if (FREG.equals(adresse.getMaster()) && (nonNull(adresse.getUtenlandskAdresse()))) {
+        if (DbVersjonDTO.Master.FREG == adresse.getMaster() && nonNull(adresse.getUtenlandskAdresse())) {
             throw new InvalidRequestException(VALIDATION_MASTER_PDL_ERROR);
         }
         if (nonNull(adresse.getVegadresse()) && isNotBlank(adresse.getVegadresse().getBruksenhetsnummer())) {
@@ -64,8 +81,7 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO> {
         }
     }
 
-    @Override
-    protected void handle(BostedadresseDTO bostedadresse) {
+    private void handle(BostedadresseDTO bostedadresse) {
 
         if (nonNull(bostedadresse.getVegadresse())) {
             var vegadresse =
@@ -80,7 +96,7 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO> {
             mapperFacade.map(matrikkeladresse, bostedadresse.getMatrikkeladresse());
 
         } else if (nonNull(bostedadresse.getUtenlandskAdresse())) {
-            bostedadresse.setMaster(PDL);
+            bostedadresse.setMaster(DbVersjonDTO.Master.PDL);
         }
 
         bostedadresse.setCoAdressenavn(genererCoNavn(bostedadresse.getOpprettCoAdresseNavn()));

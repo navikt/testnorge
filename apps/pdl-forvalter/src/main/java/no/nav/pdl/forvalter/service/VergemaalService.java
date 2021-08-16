@@ -3,11 +3,12 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -41,9 +42,8 @@ public class VergemaalService {
                 validate(type);
 
                 handle(type, person.getIdent());
-                if (Strings.isBlank(type.getKilde())) {
-                    type.setKilde("Dolly");
-                }
+                type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
+                type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : DbVersjonDTO.Master.FREG);
             }
         }
         return person.getVergemaal();
@@ -55,8 +55,8 @@ public class VergemaalService {
             throw new InvalidRequestException(VALIDATION_EMBETE_ERROR);
         }
 
-        if (nonNull(vergemaal.getGyldigFom()) && nonNull(vergemaal.getGyldigTom()) &&
-                !vergemaal.getGyldigFom().isBefore(vergemaal.getGyldigTom())) {
+        if (nonNull(vergemaal.getGyldigFraOgMed()) && nonNull(vergemaal.getGyldigTilOgMed()) &&
+                !vergemaal.getGyldigFraOgMed().isBefore(vergemaal.getGyldigTilOgMed())) {
             throw new InvalidRequestException(VALIDATION_UGYLDIG_INTERVAL_ERROR);
         }
 
@@ -84,6 +84,10 @@ public class VergemaalService {
 
                 fullmakt.getNyVergeIdent().setFoedtFoer(LocalDateTime.now().minusYears(18));
                 fullmakt.getNyVergeIdent().setFoedtEtter(LocalDateTime.now().minusYears(75));
+            }
+
+            if (isNull(fullmakt.getNyVergeIdent().getSyntetisk())) {
+                fullmakt.getNyVergeIdent().setSyntetisk(SyntetiskFraIdentUtility.isSyntetisk(ident));
             }
 
             fullmakt.setVergeIdent(createPersonService.execute(fullmakt.getNyVergeIdent()).getIdent());

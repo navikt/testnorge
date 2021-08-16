@@ -48,12 +48,12 @@ class InnflyttingServiceTest {
 
         var request = List.of(InnflyttingDTO.builder()
                         .fraflyttingsland("AUS")
-                        .flyttedato(LocalDate.of(2015, 12, 31).atStartOfDay())
+                        .gyldigFraOgMed(LocalDate.of(2015, 12, 31).atStartOfDay())
                         .isNew(true)
                         .build(),
                 InnflyttingDTO.builder()
                         .fraflyttingsland("RUS")
-                        .flyttedato(LocalDate.of(2015, 12, 31).atStartOfDay())
+                        .gyldigFraOgMed(LocalDate.of(2015, 12, 31).atStartOfDay())
                         .isNew(true)
                         .build());
 

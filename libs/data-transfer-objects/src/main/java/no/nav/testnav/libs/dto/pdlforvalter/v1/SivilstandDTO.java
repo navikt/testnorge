@@ -1,14 +1,20 @@
 package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
 @Data
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SivilstandDTO extends DbVersjonDTO {
 
     public enum Sivilstand {
@@ -25,12 +31,10 @@ public class SivilstandDTO extends DbVersjonDTO {
     }
 
     private LocalDateTime bekreftelsesdato;
-    private String kommune;
-    private String master;
-    private String myndighet;
     private String relatertVedSivilstand;
     private LocalDateTime sivilstandsdato;
-    private String sted;
     private Sivilstand type;
-    private String utland;
+
+    private Boolean borIkkeSammen;
+    private PersonRequestDTO nyRelatertPerson;
 }

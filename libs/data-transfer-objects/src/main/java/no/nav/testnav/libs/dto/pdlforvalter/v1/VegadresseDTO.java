@@ -3,14 +3,12 @@ package no.nav.testnav.libs.dto.pdlforvalter.v1;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.io.Serializable;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,7 +17,7 @@ public class VegadresseDTO implements Serializable {
 
     private String adressekode;
     private String adressenavn;
-    private String adressetilleggsnavn;
+    private String tilleggsnavn;
     private String bruksenhetsnummer;
     private String husbokstav;
     private String husnummer;

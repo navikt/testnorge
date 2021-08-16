@@ -1,5 +1,6 @@
 package no.nav.testnav.proxies.tpsforvaterenproxy;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -23,9 +24,13 @@ public class TpsForvaterenProxyApplicationStarter {
     }
 
     @Bean
-    public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+    public RouteLocator customRouteLocator(RouteLocatorBuilder builder, @Value("${proxy.url}") String url) {
         return builder.routes()
-                .route(spec -> spec.path("/**").uri("https://tps-forvalteren.dev.adeo.no"))
+                .route(spec -> spec
+                        .path("/**")
+                        .filters(filterSpec -> filterSpec.removeRequestHeader("Origin"))
+                        .uri(url)
+                )
                 .build();
     }
 

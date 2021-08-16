@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 
 @Data
 @SuperBuilder
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -40,7 +42,7 @@ public class KontaktinformasjonForDoedsboDTO extends DbVersjonDTO {
     @Schema(required = true,
             type = "LocalDateTime",
             description = "Dato for utstedelse")
-    private LocalDateTime utstedtDato;
+    private LocalDateTime attestutstedelsesdato;
 
     private AdressatDTO adressat;
 
@@ -69,7 +71,7 @@ public class KontaktinformasjonForDoedsboDTO extends DbVersjonDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class KontaktpersonMedIdNummerDTO implements Serializable {
 
-        private String idnummer;
+        private String identifikasjonsnummer;
         private PersonRequestDTO nyKontaktPerson;
     }
 

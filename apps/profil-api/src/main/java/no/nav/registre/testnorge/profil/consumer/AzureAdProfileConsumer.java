@@ -1,6 +1,13 @@
 package no.nav.registre.testnorge.profil.consumer;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.profil.consumer.command.GetProfileCommand;
+import no.nav.registre.testnorge.profil.consumer.command.GetProfileImageCommand;
+import no.nav.registre.testnorge.profil.consumer.dto.ProfileDTO;
+import no.nav.registre.testnorge.profil.domain.Profil;
+import no.nav.testnav.libs.servletsecurity.domain.AccessScopes;
+import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
@@ -10,14 +17,7 @@ import reactor.netty.http.client.HttpClient;
 import reactor.netty.tcp.ProxyProvider;
 
 import java.net.URI;
-
-import no.nav.testnav.libs.servletsecurity.domain.AccessScopes;
-import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
-import no.nav.registre.testnorge.profil.consumer.command.GetProfileCommand;
-import no.nav.registre.testnorge.profil.consumer.command.GetProfileImageCommand;
-import no.nav.registre.testnorge.profil.consumer.dto.ProfileDTO;
-import no.nav.registre.testnorge.profil.domain.Profil;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -67,7 +67,7 @@ public class AzureAdProfileConsumer {
         return new Profil(dto);
     }
 
-    public byte[] getProfilImage() {
+    public Optional<byte[]> getProfilImage() {
         AccessToken accessToken = accessTokenService.generateToken(accessScopes).block();
         return new GetProfileImageCommand(webClient, accessToken.getTokenValue()).call();
     }

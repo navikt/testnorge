@@ -6,6 +6,9 @@ metadata:
   labels:
     team: dolly
 spec:
+  env:
+    - name: PROXY_URL
+      value: https://tps-forvalteren.dev.adeo.no
   image: {{ image }}
   port: 8080
   webproxy: true
@@ -23,6 +26,10 @@ spec:
         - application: testnav-miljoer-service
           cluster: dev-gcp
         - application: testnav-person-service
+          cluster: dev-gcp
+        - application: dolly-frontend
+          cluster: dev-fss
+        - application: testnav-oversikt-frontend
           cluster: dev-gcp
   liveness:
     path: /internal/isAlive
@@ -48,3 +55,4 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://tps-forvalteren-proxy.dev-fss-pub.nais.io"
+    - "https://tps-forvalteren-proxy.dev.intern.nav.no"

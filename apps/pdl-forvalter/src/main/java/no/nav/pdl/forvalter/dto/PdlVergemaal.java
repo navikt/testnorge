@@ -3,21 +3,27 @@ package no.nav.pdl.forvalter.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 
 @Data
-@Builder
+@SuperBuilder
+@EqualsAndHashCode(callSuper=true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class PdlVergemaal extends DbVersjonDTO {
 
     private String embete;
-    private Folkeregistermetadata folkeregistermetadata;
     private VergemaalType type;
     private VergeEllerFullmektig vergeEllerFullmektig;
+    private LocalDate gyldigFraOgMed;
+    private LocalDate gyldigTilOgMed;
+
     public enum VergemaalType {
         ENSLIG_MINDREAARIG_ASYLSOEKER,
         ENSLIG_MINDREAARIG_FLYKTNING,

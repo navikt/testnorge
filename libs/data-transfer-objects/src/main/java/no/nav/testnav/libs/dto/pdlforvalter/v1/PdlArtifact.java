@@ -6,7 +6,7 @@ package no.nav.testnav.libs.dto.pdlforvalter.v1;
         PDL_FOLKEREGISTER_PERSONSTATUS,
         PDL_FALSK_IDENTITET,
         PDL_FOEDSEL,
-        PDL_FAMILIERELASJON,
+        PDL_FORELDRE_BARN_RELASJON,
         PDL_DOEDSFALL,
         PDL_ADRESSEBESKYTTELSE,
         PDL_NAVN,

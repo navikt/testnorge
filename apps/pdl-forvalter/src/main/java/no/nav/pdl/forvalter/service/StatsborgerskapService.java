@@ -5,10 +5,10 @@ import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
 import no.nav.pdl.forvalter.utils.TilfeldigLandService;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +20,7 @@ import static no.nav.pdl.forvalter.utils.ArtifactUtils.isLandkode;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FNR;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
@@ -38,9 +39,8 @@ public class StatsborgerskapService {
                 validate(type);
 
                 handle(type, person.getIdent(), person.getInnflytting().stream().reduce((a, b) -> b).orElse(null));
-                if (Strings.isBlank(type.getKilde())) {
-                    type.setKilde("Dolly");
-                }
+                type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
+                type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : DbVersjonDTO.Master.FREG);
             }
         }
         return person.getStatsborgerskap();
@@ -52,8 +52,8 @@ public class StatsborgerskapService {
             throw new InvalidRequestException(VALIDATION_LANDKODE_ERROR);
         }
 
-        if (nonNull(statsborgerskap.getGyldigFom()) && nonNull(statsborgerskap.getGyldigTom()) &&
-                !statsborgerskap.getGyldigFom().isBefore(statsborgerskap.getGyldigTom())) {
+        if (nonNull(statsborgerskap.getGyldigFraOgMed()) && nonNull(statsborgerskap.getGyldigTilOgMed()) &&
+                !statsborgerskap.getGyldigFraOgMed().isBefore(statsborgerskap.getGyldigTilOgMed())) {
             throw new InvalidRequestException(VALIDATION_DATOINTERVALL_ERROR);
         }
     }
@@ -70,8 +70,8 @@ public class StatsborgerskapService {
             }
         }
 
-        if (isNull(statsborgerskap.getGyldigFom())) {
-            statsborgerskap.setGyldigFom(DatoFraIdentUtility.getDato(ident).atStartOfDay());
+        if (isNull(statsborgerskap.getGyldigFraOgMed())) {
+            statsborgerskap.setGyldigFraOgMed(DatoFraIdentUtility.getDato(ident).atStartOfDay());
         }
     }
 }
