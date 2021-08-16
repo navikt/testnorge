@@ -47,3 +47,4 @@ spec:
   ingresses:
     - "https://testnorge-varslinger-api.dev.adeo.no"
     - "https://testnorge-varslinger-api.dev.intern.nav.no"
+    - "https://testnorge-varslinger-api.dev-fss-pub.nais.io"

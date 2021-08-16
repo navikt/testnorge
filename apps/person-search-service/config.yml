@@ -45,3 +45,4 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://person-search-service.dev.intern.nav.no"
+    - "https://person-search-service.dev-fss-pub.nais.io"
