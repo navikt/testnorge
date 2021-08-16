@@ -95,7 +95,7 @@ public class AaregConsumerTest {
 
     @Test
     public void hentArbeidsforhold() {
-        String expectedUri = serverUrl + "/api/v2/arbeidsforhold?ident={ident}&miljoe={miljoe}";
+        String expectedUri = serverUrl + "/api/v1/arbeidsforhold?ident={ident}&miljoe={miljoe}";
         stubHentArbeidsforhold(expectedUri);
 
         aaregConsumer.hentArbeidsforhold(ident, miljoe);

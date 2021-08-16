@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - aareg-arbeidsforhold-innsending-gammel
+      - bugfix/aareg-190-error-ved-gjenopprett
 
 
 env:
