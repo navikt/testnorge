@@ -26,6 +26,8 @@ spec:
           cluster: dev-gcp
         - application: dolly-frontend
           cluster: dev-fss
+        - application: dolly-frontend
+          cluster: dev-gcp
         - application: testnav-joark-dokument-service
           cluster: dev-gcp
   liveness:

@@ -25,6 +25,8 @@ spec:
           cluster: dev-gcp
         - application: dolly-frontend
           cluster: dev-fss
+        - application: dolly-frontend
+          cluster: dev-gcp
     outbound:
       rules:
         - application: oppsummeringsdokument-service

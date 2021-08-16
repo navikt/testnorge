@@ -27,6 +27,8 @@ spec:
           cluster: dev-gcp
         - application: dolly-frontend
           cluster: dev-fss
+        - application: dolly-frontend
+          cluster: dev-gcp
         - application: testnav-faste-data-frontend
           cluster: dev-gcp
     outbound:
