@@ -47,6 +47,8 @@ spec:
           cluster: dev-fss
         - application: dolly-frontend-dev
           cluster: dev-fss
+        - application: dolly-frontend-dev
+          cluster: dev-gcp
     outbound:
       rules:
         - application: generer-navn-service
