@@ -12,6 +12,8 @@ spec:
         - application: dolly-frontend-dev
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
+        - application: dolly-frontend-dev
+          cluster: dev-gcp
         - application: team-dolly-lokal-app
   webproxy: true
   azure:
