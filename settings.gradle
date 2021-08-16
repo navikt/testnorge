@@ -68,6 +68,7 @@ includeBuild './apps/person-service'
 includeBuild './apps/profil-api'
 includeBuild './apps/faste-data-frontend'
 includeBuild './apps/oversikt-frontend'
+includeBuild './apps/testnorge-inst'
 includeBuild './apps/endringsmelding-frontend'
 includeBuild './apps/endringsmelding-service'
 includeBuild './apps/applikasjonsanalyse-frontend'
@@ -127,19 +128,15 @@ include(':apps')
 include(':brreg-stub')
 include(':sigrun-domain')
 include(':libs')
-include(':testnorge-inst')
 include(':testnorge-spion')
 include(':opprett-person-pdl')
 include(':varslinger-api')
 include(':testnorge-inntekt')
-include(':inst-local')
 include(':tp-core')
 include(':testnorge-aareg')
 include(':synt-person-api')
 include(':skd-core')
 include(':testnorge-sam')
-include(':inst-core')
-include(':inst-domain')
 include(':testnorge-skd')
 include(':statistikk-service')
 include(':skd-local')
@@ -195,19 +192,15 @@ project(":helsepersonell-service").projectDir = file('apps/helsepersonell-servic
 project(":person-export-api").projectDir = file('apps/person-export-api')
 project(":brreg-stub").projectDir = file('apps/brreg-stub')
 project(":sigrun-domain").projectDir = file('apps/testnorge-sigrun/sigrun-domain')
-project(":testnorge-inst").projectDir = file('apps/testnorge-inst')
 project(":testnorge-spion").projectDir = file('apps/testnorge-spion')
 project(":opprett-person-pdl").projectDir = file('apps/opprett-person-pdl')
 project(":varslinger-api").projectDir = file('apps/varslinger-api')
 project(":testnorge-inntekt").projectDir = file('apps/testnorge-inntekt')
-project(":inst-local").projectDir = file('apps/testnorge-inst/inst-local')
 project(":tp-core").projectDir = file('apps/testnorge-tp/tp-core')
 project(":testnorge-aareg").projectDir = file('apps/testnorge-aareg')
 project(":synt-person-api").projectDir = file('apps/synt-person-api')
 project(":skd-core").projectDir = file('apps/testnorge-skd/skd-core')
 project(":testnorge-sam").projectDir = file('apps/testnorge-sam')
-project(":inst-core").projectDir = file('apps/testnorge-inst/inst-core')
-project(":inst-domain").projectDir = file('apps/testnorge-inst/inst-domain')
 project(":testnorge-skd").projectDir = file('apps/testnorge-skd')
 project(":statistikk-service").projectDir = file('apps/statistikk-service')
 project(":skd-local").projectDir = file('apps/testnorge-skd/skd-local')
