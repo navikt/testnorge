@@ -49,7 +49,6 @@ public class IdentService {
     ) {
         log.info("Sender institusjonsopphold til inst2: " + opphold);
         var oppholdResponse = inst2Consumer.leggTilInstitusjonsoppholdIInst2(
-                hentTokenTilInst2(miljoe),
                 callId,
                 consumerId,
                 miljoe,
@@ -64,12 +63,10 @@ public class IdentService {
             String miljoe,
             List<String> identer
     ) {
-        var bearerToken = hentTokenTilInst2(miljoe);
-
         List<OppholdResponse> sletteOppholdResponses = new ArrayList<>(identer.size());
 
         for (var ident : identer) {
-            var response = slettOppholdMedIdent(bearerToken, callId, consumerId, miljoe, ident);
+            var response = slettOppholdMedIdent(callId, consumerId, miljoe, ident);
             sletteOppholdResponses.add(OppholdResponse.builder()
                     .personident(ident)
                     .status(response.getStatusCode())
@@ -81,13 +78,12 @@ public class IdentService {
     }
 
     public ResponseEntity<Object> slettOppholdMedIdent(
-            String bearerToken,
             String callId,
             String consumerId,
             String miljoe,
             String ident
     ) {
-        return inst2Consumer.slettInstitusjonsoppholdMedIdent(bearerToken, callId, consumerId, miljoe, ident);
+        return inst2Consumer.slettInstitusjonsoppholdMedIdent(callId, consumerId, miljoe, ident);
     }
 
     public List<InstitusjonsoppholdV2> hentOppholdTilIdenter(
@@ -96,23 +92,21 @@ public class IdentService {
             String miljoe,
             List<String> identer
     ) {
-        var bearerToken = hentTokenTilInst2(miljoe);
         List<InstitusjonsoppholdV2> alleInstitusjonsopphold = new ArrayList<>();
         for (var ident : identer) {
-            var institusjonsoppholdTilIdent = hentInstitusjonsoppholdFraInst2(bearerToken, callId, consumerId, miljoe, ident);
+            var institusjonsoppholdTilIdent = hentInstitusjonsoppholdFraInst2(callId, consumerId, miljoe, ident);
             alleInstitusjonsopphold.addAll(institusjonsoppholdTilIdent);
         }
         return alleInstitusjonsopphold;
     }
 
     public List<InstitusjonsoppholdV2> hentInstitusjonsoppholdFraInst2(
-            String bearerToken,
             String callId,
             String consumerId,
             String miljoe,
             String ident
     ) {
-        var institusjonsforholdsmeldinger = inst2Consumer.hentInstitusjonsoppholdFraInst2(bearerToken, callId, consumerId, miljoe, ident);
+        var institusjonsforholdsmeldinger = inst2Consumer.hentInstitusjonsoppholdFraInst2(callId, consumerId, miljoe, ident);
         if (institusjonsforholdsmeldinger != null) {
             var opphold = getOppholdForMiljoe(institusjonsforholdsmeldinger, miljoe);
             for (var melding : opphold) {

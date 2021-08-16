@@ -84,24 +84,22 @@ public class SyntetiseringServiceTest {
                 .startdato(LocalDate.of(2019, 1, 1))
                 .sluttdato(LocalDate.of(2019, 2, 1))
                 .build());
-        when(identService.hentTokenTilInst2(miljoe)).thenReturn("Bearer 123");
     }
 
     @Test
     public void shouldOppretteInstitusjonsmeldinger() {
         when(instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(antallMeldinger)).thenReturn(meldingerV2);
         when(hodejegerenConsumer.getLevende(avspillergruppeId)).thenReturn(utvalgteIdenter);
-        when(inst2Consumer.leggTilInstitusjonsoppholdIInst2(anyString(), eq(id), eq(id), eq(miljoe), eq(meldingerV2.get(0)))).thenReturn(OppholdResponse.builder()
+        when(inst2Consumer.leggTilInstitusjonsoppholdIInst2(eq(id), eq(id), eq(miljoe), eq(meldingerV2.get(0)))).thenReturn(OppholdResponse.builder()
                 .status(HttpStatus.OK)
                 .build());
-        when(inst2Consumer.finnesInstitusjonPaaDato(anyString(), eq(id), eq(id), eq(miljoe), anyString(), any())).thenReturn(HttpStatus.OK);
+        when(inst2Consumer.finnesInstitusjonPaaDato(eq(id), eq(id), eq(miljoe), anyString(), any())).thenReturn(HttpStatus.OK);
 
         syntetiseringService.finnSyntetiserteMeldingerOgLagreIInst2(id, id, miljoe, syntetiserInstRequest);
 
         verify(instSyntetisererenConsumer).hentInstMeldingerFromSyntRest(antallMeldinger);
         verify(hodejegerenConsumer).getLevende(avspillergruppeId);
-        verify(identService).hentTokenTilInst2(miljoe);
-        verify(identService).hentInstitusjonsoppholdFraInst2(anyString(), eq(id), eq(id), eq(miljoe), anyString());
+        verify(identService).hentInstitusjonsoppholdFraInst2(eq(id), eq(id), eq(miljoe), anyString());
         verify(hodejegerenHistorikkConsumer).saveHistory(any());
     }
 
@@ -114,15 +112,14 @@ public class SyntetiseringServiceTest {
 
         when(instSyntetisererenConsumer.hentInstMeldingerFromSyntRest(antallMeldinger)).thenReturn(meldingerV2);
         when(hodejegerenConsumer.getLevende(avspillergruppeId)).thenReturn(utvalgteIdenter);
-        when(identService.hentInstitusjonsoppholdFraInst2(anyString(), eq(id), eq(id), eq(miljoe), anyString())).thenReturn(meldingerV2);
-        when(inst2Consumer.finnesInstitusjonPaaDato(anyString(), eq(id), eq(id), eq(miljoe), anyString(), any())).thenReturn(HttpStatus.OK);
+        when(identService.hentInstitusjonsoppholdFraInst2(eq(id), eq(id), eq(miljoe), anyString())).thenReturn(meldingerV2);
+        when(inst2Consumer.finnesInstitusjonPaaDato(eq(id), eq(id), eq(miljoe), anyString(), any())).thenReturn(HttpStatus.OK);
 
         syntetiseringService.finnSyntetiserteMeldingerOgLagreIInst2(id, id, miljoe, syntetiserInstRequest);
 
         verify(instSyntetisererenConsumer).hentInstMeldingerFromSyntRest(antallMeldinger);
         verify(hodejegerenConsumer).getLevende(avspillergruppeId);
-        verify(identService).hentTokenTilInst2(miljoe);
-        verify(identService).hentInstitusjonsoppholdFraInst2(anyString(), eq(id), eq(id), eq(miljoe), anyString());
+        verify(identService).hentInstitusjonsoppholdFraInst2(eq(id), eq(id), eq(miljoe), anyString());
 
         assertThat(listAppender.list.get(0).toString(), containsString("Ident " + fnr1 + " har allerede fått opprettet institusjonsforhold."));
     }

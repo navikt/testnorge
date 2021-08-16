@@ -104,7 +104,7 @@ public class SyntetiseringService {
             }
             var personident = utvalgteIdenter.remove(0);
             var eksisterendeInstitusjonsforhold =
-                    identService.hentInstitusjonsoppholdFraInst2(bearerToken, callId, consumerId, miljoe, personident);
+                    identService.hentInstitusjonsoppholdFraInst2(callId, consumerId, miljoe, personident);
             if (!eksisterendeInstitusjonsforhold.isEmpty()) {
                 log.warn("Ident {} har allerede fått opprettet institusjonsforhold. Hopper over opprettelse.", personident);
             } else {
@@ -143,7 +143,7 @@ public class SyntetiseringService {
     }
 
     private OppholdResponse fyllOppholdResponse(String bearerToken, String callId, String consumerId, String miljoe, Map<String, List<OppholdResponse>> statusFraInst2, InstitusjonsoppholdV2 institusjonsopphold, String personident) {
-        var oppholdResponse = inst2Consumer.leggTilInstitusjonsoppholdIInst2(bearerToken, callId, consumerId, miljoe, institusjonsopphold);
+        var oppholdResponse = inst2Consumer.leggTilInstitusjonsoppholdIInst2(callId, consumerId, miljoe, institusjonsopphold);
         if (statusFraInst2.containsKey(personident)) {
             statusFraInst2.get(personident).add(oppholdResponse);
         } else {
@@ -167,8 +167,8 @@ public class SyntetiseringService {
             var tssEksternId = melding.getTssEksternId();
             var startdato = melding.getStartdato();
             var faktiskSluttdato = melding.getSluttdato();
-            if (inst2Consumer.finnesInstitusjonPaaDato(bearerToken, callId, consumerId, miljoe, tssEksternId, startdato).is2xxSuccessful()
-                    && inst2Consumer.finnesInstitusjonPaaDato(bearerToken, callId, consumerId, miljoe, tssEksternId, faktiskSluttdato).is2xxSuccessful()) {
+            if (inst2Consumer.finnesInstitusjonPaaDato(callId, consumerId, miljoe, tssEksternId, startdato).is2xxSuccessful()
+                    && inst2Consumer.finnesInstitusjonPaaDato(callId, consumerId, miljoe, tssEksternId, faktiskSluttdato).is2xxSuccessful()) {
                 gyldigeSyntetiserteMeldinger.add(melding);
             }
         }

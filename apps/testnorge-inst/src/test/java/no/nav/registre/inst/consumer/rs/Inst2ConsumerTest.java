@@ -50,7 +50,7 @@ public class Inst2ConsumerTest {
     public void shouldGetInstitusjonsmeldingerFromInst2() {
         stubGetInstitusjonsopphold();
 
-        var result = inst2Consumer.hentInstitusjonsoppholdFraInst2(token, id, id, miljoe, fnr1);
+        var result = inst2Consumer.hentInstitusjonsoppholdFraInst2(id, id, miljoe, fnr1);
 
         assertThat(result.getQ2().get(0).getTssEksternId(), is("440"));
         assertThat(result.getQ2().get(0).getStartdato(), Matchers.equalTo(LocalDate.of(2013, 7, 3)));
@@ -62,7 +62,7 @@ public class Inst2ConsumerTest {
     public void shouldThrowUgyldigIdentResponseExceptionOnBadRequest() {
         stubGetInstitusjonsoppholdWithBadRequest();
 
-        inst2Consumer.hentInstitusjonsoppholdFraInst2(token, id, id, miljoe, fnr1);
+        inst2Consumer.hentInstitusjonsoppholdFraInst2(id, id, miljoe, fnr1);
     }
 
     @Test
@@ -71,7 +71,7 @@ public class Inst2ConsumerTest {
 
         stubAddInstitusjonsopphold();
 
-        var oppholdResponse = inst2Consumer.leggTilInstitusjonsoppholdIInst2(token, id, id, miljoe, institusjonsopphold);
+        var oppholdResponse = inst2Consumer.leggTilInstitusjonsoppholdIInst2(id, id, miljoe, institusjonsopphold);
 
         assertThat(oppholdResponse.getStatus(), is(HttpStatus.CREATED));
     }
