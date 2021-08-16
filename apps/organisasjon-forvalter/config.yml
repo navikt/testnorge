@@ -29,6 +29,8 @@ spec:
           cluster: dev-fss
         - application: dolly-frontend-dev
           cluster: dev-fss
+        - application: dolly-frontend-dev
+          cluster: dev-gcp
         - application: testnorge-statisk-data-forvalter
           cluster: dev-fss
         - application: team-dolly-lokal-app

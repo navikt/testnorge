@@ -22,6 +22,8 @@ spec:
           cluster: dev-fss
         - application: dolly-frontend-dev
           cluster: dev-fss
+        - application: dolly-frontend-dev
+          cluster: dev-gcp
         - application: dolly-backend
           cluster: dev-fss
         - application: dolly-backend-dev
