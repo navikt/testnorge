@@ -38,7 +38,6 @@ public class Inst2ConsumerTest {
 
     private final String id = "test";
     private final String fnr1 = "01010101010";
-    private final String token = "Bearer abc";
     private final String miljoe = "q2";
 
     @Before
@@ -80,8 +79,7 @@ public class Inst2ConsumerTest {
         stubFor(get(urlPathMatching("(.*)/v1/institusjonsopphold/person"))
                 .withQueryParam("environments", equalTo(miljoe))
                 .withHeader("norskident", equalTo(fnr1))
-                .withHeader("accept", equalTo("*/*"))
-                .withHeader("Authorization", equalTo(token))
+                .withHeader("accept", equalTo("application/json"))
                 .withHeader("Nav-Call-Id", equalTo(id))
                 .withHeader("Nav-Consumer-Id", equalTo(id))
                 .willReturn(ok()
@@ -91,8 +89,7 @@ public class Inst2ConsumerTest {
 
     private void stubGetInstitusjonsoppholdWithBadRequest() {
         stubFor(get(urlPathMatching("(.*)/v1/institusjonsopphold/person"))
-                .withHeader("accept", equalTo("*/*"))
-                .withHeader("Authorization", equalTo(token))
+                .withHeader("accept", equalTo("application/json"))
                 .withHeader("Nav-Call-Id", equalTo(id))
                 .withHeader("Nav-Consumer-Id", equalTo(id))
                 .withHeader("Nav-Personident", equalTo(fnr1))
@@ -102,8 +99,7 @@ public class Inst2ConsumerTest {
     private void stubAddInstitusjonsopphold() {
         stubFor(post(urlPathMatching("(.*)/v1/institusjonsopphold/person"))
                 .withQueryParam("environments", equalTo(miljoe))
-                .withHeader("accept", equalTo("*/*"))
-                .withHeader("Authorization", equalTo(token))
+                .withHeader("accept", equalTo("application/json"))
                 .withHeader("Nav-Call-Id", equalTo(id))
                 .withHeader("Nav-Consumer-Id", equalTo(id))
                 .willReturn(aResponse()

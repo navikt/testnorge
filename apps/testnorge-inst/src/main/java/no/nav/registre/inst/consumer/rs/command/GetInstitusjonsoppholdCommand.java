@@ -46,7 +46,7 @@ public class GetInstitusjonsoppholdCommand implements Callable<InstitusjonRespon
                                     .path(INSTITUSJONSOPPHOLD_PERSON)
                                     .queryParam(ENVIRONMENTS, miljoe)
                                     .build())
-                    .header(ACCEPT, "*/*")
+                    .header(ACCEPT, "application/json")
                     .header(HEADER_NAV_CALL_ID, callId)
                     .header(HEADER_NAV_CONSUMER_ID, consumerId)
                     .header(NORSKIDENT, ident)
