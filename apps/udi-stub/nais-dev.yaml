@@ -53,3 +53,4 @@ spec:
   ingresses:
     - "https://udi-stub-dev.dev.adeo.no"
     - "https://udi-stub-dev.dev.intern.nav.no"
+    - "https://udi-stub-dev.dev-fss-pub.nais.io"

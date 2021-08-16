@@ -48,3 +48,4 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://testnav-testnorge-inst-proxy.dev.intern.nav.no"
+    - "https://testnav-testnorge-inst-proxy.dev-fss-pub.nais.io"
