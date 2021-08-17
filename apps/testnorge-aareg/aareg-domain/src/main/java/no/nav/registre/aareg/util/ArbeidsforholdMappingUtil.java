@@ -291,7 +291,7 @@ public class ArbeidsforholdMappingUtil {
         List<RsPermisjon> rsPermisjoner = new ArrayList<>(permisjoner.size());
         for (var permisjon : permisjoner) {
             rsPermisjoner.add(RsPermisjon.builder()
-                    .permisjonsId(permisjon.getPermisjonPermitteringId())
+                    .permisjonId(permisjon.getPermisjonPermitteringId())
                     .permisjonsPeriode(RsPeriode.builder()
                             .fom(getLocalDateTimeFromLocalDate(permisjon.getPeriode().getFom()))
                             .tom(getLocalDateTimeFromLocalDate(permisjon.getPeriode().getTom()))
