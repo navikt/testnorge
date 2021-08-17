@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Testnorge AAreg
+title: Testnorge Aareg
 parent: Applikasjoner
 ---
 
