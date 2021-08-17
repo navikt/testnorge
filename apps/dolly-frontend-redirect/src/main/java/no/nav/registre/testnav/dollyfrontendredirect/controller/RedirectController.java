@@ -17,7 +17,9 @@ public class RedirectController {
 
     @GetMapping
     public void method(HttpServletResponse httpServletResponse) {
-        httpServletResponse.setHeader(HttpHeaders.LOCATION, "https://dolly.ekstern.dev.nav.no/");
+        var location = "https://dolly.ekstern.dev.nav.no/";
+        log.info("Redirecter til {}.", location);
+        httpServletResponse.setHeader(HttpHeaders.LOCATION, location);
         httpServletResponse.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
     }
 }
