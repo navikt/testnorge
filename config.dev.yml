@@ -6,6 +6,7 @@ metadata:
   labels:
     team: dolly
 spec:
+
   webproxy: true
   azure:
     application:
@@ -48,18 +49,24 @@ spec:
   env:
     - name: TESTNORGE_PROFIL_API_CLIENT_ID
       value: f73bfcd0-a1f5-4d3f-bfb4-4d0361191438
-    - name: DOLLY_BACKEND_API_CLIENT_ID
-      value: f0174d28-cb33-44f9-a7b5-09e52582e601
-    - name: DOLLY_BACKEND_HOST
+    - name: DOLLY_BACKEND_NAME
+      value: dolly-backend-dev
+    - name: DOLLY_BACKEND_URL
       value: https://dolly-backend-dev.dev.adeo.no
     - name: UDI_STUB_CLIENT_ID
       value: 4426ef7d-f148-4d19-8a03-b0d07a451938
-    - name: UDI_STUB_HOST
+    - name: UDI_STUB_URL
       value: https://udi-stub-dev.dev.adeo.no
+    - name: UDI_STUB_NAME
+      value: udi-stub-dev
     - name: TESTNORGE_PROFIL_API_HOST
       value: https://testnorge-profil-api-dev.dev.intern.nav.no
     - name: ORGANISASJON_FORVALTER_HOST
       value: https://testnav-organisasjon-forvalter.dev.intern.nav.no
+    - name: TPS_FORVALTERN_PROXY_NAME
+      value: tps-forvalteren-dev-proxy
+    - name: TPS_FORVALTERN_PROXY_URL
+      value: https://tps-forvalteren-dev-proxy.dev.intern.nav.no
   vault:
     enabled: true
     paths:

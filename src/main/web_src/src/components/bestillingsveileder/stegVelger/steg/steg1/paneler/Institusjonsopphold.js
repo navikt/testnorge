@@ -30,7 +30,7 @@ InstitusjonsoppholdPanel.initialValues = ({ set, del, has }) => ({
 				{
 					institusjonstype: '',
 					startdato: '',
-					faktiskSluttdato: ''
+					sluttdato: ''
 				}
 			])
 		},

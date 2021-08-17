@@ -1,8 +1,7 @@
-import config from '~/config'
-
+const dollyBackend = '/dolly-backend/api/v1'
 export const api = {
 	hentMaler: () =>
-		fetch(`${config.services.dollyBackend}/bestilling/malbestilling`, {
+		fetch(`${dollyBackend}/bestilling/malbestilling`, {
 			credentials: 'include',
 			headers: {
 				'Content-Type': 'application/json'
@@ -20,7 +19,7 @@ export const api = {
 				throw error
 			}),
 	slettMal: malId =>
-		fetch(`${config.services.dollyBackend}/bestilling/malbestilling/${malId}`, {
+		fetch(`${dollyBackend}/bestilling/malbestilling/${malId}`, {
 			method: 'DELETE',
 			credentials: 'include',
 			headers: {
@@ -38,7 +37,7 @@ export const api = {
 				throw error
 			}),
 	endreMalNavn: (malId, malNavn) =>
-		fetch(`${config.services.dollyBackend}/bestilling/malbestilling/${malId}`, {
+		fetch(`${dollyBackend}/bestilling/malbestilling/${malId}`, {
 			method: 'PUT',
 			credentials: 'include',
 			body: JSON.stringify({ malNavn }),

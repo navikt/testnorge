@@ -1,6 +1,6 @@
 import Request from '~/service/services/Request'
 
-const udiUrl = '/api/udi-stub'
+const udiUrl = '/udi-stub/api/v1'
 
 export default {
 	getPerson(ident) {

@@ -15,7 +15,7 @@ import { addYears } from 'date-fns'
 export const initialValues = {
 	institusjonstype: '',
 	startdato: '',
-	faktiskSluttdato: ''
+	sluttdato: ''
 }
 const instAttributt = 'instdata'
 
@@ -55,7 +55,7 @@ export const InstForm = ({ formikBag }) => {
 								maxDate={maxDate}
 							/>
 							<FormikDatepicker
-								name={`${path}.faktiskSluttdato`}
+								name={`${path}.sluttdato`}
 								label="Sluttdato"
 								excludeDates={excludeDates}
 								maxDate={maxDate}

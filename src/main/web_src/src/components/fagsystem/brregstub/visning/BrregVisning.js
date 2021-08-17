@@ -1,5 +1,4 @@
 import React from 'react'
-import _get from 'lodash/get'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
@@ -8,7 +7,7 @@ import Loading from '~/components/ui/loading/Loading'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 export const BrregVisning = ({ data, loading }) => {
-	if (loading) return <Loading label="laster brreg-data" />
+	if (loading) return <Loading label="Laster brreg-data" />
 	if (!data) return false
 
 	return (

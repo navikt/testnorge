@@ -4,11 +4,9 @@ import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import Formatters from '~/utils/DataFormatter'
-import Loading from '~/components/ui/loading/Loading'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
-export const UtenlandsId = ({ data, loading }) => {
-	if (loading) return <Loading label="laster PDL-data" />
+export const UtenlandsId = ({ data }) => {
 	if (!data || data.length === 0) return false
 
 	return (

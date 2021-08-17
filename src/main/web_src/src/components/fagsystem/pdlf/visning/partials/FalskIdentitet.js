@@ -2,11 +2,9 @@ import React, { Fragment } from 'react'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { Personnavn } from './Personnavn'
-import Loading from '~/components/ui/loading/Loading'
 import Formatters from '~/utils/DataFormatter'
 
-export const FalskIdentitet = ({ data, loading }) => {
-	if (loading) return <Loading label="laster PDL-data" />
+export const FalskIdentitet = ({ data }) => {
 	if (!data) return false
 	const {
 		rettIdentitetVedOpplysninger,

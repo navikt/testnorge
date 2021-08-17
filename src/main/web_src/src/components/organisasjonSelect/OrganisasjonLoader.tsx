@@ -40,6 +40,10 @@ export const OrganisasjonLoader = ({
 					}))
 		)
 	return (
-		<LoadableComponentWithRetry onFetch={onFetch} render={(list: Organisasjon[]) => render(list)} />
+		<LoadableComponentWithRetry
+			onFetch={onFetch}
+			render={(list: Organisasjon[]) => render(list)}
+			label="Laster organisasjoner"
+		/>
 	)
 }

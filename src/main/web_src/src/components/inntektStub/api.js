@@ -1,6 +1,5 @@
-import config from '~/config'
 import Api from '~/api'
 
-const uri = `${config.services.proxyBackend}/inntektstub`
+const uri = `/testnav-inntektstub-proxy/api/v1/inntektstub`
 
 export const validate = values => Api.fetchJson(`${uri}/valider`, { method: 'POST' }, values)

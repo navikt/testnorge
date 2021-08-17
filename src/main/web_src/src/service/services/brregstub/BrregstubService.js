@@ -1,7 +1,6 @@
-import config from '~/config'
 import Request from '~/service/services/Request'
 
-const getBrregstubUrl = () => `${config.services.proxyBackend}/brregstub`
+const getBrregstubUrl = () => `/testnav-brregstub-proxy/api/v1`
 
 export default {
 	getRoller() {

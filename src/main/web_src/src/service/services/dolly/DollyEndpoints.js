@@ -1,6 +1,4 @@
-import config from '~/config'
-
-const uri = `${config.services.dollyBackend}`
+const uri = `/dolly-backend/api/v1`
 
 const groupBase = `${uri}/gruppe`
 const identBase = `${uri}/ident`

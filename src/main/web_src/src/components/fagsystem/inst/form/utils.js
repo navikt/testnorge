@@ -16,7 +16,7 @@ export const getExcludedDatesAndMaxDate = data => {
 	let excludeDates = []
 	for (let i = 0; i < data.instdata.length; i++) {
 		const startdato = data.instdata[i].startdato
-		const sluttdato = data.instdata[i].faktiskSluttdato
+		const sluttdato = data.instdata[i].sluttdato
 		let days = []
 
 		if (_isNil(sluttdato)) {

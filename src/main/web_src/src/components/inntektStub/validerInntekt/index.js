@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 import _get from 'lodash/get'
 import Inntekt from './Inntekt'
 import { Formik } from 'formik'
-import * as api from '../api'
 import tilleggsinformasjonPaths from '../paths'
 import { useBoolean } from 'react-use'
+import InntektstubService from '@/service/services/inntektstub/InntektstubService'
 
 const InntektStub = ({ formikBag, inntektPath }) => {
 	const [fields, setFields] = useState({})
@@ -29,7 +29,7 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 
 	useEffect(() => {
 		if (inntektValues.inntektstype !== '' && Object.keys(fields).length < 1) {
-			api.validate(inntektValues).then(response => setFields(response))
+			InntektstubService.validate(inntektValues).then(response => setFields(response))
 		}
 	}, [])
 
@@ -111,7 +111,7 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 						values[key] = undefined
 					}
 				}
-				api.validate(values).then(response => setFields(response))
+				InntektstubService.validate(values).then(response => setFields(response))
 				setFormikBag(values)
 			}}
 			component={({ handleSubmit }) => {

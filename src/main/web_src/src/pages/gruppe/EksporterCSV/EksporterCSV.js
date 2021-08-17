@@ -3,7 +3,6 @@ import { format } from 'date-fns'
 import Button from '~/components/ui/button/Button'
 import Logger from '~/logger'
 import api from '@/api'
-import config from '~/config'
 
 import './EksporterCSV.less'
 
@@ -32,7 +31,7 @@ export const EksporterCSV = ({ identer, gruppeId }) => {
 		const identListe = identer.map(ident => ident.ident)
 		const data = await hentCsvFil(identListe)
 
-		const decodedData = decodeURIComponent(escape(data))
+		const decodedData = decodeURIComponent(data)
 
 		downloadCsvString(gruppeId, decodedData)
 		setLoading(false)
@@ -50,12 +49,10 @@ export const EksporterCSV = ({ identer, gruppeId }) => {
 	)
 }
 
-const getTpsfUrl = () => `${config.services.proxyBackend}/tpsf`
-
 const hentCsvFil = body => {
 	return api
 		.fetch(
-			`${getTpsfUrl()}/dolly/testdata/excel`,
+			'/tps-forvalteren-proxy/api/v1/dolly/testdata/excel',
 			{ method: 'POST', headers: { 'Content-Type': 'application/json' } },
 			body
 		)

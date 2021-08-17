@@ -10,7 +10,7 @@ export default function TilgjengeligeMiljoer({ endepunkt, dollyEnvironments }) {
 		return response
 	}, [endepunkt])
 
-	let message = 'laster tilgjengelige miljøer..'
+	let message = 'Laster tilgjengelige miljøer..'
 
 	if (state.value && state.value.data) {
 		message = Formatters.arrayToString(filterMiljoe(dollyEnvironments, state.value.data))

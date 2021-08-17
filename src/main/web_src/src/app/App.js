@@ -49,7 +49,7 @@ export default class App extends Component {
 
 		if (this.state.criticalError) return <CriticalError error={this.state.criticalError.stack} />
 
-		if (!brukerData || !configReady) return <Loading label="laster dolly applikasjon" fullpage />
+		if (!brukerData || !configReady) return <Loading label="Laster dolly applikasjon" fullpage />
 		return (
 			<React.Fragment>
 				<Utlogging />

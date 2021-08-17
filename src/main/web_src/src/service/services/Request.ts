@@ -38,6 +38,8 @@ export default class Request {
 			event: event,
 			message: error.message
 		})
-		throw new Error(event + ' Dersom Dolly er ustabil, prøv å refreshe siden!')
+		if (error.name !== 'NotFoundError') {
+			throw new Error(event + ' Dersom Dolly er ustabil, prøv å refreshe siden!')
+		}
 	}
 }

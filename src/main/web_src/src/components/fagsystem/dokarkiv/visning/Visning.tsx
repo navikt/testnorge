@@ -55,6 +55,7 @@ export default ({ ident }: Form) => (
 					)
 				)
 			}}
+			label="Laster dokarkiv data"
 		/>
 	</div>
 )

@@ -17,12 +17,12 @@ import JoarkDokumentService, {
 } from '~/service/services/JoarkDokumentService'
 import LoadableComponentWithRetry from '~/components/ui/loading/LoadableComponentWithRetry'
 
-interface InntektsmeldingVisning {
+interface InntektsmeldingVisningProps {
 	liste: Array<BestillingData>
 	ident: string
 }
 
-export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisning) => {
+export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisningProps) => {
 	//Viser data fra bestillingen
 	if (!liste || liste.length < 1) return null
 
@@ -93,6 +93,7 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisning)
 					}
 				}
 			}}
+			label="Laster inntektsmelding data"
 		/>
 	)
 }

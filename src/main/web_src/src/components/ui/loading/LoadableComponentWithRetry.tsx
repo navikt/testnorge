@@ -7,6 +7,7 @@ import styled from 'styled-components'
 interface LoadableComponent<T> {
 	onFetch: () => Promise<T>
 	render: (data: T) => JSX.Element
+	label?: string
 }
 
 const Knapp = styled(NavKnapp)`
@@ -19,7 +20,7 @@ const Alert = styled(AlertStripeFeil)`
 	margin-right: 15px;
 `
 
-function LoadableComponentWithRetry<T>({ onFetch, render }: LoadableComponent<T>) {
+function LoadableComponentWithRetry<T>({ onFetch, render, label }: LoadableComponent<T>) {
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState<boolean>(false)
 	const [data, setData] = useState<T>()
@@ -45,7 +46,7 @@ function LoadableComponentWithRetry<T>({ onFetch, render }: LoadableComponent<T>
 	}, [])
 
 	if (loading) {
-		return <Loading />
+		return <Loading label={label} />
 	}
 	if (error) {
 		return (

@@ -1,6 +1,5 @@
 package no.nav.dolly.web.provider.web;
 
-import static no.nav.dolly.web.provider.web.ProxyController.API_URI;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -10,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class ForwardAndRedirectController {
 
-    @Value("${DOLLY_BACKEND_HOST}")
+    private static final String API_URI = "/api/v1";
+
+    @Value("${DOLLY_BACKEND_URL}")
     private String dollyUrl;
 
     @RequestMapping(value = {"/minside/**", "/team/**", "/gruppe/**", "/maler/**", "/soek/**", "/organisasjoner/**"})

@@ -16,7 +16,7 @@ const datoOverlapperIkkeAndreOppholdTest = (validation, validerStart) => {
 		const alleOpphold = _get(values, `${path}`)
 
 		for (let i = 0; i < alleOpphold.length; i++) {
-			const sluttDatoValue = _get(values, `${path}[${i}].faktiskSluttdato`)
+			const sluttDatoValue = _get(values, `${path}[${i}].sluttdato`)
 			const startDatoValue = _get(values, `${path}[${i}].startdato`)
 			const sluttDato = new Date(sluttDatoValue)
 			const startDato = new Date(startDatoValue)
@@ -54,7 +54,7 @@ export const validation = {
 		Yup.object({
 			institusjonstype: requiredString,
 			startdato: datoOverlapperIkkeAndreOppholdTest(requiredDate, true),
-			faktiskSluttdato: datoOverlapperIkkeAndreOppholdTest(Yup.string().nullable(), false)
+			sluttdato: datoOverlapperIkkeAndreOppholdTest(Yup.string().nullable(), false)
 		})
 	)
 }

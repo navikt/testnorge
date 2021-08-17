@@ -1,7 +1,6 @@
-import config from '~/config'
 import Request from '~/service/services/Request'
 
-const getSigrunBaseUrl = () => `${config.services.proxyBackend}/sigrun`
+const getSigrunBaseUrl = () => `/testnav-sigrunstub-proxy/api/v1`
 
 export default {
 	getPerson(ident) {

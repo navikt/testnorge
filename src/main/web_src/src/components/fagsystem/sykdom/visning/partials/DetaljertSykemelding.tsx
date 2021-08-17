@@ -1,6 +1,4 @@
 import * as React from 'react'
-import _get from 'lodash/get'
-import _has from 'lodash/has'
 import Formatters from '~/utils/DataFormatter'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { Bidiagnoser } from './Bidiagnoser'

@@ -1,6 +1,6 @@
 import Request from '~/service/services/Request'
 
-const miljoeUrl = '/api/testnav-miljoer-service'
+const miljoeUrl = '/testnav-miljoer-service/api/v1'
 
 export default {
 	getAktiveMiljoer() {

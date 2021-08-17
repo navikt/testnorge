@@ -50,6 +50,96 @@ module.exports = env =>
 					target: env.backend,
 					changeOrigin: true,
 					secure: false
+				},
+				'/testnav-inntektstub-proxy/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false
+				},
+				'/tps-forvalteren-proxy/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false
+				},
+				'/testnav-hodejegeren-proxy/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false
+				},
+				'/testnav-brregstub-proxy/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false
+				},
+				'/testnav-arena-forvalteren-proxy/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false
+				},
+				'/testnav-testnorge-aareg-proxy/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false
+				},
+				'/testnav-krrstub-proxy/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false
+				},
+				'/testnav-testnorge-inst-proxy/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false
+				},
+				'/testnav-sigrunstub-proxy/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false
+				},
+				'/testnav-pensjon-testdata-facade-proxy/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false
+				},
+				'/dolly-backend/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false
+				},
+				'/testnorge-profil-api/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false
+				},
+				'/testnorge-varslinger-api/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false
+				},
+				'/testnav-organisasjon-forvalter/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false
+				},
+				'/testnav-organisasjon-service/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false
+				},
+				'/testnav-miljoer-service/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false
+				},
+				'/udi-stub/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false
+				},
+				'/person-search-service/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false
 				}
 			}
 		},
