@@ -31,7 +31,7 @@ export const Arbeidsavtaler = ({ data }) => {
 					/>
 					<TitleValue
 						title="Avtalte arbeidstimer per uke"
-						value={detaljer.beregnetAntallTimerPrUke}
+						value={detaljer.beregnetAntallTimerPrUke || detaljer.antallTimerPrUke}
 					/>
 				</div>
 			</ErrorBoundary>

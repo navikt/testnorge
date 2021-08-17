@@ -7,7 +7,13 @@ import _isNil from 'lodash/isNil'
 const uri = `${config.services.dollyBackend}`
 
 export const SelectOptionsOppslag = {
-	hentOrgnr: () => Api.fetchJson(`${uri}/orgnummer`, { method: 'GET' }),
+	hentOrgnr: () => {
+		const orgnr = useAsync(async () => {
+			const response = await Api.fetchJson(`${uri}/orgnummer`, { method: 'GET' })
+			return response
+		}, [Api.fetchJson])
+		return orgnr
+	},
 
 	hentHelsepersonell: () => Api.fetchJson(`${uri}/helsepersonell`, { method: 'GET' }),
 

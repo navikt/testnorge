@@ -16,6 +16,7 @@ import { ArbeidsgiverTyper } from '~/components/fagsystem/aareg/AaregTypes'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { FormikProps } from 'formik'
 import { AaregListe } from '~/components/fagsystem/aareg/AaregTypes'
+import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 
 interface ArbeidsforholdToggle {
 	formikBag: FormikProps<{ aareg: AaregListe }>
@@ -38,6 +39,9 @@ const fellesOrg = [
 ]
 
 export const ArbeidsforholdToggle = ({ formikBag }: ArbeidsforholdToggle): ReactElement => {
+	// const fellesOrg = SelectOptionsOppslag.hentOrgnr().value?.liste
+	// TODO hent felles organisasjoner fra api istedenfor hardkodet liste
+
 	const getArbeidsgiverType =
 		_get(formikBag.values, 'aareg[0].amelding') || _get(formikBag.values, 'aareg[0].arbeidsforhold')
 			? ArbeidsgiverTyper.egen
@@ -102,7 +106,7 @@ export const ArbeidsforholdToggle = ({ formikBag }: ArbeidsforholdToggle): React
 					<AlertStripeInfo>
 						For denne typen arbeidsgiver er det ikke mulig å registrere nye attributter som
 						sluttårsak, ansettelsesform, endringsdato lønn og fartøy. For å bestille testbrukere med
-						disse attributtene må du bruke egen organisasjon for å oppr ette A-meldinger.
+						disse attributtene må du bruke egen organisasjon for å opprette A-meldinger.
 					</AlertStripeInfo>
 					<FormikDollyFieldArray
 						name="aareg"

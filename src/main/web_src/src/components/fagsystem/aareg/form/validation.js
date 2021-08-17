@@ -18,6 +18,7 @@ const innenforAnsettelsesforholdTest = (validation, validateFomMonth) => {
 			const dateValue = new Date(val)
 			const path = this.path
 			const values = this.options.context
+			const aaregIndex = parseInt(path.match(/\d+/g)[0])
 			const ameldingIndex = parseInt(path.match(/\d+/g)[1])
 			const arbeidsforholdIndex = this.options.index
 
@@ -30,10 +31,9 @@ const innenforAnsettelsesforholdTest = (validation, validateFomMonth) => {
 				)
 					return false
 			}
-
 			const arrayPos = _get(values, 'aareg[0].amelding')
 				? `aareg[0].amelding[${ameldingIndex}].arbeidsforhold[${arbeidsforholdIndex}]`
-				: `aareg[0].arbeidsforhold[${arbeidsforholdIndex}]`
+				: `aareg[${aaregIndex}]`
 
 			const ansattFom = _get(values, `${arrayPos}.ansettelsesPeriode.fom`)
 			const ansattTom = _get(values, `${arrayPos}.ansettelsesPeriode.tom`)
@@ -59,55 +59,6 @@ const fullArbeidsforholdTest = validation => {
 		return gyldig
 	})
 }
-
-const antallTimerForTimeloennet = Yup.array().of(
-	Yup.object({
-		periode: Yup.object({
-			fom: innenforAnsettelsesforholdTest(requiredDate),
-			tom: innenforAnsettelsesforholdTest(requiredDate, true)
-		}),
-		antallTimer: Yup.number()
-			.min(1, 'Kan ikke være mindre enn ${min}')
-			.typeError(messages.required)
-	})
-)
-
-const utenlandsopphold = Yup.array().of(
-	Yup.object({
-		periode: Yup.object({
-			fom: innenforAnsettelsesforholdTest(requiredDate),
-			tom: innenforAnsettelsesforholdTest(requiredDate, true)
-		}),
-		land: requiredString
-	})
-)
-
-const permisjon = Yup.array().of(
-	Yup.object({
-		permisjonsPeriode: Yup.object({
-			fom: innenforAnsettelsesforholdTest(requiredDate),
-			tom: innenforAnsettelsesforholdTest(Yup.date().nullable())
-		}),
-		permisjonsprosent: Yup.number()
-			.min(1, 'Kan ikke være mindre enn ${min}')
-			.max(100, 'Kan ikke være større enn ${max}')
-			.typeError(messages.required),
-		permisjon: requiredString
-	})
-)
-
-const permittering = Yup.array().of(
-	Yup.object({
-		permitteringsPeriode: Yup.object({
-			fom: innenforAnsettelsesforholdTest(requiredDate),
-			tom: innenforAnsettelsesforholdTest(Yup.date().nullable())
-		}),
-		permitteringsprosent: Yup.number()
-			.min(1, 'Kan ikke være mindre enn ${min}')
-			.max(100, 'Kan ikke være større enn ${max}')
-			.typeError(messages.required)
-	})
-)
 
 const ansettelsesPeriode = Yup.object({
 	fom: requiredDate,
@@ -183,10 +134,51 @@ export const validation = {
 			arbeidsgiver: ifPresent('$aareg[0].arbeidsgiver', arbeidsgiver),
 			arbeidsavtale: ifPresent('$aareg[0].arbeidsgiver', arbeidsavtale),
 			fartoy: ifPresent('$aareg[0].fartoy', fartoy),
-			antallTimerForTimeloennet: antallTimerForTimeloennet,
-			utenlandsopphold: utenlandsopphold,
-			permisjon: permisjon,
-			permittering: permittering,
+			antallTimerForTimeloennet: Yup.array().of(
+				Yup.object({
+					periode: Yup.object({
+						fom: innenforAnsettelsesforholdTest(requiredDate),
+						tom: innenforAnsettelsesforholdTest(requiredDate, true)
+					}),
+					antallTimer: Yup.number()
+						.min(1, 'Kan ikke være mindre enn ${min}')
+						.typeError(messages.required)
+				})
+			),
+			utenlandsopphold: Yup.array().of(
+				Yup.object({
+					periode: Yup.object({
+						fom: innenforAnsettelsesforholdTest(requiredDate),
+						tom: innenforAnsettelsesforholdTest(requiredDate, true)
+					}),
+					land: requiredString
+				})
+			),
+			permisjon: Yup.array().of(
+				Yup.object({
+					permisjonsPeriode: Yup.object({
+						fom: innenforAnsettelsesforholdTest(requiredDate),
+						tom: innenforAnsettelsesforholdTest(Yup.date().nullable())
+					}),
+					permisjonsprosent: Yup.number()
+						.min(1, 'Kan ikke være mindre enn ${min}')
+						.max(100, 'Kan ikke være større enn ${max}')
+						.typeError(messages.required),
+					permisjon: requiredString
+				})
+			),
+			permittering: Yup.array().of(
+				Yup.object({
+					permitteringsPeriode: Yup.object({
+						fom: innenforAnsettelsesforholdTest(requiredDate),
+						tom: innenforAnsettelsesforholdTest(Yup.date().nullable())
+					}),
+					permitteringsprosent: Yup.number()
+						.min(1, 'Kan ikke være mindre enn ${min}')
+						.max(100, 'Kan ikke være større enn ${max}')
+						.typeError(messages.required)
+				})
+			),
 			amelding: ifPresent(
 				'$aareg[0].amelding',
 				Yup.array().of(
@@ -198,10 +190,51 @@ export const validation = {
 								arbeidsgiver: arbeidsgiver,
 								arbeidsavtale: arbeidsavtale,
 								fartoy: fartoy,
-								antallTimerForTimeloennet: antallTimerForTimeloennet,
-								utenlandsopphold: utenlandsopphold,
-								permisjon: permisjon,
-								permittering: permittering
+								antallTimerForTimeloennet: Yup.array().of(
+									Yup.object({
+										periode: Yup.object({
+											fom: requiredDate,
+											tom: requiredDate
+										}),
+										antallTimer: Yup.number()
+											.min(1, 'Kan ikke være mindre enn ${min}')
+											.typeError(messages.required)
+									})
+								),
+								utenlandsopphold: Yup.array().of(
+									Yup.object({
+										periode: Yup.object({
+											fom: requiredDate,
+											tom: requiredDate
+										}),
+										land: requiredString
+									})
+								),
+								permisjon: Yup.array().of(
+									Yup.object({
+										permisjonsPeriode: Yup.object({
+											fom: requiredDate,
+											tom: Yup.date().nullable()
+										}),
+										permisjonsprosent: Yup.number()
+											.min(1, 'Kan ikke være mindre enn ${min}')
+											.max(100, 'Kan ikke være større enn ${max}')
+											.typeError(messages.required),
+										permisjon: requiredString
+									})
+								),
+								permittering: Yup.array().of(
+									Yup.object({
+										permitteringsPeriode: Yup.object({
+											fom: requiredDate,
+											tom: Yup.date().nullable()
+										}),
+										permitteringsprosent: Yup.number()
+											.min(1, 'Kan ikke være mindre enn ${min}')
+											.max(100, 'Kan ikke være større enn ${max}')
+											.typeError(messages.required)
+									})
+								)
 							})
 						)
 					})

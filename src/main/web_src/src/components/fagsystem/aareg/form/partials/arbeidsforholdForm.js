@@ -5,7 +5,7 @@ import _set from 'lodash/set'
 import _cloneDeep from 'lodash/cloneDeep'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikTextInput, DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { TimeloennetForm } from './timeloennetForm'
 import { PermisjonForm } from './permisjonForm'
 import { PermitteringForm } from './permitteringForm'
@@ -36,6 +36,7 @@ export const ArbeidsforholdForm = ({
 		typeof ameldingIndex !== 'undefined'
 			? _get(formikBag.values, 'aareg[0].arbeidsforholdstype')
 			: _get(formikBag.values, `${path}.arbeidsforholdstype`)
+
 	const onChangeLenket = fieldPath => {
 		if (arbeidsgiverType !== ArbeidsgiverTyper.egen) {
 			return field => {
@@ -161,12 +162,12 @@ export const ArbeidsforholdForm = ({
 					<FormikTextInput name={`${path}.arbeidsgiver.ident`} label="Arbeidsgiver ident" />
 				)}
 				{arbeidsforholdstype !== 'forenkletOppgjoersordning' && (
-					<DollyTextInput
+					<FormikTextInput
+						key={`${path}.arbeidsforholdID`}
 						name={`${path}.arbeidsforholdID`}
 						label="Arbeidsforhold-ID"
 						type="text"
-						value={_get(formikBag.values, `${path}.arbeidsforholdID`)}
-						onChange={onChangeLenket('arbeidsforholdID')}
+						onBlur={onChangeLenket('arbeidsforholdID')}
 					/>
 				)}
 				<FormikDatepicker

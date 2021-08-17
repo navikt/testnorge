@@ -27,10 +27,11 @@ export const ArbeidsavtaleForm = ({ path, onChangeLenket }) => {
 					isClearable={false}
 				/>
 				<FormikTextInput
+					key={`${path}.stillingsprosent`}
 					name={`${path}.stillingsprosent`}
 					label="Stillingsprosent"
 					type="number"
-					onChange={onChangeLenket('arbeidsavtale.stillingsprosent')}
+					onBlur={onChangeLenket('arbeidsavtale.stillingsprosent')}
 				/>
 				<FormikDatepicker
 					name={`${path}.endringsdatoStillingsprosent`}
@@ -53,11 +54,11 @@ export const ArbeidsavtaleForm = ({ path, onChangeLenket }) => {
 					onChange={onChangeLenket('arbeidsavtale.arbeidstidsordning')}
 				/>
 				<FormikTextInput
+					key={`${path}.avtaltArbeidstimerPerUke`}
 					name={`${path}.avtaltArbeidstimerPerUke`}
 					label="Avtalte arbeidstimer per uke"
 					type="number"
-					isclearable="true"
-					onChange={onChangeLenket('arbeidsavtale.avtaltArbeidstimerPerUke')}
+					onBlur={onChangeLenket('arbeidsavtale.avtaltArbeidstimerPerUke')}
 				/>
 			</div>
 		</div>
