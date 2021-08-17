@@ -1,6 +1,7 @@
 package no.nav.registre.varslingerservice.adapter;
 
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
 
@@ -49,7 +50,6 @@ public class PersonVarslingAdapter {
                 .findFirst();
     }
 
-
     public List<String> getAll() {
         BrukerModel bruker = getBruker();
         var mottattVarslinger = mottattVarslingRepository.findAllByBrukerObjectId(bruker.getObjectId());
@@ -60,7 +60,7 @@ public class PersonVarslingAdapter {
     }
 
     public String save(String varslingId) {
-        Varsling varsling = varslingerAdapter.get(varslingId);
+        var varsling = varslingerAdapter.get(varslingId);
 
         if (getMottattVarsling(varsling.getVarslingId()).isPresent()) {
             return varsling.getVarslingId();

@@ -1,6 +1,5 @@
 package no.nav.registre.varslingerservice.domain;
 
-
 import lombok.Value;
 
 import java.time.LocalDate;
@@ -23,7 +22,6 @@ public class Varsling {
         this.tom = toLocalDate(model.getTom());
     }
 
-
     public Varsling(VarslingDTO dto) {
         this.varslingId = dto.getVarslingId();
         this.fom = dto.getFom();
@@ -42,7 +40,6 @@ public class Varsling {
                 : null;
     }
 
-
     public VarslingDTO toDTO() {
         return VarslingDTO
                 .builder()
@@ -51,7 +48,6 @@ public class Varsling {
                 .tom(tom)
                 .build();
     }
-
 
     public VarslingModel toModel() {
         return VarslingModel

@@ -14,7 +14,7 @@ import no.nav.testnav.libs.servletsecurity.config.OAuth2ResourceServerConfigurat
 
 @EnableWebSecurity
 @Configuration
-@Profile({"prod", "dev"})
+@Profile({ "prod", "dev" })
 public class SecurityConfig extends OAuth2ResourceServerConfiguration {
 
     public SecurityConfig(

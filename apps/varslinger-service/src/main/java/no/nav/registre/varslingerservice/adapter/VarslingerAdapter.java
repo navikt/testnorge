@@ -1,6 +1,7 @@
 package no.nav.registre.varslingerservice.adapter;
 
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class VarslingerAdapter {
     }
 
     public String save(Varsling varsling) {
-        VarslingModel varslingModel = varsling.toModel();
+        var varslingModel = varsling.toModel();
         return varslingRepository.save(varslingModel).getVarslingId();
     }
 
