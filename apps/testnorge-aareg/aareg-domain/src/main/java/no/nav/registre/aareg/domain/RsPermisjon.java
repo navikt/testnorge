@@ -15,6 +15,7 @@ public class RsPermisjon {
 
     private String permisjonOgPermittering;
     private String permisjonId;
+    private String beskrivelse;
     private RsPeriode permisjonsPeriode;
     private Double permisjonsprosent;
 }
