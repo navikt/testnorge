@@ -14,7 +14,8 @@ import lombok.Setter;
 public class RsPermisjon {
 
     private String permisjonOgPermittering;
-    private String permisjonsId;
+    private String permisjonId;
+    private String beskrivelse;
     private RsPeriode permisjonsPeriode;
     private Double permisjonsprosent;
 }
