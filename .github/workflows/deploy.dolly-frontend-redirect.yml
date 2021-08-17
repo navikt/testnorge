@@ -3,7 +3,7 @@ name: Deploy dolly-frontend-redirect
 on:
   push:
     paths:
-      - apps/adresse-service/**
+      - apps/dolly-frontend-redirect/**
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/dolly-frontend-redirect:${{ github.sha }}
