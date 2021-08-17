@@ -1,11 +1,10 @@
 package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
@@ -20,11 +19,14 @@ public class ForeldreansvarDTO extends DbVersjonDTO {
 
     private Ansvar ansvar;
     private String ansvarlig;
+    private PersonRequestDTO nyAnsvarlig;
     private RelatertBiPersonDTO ansvarligUtenIdentifikator;
+    private LocalDateTime gyldigFraOgMed;
+    private LocalDateTime gyldigTilOgMed;
     public enum Ansvar {FELLES, MOR, FAR, MEDMOR, ANDRE, UKJENT}
 
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class RelatertBiPersonDTO implements Serializable {
@@ -35,8 +37,8 @@ public class ForeldreansvarDTO extends DbVersjonDTO {
         private String statsborgerskap;
     }
 
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class PersonnavnDTO implements Serializable {
