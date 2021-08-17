@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,6 +18,7 @@ public class RsPermisjon {
     private String permisjonOgPermittering;
     private String permisjonId;
     private String beskrivelse;
-    private RsPeriode permisjonsPeriode;
+    private LocalDate startdato;
+    private LocalDate sluttdato;
     private Double permisjonsprosent;
 }

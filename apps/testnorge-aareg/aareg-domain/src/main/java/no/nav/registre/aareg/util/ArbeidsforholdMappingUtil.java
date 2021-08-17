@@ -292,10 +292,8 @@ public class ArbeidsforholdMappingUtil {
         for (var permisjon : permisjoner) {
             rsPermisjoner.add(RsPermisjon.builder()
                     .permisjonId(permisjon.getPermisjonPermitteringId())
-                    .permisjonsPeriode(RsPeriode.builder()
-                            .fom(getLocalDateTimeFromLocalDate(permisjon.getPeriode().getFom()))
-                            .tom(getLocalDateTimeFromLocalDate(permisjon.getPeriode().getTom()))
-                            .build())
+                    .startdato(permisjon.getPeriode().getFom())
+                    .sluttdato(permisjon.getPeriode().getTom())
                     .permisjonsprosent(permisjon.getProsent())
                     .permisjonOgPermittering(permisjon.getType())
                     .build());
