@@ -12,6 +12,8 @@ spec:
     application:
       enabled: true
       tenant: nav.no
+      replyURLs:
+        - https://testnav-dolly-frontend-redirect.dev.intern.nav.no/login/oauth2/code/aad
   liveness:
     path: /internal/isAlive
     initialDelay: 4
