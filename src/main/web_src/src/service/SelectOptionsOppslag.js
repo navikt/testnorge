@@ -1,5 +1,5 @@
 import { useAsync } from 'react-use'
-import { BrregstubApi, DollyApi, KrrApi } from '~/service/Api'
+import { BrregstubApi, DollyApi, KrrApi, OrgforvalterApi } from '~/service/Api'
 import Api from '~/api'
 import _isNil from 'lodash/isNil'
 
