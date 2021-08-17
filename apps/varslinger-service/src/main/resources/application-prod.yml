@@ -1,15 +1,9 @@
 spring:
   datasource:
-    url: jdbc:postgresql://b27dbvl022.preprod.local:5432/testnorge-varslinger?useUnicode=yes&characterEncoding=UTF-8
+    url: jdbc:postgresql://${NAIS_DATABASE_TESTNAV_VARSLINGER_SERVICE_TESTNAV_VARSLINGER_DB_HOST}:${NAIS_DATABASE_TESTNAV_VARSLINGER_SERVICE_TESTNAV_VARSLINGER_DB_PORT}/${NAIS_DATABASE_TESTNAV_VARSLINGER_SERVICE_TESTNAV_VARSLINGER_DB_DATABASE}?user=${NAIS_DATABASE_TESTNAV_VARSLINGER_SERVICE_TESTNAV_VARSLINGER_DB_USERNAME}&password=${NAIS_DATABASE_TESTNAV_VARSLINGER_SERVICE_TESTNAV_VARSLINGER_DB_PASSWORD}
     hikari:
       maximum-pool-size: 3
       minimum-idle: 0
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
   flyway:
     locations: classpath:db/migration
     enabled: true
@@ -18,8 +12,6 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-  main:
-    banner-mode: off
 
 testnorge:
   analyse:

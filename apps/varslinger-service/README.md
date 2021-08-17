@@ -11,7 +11,7 @@ Applikasjon for registering av varslinger og brukeres varslinger.
 Swagger finnes under [/swagger](https://testnav-varslinger-service.dev.adeo.no/swagger) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
-Ha naisdevice kjørende og kjør VarslingerApiApplicationStarter med følgende argumenter:
+Ha naisdevice kjørende og kjør deretter VarslingerServiceApplicationStarter med følgende argumenter:
 ```
 -Dspring.cloud.vault.token=[kopier token fra vault]
 -Dspring.profiles.active=dev

@@ -1,12 +1,20 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
 spring:
+  main:
+    banner-mode: off
   application:
-    name: testnorge-varslinger-service
+    name: testnav-varslinger-service
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     description: Applikasjon for å registrere varslinger
-    cluster: dev-fss
+    cluster: dev-gcp
     namespace: dolly
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
 
 kafka:
   bootstrapservers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443

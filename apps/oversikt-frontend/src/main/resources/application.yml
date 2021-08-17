@@ -21,7 +21,6 @@ spring:
 applications:
   dolly-backend: dev-fss.dolly.dolly-backend
   dolly-backend-dev: dev-fss.dolly.dolly-backend-dev
-  testnorge-varslinger-api: a1dca941-bdd5-4705-a1a4-04cf76473040
   testnorge-tilbakemelding-api: 0f8c4430-19e4-4628-8e89-1dd89a1d613d
   testnorge-arbeidsforhold-export-api: 06c9b9c1-d370-40ea-8181-2c4a6858392f
   testnorge-avhengighetsanalyse-service: a90b186a-6896-4a79-9462-03b8cc9c36a9
@@ -81,6 +80,7 @@ applications:
   testnav-inntektstub-proxy: dev-fss.dolly.testnav-inntektstub-proxy
   tps-forvalteren-proxy: dev-fss.dolly.tps-forvalteren-proxy
   tps-forvalteren-dev-proxy: dev-fss.dolly.tps-forvalteren-dev-proxy
+  testnav-varslinger-service: dev-gcp.dolly.testnav-varslinger-service
 
 consumers:
   testnorge-profil-api:

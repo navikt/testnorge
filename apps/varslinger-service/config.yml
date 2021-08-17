@@ -28,6 +28,11 @@ spec:
     application:
       enabled: true
       tenant: nav.no
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_12
+        databases:
+          - name: testnav-varslinger-db
   liveness:
     path: /internal/isAlive
     initialDelay: 4
