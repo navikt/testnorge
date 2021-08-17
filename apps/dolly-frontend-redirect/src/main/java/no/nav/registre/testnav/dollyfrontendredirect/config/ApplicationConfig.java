@@ -6,8 +6,6 @@ import org.springframework.context.annotation.Import;
 import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
 
 @Configuration
-@Import({
-        ApplicationCoreConfig.class
-})
+@Import({ApplicationCoreConfig.class})
 public class ApplicationConfig {
 }

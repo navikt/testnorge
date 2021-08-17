@@ -14,7 +14,7 @@ public class SecureOAuth2AuthenticationTokenResolver implements AuthenticationTo
 
     private final OAuth2AuthorizedClientService clientService;
 
-    private OAuth2AuthenticationToken oauth2AuthenticationToken() {
+    public OAuth2AuthenticationToken oauth2AuthenticationToken() {
         return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
                 .filter(o -> o instanceof OAuth2AuthenticationToken)
                 .map(OAuth2AuthenticationToken.class::cast)
