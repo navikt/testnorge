@@ -8,12 +8,12 @@ import { KrrApi } from '~/service/Api'
 import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
-type KrrVisning = {
+type KrrVisningProps = {
 	data: Array<Data>
 	loading: boolean
 }
 
-type Visning = {
+type VisningProps = {
 	data: Data
 }
 
@@ -34,7 +34,7 @@ type SdpLeverandoer = {
 	}
 }
 
-export const Visning = ({ data }: Visning) => {
+export const Visning = ({ data }: VisningProps) => {
 	return (
 		<>
 			<LoadableComponent
@@ -74,13 +74,14 @@ export const Visning = ({ data }: Visning) => {
 						</>
 					)
 				}
+				label="Laster KRR data"
 			/>
 		</>
 	)
 }
 
-export const KrrVisning = ({ data, loading }: KrrVisning) => {
-	if (loading) return <Loading label="laster krr data" />
+export const KrrVisning = ({ data, loading }: KrrVisningProps) => {
+	if (loading) return <Loading label="Laster KRR data" />
 	if (!data) return false
 
 	const sortedData = Array.isArray(data) ? data.slice().reverse() : data

@@ -18,7 +18,7 @@ export default function Liste({
 	setSidetall,
 	setSideStoerrelse
 }) {
-	if (isFetching) return <Loading label="laster grupper" panel />
+	if (isFetching) return <Loading label="Laster grupper" panel />
 
 	if (!items || !items.length) {
 		return (

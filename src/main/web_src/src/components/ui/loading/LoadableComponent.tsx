@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import Loading from './Loading'
 
-interface LoadableComponent {
+interface LoadableComponentProps {
 	onFetch: any
 	render: (data: any, feilmelding: Feilmelding) => JSX.Element
+	label?: string
 }
 
 export type Feilmelding = {
 	feilmelding?: string
 }
 
-const LoadableComponent = ({ onFetch, render }: LoadableComponent) => {
+const LoadableComponent = ({ onFetch, render, label }: LoadableComponentProps) => {
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState()
 	const [data, setData] = useState()
@@ -27,7 +28,7 @@ const LoadableComponent = ({ onFetch, render }: LoadableComponent) => {
 	}, [])
 
 	if (loading) {
-		return <Loading />
+		return <Loading label={label} />
 	}
 	const feilmelding: Feilmelding = error
 		? {

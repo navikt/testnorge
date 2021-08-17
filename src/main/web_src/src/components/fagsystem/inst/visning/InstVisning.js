@@ -18,7 +18,7 @@ const getSortedData = data => {
 }
 
 export const InstVisning = ({ data, loading }) => {
-	if (loading) return <Loading label="laster inst data" />
+	if (loading) return <Loading label="Laster inst data" />
 	if (!data) return false
 
 	const sortedData = getSortedData(data)

@@ -6,7 +6,7 @@ import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 export const PensjonVisning = ({ data, loading }) => {
-	if (loading) return <Loading label="laster pensjonforvalter-data" />
+	if (loading) return <Loading label="Laster pensjonforvalter-data" />
 	if (!data || data.length === 0) return false
 
 	return (

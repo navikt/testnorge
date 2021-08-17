@@ -1,14 +1,12 @@
 import React from 'react'
-import _get from 'lodash/get'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import Formatters from '~/utils/DataFormatter'
 import Loading from '~/components/ui/loading/Loading'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 export const SigrunstubVisning = ({ data, loading, visTittel = true }) => {
-	if (loading) return <Loading label="laster sigrunstub-data" />
+	if (loading) return <Loading label="Laster sigrunstub-data" />
 	if (!data || data.length === 0) return false
 	const grunnlag = data[0].grunnlag.length > 0
 	const svalbardGrunnlag = data[0].svalbardGrunnlag.length > 0

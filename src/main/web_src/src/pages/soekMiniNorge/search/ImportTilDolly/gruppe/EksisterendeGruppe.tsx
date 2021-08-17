@@ -37,7 +37,7 @@ export default ({
 		label: v.id + ' - ' + v.navn
 	}))
 
-	if (isFetching) return <Loading label="laster grupper" />
+	if (isFetching) return <Loading label="Laster grupper" />
 
 	return (
 		<DollySelect

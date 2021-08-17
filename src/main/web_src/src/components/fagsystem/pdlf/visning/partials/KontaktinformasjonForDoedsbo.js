@@ -3,13 +3,11 @@ import { AdresseKodeverk } from '~/config/kodeverk'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Loading from '~/components/ui/loading/Loading'
 import Formatters from '~/utils/DataFormatter'
 import { Personnavn } from './Personnavn'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
-export const KontaktinformasjonForDoedsbo = ({ data, loading }) => {
-	if (loading) return <Loading label="laster PDL-data" />
+export const KontaktinformasjonForDoedsbo = ({ data }) => {
 	if (!data || data.length === 0) return false
 
 	return (
