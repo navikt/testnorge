@@ -20,6 +20,8 @@ spec:
           cluster: dev-fss
         - application: dolly-frontend
           cluster: dev-fss
+        - application: dolly-frontend
+          cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
   liveness:
@@ -51,3 +53,4 @@ spec:
   ingresses:
     - "https://udi-stub.dev.adeo.no"
     - "https://udi-stub.dev.intern.nav.no"
+    - "https://udi-stub.dev-fss-pub.nais.io"

@@ -1,22 +1,7 @@
 package no.nav.registre.aareg.mapper.strategy;
 
-import static java.time.LocalDateTime.of;
-import static java.util.Collections.singletonList;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.MapperFacade;
-
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidsforhold;
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Organisasjon;
-import org.junit.Before;
-import org.junit.Test;
-
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.math.BigDecimal;
-
 import no.nav.registre.aareg.config.MappingStrategy;
 import no.nav.registre.aareg.domain.RsAntallTimerForTimeloennet;
 import no.nav.registre.aareg.domain.RsArbeidsavtale;
@@ -27,6 +12,19 @@ import no.nav.registre.aareg.domain.RsPermisjon;
 import no.nav.registre.aareg.domain.RsPersonAareg;
 import no.nav.registre.aareg.domain.RsUtenlandsopphold;
 import no.nav.registre.aareg.testutils.MapperTestUtils;
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidsforhold;
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Organisasjon;
+import org.junit.Before;
+import org.junit.Test;
+
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.math.BigDecimal;
+
+import static java.time.LocalDateTime.of;
+import static java.util.Collections.singletonList;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class AaregMappingStrategyTest {
 
@@ -81,31 +79,6 @@ public class AaregMappingStrategyTest {
                 is(equalTo(mapper.map(rsArbeidsforhold.getAntallTimerForTimeloennet().get(0).getPeriode().getTom(), XMLGregorianCalendar.class))));
     }
 
-    @Test
-    public void mapAaregArbeidsforholdPermisjon_OK() {
-        var permisjon = mapper.map(buildRsArbeidforhold(), Arbeidsforhold.class).getPermisjon().get(0);
-
-        assertThat(permisjon.getPermisjonsId(), is(equalTo(rsArbeidsforhold.getPermisjon().get(0).getPermisjonsId())));
-        assertThat(permisjon.getPermisjonsprosent(), equalTo(BigDecimal.valueOf(rsArbeidsforhold.getPermisjon().get(0).getPermisjonsprosent())));
-        assertThat(permisjon.getPermisjonsPeriode().getFom(),
-                is(equalTo(mapper.map(rsArbeidsforhold.getPermisjon().get(0).getPermisjonsPeriode().getFom(), XMLGregorianCalendar.class))));
-        assertThat(permisjon.getPermisjonsPeriode().getTom(),
-                is(equalTo(mapper.map(rsArbeidsforhold.getPermisjon().get(0).getPermisjonsPeriode().getTom(), XMLGregorianCalendar.class))));
-        assertThat(permisjon.getPermisjonOgPermittering().getKodeRef(),
-                is(equalTo(rsArbeidsforhold.getPermisjon().get(0).getPermisjonOgPermittering())));
-    }
-
-    @Test
-    public void mapAaregArbeidsforholdUtenlandsopphold_OK() {
-        var utenlandsopphold = mapper.map(buildRsArbeidforhold(), Arbeidsforhold.class).getUtenlandsopphold().get(0);
-
-        assertThat(utenlandsopphold.getLand().getKodeRef(), is(equalTo(rsArbeidsforhold.getUtenlandsopphold().get(0).getLand())));
-        assertThat(utenlandsopphold.getPeriode().getFom(),
-                is(equalTo(mapper.map(rsArbeidsforhold.getUtenlandsopphold().get(0).getPeriode().getFom(), XMLGregorianCalendar.class))));
-        assertThat(utenlandsopphold.getPeriode().getTom(),
-                is(equalTo(mapper.map(rsArbeidsforhold.getUtenlandsopphold().get(0).getPeriode().getTom(), XMLGregorianCalendar.class))));
-    }
-
     private static RsArbeidsforhold buildRsArbeidforhold() {
         return RsArbeidsforhold.builder()
                 .ansettelsesPeriode(RsPeriode.builder()
@@ -140,7 +113,7 @@ public class AaregMappingStrategyTest {
                                 .build())
                         .build()))
                 .permisjon(singletonList(RsPermisjon.builder()
-                        .permisjonsId("123456")
+                        .permisjonId("123456")
                         .permisjonsPeriode(RsPeriode.builder()
                                 .fom(of(2012, 12, 9, 0, 0))
                                 .tom(of(2016, 5, 3, 0, 0))
@@ -156,5 +129,30 @@ public class AaregMappingStrategyTest {
                                 .build())
                         .build()))
                 .build();
+    }
+
+    @Test
+    public void mapAaregArbeidsforholdUtenlandsopphold_OK() {
+        var utenlandsopphold = mapper.map(buildRsArbeidforhold(), Arbeidsforhold.class).getUtenlandsopphold().get(0);
+
+        assertThat(utenlandsopphold.getLand().getKodeRef(), is(equalTo(rsArbeidsforhold.getUtenlandsopphold().get(0).getLand())));
+        assertThat(utenlandsopphold.getPeriode().getFom(),
+                is(equalTo(mapper.map(rsArbeidsforhold.getUtenlandsopphold().get(0).getPeriode().getFom(), XMLGregorianCalendar.class))));
+        assertThat(utenlandsopphold.getPeriode().getTom(),
+                is(equalTo(mapper.map(rsArbeidsforhold.getUtenlandsopphold().get(0).getPeriode().getTom(), XMLGregorianCalendar.class))));
+    }
+
+    @Test
+    public void mapAaregArbeidsforholdPermisjon_OK() {
+        var permisjon = mapper.map(buildRsArbeidforhold(), Arbeidsforhold.class).getPermisjon().get(0);
+
+        assertThat(permisjon.getPermisjonsId(), is(equalTo(rsArbeidsforhold.getPermisjon().get(0).getPermisjonId())));
+        assertThat(permisjon.getPermisjonsprosent(), equalTo(BigDecimal.valueOf(rsArbeidsforhold.getPermisjon().get(0).getPermisjonsprosent())));
+        assertThat(permisjon.getPermisjonsPeriode().getFom(),
+                is(equalTo(mapper.map(rsArbeidsforhold.getPermisjon().get(0).getPermisjonsPeriode().getFom(), XMLGregorianCalendar.class))));
+        assertThat(permisjon.getPermisjonsPeriode().getTom(),
+                is(equalTo(mapper.map(rsArbeidsforhold.getPermisjon().get(0).getPermisjonsPeriode().getTom(), XMLGregorianCalendar.class))));
+        assertThat(permisjon.getPermisjonOgPermittering().getKodeRef(),
+                is(equalTo(rsArbeidsforhold.getPermisjon().get(0).getPermisjonOgPermittering())));
     }
 }

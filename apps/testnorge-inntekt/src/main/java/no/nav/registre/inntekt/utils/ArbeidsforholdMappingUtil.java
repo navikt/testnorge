@@ -1,14 +1,6 @@
 package no.nav.registre.inntekt.utils;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.YearMonth;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.fasterxml.jackson.databind.JsonNode;
-
 import no.nav.registre.inntekt.domain.aareg.RsAktoer;
 import no.nav.registre.inntekt.domain.aareg.RsAktoerPerson;
 import no.nav.registre.inntekt.domain.aareg.RsAntallTimerForTimeloennet;
@@ -34,6 +26,13 @@ import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.PermisjonPermitt
 import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Person;
 import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Sporingsinformasjon;
 import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Utenlandsopphold;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class ArbeidsforholdMappingUtil {
 
@@ -291,7 +290,7 @@ public class ArbeidsforholdMappingUtil {
         List<RsPermisjon> rsPermisjoner = new ArrayList<>(permisjoner.size());
         for (var permisjon : permisjoner) {
             rsPermisjoner.add(RsPermisjon.builder()
-                    .permisjonsId(permisjon.getPermisjonPermitteringId())
+                    .permisjonId(permisjon.getPermisjonPermitteringId())
                     .permisjonsPeriode(RsPeriode.builder()
                             .fom(getLocalDateTimeFromLocalDate(permisjon.getPeriode().getFom()))
                             .tom(getLocalDateTimeFromLocalDate(permisjon.getPeriode().getTom()))

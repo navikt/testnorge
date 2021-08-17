@@ -13,7 +13,13 @@ spec:
     inbound:
       rules:
         - application: dolly-frontend-dev
+          cluster: dev-fss
         - application: dolly-frontend
+          cluster: dev-fss
+        - application: dolly-frontend-dev
+          cluster: dev-gcp
+        - application: dolly-frontend
+          cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
         - application: team-dolly-lokal-app
@@ -47,3 +53,4 @@ spec:
   ingresses:
     - "https://testnorge-varslinger-api.dev.adeo.no"
     - "https://testnorge-varslinger-api.dev.intern.nav.no"
+    - "https://testnorge-varslinger-api.dev-fss-pub.nais.io"

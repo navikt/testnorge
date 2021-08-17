@@ -29,6 +29,8 @@ spec:
           cluster: dev-gcp
         - application: dolly-frontend-dev
           cluster: dev-fss
+        - application: dolly-frontend-dev
+          cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
   liveness:
@@ -55,3 +57,4 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://tps-forvalteren-dev-proxy.dev.intern.nav.no"
+    - "https://tps-forvalteren-dev-proxy.dev-fss-pub.nais.io"

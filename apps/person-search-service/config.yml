@@ -20,7 +20,13 @@ spec:
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
         - application: dolly-frontend-dev
+          cluster: dev-fss
+        - application: dolly-frontend-dev
+          cluster: dev-gcp
         - application: dolly-frontend
+          cluster: dev-fss
+        - application: dolly-frontend
+          cluster: dev-gcp
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -45,3 +51,4 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://person-search-service.dev.intern.nav.no"
+    - "https://person-search-service.dev-fss-pub.nais.io"

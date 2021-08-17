@@ -80,7 +80,7 @@ public class AaregMappingStrategy implements MappingStrategy {
                 .register();
 
         factory.classMap(RsPermisjon.class, Permisjon.class)
-                .customize(new CustomMapper<RsPermisjon, Permisjon>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(
                             RsPermisjon rsPermisjon,
@@ -89,6 +89,7 @@ public class AaregMappingStrategy implements MappingStrategy {
                     ) {
 
                         permisjon.setPermisjonOgPermittering(mapKodeverdi(new PermisjonsOgPermitteringsBeskrivelse(), rsPermisjon.getPermisjonOgPermittering()));
+                        permisjon.setPermisjonsId(rsPermisjon.getPermisjonId());
                     }
                 })
                 .byDefault()
