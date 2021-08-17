@@ -19,7 +19,7 @@ import java.util.List;
 @NoArgsConstructor(force = true)
 public class PermisjonDTO {
     @JsonProperty
-    String permisjonId;
+    String permisjonsId;
     @JsonProperty
     String beskrivelse;
     @JsonProperty
