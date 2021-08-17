@@ -43,5 +43,5 @@ jobs:
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-          CLUSTER: dev-gcp
+          CLUSTER: dev-fss
           RESOURCE: apps/dolly-frontend-redirect/config.yml
