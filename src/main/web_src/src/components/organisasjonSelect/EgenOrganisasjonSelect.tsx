@@ -1,31 +1,42 @@
 import * as React from 'react'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 
 type EgenOrganisasjonSelect = {
 	name: string
 	isClearable?: boolean
 	onChange?: (selected: any) => void
-	brukerId?: string
 }
 
 export const EgenOrganisasjonSelect = ({
 	name,
 	isClearable = true,
-	onChange = null,
-	brukerId
+	onChange = null
 }: EgenOrganisasjonSelect) => {
-	const virksomheter = SelectOptionsOppslag.hentVirksomheterFraOrgforvalter(brukerId)
-	const virksomheterOptions = SelectOptionsOppslag.formatOptions('virksomheter', virksomheter)
-
 	return (
-		<FormikSelect
-			name={name}
-			label="Organisasjonsnummer"
-			options={virksomheterOptions}
-			size="xxlarge"
-			isClearable={isClearable}
-			onChange={onChange}
-		/>
+		<ErrorBoundary>
+			<LoadableComponent
+				onFetch={() =>
+					SelectOptionsOppslag.hentVirksomheterFraOrgforvalter().then(response =>
+						response.map(virksomhet => ({
+							value: virksomhet.orgnummer,
+							label: `${virksomhet.orgnummer} (${virksomhet.enhetstype}) - ${virksomhet.orgnavn}`
+						}))
+					)
+				}
+				render={data => (
+					<FormikSelect
+						name={name}
+						label="Organisasjonsnummer"
+						options={data}
+						size="xxlarge"
+						isClearable={isClearable}
+						onChange={onChange}
+					/>
+				)}
+			/>
+		</ErrorBoundary>
 	)
 }

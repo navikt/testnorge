@@ -75,12 +75,10 @@ export const SelectOptionsOppslag = {
 		return understatusInfo
 	},
 
-	hentVirksomheterFraOrgforvalter: ident => {
-		const virksomheter = useAsync(async () => {
-			const response = await OrgforvalterApi.getVirksomheterPaaBruker(ident)
-			return response
-		}, [OrgforvalterApi.getVirksomheterPaaBruker])
-		return virksomheter
+	hentVirksomheterFraOrgforvalter: () => {
+		return Api.fetchJson(`/testnav-organisasjon-forvalter/api/v1/organisasjon/virksomheter`, {
+			method: 'GET'
+		})
 	},
 
 	formatOptions: (type, data) => {
@@ -158,16 +156,6 @@ export const SelectOptionsOppslag = {
 					data = omraade[1]
 					options.push({ value: data.value, label: data.label })
 				})
-			return options
-		} else if (type === 'virksomheter') {
-			const virksomheter = data.value ? data.value.data : []
-			const options = []
-			virksomheter.forEach(virksomhet => {
-				options.push({
-					value: virksomhet.orgnummer,
-					label: `${virksomhet.orgnummer} (${virksomhet.enhetstype}) - ${virksomhet.orgnavn}`
-				})
-			})
 			return options
 		}
 	}

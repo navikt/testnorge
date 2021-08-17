@@ -15,7 +15,6 @@ import { MaritimtArbeidsforholdForm } from './maritimtArbeidsforholdForm'
 import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSelect'
 import { ArbeidKodeverk } from '~/config/kodeverk'
 import { ArbeidsgiverTyper } from '~/components/fagsystem/aareg/AaregTypes'
-import EgenOrganisasjonConnector from '~/components/organisasjonSelect/EgenOrganisasjonConnector'
 import {
 	initialForenkletOppgjoersordningOrg,
 	initialForenkletOppgjoersordningPers,
@@ -23,6 +22,7 @@ import {
 	initialArbeidsforholdPers,
 	initialFartoy
 } from '../initialValues'
+import { EgenOrganisasjonSelect } from '~/components/organisasjonSelect/EgenOrganisasjonSelect'
 
 export const ArbeidsforholdForm = ({
 	path,
@@ -139,7 +139,7 @@ export const ArbeidsforholdForm = ({
 					/>
 				)}
 				{arbeidsgiverType === ArbeidsgiverTyper.egen && (
-					<EgenOrganisasjonConnector
+					<EgenOrganisasjonSelect
 						name={`${path}.arbeidsgiver.orgnummer`}
 						isClearable={false}
 						onChange={onChangeLenket('arbeidsgiver.orgnummer')}
