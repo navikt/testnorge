@@ -79,7 +79,7 @@ public class OrganisasjonController {
     @GetMapping("/virksomheter")
     @Operation(description = "Hent virksomheter av type BEDR og AAFY fra database. Kun disse typer kan ha ansatte")
     public List<UnderenhetResponse> getUnderenheter(@Parameter(description = "BrukerId fra Azure") @RequestParam(required = false) String brukerid) {
-        if (brukerid == null) {
+        if (brukerid != null) {
             return drivervirksomheterService.getUnderenheter(brukerid);
         }
         return drivervirksomheterService.getUnderenheter(authenticationTokenResolver.getOid());
