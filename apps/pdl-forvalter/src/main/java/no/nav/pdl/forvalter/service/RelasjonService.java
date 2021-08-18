@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static java.util.Objects.nonNull;
+
 @Service
 @RequiredArgsConstructor
 public class RelasjonService {
@@ -34,7 +36,15 @@ public class RelasjonService {
                         String.format(DB_ERROR, identRelasjon)));
 
         createRelasjon(relasjonPerson, hovedperson, relasjon);
-        createRelasjon(hovedperson, relasjonPerson, reverseRelasjon);
+
+        if (nonNull(reverseRelasjon)) {
+            createRelasjon(hovedperson, relasjonPerson, reverseRelasjon);
+        }
+    }
+
+    public void setRelasjon(String ident, String identRelasjon, RelasjonType relasjon) {
+
+       setRelasjoner(identRelasjon, relasjon, ident, null);
     }
 
     private void createRelasjon(DbPerson person1, DbPerson person2, RelasjonType relasjon) {
