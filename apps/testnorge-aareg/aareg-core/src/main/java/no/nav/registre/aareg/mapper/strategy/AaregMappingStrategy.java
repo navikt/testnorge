@@ -88,7 +88,7 @@ public class AaregMappingStrategy implements MappingStrategy {
                             MappingContext context
                     ) {
 
-                        permisjon.setPermisjonOgPermittering(mapKodeverdi(new PermisjonsOgPermitteringsBeskrivelse(), rsPermisjon.getPermisjon()));
+                        permisjon.setPermisjonOgPermittering(mapKodeverdi(new PermisjonsOgPermitteringsBeskrivelse(), rsPermisjon.getPermisjonOgPermittering()));
                         permisjon.setPermisjonsId(rsPermisjon.getPermisjonId());
                     }
                 })
