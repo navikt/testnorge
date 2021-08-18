@@ -1,0 +1,39 @@
+@import (reference) '~lessVars';
+
+.content-header {
+	width: 100%;
+	border: 1px solid #eee;
+	background-color: white;
+	margin: 20px 0;
+	display: flex;
+
+	&_icon {
+		background-color: @color-faded-blue;
+		display: flex;
+		align-items: center;
+		padding: 0 12px;
+	}
+
+	&_content {
+		width: 100%;
+	}
+
+	.org {
+		background-color: @navOransjeLighten60;
+	}
+
+	dl {
+		padding: 0 20px;
+		border-right: 1px solid #eee;
+		&:last-child {
+			border: none;
+		}
+		dt {
+			font-weight: bold;
+			font-size: 14px;
+		}
+		dd {
+			margin: 0;
+		}
+	}
+}

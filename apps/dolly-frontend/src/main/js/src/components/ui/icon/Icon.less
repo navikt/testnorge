@@ -1,0 +1,76 @@
+@import (reference) '~lessVars';
+
+// Ny struktur
+.svg-icon {
+	&-trashcan,
+	&-add-circle,
+	&-remove-circle,
+	&-edit,
+	&-star,
+	&-eraser,
+	&-search,
+	&-details {
+		* {
+			stroke: @color-lightblue;
+		}
+	}
+
+	&-synchronize {
+		* {
+			fill: @color-lightblue;
+		}
+	}
+
+	&-eraser g path:nth-child(2) {
+		fill: none;
+	}
+
+	&-star-filled * {
+		fill: #f8e71c;
+		stroke: #e2d318;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+		stroke-miterlimit: 10;
+		stroke-width: 2;
+	}
+
+	&-report-problem-circle {
+		.circle {
+			fill: #3e3832;
+		}
+
+		.path {
+			fill: #ffb249;
+		}
+	}
+
+	&-feedback-check-circle {
+		.checkmark {
+			fill: none;
+			stroke: #3e3832;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+			stroke-miterlimit: 10;
+		}
+
+		.circle {
+			fill: #9bd0b0;
+			stroke-linecap: round;
+			stroke-linejoin: round;
+			stroke-miterlimit: 10;
+		}
+	}
+
+	&-calendar {
+		.st0 {
+			stroke: #777;
+		}
+	}
+}
+
+// Prevent duplicate title on mouse tooltip
+button > svg,
+button > svg > path,
+button > svg > title {
+	pointer-events: none;
+}

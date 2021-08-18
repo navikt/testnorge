@@ -1,0 +1,20 @@
+{
+	"compilerOptions": {
+		"outDir": "./dist/dev",
+		"sourceMap": true,
+		"noImplicitAny": true,
+		"moduleResolution": "node",
+		"esModuleInterop": true,
+		"module": "es6",
+		"target": "ESNext",
+		"allowJs": true,
+		"jsx": "react",
+		"lib": ["esnext", "dom"],
+		"baseUrl": ".",
+		"paths": {
+			"~/*": ["./src/*"],
+			"@/*": ["./src/*"]
+		}
+	},
+	"exclude": ["node_modules", "**/node_modules/*"]
+}

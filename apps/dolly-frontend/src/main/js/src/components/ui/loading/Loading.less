@@ -1,0 +1,47 @@
+@import (reference) '~lessVars';
+
+@base-line-height: 18px;
+@circle-main-color: @color-darkblue;
+@cirle-bg-color: fade(@circle-main-color, 20%);
+@spin-duration: 1s;
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+.fullpage-loading-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100vh;
+}
+
+.panel-loading-container {
+	//background-color: white;
+	padding: 15px;
+	border: 1px solid @color-bg-grey-border;
+}
+
+.loading-component {
+	font-family: 'Lucida Console', Monaco, monospace;
+	display: inline-flex;
+	font-size: 16px;
+	align-items: center;
+	.loading-spinner {
+		margin-left: 10px;
+	}
+}
+
+.loading-spinner {
+	border-radius: 50%;
+	width: @base-line-height;
+	height: @base-line-height;
+	border: 0.25rem solid @cirle-bg-color;
+	border-top-color: @circle-main-color;
+	animation: spin @spin-duration infinite linear;
+}

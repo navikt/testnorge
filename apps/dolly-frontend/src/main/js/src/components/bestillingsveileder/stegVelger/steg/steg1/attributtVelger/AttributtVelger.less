@@ -1,0 +1,53 @@
+@import (reference) '~lessVars';
+
+
+.attributt-velger {
+  &_search {
+    width: 40%;
+  }
+
+  &_checkboks-label {
+    font-size: 1em;
+    text-transform: uppercase;
+  }
+
+  &_panels {
+    width: 65%;
+    padding-right: 30px;
+    border-right: 1px solid @color-darkblue;
+
+    h3 {
+      font-size: 1rem;
+      margin: 0 0 12px;
+    }
+  }
+
+  &_panelsubcontent {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+
+    // Ekspanderer grid column for å fylle ut row
+    // css-irl.info/controlling-leftover-grid-items
+    > div:last-child:nth-child(3n - 1) {
+      grid-column: span 2;
+    }
+
+    > div:last-child:nth-child(3n - 2) {
+      grid-column: span 3;
+    }
+  }
+
+  &_panelsubcontent:not(:last-child) {
+    margin-bottom: 20px;
+  }
+
+  &_radiogruppe {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+
+    > * {
+      margin-right: 30px;
+    }
+  }
+}

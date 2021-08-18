@@ -1,0 +1,45 @@
+@import (reference) '~lessVars';
+
+.btn-modal {
+	cursor: pointer;
+	position: fixed;
+	right: 30px;
+	bottom: 70px;
+	border-radius: 50%;
+	width: 60px;
+	height: 60px;
+	background-color: @navBla;
+	border: 0px;
+
+	svg {
+		stroke: white;
+		padding-top: 4px;
+	}
+}
+
+.btn-modal:hover {
+	background-color: @fokusFarge;
+}
+
+.modal-content {
+	display: flex;
+	margin-bottom: -15px;
+
+	img {
+		width: 40px;
+		height: 40px;
+		border-radius: 50%;
+		margin-right: 10px;
+		margin-top: 23px;
+	}
+
+	.bruker-ikon {
+		margin-right: 10px;
+		margin-top: 23px;
+		fill: @navGra60;
+	}
+
+	.modal-input {
+		width: 90%;
+	}
+}

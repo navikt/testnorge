@@ -1,0 +1,17 @@
+{
+	"compilerOptions": {
+		"sourceMap": true,
+		"moduleResolution": "node",
+		"esModuleInterop": true,
+		"module": "es6",
+		"target": "es6",
+		"outDir": "./dist",
+		"lib": ["es6", "dom", "es2017"],
+		"jsx": "react",
+		"baseUrl": ".",
+		"paths": {
+			"~/*": ["./src/*"]
+		}
+	},
+	"exclude": ["node_modules", "**/node_modules/*"]
+}
