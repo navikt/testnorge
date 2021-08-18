@@ -28,6 +28,8 @@ import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Utenlandsopp
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Yrker;
 import org.springframework.stereotype.Component;
 
+import static java.util.Objects.nonNull;
+
 @Component
 public class AaregMappingStrategy implements MappingStrategy {
 
@@ -88,10 +90,14 @@ public class AaregMappingStrategy implements MappingStrategy {
                             MappingContext context
                     ) {
 
-                        permisjon.setPermisjonOgPermittering(mapKodeverdi(new PermisjonsOgPermitteringsBeskrivelse(), rsPermisjon.getPermisjonOgPermittering()));
+                        permisjon.setPermisjonOgPermittering(nonNull(rsPermisjon.getPermisjonOgPermittering())
+                                ? mapKodeverdi(new PermisjonsOgPermitteringsBeskrivelse(), rsPermisjon.getPermisjonOgPermittering())
+                                : mapKodeverdi(new PermisjonsOgPermitteringsBeskrivelse(), rsPermisjon.getPermisjon())
+                        );
                         permisjon.setPermisjonsId(rsPermisjon.getPermisjonId());
                     }
                 })
+                .exclude("permisjon")
                 .byDefault()
                 .register();
 
