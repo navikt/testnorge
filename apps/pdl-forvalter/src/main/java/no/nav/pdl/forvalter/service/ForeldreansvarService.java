@@ -9,10 +9,12 @@ import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.ROLLE;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO.Ansvar;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO.PersonnavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
@@ -99,7 +101,7 @@ public class ForeldreansvarService {
         if (nonNull(foreldreansvar.getAnsvarligUtenIdentifikator())) {
 
             var navn = foreldreansvar.getAnsvarligUtenIdentifikator().getNavn();
-            if ((isNotBlank(navn.getFornavn()) ||
+            if (nonNull(navn) && (isNotBlank(navn.getFornavn()) ||
                     isNotBlank(navn.getMellomnavn()) ||
                     isNotBlank(navn.getEtternavn())) &&
                     isFalse(genererNavnServiceConsumer.verifyNavn(no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO.builder()
@@ -152,7 +154,7 @@ public class ForeldreansvarService {
                                     foreldreRelasjon.getRelatertPersonsRolle() == ROLLE.MEDMOR)
                             .map(foreldreRelasjon -> BarnRelasjon.builder()
                                     .barn(barn)
-                                    .forelder(foreldreRelasjon.getRelatertPerson())
+                                    .ansvarlig(foreldreRelasjon.getRelatertPerson())
                                     .build())
                             .findFirst().get();
                 })
@@ -160,6 +162,7 @@ public class ForeldreansvarService {
     }
 
     private boolean isRelasjonFar(PersonDTO hovedperson) {
+
         return hovedperson.getForelderBarnRelasjon().stream().anyMatch(relasjon -> {
             Optional<DbPerson> barn = personRepository.findByIdent(relasjon.getRelatertPerson());
             return barn.isPresent() &&
@@ -177,7 +180,7 @@ public class ForeldreansvarService {
                             .filter(foreldreRelasjon -> foreldreRelasjon.getRelatertPersonsRolle() == ROLLE.FAR)
                             .map(foreldreRelasjon -> BarnRelasjon.builder()
                                     .barn(barn)
-                                    .forelder(foreldreRelasjon.getRelatertPerson())
+                                    .ansvarlig(foreldreRelasjon.getRelatertPerson())
                                     .build())
                             .findFirst().get();
                 })
@@ -202,25 +205,8 @@ public class ForeldreansvarService {
         } else if (foreldreansvar.getAnsvar() == Ansvar.ANDRE) {
             if (nonNull(foreldreansvar.getAnsvarligUtenIdentifikator())) {
 
-                if (isBlank(foreldreansvar.getAnsvarligUtenIdentifikator().getStatsborgerskap())) {
-                    foreldreansvar.getAnsvarligUtenIdentifikator().setStatsborgerskap("NOR");
-                }
+                makeAnsvarligUtenIdentifier(foreldreansvar, hovedperson);
 
-                if (isBlank(foreldreansvar.getAnsvarligUtenIdentifikator().getNavn().getFornavn()) ||
-                        isBlank(foreldreansvar.getAnsvarligUtenIdentifikator().getNavn().getMellomnavn()) ||
-                        isBlank(foreldreansvar.getAnsvarligUtenIdentifikator().getNavn().getEtternavn())) {
-
-                    var forespurtNavn = foreldreansvar.getAnsvarligUtenIdentifikator().getNavn();
-                    var nyttNavn = genererNavnServiceConsumer.getNavn(1);
-                    if (nyttNavn.isPresent()) {
-                        foreldreansvar.getAnsvarligUtenIdentifikator().setNavn(
-                                ForeldreansvarDTO.PersonnavnDTO.builder()
-                                        .fornavn(blankCheck(forespurtNavn.getFornavn(), nyttNavn.get().getAdjektiv()))
-                                        .etternavn(blankCheck(forespurtNavn.getEtternavn(), nyttNavn.get().getSubstantiv()))
-                                        .mellomnavn(blankCheck(forespurtNavn.getMellomnavn(), nyttNavn.get().getAdverb()))
-                                        .build());
-                    }
-                }
             } else if (isNull(foreldreansvar.getAnsvarlig())) {
 
                 if (isNull(foreldreansvar.getNyAnsvarlig())) {
@@ -250,13 +236,49 @@ public class ForeldreansvarService {
                     .map(relasjon -> relasjon.getRelatertPerson())
                     .map(ident -> personRepository.findByIdent(ident))
                     .map(dbperson -> BarnRelasjon.builder()
-                            .forelder(foreldreansvar.getAnsvarlig())
+                            .ansvarlig(foreldreansvar.getAnsvarlig())
                             .barn(dbperson.get())
                             .build())
                     .collect(Collectors.toList()), foreldreansvar);
         }
 
         foreldreansvar.setNyAnsvarlig(null);
+    }
+
+    private void makeAnsvarligUtenIdentifier(ForeldreansvarDTO foreldreansvar, PersonDTO hovedperson) {
+
+        if (isBlank(foreldreansvar.getAnsvarligUtenIdentifikator().getStatsborgerskap())) {
+            foreldreansvar.getAnsvarligUtenIdentifikator().setStatsborgerskap("NOR");
+        }
+
+        var forespurtNavn =
+                nonNull(foreldreansvar.getAnsvarligUtenIdentifikator().getNavn()) ?
+                        foreldreansvar.getAnsvarligUtenIdentifikator().getNavn() : new PersonnavnDTO();
+
+        if (isBlank(forespurtNavn.getFornavn()) ||
+                isBlank(forespurtNavn.getMellomnavn()) ||
+                isBlank(forespurtNavn.getEtternavn())) {
+
+            var nyttNavn = genererNavnServiceConsumer.getNavn(1);
+            if (nyttNavn.isPresent()) {
+                foreldreansvar.getAnsvarligUtenIdentifikator().setNavn(
+                        PersonnavnDTO.builder()
+                                .fornavn(blankCheck(forespurtNavn.getFornavn(), nyttNavn.get().getAdjektiv()))
+                                .etternavn(blankCheck(forespurtNavn.getEtternavn(), nyttNavn.get().getSubstantiv()))
+                                .mellomnavn(blankCheck(forespurtNavn.getMellomnavn(), nyttNavn.get().getAdverb()))
+                                .build());
+            }
+        }
+
+        if (isNull(foreldreansvar.getAnsvarligUtenIdentifikator().getKjoenn())) {
+            foreldreansvar.getAnsvarligUtenIdentifikator().setKjoenn(random.nextBoolean() ? Kjoenn.MANN : Kjoenn.KVINNE);
+        }
+
+        if (isNull(foreldreansvar.getAnsvarligUtenIdentifikator().getFoedselsdato())) {
+            foreldreansvar.getAnsvarligUtenIdentifikator().setFoedselsdato(
+                    DatoFraIdentUtility.getDato(hovedperson.getIdent())
+                            .plusDays(random.nextInt(365)).atStartOfDay());
+        }
     }
 
     private void setRelasjoner(List<BarnRelasjon> barnRelasjoner, ForeldreansvarDTO foreldreansvar) {
@@ -266,14 +288,18 @@ public class ForeldreansvarService {
             relasjon.getBarn().getPerson().getForeldreansvar()
                     .add(0, ForeldreansvarDTO.builder()
                             .ansvar(foreldreansvar.getAnsvar())
-                            .ansvarlig(relasjon.getForelder())
+                            .ansvarlig(relasjon.getAnsvarlig())
+                            .ansvarligUtenIdentifikator(foreldreansvar.getAnsvarligUtenIdentifikator())
                             .kilde(foreldreansvar.getKilde())
                             .master(foreldreansvar.getMaster())
                             .id(relasjon.getBarn().getPerson().getForeldreansvar().stream()
                                     .map(ForeldreansvarDTO::getId)
                                     .findFirst().orElse(0) + 1)
                             .build());
-            relasjonService.setRelasjon(relasjon.getBarn().getIdent(), relasjon.getForelder(), FORELDREANSVAR);
+
+            if (nonNull(relasjon.getAnsvarlig())) {
+                relasjonService.setRelasjon(relasjon.getBarn().getIdent(), relasjon.getAnsvarlig(), FORELDREANSVAR);
+            }
         });
     }
 
@@ -284,6 +310,6 @@ public class ForeldreansvarService {
     private static class BarnRelasjon {
 
         private DbPerson barn;
-        private String forelder;
+        private String ansvarlig;
     }
 }

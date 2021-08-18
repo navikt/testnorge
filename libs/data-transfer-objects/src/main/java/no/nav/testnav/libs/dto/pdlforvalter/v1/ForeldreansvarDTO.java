@@ -1,5 +1,7 @@
 package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,6 +17,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(Include.NON_NULL)
 public class ForeldreansvarDTO extends DbVersjonDTO {
 
     private Ansvar ansvar;
@@ -29,6 +32,7 @@ public class ForeldreansvarDTO extends DbVersjonDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(Include.NON_NULL)
     public static class RelatertBiPersonDTO implements Serializable {
 
         private LocalDateTime foedselsdato;
@@ -41,6 +45,7 @@ public class ForeldreansvarDTO extends DbVersjonDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(Include.NON_NULL)
     public static class PersonnavnDTO implements Serializable {
 
         private String etternavn;
