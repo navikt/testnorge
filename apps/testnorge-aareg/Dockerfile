@@ -1,7 +1,7 @@
 FROM navikt/java:11
 LABEL maintainer="Team Dolly"
 
-ADD apps/testnorge-aareg/aareg-core/build/libs/app.jar /app/app.jar
+ADD apps/testnorge-aareg/build/libs/app.jar /app/app.jar
 
 ENV JAVA_OPTS="-Dspring.profiles.active=prod"
 
