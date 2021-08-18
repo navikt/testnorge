@@ -97,7 +97,6 @@ public class AaregMappingStrategy implements MappingStrategy {
                         permisjon.setPermisjonsId(rsPermisjon.getPermisjonId());
                     }
                 })
-                .exclude("permisjon")
                 .byDefault()
                 .register();
 
