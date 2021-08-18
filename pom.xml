@@ -30,7 +30,7 @@
         <commons-lang3.version>3.11</commons-lang3.version>
         <papertrailapp.version>1.0.0</papertrailapp.version>
         <logstash-logback-encoder.version>5.1</logstash-logback-encoder.version>
-        <testnorge-libs.version>2020.11.13-13.14-1f4923c6cf11</testnorge-libs.version>
+        <testnav-libs.version>2021.08.13-14.28-a09307a7bcb2</testnav-libs.version>
     </properties>
 
     <dependencyManagement>
@@ -52,22 +52,30 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Testnorge -->
         <dependency>
-            <groupId>no.nav.registre.testnorge.libs</groupId>
-            <artifactId>testnorge-data-transfer-objects</artifactId>
-            <version>${testnorge-libs.version}</version>
+            <groupId>no.nav.testnav.libs</groupId>
+            <artifactId>reactive-core</artifactId>
+            <version>${testnav-libs.version}</version>
         </dependency>
         <dependency>
-            <groupId>no.nav.registre.testnorge.libs</groupId>
-            <artifactId>testnorge-dependency-analysis</artifactId>
-            <version>${testnorge-libs.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springdoc</groupId>
-                    <artifactId>springdoc-openapi-ui</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>no.nav.testnav.libs</groupId>
+            <artifactId>reactive-security</artifactId>
+            <version>${testnav-libs.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.testnav.libs</groupId>
+            <artifactId>reactive-proxy</artifactId>
+            <version>${testnav-libs.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.testnav.libs</groupId>
+            <artifactId>data-transfer-objects</artifactId>
+            <version>${testnav-libs.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>no.nav.testnav.libs</groupId>
+            <artifactId>reactive-frontend</artifactId>
+            <version>${testnav-libs.version}</version>
         </dependency>
 
         <dependency>
@@ -91,6 +99,10 @@
             <artifactId>spring-cloud-starter-vault-config</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-gateway</artifactId>
+        </dependency>
+        <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
             <version>${logstash-logback-encoder.version}</version>
@@ -99,10 +111,6 @@
             <groupId>com.papertrailapp</groupId>
             <artifactId>logback-syslog4j</artifactId>
             <version>${papertrailapp.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -127,17 +135,10 @@
         <artifactId>spring-security-oauth2-client</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-zuul</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
         </dependency>
-
     </dependencies>
-
 
     <profiles>
         <profile>

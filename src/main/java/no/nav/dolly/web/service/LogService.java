@@ -2,9 +2,9 @@ package no.nav.dolly.web.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.Strings;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import no.nav.dolly.web.consumers.TilbakemeldingConsumer;
 import no.nav.dolly.web.domain.Level;
@@ -18,7 +18,7 @@ public class LogService {
     private final TilbakemeldingConsumer tilbakemeldingConsumer;
 
     private void logKibana(LogEvent event) {
-        MDC.clear();
+        var original = MDC.getCopyOfContextMap();
         MDC.setContextMap(event.toPropertyMap());
         switch (event.getLevel()) {
             case TRACE:
@@ -37,18 +37,14 @@ public class LogService {
                 log.debug(event.getMessage());
                 break;
         }
-        MDC.clear();
+        MDC.setContextMap(original);
     }
 
-    public void log(LogEvent event) {
-        try {
-            if (Strings.isNotBlank(event.getMessage()) && event.getLevel() == Level.INFO) {
-                tilbakemeldingConsumer.send(event.toTilbakemeldingDTO());
-            }
-        } catch (Exception e) {
-            log.error("Feil ved innsendelse til tilbakemelding consumer.", e);
-        } finally {
-            logKibana(event);
+    public Mono<Void> log(LogEvent event) {
+        logKibana(event);
+        if (event.getMessage() != null && event.getLevel() == Level.INFO) {
+            return tilbakemeldingConsumer.send(event.toTilbakemeldingDTO());
         }
+        return Mono.empty();
     }
 }

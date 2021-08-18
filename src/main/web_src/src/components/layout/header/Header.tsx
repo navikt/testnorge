@@ -52,7 +52,10 @@ export default ({ brukerProfil, brukerBilde }: Props) => {
 				>
 					Dokumentasjon
 				</a>
-				<a href="/swagger-ui.html" target="_blank">
+				<a
+					href="https://dolly-backend.dev.adeo.no/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config"
+					target="_blank"
+				>
 					API-dok
 				</a>
 			</div>

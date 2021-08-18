@@ -42,5 +42,5 @@ jobs:
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.API_DOLLY_KEY }}
-          CLUSTER: dev-fss
+          CLUSTER: dev-gcp
           RESOURCE: config.dev.yml

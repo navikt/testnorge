@@ -1,191 +1,10 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
-zuul:
-  routes:
-    dolly-backend:
-      path: /dolly-backend/api/**
-      url: ${DOLLY_BACKEND_URL}/api
-      sensitiveHeaders: Cookie,Set-Cookie
-    testnorge-profil-api:
-      path: /testnorge-profil-api/api/**
-      url: https://testnorge-profil-api.dev.intern.nav.no/api
-      sensitiveHeaders: Cookie,Set-Cookie
-    testnorge-varslinger-api:
-      path: /testnorge-varslinger-api/api/**
-      url: https://testnorge-varslinger-api.dev.adeo.no/api
-      sensitiveHeaders: Cookie,Set-Cookie
-    testnav-organisasjon-forvalter:
-      path: /testnav-organisasjon-forvalter/api/**
-      url: https://testnav-organisasjon-forvalter.dev.intern.nav.no/api
-      sensitiveHeaders: Cookie,Set-Cookie
-    testnav-organisasjon-service:
-      path: /testnav-organisasjon-service/api/**
-      url: https://testnav-organisasjon-service.dev.intern.nav.no/api
-      sensitiveHeaders: Cookie,Set-Cookie
-    testnav-miljoer-service:
-      path: /testnav-miljoer-service/api/**
-      url: https://testnav-miljoer-service.dev.intern.nav.no/api
-      sensitiveHeaders: Cookie,Set-Cookie
-    udi-stub:
-      path: /udi-stub/api/**
-      url: ${UDI_STUB_URL}/api
-      sensitiveHeaders: Cookie,Set-Cookie
-    person-search-service:
-      path: /person-search-service/api/**
-      url: https://person-search-service.dev.intern.nav.no/api
-      sensitiveHeaders: Cookie,Set-Cookie
-    testnav-organisasjon-faste-data-service:
-      path: /testnav-organisasjon-faste-data-service/api/**
-      url: https://testnav-organisasjon-faste-data-service.dev.intern.nav.no/api
-      sensitiveHeaders: Cookie,Set-Cookie
-    testnav-adresse-service:
-      path: /testnav-adresse-service/api/**
-      url: https://testnav-adresse-service.dev.intern.nav.no/api
-      sensitiveHeaders: Cookie,Set-Cookie
-    testnav-joark-dokument-service:
-      path: /testnav-joark-dokument-service/api/**
-      url: https://testnav-joark-dokument-service.dev.intern.nav.no/api
-      sensitiveHeaders: Cookie,Set-Cookie
-    testnav-inntektstub-proxy:
-      path: /testnav-inntektstub-proxy/api/**
-      url: https://testnav-inntektstub-proxy.dev.intern.nav.no/api
-      sensitiveHeaders: Cookie,Set-Cookie
-    testnav-brregstub-proxy:
-      path: /testnav-brregstub-proxy/api/**
-      url: https://testnav-brregstub-proxy.dev.intern.nav.no/api
-      sensitiveHeaders: Cookie,Set-Cookie
-    tps-forvalteren-proxy:
-      path: /tps-forvalteren-proxy/api/**
-      url: ${TPS_FORVALTERN_PROXY_URL}/api
-      sensitiveHeaders: Cookie,Set-Cookie
-    testnav-hodejegeren-proxy:
-      path: /testnav-hodejegeren-proxy/api/**
-      url: https://testnav-hodejegeren-proxy.dev.intern.nav.no/api
-      sensitiveHeaders: Cookie,Set-Cookie
-    testnav-arena-forvalteren-proxy:
-      path: /testnav-arena-forvalteren-proxy/api/**
-      url: https://testnav-arena-forvalteren-proxy.dev.intern.nav.no/api
-      sensitiveHeaders: Cookie,Set-Cookie
-    testnav-testnorge-aareg-proxy:
-      path: /testnav-testnorge-aareg-proxy/api/**
-      url: https://testnav-testnorge-aareg-proxy.dev.intern.nav.no/api
-      sensitiveHeaders: Cookie,Set-Cookie
-    testnav-krrstub-proxy:
-      path: /testnav-krrstub-proxy/api/**
-      url: https://testnav-krrstub-proxy.dev.intern.nav.no/api
-      sensitiveHeaders: Cookie,Set-Cookie
-    testnav-testnorge-inst-proxy:
-      path: /testnav-testnorge-inst-proxy/api/**
-      url: https://testnav-testnorge-inst-proxy.dev.intern.nav.no/api
-      sensitiveHeaders: Cookie,Set-Cookie
-    testnav-sigrunstub-proxy:
-      path: /testnav-sigrunstub-proxy/api/**
-      url: https://testnav-sigrunstub-proxy.dev.intern.nav.no/api
-      sensitiveHeaders: Cookie,Set-Cookie
-    testnav-pensjon-testdata-facade-proxy:
-      path: /testnav-pensjon-testdata-facade-proxy/api/**
-      url: https://testnav-pensjon-testdata-facade-proxy.dev.intern.nav.no/api
-      sensitiveHeaders: Cookie,Set-Cookie
-
-applications:
-  udi-stub: ${UDI_STUB_CLIENT_ID}
-  testnorge-tilbakemelding-api: 0f8c4430-19e4-4628-8e89-1dd89a1d613d
-
-application:
-  basepackage: no.nav.dolly.web
-
-consumers:
-  testnorge-tilbakemelding-api.baseUrl: https://testnorge-tilbakemelding-api.dev.intern.nav.no
-  testnav-organisasjon-faste-data-service:
-    cluster: dev-gcp
-    namespace: dolly
-    name: testnav-organisasjon-faste-data-service
-  testnav-joark-dokument-service:
-    cluster: dev-gcp
-    namespace: dolly
-    name: testnav-joark-dokument-service
-  testnav-brregstub-proxy:
-    cluster: dev-fss
-    namespace: dolly
-    name: testnav-brregstub-proxy
-  testnav-inntektstub-proxy:
-    cluster: dev-fss
-    namespace: dolly
-    name: testnav-inntektstub-proxy
-  tps-forvalteren-proxy:
-    cluster: dev-fss
-    namespace: dolly
-    name: ${TPS_FORVALTERN_PROXY_NAME}
-  testnav-hodejegeren-proxy:
-    cluster: dev-fss
-    namespace: dolly
-    name: testnav-hodejegeren-proxy
-  testnav-arena-forvalteren-proxy:
-    cluster: dev-fss
-    namespace: dolly
-    name: testnav-arena-forvalteren-proxy
-  testnav-testnorge-aareg-proxy:
-    cluster: dev-fss
-    namespace: dolly
-    name: testnav-testnorge-aareg-proxy
-  testnav-krrstub-proxy:
-    cluster: dev-fss
-    namespace: dolly
-    name: testnav-krrstub-proxy
-  testnav-testnorge-inst-proxy:
-    cluster: dev-fss
-    namespace: dolly
-    name: testnav-testnorge-inst-proxy
-  testnav-sigrunstub-proxy:
-    cluster: dev-fss
-    namespace: dolly
-    name: testnav-sigrunstub-proxy
-  testnav-pensjon-testdata-facade-proxy:
-    cluster: dev-fss
-    namespace: dolly
-    name: testnav-pensjon-testdata-facade-proxy
-  dolly-backend:
-    cluster: dev-fss
-    namespace: dolly
-    name: ${DOLLY_BACKEND_NAME}
-  testnorge-profil-api:
-    cluster: dev-gcp
-    namespace: dolly
-    name: testnorge-profil-api
-  testnorge-varslinger-api:
-    cluster: dev-fss
-    namespace: dolly
-    name: testnorge-varslinger-api
-  testnav-organisasjon-forvalter:
-    cluster: dev-gcp
-    namespace: dolly
-    name: testnav-organisasjon-forvalter
-  testnav-organisasjon-service:
-    cluster: dev-gcp
-    namespace: dolly
-    name: testnav-organisasjon-service
-  testnav-miljoer-service:
-    cluster: dev-gcp
-    namespace: dolly
-    name: testnav-miljoer-service
-  udi-stub:
-    cluster: dev-fss
-    namespace: dolly
-    name: ${UDI_STUB_NAME}
-  person-search-service:
-    cluster: dev-fss
-    namespace: dolly
-    name: person-search-service
-  testnav-adresse-service:
-    cluster: dev-gcp
-    namespace: dolly
-    name: testnav-adresse-service
 
 spring:
   application:
     name: dolly-frontend
-  cloud:
-    vault:
-      enabled: false
+  main:
+    banner-mode: off
   security:
     oauth2:
       client:
@@ -194,12 +13,122 @@ spring:
             client-id: ${azure.app.client.id}
             client-secret: ${azure.app.client.secret}
             authorization-grant-type: authorization_code
-            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
             scope: openid, ${azure.app.client.id}/.default
         provider:
           aad:
             authorization-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/authorize
             token-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/token
             jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
-server:
-  forward-headers-strategy: native
+
+consumers:
+  testnav-organisasjon-faste-data-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-organisasjon-faste-data-service
+    url: https://testnav-organisasjon-faste-data-service.dev.intern.nav.no
+  testnav-joark-dokument-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-joark-dokument-service
+    url: https://testnav-joark-dokument-service.dev.intern.nav.no
+  testnav-brregstub-proxy:
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-brregstub-proxy
+    url: https://testnav-brregstub-proxy.dev-fss-pub.nais.io
+  testnav-inntektstub-proxy:
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-inntektstub-proxy
+    url: https://testnav-inntektstub-proxy.dev-fss-pub.nais.io
+  tps-forvalteren-proxy:
+    cluster: dev-fss
+    namespace: dolly
+    name: ${TPS_FORVALTERN_PROXY_NAME}
+    url: ${TPS_FORVALTERN_PROXY_URL}
+  testnav-hodejegeren-proxy:
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-hodejegeren-proxy
+    url: https://testnav-hodejegeren-proxy.dev-fss-pub.nais.io
+  testnav-arena-forvalteren-proxy:
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-arena-forvalteren-proxy
+    url: https://testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
+  testnav-testnorge-aareg-proxy:
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-testnorge-aareg-proxy
+    url: https://testnav-testnorge-aareg-proxy.dev-fss-pub.nais.io
+  testnav-krrstub-proxy:
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-krrstub-proxy
+    url: https://testnav-krrstub-proxy.dev-fss-pub.nais.io
+  testnav-testnorge-inst-proxy:
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-testnorge-inst-proxy
+    url: https://testnav-testnorge-inst-proxy.dev-fss-pub.nais.io
+  testnav-sigrunstub-proxy:
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-sigrunstub-proxy
+    url: https://testnav-sigrunstub-proxy.dev-fss-pub.nais.io
+  testnav-pensjon-testdata-facade-proxy:
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-pensjon-testdata-facade-proxy
+    url: https://testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
+  dolly-backend:
+    cluster: dev-fss
+    namespace: dolly
+    name: ${DOLLY_BACKEND_NAME}
+    url: ${DOLLY_BACKEND_URL}
+  testnorge-profil-api:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnorge-profil-api
+    url: https://testnorge-profil-api.dev.intern.nav.no
+  testnorge-varslinger-api:
+    cluster: dev-fss
+    namespace: dolly
+    name: testnorge-varslinger-api
+    url: https://testnorge-varslinger-api.dev-fss-pub.nais.io
+  testnav-organisasjon-forvalter:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-organisasjon-forvalter
+    url: https://testnav-organisasjon-forvalter.dev.intern.nav.no
+  testnav-organisasjon-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-organisasjon-service
+    url: https://testnav-organisasjon-service.dev.intern.nav.no
+  testnav-miljoer-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-miljoer-service
+    url: https://testnav-miljoer-service.dev.intern.nav.no
+  udi-stub:
+    cluster: dev-fss
+    namespace: dolly
+    name: ${UDI_STUB_NAME}
+    url: ${UDI_STUB_URL}
+  person-search-service:
+    cluster: dev-fss
+    namespace: dolly
+    name: person-search-service
+    url: https://person-search-service.dev-fss-pub.nais.io
+  testnav-adresse-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-adresse-service
+    url: https://testnav-adresse-service.dev.intern.nav.no
+  testnorge-tilbakemelding-api:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnorge-tilbakemelding-api
+    url: https://testnorge-tilbakemelding-api.dev.intern.nav.no

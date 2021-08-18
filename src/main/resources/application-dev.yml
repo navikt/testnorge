@@ -1,15 +1,12 @@
-server.port: 8020
+server:
+  port: 8020
 
-#dolly.url: http://localhost:8020/api/v1
+azure.app.client.id: ${client_id}
+azure.app.client.secret: ${client_secret}
 
-#fagsystem.tpsf.url: https://tps-forvalteren-u2.nais.preprod.local
-
-UDI_STUB_CLIENT_ID: 4426ef7d-f148-4d19-8a03-b0d07a451938
 DOLLY_BACKEND_NAME: dolly-backend-dev
 DOLLY_BACKEND_URL: https://dolly-backend-dev.dev.adeo.no
 UDI_STUB_URL: https://udi-stub-dev.dev.adeo.no
 UDI_STUB_NAME: udi-stub-dev
-TESTNORGE_PROFIL_API_HOST: https://testnorge-profil-api-dev.dev.intern.nav.no
-ORGANISASJON_FORVALTER_HOST: https://testnav-organisasjon-forvalter.dev.intern.nav.no
 TPS_FORVALTERN_PROXY_NAME: tps-forvalteren-dev-proxy
 TPS_FORVALTERN_PROXY_URL:  https://tps-forvalteren-dev.dev.adeo.no

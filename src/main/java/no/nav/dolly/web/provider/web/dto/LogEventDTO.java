@@ -12,20 +12,20 @@ import no.nav.dolly.web.domain.Rating;
 public class LogEventDTO {
 
     @JsonProperty(required = true)
-    private String uuid;
+    String uuid;
 
     @JsonProperty(required = true)
-    private String event;
+    String event;
 
     @JsonProperty(required = true)
-    private Level level;
+    Level level;
 
     @JsonProperty
-    private String message;
+    String message;
 
     @JsonProperty
-    private Rating rating;
+    Rating rating;
 
     @JsonProperty
-    private Boolean isAnonym;
+    Boolean isAnonym;
 }

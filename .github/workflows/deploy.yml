@@ -1,8 +1,7 @@
 name: Deploy
 
 on:
-  push:
-    branches: master
+  push: master
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/dolly-frontend:${{ github.sha }}
@@ -44,5 +43,5 @@ jobs:
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.API_DOLLY_KEY }}
-          CLUSTER: dev-fss
+          CLUSTER: dev-gcp
           RESOURCE: config.yml
