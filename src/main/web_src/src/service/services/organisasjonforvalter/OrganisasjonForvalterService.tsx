@@ -13,5 +13,11 @@ export default {
 		return Request.get(endpoint + '?orgnummer=' + orgnummer).then(response => {
 			if (response != null) return response
 		})
+	},
+	getVirksomheterPaaBruker(brukerid: string) {
+		const endpoint = orgForvalterUrl + '/virksomheter'
+		return Request.get(endpoint + '?brukerid=' + brukerid).then(response => {
+			if (response != null) return response
+		})
 	}
 }

@@ -13,7 +13,7 @@ export const TextInput = React.forwardRef(
 			className,
 			icon,
 			...props
-		}: { name: string; className?: string; icon?: string; placeholder?: string; feil?: any },
+		}: { name?: string; className?: string; icon?: string; placeholder?: string; feil?: any },
 		ref
 	) => {
 		const css = cn('skjemaelement__input', className, {

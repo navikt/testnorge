@@ -182,4 +182,8 @@ export default class DollyEndpoints {
 			return `${uri}/transaksjonid?system=${system}&ident=${ident}&bestillingId=${bestillingsid}`
 		} else return `${uri}/transaksjonid?ident=${ident}&system=${system}`
 	}
+
+	static getArbeidsforhold(ident, miljoe) {
+		return `${uri}/aareg/arbeidsforhold?ident=${ident}&miljoe=${miljoe}`
+	}
 }

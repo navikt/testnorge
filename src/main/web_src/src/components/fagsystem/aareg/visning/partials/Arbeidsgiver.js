@@ -9,7 +9,7 @@ export const Arbeidsgiver = ({ data }) => {
 			<h4>Arbeidsgiver</h4>
 			<div className="person-visning_content">
 				<TitleValue title="Aktørtype" value={data.type} />
-				{data.type === 'Organisasjon' && (
+				{(data.type === 'Organisasjon' || data.type === 'ORGANISASJON') && (
 					<TitleValue title="Organisasjonsnummer" value={data.organisasjonsnummer} />
 				)}
 				{data.type === 'Person' && (

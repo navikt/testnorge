@@ -1,6 +1,7 @@
 import React from 'react'
 import cn from 'classnames'
 import _isNil from 'lodash/isNil'
+import _isEmpty from 'lodash/isEmpty'
 import styled from 'styled-components'
 
 const StyledLabel = styled.label`
@@ -10,7 +11,7 @@ const StyledLabel = styled.label`
 
 export const Label = ({ name, label, feil, containerClass, children }) => {
 	const wrapClass = cn('skjemaelement', containerClass, {
-		error: Boolean(feil),
+		error: Boolean(feil && !_isEmpty(feil.feilmelding)),
 		'label-offscreen': _isNil(label)
 	})
 
@@ -20,7 +21,7 @@ export const Label = ({ name, label, feil, containerClass, children }) => {
 				{label}
 			</StyledLabel>
 			{children}
-			{feil && (
+			{feil && !_isEmpty(feil.feilmelding) && (
 				<div role="alert" aria-live="assertive">
 					<div className="skjemaelement__feilmelding">{feil.feilmelding}</div>
 				</div>

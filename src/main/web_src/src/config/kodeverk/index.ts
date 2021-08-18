@@ -40,7 +40,12 @@ export enum ArbeidKodeverk {
 	Arbeidstidsordninger = 'Arbeidstidsordninger',
 	Arbeidsforholdstyper = 'Arbeidsforholdstyper',
 	Avloenningstyper = 'Avlønningstyper',
-	PermisjonsOgPermitteringsBeskrivelse = 'PermisjonsOgPermitteringsBeskrivelse'
+	PermisjonsOgPermitteringsBeskrivelse = 'PermisjonsOgPermitteringsBeskrivelse',
+	SluttaarsakAareg = 'SluttårsakAareg',
+	AnsettelsesformAareg = 'AnsettelsesformAareg',
+	Skipsregistre = 'Skipsregistre',
+	Skipstyper = 'Skipstyper',
+	Fartsområder = 'Fartsområder'
 }
 
 export enum InntektstubKodeverk {

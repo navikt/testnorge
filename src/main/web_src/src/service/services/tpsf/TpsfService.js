@@ -26,5 +26,10 @@ export default {
 		if (!fragment) return
 		const endpoint = `${getTpsfUrl()}/dolly/testdata/soekperson?fragment=${fragment}`
 		return Request.get(endpoint)
+	},
+
+	getMiljoerByFnr(fnr) {
+		const endpoint = getTpsfUrl() + '/testdata/tpsStatus?identer=' + fnr
+		return Request.get(endpoint)
 	}
 }

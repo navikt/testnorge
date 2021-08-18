@@ -1,11 +1,14 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useState } from 'react'
 import cn from 'classnames'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { mapBestillingData } from './BestillingKriterieMapper'
 import { OrganisasjonKriterier } from './OrganisasjonKriterier'
+import DollyKjede from '~/components/dollyKjede/DollyKjede'
 
 const _renderBestillingsDetaljer = data => {
+	const [selectedIndex, setSelectedIndex] = useState(0)
+
 	return data.map((kategori, j) => {
 		const bottomBorder = j != data.length - 1
 		const cssClass = cn('flexbox--align-start info-text', {
@@ -17,6 +20,27 @@ const _renderBestillingsDetaljer = data => {
 					<h4>{kategori.header} </h4>
 					{kategori.items && (
 						<div className={cssClass}>{kategori.items.map(_renderStaticValue)}</div>
+					)}
+					{kategori.paginering?.length > 0 && (
+						<>
+							<DollyKjede
+								objectList={kategori.pagineringPages}
+								itemLimit={10}
+								selectedIndex={selectedIndex}
+								setSelectedIndex={setSelectedIndex}
+								isLocked={false}
+							/>
+							<div className={cn('info-text', { 'bottom-border': bottomBorder })}>
+								{kategori.paginering[selectedIndex].itemRows.map((row, i) => (
+									<div className="dfa-blokk" key={i}>
+										{row[0].numberHeader && <h4>{row[0].numberHeader}</h4>}
+										<div className={'flexbox--align-start flexbox--wrap'} key={i}>
+											{row.map(_renderStaticValue)}
+										</div>
+									</div>
+								))}
+							</div>
+						</>
 					)}
 					{kategori.itemRows && (
 						<div className={cn('info-text', { 'bottom-border': bottomBorder })}>

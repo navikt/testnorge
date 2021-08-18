@@ -45,7 +45,7 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 	aareg: {
 		label: 'Har arbeidsforhold',
 		checked: has('aareg'),
-		add: () => set('aareg', initialValues),
+		add: () => set('aareg', [initialValues]),
 		remove() {
 			del('aareg')
 		}

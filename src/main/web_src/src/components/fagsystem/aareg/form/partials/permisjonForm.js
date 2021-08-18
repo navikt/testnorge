@@ -9,31 +9,88 @@ import { ArbeidKodeverk } from '~/config/kodeverk'
 
 const infotekst = 'Start- og sluttdato må være innenfor perioden til arbeidsforholdet'
 
-export const PermisjonForm = ({ path }) => (
-	<FormikDollyFieldArray
-		name={path}
-		header="Permisjon"
-		infotekst={infotekst}
-		newEntry={initialPermisjon}
-		nested
-	>
-		{(path, idx) => (
-			<React.Fragment key={idx}>
-				<FormikSelect
-					name={`${path}.permisjonOgPermittering`}
-					label="Permisjonstype"
-					kodeverk={ArbeidKodeverk.PermisjonsOgPermitteringsBeskrivelse}
-					isClearable={false}
-					size="medium"
-				/>
-				<FormikDatepicker name={`${path}.permisjonsPeriode.fom`} label="Permisjon fra" />
-				<FormikDatepicker name={`${path}.permisjonsPeriode.tom`} label="Permisjon til" />
-				<FormikTextInput
-					name={`${path}.permisjonsprosent`}
-					label="Permisjonsprosent"
-					type="number"
-				/>
-			</React.Fragment>
-		)}
-	</FormikDollyFieldArray>
-)
+export const PermisjonForm = ({
+	path,
+	ameldingIndex,
+	arbeidsforholdIndex,
+	formikBag,
+	erLenket,
+	onChangeLenket
+}) => {
+	const maaneder = _get(formikBag.values, 'aareg[0].amelding')
+
+	const handleNewEntry = () => {
+		if (!maaneder) return
+		maaneder.forEach((maaned, idMaaned) => {
+			if (!erLenket && idMaaned != ameldingIndex) return
+			const currPermisjon = _get(
+				formikBag.values,
+				`aareg[0].amelding[${idMaaned}].arbeidsforhold[${arbeidsforholdIndex}].permisjon`
+			)
+			formikBag.setFieldValue(
+				`aareg[0].amelding[${idMaaned}].arbeidsforhold[${arbeidsforholdIndex}].permisjon`,
+				currPermisjon ? [...currPermisjon, initialPermisjon] : [initialPermisjon]
+			)
+		})
+	}
+
+	const handleRemoveEntry = idPermisjon => {
+		if (!maaneder) return
+		maaneder.forEach((maaned, idMaaned) => {
+			if (!erLenket && idMaaned != ameldingIndex) return
+			const currPermisjon = _get(
+				formikBag.values,
+				`aareg[0].amelding[${idMaaned}].arbeidsforhold[${arbeidsforholdIndex}].permisjon`
+			)
+			currPermisjon.splice(idPermisjon, 1)
+			formikBag.setFieldValue(
+				`aareg[0].amelding[${idMaaned}].arbeidsforhold[${arbeidsforholdIndex}].permisjon`,
+				currPermisjon
+			)
+		})
+	}
+
+	//! Har disablet changehandlers fordi de mest sannsynlig ikke er nødvendige, og de kompliserer skjemaet mye.
+	//! Lar dem bli liggende en stund i tilfelle det blir behov for dem.
+
+	return (
+		<FormikDollyFieldArray
+			name={path}
+			header="Permisjon"
+			hjelpetekst={infotekst}
+			newEntry={initialPermisjon}
+			nested
+			// handleNewEntry={maaneder ? handleNewEntry : null}
+			// handleRemoveEntry={maaneder ? handleRemoveEntry : null}
+		>
+			{(path, idx) => (
+				<React.Fragment key={idx}>
+					<FormikSelect
+						name={`${path}.permisjon`}
+						label="Permisjonstype"
+						kodeverk={ArbeidKodeverk.PermisjonsOgPermitteringsBeskrivelse}
+						isClearable={false}
+						size="large"
+						// onChange={onChangeLenket(`permisjon[${idx}].permisjon`)}
+					/>
+					<FormikDatepicker
+						name={`${path}.permisjonsPeriode.fom`}
+						label="Permisjon fra"
+						// onChange={onChangeLenket(`permisjon[${idx}].permisjonsPeriode.fom`)}
+					/>
+					<FormikDatepicker
+						name={`${path}.permisjonsPeriode.tom`}
+						label="Permisjon til"
+						// onChange={onChangeLenket(`permisjon[${idx}].permisjonsPeriode.tom`)}
+					/>
+					<FormikTextInput
+						name={`${path}.permisjonsprosent`}
+						label="Permisjonsprosent"
+						type="number"
+						// onChange={onChangeLenket(`permisjon[${idx}].permisjonsprosent`)}
+					/>
+				</React.Fragment>
+			)}
+		</FormikDollyFieldArray>
+	)
+}

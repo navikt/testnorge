@@ -6,6 +6,7 @@ import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { Arbeidsavtaler } from './partials/Arbeidsavtaler'
 import { Arbeidsgiver } from './partials/Arbeidsgiver'
+import { Fartoy } from './partials/Fartoy'
 import { PermisjonPermitteringer } from './partials/PermisjonPermitteringer'
 import { AntallTimerForTimeloennet } from './partials/AntallTimerForTimeloennet'
 import { Utenlandsopphold } from './partials/Utenlandsopphold'
@@ -23,6 +24,7 @@ type Arbeidsforhold = {
 	antallTimerForTimeloennet?: Array<unknown>
 	arbeidsavtaler?: Array<unknown>
 	arbeidsgiver?: Arbeidsgiver
+	fartoy?: Array<any>
 	permisjonPermitteringer?: Array<unknown>
 	utenlandsopphold?: Array<unknown>
 	arbeidsforholdId?: string
@@ -80,29 +82,34 @@ export const AaregVisning = ({ liste, loading }: AaregVisning) => {
 									/>
 								)}
 
+								<TitleValue title="Arbeidsforhold-ID" value={arbeidsforhold.arbeidsforholdId} />
+
 								{arbeidsforhold.ansettelsesperiode && arbeidsforhold.ansettelsesperiode.periode && (
 									<TitleValue
-										title="Startdato"
+										title="Ansatt fra"
 										value={Formatters.formatDate(arbeidsforhold.ansettelsesperiode.periode.fom)}
 									/>
 								)}
 								{arbeidsforhold.ansettelsesperiode && arbeidsforhold.ansettelsesperiode.periode && (
 									<TitleValue
-										title="Sluttdato"
+										title="Ansatt til"
 										value={Formatters.formatDate(arbeidsforhold.ansettelsesperiode.periode.tom)}
 									/>
 								)}
+								{/* //TODO: Sluttårsak mangler fra Aareg */}
 							</div>
-
-							<AntallTimerForTimeloennet data={arbeidsforhold.antallTimerForTimeloennet} />
-
-							<Arbeidsavtaler data={arbeidsforhold.arbeidsavtaler} />
 
 							<Arbeidsgiver data={arbeidsforhold.arbeidsgiver} />
 
-							<PermisjonPermitteringer data={arbeidsforhold.permisjonPermitteringer} />
+							<Arbeidsavtaler data={arbeidsforhold.arbeidsavtaler} />
+
+							<Fartoy data={arbeidsforhold.fartoy} />
+
+							<AntallTimerForTimeloennet data={arbeidsforhold.antallTimerForTimeloennet} />
 
 							<Utenlandsopphold data={arbeidsforhold.utenlandsopphold} />
+
+							<PermisjonPermitteringer data={arbeidsforhold.permisjonPermitteringer} />
 						</React.Fragment>
 					)}
 				</DollyFieldArray>

@@ -152,6 +152,10 @@ export default {
 		return Request.get(Endpoints.fasteOrgnummer())
 	},
 
+	getArbeidsforhold(ident, miljoe) {
+		return Request.get(Endpoints.getArbeidsforhold(ident, miljoe))
+	},
+
 	getFasteDatasettGruppe(gruppe) {
 		return Request.get(Endpoints.getFasteDatasettTPSGruppe(gruppe))
 	},
