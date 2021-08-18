@@ -1,19 +1,11 @@
 package no.nav.organisasjonforvalter.controller;
 
+import static no.nav.organisasjonforvalter.config.CacheConfig.CACHE_BEDRIFT;
+import static no.nav.organisasjonforvalter.config.CacheConfig.CACHE_EREG_IMPORT;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
-import no.nav.organisasjonforvalter.dto.requests.BestillingRequest;
-import no.nav.organisasjonforvalter.dto.requests.DeployRequest;
-import no.nav.organisasjonforvalter.dto.responses.BestillingResponse;
-import no.nav.organisasjonforvalter.dto.responses.DeployResponse;
-import no.nav.organisasjonforvalter.dto.responses.RsOrganisasjon;
-import no.nav.organisasjonforvalter.dto.responses.UnderenhetResponse;
-import no.nav.organisasjonforvalter.service.BestillingService;
-import no.nav.organisasjonforvalter.service.DeploymentService;
-import no.nav.organisasjonforvalter.service.DrivervirksomheterService;
-import no.nav.organisasjonforvalter.service.ImportService;
-import no.nav.organisasjonforvalter.service.OrganisasjonService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,8 +19,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static no.nav.organisasjonforvalter.config.CacheConfig.CACHE_BEDRIFT;
-import static no.nav.organisasjonforvalter.config.CacheConfig.CACHE_EREG_IMPORT;
+import no.nav.organisasjonforvalter.dto.requests.BestillingRequest;
+import no.nav.organisasjonforvalter.dto.requests.DeployRequest;
+import no.nav.organisasjonforvalter.dto.responses.BestillingResponse;
+import no.nav.organisasjonforvalter.dto.responses.DeployResponse;
+import no.nav.organisasjonforvalter.dto.responses.RsOrganisasjon;
+import no.nav.organisasjonforvalter.dto.responses.UnderenhetResponse;
+import no.nav.organisasjonforvalter.service.BestillingService;
+import no.nav.organisasjonforvalter.service.DeploymentService;
+import no.nav.organisasjonforvalter.service.DrivervirksomheterService;
+import no.nav.organisasjonforvalter.service.ImportService;
+import no.nav.organisasjonforvalter.service.OrganisasjonService;
+import no.nav.testnav.libs.servletsecurity.service.AuthenticationTokenResolver;
 
 @RestController
 @RequestMapping("api/v1/organisasjon")
@@ -40,6 +42,7 @@ public class OrganisasjonController {
     private final OrganisasjonService organisasjonService;
     private final ImportService importService;
     private final DrivervirksomheterService drivervirksomheterService;
+    private final AuthenticationTokenResolver authenticationTokenResolver;
 
     @CacheEvict(value = CACHE_BEDRIFT, allEntries = true)
     @PostMapping("/bestilling")
@@ -68,16 +71,17 @@ public class OrganisasjonController {
     @GetMapping("/import")
     @Operation(description = "Hent organisasjon fra EREG")
     public Map<String, RsOrganisasjon> importOrganisasjon(@RequestParam String orgnummer,
-                                                          @RequestParam(required = false) Set<String> miljoer){
+                                                          @RequestParam(required = false) Set<String> miljoer) {
 
         return importService.getOrganisasjoner(orgnummer, miljoer);
     }
 
-    @Cacheable(CACHE_BEDRIFT)
     @GetMapping("/virksomheter")
     @Operation(description = "Hent virksomheter av type BEDR og AAFY fra database. Kun disse typer kan ha ansatte")
-    public List<UnderenhetResponse> getUnderenheter(@Parameter(description = "BrukerId fra Azure") @RequestParam String brukerid){
-
-        return drivervirksomheterService.getUnderenheter(brukerid);
+    public List<UnderenhetResponse> getUnderenheter(@Parameter(description = "BrukerId fra Azure") @RequestParam(required = false) String brukerid) {
+        if (brukerid != null) {
+            return drivervirksomheterService.getUnderenheter(brukerid);
+        }
+        return drivervirksomheterService.getUnderenheter(authenticationTokenResolver.getOid());
     }
 }
