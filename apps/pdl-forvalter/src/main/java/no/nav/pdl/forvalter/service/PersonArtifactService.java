@@ -31,6 +31,7 @@ public class PersonArtifactService {
     private final IdenttypeService identtypeService;
     private final SivilstandService sivilstandService;
     private final ForelderBarnRelasjonService forelderBarnRelasjonService;
+    private final ForeldreansvarService foreldreansvarService;
 
     public PersonDTO buildPerson(PersonDTO person) {
 
@@ -58,6 +59,7 @@ public class PersonArtifactService {
         person.setKontaktinformasjonForDoedsbo(kontaktinformasjonForDoedsboService.convert(person));
         person.setSivilstand(sivilstandService.convert(person));
         person.setForelderBarnRelasjon(forelderBarnRelasjonService.convert(person));
+        person.setForeldreansvar(foreldreansvarService.convert(person));
         person.setIdent(identtypeService.convert(person));
 
         return person;
