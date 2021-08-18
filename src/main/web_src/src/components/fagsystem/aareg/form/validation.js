@@ -84,7 +84,7 @@ const arbeidsgiver = Yup.object({
 
 const arbeidsavtale = Yup.object({
 	yrke: fullArbeidsforholdTest(Yup.string()),
-	ansettelsesform: fullArbeidsforholdTest(Yup.string()),
+	ansettelsesform: Yup.string(),
 	stillingsprosent: fullArbeidsforholdTest(
 		Yup.number()
 			.min(0, 'Kan ikke være mindre enn ${min}')

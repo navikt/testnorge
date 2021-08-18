@@ -40,21 +40,22 @@ export const initialValuesBasedOnMal = (mal: any) => {
 
 const getUpdatedInntektstubData = (inntektstubData: any) => {
 	const newInntektstubData = Object.assign({}, inntektstubData)
-	newInntektstubData.inntektsinformasjon = newInntektstubData.inntektsinformasjon.map(
+	newInntektstubData.inntektsinformasjon = newInntektstubData.inntektsinformasjon?.map(
 		(inntekt: any) => updateData(inntekt, initialValues.inntektstub)
 	)
 	return newInntektstubData
 }
 
-const getUpdatedAaregData = (aaregData: any) =>
-	aaregData.map((data: any) => {
+const getUpdatedAaregData = (aaregData: any) => {
+	return aaregData.map((data: any) => {
 		data = updateData(data, initialValues.aareg[0])
-		data.permisjon = data.permisjon.map((data: any) => updateData(data, initialValues.permisjon))
-		data.utenlandsopphold = data.utenlandsopphold.map((data: any) =>
+		data.permisjon = data.permisjon?.map((data: any) => updateData(data, initialValues.permisjon))
+		data.utenlandsopphold = data.utenlandsopphold?.map((data: any) =>
 			updateData(data, initialValues.utenlandsopphold)
 		)
 		return data
 	})
+}
 const getUpdatedInntektsmeldingData = (inntektsmeldingData: any) =>
 	inntektsmeldingData.map((inntekt: any) => updateData(inntekt, initialValues.inntektsmelding))
 
