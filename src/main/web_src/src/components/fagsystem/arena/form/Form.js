@@ -1,8 +1,6 @@
-import React, { useEffect } from 'react'
-import * as Yup from 'yup'
+import React, { useContext, useEffect } from 'react'
 import _get from 'lodash/get'
-import { isAfter, isBefore } from 'date-fns'
-import { ifPresent, messages, requiredDate, requiredString } from '~/utils/YupValidations'
+import { ifPresent } from '~/utils/YupValidations'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import Panel from '~/components/ui/panel/Panel'
 import { erForste, panelError } from '~/components/ui/form/formUtils'
@@ -10,6 +8,9 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { MedServicebehov } from './partials/MedServicebehov'
 import { AlertInntektskomponentenRequired } from '~/components/ui/brukerAlert/AlertInntektskomponentenRequired'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
+import { validation } from '~/components/fagsystem/arena/form/validation'
+import { ArenaVisning } from '~/components/fagsystem/arena/visning/ArenaVisning'
+import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 
 const arenaAttributt = 'arenaforvalter'
@@ -19,10 +20,19 @@ export const ArenaForm = ({ formikBag }) => {
 		_get(formikBag, 'values.arenaforvalter.arenaBrukertype') === 'MED_SERVICEBEHOV'
 	const dagpengerAktiv = _get(formikBag, 'values.arenaforvalter.dagpenger[0]')
 
+	const opts = useContext(BestillingsveilederContext)
+
+	const { personFoerLeggTil, tidligereBestillinger } = opts
+	const uregistrert = !(personFoerLeggTil && personFoerLeggTil.arenaforvalteren)
+
 	useEffect(() => {
 		servicebehovAktiv &&
 			!_get(formikBag, 'values.arenaforvalter.kvalifiseringsgruppe') &&
 			formikBag.setFieldValue('arenaforvalter.kvalifiseringsgruppe', null)
+
+		servicebehovAktiv &&
+			!uregistrert &&
+			formikBag.setFieldValue('arenaforvalter.automatiskInnsendingAvMeldekort', null)
 	}, [])
 
 	return (
@@ -33,11 +43,19 @@ export const ArenaForm = ({ formikBag }) => {
 				iconType="arena"
 				startOpen={() => erForste(formikBag.values, [arenaAttributt])}
 			>
+				{personFoerLeggTil && (
+					<ArenaVisning
+						data={personFoerLeggTil.arenaforvalteren}
+						bestillinger={tidligereBestillinger}
+						useStandard={false}
+					/>
+				)}
 				{dagpengerAktiv && (
 					<>
-						{!formikBag.values.hasOwnProperty('inntektstub') && (
-							<AlertInntektskomponentenRequired vedtak={'dagpengevedtak'} />
-						)}
+						{!(
+							formikBag.values.hasOwnProperty('inntektstub') ||
+							(personFoerLeggTil && personFoerLeggTil.inntektstub)
+						) && <AlertInntektskomponentenRequired vedtak={'dagpengevedtak'} />}
 						<AlertStripeInfo style={{ marginBottom: '20px' }}>
 							For å kunne få gyldig dagpengevedtak må det være knyttet inntektsmelding for 12
 							måneder før vedtakets fra dato. Dette kan enkelt gjøres i innteksinformasjon ved å
@@ -53,101 +71,17 @@ export const ArenaForm = ({ formikBag }) => {
 					/>
 				)}
 				{servicebehovAktiv && <MedServicebehov formikBag={formikBag} />}
-				<FormikCheckbox
-					name="arenaforvalter.automatiskInnsendingAvMeldekort"
-					label="Automatisk innsending av meldekort"
-					size="large"
-				/>
+				{(!servicebehovAktiv || uregistrert) && (
+					<FormikCheckbox
+						name="arenaforvalter.automatiskInnsendingAvMeldekort"
+						label="Automatisk innsending av meldekort"
+						size="large"
+					/>
+				)}
 			</Panel>
 		</Vis>
 	)
 }
-
-const datoIkkeMellom = (nyDatoFra, gjeldendeDatoFra, gjeldendeDatoTil) => {
-	if (!gjeldendeDatoFra || !gjeldendeDatoTil) return true
-	return (
-		isAfter(new Date(nyDatoFra), new Date(gjeldendeDatoTil)) ||
-		isBefore(new Date(nyDatoFra), new Date(gjeldendeDatoFra))
-	)
-}
-
-function validTildato(fradato, tildato) {
-	if (!fradato || !tildato) return true
-	return isAfter(new Date(tildato), new Date(fradato))
-}
-
-function harGjeldendeVedtakValidation(vedtakType) {
-	return Yup.string()
-		.test(
-			'har-gjeldende-vedtak',
-			'AAP- og Dagpenger-vedtak kan ikke overlappe hverandre',
-			function validVedtak() {
-				const values = this.options.context
-				const dagpengerFra = values.arenaforvalter.dagpenger?.[0].fraDato
-				const dagpengerTil = values.arenaforvalter.dagpenger?.[0].tilDato
-
-				const aapFra = values.arenaforvalter.aap?.[0].fraDato
-				const aapTil = values.arenaforvalter.aap?.[0].tilDato
-
-				// Hvis det bare er en type vedtak trengs det ikke å sjekkes videre
-				if (!dagpengerFra && !aapFra) return true
-				if (vedtakType === 'aap') {
-					return datoIkkeMellom(aapFra, dagpengerFra, dagpengerTil)
-				} else if (vedtakType === 'dagpenger') {
-					return datoIkkeMellom(dagpengerFra, aapFra, aapTil)
-				}
-			}
-		)
-		.nullable()
-		.required(messages.required)
-}
-
-const validation = Yup.object({
-	aap: Yup.array().of(
-		Yup.object({
-			fraDato: harGjeldendeVedtakValidation('aap'),
-			tilDato: Yup.string()
-				.test('etter-fradato', 'Til-dato må være etter fra-dato', function validDate(tildato) {
-					const fradato = this.options.context.arenaforvalter.aap[0].fraDato
-					return validTildato(fradato, tildato)
-				})
-				.nullable()
-				.required(messages.required)
-		})
-	),
-	aap115: Yup.array().of(
-		Yup.object({
-			fraDato: requiredDate
-		})
-	),
-	arenaBrukertype: requiredString,
-	inaktiveringDato: Yup.mixed()
-		.nullable()
-		.when('arenaBrukertype', {
-			is: 'UTEN_SERVICEBEHOV',
-			then: requiredDate
-		}),
-	automatiskInnsendingAvMeldekort: Yup.boolean(),
-	kvalifiseringsgruppe: Yup.string()
-		.nullable()
-		.when('arenaBrukertype', {
-			is: 'MED_SERVICEBEHOV',
-			then: requiredString
-		}),
-	dagpenger: Yup.array().of(
-		Yup.object({
-			rettighetKode: Yup.string().required(messages.required),
-			fraDato: harGjeldendeVedtakValidation('dagpenger'),
-			tilDato: Yup.string()
-				.test('etter-fradato', 'Til-dato må være etter fra-dato', function validDate(tildato) {
-					const fradato = this.options.context.arenaforvalter.dagpenger[0].fraDato
-					return validTildato(fradato, tildato)
-				})
-				.nullable(),
-			mottattDato: Yup.date().nullable()
-		})
-	)
-})
 
 ArenaForm.validation = {
 	arenaforvalter: ifPresent('$arenaforvalter', validation)

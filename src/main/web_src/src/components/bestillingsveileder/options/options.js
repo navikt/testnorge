@@ -15,6 +15,7 @@ export const BVOptions = ({
 	mal,
 	opprettFraIdenter,
 	personFoerLeggTil,
+	tidligereBestillinger,
 	opprettOrganisasjon = null
 } = {}) => {
 	let initialValues = {
@@ -89,6 +90,7 @@ export const BVOptions = ({
 		mal,
 		opprettFraIdenter,
 		personFoerLeggTil,
+		tidligereBestillinger,
 		is: {
 			nyBestilling: bestType === TYPE.NY_BESTILLING,
 			nyBestillingFraMal: bestType === TYPE.NY_BESTILLING_FRA_MAL,
