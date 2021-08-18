@@ -4,8 +4,8 @@ import _has from 'lodash/has'
 import _set from 'lodash/set'
 import _cloneDeep from 'lodash/cloneDeep'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { TimeloennetForm } from './timeloennetForm'
 import { PermisjonForm } from './permisjonForm'
 import { PermitteringForm } from './permitteringForm'
@@ -23,6 +23,7 @@ import {
 	initialFartoy
 } from '../initialValues'
 import { EgenOrganisasjonSelect } from '~/components/organisasjonSelect/EgenOrganisasjonSelect'
+import { ArbeidsgiverIdent } from '~/components/fagsystem/aareg/form/partials/arbeidsgiverIdent.tsx'
 
 export const ArbeidsforholdForm = ({
 	path,
@@ -159,8 +160,12 @@ export const ArbeidsforholdForm = ({
 					/>
 				)}
 				{arbeidsgiverType === ArbeidsgiverTyper.privat && (
-					<FormikTextInput name={`${path}.arbeidsgiver.ident`} label="Arbeidsgiver ident" />
+					<ArbeidsgiverIdent formikBag={formikBag} path={`${path}.arbeidsgiver.ident`} />
 				)}
+				{/* <FormikTextInput name={`${path}.arbeidsgiver.ident`} label="Arbeidsgiver ident" /> */}
+				{/* {arbeidsforhold.arbeidsgiver.aktoertype === 'PERS' && (
+					<ArbeidsgiverIdent formikBag={formikBag} path={`${path}.arbeidsgiver.ident`} />
+				)} */}
 				{arbeidsforholdstype !== 'forenkletOppgjoersordning' && (
 					<FormikTextInput
 						key={`${path}.arbeidsforholdID`}

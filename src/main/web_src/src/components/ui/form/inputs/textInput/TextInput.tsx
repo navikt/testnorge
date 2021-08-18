@@ -38,6 +38,7 @@ export const DollyTextInput = (props: {
 	onBlur?: Function
 	onSubmit?: Function
 	onChange?: Function
+	onPaste?: Function
 }) => (
 	<InputWrapper {...props}>
 		{/*@ts-ignore*/}
