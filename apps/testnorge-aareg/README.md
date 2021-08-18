@@ -7,7 +7,7 @@ parent: Applikasjoner
 # Testnorge-Aareg
 
 Testnorge-aareg er en applikasjon som håndterer arbeidsforhold 
-ved å motta disse fra synt-pakke eller Dolly, og så sende disse inn i aareg.
+ved å motta disse fra synt-pakke eller Dolly, og sender deretter disse inn i aareg.
 
 Applikasjonen er også koblet til Testnorge-aaregstub,
 og sender syntetiserte arbeidsforhold hit for lagring, 
