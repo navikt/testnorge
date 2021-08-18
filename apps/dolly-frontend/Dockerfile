@@ -3,4 +3,4 @@ LABEL maintainer="Team Dolly"
 
 ENV JAVA_OPTS="-Dspring.profiles.active=prod"
 
-ADD target/app.jar /app/app.jar
+ADD /build/libs/app.jar /app/app.jar
