@@ -8,6 +8,7 @@ import no.nav.dolly.domain.resultset.aareg.RsAmeldingRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAntallTimerIPerioden;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsforholdAareg;
 import no.nav.dolly.domain.resultset.aareg.RsFartoy;
+import no.nav.dolly.domain.resultset.aareg.RsPeriodeAareg;
 import no.nav.dolly.domain.resultset.aareg.RsPermisjon;
 import no.nav.dolly.domain.resultset.aareg.RsPermittering;
 import no.nav.dolly.domain.resultset.aareg.RsUtenlandsopphold;
@@ -145,20 +146,20 @@ public class AmeldingRequestMappingStrategy implements MappingStrategy {
                 .byDefault()
                 .register();
 
-        factory.classMap(RsPermittering.class, PermisjonDTO.class).customize(new CustomMapper<>() {
+        factory.classMap(RsPermittering.class, RsPermisjon.class).customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(RsPermittering rsPermittering, PermisjonDTO permisjonDTO, MappingContext context) {
-                        permisjonDTO.setPermisjonId(PERMISJON_ID);
-                        permisjonDTO.setBeskrivelse("permittering");
-                        permisjonDTO.setPermisjonsprosent(rsPermittering.getPermitteringsprosent().floatValue());
-                        permisjonDTO.setStartdato(
-                                nonNull(rsPermittering.getPermitteringsPeriode()) && nonNull(rsPermittering.getPermitteringsPeriode().getFom())
-                                        ? rsPermittering.getPermitteringsPeriode().getFom().toLocalDate()
-                                        : null);
-                        permisjonDTO.setSluttdato(
-                                nonNull(rsPermittering.getPermitteringsPeriode()) && nonNull(rsPermittering.getPermitteringsPeriode().getTom())
-                                        ? rsPermittering.getPermitteringsPeriode().getTom().toLocalDate()
-                                        : null);
+                    public void mapAtoB(RsPermittering rsPermittering, RsPermisjon rsPermisjon, MappingContext context) {
+                        rsPermisjon.setPermisjonId(PERMISJON_ID);
+                        rsPermisjon.setPermisjon("permittering");
+                        rsPermisjon.setPermisjonsprosent(rsPermittering.getPermitteringsprosent());
+                        rsPermisjon.setPermisjonsPeriode(RsPeriodeAareg.builder()
+                                .fom(nonNull(rsPermittering.getPermitteringsPeriode()) && nonNull(rsPermittering.getPermitteringsPeriode().getFom())
+                                        ? rsPermittering.getPermitteringsPeriode().getFom()
+                                        : null)
+                                .tom(nonNull(rsPermittering.getPermitteringsPeriode()) && nonNull(rsPermittering.getPermitteringsPeriode().getTom())
+                                        ? rsPermittering.getPermitteringsPeriode().getTom()
+                                        : null)
+                                .build());
                     }
                 })
                 .byDefault()

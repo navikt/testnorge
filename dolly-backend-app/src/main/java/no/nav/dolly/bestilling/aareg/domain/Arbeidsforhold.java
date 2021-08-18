@@ -10,9 +10,9 @@ import lombok.Setter;
 import no.nav.dolly.domain.resultset.aareg.RsAktoer;
 import no.nav.dolly.domain.resultset.aareg.RsAntallTimerIPerioden;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsavtale;
+import no.nav.dolly.domain.resultset.aareg.RsPermisjon;
 import no.nav.dolly.domain.resultset.aareg.RsPersonAareg;
 import no.nav.dolly.domain.resultset.aareg.RsUtenlandsopphold;
-import no.nav.registre.testnorge.libs.dto.ameldingservice.v1.PermisjonDTO;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class Arbeidsforhold {
     private String arbeidsforholdstype;
     private RsAktoer arbeidsgiver;
     private RsPersonAareg arbeidstaker;
-    private List<PermisjonDTO> permisjon;
+    private List<RsPermisjon> permisjon;
     private List<RsUtenlandsopphold> utenlandsopphold;
 
     @Getter
@@ -70,7 +70,7 @@ public class Arbeidsforhold {
         return utenlandsopphold;
     }
 
-    public List<PermisjonDTO> getPermisjon() {
+    public List<RsPermisjon> getPermisjon() {
         if (isNull(permisjon)) {
             permisjon = new ArrayList<>();
         }

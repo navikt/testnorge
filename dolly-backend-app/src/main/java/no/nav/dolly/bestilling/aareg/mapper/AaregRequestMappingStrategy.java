@@ -9,8 +9,8 @@ import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsavtale;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
+import no.nav.dolly.domain.resultset.aareg.RsPermisjon;
 import no.nav.dolly.mapper.MappingStrategy;
-import no.nav.registre.testnorge.libs.dto.ameldingservice.v1.PermisjonDTO;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
@@ -73,11 +73,10 @@ public class AaregRequestMappingStrategy implements MappingStrategy {
                         arbeidsforhold.setArbeidsforholdstype(rsArbeidsforhold.getArbeidsforholdstype());
 
                         arbeidsforhold.setPermisjon((nonNull(rsArbeidsforhold.getPermisjon()) && !rsArbeidsforhold.getPermisjon().isEmpty())
-                                || (nonNull(rsArbeidsforhold.getPermittering())
-                                && !rsArbeidsforhold.getPermittering().isEmpty())
+                                || (nonNull(rsArbeidsforhold.getPermittering()) && !rsArbeidsforhold.getPermittering().isEmpty())
                                 ? Stream.concat(
-                                mapperFacade.mapAsList(rsArbeidsforhold.getPermisjon(), PermisjonDTO.class).stream(),
-                                mapperFacade.mapAsList(rsArbeidsforhold.getPermittering(), PermisjonDTO.class).stream())
+                                        rsArbeidsforhold.getPermisjon().stream(),
+                                        mapperFacade.mapAsList(rsArbeidsforhold.getPermittering(), RsPermisjon.class).stream())
                                 .collect(Collectors.toList())
                                 : null);
                     }

@@ -162,14 +162,22 @@ public class AmeldingRequestMappingStrategyTest {
                 .permitteringsprosent(BigDecimal.valueOf(100))
                 .build();
 
-        List<PermisjonDTO> result = mapperFacade.mapAsList(List.of(permittering), PermisjonDTO.class);
+        List<RsPermisjon> result = mapperFacade.mapAsList(List.of(permittering), RsPermisjon.class);
 
-        assertThat(result.get(0), is(equalTo(PermisjonDTO.builder()
+        RsPermisjon expected = RsPermisjon.builder()
                 .permisjonId(PERMISJON_ID)
-                .permisjonsprosent(100F)
-                .beskrivelse(PERMITTERING)
-                .startdato(LocalDate.of(2021, 5, 1))
-                .sluttdato(LocalDate.of(2021, 5, 10))
-                .build())));
+                .permisjonsprosent(BigDecimal.valueOf(100))
+                .permisjon(PERMITTERING)
+                .permisjonsPeriode(RsPeriodeAareg.builder()
+                        .fom(LocalDateTime.of(2021, 5, 1, 0, 0))
+                        .tom(LocalDateTime.of(2021, 5, 10, 0, 0))
+                        .build())
+                .build();
+
+        assertThat(result.get(0).getPermisjonId(), is(equalTo(expected.getPermisjonId())));
+        assertThat(result.get(0).getPermisjonsprosent(), is(equalTo(expected.getPermisjonsprosent())));
+        assertThat(result.get(0).getPermisjon(), is(equalTo(expected.getPermisjon())));
+        assertThat(result.get(0).getPermisjonsPeriode().getFom(), is(equalTo(expected.getPermisjonsPeriode().getFom())));
+        assertThat(result.get(0).getPermisjonsPeriode().getTom(), is(equalTo(expected.getPermisjonsPeriode().getTom())));
     }
 }

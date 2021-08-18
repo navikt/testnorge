@@ -9,6 +9,7 @@ import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeDagpengerResponse;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.properties.ProvidersProps;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -35,18 +36,18 @@ public class ArenaForvalterConsumer {
     private final ProvidersProps providersProps;
 
     @Timed(name = "providers", tags = { "operation", "arena_getIdent" })
-    public ResponseEntity getIdent(String ident) {
+    public ResponseEntity<ArenaArbeidssokerBruker> getIdent(String ident) {
         return restTemplate.exchange(RequestEntity.get(
-                URI.create(format("%s%s?filter-personident=%s", providersProps.getArenaForvalter().getUrl(), ARENAFORVALTER_BRUKER, ident)))
+                        URI.create(format("%s%s?filter-personident=%s", providersProps.getArenaForvalter().getUrl(), ARENAFORVALTER_BRUKER, ident)))
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .build(), ArenaArbeidssokerBruker.class);
     }
 
     @Timed(name = "providers", tags = { "operation", "arena_deleteIdent" })
-    public ResponseEntity deleteIdent(String ident, String environment) {
+    public ResponseEntity<JsonNode> deleteIdent(String ident, String environment) {
         return restTemplate.exchange(RequestEntity.delete(
-                URI.create(format("%s%s?miljoe=%s&personident=%s", providersProps.getArenaForvalter().getUrl(), ARENAFORVALTER_BRUKER, environment, ident)))
+                        URI.create(format("%s%s?miljoe=%s&personident=%s", providersProps.getArenaForvalter().getUrl(), ARENAFORVALTER_BRUKER, environment, ident)))
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .build(), JsonNode.class);
@@ -55,7 +56,7 @@ public class ArenaForvalterConsumer {
     @Timed(name = "providers", tags = { "operation", "arena_postBruker" })
     public ResponseEntity<ArenaNyeBrukereResponse> postArenadata(ArenaNyeBrukere arenaNyeBrukere) {
         return restTemplate.exchange(RequestEntity.post(
-                URI.create(providersProps.getArenaForvalter().getUrl() + ARENAFORVALTER_BRUKER))
+                        URI.create(providersProps.getArenaForvalter().getUrl() + ARENAFORVALTER_BRUKER))
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .body(arenaNyeBrukere), ArenaNyeBrukereResponse.class);
@@ -64,18 +65,19 @@ public class ArenaForvalterConsumer {
     @Timed(name = "providers", tags = { "operation", "arena_postDagpenger" })
     public ResponseEntity<ArenaNyeDagpengerResponse> postArenaDagpenger(ArenaDagpenger arenaDagpenger) {
         return restTemplate.exchange(RequestEntity.post(
-                URI.create(providersProps.getArenaForvalter().getUrl() + ARENAFORVALTER_DAGPENGER))
+                        URI.create(providersProps.getArenaForvalter().getUrl() + ARENAFORVALTER_DAGPENGER))
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .body(arenaDagpenger), ArenaNyeDagpengerResponse.class);
     }
 
     @Timed(name = "providers", tags = { "operation", "arena_getEnvironments" })
-    public ResponseEntity<List> getEnvironments() {
+    public ResponseEntity<List<String>> getEnvironments() {
         return restTemplate.exchange(RequestEntity.get(
-                URI.create(providersProps.getArenaForvalter().getUrl() + ARENAFORVALTER_ENVIRONMENTS))
+                        URI.create(providersProps.getArenaForvalter().getUrl() + ARENAFORVALTER_ENVIRONMENTS))
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .build(), List.class);
+                .build(), new ParameterizedTypeReference<>() {
+        });
     }
 }
