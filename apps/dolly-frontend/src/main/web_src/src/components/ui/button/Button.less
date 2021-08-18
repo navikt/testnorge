@@ -1,0 +1,32 @@
+@import (reference) '~lessVars';
+
+.dolly-button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: 600;
+	font-size: 0.8rem;
+	line-height: 9px; // Center text
+	border: none;
+	border-bottom: 1px solid transparent;
+	background: none;
+	color: @color-lightblue;
+	cursor: pointer;
+	padding: 5px 0;
+
+	span {
+		padding: 0 5px;
+	}
+
+	&:hover {
+		border-color: @color-lightblue;
+		.svg-icon {
+			fill: @color-lightblue;
+		}
+	}
+
+	&:disabled {
+		opacity: 0.4;
+		border-color: transparent;
+	}
+}

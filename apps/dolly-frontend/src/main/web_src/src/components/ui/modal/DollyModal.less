@@ -1,0 +1,47 @@
+.ReactModal__Overlay {
+	z-index: 9;
+}
+
+.ReactModal__Content {
+	max-width: 800px;
+}
+
+.ReactModal__Body {
+	overflow: auto;
+}
+
+.dollymodal {
+	position: relative;
+
+	h1 {
+		font-size: 2em;
+		margin: 0;
+		padding-bottom: 20px;
+		border-bottom: 1px solid #ccc;
+	}
+	.lukknapp {
+		position: absolute;
+		right: 0;
+		top: 0;
+		z-index: 1;
+	}
+
+	&_buttons {
+		display: flex;
+		justify-content: flex-end;
+		padding: 20px 0 0;
+
+		&--center {
+			justify-content: center;
+		}
+		button {
+			margin: 0 10px;
+		}
+	}
+	.feilcontainer {
+		margin: 10px 0 15px 0;
+	}
+	.feilmelding {
+		margin: 0 0 0 0;
+	}
+}

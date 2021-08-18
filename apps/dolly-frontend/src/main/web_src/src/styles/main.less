@@ -1,0 +1,83 @@
+// - Normalize.css
+@import '~nav-frontend-core/less/core';
+@import './variables';
+@import './utils';
+
+@import '~nav-frontend-tabell-style';
+
+// TODO: rydd i shared styling
+// shared stylings across pages
+@import './shared/Oversikt';
+@import './shared/Toolbar';
+
+body {
+  font-family: 'Source Sans Pro', sans-serif;
+  background-color: @color-bg-grey;
+  color: @color-textbase;
+}
+
+fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin: 40px 0 20px;
+}
+
+h3 {
+  font-size: 1rem;
+}
+
+// NAV skjema override
+.skjemaelement {
+  line-height: 1.375rem;
+  margin-bottom: 1rem;
+
+  .skjemaelement__input {
+    width: 100%;
+    padding: 7px 10px;
+
+    &:disabled,
+    &:read-only {
+      background-color: #f2f2f2;
+      border-color: #e6e6e6;
+      color: #99a4bd;
+    }
+  }
+
+  .skjemaelement__label {
+    font-size: 0.75em;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+
+  .skjemaelement__feilmelding {
+    font-style: italic;
+    color: #ba3a26;
+    margin-top: .5rem;
+    margin-bottom: 0;
+  }
+
+  .svg-icon {
+    pointer-events: none;
+    position: absolute;
+    top: 9px;
+    right: 8px;
+  }
+}
+
+.inputPanel {
+  margin-bottom: 0.5rem;
+}
+
+// NAV hjelpetekst
+.hjelpetekst {
+  margin-left: 10px;
+}
+
+.popover {
+  max-width: 350px;
+}

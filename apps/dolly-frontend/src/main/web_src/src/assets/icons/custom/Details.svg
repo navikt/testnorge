@@ -1,0 +1,11 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">	
+    <g stroke="#0067C5" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" fill="none" />
+    <g>
+        <line id="svg_5" y2="1.739583" x2="18.361613" y1="1.739583" x1="0.666667" strokeWidth="1"/>
+        <line id="svg_6" y2="6.946506" x2="18.361613" y1="6.946506" x1="0.666667" strokeWidth="1"/>
+        <line id="svg_10" y2="12" x2="9.194946" y1="12" x1="0.666667" strokeWidth="1"/>
+        <line id="svg_4" y2="17" x2="9.194946" y1="17" x1="0.666667" strokeWidth="1"/>
+        <ellipse ry="4.083333" rx="4.083333" id="svg_7" cy="14.822917" cx="15.75" strokeWidth="2" fill="none"/>
+        <line id="svg_9" y2="22.239583" x2="22.333333" y1="17.90625" x1="18.666667" strokeWidth="2"/>
+    </g>
+</svg>

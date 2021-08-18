@@ -1,0 +1,57 @@
+@import (reference) '~lessVars';
+
+.bestilling-status {
+	margin: 20px 0 20px 0;
+	padding: 20px 20px;
+	background-color: white;
+	border: solid 1px @color-nav-fokus-oransje;
+
+	h5 {
+		margin: 0;
+	}
+
+	span {
+		font-size: 14px;
+	}
+
+	.loading-spinner {
+		display: inline-block;
+		vertical-align: text-bottom;
+		margin-right: 10px;
+		width: 18px;
+		height: 18px;
+	}
+
+	.rc-progress-wrapper {
+		margin-top: -3px;
+	}
+
+	.cancel-container {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		padding-top: 10px;
+
+		div {
+			display: flex;
+			align-items: center;
+			margin: 5px 5px 10px 5px;
+		}
+
+		h5 {
+			font-size: 15px;
+		}
+
+		.feil-status-text {
+			margin-left: 5px;
+		}
+	}
+
+	.loading-content-container {
+		background-color: white;
+		display: flex;
+		justify-content: center;
+		padding: 20px;
+		margin: 10px 0 10px 0;
+	}
+}

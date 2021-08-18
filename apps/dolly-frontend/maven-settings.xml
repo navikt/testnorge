@@ -1,0 +1,22 @@
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0">
+    <profiles>
+        <profile>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <repositories>
+                <repository>
+                    <id>github-package-registry-navikt</id>
+                    <url>https://maven.pkg.github.com/navikt/maven-release</url>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
+    <servers>
+        <server>
+            <id>github-package-registry-navikt</id>
+            <username>${USERNAME}</username>
+            <password>${TOKEN}</password>
+        </server>
+    </servers>
+</settings>

@@ -1,0 +1,11 @@
+
+<svg contentScriptType="text/ecmascript" width="24" xmlns:xlink="http://www.w3.org/1999/xlink" zoomAndPan="magnify" contentStyleType="text/css" viewBox="0 0 24 24" height="24" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" version="1.0">
+    <g fill="none" stroke-miterlimit="10" stroke="#3e3832" stroke-linejoin="round" stroke-linecap="round">
+        <ellipse rx="5" ry="1" cx="9.513" cy="12.5" />
+        <path d="M4.513 12.5v2c0 .553 2.238 1 5 1s5-.447 5-1v-2M14.513 14.5v2c0 .553-2.238 1-5 1s-5-.447-5-1v-2M14.513 16.5v2c0 .553-2.238 1-5 1s-5-.447-5-1v-2M14.513 18.5v2c0 .553-2.238 1-5 1s-5-.447-5-1v-2M14.513 20.5v2c0 .553-2.238 1-5 1s-5-.447-5-1v-2M4.513 14.5h-4v-14h23v14h-9" />
+        <circle r="3" cx="12.013" cy="7.5" />
+        <circle r=".5" cx="5.013" cy="5" />
+        <circle r=".5" cx="19.013" cy="10" />
+        <path d="M4.513 12.5c-1.104 0-2-.896-2-2v-6c0-1.104.896-2 2-2h15c1.104 0 2 .896 2 2v6c0 1.104-.896 2-2 2h-5" />
+    </g>
+</svg>

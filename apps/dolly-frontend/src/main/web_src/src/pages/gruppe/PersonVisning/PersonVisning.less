@@ -1,0 +1,30 @@
+@import (reference) '~lessVars';
+
+.person-visning {
+	&_content {
+		display: flex;
+		flex-wrap: wrap;
+		width: 100%;
+		margin-bottom: 10px;
+
+		.title-value {
+			margin-bottom: 10px;
+		}
+	}
+	&_actions {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin: 5px 0 10px 0;
+		button {
+			margin-left: 10px;
+		}
+	}
+}
+
+.identnummer-cell {
+	display: flex;
+	.icon {
+		padding-left: 5px;
+	}
+}
