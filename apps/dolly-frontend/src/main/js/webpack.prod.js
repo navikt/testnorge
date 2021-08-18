@@ -23,7 +23,7 @@ module.exports = merge(common, {
         })
     ],
     output: {
-        path: path.join(__dirname, '../../../target/classes/public'),
+        path: path.join(__dirname, 'build'),
         filename: 'bundle.[contenthash:8].js',
         publicPath: '/'
     },
