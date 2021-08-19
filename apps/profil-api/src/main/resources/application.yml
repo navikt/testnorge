@@ -1,9 +1,17 @@
-spring.application:
-  version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
-  name: testnorge-profil-api
-  desciption: API for hente ut profil fra Azure Ad
-  cluster: dev-gcp
-  namespace: dolly
+spring:
+  application:
+    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
+    name: testnorge-profil-api
+    desciption: API for hente ut profil fra Azure Ad
+  main:
+    banner-mode: off
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
 
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
