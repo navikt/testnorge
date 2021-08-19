@@ -24,6 +24,7 @@ export const ArbeidsgiverIdent = ({ formikBag, path }: ArbeidsgiverIdentProps) =
 		setError(null)
 		setMiljoer(null)
 		setSuccess(false)
+
 		let personnr = event.target.value
 
 		// TODO: move to frontend validation
@@ -31,6 +32,7 @@ export const ArbeidsgiverIdent = ({ formikBag, path }: ArbeidsgiverIdentProps) =
 			handleManualPersonnrChange(personnr)
 		} else {
 			setError('Personnummer må være et tall med 11 siffer.')
+			formikBag.setFieldValue(`${path}`, '')
 		}
 	}
 
