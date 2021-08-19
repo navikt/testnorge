@@ -19,9 +19,11 @@ import java.util.Map;
  */
 @Slf4j
 public class LogServerHttpRequestDecorator extends ServerHttpRequestDecorator {
+    private final LogRequest logRequest;
 
-    public LogServerHttpRequestDecorator(ServerHttpRequest delegate) {
+    public LogServerHttpRequestDecorator(ServerHttpRequest delegate, LogRequest logRequest) {
         super(delegate);
+        this.logRequest = logRequest;
     }
 
     @Override
@@ -29,35 +31,10 @@ public class LogServerHttpRequestDecorator extends ServerHttpRequestDecorator {
         return super.getBody().doOnNext(dataBuffer -> {
             try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
                 Channels.newChannel(byteArrayOutputStream).write(dataBuffer.asByteBuffer().asReadOnlyBuffer());
-                logRequest(getDelegate(), byteArrayOutputStream.toString(StandardCharsets.UTF_8));
+                logRequest.log(getDelegate(), byteArrayOutputStream.toString(StandardCharsets.UTF_8));
             } catch (Exception exception) {
                 log.error("Feil med logging av requests.", exception);
             }
         });
-    }
-
-    private void logRequest(ServerHttpRequest request, String body) {
-        Map<String, String> contextMap = MDC.getCopyOfContextMap() != null ? MDC.getCopyOfContextMap() : new HashMap<>();
-        var method = request.getMethod().name();
-        var uri = request.getPath().toString();
-        var queryParrams = request.getQueryParams().isEmpty() ? null : request.getQueryParams().toString();
-        var host = request.getHeaders().getHost().toString();
-        var contentType = request.getHeaders().getContentType();
-
-        contextMap.put("Transaction-Type", "request");
-        contextMap.put("Method", method);
-        if (contentType != null) {
-            contextMap.put(HttpHeaders.CONTENT_TYPE, contentType.getType());
-        }
-        contextMap.put(HttpHeaders.HOST, host);
-        contextMap.put(HttpHeaders.ORIGIN, request.getHeaders().getOrigin());
-        contextMap.put(HttpHeaders.ACCEPT, request.getHeaders().getAccept().toString());
-        contextMap.put("Query-Params", queryParrams);
-        contextMap.put("Body", body == null ? "[empty]" : body);
-        contextMap.put("URI", uri);
-
-        MDC.setContextMap(contextMap);
-        log.trace("[Request ] {} {}{}", method, host, uri);
-
     }
 }

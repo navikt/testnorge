@@ -20,6 +20,7 @@ public class SecurityConfig {
                 .anyExchange().authenticated()
                 .and().oauth2Client()
                 .and().oauth2Login()
+                .and().formLogin().loginPage("/oauth2/authorization/aad")
                 .and().logout().logoutUrl("/");
         return http.build();
     }
