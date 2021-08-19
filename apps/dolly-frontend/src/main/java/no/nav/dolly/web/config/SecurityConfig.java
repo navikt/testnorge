@@ -14,6 +14,8 @@ public class SecurityConfig {
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
+        var loginPage = "/login/oauth2/code/aad";
+
         http.csrf().disable()
                 .authorizeExchange()
                 .pathMatchers("/internal/isReady", "/internal/isAlive").permitAll()
