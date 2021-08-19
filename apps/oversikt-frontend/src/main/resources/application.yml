@@ -33,7 +33,7 @@ applications:
   testnorge-person-api-dev: 51ec8e6e-20a1-4b8f-b66a-66dd6a9b00b9
   endringsmelding-service: 7f00fa49-869e-4a1a-b4a0-e0c1d556dc38
   generer-navn-service: 92e61fa8-6fca-48e2-87b9-29d8bb6cf850
-  organisasjon-bestilling-service: 213b750d-7a71-40bb-ada6-81530e61dcd5
+  organisasjon-bestilling-service: dev-gcp.dolly.organisasjon-bestilling-service
   organisasjon-orgnummer-service: cc5eab78-8ec7-4f4f-8b2f-7e6f46870a48
   ereg-batch-status-service: 67f507ff-399c-4853-9eb3-3dc6aabc8289
   testnorge-arbeidsforhold-api: 90e047cc-cc80-4da3-abb2-87ea2e98beed
