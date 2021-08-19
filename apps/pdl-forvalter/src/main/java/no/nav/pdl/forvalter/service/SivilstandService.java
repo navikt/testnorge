@@ -115,11 +115,16 @@ public class SivilstandService {
 
                 if (isNotTrue(sivilstand.getBorIkkeSammen()) && !hovedperson.getBostedsadresse().isEmpty()) {
                     BostedadresseDTO fellesAdresse = hovedperson.getBostedsadresse().stream()
+                            .map(adresse -> mapperFacade.map(adresse, BostedadresseDTO.class))
                             .findFirst()
                             .orElse(BostedadresseDTO.builder()
                                     .vegadresse(mapperFacade.map(defaultAdresse(), VegadresseDTO.class))
                                     .build());
+
                     fellesAdresse.setGyldigFraOgMed(sivilstand.getSivilstandsdato());
+                    fellesAdresse.setId(relatertPerson.getBostedsadresse().stream()
+                            .map(BostedadresseDTO::getId).findFirst()
+                            .orElse(0) + 1);
                     relatertPerson.getBostedsadresse().add(0, fellesAdresse);
                 }
 
