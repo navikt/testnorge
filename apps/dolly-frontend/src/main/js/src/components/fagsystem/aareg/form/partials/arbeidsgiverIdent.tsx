@@ -21,8 +21,17 @@ export const ArbeidsgiverIdent = ({ formikBag, path }: ArbeidsgiverIdentProps) =
 
 	const handleChange = (event: React.ChangeEvent<any>) => {
 		event.preventDefault()
+		setError(null)
+		setMiljoer(null)
+		setSuccess(false)
 		let personnr = event.target.value
-		handleManualPersonnrChange(personnr)
+
+		// TODO: move to frontend validation
+		if (personnr.length == 11 && personnr.match(/^[0-9]+$/) != null) {
+			handleManualPersonnrChange(personnr)
+		} else {
+			setError('Personnummer må være et tall med 11 siffer.')
+		}
 	}
 
 	const handleManualPersonnrChange = (personnr: string) => {
