@@ -6,8 +6,10 @@ rootProject.name = 'profil-api'
 
 includeBuild '../../gradlePlugins'
 
-includeBuild '../../libs/servlet-core'
-includeBuild '../../libs/servlet-security'
+includeBuild '../../libs/reactive-core'
+includeBuild '../../libs/reactive-security'
+includeBuild '../../libs/testing'
+includeBuild '../../libs/data-transfer-objects'
 
 gradleEnterprise {
     buildScan {

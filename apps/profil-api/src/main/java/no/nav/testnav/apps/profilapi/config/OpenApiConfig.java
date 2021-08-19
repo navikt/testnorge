@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.profil.config;
+package no.nav.testnav.apps.profilapi.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -7,18 +7,16 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
-import no.nav.testnav.libs.servletcore.config.ApplicationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
 
+import no.nav.testnav.libs.reactivecore.config.ApplicationProperties;
+
+
 @Configuration
-@Import(ApplicationProperties.class)
-public class OpenApiConfig implements WebMvcConfigurer {
+public class OpenApiConfig {
 
     @Bean
     public OpenAPI openApi(ApplicationProperties applicationProperties) {
@@ -45,11 +43,7 @@ public class OpenApiConfig implements WebMvcConfigurer {
                         .license(new License()
                                 .name("MIT License")
                                 .url("https://opensource.org/licenses/MIT")
-                        ));
-    }
-
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/swagger").setViewName("redirect:/swagger-ui.html");
+                        )
+                );
     }
 }

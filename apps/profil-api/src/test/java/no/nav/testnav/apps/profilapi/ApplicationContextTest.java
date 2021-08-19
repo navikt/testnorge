@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.profil;
+package no.nav.testnav.apps.profilapi;
 
 
 import org.junit.Test;

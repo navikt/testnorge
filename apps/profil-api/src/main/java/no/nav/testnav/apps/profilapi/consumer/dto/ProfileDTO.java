@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.profil.consumer.dto;
+package no.nav.testnav.apps.profilapi.consumer.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

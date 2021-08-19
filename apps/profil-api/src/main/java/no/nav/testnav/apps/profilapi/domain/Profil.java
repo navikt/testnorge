@@ -1,9 +1,9 @@
-package no.nav.registre.testnorge.profil.domain;
+package no.nav.testnav.apps.profilapi.domain;
 
 import lombok.RequiredArgsConstructor;
 
+import no.nav.testnav.apps.profilapi.consumer.dto.ProfileDTO;
 import no.nav.testnav.libs.dto.profil.v1.ProfilDTO;
-import no.nav.registre.testnorge.profil.consumer.dto.ProfileDTO;
 
 @RequiredArgsConstructor
 public class Profil {

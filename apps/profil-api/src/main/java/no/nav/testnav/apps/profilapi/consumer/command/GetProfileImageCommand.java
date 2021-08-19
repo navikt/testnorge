@@ -1,0 +1,32 @@
+package no.nav.testnav.apps.profilapi.consumer.command;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+
+import java.util.concurrent.Callable;
+
+@Slf4j
+@RequiredArgsConstructor
+public class GetProfileImageCommand implements Callable<Mono<byte[]>> {
+
+    private final WebClient webClient;
+    private final String accessToken;
+
+    @Override
+    public Mono<byte[]> call() {
+        return webClient
+                .get()
+                .uri(builder -> builder.path("/v1.0/me/photos/240x240/$value").build())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .retrieve()
+                .onStatus(
+                        HttpStatus::isError,
+                        clientResponse -> Mono.empty()
+                )
+                .bodyToMono(byte[].class);
+    }
+}

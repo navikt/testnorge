@@ -1,23 +1,22 @@
-package no.nav.registre.testnorge.profil.consumer;
+package no.nav.testnav.apps.profilapi.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.profil.consumer.command.GetProfileCommand;
-import no.nav.registre.testnorge.profil.consumer.command.GetProfileImageCommand;
-import no.nav.registre.testnorge.profil.consumer.dto.ProfileDTO;
-import no.nav.registre.testnorge.profil.domain.Profil;
-import no.nav.testnav.libs.servletsecurity.domain.AccessScopes;
-import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.tcp.ProxyProvider;
 
 import java.net.URI;
-import java.util.Optional;
+
+import no.nav.testnav.apps.profilapi.consumer.command.GetProfileCommand;
+import no.nav.testnav.apps.profilapi.consumer.command.GetProfileImageCommand;
+import no.nav.testnav.apps.profilapi.domain.Profil;
+import no.nav.testnav.libs.reactivesecurity.domain.AccessScopes;
+import no.nav.testnav.libs.reactivesecurity.service.AccessTokenService;
 
 @Slf4j
 @Component
@@ -61,15 +60,17 @@ public class AzureAdProfileConsumer {
                 .build();
     }
 
-    public Profil getProfil() {
-        AccessToken accessToken = accessTokenService.generateToken(accessScopes).block();
-        ProfileDTO dto = new GetProfileCommand(webClient, accessToken.getTokenValue()).call();
-        return new Profil(dto);
+    public Mono<Profil> getProfil() {
+        return accessTokenService
+                .generateToken(accessScopes)
+                .flatMap(accessToken -> new GetProfileCommand(webClient, accessToken.getTokenValue()).call())
+                .map(Profil::new);
     }
 
-    public Optional<byte[]> getProfilImage() {
-        AccessToken accessToken = accessTokenService.generateToken(accessScopes).block();
-        return new GetProfileImageCommand(webClient, accessToken.getTokenValue()).call();
+    public Mono<byte[]> getProfilImage() {
+        return accessTokenService
+                .generateToken(accessScopes)
+                .flatMap(accessToken -> new GetProfileImageCommand(webClient, accessToken.getTokenValue()).call());
     }
 
 }
