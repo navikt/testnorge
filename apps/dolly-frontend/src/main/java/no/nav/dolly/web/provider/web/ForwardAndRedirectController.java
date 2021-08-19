@@ -17,7 +17,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 public class ForwardAndRedirectController {
 
     @Bean
-    public RouterFunction<ServerResponse> htmlRouter(@Value("classpath:/public/index.html") Resource html) {
+    public RouterFunction<ServerResponse> htmlRouter(@Value("classpath:/static/index.html") Resource html) {
         HandlerFunction<ServerResponse> indexHandler = request -> ok().contentType(MediaType.TEXT_HTML).syncBody(html);
         return RouterFunctions
                 .route(RequestPredicates.GET("/gruppe/**"), indexHandler)
