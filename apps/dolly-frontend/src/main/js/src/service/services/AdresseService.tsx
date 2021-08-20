@@ -1,6 +1,6 @@
 import api from '@/api'
 
-type Request = {
+type AdresseRequest = {
 	matrikkelId?: string
 	adressenavn?: string
 	husnummer?: number
@@ -13,6 +13,16 @@ type Request = {
 	bydelsnavn?: string
 	tilleggsnavn?: string
 	fritekst?: string
+}
+
+type MatrikkelAdresseRequest = {
+	matrikkelId?: string
+	kommunenummer?: string
+	gaardsnummer?: string
+	bruksnummer?: string
+	postnummer?: string
+	poststed?: string
+	tilleggsnavn?: string
 }
 
 export type Adresse = {
@@ -32,21 +42,43 @@ export type Adresse = {
 	fylkesnavn: string
 }
 
-export default {
-	hentAdresser(request: Request, antall: number = 1): Promise<Adresse[]> {
-		const getQueryParms = () => {
-			const keys = Object.keys(request).filter(
-				(key: keyof Request) => request[key] && request[key] !== ''
-			)
-			if (keys.length === 0) {
-				return ''
-			}
-			return '?' + keys.map((key: keyof Request) => `${key}=${request[key]}`).join('&')
-		}
+export type MatrikkelAdresse = {
+	matrikkelId: string
+	kommunenummer: string
+	gaardsnummer: string
+	bruksnummer: string
+	postnummer: string
+	poststed: string
+	tilleggsnavn: string
+}
 
-		return api.fetchJson(`/testnav-adresse-service/api/v1/adresser/veg${getQueryParms()}`, {
+const getQueryParms = (request: any) => {
+	const keys = Object.keys(request).filter(
+		(key: keyof Request) => request[key] && request[key] !== ''
+	)
+	if (keys.length === 0) {
+		return ''
+	}
+	return '?' + keys.map((key: keyof Request) => `${key}=${request[key]}`).join('&')
+}
+
+export default {
+	hentAdresser(request: AdresseRequest, antall: number = 1): Promise<Adresse[]> {
+		return api.fetchJson(`/testnav-adresse-service/api/v1/adresser/veg${getQueryParms(request)}`, {
 			method: 'GET',
 			headers: { antall: antall.toString() }
 		})
+	},
+	hentMatrikkelAdresser(
+		request: MatrikkelAdresseRequest,
+		antall: number = 10
+	): Promise<MatrikkelAdresse[]> {
+		return api.fetchJson(
+			`/testnav-adresse-service/api/v1/adresser/matrikkeladresse${getQueryParms(request)}`,
+			{
+				method: 'GET',
+				headers: { antall: antall.toString() }
+			}
+		)
 	}
 }
