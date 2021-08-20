@@ -20,7 +20,7 @@ export const TilfeldigMatrikkelAdresse = ({ formikBag }: AdresseProps) => {
 			tilleggsadresse: formikBag.values.tpsf.boadresse.tilleggsadresse,
 			matrikkelId: adresse.matrikkelId,
 			adressetype: 'MATR',
-			mellomnavn: adresse.tilleggsnavn,
+			mellomnavn: adresse.tilleggsnavn ? adresse.tilleggsnavn : '',
 			gardsnr: adresse.gaardsnummer,
 			bruksnr: adresse.bruksnummer,
 			festnr: '',

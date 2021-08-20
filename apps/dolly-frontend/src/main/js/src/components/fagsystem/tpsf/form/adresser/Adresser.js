@@ -82,7 +82,7 @@ export const Adresser = ({ formikBag }) => {
 					tilleggsadresse: formikBag.values.tpsf.boadresse.tilleggsadresse
 				})
 				break
-			case 'tilfeldig':
+			case 'matrikkelsok':
 			case 'matrikkel':
 				formikBag.setFieldValue('tpsf.boadresse', {
 					adressetype: 'MATR',
@@ -129,8 +129,8 @@ export const Adresser = ({ formikBag }) => {
 								},
 								{
 									label: 'Tilfeldig matrikkeladressse ...',
-									value: 'tilfeldig',
-									id: 'tilfeldig'
+									value: 'matrikkelsok',
+									id: 'matrikkelsok'
 								},
 								{ label: 'Gateadresse detaljert ...', value: 'gate', id: 'gate' },
 								{ label: 'Matrikkeladresse detaljert ...', value: 'matrikkel', id: 'matrikkel' }
@@ -142,7 +142,7 @@ export const Adresser = ({ formikBag }) => {
 						{['postnr', 'kommunenr'].includes(boType) && (
 							<AdresseNr formikBag={formikBag} type={boType} />
 						)}
-						{boType === 'tilfeldig' && <TilfeldigMatrikkelAdresse formikBag={formikBag} />}
+						{boType === 'matrikkelsok' && <TilfeldigMatrikkelAdresse formikBag={formikBag} />}
 						{boType === 'gate' && <Boadresse formikBag={formikBag} />}
 						{boType === 'matrikkel' && <MatrikkelAdresse formikBag={formikBag} />}
 						<div className="flexbox--flex-wrap">
