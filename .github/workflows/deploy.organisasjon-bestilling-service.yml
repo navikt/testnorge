@@ -3,7 +3,7 @@ name: Deploy organisasjon-bestilling-service
 on:
   push:
     paths:
-      - apps/organisasjon-bestilling-service/**
+      - master
 
 
 env:
