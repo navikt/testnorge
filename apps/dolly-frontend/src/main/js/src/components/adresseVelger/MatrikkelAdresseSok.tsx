@@ -25,9 +25,9 @@ const HeaderGroup = styled.div`
 `
 
 export default ({ onSubmit, loading = false }: Props) => {
-	const [kommunenummer, setKommunenummer] = useState<string>(null)
-	const [gaardsnummer, setGaardsnummer] = useState<string>(null)
-	const [bruksnummer, setBruksnummer] = useState<string>(null)
+	const [kommunenummer, setKommunenummer] = useState<string>('')
+	const [gaardsnummer, setGaardsnummer] = useState<string>('')
+	const [bruksnummer, setBruksnummer] = useState<string>('')
 
 	const informasjonstekst =
 		'Bruk ingen, ett eller flere av søkefeltene for å få en liste med tilfeldige matrikkeladresser.'
