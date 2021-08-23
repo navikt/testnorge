@@ -31,7 +31,7 @@ export const ArbeidsgiverIdent = ({ formikBag, path }: ArbeidsgiverIdentProps) =
 		if (personnr.match(/^[0-9]{11}$/) != null) {
 			handleManualPersonnrChange(personnr)
 		} else {
-			setError('Personnummer må være et tall med 11 siffer.')
+			setError('Ident må være et tall med 11 siffer.')
 			formikBag.setFieldValue(`${path}`, '')
 		}
 	}
