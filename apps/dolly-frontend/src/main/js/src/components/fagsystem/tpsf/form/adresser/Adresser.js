@@ -27,7 +27,7 @@ export const boadressePaths = [
 ]
 
 const initialBoType = formikBag => {
-	const localBoType = localStorage.getItem('boType')
+	const localBoType = sessionStorage.getItem('boType')
 	const adresseType = _get(formikBag.values, 'tpsf.boadresse.adressetype')
 	const nummertype = _get(formikBag.values, 'tpsf.adresseNrInfo.nummertype')
 
@@ -51,7 +51,7 @@ export const Adresser = ({ formikBag }) => {
 	const handleRadioChange = e => {
 		const nyType = e.target.value
 		setBoType(nyType)
-		localStorage.setItem('boType', nyType)
+		sessionStorage.setItem('boType', nyType)
 
 		formikBag.setFieldValue('tpsf.adresseNrInfo', null)
 		formikBag.setFieldValue('tpsf.boadresse', {
