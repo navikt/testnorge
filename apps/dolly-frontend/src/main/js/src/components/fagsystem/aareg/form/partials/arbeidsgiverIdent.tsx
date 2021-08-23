@@ -21,30 +21,23 @@ export const ArbeidsgiverIdent = ({ formikBag, path }: ArbeidsgiverIdentProps) =
 
 	const handleChange = (event: React.ChangeEvent<any>) => {
 		event.preventDefault()
-		let personnr = event.target.value
-		handleManualPersonnrChange(personnr)
-	}
-
-	const handlePaste = (event: React.ClipboardEvent<any>) => {
-		event.preventDefault()
-		let personnr = event.clipboardData.getData('Text')
-		handleManualPersonnrChange(personnr)
-	}
-
-	const handleManualPersonnrChange = (personnr: string) => {
-		setPersonnummer(personnr)
-
 		setError(null)
 		setMiljoer(null)
 		setSuccess(false)
-		setLoading(true)
 
-		if (!personnr){
-			setError('Ident må være et tall med 11 sifre')
-			setLoading(false)
+		let personnr = event.target.value
+
+		// TODO: move to frontend validation
+		if (personnr.match(/^[0-9]{11}$/) != null) {
+			handleManualPersonnrChange(personnr)
+		} else {
+			setError('Ident må være et tall med 11 siffer.')
 			formikBag.setFieldValue(`${path}`, '')
-			return
 		}
+	}
+
+	const handleManualPersonnrChange = (personnr: string) => {
+		setLoading(true)
 
 		TpsfApi.getMiljoerByFnr(personnr)
 			.then((response: any) => {
@@ -62,6 +55,7 @@ export const ArbeidsgiverIdent = ({ formikBag, path }: ArbeidsgiverIdentProps) =
 				setError(null)
 				setSuccess(true)
 				setLoading(false)
+				setPersonnummer(personnr)
 
 				let env = response.data.statusPaaIdenter[0].env
 				setMiljoer(env === null ? env : env.toString())
@@ -79,7 +73,7 @@ export const ArbeidsgiverIdent = ({ formikBag, path }: ArbeidsgiverIdentProps) =
 				defaultValue={personnummer}
 				label={'Arbeidsgiver ident'}
 				onBlur={handleChange}
-				onPaste={handlePaste}
+				disabled={loading}
 				feil={
 					error && {
 						feilmelding: error
