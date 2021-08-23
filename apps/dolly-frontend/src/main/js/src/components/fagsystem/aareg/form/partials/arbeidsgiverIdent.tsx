@@ -85,7 +85,7 @@ export const ArbeidsgiverIdent = ({ formikBag, path }: ArbeidsgiverIdentProps) =
 					<Icon size={22} kind="feedback-check-circle" /> Ident funnet i miljø: {miljoer}
 				</div>
 			)}
-			{loading && <Loading label="Sjekker arbeidsgiver ident." />}
+			{loading && <Loading label="Sjekker arbeidsgiver ident" />}
 		</div>
 	)
 }

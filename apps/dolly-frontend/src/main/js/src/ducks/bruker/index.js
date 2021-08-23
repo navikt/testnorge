@@ -1,7 +1,7 @@
-import {DollyApi, ProfilApi} from '~/service/Api'
-import {combineActions, createActions} from 'redux-actions'
-import {handleActions} from '~/ducks/utils/immerHandleActions'
-import {onSuccess} from '~/ducks/utils/requestActions'
+import { DollyApi, ProfilApi } from '~/service/Api'
+import { combineActions, createActions } from 'redux-actions'
+import { handleActions } from '~/ducks/utils/immerHandleActions'
+import { onSuccess } from '~/ducks/utils/requestActions'
 
 export const {
 	getCurrentBruker,
