@@ -75,7 +75,7 @@ applications:
   testnav-inntektsmelding-service: dev-gcp.dolly.testnav-inntektsmelding-service
   testnav-amelding-service: dev-gcp.dolly.testnav-amelding-service
   testnav-joark-dokument-service: dev-gcp.dolly.testnav-joark-dokument-service
-  synthdata-tps-gcp: dev-gcp.dolly.synthdata-tps-gcp-tmp
+  synthdata-tps-gcp: dev-gcp.dolly.synthdata-tps-gcp
   testnav-person-faste-data-service: dev-gcp.dolly.testnav-person-faste-data-service
   testnav-person-service: dev-gcp.dolly.testnav-person-service
   testnav-inntektstub-proxy: dev-fss.dolly.testnav-inntektstub-proxy

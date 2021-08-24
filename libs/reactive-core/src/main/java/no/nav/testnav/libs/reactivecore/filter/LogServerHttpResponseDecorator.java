@@ -8,6 +8,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
+
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.ByteArrayOutputStream;
@@ -32,7 +34,7 @@ public class LogServerHttpResponseDecorator extends ServerHttpResponseDecorator 
 
     @Override
     public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
-        Mono<DataBuffer> buffer = Mono.from(body);
+        Flux<DataBuffer> buffer = Flux.from(body);
         return super.writeWith(buffer.doOnNext(dataBuffer -> {
             try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
                 Channels.newChannel(byteArrayOutputStream).write(dataBuffer.asByteBuffer().asReadOnlyBuffer());
