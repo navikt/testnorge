@@ -6,14 +6,14 @@ import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import Panel from '~/components/ui/panel/Panel'
-import { panelError } from '~/components/ui/form/formUtils'
-import { erForste } from '~/components/ui/form/formUtils'
+import { panelError, erForste } from '~/components/ui/form/formUtils'
 import { Boadresse } from './partials/boadresse/Boadresse'
 import { Postadresser } from './Postadresser'
 import { MidlertidigAdresse } from './MidlertidigAdresse'
-import { MatrikkelAdresse } from './partials/MatrikkelAdresse'
+import { MatrikkelAdresse } from './partials/matrikkelAdresse/MatrikkelAdresse'
 import { AdresseNr } from './partials/AdresseNr'
 import { Tilleggsadresse } from '~/components/fagsystem/tpsf/form/adresser/partials/Tilleggsadresse/Tilleggsadresse'
+import { TilfeldigMatrikkelAdresse } from '~/components/fagsystem/tpsf/form/adresser/partials/matrikkelAdresse/TilfeldigMatrikkelAdresse'
 
 const paths = ['tpsf.boadresse', 'tpsf.postadresse', 'tpsf.midlertidigAdresse']
 /* Fordi UFB også bruker boadresse kan vi ikke bare sjekke den. 
@@ -27,12 +27,17 @@ export const boadressePaths = [
 ]
 
 const initialBoType = formikBag => {
+	const localBoType = sessionStorage.getItem('boType')
 	const adresseType = _get(formikBag.values, 'tpsf.boadresse.adressetype')
 	const nummertype = _get(formikBag.values, 'tpsf.adresseNrInfo.nummertype')
 
 	if (nummertype) return nummertype === 'POSTNR' ? 'postnr' : 'kommunenr'
-	else if (adresseType) return adresseType === 'GATE' ? 'gate' : 'matrikkel'
-	else return
+	else if (adresseType) {
+		if (adresseType === 'GATE') return 'gate'
+		else if (adresseType === 'MATR') {
+			return localBoType && localBoType === 'matrikkelsok' ? localBoType : 'matrikkel'
+		}
+	}
 }
 
 export const Adresser = ({ formikBag }) => {
@@ -46,6 +51,7 @@ export const Adresser = ({ formikBag }) => {
 	const handleRadioChange = e => {
 		const nyType = e.target.value
 		setBoType(nyType)
+		sessionStorage.setItem('boType', nyType)
 
 		formikBag.setFieldValue('tpsf.adresseNrInfo', null)
 		formikBag.setFieldValue('tpsf.boadresse', {
@@ -83,6 +89,7 @@ export const Adresser = ({ formikBag }) => {
 					tilleggsadresse: formikBag.values.tpsf.boadresse.tilleggsadresse
 				})
 				break
+			case 'matrikkelsok':
 			case 'matrikkel':
 				formikBag.setFieldValue('tpsf.boadresse', {
 					adressetype: 'MATR',
@@ -127,6 +134,11 @@ export const Adresser = ({ formikBag }) => {
 									value: 'kommunenr',
 									id: 'kommunenr'
 								},
+								{
+									label: 'Tilfeldig matrikkeladressse ...',
+									value: 'matrikkelsok',
+									id: 'matrikkelsok'
+								},
 								{ label: 'Gateadresse detaljert ...', value: 'gate', id: 'gate' },
 								{ label: 'Matrikkeladresse detaljert ...', value: 'matrikkel', id: 'matrikkel' }
 							]}
@@ -137,6 +149,7 @@ export const Adresser = ({ formikBag }) => {
 						{['postnr', 'kommunenr'].includes(boType) && (
 							<AdresseNr formikBag={formikBag} type={boType} />
 						)}
+						{boType === 'matrikkelsok' && <TilfeldigMatrikkelAdresse formikBag={formikBag} />}
 						{boType === 'gate' && <Boadresse formikBag={formikBag} />}
 						{boType === 'matrikkel' && <MatrikkelAdresse formikBag={formikBag} />}
 						<div className="flexbox--flex-wrap">
