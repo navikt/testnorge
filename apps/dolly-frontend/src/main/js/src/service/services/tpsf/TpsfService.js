@@ -6,7 +6,6 @@ export default {
 	getPersoner(userArray) {
 		if (!userArray) return
 		const endpoint = getTpsfUrl() + `/dolly/testdata/hentpersoner`
-
 		return Request.post(endpoint, userArray)
 	},
 
