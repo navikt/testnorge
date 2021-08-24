@@ -14,7 +14,6 @@ import { pdfjs } from 'react-pdf'
 // @ts-ignore
 import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry'
 import styled from 'styled-components'
-import { isAfter } from 'date-fns'
 import _get from 'lodash/get'
 
 pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker
@@ -53,7 +52,7 @@ enum Kodeverk {
 
 const dokarkivAttributt = 'dokarkiv'
 
-export const DokarkivForm = ({ formikBag }: Form) => {
+export const DigitalInnsendingForm = ({ formikBag }: Form) => {
 	const gjeldendeFiler = JSON.parse(sessionStorage.getItem('dokarkiv_vedlegg'))
 	const [files, setFiles] = useState(gjeldendeFiler ? gjeldendeFiler : [])
 	const [skjemaValues, setSkjemaValues] = useState(null)
@@ -97,7 +96,7 @@ export const DokarkivForm = ({ formikBag }: Form) => {
 				// @ts-ignore
 				startOpen={() => erForste(formikBag.values, [dokarkivAttributt])}
 			>
-				<Kategori title="Oppretting av skannet dokument" vis={dokarkivAttributt}>
+				<Kategori title="Oppretting av digital innsending" vis={dokarkivAttributt}>
 					<div className="flexbox--full-width">
 						<FormikSelect
 							name="dokarkiv.dokumenter[0].brevkode"
@@ -117,6 +116,8 @@ export const DokarkivForm = ({ formikBag }: Form) => {
 						isClearable={false}
 					/>
 					<FormikTextInput name="dokarkiv.journalfoerendeEnhet" label="Journalførende enhet" />
+					<FormikTextInput name="dokarkiv.avsenderMottaker.id" label="ID til avsender" />
+					<FormikTextInput name="dokarkiv.avsenderMottaker.navn" label="Navn på mottaker" />
 					<Label
 						label={'Vedlegg'}
 						name={'Vedlegg'}
@@ -137,12 +138,16 @@ export const DokarkivForm = ({ formikBag }: Form) => {
 	)
 }
 
-DokarkivForm.validation = {
+DigitalInnsendingForm.validation = {
 	dokarkiv: ifPresent(
 		'$dokarkiv',
 		Yup.object({
 			tittel: requiredString,
 			tema: requiredString,
+			avsenderMottaker: Yup.object({
+				navn: Yup.string().nullable(),
+				id: Yup.string().nullable()
+			}),
 			journalfoerendeEnhet: Yup.string(),
 			dokumenter: Yup.array().of(
 				Yup.object({

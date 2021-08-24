@@ -15,7 +15,8 @@ import { ArenaForm } from '~/components/fagsystem/arena/form/Form'
 import { InstForm } from '~/components/fagsystem/inst/form/Form'
 import { UdistubForm } from '~/components/fagsystem/udistub/form/Form'
 import { PensjonForm } from '~/components/fagsystem/pensjon/form/Form'
-import { DokarkivForm } from '~/components/fagsystem/dokarkiv/form/Form'
+import { DokarkivForm } from '~/components/fagsystem/dokarkiv/form/scanning/ScanningForm'
+import { DigitalInnsendingForm } from '~/components/fagsystem/dokarkiv/form/digital/DigitalinnsendingForm'
 import { SykdomForm } from '~/components/fagsystem/sykdom/form/Form'
 import { OrganisasjonForm } from '~/components/fagsystem/organisasjoner/form/Form'
 
@@ -47,6 +48,7 @@ export const Steg2 = ({ formikBag }) => {
 			<ArenaForm formikBag={formikBag} />
 			<UdistubForm formikBag={formikBag} />
 			<DokarkivForm formikBag={formikBag} />
+			<DigitalInnsendingForm formikBag={formikBag} />
 			<OrganisasjonForm formikBag={formikBag} />
 		</div>
 	)
@@ -69,5 +71,6 @@ Steg2.validation = Yup.object({
 	...ArenaForm.validation,
 	...UdistubForm.validation,
 	...DokarkivForm.validation,
+	...DigitalInnsendingForm.validation,
 	...OrganisasjonForm.validation
 })

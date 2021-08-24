@@ -1,7 +1,7 @@
 import React from 'react'
-import { Dokument, Journalpost } from '~/service/services/JoarkDokumentService'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import {Dokument, Journalpost} from '~/service/services/JoarkDokumentService'
+import {TitleValue} from '~/components/ui/titleValue/TitleValue'
+import {DollyFieldArray} from '~/components/ui/form/fieldArray/DollyFieldArray'
 
 type Props = {
 	journalpost: Journalpost
@@ -10,6 +10,7 @@ type Props = {
 export default ({ journalpost }: Props) => (
 	<>
 		<TitleValue title="Tittel" value={journalpost.tittel} />
+		<TitleValue title="Kanal" value={journalpost.kanal} />
 		<TitleValue title="Tema" value={journalpost.tema} />
 		<TitleValue title="Journalpost-ID" value={journalpost.journalpostId} />
 		<DollyFieldArray header={'Vedlegg'} data={journalpost.dokumenter} nested>

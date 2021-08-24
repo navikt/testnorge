@@ -1243,6 +1243,9 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			items: [
 				obj('Brevkode', dokarkivKriterier.dokumenter[0].brevkode),
 				obj('Tittel', dokarkivKriterier.tittel),
+				obj('ID på avsender', dokarkivKriterier.avsenderMottaker.id),
+				obj('Navn på avsender', dokarkivKriterier.avsenderMottaker?.navn),
+				obj('Tittel', dokarkivKriterier.tittel),
 				obj('Tema', dokarkivKriterier.tema),
 				obj('Journalførende enhet', dokarkivKriterier.journalfoerendeEnhet),
 				obj('Antall vedlegg', dokarkivKriterier.dokumenter.length)

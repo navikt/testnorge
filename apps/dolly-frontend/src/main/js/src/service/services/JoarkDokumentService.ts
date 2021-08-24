@@ -4,6 +4,7 @@ export type Journalpost = {
 	journalpostId: number
 	tittel: string
 	tema: string
+	kanal: string
 	dokumenter: Dokument[]
 }
 
