@@ -312,6 +312,12 @@ const selectOptions: SelectOptions = {
 	maalform: [
 		{ value: 'B', label: 'Bokmål' },
 		{ value: 'N', label: 'Nynorsk' }
+	],
+
+	// Dokarkiv:
+	avsenderType: [
+		{ value: 'FNR', label: 'FNR' },
+		{ value: 'ORGNR', label: 'ORGNR' }
 	]
 }
 

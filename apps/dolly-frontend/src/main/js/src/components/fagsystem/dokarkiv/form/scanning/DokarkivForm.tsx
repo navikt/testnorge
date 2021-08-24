@@ -9,16 +9,16 @@ import Panel from '~/components/ui/panel/Panel'
 import { erForste, panelError } from '~/components/ui/form/formUtils'
 import { FormikProps } from 'formik'
 import FileUpload from 'filopplasting'
-import { Label } from '~/components/ui/form/inputs/label/Label'
 import { pdfjs } from 'react-pdf'
 // @ts-ignore
 import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry'
 import styled from 'styled-components'
 import _get from 'lodash/get'
+import { Digitalinnsending } from '~/components/fagsystem/dokarkiv/form/digital/Digitalinnsending'
 
 pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker
 
-interface Form {
+interface DokarkivForm {
 	formikBag: FormikProps<{}>
 }
 
@@ -39,6 +39,7 @@ type Vedlegg = {
 
 const FilOpplaster = styled(FileUpload)`
 	background-color: unset;
+	margin-bottom: 10px;
 
 	&:hover {
 		background-color: #f1f1f1;
@@ -52,8 +53,9 @@ enum Kodeverk {
 
 const dokarkivAttributt = 'dokarkiv'
 
-export const DigitalInnsendingForm = ({ formikBag }: Form) => {
+export const DokarkivForm = ({ formikBag }: DokarkivForm) => {
 	const gjeldendeFiler = JSON.parse(sessionStorage.getItem('dokarkiv_vedlegg'))
+	const digitalInnsending = _get(formikBag.values, 'dokarkiv.avsenderMottaker')
 	const [files, setFiles] = useState(gjeldendeFiler ? gjeldendeFiler : [])
 	const [skjemaValues, setSkjemaValues] = useState(null)
 
@@ -65,7 +67,7 @@ export const DigitalInnsendingForm = ({ formikBag }: Form) => {
 		}
 		setSkjemaValues(skjema)
 		formikBag.setFieldValue('dokarkiv.tittel', skjema.data)
-		const dokumentVarianter = files.map((vedl, index) => ({
+		const dokumentVarianter = files.map((vedl: Vedlegg, index: number) => ({
 			tittel: vedl.name,
 			brevkode: (index === 0 && skjema?.value) || undefined,
 			dokumentvarianter: [
@@ -96,7 +98,10 @@ export const DigitalInnsendingForm = ({ formikBag }: Form) => {
 				// @ts-ignore
 				startOpen={() => erForste(formikBag.values, [dokarkivAttributt])}
 			>
-				<Kategori title="Oppretting av digital innsending" vis={dokarkivAttributt}>
+				<Kategori
+					title={`Oppretting av ${digitalInnsending ? 'digitalt' : 'skannet '} dokument`}
+					vis={dokarkivAttributt}
+				>
 					<div className="flexbox--full-width">
 						<FormikSelect
 							name="dokarkiv.dokumenter[0].brevkode"
@@ -116,14 +121,8 @@ export const DigitalInnsendingForm = ({ formikBag }: Form) => {
 						isClearable={false}
 					/>
 					<FormikTextInput name="dokarkiv.journalfoerendeEnhet" label="Journalførende enhet" />
-					<FormikTextInput name="dokarkiv.avsenderMottaker.id" label="ID til avsender" />
-					<FormikTextInput name="dokarkiv.avsenderMottaker.navn" label="Navn på mottaker" />
-					<Label
-						label={'Vedlegg'}
-						name={'Vedlegg'}
-						containerClass={'flexbox--full-width'}
-						feil={null}
-					>
+					{digitalInnsending ? <Digitalinnsending /> : null}
+					<Kategori title={'Vedlegg'}>
 						<FilOpplaster
 							className={'flexbox--full-width'}
 							acceptedMimetypes={['application/pdf']}
@@ -131,24 +130,39 @@ export const DigitalInnsendingForm = ({ formikBag }: Form) => {
 							// @ts-ignore
 							onFilesChanged={handleVedleggChange}
 						/>
-					</Label>
+					</Kategori>
 				</Kategori>
 			</Panel>
 		</Vis>
 	)
 }
 
-DigitalInnsendingForm.validation = {
+DokarkivForm.validation = {
 	dokarkiv: ifPresent(
 		'$dokarkiv',
 		Yup.object({
 			tittel: requiredString,
 			tema: requiredString,
-			avsenderMottaker: Yup.object({
-				navn: Yup.string().nullable(),
-				id: Yup.string().nullable()
-			}),
 			journalfoerendeEnhet: Yup.string(),
+			avsenderMottaker: Yup.object({
+				idType: Yup.string()
+					.optional()
+					.nullable(),
+				id: Yup.string()
+					.when('idType', {
+						is: 'ORGNR',
+						then: Yup.string()
+							.matches(/^[0-9]*$/, 'Orgnummer må være et tall med 9 sifre')
+							.test('len', 'Orgnummer må være et tall med 9 sifre', val => val && val.length === 9)
+					})
+					.when('idType', {
+						is: 'FNR',
+						then: Yup.string()
+							.matches(/^[0-9]*$/, 'Ident må være et tall med 11 sifre')
+							.test('len', 'Ident må være et tall med 11 sifre', val => val && val.length === 11)
+					}),
+				navn: Yup.string().optional()
+			}),
 			dokumenter: Yup.array().of(
 				Yup.object({
 					tittel: requiredString,
