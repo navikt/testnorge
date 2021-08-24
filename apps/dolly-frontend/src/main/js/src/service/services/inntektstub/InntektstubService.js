@@ -6,8 +6,9 @@ export default {
 		return Request.get(endpoint)
 	},
 	validate(values) {
-		return Request.post('/testnav-inntektstub-proxy/api/v2/valider', values).then(
-			value => value.data
-		)
+		return Request.post('/testnav-inntektstub-proxy/api/v2/valider', values).then(value => {
+			// console.log('value', value)
+			return value.data
+		})
 	}
 }
