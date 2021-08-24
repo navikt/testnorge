@@ -104,7 +104,7 @@ export default function PersonListe({
 							destroyTooltipOnHide={true}
 							mouseEnterDelay={0}
 							mouseLeaveDelay={0.1}
-							arrowContent={<div className="rc-tooltip-arrow-inner"></div>}
+							arrowContent={<div className="rc-tooltip-arrow-inner" />}
 							align={{
 								offset: ['0', '-10']
 							}}
@@ -182,7 +182,7 @@ export default function PersonListe({
 								openKommentarModal()
 								event.stopPropagation()
 							}}
-							arrowContent={<div className="rc-tooltip-arrow-inner"></div>}
+							arrowContent={<div className="rc-tooltip-arrow-inner" />}
 							align={{
 								offset: ['0', '-10']
 							}}
