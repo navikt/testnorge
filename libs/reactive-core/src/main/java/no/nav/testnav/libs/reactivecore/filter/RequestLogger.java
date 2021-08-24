@@ -48,7 +48,6 @@ public class RequestLogger implements WebFilter {
             contextMap.put(HttpHeaders.ORIGIN, request.getHeaders().getOrigin());
             contextMap.put(HttpHeaders.ACCEPT, request.getHeaders().getAccept().toString());
             contextMap.put("Query-Params", queryParrams);
-            contextMap.put("Body", body == null ? "[empty]" : body);
             contextMap.put("URI", uri);
 
             MDC.setContextMap(contextMap);
