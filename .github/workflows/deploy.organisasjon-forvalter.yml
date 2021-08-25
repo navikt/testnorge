@@ -3,7 +3,7 @@ name: Deploy testnav-organisasjon-forvalter
 on:
   push:
     branches:
-      - feature/org_forvalter_nytt_status_endepunkt
+      - feature/master
     paths:
       - apps/organisasjon-forvalter/**
       - libs/kafka-config/**
