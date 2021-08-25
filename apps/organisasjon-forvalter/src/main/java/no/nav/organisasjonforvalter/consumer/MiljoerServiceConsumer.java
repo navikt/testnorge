@@ -35,10 +35,9 @@ public class MiljoerServiceConsumer {
     public Set<String> getOrgMiljoer() {
 
         try {
-            var accessToken = accessTokenService.generateToken(serviceProperties).block();
-            var response = new MiljoerServiceCommand(webClient, accessToken.getTokenValue()).call();
-
-            return Stream.of(response)
+            return Stream.of(accessTokenService.generateToken(serviceProperties)
+                    .flatMap(token ->
+                            new MiljoerServiceCommand(webClient, token.getTokenValue()).call()).block())
                             .filter(env -> !env.equals("u5") && !env.equals("qx"))
                             .collect(Collectors.toSet());
 

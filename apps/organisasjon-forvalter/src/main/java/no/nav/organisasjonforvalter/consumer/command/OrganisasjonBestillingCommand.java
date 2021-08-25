@@ -1,29 +1,54 @@
 package no.nav.organisasjonforvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.organisasjonforvalter.dto.responses.ItemDto;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.organisasjonforvalter.dto.responses.BestillingStatus;
+import no.nav.organisasjonforvalter.jpa.entity.Status;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Mono;
 
+import java.util.Arrays;
 import java.util.concurrent.Callable;
 
+@Slf4j
 @RequiredArgsConstructor
-public class OrganisasjonBestillingCommand implements Callable<ItemDto[]> {
+public class OrganisasjonBestillingCommand implements Callable<Mono<BestillingStatus>> {
 
     private static final String STATUS_URL = "/api/v1/order/{uuid}/items";
 
     private final WebClient webClient;
-    private final String uuid;
+    private final Status status;
     private final String token;
 
     @Override
-    public ItemDto[] call()  {
+    public Mono<BestillingStatus> call() {
 
         return webClient.get()
-                .uri(STATUS_URL.replace("{uuid}", uuid))
+                .uri(STATUS_URL.replace("{uuid}", status.getUuid()))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .retrieve()
-                .bodyToMono(ItemDto[].class)
-                .block();
+                .exchange()
+                .flatMap(response -> response
+                        .bodyToMono(BestillingStatus.ItemDto[].class)
+                        .map(value -> BestillingStatus.builder()
+                                .uuid(status.getUuid())
+                                .miljoe(status.getMiljoe())
+                                .itemDtos(Arrays.asList(value))
+                                .build()))
+
+                .doOnError(throwable -> {
+                    log.error(throwable instanceof WebClientResponseException ?
+                            ((WebClientResponseException) throwable).getResponseBodyAsString() :
+                            throwable.getMessage());
+
+                    BestillingStatus.builder()
+                            .uuid(status.getUuid())
+                            .miljoe(status.getMiljoe())
+                            .feilmelding(throwable instanceof WebClientResponseException ?
+                                    ((WebClientResponseException) throwable).getResponseBodyAsString() :
+                                    throwable.getMessage())
+                            .build();
+                });
     }
 }
