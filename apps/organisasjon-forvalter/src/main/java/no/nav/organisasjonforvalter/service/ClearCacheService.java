@@ -5,18 +5,22 @@ import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import static java.util.Objects.nonNull;
 import static no.nav.organisasjonforvalter.config.CacheConfig.CACHE_MILJOER;
 
 @Service
 @RequiredArgsConstructor
 public class ClearCacheService {
 
-    private final static long INTERVAL = 60 * 60 * 1000L;
+    private final static long EVERY_HOUR = 60 * 60 * 1000L;
 
     private final CacheManager cacheManager;
 
-    @Scheduled(fixedRate = INTERVAL)
+    @Scheduled(fixedRate = EVERY_HOUR)
     public void cacheEvictMiljoer() {
-        cacheManager.getCache(CACHE_MILJOER).clear();
+
+        if (nonNull(cacheManager.getCache(CACHE_MILJOER))) {
+            cacheManager.getCache(CACHE_MILJOER).clear();
+        }
     }
 }
