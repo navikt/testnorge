@@ -1,0 +1,20 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+spring:
+  application:
+    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
+    name: testnav-import-person-service
+    desciption: Tjeneste for å sende inn personer til PDL
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+
+consumers.testnav-pdl-forvalter:
+  url: https://testnav-pdl-forvalter.dev.intern.nav.no
+  cluster: dev-gcp
+  namespace: dolly
+  name: testnav-pdl-forvalter
