@@ -41,7 +41,7 @@ export default handleActions(
 			state.brukerProfil = action.payload ? action.payload.data : null
 		},
 		[onSuccess(getCurrentBrukerBilde)](state, action) {
-			state.brukerBilde = null //TODO: FIX
+			state.brukerBilde = action.payload ? action.payload.data : null
 		}
 	},
 	initialState
