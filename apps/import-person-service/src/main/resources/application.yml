@@ -4,7 +4,7 @@ spring:
   application:
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     name: testnav-import-person-service
-    desciption: Tjeneste for å sende endringsmeldinger
+    desciption: Tjeneste for å sende inn personer til PDL
   security:
     oauth2:
       resourceserver:
