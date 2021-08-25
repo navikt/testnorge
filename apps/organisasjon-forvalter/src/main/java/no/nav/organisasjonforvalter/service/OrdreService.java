@@ -79,7 +79,6 @@ public class OrdreService {
                 .build();
     }
 
-
     private void deployOrganisasjon(String uuid, Organisasjon organisasjon, String env) {
 
         if (organisasjonServiceConsumer.getStatus(organisasjon.getOrganisasjonsnummer(), env).isEmpty()) {

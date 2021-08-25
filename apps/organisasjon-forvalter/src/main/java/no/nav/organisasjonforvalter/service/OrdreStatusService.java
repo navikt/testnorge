@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.organisasjonforvalter.dto.responses.BestillingStatus.ItemDto.ItemStatus.INITIALIZING;
 
 @Slf4j
@@ -35,22 +36,23 @@ public class OrdreStatusService {
         var mapping = statusRepository.findAllByOrganisasjonsnummer(orgnumre)
                 .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND, "Ingen status funnet for gitte orgnumre"));
 
+        var orgStatus = mapping.stream()
+                .map(organisasjonBestillingConsumer::getBestillingStatus)
+                .reduce(Flux.empty(), Flux::concat)
+                .collectList()
+                .block();
+
         return OrdreResponse.builder()
-                .orgStatus(
-                        mapping.stream()
-                                .map(entry -> organisasjonBestillingConsumer.getBestillingStatus(entry))
-                                .reduce(Flux.empty(), Flux::concat)
-                                .collectList()
-                                .block()
-                                .stream()
-                                .collect(Collectors.toMap(BestillingStatus::getMiljoe,
-                                        status -> EnvStatus.builder()
-                                                .status(status.getItemDtos().stream()
-                                                        .map(BestillingStatus.ItemDto::getStatus)
-                                                        .map(BestillingStatus.ItemDto.ItemStatus::toString)
-                                                        .findFirst().orElse(INITIALIZING.toString()))
-                                                .details(status.getFeilmelding())
-                                                .build())))
+                .orgStatus((nonNull(orgStatus) ? orgStatus : new ArrayList<BestillingStatus>())
+                        .stream()
+                        .collect(Collectors.toMap(BestillingStatus::getMiljoe,
+                                status -> EnvStatus.builder()
+                                        .status(status.getItemDtos().stream()
+                                                .map(BestillingStatus.ItemDto::getStatus)
+                                                .map(BestillingStatus.ItemDto.ItemStatus::toString)
+                                                .findFirst().orElse(INITIALIZING.toString()))
+                                        .details(status.getFeilmelding())
+                                        .build())))
                 .build();
     }
 
