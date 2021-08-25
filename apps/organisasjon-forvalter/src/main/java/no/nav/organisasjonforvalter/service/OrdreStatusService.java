@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.organisasjonforvalter.dto.responses.BestillingStatus.ItemDto.ItemStatus.INITIALIZING;
 
@@ -45,12 +44,13 @@ public class OrdreStatusService {
         return OrdreResponse.builder()
                 .orgStatus((nonNull(orgStatus) ? orgStatus : new ArrayList<BestillingStatus>())
                         .stream()
-                        .collect(Collectors.toMap(BestillingStatus::getMiljoe,
+                        .collect(Collectors.toMap(BestillingStatus::getOrgnummer,
                                 status -> EnvStatus.builder()
                                         .status(status.getItemDtos().stream()
                                                 .map(BestillingStatus.ItemDto::getStatus)
                                                 .map(BestillingStatus.ItemDto.ItemStatus::toString)
                                                 .findFirst().orElse(INITIALIZING.toString()))
+                                        .environment(status.getMiljoe())
                                         .details(status.getFeilmelding())
                                         .build())))
                 .build();
@@ -64,12 +64,5 @@ public class OrdreStatusService {
         private String environment;
         private String uuid;
         private List<BestillingStatus.ItemDto> lastStatus;
-
-        public List<BestillingStatus.ItemDto> getLastStatus() {
-            if (isNull(lastStatus)) {
-                lastStatus = new ArrayList<>();
-            }
-            return lastStatus;
-        }
     }
 }

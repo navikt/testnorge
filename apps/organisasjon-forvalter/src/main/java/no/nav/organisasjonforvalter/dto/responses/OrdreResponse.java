@@ -6,10 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.HashMap;
 import java.util.Map;
-
-import static java.util.Objects.isNull;
 
 @Data
 @Builder
@@ -19,13 +16,6 @@ public class OrdreResponse {
 
     private Map<String, EnvStatus> orgStatus;
 
-    public Map<String, EnvStatus> getOrgStatus() {
-        if (isNull(orgStatus)) {
-            orgStatus = new HashMap<>();
-        }
-        return orgStatus;
-    }
-
     @Data
     @Builder
     @NoArgsConstructor
@@ -33,6 +23,7 @@ public class OrdreResponse {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class EnvStatus {
 
+        private String environment;
         private String status;
         private String details;
     }
