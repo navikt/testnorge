@@ -42,7 +42,7 @@ providers:
   krrstub:
     url: http://krrstubdummy
   arenaforvalter:
-    url: http://arenaforvalterdummy
+    url: http://localhost:${wiremock.server.port:0}/arenaforvalter
   aaregdata:
     url: http://aaregdatadummy
   udistub:

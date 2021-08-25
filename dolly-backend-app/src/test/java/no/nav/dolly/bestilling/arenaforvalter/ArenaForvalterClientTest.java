@@ -1,5 +1,24 @@
 package no.nav.dolly.bestilling.arenaforvalter;
 
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaKvalifiseringsgruppe;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
+import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
+import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
+
 import static java.util.Collections.singletonList;
 import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse.BrukerFeilstatus.DUPLIKAT;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -11,25 +30,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpClientErrorException;
-
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
-import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
-import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
-import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
-import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ArenaForvalterClientTest {
@@ -52,8 +52,10 @@ public class ArenaForvalterClientTest {
 
     @Before
     public void setup() {
-        when(arenaForvalterConsumer.getEnvironments()).thenReturn(ResponseEntity.ok(singletonList(ENV)));
-        when(mapperFacade.map(any(Arenadata.class), eq(ArenaNyBruker.class))).thenReturn(new ArenaNyBruker());
+        when(arenaForvalterConsumer.getEnvironments()).thenReturn(singletonList(ENV));
+        when(mapperFacade.map(any(Arenadata.class), eq(ArenaNyBruker.class))).thenReturn(ArenaNyBruker.builder()
+                .kvalifiseringsgruppe(ArenaKvalifiseringsgruppe.IKVAL)
+                .build());
     }
 
     @Test
