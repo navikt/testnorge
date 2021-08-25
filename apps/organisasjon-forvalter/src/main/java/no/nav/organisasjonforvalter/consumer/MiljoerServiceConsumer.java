@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.organisasjonforvalter.config.credentials.MiljoerServiceProperties;
 import no.nav.organisasjonforvalter.consumer.command.MiljoerServiceCommand;
 import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Collections.emptySet;
+import static no.nav.organisasjonforvalter.config.CacheConfig.CACHE_MILJOER;
 
 @Slf4j
 @Service
@@ -32,6 +34,7 @@ public class MiljoerServiceConsumer {
         this.accessTokenService = accessTokenService;
     }
 
+    @Cacheable(CACHE_MILJOER)
     public Set<String> getOrgMiljoer() {
 
         try {

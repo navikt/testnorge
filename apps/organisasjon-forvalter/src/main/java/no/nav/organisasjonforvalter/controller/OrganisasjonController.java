@@ -18,7 +18,6 @@ import no.nav.organisasjonforvalter.service.OrdreStatusService;
 import no.nav.organisasjonforvalter.service.OrganisasjonService;
 import no.nav.testnav.libs.servletsecurity.service.AuthenticationTokenResolver;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,7 +31,6 @@ import java.util.Set;
 
 import static java.util.Objects.nonNull;
 import static no.nav.organisasjonforvalter.config.CacheConfig.CACHE_BEDRIFT;
-import static no.nav.organisasjonforvalter.config.CacheConfig.CACHE_EREG_IMPORT;
 
 @RestController
 @RequestMapping("api/v2/organisasjoner")
@@ -55,7 +53,6 @@ public class OrganisasjonController {
         return bestillingService.execute(request);
     }
 
-    @CacheEvict(value = CACHE_EREG_IMPORT, allEntries = true)
     @PostMapping("/ordre")
     @Operation(description = "Send organisasjoner til EREG i angitte miljøer")
     public DeployResponse deployOrganisasjon(@RequestBody DeployRequest request) {
@@ -77,7 +74,6 @@ public class OrganisasjonController {
         return organisasjonService.getOrganisasjoner(orgnumre);
     }
 
-    @Cacheable(CACHE_EREG_IMPORT)
     @GetMapping("/framiljoe")
     @Operation(description = "Hent organisasjon fra EREG")
     public Map<String, RsOrganisasjon> importOrganisasjon(@RequestParam String orgnummer,
