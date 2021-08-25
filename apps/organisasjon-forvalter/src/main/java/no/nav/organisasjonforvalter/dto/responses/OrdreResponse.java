@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -14,7 +15,7 @@ import java.util.Map;
 @AllArgsConstructor
 public class OrdreResponse {
 
-    private Map<String, EnvStatus> orgStatus;
+    private Map<String, List<EnvStatus>> orgStatus;
 
     @Data
     @Builder

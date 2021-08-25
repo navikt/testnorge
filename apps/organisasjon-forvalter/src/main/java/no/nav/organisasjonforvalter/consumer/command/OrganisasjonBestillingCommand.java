@@ -32,6 +32,7 @@ public class OrganisasjonBestillingCommand implements Callable<Mono<BestillingSt
                 .flatMap(response -> response
                         .bodyToMono(BestillingStatus.ItemDto[].class)
                         .map(value -> BestillingStatus.builder()
+                                .orgnummer(status.getOrganisasjonsnummer())
                                 .uuid(status.getUuid())
                                 .miljoe(status.getMiljoe())
                                 .itemDtos(Arrays.asList(value))
