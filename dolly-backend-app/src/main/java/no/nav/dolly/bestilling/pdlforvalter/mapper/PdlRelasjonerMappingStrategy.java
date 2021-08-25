@@ -103,11 +103,11 @@ public class PdlRelasjonerMappingStrategy implements MappingStrategy {
                 case SKIL:
                     return SKILT;
                 case SEPR:
-                    return SEPARERT_PARTNER;
+                    return SEPARERT;
                 case REPA:
                     return REGISTRERT_PARTNER;
                 case SEPA:
-                    return SEPARERT;
+                    return SEPARERT_PARTNER;
                 case SKPA:
                     return SKILT_PARTNER;
                 case GJPA:
