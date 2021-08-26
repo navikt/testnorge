@@ -60,7 +60,7 @@ public class OrderServiceV2 {
 
         var order = entity.get();
 
-        if (order.getBatchId() == null) {
+        if (order.getBatchId() != null) {
             return getStatusFromBatchId(new Order(order));
         }
 
