@@ -8,7 +8,7 @@ import lombok.Value;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class AvsenderMottakerDTO {
-    String idType;
+    String type;
     String id;
     String navn;
 }

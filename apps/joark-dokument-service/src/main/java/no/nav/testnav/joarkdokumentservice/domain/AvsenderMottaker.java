@@ -5,12 +5,12 @@ import no.nav.testnav.joarkdokumentservice.consumer.dto.AvsenderMottakerDTO;
 
 @Value
 public class AvsenderMottaker {
-    String idType;
+    String type;
     String id;
     String navn;
 
     public AvsenderMottaker(AvsenderMottakerDTO dto) {
-        idType = dto.getIdType();
+        type = dto.getType();
         id = dto.getId();
         navn = dto.getNavn();
     }
@@ -18,7 +18,7 @@ public class AvsenderMottaker {
     public no.nav.testnav.joarkdokumentservice.controller.v2.dto.AvsenderMottakerDTO toDTO() {
         return no.nav.testnav.joarkdokumentservice.controller.v2.dto.AvsenderMottakerDTO
                 .builder()
-                .idType(idType)
+                .type(type)
                 .id(id)
                 .navn(navn)
                 .build();
