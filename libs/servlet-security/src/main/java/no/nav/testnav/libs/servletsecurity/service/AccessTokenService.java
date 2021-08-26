@@ -80,8 +80,8 @@ public class AccessTokenService {
         return generateOnBehalfOfAccessToken(accessScopes);
     }
 
-    public AccessToken generateClientCredentialAccessToken(Scopeable serverProperties) {
-        return generateClientCredentialAccessToken(new AccessScopes(serverProperties.toScope())).block();
+    public Mono<AccessToken> generateClientCredentialAccessToken(Scopeable serverProperties) {
+        return generateClientCredentialAccessToken(new AccessScopes(serverProperties.toScope()));
     }
 
 

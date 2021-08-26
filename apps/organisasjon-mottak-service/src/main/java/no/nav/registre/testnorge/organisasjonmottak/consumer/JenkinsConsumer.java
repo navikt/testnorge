@@ -45,7 +45,7 @@ public class JenkinsConsumer {
     }
 
     public void send(Flatfil flatFile, String miljo, Set<String> uuids) {
-        var accessToken = accessTokenService.generateClientCredentialAccessToken(properties);
+        var accessToken = accessTokenService.generateClientCredentialAccessToken(properties).block();
 
         var server = env.getProperty("JENKINS_SERVER_" + miljo.toUpperCase());
         if (server == null) {
