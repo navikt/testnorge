@@ -29,8 +29,8 @@ public class OrderControllerV2 {
     private final OrderServiceV2 service;
 
 
-    @GetMapping("/{uuid}/ids")
-    public ResponseEntity<List<OrderDTO>> getOrders() {
+    @GetMapping
+    public ResponseEntity<List<OrderDTO>> getAll() {
         var list = service.findAll().stream().map(Order::toDTO).collect(Collectors.toList());
         return ResponseEntity.ok(list);
     }
