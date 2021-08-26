@@ -7,13 +7,13 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Set;
 
+import no.nav.registre.testnorge.organisasjonmottak.config.properties.JenkinsServiceProperties;
+import no.nav.registre.testnorge.organisasjonmottak.consumer.command.StartBEREG007Command;
+import no.nav.registre.testnorge.organisasjonmottak.domain.Flatfil;
 import no.nav.testnav.libs.commands.GetCrumbCommand;
 import no.nav.testnav.libs.dto.jenkins.v1.JenkinsCrumb;
 import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
 import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
-import no.nav.registre.testnorge.organisasjonmottak.config.properties.JenkinsServiceProperties;
-import no.nav.registre.testnorge.organisasjonmottak.consumer.command.StartBEREG007Command;
-import no.nav.registre.testnorge.organisasjonmottak.domain.Flatfil;
 
 @Slf4j
 @Component
@@ -23,13 +23,16 @@ public class JenkinsConsumer {
     private final WebClient webClient;
     private final AccessTokenService accessTokenService;
     private final NaisServerProperties properties;
+    private final OrganisasjonBestillingConsumer organisasjonBestillingConsumer;
 
     public JenkinsConsumer(
             Environment env,
             JenkinsServiceProperties properties,
             AccessTokenService accessTokenService,
-            JenkinsBatchStatusConsumer jenkinsBatchStatusConsumer
+            JenkinsBatchStatusConsumer jenkinsBatchStatusConsumer,
+            OrganisasjonBestillingConsumer organisasjonBestillingConsumer
     ) {
+        this.organisasjonBestillingConsumer = organisasjonBestillingConsumer;
         this.properties = properties;
         this.accessTokenService = accessTokenService;
         this.jenkinsBatchStatusConsumer = jenkinsBatchStatusConsumer;
@@ -54,6 +57,7 @@ public class JenkinsConsumer {
         uuids.forEach(uuid -> {
             jenkinsBatchStatusConsumer.registerBestilling(uuid, miljo, id);
             log.info("Bestilling sendt til jenkins {}.", uuid);
+            organisasjonBestillingConsumer.registerBestilling(uuid, miljo, id);
         });
     }
 }
