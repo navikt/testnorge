@@ -4,15 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
-import java.util.List;
-
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class JournalpostDTO {
-    Integer journalpostId;
-    String tittel;
-    String temanavn;
-    AvsenderMottakerDTO avsenderMottaker;
-    List<DokuemntDTO> dokumenter;
+public class AvsenderMottakerDTO {
+    String idType;
+    String id;
+    String navn;
 }
