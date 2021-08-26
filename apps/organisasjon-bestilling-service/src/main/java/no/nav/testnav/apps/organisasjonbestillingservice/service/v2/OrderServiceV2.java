@@ -115,6 +115,10 @@ public class OrderServiceV2 {
         return repository.findBy(uuid).stream().map(Order::new).collect(Collectors.toList());
     }
 
+    public void delete(String uuid) {
+        repository.deleteAllByUuid(uuid);
+    }
+
     public List<Order> findAll() {
         return StreamSupport
                 .stream(repository.findAll().spliterator(), false)

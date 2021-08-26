@@ -12,6 +12,8 @@ public interface OrderRepositoryV2 extends CrudRepository<OrderEntity, Long> {
 
     Optional<OrderEntity> findById(Long id);
 
+    void deleteAllByUuid(String uuid);
+
     @Query(value = "from OrderEntity o1 where o1.uuid = ?1")
     List<OrderEntity> findBy(String uuid);
 }
