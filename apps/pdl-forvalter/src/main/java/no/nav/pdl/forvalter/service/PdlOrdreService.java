@@ -10,8 +10,10 @@ import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.HistoriskIdent;
 import no.nav.pdl.forvalter.dto.PdlDelete;
 import no.nav.pdl.forvalter.dto.PdlFalskIdentitet;
+import no.nav.pdl.forvalter.dto.PdlInnflytting;
 import no.nav.pdl.forvalter.dto.PdlKontaktadresse;
 import no.nav.pdl.forvalter.dto.PdlTilrettelagtKommunikasjon;
+import no.nav.pdl.forvalter.dto.PdlUtflytting;
 import no.nav.pdl.forvalter.dto.PdlVergemaal;
 import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
@@ -108,8 +110,10 @@ public class PdlOrdreService {
                 deployService.send(PDL_BOSTEDADRESSE, person.getIdent(), person.getPerson().getBostedsadresse()),
                 deployService.send(PDL_OPPHOLDSADRESSE, person.getIdent(), person.getPerson().getOppholdsadresse()),
                 deployService.send(PDL_ADRESSEBESKYTTELSE, person.getIdent(), person.getPerson().getAdressebeskyttelse()),
-                deployService.send(PDL_INNFLYTTING, person.getIdent(), person.getPerson().getInnflytting()),
-                deployService.send(PDL_UTFLYTTING, person.getIdent(), person.getPerson().getUtflytting()),
+                deployService.send(PDL_INNFLYTTING, person.getIdent(),
+                        mapperFacade.mapAsList(person.getPerson().getInnflytting(), PdlInnflytting.class)),
+                deployService.send(PDL_UTFLYTTING, person.getIdent(),
+                        mapperFacade.mapAsList(person.getPerson().getUtflytting(), PdlUtflytting.class)),
                 deployService.send(PDL_DELTBOSTED, person.getIdent(), person.getPerson().getDeltBosted()),
                 deployService.send(PDL_FORELDREANSVAR, person.getIdent(), person.getPerson().getForeldreansvar()),
                 deployService.send(PDL_FORELDRE_BARN_RELASJON, person.getIdent(), person.getPerson().getForelderBarnRelasjon()),

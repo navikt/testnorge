@@ -88,7 +88,7 @@ public class FullmaktService {
                 fullmakt.getNyFullmektig().setFoedtEtter(LocalDateTime.now().minusYears(75));
             }
 
-            if (fullmakt.getNyFullmektig().getSyntetisk()) {
+            if (isNull(fullmakt.getNyFullmektig().getSyntetisk())) {
                 fullmakt.getNyFullmektig().setSyntetisk(SyntetiskFraIdentUtility.isSyntetisk(ident));
             }
 
