@@ -7,7 +7,7 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class DokuemntDTO {
+public class DokumentDTO {
     Integer dokumentInfoId;
     String tittel;
 }

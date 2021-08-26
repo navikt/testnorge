@@ -43,7 +43,7 @@ public class SafConsumer {
                 .block();
     }
 
-    public String getDokument(Integer journalpostId, Integer dokumentInfoId, DokumentType dokuemntType, String miljo) {
+    public String getDokument(Integer journalpostId, Integer dokumentInfoId, DokumentType dokumentType, String miljo) {
         return accessTokenService
                 .generateToken(properties)
                 .flatMap(accessToken -> new GetDokumentCommand(
@@ -52,7 +52,7 @@ public class SafConsumer {
                                 journalpostId,
                                 dokumentInfoId,
                                 miljo,
-                                dokuemntType
+                                dokumentType
                         ).call()
                 ).block();
     }

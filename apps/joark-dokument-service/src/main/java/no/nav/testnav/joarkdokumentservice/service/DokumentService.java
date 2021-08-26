@@ -1,11 +1,10 @@
 package no.nav.testnav.joarkdokumentservice.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import no.nav.testnav.joarkdokumentservice.consumer.SafConsumer;
 import no.nav.testnav.joarkdokumentservice.domain.DokumentType;
 import no.nav.testnav.joarkdokumentservice.domain.Journalpost;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -16,7 +15,7 @@ public class DokumentService {
         return safConsumer.getJournalpost(journalpostId, miljo);
     }
 
-    public String getDokument(Integer journalpostId, Integer dokumentInfoId, DokumentType dokuemntType, String miljo) {
-        return safConsumer.getDokument(journalpostId, dokumentInfoId, dokuemntType, miljo);
+    public String getDokument(Integer journalpostId, Integer dokumentInfoId, DokumentType dokumentType, String miljo) {
+        return safConsumer.getDokument(journalpostId, dokumentInfoId, dokumentType, miljo);
     }
 }
