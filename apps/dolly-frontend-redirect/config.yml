@@ -15,6 +15,11 @@ spec:
       tenant: nav.no
       replyURLs:
         - https://testnav-dolly-frontend-redirect.dev.intern.nav.no/login/oauth2/code/aad
+        - https://dolly.dev.intern.nav.no/login/oauth2/code/aad
+        - https://dolly-frontend.dev.adeo.no/login/oauth2/code/aad
+        - https://dolly.nais.preprod.local/login/oauth2/code/aad
+        - https://dolly.nais-dev-fss.adeo.no/login/oauth2/code/aad
+        - https://dolly.dev.adeo.no/login/oauth2/code/aad
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -36,4 +41,9 @@ spec:
       cpu: 500m
       memory: 2048Mi
   ingresses:
-    - "https://testnav-dolly-frontend-redirect.dev.intern.nav.no"
+    - https://testnav-dolly-frontend-redirect.dev.intern.nav.no
+    - https://dolly.dev.intern.nav.no
+    - https://dolly-frontend.dev.adeo.no
+    - https://dolly.nais.preprod.local
+    - https://dolly.nais-dev-fss.adeo.no
+    - https://dolly.dev.adeo.no

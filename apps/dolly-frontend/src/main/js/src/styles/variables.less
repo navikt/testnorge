@@ -1,0 +1,43 @@
+@import (reference) '~nav-frontend-core/less/core';
+
+// Colors
+@color-textbase: #212529;
+@color-bg-grey: #f1f1f1;
+@color-bg-shallow: #e9ecef;
+@color-bg-grey-border: darken(@color-bg-grey, 5%);
+@color-bg-grey-border-darker: darken(@color-bg-grey, 40%);
+@color-bg-divider: #d3dee3;
+@color-darkblue: @navBlaDarken60;
+@color-lightblue: @navBla;
+@color-focus: @orangeFocus;
+@color-success: #06893a;
+@color-disabled: #e9e7e7;
+@color-error: #ba3a26;
+@color-error-background: #f3e3e3;
+
+@color-faded-blue: #cce3ed;
+
+// Bruker for å fremheve viktig innhold eller informasjon
+@color-nav-oransje: #ff9100;
+
+// Bruker som forkus farge ved tabbing. Skal også kunne brukes for å fremheve elementer som
+// krever brukernes fokus. Påpeker hvor brukeren befinner seg, og øker brukervennlighet
+@color-nav-fokus-oransje: #ffbd66;
+@color-nav-black: #3e3832;
+
+// Layout
+@page-max-width: 960px;
+@page-padding: 20px;
+
+// Input sizes
+@default-input-size: 200px;
+@default-input-size-small: 250px;
+@default-input-size-medium: 300px;
+@default-input-size-large: 350px;
+@default-input-size-xlarge: 420px;
+
+// Media queries vars
+@mobile: ~'only screen and (max-width: 529px)';
+@tablet: ~'only screen and (min-width: 530px) and (max-width: 949px)';
+@desktop: ~'only screen and (min-width: 950px) and (max-width: 1128px)';
+@desktop-xl: ~'only screen and (min-width: 1129px)';

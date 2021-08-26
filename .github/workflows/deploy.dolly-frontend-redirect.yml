@@ -2,6 +2,8 @@ name: Deploy dolly-frontend-redirect
 
 on:
   push:
+    branches:
+      - master
     paths:
       - apps/dolly-frontend-redirect/**
 

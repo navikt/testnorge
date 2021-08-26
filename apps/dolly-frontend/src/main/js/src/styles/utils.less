@@ -1,0 +1,95 @@
+@import (reference) '~lessVars';
+
+// ? Det kan væert lurt å legge til alle NAV-tekst appreance her.
+// ? Alle tekst-feltene på Dolly kan da bruke dem. Link: design.nav.no
+
+.offscreen {
+	position: absolute;
+	left: -10000px;
+	top: auto;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+.flexbox {
+	display: flex;
+
+	&--wrap {
+		flex-wrap: wrap;
+	}
+
+	&--flex-wrap {
+		display: flex;
+		flex-wrap: wrap;
+	}
+
+	&--space {
+		display: flex;
+		justify-content: space-between;
+	}
+
+	&--align-center {
+		display: flex;
+		align-items: center;
+	}
+
+	&--align-start {
+		display: flex;
+		align-items: flex-start;
+	}
+
+	&--justify-center {
+		display: flex;
+		justify-content: center;
+	}
+
+	&--column {
+		display: flex;
+		flex-direction: column;
+	}
+
+	&--all-center {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	&--align-center--justify-start {
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+	}
+
+	&--align-center--justify-end {
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+	}
+
+	&--align-center--space {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	&--full-width {
+		width: 100%;
+	}
+
+}
+
+// TEKST
+.clickable-text {
+	color: @navBla;
+	cursor: pointer;
+	&-small {
+		cursor: pointer;
+		color: @navBla;
+		font-size: 0.9rem;
+	}
+}
+
+.error-message {
+	color: @color-error;
+}

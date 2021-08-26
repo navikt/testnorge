@@ -1,0 +1,54 @@
+.utvalg-container {
+	flex-grow: 1;
+	padding-left: 30px;
+}
+
+.utvalg {
+	position: sticky;
+	top: 1rem;
+	h2 {
+		margin: 0;
+		font-size: 1.25rem;
+	}
+
+	> ul {
+		list-style-type: none;
+		padding-left: 10px;
+		> li {
+			padding: 5px 0;
+		}
+	}
+
+	li > span:hover {
+		> button:first-child {
+			display: inline-block;
+		}
+	}
+
+	ul {
+		li {
+			font-weight: bold;
+
+			button {
+				vertical-align: middle;
+				display: none;
+			}
+
+			ul {
+				list-style-type: disc;
+				margin-top: 3px;
+				li {
+					font-weight: normal;
+					padding: 3px 0px;
+				}
+			}
+		}
+	}
+
+	&--empty-result {
+		display: block;
+		margin: 10px 0;
+		color: #777;
+		font-style: italic;
+	}
+}

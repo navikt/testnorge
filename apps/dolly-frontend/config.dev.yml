@@ -1,0 +1,84 @@
+apiVersion: nais.io/v1alpha1
+kind: Application
+metadata:
+  name: dolly-frontend-dev
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  webproxy: true
+  azure:
+    application:
+      enabled: true
+      # enum of {trygdeetaten.no, nav.no}
+      tenant: nav.no
+      replyURLs:
+        - https://dolly-frontend-dev.dev.intern.nav.no/login/oauth2/code/aad
+        - http://localhost:8020/login/oauth2/code/aad
+        - http://localhost:3000/login/oauth2/code/aad
+  accessPolicy:
+    outbound:
+      rules:
+        - application: testnorge-tilbakemelding-api
+        - application: testnav-adresse-service
+        - application: testnav-miljoer-service
+        - application: testnav-organisasjon-service
+        - application: testnav-organisasjon-forvalter
+        - application: testnorge-profil-api
+        - application: testnav-joark-dokument-service
+        - application: testnav-organisasjon-faste-data-service
+      external:
+        - host: person-search-service.dev-fss-pub.nais.io
+        - host: udi-stub-dev.dev-fss-pub.nais.io
+        - host: testnorge-varslinger-api.dev-fss-pub.nais.io
+        - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
+        - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
+        - host: testnav-testnorge-inst-proxy.dev-fss-pub.nais.io
+        - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
+        - host: testnav-testnorge-aareg-proxy.dev-fss-pub.nais.io
+        - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
+        - host: testnav-hodejegeren-proxy.dev-fss-pub.nais.io
+        - host: tps-forvalteren-dev-proxy.dev-fss-pub.nais.io
+        - host: dolly-backend-dev.dev-fss-pub.nais.io
+        - host: testnav-inntektstub-proxy.dev-fss-pub.nais.io
+        - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
+  replicas:
+    min: 1
+    max: 2
+  port: 8080
+  ingresses:
+    - https://dolly-frontend-dev.dev.intern.nav.no
+  liveness:
+    path: /internal/isAlive
+    initialDelay: 20
+    periodSeconds: 2
+    failureThreshold: 140
+  readiness:
+    path: /internal/isReady
+    initialDelay: 20
+    periodSeconds: 2
+    failureThreshold: 140
+  prometheus:
+    enabled: true
+    path: /internal/metrics
+  resources:
+    requests:
+      cpu: 1000m
+      memory: 1024Mi
+    limits:
+      cpu: 1500m
+      memory: 2048Mi
+  image: {{ image }}
+  env:
+    - name: DOLLY_BACKEND_NAME
+      value: dolly-backend-dev
+    - name: DOLLY_BACKEND_URL
+      value: https://dolly-backend-dev.dev-fss-pub.nais.io
+    - name: UDI_STUB_URL
+      value: https://udi-stub-dev.dev-fss-pub.nais.io
+    - name: UDI_STUB_NAME
+      value: udi-stub-dev
+    - name: TPS_FORVALTERN_PROXY_NAME
+      value: tps-forvalteren-dev-proxy
+    - name: TPS_FORVALTERN_PROXY_URL
+      value: https://tps-forvalteren-dev-proxy.dev-fss-pub.nais.io

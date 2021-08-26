@@ -35,13 +35,25 @@ public class BestillingService {
 
     private static String adresseQuery(AdresseRequest adresse) {
 
-        return new StringBuilder("postnummer=")
-                .append(isNotBlank(adresse.getPostnr()) ? adresse.getPostnr() : "")
-                .append("&kommunenummer=")
-                .append(isNotBlank(adresse.getKommunenr()) ? adresse.getKommunenr() : "")
-                .append("&fritekst=")
-                .append(adresse.getAdresselinjer().stream().findFirst().orElse(""))
-                .toString();
+        var query = new StringBuilder();
+        if (isNotBlank(adresse.getPostnr())) {
+            query.append("postnummer=").append(adresse.getPostnr());
+        }
+        if (query.length() > 0) {
+            query.append('&');
+        }
+        if (isNotBlank(adresse.getKommunenr())) {
+            query.append("kommunenummer=").append(adresse.getKommunenr());
+        }
+        if (query.length() > 0) {
+            query.append('&');
+        }
+        if (isNotBlank(adresse.getAdresselinjer().stream()
+                .filter(linje -> isNotBlank(linje)).findFirst().orElse(""))) {
+            query.append("fritekst=").append(adresse.getAdresselinjer().stream()
+                    .filter(linje -> isNotBlank(linje)).findFirst().get());
+        }
+        return query.toString();
     }
 
     public BestillingResponse execute(BestillingRequest request) {

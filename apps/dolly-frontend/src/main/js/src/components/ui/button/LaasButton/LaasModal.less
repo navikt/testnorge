@@ -1,0 +1,24 @@
+@import (reference) '~lessVars';
+
+.laasModal {
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+
+	&-content {
+		border-bottom: 1px solid @color-bg-divider;
+		margin-bottom: 20px;
+		text-align: center;
+
+		h1 {
+			border: none;
+			margin: 10px 0 0;
+		}
+	}
+	&-actions {
+		padding: 20px 0 0;
+		button {
+			margin: 0 10px;
+		}
+	}
+}

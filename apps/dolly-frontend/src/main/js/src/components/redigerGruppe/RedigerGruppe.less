@@ -1,0 +1,38 @@
+@import (reference) '~lessVars';
+
+.opprett-tabellrad {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	background-color: white;
+	padding: 0;
+	margin: 20px 0px;
+	border: 1px solid @color-focus;
+
+	.fields {
+		display: flex;
+		align-items: flex-start;
+		padding: 10px;
+	}
+
+	// Override margin from parent selector (avoid important)
+	.skjemaelement.skjemaelement,
+	button:not(:last-child) {
+		margin-right: 10px;
+	}
+
+	button {
+		margin-top: 26px;
+		min-width: 100px;
+		min-height: 35px;
+	}
+
+	.opprett-error {
+		background-color: #f3e3e3;
+		padding: 10px;
+	}
+
+	&.loading .loading-component {
+		padding: 10px;
+	}
+}

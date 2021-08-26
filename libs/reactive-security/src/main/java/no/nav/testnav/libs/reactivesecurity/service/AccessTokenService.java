@@ -136,7 +136,7 @@ public class AccessTokenService {
                 .with("requested_token_use", "on_behalf_of")
                 .with("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
 
-        log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow. \nScope: {}.", scope);
+        log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow. Scope: {}.", scope);
         return webClient
                 .post()
                 .body(body)

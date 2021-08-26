@@ -1,0 +1,70 @@
+@import (reference) '~lessVars';
+
+.dolly-panel {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 10px;
+	background-color: white;
+	border: 1px solid white; // get correct sizing when open
+	border-radius: 4px;
+
+	border-color: @color-bg-grey-border;
+
+	&.dolly-panel-open {
+		border: 1px solid @color-focus;
+	}
+
+	.dolly-panel-heading {
+		display: flex;
+		align-items: center;
+		cursor: pointer;
+
+		h1,
+		h2,
+		h3,
+		h4 {
+			margin: 0;
+			margin-left: 10px;
+			font-size: 1rem;
+		}
+		.header-icon {
+			background: @color-bg-shallow;
+			align-items: center;
+			padding: 10px;
+		}
+
+		.hjelpetekst {
+			width: 1.25rem;
+			height: 1.25rem;
+		}
+
+		.dolly-button {
+			width: 36px;
+			height: 36px;
+		}
+
+		&_error {
+			color: @color-error;
+			display: flex;
+			align-items: center;
+			margin: 0 10px;
+			font-size: 0.9rem;
+
+			svg {
+				margin-right: 5px;
+			}
+		}
+
+		&_buttons {
+			margin-left: auto;
+			display: flex;
+			align-items: center;
+			padding-right: 5px;
+		}
+	}
+
+	.dolly-panel-content {
+		border-top: 1px solid @color-bg-grey-border;
+		padding: 20px 10px 0;
+	}
+}

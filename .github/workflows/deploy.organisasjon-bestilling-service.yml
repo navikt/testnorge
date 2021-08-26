@@ -2,9 +2,9 @@ name: Deploy organisasjon-bestilling-service
 
 on:
   push:
+    branches: master
     paths:
       - apps/organisasjon-bestilling-service/**
-
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/organisasjon-bestilling-service:${{ github.sha }}
