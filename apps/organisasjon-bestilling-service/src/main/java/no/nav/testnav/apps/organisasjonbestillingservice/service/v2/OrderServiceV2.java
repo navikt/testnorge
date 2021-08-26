@@ -8,15 +8,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import no.nav.testnav.apps.organisasjonbestillingservice.consumer.EregBatchStatusConsumer;
 import no.nav.testnav.apps.organisasjonbestillingservice.consumer.JenkinsConsumer;
-import no.nav.testnav.libs.dto.organiasjonbestilling.v2.Status;
 import no.nav.testnav.apps.organisasjonbestillingservice.domain.v2.Order;
 import no.nav.testnav.apps.organisasjonbestillingservice.repository.v2.OrderRepositoryV2;
 import no.nav.testnav.apps.organisasjonbestillingservice.repository.v2.entity.OrderEntity;
 import no.nav.testnav.apps.organisasjonbestillingservice.retry.RetryConfig;
 import no.nav.testnav.apps.organisasjonbestillingservice.service.RetryService;
+import no.nav.testnav.libs.dto.organiasjonbestilling.v2.Status;
 
 @Slf4j
 @Service
@@ -113,4 +114,12 @@ public class OrderServiceV2 {
     public List<Order> find(String uuid) {
         return repository.findBy(uuid).stream().map(Order::new).collect(Collectors.toList());
     }
+
+    public List<Order> findAll() {
+        return StreamSupport
+                .stream(repository.findAll().spliterator(), false)
+                .map(Order::new)
+                .collect(Collectors.toList());
+    }
+
 }

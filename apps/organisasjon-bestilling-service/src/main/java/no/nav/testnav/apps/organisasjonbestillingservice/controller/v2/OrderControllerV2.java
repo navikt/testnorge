@@ -12,13 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import no.nav.testnav.libs.dto.organiasjonbestilling.v2.OrderDTO;
-import no.nav.testnav.libs.dto.organiasjonbestilling.v2.StatusDTO;
 import no.nav.testnav.apps.organisasjonbestillingservice.domain.v2.Order;
 import no.nav.testnav.apps.organisasjonbestillingservice.service.v2.OrderServiceV2;
+import no.nav.testnav.libs.dto.organiasjonbestilling.v2.OrderDTO;
+import no.nav.testnav.libs.dto.organiasjonbestilling.v2.StatusDTO;
 
 @Slf4j
 @RestController
@@ -26,6 +27,13 @@ import no.nav.testnav.apps.organisasjonbestillingservice.service.v2.OrderService
 @RequiredArgsConstructor
 public class OrderControllerV2 {
     private final OrderServiceV2 service;
+
+
+    @GetMapping("/{uuid}/ids")
+    public ResponseEntity<List<OrderDTO>> getOrders() {
+        var list = service.findAll().stream().map(Order::toDTO).collect(Collectors.toList());
+        return ResponseEntity.ok(list);
+    }
 
     @PostMapping
     public ResponseEntity<OrderDTO> opprett(
