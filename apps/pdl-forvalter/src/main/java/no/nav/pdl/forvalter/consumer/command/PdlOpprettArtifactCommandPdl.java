@@ -53,15 +53,19 @@ public class PdlOpprettArtifactCommandPdl extends PdlTestdataCommand {
                 .header(TEMA, GEN.name())
                 .header(HEADER_NAV_PERSON_IDENT, ident)
                 .exchange()
-                .flatMap(response -> response
-                        .bodyToMono(PdlBestillingResponse.class)
-                        .map(value -> OrdreResponseDTO.HendelseDTO.builder()
-                                .id(id)
-                                .status(isBlank(value.getMessage()) ? PdlStatus.OK : FEIL)
-                                .hendelseId(value.getHendelseId())
-                                .error(isNotBlank(value.getMessage()) ? buildErrorStatus(value) : null)
-                                .build())
-                )
+                .flatMap(clientResponse -> {
+                    if (clientResponse.statusCode().isError()) {
+                        return clientResponse.createException()
+                                .flatMap(error -> Mono.just(errorHandling(error, id)));
+                    }
+                    return clientResponse.bodyToMono(PdlBestillingResponse.class)
+                            .map(value -> OrdreResponseDTO.HendelseDTO.builder()
+                                    .id(id)
+                                    .status(isBlank(value.getMessage()) ? PdlStatus.OK : FEIL)
+                                    .hendelseId(value.getHendelseId())
+                                    .error(isNotBlank(value.getMessage()) ? buildErrorStatus(value) : null)
+                                    .build());
+                })
                 .doOnError(error -> Mono.just(errorHandling(error, id)));
     }
 }
