@@ -15,6 +15,8 @@ import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry'
 import styled from 'styled-components'
 import _get from 'lodash/get'
 import { Digitalinnsending } from '~/components/fagsystem/dokarkiv/form/digital/Digitalinnsending'
+import useBoolean from '~/utils/hooks/useBoolean'
+import { FilnavnModal } from '~/components/fagsystem/dokarkiv/modal/FilnavnModal'
 
 pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker
 
@@ -57,6 +59,8 @@ export const DokarkivForm = ({ formikBag }: DokarkivForm) => {
 	const gjeldendeFiler = JSON.parse(sessionStorage.getItem('dokarkiv_vedlegg'))
 	const digitalInnsending = _get(formikBag.values, 'dokarkiv.avsenderMottaker')
 	const [files, setFiles] = useState(gjeldendeFiler ? gjeldendeFiler : [])
+
+	const [isFilnavnModalOpen, openFilnavnModal, closeFilnavnModal] = useBoolean(false)
 	const [skjemaValues, setSkjemaValues] = useState(null)
 
 	useEffect(() => handleSkjemaChange(skjemaValues), [files, skjemaValues])
@@ -73,7 +77,7 @@ export const DokarkivForm = ({ formikBag }: DokarkivForm) => {
 			dokumentvarianter: [
 				{
 					filtype: 'PDFA',
-					fysiskDokument: vedl.content.base64,
+					fysiskDokument: 'testy', // TODO REVERT!! vedl.content.base64,
 					variantformat: 'ARKIV'
 				}
 			]
@@ -85,6 +89,7 @@ export const DokarkivForm = ({ formikBag }: DokarkivForm) => {
 
 	const handleVedleggChange = (filer: [Vedlegg]) => {
 		setFiles(filer)
+		openFilnavnModal()
 		sessionStorage.setItem('dokarkiv_vedlegg', JSON.stringify(filer))
 	}
 
@@ -133,6 +138,7 @@ export const DokarkivForm = ({ formikBag }: DokarkivForm) => {
 					</Kategori>
 				</Kategori>
 			</Panel>
+			{isFilnavnModalOpen && files && <FilnavnModal closeModal={closeFilnavnModal} filer={files} />}
 		</Vis>
 	)
 }
