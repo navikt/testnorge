@@ -3,6 +3,7 @@ package no.nav.organisasjonforvalter.consumer.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.organisasjonforvalter.dto.responses.BestillingStatus;
+import no.nav.organisasjonforvalter.dto.responses.StatusDTO;
 import no.nav.organisasjonforvalter.jpa.entity.Status;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
