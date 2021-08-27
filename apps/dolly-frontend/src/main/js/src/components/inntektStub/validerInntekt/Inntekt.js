@@ -105,11 +105,10 @@ const fieldResolver = (
 	const tomTilleggsinformasjonFieldPath =
 		tilleggsinformasjonAttributter[filteredOptions[0].value] &&
 		`${path}.tilleggsinformasjon.${tilleggsinformasjonAttributter[filteredOptions[0].value]}`
-	// console.log('tomTilleggsinformasjonFieldPath', tomTilleggsinformasjonFieldPath)
+
 	if (
 		!resetForm &&
 		filteredOptions.length === 1 &&
-		// _get(values, fieldPath) !== filteredOptions[0].value
 		tilleggsinformasjonAttributter[filteredOptions[0].value] &&
 		!_get(values, tomTilleggsinformasjonFieldPath)
 	) {
@@ -118,6 +117,7 @@ const fieldResolver = (
 				`${path}.tilleggsinformasjon.${tilleggsinformasjonAttributter[filteredOptions[0].value]}`,
 				{}
 			)
+			formik.setFieldValue(`${path}.tilleggsinformasjonstype`, filteredOptions[0].value)
 		})
 	} else if (
 		!resetForm &&
@@ -129,6 +129,7 @@ const fieldResolver = (
 			formik.setFieldValue(fieldPath, filteredOptions[0].value)
 		})
 	}
+
 	return (
 		<FormikSelect
 			key={index}
@@ -140,7 +141,9 @@ const fieldResolver = (
 			afterChange={handleChange}
 			size={booleanField(options) ? 'small' : wideFields.includes(field) ? 'xxlarge' : 'large'}
 			feil={sjekkFelt(field, options, values, path, tomTilleggsinformasjonFieldPath)}
-			isClearable={field !== 'inntektstype' && filteredOptions.length !== 1}
+			isClearable={
+				field !== 'inntektstype' && filteredOptions.length !== 1 && options.includes('<TOM>')
+			}
 		/>
 	)
 }
@@ -153,16 +156,8 @@ const Inntekt = ({
 	resetForm,
 	tilleggsinformasjonAttributter
 }) => {
-	// console.log('tilleggsinformasjonAttributter', tilleggsinformasjonAttributter)
 	return (
 		<div className="flexbox--flex-wrap">
-			{/*{fieldResolver('inntektstype', onValidate, formikBag, path, `${path}.inntektstype`, resetForm, [*/}
-			{/*	'LOENNSINNTEKT',*/}
-			{/*	'YTELSE_FRA_OFFENTLIGE',*/}
-			{/*	'PENSJON_ELLER_TRYGD',*/}
-			{/*	'NAERINGSINNTEKT'*/}
-			{/*])}*/}
-
 			{fieldResolver(
 				'inntektstype',
 				onValidate,

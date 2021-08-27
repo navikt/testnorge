@@ -7,7 +7,6 @@ import { useBoolean } from 'react-use'
 import InntektstubService from '@/service/services/inntektstub/InntektstubService'
 
 const InntektStub = ({ formikBag, inntektPath }) => {
-	// console.log('inntektPath', inntektPath)
 	const [fields, setFields] = useState({})
 	const [reset, setReset] = useBoolean(false)
 	const [inntektValues, setInntektValues] = useState(_get(formikBag.values, inntektPath))
@@ -17,8 +16,6 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 	const [currentTilleggsinformasjonstype, setCurrentTilleggsinformasjonstype] = useState(
 		_get(formikBag.values, `${inntektPath}.tilleggsinformasjonstype`)
 	)
-
-	// console.log('fields', fields)
 
 	const tilleggsinformasjonAttributter = {
 		BilOgBaat: 'bilOgBaat',
@@ -41,7 +38,6 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 	})
 
 	useEffect(() => {
-		// console.log('inntektValues', inntektValues)
 		if (inntektValues.inntektstype !== '' && Object.keys(fields).length < 1) {
 			InntektstubService.validate(inntektValues).then(response => {
 				console.log('response', response)
@@ -62,17 +58,15 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 			formikBag.setFieldValue(inntektPath, nullstiltInntekt)
 		} else {
 			for (const [key, value] of Object.entries(values)) {
-				// console.log('key', key)
-				// console.log('value', value)
 				if (key === 'tilleggsinformasjonstype') {
 					if (value === null) {
 						formikBag.setFieldValue(`${inntektPath}.tilleggsinformasjon`, undefined)
+						formikBag.setFieldValue(`${inntektPath}.tilleggsinformasjonstype`, '')
 					} else if (value !== currentTilleggsinformasjonstype) {
 						formikBag.setFieldValue(`${inntektPath}.tilleggsinformasjon`, {})
 					}
 					setCurrentTilleggsinformasjonstype(value)
 				}
-
 				if (tilleggsinformasjonAttributter[value]) {
 					formikBag.setFieldValue(
 						`${inntektPath}.tilleggsinformasjon.${tilleggsinformasjonAttributter[value]}`,
@@ -81,9 +75,17 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 					formikBag.setFieldValue(`${inntektPath}.${key}`, value)
 				} else {
 					if (tilleggsinformasjonPaths(key) !== key) {
-						formikBag.setFieldValue(`${inntektPath}.${tilleggsinformasjonPaths(key)}`, value)
+						if (value === null) {
+							formikBag.setFieldValue(`${inntektPath}.tilleggsinformasjon`, undefined)
+						} else {
+							formikBag.setFieldValue(`${inntektPath}.${tilleggsinformasjonPaths(key)}`, value)
+						}
 					} else {
-						formikBag.setFieldValue(`${inntektPath}.${key}`, value)
+						if (key === 'tilleggsinformasjonstype' && value === null) {
+							formikBag.setFieldValue(`${inntektPath}.tilleggsinformasjon`, undefined)
+						} else {
+							formikBag.setFieldValue(`${inntektPath}.${key}`, value)
+						}
 					}
 				}
 			}
@@ -94,8 +96,6 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 		Object.entries(fields).forEach(entry => {
 			const name = entry[0]
 			const valueArray = entry[1]
-			console.log('name', name)
-			console.log('valueArray', valueArray)
 			if (
 				valueArray.length === 1 &&
 				valueArray[0] === '<TOM>' &&
