@@ -21,6 +21,7 @@ spec:
           cluster: dev-gcp
     outbound:
       rules:
+        - application: organisasjon-bestilling-service
         - application: testnav-jenkins-batch-status-service
       external:
         - host: aareg-synt-services-proxy.dev-fss-pub.nais.io

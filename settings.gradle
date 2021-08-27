@@ -84,6 +84,8 @@ includeBuild './apps/dolly-frontend-redirect'
 includeBuild './apps/dolly-frontend'
 includeBuild './apps/synt-sykemelding-api'
 includeBuild './apps/import-person-service'
+includeBuild './apps/jenkins-batch-status-service'
+includeBuild './apps/organisasjon-bestilling-service'
 
 includeBuild './xsd/arbeidsforhold-xsd'
 
@@ -224,14 +226,8 @@ project(":generer-synt-amelding-service").projectDir = file('apps/generer-synt-a
 include 'miljoer-service'
 project(":miljoer-service").projectDir = file('apps/miljoer-service')
 
-include 'organisasjon-bestilling-service'
-project(":organisasjon-bestilling-service").projectDir = file('apps/organisasjon-bestilling-service')
-
 include 'ereg-batch-status-service'
 project(":ereg-batch-status-service").projectDir = file('apps/ereg-batch-status-service')
-
-include 'jenkins-batch-status-service'
-project(":jenkins-batch-status-service").projectDir = file('apps/jenkins-batch-status-service')
 
 include 'oppsummeringsdokument-service'
 project(":oppsummeringsdokument-service").projectDir = file('apps/oppsummeringsdokument-service')

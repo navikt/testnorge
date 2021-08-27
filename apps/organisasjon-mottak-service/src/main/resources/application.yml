@@ -22,6 +22,11 @@ consumers:
     namespace: dolly
     name: testnorge-batch-adeo-proxy
     cluster: dev-fss
+  organisasjon-bestilling-service:
+    url: http://organisasjon-bestilling-service.dolly.svc.cluster.local
+    name: organisasjon-bestilling-service
+    cluster: dev-gcp
+    namespace: dolly
 
 kafka.groupid: testnav-organisasjon-mottak-service-v1
 

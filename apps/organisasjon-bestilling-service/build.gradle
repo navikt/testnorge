@@ -1,24 +1,38 @@
+import no.nav.testnav.dependencies.gradle.DependenciesPlugin
+
 plugins {
-    id 'no.nav.registre.testnorge.java-conventions'
-    id 'org.springframework.boot' version "${springBootVersion}"
-    id 'io.spring.dependency-management' version "${springDependencyManagement}"
+    id 'no.nav.testnav.dependencies'
+    id 'java'
+    id 'org.springframework.boot' version "2.3.4.RELEASE"
+    id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
+
 bootJar {
     archiveFileName = "app.jar"
 }
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        mavenBom  "org.springframework.cloud:spring-cloud-dependencies:${DependenciesPlugin.springCloud}"
     }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+repositories {
+    maven {
+        url = uri('https://repo1.maven.org/maven2/')
+    }
+    mavenLocal()
 }
 
 dependencies {
 
+
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:commands'
-    implementation 'no.nav.testnav.libs:avro-schema'
     implementation 'no.nav.testnav.libs:servlet-security'
-    implementation 'no.nav.testnav.libs:database'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
 
     implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -36,12 +50,14 @@ dependencies {
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
 
-    implementation "org.springdoc:springdoc-openapi-ui:${springdocOpenapiUi}"
-    implementation "net.logstash.logback:logstash-logback-encoder:${logstashLogbackEncoder}"
+    implementation "org.springdoc:springdoc-openapi-ui:${DependenciesPlugin.springdocOpenapi}"
+    implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
-    testImplementation 'no.nav.testnav.libs:testing'
+
+    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
 }
 
-description = 'organisasjon-bestilling-service'
