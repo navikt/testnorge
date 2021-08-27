@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ public class BestillingStatus {
     private String miljoe;
     private String uuid;
     private List<ItemDto> itemDtos;
-    private StatusDTO status;
+    private OrdreResponseDTO.PdlStatusDTO status;
     private String feilmelding;
 
     public List<ItemDto> getItemDtos() {
