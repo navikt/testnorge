@@ -32,6 +32,8 @@ spec:
           cluster: dev-gcp
         - application: testnav-jenkins-batch-status-service
           cluster: dev-gcp
+        - application: organisasjon-bestilling-service
+          cluster: dev-gcp
   liveness:
     path: /internal/isAlive
     initialDelay: 4

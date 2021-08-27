@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.applikasjonsanalyseservice.domain;
 
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -12,15 +13,24 @@ import no.nav.registre.testnorge.applikasjonsanalyseservice.domain.yml.applicati
 import no.nav.registre.testnorge.applikasjonsanalyseservice.util.YAMLUtil;
 import no.nav.testnav.libs.dto.dependencyanalysis.v1.DependencyDTO;
 
+@Slf4j
 public class ApplicationAnalyse {
     private final KindApplikasjon kindApplikasjon;
 
     @SneakyThrows
     public ApplicationAnalyse(String content) {
-        this.kindApplikasjon = YAMLUtil.Instance().read(
-                content.replace("{{ image }}", "unknown"),
-                KindApplikasjon.class
-        );
+        try {
+            String value = content
+                    .replace("{{ image }}", "unknown")
+                    .replace("{{image}}", "unknown");
+            this.kindApplikasjon = YAMLUtil.Instance().read(
+                    value,
+                    KindApplikasjon.class
+            );
+        } catch (Exception e) {
+            log.error("Klarer ikke å convertere til yaml. Data: \n{}", content);
+            throw e;
+        }
     }
 
     public String getName() {

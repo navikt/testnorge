@@ -8,8 +8,14 @@ spring:
     namespace: dolly
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
-consumers.ereg-batch-status-service:
-  url: https://ereg-batch-status-service.dev-fss-pub.nais.io
-  cluster: dev-fss
-  namespace: dolly
-  name: ereg-batch-status-service
+consumers:
+  ereg-batch-status-service:
+    url: https://ereg-batch-status-service.dev-fss-pub.nais.io
+    cluster: dev-fss
+    namespace: dolly
+    name: ereg-batch-status-service
+  jenkins:
+    url: https://testnorge-batch-adeo-proxy.dev-fss-pub.nais.io
+    name: testnorge-batch-adeo-proxy
+    cluster: dev-fss
+    namespace: dolly

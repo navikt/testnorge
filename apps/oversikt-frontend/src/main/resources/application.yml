@@ -24,20 +24,16 @@ applications:
   testnorge-varslinger-api: a1dca941-bdd5-4705-a1a4-04cf76473040
   testnorge-tilbakemelding-api: 0f8c4430-19e4-4628-8e89-1dd89a1d613d
   testnorge-arbeidsforhold-export-api: 06c9b9c1-d370-40ea-8181-2c4a6858392f
-  testnorge-avhengighetsanalyse-service: a90b186a-6896-4a79-9462-03b8cc9c36a9
   testnorge-ident-check-in-prod-service: bb4aa476-9040-48a1-bcac-79370c530f58
   mn-synt-arbeidsforhold-service: 6d2a7d13-a1cc-4397-ac6b-5480049187c4
   testnorge-tps-ident-service: 76276f3a-29d7-4bc4-ba1e-018007b7417b
   testnorge-person-api: 607ab2ee-2473-4bfd-8d48-03a7aaceeda6
-  testnorge-helsepersonell-api: af686685-d25a-462a-a0ea-e2a348c457d3
   testnorge-person-api-dev: 51ec8e6e-20a1-4b8f-b66a-66dd6a9b00b9
-  endringsmelding-service: 7f00fa49-869e-4a1a-b4a0-e0c1d556dc38
+  endringsmelding-service: dev-gcp.dolly.endringsmelding-service
   generer-navn-service: 92e61fa8-6fca-48e2-87b9-29d8bb6cf850
   organisasjon-bestilling-service: dev-gcp.dolly.organisasjon-bestilling-service
   organisasjon-orgnummer-service: cc5eab78-8ec7-4f4f-8b2f-7e6f46870a48
   ereg-batch-status-service: 67f507ff-399c-4853-9eb3-3dc6aabc8289
-  testnorge-arbeidsforhold-api: 90e047cc-cc80-4da3-abb2-87ea2e98beed
-  organisasjon-mottak-service: 9da0741a-ff41-4046-8635-6742298d74a4
   testnav-miljoer-service: dev-gcp.dolly.testnav-miljoer-service
   testnorge-organisasjon-api: f4167796-bf43-438b-a282-a480e8108d0c
   team-dolly-lokal-app: dev-fss.dolly.team-dolly-lokal-app
