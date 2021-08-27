@@ -75,10 +75,14 @@ public class OrderServiceV2 {
             return Status.FAILED;
         }
 
-        var content = jenkinsConsumer.getBuildLog(order.getBuildId()).block();
+        var content = jenkinsConsumer.getBuildLog(order.getBuildId()).blockOptional();
+
+        if (content.isEmpty()) {
+            return Status.INN_QUEUE_WAITING_TO_START;
+        }
 
         try {
-            var batchId = findIDFromLog(content);
+            var batchId = findIDFromLog(content.get());
             order.setBatchId(batchId);
         } catch (Exception e) {
             log.warn("Klarer ikke å finne batch id fra Jenkins loggen.", e);

@@ -12,19 +12,22 @@ import java.util.concurrent.Callable;
 public class GetBEREG007LogCommand implements Callable<Mono<String>> {
     private final WebClient webClient;
     private final String token;
-    private final Long jobNumber;
+    private final Long buildId;
 
     @Override
     public Mono<String> call() {
         return webClient
                 .get()
-                .uri(uriBuilder -> uriBuilder.path("view/All/job/Start_BEREG007/{jobNumber}/logText/progressiveText")
+                .uri(uriBuilder -> uriBuilder.path("view/All/job/Start_BEREG007/{buildId}/logText/progressiveText")
                         .queryParam("start", 0)
-                        .build(jobNumber)
+                        .build(buildId)
                 )
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(String.class)
-                .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound, throwable -> Mono.empty());
+                .onErrorResume(
+                        throwable -> throwable instanceof WebClientResponseException.NotFound,
+                        throwable -> Mono.empty()
+                );
     }
 }
