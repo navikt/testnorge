@@ -68,7 +68,7 @@ public class OrderServiceV2 {
         var build = jenkinsConsumer.getBuild(order.getBuildId()).blockOptional();
 
         if (build.isEmpty()) {
-            return Status.INN_QUEUE_WAITING_TO_START;
+            return Status.IN_QUEUE_WAITING_TO_START;
         }
 
         if (build.get().getResult() != null && build.get().getResult().equals("FAILURE")) {
@@ -78,7 +78,7 @@ public class OrderServiceV2 {
         var content = jenkinsConsumer.getBuildLog(order.getBuildId()).blockOptional();
 
         if (content.isEmpty()) {
-            return Status.INN_QUEUE_WAITING_TO_START;
+            return Status.IN_QUEUE_WAITING_TO_START;
         }
 
         try {

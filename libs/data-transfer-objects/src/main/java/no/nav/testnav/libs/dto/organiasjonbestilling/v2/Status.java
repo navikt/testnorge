@@ -4,7 +4,7 @@ package no.nav.testnav.libs.dto.organiasjonbestilling.v2;
 public enum Status {
     NOT_FOUND,
     ADDING_TO_QUEUE,
-    INN_QUEUE_WAITING_TO_START,
+    IN_QUEUE_WAITING_TO_START,
     RUNNING,
     COMPLETED,
     ERROR,
