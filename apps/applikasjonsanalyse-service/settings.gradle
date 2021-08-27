@@ -7,11 +7,8 @@ rootProject.name = 'applikasjonsanalyse-service'
 includeBuild '../../gradlePlugins'
 
 includeBuild '../../libs/servlet-core'
-includeBuild '../../libs/commands'
-includeBuild '../../libs/avro-schema'
 includeBuild '../../libs/servlet-security'
 includeBuild '../../libs/data-transfer-objects'
-includeBuild '../../libs/database'
 
 gradleEnterprise {
     buildScan {
