@@ -40,7 +40,6 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 	useEffect(() => {
 		if (inntektValues.inntektstype !== '' && Object.keys(fields).length < 1) {
 			InntektstubService.validate(inntektValues).then(response => {
-				console.log('response', response)
 				setFields(response)
 			})
 		}
