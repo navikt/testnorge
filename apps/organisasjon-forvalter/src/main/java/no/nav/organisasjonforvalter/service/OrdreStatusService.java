@@ -10,6 +10,7 @@ import no.nav.organisasjonforvalter.dto.responses.BestillingStatus;
 import no.nav.organisasjonforvalter.dto.responses.OrdreResponse;
 import no.nav.organisasjonforvalter.dto.responses.OrdreResponse.EnvStatus;
 import no.nav.organisasjonforvalter.jpa.repository.StatusRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -36,7 +38,16 @@ public class OrdreStatusService {
         var statusMap = statusRepository.findAllByOrganisasjonsnummer(orgnumre)
                 .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND, "Ingen status funnet for gitte orgnumre"));
 
+        if (statusMap.stream().anyMatch(status -> StringUtils.isBlank(status.getBestId()))) {
+            statusMap.stream()
+                    .map(organisasjonBestillingConsumer::getBestillingId)
+                    .reduce(Flux.empty(), Flux::concat)
+                    .collectList()
+                    .block();
+        }
+
         var orgStatus = statusMap.stream()
+                .filter(status -> isNotBlank(status.getBestId()))
                 .map(organisasjonBestillingConsumer::getBestillingStatus)
                 .reduce(Flux.empty(), Flux::concat)
                 .collectList()

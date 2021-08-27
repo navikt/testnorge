@@ -11,8 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
-import java.util.Arrays;
-
 @Service
 public class OrganisasjonBestillingConsumer {
 
@@ -38,12 +36,11 @@ public class OrganisasjonBestillingConsumer {
                         token.getTokenValue()).call()));
     }
 
-    public String getBestillingId(String uuid) {
+    public Flux<Status> getBestillingId(Status status) {
 
-        return Arrays.asList(accessTokenService.generateToken(serviceProperties)
-                .flatMap(token -> new OrganisasjonBestillingIdsCommand(webClient, uuid,
-                        token.getTokenValue()).call()).block())
-                .stream().findFirst().orElse(null);
+        return Flux.from(accessTokenService.generateToken(serviceProperties)
+                .flatMap(token -> new OrganisasjonBestillingIdsCommand(webClient, status,
+                        token.getTokenValue()).call()));
     }
 
     public BestillingStatus getBestillingStatus(String uuid) {

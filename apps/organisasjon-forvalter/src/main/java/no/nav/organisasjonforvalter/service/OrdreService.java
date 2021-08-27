@@ -3,7 +3,6 @@ package no.nav.organisasjonforvalter.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.organisasjonforvalter.consumer.MiljoerServiceConsumer;
-import no.nav.organisasjonforvalter.consumer.OrganisasjonBestillingConsumer;
 import no.nav.organisasjonforvalter.consumer.OrganisasjonMottakConsumer;
 import no.nav.organisasjonforvalter.consumer.OrganisasjonServiceConsumer;
 import no.nav.organisasjonforvalter.dto.requests.DeployRequest;
@@ -36,7 +35,6 @@ public class OrdreService {
     private final OrganisasjonServiceConsumer organisasjonServiceConsumer;
     private final StatusRepository statusRepository;
     private final MiljoerServiceConsumer miljoerServiceConsumer;
-    private final OrganisasjonBestillingConsumer organisasjonBestillingConsumer;
 
     public DeployResponse deploy(DeployRequest request) {
 
@@ -60,12 +58,10 @@ public class OrdreService {
                                     String uuid = UUID.randomUUID().toString();
                                     try {
                                         deployOrganisasjon(uuid, organisasjon, env);
-                                        var bestId = organisasjonBestillingConsumer.getBestillingId(uuid);
                                         statusRepository.save(Status.builder()
                                                 .uuid(uuid)
                                                 .organisasjonsnummer(organisasjon.getOrganisasjonsnummer())
                                                 .miljoe(env)
-                                                .bestId(bestId)
                                                 .build());
                                         return EnvStatus.builder()
                                                 .status(OK)
