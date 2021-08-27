@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
-import static no.nav.organisasjonforvalter.dto.responses.BestillingStatus.ItemDto.ItemStatus.INITIALIZING;
 
 @Slf4j
 @Service
@@ -48,10 +47,7 @@ public class OrdreStatusService {
                         .stream()
                         .collect(Collectors.groupingBy(BestillingStatus::getOrgnummer,
                                 mapping(status -> EnvStatus.builder()
-                                                .status(status.getItemDtos().stream()
-                                                        .map(BestillingStatus.ItemDto::getStatus)
-                                                        .map(BestillingStatus.ItemDto.ItemStatus::toString)
-                                                        .findFirst().orElse(INITIALIZING.toString()))
+                                                .status(status.getStatus().getDescription())
                                                 .environment(status.getMiljoe())
                                                 .details(status.getFeilmelding())
                                                 .build(),

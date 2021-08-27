@@ -38,4 +38,7 @@ public class Status implements Serializable {
 
     @Column(name = "uuid")
     private String uuid;
+
+    @Column(name = "best_id")
+    private String bestId;
 }

@@ -20,6 +20,7 @@ public class BestillingStatus {
     private String miljoe;
     private String uuid;
     private List<ItemDto> itemDtos;
+    private StatusDTO status;
     private String feilmelding;
 
     public List<ItemDto> getItemDtos() {
