@@ -7,6 +7,7 @@ import no.nav.organisasjonforvalter.dto.responses.StatusDTO;
 import no.nav.organisasjonforvalter.jpa.entity.Status;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
@@ -28,25 +29,25 @@ public class OrganisasjonBestillingStatusCommand implements Callable<Mono<Bestil
                 .uri(STATUS_URL.replace("{uuid}", status.getUuid())
                         .replace("{id}", status.getBestId()))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .exchange()
-                .flatMap(clientResponse -> {
-                    if (clientResponse.statusCode().isError()) {
-                        clientResponse.createException().flatMap(error -> {
+                .retrieve()
+                .bodyToMono(StatusDTO.class)
+                .flatMap(value -> Mono.just(BestillingStatus.builder()
+                        .orgnummer(status.getOrganisasjonsnummer())
+                        .uuid(status.getUuid())
+                        .miljoe(status.getMiljoe())
+                        .status(value)
+                        .build()))
 
-                            log.error(error.getResponseBodyAsString());
-                            return Mono.just(BestillingStatus.builder()
-                                    .uuid(status.getUuid())
-                                    .miljoe(status.getMiljoe())
-                                    .feilmelding(error.getMessage())
-                                    .build());
-                        });
-                    }
-                    return clientResponse.bodyToMono(StatusDTO.class)
-                            .map(value -> BestillingStatus.builder()
-                            .orgnummer(status.getOrganisasjonsnummer())
+                .doOnError(error -> {
+                    log.error(error instanceof WebClientResponseException ?
+                            ((WebClientResponseException) error).getResponseBodyAsString() :
+                            error.getMessage());
+                    Mono.just(BestillingStatus.builder()
                             .uuid(status.getUuid())
                             .miljoe(status.getMiljoe())
-                            .status(value)
+                            .feilmelding(error instanceof  WebClientResponseException ?
+                                    ((WebClientResponseException)error).getMessage() :
+                                    error.getMessage())
                             .build());
                 });
     }
