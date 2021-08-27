@@ -21,9 +21,9 @@ public class StatusDTO {
     private static String getDescription(Status status) {
         switch (status) {
             case ERROR:
-                return "Ukjent feil med bestillingen i EREG.";
+                return "Ukjent feil.";
             case FAILED:
-                return "Ukjent kristisk feil med bestllingen i EREG.";
+                return "Ukjent kristisk feil.";
             case RUNNING:
                 return "Bestillingen blir prosessert av EREG.";
             case COMPLETED:

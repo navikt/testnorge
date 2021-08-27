@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -66,14 +65,20 @@ public class OrderServiceV2 {
             return Status.ADDING_TO_QUEUE;
         }
 
-        Optional<String> content = jenkinsConsumer.getJobLog(order.getBuildId()).blockOptional();
+        var build = jenkinsConsumer.getBuild(order.getBuildId()).blockOptional();
 
-        if (content.isEmpty()) {
+        if (build.isEmpty()) {
             return Status.INN_QUEUE_WAITING_TO_START;
         }
 
+        if (build.get().getResult() != null && build.get().getResult().equals("FAILURE")) {
+            return Status.FAILED;
+        }
+
+        var content = jenkinsConsumer.getBuildLog(order.getBuildId()).block();
+
         try {
-            var batchId = findIDFromLog(content.get());
+            var batchId = findIDFromLog(content);
             order.setBatchId(batchId);
         } catch (Exception e) {
             log.warn("Klarer ikke å finne batch id fra Jenkins loggen.", e);
