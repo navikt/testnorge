@@ -9,6 +9,7 @@ import no.nav.organisasjonforvalter.consumer.OrganisasjonBestillingConsumer;
 import no.nav.organisasjonforvalter.dto.responses.BestillingStatus;
 import no.nav.organisasjonforvalter.dto.responses.OrdreResponse;
 import no.nav.organisasjonforvalter.dto.responses.OrdreResponse.EnvStatus;
+import no.nav.organisasjonforvalter.dto.responses.StatusDTO;
 import no.nav.organisasjonforvalter.jpa.repository.StatusRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -52,6 +54,19 @@ public class OrdreStatusService {
                 .reduce(Flux.empty(), Flux::concat)
                 .collectList()
                 .block();
+
+        if (statusMap.stream().anyMatch(status -> isBlank(status.getBestId()))) {
+            orgStatus.addAll(statusMap.stream()
+                    .filter(status -> isBlank(status.getBestId()))
+                    .map(status -> BestillingStatus.builder()
+                            .orgnummer(status.getOrganisasjonsnummer())
+                            .miljoe(status.getMiljoe())
+                            .status(StatusDTO.builder()
+                                    .description("Oppstart av bestilling ...")
+                                    .build())
+                            .build())
+                    .collect(toList()));
+        }
 
         return OrdreResponse.builder()
                 .orgStatus((nonNull(orgStatus) ? orgStatus : new ArrayList<BestillingStatus>())
