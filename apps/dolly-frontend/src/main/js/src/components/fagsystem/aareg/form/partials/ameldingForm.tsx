@@ -99,98 +99,32 @@ export const AmeldingForm = ({ formikBag }: AmeldingForm): ReactFragment => {
 	}
 
 	const handleArbeidsforholdstypeChange = (event: KodeverkValue) => {
-		// console.log(event.value)
 		const amelding = _get(formikBag.values, 'aareg[0].amelding')
 		const ameldingClone = _cloneDeep(amelding)
 
 		if (event.value === 'forenkletOppgjoersordning') {
 			ameldingClone.forEach((maaned: string, idx: number) => {
-				// const arbeidsforholdClone = _cloneDeep(amelding[idx].arbeidsforhold)
-				// console.log('ameldin1', amelding)
-				// formikBag.setFieldValue(`aareg[0].amelding[${idx}].arbeidsforhold`, [
-				// 	initialForenkletOppgjoersordningOrg
-				// ])
-				// _set(arbeidsforholdClone, `aareg[0].amelding[${idx}].arbeidsforhold`, [
-				// 	initialForenkletOppgjoersordningOrg
-				// ])
-				// _set(amelding[idx], 'arbeidsforhold', arbeidsforholdClone)
-				// console.log('arbeidsforholdClone', arbeidsforholdClone)
-				// console.log('ameldin2', amelding)
 				_set(ameldingClone[idx], 'arbeidsforhold', [initialForenkletOppgjoersordningOrg])
 			})
 		} else {
 			ameldingClone.forEach((maaned: string, idx: number) => {
-				// const arbeidsforholdClone = _cloneDeep(amelding[idx].arbeidsforhold)
 				if (arbeidsforholdstype === 'forenkletOppgjoersordning' || arbeidsforholdstype === '') {
-					// formikBag.setFieldValue(`aareg[0].amelding[${idx}].arbeidsforhold`, [
-					// 	initialArbeidsforholdOrg
-					// ])
 					_set(ameldingClone[idx], 'arbeidsforhold', [initialArbeidsforholdOrg])
 				}
 				if (event.value === 'maritimtArbeidsforhold') {
-					// formikBag.setFieldValue(
-					// 	`aareg[0].amelding[${idx}].arbeidsforhold[0].fartoy`,
-					// 	initialFartoy
-					// )
 					maaned.arbeidsforhold.forEach((arbforh, id) => {
 						_set(ameldingClone[idx], `arbeidsforhold[${id}].fartoy`, initialFartoy)
 					})
 				} else {
-					// formikBag.setFieldValue(`aareg[0].amelding[${idx}].arbeidsforhold[0].fartoy`, undefined)
 					maaned.arbeidsforhold.forEach((arbforh, id) => {
 						_set(ameldingClone[idx], `arbeidsforhold[${id}].fartoy`, undefined)
 					})
 				}
 			})
 		}
-		// console.log('ameldin3', amelding)
-		// formikBag.setFieldValue('aareg[0].amelding', amelding)
 		formikBag.setFieldValue('aareg[0].amelding', ameldingClone)
 		formikBag.setFieldValue('aareg[0].arbeidsforholdstype', event.value)
 	}
-
-	// const handleArbeidsforholdstypeChange = (event: KodeverkValue) => {
-	// 	// const ameldingClone = _cloneDeep(_get(formikBag.values, 'aareg[0].amelding'))
-	// 	console.log(event.value)
-	// 	if (arbeidsforholdstype === '') {
-	// 		formikBag.setFieldValue('aareg[0].genererPeriode', initialPeriode)
-	// 		formikBag.setFieldValue('aareg[0].amelding', initialAmelding)
-	// 	}
-	// 	if (event.value === 'maritimtArbeidsforhold') {
-	// 		periode.forEach((maaned: string, idx: number) => {
-	// 			if (arbeidsforholdstype === 'forenkletOppgjoersordning') {
-	// 				formikBag.setFieldValue(`aareg[0].amelding[${idx}].arbeidsforhold`, [
-	// 					initialArbeidsforholdOrg
-	// 				])
-	// 			}
-	// 			formikBag.setFieldValue(`aareg[0].amelding[${idx}].arbeidsforhold[0].fartoy`, initialFartoy)
-	// 		})
-	// 	} else {
-	// 		periode.forEach((maaned: string, idx: number) => {
-	// 			formikBag.setFieldValue(`aareg[0].amelding[${idx}].arbeidsforhold[0].fartoy`, undefined)
-	// 		})
-	// 	}
-	// 	if (
-	// 		(event.value === 'ordinaertArbeidsforhold' ||
-	// 			event.value === 'frilanserOppdragstakerHonorarPersonerMm') &&
-	// 		arbeidsforholdstype === 'forenkletOppgjoersordning'
-	// 	) {
-	// 		periode.forEach((maaned: string, idx: number) => {
-	// 			formikBag.setFieldValue(`aareg[0].amelding[${idx}].arbeidsforhold`, [
-	// 				initialArbeidsforholdOrg
-	// 			])
-	// 		})
-	// 	}
-	// 	if (event.value === 'forenkletOppgjoersordning') {
-	// 		periode.forEach((maaned: string, idx: number) => {
-	// 			formikBag.setFieldValue(`aareg[0].amelding[${idx}].arbeidsforhold`, [
-	// 				[initialForenkletOppgjoersordningOrg]
-	// 			])
-	// 		})
-	// 	}
-	// 	formikBag.setFieldValue('aareg[0].arbeidsforholdstype', event.value)
-	// 	// console.log('ameldingClone', ameldingClone)
-	// }
 
 	const handleNewEntry = () => {
 		ameldinger.forEach((maaned: Amelding, idMaaned: number) => {
