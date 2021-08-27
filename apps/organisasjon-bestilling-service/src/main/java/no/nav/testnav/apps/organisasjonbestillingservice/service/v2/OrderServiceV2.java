@@ -39,8 +39,6 @@ public class OrderServiceV2 {
                     .setRetryAttempts(60 * 5)
                     .setSleepSeconds(2)
                     .build();
-
-
             retryService.execute(retryConfig, () -> {
                 var buildId = jenkinsConsumer.getBuildId(order.getQueueId()).block();
                 saved.setBuildId(buildId);
@@ -78,7 +76,7 @@ public class OrderServiceV2 {
             var batchId = findIDFromLog(content.get());
             order.setBatchId(batchId);
         } catch (Exception e) {
-            log.warn("Klarer ikke å finne batch id fra Jenklins loggen.", e);
+            log.warn("Klarer ikke å finne batch id fra Jenkins loggen.", e);
             return Status.RUNNING;
         }
         repository.save(order);
@@ -89,7 +87,6 @@ public class OrderServiceV2 {
         var statusKode = eregBatchStatusConsumer.getStatusKode(order);
         return Status.from(statusKode);
     }
-
 
     private Long findIDFromLog(String value) {
         log.info("Prøver å hente ut id fra log: {}.", value);
@@ -102,7 +99,7 @@ public class OrderServiceV2 {
             if (id == null) {
                 id = matcher.group(2);
             } else {
-                throw new RuntimeException("Fant flere enn ett eksempel som matcher.");
+                throw new RuntimeException("Fant flere enn et eksempel som matcher.");
             }
         }
         if (id == null) {
