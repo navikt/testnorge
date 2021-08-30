@@ -8,7 +8,6 @@ repositories {
         url = uri('https://repo1.maven.org/maven2/')
     }
     mavenLocal()
-    mavenCentral()
     maven {
         name = "GitHubPackages"
         url = uri('https://maven.pkg.github.com/navikt/maven-release')
@@ -18,11 +17,7 @@ repositories {
         }
     }
     maven {
-        url = uri('https://repo.adeo.no/repository/github-package-registry-navikt')
-    }
-    maven {
-        url = uri('http://packages.confluent.io/maven/')
-        allowInsecureProtocol = true
+        url = uri('https://packages.confluent.io/maven/')
     }
 }
 
