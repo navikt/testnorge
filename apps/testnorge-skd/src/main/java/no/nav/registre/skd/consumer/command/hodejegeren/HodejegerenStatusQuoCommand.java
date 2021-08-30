@@ -1,7 +1,8 @@
-package no.nav.registre.skd.commands;
+package no.nav.registre.skd.consumer.command.hodejegeren;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -15,7 +16,8 @@ public class HodejegerenStatusQuoCommand implements Callable<Map<String, String>
     private final String ident;
     private final String endringskode;
     private final String miljoe;
-    private static final ParameterizedTypeReference<Map<String, String>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {};
+    private static final ParameterizedTypeReference<Map<String, String>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
+    };
 
     @Override
     public Map<String, String> call() {

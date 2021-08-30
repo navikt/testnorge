@@ -1,6 +1,7 @@
-package no.nav.registre.skd.commands;
+package no.nav.registre.skd.consumer.command.hodejegeren;
 
 import no.nav.registre.skd.consumer.response.RelasjonsResponse;
+
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.concurrent.Callable;
