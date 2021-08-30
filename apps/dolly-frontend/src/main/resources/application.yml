@@ -13,14 +13,9 @@ spring:
         registration:
           idporten:
             client-id: ${IDPORTEN_CLIENT_ID}
-            client-secret: ${IDPORTEN_CLIENT_JWT}
-            authorization-grant-type: authorization_code
-            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
-            scope: openid
         provider:
           idporten:
-            authorization-uri: https://oidc-ver2.difi.no/idporten-oidc-provider/authorize
-            token-uri: https://oidc-ver2.difi.no/idporten-oidc-provider/token
+            issuer-uri: https://oidc-ver2.difi.no/idporten-oidc-provider/
 
 consumers:
   testnav-organisasjon-faste-data-service:
