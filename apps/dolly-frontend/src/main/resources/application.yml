@@ -13,6 +13,7 @@ spring:
         registration:
           idporten:
             client-id: ${IDPORTEN_CLIENT_ID}
+            client-secret: ${IDPORTEN_CLIENT_JWT}
             authorization-grant-type: authorization_code
             redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
             scope: openid
