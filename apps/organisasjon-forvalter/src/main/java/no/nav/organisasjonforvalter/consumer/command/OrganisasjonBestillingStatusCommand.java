@@ -32,6 +32,7 @@ public class OrganisasjonBestillingStatusCommand implements Callable<Mono<Bestil
     private static Mono<BestillingStatus> getError(Status status, String description) {
 
         return Mono.just(BestillingStatus.builder()
+                .orgnummer(status.getOrganisasjonsnummer())
                 .uuid(status.getUuid())
                 .miljoe(status.getMiljoe())
                 .feilmelding(description)

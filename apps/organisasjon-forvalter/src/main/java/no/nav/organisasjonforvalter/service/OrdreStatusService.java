@@ -76,8 +76,10 @@ public class OrdreStatusService {
                         .stream()
                         .collect(Collectors.groupingBy(BestillingStatus::getOrgnummer,
                                 mapping(status -> EnvStatus.builder()
-                                                .status(status.getStatus().getStatus().toString())
-                                                .details(status.getStatus().getDescription())
+                                                .status(nonNull(status.getStatus()) ?
+                                                        status.getStatus().getStatus().toString() : null)
+                                                .details(nonNull(status.getStatus()) ?
+                                                        status.getStatus().getDescription() : null)
                                                 .environment(status.getMiljoe())
                                                 .error(status.getFeilmelding())
                                                 .build(),
