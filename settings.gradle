@@ -87,6 +87,7 @@ includeBuild './apps/synt-sykemelding-api'
 includeBuild './apps/import-person-service'
 includeBuild './apps/jenkins-batch-status-service'
 includeBuild './apps/organisasjon-bestilling-service'
+includeBuild './apps/geografiske-kodeverk-service'
 
 includeBuild './xsd/arbeidsforhold-xsd'
 
