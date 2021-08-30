@@ -46,4 +46,4 @@ dependencies {
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }
 
-description = 'skd-core'
+description = 'testnorge-skd'

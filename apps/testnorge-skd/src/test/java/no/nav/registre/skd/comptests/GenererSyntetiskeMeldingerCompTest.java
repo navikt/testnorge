@@ -14,7 +14,6 @@ import static no.nav.registre.skd.testutils.ResourceUtils.getResourceFileContent
 import static no.nav.registre.skd.testutils.StrSubstitutor.replace;
 import static org.junit.Assert.assertEquals;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -33,13 +32,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import no.nav.registre.skd.ApplicationStarter;
+import no.nav.registre.skd.TestnorgeSkdApplicationStarter;
 import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
 import no.nav.registre.skd.provider.rs.SyntetiseringController;
 import no.nav.registre.skd.provider.rs.requests.GenereringsOrdreRequest;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { ApplicationTestConfig.class, ApplicationStarter.class }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = { ApplicationTestConfig.class, TestnorgeSkdApplicationStarter.class }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 @ActiveProfiles("test")
 public class GenererSyntetiskeMeldingerCompTest {
