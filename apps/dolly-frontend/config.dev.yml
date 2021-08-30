@@ -6,7 +6,8 @@ metadata:
   labels:
     team: dolly
 spec:
-  webproxy: true
+  idporten:
+    enabled: true
   azure:
     application:
       enabled: true
