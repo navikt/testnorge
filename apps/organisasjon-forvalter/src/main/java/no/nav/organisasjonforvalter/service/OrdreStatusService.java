@@ -57,7 +57,7 @@ public class OrdreStatusService {
                 .collectList()
                 .block();
 
-        if (statusMap.stream().anyMatch(status -> isBlank(status.getBestId()))) {
+        if (nonNull(orgStatus) && statusMap.stream().anyMatch(status -> isBlank(status.getBestId()))) {
             orgStatus.addAll(statusMap.stream()
                     .filter(status -> isBlank(status.getBestId()))
                     .map(status -> BestillingStatus.builder()
