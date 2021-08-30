@@ -8,6 +8,7 @@ metadata:
 spec:
   idporten:
     enabled: true
+    redirectPath: "/login/oauth2/code/idporten"
   azure:
     application:
       enabled: true

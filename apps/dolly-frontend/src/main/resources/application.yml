@@ -11,22 +11,21 @@ spring:
     oauth2:
       client:
         registration:
-          aad:
-            client-id: ${azure.app.client.id}
-            client-secret: ${azure.app.client.secret}
+          idporten:
+            client-id: ${IDPORTEN_CLIENT_ID}
             authorization-grant-type: authorization_code
             redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
-            scope: openid, ${azure.app.client.id}/.default
+            scope: openid
         provider:
-          aad:
-            authorization-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/authorize
-            token-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/token
-            jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          idporten:
+            authorization-uri: https://oidc-ver2.difi.no/idporten-oidc-provider/authorize
+            token-uri: https://oidc-ver2.difi.no/idporten-oidc-provider/token
 
 consumers:
   testnav-organisasjon-faste-data-service:
     cluster: dev-gcp
     namespace: dolly
+
     name: testnav-organisasjon-faste-data-service
     url: https://testnav-organisasjon-faste-data-service.dev.intern.nav.no
   testnav-joark-dokument-service:
