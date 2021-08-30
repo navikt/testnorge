@@ -1,6 +1,5 @@
 package no.nav.organisasjonforvalter.dto.responses;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,18 +9,13 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 import java.util.Map;
 
-import static no.nav.organisasjonforvalter.dto.responses.DeployResponse.Status.ERROR;
-import static no.nav.organisasjonforvalter.dto.responses.DeployResponse.Status.OK;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DeployResponse {
+public class OrdreResponse {
 
     private Map<String, List<EnvStatus>> orgStatus;
-
-    public enum Status {OK, ERROR}
 
     @Data
     @Builder
@@ -31,18 +25,8 @@ public class DeployResponse {
     public static class EnvStatus {
 
         private String environment;
-        private String uuid;
-        private Status status;
+        private String status;
         private String details;
-
-        @JsonIgnore
-        public boolean isOk() {
-            return status == OK;
-        }
-
-        @JsonIgnore
-        public boolean isError() {
-            return status == ERROR;
-        }
+        private String error;
     }
 }

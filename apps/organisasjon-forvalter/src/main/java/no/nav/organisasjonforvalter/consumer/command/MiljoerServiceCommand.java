@@ -3,11 +3,12 @@ package no.nav.organisasjonforvalter.consumer.command;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
-public class MiljoerServiceCommand implements Callable<String[]> {
+public class MiljoerServiceCommand implements Callable<Mono<String[]>> {
 
     private static final String MILJOER_URL = "/api/v1/miljoer";
 
@@ -15,13 +16,12 @@ public class MiljoerServiceCommand implements Callable<String[]> {
     private final String token;
 
     @Override
-    public String[] call() {
+    public Mono<String[]> call() {
 
         return webClient.get()
                 .uri(MILJOER_URL)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
-                .bodyToMono(String[].class)
-                .block();
+                .bodyToMono(String[].class);
     }
 }
