@@ -24,6 +24,7 @@ import {
 } from '../initialValues'
 import { EgenOrganisasjonSelect } from '~/components/organisasjonSelect/EgenOrganisasjonSelect'
 import { ArbeidsgiverIdent } from '~/components/fagsystem/aareg/form/partials/arbeidsgiverIdent.tsx'
+import { isDate } from 'date-fns'
 
 export const ArbeidsforholdForm = ({
 	path,
@@ -37,17 +38,15 @@ export const ArbeidsforholdForm = ({
 		typeof ameldingIndex !== 'undefined'
 			? _get(formikBag.values, 'aareg[0].arbeidsforholdstype')
 			: _get(formikBag.values, `${path}.arbeidsforholdstype`)
-
 	const onChangeLenket = fieldPath => {
 		if (arbeidsgiverType !== ArbeidsgiverTyper.egen) {
 			return field => {
-				formikBag.setFieldValue(
-					`${path}.${fieldPath}`,
-					field?.value || field?.target?.value || field || null
-				)
+				const value = isDate(field) ? field : field?.value || field?.target?.value || null
+				formikBag.setFieldValue(`${path}.${fieldPath}`, value)
 			}
 		} else {
 			return field => {
+				const value = isDate(field) ? field : field?.value || field?.target?.value || null
 				const amelding = _get(formikBag.values, 'aareg[0].amelding')
 				amelding.forEach((maaned, idx) => {
 					if (!erLenket && idx < ameldingIndex) {
@@ -56,11 +55,7 @@ export const ArbeidsforholdForm = ({
 						const arbeidsforholdClone = _cloneDeep(
 							amelding[idx].arbeidsforhold[arbeidsforholdIndex]
 						)
-						_set(
-							arbeidsforholdClone,
-							fieldPath,
-							field?.value || field?.target?.value || field || null
-						)
+						_set(arbeidsforholdClone, fieldPath, value)
 						_set(amelding[idx], `arbeidsforhold[${arbeidsforholdIndex}]`, arbeidsforholdClone)
 					}
 				})
@@ -124,7 +119,6 @@ export const ArbeidsforholdForm = ({
 			}
 		}
 	}
-
 	return (
 		<React.Fragment>
 			<div className="flexbox--flex-wrap">
@@ -162,10 +156,6 @@ export const ArbeidsforholdForm = ({
 				{arbeidsgiverType === ArbeidsgiverTyper.privat && (
 					<ArbeidsgiverIdent formikBag={formikBag} path={`${path}.arbeidsgiver.ident`} />
 				)}
-				{/* <FormikTextInput name={`${path}.arbeidsgiver.ident`} label="Arbeidsgiver ident" /> */}
-				{/* {arbeidsforhold.arbeidsgiver.aktoertype === 'PERS' && (
-					<ArbeidsgiverIdent formikBag={formikBag} path={`${path}.arbeidsgiver.ident`} />
-				)} */}
 				{arbeidsforholdstype !== 'forenkletOppgjoersordning' && (
 					<FormikTextInput
 						key={`${path}.arbeidsforholdID`}
