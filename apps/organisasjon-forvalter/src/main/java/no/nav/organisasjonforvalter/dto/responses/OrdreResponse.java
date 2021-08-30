@@ -27,5 +27,6 @@ public class OrdreResponse {
         private String environment;
         private String status;
         private String details;
+        private String error;
     }
 }

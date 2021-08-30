@@ -3,14 +3,12 @@ name: Deploy testnav-organisasjon-forvalter
 on:
   push:
     branches:
-      - feature/org_forvalter_nytt_status_endepunkt
+      - master
     paths:
       - apps/organisasjon-forvalter/**
       - libs/kafka-config/**
       - libs/kafka-producers/**
-      - libs/testnorge-avro-schema/**
-
-      - libs/testnorge-oauth2/**
+      - libs/avro-schema/**
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/organisasjon-forvalter:${{ github.sha }}

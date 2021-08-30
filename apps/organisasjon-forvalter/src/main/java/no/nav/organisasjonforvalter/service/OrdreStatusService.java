@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
+import static no.nav.organisasjonforvalter.dto.responses.StatusDTO.Status.NOT_FOUND;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -46,6 +47,7 @@ public class OrdreStatusService {
                     .reduce(Flux.empty(), Flux::concat)
                     .collectList()
                     .block();
+            statusRepository.saveAll(statusMap);
         }
 
         var orgStatus = statusMap.stream()
@@ -62,7 +64,8 @@ public class OrdreStatusService {
                             .orgnummer(status.getOrganisasjonsnummer())
                             .miljoe(status.getMiljoe())
                             .status(StatusDTO.builder()
-                                    .description("Oppstart av bestilling ...")
+                                    .status(NOT_FOUND)
+                                    .description("Bestilling venter på å starte")
                                     .build())
                             .build())
                     .collect(toList()));
@@ -73,9 +76,10 @@ public class OrdreStatusService {
                         .stream()
                         .collect(Collectors.groupingBy(BestillingStatus::getOrgnummer,
                                 mapping(status -> EnvStatus.builder()
-                                                .status(status.getStatus().getDescription())
+                                                .status(status.getStatus().getStatus().toString())
+                                                .details(status.getStatus().getDescription())
                                                 .environment(status.getMiljoe())
-                                                .details(status.getFeilmelding())
+                                                .error(status.getFeilmelding())
                                                 .build(),
                                         toList()))))
                 .build();

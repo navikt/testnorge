@@ -22,11 +22,20 @@ public class OrganisasjonBestillingStatusCommand implements Callable<Mono<Bestil
     private final Status status;
     private final String token;
 
-    private static String getError(Throwable throwable) {
+    private static String getMessage(Throwable throwable) {
 
         return throwable instanceof WebClientResponseException ?
                 ((WebClientResponseException) throwable).getResponseBodyAsString() :
                 throwable.getMessage();
+    }
+
+    private static Mono<BestillingStatus> getError(Status status, String description) {
+
+        return Mono.just(BestillingStatus.builder()
+                .uuid(status.getUuid())
+                .miljoe(status.getMiljoe())
+                .feilmelding(description)
+                .build());
     }
 
     @Override
@@ -44,14 +53,7 @@ public class OrganisasjonBestillingStatusCommand implements Callable<Mono<Bestil
                         .miljoe(status.getMiljoe())
                         .status(value)
                         .build()))
-
-                .doOnError(throwable -> {
-                    log.error(getError(throwable));
-                    Mono.just(BestillingStatus.builder()
-                            .uuid(status.getUuid())
-                            .miljoe(status.getMiljoe())
-                            .feilmelding(getError(throwable))
-                            .build());
-                });
+                .doOnError(throwable -> log.error(getMessage(throwable)))
+                .onErrorResume(throwable -> getError(status, getMessage(throwable)));
     }
 }
