@@ -11,6 +11,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -72,6 +73,10 @@ public class StatsborgerskapService {
 
         if (isNull(statsborgerskap.getGyldigFraOgMed())) {
             statsborgerskap.setGyldigFraOgMed(DatoFraIdentUtility.getDato(ident).atStartOfDay());
+        }
+
+        if (isNull(statsborgerskap.getBekreftelsesdato())) {
+            statsborgerskap.setBekreftelsesdato(LocalDateTime.now());
         }
     }
 }

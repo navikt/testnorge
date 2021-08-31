@@ -14,7 +14,6 @@ import no.nav.pdl.forvalter.dto.PdlForeldreansvar;
 import no.nav.pdl.forvalter.dto.PdlInnflytting;
 import no.nav.pdl.forvalter.dto.PdlKontaktadresse;
 import no.nav.pdl.forvalter.dto.PdlTilrettelagtKommunikasjon;
-import no.nav.pdl.forvalter.dto.PdlUtflytting;
 import no.nav.pdl.forvalter.dto.PdlVergemaal;
 import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
@@ -113,8 +112,7 @@ public class PdlOrdreService {
                 deployService.send(PDL_ADRESSEBESKYTTELSE, person.getIdent(), person.getPerson().getAdressebeskyttelse()),
                 deployService.send(PDL_INNFLYTTING, person.getIdent(),
                         mapperFacade.mapAsList(person.getPerson().getInnflytting(), PdlInnflytting.class)),
-                deployService.send(PDL_UTFLYTTING, person.getIdent(),
-                        mapperFacade.mapAsList(person.getPerson().getUtflytting(), PdlUtflytting.class)),
+                deployService.send(PDL_UTFLYTTING, person.getIdent(), person.getPerson().getUtflytting()),
                 deployService.send(PDL_DELTBOSTED, person.getIdent(), person.getPerson().getDeltBosted()),
                 deployService.send(PDL_FORELDREANSVAR, person.getIdent(),
                         mapperFacade.mapAsList(person.getPerson().getForeldreansvar(), PdlForeldreansvar.class)),
