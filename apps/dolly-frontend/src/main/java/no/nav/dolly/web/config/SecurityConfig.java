@@ -14,7 +14,7 @@ public class SecurityConfig {
         return http.cors()
                 .and().csrf().disable()
                 .authorizeExchange()
-                .pathMatchers("/internal/isReady", "/internal/isAlive", "/oauth2/callback").permitAll()
+                .pathMatchers("/internal/isReady", "/internal/isAlive", "/oauth2/callback", "/favicon.ico").permitAll()
                 .anyExchange().authenticated()
                 .and().oauth2Login()
                 .and().build();

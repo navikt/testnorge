@@ -18,15 +18,11 @@ spring:
         provider:
           idporten:
             issuer-uri: https://oidc-ver2.difi.no/idporten-oidc-provider/
-      resourceserver:
-        jwt:
-          issuer-uri: https://oidc-ver2.difi.no/idporten-oidc-provider/
 
 consumers:
   testnav-organisasjon-faste-data-service:
     cluster: dev-gcp
     namespace: dolly
-
     name: testnav-organisasjon-faste-data-service
     url: https://testnav-organisasjon-faste-data-service.dev.intern.nav.no
   testnav-joark-dokument-service:
