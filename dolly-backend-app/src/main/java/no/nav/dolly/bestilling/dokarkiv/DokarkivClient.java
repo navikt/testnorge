@@ -27,6 +27,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -52,8 +53,12 @@ public class DokarkivClient implements ClientRegister {
             dollyPersonCache.fetchIfEmpty(dollyPerson);
             dokarkivRequest.getBruker().setId(dollyPerson.getHovedperson());
             Person avsender = dollyPerson.getPerson(dollyPerson.getHovedperson());
-            dokarkivRequest.getAvsenderMottaker().setId(dollyPerson.getHovedperson());
-            dokarkivRequest.getAvsenderMottaker().setNavn(String.format("%s, %s%s", avsender.getFornavn(), avsender.getEtternavn(), isNull(avsender.getMellomnavn()) ? "" : ", " + avsender.getMellomnavn()));
+            if (isBlank(dokarkivRequest.getAvsenderMottaker().getId())) {
+                dokarkivRequest.getAvsenderMottaker().setId(dollyPerson.getHovedperson());
+            }
+            if (isBlank(dokarkivRequest.getAvsenderMottaker().getNavn())) {
+                dokarkivRequest.getAvsenderMottaker().setNavn(String.format("%s, %s%s", avsender.getFornavn(), avsender.getEtternavn(), isNull(avsender.getMellomnavn()) ? "" : ", " + avsender.getMellomnavn()));
+            }
 
             bestilling.getEnvironments().forEach(environment -> {
 

@@ -1,23 +1,24 @@
 package no.nav.dolly.domain.resultset.dokarkiv;
 
-import static java.util.Objects.isNull;
-
-import java.util.ArrayList;
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.util.Objects.isNull;
+
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class RsDokarkiv {
 
@@ -64,11 +65,10 @@ public class RsDokarkiv {
         return dokumenter;
     }
 
-    @Getter
-    @Setter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @Data
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class AvsenderMottaker {
 
@@ -112,27 +112,45 @@ public class RsDokarkiv {
             }
             return dokumentvarianter;
         }
+
+        @Override
+        public String toString() {
+            return String.format("Dokument{tittel='%s', brevkode='%s', dokumentvariantListe=%s}",
+                    tittel,
+                    brevkode,
+                    dokumentvarianter.stream().map(DokumentVariant::toString).collect(Collectors.toList()));
+        }
+
+        @Getter
+        @Setter
+        @Builder
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
+        public static class DokumentVariant {
+
+            @Schema(description = "Filtypen til filen som følger, feks PDFA, JSON eller XML.")
+            private String filtype;
+
+            @Schema(description = "Selve dokumentet. Hvis filtype er PDF/XML, ved fysisk dokument brukes bytearray.")
+            private String fysiskDokument;
+
+            @Schema(description = "ARKIV brukes for dokumentvarianter i menneskelesbart format (for eksempel PDFA). "
+                    + "Gosys og nav.no henter arkivvariant og viser denne til bruker.\n"
+                    + "ORIGINAL skal brukes for dokumentvariant i maskinlesbart format "
+                    + "(for eksempel XML og JSON) som brukes for automatisk saksbehandling\n"
+                    + "Alle dokumenter må ha én variant med variantFormat ARKIV.")
+            private String variantformat;
+
+            @Override
+            public String toString() {
+                return "DokumentVariant{" +
+                        "filtype='" + filtype + '\'' +
+                        ", fysiskDok='" + fysiskDokument.substring(0, 10) + "..." + '\'' +
+                        ", variantformat='" + variantformat + '\'' +
+                        '}';
+            }
+        }
     }
 
-    @Getter
-    @Setter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    public static class DokumentVariant {
-
-        @Schema(description = "Filtypen til filen som følger, feks PDFA, JSON eller XML.")
-        private String filtype;
-
-        @Schema(description = "Selve dokumentet. Hvis filtype er PDF/XML, ved fysisk dokument brukes bytearray.")
-        private String fysiskDokument;
-
-        @Schema(description = "ARKIV brukes for dokumentvarianter i menneskelesbart format (for eksempel PDFA). "
-                + "Gosys og nav.no henter arkivvariant og viser denne til bruker.\n"
-                + "ORIGINAL skal brukes for dokumentvariant i maskinlesbart format "
-                + "(for eksempel XML og JSON) som brukes for automatisk saksbehandling\n"
-                + "Alle dokumenter må ha én variant med variantFormat ARKIV.")
-        private String variantformat;
-    }
 }

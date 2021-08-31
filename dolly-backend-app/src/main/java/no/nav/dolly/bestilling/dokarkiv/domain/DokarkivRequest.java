@@ -1,21 +1,21 @@
 package no.nav.dolly.bestilling.dokarkiv.domain;
 
-import static java.util.Objects.isNull;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
 
-@Getter
-@Setter
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.util.Objects.isNull;
+
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -45,11 +45,10 @@ public class DokarkivRequest {
         return dokumenter;
     }
 
-    @Getter
-    @Setter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @Data
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
     public static class AvsenderMottaker {
 
@@ -77,6 +76,14 @@ public class DokarkivRequest {
             }
             return dokumentvarianter;
         }
+
+        @Override
+        public String toString() {
+            return String.format("Dokument{tittel='%s', brevkode='%s', dokumentvariantListe=%s}",
+                    tittel,
+                    brevkode,
+                    dokumentvarianter.stream().map(DokumentVariant::toString).collect(Collectors.toList()));
+        }
     }
 
     @Getter
@@ -90,13 +97,21 @@ public class DokarkivRequest {
         private String filtype;
         private String fysiskDokument;
         private String variantformat;
+
+        @Override
+        public String toString() {
+            return "DokumentVariant{" +
+                    "filtype='" + filtype + '\'' +
+                    ", fysiskDok='" + fysiskDokument.substring(0, 10) + "..." + '\'' +
+                    ", variantformat='" + variantformat + '\'' +
+                    '}';
+        }
     }
 
-    @Getter
-    @Setter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @Data
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
     public static class Bruker {
 
@@ -104,11 +119,10 @@ public class DokarkivRequest {
         private IdType idType;
     }
 
-    @Getter
-    @Setter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @Data
     @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
     public static class Sak {
 
