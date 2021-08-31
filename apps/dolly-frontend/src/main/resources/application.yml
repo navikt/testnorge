@@ -94,11 +94,11 @@ consumers:
     namespace: dolly
     name: testnorge-profil-api
     url: https://testnorge-profil-api.dev.intern.nav.no
-  testnorge-varslinger-api:
-    cluster: dev-fss
+  testnav-varslinger-service:
+    cluster: dev-gcp
     namespace: dolly
-    name: testnorge-varslinger-api
-    url: https://testnorge-varslinger-api.dev-fss-pub.nais.io
+    name: testnav-varslinger-service
+    url: https://testnav-varslinger-service.dev.intern.nav.no
   testnav-organisasjon-forvalter:
     cluster: dev-gcp
     namespace: dolly
