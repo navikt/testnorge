@@ -14,9 +14,13 @@ spring:
           idporten:
             client-id: ${IDPORTEN_CLIENT_ID}
             redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+            scope: openid
         provider:
           idporten:
             issuer-uri: https://oidc-ver2.difi.no/idporten-oidc-provider/
+      resourceserver:
+        jwt:
+          issuer-uri: https://oidc-ver2.difi.no/idporten-oidc-provider/
 
 consumers:
   testnav-organisasjon-faste-data-service:
