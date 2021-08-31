@@ -1,4 +1,4 @@
-package no.nav.registre.skd.consumer.command;
+package no.nav.registre.skd.consumer.command.tpsf;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -9,10 +9,9 @@ import lombok.AllArgsConstructor;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 
 @AllArgsConstructor
-public class GetSyntSkdMeldingerCommand implements Callable<List<RsMeldingstype>> {
+public class GetMeldingerMedIdsCommand implements Callable<List<RsMeldingstype>> {
 
-    private final String endringskode;
-    private final Integer antallMeldinger;
+    private final String ids;
     private final WebClient webClient;
 
     private static final ParameterizedTypeReference<List<RsMeldingstype>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
@@ -22,13 +21,12 @@ public class GetSyntSkdMeldingerCommand implements Callable<List<RsMeldingstype>
     public List<RsMeldingstype> call() {
         return webClient.get()
                 .uri(builder ->
-                        builder.path("/v1/generate/tps/{endringskode}")
-                                .queryParam("numToGenerate", antallMeldinger)
-                                .build(endringskode)
+                        builder.path("/v1/endringsmelding/skd/meldinger?ids={ids}")
+                                .build(ids)
                 )
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)
                 .block();
-    }
 
+    }
 }

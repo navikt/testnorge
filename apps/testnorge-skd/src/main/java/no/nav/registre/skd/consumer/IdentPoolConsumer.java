@@ -8,20 +8,15 @@ import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriTemplate;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 
@@ -36,9 +31,6 @@ import no.nav.registre.skd.consumer.response.Navn;
 public class IdentPoolConsumer {
 
     private final WebClient webClient;
-
-    private static final ParameterizedTypeReference<List<Navn>> RESPONSE_TYPE_NAVN = new ParameterizedTypeReference<>() {
-    };
 
     public IdentPoolConsumer(@Value("${ident-pool.rest-api.url}") String serverUrl) {
         var objectMapper = new ObjectMapper()

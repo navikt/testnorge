@@ -66,7 +66,7 @@ public class IdentService {
         tpsfConsumer.slettIdenterFraTps(miljoer, identer);
         var meldingIderTilhoerendeIdenter = tpsfConsumer.getMeldingIderTilhoerendeIdenter(avspillergruppeId, identer);
         var tpsfResponse = tpsfConsumer.slettMeldingerFraTpsf(meldingIderTilhoerendeIdenter);
-        if (tpsfResponse.getStatusCode().is2xxSuccessful()) {
+        if (tpsfResponse.is2xxSuccessful()) {
             List<String> frigjorteIdenter = identPoolConsumer.frigjoerLedigeIdenter(identer);
             log.info("Identer som ble frigjort i ident-pool: {}", frigjorteIdenter.toString());
             return meldingIderTilhoerendeIdenter;
@@ -82,8 +82,8 @@ public class IdentService {
     ) {
         List<Long> oppdaterteIder = new ArrayList<>();
         var identerIAvspillergruppe = hodejegerenConsumer.get(avspillergruppeId);
-        int antallIderSjekket = 0;
-        int antallIdenterSjekket = 0;
+        var antallIderSjekket = 0;
+        var antallIdenterSjekket = 0;
         for (var partisjonerteIdenter : Lists.partition(identerIAvspillergruppe, PARTITION_SIZE)) {
             List<RsMeldingstype> meldingerSomSkalOppdateres = new ArrayList<>();
             var ikkeCachedeIdenter = getIdenterSomIkkeErCachet(partisjonerteIdenter);

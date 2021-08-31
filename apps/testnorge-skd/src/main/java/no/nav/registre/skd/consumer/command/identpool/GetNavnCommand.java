@@ -1,16 +1,17 @@
 package no.nav.registre.skd.consumer.command.identpool;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.skd.consumer.response.Navn;
 
 @Slf4j
+@AllArgsConstructor
 public class GetNavnCommand implements Callable<List<Navn>> {
 
     private final WebClient webClient;
@@ -18,12 +19,8 @@ public class GetNavnCommand implements Callable<List<Navn>> {
     private static final ParameterizedTypeReference<List<Navn>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
-    public GetNavnCommand(WebClient webClient){
-        this.webClient = webClient;
-    }
-
     @Override
-    public List<Navn> call(){
+    public List<Navn> call() {
         try {
             return webClient.get()
                     .uri(builder ->

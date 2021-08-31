@@ -14,7 +14,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -49,10 +48,9 @@ public class TpConsumerTest {
 
         var response = tpConsumer.leggTilIdenterITp(identer, miljoe);
 
-        assertThat(response.getStatusCode(), is(HttpStatus.OK));
-        assert response.getBody() != null;
-        assertThat(response.getBody().size(), is(1));
-        assertThat(response.getBody().get(0), equalTo(fnr2));
+        assert response != null;
+        assertThat(response.size(), is(1));
+        assertThat(response.get(0), equalTo(fnr2));
     }
 
     private void stubTpConsumer() {

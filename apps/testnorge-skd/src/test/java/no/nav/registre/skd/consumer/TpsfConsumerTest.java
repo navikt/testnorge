@@ -102,7 +102,7 @@ public class TpsfConsumerTest {
 
         var response = tpsfConsumer.slettMeldingerFraTpsf(meldingIder);
 
-        assertThat(response.getStatusCode(), is(HttpStatus.OK));
+        assertThat(response, is(HttpStatus.OK));
     }
 
     @Test

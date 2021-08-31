@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class IdentServiceTest {
         var meldingIder = new ArrayList<>(Collections.singletonList(1L));
 
         when(tpsfConsumer.getMeldingIderTilhoerendeIdenter(avspillergruppeId, identer)).thenReturn(meldingIder);
-        when(tpsfConsumer.slettMeldingerFraTpsf(meldingIder)).thenReturn(ResponseEntity.ok().build());
+        when(tpsfConsumer.slettMeldingerFraTpsf(meldingIder)).thenReturn(HttpStatus.ACCEPTED);
         when(identPoolConsumer.frigjoerLedigeIdenter(identer)).thenReturn(new ArrayList<>(identer));
 
         var response = identService.slettIdenterFraAvspillergruppe(avspillergruppeId, miljoer, identer);
