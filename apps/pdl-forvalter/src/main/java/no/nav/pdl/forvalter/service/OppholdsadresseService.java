@@ -19,11 +19,11 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 @Service
 public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO> {
 
-    private static final String VALIDATION_AMBIGUITY_ERROR = "Kun én adresse skal være satt (vegadresse, " +
+    private static final String VALIDATION_AMBIGUITY_ERROR = "Oppholdsadresse: kun én adresse skal være satt (vegadresse, " +
             "matrikkeladresse, utenlandskAdresse)";
-    private static final String VALIDATION_ADDRESS_ABSENT_ERROR = "Én av adressene må velges (vegadresse, " +
+    private static final String VALIDATION_ADDRESS_ABSENT_ERROR = "Oppholdsadresse: én av adressene må velges (vegadresse, " +
             "matrikkeladresse, utenlandskAdresse)";
-    private static final String VALIDATION_MASTER_PDL_ERROR = "Utenlandsk adresse krever at master er PDL";
+    private static final String VALIDATION_MASTER_PDL_ERROR = "Oppholdsadresse: Utenlandsk adresse krever at master er PDL";
 
     private final AdresseServiceConsumer adresseServiceConsumer;
     private final MapperFacade mapperFacade;
