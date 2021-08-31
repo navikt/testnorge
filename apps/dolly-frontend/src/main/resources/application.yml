@@ -11,10 +11,11 @@ spring:
     oauth2:
       client:
         registration:
-          idporten:
+          callback:
             client-id: ${IDPORTEN_CLIENT_ID}
+              redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
         provider:
-          idporten:
+          callback:
             issuer-uri: https://oidc-ver2.difi.no/idporten-oidc-provider/
 
 consumers:

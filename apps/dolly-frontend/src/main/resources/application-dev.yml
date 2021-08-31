@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 3000
 
 azure.app.client.id: ${client_id}
 azure.app.client.secret: ${client_secret}
@@ -10,3 +10,11 @@ UDI_STUB_URL: https://udi-stub-dev.dev.adeo.no
 UDI_STUB_NAME: udi-stub-dev
 TPS_FORVALTERN_PROXY_NAME: tps-forvalteren-dev-proxy
 TPS_FORVALTERN_PROXY_URL:  https://tps-forvalteren-dev.dev.adeo.no
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          callback:
+              redirect-uri: '{baseUrl}/oauth2/{registrationId}'
