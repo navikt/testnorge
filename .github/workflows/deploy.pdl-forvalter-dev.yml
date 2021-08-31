@@ -3,7 +3,7 @@ name: Deploy pdl-forvalter-dev
 on:
   push:
     branches:
-      - feature/pdl-forbedringer
+      - master
     paths:
       - apps/pdl-forvalter/**
 
