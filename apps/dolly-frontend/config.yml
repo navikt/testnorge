@@ -32,7 +32,7 @@ spec:
       external:
         - host: person-search-service.dev-fss-pub.nais.io
         - host: udi-stub.dev-fss-pub.nais.io
-        - host: testnorge-varslinger-api.dev-fss-pub.nais.io
+        - host: testnav-varslinger-service.dev-fss-pub.nais.io
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
         - host: testnav-testnorge-inst-proxy.dev-fss-pub.nais.io

@@ -6,6 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import no.nav.testnav.libs.reactivesecurity.domain.NaisServerProperties;
 
 @Configuration
-@ConfigurationProperties(prefix = "consumers.testnorge-varslinger-api")
-public class TestnavVarslingerApiProperties extends NaisServerProperties {
+@ConfigurationProperties(prefix = "consumers.testnav-varslinger-service")
+public class TestnavVarslingerServiceProperties extends NaisServerProperties {
 }
