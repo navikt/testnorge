@@ -40,7 +40,7 @@ public class PdlDeleteCommandPdl extends PdlTestdataCommand {
                         .status(PdlStatus.OK)
                         .deletedOpplysninger(response.getDeletedOpplysninger())
                         .build()))
-                .doOnError(WebServerException.class, error -> log.error(getMessage(error), error))
+                .doOnError(WebServerException.class, error -> log.error(error.getMessage(), error))
                 .onErrorResume(error ->
                         Mono.just(OrdreResponseDTO.HendelseDTO.builder()
                                 .status(getMessage(error).contains(INFO_STATUS) ? PdlStatus.OK : PdlStatus.FEIL)

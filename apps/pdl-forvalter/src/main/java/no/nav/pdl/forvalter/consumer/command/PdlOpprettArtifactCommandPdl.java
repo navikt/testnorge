@@ -44,6 +44,6 @@ public class PdlOpprettArtifactCommandPdl extends PdlTestdataCommand {
                         .hendelseId(response.getHendelseId())
                         .build()))
                 .doOnError(WebServerException.class, error -> log.error(error.getMessage(), error))
-                .onErrorResume(error -> Mono.just(errorHandling(error, null)));
+                .onErrorResume(error -> Mono.just(errorHandling(error, id)));
     }
 }
