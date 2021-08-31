@@ -18,11 +18,11 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 @Service
 public class BostedAdresseService extends AdresseService<BostedadresseDTO> {
 
-    private static final String VALIDATION_AMBIGUITY_ERROR = "Kun én adresse skal være satt (vegadresse, " +
+    private static final String VALIDATION_AMBIGUITY_ERROR = "Bostedsadresse: kun én adresse skal være satt (vegadresse, " +
             "matrikkeladresse, ukjentbosted, utenlandskAdresse)";
-    private static final String VALIDATION_ADDRESS_ABSENT_ERROR = "Én av adressene må velges (vegadresse, " +
+    private static final String VALIDATION_ADDRESS_ABSENT_ERROR = "Bostedsadresse: én av adressene må velges (vegadresse, " +
             "matrikkeladresse, ukjentbosted, utenlandskAdresse)";
-    private static final String VALIDATION_MASTER_PDL_ERROR = "Utenlandsk adresse krever at master er PDL";
+    private static final String VALIDATION_MASTER_PDL_ERROR = "Bostedsadresse: utenlandsk adresse krever at master er PDL";
 
     private final AdresseServiceConsumer adresseServiceConsumer;
     private final MapperFacade mapperFacade;

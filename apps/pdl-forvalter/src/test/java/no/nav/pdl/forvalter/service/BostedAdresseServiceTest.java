@@ -56,7 +56,7 @@ class BostedAdresseServiceTest {
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 bostedAdresseService.convert(request));
 
-        assertThat(exception.getMessage(), containsString("Kun én adresse skal være satt (vegadresse, " +
+        assertThat(exception.getMessage(), containsString("én adresse skal være satt (vegadresse, " +
                 "matrikkeladresse, ukjentbosted, utenlandskAdresse)"));
     }
 
@@ -72,7 +72,7 @@ class BostedAdresseServiceTest {
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 bostedAdresseService.convert(request));
 
-        assertThat(exception.getMessage(), containsString("Én av adressene må velges " +
+        assertThat(exception.getMessage(), containsString("én av adressene må velges " +
                 "(vegadresse, matrikkeladresse, ukjentbosted, utenlandskAdresse)"));
     }
 
@@ -90,7 +90,7 @@ class BostedAdresseServiceTest {
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 bostedAdresseService.convert(request));
 
-        assertThat(exception.getMessage(), containsString("Utenlandsk adresse krever at master er PDL"));
+        assertThat(exception.getMessage(), containsString("utenlandsk adresse krever at master er PDL"));
     }
 
     @Test

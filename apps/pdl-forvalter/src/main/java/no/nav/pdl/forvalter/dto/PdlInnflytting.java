@@ -1,4 +1,4 @@
-package no.nav.testnav.libs.dto.pdlforvalter.v1;
+package no.nav.pdl.forvalter.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -6,8 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-
-import java.time.LocalDateTime;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 
 @Data
 @SuperBuilder
@@ -15,9 +14,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class InnflyttingDTO extends DbVersjonDTO {
+public class PdlInnflytting extends DbVersjonDTO {
 
+    private Folkeregistermetadata folkeregistermetadata;
     private String fraflyttingsland;
     private String fraflyttingsstedIUtlandet;
-    private LocalDateTime innflyttingsdato;
 }
