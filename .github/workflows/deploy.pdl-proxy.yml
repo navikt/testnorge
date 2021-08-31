@@ -3,7 +3,7 @@ name: Deploy pdl-proxy
 on:
   push:
     branches:
-      - feature/pdl-forbedringer
+      - master
     paths:
       - proxies/pdl-proxy/**
 
