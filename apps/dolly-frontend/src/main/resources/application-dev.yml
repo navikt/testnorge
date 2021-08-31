@@ -17,4 +17,4 @@ spring:
       client:
         registration:
           idporten:
-              redirect-uri: '{baseUrl}/oauth2/{registrationId}'
+            redirect-uri: '{baseUrl}/oauth2/{registrationId}'
