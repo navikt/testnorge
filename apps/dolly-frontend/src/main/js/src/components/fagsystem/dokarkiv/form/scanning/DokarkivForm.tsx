@@ -31,7 +31,7 @@ type Skjema = {
 	value: string
 }
 
-type Vedlegg = {
+export type Vedlegg = {
 	id: string
 	name: string
 	content: {
@@ -56,19 +56,22 @@ enum Kodeverk {
 const dokarkivAttributt = 'dokarkiv'
 
 export const DokarkivForm = ({ formikBag }: DokarkivForm) => {
-	const gjeldendeFiler = JSON.parse(sessionStorage.getItem('dokarkiv_vedlegg'))
+	const sessionDokumenter = JSON.parse(sessionStorage.getItem('dokarkiv_vedlegg'))
 	const digitalInnsending = _get(formikBag.values, 'dokarkiv.avsenderMottaker')
-	const [files, setFiles] = useState(gjeldendeFiler ? gjeldendeFiler : [])
+	const [files, setFiles] = useState(sessionDokumenter ? sessionDokumenter : [])
 
 	const [isFilnavnModalOpen, openFilnavnModal, closeFilnavnModal] = useBoolean(false)
 	const [skjemaValues, setSkjemaValues] = useState(null)
 
 	useEffect(() => handleSkjemaChange(skjemaValues), [files, skjemaValues])
 
+	//TODO: Filopplaster overskriver filer for hver endring, også på sletting. Trenger en map mellom ID på fil så tildeltnavn kan legges på etter endring
+
 	const handleSkjemaChange = (skjema: Skjema) => {
 		if (!skjema) {
 			return
 		}
+		console.log('skjema: ', skjema) //TODO - SLETT MEG
 		setSkjemaValues(skjema)
 		formikBag.setFieldValue('dokarkiv.tittel', skjema.data)
 		const dokumentVarianter = files.map((vedl: Vedlegg, index: number) => ({
@@ -88,9 +91,18 @@ export const DokarkivForm = ({ formikBag }: DokarkivForm) => {
 	}
 
 	const handleVedleggChange = (filer: [Vedlegg]) => {
+		console.log('filer: ', filer) //TODO - SLETT MEG
+		console.log('files: ', files) //TODO - SLETT MEG
+		filer.map(fil => {
+			const eksisterendeFil = files.find((file: Vedlegg) => file.id === fil.id)
+			if (eksisterendeFil && eksisterendeFil.id === fil.id) {
+				return (fil.name = eksisterendeFil.name)
+			}
+			return fil.id
+		})
 		setFiles(filer)
-		openFilnavnModal()
 		sessionStorage.setItem('dokarkiv_vedlegg', JSON.stringify(filer))
+		openFilnavnModal()
 	}
 
 	return (
@@ -138,7 +150,13 @@ export const DokarkivForm = ({ formikBag }: DokarkivForm) => {
 					</Kategori>
 				</Kategori>
 			</Panel>
-			{isFilnavnModalOpen && files && <FilnavnModal closeModal={closeFilnavnModal} filer={files} />}
+			{isFilnavnModalOpen && files && (
+				<FilnavnModal
+					handleChange={handleVedleggChange}
+					closeModal={closeFilnavnModal}
+					filer={files}
+				/>
+			)}
 		</Vis>
 	)
 }
