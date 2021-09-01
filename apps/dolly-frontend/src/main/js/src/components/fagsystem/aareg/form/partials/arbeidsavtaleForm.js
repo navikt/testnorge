@@ -40,9 +40,9 @@ export const ArbeidsavtaleForm = ({ path, onChangeLenket }) => {
 					fastfield={false}
 				/>
 				<FormikDatepicker
-					name={`${path}.endringsdatoLoenn`}
+					name={`${path}.sisteLoennsendringsdato`}
 					label="Endringsdato lønn"
-					onChange={onChangeLenket('arbeidsavtale.endringsdatoLoenn')}
+					onChange={onChangeLenket('arbeidsavtale.sisteLoennsendringsdato')}
 					fastfield={false}
 				/>
 				<FormikSelect
