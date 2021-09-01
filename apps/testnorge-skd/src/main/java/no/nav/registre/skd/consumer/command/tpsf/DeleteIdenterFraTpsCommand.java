@@ -16,8 +16,10 @@ public class DeleteIdenterFraTpsCommand implements Callable<Void> {
     public Void call() {
         return webClient.delete()
                 .uri(builder ->
-                        builder.path("/v1/endringsmelding/skd/deleteFromTps?miljoer={miljoer}&identer={identer}")
-                                .build(miljoerSomString, identerSomString)
+                        builder.path("/v1/endringsmelding/skd/deleteFromTps")
+                                .queryParam("miljoer", miljoerSomString)
+                                .queryParam("identer", identerSomString)
+                                .build()
                 )
                 .retrieve()
                 .bodyToMono(Void.class)

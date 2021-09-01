@@ -21,8 +21,9 @@ public class GetMeldingerMedIdsCommand implements Callable<List<RsMeldingstype>>
     public List<RsMeldingstype> call() {
         return webClient.get()
                 .uri(builder ->
-                        builder.path("/v1/endringsmelding/skd/meldinger?ids={ids}")
-                                .build(ids)
+                        builder.path("/v1/endringsmelding/skd/meldinger")
+                                .queryParam("ids", ids)
+                                .build()
                 )
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)
