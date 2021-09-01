@@ -61,7 +61,7 @@ public class Arbeidsavtale {
             notes = "Dato for siste l&oslash;nnsendring, format (ISO-8601): yyyy-MM-dd",
             example = "2014-07-15"
     )
-    private LocalDate sisteLoennsendringsdato;
+    private LocalDate sistLoennsendring;
     @ApiModelProperty(
             notes = "Dato for siste stillingsendring, format (ISO-8601): yyyy-MM-dd",
             example = "2015-12-15"
@@ -82,7 +82,7 @@ public class Arbeidsavtale {
 
     @JsonProperty("sistLoennsendring")
     public String getSistLoennsendringAsString() {
-        return JavaTimeUtil.toString(this.sisteLoennsendringsdato);
+        return JavaTimeUtil.toString(this.sistLoennsendring);
     }
 
     @JsonProperty("sistStillingsendring")
