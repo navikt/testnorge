@@ -11,16 +11,20 @@ import java.util.List;
 
 import no.nav.registre.skd.consumer.command.GetSyntSkdMeldingerCommand;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
+import no.nav.testnav.libs.securitytokenservice.StsOidcTokenService;
 
 @Component
 @Slf4j
 public class TpsSyntetisererenConsumer {
 
+    private final StsOidcTokenService tokenService;
     private final WebClient webClient;
 
     public TpsSyntetisererenConsumer(
-            @Value("${syntrest.rest.api.url}") String syntrestServerUrl
+            StsOidcTokenService stsOidcTokenService,
+            @Value("${synt-tps.rest.api.url}") String syntrestServerUrl
     ) {
+        this.tokenService = stsOidcTokenService;
         this.webClient = WebClient.builder().baseUrl(syntrestServerUrl).build();
     }
 
@@ -29,7 +33,7 @@ public class TpsSyntetisererenConsumer {
             String endringskode,
             Integer antallMeldinger
     ) {
-        var response = new GetSyntSkdMeldingerCommand(endringskode, antallMeldinger, webClient).call();
+        var response = new GetSyntSkdMeldingerCommand(endringskode, antallMeldinger, tokenService.getToken(), webClient).call();
 
         if (response != null && response.size() != antallMeldinger) {
             log.warn("Feil antall meldinger mottatt fra TPS-Syntetisereren. Forventet {}, men mottok {} meldinger.", antallMeldinger, response.size());

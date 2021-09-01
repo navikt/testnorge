@@ -1,39 +1,46 @@
 package no.nav.registre.skd.consumer;
 
 import static no.nav.registre.skd.testutils.ResourceUtils.getResourceFileContent;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.client.MockRestServiceServer;
 
+import no.nav.testnav.libs.securitytokenservice.StsOidcTokenService;
+import okhttp3.mockwebserver.Dispatcher;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
+
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
 import no.nav.registre.skd.testutils.AssertionUtils;
 
-@RunWith(SpringRunner.class)
-@RestClientTest(TpsSyntetisererenConsumer.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
 @ActiveProfiles("test")
 public class TpsSyntetisererenConsumerTest {
 
-    @Autowired
     private TpsSyntetisererenConsumer consumer;
 
-    @Autowired
-    private MockRestServiceServer server;
+    private MockWebServer mockWebServer;
 
-    @Value("${syntrest.rest.api.url}")
-    private String serverUrl;
+    @Before
+    public void setUp() throws IOException {
+        this.mockWebServer = new MockWebServer();
+        this.mockWebServer.start();
+        Dispatcher dispatcher = getSyntTpsDispatcher();
+        mockWebServer.setDispatcher(dispatcher);
+
+        this.consumer = new TpsSyntetisererenConsumer(
+                new StsOidcTokenService(mockWebServer.url("/token").toString(), "dummy", "dummy"),
+                mockWebServer.url("/api").toString());
+
+    }
 
     /**
      * Tester om metoden bygger korrekt URI og queryParam når den konsumerer Tps Synt.
@@ -43,12 +50,10 @@ public class TpsSyntetisererenConsumerTest {
         var endringskode = "0211";
         var antallMeldinger = 1;
 
-        this.server.expect(requestToUriTemplate(serverUrl + "/v1/generate/tps/" + endringskode + "?numToGenerate=" + antallMeldinger))
-                .andRespond(withSuccess("[null]", MediaType.APPLICATION_JSON));
+        var response = consumer.getSyntetiserteSkdmeldinger(endringskode, antallMeldinger);
 
-        consumer.getSyntetiserteSkdmeldinger(endringskode, antallMeldinger);
-
-        this.server.verify();
+        assertThat(response).hasSize(1);
+        assertThat(response.get(0)).isNull();
     }
 
     /**
@@ -57,11 +62,8 @@ public class TpsSyntetisererenConsumerTest {
      */
     @Test
     public void shouldDeserialiseAllFieldsInTheResponse() throws InvocationTargetException, IllegalAccessException {
-        var endringskode = "0211";
+        var endringskode = "0110";
         var antallMeldinger = 1;
-        this.server.expect(requestToUriTemplate(serverUrl +
-                "/v1/generate/tps/" + endringskode + "?numToGenerate=" + antallMeldinger))
-                .andRespond(withSuccess(getResourceFileContent("__files/tpssynt/tpsSynt_NotNullFields_Response.json"), MediaType.APPLICATION_JSON));
 
         var skdmeldinger = consumer.getSyntetiserteSkdmeldinger(endringskode, antallMeldinger);
 
@@ -69,5 +71,34 @@ public class TpsSyntetisererenConsumerTest {
                 "getVedtaksdato", "getInternVergeid", "getVergeFnrDnr", "getVergetype",
                 "getMandattype", "getMandatTekst", "getReserverFramtidigBruk");
         AssertionUtils.assertAllFieldsNotNull(skdmeldinger.get(0), ignoredFields);
+    }
+
+    private Dispatcher getSyntTpsDispatcher() {
+        return new Dispatcher() {
+            @Override
+            public MockResponse dispatch(RecordedRequest request) {
+                switch (request.getPath()) {
+                case "/api/v1/generate/1/0211":
+                    return new MockResponse().setResponseCode(200)
+                            .addHeader("Content-Type", "application/json")
+                            .setBody("[null]");
+                case "/api/v1/generate/1/0110":
+                    return new MockResponse().setResponseCode(200)
+                            .addHeader("Content-Type", "application/json")
+                            .setBody(getResourceFileContent("__files/tpssynt/tpsSynt_NotNullFields_Response.json"));
+                case "/token?grant_type=client_credentials&scope=openid":
+                    return new MockResponse().setResponseCode(200)
+                            .addHeader("Content-Type", "application/json")
+                            .setBody("{\"expires_in\": \"1000\"," +
+                                    "\"access_token\": \"dummy\"}");
+                }
+                return new MockResponse().setResponseCode(404);
+            }
+        };
+    }
+
+    @After
+    public void tearDown() throws IOException {
+        mockWebServer.shutdown();
     }
 }

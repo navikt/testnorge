@@ -7,9 +7,9 @@ import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.skd.consumer.IdentPoolConsumer;
@@ -21,21 +21,18 @@ import no.nav.registre.skd.provider.rs.requests.FastMeldingRequest;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
 
-@Service
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class FasteMeldingerService {
 
-    @Autowired
-    private TpsfConsumer tpsfConsumer;
+    private final TpsfConsumer tpsfConsumer;
 
-    @Autowired
-    private TpsSyntetisererenConsumer tpsSyntetisererenConsumer;
+    private final TpsSyntetisererenConsumer tpsSyntetisererenConsumer;
 
-    @Autowired
-    private IdentPoolConsumer identPoolConsumer;
+    private final IdentPoolConsumer identPoolConsumer;
 
-    @Autowired
-    private ValidationService validationService;
+    private final ValidationService validationService;
 
     public SkdMeldingerTilTpsRespons startAvspillingAvTpsfAvspillergruppe(
             Long avspillergruppeId,

@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,6 +24,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.micrometer.core.annotation.Timed;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.skd.consumer.TpsSyntetisererenConsumer;
@@ -38,8 +38,9 @@ import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
-@Service
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class SyntetiseringService {
 
     static final String FEILMELDING = "Feil på endringskode %s i avspillergruppe %d. Skdmeldinger som er lagret i TPSF, men som ikke ble sendt til TPS har følgende id-er i TPSF: %s - Skdmeldinger som ble lagret i TPSF: %s";
@@ -51,32 +52,23 @@ public class SyntetiseringService {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    @Autowired
-    private HodejegerenConsumer hodejegerenConsumer;
+    private final HodejegerenConsumer hodejegerenConsumer;
 
-    @Autowired
-    private TpsfConsumer tpsfConsumer;
+    private final TpsfConsumer tpsfConsumer;
 
-    @Autowired
-    private TpsSyntetisererenConsumer tpsSyntetisererenConsumer;
+    private final TpsSyntetisererenConsumer tpsSyntetisererenConsumer;
 
-    @Autowired
-    private ValidationService validationService;
+    private final ValidationService validationService;
 
-    @Autowired
-    private NyeIdenterService nyeIdenterService;
+    private final NyeIdenterService nyeIdenterService;
 
-    @Autowired
-    private FoedselService foedselService;
+    private final FoedselService foedselService;
 
-    @Autowired
-    private EksisterendeIdenterService eksisterendeIdenterService;
+    private final EksisterendeIdenterService eksisterendeIdenterService;
 
-    @Autowired
-    private TpService tpService;
+    private final TpService tpService;
 
-    @Autowired
-    private PersonService personService;
+    private final PersonService personService;
 
     private List<String> feiledeEndringskoder;
 
@@ -163,7 +155,7 @@ public class SyntetiseringService {
             if (!feiledeTpIdenter.isEmpty()) {
                 log.error("Følgende identer kunne ikke lagres i TP: {}", feiledeTpIdenter.toString());
             }
-            if(Arrays.asList(FOEDSELSMELDING, INNVANDRING).contains(endringskode)){
+            if (Arrays.asList(FOEDSELSMELDING, INNVANDRING).contains(endringskode)) {
                 personService.leggTilIdenterIPdl(nyeIdenterDenneEndringskoden, request.getAvspillergruppeId(), request.getMiljoe());
             }
         }
@@ -303,7 +295,8 @@ public class SyntetiseringService {
         var rangeToAdd = new StringBuilder();
 
         for (int i = 0; i < ids.size(); i++) {
-            if (sisteElementIListe(ids, idsWithRange, rangeStarted, rangeToAdd, i)) break;
+            if (sisteElementIListe(ids, idsWithRange, rangeStarted, rangeToAdd, i))
+                break;
             if (ids.get(i + 1) == ids.get(i) + 1) {
                 if (!rangeStarted) {
                     rangeToAdd = new StringBuilder(ids.get(i).toString()).append(" - ");

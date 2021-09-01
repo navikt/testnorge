@@ -13,6 +13,7 @@ public class GetSyntSkdMeldingerCommand implements Callable<List<RsMeldingstype>
 
     private final String endringskode;
     private final Integer antallMeldinger;
+    private final String token;
     private final WebClient webClient;
 
     private static final ParameterizedTypeReference<List<RsMeldingstype>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
@@ -22,10 +23,10 @@ public class GetSyntSkdMeldingerCommand implements Callable<List<RsMeldingstype>
     public List<RsMeldingstype> call() {
         return webClient.get()
                 .uri(builder ->
-                        builder.path("/v1/generate/tps/{endringskode}")
-                                .queryParam("numToGenerate", antallMeldinger)
-                                .build(endringskode)
+                        builder.path("/v1/generate/{antallMeldinger}/{endringskode}")
+                                .build(antallMeldinger, endringskode)
                 )
+                .header("Authorization", "Bearer " + token)
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)
                 .block();
