@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.skd.consumer.IdentPoolConsumer;
-import no.nav.registre.skd.consumer.TpsSyntetisererenConsumer;
+import no.nav.registre.skd.consumer.SyntTpsConsumer;
 import no.nav.registre.skd.consumer.TpsfConsumer;
 import no.nav.registre.skd.consumer.requests.SendToTpsRequest;
 import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
@@ -28,7 +28,7 @@ public class FasteMeldingerService {
 
     private final TpsfConsumer tpsfConsumer;
 
-    private final TpsSyntetisererenConsumer tpsSyntetisererenConsumer;
+    private final SyntTpsConsumer syntTpsConsumer;
 
     private final IdentPoolConsumer identPoolConsumer;
 
@@ -48,7 +48,7 @@ public class FasteMeldingerService {
             List<FastMeldingRequest> fasteMeldinger,
             Boolean opprettEndringStatsborgerskap
     ) {
-        var syntetiserteSkdmeldinger = tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(Endringskoder.INNVANDRING.getEndringskode(), fasteMeldinger.size());
+        var syntetiserteSkdmeldinger = syntTpsConsumer.getSyntetiserteSkdmeldinger(Endringskoder.INNVANDRING.getEndringskode(), fasteMeldinger.size());
         validationService.logAndRemoveInvalidMessages(syntetiserteSkdmeldinger, Endringskoder.INNVANDRING);
 
         if (syntetiserteSkdmeldinger.size() < fasteMeldinger.size()) {

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import no.nav.registre.skd.consumer.TpsSyntetisererenConsumer;
+import no.nav.registre.skd.consumer.SyntTpsConsumer;
 import no.nav.registre.skd.consumer.TpsfConsumer;
 import no.nav.registre.skd.provider.rs.requests.FastMeldingRequest;
 
@@ -28,7 +28,7 @@ public class FasteMeldingerServiceTest {
     private TpsfConsumer tpsfConsumer;
 
     @Mock
-    private TpsSyntetisererenConsumer tpsSyntetisererenConsumer;
+    private SyntTpsConsumer syntTpsConsumer;
 
     @Mock
     private ValidationService validationService;
@@ -37,7 +37,6 @@ public class FasteMeldingerServiceTest {
     private FasteMeldingerService fasteMeldingerService;
 
     private final Long avspillergruppeId = 10L;
-    private final String miljoe = "t1";
     private List<Long> avspillergruppeIder;
     private List<FastMeldingRequest> fasteMeldinger;
 
@@ -52,6 +51,7 @@ public class FasteMeldingerServiceTest {
     public void shouldStartAvspillingAvAvspillergruppe() {
         when(tpsfConsumer.getMeldingIdsFromAvspillergruppe(avspillergruppeId)).thenReturn(avspillergruppeIder);
 
+        String miljoe = "t1";
         fasteMeldingerService.startAvspillingAvTpsfAvspillergruppe(avspillergruppeId, miljoe);
 
         verify(tpsfConsumer).getMeldingIdsFromAvspillergruppe(avspillergruppeId);
@@ -62,7 +62,7 @@ public class FasteMeldingerServiceTest {
     public void shouldOppretteMeldingerOgLeggeIGruppe() {
         fasteMeldingerService.opprettMeldingerOgLeggIGruppe(avspillergruppeId, fasteMeldinger, false);
 
-        verify(tpsSyntetisererenConsumer).getSyntetiserteSkdmeldinger(Endringskoder.INNVANDRING.getEndringskode(), 1);
+        verify(syntTpsConsumer).getSyntetiserteSkdmeldinger(Endringskoder.INNVANDRING.getEndringskode(), 1);
         verify(validationService).logAndRemoveInvalidMessages(anyList(), eq(Endringskoder.INNVANDRING));
         verify(tpsfConsumer).saveSkdEndringsmeldingerInTPSF(eq(avspillergruppeId), anyList());
     }

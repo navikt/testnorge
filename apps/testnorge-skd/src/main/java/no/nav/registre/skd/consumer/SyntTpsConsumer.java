@@ -15,12 +15,12 @@ import no.nav.testnav.libs.securitytokenservice.StsOidcTokenService;
 
 @Component
 @Slf4j
-public class TpsSyntetisererenConsumer {
+public class SyntTpsConsumer {
 
     private final StsOidcTokenService tokenService;
     private final WebClient webClient;
 
-    public TpsSyntetisererenConsumer(
+    public SyntTpsConsumer(
             StsOidcTokenService stsOidcTokenService,
             @Value("${synt-tps.rest.api.url}") String syntrestServerUrl
     ) {

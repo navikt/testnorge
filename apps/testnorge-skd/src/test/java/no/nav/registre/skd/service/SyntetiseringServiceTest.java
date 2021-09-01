@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import org.junit.Ignore;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -38,7 +38,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import no.nav.registre.skd.consumer.TpsSyntetisererenConsumer;
+import no.nav.registre.skd.consumer.SyntTpsConsumer;
 import no.nav.registre.skd.consumer.TpsfConsumer;
 import no.nav.registre.skd.provider.rs.requests.GenereringsOrdreRequest;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
@@ -49,7 +49,7 @@ import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 public class SyntetiseringServiceTest {
 
     @Mock
-    private TpsSyntetisererenConsumer tpsSyntetisererenConsumer;
+    private SyntTpsConsumer syntTpsConsumer;
 
     @Mock
     private NyeIdenterService nyeIdenterService;
@@ -88,13 +88,13 @@ public class SyntetiseringServiceTest {
         List<RsMeldingstype> treSkdmeldinger = Arrays.asList(new RsMeldingstype1Felter(), new RsMeldingstype1Felter(), new RsMeldingstype1Felter());
         List<RsMeldingstype> fireSkdmeldinger = Arrays.asList(new RsMeldingstype1Felter(), new RsMeldingstype1Felter(), new RsMeldingstype1Felter(), new RsMeldingstype1Felter());
 
-        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(any(), eq(3))).thenReturn(treSkdmeldinger);
-        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(any(), eq(4))).thenReturn(fireSkdmeldinger);
+        when(syntTpsConsumer.getSyntetiserteSkdmeldinger(any(), eq(3))).thenReturn(treSkdmeldinger);
+        when(syntTpsConsumer.getSyntetiserteSkdmeldinger(any(), eq(4))).thenReturn(fireSkdmeldinger);
 
         syntetiseringService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(GRUPPE_ID, "t1", antallMeldingerPerEndringskode));
 
-        verify(tpsSyntetisererenConsumer).getSyntetiserteSkdmeldinger(Endringskoder.FOEDSELSMELDING.getEndringskode(), 3);
-        verify(tpsSyntetisererenConsumer).getSyntetiserteSkdmeldinger(Endringskoder.INNVANDRING.getEndringskode(), 4);
+        verify(syntTpsConsumer).getSyntetiserteSkdmeldinger(Endringskoder.FOEDSELSMELDING.getEndringskode(), 3);
+        verify(syntTpsConsumer).getSyntetiserteSkdmeldinger(Endringskoder.INNVANDRING.getEndringskode(), 4);
 
         verify(validationService).logAndRemoveInvalidMessages(eq(treSkdmeldinger), any());
         verify(validationService).logAndRemoveInvalidMessages(eq(fireSkdmeldinger), any());
@@ -124,10 +124,10 @@ public class SyntetiseringServiceTest {
         List<RsMeldingstype> meldinger03 = Collections.singletonList(new RsMeldingstype1Felter());
         List<RsMeldingstype> meldinger04 = Collections.singletonList(new RsMeldingstype1Felter());
 
-        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(Endringskoder.FOEDSELSMELDING.getEndringskode(), 1)).thenReturn(meldinger01);
-        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(Endringskoder.INNVANDRING.getEndringskode(), 1)).thenReturn(meldinger02);
-        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(Endringskoder.FOEDSELSNUMMERKORREKSJON.getEndringskode(), 1)).thenReturn(meldinger39);
-        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(Endringskoder.TILDELING_DNUMMER.getEndringskode(), 1)).thenReturn(meldinger91);
+        when(syntTpsConsumer.getSyntetiserteSkdmeldinger(Endringskoder.FOEDSELSMELDING.getEndringskode(), 1)).thenReturn(meldinger01);
+        when(syntTpsConsumer.getSyntetiserteSkdmeldinger(Endringskoder.INNVANDRING.getEndringskode(), 1)).thenReturn(meldinger02);
+        when(syntTpsConsumer.getSyntetiserteSkdmeldinger(Endringskoder.FOEDSELSNUMMERKORREKSJON.getEndringskode(), 1)).thenReturn(meldinger39);
+        when(syntTpsConsumer.getSyntetiserteSkdmeldinger(Endringskoder.TILDELING_DNUMMER.getEndringskode(), 1)).thenReturn(meldinger91);
 
         final var fodselsdato = "111111";
         final var personnummer = "22222";
@@ -170,14 +170,14 @@ public class SyntetiseringServiceTest {
             antallMeldingerPerEndringskode.put(requestedEndringskode, 0);
         }
 
-        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(any(), any())).thenReturn(new ArrayList<>());
+        when(syntTpsConsumer.getSyntetiserteSkdmeldinger(any(), any())).thenReturn(new ArrayList<>());
 
         syntetiseringService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(123L, "t1", antallMeldingerPerEndringskode));
 
-        final var inOrder = Mockito.inOrder(tpsSyntetisererenConsumer);
+        final var inOrder = Mockito.inOrder(syntTpsConsumer);
         for (var endringskode : Arrays.asList("9110", "0211", "0110", "3910",
                 "0610", "0710", "1010", "1110", "1410", "1810", "5110", "5610", "8110", "9810", "4310", "3210")) {
-            inOrder.verify(tpsSyntetisererenConsumer).getSyntetiserteSkdmeldinger(eq(endringskode), any());
+            inOrder.verify(syntTpsConsumer).getSyntetiserteSkdmeldinger(eq(endringskode), any());
         }
         inOrder.verifyNoMoreInteractions();
     }
@@ -202,7 +202,7 @@ public class SyntetiseringServiceTest {
         melding.setPersonnummer("01010");
 
         when(tpsfConsumer.saveSkdEndringsmeldingerInTPSF(any(), any())).thenThrow(RuntimeException.class);
-        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(any(), anyInt())).thenReturn(Collections.singletonList(melding));
+        when(syntTpsConsumer.getSyntetiserteSkdmeldinger(any(), anyInt())).thenReturn(Collections.singletonList(melding));
 
         syntetiseringService.puttIdenterIMeldingerOgLagre(new GenereringsOrdreRequest(123L, "t1", antallMeldingerPerEndringskode));
         verify(tpsfConsumer, times(2)).saveSkdEndringsmeldingerInTPSF(any(), eq(Collections.singletonList(melding)));
@@ -224,7 +224,7 @@ public class SyntetiseringServiceTest {
         antallMeldingerPerEndringskode.put(Endringskoder.INNFLYTTING_ANNEN_KOMMUNE.getEndringskode(), ids.size());
         antallMeldingerPerEndringskode.put(ENDRING_OPPHOLDSTILLATELSE.getEndringskode(), 1);
 
-        when(tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(any(), any())).thenReturn(new ArrayList<>());
+        when(syntTpsConsumer.getSyntetiserteSkdmeldinger(any(), any())).thenReturn(new ArrayList<>());
         var testfeilmelding = "testfeilmelding";
         doThrow(new RuntimeException(testfeilmelding))
                 .when(eksisterendeIdenterService).behandleEksisterendeIdenter(any(), any(), eq(ENDRING_OPPHOLDSTILLATELSE), any());

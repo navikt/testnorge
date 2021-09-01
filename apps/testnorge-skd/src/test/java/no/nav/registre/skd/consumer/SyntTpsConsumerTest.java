@@ -23,9 +23,9 @@ import no.nav.registre.skd.testutils.AssertionUtils;
 
 @TestPropertySource(locations = "classpath:application-test.properties")
 @ActiveProfiles("test")
-public class TpsSyntetisererenConsumerTest {
+public class SyntTpsConsumerTest {
 
-    private TpsSyntetisererenConsumer consumer;
+    private SyntTpsConsumer consumer;
 
     private MockWebServer mockWebServer;
 
@@ -36,7 +36,7 @@ public class TpsSyntetisererenConsumerTest {
         Dispatcher dispatcher = getSyntTpsDispatcher();
         mockWebServer.setDispatcher(dispatcher);
 
-        this.consumer = new TpsSyntetisererenConsumer(
+        this.consumer = new SyntTpsConsumer(
                 new StsOidcTokenService(mockWebServer.url("/token").toString(), "dummy", "dummy"),
                 mockWebServer.url("/api").toString());
 

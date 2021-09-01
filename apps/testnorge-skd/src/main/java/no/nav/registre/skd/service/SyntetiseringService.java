@@ -27,7 +27,7 @@ import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import no.nav.registre.skd.consumer.TpsSyntetisererenConsumer;
+import no.nav.registre.skd.consumer.SyntTpsConsumer;
 import no.nav.registre.skd.consumer.TpsfConsumer;
 import no.nav.registre.skd.consumer.requests.SendToTpsRequest;
 import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
@@ -56,7 +56,7 @@ public class SyntetiseringService {
 
     private final TpsfConsumer tpsfConsumer;
 
-    private final TpsSyntetisererenConsumer tpsSyntetisererenConsumer;
+    private final SyntTpsConsumer syntTpsConsumer;
 
     private final ValidationService validationService;
 
@@ -92,7 +92,7 @@ public class SyntetiseringService {
         for (var endringskode : sorterteEndringskoder) {
             List<Long> ids = new ArrayList<>();
             try {
-                List<RsMeldingstype> syntetiserteSkdmeldinger = tpsSyntetisererenConsumer.getSyntetiserteSkdmeldinger(endringskode.getEndringskode(),
+                List<RsMeldingstype> syntetiserteSkdmeldinger = syntTpsConsumer.getSyntetiserteSkdmeldinger(endringskode.getEndringskode(),
                         antallMeldingerPerEndringskode.get(endringskode.getEndringskode()));
                 validationService.logAndRemoveInvalidMessages(syntetiserteSkdmeldinger, endringskode);
 
