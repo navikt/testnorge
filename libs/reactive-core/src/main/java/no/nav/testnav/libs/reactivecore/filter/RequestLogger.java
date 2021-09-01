@@ -32,7 +32,11 @@ public class RequestLogger implements WebFilter {
 
     private LogRequest logRequest() {
         return (request, body) -> {
-            Map<String, String> contextMap = MDC.getCopyOfContextMap() != null ? MDC.getCopyOfContextMap() : new HashMap<>();
+            if (!log.isTraceEnabled()) {
+                return;
+            }
+            Map<String, String> original = MDC.getCopyOfContextMap();
+            Map<String, String> contextMap = MDC.getCopyOfContextMap();
             var method = request.getMethod().name();
             var uri = request.getPath().toString();
             var queryParrams = request.getQueryParams().isEmpty() ? null : request.getQueryParams().toString();
@@ -48,11 +52,11 @@ public class RequestLogger implements WebFilter {
             contextMap.put(HttpHeaders.ORIGIN, request.getHeaders().getOrigin());
             contextMap.put(HttpHeaders.ACCEPT, request.getHeaders().getAccept().toString());
             contextMap.put("Query-Params", queryParrams);
-            contextMap.put("Body", body == null ? "[empty]" : body);
             contextMap.put("URI", uri);
 
             MDC.setContextMap(contextMap);
             log.trace("[Request ] {} {}{}", method, host, uri);
+            MDC.setContextMap(original);
 
         };
     }
@@ -63,8 +67,8 @@ public class RequestLogger implements WebFilter {
             if (!log.isTraceEnabled()) {
                 return;
             }
-
-            Map<String, String> contextMap = MDC.getCopyOfContextMap() != null ? MDC.getCopyOfContextMap() : new HashMap<>();
+            Map<String, String> original = MDC.getCopyOfContextMap();
+            Map<String, String> contextMap = MDC.getCopyOfContextMap();
             var method = request.getMethod().name();
             var uri = request.getPath().toString();
             var statusCode = response.getRawStatusCode();
@@ -86,6 +90,7 @@ public class RequestLogger implements WebFilter {
 
             MDC.setContextMap(contextMap);
             log.trace("[Response] {} {}{} HTTP:{}", method, host, uri, statusCode);
+            MDC.setContextMap(original);
         };
     }
 }

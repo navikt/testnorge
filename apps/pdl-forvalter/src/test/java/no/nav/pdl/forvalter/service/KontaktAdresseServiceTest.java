@@ -90,7 +90,7 @@ class KontaktAdresseServiceTest {
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 kontaktAdresseService.convert(request));
 
-        assertThat(exception.getMessage(), containsString("Én av adressene må velges"));
+        assertThat(exception.getMessage(), containsString("én av adressene må velges"));
     }
 
     @Test
@@ -107,7 +107,7 @@ class KontaktAdresseServiceTest {
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 kontaktAdresseService.convert(request));
 
-        assertThat(exception.getMessage(), containsString("Kun én adresse skal være satt"));
+        assertThat(exception.getMessage(), containsString("kun én adresse skal være satt"));
     }
 
     @Test

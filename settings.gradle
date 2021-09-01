@@ -69,6 +69,7 @@ includeBuild './apps/profil-api'
 includeBuild './apps/faste-data-frontend'
 includeBuild './apps/oversikt-frontend'
 includeBuild './apps/testnorge-inst'
+includeBuild './apps/testnorge-aareg'
 includeBuild './apps/endringsmelding-frontend'
 includeBuild './apps/endringsmelding-service'
 includeBuild './apps/applikasjonsanalyse-frontend'
@@ -79,9 +80,13 @@ includeBuild './apps/amelding-service'
 includeBuild './apps/applikasjonsanalyse-service'
 includeBuild './apps/arbeidsforhold-export-api'
 includeBuild './apps/arbeidsforhold-service'
+includeBuild './apps/varslinger-service'
 includeBuild './apps/dolly-frontend-redirect'
 includeBuild './apps/dolly-frontend'
 includeBuild './apps/synt-sykemelding-api'
+includeBuild './apps/import-person-service'
+includeBuild './apps/jenkins-batch-status-service'
+includeBuild './apps/organisasjon-bestilling-service'
 
 includeBuild './xsd/arbeidsforhold-xsd'
 
@@ -92,7 +97,6 @@ include(':testnorge-tss')
 include(':tp-domain')
 include(':sykemelding-api')
 include(':medl-core')
-include(':aareg-local')
 include(':mn-original-populasjon')
 include(':medl-local')
 include(':sigrun-local')
@@ -100,7 +104,6 @@ include(':testnorge-nav-endringsmeldinger')
 include(':testnorge-frikort')
 include(':testnorge-aaregstub')
 include(':sam-domain')
-include(':aareg-domain')
 include(':medl-domain')
 include(':testnorge-sigrun')
 include(':orkestratoren')
@@ -119,7 +122,6 @@ include(':testnorge-populasjoner')
 include(':sam-core')
 include(':tilbakemelding-api')
 include(':sam-local')
-include(':aareg-core')
 include(':mn-organisasjon-api')
 include(':organisasjon-service')
 include(':organisasjon-service')
@@ -132,10 +134,8 @@ include(':sigrun-domain')
 include(':libs')
 include(':testnorge-spion')
 include(':opprett-person-pdl')
-include(':varslinger-api')
 include(':testnorge-inntekt')
 include(':tp-core')
-include(':testnorge-aareg')
 include(':synt-person-api')
 include(':skd-core')
 include(':testnorge-sam')
@@ -157,7 +157,6 @@ project(":testnorge-tss").projectDir = file('apps/testnorge-tss')
 project(":tp-domain").projectDir = file('apps/testnorge-tp/tp-domain')
 project(":sykemelding-api").projectDir = file('apps/sykemelding-api')
 project(":medl-core").projectDir = file('apps/testnorge-medl/medl-core')
-project(":aareg-local").projectDir = file('apps/testnorge-aareg/aareg-local')
 project(":mn-original-populasjon").projectDir = file('apps/mn-original-populasjon')
 project(":medl-local").projectDir = file('apps/testnorge-medl/medl-local')
 project(":sigrun-local").projectDir = file('apps/testnorge-sigrun/sigrun-local')
@@ -165,7 +164,6 @@ project(":testnorge-nav-endringsmeldinger").projectDir = file('apps/testnorge-na
 project(":testnorge-frikort").projectDir = file('apps/testnorge-frikort')
 project(":testnorge-aaregstub").projectDir = file('apps/testnorge-aaregstub')
 project(":sam-domain").projectDir = file('apps/testnorge-sam/sam-domain')
-project(":aareg-domain").projectDir = file('apps/testnorge-aareg/aareg-domain')
 project(":medl-domain").projectDir = file('apps/testnorge-medl/medl-domain')
 project(":testnorge-sigrun").projectDir = file('apps/testnorge-sigrun')
 project(":orkestratoren").projectDir = file('apps/orkestratoren')
@@ -184,7 +182,6 @@ project(":testnorge-populasjoner").projectDir = file('apps/testnorge-populasjone
 project(":sam-core").projectDir = file('apps/testnorge-sam/sam-core')
 project(":tilbakemelding-api").projectDir = file('apps/tilbakemelding-api')
 project(":sam-local").projectDir = file('apps/testnorge-sam/sam-local')
-project(":aareg-core").projectDir = file('apps/testnorge-aareg/aareg-core')
 project(":mn-organisasjon-api").projectDir = file('apps/mn-organisasjon-api')
 project(":organisasjon-service").projectDir = file('apps/organisasjon-service')
 project(":organisasjon-service").projectDir = file('apps/organisasjon-service')
@@ -195,10 +192,8 @@ project(":brreg-stub").projectDir = file('apps/brreg-stub')
 project(":sigrun-domain").projectDir = file('apps/testnorge-sigrun/sigrun-domain')
 project(":testnorge-spion").projectDir = file('apps/testnorge-spion')
 project(":opprett-person-pdl").projectDir = file('apps/opprett-person-pdl')
-project(":varslinger-api").projectDir = file('apps/varslinger-api')
 project(":testnorge-inntekt").projectDir = file('apps/testnorge-inntekt')
 project(":tp-core").projectDir = file('apps/testnorge-tp/tp-core')
-project(":testnorge-aareg").projectDir = file('apps/testnorge-aareg')
 project(":synt-person-api").projectDir = file('apps/synt-person-api')
 project(":skd-core").projectDir = file('apps/testnorge-skd/skd-core')
 project(":testnorge-sam").projectDir = file('apps/testnorge-sam')
@@ -230,14 +225,8 @@ project(":generer-synt-amelding-service").projectDir = file('apps/generer-synt-a
 include 'miljoer-service'
 project(":miljoer-service").projectDir = file('apps/miljoer-service')
 
-include 'organisasjon-bestilling-service'
-project(":organisasjon-bestilling-service").projectDir = file('apps/organisasjon-bestilling-service')
-
 include 'ereg-batch-status-service'
 project(":ereg-batch-status-service").projectDir = file('apps/ereg-batch-status-service')
-
-include 'jenkins-batch-status-service'
-project(":jenkins-batch-status-service").projectDir = file('apps/jenkins-batch-status-service')
 
 include 'oppsummeringsdokument-service'
 project(":oppsummeringsdokument-service").projectDir = file('apps/oppsummeringsdokument-service')

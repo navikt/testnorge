@@ -20,6 +20,7 @@ public class ArbeidsavtaleDTO {
     PeriodeDTO bruksperiode;
     PeriodeDTO gyldighetsperiode;
     String sistLoennsendring;
+    LocalDate sisteLoennsendringsdato;
     LocalDate sistStillingsendring;
     Double stillingsprosent;
     String yrke;

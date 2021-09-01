@@ -31,7 +31,7 @@ import no.nav.dolly.web.credentials.TestnavPensjonTestdataFacadeProxyProperties;
 import no.nav.dolly.web.credentials.TestnavSigrunstubProxyProperties;
 import no.nav.dolly.web.credentials.TestnavTestnorgeAaregProxyProperties;
 import no.nav.dolly.web.credentials.TestnavTestnorgeInstProxyProperties;
-import no.nav.dolly.web.credentials.TestnavVarslingerApiProperties;
+import no.nav.dolly.web.credentials.TestnavVarslingerServiceProperties;
 import no.nav.dolly.web.credentials.TestnorgeProfilApiProperties;
 import no.nav.dolly.web.credentials.TpsForvalterenProxyProperties;
 import no.nav.dolly.web.credentials.UdiStubProperties;
@@ -70,7 +70,7 @@ public class ApplicationStarter {
     private final TestnavPensjonTestdataFacadeProxyProperties testnavPensjonTestdataFacadeProxyProperties;
     private final DollyBackendProperties dollyBackendProperties;
     private final TestnorgeProfilApiProperties testnorgeProfilApiProperties;
-    private final TestnavVarslingerApiProperties testnorgeVarslingerApiProperties;
+    private final TestnavVarslingerServiceProperties testnavVarslingerServiceProperties;
     private final TestnavOrganisasjonForvalterProperties testnavOrganisasjonForvalterProperties;
     private final TestnavOrganisasjonServiceProperties testnavOrganisasjonServiceProperties;
     private final TestnavMiljoerServiceProperties testnavMiljoerServiceProperties;
@@ -89,7 +89,7 @@ public class ApplicationStarter {
                 .route(createRoute(testnavOrganisasjonFasteDataServiceProperties))
                 .route(createRoute(testnavAdresseServiceProperties))
                 .route(createRoute(testnavOrganisasjonForvalterProperties))
-                .route(createRoute(testnorgeVarslingerApiProperties))
+                .route(createRoute(testnavVarslingerServiceProperties))
                 .route(createRoute(testnorgeProfilApiProperties))
                 .route(createRoute(testnavMiljoerServiceProperties))
                 .route(createRoute(dollyBackendProperties, "dolly-backend"))
