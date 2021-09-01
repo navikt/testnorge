@@ -112,7 +112,7 @@ public class ArbeidsforholdResponse {
         private Double beregnetAntallTimerPrUke;
         private Periode bruksperiode;
         private Periode gyldighetsperiode;
-        private LocalDate sisteLoennsendringsdato;
+        private LocalDate sistLoennsendring;
         private LocalDate sistStillingsendring;
         private Double stillingsprosent;
         private String yrke;
