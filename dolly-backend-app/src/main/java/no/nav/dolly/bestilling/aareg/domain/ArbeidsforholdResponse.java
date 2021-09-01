@@ -113,6 +113,7 @@ public class ArbeidsforholdResponse {
         private Periode bruksperiode;
         private Periode gyldighetsperiode;
         private LocalDate sistLoennsendring;
+        private LocalDate sisteLoennsendringsdato;
         private LocalDate sistStillingsendring;
         private Double stillingsprosent;
         private String yrke;
