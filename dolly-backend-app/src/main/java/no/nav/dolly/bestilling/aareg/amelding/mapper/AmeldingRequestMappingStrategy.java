@@ -105,7 +105,7 @@ public class AmeldingRequestMappingStrategy implements MappingStrategy {
                                         .yrke(rsArbeidsforholdAareg.getArbeidsavtale().getYrke())
                                         .arbeidstidsordning(rsArbeidsforholdAareg.getArbeidsavtale().getArbeidstidsordning())
                                         .stillingsprosent(nonNull(rsArbeidsforholdAareg.getArbeidsavtale().getStillingsprosent()) ? rsArbeidsforholdAareg.getArbeidsavtale().getStillingsprosent().floatValue() : null)
-                                        .sisteLoennsendringsdato(nonNull(rsArbeidsforholdAareg.getArbeidsavtale().getEndringsdatoLoenn()) ? rsArbeidsforholdAareg.getArbeidsavtale().getEndringsdatoLoenn().toLocalDate() : null)
+                                        .sisteLoennsendringsdato(nonNull(rsArbeidsforholdAareg.getArbeidsavtale().getSisteLoennsendringsdato()) ? rsArbeidsforholdAareg.getArbeidsavtale().getSisteLoennsendringsdato().toLocalDate() : null)
                                         .permisjoner((nonNull(rsArbeidsforholdAareg.getPermisjon()) && !rsArbeidsforholdAareg.getPermisjon().isEmpty())
                                                 || (nonNull(rsArbeidsforholdAareg.getPermittering()) && !rsArbeidsforholdAareg.getPermittering().isEmpty())
                                                 ? Stream.of(
