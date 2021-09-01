@@ -41,7 +41,6 @@ public class AaregRequestMappingStrategy implements MappingStrategy {
                                 .avloenningstype(rsArbeidsforhold.getArbeidsavtale().getAvloenningstype())
                                 .avtaltArbeidstimerPerUke(rsArbeidsforhold.getArbeidsavtale().getAvtaltArbeidstimerPerUke())
                                 .endringsdatoStillingsprosent(null)
-                                .sisteLoennsendringsdato(rsArbeidsforhold.getArbeidsavtale().getSisteLoennsendringsdato())
                                 .stillingsprosent(rsArbeidsforhold.getArbeidsavtale().getStillingsprosent())
                                 .yrke(rsArbeidsforhold.getArbeidsavtale().getYrke())
                                 .endringsdatoLoenn(null)
