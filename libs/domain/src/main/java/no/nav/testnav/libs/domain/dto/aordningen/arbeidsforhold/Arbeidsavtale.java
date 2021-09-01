@@ -66,6 +66,12 @@ public class Arbeidsavtale {
             notes = "Dato for siste stillingsendring, format (ISO-8601): yyyy-MM-dd",
             example = "2015-12-15"
     )
+
+    private LocalDate sisteLoennsendringsdato;
+    @ApiModelProperty(
+            notes = "Dato for siste stillingsendring, format (ISO-8601): yyyy-MM-dd",
+            example = "2015-12-15"
+    )
     private LocalDate sistStillingsendring;
     @ApiModelProperty(
             notes = "Bruksperiode for arbeidsavtalen"

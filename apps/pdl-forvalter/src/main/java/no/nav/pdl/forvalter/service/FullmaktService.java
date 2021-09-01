@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
@@ -43,7 +43,7 @@ public class FullmaktService {
                 validate(type);
 
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
-                type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : DbVersjonDTO.Master.FREG);
+                type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
                 handle(type, person.getIdent());
             }
         }
@@ -88,7 +88,7 @@ public class FullmaktService {
                 fullmakt.getNyFullmektig().setFoedtEtter(LocalDateTime.now().minusYears(75));
             }
 
-            if (fullmakt.getNyFullmektig().getSyntetisk()) {
+            if (isNull(fullmakt.getNyFullmektig().getSyntetisk())) {
                 fullmakt.getNyFullmektig().setSyntetisk(SyntetiskFraIdentUtility.isSyntetisk(ident));
             }
 
@@ -97,5 +97,7 @@ public class FullmaktService {
                     fullmakt.getMotpartsPersonident(), RelasjonType.FULLMEKTIG);
             fullmakt.setNyFullmektig(null);
         }
+
+        fullmakt.setMaster(Master.PDL);
     }
 }

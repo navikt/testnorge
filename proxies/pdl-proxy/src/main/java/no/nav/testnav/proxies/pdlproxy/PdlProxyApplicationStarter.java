@@ -1,5 +1,11 @@
 package no.nav.testnav.proxies.pdlproxy;
 
+import no.nav.testnav.libs.reactivecore.config.CoreConfig;
+import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
+import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
+import no.nav.testnav.libs.reactiveproxy.filter.AddRequestHeadersGatewayFilterFactory;
+import no.nav.testnav.libs.reactiveproxy.filter.GetHeader;
+import no.nav.testnav.libs.securitytokenservice.StsOidcTokenService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,13 +20,6 @@ import org.springframework.http.HttpHeaders;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
-
-import no.nav.testnav.libs.securitytokenservice.StsOidcTokenService;
-import no.nav.testnav.libs.reactivecore.config.CoreConfig;
-import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
-import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
-import no.nav.testnav.libs.reactiveproxy.filter.AddRequestHeadersGatewayFilterFactory;
-import no.nav.testnav.libs.reactiveproxy.filter.GetHeader;
 
 @Import({
         CoreConfig.class,
@@ -65,7 +64,7 @@ public class PdlProxyApplicationStarter {
         return builder
                 .routes()
                 .route(createRoute("pdl-api", "https://pdl-api.dev.adeo.no", addAuthorizationAndNavConsumerTokenToRouteFilter))
-                .route(createRoute("pdl-testdata", "https://pdl-testdata.dev.adeo.no", addAuthenticationHeaderFilter))
+                .route(createRoute("pdl-testdata", "https://pdl-testdata-feature.dev.adeo.no", addAuthenticationHeaderFilter))
                 .build();
     }
 

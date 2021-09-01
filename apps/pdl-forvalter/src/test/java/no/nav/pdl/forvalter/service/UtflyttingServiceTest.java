@@ -9,7 +9,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -41,26 +40,6 @@ class UtflyttingServiceTest {
                 utflyttingService.convert((List<UtflyttingDTO>) request));
 
         assertThat(exception.getMessage(), containsString("Landkode må oppgis i hht ISO-3 Landkoder for tilflyttingsland"));
-    }
-
-    @Test
-    void whenInvalidFlyttedatoSequence_thenThrowExecption() {
-
-        var request = List.of(UtflyttingDTO.builder()
-                        .tilflyttingsland("USA")
-                        .gyldigFraOgMed(LocalDate.of(2015, 12, 31).atStartOfDay())
-                        .isNew(true)
-                        .build(),
-                UtflyttingDTO.builder()
-                        .tilflyttingsland("CAN")
-                        .gyldigFraOgMed(LocalDate.of(2015, 12, 31).atStartOfDay())
-                        .isNew(true)
-                        .build());
-
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                utflyttingService.convert(request));
-
-        assertThat(exception.getMessage(), containsString("Ugyldig flyttedato, ny dato må være etter en eksisterende"));
     }
 
     @Test

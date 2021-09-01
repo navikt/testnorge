@@ -12,20 +12,19 @@ public abstract class PdlTestdataCommand implements Callable<Mono<OrdreResponseD
     static final String HEADER_NAV_PERSON_IDENT = "Nav-Personident";
     static final String TEMA = "Tema";
 
+    protected static String getMessage(Throwable error) {
+
+        return error instanceof WebClientResponseException ?
+                ((WebClientResponseException) error).getResponseBodyAsString() :
+                error.getMessage();
+    }
+
     OrdreResponseDTO.HendelseDTO errorHandling(Throwable error, Integer id) {
 
-        if (error instanceof WebClientResponseException) {
-            return OrdreResponseDTO.HendelseDTO.builder()
-                    .id(id)
-                    .status(PdlStatus.FEIL)
-                    .error(((WebClientResponseException) error).getResponseBodyAsString())
-                    .build();
-        } else {
-            return OrdreResponseDTO.HendelseDTO.builder()
-                    .id(id)
-                    .status(PdlStatus.FEIL)
-                    .error(error.getMessage())
-                    .build();
-        }
+        return OrdreResponseDTO.HendelseDTO.builder()
+                .id(id)
+                .status(PdlStatus.FEIL)
+                .error(getMessage(error))
+                .build();
     }
 }

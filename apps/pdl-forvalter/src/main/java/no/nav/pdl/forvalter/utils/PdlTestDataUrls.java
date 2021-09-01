@@ -44,7 +44,7 @@ public class PdlTestDataUrls {
     private static final String PDL_BESTILLING_UTENLANDS_IDENTIFIKASJON_NUMMER_URL = PDL_BESTILLING_URL + "/utenlandsidentifikasjonsnummer";
     private static final String PDL_BESTILLING_FALSK_IDENTITET_URL = PDL_BESTILLING_URL + "/falskidentitet";
     private static final String PDL_BESTILLING_FOEDSEL_URL = PDL_BESTILLING_URL + "/foedsel";
-    private static final String PDL_BESTILLING_FORELDRE_BARN_RELASJON_URL = PDL_BESTILLING_URL + "/foreldrebarnrelasjon";
+    private static final String PDL_BESTILLING_FORELDRE_BARN_RELASJON_URL = PDL_BESTILLING_URL + "/forelderbarnrelasjon";
     private static final String PDL_BESTILLING_DOEDSFALL_URL = PDL_BESTILLING_URL + "/doedsfall";
     private static final String PDL_BESTILLING_ADRESSEBESKYTTELSE_URL = PDL_BESTILLING_URL + "/adressebeskyttelse";
     private static final String PDL_BESTILLING_NAVN_URL = PDL_BESTILLING_URL + "/navn";

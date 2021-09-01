@@ -18,4 +18,5 @@ public class StatsborgerskapDTO extends DbVersjonDTO {
     private String landkode;
     private LocalDateTime gyldigFraOgMed;
     private LocalDateTime gyldigTilOgMed;
+    private LocalDateTime bekreftelsesdato;
 }

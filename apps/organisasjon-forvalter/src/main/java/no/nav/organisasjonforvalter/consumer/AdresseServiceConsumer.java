@@ -48,12 +48,11 @@ public class AdresseServiceConsumer {
         long startTime = currentTimeMillis();
 
         try {
-            var accessToken = accessTokenService.generateToken(serviceProperties);
-            var adresseResponse =
-                    new AdresseServiceCommand(webClient, query, accessToken.block().getTokenValue()).call();
+            var adresser = accessTokenService.generateToken(serviceProperties)
+            .flatMap(token ->  new AdresseServiceCommand(webClient, query, token.getTokenValue()).call()).block();
 
             log.info("Adresseoppslag tok {} ms", currentTimeMillis() - startTime);
-            return Arrays.asList(adresseResponse);
+            return Arrays.asList(adresser);
 
         } catch (RuntimeException e) {
 

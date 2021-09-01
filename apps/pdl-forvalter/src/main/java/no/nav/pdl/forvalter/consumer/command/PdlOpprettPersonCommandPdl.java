@@ -6,6 +6,7 @@ import no.nav.pdl.forvalter.dto.HistoriskIdent;
 import no.nav.pdl.forvalter.dto.PdlBestillingResponse;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlStatus;
+import org.springframework.boot.web.server.WebServerException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -38,11 +39,12 @@ public class PdlOpprettPersonCommandPdl extends PdlTestdataCommand {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(TEMA, GEN.name())
                 .header(HEADER_NAV_PERSON_IDENT, ident)
-                .exchange()
-                .flatMap(response -> response.bodyToMono(PdlBestillingResponse.class)
-                        .map((value -> OrdreResponseDTO.HendelseDTO.builder()
+                .retrieve()
+                .bodyToMono(PdlBestillingResponse.class)
+                .flatMap(response -> Mono.just(OrdreResponseDTO.HendelseDTO.builder()
                                 .status(PdlStatus.OK)
-                                .build())))
-                .doOnError(error -> Mono.just(errorHandling(error, null)));
+                                .build()))
+                .doOnError(WebServerException.class, error -> log.error(error.getMessage(), error))
+                .onErrorResume(error -> Mono.just(errorHandling(error, null)));
     }
 }
