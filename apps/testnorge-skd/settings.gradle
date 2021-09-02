@@ -10,7 +10,7 @@ includeBuild '../../libs/commands'
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/servlet-security'
 includeBuild '../../libs/data-transfer-objects'
-includeBuild '../../libs/security-token-service'
+includeBuild '../../libs/servlet-security'
 
 gradleEnterprise {
     buildScan {

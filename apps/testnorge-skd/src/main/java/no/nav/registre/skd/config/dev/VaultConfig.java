@@ -7,5 +7,6 @@ import org.springframework.vault.annotation.VaultPropertySource;
 @Configuration
 @Profile("local")
 @VaultPropertySource(value = "kv/preprod/fss/testnorge-skd/local", ignoreSecretNotFound = false)
+@VaultPropertySource(value = "azuread/prod/creds/team-dolly-lokal-app", ignoreSecretNotFound = false)
 public class VaultConfig {
 }

@@ -10,21 +10,26 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.List;
 
 import no.nav.registre.skd.consumer.command.GetSyntSkdMeldingerCommand;
+import no.nav.registre.skd.consumer.credential.SyntTpsGcpProperties;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
-import no.nav.testnav.libs.securitytokenservice.StsOidcTokenService;
+import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 
 @Component
 @Slf4j
 public class SyntTpsConsumer {
 
-    private final StsOidcTokenService tokenService;
+    private final AccessTokenService tokenService;
+    private final NaisServerProperties serviceProperties;
     private final WebClient webClient;
 
     public SyntTpsConsumer(
-            StsOidcTokenService stsOidcTokenService,
+            SyntTpsGcpProperties syntTpsGcpProperties,
+            AccessTokenService accessTokenService,
             @Value("${synt-tps.rest.api.url}") String syntrestServerUrl
     ) {
-        this.tokenService = stsOidcTokenService;
+        this.serviceProperties = syntTpsGcpProperties;
+        this.tokenService = accessTokenService;
         this.webClient = WebClient.builder().baseUrl(syntrestServerUrl).build();
     }
 
@@ -33,7 +38,9 @@ public class SyntTpsConsumer {
             String endringskode,
             Integer antallMeldinger
     ) {
-        var response = new GetSyntSkdMeldingerCommand(endringskode, antallMeldinger, tokenService.getToken(), webClient).call();
+        var accessToken = tokenService.generateClientCredentialAccessToken(serviceProperties).getTokenValue();
+
+        var response = new GetSyntSkdMeldingerCommand(endringskode, antallMeldinger, accessToken, webClient).call();
 
         if (response != null && response.size() != antallMeldinger) {
             log.warn("Feil antall meldinger mottatt fra TPS-Syntetisereren. Forventet {}, men mottok {} meldinger.", antallMeldinger, response.size());

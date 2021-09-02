@@ -12,10 +12,14 @@ import java.util.Random;
 import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import no.nav.testnav.libs.servletsecurity.config.InsecureOAuth2ServerToServerConfiguration;
-import no.nav.testnav.libs.securitytokenservice.StsOidcTokenService;
+import no.nav.testnav.libs.servletsecurity.config.SecureOAuth2ServerToServerConfiguration;
 
 @Configuration
-@Import(value = {ApplicationCoreConfig.class, InsecureOAuth2ServerToServerConfiguration.class})
+@Import(value = {
+        ApplicationCoreConfig.class,
+        InsecureOAuth2ServerToServerConfiguration.class
+        SecureOAuth2ServerToServerConfiguration.class
+})
 public class AppConfig {
 
     @Value("${testnorge-hodejegeren.rest-api.url}")
@@ -31,14 +35,6 @@ public class AppConfig {
         return new Random();
     }
 
-    @Bean
-    public StsOidcTokenService stsOidcTokenService(
-            @Value("${sts.token.provider.url}") String url,
-            @Value("${sts.token.provider.username}") String username,
-            @Value("${sts.token.provider.password}") String password
-    ) {
-        return new StsOidcTokenService(url, username, password);
-    }
 
     @Bean
     @DependsOn("restTemplate")
