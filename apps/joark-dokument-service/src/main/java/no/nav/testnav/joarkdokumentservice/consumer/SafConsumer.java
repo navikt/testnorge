@@ -58,7 +58,7 @@ public class SafConsumer {
                 ).block();
     }
 
-    public String getPDF(Integer journalpostId, Integer dokumentInfoId, DokumentType dokumentType, String miljo) {
+    public String getPDF(Integer journalpostId, Integer dokumentInfoId, String miljo) {
         return accessTokenService
                 .generateToken(properties)
                 .flatMap(accessToken -> new GetPDFCommand(
@@ -66,8 +66,7 @@ public class SafConsumer {
                                 accessToken.getTokenValue(),
                                 journalpostId,
                                 dokumentInfoId,
-                                miljo,
-                                dokumentType
+                                miljo
                         ).call()
                 ).block();
     }

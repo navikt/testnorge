@@ -48,11 +48,10 @@ const hentPDF = (
 	journalpostId: number,
 	dokumentInfoId: number,
 	miljo: string,
-	dokumentType: DokumentType
 ): any =>
 	api
 		.fetch(
-			`/testnav-joark-dokument-service/api/v2/journalpost/${journalpostId}/dokumenter/${dokumentInfoId}?dokumentType=${dokumentType}/pdf`,
+			`/testnav-joark-dokument-service/api/v2/journalpost/${journalpostId}/dokumenter/${dokumentInfoId}/pdf`,
 			{
 				method: 'GET',
 				headers: {
