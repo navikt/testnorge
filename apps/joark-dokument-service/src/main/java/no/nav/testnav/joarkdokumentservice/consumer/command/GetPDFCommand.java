@@ -28,6 +28,7 @@ public class GetPDFCommand implements Callable<Mono<String>> {
                 )
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(HttpHeaders.CONTENT_TYPE, "application/pdf")
+                .header(HttpHeaders.ACCEPT, "application/pdf")
                 .retrieve()
                 .bodyToMono(String.class)
                 .onErrorResume(
