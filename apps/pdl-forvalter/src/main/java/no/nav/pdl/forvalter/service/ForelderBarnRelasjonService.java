@@ -10,7 +10,7 @@ import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.ROLLE;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
@@ -81,8 +81,8 @@ public class ForelderBarnRelasjonService {
             throw new InvalidRequestException(INVALID_EMPTY_RELATERT_PERSON_ROLLE_EXCEPTION);
         }
 
-        if ((relasjon.getMinRolleForPerson() == ROLLE.BARN && relasjon.getRelatertPersonsRolle() == ROLLE.BARN) ||
-                (relasjon.getMinRolleForPerson() != ROLLE.BARN && relasjon.getRelatertPersonsRolle() != ROLLE.BARN)) {
+        if ((relasjon.getMinRolleForPerson() == Rolle.BARN && relasjon.getRelatertPersonsRolle() == Rolle.BARN) ||
+                (relasjon.getMinRolleForPerson() != Rolle.BARN && relasjon.getRelatertPersonsRolle() != Rolle.BARN)) {
             throw new InvalidRequestException(AMBIGUOUS_PERSON_ROLLE_EXCEPTION);
         }
 
@@ -99,7 +99,7 @@ public class ForelderBarnRelasjonService {
         setRelatertPerson(relasjon, hovedperson);
         addForelderBarnRelasjon(relasjon, hovedperson);
 
-        if (relasjon.getRelatertPersonsRolle() == ROLLE.BARN &&
+        if (relasjon.getRelatertPersonsRolle() == Rolle.BARN &&
                 isNotTrue(relasjon.getPartnerErIkkeForelder()) && hovedperson.getSivilstand().stream()
                 .anyMatch(sivilstand -> nonNull(sivilstand.getRelatertVedSivilstand()))) {
 
@@ -114,7 +114,7 @@ public class ForelderBarnRelasjonService {
         }
         relasjon.setPartnerErIkkeForelder(null);
 
-        if (relasjon.getMinRolleForPerson() == ROLLE.BARN) {
+        if (relasjon.getMinRolleForPerson() == Rolle.BARN) {
             ForelderBarnRelasjonDTO forelderRelasjon = mapperFacade.map(relasjon, ForelderBarnRelasjonDTO.class);
             forelderRelasjon.setNyRelatertPerson(PersonRequestDTO.builder()
                     .kjoenn(KjoennFraIdentUtility.getKjoenn(relasjon.getRelatertPerson()) == MANN ? KVINNE : MANN)
@@ -136,9 +136,9 @@ public class ForelderBarnRelasjonService {
 
         getRolle(relasjon, hovedperson);
         relasjonService.setRelasjoner(hovedperson.getIdent(),
-                relasjon.getRelatertPersonsRolle() == ROLLE.BARN ? FAMILIERELASJON_FORELDER : FAMILIERELASJON_BARN,
+                relasjon.getRelatertPersonsRolle() == Rolle.BARN ? FAMILIERELASJON_FORELDER : FAMILIERELASJON_BARN,
                 relasjon.getRelatertPerson(),
-                relasjon.getRelatertPersonsRolle() == ROLLE.BARN ? FAMILIERELASJON_BARN : FAMILIERELASJON_FORELDER);
+                relasjon.getRelatertPersonsRolle() == Rolle.BARN ? FAMILIERELASJON_BARN : FAMILIERELASJON_FORELDER);
 
         createMotsattRelasjon(relasjon, hovedperson.getIdent());
         return relasjon;
@@ -156,9 +156,9 @@ public class ForelderBarnRelasjonService {
                     isNull(relasjon.getNyRelatertPerson().getFoedtFoer())) {
 
                 relasjon.getNyRelatertPerson().setFoedtFoer(LocalDateTime.now().minusYears(
-                        relasjon.getRelatertPersonsRolle() == ROLLE.BARN ? 0 : 70));
+                        relasjon.getRelatertPersonsRolle() == Rolle.BARN ? 0 : 70));
                 relasjon.getNyRelatertPerson().setFoedtEtter(LocalDateTime.now().minusYears(
-                        relasjon.getRelatertPersonsRolle() == ROLLE.BARN ? 18 : 90));
+                        relasjon.getRelatertPersonsRolle() == Rolle.BARN ? 18 : 90));
             }
             if (isNull(relasjon.getNyRelatertPerson().getKjoenn())) {
                 relasjon.getNyRelatertPerson().setKjoenn(getKjoenn(relasjon.getRelatertPersonsRolle()));
@@ -189,12 +189,12 @@ public class ForelderBarnRelasjonService {
 
     private void getRolle(ForelderBarnRelasjonDTO relasjon, PersonDTO person) {
 
-        if (relasjon.getRelatertPersonsRolle() == ROLLE.BARN) {
+        if (relasjon.getRelatertPersonsRolle() == Rolle.BARN) {
             relasjon.setMinRolleForPerson(
-                    KjoennFraIdentUtility.getKjoenn(person.getIdent()) == MANN ? ROLLE.FAR : ROLLE.MOR);
+                    KjoennFraIdentUtility.getKjoenn(person.getIdent()) == MANN ? Rolle.FAR : Rolle.MOR);
         } else {
             relasjon.setRelatertPersonsRolle(
-                    KjoennFraIdentUtility.getKjoenn(relasjon.getRelatertPerson()) == KVINNE ? ROLLE.MOR : ROLLE.FAR);
+                    KjoennFraIdentUtility.getKjoenn(relasjon.getRelatertPerson()) == KVINNE ? Rolle.MOR : Rolle.FAR);
         }
     }
 
@@ -224,7 +224,7 @@ public class ForelderBarnRelasjonService {
         personRepository.save(relatertPerson);
     }
 
-    private KjoennDTO.Kjoenn getKjoenn(ROLLE rolle) {
+    private KjoennDTO.Kjoenn getKjoenn(Rolle rolle) {
 
         switch (rolle) {
             case FAR:
@@ -240,7 +240,7 @@ public class ForelderBarnRelasjonService {
 
     private ForelderBarnRelasjonDTO swapRoller(ForelderBarnRelasjonDTO relasjon) {
 
-        ROLLE rolle = relasjon.getMinRolleForPerson();
+        Rolle rolle = relasjon.getMinRolleForPerson();
         relasjon.setMinRolleForPerson(relasjon.getRelatertPersonsRolle());
         relasjon.setRelatertPersonsRolle(rolle);
         return relasjon;

@@ -1,5 +1,6 @@
 package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -37,4 +38,10 @@ public class SivilstandDTO extends DbVersjonDTO {
 
     private Boolean borIkkeSammen;
     private PersonRequestDTO nyRelatertPerson;
+
+    @JsonIgnore
+    public boolean isGift() {
+
+        return Sivilstand.GIFT == type || Sivilstand.REGISTRERT_PARTNER == type;
+    }
 }
