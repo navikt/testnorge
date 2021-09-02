@@ -12,9 +12,10 @@ public class CacheConfig {
 
     public static final String CACHE_EREG_IMPORT = "org-importert";
     public static final String CACHE_BEDRIFT = "underenheter";
+    public static final String CACHE_MILJOER = "miljoer";
 
     @Bean
     public CacheManager cacheManager() {
-        return new ConcurrentMapCacheManager(CACHE_EREG_IMPORT, CACHE_BEDRIFT);
+        return new ConcurrentMapCacheManager(CACHE_EREG_IMPORT, CACHE_BEDRIFT, CACHE_MILJOER);
     }
 }

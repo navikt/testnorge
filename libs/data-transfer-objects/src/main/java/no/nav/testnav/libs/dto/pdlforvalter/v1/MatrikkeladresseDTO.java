@@ -15,10 +15,10 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MatrikkeladresseDTO implements Serializable {
 
-    private String tilleggsnavn;
-    private String bruksenhetsnummer;
-    private Integer bruksnummer;
-    private Integer gaardsnummer;
     private String kommunenummer;
+    private Integer gaardsnummer;
+    private Integer bruksnummer;
     private String postnummer;
+    private String bruksenhetsnummer;
+    private String tilleggsnavn;
 }

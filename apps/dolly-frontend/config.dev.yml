@@ -6,7 +6,8 @@ metadata:
   labels:
     team: dolly
 spec:
-  webproxy: true
+  idporten:
+    enabled: true
   azure:
     application:
       enabled: true
@@ -27,10 +28,10 @@ spec:
         - application: testnorge-profil-api
         - application: testnav-joark-dokument-service
         - application: testnav-organisasjon-faste-data-service
+        - application: testnav-varslinger-service
       external:
         - host: person-search-service.dev-fss-pub.nais.io
         - host: udi-stub-dev.dev-fss-pub.nais.io
-        - host: testnorge-varslinger-api.dev-fss-pub.nais.io
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
         - host: testnav-testnorge-inst-proxy.dev-fss-pub.nais.io

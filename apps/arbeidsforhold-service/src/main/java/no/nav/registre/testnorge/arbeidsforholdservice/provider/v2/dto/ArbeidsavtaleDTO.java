@@ -19,7 +19,8 @@ public class ArbeidsavtaleDTO {
     Double beregnetAntallTimerPrUke;
     PeriodeDTO bruksperiode;
     PeriodeDTO gyldighetsperiode;
-    String sistLoennsendring;
+    LocalDate sistLoennsendring;
+    LocalDate sisteLoennsendringsdato;
     LocalDate sistStillingsendring;
     Double stillingsprosent;
     String yrke;

@@ -176,7 +176,7 @@ public class ForelderBarnRelasjonService {
                                 .vegadresse(mapperFacade.map(defaultAdresse(), VegadresseDTO.class))
                                 .build());
                 fellesAdresse.setGyldigFraOgMed(getMaxDato(getLastFlyttedato(hovedperson), getLastFlyttedato(relatertPerson)));
-                relatertPerson.getBostedsadresse().add(0, fellesAdresse);
+                relatertPerson.getBostedsadresse().set(0, fellesAdresse);
             }
 
             relasjon.setRelatertPerson(relatertPerson.getIdent());
@@ -220,7 +220,7 @@ public class ForelderBarnRelasjonService {
         relatertFamilierelasjon.setId(relatertPerson.getPerson().getForelderBarnRelasjon().stream().findFirst()
                 .map(ForelderBarnRelasjonDTO::getId)
                 .orElse(0) + 1);
-        relatertPerson.getPerson().getForelderBarnRelasjon().add(relatertFamilierelasjon);
+        relatertPerson.getPerson().getForelderBarnRelasjon().add(0, relatertFamilierelasjon);
         personRepository.save(relatertPerson);
     }
 

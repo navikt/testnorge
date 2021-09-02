@@ -5,21 +5,19 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.dto.PdlBestillingResponse;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlStatus;
+import org.springframework.boot.web.server.WebServerException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.TemaGrunnlag.GEN;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @RequiredArgsConstructor
 public class PdlDeleteCommandPdl extends PdlTestdataCommand {
 
-    private static final String HEADER_NAV_PERSON_IDENT = "Nav-Personident";
-    private static final String TEMA = "Tema";
+    private static final String INFO_STATUS = "Finner ikke forespurt ident i pdl-api";
 
     private final WebClient webClient;
     private final String url;
@@ -36,24 +34,18 @@ public class PdlDeleteCommandPdl extends PdlTestdataCommand {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(TEMA, GEN.name())
                 .header(HEADER_NAV_PERSON_IDENT, ident)
-                .exchange()
-                .flatMap(response -> response.bodyToMono(PdlBestillingResponse.class)
-                        .map(value ->
-                                OrdreResponseDTO.HendelseDTO.builder()
-                                .status(isBlank(value.getFeilmelding()) ? PdlStatus.OK : PdlStatus.FEIL)
-                                .deletedOpplysninger(value.getDeletedOpplysninger())
-                                .error(value.getFeilmelding())
-                                .build()))
-                .doOnError(error -> {
-                    if (error instanceof WebClientResponseException) {
-                        if (!((WebClientResponseException) error)
-                                .getResponseBodyAsString().contains("Finner ikke forespurt ident i pdl-api")) {
-                            log.error("Sletting av person feilet mot pdl: {}",
-                                    ((WebClientResponseException) error).getResponseBodyAsString(), error);
-                        }
-                    } else {
-                        log.error("Sletting av person feilet mot pdl ", error);
-                    }
-                });
+                .retrieve()
+                .bodyToMono(PdlBestillingResponse.class)
+                .flatMap(response -> Mono.just(OrdreResponseDTO.HendelseDTO.builder()
+                        .status(PdlStatus.OK)
+                        .deletedOpplysninger(response.getDeletedOpplysninger())
+                        .build()))
+                .doOnError(WebServerException.class, error -> log.error(error.getMessage(), error))
+                .onErrorResume(error ->
+                        Mono.just(OrdreResponseDTO.HendelseDTO.builder()
+                                .status(getMessage(error).contains(INFO_STATUS) ? PdlStatus.OK : PdlStatus.FEIL)
+                                .error(getMessage(error).contains(INFO_STATUS) ? null : getMessage(error))
+                                .build())
+                );
     }
 }

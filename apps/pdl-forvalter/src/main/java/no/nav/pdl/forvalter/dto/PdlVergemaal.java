@@ -9,7 +9,6 @@ import lombok.experimental.SuperBuilder;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 
 @Data
 @SuperBuilder
@@ -20,9 +19,8 @@ public class PdlVergemaal extends DbVersjonDTO {
 
     private String embete;
     private VergemaalType type;
+    private Folkeregistermetadata folkeregistermetadata;
     private VergeEllerFullmektig vergeEllerFullmektig;
-    private LocalDate gyldigFraOgMed;
-    private LocalDate gyldigTilOgMed;
 
     public enum VergemaalType {
         ENSLIG_MINDREAARIG_ASYLSOEKER,

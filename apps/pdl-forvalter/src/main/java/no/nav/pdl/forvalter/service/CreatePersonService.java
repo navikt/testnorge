@@ -22,7 +22,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 
 @Service
@@ -45,9 +44,9 @@ public class CreatePersonService {
         return PersonDTO.builder()
                 .kjoenn(List.of(KjoennDTO.builder().kjoenn(request.getKjoenn()).build()))
                 .foedsel(List.of(FoedselDTO.builder().build()))
-                .navn(nonNull(request.getNyttNavn()) ?
-                        List.of(NavnDTO.builder().hasMellomnavn(request.getNyttNavn().isHarMellomnavn()).build()) :
-                        emptyList())
+                .navn(List.of(nonNull(request.getNyttNavn()) ?
+                        NavnDTO.builder().hasMellomnavn(request.getNyttNavn().isHarMellomnavn()).build() :
+                        new NavnDTO()))
                 .bostedsadresse(List.of(
                                 BostedadresseDTO.builder()
                                         .vegadresse(new VegadresseDTO())

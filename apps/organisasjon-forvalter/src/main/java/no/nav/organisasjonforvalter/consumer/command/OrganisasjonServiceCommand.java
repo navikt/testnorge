@@ -4,11 +4,12 @@ import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
-public class OrganisasjonServiceCommand implements Callable<OrganisasjonDTO> {
+public class OrganisasjonServiceCommand implements Callable<Mono<OrganisasjonDTO>> {
 
     private static final String STATUS_URL = "/api/v1/organisasjoner/{orgnummer}";
     private static final String MILJOE = "miljo";
@@ -19,14 +20,13 @@ public class OrganisasjonServiceCommand implements Callable<OrganisasjonDTO> {
     private final String token;
 
     @Override
-    public OrganisasjonDTO call() {
+    public Mono<OrganisasjonDTO> call() {
 
         return webClient.get()
                 .uri(STATUS_URL.replace("{orgnummer}", orgnummer))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(MILJOE, environment)
                 .retrieve()
-                .bodyToMono(OrganisasjonDTO.class)
-                .block();
+                .bodyToMono(OrganisasjonDTO.class);
     }
 }

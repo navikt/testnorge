@@ -6,7 +6,6 @@ import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FalskIdentitetDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
@@ -49,7 +48,7 @@ public class FalskIdentitetService {
         return isNotBlank(value) ? value : defaultValue;
     }
 
-    private static boolean isNavnUpdateRequired(NavnDTO navn) {
+    private static boolean isNavnUpdateRequired(FalskIdentitetDTO.NavnDTO navn) {
         return isBlank(navn.getFornavn()) || isBlank(navn.getEtternavn()) ||
                 (isBlank(navn.getMellomnavn()) && isTrue(navn.getHasMellomnavn()));
     }

@@ -17,6 +17,16 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 		_get(formikBag.values, `${inntektPath}.tilleggsinformasjonstype`)
 	)
 
+	const tilleggsinformasjonAttributter = {
+		BilOgBaat: 'bilOgBaat',
+		DagmammaIEgenBolig: 'dagmammaIEgenBolig',
+		NorskKontinentalsokkel: 'inntektPaaNorskKontinentalsokkel',
+		Livrente: 'livrente',
+		LottOgPartInnenFiske: 'lottOgPart',
+		Nettoloennsordning: 'nettoloenn',
+		UtenlandskArtist: 'utenlandskArtist'
+	}
+
 	useEffect(() => {
 		setCurrentInntektstype(_get(formikBag.values, `${inntektPath}.inntektstype`))
 	})
@@ -29,21 +39,13 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 
 	useEffect(() => {
 		if (inntektValues.inntektstype !== '' && Object.keys(fields).length < 1) {
-			InntektstubService.validate(inntektValues).then(response => setFields(response))
+			InntektstubService.validate(inntektValues).then(response => {
+				setFields(response)
+			})
 		}
 	}, [])
 
 	const setFormikBag = values => {
-		const tilleggsinformasjonAttributter = {
-			BilOgBaat: 'bilOgBaat',
-			DagmammaIEgenBolig: 'dagmammaIEgenBolig',
-			NorskKontinentalsokkel: 'inntektPaaNorskKontinentalsokkel',
-			Livrente: 'livrente',
-			LottOgPartInnenFiske: 'lottOgPart',
-			Nettoloennsordning: 'nettoloenn',
-			UtenlandskArtist: 'utenlandskArtist'
-		}
-
 		const nullstiltInntekt = {
 			beloep: _get(formikBag.values, `${inntektPath}.beloep`),
 			startOpptjeningsperiode: _get(formikBag.values, `${inntektPath}.startOpptjeningsperiode`),
@@ -58,12 +60,12 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 				if (key === 'tilleggsinformasjonstype') {
 					if (value === null) {
 						formikBag.setFieldValue(`${inntektPath}.tilleggsinformasjon`, undefined)
+						formikBag.setFieldValue(`${inntektPath}.tilleggsinformasjonstype`, '')
 					} else if (value !== currentTilleggsinformasjonstype) {
 						formikBag.setFieldValue(`${inntektPath}.tilleggsinformasjon`, {})
 					}
 					setCurrentTilleggsinformasjonstype(value)
 				}
-
 				if (tilleggsinformasjonAttributter[value]) {
 					formikBag.setFieldValue(
 						`${inntektPath}.tilleggsinformasjon.${tilleggsinformasjonAttributter[value]}`,
@@ -72,9 +74,17 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 					formikBag.setFieldValue(`${inntektPath}.${key}`, value)
 				} else {
 					if (tilleggsinformasjonPaths(key) !== key) {
-						formikBag.setFieldValue(`${inntektPath}.${tilleggsinformasjonPaths(key)}`, value)
+						if (value === null) {
+							formikBag.setFieldValue(`${inntektPath}.tilleggsinformasjon`, undefined)
+						} else {
+							formikBag.setFieldValue(`${inntektPath}.${tilleggsinformasjonPaths(key)}`, value)
+						}
 					} else {
-						formikBag.setFieldValue(`${inntektPath}.${key}`, value)
+						if (key === 'tilleggsinformasjonstype' && value === null) {
+							formikBag.setFieldValue(`${inntektPath}.tilleggsinformasjon`, undefined)
+						} else {
+							formikBag.setFieldValue(`${inntektPath}.${key}`, value)
+						}
 					}
 				}
 			}
@@ -123,6 +133,7 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 							formikBag={formikBag}
 							path={inntektPath}
 							resetForm={reset}
+							tilleggsinformasjonAttributter={tilleggsinformasjonAttributter}
 						/>
 					</div>
 				)

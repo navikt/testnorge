@@ -7,11 +7,16 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import texts from '../texts'
 import tilleggsinformasjonPaths from '../paths'
 
-const sjekkFelt = (field, options, values, path) => {
+const sjekkFelt = (field, options, values, path, tomTilleggsinformasjonFieldPath) => {
 	const fieldValue = _get(values, path)
 	const fieldPath = tilleggsinformasjonPaths(field)
 	if (!options.includes('<TOM>')) {
-		if (fieldValue && !_get(fieldValue, fieldPath) && _get(fieldValue, fieldPath) !== false) {
+		if (
+			fieldValue &&
+			!_get(fieldValue, fieldPath) &&
+			_get(fieldValue, fieldPath) !== false &&
+			!tomTilleggsinformasjonFieldPath
+		) {
 			return { feilmelding: 'Feltet er påkrevd' }
 		}
 	}
@@ -46,7 +51,16 @@ function optionsUtfylt(options) {
 	)
 }
 
-const fieldResolver = (field, handleChange, formik, path, index, resetForm, options = []) => {
+const fieldResolver = (
+	field,
+	handleChange,
+	formik,
+	path,
+	index,
+	resetForm,
+	tilleggsinformasjonAttributter,
+	options = []
+) => {
 	const values = formik.values
 	if (dateFields.includes(field)) {
 		return (
@@ -88,15 +102,34 @@ const fieldResolver = (field, handleChange, formik, path, index, resetForm, opti
 	}
 	const filteredOptions = options.map(option => ({ label: texts(option), value: option }))
 	const fieldPath = `${path}.${tilleggsinformasjonPaths(field)}`
+	const tomTilleggsinformasjonFieldPath =
+		tilleggsinformasjonAttributter[filteredOptions[0].value] &&
+		`${path}.tilleggsinformasjon.${tilleggsinformasjonAttributter[filteredOptions[0].value]}`
+
 	if (
 		!resetForm &&
 		filteredOptions.length === 1 &&
-		_get(values, fieldPath) !== filteredOptions[0].value
+		tilleggsinformasjonAttributter[filteredOptions[0].value] &&
+		!_get(values, tomTilleggsinformasjonFieldPath)
+	) {
+		useEffect(() => {
+			formik.setFieldValue(
+				`${path}.tilleggsinformasjon.${tilleggsinformasjonAttributter[filteredOptions[0].value]}`,
+				{}
+			)
+			formik.setFieldValue(`${path}.tilleggsinformasjonstype`, filteredOptions[0].value)
+		})
+	} else if (
+		!resetForm &&
+		filteredOptions.length === 1 &&
+		_get(values, fieldPath) !== filteredOptions[0].value &&
+		!tilleggsinformasjonAttributter[filteredOptions[0].value]
 	) {
 		useEffect(() => {
 			formik.setFieldValue(fieldPath, filteredOptions[0].value)
 		})
 	}
+
 	return (
 		<FormikSelect
 			key={index}
@@ -107,36 +140,52 @@ const fieldResolver = (field, handleChange, formik, path, index, resetForm, opti
 			fastfield={false}
 			afterChange={handleChange}
 			size={booleanField(options) ? 'small' : wideFields.includes(field) ? 'xxlarge' : 'large'}
-			feil={sjekkFelt(field, options, values, path)}
-			isClearable={field !== 'inntektstype' && filteredOptions.length !== 1}
+			feil={sjekkFelt(field, options, values, path, tomTilleggsinformasjonFieldPath)}
+			isClearable={
+				field !== 'inntektstype' && filteredOptions.length !== 1 && options.includes('<TOM>')
+			}
 		/>
 	)
 }
 
-const Inntekt = ({ fields = {}, onValidate, formikBag, path, resetForm }) => (
-	<div className="flexbox--flex-wrap">
-		{fieldResolver('inntektstype', onValidate, formikBag, path, `${path}.inntektstype`, resetForm, [
-			'LOENNSINNTEKT',
-			'YTELSE_FRA_OFFENTLIGE',
-			'PENSJON_ELLER_TRYGD',
-			'NAERINGSINNTEKT'
-		])}
-
-		{Object.keys(fields)
-			.filter(field => !(fields[field].length === 1 && fields[field][0] === '<TOM>'))
-			.map(field =>
-				fieldResolver(
-					field,
-					onValidate,
-					formikBag,
-					path,
-					`${path}.${field}`,
-					resetForm,
-					fields[field]
-				)
+const Inntekt = ({
+	fields = {},
+	onValidate,
+	formikBag,
+	path,
+	resetForm,
+	tilleggsinformasjonAttributter
+}) => {
+	return (
+		<div className="flexbox--flex-wrap">
+			{fieldResolver(
+				'inntektstype',
+				onValidate,
+				formikBag,
+				path,
+				`${path}.inntektstype`,
+				resetForm,
+				tilleggsinformasjonAttributter,
+				['LOENNSINNTEKT', 'YTELSE_FRA_OFFENTLIGE', 'PENSJON_ELLER_TRYGD', 'NAERINGSINNTEKT']
 			)}
-	</div>
-)
+
+			{Object.keys(fields)
+				.filter(field => !(fields[field].length === 1 && fields[field][0] === '<TOM>'))
+				.map(field =>
+					fieldResolver(
+						field,
+						onValidate,
+						formikBag,
+						path,
+						`${path}.${field}`,
+						resetForm,
+						tilleggsinformasjonAttributter,
+						fields[field]
+					)
+				)}
+		</div>
+	)
+}
 
 Inntekt.displayName = 'Inntekt'
 

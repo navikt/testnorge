@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Data
 @SuperBuilder
@@ -17,6 +18,7 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BostedadresseDTO extends AdresseDTO {
 
+    private LocalDateTime angittFlyttedato;
     private VegadresseDTO vegadresse;
     private UkjentBostedDTO ukjentBosted;
     private MatrikkeladresseDTO matrikkeladresse;
