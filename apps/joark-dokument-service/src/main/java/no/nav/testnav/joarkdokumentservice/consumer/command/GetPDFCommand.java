@@ -22,8 +22,7 @@ public class GetPDFCommand implements Callable<Mono<String>> {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
-                        .path("/{miljo}/rest/hentdokument/{journalpostId}/{dokumentInfoId}")
-                        .queryParam("dokumentType", "ARKIV")
+                        .path("/{miljo}/rest/hentdokument/{journalpostId}/{dokumentInfoId}/dokumentType=ARKIV")
                         .build(miljo, journalpostId, dokumentInfoId)
                 )
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
