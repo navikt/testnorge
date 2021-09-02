@@ -25,7 +25,7 @@ public class GetSyntSkdMeldingerCommand implements Callable<List<RsMeldingstype>
                 .uri(builder ->
                         builder.path("/v1/generate/tps/{endringskode}")
                                 .queryParam("numToGenerate", antallMeldinger)
-                                .build(antallMeldinger, endringskode)
+                                .build(endringskode)
                 )
                 .header("Authorization", "Bearer " + token)
                 .retrieve()

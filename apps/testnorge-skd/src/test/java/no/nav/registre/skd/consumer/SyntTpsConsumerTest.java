@@ -9,7 +9,8 @@ import org.junit.Test;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
-import no.nav.testnav.libs.securitytokenservice.StsOidcTokenService;
+import no.nav.registre.skd.consumer.credential.SyntTpsGcpProperties;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -20,6 +21,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
 import no.nav.registre.skd.testutils.AssertionUtils;
+import no.nav.testnav.libs.servletsecurity.domain.AzureClientCredentials;
 
 @TestPropertySource(locations = "classpath:application-test.properties")
 @ActiveProfiles("test")
@@ -37,7 +39,9 @@ public class SyntTpsConsumerTest {
         mockWebServer.setDispatcher(dispatcher);
 
         this.consumer = new SyntTpsConsumer(
-                new StsOidcTokenService(mockWebServer.url("/token").toString(), "dummy", "dummy"),
+                new SyntTpsGcpProperties(),
+                new AccessTokenService(null, mockWebServer.url("/token").toString(), null,
+                        new AzureClientCredentials("dummy", "dummy")),
                 mockWebServer.url("/api").toString());
 
     }
@@ -78,19 +82,18 @@ public class SyntTpsConsumerTest {
             @Override
             public MockResponse dispatch(RecordedRequest request) {
                 switch (request.getPath()) {
-                case "/api/v1/generate/1/0211":
+                case "/api/v1/generate/tps/0211?numToGenerate=1":
                     return new MockResponse().setResponseCode(200)
                             .addHeader("Content-Type", "application/json")
                             .setBody("[null]");
-                case "/api/v1/generate/1/0110":
+                case "/api/v1/generate/tps/0110?numToGenerate=1":
                     return new MockResponse().setResponseCode(200)
                             .addHeader("Content-Type", "application/json")
                             .setBody(getResourceFileContent("__files/tpssynt/tpsSynt_NotNullFields_Response.json"));
-                case "/token?grant_type=client_credentials&scope=openid":
+                case "/token/oauth2/v2.0/token":
                     return new MockResponse().setResponseCode(200)
                             .addHeader("Content-Type", "application/json")
-                            .setBody("{\"expires_in\": \"1000\"," +
-                                    "\"access_token\": \"dummy\"}");
+                            .setBody("{\"access_token\": \"dummy\"}");
                 }
                 return new MockResponse().setResponseCode(404);
             }
