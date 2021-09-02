@@ -85,6 +85,7 @@ includeBuild './apps/dolly-frontend-redirect'
 includeBuild './apps/dolly-frontend'
 includeBuild './apps/synt-sykemelding-api'
 includeBuild './apps/import-person-service'
+includeBuild './apps/orkestratoren'
 includeBuild './apps/jenkins-batch-status-service'
 includeBuild './apps/organisasjon-bestilling-service'
 
@@ -106,7 +107,6 @@ include(':testnorge-aaregstub')
 include(':sam-domain')
 include(':medl-domain')
 include(':testnorge-sigrun')
-include(':orkestratoren')
 include(':testnorge-arena')
 include(':testnorge-token-provider')
 include(':nav-endringsmeldinger-core')
@@ -166,7 +166,6 @@ project(":testnorge-aaregstub").projectDir = file('apps/testnorge-aaregstub')
 project(":sam-domain").projectDir = file('apps/testnorge-sam/sam-domain')
 project(":medl-domain").projectDir = file('apps/testnorge-medl/medl-domain')
 project(":testnorge-sigrun").projectDir = file('apps/testnorge-sigrun')
-project(":orkestratoren").projectDir = file('apps/orkestratoren')
 project(":testnorge-token-provider").projectDir = file('apps/testnorge-token-provider')
 project(":nav-endringsmeldinger-core").projectDir = file('apps/testnorge-nav-endringsmeldinger/nav-endringsmeldinger-core')
 project(":testnorge-tp").projectDir = file('apps/testnorge-tp')
