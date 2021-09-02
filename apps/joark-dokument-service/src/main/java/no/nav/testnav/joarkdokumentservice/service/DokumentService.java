@@ -18,4 +18,8 @@ public class DokumentService {
     public String getDokument(Integer journalpostId, Integer dokumentInfoId, DokumentType dokumentType, String miljo) {
         return safConsumer.getDokument(journalpostId, dokumentInfoId, dokumentType, miljo);
     }
+
+    public String getPDF(Integer journalpostId, Integer dokumentInfoId, DokumentType dokumentType, String miljo) {
+        return safConsumer.getPDF(journalpostId, dokumentInfoId, dokumentType, miljo);
+    }
 }

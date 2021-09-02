@@ -1,5 +1,5 @@
 import React from 'react'
-import {Dokument, Journalpost} from '~/service/services/JoarkDokumentService'
+import JoarkDokumentService, {Dokument, Journalpost} from '~/service/services/JoarkDokumentService'
 import {TitleValue} from '~/components/ui/titleValue/TitleValue'
 import {DollyFieldArray} from '~/components/ui/form/fieldArray/DollyFieldArray'
 import styled from 'styled-components'
@@ -29,12 +29,23 @@ export default ({ journalpost }: Props) => (
 		) : null}
 
 		<DollyFieldArray header={'Vedlegg'} data={journalpost.dokumenter} nested>
-			{(dokument: Dokument, idx: number) => (
-				<div key={idx} className="person-visning_content">
-					<TitleValue title="Tittel" value={dokument.tittel} />
-					<TitleValue title="Dokumentinfo-ID" value={dokument.dokumentInfoId} />
-				</div>
-			)}
+			{(dokument: Dokument, idx: number) => {
+				console.log('dokument: ', dokument) //TODO - SLETT MEG
+
+				JoarkDokumentService.hentPDF(
+					journalpost.journalpostId,
+					dokument.dokumentInfoId,
+					'q2', //TODO FIX: bestilling.miljoe,
+					'ARKIV'
+				)
+				return (
+					<div key={idx} className="person-visning_content">
+						{/*{kapplah && kapplah.value && <a href={kapplah.value}>Download</a>}*/}
+						<TitleValue title="Tittel" value={dokument.tittel} />
+						<TitleValue title="Dokumentinfo-ID" value={dokument.dokumentInfoId} />
+					</div>
+				)
+			}}
 		</DollyFieldArray>
 	</div>
 )

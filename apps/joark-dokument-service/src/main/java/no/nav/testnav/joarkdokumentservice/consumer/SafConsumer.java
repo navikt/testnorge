@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.joarkdokumentservice.config.credentias.TestnavSafProxyServiceProperties;
 import no.nav.testnav.joarkdokumentservice.consumer.command.GetDokumentCommand;
 import no.nav.testnav.joarkdokumentservice.consumer.command.GetDokumentInfoCommand;
+import no.nav.testnav.joarkdokumentservice.consumer.command.GetPDFCommand;
 import no.nav.testnav.joarkdokumentservice.domain.DokumentType;
 import no.nav.testnav.joarkdokumentservice.domain.Journalpost;
 import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
@@ -47,6 +48,20 @@ public class SafConsumer {
         return accessTokenService
                 .generateToken(properties)
                 .flatMap(accessToken -> new GetDokumentCommand(
+                                webClient,
+                                accessToken.getTokenValue(),
+                                journalpostId,
+                                dokumentInfoId,
+                                miljo,
+                                dokumentType
+                        ).call()
+                ).block();
+    }
+
+    public String getPDF(Integer journalpostId, Integer dokumentInfoId, DokumentType dokumentType, String miljo) {
+        return accessTokenService
+                .generateToken(properties)
+                .flatMap(accessToken -> new GetPDFCommand(
                                 webClient,
                                 accessToken.getTokenValue(),
                                 journalpostId,

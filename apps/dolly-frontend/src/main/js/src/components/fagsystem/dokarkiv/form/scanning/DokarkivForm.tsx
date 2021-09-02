@@ -34,6 +34,7 @@ type Skjema = {
 export type Vedlegg = {
 	id: string
 	name: string
+	dokNavn: string
 	content: {
 		base64: string
 	}
@@ -65,13 +66,10 @@ export const DokarkivForm = ({ formikBag }: DokarkivForm) => {
 
 	useEffect(() => handleSkjemaChange(skjemaValues), [files, skjemaValues])
 
-	//TODO: Filopplaster overskriver filer for hver endring, også på sletting. Trenger en map mellom ID på fil så tildeltnavn kan legges på etter endring
-
 	const handleSkjemaChange = (skjema: Skjema) => {
 		if (!skjema) {
 			return
 		}
-		console.log('skjema: ', skjema) //TODO - SLETT MEG
 		setSkjemaValues(skjema)
 		formikBag.setFieldValue('dokarkiv.tittel', skjema.data)
 		const dokumentVarianter = files.map((vedl: Vedlegg, index: number) => ({
@@ -94,11 +92,11 @@ export const DokarkivForm = ({ formikBag }: DokarkivForm) => {
 		console.log('filer: ', filer) //TODO - SLETT MEG
 		console.log('files: ', files) //TODO - SLETT MEG
 		filer.map(fil => {
-			const eksisterendeFil = files.find((file: Vedlegg) => file.id === fil.id)
-			if (eksisterendeFil && eksisterendeFil.id === fil.id) {
-				return (fil.name = eksisterendeFil.name)
+			const eksisterendeFil = files.find((file: Vedlegg) => file.id === fil.id && file.dokNavn)
+			if (eksisterendeFil) {
+				return (fil.dokNavn = eksisterendeFil.dokNavn)
 			}
-			return fil.id
+			return fil
 		})
 		setFiles(filer)
 		sessionStorage.setItem('dokarkiv_vedlegg', JSON.stringify(filer))

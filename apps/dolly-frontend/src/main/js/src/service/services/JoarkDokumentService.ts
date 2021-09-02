@@ -44,7 +44,41 @@ const hentDokument = (
 		)
 		.then(response => response.text())
 
+const hentPDF = (
+	journalpostId: number,
+	dokumentInfoId: number,
+	miljo: string,
+	dokumentType: DokumentType
+): any =>
+	api
+		.fetch(
+			`/testnav-joark-dokument-service/api/v2/journalpost/${journalpostId}/dokumenter/${dokumentInfoId}?dokumentType=${dokumentType}/pdf`,
+			{
+				method: 'GET',
+				headers: {
+					miljo: miljo,
+					Accept: 'application/pdf',
+					'Content-Type': 'application/pdf'
+				}
+			}
+		)
+		.then(response => {
+			return response.blob()
+		})
+		.then(resp => {
+			console.log('resp: ', resp) //TODO - SLETT MEG
+			const fileURL = URL.createObjectURL(resp)
+			const link = document.createElement('a')
+			link.href = fileURL
+			link.download = `Dokument-${dokumentInfoId}.pdf`
+			link.click()
+		})
+		.catch(error => {
+			console.log(error)
+		})
+
 export default {
 	hentJournalpost,
-	hentDokument
+	hentDokument,
+	hentPDF
 }

@@ -16,10 +16,9 @@ export const FilnavnModal = ({ filer, closeModal, handleChange }: Data) => {
 		return null
 	}
 	const aktivIndex = filer.findIndex(fil => {
-		return fil.name == fil.id
+		return !fil.dokNavn
 	})
 	const MAX_LENGTH = 50
-	const [dokumenter, setDokumenter] = React.useState(filer)
 	const [filnavn, setFilnavn] = React.useState(filer[aktivIndex] ? filer[aktivIndex].name : '')
 	console.log('aktivIndex: ', aktivIndex) //TODO - SLETT MEG
 	if (aktivIndex === -1) {
@@ -34,27 +33,24 @@ export const FilnavnModal = ({ filer, closeModal, handleChange }: Data) => {
 				<DollyTextInput
 					name={null}
 					value={filnavn}
-					onChange={(event: { target: { value: string } }) => {
-						console.log('dokumenter: ', dokumenter) //TODO - SLETT MEG
-						setDokumenter(
-							filer.map((fil, index) => {
-								return index === aktivIndex
-									? {
-											...fil,
-											name: filnavn
-									  }
-									: fil
-							})
-						)
-						return setFilnavn(event.target.value)
-					}}
+					onChange={(event: { target: { value: string } }) => setFilnavn(event.target.value)}
 					label={'Tittel på dokument'}
 				/>
 				<ModalActionKnapper
 					submitknapp="Lagre tittel"
 					disabled={filnavn === '' || filnavn.length > MAX_LENGTH}
 					onSubmit={() => {
-						handleChange(dokumenter)
+						console.log('dokumenter: ', filer) //TODO - SLETT MEG
+						handleChange(
+							filer.map((fil, index) =>
+								index === aktivIndex
+									? {
+											...fil,
+											dokNavn: filnavn
+									  }
+									: fil
+							)
+						)
 						closeModal()
 					}}
 					// @ts-ignore
