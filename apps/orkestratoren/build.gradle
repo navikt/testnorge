@@ -25,6 +25,9 @@ repositories {
         url = uri('https://repo1.maven.org/maven2/')
     }
     mavenLocal()
+    maven {
+        url = uri('https://packages.confluent.io/maven/')
+    }
 }
 
 dependencies {
