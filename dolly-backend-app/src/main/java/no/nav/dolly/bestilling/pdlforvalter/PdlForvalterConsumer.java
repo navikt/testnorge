@@ -7,14 +7,15 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlBostedadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDeltBosted;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDoedsfall;
-import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFamilierelasjon;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFoedsel;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFolkeregisterpersonstatus;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlForelderBarnRelasjon;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlForeldreansvar;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFullmakt;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlInnflytting;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKjoenn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktinformasjonForDoedsbo;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpphold;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse;
@@ -24,7 +25,6 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlStatsborgerskap;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlTelefonnummer;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlUtflytting;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlVergemaal;
-import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.PdlKontaktinformasjonForDoedsbo;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentitet;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
@@ -55,7 +55,7 @@ public class PdlForvalterConsumer {
     private static final String PDL_BESTILLING_FALSK_IDENTITET_URL = PDL_BESTILLING_URL + "/falskidentitet";
     private static final String PDL_BESTILLING_OPPRETT_PERSON = PDL_BESTILLING_URL + "/opprettperson";
     private static final String PDL_BESTILLING_FOEDSEL_URL = PDL_BESTILLING_URL + "/foedsel";
-    private static final String PDL_BESTILLING_FAMILIERELASJON = PDL_BESTILLING_URL + "/familierelasjon";
+    private static final String PDL_BESTILLING_FORELDER_BARN_RELASJON = PDL_BESTILLING_URL + "/forelderbarnrelasjon";
     private static final String PDL_BESTILLING_DOEDSFALL_URL = PDL_BESTILLING_URL + "/doedsfall";
     private static final String PDL_BESTILLING_ADRESSEBESKYTTELSE_URL = PDL_BESTILLING_URL + "/adressebeskyttelse";
     private static final String PDL_BESTILLING_NAVN_URL = PDL_BESTILLING_URL + "/navn";
@@ -178,10 +178,10 @@ public class PdlForvalterConsumer {
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_familierelasjon" })
-    public ResponseEntity<JsonNode> postFamilierelasjon(PdlFamilierelasjon familierelasjonn, String ident) {
+    public ResponseEntity<JsonNode> postFamilierelasjon(PdlForelderBarnRelasjon familierelasjonn, String ident) {
 
         return postRequest(
-                providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_FAMILIERELASJON,
+                providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_FORELDER_BARN_RELASJON,
                 familierelasjonn, ident, "familierelasjon");
     }
 
@@ -217,7 +217,7 @@ public class PdlForvalterConsumer {
                 kontaktadresse, ident, "kontaktadresse");
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_kontaktadresse" })
+    @Timed(name = "providers", tags = { "operation", "pdl_bostedadresse" })
     public ResponseEntity<JsonNode> postBostedadresse(PdlBostedadresse bostedadresse, String ident) {
 
         return postRequest(

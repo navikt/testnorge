@@ -1,18 +1,18 @@
 package no.nav.dolly.bestilling.pdlforvalter.domain;
 
-import static java.util.Objects.isNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import static java.util.Objects.isNull;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,14 +27,13 @@ public class PdlTelefonnummer {
         return telfonnumre;
     }
 
-    @Getter
-    @Setter
-    @Builder
+    @Data
+    @SuperBuilder
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Entry {
+    public static class Entry extends PdlOpplysning {
 
-        private String kilde;
         private String landskode;
         private String nummer;
         private Integer prioritet;

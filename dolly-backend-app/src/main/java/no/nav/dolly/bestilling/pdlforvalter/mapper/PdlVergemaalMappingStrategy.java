@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.bestilling.pdlforvalter.domain.Folkeregistermetadata;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpplysning.Master;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlVergemaal;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlVergemaal.Omfang;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlVergemaal.Personnavn;
@@ -16,8 +16,6 @@ import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDate;
 
 import static java.util.Objects.isNull;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
@@ -70,10 +68,8 @@ public class PdlVergemaalMappingStrategy implements MappingStrategy {
 
                             PdlVergemaal pdlVergemaal = new PdlVergemaal();
                             pdlVergemaal.setEmbete(kodeverkConsumer.getKodeverkByName(EMBETE_KODEVERK).get(vergemaal.getEmbete()));
-                            pdlVergemaal.setFolkeregistermetadata(Folkeregistermetadata.builder()
-                                    .gyldighetstidspunkt(mapperFacade.map(vergemaal.getVedtakDato(), LocalDate.class))
-                                    .build());
                             pdlVergemaal.setKilde(CONSUMER);
+                            pdlVergemaal.setMaster(Master.FREG);
                             pdlVergemaal.setType(getSakstype(vergemaal.getSakType()));
                             pdlVergemaal.setVergeEllerFullmektig(VergeEllerFullmektig.builder()
                                     .motpartsPersonident(vergemaal.getVerge().getIdent())

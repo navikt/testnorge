@@ -1,18 +1,19 @@
 package no.nav.dolly.bestilling.pdlforvalter.domain;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class PdlInnflytting {
+public class PdlInnflytting extends PdlOpplysning {
 
     private Folkeregistermetadata folkeregistermetadata;
     private String fraflyttingsland;
     private String fraflyttingsstedIUtlandet;
-    private String kilde;
 }

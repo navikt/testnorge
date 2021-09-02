@@ -187,17 +187,6 @@ query($identer: [ID!]!) {
                     ...metadataDetails
                 }
             },
-            familierelasjoner {
-                relatertPersonsIdent,
-                relatertPersonsRolle,
-                minRolleForPerson,
-                folkeregistermetadata {
-                    ...folkeregistermetadataDetails
-                }
-                metadata {
-                    ...metadataDetails
-                }
-            },
             forelderBarnRelasjon {
                 relatertPersonsIdent,
                 relatertPersonsRolle,

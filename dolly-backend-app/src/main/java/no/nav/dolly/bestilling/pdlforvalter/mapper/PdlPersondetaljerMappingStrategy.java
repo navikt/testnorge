@@ -8,6 +8,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDoedsfall;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKjoenn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpplysning.Master;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpprettPerson;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlStatsborgerskap;
 import no.nav.dolly.domain.resultset.tpsf.Person;
@@ -21,8 +22,6 @@ import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdresse.Master.FREG;
-import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdresse.Master.PDL;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.FORTROLIG;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse.AdresseBeskyttelse.STRENGT_FORTROLIG_UTLAND;
@@ -55,6 +54,7 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Person person, PdlNavn pdlNavn, MappingContext context) {
 
                         pdlNavn.setKilde(CONSUMER);
+                        pdlNavn.setMaster(Master.FREG);
                     }
                 })
                 .byDefault()
@@ -67,6 +67,7 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
 
                         pdlKjoenn.setKjoenn(Kjoenn.decode(person.getKjonn()));
                         pdlKjoenn.setKilde(CONSUMER);
+                        pdlKjoenn.setMaster(Master.FREG);
                     }
                 })
                 .register();
@@ -77,9 +78,10 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Statsborgerskap statsborgerskap, PdlStatsborgerskap pdlStatsborgerskap, MappingContext context) {
 
                         pdlStatsborgerskap.setLandkode(isNotBlank(statsborgerskap.getStatsborgerskap()) ? statsborgerskap.getStatsborgerskap() : "NOR");
-                        pdlStatsborgerskap.setGyldigFom(getDato(statsborgerskap.getStatsborgerskapRegdato()));
-                        pdlStatsborgerskap.setGyldigTom(getDato(statsborgerskap.getStatsborgerskapTildato()));
+                        pdlStatsborgerskap.setGyldigFraOgMed(getDato(statsborgerskap.getStatsborgerskapRegdato()));
+                        pdlStatsborgerskap.setGyldigTilOgMed(getDato(statsborgerskap.getStatsborgerskapTildato()));
                         pdlStatsborgerskap.setKilde(CONSUMER);
+                        pdlStatsborgerskap.setMaster(Master.FREG);
                     }
                 })
                 .register();
@@ -91,18 +93,19 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
 
                         if ("SPSF".equals(person.getSpesreg())) {
                             adressebeskyttelse.setGradering(STRENGT_FORTROLIG);
-                            adressebeskyttelse.setMaster(FREG);
+                            adressebeskyttelse.setMaster(Master.FREG);
                         } else if ("SPFO".equals(person.getSpesreg())) {
                             adressebeskyttelse.setGradering(FORTROLIG);
-                            adressebeskyttelse.setMaster(FREG);
+                            adressebeskyttelse.setMaster(Master.FREG);
                         } else if ("SFU".equals(person.getSpesreg())) {
                             adressebeskyttelse.setGradering(STRENGT_FORTROLIG_UTLAND);
-                            adressebeskyttelse.setMaster(PDL);
+                            adressebeskyttelse.setMaster(Master.PDL);
                         } else {
                             adressebeskyttelse.setGradering(UGRADERT);
                         }
 
                         adressebeskyttelse.setKilde(CONSUMER);
+                        adressebeskyttelse.setMaster(Master.FREG);
                     }
                 })
                 .register();
@@ -113,6 +116,7 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Person person, PdlDoedsfall pdlDoedsfall, MappingContext context) {
 
                         pdlDoedsfall.setKilde(CONSUMER);
+                        pdlDoedsfall.setMaster(Master.FREG);
                     }
                 })
                 .byDefault()

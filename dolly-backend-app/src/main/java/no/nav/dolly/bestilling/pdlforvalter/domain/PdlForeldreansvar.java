@@ -1,23 +1,26 @@
 package no.nav.dolly.bestilling.pdlforvalter.domain;
 
-import java.time.LocalDate;
-
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
-@Getter
-@Setter
+import java.time.LocalDate;
+
+@Data
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class PdlForeldreansvar {
+public class PdlForeldreansvar extends PdlOpplysning {
 
     public enum Ansvar {FELLES, MOR, FAR, MEDMOR, ANDRE, UKJENT}
 
     private Ansvar ansvar;
     private String ansvarlig;
-    private String kilde;
     private RelatertBiPerson ansvarligUtenIdentifikator;
 
     @Getter

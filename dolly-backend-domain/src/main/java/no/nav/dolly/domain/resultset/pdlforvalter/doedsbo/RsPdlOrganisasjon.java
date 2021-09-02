@@ -1,6 +1,5 @@
 package no.nav.dolly.domain.resultset.pdlforvalter.doedsbo;
 
-import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
@@ -16,12 +15,15 @@ import no.nav.dolly.domain.resultset.pdlforvalter.PdlPersonnavn;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class RsPdlKontaktpersonUtenIdNummer extends PdlSomAdressat {
+public class RsPdlOrganisasjon extends RsPdlAdressat {
 
-    private LocalDateTime foedselsdato;
-    private PdlPersonnavn navn;
+    public static final String ORGANISASJON = "ORGANISASJON";
+
+    private PdlPersonnavn kontaktperson;
+    private String organisasjonsnavn;
+    private String organisasjonsnummer;
 
     @Override public String getAdressatType() {
-        return "PERSON_UTENID";
+        return ORGANISASJON;
     }
 }

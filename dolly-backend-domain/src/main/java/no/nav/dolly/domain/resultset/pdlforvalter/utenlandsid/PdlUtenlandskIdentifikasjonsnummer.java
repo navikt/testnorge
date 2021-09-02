@@ -1,29 +1,25 @@
 package no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+import no.nav.dolly.domain.resultset.pdlforvalter.PdlOpplysning;
 
-@Getter
-@Setter
-@Builder
+@Data
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PdlUtenlandskIdentifikasjonsnummer {
+public class PdlUtenlandskIdentifikasjonsnummer extends PdlOpplysning {
 
     @Schema(required = true,
             description = "Utenlandsk identifikasjonsnummer knyttet til personen")
     private String identifikasjonsnummer;
-
-    @Schema(required = true,
-            description = "Dataens opprinnelse")
-    private String kilde;
 
     @Schema(required = true,
             description = "Er det utenlandske identifikasjonsnummeret opphørt?")

@@ -6,6 +6,7 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDeltBosted;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDeltBosted.PdlDelteBosteder;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlMatrikkeladresse;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpplysning.Master;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlVegadresse;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.adresse.BoAdresse;
@@ -47,6 +48,7 @@ public class PdlDeltBostedMappingStrategy implements MappingStrategy {
                                                         .map(boAdresse -> PdlDeltBosted.builder()
                                                                 .vegadresse(mapperFacade.map(boAdresse, PdlVegadresse.class))
                                                                 .kilde(CONSUMER)
+                                                                .master(Master.FREG)
                                                                 .startdatoForKontrakt(LocalDate.now())
                                                                 .build())
                                                         .collect(Collectors.toList()),
@@ -57,6 +59,7 @@ public class PdlDeltBostedMappingStrategy implements MappingStrategy {
                                                         .map(boAdresse -> PdlDeltBosted.builder()
                                                                 .matrikkeladresse(mapperFacade.map(boAdresse, PdlMatrikkeladresse.class))
                                                                 .kilde(CONSUMER)
+                                                                .master(Master.FREG)
                                                                 .startdatoForKontrakt(LocalDate.now())
                                                                 .build())
                                                         .collect(Collectors.toList())

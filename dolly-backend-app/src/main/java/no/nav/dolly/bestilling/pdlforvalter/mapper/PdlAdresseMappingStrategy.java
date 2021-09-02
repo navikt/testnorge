@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdresse.Bruksenhetstype.BOLIG;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Component
@@ -58,7 +57,6 @@ public class PdlAdresseMappingStrategy implements MappingStrategy {
                         vegadresse.setAdressekode(gateadresse.getGatekode());
                         vegadresse.setAdressenavn(gateadresse.getGateadresse());
                         vegadresse.setHusnummer(gateadresse.getHusnummer());
-                        vegadresse.setBruksenhetstype(BOLIG);
                         vegadresse.setKommunenummer(gateadresse.getKommunenr());
                         vegadresse.setPostnummer(gateadresse.getPostnr());
                         vegadresse.setBruksenhetsnummer(gateadresse.getBolignr());
@@ -72,8 +70,7 @@ public class PdlAdresseMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(BoMatrikkeladresse rsMatrikkeladresse, PdlMatrikkeladresse matrikkeladresse, MappingContext context) {
 
-                        matrikkeladresse.setAdressetilleggsnavn(rsMatrikkeladresse.getMellomnavn());
-                        matrikkeladresse.setBruksenhetstype(BOLIG);
+                        matrikkeladresse.setTilleggsnavn(rsMatrikkeladresse.getMellomnavn());
                         matrikkeladresse.setBruksnummer(toNumeric(rsMatrikkeladresse.getBruksnr()));
                         matrikkeladresse.setFestenummer(toNumeric(rsMatrikkeladresse.getFestenr()));
                         matrikkeladresse.setGaardsnummer(toNumeric(rsMatrikkeladresse.getGardsnr()));

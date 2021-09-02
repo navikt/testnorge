@@ -3,9 +3,10 @@ package no.nav.dolly.bestilling.pdlforvalter.domain;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -13,18 +14,16 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 
-@Getter
-@Setter
-@Builder
+@Data
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PdlDeltBosted {
+public class PdlDeltBosted extends PdlOpplysning {
 
     private String adresseIdentifikatorFraMatrikkelen;
     private String coAdressenavn;
-    private Folkeregistermetadata folkeregistermetadata;
-    private String kilde;
     private String naerAdresseIdentifikatorFraMatrikkelen;
     private LocalDate sluttdatoForKontrakt;
     private LocalDate startdatoForKontrakt;
@@ -32,8 +31,7 @@ public class PdlDeltBosted {
     private UkjentBosted ukjentBosted;
     private PdlMatrikkeladresse matrikkeladresse;
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -42,6 +40,7 @@ public class PdlDeltBosted {
         private String bostedskommune;
     }
 
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor

@@ -1,25 +1,21 @@
 package no.nav.dolly.bestilling.pdlforvalter.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 
-@Getter
-@Setter
+@Data
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public abstract class PdlAdresse {
+public abstract class PdlAdresse extends PdlOpplysning {
 
     public enum Adressegradering {UGRADERT, KLIENTADRESSE, FORTROLIG, STRENGT_FORTROLIG, STRENGT_FORTROLIG_UTLAND}
-
-    public enum Bruksenhetstype {BOLIG, ANNET_ENN_BOLIG, FRITIDSBOLIG, IKKE_GODKJENT_BOLIG, UNUMMERERT_BRUKSENHET}
-
-    public enum Master {FREG, PDL}
 
     public enum OppholdAnnetSted {MILITAER, UTENRIKS, PAA_SVALBARD, PENDLER}
 
@@ -28,8 +24,7 @@ public abstract class PdlAdresse {
     private LocalDate gyldigFraOgMed;
     private LocalDate gyldigTilOgMed;
     private String coAdressenavn;
-    private String kilde;
-    private Master master;
+
     private String naerAdresseIdentifikatorFraMatrikkelen;
     private PdlVegadresse vegadresse;
 }

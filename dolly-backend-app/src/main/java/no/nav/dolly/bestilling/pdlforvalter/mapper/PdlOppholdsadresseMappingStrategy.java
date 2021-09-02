@@ -6,6 +6,7 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdresse.OppholdAnnetSted;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresseHistorikk;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpplysning.Master;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
 import no.nav.dolly.mapper.MappingStrategy;
@@ -43,6 +44,7 @@ public class PdlOppholdsadresseMappingStrategy implements MappingStrategy {
                                     oppholdsadresse.setUtenlandskAdresse(mapperFacade.map(
                                             postadresse, UtenlandskAdresse.class));
                                     oppholdsadresse.setKilde(CONSUMER);
+                                    oppholdsadresse.setMaster(Master.FREG);
                                     oppholdsadresse.setOppholdAnnetSted(mapSpesReg(person.getSpesreg()));
                                     return oppholdsadresse;
                                 })

@@ -1,15 +1,17 @@
 package no.nav.dolly.bestilling.pdlforvalter.domain;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
-@Getter
-@Setter
+@Data
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class PdlFolkeregisterpersonstatus {
+public class PdlFolkeregisterpersonstatus extends PdlOpplysning {
 
     public enum Folkeregisterpersonstatus {
         BOSATT,
@@ -23,6 +25,5 @@ public class PdlFolkeregisterpersonstatus {
         INAKTIV
     }
 
-    private String kilde;
     private Folkeregisterpersonstatus status;
 }

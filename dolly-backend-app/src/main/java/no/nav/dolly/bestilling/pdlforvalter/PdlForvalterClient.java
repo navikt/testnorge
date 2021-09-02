@@ -8,9 +8,9 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlBostedsadresseHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDeltBosted.PdlDelteBosteder;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDoedsfall;
-import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFamilierelasjon;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFoedsel;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFolkeregisterpersonstatus;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlForelderBarnRelasjon;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlForeldreansvar;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFullmaktHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlInnflyttingHistorikk;
@@ -25,10 +25,11 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlStatsborgerskap;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlTelefonnummer;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlUtflyttingHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlVergemaalHistorikk;
+import no.nav.dolly.bestilling.pdlforvalter.domain.Pdldata;
 import no.nav.dolly.bestilling.pdlforvalter.domain.SivilstandWrapper;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
-import no.nav.dolly.domain.resultset.pdlforvalter.Pdldata;
+import no.nav.dolly.domain.resultset.pdlforvalter.PdlOpplysning.Master;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.domain.resultset.tpsf.Person;
@@ -234,7 +235,7 @@ public class PdlForvalterClient implements ClientRegister {
 
         person.getRelasjoner().forEach(relasjon -> {
             if (!relasjon.isPartner() && nonNull(relasjon.getPersonRelasjonTil())) {
-                pdlForvalterConsumer.postFamilierelasjon(mapperFacade.map(relasjon, PdlFamilierelasjon.class),
+                pdlForvalterConsumer.postFamilierelasjon(mapperFacade.map(relasjon, PdlForelderBarnRelasjon.class),
                         person.getIdent());
             }
         });
@@ -359,6 +360,7 @@ public class PdlForvalterClient implements ClientRegister {
                 List<PdlUtenlandskIdentifikasjonsnummer> utenlandskId = pdldata.getUtenlandskIdentifikasjonsnummer();
                 utenlandskId.forEach(id -> {
                     id.setKilde(nullcheckSetDefaultValue(id.getKilde(), CONSUMER));
+                    id.setMaster(Master.FREG);
                     pdlForvalterConsumer.postUtenlandskIdentifikasjonsnummer(id, ident);
                 });
                 appendOkStatus(status);

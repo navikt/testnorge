@@ -10,15 +10,15 @@ import lombok.Setter;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "adressatType")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = PdlAdvokat.class, name = "ADVOKAT"),
-        @JsonSubTypes.Type(value = PdlKontaktpersonMedIdNummer.class, name = "PERSON_MEDID"),
-        @JsonSubTypes.Type(value = RsPdlKontaktpersonUtenIdNummer.class, name = "PERSON_UTENID"),
-        @JsonSubTypes.Type(value = PdlOrganisasjon.class, name = "ORGANISASJON")
+        @JsonSubTypes.Type(value = RsPdlAdvokat.class, name = "ADVOKAT"),
+        @JsonSubTypes.Type(value = RsPdlKontaktpersonMedIdNummer.class, name = "PERSON_MEDID"),
+        @JsonSubTypes.Type(value = RsRsPdlKontaktpersonUtenIdNummer.class, name = "PERSON_UTENID"),
+        @JsonSubTypes.Type(value = RsPdlOrganisasjon.class, name = "ORGANISASJON")
 })
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public abstract class PdlSomAdressat {
+public abstract class RsPdlAdressat {
 
     @Schema(required = true,
             description = "AdressatType må settes hhv ADVOKAT, PERSON_MEDID, PERSON_UTENID, ORGANISASJON")

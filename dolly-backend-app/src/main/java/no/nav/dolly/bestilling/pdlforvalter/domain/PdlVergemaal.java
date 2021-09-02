@@ -3,13 +3,16 @@ package no.nav.dolly.bestilling.pdlforvalter.domain;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class PdlVergemaal {
+public class PdlVergemaal extends PdlOpplysning {
 
     public enum VergemaalType {
         ENSLIG_MINDREAARIG_ASYLSOEKER,
@@ -30,8 +33,6 @@ public class PdlVergemaal {
     }
 
     private String embete;
-    private Folkeregistermetadata folkeregistermetadata;
-    private String kilde;
     private VergemaalType type;
     private VergeEllerFullmektig vergeEllerFullmektig;
 

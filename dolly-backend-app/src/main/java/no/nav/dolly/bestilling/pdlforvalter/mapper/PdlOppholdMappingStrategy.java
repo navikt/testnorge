@@ -5,6 +5,7 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpphold;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpphold.OppholdType;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpplysning.Master;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 import no.nav.dolly.domain.resultset.udistub.model.opphold.RsUdiOppholdStatus;
 import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdsrettType;
@@ -47,6 +48,7 @@ public class PdlOppholdMappingStrategy implements MappingStrategy {
                             }
                         }
                         opphold.setKilde(CONSUMER);
+                        opphold.setMaster(Master.FREG);
                     }
                 }).register();
     }

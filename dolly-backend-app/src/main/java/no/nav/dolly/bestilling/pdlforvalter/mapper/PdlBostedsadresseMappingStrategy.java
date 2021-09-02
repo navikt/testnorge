@@ -6,6 +6,7 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlBostedadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlBostedsadresseHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlMatrikkeladresse;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpplysning.Master;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlVegadresse;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.adresse.BoAdresse;
@@ -32,8 +33,10 @@ public class PdlBostedsadresseMappingStrategy implements MappingStrategy {
 
         PdlBostedadresse bostedadresse = new PdlBostedadresse();
         bostedadresse.setKilde(CONSUMER);
+        bostedadresse.setMaster(Master.FREG);
         bostedadresse.setGyldigFraOgMed(getDato(adresse.getFlyttedato()));
         bostedadresse.setGyldigTilOgMed(getDato(adresse.getGyldigTilOgMed()));
+        bostedadresse.setAngittFlyttedato(getDato(adresse.getFlyttedato()));
         bostedadresse.setCoAdressenavn(getCoadresse(adresse));
         bostedadresse.setAdresseIdentifikatorFraMatrikkelen(adresse.getMatrikkelId());
         return bostedadresse;

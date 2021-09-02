@@ -1,13 +1,9 @@
 package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
-import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
-
-import org.springframework.stereotype.Component;
-
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.domain.resultset.pdlforvalter.PdlOpplysning.Master;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentitet;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlRettIdentitetErUkjent;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlRettIdentitetVedIdentifikasjonsnummer;
@@ -15,6 +11,10 @@ import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlRettIdentite
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.RsPdlFalskIdentitet;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.RsPdlRettIdentitetVedOpplysninger;
 import no.nav.dolly.mapper.MappingStrategy;
+import org.springframework.stereotype.Component;
+
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
+import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
 @Component
 public class PdlFalskIdentitetMappingStrategy implements MappingStrategy {
@@ -46,6 +46,7 @@ public class PdlFalskIdentitetMappingStrategy implements MappingStrategy {
 
                         pdlFalskIdentitet.setErFalsk(nullcheckSetDefaultValue(pdlFalskIdentitet.getErFalsk(), true));
                         pdlFalskIdentitet.setKilde(nullcheckSetDefaultValue(pdlFalskIdentitet.getKilde(), CONSUMER));
+                        pdlFalskIdentitet.setMaster(Master.FREG);
                     }
                 })
                 .byDefault()

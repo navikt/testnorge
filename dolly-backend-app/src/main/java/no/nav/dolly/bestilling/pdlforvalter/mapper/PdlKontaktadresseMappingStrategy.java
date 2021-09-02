@@ -4,13 +4,13 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdresse.Master;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse.PostadresseIFrittFormat;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse.Postboksadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse.UtenlandskAdresseIFrittFormat;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresse.VegadresseForPost;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlKontaktadresseHistorikk;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpplysning.Master;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.adresse.MidlertidigAdresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.MidlertidigAdresse.MidlertidigGateAdresse;
@@ -50,6 +50,7 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
         PdlKontaktadresse kontaktadresse = new PdlKontaktadresse();
         kontaktadresse.setCoAdressenavn(getCoAdresse(midlertidigAdresse));
         kontaktadresse.setKilde(CONSUMER);
+        kontaktadresse.setMaster(Master.FREG);
         kontaktadresse.setGyldigFraOgMed(LocalDate.now());
         kontaktadresse.setGyldigTilOgMed(getDato(midlertidigAdresse.getGyldigTom()));
         if (midlertidigAdresse.isGateAdr()) {
@@ -97,6 +98,7 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                                                     kontaktadresse.setUtenlandskAdresseIFrittFormat(mapperFacade.map(
                                                             postadresse, UtenlandskAdresseIFrittFormat.class));
                                                     kontaktadresse.setKilde(CONSUMER);
+                                                    kontaktadresse.setMaster(Master.FREG);
                                                     return kontaktadresse;
                                                 })
                                                 .collect(Collectors.toList()),

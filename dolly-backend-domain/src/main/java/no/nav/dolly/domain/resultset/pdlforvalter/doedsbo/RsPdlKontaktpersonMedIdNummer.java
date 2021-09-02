@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.dolly.domain.resultset.pdlforvalter.PdlPersonnavn;
 
 @Getter
 @Setter
@@ -15,13 +14,14 @@ import no.nav.dolly.domain.resultset.pdlforvalter.PdlPersonnavn;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PdlAdvokat extends PdlSomAdressat {
+public class RsPdlKontaktpersonMedIdNummer extends RsPdlAdressat {
 
-    private PdlPersonnavn kontaktperson;
-    private String organisasjonsnavn;
-    private String organisasjonsnummer;
+    public static final String PERSON_MEDID = "PERSON_MEDID";
 
-    @Override public String getAdressatType() {
-        return "ADVOKAT";
+    private String idnummer;
+
+    @Override
+    public String getAdressatType() {
+        return PERSON_MEDID;
     }
 }

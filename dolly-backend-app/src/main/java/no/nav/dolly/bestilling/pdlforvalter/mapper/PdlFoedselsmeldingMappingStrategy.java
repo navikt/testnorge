@@ -5,6 +5,7 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFoedsel;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpplysning.Master;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.domain.resultset.tpsf.InnvandretUtvandret;
 import no.nav.dolly.domain.resultset.tpsf.Person;
@@ -48,6 +49,7 @@ public class PdlFoedselsmeldingMappingStrategy implements MappingStrategy {
                                 pdlFoedsel.getFodekommune() :
                                 kodeverkConsumer.getKodeverkByName(LAND).get(pdlFoedsel.getFoedeland())));
                         pdlFoedsel.setKilde(CONSUMER);
+                        pdlFoedsel.setMaster(Master.FREG);
                     }
 
                     private String getFoedekommune(Person person) {

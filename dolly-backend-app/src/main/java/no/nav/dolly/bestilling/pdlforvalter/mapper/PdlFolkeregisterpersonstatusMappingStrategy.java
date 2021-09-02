@@ -1,17 +1,17 @@
 package no.nav.dolly.bestilling.pdlforvalter.mapper;
 
-import static java.util.Objects.isNull;
-import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlFolkeregisterpersonstatus.Folkeregisterpersonstatus;
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
-
-import org.springframework.stereotype.Component;
-
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFolkeregisterpersonstatus;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpplysning.Master;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.mapper.MappingStrategy;
+import org.springframework.stereotype.Component;
+
+import static java.util.Objects.isNull;
+import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlFolkeregisterpersonstatus.Folkeregisterpersonstatus;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 
 @Component
 public class PdlFolkeregisterpersonstatusMappingStrategy implements MappingStrategy {
@@ -24,6 +24,7 @@ public class PdlFolkeregisterpersonstatusMappingStrategy implements MappingStrat
                             PdlFolkeregisterpersonstatus personstatus, MappingContext context) {
 
                         personstatus.setKilde(CONSUMER);
+                        personstatus.setMaster(Master.FREG);
                         personstatus.setStatus(getStatus(person.getPersonStatus()));
                     }
                 })

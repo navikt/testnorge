@@ -1,14 +1,14 @@
 package no.nav.dolly.domain.resultset.pdlforvalter.doedsbo;
 
-import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -41,7 +41,7 @@ public class RsPdlKontaktinformasjonForDoedsbo {
     private PdlSkifteform skifteform;
 
     @Schema(required = true)
-    private PdlSomAdressat adressat;
+    private RsPdlAdressat adressat;
 
     @Schema(required = true,
             type = "LocalDateTime",

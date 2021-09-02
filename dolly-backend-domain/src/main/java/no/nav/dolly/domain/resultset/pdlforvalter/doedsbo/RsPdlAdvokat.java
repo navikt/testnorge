@@ -15,13 +15,15 @@ import no.nav.dolly.domain.resultset.pdlforvalter.PdlPersonnavn;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PdlOrganisasjon extends PdlSomAdressat {
+public class RsPdlAdvokat extends RsPdlAdressat {
+
+    public static final String ADVOKAT = "ADVOKAT";
 
     private PdlPersonnavn kontaktperson;
     private String organisasjonsnavn;
     private String organisasjonsnummer;
 
     @Override public String getAdressatType() {
-        return "ORGANISASJON";
+        return ADVOKAT;
     }
 }

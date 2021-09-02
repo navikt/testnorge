@@ -1,23 +1,22 @@
 package no.nav.dolly.bestilling.pdlforvalter.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdresse.Bruksenhetstype;
+import lombok.experimental.SuperBuilder;
 
-@Getter
-@Setter
+@Data
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PdlMatrikkeladresse {
+public class PdlMatrikkeladresse extends PdlOpplysning {
 
-        private String adressetilleggsnavn;
+        private String tilleggsnavn;
         private String bruksenhetsnummer;
-        private Bruksenhetstype bruksenhetstype;
         private Integer bruksnummer;
         private Integer festenummer;
         private Integer gaardsnummer;
