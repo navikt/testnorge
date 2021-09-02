@@ -58,7 +58,7 @@ public class SafConsumer {
                 ).block();
     }
 
-    public String getPDF(Integer journalpostId, Integer dokumentInfoId, String miljo) {
+    public byte[] getPDF(Integer journalpostId, Integer dokumentInfoId, String miljo) {
         return accessTokenService
                 .generateToken(properties)
                 .flatMap(accessToken -> new GetPDFCommand(
