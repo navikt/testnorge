@@ -47,10 +47,9 @@ public class JournalpostController {
     public ResponseEntity<?> hentPDF(
             @RequestHeader("miljo") String miljo,
             @PathVariable("dokumentInfoId") Integer dokumentInfoId,
-            @PathVariable("journalpostId") Integer journalpostId,
-            @RequestParam DokumentType dokumentType
+            @PathVariable("journalpostId") Integer journalpostId
     ) {
-        var dokument = service.getPDF(journalpostId, dokumentInfoId, dokumentType, miljo);
+        var dokument = service.getPDF(journalpostId, dokumentInfoId, miljo);
 
         if (dokument == null) {
             return ResponseEntity.notFound().build();
