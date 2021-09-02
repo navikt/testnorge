@@ -54,6 +54,4 @@ spec:
       cpu: 500m
       memory: 5000Mi
   ingresses:
-    - "https://testnav-varslinger-service.dev.adeo.no"
     - "https://testnav-varslinger-service.dev.intern.nav.no"
-    - "https://testnav-varslinger-service.dev-fss-pub.nais.io"
