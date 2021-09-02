@@ -60,14 +60,10 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO> {
     }
 
     private void validate(KontaktadresseDTO adresse) {
-        if (count(adresse.getPostboksadresse()) +
-                count(adresse.getUtenlandskAdresse()) +
-                count(adresse.getVegadresse()) == 0) {
+        if (adresse.countAdresser() == 0) {
             throw new InvalidRequestException(VALIDATION_ADDRESS_ABSENT_ERROR);
         }
-        if (count(adresse.getPostboksadresse()) +
-                count(adresse.getUtenlandskAdresse()) +
-                count(adresse.getVegadresse()) > 1) {
+        if (adresse.countAdresser() > 1) {
             throw new InvalidRequestException(VALIDATION_AMBIGUITY_ERROR);
         }
         if (DbVersjonDTO.Master.PDL == adresse.getMaster() &&

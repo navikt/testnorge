@@ -54,10 +54,6 @@ public abstract class AdresseService<T extends AdresseDTO> {
         }
     }
 
-    protected static <T> int count(T artifact) {
-        return nonNull(artifact) ? 1 : 0;
-    }
-
     protected void validateCoAdresseNavn(AdresseDTO.CoNavnDTO navn) {
 
         if ((isNotBlank(navn.getFornavn()) ||

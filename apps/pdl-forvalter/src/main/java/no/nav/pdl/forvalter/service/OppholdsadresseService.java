@@ -52,14 +52,10 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO> {
 
     protected void validate(OppholdsadresseDTO adresse) {
 
-        if (count(adresse.getVegadresse()) +
-                count(adresse.getMatrikkeladresse()) +
-                count(adresse.getUtenlandskAdresse()) > 1) {
+        if (adresse.countAdresser() > 1) {
             throw new InvalidRequestException(VALIDATION_AMBIGUITY_ERROR);
 
-        } else if (count(adresse.getMatrikkeladresse()) +
-                count(adresse.getUtenlandskAdresse()) +
-                count(adresse.getVegadresse()) == 0) {
+        } else if (adresse.countAdresser() == 0) {
             throw new InvalidRequestException(VALIDATION_ADDRESS_ABSENT_ERROR);
         }
         if (DbVersjonDTO.Master.FREG == adresse.getMaster() && nonNull(adresse.getUtenlandskAdresse())) {

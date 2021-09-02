@@ -50,16 +50,10 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO> {
 
     private void validate(BostedadresseDTO adresse) {
 
-        if (count(adresse.getMatrikkeladresse()) +
-                count(adresse.getUtenlandskAdresse()) +
-                count(adresse.getVegadresse()) +
-                count(adresse.getUkjentBosted()) > 1) {
+        if (adresse.countAdresser() > 1) {
             throw new InvalidRequestException(VALIDATION_AMBIGUITY_ERROR);
 
-        } else if (count(adresse.getMatrikkeladresse()) +
-                count(adresse.getUtenlandskAdresse()) +
-                count(adresse.getVegadresse()) +
-                count(adresse.getUkjentBosted()) == 0) {
+        } else if (adresse.countAdresser() == 0) {
             throw new InvalidRequestException(VALIDATION_ADDRESS_ABSENT_ERROR);
         }
 
