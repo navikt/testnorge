@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - apps/varslinger-service/**
-
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/varslinger-service:${{ github.sha }}
