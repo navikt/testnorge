@@ -63,10 +63,7 @@ const hentPDF = (journalpostId: number, dokumentInfoId: number, miljo: string): 
 		})
 		.then(resp => {
 			const fileURL = URL.createObjectURL(resp)
-			const link = document.createElement('a')
-			link.href = fileURL
-			link.download = `Dokument-${dokumentInfoId}.pdf`
-			link.click()
+			window.open(fileURL)
 		})
 		.catch(error => {
 			console.log(error)

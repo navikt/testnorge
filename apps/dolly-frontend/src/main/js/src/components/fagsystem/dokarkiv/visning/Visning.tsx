@@ -26,7 +26,7 @@ export default ({ ident }: Form) => {
 				onFetch={() =>
 					DollyApi.getTransaksjonid('DOKARKIV', ident)
 						.then(({ data }: { data: Array<TransaksjonId> }) => {
-							setMiljoe(data[0].miljoe)
+							data[0] && setMiljoe(data[0].miljoe)
 							return data.map((bestilling: TransaksjonId) =>
 								JoarkDokumentService.hentJournalpost(
 									bestilling.transaksjonId.journalpostId,

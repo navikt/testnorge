@@ -47,7 +47,7 @@ export default ({ journalpost, miljoe }: Props) => (
 								)
 							}
 						>
-							EKSPORTER TIL PDF
+							VIS PDF
 						</Button>
 					</div>
 				)

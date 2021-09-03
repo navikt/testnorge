@@ -26,6 +26,20 @@ export const FilnavnModal = ({ filer, closeModal, handleChange }: Data) => {
 	if (aktivIndex === -1) {
 		return null
 	}
+
+	function handleSubmit() {
+		handleChange(
+			filer.map((fil, index) =>
+				index === aktivIndex
+					? {
+							...fil,
+							dokNavn: filnavn
+					  }
+					: fil
+			)
+		)
+	}
+
 	return (
 		<ErrorBoundary>
 			<DollyModal isOpen closeModal={closeModal} width="50%" overflow="auto">
@@ -42,16 +56,7 @@ export const FilnavnModal = ({ filer, closeModal, handleChange }: Data) => {
 					submitknapp="Lagre tittel"
 					disabled={filnavn === '' || filnavn.length > MAX_LENGTH}
 					onSubmit={() => {
-						handleChange(
-							filer.map((fil, index) =>
-								index === aktivIndex
-									? {
-											...fil,
-											dokNavn: filnavn
-									  }
-									: fil
-							)
-						)
+						handleSubmit()
 						closeModal()
 					}}
 					// @ts-ignore
