@@ -20,7 +20,7 @@ public class SafConsumer {
     private final AccessTokenService accessTokenService;
     private final NaisServerProperties properties;
     private final ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
-            .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(1024 * 50)).build();
+            .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(1024 * 1024 * 50)).build();
 
     public SafConsumer(
             TestnavSafProxyServiceProperties properties,
