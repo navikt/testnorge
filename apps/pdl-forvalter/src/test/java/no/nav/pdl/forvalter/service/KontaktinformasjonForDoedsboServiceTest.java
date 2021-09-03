@@ -5,7 +5,6 @@ import no.nav.pdl.forvalter.consumer.OrganisasjonForvalterConsumer;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.AdressatDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.OrganisasjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.junit.jupiter.api.Test;
@@ -21,8 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.lang.String.format;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.KontaktpersonMedIdNummerDTO;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.KontaktpersonUtenIdNummerDTO;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.KontaktpersonDTO;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.PdlSkifteform.OFFENTLIG;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.PersonNavnDTO;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -77,7 +75,7 @@ class KontaktinformasjonForDoedsboServiceTest {
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 kontaktinformasjonForDoedsboService.convert(request));
 
-        assertThat(exception.getMessage(), containsString("KontaktinformasjonForDoedsbo: addressat må oppgis"));
+        assertThat(exception.getMessage(), containsString("KontaktinformasjonForDoedsbo: kontakt må oppgis, enten advokatSomKontakt, personSomKontakt eller organisasjonSomKontakt"));
     }
 
     @Test
@@ -86,10 +84,8 @@ class KontaktinformasjonForDoedsboServiceTest {
         var request = PersonDTO.builder()
                 .kontaktinformasjonForDoedsbo(List.of(KontaktinformasjonForDoedsboDTO.builder()
                         .skifteform(OFFENTLIG)
-                        .adressat(AdressatDTO.builder()
-                                .advokatSomAdressat(new OrganisasjonDTO())
-                                .organisasjonSomAdressat(new OrganisasjonDTO())
-                                .build())
+                        .advokatSomKontakt(new OrganisasjonDTO())
+                        .organisasjonSomKontakt(new OrganisasjonDTO())
                         .isNew(true)
                         .build()))
                 .build();
@@ -97,9 +93,7 @@ class KontaktinformasjonForDoedsboServiceTest {
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 kontaktinformasjonForDoedsboService.convert(request));
 
-        assertThat(exception.getMessage(), containsString("KontaktinformasjonForDoedsbo: kun en av disse " +
-                "adressater skal oppgis: advokatSomAdressat, kontaktpersonMedIdNummerSomAdressat, " +
-                "kontaktpersonUtenIdNummerSomAdressat eller organisasjonSomAdressat"));
+        assertThat(exception.getMessage(), containsString("KontaktinformasjonForDoedsbo: kun en av disse kontakter skal oppgis: advokatSomKontakt, personSomKontakt eller organisasjonSomKontakt"));
     }
 
     @Test
@@ -110,10 +104,8 @@ class KontaktinformasjonForDoedsboServiceTest {
         var request = PersonDTO.builder()
                 .kontaktinformasjonForDoedsbo(List.of(KontaktinformasjonForDoedsboDTO.builder()
                         .skifteform(OFFENTLIG)
-                        .adressat(AdressatDTO.builder()
-                                .kontaktpersonMedIdNummerSomAdressat(KontaktpersonMedIdNummerDTO.builder()
-                                        .identifikasjonsnummer(IDENT)
-                                        .build())
+                        .personSomKontakt(KontaktpersonDTO.builder()
+                                .identifikasjonsnummer(IDENT)
                                 .build())
                         .isNew(true)
                         .build()))
@@ -122,7 +114,7 @@ class KontaktinformasjonForDoedsboServiceTest {
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 kontaktinformasjonForDoedsboService.convert(request));
 
-        assertThat(exception.getMessage(), containsString(format("KontaktinformasjonForDoedsbo: adressat med idnummer %s " +
+        assertThat(exception.getMessage(), containsString(format("KontaktinformasjonForDoedsbo: personSomKontakt med identifikasjonsnummer %s " +
                 "ikke funnet i database", IDENT)));
     }
 
@@ -132,9 +124,7 @@ class KontaktinformasjonForDoedsboServiceTest {
         var request = PersonDTO.builder()
                 .kontaktinformasjonForDoedsbo(List.of(KontaktinformasjonForDoedsboDTO.builder()
                         .skifteform(OFFENTLIG)
-                        .adressat(AdressatDTO.builder()
-                                .kontaktpersonUtenIdNummerSomAdressat(new KontaktpersonUtenIdNummerDTO())
-                                .build())
+                        .personSomKontakt(new KontaktpersonDTO())
                         .isNew(true)
                         .build()))
                 .build();
@@ -142,8 +132,7 @@ class KontaktinformasjonForDoedsboServiceTest {
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 kontaktinformasjonForDoedsboService.convert(request));
 
-        assertThat(exception.getMessage(), containsString("KontaktinformasjonForDoedsbo: adressat uten idnummer " +
-                "behøver fødselsdato"));
+        assertThat(exception.getMessage(), containsString("KontaktinformasjonForDoedsbo: personSomKontakt uten identifikasjonsnummer behøver fødselsdato"));
     }
 
     @Test
@@ -154,11 +143,9 @@ class KontaktinformasjonForDoedsboServiceTest {
         var request = PersonDTO.builder()
                 .kontaktinformasjonForDoedsbo(List.of(KontaktinformasjonForDoedsboDTO.builder()
                         .skifteform(OFFENTLIG)
-                        .adressat(AdressatDTO.builder()
-                                .kontaktpersonUtenIdNummerSomAdressat(KontaktpersonUtenIdNummerDTO.builder()
-                                        .foedselsdato(LocalDate.of(1984, 1, 1).atStartOfDay())
-                                        .navn(PersonNavnDTO.builder().etternavn("Blæh").build())
-                                        .build())
+                        .personSomKontakt(KontaktpersonDTO.builder()
+                                .foedselsdato(LocalDate.of(1984, 1, 1).atStartOfDay())
+                                .navn(PersonNavnDTO.builder().etternavn("Blæh").build())
                                 .build())
                         .isNew(true)
                         .build()))
@@ -178,10 +165,8 @@ class KontaktinformasjonForDoedsboServiceTest {
         var request = PersonDTO.builder()
                 .kontaktinformasjonForDoedsbo(List.of(KontaktinformasjonForDoedsboDTO.builder()
                         .skifteform(OFFENTLIG)
-                        .adressat(AdressatDTO.builder()
-                                .advokatSomAdressat(OrganisasjonDTO.builder()
-                                        .kontaktperson(PersonNavnDTO.builder().etternavn("Blæh").build())
-                                        .build())
+                        .advokatSomKontakt(OrganisasjonDTO.builder()
+                                .kontaktperson(PersonNavnDTO.builder().etternavn("Blæh").build())
                                 .build())
                         .isNew(true)
                         .build()))
@@ -201,10 +186,8 @@ class KontaktinformasjonForDoedsboServiceTest {
         var request = PersonDTO.builder()
                 .kontaktinformasjonForDoedsbo(List.of(KontaktinformasjonForDoedsboDTO.builder()
                         .skifteform(OFFENTLIG)
-                        .adressat(AdressatDTO.builder()
-                                .organisasjonSomAdressat(OrganisasjonDTO.builder()
-                                        .kontaktperson(PersonNavnDTO.builder().etternavn("Blæh").build())
-                                        .build())
+                        .organisasjonSomKontakt(OrganisasjonDTO.builder()
+                                .kontaktperson(PersonNavnDTO.builder().etternavn("Blæh").build())
                                 .build())
                         .isNew(true)
                         .build()))
@@ -222,10 +205,8 @@ class KontaktinformasjonForDoedsboServiceTest {
         var request = PersonDTO.builder()
                 .kontaktinformasjonForDoedsbo(List.of(KontaktinformasjonForDoedsboDTO.builder()
                         .skifteform(OFFENTLIG)
-                        .adressat(AdressatDTO.builder()
-                                .organisasjonSomAdressat(OrganisasjonDTO.builder()
-                                        .organisasjonsnavn("Tada")
-                                        .build())
+                        .organisasjonSomKontakt(OrganisasjonDTO.builder()
+                                .organisasjonsnavn("Tada")
                                 .build())
                         .isNew(true)
                         .build()))
@@ -247,11 +228,9 @@ class KontaktinformasjonForDoedsboServiceTest {
         var request = PersonDTO.builder()
                 .kontaktinformasjonForDoedsbo(List.of(KontaktinformasjonForDoedsboDTO.builder()
                         .skifteform(OFFENTLIG)
-                        .adressat(AdressatDTO.builder()
-                                .advokatSomAdressat(OrganisasjonDTO.builder()
-                                        .kontaktperson(PersonNavnDTO.builder().etternavn("Blæh").build())
-                                        .organisasjonsnummer("123456789")
-                                        .build())
+                        .advokatSomKontakt(OrganisasjonDTO.builder()
+                                .kontaktperson(PersonNavnDTO.builder().etternavn("Blæh").build())
+                                .organisasjonsnummer("123456789")
                                 .build())
                         .isNew(true)
                         .build()))
@@ -274,12 +253,10 @@ class KontaktinformasjonForDoedsboServiceTest {
         var request = PersonDTO.builder()
                 .kontaktinformasjonForDoedsbo(List.of(KontaktinformasjonForDoedsboDTO.builder()
                         .skifteform(OFFENTLIG)
-                        .adressat(AdressatDTO.builder()
-                                .advokatSomAdressat(OrganisasjonDTO.builder()
-                                        .kontaktperson(PersonNavnDTO.builder().etternavn("Blæh").build())
-                                        .organisasjonsnummer("123456789")
-                                        .organisasjonsnavn("Tull")
-                                        .build())
+                        .advokatSomKontakt(OrganisasjonDTO.builder()
+                                .kontaktperson(PersonNavnDTO.builder().etternavn("Blæh").build())
+                                .organisasjonsnummer("123456789")
+                                .organisasjonsnavn("Tull")
                                 .build())
                         .isNew(true)
                         .build()))

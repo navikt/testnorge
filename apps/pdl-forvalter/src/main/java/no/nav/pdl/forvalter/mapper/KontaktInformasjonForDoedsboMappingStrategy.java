@@ -8,7 +8,7 @@ import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.PostnummerService;
 import no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.KontaktinformasjonForDoedsboAdresse;
 import org.springframework.stereotype.Component;
 
 import static java.lang.String.format;
@@ -30,11 +30,11 @@ public class KontaktInformasjonForDoedsboMappingStrategy implements MappingStrat
     @Override
     public void register(MapperFactory factory) {
 
-        factory.classMap(BostedadresseDTO.class, KontaktinformasjonForDoedsboDTO.class)
+        factory.classMap(BostedadresseDTO.class, KontaktinformasjonForDoedsboAdresse.class)
                 .customize(new CustomMapper<>() {
 
                     @Override
-                    public void mapAtoB(BostedadresseDTO kilde, KontaktinformasjonForDoedsboDTO destinasjon, MappingContext context) {
+                    public void mapAtoB(BostedadresseDTO kilde, KontaktinformasjonForDoedsboAdresse destinasjon, MappingContext context) {
 
                         if (nonNull(kilde.getVegadresse())) {
                             destinasjon.setAdresselinje1(format("%s %s", kilde.getVegadresse().getAdressenavn(),
@@ -68,11 +68,11 @@ public class KontaktInformasjonForDoedsboMappingStrategy implements MappingStrat
                 })
                 .register();
 
-        factory.classMap(VegadresseDTO.class, KontaktinformasjonForDoedsboDTO.class)
+        factory.classMap(VegadresseDTO.class, KontaktinformasjonForDoedsboAdresse.class)
                 .customize(new CustomMapper<>() {
 
                     @Override
-                    public void mapAtoB(VegadresseDTO kilde, KontaktinformasjonForDoedsboDTO destinasjon, MappingContext context) {
+                    public void mapAtoB(VegadresseDTO kilde, KontaktinformasjonForDoedsboAdresse destinasjon, MappingContext context) {
 
                         destinasjon.setAdresselinje1(format("%s %d", kilde.getAdressenavn(), kilde.getHusnummer()));
                         destinasjon.setPostnummer(kilde.getPostnummer());
