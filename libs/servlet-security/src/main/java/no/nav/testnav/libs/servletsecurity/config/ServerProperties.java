@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class NaisServerProperties implements Scopeable {
+public class ServerProperties implements Scopeable {
     private String url;
     private String cluster;
     private String name;

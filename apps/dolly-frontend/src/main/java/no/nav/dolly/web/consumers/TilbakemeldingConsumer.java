@@ -11,26 +11,26 @@ import reactor.core.publisher.Mono;
 
 import no.nav.dolly.web.credentials.TestnorgeTilbakemeldingApiProperties;
 import no.nav.testnav.libs.dto.tilbakemeldingapi.v1.TilbakemeldingDTO;
-import no.nav.testnav.libs.reactivesecurity.service.AccessTokenService;
+import no.nav.testnav.libs.reactivesecurity.service.TokenExchange;
 
 @Slf4j
 @Service
 public class TilbakemeldingConsumer {
     private final WebClient webClient;
     private final TestnorgeTilbakemeldingApiProperties testnorgeTilbakemeldingApiProperties;
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
 
     public TilbakemeldingConsumer(
             TestnorgeTilbakemeldingApiProperties tilbakemeldingApiProperties,
-            AccessTokenService accessTokenService
+            TokenExchange tokenExchange
     ) {
         this.testnorgeTilbakemeldingApiProperties = tilbakemeldingApiProperties;
         this.webClient = WebClient.builder().baseUrl(tilbakemeldingApiProperties.getUrl()).build();
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
     }
 
     public Mono<Void> send(TilbakemeldingDTO dto) {
-        return accessTokenService
+        return tokenExchange
                 .generateToken(testnorgeTilbakemeldingApiProperties)
                 .flatMap(accessToken -> webClient
                         .post()

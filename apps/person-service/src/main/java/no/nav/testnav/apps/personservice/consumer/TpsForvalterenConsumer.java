@@ -15,7 +15,7 @@ import java.util.Optional;
 import no.nav.testnav.apps.personservice.consumer.command.GetTpsPersonCommand;
 import no.nav.testnav.apps.personservice.credentials.TpsForvalterenProxyServiceProperties;
 import no.nav.testnav.apps.personservice.domain.Person;
-import no.nav.testnav.libs.reactivesecurity.service.AccessTokenService;
+import no.nav.testnav.libs.reactivesecurity.service.TokenExchange;
 
 @Slf4j
 @Component
@@ -23,15 +23,15 @@ public class TpsForvalterenConsumer {
 
     private final WebClient webClient;
     private final TpsForvalterenProxyServiceProperties serviceProperties;
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
 
     public TpsForvalterenConsumer(
             TpsForvalterenProxyServiceProperties serviceProperties,
-            AccessTokenService accessTokenService,
+            TokenExchange accessTokenService,
             ObjectMapper objectMapper
     ) {
         this.serviceProperties = serviceProperties;
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = accessTokenService;
         ExchangeStrategies jacksonStrategy = ExchangeStrategies.builder()
                 .codecs(config -> {
                     config.defaultCodecs()
@@ -48,7 +48,7 @@ public class TpsForvalterenConsumer {
     }
 
     public Mono<Optional<Person>> getPerson(String ident, String miljoe) {
-        return accessTokenService
+        return tokenExchange
                 .generateToken(serviceProperties)
                 .flatMap(token -> new GetTpsPersonCommand(webClient, token.getTokenValue(), ident, miljoe).call())
                 .map(value -> value.map(response -> new Person(response.getPerson())));

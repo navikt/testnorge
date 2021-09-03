@@ -5,7 +5,7 @@ import no.nav.pdl.forvalter.config.credentials.IdentPoolProperties;
 import no.nav.pdl.forvalter.consumer.command.IdentpoolPostCommand;
 import no.nav.pdl.forvalter.dto.HentIdenterRequest;
 import no.nav.pdl.forvalter.exception.InternalServerException;
-import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
+import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -27,7 +27,7 @@ public class IdentPoolConsumer {
 
     private final WebClient webClient;
     private final AccessTokenService accessTokenService;
-    private final NaisServerProperties properties;
+    private final ServerProperties properties;
 
     public IdentPoolConsumer(AccessTokenService accessTokenService, IdentPoolProperties properties) {
         this.accessTokenService = accessTokenService;

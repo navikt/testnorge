@@ -42,6 +42,7 @@ dependencies {
     implementation 'no.nav.registre:testnorge-consumers:1.12.0-RELEASE'
 
 
+    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }

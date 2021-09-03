@@ -10,14 +10,14 @@ import reactor.core.publisher.Mono;
 import no.nav.testnav.apps.oversiktfrontend.config.ApplicationsProperties;
 import no.nav.testnav.apps.oversiktfrontend.router.dto.TokenDTO;
 import no.nav.testnav.libs.reactivesecurity.domain.AccessScopes;
-import no.nav.testnav.libs.reactivesecurity.service.AccessTokenService;
+import no.nav.testnav.libs.reactivesecurity.service.AzureAdTokenExchange;
 
 @Component
 @RequiredArgsConstructor
 public class ApplicationHandler {
 
     private final ApplicationsProperties properties;
-    private final AccessTokenService accessTokenService;
+    private final AzureAdTokenExchange azureAdTokenExchange;
 
     public Mono<ServerResponse> getApplications(ServerRequest request) {
         var applications = properties.getApplications().keySet();
@@ -31,7 +31,7 @@ public class ApplicationHandler {
             return ServerResponse.notFound().build();
         }
 
-        return accessTokenService
+        return azureAdTokenExchange
                 .generateToken(new AccessScopes("api://" + scope + "/.default"))
                 .flatMap(token -> ServerResponse.ok().body(BodyInserters.fromValue(new TokenDTO(token))));
     }

@@ -25,8 +25,7 @@ dependencies {
     implementation 'no.nav.testnav.libs:data-transfer-objects'
     implementation 'no.nav.testnav.libs:commands'
 
-    implementation 'org.springframework.kafka:spring-kafka:2.5.6.RELEASE'
-    implementation 'org.apache.kafka:kafka-clients:2.5.1'
+    implementation 'org.springframework.kafka:spring-kafka'
     implementation 'io.confluent:kafka-avro-serializer:5.5.0'
 
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
@@ -41,7 +40,7 @@ dependencies {
 
     implementation 'org.flywaydb:flyway-core:6.4.4'
     implementation 'io.projectreactor.addons:reactor-extra:3.4.2'
-    implementation 'org.postgresql:postgresql:42.2.16'
+    implementation 'org.postgresql:postgresql'
     implementation "org.springdoc:springdoc-openapi-ui:${springdocOpenapiUi}"
 
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
@@ -54,7 +53,8 @@ dependencies {
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.11.2'
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
-    testImplementation 'com.h2database:h2:1.4.200'
+    testImplementation 'com.h2database:h2'
+    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'no.nav.testnav.libs:testing'
 }

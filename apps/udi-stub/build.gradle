@@ -55,6 +55,7 @@ dependencies {
     testImplementation 'org.mockito:mockito-junit-jupiter:3.3.3'
     testImplementation 'com.h2database:h2:1.4.200'
     
+    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }

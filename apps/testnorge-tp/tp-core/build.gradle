@@ -37,6 +37,7 @@ dependencies {
     implementation 'no.nav.registre:testnorge-consumers:1.12.0-RELEASE'
 
     runtimeOnly 'com.oracle.database.jdbc:ojdbc8:19.7.0.0'
+    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'com.h2database:h2:1.4.200'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'

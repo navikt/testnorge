@@ -9,12 +9,4 @@ DOLLY_BACKEND_URL: https://dolly-backend-dev.dev.adeo.no
 UDI_STUB_URL: https://udi-stub-dev.dev.adeo.no
 UDI_STUB_NAME: udi-stub-dev
 TPS_FORVALTERN_PROXY_NAME: tps-forvalteren-dev-proxy
-TPS_FORVALTERN_PROXY_URL:  https://tps-forvalteren-dev.dev.adeo.no
-
-spring:
-  security:
-    oauth2:
-      client:
-        registration:
-          idporten:
-            redirect-uri: 'http://localhost:3000/oauth2/callback'
+TPS_FORVALTERN_PROXY_URL: https://tps-forvalteren-dev.dev.adeo.no

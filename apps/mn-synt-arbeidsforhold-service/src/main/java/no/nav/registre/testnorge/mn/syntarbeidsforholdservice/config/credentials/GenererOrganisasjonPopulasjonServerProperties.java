@@ -4,10 +4,10 @@ import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
+import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
 
 @Getter
 @Configuration
 @ConfigurationProperties(prefix = "consumers.testnav-generer-organisasjon-populasjon-service")
-public class GenererOrganisasjonPopulasjonServerProperties extends NaisServerProperties {
+public class GenererOrganisasjonPopulasjonServerProperties extends ServerProperties {
 }

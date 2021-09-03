@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteLocator;
+import org.springframework.cloud.gateway.route.builder.Buildable;
 import org.springframework.cloud.gateway.route.builder.PredicateSpec;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +22,8 @@ import no.nav.testnav.libs.reactivefrontend.filter.AddRequestHeaderGatewayFilter
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2FrontendConfiguration;
 import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
 import no.nav.testnav.libs.reactivesecurity.domain.Scopeable;
-import no.nav.testnav.libs.reactivesecurity.service.AccessTokenService;
+import no.nav.testnav.libs.reactivesecurity.domain.ServerProperties;
+import no.nav.testnav.libs.reactivesecurity.service.TokenExchange;
 
 @Import({
         CoreConfig.class,
@@ -34,16 +36,16 @@ public class AvhengighetsanalyseFrontendApplicationStarter {
 
     private final ApplikasjonsanalyseServiceProperties applikasjonsanalyseServiceProperties;
     private final ProfilApiServiceProperties profilApiServiceProperties;
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
 
     public static void main(String[] args) {
         SpringApplication.run(AvhengighetsanalyseFrontendApplicationStarter.class, args);
     }
 
-    private GatewayFilter filterFrom(Scopeable scopeable) {
+    private GatewayFilter filterFrom(ServerProperties scopeable) {
         return AddRequestHeaderGatewayFilterFactory
                 .createAuthenticationHeaderFilter(
-                        () -> accessTokenService
+                        () -> tokenExchange
                                 .generateToken(scopeable)
                                 .map(AccessToken::getTokenValue)
                 );
@@ -66,7 +68,7 @@ public class AvhengighetsanalyseFrontendApplicationStarter {
                 .build();
     }
 
-    private Function<PredicateSpec, Route.AsyncBuilder> createRoute(String segment, String host, GatewayFilter filter) {
+    private Function<PredicateSpec, Buildable<Route>> createRoute(String segment, String host, GatewayFilter filter) {
         return spec -> spec
                 .path("/" + segment + "/**")
                 .filters(filterSpec -> filterSpec

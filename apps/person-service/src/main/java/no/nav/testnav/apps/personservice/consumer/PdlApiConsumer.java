@@ -15,7 +15,7 @@ import java.util.Optional;
 import no.nav.testnav.apps.personservice.consumer.command.GetPdlPersonCommand;
 import no.nav.testnav.apps.personservice.credentials.PdlServiceProperties;
 import no.nav.testnav.apps.personservice.domain.Person;
-import no.nav.testnav.libs.reactivesecurity.service.AccessTokenService;
+import no.nav.testnav.libs.reactivesecurity.service.TokenExchange;
 
 @Slf4j
 @Component
@@ -23,15 +23,15 @@ public class PdlApiConsumer {
 
     private final WebClient webClient;
     private final PdlServiceProperties serviceProperties;
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
 
     public PdlApiConsumer(
             PdlServiceProperties serviceProperties,
-            AccessTokenService accessTokenService,
+            TokenExchange tokenExchange,
             ObjectMapper objectMapper
     ) {
         this.serviceProperties = serviceProperties;
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
         ExchangeStrategies jacksonStrategy = ExchangeStrategies.builder()
                 .codecs(config -> {
                     config.defaultCodecs()
@@ -49,7 +49,7 @@ public class PdlApiConsumer {
 
     public Mono<Optional<Person>> getPerson(String ident) {
         log.info("Henter person {} fra PDL", ident);
-        return accessTokenService
+        return tokenExchange
                 .generateToken(serviceProperties)
                 .flatMap(token -> new GetPdlPersonCommand(webClient, ident, token.getTokenValue()).call())
                 .map(pdlPerson -> {

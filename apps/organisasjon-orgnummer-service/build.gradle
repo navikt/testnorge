@@ -41,6 +41,7 @@ dependencies {
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'org.postgresql:postgresql:42.2.16'
 
+    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 

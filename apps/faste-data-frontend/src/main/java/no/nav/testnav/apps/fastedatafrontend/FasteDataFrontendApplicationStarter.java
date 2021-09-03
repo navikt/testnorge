@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteLocator;
+import org.springframework.cloud.gateway.route.builder.Buildable;
 import org.springframework.cloud.gateway.route.builder.PredicateSpec;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
@@ -25,7 +26,8 @@ import no.nav.testnav.libs.reactivefrontend.filter.AddRequestHeaderGatewayFilter
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2FrontendConfiguration;
 import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
 import no.nav.testnav.libs.reactivesecurity.domain.Scopeable;
-import no.nav.testnav.libs.reactivesecurity.service.AccessTokenService;
+import no.nav.testnav.libs.reactivesecurity.domain.ServerProperties;
+import no.nav.testnav.libs.reactivesecurity.service.TokenExchange;
 
 @Slf4j
 @Import({
@@ -47,13 +49,13 @@ public class FasteDataFrontendApplicationStarter {
         SpringApplication.run(FasteDataFrontendApplicationStarter.class, args);
     }
 
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
 
 
-    private GatewayFilter filterFrom(Scopeable scopeable) {
+    private GatewayFilter filterFrom(ServerProperties scopeable) {
         return AddRequestHeaderGatewayFilterFactory
                 .createAuthenticationHeaderFilter(
-                        () -> accessTokenService
+                        () -> tokenExchange
                                 .generateToken(scopeable)
                                 .map(AccessToken::getTokenValue)
                 );
@@ -91,7 +93,7 @@ public class FasteDataFrontendApplicationStarter {
                 .build();
     }
 
-    private Function<PredicateSpec, Route.AsyncBuilder> createRoute(String segment, String host, GatewayFilter filter) {
+    private Function<PredicateSpec, Buildable<Route>> createRoute(String segment, String host, GatewayFilter filter) {
         log.info("Redirect fra segment {} til host {}.", segment, host);
         return spec -> spec
                 .path("/" + segment + "/**")

@@ -50,6 +50,7 @@ dependencies {
     implementation 'no.nav.repository.fellesreg.tpsws:nav-repository-fellesregister-jaxb-tps-m201-domain:2020.08.27-09.53-183ead3d81eb'
     implementation "org.springdoc:springdoc-openapi-ui:${springdocOpenapiUi}"
 
+    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'no.nav.testnav.libs:testing'
 }

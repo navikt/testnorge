@@ -33,6 +33,7 @@ dependencies {
     implementation "org.springdoc:springdoc-openapi-ui:${springdocOpenapiUi}"
     implementation "net.logstash.logback:logstash-logback-encoder:${logstashLogbackEncoder}"
 
+    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'no.nav.testnav.libs:testing'

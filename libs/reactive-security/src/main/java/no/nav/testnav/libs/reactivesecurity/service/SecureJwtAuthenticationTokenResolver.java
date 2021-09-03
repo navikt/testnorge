@@ -45,4 +45,9 @@ public class SecureJwtAuthenticationTokenResolver implements AuthenticationToken
                             .build();
                 });
     }
+
+    @Override
+    public Mono<String> getClientRegistrationId() {
+        return Mono.just("unknown");
+    }
 }

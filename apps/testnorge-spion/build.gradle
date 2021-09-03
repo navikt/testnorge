@@ -39,6 +39,7 @@ dependencies {
     implementation 'io.springfox:springfox-swagger-ui:2.9.2'
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
+    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.kafka:spring-kafka-test'
 }

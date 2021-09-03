@@ -12,7 +12,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
-import reactor.netty.tcp.ProxyProvider;
+import reactor.netty.transport.ProxyProvider;
 import reactor.util.retry.Retry;
 
 import java.net.URI;
@@ -22,17 +22,17 @@ import java.util.Map;
 import no.nav.testnav.libs.reactivesecurity.domain.AccessScopes;
 import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
 import no.nav.testnav.libs.reactivesecurity.domain.AzureClientCredentials;
-import no.nav.testnav.libs.reactivesecurity.domain.Scopeable;
+import no.nav.testnav.libs.reactivesecurity.domain.ServerProperties;
 import no.nav.testnav.libs.reactivesecurity.domain.Token;
 
 @Slf4j
 @Service
-public class AccessTokenService {
+public class AzureAdTokenExchange {
     private final WebClient webClient;
     private final AuthenticationTokenResolver tokenResolver;
     private final AzureClientCredentials clientCredentials;
 
-    public AccessTokenService(
+    public AzureAdTokenExchange(
             @Value("${http.proxy:#{null}}") String proxyHost,
             @Value("${AAD_ISSUER_URI}") String issuerUrl,
             AuthenticationTokenResolver tokenResolver,
@@ -61,31 +61,29 @@ public class AccessTokenService {
         this.clientCredentials = clientCredentials;
     }
 
-
-    public Mono<AccessToken> generateToken(Scopeable scopeable) {
-        return generateToken(new AccessScopes(scopeable));
-    }
-
-    public Mono<AccessToken> generateToken(AccessScopes accessScopes) {
-
-        if (accessScopes.getScopes().isEmpty()) {
-            throw new RuntimeException("Kan ikke opprette accessToken uten scopes (clienter).");
-        }
-
+    public Mono<AccessToken> generateToken(ServerProperties serverProperties) {
         return tokenResolver
                 .getToken()
                 .flatMap(token -> {
                     if (token.isClientCredentials()) {
-                        return generateClientCredentialAccessToken(accessScopes);
+                        return generateClientCredentialAccessToken(serverProperties);
                     }
-                    return generateOnBehalfOfAccessToken(token, accessScopes);
+                    return generateOnBehalfOfAccessToken(token, serverProperties);
                 });
     }
 
-    private Mono<AccessToken> generateClientCredentialAccessToken(AccessScopes accessScopes) {
+    // TODO Refactor to use format: cluster:namespace:app-name
+    @Deprecated
+    public Mono<AccessToken> generateToken(AccessScopes accessScopes) {
+        return tokenResolver
+                .getToken()
+                .flatMap(token -> generateOnBehalfOfAccessToken(token, accessScopes.getScopes().stream().findFirst().get()));
+    }
+
+    private Mono<AccessToken> generateClientCredentialAccessToken(ServerProperties serverProperties) {
         log.trace("Henter OAuth2 access token fra client credential...");
 
-        var scope = String.join(" ", accessScopes.getScopes());
+        var scope = String.join(" ", toScope(serverProperties));
         var body = BodyInserters
                 .fromFormData("scope", scope)
                 .with("client_id", clientCredentials.getClientId())
@@ -114,7 +112,16 @@ public class AccessTokenService {
 
     }
 
-    private Mono<AccessToken> generateOnBehalfOfAccessToken(Token token, AccessScopes accessScopes) {
+
+    private String toScope(ServerProperties serverProperties) {
+        return "api://" + serverProperties.getCluster() + "." + serverProperties.getNamespace() + "." + serverProperties.getName() + "/.default";
+    }
+
+    private Mono<AccessToken> generateOnBehalfOfAccessToken(Token token, ServerProperties serverProperties) {
+        return generateOnBehalfOfAccessToken(token, toScope(serverProperties));
+    }
+
+    private Mono<AccessToken> generateOnBehalfOfAccessToken(Token token, String scope) {
         String oid = token.getOid();
         if (oid != null) {
             Map<String, String> contextMap = MDC.getCopyOfContextMap();
@@ -125,8 +132,6 @@ public class AccessTokenService {
         if (clientCredentials.getClientSecret() == null) {
             log.error("Client secret er null.");
         }
-
-        var scope = String.join(" ", accessScopes.getScopes());
 
         var body = BodyInserters
                 .fromFormData("scope", scope)

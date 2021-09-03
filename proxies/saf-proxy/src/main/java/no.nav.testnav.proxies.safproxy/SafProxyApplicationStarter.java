@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteLocator;
+import org.springframework.cloud.gateway.route.builder.Buildable;
 import org.springframework.cloud.gateway.route.builder.PredicateSpec;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
@@ -78,7 +79,7 @@ public class SafProxyApplicationStarter {
                 .build();
     }
 
-    private Function<PredicateSpec, Route.AsyncBuilder> createRoute(String miljo, GatewayFilter filter) {
+    private Function<PredicateSpec, Buildable<Route>> createRoute(String miljo, GatewayFilter filter) {
         return spec -> spec
                 .path("/" + miljo + "/**")
                 .filters(filterSpec -> filterSpec

@@ -7,13 +7,13 @@ import java.util.Set;
 
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.command.GetOpplysningspliktigOrgnummerCommand;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.credentials.GenererOrganisasjonPopulasjonServerProperties;
-import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
+import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 
 @Component
 public class GenererOrganisasjonPopulasjonConsumer {
     private final WebClient webClient;
-    private final NaisServerProperties properties;
+    private final ServerProperties properties;
     private final AccessTokenService accessTokenService;
 
     public GenererOrganisasjonPopulasjonConsumer(

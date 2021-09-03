@@ -25,8 +25,8 @@ dependencies {
 
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
-    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-zuul'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-zuul:2.2.9.RELEASE'
 
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -51,6 +51,7 @@ dependencies {
     implementation 'org.postgresql:postgresql:42.2.16'
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
+    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'no.nav.testnav.libs:testing'
 }

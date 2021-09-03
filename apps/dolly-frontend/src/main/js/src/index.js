@@ -13,6 +13,7 @@ import history from './history'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import Logger from './logger'
 import { v4 as uuid } from 'uuid'
+import { LoginPage } from '~/pages/login'
 
 window.uuid = uuid()
 window.onerror = message => {
@@ -28,13 +29,20 @@ window.onerror = message => {
 }
 
 const root = document.getElementById('root')
+
+console.log()
+
 render(
-	<Provider store={store}>
-		<ConnectedRouter history={history}>
-			<ErrorBoundary>
-				<AppConnector />
-			</ErrorBoundary>
-		</ConnectedRouter>
-	</Provider>,
+	window.location.pathname !== '/login' ? (
+		<Provider store={store}>
+			<ConnectedRouter history={history}>
+				<ErrorBoundary>
+					<AppConnector />
+				</ErrorBoundary>
+			</ConnectedRouter>
+		</Provider>
+	) : (
+		<LoginPage />
+	),
 	root
 )

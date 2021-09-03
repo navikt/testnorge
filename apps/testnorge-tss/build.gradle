@@ -35,6 +35,7 @@ dependencies {
     implementation 'commons-codec:commons-codec:1.14'
     implementation 'com.opencsv:opencsv:4.6'
 
+    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }

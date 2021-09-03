@@ -9,17 +9,17 @@ import reactor.core.publisher.Mono;
 
 import no.nav.testnav.apps.oversiktfrontend.router.dto.TokenDTO;
 import no.nav.testnav.libs.reactivesecurity.domain.AccessScopes;
-import no.nav.testnav.libs.reactivesecurity.service.AccessTokenService;
+import no.nav.testnav.libs.reactivesecurity.service.AzureAdTokenExchange;
 
 @Component
 @RequiredArgsConstructor
 public class TokenHandler {
 
-    private final AccessTokenService accessTokenService;
+    private final AzureAdTokenExchange azureAdTokenExchange;
 
     public Mono<ServerResponse> onBehalfOf(ServerRequest request) {
         var scope = request.pathVariable("scope");
-        return accessTokenService
+        return azureAdTokenExchange
                 .generateToken(new AccessScopes("api://" + scope + "/.default"))
                 .flatMap(token -> ServerResponse.ok().body(BodyInserters.fromValue(new TokenDTO(token))));
     }
