@@ -3,6 +3,7 @@ import JoarkDokumentService, {Dokument, Journalpost} from '~/service/services/Jo
 import {TitleValue} from '~/components/ui/titleValue/TitleValue'
 import {DollyFieldArray} from '~/components/ui/form/fieldArray/DollyFieldArray'
 import styled from 'styled-components'
+import Button from '~/components/ui/button/Button'
 
 type Props = {
 	journalpost: Journalpost
@@ -30,19 +31,24 @@ export default ({ journalpost }: Props) => (
 
 		<DollyFieldArray header={'Vedlegg'} data={journalpost.dokumenter} nested>
 			{(dokument: Dokument, idx: number) => {
-				console.log('dokument: ', dokument) //TODO - SLETT MEG
-
-				JoarkDokumentService.hentPDF(
-					journalpost.journalpostId,
-					dokument.dokumentInfoId,
-					'q2', //TODO FIX: bestilling.miljoe,
-					'ARKIV'
-				)
 				return (
 					<div key={idx} className="person-visning_content">
 						{/*{kapplah && kapplah.value && <a href={kapplah.value}>Download</a>}*/}
 						<TitleValue title="Tittel" value={dokument.tittel} />
 						<TitleValue title="Dokumentinfo-ID" value={dokument.dokumentInfoId} />
+						<Button
+							className="flexbox--align-center csv-eksport-btn"
+							kind="file-new-table"
+							onClick={() =>
+								JoarkDokumentService.hentPDF(
+									journalpost.journalpostId,
+									dokument.dokumentInfoId,
+									'q2' //TODO FIX: bestilling.miljoe,
+								)
+							}
+						>
+							EKSPORTER TIL PDF
+						</Button>
 					</div>
 				)
 			}}
