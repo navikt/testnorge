@@ -44,7 +44,7 @@ public class PdlOppholdsadresseMappingStrategy implements MappingStrategy {
                                     oppholdsadresse.setUtenlandskAdresse(mapperFacade.map(
                                             postadresse, UtenlandskAdresse.class));
                                     oppholdsadresse.setKilde(CONSUMER);
-                                    oppholdsadresse.setMaster(Master.FREG);
+                                    oppholdsadresse.setMaster(Master.PDL);
                                     oppholdsadresse.setOppholdAnnetSted(mapSpesReg(person.getSpesreg()));
                                     return oppholdsadresse;
                                 })

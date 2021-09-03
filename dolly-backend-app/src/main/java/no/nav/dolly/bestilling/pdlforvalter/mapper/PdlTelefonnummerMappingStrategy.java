@@ -26,7 +26,7 @@ public class PdlTelefonnummerMappingStrategy implements MappingStrategy {
                         if (isNotBlank(person.getTelefonnummer_1())) {
                             telefonnummer.getTelfonnumre().add(PdlTelefonnummer.Entry.builder()
                                     .kilde(CONSUMER)
-                                    .master(Master.FREG)
+                                    .master(Master.PDL)
                                     .prioritet(1)
                                     .landskode(person.getTelefonLandskode_1())
                                     .nummer(person.getTelefonnummer_1())
@@ -35,7 +35,7 @@ public class PdlTelefonnummerMappingStrategy implements MappingStrategy {
                         if (isNotBlank(person.getTelefonnummer_2())) {
                             telefonnummer.getTelfonnumre().add(PdlTelefonnummer.Entry.builder()
                                     .kilde(CONSUMER)
-                                    .master(Master.FREG)
+                                    .master(Master.PDL)
                                     .prioritet(2)
                                     .landskode(person.getTelefonLandskode_2())
                                     .nummer(person.getTelefonnummer_2())
