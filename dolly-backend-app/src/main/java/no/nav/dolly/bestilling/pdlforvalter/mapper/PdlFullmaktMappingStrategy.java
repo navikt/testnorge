@@ -31,7 +31,7 @@ public class PdlFullmaktMappingStrategy implements MappingStrategy {
                             PdlFullmakt pdlFullmakt = PdlFullmakt.builder()
                                     .motpartsPersonident(fullmakt.getFullmektig().getIdent())
                                     .kilde(NullcheckUtil.nullcheckSetDefaultValue(fullmakt.getKilde(), CONSUMER))
-                                    .master(Master.FREG)
+                                    .master(Master.PDL)
                                     .omraader(fullmakt.getOmraader())
                                     .gyldigFraOgMed(fullmakt.getGyldigFom())
                                     .gyldigTilOgMed(fullmakt.getGyldigTom())
