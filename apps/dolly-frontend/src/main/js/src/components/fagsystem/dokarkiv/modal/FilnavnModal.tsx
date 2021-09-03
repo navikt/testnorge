@@ -18,8 +18,11 @@ export const FilnavnModal = ({ filer, closeModal, handleChange }: Data) => {
 	const aktivIndex = filer.findIndex(fil => {
 		return !fil.dokNavn
 	})
+
 	const MAX_LENGTH = 50
-	const [filnavn, setFilnavn] = React.useState(filer[aktivIndex] ? filer[aktivIndex].name : '')
+	const [filnavn, setFilnavn] = React.useState(
+		filer[aktivIndex] && filer[aktivIndex].name ? filer[aktivIndex].name.replace('.pdf', '') : ''
+	)
 	if (aktivIndex === -1) {
 		return null
 	}
