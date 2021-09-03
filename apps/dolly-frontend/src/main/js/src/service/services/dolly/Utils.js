@@ -117,6 +117,16 @@ export const SortKodeverkArray = data => {
 		}))
 	}
 
+	if (data.name === 'LandAdresserFreg') {
+		kodeverk.push({
+			label: 'UKJENT LAND',
+			value: 'XUK',
+			gyldigFra: '1900-01-01',
+			gyldigTil: '9999-12-31'
+		})
+		return kodeverk.sort()
+	}
+
 	if (data.name === 'Tema') {
 		const ugyldigeKoder = ['BII', 'KLA', 'KNA', 'KOM', 'LGA', 'MOT', 'OVR']
 		return kodeverk.filter(kode => !ugyldigeKoder.includes(kode.value))
