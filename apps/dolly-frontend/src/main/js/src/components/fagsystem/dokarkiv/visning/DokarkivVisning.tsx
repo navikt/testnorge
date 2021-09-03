@@ -33,7 +33,6 @@ export default ({ journalpost }: Props) => (
 			{(dokument: Dokument, idx: number) => {
 				return (
 					<div key={idx} className="person-visning_content">
-						{/*{kapplah && kapplah.value && <a href={kapplah.value}>Download</a>}*/}
 						<TitleValue title="Tittel" value={dokument.tittel} />
 						<TitleValue title="Dokumentinfo-ID" value={dokument.dokumentInfoId} />
 						<Button
