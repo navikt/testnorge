@@ -19,8 +19,6 @@ public class SafConsumer {
     private final WebClient webClient;
     private final AccessTokenService accessTokenService;
     private final NaisServerProperties properties;
-    private final ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
-            .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(1024 * 1024 * 50)).build();
 
     public SafConsumer(
             TestnavSafProxyServiceProperties properties,
@@ -28,7 +26,11 @@ public class SafConsumer {
     ) {
         this.accessTokenService = accessTokenService;
         this.properties = properties;
-        this.webClient = WebClient.builder().exchangeStrategies(exchangeStrategies).baseUrl(properties.getUrl()).build();
+        this.webClient = WebClient.builder()
+                .exchangeStrategies(
+                        ExchangeStrategies.builder()
+                                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(1024 * 1024 * 50)).build())
+                .baseUrl(properties.getUrl()).build();
     }
 
     public Journalpost getJournalpost(Integer journalpostId, String miljo) {
