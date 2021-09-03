@@ -35,6 +35,8 @@ export type Vedlegg = {
 	id: string
 	name: string
 	dokNavn: string
+	mimetype: string
+	size: number
 	content: {
 		base64: string
 	}
