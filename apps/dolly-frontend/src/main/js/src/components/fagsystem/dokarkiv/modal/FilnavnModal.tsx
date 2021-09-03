@@ -20,7 +20,6 @@ export const FilnavnModal = ({ filer, closeModal, handleChange }: Data) => {
 	})
 	const MAX_LENGTH = 50
 	const [filnavn, setFilnavn] = React.useState(filer[aktivIndex] ? filer[aktivIndex].name : '')
-	console.log('aktivIndex: ', aktivIndex) //TODO - SLETT MEG
 	if (aktivIndex === -1) {
 		return null
 	}
@@ -40,7 +39,6 @@ export const FilnavnModal = ({ filer, closeModal, handleChange }: Data) => {
 					submitknapp="Lagre tittel"
 					disabled={filnavn === '' || filnavn.length > MAX_LENGTH}
 					onSubmit={() => {
-						console.log('dokumenter: ', filer) //TODO - SLETT MEG
 						handleChange(
 							filer.map((fil, index) =>
 								index === aktivIndex

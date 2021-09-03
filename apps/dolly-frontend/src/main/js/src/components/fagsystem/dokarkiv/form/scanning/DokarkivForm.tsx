@@ -73,12 +73,12 @@ export const DokarkivForm = ({ formikBag }: DokarkivForm) => {
 		setSkjemaValues(skjema)
 		formikBag.setFieldValue('dokarkiv.tittel', skjema.data)
 		const dokumentVarianter = files.map((vedl: Vedlegg, index: number) => ({
-			tittel: vedl.name,
+			tittel: vedl.dokNavn ? vedl.dokNavn : vedl.name,
 			brevkode: (index === 0 && skjema?.value) || undefined,
 			dokumentvarianter: [
 				{
 					filtype: 'PDFA',
-					fysiskDokument: 'testy', // TODO REVERT!! vedl.content.base64,
+					fysiskDokument: vedl.content.base64,
 					variantformat: 'ARKIV'
 				}
 			]
@@ -89,8 +89,6 @@ export const DokarkivForm = ({ formikBag }: DokarkivForm) => {
 	}
 
 	const handleVedleggChange = (filer: [Vedlegg]) => {
-		console.log('filer: ', filer) //TODO - SLETT MEG
-		console.log('files: ', files) //TODO - SLETT MEG
 		filer.map(fil => {
 			const eksisterendeFil = files.find((file: Vedlegg) => file.id === fil.id && file.dokNavn)
 			if (eksisterendeFil) {

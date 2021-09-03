@@ -7,13 +7,14 @@ import Button from '~/components/ui/button/Button'
 
 type Props = {
 	journalpost: Journalpost
+	miljoe: string
 }
 
 const H4 = styled.h4`
 	width: 100%;
 `
 
-export default ({ journalpost }: Props) => (
+export default ({ journalpost, miljoe }: Props) => (
 	<div className="person-visning_content">
 		<TitleValue title="Tittel" value={journalpost.tittel} />
 		<TitleValue title="Kanal" value={journalpost.kanal} />
@@ -42,7 +43,7 @@ export default ({ journalpost }: Props) => (
 								JoarkDokumentService.hentPDF(
 									journalpost.journalpostId,
 									dokument.dokumentInfoId,
-									'q2' //TODO FIX: bestilling.miljoe,
+									miljoe
 								)
 							}
 						>

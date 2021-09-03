@@ -10,6 +10,7 @@ import no.nav.testnav.joarkdokumentservice.domain.Journalpost;
 import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
 import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Slf4j
@@ -18,6 +19,8 @@ public class SafConsumer {
     private final WebClient webClient;
     private final AccessTokenService accessTokenService;
     private final NaisServerProperties properties;
+    private final ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
+            .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(1024 * 50)).build();
 
     public SafConsumer(
             TestnavSafProxyServiceProperties properties,
@@ -25,7 +28,7 @@ public class SafConsumer {
     ) {
         this.accessTokenService = accessTokenService;
         this.properties = properties;
-        this.webClient = WebClient.builder().baseUrl(properties.getUrl()).build();
+        this.webClient = WebClient.builder().exchangeStrategies(exchangeStrategies).baseUrl(properties.getUrl()).build();
     }
 
     public Journalpost getJournalpost(Integer journalpostId, String miljo) {

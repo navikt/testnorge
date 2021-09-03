@@ -7,6 +7,7 @@ export type Journalpost = {
 	tema: string
 	kanal: string
 	dokumenter: Dokument[]
+	miljoe: string
 }
 
 export type Dokument = {
@@ -44,11 +45,7 @@ const hentDokument = (
 		)
 		.then(response => response.text())
 
-const hentPDF = (
-	journalpostId: number,
-	dokumentInfoId: number,
-	miljo: string,
-): any =>
+const hentPDF = (journalpostId: number, dokumentInfoId: number, miljo: string): any =>
 	api
 		.fetch(
 			`/testnav-joark-dokument-service/api/v2/journalpost/${journalpostId}/dokumenter/${dokumentInfoId}/pdf`,
@@ -65,7 +62,6 @@ const hentPDF = (
 			return response.blob()
 		})
 		.then(resp => {
-			console.log('resp: ', resp) //TODO - SLETT MEG
 			const fileURL = URL.createObjectURL(resp)
 			const link = document.createElement('a')
 			link.href = fileURL
