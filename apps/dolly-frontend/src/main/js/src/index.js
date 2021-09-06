@@ -11,6 +11,7 @@ import { ConnectedRouter } from 'connected-react-router'
 import AppConnector from './app/AppConnector'
 import history from './history'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import LoginPage from '~/pages/loginPage'
 import Logger from './logger'
 import { v4 as uuid } from 'uuid'
 
@@ -29,12 +30,16 @@ window.onerror = message => {
 
 const root = document.getElementById('root')
 render(
-	<Provider store={store}>
-		<ConnectedRouter history={history}>
-			<ErrorBoundary>
-				<AppConnector />
-			</ErrorBoundary>
-		</ConnectedRouter>
-	</Provider>,
+	window.location.pathname !== '/innlogging' ? (
+		<Provider store={store}>
+			<ConnectedRouter history={history}>
+				<ErrorBoundary>
+					<AppConnector />
+				</ErrorBoundary>
+			</ConnectedRouter>
+		</Provider>
+	) : (
+		<LoginPage />
+	),
 	root
 )

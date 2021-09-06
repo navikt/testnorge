@@ -1,0 +1,35 @@
+.login-modal {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(~"100vh - 58px");
+  width: 100vw;
+}
+
+.login-container {
+  width: 1000px;
+  text-align: center;
+  background-color: white;
+  box-shadow: 2px 2px 4px grey;
+  margin: 20px;
+  padding: 30px;
+  h1 {
+    font-size: 2em;
+    margin: 0;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #ccc;
+  }
+
+  &_buttons {
+    margin: 10px;
+  }
+}
+
+.background{
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -100;
+}
