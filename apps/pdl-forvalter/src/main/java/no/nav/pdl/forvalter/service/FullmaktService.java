@@ -23,7 +23,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
-public class FullmaktService {
+public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
 
     private static final String VALIDATION_GYLDIG_FOM_ERROR = "Fullmakt med gyldigFom må angis";
     private static final String VALIDATION_GYLDIG_TOM_ERROR = "Fullmakt med gyldigTom må angis";
@@ -40,7 +40,6 @@ public class FullmaktService {
         for (var type : person.getFullmakt()) {
 
             if (isTrue(type.getIsNew())) {
-                validate(type);
 
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
@@ -99,5 +98,11 @@ public class FullmaktService {
         }
 
         fullmakt.setMaster(Master.PDL);
+    }
+
+    @Override
+    public void validate(FullmaktDTO artifact, PersonDTO person) {
+
+        // Ingen validering
     }
 }

@@ -39,7 +39,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
-public class ForelderBarnRelasjonService {
+public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelasjonDTO> {
 
     private static final String INVALID_EMPTY_MIN_ROLLE_EXCEPTION = "ForelderBarnRelasjon: min rolle for person må oppgis";
     private static final String INVALID_EMPTY_RELATERT_PERSON_ROLLE_EXCEPTION = "ForelderBarnRelasjon: relatert persons rolle må oppgis";
@@ -60,7 +60,6 @@ public class ForelderBarnRelasjonService {
         for (var type : person.getForelderBarnRelasjon()) {
 
             if (isTrue(type.getIsNew())) {
-                validate(type);
 
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
@@ -71,7 +70,8 @@ public class ForelderBarnRelasjonService {
         return person.getForelderBarnRelasjon();
     }
 
-    private void validate(ForelderBarnRelasjonDTO relasjon) {
+    @Override
+    public void validate(ForelderBarnRelasjonDTO relasjon) {
 
         if (isNull(relasjon.getMinRolleForPerson())) {
             throw new InvalidRequestException(INVALID_EMPTY_MIN_ROLLE_EXCEPTION);

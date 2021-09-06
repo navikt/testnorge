@@ -24,7 +24,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
-public class DeltBostedService {
+public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO> {
 
     private static final String INVALID_ADRESSE_MANGLER = "Delt bosted: når personen ikke er gift må en adresse oppgis";
     private static final String INVALID_BARN_DONT_EXIST = "Delt bosted: det finnes ingen barn å knytte delt bosted til";
@@ -41,7 +41,6 @@ public class DeltBostedService {
         for (var type : person.getDeltBosted()) {
 
             if (isTrue(type.getIsNew())) {
-                validate(type, person);
 
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
@@ -52,7 +51,8 @@ public class DeltBostedService {
         return emptyList();
     }
 
-    private void validate(DeltBostedDTO deltBosted, PersonDTO hovedperson) {
+    @Override
+    public void validate(DeltBostedDTO deltBosted, PersonDTO hovedperson) {
 
         if (hovedperson.getForelderBarnRelasjon().stream().noneMatch(ForelderBarnRelasjonDTO::hasBarn)) {
 

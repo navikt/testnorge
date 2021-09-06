@@ -39,7 +39,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
-public class ForeldreansvarService {
+public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, PersonDTO> {
 
     private static final String INVALID_EMPTY_ANSVAR_EXCEPTION = "Forelderansvar: hvem som har ansvar må oppgis";
     private static final String INVALID_AMBIGUOUS_ANSVARLIG_EXCEPTION = "Forelderansvar: kun et av feltene 'ansvarlig' " +
@@ -68,7 +68,6 @@ public class ForeldreansvarService {
         for (var type : person.getForeldreansvar()) {
 
             if (isTrue(type.getIsNew())) {
-                validate(type, person);
 
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
@@ -79,7 +78,8 @@ public class ForeldreansvarService {
         return emptyList();
     }
 
-    private void validate(ForeldreansvarDTO foreldreansvar, PersonDTO hovedperson) {
+    @Override
+    public void validate(ForeldreansvarDTO foreldreansvar, PersonDTO hovedperson) {
 
         if (isNull(foreldreansvar.getAnsvar())) {
             throw new InvalidRequestException(INVALID_EMPTY_ANSVAR_EXCEPTION);

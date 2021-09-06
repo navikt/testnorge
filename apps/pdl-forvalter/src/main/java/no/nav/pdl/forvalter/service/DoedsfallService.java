@@ -14,7 +14,7 @@ public class DoedsfallService extends PdlArtifactService<DoedsfallDTO> {
     private static final String INVALID_DATO_MISSING = "Dødsfall: dødsdato må oppgis";
 
     @Override
-    protected void validate(DoedsfallDTO type) {
+    public void validate(DoedsfallDTO type) {
 
         if (isNull(type.getDoedsdato())) {
 

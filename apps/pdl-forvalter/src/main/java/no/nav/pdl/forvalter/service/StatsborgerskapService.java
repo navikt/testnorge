@@ -25,7 +25,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
-public class StatsborgerskapService {
+public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
 
     private static final String VALIDATION_LANDKODE_ERROR = "Ugyldig landkode, må være i hht ISO-3 Landkoder";
     private static final String VALIDATION_DATOINTERVALL_ERROR = "Ugyldig datointervall: gyldigFom må være før gyldigTom";
@@ -37,7 +37,6 @@ public class StatsborgerskapService {
         for (var type : person.getStatsborgerskap()) {
 
             if (isTrue(type.getIsNew())) {
-                validate(type);
 
                 handle(type, person.getIdent(), person.getInnflytting().stream().reduce((a, b) -> b).orElse(null));
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
@@ -47,7 +46,8 @@ public class StatsborgerskapService {
         return person.getStatsborgerskap();
     }
 
-    private void validate(StatsborgerskapDTO statsborgerskap) {
+    @Override
+    public void validate(StatsborgerskapDTO statsborgerskap) {
 
         if (nonNull(statsborgerskap.getLandkode()) && !isLandkode(statsborgerskap.getLandkode())) {
             throw new InvalidRequestException(VALIDATION_LANDKODE_ERROR);

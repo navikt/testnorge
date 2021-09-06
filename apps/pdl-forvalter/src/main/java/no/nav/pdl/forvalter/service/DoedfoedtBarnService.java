@@ -14,7 +14,7 @@ public class DoedfoedtBarnService extends PdlArtifactService<DoedfoedtBarnDTO> {
     private static final String INVALID_DATO_MISSING = "DødfødtBarn: dato må oppgis";
 
     @Override
-    protected void validate(DoedfoedtBarnDTO type) {
+    public void validate(DoedfoedtBarnDTO type) {
 
         if (isNull(type.getDato())) {
 

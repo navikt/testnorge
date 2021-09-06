@@ -32,7 +32,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
-public class KontaktinformasjonForDoedsboService {
+public class KontaktinformasjonForDoedsboService implements Validation<KontaktinformasjonForDoedsboDTO> {
 
     private static final String VALIDATION_SKIFTEFORM_MISSING = "KontaktinformasjonForDoedsbo: Skifteform må angis";
     private static final String VALIDATION_KONTAKT_MISSING = "KontaktinformasjonForDoedsbo: kontakt må oppgis, enten advokatSomKontakt, " +
@@ -66,7 +66,6 @@ public class KontaktinformasjonForDoedsboService {
         for (var type : person.getKontaktinformasjonForDoedsbo()) {
 
             if (isTrue(type.getIsNew())) {
-                validate(type);
 
                 handle(type, person);
                 if (Strings.isBlank(type.getKilde())) {
@@ -77,7 +76,8 @@ public class KontaktinformasjonForDoedsboService {
         return person.getKontaktinformasjonForDoedsbo();
     }
 
-    private void validate(KontaktinformasjonForDoedsboDTO kontaktinfo) {
+    @Override
+    public void validate(KontaktinformasjonForDoedsboDTO kontaktinfo) {
 
         if (isNull(kontaktinfo.getSkifteform())) {
             throw new InvalidRequestException(VALIDATION_SKIFTEFORM_MISSING);

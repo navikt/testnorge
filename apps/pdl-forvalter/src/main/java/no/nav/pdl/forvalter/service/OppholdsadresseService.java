@@ -40,7 +40,6 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO> {
         for (var adresse : person.getOppholdsadresse()) {
 
             if (isTrue(adresse.getIsNew())) {
-                validate(adresse);
 
                 handle(adresse);
                 populateMiscFields(adresse, person);
@@ -50,7 +49,8 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO> {
         return person.getOppholdsadresse();
     }
 
-    protected void validate(OppholdsadresseDTO adresse) {
+    @Override
+    public void validate(OppholdsadresseDTO adresse) {
 
         if (adresse.countAdresser() > 1) {
             throw new InvalidRequestException(VALIDATION_AMBIGUITY_ERROR);

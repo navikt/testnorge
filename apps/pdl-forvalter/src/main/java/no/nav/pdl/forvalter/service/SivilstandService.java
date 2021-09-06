@@ -36,7 +36,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
-public class SivilstandService {
+public class SivilstandService implements Validation<SivilstandDTO> {
 
     private static final String TYPE_EMPTY_ERROR = "Type av sivilstand må oppgis";
     private static final String INVALID_RELATERT_VED_SIVILSTAND = "Sivilstand: Relatert person finnes ikke";
@@ -53,7 +53,6 @@ public class SivilstandService {
         for (var type : person.getSivilstand()) {
 
             if (isTrue(type.getIsNew())) {
-                validate(type);
 
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
@@ -64,7 +63,8 @@ public class SivilstandService {
         return person.getSivilstand();
     }
 
-    private void validate(SivilstandDTO sivilstand) {
+    @Override
+    public void validate(SivilstandDTO sivilstand) {
 
         if (isNull(sivilstand.getType())) {
             throw new InvalidRequestException(TYPE_EMPTY_ERROR);

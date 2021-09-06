@@ -49,7 +49,6 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO> {
         for (var adresse : person.getKontaktadresse()) {
 
             if (isTrue(adresse.getIsNew())) {
-                validate(adresse);
 
                 handle(adresse);
                 populateMiscFields(adresse, person);
@@ -59,7 +58,8 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO> {
         return person.getKontaktadresse();
     }
 
-    private void validate(KontaktadresseDTO adresse) {
+    @Override
+    public void validate(KontaktadresseDTO adresse) {
         if (adresse.countAdresser() == 0) {
             throw new InvalidRequestException(VALIDATION_ADDRESS_ABSENT_ERROR);
         }

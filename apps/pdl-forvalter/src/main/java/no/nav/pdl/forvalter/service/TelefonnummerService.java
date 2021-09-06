@@ -23,7 +23,7 @@ public class TelefonnummerService extends PdlArtifactService<TelefonnummerDTO> {
     private static final String VALIDATION_NUMMER_INVALID_LENGTH = "Telefonnummer: nummer kan ha lengde fra 3 til 16 sifre";
 
     @Override
-    protected void validate(TelefonnummerDTO telefonnummer) {
+    public void validate(TelefonnummerDTO telefonnummer) {
 
         if (isNull(telefonnummer.getNummer())) {
             throw new InvalidRequestException(VALIDATION_NUMMER_REQUIRED);
