@@ -6,10 +6,6 @@ import './LoginPage.less'
 // @ts-ignore
 import Summer from '~/pages/loginPage/backgrounds/Summer.svg'
 
-const Container = styled.div`
-	display: flex;
-`
-
 const Background = styled.div`
     background-image: url(data:image/svg+xml;base64,${btoa(Summer)});
     background-size: cover;
@@ -22,11 +18,9 @@ export default () => {
 	return (
 		<React.Fragment>
 			<BlankHeader />
-			<Container>
-				<Background>
-					<LoginModal />
-				</Background>
-			</Container>
+			<Background>
+				<LoginModal />
+			</Background>
 		</React.Fragment>
 	)
 }
