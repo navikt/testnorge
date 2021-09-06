@@ -46,7 +46,7 @@ public class PdlFalskIdentitetMappingStrategy implements MappingStrategy {
 
                         pdlFalskIdentitet.setErFalsk(nullcheckSetDefaultValue(pdlFalskIdentitet.getErFalsk(), true));
                         pdlFalskIdentitet.setKilde(nullcheckSetDefaultValue(pdlFalskIdentitet.getKilde(), CONSUMER));
-                        pdlFalskIdentitet.setMaster(Master.PDL);
+                        pdlFalskIdentitet.setMaster(Master.FREG);
                     }
                 })
                 .byDefault()
