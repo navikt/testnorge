@@ -5,12 +5,6 @@ import LoginModal from '~/pages/loginPage/LoginModal'
 import './LoginPage.less'
 // @ts-ignore
 import Summer from '~/pages/loginPage/backgrounds/Summer.svg'
-// @ts-ignore
-import Winter from '~/pages/loginPage/backgrounds/Winter.svg'
-// @ts-ignore
-import Winter2 from '~/pages/loginPage/backgrounds/Winter2.svg'
-// @ts-ignore
-import Halloween from '~/pages/loginPage/backgrounds/Halloween.svg'
 
 const Container = styled.div`
 	display: flex;

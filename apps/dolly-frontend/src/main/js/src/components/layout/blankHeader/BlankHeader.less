@@ -1,6 +1,5 @@
 @import (reference) '~lessVars';
 
-@side-padding: 128px; // temp?
 
 header.app-header {
   background-color: @color-nav-black;
@@ -8,80 +7,13 @@ header.app-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 13px 10px;
+  padding: 15px 10px;
 
   .home-nav {
     display: flex;
     align-items: center;
     text-decoration: none;
-    @import (reference) '~lessVars';
-
-
-    .outer-box{
-      display: flex;
-    }
-
-    .login-modal {
-      position: relative;
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: calc(~"100vh - 58px");
-      width: 100vw;
-    }
-
-    .login-container {
-      width: 50%;
-      text-align: center;
-      background-color: white;
-      box-shadow: 2px 2px 4px grey;
-      margin: 20px;
-      padding: 30px;
-      h1 {
-        font-size: 2em;
-        margin: 0;
-        padding-bottom: 20px;
-        border-bottom: 1px solid #ccc;
-      }
-
-      &_buttons {
-        display: flex;
-        justify-content: flex-end;
-        padding: 20px 0 0;
-
-        &--center {
-          justify-content: center;
-        }
-        button {
-          margin: 0 10px;
-        }
-      }
-    }
-
-    .background{
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: -100;
-    }
-    .img-logo {
-      width: @side-padding;
-      text-align: center;
-      border-right: 2px solid #88b1d6;
-
-      img {
-        height: 30px;
-      }
-    }
-
-    h1 {
-      display: inline-block;
-      margin: 0;
-      padding-left: 10px;
-      font-size: 1.6rem;
-      color: white;
-    }
+    margin-left: -10px;
   }
 
 }
