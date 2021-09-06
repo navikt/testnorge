@@ -102,10 +102,10 @@ public class PdlPersondetaljerMappingStrategy implements MappingStrategy {
                             adressebeskyttelse.setMaster(Master.PDL);
                         } else {
                             adressebeskyttelse.setGradering(UGRADERT);
+                            adressebeskyttelse.setMaster(Master.FREG);
                         }
 
                         adressebeskyttelse.setKilde(CONSUMER);
-                        adressebeskyttelse.setMaster(Master.FREG);
                     }
                 })
                 .register();
