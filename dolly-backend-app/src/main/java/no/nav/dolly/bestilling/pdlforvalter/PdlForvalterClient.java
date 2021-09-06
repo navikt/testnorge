@@ -360,7 +360,7 @@ public class PdlForvalterClient implements ClientRegister {
                 List<PdlUtenlandskIdentifikasjonsnummer> utenlandskId = pdldata.getUtenlandskIdentifikasjonsnummer();
                 utenlandskId.forEach(id -> {
                     id.setKilde(nullcheckSetDefaultValue(id.getKilde(), CONSUMER));
-                    id.setMaster(Master.FREG);
+                    id.setMaster(Master.PDL);
                     pdlForvalterConsumer.postUtenlandskIdentifikasjonsnummer(id, ident);
                 });
                 appendOkStatus(status);
