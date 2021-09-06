@@ -6,7 +6,7 @@ import './BlankHeader.less'
 
 export default () => {
 	return (
-		<header className="app-header">
+		<header className="blank-header">
 			<div className="home-nav">
 				<div className="img-logo">
 					<img alt="NAV logo" src={logo} />
