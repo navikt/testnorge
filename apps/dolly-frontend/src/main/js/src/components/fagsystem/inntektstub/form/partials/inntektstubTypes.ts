@@ -21,6 +21,7 @@ export type Inntekt = {
 	startOpptjeningsperiode: string
 	sluttOpptjeningsperiode: string
 	inntektstype: string
+	tilleggsinformasjonstype?: string
 }
 
 export type Fradrag = {}
