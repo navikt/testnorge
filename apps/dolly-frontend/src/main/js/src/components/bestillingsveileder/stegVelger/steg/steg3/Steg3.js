@@ -6,6 +6,7 @@ import { MiljoVelger } from '~/components/miljoVelger/MiljoVelger'
 import { MalForm } from './MalForm'
 import { BestillingInfoboks } from './BestillingInfoboks'
 import { IdentVelger } from './IdentVelger'
+import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 
 export const Steg3 = ({ formikBag, erNyIdent }) => {
 	const erOrganisasjon = formikBag.values.hasOwnProperty('organisasjon')
@@ -19,6 +20,7 @@ export const Steg3 = ({ formikBag, erNyIdent }) => {
 				</div>
 			)}
 			{!erOrganisasjon && erNyIdent && <IdentVelger formikBag={formikBag} />}
+			<FormikTextInput name={'beskrivelse'} label={'Kommentar'} />
 			<MiljoVelger bestillingsdata={formikBag.values} heading="Hvilke miljøer vil du opprette i?" />
 			{!erOrganisasjon && <MalForm formikBag={formikBag} />}
 		</div>
