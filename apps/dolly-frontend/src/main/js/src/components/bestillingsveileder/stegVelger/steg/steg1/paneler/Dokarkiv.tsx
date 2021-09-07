@@ -14,8 +14,8 @@ export const DokarkivPanel = ({ stateModifier }: any) => {
 			iconType="dokarkiv"
 		>
 			<AttributtKategori title="Oppretting av dokument">
-				<Attributt attr={sm.attrs.dokarkiv} />
-				<Attributt attr={sm.attrs.digitalInnsending} />
+				<Attributt attr={sm.attrs.dokarkiv} disabled={sm.attrs.digitalInnsending.checked} />
+				<Attributt attr={sm.attrs.digitalInnsending} disabled={sm.attrs.dokarkiv.checked} />
 			</AttributtKategori>
 		</Panel>
 	)

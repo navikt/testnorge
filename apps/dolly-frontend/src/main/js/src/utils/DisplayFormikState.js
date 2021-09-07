@@ -1,16 +1,9 @@
 import React from 'react'
 import { useToggle } from 'react-use'
 
-const replacer = (key, value) => {
-	// if (key === 'dokumenter') {
-	// 	return 'Dokument fil bytecode for lang'
-	// }
-	return value
-}
-
 const FormikState = props => (
 	<pre>
-		<strong>props</strong> = {JSON.stringify(props, replacer, 2)}
+		<strong>props</strong> = {JSON.stringify(props, null, 2)}
 	</pre>
 )
 
