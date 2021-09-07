@@ -2,19 +2,19 @@ const path = require('path');
 const merge = require('webpack-merge');
 const common = require('./webpack.common.js');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const OptimizeCssAssetsPlugin = require("css-minimizer-webpack-plugin");
 const TerserPlugin = require('terser-webpack-plugin')
 
 module.exports = merge(common, {
     mode: 'production',
     devtool: 'source-map',
     stats: 'minimal',
-    plugins:[
+    plugins: [
         new OptimizeCssAssetsPlugin({
             assetNameRegExp: /\.css$/g,
             cssProcessor: require('cssnano'),
             cssProcessorPluginOptions: {
-                preset: ['default', { discardComments: { removeAll: true } }]
+                preset: ['default', {discardComments: {removeAll: true}}]
             },
             canPrint: true
         }),
@@ -45,7 +45,7 @@ module.exports = merge(common, {
             {
                 test: /\.less$/,
                 use: [
-                     MiniCssExtractPlugin.loader,
+                    MiniCssExtractPlugin.loader,
                     'css-loader',
                     'less-loader?{"globalVars":{"nodeModulesPath":"\'~\'", "coreModulePath":"\'~\'"}}'
                 ]

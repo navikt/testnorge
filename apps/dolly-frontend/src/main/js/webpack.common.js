@@ -32,9 +32,8 @@ module.exports = {
 		new HtmlWebpackPlugin({
 			title: 'Dolly',
 			favicon: 'src/assets/favicon.ico',
-			inject: false,
-			template: require('html-webpack-template'),
-			appMountIds: ['root', 'react-select-root'],
+			inject: true,
+			template: 'src/assets/index.html',
 			lang: 'nb'
 		}),
 		new ESLintPlugin(),
