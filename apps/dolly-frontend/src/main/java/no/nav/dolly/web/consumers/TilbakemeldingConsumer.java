@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
 
 import no.nav.dolly.web.credentials.TestnorgeTilbakemeldingApiProperties;
 import no.nav.testnav.libs.dto.tilbakemeldingapi.v1.TilbakemeldingDTO;
-import no.nav.testnav.libs.reactivesecurity.service.TokenExchange;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 
 @Slf4j
 @Service

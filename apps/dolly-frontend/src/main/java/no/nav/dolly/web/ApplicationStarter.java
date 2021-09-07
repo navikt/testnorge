@@ -42,8 +42,7 @@ import no.nav.testnav.libs.reactivefrontend.filter.AddRequestHeaderGatewayFilter
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2FrontendConfiguration;
 import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
 import no.nav.testnav.libs.reactivesecurity.domain.ServerProperties;
-import no.nav.testnav.libs.reactivesecurity.domain.Scopeable;
-import no.nav.testnav.libs.reactivesecurity.service.TokenExchange;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 
 @Slf4j
 @Import({

@@ -48,6 +48,7 @@ public class SecureJwtAuthenticationTokenResolver implements AuthenticationToken
 
     @Override
     public Mono<String> getClientRegistrationId() {
-        return Mono.just("unknown");
+        // TODO Read from token
+        return Mono.just("aad");
     }
 }

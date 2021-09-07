@@ -1,4 +1,5 @@
 import React from 'react'
+import Api from '~/api'
 
 const LoginPage = () => {
 	return (
@@ -10,6 +11,20 @@ const LoginPage = () => {
 				</li>
 				<li>
 					<a href="/oauth2/authorization/idporten">Logg inn med BankId</a>
+				</li>
+				<li>
+					<button
+						onClick={e => {
+							e.preventDefault()
+							Api.fetch('/logout', { method: 'POST' }).then(response => {
+								if (response.redirected) {
+									window.location.href = response.url
+								}
+							})
+						}}
+					>
+						Logg ut
+					</button>
 				</li>
 			</ul>
 		</div>
