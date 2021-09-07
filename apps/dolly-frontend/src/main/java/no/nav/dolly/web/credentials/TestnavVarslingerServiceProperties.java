@@ -7,5 +7,5 @@ import no.nav.testnav.libs.reactivesecurity.domain.ServerProperties;
 
 @Configuration
 @ConfigurationProperties(prefix = "consumers.testnav-varslinger-service")
-public class TestnavVarslingerApiProperties extends ServerProperties {
+public class TestnavVarslingerServiceProperties extends ServerProperties {
 }
