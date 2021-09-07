@@ -11,7 +11,7 @@ export default () => {
 					consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
 					aliqua.
 				</h3>
-				<NavButton className="login-modal_button-nav" type="hoved" onClick={() => {}}>
+				<NavButton className="login-modal_button-nav" type="hoved">
 					Logg inn med NAV-epost
 				</NavButton>
 				<NavButton
