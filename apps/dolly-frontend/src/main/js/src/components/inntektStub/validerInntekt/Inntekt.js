@@ -7,16 +7,11 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import texts from '../texts'
 import tilleggsinformasjonPaths from '../paths'
 
-const sjekkFelt = (field, options, values, path, tomTilleggsinformasjonFieldPath) => {
+const sjekkFelt = (field, options, values, path) => {
 	const fieldValue = _get(values, path)
 	const fieldPath = tilleggsinformasjonPaths(field)
 	if (!options.includes('<TOM>')) {
-		if (
-			fieldValue &&
-			!_get(fieldValue, fieldPath) &&
-			_get(fieldValue, fieldPath) !== false &&
-			!tomTilleggsinformasjonFieldPath
-		) {
+		if (fieldValue && !_get(fieldValue, fieldPath) && _get(fieldValue, fieldPath) !== false) {
 			return { feilmelding: 'Feltet er påkrevd' }
 		}
 	}
@@ -140,10 +135,8 @@ const fieldResolver = (
 			fastfield={false}
 			afterChange={handleChange}
 			size={booleanField(options) ? 'small' : wideFields.includes(field) ? 'xxlarge' : 'large'}
-			feil={sjekkFelt(field, options, values, path, tomTilleggsinformasjonFieldPath)}
-			isClearable={
-				field !== 'inntektstype' && filteredOptions.length !== 1 && options.includes('<TOM>')
-			}
+			feil={sjekkFelt(field, options, values, path)}
+			isClearable={field !== 'inntektstype'}
 		/>
 	)
 }
