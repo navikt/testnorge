@@ -20,7 +20,7 @@ import no.nav.testnav.endringsmeldingservice.consumer.request.FoedselsmeldingReq
 import no.nav.testnav.endringsmeldingservice.domain.Status;
 import no.nav.testnav.libs.dto.endringsmelding.v1.FoedselsmeldingDTO;
 import no.nav.testnav.libs.reactivesecurity.domain.ServerProperties;
-import no.nav.testnav.libs.reactivesecurity.service.TokenExchange;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 
 @Component
 public class TpsForvalterConsumer {

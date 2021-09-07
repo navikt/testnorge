@@ -13,7 +13,7 @@ import no.nav.testnav.apps.importpersonservice.credentias.TestnavPdlForvalterPro
 import no.nav.testnav.apps.importpersonservice.domain.PersonList;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.reactivesecurity.domain.ServerProperties;
-import no.nav.testnav.libs.reactivesecurity.service.TokenExchange;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 
 @Component
 public class PdlForvalterConsumer {

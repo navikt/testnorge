@@ -18,7 +18,7 @@ import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Oppsummeringsdoku
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
 import no.nav.testnav.libs.reactivecore.config.ApplicationProperties;
 import no.nav.testnav.libs.reactivesecurity.domain.ServerProperties;
-import no.nav.testnav.libs.reactivesecurity.service.TokenExchange;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 
 @Component
 public class OppsummeringsdokumentConsumer {

@@ -23,7 +23,7 @@ import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2FrontendConfigura
 import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
 import no.nav.testnav.libs.reactivesecurity.domain.Scopeable;
 import no.nav.testnav.libs.reactivesecurity.domain.ServerProperties;
-import no.nav.testnav.libs.reactivesecurity.service.TokenExchange;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 
 @Import({
         CoreConfig.class,

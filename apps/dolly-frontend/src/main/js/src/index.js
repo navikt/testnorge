@@ -29,8 +29,6 @@ window.onerror = message => {
 
 const root = document.getElementById('root')
 
-console.log()
-
 render(
 	<Provider store={store}>
 		<ConnectedRouter history={history}>
