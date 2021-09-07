@@ -15,8 +15,7 @@ import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry'
 import styled from 'styled-components'
 import _get from 'lodash/get'
 import { Digitalinnsending } from '~/components/fagsystem/dokarkiv/form/digital/Digitalinnsending'
-import useBoolean from '~/utils/hooks/useBoolean'
-import { FilnavnModal } from '~/components/fagsystem/dokarkiv/modal/FilnavnModal'
+import { FilnavnDollyArray } from '~/components/fagsystem/dokarkiv/modal/FilnavnDollyArray'
 
 pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker
 
@@ -63,7 +62,6 @@ export const DokarkivForm = ({ formikBag }: DokarkivForm) => {
 	const digitalInnsending = _get(formikBag.values, 'dokarkiv.avsenderMottaker')
 	const [files, setFiles] = useState(sessionDokumenter ? sessionDokumenter : [])
 
-	const [isFilnavnModalOpen, openFilnavnModal, closeFilnavnModal] = useBoolean(false)
 	const [skjemaValues, setSkjemaValues] = useState(null)
 
 	useEffect(() => handleSkjemaChange(skjemaValues), [files, skjemaValues])
@@ -100,7 +98,6 @@ export const DokarkivForm = ({ formikBag }: DokarkivForm) => {
 		})
 		setFiles(filer)
 		sessionStorage.setItem('dokarkiv_vedlegg', JSON.stringify(filer))
-		openFilnavnModal()
 	}
 
 	return (
@@ -145,16 +142,12 @@ export const DokarkivForm = ({ formikBag }: DokarkivForm) => {
 							// @ts-ignore
 							onFilesChanged={handleVedleggChange}
 						/>
+						{files.length > 0 && (
+							<FilnavnDollyArray handleChange={handleVedleggChange} filer={files} />
+						)}
 					</Kategori>
 				</Kategori>
 			</Panel>
-			{isFilnavnModalOpen && files && (
-				<FilnavnModal
-					handleChange={handleVedleggChange}
-					closeModal={closeFilnavnModal}
-					filer={files}
-				/>
-			)}
 		</Vis>
 	)
 }
@@ -165,7 +158,14 @@ DokarkivForm.validation = {
 		Yup.object({
 			tittel: requiredString,
 			tema: requiredString,
-			journalfoerendeEnhet: Yup.string(),
+			journalfoerendeEnhet: Yup.string()
+				.optional()
+				.matches(/^[0-9]*$/, 'Journalfoerende enhet må enten være blank eller et tall med 4 sifre')
+				.test(
+					'len',
+					'Journalfoerende enhet må enten være blank eller et tall med 4 sifre',
+					val => !val || (val && val.length === 4)
+				),
 			avsenderMottaker: Yup.object({
 				idType: Yup.string()
 					.optional()
