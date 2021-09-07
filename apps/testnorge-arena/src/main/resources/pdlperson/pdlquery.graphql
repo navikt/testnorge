@@ -199,17 +199,6 @@ query($ident: ID!, $historikk: Boolean!) {
                 ...metadataDetails
             }
         },
-        familierelasjoner {
-            relatertPersonsIdent,
-            relatertPersonsRolle,
-            minRolleForPerson,
-            folkeregistermetadata {
-                ...folkeregistermetadataDetails
-            }
-            metadata {
-                ...metadataDetails
-            }
-        },
         forelderBarnRelasjon {
             relatertPersonsIdent,
             relatertPersonsRolle,
