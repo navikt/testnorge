@@ -11,11 +11,11 @@ export default () => {
 					consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
 					aliqua.
 				</h3>
-				<NavButton className="login-modal_buttons" type="hoved">
+				<NavButton className="login-modal_button-nav" type="hoved" onClick={() => {}}>
 					Logg inn med NAV-epost
 				</NavButton>
 				<NavButton
-					className="login-modal_buttons"
+					className="login-modal_button-bankid"
 					type="hoved"
 					disabled={true}
 					title="Kommer snart"

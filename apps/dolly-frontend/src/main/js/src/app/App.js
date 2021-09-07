@@ -6,7 +6,6 @@ import Loading from '~/components/ui/loading/Loading'
 import Toast from '~/components/ui/toast/Toast'
 import routes from '~/Routes'
 import { VarslingerModal } from '~/components/varslinger/VarslingerModal'
-
 import './App.less'
 import { Forbedring } from '~/components/feedback/Forbedring'
 import Utlogging from '~/components/utlogging'
@@ -49,7 +48,7 @@ export default class App extends Component {
 
 		if (this.state.criticalError) return <CriticalError error={this.state.criticalError.stack} />
 
-		if (!brukerData || !configReady) return <Loading label="Laster dolly applikasjon" fullpage />
+		if (!brukerData || !configReady) return <Loading label="Laster Dolly applikasjon" fullpage />
 		return (
 			<React.Fragment>
 				<Utlogging />
