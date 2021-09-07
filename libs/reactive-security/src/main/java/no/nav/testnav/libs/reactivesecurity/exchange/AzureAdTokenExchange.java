@@ -1,4 +1,4 @@
-package no.nav.testnav.libs.reactivesecurity.service;
+package no.nav.testnav.libs.reactivesecurity.exchange;
 
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
@@ -24,10 +24,11 @@ import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
 import no.nav.testnav.libs.reactivesecurity.domain.AzureClientCredentials;
 import no.nav.testnav.libs.reactivesecurity.domain.ServerProperties;
 import no.nav.testnav.libs.reactivesecurity.domain.Token;
+import no.nav.testnav.libs.reactivesecurity.service.AuthenticationTokenResolver;
 
 @Slf4j
 @Service
-public class AzureAdTokenExchange {
+public class AzureAdTokenExchange implements GenerateTokenExchange {
     private final WebClient webClient;
     private final AuthenticationTokenResolver tokenResolver;
     private final AzureClientCredentials clientCredentials;
@@ -61,6 +62,7 @@ public class AzureAdTokenExchange {
         this.clientCredentials = clientCredentials;
     }
 
+    @Override
     public Mono<AccessToken> generateToken(ServerProperties serverProperties) {
         return tokenResolver
                 .getToken()

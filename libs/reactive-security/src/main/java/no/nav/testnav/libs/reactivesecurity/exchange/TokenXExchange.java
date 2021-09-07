@@ -1,4 +1,4 @@
-package no.nav.testnav.libs.reactivesecurity.service;
+package no.nav.testnav.libs.reactivesecurity.exchange;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -19,10 +19,11 @@ import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
 import no.nav.testnav.libs.reactivesecurity.domain.ServerProperties;
 import no.nav.testnav.libs.reactivesecurity.domain.TokenX;
 import no.nav.testnav.libs.reactivesecurity.domain.WellKnownConfig;
+import no.nav.testnav.libs.reactivesecurity.service.AuthenticationTokenResolver;
 
 @Slf4j
 @Service
-class TokenXExchange {
+public class TokenXExchange implements GenerateTokenExchange {
     private final AuthenticationTokenResolver tokenResolver;
     private final WebClient webClient;
     private final TokenX tokenX;
@@ -38,7 +39,8 @@ class TokenXExchange {
         return serverProperties.getCluster() + ":" + serverProperties.getNamespace() + ":" + serverProperties.getName();
     }
 
-    Mono<AccessToken> generateToken(ServerProperties serverProperties) {
+    @Override
+    public Mono<AccessToken> generateToken(ServerProperties serverProperties) {
         return tokenResolver.getToken().flatMap(token -> webClient
                 .get()
                 .uri(tokenX.getWellKnownUrl())
