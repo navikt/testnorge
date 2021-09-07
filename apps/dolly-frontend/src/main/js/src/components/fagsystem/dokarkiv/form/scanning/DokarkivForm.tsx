@@ -10,7 +10,6 @@ import { erForste, panelError } from '~/components/ui/form/formUtils'
 import { FormikProps } from 'formik'
 import FileUpload from 'filopplasting'
 import { pdfjs } from 'react-pdf'
-// @ts-ignore
 import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry'
 import styled from 'styled-components'
 import _get from 'lodash/get'
