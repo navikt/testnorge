@@ -37,7 +37,7 @@ public class PdlPersonConsumer {
 
     public PdlPerson getPdlPerson(String ident) {
         var query = getSinglePersonQueryFromFile();
-        return new GetPdlPersonCommand(ident, query, tokenService.getToken(), webClient).call();
+        return new GetPdlPersonCommand(ident, query, tokenService.getToken().block(), webClient).call();
     }
 
     private static String getSinglePersonQueryFromFile() {

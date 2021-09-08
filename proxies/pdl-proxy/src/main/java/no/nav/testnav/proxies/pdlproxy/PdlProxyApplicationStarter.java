@@ -3,6 +3,7 @@ package no.nav.testnav.proxies.pdlproxy;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
+import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactiveproxy.filter.AddRequestHeadersGatewayFilterFactory;
 import no.nav.testnav.libs.reactiveproxy.filter.GetHeader;
 import no.nav.testnav.libs.securitytokenservice.StsOidcTokenService;
@@ -45,22 +46,13 @@ public class PdlProxyApplicationStarter {
         return new StsOidcTokenService(url, username, password);
     }
 
-    private GatewayFilter addAuthenticationHeaderFilter(Supplier<String> tokenService) {
-        var getHeader = new GetHeader(() -> HttpHeaders.AUTHORIZATION, () -> "Bearer " + tokenService.get());
-        return new AddRequestHeadersGatewayFilterFactory().apply(getHeader);
-    }
-
-    private GatewayFilter AddAuthorizationAndNavConsumerTokenToRouteFilter(Supplier<String> tokenService) {
-        var getAuthorizationHeader = new GetHeader(() -> HttpHeaders.AUTHORIZATION, () -> "Bearer " + tokenService.get());
-        var getNavConsumerTokenHeader = new GetHeader(() -> HEADER_NAV_CONSUMER_TOKEN, () -> "Bearer " + tokenService.get());
-        return new AddRequestHeadersGatewayFilterFactory().apply(getAuthorizationHeader, getNavConsumerTokenHeader);
-    }
-
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder, StsOidcTokenService stsOidcTokenService) {
-        var addAuthenticationHeaderFilter = addAuthenticationHeaderFilter(stsOidcTokenService::getToken);
-        var addAuthorizationAndNavConsumerTokenToRouteFilter = AddAuthorizationAndNavConsumerTokenToRouteFilter(stsOidcTokenService::getToken);
+        var addAuthenticationHeaderFilter = AddAuthenticationRequestGatewayFilterFactory
+                .createAuthenticationHeaderFilter(stsOidcTokenService::getToken);
+        var addAuthorizationAndNavConsumerTokenToRouteFilter = AddAuthenticationRequestGatewayFilterFactory
+                .createAuthenticationAndNavConsumerTokenHeaderFilter(stsOidcTokenService::getToken);
 
         return builder
                 .routes()
