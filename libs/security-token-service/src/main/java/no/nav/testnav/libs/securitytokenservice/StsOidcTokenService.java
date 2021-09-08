@@ -44,7 +44,7 @@ public class StsOidcTokenService {
     }
 
     private boolean hasExpired() {
-        return expiry != null || LocalDateTime.now().isAfter(expiry);
+        return expiry != null && LocalDateTime.now().isAfter(expiry);
     }
 
     private Mono<String> updateToken() {
