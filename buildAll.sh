@@ -43,4 +43,5 @@
  :krrstub-proxy:build \
  :testnorge-inst-proxy:build \
  :sigrunstub-proxy:build \
- :pensjon-testdata-facade-proxy:build
+ :pensjon-testdata-facade-proxy:build \
+ :testnorge-inntekt:build
