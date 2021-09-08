@@ -51,5 +51,5 @@ export default {
 	VarslingerApi: VarslingerService,
 	OrgforvalterApi: OrganisasjonForvalterService,
 	OrgserviceApi: OrganisasjonService,
-	MiljoeApi: MiljoeService
+	MiljoeApi: MiljoeService,
 }

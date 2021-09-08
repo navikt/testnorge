@@ -4,7 +4,7 @@ import { _getEnvironmentsSortedByType } from '../'
 describe('environmentsReducer', () => {
 	it('should return initial state', () => {
 		const initialState = {
-			data: null
+			data: null,
 		}
 
 		expect(environments(undefined, {})).toEqual(initialState)
@@ -14,11 +14,11 @@ describe('environmentsReducer', () => {
 		const testdata = [1, 2, 3, 4]
 		const action = {
 			type: 'GET_ENVIRONMENTS_SUCCESS',
-			payload: testdata
+			payload: testdata,
 		}
 
 		const res = {
-			data: testdata
+			data: testdata,
 		}
 
 		expect(environments({}, action)).toEqual(res)
@@ -33,29 +33,29 @@ describe('environmentsReduder - _getEnvironmentsSortedByType', () => {
 			T: [
 				{
 					id: 't1',
-					label: 'T1'
+					label: 'T1',
 				},
 				{
 					id: 't2',
-					label: 'T2'
-				}
+					label: 'T2',
+				},
 			],
 			Q: [
 				{
 					id: 'q1',
-					label: 'Q1'
+					label: 'Q1',
 				},
 				{
 					id: 'q2',
-					label: 'Q2'
-				}
+					label: 'Q2',
+				},
 			],
 			U: [
 				{
 					id: 'u6',
-					label: 'U6'
-				}
-			]
+					label: 'U6',
+				},
+			],
 		}
 
 		expect(_getEnvironmentsSortedByType(testdata)).toEqual(res)

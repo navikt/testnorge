@@ -25,7 +25,7 @@ const getColumnHeader = (cell, data) => {
 // Setter rowKey til en verdi dersom datasett har et unikt felt
 // Fallback til row index
 const getRowKey = (row, columns) => {
-	const hasUnique = columns.find(c => c.unique)
+	const hasUnique = columns.find((c) => c.unique)
 	return hasUnique && _get(row, `${hasUnique.dataField}`).toString()
 }
 
@@ -44,10 +44,10 @@ export default function Table({
 	onRowClick,
 	header = true,
 	visPerson,
-	onExpand
+	onExpand,
 }) {
 	const headerClass = cn('dot-header', {
-		'has-icon': Boolean(iconItem)
+		'has-icon': Boolean(iconItem),
 	})
 
 	return (

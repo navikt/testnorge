@@ -7,15 +7,15 @@ import RedigerGruppe from './RedigerGruppe'
 const loadingSelector = createLoadingSelector([actions.createGruppe, actions.updateGruppe])
 const errorSelector = createErrorMessageSelector([actions.createGruppe, actions.updateGruppe])
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	createOrUpdateFetching: loadingSelector(state),
 	currentUserId: state.bruker.brukerData.brukerId,
-	error: errorSelector(state)
+	error: errorSelector(state),
 })
 
 const mapDispatchToProps = {
 	createGruppe: actions.create,
-	updateGruppe: actions.update
+	updateGruppe: actions.update,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(RedigerGruppe)

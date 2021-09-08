@@ -36,14 +36,14 @@ DokarkivPanel.initialValues = ({ set, del, has }: any) => ({
 				dokumenter: [
 					{
 						tittel: '',
-						brevkode: ''
-					}
-				]
+						brevkode: '',
+					},
+				],
 			})
 		},
 		remove() {
 			del('dokarkiv')
-		}
+		},
 	},
 	digitalInnsending: {
 		label: 'Digital innsending',
@@ -56,19 +56,19 @@ DokarkivPanel.initialValues = ({ set, del, has }: any) => ({
 				avsenderMottaker: {
 					id: '',
 					navn: '',
-					idType: ''
+					idType: '',
 				},
 				journalfoerendeEnhet: '',
 				dokumenter: [
 					{
 						tittel: '',
-						brevkode: ''
-					}
-				]
+						brevkode: '',
+					},
+				],
 			})
 		},
 		remove() {
 			del('dokarkiv')
-		}
-	}
+		},
+	},
 })

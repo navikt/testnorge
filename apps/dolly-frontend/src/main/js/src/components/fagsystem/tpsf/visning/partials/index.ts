@@ -17,5 +17,5 @@ export {
 	Identhistorikk,
 	Relasjoner,
 	Vergemaal,
-	Fullmakt
+	Fullmakt,
 }

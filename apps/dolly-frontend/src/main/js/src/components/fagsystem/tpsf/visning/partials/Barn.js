@@ -63,10 +63,10 @@ export const Barn = ({ data, type }) => {
 	)
 }
 
-const finnForeldre = relasjoner => {
+const finnForeldre = (relasjoner) => {
 	return relasjoner
-		.filter(relasjon => {
+		.filter((relasjon) => {
 			return relasjon.relasjonTypeNavn === 'MOR' || relasjon.relasjonTypeNavn === 'FAR'
 		})
-		.map(relasjon => relasjon.personRelasjonMed.ident)
+		.map((relasjon) => relasjon.personRelasjonMed.ident)
 }

@@ -14,11 +14,11 @@ const customStyles = {
 		width: '25%',
 		minWidth: '500px',
 		overflow: 'auto',
-		maxHeight: '80%'
+		maxHeight: '80%',
 	},
 	overlay: {
-		background: 'rgba(0,0,0,0.75)'
-	}
+		background: 'rgba(0,0,0,0.75)',
+	},
 }
 
 Modal.setAppElement('#root')

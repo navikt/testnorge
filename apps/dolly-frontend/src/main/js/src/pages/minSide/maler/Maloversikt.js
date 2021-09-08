@@ -20,16 +20,16 @@ export default ({ brukerId }) => {
 	useEffect(() => {
 		api
 			.hentMaler()
-			.then(data => {
+			.then((data) => {
 				setMaler(data.malbestillinger[`${brukerId}`] || [])
 			})
 			.then(() => setLoading(false))
 	}, [])
 
-	const erUnderRedigering = id => underRedigering.includes(id)
+	const erUnderRedigering = (id) => underRedigering.includes(id)
 
-	const avbrytRedigering = id => {
-		setUnderRedigering(underRedigering => underRedigering.filter(number => number !== id))
+	const avbrytRedigering = (id) => {
+		setUnderRedigering((underRedigering) => underRedigering.filter((number) => number !== id))
 	}
 
 	const columns = [
@@ -42,7 +42,7 @@ export default ({ brukerId }) => {
 					<EndreMalnavn malInfo={row} setMaler={setMaler} avbrytRedigering={avbrytRedigering} />
 				) : (
 					row.malNavn
-				)
+				),
 		},
 		{
 			text: 'Rediger malnavn',
@@ -57,7 +57,7 @@ export default ({ brukerId }) => {
 						ENDRE
 					</Button>
 				)
-			}
+			},
 		},
 		{
 			text: 'Slett',
@@ -67,8 +67,8 @@ export default ({ brukerId }) => {
 				<SlettButton action={() => slettMal(row.id, setMaler)} loading={loading}>
 					Er du sikker på at du vil slette denne malen?
 				</SlettButton>
-			)
-		}
+			),
+		},
 	]
 
 	if (loading) return <Loading label="Loading" />
@@ -105,4 +105,4 @@ export default ({ brukerId }) => {
 }
 
 const malerFiltrert = (maler, searchText) =>
-	maler.filter(mal => mal.malNavn.toLowerCase().includes(searchText.toLowerCase()))
+	maler.filter((mal) => mal.malNavn.toLowerCase().includes(searchText.toLowerCase()))

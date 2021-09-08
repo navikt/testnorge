@@ -6,13 +6,13 @@ import { mapBestillingData } from './BestillingKriterieMapper'
 import { OrganisasjonKriterier } from './OrganisasjonKriterier'
 import DollyKjede from '~/components/dollyKjede/DollyKjede'
 
-const _renderBestillingsDetaljer = data => {
+const _renderBestillingsDetaljer = (data) => {
 	const [selectedIndex, setSelectedIndex] = useState(0)
 
 	return data.map((kategori, j) => {
 		const bottomBorder = j != data.length - 1
 		const cssClass = cn('flexbox--align-start info-text', {
-			'bottom-border': bottomBorder
+			'bottom-border': bottomBorder,
 		})
 		if (kategori.header) {
 			return (

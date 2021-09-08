@@ -59,7 +59,7 @@ export const ArenaVisning = ({ data, bestillinger, loading, useStandard = true }
 	if (loading) return <Loading label="Laster arena-data" />
 	if (!data) return false
 
-	const arenaBestillinger = bestillinger.filter(bestilling =>
+	const arenaBestillinger = bestillinger.filter((bestilling) =>
 		bestilling.data.hasOwnProperty('arenaforvalter')
 	)
 
@@ -70,7 +70,7 @@ export const ArenaVisning = ({ data, bestillinger, loading, useStandard = true }
 		automatiskInnsendingAvMeldekort: undefined,
 		aap115: [],
 		aap: [],
-		dagpenger: []
+		dagpenger: [],
 	}
 
 	// Arenaforvalternen returnerer veldig lite informasjon, bruker derfor data fra bestillingen i tillegg
@@ -111,7 +111,7 @@ function fyllVisningData(bestilling, visningData) {
 		automatiskInnsendingAvMeldekort,
 		aap115,
 		aap,
-		dagpenger
+		dagpenger,
 	} = bestilling.data.arenaforvalter
 	if (!visningData.brukertype) {
 		visningData.brukertype =

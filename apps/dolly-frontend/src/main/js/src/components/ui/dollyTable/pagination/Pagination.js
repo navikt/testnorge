@@ -12,7 +12,7 @@ export default class Pagination extends Component {
 		currentPage: this.props.visSide ? this.props.visSide : 0,
 		pageSize: this.props.gruppeDetaljer?.pageSize
 			? this.props.gruppeDetaljer.pageSize
-			: ITEM_PER_PAGE
+			: ITEM_PER_PAGE,
 	}
 
 	render() {
@@ -59,14 +59,14 @@ export default class Pagination extends Component {
 		)
 	}
 
-	_pageChangeHandler = e => {
+	_pageChangeHandler = (e) => {
 		if (this.props.setSidetall) this.props.setSidetall(e.selected)
 		this.setState({
-			currentPage: e.selected
+			currentPage: e.selected,
 		})
 	}
 
-	_itemCountHandler = e => {
+	_itemCountHandler = (e) => {
 		if (this.props.setSidetall) this.props.setSidetall(0)
 		if (this.props.setSideStoerrelse) this.props.setSideStoerrelse(e.value)
 		this.setState({ currentPage: 0, pageSize: e.value })

@@ -1,7 +1,10 @@
 import React from 'react'
-import JoarkDokumentService, {Dokument, Journalpost} from '~/service/services/JoarkDokumentService'
-import {TitleValue} from '~/components/ui/titleValue/TitleValue'
-import {DollyFieldArray} from '~/components/ui/form/fieldArray/DollyFieldArray'
+import JoarkDokumentService, {
+	Dokument,
+	Journalpost,
+} from '~/service/services/JoarkDokumentService'
+import { TitleValue } from '~/components/ui/titleValue/TitleValue'
+import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import styled from 'styled-components'
 import Button from '~/components/ui/button/Button'
 

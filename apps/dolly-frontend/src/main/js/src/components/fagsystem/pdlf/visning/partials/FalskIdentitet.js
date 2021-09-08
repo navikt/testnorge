@@ -9,7 +9,7 @@ export const FalskIdentitet = ({ data }) => {
 	const {
 		rettIdentitetVedOpplysninger,
 		rettIdentitetErUkjent,
-		rettIdentitetVedIdentifikasjonsnummer
+		rettIdentitetVedIdentifikasjonsnummer,
 	} = data
 
 	return (

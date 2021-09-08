@@ -62,7 +62,6 @@ const texts = {
 	rentefordelLaan: 'Rentefordel lån',
 	bolig: 'Bolig',
 	fondForIdrettsutoevere: 'Fond for idrettsutøvere',
-	bonusFraForsvaret: 'Bonus fra forsvaret',
 	elektroniskKommunikasjon: 'Elektronisk kommunikasjon',
 	opsjoner: 'Opsjoner',
 	aksjerGrunnfondsbevisTilUnderkurs: 'Aksjer/grunnfondsbevis til underkurs',
@@ -250,7 +249,7 @@ const texts = {
 	tilleggspensjonsbeloep: 'Tilleggspensjonsbeløp',
 	ufoeregrad: 'Uføregrad',
 	pensjonsgrad: 'Pensjonsgrad',
-	heravEtterlattepensjon: 'Herav etterlattepensjon'
+	heravEtterlattepensjon: 'Herav etterlattepensjon',
 }
 
-export default key => (texts[key] ? texts[key] : key)
+export default (key) => (texts[key] ? texts[key] : key)

@@ -27,7 +27,7 @@ export const GjenopprettGruppe = ({
 	onCancel,
 	gruppe,
 	bestillingStatuser,
-	getBestillinger
+	getBestillinger,
 }: GjenopprettGruppe) => {
 	const bestilteMiljoer = () => {
 		const miljoer: Set<string> = new Set()
@@ -62,9 +62,7 @@ export const GjenopprettGruppe = ({
 	)
 
 	const submitFormik = async (values: any) => {
-		const envsQuery = Formatters.arrayToString(values.environments)
-			.replace(/ /g, '')
-			.toLowerCase()
+		const envsQuery = Formatters.arrayToString(values.environments).replace(/ /g, '').toLowerCase()
 
 		await DollyApi.gjenopprettGruppe(gruppe.id, envsQuery)
 		await getBestillinger()

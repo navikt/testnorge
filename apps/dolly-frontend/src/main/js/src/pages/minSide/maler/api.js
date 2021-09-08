@@ -4,35 +4,35 @@ export const api = {
 		fetch(`${dollyBackend}/bestilling/malbestilling`, {
 			credentials: 'include',
 			headers: {
-				'Content-Type': 'application/json'
-			}
+				'Content-Type': 'application/json',
+			},
 		})
-			.then(response => {
+			.then((response) => {
 				if (!response.ok) {
 					throw new Error(response.statusText)
 				}
 				return response
 			})
-			.then(response => response.json())
-			.catch(error => {
+			.then((response) => response.json())
+			.catch((error) => {
 				console.error(error)
 				throw error
 			}),
-	slettMal: malId =>
+	slettMal: (malId) =>
 		fetch(`${dollyBackend}/bestilling/malbestilling/${malId}`, {
 			method: 'DELETE',
 			credentials: 'include',
 			headers: {
-				'Content-Type': 'application/json'
-			}
+				'Content-Type': 'application/json',
+			},
 		})
-			.then(response => {
+			.then((response) => {
 				if (!response.ok) {
 					throw new Error(response.statusText)
 				}
 				return response
 			})
-			.catch(error => {
+			.catch((error) => {
 				console.error(error)
 				throw error
 			}),
@@ -42,17 +42,17 @@ export const api = {
 			credentials: 'include',
 			body: JSON.stringify({ malNavn }),
 			headers: {
-				'Content-Type': 'application/json'
-			}
+				'Content-Type': 'application/json',
+			},
 		})
-			.then(response => {
+			.then((response) => {
 				if (!response.ok) {
 					throw new Error(response.statusText)
 				}
 				return response
 			})
-			.catch(error => {
+			.catch((error) => {
 				console.error(error)
 				throw error
-			})
+			}),
 }

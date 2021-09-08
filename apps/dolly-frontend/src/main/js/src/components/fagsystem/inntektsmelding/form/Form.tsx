@@ -16,7 +16,7 @@ import {
 	messages,
 	requiredDate,
 	requiredNumber,
-	requiredString
+	requiredString,
 } from '~/utils/YupValidations'
 import { FormikProps } from 'formik'
 import { Inntekt, Kodeverk, Ytelser } from '../InntektsmeldingTypes'
@@ -38,7 +38,7 @@ interface InntektsmeldingForm {
 
 enum TypeArbeidsgiver {
 	VIRKSOMHET = 'VIRKSOMHET',
-	PRIVATPERSON = 'PRIVATPERSON'
+	PRIVATPERSON = 'PRIVATPERSON',
 }
 
 export const initialValues = (type: string) => ({
@@ -46,31 +46,31 @@ export const initialValues = (type: string) => ({
 	arbeidsgiver:
 		type === TypeArbeidsgiver.VIRKSOMHET
 			? {
-					virksomhetsnummer: ''
+					virksomhetsnummer: '',
 			  }
 			: undefined,
 	arbeidsgiverPrivat:
 		type === TypeArbeidsgiver.PRIVATPERSON
 			? {
-					arbeidsgiverFnr: ''
+					arbeidsgiverFnr: '',
 			  }
 			: undefined,
 	arbeidsforhold: {
 		arbeidsforholdId: '',
 		beregnetInntekt: {
-			beloep: ''
+			beloep: '',
 		},
-		foersteFravaersdag: ''
+		foersteFravaersdag: '',
 	},
 	avsendersystem: {
-		innsendingstidspunkt: new Date()
+		innsendingstidspunkt: new Date(),
 	},
 	refusjon: {
 		refusjonsbeloepPrMnd: '',
-		refusjonsopphoersdato: ''
+		refusjonsopphoersdato: '',
 	},
 	naerRelasjon: false,
-	ytelse: ''
+	ytelse: '',
 })
 
 const inntektsmeldingAttributt = 'inntektsmelding'
@@ -123,9 +123,9 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingForm) => {
 					label="Type arbeidsgiver"
 					options={[
 						{ value: TypeArbeidsgiver.VIRKSOMHET, label: 'Virksomhet' },
-						{ value: TypeArbeidsgiver.PRIVATPERSON, label: 'Privatperson' }
+						{ value: TypeArbeidsgiver.PRIVATPERSON, label: 'Privatperson' },
 					]}
-					onChange={type => handleArbeidsgiverChange(type.value)}
+					onChange={(type) => handleArbeidsgiverChange(type.value)}
 					value={typeArbeidsgiver}
 					isClearable={false}
 				/>
@@ -230,24 +230,24 @@ InntektsmeldingForm.validation = {
 					virksomhetsnummer: ifPresent(
 						'$inntektsmelding.inntekter[0].arbeidsgiver.virksomhetsnummer',
 						requiredString
-					)
+					),
 				}),
 				arbeidsgiverPrivat: Yup.object({
 					arbeidsgiverFnr: ifPresent(
 						'$inntektsmelding.inntekter[0].arbeidsgiverPrivat.arbeidsgiverFnr',
 						requiredString
-					)
+					),
 				}),
 				arbeidsforhold: Yup.object({
 					beregnetInntekt: Yup.object({
-						beloep: requiredNumber.typeError(messages.required)
-					})
+						beloep: requiredNumber.typeError(messages.required),
+					}),
 				}),
 				avsendersystem: Yup.object({
-					innsendingstidspunkt: requiredDate
+					innsendingstidspunkt: requiredDate,
 				}),
-				ytelse: requiredString
+				ytelse: requiredString,
 			})
-		)
-	})
+		),
+	}),
 }

@@ -18,7 +18,7 @@ const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
 	Avvik: 'report-problem-circle',
 	Feilet: 'report-problem-triangle',
-	Stoppet: 'report-problem-triangle'
+	Stoppet: 'report-problem-triangle',
 }
 
 export default function OrganisasjonBestilling({ brukerId, bestillinger }: OrganisasjonBestilling) {
@@ -33,12 +33,12 @@ export default function OrganisasjonBestilling({ brukerId, bestillinger }: Organ
 			text: 'ID',
 			width: '10',
 			dataField: 'id',
-			unique: true
+			unique: true,
 		},
 		{
 			text: 'Antall',
 			width: '10',
-			dataField: 'antallLevert'
+			dataField: 'antallLevert',
 		},
 		{
 			text: 'Sist oppdatert',
@@ -46,7 +46,7 @@ export default function OrganisasjonBestilling({ brukerId, bestillinger }: Organ
 			dataField: 'sistOppdatert',
 			formatter(cell: string): string {
 				return Formatters.formatDate(cell)
-			}
+			},
 		},
 		{
 			text: 'Miljø',
@@ -54,13 +54,13 @@ export default function OrganisasjonBestilling({ brukerId, bestillinger }: Organ
 			dataField: 'environments',
 			formatter(cell: string) {
 				return cell.toUpperCase().replaceAll(',', ', ')
-			}
+			},
 		},
 		{
 			text: 'Orgnr.',
 			width: '15',
 			dataField: 'organisasjonNummer',
-			unique: true
+			unique: true,
 		},
 		{
 			text: 'Status',
@@ -73,8 +73,8 @@ export default function OrganisasjonBestilling({ brukerId, bestillinger }: Organ
 					//@ts-ignore
 					<Icon kind={ikonTypeMap[cell]} title={cell} />
 				)
-			}
-		}
+			},
+		},
 	]
 
 	return (

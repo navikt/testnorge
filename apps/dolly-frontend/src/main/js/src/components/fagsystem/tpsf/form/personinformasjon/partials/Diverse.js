@@ -11,7 +11,7 @@ import { Diskresjonskoder } from './diskresjonskoder/Diskresjonskoder'
 import { Telefonnummer } from './telefonnummer/Telefonnummer'
 
 export const Diverse = ({ formikBag }) => {
-	const handleChangeKontonr = selected => {
+	const handleChangeKontonr = (selected) => {
 		if (!selected) {
 			formikBag.setFieldValue(`tpsf.bankkontonrRegdato`, null)
 		}

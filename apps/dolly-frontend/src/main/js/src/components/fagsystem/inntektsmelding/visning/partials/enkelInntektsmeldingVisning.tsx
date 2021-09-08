@@ -13,7 +13,7 @@ import useBoolean from '~/utils/hooks/useBoolean'
 import {
 	EnkelInntektsmelding,
 	Inntekt,
-	Journalpost
+	Journalpost,
 } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { CodeView } from '~/components/codeView'
@@ -30,7 +30,7 @@ const getHeader = (data: Inntekt) => {
 export const EnkelInntektsmeldingVisning = ({ bestilling, data }: EnkelInntektsmelding) => {
 	// Sjekk om bestillingid i bestilling er i data
 	const journalpostidPaaBestilling = data.filter(
-		id => id.bestillingId === bestilling.id || !id.bestillingId
+		(id) => id.bestillingId === bestilling.id || !id.bestillingId
 	)
 
 	return (

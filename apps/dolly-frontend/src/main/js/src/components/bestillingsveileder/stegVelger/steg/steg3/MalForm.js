@@ -2,7 +2,7 @@ import React from 'react'
 import { useToggle } from 'react-use'
 import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { requiredString, ifPresent } from '~/utils/YupValidations'
+import { ifPresent, requiredString } from '~/utils/YupValidations'
 
 export const MalForm = ({ formikBag }) => {
 	const [aktiv, toggleMal] = useToggle(false)
@@ -25,5 +25,5 @@ export const MalForm = ({ formikBag }) => {
 }
 
 MalForm.validation = {
-	malBestillingNavn: ifPresent('$malBestillingNavn', requiredString)
+	malBestillingNavn: ifPresent('$malBestillingNavn', requiredString),
 }

@@ -10,9 +10,9 @@ export interface Props {
 
 const ArrowButton = styled.button`
 	background: transparent;
-	cursor: ${p => (p.disabled ? 'auto' : 'pointer')};
+	cursor: ${(p) => (p.disabled ? 'auto' : 'pointer')};
 	border: none;
-	fill: ${p => (p.disabled ? 'grey' : 'black')};
+	fill: ${(p) => (p.disabled ? 'grey' : 'black')};
 `
 
 export default ({ left, disabled, onClick }: Props) => {

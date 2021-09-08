@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
-import { panelError } from '~/components/ui/form/formUtils'
-import { erForste } from '~/components/ui/form/formUtils'
+import { erForste, panelError } from '~/components/ui/form/formUtils'
 import Panel from '~/components/ui/panel/Panel'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
@@ -15,7 +14,7 @@ import { addYears } from 'date-fns'
 export const initialValues = {
 	institusjonstype: '',
 	startdato: '',
-	sluttdato: ''
+	sluttdato: '',
 }
 const instAttributt = 'instdata'
 

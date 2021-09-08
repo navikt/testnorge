@@ -25,7 +25,7 @@ enum AdresseTyper {
 	GATE = 'GATE',
 	STED = 'STED',
 	PBOX = 'PBOX',
-	UTAD = 'UTAD'
+	UTAD = 'UTAD',
 }
 
 export const MidlertidigAdresse = ({ formikBag }: MidlertidigAdresse) => {
@@ -44,8 +44,8 @@ export const MidlertidigAdresse = ({ formikBag }: MidlertidigAdresse) => {
 					adressetype: type,
 					gyldigTom: _get(formikBag.values, gyldigTom),
 					norskAdresse: {
-						tilleggsadresse: _get(formikBag.values, tilleggsadresse)
-					}
+						tilleggsadresse: _get(formikBag.values, tilleggsadresse),
+					},
 				})
 				break
 			case AdresseTyper.STED:
@@ -55,8 +55,8 @@ export const MidlertidigAdresse = ({ formikBag }: MidlertidigAdresse) => {
 					norskAdresse: {
 						postnr: '',
 						eiendomsnavn: '',
-						tilleggsadresse: _get(formikBag.values, tilleggsadresse)
-					}
+						tilleggsadresse: _get(formikBag.values, tilleggsadresse),
+					},
 				})
 				break
 			case AdresseTyper.PBOX:
@@ -66,8 +66,8 @@ export const MidlertidigAdresse = ({ formikBag }: MidlertidigAdresse) => {
 					norskAdresse: {
 						postnr: '',
 						postboksnr: '',
-						postboksAnlegg: ''
-					}
+						postboksAnlegg: '',
+					},
 				})
 				break
 			case AdresseTyper.UTAD:
@@ -78,8 +78,8 @@ export const MidlertidigAdresse = ({ formikBag }: MidlertidigAdresse) => {
 						postLinje1: '',
 						postLinje2: '',
 						postLinje3: '',
-						postLand: ''
-					}
+						postLand: '',
+					},
 				})
 				break
 			default:

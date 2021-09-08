@@ -11,7 +11,7 @@ type Form = {
 
 enum IdentType {
 	STANDARD = 'STANDARD',
-	SYNTETISK = 'SYNTETISK'
+	SYNTETISK = 'SYNTETISK',
 }
 
 const IdentVelgerField = styled.div`
@@ -75,10 +75,10 @@ export const IdentVelger = ({ formikBag }: Form) => {
 				legend=""
 				radios={[
 					{ label: 'Standard', value: IdentType.STANDARD },
-					{ label: 'NAV syntetisk', value: IdentType.SYNTETISK }
+					{ label: 'NAV syntetisk', value: IdentType.SYNTETISK },
 				]}
 				checked={type}
-				onChange={e => handleIdentTypeChange(e.target.value)}
+				onChange={(e) => handleIdentTypeChange(e.target.value)}
 			/>
 		</IdentVelgerField>
 	)

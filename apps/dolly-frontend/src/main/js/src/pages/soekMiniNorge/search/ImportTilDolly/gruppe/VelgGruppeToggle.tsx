@@ -11,7 +11,7 @@ interface VelgGruppeToggle {
 const togglenavn = 'Gruppevalgtoggle'
 enum Gruppevalg {
 	EKSISTERENDE = 'Eksisterende',
-	NY = 'Ny'
+	NY = 'Ny',
 }
 
 export const VelgGruppeToggle = ({ setValgtGruppe, valgtGruppe }: VelgGruppeToggle) => {

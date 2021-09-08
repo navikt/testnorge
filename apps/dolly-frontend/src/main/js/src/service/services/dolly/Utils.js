@@ -1,10 +1,10 @@
 // Specialbehov for modifisering og sortering av kodeverk
-export const SortKodeverkArray = data => {
+export const SortKodeverkArray = (data) => {
 	const kodeverk = data.koder
 	if (data.name === 'Språk') {
 		const spesKoder = ['ES', 'EN', 'NN', 'NB']
 
-		spesKoder.forEach(value => {
+		spesKoder.forEach((value) => {
 			for (let i = 0; i < kodeverk.length - 1; i++) {
 				const temp = kodeverk[i]
 				if (value == temp.value) {
@@ -18,17 +18,17 @@ export const SortKodeverkArray = data => {
 
 	if (data.name === 'Sivilstander') {
 		//Dolly støtter ikke GLAD fordi det er NAV-spesifikt og ikke SKD. Kan endres ved behov.
-		return kodeverk.filter(kode => kode.value !== 'NULL' && kode.value !== 'GLAD')
+		return kodeverk.filter((kode) => kode.value !== 'NULL' && kode.value !== 'GLAD')
 	}
 
 	if (data.name === 'Diskresjonskoder') {
 		const diskresjonskoder = [
 			...kodeverk,
 			{ label: 'KODE 19 - Strengt fortrolig utland', value: 'SFU' },
-			{ label: 'Opphev diskresjonskode', value: 'UGRADERT' }
+			{ label: 'Opphev diskresjonskode', value: 'UGRADERT' },
 		]
 		return diskresjonskoder
-			.map(kode => {
+			.map((kode) => {
 				if (kode.value === 'SPFO') {
 					kode.label = 'KODE 07 - Sperret adresse, fortrolig'
 				}
@@ -37,7 +37,7 @@ export const SortKodeverkArray = data => {
 				}
 				return kode
 			})
-			.filter(kode => kode.value !== 'UFB')
+			.filter((kode) => kode.value !== 'UFB')
 			.sort((first, second) => (first.label > second.label ? 1 : -1))
 	}
 
@@ -48,10 +48,10 @@ export const SortKodeverkArray = data => {
 		data.name === 'Næringskoder' ||
 		data.name === 'Sektorkoder'
 	) {
-		return kodeverk.map(kode => ({
+		return kodeverk.map((kode) => ({
 			label: `${kode.value} - ${kode.label}`,
 			value: kode.value,
-			data: kode.label
+			data: kode.label,
 		}))
 	}
 
@@ -69,20 +69,20 @@ export const SortKodeverkArray = data => {
 			{ value: '5221126', label: 'BUTIKKMEDARBEIDER' },
 			{ value: '7217102', label: 'BILSKADEREPARATØR' },
 			{ value: '3310101', label: 'ALLMENNLÆRER' },
-			{ value: '2521106', label: 'ADVOKAT' }
+			{ value: '2521106', label: 'ADVOKAT' },
 		]
-		spesKoder.map(yrke => kodeverk.unshift(yrke))
+		spesKoder.map((yrke) => kodeverk.unshift(yrke))
 	}
 
 	if (data.name === 'Arbeidsforholdstyper') {
 		// Kodeverket for arbeidsforholdstyper har en type som AAREG per i dag ikke støtter
 		const arbeidsforhold = kodeverk
-			.filter(kode => kode.value !== 'pensjonOgAndreTyperYtelserUtenAnsettelsesforhold')
-			.map(kode => {
+			.filter((kode) => kode.value !== 'pensjonOgAndreTyperYtelserUtenAnsettelsesforhold')
+			.map((kode) => {
 				if (kode.value === 'frilanserOppdragstakerHonorarPersonerMm') {
 					return {
 						...kode,
-						label: 'Frilansere/oppdragstakere, honorar, m.m.'
+						label: 'Frilansere/oppdragstakere, honorar, m.m.',
 					}
 				}
 				return kode
@@ -104,37 +104,37 @@ export const SortKodeverkArray = data => {
 			'SXM',
 			'TLS',
 			'WAK',
-			'YUG'
+			'YUG',
 		]
-		return kodeverk.filter(kode => !spesKoder.includes(kode.value))
+		return kodeverk.filter((kode) => !spesKoder.includes(kode.value))
 	}
 
 	if (data.name === 'NAVSkjema') {
-		return kodeverk.map(kode => ({
+		return kodeverk.map((kode) => ({
 			label: `${kode.value}: ${kode.label}`,
 			value: kode.value,
-			data: kode.label
+			data: kode.label,
 		}))
 	}
 
 	if (data.name === 'Tema') {
 		const ugyldigeKoder = ['BII', 'KLA', 'KNA', 'KOM', 'LGA', 'MOT', 'OVR']
-		return kodeverk.filter(kode => !ugyldigeKoder.includes(kode.value))
+		return kodeverk.filter((kode) => !ugyldigeKoder.includes(kode.value))
 	}
 
 	if (data.name === 'Vergemål_Mandattype') {
-		return kodeverk.filter(kode => kode.value !== '<Blank>' && kode.value !== 'ADP')
+		return kodeverk.filter((kode) => kode.value !== '<Blank>' && kode.value !== 'ADP')
 	}
 
 	if (data.name === 'EnhetstyperJuridiskEnhet' || data.name === 'EnhetstyperVirksomhet') {
-		return kodeverk.map(kode => ({
+		return kodeverk.map((kode) => ({
 			label: `${kode.label} (${kode.value})`,
-			value: kode.value
+			value: kode.value,
 		}))
 	}
 
 	if (data.name === 'PermisjonsOgPermitteringsBeskrivelse') {
-		return kodeverk.filter(kode => kode.value !== 'permittering')
+		return kodeverk.filter((kode) => kode.value !== 'permittering')
 	}
 
 	return kodeverk

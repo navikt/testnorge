@@ -16,18 +16,18 @@ const mapStateToProps = (state, ownProps) => ({
 	gruppe: selectGruppeById(state, ownProps.match.params.gruppeId),
 	identer: state.gruppe.ident,
 	brukernavn: state.bruker.brukerData.brukernavn,
-	bestillingStatuser: state.bestillingStatuser.byId
+	bestillingStatuser: state.bestillingStatuser.byId,
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => {
 	const { gruppeId } = ownProps.match.params
 	return {
 		getGruppe: (pageNo, pageSize) => dispatch(actions.getById(gruppeId, pageNo, pageSize)),
-		navigerTilPerson: ident => dispatch(navigerTilPerson(ident)),
+		navigerTilPerson: (ident) => dispatch(navigerTilPerson(ident)),
 		deleteGruppe: () => dispatch(actions.remove(gruppeId)),
 		laasGruppe: () =>
 			dispatch(actions.laas(gruppeId, { erLaast: true, laastBeskrivelse: 'Låst gruppe' })),
-		getBestillinger: () => dispatch(getBestillinger(gruppeId))
+		getBestillinger: () => dispatch(getBestillinger(gruppeId)),
 	}
 }
 

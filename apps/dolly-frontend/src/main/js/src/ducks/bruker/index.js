@@ -8,14 +8,14 @@ export const {
 	getCurrentBrukerProfil,
 	getCurrentBrukerBilde,
 	addFavorite,
-	removeFavorite
+	removeFavorite,
 } = createActions(
 	{
 		getCurrentBruker: DollyApi.getCurrentBruker,
 		getCurrentBrukerProfil: ProfilApi.getProfil,
 		getCurrentBrukerBilde: ProfilApi.getProfilBilde,
 		addFavorite: DollyApi.addFavorite,
-		removeFavorite: DollyApi.removeFavorite
+		removeFavorite: DollyApi.removeFavorite,
 	},
 	{ prefix: 'bruker' }
 )
@@ -23,7 +23,7 @@ export const {
 const initialState = {
 	brukerData: null,
 	brukerProfil: null,
-	brukerBilde: null
+	brukerBilde: null,
 }
 
 const successActions = combineActions(
@@ -42,7 +42,7 @@ export default handleActions(
 		},
 		[onSuccess(getCurrentBrukerBilde)](state, action) {
 			state.brukerBilde = null //TODO: FIX
-		}
+		},
 	},
 	initialState
 )

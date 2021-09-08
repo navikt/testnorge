@@ -34,25 +34,25 @@ export default ({ items, pageing, numberOfItems, onChange }: Props) => {
 			text: 'Ident',
 			width: '20',
 			dataField: 'ident',
-			unique: true
+			unique: true,
 		},
 		{
 			text: 'Fornavn',
 			width: '20',
 			dataField: 'fornavn',
-			unique: true
+			unique: true,
 		},
 		{
 			text: 'Etternavn',
 			width: '20',
 			dataField: 'etternavn',
-			unique: true
+			unique: true,
 		},
 		{
 			text: 'Kjønn',
 			width: '20',
-			dataField: 'kjoenn'
-		}
+			dataField: 'kjoenn',
+		},
 	]
 
 	return (

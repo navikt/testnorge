@@ -12,5 +12,5 @@ export default {
 	getTilgjengeligeMiljoer() {
 		const endpoint = `${getPensjonUrl()}/miljo`
 		return Request.get(endpoint, { 'Nav-Call-Id': _uuid(), 'Nav-Consumer-Id': 'dolly' })
-	}
+	},
 }

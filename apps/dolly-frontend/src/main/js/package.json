@@ -12,7 +12,7 @@
     "copy-prod-build": "cpx \"dist/production/*\" ../resources/public",
     "test:1": "node ./node_modules/jest-single-file-coverage",
     "lint": "eslint */**/*.{js,ts,tsx} --fix",
-    "prettier": "prettier --write '**/*.{ts,js,css,html}'"
+    "prettier": "prettier --write '**/*.{ts,tsx,js,css,html}'"
   },
   "author": "",
   "license": "ISC",

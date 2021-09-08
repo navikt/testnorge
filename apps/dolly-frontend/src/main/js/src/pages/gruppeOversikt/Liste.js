@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import Loading from '~/components/ui/loading/Loading'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
@@ -16,7 +16,7 @@ export default function Liste({
 	gruppeDetaljer,
 	visSide,
 	setSidetall,
-	setSideStoerrelse
+	setSideStoerrelse,
 }) {
 	if (isFetching) return <Loading label="Laster grupper" panel />
 
@@ -47,48 +47,48 @@ export default function Liste({
 			text: 'ID',
 			width: '10',
 			dataField: 'id',
-			unique: true
+			unique: true,
 		},
 		{
 			text: 'Navn',
 			width: '20',
-			dataField: 'navn'
+			dataField: 'navn',
 		},
 		{
 			text: 'Hensikt',
 			width: '20',
-			dataField: 'hensikt'
+			dataField: 'hensikt',
 		},
 		{
 			text: 'Personer',
 			width: '15',
-			dataField: 'antallIdenter'
+			dataField: 'antallIdenter',
 		},
 		{
 			text: 'Antall brukt',
 			width: '15',
-			dataField: 'antallIBruk'
+			dataField: 'antallIBruk',
 		},
 		{
 			text: 'Favoritt',
 			width: '15',
 			dataField: 'id',
 			formatter: (cell, row) =>
-				!row.erEierAvGruppe && <FavoriteButtonConnector hideLabel={true} groupId={row.id} />
+				!row.erEierAvGruppe && <FavoriteButtonConnector hideLabel={true} groupId={row.id} />,
 		},
 		{
 			text: 'Låst',
 			width: '10',
 			dataField: 'erLaast',
-			formatter: (cell, row) => row.erLaast && <Icon kind={'lock'} />
-		}
+			formatter: (cell, row) => row.erLaast && <Icon kind={'lock'} />,
+		},
 	]
 	return (
 		<ErrorBoundary>
 			<DollyTable
 				data={items}
 				columns={columns}
-				onRowClick={row => () => history.push(`gruppe/${row.id}`)}
+				onRowClick={(row) => () => history.push(`gruppe/${row.id}`)}
 				iconItem={<GruppeIconItem />}
 				pagination
 				gruppeDetaljer={gruppeDetaljer}

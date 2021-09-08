@@ -26,7 +26,7 @@ export default ({
 	setValgtGruppe,
 	isFetching,
 	valgtGruppe,
-	gruppeListe
+	gruppeListe,
 }: EksisterendeGruppe) => {
 	useEffect(() => {
 		fetchMineGrupper()
@@ -34,7 +34,7 @@ export default ({
 
 	const gruppeliste = gruppeListe.map((v: Gruppe) => ({
 		value: v.id,
-		label: v.id + ' - ' + v.navn
+		label: v.id + ' - ' + v.navn,
 	}))
 
 	if (isFetching) return <Loading label="Laster grupper" />

@@ -1,8 +1,8 @@
 import React from 'react'
-import {ErrorBoundary} from '~/components/ui/appError/ErrorBoundary'
-import {DollyTextInput} from '~/components/ui/form/inputs/textInput/TextInput'
-import {Vedlegg} from '~/components/fagsystem/dokarkiv/form/scanning/DokarkivForm'
-import {DollyFieldArray} from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { Vedlegg } from '~/components/fagsystem/dokarkiv/form/scanning/DokarkivForm'
+import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 
 type Data = {
 	filer: Vedlegg[]
@@ -19,7 +19,7 @@ export const FilnavnDollyArray = ({ filer, handleChange }: Data) => {
 				index === aktivIndex
 					? {
 							...fil,
-							dokNavn: filnavn
+							dokNavn: filnavn,
 					  }
 					: fil
 			)

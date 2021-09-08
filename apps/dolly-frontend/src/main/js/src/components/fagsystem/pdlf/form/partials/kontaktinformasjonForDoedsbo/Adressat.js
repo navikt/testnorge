@@ -1,7 +1,7 @@
 import React from 'react'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
-import { FormikSelect, DollySelect } from '~/components/ui/form/inputs/select/Select'
+import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
@@ -24,18 +24,18 @@ export const Adressat = ({ formikBag }) => {
 				adressatType: value,
 				kontaktperson: { fornavn: '', mellomnavn: '', etternavn: '' },
 				organisasjonsnavn: '',
-				organisasjonsnummer: ''
+				organisasjonsnummer: '',
 			})
 		else if (value === 'PERSON_UTENID')
 			formikBag.setFieldValue(addressatPath, {
 				adressatType: value,
 				navn: { fornavn: '', mellomnavn: '', etternavn: '' },
-				foedselsdato: ''
+				foedselsdato: '',
 			})
 		else if (value === 'PERSON_MEDID')
 			formikBag.setFieldValue(addressatPath, {
 				adressatType: value,
-				idnummer: ''
+				idnummer: '',
 			})
 	}
 
@@ -58,7 +58,7 @@ export const Adressat = ({ formikBag }) => {
 						size="large"
 						placeholder={getPlaceholder(formikBag.values, `${addressatPath}.kontaktperson`)}
 						isLoading={navnInfo.loading}
-						onChange={navn =>
+						onChange={(navn) =>
 							setNavn(navn, `${addressatPath}.kontaktperson`, formikBag.setFieldValue)
 						}
 						value={_get(formikBag.values, `${addressatPath}.kontaktperson.fornavn`)}
@@ -83,7 +83,7 @@ export const Adressat = ({ formikBag }) => {
 					options={navnOgFnrOptions}
 					size="large"
 					isLoading={dollyGruppeInfo.loading}
-					onChange={id => setValue(id, `${addressatPath}.idnummer`, formikBag.setFieldValue)}
+					onChange={(id) => setValue(id, `${addressatPath}.idnummer`, formikBag.setFieldValue)}
 					value={_get(formikBag.values, `${addressatPath}.idnummer`)}
 					isClearable={false}
 				/>
@@ -97,7 +97,7 @@ export const Adressat = ({ formikBag }) => {
 						size="large"
 						placeholder={getPlaceholder(formikBag.values, `${addressatPath}.navn`)}
 						isLoading={navnInfo.loading}
-						onChange={navn => setNavn(navn, `${addressatPath}.navn`, formikBag.setFieldValue)}
+						onChange={(navn) => setNavn(navn, `${addressatPath}.navn`, formikBag.setFieldValue)}
 						value={_get(formikBag.values, `${addressatPath}.navn.fornavn`)}
 						isClearable={false}
 					/>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import AdresseSok from './AdresseSok'
-import { AlertStripeFeil, AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
+import { AlertStripeAdvarsel, AlertStripeFeil } from 'nav-frontend-alertstriper'
 import styled from 'styled-components'
 import AdresseService, { Adresse } from '~/service/services/AdresseService'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
@@ -36,7 +36,7 @@ export default ({ onSelect }: Props) => {
 	const [error, setError] = useState<boolean>(false)
 
 	const findAdresse = (matrikkelId: string) =>
-		adresser.find(value => value.matrikkelId === matrikkelId)
+		adresser.find((value) => value.matrikkelId === matrikkelId)
 
 	const getLabel = ({ adressenavn, husnummer, husbokstav, postnummer, poststed }: Adresse) =>
 		`${adressenavn} ${husnummer}${husbokstav ? husbokstav : ''}, ${postnummer} ${poststed}`
@@ -47,7 +47,7 @@ export default ({ onSelect }: Props) => {
 		setError(false)
 		setAdresser(null)
 		return AdresseService.hentAdresser(search, 10)
-			.then(adresser => {
+			.then((adresser) => {
 				setAdresser(adresser)
 				setLoading(false)
 			})
@@ -76,9 +76,9 @@ export default ({ onSelect }: Props) => {
 						label="Adresse"
 						size="grow"
 						isClearable={false}
-						options={adresser.map(value => ({
+						options={adresser.map((value) => ({
 							value: value.matrikkelId,
-							label: getLabel(value)
+							label: getLabel(value),
 						}))}
 						value={adresse ? adresse.matrikkelId : null}
 						onChange={(e: any) => {

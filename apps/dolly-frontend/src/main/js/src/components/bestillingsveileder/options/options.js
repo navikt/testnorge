@@ -6,7 +6,7 @@ const TYPE = Object.freeze({
 	OPPRETT_FRA_IDENTER: 'OPPRETT_FRA_IDENTER',
 	LEGG_TIL: 'LEGG_TIL',
 	NY_ORGANISASJON: 'NY_ORGANISASJON',
-	NY_STANDARD_ORGANISASJON: 'NY_STANDARD_ORGANISASJON'
+	NY_STANDARD_ORGANISASJON: 'NY_STANDARD_ORGANISASJON',
 })
 
 export const BVOptions = ({
@@ -16,19 +16,19 @@ export const BVOptions = ({
 	opprettFraIdenter,
 	personFoerLeggTil,
 	tidligereBestillinger,
-	opprettOrganisasjon = null
+	opprettOrganisasjon = null,
 } = {}) => {
 	let initialValues = {
 		antall,
 		environments: [],
-		navSyntetiskIdent: false
+		navSyntetiskIdent: false,
 	}
 
 	let initialValuesOrganisasjon = {
 		environments: [],
 		organisasjon: {
-			enhetstype: ''
-		}
+			enhetstype: '',
+		},
 	}
 
 	let initialValuesStandardOrganisasjon = {
@@ -40,7 +40,7 @@ export const BVOptions = ({
 				adresselinjer: ['', '', ''],
 				postnr: '',
 				kommunenr: '',
-				landkode: 'NO'
+				landkode: 'NO',
 			},
 			underenheter: [
 				{
@@ -50,11 +50,11 @@ export const BVOptions = ({
 						adresselinjer: ['', '', ''],
 						postnr: '',
 						kommunenr: '',
-						landkode: 'NO'
-					}
-				}
-			]
-		}
+						landkode: 'NO',
+					},
+				},
+			],
+		},
 	}
 
 	let bestType = TYPE.NY_BESTILLING
@@ -97,7 +97,7 @@ export const BVOptions = ({
 			opprettFraIdenter: bestType === TYPE.OPPRETT_FRA_IDENTER,
 			leggTil: bestType === TYPE.LEGG_TIL,
 			nyOrganisasjon: bestType === TYPE.NY_ORGANISASJON,
-			nyStandardOrganisasjon: bestType === TYPE.NY_STANDARD_ORGANISASJON
-		}
+			nyStandardOrganisasjon: bestType === TYPE.NY_STANDARD_ORGANISASJON,
+		},
 	}
 }

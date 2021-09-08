@@ -3,62 +3,62 @@ import subYears from 'date-fns/subYears'
 export const initialPeriode = {
 	fom: null,
 	tom: null,
-	periode: []
+	periode: [],
 }
 
 export const initialAmelding = [
 	{
 		maaned: null,
-		arbeidsforhold: []
-	}
+		arbeidsforhold: [],
+	},
 ]
 
 export const initialValues = {
 	arbeidsforholdstype: '',
 	genererPeriode: initialPeriode,
-	amelding: initialAmelding
+	amelding: initialAmelding,
 }
 
 export const initialForenkletOppgjoersordningOrg = {
 	arbeidsgiver: {
 		aktoertype: 'ORG',
-		orgnummer: ''
+		orgnummer: '',
 	},
 	ansettelsesPeriode: {
 		fom: subYears(new Date(), 20),
 		tom: null,
-		sluttaarsak: null
+		sluttaarsak: null,
 	},
 	arbeidsavtale: {
-		yrke: ''
-	}
+		yrke: '',
+	},
 }
 
 export const initialForenkletOppgjoersordningPers = {
 	arbeidsgiver: {
 		aktoertype: 'PERS',
-		ident: ''
+		ident: '',
 	},
 	ansettelsesPeriode: {
 		fom: subYears(new Date(), 20),
 		tom: null,
-		sluttaarsak: null
+		sluttaarsak: null,
 	},
 	arbeidsavtale: {
-		yrke: ''
-	}
+		yrke: '',
+	},
 }
 
 export const initialArbeidsforholdOrg = {
 	arbeidsgiver: {
 		aktoertype: 'ORG',
-		orgnummer: ''
+		orgnummer: '',
 	},
 	arbeidsforholdID: '',
 	ansettelsesPeriode: {
 		fom: subYears(new Date(), 20),
 		tom: null,
-		sluttaarsak: null
+		sluttaarsak: null,
 	},
 	arbeidsavtale: {
 		yrke: '',
@@ -67,20 +67,20 @@ export const initialArbeidsforholdOrg = {
 		endringsdatoStillingsprosent: null,
 		endringsdatoLoenn: null,
 		arbeidstidsordning: 'ikkeSkift',
-		avtaltArbeidstimerPerUke: 37.5
-	}
+		avtaltArbeidstimerPerUke: 37.5,
+	},
 }
 
 export const initialArbeidsforholdPers = {
 	arbeidsgiver: {
 		aktoertype: 'PERS',
-		ident: ''
+		ident: '',
 	},
 	arbeidsforholdID: '',
 	ansettelsesPeriode: {
 		fom: subYears(new Date(), 20),
 		tom: null,
-		sluttaarsak: null
+		sluttaarsak: null,
 	},
 	arbeidsavtale: {
 		yrke: '',
@@ -89,57 +89,57 @@ export const initialArbeidsforholdPers = {
 		endringsdatoStillingsprosent: null,
 		endringsdatoLoenn: null,
 		arbeidstidsordning: 'ikkeSkift',
-		avtaltArbeidstimerPerUke: 37.5
-	}
+		avtaltArbeidstimerPerUke: 37.5,
+	},
 }
 
 export const initialAaregOrg = {
 	arbeidsforholdstype: '',
-	...initialArbeidsforholdOrg
+	...initialArbeidsforholdOrg,
 }
 
 export const initialAaregPers = {
 	arbeidsforholdstype: '',
-	...initialArbeidsforholdPers
+	...initialArbeidsforholdPers,
 }
 
 export const initialFartoy = [
 	{
 		skipsregister: '',
 		skipstype: '',
-		fartsomraade: ''
-	}
+		fartsomraade: '',
+	},
 ]
 
 export const initialTimeloennet = {
 	periode: {
 		fom: null,
-		tom: null
+		tom: null,
 	},
-	antallTimer: 0
+	antallTimer: 0,
 }
 
 export const initialUtenlandsopphold = {
 	periode: {
 		fom: null,
-		tom: null
+		tom: null,
 	},
-	land: ''
+	land: '',
 }
 
 export const initialPermisjon = {
 	permisjonsPeriode: {
 		fom: null,
-		tom: null
+		tom: null,
 	},
 	permisjonsprosent: 100,
-	permisjon: ''
+	permisjon: '',
 }
 
 export const initialPermittering = {
 	permitteringsPeriode: {
 		fom: null,
-		tom: null
+		tom: null,
 	},
-	permitteringsprosent: 100
+	permitteringsprosent: 100,
 }

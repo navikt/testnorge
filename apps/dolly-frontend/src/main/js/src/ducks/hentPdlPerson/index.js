@@ -5,11 +5,11 @@ import { onSuccess } from '~/ducks/utils/requestActions'
 import { handleActions } from '~/ducks/utils/immerHandleActions'
 
 export const { hentFraPdl } = createActions({
-	hentFraPdl: DollyApi.getPersonFraPdl
+	hentFraPdl: DollyApi.getPersonFraPdl,
 })
 
 const initialState = {
-	visPerson: null
+	visPerson: null,
 }
 
 export default handleActions(
@@ -19,7 +19,7 @@ export default handleActions(
 		},
 		[onSuccess(hentFraPdl)](state, action) {
 			state.visPerson = action.payload.data
-		}
+		},
 	},
 	initialState
 )

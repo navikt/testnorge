@@ -7,15 +7,15 @@ import antallIdenterOpprettet from '~/components/bestilling/utils/antallIdenterO
 
 import './MiljoeStatus.less'
 
-const mapStatusrapport = bestillingstatus => {
-	const successFirst = a => (a.melding ? 1 : -1)
+const mapStatusrapport = (bestillingstatus) => {
+	const successFirst = (a) => (a.melding ? 1 : -1)
 	return bestillingstatus
 		.reduce((acc, curr) => {
 			return acc.concat(
-				curr.statuser.map(status => {
+				curr.statuser.map((status) => {
 					const feil = {
 						navn: curr.navn,
-						melding: status.melding !== 'OK' ? status.melding : null
+						melding: status.melding !== 'OK' ? status.melding : null,
 					}
 
 					if (status.identer) {
@@ -29,7 +29,7 @@ const mapStatusrapport = bestillingstatus => {
 					}
 
 					if (status.detaljert) {
-						const miljoArray = status.detaljert.map(m => m.miljo).sort()
+						const miljoArray = status.detaljert.map((m) => m.miljo).sort()
 						const identArray = status.detaljert[0].identer
 						feil.miljo = miljoArray[0] ? Formatters.arrayToString(miljoArray) : ''
 						feil.identer = identArray

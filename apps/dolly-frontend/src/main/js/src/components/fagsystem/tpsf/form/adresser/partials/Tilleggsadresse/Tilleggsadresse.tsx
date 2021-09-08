@@ -30,7 +30,7 @@ enum TilleggsTyper {
 	CoNavn = 'CO_NAVN',
 	LeilighetsNr = 'LEILIGHET_NR',
 	SeksjonsNr = 'SEKSJON_NR',
-	BoligNr = 'BOLIG_NR'
+	BoligNr = 'BOLIG_NR',
 }
 
 const initialValues = { tilleggType: '', nummer: '' }
@@ -39,7 +39,7 @@ export const Tilleggsadresse = ({
 	formikBag,
 	tilleggsadressePath,
 	options,
-	type
+	type,
 }: TilleggsadresseProps) => {
 	const [showTilleggsadresse, setShowTilleggsadresse] = useState(
 		_get(formikBag.values, tilleggsadressePath) ? true : false

@@ -13,20 +13,20 @@ type EgenOrganisasjonSelect = {
 export const EgenOrganisasjonSelect = ({
 	name,
 	isClearable = true,
-	onChange = null
+	onChange = null,
 }: EgenOrganisasjonSelect) => {
 	return (
 		<ErrorBoundary>
 			<LoadableComponent
 				onFetch={() =>
-					SelectOptionsOppslag.hentVirksomheterFraOrgforvalter().then(response =>
-						response.map(virksomhet => ({
+					SelectOptionsOppslag.hentVirksomheterFraOrgforvalter().then((response) =>
+						response.map((virksomhet) => ({
 							value: virksomhet.orgnummer,
-							label: `${virksomhet.orgnummer} (${virksomhet.enhetstype}) - ${virksomhet.orgnavn}`
+							label: `${virksomhet.orgnummer} (${virksomhet.enhetstype}) - ${virksomhet.orgnavn}`,
 						}))
 					)
 				}
-				render={data => (
+				render={(data) => (
 					<FormikSelect
 						name={name}
 						label="Organisasjonsnummer"

@@ -1,8 +1,8 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import {DollyApi} from '~/service/Api'
-import {DollyFieldArray} from '~/components/ui/form/fieldArray/DollyFieldArray'
-import JoarkDokumentService, {Journalpost} from '~/service/services/JoarkDokumentService'
+import { DollyApi } from '~/service/Api'
+import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import JoarkDokumentService, { Journalpost } from '~/service/services/JoarkDokumentService'
 import LoadableComponentWithRetry from '~/components/ui/loading/LoadableComponentWithRetry'
 import DokarkivVisning from './DokarkivVisning'
 
@@ -37,7 +37,7 @@ export default ({ ident }: Form) => {
 						.then((data: Array<Promise<any>>) => Promise.all(data))
 				}
 				render={(data: Journalpost[]) => {
-					const filteredData = data.filter(journalpost => journalpost.journalpostId != null)
+					const filteredData = data.filter((journalpost) => journalpost.journalpostId != null)
 
 					if (!filteredData) {
 						return null

@@ -6,5 +6,5 @@ export const EnvironmentManager = ENVM
 
 export default {
 	AttributtManager: ATBM,
-	EnvironmentManager: ENVM
+	EnvironmentManager: ENVM,
 }

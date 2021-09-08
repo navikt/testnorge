@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import useBoolean from '~/utils/hooks/useBoolean'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
-import { format, eachMonthOfInterval } from 'date-fns'
+import { eachMonthOfInterval, format } from 'date-fns'
 import Hjelpetekst from '~/components/hjelpetekst'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { ArbeidKodeverk } from '~/config/kodeverk'
@@ -11,18 +11,18 @@ import NavButton from '~/components/ui/button/NavButton/NavButton'
 import Button from '~/components/ui/button/Button'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import {
-	initialPeriode,
 	initialAmelding,
 	initialArbeidsforholdOrg,
+	initialFartoy,
 	initialForenkletOppgjoersordningOrg,
-	initialFartoy
+	initialPeriode,
 } from '../initialValues'
 import { ArbeidsforholdForm } from './arbeidsforholdForm'
 import { Monthpicker } from '~/components/ui/form/inputs/monthpicker/Monthpicker'
 import DollyKjede from '~/components/dollyKjede/DollyKjede'
 import KjedeIcon from '~/components/dollyKjede/KjedeIcon'
 import { FormikProps } from 'formik'
-import { Amelding, KodeverkValue, AaregListe } from '~/components/fagsystem/aareg/AaregTypes'
+import { AaregListe, Amelding, KodeverkValue } from '~/components/fagsystem/aareg/AaregTypes'
 
 interface AmeldingForm {
 	formikBag: FormikProps<{ aareg: AaregListe }>
@@ -62,15 +62,15 @@ export const AmeldingForm = ({ formikBag }: AmeldingForm): ReactFragment => {
 			const maaneder: Array<string> = []
 			const maanederTmp = eachMonthOfInterval({
 				start: new Date(type === 'fom' ? dato : fom),
-				end: new Date(type === 'tom' ? dato : tom)
+				end: new Date(type === 'tom' ? dato : tom),
 			})
-			maanederTmp.forEach(maaned => {
+			maanederTmp.forEach((maaned) => {
 				maaneder.push(format(maaned, 'yyyy-MM'))
 			})
 			formikBag.setFieldValue('aareg[0].genererPeriode.periode', maaneder)
 
 			if (maaneder.length < maanederPrev.length) {
-				const maanederFiltered = maanederPrev.filter(maaned => maaneder.includes(maaned.maaned))
+				const maanederFiltered = maanederPrev.filter((maaned) => maaneder.includes(maaned.maaned))
 				formikBag.setFieldValue('aareg[0].amelding', maanederFiltered)
 			} else {
 				maaneder.forEach((mnd, idx) => {
@@ -83,7 +83,7 @@ export const AmeldingForm = ({ formikBag }: AmeldingForm): ReactFragment => {
 							? currMaaned.arbeidsforhold
 							: arbeidsforholdstype === 'forenkletOppgjoersordning'
 							? [initialForenkletOppgjoersordningOrg]
-							: [initialArbeidsforholdOrg]
+							: [initialArbeidsforholdOrg],
 					})
 					if (arbeidsforholdstype === 'maritimtArbeidsforhold') {
 						formikBag.setFieldValue(
@@ -113,7 +113,7 @@ export const AmeldingForm = ({ formikBag }: AmeldingForm): ReactFragment => {
 		if (event.value === 'forenkletOppgjoersordning') {
 			periode.forEach((maaned: string, idx: number) => {
 				formikBag.setFieldValue(`aareg[0].amelding[${idx}].arbeidsforhold`, [
-					initialForenkletOppgjoersordningOrg
+					initialForenkletOppgjoersordningOrg,
 				])
 			})
 		}
@@ -135,7 +135,7 @@ export const AmeldingForm = ({ formikBag }: AmeldingForm): ReactFragment => {
 					: initialArbeidsforholdOrg
 			formikBag.setFieldValue(`aareg[0].amelding[${idMaaned}].arbeidsforhold`, [
 				...currArbeidsforhold,
-				nyttArbeidsforhold
+				nyttArbeidsforhold,
 			])
 		})
 	}
@@ -176,7 +176,7 @@ export const AmeldingForm = ({ formikBag }: AmeldingForm): ReactFragment => {
 			_has(formikBag.touched, 'aareg[0].arbeidsforholdstype')
 		) {
 			return {
-				feilmelding: _get(formikBag.errors, 'aareg[0].arbeidsforholdstype')
+				feilmelding: _get(formikBag.errors, 'aareg[0].arbeidsforholdstype'),
 			}
 		}
 	}

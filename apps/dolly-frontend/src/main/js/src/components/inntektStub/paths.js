@@ -10,7 +10,7 @@ const tilleggsinformasjonPaths = {
 	tilleggspensjonsbeloep: 'tilleggsinformasjon.pensjon.tilleggspensjonsbeloep',
 	ufoeregrad: 'tilleggsinformasjon.pensjon.ufoeregrad',
 	persontype: 'tilleggsinformasjon.reiseKostOgLosji.persontype',
-	inntjeningsforhold: 'tilleggsinformasjon.inntjeningsforhold.inntjeningsforhold'
+	inntjeningsforhold: 'tilleggsinformasjon.inntjeningsforhold.inntjeningsforhold',
 }
 
-export default key => (tilleggsinformasjonPaths[key] ? tilleggsinformasjonPaths[key] : key)
+export default (key) => (tilleggsinformasjonPaths[key] ? tilleggsinformasjonPaths[key] : key)

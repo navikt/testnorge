@@ -12,7 +12,7 @@ type InntektstubVirksomhetToggle = {
 
 enum ToggleValg {
 	ORGANISASJON = 'ORGANISASJON',
-	PRIVAT = 'PRIVAT'
+	PRIVAT = 'PRIVAT',
 }
 
 export const InntektstubVirksomhetToggle = ({ formikBag, path }: InntektstubVirksomhetToggle) => {

@@ -26,7 +26,7 @@ type DokumentType = 'ORIGINAL' | 'ARKIV'
 const hentJournalpost = (journalpostId: number, miljo: string): Promise<Journalpost> =>
 	api.fetchJson(`/testnav-joark-dokument-service/api/v2/journalpost/${journalpostId}`, {
 		method: 'GET',
-		headers: { miljo: miljo }
+		headers: { miljo: miljo },
 	})
 
 const hentDokument = (
@@ -40,10 +40,10 @@ const hentDokument = (
 			`/testnav-joark-dokument-service/api/v2/journalpost/${journalpostId}/dokumenter/${dokumentInfoId}?dokumentType=${dokumentType}`,
 			{
 				method: 'GET',
-				headers: { miljo: miljo }
+				headers: { miljo: miljo },
 			}
 		)
-		.then(response => response.text())
+		.then((response) => response.text())
 
 const hentPDF = (journalpostId: number, dokumentInfoId: number, miljo: string): any =>
 	api
@@ -54,23 +54,23 @@ const hentPDF = (journalpostId: number, dokumentInfoId: number, miljo: string): 
 				headers: {
 					miljo: miljo,
 					Accept: 'application/pdf',
-					'Content-Type': 'application/pdf'
-				}
+					'Content-Type': 'application/pdf',
+				},
 			}
 		)
-		.then(response => {
+		.then((response) => {
 			return response.blob()
 		})
-		.then(resp => {
+		.then((resp) => {
 			const fileURL = URL.createObjectURL(resp)
 			window.open(fileURL)
 		})
-		.catch(error => {
+		.catch((error) => {
 			console.log(error)
 		})
 
 export default {
 	hentJournalpost,
 	hentDokument,
-	hentPDF
+	hentPDF,
 }

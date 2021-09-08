@@ -23,7 +23,7 @@ export const AppError = ({ error, stackTrace, style }) => (
 						<div
 							className="icon"
 							style={{ paddingTop: '8px' }}
-							onClick={event => {
+							onClick={(event) => {
 								event.stopPropagation()
 							}}
 						>

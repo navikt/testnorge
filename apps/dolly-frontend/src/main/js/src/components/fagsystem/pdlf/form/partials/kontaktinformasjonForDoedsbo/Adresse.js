@@ -5,7 +5,7 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 
 export const Adresse = ({ formikBag }) => {
-	const handleAfterChange = selected => {
+	const handleAfterChange = (selected) => {
 		return formikBag.setFieldValue(
 			'pdlforvalter.kontaktinformasjonForDoedsbo.poststedsnavn',
 			selected.data

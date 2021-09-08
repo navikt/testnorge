@@ -54,7 +54,7 @@ export const Adressevisning = ({ midlertidigAdresse }: Enkeltadresse) => {
 		postLinje2,
 		postLinje3,
 		postLand,
-		tilleggsadresse
+		tilleggsadresse,
 	} = midlertidigAdresse
 
 	const gate = <div>{`${gatenavn} ${husnr}`}</div>
