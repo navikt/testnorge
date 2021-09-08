@@ -49,6 +49,7 @@ public class PdlProxyApplicationStarter {
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder, StsOidcTokenService stsOidcTokenService) {
+
         var addAuthenticationHeaderFilter = AddAuthenticationRequestGatewayFilterFactory
                 .createAuthenticationHeaderFilter(stsOidcTokenService::getToken);
         var addAuthorizationAndNavConsumerTokenToRouteFilter = AddAuthenticationRequestGatewayFilterFactory

@@ -57,6 +57,7 @@ public class DokarkivProxyApplicationStarter {
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder, StsOidcTokenService stsTestOidcTokenService, StsOidcTokenService stsPreprodOidcTokenService) {
+
         var preprodFilter = AddAuthenticationRequestGatewayFilterFactory
                 .createAuthenticationHeaderFilter(stsPreprodOidcTokenService::getToken);
         var testFilter = AddAuthenticationRequestGatewayFilterFactory

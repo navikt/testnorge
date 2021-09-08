@@ -56,7 +56,6 @@ public class AaregProxyApplicationStarter {
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder, StsOidcTokenService stsTestOidcTokenService, StsOidcTokenService stsPreprodOidcTokenService) {
-
         var preprodFilter = AddAuthenticationRequestGatewayFilterFactory
                 .createAuthenticationAndNavConsumerTokenHeaderFilter(stsPreprodOidcTokenService::getToken);
         var testFilter = AddAuthenticationRequestGatewayFilterFactory
