@@ -39,8 +39,8 @@ public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
     public JedisClientConfiguration jedisClientConfiguration(JedisPoolConfig jedisPoolConfig) {
         return JedisClientConfiguration
                 .builder()
-                .usePooling().poolConfig(jedisPoolConfig)
-                .and()
+//                .usePooling().poolConfig(jedisPoolConfig)
+//                .and()
                 .connectTimeout(Duration.ZERO)
                 .readTimeout(Duration.ZERO)
                 .build();
