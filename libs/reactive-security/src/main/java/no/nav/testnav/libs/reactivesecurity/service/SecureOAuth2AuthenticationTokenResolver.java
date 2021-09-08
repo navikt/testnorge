@@ -3,6 +3,7 @@ package no.nav.testnav.libs.reactivesecurity.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import reactor.core.publisher.Mono;
@@ -18,7 +19,7 @@ public class SecureOAuth2AuthenticationTokenResolver implements AuthenticationTo
 
         return ReactiveSecurityContextHolder
                 .getContext()
-                .map(securityContext -> securityContext.getAuthentication())
+                .map(SecurityContext::getAuthentication)
                 .map(OAuth2AuthenticationToken.class::cast)
                 .doOnSuccess(oAuth2AuthenticationToken -> {
                     if (!oAuth2AuthenticationToken.isAuthenticated()) {
@@ -40,5 +41,10 @@ public class SecureOAuth2AuthenticationTokenResolver implements AuthenticationTo
                         .oid(null)
                         .build()
                 );
+    }
+
+    @Override
+    public Mono<String> getClientRegistrationId() {
+        return oauth2AuthenticationToken().map(OAuth2AuthenticationToken::getAuthorizedClientRegistrationId);
     }
 }

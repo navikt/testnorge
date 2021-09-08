@@ -19,22 +19,22 @@ import no.nav.testnav.endringsmeldingservice.consumer.dto.DoedsmeldingDTO;
 import no.nav.testnav.endringsmeldingservice.consumer.request.FoedselsmeldingRequest;
 import no.nav.testnav.endringsmeldingservice.domain.Status;
 import no.nav.testnav.libs.dto.endringsmelding.v1.FoedselsmeldingDTO;
-import no.nav.testnav.libs.reactivesecurity.domain.NaisServerProperties;
-import no.nav.testnav.libs.reactivesecurity.service.AccessTokenService;
+import no.nav.testnav.libs.reactivesecurity.domain.ServerProperties;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 
 @Component
 public class TpsForvalterConsumer {
     private final WebClient webClient;
-    private final NaisServerProperties serverProperties;
-    private final AccessTokenService accessTokenService;
+    private final ServerProperties serverProperties;
+    private final TokenExchange accessTokenService;
 
     public TpsForvalterConsumer(
             TpsForvalterenProxyServiceProperties serverProperties,
-            AccessTokenService accessTokenService,
+            TokenExchange tokenExchange,
             ObjectMapper objectMapper
     ) {
         this.serverProperties = serverProperties;
-        this.accessTokenService = accessTokenService;
+        this.accessTokenService = tokenExchange;
 
         ExchangeStrategies jacksonStrategy = ExchangeStrategies.builder()
                 .codecs(config -> {

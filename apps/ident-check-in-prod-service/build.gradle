@@ -28,6 +28,7 @@ dependencies {
 
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
 
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.11.2'
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
@@ -48,6 +49,7 @@ dependencies {
     implementation 'org.springframework:spring-messaging:5.2.10.RELEASE'
     implementation 'org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1'
 
+    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'no.nav.testnav.libs:testing'

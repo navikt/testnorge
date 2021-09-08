@@ -1,5 +1,17 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
+spring:
+  application:
+    name: tps-identer-vedlikehold
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          accepted-audience: ${client_id}, api://${client_secret}
+  flyway:
+    enabled: false
+
 consumers:
   tps-forvalteren:
     url: https://tps-forvalteren.dev.adeo.no

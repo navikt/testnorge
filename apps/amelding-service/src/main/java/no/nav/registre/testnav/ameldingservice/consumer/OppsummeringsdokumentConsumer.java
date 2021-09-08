@@ -17,25 +17,25 @@ import no.nav.testnav.libs.commands.SaveOppsummeringsdokumenterCommand;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
 import no.nav.testnav.libs.reactivecore.config.ApplicationProperties;
-import no.nav.testnav.libs.reactivesecurity.domain.NaisServerProperties;
-import no.nav.testnav.libs.reactivesecurity.service.AccessTokenService;
+import no.nav.testnav.libs.reactivesecurity.domain.ServerProperties;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 
 @Component
 public class OppsummeringsdokumentConsumer {
     private static final int BYTE_COUNT = 16 * 1024 * 1024;
     private final WebClient webClient;
-    private final AccessTokenService accessTokenService;
-    private final NaisServerProperties properties;
+    private final TokenExchange tokenExchange;
+    private final ServerProperties properties;
     private final ApplicationProperties applicationProperties;
 
     public OppsummeringsdokumentConsumer(
-            AccessTokenService accessTokenService,
+            TokenExchange tokenExchange,
             OppsummeringsdokumentServerProperties properties,
             ObjectMapper objectMapper,
             ApplicationProperties applicationProperties
     ) {
         this.applicationProperties = applicationProperties;
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
         this.properties = properties;
         this.webClient = WebClient
                 .builder()
@@ -53,7 +53,7 @@ public class OppsummeringsdokumentConsumer {
     }
 
     public Mono<String> save(OppsummeringsdokumentDTO dto, String miljo) {
-        return accessTokenService
+        return tokenExchange
                 .generateToken(properties)
                 .flatMap(accessToken -> new SaveOppsummeringsdokumenterCommand(
                         webClient,
@@ -67,7 +67,7 @@ public class OppsummeringsdokumentConsumer {
 
 
     public Mono<OppsummeringsdokumentDTO> get(String opplysningspliktigOrgnummer, LocalDate kalendermaaned, String miljo) {
-        return accessTokenService
+        return tokenExchange
                 .generateToken(properties)
                 .flatMap(accessToken -> new GetOppsummeringsdokumentCommand(
                         webClient,
@@ -79,7 +79,7 @@ public class OppsummeringsdokumentConsumer {
     }
 
     public Mono<OppsummeringsdokumentDTO> get(String id) {
-        return accessTokenService
+        return tokenExchange
                 .generateToken(properties)
                 .flatMap(accessToken -> new GetOppsummeringsdokumentByIdCommand(
                         webClient,

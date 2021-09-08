@@ -8,6 +8,9 @@ metadata:
 spec:
   idporten:
     enabled: true
+    redirectPath: /login/oauth2/code/idporten
+    postLogoutRedirectURIs:
+      - https://dolly-frontend-dev.dev.intern.nav.no/login
   azure:
     application:
       enabled: true
@@ -83,3 +86,5 @@ spec:
       value: tps-forvalteren-dev-proxy
     - name: TPS_FORVALTERN_PROXY_URL
       value: https://tps-forvalteren-dev-proxy.dev-fss-pub.nais.io
+    - name: POST_LOGOUT_REDIRECT_URI
+      value: https://dolly-frontend-dev.dev.intern.nav.no/login

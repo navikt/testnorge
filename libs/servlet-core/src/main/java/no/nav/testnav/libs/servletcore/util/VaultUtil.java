@@ -16,6 +16,10 @@ public final class VaultUtil {
 
     private static String getVaultToken() {
 
+        if (System.getProperty("spring.cloud.vault.token") != null) {
+            return System.getProperty("spring.cloud.vault.token");
+        }
+
         AnnotationConfigApplicationContext context =
                 new AnnotationConfigApplicationContext();
         ConfigurableEnvironment environment = context.getEnvironment();

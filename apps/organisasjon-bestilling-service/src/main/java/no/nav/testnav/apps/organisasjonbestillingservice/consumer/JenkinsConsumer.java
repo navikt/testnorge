@@ -12,7 +12,7 @@ import no.nav.testnav.apps.organisasjonbestillingservice.consumer.dto.BuildDTO;
 import no.nav.testnav.apps.organisasjonbestillingservice.consumer.dto.ItemDTO;
 import no.nav.testnav.apps.organisasjonbestillingservice.credentials.JenkinsServiceProperties;
 import no.nav.testnav.libs.dto.jenkins.v1.JenkinsCrumb;
-import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
+import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
 import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 
@@ -21,7 +21,7 @@ public class JenkinsConsumer {
 
     private final WebClient webClient;
     private final AccessTokenService accessTokenService;
-    private final NaisServerProperties properties;
+    private final ServerProperties properties;
 
     public JenkinsConsumer(
             JenkinsServiceProperties properties,

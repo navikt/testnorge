@@ -6,6 +6,7 @@ import org.springframework.vault.annotation.VaultPropertySource;
 
 @Configuration
 @Profile("dev")
+@VaultPropertySource(value = "kv/preprod/fss/testnorge-ident-check-in-prod-service/local", ignoreSecretNotFound = false)
 @VaultPropertySource(value = "azuread/prod/creds/team-dolly-lokal-app", ignoreSecretNotFound = false)
 public class DevConfig {
 }
