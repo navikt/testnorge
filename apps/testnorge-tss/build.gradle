@@ -20,7 +20,7 @@ dependencies {
     implementation 'org.springframework:spring-tx:5.2.9.RELEASE'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
-
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
 
     implementation "net.logstash.logback:logstash-logback-encoder:${logstashLogbackEncoder}"

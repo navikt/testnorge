@@ -35,7 +35,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
-
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
@@ -46,7 +46,7 @@ dependencies {
     implementation 'org.postgresql:postgresql'
     implementation 'com.zaxxer:HikariCP'
 
-    implementation 'org.flywaydb:flyway-core:6.4.4'
+    implementation 'org.flywaydb:flyway-core'
 
     implementation 'com.h2database:h2'
     implementation 'org.hibernate.validator:hibernate-validator'
