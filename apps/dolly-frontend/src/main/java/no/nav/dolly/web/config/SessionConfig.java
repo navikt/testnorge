@@ -1,5 +1,6 @@
 package no.nav.dolly.web.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,7 @@ import redis.clients.jedis.JedisPoolConfig;
 
 import java.time.Duration;
 
+@Slf4j
 @Profile("prod")
 @Configuration
 @EnableRedisHttpSession
@@ -32,6 +34,7 @@ public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
             @Value("${spring.redis.host}") String host,
             @Value("${spring.redis.port}") Integer port
     ) {
+        log.info("Setter opp redis ({}:{})...", host, port);
         return new RedisStandaloneConfiguration(host, port);
     }
 
@@ -39,8 +42,8 @@ public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
     public JedisClientConfiguration jedisClientConfiguration(JedisPoolConfig jedisPoolConfig) {
         return JedisClientConfiguration
                 .builder()
-//                .usePooling().poolConfig(jedisPoolConfig)
-//                .and()
+                .usePooling().poolConfig(jedisPoolConfig)
+                .and()
                 .connectTimeout(Duration.ZERO)
                 .readTimeout(Duration.ZERO)
                 .build();
@@ -49,11 +52,7 @@ public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
     @Bean
     public JedisPoolConfig jedisPoolConfig() {
         JedisPoolConfig poolConfig = new JedisPoolConfig();
-        poolConfig.setMaxIdle(50);
-        poolConfig.setMinIdle(0);
-        poolConfig.setMaxWaitMillis(100 * 1000);
-        poolConfig.setTestOnBorrow(true);
-        poolConfig.setNumTestsPerEvictionRun(5);
+        poolConfig.setMaxIdle(128);
         return poolConfig;
     }
 
