@@ -11,6 +11,9 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.KontaktinformasjonForDoedsboAdresse;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Map;
+
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -78,6 +81,23 @@ public class KontaktInformasjonForDoedsboMappingStrategy implements MappingStrat
                         destinasjon.setPostnummer(kilde.getPostnummer());
                         destinasjon.setPoststedsnavn(kilde.getPoststed());
                         destinasjon.setLandkode(LANDKODE_NORGE);
+                    }
+                })
+                .register();
+
+        factory.classMap(Map.class, KontaktinformasjonForDoedsboAdresse.class)
+                .customize(new CustomMapper<>() {
+
+                    @Override
+                    public void mapAtoB(Map kilde, KontaktinformasjonForDoedsboAdresse destinasjon, MappingContext context) {
+
+                        var adresselinjer = (List<String>) kilde.get("adresselinjer");
+                        destinasjon.setAdresselinje1(!adresselinjer.isEmpty() ? adresselinjer.get(0) : "Ingen adresselinje funnet");
+                        destinasjon.setAdresselinje2(adresselinjer.size() > 1 ? adresselinjer.get(1) : null);
+
+                        destinasjon.setPostnummer((String) kilde.get("postnr"));
+                        destinasjon.setPoststedsnavn(postnummerService.getNavn(destinasjon.getPostnummer()));
+                        destinasjon.setLandkode((String) kilde.get("landkode"));
                     }
                 })
                 .register();

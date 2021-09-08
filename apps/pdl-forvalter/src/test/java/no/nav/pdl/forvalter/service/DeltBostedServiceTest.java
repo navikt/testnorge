@@ -29,16 +29,14 @@ class DeltBostedServiceTest {
     @Test
     void whenBarnIsMissing_thenThrowExecption() {
 
-        var request = PersonDTO.builder()
-                .deltBosted(List.of(DeltBostedDTO.builder()
-                        .vegadresse(new VegadresseDTO())
-                        .startdatoForKontrakt(LocalDateTime.now())
-                        .isNew(true)
-                        .build()))
+        var request = DeltBostedDTO.builder()
+                .vegadresse(new VegadresseDTO())
+                .startdatoForKontrakt(LocalDateTime.now())
+                .isNew(true)
                 .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                deltBostedService.convert(request));
+                deltBostedService.validate(request, new PersonDTO()));
 
         assertThat(exception.getMessage(), containsString("Delt bosted: det finnes ingen barn å knytte delt bosted til"));
     }
@@ -46,19 +44,18 @@ class DeltBostedServiceTest {
     @Test
     void whenStartDatoForKontraktIsMissing_thenThrowExecption() {
 
-        var request = PersonDTO.builder()
-                .forelderBarnRelasjon(List.of(ForelderBarnRelasjonDTO.builder()
-                        .minRolleForPerson(FORELDER)
-                        .relatertPersonsRolle(BARN)
-                        .build()))
-                .deltBosted(List.of(DeltBostedDTO.builder()
-                        .vegadresse(new VegadresseDTO())
-                        .isNew(true)
-                        .build()))
+        var request = DeltBostedDTO.builder()
+                .vegadresse(new VegadresseDTO())
+                .isNew(true)
                 .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                deltBostedService.convert(request));
+                deltBostedService.validate(request, PersonDTO.builder()
+                        .forelderBarnRelasjon(List.of(ForelderBarnRelasjonDTO.builder()
+                                .minRolleForPerson(FORELDER)
+                                .relatertPersonsRolle(BARN)
+                                .build()))
+                        .build()));
 
         assertThat(exception.getMessage(), containsString("Delt bosted: startdato for kontrakt må angis"));
     }
@@ -66,21 +63,20 @@ class DeltBostedServiceTest {
     @Test
     void whenAmbiguosAdresserExist_thenThrowExecption() {
 
-        var request = PersonDTO.builder()
-                .forelderBarnRelasjon(List.of(ForelderBarnRelasjonDTO.builder()
-                        .minRolleForPerson(FORELDER)
-                        .relatertPersonsRolle(BARN)
-                        .build()))
-                .deltBosted(List.of(DeltBostedDTO.builder()
-                        .vegadresse(new VegadresseDTO())
-                        .matrikkeladresse(new MatrikkeladresseDTO())
-                        .startdatoForKontrakt(LocalDateTime.now())
-                        .isNew(true)
-                        .build()))
+        var request = DeltBostedDTO.builder()
+                .vegadresse(new VegadresseDTO())
+                .matrikkeladresse(new MatrikkeladresseDTO())
+                .startdatoForKontrakt(LocalDateTime.now())
+                .isNew(true)
                 .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                deltBostedService.convert(request));
+                deltBostedService.validate(request, PersonDTO.builder()
+                        .forelderBarnRelasjon(List.of(ForelderBarnRelasjonDTO.builder()
+                                .minRolleForPerson(FORELDER)
+                                .relatertPersonsRolle(BARN)
+                                .build()))
+                        .build()));
 
         assertThat(exception.getMessage(), containsString("Delt bosted: kun én adresse skal være satt (vegadresse, ukjentBosted, matrikkeladresse)"));
     }
@@ -88,19 +84,18 @@ class DeltBostedServiceTest {
     @Test
     void whenNoAdresseExists_thenThrowExecption() {
 
-        var request = PersonDTO.builder()
-                .forelderBarnRelasjon(List.of(ForelderBarnRelasjonDTO.builder()
-                        .minRolleForPerson(FORELDER)
-                        .relatertPersonsRolle(BARN)
-                        .build()))
-                .deltBosted(List.of(DeltBostedDTO.builder()
-                        .startdatoForKontrakt(LocalDateTime.now())
-                        .isNew(true)
-                        .build()))
+        var request = DeltBostedDTO.builder()
+                .startdatoForKontrakt(LocalDateTime.now())
+                .isNew(true)
                 .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                deltBostedService.convert(request));
+                deltBostedService.validate(request, PersonDTO.builder()
+                        .forelderBarnRelasjon(List.of(ForelderBarnRelasjonDTO.builder()
+                                .minRolleForPerson(FORELDER)
+                                .relatertPersonsRolle(BARN)
+                                .build()))
+                        .build()));
 
         assertThat(exception.getMessage(), containsString("Delt bosted: når personen ikke er gift må en adresse oppgis"));
     }

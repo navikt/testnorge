@@ -49,7 +49,7 @@ public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
         return person.getFullmakt();
     }
 
-    private void validate(FullmaktDTO fullmakt) {
+    public void validate(FullmaktDTO fullmakt) {
 
         if (isNull(fullmakt.getOmraader())) {
             throw new InvalidRequestException(VALIDATION_OMRAADER_ERROR);

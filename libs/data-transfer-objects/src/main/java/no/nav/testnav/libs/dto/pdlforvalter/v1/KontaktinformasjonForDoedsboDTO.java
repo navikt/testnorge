@@ -45,7 +45,7 @@ public class KontaktinformasjonForDoedsboDTO extends DbVersjonDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class KontaktinformasjonForDoedsboAdresse {
+    public static class KontaktinformasjonForDoedsboAdresse implements Serializable {
 
         @Schema(description = "Dødsboets adresse, adresselinje 1")
         private String adresselinje1;
@@ -71,8 +71,6 @@ public class KontaktinformasjonForDoedsboDTO extends DbVersjonDTO {
     public static class KontaktpersonDTO implements Serializable {
 
         private String identifikasjonsnummer;
-        private PersonRequestDTO nyKontaktPerson;
-
         private LocalDateTime foedselsdato;
         private PersonNavnDTO navn;
     }

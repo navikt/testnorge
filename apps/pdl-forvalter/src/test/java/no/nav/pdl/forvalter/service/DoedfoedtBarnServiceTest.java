@@ -7,8 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.util.List;
-
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -22,12 +20,12 @@ class DoedfoedtBarnServiceTest {
     @Test
     void whenDoedsdatoIsMissing_thenThrowExecption() {
 
-        List<DoedfoedtBarnDTO> request = List.of(DoedfoedtBarnDTO.builder()
+        var request = DoedfoedtBarnDTO.builder()
                 .isNew(true)
-                .build());
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                doedfoedtBarnService.convert(request));
+                doedfoedtBarnService.validate(request));
 
         assertThat(exception.getMessage(), containsString("DødfødtBarn: dato må oppgis"));
     }

@@ -24,11 +24,12 @@ class TelefonnummerServiceTest {
     @Test
     void whenTelefonnummerIsAbsent_thenThrowException() {
 
-        var request = List.of(TelefonnummerDTO.builder()
-                .isNew(true).build());
+        var request = TelefonnummerDTO.builder()
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                telefonnummerService.convert((List<TelefonnummerDTO>) request));
+                telefonnummerService.validate(request));
 
         assertThat(exception.getMessage(), containsString("Telefonnummer: nummer er påkrevd felt"));
     }
@@ -36,12 +37,13 @@ class TelefonnummerServiceTest {
     @Test
     void whenTelefonnummerContainsNonDigitCharacters_thenThrowException() {
 
-        var request = List.of(TelefonnummerDTO.builder()
+        var request = TelefonnummerDTO.builder()
                 .nummer("ABC123")
-                .isNew(true).build());
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                telefonnummerService.convert((List<TelefonnummerDTO>) request));
+                telefonnummerService.validate(request));
 
         assertThat(exception.getMessage(), containsString("Telefonnummer: nummer kan kun inneholde tallsifre"));
     }
@@ -50,12 +52,13 @@ class TelefonnummerServiceTest {
     @ValueSource(strings = {"23", "12345678901234567"})
     void whenTelefonnummerContainsTooFewDigits_thenThrowException(String input) {
 
-        var request = List.of(TelefonnummerDTO.builder()
+        var request = TelefonnummerDTO.builder()
                 .nummer(input)
-                .isNew(true).build());
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                telefonnummerService.convert((List<TelefonnummerDTO>) request));
+                telefonnummerService.validate(request));
 
         assertThat(exception.getMessage(), containsString("Telefonnummer: nummer kan ha lengde fra 3 til 16 sifre"));
     }
@@ -63,12 +66,13 @@ class TelefonnummerServiceTest {
     @Test
     void whenLandskodeIsAbsent_thenThrowException() {
 
-        var request = List.of(TelefonnummerDTO.builder()
+        var request = TelefonnummerDTO.builder()
                 .nummer("1213123")
-                .isNew(true).build());
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                telefonnummerService.convert((List<TelefonnummerDTO>) request));
+                telefonnummerService.validate(request));
 
         assertThat(exception.getMessage(), containsString("Telefonnummer: landskode er påkrevd felt"));
     }
@@ -76,13 +80,14 @@ class TelefonnummerServiceTest {
     @Test
     void whenLandskodeInvalidFormat_thenThrowException() {
 
-        var request = List.of(TelefonnummerDTO.builder()
+        var request = TelefonnummerDTO.builder()
                 .nummer("123123")
                 .landskode("-6332")
-                .isNew(true).build());
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                telefonnummerService.convert((List<TelefonnummerDTO>) request));
+                telefonnummerService.validate(request));
 
         assertThat(exception.getMessage(), containsString("Telefonnummer: Landkode består av ledende + " +
                 "(plusstegn) fulgt av  1 til 5 sifre"));
@@ -91,13 +96,14 @@ class TelefonnummerServiceTest {
     @Test
     void whenPriorityIsMissing_thenThrowException() {
 
-        var request = List.of(TelefonnummerDTO.builder()
+        var request = TelefonnummerDTO.builder()
                 .nummer("243442")
                 .landskode("+323")
-                .isNew(true).build());
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                telefonnummerService.convert((List<TelefonnummerDTO>) request));
+                telefonnummerService.validate(request));
 
         assertThat(exception.getMessage(), containsString("Telefonnummer: prioritet er påkrevd"));
     }
@@ -105,15 +111,15 @@ class TelefonnummerServiceTest {
     @Test
     void whenPriorityOtherThan1or2_thenThrowException() {
 
-        var request = List.of(TelefonnummerDTO.builder()
+        var request = TelefonnummerDTO.builder()
                 .nummer("243442")
                 .landskode("+323")
                 .prioritet(3)
                 .isNew(true)
-                .build());
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                telefonnummerService.convert((List<TelefonnummerDTO>) request));
+                telefonnummerService.validate(request));
 
         assertThat(exception.getMessage(), containsString("Telefonnummerets prioritet må være 1 eller 2"));
     }
