@@ -10,7 +10,7 @@ module.exports = env =>
 		devtool: 'inline-source-map',
 		devServer: {
 			port: 3000,
-			contentBase: path.join(__dirname, 'public'),
+			static: path.join(__dirname, 'public'),
 			historyApiFallback: true,
 			headers: {
 				'Access-Control-Allow-Origin': '*'
