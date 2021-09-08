@@ -1,5 +1,6 @@
 package no.nav.dolly.web.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -14,11 +15,15 @@ import org.springframework.session.web.context.AbstractHttpSessionApplicationIni
 public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
 
     @Bean
-    public JedisConnectionFactory connectionFactory() {
-        return new JedisConnectionFactory(redisStandaloneConfiguration());
+    public JedisConnectionFactory connectionFactory(RedisStandaloneConfiguration redisStandaloneConfiguration) {
+        return new JedisConnectionFactory(redisStandaloneConfiguration);
     }
 
-    private RedisStandaloneConfiguration redisStandaloneConfiguration() {
-        return new RedisStandaloneConfiguration(System.getProperty("REDIS_HOST"));
+    @Bean
+    public RedisStandaloneConfiguration redisStandaloneConfiguration(
+            @Value("${spring.redis.host}") String host,
+            @Value("${spring.redis.port}") Integer port
+    ) {
+        return new RedisStandaloneConfiguration(host, port);
     }
 }

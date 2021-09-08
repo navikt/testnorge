@@ -37,7 +37,6 @@ dependencies {
     implementation 'no.nav.testnav.libs:reactive-proxy'
 
 
-    implementation 'redis.clients:jedis'
     implementation 'org.springframework.session:spring-session-core'
     implementation 'org.springframework.session:spring-session-data-redis'
 
@@ -55,6 +54,7 @@ dependencies {
     implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'javax.servlet:javax.servlet-api:4.0.1'
+    implementation 'redis.clients:jedis'
 
     testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
