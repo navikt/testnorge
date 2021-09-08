@@ -3,6 +3,7 @@ package no.nav.testnav.proxies.aaregproxy;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
+import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactiveproxy.filter.AddRequestHeadersGatewayFilterFactory;
 import no.nav.testnav.libs.reactiveproxy.filter.GetHeader;
 import no.nav.testnav.libs.securitytokenservice.StsOidcTokenService;
@@ -53,16 +54,13 @@ public class AaregProxyApplicationStarter {
         return new StsOidcTokenService(url, username, password);
     }
 
-    private GatewayFilter AddAuthorizationAndNavConsumerTokenToRouteFilter(String token) {
-        var getAuthorizationHeader = new GetHeader(() -> HttpHeaders.AUTHORIZATION, () -> "Bearer " + token);
-        var getNavConsumerTokenHeader = new GetHeader(() -> HEADER_NAV_CONSUMER_TOKEN, () -> "Bearer " + token);
-        return new AddRequestHeadersGatewayFilterFactory().apply(getAuthorizationHeader, getNavConsumerTokenHeader);
-    }
-
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder, StsOidcTokenService stsTestOidcTokenService, StsOidcTokenService stsPreprodOidcTokenService) {
-        var preprodFilter = AddAuthorizationAndNavConsumerTokenToRouteFilter(stsPreprodOidcTokenService.getToken());
-        var testFilter = AddAuthorizationAndNavConsumerTokenToRouteFilter(stsTestOidcTokenService.getToken());
+
+        var preprodFilter = AddAuthenticationRequestGatewayFilterFactory
+                .createAuthenticationAndNavConsumerTokenHeaderFilter(stsPreprodOidcTokenService::getToken);
+        var testFilter = AddAuthenticationRequestGatewayFilterFactory
+                .createAuthenticationAndNavConsumerTokenHeaderFilter(stsTestOidcTokenService::getToken);
         return builder
                 .routes()
                 .route(createRoute("q0", preprodFilter))

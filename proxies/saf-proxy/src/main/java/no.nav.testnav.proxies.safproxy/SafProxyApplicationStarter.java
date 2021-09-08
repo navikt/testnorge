@@ -16,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
 import no.nav.testnav.libs.securitytokenservice.StsOidcTokenService;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
@@ -52,15 +53,12 @@ public class SafProxyApplicationStarter {
         return new StsOidcTokenService(url, username, password);
     }
 
-    private GatewayFilter addAuthenticationHeaderFilter(Supplier<String> tokenService) {
-        var getHeader = new GetHeader(() -> HttpHeaders.AUTHORIZATION, () -> "Bearer " + tokenService.get());
-        return new AddRequestHeadersGatewayFilterFactory().apply(getHeader);
-    }
-
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder, StsOidcTokenService stsTestOidcTokenService, StsOidcTokenService stsPreprodOidcTokenService) {
-        var preprodFilter = addAuthenticationHeaderFilter(stsPreprodOidcTokenService::getToken);
-        var testFilter = addAuthenticationHeaderFilter(stsTestOidcTokenService::getToken);
+        var preprodFilter = AddAuthenticationRequestGatewayFilterFactory
+                .createAuthenticationHeaderFilter(stsPreprodOidcTokenService::getToken);
+        var testFilter = AddAuthenticationRequestGatewayFilterFactory
+                .createAuthenticationHeaderFilter(stsTestOidcTokenService::getToken);
         return builder
                 .routes()
                 .route(createRoute("q1", preprodFilter))
