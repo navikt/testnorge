@@ -94,7 +94,7 @@
     "uuid": "^7.0.3",
     "webpack-merge": "^4.2.2",
     "whatwg-fetch": "^3.4.1",
-    "yup": "^0.29.3"
+    "yup": "^0.32.9"
   },
   "devDependencies": {
     "@babel/core": "^7.14.0",
