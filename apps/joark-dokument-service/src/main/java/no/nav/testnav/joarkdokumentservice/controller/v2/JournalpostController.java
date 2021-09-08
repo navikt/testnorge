@@ -28,7 +28,7 @@ public class JournalpostController {
     }
 
     @GetMapping("/dokumenter/{dokumentInfoId}")
-    public ResponseEntity<?> hentDokument(
+    public ResponseEntity<String> hentDokument(
             @RequestHeader("miljo") String miljo,
             @PathVariable("dokumentInfoId") Integer dokumentInfoId,
             @PathVariable("journalpostId") Integer journalpostId,
@@ -44,7 +44,7 @@ public class JournalpostController {
     }
 
     @GetMapping("/dokumenter/{dokumentInfoId}/pdf")
-    public ResponseEntity<?> hentPDF(
+    public ResponseEntity<byte[]> hentPDF(
             @RequestHeader("miljo") String miljo,
             @PathVariable("dokumentInfoId") Integer dokumentInfoId,
             @PathVariable("journalpostId") Integer journalpostId
