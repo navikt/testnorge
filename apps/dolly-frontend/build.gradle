@@ -37,6 +37,7 @@ dependencies {
     implementation 'no.nav.testnav.libs:reactive-proxy'
 
 
+    implementation 'redis.clients:jedis'
     implementation 'org.springframework.session:spring-session-core'
     implementation 'org.springframework.session:spring-session-data-redis'
 

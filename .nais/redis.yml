@@ -36,7 +36,7 @@ metadata:
   name: dolly-dev-redis-session-redisexporter
   namespace: dolly
 spec:
-  image: oliver006/redis_exporter:<latest-docker>
+  image: oliver006/redis_exporter:v1.27.0
   port: 9121
   prometheus:
     enabled: true
@@ -46,10 +46,10 @@ spec:
   resources:
     limits:
       cpu: 100m
-      memory: 100Mi
+      memory: 128Mi
     requests:
       cpu: 100m
-      memory: 100Mi
+      memory: 128Mi
   liveness:
     path: /health
   accessPolicy: # for GCP
