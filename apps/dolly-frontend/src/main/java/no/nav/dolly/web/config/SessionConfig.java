@@ -5,9 +5,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 import org.springframework.session.web.context.AbstractHttpSessionApplicationInitializer;
+import redis.clients.jedis.JedisPoolConfig;
 
 @Profile("prod")
 @Configuration
@@ -15,8 +17,12 @@ import org.springframework.session.web.context.AbstractHttpSessionApplicationIni
 public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
 
     @Bean
-    public JedisConnectionFactory connectionFactory(RedisStandaloneConfiguration redisStandaloneConfiguration) {
-        return new JedisConnectionFactory(redisStandaloneConfiguration);
+    public JedisConnectionFactory connectionFactory(
+            RedisStandaloneConfiguration redisStandaloneConfiguration,
+            JedisClientConfiguration jedisClientConfiguration
+    ) {
+        var jedisConnectionFactory = new JedisConnectionFactory(redisStandaloneConfiguration, jedisClientConfiguration);
+        return jedisConnectionFactory;
     }
 
     @Bean
@@ -26,4 +32,23 @@ public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
     ) {
         return new RedisStandaloneConfiguration(host, port);
     }
+
+    @Bean
+    public JedisClientConfiguration jedisClientConfiguration(JedisPoolConfig jedisPoolConfig) {
+        return JedisClientConfiguration
+                .builder()
+                .usePooling().poolConfig(jedisPoolConfig)
+                .build();
+    }
+
+    @Bean
+    public JedisPoolConfig jedisPoolConfig() {
+        JedisPoolConfig poolConfig = new JedisPoolConfig();
+        poolConfig.setMaxIdle(50);
+        poolConfig.setMinIdle(0);
+        poolConfig.setNumTestsPerEvictionRun(5);
+        return poolConfig;
+    }
+
+
 }
