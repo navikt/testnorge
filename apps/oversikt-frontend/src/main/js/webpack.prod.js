@@ -9,6 +9,7 @@ module.exports = merge(common, {
   output: {
     filename: "[name].[contenthash:8].js",
     path: path.resolve(__dirname, "build"),
+    publicPath: '/'
   },
   optimization: {
     minimize: true,

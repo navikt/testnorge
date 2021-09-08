@@ -8,6 +8,11 @@ metadata:
 spec:
   image: {{ image }}
   port: 8080
+  idporten:
+    enabled: true
+    redirectPath: /login/oauth2/code/idporten
+    postLogoutRedirectURIs:
+      - https://testnav-oversikt.dev.intern.nav.no/login
   azure:
     application:
       enabled: true
