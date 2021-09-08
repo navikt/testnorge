@@ -53,6 +53,7 @@ dependencies {
 
     implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
     implementation 'org.hibernate.validator:hibernate-validator'
+    implementation 'javax.servlet:javax.servlet-api:4.0.1'
 
     testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
