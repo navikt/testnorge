@@ -1,0 +1,28 @@
+---
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  labels:
+    team: dolly
+  name: dolly-dev-redis-session
+  namespace: dolly
+spec:
+  image: redis:6.2.5
+  port: 6379
+  replicas:
+    min: 1
+    max: 1
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  service:
+    port: 6379
+    protocol: redis
+  accessPolicy:
+    inbound:
+      rules:
+        - application: dolly-frontend-dev
