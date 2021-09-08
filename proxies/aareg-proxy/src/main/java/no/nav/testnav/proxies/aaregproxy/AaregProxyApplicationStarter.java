@@ -1,5 +1,11 @@
 package no.nav.testnav.proxies.aaregproxy;
 
+import no.nav.testnav.libs.reactivecore.config.CoreConfig;
+import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
+import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
+import no.nav.testnav.libs.reactiveproxy.filter.AddRequestHeadersGatewayFilterFactory;
+import no.nav.testnav.libs.reactiveproxy.filter.GetHeader;
+import no.nav.testnav.libs.securitytokenservice.StsOidcTokenService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,14 +20,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
-
-import no.nav.testnav.libs.reactivecore.config.CoreConfig;
-import no.nav.testnav.libs.securitytokenservice.StsOidcTokenService;
-import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
-import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
-import no.nav.testnav.libs.reactiveproxy.filter.AddRequestHeadersGatewayFilterFactory;
-import no.nav.testnav.libs.reactiveproxy.filter.GetHeader;
 
 @Import({
         CoreConfig.class,
@@ -55,16 +53,16 @@ public class AaregProxyApplicationStarter {
         return new StsOidcTokenService(url, username, password);
     }
 
-    private GatewayFilter AddAuthorizationAndNavConsumerTokenToRouteFilter(Supplier<String> tokenService) {
-        var getAuthorizationHeader = new GetHeader(() -> HttpHeaders.AUTHORIZATION, () -> "Bearer " + tokenService.get());
-        var getNavConsumerTokenHeader = new GetHeader(() -> HEADER_NAV_CONSUMER_TOKEN, () -> "Bearer " + tokenService.get());
+    private GatewayFilter AddAuthorizationAndNavConsumerTokenToRouteFilter(String token) {
+        var getAuthorizationHeader = new GetHeader(() -> HttpHeaders.AUTHORIZATION, () -> "Bearer " + token);
+        var getNavConsumerTokenHeader = new GetHeader(() -> HEADER_NAV_CONSUMER_TOKEN, () -> "Bearer " + token);
         return new AddRequestHeadersGatewayFilterFactory().apply(getAuthorizationHeader, getNavConsumerTokenHeader);
     }
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder, StsOidcTokenService stsTestOidcTokenService, StsOidcTokenService stsPreprodOidcTokenService) {
-        var preprodFilter = AddAuthorizationAndNavConsumerTokenToRouteFilter(stsPreprodOidcTokenService::getToken);
-        var testFilter = AddAuthorizationAndNavConsumerTokenToRouteFilter(stsTestOidcTokenService::getToken);
+        var preprodFilter = AddAuthorizationAndNavConsumerTokenToRouteFilter(stsPreprodOidcTokenService.getToken());
+        var testFilter = AddAuthorizationAndNavConsumerTokenToRouteFilter(stsTestOidcTokenService.getToken());
         return builder
                 .routes()
                 .route(createRoute("q0", preprodFilter))
