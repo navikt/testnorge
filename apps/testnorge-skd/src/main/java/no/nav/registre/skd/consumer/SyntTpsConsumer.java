@@ -25,12 +25,11 @@ public class SyntTpsConsumer {
 
     public SyntTpsConsumer(
             SyntTpsGcpProperties syntTpsGcpProperties,
-            AccessTokenService accessTokenService,
-            @Value("${synt-tps.rest.api.url}") String syntrestServerUrl
+            AccessTokenService accessTokenService
     ) {
         this.serviceProperties = syntTpsGcpProperties;
         this.tokenService = accessTokenService;
-        this.webClient = WebClient.builder().baseUrl(syntrestServerUrl).build();
+        this.webClient = WebClient.builder().baseUrl(syntTpsGcpProperties.getUrl()).build();
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "tps-syntetisereren" })

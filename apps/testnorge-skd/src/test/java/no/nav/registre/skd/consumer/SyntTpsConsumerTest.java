@@ -41,8 +41,7 @@ public class SyntTpsConsumerTest {
         this.consumer = new SyntTpsConsumer(
                 new SyntTpsGcpProperties(),
                 new AccessTokenService(null, mockWebServer.url("/token").toString(), null,
-                        new AzureClientCredentials("dummy", "dummy")),
-                mockWebServer.url("/api").toString());
+                        new AzureClientCredentials("dummy", "dummy")));
 
     }
 

@@ -17,7 +17,6 @@ import no.nav.testnav.libs.servletsecurity.config.SecureOAuth2ServerToServerConf
 @Configuration
 @Import(value = {
         ApplicationCoreConfig.class,
-        InsecureOAuth2ServerToServerConfiguration.class,
         SecureOAuth2ServerToServerConfiguration.class
 })
 public class AppConfig {
