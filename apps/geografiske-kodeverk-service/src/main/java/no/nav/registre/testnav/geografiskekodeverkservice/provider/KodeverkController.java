@@ -1,10 +1,14 @@
 package no.nav.registre.testnav.geografiskekodeverkservice.provider;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.registre.testnav.geografiskekodeverkservice.domain.Kodeverk;
 import no.nav.registre.testnav.geografiskekodeverkservice.service.KodeverkService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -12,22 +16,22 @@ import org.springframework.web.bind.annotation.RestController;
 public class KodeverkController {
 
     @GetMapping(value = "/kommuner")
-    public String getKommuner() {
-        return KodeverkService.getKommuner();
+    public List<Kodeverk> getKommuner(@RequestParam(required = false) String kommunenr) {
+        return KodeverkService.getKommuner(kommunenr);
     }
 
     @GetMapping(value = "/landkoder")
-    public String getLandkoder() {
-        return "Not implemented yet";
+    public List<Kodeverk> getLandkoder(@RequestParam(required = false) String land) {
+        return KodeverkService.getLandkoder(land);
     }
 
     @GetMapping(value = "/postnummer")
-    public String getPostnummer() {
-        return "Not implemented yet";
+    public List<Kodeverk> getPostnummer(@RequestParam(required = false) String poststed) {
+        return KodeverkService.getPostnummer(poststed);
     }
 
     @GetMapping(value = "/embeter")
-    public String getEmbeter() {
-        return "Not implemented yet";
+    public List<Kodeverk> getEmbeter() {
+        return KodeverkService.getEmbeter();
     }
 }
