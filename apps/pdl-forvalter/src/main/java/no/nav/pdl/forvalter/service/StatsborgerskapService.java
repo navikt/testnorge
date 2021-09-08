@@ -5,12 +5,13 @@ import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
 import no.nav.pdl.forvalter.utils.TilfeldigLandService;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -40,7 +41,7 @@ public class StatsborgerskapService {
 
                 handle(type, person.getIdent(), person.getInnflytting().stream().reduce((a, b) -> b).orElse(null));
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
-                type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : DbVersjonDTO.Master.FREG);
+                type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
             }
         }
         return person.getStatsborgerskap();
@@ -72,6 +73,10 @@ public class StatsborgerskapService {
 
         if (isNull(statsborgerskap.getGyldigFraOgMed())) {
             statsborgerskap.setGyldigFraOgMed(DatoFraIdentUtility.getDato(ident).atStartOfDay());
+        }
+
+        if (isNull(statsborgerskap.getBekreftelsesdato()) && Master.PDL == statsborgerskap.getMaster()) {
+            statsborgerskap.setBekreftelsesdato(LocalDateTime.now());
         }
     }
 }

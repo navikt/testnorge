@@ -1,0 +1,6 @@
+azure.app.client.id: ${client_id}
+azure.app.client.secret: ${client_secret}
+
+consumers.testnav-pdl-forvalter:
+  url: https://testnav-pdl-forvalter-dev.dev.intern.nav.no
+  name: testnav-pdl-forvalter-dev

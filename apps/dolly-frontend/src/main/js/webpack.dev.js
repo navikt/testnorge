@@ -111,7 +111,7 @@ module.exports = (env) =>
 					changeOrigin: true,
 					secure: false,
 				},
-				'/testnorge-varslinger-api/api': {
+				'/testnav-varslinger-service/api': {
 					target: env.backend,
 					changeOrigin: true,
 					secure: false,

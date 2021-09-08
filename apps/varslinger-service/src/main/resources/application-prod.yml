@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${NAIS_DATABASE_TESTNAV_VARSLINGER_SERVICE_TESTNAV_VARSLINGER_DB_HOST}:${NAIS_DATABASE_TESTNAV_VARSLINGER_SERVICE_TESTNAV_VARSLINGER_DB_PORT}/${NAIS_DATABASE_TESTNAV_VARSLINGER_SERVICE_TESTNAV_VARSLINGER_DB_DATABASE}?user=${NAIS_DATABASE_TESTNAV_VARSLINGER_SERVICE_TESTNAV_VARSLINGER_DB_USERNAME}&password=${NAIS_DATABASE_TESTNAV_VARSLINGER_SERVICE_TESTNAV_VARSLINGER_DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 3
+      minimum-idle: 0
+  flyway:
+    locations: classpath:db/migration
+    enabled: true
+  jpa:
+    database: POSTGRESQL
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+testnorge:
+  analyse:
+    enabled: true

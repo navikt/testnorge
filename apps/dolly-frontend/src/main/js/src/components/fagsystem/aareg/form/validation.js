@@ -92,7 +92,7 @@ const arbeidsavtale = Yup.object({
 			.typeError(messages.required)
 	),
 	endringsdatoStillingsprosent: Yup.date().nullable(),
-	endringsdatoLoenn: Yup.date().nullable(),
+	sisteLoennsendringsdato: Yup.date().nullable(),
 	arbeidstidsordning: fullArbeidsforholdTest(Yup.string()),
 	avtaltArbeidstimerPerUke: fullArbeidsforholdTest(
 		Yup.number()

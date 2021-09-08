@@ -3,7 +3,6 @@ package no.nav.pdl.forvalter.service;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FalskIdentitetDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -134,7 +133,7 @@ class FalskIdentitetServiceTest {
                 .falskIdentitet(List.of(FalskIdentitetDTO.builder()
                         .erFalsk(true)
                         .rettIdentitetVedOpplysninger(FalskIdentitetDTO.IdentifiserendeInformasjonDTO.builder()
-                                .personnavn(NavnDTO.builder().etternavn(INVALID_NAME).build())
+                                .personnavn(FalskIdentitetDTO.NavnDTO.builder().etternavn(INVALID_NAME).build())
                                 .build())
                         .isNew(true)
                         .build()))

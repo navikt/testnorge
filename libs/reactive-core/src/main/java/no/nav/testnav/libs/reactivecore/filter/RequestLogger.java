@@ -32,7 +32,9 @@ public class RequestLogger implements WebFilter {
 
     private LogRequest logRequest() {
         return (request, body) -> {
-
+            if (!log.isTraceEnabled()) {
+                return;
+            }
             Map<String, String> original = MDC.getCopyOfContextMap();
             Map<String, String> contextMap = MDC.getCopyOfContextMap();
             var method = request.getMethod().name();

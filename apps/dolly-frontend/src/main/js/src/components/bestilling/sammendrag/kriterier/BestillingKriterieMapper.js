@@ -468,7 +468,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			),
 			obj(
 				'Endringsdato lønn',
-				Formatters.formatDate(arbeidsforhold.arbeidsavtale?.endringsdatoLoenn)
+				Formatters.formatDate(arbeidsforhold.arbeidsavtale?.sisteLoennsendringsdato)
 			),
 			{
 				label: 'Arbeidstidsordning',

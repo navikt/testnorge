@@ -4,6 +4,7 @@ package no.nav.registre.testnorge.arbeidsforholdservice.provider.v1;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arbeidsforholdservice.service.ArbeidsforholdService;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +20,7 @@ public class ArbeidsforholdController {
     private final ArbeidsforholdService arbeidsforholdService;
 
     @GetMapping("/{ident}/{orgnummer}/{arbeidsforholdId}")
-    public ResponseEntity<?> getArbeidsforhold(
+    public ResponseEntity<ArbeidsforholdDTO> getArbeidsforhold(
             @PathVariable("ident") String ident,
             @PathVariable("orgnummer") String orgnummer,
             @PathVariable("arbeidsforholdId") String arbeidsforholdId,

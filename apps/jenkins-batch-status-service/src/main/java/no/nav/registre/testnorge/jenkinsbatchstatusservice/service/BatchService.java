@@ -27,6 +27,7 @@ public class BatchService {
                 .setSleepSeconds(3)
                 .build();
 
+
         retryService.execute(retryConfig, () -> {
             var jobNumber = jenkinsConsumer.getJobNumber(itemId);
             log.info("Fant jobb nummer {} for besilling {}", jobNumber, uuid);
