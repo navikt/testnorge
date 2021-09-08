@@ -32,12 +32,3 @@ consumers:
     name: testnav-inntektsmelding-service
     cluster: dev-gcp
     namespace: dolly
-
-zuul:
-  ignoredPatterns: /internal/isReady, /internal/isAlive
-  set-content-length: true
-  sensitiveHeaders: Cookie,Set-Cookie
-  routes:
-    testnav-inntektsmelding-service:
-      path: /api/v1/altinnInntekt/enkeltident/**
-      url: https://testnav-inntektsmelding-service.dev.intern.nav.no/api/v1/inntektsmelding/

@@ -1,17 +1,13 @@
-package no.nav.registre.inntekt.config.local;
+package no.nav.registre.inntekt.config;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
-import org.springframework.vault.annotation.VaultPropertySource;
 import org.springframework.vault.authentication.ClientAuthentication;
 import org.springframework.vault.authentication.TokenAuthentication;
 import org.springframework.vault.client.VaultEndpoint;
 import org.springframework.vault.config.AbstractVaultConfiguration;
 
 @Configuration
-@Profile("local")
-@VaultPropertySource(value = "kv/preprod/fss/testnorge-inntekt/local", ignoreSecretNotFound = false)
-public class VaultConfig  extends AbstractVaultConfiguration {
+public class VaultConfig extends AbstractVaultConfiguration {
 
     @Override
     public VaultEndpoint vaultEndpoint() {
