@@ -122,7 +122,7 @@ export const SortKodeverkArray = (data) => {
 			label: 'UKJENT LAND',
 			value: 'XUK',
 			gyldigFra: '1900-01-01',
-			gyldigTil: '9999-12-31'
+			gyldigTil: '9999-12-31',
 		})
 		return kodeverk.sort()
 	}

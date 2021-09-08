@@ -147,7 +147,7 @@ const Inntekt = ({
 	formikBag,
 	path,
 	resetForm,
-	tilleggsinformasjonAttributter
+	tilleggsinformasjonAttributter,
 }) => {
 	return (
 		<div className="flexbox--flex-wrap">

@@ -12,13 +12,13 @@ module.exports = merge(common, {
 	plugins: [
 		new OptimizeCssAssetsPlugin(),
 		new MiniCssExtractPlugin({
-			filename: '[name].[contenthash:8].css'
-		})
+			filename: '[name].[contenthash:8].css',
+		}),
 	],
 	output: {
 		path: path.join(__dirname, 'build'),
 		filename: 'bundle.[contenthash:8].js',
-		publicPath: '/'
+		publicPath: '/',
 	},
 	optimization: {
 		minimize: true,
@@ -28,10 +28,10 @@ module.exports = merge(common, {
 				sourceMap: true,
 				terserOptions: {
 					keep_classnames: true,
-					keep_fnames: true
-				}
-			})
-		]
+					keep_fnames: true,
+				},
+			}),
+		],
 	},
 	module: {
 		rules: [
@@ -40,13 +40,13 @@ module.exports = merge(common, {
 				use: [
 					MiniCssExtractPlugin.loader,
 					'css-loader',
-					'less-loader?{"lessOptions":{"globalVars":{"nodeModulesPath":"\'~\'", "coreModulePath":"\'~\'"}}}'
-				]
+					'less-loader?{"lessOptions":{"globalVars":{"nodeModulesPath":"\'~\'", "coreModulePath":"\'~\'"}}}',
+				],
 			},
 			{
 				test: /\.css$/,
-				use: [MiniCssExtractPlugin.loader, 'css-loader']
-			}
-		]
-	}
+				use: [MiniCssExtractPlugin.loader, 'css-loader'],
+			},
+		],
+	},
 })

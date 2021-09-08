@@ -24,7 +24,7 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 		Livrente: 'livrente',
 		LottOgPartInnenFiske: 'lottOgPart',
 		Nettoloennsordning: 'nettoloenn',
-		UtenlandskArtist: 'utenlandskArtist'
+		UtenlandskArtist: 'utenlandskArtist',
 	}
 
 	useEffect(() => {
@@ -45,7 +45,7 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 		}
 	}, [])
 
-	const setFormikBag = values => {
+	const setFormikBag = (values) => {
 		const nullstiltInntekt = {
 			beloep: _get(formikBag.values, `${inntektPath}.beloep`),
 			startOpptjeningsperiode: _get(formikBag.values, `${inntektPath}.startOpptjeningsperiode`),
