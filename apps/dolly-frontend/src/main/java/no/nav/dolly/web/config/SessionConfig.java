@@ -11,6 +11,8 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 import org.springframework.session.web.context.AbstractHttpSessionApplicationInitializer;
 import redis.clients.jedis.JedisPoolConfig;
 
+import java.time.Duration;
+
 @Profile("prod")
 @Configuration
 @EnableRedisHttpSession
@@ -38,6 +40,9 @@ public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
         return JedisClientConfiguration
                 .builder()
                 .usePooling().poolConfig(jedisPoolConfig)
+                .and()
+                .connectTimeout(Duration.ZERO)
+                .readTimeout(Duration.ZERO)
                 .build();
     }
 
@@ -46,6 +51,8 @@ public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
         JedisPoolConfig poolConfig = new JedisPoolConfig();
         poolConfig.setMaxIdle(50);
         poolConfig.setMinIdle(0);
+        poolConfig.setMaxWaitMillis(100 * 1000);
+        poolConfig.setTestOnBorrow(true);
         poolConfig.setNumTestsPerEvictionRun(5);
         return poolConfig;
     }
