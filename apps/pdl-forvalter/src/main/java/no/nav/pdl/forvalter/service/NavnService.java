@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
-
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,7 +25,7 @@ public class NavnService extends PdlArtifactService<NavnDTO> {
     }
 
     @Override
-    protected void validate(NavnDTO navn) {
+    public void validate(NavnDTO navn) {
 
         if ((isNotBlank(navn.getFornavn()) ||
                 isNotBlank(navn.getMellomnavn()) ||

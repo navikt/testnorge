@@ -20,21 +20,6 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class KontaktinformasjonForDoedsboDTO extends DbVersjonDTO {
 
-    @Schema(description = "Dødsboets adresse, adresselinje 1")
-    private String adresselinje1;
-
-    @Schema(description = "Dødsboets adresse, adresselinje 2")
-    private String adresselinje2;
-
-    @Schema(description = "Postnummer i hht kodeverk 'Postnummer'")
-    private String postnummer;
-
-    @Schema(description = "Poststed i hht kodeverk 'Postnummer'")
-    private String poststedsnavn;
-
-    @Schema(description = "Landkode i hht. kodeverk 'Landkoder'")
-    private String landkode;
-
     @Schema(required = true,
             description = "Dødsboets skifteform")
     private PdlSkifteform skifteform;
@@ -44,7 +29,11 @@ public class KontaktinformasjonForDoedsboDTO extends DbVersjonDTO {
             description = "Dato for utstedelse")
     private LocalDateTime attestutstedelsesdato;
 
-    private AdressatDTO adressat;
+    private KontaktinformasjonForDoedsboAdresse adresse;
+
+    private OrganisasjonDTO advokatSomKontakt;
+    private KontaktpersonDTO personSomKontakt;
+    private OrganisasjonDTO organisasjonSomKontakt;
 
     public enum PdlSkifteform {
 
@@ -56,12 +45,22 @@ public class KontaktinformasjonForDoedsboDTO extends DbVersjonDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class AdressatDTO implements Serializable {
+    public static class KontaktinformasjonForDoedsboAdresse implements Serializable {
 
-        private OrganisasjonDTO advokatSomAdressat;
-        private KontaktpersonMedIdNummerDTO kontaktpersonMedIdNummerSomAdressat;
-        private KontaktpersonUtenIdNummerDTO kontaktpersonUtenIdNummerSomAdressat;
-        private OrganisasjonDTO organisasjonSomAdressat;
+        @Schema(description = "Dødsboets adresse, adresselinje 1")
+        private String adresselinje1;
+
+        @Schema(description = "Dødsboets adresse, adresselinje 2")
+        private String adresselinje2;
+
+        @Schema(description = "Postnummer i hht kodeverk 'Postnummer'")
+        private String postnummer;
+
+        @Schema(description = "Poststed i hht kodeverk 'Postnummer'")
+        private String poststedsnavn;
+
+        @Schema(description = "Landkode i hht. kodeverk 'Landkoder'")
+        private String landkode;
     }
 
     @Data
@@ -69,19 +68,9 @@ public class KontaktinformasjonForDoedsboDTO extends DbVersjonDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class KontaktpersonMedIdNummerDTO implements Serializable {
+    public static class KontaktpersonDTO implements Serializable {
 
         private String identifikasjonsnummer;
-        private PersonRequestDTO nyKontaktPerson;
-    }
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class KontaktpersonUtenIdNummerDTO implements Serializable {
-
         private LocalDateTime foedselsdato;
         private PersonNavnDTO navn;
     }
@@ -110,5 +99,11 @@ public class KontaktinformasjonForDoedsboDTO extends DbVersjonDTO {
         private String fornavn;
         private String mellomnavn;
         private Boolean hasMellomnavn;
+    }
+
+
+    public int countKontakter() {
+
+        return count(getAdvokatSomKontakt()) + count(getPersonSomKontakt()) + count(getOrganisasjonSomKontakt());
     }
 }

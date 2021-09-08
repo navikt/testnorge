@@ -38,7 +38,6 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO> {
         for (var adresse : person.getBostedsadresse()) {
 
             if (isTrue(adresse.getIsNew())) {
-                validate(adresse);
 
                 handle(adresse);
                 populateMiscFields(adresse, person);
@@ -48,18 +47,13 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO> {
         return person.getBostedsadresse();
     }
 
-    private void validate(BostedadresseDTO adresse) {
+    @Override
+    public void validate(BostedadresseDTO adresse) {
 
-        if (count(adresse.getMatrikkeladresse()) +
-                count(adresse.getUtenlandskAdresse()) +
-                count(adresse.getVegadresse()) +
-                count(adresse.getUkjentBosted()) > 1) {
+        if (adresse.countAdresser() > 1) {
             throw new InvalidRequestException(VALIDATION_AMBIGUITY_ERROR);
 
-        } else if (count(adresse.getMatrikkeladresse()) +
-                count(adresse.getUtenlandskAdresse()) +
-                count(adresse.getVegadresse()) +
-                count(adresse.getUkjentBosted()) == 0) {
+        } else if (adresse.countAdresser() == 0) {
             throw new InvalidRequestException(VALIDATION_ADDRESS_ABSENT_ERROR);
         }
 

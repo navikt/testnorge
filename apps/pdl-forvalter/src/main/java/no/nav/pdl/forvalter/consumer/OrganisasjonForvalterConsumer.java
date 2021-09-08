@@ -31,7 +31,7 @@ public class OrganisasjonForvalterConsumer {
                 .build();
     }
 
-    public Map<String, Map<String, String>> get(String orgNummer) {
+    public Map<String, Map<String, Object>> get(String orgNummer) {
 
         return accessTokenService.generateToken(properties).flatMap(
                 token -> new OrganisasjonForvalterCommand(webClient, IMPORT_ORG_URL,

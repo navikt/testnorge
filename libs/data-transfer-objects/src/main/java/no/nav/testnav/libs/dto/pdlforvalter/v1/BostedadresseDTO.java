@@ -1,5 +1,6 @@
 package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,5 +32,12 @@ public class BostedadresseDTO extends AdresseDTO {
     public static class UkjentBostedDTO implements Serializable {
 
         private String bostedskommune;
+    }
+
+    @JsonIgnore
+    public int countAdresser() {
+
+        return count(getVegadresse()) + count(getMatrikkeladresse()) +
+                count(getUkjentBosted()) + count(getUtenlandskAdresse());
     }
 }

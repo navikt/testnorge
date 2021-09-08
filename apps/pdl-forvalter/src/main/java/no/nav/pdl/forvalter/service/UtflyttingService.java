@@ -21,7 +21,7 @@ public class UtflyttingService extends PdlArtifactService<UtflyttingDTO> {
     private final TilfeldigLandService tilfeldigLandService;
 
     @Override
-    protected void validate(UtflyttingDTO utflytting) {
+    public void validate(UtflyttingDTO utflytting) {
 
         if (isNotBlank(utflytting.getTilflyttingsland()) && !isLandkode(utflytting.getTilflyttingsland())) {
             throw new InvalidRequestException(VALIDATION_LANDKODE_ERROR);

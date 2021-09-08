@@ -18,7 +18,7 @@ public class TilrettelagtKommunikasjonService extends PdlArtifactService<Tilrett
     private static final String VALIDATION_TEGNSPRAAK_ERROR = "Språk for tegnspråktolk er ugyldig: forventet 2 tegn i hht kodeverk Språk";
 
     @Override
-    protected void validate(TilrettelagtKommunikasjonDTO tilrettelagtKommunikasjon) {
+    public void validate(TilrettelagtKommunikasjonDTO tilrettelagtKommunikasjon) {
 
         if (isBlank(tilrettelagtKommunikasjon.getSpraakForTaletolk()) &&
                 isBlank(tilrettelagtKommunikasjon.getSpraakForTegnspraakTolk())) {

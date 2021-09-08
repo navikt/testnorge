@@ -18,7 +18,7 @@ public class UtenlandsidentifikasjonsnummerService extends PdlArtifactService<Ut
     private static final String VALIDATION_LANDKODE_ILLEGAL_FORMAT = "Trebokstavers landkode er forventet på utstederland";
 
     @Override
-    protected void validate(UtenlandskIdentifikasjonsnummerDTO identifikasjon) {
+    public void validate(UtenlandskIdentifikasjonsnummerDTO identifikasjon) {
 
         if (isBlank(identifikasjon.getIdentifikasjonsnummer())) {
             throw new InvalidRequestException(VALIDATION_ID_NUMMER_MISSING);
