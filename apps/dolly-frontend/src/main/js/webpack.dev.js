@@ -24,10 +24,6 @@ module.exports = env =>
 					target: env.backend,
 					secure: false
 				},
-				'/login': {
-					target: env.backend,
-					secure: false
-				},
 				'/logout': {
 					target: env.backend,
 					secure: false

@@ -1,7 +1,16 @@
 import React from 'react'
+import { Redirect } from 'react-router-dom'
+import useBoolean from '~/utils/hooks/useBoolean'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 
 export default () => {
+	const [redirectToNavLogin, setRedirectNav] = useBoolean()
+	const handleNavClick = () => {
+		setRedirectNav()
+	}
+
+	if (redirectToNavLogin) return <Redirect to={'/oauth2/authorization/aad'} />
+
 	return (
 		<div className="login-container">
 			<div className="login-modal">
@@ -11,7 +20,7 @@ export default () => {
 					consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
 					aliqua.
 				</h3>
-				<NavButton className="login-modal_button-nav" type="hoved">
+				<NavButton className="login-modal_button-nav" type="hoved" onClick={handleNavClick}>
 					Logg inn med NAV-epost
 				</NavButton>
 				<NavButton
