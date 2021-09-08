@@ -1,0 +1,21 @@
+plugins {
+    id "com.gradle.enterprise" version "3.4.1"
+}
+
+rootProject.name = 'testnorge-inntekt'
+
+includeBuild '../../gradlePlugins'
+
+includeBuild '../../libs/servlet-core'
+includeBuild '../../libs/servlet-security'
+includeBuild '../../libs/domain'
+includeBuild '../../libs/database'
+includeBuild '../../libs/data-transfer-objects'
+includeBuild '../../libs/testing'
+
+gradleEnterprise {
+    buildScan {
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
+    }
+}

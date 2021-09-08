@@ -88,6 +88,7 @@ includeBuild './apps/import-person-service'
 includeBuild './apps/orkestratoren'
 includeBuild './apps/jenkins-batch-status-service'
 includeBuild './apps/organisasjon-bestilling-service'
+includeBuild './apps/testnorge-inntekt'
 
 includeBuild './xsd/arbeidsforhold-xsd'
 
@@ -133,7 +134,6 @@ include(':sigrun-domain')
 include(':libs')
 include(':testnorge-spion')
 include(':opprett-person-pdl')
-include(':testnorge-inntekt')
 include(':tp-core')
 include(':synt-person-api')
 include(':skd-core')
@@ -189,7 +189,6 @@ project(":person-export-api").projectDir = file('apps/person-export-api')
 project(":sigrun-domain").projectDir = file('apps/testnorge-sigrun/sigrun-domain')
 project(":testnorge-spion").projectDir = file('apps/testnorge-spion')
 project(":opprett-person-pdl").projectDir = file('apps/opprett-person-pdl')
-project(":testnorge-inntekt").projectDir = file('apps/testnorge-inntekt')
 project(":tp-core").projectDir = file('apps/testnorge-tp/tp-core')
 project(":synt-person-api").projectDir = file('apps/synt-person-api')
 project(":skd-core").projectDir = file('apps/testnorge-skd/skd-core')
