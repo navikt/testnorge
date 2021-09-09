@@ -7,7 +7,7 @@ import reactor.core.publisher.Mono;
 
 import java.net.URI;
 
-import no.nav.testnav.libs.reactivesessionsecurity.domain.WellKnownConfig;
+import no.nav.testnav.libs.reactivesessionsecurity.domain.idporten.WellKnownConfig;
 
 
 public class IdportenOcidLogoutUrlResolver implements OcidLogoutUriResolver {

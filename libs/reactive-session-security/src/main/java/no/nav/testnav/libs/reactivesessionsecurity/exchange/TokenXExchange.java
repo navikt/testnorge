@@ -20,7 +20,7 @@ import java.util.UUID;
 import no.nav.testnav.libs.reactivesessionsecurity.domain.AccessToken;
 import no.nav.testnav.libs.reactivesessionsecurity.domain.ServerProperties;
 import no.nav.testnav.libs.reactivesessionsecurity.domain.TokenX;
-import no.nav.testnav.libs.reactivesessionsecurity.domain.WellKnownConfig;
+import no.nav.testnav.libs.reactivesessionsecurity.domain.tokenx.WellKnownConfig;
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.TokenResolver;
 
 @Slf4j

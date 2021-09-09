@@ -8,7 +8,7 @@ import no.nav.testnav.libs.reactivesessionsecurity.config.OicdInMemorySessionCon
 import no.nav.testnav.libs.reactivesessionsecurity.config.OicdRedisSessionConfiguration;
 
 @Configuration
-@Profile("dev2")
+@Profile("dev")
 @Import({
         OicdInMemorySessionConfiguration.class
 })

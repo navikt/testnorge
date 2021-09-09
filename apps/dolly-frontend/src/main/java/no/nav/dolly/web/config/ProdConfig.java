@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Profile;
 import no.nav.testnav.libs.reactivesessionsecurity.config.OicdRedisSessionConfiguration;
 
 @Configuration
-@Profile("dev")
+@Profile("prod")
 @Import({
         OicdRedisSessionConfiguration.class
 })
