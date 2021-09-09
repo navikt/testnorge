@@ -14,6 +14,7 @@ import _get from 'lodash/get'
 import { Digitalinnsending } from '~/components/fagsystem/dokarkiv/form/digital/Digitalinnsending'
 import { FilnavnDollyArray } from '~/components/fagsystem/dokarkiv/modal/FilnavnDollyArray'
 import { pdfjs } from 'react-pdf'
+// @ts-ignore
 import pdfjsWorker from 'forhandsvisningsfil/public/static/js/pdf.worker.min'
 import File from 'forhandsvisningsfil'
 
