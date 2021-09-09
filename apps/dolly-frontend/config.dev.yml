@@ -32,7 +32,7 @@ spec:
         - application: testnav-joark-dokument-service
         - application: testnav-organisasjon-faste-data-service
         - application: testnav-varslinger-service
-        - application: dolly-frontend-dev
+        - application: dolly-dev-redis-session
       external:
         - host: person-search-service.dev-fss-pub.nais.io
         - host: udi-stub-dev.dev-fss-pub.nais.io
