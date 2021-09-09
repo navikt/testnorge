@@ -19,7 +19,7 @@ import java.util.List;
 public class WellKnownConfig {
     @JsonProperty("token_endpoint")
     String tokenEndpoint;
-//
-//    @JsonProperty("grant_types_supported")
-//    List<String> grantTypesSupported;
+
+    @JsonProperty("grant_types_supported")
+    List<String> grantTypesSupported;
 }
