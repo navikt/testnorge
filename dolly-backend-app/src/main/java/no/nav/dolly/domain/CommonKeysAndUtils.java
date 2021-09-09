@@ -19,7 +19,7 @@ public final class CommonKeysAndUtils {
     public static final String HEADER_NAV_PERSON_IDENTER = "Nav-Personidenter";
     public static final String CONSUMER = "Dolly";
 
-    private static final String[] SYNTH_ENV = { "q1", "q2", "q4" };
+    private static final String[] SYNTH_ENV = {"q1", "q2", "q4", "t4"};
 
     public static String getSynthEnv() {
 
