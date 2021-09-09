@@ -7,11 +7,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import no.nav.dolly.web.credentials.TestnorgeTilbakemeldingApiProperties;
 import no.nav.testnav.libs.dto.tilbakemeldingapi.v1.TilbakemeldingDTO;
-import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Service
@@ -29,9 +30,9 @@ public class TilbakemeldingConsumer {
         this.tokenExchange = tokenExchange;
     }
 
-    public Mono<Void> send(TilbakemeldingDTO dto) {
+    public Mono<Void> send(TilbakemeldingDTO dto, ServerWebExchange exchange) {
         return tokenExchange
-                .generateToken(testnorgeTilbakemeldingApiProperties)
+                .generateToken(testnorgeTilbakemeldingApiProperties, exchange)
                 .flatMap(accessToken -> webClient
                         .post()
                         .uri("/api/v1/tilbakemelding")

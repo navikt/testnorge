@@ -1,0 +1,3 @@
+//! Har disablet changehandlers fordi de mest sannsynlig ikke er nødvendige, og de kompliserer skjemaet mye.
+
+//! Lar dem bli liggende en stund i tilfelle det blir behov for dem.

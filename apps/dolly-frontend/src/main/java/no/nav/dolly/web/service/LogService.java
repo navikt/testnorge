@@ -4,7 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+
+import java.util.HashMap;
 
 import no.nav.dolly.web.consumers.TilbakemeldingConsumer;
 import no.nav.dolly.web.domain.Level;
@@ -18,7 +21,7 @@ public class LogService {
     private final TilbakemeldingConsumer tilbakemeldingConsumer;
 
     private void logKibana(LogEvent event) {
-        var original = MDC.getCopyOfContextMap();
+        var original = MDC.getCopyOfContextMap() == null ? new HashMap<String, String>() : MDC.getCopyOfContextMap();
         MDC.setContextMap(event.toPropertyMap());
         switch (event.getLevel()) {
             case TRACE:
@@ -40,10 +43,11 @@ public class LogService {
         MDC.setContextMap(original);
     }
 
-    public Mono<Void> log(LogEvent event) {
+    public Mono<Void> log(LogEvent event, ServerWebExchange exchange) {
+
         logKibana(event);
         if (event.getMessage() != null && event.getLevel() == Level.INFO) {
-            return tilbakemeldingConsumer.send(event.toTilbakemeldingDTO());
+            return tilbakemeldingConsumer.send(event.toTilbakemeldingDTO(), exchange);
         }
         return Mono.empty();
     }

@@ -56,20 +56,17 @@ public abstract class OAuth2ResourceServerConfiguration {
         return builder.build();
     }
 
-
     protected ReactiveJwtDecoder jwtDecoder() {
         NimbusReactiveJwtDecoder jwtDecoder = NimbusReactiveJwtDecoder
                 .withJwkSetUri(oAuth2ResourceServerProperties.getJwt().getJwkSetUri())
                 .webClient(webClient())
                 .build();
 
-
         OAuth2TokenValidator<Jwt> audienceValidator = new AudienceValidator();
         OAuth2TokenValidator<Jwt> withIssuer = JwtValidators.createDefaultWithIssuer(oAuth2ResourceServerProperties.getJwt().getIssuerUri());
         OAuth2TokenValidator<Jwt> withAudience = new DelegatingOAuth2TokenValidator<>(withIssuer, audienceValidator);
 
         jwtDecoder.setJwtValidator(withAudience);
-
         return jwtDecoder;
     }
 
