@@ -37,16 +37,13 @@ class StatsborgerskapServiceTest {
     @Test
     void whenUgyldigLandkode_thenThrowExecption() {
 
-        var request = PersonDTO.builder()
-                .statsborgerskap(List.of(StatsborgerskapDTO.builder()
+        var request = StatsborgerskapDTO.builder()
                         .landkode("Uruguay")
                         .isNew(true)
-                        .build()))
-                .ident(FNR_IDENT)
-                .build();
+                        .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                statsborgerskapService.convert(request));
+                statsborgerskapService.validate(request));
 
         assertThat(exception.getMessage(), containsString("Ugyldig landkode, må være i hht ISO-3 Landkoder"));
     }
@@ -54,17 +51,14 @@ class StatsborgerskapServiceTest {
     @Test
     void whenInvalidDateInterval_thenThrowExecption() {
 
-        var request = PersonDTO.builder()
-                .statsborgerskap(List.of(StatsborgerskapDTO.builder()
+        var request = StatsborgerskapDTO.builder()
                         .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
                         .gyldigTilOgMed(LocalDate.of(2018, 1, 1).atStartOfDay())
                         .isNew(true)
-                        .build()))
-                .ident(FNR_IDENT)
-                .build();
+                        .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                statsborgerskapService.convert(request));
+                statsborgerskapService.validate(request));
 
         assertThat(exception.getMessage(), containsString("Ugyldig datointervall: gyldigFom må være før gyldigTom"));
     }

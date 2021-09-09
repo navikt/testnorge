@@ -1,14 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-
+import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,8 +12,14 @@ import org.springframework.web.client.HttpClientErrorException;
 import java.util.List;
 import java.util.Optional;
 
-import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class NavnServiceTest {
@@ -34,17 +33,17 @@ class NavnServiceTest {
     @Test
     void whenNameDoesNotVerify_thenThrowExecption() {
 
-        var request = List.of(NavnDTO.builder()
+        var request = NavnDTO.builder()
                 .fornavn("Ugyldig")
                 .mellomnavn("Sjanglende")
                 .etternavn("Sjømann")
                 .isNew(true)
-                .build());
+                .build();
 
         when(genererNavnServiceConsumer.verifyNavn(any(no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO.class))).thenReturn(false);
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                navnService.convert((List<NavnDTO>) request));
+                navnService.validate(request));
 
         assertThat(exception.getMessage(), containsString("Navn er ikke i liste over gyldige verdier"));
     }
@@ -58,8 +57,6 @@ class NavnServiceTest {
                 .etternavn("Sjømann")
                 .isNew(true)
                 .build());
-
-        when(genererNavnServiceConsumer.verifyNavn(any(no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO.class))).thenReturn(true);
 
         var target = navnService.convert((List<NavnDTO>) request).get(0);
 

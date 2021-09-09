@@ -19,7 +19,7 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-actuator:${DependenciesPlugin.springBoot}"
     implementation "org.springframework.boot:spring-boot-starter-webflux:${DependenciesPlugin.springBoot}"
     implementation "org.springframework.boot:spring-boot-starter-web:${DependenciesPlugin.springBoot}"
-    implementation "org.springframework.security:spring-security-oauth2-client:${DependenciesPlugin.springSecurity}"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-client:${DependenciesPlugin.springBoot}"
 
     implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"

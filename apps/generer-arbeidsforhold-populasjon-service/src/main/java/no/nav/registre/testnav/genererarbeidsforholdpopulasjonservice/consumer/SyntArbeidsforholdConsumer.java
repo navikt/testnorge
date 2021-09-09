@@ -16,13 +16,13 @@ import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.c
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.credentials.SyntrestServiceProperties;
 import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdRequest;
 import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdResponse;
-import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
+import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 
 @Component
 public class SyntArbeidsforholdConsumer {
     private final AccessTokenService accessTokenService;
-    private final NaisServerProperties properties;
+    private final ServerProperties properties;
     private final WebClient webClient;
     private final ObjectMapper objectMapper;
 

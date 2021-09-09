@@ -44,16 +44,14 @@ class OppholdsadresseServiceTest {
     @Test
     void whenMultipleAdressesProvided_thenThrowExecption() {
 
-        var request = PersonDTO.builder()
-                .oppholdsadresse(List.of(OppholdsadresseDTO.builder()
+        var request = OppholdsadresseDTO.builder()
                         .vegadresse(new VegadresseDTO())
                         .matrikkeladresse(new MatrikkeladresseDTO())
                         .isNew(true)
-                        .build()))
-                .build();
+                        .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdsadresseService.convert(request));
+                oppholdsadresseService.validate(request));
 
         assertThat(exception.getMessage(), containsString("kun én adresse skal være satt " +
                 "(vegadresse, matrikkeladresse, utenlandskAdresse)"));
@@ -62,14 +60,12 @@ class OppholdsadresseServiceTest {
     @Test
     void whenNoAdressProvided_thenThrowExecption() {
 
-        var request = PersonDTO.builder()
-                .oppholdsadresse(List.of(OppholdsadresseDTO.builder()
+        var request = OppholdsadresseDTO.builder()
                         .isNew(true)
-                        .build()))
-                .build();
+                        .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdsadresseService.convert(request));
+                oppholdsadresseService.validate(request));
 
         assertThat(exception.getMessage(), containsString("én av adressene må velges " +
                 "(vegadresse, matrikkeladresse, utenlandskAdresse)"));
@@ -78,16 +74,14 @@ class OppholdsadresseServiceTest {
     @Test
     void whenUtenlandskAdresseProvidedAndMasterIsFreg_thenThrowExecption() {
 
-        var request = PersonDTO.builder()
-                .oppholdsadresse(List.of(OppholdsadresseDTO.builder()
+        var request = OppholdsadresseDTO.builder()
                         .utenlandskAdresse(new UtenlandskAdresseDTO())
                         .master(DbVersjonDTO.Master.FREG)
                         .isNew(true)
-                        .build()))
-                .build();
+                        .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdsadresseService.convert(request));
+                oppholdsadresseService.validate(request));
 
         assertThat(exception.getMessage(), containsString("Utenlandsk adresse krever at master er PDL"));
     }
@@ -95,17 +89,15 @@ class OppholdsadresseServiceTest {
     @Test
     void whenVegadresseWithBruksenhetsnummerInvalidFormat_thenThrowExecption() {
 
-        var request = PersonDTO.builder()
-                .oppholdsadresse(List.of(OppholdsadresseDTO.builder()
+        var request = OppholdsadresseDTO.builder()
                         .vegadresse(VegadresseDTO.builder()
                                 .bruksenhetsnummer("HK25419")
                                 .build())
                         .isNew(true)
-                        .build()))
-                .build();
+                        .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdsadresseService.convert(request));
+                oppholdsadresseService.validate(request));
 
         assertThat(exception.getMessage(), containsString("Gyldig format er Bokstaven H, L, U eller K etterfulgt av fire sifre"));
     }
@@ -113,17 +105,15 @@ class OppholdsadresseServiceTest {
     @Test
     void whenMatrikkeladresseWithBruksenhetsnummerInvalidFormat_thenThrowExecption() {
 
-        var request = PersonDTO.builder()
-                .oppholdsadresse(List.of(OppholdsadresseDTO.builder()
+        var request = OppholdsadresseDTO.builder()
                         .matrikkeladresse(MatrikkeladresseDTO.builder()
                                 .bruksenhetsnummer("F8021")
                                 .build())
                         .isNew(true)
-                        .build()))
-                .build();
+                        .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdsadresseService.convert(request));
+                oppholdsadresseService.validate(request));
 
         assertThat(exception.getMessage(), containsString("Gyldig format er Bokstaven H, L, U eller K etterfulgt av fire sifre"));
     }
@@ -131,19 +121,17 @@ class OppholdsadresseServiceTest {
     @Test
     void whenInvalidDateInterval_thenThrowExecption() {
 
-        var request = PersonDTO.builder()
-                .oppholdsadresse(List.of(OppholdsadresseDTO.builder()
+        var request = OppholdsadresseDTO.builder()
                         .vegadresse(new VegadresseDTO())
                         .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
                         .gyldigTilOgMed(LocalDate.of(2018, 1, 1).atStartOfDay())
                         .isNew(true)
-                        .build()))
-                .build();
+                        .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdsadresseService.convert(request));
+                oppholdsadresseService.validate(request));
 
-        assertThat(exception.getMessage(), containsString("Feil: Overlappende adressedatoer er ikke lov"));
+        assertThat(exception.getMessage(), containsString("Adresse: Overlappende adressedatoer er ikke lov"));
     }
 
     @Test
@@ -171,7 +159,7 @@ class OppholdsadresseServiceTest {
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 oppholdsadresseService.convert(request));
 
-        assertThat(exception.getMessage(), containsString("Feil: Overlappende adressedatoer er ikke lov"));
+        assertThat(exception.getMessage(), containsString("Adresse: Overlappende adressedatoer er ikke lov"));
     }
 
     @Test
@@ -198,7 +186,7 @@ class OppholdsadresseServiceTest {
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 oppholdsadresseService.convert(request));
 
-        assertThat(exception.getMessage(), containsString("Feil: Overlappende adressedatoer er ikke lov"));
+        assertThat(exception.getMessage(), containsString("Adresse: Overlappende adressedatoer er ikke lov"));
     }
 
     @Test

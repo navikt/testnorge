@@ -8,8 +8,11 @@ import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.PostnummerService;
 import no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.KontaktinformasjonForDoedsboAdresse;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Map;
 
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
@@ -30,11 +33,11 @@ public class KontaktInformasjonForDoedsboMappingStrategy implements MappingStrat
     @Override
     public void register(MapperFactory factory) {
 
-        factory.classMap(BostedadresseDTO.class, KontaktinformasjonForDoedsboDTO.class)
+        factory.classMap(BostedadresseDTO.class, KontaktinformasjonForDoedsboAdresse.class)
                 .customize(new CustomMapper<>() {
 
                     @Override
-                    public void mapAtoB(BostedadresseDTO kilde, KontaktinformasjonForDoedsboDTO destinasjon, MappingContext context) {
+                    public void mapAtoB(BostedadresseDTO kilde, KontaktinformasjonForDoedsboAdresse destinasjon, MappingContext context) {
 
                         if (nonNull(kilde.getVegadresse())) {
                             destinasjon.setAdresselinje1(format("%s %s", kilde.getVegadresse().getAdressenavn(),
@@ -68,16 +71,33 @@ public class KontaktInformasjonForDoedsboMappingStrategy implements MappingStrat
                 })
                 .register();
 
-        factory.classMap(VegadresseDTO.class, KontaktinformasjonForDoedsboDTO.class)
+        factory.classMap(VegadresseDTO.class, KontaktinformasjonForDoedsboAdresse.class)
                 .customize(new CustomMapper<>() {
 
                     @Override
-                    public void mapAtoB(VegadresseDTO kilde, KontaktinformasjonForDoedsboDTO destinasjon, MappingContext context) {
+                    public void mapAtoB(VegadresseDTO kilde, KontaktinformasjonForDoedsboAdresse destinasjon, MappingContext context) {
 
                         destinasjon.setAdresselinje1(format("%s %d", kilde.getAdressenavn(), kilde.getHusnummer()));
                         destinasjon.setPostnummer(kilde.getPostnummer());
                         destinasjon.setPoststedsnavn(kilde.getPoststed());
                         destinasjon.setLandkode(LANDKODE_NORGE);
+                    }
+                })
+                .register();
+
+        factory.classMap(Map.class, KontaktinformasjonForDoedsboAdresse.class)
+                .customize(new CustomMapper<>() {
+
+                    @Override
+                    public void mapAtoB(Map kilde, KontaktinformasjonForDoedsboAdresse destinasjon, MappingContext context) {
+
+                        var adresselinjer = (List<String>) kilde.get("adresselinjer");
+                        destinasjon.setAdresselinje1(!adresselinjer.isEmpty() ? adresselinjer.get(0) : "Ingen adresselinje funnet");
+                        destinasjon.setAdresselinje2(adresselinjer.size() > 1 ? adresselinjer.get(1) : null);
+
+                        destinasjon.setPostnummer((String) kilde.get("postnr"));
+                        destinasjon.setPoststedsnavn(postnummerService.getNavn(destinasjon.getPostnummer()));
+                        destinasjon.setLandkode((String) kilde.get("landkode"));
                     }
                 })
                 .register();

@@ -25,7 +25,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
-public class FolkeregisterPersonstatusService {
+public class FolkeregisterPersonstatusService implements BiValidation<FolkeregisterpersonstatusDTO, PersonDTO> {
 
     public List<FolkeregisterpersonstatusDTO> convert(PersonDTO person) {
 
@@ -73,5 +73,11 @@ public class FolkeregisterPersonstatusService {
                 status.setStatus(FOEDSELSREGISTRERT);
             }
         }
+    }
+
+    @Override
+    public void validate(FolkeregisterpersonstatusDTO artifact, PersonDTO person) {
+
+        // Ingen validering
     }
 }

@@ -26,14 +26,14 @@ class AdressebeskyttelseServiceTest {
     @Test
     void whenStrengtFortroligUtlandAndMasterIsFreg_thenThrowExecption() {
 
-        var request = List.of(AdressebeskyttelseDTO.builder()
+        var request = AdressebeskyttelseDTO.builder()
                 .gradering(STRENGT_FORTROLIG_UTLAND)
                 .master(DbVersjonDTO.Master.FREG)
                 .isNew(true)
-                .build());
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                adressebeskyttelseService.convert((List<AdressebeskyttelseDTO>) request));
+                adressebeskyttelseService.validate(request));
 
         assertThat(exception.getMessage(), containsString("Gradering STRENGT_FORTROLIG_UTLAND kan kun settes hvis master er PDL"));
     }

@@ -26,11 +26,11 @@ module.exports = env =>
 					target: env.backend,
 					secure: false
 				},
-				'/oauth2': {
+				'/oauth2/authorization/aad': {
 					target: env.backend,
 					secure: false
 				},
-				'/login': {
+				'/login/oauth2/code/aad': {
 					target: env.backend,
 					secure: false
 				},

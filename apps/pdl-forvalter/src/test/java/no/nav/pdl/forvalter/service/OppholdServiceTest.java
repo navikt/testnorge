@@ -28,13 +28,13 @@ class OppholdServiceTest {
     @Test
     void whenGyldigFraIsMissing_thenThrowExecption() {
 
-        var request = List.of(OppholdDTO.builder()
+        var request = OppholdDTO.builder()
                 .type(PERMANENT)
                 .isNew(true)
-                .build());
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdService.convert((List<OppholdDTO>) request));
+                oppholdService.validate(request));
 
         assertThat(exception.getMessage(), containsString("Opphold med oppholdFra må angis"));
     }
@@ -42,15 +42,15 @@ class OppholdServiceTest {
     @Test
     void whenInvalidDateInterval_thenThrowExecption() {
 
-        var request = List.of(OppholdDTO.builder()
+        var request = OppholdDTO.builder()
                 .oppholdFra(LocalDate.of(2020, 1, 1).atStartOfDay())
                 .oppholdTil(LocalDate.of(2018, 1, 1).atStartOfDay())
                 .type(MIDLERTIDIG)
                 .isNew(true)
-                .build());
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdService.convert((List<OppholdDTO>) request));
+                oppholdService.validate(request));
 
         assertThat(exception.getMessage(), containsString("Ugyldig datointervall: oppholdFra må være før oppholdTil"));
     }
@@ -58,13 +58,13 @@ class OppholdServiceTest {
     @Test
     void whenTypeIsEmpty_thenThrowExecption() {
 
-        var request = List.of(OppholdDTO.builder()
+        var request = OppholdDTO.builder()
                 .oppholdFra(LocalDate.of(2020, 1, 1).atStartOfDay())
                 .isNew(true)
-                .build());
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdService.convert((List<OppholdDTO>) request));
+                oppholdService.validate(request));
 
         assertThat(exception.getMessage(), containsString("Type av opphold må angis"));
     }

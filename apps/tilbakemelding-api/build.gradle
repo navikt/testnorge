@@ -26,12 +26,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-
     implementation "org.springdoc:springdoc-openapi-ui:${springdocOpenapiUi}"
 
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation "net.logstash.logback:logstash-logback-encoder:${logstashLogbackEncoder}"
-
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
 
@@ -39,6 +38,7 @@ dependencies {
 
     implementation 'org.projectreactor:reactor-spring:1.0.1.RELEASE'
 
+    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }
