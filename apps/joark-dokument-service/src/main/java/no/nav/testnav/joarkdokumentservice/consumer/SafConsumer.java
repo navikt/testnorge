@@ -1,10 +1,5 @@
 package no.nav.testnav.joarkdokumentservice.consumer;
 
-import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
-
-import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.joarkdokumentservice.config.credentias.TestnavSafProxyServiceProperties;
 import no.nav.testnav.joarkdokumentservice.consumer.command.GetDokumentCommand;
@@ -12,7 +7,7 @@ import no.nav.testnav.joarkdokumentservice.consumer.command.GetDokumentInfoComma
 import no.nav.testnav.joarkdokumentservice.consumer.command.GetPDFCommand;
 import no.nav.testnav.joarkdokumentservice.domain.DokumentType;
 import no.nav.testnav.joarkdokumentservice.domain.Journalpost;
-import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
+import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
@@ -48,7 +43,7 @@ public class SafConsumer {
                         miljo
                 ).call())
                 .map(response -> {
-                    log.info("Response er: {}", response);
+                    log.info("Mottok journalpost: {}", response);
                     return new Journalpost(response.getData().getJournalpost());
                 })
                 .block();
