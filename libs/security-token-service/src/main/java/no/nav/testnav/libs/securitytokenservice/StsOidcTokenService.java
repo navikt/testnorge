@@ -1,14 +1,14 @@
 package no.nav.testnav.libs.securitytokenservice;
 
-import static org.springframework.http.HttpHeaders.ACCEPT;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+
+import static org.springframework.http.HttpHeaders.ACCEPT;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
 public class StsOidcTokenService {
@@ -30,11 +30,11 @@ public class StsOidcTokenService {
     }
 
     public Mono<String> getToken() {
-        if (hasExpired()) {
-            throw new RuntimeException("Sikkerhet-token kunne ikke fornyes");
-        }
         if (shouldRefresh()) {
             return updateToken();
+        }
+        if (hasExpired()) {
+            throw new RuntimeException("Sikkerhet-token kunne ikke fornyes");
         }
         return Mono.just(token);
     }
