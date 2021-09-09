@@ -25,7 +25,7 @@ public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
             RedisStandaloneConfiguration redisStandaloneConfiguration,
             JedisClientConfiguration jedisClientConfiguration
     ) {
-        var jedisConnectionFactory = new JedisConnectionFactory(redisStandaloneConfiguration, jedisClientConfiguration);
+        var jedisConnectionFactory = new JedisConnectionFactory(redisStandaloneConfiguration);
         return jedisConnectionFactory;
     }
 
