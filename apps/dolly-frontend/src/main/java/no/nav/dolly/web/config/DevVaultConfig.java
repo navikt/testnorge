@@ -25,4 +25,5 @@ public class DevVaultConfig extends AbstractVaultConfiguration {
     public ClientAuthentication clientAuthentication() {
         return new TokenAuthentication(System.getProperty("spring.cloud.vault.token"));
     }
+
 }

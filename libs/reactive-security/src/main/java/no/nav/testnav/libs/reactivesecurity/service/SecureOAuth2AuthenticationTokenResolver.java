@@ -35,15 +35,13 @@ public class SecureOAuth2AuthenticationTokenResolver implements AuthenticationTo
                 .flatMap(oAuth2AuthenticationToken -> auth2AuthorizedClientService.loadAuthorizedClient(
                                 oAuth2AuthenticationToken.getAuthorizedClientRegistrationId(),
                                 oAuth2AuthenticationToken.getPrincipal().getName()
-                        ).doOnError(error -> log.error("Feil med load", error)).doOnSuccess(value -> log.info("value: {}")).map(client -> client.getAccessToken().getTokenValue())
+                        ).map(client -> client.getAccessToken().getTokenValue())
                 ).map(token -> Token.builder()
                         .value(token)
                         .clientCredentials(false)
                         .oid(null)
                         .build()
-                ).doOnError(error -> log.error("Feil", error))
-                .doOnSuccess(token -> log.info("Token {}", token))
-                .doFinally(value -> log.info("Ferdig? {}", value));
+                );
     }
 
     @Override
