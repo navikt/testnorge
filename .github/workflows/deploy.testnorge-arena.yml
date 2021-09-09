@@ -5,7 +5,7 @@ on:
     branches: master
     paths:
       - apps/testnorge-arena/**
-
+      - libs/**
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/arena:${{ github.sha }}

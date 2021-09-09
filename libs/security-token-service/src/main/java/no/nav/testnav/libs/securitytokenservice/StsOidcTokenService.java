@@ -30,24 +30,13 @@ public class StsOidcTokenService {
     }
 
     public Mono<String> getToken() {
-        updateTokenIfNeeded();
-        return Mono.just(token);
-    }
-
-    private void updateTokenIfNeeded() {
         if (shouldRefresh()) {
-            synchronized (this) {
-                if (shouldRefresh()) {
-                    try {
-                        updateToken();
-                    } catch (RuntimeException e) {
-                        if (hasExpired()) {
-                            throw new RuntimeException("Sikkerhet-token kunne ikke fornyes", e);
-                        }
-                    }
-                }
-            }
+            return updateToken();
         }
+        if (hasExpired()) {
+            throw new RuntimeException("Sikkerhet-token kunne ikke fornyes");
+        }
+        return Mono.just(token);
     }
 
     private boolean shouldRefresh() {
