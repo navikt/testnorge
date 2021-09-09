@@ -13,7 +13,11 @@ import styled from 'styled-components'
 import _get from 'lodash/get'
 import { Digitalinnsending } from '~/components/fagsystem/dokarkiv/form/digital/Digitalinnsending'
 import { FilnavnDollyArray } from '~/components/fagsystem/dokarkiv/modal/FilnavnDollyArray'
+import { pdfjs } from 'react-pdf'
+import pdfjsWorker from 'forhandsvisningsfil/public/static/js/pdf.worker.min'
 import File from 'forhandsvisningsfil'
+
+pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker
 
 interface DokarkivForm {
 	formikBag: FormikProps<{}>
@@ -48,7 +52,7 @@ const FilOpplaster = styled(FileUpload)`
 
 enum Kodeverk {
 	TEMA = 'Tema',
-	NAVSKJEMA = 'NAVSkjema'
+	NAVSKJEMA = 'NAVSkjema',
 }
 
 const dokarkivAttributt = 'dokarkiv'
@@ -75,9 +79,9 @@ export const DokarkivForm = ({ formikBag }: DokarkivForm) => {
 				{
 					filtype: 'PDFA',
 					fysiskDokument: vedl.content.base64,
-					variantformat: 'ARKIV'
-				}
-			]
+					variantformat: 'ARKIV',
+				},
+			],
 		}))
 		dokumentVarianter.length > 0
 			? formikBag.setFieldValue('dokarkiv.dokumenter', dokumentVarianter)
@@ -85,7 +89,7 @@ export const DokarkivForm = ({ formikBag }: DokarkivForm) => {
 	}
 
 	const handleVedleggChange = (filer: [Vedlegg]) => {
-		filer.map(fil => {
+		filer.map((fil) => {
 			const eksisterendeFil = files.find((file: Vedlegg) => file.id === fil.id && file.dokNavn)
 			if (eksisterendeFil) {
 				return (fil.dokNavn = eksisterendeFil.dokNavn)
@@ -161,26 +165,28 @@ DokarkivForm.validation = {
 				.test(
 					'len',
 					'Journalfoerende enhet må enten være blank eller et tall med 4 sifre',
-					val => !val || (val && val.length === 4)
+					(val) => !val || (val && val.length === 4)
 				),
 			avsenderMottaker: Yup.object({
-				idType: Yup.string()
-					.optional()
-					.nullable(),
+				idType: Yup.string().optional().nullable(),
 				id: Yup.string()
 					.when('idType', {
 						is: 'ORGNR',
 						then: Yup.string()
 							.matches(/^[0-9]*$/, 'Orgnummer må være et tall med 9 sifre')
-							.test('len', 'Orgnummer må være et tall med 9 sifre', val => val && val.length === 9)
+							.test(
+								'len',
+								'Orgnummer må være et tall med 9 sifre',
+								(val) => val && val.length === 9
+							),
 					})
 					.when('idType', {
 						is: 'FNR',
 						then: Yup.string()
 							.matches(/^[0-9]*$/, 'Ident må være et tall med 11 sifre')
-							.test('len', 'Ident må være et tall med 11 sifre', val => val && val.length === 11)
+							.test('len', 'Ident må være et tall med 11 sifre', (val) => val && val.length === 11),
 					}),
-				navn: Yup.string().optional()
+				navn: Yup.string().optional(),
 			}),
 			dokumenter: Yup.array().of(
 				Yup.object({
@@ -193,9 +199,9 @@ DokarkivForm.validation = {
 							const brevkode = _get(values, 'dokarkiv.dokumenter[0].brevkode')
 							return brevkode !== ''
 						}
-					)
+					),
 				})
-			)
+			),
 		})
-	)
+	),
 }
