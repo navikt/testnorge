@@ -15,7 +15,7 @@ import { Digitalinnsending } from '~/components/fagsystem/dokarkiv/form/digital/
 import { FilnavnDollyArray } from '~/components/fagsystem/dokarkiv/modal/FilnavnDollyArray'
 import { pdfjs } from 'react-pdf'
 // @ts-ignore
-import pdfjsWorker from 'forhandsvisningsfil/public/static/js/pdf.worker.min'
+import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry'
 import File from 'forhandsvisningsfil'
 
 pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker
