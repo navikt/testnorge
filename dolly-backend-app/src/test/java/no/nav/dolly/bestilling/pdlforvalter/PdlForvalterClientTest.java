@@ -35,6 +35,7 @@ import java.util.List;
 
 import static com.fasterxml.jackson.databind.node.JsonNodeFactory.instance;
 import static java.util.Collections.singletonList;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -258,6 +259,6 @@ public class PdlForvalterClientTest {
         verifyNoInteractions(pdlForvalterConsumer);
 
         assertThat(progress.getPdlforvalterStatus(),
-                is(equalTo("PdlForvalter&Feil= Bestilling ble ikke sendt til Persondataløsningen (PDL) da ingen av miljøene '{q1;q2;q4}' er valgt")));
+                containsString("PdlForvalter&Feil= Bestilling ble ikke sendt til Persondataløsningen (PDL) da ingen av miljøene"));
     }
 }
