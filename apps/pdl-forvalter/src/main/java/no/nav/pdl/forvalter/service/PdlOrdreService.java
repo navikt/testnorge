@@ -135,7 +135,7 @@ public class PdlOrdreService {
                         mapperFacade.mapAsList(person.getPerson().getTilrettelagtKommunikasjon(), PdlTilrettelagtKommunikasjon.class)),
                 deployService.send(PDL_DOEDFOEDT_BARN, person.getIdent(), person.getPerson().getDoedfoedtBarn())
         )
-                .reduce(Flux.empty(), Flux::concat)
+                .reduce(Flux.empty(), Flux::merge)
                 .collectList()
                 .block();
 
