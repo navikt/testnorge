@@ -29,7 +29,7 @@ repositories {
 
 dependencies {
     implementation 'no.nav.testnav.libs:reactive-core'
-    implementation 'no.nav.testnav.libs:reactive-security'
+    implementation 'no.nav.testnav.libs:reactive-session-security'
     implementation 'no.nav.testnav.libs:reactive-frontend'
 
     implementation 'org.springframework.boot:spring-boot-starter-webflux'

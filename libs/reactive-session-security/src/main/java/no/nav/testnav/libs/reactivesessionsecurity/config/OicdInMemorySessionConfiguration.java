@@ -18,7 +18,6 @@ import no.nav.testnav.libs.reactivesessionsecurity.resolver.InMemoryTokenResolve
 @EnableSpringWebSession
 @Import({
         InMemoryTokenResolver.class,
-        TokenExchange.class,
         AzureAdTokenExchange.class,
         TokenXExchange.class,
         ClientRegistrationIdResolver.class

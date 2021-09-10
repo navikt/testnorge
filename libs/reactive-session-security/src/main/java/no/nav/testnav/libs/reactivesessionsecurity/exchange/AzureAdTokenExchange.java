@@ -51,6 +51,14 @@ public class AzureAdTokenExchange implements GenerateTokenExchange {
                 .flatMap(token -> generateOnBehalfOfAccessToken(token, toScope(serverProperties)));
     }
 
+    @Deprecated
+    public Mono<AccessToken> generateToken(String scope, ServerWebExchange exchange) {
+        return tokenService
+                .getToken(exchange)
+                .flatMap(token -> generateOnBehalfOfAccessToken(token, scope));
+    }
+
+
     private String toScope(ServerProperties serverProperties) {
         return "api://" + serverProperties.getCluster() + "." + serverProperties.getNamespace() + "." + serverProperties.getName() + "/.default";
     }

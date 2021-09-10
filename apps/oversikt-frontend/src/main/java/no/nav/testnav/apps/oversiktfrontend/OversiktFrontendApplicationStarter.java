@@ -17,16 +17,15 @@ import java.util.function.Function;
 import no.nav.testnav.apps.oversiktfrontend.credentials.ProfilApiServiceProperties;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
-import no.nav.testnav.libs.reactivefrontend.filter.AddRequestHeaderGatewayFilterFactory;
-import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2FrontendConfiguration;
-import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
-import no.nav.testnav.libs.reactivesecurity.domain.Scopeable;
-import no.nav.testnav.libs.reactivesecurity.domain.ServerProperties;
-import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
+import no.nav.testnav.libs.reactivesessionsecurity.config.OicdInMemorySessionConfiguration;
+import no.nav.testnav.libs.reactivesessionsecurity.domain.AccessToken;
+import no.nav.testnav.libs.reactivesessionsecurity.domain.ServerProperties;
+import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 
 @Import({
         CoreConfig.class,
-        SecureOAuth2FrontendConfiguration.class,
+        OicdInMemorySessionConfiguration.class,
         FrontendConfig.class
 })
 @SpringBootApplication
@@ -40,13 +39,13 @@ public class OversiktFrontendApplicationStarter {
         SpringApplication.run(OversiktFrontendApplicationStarter.class, args);
     }
 
-    private GatewayFilter filterFrom(ServerProperties scopeable) {
-        return AddRequestHeaderGatewayFilterFactory
-                .createAuthenticationHeaderFilter(
-                        () -> tokenExchange
-                                .generateToken(scopeable)
-                                .map(AccessToken::getTokenValue)
-                );
+    private GatewayFilter addAuthenticationHeaderFilterFrom(ServerProperties serverProperties) {
+        return new AddAuthenticationHeaderToRequestGatewayFilterFactory()
+                .apply(exchange -> {
+                    return tokenExchange
+                            .generateToken(serverProperties, exchange)
+                            .map(AccessToken::getTokenValue);
+                });
     }
 
     @Bean
@@ -56,7 +55,7 @@ public class OversiktFrontendApplicationStarter {
                 .route(createRoute(
                         "testnorge-profil-api",
                         profilApiServiceProperties.getUrl(),
-                        filterFrom(profilApiServiceProperties)
+                        addAuthenticationHeaderFilterFrom(profilApiServiceProperties)
                 ))
                 .build();
     }

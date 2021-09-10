@@ -18,16 +18,15 @@ import no.nav.registre.testnorge.avhengighetsanalysefrontend.config.credentials.
 import no.nav.registre.testnorge.avhengighetsanalysefrontend.config.credentials.ProfilApiServiceProperties;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
-import no.nav.testnav.libs.reactivefrontend.filter.AddRequestHeaderGatewayFilterFactory;
-import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2FrontendConfiguration;
-import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
-import no.nav.testnav.libs.reactivesecurity.domain.Scopeable;
-import no.nav.testnav.libs.reactivesecurity.domain.ServerProperties;
-import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
+import no.nav.testnav.libs.reactivesessionsecurity.config.OicdInMemorySessionConfiguration;
+import no.nav.testnav.libs.reactivesessionsecurity.domain.AccessToken;
+import no.nav.testnav.libs.reactivesessionsecurity.domain.ServerProperties;
+import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 
 @Import({
         CoreConfig.class,
-        SecureOAuth2FrontendConfiguration.class,
+        OicdInMemorySessionConfiguration.class,
         FrontendConfig.class
 })
 @SpringBootApplication
@@ -42,13 +41,13 @@ public class AvhengighetsanalyseFrontendApplicationStarter {
         SpringApplication.run(AvhengighetsanalyseFrontendApplicationStarter.class, args);
     }
 
-    private GatewayFilter filterFrom(ServerProperties scopeable) {
-        return AddRequestHeaderGatewayFilterFactory
-                .createAuthenticationHeaderFilter(
-                        () -> tokenExchange
-                                .generateToken(scopeable)
-                                .map(AccessToken::getTokenValue)
-                );
+    private GatewayFilter addAuthenticationHeaderFilterFrom(ServerProperties serverProperties) {
+        return new AddAuthenticationHeaderToRequestGatewayFilterFactory()
+                .apply(exchange -> {
+                    return tokenExchange
+                            .generateToken(serverProperties, exchange)
+                            .map(AccessToken::getTokenValue);
+                });
     }
 
     @Bean
@@ -58,12 +57,12 @@ public class AvhengighetsanalyseFrontendApplicationStarter {
                 .route(createRoute(
                         "applikasjonsanalyse-service",
                         applikasjonsanalyseServiceProperties.getUrl(),
-                        filterFrom(applikasjonsanalyseServiceProperties)
+                        addAuthenticationHeaderFilterFrom(applikasjonsanalyseServiceProperties)
                 ))
                 .route(createRoute(
                         "testnorge-profil-api",
                         profilApiServiceProperties.getUrl(),
-                        filterFrom(profilApiServiceProperties)
+                        addAuthenticationHeaderFilterFrom(profilApiServiceProperties)
                 ))
                 .build();
     }
