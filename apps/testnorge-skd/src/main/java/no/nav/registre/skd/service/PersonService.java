@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static no.nav.registre.skd.utils.DatoFraIdentUtils.getDato;
+import no.nav.registre.skd.utils.DatoFraIdentUtils;
 
 @Slf4j
 @Service
@@ -34,7 +34,7 @@ public class PersonService {
             }
             for (var ident : identer) {
                 try {
-                    var birthDate = getDato(ident);
+                    var birthDate = DatoFraIdentUtils.getDato(ident);
                     var person = PersonDTO.builder().ident(ident).foedselsdato(birthDate).build();
                     personConsumer.createPerson(person, kilde);
                 } catch (Exception e) {
