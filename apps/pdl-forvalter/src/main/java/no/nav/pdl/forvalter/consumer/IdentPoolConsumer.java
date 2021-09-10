@@ -10,9 +10,9 @@ import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
@@ -59,23 +59,10 @@ public class IdentPoolConsumer {
         }
     }
 
-    public void releaseIdents(List<String> identer) {
+    public Flux<String[]> releaseIdents(List<String> identer) {
 
-        var startTime = currentTimeMillis();
-
-        try {
-            accessTokenService.generateToken(properties).flatMap(
+        return  Flux.from(accessTokenService.generateToken(properties).flatMap(
                     token -> new IdentpoolPostCommand(webClient, RELEASE_IDENTS_URL, REKVIRERT_AV, identer,
-                            token.getTokenValue()).call())
-                    .block();
-
-            log.info("Identpool frigjoering av identer tok {} ms", currentTimeMillis() - startTime);
-
-        } catch (WebClientResponseException e) {
-
-            log.info("Oppslag til identpool feilet etter {} ms {}", currentTimeMillis() - startTime, e.getResponseBodyAsString());
-            throw new InternalServerException(format("Forspørsel %s til ident-pool feilet: %s",
-                    identer.stream().collect(Collectors.joining(",")), e.getResponseBodyAsString()));
-        }
+                            token.getTokenValue()).call()));
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
@@ -14,11 +15,19 @@ import java.util.concurrent.Callable;
 @RequiredArgsConstructor
 public class IdentpoolPostCommand implements Callable<Mono<String[]>> {
 
+
     private final WebClient webClient;
     private final String url;
     private final String query;
     private final Object body;
     private final String token;
+
+    protected static String getMessage(Throwable error) {
+
+        return error instanceof WebClientResponseException ?
+                ((WebClientResponseException) error).getResponseBodyAsString() :
+                error.getMessage();
+    }
 
     @Override
     public Mono<String[]> call() {
@@ -30,6 +39,7 @@ public class IdentpoolPostCommand implements Callable<Mono<String[]>> {
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
-                .bodyToMono(String[].class);
+                .bodyToMono(String[].class)
+                .doOnError(throwable -> log.error(getMessage(throwable)));
     }
 }

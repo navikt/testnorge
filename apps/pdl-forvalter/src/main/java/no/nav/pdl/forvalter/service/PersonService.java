@@ -16,6 +16,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
 
 import java.util.Collection;
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
+import static java.lang.System.currentTimeMillis;
 import static java.time.LocalDateTime.now;
 
 @Slf4j
@@ -67,14 +69,16 @@ public class PersonService {
     @Transactional
     public void deletePerson(String ident) {
 
+        var startTime = currentTimeMillis();
+
         checkAlias(ident);
         var dbPerson = personRepository.findByIdent(ident).orElseThrow(() ->
                 new NotFoundException(format("Ident %s ble ikke funnet", ident)));
 
         var personer = Stream.of(List.of(dbPerson),
-                dbPerson.getRelasjoner().stream()
-                        .map(DbRelasjon::getRelatertPerson)
-                        .collect(Collectors.toList()))
+                        dbPerson.getRelasjoner().stream()
+                                .map(DbRelasjon::getRelatertPerson)
+                                .collect(Collectors.toList()))
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
 
@@ -82,9 +86,15 @@ public class PersonService {
                 .map(DbPerson::getIdent)
                 .collect(Collectors.toList());
 
-        pdlTestdataConsumer.delete(identer);
-        identPoolConsumer.releaseIdents(identer);
-        personRepository.deleteByIdentIn(identer);
+        Stream.of(
+                        pdlTestdataConsumer.delete(identer),
+                        identPoolConsumer.releaseIdents(identer),
+                        Flux.just(personRepository.deleteByIdentIn(identer)))
+                .reduce(Flux.empty(), Flux::merge)
+                .collectList()
+                .block();
+
+        log.info("Sletting av ident {} tok {} ms", ident, currentTimeMillis() - startTime);
     }
 
     @Transactional(readOnly = true)

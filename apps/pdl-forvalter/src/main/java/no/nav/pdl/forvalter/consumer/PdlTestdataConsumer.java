@@ -90,16 +90,15 @@ public class PdlTestdataConsumer {
                         .reduce(Flux.empty(), Flux::concat));
     }
 
-    public void delete(List<String> identer) {
+    public Flux<List<OrdreResponseDTO.HendelseDTO>> delete(List<String> identer) {
 
-        accessTokenService
+        return Flux.from(accessTokenService
                 .generateToken(properties)
                 .flatMapMany(accessToken -> identer
                         .stream()
                         .map(ident -> Flux.from(new PdlDeleteCommandPdl(webClient, getBestillingUrl().get(PDL_SLETTING), ident, accessToken.getTokenValue()).call()))
                         .reduce(Flux.empty(), Flux::concat))
-                .collectList()
-                .block();
+                .collectList());
     }
 
     private Flux<OrdreResponseDTO.HendelseDTO> send(ArtifactValue value, AccessToken accessToken) {
