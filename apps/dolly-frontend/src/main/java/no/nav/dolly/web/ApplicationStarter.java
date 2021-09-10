@@ -41,7 +41,6 @@ import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
 import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivesessionsecurity.domain.AccessToken;
 import no.nav.testnav.libs.reactivesessionsecurity.domain.ServerProperties;
-import no.nav.testnav.libs.reactivesessionsecurity.exchange.AzureAdTokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 
 @Slf4j
@@ -53,7 +52,7 @@ import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 @RequiredArgsConstructor
 public class ApplicationStarter {
 
-    private final AzureAdTokenExchange tokenExchange;
+    private final TokenExchange tokenExchange;
 
     private final TestnavOrganisasjonFasteDataServiceProperties testnavOrganisasjonFasteDataServiceProperties;
     private final TestnavJoarkDokumentServiceProperties testnavJoarkDokumentServiceProperties;
