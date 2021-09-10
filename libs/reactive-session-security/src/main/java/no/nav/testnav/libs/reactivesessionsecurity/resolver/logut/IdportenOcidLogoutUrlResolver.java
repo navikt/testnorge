@@ -1,4 +1,4 @@
-package no.nav.testnav.libs.reactivesecurity.service;
+package no.nav.testnav.libs.reactivesessionsecurity.resolver.logut;
 
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -7,7 +7,8 @@ import reactor.core.publisher.Mono;
 
 import java.net.URI;
 
-import no.nav.testnav.libs.reactivesecurity.domain.WellKnownConfig;
+import no.nav.testnav.libs.reactivesessionsecurity.domain.idporten.WellKnownConfig;
+
 
 public class IdportenOcidLogoutUrlResolver implements OcidLogoutUriResolver {
     private final WebClient webClient;
@@ -35,7 +36,6 @@ public class IdportenOcidLogoutUrlResolver implements OcidLogoutUriResolver {
                         .toUri()
                 );
     }
-
 
 
 }

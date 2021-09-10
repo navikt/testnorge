@@ -9,8 +9,7 @@ import reactor.core.publisher.Mono;
 
 import no.nav.testnav.apps.oversiktfrontend.config.ApplicationsProperties;
 import no.nav.testnav.apps.oversiktfrontend.router.dto.TokenDTO;
-import no.nav.testnav.libs.reactivesecurity.domain.AccessScopes;
-import no.nav.testnav.libs.reactivesecurity.exchange.AzureAdTokenExchange;
+import no.nav.testnav.libs.reactivesessionsecurity.exchange.AzureAdTokenExchange;
 
 @Component
 @RequiredArgsConstructor
@@ -32,7 +31,7 @@ public class ApplicationHandler {
         }
 
         return azureAdTokenExchange
-                .generateToken(new AccessScopes("api://" + scope + "/.default"))
+                .generateToken("api://" + scope + "/.default", request.exchange())
                 .flatMap(token -> ServerResponse.ok().body(BodyInserters.fromValue(new TokenDTO(token))));
     }
 }

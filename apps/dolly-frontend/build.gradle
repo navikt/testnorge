@@ -13,6 +13,7 @@ bootJar {
 dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${DependenciesPlugin.springCloud}"
+        mavenBom "org.springframework.session:spring-session-bom:${DependenciesPlugin.springSession}"
     }
 }
 
@@ -27,20 +28,22 @@ repositories {
     mavenLocal()
 }
 
-
 dependencies {
     implementation 'no.nav.testnav.libs:reactive-core'
-    implementation 'no.nav.testnav.libs:reactive-security'
+    implementation 'no.nav.testnav.libs:reactive-session-security'
     implementation 'no.nav.testnav.libs:reactive-frontend'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
     implementation 'no.nav.testnav.libs:reactive-proxy'
 
-
+    // Session
+    implementation 'redis.clients:jedis'
     implementation 'org.springframework.session:spring-session-core'
+    implementation 'org.springframework.session:spring-session-data-redis'
 
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
@@ -49,6 +52,7 @@ dependencies {
 
     implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
     implementation 'org.hibernate.validator:hibernate-validator'
+    implementation 'javax.servlet:javax.servlet-api:4.0.1'
 
     testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

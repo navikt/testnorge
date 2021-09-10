@@ -12,3 +12,8 @@ TPS_FORVALTERN_PROXY_NAME: tps-forvalteren-dev-proxy
 TPS_FORVALTERN_PROXY_URL: https://tps-forvalteren-dev.dev.adeo.no
 
 POST_LOGOUT_REDIRECT_URI: 'http://localhost:3000/login'
+
+spring:
+  redis:
+    host: localhost
+    port: 6379

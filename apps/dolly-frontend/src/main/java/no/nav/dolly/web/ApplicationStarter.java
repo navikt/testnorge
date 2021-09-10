@@ -38,16 +38,14 @@ import no.nav.dolly.web.credentials.TpsForvalterenProxyProperties;
 import no.nav.dolly.web.credentials.UdiStubProperties;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
-import no.nav.testnav.libs.reactivefrontend.filter.AddRequestHeaderGatewayFilterFactory;
-import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2FrontendConfiguration;
-import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
-import no.nav.testnav.libs.reactivesecurity.domain.ServerProperties;
-import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
+import no.nav.testnav.libs.reactivesessionsecurity.domain.AccessToken;
+import no.nav.testnav.libs.reactivesessionsecurity.domain.ServerProperties;
+import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Import({
         CoreConfig.class,
-        SecureOAuth2FrontendConfiguration.class,
         FrontendConfig.class
 })
 @SpringBootApplication
@@ -111,12 +109,12 @@ public class ApplicationStarter {
     }
 
     private GatewayFilter addAuthenticationHeaderFilterFrom(ServerProperties serverProperties) {
-        return AddRequestHeaderGatewayFilterFactory
-                .createAuthenticationHeaderFilter(
-                        () -> tokenExchange
-                                .generateToken(serverProperties)
-                                .map(AccessToken::getTokenValue)
-                );
+        return new AddAuthenticationHeaderToRequestGatewayFilterFactory()
+                .apply(exchange -> {
+                    return tokenExchange
+                            .generateToken(serverProperties, exchange)
+                            .map(AccessToken::getTokenValue);
+                });
     }
 
     private Function<PredicateSpec, Buildable<Route>> createRoute(ServerProperties serverProperties) {

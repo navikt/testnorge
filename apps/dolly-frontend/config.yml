@@ -14,7 +14,7 @@ spec:
         - https://dolly.ekstern.dev.nav.no/login/oauth2/code/aad
   replicas:
     min: 1
-    max: 2
+    max: 3
   port: 8080
   ingresses:
     - https://dolly.ekstern.dev.nav.no
@@ -30,6 +30,7 @@ spec:
         - application: testnav-joark-dokument-service
         - application: testnav-organisasjon-faste-data-service
         - application: testnav-varslinger-service
+        - application: dolly-redis-session
       external:
         - host: person-search-service.dev-fss-pub.nais.io
         - host: udi-stub.dev-fss-pub.nais.io
@@ -80,8 +81,5 @@ spec:
       value: https://tps-forvalteren-proxy.dev-fss-pub.nais.io
     - name: POST_LOGOUT_REDIRECT_URI
       value: https://dolly.ekstern.dev.nav.no/login
-  vault:
-    enabled: true
-    paths:
-      - kvPath: /kv/preprod/fss/dolly-frontend/dolly
-        mountPath: /var/run/secrets/nais.io/vault
+    - name: REDIS_HOST
+      value: dolly-redis-session.dolly.svc.cluster.local

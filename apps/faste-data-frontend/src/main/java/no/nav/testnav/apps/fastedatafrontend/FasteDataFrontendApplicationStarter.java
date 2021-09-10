@@ -22,17 +22,16 @@ import no.nav.testnav.apps.fastedatafrontend.credentials.PersonServiceProperties
 import no.nav.testnav.apps.fastedatafrontend.credentials.ProfilApiServiceProperties;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
-import no.nav.testnav.libs.reactivefrontend.filter.AddRequestHeaderGatewayFilterFactory;
-import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2FrontendConfiguration;
-import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
-import no.nav.testnav.libs.reactivesecurity.domain.Scopeable;
-import no.nav.testnav.libs.reactivesecurity.domain.ServerProperties;
-import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
+import no.nav.testnav.libs.reactivesessionsecurity.config.OicdInMemorySessionConfiguration;
+import no.nav.testnav.libs.reactivesessionsecurity.domain.AccessToken;
+import no.nav.testnav.libs.reactivesessionsecurity.domain.ServerProperties;
+import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Import({
         CoreConfig.class,
-        SecureOAuth2FrontendConfiguration.class,
+        OicdInMemorySessionConfiguration.class,
         FrontendConfig.class
 })
 @SpringBootApplication
@@ -51,14 +50,13 @@ public class FasteDataFrontendApplicationStarter {
 
     private final TokenExchange tokenExchange;
 
-
-    private GatewayFilter filterFrom(ServerProperties scopeable) {
-        return AddRequestHeaderGatewayFilterFactory
-                .createAuthenticationHeaderFilter(
-                        () -> tokenExchange
-                                .generateToken(scopeable)
-                                .map(AccessToken::getTokenValue)
-                );
+    private GatewayFilter addAuthenticationHeaderFilterFrom(ServerProperties serverProperties) {
+        return new AddAuthenticationHeaderToRequestGatewayFilterFactory()
+                .apply(exchange -> {
+                    return tokenExchange
+                            .generateToken(serverProperties, exchange)
+                            .map(AccessToken::getTokenValue);
+                });
     }
 
     @Bean
@@ -68,27 +66,27 @@ public class FasteDataFrontendApplicationStarter {
                 .route(createRoute(
                         "testnav-organisasjon-service",
                         organisasjonServiceProperties.getUrl(),
-                        filterFrom(organisasjonServiceProperties)
+                        addAuthenticationHeaderFilterFrom(organisasjonServiceProperties)
                 ))
                 .route(createRoute(
                         "testnav-organisasjon-faste-data-service",
                         organisasjonFasteDataServiceProperties.getUrl(),
-                        filterFrom(organisasjonFasteDataServiceProperties)
+                        addAuthenticationHeaderFilterFrom(organisasjonFasteDataServiceProperties)
                 ))
                 .route(createRoute(
                         "testnorge-profil-api",
                         profilApiServiceProperties.getUrl(),
-                        filterFrom(profilApiServiceProperties)
+                        addAuthenticationHeaderFilterFrom(profilApiServiceProperties)
                 ))
                 .route(createRoute(
                         "testnav-person-service",
                         personServiceProperties.getUrl(),
-                        filterFrom(personServiceProperties)
+                        addAuthenticationHeaderFilterFrom(personServiceProperties)
                 ))
                 .route(createRoute(
                         "testnav-person-faste-data-service",
                         personFasteDataServiceProperties.getUrl(),
-                        filterFrom(personFasteDataServiceProperties)
+                        addAuthenticationHeaderFilterFrom(personFasteDataServiceProperties)
                 ))
                 .build();
     }

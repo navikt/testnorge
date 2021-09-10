@@ -1,0 +1,33 @@
+import no.nav.testnav.dependencies.gradle.DependenciesPlugin
+
+plugins {
+    id 'no.nav.testnav.dependencies'
+    id 'java-library'
+}
+
+group = 'no.nav.testnav.libs'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+java.sourceCompatibility = JavaVersion.VERSION_11
+
+dependencies {
+    implementation 'com.auth0:java-jwt:3.18.1'
+
+    // Session
+    implementation "org.springframework.session:spring-session-core:2.5.2"
+    implementation "org.springframework.session:spring-session-data-redis:2.5.2"
+
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:${DependenciesPlugin.springBoot}"
+    implementation "org.springframework.boot:spring-boot-starter-webflux:${DependenciesPlugin.springBoot}"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-client:${DependenciesPlugin.springBoot}"
+    implementation "org.springframework.boot:spring-boot-starter-security:${DependenciesPlugin.springBoot}"
+    implementation "org.springframework.boot:spring-boot-starter-data-redis:${DependenciesPlugin.springBoot}"
+
+    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+}

@@ -1,4 +1,4 @@
-package no.nav.testnav.libs.reactivesecurity.service;
+package no.nav.testnav.libs.reactivesessionsecurity.handler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -14,6 +14,8 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
+import no.nav.testnav.libs.reactivesessionsecurity.resolver.logut.OcidLogoutUriResolver;
 
 public class LogoutSuccessHandler implements ServerLogoutSuccessHandler {
 

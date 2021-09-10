@@ -1,4 +1,4 @@
-package no.nav.testnav.libs.reactivesecurity.service;
+package no.nav.testnav.libs.reactivesessionsecurity.resolver.logut;
 
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import reactor.core.publisher.Mono;
