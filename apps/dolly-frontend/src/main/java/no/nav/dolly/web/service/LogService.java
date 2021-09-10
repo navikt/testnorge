@@ -44,7 +44,6 @@ public class LogService {
     }
 
     public Mono<Void> log(LogEvent event, ServerWebExchange exchange) {
-
         logKibana(event);
         if (event.getMessage() != null && event.getLevel() == Level.INFO) {
             return tilbakemeldingConsumer.send(event.toTilbakemeldingDTO(), exchange);
