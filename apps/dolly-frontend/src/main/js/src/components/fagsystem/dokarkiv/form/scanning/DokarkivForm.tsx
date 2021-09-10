@@ -13,12 +13,11 @@ import styled from 'styled-components'
 import _get from 'lodash/get'
 import { Digitalinnsending } from '~/components/fagsystem/dokarkiv/form/digital/Digitalinnsending'
 import { FilnavnDollyArray } from '~/components/fagsystem/dokarkiv/modal/FilnavnDollyArray'
-import { pdfjs } from 'react-pdf'
+import { pdfjs } from 'react-pdf/dist/umd/entry.webpack'
 // @ts-ignore
-import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry'
-import File from 'forhandsvisningsfil'
+import pdfjsworker from 'react-pdf/src/pdf.worker.entry'
 
-pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker
+pdfjs.GlobalWorkerOptions.workerSrc = pdfjsworker
 
 interface DokarkivForm {
 	formikBag: FormikProps<{}>
@@ -111,7 +110,6 @@ export const DokarkivForm = ({ formikBag }: DokarkivForm) => {
 				// @ts-ignore
 				startOpen={() => erForste(formikBag.values, [dokarkivAttributt])}
 			>
-				{files.length > 0 && <File file={files[0]} />}
 				<Kategori
 					title={`Oppretting av ${digitalInnsending ? 'digitalt' : 'skannet '} dokument`}
 					vis={dokarkivAttributt}

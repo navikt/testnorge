@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "webpack serve --env backend=http://localhost:8020 --open --config webpack.dev.js",
+    "start": "webpack serve --env backend=http://localhost:8020 --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
     "analysis": "webpack --config webpack.analysis.js",
     "test": "jest --watch",
@@ -24,7 +24,7 @@
     "core-js": "^3.17.2",
     "date-fns": "^2.23.0",
     "events-polyfill": "^2.1.2",
-    "filopplasting": "1.1.0",
+    "filopplasting": "^1.1.1",
     "formik": "^2.2.9",
     "fremdriftslinje": "^1.0.7",
     "git-revision-webpack-plugin": "^5.0.0",
@@ -129,7 +129,7 @@
     "eslint-plugin-react": "^7.25.1",
     "eslint-webpack-plugin": "^3.0.1",
     "file-loader": "^6.2.0",
-    "forhandsvisningsfil": "1.2.5",
+    "forhandsvisningsfil": "^1.2.7",
     "html-webpack-plugin": "^5.3.2",
     "less": "^4.1.1",
     "less-loader": "^10.0.1",
@@ -148,7 +148,7 @@
     "webpack": "^5.52.0",
     "webpack-bundle-analyzer": "^3.9.0",
     "webpack-cli": "^4.8.0",
-    "webpack-dev-server": "^4.1.1",
+    "webpack-dev-server": "^4.2.0",
     "worker-loader": "^3.0.8"
   },
   "prettier": {
