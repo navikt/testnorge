@@ -48,7 +48,15 @@ export const AppError = ({ error, stackTrace, style }) => (
 			Noe gikk galt under visning av elementet. <br />
 			Dersom refresh av siden ikke fungerer, forsøk å trykke{' '}
 			<b>
-				<a href="https://dolly.ekstern.dev.nav.no/oauth2/authorization/aad">her</a>
+				<a
+					href={
+						window.location.hostname.includes('localhost')
+							? 'http://localhost:3000/oauth2/authorization/aad'
+							: 'https://dolly.ekstern.dev.nav.no/oauth2/authorization/aad'
+					}
+				>
+					her
+				</a>
 			</b>
 			, eller kontakt Team Dolly på slack{' '}
 			<b>

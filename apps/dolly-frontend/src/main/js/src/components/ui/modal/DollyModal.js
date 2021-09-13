@@ -37,7 +37,7 @@ export default class DollyModal extends PureComponent {
 				shouldCloseOnEsc
 				onRequestClose={closeModal}
 				style={customStyles}
-				bodyOpenClassName={'ReactModal__Body'}
+				bodyOpenClassName={'ReactModal__Body--open'}
 			>
 				<div className="dollymodal">
 					{children}
