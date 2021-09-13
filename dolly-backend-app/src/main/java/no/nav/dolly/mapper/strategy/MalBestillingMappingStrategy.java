@@ -23,7 +23,7 @@ public class MalBestillingMappingStrategy implements MappingStrategy {
 
     @Override public void register(MapperFactory factory) {
         factory.classMap(Bestilling.class, RsMalBestillingWrapper.RsBestilling.class)
-                .customize(new CustomMapper<Bestilling, RsMalBestillingWrapper.RsBestilling>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(Bestilling bestilling, RsMalBestillingWrapper.RsBestilling malBestilling, MappingContext context) {
 

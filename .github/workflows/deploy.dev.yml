@@ -5,7 +5,7 @@ on:
     branches:
       - master
       - feature/pdl-testdata_breaking_changes
-      - feature/dokarkiv-digital-innsending
+      - bugfix/arena-maler
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/dolly-backend:${{ github.sha }}

@@ -52,6 +52,8 @@ import static no.nav.dolly.domain.resultset.SystemTyper.AAREG;
 @RequiredArgsConstructor
 public class AaregClient implements ClientRegister {
 
+    private static final int NOT_FOUND = -1;
+
     private final AaregConsumer aaregConsumer;
     private final AmeldingConsumer ameldingConsumer;
     private final TransaksjonMappingService transaksjonMappingService;
@@ -151,11 +153,14 @@ public class AaregClient implements ClientRegister {
             response.forEach((maaned, resp) -> {
                 log.info("Response fra Amelding service: " + Json.pretty(resp));
                 if (resp.getStatusCode().is2xxSuccessful()) {
-                    appendResult((singletonMap(env, "OK")), "1", result);
-                    saveTransaksjonId(resp, maaned, dollyPerson.getHovedperson(), progress.getBestilling().getId(), env);
-
+                    if (result.indexOf("OK") == NOT_FOUND) {
+                        appendResult((singletonMap(env, "OK")), "1", result);
+                        saveTransaksjonId(resp, maaned, dollyPerson.getHovedperson(), progress.getBestilling().getId(), env);
+                    }
                 } else {
-                    appendResult((singletonMap(env, resp.getStatusCode().getReasonPhrase())), "1", result);
+                    if (result.indexOf(resp.getStatusCode().getReasonPhrase()) == NOT_FOUND) {
+                        appendResult((singletonMap(env, resp.getStatusCode().getReasonPhrase())), "1", result);
+                    }
                 }
             });
         } catch (RuntimeException e) {
