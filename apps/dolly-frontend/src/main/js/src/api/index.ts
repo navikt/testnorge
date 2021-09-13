@@ -36,7 +36,7 @@ const fetchJson = <T>(url: string, config: Config, body?: object): Promise<T> =>
 		url,
 		{
 			method: config.method,
-			headers: { ...config.headers, 'Content-Type': 'application/json' },
+			headers: { ...config.headers },
 		},
 		body
 	).then((response: Response) => response.json() as Promise<T>)
