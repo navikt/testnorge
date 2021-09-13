@@ -1,32 +1,35 @@
-import React, { useState } from 'react'
-import { Redirect } from 'react-router-dom'
-import { Hovedknapp, Knapp } from 'nav-frontend-knapper'
+import React from 'react'
+import { Hovedknapp } from 'nav-frontend-knapper'
 
 export default () => {
-	const [redirectToNavLogin, setRedirectNav] = useState<boolean>(false)
-	const handleNavClick = () => {
-		setRedirectNav(!redirectToNavLogin)
+	const getOnClick = (path: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
+		event.preventDefault()
+		window.location.href = path
 	}
-
-	if (redirectToNavLogin) return <Redirect to={'/oauth2/authorization/aad'} />
 
 	return (
 		<div className="login-container">
 			<div className="login-modal">
-				<h1>Velkommen til Dolly</h1>
-				<h3>
-					En søt liten velkomsttekst med bittelitt info om innlogging. Lorem ipsum dolor sit amet,
-					consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-					aliqua.
-				</h3>
-				<Hovedknapp className="login-modal_button-nav" type="hoved" onClick={handleNavClick}>
+				<h1>Oversikt login</h1>
+				<p>Velg hvordan du ønker å logge inn</p>
+				<p>
+					BankId innlogging er bastert på Digdir testbrukere (
+					<a target="_blank" href="https://docs.digdir.no/idporten_testbrukere.html">
+						Trykk her
+					</a>
+					).
+				</p>
+				<Hovedknapp
+					className="login-modal_button-nav"
+					type="hoved"
+					onClick={getOnClick('/oauth2/authorization/aad')}
+				>
 					Logg inn med NAV-epost
 				</Hovedknapp>
 				<Hovedknapp
 					className="login-modal_button-bankid"
 					type="hoved"
-					disabled={true}
-					title="Kommer snart"
+					onClick={getOnClick('/oauth2/authorization/idporten')}
 				>
 					Logg inn med BankId
 				</Hovedknapp>

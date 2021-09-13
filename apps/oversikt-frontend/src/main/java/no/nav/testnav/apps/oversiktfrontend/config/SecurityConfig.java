@@ -1,10 +1,17 @@
 package no.nav.testnav.apps.oversiktfrontend.config;
 
+import com.nimbusds.jose.jwk.JWK;
+import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+
+import no.nav.testnav.libs.reactivesessionsecurity.handler.LogoutSuccessHandler;
+import no.nav.testnav.libs.reactivesessionsecurity.manager.AuthorizationCodeReactiveAuthenticationManger;
+import no.nav.testnav.libs.reactivesessionsecurity.resolver.logut.IdportenOcidLogoutUrlResolver;
 
 @Configuration
 @EnableWebFluxSecurity
@@ -45,8 +52,7 @@ public class SecurityConfig {
                 ).permitAll()
                 .anyExchange().authenticated()
                 .and().oauth2Login(oAuth2LoginSpec -> oAuth2LoginSpec.authenticationManager(authenticationManger))
-                .formLogin().loginPage("/login")
-                .and().logout(logoutSpec -> logoutSpec
+                .logout(logoutSpec -> logoutSpec
                         .logoutUrl("/logout")
                         .logoutSuccessHandler(logoutSuccessHandler))
                 .build();

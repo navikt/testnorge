@@ -1,2 +1,10 @@
 azure.app.client.id: ${client_id}
 azure.app.client.secret: ${client_secret}
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          idporten:
+            post-logout-redirect-uri: 'http://localhost:3000/login'

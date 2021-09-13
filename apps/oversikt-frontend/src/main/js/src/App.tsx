@@ -27,24 +27,6 @@ const Body = styled.div`
 export default () => {
 	return (
 		<Router>
-			<Header title="Generer token">
-				<HeaderLinkGroup>
-					<HeaderLink
-						href="/magic-token"
-						isActive={() =>
-							window.location.pathname === '/' || window.location.pathname.includes('/magic-token')
-						}
-					>
-						Magic Token
-					</HeaderLink>
-					<HeaderLink
-						href="/access-token/dev-fss.dolly.dolly-backend"
-						isActive={() => window.location.pathname.includes('/access-token')}
-					>
-						Access Token
-					</HeaderLink>
-				</HeaderLinkGroup>
-			</Header>
 			<Body>
 				<Switch>
 					<Route path="/login">

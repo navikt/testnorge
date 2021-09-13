@@ -1,14 +1,15 @@
 import React from 'react'
 import LoginModal from './LoginModal'
 import './LoginPage.less'
-import { HalloweenBackground as Background } from './Background'
+import { SummerBackground as Background } from './Background'
+import { Page } from '@/pages/Page'
 
 export default () => {
 	return (
-		<React.Fragment>
-			<Background>
+		<Background>
+			<Page loggedIn={false}>
 				<LoginModal />
-			</Background>
-		</React.Fragment>
+			</Page>
+		</Background>
 	)
 }

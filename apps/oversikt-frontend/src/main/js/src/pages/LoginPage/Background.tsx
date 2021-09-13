@@ -10,7 +10,7 @@ import Halloween from './backgrounds/Halloween.svg'
 import Snowing from './backgrounds/Snowing.svg'
 
 export const SummerBackground = styled.div`
-	background-image: url(data:image/svg+xml;base64,${btoa(Summer)});
+	background-image: url(${Summer});
 	background-size: 100% auto;
 	background-repeat: no-repeat;
 	background-position: bottom;
@@ -18,7 +18,7 @@ export const SummerBackground = styled.div`
 `
 
 export const ChristmasBackground = styled.div`
-	background-image: url(data:image/svg+xml;base64,${btoa(Christmas)});
+	background-image: url(${Christmas});
 	background-size: 100% auto;
 	background-repeat: no-repeat;
 	background-position: bottom;
@@ -26,14 +26,14 @@ export const ChristmasBackground = styled.div`
 `
 
 export const SnowingBackground = styled.div`
-	background-image: url(data:image/svg+xml;base64,${btoa(Snowing)});
+	background-image: url(${Snowing});
 	background-size: cover;
 	background-position: bottom;
 	background-color: #005077;
 `
 
 export const HalloweenBackground = styled.div`
-	background-image: url(data:image/svg+xml;base64,${btoa(Halloween)});
+	background-image: url(${Halloween});
 	background-size: 100% auto;
 	background-repeat: no-repeat;
 	background-position: bottom;
