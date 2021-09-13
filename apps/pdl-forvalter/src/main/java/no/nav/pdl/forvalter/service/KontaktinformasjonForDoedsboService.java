@@ -294,7 +294,7 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
 
         kontakt.setIdentifikasjonsnummer(
                 createPersonService.execute(PersonRequestDTO.builder()
-                        .foedtEtter(LocalDateTime.now().minusYears(18))
+                        .foedtFoer(LocalDateTime.now().minusYears(18))
                         .foedtEtter(LocalDateTime.now().minusYears(67))
                         .build()).getIdent());
         relasjonService.setRelasjoner(hovedperson, RelasjonType.AVDOEDD_FOR_KONTAKT,

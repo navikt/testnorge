@@ -1,12 +1,11 @@
 package no.nav.pdl.forvalter.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.pdl.forvalter.dto.BestillingRequest;
 import no.nav.pdl.forvalter.service.PdlOrdreService;
 import no.nav.pdl.forvalter.service.PersonService;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
@@ -40,9 +39,9 @@ public class PersonController {
     @ResponseBody
     @PostMapping
     @Operation(description = "Opprett person")
-    public JsonNode createPerson(@RequestBody BestillingRequest request) {
+    public String createPerson(@RequestBody BestillingRequestDTO request) {
 
-        throw new UnsupportedOperationException("opprette person er ikke implementert");
+        return personService.createPerson(request);
     }
 
     @ResponseBody

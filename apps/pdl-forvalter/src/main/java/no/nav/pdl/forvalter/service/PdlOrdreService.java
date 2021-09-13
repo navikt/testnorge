@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
+import static java.lang.System.currentTimeMillis;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_ADRESSEBESKYTTELSE;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_BOSTEDADRESSE;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_DELTBOSTED;
@@ -68,10 +69,12 @@ public class PdlOrdreService {
 
     public OrdreResponseDTO send(String ident) {
 
+        var startTime = currentTimeMillis();
+
         var dbPerson = personRepository.findByIdent(ident)
                 .orElseThrow(() -> new NotFoundException(format("Ident %s ikke funnet", ident)));
 
-        return OrdreResponseDTO.builder()
+        var response =  OrdreResponseDTO.builder()
                 .relasjoner(dbPerson.getRelasjoner().stream()
                         .map(DbRelasjon::getRelatertPerson)
                         .map(person -> PersonHendelserDTO.builder()
@@ -84,6 +87,10 @@ public class PdlOrdreService {
                         .ordrer(sendAlleInformasjonselementer(dbPerson, false))
                         .build())
                 .build();
+
+        log.info("Ordre (til PDL) for ident {} tok {} ms", ident, currentTimeMillis() - startTime);
+
+        return response;
     }
 
     private List<OrdreResponseDTO.PdlStatusDTO> sendAlleInformasjonselementer(DbPerson person, boolean isRelasjon) {

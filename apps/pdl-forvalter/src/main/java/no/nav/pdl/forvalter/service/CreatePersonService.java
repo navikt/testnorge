@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.IdentPoolConsumer;
 import no.nav.pdl.forvalter.database.model.DbPerson;
@@ -20,14 +21,14 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.lang.System.currentTimeMillis;
 import static java.util.Objects.nonNull;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CreatePersonService {
@@ -49,13 +50,15 @@ public class CreatePersonService {
                 .kjoenn(List.of(KjoennDTO.builder().kjoenn(request.getKjoenn()).build()))
                 .foedsel(List.of(FoedselDTO.builder().build()))
                 .navn(List.of(nonNull(request.getNyttNavn()) ?
-                        NavnDTO.builder().hasMellomnavn(request.getNyttNavn().isHarMellomnavn()).build() :
+                        NavnDTO.builder().hasMellomnavn(request.getNyttNavn().isHasMellomnavn()).build() :
                         new NavnDTO()))
                 .bostedsadresse(List.of(
                         BostedadresseDTO.builder()
                                 .vegadresse(new VegadresseDTO())
                                 .build()))
-                .statsborgerskap(List.of(StatsborgerskapDTO.builder().build()))
+                .statsborgerskap(List.of(nonNull(request.getStatsborgerskap()) ?
+                        request.getStatsborgerskap() :
+                        StatsborgerskapDTO.builder().build()))
                 .folkeregisterpersonstatus(
                         List.of(FolkeregisterpersonstatusDTO.builder().build()))
                 .build();
@@ -63,16 +66,14 @@ public class CreatePersonService {
 
     public PersonDTO execute(PersonRequestDTO request) {
 
+        var startTime = currentTimeMillis();
+
         var mergedPerson = mergeService.merge(buildPerson(nonNull(request) ? request : new PersonRequestDTO()),
                 new PersonDTO());
 
         var delivery = Stream.of(
-                        Flux.just(Arrays.stream(identPoolConsumer.getIdents(
-                                        mapperFacade.map(nonNull(request) ? request : new PersonRequestDTO(), HentIdenterRequest.class)))
-                                .map(ident -> IdentDTO.builder()
-                                        .ident(ident)
-                                        .build())
-                                .collect(Collectors.toList())),
+                        identPoolConsumer.getIdents(
+                                        mapperFacade.map(nonNull(request) ? request : new PersonRequestDTO(), HentIdenterRequest.class)),
                         Flux.just(navnService.convert(mergedPerson.getNavn())))
                 .reduce(Flux.empty(), Flux::merge)
                 .collectList()
@@ -94,6 +95,8 @@ public class CreatePersonService {
                 .block();
 
         folkeregisterPersonstatusService.convert(mergedPerson);
+
+        log.info("Oppretting av ident {} tok {} ms", mergedPerson.getIdent(), currentTimeMillis() - startTime);
 
         return personRepository.save(DbPerson.builder()
                         .person(mergedPerson)

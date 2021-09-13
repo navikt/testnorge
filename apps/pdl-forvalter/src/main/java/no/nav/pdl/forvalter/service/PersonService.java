@@ -9,11 +9,20 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
+import no.nav.pdl.forvalter.dto.HentIdenterRequest;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
@@ -26,6 +35,7 @@ import java.util.stream.Stream;
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
 import static java.time.LocalDateTime.now;
+import static java.util.Objects.isNull;
 
 @Slf4j
 @Service
@@ -121,5 +131,41 @@ public class PersonService {
             throw new InvalidRequestException(
                     format(VIOLATION_ALIAS_EXISTS, alias.get().getPerson().getIdent()));
         }
+    }
+
+    public String createPerson(BestillingRequestDTO request) {
+
+        if (isNull(request.getPerson())){
+            request.setPerson(new PersonDTO());
+        }
+
+        request.getPerson().setIdent(identPoolConsumer.getIdents(
+                        mapperFacade.map(request, HentIdenterRequest.class))
+                .blockFirst().stream().findFirst().get().getIdent());
+
+        if (request.getPerson().getKjoenn().isEmpty()) {
+            request.getPerson().getKjoenn().add(new KjoennDTO());
+        }
+        if (request.getPerson().getFoedsel().isEmpty()) {
+            request.getPerson().getFoedsel().add(new FoedselDTO());
+        }
+        if (request.getPerson().getNavn().isEmpty()) {
+            request.getPerson().getNavn().add(new NavnDTO());
+        }
+        if (request.getPerson().getBostedsadresse().isEmpty()) {
+            request.getPerson().getBostedsadresse().add(BostedadresseDTO.builder()
+                    .vegadresse(new VegadresseDTO())
+                    .build());
+        }
+        if (request.getPerson().getStatsborgerskap().isEmpty()) {
+            request.getPerson().getStatsborgerskap().add(new StatsborgerskapDTO());
+        }
+        if (request.getPerson().getFolkeregisterpersonstatus().isEmpty()) {
+            request.getPerson().getFolkeregisterpersonstatus().add(new FolkeregisterpersonstatusDTO());
+        }
+
+        return updatePerson(request.getPerson().getIdent(), PersonUpdateRequestDTO.builder()
+                .person(request.getPerson())
+                .build());
     }
 }
