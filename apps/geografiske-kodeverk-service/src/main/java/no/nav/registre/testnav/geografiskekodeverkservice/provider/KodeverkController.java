@@ -13,25 +13,28 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
+
 public class KodeverkController {
+
+    private final KodeverkService kodeverkService;
 
     @GetMapping(value = "/kommuner")
     public List<Kodeverk> getKommuner(@RequestParam(required = false) String kommunenr) {
-        return KodeverkService.getKommuner(kommunenr);
+        return kodeverkService.getKommuner(kommunenr);
     }
 
     @GetMapping(value = "/landkoder")
     public List<Kodeverk> getLandkoder(@RequestParam(required = false) String land) {
-        return KodeverkService.getLandkoder(land);
+        return kodeverkService.getLandkoder(land);
     }
 
     @GetMapping(value = "/postnummer")
     public List<Kodeverk> getPostnummer(@RequestParam(required = false) String poststed) {
-        return KodeverkService.getPostnummer(poststed);
+        return kodeverkService.getPostnummer(poststed);
     }
 
     @GetMapping(value = "/embeter")
     public List<Kodeverk> getEmbeter() {
-        return KodeverkService.getEmbeter();
+        return kodeverkService.getEmbeter();
     }
 }

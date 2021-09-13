@@ -17,114 +17,55 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class KodeverkService {
 
-public static List<Kodeverk> getKommuner(String kommunenr) {
-    final Properties kommuner = new Properties();
-    var resource = new ClassPathResource("kommuner/kommuner.yaml");
+    private static final List<Kodeverk> kommunerKodeverkListe;
+    private static final List<Kodeverk> landkoderKodeverkListe;
+    private static final List<Kodeverk> postnummerKodeverkListe;
+    private static final List<Kodeverk> embeterKodeverkListe;
 
-    try (final InputStreamReader stream = new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8)) {
-        kommuner.load(stream);
-    } catch (IOException e) {
-        log.error("Lesing av kommuner feilet", e);
+    static {
+        kommunerKodeverkListe = loadKodeverk("kommuner/kommuner.yaml");
+        landkoderKodeverkListe = loadKodeverk("landkoder/landkoder.yaml");
+        postnummerKodeverkListe = loadKodeverk("postnummer/postnummer.yaml");
+        embeterKodeverkListe = loadKodeverk("vergemaal/embeter.yaml");
     }
 
-    if (kommunenr != null) {
-        List<Kodeverk> result = kommuner.entrySet().stream()
-            .filter(item -> item.getKey().toString().equals(kommunenr))
-            .map(item -> {
-                Kodeverk obj = new Kodeverk();
-                obj.setKode(item.getKey().toString());
-                obj.setNavn(item.getValue().toString());
-                return obj;
-        }).collect(Collectors.toList());
-        return result;
+    private static List<Kodeverk> loadKodeverk(String path) {
+        var resource = new ClassPathResource(path);
+        try (final InputStreamReader stream = new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8)) {
+            final Properties properties = new Properties();
+            properties.load(stream);
+            return properties
+                    .entrySet()
+                    .stream()
+                    .map(Kodeverk::new)
+                    .collect(Collectors.toList());
+        } catch (IOException e) {
+            throw new RuntimeException("Lesing av kodeverk fra " + path + " feilet", e);
+        }
     }
 
-    List<Kodeverk> result = kommuner.entrySet().stream().map(item -> {
-        Kodeverk obj = new Kodeverk();
-        obj.setKode(item.getKey().toString());
-        obj.setNavn(item.getValue().toString());
-        return obj;
-    }).collect(Collectors.toList());
-    return result;
-}
-
-public static List<Kodeverk> getLandkoder(String land) {
-    final Properties landkoder = new Properties();
-    var resource = new ClassPathResource("landkoder/landkoder.yaml");
-
-    try (final InputStreamReader stream = new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8)) {
-        landkoder.load(stream);
-    } catch (IOException e) {
-        log.error("Lesing av landkoder feilet", e);
+    public List<Kodeverk> getKommuner(String kommunenr) {
+        return kommunerKodeverkListe
+                .stream()
+                .filter(kodeverk -> kommunenr == null || kodeverk.getKode().equals(kommunenr))
+                .collect(Collectors.toList());
     }
 
-    if (land != null) {
-        List<Kodeverk> result = landkoder.entrySet().stream()
-                .filter(item -> item.getValue().toString().equals(land))
-                .map(item -> {
-                    Kodeverk obj = new Kodeverk();
-                    obj.setKode(item.getKey().toString());
-                    obj.setNavn(item.getValue().toString());
-                    return obj;
-                }).collect(Collectors.toList());
-        return result;
+    public static List<Kodeverk> getLandkoder(String land) {
+        return landkoderKodeverkListe
+                .stream()
+                .filter(kodeverk -> land == null || kodeverk.getNavn().equals(land))
+                .collect(Collectors.toList());
     }
 
-    List<Kodeverk> result = landkoder.entrySet().stream().map(item -> {
-        Kodeverk obj = new Kodeverk();
-        obj.setKode(item.getKey().toString());
-        obj.setNavn(item.getValue().toString());
-        return obj;
-    }).collect(Collectors.toList());
-    return result;
-}
-
-public static List<Kodeverk> getPostnummer(String poststed) {
-    final Properties postnummer = new Properties();
-    var resource = new ClassPathResource("postnummer/postnummer.yaml");
-
-    try (final InputStreamReader stream = new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8)) {
-        postnummer.load(stream);
-    } catch (IOException e) {
-        log.error("Lesing av postnummer feilet", e);
+    public static List<Kodeverk> getPostnummer(String poststed) {
+        return postnummerKodeverkListe
+                .stream()
+                .filter(kodeverk -> poststed == null || kodeverk.getNavn().equals(poststed))
+                .collect(Collectors.toList());
     }
 
-    if (poststed != null) {
-        List<Kodeverk> result = postnummer.entrySet().stream()
-                .filter(item -> item.getValue().toString().equals(poststed))
-                .map(item -> {
-                    Kodeverk obj = new Kodeverk();
-                    obj.setKode(item.getKey().toString());
-                    obj.setNavn(item.getValue().toString());
-                    return obj;
-                }).collect(Collectors.toList());
-        return result;
+    public static List<Kodeverk> getEmbeter() {
+        return embeterKodeverkListe;
     }
-    List<Kodeverk> result = postnummer.entrySet().stream().map(item -> {
-            Kodeverk obj = new Kodeverk();
-            obj.setKode(item.getKey().toString());
-            obj.setNavn(item.getValue().toString());
-            return obj;
-        }).collect(Collectors.toList());
-    return result;
-}
-
-public static List<Kodeverk> getEmbeter() {
-    final Properties embeter = new Properties();
-    var resource = new ClassPathResource("vergemaal/embeter.yaml");
-
-    try (final InputStreamReader stream = new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8)) {
-        embeter.load(stream);
-    } catch (IOException e) {
-        log.error("Lesing av embeter feilet", e);
-    }
-
-    List<Kodeverk> result = embeter.entrySet().stream().map(item -> {
-        Kodeverk obj = new Kodeverk();
-        obj.setKode(item.getKey().toString());
-        obj.setNavn(item.getValue().toString());
-        return obj;
-    }).collect(Collectors.toList());
-    return result;
-}
 }
