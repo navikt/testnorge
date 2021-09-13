@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import no.nav.registre.skd.utils.DatoFraIdentUtils;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -32,7 +34,8 @@ public class PersonService {
             }
             for (var ident : identer) {
                 try {
-                    personConsumer.createPerson(PersonDTO.builder().ident(ident).build(), kilde);
+                    var birthDate = DatoFraIdentUtils.getDato(ident);
+                    personConsumer.createPerson(PersonDTO.builder().ident(ident).foedselsdato(birthDate).build(), kilde);
                 } catch (Exception e) {
                     log.error("Kunne ikke legge følgende ident til i PDL: {}", ident, e);
                 }
