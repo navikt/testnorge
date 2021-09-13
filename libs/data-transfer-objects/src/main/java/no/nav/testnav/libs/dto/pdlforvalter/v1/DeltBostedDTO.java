@@ -1,21 +1,16 @@
 package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import static java.util.Objects.isNull;
 
 @Data
 @SuperBuilder
@@ -33,8 +28,7 @@ public class DeltBostedDTO extends DbVersjonDTO {
     private UkjentBostedDTO ukjentBosted;
     private MatrikkeladresseDTO matrikkeladresse;
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -43,18 +37,9 @@ public class DeltBostedDTO extends DbVersjonDTO {
         private String bostedskommune;
     }
 
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class PdlDelteBosteder implements Serializable {
+    @JsonIgnore
+    public int countAdresser() {
 
-        private List<DeltBostedDTO> delteBosteder;
-
-        public List<DeltBostedDTO> getDelteBosteder() {
-            if (isNull(delteBosteder)) {
-                delteBosteder = new ArrayList<>();
-            }
-            return delteBosteder;
-        }
+        return count(getVegadresse()) + count(getMatrikkeladresse()) + count(ukjentBosted);
     }
 }

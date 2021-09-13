@@ -1,5 +1,6 @@
 package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,13 +14,19 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class ForelderBarnRelasjonDTO extends DbVersjonDTO {
 
-    private ROLLE minRolleForPerson;
+    private Rolle minRolleForPerson;
     private String relatertPerson;
-    private ROLLE relatertPersonsRolle;
+    private Rolle relatertPersonsRolle;
 
     private Boolean borIkkeSammen;
     private PersonRequestDTO nyRelatertPerson;
     private Boolean partnerErIkkeForelder;
 
-    public enum ROLLE {BARN, FORELDER, MOR, FAR, MEDMOR}
+    public enum Rolle {BARN, FORELDER, MOR, FAR, MEDMOR}
+
+    @JsonIgnore
+    public boolean hasBarn() {
+
+        return Rolle.BARN == relatertPersonsRolle;
+    }
 }

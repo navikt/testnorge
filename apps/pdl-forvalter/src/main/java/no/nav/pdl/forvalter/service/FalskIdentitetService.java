@@ -4,9 +4,8 @@ import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FalskIdentitetDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
@@ -26,7 +25,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
-public class FalskIdentitetService {
+public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
 
     private static final String VALIDATION_UGYLDIG_INTERVAL_ERROR = "Ugyldig datointervall: gyldigFom må være før gyldigTom";
     private static final String VALIDATION_FALSK_IDENTITET_ER_FALSK_MISSING = "Falskidentitet: attribute erFalsk må oppgis";
@@ -49,7 +48,7 @@ public class FalskIdentitetService {
         return isNotBlank(value) ? value : defaultValue;
     }
 
-    private static boolean isNavnUpdateRequired(NavnDTO navn) {
+    private static boolean isNavnUpdateRequired(FalskIdentitetDTO.NavnDTO navn) {
         return isBlank(navn.getFornavn()) || isBlank(navn.getEtternavn()) ||
                 (isBlank(navn.getMellomnavn()) && isTrue(navn.getHasMellomnavn()));
     }
@@ -59,17 +58,17 @@ public class FalskIdentitetService {
         for (var type : person.getFalskIdentitet()) {
 
             if (isTrue(type.getIsNew())) {
-                validate(type);
 
                 handle(type, person.getIdent());
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
-                type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : DbVersjonDTO.Master.FREG);
+                type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
             }
         }
         return person.getFalskIdentitet();
     }
 
-    private void validate(FalskIdentitetDTO identitet) {
+    @Override
+    public void validate(FalskIdentitetDTO identitet) {
 
         if (isNull(identitet.getErFalsk())) {
             throw new InvalidRequestException(VALIDATION_FALSK_IDENTITET_ER_FALSK_MISSING);

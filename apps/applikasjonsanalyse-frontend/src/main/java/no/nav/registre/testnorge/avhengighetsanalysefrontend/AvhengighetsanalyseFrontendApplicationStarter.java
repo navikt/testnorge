@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteLocator;
+import org.springframework.cloud.gateway.route.builder.Buildable;
 import org.springframework.cloud.gateway.route.builder.PredicateSpec;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
@@ -17,15 +18,15 @@ import no.nav.registre.testnorge.avhengighetsanalysefrontend.config.credentials.
 import no.nav.registre.testnorge.avhengighetsanalysefrontend.config.credentials.ProfilApiServiceProperties;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
-import no.nav.testnav.libs.reactivefrontend.filter.AddRequestHeaderGatewayFilterFactory;
-import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2FrontendConfiguration;
-import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
-import no.nav.testnav.libs.reactivesecurity.domain.Scopeable;
-import no.nav.testnav.libs.reactivesecurity.service.AccessTokenService;
+import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
+import no.nav.testnav.libs.reactivesessionsecurity.config.OicdInMemorySessionConfiguration;
+import no.nav.testnav.libs.reactivesessionsecurity.domain.AccessToken;
+import no.nav.testnav.libs.reactivesessionsecurity.domain.ServerProperties;
+import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 
 @Import({
         CoreConfig.class,
-        SecureOAuth2FrontendConfiguration.class,
+        OicdInMemorySessionConfiguration.class,
         FrontendConfig.class
 })
 @SpringBootApplication
@@ -34,19 +35,19 @@ public class AvhengighetsanalyseFrontendApplicationStarter {
 
     private final ApplikasjonsanalyseServiceProperties applikasjonsanalyseServiceProperties;
     private final ProfilApiServiceProperties profilApiServiceProperties;
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
 
     public static void main(String[] args) {
         SpringApplication.run(AvhengighetsanalyseFrontendApplicationStarter.class, args);
     }
 
-    private GatewayFilter filterFrom(Scopeable scopeable) {
-        return AddRequestHeaderGatewayFilterFactory
-                .createAuthenticationHeaderFilter(
-                        () -> accessTokenService
-                                .generateToken(scopeable)
-                                .map(AccessToken::getTokenValue)
-                );
+    private GatewayFilter addAuthenticationHeaderFilterFrom(ServerProperties serverProperties) {
+        return new AddAuthenticationHeaderToRequestGatewayFilterFactory()
+                .apply(exchange -> {
+                    return tokenExchange
+                            .generateToken(serverProperties, exchange)
+                            .map(AccessToken::getTokenValue);
+                });
     }
 
     @Bean
@@ -56,17 +57,17 @@ public class AvhengighetsanalyseFrontendApplicationStarter {
                 .route(createRoute(
                         "applikasjonsanalyse-service",
                         applikasjonsanalyseServiceProperties.getUrl(),
-                        filterFrom(applikasjonsanalyseServiceProperties)
+                        addAuthenticationHeaderFilterFrom(applikasjonsanalyseServiceProperties)
                 ))
                 .route(createRoute(
                         "testnorge-profil-api",
                         profilApiServiceProperties.getUrl(),
-                        filterFrom(profilApiServiceProperties)
+                        addAuthenticationHeaderFilterFrom(profilApiServiceProperties)
                 ))
                 .build();
     }
 
-    private Function<PredicateSpec, Route.AsyncBuilder> createRoute(String segment, String host, GatewayFilter filter) {
+    private Function<PredicateSpec, Buildable<Route>> createRoute(String segment, String host, GatewayFilter filter) {
         return spec -> spec
                 .path("/" + segment + "/**")
                 .filters(filterSpec -> filterSpec

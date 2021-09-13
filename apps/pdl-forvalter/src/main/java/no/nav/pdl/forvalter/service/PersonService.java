@@ -39,6 +39,7 @@ public class PersonService {
     private final IdentPoolConsumer identPoolConsumer;
     private final PdlTestdataConsumer pdlTestdataConsumer;
     private final AliasRepository aliasRepository;
+    private final ValidateArtifactsService validateArtifactsService;
 
     @Transactional
     public String updatePerson(String ident, PersonUpdateRequestDTO request) {
@@ -54,6 +55,8 @@ public class PersonService {
                         .build()));
 
         var mergedPerson = mergeService.merge(request.getPerson(), dbPerson.getPerson());
+        validateArtifactsService.validate(mergedPerson);
+
         var extendedArtifacts = personArtifactService.buildPerson(mergedPerson);
         dbPerson.setPerson(extendedArtifacts);
         dbPerson.setSistOppdatert(now());

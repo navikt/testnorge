@@ -14,7 +14,7 @@ import no.nav.registre.testnav.inntektsmeldingservice.domain.FilLaster;
 import no.nav.testnav.libs.dto.dokarkiv.v1.DokmotRequest;
 import no.nav.testnav.libs.dto.dokarkiv.v1.InntektDokument;
 import no.nav.testnav.libs.dto.dokarkiv.v1.ProsessertInntektDokument;
-import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
+import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 
 @Slf4j
@@ -23,7 +23,7 @@ public class DokmotConsumer {
 
     private final WebClient webClient;
     private final AccessTokenService accessTokenService;
-    private final NaisServerProperties properties;
+    private final ServerProperties properties;
 
     public DokmotConsumer(
             DokarkivProxyServiceProperties properties,

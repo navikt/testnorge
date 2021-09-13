@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 import no.nav.registre.testnorge.arbeidsforholdservice.config.credentials.AaregServiceProperties;
 import no.nav.registre.testnorge.arbeidsforholdservice.consumer.command.GetArbeidstakerArbeidsforholdCommand;
 import no.nav.registre.testnorge.arbeidsforholdservice.consumer.dto.ArbeidsforholdDTO;
-import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
+import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
 import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 
@@ -29,7 +29,7 @@ import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 public class AaregConsumer {
 
     private final WebClient webClient;
-    private final NaisServerProperties serverProperties;
+    private final ServerProperties serverProperties;
     private final AccessTokenService accessTokenService;
 
     public AaregConsumer(

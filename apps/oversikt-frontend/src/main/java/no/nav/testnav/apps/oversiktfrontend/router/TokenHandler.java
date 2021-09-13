@@ -8,19 +8,18 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import no.nav.testnav.apps.oversiktfrontend.router.dto.TokenDTO;
-import no.nav.testnav.libs.reactivesecurity.domain.AccessScopes;
-import no.nav.testnav.libs.reactivesecurity.service.AccessTokenService;
+import no.nav.testnav.libs.reactivesessionsecurity.exchange.AzureAdTokenExchange;
 
 @Component
 @RequiredArgsConstructor
 public class TokenHandler {
 
-    private final AccessTokenService accessTokenService;
+    private final AzureAdTokenExchange azureAdTokenExchange;
 
     public Mono<ServerResponse> onBehalfOf(ServerRequest request) {
         var scope = request.pathVariable("scope");
-        return accessTokenService
-                .generateToken(new AccessScopes("api://" + scope + "/.default"))
+        return azureAdTokenExchange
+                .generateToken("api://" + scope + "/.default", request.exchange())
                 .flatMap(token -> ServerResponse.ok().body(BodyInserters.fromValue(new TokenDTO(token))));
     }
 }

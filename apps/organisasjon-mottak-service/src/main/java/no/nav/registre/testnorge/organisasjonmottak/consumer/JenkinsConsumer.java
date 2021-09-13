@@ -12,7 +12,7 @@ import no.nav.registre.testnorge.organisasjonmottak.consumer.command.StartBEREG0
 import no.nav.registre.testnorge.organisasjonmottak.domain.Flatfil;
 import no.nav.testnav.libs.commands.GetCrumbCommand;
 import no.nav.testnav.libs.dto.jenkins.v1.JenkinsCrumb;
-import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
+import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 
 @Slf4j
@@ -22,7 +22,7 @@ public class JenkinsConsumer {
     private final Environment env;
     private final WebClient webClient;
     private final AccessTokenService accessTokenService;
-    private final NaisServerProperties properties;
+    private final ServerProperties properties;
     private final OrganisasjonBestillingConsumer organisasjonBestillingConsumer;
 
     public JenkinsConsumer(

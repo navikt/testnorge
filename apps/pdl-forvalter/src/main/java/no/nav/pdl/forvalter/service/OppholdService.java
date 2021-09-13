@@ -18,7 +18,7 @@ public class OppholdService extends PdlArtifactService<OppholdDTO> {
     private static final String VALIDATION_OPPHOLD_OVELAP_ERROR = "Feil: Overlappende opphold er detektert";
 
     @Override
-    protected void validate(OppholdDTO opphold) {
+    public void validate(OppholdDTO opphold) {
 
         if (isNull(opphold.getType())) {
             throw new InvalidRequestException(VALIDATION_TYPE_ERROR);

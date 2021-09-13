@@ -6,16 +6,16 @@ inntektstub-t4.rest.api.url: https://inntektstub-t4.nais.preprod.local/api
 altinnInntekt.rest.api.url: https://inntektsmelding-stub.nais.preprod.local/api
 dokmot.joark.rest.api.url: https://dokarkiv-{miljoe}.nais.preprod.local/
 testnorge-aareg.rest.api.url: https://testnorge-aareg.nais.preprod.local/api
-testnorges.ida.credential.inntektstub.username: ${IDA_USERNAME}
-testnorges.ida.credential.inntektstub.password: ${IDA_PASSWORD}
+testnorges.ida.credential.inntektstub.username: asd
+testnorges.ida.credential.inntektstub.password: asd
 andelNyeIdenter: 3
 
-testnorge-inntekt.srvuser.username.dev: ${SERVICEUSER_DEV_USERNAME}
-testnorge-inntekt.srvuser.password.dev: ${SERVICEUSER_DEV_PASSWORD}
+testnorge-inntekt.srvuser.username.dev: asd
+testnorge-inntekt.srvuser.password.dev: asd
 testnorge-inntekt.token.url.dev: https://security-token-service.nais.preprod.local/rest/v1/sts/token
 
-testnorge-inntekt.srvuser.username.test: ${SERVICEUSER_TEST_USERNAME}
-testnorge-inntekt.srvuser.password.test: ${SERVICEUSER_TEST_PASSWORD}
+testnorge-inntekt.srvuser.username.test: asd
+testnorge-inntekt.srvuser.password.test: asd
 testnorge-inntekt.token.url.test: https://security-token-service-t4.nais.preprod.local/rest/v1/sts/token
 
 app:
@@ -32,3 +32,10 @@ spring:
       minimum-idle: 0
   main:
     banner-mode: off
+  cloud.vault:
+    database:
+      enabled: true
+      role: testnorge-inntekt-user
+      backend: postgresql/preprod-fss
+      username-property: spring.datasource.username
+      password-property: spring.datasource.password

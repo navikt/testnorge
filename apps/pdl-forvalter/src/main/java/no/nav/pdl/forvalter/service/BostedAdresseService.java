@@ -18,11 +18,11 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 @Service
 public class BostedAdresseService extends AdresseService<BostedadresseDTO> {
 
-    private static final String VALIDATION_AMBIGUITY_ERROR = "Kun én adresse skal være satt (vegadresse, " +
+    private static final String VALIDATION_AMBIGUITY_ERROR = "Bostedsadresse: kun én adresse skal være satt (vegadresse, " +
             "matrikkeladresse, ukjentbosted, utenlandskAdresse)";
-    private static final String VALIDATION_ADDRESS_ABSENT_ERROR = "Én av adressene må velges (vegadresse, " +
+    private static final String VALIDATION_ADDRESS_ABSENT_ERROR = "Bostedsadresse: én av adressene må velges (vegadresse, " +
             "matrikkeladresse, ukjentbosted, utenlandskAdresse)";
-    private static final String VALIDATION_MASTER_PDL_ERROR = "Utenlandsk adresse krever at master er PDL";
+    private static final String VALIDATION_MASTER_PDL_ERROR = "Bostedsadresse: utenlandsk adresse krever at master er PDL";
 
     private final AdresseServiceConsumer adresseServiceConsumer;
     private final MapperFacade mapperFacade;
@@ -38,7 +38,6 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO> {
         for (var adresse : person.getBostedsadresse()) {
 
             if (isTrue(adresse.getIsNew())) {
-                validate(adresse);
 
                 handle(adresse);
                 populateMiscFields(adresse, person);
@@ -48,18 +47,13 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO> {
         return person.getBostedsadresse();
     }
 
-    private void validate(BostedadresseDTO adresse) {
+    @Override
+    public void validate(BostedadresseDTO adresse) {
 
-        if (count(adresse.getMatrikkeladresse()) +
-                count(adresse.getUtenlandskAdresse()) +
-                count(adresse.getVegadresse()) +
-                count(adresse.getUkjentBosted()) > 1) {
+        if (adresse.countAdresser() > 1) {
             throw new InvalidRequestException(VALIDATION_AMBIGUITY_ERROR);
 
-        } else if (count(adresse.getMatrikkeladresse()) +
-                count(adresse.getUtenlandskAdresse()) +
-                count(adresse.getVegadresse()) +
-                count(adresse.getUkjentBosted()) == 0) {
+        } else if (adresse.countAdresser() == 0) {
             throw new InvalidRequestException(VALIDATION_ADDRESS_ABSENT_ERROR);
         }
 

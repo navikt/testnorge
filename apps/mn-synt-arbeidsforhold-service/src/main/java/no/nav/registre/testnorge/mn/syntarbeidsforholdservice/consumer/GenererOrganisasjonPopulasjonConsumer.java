@@ -5,7 +5,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Set;
 
-import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
+import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.config.credentials.GenererOrganisasjonPopulasjonServerProperties;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command.GetOpplysningspliktigOrgnummerCommand;
@@ -13,7 +13,7 @@ import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command.G
 @Component
 public class GenererOrganisasjonPopulasjonConsumer {
     private final WebClient webClient;
-    private final NaisServerProperties properties;
+    private final ServerProperties properties;
     private final AccessTokenService accessTokenService;
 
     public GenererOrganisasjonPopulasjonConsumer(

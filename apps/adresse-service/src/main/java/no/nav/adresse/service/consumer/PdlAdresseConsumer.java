@@ -4,7 +4,7 @@ import no.nav.adresse.service.config.credentials.PdlServiceProperties;
 import no.nav.adresse.service.consumer.command.PdlAdresseSoekCommand;
 import no.nav.adresse.service.dto.GraphQLRequest;
 import no.nav.adresse.service.dto.PdlAdresseResponse;
-import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
+import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -16,7 +16,7 @@ public class PdlAdresseConsumer {
 
     private final WebClient webClient;
     private final AccessTokenService accessTokenService;
-    private final NaisServerProperties properties;
+    private final ServerProperties properties;
 
     public PdlAdresseConsumer(AccessTokenService accessTokenService, PdlServiceProperties properties) {
         this.accessTokenService = accessTokenService;

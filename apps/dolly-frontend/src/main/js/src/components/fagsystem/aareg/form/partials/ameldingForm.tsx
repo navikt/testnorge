@@ -3,6 +3,8 @@ import styled from 'styled-components'
 import useBoolean from '~/utils/hooks/useBoolean'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
+import _set from 'lodash/set'
+import _cloneDeep from 'lodash/cloneDeep'
 import { format, eachMonthOfInterval } from 'date-fns'
 import Hjelpetekst from '~/components/hjelpetekst'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
@@ -97,26 +99,30 @@ export const AmeldingForm = ({ formikBag }: AmeldingForm): ReactFragment => {
 	}
 
 	const handleArbeidsforholdstypeChange = (event: KodeverkValue) => {
-		if (arbeidsforholdstype === '') {
-			formikBag.setFieldValue('aareg[0].genererPeriode', initialPeriode)
-			formikBag.setFieldValue('aareg[0].amelding', initialAmelding)
-		}
-		if (event.value === 'maritimtArbeidsforhold') {
-			periode.forEach((maaned: string, idx: number) => {
-				formikBag.setFieldValue(`aareg[0].amelding[${idx}].arbeidsforhold[0].fartoy`, initialFartoy)
+		const amelding = _get(formikBag.values, 'aareg[0].amelding')
+		const ameldingClone = _cloneDeep(amelding)
+
+		if (event.value === 'forenkletOppgjoersordning') {
+			ameldingClone.forEach((maaned: string, idx: number) => {
+				_set(ameldingClone[idx], 'arbeidsforhold', [initialForenkletOppgjoersordningOrg])
 			})
 		} else {
-			periode.forEach((maaned: string, idx: number) => {
-				formikBag.setFieldValue(`aareg[0].amelding[${idx}].arbeidsforhold[0].fartoy`, undefined)
+			ameldingClone.forEach((maaned: string, idx: number) => {
+				if (arbeidsforholdstype === 'forenkletOppgjoersordning' || arbeidsforholdstype === '') {
+					_set(ameldingClone[idx], 'arbeidsforhold', [initialArbeidsforholdOrg])
+				}
+				if (event.value === 'maritimtArbeidsforhold') {
+					maaned.arbeidsforhold.forEach((arbforh, id) => {
+						_set(ameldingClone[idx], `arbeidsforhold[${id}].fartoy`, initialFartoy)
+					})
+				} else {
+					maaned.arbeidsforhold.forEach((arbforh, id) => {
+						_set(ameldingClone[idx], `arbeidsforhold[${id}].fartoy`, undefined)
+					})
+				}
 			})
 		}
-		if (event.value === 'forenkletOppgjoersordning') {
-			periode.forEach((maaned: string, idx: number) => {
-				formikBag.setFieldValue(`aareg[0].amelding[${idx}].arbeidsforhold`, [
-					initialForenkletOppgjoersordningOrg
-				])
-			})
-		}
+		formikBag.setFieldValue('aareg[0].amelding', ameldingClone)
 		formikBag.setFieldValue('aareg[0].arbeidsforholdstype', event.value)
 	}
 
@@ -253,8 +259,8 @@ export const AmeldingForm = ({ formikBag }: AmeldingForm): ReactFragment => {
 									Når du ser et lenke-symbol til høyre for månedsoversikten er alle måneder lenket
 									sammen. Det vil si at om du gjør endringer på én måned vil disse bli gjort på alle
 									månedene. Om du trykker på lenken vises en brutt lenke og månedene vil være
-									uavhengige av hverandre. Ihvertfall nesten - endringer som gjøres på én måned ikke
-									vil kun påvirke den valgte måneden og månedene som kommer etter den i perioden.
+									uavhengige av hverandre. Ihvertfall nesten - endringer som gjøres på én måned vil
+									kun påvirke den valgte måneden og månedene som kommer etter den i perioden.
 								</Hjelpetekst>
 							</KjedeContainer>
 							{arbeidsforholdstype === 'frilanserOppdragstakerHonorarPersonerMm' &&

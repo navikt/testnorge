@@ -7,31 +7,32 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import no.nav.dolly.web.credentials.TestnorgeTilbakemeldingApiProperties;
 import no.nav.testnav.libs.dto.tilbakemeldingapi.v1.TilbakemeldingDTO;
-import no.nav.testnav.libs.reactivesecurity.service.AccessTokenService;
+import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Service
 public class TilbakemeldingConsumer {
     private final WebClient webClient;
     private final TestnorgeTilbakemeldingApiProperties testnorgeTilbakemeldingApiProperties;
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
 
     public TilbakemeldingConsumer(
             TestnorgeTilbakemeldingApiProperties tilbakemeldingApiProperties,
-            AccessTokenService accessTokenService
+            TokenExchange tokenExchange
     ) {
         this.testnorgeTilbakemeldingApiProperties = tilbakemeldingApiProperties;
         this.webClient = WebClient.builder().baseUrl(tilbakemeldingApiProperties.getUrl()).build();
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
     }
 
-    public Mono<Void> send(TilbakemeldingDTO dto) {
-        return accessTokenService
-                .generateToken(testnorgeTilbakemeldingApiProperties)
+    public Mono<Void> send(TilbakemeldingDTO dto, ServerWebExchange exchange) {
+        return tokenExchange
+                .generateToken(testnorgeTilbakemeldingApiProperties, exchange)
                 .flatMap(accessToken -> webClient
                         .post()
                         .uri("/api/v1/tilbakemelding")

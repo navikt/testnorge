@@ -20,11 +20,11 @@ module.exports = env =>
 					target: env.backend,
 					secure: false
 				},
-				'/oauth2': {
+				'/oauth2/authorization/aad': {
 					target: env.backend,
 					secure: false
 				},
-				'/login': {
+				'/login/oauth2/code/aad': {
 					target: env.backend,
 					secure: false
 				},
@@ -111,7 +111,7 @@ module.exports = env =>
 					changeOrigin: true,
 					secure: false
 				},
-				'/testnorge-varslinger-api/api': {
+				'/testnav-varslinger-service/api': {
 					target: env.backend,
 					changeOrigin: true,
 					secure: false

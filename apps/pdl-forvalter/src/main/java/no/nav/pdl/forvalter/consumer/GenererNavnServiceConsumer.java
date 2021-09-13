@@ -5,7 +5,7 @@ import no.nav.pdl.forvalter.config.credentials.GenererNavnServiceProperties;
 import no.nav.pdl.forvalter.consumer.command.GenererNavnServiceCommand;
 import no.nav.pdl.forvalter.consumer.command.VerifiserNavnServiceCommand;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
-import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
+import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -22,7 +22,7 @@ public class GenererNavnServiceConsumer {
 
     private final WebClient webClient;
     private final AccessTokenService accessTokenService;
-    private final NaisServerProperties properties;
+    private final ServerProperties properties;
 
     public GenererNavnServiceConsumer(AccessTokenService accessTokenService, GenererNavnServiceProperties properties) {
         this.accessTokenService = accessTokenService;

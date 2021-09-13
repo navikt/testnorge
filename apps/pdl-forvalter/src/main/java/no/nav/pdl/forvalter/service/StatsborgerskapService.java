@@ -5,12 +5,13 @@ import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
 import no.nav.pdl.forvalter.utils.TilfeldigLandService;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -24,7 +25,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
-public class StatsborgerskapService {
+public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
 
     private static final String VALIDATION_LANDKODE_ERROR = "Ugyldig landkode, må være i hht ISO-3 Landkoder";
     private static final String VALIDATION_DATOINTERVALL_ERROR = "Ugyldig datointervall: gyldigFom må være før gyldigTom";
@@ -36,17 +37,17 @@ public class StatsborgerskapService {
         for (var type : person.getStatsborgerskap()) {
 
             if (isTrue(type.getIsNew())) {
-                validate(type);
 
                 handle(type, person.getIdent(), person.getInnflytting().stream().reduce((a, b) -> b).orElse(null));
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
-                type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : DbVersjonDTO.Master.FREG);
+                type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
             }
         }
         return person.getStatsborgerskap();
     }
 
-    private void validate(StatsborgerskapDTO statsborgerskap) {
+    @Override
+    public void validate(StatsborgerskapDTO statsborgerskap) {
 
         if (nonNull(statsborgerskap.getLandkode()) && !isLandkode(statsborgerskap.getLandkode())) {
             throw new InvalidRequestException(VALIDATION_LANDKODE_ERROR);
@@ -72,6 +73,10 @@ public class StatsborgerskapService {
 
         if (isNull(statsborgerskap.getGyldigFraOgMed())) {
             statsborgerskap.setGyldigFraOgMed(DatoFraIdentUtility.getDato(ident).atStartOfDay());
+        }
+
+        if (isNull(statsborgerskap.getBekreftelsesdato()) && Master.PDL == statsborgerskap.getMaster()) {
+            statsborgerskap.setBekreftelsesdato(LocalDateTime.now());
         }
     }
 }

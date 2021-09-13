@@ -13,7 +13,7 @@ import no.nav.registre.testnorge.jenkinsbatchstatusservice.config.credentials.Or
 import no.nav.registre.testnorge.jenkinsbatchstatusservice.consumer.command.SaveOrganisasjonBestillingCommand;
 import no.nav.registre.testnorge.jenkinsbatchstatusservice.consumer.command.UpdateOrganisasjonBestillingCommand;
 import no.nav.testnav.libs.dto.organiasjonbestilling.v1.OrderDTO;
-import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
+import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
 import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 
@@ -23,7 +23,7 @@ public class OrganisasjonBestillingConsumer {
     private static final int TIMEOUT_SECONDS = 10;
     private final WebClient webClient;
     private final AccessTokenService accessTokenService;
-    private final NaisServerProperties properties;
+    private final ServerProperties properties;
 
     public OrganisasjonBestillingConsumer(
             OrganisasjonBestillingServiceProperties properties,

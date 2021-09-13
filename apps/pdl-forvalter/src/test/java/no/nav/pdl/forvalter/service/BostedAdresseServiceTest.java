@@ -45,68 +45,60 @@ class BostedAdresseServiceTest {
     @Test
     void whenMultipleAdressesProvided_thenThrowExecption() {
 
-        var request = PersonDTO.builder()
-                .bostedsadresse(List.of(BostedadresseDTO.builder()
+        var request = BostedadresseDTO.builder()
                         .vegadresse(new VegadresseDTO())
                         .matrikkeladresse(new MatrikkeladresseDTO())
                         .isNew(true)
-                        .build()))
-                .build();
+                        .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.convert(request));
+                bostedAdresseService.validate(request));
 
-        assertThat(exception.getMessage(), containsString("Kun én adresse skal være satt (vegadresse, " +
+        assertThat(exception.getMessage(), containsString("én adresse skal være satt (vegadresse, " +
                 "matrikkeladresse, ukjentbosted, utenlandskAdresse)"));
     }
 
     @Test
     void whenNoAdressProvided_thenThrowExecption() {
 
-        var request = PersonDTO.builder()
-                .bostedsadresse(List.of(BostedadresseDTO.builder()
+        var request = BostedadresseDTO.builder()
                         .isNew(true)
-                        .build()))
-                .build();
+                        .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.convert(request));
+                bostedAdresseService.validate(request));
 
-        assertThat(exception.getMessage(), containsString("Én av adressene må velges " +
+        assertThat(exception.getMessage(), containsString("én av adressene må velges " +
                 "(vegadresse, matrikkeladresse, ukjentbosted, utenlandskAdresse)"));
     }
 
     @Test
     void whenUtenlandskAdresseProvidedAndMasterIsFreg_thenThrowExecption() {
 
-        var request = PersonDTO.builder()
-                .bostedsadresse(List.of(BostedadresseDTO.builder()
+        var request = BostedadresseDTO.builder()
                         .utenlandskAdresse(new UtenlandskAdresseDTO())
                         .master(DbVersjonDTO.Master.FREG)
                         .isNew(true)
-                        .build()))
-                .build();
+                        .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.convert(request));
+                bostedAdresseService.validate(request));
 
-        assertThat(exception.getMessage(), containsString("Utenlandsk adresse krever at master er PDL"));
+        assertThat(exception.getMessage(), containsString("utenlandsk adresse krever at master er PDL"));
     }
 
     @Test
     void whenVegadresseWithBruksenhetsnummerInvalidFormat_thenThrowExecption() {
 
-        var request = PersonDTO.builder()
-                .bostedsadresse(List.of(BostedadresseDTO.builder()
+        var request = BostedadresseDTO.builder()
                         .vegadresse(VegadresseDTO.builder()
                                 .bruksenhetsnummer("HK25419")
                                 .build())
                         .isNew(true)
-                        .build()))
-                .build();
+                        .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.convert(request));
+                bostedAdresseService.validate(request));
 
         assertThat(exception.getMessage(), containsString("Gyldig format er Bokstaven H, L, U eller K etterfulgt av fire sifre"));
     }
@@ -114,17 +106,15 @@ class BostedAdresseServiceTest {
     @Test
     void whenMatrikkeladresseWithBruksenhetsnummerInvalidFormat_thenThrowExecption() {
 
-        var request = PersonDTO.builder()
-                .bostedsadresse(List.of(BostedadresseDTO.builder()
+        var request = BostedadresseDTO.builder()
                         .matrikkeladresse(MatrikkeladresseDTO.builder()
                                 .bruksenhetsnummer("F8021")
                                 .build())
                         .isNew(true)
-                        .build()))
-                .build();
+                        .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.convert(request));
+                bostedAdresseService.validate(request));
 
         assertThat(exception.getMessage(), containsString("Gyldig format er Bokstaven H, L, U eller K etterfulgt av fire sifre"));
     }
@@ -132,19 +122,17 @@ class BostedAdresseServiceTest {
     @Test
     void whenInvalidDateInterval_thenThrowExecption() {
 
-        var request = PersonDTO.builder()
-                .bostedsadresse(List.of(BostedadresseDTO.builder()
+        var request = BostedadresseDTO.builder()
                         .vegadresse(new VegadresseDTO())
                         .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
                         .gyldigTilOgMed(LocalDate.of(2018, 1, 1).atStartOfDay())
                         .isNew(true)
-                        .build()))
-                .build();
+                        .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.convert(request));
+                bostedAdresseService.validate(request));
 
-        assertThat(exception.getMessage(), containsString("Feil: Overlappende adressedatoer er ikke lov"));
+        assertThat(exception.getMessage(), containsString("Adresse: Overlappende adressedatoer er ikke lov"));
     }
 
     @Test
@@ -172,7 +160,7 @@ class BostedAdresseServiceTest {
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 bostedAdresseService.convert(request));
 
-        assertThat(exception.getMessage(), containsString("Feil: Overlappende adressedatoer er ikke lov"));
+        assertThat(exception.getMessage(), containsString("Adresse: Overlappende adressedatoer er ikke lov"));
     }
 
     @Test
@@ -199,7 +187,7 @@ class BostedAdresseServiceTest {
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 bostedAdresseService.convert(request));
 
-        assertThat(exception.getMessage(), containsString("Feil: Overlappende adressedatoer er ikke lov"));
+        assertThat(exception.getMessage(), containsString("Adresse: Overlappende adressedatoer er ikke lov"));
     }
 
     @Test
