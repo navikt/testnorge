@@ -18,9 +18,8 @@ export default () => {
 			<div className="login-modal">
 				<h1>Velkommen til Dolly</h1>
 				<h3>
-					En søt liten velkomsttekst med bittelitt info om innlogging. Lorem ipsum dolor sit amet,
-					consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-					aliqua.
+					Dolly er NAVs selvbetjeningsløsning for å opprette syntetiske testdata.
+					I Dolly kan du opprette syntetiske testpersoner med forskjellige egenskaper, og tilgjengeliggjøre testdataene i valgte testmiljøer.
 				</h3>
 				<NavButton className="login-modal_button-nav" type="hoved" onClick={handleNavClick}>
 					Logg inn med NAV-epost
