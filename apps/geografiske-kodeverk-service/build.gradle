@@ -3,7 +3,7 @@ import no.nav.testnav.dependencies.gradle.DependenciesPlugin
 plugins {
     id 'no.nav.testnav.dependencies'
     id 'java'
-    id 'org.springframework.boot' version "2.3.4.RELEASE"
+    id 'org.springframework.boot' version "2.5.4"
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
 bootJar {
@@ -39,6 +39,7 @@ dependencies {
 
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
 
     implementation "org.springdoc:springdoc-openapi-ui:${DependenciesPlugin.springdocOpenapi}"
 
