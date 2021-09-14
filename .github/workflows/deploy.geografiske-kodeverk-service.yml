@@ -7,7 +7,7 @@ on:
 
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/geografiske-kodeverk-service:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/testnav-geografiske-kodeverk-service:${{ github.sha }}
 
 jobs:
   build_and_deploy:
