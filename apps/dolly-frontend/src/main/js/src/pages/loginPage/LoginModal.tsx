@@ -9,7 +9,7 @@ export default () => {
 		setRedirectNav()
 	}
 
-	if (redirectToNavLogin) return <Redirect to={'/oauth2/authorization/aad'} />
+	if (redirectToNavLogin) return <Redirect to={'/login/oauth2/authorization/aad'} />
 
 	return (
 		<div className="login-container">

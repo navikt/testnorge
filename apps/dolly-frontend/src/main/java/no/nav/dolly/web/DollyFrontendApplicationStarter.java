@@ -52,7 +52,7 @@ import no.nav.testnav.libs.reactivesecurity.service.AccessTokenService;
 })
 @SpringBootApplication
 @RequiredArgsConstructor
-public class ApplicationStarter {
+public class DollyFrontendApplicationStarter {
 
     private final AccessTokenService accessTokenService;
 
@@ -79,7 +79,7 @@ public class ApplicationStarter {
     private final TestnavAdresseServiceProperties testnavAdresseServiceProperties;
 
     public static void main(String[] args) {
-        SpringApplication.run(ApplicationStarter.class, args);
+        SpringApplication.run(DollyFrontendApplicationStarter.class, args);
     }
 
     @Bean
