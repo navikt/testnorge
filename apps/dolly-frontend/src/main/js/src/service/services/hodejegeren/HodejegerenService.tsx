@@ -10,11 +10,11 @@ export default {
 
 		return Request.get(endpoint).then((response: HodejegerenResponse) => {
 			if (response.data.length > 0) {
-				return response.data.map(function(res: ResponseData) {
+				return response.data.map(function (res: ResponseData) {
 					return res.kilder[0].data[0].innhold
 				})
 			}
 			return null
 		})
-	}
+	},
 }

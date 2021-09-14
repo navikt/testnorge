@@ -63,6 +63,7 @@ includeBuild './libs/database'
 includeBuild './libs/domain'
 includeBuild './libs/reporting'
 includeBuild './libs/slack'
+includeBuild './libs/reactive-session-security'
 
 includeBuild './apps/person-service'
 includeBuild './apps/profil-api'
@@ -88,6 +89,7 @@ includeBuild './apps/import-person-service'
 includeBuild './apps/orkestratoren'
 includeBuild './apps/jenkins-batch-status-service'
 includeBuild './apps/organisasjon-bestilling-service'
+includeBuild './apps/testnorge-inntekt'
 
 includeBuild './xsd/arbeidsforhold-xsd'
 
@@ -129,12 +131,10 @@ include(':token-provider-core')
 include(':helsepersonell-service')
 include(':person-export-api')
 include(':apps')
-include(':brreg-stub')
 include(':sigrun-domain')
 include(':libs')
 include(':testnorge-spion')
 include(':opprett-person-pdl')
-include(':testnorge-inntekt')
 include(':tp-core')
 include(':synt-person-api')
 include(':skd-core')
@@ -187,11 +187,9 @@ project(":organisasjon-service").projectDir = file('apps/organisasjon-service')
 project(":token-provider-core").projectDir = file('apps/testnorge-token-provider/token-provider-core')
 project(":helsepersonell-service").projectDir = file('apps/helsepersonell-service')
 project(":person-export-api").projectDir = file('apps/person-export-api')
-project(":brreg-stub").projectDir = file('apps/brreg-stub')
 project(":sigrun-domain").projectDir = file('apps/testnorge-sigrun/sigrun-domain')
 project(":testnorge-spion").projectDir = file('apps/testnorge-spion')
 project(":opprett-person-pdl").projectDir = file('apps/opprett-person-pdl')
-project(":testnorge-inntekt").projectDir = file('apps/testnorge-inntekt')
 project(":tp-core").projectDir = file('apps/testnorge-tp/tp-core')
 project(":synt-person-api").projectDir = file('apps/synt-person-api')
 project(":skd-core").projectDir = file('apps/testnorge-skd/skd-core')
@@ -250,3 +248,6 @@ project(':joark-dokument-service').projectDir = file('apps/joark-dokument-servic
 
 include 'person-faste-data-service'
 project(':person-faste-data-service').projectDir = file('apps/person-faste-data-service')
+
+include(':brreg-stub')
+project(":brreg-stub").projectDir = file('apps/brreg-stub')

@@ -45,4 +45,10 @@ public class SecureJwtAuthenticationTokenResolver implements AuthenticationToken
                             .build();
                 });
     }
+
+    @Override
+    public Mono<String> getClientRegistrationId() {
+        // TODO Read from token
+        return Mono.just("aad");
+    }
 }

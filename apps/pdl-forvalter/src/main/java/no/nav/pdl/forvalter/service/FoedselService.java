@@ -6,7 +6,7 @@ import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
 import no.nav.pdl.forvalter.utils.TilfeldigKommuneService;
 import no.nav.pdl.forvalter.utils.TilfeldigLandService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
@@ -24,7 +24,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
-public class FoedselService {
+public class FoedselService implements BiValidation<FoedselDTO, PersonDTO> {
 
     private final TilfeldigKommuneService tilfeldigKommuneService;
     private final TilfeldigLandService tilfeldigLandService;
@@ -39,7 +39,7 @@ public class FoedselService {
                         person.getBostedsadresse().stream().reduce((a, b) -> b).orElse(null),
                         person.getInnflytting().stream().reduce((a, b) -> b).orElse(null));
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
-                type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : DbVersjonDTO.Master.FREG);
+                type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
             }
         }
         return person.getFoedsel();
@@ -85,5 +85,11 @@ public class FoedselService {
                 foedsel.setFodekommune(tilfeldigKommuneService.getKommune());
             }
         }
+    }
+
+    @Override
+    public void validate(FoedselDTO artifact, PersonDTO personDTO) {
+
+        // Ingen validering
     }
 }

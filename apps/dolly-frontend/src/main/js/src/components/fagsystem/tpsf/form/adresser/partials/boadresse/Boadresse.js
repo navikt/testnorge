@@ -11,7 +11,7 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { AdresseVelger } from '~/components/adresseVelger'
 
 export const Boadresse = ({ formikBag }) => {
-	const settBoadresse = adresse => {
+	const settBoadresse = (adresse) => {
 		formikBag.setFieldValue('tpsf.boadresse', {
 			bolignr: formikBag.values.tpsf.boadresse.bolignr,
 			flyttedato: formikBag.values.tpsf.boadresse.flyttedato,
@@ -23,11 +23,11 @@ export const Boadresse = ({ formikBag }) => {
 			gateadresse: adresse.adressenavn,
 			gatekode: adresse.adressekode,
 			husnummer: adresse.husnummer,
-			kommunenr: adresse.kommunenummer
+			kommunenr: adresse.kommunenummer,
 		})
 	}
 
-	const renderAdresse = postnummerListe => {
+	const renderAdresse = (postnummerListe) => {
 		const { gateadresse, husnummer, postnr } = formikBag.values.tpsf.boadresse
 		let poststed = formikBag.values.tpsf.boadresse.poststed
 		if (!gateadresse) return ''
@@ -45,7 +45,7 @@ export const Boadresse = ({ formikBag }) => {
 		return `${gateadresse} ${parseInt(husnummer)}, ${postnr} ${poststed}`
 	}
 
-	const feilmelding = feil => {
+	const feilmelding = (feil) => {
 		if (
 			!_get(formikBag.values, 'tpsf.boadresse.gateadresse') &&
 			_has(formikBag.touched, 'tpsf.boadresse.gateadresse')

@@ -1,5 +1,5 @@
 import { useAsync } from 'react-use'
-import { BrregstubApi, DollyApi, KrrApi, OrgforvalterApi } from '~/service/Api'
+import { BrregstubApi, DollyApi, KrrApi } from '~/service/Api'
 import Api from '~/api'
 import _isNil from 'lodash/isNil'
 
@@ -40,7 +40,7 @@ export const SelectOptionsOppslag = {
 		return datasettInfo
 	},
 
-	hentInntektsmeldingOptions: enumtype =>
+	hentInntektsmeldingOptions: (enumtype) =>
 		Api.fetchJson(`${uri}/inntektsmelding/${enumtype}`, { method: 'GET' }),
 
 	hentArbeidsforholdstyperInntektstub: () => {
@@ -77,7 +77,7 @@ export const SelectOptionsOppslag = {
 
 	hentVirksomheterFraOrgforvalter: () => {
 		return Api.fetchJson(`/testnav-organisasjon-forvalter/api/v1/organisasjon/virksomheter`, {
-			method: 'GET'
+			method: 'GET',
 		})
 	},
 
@@ -86,7 +86,7 @@ export const SelectOptionsOppslag = {
 			const persondata = data.value && data.value.data ? data.value.data : []
 			const options = []
 			persondata.length > 0 &&
-				persondata.forEach(personInfo => {
+				persondata.forEach((personInfo) => {
 					if (!_isNil(personInfo.fornavn)) {
 						const mellomnavn = !_isNil(personInfo.mellomnavn) ? ' ' + personInfo.mellomnavn : ''
 						const navn = personInfo.fornavn + mellomnavn + ' ' + personInfo.etternavn
@@ -98,7 +98,7 @@ export const SelectOptionsOppslag = {
 			const persondata = data.value && data.value.data ? data.value.data.liste : []
 			const options = []
 			persondata.length > 0 &&
-				persondata.forEach(personInfo => {
+				persondata.forEach((personInfo) => {
 					if (!_isNil(personInfo.fornavn)) {
 						const mellomnavn = !_isNil(personInfo.mellomnavn) ? ' ' + personInfo.mellomnavn : ''
 						const navnOgFnr =
@@ -112,7 +112,7 @@ export const SelectOptionsOppslag = {
 		} else if (type === 'arbeidsforholdstyper') {
 			const options = data.value ? data.value.data.koder : []
 			options.length > 0 &&
-				options.forEach(option => {
+				options.forEach((option) => {
 					if (option.value === 'frilanserOppdragstakerHonorarPersonerMm') {
 						option.label = 'Frilansere/oppdragstakere, honorar, m.m.'
 					}
@@ -124,21 +124,21 @@ export const SelectOptionsOppslag = {
 		} else if (type === 'understatuser') {
 			const statuser = data.value ? Object.entries(data.value.data) : []
 			const options = []
-			statuser.forEach(status => {
+			statuser.forEach((status) => {
 				options.push({ value: parseInt(status[0]), label: `${status[0]}: ${status[1]}` })
 			})
 			return options
 		} else if (type === 'roller') {
 			const roller = data.value ? Object.entries(data.value.data) : []
 			const options = []
-			roller.forEach(rolle => {
+			roller.forEach((rolle) => {
 				options.push({ value: rolle[0], label: rolle[1] })
 			})
 			return options
 		} else if (type === 'sdpLeverandoer') {
 			const leverandoerer = data.value ? Object.entries(data.value.data) : []
 			const options = []
-			leverandoerer.forEach(leverandoer => {
+			leverandoerer.forEach((leverandoer) => {
 				data = leverandoer[1]
 				options.push({ value: parseInt(data.id), label: data.navn })
 			})
@@ -149,14 +149,14 @@ export const SelectOptionsOppslag = {
 			const options = []
 			options.push({ value: '*', label: '* (Alle)' })
 			omraader
-				.filter(omr => {
+				.filter((omr) => {
 					return !ugyldigeKoder.includes(omr[1].value)
 				})
-				.forEach(omraade => {
+				.forEach((omraade) => {
 					data = omraade[1]
 					options.push({ value: data.value, label: data.label })
 				})
 			return options
 		}
-	}
+	},
 }

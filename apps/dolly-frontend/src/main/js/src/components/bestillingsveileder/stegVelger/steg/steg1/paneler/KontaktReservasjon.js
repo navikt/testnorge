@@ -40,11 +40,11 @@ KontaktReservasjonsPanel.initialValues = ({ set, del, has }) => ({
 				sdpLeverandoer: '',
 				spraak: '',
 				registrert: null,
-				reservert: null
+				reservert: null,
 			})
 		},
 		remove() {
 			del('krrstub')
-		}
-	}
+		},
+	},
 })

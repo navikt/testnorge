@@ -47,55 +47,55 @@ OrganisasjonDetaljerPanel.initialValues = ({ set, del, has }: any) => {
 			label: 'Enhetstype',
 			checked: has('organisasjon.enhetstype'),
 			add: () => set('organisasjon.enhetstype', ''),
-			remove: () => del('organisasjon.enhetstype')
+			remove: () => del('organisasjon.enhetstype'),
 		},
 		naeringskode: {
 			label: 'Næringskode',
 			checked: has('organisasjon.naeringskode'),
 			add: () => set('organisasjon.naeringskode', ''),
-			remove: () => del('organisasjon.naeringskode')
+			remove: () => del('organisasjon.naeringskode'),
 		},
 		sektorkode: {
 			label: 'Sektorkode',
 			checked: has('organisasjon.sektorkode'),
 			add: () => set('organisasjon.sektorkode', ''),
-			remove: () => del('organisasjon.sektorkode')
+			remove: () => del('organisasjon.sektorkode'),
 		},
 		formaal: {
 			label: 'Formål',
 			checked: has('organisasjon.formaal'),
 			add: () => set('organisasjon.formaal', ''),
-			remove: () => del('organisasjon.formaal')
+			remove: () => del('organisasjon.formaal'),
 		},
 		stiftelsesdato: {
 			label: 'Stiftelsesdato',
 			checked: has('organisasjon.stiftelsesdato'),
 			add: () => set('organisasjon.stiftelsesdato', ''),
-			remove: () => del('organisasjon.stiftelsesdato')
+			remove: () => del('organisasjon.stiftelsesdato'),
 		},
 		maalform: {
 			label: 'Målform',
 			checked: has('organisasjon.maalform'),
 			add: () => set('organisasjon.maalform', ''),
-			remove: () => del('organisasjon.maalform')
+			remove: () => del('organisasjon.maalform'),
 		},
 		telefon: {
 			label: 'Telefon',
 			checked: has('organisasjon.telefon'),
 			add: () => set('organisasjon.telefon', ''),
-			remove: () => del('organisasjon.telefon')
+			remove: () => del('organisasjon.telefon'),
 		},
 		epost: {
 			label: 'E-postadresse',
 			checked: has('organisasjon.epost'),
 			add: () => set('organisasjon.epost', ''),
-			remove: () => del('organisasjon.epost')
+			remove: () => del('organisasjon.epost'),
 		},
 		nettside: {
 			label: 'Internettadresse',
 			checked: has('organisasjon.nettside'),
 			add: () => set('organisasjon.nettside', ''),
-			remove: () => del('organisasjon.nettside')
+			remove: () => del('organisasjon.nettside'),
 		},
 		forretningsadresse: {
 			label: 'Forretningsadresse',
@@ -106,9 +106,9 @@ OrganisasjonDetaljerPanel.initialValues = ({ set, del, has }: any) => {
 					postnr: '',
 					kommunenr: '',
 					landkode: 'NO',
-					poststed: ''
+					poststed: '',
 				}),
-			remove: () => del('organisasjon.forretningsadresse')
+			remove: () => del('organisasjon.forretningsadresse'),
 		},
 		postadresse: {
 			label: 'Postadresse',
@@ -119,9 +119,9 @@ OrganisasjonDetaljerPanel.initialValues = ({ set, del, has }: any) => {
 					postnr: '',
 					kommunenr: '',
 					landkode: 'NO',
-					poststed: ''
+					poststed: '',
 				}),
-			remove: () => del('organisasjon.postadresse')
-		}
+			remove: () => del('organisasjon.postadresse'),
+		},
 	}
 }

@@ -17,7 +17,7 @@ const log = (
 		level: level,
 		uuid: uuid || _uuid(),
 		rating: rating,
-		isAnonym: isAnonym
+		isAnonym: isAnonym,
 	})
 }
 
@@ -34,5 +34,5 @@ export default {
 	log: ({ event, message, uuid, rating, isAnonym }: Log) =>
 		log(Level.INFO, event, message, uuid, rating, isAnonym),
 	warn: ({ event, message, uuid, rating }: Log) => log(Level.WARNING, event, message, uuid, rating),
-	error: ({ event, message, uuid, rating }: Log) => log(Level.ERROR, event, message, uuid, rating)
+	error: ({ event, message, uuid, rating }: Log) => log(Level.ERROR, event, message, uuid, rating),
 }

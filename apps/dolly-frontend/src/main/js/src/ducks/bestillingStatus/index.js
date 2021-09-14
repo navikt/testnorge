@@ -14,14 +14,14 @@ export const {
 	gjenopprettBestilling,
 	getOrganisasjonBestilling,
 	gjenopprettOrganisasjonBestilling,
-	removeNyBestillingStatus
+	removeNyBestillingStatus,
 } = createActions(
 	{
 		getBestillinger: DollyApi.getBestillinger,
 		cancelBestilling: DollyApi.cancelBestilling,
 		gjenopprettBestilling: DollyApi.gjenopprettBestilling,
 		getOrganisasjonBestilling: DollyApi.getOrganisasjonsnummerByUserId,
-		gjenopprettOrganisasjonBestilling: DollyApi.gjenopprettOrganisasjonBestilling
+		gjenopprettOrganisasjonBestilling: DollyApi.gjenopprettOrganisasjonBestilling,
 	},
 	'removeNyBestillingStatus',
 	{ prefix: 'bestillingStatus' }
@@ -38,32 +38,32 @@ export default handleActions(
 		[onSuccess(getBestillinger)](state, action) {
 			const { data } = action.payload
 			const nyeBestillinger = data
-				.filter(bestilling => !bestilling.ferdig && !state.ny.includes(bestilling.id))
-				.map(bestilling => bestilling.id)
+				.filter((bestilling) => !bestilling.ferdig && !state.ny.includes(bestilling.id))
+				.map((bestilling) => bestilling.id)
 
 			if (nyeBestillinger.length > 0) {
 				state.ny = state.ny.concat(nyeBestillinger)
 			}
 
-			bestillingStatusMapper(data).map(best => {
+			bestillingStatusMapper(data).map((best) => {
 				state.byId[best.id] = best
 			})
 		},
 		[onSuccess(getOrganisasjonBestilling)](state, action) {
 			const { data } = action.payload
 			const nyeBestillinger = data
-				.filter(bestilling => !bestilling.ferdig && !state.ny.includes(bestilling.id))
-				.map(bestilling => bestilling.id)
+				.filter((bestilling) => !bestilling.ferdig && !state.ny.includes(bestilling.id))
+				.map((bestilling) => bestilling.id)
 			if (nyeBestillinger.length > 0) {
 				state.ny = state.ny.concat(nyeBestillinger)
 			}
-			bestillingStatusMapper(data).map(best => {
+			bestillingStatusMapper(data).map((best) => {
 				state.byId[best.id] = best
 			})
 		},
 		[removeNyBestillingStatus](state, action) {
-			state.ny = state.ny.filter(id => id !== action.payload)
-		}
+			state.ny = state.ny.filter((id) => id !== action.payload)
+		},
 	},
 	initialState
 )
@@ -82,7 +82,7 @@ export const getBestillingsListe = (state, IDer) => {
 		const bestilling = {
 			data: state.bestillingStatuser.byId[IDer[i]].bestilling,
 			id: IDer[i],
-			erGjenopprettet: state.bestillingStatuser.byId[IDer[i]].hasOwnProperty('opprettetFraId')
+			erGjenopprettet: state.bestillingStatuser.byId[IDer[i]].hasOwnProperty('opprettetFraId'),
 		}
 		const suksessMiljoer = successMiljoSelector(state.bestillingStatuser.byId[IDer[i]].status)
 		// Arena-bestillinger brukes i personvisning, skal derfor ikke returnere Arena-bestillinger som har feilet
@@ -94,9 +94,11 @@ export const getBestillingsListe = (state, IDer) => {
 }
 
 // Henter bestilling objecter basert på nye bestillinger (Array av ID'er)
-export const nyeBestillingerSelector = state => {
+export const nyeBestillingerSelector = (state) => {
 	// Filter() -> Fjerner non-truthy values hvis find funksjon feiler
-	return state.bestillingStatuser.ny.map(id => getBestillingById(state, id)).filter(x => Boolean(x))
+	return state.bestillingStatuser.ny
+		.map((id) => getBestillingById(state, id))
+		.filter((x) => Boolean(x))
 }
 
 // Filtrer bestillinger basert på søkestreng
@@ -105,21 +107,21 @@ export const sokSelector = (state, searchStr) => {
 	if (!searchStr || !items) return items
 
 	return items.filter(({ listedata }) => {
-		const searchValues = listedata.filter(v => !_isNil(v)).map(v => v.toString().toLowerCase())
-		return searchValues.some(v => v.includes(searchStr.toLowerCase()))
+		const searchValues = listedata.filter((v) => !_isNil(v)).map((v) => v.toString().toLowerCase())
+		return searchValues.some((v) => v.includes(searchStr.toLowerCase()))
 	})
 }
 
 // Object med system som key, og OK-miljøer som value
 // StatusArray = state.bestillingStatus[0].status
-export const successMiljoSelector = statusArray => {
+export const successMiljoSelector = (statusArray) => {
 	const success_list = statusArray.reduce((acc, curr) => {
-		const statuser = curr.statuser.filter(v => v.melding === 'OK')
+		const statuser = curr.statuser.filter((v) => v.melding === 'OK')
 
 		if (statuser.length) {
 			// Dette er statuser som er OK
 			const detaljert = statuser[0].detaljert
-			const envs = detaljert && detaljert.map(v => v.miljo)
+			const envs = detaljert && detaljert.map((v) => v.miljo)
 
 			if (acc[curr.id]) {
 				acc[curr.id] = acc[curr.id].concat(envs)
@@ -132,5 +134,5 @@ export const successMiljoSelector = statusArray => {
 	}, {})
 
 	// Filtrer og sorter miljøer
-	return _mapValues(success_list, v => _uniq(v).sort())
+	return _mapValues(success_list, (v) => _uniq(v).sort())
 }

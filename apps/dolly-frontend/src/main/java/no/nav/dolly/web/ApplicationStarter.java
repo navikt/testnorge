@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteLocator;
+import org.springframework.cloud.gateway.route.builder.Buildable;
 import org.springframework.cloud.gateway.route.builder.PredicateSpec;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
@@ -37,24 +38,21 @@ import no.nav.dolly.web.credentials.TpsForvalterenProxyProperties;
 import no.nav.dolly.web.credentials.UdiStubProperties;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
-import no.nav.testnav.libs.reactivefrontend.filter.AddRequestHeaderGatewayFilterFactory;
-import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2FrontendConfiguration;
-import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
-import no.nav.testnav.libs.reactivesecurity.domain.NaisServerProperties;
-import no.nav.testnav.libs.reactivesecurity.domain.Scopeable;
-import no.nav.testnav.libs.reactivesecurity.service.AccessTokenService;
+import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
+import no.nav.testnav.libs.reactivesessionsecurity.domain.AccessToken;
+import no.nav.testnav.libs.reactivesessionsecurity.domain.ServerProperties;
+import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Import({
         CoreConfig.class,
-        SecureOAuth2FrontendConfiguration.class,
         FrontendConfig.class
 })
 @SpringBootApplication
 @RequiredArgsConstructor
 public class ApplicationStarter {
 
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
 
     private final TestnavOrganisasjonFasteDataServiceProperties testnavOrganisasjonFasteDataServiceProperties;
     private final TestnavJoarkDokumentServiceProperties testnavJoarkDokumentServiceProperties;
@@ -110,32 +108,32 @@ public class ApplicationStarter {
                 .build();
     }
 
-    private GatewayFilter addAuthenticationHeaderFilterFrom(Scopeable scopeable) {
-        return AddRequestHeaderGatewayFilterFactory
-                .createAuthenticationHeaderFilter(
-                        () -> accessTokenService
-                                .generateToken(scopeable)
-                                .map(AccessToken::getTokenValue)
-                );
+    private GatewayFilter addAuthenticationHeaderFilterFrom(ServerProperties serverProperties) {
+        return new AddAuthenticationHeaderToRequestGatewayFilterFactory()
+                .apply(exchange -> {
+                    return tokenExchange
+                            .generateToken(serverProperties, exchange)
+                            .map(AccessToken::getTokenValue);
+                });
     }
 
-    private Function<PredicateSpec, Route.AsyncBuilder> createRoute(NaisServerProperties naisServerProperties) {
+    private Function<PredicateSpec, Buildable<Route>> createRoute(ServerProperties serverProperties) {
         return createRoute(
-                naisServerProperties.getName(),
-                naisServerProperties.getUrl(),
-                addAuthenticationHeaderFilterFrom(naisServerProperties)
+                serverProperties.getName(),
+                serverProperties.getUrl(),
+                addAuthenticationHeaderFilterFrom(serverProperties)
         );
     }
 
-    private Function<PredicateSpec, Route.AsyncBuilder> createRoute(NaisServerProperties naisServerProperties, String segment) {
+    private Function<PredicateSpec, Buildable<Route>> createRoute(ServerProperties serverProperties, String segment) {
         return createRoute(
                 segment,
-                naisServerProperties.getUrl(),
-                addAuthenticationHeaderFilterFrom(naisServerProperties)
+                serverProperties.getUrl(),
+                addAuthenticationHeaderFilterFrom(serverProperties)
         );
     }
 
-    private Function<PredicateSpec, Route.AsyncBuilder> createRoute(String segment, String host, GatewayFilter filter) {
+    private Function<PredicateSpec, Buildable<Route>> createRoute(String segment, String host, GatewayFilter filter) {
         log.info("Redirect fra segment {} til host {}.", segment, host);
         return spec -> spec
                 .path("/" + segment + "/**")

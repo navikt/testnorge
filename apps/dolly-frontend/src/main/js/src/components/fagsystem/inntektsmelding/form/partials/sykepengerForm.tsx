@@ -11,7 +11,7 @@ interface SykepengerForm {
 
 const initialArbeidsperiode = {
 	fom: '',
-	tom: ''
+	tom: '',
 }
 
 export default ({ path }: SykepengerForm) => (

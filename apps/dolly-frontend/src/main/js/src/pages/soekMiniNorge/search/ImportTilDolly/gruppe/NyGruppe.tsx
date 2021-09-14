@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Formik, Form } from 'formik'
+import { Form, Formik } from 'formik'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import * as yup from 'yup'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
@@ -10,21 +10,17 @@ interface NyGruppe {
 }
 const initialValues = {
 	navn: '',
-	hensikt: ''
+	hensikt: '',
 }
 
 const validation = () =>
 	yup.object().shape({
-		navn: yup
-			.string()
-			.trim()
-			.required('Navn er et påkrevd felt')
-			.max(30, 'Maksimalt 30 bokstaver'),
+		navn: yup.string().trim().required('Navn er et påkrevd felt').max(30, 'Maksimalt 30 bokstaver'),
 		hensikt: yup
 			.string()
 			.trim()
 			.required('Gi en liten beskrivelse av hensikten med gruppen')
-			.max(200, 'Maksimalt 200 bokstaver')
+			.max(200, 'Maksimalt 200 bokstaver'),
 	})
 
 export default ({ setValgtGruppe }: NyGruppe) => {
@@ -34,7 +30,7 @@ export default ({ setValgtGruppe }: NyGruppe) => {
 	const onHandleSubmit = async (values: any) => {
 		await DollyApi.createGruppe({
 			navn: values.navn,
-			hensikt: values.hensikt
+			hensikt: values.hensikt,
 		}).then((response: any) => {
 			if (response.error) {
 				setFeilmelding('Noe gikk galt under oppretting av gruppe: ' + response.error)

@@ -30,5 +30,5 @@ export default {
 	getMiljoerByFnr(fnr) {
 		const endpoint = getTpsfUrl() + '/testdata/tpsStatus?identer=' + fnr
 		return Request.get(endpoint)
-	}
+	},
 }

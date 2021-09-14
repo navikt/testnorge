@@ -1,13 +1,11 @@
 import React from 'react'
-import _get from 'lodash/get'
 import * as Yup from 'yup'
-import { requiredDate, requiredString, requiredNumber, ifPresent } from '~/utils/YupValidations'
+import { ifPresent, requiredDate, requiredNumber, requiredString } from '~/utils/YupValidations'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import Panel from '~/components/ui/panel/Panel'
-import { panelError } from '~/components/ui/form/formUtils'
-import { erForste } from '~/components/ui/form/formUtils'
+import { erForste, panelError } from '~/components/ui/form/formUtils'
 import { EnheterForm } from './partials/enheterForm'
 
 const brregAttributt = 'brregstub'
@@ -46,9 +44,7 @@ BrregstubForm.validation = {
 	brregstub: ifPresent(
 		'$brregstub',
 		Yup.object({
-			understatuser: Yup.array()
-				.of(Yup.number())
-				.required('Velg minst én understatus'),
+			understatuser: Yup.array().of(Yup.number()).required('Velg minst én understatus'),
 			enheter: Yup.array().of(
 				Yup.object({
 					rolle: requiredString,
@@ -58,11 +54,11 @@ BrregstubForm.validation = {
 						Yup.object({
 							egenskap: requiredString,
 							fratraadt: Yup.boolean(),
-							registreringsdato: Yup.date()
+							registreringsdato: Yup.date(),
 						})
-					)
+					),
 				})
-			)
+			),
 		})
-	)
+	),
 }

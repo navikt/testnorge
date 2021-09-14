@@ -46,7 +46,7 @@ export const TilfeldigMatrikkelAdresse = ({ formikBag }: AdresseProps) => {
 			undernr: '',
 			postnr: adresse.postnummer,
 			poststed: adresse.poststed,
-			kommunenr: adresse.kommunenummer
+			kommunenr: adresse.kommunenummer,
 		})
 	}
 

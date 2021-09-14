@@ -4,7 +4,7 @@ import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 export default function JiraLenker({ openAm }) {
 	if (!openAm) return false
 
-	const extractRegNr = link => link.substring(28, link.length)
+	const extractRegNr = (link) => link.substring(28, link.length)
 
 	return (
 		<div>
@@ -14,7 +14,7 @@ export default function JiraLenker({ openAm }) {
 					i > 0 && ', ',
 					<a href={link} key={i} target="_blank">
 						{extractRegNr(link)}
-					</a>
+					</a>,
 				])}
 			</div>
 		</div>

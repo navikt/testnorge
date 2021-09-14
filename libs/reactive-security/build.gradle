@@ -36,9 +36,13 @@ publishing {
     }
 }
 dependencies {
+
+    implementation 'com.auth0:java-jwt:3.18.1'
+
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:${DependenciesPlugin.springBoot}"
     implementation "org.springframework.boot:spring-boot-starter-webflux:${DependenciesPlugin.springBoot}"
-    implementation "org.springframework.security:spring-security-oauth2-client:${DependenciesPlugin.springSecurity}"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-client:${DependenciesPlugin.springBoot}"
+    implementation "org.springframework.boot:spring-boot-starter-security:${DependenciesPlugin.springBoot}"
 
     implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"

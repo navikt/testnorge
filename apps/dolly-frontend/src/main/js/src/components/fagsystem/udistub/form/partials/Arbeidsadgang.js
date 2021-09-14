@@ -10,13 +10,13 @@ import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput
 export const Arbeidsadgang = ({ formikBag }) => {
 	const harArbeidsAdgang = _get(formikBag.values, 'udistub.arbeidsadgang.harArbeidsAdgang')
 
-	const endreArbeidsadgang = v => {
+	const endreArbeidsadgang = (v) => {
 		formikBag.setFieldValue('udistub.arbeidsadgang.harArbeidsAdgang', v.value)
 		if (v.value !== 'JA') {
 			formikBag.setFieldValue('udistub.arbeidsadgang.arbeidsOmfang', null)
 			formikBag.setFieldValue('udistub.arbeidsadgang.periode', {
 				fra: null,
-				til: null
+				til: null,
 			})
 			formikBag.setFieldValue('udistub.arbeidsadgang.typeArbeidsadgang', null)
 		}
@@ -24,7 +24,7 @@ export const Arbeidsadgang = ({ formikBag }) => {
 
 	const forklaring = _get(formikBag.values, 'udistub.arbeidsadgang.forklaring')
 
-	const endreForklaring = text => {
+	const endreForklaring = (text) => {
 		formikBag.setFieldValue('udistub.arbeidsadgang.forklaring', text === '' ? null : text)
 	}
 
@@ -75,7 +75,7 @@ export const Arbeidsadgang = ({ formikBag }) => {
 						label="Forklaring"
 						placeholder="Skriv inn forklaring"
 						maxLength={MAX_LENGTH}
-						onChange={event => endreForklaring(event.target.value)}
+						onChange={(event) => endreForklaring(event.target.value)}
 						feil={
 							forklaring && forklaring.length > MAX_LENGTH
 								? { feilmelding: 'Forklaring kan ikke være lenger enn 4000 tegn' }

@@ -10,7 +10,7 @@ import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import { OrganisasjonItem } from '~/components/ui/icon/IconItem'
 import Icon from '~/components/ui/icon/Icon'
 import { OrganisasjonVisning } from '~/components/fagsystem/organisasjoner/visning/Visning'
-import { OrgStatus, EnhetData, EnhetBestilling } from '~/components/fagsystem/organisasjoner/types'
+import { EnhetBestilling, EnhetData, OrgStatus } from '~/components/fagsystem/organisasjoner/types'
 
 type OrganisasjonListe = {
 	bestillinger: Array<EnhetBestilling>
@@ -21,7 +21,7 @@ const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
 	Avvik: 'report-problem-circle',
 	Feilet: 'report-problem-triangle',
-	Stoppet: 'report-problem-triangle'
+	Stoppet: 'report-problem-triangle',
 }
 
 export default function OrganisasjonListe({ bestillinger, organisasjoner }: OrganisasjonListe) {
@@ -50,12 +50,12 @@ export default function OrganisasjonListe({ bestillinger, organisasjoner }: Orga
 							mouseLeaveDelay={0.1}
 							arrowContent={<div className="rc-tooltip-arrow-inner"></div>}
 							align={{
-								offset: ['0', '-10']
+								offset: ['0', '-10'],
 							}}
 						>
 							<div
 								className="icon"
-								onClick={event => {
+								onClick={(event) => {
 									event.stopPropagation()
 								}}
 							>
@@ -64,17 +64,17 @@ export default function OrganisasjonListe({ bestillinger, organisasjoner }: Orga
 						</Tooltip>
 					</CopyToClipboard>
 				</div>
-			)
+			),
 		},
 		{
 			text: 'Navn',
 			width: '30',
-			dataField: 'organisasjonsnavn'
+			dataField: 'organisasjonsnavn',
 		},
 		{
 			text: 'Enhetstype',
 			width: '15',
-			dataField: 'enhetstype'
+			dataField: 'enhetstype',
 		},
 		{
 			text: 'Bestilling-ID',
@@ -84,7 +84,7 @@ export default function OrganisasjonListe({ bestillinger, organisasjoner }: Orga
 				const str = row.bestillingId
 				if (str.length > 1) return `${str[0]} ...`
 				return str[0]
-			}
+			},
 		},
 		{
 			text: 'Status',
@@ -93,8 +93,8 @@ export default function OrganisasjonListe({ bestillinger, organisasjoner }: Orga
 			formatter(cell: string) {
 				// @ts-ignore
 				return <Icon kind={ikonTypeMap[cell]} title={cell} />
-			}
-		}
+			},
+		},
 	]
 
 	return (

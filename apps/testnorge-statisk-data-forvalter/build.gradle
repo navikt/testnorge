@@ -17,7 +17,7 @@ bootJar {
 dependencies {
     implementation 'com.google.guava:guava:30.0-jre'
 
-
+    implementation 'no.nav.testnav.libs:servlet-security'
     implementation 'no.nav.testnav.libs:kafka-config'
     implementation 'no.nav.testnav.libs:kafka-producers'
     implementation 'no.nav.testnav.libs:avro-schema'
@@ -27,37 +27,39 @@ dependencies {
     implementation 'no.nav.testnav.libs:commands'
     implementation 'no.nav.testnav.libs:csv-converter'
 
-    implementation 'org.springframework.kafka:spring-kafka:2.5.6.RELEASE'
+    implementation 'org.springframework.kafka:spring-kafka'
     implementation 'io.confluent:kafka-avro-serializer:6.1.0'
 
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
-
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
+    implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
-    implementation 'org.springframework.boot:spring-boot-starter-web:2.3.4.RELEASE'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator:2.3.4.RELEASE'
+    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
 
     implementation 'org.aspectj:aspectjweaver:1.9.6'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
     implementation "net.logstash.logback:logstash-logback-encoder:${logstashLogbackEncoder}"
-    implementation 'org.springframework.vault:spring-vault-core:2.2.0.RELEASE'
-    implementation 'org.postgresql:postgresql:42.2.16'
-    implementation 'com.zaxxer:HikariCP:3.4.5'
-    implementation 'org.springframework.cloud:spring-cloud-vault-config-databases:2.2.5.RELEASE'
-    implementation 'org.flywaydb:flyway-core:6.4.4'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.3.4.RELEASE'
-    implementation 'com.h2database:h2:1.4.200'
+    implementation 'org.postgresql:postgresql'
+    implementation 'com.zaxxer:HikariCP'
+
+    implementation 'org.flywaydb:flyway-core'
+
+    implementation 'com.h2database:h2'
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'javax.validation:validation-api:2.0.1.Final'
-    implementation 'no.nav.testnav.libs:data-transfer-objects'
-    implementation 'no.nav.testnav.libs:servlet-security'
+
     implementation 'org.apache.httpcomponents:httpclient:4.5.12'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation "org.springdoc:springdoc-openapi-ui:${springdocOpenapiUi}"
-    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config:2.2.5.RELEASE'
-    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:2.2.4.RELEASE'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.3.5.RELEASE'
+
+    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'no.nav.testnav.libs:testing'
+    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
 }
 
 description = 'testnorge-statisk-data-forvalter'

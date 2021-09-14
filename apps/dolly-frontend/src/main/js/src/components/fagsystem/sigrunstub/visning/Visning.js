@@ -11,7 +11,7 @@ export const SigrunstubVisning = ({ data, loading, visTittel = true }) => {
 	const grunnlag = data[0].grunnlag.length > 0
 	const svalbardGrunnlag = data[0].svalbardGrunnlag.length > 0
 
-	const sortedData = data => (Array.isArray(data) ? data.slice().reverse() : data)
+	const sortedData = (data) => (Array.isArray(data) ? data.slice().reverse() : data)
 
 	return (
 		<div>

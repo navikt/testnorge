@@ -17,7 +17,7 @@ export const TextInput = React.forwardRef(
 		ref
 	) => {
 		const css = cn('skjemaelement__input', className, {
-			'skjemaelement__input--harFeil': props.feil
+			'skjemaelement__input--harFeil': props.feil,
 		})
 
 		return (

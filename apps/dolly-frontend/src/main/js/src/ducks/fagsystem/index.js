@@ -13,7 +13,7 @@ import {
 	PensjonApi,
 	SigrunApi,
 	TpsfApi,
-	UdiApi
+	UdiApi,
 } from '~/service/Api'
 import { onSuccess } from '~/ducks/utils/requestActions'
 import { selectIdentById } from '~/ducks/gruppe'
@@ -26,79 +26,79 @@ export const actions = createActions(
 		getTpsf: TpsfApi.getPersoner,
 		getSigrun: [
 			SigrunApi.getPerson,
-			ident => ({
-				ident
-			})
+			(ident) => ({
+				ident,
+			}),
 		],
 		getSigrunSekvensnr: [
 			SigrunApi.getSekvensnummer,
-			ident => ({
-				ident
-			})
+			(ident) => ({
+				ident,
+			}),
 		],
 		getPensjon: [
 			PensjonApi.getPoppInntekt,
-			ident => ({
-				ident
-			})
+			(ident) => ({
+				ident,
+			}),
 		],
 		getInntektstub: [
 			InntektstubApi.getInntektsinformasjon,
-			ident => ({
-				ident
-			})
+			(ident) => ({
+				ident,
+			}),
 		],
 		getKrr: [
 			KrrApi.getPerson,
-			ident => ({
-				ident
-			})
+			(ident) => ({
+				ident,
+			}),
 		],
 		getArena: [
 			ArenaApi.getPerson,
-			ident => ({
-				ident
-			})
+			(ident) => ({
+				ident,
+			}),
 		],
 		getAareg: [
 			DollyApi.getArbeidsforhold,
-			ident => ({
-				ident
-			})
+			(ident) => ({
+				ident,
+			}),
 		],
 		getInst: [
 			InstApi.getPerson,
-			ident => ({
-				ident
-			})
+			(ident) => ({
+				ident,
+			}),
 		],
 		getUdi: [
 			UdiApi.getPerson,
-			ident => ({
-				ident
-			})
+			(ident) => ({
+				ident,
+			}),
 		],
 		getBrreg: [
 			BrregstubApi.getPerson,
-			ident => ({
-				ident
-			})
+			(ident) => ({
+				ident,
+			}),
 		],
 		getPDL: [
 			DollyApi.getPersonFraPdl,
-			ident => ({
-				ident
-			})
+			(ident) => ({
+				ident,
+			}),
 		],
 		slettPerson: [
 			DollyApi.slettPerson,
-			ident => ({
-				ident
-			})
-		]
+			(ident) => ({
+				ident,
+			}),
+		],
 	},
 	{
-		prefix: 'fagsystem' // String used to prefix each type
+		prefix: 'fagsystem', // String used to prefix each type
 	}
 )
 
@@ -134,7 +134,7 @@ const initialState = {
 	instdata: {},
 	udistub: {},
 	pensjonforvalter: {},
-	brregstub: {}
+	brregstub: {},
 }
 
 export default handleActions(
@@ -143,7 +143,7 @@ export default handleActions(
 			return initialState
 		},
 		[onSuccess(actions.getTpsf)](state, action) {
-			action.payload.data.forEach(ident => {
+			action.payload.data.forEach((ident) => {
 				state.tpsf[ident.ident] = ident
 			})
 		},
@@ -153,8 +153,8 @@ export default handleActions(
 		[onSuccess(actions.getSigrunSekvensnr)](state, action) {
 			const inntektData = state.sigrunstub[action.meta.ident]
 			if (inntektData) {
-				state.sigrunstub[action.meta.ident] = inntektData.map(i => {
-					const sekvens = action.payload.data.find(s => s.gjelderPeriode === i.inntektsaar)
+				state.sigrunstub[action.meta.ident] = inntektData.map((i) => {
+					const sekvens = action.payload.data.find((s) => s.gjelderPeriode === i.inntektsaar)
 					const sekvensnummer = sekvens && sekvens.sekvensnummer.toString()
 					return { ...i, sekvensnummer }
 				})
@@ -199,7 +199,7 @@ export default handleActions(
 			delete state.udistub[action.meta.ident]
 			delete state.pensjonforvalter[action.meta.ident]
 			delete state.brregstub[action.meta.ident]
-		}
+		},
 	},
 	initialState
 )
@@ -209,7 +209,7 @@ export const fetchTpsfPersoner = () => (dispatch, getState) => {
 	const state = getState()
 
 	let identListe = []
-	Object.values(state.gruppe?.ident)?.forEach(person => identListe.push(person.ident))
+	Object.values(state.gruppe?.ident)?.forEach((person) => identListe.push(person.ident))
 
 	if (identListe && identListe.length >= 1) dispatch(actions.getTpsf(identListe))
 }
@@ -218,14 +218,14 @@ export const fetchTpsfPersoner = () => (dispatch, getState) => {
  * Sjekke hvilke fagsystemer som har bestillingsstatus satt til 'OK'.
  * De systemene som har OK fetches
  */
-export const fetchDataFraFagsystemer = personId => (dispatch, getState) => {
+export const fetchDataFraFagsystemer = (personId) => (dispatch, getState) => {
 	const state = getState()
 
 	// Person fra gruppe
 	const person = selectIdentById(state, personId)
 
 	// Bestillingen(e) fra bestillingStatuser
-	const bestillinger = person.bestillingId.map(id => getBestillingById(state, id))
+	const bestillinger = person.bestillingId.map((id) => getBestillingById(state, id))
 
 	// Samlet liste over alle statuser
 	const statusArray = bestillinger.reduce((acc, curr) => acc.concat(curr.status), [])
@@ -234,11 +234,11 @@ export const fetchDataFraFagsystemer = personId => (dispatch, getState) => {
 	const success = successMiljoSelector(statusArray)
 
 	// Samle alt fra PDL under en ID
-	if (Object.keys(success).some(a => a.substring(0, 3) === 'PDL')) {
+	if (Object.keys(success).some((a) => a.substring(0, 3) === 'PDL')) {
 		success.PDL = 'PDL'
 	}
 
-	Object.keys(success).forEach(system => {
+	Object.keys(success).forEach((system) => {
 		switch (system) {
 			case 'KRRSTUB':
 				return dispatch(actions.getKrr(personId))
@@ -265,7 +265,7 @@ export const fetchDataFraFagsystemer = personId => (dispatch, getState) => {
 	})
 }
 
-export const fetchDataFraFagsystemerForSoek = personId => dispatch => {
+export const fetchDataFraFagsystemerForSoek = (personId) => (dispatch) => {
 	// Liste over systemer
 	const systemer = [
 		'KRRSTUB',
@@ -275,10 +275,10 @@ export const fetchDataFraFagsystemerForSoek = personId => dispatch => {
 		'PDL',
 		'INST2',
 		'PEN_INNTEKT',
-		'AAREG'
+		'AAREG',
 	]
 
-	systemer.forEach(system => {
+	systemer.forEach((system) => {
 		switch (system) {
 			case 'KRRSTUB':
 				return dispatch(actions.getKrr(personId))
@@ -307,13 +307,8 @@ export const sokSelector = (items, searchStr) => {
 	if (!searchStr) return items
 
 	const query = searchStr.toLowerCase()
-	return items.filter(item =>
-		Object.values(item).some(v =>
-			(v || '')
-				.toString()
-				.toLowerCase()
-				.includes(query)
-		)
+	return items.filter((item) =>
+		Object.values(item).some((v) => (v || '').toString().toLowerCase().includes(query))
 	)
 }
 
@@ -321,10 +316,10 @@ const hentPersonStatus = (ident, bestillingStatus) => {
 	if (!bestillingStatus) return null
 	let totalStatus = 'Ferdig'
 
-	bestillingStatus.status.forEach(fagsystem => {
-		_get(fagsystem, 'statuser', []).forEach(status => {
-			_get(status, 'detaljert', []).forEach(miljoe => {
-				_get(miljoe, 'identer', []).forEach(miljoeIdent => {
+	bestillingStatus.status.forEach((fagsystem) => {
+		_get(fagsystem, 'statuser', []).forEach((status) => {
+			_get(status, 'detaljert', []).forEach((miljoe) => {
+				_get(miljoe, 'identer', []).forEach((miljoeIdent) => {
 					if (miljoeIdent === ident) {
 						if (status.melding !== 'OK') totalStatus = 'Avvik'
 					}
@@ -335,24 +330,26 @@ const hentPersonStatus = (ident, bestillingStatus) => {
 	return totalStatus
 }
 
-export const selectPersonListe = state => {
+export const selectPersonListe = (state) => {
 	const { gruppe, fagsystem } = state
 
 	if (_isEmpty(fagsystem.tpsf)) return null
 
 	// Sortert etter bestillingsId
 	const identer = Object.values(gruppe.ident)
-		.filter(gruppeIdent => gruppeIdent.bestillingId != null && gruppeIdent.bestillingId.length > 0)
+		.filter(
+			(gruppeIdent) => gruppeIdent.bestillingId != null && gruppeIdent.bestillingId.length > 0
+		)
 		.sort((a, b) => _last(b.bestillingId) - _last(a.bestillingId))
-		.filter(gruppeIdent => Object.keys(fagsystem.tpsf).includes(gruppeIdent.ident))
+		.filter((gruppeIdent) => Object.keys(fagsystem.tpsf).includes(gruppeIdent.ident))
 
 	return identer
 		.filter(
-			ident =>
+			(ident) =>
 				ident.bestillingId.length > 0 &&
 				state.bestillingStatuser.byId[ident.bestillingId[0]] != null
 		)
-		.map(ident => {
+		.map((ident) => {
 			const tpsfIdent = fagsystem.tpsf[ident.ident]
 			const mellomnavn = tpsfIdent.mellomnavn ? `${tpsfIdent.mellomnavn.charAt(0)}.` : ''
 
@@ -365,7 +362,7 @@ export const selectPersonListe = state => {
 				navn: `${tpsfIdent.fornavn} ${mellomnavn} ${tpsfIdent.etternavn}`,
 				kjonn: Formatters.kjonn(tpsfIdent.kjonn, tpsfIdent.alder),
 				alder: Formatters.formatAlder(tpsfIdent.alder, tpsfIdent.doedsdato),
-				status: hentPersonStatus(ident.ident, state.bestillingStatuser.byId[ident.bestillingId[0]])
+				status: hentPersonStatus(ident.ident, state.bestillingStatuser.byId[ident.bestillingId[0]]),
 			}
 		})
 }
@@ -382,6 +379,6 @@ export const selectDataForIdent = (state, ident) => {
 		instdata: state.fagsystem.instdata[ident],
 		udistub: state.fagsystem.udistub[ident],
 		pensjonforvalter: state.fagsystem.pensjonforvalter[ident],
-		brregstub: state.fagsystem.brregstub[ident]
+		brregstub: state.fagsystem.brregstub[ident],
 	}
 }

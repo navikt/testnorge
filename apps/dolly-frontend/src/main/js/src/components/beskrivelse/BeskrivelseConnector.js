@@ -5,8 +5,8 @@ import { Beskrivelse } from './Beskrivelse'
 
 const loadingSelector = createLoadingSelector([actions.updateBeskrivelse])
 
-const mapStateToProps = state => ({
-	isUpdatingBeskrivelse: loadingSelector(state)
+const mapStateToProps = (state) => ({
+	isUpdatingBeskrivelse: loadingSelector(state),
 })
 
 const mapDispatchToProps = { updateBeskrivelse: actions.updateBeskrivelse }

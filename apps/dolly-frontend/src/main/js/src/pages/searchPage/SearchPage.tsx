@@ -14,11 +14,11 @@ export default () => {
 				legend="Hvilket datasett ønsker du å søke i?"
 				radios={[
 					{ label: 'Testnorge', value: 'TESTNORGE' },
-					{ label: 'Mini-Norge', value: 'MININORGE' }
+					{ label: 'Mini-Norge', value: 'MININORGE' },
 				]}
 				checked={selected}
 				// @ts-ignore
-				onChange={value => setSelected(value.target.value)}
+				onChange={(value) => setSelected(value.target.value)}
 				name="velg_datasett"
 			/>
 			{selected === 'TESTNORGE' && <TestnorgePage />}

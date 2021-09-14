@@ -17,5 +17,5 @@ export default {
 			{ method: 'POST', headers: { 'Content-Type': 'application/json' } },
 			event
 		)
-	}
+	},
 }

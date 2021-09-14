@@ -8,7 +8,7 @@ describe('Pagination.js', () => {
 	const wrapper = shallow(
 		<Pagination
 			items={items}
-			render={cb => {
+			render={(cb) => {
 				return <div className="test-comp">content</div>
 			}}
 		/>

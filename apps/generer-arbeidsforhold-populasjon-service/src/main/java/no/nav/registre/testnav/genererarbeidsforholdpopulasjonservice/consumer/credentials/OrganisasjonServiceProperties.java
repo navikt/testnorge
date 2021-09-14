@@ -6,12 +6,12 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
+import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
 
 @Getter
 @Setter
 @Configuration
 @ConfigurationProperties(prefix = "consumers.testnav-organisasjon-service")
-public class OrganisasjonServiceProperties extends NaisServerProperties {
+public class OrganisasjonServiceProperties extends ServerProperties {
     private Integer threads;
 }

@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { get as _get } from 'lodash'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
@@ -11,12 +10,12 @@ interface OmsorgspengerForm {
 
 const initialDelvisFravaer = {
 	dato: '',
-	timer: ''
+	timer: '',
 }
 
 const initialFravaersperioder = {
 	fom: '',
-	tom: ''
+	tom: '',
 }
 
 export default ({ path }: OmsorgspengerForm) => {

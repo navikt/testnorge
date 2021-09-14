@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { get as _get } from 'lodash'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 
@@ -9,7 +8,7 @@ interface PleiepengerForm {
 
 const initialPleiepengerperiode = {
 	fom: '',
-	tom: ''
+	tom: '',
 }
 
 export default ({ path }: PleiepengerForm) => (

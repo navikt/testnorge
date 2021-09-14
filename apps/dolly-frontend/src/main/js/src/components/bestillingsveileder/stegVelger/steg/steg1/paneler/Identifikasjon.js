@@ -28,20 +28,20 @@ IdentifikasjonPanel.initialValues = ({ set, del, has }) => ({
 		checked: has('pdlforvalter.falskIdentitet'),
 		add() {
 			set('pdlforvalter.falskIdentitet', {
-				rettIdentitet: { identitetType: 'UKJENT', rettIdentitetErUkjent: true }
+				rettIdentitet: { identitetType: 'UKJENT', rettIdentitetErUkjent: true },
 			})
 		},
 		remove() {
 			del('pdlforvalter.falskIdentitet')
-		}
+		},
 	},
 	utenlandskIdentifikasjonsnummer: {
 		label: 'Har utenlandsk ID',
 		checked: has('pdlforvalter.utenlandskIdentifikasjonsnummer'),
 		add: () =>
 			set('pdlforvalter.utenlandskIdentifikasjonsnummer', [
-				{ identifikasjonsnummer: '', kilde: '', opphoert: '', utstederland: '' }
+				{ identifikasjonsnummer: '', kilde: '', opphoert: '', utstederland: '' },
 			]),
-		remove: () => del('pdlforvalter.utenlandskIdentifikasjonsnummer')
-	}
+		remove: () => del('pdlforvalter.utenlandskIdentifikasjonsnummer'),
+	},
 })

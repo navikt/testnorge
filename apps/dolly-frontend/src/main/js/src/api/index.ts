@@ -5,15 +5,17 @@ type Method = 'POST' | 'GET' | 'PUT' | 'DELETE'
 type Config = {
 	method: Method
 	headers?: Record<string, string>
+	redirect?: 'follow' | 'manual'
 }
 
 const _fetch = (url: string, config: Config, body?: object): Promise<Response> =>
 	window
 		.fetch(url, {
 			method: config.method,
+			redirect: config.redirect,
 			credentials: 'include',
 			headers: config.headers,
-			body: JSON.stringify(body)
+			body: JSON.stringify(body),
 		})
 		.then((response: Response) => {
 			if (!response.ok) {
@@ -34,12 +36,12 @@ const fetchJson = <T>(url: string, config: Config, body?: object): Promise<T> =>
 		url,
 		{
 			method: config.method,
-			headers: { ...config.headers, 'Content-Type': 'application/json' }
+			headers: { ...config.headers, 'Content-Type': 'application/json' },
 		},
 		body
 	).then((response: Response) => response.json() as Promise<T>)
 
 export default {
 	fetch: _fetch,
-	fetchJson
+	fetchJson,
 }

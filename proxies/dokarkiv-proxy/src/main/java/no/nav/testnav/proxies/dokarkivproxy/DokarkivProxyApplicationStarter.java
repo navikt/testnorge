@@ -1,27 +1,24 @@
 package no.nav.testnav.proxies.dokarkivproxy;
 
 
+import no.nav.testnav.libs.reactivecore.config.CoreConfig;
+import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
+import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
+import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
+import no.nav.testnav.libs.securitytokenservice.StsOidcTokenService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteLocator;
+import org.springframework.cloud.gateway.route.builder.Buildable;
 import org.springframework.cloud.gateway.route.builder.PredicateSpec;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpHeaders;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
-
-import no.nav.testnav.libs.reactivecore.config.CoreConfig;
-import no.nav.testnav.libs.securitytokenservice.StsOidcTokenService;
-import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
-import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
-import no.nav.testnav.libs.reactiveproxy.filter.AddRequestHeadersGatewayFilterFactory;
-import no.nav.testnav.libs.reactiveproxy.filter.GetHeader;
 
 @Import({
         CoreConfig.class,
@@ -52,16 +49,12 @@ public class DokarkivProxyApplicationStarter {
         return new StsOidcTokenService(url, username, password);
     }
 
-    private GatewayFilter addAuthenticationHeaderFilter(Supplier<String> tokenService) {
-        var getHeader = new GetHeader(() -> HttpHeaders.AUTHORIZATION, () -> "Bearer " + tokenService.get());
-        return new AddRequestHeadersGatewayFilterFactory().apply(getHeader);
-    }
-
-
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder, StsOidcTokenService stsTestOidcTokenService, StsOidcTokenService stsPreprodOidcTokenService) {
-        var preprodFilter = addAuthenticationHeaderFilter(stsPreprodOidcTokenService::getToken);
-        var testFilter = addAuthenticationHeaderFilter(stsTestOidcTokenService::getToken);
+        var preprodFilter = AddAuthenticationRequestGatewayFilterFactory
+                .createAuthenticationHeaderFilter(stsPreprodOidcTokenService::getToken);
+        var testFilter = AddAuthenticationRequestGatewayFilterFactory
+                .createAuthenticationHeaderFilter(stsTestOidcTokenService::getToken);
         return builder
                 .routes()
                 .route(createRoute("q1", preprodFilter))
@@ -80,8 +73,7 @@ public class DokarkivProxyApplicationStarter {
                 .build();
     }
 
-
-    private Function<PredicateSpec, Route.AsyncBuilder> createRoute(String miljo, GatewayFilter filter) {
+    private Function<PredicateSpec, Buildable<Route>> createRoute(String miljo, GatewayFilter filter) {
         return spec -> spec
                 .path("/api/" + miljo + "/**")
                 .filters(filterSpec -> filterSpec
@@ -89,6 +81,4 @@ public class DokarkivProxyApplicationStarter {
                         .filter(filter)
                 ).uri("https://dokarkiv-" + miljo + ".dev.adeo.no");
     }
-
-
 }

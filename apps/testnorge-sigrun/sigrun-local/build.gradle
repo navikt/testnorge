@@ -16,6 +16,7 @@ dependencyManagement {
 dependencies {
     implementation project(':sigrun-core')
     implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 

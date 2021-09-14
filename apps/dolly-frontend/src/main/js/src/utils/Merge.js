@@ -15,7 +15,7 @@ function _mergeKeepShapeArray(dest, source) {
 
 function _mergeKeepShapeObject(dest, source) {
 	const ret = {}
-	Object.keys(dest).forEach(key => {
+	Object.keys(dest).forEach((key) => {
 		const sourceValue = source[key]
 		if (typeof sourceValue !== 'undefined') {
 			ret[key] = _mergeKeepShape(dest[key], sourceValue)

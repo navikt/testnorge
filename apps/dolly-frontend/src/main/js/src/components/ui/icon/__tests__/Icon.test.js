@@ -15,7 +15,7 @@ describe('Icon.js', () => {
 		expect(wrapper.children()).toHaveLength(0)
 	})
 
-	iconList.map(icon => {
+	iconList.map((icon) => {
 		it(`it should return a svg: ${icon}`, () => {
 			const wrapper = shallow(<Icon kind={icon} />)
 

@@ -8,13 +8,13 @@ const search = (search: Search): Promise<SearchResponse> =>
 		'/person-search-service/api/v1/person',
 		{ method: 'POST', headers: { 'Content-Type': 'application/json' } },
 		search
-	).then(response =>
-		(response.json() as Promise<Person[]>).then(items => ({
+	).then((response) =>
+		(response.json() as Promise<Person[]>).then((items) => ({
 			items: items,
-			numerOfItems: parseInt(response.headers.get('number_of_items'))
+			numerOfItems: parseInt(response.headers.get('number_of_items')),
 		}))
 	)
 
 export default {
-	search
+	search,
 }

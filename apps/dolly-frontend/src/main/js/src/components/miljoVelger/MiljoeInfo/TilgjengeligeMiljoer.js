@@ -27,13 +27,13 @@ export const filterMiljoe = (dollyMiljoe, utvalgteMiljoer) => {
 
 	//Filtrerer bort de miljøene som er tilgjengelige for fagsystemene eller en mal,
 	//men ikke Dolly per dags dato
-	return utvalgteMiljoer.filter(miljoe => dollyMiljoeArray.includes(miljoe))
+	return utvalgteMiljoer.filter((miljoe) => dollyMiljoeArray.includes(miljoe))
 }
 
-const flatDollyMiljoe = dollymiljoe => {
+const flatDollyMiljoe = (dollymiljoe) => {
 	const miljoeArray = []
-	Object.values(dollymiljoe).forEach(miljoeKat =>
-		miljoeKat.forEach(miljoe => miljoeArray.push(miljoe.id))
+	Object.values(dollymiljoe).forEach((miljoeKat) =>
+		miljoeKat.forEach((miljoe) => miljoeArray.push(miljoe.id))
 	)
 	return miljoeArray
 }

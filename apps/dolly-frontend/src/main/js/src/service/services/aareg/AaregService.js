@@ -7,5 +7,5 @@ export default {
 	getArbeidsforhold(ident, miljoe) {
 		const endpoint = `${getAaregUrl()}/arbeidsforhold?ident=${ident}&miljoe=${miljoe}`
 		return Request.get(endpoint, { 'Nav-Call-Id': _uuid(), 'Nav-Consumer-Id': 'dolly' })
-	}
+	},
 }

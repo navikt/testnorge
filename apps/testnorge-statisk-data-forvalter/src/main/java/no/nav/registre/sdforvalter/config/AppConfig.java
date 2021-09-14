@@ -17,8 +17,6 @@ import no.nav.testnav.libs.servletsecurity.config.InsecureOAuth2ServerToServerCo
 @EnableJpaRepositories(basePackages = "no.nav.registre.sdforvalter.database.repository")
 @Import(value = {
         ApplicationCoreConfig.class,
-        VaultHikariConfiguration.class,
-        FlywayConfiguration.class,
         InsecureOAuth2ServerToServerConfiguration.class
 })
 public class AppConfig {

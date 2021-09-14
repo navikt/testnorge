@@ -1,5 +1,6 @@
 package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,4 +18,10 @@ public class OppholdsadresseDTO extends AdresseDTO {
     private VegadresseDTO vegadresse;
     private UtenlandskAdresseDTO utenlandskAdresse;
     private MatrikkeladresseDTO matrikkeladresse;
+
+    @JsonIgnore
+    public int countAdresser() {
+
+        return count(getVegadresse()) + count(getUtenlandskAdresse()) + count(getMatrikkeladresse());
+    }
 }

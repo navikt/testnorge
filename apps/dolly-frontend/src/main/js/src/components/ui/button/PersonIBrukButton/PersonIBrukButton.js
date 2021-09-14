@@ -2,7 +2,7 @@ import React from 'react'
 import { DollyCheckbox } from '../../form/inputs/checbox/Checkbox'
 
 export const PersonIBrukButton = ({ ident, iLaastGruppe, updateIdentIbruk }) => {
-	const handleOnChange = event => {
+	const handleOnChange = (event) => {
 		updateIdentIbruk(ident.ident, !ident.ibruk)
 	}
 	return (
@@ -16,7 +16,7 @@ export const PersonIBrukButton = ({ ident, iLaastGruppe, updateIdentIbruk }) => 
 			}
 			checked={ident.ibruk}
 			onChange={handleOnChange}
-			onClick={e => e.stopPropagation()}
+			onClick={(e) => e.stopPropagation()}
 			disabled={iLaastGruppe}
 			isSwitch
 		/>

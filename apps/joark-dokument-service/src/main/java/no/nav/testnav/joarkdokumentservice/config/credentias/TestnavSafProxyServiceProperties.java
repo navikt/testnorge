@@ -3,10 +3,10 @@ package no.nav.testnav.joarkdokumentservice.config.credentias;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
+import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
 
 
 @Configuration
 @ConfigurationProperties(prefix = "consumers.testnav-saf-proxy")
-public class TestnavSafProxyServiceProperties extends NaisServerProperties {
+public class TestnavSafProxyServiceProperties extends ServerProperties {
 }

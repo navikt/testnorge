@@ -28,11 +28,12 @@ dependencies {
 
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
-
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation "org.springdoc:springdoc-openapi-ui:${springdocOpenapiUi}"
     implementation "net.logstash.logback:logstash-logback-encoder:${logstashLogbackEncoder}"
 
+    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }

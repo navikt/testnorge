@@ -14,7 +14,7 @@ export const EndreMalnavn = ({ malInfo, setMaler, avbrytRedigering }) => {
 				<TextInput
 					name="malnavn"
 					value={nyttMalnavn}
-					onChange={e => setMalnavn(e.target.value)}
+					onChange={(e) => setMalnavn(e.target.value)}
 					className="navnInput"
 				/>
 				<Button
@@ -32,8 +32,8 @@ const lagreEndring = (nyttMalnavn, setMaler, id, avbrytRedigering) => {
 	api
 		.endreMalNavn(id, nyttMalnavn)
 		.then(() =>
-			setMaler(maler =>
-				maler.map(mal => ({ ...mal, malNavn: mal.id === id ? nyttMalnavn : mal.malNavn }))
+			setMaler((maler) =>
+				maler.map((mal) => ({ ...mal, malNavn: mal.id === id ? nyttMalnavn : mal.malNavn }))
 			)
 		)
 		.then(avbrytRedigering(id))

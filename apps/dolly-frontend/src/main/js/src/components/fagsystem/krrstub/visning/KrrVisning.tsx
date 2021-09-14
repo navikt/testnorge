@@ -45,7 +45,7 @@ export const Visning = ({ data }: VisningProps) => {
 						  })
 						: Promise.resolve()
 				}
-				render={response =>
+				render={(response) =>
 					data && (
 						<>
 							<TitleValue

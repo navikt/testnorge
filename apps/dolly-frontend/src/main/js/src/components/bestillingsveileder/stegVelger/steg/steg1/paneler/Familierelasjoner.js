@@ -39,7 +39,7 @@ FamilierelasjonPanel.initialValues = ({ set, del, has, opts }) => ({
 		remove() {
 			del('tpsf.relasjoner.partnere')
 			!has('tpsf.relasjoner.barn') && !has('tpsf.relasjoner.foreldre') && del('tpsf.relasjoner')
-		}
+		},
 	},
 	barn: {
 		label: 'Har barn',
@@ -50,7 +50,7 @@ FamilierelasjonPanel.initialValues = ({ set, del, has, opts }) => ({
 		remove() {
 			del('tpsf.relasjoner.barn')
 			!has('tpsf.relasjoner.partnere') && !has('tpsf.relasjoner.foreldre') && del('tpsf.relasjoner')
-		}
+		},
 	},
 	foreldre: {
 		label: 'Har foreldre',
@@ -61,11 +61,11 @@ FamilierelasjonPanel.initialValues = ({ set, del, has, opts }) => ({
 		remove() {
 			del('tpsf.relasjoner.foreldre')
 			!has('tpsf.relasjoner.partnere') && !has('tpsf.relasjoner.barn') && del('tpsf.relasjoner')
-		}
-	}
+		},
+	},
 })
 
-const defaultPartner = opts => {
+const defaultPartner = (opts) => {
 	const fullPartner = [
 		{
 			identtype: 'FNR',
@@ -78,8 +78,8 @@ const defaultPartner = opts => {
 			utenFastBopel: false,
 			statsborgerskap: '',
 			statsborgerskapRegdato: '',
-			statsborgerskapTildato: ''
-		}
+			statsborgerskapTildato: '',
+		},
 	]
 
 	const eksisterendePartner = [
@@ -87,18 +87,18 @@ const defaultPartner = opts => {
 			ident: _get(opts, 'personFoerLeggTil.tpsf.relasjoner[0].personRelasjonMed.ident'),
 			doedsdato:
 				_get(opts, 'personFoerLeggTil.tpsf.relasjoner[0].personRelasjonMed.doedsdato') || null,
-			sivilstander: []
-		}
+			sivilstander: [],
+		},
 	]
 
 	const harEksisterendePartner = _get(opts, 'personFoerLeggTil.tpsf.relasjoner', []).some(
-		relasjon => relasjon.relasjonTypeNavn === 'PARTNER'
+		(relasjon) => relasjon.relasjonTypeNavn === 'PARTNER'
 	)
 
 	return harEksisterendePartner ? eksisterendePartner : fullPartner
 }
 
-const defaultForeldre = opts => {
+const defaultForeldre = (opts) => {
 	const fullForelder = [
 		{
 			identtype: 'FNR',
@@ -112,21 +112,21 @@ const defaultForeldre = opts => {
 			utenFastBopel: false,
 			statsborgerskap: '',
 			statsborgerskapRegdato: '',
-			statsborgerskapTildato: ''
-		}
+			statsborgerskapTildato: '',
+		},
 	]
 
 	const eksisterendeRelasjoner = _get(opts, 'personFoerLeggTil.tpsf.relasjoner')
 	const eksisterendeForeldre =
 		eksisterendeRelasjoner &&
 		eksisterendeRelasjoner.filter(
-			relasjon => relasjon.relasjonTypeNavn === 'MOR' || relasjon.relasjonTypeNavn === 'FAR'
+			(relasjon) => relasjon.relasjonTypeNavn === 'MOR' || relasjon.relasjonTypeNavn === 'FAR'
 		)
 	const eksisterendeForelderValues =
 		eksisterendeForeldre &&
-		eksisterendeForeldre.map(forelder => ({
+		eksisterendeForeldre.map((forelder) => ({
 			ident: forelder.personRelasjonMed.ident,
-			doedsdato: forelder.personRelasjonMed.doedsdato || null
+			doedsdato: forelder.personRelasjonMed.doedsdato || null,
 		}))
 
 	return eksisterendeForelderValues && eksisterendeForelderValues.length > 0
@@ -134,7 +134,7 @@ const defaultForeldre = opts => {
 		: fullForelder
 }
 
-const defaultBarn = opts => {
+const defaultBarn = (opts) => {
 	const fullBarn = [
 		{
 			identtype: 'FNR',
@@ -149,19 +149,19 @@ const defaultBarn = opts => {
 			utenFastBopel: false,
 			statsborgerskap: '',
 			statsborgerskapRegdato: '',
-			statsborgerskapTildato: ''
-		}
+			statsborgerskapTildato: '',
+		},
 	]
 
 	const eksisterendeRelasjoner = _get(opts, 'personFoerLeggTil.tpsf.relasjoner')
 	const eksisterendeBarn =
 		eksisterendeRelasjoner &&
-		eksisterendeRelasjoner.filter(relasjon => relasjon.relasjonTypeNavn === 'FOEDSEL')
+		eksisterendeRelasjoner.filter((relasjon) => relasjon.relasjonTypeNavn === 'FOEDSEL')
 	const eksisterendeBarnValues =
 		eksisterendeBarn &&
-		eksisterendeBarn.map(barn => ({
+		eksisterendeBarn.map((barn) => ({
 			ident: barn.personRelasjonMed.ident,
-			doedsdato: barn.personRelasjonMed.doedsdato || null
+			doedsdato: barn.personRelasjonMed.doedsdato || null,
 		}))
 
 	return eksisterendeBarnValues && eksisterendeBarnValues.length > 0

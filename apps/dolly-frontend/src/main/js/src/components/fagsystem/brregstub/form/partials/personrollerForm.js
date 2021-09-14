@@ -7,7 +7,7 @@ import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 
 const initialValues = {
 	egenskap: '',
-	fratraadt: false
+	fratraadt: false,
 }
 
 export const PersonrollerForm = ({ formikBag, path }) => {
@@ -16,22 +16,22 @@ export const PersonrollerForm = ({ formikBag, path }) => {
 	const getEgenskapOptions = () => {
 		const valgteOptions = []
 		if (personroller) {
-			personroller.forEach(rolle => {
+			personroller.forEach((rolle) => {
 				valgteOptions.push(rolle.egenskap)
 			})
 		}
-		return Options('rolleEgenskap').filter(option => !valgteOptions.includes(option.value))
+		return Options('rolleEgenskap').filter((option) => !valgteOptions.includes(option.value))
 	}
 
 	const egenskapOptions = getEgenskapOptions()
 	const antallEgenskaper = 5 // Det finnes fem ulike egenskaper for personroller, som hver kan velges én gang
 	const colorStyles = {
-		placeholder: defaultStyles => {
+		placeholder: (defaultStyles) => {
 			return {
 				...defaultStyles,
-				color: '#000000'
+				color: '#000000',
 			}
-		}
+		},
 	}
 
 	return (
@@ -44,7 +44,7 @@ export const PersonrollerForm = ({ formikBag, path }) => {
 				personroller.length >= antallEgenskaper ? 'Alle mulige personroller er lagt til' : null
 			}
 		>
-			{path => {
+			{(path) => {
 				const egenskap = `${path}.egenskap`
 				return (
 					<>
@@ -52,7 +52,7 @@ export const PersonrollerForm = ({ formikBag, path }) => {
 							name={egenskap}
 							label="Egenskap"
 							options={egenskapOptions}
-							onChange={egenskapen => formikBag.setFieldValue(egenskap, egenskapen.value)}
+							onChange={(egenskapen) => formikBag.setFieldValue(egenskap, egenskapen.value)}
 							value={_get(formikBag.values, egenskap)}
 							placeholder={
 								_get(formikBag.values, egenskap) ? _get(formikBag.values, egenskap) : 'Velg..'
@@ -60,7 +60,7 @@ export const PersonrollerForm = ({ formikBag, path }) => {
 							isClearable={false}
 							feil={
 								_get(formikBag.values, egenskap) === '' && {
-									feilmelding: 'Feltet er påkrevd'
+									feilmelding: 'Feltet er påkrevd',
 								}
 							}
 							styles={_get(formikBag.values, egenskap) ? colorStyles : null}

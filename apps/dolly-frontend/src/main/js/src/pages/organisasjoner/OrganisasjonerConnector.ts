@@ -7,7 +7,7 @@ import Organisasjoner from './Organisasjoner'
 
 const loadingSelector = createLoadingSelector([
 	actions.getOrganisasjoner,
-	actions.getOrganisasjonBestilling
+	actions.getOrganisasjonBestilling,
 ])
 
 const mapStateToProps = (state: any) => ({
@@ -16,7 +16,7 @@ const mapStateToProps = (state: any) => ({
 	isFetching: loadingSelector(state),
 	bestillinger: state.organisasjon.bestillinger,
 	organisasjoner: state.organisasjon.organisasjoner,
-	brukerId: state.bruker.brukerData.brukerId
+	brukerId: state.bruker.brukerData.brukerId,
 })
 
 const mapDispatchToProps = (dispatch: React.Dispatch<React.SetStateAction<string>>) => {
@@ -26,7 +26,7 @@ const mapDispatchToProps = (dispatch: React.Dispatch<React.SetStateAction<string
 		getOrganisasjonBestilling: (brukerId: string) =>
 			dispatch(actions.getOrganisasjonBestilling(brukerId)),
 		getOrganisasjoner: (orgListe: Array<string>) => dispatch(actions.getOrganisasjoner(orgListe)),
-		fetchOrganisasjoner: fetchOrganisasjoner(dispatch)
+		fetchOrganisasjoner: fetchOrganisasjoner(dispatch),
 	}
 }
 

@@ -34,7 +34,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
-public class IdenttypeService {
+public class IdenttypeService implements Validation<IdentRequestDTO> {
 
     private static final LocalDateTime START_OF_ERA = LocalDateTime.of(1900, 1, 1, 0, 0);
     private static final String VALIDATION_DATO_INVALID = "Identtype ugyldig forespørsel: støttet datointervall " +
@@ -115,7 +115,8 @@ public class IdenttypeService {
         return ident;
     }
 
-    private void validate(IdentRequestDTO request) {
+    @Override
+    public void validate(IdentRequestDTO request) {
 
         if (nonNull(request.getIdenttype()) && FNR != request.getIdenttype() &&
                 DNR != request.getIdenttype() && BOST != request.getIdenttype()) {

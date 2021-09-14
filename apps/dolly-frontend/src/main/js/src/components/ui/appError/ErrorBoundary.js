@@ -5,18 +5,18 @@ import Logger from '~/logger'
 export class ErrorBoundary extends React.Component {
 	state = {
 		error: this.props.error,
-		stackTrace: this.props.stackTrace
+		stackTrace: this.props.stackTrace,
 	}
 
 	componentDidCatch(error, info) {
 		this.setState({
 			error: error,
-			stackTrace: info.componentStack
+			stackTrace: info.componentStack,
 		})
 		Logger.error({
 			event: `Global React feil: ${error.message}`,
 			message: error.message + info.componentStack,
-			uuid: window.uuid
+			uuid: window.uuid,
 		})
 	}
 

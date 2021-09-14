@@ -5,8 +5,8 @@ import _filter from 'lodash/filter'
 export const clearAllErrors = createAction('ERRORS/CLEAR_ALL_ERRORS')
 
 // SELECTORS
-export const createErrorMessageSelector = actions => state => {
-	const errors = actions.map(action => state.errors[action])
+export const createErrorMessageSelector = (actions) => (state) => {
+	const errors = actions.map((action) => state.errors[action])
 	if (errors && errors[0]) {
 		return errors[0]
 	}
@@ -15,9 +15,9 @@ export const createErrorMessageSelector = actions => state => {
 
 // Pick any error
 export const applicationErrorSelector = createSelector(
-	state => state.errors,
-	errors => {
-		const filtered = _filter(errors, val => val !== '')
+	(state) => state.errors,
+	(errors) => {
+		const filtered = _filter(errors, (val) => val !== '')
 		return filtered[Object.keys(filtered)[0]]
 	}
 )
@@ -39,6 +39,6 @@ export default function errorReducer(state = initialState, action) {
 		// Store errorMessage
 		// e.g. stores errorMessage when receiving GET_TODOS_FAILURE
 		//      else clear errorMessage when receiving GET_TODOS_REQUEST
-		[requestName]: requestState === 'FAILURE' ? payload.customMessage || payload.message : ''
+		[requestName]: requestState === 'FAILURE' ? payload.customMessage || payload.message : '',
 	}
 }

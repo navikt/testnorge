@@ -11,7 +11,7 @@ import no.nav.registre.testnorge.generersyntameldingservice.config.credentials.S
 import no.nav.registre.testnorge.generersyntameldingservice.consumer.command.PostArbeidsforholdCommand;
 import no.nav.registre.testnorge.generersyntameldingservice.consumer.command.PostHistorikkCommand;
 import no.nav.registre.testnorge.generersyntameldingservice.domain.ArbeidsforholdType;
-import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
+import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 
 @Slf4j
@@ -19,7 +19,7 @@ import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 public class SyntrestConsumer {
 
     private final WebClient webClient;
-    private final NaisServerProperties properties;
+    private final ServerProperties properties;
     private final AccessTokenService accessTokenService;
 
     public SyntrestConsumer(AccessTokenService accessTokenService, SyntrestProperties properties) {

@@ -1,10 +1,8 @@
 import React from 'react'
-import _isEmpty from 'lodash/isEmpty'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { validation } from './validation'
 import Panel from '~/components/ui/panel/Panel'
-import { panelError } from '~/components/ui/form/formUtils'
-import { erForste } from '~/components/ui/form/formUtils'
+import { erForste, panelError } from '~/components/ui/form/formUtils'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FalskIdentitet } from './partials/falskIdentitet/FalskIdentitet'
 import { UtenlandsId } from './partials/utenlandsId/UtenlandsId'
@@ -12,7 +10,7 @@ import { KontaktinformasjonForDoedsbo } from './partials/kontaktinformasjonForDo
 
 const identifikasjonAttributt = [
 	'pdlforvalter.falskIdentitet',
-	'pdlforvalter.utenlandskIdentifikasjonsnummer'
+	'pdlforvalter.utenlandskIdentifikasjonsnummer',
 ]
 const doedsboAttributt = 'pdlforvalter.kontaktinformasjonForDoedsbo'
 

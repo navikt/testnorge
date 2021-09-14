@@ -1,10 +1,9 @@
 import React from 'react'
-import { FieldArray } from 'formik'
+import { ErrorMessage } from 'formik'
 import { subYears } from 'date-fns'
 import _get from 'lodash/get'
 import _isString from 'lodash/isString'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { ErrorMessage } from 'formik'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { EnkeltinntektForm } from './enkeltinntektForm'
@@ -14,18 +13,18 @@ const initialValues = {
 	inntektsaar: new Date().getFullYear(),
 	tjeneste: '',
 	grunnlag: [],
-	svalbardGrunnlag: []
+	svalbardGrunnlag: [],
 }
 
 export const InntektsaarForm = ({ formikBag }) => {
 	const initialGrunnlag = {
 		tekniskNavn: '',
-		verdi: ''
+		verdi: '',
 	}
 
 	return (
 		<FormikDollyFieldArray name="sigrunstub" header="Inntekt" newEntry={initialValues}>
-			{path => (
+			{(path) => (
 				<React.Fragment>
 					<React.Fragment>
 						<div className="flexbox--flex-wrap">
