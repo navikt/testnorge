@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import * as yup from 'yup'
 import useBoolean from '~/utils/hooks/useBoolean'
 import { useAsync } from 'react-use'
@@ -6,7 +6,7 @@ import NavButton from '~/components/ui/button/NavButton/NavButton'
 import DollyModal from '~/components/ui/modal/DollyModal'
 import { DollyApi } from '~/service/Api'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { Formik, Form } from 'formik'
+import { Form, Formik } from 'formik'
 import './ImporterGrupper.less'
 import { AsyncState } from 'react-use/lib/useAsync'
 
@@ -37,7 +37,7 @@ export default function ImporterGrupper({ importZIdent }: ImporterGrupper) {
 	}, [])
 
 	const getZIdentOptions = () => {
-		return ZIdenter.value.reduce(function(filtered: Array<SelectOptions>, ident: ZIdent) {
+		return ZIdenter.value.reduce(function (filtered: Array<SelectOptions>, ident: ZIdent) {
 			if (ident.navIdent) {
 				filtered.push({ value: ident.navIdent, label: ident.navIdent })
 			}
@@ -59,7 +59,7 @@ export default function ImporterGrupper({ importZIdent }: ImporterGrupper) {
 	}
 
 	const validation = yup.object().shape({
-		identer: yup.array().required('Velg minst én Z-ident')
+		identer: yup.array().required('Velg minst én Z-ident'),
 	})
 
 	return (

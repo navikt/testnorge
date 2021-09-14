@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
-import _set from 'lodash/set'
 import _omit from 'lodash/omit'
 import { organisasjonPaths } from '../paths'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
@@ -27,7 +26,7 @@ type Detaljer = {
 
 enum TypeUnderenhet {
 	JURIDISKENHET = 'JURIDISKENHET',
-	VIRKSOMHET = 'VIRKSOMHET'
+	VIRKSOMHET = 'VIRKSOMHET',
 }
 
 export const Detaljer = ({ formikBag, path, level, number, maaHaUnderenhet = true }: Detaljer) => {

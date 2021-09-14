@@ -4,20 +4,20 @@ import Button from '~/components/ui/button/Button'
 import { TidligereBestillinger } from './TidligereBestillinger/TidligereBestillinger'
 import { PersonMiljoeinfo } from './PersonMiljoeinfo/PersonMiljoeinfo'
 import {
-	KrrVisning,
-	PdlfVisning,
-	SigrunstubVisning,
-	InntektstubVisning,
-	InstVisning,
-	PensjonVisning,
-	TpsfVisning,
-	ArenaVisning,
 	AaregVisning,
-	UdiVisning,
-	InntektsmeldingVisning,
+	ArenaVisning,
 	BrregVisning,
 	DokarkivVisning,
-	SykemeldingVisning
+	InntektsmeldingVisning,
+	InntektstubVisning,
+	InstVisning,
+	KrrVisning,
+	PdlfVisning,
+	PensjonVisning,
+	SigrunstubVisning,
+	SykemeldingVisning,
+	TpsfVisning,
+	UdiVisning,
 } from '~/components/fagsystem'
 import BeskrivelseConnector from '~/components/beskrivelse/BeskrivelseConnector'
 import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
@@ -36,7 +36,7 @@ export const PersonVisning = ({
 	loading,
 	slettPerson,
 	leggTilPaaPerson,
-	iLaastGruppe
+	iLaastGruppe,
 }) => {
 	useMount(fetchDataFraFagsystemer)
 

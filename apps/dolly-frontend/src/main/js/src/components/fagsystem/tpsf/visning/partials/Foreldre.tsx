@@ -96,11 +96,11 @@ export const Foreldre = ({ person, type }: Data) => {
 
 const finnBarn = (relasjoner: Relasjon) =>
 	relasjoner
-		.filter(relasjon => {
+		.filter((relasjon) => {
 			return relasjon.relasjonTypeNavn === 'BARN'
 		})
 		.map(
-			relasjon =>
+			(relasjon) =>
 				relasjon.personRelasjonMed.fornavn +
 				' ' +
 				relasjon.personRelasjonMed.etternavn +

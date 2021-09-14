@@ -1,7 +1,7 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux'
+import { applyMiddleware, combineReducers, createStore } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 import { createPromise } from 'redux-promise-middleware'
-import { connectRouter, routerMiddleware, LOCATION_CHANGE } from 'connected-react-router'
+import { connectRouter, LOCATION_CHANGE, routerMiddleware } from 'connected-react-router'
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
 import gruppeReducer from './ducks/gruppe'
 import brukerReducer from './ducks/bruker'
@@ -20,7 +20,7 @@ import organisasjonReducer from './ducks/organisasjon'
 
 import history from './history'
 
-const locationMiddleware = store => next => action => {
+const locationMiddleware = (store) => (next) => (action) => {
 	if (action.type === LOCATION_CHANGE) {
 		const prevPath = store.getState().router.location.pathname
 		const nextPath = action.payload.location.pathname
@@ -31,15 +31,15 @@ const locationMiddleware = store => next => action => {
 	return next(action)
 }
 
-const configureReduxStore = history => {
+const configureReduxStore = (history) => {
 	const allMiddleware = [
 		locationMiddleware,
 		thunkMiddleware,
 		createPromise({ promiseTypeSuffixes: ['REQUEST', 'SUCCESS', 'FAILURE'] }),
-		routerMiddleware(history)
+		routerMiddleware(history),
 	]
 
-	const rootReducer = history =>
+	const rootReducer = (history) =>
 		combineReducers({
 			router: connectRouter(history),
 			bestveil: bestillingReducer,
@@ -55,7 +55,7 @@ const configureReduxStore = history => {
 			kodeverk: kodeverkReducer,
 			varslinger: varslingerReducer,
 			finnPerson: finnPersonReducer,
-			organisasjon: organisasjonReducer
+			organisasjon: organisasjonReducer,
 		})
 
 	return createStore(rootReducer(history), composeWithDevTools(applyMiddleware(...allMiddleware)))

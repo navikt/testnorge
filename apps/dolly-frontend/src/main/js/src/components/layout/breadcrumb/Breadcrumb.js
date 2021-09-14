@@ -13,7 +13,7 @@ export const Breadcrumbs = ({ breadcrumbs }) => (
 			{breadcrumbs.map(({ match, location, breadcrumb }) => {
 				const active = isActive(match, location)
 				const classes = cn('breadcrumb-item', {
-					active
+					active,
 				})
 
 				return (

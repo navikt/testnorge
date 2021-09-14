@@ -4,7 +4,7 @@ import { AdresseKodeverk } from '~/config/kodeverk'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { getPlaceholder, setValue, setNavn } from '../utils'
+import { getPlaceholder, setNavn, setValue } from '../utils'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 
 export const FalskIdentitet = ({ formikBag }) => {
@@ -16,13 +16,13 @@ export const FalskIdentitet = ({ formikBag }) => {
 	const dollyGruppeInfo = SelectOptionsOppslag.hentGruppe()
 	const navnOgFnrOptions = SelectOptionsOppslag.formatOptions('navnOgFnr', dollyGruppeInfo)
 
-	const settIdentitetType = e => {
+	const settIdentitetType = (e) => {
 		if (e.value === 'UKJENT') {
 			formikBag.setFieldValue(falskIdPath, { identitetType: e.value, rettIdentitetErUkjent: true })
 		} else if (e.value === 'ENTYDIG') {
 			formikBag.setFieldValue(falskIdPath, {
 				identitetType: e.value,
-				rettIdentitetVedIdentifikasjonsnummer: ''
+				rettIdentitetVedIdentifikasjonsnummer: '',
 			})
 		} else {
 			formikBag.setFieldValue(falskIdPath, {
@@ -30,7 +30,7 @@ export const FalskIdentitet = ({ formikBag }) => {
 				foedselsdato: '',
 				kjoenn: '',
 				personnavn: { fornavn: '', mellomnavn: '', etternavn: '' },
-				statsborgerskap: ''
+				statsborgerskap: '',
 			})
 		}
 		return e.value
@@ -55,7 +55,7 @@ export const FalskIdentitet = ({ formikBag }) => {
 					size="large"
 					options={navnOgFnrOptions}
 					isLoading={dollyGruppeInfo.loading}
-					onChange={id =>
+					onChange={(id) =>
 						setValue(
 							id,
 							`${falskIdPath}.rettIdentitetVedIdentifikasjonsnummer`,
@@ -74,7 +74,7 @@ export const FalskIdentitet = ({ formikBag }) => {
 						options={navnOptions}
 						size="large"
 						isLoading={navnInfo.loading}
-						onChange={navn => setNavn(navn, `${falskIdPath}.personnavn`, formikBag.setFieldValue)}
+						onChange={(navn) => setNavn(navn, `${falskIdPath}.personnavn`, formikBag.setFieldValue)}
 						value={_get(formikBag.values, `${falskIdPath}.personnavn.fornavn`)}
 						isClearable={false}
 						placeholder={getPlaceholder(formikBag.values, `${falskIdPath}.personnavn`)}

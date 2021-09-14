@@ -6,9 +6,9 @@ import Formatters from '~/utils/DataFormatter'
 import Loading from '~/components/ui/loading/Loading'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
-const getSortedData = data => {
+const getSortedData = (data) => {
 	return Array.isArray(data)
-		? data.slice().sort(function(a, b) {
+		? data.slice().sort(function (a, b) {
 				const datoA = new Date(a.startdato)
 				const datoB = new Date(b.startdato)
 

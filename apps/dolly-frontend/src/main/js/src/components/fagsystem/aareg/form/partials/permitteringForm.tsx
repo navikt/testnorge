@@ -23,7 +23,7 @@ export const PermitteringForm = ({
 	arbeidsforholdIndex,
 	formikBag,
 	erLenket,
-	onChangeLenket
+	onChangeLenket,
 }: Permittering) => {
 	const maaneder = _get(formikBag.values, 'aareg[0].amelding')
 

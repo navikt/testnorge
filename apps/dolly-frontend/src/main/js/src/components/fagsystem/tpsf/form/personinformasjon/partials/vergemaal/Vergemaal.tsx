@@ -12,7 +12,7 @@ export const Vergemaal = () => {
 		mandatType: 'tpsf.vergemaal.mandatType',
 		vedtakDato: 'tpsf.vergemaal.vedtakDato',
 		identType: 'tpsf.vergemaal.identType',
-		harMellomnavn: 'tpsf.vergemaal.harMellomnavn'
+		harMellomnavn: 'tpsf.vergemaal.harMellomnavn',
 	}
 
 	return (

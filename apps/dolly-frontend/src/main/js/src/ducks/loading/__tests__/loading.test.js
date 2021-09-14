@@ -1,14 +1,13 @@
-import loading from '../index'
-import { createLoadingSelector } from '../index'
+import loading, { createLoadingSelector } from '../index'
 
 describe('loadingReducer', () => {
 	it('should set a request to true', () => {
 		const action = {
-			type: 'DUMMY_ACTION_REQUEST'
+			type: 'DUMMY_ACTION_REQUEST',
 		}
 
 		const res = {
-			DUMMY_ACTION: true
+			DUMMY_ACTION: true,
 		}
 
 		expect(loading({}, action)).toEqual(res)
@@ -23,8 +22,8 @@ describe('loadingReducer-selector', () => {
 		loading: {
 			DUMMY_1: true,
 			DUMMY_2: true,
-			DUMMY_3: true
-		}
+			DUMMY_3: true,
+		},
 	}
 
 	const loadingActions = createLoadingSelector(actions)

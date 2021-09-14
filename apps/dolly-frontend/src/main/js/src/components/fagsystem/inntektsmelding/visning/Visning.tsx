@@ -6,14 +6,14 @@ import {
 	Bestilling,
 	BestillingData,
 	Inntekt,
-	TransaksjonId
+	TransaksjonId,
 } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import { EnkelInntektsmeldingVisning } from './partials/enkelInntektsmeldingVisning'
 import { DollyApi } from '~/service/Api'
 import { erGyldig } from '~/components/transaksjonid/GyldigeBestillinger'
 import JoarkDokumentService, {
 	Dokument,
-	Journalpost
+	Journalpost,
 } from '~/service/services/JoarkDokumentService'
 import LoadableComponentWithRetry from '~/components/ui/loading/LoadableComponentWithRetry'
 
@@ -41,7 +41,7 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisningP
 					).then((dokument: string) => ({
 						journalpostId: bestilling.transaksjonId.journalpostId,
 						dokumentInfoId: document.dokumentInfoId,
-						dokument
+						dokument,
 					}))
 				)
 			)
@@ -54,12 +54,12 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisningP
 				DollyApi.getTransaksjonid('INNTKMELD', ident)
 					.then(({ data }: { data: Array<TransaksjonId> }) => {
 						return data.map((bestilling: TransaksjonId) => {
-							return getDokumenter(bestilling).then(response => {
+							return getDokumenter(bestilling).then((response) => {
 								if (response) {
 									return {
 										bestillingId: bestilling.bestillingId,
 										miljoe: bestilling.miljoe,
-										dokumenter: response
+										dokumenter: response,
 									}
 								}
 							})
@@ -71,8 +71,8 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisningP
 			}
 			render={(data: Array<Journalpost>) => {
 				if (data && data.length > 0) {
-					const gyldigeBestillinger = liste.filter(bestilling =>
-						data.find(x => (x && x.bestillingId ? x.bestillingId === bestilling.id : x))
+					const gyldigeBestillinger = liste.filter((bestilling) =>
+						data.find((x) => (x && x.bestillingId ? x.bestillingId === bestilling.id : x))
 					)
 					if (gyldigeBestillinger && gyldigeBestillinger.length > 0) {
 						return (
@@ -110,6 +110,6 @@ InntektsmeldingVisning.filterValues = (bestillinger: Array<Bestilling>, ident: s
 }
 
 const tomBestilling = (inntekter: Array<Inntekt>) => {
-	const inntekterMedInnhold = inntekter.filter(inntekt => !_isEmpty(inntekt))
+	const inntekterMedInnhold = inntekter.filter((inntekt) => !_isEmpty(inntekt))
 	return inntekterMedInnhold.length < 1
 }

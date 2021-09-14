@@ -18,17 +18,17 @@ export const Diskresjonskoder = ({ basePath, formikBag }) => {
 	const paths = {
 		spesreg: `${basePath}.spesreg`,
 		utenFastBopel: `${basePath}.utenFastBopel`,
-		kommunenr: `${basePath}.boadresse.kommunenr`
+		kommunenr: `${basePath}.boadresse.kommunenr`,
 	}
 
-	const handleChangeUFB = selected => {
+	const handleChangeUFB = (selected) => {
 		setHarUfb(selected)
 		if (!harBoadresse && !selected) {
 			formikBag.setFieldValue(`${basePath}.boadresse`, null)
 		}
 	}
 
-	const handleChangeKommunenr = val => {
+	const handleChangeKommunenr = (val) => {
 		formikBag.setFieldValue(`${basePath}.boadresse.adressetype`, 'GATE')
 	}
 

@@ -13,5 +13,5 @@ export default {
 	getTilgjengeligeMiljoer() {
 		const endpoint = `${getPensjonUrl()}/miljo`
 		return Request.get(endpoint, headers)
-	}
+	},
 }

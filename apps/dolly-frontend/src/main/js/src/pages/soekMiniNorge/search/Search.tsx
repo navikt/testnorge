@@ -5,7 +5,6 @@ import { Formik } from 'formik'
 import { SearchResult } from '~/pages/soekMiniNorge/search/SearchResult'
 import './Search.less'
 import '../../gruppe/PersonVisning/PersonVisning.less'
-import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { getSoekOptions, initialValues } from '~/pages/soekMiniNorge/search/utils'
 import { Feedback } from '~/components/feedback'
 import Button from '~/components/ui/button/Button'
@@ -40,7 +39,7 @@ export const Search = () => {
 			</p>
 			<div className="search-content">
 				<Formik onSubmit={_onSubmit} initialValues={initialValues} enableReinitialize>
-					{formikBag => {
+					{(formikBag) => {
 						return (
 							<div className="search-field">
 								<SearchContainer

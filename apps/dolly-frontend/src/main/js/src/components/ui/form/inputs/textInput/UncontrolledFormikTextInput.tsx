@@ -15,7 +15,7 @@ export default ({ name, defaultValue, ...props }: Props) => {
 	return (
 		<FormikField name={name} fastfield={false}>
 			{({ field, form, meta }) => {
-				const handleBlur = event => {
+				const handleBlur = (event) => {
 					if (!_get(touched, field.name)) {
 						setFieldTouched(field.name, true)
 					}
@@ -35,7 +35,7 @@ export default ({ name, defaultValue, ...props }: Props) => {
 						name={name}
 						feil={fieldError({
 							touched: _get(touched, name),
-							error: _get(errors, name)
+							error: _get(errors, name),
 						})}
 						{...props}
 					/>

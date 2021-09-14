@@ -1,9 +1,9 @@
 import React from 'react'
 import * as Yup from 'yup'
-import { requiredString, ifPresent } from '~/utils/YupValidations'
+import { ifPresent, requiredString } from '~/utils/YupValidations'
 import { Detaljer } from './partials/Detaljer'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
-import { organisasjonPaths, kontaktPaths, adressePaths } from './paths'
+import { adressePaths, kontaktPaths, organisasjonPaths } from './paths'
 import Panel from '~/components/ui/panel/Panel'
 import { erForste, panelError } from '~/components/ui/form/formUtils'
 import { FormikProps } from 'formik'
@@ -41,7 +41,7 @@ const testSektorkode = (schema: any) => {
 		function harSektorkode(value: string) {
 			if (value === undefined || value !== '') return true
 			return this.createError({
-				message: 'Feltet er påkrevd'
+				message: 'Feltet er påkrevd',
 			})
 		}
 	)
@@ -52,7 +52,7 @@ const adresse = Yup.object({
 	postnr: Yup.string().nullable(),
 	kommunenr: Yup.string().nullable(),
 	landkode: requiredString,
-	poststed: Yup.string()
+	poststed: Yup.string(),
 })
 
 const organisasjon: any = Yup.object().shape({
@@ -70,11 +70,11 @@ const organisasjon: any = Yup.object().shape({
 	underenheter: ifPresent(
 		'$organisasjon.underenheter',
 		Yup.array()
-			.transform(value => Object.values(value))
+			.transform((value) => Object.values(value))
 			.of(Yup.lazy(() => organisasjon.default(undefined)))
-	)
+	),
 })
 
 OrganisasjonForm.validation = {
-	organisasjon: ifPresent('$organisasjon', organisasjon)
+	organisasjon: ifPresent('$organisasjon', organisasjon),
 }

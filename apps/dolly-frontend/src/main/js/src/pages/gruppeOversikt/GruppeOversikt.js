@@ -18,7 +18,7 @@ export default function GruppeOversikt({
 	mineIds,
 	history,
 	searchActive,
-	importerteZIdenter
+	importerteZIdenter,
 }) {
 	const [visning, setVisning] = useState('mine')
 	const [sidetall, setSidetall] = useState(0)
@@ -30,14 +30,14 @@ export default function GruppeOversikt({
 		visning === 'mine' ? fetchMineGrupper() : getGrupper(sidetall, sideStoerrelse)
 	}, [visning, sidetall, sideStoerrelse])
 
-	const byttVisning = event => setVisning(event.target.value)
+	const byttVisning = (event) => setVisning(event.target.value)
 
 	if (importerteZIdenter !== importerte) {
 		fetchMineGrupper()
 		setImporterte(importerteZIdenter)
 	}
 
-	const items = visning === 'mine' ? gruppeListe.filter(v => mineIds.includes(v.id)) : gruppeListe
+	const items = visning === 'mine' ? gruppeListe.filter((v) => mineIds.includes(v.id)) : gruppeListe
 
 	return (
 		<div className="oversikt-container">

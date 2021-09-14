@@ -1,19 +1,19 @@
 import React from 'react'
 import { useMount } from 'react-use'
 import {
-	KrrVisning,
-	PdlfVisning,
-	SigrunstubVisning,
+	AaregVisning,
 	InntektstubVisning,
 	InstVisning,
+	KrrVisning,
+	PdlfVisning,
 	PensjonVisning,
-	AaregVisning
+	SigrunstubVisning,
 } from '~/components/fagsystem'
 import Panel from '~/components/ui/panel/Panel'
 
 import {
+	ArenaVisning,
 	MiniNorgeVisning,
-	ArenaVisning
 } from '~/pages/soekMiniNorge/search/ResultatVisning/partials'
 import { Innhold } from '~/pages/soekMiniNorge/hodejegeren/types'
 
@@ -42,7 +42,7 @@ export const ResultatVisning = ({
 	fetchDataFraFagsystemerForSoek,
 	data,
 	dataFraMiniNorge,
-	loading
+	loading,
 }: ResultatVisningProps) => {
 	useMount(fetchDataFraFagsystemerForSoek)
 	return (

@@ -10,27 +10,26 @@
  * - Pre-mappe verdier for liste
  */
 
-import _get from 'lodash/get'
 import Formatters from '~/utils/DataFormatter'
 
-const finnesDetAvvikForBestillinger = status => {
+const finnesDetAvvikForBestillinger = (status) => {
 	if (!status) return false
-	return status.some(source => {
-		return source.statuser.some(status => status.melding !== 'OK')
+	return status.some((source) => {
+		return source.statuser.some((status) => status.melding !== 'OK')
 	})
 }
 
-const antallIdenterOpprettetPaaBestilling = status => {
+const antallIdenterOpprettetPaaBestilling = (status) => {
 	if (!status) return 0
-	if (status.some(status => status.id === 'ORGANISASJON_FORVALTER')) return null
+	if (status.some((status) => status.id === 'ORGANISASJON_FORVALTER')) return null
 	let identerOpprettet = []
 	if (status.length) {
-		const tpsf = status.find(f => f.id === 'TPSF')
-		const importFraTps = status.find(f => f.id === 'TPSIMPORT')
+		const tpsf = status.find((f) => f.id === 'TPSF')
+		const importFraTps = status.find((f) => f.id === 'TPSIMPORT')
 
-		const addOpprettedeIdenter = system => {
-			system.statuser.forEach(stat => {
-				stat.detaljert.forEach(miljo => {
+		const addOpprettedeIdenter = (system) => {
+			system.statuser.forEach((stat) => {
+				stat.detaljert.forEach((miljo) => {
 					identerOpprettet = identerOpprettet.concat(miljo.identer)
 				})
 			})
@@ -69,14 +68,14 @@ const extractValuesForBestillingListe = (data, statusKode) => {
 		antallIdenter: data.antallIdenter ? data.antallIdenter.toString() : null,
 		sistOppdatert: Formatters.formatDate(data.sistOppdatert),
 		environments: Formatters.arrayToString(data.environments),
-		statusKode
+		statusKode,
 	}
 
 	return Object.values(values)
 }
 
 export default function bestillingStatusMapper(data) {
-	return data.map(bestilling => {
+	return data.map((bestilling) => {
 		const harAvvik = finnesDetAvvikForBestillinger(bestilling.status)
 		const antallIdenterOpprettet = antallIdenterOpprettetPaaBestilling(bestilling.status)
 		const statusKode = extractBestillingstatusKode(bestilling, harAvvik, antallIdenterOpprettet)
@@ -85,7 +84,7 @@ export default function bestillingStatusMapper(data) {
 			...bestilling,
 			antallIdenterOpprettet,
 			listedata,
-			status: bestilling.status || []
+			status: bestilling.status || [],
 		}
 	})
 }

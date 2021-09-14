@@ -9,7 +9,7 @@ import {
 	ArbeidKodeverk,
 	PersoninformasjonKodeverk,
 	SigrunKodeverk,
-	VergemaalKodeverk
+	VergemaalKodeverk,
 } from '~/config/kodeverk'
 
 // TODO: Flytte til selector?
@@ -20,10 +20,10 @@ import {
 const obj = (label, value, apiKodeverkId) => ({
 	label,
 	value,
-	...(apiKodeverkId && { apiKodeverkId })
+	...(apiKodeverkId && { apiKodeverkId }),
 })
 
-const _getTpsfBestillingData = data => {
+const _getTpsfBestillingData = (data) => {
 	return [
 		obj('Identtype', data.identtype),
 		obj('Født etter', Formatters.formatDate(data.foedtEtter)),
@@ -56,7 +56,7 @@ const _getTpsfBestillingData = data => {
 			data.telefonnummer_2 && `${data.telefonLandskode_2} ${data.telefonnummer_2}`
 		),
 		obj('Skjerming fra', Formatters.formatDate(data.egenAnsattDatoFom)),
-		obj('Skjerming til', Formatters.formatDate(data.egenAnsattDatoTom))
+		obj('Skjerming til', Formatters.formatDate(data.egenAnsattDatoTom)),
 	]
 }
 
@@ -84,8 +84,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						? `Bestilling # ${bestillingsinformasjon.opprettetFraId}`
 						: bestillingsinformasjon.opprettetFraGruppeId &&
 								`Gruppe # ${bestillingsinformasjon.opprettetFraGruppeId}`
-				)
-			]
+				),
+			],
 		}
 		data.push(bestillingsInfo)
 	}
@@ -106,7 +106,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		if (!_isEmpty(persondetaljer)) {
 			const personinfo = {
 				header: 'Persondetaljer',
-				items: _getTpsfBestillingData(bestillingData.tpsf)
+				items: _getTpsfBestillingData(bestillingData.tpsf),
 			}
 
 			data.push(personinfo)
@@ -124,8 +124,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 							adresseNrInfo.nummer ? adresseNrInfo.nummer : 'Tilfeldig'
 						),
 						obj('Bruksenhetsnummer', boadresse.bolignr),
-						obj('Flyttedato', Formatters.formatDate(boadresse.flyttedato))
-					]
+						obj('Flyttedato', Formatters.formatDate(boadresse.flyttedato)),
+					],
 				}
 				data.push(adresseNrInfoObj)
 			} else {
@@ -133,7 +133,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					header: 'Bostedadresse',
 					items: [
 						{
-							header: 'Bosted'
+							header: 'Bosted',
 						},
 						obj('Adressetype', Formatters.adressetypeToString(boadresse.adressetype)),
 						obj('Gatenavn', boadresse.gateadresse),
@@ -146,8 +146,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						obj('Postnummer', boadresse.postnr),
 						obj('Kommunenummer', boadresse.kommunenr),
 						obj('Bruksenhetsnummer', boadresse.bolignr),
-						obj('Flyttedato', Formatters.formatDate(boadresse.flyttedato))
-					]
+						obj('Flyttedato', Formatters.formatDate(boadresse.flyttedato)),
+					],
 				}
 				data.push(adresse)
 			}
@@ -160,8 +160,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 							'Tilleggstype',
 							Formatters.showLabel('tilleggstype', boadresse.tilleggsadresse.tilleggType)
 						),
-						obj('Nummer', boadresse.tilleggsadresse.nummer)
-					]
+						obj('Nummer', boadresse.tilleggsadresse.nummer),
+					],
 				}
 				data.push(tilleggsadresse)
 			}
@@ -175,8 +175,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					obj('Land', postadr.postLand),
 					obj('Adresselinje 1', postadr.postLinje1),
 					obj('Adresselinje 2', postadr.postLinje2),
-					obj('Adresselinje 3', postadr.postLinje3)
-				]
+					obj('Adresselinje 3', postadr.postLinje3),
+				],
 			}
 			data.push(postadresse)
 		}
@@ -250,8 +250,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						'Land',
 						midlertidigAdresse.utenlandskAdresse && midlertidigAdresse.utenlandskAdresse.postLand,
 						AdresseKodeverk.PostadresseLand
-					)
-				]
+					),
+				],
 			}
 			data.push(midlertidigAdresseObj)
 
@@ -266,8 +266,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 								midlertidigAdresse.norskAdresse.tilleggsadresse.tilleggType
 							)
 						),
-						obj('Nummer', midlertidigAdresse.norskAdresse.tilleggsadresse.nummer)
-					]
+						obj('Nummer', midlertidigAdresse.norskAdresse.tilleggsadresse.nummer),
+					],
 				}
 				data.push(midlertidigTilleggsadresseObj)
 			}
@@ -279,15 +279,15 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				itemRows: identHistorikk.map((ident, idx) => {
 					return [
 						{
-							numberHeader: `Identhistorikk ${idx + 1}`
+							numberHeader: `Identhistorikk ${idx + 1}`,
 						},
 						obj('Identtype', ident.identtype),
 						obj('Kjønn', Formatters.kjonnToString(ident.kjonn)),
 						obj('Utgått dato', Formatters.formatDate(ident.regdato)),
 						obj('Født før', Formatters.formatDate(ident.foedtFoer)),
-						obj('Født Etter', Formatters.formatDate(ident.foedtEtter))
+						obj('Født Etter', Formatters.formatDate(ident.foedtEtter)),
 					]
-				})
+				}),
 			}
 			data.push(identhistorikkData)
 		}
@@ -300,7 +300,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			if (partnere) {
 				const partner = {
 					header: 'Partner',
-					itemRows: []
+					itemRows: [],
 				}
 
 				partnere.forEach((item, j) => {
@@ -309,13 +309,13 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 
 					const tidligereSivilstander = _dropRight(sivilstander)
 						.reverse()
-						.map(s => s.sivilstand)
+						.map((s) => s.sivilstand)
 
 					partner.itemRows.push([
 						{
 							label: '',
 							value: `#${j + 1}`,
-							width: 'x-small'
+							width: 'x-small',
 						},
 						..._getTpsfBestillingData(item),
 						obj('Fnr/dnr/bost', item.ident),
@@ -325,7 +325,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 							sisteSivilstand.length > 0 && sisteSivilstand[0].sivilstand,
 							PersoninformasjonKodeverk.Sivilstander
 						),
-						obj('Tidligere sivilstander', Formatters.arrayToString(tidligereSivilstander))
+						obj('Tidligere sivilstander', Formatters.arrayToString(tidligereSivilstander)),
 					])
 				})
 
@@ -335,7 +335,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			if (barn && barn.length > 0) {
 				const barn = {
 					header: 'Barn',
-					itemRows: []
+					itemRows: [],
 				}
 
 				relasjoner.barn.forEach((item, i) => {
@@ -343,7 +343,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						{
 							label: '',
 							value: `#${i + 1}`,
-							width: 'x-small'
+							width: 'x-small',
 						},
 						..._getTpsfBestillingData(item),
 						obj('Fnr/dnr/bost', item.ident),
@@ -351,7 +351,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						obj('Foreldre', Formatters.showLabel('barnType', item.barnType)), //Bruke samme funksjon som i bestillingsveileder
 						obj('Bor hos', Formatters.showLabel('barnBorHos', item.borHos)),
 						obj('Er adoptert', Formatters.oversettBoolean(item.erAdoptert)),
-						obj('Fødselsdato', Formatters.formatDate(item.foedselsdato))
+						obj('Fødselsdato', Formatters.formatDate(item.foedselsdato)),
 					])
 				})
 
@@ -360,7 +360,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			if (foreldre && foreldre.length > 0) {
 				const foreldreRows = {
 					header: 'Foreldre',
-					itemRows: []
+					itemRows: [],
 				}
 
 				relasjoner.foreldre.forEach((item, i) => {
@@ -368,14 +368,14 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						{
 							label: '',
 							value: `#${i + 1}`,
-							width: 'x-small'
+							width: 'x-small',
 						},
 						..._getTpsfBestillingData(item),
 						obj('Fnr/dnr/bost', item.ident),
 						obj('ForeldreType', Formatters.showLabel('foreldreType', item.foreldreType)),
 						obj('Foreldre bor sammen', Formatters.oversettBoolean(item.harFellesAdresse)),
 						obj('Diskresjonskoder', item.spesreg !== 'UFB' && item.spesreg, 'Diskresjonskoder'),
-						obj('Fødselsdato', Formatters.formatDate(item.foedselsdato))
+						obj('Fødselsdato', Formatters.formatDate(item.foedselsdato)),
 					])
 				})
 
@@ -392,8 +392,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					obj('Mandattype', vergemaal.mandatType, VergemaalKodeverk.Mandattype),
 					obj('Vedtaksdato', Formatters.formatDate(vergemaal.vedtakDato)),
 					obj('Verges identtype', vergemaal.identType),
-					obj('Verge har mellomnavn', Formatters.oversettBoolean(vergemaal.harMellomnavn))
-				]
+					obj('Verge har mellomnavn', Formatters.oversettBoolean(vergemaal.harMellomnavn)),
+				],
 			}
 			data.push(vergemaalKriterier)
 		}
@@ -407,8 +407,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					obj('Gyldig fra og med', Formatters.formatDate(fullmakt.gyldigFom)),
 					obj('Gyldig til og med', Formatters.formatDate(fullmakt.gyldigTom)),
 					obj('Fullmektiges identtype', fullmakt.identType),
-					obj('Fullmektig har mellomnavn', Formatters.oversettBoolean(fullmakt.harMellomnavn))
-				]
+					obj('Fullmektig har mellomnavn', Formatters.oversettBoolean(fullmakt.harMellomnavn)),
+				],
 			}
 			data.push(fullmaktKriterier)
 		}
@@ -421,20 +421,20 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			items: [],
 			itemRows: [],
 			paginering: [],
-			pagineringPages: []
+			pagineringPages: [],
 		}
 
 		const harAmelding = _has(aaregKriterier[0], 'amelding')
 		const arbeidsforholdVisning = (arbeidsforhold, i) => [
 			{
-				numberHeader: `Arbeidsforhold ${i + 1}`
+				numberHeader: `Arbeidsforhold ${i + 1}`,
 			},
 			{
 				label: 'Type arbeidsforhold',
 				value:
 					arbeidsforhold.arbeidsforholdstype ||
 					(!harAmelding && aaregKriterier.arbeidsforholdstype),
-				apiKodeverkId: ArbeidKodeverk.Arbeidsforholdstyper
+				apiKodeverkId: ArbeidKodeverk.Arbeidsforholdstyper,
 			},
 			obj('Orgnummer', arbeidsforhold.arbeidsgiver?.orgnummer),
 			obj('Arbeidsgiver ident', arbeidsforhold.arbeidsgiver?.ident),
@@ -444,17 +444,17 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			{
 				label: 'Sluttårsak',
 				value: arbeidsforhold.ansettelsesPeriode?.sluttaarsak,
-				apiKodeverkId: ArbeidKodeverk.SluttaarsakAareg
+				apiKodeverkId: ArbeidKodeverk.SluttaarsakAareg,
 			},
 			{
 				label: 'Yrke',
 				value: arbeidsforhold.arbeidsavtale?.yrke,
-				apiKodeverkId: ArbeidKodeverk.Yrker
+				apiKodeverkId: ArbeidKodeverk.Yrker,
 			},
 			{
 				label: 'Ansettelsesform',
 				value: arbeidsforhold.arbeidsavtale?.ansettelsesform,
-				apiKodeverkId: ArbeidKodeverk.AnsettelsesformAareg
+				apiKodeverkId: ArbeidKodeverk.AnsettelsesformAareg,
 			},
 			obj(
 				'Stillingprosent',
@@ -473,23 +473,23 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			{
 				label: 'Arbeidstidsordning',
 				value: arbeidsforhold.arbeidsavtale?.arbeidstidsordning,
-				apiKodeverkId: ArbeidKodeverk.Arbeidstidsordninger
+				apiKodeverkId: ArbeidKodeverk.Arbeidstidsordninger,
 			},
 			obj('Avtalte arbeidstimer per uke', arbeidsforhold.arbeidsavtale?.avtaltArbeidstimerPerUke),
 			{
 				label: 'Skipsregister',
 				value: arbeidsforhold.fartoy?.[0].skipsregister,
-				apiKodeverkId: ArbeidKodeverk.Skipsregistre
+				apiKodeverkId: ArbeidKodeverk.Skipsregistre,
 			},
 			{
 				label: 'Fartøystype',
 				value: arbeidsforhold.fartoy?.[0].skipstype,
-				apiKodeverkId: ArbeidKodeverk.Skipstyper
+				apiKodeverkId: ArbeidKodeverk.Skipstyper,
 			},
 			{
 				label: 'Fartsområde',
 				value: arbeidsforhold.fartoy?.[0].fartsomraade,
-				apiKodeverkId: ArbeidKodeverk.Fartsområder
+				apiKodeverkId: ArbeidKodeverk.Fartsområder,
 			},
 			obj(
 				'Perioder med antall timer for timelønnet',
@@ -497,7 +497,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			),
 			obj('Perioder med utenlandsopphold', arbeidsforhold.utenlandsopphold?.length),
 			obj('Perioder med permisjon', arbeidsforhold.permisjon?.length),
-			obj('Perioder med permittering', arbeidsforhold.permittering?.length)
+			obj('Perioder med permittering', arbeidsforhold.permittering?.length),
 		]
 
 		if (harAmelding) {
@@ -505,14 +505,14 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				{
 					label: 'Type arbeidsforhold',
 					value: aaregKriterier[0]?.arbeidsforholdstype,
-					apiKodeverkId: ArbeidKodeverk.Arbeidsforholdstyper
+					apiKodeverkId: ArbeidKodeverk.Arbeidsforholdstyper,
 				},
 				obj('F.o.m. kalendermåned', Formatters.formatDate(aaregKriterier[0]?.genererPeriode?.fom)),
 				obj('T.o.m. kalendermåned', Formatters.formatDate(aaregKriterier[0]?.genererPeriode?.tom))
 			)
-			aaregKriterier[0]?.amelding.forEach(maaned => {
+			aaregKriterier[0]?.amelding.forEach((maaned) => {
 				const data = {
-					itemRows: []
+					itemRows: [],
 				}
 				maaned.arbeidsforhold.forEach((arbeidsforhold, i) => {
 					data.itemRows.push(arbeidsforholdVisning(arbeidsforhold, i))
@@ -534,37 +534,37 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	if (sigrunStubKriterier) {
 		// Flatter ut sigrunKriterier for å gjøre det lettere å mappe
 		const flatSigrunStubKriterier = []
-		sigrunStubKriterier.forEach(inntekt => {
+		sigrunStubKriterier.forEach((inntekt) => {
 			const inntektObj = { inntektsaar: inntekt.inntektsaar, tjeneste: inntekt.tjeneste }
 			inntekt.grunnlag &&
-				inntekt.grunnlag.forEach(gr => {
+				inntekt.grunnlag.forEach((gr) => {
 					flatSigrunStubKriterier.push({
 						...inntektObj,
 						grunnlag: gr.tekniskNavn,
 						verdi: gr.verdi,
-						inntektssted: 'Fastlands-Norge'
+						inntektssted: 'Fastlands-Norge',
 					})
 				})
 			inntekt.svalbardGrunnlag &&
-				inntekt.svalbardGrunnlag.forEach(gr => {
+				inntekt.svalbardGrunnlag.forEach((gr) => {
 					flatSigrunStubKriterier.push({
 						...inntektObj,
 						svalbardGrunnlag: gr.tekniskNavn,
 						verdi: gr.verdi,
-						inntektssted: 'Svalbard'
+						inntektssted: 'Svalbard',
 					})
 				})
 		})
 
 		const sigrunStub = {
 			header: 'Skatteoppgjør (Sigrun)',
-			itemRows: []
+			itemRows: [],
 		}
 
 		flatSigrunStubKriterier.forEach((inntekt, i) => {
 			sigrunStub.itemRows.push([
 				{
-					numberHeader: `Inntekt ${i + 1}`
+					numberHeader: `Inntekt ${i + 1}`,
 				},
 				obj('År', inntekt.inntektsaar),
 				obj('Beløp', inntekt.verdi),
@@ -573,14 +573,14 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					label: 'Grunnlag (Fastlands-Norge)',
 					value: inntekt.grunnlag,
 					width: 'xlarge',
-					apiKodeverkId: SigrunKodeverk[inntekt.tjeneste]
+					apiKodeverkId: SigrunKodeverk[inntekt.tjeneste],
 				},
 				{
 					label: 'Grunnlag (Svalbard)',
 					value: inntekt.svalbardGrunnlag,
 					width: 'xlarge',
-					apiKodeverkId: SigrunKodeverk[inntekt.tjeneste]
-				}
+					apiKodeverkId: SigrunKodeverk[inntekt.tjeneste],
+				},
 			])
 		})
 
@@ -595,7 +595,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			// items: [
 			// 	obj('Prosentøkning per år', inntektStubKriterier.prosentOekningPerAaar)
 			// ],
-			itemRows: []
+			itemRows: [],
 		}
 
 		inntektStubKriterier.inntektsinformasjon &&
@@ -625,7 +625,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					obj(
 						'Antall registrerte inntektsendringer (historikk)',
 						inntektsinfo.historikk && inntektsinfo.historikk.length
-					)
+					),
 				])
 			})
 
@@ -641,7 +641,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				? [
 						obj('Startdato', Formatters.formatDate(sykemeldingKriterier.syntSykemelding.startDato)),
 						obj('Organisasjonsnummer', sykemeldingKriterier.syntSykemelding.orgnummer),
-						obj('Arbeidsforhold-ID', sykemeldingKriterier.syntSykemelding.arbeidsforholdId)
+						obj('Arbeidsforhold-ID', sykemeldingKriterier.syntSykemelding.arbeidsforholdId),
 				  ]
 				: sykemeldingKriterier.detaljertSykemelding
 				? [
@@ -731,9 +731,9 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 								(sykemeldingKriterier.detaljertSykemelding.detaljer.arbeidsforEtterEndtPeriode
 									? 'JA'
 									: 'NEI')
-						)
+						),
 				  ]
-				: null
+				: null,
 		}
 		data.push(sykemelding)
 	}
@@ -744,7 +744,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		const brregstub = {
 			header: 'Brønnøysundregistrene',
 			items: [obj('Understatuser', Formatters.arrayToString(brregstubKriterier.understatuser))],
-			itemRows: []
+			itemRows: [],
 		}
 		brregstubKriterier.enheter.forEach((enhet, i) => {
 			brregstub.itemRows.push([
@@ -753,7 +753,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				obj('Registreringsdato', Formatters.formatDate(enhet.registreringsdato)),
 				obj('Organisasjonsnummer', enhet.orgNr),
 				obj('Foretaksnavn', enhet.foretaksNavn.navn1),
-				obj('Antall registrerte personroller', enhet.personroller && enhet.personroller.length)
+				obj('Antall registrerte personroller', enhet.personroller && enhet.personroller.length),
 			])
 		})
 
@@ -770,15 +770,15 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				{
 					label: 'RESERVERT MOT DIGITALKOMMUNIKASJON',
 					value: krrKriterier.reservert === null ? null : krrKriterier.reservert ? 'JA' : 'NEI',
-					width: 'medium'
+					width: 'medium',
 				},
 				obj('Epost', krrKriterier.epost),
 				obj('Mobilnummer', krrKriterier.mobil),
 				obj('Språk', Formatters.showLabel('spraaktype', krrKriterier.spraak)),
 				obj('Gyldig fra', Formatters.formatDate(krrKriterier.gyldigFra)),
 				obj('Adresse', krrKriterier.sdpAdresse),
-				obj('Leverandør', krrKriterier.sdpLeverandoer)
-			]
+				obj('Leverandør', krrKriterier.sdpLeverandoer),
+			],
 		}
 
 		data.push(krrStub)
@@ -814,8 +814,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					obj('Skifteform', doedsboKriterier.skifteform),
 					obj('Dato utstedt', Formatters.formatDate(doedsboKriterier.utstedtDato)),
 					obj('Gyldig fra', Formatters.formatDate(doedsboKriterier.gyldigFom)),
-					obj('Gyldig til', Formatters.formatDate(doedsboKriterier.gyldigTom))
-				]
+					obj('Gyldig til', Formatters.formatDate(doedsboKriterier.gyldigTom)),
+				],
 			}
 			data.push(doedsbo)
 		}
@@ -824,29 +824,29 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			const uidnr = pdlforvalterKriterier.utenlandskIdentifikasjonsnummer
 
 			const flatUidnrKriterier = []
-			uidnr.forEach(ui => {
+			uidnr.forEach((ui) => {
 				flatUidnrKriterier.push({
 					identifikasjonsnummer: ui.identifikasjonsnummer,
 					kilde: ui.kilde,
 					opphoert: ui.opphoert,
-					utstederland: ui.utstederland
+					utstederland: ui.utstederland,
 				})
 			})
 
 			const uidnrObj = {
 				header: 'Utenlandsk identifikasjonsnummer',
-				itemRows: []
+				itemRows: [],
 			}
 
 			flatUidnrKriterier.forEach((uidr, i) => {
 				uidnrObj.itemRows.push([
 					{
-						numberHeader: `Utenlandsk identifikasjonsnummer ${i + 1}`
+						numberHeader: `Utenlandsk identifikasjonsnummer ${i + 1}`,
 					},
 					obj('Utenlandsk ID', uidr.identifikasjonsnummer),
 					obj('Kilde', uidr.kilde),
 					obj('Utenlandsk ID opphørt', Formatters.oversettBoolean(uidr.opphoert)),
-					obj('Utstederland', uidr.utstederland, AdresseKodeverk.Utstederland)
+					obj('Utstederland', uidr.utstederland, AdresseKodeverk.Utstederland),
 				])
 			})
 			data.push(uidnrObj)
@@ -861,9 +861,9 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					items: [
 						{
 							label: 'Rett identitet',
-							value: 'Ukjent'
-						}
-					]
+							value: 'Ukjent',
+						},
+					],
 				}
 				data.push(falskId)
 			} else if (falskIdData.identitetType === 'ENTYDIG') {
@@ -872,9 +872,9 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					items: [
 						{
 							label: 'Rett fødselsnummer',
-							value: falskIdData.rettIdentitetVedIdentifikasjonsnummer
-						}
-					]
+							value: falskIdData.rettIdentitetVedIdentifikasjonsnummer,
+						},
+					],
 				}
 				data.push(falskId)
 			} else if (falskIdData.identitetType === 'OMTRENTLIG') {
@@ -887,8 +887,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						obj('Etternavn', falskIdData.personnavn.etternavn),
 						obj('Kjønn', falskIdData.kjoenn),
 						obj('Fødselsdato', Formatters.formatDate(falskIdData.foedselsdato)),
-						obj('Statsborgerskap', Formatters.arrayToString(falskIdData.statsborgerskap))
-					]
+						obj('Statsborgerskap', Formatters.arrayToString(falskIdData.statsborgerskap)),
+					],
 				}
 				data.push(falskId)
 			}
@@ -945,8 +945,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					'Dagpenger til dato',
 					arenaKriterier.dagpenger?.[0] &&
 						Formatters.formatDate(arenaKriterier.dagpenger[0].tilDato)
-				)
-			]
+				),
+			],
 		}
 		data.push(arenaforvalter)
 	}
@@ -957,29 +957,29 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		// Flater ut instKriterier for å gjøre det lettere å mappe
 
 		const flatInstKriterier = []
-		instKriterier.forEach(i => {
+		instKriterier.forEach((i) => {
 			flatInstKriterier.push({
 				institusjonstype: i.institusjonstype,
 				varighet: i.varighet,
 				startdato: i.startdato,
-				sluttdato: i.sluttdato
+				sluttdato: i.sluttdato,
 			})
 		})
 
 		const instObj = {
 			header: 'Institusjonsopphold',
-			itemRows: []
+			itemRows: [],
 		}
 
 		flatInstKriterier.forEach((inst, i) => {
 			instObj.itemRows.push([
 				{
-					numberHeader: `Institusjonsopphold ${i + 1}`
+					numberHeader: `Institusjonsopphold ${i + 1}`,
 				},
 				obj('Institusjonstype', Formatters.showLabel('institusjonstype', inst.institusjonstype)),
 				obj('Varighet', inst.varighet && Formatters.showLabel('varighet', inst.varighet)),
 				obj('Startdato', Formatters.formatDate(inst.startdato)),
-				obj('Sluttdato', Formatters.formatDate(inst.sluttdato))
+				obj('Sluttdato', Formatters.formatDate(inst.sluttdato)),
 			])
 		})
 		data.push(instObj)
@@ -994,10 +994,10 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		const oppholdsrettTyper = [
 			'eosEllerEFTABeslutningOmOppholdsrett',
 			'eosEllerEFTAVedtakOmVarigOppholdsrett',
-			'eosEllerEFTAOppholdstillatelse'
+			'eosEllerEFTAOppholdstillatelse',
 		]
 		const currentOppholdsrettType =
-			oppholdKriterier && oppholdsrettTyper.find(type => oppholdKriterier[type])
+			oppholdKriterier && oppholdsrettTyper.find((type) => oppholdKriterier[type])
 
 		const currentTredjelandsborgereStatus =
 			oppholdKriterier && oppholdKriterier.oppholdSammeVilkaar
@@ -1119,8 +1119,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						'jaNeiUavklart',
 						udiStubKriterier.soeknadOmBeskyttelseUnderBehandling
 					)
-				)
-			]
+				),
+			],
 		}
 		data.push(udistub)
 	}
@@ -1137,8 +1137,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				obj(
 					'Nedjuster med grunnbeløp',
 					Formatters.oversettBoolean(pensjonKriterier.inntekt.redusertMedGrunnbelop)
-				)
-			]
+				),
+			],
 		}
 
 		data.push(pensjonforvalter)
@@ -1146,11 +1146,11 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 
 	const inntektsmeldingKriterier = bestillingData.inntektsmelding
 
-	const mapInntektsmeldingKriterier = meldinger => ({
+	const mapInntektsmeldingKriterier = (meldinger) => ({
 		header: 'Inntektsmelding (fra Altinn)',
 		itemRows: meldinger.map((inntekt, i) => [
 			{
-				numberHeader: `Inntekt ${i + 1}`
+				numberHeader: `Inntekt ${i + 1}`,
 			},
 			obj('Årsak til innsending', Formatters.codeToNorskLabel(inntekt.aarsakTilInnsending)),
 			obj('Ytelse', Formatters.codeToNorskLabel(inntekt.ytelse)),
@@ -1220,13 +1220,13 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			obj(
 				'Opphør av Naturalytelse',
 				inntekt.opphoerAvNaturalytelseListe && inntekt.opphoerAvNaturalytelseListe.length
-			)
-		])
+			),
+		]),
 	})
 
 	const tomInntektsmelding = {
 		header: 'Inntektsmelding (fra Altinn)',
-		items: [obj('Inntektsmelding', 'Tom bestilling')]
+		items: [obj('Inntektsmelding', 'Tom bestilling')],
 	}
 
 	if (inntektsmeldingKriterier) {
@@ -1243,10 +1243,13 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			items: [
 				obj('Brevkode', dokarkivKriterier.dokumenter[0].brevkode),
 				obj('Tittel', dokarkivKriterier.tittel),
+				obj('Avsender type', dokarkivKriterier.avsenderMottaker?.idType),
+				obj('Avsender ID', dokarkivKriterier.avsenderMottaker?.id),
+				obj('Avsender navn', dokarkivKriterier.avsenderMottaker?.navn),
 				obj('Tema', dokarkivKriterier.tema),
 				obj('Journalførende enhet', dokarkivKriterier.journalfoerendeEnhet),
-				obj('Antall vedlegg', dokarkivKriterier.dokumenter.length)
-			]
+				obj('Antall vedlegg', dokarkivKriterier.dokumenter.length),
+			],
 		}
 
 		data.push(dokarkiv)
@@ -1268,8 +1271,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				obj('Målform', Formatters.showLabel('maalform', organisasjonKriterier[0].maalform)),
 				obj('Telefon', organisasjonKriterier[0].telefon),
 				obj('E-postadresse', organisasjonKriterier[0].epost),
-				obj('Internettadresse', organisasjonKriterier[0].nettside)
-			]
+				obj('Internettadresse', organisasjonKriterier[0].nettside),
+			],
 		}
 
 		const forretningsadresseKriterier = {
@@ -1281,8 +1284,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				obj('Kommunenummer', forretningsadresse && forretningsadresse.kommunenr),
 				obj('Adresselinje 1', forretningsadresse && forretningsadresse.adresselinjer[0]),
 				obj('Adresselinje 2', forretningsadresse && forretningsadresse.adresselinjer[1]),
-				obj('Adresselinje 3', forretningsadresse && forretningsadresse.adresselinjer[2])
-			]
+				obj('Adresselinje 3', forretningsadresse && forretningsadresse.adresselinjer[2]),
+			],
 		}
 
 		const postadresseKriterier = {
@@ -1294,8 +1297,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				obj('Kommunenummer', postadresse && postadresse.kommunenr),
 				obj('Adresselinje 1', postadresse && postadresse.adresselinjer[0]),
 				obj('Adresselinje 2', postadresse && postadresse.adresselinjer[1]),
-				obj('Adresselinje 3', postadresse && postadresse.adresselinjer[2])
-			]
+				obj('Adresselinje 3', postadresse && postadresse.adresselinjer[2]),
+			],
 		}
 
 		data.push(organisasjon)
@@ -1310,8 +1313,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			header: 'Import',
 			items: [
 				obj('Identer', Formatters.arrayToString(importFraTps)),
-				obj('Importert fra', bestillingData.kildeMiljoe.toUpperCase())
-			]
+				obj('Importert fra', bestillingData.kildeMiljoe.toUpperCase()),
+			],
 		}
 
 		data.push(importData)

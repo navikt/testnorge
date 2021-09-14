@@ -8,7 +8,7 @@ export const KodeverkWrapper = ({ navn, value, kodeverk, fetchKodeverk, children
 	let verdi
 
 	if (kodeverk && value) {
-		verdi = kodeverk.find(v => v.value === value)
+		verdi = kodeverk.find((v) => v.value === value)
 	}
 
 	return children(kodeverk, verdi)

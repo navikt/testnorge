@@ -5,7 +5,7 @@ import _has from 'lodash/has'
 import {
 	DollyFaBlokk,
 	DollyFieldArrayWrapper,
-	FieldArrayAddButton
+	FieldArrayAddButton,
 } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import Formatters from '~/utils/DataFormatter'
 import { erOpprettNyPartnerGyldig } from './sivilstand/SivilstandOptions'
@@ -24,11 +24,11 @@ const initialValues = {
 	utenFastBopel: false,
 	statsborgerskap: '',
 	statsborgerskapRegdato: '',
-	statsborgerskapTildato: ''
+	statsborgerskapTildato: '',
 }
 
-const ugyldigSivilstandState = errors =>
-	_get(errors, 'tpsf.relasjoner.partnere', []).some(partner => _has(partner, 'sivilstander'))
+const ugyldigSivilstandState = (errors) =>
+	_get(errors, 'tpsf.relasjoner.partnere', []).some((partner) => _has(partner, 'sivilstander'))
 
 const sistePartner = (partnere = []) => partnere[partnere.length - 1]
 
@@ -37,12 +37,12 @@ const sisteSivilstand = (partner = {}) => {
 	return sivilstander[sivilstander.length - 1]
 }
 
-const sisteTidligereSivilstandRegdato = partnere => {
-	const tidligerePartnere = partnere.filter(partner => !partner.ny)
+const sisteTidligereSivilstandRegdato = (partnere) => {
+	const tidligerePartnere = partnere.filter((partner) => !partner.ny)
 	if (tidligerePartnere.length < 1) return null
 
 	const tidligereSivilstander = sistePartner(tidligerePartnere).sivilstander.filter(
-		sivilstand => !sivilstand.ny
+		(sivilstand) => !sivilstand.ny
 	)
 	return tidligereSivilstander[tidligereSivilstander.length - 1].sivilstandRegdato
 }
@@ -65,7 +65,7 @@ export const sjekkKanOppretteNyPartner = (partnere, formikBag) => {
 const path = 'tpsf.relasjoner.partnere'
 export const Partnere = ({ formikBag, personFoerLeggTil }) => (
 	<FieldArray name={path}>
-		{arrayHelpers => {
+		{(arrayHelpers) => {
 			// Vil også vise partnere og sivilstander fra tidligere bestillinger uten å legge dem i formikBag.
 			// Lager derfor nytt partnerarray med både nye og tidligere partnere tagget med 'ny: true/false'.
 			const { partnere, partnereUtenomFormikBag, oppdatertPartner } = Partnerliste(

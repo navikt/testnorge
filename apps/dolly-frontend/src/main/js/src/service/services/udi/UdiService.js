@@ -6,5 +6,5 @@ export default {
 	getPerson(ident) {
 		const endpoint = `${udiUrl}/person/${ident}`
 		return Request.get(endpoint)
-	}
+	},
 }

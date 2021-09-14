@@ -46,7 +46,7 @@ export default () => (
 				label="Sivilstand"
 				options={[
 					{ value: 'GIFT', label: 'Gift' },
-					{ value: 'UGIFT', label: 'Ugift' }
+					{ value: 'UGIFT', label: 'Ugift' },
 				]}
 			/>
 		</section>
@@ -57,7 +57,7 @@ export default () => (
 				label="Kjønn"
 				options={[
 					{ value: 'KVINNE', label: 'Kvinne' },
-					{ value: 'MANN', label: 'Mann' }
+					{ value: 'MANN', label: 'Mann' },
 				]}
 			/>
 		</section>

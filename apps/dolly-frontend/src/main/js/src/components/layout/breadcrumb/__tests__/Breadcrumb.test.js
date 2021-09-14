@@ -6,8 +6,8 @@ const breadcrumbs = [
 	{ key: '/', props: { match: { path: '/', url: '/' }, location: { pathname: '/yolo' } } },
 	{
 		key: '/yolo',
-		props: { match: { path: '/yolo', url: '/yolo' }, location: { pathname: '/yolo' } }
-	}
+		props: { match: { path: '/yolo', url: '/yolo' }, location: { pathname: '/yolo' } },
+	},
 ]
 
 describe('Breadcrumb.js', () => {

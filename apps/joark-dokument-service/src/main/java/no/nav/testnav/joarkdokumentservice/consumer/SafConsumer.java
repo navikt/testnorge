@@ -1,16 +1,19 @@
 package no.nav.testnav.joarkdokumentservice.consumer;
 
-import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
-
-import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.joarkdokumentservice.config.credentias.TestnavSafProxyServiceProperties;
 import no.nav.testnav.joarkdokumentservice.consumer.command.GetDokumentCommand;
 import no.nav.testnav.joarkdokumentservice.consumer.command.GetDokumentInfoCommand;
+import no.nav.testnav.joarkdokumentservice.consumer.command.GetPDFCommand;
 import no.nav.testnav.joarkdokumentservice.domain.DokumentType;
 import no.nav.testnav.joarkdokumentservice.domain.Journalpost;
+import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
+import org.springframework.web.reactive.function.client.WebClient;
 
+@Slf4j
 @Component
 public class SafConsumer {
     private final WebClient webClient;
@@ -23,7 +26,11 @@ public class SafConsumer {
     ) {
         this.accessTokenService = accessTokenService;
         this.properties = properties;
-        this.webClient = WebClient.builder().baseUrl(properties.getUrl()).build();
+        this.webClient = WebClient.builder()
+                .exchangeStrategies(
+                        ExchangeStrategies.builder()
+                                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(1024 * 1024 * 50)).build())
+                .baseUrl(properties.getUrl()).build();
     }
 
     public Journalpost getJournalpost(Integer journalpostId, String miljo) {
@@ -35,11 +42,14 @@ public class SafConsumer {
                         journalpostId,
                         miljo
                 ).call())
-                .map(response -> new Journalpost(response.getData().getJournalpost()))
+                .map(response -> {
+                    log.info("Mottok journalpost: {}", response);
+                    return new Journalpost(response.getData().getJournalpost());
+                })
                 .block();
     }
 
-    public String getDokument(Integer journalpostId, Integer dokumentInfoId, DokumentType dokuemntType, String miljo) {
+    public String getDokument(Integer journalpostId, Integer dokumentInfoId, DokumentType dokumentType, String miljo) {
         return accessTokenService
                 .generateToken(properties)
                 .flatMap(accessToken -> new GetDokumentCommand(
@@ -48,7 +58,20 @@ public class SafConsumer {
                                 journalpostId,
                                 dokumentInfoId,
                                 miljo,
-                                dokuemntType
+                                dokumentType
+                        ).call()
+                ).block();
+    }
+
+    public byte[] getPDF(Integer journalpostId, Integer dokumentInfoId, String miljo) {
+        return accessTokenService
+                .generateToken(properties)
+                .flatMap(accessToken -> new GetPDFCommand(
+                                webClient,
+                                accessToken.getTokenValue(),
+                                journalpostId,
+                                dokumentInfoId,
+                                miljo
                         ).call()
                 ).block();
     }

@@ -12,7 +12,7 @@ const initialValues = {
 	beloep: '',
 	startOpptjeningsperiode: '',
 	sluttOpptjeningsperiode: '',
-	inntektstype: ''
+	inntektstype: '',
 }
 
 const simpleInitialValues = {
@@ -23,7 +23,7 @@ const simpleInitialValues = {
 	inngaarIGrunnlagForTrekk: true,
 	utloeserArbeidsgiveravgift: true,
 	fordel: 'kontantytelse',
-	beskrivelse: 'fastloenn'
+	beskrivelse: 'fastloenn',
 }
 
 type inntekt = {
@@ -47,7 +47,7 @@ const simpleValues = {
 	inngaarIGrunnlagForTrekk: true,
 	utloeserArbeidsgiveravgift: true,
 	fordel: 'kontantytelse',
-	beskrivelse: 'fastloenn'
+	beskrivelse: 'fastloenn',
 }
 
 export const InntektForm = ({ formikBag, inntektsinformasjonPath }: data) => {
@@ -67,7 +67,7 @@ export const InntektForm = ({ formikBag, inntektsinformasjonPath }: data) => {
 				beloep: inntekt.beloep,
 				startOpptjeningsperiode: inntekt.startOpptjeningsperiode,
 				sluttOpptjeningsperiode: inntekt.sluttOpptjeningsperiode,
-				...restValues
+				...restValues,
 			}))
 
 		newInntektArray &&

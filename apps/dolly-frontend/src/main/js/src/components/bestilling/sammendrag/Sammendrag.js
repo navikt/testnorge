@@ -21,7 +21,7 @@ export default function BestillingSammendrag({ bestilling }) {
 					sistOppdatert: bestilling.sistOppdatert,
 					opprettetFraId: bestilling.opprettetFraId,
 					opprettetFraGruppeId: bestilling.opprettetFraGruppeId,
-					navSyntetiskIdent: bestilling.bestilling.navSyntetiskIdent
+					navSyntetiskIdent: bestilling.bestilling.navSyntetiskIdent,
 				}}
 				header="Bestillingskriterier"
 			/>

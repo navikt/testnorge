@@ -1,25 +1,23 @@
 import { createActions, handleActions } from 'redux-actions'
-import _get from 'lodash/get'
-import _isNil from 'lodash/isNil'
 import { DollyApi } from '~/service/Api'
-import { onSuccess, onRequest } from '~/ducks/utils/requestActions'
+import { onRequest, onSuccess } from '~/ducks/utils/requestActions'
 import { SortKodeverkArray } from '~/service/services/dolly/Utils'
 
 export const { getKodeverk } = createActions(
 	{
 		getKodeverk: [
 			DollyApi.getKodeverkByNavn,
-			kodeverkNavn => ({
-				kodeverkNavn
-			})
-		]
+			(kodeverkNavn) => ({
+				kodeverkNavn,
+			}),
+		],
 	},
 	{ prefix: 'kodeverk' }
 )
 
 const initialState = {
 	loading: {},
-	data: {}
+	data: {},
 }
 
 /**
@@ -32,8 +30,8 @@ export default handleActions(
 				...state,
 				loading: {
 					...state.loading,
-					[action.meta.kodeverkNavn]: true
-				}
+					[action.meta.kodeverkNavn]: true,
+				},
 			}
 		},
 		[onSuccess(getKodeverk)](state, action) {
@@ -42,20 +40,20 @@ export default handleActions(
 				...state,
 				loading: {
 					...state.loading,
-					[action.meta.kodeverkNavn]: false
+					[action.meta.kodeverkNavn]: false,
 				},
 				data: {
 					...state.data,
-					[action.meta.kodeverkNavn]: kodeverk
-				}
+					[action.meta.kodeverkNavn]: kodeverk,
+				},
 			}
-		}
+		},
 	},
 	initialState
 )
 
 /*** THUNKS */
-export const fetchKodeverk = kodeverkNavn => (dispatch, getState) => {
+export const fetchKodeverk = (kodeverkNavn) => (dispatch, getState) => {
 	const { kodeverk } = getState()
 	if (kodeverk.data[kodeverkNavn] || kodeverk.loading[kodeverkNavn]) return false
 	return dispatch(getKodeverk(kodeverkNavn))
@@ -69,7 +67,7 @@ export const getKodeverkSelector = (state, kodeverk) => {
 
 export const getKodeverkByIdSelector = (state, kodeverk, value) => {
 	const defaultResponse = {
-		label: `${value} - Finnes ikke i kodeverk`
+		label: `${value} - Finnes ikke i kodeverk`,
 	}
-	return state.kodeverk.data[kodeverk].find(y => y.value === value) || defaultResponse
+	return state.kodeverk.data[kodeverk].find((y) => y.value === value) || defaultResponse
 }

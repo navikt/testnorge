@@ -6,6 +6,6 @@ export default function antallIdenterOpprettet(bestilling) {
 
 	return {
 		tekst,
-		harMangler: antallIdenterOpprettet < antallIdenter
+		harMangler: antallIdenterOpprettet < antallIdenter,
 	}
 }

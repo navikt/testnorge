@@ -1,7 +1,6 @@
 import { LOCATION_CHANGE } from 'connected-react-router'
 import { onSuccess } from '~/ducks/utils/requestActions'
 import { actions } from '~/ducks/gruppe'
-import { actions as bestillingActions } from '~/ducks/bestilling'
 
 export const redirectReducer = (state = null, action) => {
 	switch (action.type) {
@@ -17,6 +16,6 @@ export const redirectReducer = (state = null, action) => {
 
 export default function commonReducer(state, action) {
 	return {
-		redirectTo: redirectReducer(state, action)
+		redirectTo: redirectReducer(state, action),
 	}
 }

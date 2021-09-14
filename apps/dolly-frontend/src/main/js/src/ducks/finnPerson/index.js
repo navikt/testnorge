@@ -5,11 +5,11 @@ import { onSuccess } from '~/ducks/utils/requestActions'
 import { handleActions } from '~/ducks/utils/immerHandleActions'
 
 export const { navigerTilPerson } = createActions({
-	navigerTilPerson: DollyApi.navigerTilPerson
+	navigerTilPerson: DollyApi.navigerTilPerson,
 })
 
 const initialState = {
-	visPerson: null
+	visPerson: null,
 }
 
 export default handleActions(
@@ -19,7 +19,7 @@ export default handleActions(
 		},
 		[onSuccess(navigerTilPerson)](state, action) {
 			state.visPerson = action.payload.data.identHovedperson
-		}
+		},
 	},
 	initialState
 )

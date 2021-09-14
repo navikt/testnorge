@@ -24,7 +24,7 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 		Livrente: 'livrente',
 		LottOgPartInnenFiske: 'lottOgPart',
 		Nettoloennsordning: 'nettoloenn',
-		UtenlandskArtist: 'utenlandskArtist'
+		UtenlandskArtist: 'utenlandskArtist',
 	}
 
 	useEffect(() => {
@@ -39,18 +39,18 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 
 	useEffect(() => {
 		if (inntektValues.inntektstype !== '' && Object.keys(fields).length < 1) {
-			InntektstubService.validate(inntektValues).then(response => {
+			InntektstubService.validate(inntektValues).then((response) => {
 				setFields(response)
 			})
 		}
 	}, [])
 
-	const setFormikBag = values => {
+	const setFormikBag = (values) => {
 		const nullstiltInntekt = {
 			beloep: _get(formikBag.values, `${inntektPath}.beloep`),
 			startOpptjeningsperiode: _get(formikBag.values, `${inntektPath}.startOpptjeningsperiode`),
 			sluttOpptjeningsperiode: _get(formikBag.values, `${inntektPath}.sluttOpptjeningsperiode`),
-			inntektstype: values.inntektstype
+			inntektstype: values.inntektstype,
 		}
 
 		if (values.inntektstype !== currentInntektstype) {
@@ -92,7 +92,7 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 	}
 
 	useEffect(() => {
-		Object.entries(fields).forEach(entry => {
+		Object.entries(fields).forEach((entry) => {
 			const name = entry[0]
 			const valueArray = entry[1]
 			if (
@@ -121,7 +121,7 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 						values[key] = undefined
 					}
 				}
-				InntektstubService.validate(values).then(response => setFields(response))
+				InntektstubService.validate(values).then((response) => setFields(response))
 				setFormikBag(values)
 			}}
 			component={({ handleSubmit }) => {

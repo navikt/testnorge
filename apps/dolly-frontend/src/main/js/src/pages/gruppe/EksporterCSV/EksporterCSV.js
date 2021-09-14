@@ -28,7 +28,7 @@ export const EksporterCSV = ({ identer, gruppeId }) => {
 	const download = async () => {
 		setLoading(true)
 		Logger.log({ event: 'Eksporterer til excel' })
-		const identListe = identer.map(ident => ident.ident)
+		const identListe = identer.map((ident) => ident.ident)
 		const data = await hentCsvFil(identListe)
 
 		const decodedData = decodeURIComponent(data)
@@ -49,12 +49,12 @@ export const EksporterCSV = ({ identer, gruppeId }) => {
 	)
 }
 
-const hentCsvFil = body => {
+const hentCsvFil = (body) => {
 	return api
 		.fetch(
 			'/tps-forvalteren-proxy/api/v1/dolly/testdata/excel',
 			{ method: 'POST', headers: { 'Content-Type': 'application/json' } },
 			body
 		)
-		.then(response => response.text())
+		.then((response) => response.text())
 }

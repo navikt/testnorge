@@ -2,8 +2,7 @@ import React from 'react'
 import _get from 'lodash/get'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { DollySelect } from '~/components/ui/form/inputs/select/Select'
+import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { OrganisasjonLoader } from '~/components/organisasjonSelect'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { PersonrollerForm } from './personrollerForm'
@@ -12,10 +11,10 @@ const initialValues = {
 	rolle: '',
 	registreringsdato: new Date(),
 	foretaksNavn: {
-		navn1: ''
+		navn1: '',
 	},
 	orgNr: '',
-	personroller: []
+	personroller: [],
 }
 
 export const EnheterForm = ({ formikBag }) => {
@@ -31,7 +30,7 @@ export const EnheterForm = ({ formikBag }) => {
 				kommunenr: org.forretningsAdresse.kommunenr,
 				landKode: org.forretningsAdresse.landkode,
 				postnr: org.forretningsAdresse.postnr,
-				poststed: org.forretningsAdresse.poststed
+				poststed: org.forretningsAdresse.poststed,
 			})
 		}
 		if (org.postadresse) {
@@ -40,14 +39,14 @@ export const EnheterForm = ({ formikBag }) => {
 				kommunenr: org.forretningsAdresse.kommunenr,
 				landKode: org.forretningsAdresse.landkode,
 				postnr: org.forretningsAdresse.postnr,
-				poststed: org.forretningsAdresse.poststed
+				poststed: org.forretningsAdresse.poststed,
 			})
 		}
 	}
 
 	return (
 		<FormikDollyFieldArray name="brregstub.enheter" header="Enhet" newEntry={initialValues}>
-			{path => (
+			{(path) => (
 				<>
 					<FormikSelect
 						name={`${path}.rolle`}
@@ -60,17 +59,17 @@ export const EnheterForm = ({ formikBag }) => {
 					/>
 					<FormikDatepicker name={`${path}.registreringsdato`} label="Registreringsdato" />
 					<OrganisasjonLoader
-						render={data => (
+						render={(data) => (
 							<DollySelect
 								name={`${path}.orgNr`}
 								label="Organisasjonsnummer"
 								options={data}
 								size="xlarge"
-								onChange={org => setEnhetsinfo(org, path)}
+								onChange={(org) => setEnhetsinfo(org, path)}
 								value={_get(formikBag.values, `${path}.orgNr`)}
 								feil={
 									_get(formikBag.values, `${path}.orgNr`) === '' && {
-										feilmelding: 'Feltet er påkrevd'
+										feilmelding: 'Feltet er påkrevd',
 									}
 								}
 								isClearable={false}

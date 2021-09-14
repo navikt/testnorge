@@ -22,7 +22,7 @@ export const ImportTilDollyModal = ({ valgtePersoner, onAvbryt }: ImportTilDolly
 		const request = {
 			identer: valgtePersoner,
 			kildeMiljoe: KILDE_MILJOE,
-			environments: DOLLY_MILJOE
+			environments: DOLLY_MILJOE,
 		}
 
 		DollyApi.importerPersoner(valgtGruppe, request).then((response: any) => {

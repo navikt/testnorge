@@ -23,7 +23,7 @@ Formatters.formatAlderBarn = (alder, doedsdato, doedfoedt) => {
 
 // Format date to readable string format (AAAA-MM-DDTxx:xx:xx to DD.MM.AAAA?)
 // Date ---> String
-Formatters.formatDate = date => {
+Formatters.formatDate = (date) => {
 	if (!date) return date
 	// Parse date if not date
 	if (!isDate(date)) date = new Date(date)
@@ -32,7 +32,7 @@ Formatters.formatDate = date => {
 
 // Format string to Date format
 // String ---> Date
-Formatters.parseDate = date => {
+Formatters.parseDate = (date) => {
 	if (!date) return date
 
 	const parts = date.split('.')
@@ -40,7 +40,7 @@ Formatters.parseDate = date => {
 }
 
 // Format date AAAA-MM-DD to DD.MM.AAAA
-Formatters.formatStringDates = date => {
+Formatters.formatStringDates = (date) => {
 	if (!date) return date
 	const dateArray = date.split('-')
 	return `${dateArray[2]}.${dateArray[1]}.${dateArray[0]}`
@@ -59,7 +59,7 @@ Formatters.kjonnToString = (kjonn = '', barn = false) => {
 	return _kjonn === 'm' ? 'MANN' : 'KVINNE'
 }
 
-Formatters.adressetypeToString = adressetype => {
+Formatters.adressetypeToString = (adressetype) => {
 	if (!adressetype) return null
 	switch (adressetype) {
 		case 'MATR':
@@ -87,27 +87,27 @@ Formatters.arrayToString = (array, separator = ',') => {
 	}, '')
 }
 
-Formatters.omraaderArrayToString = array => {
+Formatters.omraaderArrayToString = (array) => {
 	if (!array) return null
 
 	return Formatters.arrayToString(array).replace('*', '* (Alle)')
 }
 
-Formatters.uppercaseAndUnderscoreToCapitalized = value => {
+Formatters.uppercaseAndUnderscoreToCapitalized = (value) => {
 	if (!value) return null
 	const clean = _startCase(value)
 	return _capitalize(clean)
 }
 
-Formatters.CapitalizedToUppercaseAndUnderscore = value => {
+Formatters.CapitalizedToUppercaseAndUnderscore = (value) => {
 	return value.replace(' ', '_').toUpperCase()
 }
 
-Formatters.allCapsToCapitalized = value => {
+Formatters.allCapsToCapitalized = (value) => {
 	return _capitalize(value)
 }
 
-Formatters.codeToNorskLabel = value => {
+Formatters.codeToNorskLabel = (value) => {
 	if (!value) return null
 	return Formatters.uppercaseAndUnderscoreToCapitalized(value)
 		.replace('oe', 'ø')
@@ -118,7 +118,7 @@ Formatters.codeToNorskLabel = value => {
 		.replace('Aa', 'Å')
 }
 
-Formatters.oversettBoolean = value => {
+Formatters.oversettBoolean = (value) => {
 	if (_isNil(value)) return value
 	return value === true || value === 'true'
 		? 'Ja'
@@ -127,7 +127,7 @@ Formatters.oversettBoolean = value => {
 		: value
 }
 
-Formatters.gtTypeLabel = gtType => {
+Formatters.gtTypeLabel = (gtType) => {
 	if (!gtType) return null
 
 	switch (gtType) {
@@ -164,7 +164,7 @@ Formatters.showLabel = (optionsGruppe, value) => {
 	optionsGruppe.includes('partner') && (copyOptionsGruppe = optionsGruppe.replace('partner_', ''))
 	optionsGruppe.includes('barn') && (copyOptionsGruppe = optionsGruppe.replace('barn_', ''))
 
-	const obj = Options(copyOptionsGruppe).filter(options => options.value === value)
+	const obj = Options(copyOptionsGruppe).filter((options) => options.value === value)
 
 	if (_get(obj, 'label') || _get(obj, '[0].label')) {
 		return obj.label || obj[0].label

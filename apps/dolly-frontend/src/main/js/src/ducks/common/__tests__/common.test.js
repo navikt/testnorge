@@ -7,7 +7,7 @@ import { actions as bestillingActions } from '~/ducks/bestilling'
 describe('commonReducer', () => {
 	it('should return initial state', () => {
 		const initialState = {
-			redirectTo: null
+			redirectTo: null,
 		}
 
 		expect(common(undefined, {})).toEqual(initialState)
@@ -24,7 +24,7 @@ describe('commonReducer - redirectReducer', () => {
 	it('should handle success create group', () => {
 		const action = {
 			type: onSuccess(createGruppe),
-			payload: { data: { id: testId } }
+			payload: { data: { id: testId } },
 		}
 
 		const res = `/gruppe/${testId}`
@@ -34,7 +34,7 @@ describe('commonReducer - redirectReducer', () => {
 	it('should handle abort bestilling', () => {
 		const action = {
 			type: bestillingActions.abortBestilling.toString(),
-			payload: testId
+			payload: testId,
 		}
 
 		const res = `/gruppe/${testId}`
@@ -55,7 +55,7 @@ describe('commonReducer - redirectReducer', () => {
 
 	it('should handle delete group success', () => {
 		const action = {
-			type: onSuccess(deleteGruppe)
+			type: onSuccess(deleteGruppe),
 		}
 		const res = '/'
 		expect(redirectReducer({}, action)).toEqual(res)
@@ -63,7 +63,7 @@ describe('commonReducer - redirectReducer', () => {
 
 	it('should handle LOCATION_CHANGE', () => {
 		const action = {
-			type: LOCATION_CHANGE
+			type: LOCATION_CHANGE,
 		}
 
 		expect(redirectReducer({}, action)).toEqual(null)

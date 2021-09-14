@@ -21,7 +21,7 @@ const dateFields = [
 	'etterbetalingsperiodeStart',
 	'etterbetalingsperiodeSlutt',
 	'pensjonTidsromStart',
-	'pensjonTidsromSlutt'
+	'pensjonTidsromSlutt',
 ]
 
 const numberFields = [
@@ -30,12 +30,12 @@ const numberFields = [
 	'pensjonsgrad',
 	'tilleggspensjonsbeloep',
 	'ufoeregrad',
-	'antall'
+	'antall',
 ]
 
 const wideFields = ['beskrivelse', 'inntjeningsforhold', 'persontype']
 
-const booleanField = options => {
+const booleanField = (options) => {
 	return options.length > 0 && typeof options[0] === 'boolean'
 }
 
@@ -95,7 +95,7 @@ const fieldResolver = (
 			/>
 		)
 	}
-	const filteredOptions = options.map(option => ({ label: texts(option), value: option }))
+	const filteredOptions = options.map((option) => ({ label: texts(option), value: option }))
 	const fieldPath = `${path}.${tilleggsinformasjonPaths(field)}`
 	const tomTilleggsinformasjonFieldPath =
 		tilleggsinformasjonAttributter[filteredOptions[0].value] &&
@@ -131,7 +131,7 @@ const fieldResolver = (
 			name={field}
 			value={filteredOptions.length === 1 ? filteredOptions[0].value : _get(values, fieldPath)}
 			label={texts(field)}
-			options={filteredOptions.filter(option => option.value !== '<TOM>')}
+			options={filteredOptions.filter((option) => option.value !== '<TOM>')}
 			fastfield={false}
 			afterChange={handleChange}
 			size={booleanField(options) ? 'small' : wideFields.includes(field) ? 'xxlarge' : 'large'}
@@ -147,7 +147,7 @@ const Inntekt = ({
 	formikBag,
 	path,
 	resetForm,
-	tilleggsinformasjonAttributter
+	tilleggsinformasjonAttributter,
 }) => {
 	return (
 		<div className="flexbox--flex-wrap">
@@ -163,8 +163,8 @@ const Inntekt = ({
 			)}
 
 			{Object.keys(fields)
-				.filter(field => !(fields[field].length === 1 && fields[field][0] === '<TOM>'))
-				.map(field =>
+				.filter((field) => !(fields[field].length === 1 && fields[field][0] === '<TOM>'))
+				.map((field) =>
 					fieldResolver(
 						field,
 						onValidate,

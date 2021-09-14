@@ -15,12 +15,12 @@ import Logger from './logger'
 import { v4 as uuid } from 'uuid'
 
 window.uuid = uuid()
-window.onerror = message => {
+window.onerror = (message) => {
 	try {
 		Logger.error({
 			event: 'Global feil',
 			message: message,
-			uuid: window.uuid
+			uuid: window.uuid,
 		})
 	} catch (e) {
 		console.error(e)

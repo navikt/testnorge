@@ -84,5 +84,5 @@ export const ArenaForm = ({ formikBag }) => {
 }
 
 ArenaForm.validation = {
-	arenaforvalter: ifPresent('$arenaforvalter', validation)
+	arenaforvalter: ifPresent('$arenaforvalter', validation),
 }

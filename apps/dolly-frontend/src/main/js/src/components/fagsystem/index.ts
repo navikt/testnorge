@@ -27,5 +27,5 @@ export {
 	BrregVisning,
 	PensjonVisning,
 	DokarkivVisning,
-	SykemeldingVisning
+	SykemeldingVisning,
 }

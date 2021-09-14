@@ -2,7 +2,7 @@ import { DollyApi } from './Api'
 
 const ConfigService = {
 	fetchConfig() {
-		return DollyApi.getConfig().then(res => {
+		return DollyApi.getConfig().then((res) => {
 			window.dollyConfig = res.data
 		})
 	},
@@ -28,7 +28,7 @@ const ConfigService = {
 			default:
 				return undefined
 		}
-	}
+	},
 }
 
 export default ConfigService

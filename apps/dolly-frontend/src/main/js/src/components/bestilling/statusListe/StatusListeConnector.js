@@ -3,11 +3,11 @@ import { actions } from '~/ducks/gruppe'
 import { fetchOrganisasjoner } from '~/ducks/organisasjon'
 import { createLoadingSelector } from '~/ducks/loading'
 import {
+	cancelBestilling,
 	getBestillinger,
-	nyeBestillingerSelector,
 	getOrganisasjonBestilling,
+	nyeBestillingerSelector,
 	removeNyBestillingStatus,
-	cancelBestilling
 } from '~/ducks/bestillingStatus'
 import StatusListe from './StatusListe'
 
@@ -15,14 +15,14 @@ const loadingCancelSelector = createLoadingSelector(cancelBestilling)
 const loadingBestillingerSelector = createLoadingSelector(getBestillinger)
 const loadingOrgBestillingSelector = createLoadingSelector(getOrganisasjonBestilling)
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
 	return {
 		isFetchingBestillinger: loadingBestillingerSelector(state),
 		isFetchingOrgBestillinger: loadingOrgBestillingSelector(state),
 		nyeBestillinger: nyeBestillingerSelector(state),
 		isCanceling: loadingCancelSelector(state),
 		brukerBilde: state.bruker.brukerBilde,
-		brukerId: state.bruker.brukerData.brukerId
+		brukerId: state.bruker.brukerData.brukerId,
 	}
 }
 
@@ -35,8 +35,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 			ownProps.brukerId
 				? dispatch(getOrganisasjonBestilling(ownProps.brukerId))
 				: dispatch(getBestillinger(ownProps.gruppeId)),
-		removeNyBestillingStatus: bestillingId => dispatch(removeNyBestillingStatus(bestillingId)),
-		cancelBestilling: bestillingId => dispatch(cancelBestilling(bestillingId))
+		removeNyBestillingStatus: (bestillingId) => dispatch(removeNyBestillingStatus(bestillingId)),
+		cancelBestilling: (bestillingId) => dispatch(cancelBestilling(bestillingId)),
 	}
 }
 

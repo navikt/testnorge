@@ -3,7 +3,7 @@ import React from 'react'
 import './LinkButton.less'
 
 export default function LinkButton({ text, onClick }) {
-	const handleClick = event => {
+	const handleClick = (event) => {
 		event.preventDefault()
 		onClick(event)
 	}

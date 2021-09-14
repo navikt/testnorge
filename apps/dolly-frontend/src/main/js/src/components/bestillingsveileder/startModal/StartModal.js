@@ -18,10 +18,10 @@ export const BestillingsveilederModal = ({ onAvbryt, onSubmit, brukernavn }) => 
 					legend="Type bestilling"
 					radios={[
 						{ label: 'Ny person', value: 'ny', id: 'ny' },
-						{ label: 'Eksisterende person', value: 'eksisterende', id: 'eksisterende' }
+						{ label: 'Eksisterende person', value: 'eksisterende', id: 'eksisterende' },
 					]}
 					checked={type}
-					onChange={e => setType(e.target.value)}
+					onChange={(e) => setType(e.target.value)}
 				/>
 
 				{type === 'ny' && <NyIdent onAvbryt={onAvbryt} onSubmit={onSubmit} zBruker={brukernavn} />}

@@ -3,7 +3,7 @@ import _get from 'lodash/get'
 import { addDays, areIntervalsOverlapping, subMonths } from 'date-fns'
 import { messages, requiredDate, requiredNumber, requiredString } from '~/utils/YupValidations'
 
-const unikOrgMndTest = validation => {
+const unikOrgMndTest = (validation) => {
 	const errorMsg = 'Kombinasjonen av år, måned og virksomhet er ikke unik'
 	return validation.test('unikhet', errorMsg, function isUniqueCombination(orgnr) {
 		if (!orgnr) return true
@@ -22,10 +22,10 @@ const unikOrgMndTest = validation => {
 }
 
 const nyeInntekterOverlapper = (alleInntekter, currInntektsinformasjon) => {
-	const virksomheter = alleInntekter.map(inntektinfo => inntektinfo.virksomhet)
-	const maaneder = alleInntekter.map(inntektinfo => ({
+	const virksomheter = alleInntekter.map((inntektinfo) => inntektinfo.virksomhet)
+	const maaneder = alleInntekter.map((inntektinfo) => ({
 		sisteAarMaaned: inntektinfo.sisteAarMaaned,
-		antallMaaneder: inntektinfo.antallMaaneder
+		antallMaaneder: inntektinfo.antallMaaneder,
 	}))
 
 	const likeOrgnrIndex = indexOfLikeOrgnr(virksomheter, currInntektsinformasjon.virksomhet)
@@ -42,29 +42,29 @@ const indexOfLikeOrgnr = (virksomheter, orgnr) => {
 	return index
 }
 
-const dato = aarMaaned => {
+const dato = (aarMaaned) => {
 	const year = aarMaaned.split('-')[0]
 	const month = aarMaaned.split('-')[1]
 	return new Date(year, month - 1)
 }
 
-const finnTidsrom = maaneder => maaneder.map(maaned => getInterval(maaned))
+const finnTidsrom = (maaneder) => maaneder.map((maaned) => getInterval(maaned))
 
-const getInterval = inntektsinformasjon => {
+const getInterval = (inntektsinformasjon) => {
 	const currDato = dato(inntektsinformasjon.sisteAarMaaned)
 	return inntektsinformasjon.antallMaaneder && inntektsinformasjon.antallMaaneder > 1
 		? {
 				start: subMonths(currDato, inntektsinformasjon.antallMaaneder - 1),
-				end: currDato
+				end: currDato,
 		  }
 		: {
 				start: currDato,
-				end: addDays(currDato, 1)
+				end: addDays(currDato, 1),
 		  }
 }
 
 const finnesOverlappendeDato = (tidsrom, index) => {
-	const tidsromSomIkkeKanOverlappe = index.map(idx => tidsrom[idx])
+	const tidsromSomIkkeKanOverlappe = index.map((idx) => tidsrom[idx])
 	const firstInterval = tidsromSomIkkeKanOverlappe[0]
 
 	return tidsromSomIkkeKanOverlappe.some((tidsrom, idx) => {
@@ -80,21 +80,21 @@ const inntektsliste = Yup.array().of(
 	Yup.object({
 		beloep: requiredNumber.typeError(messages.required),
 		startOpptjeningsperiode: Yup.string().nullable(),
-		sluttOpptjeningsperiode: Yup.string().nullable()
+		sluttOpptjeningsperiode: Yup.string().nullable(),
 	})
 )
 
 const fradragsliste = Yup.array().of(
 	Yup.object({
 		beloep: requiredNumber.typeError(messages.required),
-		beskrivelse: requiredString
+		beskrivelse: requiredString,
 	})
 )
 
 const forskuddstrekksliste = Yup.array().of(
 	Yup.object({
 		beloep: requiredNumber.typeError(messages.required),
-		beskrivelse: Yup.string().nullable()
+		beskrivelse: Yup.string().nullable(),
 	})
 )
 
@@ -102,8 +102,8 @@ const arbeidsforholdsliste = Yup.array().of(
 	Yup.object({
 		arbeidsforholdstype: requiredString,
 		startdato: Yup.mixed().when('sluttdato', {
-			is: val => val !== undefined,
-			then: requiredDate
+			is: (val) => val !== undefined,
+			then: requiredDate,
 		}),
 		sluttdato: Yup.string().nullable(),
 		antallTimerPerUkeSomEnFullStillingTilsvarer: Yup.number()
@@ -116,7 +116,7 @@ const arbeidsforholdsliste = Yup.array().of(
 			.transform((i, j) => (j === '' ? null : i))
 			.nullable(),
 		sisteLoennsendringsdato: Yup.string().nullable(),
-		sisteDatoForStillingsprosentendring: Yup.string().nullable()
+		sisteDatoForStillingsprosentendring: Yup.string().nullable(),
 	})
 )
 
@@ -126,7 +126,7 @@ export const validation = {
 			Yup.object({
 				sisteAarMaaned: requiredString.matches(/^\d{4}\-(0[1-9]|1[012])$/, {
 					message: 'Dato må være på formatet yyyy-MM',
-					excludeEmptyString: true
+					excludeEmptyString: true,
 				}),
 				antallMaaneder: Yup.number()
 					.integer('Kan ikke være et desimaltall')
@@ -139,8 +139,8 @@ export const validation = {
 				inntektsliste: inntektsliste,
 				fradragsliste: fradragsliste,
 				forskuddstrekksliste: forskuddstrekksliste,
-				arbeidsforholdsliste: arbeidsforholdsliste
+				arbeidsforholdsliste: arbeidsforholdsliste,
 			})
-		)
-	})
+		),
+	}),
 }

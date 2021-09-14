@@ -9,17 +9,17 @@ import Panel from '~/components/ui/panel/Panel'
 import { erForste, panelError } from '~/components/ui/form/formUtils'
 import { FormikProps } from 'formik'
 import FileUpload from 'filopplasting'
-import { Label } from '~/components/ui/form/inputs/label/Label'
-import { pdfjs } from 'react-pdf'
-// @ts-ignore
-import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry'
 import styled from 'styled-components'
-import { isAfter } from 'date-fns'
 import _get from 'lodash/get'
+import { Digitalinnsending } from '~/components/fagsystem/dokarkiv/form/digital/Digitalinnsending'
+import { FilnavnDollyArray } from '~/components/fagsystem/dokarkiv/modal/FilnavnDollyArray'
+import { pdfjs } from 'react-pdf/dist/umd/entry.webpack'
+// @ts-ignore
+import pdfjsworker from 'react-pdf/src/pdf.worker.entry'
 
-pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker
+pdfjs.GlobalWorkerOptions.workerSrc = pdfjsworker
 
-interface Form {
+interface DokarkivForm {
 	formikBag: FormikProps<{}>
 }
 
@@ -30,9 +30,12 @@ type Skjema = {
 	value: string
 }
 
-type Vedlegg = {
+export type Vedlegg = {
 	id: string
 	name: string
+	dokNavn: string
+	mimetype: string
+	size: number
 	content: {
 		base64: string
 	}
@@ -40,6 +43,7 @@ type Vedlegg = {
 
 const FilOpplaster = styled(FileUpload)`
 	background-color: unset;
+	margin-bottom: 10px;
 
 	&:hover {
 		background-color: #f1f1f1;
@@ -48,14 +52,16 @@ const FilOpplaster = styled(FileUpload)`
 
 enum Kodeverk {
 	TEMA = 'Tema',
-	NAVSKJEMA = 'NAVSkjema'
+	NAVSKJEMA = 'NAVSkjema',
 }
 
 const dokarkivAttributt = 'dokarkiv'
 
-export const DokarkivForm = ({ formikBag }: Form) => {
-	const gjeldendeFiler = JSON.parse(sessionStorage.getItem('dokarkiv_vedlegg'))
-	const [files, setFiles] = useState(gjeldendeFiler ? gjeldendeFiler : [])
+export const DokarkivForm = ({ formikBag }: DokarkivForm) => {
+	const sessionDokumenter = JSON.parse(sessionStorage.getItem('dokarkiv_vedlegg'))
+	const digitalInnsending = _get(formikBag.values, 'dokarkiv.avsenderMottaker')
+	const [files, setFiles] = useState(sessionDokumenter ? sessionDokumenter : [])
+
 	const [skjemaValues, setSkjemaValues] = useState(null)
 
 	useEffect(() => handleSkjemaChange(skjemaValues), [files, skjemaValues])
@@ -66,16 +72,16 @@ export const DokarkivForm = ({ formikBag }: Form) => {
 		}
 		setSkjemaValues(skjema)
 		formikBag.setFieldValue('dokarkiv.tittel', skjema.data)
-		const dokumentVarianter = files.map((vedl, index) => ({
-			tittel: vedl.name,
+		const dokumentVarianter = files.map((vedl: Vedlegg, index: number) => ({
+			tittel: vedl.dokNavn ? vedl.dokNavn : vedl.name,
 			brevkode: (index === 0 && skjema?.value) || undefined,
 			dokumentvarianter: [
 				{
 					filtype: 'PDFA',
 					fysiskDokument: vedl.content.base64,
-					variantformat: 'ARKIV'
-				}
-			]
+					variantformat: 'ARKIV',
+				},
+			],
 		}))
 		dokumentVarianter.length > 0
 			? formikBag.setFieldValue('dokarkiv.dokumenter', dokumentVarianter)
@@ -83,6 +89,13 @@ export const DokarkivForm = ({ formikBag }: Form) => {
 	}
 
 	const handleVedleggChange = (filer: [Vedlegg]) => {
+		filer.map((fil) => {
+			const eksisterendeFil = files.find((file: Vedlegg) => file.id === fil.id && file.dokNavn)
+			if (eksisterendeFil) {
+				return (fil.dokNavn = eksisterendeFil.dokNavn)
+			}
+			return fil
+		})
 		setFiles(filer)
 		sessionStorage.setItem('dokarkiv_vedlegg', JSON.stringify(filer))
 	}
@@ -97,7 +110,10 @@ export const DokarkivForm = ({ formikBag }: Form) => {
 				// @ts-ignore
 				startOpen={() => erForste(formikBag.values, [dokarkivAttributt])}
 			>
-				<Kategori title="Oppretting av skannet dokument" vis={dokarkivAttributt}>
+				<Kategori
+					title={`Oppretting av ${digitalInnsending ? 'digitalt' : 'skannet '} dokument`}
+					vis={dokarkivAttributt}
+				>
 					<div className="flexbox--full-width">
 						<FormikSelect
 							name="dokarkiv.dokumenter[0].brevkode"
@@ -117,12 +133,8 @@ export const DokarkivForm = ({ formikBag }: Form) => {
 						isClearable={false}
 					/>
 					<FormikTextInput name="dokarkiv.journalfoerendeEnhet" label="Journalførende enhet" />
-					<Label
-						label={'Vedlegg'}
-						name={'Vedlegg'}
-						containerClass={'flexbox--full-width'}
-						feil={null}
-					>
+					{digitalInnsending ? <Digitalinnsending /> : null}
+					<Kategori title={'Vedlegg'}>
 						<FilOpplaster
 							className={'flexbox--full-width'}
 							acceptedMimetypes={['application/pdf']}
@@ -130,7 +142,10 @@ export const DokarkivForm = ({ formikBag }: Form) => {
 							// @ts-ignore
 							onFilesChanged={handleVedleggChange}
 						/>
-					</Label>
+						{files.length > 0 && (
+							<FilnavnDollyArray handleChange={handleVedleggChange} filer={files} />
+						)}
+					</Kategori>
 				</Kategori>
 			</Panel>
 		</Vis>
@@ -143,7 +158,35 @@ DokarkivForm.validation = {
 		Yup.object({
 			tittel: requiredString,
 			tema: requiredString,
-			journalfoerendeEnhet: Yup.string(),
+			journalfoerendeEnhet: Yup.string()
+				.optional()
+				.matches(/^[0-9]*$/, 'Journalfoerende enhet må enten være blank eller et tall med 4 sifre')
+				.test(
+					'len',
+					'Journalfoerende enhet må enten være blank eller et tall med 4 sifre',
+					(val) => !val || (val && val.length === 4)
+				),
+			avsenderMottaker: Yup.object({
+				idType: Yup.string().optional().nullable(),
+				id: Yup.string()
+					.when('idType', {
+						is: 'ORGNR',
+						then: Yup.string()
+							.matches(/^[0-9]*$/, 'Orgnummer må være et tall med 9 sifre')
+							.test(
+								'len',
+								'Orgnummer må være et tall med 9 sifre',
+								(val) => val && val.length === 9
+							),
+					})
+					.when('idType', {
+						is: 'FNR',
+						then: Yup.string()
+							.matches(/^[0-9]*$/, 'Ident må være et tall med 11 sifre')
+							.test('len', 'Ident må være et tall med 11 sifre', (val) => val && val.length === 11),
+					}),
+				navn: Yup.string().optional(),
+			}),
 			dokumenter: Yup.array().of(
 				Yup.object({
 					tittel: requiredString,
@@ -155,9 +198,9 @@ DokarkivForm.validation = {
 							const brevkode = _get(values, 'dokarkiv.dokumenter[0].brevkode')
 							return brevkode !== ''
 						}
-					)
+					),
 				})
-			)
+			),
 		})
-	)
+	),
 }

@@ -15,7 +15,7 @@ export const UtenlandsoppholdForm = ({
 	arbeidsforholdIndex,
 	formikBag,
 	erLenket,
-	onChangeLenket
+	onChangeLenket,
 }) => {
 	const maaneder = _get(formikBag.values, 'aareg[0].amelding')
 
@@ -36,7 +36,7 @@ export const UtenlandsoppholdForm = ({
 		})
 	}
 
-	const handleRemoveEntry = idUtenlandsopphold => {
+	const handleRemoveEntry = (idUtenlandsopphold) => {
 		if (!maaneder) return
 		maaneder.forEach((maaned, idMaaned) => {
 			if (!erLenket && idMaaned != ameldingIndex) return
