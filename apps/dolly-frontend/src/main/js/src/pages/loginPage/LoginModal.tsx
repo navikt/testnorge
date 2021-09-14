@@ -9,7 +9,10 @@ export default () => {
 		setRedirectNav()
 	}
 
-	if (redirectToNavLogin) return <Redirect to={'/login/oauth2/authorization/aad'} />
+	if (redirectToNavLogin) {
+		let url = window.location.protocol + '//' + window.location.host + '/oauth2/authorization/aad'
+		window.location.replace(url)
+	}
 
 	return (
 		<div className="login-container">
