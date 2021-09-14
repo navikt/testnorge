@@ -45,4 +45,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
-          RESOURCE: apps/geografiske-kodeverk-service/config.yaml
+          RESOURCE: apps/geografiske-kodeverk-service/config.yml
