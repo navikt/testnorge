@@ -22,7 +22,7 @@ export const BVOptions = ({
 		antall,
 		environments: [],
 		navSyntetiskIdent: false,
-		beskrivelse: ''
+		beskrivelse: '',
 	}
 
 	let initialValuesOrganisasjon = {

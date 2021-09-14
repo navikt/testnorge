@@ -22,7 +22,7 @@ export default function BestillingSammendrag({ bestilling }) {
 					opprettetFraId: bestilling.opprettetFraId,
 					opprettetFraGruppeId: bestilling.opprettetFraGruppeId,
 					navSyntetiskIdent: bestilling.bestilling.navSyntetiskIdent,
-					beskrivelse: bestilling.bestilling.beskrivelse
+					beskrivelse: bestilling.bestilling.beskrivelse,
 				}}
 				header="Bestillingskriterier"
 			/>
