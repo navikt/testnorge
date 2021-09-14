@@ -6,7 +6,7 @@ metadata:
   labels:
     team: dolly
 spec:
-  image: { { image } }
+  image: {{ image }}
   port: 8080
   tracing:
     enabled: true
@@ -39,7 +39,7 @@ spec:
   resources:
     requests:
       cpu: 200m
-      memory: 1024Mi
+      memory: 2048Mi
     limits:
       cpu: 500m
       memory: 2048Mi
