@@ -1,5 +1,4 @@
 import React from 'react'
-import { Redirect } from 'react-router-dom'
 import useBoolean from '~/utils/hooks/useBoolean'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 
@@ -10,8 +9,8 @@ export default () => {
 	}
 
 	if (redirectToNavLogin) {
-		let url = window.location.protocol + '//' + window.location.host + '/oauth2/authorization/aad'
-		window.location.replace(url)
+		let url = location.protocol + '//' + location.host + '/oauth2/authorization/aad'
+		location.replace(url)
 	}
 
 	return (
