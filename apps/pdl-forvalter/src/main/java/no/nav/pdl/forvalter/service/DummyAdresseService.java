@@ -41,7 +41,7 @@ public class DummyAdresseService {
         return UtenlandskAdresseDTO.builder()
                 .adressenavnNummer(ADRESSE_NAVN_NUMMER)
                 .distriktnavn(ADRESSE_BY_STED)
-                .region(ADRESSE_3_UTLAND)
+                .bySted(ADRESSE_3_UTLAND)
                 .postkode(ADRESSE_POSTKODE)
                 .landkode(isNotBlank(landkode) ? landkode : tilfeldigLandService.getLand())
                 .build();

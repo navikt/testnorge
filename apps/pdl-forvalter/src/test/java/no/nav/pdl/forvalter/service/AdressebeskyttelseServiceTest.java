@@ -26,6 +26,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ExtendWith(MockitoExtension.class)
 class AdressebeskyttelseServiceTest {
 
+    private static final String FNR_IDENT = "12044512345";
+    private static final String DNR_IDENT = "45027812345";
+
     @InjectMocks
     private AdressebeskyttelseService adressebeskyttelseService;
 
@@ -39,9 +42,28 @@ class AdressebeskyttelseServiceTest {
                 .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                adressebeskyttelseService.validate(request));
+                adressebeskyttelseService.validate(request, PersonDTO.builder()
+                        .ident(DNR_IDENT)
+                        .build()));
 
         assertThat(exception.getMessage(), containsString("Gradering STRENGT_FORTROLIG_UTLAND kan kun settes hvis master er PDL"));
+    }
+
+    @Test
+    void whenStrengtFortroligOrFortroligAndIdentypeDnr_thenThrowExecption() {
+
+        var request = AdressebeskyttelseDTO.builder()
+                .gradering(STRENGT_FORTROLIG)
+                .isNew(true)
+                .build();
+
+        var exception = assertThrows(HttpClientErrorException.class, () ->
+                adressebeskyttelseService.validate(request, PersonDTO.builder()
+                        .ident(DNR_IDENT)
+                        .build()));
+
+        assertThat(exception.getMessage(), containsString("Adressebeskyttelse: Gradering STRENGT_FORTROLIG eller " +
+                "FORTROLIG kan kun settes på personer med fødselsnummer"));
     }
 
     @Test

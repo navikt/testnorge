@@ -52,7 +52,7 @@ public class ValidateArtifactsService {
                 validate(foedselService, person.getFoedsel(), person),
                 validate(navnService, person.getNavn()),
                 validate(oppholdsadresseService, person.getOppholdsadresse(), person),
-                validate(adressebeskyttelseService, person.getAdressebeskyttelse()),
+                validate(adressebeskyttelseService, person.getAdressebeskyttelse(), person),
                 validate(telefonnummerService, person.getTelefonnummer()),
                 validate(utflyttingService, person.getUtflytting()),
                 validate(oppholdService, person.getOpphold()),

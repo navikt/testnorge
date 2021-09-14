@@ -8,6 +8,7 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.HentIdenterRequest;
 import no.nav.pdl.forvalter.dto.IdentDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO;
@@ -43,6 +44,7 @@ public class CreatePersonService {
     private final BostedAdresseService bostedAdresseService;
     private final NavnService navnService;
     private final FolkeregisterPersonstatusService folkeregisterPersonstatusService;
+    private final AdressebeskyttelseService adressebeskyttelseService;
 
     private static PersonDTO buildPerson(PersonRequestDTO request) {
 
@@ -56,9 +58,12 @@ public class CreatePersonService {
                         BostedadresseDTO.builder()
                                 .vegadresse(new VegadresseDTO())
                                 .build()))
-                .statsborgerskap(List.of(nonNull(request.getStatsborgerskap()) ?
-                        request.getStatsborgerskap() :
-                        StatsborgerskapDTO.builder().build()))
+                .statsborgerskap(List.of(StatsborgerskapDTO.builder()
+                        .landkode(request.getStatsborgerskapLandkode())
+                        .build()))
+                .adressebeskyttelse(List.of(AdressebeskyttelseDTO.builder()
+                        .gradering(request.getGradering())
+                        .build()))
                 .folkeregisterpersonstatus(
                         List.of(FolkeregisterpersonstatusDTO.builder().build()))
                 .build();
@@ -73,7 +78,7 @@ public class CreatePersonService {
 
         var delivery = Stream.of(
                         identPoolConsumer.getIdents(
-                                        mapperFacade.map(nonNull(request) ? request : new PersonRequestDTO(), HentIdenterRequest.class)),
+                                mapperFacade.map(nonNull(request) ? request : new PersonRequestDTO(), HentIdenterRequest.class)),
                         Flux.just(navnService.convert(mergedPerson.getNavn())))
                 .reduce(Flux.empty(), Flux::merge)
                 .collectList()
@@ -89,7 +94,8 @@ public class CreatePersonService {
                         Flux.just(bostedAdresseService.convert(mergedPerson)),
                         Flux.just(kjoennService.convert(mergedPerson)),
                         Flux.just(statsborgerskapService.convert(mergedPerson)),
-                        Flux.just(foedselService.convert(mergedPerson)))
+                        Flux.just(foedselService.convert(mergedPerson)),
+                        Flux.just(adressebeskyttelseService.convert(mergedPerson)))
                 .reduce(Flux.empty(), Flux::merge)
                 .collectList()
                 .block();
