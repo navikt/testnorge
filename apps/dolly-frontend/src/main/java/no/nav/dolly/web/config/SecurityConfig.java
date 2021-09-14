@@ -15,7 +15,7 @@ public class SecurityConfig {
                 .authorizeExchange()
                 .pathMatchers("/internal/isReady", "/internal/isAlive").permitAll()
                 .anyExchange().authenticated()
-                .and().oauth2Login().and().formLogin().loginPage("/login/oauth2")
+                .and().oauth2Login().and().formLogin().loginPage("/login")
                 .and().build();
     }
 }
