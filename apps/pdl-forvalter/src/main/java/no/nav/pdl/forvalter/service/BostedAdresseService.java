@@ -4,33 +4,45 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility.getIdenttype;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FNR;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Service
-public class BostedAdresseService extends AdresseService<BostedadresseDTO> {
+public class BostedAdresseService extends AdresseService<BostedadresseDTO, PersonDTO> {
 
     private static final String VALIDATION_AMBIGUITY_ERROR = "Bostedsadresse: kun én adresse skal være satt (vegadresse, " +
             "matrikkeladresse, ukjentbosted, utenlandskAdresse)";
-    private static final String VALIDATION_ADDRESS_ABSENT_ERROR = "Bostedsadresse: én av adressene må velges (vegadresse, " +
-            "matrikkeladresse, ukjentbosted, utenlandskAdresse)";
+    private static final String VALIDATION_PROTECTED_ADDRESS = "Bostedsadresse: Personer med adressebeskyttelse == " +
+            "STRENGT_FORTROLIG skal ikke ha bostedsadresse";
     private static final String VALIDATION_MASTER_PDL_ERROR = "Bostedsadresse: utenlandsk adresse krever at master er PDL";
 
     private final AdresseServiceConsumer adresseServiceConsumer;
+    private final DummyAdresseService dummyAdresseService;
     private final MapperFacade mapperFacade;
 
-    public BostedAdresseService(GenererNavnServiceConsumer genererNavnServiceConsumer, AdresseServiceConsumer adresseServiceConsumer, MapperFacade mapperFacade) {
+    public BostedAdresseService(GenererNavnServiceConsumer genererNavnServiceConsumer, AdresseServiceConsumer adresseServiceConsumer, DummyAdresseService dummyAdresseService, MapperFacade mapperFacade) {
         super(genererNavnServiceConsumer);
         this.adresseServiceConsumer = adresseServiceConsumer;
         this.mapperFacade = mapperFacade;
+        this.dummyAdresseService = dummyAdresseService;
     }
 
     public List<BostedadresseDTO> convert(PersonDTO person) {
@@ -39,7 +51,7 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO> {
 
             if (isTrue(adresse.getIsNew())) {
 
-                handle(adresse);
+                handle(adresse, person);
                 populateMiscFields(adresse, person);
             }
         }
@@ -48,15 +60,16 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO> {
     }
 
     @Override
-    public void validate(BostedadresseDTO adresse) {
+    public void validate(BostedadresseDTO adresse, PersonDTO person) {
 
         if (adresse.countAdresser() > 1) {
             throw new InvalidRequestException(VALIDATION_AMBIGUITY_ERROR);
-
-        } else if (adresse.countAdresser() == 0) {
-            throw new InvalidRequestException(VALIDATION_ADDRESS_ABSENT_ERROR);
         }
-
+        if (FNR == IdenttypeFraIdentUtility.getIdenttype(person.getIdent()) &&
+                STRENGT_FORTROLIG == person.getAdressebeskyttelse().stream()
+                .findFirst().orElse(new AdressebeskyttelseDTO()).getGradering()) {
+            throw new InvalidRequestException(VALIDATION_PROTECTED_ADDRESS);
+        }
         if (DbVersjonDTO.Master.FREG == adresse.getMaster() && nonNull(adresse.getUtenlandskAdresse())) {
             throw new InvalidRequestException(VALIDATION_MASTER_PDL_ERROR);
         }
@@ -75,22 +88,46 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO> {
         }
     }
 
-    private void handle(BostedadresseDTO bostedadresse) {
+    private void handle(BostedadresseDTO bostedadresse, PersonDTO person) {
 
-        if (nonNull(bostedadresse.getVegadresse())) {
-            var vegadresse =
-                    adresseServiceConsumer.getVegadresse(bostedadresse.getVegadresse(), bostedadresse.getAdresseIdentifikatorFraMatrikkelen());
-            bostedadresse.setAdresseIdentifikatorFraMatrikkelen(vegadresse.getMatrikkelId());
-            mapperFacade.map(vegadresse, bostedadresse.getVegadresse());
+        if (FNR == getIdenttype(person.getIdent())) {
 
-        } else if (nonNull(bostedadresse.getMatrikkeladresse())) {
-            var matrikkeladresse =
-                    adresseServiceConsumer.getMatrikkeladresse(bostedadresse.getMatrikkeladresse(), bostedadresse.getAdresseIdentifikatorFraMatrikkelen());
-            bostedadresse.setAdresseIdentifikatorFraMatrikkelen(matrikkeladresse.getMatrikkelId());
-            mapperFacade.map(matrikkeladresse, bostedadresse.getMatrikkeladresse());
+            if (STRENGT_FORTROLIG == person.getAdressebeskyttelse().stream()
+                    .findFirst().orElse(new AdressebeskyttelseDTO()).getGradering()) {
+                return;
+            }
 
-        } else if (nonNull(bostedadresse.getUtenlandskAdresse())) {
+            if (bostedadresse.countAdresser() == 0) {
+                bostedadresse.setVegadresse(new VegadresseDTO());
+            }
+
+            if (nonNull(bostedadresse.getVegadresse())) {
+                var vegadresse =
+                        adresseServiceConsumer.getVegadresse(bostedadresse.getVegadresse(), bostedadresse.getAdresseIdentifikatorFraMatrikkelen());
+                bostedadresse.setAdresseIdentifikatorFraMatrikkelen(vegadresse.getMatrikkelId());
+                mapperFacade.map(vegadresse, bostedadresse.getVegadresse());
+
+            } else if (nonNull(bostedadresse.getMatrikkeladresse())) {
+                var matrikkeladresse =
+                        adresseServiceConsumer.getMatrikkeladresse(bostedadresse.getMatrikkeladresse(), bostedadresse.getAdresseIdentifikatorFraMatrikkelen());
+                bostedadresse.setAdresseIdentifikatorFraMatrikkelen(matrikkeladresse.getMatrikkelId());
+                mapperFacade.map(matrikkeladresse, bostedadresse.getMatrikkeladresse());
+            }
+
+        } else {
+            bostedadresse.setVegadresse(null);
+            bostedadresse.setMatrikkeladresse(null);
             bostedadresse.setMaster(DbVersjonDTO.Master.PDL);
+            if (isNull(bostedadresse.getUtenlandskAdresse())) {
+                bostedadresse.setUtenlandskAdresse(new UtenlandskAdresseDTO());
+            }
+
+            if (isBlank(bostedadresse.getUtenlandskAdresse().getAdressenavnNummer())) {
+                bostedadresse.setUtenlandskAdresse(
+                        dummyAdresseService.getUtenlandskAdresse(
+                                person.getStatsborgerskap().stream()
+                                        .findFirst().orElse(new StatsborgerskapDTO()).getLandkode()));
+            }
         }
 
         bostedadresse.setCoAdressenavn(genererCoNavn(bostedadresse.getOpprettCoAdresseNavn()));

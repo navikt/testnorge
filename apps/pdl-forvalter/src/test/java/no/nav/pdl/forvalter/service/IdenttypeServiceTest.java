@@ -10,7 +10,6 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
 
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FDAT;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -22,26 +21,12 @@ class IdenttypeServiceTest {
     private IdenttypeService identtypeService;
 
     @Test
-    void whenIllegalIdenttype_thenThrowError() {
-
-        var request = IdentRequestDTO.builder()
-                        .identtype(FDAT)
-                        .isNew(true)
-                        .build();
-
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                identtypeService.validate(request));
-
-        assertThat(exception.getMessage(), containsString("Identtype må være en av FNR, DNR eller BOST"));
-    }
-
-    @Test
     void whenFutureDatoIsProvided_thenThrowError() {
 
         var request = IdentRequestDTO.builder()
-                        .foedtEtter(LocalDateTime.now().plusDays(1))
-                        .isNew(true)
-                        .build();
+                .foedtEtter(LocalDateTime.now().plusDays(1))
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 identtypeService.validate(request));
@@ -54,9 +39,9 @@ class IdenttypeServiceTest {
     void whenPre1900DatoIsProvided_thenThrowError() {
 
         var request = IdentRequestDTO.builder()
-                        .foedtFoer(LocalDateTime.of(1870, 1, 1, 0, 0))
-                        .isNew(true)
-                        .build();
+                .foedtFoer(LocalDateTime.of(1870, 1, 1, 0, 0))
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 identtypeService.validate(request));
@@ -69,11 +54,11 @@ class IdenttypeServiceTest {
     void whenIllegalDatoIntervalIsProvided_thenThrowError() {
 
         var request = IdentRequestDTO.builder()
-                        .identtype(Identtype.FNR)
-                        .foedtEtter(LocalDateTime.of(1980, 1, 1, 1, 0, 0))
-                        .foedtFoer(LocalDateTime.of(1970, 1, 1, 0, 0))
-                        .isNew(true)
-                        .build();
+                .identtype(Identtype.FNR)
+                .foedtEtter(LocalDateTime.of(1980, 1, 1, 1, 0, 0))
+                .foedtFoer(LocalDateTime.of(1970, 1, 1, 0, 0))
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 identtypeService.validate(request));
@@ -86,9 +71,9 @@ class IdenttypeServiceTest {
     void whenAlderIsOutsideBoundaries_thenThrowError() {
 
         var request = IdentRequestDTO.builder()
-                        .alder(-1)
-                        .isNew(true)
-                        .build();
+                .alder(-1)
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 identtypeService.validate(request));
@@ -100,9 +85,9 @@ class IdenttypeServiceTest {
     void whenAlderIsOutsideBoundaries2_thenThrowError() {
 
         var request = IdentRequestDTO.builder()
-                        .alder(-1)
-                        .isNew(true)
-                        .build();
+                .alder(-1)
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 identtypeService.validate(request));

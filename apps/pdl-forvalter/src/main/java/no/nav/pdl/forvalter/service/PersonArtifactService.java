@@ -45,7 +45,7 @@ public class PersonArtifactService {
         person.setFoedsel(foedselService.convert(person));
         person.setNavn(navnService.convert(person.getNavn()));
         person.setOppholdsadresse(oppholdsadresseService.convert(person));
-        person.setAdressebeskyttelse(adressebeskyttelseService.convert(person.getAdressebeskyttelse()));
+        person.setAdressebeskyttelse(adressebeskyttelseService.convert(person));
         person.setTelefonnummer(telefonnummerService.convert(person.getTelefonnummer()));
         person.setUtflytting(utflyttingService.convert(person.getUtflytting()));
         person.setOpphold(oppholdService.convert(person.getOpphold()));

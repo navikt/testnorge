@@ -18,7 +18,7 @@ import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-public abstract class AdresseService<T extends AdresseDTO> implements Validation<T> {
+public abstract class AdresseService<T extends AdresseDTO, R> implements BiValidation<T, R> {
 
     public static final String VALIDATION_MASTER_PDL_ERROR = "Feltene gyldigFraOgMed og gyldigTilOgMed må ha verdi " +
             "hvis master er PDL";

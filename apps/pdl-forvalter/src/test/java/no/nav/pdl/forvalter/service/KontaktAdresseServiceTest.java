@@ -54,7 +54,7 @@ class KontaktAdresseServiceTest {
                         .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.validate(request));
+                kontaktAdresseService.validate(request, new PersonDTO()));
 
         assertThat(exception.getMessage(), containsString("Postnummer består av fire sifre"));
     }
@@ -69,7 +69,7 @@ class KontaktAdresseServiceTest {
                         .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.validate(request));
+                kontaktAdresseService.validate(request, new PersonDTO()));
 
         assertThat(exception.getMessage(), containsString("Kan ikke være tom"));
     }
@@ -82,7 +82,7 @@ class KontaktAdresseServiceTest {
                         .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.validate(request));
+                kontaktAdresseService.validate(request, new PersonDTO()));
 
         assertThat(exception.getMessage(), containsString("én av adressene må velges"));
     }
@@ -97,7 +97,7 @@ class KontaktAdresseServiceTest {
                         .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.validate(request));
+                kontaktAdresseService.validate(request, new PersonDTO()));
 
         assertThat(exception.getMessage(), containsString("kun én adresse skal være satt"));
     }
@@ -112,7 +112,7 @@ class KontaktAdresseServiceTest {
                         .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.validate(request));
+                kontaktAdresseService.validate(request, new PersonDTO()));
 
         assertThat(exception.getMessage(), containsString(
                 "Feltene gyldigFraOgMed og gyldigTilOgMed må ha verdi hvis master er PDL"));
@@ -129,7 +129,7 @@ class KontaktAdresseServiceTest {
                         .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.validate(request));
+                kontaktAdresseService.validate(request, new PersonDTO()));
 
         assertThat(exception.getMessage(), containsString(
                 "Feltene gyldigFraOgMed og gyldigTilOgMed må ha verdi for vegadresse uten matrikkelId"));
@@ -146,7 +146,7 @@ class KontaktAdresseServiceTest {
                         .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.validate(request));
+                kontaktAdresseService.validate(request, new PersonDTO()));
 
         assertThat(exception.getMessage(), containsString(
                 "Gyldig format er Bokstaven H, L, U eller K etterfulgt av fire sifre"));

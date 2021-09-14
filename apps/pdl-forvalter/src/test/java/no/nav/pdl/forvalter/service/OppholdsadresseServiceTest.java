@@ -2,7 +2,8 @@ package no.nav.pdl.forvalter.service;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdsadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
@@ -18,10 +19,12 @@ import org.springframework.web.client.HttpClientErrorException;
 import java.time.LocalDate;
 import java.util.List;
 
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -30,13 +33,17 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class OppholdsadresseServiceTest {
 
-    private static final String IDENT = "12044512345";
+    private static final String FNR_IDENT = "12044512345";
+    private static final String DNR_IDENT = "45027812345";
 
     @Mock
     private AdresseServiceConsumer adresseServiceConsumer;
 
     @Mock
     private MapperFacade mapperFacade;
+
+    @Mock
+    private DummyAdresseService dummyAdresseService;
 
     @InjectMocks
     private OppholdsadresseService oppholdsadresseService;
@@ -45,43 +52,50 @@ class OppholdsadresseServiceTest {
     void whenMultipleAdressesProvided_thenThrowExecption() {
 
         var request = OppholdsadresseDTO.builder()
-                        .vegadresse(new VegadresseDTO())
-                        .matrikkeladresse(new MatrikkeladresseDTO())
-                        .isNew(true)
-                        .build();
+                .vegadresse(new VegadresseDTO())
+                .matrikkeladresse(new MatrikkeladresseDTO())
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdsadresseService.validate(request));
+                oppholdsadresseService.validate(request, new PersonDTO()));
 
         assertThat(exception.getMessage(), containsString("kun én adresse skal være satt " +
                 "(vegadresse, matrikkeladresse, utenlandskAdresse)"));
     }
 
     @Test
-    void whenNoAdressProvided_thenThrowExecption() {
+    void whenAddressProvidedAndStrengtFortrolig_thenThrowExecption() {
 
         var request = OppholdsadresseDTO.builder()
-                        .isNew(true)
-                        .build();
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdsadresseService.validate(request));
+                oppholdsadresseService.validate(request, PersonDTO.builder()
+                        .ident(FNR_IDENT)
+                        .adressebeskyttelse(List.of(AdressebeskyttelseDTO.builder()
+                                .gradering(STRENGT_FORTROLIG)
+                                .build()))
+                        .build()));
 
-        assertThat(exception.getMessage(), containsString("én av adressene må velges " +
-                "(vegadresse, matrikkeladresse, utenlandskAdresse)"));
+        assertThat(exception.getMessage(), containsString("" +
+                "Oppholdsadresse: Personer med adressebeskyttelse == STRENGT_FORTROLIG skal ikke ha oppholdsadresse"));
     }
 
     @Test
     void whenUtenlandskAdresseProvidedAndMasterIsFreg_thenThrowExecption() {
 
         var request = OppholdsadresseDTO.builder()
-                        .utenlandskAdresse(new UtenlandskAdresseDTO())
-                        .master(DbVersjonDTO.Master.FREG)
-                        .isNew(true)
-                        .build();
+                .utenlandskAdresse(new UtenlandskAdresseDTO())
+                .master(Master.FREG)
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdsadresseService.validate(request));
+                oppholdsadresseService.validate(request, PersonDTO.builder()
+                        .ident(FNR_IDENT)
+                        .build()));
 
         assertThat(exception.getMessage(), containsString("Utenlandsk adresse krever at master er PDL"));
     }
@@ -90,14 +104,16 @@ class OppholdsadresseServiceTest {
     void whenVegadresseWithBruksenhetsnummerInvalidFormat_thenThrowExecption() {
 
         var request = OppholdsadresseDTO.builder()
-                        .vegadresse(VegadresseDTO.builder()
-                                .bruksenhetsnummer("HK25419")
-                                .build())
-                        .isNew(true)
-                        .build();
+                .vegadresse(VegadresseDTO.builder()
+                        .bruksenhetsnummer("HK25419")
+                        .build())
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdsadresseService.validate(request));
+                oppholdsadresseService.validate(request, PersonDTO.builder()
+                        .ident(FNR_IDENT)
+                        .build()));
 
         assertThat(exception.getMessage(), containsString("Gyldig format er Bokstaven H, L, U eller K etterfulgt av fire sifre"));
     }
@@ -106,14 +122,16 @@ class OppholdsadresseServiceTest {
     void whenMatrikkeladresseWithBruksenhetsnummerInvalidFormat_thenThrowExecption() {
 
         var request = OppholdsadresseDTO.builder()
-                        .matrikkeladresse(MatrikkeladresseDTO.builder()
-                                .bruksenhetsnummer("F8021")
-                                .build())
-                        .isNew(true)
-                        .build();
+                .matrikkeladresse(MatrikkeladresseDTO.builder()
+                        .bruksenhetsnummer("F8021")
+                        .build())
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdsadresseService.validate(request));
+                oppholdsadresseService.validate(request, PersonDTO.builder()
+                        .ident(FNR_IDENT)
+                        .build()));
 
         assertThat(exception.getMessage(), containsString("Gyldig format er Bokstaven H, L, U eller K etterfulgt av fire sifre"));
     }
@@ -122,14 +140,16 @@ class OppholdsadresseServiceTest {
     void whenInvalidDateInterval_thenThrowExecption() {
 
         var request = OppholdsadresseDTO.builder()
-                        .vegadresse(new VegadresseDTO())
-                        .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
-                        .gyldigTilOgMed(LocalDate.of(2018, 1, 1).atStartOfDay())
-                        .isNew(true)
-                        .build();
+                .vegadresse(new VegadresseDTO())
+                .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
+                .gyldigTilOgMed(LocalDate.of(2018, 1, 1).atStartOfDay())
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdsadresseService.validate(request));
+                oppholdsadresseService.validate(request, PersonDTO.builder()
+                        .ident(FNR_IDENT)
+                        .build()));
 
         assertThat(exception.getMessage(), containsString("Adresse: Overlappende adressedatoer er ikke lov"));
     }
@@ -143,7 +163,7 @@ class OppholdsadresseServiceTest {
                 .thenReturn(new no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO());
 
         var request = PersonDTO.builder()
-                .ident(IDENT)
+                .ident(FNR_IDENT)
                 .oppholdsadresse(List.of(OppholdsadresseDTO.builder()
                                 .vegadresse(new VegadresseDTO())
                                 .gyldigFraOgMed(LocalDate.of(2020, 1, 2).atStartOfDay())
@@ -169,7 +189,7 @@ class OppholdsadresseServiceTest {
                 .thenReturn(new no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO());
 
         var request = PersonDTO.builder()
-                .ident(IDENT)
+                .ident(FNR_IDENT)
                 .oppholdsadresse(List.of(OppholdsadresseDTO.builder()
                                 .gyldigFraOgMed(LocalDate.of(2020, 2, 3).atStartOfDay())
                                 .matrikkeladresse(new MatrikkeladresseDTO())
@@ -196,6 +216,7 @@ class OppholdsadresseServiceTest {
                 .thenReturn(new no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO());
 
         var request = PersonDTO.builder()
+                .ident(FNR_IDENT)
                 .oppholdsadresse(List.of(OppholdsadresseDTO.builder()
                         .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
                         .matrikkeladresse(new MatrikkeladresseDTO())
@@ -214,7 +235,7 @@ class OppholdsadresseServiceTest {
         when(adresseServiceConsumer.getVegadresse(any(VegadresseDTO.class), isNull())).thenReturn(new no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO());
 
         var request = PersonDTO.builder()
-                .ident(IDENT)
+                .ident(FNR_IDENT)
                 .oppholdsadresse(List.of(OppholdsadresseDTO.builder()
                                 .gyldigFraOgMed(LocalDate.of(2020, 2, 4).atStartOfDay())
                                 .vegadresse(new VegadresseDTO())
@@ -230,5 +251,61 @@ class OppholdsadresseServiceTest {
         var target = oppholdsadresseService.convert(request);
 
         assertThat(target.get(1).getGyldigTilOgMed(), is(equalTo(LocalDate.of(2020, 2, 3).atStartOfDay())));
+    }
+
+    @Test
+    void whenIdenttypeFnrAndStrengtFortrolig_thenMakeNoAdress() {
+
+        var request = PersonDTO.builder()
+                .ident(FNR_IDENT)
+                .oppholdsadresse(List.of(OppholdsadresseDTO.builder()
+                        .isNew(true)
+                        .build()))
+                .adressebeskyttelse(List.of(AdressebeskyttelseDTO.builder()
+                        .gradering(STRENGT_FORTROLIG)
+                        .build()))
+                .build();
+
+        var target = oppholdsadresseService.convert(request).get(0);
+
+        assertThat(target.countAdresser(), is(0));
+    }
+
+    @Test
+    void whenIdenttypeFnrAndNoAdresseBeskyttelse_thenMakeAdress() {
+
+        var request = PersonDTO.builder()
+                .ident(FNR_IDENT)
+                .oppholdsadresse(List.of(OppholdsadresseDTO.builder()
+                        .isNew(true)
+                        .build()))
+                .build();
+
+        when(adresseServiceConsumer.getVegadresse(any(VegadresseDTO.class), any()))
+                .thenReturn(new no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO());
+
+        var target = oppholdsadresseService.convert(request).get(0);
+
+        assertThat(target.countAdresser(), is(1));
+        assertThat(target.getVegadresse(), is(notNullValue()));
+    }
+
+    @Test
+    void whenUtenlandskAdresse_thenMakeUtenlandskAdresse() {
+
+        var request = PersonDTO.builder()
+                .ident(DNR_IDENT)
+                .oppholdsadresse(List.of(OppholdsadresseDTO.builder()
+                        .isNew(true)
+                                .utenlandskAdresse(new UtenlandskAdresseDTO())
+                        .build()))
+                .build();
+
+        when(dummyAdresseService.getUtenlandskAdresse(any())).thenReturn(new UtenlandskAdresseDTO());
+
+        var target = oppholdsadresseService.convert(request).get(0);
+
+        assertThat(target.countAdresser(), is(1));
+        assertThat(target.getUtenlandskAdresse(), is(notNullValue()));
     }
 }
