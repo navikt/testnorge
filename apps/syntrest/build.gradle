@@ -38,7 +38,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
+    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+
     implementation 'org.apache.httpcomponents:httpclient:4.5.12'
+
+    implementation 'org.hibernate.validator:hibernate-validator'
 
     implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
     implementation 'org.json:json:20180813'
