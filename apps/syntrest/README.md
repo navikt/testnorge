@@ -114,7 +114,8 @@ Kjør så ApplicationStarter med følgende argumenter:
  -Djavax.net.ssl.trustStore=[path til lokal truststore]
  -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
  -Dspring.profiles.active=dev
- -Dspring.cloud.vault.token=[hent token fra vault]
+ -DGITHUB_USERNAME=[github brukernavn, kan finnes i syntrest secrets i vault]
+ -DGITHUB_PASSWORD=[github passord, kan finnes i syntrest secrets i vault]
 ```
 
 Dersom ApplicationStarter ikke vil kjøre sjekk at du fremdeles har gyldig Kubectl token (`kubectl get pods` kommando fungerer lokalt.)
@@ -138,7 +139,8 @@ Oppdater `kube-config-path` i `application-dev.properties` til din lokale kubeco
 Kjør så ApplicationStarter med følgende argumenter:
 ```
  -Dspring.profiles.active=dev
- -Dspring.cloud.vault.token=[hent token fra vault]
+ -DGITHUB_USERNAME=[github brukernavn, kan finnes i syntrest secrets i vault]
+ -DGITHUB_PASSWORD=[github passord, kan finnes i syntrest secrets i vault]
 ```
 
 Dersom ApplicationStarter ikke vil kjøre sjekk at du fremdeles har gyldig Kubectl token (`kubectl get pods` kommando fungerer lokalt.)
