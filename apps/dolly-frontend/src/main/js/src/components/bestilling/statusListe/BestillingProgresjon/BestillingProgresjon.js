@@ -120,10 +120,10 @@ export default class BestillingProgresjon extends PureComponent {
 		const liveTimeStamp = new Date(sistOppdatert).getTime()
 		const oldTimeStamp = new Date(this.state.sistOppdatert).getTime()
 
-		if (liveTimeStamp == oldTimeStamp) {
+		if (liveTimeStamp === oldTimeStamp) {
 			this.setState({ failureIntervalCounter: this.state.failureIntervalCounter + 1 })
 			// Etter et bestemt intervall uten update av timestamp, setter bestilling til failed
-			if (this.state.failureIntervalCounter == this.TIME_BEFORE_WARNING_MESSAGE) {
+			if (this.state.failureIntervalCounter === this.TIME_BEFORE_WARNING_MESSAGE) {
 				this.setState({ failed: true })
 			}
 		} else {

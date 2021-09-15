@@ -14,7 +14,7 @@ import java.util.Map;
 @Service
 public class OrganisasjonForvalterConsumer {
 
-    private static final String IMPORT_ORG_URL = "/api/v1/organisasjon/import";
+    private static final String IMPORT_ORG_URL = "/api/v2/organisasjoner/framiljoe";
 
     private final WebClient webClient;
     private final AccessTokenService accessTokenService;

@@ -76,7 +76,7 @@ export const SelectOptionsOppslag = {
 	},
 
 	hentVirksomheterFraOrgforvalter: () => {
-		return Api.fetchJson(`/testnav-organisasjon-forvalter/api/v1/organisasjon/virksomheter`, {
+		return Api.fetchJson(`/testnav-organisasjon-forvalter/api/v2/organisasjoner/virksomheter`, {
 			method: 'GET',
 		})
 	},
