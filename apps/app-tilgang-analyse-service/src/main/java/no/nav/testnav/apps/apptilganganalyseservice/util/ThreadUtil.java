@@ -9,17 +9,17 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-public class TreadUtil {
-    private static TreadUtil instance;
+public class ThreadUtil {
+    private static ThreadUtil instance;
     private final Executor executor;
 
-    private TreadUtil() {
+    private ThreadUtil() {
         this.executor = Executors.newFixedThreadPool(10);
     }
 
-    public static TreadUtil Instance() {
+    public static ThreadUtil Instance() {
         if (instance == null) {
-            instance = new TreadUtil();
+            instance = new ThreadUtil();
         }
         return instance;
     }

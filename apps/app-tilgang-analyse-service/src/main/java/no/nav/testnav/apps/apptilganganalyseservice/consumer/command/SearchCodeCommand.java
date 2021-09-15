@@ -27,8 +27,8 @@ public class SearchCodeCommand implements Callable<Mono<SearchDTO>> {
                 .uri(builder -> builder
                         .path("/search/code")
                         .queryParam("q", search)
-                        .queryParam("per_page", 2)
-                        .queryParam("page", 1)
+                        .queryParam("per_page", pageSize)
+                        .queryParam("page", page)
                         .build()
                 )
                 .header(HttpHeaders.ACCEPT, "application/vnd.github.v3+json")

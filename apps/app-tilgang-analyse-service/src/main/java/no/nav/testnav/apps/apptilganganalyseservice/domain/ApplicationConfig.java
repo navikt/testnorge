@@ -30,7 +30,10 @@ public class ApplicationConfig {
     }
 
     public List<String> getInbound() {
-        if (getAccessPolicy() == null || getAccessPolicy().getInbound() == null) {
+        if (getAccessPolicy() == null
+                || getAccessPolicy().getInbound() == null
+                || getAccessPolicy().getInbound().getRules() == null
+        ) {
             return Collections.emptyList();
         }
         return getAccessPolicy()
@@ -41,9 +44,11 @@ public class ApplicationConfig {
                 .collect(Collectors.toList());
     }
 
-
     public List<String> getOutbound() {
-        if (getAccessPolicy() == null || getAccessPolicy().getOutbound() == null) {
+        if (getAccessPolicy() == null
+                || getAccessPolicy().getOutbound() == null
+                || getAccessPolicy().getOutbound().getRules() == null
+        ) {
             return Collections.emptyList();
         }
         return getAccessPolicy()
@@ -69,5 +74,4 @@ public class ApplicationConfig {
     public String getNamespace() {
         return kindApplikasjon.getMetadata().getNamespace();
     }
-
 }
