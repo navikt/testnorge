@@ -14,7 +14,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityWebFilterChain configure(ServerHttpSecurity http) {
-        
+
         var logoutSuccessHandler = new LogoutSuccessHandler();
 
         return http.cors()
