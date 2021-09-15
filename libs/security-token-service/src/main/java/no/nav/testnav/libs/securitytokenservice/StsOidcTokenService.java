@@ -1,13 +1,14 @@
 package no.nav.testnav.libs.securitytokenservice;
 
-import static org.springframework.http.HttpHeaders.ACCEPT;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+
+import static org.springframework.http.HttpHeaders.ACCEPT;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
 public class StsOidcTokenService {
@@ -28,25 +29,14 @@ public class StsOidcTokenService {
                 .build();
     }
 
-    public String getToken() {
-        updateTokenIfNeeded();
-        return token;
-    }
-
-    private void updateTokenIfNeeded() {
+    public Mono<String> getToken() {
         if (shouldRefresh()) {
-            synchronized (this) {
-                if (shouldRefresh()) {
-                    try {
-                        updateToken();
-                    } catch (RuntimeException e) {
-                        if (hasExpired()) {
-                            throw new RuntimeException("Sikkerhet-token kunne ikke fornyes", e);
-                        }
-                    }
-                }
-            }
+            return updateToken();
         }
+        if (hasExpired()) {
+            throw new RuntimeException("Sikkerhet-token kunne ikke fornyes");
+        }
+        return Mono.just(token);
     }
 
     private boolean shouldRefresh() {
@@ -54,11 +44,11 @@ public class StsOidcTokenService {
     }
 
     private boolean hasExpired() {
-        return expiry == null || LocalDateTime.now().isAfter(expiry);
+        return expiry != null && LocalDateTime.now().isAfter(expiry);
     }
 
-    private void updateToken() {
-        var node = webClient
+    private Mono<String> updateToken() {
+        return webClient
                 .get()
                 .uri(builder -> builder
                         .queryParam("grant_type", "client_credentials")
@@ -68,9 +58,9 @@ public class StsOidcTokenService {
                 .header(ACCEPT, APPLICATION_JSON_VALUE)
                 .retrieve()
                 .bodyToMono(JsonNode.class)
-                .block();
-
-        expiry = LocalDateTime.now().plusSeconds(node.get("expires_in").asLong());
-        token = node.get("access_token").asText();
+                .doOnSuccess(node -> {
+                    expiry = LocalDateTime.now().plusSeconds(node.get("expires_in").asLong());
+                    token = node.get("access_token").asText();
+                }).map(value -> value.get("access_token").asText());
     }
 }

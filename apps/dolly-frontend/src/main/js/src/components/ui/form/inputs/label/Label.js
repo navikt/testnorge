@@ -12,7 +12,7 @@ const StyledLabel = styled.label`
 export const Label = ({ name, label, feil, containerClass, children }) => {
 	const wrapClass = cn('skjemaelement', containerClass, {
 		error: Boolean(feil && !_isEmpty(feil.feilmelding)),
-		'label-offscreen': _isNil(label)
+		'label-offscreen': _isNil(label),
 	})
 
 	return (

@@ -16,7 +16,7 @@ dependencies {
     implementation 'no.nav.testnav.libs:servlet-core'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
-
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
@@ -30,6 +30,7 @@ dependencies {
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 

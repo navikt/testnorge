@@ -3,14 +3,14 @@ import { get as _get } from 'lodash'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { SyntSykemelding } from './SyntSykemelding'
 import { DetaljertSykemelding } from './DetaljertSykemelding'
-import { SykemeldingForm, Diagnose } from '~/components/fagsystem/sykdom/SykemeldingTypes'
+import { Diagnose, SykemeldingForm } from '~/components/fagsystem/sykdom/SykemeldingTypes'
 
 const initialValuesSyntSykemelding = {
 	syntSykemelding: {
 		startDato: new Date(),
 		orgnummer: '',
-		arbeidsforholdId: ''
-	}
+		arbeidsforholdId: '',
+	},
 }
 
 const initialValuesDetaljertSykemelding = {
@@ -18,19 +18,19 @@ const initialValuesDetaljertSykemelding = {
 		arbeidsgiver: {
 			navn: '',
 			stillingsprosent: 100,
-			yrkesbetegnelse: ''
+			yrkesbetegnelse: '',
 		},
 		biDiagnoser: [] as Array<Diagnose>,
 		detaljer: {
 			arbeidsforEtterEndtPeriode: false,
 			beskrivHensynArbeidsplassen: '',
 			tiltakArbeidsplass: '',
-			tiltakNav: ''
+			tiltakNav: '',
 		},
 		hovedDiagnose: {
 			diagnose: '',
 			diagnosekode: '',
-			system: ''
+			system: '',
 		},
 		helsepersonell: {
 			etternavn: '',
@@ -38,7 +38,7 @@ const initialValuesDetaljertSykemelding = {
 			hprId: '',
 			ident: '',
 			mellomnavn: '',
-			samhandlerType: ''
+			samhandlerType: '',
 		},
 		manglendeTilretteleggingPaaArbeidsplassen: false,
 		mottaker: {
@@ -48,8 +48,8 @@ const initialValuesDetaljertSykemelding = {
 				by: '',
 				gate: '',
 				land: '',
-				postnummer: ''
-			}
+				postnummer: '',
+			},
 		},
 		perioder: [
 			{
@@ -57,20 +57,20 @@ const initialValuesDetaljertSykemelding = {
 					aktivitet: null as string,
 					behandlingsdager: 0,
 					grad: 0,
-					reisetilskudd: false
+					reisetilskudd: false,
 				},
 				fom: '',
-				tom: ''
-			}
+				tom: '',
+			},
 		],
 		startDato: new Date(),
-		umiddelbarBistand: false
-	}
+		umiddelbarBistand: false,
+	},
 }
 
 enum SykemeldingTyper {
 	detaljert = 'DETALJERT',
-	synt = 'SYNT'
+	synt = 'SYNT',
 }
 
 export const Sykemelding = ({ formikBag }: SykemeldingForm) => {
@@ -90,18 +90,18 @@ export const Sykemelding = ({ formikBag }: SykemeldingForm) => {
 	const toggleValues = [
 		{
 			value: SykemeldingTyper.synt,
-			label: 'Generer sykemelding automatisk'
+			label: 'Generer sykemelding automatisk',
 		},
 		{
 			value: SykemeldingTyper.detaljert,
-			label: 'Lag detaljert sykemelding'
-		}
+			label: 'Lag detaljert sykemelding',
+		},
 	]
 
 	return (
 		<div className="toggle--wrapper">
 			<ToggleGruppe onChange={handleToggleChange} name="sykemelding">
-				{toggleValues.map(val => (
+				{toggleValues.map((val) => (
 					<ToggleKnapp key={val.value} value={val.value} checked={typeSykemelding === val.value}>
 						{val.label}
 					</ToggleKnapp>

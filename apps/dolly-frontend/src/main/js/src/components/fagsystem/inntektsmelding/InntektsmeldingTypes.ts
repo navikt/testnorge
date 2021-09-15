@@ -4,7 +4,7 @@ export enum Kodeverk {
 	AarsakVedEndring = 'AARSAK_VED_ENDRING_TYPE',
 	Begrunnelse = 'BEGRUNNELSE_TYPE',
 	NaturalYtelse = 'NATURALYTELSE_TYPE',
-	Ytelse = 'YTELSE_TYPE'
+	Ytelse = 'YTELSE_TYPE',
 }
 
 export enum Ytelser {
@@ -15,13 +15,13 @@ export enum Ytelser {
 	PleiepengerBarn = 'PLEIEPENGER_BARN',
 	PleiepengerNaerstaaende = 'PLEIEPENGER_NAERSTAAENDE',
 	Omsorgspenger = 'OMSORGSPENGER',
-	Opplaeringspenger = 'OPPLAERINGSPENGER'
+	Opplaeringspenger = 'OPPLAERINGSPENGER',
 }
 
 export enum Tema {
 	Syk = 'SYK',
 	Oms = 'OMS',
-	For = 'FOR'
+	For = 'FOR',
 }
 
 export type Inntektsmelding = {

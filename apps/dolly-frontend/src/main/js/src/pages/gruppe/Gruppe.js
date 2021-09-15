@@ -28,7 +28,7 @@ export default function Gruppe({
 	isLockingGruppe,
 	match,
 	history,
-	bestillingStatuser
+	bestillingStatuser,
 }) {
 	const [visning, setVisning] = useState(VISNING_PERSONER)
 	const [startBestillingAktiv, visStartBestilling, skjulStartBestilling] = useBoolean(false)
@@ -50,13 +50,13 @@ export default function Gruppe({
 		return null
 	}
 
-	const byttVisning = event => setVisning(event.target.value)
+	const byttVisning = (event) => setVisning(event.target.value)
 
 	const identArray = Object.values(identer).filter(
-		ident => ident.bestillingId != null && ident.bestillingId.length > 0
+		(ident) => ident.bestillingId != null && ident.bestillingId.length > 0
 	)
 
-	const startBestilling = values =>
+	const startBestilling = (values) =>
 		history.push(`/gruppe/${match.params.gruppeId}/bestilling`, values)
 
 	const erLaast = gruppe.erLaast

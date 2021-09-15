@@ -18,7 +18,7 @@ export const Adressevisning = ({ boadresse }) => {
 		postnr,
 		bolignr,
 		flyttedato,
-		tilleggsadresse
+		tilleggsadresse,
 	} = boadresse
 
 	const gate = <div>{`${gateadresse} ${husnummer}`}</div>

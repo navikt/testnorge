@@ -10,7 +10,7 @@ import './BestillingProgresjon.less'
 
 export default class BestillingProgresjon extends PureComponent {
 	static propTypes = {
-		bestilling: PropTypes.object.isRequired
+		bestilling: PropTypes.object.isRequired,
 	}
 
 	constructor(props) {
@@ -26,7 +26,7 @@ export default class BestillingProgresjon extends PureComponent {
 			antallLevert: props.bestilling.antallLevert,
 			failureIntervalCounter: 0,
 			failed: false,
-			sistOppdatert: props.bestilling.sistOppdatert
+			sistOppdatert: props.bestilling.sistOppdatert,
 		}
 	}
 
@@ -78,13 +78,13 @@ export default class BestillingProgresjon extends PureComponent {
 		}
 	}
 
-	updateOrgStatus = data => {
+	updateOrgStatus = (data) => {
 		// Setter alltid status til IKKE FERDIG, sånn at vi kan vise
 		// en kort melding som sier at prosessen er ferdig
 		const newState = {
 			ferdig: false,
 			antallLevert: data.antallLevert,
-			sistOppdatert: data.sistOppdatert
+			sistOppdatert: data.sistOppdatert,
 		}
 		this.setState(newState)
 
@@ -96,13 +96,13 @@ export default class BestillingProgresjon extends PureComponent {
 		}
 	}
 
-	updateStatus = data => {
+	updateStatus = (data) => {
 		// Setter alltid status til IKKE FERDIG, sånn at vi kan vise
 		// en kort melding som sier at prosessen er ferdig
 		const newState = {
 			ferdig: false,
 			antallLevert: data.antallLevert,
-			sistOppdatert: data.sistOppdatert
+			sistOppdatert: data.sistOppdatert,
 		}
 		this.setState(newState)
 
@@ -116,7 +116,7 @@ export default class BestillingProgresjon extends PureComponent {
 		}
 	}
 
-	harBestillingFeilet = sistOppdatert => {
+	harBestillingFeilet = (sistOppdatert) => {
 		const liveTimeStamp = new Date(sistOppdatert).getTime()
 		const oldTimeStamp = new Date(this.state.sistOppdatert).getTime()
 
@@ -158,7 +158,7 @@ export default class BestillingProgresjon extends PureComponent {
 		return {
 			percent,
 			title,
-			text
+			text,
 		}
 	}
 

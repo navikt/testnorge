@@ -76,7 +76,7 @@ export const ArbeidsgiverIdent = ({ formikBag, path }: ArbeidsgiverIdentProps) =
 				disabled={loading}
 				feil={
 					error && {
-						feilmelding: error
+						feilmelding: error,
 					}
 				}
 			/>

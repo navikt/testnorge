@@ -8,7 +8,7 @@ const loadingBestillingerSelector = createLoadingSelector(getBestillinger)
 const mapStateToProps = (state, ownProps) => ({
 	searchActive: Boolean(state.search),
 	isFetchingBestillinger: loadingBestillingerSelector(state),
-	bestillinger: sokSelector(state, state.search)
+	bestillinger: sokSelector(state, state.search),
 })
 
 export default connect(mapStateToProps)(BestillingListe)

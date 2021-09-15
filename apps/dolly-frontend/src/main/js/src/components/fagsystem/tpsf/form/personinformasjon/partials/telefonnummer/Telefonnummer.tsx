@@ -34,7 +34,7 @@ export const Telefonnummer = ({ formikBag }: TelefonnummerProps) => {
 		telefonLandskode_1: 'tpsf.telefonLandskode_1',
 		telefonnummer_1: 'tpsf.telefonnummer_1',
 		telefonLandskode_2: 'tpsf.telefonLandskode_2',
-		telefonnummer_2: 'tpsf.telefonnummer_2'
+		telefonnummer_2: 'tpsf.telefonnummer_2',
 	}
 
 	const leggTilTlfnr = () => {

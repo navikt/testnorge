@@ -26,8 +26,8 @@ export const ArenaVisning = ({ data, loading }: ArenaVisningProps) => {
 		? data.arbeidsokerList.slice().reverse()
 		: data.arbeidsokerList
 
-	const visningData: VisningData[] = sortedData.map(info => ({
-		brukertype: info.servicebehov ? 'Med servicebehov' : 'Uten servicebehov'
+	const visningData: VisningData[] = sortedData.map((info) => ({
+		brukertype: info.servicebehov ? 'Med servicebehov' : 'Uten servicebehov',
 	}))
 
 	return (

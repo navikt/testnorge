@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { ToastContainer, toast } from 'react-toastify'
+import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 export default class Toaster extends PureComponent {
@@ -9,7 +9,7 @@ export default class Toaster extends PureComponent {
 			toast.error(error, {
 				position: toast.POSITION.BOTTOM_RIGHT,
 				onClose: clearErrors,
-				autoClose: 10000
+				autoClose: 10000,
 			})
 		}
 	}

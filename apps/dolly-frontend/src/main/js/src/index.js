@@ -17,12 +17,12 @@ import { v4 as uuid } from 'uuid'
 import LoginPage from '~/pages/loginPage'
 
 window.uuid = uuid()
-window.onerror = message => {
+window.onerror = (message) => {
 	try {
 		Logger.error({
 			event: 'Global feil',
 			message: message,
-			uuid: window.uuid
+			uuid: window.uuid,
 		})
 	} catch (e) {
 		console.error(e)
@@ -30,6 +30,7 @@ window.onerror = message => {
 }
 
 const root = document.getElementById('root')
+
 render(
 	<Provider store={store}>
 		<ConnectedRouter history={history}>

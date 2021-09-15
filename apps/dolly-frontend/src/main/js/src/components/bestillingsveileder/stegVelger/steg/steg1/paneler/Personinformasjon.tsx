@@ -5,7 +5,7 @@ import { Attributt, AttributtKategori } from '../Attributt'
 import Formatters from '~/utils/DataFormatter'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 
-const innvandret = personFoerLeggTil =>
+const innvandret = (personFoerLeggTil) =>
 	_get(personFoerLeggTil, 'tpsf.innvandretUtvandret[0].innutvandret') === 'INNVANDRET'
 
 export const PersoninformasjonPanel = ({ stateModifier }) => {
@@ -78,13 +78,13 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			label: 'Alder',
 			checked: has('tpsf.alder') || has('tpsf.foedtEtter') || has('tpsf.foedtFoer'),
 			add: () => set('tpsf.alder', Formatters.randomIntInRange(30, 60)),
-			remove: () => del(['tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer'])
+			remove: () => del(['tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer']),
 		},
 		doedsdato: {
 			label: 'Dødsdato',
 			checked: has('tpsf.doedsdato'),
 			add: () => set('tpsf.doedsdato', null),
-			remove: () => del('tpsf.doedsdato')
+			remove: () => del('tpsf.doedsdato'),
 		},
 		statsborgerskap: {
 			label: 'Statsborgerskap',
@@ -101,7 +101,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 					['tpsf.statsborgerskap', 'tpsf.statsborgerskapRegdato'],
 					['tpsf.statsborgerskap', 'tpsf.statsborgerskapTildato']
 				)
-			}
+			},
 		},
 		innvandretFraLand: {
 			label: 'Innvandret fra',
@@ -111,7 +111,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			},
 			remove() {
 				del(['tpsf.innvandretFraLand', 'tpsf.innvandretFraLandFlyttedato'])
-			}
+			},
 		},
 		utvandretTilLand: {
 			label: 'Utvandret til',
@@ -121,7 +121,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			},
 			remove() {
 				del(['tpsf.utvandretTilLand', 'tpsf.utvandretTilLandFlyttedato'])
-			}
+			},
 		},
 		identHistorikk: {
 			label: 'Identhistorikk',
@@ -133,28 +133,28 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 						foedtFoer: null,
 						identtype: null,
 						kjonn: null,
-						regdato: null
-					}
+						regdato: null,
+					},
 				]),
-			remove: () => del('tpsf.identHistorikk')
+			remove: () => del('tpsf.identHistorikk'),
 		},
 		kjonn: {
 			label: 'Kjønn',
 			checked: has('tpsf.kjonn'),
 			add: () => set('tpsf.kjonn', ''),
-			remove: () => del('tpsf.kjonn')
+			remove: () => del('tpsf.kjonn'),
 		},
 		harMellomnavn: {
 			label: 'Har mellomnavn',
 			checked: has('tpsf.harMellomnavn'),
 			add: () => set('tpsf.harMellomnavn', true),
-			remove: () => del('tpsf.harMellomnavn')
+			remove: () => del('tpsf.harMellomnavn'),
 		},
 		sprakKode: {
 			label: 'Språk',
 			checked: has('tpsf.sprakKode'),
 			add: () => set('tpsf.sprakKode', ''),
-			remove: () => del('tpsf.sprakKode')
+			remove: () => del('tpsf.sprakKode'),
 		},
 		egenAnsattDatoFom: {
 			label: 'Skjerming',
@@ -163,14 +163,14 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 				setMulti(
 					[
 						'tpsf.egenAnsattDatoFom',
-						_get(personFoerLeggTil, 'tpsf.egenAnsattDatoFom') || new Date()
+						_get(personFoerLeggTil, 'tpsf.egenAnsattDatoFom') || new Date(),
 					],
 					['tpsf.egenAnsattDatoTom', undefined]
 				)
 			},
 			remove() {
 				del(['tpsf.egenAnsattDatoFom', 'tpsf.egenAnsattDatoTom'])
-			}
+			},
 		},
 		erForsvunnet: {
 			label: 'Forsvunnet',
@@ -180,7 +180,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			},
 			remove() {
 				del(['tpsf.erForsvunnet', 'tpsf.forsvunnetDato'])
-			}
+			},
 		},
 		harBankkontonr: {
 			label: 'Bankkontonummer',
@@ -190,7 +190,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			},
 			remove() {
 				del(['tpsf.harBankkontonr', 'tpsf.bankkontonrRegdato'])
-			}
+			},
 		},
 		telefonnummer_1: {
 			label: 'Telefonnummer',
@@ -203,9 +203,9 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 					'tpsf.telefonLandskode_1',
 					'tpsf.telefonnummer_1',
 					'tpsf.telefonLandskode_2',
-					'tpsf.telefonnummer_2'
+					'tpsf.telefonnummer_2',
 				])
-			}
+			},
 		},
 		spesreg: {
 			label: 'Diskresjonskode',
@@ -215,13 +215,13 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			},
 			remove() {
 				del(['tpsf.spesreg', 'tpsf.utenFastBopel'])
-			}
+			},
 		},
 		identtype: {
 			label: 'Identtype',
 			checked: has('tpsf.identtype'),
 			add: () => setMulti(['tpsf.identtype', ''], ['tpsf.alder', personFoerLeggTil?.tpsf?.alder]),
-			remove: () => del(['tpsf.identtype', 'tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer'])
+			remove: () => del(['tpsf.identtype', 'tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer']),
 		},
 		vergemaal: {
 			label: 'Vergemål',
@@ -233,9 +233,9 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 					mandatType: null,
 					vedtakDato: null,
 					identType: null,
-					harMellomnavn: null
+					harMellomnavn: null,
 				}),
-			remove: () => del('tpsf.vergemaal')
+			remove: () => del('tpsf.vergemaal'),
 		},
 		fullmakt: {
 			label: 'Fullmakt',
@@ -247,9 +247,9 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 					gyldigFom: null,
 					gyldigTom: null,
 					identType: null,
-					harMellomnavn: null
+					harMellomnavn: null,
 				}),
-			remove: () => del('tpsf.fullmakt')
-		}
+			remove: () => del('tpsf.fullmakt'),
+		},
 	}
 }

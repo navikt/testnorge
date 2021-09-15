@@ -23,7 +23,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
-public class VergemaalService {
+public class VergemaalService implements Validation<VergemaalDTO> {
 
     private static final String VALIDATION_UGYLDIG_INTERVAL_ERROR = "Ugyldig datointervall: gyldigFom må være før gyldigTom";
     private static final String VALIDATION_EMBETE_ERROR = "Embete for vergemål må angis";
@@ -39,7 +39,6 @@ public class VergemaalService {
         for (var type : person.getVergemaal()) {
 
             if (isTrue(type.getIsNew())) {
-                validate(type);
 
                 handle(type, person.getIdent());
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
@@ -49,7 +48,7 @@ public class VergemaalService {
         return person.getVergemaal();
     }
 
-    private void validate(VergemaalDTO vergemaal) {
+    public void validate(VergemaalDTO vergemaal) {
 
         if (isNull(vergemaal.getVergemaalEmbete())) {
             throw new InvalidRequestException(VALIDATION_EMBETE_ERROR);

@@ -17,22 +17,22 @@ export default function Panel({
 	checkAttributeArray,
 	uncheckAttributeArray,
 	informasjonstekst,
-	iconType
+	iconType,
 }) {
 	const [isOpen, toggleOpen] = useToggle(startOpen)
 
 	const panelClass = cn('dolly-panel', {
-		'dolly-panel-open': isOpen
+		'dolly-panel-open': isOpen,
 	})
 
 	const renderContent = children ? children : content
 
-	const check = e => {
+	const check = (e) => {
 		e.stopPropagation()
 		checkAttributeArray()
 	}
 
-	const uncheck = e => {
+	const uncheck = (e) => {
 		e.stopPropagation()
 		uncheckAttributeArray()
 	}

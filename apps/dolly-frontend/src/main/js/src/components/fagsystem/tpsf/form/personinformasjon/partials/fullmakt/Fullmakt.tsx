@@ -13,7 +13,7 @@ export const Fullmakt = () => {
 		gyldigFom: 'tpsf.fullmakt.gyldigFom',
 		gyldigTom: 'tpsf.fullmakt.gyldigTom',
 		identType: 'tpsf.fullmakt.identType',
-		harMellomnavn: 'tpsf.fullmakt.harMellomnavn'
+		harMellomnavn: 'tpsf.fullmakt.harMellomnavn',
 	}
 
 	const fullmaktOmraader = SelectOptionsOppslag.hentFullmaktOmraader()

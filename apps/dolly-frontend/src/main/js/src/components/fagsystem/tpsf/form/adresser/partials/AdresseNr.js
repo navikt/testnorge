@@ -4,7 +4,7 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { AdresseKodeverk } from '~/config/kodeverk'
 
 export const AdresseNr = ({ formikBag, type }) => {
-	const settAdresseNrInfo = adresse => {
+	const settAdresseNrInfo = (adresse) => {
 		// Denne bør nok settes fra initalValues i stedet
 		formikBag.setFieldValue('tpsf.boadresse.adressetype', 'MATR')
 	}

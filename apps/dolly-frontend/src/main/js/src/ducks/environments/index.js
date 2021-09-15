@@ -5,25 +5,25 @@ import { MiljoeApi } from '~/service/Api'
 
 export const { getEnvironments } = createActions(
 	{
-		getEnvironments: MiljoeApi.getAktiveMiljoer
+		getEnvironments: MiljoeApi.getAktiveMiljoer,
 	},
 	{ prefix: 'env' }
 )
 
 const initialState = {
-	data: null
+	data: null,
 }
 
 export default handleActions(
 	{
 		[onSuccess(getEnvironments)](state, action) {
 			state.data = _getEnvironmentsSortedByType(action.payload.data)
-		}
+		},
 	},
 	initialState
 )
 
-export const _getEnvironmentsSortedByType = envArray => {
+export const _getEnvironmentsSortedByType = (envArray) => {
 	const sortedByType = envArray.reduce((prev, curr) => {
 		const label = curr.toUpperCase()
 		const envType = label.charAt(0)
@@ -35,12 +35,12 @@ export const _getEnvironmentsSortedByType = envArray => {
 		return prev
 	}, {})
 
-	Object.keys(sortedByType).forEach(key => {
+	Object.keys(sortedByType).forEach((key) => {
 		const envs = sortedByType[key]
-		const sorterteNummer = envs.map(env => env.id.match(/.{1,3}/g))
+		const sorterteNummer = envs.map((env) => env.id.match(/.{1,3}/g))
 		const sorterteEnvs = sorterteNummer
-			.map(v => v[0])
-			.sort(function(a, b) {
+			.map((v) => v[0])
+			.sort(function (a, b) {
 				const prev = parseInt(a.substring(1))
 				const current = parseInt(b.substring(1))
 				if (prev > current) return 1

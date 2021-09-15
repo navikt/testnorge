@@ -1,10 +1,8 @@
 import React from 'react'
 import * as Yup from 'yup'
-import _get from 'lodash/get'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import Panel from '~/components/ui/panel/Panel'
-import { panelError } from '~/components/ui/form/formUtils'
-import { erForste } from '~/components/ui/form/formUtils'
+import { erForste, panelError } from '~/components/ui/form/formUtils'
 import { InntektsaarForm } from './partials/inntektsaarForm'
 import { ifPresent } from '~/utils/YupValidations'
 
@@ -33,7 +31,7 @@ SigrunstubForm.validation = {
 							tekniskNavn: Yup.string().required('Velg en type inntekt'),
 							verdi: Yup.number()
 								.min(0, 'Tast inn et gyldig beløp')
-								.typeError('Tast inn et gyldig beløp')
+								.typeError('Tast inn et gyldig beløp'),
 						})
 					)
 					.test('is-required', 'Legg til minst én inntekt', function checkTjenesteGrunnlag(val) {
@@ -53,19 +51,17 @@ SigrunstubForm.validation = {
 							} else return false
 						} else return true
 					}),
-				inntektsaar: Yup.number()
-					.integer('Ugyldig årstall')
-					.required('Tast inn et gyldig år'),
+				inntektsaar: Yup.number().integer('Ugyldig årstall').required('Tast inn et gyldig år'),
 				svalbardGrunnlag: Yup.array().of(
 					Yup.object({
 						tekniskNavn: Yup.string().required('Velg en type inntekt'),
 						verdi: Yup.number()
 							.min(0, 'Tast inn et gyldig beløp')
-							.typeError('Tast inn et gyldig beløp')
+							.typeError('Tast inn et gyldig beløp'),
 					})
 				),
-				tjeneste: Yup.string().required('Velg en type tjeneste')
+				tjeneste: Yup.string().required('Velg en type tjeneste'),
 			})
 		)
-	)
+	),
 }

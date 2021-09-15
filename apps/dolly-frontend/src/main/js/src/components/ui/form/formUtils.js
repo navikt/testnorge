@@ -1,7 +1,7 @@
 import _has from 'lodash/has'
 import _isNil from 'lodash/isNil'
 
-export const fieldError = meta => {
+export const fieldError = (meta) => {
 	return !!meta.touched && !!meta.error ? { feilmelding: meta.error } : null
 }
 
@@ -12,7 +12,7 @@ export const panelError = (formikBag, attributtPath) => {
 	// Strings er akseptert, men konverter til Array
 	if (!Array.isArray(attributtPath)) attributtPath = [attributtPath]
 
-	return attributtPath.some(attr => _has(formikBag.errors, attr))
+	return attributtPath.some((attr) => _has(formikBag.errors, attr))
 }
 
 export const SyntEvent = (name, value) => ({ target: { name, value } })
@@ -69,12 +69,12 @@ export const erForste = (values, attributt) => {
 		'organisasjon.epost',
 		'organisasjon.nettside',
 		'organisasjon.forretningsadresse',
-		'organisasjon.postadresse'
+		'organisasjon.postadresse',
 	]
 
 	const valgteAttributter = []
 
-	rootPaths.forEach(path => {
+	rootPaths.forEach((path) => {
 		if (_has(values, path)) {
 			valgteAttributter.push(path)
 		}

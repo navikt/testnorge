@@ -31,13 +31,13 @@ class UtflyttingServiceTest {
     @Test
     void whenInvalidLandkode_thenThrowExecption() {
 
-        var request = List.of(UtflyttingDTO.builder()
+        var request = UtflyttingDTO.builder()
                 .tilflyttingsland("Mali")
                 .isNew(true)
-                .build());
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                utflyttingService.convert((List<UtflyttingDTO>) request));
+                utflyttingService.validate(request));
 
         assertThat(exception.getMessage(), containsString("Landkode må oppgis i hht ISO-3 Landkoder for tilflyttingsland"));
     }

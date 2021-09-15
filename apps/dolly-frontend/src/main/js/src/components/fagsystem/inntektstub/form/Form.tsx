@@ -1,9 +1,8 @@
 import React from 'react'
 import { FormikProps } from 'formik'
-import _get from 'lodash/get'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import Panel from '~/components/ui/panel/Panel'
-import { panelError, erForste } from '~/components/ui/form/formUtils'
+import { erForste, panelError } from '~/components/ui/form/formUtils'
 import { validation } from './validation'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import InntektsinformasjonForm from './partials/inntektsinformasjonForm'
@@ -24,12 +23,12 @@ export const initialValues: Inntektsinformasjon = {
 			beloep: '',
 			startOpptjeningsperiode: undefined,
 			sluttOpptjeningsperiode: undefined,
-			inntektstype: ''
-		}
+			inntektstype: '',
+		},
 	],
 	fradragsliste: [],
 	forskuddstrekksliste: [],
-	arbeidsforholdsliste: []
+	arbeidsforholdsliste: [],
 }
 
 const inntektstubAttributt = 'inntektstub'

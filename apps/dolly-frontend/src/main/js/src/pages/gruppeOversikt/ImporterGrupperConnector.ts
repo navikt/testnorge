@@ -5,7 +5,7 @@ import ImporterGrupper from './ImporterGrupper'
 
 const mapDispatchToProps = (dispatch: React.Dispatch<React.SetStateAction<string>>) => {
 	return {
-		importZIdent: (ZIdent: string) => dispatch(actions.importZIdent(ZIdent))
+		importZIdent: (ZIdent: string) => dispatch(actions.importZIdent(ZIdent)),
 	}
 }
 

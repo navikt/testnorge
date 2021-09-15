@@ -3,8 +3,11 @@ import api from '@/api'
 export type Journalpost = {
 	journalpostId: number
 	tittel: string
+	avsenderMottaker: AvsenderMottaker
 	tema: string
+	kanal: string
 	dokumenter: Dokument[]
+	miljoe: string
 }
 
 export type Dokument = {
@@ -12,12 +15,18 @@ export type Dokument = {
 	tittel: string
 }
 
+type AvsenderMottaker = {
+	id: string
+	navn: string
+	type: string
+}
+
 type DokumentType = 'ORIGINAL' | 'ARKIV'
 
 const hentJournalpost = (journalpostId: number, miljo: string): Promise<Journalpost> =>
 	api.fetchJson(`/testnav-joark-dokument-service/api/v2/journalpost/${journalpostId}`, {
 		method: 'GET',
-		headers: { miljo: miljo }
+		headers: { miljo: miljo },
 	})
 
 const hentDokument = (
@@ -31,12 +40,37 @@ const hentDokument = (
 			`/testnav-joark-dokument-service/api/v2/journalpost/${journalpostId}/dokumenter/${dokumentInfoId}?dokumentType=${dokumentType}`,
 			{
 				method: 'GET',
-				headers: { miljo: miljo }
+				headers: { miljo: miljo },
 			}
 		)
-		.then(response => response.text())
+		.then((response) => response.text())
+
+const hentPDF = (journalpostId: number, dokumentInfoId: number, miljo: string): any =>
+	api
+		.fetch(
+			`/testnav-joark-dokument-service/api/v2/journalpost/${journalpostId}/dokumenter/${dokumentInfoId}/pdf`,
+			{
+				method: 'GET',
+				headers: {
+					miljo: miljo,
+					Accept: 'application/pdf',
+					'Content-Type': 'application/pdf',
+				},
+			}
+		)
+		.then((response) => {
+			return response.blob()
+		})
+		.then((resp) => {
+			const fileURL = URL.createObjectURL(resp)
+			window.open(fileURL)
+		})
+		.catch((error) => {
+			console.log(error)
+		})
 
 export default {
 	hentJournalpost,
-	hentDokument
+	hentDokument,
+	hentPDF,
 }

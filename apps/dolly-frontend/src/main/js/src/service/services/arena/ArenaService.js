@@ -12,5 +12,5 @@ export default {
 	getTilgjengeligeMiljoer() {
 		const endpoint = `${getArenaUrl()}/miljoe`
 		return Request.get(endpoint, { 'Nav-Call-Id': _uuid(), 'Nav-Consumer-Id': 'dolly' })
-	}
+	},
 }

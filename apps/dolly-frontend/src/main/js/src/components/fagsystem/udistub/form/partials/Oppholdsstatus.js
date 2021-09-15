@@ -5,9 +5,9 @@ import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { OppholdSammeVilkaar } from '~/components/fagsystem/udistub/form/partials/OppholdSammeVilkaar'
 import { IkkeOppholdSammeVilkaar } from '~/components/fagsystem/udistub/form/partials/IkkeOppholdSammeVilkaar'
 
-const findInitialStatus = formikBag => {
+const findInitialStatus = (formikBag) => {
 	const oppholdsstatusObj = formikBag.values.udistub.oppholdStatus
-	const eosEllerEFTAOpphold = Object.keys(oppholdsstatusObj).some(key =>
+	const eosEllerEFTAOpphold = Object.keys(oppholdsstatusObj).some((key) =>
 		key.includes('eosEllerEFTA')
 	)
 	if (eosEllerEFTAOpphold) {
@@ -37,25 +37,25 @@ export const Oppholdsstatus = ({ formikBag }) => {
 
 	const basePath = 'udistub.oppholdStatus'
 
-	const endreOppholdsstatus = value => {
+	const endreOppholdsstatus = (value) => {
 		setOppholdsstatus(value)
 		setEosEllerEFTAtypeOpphold('')
 		setTredjelandsBorgereValg('')
 		formikBag.setFieldValue(basePath, {})
 	}
 
-	const endreEosEllerEFTAtypeOpphold = value => {
+	const endreEosEllerEFTAtypeOpphold = (value) => {
 		setEosEllerEFTAtypeOpphold(value)
 		formikBag.setFieldValue(basePath, {})
 		formikBag.setFieldValue(`udistub.oppholdStatus.${value}Periode`, {
 			fra: null,
-			til: null
+			til: null,
 		})
 		formikBag.setFieldValue(`udistub.oppholdStatus.${value}Effektuering`, null)
 		formikBag.setFieldValue(`udistub.oppholdStatus.${value}`, '')
 	}
 
-	const endreTredjelandsBorgereValg = value => {
+	const endreTredjelandsBorgereValg = (value) => {
 		setTredjelandsBorgereValg(value)
 		formikBag.setFieldValue(basePath, {})
 		if (value === 'oppholdSammeVilkaar') {
@@ -64,15 +64,15 @@ export const Oppholdsstatus = ({ formikBag }) => {
 				oppholdSammeVilkaarPeriode: { fra: null, til: null },
 				oppholdSammeVilkaarEffektuering: null,
 				oppholdstillatelseVedtaksDato: null,
-				oppholdstillatelseType: ''
+				oppholdstillatelseType: '',
 			})
 		} else if (value === 'ikkeOppholdSammeVilkaar') {
 			formikBag.setFieldValue(basePath, {})
 			formikBag.setFieldValue('udistub.harOppholdsTillatelse', false)
 			formikBag.setFieldValue('udistub.oppholdStatus.ikkeOppholdstilatelseIkkeVilkaarIkkeVisum', {
 				avslagEllerBortfall: {
-					avgjorelsesDato: null
-				}
+					avgjorelsesDato: null,
+				},
 			})
 		} else if (value === 'UAVKLART') {
 			formikBag.setFieldValue(basePath, { uavklart: true })
@@ -80,7 +80,7 @@ export const Oppholdsstatus = ({ formikBag }) => {
 		}
 	}
 
-	const feilmelding = felt => {
+	const feilmelding = (felt) => {
 		if (!felt) {
 			return { feilmelding: 'Feltet er påkrevd' }
 		}
@@ -93,7 +93,7 @@ export const Oppholdsstatus = ({ formikBag }) => {
 				label="Innenfor eller utenfor EØS"
 				value={oppholdsstatus}
 				options={Options('oppholdsstatus')}
-				onChange={v => endreOppholdsstatus(v.value)}
+				onChange={(v) => endreOppholdsstatus(v.value)}
 				feil={feilmelding(oppholdsstatus)}
 				isClearable={false}
 			/>
@@ -104,7 +104,7 @@ export const Oppholdsstatus = ({ formikBag }) => {
 						label="Type opphold"
 						value={eosEllerEFTAtypeOpphold}
 						options={Options('eosEllerEFTAtypeOpphold')}
-						onChange={v => endreEosEllerEFTAtypeOpphold(v.value)}
+						onChange={(v) => endreEosEllerEFTAtypeOpphold(v.value)}
 						size="xxlarge"
 						feil={feilmelding(eosEllerEFTAtypeOpphold)}
 						isClearable={false}
@@ -140,7 +140,7 @@ export const Oppholdsstatus = ({ formikBag }) => {
 						value={tredjelandsBorgereValg}
 						size="xxlarge"
 						options={Options('tredjelandsBorgereValg')}
-						onChange={v => endreTredjelandsBorgereValg(v.value)}
+						onChange={(v) => endreTredjelandsBorgereValg(v.value)}
 						feil={feilmelding(tredjelandsBorgereValg)}
 						isClearable={false}
 					/>

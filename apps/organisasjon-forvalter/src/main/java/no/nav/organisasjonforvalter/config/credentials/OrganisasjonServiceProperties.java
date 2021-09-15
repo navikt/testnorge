@@ -3,7 +3,7 @@ package no.nav.organisasjonforvalter.config.credentials;
 
 import lombok.Getter;
 import lombok.Setter;
-import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
+import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 @Configuration
 @ConfigurationProperties(prefix = "consumers.testnav-organisasjon-service")
-public class OrganisasjonServiceProperties extends NaisServerProperties {
+public class OrganisasjonServiceProperties extends ServerProperties {
 
     private int threads;
 }

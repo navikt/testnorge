@@ -3,40 +3,40 @@ import _get from 'lodash/get'
 export const statuser = {
 	ENKE: {
 		label: 'Enke/-mann',
-		value: 'ENKE'
+		value: 'ENKE',
 	},
 	GIFT: {
 		label: 'Gift',
-		value: 'GIFT'
+		value: 'GIFT',
 	},
 	GJPA: {
 		label: 'Gjenlevende partner',
-		value: 'GJPA'
+		value: 'GJPA',
 	},
 	REPA: {
 		label: 'Registrert partner',
-		value: 'REPA'
+		value: 'REPA',
 	},
 	SAMB: {
 		label: 'Samboer',
-		value: 'SAMB'
+		value: 'SAMB',
 	},
 	SEPR: {
 		label: 'Separert',
-		value: 'SEPR'
+		value: 'SEPR',
 	},
 	SEPA: {
 		label: 'Separert partner',
-		value: 'SEPA'
+		value: 'SEPA',
 	},
 	SKIL: {
 		label: 'Skilt',
-		value: 'SKIL'
+		value: 'SKIL',
 	},
 	SKPA: {
 		label: 'Skilt partner',
-		value: 'SKPA'
-	}
+		value: 'SKPA',
+	},
 }
 
 // Gyldige statuser før oppretting av nytt forhold
@@ -47,23 +47,23 @@ export const gyldigNesteStatus = {
 	REPA: ['GJPA', 'SEPA', 'SKPA'],
 	SEPR: ['GIFT', 'SKIL', 'ENKE'],
 	SEPA: ['REPA', 'SKPA', 'GJPA'],
-	ALLE: ['ENKE', 'GIFT', 'GJPA', 'REPA', 'SAMB', 'SEPR', 'SEPA', 'SKIL', 'SKPA']
+	ALLE: ['ENKE', 'GIFT', 'GJPA', 'REPA', 'SAMB', 'SEPR', 'SEPA', 'SKIL', 'SKPA'],
 }
 
 // Gyldige statuser før oppretting av ny partner
 export const gyldigSisteStatus = ['ENKE', 'SKIL', 'GJPA', 'SKPA', 'SAMB']
 
 // Hjelpefunksjoner for uthenting
-const sisteSivilstandKode = sivilstander =>
+const sisteSivilstandKode = (sivilstander) =>
 	sivilstander.length > 1 ? sivilstander[sivilstander.length - 2].sivilstand : null
 
-export const nesteGyldigStatuser = sivilstander => {
+export const nesteGyldigStatuser = (sivilstander) => {
 	const kode = sisteSivilstandKode(sivilstander)
 	const nesteOpts = gyldigNesteStatus[kode] || gyldigNesteStatus.init
-	return nesteOpts.map(statusKode => statuser[statusKode])
+	return nesteOpts.map((statusKode) => statuser[statusKode])
 }
 
-export const erOpprettNyPartnerGyldig = kode => gyldigSisteStatus.includes(kode)
+export const erOpprettNyPartnerGyldig = (kode) => gyldigSisteStatus.includes(kode)
 
 export const tomSisteSivilstand = (formikBag, sivilstandBasePath) => {
 	const sivilstander = _get(formikBag.values, sivilstandBasePath, [])

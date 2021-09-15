@@ -20,7 +20,7 @@ export default function DollyTable({
 			gruppeDetaljer={gruppeDetaljer}
 			setSidetall={setSidetall}
 			setSideStoerrelse={setSideStoerrelse}
-			render={items => <Table data={items} {...props} />}
+			render={(items) => <Table data={items} {...props} />}
 		/>
 	)
 }

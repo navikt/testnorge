@@ -1,5 +1,6 @@
 package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,5 +33,11 @@ public class KontaktadresseDTO extends AdresseDTO {
         private String postboks;
         private String postbokseier;
         private String postnummer;
+    }
+
+    @JsonIgnore
+    public int countAdresser() {
+
+        return count(getVegadresse()) + count(getUtenlandskAdresse()) + count(getPostboksadresse());
     }
 }

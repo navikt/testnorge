@@ -14,7 +14,7 @@ export const InputWarning = ({
 	visWarning,
 	warningText,
 	children,
-	size = 'small'
+	size = 'small',
 }: WarningData) => {
 	const css = cn('dolly-form-input', size)
 

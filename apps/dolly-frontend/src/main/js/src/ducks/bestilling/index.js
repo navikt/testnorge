@@ -14,13 +14,13 @@ export const actions = createActions(
 		postBestillingFraEksisterendeIdenter: DollyApi.createBestillingFraEksisterendeIdenter,
 		postBestilling: DollyApi.createBestilling,
 		postOrganisasjonBestilling: DollyApi.createOrganisasjonBestilling,
-		bestillingFeilet: error => ({ error })
+		bestillingFeilet: (error) => ({ error }),
 	},
 	{ prefix: 'bestveil' }
 )
 
 const initialState = {
-	error: null
+	error: null,
 }
 
 export default handleActions(
@@ -30,19 +30,19 @@ export default handleActions(
 		},
 		[actions.bestillingFeilet](state, action) {
 			state.error = action.payload.error
-		}
+		},
 	},
 	initialState
 )
 
-const trackBestilling = values => {
+const trackBestilling = (values) => {
 	const _uuid = uuid()
 	Object.keys(values)
-		.filter(key => rootPaths.find(value => value === key))
-		.forEach(key => {
+		.filter((key) => rootPaths.find((value) => value === key))
+		.forEach((key) => {
 			Logger.trace({
 				event: 'Bestilling av omraade: ' + key,
-				uuid: _uuid
+				uuid: _uuid,
 			})
 		})
 }

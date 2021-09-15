@@ -3,7 +3,7 @@ import no.nav.testnav.dependencies.gradle.DependenciesPlugin
 plugins {
     id 'no.nav.testnav.dependencies'
     id 'java'
-    id 'org.springframework.boot' version "2.3.4.RELEASE"
+    id 'org.springframework.boot' version "2.5.4"
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
 
@@ -57,6 +57,7 @@ dependencies {
     implementation 'org.springframework.security:spring-security-config'
     implementation 'org.springframework.security:spring-security-core'
 
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
@@ -85,12 +86,12 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.10'
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
 
+    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.boot:spring-boot-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     testImplementation 'org.springframework:spring-test'
-    testImplementation 'junit:junit:4.13'
     testImplementation 'org.mockito:mockito-core:3.3.3'
 }
 

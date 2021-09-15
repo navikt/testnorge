@@ -12,7 +12,7 @@ export default function SendOpenAm({ closeModal, bestilling, getBestillinger }) 
 		return DollyApi.postOpenAmBestilling(bestilling.id)
 	})
 
-	const openAmLinkArray = _get(requestState, 'value.data', []).map(response => response.message)
+	const openAmLinkArray = _get(requestState, 'value.data', []).map((response) => response.message)
 
 	const close = () => (requestState.value ? getBestillinger() : closeModal())
 

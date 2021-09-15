@@ -15,7 +15,7 @@ import { ArenaForm } from '~/components/fagsystem/arena/form/Form'
 import { InstForm } from '~/components/fagsystem/inst/form/Form'
 import { UdistubForm } from '~/components/fagsystem/udistub/form/Form'
 import { PensjonForm } from '~/components/fagsystem/pensjon/form/Form'
-import { DokarkivForm } from '~/components/fagsystem/dokarkiv/form/Form'
+import { DokarkivForm } from '~/components/fagsystem/dokarkiv/form/scanning/DokarkivForm'
 import { SykdomForm } from '~/components/fagsystem/sykdom/form/Form'
 import { OrganisasjonForm } from '~/components/fagsystem/organisasjoner/form/Form'
 
@@ -69,5 +69,5 @@ Steg2.validation = Yup.object({
 	...ArenaForm.validation,
 	...UdistubForm.validation,
 	...DokarkivForm.validation,
-	...OrganisasjonForm.validation
+	...OrganisasjonForm.validation,
 })

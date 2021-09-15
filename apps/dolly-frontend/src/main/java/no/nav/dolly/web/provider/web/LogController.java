@@ -4,11 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import no.nav.dolly.web.domain.LogEvent;
@@ -28,10 +30,11 @@ public class LogController {
     public Mono<ResponseEntity<HttpStatus>> logg(
             @RequestBody LogEventDTO dto,
             @RequestHeader("user-agent") String userAgent,
-            @RequestHeader("host") String host
+            @RequestHeader("host") String host,
+            ServerWebExchange exchange
     ) {
         return logService
-                .log(new LogEvent(dto, userAgent, host))
+                .log(new LogEvent(dto, userAgent, host), exchange)
                 .map(response -> ResponseEntity.noContent().build());
     }
 }

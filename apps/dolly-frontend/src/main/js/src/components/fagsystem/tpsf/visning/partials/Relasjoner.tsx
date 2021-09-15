@@ -38,7 +38,7 @@ enum RelasjonType {
 	MOR = 'MOR',
 	FAR = 'FAR',
 	BARN = 'BARN',
-	FOEDSEL = 'FOEDSEL'
+	FOEDSEL = 'FOEDSEL',
 }
 
 const getHeader = (navn: string) => {

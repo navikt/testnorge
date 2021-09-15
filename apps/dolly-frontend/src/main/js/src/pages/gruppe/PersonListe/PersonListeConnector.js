@@ -3,7 +3,7 @@ import {
 	actions as actionList,
 	fetchTpsfPersoner,
 	selectPersonListe,
-	sokSelector
+	sokSelector,
 } from '~/ducks/fagsystem'
 import { actions } from '~/ducks/gruppe'
 import { getBestillinger } from '~/ducks/bestillingStatus'
@@ -13,7 +13,7 @@ import personListe from './PersonListe'
 const loadingSelector = createLoadingSelector([
 	actions.getById,
 	actionList.getTpsf,
-	getBestillinger
+	getBestillinger,
 ])
 const mapStateToProps = (state, ownProps) => {
 	return {
@@ -21,7 +21,7 @@ const mapStateToProps = (state, ownProps) => {
 		gruppeInfo: state.gruppe.gruppeInfo,
 		identer: state.gruppe.ident,
 		isFetching: loadingSelector(state),
-		visPerson: state.finnPerson.visPerson
+		visPerson: state.finnPerson.visPerson,
 	}
 }
 

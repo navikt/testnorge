@@ -4,18 +4,18 @@ export enum PersoninformasjonKodeverk {
 	Diskresjonskoder = 'Diskresjonskoder',
 	Sivilstander = 'Sivilstander',
 	Personstatuser = 'Personstatuser',
-	Retningsnumre = 'Retningsnumre'
+	Retningsnumre = 'Retningsnumre',
 }
 
 export enum VergemaalKodeverk {
 	Fylkesmannsembeter = 'Vergemål_Fylkesmannsembeter',
 	Mandattype = 'Vergemål_Mandattype',
 	Sakstype = 'Vergemål_Sakstype',
-	Vergetype = 'Vergemål_Vergetype'
+	Vergetype = 'Vergemål_Vergetype',
 }
 
 export enum FullmaktKodeverk {
-	Tema = 'Tema'
+	Tema = 'Tema',
 }
 
 export enum AdresseKodeverk {
@@ -27,12 +27,12 @@ export enum AdresseKodeverk {
 	StatsborgerskapLand = 'StatsborgerskapFreg',
 	Utstederland = 'UtstederlandIDFreg',
 	InnvandretUtvandretLand = 'LandAdresserFreg',
-	ArbeidOgInntektLand = 'LandkoderISO2'
+	ArbeidOgInntektLand = 'LandkoderISO2',
 }
 
 export enum SigrunKodeverk {
 	BEREGNET_SKATT = 'Beregnet skatt',
-	SUMMERT_SKATTEGRUNNLAG = 'Summert skattegrunnlag'
+	SUMMERT_SKATTEGRUNNLAG = 'Summert skattegrunnlag',
 }
 
 export enum ArbeidKodeverk {
@@ -45,27 +45,27 @@ export enum ArbeidKodeverk {
 	AnsettelsesformAareg = 'AnsettelsesformAareg',
 	Skipsregistre = 'Skipsregistre',
 	Skipstyper = 'Skipstyper',
-	Fartsområder = 'Fartsområder'
+	Fartsområder = 'Fartsområder',
 }
 
 export enum InntektstubKodeverk {
 	Forskuddstrekkbeskrivelse = 'Forskuddstrekkbeskrivelse',
-	Fradragbeskrivelse = 'Fradragbeskrivelse'
+	Fradragbeskrivelse = 'Fradragbeskrivelse',
 }
 
 export enum GtKodeverk {
 	KNR = 'Kommuner',
 	BYDEL = 'Bydeler',
-	LAND = 'Landkoder'
+	LAND = 'Landkoder',
 }
 
 export enum OppholdstillatelseKodeverk {
-	Oppholdstillatelser = 'Oppholdstillatelser'
+	Oppholdstillatelser = 'Oppholdstillatelser',
 }
 
 export enum OrganisasjonKodeverk {
 	EnhetstyperJuridiskEnhet = 'EnhetstyperJuridiskEnhet',
 	EnhetstyperVirksomhet = 'EnhetstyperVirksomhet',
 	Naeringskoder = 'Næringskoder',
-	Sektorkoder = 'Sektorkoder'
+	Sektorkoder = 'Sektorkoder',
 }

@@ -150,17 +150,17 @@ export const icons = {
 	organisasjonLight: Hierarchy3Light,
 	fullmakt: Group2,
 	link: Link,
-	linkBroken: LinkBroken
+	linkBroken: LinkBroken,
 }
 
-const px = v => `${v}px`
+const px = (v) => `${v}px`
 
 export default function Icon({
 	kind,
 	title = undefined,
 	size = 24,
 	style = undefined,
-	className = undefined
+	className = undefined,
 }) {
 	if (!icons[kind]) return null
 

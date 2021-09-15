@@ -60,7 +60,7 @@ export default ({
 	itemLimit,
 	selectedIndex,
 	setSelectedIndex,
-	isLocked
+	isLocked,
 }: DollyKjedeProps) => {
 	useEffect(() => {
 		setLocked(isLocked)

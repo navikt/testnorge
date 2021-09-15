@@ -16,7 +16,7 @@ import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
-import reactor.netty.tcp.ProxyProvider;
+import reactor.netty.transport.ProxyProvider;
 
 import java.net.URI;
 import java.util.List;
@@ -56,20 +56,17 @@ public abstract class OAuth2ResourceServerConfiguration {
         return builder.build();
     }
 
-
     protected ReactiveJwtDecoder jwtDecoder() {
         NimbusReactiveJwtDecoder jwtDecoder = NimbusReactiveJwtDecoder
                 .withJwkSetUri(oAuth2ResourceServerProperties.getJwt().getJwkSetUri())
                 .webClient(webClient())
                 .build();
 
-
         OAuth2TokenValidator<Jwt> audienceValidator = new AudienceValidator();
         OAuth2TokenValidator<Jwt> withIssuer = JwtValidators.createDefaultWithIssuer(oAuth2ResourceServerProperties.getJwt().getIssuerUri());
         OAuth2TokenValidator<Jwt> withAudience = new DelegatingOAuth2TokenValidator<>(withIssuer, audienceValidator);
 
         jwtDecoder.setJwtValidator(withAudience);
-
         return jwtDecoder;
     }
 

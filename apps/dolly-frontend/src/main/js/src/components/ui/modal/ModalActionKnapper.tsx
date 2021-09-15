@@ -17,7 +17,7 @@ export default ({
 	disabled,
 	onAvbryt,
 	onSubmit,
-	center
+	center,
 }: BekreftAvbrytKnapper) => {
 	const css = cn('dollymodal_buttons', { 'dollymodal_buttons--center': center })
 

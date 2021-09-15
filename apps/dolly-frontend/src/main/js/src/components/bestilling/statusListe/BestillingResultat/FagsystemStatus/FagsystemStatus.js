@@ -7,16 +7,16 @@ export default function FagsystemStatus({ bestilling }) {
 	const iconTypes = {
 		suksess: 'feedback-check-circle',
 		avvik: 'report-problem-circle',
-		feil: 'report-problem-triangle'
+		feil: 'report-problem-triangle',
 	}
 
-	const iconType = statuser => {
+	const iconType = (statuser) => {
 		// Alle er OK
-		if (statuser.every(status => status.melding === 'OK')) return iconTypes.suksess
+		if (statuser.every((status) => status.melding === 'OK')) return iconTypes.suksess
 		// Denne statusmeldingen gir kun avvik
 		else if (
 			statuser.some(
-				status =>
+				(status) =>
 					status?.melding.includes('TIDSAVBRUDD') ||
 					status?.melding.includes('Tidsavbrudd') ||
 					status?.melding.includes('tidsavbrudd')
@@ -24,7 +24,7 @@ export default function FagsystemStatus({ bestilling }) {
 		)
 			return iconTypes.avvik
 		// Avvik eller Error
-		return statuser.some(status => status?.melding === 'OK') ? iconTypes.avvik : iconTypes.feil
+		return statuser.some((status) => status?.melding === 'OK') ? iconTypes.avvik : iconTypes.feil
 	}
 
 	return (

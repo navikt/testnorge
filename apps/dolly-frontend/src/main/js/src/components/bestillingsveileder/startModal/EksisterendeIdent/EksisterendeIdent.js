@@ -20,11 +20,11 @@ export const EksisterendeIdent = ({ onAvbryt, onSubmit }) => {
 	}, [text])
 
 	const _onSubmit = () =>
-		onSubmit({ opprettFraIdenter: state.value.filter(v => v.available).map(v => v.ident) })
+		onSubmit({ opprettFraIdenter: state.value.filter((v) => v.available).map((v) => v.ident) })
 
 	const statuser = _get(state, 'value', [])
-	const finnesUgyldige = statuser.some(v => !v.available)
-	const finnesGyldige = statuser.some(v => v.available)
+	const finnesUgyldige = statuser.some((v) => !v.available)
+	const finnesGyldige = statuser.some((v) => v.available)
 
 	return (
 		<div className="eksisterende-ident-form">
@@ -36,7 +36,7 @@ export const EksisterendeIdent = ({ onAvbryt, onSubmit }) => {
 						label="Identer"
 						placeholder="fnr/dnr/bost"
 						value={text}
-						onChange={e => setText(e.target.value)}
+						onChange={(e) => setText(e.target.value)}
 					/>
 
 					<Alertstripe type="info">

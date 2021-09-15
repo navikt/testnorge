@@ -1,6 +1,6 @@
 import { FormikProps } from 'formik'
 import _get from 'lodash/get'
-import { Partner, PersonHentet, Relasjon, Sivilstand, Relasjonstyper } from './partnerTypes'
+import { Partner, PersonHentet, Relasjon, Relasjonstyper, Sivilstand } from './partnerTypes'
 
 export default function Partnerliste(
 	formikBag: FormikProps<{}>,
@@ -19,7 +19,7 @@ export default function Partnerliste(
 	return {
 		partnere,
 		partnereUtenomFormikBag: tidligerePartnere.length,
-		oppdatertPartner
+		oppdatertPartner,
 	}
 }
 
@@ -36,7 +36,7 @@ const mapTidligerePartnere = (personFoerLeggTil: PersonHentet): Array<Partner> =
 	return tidligerePartnerliste.map((partner: Partner) => ({
 		...partner,
 		ny: false,
-		sivilstander: mapSivilstand(partner.sivilstander, false).reverse()
+		sivilstander: mapSivilstand(partner.sivilstander, false).reverse(),
 	}))
 }
 
@@ -46,12 +46,12 @@ const mapNyePartnere = (formikBag: FormikProps<{}>, path: string, sisteTidligere
 			? {
 					...partner,
 					ny: true,
-					sivilstander: mapSivilstand(partner.sivilstander, true)
+					sivilstander: mapSivilstand(partner.sivilstander, true),
 			  }
 			: {
 					...sisteTidligerePartner,
 					sivilstander: sisteTidligerePartner.sivilstander.concat(
 						mapSivilstand(partner.sivilstander, true)
-					)
+					),
 			  }
 	)

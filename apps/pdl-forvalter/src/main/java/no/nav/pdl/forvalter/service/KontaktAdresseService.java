@@ -49,7 +49,6 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO> {
         for (var adresse : person.getKontaktadresse()) {
 
             if (isTrue(adresse.getIsNew())) {
-                validate(adresse);
 
                 handle(adresse);
                 populateMiscFields(adresse, person);
@@ -59,15 +58,12 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO> {
         return person.getKontaktadresse();
     }
 
-    private void validate(KontaktadresseDTO adresse) {
-        if (count(adresse.getPostboksadresse()) +
-                count(adresse.getUtenlandskAdresse()) +
-                count(adresse.getVegadresse()) == 0) {
+    @Override
+    public void validate(KontaktadresseDTO adresse) {
+        if (adresse.countAdresser() == 0) {
             throw new InvalidRequestException(VALIDATION_ADDRESS_ABSENT_ERROR);
         }
-        if (count(adresse.getPostboksadresse()) +
-                count(adresse.getUtenlandskAdresse()) +
-                count(adresse.getVegadresse()) > 1) {
+        if (adresse.countAdresser() > 1) {
             throw new InvalidRequestException(VALIDATION_AMBIGUITY_ERROR);
         }
         if (DbVersjonDTO.Master.PDL == adresse.getMaster() &&

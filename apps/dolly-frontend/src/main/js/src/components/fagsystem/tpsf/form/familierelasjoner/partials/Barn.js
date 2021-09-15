@@ -23,7 +23,7 @@ const initialValues = {
 	utenFastBopel: false,
 	statsborgerskap: '',
 	statsborgerskapRegdato: '',
-	statsborgerskapTildato: ''
+	statsborgerskapTildato: '',
 }
 
 export const initialValuesDoedfoedt = {
@@ -34,7 +34,7 @@ export const initialValuesDoedfoedt = {
 	foedselsdato: '',
 	foedtEtter: '',
 	foedtFoer: '',
-	doedsdato: ''
+	doedsdato: '',
 }
 
 export const Barn = ({ formikBag, personFoerLeggTil }) => {
@@ -45,7 +45,7 @@ export const Barn = ({ formikBag, personFoerLeggTil }) => {
 			return options
 		}
 		if (barn[index].partnerNr && barn[index].partnerNr !== '') {
-			return options.filter(opt =>
+			return options.filter((opt) =>
 				partnere[barn[index].partnerNr - 1].harFellesAdresse
 					? opt.value !== 'BEGGE'
 					: opt.value !== 'OSS'
@@ -93,7 +93,7 @@ export const Barn = ({ formikBag, personFoerLeggTil }) => {
 					personFoerLeggTil &&
 					eksisterendeBarn &&
 					_get(personFoerLeggTil, 'tpsf.relasjoner').filter(
-						relasjon => relasjon.personRelasjonMed.ident === eksisterendeBarn
+						(relasjon) => relasjon.personRelasjonMed.ident === eksisterendeBarn
 					)
 				const fornavn = aktuellRelasjon && aktuellRelasjon[0].personRelasjonMed.fornavn
 				const etternavn = aktuellRelasjon && aktuellRelasjon[0].personRelasjonMed.etternavn
@@ -104,7 +104,7 @@ export const Barn = ({ formikBag, personFoerLeggTil }) => {
 							name={`${path}.identtype`}
 							label="Identtype"
 							options={Options('identtypeBarn')}
-							onChange={ident => handleIdenttypeChange(path, ident, isDoedfoedt)}
+							onChange={(ident) => handleIdenttypeChange(path, ident, isDoedfoedt)}
 							isClearable={false}
 						/>
 						<FormikSelect name={`${path}.kjonn`} label="Kjønn" options={Options('kjonnBarn')} />
@@ -167,7 +167,7 @@ export const Barn = ({ formikBag, personFoerLeggTil }) => {
 							<FormikDatepicker
 								name={`${path}.foedselsdato`}
 								label="Dato født"
-								onChange={dato => handleFoedselsdatoChange(path, dato)}
+								onChange={(dato) => handleFoedselsdatoChange(path, dato)}
 							/>
 						)}
 					</React.Fragment>

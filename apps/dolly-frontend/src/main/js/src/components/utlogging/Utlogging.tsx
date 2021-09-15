@@ -49,14 +49,11 @@ const Utlogging = () => {
 		}
 	}, [milliseconds])
 
-	const switchToLogin = () => {
-		location.replace(location.protocol + '//' + location.host + '/login')
-	}
-	const logout = () => Api.fetch('/logout', { method: 'POST' }).then(() => switchToLogin())
+	const logout = () => Api.fetch('/logout', { method: 'POST' })
 	const continueSession = () => Api.fetch('/session/ping', { method: 'GET' })
 
 	if (milliseconds <= 0) {
-		switchToLogin()
+		location.replace(location.protocol + '//' + location.host + '/login')
 	}
 
 	return (

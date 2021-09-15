@@ -25,12 +25,12 @@ export const OrgnummerToggle = ({ formikBag, path, opplysningspliktigPath }) => 
 		fetchData()
 	}, [])
 
-	const handleToggleChange = event => {
+	const handleToggleChange = (event) => {
 		setInputType(event.target.value)
 		formikBag.setFieldValue(path, '')
 	}
 
-	const handleChange = value => {
+	const handleChange = (value) => {
 		opplysningspliktigPath &&
 			formikBag.setFieldValue(`${opplysningspliktigPath}`, value.juridiskEnhet)
 		formikBag.setFieldValue(`${path}`, value.orgnr)
@@ -41,7 +41,7 @@ export const OrgnummerToggle = ({ formikBag, path, opplysningspliktigPath }) => 
 		setError(null)
 		setSuccess(false)
 		OrgserviceApi.getOrganisasjonInfo(org, miljo)
-			.then(response => {
+			.then((response) => {
 				if (
 					!response.data.enhetType.includes('BEDR') &&
 					!response.data.enhetType.includes('AAFY')
@@ -89,14 +89,14 @@ export const OrgnummerToggle = ({ formikBag, path, opplysningspliktigPath }) => 
 						type={'number'}
 						size="xlarge"
 						label={'Organisasjonsnummer'}
-						onBlur={event => {
+						onBlur={(event) => {
 							const org = event.target.value
 							setOrgnummer(org)
 							handleManualOrgChange(org, environment)
 						}}
 						feil={
 							error && {
-								feilmelding: error
+								feilmelding: error,
 							}
 						}
 					/>
@@ -112,17 +112,17 @@ export const OrgnummerToggle = ({ formikBag, path, opplysningspliktigPath }) => 
 								.sort((a, b) =>
 									a.localeCompare(b, undefined, {
 										numeric: true,
-										sensitivity: 'base'
+										sensitivity: 'base',
 									})
 								)
-								.map(value => ({
+								.map((value) => ({
 									value: value,
-									label: value.toUpperCase()
+									label: value.toUpperCase(),
 								}))
 						}
 						placeholder={'q1'}
 						value={environment}
-						onChange={event => {
+						onChange={(event) => {
 							setEnvironment(event.value)
 							handleManualOrgChange(orgnummer, event.value)
 						}}

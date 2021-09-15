@@ -48,7 +48,7 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 		add: () => set('aareg', [initialValues]),
 		remove() {
 			del('aareg')
-		}
+		},
 	},
 	sigrunstub: {
 		label: 'Har inntekt',
@@ -59,10 +59,10 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 					inntektsaar: new Date().getFullYear(),
 					tjeneste: '',
 					grunnlag: [],
-					svalbardGrunnlag: []
-				}
+					svalbardGrunnlag: [],
+				},
 			]),
-		remove: () => del('sigrunstub')
+		remove: () => del('sigrunstub'),
 	},
 	inntektsmelding: {
 		label: 'Har inntektsmelding',
@@ -73,32 +73,32 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 					{
 						aarsakTilInnsending: 'NY',
 						arbeidsgiver: {
-							virksomhetsnummer: ''
+							virksomhetsnummer: '',
 						},
 						arbeidsgiverPrivat: undefined,
 						arbeidsforhold: {
 							arbeidsforholdId: '',
 							beregnetInntekt: {
-								beloep: ''
+								beloep: '',
 							},
-							foersteFravaersdag: ''
+							foersteFravaersdag: '',
 						},
 						avsendersystem: {
-							innsendingstidspunkt: new Date()
+							innsendingstidspunkt: new Date(),
 						},
 						refusjon: {
 							refusjonsbeloepPrMnd: '',
-							refusjonsopphoersdato: ''
+							refusjonsopphoersdato: '',
 						},
 						naerRelasjon: false,
-						ytelse: ''
-					}
+						ytelse: '',
+					},
 				],
 				joarkMetadata: {
-					tema: ''
-				}
+					tema: '',
+				},
 			}),
-		remove: () => del('inntektsmelding')
+		remove: () => del('inntektsmelding'),
 	},
 	pensjonforvalter: {
 		label: 'Har inntekt',
@@ -108,9 +108,9 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 				fomAar: new Date().getFullYear() - 1,
 				tomAar: null,
 				belop: '',
-				redusertMedGrunnbelop: true
+				redusertMedGrunnbelop: true,
 			}),
-		remove: () => del('pensjonforvalter.inntekt')
+		remove: () => del('pensjonforvalter.inntekt'),
 	},
 	inntektstub: {
 		label: 'Har inntekt',
@@ -129,17 +129,17 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 								beloep: '',
 								startOpptjeningsperiode: '',
 								sluttOpptjeningsperiode: '',
-								inntektstype: ''
-							}
+								inntektstype: '',
+							},
 						],
 						fradragsliste: [],
 						forskuddstrekksliste: [],
-						arbeidsforholdsliste: []
-					}
-				]
+						arbeidsforholdsliste: [],
+					},
+				],
 			}),
 		remove() {
 			del('inntektstub')
-		}
-	}
+		},
+	},
 })

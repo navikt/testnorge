@@ -1,17 +1,17 @@
 import React from 'react'
 import {
-	Personinfo,
-	Nasjonalitet,
 	Boadresse,
+	Nasjonalitet,
+	Personinfo,
 	Postadresse,
-	Relasjoner
+	Relasjoner,
 } from '~/components/fagsystem/tpsf/visning/partials'
 import {
 	getBoadresse,
 	getNasjonalitet,
 	getPersonInfo,
 	getPostAdresse,
-	getRelasjoner
+	getRelasjoner,
 } from './utils'
 import { Innhold } from '~/pages/soekMiniNorge/hodejegeren/types'
 import { Oppholdstillatelse } from '~/pages/soekMiniNorge/search/ResultatVisning/partials/Oppholdstillatelse'

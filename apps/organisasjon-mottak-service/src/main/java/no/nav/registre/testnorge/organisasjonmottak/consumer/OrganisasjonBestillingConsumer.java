@@ -7,7 +7,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import no.nav.registre.testnorge.organisasjonmottak.config.properties.OrganisasjonBestillingServiceProperties;
 import no.nav.registre.testnorge.organisasjonmottak.consumer.command.RegisterBestillingCommand;
 import no.nav.testnav.libs.dto.organiasjonbestilling.v2.OrderDTO;
-import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
+import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 
 @Slf4j
@@ -15,7 +15,7 @@ import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 public class OrganisasjonBestillingConsumer {
     private final WebClient webClient;
     private final AccessTokenService accessTokenService;
-    private final NaisServerProperties properties;
+    private final ServerProperties properties;
 
     public OrganisasjonBestillingConsumer(
             OrganisasjonBestillingServiceProperties properties,

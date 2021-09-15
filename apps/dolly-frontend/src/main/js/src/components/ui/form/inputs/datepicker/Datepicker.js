@@ -23,7 +23,7 @@ export const Datepicker = ({
 	feil,
 	excludeDates,
 	minDate,
-	maxDate
+	maxDate,
 }) => {
 	return (
 		<ReactDatepicker
@@ -48,7 +48,7 @@ export const Datepicker = ({
 	)
 }
 
-export const DollyDatepicker = props => (
+export const DollyDatepicker = (props) => (
 	<InputWrapper {...props}>
 		<Label name={props.name} label={props.label} feil={props.feil}>
 			<Datepicker {...props} />
@@ -59,7 +59,7 @@ export const DollyDatepicker = props => (
 const P_FormikDatepicker = ({ fastfield, ...props }) => (
 	<FormikField name={props.name} fastfield={fastfield}>
 		{({ field, form, meta }) => {
-			const handleChange = date => {
+			const handleChange = (date) => {
 				form.setFieldTouched(props.name) // Need to trigger touched manually for Datepicker
 
 				if (props.afterChange) props.afterChange(date)

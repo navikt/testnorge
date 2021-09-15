@@ -27,7 +27,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
 
@@ -41,6 +41,7 @@ dependencies {
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'org.postgresql:postgresql:42.2.16'
 
+    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 

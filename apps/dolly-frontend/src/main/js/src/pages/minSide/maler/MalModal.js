@@ -22,7 +22,7 @@ export const MalModal = ({ id, closeModal }) => {
 					<Label name={'MalNavn'} label={'Navn på mal'}>
 						<TextInput
 							name="malnavn"
-							onChange={e => setMalnavn(e.target.value)}
+							onChange={(e) => setMalnavn(e.target.value)}
 							className="input--fullbredde"
 						/>
 					</Label>

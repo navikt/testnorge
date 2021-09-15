@@ -37,7 +37,7 @@ import { AppError } from '~/components/ui/appError/AppError'
 // TextEditor
 import { TextEditor } from '~/components/ui/form/inputs/textEditor/TextEditor'
 
-export default function() {
+export default function () {
 	return (
 		<div className="ui-demo">
 			<h1>UI elementer</h1>
@@ -104,8 +104,8 @@ export default function() {
 			</Panel>
 
 			<h2>Text Editor</h2>
-			<TextEditor placeholder="Skriv en tekst" handleSubmit={v => {}} />
-			<TextEditor text="Dette er en tekst som allerede ligger inne" handleSubmit={v => {}} />
+			<TextEditor placeholder="Skriv en tekst" handleSubmit={(v) => {}} />
+			<TextEditor text="Dette er en tekst som allerede ligger inne" handleSubmit={(v) => {}} />
 
 			<h2>ContentContainer</h2>
 			<ContentContainer>Dette er en ContentContainer</ContentContainer>

@@ -16,7 +16,7 @@ const alderPaths = ['tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer', 'tpsf.doe
 const nasjonalitetPaths = [
 	'tpsf.statsborgerskap',
 	'tpsf.innvandretFraLand',
-	'tpsf.utvandretTilLand'
+	'tpsf.utvandretTilLand',
 ]
 
 const diversePaths = [
@@ -31,7 +31,7 @@ const diversePaths = [
 	'tpsf.utenFastBopel',
 	'tpsf.erForsvunnet',
 	'tpsf.harBankkontonr',
-	'tpsf.telefonnummer_1'
+	'tpsf.telefonnummer_1',
 ]
 
 const vergemaalPath = ['tpsf.vergemaal']

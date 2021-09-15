@@ -5,7 +5,6 @@ import SearchContainer from '~/components/SearchContainer'
 import SearchOptions from './SearchOptions'
 import PersonSearch from '~/service/services/personsearch'
 import SearchView from '~/pages/testnorgePage/SearchView'
-import _get from 'lodash'
 import { Person } from '~/service/services/personsearch/types'
 
 export default () => {
@@ -18,25 +17,25 @@ export default () => {
 		PersonSearch.search({
 			pageing: {
 				page: page,
-				pageSize: pageSize
+				pageSize: pageSize,
 			},
 			kjoenn: values?.personinformasjon?.diverse?.kjoenn,
 			foedsel: {
 				fom: values?.personinformasjon?.alder?.foedselsdato?.fom,
-				tom: values?.personinformasjon?.alder?.foedselsdato?.tom
+				tom: values?.personinformasjon?.alder?.foedselsdato?.tom,
 			},
 			statsborgerskap: {
-				land: values?.personinformasjon?.statsborgerskap?.land
+				land: values?.personinformasjon?.statsborgerskap?.land,
 			},
 			sivilstand: {
-				type: values?.personinformasjon?.sivilstand?.type
+				type: values?.personinformasjon?.sivilstand?.type,
 			},
 			alder: {
 				fra: values?.personinformasjon?.alder?.fra,
-				til: values?.personinformasjon?.alder?.til
+				til: values?.personinformasjon?.alder?.til,
 			},
-			tag: 'TESTNORGE'
-		}).then(response => {
+			tag: 'TESTNORGE',
+		}).then((response) => {
 			setPage(page)
 			setItems(response.items)
 			setNumberOfItems(response.numerOfItems)
@@ -70,10 +69,10 @@ export default () => {
 								items={items}
 								pageing={{
 									pageSize: pageSize,
-									page: page
+									page: page,
 								}}
 								numberOfItems={numberOfItems}
-								onChange={page => search(page, values)}
+								onChange={(page) => search(page, values)}
 							/>
 						}
 						onSubmit={handleSubmit}

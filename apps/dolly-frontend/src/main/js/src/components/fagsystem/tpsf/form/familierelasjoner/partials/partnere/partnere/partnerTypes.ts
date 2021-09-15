@@ -1,5 +1,5 @@
 export enum Relasjonstyper {
-	Partner = 'PARTNER'
+	Partner = 'PARTNER',
 }
 
 export type Partner = {

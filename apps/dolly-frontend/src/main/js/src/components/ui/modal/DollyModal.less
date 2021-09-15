@@ -1,47 +1,67 @@
 .ReactModal__Overlay {
-	z-index: 9;
+  z-index: 9;
+  position: fixed;
+  inset: 0;
+  background: hsl(0deg 0% 0% / 75%);
 }
 
 .ReactModal__Content {
-	max-width: 800px;
+  max-width: 800px;
+  position: absolute;
+  inset: 50% auto auto 50%;
+  border: 1px solid hsl(0deg 0% 80%);
+  background: hsl(0deg 0% 100%);
+  overflow: auto;
+  border-radius: 4px;
+  outline: none;
+  padding: 20px;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  min-width: 500px;
+  max-height: 80%;
 }
 
 .ReactModal__Body {
-	overflow: auto;
+  overflow: auto;
 }
 
 .dollymodal {
-	position: relative;
+  position: relative;
 
-	h1 {
-		font-size: 2em;
-		margin: 0;
-		padding-bottom: 20px;
-		border-bottom: 1px solid #ccc;
-	}
-	.lukknapp {
-		position: absolute;
-		right: 0;
-		top: 0;
-		z-index: 1;
-	}
+  h1 {
+    font-size: 2em;
+    margin: 0;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #ccc;
+  }
 
-	&_buttons {
-		display: flex;
-		justify-content: flex-end;
-		padding: 20px 0 0;
+  .lukknapp {
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 1;
+  }
 
-		&--center {
-			justify-content: center;
-		}
-		button {
-			margin: 0 10px;
-		}
-	}
-	.feilcontainer {
-		margin: 10px 0 15px 0;
-	}
-	.feilmelding {
-		margin: 0 0 0 0;
-	}
+  &_buttons {
+    display: flex;
+    justify-content: flex-end;
+    padding: 20px 0 0;
+
+    &--center {
+      justify-content: center;
+    }
+
+    button {
+      margin: 0 10px;
+    }
+  }
+
+  .feilcontainer {
+    margin: 10px 0 15px 0;
+  }
+
+  .feilmelding {
+    margin: 0 0 0 0;
+  }
 }
