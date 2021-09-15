@@ -10,32 +10,32 @@ import Halloween from '~/pages/loginPage/backgrounds/Halloween.svg'
 import Snowing from '~/pages/loginPage/backgrounds/Snowing.svg'
 
 export const SummerBackground = styled.div`
-    background-image: url(data:image/svg+xml;base64,${btoa(Summer)});
-    background-size: 100% auto;
-    background-repeat: no-repeat;
-    background-position: bottom;
-    background-color: #CCE4EE;
+	background-image: url(data:image/svg+xml;base64,${btoa(Summer)});
+	background-size: 100% auto;
+	background-repeat: no-repeat;
+	background-position: bottom;
+	background-color: #cce4ee;
 `
 
 export const ChristmasBackground = styled.div`
-    background-image: url(data:image/svg+xml;base64,${btoa(Christmas)});
-    background-size: 100% auto;
-    background-repeat: no-repeat;
-    background-position: bottom;
-    background-color: #005077;
+	background-image: url(data:image/svg+xml;base64,${btoa(Christmas)});
+	background-size: 100% auto;
+	background-repeat: no-repeat;
+	background-position: bottom;
+	background-color: #005077;
 `
 
 export const SnowingBackground = styled.div`
-    background-image: url(data:image/svg+xml;base64,${btoa(Snowing)});
-    background-size: cover;
-    background-position: bottom;
-    background-color: #005077;
+	background-image: url(data:image/svg+xml;base64,${btoa(Snowing)});
+	background-size: cover;
+	background-position: bottom;
+	background-color: #005077;
 `
 
 export const HalloweenBackground = styled.div`
-    background-image: url(data:image/svg+xml;base64,${btoa(Halloween)});
-    background-size: 100% auto;
-    background-repeat: no-repeat;
-    background-position: bottom;
-    background-color: #C0B2D2;
+	background-image: url(data:image/svg+xml;base64,${btoa(Halloween)});
+	background-size: 100% auto;
+	background-repeat: no-repeat;
+	background-position: bottom;
+	background-color: #c0b2d2;
 `

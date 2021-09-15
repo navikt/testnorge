@@ -14,9 +14,9 @@ const LoginPage = () => {
 				</li>
 				<li>
 					<button
-						onClick={e => {
+						onClick={(e) => {
 							e.preventDefault()
-							Api.fetch('/logout', { method: 'POST' }).then(response => {
+							Api.fetch('/logout', { method: 'POST' }).then((response) => {
 								if (response.redirected) {
 									window.location.href = response.url
 								}
