@@ -16,8 +16,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -29,9 +32,9 @@ public class PersonController {
     private final PdlOrdreService pdlOrdreService;
 
     @ResponseBody
-    @GetMapping(value = "/{ident}")
+    @GetMapping
     @Operation(description = "Hent person")
-    public FullPersonDTO getPerson(@PathVariable String ident) {
+    public List<FullPersonDTO> getPerson(@RequestParam List<String> ident) {
 
         return personService.getPerson(ident);
     }

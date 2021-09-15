@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.IdentPoolConsumer;
 import no.nav.pdl.forvalter.consumer.PdlTestdataConsumer;
+import no.nav.pdl.forvalter.database.model.DbAlias;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.AliasRepository;
@@ -28,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -108,20 +110,19 @@ public class PersonService {
     }
 
     @Transactional(readOnly = true)
-    public FullPersonDTO getPerson(String ident) {
+    public List<FullPersonDTO> getPerson(List<String> identer) {
 
-        var aliasPerson = aliasRepository.findByTidligereIdent(ident);
-        if (aliasPerson.isPresent()) {
-            return mapperFacade.map(aliasPerson.get().getPerson(), FullPersonDTO.class);
-        } else {
-            return mapperFacade.map(getDbPerson(ident), FullPersonDTO.class);
-        }
-    }
+        var query = new HashSet<>(identer);
+        var aliaser = aliasRepository.findByTidligereIdentIn(identer);
+        query.addAll(aliaser.stream()
+                        .map(DbAlias::getPerson)
+                .map(DbPerson::getIdent)
+                        .collect(Collectors.toSet()));
+        query.removeAll(aliaser.stream()
+                .map(DbAlias::getTidligereIdent)
+                .collect(Collectors.toSet()));
 
-    private DbPerson getDbPerson(String ident) {
-
-        return personRepository.findByIdent(ident)
-                .orElseThrow(() -> new NotFoundException(format("Ident %s ble ikke funnet", ident)));
+        return mapperFacade.mapAsList(personRepository.findByIdentIn(query), FullPersonDTO.class);
     }
 
     private void checkAlias(String ident) {
