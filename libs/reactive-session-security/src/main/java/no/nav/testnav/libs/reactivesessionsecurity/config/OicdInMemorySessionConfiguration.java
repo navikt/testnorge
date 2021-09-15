@@ -1,20 +1,25 @@
 package no.nav.testnav.libs.reactivesessionsecurity.config;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.session.SessionProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.session.ReactiveMapSessionRepository;
 import org.springframework.session.ReactiveSessionRepository;
 import org.springframework.session.config.annotation.web.server.EnableSpringWebSession;
 
+import java.time.Duration;
 import java.util.concurrent.ConcurrentHashMap;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.AzureAdTokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenXExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.ClientRegistrationIdResolver;
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.InMemoryTokenResolver;
 
+@Slf4j
 @EnableSpringWebSession
 @Import({
         InMemoryTokenResolver.class,
@@ -22,11 +27,21 @@ import no.nav.testnav.libs.reactivesessionsecurity.resolver.InMemoryTokenResolve
         TokenXExchange.class,
         ClientRegistrationIdResolver.class
 })
+@RequiredArgsConstructor
 public class OicdInMemorySessionConfiguration {
+
+    private final SessionProperties sessionProperties;
 
     @Bean
     public ReactiveSessionRepository reactiveSessionRepository() {
-        return new ReactiveMapSessionRepository(new ConcurrentHashMap<>());
+        ReactiveMapSessionRepository sessionRepository = new ReactiveMapSessionRepository(new ConcurrentHashMap<>());
+        int defaultMaxInactiveInterval = (int) (sessionProperties.getTimeout() == null
+                ? Duration.ofMinutes(30)
+                : sessionProperties.getTimeout()
+        ).toSeconds();
+        sessionRepository.setDefaultMaxInactiveInterval(defaultMaxInactiveInterval);
+        log.info("Set in-memory session defaultMaxInactiveInterval to {} seconds.", defaultMaxInactiveInterval);
+        return sessionRepository;
     }
 
     @Bean

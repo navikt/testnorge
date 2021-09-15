@@ -1,6 +1,8 @@
 server:
   port: 8020
 
+
+
 azure.app.client.id: ${client_id}
 azure.app.client.secret: ${client_secret}
 
@@ -14,6 +16,8 @@ TPS_FORVALTERN_PROXY_URL: https://tps-forvalteren-dev.dev.adeo.no
 POST_LOGOUT_REDIRECT_URI: 'http://localhost:3000/login'
 
 spring:
+  session:
+    timeout: 30m
   redis:
     host: localhost
     port: 6379
