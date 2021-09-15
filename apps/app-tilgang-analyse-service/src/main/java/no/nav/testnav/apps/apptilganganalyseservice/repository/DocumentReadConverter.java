@@ -31,8 +31,10 @@ public class DocumentReadConverter implements Converter<Row, DocumentEntity> {
      * TODO: Bruker en HACK for å hente ut stream av strings fra Flux.
      */
     private static String clobToString(Row row, String name) {
+        if (row.get(name) instanceof String) {
+            return (String) row.get(name);
+        }
         var publisher = (Flux<CharSequence>) ((Clob) row.get(name)).stream();
         return String.join("", TreadUtil.Instance().resolve(publisher));
     }
 }
-
