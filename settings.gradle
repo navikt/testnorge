@@ -90,6 +90,7 @@ includeBuild './apps/orkestratoren'
 includeBuild './apps/jenkins-batch-status-service'
 includeBuild './apps/organisasjon-bestilling-service'
 includeBuild './apps/testnorge-inntekt'
+includeBuild './apps/app-tilgang-analyse-service'
 
 includeBuild './xsd/arbeidsforhold-xsd'
 
