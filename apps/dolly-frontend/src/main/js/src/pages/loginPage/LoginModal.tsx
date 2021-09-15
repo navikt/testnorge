@@ -23,7 +23,7 @@ export default () => {
 					testdataene i valgte testmiljøer.
 				</h3>
 				<NavButton className="login-modal_button-nav" type="hoved" onClick={handleNavClick}>
-					Logg inn med NAV-epost
+					Logg inn med NAV epost
 				</NavButton>
 				<NavButton
 					className="login-modal_button-bankid"
