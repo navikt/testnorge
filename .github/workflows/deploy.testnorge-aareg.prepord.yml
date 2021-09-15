@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Gradle cache
-        uses: actions/cache@v2
+        uses: actions/cache@v2222
         with:
           path: |
             ~/.gradle
