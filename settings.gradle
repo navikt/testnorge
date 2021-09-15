@@ -89,6 +89,7 @@ includeBuild './apps/import-person-service'
 includeBuild './apps/orkestratoren'
 includeBuild './apps/jenkins-batch-status-service'
 includeBuild './apps/organisasjon-bestilling-service'
+includeBuild './apps/geografiske-kodeverk-service'
 includeBuild './apps/testnorge-inntekt'
 
 includeBuild './xsd/arbeidsforhold-xsd'

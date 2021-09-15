@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.organisasjonforvalter.consumer.OrganisasjonBestillingConsumer;
 import no.nav.organisasjonforvalter.dto.responses.BestillingStatus;
 import no.nav.organisasjonforvalter.dto.responses.OrdreResponse;
-import no.nav.organisasjonforvalter.dto.responses.OrdreResponse.EnvStatus;
+import no.nav.organisasjonforvalter.dto.responses.OrdreResponse.StatusEnv;
 import no.nav.organisasjonforvalter.dto.responses.StatusDTO;
 import no.nav.organisasjonforvalter.jpa.repository.StatusRepository;
 import org.apache.commons.lang3.StringUtils;
@@ -75,9 +75,9 @@ public class OrdreStatusService {
                 .orgStatus((nonNull(orgStatus) ? orgStatus : new ArrayList<BestillingStatus>())
                         .stream()
                         .collect(Collectors.groupingBy(BestillingStatus::getOrgnummer,
-                                mapping(status -> EnvStatus.builder()
+                                mapping(status -> StatusEnv.builder()
                                                 .status(nonNull(status.getStatus()) ?
-                                                        status.getStatus().getStatus().toString() : null)
+                                                        status.getStatus().getStatus() : null)
                                                 .details(nonNull(status.getStatus()) ?
                                                         status.getStatus().getDescription() : null)
                                                 .environment(status.getMiljoe())
