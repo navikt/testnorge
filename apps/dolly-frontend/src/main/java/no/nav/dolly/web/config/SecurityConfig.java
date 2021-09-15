@@ -27,7 +27,8 @@ public class SecurityConfig {
                         "/favicon.ico",
                         "/login",
                         "/main.*.css",
-                        "/bundle.*.js"
+                        "/bundle.*.js",
+                        "/*.png"
                 ).permitAll()
                 .anyExchange().authenticated()
                 .and().oauth2Login()
