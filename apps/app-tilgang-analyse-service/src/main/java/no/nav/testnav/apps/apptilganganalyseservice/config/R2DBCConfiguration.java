@@ -1,6 +1,5 @@
 package no.nav.testnav.apps.apptilganganalyseservice.config;
 
-import io.r2dbc.h2.H2ConnectionConfiguration;
 import io.r2dbc.h2.H2ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactory;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,7 @@ import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 
 import java.util.ArrayList;
 
-import no.nav.testnav.apps.apptilganganalyseservice.repository.ApplicationReadConverter;
+import no.nav.testnav.apps.apptilganganalyseservice.repository.DocumentReadConverter;
 
 @Configuration
 @EnableR2dbcAuditing
@@ -48,7 +47,7 @@ class R2DBCConfiguration extends AbstractR2dbcConfiguration {
     @Override
     public R2dbcCustomConversions r2dbcCustomConversions() {
         var converterList = new ArrayList<Converter<?, ?>>();
-        converterList.add(new ApplicationReadConverter());
+        converterList.add(new DocumentReadConverter());
         return new R2dbcCustomConversions(getStoreConversions(), converterList);
     }
 

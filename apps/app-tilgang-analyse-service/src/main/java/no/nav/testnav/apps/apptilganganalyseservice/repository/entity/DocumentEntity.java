@@ -12,13 +12,15 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
 
+import no.nav.testnav.apps.apptilganganalyseservice.domain.DocumentType;
 
-@Table("APPLICATION_ENTITY")
+
+@Table("DOCUMENT_ENTITY")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ApplicationEntity implements Persistable<String> {
+public class DocumentEntity implements Persistable<String> {
 
     @Id
     @Column("SHA")
@@ -29,6 +31,15 @@ public class ApplicationEntity implements Persistable<String> {
 
     @Column("REPO")
     private String repo;
+
+    @Column("OWNER")
+    private String owner;
+
+    @Column("TYPE")
+    private DocumentType type;
+
+    @Column("PATH")
+    private String path;
 
     @CreatedDate
     @Column("CREATED_AT")

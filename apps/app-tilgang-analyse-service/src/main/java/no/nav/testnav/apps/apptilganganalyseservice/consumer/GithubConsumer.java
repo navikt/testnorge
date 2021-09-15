@@ -6,8 +6,6 @@ import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import java.time.Duration;
-
 import no.nav.testnav.apps.apptilganganalyseservice.consumer.command.GetBlobFromShaCommand;
 import no.nav.testnav.apps.apptilganganalyseservice.consumer.command.SearchCodeCommand;
 import no.nav.testnav.apps.apptilganganalyseservice.domain.SearchArgs;
@@ -31,13 +29,8 @@ public class GithubConsumer {
                 .build();
     }
 
-    public Mono<SearchResults> search(SearchArgs args, String repo) {
-        return search(new SearchResults(repo), args, 1)
-                .cache(
-                        value -> Duration.ofMinutes(1),
-                        throwable -> Duration.ZERO,
-                        () -> Duration.ZERO
-                );
+    public Mono<SearchResults> search(SearchArgs args, String owner, String repo) {
+        return search(new SearchResults(repo, owner), args, 1);
     }
 
     private Mono<SearchResults> search(SearchResults results, SearchArgs args, Integer page) {
@@ -50,7 +43,7 @@ public class GithubConsumer {
         });
     }
 
-    public Mono<byte[]> getBlobFromSha(String sha, String repo) {
-        return new GetBlobFromShaCommand(webClient, sha, repo).call();
+    public Mono<byte[]> getBlobFromSha(String sha,String owner, String repo) {
+        return new GetBlobFromShaCommand(webClient, sha, owner, repo).call();
     }
 }

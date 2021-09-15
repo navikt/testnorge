@@ -12,4 +12,5 @@ import lombok.Value;
 public class ItemDTO {
     String name;
     String sha;
+    String path;
 }

@@ -22,10 +22,11 @@ public class TilgangAnalyseController {
     @GetMapping("/{name}/access")
     public Mono<AccessDTO> app(
             @PathVariable String name,
+            @RequestParam String owner,
             @RequestParam String repo
     ) {
         return tilgangService
-                .fetchAccessBy(name, repo)
+                .fetchAccessBy(name, owner, repo)
                 .map(Access::toDTO);
     }
 

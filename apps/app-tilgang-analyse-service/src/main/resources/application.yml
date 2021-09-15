@@ -1,6 +1,9 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
 spring:
+  cloud:
+    vault:
+      enabled: false
   application:
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     name: testnav-app-tilgang-analyse-service

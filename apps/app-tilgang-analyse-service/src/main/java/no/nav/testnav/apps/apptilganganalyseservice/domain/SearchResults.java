@@ -15,29 +15,33 @@ import no.nav.testnav.apps.apptilganganalyseservice.consumer.dto.SearchDTO;
 @AllArgsConstructor
 public class SearchResults {
     String repo;
-    List<String> sha;
+    String owner;
+    List<ItemResult> items;
 
-    public SearchResults(String repo) {
+    public SearchResults(String repo, String owner) {
         this.repo = repo;
-        this.sha = new ArrayList<>();
+        this.owner = owner;
+        this.items = new ArrayList<>();
     }
 
-    public SearchResults(SearchDTO dto, String repo) {
+    public SearchResults(SearchDTO dto, String repo, String owner) {
         this.repo = repo;
-        this.sha = dto.getItems()
+        this.owner = owner;
+        this.items = dto.getItems()
                 .stream()
-                .map(ItemDTO::getSha)
+                .map(ItemResult::new)
                 .collect(Collectors.toList());
     }
 
     public SearchResults concat(SearchResults results) {
         return new SearchResults(
                 repo,
-                Stream.concat(sha.stream(), results.getSha().stream()).collect(Collectors.toList())
+                owner,
+                Stream.concat(items.stream(), results.getItems().stream()).collect(Collectors.toList())
         );
     }
 
     public SearchResults concat(SearchDTO dto) {
-        return concat(new SearchResults(dto, repo));
+        return concat(new SearchResults(dto, repo, owner));
     }
 }

@@ -9,12 +9,13 @@ import no.nav.testnav.apps.apptilganganalyseservice.domain.Access;
 @Service
 @RequiredArgsConstructor
 public class TilgangService {
-    private final ApplicationService applicationService;
+    private final ReadApplicationConfigService readApplicationConfigService;
+    private final ReadDeployConfigService readDeployConfigService;
 
-    public Mono<Access> fetchAccessBy(String appName, String repo) {
-        return applicationService
-                .fetchAppsBy(appName, repo)
-                .collectList()
-                .map(list -> new Access(appName, list));
+    public Mono<Access> fetchAccessBy(String appName, String owner, String repo) {
+        return Mono.zip(
+                readApplicationConfigService.getConfigBy(appName, owner, repo).collectList(),
+                readDeployConfigService.getConfigBy(owner, repo).collectList()
+        ).map(zipped -> new Access(appName, zipped.getT1(), zipped.getT2()));
     }
 }

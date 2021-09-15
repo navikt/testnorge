@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 public class SearchArgs {
 
     private final List<String> strings;
+    private final String owner;
     private final String repo;
     private final List<String> language;
 
@@ -23,13 +24,14 @@ public class SearchArgs {
                 .map(value -> "language:" + value)
                 .collect(Collectors.joining("+"));
 
-        return searchTexts + "+in:file+" + languages + "+repo:" + repo;
+        return searchTexts + "+in:file+" + languages + "+repo:" + owner + "/" + repo;
     }
 
     public static class Builder {
         private List<String> strings;
         private List<String> language;
         private String repo;
+        private String owner;
 
         private Builder() {
             strings = new ArrayList<>();
@@ -45,6 +47,11 @@ public class SearchArgs {
             return this;
         }
 
+        public Builder owner(String owner) {
+            this.owner = owner;
+            return this;
+        }
+
         public Builder addSearchString(String string) {
             this.strings.add(string);
             return this;
@@ -56,7 +63,7 @@ public class SearchArgs {
         }
 
         public SearchArgs build() {
-            return new SearchArgs(strings, repo, language);
+            return new SearchArgs(strings, owner, repo, language);
         }
     }
 }
