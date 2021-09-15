@@ -25,7 +25,7 @@ public class OrdreResponse {
     public static class StatusEnv {
 
         private String environment;
-        private String status;
+        private StatusDTO.Status status;
         private String details;
         private String error;
     }
