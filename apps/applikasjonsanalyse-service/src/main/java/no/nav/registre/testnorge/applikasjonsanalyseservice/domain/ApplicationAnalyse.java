@@ -17,7 +17,21 @@ import no.nav.testnav.libs.dto.dependencyanalysis.v1.DependencyDTO;
 public class ApplicationAnalyse {
     private final KindApplikasjon kindApplikasjon;
 
-
+    @SneakyThrows
+    public ApplicationAnalyse(String content) {
+        try {
+            String value = content
+                    .replace("{{ image }}", "unknown")
+                    .replace("{{image}}", "unknown");
+            this.kindApplikasjon = YAMLUtil.Instance().read(
+                    value,
+                    KindApplikasjon.class
+            );
+        } catch (Exception e) {
+            log.error("Klarer ikke å convertere til yaml. Data: \n{}", content);
+            throw e;
+        }
+    }
 
     public String getName() {
         return kindApplikasjon.getMetadata().getName();

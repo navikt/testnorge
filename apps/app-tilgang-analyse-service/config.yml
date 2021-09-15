@@ -24,7 +24,7 @@ spec:
         - host: api.github.com
   gcp:
     sqlInstances:
-      - type: POSTGRES_13
+      - type: POSTGRES_12
         databases:
           - name: testnav-app-tilgang-analyse-service-db
   liveness:
