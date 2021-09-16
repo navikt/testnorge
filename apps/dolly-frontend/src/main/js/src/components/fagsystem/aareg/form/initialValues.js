@@ -25,7 +25,7 @@ export const initialForenkletOppgjoersordningOrg = {
 		orgnummer: '',
 	},
 	ansettelsesPeriode: {
-		fom: subYears(new Date(), 20),
+		fom: subYears(new Date().setHours(0, 0, 0, 0), 20),
 		tom: null,
 		sluttaarsak: null,
 	},
@@ -40,7 +40,7 @@ export const initialForenkletOppgjoersordningPers = {
 		ident: '',
 	},
 	ansettelsesPeriode: {
-		fom: subYears(new Date(), 20),
+		fom: subYears(new Date().setHours(0, 0, 0, 0), 20),
 		tom: null,
 		sluttaarsak: null,
 	},
@@ -56,7 +56,7 @@ export const initialArbeidsforholdOrg = {
 	},
 	arbeidsforholdID: '',
 	ansettelsesPeriode: {
-		fom: subYears(new Date(), 20),
+		fom: subYears(new Date().setHours(0, 0, 0, 0), 20),
 		tom: null,
 		sluttaarsak: null,
 	},
@@ -78,7 +78,7 @@ export const initialArbeidsforholdPers = {
 	},
 	arbeidsforholdID: '',
 	ansettelsesPeriode: {
-		fom: subYears(new Date(), 20),
+		fom: subYears(new Date().setHours(0, 0, 0, 0), 20),
 		tom: null,
 		sluttaarsak: null,
 	},
