@@ -6,10 +6,12 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import no.nav.testnav.apps.oversiktfrontend.consumer.command.GetApplicationAccessCommand;
 import no.nav.testnav.apps.oversiktfrontend.credentials.AppTilgangAnalyseServiceProperties;
+import no.nav.testnav.libs.reactivesessionsecurity.domain.AccessToken;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 
 @Slf4j
@@ -29,14 +31,25 @@ public class AppTilgangAnalyseConsumer {
     }
 
     public Flux<String> getScopes(ServerWebExchange serverWebExchange) {
+        return Flux.concat(
+                getScopes(serverWebExchange, getCommand("dolly-backend")),
+                getScopes(serverWebExchange, getCommand("testnorge"))
+        );
+    }
+
+    public Flux<String> getScopes(ServerWebExchange serverWebExchange, Function<AccessToken, GetApplicationAccessCommand> getCommand) {
         return tokenExchange
                 .generateToken(appTilgangAnalyseServiceProperties, serverWebExchange)
-                .flatMap(accessToken -> new GetApplicationAccessCommand(webClient, accessToken.getTokenValue(), "testnav-oversikt-frontend", "testnorge").call())
+                .flatMap(accessToken -> getCommand.apply(accessToken).call())
                 .map(access -> access
                         .getAccessTo()
                         .stream()
                         .map(application -> application.getCluster() + "." + application.getNamespace() + "." + application.getName())
                         .collect(Collectors.toList())
                 ).flatMapMany(Flux::fromIterable);
+    }
+
+    public Function<AccessToken, GetApplicationAccessCommand> getCommand(String repo) {
+        return (accessToken -> new GetApplicationAccessCommand(webClient, accessToken.getTokenValue(), "testnav-oversikt-frontend", repo));
     }
 }

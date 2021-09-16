@@ -51,7 +51,7 @@ public class ApplicationHandler {
     }
 
     public ServerProperties create(String scope) {
-        var parts = Arrays.stream(scope.split(".")).collect(Collectors.toList());
+        var parts = Arrays.stream(scope.split("\\.")).collect(Collectors.toList());
         return ServerProperties
                 .builder()
                 .cluster(parts.get(0))
