@@ -6,6 +6,8 @@ metadata:
     team: dolly
   name: dolly-dev-redis-session
   namespace: dolly
+  annotations:
+    nais.io/security-does-not-matter: "true"
 spec:
   image: redis:6.2.5
   port: 6379
@@ -69,6 +71,8 @@ metadata:
     team: dolly
   name: dolly-redis-session
   namespace: dolly
+  annotations:
+    nais.io/security-does-not-matter: "true"
 spec:
   image: redis:6.2.5
   port: 6379
