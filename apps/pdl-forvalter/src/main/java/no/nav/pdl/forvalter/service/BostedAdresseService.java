@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility.getIdenttype;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
@@ -67,7 +66,7 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
         }
         if (FNR == IdenttypeFraIdentUtility.getIdenttype(person.getIdent()) &&
                 STRENGT_FORTROLIG == person.getAdressebeskyttelse().stream()
-                .findFirst().orElse(new AdressebeskyttelseDTO()).getGradering()) {
+                        .findFirst().orElse(new AdressebeskyttelseDTO()).getGradering()) {
             throw new InvalidRequestException(VALIDATION_PROTECTED_ADDRESS);
         }
         if (DbVersjonDTO.Master.FREG == adresse.getMaster() && nonNull(adresse.getUtenlandskAdresse())) {
@@ -95,33 +94,31 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
             if (STRENGT_FORTROLIG == person.getAdressebeskyttelse().stream()
                     .findFirst().orElse(new AdressebeskyttelseDTO()).getGradering()) {
                 return;
-            }
 
-            if (bostedadresse.countAdresser() == 0) {
+            } else if (bostedadresse.countAdresser() == 0) {
                 bostedadresse.setVegadresse(new VegadresseDTO());
             }
 
-            if (nonNull(bostedadresse.getVegadresse())) {
-                var vegadresse =
-                        adresseServiceConsumer.getVegadresse(bostedadresse.getVegadresse(), bostedadresse.getAdresseIdentifikatorFraMatrikkelen());
-                bostedadresse.setAdresseIdentifikatorFraMatrikkelen(vegadresse.getMatrikkelId());
-                mapperFacade.map(vegadresse, bostedadresse.getVegadresse());
+        } else if (bostedadresse.countAdresser() == 0) {
 
-            } else if (nonNull(bostedadresse.getMatrikkeladresse())) {
-                var matrikkeladresse =
-                        adresseServiceConsumer.getMatrikkeladresse(bostedadresse.getMatrikkeladresse(), bostedadresse.getAdresseIdentifikatorFraMatrikkelen());
-                bostedadresse.setAdresseIdentifikatorFraMatrikkelen(matrikkeladresse.getMatrikkelId());
-                mapperFacade.map(matrikkeladresse, bostedadresse.getMatrikkeladresse());
-            }
+            bostedadresse.setUtenlandskAdresse(new UtenlandskAdresseDTO());
+        }
 
-        } else {
-            bostedadresse.setVegadresse(null);
-            bostedadresse.setMatrikkeladresse(null);
+        if (nonNull(bostedadresse.getVegadresse())) {
+            var vegadresse =
+                    adresseServiceConsumer.getVegadresse(bostedadresse.getVegadresse(), bostedadresse.getAdresseIdentifikatorFraMatrikkelen());
+            bostedadresse.setAdresseIdentifikatorFraMatrikkelen(vegadresse.getMatrikkelId());
+            mapperFacade.map(vegadresse, bostedadresse.getVegadresse());
+
+        } else if (nonNull(bostedadresse.getMatrikkeladresse())) {
+            var matrikkeladresse =
+                    adresseServiceConsumer.getMatrikkeladresse(bostedadresse.getMatrikkeladresse(), bostedadresse.getAdresseIdentifikatorFraMatrikkelen());
+            bostedadresse.setAdresseIdentifikatorFraMatrikkelen(matrikkeladresse.getMatrikkelId());
+            mapperFacade.map(matrikkeladresse, bostedadresse.getMatrikkeladresse());
+
+        } else if (nonNull(bostedadresse.getUtenlandskAdresse())) {
+
             bostedadresse.setMaster(DbVersjonDTO.Master.PDL);
-            if (isNull(bostedadresse.getUtenlandskAdresse())) {
-                bostedadresse.setUtenlandskAdresse(new UtenlandskAdresseDTO());
-            }
-
             if (isBlank(bostedadresse.getUtenlandskAdresse().getAdressenavnNummer())) {
                 bostedadresse.setUtenlandskAdresse(
                         dummyAdresseService.getUtenlandskAdresse(

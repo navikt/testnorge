@@ -10,6 +10,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
 
@@ -97,14 +98,18 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
 
     private void handle(KontaktadresseDTO kontaktadresse, PersonDTO person) {
 
-        if (FNR == IdenttypeFraIdentUtility.getIdenttype(person.getIdent()) &&
-                STRENGT_FORTROLIG == person.getAdressebeskyttelse().stream()
-                        .findFirst().orElse(new AdressebeskyttelseDTO()).getGradering()) {
-            return;
-        }
+        if (FNR == IdenttypeFraIdentUtility.getIdenttype(person.getIdent())) {
 
-        if (kontaktadresse.countAdresser() == 0) {
-            kontaktadresse.setVegadresse(new VegadresseDTO());
+            if (STRENGT_FORTROLIG == person.getAdressebeskyttelse().stream()
+                    .findFirst().orElse(new AdressebeskyttelseDTO()).getGradering()) {
+                return;
+
+            } else if (kontaktadresse.countAdresser() == 0) {
+                kontaktadresse.setVegadresse(new VegadresseDTO());
+            }
+
+        } else if (kontaktadresse.countAdresser() == 0) {
+            kontaktadresse.setUtenlandskAdresse(new UtenlandskAdresseDTO());
         }
 
         if (nonNull(kontaktadresse.getVegadresse())) {
@@ -112,9 +117,8 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
                     adresseServiceConsumer.getVegadresse(kontaktadresse.getVegadresse(), kontaktadresse.getAdresseIdentifikatorFraMatrikkelen());
             kontaktadresse.setAdresseIdentifikatorFraMatrikkelen(vegadresse.getMatrikkelId());
             mapperFacade.map(vegadresse, kontaktadresse.getVegadresse());
-        }
 
-        if (nonNull(kontaktadresse.getUtenlandskAdresse()) &&
+        } else if (nonNull(kontaktadresse.getUtenlandskAdresse()) &&
                 isBlank(kontaktadresse.getUtenlandskAdresse().getAdressenavnNummer())) {
             kontaktadresse.setUtenlandskAdresse(
                     dummyAdresseService.getUtenlandskAdresse(

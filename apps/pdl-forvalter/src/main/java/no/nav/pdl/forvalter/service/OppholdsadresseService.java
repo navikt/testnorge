@@ -10,6 +10,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdsadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
 
@@ -95,14 +96,19 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
 
     protected void handle(OppholdsadresseDTO oppholdsadresse, PersonDTO person) {
 
-        if (FNR == IdenttypeFraIdentUtility.getIdenttype(person.getIdent()) &&
-                STRENGT_FORTROLIG == person.getAdressebeskyttelse().stream()
-                        .findFirst().orElse(new AdressebeskyttelseDTO()).getGradering()) {
-            return;
-        }
+        if (FNR == IdenttypeFraIdentUtility.getIdenttype(person.getIdent())) {
 
-        if (oppholdsadresse.countAdresser() == 0) {
-            oppholdsadresse.setVegadresse(new VegadresseDTO());
+            if (STRENGT_FORTROLIG == person.getAdressebeskyttelse().stream()
+                    .findFirst().orElse(new AdressebeskyttelseDTO()).getGradering()) {
+
+                return;
+
+            } else if (oppholdsadresse.countAdresser() == 0) {
+                oppholdsadresse.setVegadresse(new VegadresseDTO());
+            }
+
+        } else if (oppholdsadresse.countAdresser() == 0) {
+            oppholdsadresse.setUtenlandskAdresse(new UtenlandskAdresseDTO());
         }
 
         if (nonNull(oppholdsadresse.getVegadresse())) {
@@ -116,9 +122,8 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
                     adresseServiceConsumer.getMatrikkeladresse(oppholdsadresse.getMatrikkeladresse(), oppholdsadresse.getAdresseIdentifikatorFraMatrikkelen());
             oppholdsadresse.setAdresseIdentifikatorFraMatrikkelen(matrikkeladresse.getMatrikkelId());
             mapperFacade.map(matrikkeladresse, oppholdsadresse.getMatrikkeladresse());
-        }
 
-        if (nonNull(oppholdsadresse.getUtenlandskAdresse()) &&
+        } else if (nonNull(oppholdsadresse.getUtenlandskAdresse()) &&
                 isBlank(oppholdsadresse.getUtenlandskAdresse().getAdressenavnNummer())) {
             oppholdsadresse.setUtenlandskAdresse(
                     dummyAdresseService.getUtenlandskAdresse(

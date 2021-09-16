@@ -26,7 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ExtendWith(MockitoExtension.class)
 class AdressebeskyttelseServiceTest {
 
-    private static final String FNR_IDENT = "12044512345";
     private static final String DNR_IDENT = "45027812345";
 
     @InjectMocks
