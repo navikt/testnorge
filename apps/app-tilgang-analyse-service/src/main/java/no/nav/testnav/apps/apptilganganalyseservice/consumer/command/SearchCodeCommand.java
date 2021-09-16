@@ -21,7 +21,6 @@ public class SearchCodeCommand implements Callable<Mono<SearchDTO>> {
 
     @Override
     public Mono<SearchDTO> call() {
-        log.info("Søk: {}", search);
         return webClient
                 .get()
                 .uri(builder -> builder

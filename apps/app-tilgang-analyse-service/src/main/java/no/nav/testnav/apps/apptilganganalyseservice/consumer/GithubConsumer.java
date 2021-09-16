@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.apptilganganalyseservice.consumer;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
@@ -11,7 +12,7 @@ import no.nav.testnav.apps.apptilganganalyseservice.consumer.command.SearchCodeC
 import no.nav.testnav.apps.apptilganganalyseservice.domain.SearchArgs;
 import no.nav.testnav.apps.apptilganganalyseservice.domain.SearchResults;
 
-
+@Slf4j
 @Component
 public class GithubConsumer {
     private final WebClient webClient;
@@ -30,7 +31,9 @@ public class GithubConsumer {
     }
 
     public Mono<SearchResults> search(SearchArgs args, String owner, String repo) {
-        return search(new SearchResults(repo, owner), args, 1);
+        log.info("Søker etter '{}'.", args.toString());
+        return search(new SearchResults(repo, owner), args, 1)
+                .doOnNext(value -> log.info("Fant {} (søk='{}').", value.getItems().size(), args));
     }
 
     private Mono<SearchResults> search(SearchResults results, SearchArgs args, Integer page) {
