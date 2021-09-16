@@ -13,7 +13,6 @@ import no.nav.testnav.apps.apptilganganalyseservice.domain.SearchResults;
 import no.nav.testnav.apps.apptilganganalyseservice.repository.DocumentRepository;
 import no.nav.testnav.apps.apptilganganalyseservice.repository.entity.DocumentEntity;
 
-
 @AllArgsConstructor
 abstract class ReadConfigService {
     final GithubConsumer githubConsumer;
@@ -29,7 +28,7 @@ abstract class ReadConfigService {
                                 .builder()
                                 .sha(item.getSha())
                                 .content(content)
-                                .type(DocumentType.APPLICATION_V1)
+                                .type(getType())
                                 .repo(repo)
                                 .owner(owner)
                                 .path(item.getPath())
@@ -47,5 +46,7 @@ abstract class ReadConfigService {
                         .collect(Collectors.toList())
         );
     }
+
+    abstract DocumentType getType();
 
 }

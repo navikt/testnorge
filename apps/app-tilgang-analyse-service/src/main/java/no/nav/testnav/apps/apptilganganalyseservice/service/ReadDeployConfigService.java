@@ -5,6 +5,7 @@ import reactor.core.publisher.Flux;
 
 import no.nav.testnav.apps.apptilganganalyseservice.consumer.GithubConsumer;
 import no.nav.testnav.apps.apptilganganalyseservice.domain.DeployConfig;
+import no.nav.testnav.apps.apptilganganalyseservice.domain.DocumentType;
 import no.nav.testnav.apps.apptilganganalyseservice.domain.SearchArgs;
 import no.nav.testnav.apps.apptilganganalyseservice.repository.DocumentRepository;
 
@@ -30,5 +31,10 @@ public class ReadDeployConfigService extends ReadConfigService {
         return githubConsumer.search(searchArgs, owner, repo)
                 .flatMapMany(this::resolve)
                 .map(DeployConfig::new);
+    }
+
+    @Override
+    DocumentType getType() {
+        return DocumentType.DEPLOY_V1;
     }
 }
