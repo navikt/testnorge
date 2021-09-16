@@ -1,6 +1,7 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 import Icon from '~/components/ui/icon/Icon'
+import Button from '~/components/ui/button/Button'
 // @ts-ignore
 import logo from '~/assets/img/nav-logo-hvit.png'
 // @ts-ignore
@@ -8,6 +9,7 @@ import dolly from '~/assets/favicon.ico'
 import './Header.less'
 import Logger from '~/logger'
 import { useLocation } from 'react-use'
+import Api from '~/api'
 
 type Props = {
 	brukerProfil: {
@@ -19,6 +21,8 @@ type Props = {
 
 export default ({ brukerProfil, brukerBilde }: Props) => {
 	const location = useLocation()
+
+	const logout = () => Api.fetch('/logout', { method: 'POST' }).then(() => window.location.reload())
 
 	return (
 		<header className="app-header">
@@ -59,15 +63,17 @@ export default ({ brukerProfil, brukerBilde }: Props) => {
 					API-dok
 				</a>
 			</div>
-
-			<div className="profil-area flexbox--all-center">
-				<NavLink to="/minside">
-					<img alt="Profilbilde" src={brukerBilde ? brukerBilde.url : dolly} />
-					<div className="profil-navn">
-						<p className="min-side">MIN SIDE</p>
-						<p>{brukerProfil && brukerProfil.visningsNavn}</p>
-					</div>
-				</NavLink>
+			<div className="flexbox--all-center">
+				<Button kind="logout" title="Logg ut" onClick={logout} />
+				<div className="profil-area flexbox--all-center">
+					<NavLink to="/minside">
+						<img alt="Profilbilde" src={brukerBilde ? brukerBilde.url : dolly} />
+						<div className="profil-navn">
+							<p className="min-side">MIN SIDE</p>
+							<p>{brukerProfil && brukerProfil.visningsNavn}</p>
+						</div>
+					</NavLink>
+				</div>
 			</div>
 		</header>
 	)
