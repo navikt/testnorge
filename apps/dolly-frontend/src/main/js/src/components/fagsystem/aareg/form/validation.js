@@ -83,7 +83,7 @@ const arbeidsgiver = Yup.object({
 })
 
 const arbeidsavtale = Yup.object({
-	yrke: fullArbeidsforholdTest(Yup.string()),
+	yrke: fullArbeidsforholdTest(requiredString),
 	ansettelsesform: Yup.string(),
 	stillingsprosent: fullArbeidsforholdTest(
 		Yup.number()
