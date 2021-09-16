@@ -8,7 +8,6 @@ const BestillingsveilederConnector = lazy(() =>
 )
 const MinSide = lazy(() => import('./pages/minSide/MinSideConnector'))
 const UI = lazy(() => import('./pages/ui/index'))
-const SoekMiniNorge = lazy(() => import('./pages/soekMiniNorge/SoekMiniNorge'))
 const SearchPage = lazy(() => import('./pages/searchPage'))
 
 const GruppeBreadcrumb = (props) => <span>Gruppe #{props.match.params.gruppeId}</span>
