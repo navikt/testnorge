@@ -61,9 +61,9 @@ public class CreatePersonService {
                 .statsborgerskap(List.of(StatsborgerskapDTO.builder()
                         .landkode(request.getStatsborgerskapLandkode())
                         .build()))
-                .adressebeskyttelse(List.of(AdressebeskyttelseDTO.builder()
+                .adressebeskyttelse(nonNull(request.getGradering()) ? List.of(AdressebeskyttelseDTO.builder()
                         .gradering(request.getGradering())
-                        .build()))
+                        .build()) : null)
                 .folkeregisterpersonstatus(
                         List.of(FolkeregisterpersonstatusDTO.builder().build()))
                 .build();
