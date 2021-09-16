@@ -21,12 +21,12 @@ export const GjenopprettModal = ({
 	environments,
 	submitFormik,
 	closeModal,
-	bestilling
+	bestilling,
 }: GjenopprettModal) => {
 	const tilgjengeligeEnvironments = useSelector((state: any) => state.environments.data)
 
 	const schemaValidation = yup.object().shape({
-		environments: yup.array().required('Velg minst ett miljø')
+		environments: yup.array().required('Velg minst ett miljø'),
 	})
 
 	return (
@@ -35,12 +35,12 @@ export const GjenopprettModal = ({
 				{gjenopprettHeader}
 				<Formik
 					initialValues={{
-						environments: filterMiljoe(tilgjengeligeEnvironments, environments)
+						environments: filterMiljoe(tilgjengeligeEnvironments, environments),
 					}}
 					onSubmit={submitFormik}
 					validationSchema={schemaValidation}
 				>
-					{formikProps => {
+					{(formikProps) => {
 						return (
 							<Fragment>
 								<MiljoVelger

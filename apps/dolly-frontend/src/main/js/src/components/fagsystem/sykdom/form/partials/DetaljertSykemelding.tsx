@@ -13,7 +13,7 @@ import { ArbeidKodeverk } from '~/config/kodeverk'
 import {
 	Arbeidsgiver,
 	Helsepersonell,
-	SykemeldingForm
+	SykemeldingForm,
 } from '~/components/fagsystem/sykdom/SykemeldingTypes'
 
 type DiagnoseSelect = {
@@ -23,7 +23,7 @@ type DiagnoseSelect = {
 const initialValuesDiagnose = {
 	diagnose: '',
 	diagnosekode: '',
-	system: ''
+	system: '',
 }
 
 const initialValuesPeriode = {
@@ -31,10 +31,10 @@ const initialValuesPeriode = {
 		aktivitet: null as string,
 		behandlingsdager: 0,
 		grad: 0,
-		reisetilskudd: false
+		reisetilskudd: false,
 	},
 	fom: '',
-	tom: ''
+	tom: '',
 }
 
 const KODESYSTEM = '2.16.578.1.12.4.1.1.7170'
@@ -52,7 +52,7 @@ export const DetaljertSykemelding = ({ formikBag }: SykemeldingForm) => {
 			hprId: v.hprId,
 			ident: v.fnr,
 			mellomnavn: v.mellomnavn,
-			samhandlerType: v.samhandlerType
+			samhandlerType: v.samhandlerType,
 		})
 	}
 
@@ -64,8 +64,8 @@ export const DetaljertSykemelding = ({ formikBag }: SykemeldingForm) => {
 				by: v.forretningsAdresse.poststed,
 				gate: v.forretningsAdresse.adresse,
 				land: v.forretningsAdresse.landkode,
-				postnummer: v.forretningsAdresse.postnr
-			}
+				postnummer: v.forretningsAdresse.postnr,
+			},
 		})
 	}
 

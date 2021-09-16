@@ -43,21 +43,21 @@ export const StegVelger = ({ initialValues, onSubmit, children }) => {
 
 	const CurrentStepComponent = STEPS[step]
 
-	const _validate = values =>
+	const _validate = (values) =>
 		validate(
 			{
 				...values,
 				personFoerLeggTil: personFoerLeggTil,
-				tidligereBestillinger: tidligereBestillinger
+				tidligereBestillinger: tidligereBestillinger,
 			},
 			CurrentStepComponent.validation
 		)
 
-	const labels = STEPS.map(v => ({ label: v.label }))
+	const labels = STEPS.map((v) => ({ label: v.label }))
 
 	return (
 		<Formik initialValues={initialValues} validate={_validate} onSubmit={_handleSubmit}>
-			{formikBag => {
+			{(formikBag) => {
 				const stateModifier = stateModifierFns(formikBag.values, formikBag.setValues, opts)
 				const erLokalt = window.location.hostname.includes('localhost')
 

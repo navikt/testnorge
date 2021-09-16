@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import { requiredDate, requiredString, requiredNumber, ifPresent } from '~/utils/YupValidations'
+import { ifPresent, requiredDate, requiredNumber, requiredString } from '~/utils/YupValidations'
 
 export const validation = {
 	sykemelding: ifPresent(
@@ -9,7 +9,7 @@ export const validation = {
 				'$sykemelding.syntSykemelding',
 				Yup.object({
 					startDato: requiredDate,
-					orgnummer: requiredString
+					orgnummer: requiredString,
 				})
 			),
 			detaljertSykemelding: ifPresent(
@@ -18,14 +18,14 @@ export const validation = {
 					startDato: requiredDate,
 					hovedDiagnose: Yup.object({
 						diagnose: requiredString,
-						diagnosekode: requiredString
+						diagnosekode: requiredString,
 					}),
 					biDiagnoser: Yup.array().of(
 						ifPresent(
 							'$sykemelding.detaljertSykemelding.biDiagnoser[0].diagnose',
 							Yup.object({
 								diagnose: requiredString,
-								diagnosekode: requiredString
+								diagnosekode: requiredString,
 							})
 						)
 					),
@@ -33,22 +33,22 @@ export const validation = {
 						etternavn: requiredString,
 						fornavn: requiredString,
 						ident: requiredString,
-						hprId: requiredString
+						hprId: requiredString,
 					}),
 					arbeidsgiver: Yup.object({
 						navn: requiredString,
-						stillingsprosent: requiredNumber.transform(num => (isNaN(num) ? undefined : num)),
-						yrkesbetegnelse: requiredString
+						stillingsprosent: requiredNumber.transform((num) => (isNaN(num) ? undefined : num)),
+						yrkesbetegnelse: requiredString,
 					}),
 					perioder: Yup.array().of(
 						Yup.object({
 							aktivitet: Yup.object({}),
 							fom: requiredDate,
-							tom: requiredDate
+							tom: requiredDate,
 						})
-					)
+					),
 				})
-			)
+			),
 		})
-	)
+	),
 }

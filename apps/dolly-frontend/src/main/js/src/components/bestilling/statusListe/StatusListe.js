@@ -16,10 +16,10 @@ export default function StatusListe(props) {
 		getOrganisasjoner,
 		getBestillinger,
 		removeNyBestillingStatus,
-		cancelBestilling
+		cancelBestilling,
 	} = props
 
-	const _onCloseBestillingResultat = bestillingId => {
+	const _onCloseBestillingResultat = (bestillingId) => {
 		removeNyBestillingStatus(bestillingId)
 		getBestillinger()
 	}
@@ -34,7 +34,7 @@ export default function StatusListe(props) {
 		)
 	}
 
-	return nyeBestillinger.map(bestilling => {
+	return nyeBestillinger.map((bestilling) => {
 		return (
 			<div className="bestilling-status" key={bestilling.id}>
 				{bestilling.ferdig ? (

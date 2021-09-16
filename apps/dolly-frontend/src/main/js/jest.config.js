@@ -6,7 +6,7 @@ module.exports = {
 		'(nav-frontend-)(.*)(style)$': '<rootDir>/__mocks__/styleMock.js',
 		'\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4)$': '<rootDir>/__mocks__/fileMock.js',
 		'\\.(css|less)$': '<rootDir>/__mocks__/styleMock.js',
-		'~/(.*)$': '<rootDir>/src/$1'
+		'~/(.*)$': '<rootDir>/src/$1',
 	},
 	collectCoverageFrom: [
 		'src/**/*.js',
@@ -14,6 +14,6 @@ module.exports = {
 		'!src/**/*WithHoc.js',
 		'!src/service/services/**/*.js',
 		'!src/pages/**/*.js',
-		'!src/*.js'
-	]
+		'!src/*.js',
+	],
 }

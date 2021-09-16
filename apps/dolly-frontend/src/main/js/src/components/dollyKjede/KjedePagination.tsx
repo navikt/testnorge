@@ -28,7 +28,7 @@ const PaginationWrapper = styled.div`
 const Separator = styled.div`
 	font-weight: bold;
 	margin: 0 20px 0 20px;
-	color: ${props => props.color};
+	color: ${(props) => props.color};
 `
 
 export default ({
@@ -37,7 +37,7 @@ export default ({
 	centerIndices,
 	disabled,
 	handlePagination,
-	handleClick
+	handleClick,
 }: Props) => {
 	return (
 		<PaginationContainer className={'background-color-bg-divider'}>

@@ -11,7 +11,7 @@ export default function FagsystemStatus({ statusrapport }) {
 	// Feilmeldinger som skal ha gul problem-circle legges inn her
 	const problemCircleFeil = ['InnvandringOpprettingsmelding: STATUS: TIDSAVBRUDD']
 
-	const getIconType = status => {
+	const getIconType = (status) => {
 		const melding = status.melding
 		return melding && !melding.includes('OK')
 			? problemCircleFeil.includes(melding) || (status.orgnummer && status.orgnummer !== 'NA')
@@ -22,7 +22,7 @@ export default function FagsystemStatus({ statusrapport }) {
 
 	if (
 		statusrapport &&
-		statusrapport.some(status => status.navn === 'Forvalter av syntetiske organisasjoner')
+		statusrapport.some((status) => status.navn === 'Forvalter av syntetiske organisasjoner')
 	) {
 		return (
 			<ErrorBoundary>

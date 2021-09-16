@@ -38,7 +38,7 @@ type Organisasjon = {
 
 enum BestillingType {
 	NY = 'NY',
-	STANDARD = 'STANDARD'
+	STANDARD = 'STANDARD',
 }
 
 const VISNING_ORGANISASJONER = 'organisasjoner'
@@ -54,7 +54,7 @@ export default function Organisasjoner({
 	brukerId,
 	getOrganisasjonBestillingStatus,
 	getOrganisasjonBestilling,
-	fetchOrganisasjoner
+	fetchOrganisasjoner,
 }: Organisasjoner) {
 	const [visning, setVisning] = useState(VISNING_ORGANISASJONER)
 	const byttVisning = (event: React.ChangeEvent<any>) => setVisning(event.target.value)
@@ -85,24 +85,19 @@ export default function Organisasjoner({
 		if (!searchStr) return items
 
 		const query = searchStr.toLowerCase()
-		return items.filter(item =>
-			Object.values(item).some(v =>
-				(v || '')
-					.toString()
-					.toLowerCase()
-					.includes(query)
-			)
+		return items.filter((item) =>
+			Object.values(item).some((v) => (v || '').toString().toLowerCase().includes(query))
 		)
 	}
 
 	const hentOrgStatus = (bestillinger: Array<EnhetBestilling>, bestillingId: string) => {
 		if (!bestillinger) return null
 		let orgStatus = 'Ferdig'
-		const bestilling = bestillinger.find(obj => {
+		const bestilling = bestillinger.find((obj) => {
 			return obj.id === bestillingId
 		})
 		if (!bestilling?.status) orgStatus = 'Feilet'
-		bestilling?.status?.[0].statuser?.forEach(status => {
+		bestilling?.status?.[0].statuser?.forEach((status) => {
 			if (status?.melding !== 'OK') orgStatus = 'Avvik'
 		})
 		return orgStatus
@@ -113,9 +108,9 @@ export default function Organisasjoner({
 		organisasjonsnummer: string
 	) {
 		return bestillinger
-			.filter(org => org.organisasjonNummer === organisasjonsnummer)
-			.map(org => org.id)
-			.sort(function(a: number, b: number) {
+			.filter((org) => org.organisasjonNummer === organisasjonsnummer)
+			.map((org) => org.id)
+			.sort(function (a: number, b: number) {
 				return b - a
 			})
 	}
@@ -123,7 +118,7 @@ export default function Organisasjoner({
 	const mergeList = (organisasjoner: Array<Organisasjon>, bestillinger: Array<EnhetBestilling>) => {
 		if (_isEmpty(organisasjoner)) return null
 
-		return organisasjoner.map(orgInfo => {
+		return organisasjoner.map((orgInfo) => {
 			const bestillingId = getBestillingIdFromOrgnummer(bestillinger, orgInfo.organisasjonsnummer)
 			return {
 				orgInfo,
@@ -132,7 +127,7 @@ export default function Organisasjoner({
 				organisasjonsnavn: orgInfo.organisasjonsnavn,
 				enhetstype: orgInfo.enhetstype,
 				status: hentOrgStatus(bestillinger, bestillingId[0]),
-				bestillingId: bestillingId
+				bestillingId: bestillingId,
 			}
 		})
 	}

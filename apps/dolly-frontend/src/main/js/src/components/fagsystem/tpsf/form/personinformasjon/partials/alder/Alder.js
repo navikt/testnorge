@@ -13,7 +13,7 @@ import './alder.less'
 
 const alderValg = {
 	alder: 'alder',
-	spesifikk: 'spesifikk'
+	spesifikk: 'spesifikk',
 }
 
 const initialValue = (basePath, formikBag) => {
@@ -30,10 +30,10 @@ export const Alder = ({ basePath, formikBag, title, handleDoed }) => {
 		alder: `${basePath}.alder`,
 		foedtEtter: `${basePath}.foedtEtter`,
 		foedtFoer: `${basePath}.foedtFoer`,
-		doedsdato: `${basePath}.doedsdato`
+		doedsdato: `${basePath}.doedsdato`,
 	}
 
-	const handleToggleChange = event => {
+	const handleToggleChange = (event) => {
 		const { value } = event.target
 		setAlderType(alderValg[value])
 
@@ -68,12 +68,12 @@ export const Alder = ({ basePath, formikBag, title, handleDoed }) => {
 	const toggleValues = [
 		{
 			value: alderValg.alder,
-			label: 'Antall år ...'
+			label: 'Antall år ...',
 		},
 		{
 			value: alderValg.spesifikk,
-			label: 'Født før/etter ...'
-		}
+			label: 'Født før/etter ...',
+		},
 	]
 
 	return (
@@ -82,7 +82,7 @@ export const Alder = ({ basePath, formikBag, title, handleDoed }) => {
 				{title && <h4>{title}</h4>}
 				{alderType && (
 					<ToggleGruppe onChange={handleToggleChange} name={paths.alder}>
-						{toggleValues.map(val => (
+						{toggleValues.map((val) => (
 							<ToggleKnapp key={val.value} value={val.value} checked={alderType === val.value}>
 								{val.label}
 							</ToggleKnapp>

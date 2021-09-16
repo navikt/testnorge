@@ -191,5 +191,5 @@ export default {
 
 	deleteOrganisasjonOrgnummer(orgnummer) {
 		return Request.delete(Endpoints.deleteOrganisasjonOrgnummer(orgnummer))
-	}
+	},
 }

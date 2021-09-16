@@ -4,8 +4,8 @@ import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import {
+	EndringIRefusjon,
 	Refusjon,
-	EndringIRefusjon
 } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 

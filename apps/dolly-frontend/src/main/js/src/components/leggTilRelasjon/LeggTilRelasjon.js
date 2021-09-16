@@ -1,14 +1,12 @@
 import React from 'react'
 import * as Yup from 'yup'
-import { Formik, Form, ErrorMessage } from 'formik'
-import _difference from 'lodash/difference'
+import { ErrorMessage, Form, Formik } from 'formik'
 import _get from 'lodash/get'
 import { DollyApi } from '~/service/Api'
 import { Partner } from './relasjonstype/Partner'
 import { Barn } from './relasjonstype/Barn'
-import { messages } from '~/utils/YupValidations'
+import { messages, validate } from '~/utils/YupValidations'
 import { sivilstander } from '~/components/fagsystem/tpsf/form/validation'
-import { validate } from '~/utils/YupValidations'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 
 import Panel from '~/components/ui/panel/Panel'
@@ -19,9 +17,9 @@ export const LeggTilRelasjon = ({
 	identInfo,
 	closeModal,
 	getBestillinger,
-	gruppeId
+	gruppeId,
 }) => {
-	const onSubmit = async values => {
+	const onSubmit = async (values) => {
 		await DollyApi.createRelasjon(hovedIdent, values)
 		getBestillinger(gruppeId)
 	}
@@ -31,18 +29,18 @@ export const LeggTilRelasjon = ({
 		tpsf: {
 			relasjoner: {
 				partnere: [],
-				barn: []
-			}
-		}
+				barn: [],
+			},
+		},
 	}
 	return (
 		<div className="add-relasjon">
 			<Formik
 				onSubmit={onSubmit}
-				validate={async values => await validate(values, validation)}
+				validate={async (values) => await validate(values, validation)}
 				initialValues={initialValues}
 			>
-				{formikBag => {
+				{(formikBag) => {
 					return (
 						<Form autoComplete="off">
 							<div className="add-relasjon">
@@ -98,7 +96,7 @@ const validation = Yup.object({
 	tpsf: Yup.object({
 		relasjoner: Yup.object({
 			partnere: Yup.mixed().when('$tpsf.relasjoner.partnere', {
-				is: v => v.length > 0,
+				is: (v) => v.length > 0,
 				then: Yup.array().of(
 					Yup.object({
 						ident: Yup.string()
@@ -119,13 +117,13 @@ const validation = Yup.object({
 								}
 							)
 							.required(messages.required),
-						sivilstander: sivilstander
+						sivilstander: sivilstander,
 					})
 				),
 				otherwise: Yup.mixed().when('$tpsf.relasjoner.barn', {
-					is: v => v.length < 1,
-					then: Yup.string().required('Legg til partner eller barn')
-				})
+					is: (v) => v.length < 1,
+					then: Yup.string().required('Legg til partner eller barn'),
+				}),
 			}),
 			barn: Yup.array().of(
 				Yup.object({
@@ -138,15 +136,15 @@ const validation = Yup.object({
 								const path = this.options.path
 								const barnIdent = _get(values, path)
 								const antallBarnSammeIdent = antallIdenter(values, path, barnIdent, 'barn')
-								const partnere = values.tpsf.relasjoner.partnere.map(partner => partner.ident)
+								const partnere = values.tpsf.relasjoner.partnere.map((partner) => partner.ident)
 								return antallBarnSammeIdent < 1 && !partnere.includes(barnIdent)
 							}
 						)
-						.required(messages.required)
+						.required(messages.required),
 				})
-			)
-		})
-	})
+			),
+		}),
+	}),
 })
 
 function antallIdenter(values, path, identNr, type) {

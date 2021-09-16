@@ -2,11 +2,7 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import Panel from '../Panel'
 
-const findHeading = wrapper =>
-	wrapper
-		.find('.panel-heading')
-		.childAt(0)
-		.text()
+const findHeading = (wrapper) => wrapper.find('.panel-heading').childAt(0).text()
 
 describe('Panel.js', () => {
 	it('should render panel with default header ', () => {

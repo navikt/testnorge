@@ -52,7 +52,7 @@ const initialValues = {
 	utenFastBopel: false,
 	statsborgerskap: '',
 	statsborgerskapRegdato: '',
-	statsborgerskapTildato: ''
+	statsborgerskapTildato: '',
 }
 
 export const Foreldre = ({ formikBag, personFoerLeggTil }: ForeldreType) => {
@@ -77,7 +77,7 @@ export const Foreldre = ({ formikBag, personFoerLeggTil }: ForeldreType) => {
 					personFoerLeggTil &&
 					eksisterendeForelder &&
 					_get(personFoerLeggTil, 'tpsf.relasjoner').filter(
-						relasjon => relasjon.personRelasjonMed.ident === eksisterendeForelder
+						(relasjon) => relasjon.personRelasjonMed.ident === eksisterendeForelder
 					)
 				const gjeldendeForelder = aktuellRelasjon && aktuellRelasjon[0]
 

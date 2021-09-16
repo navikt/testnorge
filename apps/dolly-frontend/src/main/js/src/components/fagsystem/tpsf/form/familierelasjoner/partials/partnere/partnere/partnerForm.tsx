@@ -33,24 +33,24 @@ export default ({ path, formikBag, partner, ...rest }: PartnerForm) => {
 			if (sisteSivilstand === 'GIFT') {
 				_get(formikBag.values, `${path}.sivilstander`).push({
 					sivilstand: 'ENKE',
-					sivilstandRegdato: dato
+					sivilstandRegdato: dato,
 				})
 			} else if (sisteSivilstand === 'ENKE') {
 				sivilstander.length > 0 &&
 					formikBag.setFieldValue(`${path}.sivilstander[${sivilstander.length - 1}]`, {
 						sivilstand: 'ENKE',
-						sivilstandRegdato: dato
+						sivilstandRegdato: dato,
 					})
 			} else if (sisteSivilstand === 'REPA') {
 				_get(formikBag.values, `${path}.sivilstander`).push({
 					sivilstand: 'GJPA',
-					sivilstandRegdato: dato
+					sivilstandRegdato: dato,
 				})
 			} else if (sisteSivilstand === 'GJPA') {
 				sivilstander.length > 0 &&
 					formikBag.setFieldValue(`${path}.sivilstander[${sivilstander.length - 1}]`, {
 						sivilstand: 'GJPA',
-						sivilstandRegdato: dato
+						sivilstandRegdato: dato,
 					})
 			}
 		} else {

@@ -3,7 +3,7 @@ import brukerReducer from '../index'
 describe('brukerReducer', () => {
 	it('should return initialState', () => {
 		const initState = {
-			brukerData: null
+			brukerData: null,
 		}
 		expect(brukerReducer(undefined, {})).toEqual(initState)
 	})
@@ -12,11 +12,11 @@ describe('brukerReducer', () => {
 		const testdata = 'test'
 		const action = {
 			type: 'GET_CURRENT_BRUKER_SUCCESS',
-			payload: { data: testdata }
+			payload: { data: testdata },
 		}
 
 		const res = {
-			brukerData: testdata
+			brukerData: testdata,
 		}
 
 		expect(brukerReducer(undefined, action)).toEqual(res)

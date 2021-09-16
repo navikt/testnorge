@@ -20,7 +20,7 @@ export default function GruppeHeader({
 	deleteGruppe,
 	laasGruppe,
 	isLockingGruppe,
-	bestillingStatuser
+	bestillingStatuser,
 }) {
 	const [visRedigerState, visRediger, skjulRediger] = useBoolean(false)
 	const [viserGjenopprettModal, visGjenopprettModal, skjulGjenopprettModal] = useBoolean(false)
@@ -56,7 +56,7 @@ export default function GruppeHeader({
 					/>
 					<Header.TitleValue
 						title="Antall brukt"
-						value={identArray.map(p => p.ibruk).filter(Boolean).length}
+						value={identArray.map((p) => p.ibruk).filter(Boolean).length}
 					/>
 					<Header.TitleValue title="Hensikt" value={gruppe.hensikt} />
 				</div>

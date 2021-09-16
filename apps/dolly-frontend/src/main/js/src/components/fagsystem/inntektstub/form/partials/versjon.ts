@@ -33,7 +33,7 @@ export default function versjonsinformasjon(
 		(acc: SpesifikkVersjon, curr: Versjonsoversikt, kdx: number) => {
 			if (curr.formikIdx === idx)
 				return { ...acc, underversjonerIdx: curr.underversjonerIdx, gjeldendeIdx: kdx }
-			else if (curr.underversjonerIdx.some(versjon => versjon === idx))
+			else if (curr.underversjonerIdx.some((versjon) => versjon === idx))
 				return { ...acc, versjonAv: kdx, underVersjonerIdx: curr.underversjonerIdx }
 			else return acc
 		},
@@ -56,7 +56,7 @@ const mapVersjonsliste = (
 		if (_isNil(inntektinfo.versjon))
 			versjonsoversikt.push({ formikIdx: idx, underversjonerIdx: [] })
 		else {
-			versjonsoversikt.forEach(inntekt => {
+			versjonsoversikt.forEach((inntekt) => {
 				if (sjekkKombinasjon(inntektValues[inntekt.formikIdx], inntektinfo)) {
 					inntekt.underversjonerIdx.push(idx)
 					if (inntektinfo.versjon !== inntekt.underversjonerIdx.length)

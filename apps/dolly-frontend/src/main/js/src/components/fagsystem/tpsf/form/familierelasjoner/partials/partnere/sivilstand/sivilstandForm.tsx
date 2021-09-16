@@ -29,7 +29,7 @@ export default ({
 	readOnly,
 	formikBag,
 	tidligereSivilstand,
-	minimumDato = null
+	minimumDato = null,
 }: SivilstandForm) => (
 	<div
 		className="flexbox"

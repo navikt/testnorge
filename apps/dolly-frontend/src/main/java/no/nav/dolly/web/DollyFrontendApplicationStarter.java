@@ -50,7 +50,7 @@ import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 })
 @SpringBootApplication
 @RequiredArgsConstructor
-public class ApplicationStarter {
+public class DollyFrontendApplicationStarter {
 
     private final TokenExchange tokenExchange;
 
@@ -77,7 +77,7 @@ public class ApplicationStarter {
     private final TestnavAdresseServiceProperties testnavAdresseServiceProperties;
 
     public static void main(String[] args) {
-        SpringApplication.run(ApplicationStarter.class, args);
+        SpringApplication.run(DollyFrontendApplicationStarter.class, args);
     }
 
     @Bean

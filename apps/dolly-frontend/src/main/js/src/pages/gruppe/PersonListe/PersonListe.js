@@ -19,7 +19,7 @@ const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
 	Avvik: 'report-problem-circle',
 	Feilet: 'report-problem-triangle',
-	Stoppet: 'report-problem-triangle'
+	Stoppet: 'report-problem-triangle',
 }
 
 export default function PersonListe({
@@ -33,7 +33,7 @@ export default function PersonListe({
 	setSideStoerrelse,
 	visPerson,
 	iLaastGruppe,
-	fetchTpsfPersoner
+	fetchTpsfPersoner,
 }) {
 	const [isKommentarModalOpen, openKommentarModal, closeKommentarModal] = useBoolean(false)
 	const [selectedIdent, setSelectedIdent] = useState(null)
@@ -44,12 +44,12 @@ export default function PersonListe({
 	const iBrukEndret = () => {
 		if (!previousValues) return false
 		previousValues.current = identer
-		const prevIbruk = previousIdenter.map(ident => ({
+		const prevIbruk = previousIdenter.map((ident) => ({
 			ident: ident.ident,
-			ibruk: ident.ibruk
+			ibruk: ident.ibruk,
 		}))
 
-		return prevIbruk.some(id => {
+		return prevIbruk.some((id) => {
 			if (id.ibruk !== identer?.[id.ident]?.ibruk) {
 				return true
 			}
@@ -78,7 +78,7 @@ export default function PersonListe({
 			</ContentContainer>
 		)
 
-	const getKommentarTekst = tekst => {
+	const getKommentarTekst = (tekst) => {
 		const beskrivelse = tekst.length > 170 ? tekst.substring(0, 170) + '...' : tekst
 		return (
 			<div style={{ maxWidth: 200 }}>
@@ -106,12 +106,12 @@ export default function PersonListe({
 							mouseLeaveDelay={0.1}
 							arrowContent={<div className="rc-tooltip-arrow-inner" />}
 							align={{
-								offset: ['0', '-10']
+								offset: ['0', '-10'],
 							}}
 						>
 							<div
 								className="icon"
-								onClick={event => {
+								onClick={(event) => {
 									event.stopPropagation()
 								}}
 							>
@@ -120,17 +120,17 @@ export default function PersonListe({
 						</Tooltip>
 					</CopyToClipboard>
 				</div>
-			)
+			),
 		},
 		{
 			text: 'Navn',
 			width: '30',
-			dataField: 'navn'
+			dataField: 'navn',
 		},
 		{
 			text: 'Alder',
 			width: '10',
-			dataField: 'alder'
+			dataField: 'alder',
 		},
 		{
 			text: 'Bestilling-ID',
@@ -146,14 +146,14 @@ export default function PersonListe({
 						<ImportFraEtikett importFra={row.importFra} type={'fokus'} venstreMargin />
 					</>
 				)
-			}
+			},
 		},
 		{
 			text: 'Status',
 			width: '10',
 			dataField: 'status',
 
-			formatter: cell => <Icon kind={ikonTypeMap[cell]} title={cell} />
+			formatter: (cell) => <Icon kind={ikonTypeMap[cell]} title={cell} />,
 		},
 		{
 			text: 'Brukt',
@@ -161,7 +161,7 @@ export default function PersonListe({
 			dataField: 'ibruk',
 			formatter: (cell, row) => (
 				<PersonIBrukButtonConnector ident={row.ident} iLaastGruppe={iLaastGruppe} />
-			)
+			),
 		},
 		{
 			text: '',
@@ -177,14 +177,14 @@ export default function PersonListe({
 							destroyTooltipOnHide={true}
 							mouseEnterDelay={0}
 							mouseLeaveDelay={0.1}
-							onClick={event => {
+							onClick={(event) => {
 								setSelectedIdent(row.ident)
 								openKommentarModal()
 								event.stopPropagation()
 							}}
 							arrowContent={<div className="rc-tooltip-arrow-inner" />}
 							align={{
-								offset: ['0', '-10']
+								offset: ['0', '-10'],
 							}}
 						>
 							<div style={{ textAlign: 'center' }}>
@@ -193,8 +193,8 @@ export default function PersonListe({
 						</Tooltip>
 					)
 				}
-			}
-		}
+			},
+		},
 	]
 
 	return (
@@ -204,15 +204,15 @@ export default function PersonListe({
 				columns={columns}
 				gruppeDetaljer={{
 					antallElementer: gruppeInfo.antallIdenter,
-					pageSize: sideStoerrelse
+					pageSize: sideStoerrelse,
 				}}
 				pagination
-				iconItem={bruker => (bruker.kjonn === 'MANN' ? <ManIconItem /> : <WomanIconItem />)}
+				iconItem={(bruker) => (bruker.kjonn === 'MANN' ? <ManIconItem /> : <WomanIconItem />)}
 				visSide={sidetall}
 				setSidetall={setSidetall}
 				setSideStoerrelse={setSideStoerrelse}
 				visPerson={visPerson}
-				onExpand={bruker => (
+				onExpand={(bruker) => (
 					<PersonVisningConnector
 						personId={bruker.ident.ident}
 						bestillingId={bruker.ident.bestillingId[0]}

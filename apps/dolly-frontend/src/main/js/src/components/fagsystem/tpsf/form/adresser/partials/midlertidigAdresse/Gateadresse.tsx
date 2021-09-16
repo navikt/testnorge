@@ -15,7 +15,7 @@ enum GateadresseTyper {
 	TILFELDIG = 'TILFELDIG',
 	POSTNR = 'POSTNR',
 	KOMMUNENR = 'KOMMUNENR',
-	GATE = 'GATE'
+	GATE = 'GATE',
 }
 
 export const Gateadresse = ({ formikBag }: Gateadresse) => {
@@ -40,26 +40,26 @@ export const Gateadresse = ({ formikBag }: Gateadresse) => {
 		switch (type) {
 			case GateadresseTyper.TILFELDIG:
 				formikBag.setFieldValue(norskAdresse, {
-					tilleggsadresse: _get(formikBag.values, tilleggsadresse)
+					tilleggsadresse: _get(formikBag.values, tilleggsadresse),
 				})
 				formikBag.setFieldValue(gateadresseNrInfo, undefined)
 				break
 			case GateadresseTyper.POSTNR:
 				formikBag.setFieldValue(norskAdresse, {
-					tilleggsadresse: _get(formikBag.values, tilleggsadresse)
+					tilleggsadresse: _get(formikBag.values, tilleggsadresse),
 				})
 				formikBag.setFieldValue(gateadresseNrInfo, {
 					nummertype: GateadresseTyper.POSTNR,
-					nummer: ''
+					nummer: '',
 				})
 				break
 			case GateadresseTyper.KOMMUNENR:
 				formikBag.setFieldValue(norskAdresse, {
-					tilleggsadresse: _get(formikBag.values, tilleggsadresse)
+					tilleggsadresse: _get(formikBag.values, tilleggsadresse),
 				})
 				formikBag.setFieldValue(gateadresseNrInfo, {
 					nummertype: GateadresseTyper.KOMMUNENR,
-					nummer: ''
+					nummer: '',
 				})
 				break
 			case GateadresseTyper.GATE:
@@ -68,7 +68,7 @@ export const Gateadresse = ({ formikBag }: Gateadresse) => {
 					gatenavn: '',
 					gatekode: '',
 					husnr: '',
-					tilleggsadresse: _get(formikBag.values, tilleggsadresse)
+					tilleggsadresse: _get(formikBag.values, tilleggsadresse),
 				})
 				formikBag.setFieldValue(gateadresseNrInfo, undefined)
 			default:
@@ -87,23 +87,23 @@ export const Gateadresse = ({ formikBag }: Gateadresse) => {
 					{
 						label: 'Tilfeldig gateadresse',
 						value: GateadresseTyper.TILFELDIG,
-						id: GateadresseTyper.TILFELDIG
+						id: GateadresseTyper.TILFELDIG,
 					},
 					{
 						label: 'Tilfeldig gateadresse basert på postnummer ...',
 						value: GateadresseTyper.POSTNR,
-						id: GateadresseTyper.POSTNR
+						id: GateadresseTyper.POSTNR,
 					},
 					{
 						label: 'Tilfeldig gateadresse basert på kommunenummer ...',
 						value: GateadresseTyper.KOMMUNENR,
-						id: GateadresseTyper.KOMMUNENR
+						id: GateadresseTyper.KOMMUNENR,
 					},
 					{
 						label: 'Gateadresse detaljert ...',
 						value: GateadresseTyper.GATE,
-						id: GateadresseTyper.GATE
-					}
+						id: GateadresseTyper.GATE,
+					},
 				]}
 				checked={gateAdresseType}
 				onChange={handleRadioChange}

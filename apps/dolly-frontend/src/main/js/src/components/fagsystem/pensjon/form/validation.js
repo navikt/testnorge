@@ -1,7 +1,7 @@
 import * as Yup from 'yup'
 import _get from 'lodash/get'
 import _isNil from 'lodash/isNil'
-import { requiredNumber, ifPresent } from '~/utils/YupValidations'
+import { ifPresent, requiredNumber } from '~/utils/YupValidations'
 
 function calculate_age(dob) {
 	const diff_ms = Date.now() - dob.getTime()
@@ -101,8 +101,8 @@ export const validation = {
 					.min(0, 'Tast inn et gyldig beløp')
 
 					.typeError('Tast inn et gyldig beløp'),
-				redusertMedGrunnbelop: Yup.boolean()
-			})
+				redusertMedGrunnbelop: Yup.boolean(),
+			}),
 		})
-	)
+	),
 }

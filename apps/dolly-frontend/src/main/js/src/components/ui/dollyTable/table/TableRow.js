@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import cn from 'classnames'
-import Icon from '~/components/ui/icon/Icon'
 import Column from './TableColumn'
 import ExpandButton from '~/components/ui/button/ExpandButton'
 
@@ -9,22 +8,22 @@ export default function TableRow({
 	icon,
 	expandComponent,
 	navLink,
-	expandPerson = false
+	expandPerson = false,
 }) {
 	const [isExpanded, setIsExpanded] = useState(expandPerson)
 
-	const onRowClick = event => {
+	const onRowClick = (event) => {
 		if (expandComponent) return setIsExpanded(!isExpanded)
 
 		if (navLink) return navLink()
 	}
 
 	const rowWrapperClass = cn('dot-body-row-wrapper', {
-		expanded: isExpanded
+		expanded: isExpanded,
 	})
 
 	const rowClass = cn('dot-body-row', {
-		clickable: Boolean(expandComponent || navLink)
+		clickable: Boolean(expandComponent || navLink),
 	})
 
 	return (

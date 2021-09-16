@@ -34,7 +34,7 @@ export const Feedback = ({ label, feedbackFor, brukerBilde }: FeedbackProps) => 
 		<ThumbsRating
 			label={label}
 			ratingFor={feedbackFor}
-			onClick={rating => setRating(rating)}
+			onClick={(rating) => setRating(rating)}
 			uuid={uuid}
 		>
 			{!submit && (
@@ -51,7 +51,7 @@ export const Feedback = ({ label, feedbackFor, brukerBilde }: FeedbackProps) => 
 								label=""
 								placeholder={'(Valgfritt) ' + label}
 								maxLength={MAX_LENGTH}
-								onChange={event => setText(event.target.value)}
+								onChange={(event) => setText(event.target.value)}
 								feil={
 									text.length > MAX_LENGTH
 										? { feilmelding: 'Tilbakemelding inneholder for mange tegn' }
@@ -68,14 +68,14 @@ export const Feedback = ({ label, feedbackFor, brukerBilde }: FeedbackProps) => 
 							htmlType="submit"
 							disabled={text.length > MAX_LENGTH}
 							autoFocus={true}
-							onClick={event => {
+							onClick={(event) => {
 								event.preventDefault()
 								Logger.log({
 									event: `Tilbakemelding for: ${feedbackFor}`,
 									rating: rating,
 									message: text,
 									uuid: uuid,
-									isAnonym: isAnonym
+									isAnonym: isAnonym,
 								})
 								setSubmit(true)
 							}}

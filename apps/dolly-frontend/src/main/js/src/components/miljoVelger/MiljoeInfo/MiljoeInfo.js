@@ -1,20 +1,12 @@
 import React from 'react'
 import _get from 'lodash/get'
 import { AlertStripeInfo } from 'nav-frontend-alertstriper'
-import { InstApi } from '~/service/Api'
-import { ArenaApi } from '~/service/Api'
-import { PensjonApi } from '~/service/Api'
+import { ArenaApi, InstApi, PensjonApi } from '~/service/Api'
 import TilgjengeligeMiljoer from './TilgjengeligeMiljoer'
 
 export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
-	const {
-		instdata,
-		pdlforvalter,
-		arenaforvalter,
-		pensjonforvalter,
-		sykemelding,
-		udistub
-	} = bestillingsdata
+	const { instdata, pdlforvalter, arenaforvalter, pensjonforvalter, sykemelding, udistub } =
+		bestillingsdata
 	if (
 		!instdata &&
 		!pdlforvalter &&

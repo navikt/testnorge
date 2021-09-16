@@ -17,7 +17,7 @@ const initialValues = {
 	arbeidstidsordning: undefined,
 	stillingsprosent: '',
 	sisteLoennsendringsdato: undefined,
-	sisteDatoForStillingsprosentendring: undefined
+	sisteDatoForStillingsprosentendring: undefined,
 }
 
 export const ArbeidsforholdForm = ({ formikBag, inntektsinformasjonPath }) => {
@@ -33,14 +33,14 @@ export const ArbeidsforholdForm = ({ formikBag, inntektsinformasjonPath }) => {
 			header="Arbeidsforhold"
 			newEntry={initialValues}
 		>
-			{path => (
+			{(path) => (
 				<React.Fragment>
 					<DollySelect
 						name={`${path}.arbeidsforholdstype`}
 						label="Arbeidsforholdstype"
 						options={arbeidsforholdstyperFormatted}
 						isLoading={arbeidsforholdstyper.loading}
-						onChange={forhold =>
+						onChange={(forhold) =>
 							formikBag.setFieldValue(`${path}.arbeidsforholdstype`, forhold.value)
 						}
 						value={_get(formikBag.values, `${path}.arbeidsforholdstype`)}

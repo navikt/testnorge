@@ -8,10 +8,8 @@ export default function GjenopprettBestilling(props) {
 	const { environments } = bestilling
 	const erOrganisasjon = bestilling.hasOwnProperty('organisasjonNummer')
 
-	const submitFormik = async values => {
-		const envsQuery = Formatters.arrayToString(values.environments)
-			.replace(/ /g, '')
-			.toLowerCase()
+	const submitFormik = async (values) => {
+		const envsQuery = Formatters.arrayToString(values.environments).replace(/ /g, '').toLowerCase()
 		erOrganisasjon
 			? await props.gjenopprettOrganisasjonBestilling(envsQuery)
 			: await props.gjenopprettBestilling(envsQuery)

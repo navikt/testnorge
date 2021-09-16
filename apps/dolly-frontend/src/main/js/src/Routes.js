@@ -8,10 +8,9 @@ const BestillingsveilederConnector = lazy(() =>
 )
 const MinSide = lazy(() => import('./pages/minSide/MinSideConnector'))
 const UI = lazy(() => import('./pages/ui/index'))
-const SoekMiniNorge = lazy(() => import('./pages/soekMiniNorge/SoekMiniNorge'))
 const SearchPage = lazy(() => import('./pages/searchPage'))
 
-const GruppeBreadcrumb = props => <span>Gruppe #{props.match.params.gruppeId}</span>
+const GruppeBreadcrumb = (props) => <span>Gruppe #{props.match.params.gruppeId}</span>
 
 const routes = [
 	{ path: '/', exact: true, breadcrumb: 'Testpersoner', component: GruppeOversikt },
@@ -20,29 +19,29 @@ const routes = [
 		path: '/gruppe/:gruppeId/bestilling/:personId',
 		exact: true,
 		breadcrumb: 'Legg til/endre',
-		component: BestillingsveilederConnector
+		component: BestillingsveilederConnector,
 	},
 	{
 		path: '/gruppe/:gruppeId/bestilling',
 		exact: true,
 		breadcrumb: 'Opprett personer',
-		component: BestillingsveilederConnector
+		component: BestillingsveilederConnector,
 	},
 	{
 		path: '/organisasjoner',
 		exact: true,
 		breadcrumb: 'Testorganisasjoner',
-		component: Organisasjon
+		component: Organisasjon,
 	},
 	{
 		path: '/organisasjoner/bestilling',
 		exact: true,
 		breadcrumb: 'Opprett organisasjon',
-		component: BestillingsveilederConnector
+		component: BestillingsveilederConnector,
 	},
 	{ path: '/minside', exact: true, breadcrumb: 'Min side', component: MinSide },
 	{ path: '/ui', exact: true, breadcrumb: 'UI demo', component: UI },
-	{ path: '/soek', exact: true, breadcrumb: 'Søk', component: SearchPage }
+	{ path: '/soek', exact: true, breadcrumb: 'Søk', component: SearchPage },
 ]
 
 export default routes

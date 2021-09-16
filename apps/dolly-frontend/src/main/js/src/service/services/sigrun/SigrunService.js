@@ -10,5 +10,5 @@ export default {
 	getSekvensnummer(ident) {
 		const endpoint = getSigrunBaseUrl() + '/sekvensnummer/' + ident
 		return Request.get(endpoint)
-	}
+	},
 }

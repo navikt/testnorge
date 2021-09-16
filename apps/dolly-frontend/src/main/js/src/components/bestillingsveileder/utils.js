@@ -15,9 +15,9 @@ export const rootPaths = [
 	'brregstub',
 	'dokarkiv',
 	'sykemelding',
-	'organisasjon'
+	'organisasjon',
 ]
 
-export const harAvhukedeAttributter = values => {
-	return rootPaths.some(path => _has(values, path))
+export const harAvhukedeAttributter = (values) => {
+	return rootPaths.some((path) => _has(values, path))
 }

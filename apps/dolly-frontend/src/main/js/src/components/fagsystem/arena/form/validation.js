@@ -26,7 +26,7 @@ const ingenOverlappFraTildato = (tildato, values) => {
 	if (isBefore(new Date(fraDato), new Date(aapFraDato))) return false
 
 	if (values.tidligereBestillinger) {
-		const arenaBestillinger = values.tidligereBestillinger.filter(bestilling =>
+		const arenaBestillinger = values.tidligereBestillinger.filter((bestilling) =>
 			bestilling.data.hasOwnProperty('arenaforvalter')
 		)
 		for (let bestilling of arenaBestillinger) {
@@ -42,7 +42,7 @@ const ingenOverlappFraTildato = (tildato, values) => {
 	return true
 }
 
-const validFradato = vedtakType => {
+const validFradato = (vedtakType) => {
 	return Yup.string()
 		.test(
 			'har-gjeldende-vedtak',
@@ -54,7 +54,7 @@ const validFradato = vedtakType => {
 				for (let key of ikkeOverlappendeVedtak) {
 					naavaerendeVerdier[key] = {
 						fraDato: values.arenaforvalter[key]?.[0].fraDato,
-						tilDato: values.arenaforvalter[key]?.[0].tilDato
+						tilDato: values.arenaforvalter[key]?.[0].tilDato,
 					}
 				}
 
@@ -85,7 +85,7 @@ const datoOverlapperIkkeAndreVedtak = (vedtaktype, naeverendeVerdier, tidligereB
 	const nyDatoFra = naeverendeVerdier[vedtaktype].fraDato
 	const nyDatoTil = naeverendeVerdier[vedtaktype].tilDato
 
-	const arenaBestillinger = tidligereBestillinger.filter(bestilling =>
+	const arenaBestillinger = tidligereBestillinger.filter((bestilling) =>
 		bestilling.data.hasOwnProperty('arenaforvalter')
 	)
 
@@ -134,21 +134,19 @@ export const validation = Yup.object({
 					return validTildato(fradato, tildato)
 				})
 				.nullable()
-				.required(messages.required)
+				.required(messages.required),
 		})
 	),
 	aap115: Yup.array().of(
 		Yup.object({
-			fraDato: requiredDate
+			fraDato: requiredDate,
 		})
 	),
 	arenaBrukertype: requiredString,
-	inaktiveringDato: Yup.mixed()
-		.nullable()
-		.when('arenaBrukertype', {
-			is: 'UTEN_SERVICEBEHOV',
-			then: requiredDate
-		}),
+	inaktiveringDato: Yup.mixed().nullable().when('arenaBrukertype', {
+		is: 'UTEN_SERVICEBEHOV',
+		then: requiredDate,
+	}),
 	automatiskInnsendingAvMeldekort: Yup.boolean().nullable(),
 	kvalifiseringsgruppe: Yup.string()
 		.test('har-verdi', messages.required, function validKvalifiseringsgruppe(gruppe) {
@@ -176,7 +174,7 @@ export const validation = Yup.object({
 					}
 				)
 				.nullable(),
-			mottattDato: Yup.date().nullable()
+			mottattDato: Yup.date().nullable(),
 		})
-	)
+	),
 })

@@ -21,7 +21,7 @@ export const ForbedringModal = ({ closeModal, brukerBilde }) => {
 			event: `Ønsket forbedring fra Dollybruker`,
 			message: forbedring,
 			uuid: uuid,
-			isAnonym: isAnonym
+			isAnonym: isAnonym,
 		})
 		closeModal()
 	}
@@ -44,7 +44,7 @@ export const ForbedringModal = ({ closeModal, brukerBilde }) => {
 							label={'Forbedring/funksjonalitet'}
 							placeholder={'Forsøk å være så spesifikk som mulig'}
 							maxLength={MAX_LENGTH}
-							onChange={event => setForbedring(event.target.value)}
+							onChange={(event) => setForbedring(event.target.value)}
 							feil={
 								forbedring.length > MAX_LENGTH ? 'Tilbakemelding inneholder for mange tegn' : null
 							}

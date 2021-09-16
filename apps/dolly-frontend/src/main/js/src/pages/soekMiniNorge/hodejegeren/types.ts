@@ -108,7 +108,7 @@ type Boadresse = {
 }
 
 type PrioritertAdresse = {
-	type?: string,
+	type?: string
 	fraDato?: Date
 	tilDato?: Date
 }

@@ -26,33 +26,33 @@ export const initialValues = {
 	personIdent: {
 		id: '',
 		type: '',
-		status: ''
+		status: '',
 	},
 	personInfo: {
 		kjoenn: '',
-		datoFoedt: ''
+		datoFoedt: '',
 	},
 	navn: {
 		fornavn: '',
 		mellomnavn: '',
-		slektsnavn: ''
+		slektsnavn: '',
 	},
 	sivilstand: {
-		type: ''
+		type: '',
 	},
 	statsborger: {
-		land: ''
+		land: '',
 	},
 	boadresse: {
 		adresse: '',
 		land: '',
 		kommune: '',
-		postnr: ''
+		postnr: '',
 	},
 	relasjoner: {
-		rolle: ''
+		rolle: '',
 	},
-	antallResultat: 20
+	antallResultat: 20,
 }
 
 export const antallResultatOptions = [
@@ -65,5 +65,5 @@ export const antallResultatOptions = [
 	{ value: 70, label: '70' },
 	{ value: 80, label: '80' },
 	{ value: 90, label: '90' },
-	{ value: 100, label: '100' }
+	{ value: 100, label: '100' },
 ]

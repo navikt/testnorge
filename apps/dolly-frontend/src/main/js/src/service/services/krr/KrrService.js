@@ -9,7 +9,7 @@ export default {
 		return Request.get(endpoint, {
 			'Nav-Personident': ident,
 			'Nav-Call-Id': _uuid(),
-			'Nav-Consumer-Id': 'dolly'
+			'Nav-Consumer-Id': 'dolly',
 		})
 	},
 	getSdpLeverandoerListe() {
@@ -19,5 +19,5 @@ export default {
 	getSdpLeverandoer(id) {
 		const endpoint = `${getKrrUrl()}/sdp/leverandoer/${id}`
 		return Request.get(endpoint, { 'Nav-Call-Id': _uuid(), 'Nav-Consumer-Id': 'dolly' })
-	}
+	},
 }

@@ -14,7 +14,7 @@ export const OrganisasjonDataVisning = ({ data }) => {
 	const organisasjonListe = Object.entries(data).sort()
 
 	// @ts-ignore
-	const getOrganisasjonInfo = organisasjon => {
+	const getOrganisasjonInfo = (organisasjon) => {
 		const [selectedId, setSelectedId] = useState('0')
 		const orgTree = new OrgTree(organisasjon[1], '0')
 		return (
@@ -35,7 +35,7 @@ export const OrganisasjonDataVisning = ({ data }) => {
 						overlay={getOrganisasjonInfo(organisasjoner)}
 						placement="top"
 						align={{
-							offset: ['0', '-10']
+							offset: ['0', '-10'],
 						}}
 						mouseEnterDelay={0.1}
 						mouseLeaveDelay={0.1}

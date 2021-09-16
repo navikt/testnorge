@@ -11,5 +11,5 @@ export default {
 	getTilgjengeligeMiljoer() {
 		const endpoint = `${getInstUrl()}/miljoer`
 		return Request.get(endpoint, { 'Nav-Call-Id': _uuid(), 'Nav-Consumer-Id': 'dolly' })
-	}
+	},
 }

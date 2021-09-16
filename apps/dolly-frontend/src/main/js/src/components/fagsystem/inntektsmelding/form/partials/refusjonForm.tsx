@@ -1,7 +1,4 @@
 import * as React from 'react'
-import { get as _get } from 'lodash'
-import _has from 'lodash/has'
-import Button from '~/components/ui/button/Button'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
@@ -14,7 +11,7 @@ interface RefusjonForm {
 
 const initialEndringIRefusjon = {
 	fom: '',
-	tom: ''
+	tom: '',
 }
 
 export default ({ path, ytelse }: RefusjonForm) => {

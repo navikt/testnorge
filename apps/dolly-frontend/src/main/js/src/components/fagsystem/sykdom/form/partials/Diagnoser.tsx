@@ -1385,6 +1385,6 @@ export const Diagnoser = {
 		{ code: 'Z66', text: 'Henvisning annet helsepersonell IKA' },
 		{ code: 'Z67', text: 'Henvisning spesialist/sykehus' },
 		{ code: 'Z68', text: 'Henvisning IKA' },
-		{ code: 'Z69', text: 'Kontaktårsak IKA' }
-	]
+		{ code: 'Z69', text: 'Kontaktårsak IKA' },
+	],
 }

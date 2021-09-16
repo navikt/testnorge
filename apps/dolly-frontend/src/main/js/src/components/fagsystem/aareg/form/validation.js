@@ -1,8 +1,8 @@
 import * as Yup from 'yup'
 import _get from 'lodash/get'
 import _isNil from 'lodash/isNil'
-import { isWithinInterval, getMonth, getYear } from 'date-fns'
-import { ifPresent, requiredDate, requiredString, messages } from '~/utils/YupValidations'
+import { getMonth, getYear, isWithinInterval } from 'date-fns'
+import { ifPresent, messages, requiredDate, requiredString } from '~/utils/YupValidations'
 
 const innenforAnsettelsesforholdTest = (validation, validateFomMonth) => {
 	const errorMsg = 'Dato må være innenfor ansettelsesforhold'
@@ -40,20 +40,20 @@ const innenforAnsettelsesforholdTest = (validation, validateFomMonth) => {
 
 			return isWithinInterval(dateValue, {
 				start: new Date(ansattFom),
-				end: _isNil(ansattTom) ? new Date() : new Date(ansattTom)
+				end: _isNil(ansattTom) ? new Date() : new Date(ansattTom),
 			})
 		}
 	)
 }
 
-const fullArbeidsforholdTest = validation => {
+const fullArbeidsforholdTest = (validation) => {
 	const fullArbeidsforholdTyper = ['', 'ordinaertArbeidsforhold', 'maritimtArbeidsforhold']
 	return validation.test('isRequired', 'Feltet er påkrevd', function checkRequired(val) {
 		let gyldig = true
 		const values = this.options.context
 		const index = this.options.index
 		const arbeidsforholdType = _get(values, `aareg[${index}].arbeidsforholdstype`)
-		if (fullArbeidsforholdTyper.some(value => value === arbeidsforholdType) && !val) {
+		if (fullArbeidsforholdTyper.some((value) => value === arbeidsforholdType) && !val) {
 			gyldig = false
 		}
 		return gyldig
@@ -63,7 +63,7 @@ const fullArbeidsforholdTest = validation => {
 const ansettelsesPeriode = Yup.object({
 	fom: requiredDate,
 	tom: Yup.date().nullable(),
-	sluttaarsak: Yup.string().nullable()
+	sluttaarsak: Yup.string().nullable(),
 })
 
 const arbeidsgiver = Yup.object({
@@ -72,18 +72,18 @@ const arbeidsgiver = Yup.object({
 		is: 'ORG',
 		then: Yup.string()
 			.matches(/^[0-9]*$/, 'Orgnummer må være et tall med 9 sifre')
-			.test('len', 'Orgnummer må være et tall med 9 sifre', val => val && val.length === 9)
+			.test('len', 'Orgnummer må være et tall med 9 sifre', (val) => val && val.length === 9),
 	}),
 	ident: Yup.string().when('aktoertype', {
 		is: 'PERS',
 		then: Yup.string()
 			.matches(/^[0-9]*$/, 'Ident må være et tall med 11 sifre')
-			.test('len', 'Ident må være et tall med 11 sifre', val => val && val.length === 11)
-	})
+			.test('len', 'Ident må være et tall med 11 sifre', (val) => val && val.length === 11),
+	}),
 })
 
 const arbeidsavtale = Yup.object({
-	yrke: fullArbeidsforholdTest(Yup.string()),
+	yrke: fullArbeidsforholdTest(requiredString),
 	ansettelsesform: Yup.string(),
 	stillingsprosent: fullArbeidsforholdTest(
 		Yup.number()
@@ -99,29 +99,29 @@ const arbeidsavtale = Yup.object({
 			.min(1, 'Kan ikke være mindre enn ${min}')
 			.max(75, 'Kan ikke være større enn ${max}')
 			.typeError(messages.required)
-	)
+	),
 })
 
 const fartoy = Yup.array().of(
 	Yup.object({
 		skipsregister: requiredString,
 		skipstype: requiredString,
-		fartsomraade: requiredString
+		fartsomraade: requiredString,
 	})
 )
 
 const requiredPeriode = Yup.mixed()
 	.when('$aareg[0].arbeidsforholdstype', {
 		is: 'frilanserOppdragstakerHonorarPersonerMm',
-		then: requiredString
+		then: requiredString,
 	})
 	.when('$aareg[0].arbeidsforholdstype', {
 		is: 'maritimtArbeidsforhold',
-		then: requiredString
+		then: requiredString,
 	})
 	.when('$aareg[0].arbeidsforholdstype', {
 		is: 'ordinaertArbeidsforhold',
-		then: requiredString
+		then: requiredString,
 	})
 	.nullable()
 
@@ -138,45 +138,45 @@ export const validation = {
 				Yup.object({
 					periode: Yup.object({
 						fom: innenforAnsettelsesforholdTest(requiredDate),
-						tom: innenforAnsettelsesforholdTest(requiredDate, true)
+						tom: innenforAnsettelsesforholdTest(requiredDate, true),
 					}),
 					antallTimer: Yup.number()
 						.min(1, 'Kan ikke være mindre enn ${min}')
-						.typeError(messages.required)
+						.typeError(messages.required),
 				})
 			),
 			utenlandsopphold: Yup.array().of(
 				Yup.object({
 					periode: Yup.object({
 						fom: innenforAnsettelsesforholdTest(requiredDate),
-						tom: innenforAnsettelsesforholdTest(requiredDate, true)
+						tom: innenforAnsettelsesforholdTest(requiredDate, true),
 					}),
-					land: requiredString
+					land: requiredString,
 				})
 			),
 			permisjon: Yup.array().of(
 				Yup.object({
 					permisjonsPeriode: Yup.object({
 						fom: innenforAnsettelsesforholdTest(requiredDate),
-						tom: innenforAnsettelsesforholdTest(Yup.date().nullable())
+						tom: innenforAnsettelsesforholdTest(Yup.date().nullable()),
 					}),
 					permisjonsprosent: Yup.number()
 						.min(1, 'Kan ikke være mindre enn ${min}')
 						.max(100, 'Kan ikke være større enn ${max}')
 						.typeError(messages.required),
-					permisjon: requiredString
+					permisjon: requiredString,
 				})
 			),
 			permittering: Yup.array().of(
 				Yup.object({
 					permitteringsPeriode: Yup.object({
 						fom: innenforAnsettelsesforholdTest(requiredDate),
-						tom: innenforAnsettelsesforholdTest(Yup.date().nullable())
+						tom: innenforAnsettelsesforholdTest(Yup.date().nullable()),
 					}),
 					permitteringsprosent: Yup.number()
 						.min(1, 'Kan ikke være mindre enn ${min}')
 						.max(100, 'Kan ikke være større enn ${max}')
-						.typeError(messages.required)
+						.typeError(messages.required),
 				})
 			),
 			amelding: ifPresent(
@@ -194,49 +194,49 @@ export const validation = {
 									Yup.object({
 										periode: Yup.object({
 											fom: requiredDate,
-											tom: requiredDate
+											tom: requiredDate,
 										}),
 										antallTimer: Yup.number()
 											.min(1, 'Kan ikke være mindre enn ${min}')
-											.typeError(messages.required)
+											.typeError(messages.required),
 									})
 								),
 								utenlandsopphold: Yup.array().of(
 									Yup.object({
 										periode: Yup.object({
 											fom: requiredDate,
-											tom: requiredDate
+											tom: requiredDate,
 										}),
-										land: requiredString
+										land: requiredString,
 									})
 								),
 								permisjon: Yup.array().of(
 									Yup.object({
 										permisjonsPeriode: Yup.object({
 											fom: requiredDate,
-											tom: Yup.date().nullable()
+											tom: Yup.date().nullable(),
 										}),
 										permisjonsprosent: Yup.number()
 											.min(1, 'Kan ikke være mindre enn ${min}')
 											.max(100, 'Kan ikke være større enn ${max}')
 											.typeError(messages.required),
-										permisjon: requiredString
+										permisjon: requiredString,
 									})
 								),
 								permittering: Yup.array().of(
 									Yup.object({
 										permitteringsPeriode: Yup.object({
 											fom: requiredDate,
-											tom: Yup.date().nullable()
+											tom: Yup.date().nullable(),
 										}),
 										permitteringsprosent: Yup.number()
 											.min(1, 'Kan ikke være mindre enn ${min}')
 											.max(100, 'Kan ikke være større enn ${max}')
-											.typeError(messages.required)
+											.typeError(messages.required),
 									})
-								)
+								),
 							})
-						)
+						),
 					})
 				)
 			),
@@ -244,9 +244,9 @@ export const validation = {
 				'$aareg[0].amelding',
 				Yup.object({
 					fom: requiredPeriode,
-					tom: requiredPeriode
+					tom: requiredPeriode,
 				})
-			)
+			),
 		})
-	)
+	),
 }

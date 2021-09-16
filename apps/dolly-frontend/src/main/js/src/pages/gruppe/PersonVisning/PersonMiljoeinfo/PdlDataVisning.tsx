@@ -44,9 +44,9 @@ export const PdlDataVisning = ({ data }: PdlData) => {
 		return null
 	}
 
-	const gjeldendeAdresse = adresseListe => {
+	const gjeldendeAdresse = (adresseListe) => {
 		if (!adresseListe || adresseListe.length === 0) return null
-		const filteredArray = adresseListe.filter(adresse => adresse.metadata.historisk != true)
+		const filteredArray = adresseListe.filter((adresse) => adresse.metadata.historisk != true)
 		return filteredArray.length > 0 ? filteredArray[0] : adresseListe[0]
 	}
 
@@ -69,7 +69,7 @@ export const PdlDataVisning = ({ data }: PdlData) => {
 				overlay={getPersonInfo(data)}
 				placement="top"
 				align={{
-					offset: ['0', '-10']
+					offset: ['0', '-10'],
 				}}
 				mouseEnterDelay={0.1}
 				mouseLeaveDelay={0.1}

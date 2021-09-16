@@ -33,7 +33,7 @@ const LoadableComponent = ({ onFetch, render, label }: LoadableComponentProps) =
 	const feilmelding: Feilmelding = error
 		? {
 				feilmelding:
-					'Noe gikk galt ved henting av valg. Ta kontakt med team Dolly hvis ikke en refresh av siden hjelper.'
+					'Noe gikk galt ved henting av valg. Ta kontakt med team Dolly hvis ikke en refresh av siden hjelper.',
 		  }
 		: null
 	return render(data, feilmelding)

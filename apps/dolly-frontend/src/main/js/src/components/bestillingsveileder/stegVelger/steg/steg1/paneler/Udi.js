@@ -42,9 +42,9 @@ const arbeidsadgangFelter = {
 	harArbeidsAdgang: '',
 	periode: {
 		fra: null,
-		til: null
+		til: null,
 	},
-	typeArbeidsadgang: null
+	typeArbeidsadgang: null,
 }
 
 UdiPanel.heading = 'UDI'
@@ -54,7 +54,7 @@ UdiPanel.initialValues = ({ set, del, has }) => ({
 		label: 'Oppholdstatus',
 		checked: has('udistub.oppholdStatus'),
 		add: () => set('udistub.oppholdStatus', {}),
-		remove: () => del('udistub.oppholdStatus')
+		remove: () => del('udistub.oppholdStatus'),
 	},
 	arbeidsadgang: {
 		label: 'Arbeidsadgang',
@@ -64,7 +64,7 @@ UdiPanel.initialValues = ({ set, del, has }) => ({
 		},
 		remove() {
 			del('udistub.arbeidsadgang')
-		}
+		},
 	},
 	hjemmel: {
 		label: 'Innhent vedtakshjemmel',
@@ -73,9 +73,9 @@ UdiPanel.initialValues = ({ set, del, has }) => ({
 			set('udistub.arbeidsadgang', {
 				...arbeidsadgangFelter,
 				hjemmel: '',
-				forklaring: null
+				forklaring: null,
 			}),
-		remove: () => del('udistub.arbeidsadgang.hjemmel')
+		remove: () => del('udistub.arbeidsadgang.hjemmel'),
 	},
 	aliaser: {
 		label: 'Har aliaser',
@@ -84,21 +84,21 @@ UdiPanel.initialValues = ({ set, del, has }) => ({
 			set('udistub.aliaser', [
 				{
 					identtype: null,
-					nyIdent: false
-				}
+					nyIdent: false,
+				},
 			]),
-		remove: () => del('udistub.aliaser')
+		remove: () => del('udistub.aliaser'),
 	},
 	flyktning: {
 		label: 'Flyktningstatus',
 		checked: has('udistub.flyktning'),
 		add: () => set('udistub.flyktning', null),
-		remove: () => del('udistub.flyktning')
+		remove: () => del('udistub.flyktning'),
 	},
 	asylsoker: {
 		label: 'Asylsøker',
 		checked: has('udistub.soeknadOmBeskyttelseUnderBehandling'),
 		add: () => set('udistub.soeknadOmBeskyttelseUnderBehandling', ''),
-		remove: () => del('udistub.soeknadOmBeskyttelseUnderBehandling')
-	}
+		remove: () => del('udistub.soeknadOmBeskyttelseUnderBehandling'),
+	},
 })

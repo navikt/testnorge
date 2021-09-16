@@ -78,6 +78,7 @@ applications:
   tps-forvalteren-dev-proxy: dev-fss.dolly.tps-forvalteren-dev-proxy
   testnav-varslinger-service: dev-gcp.dolly.testnav-varslinger-service
   testnav-app-tilgang-analyse-service: dev-gcp.dolly.testnav-app-tilgang-analyse-service
+  geografiske-kodeverk-service: dev-gcp.dolly.testnav-geografiske-kodeverk-service
 
 consumers:
   testnorge-profil-api:

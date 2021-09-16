@@ -33,7 +33,7 @@ Steg3.validation = Yup.object(
 		{
 			environments: Yup.array()
 				.of(Yup.string().required('Velg et navn'))
-				.min(1, 'Må minst velge et miljø')
+				.min(1, 'Må minst velge et miljø'),
 		},
 		MalForm.validation
 	)

@@ -18,16 +18,16 @@ export const actions = createActions(
 		laas: DollyApi.updateGruppeLaas,
 		remove: [
 			DollyApi.deleteGruppe,
-			gruppeId => ({
-				gruppeId
-			})
+			(gruppeId) => ({
+				gruppeId,
+			}),
 		],
 		updateIdentIbruk: DollyApi.updateIdentIbruk,
 		updateBeskrivelse: DollyApi.updateIdentBeskrivelse,
-		importZIdent: DollyApi.importZIdent
+		importZIdent: DollyApi.importZIdent,
 	},
 	{
-		prefix: 'gruppe' // String used to prefix each type
+		prefix: 'gruppe', // String used to prefix each type
 	}
 )
 
@@ -36,7 +36,7 @@ const initialState = {
 	byId: {},
 	gruppeInfo: {},
 	mineIds: [],
-	importerteZIdenter: null
+	importerteZIdenter: null,
 }
 
 export default handleActions(
@@ -58,13 +58,13 @@ export default handleActions(
 		[onSuccess(actions.getAlle)](state, action) {
 			state.byId = []
 			state.gruppeInfo = action.payload.data
-			action.payload.data.contents.forEach(gruppe => {
+			action.payload.data.contents.forEach((gruppe) => {
 				state.byId[gruppe.id] = gruppe
 			})
 		},
 		[onSuccess(actions.getByUserId)](state, action) {
-			state.mineIds = action.payload.data.map(v => v.id)
-			action.payload.data.forEach(gruppe => {
+			state.mineIds = action.payload.data.map((v) => v.id)
+			action.payload.data.forEach((gruppe) => {
 				state.byId[gruppe.id] = gruppe
 			})
 		},
@@ -84,11 +84,11 @@ export default handleActions(
 		},
 		[onSuccess(actions.remove)](state, action) {
 			delete state.byId[action.meta.gruppeId]
-			state.mineIds = state.mineIds.filter(v => v !== action.meta.gruppeId)
+			state.mineIds = state.mineIds.filter((v) => v !== action.meta.gruppeId)
 		},
 		[onSuccess(actions.importZIdent)](state, action) {
 			state.importerteZIdenter = action.payload.data
-		}
+		},
 	},
 	initialState
 )
@@ -103,13 +103,13 @@ export const fetchMineGrupper = () => async (dispatch, getState) => {
 export const loadingGrupper = createLoadingSelector([
 	actions.getById,
 	actions.getAlle,
-	actions.getByUserId
+	actions.getByUserId,
 ])
 
 export const selectGruppeById = (state, gruppeId) => state.gruppe.byId[gruppeId]
 export const selectIdentById = (state, ident) => state.gruppe.ident[ident]
 
-export const sokSelectorGruppeOversikt = state => {
+export const sokSelectorGruppeOversikt = (state) => {
 	const { search, gruppe } = state
 	const items = Object.values(gruppe.byId)
 
@@ -117,16 +117,16 @@ export const sokSelectorGruppeOversikt = state => {
 	if (!search) return items
 
 	const query = search.toLowerCase()
-	return items.filter(item => {
+	return items.filter((item) => {
 		const searchValues = [
 			_get(item, 'id'),
 			_get(item, 'navn'),
 			_get(item, 'hensikt'),
-			_get(item, 'identer', []).length
+			_get(item, 'identer', []).length,
 		]
-			.filter(v => !_isNil(v))
-			.map(v => v.toString().toLowerCase())
+			.filter((v) => !_isNil(v))
+			.map((v) => v.toString().toLowerCase())
 
-		return searchValues.some(v => v.includes(query))
+		return searchValues.some((v) => v.includes(query))
 	})
 }

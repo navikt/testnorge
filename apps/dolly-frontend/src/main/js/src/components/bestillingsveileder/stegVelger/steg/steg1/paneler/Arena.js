@@ -82,8 +82,8 @@ ArenaPanel.initialValues = ({ set, setMulti, del, has }) => ({
 					'arenaforvalter.aap115[0]',
 					{
 						fraDato: null,
-						tilDato: null
-					}
+						tilDato: null,
+					},
 				],
 				MED_SERVICEBEHOV,
 				AUTOMATISK_INNSENDING_MELDEKORT
@@ -92,7 +92,7 @@ ArenaPanel.initialValues = ({ set, setMulti, del, has }) => ({
 		remove() {
 			del('arenaforvalter.aap115')
 			!has('arenaforvalter.aap') && !has('arenaforvalter.dagpenger') && del('arenaforvalter')
-		}
+		},
 	},
 
 	aap: {
@@ -104,8 +104,8 @@ ArenaPanel.initialValues = ({ set, setMulti, del, has }) => ({
 					'arenaforvalter.aap[0]',
 					{
 						fraDato: null,
-						tilDato: null
-					}
+						tilDato: null,
+					},
 				],
 				MED_SERVICEBEHOV,
 				AUTOMATISK_INNSENDING_MELDEKORT
@@ -114,7 +114,7 @@ ArenaPanel.initialValues = ({ set, setMulti, del, has }) => ({
 		remove() {
 			del('arenaforvalter.aap')
 			!has('arenaforvalter.aap115') && !has('arenaforvalter.dagpenger') && del('arenaforvalter')
-		}
+		},
 	},
 
 	dagpenger: {
@@ -129,8 +129,8 @@ ArenaPanel.initialValues = ({ set, setMulti, del, has }) => ({
 						rettighetKode: 'DAGO',
 						fraDato: null,
 						tilDato: null,
-						mottattDato: null
-					}
+						mottattDato: null,
+					},
 				],
 				MED_SERVICEBEHOV,
 				AUTOMATISK_INNSENDING_MELDEKORT
@@ -139,7 +139,7 @@ ArenaPanel.initialValues = ({ set, setMulti, del, has }) => ({
 		remove() {
 			del('arenaforvalter.dagpenger')
 			!has('arenaforvalter.aap115') && !has('arenaforvalter.aap') && del('arenaforvalter')
-		}
+		},
 	},
 
 	ikkeServicebehov: {
@@ -149,12 +149,12 @@ ArenaPanel.initialValues = ({ set, setMulti, del, has }) => ({
 			set('arenaforvalter', {
 				inaktiveringDato: null,
 				automatiskInnsendingAvMeldekort: true,
-				arenaBrukertype: 'UTEN_SERVICEBEHOV'
+				arenaBrukertype: 'UTEN_SERVICEBEHOV',
 			})
 		},
 		remove() {
 			del('arenaforvalter')
-		}
+		},
 	},
 
 	ingenYtelser: {
@@ -170,6 +170,6 @@ ArenaPanel.initialValues = ({ set, setMulti, del, has }) => ({
 		},
 		remove() {
 			del('arenaforvalter')
-		}
-	}
+		},
+	},
 })

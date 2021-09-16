@@ -11,7 +11,7 @@ export const PermisjonPermitteringer = ({ data }) => {
 	const permisjon = []
 	const permittering = []
 
-	data.forEach(periode => {
+	data.forEach((periode) => {
 		if (periode.type === 'permittering') {
 			permittering.push(periode)
 		} else {

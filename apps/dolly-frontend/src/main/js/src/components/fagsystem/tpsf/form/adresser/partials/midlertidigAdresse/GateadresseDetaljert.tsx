@@ -25,7 +25,7 @@ export const GateadresseDetaljert = ({ formikBag }: GateadresseDetaljert) => {
 			poststed: adresse.poststed,
 			gatenavn: adresse.adressenavn,
 			gatekode: adresse.adressekode,
-			husnr: adresse.husnummer
+			husnr: adresse.husnummer,
 		})
 	}
 
@@ -40,7 +40,7 @@ export const GateadresseDetaljert = ({ formikBag }: GateadresseDetaljert) => {
 			_has(formikBag.touched, `${norskAdresse}.gatenavn`)
 		) {
 			return {
-				feilmelding: _get(formikBag.errors, `${norskAdresse}.gatenavn`)
+				feilmelding: _get(formikBag.errors, `${norskAdresse}.gatenavn`),
 			}
 		}
 	}
