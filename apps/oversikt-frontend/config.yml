@@ -22,6 +22,7 @@ spec:
     outbound:
       rules:
         - application: testnorge-profil-api
+        - application: testnav-app-tilgang-analyse-service
   liveness:
     path: /internal/isAlive
     initialDelay: 4

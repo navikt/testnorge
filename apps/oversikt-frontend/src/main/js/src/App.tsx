@@ -40,7 +40,7 @@ export default () => {
             Magic Token
           </HeaderLink>
           <HeaderLink
-            href="#/access-token/dolly-backend"
+            href="#/access-token/dev-fss.dolly.dolly-backend"
             isActive={() => window.location.hash.includes("/access-token")}
           >
             Access Token

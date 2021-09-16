@@ -16,7 +16,7 @@ public class ApplicationRouter {
                         RequestPredicates.GET("/api/v1/applications"),
                         handler::getApplications
                 ).andRoute(
-                        RequestPredicates.GET("/api/v1/applications/{name}/token/on-behalf-of"),
+                        RequestPredicates.GET("/api/v1/applications/{scope}/token/on-behalf-of"),
                         handler::onBehalfOf
                 );
     }
