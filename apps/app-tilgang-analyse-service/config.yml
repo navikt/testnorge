@@ -6,6 +6,8 @@ metadata:
   labels:
     team: dolly
 spec:
+  idporten:
+    enabled: true
   image: {{ image }}
   port: 8080
   azure:
@@ -19,6 +21,9 @@ spec:
           cluster: dev-fss
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
+        - application: app-1
+          cluster: dev-gcp
+          namespace: plattformsikkerhet
     outbound:
       external:
         - host: api.github.com
