@@ -24,7 +24,7 @@ export const VarslingerModal = ({
 	varslinger,
 	varslingerBruker,
 	isLoadingVarslinger,
-	updateVarslingerBruker
+	updateVarslingerBruker,
 }: Varslinger) => {
 	const [steg, setSteg] = useState(0)
 	const [modalOpen, setModalOpen] = useState(true)
@@ -34,12 +34,12 @@ export const VarslingerModal = ({
 	const usetteVarslinger =
 		isLoadingVarslinger === false &&
 		varslinger.length > 0 &&
-		varslinger.filter(varsel => !varslingerBruker.includes(varsel.varslingId))
+		varslinger.filter((varsel) => !varslingerBruker.includes(varsel.varslingId))
 	if (!usetteVarslinger || usetteVarslinger.length < 1) return null
 
 	const currentDate = new Date()
 	const gyldigeVarslinger = usetteVarslinger.filter(
-		varsling =>
+		(varsling) =>
 			(!varsling.fom && (!varsling.tom || isBefore(currentDate, new Date(varsling.tom)))) ||
 			(!varsling.tom && (!varsling.fom || isAfter(currentDate, new Date(varsling.fom)))) ||
 			(isAfter(currentDate, new Date(varsling.fom)) &&
@@ -49,7 +49,7 @@ export const VarslingerModal = ({
 	const antallVarslinger = gyldigeVarslinger.length
 	if (antallVarslinger < 1) return null
 
-	const varslingerSteg = gyldigeVarslinger.map(varsling => ({ label: varsling.varslingId }))
+	const varslingerSteg = gyldigeVarslinger.map((varsling) => ({ label: varsling.varslingId }))
 
 	const submitSettVarsling = (siste: boolean) => {
 		siste ? setModalOpen(false) : setSteg(steg + 1)

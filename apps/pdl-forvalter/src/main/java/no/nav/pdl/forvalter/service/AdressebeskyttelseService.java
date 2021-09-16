@@ -15,7 +15,7 @@ public class AdressebeskyttelseService extends PdlArtifactService<Adressebeskytt
     private static final String VALIDATION_UTLAND_MASTER_ERROR = "Gradering STRENGT_FORTROLIG_UTLAND kan kun settes hvis master er PDL";
 
     @Override
-    protected void validate(AdressebeskyttelseDTO adressebeskyttelse) {
+    public void validate(AdressebeskyttelseDTO adressebeskyttelse) {
 
         if (STRENGT_FORTROLIG_UTLAND.equals(adressebeskyttelse.getGradering()) &&
                 DbVersjonDTO.Master.FREG == adressebeskyttelse.getMaster()) {

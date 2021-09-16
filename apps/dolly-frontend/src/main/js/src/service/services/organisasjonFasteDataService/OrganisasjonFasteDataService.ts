@@ -31,7 +31,7 @@ const fetchOrganisasjoner = (gruppe: string, kanHaArbeidsforhold: boolean = null
 			kanHaArbeidsforhold !== null ? '&kanHaArbeidsforhold=' + kanHaArbeidsforhold : ''
 		}`,
 		{
-			method: 'GET'
+			method: 'GET',
 		}
 	)
 

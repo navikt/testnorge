@@ -1,4 +1,4 @@
-import React, { Children } from 'react'
+import React from 'react'
 import { FieldArray } from 'formik'
 import _get from 'lodash/get'
 import Button from '~/components/ui/button/Button'
@@ -12,14 +12,14 @@ const numberColor = {
 	ARRAY_LEVEL_ONE: '#CCE3ED',
 	ARRAY_LEVEL_TWO: '#FFE5C2',
 	ARRAY_LEVEL_THREE: '#CDE7D8',
-	ARRAY_LEVEL_FOUR: '#C1B5D0'
+	ARRAY_LEVEL_FOUR: '#C1B5D0',
 }
 
 export const FieldArrayAddButton = ({
 	hoverText = null,
 	addEntryButtonText,
 	onClick,
-	disabled = false
+	disabled = false,
 }) => (
 	<Button
 		kind="add-circle"
@@ -50,7 +50,7 @@ export const DollyFieldArrayWrapper = ({
 	header = null,
 	hjelpetekst = null,
 	nested = false,
-	children
+	children,
 }) => (
 	<div className="dfa">
 		{nested && header && (
@@ -70,7 +70,7 @@ export const DollyFaBlokk = ({
 	hjelpetekst,
 	children,
 	showDeleteButton,
-	number
+	number,
 }) => (
 	<div className="dfa-blokk">
 		<div className="dfa-blokk_header">
@@ -90,7 +90,7 @@ export const DollyFaBlokkOrg = ({
 	hjelpetekst,
 	children,
 	showDeleteButton,
-	number
+	number,
 }) => {
 	const nivaa = (number.match(/\./g) || []).length + 1
 	const name = nivaa & 1 ? 'dfa-blokk-org-odd' : 'dfa-blokk-org-even'
@@ -143,7 +143,7 @@ export const DollyFieldArray = ({
 	nested = false,
 	children,
 	expandable = false,
-	getHeader = null
+	getHeader = null,
 }) => {
 	if (ignoreOnSingleElement && data.length === 1) {
 		return children(data[0], 0)
@@ -190,10 +190,10 @@ export const FormikDollyFieldArray = ({
 	tag = null,
 	isOrganisasjon = false,
 	handleNewEntry = null,
-	handleRemoveEntry = null
+	handleRemoveEntry = null,
 }) => (
 	<FieldArray name={name}>
-		{arrayHelpers => {
+		{(arrayHelpers) => {
 			const values = _get(arrayHelpers.form.values, name, [])
 			const addNewEntry = () => {
 				handleNewEntry ? handleNewEntry() : arrayHelpers.push(newEntry)

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useToggle } from 'react-use'
 
-const FormikState = props => (
+const FormikState = (props) => (
 	<pre>
 		<strong>props</strong> = {JSON.stringify(props, null, 2)}
 	</pre>
@@ -24,7 +24,7 @@ export default function DisplayFormikState({ visState = false, ...props }) {
 				borderBottom: '1px solid',
 				borderLeft: '1px solid',
 				borderColor: '#ccc',
-				zIndex: 99
+				zIndex: 99,
 			}}
 		>
 			{showState && <FormikState {...props} />}

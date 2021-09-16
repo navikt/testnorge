@@ -26,7 +26,7 @@ export class Hjelpetekst extends React.Component<Props> {
 			e.stopPropagation()
 			Logger.log({
 				event: `Trykk på hjelpetekst for: ${hjelpetekstFor}`,
-				uuid: this.uuid
+				uuid: this.uuid,
 			})
 		}
 

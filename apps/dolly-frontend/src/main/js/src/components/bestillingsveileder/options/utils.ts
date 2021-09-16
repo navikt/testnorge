@@ -2,7 +2,7 @@ import { initialValues as initialValuesInntektstub } from '~/components/fagsyste
 import {
 	initialPermisjon,
 	initialUtenlandsopphold,
-	initialValues as initialValuesAareg
+	initialValues as initialValuesAareg,
 } from '~/components/fagsystem/aareg/form/initialValues'
 import { initialValues as initialValuesInntektsmelding } from '~/components/fagsystem/inntektsmelding/form/Form'
 import { initialValues as initialValuesInst } from '~/components/fagsystem/inst/form/Form'
@@ -19,7 +19,7 @@ export const initialValues = {
 	boadresse: {
 		bolignr: '',
 		// @ts-ignore
-		flyttedato: null
+		flyttedato: null,
 	},
 	kontaktinformasjonForDoedsbo: {
 		adressat: { adressatType: '' },
@@ -29,7 +29,7 @@ export const initialValues = {
 		poststedsnavn: '',
 		landkode: 'NOR',
 		skifteform: '',
-		utstedtDato: ''
+		utstedtDato: '',
 	},
 	arbeidsadgang: {
 		// @ts-ignore
@@ -39,14 +39,14 @@ export const initialValues = {
 			// @ts-ignore
 			fra: null,
 			// @ts-ignore
-			til: null
+			til: null,
 		},
 		// @ts-ignore
 		typeArbeidsadgang: null,
 		// @ts-ignore
 		hjemmel: '',
 		// @ts-ignore
-		forklaring: null
+		forklaring: null,
 	},
 	udistub: [
 		{
@@ -54,33 +54,33 @@ export const initialValues = {
 				// @ts-ignore
 				fra: null,
 				// @ts-ignore
-				til: null
+				til: null,
 			},
 			// @ts-ignore
 			eosEllerEFTABeslutningOmOppholdsrettEffektuering: null,
-			eosEllerEFTABeslutningOmOppholdsrett: ''
+			eosEllerEFTABeslutningOmOppholdsrett: '',
 		},
 		{
 			eosEllerEFTAVedtakOmVarigOppholdsrettPeriode: {
 				// @ts-ignore
 				fra: null,
 				// @ts-ignore
-				til: null
+				til: null,
 			},
 			// @ts-ignore
 			eosEllerEFTAVedtakOmVarigOppholdsrettEffektuering: null,
-			eosEllerEFTAVedtakOmVarigOppholdsrett: ''
+			eosEllerEFTAVedtakOmVarigOppholdsrett: '',
 		},
 		{
 			eosEllerEFTAOppholdstillatelsePeriode: {
 				// @ts-ignore
 				fra: null,
 				// @ts-ignore
-				til: null
+				til: null,
 			},
 			// @ts-ignore
 			eosEllerEFTAOppholdstillatelseEffektuering: null,
-			eosEllerEFTAOppholdstillatelse: ''
+			eosEllerEFTAOppholdstillatelse: '',
 		},
 		{
 			oppholdSammeVilkaar: {
@@ -88,15 +88,15 @@ export const initialValues = {
 					// @ts-ignore
 					fra: null,
 					// @ts-ignore
-					til: null
+					til: null,
 				},
 				// @ts-ignore
 				oppholdSammeVilkaarEffektuering: null, //date
 				// @ts-ignore
 				oppholdstillatelseVedtaksDato: null, //date
-				oppholdstillatelseType: ''
-			}
-		}
+				oppholdstillatelseType: '',
+			},
+		},
 	],
 	partnere: {
 		identtype: 'FNR',
@@ -105,15 +105,15 @@ export const initialValues = {
 			{
 				sivilstand: '',
 				// @ts-ignore
-				sivilstandRegdato: null
-			}
+				sivilstandRegdato: null,
+			},
 		],
 		harFellesAdresse: false,
 		spesreg: '',
 		utenFastBopel: false,
 		statsborgerskap: '',
 		statsborgerskapRegdato: '',
-		statsborgerskapTildato: ''
+		statsborgerskapTildato: '',
 	},
 	barn: {
 		identtype: 'FNR',
@@ -127,7 +127,7 @@ export const initialValues = {
 		utenFastBopel: false,
 		statsborgerskap: '',
 		statsborgerskapRegdato: '',
-		statsborgerskapTildato: ''
+		statsborgerskapTildato: '',
 	},
 	foreldre: {
 		identtype: 'FNR',
@@ -139,23 +139,23 @@ export const initialValues = {
 		utenFastBopel: false,
 		statsborgerskap: '',
 		statsborgerskapRegdato: '',
-		statsborgerskapTildato: ''
+		statsborgerskapTildato: '',
 	},
 	statborgerskap: {
 		statborgerskap: '',
 		// @ts-ignore
 		statsborgerskapRegdato: null,
 		// @ts-ignore
-		statsborgerskapTildato: null
+		statsborgerskapTildato: null,
 	},
 	utvandretTil: {
 		utvandretTilLand: '',
 		// @ts-ignore
-		utvandretTilLandFlyttedato: null
+		utvandretTilLandFlyttedato: null,
 	},
 	innvandretFra: {
 		innvandretFraLand: '',
 		// @ts-ignore
-		innvandretFraLandFlyttedato: null
-	}
+		innvandretFraLandFlyttedato: null,
+	},
 }

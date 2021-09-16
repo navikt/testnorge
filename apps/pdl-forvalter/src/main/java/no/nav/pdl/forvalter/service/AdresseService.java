@@ -18,7 +18,7 @@ import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-public abstract class AdresseService<T extends AdresseDTO> {
+public abstract class AdresseService<T extends AdresseDTO> implements Validation<T> {
 
     public static final String VALIDATION_MASTER_PDL_ERROR = "Feltene gyldigFraOgMed og gyldigTilOgMed må ha verdi " +
             "hvis master er PDL";
@@ -28,7 +28,7 @@ public abstract class AdresseService<T extends AdresseDTO> {
     public static final String VALIDATION_POSTNUMMER_ERROR = "Postnummer består av fire sifre";
     public static final String VALIDATION_GYLDIGHET_ABSENT_ERROR = "Feltene gyldigFraOgMed og gyldigTilOgMed må ha " +
             "verdi for vegadresse uten matrikkelId";
-    protected static final String VALIDATION_ADRESSE_OVELAP_ERROR = "Feil: Overlappende adressedatoer er ikke lov";
+    protected static final String VALIDATION_ADRESSE_OVELAP_ERROR = "Adresse: Overlappende adressedatoer er ikke lov";
 
     private static final String NAVN_INVALID_ERROR = "CoAdresseNavn er ikke i liste over gyldige verdier";
 
@@ -52,10 +52,6 @@ public abstract class AdresseService<T extends AdresseDTO> {
         if (!bruksenhet.matches("[HULK][0-9]{4}")) {
             throw new InvalidRequestException(VALIDATION_BRUKSENHET_ERROR);
         }
-    }
-
-    protected static <T> int count(T artifact) {
-        return nonNull(artifact) ? 1 : 0;
     }
 
     protected void validateCoAdresseNavn(AdresseDTO.CoNavnDTO navn) {

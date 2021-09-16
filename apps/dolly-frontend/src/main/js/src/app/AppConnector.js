@@ -10,7 +10,7 @@ import ConfigService from '~/service/Config'
 
 const loadingVarslinger = createLoadingSelector(getVarslingerBruker)
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
 	router: state.router,
 	brukerData: state.bruker.brukerData,
 	brukerProfil: state.bruker.brukerProfil,
@@ -20,20 +20,20 @@ const mapStateToProps = state => ({
 	isLoadingVarslinger: loadingVarslinger(state),
 	redirectTo: state.common.redirectTo,
 	applicationError: applicationErrorSelector(state),
-	configReady: ConfigService.verifyConfig()
+	configReady: ConfigService.verifyConfig(),
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-	onRedirect: url => dispatch(push(url)),
+	onRedirect: (url) => dispatch(push(url)),
 	getCurrentBruker: () => dispatch(getCurrentBruker()),
 	getCurrentBrukerProfil: () => dispatch(getCurrentBrukerProfil()),
 	getCurrentBrukerBilde: () => dispatch(getCurrentBrukerBilde()),
 	getVarslingerBruker: () => dispatch(getVarslingerBruker()),
 	getVarslinger: () => dispatch(getVarslinger()),
-	updateVarslingerBruker: varslingId => dispatch(updateVarslingerBruker(varslingId)),
+	updateVarslingerBruker: (varslingId) => dispatch(updateVarslingerBruker(varslingId)),
 	clearAllErrors: () => dispatch(clearAllErrors()),
 	getEnvironments: () => dispatch(getEnvironments()),
-	fetchConfig: () => ConfigService.fetchConfig()
+	fetchConfig: () => ConfigService.fetchConfig(),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)

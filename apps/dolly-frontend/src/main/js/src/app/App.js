@@ -6,7 +6,6 @@ import Loading from '~/components/ui/loading/Loading'
 import Toast from '~/components/ui/toast/Toast'
 import routes from '~/Routes'
 import { VarslingerModal } from '~/components/varslinger/VarslingerModal'
-
 import './App.less'
 import { Forbedring } from '~/components/feedback/Forbedring'
 import Utlogging from '~/components/utlogging'
@@ -15,17 +14,17 @@ import { CriticalError } from '~/components/ui/appError/CriticalError'
 export default class App extends Component {
 	state = {
 		criticalError: null,
-		apiError: null
+		apiError: null,
 	}
 
 	async componentDidMount() {
-		await this.props.fetchConfig().catch(err => this.setState({ criticalError: err }))
-		await this.props.getEnvironments().catch(err => this.setState({ criticalError: err }))
-		await this.props.getCurrentBruker().catch(err => this.setState({ criticalError: err }))
-		await this.props.getCurrentBrukerProfil().catch(err => this.setState({ apiError: err }))
-		await this.props.getCurrentBrukerBilde().catch(err => this.setState({ apiError: err }))
-		await this.props.getVarslinger().catch(err => this.setState({ apiError: err }))
-		await this.props.getVarslingerBruker().catch(err => this.setState({ apiError: err }))
+		await this.props.fetchConfig().catch((err) => this.setState({ criticalError: err }))
+		await this.props.getEnvironments().catch((err) => this.setState({ criticalError: err }))
+		await this.props.getCurrentBruker().catch((err) => this.setState({ criticalError: err }))
+		await this.props.getCurrentBrukerProfil().catch((err) => this.setState({ apiError: err }))
+		await this.props.getCurrentBrukerBilde().catch((err) => this.setState({ apiError: err }))
+		await this.props.getVarslinger().catch((err) => this.setState({ apiError: err }))
+		await this.props.getVarslingerBruker().catch((err) => this.setState({ apiError: err }))
 	}
 
 	componentDidUpdate() {
@@ -44,12 +43,12 @@ export default class App extends Component {
 			varslinger,
 			varslingerBruker,
 			isLoadingVarslinger,
-			updateVarslingerBruker
+			updateVarslingerBruker,
 		} = this.props
 
 		if (this.state.criticalError) return <CriticalError error={this.state.criticalError.stack} />
 
-		if (!brukerData || !configReady) return <Loading label="Laster dolly applikasjon" fullpage />
+		if (!brukerData || !configReady) return <Loading label="Laster Dolly applikasjon" fullpage />
 		return (
 			<React.Fragment>
 				<Utlogging />
@@ -70,7 +69,7 @@ export default class App extends Component {
 										key={idx}
 										path={route.path}
 										exact={route.exact}
-										render={props => <route.component {...props} />}
+										render={(props) => <route.component {...props} />}
 									/>
 								) : null
 							})}

@@ -9,6 +9,7 @@ import java.util.Map;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_ADRESSEBESKYTTELSE;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_BOSTEDADRESSE;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_DELTBOSTED;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_DOEDFOEDT_BARN;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_DOEDSFALL;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_FALSK_IDENTITET;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_FOEDSEL;
@@ -44,7 +45,7 @@ public class PdlTestDataUrls {
     private static final String PDL_BESTILLING_UTENLANDS_IDENTIFIKASJON_NUMMER_URL = PDL_BESTILLING_URL + "/utenlandsidentifikasjonsnummer";
     private static final String PDL_BESTILLING_FALSK_IDENTITET_URL = PDL_BESTILLING_URL + "/falskidentitet";
     private static final String PDL_BESTILLING_FOEDSEL_URL = PDL_BESTILLING_URL + "/foedsel";
-    private static final String PDL_BESTILLING_FORELDRE_BARN_RELASJON_URL = PDL_BESTILLING_URL + "/foreldrebarnrelasjon";
+    private static final String PDL_BESTILLING_FORELDRE_BARN_RELASJON_URL = PDL_BESTILLING_URL + "/forelderbarnrelasjon";
     private static final String PDL_BESTILLING_DOEDSFALL_URL = PDL_BESTILLING_URL + "/doedsfall";
     private static final String PDL_BESTILLING_ADRESSEBESKYTTELSE_URL = PDL_BESTILLING_URL + "/adressebeskyttelse";
     private static final String PDL_BESTILLING_NAVN_URL = PDL_BESTILLING_URL + "/navn";
@@ -62,6 +63,7 @@ public class PdlTestDataUrls {
     private static final String PDL_BESTILLING_OPPHOLD_URL = PDL_BESTILLING_URL + "/opphold";
     private static final String PDL_BESTILLING_VERGEMAAL_URL = PDL_BESTILLING_URL + "/vergemaal";
     private static final String PDL_BESTILLING_FULLMAKT_URL = PDL_BESTILLING_URL + "/fullmakt";
+    private static final String PDL_BESTILLING_DOEDFOEDT_BARN = PDL_BESTILLING_URL + "/doedfoedtbarn";
     private static final String PDL_BESTILLING_TILRETTELAGT_KOMMUNIKASJON_URL = PDL_BESTILLING_URL + "/tilrettelagtkommunikasjon";
     private static final String PDL_BESTILLING_FOLKEREGISTER_PERSONSTATUS_URL = PDL_BESTILLING_URL + "/folkeregisterpersonstatus";
 
@@ -94,6 +96,7 @@ public class PdlTestDataUrls {
         bestillingUrl.put(PDL_TILRETTELAGT_KOMMUNIKASJON, PDL_BESTILLING_TILRETTELAGT_KOMMUNIKASJON_URL);
         bestillingUrl.put(PDL_SLETTING, PDL_SLETTING_URL);
         bestillingUrl.put(PDL_OPPRETT_PERSON, PDL_BESTILLING_OPPRETT_PERSON_URL);
+        bestillingUrl.put(PDL_DOEDFOEDT_BARN, PDL_BESTILLING_DOEDFOEDT_BARN);
     }
 
     public static Map<PdlArtifact, String> getBestillingUrl() {

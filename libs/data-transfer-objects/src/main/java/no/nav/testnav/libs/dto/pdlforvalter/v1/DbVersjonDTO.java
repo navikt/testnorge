@@ -11,6 +11,8 @@ import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 
+import static java.util.Objects.nonNull;
+
 @Data
 @SuperBuilder
 @NoArgsConstructor
@@ -34,4 +36,9 @@ public abstract class DbVersjonDTO implements Serializable {
 
     @JsonIgnore
     private Boolean isNew;
+
+    @JsonIgnore
+    protected static <T> int count(T artifact) {
+        return nonNull(artifact) ? 1 : 0;
+    }
 }

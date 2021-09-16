@@ -14,8 +14,8 @@ export const getBoadresse = (data: Innhold) => {
 			festenr: boadresseData.matrikkelFestenr,
 			undernr: boadresseData.matrikkelUndernr,
 			postnr: boadresseData.postnr,
-			flyttedato: boadresseData.fraDato
-		}
+			flyttedato: boadresseData.fraDato,
+		},
 	]
 }
 
@@ -24,8 +24,8 @@ const getStatsborgerskap = (data: Statsborger) => {
 		{
 			statsborgerskap: data.land,
 			statsborgerskapRegdato: data.fraDato ? data.fraDato : '',
-			statsborgerskapTildato: data.tilDato ? data.tilDato : ''
-		}
+			statsborgerskapTildato: data.tilDato ? data.tilDato : '',
+		},
 	]
 }
 
@@ -34,7 +34,7 @@ export const getNasjonalitet = (data: Innhold) => {
 	innutvandret = []
 	return {
 		statsborgerskap: getStatsborgerskap(data.statsborger),
-		innvandretUtvandret: innutvandret
+		innvandretUtvandret: innutvandret,
 	}
 }
 
@@ -65,7 +65,7 @@ export const getPersonInfo = (data: Innhold) => {
 		telefonLandskode_2:
 			tlf1 === 'mobil' ? data.telefonPrivat.retningslinje : data.telefonMobil.retningslinje,
 		bankkontonr: data.giro.nummer,
-		bankkontonrRegdato: data.giro.fraDato
+		bankkontonrRegdato: data.giro.fraDato,
 	}
 
 	if (!personInfo.telefonLandskode_1) personInfo.telefonLandskode_1 = ''
@@ -80,8 +80,8 @@ export const getPostAdresse = (data: Innhold) => {
 			postLinje1: data.post.adresse1,
 			postLinje2: data.post.adresse2,
 			postLinje3: data.post.adresse3,
-			postLand: data.post.postland
-		}
+			postLand: data.post.postland,
+		},
 	]
 }
 
@@ -101,8 +101,8 @@ export const getRelasjoner = (data: Innhold) => {
 				postadresse: emptyArray,
 				sivilstander: emptyArray,
 				relasjoner: emptyArray,
-				adoptert: 'Ukjent'
-			}
+				adoptert: 'Ukjent',
+			},
 		})
 	}
 	return dollyRelasjoner
@@ -113,7 +113,7 @@ enum Relasjon {
 	FAR = 'FAR',
 	EKTEFELLE = 'EKTEFELLE',
 	PARTNER = 'PARTNER',
-	BARN = 'BARN'
+	BARN = 'BARN',
 }
 
 const getRelasjonsType = (rolle: string) => {

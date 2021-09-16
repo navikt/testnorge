@@ -1,12 +1,12 @@
 import React from 'react'
 import _get from 'lodash/get'
-import { FormikProps, FieldArray } from 'formik'
+import { FieldArray, FormikProps } from 'formik'
 import {
 	DollyFaBlokk,
 	DollyFieldArrayWrapper,
-	FieldArrayAddButton
+	FieldArrayAddButton,
 } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { Inntekt, Fradrag, Forskudd, Arbeidsforhold } from './inntektstubTypes'
+import { Arbeidsforhold, Forskudd, Fradrag, Inntekt } from './inntektstubTypes'
 import InntektsinformasjonLister from './inntektsinformasjonLister/inntektsinformasjonLister'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
@@ -30,14 +30,14 @@ export default ({ formikBag, path }: InntektendringForm) => {
 		arbeidsforholdsliste: kopiAvGjeldendeInntekt.arbeidsforholdsliste,
 		forskuddstrekksliste: kopiAvGjeldendeInntekt.forskuddstrekksliste,
 		fradragsliste: kopiAvGjeldendeInntekt.fradragsliste,
-		inntektsliste: kopiAvGjeldendeInntekt.inntektsliste
+		inntektsliste: kopiAvGjeldendeInntekt.inntektsliste,
 	}
 	const historikkPath = `${path}.historikk`
 	const data = _get(formikBag.values, historikkPath, [])
 
 	return (
 		<FieldArray name={historikkPath}>
-			{arrayHelpers => {
+			{(arrayHelpers) => {
 				const addNewEntry = () => arrayHelpers.push(initialValues)
 				return (
 					<ErrorBoundary>

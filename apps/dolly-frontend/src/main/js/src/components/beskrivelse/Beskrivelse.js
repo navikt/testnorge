@@ -9,14 +9,14 @@ export const Beskrivelse = ({
 	updateBeskrivelse,
 	isUpdatingBeskrivelse,
 	iLaastGruppe,
-	closeModal
+	closeModal,
 }) => {
 	if (isUpdatingBeskrivelse) {
 		closeModal && closeModal()
 		return <Loading label="oppdaterer beskrivelse" />
 	}
 
-	const handleSubmit = value => updateBeskrivelse(ident.ident, value)
+	const handleSubmit = (value) => updateBeskrivelse(ident.ident, value)
 
 	return (
 		<React.Fragment>

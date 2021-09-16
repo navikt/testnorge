@@ -71,7 +71,7 @@ export const Personinfo = ({ data, visTittel = true }) => {
 						value={data.gtVerdi}
 						size="medium"
 					>
-						{value => `${Formatters.gtTypeLabel(data.gtType)} - ${value.label}`}
+						{(value) => `${Formatters.gtTypeLabel(data.gtType)} - ${value.label}`}
 					</TitleValue>
 				)}
 

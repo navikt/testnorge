@@ -36,6 +36,6 @@ export class OrgTree<T extends Org<T>> {
 		if (this.level === id) {
 			return this.organisajon
 		}
-		return this.underenheter.map(value => value.find(id)).find(value => value != null)
+		return this.underenheter.map((value) => value.find(id)).find((value) => value != null)
 	}
 }

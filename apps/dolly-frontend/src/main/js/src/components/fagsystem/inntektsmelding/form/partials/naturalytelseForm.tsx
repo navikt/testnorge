@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { get as _get } from 'lodash'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
@@ -13,7 +12,7 @@ interface NaturalytelseForm {
 const initialNaturalytelse = {
 	beloepPrMnd: '',
 	fom: '',
-	naturalytelseType: ''
+	naturalytelseType: '',
 }
 
 export default ({ path }: NaturalytelseForm) => (

@@ -13,9 +13,9 @@ export const TextEditor = ({ text, handleSubmit, placeholder, maxLength = 1000 }
 		handleSubmit(value)
 		turnOffEditing()
 	}
-	const handleChange = e => setValue(e.target.value)
+	const handleChange = (e) => setValue(e.target.value)
 
-	const focusEndOfStringHack = e => {
+	const focusEndOfStringHack = (e) => {
 		e.target.value = ''
 		e.target.value = value
 	}

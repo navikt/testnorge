@@ -34,14 +34,12 @@ class SivilstandServiceTest {
     @Test
     void whenTypeIsMissing_thenThrowExecption() {
 
-        var request = PersonDTO.builder()
-                .sivilstand(List.of(SivilstandDTO.builder()
+        var request = SivilstandDTO.builder()
                         .isNew(true)
-                        .build()))
-                .build();
+                        .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                sivilstandService.convert(request));
+                sivilstandService.validate(request));
 
         assertThat(exception.getMessage(), containsString("Type av sivilstand må oppgis"));
     }
@@ -49,15 +47,13 @@ class SivilstandServiceTest {
     @Test
     void whenSivilstandDatoIsMissing_thenThrowExecption() {
 
-        var request = PersonDTO.builder()
-                .sivilstand(List.of(SivilstandDTO.builder()
+        var request = SivilstandDTO.builder()
                         .type(SKILT)
                         .isNew(true)
-                        .build()))
-                .build();
+                        .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                sivilstandService.convert(request));
+                sivilstandService.validate(request));
 
         assertThat(exception.getMessage(), containsString("Sivilstand: dato for sivilstand må oppgis"));
     }
@@ -65,19 +61,17 @@ class SivilstandServiceTest {
     @Test
     void whenRelatertPersonDontExist_thenThrowExecption() {
 
-        var request = PersonDTO.builder()
-                .sivilstand(List.of(SivilstandDTO.builder()
+        var request = SivilstandDTO.builder()
                         .type(GIFT)
                         .sivilstandsdato(LocalDateTime.now())
                         .relatertVedSivilstand(IDENT)
                         .isNew(true)
-                        .build()))
-                .build();
+                        .build();
 
         when(personRepository.existsByIdent(IDENT)).thenReturn(false);
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                sivilstandService.convert(request));
+                sivilstandService.validate(request));
 
         assertThat(exception.getMessage(), containsString("Sivilstand: Relatert person finnes ikke"));
     }

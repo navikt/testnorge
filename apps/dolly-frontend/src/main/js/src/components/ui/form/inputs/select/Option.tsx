@@ -32,7 +32,7 @@ const StyledOption = styled.div`
 const Option = ({ children, isSelected, innerProps }) => (
 	<StyledOption
 		className={cx('dolly-select__option', {
-			'dolly-select__option_selected': isSelected
+			'dolly-select__option_selected': isSelected,
 		})}
 		id={innerProps.id}
 		tabIndex={innerProps.tabIndex}

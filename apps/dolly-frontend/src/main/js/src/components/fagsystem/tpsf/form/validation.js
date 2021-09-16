@@ -8,7 +8,7 @@ import {
 	messages,
 	requiredDate,
 	requiredNumber,
-	requiredString
+	requiredString,
 } from '~/utils/YupValidations'
 
 const boadresse = Yup.object({
@@ -44,31 +44,27 @@ const boadresse = Yup.object({
 		then: ifKeyHasValue(
 			'$tpsf.boadresse.tilleggsadresse',
 			[undefined],
-			Yup.string()
-				.required(messages.required)
-				.max(5, 'Gårdsnummeret må være under 99999')
-		)
+			Yup.string().required(messages.required).max(5, 'Gårdsnummeret må være under 99999')
+		),
 	}),
 	bruksnr: Yup.mixed().when('adressetype', {
 		is: 'MATR',
 		then: ifKeyHasValue(
 			'$tpsf.boadresse.tilleggsadresse',
 			[undefined],
-			Yup.string()
-				.required(messages.required)
-				.max(4, 'Bruksnummeret må være under 9999')
-		)
+			Yup.string().required(messages.required).max(4, 'Bruksnummeret må være under 9999')
+		),
 	}),
 	festnr: Yup.string().max(4, 'Festenummer må være under 9999'),
 	undernr: Yup.string().max(3, 'Undernummer må være under 999'),
 	postnr: Yup.mixed().when('adressetype', {
 		is: 'MATR',
-		then: ifKeyHasValue('$tpsf.boadresse.tilleggsadresse', [undefined], requiredString)
+		then: ifKeyHasValue('$tpsf.boadresse.tilleggsadresse', [undefined], requiredString),
 	}),
 	kommunenr: Yup.mixed()
 		.when('adressetype', {
 			is: 'MATR',
-			then: ifKeyHasValue('$tpsf.boadresse.tilleggsadresse', [undefined], requiredString)
+			then: ifKeyHasValue('$tpsf.boadresse.tilleggsadresse', [undefined], requiredString),
 		})
 		.nullable(),
 	tilleggsadresse: Yup.object({
@@ -76,16 +72,16 @@ const boadresse = Yup.object({
 		nummer: ifKeyHasValue(
 			'$tpsf.boadresse.tilleggsadresse.tilleggType',
 			['LEILIGHET_NR', 'SEKSJON_NR', 'BOLIG_NR'],
-			requiredNumber.transform(num => (isNaN(num) ? undefined : num))
-		)
-	})
+			requiredNumber.transform((num) => (isNaN(num) ? undefined : num))
+		),
+	}),
 })
 
 const adresseNrInfo = Yup.object({
 	nummer: Yup.mixed().when('nummertype', {
-		is: v => v,
-		then: ifKeyHasValue('$tpsf.boadresse.tilleggsadresse', [undefined], requiredString)
-	})
+		is: (v) => v,
+		then: ifKeyHasValue('$tpsf.boadresse.tilleggsadresse', [undefined], requiredString),
+	}),
 }).nullable()
 
 const midlertidigAdresse = Yup.object({
@@ -103,7 +99,7 @@ const midlertidigAdresse = Yup.object({
 	),
 	gateadresseNrInfo: Yup.object({
 		nummertype: ifPresent('$tpsf.midlertidigAdresse.gateadresseNrInfo', requiredString),
-		nummer: ifPresent('$tpsf.midlertidigAdresse.gateadresseNrInfo', requiredString)
+		nummer: ifPresent('$tpsf.midlertidigAdresse.gateadresseNrInfo', requiredString),
 	}),
 	norskAdresse: Yup.object({
 		tilleggsadresse: Yup.object({
@@ -115,7 +111,7 @@ const midlertidigAdresse = Yup.object({
 				'$tpsf.midlertidigAdresse.norskAdresse.tilleggsadresse.tilleggType',
 				'BOLIG_NR',
 				requiredString
-			)
+			),
 		}),
 		postnr: ifPresent('$tpsf.midlertidigAdresse.norskAdresse.postnr', requiredString),
 		gatenavn: ifKeyHasValue(
@@ -131,17 +127,15 @@ const midlertidigAdresse = Yup.object({
 		gatekode: Yup.string(),
 		husnr: Yup.string(),
 		eiendomsnavn: ifKeyHasValue('$tpsf.midlertidigAdresse.adressetype', 'STED', requiredString),
-		postboksnr: Yup.string()
-			.min(1, 'Feltet er påkrevd')
-			.max(5, 'Nummer kan ha maks fem siffer'),
-		postboksAnlegg: ifKeyHasValue('$tpsf.midlertidigAdresse.adressetype', 'PBOX', requiredString)
+		postboksnr: Yup.string().min(1, 'Feltet er påkrevd').max(5, 'Nummer kan ha maks fem siffer'),
+		postboksAnlegg: ifKeyHasValue('$tpsf.midlertidigAdresse.adressetype', 'PBOX', requiredString),
 	}),
 	utenlandskAdresse: Yup.object({
 		postLinje1: ifPresent('$tpsf.midlertidigAdresse.utenlandskAdresse', requiredString),
 		postLinje2: Yup.string(),
 		postLinje3: Yup.string(),
-		postLand: ifPresent('$tpsf.midlertidigAdresse.utenlandskAdresse', requiredString)
-	})
+		postLand: ifPresent('$tpsf.midlertidigAdresse.utenlandskAdresse', requiredString),
+	}),
 })
 
 export const sivilstander = Yup.array().of(
@@ -170,8 +164,8 @@ export const sivilstander = Yup.array().of(
 							return null
 						}
 						const datoer = values.personFoerLeggTil.tpsf.sivilstander
-							.filter(sivstand => sivstand.sivilstandRegdato)
-							.map(sivilstand => new Date(sivilstand.sivilstandRegdato))
+							.filter((sivstand) => sivstand.sivilstandRegdato)
+							.map((sivilstand) => new Date(sivilstand.sivilstandRegdato))
 							.sort((a, b) => b.getTime() - a.getTime()) // Seneste dato på første index
 						return datoer && datoer.length > 0 && datoer[0].toISOString().substring(0, 10)
 					}
@@ -208,16 +202,16 @@ export const sivilstander = Yup.array().of(
 										prevDato
 								  )}), og det må minst være 2 dager i mellom`
 								: 'Dato kan ikke være etter dagens dato',
-							path: path
+							path: path,
 						})
 					)
 				}
 			)
-			.required(messages.required)
+			.required(messages.required),
 	})
 )
 
-const innvandringUtvandringDatoTest = schema => {
+const innvandringUtvandringDatoTest = (schema) => {
 	return schema.test(
 		'datoEtterSisteInnUtvandring',
 		`Datoen må være etter siste inn-/utvandring (${''})`,
@@ -235,7 +229,7 @@ const innvandringUtvandringDatoTest = schema => {
 					message: `Dato må være etter siste inn-/utvandring (${Dataformatter.formatDate(
 						sisteDato
 					)})`,
-					path: this.options.path
+					path: this.options.path,
 				})
 			)
 		}
@@ -298,7 +292,7 @@ const partnere = Yup.array()
 			identtype: Yup.string(),
 			kjonn: Yup.string().nullable(),
 			alder: Yup.number()
-				.transform(num => (isNaN(num) ? undefined : num))
+				.transform((num) => (isNaN(num) ? undefined : num))
 				.min(0, 'Alder må være et positivt tall')
 				.max(119, 'Alder må være under 120'),
 			foedtEtter: foedtFoerOgEtterTest(Yup.date().nullable(), false),
@@ -309,35 +303,35 @@ const partnere = Yup.array()
 					then: Yup.string().test(
 						'is-not-kode6',
 						'Kan ikke være "Kode 6" når "Uten fast bopel" er valgt.',
-						value => value !== 'SPSF'
-					)
+						(value) => value !== 'SPSF'
+					),
 				})
 				.nullable(),
 			utenFastBopel: Yup.boolean(),
 			boadresse: Yup.object({
-				kommunenr: Yup.string().nullable()
+				kommunenr: Yup.string().nullable(),
 			}),
 			sivilstander: ifPresent('$tpsf.relasjoner.partnere[0].sivilstander', sivilstander),
-			harFellesAdresse: Yup.boolean()
+			harFellesAdresse: Yup.boolean(),
 		})
 	)
 	.nullable()
 
-const requiredHvisIkkeDoed = path =>
+const requiredHvisIkkeDoed = (path) =>
 	ifPresent(
 		path,
 		Yup.mixed().when('doedsdato', {
-			is: val => val === undefined || val === null,
-			then: requiredString
+			is: (val) => val === undefined || val === null,
+			then: requiredString,
 		})
 	)
 
-const requiredHvisDoedfoedt = path =>
+const requiredHvisDoedfoedt = (path) =>
 	ifPresent(
 		path,
 		Yup.mixed().when('identtype', {
-			is: val => val === 'FDAT',
-			then: requiredDate
+			is: (val) => val === 'FDAT',
+			then: requiredDate,
 		})
 	)
 
@@ -351,7 +345,7 @@ const barn = Yup.array()
 			borHos: requiredHvisIkkeDoed('$tpsf.relasjoner.barn[0].borHos'),
 			erAdoptert: Yup.boolean(),
 			alder: Yup.number()
-				.transform(num => (isNaN(num) ? undefined : num))
+				.transform((num) => (isNaN(num) ? undefined : num))
 				.min(0, 'Alder må være et positivt tall')
 				.max(119, 'Alder må være under 120'),
 			foedtEtter: foedtFoerOgEtterTest(Yup.date().nullable(), false),
@@ -362,16 +356,16 @@ const barn = Yup.array()
 					then: Yup.string().test(
 						'is-not-kode6',
 						'Kan ikke være "Kode 6" når "Uten fast bopel" er valgt.',
-						value => value !== 'SPSF'
-					)
+						(value) => value !== 'SPSF'
+					),
 				})
 				.nullable(),
 			utenFastBopel: Yup.boolean(),
 			boadresse: Yup.object({
-				kommunenr: Yup.string().nullable()
+				kommunenr: Yup.string().nullable(),
 			}),
 			foedselsdato: requiredHvisDoedfoedt('$tpsf.relasjoner.barn[0].foedselsdato'),
-			doedsdato: Yup.date().nullable()
+			doedsdato: Yup.date().nullable(),
 		})
 	)
 	.nullable()
@@ -383,26 +377,26 @@ const foreldre = Yup.array()
 			kjonn: Yup.string().nullable(),
 			foreldreType: ifPresent('$tpsf.relasjoner.foreldre[0].foreldreType', requiredString),
 			alder: Yup.number()
-				.transform(num => (isNaN(num) ? undefined : num))
+				.transform((num) => (isNaN(num) ? undefined : num))
 				.min(0, 'Alder må være et positivt tall')
 				.max(119, 'Alder må være under 120'),
 			foedtEtter: foedtFoerOgEtterTest(Yup.date().nullable(), false),
 			foedtFoer: foedtFoerOgEtterTest(Yup.date().nullable(), true),
 			spesreg: Yup.string(),
 			boadresse: Yup.object({
-				kommunenr: Yup.string().nullable()
+				kommunenr: Yup.string().nullable(),
 			}),
-			doedsdato: Yup.date().nullable()
+			doedsdato: Yup.date().nullable(),
 		})
 	)
 	.nullable()
 
-const testTelefonnummer = nr =>
+const testTelefonnummer = (nr) =>
 	Yup.string()
 		.max(20, 'Telefonnummer kan ikke ha mer enn 20 sifre')
 		.when(`telefonLandskode_${nr}`, {
 			is: '+47',
-			then: Yup.string().length(8, 'Norsk telefonnummer må ha 8 sifre')
+			then: Yup.string().length(8, 'Norsk telefonnummer må ha 8 sifre'),
 		})
 		.required(messages.required)
 		.matches(/^[1-9][0-9]*$/, 'Telefonnummer må være numerisk, og kan ikke starte med 0')
@@ -445,12 +439,14 @@ export const validation = {
 			),
 			egenAnsattDatoTom: ifPresent(
 				'$tpsf.egenAnsattDatoTom',
-				Yup.string().test('is-after-dato-fom', 'Dato må være etter fra-dato', function validDate(
-					dato
-				) {
-					const values = this.options.context
-					return isAfter(new Date(dato), new Date(_get(values, 'tpsf.egenAnsattDatoFom')))
-				})
+				Yup.string().test(
+					'is-after-dato-fom',
+					'Dato må være etter fra-dato',
+					function validDate(dato) {
+						const values = this.options.context
+						return isAfter(new Date(dato), new Date(_get(values, 'tpsf.egenAnsattDatoFom')))
+					}
+				)
 			),
 			telefonLandskode_1: ifPresent('$tpsf.telefonLandskode_1', requiredString),
 			telefonnummer_1: ifPresent('$tpsf.telefonnummer_1', testTelefonnummer('1')),
@@ -463,8 +459,8 @@ export const validation = {
 					then: Yup.string().test(
 						'is-not-kode6',
 						'Kan ikke være "Kode 6" når "Uten fast bopel" er valgt.',
-						value => value !== 'SPSF'
-					)
+						(value) => value !== 'SPSF'
+					),
 				})
 			).nullable(),
 			vergemaal: ifPresent(
@@ -472,18 +468,16 @@ export const validation = {
 				Yup.object({
 					embete: requiredString.nullable(),
 					sakType: requiredString.nullable(),
-					vedtakDato: requiredDate
+					vedtakDato: requiredDate,
 				})
 			),
 			fullmakt: ifPresent(
 				'$tpsf.fullmakt',
 				Yup.object({
 					kilde: requiredString,
-					omraader: Yup.array()
-						.of(Yup.string())
-						.required('Velg minst ett område'),
+					omraader: Yup.array().of(Yup.string()).required('Velg minst ett område'),
 					gyldigFom: requiredDate,
-					gyldigTom: requiredDate
+					gyldigTom: requiredDate,
 				})
 			),
 			boadresse: ifPresent('$tpsf.boadresse', boadresse),
@@ -493,17 +487,17 @@ export const validation = {
 				Yup.object({
 					postLinje3: Yup.string().when('postLand', {
 						is: 'NOR',
-						then: requiredString
+						then: requiredString,
 					}),
-					postLand: requiredString
+					postLand: requiredString,
 				})
 			),
 			relasjoner: Yup.object({
 				partnere: ifPresent('$tpsf.relasjoner.partnere', partnere),
 				barn: ifPresent('$tpsf.relasjoner.barn', barn),
-				foreldre: ifPresent('$tpsf.relasjoner.foreldre', foreldre)
+				foreldre: ifPresent('$tpsf.relasjoner.foreldre', foreldre),
 			}),
-			identtype: ifPresent('$tpsf.identtype', requiredString)
+			identtype: ifPresent('$tpsf.identtype', requiredString),
 		})
-	)
+	),
 }

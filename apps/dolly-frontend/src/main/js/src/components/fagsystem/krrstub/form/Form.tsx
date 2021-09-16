@@ -4,7 +4,7 @@ import { ifPresent, requiredBoolean } from '~/utils/YupValidations'
 import _get from 'lodash/get'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikSelect, DollySelect } from '~/components/ui/form/inputs/select/Select'
+import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import Panel from '~/components/ui/panel/Panel'
@@ -39,7 +39,7 @@ export const KrrstubForm = ({ formikBag }: KrrstubForm) => {
 				sdpLeverandoer: '',
 				spraak: '',
 				registrert: registrert.value,
-				reservert: null
+				reservert: null,
 			})
 		} else {
 			formikBag.setFieldValue('krrstub.registrert', true)
@@ -117,6 +117,6 @@ KrrstubForm.validation = {
 		sdpLeverandoer: Yup.string(),
 		spraak: Yup.string(),
 		registrert: ifPresent('$krrstub.registrert', requiredBoolean),
-		reservert: Yup.boolean().nullable()
-	})
+		reservert: Yup.boolean().nullable(),
+	}),
 }

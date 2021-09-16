@@ -27,11 +27,11 @@ export const Select = ({
 	placeholder = 'Velg..',
 	options = [],
 	isMulti = false,
-	styles
+	styles,
 }) => {
 	let _value = isMulti
-		? options.filter(o => value?.some(el => el === o.value))
-		: options.filter(o => o.value === value)
+		? options.filter((o) => value?.some((el) => el === o.value))
+		: options.filter((o) => o.value === value)
 
 	return (
 		<ReactSelect
@@ -47,14 +47,14 @@ export const Select = ({
 			classNamePrefix={classNamePrefix}
 			components={{
 				MenuList,
-				Option
+				Option,
 			}}
 			isDisabled={disabled}
 			isSearchable={isSearchable}
 			isLoading={isLoading}
 			isClearable={isClearable}
 			isMulti={isMulti}
-			styles={styles ? styles : { menuPortal: base => ({ ...base, zIndex: 99999 }) }}
+			styles={styles ? styles : { menuPortal: (base) => ({ ...base, zIndex: 99999 }) }}
 			menuPortalTarget={document.getElementById('react-select-root')}
 			optionHeight={optionHeight}
 		/>
@@ -63,11 +63,13 @@ export const Select = ({
 
 export const SelectMedKodeverk = ({ kodeverk, ...rest }) => (
 	<KodeverkConnector navn={kodeverk}>
-		{kodeverkVerdier => <Select {...rest} isLoading={!kodeverkVerdier} options={kodeverkVerdier} />}
+		{(kodeverkVerdier) => (
+			<Select {...rest} isLoading={!kodeverkVerdier} options={kodeverkVerdier} />
+		)}
 	</KodeverkConnector>
 )
 
-export const DollySelect = props => (
+export const DollySelect = (props) => (
 	<InputWrapper {...props}>
 		<Label containerClass="dollyselect" name={props.name} label={props.label} feil={props.feil}>
 			{props.kodeverk ? <SelectMedKodeverk {...props} /> : <Select {...props} />}
@@ -87,7 +89,7 @@ const P_FormikSelect = ({ fastfield, feil, ...props }) => {
 			}
 			if (meta.action === 'remove-value') {
 				// When removing last value, value is null
-				value = selected ? selected.map(v => v.value) : []
+				value = selected ? selected.map((v) => v.value) : []
 			}
 		} else {
 			value = selected && selected.value

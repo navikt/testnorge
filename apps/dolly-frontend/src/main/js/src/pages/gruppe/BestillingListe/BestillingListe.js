@@ -14,14 +14,14 @@ const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
 	Avvik: 'report-problem-circle',
 	Feilet: 'report-problem-triangle',
-	Stoppet: 'report-problem-triangle'
+	Stoppet: 'report-problem-triangle',
 }
 
 export default function BestillingListe({
 	bestillinger,
 	searchActive,
 	isFetchingBestillinger,
-	iLaastGruppe
+	iLaastGruppe,
 }) {
 	if (isFetchingBestillinger) return <Loading label="Laster bestillinger" panel />
 	if (!bestillinger) return null
@@ -43,35 +43,35 @@ export default function BestillingListe({
 			text: 'ID',
 			width: '15',
 			dataField: 'listedata[0]',
-			unique: true
+			unique: true,
 		},
 		{
 			text: 'Antall personer',
 			width: '15',
-			dataField: 'listedata[1]'
+			dataField: 'listedata[1]',
 		},
 		{
 			text: 'Sist oppdatert',
 			width: '20',
-			dataField: 'listedata[2]'
+			dataField: 'listedata[2]',
 		},
 		{
 			text: 'Miljø',
 			width: '30',
-			dataField: 'listedata[3]'
+			dataField: 'listedata[3]',
 		},
 		{
 			text: 'Status',
 			width: '10',
 			dataField: 'listedata[4]',
-			formatter: cell => {
+			formatter: (cell) => {
 				return cell === 'Pågår' ? (
 					<Spinner size={24} />
 				) : (
 					<Icon kind={ikonTypeMap[cell]} title={cell} />
 				)
-			}
-		}
+			},
+		},
 	]
 
 	return (
@@ -80,7 +80,7 @@ export default function BestillingListe({
 				data={sortedBestillinger}
 				columns={columns}
 				iconItem={<BestillingIconItem />}
-				onExpand={bestilling => (
+				onExpand={(bestilling) => (
 					<BestillingDetaljer bestilling={bestilling} iLaastGruppe={iLaastGruppe} />
 				)}
 				pagination

@@ -14,7 +14,7 @@ export const TimeloennetForm = ({
 	arbeidsforholdIndex,
 	formikBag,
 	erLenket,
-	onChangeLenket
+	onChangeLenket,
 }) => {
 	const maaneder = _get(formikBag.values, 'aareg[0].amelding')
 
@@ -33,7 +33,7 @@ export const TimeloennetForm = ({
 		})
 	}
 
-	const handleRemoveEntry = idTimeloennet => {
+	const handleRemoveEntry = (idTimeloennet) => {
 		if (!maaneder) return
 		maaneder.forEach((maaned, idMaaned) => {
 			if (!erLenket && idMaaned != ameldingIndex) return

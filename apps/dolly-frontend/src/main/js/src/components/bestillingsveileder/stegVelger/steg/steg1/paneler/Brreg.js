@@ -33,16 +33,16 @@ BrregPanel.initialValues = ({ set, del, has }) => ({
 						rolle: '',
 						registreringsdato: new Date(),
 						foretaksNavn: {
-							navn1: ''
+							navn1: '',
 						},
 						orgNr: '',
-						personroller: []
-					}
-				]
+						personroller: [],
+					},
+				],
 			})
 		},
 		remove() {
 			del('brregstub')
-		}
-	}
+		},
+	},
 })

@@ -11,7 +11,7 @@ const getAllDatesBetween = (startdato, sluttdato) => {
 	return arr
 }
 
-export const getExcludedDatesAndMaxDate = data => {
+export const getExcludedDatesAndMaxDate = (data) => {
 	let maxDate = null
 	let excludeDates = []
 	for (let i = 0; i < data.instdata.length; i++) {

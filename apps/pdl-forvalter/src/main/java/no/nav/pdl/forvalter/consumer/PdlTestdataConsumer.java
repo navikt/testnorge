@@ -19,7 +19,7 @@ import no.nav.pdl.forvalter.domain.ArtifactValue;
 import no.nav.pdl.forvalter.dto.HistoriskIdent;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlStatus;
-import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
+import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
 import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import org.springframework.stereotype.Service;
@@ -64,7 +64,7 @@ public class PdlTestdataConsumer {
 
     private final WebClient webClient;
     private final AccessTokenService accessTokenService;
-    private final NaisServerProperties properties;
+    private final ServerProperties properties;
     private final ObjectMapper objectMapper;
 
     public PdlTestdataConsumer(AccessTokenService accessTokenService,

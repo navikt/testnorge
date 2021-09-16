@@ -23,10 +23,10 @@ export const Oppholdsstatus = (opphold: Opphold) => {
 	const oppholdsrettTyper = [
 		'eosEllerEFTABeslutningOmOppholdsrett',
 		'eosEllerEFTAVedtakOmVarigOppholdsrett',
-		'eosEllerEFTAOppholdstillatelse'
+		'eosEllerEFTAOppholdstillatelse',
 	]
 	// @ts-ignore
-	const currentOppholdsrettType = oppholdsrettTyper.find(type => oppholdsstatus[type])
+	const currentOppholdsrettType = oppholdsrettTyper.find((type) => oppholdsstatus[type])
 	const currentTredjelandsborgereStatus = oppholdsstatus.oppholdSammeVilkaar
 		? 'Oppholdstillatelse eller opphold på samme vilkår'
 		: oppholdsstatus.uavklart

@@ -15,7 +15,7 @@ export const PermisjonForm = ({
 	arbeidsforholdIndex,
 	formikBag,
 	erLenket,
-	onChangeLenket
+	onChangeLenket,
 }) => {
 	const maaneder = _get(formikBag.values, 'aareg[0].amelding')
 
@@ -34,7 +34,7 @@ export const PermisjonForm = ({
 		})
 	}
 
-	const handleRemoveEntry = idPermisjon => {
+	const handleRemoveEntry = (idPermisjon) => {
 		if (!maaneder) return
 		maaneder.forEach((maaned, idMaaned) => {
 			if (!erLenket && idMaaned != ameldingIndex) return

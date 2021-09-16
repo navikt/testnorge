@@ -1,13 +1,23 @@
 package no.nav.organisasjonforvalter.controller;
 
-import static no.nav.organisasjonforvalter.config.CacheConfig.CACHE_BEDRIFT;
-import static no.nav.organisasjonforvalter.config.CacheConfig.CACHE_EREG_IMPORT;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import no.nav.organisasjonforvalter.dto.requests.BestillingRequest;
+import no.nav.organisasjonforvalter.dto.requests.DeployRequest;
+import no.nav.organisasjonforvalter.dto.responses.BestillingResponse;
+import no.nav.organisasjonforvalter.dto.responses.DeployResponse;
+import no.nav.organisasjonforvalter.dto.responses.OrdreResponse;
+import no.nav.organisasjonforvalter.dto.responses.RsOrganisasjon;
+import no.nav.organisasjonforvalter.dto.responses.UnderenhetResponse;
+import no.nav.organisasjonforvalter.service.BestillingService;
+import no.nav.organisasjonforvalter.service.DrivervirksomheterService;
+import no.nav.organisasjonforvalter.service.ImportService;
+import no.nav.organisasjonforvalter.service.OrdreService;
+import no.nav.organisasjonforvalter.service.OrdreStatusService;
+import no.nav.organisasjonforvalter.service.OrganisasjonService;
+import no.nav.testnav.libs.servletsecurity.service.AuthenticationTokenResolver;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,45 +29,42 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import no.nav.organisasjonforvalter.dto.requests.BestillingRequest;
-import no.nav.organisasjonforvalter.dto.requests.DeployRequest;
-import no.nav.organisasjonforvalter.dto.responses.BestillingResponse;
-import no.nav.organisasjonforvalter.dto.responses.DeployResponse;
-import no.nav.organisasjonforvalter.dto.responses.RsOrganisasjon;
-import no.nav.organisasjonforvalter.dto.responses.UnderenhetResponse;
-import no.nav.organisasjonforvalter.service.BestillingService;
-import no.nav.organisasjonforvalter.service.DeploymentService;
-import no.nav.organisasjonforvalter.service.DrivervirksomheterService;
-import no.nav.organisasjonforvalter.service.ImportService;
-import no.nav.organisasjonforvalter.service.OrganisasjonService;
-import no.nav.testnav.libs.servletsecurity.service.AuthenticationTokenResolver;
+import static java.util.Objects.nonNull;
+import static no.nav.organisasjonforvalter.config.CacheConfig.CACHE_BEDRIFT;
 
 @RestController
-@RequestMapping("api/v1/organisasjon")
+@RequestMapping("api/v2/organisasjoner")
 @RequiredArgsConstructor
 public class OrganisasjonController {
 
     private final BestillingService bestillingService;
-    private final DeploymentService deploymentService;
+    private final OrdreService ordreService;
+    private final OrdreStatusService ordreStatusService;
     private final OrganisasjonService organisasjonService;
     private final ImportService importService;
     private final DrivervirksomheterService drivervirksomheterService;
     private final AuthenticationTokenResolver authenticationTokenResolver;
 
     @CacheEvict(value = CACHE_BEDRIFT, allEntries = true)
-    @PostMapping("/bestilling")
+    @PostMapping
     @Operation(description = "Opprett organisasjon med angitte egenskaper")
     public BestillingResponse createOrganisasjon(@RequestBody BestillingRequest request) {
 
         return bestillingService.execute(request);
     }
 
-    @CacheEvict(value = CACHE_EREG_IMPORT, allEntries = true)
-    @PostMapping("/deployment")
+    @PostMapping("/ordre")
     @Operation(description = "Send organisasjoner til EREG i angitte miljøer")
     public DeployResponse deployOrganisasjon(@RequestBody DeployRequest request) {
 
-        return deploymentService.deploy(request);
+        return ordreService.deploy(request);
+    }
+
+    @GetMapping("/ordrestatus")
+    @Operation(description = "Sjekk deploy status")
+    public OrdreResponse getStatus(@RequestParam List<String> orgnumre) {
+
+        return ordreStatusService.getStatus(orgnumre);
     }
 
     @GetMapping
@@ -67,8 +74,7 @@ public class OrganisasjonController {
         return organisasjonService.getOrganisasjoner(orgnumre);
     }
 
-    @Cacheable(CACHE_EREG_IMPORT)
-    @GetMapping("/import")
+    @GetMapping("/framiljoe")
     @Operation(description = "Hent organisasjon fra EREG")
     public Map<String, RsOrganisasjon> importOrganisasjon(@RequestParam String orgnummer,
                                                           @RequestParam(required = false) Set<String> miljoer) {
@@ -79,9 +85,7 @@ public class OrganisasjonController {
     @GetMapping("/virksomheter")
     @Operation(description = "Hent virksomheter av type BEDR og AAFY fra database. Kun disse typer kan ha ansatte")
     public List<UnderenhetResponse> getUnderenheter(@Parameter(description = "BrukerId fra Azure") @RequestParam(required = false) String brukerid) {
-        if (brukerid != null) {
-            return drivervirksomheterService.getUnderenheter(brukerid);
-        }
-        return drivervirksomheterService.getUnderenheter(authenticationTokenResolver.getOid());
+
+        return drivervirksomheterService.getUnderenheter(nonNull(brukerid) ? brukerid : authenticationTokenResolver.getOid());
     }
 }

@@ -46,17 +46,15 @@ class KontaktAdresseServiceTest {
     @Test
     void whenTooFewDigitsInPostnummer_thenThrowExecption() {
 
-        var request = PersonDTO.builder()
-                .kontaktadresse(List.of(KontaktadresseDTO.builder()
+        var request = KontaktadresseDTO.builder()
                         .postboksadresse(PostboksadresseDTO.builder()
                                 .postboks("123")
                                 .build())
                         .isNew(true)
-                        .build()))
-                .build();
+                        .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.convert(request));
+                kontaktAdresseService.validate(request));
 
         assertThat(exception.getMessage(), containsString("Postnummer består av fire sifre"));
     }
@@ -64,16 +62,14 @@ class KontaktAdresseServiceTest {
     @Test
     void whenPostboksadresseAndPostboksIsOmitted_thenThrowExecption() {
 
-        var request = PersonDTO.builder()
-                .kontaktadresse(List.of(KontaktadresseDTO.builder()
+        var request = KontaktadresseDTO.builder()
                         .postboksadresse(PostboksadresseDTO.builder()
                                 .build())
                         .isNew(true)
-                        .build()))
-                .build();
+                        .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.convert(request));
+                kontaktAdresseService.validate(request));
 
         assertThat(exception.getMessage(), containsString("Kan ikke være tom"));
     }
@@ -81,48 +77,42 @@ class KontaktAdresseServiceTest {
     @Test
     void whenNoAdressProvided_thenThrowExecption() {
 
-        var request = PersonDTO.builder()
-                .kontaktadresse(List.of(KontaktadresseDTO.builder()
+        var request = KontaktadresseDTO.builder()
                         .isNew(true)
-                        .build()))
-                .build();
+                        .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.convert(request));
+                kontaktAdresseService.validate(request));
 
-        assertThat(exception.getMessage(), containsString("Én av adressene må velges"));
+        assertThat(exception.getMessage(), containsString("én av adressene må velges"));
     }
 
     @Test
     void whenMultipleAdressesProvided_thenThrowExecption() {
 
-        var request = PersonDTO.builder()
-                .kontaktadresse(List.of(KontaktadresseDTO.builder()
+        var request = KontaktadresseDTO.builder()
                         .vegadresse(new VegadresseDTO())
                         .utenlandskAdresse(new UtenlandskAdresseDTO())
                         .isNew(true)
-                        .build()))
-                .build();
+                        .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.convert(request));
+                kontaktAdresseService.validate(request));
 
-        assertThat(exception.getMessage(), containsString("Kun én adresse skal være satt"));
+        assertThat(exception.getMessage(), containsString("kun én adresse skal være satt"));
     }
 
     @Test
     void whenMasterPDLWithoutGyldighet_thenThrowExecption() {
 
-        var request = PersonDTO.builder()
-                .kontaktadresse(List.of(KontaktadresseDTO.builder()
+        var request = KontaktadresseDTO.builder()
                         .master(DbVersjonDTO.Master.PDL)
                         .postboksadresse(new PostboksadresseDTO())
                         .isNew(true)
-                        .build()))
-                .build();
+                        .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.convert(request));
+                kontaktAdresseService.validate(request));
 
         assertThat(exception.getMessage(), containsString(
                 "Feltene gyldigFraOgMed og gyldigTilOgMed må ha verdi hvis master er PDL"));
@@ -131,17 +121,15 @@ class KontaktAdresseServiceTest {
     @Test
     void whenPDLAdresseWithoutGyldighet_thenThrowExecption() {
 
-        var request = PersonDTO.builder()
-                .kontaktadresse(List.of(KontaktadresseDTO.builder()
+        var request = KontaktadresseDTO.builder()
                         .vegadresse(VegadresseDTO.builder()
                                 .adressenavn("Denne veien")
                                 .build())
                         .isNew(true)
-                        .build()))
-                .build();
+                        .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.convert(request));
+                kontaktAdresseService.validate(request));
 
         assertThat(exception.getMessage(), containsString(
                 "Feltene gyldigFraOgMed og gyldigTilOgMed må ha verdi for vegadresse uten matrikkelId"));
@@ -150,17 +138,15 @@ class KontaktAdresseServiceTest {
     @Test
     void whenAdresseHasUgyldigBruksenhetsnummer_thenThrowExecption() {
 
-        var request = PersonDTO.builder()
-                .kontaktadresse(List.of(KontaktadresseDTO.builder()
+        var request = KontaktadresseDTO.builder()
                         .vegadresse(VegadresseDTO.builder()
                                 .bruksenhetsnummer("W12345")
                                 .build())
                         .isNew(true)
-                        .build()))
-                .build();
+                        .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.convert(request));
+                kontaktAdresseService.validate(request));
 
         assertThat(exception.getMessage(), containsString(
                 "Gyldig format er Bokstaven H, L, U eller K etterfulgt av fire sifre"));

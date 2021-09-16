@@ -8,7 +8,7 @@ import './SearchField.less'
 export const SearchField = ({ placeholder = 'Hva leter du etter?', setText }) => {
 	const dispatch = useDispatch()
 
-	const handleChange = event =>
+	const handleChange = (event) =>
 		setText
 			? setText(event.target.value.trim())
 			: dispatch(setSearchText(event.target.value.trim()))

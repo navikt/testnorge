@@ -2,16 +2,11 @@ name: Deploy testnorge-skd
 
 on:
   push:
-    branches: master
+    branches:
+      - master
     paths:
       - apps/testnorge-skd/**
-
   workflow_dispatch:
-    inputs:
-      logLevel:
-        description: 'Log level'
-        required: true
-        default: 'warning'
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/skd:${{ github.sha }}

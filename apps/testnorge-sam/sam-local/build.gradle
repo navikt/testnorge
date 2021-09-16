@@ -18,6 +18,7 @@ dependencies {
     implementation project(':sam-core')
     implementation 'org.springframework.boot:spring-boot-autoconfigure'
     implementation 'org.hibernate.validator:hibernate-validator'
+    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 

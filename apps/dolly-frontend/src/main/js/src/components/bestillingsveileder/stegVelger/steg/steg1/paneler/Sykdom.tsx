@@ -30,12 +30,12 @@ SykdomPanel.initialValues = ({ set, del, has }: any) => ({
 				syntSykemelding: {
 					startDato: new Date(),
 					orgnummer: '',
-					arbeidsforholdId: ''
-				}
+					arbeidsforholdId: '',
+				},
 			})
 		},
 		remove() {
 			del('sykemelding')
-		}
-	}
+		},
+	},
 })

@@ -55,18 +55,18 @@ const initialPartner = {
 	sivilstander: [
 		{
 			sivilstand: '',
-			sivilstandRegdato: ''
-		}
+			sivilstandRegdato: '',
+		},
 	],
-	harFellesAdresse: true
+	harFellesAdresse: true,
 }
 
-const harPartner = identInfo =>
-	_get(identInfo, 'relasjoner', []).some(r => r.relasjonTypeNavn === 'PARTNER')
+const harPartner = (identInfo) =>
+	_get(identInfo, 'relasjoner', []).some((r) => r.relasjonTypeNavn === 'PARTNER')
 
 // Per nå kan ikke bruker legge til en partner som allerede har en annen partner
 const muligePartnere = (identInfo, hovedIdent) => {
-	return Object.keys(identInfo).filter(ident => {
+	return Object.keys(identInfo).filter((ident) => {
 		if (ident === hovedIdent) return false
 		return !harPartner(identInfo[ident])
 	})

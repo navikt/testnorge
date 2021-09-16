@@ -7,7 +7,7 @@ export default {
 	},
 	validate(values) {
 		return Request.post('/testnav-inntektstub-proxy/api/v2/valider', values).then(
-			value => value.data
+			(value) => value.data
 		)
-	}
+	},
 }

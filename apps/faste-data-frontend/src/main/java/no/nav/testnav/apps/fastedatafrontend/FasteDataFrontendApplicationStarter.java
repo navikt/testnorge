@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteLocator;
+import org.springframework.cloud.gateway.route.builder.Buildable;
 import org.springframework.cloud.gateway.route.builder.PredicateSpec;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
@@ -21,16 +22,16 @@ import no.nav.testnav.apps.fastedatafrontend.credentials.PersonServiceProperties
 import no.nav.testnav.apps.fastedatafrontend.credentials.ProfilApiServiceProperties;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
-import no.nav.testnav.libs.reactivefrontend.filter.AddRequestHeaderGatewayFilterFactory;
-import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2FrontendConfiguration;
-import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
-import no.nav.testnav.libs.reactivesecurity.domain.Scopeable;
-import no.nav.testnav.libs.reactivesecurity.service.AccessTokenService;
+import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
+import no.nav.testnav.libs.reactivesessionsecurity.config.OicdInMemorySessionConfiguration;
+import no.nav.testnav.libs.reactivesessionsecurity.domain.AccessToken;
+import no.nav.testnav.libs.reactivesessionsecurity.domain.ServerProperties;
+import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Import({
         CoreConfig.class,
-        SecureOAuth2FrontendConfiguration.class,
+        OicdInMemorySessionConfiguration.class,
         FrontendConfig.class
 })
 @SpringBootApplication
@@ -47,16 +48,15 @@ public class FasteDataFrontendApplicationStarter {
         SpringApplication.run(FasteDataFrontendApplicationStarter.class, args);
     }
 
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
 
-
-    private GatewayFilter filterFrom(Scopeable scopeable) {
-        return AddRequestHeaderGatewayFilterFactory
-                .createAuthenticationHeaderFilter(
-                        () -> accessTokenService
-                                .generateToken(scopeable)
-                                .map(AccessToken::getTokenValue)
-                );
+    private GatewayFilter addAuthenticationHeaderFilterFrom(ServerProperties serverProperties) {
+        return new AddAuthenticationHeaderToRequestGatewayFilterFactory()
+                .apply(exchange -> {
+                    return tokenExchange
+                            .generateToken(serverProperties, exchange)
+                            .map(AccessToken::getTokenValue);
+                });
     }
 
     @Bean
@@ -66,32 +66,32 @@ public class FasteDataFrontendApplicationStarter {
                 .route(createRoute(
                         "testnav-organisasjon-service",
                         organisasjonServiceProperties.getUrl(),
-                        filterFrom(organisasjonServiceProperties)
+                        addAuthenticationHeaderFilterFrom(organisasjonServiceProperties)
                 ))
                 .route(createRoute(
                         "testnav-organisasjon-faste-data-service",
                         organisasjonFasteDataServiceProperties.getUrl(),
-                        filterFrom(organisasjonFasteDataServiceProperties)
+                        addAuthenticationHeaderFilterFrom(organisasjonFasteDataServiceProperties)
                 ))
                 .route(createRoute(
                         "testnorge-profil-api",
                         profilApiServiceProperties.getUrl(),
-                        filterFrom(profilApiServiceProperties)
+                        addAuthenticationHeaderFilterFrom(profilApiServiceProperties)
                 ))
                 .route(createRoute(
                         "testnav-person-service",
                         personServiceProperties.getUrl(),
-                        filterFrom(personServiceProperties)
+                        addAuthenticationHeaderFilterFrom(personServiceProperties)
                 ))
                 .route(createRoute(
                         "testnav-person-faste-data-service",
                         personFasteDataServiceProperties.getUrl(),
-                        filterFrom(personFasteDataServiceProperties)
+                        addAuthenticationHeaderFilterFrom(personFasteDataServiceProperties)
                 ))
                 .build();
     }
 
-    private Function<PredicateSpec, Route.AsyncBuilder> createRoute(String segment, String host, GatewayFilter filter) {
+    private Function<PredicateSpec, Buildable<Route>> createRoute(String segment, String host, GatewayFilter filter) {
         log.info("Redirect fra segment {} til host {}.", segment, host);
         return spec -> spec
                 .path("/" + segment + "/**")

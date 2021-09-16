@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteLocator;
+import org.springframework.cloud.gateway.route.builder.Buildable;
 import org.springframework.cloud.gateway.route.builder.PredicateSpec;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
@@ -47,7 +48,7 @@ public class EregProxyApplicationStarter {
                 .build();
     }
 
-    private Function<PredicateSpec, Route.AsyncBuilder> createRoute(String miljo) {
+    private Function<PredicateSpec, Buildable<Route>> createRoute(String miljo) {
         return spec -> spec
                 .path("/api/" + miljo + "/**")
                 .filters(filterSpec -> filterSpec

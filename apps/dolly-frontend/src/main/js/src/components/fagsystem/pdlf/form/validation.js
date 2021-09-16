@@ -1,10 +1,10 @@
 import * as Yup from 'yup'
-import { requiredString, requiredDate, ifKeyHasValue, ifPresent } from '~/utils/YupValidations'
+import { ifKeyHasValue, ifPresent, requiredDate, requiredString } from '~/utils/YupValidations'
 
 const personnavnSchema = Yup.object({
 	fornavn: requiredString,
 	mellomnavn: Yup.string(),
-	etternavn: requiredString
+	etternavn: requiredString,
 })
 
 const falskIdentitet = Yup.object({
@@ -12,7 +12,7 @@ const falskIdentitet = Yup.object({
 		identitetType: requiredString,
 		rettIdentitetVedIdentifikasjonsnummer: Yup.mixed().when('identitetType', {
 			is: 'ENTYDIG',
-			then: requiredString
+			then: requiredString,
 		}),
 		personnavn: ifKeyHasValue(
 			'$pdlforvalter.falskIdentitet.rettIdentitet.identitetType',
@@ -21,17 +21,17 @@ const falskIdentitet = Yup.object({
 		),
 		foedselsdato: Yup.mixed().when('identitetType', {
 			is: 'OMTRENTLIG',
-			then: requiredDate
+			then: requiredDate,
 		}),
 		kjoenn: Yup.mixed().when('identitetType', {
 			is: 'OMTRENTLIG',
-			then: requiredString
+			then: requiredString,
 		}),
 		statsborgerskap: Yup.mixed().when('identitetType', {
 			is: 'OMTRENTLIG',
-			then: requiredString
-		})
-	})
+			then: requiredString,
+		}),
+	}),
 })
 
 const utenlandskId = Yup.array().of(
@@ -39,7 +39,7 @@ const utenlandskId = Yup.array().of(
 		identifikasjonsnummer: requiredString,
 		kilde: requiredString,
 		opphoert: requiredString,
-		utstederland: requiredString
+		utstederland: requiredString,
 	})
 )
 
@@ -53,27 +53,27 @@ const kontaktDoedsbo = Yup.object({
 		),
 		organisasjonsnavn: Yup.string().when('adressatType', {
 			is: 'ORGANISASJON',
-			then: requiredString
+			then: requiredString,
 		}),
 		organisasjonsnummer: Yup.string().when('adressatType', {
 			is: 'ADVOKAT' || 'ORGANISASJON',
 			then: Yup.string().matches(/^[0-9]{9}$/, {
 				message: 'Organisasjonsnummeret må være et tall med 9 sifre',
-				excludeEmptyString: true
-			})
+				excludeEmptyString: true,
+			}),
 		}),
 		idnummer: Yup.string().when('adressatType', {
 			is: 'PERSON_MEDID',
 			then: requiredString.matches(/^[0-9]{11}$/, {
 				message: 'Id-nummeret må være et tall med 11 sifre',
-				excludeEmptyString: true
-			})
+				excludeEmptyString: true,
+			}),
 		}),
 		navn: ifKeyHasValue(
 			'$pdlforvalter.kontaktinformasjonForDoedsbo.adressat.adressatType',
 			['PERSON_UTENID'],
 			personnavnSchema
-		)
+		),
 	}),
 	adresselinje1: requiredString,
 	adresselinje2: Yup.string(),
@@ -81,7 +81,7 @@ const kontaktDoedsbo = Yup.object({
 	poststedsnavn: requiredString,
 	landkode: requiredString,
 	skifteform: requiredString,
-	utstedtDato: requiredDate
+	utstedtDato: requiredDate,
 })
 
 export const validation = {
@@ -94,6 +94,6 @@ export const validation = {
 		kontaktinformasjonForDoedsbo: ifPresent(
 			'$pdlforvalter.kontaktinformasjonForDoedsbo',
 			kontaktDoedsbo
-		)
-	})
+		),
+	}),
 }

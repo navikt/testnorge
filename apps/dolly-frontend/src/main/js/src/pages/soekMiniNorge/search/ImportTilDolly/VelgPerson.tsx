@@ -10,11 +10,11 @@ interface VelgPerson {
 
 export const VelgPerson = ({ personinfo, valgtePersoner, setValgtePersoner }: VelgPerson) => {
 	const gjeldendePerson = personinfo.personIdent.id
-	const avhuket = valgtePersoner.some(id => id === gjeldendePerson)
+	const avhuket = valgtePersoner.some((id) => id === gjeldendePerson)
 
 	const handleOnChange = () => {
 		if (avhuket) {
-			setValgtePersoner(valgtePersoner.filter(ident => ident !== personinfo.personIdent.id))
+			setValgtePersoner(valgtePersoner.filter((ident) => ident !== personinfo.personIdent.id))
 		} else {
 			setValgtePersoner([...valgtePersoner, personinfo.personIdent.id])
 		}

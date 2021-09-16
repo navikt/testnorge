@@ -3,7 +3,7 @@ import no.nav.testnav.dependencies.gradle.DependenciesPlugin
 plugins {
     id 'no.nav.testnav.dependencies'
     id 'java'
-    id 'org.springframework.boot' version "2.3.4.RELEASE"
+    id 'org.springframework.boot' version "2.5.4"
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
 bootJar {
@@ -28,7 +28,7 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
-
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
@@ -36,6 +36,7 @@ dependencies {
     implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
     implementation 'org.hibernate.validator:hibernate-validator'
 
+    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }

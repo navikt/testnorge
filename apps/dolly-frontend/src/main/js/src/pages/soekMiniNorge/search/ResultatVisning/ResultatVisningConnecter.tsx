@@ -3,8 +3,7 @@ import { connect } from 'react-redux'
 // @ts-ignore
 import { withRouter } from 'react-router-dom'
 import { createSelector } from 'reselect'
-import { selectIdentById } from '~/ducks/gruppe'
-import { fetchDataFraFagsystemerForSoek, selectDataForIdent, actions } from '~/ducks/fagsystem'
+import { actions, fetchDataFraFagsystemerForSoek, selectDataForIdent } from '~/ducks/fagsystem'
 import { createLoadingSelector } from '~/ducks/loading'
 import { ResultatVisning } from './ResultatVisning'
 
@@ -20,8 +19,8 @@ const loadingSelectorPensjon = createLoadingSelector(actions.getPensjon)
 
 const loadingSelector = createSelector(
 	// @ts-ignore
-	state => state.loading,
-	loading => {
+	(state) => state.loading,
+	(loading) => {
 		return {
 			krrstub: loadingSelectorKrr({ loading }),
 			sigrunstub: loadingSelectorSigrun({ loading }),
@@ -31,7 +30,7 @@ const loadingSelector = createSelector(
 			arenaforvalteren: loadingSelectorArena({ loading }),
 			instdata: loadingSelectorInst({ loading }),
 			udistub: loadingSelectorUdi({ loading }),
-			pensjonforvalter: loadingSelectorPensjon({ loading })
+			pensjonforvalter: loadingSelectorPensjon({ loading }),
 		}
 	}
 )
@@ -39,11 +38,11 @@ const loadingSelector = createSelector(
 const mapStateToProps = (state: any, ownProps: any) => ({
 	loading: loadingSelector(state),
 	data: selectDataForIdent(state, ownProps.personId),
-	dataFraMiniNorge: ownProps.data
+	dataFraMiniNorge: ownProps.data,
 })
 
 const mapDispatchToProps = (dispatch: any, ownProps: any) => ({
-	fetchDataFraFagsystemerForSoek: () => dispatch(fetchDataFraFagsystemerForSoek(ownProps.personId))
+	fetchDataFraFagsystemerForSoek: () => dispatch(fetchDataFraFagsystemerForSoek(ownProps.personId)),
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ResultatVisning))

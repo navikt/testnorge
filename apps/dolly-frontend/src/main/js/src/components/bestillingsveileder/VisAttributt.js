@@ -10,7 +10,7 @@ const InternalVis = ({ formik, attributt, children }) => {
 		// Strings er akseptert, men konverter til Array
 		if (!Array.isArray(attributtPath)) attributtPath = [attributtPath]
 
-		return attributtPath.some(v => _has(values, v))
+		return attributtPath.some((v) => _has(values, v))
 	}
 
 	return isChecked(formik.values, attributt) && children

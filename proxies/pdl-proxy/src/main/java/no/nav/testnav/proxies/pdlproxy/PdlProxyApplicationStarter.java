@@ -1,26 +1,23 @@
 package no.nav.testnav.proxies.pdlproxy;
 
+import no.nav.testnav.libs.reactivecore.config.CoreConfig;
+import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
+import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
+import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
+import no.nav.testnav.libs.securitytokenservice.StsOidcTokenService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteLocator;
+import org.springframework.cloud.gateway.route.builder.Buildable;
 import org.springframework.cloud.gateway.route.builder.PredicateSpec;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpHeaders;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
-
-import no.nav.testnav.libs.securitytokenservice.StsOidcTokenService;
-import no.nav.testnav.libs.reactivecore.config.CoreConfig;
-import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
-import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
-import no.nav.testnav.libs.reactiveproxy.filter.AddRequestHeadersGatewayFilterFactory;
-import no.nav.testnav.libs.reactiveproxy.filter.GetHeader;
 
 @Import({
         CoreConfig.class,
@@ -40,36 +37,27 @@ public class PdlProxyApplicationStarter {
     public StsOidcTokenService stsOidcTokenService(
             @Value("${sts.token.provider.url}") String url,
             @Value("${sts.token.provider.username}") String username,
-            @Value("${sts.token.provider.password}") String password
-    ) {
+            @Value("${sts.token.provider.password}") String password) {
+
         return new StsOidcTokenService(url, username, password);
     }
 
-    private GatewayFilter addAuthenticationHeaderFilter(Supplier<String> tokenService) {
-        var getHeader = new GetHeader(() -> HttpHeaders.AUTHORIZATION, () -> "Bearer " + tokenService.get());
-        return new AddRequestHeadersGatewayFilterFactory().apply(getHeader);
-    }
-
-    private GatewayFilter AddAuthorizationAndNavConsumerTokenToRouteFilter(Supplier<String> tokenService) {
-        var getAuthorizationHeader = new GetHeader(() -> HttpHeaders.AUTHORIZATION, () -> "Bearer " + tokenService.get());
-        var getNavConsumerTokenHeader = new GetHeader(() -> HEADER_NAV_CONSUMER_TOKEN, () -> "Bearer " + tokenService.get());
-        return new AddRequestHeadersGatewayFilterFactory().apply(getAuthorizationHeader, getNavConsumerTokenHeader);
-    }
-
-
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder, StsOidcTokenService stsOidcTokenService) {
-        var addAuthenticationHeaderFilter = addAuthenticationHeaderFilter(stsOidcTokenService::getToken);
-        var addAuthorizationAndNavConsumerTokenToRouteFilter = AddAuthorizationAndNavConsumerTokenToRouteFilter(stsOidcTokenService::getToken);
+
+        var addAuthenticationHeaderFilter = AddAuthenticationRequestGatewayFilterFactory
+                .createAuthenticationHeaderFilter(stsOidcTokenService::getToken);
+        var addAuthorizationAndNavConsumerTokenToRouteFilter = AddAuthenticationRequestGatewayFilterFactory
+                .createAuthenticationAndNavConsumerTokenHeaderFilter(stsOidcTokenService::getToken);
 
         return builder
                 .routes()
                 .route(createRoute("pdl-api", "https://pdl-api.dev.adeo.no", addAuthorizationAndNavConsumerTokenToRouteFilter))
-                .route(createRoute("pdl-testdata", "https://pdl-testdata.dev.adeo.no", addAuthenticationHeaderFilter))
+                .route(createRoute("pdl-testdata", "https://pdl-testdata-feature.dev.adeo.no", addAuthenticationHeaderFilter))
                 .build();
     }
 
-    private Function<PredicateSpec, Route.AsyncBuilder> createRoute(String segment, String host, GatewayFilter filter) {
+    private Function<PredicateSpec, Buildable<Route>> createRoute(String segment, String host, GatewayFilter filter) {
         return spec -> spec
                 .path("/" + segment + "/**")
                 .filters(filterSpec -> filterSpec
@@ -77,5 +65,4 @@ public class PdlProxyApplicationStarter {
                         .filter(filter)
                 ).uri(host);
     }
-
 }

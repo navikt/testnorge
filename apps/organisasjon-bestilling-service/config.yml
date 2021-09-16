@@ -31,9 +31,12 @@ spec:
           cluster: dev-fss
         - application: testnav-organisasjon-faste-data-service
           cluster: dev-gcp
+        - application: testnav-organisasjon-mottak-service
+          cluster: dev-gcp
     outbound:
       external:
         - host: ereg-batch-status-service.dev-fss-pub.nais.io
+        - host: testnorge-batch-adeo-proxy.dev-fss-pub.nais.io
   gcp:
     sqlInstances:
       - type: POSTGRES_12
@@ -55,10 +58,10 @@ spec:
   resources:
     requests:
       cpu: 200m
-      memory: 4000Mi
+      memory: 1024Mi
     limits:
       cpu: 500m
-      memory: 5000Mi
+      memory: 2048Mi
   envFrom:
     - secret: google-sql-organisasjon-bestilling-service
   ingresses:

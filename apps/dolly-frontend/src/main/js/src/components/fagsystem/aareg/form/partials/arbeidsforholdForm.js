@@ -16,14 +16,15 @@ import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSe
 import { ArbeidKodeverk } from '~/config/kodeverk'
 import { ArbeidsgiverTyper } from '~/components/fagsystem/aareg/AaregTypes'
 import {
-	initialForenkletOppgjoersordningOrg,
-	initialForenkletOppgjoersordningPers,
 	initialArbeidsforholdOrg,
 	initialArbeidsforholdPers,
-	initialFartoy
+	initialFartoy,
+	initialForenkletOppgjoersordningOrg,
+	initialForenkletOppgjoersordningPers,
 } from '../initialValues'
 import { EgenOrganisasjonSelect } from '~/components/organisasjonSelect/EgenOrganisasjonSelect'
 import { ArbeidsgiverIdent } from '~/components/fagsystem/aareg/form/partials/arbeidsgiverIdent.tsx'
+import { isDate } from 'date-fns'
 
 export const ArbeidsforholdForm = ({
 	path,
@@ -31,23 +32,21 @@ export const ArbeidsforholdForm = ({
 	arbeidsforholdIndex,
 	formikBag,
 	erLenket,
-	arbeidsgiverType
+	arbeidsgiverType,
 }) => {
 	const arbeidsforholdstype =
 		typeof ameldingIndex !== 'undefined'
 			? _get(formikBag.values, 'aareg[0].arbeidsforholdstype')
 			: _get(formikBag.values, `${path}.arbeidsforholdstype`)
-
-	const onChangeLenket = fieldPath => {
+	const onChangeLenket = (fieldPath) => {
 		if (arbeidsgiverType !== ArbeidsgiverTyper.egen) {
-			return field => {
-				formikBag.setFieldValue(
-					`${path}.${fieldPath}`,
-					field?.value || field?.target?.value || field || null
-				)
+			return (field) => {
+				const value = isDate(field) ? field : field?.value || field?.target?.value || null
+				formikBag.setFieldValue(`${path}.${fieldPath}`, value)
 			}
 		} else {
-			return field => {
+			return (field) => {
+				const value = isDate(field) ? field : field?.value || field?.target?.value || null
 				const amelding = _get(formikBag.values, 'aareg[0].amelding')
 				amelding.forEach((maaned, idx) => {
 					if (!erLenket && idx < ameldingIndex) {
@@ -56,11 +55,7 @@ export const ArbeidsforholdForm = ({
 						const arbeidsforholdClone = _cloneDeep(
 							amelding[idx].arbeidsforhold[arbeidsforholdIndex]
 						)
-						_set(
-							arbeidsforholdClone,
-							fieldPath,
-							field?.value || field?.target?.value || field || null
-						)
+						_set(arbeidsforholdClone, fieldPath, value)
 						_set(amelding[idx], `arbeidsforhold[${arbeidsforholdIndex}]`, arbeidsforholdClone)
 					}
 				})
@@ -69,7 +64,7 @@ export const ArbeidsforholdForm = ({
 		}
 	}
 
-	const handleArbeidsforholdstypeChange = event => {
+	const handleArbeidsforholdstypeChange = (event) => {
 		if (event.value === 'forenkletOppgjoersordning') {
 			if (arbeidsforholdstype !== 'forenkletOppgjoersordning') {
 				if (
@@ -78,12 +73,12 @@ export const ArbeidsforholdForm = ({
 				) {
 					formikBag.setFieldValue(path, {
 						...initialForenkletOppgjoersordningOrg,
-						arbeidsforholdstype: event.value
+						arbeidsforholdstype: event.value,
 					})
 				} else if (arbeidsgiverType === ArbeidsgiverTyper.privat) {
 					formikBag.setFieldValue(path, {
 						...initialForenkletOppgjoersordningPers,
-						arbeidsforholdstype: event.value
+						arbeidsforholdstype: event.value,
 					})
 				}
 			}
@@ -95,12 +90,12 @@ export const ArbeidsforholdForm = ({
 				) {
 					formikBag.setFieldValue(path, {
 						...initialArbeidsforholdOrg,
-						arbeidsforholdstype: event.value
+						arbeidsforholdstype: event.value,
 					})
 				} else if (arbeidsgiverType === ArbeidsgiverTyper.privat) {
 					formikBag.setFieldValue(path, {
 						...initialArbeidsforholdPers,
-						arbeidsforholdstype: event.value
+						arbeidsforholdstype: event.value,
 					})
 				}
 			} else {
@@ -120,11 +115,10 @@ export const ArbeidsforholdForm = ({
 			_has(formikBag.touched, `${path}.arbeidsforholdstype`)
 		) {
 			return {
-				feilmelding: _get(formikBag.errors, `${path}.arbeidsforholdstype`)
+				feilmelding: _get(formikBag.errors, `${path}.arbeidsforholdstype`),
 			}
 		}
 	}
-
 	return (
 		<React.Fragment>
 			<div className="flexbox--flex-wrap">
@@ -162,10 +156,6 @@ export const ArbeidsforholdForm = ({
 				{arbeidsgiverType === ArbeidsgiverTyper.privat && (
 					<ArbeidsgiverIdent formikBag={formikBag} path={`${path}.arbeidsgiver.ident`} />
 				)}
-				{/* <FormikTextInput name={`${path}.arbeidsgiver.ident`} label="Arbeidsgiver ident" /> */}
-				{/* {arbeidsforhold.arbeidsgiver.aktoertype === 'PERS' && (
-					<ArbeidsgiverIdent formikBag={formikBag} path={`${path}.arbeidsgiver.ident`} />
-				)} */}
 				{arbeidsforholdstype !== 'forenkletOppgjoersordning' && (
 					<FormikTextInput
 						key={`${path}.arbeidsforholdID`}

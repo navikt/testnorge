@@ -5,7 +5,7 @@ import { getBestillinger } from '~/ducks/bestillingStatus'
 const mapDispatchToProps = (dispatch, ownProps) => {
 	const { id } = ownProps.gruppe
 	return {
-		getBestillinger: () => dispatch(getBestillinger(id))
+		getBestillinger: () => dispatch(getBestillinger(id)),
 	}
 }
 

@@ -31,6 +31,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
 
     implementation "org.springdoc:springdoc-openapi-ui:${springdocOpenapiUi}"
     implementation "net.logstash.logback:logstash-logback-encoder:${logstashLogbackEncoder}"
@@ -42,6 +43,7 @@ dependencies {
     implementation 'org.flywaydb:flyway-core:6.4.4'
     implementation 'org.postgresql:postgresql:42.2.16'
 
+    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'no.nav.testnav.libs:testing'

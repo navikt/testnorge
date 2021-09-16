@@ -17,8 +17,7 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class InnflyttingDTO extends DbVersjonDTO {
 
-    private LocalDateTime gyldigFraOgMed;
-    private LocalDateTime gyldigTilOgMed;
     private String fraflyttingsland;
     private String fraflyttingsstedIUtlandet;
+    private LocalDateTime innflyttingsdato;
 }

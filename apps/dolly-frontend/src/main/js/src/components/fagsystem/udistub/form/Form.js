@@ -1,10 +1,8 @@
 import React from 'react'
-import _isEmpty from 'lodash/isEmpty'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import Panel from '~/components/ui/panel/Panel'
-import { panelError } from '~/components/ui/form/formUtils'
-import { erForste } from '~/components/ui/form/formUtils'
+import { erForste, panelError } from '~/components/ui/form/formUtils'
 import { validation } from './validation'
 import { Oppholdsstatus } from './partials/Oppholdsstatus'
 import { Arbeidsadgang } from './partials/Arbeidsadgang'
@@ -16,7 +14,7 @@ const attrPaths = [
 	'udistub.arbeidsadgang',
 	'udistub.aliaser',
 	'udistub.flyktning',
-	'udistub.soeknadOmBeskyttelseUnderBehandling'
+	'udistub.soeknadOmBeskyttelseUnderBehandling',
 ]
 
 const udiAttributt = 'udistub'

@@ -46,7 +46,7 @@ export default function FinnPerson({ naviger }: FinnPerson) {
 	const [gruppe, setGruppe] = useState(null)
 	const [feilmelding, setFeilmelding] = useState(null)
 
-	const [options, fetchOptions]: AsyncFn<any> = useAsyncFn(async tekst => {
+	const [options, fetchOptions]: AsyncFn<any> = useAsyncFn(async (tekst) => {
 		const { data }: any = await TpsfApi.soekPersoner(tekst)
 		const personer: Array<Option> = []
 		data.map((person: Person) => {
@@ -55,7 +55,7 @@ export default function FinnPerson({ naviger }: FinnPerson) {
 				: `${person.fornavn} ${person.etternavn}`
 			personer.push({
 				value: person.ident,
-				label: `${person.ident} - ${navn.toUpperCase()}`
+				label: `${person.ident} - ${navn.toUpperCase()}`,
 			})
 		})
 		return personer
@@ -103,7 +103,7 @@ export default function FinnPerson({ naviger }: FinnPerson) {
 						IndicatorSeparator() {
 							return null
 						},
-						DropdownIndicator
+						DropdownIndicator,
 					}}
 					isClearable={true}
 					options={options}

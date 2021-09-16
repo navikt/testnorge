@@ -66,7 +66,7 @@ export default {
 	hentAdresser(request: AdresseRequest, antall: number = 1): Promise<Adresse[]> {
 		return api.fetchJson(`/testnav-adresse-service/api/v1/adresser/veg${getQueryParms(request)}`, {
 			method: 'GET',
-			headers: { antall: antall.toString() }
+			headers: { antall: antall.toString() },
 		})
 	},
 	hentMatrikkelAdresser(
@@ -77,8 +77,8 @@ export default {
 			`/testnav-adresse-service/api/v1/adresser/matrikkeladresse${getQueryParms(request)}`,
 			{
 				method: 'GET',
-				headers: { antall: antall.toString() }
+				headers: { antall: antall.toString() },
 			}
 		)
-	}
+	},
 }

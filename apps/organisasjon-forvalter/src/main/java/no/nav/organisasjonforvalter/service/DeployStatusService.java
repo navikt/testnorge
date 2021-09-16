@@ -7,11 +7,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.organisasjonforvalter.consumer.OrganisasjonBestillingConsumer;
+import no.nav.organisasjonforvalter.dto.responses.BestillingStatus;
 import no.nav.organisasjonforvalter.dto.responses.DeployResponse.EnvStatus;
 import no.nav.organisasjonforvalter.dto.responses.DeployResponse.Status;
-import no.nav.organisasjonforvalter.dto.responses.ItemDto;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +18,9 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
-import static no.nav.organisasjonforvalter.dto.responses.ItemDto.ItemStatus.COMPLETED;
-import static no.nav.organisasjonforvalter.dto.responses.ItemDto.ItemStatus.ERROR;
-import static no.nav.organisasjonforvalter.dto.responses.ItemDto.ItemStatus.FAILED;
+import static no.nav.organisasjonforvalter.dto.responses.BestillingStatus.ItemDto.ItemStatus.COMPLETED;
+import static no.nav.organisasjonforvalter.dto.responses.BestillingStatus.ItemDto.ItemStatus.ERROR;
+import static no.nav.organisasjonforvalter.dto.responses.BestillingStatus.ItemDto.ItemStatus.FAILED;
 
 @Slf4j
 @Service
@@ -33,17 +32,17 @@ public class DeployStatusService {
 
     private final OrganisasjonBestillingConsumer bestillingStatusConsumer;
 
-    private static boolean isDone(List<ItemDto> items) {
+    private static boolean isDone(List<BestillingStatus.ItemDto> items) {
 
         return isOk(items) || isError(items);
     }
 
-    private static boolean isOk(List<ItemDto> items) {
+    private static boolean isOk(List<BestillingStatus.ItemDto> items) {
 
         return !items.isEmpty() && items.stream().allMatch(status -> status.getStatus() == COMPLETED);
     }
 
-    private static boolean isError(List<ItemDto> items) {
+    private static boolean isError(List<BestillingStatus.ItemDto> items) {
 
         return !items.isEmpty() && items.stream().anyMatch(status ->
                 status.getStatus() == ERROR || status.getStatus() == FAILED);
@@ -57,7 +56,7 @@ public class DeployStatusService {
         return String.format("%d minutter", min);
     }
 
-    private static boolean isStatusChanged(DeployEntry entry, List<ItemDto> bestStatus) {
+    private static boolean isStatusChanged(DeployEntry entry, List<BestillingStatus.ItemDto> bestStatus) {
         return !(entry.getLastStatus().containsAll(bestStatus) &&
                 bestStatus.containsAll(entry.getLastStatus()));
     }
@@ -93,22 +92,18 @@ public class DeployStatusService {
             Thread.sleep(SLEEP_TIME_MS);
             request.forEach(entry -> {
                 if (!isDone(entry.getLastStatus())) {
-                    List<ItemDto> bestStatus;
-                    try {
-                        bestStatus = bestillingStatusConsumer.getBestillingStatus(entry.getUuid());
-                        if (isStatusChanged(entry, bestStatus)) {
-                            lastUpdate.set(System.currentTimeMillis());
-                        }
-                        entry.setLastStatus(bestStatus);
-                        log.info("Deploystatus for {}, status {}, env {}, elapsed {} ms",
-                                entry.getUuid(), entry.getLastStatus().stream()
-                                        .map(ItemDto::toString)
-                                        .collect(Collectors.joining(", ")),
-                                entry.getEnvironment(),
-                                System.currentTimeMillis() - startTime);
-                    } catch (HttpClientErrorException e) {
-                        // Silently discard
+                    List<BestillingStatus.ItemDto> bestStatus =
+                            bestillingStatusConsumer.getBestillingStatus(entry.getUuid()).getItemDtos();
+                    if (isStatusChanged(entry, bestStatus)) {
+                        lastUpdate.set(System.currentTimeMillis());
                     }
+                    entry.setLastStatus(bestStatus);
+                    log.info("Deploystatus for {}, status {}, env {}, elapsed {} ms",
+                            entry.getUuid(), entry.getLastStatus().stream()
+                                    .map(BestillingStatus.ItemDto::toString)
+                                    .collect(Collectors.joining(", ")),
+                            entry.getEnvironment(),
+                            System.currentTimeMillis() - startTime);
                 }
             });
         }
@@ -123,9 +118,9 @@ public class DeployStatusService {
 
         private String environment;
         private String uuid;
-        private List<ItemDto> lastStatus;
+        private List<BestillingStatus.ItemDto> lastStatus;
 
-        public List<ItemDto> getLastStatus() {
+        public List<BestillingStatus.ItemDto> getLastStatus() {
             if (isNull(lastStatus)) {
                 lastStatus = new ArrayList<>();
             }

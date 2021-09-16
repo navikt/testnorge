@@ -30,12 +30,12 @@ InstitusjonsoppholdPanel.initialValues = ({ set, del, has }) => ({
 				{
 					institusjonstype: '',
 					startdato: '',
-					sluttdato: ''
-				}
+					sluttdato: '',
+				},
 			])
 		},
 		remove() {
 			del('instdata')
-		}
-	}
+		},
+	},
 })

@@ -7,11 +7,10 @@ import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.consumer.OrganisasjonForvalterConsumer;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
-import no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.AdressatDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.KontaktpersonMedIdNummerDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.KontaktinformasjonForDoedsboAdresse;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.KontaktpersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.OrganisasjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.PersonNavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
@@ -23,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
@@ -33,22 +33,22 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
-public class KontaktinformasjonForDoedsboService {
+public class KontaktinformasjonForDoedsboService implements Validation<KontaktinformasjonForDoedsboDTO> {
 
     private static final String VALIDATION_SKIFTEFORM_MISSING = "KontaktinformasjonForDoedsbo: Skifteform må angis";
-    private static final String VALIDATION_ADRESSAT_MISSING = "KontaktinformasjonForDoedsbo: addressat må oppgis";
-    private static final String VALIDATION_ADRESSAT_AMBIGOUS = "KontaktinformasjonForDoedsbo: kun en av disse adressater skal oppgis: " +
-            "advokatSomAdressat, kontaktpersonMedIdNummerSomAdressat, kontaktpersonUtenIdNummerSomAdressat eller " +
-            "organisasjonSomAdressat";
-    private static final String VALIDATION_IDNUMBER_INVALID = "KontaktinformasjonForDoedsbo: adressat med idnummer %s " +
+    private static final String VALIDATION_KONTAKT_MISSING = "KontaktinformasjonForDoedsbo: kontakt må oppgis, enten advokatSomKontakt, " +
+            "personSomKontakt eller organisasjonSomKontakt";
+    private static final String VALIDATION_ADRESSAT_AMBIGOUS = "KontaktinformasjonForDoedsbo: kun en av disse kontakter skal oppgis: " +
+            "advokatSomKontakt, personSomKontakt eller organisasjonSomKontakt";
+    private static final String VALIDATION_IDNUMBER_INVALID = "KontaktinformasjonForDoedsbo: personSomKontakt med identifikasjonsnummer %s " +
             "ikke funnet i database";
-    private static final String VALIDATION_FOEDSELSDATO_MISSING = "KontaktinformasjonForDoedsbo: adressat uten idnummer behøver " +
-            "fødselsdato";
+    private static final String VALIDATION_AMBIGUOUS_PERSON = "KontaktinformasjonForDoedsbo: personSomKontakt må " +
+            "angi kun én av identifikasjonsnummer eller fødselsdato";
     private static final String VALIDATION_PERSONNAVN_INVALID = "KontaktinformasjonForDoedsbo: adressat har ugyldig personnavn";
     private static final String VALIDATION_ORGANISASJON_NAVN_INVALID = "KontaktinformasjonForDoedsbo: organisajonsnavn kan " +
             "ikke oppgis uten at organisasjonsnummer finnes";
     private static final String VALIDATION_ORGANISASJON_NUMMER_OR_NAME_INVALID = "KontaktinformasjonForDoedsbo: organisajonsnummer er tomt " +
-            "og/eller angitt organisasjon finnes ikke i miljø";
+            "og/eller angitt organisasjonsnummer/navn finnes ikke i miljø [q1|q2]";
 
     private final PersonRepository personRepository;
     private final CreatePersonService createPersonService;
@@ -57,10 +57,6 @@ public class KontaktinformasjonForDoedsboService {
     private final AdresseServiceConsumer adresseServiceConsumer;
     private final GenererNavnServiceConsumer genererNavnServiceConsumer;
     private final OrganisasjonForvalterConsumer organisasjonForvalterConsumer;
-
-    protected static <T> int count(T artifact) {
-        return nonNull(artifact) ? 1 : 0;
-    }
 
     private static String blankCheck(String value, String defaultValue) {
         return isNotBlank(value) ? value : defaultValue;
@@ -71,9 +67,8 @@ public class KontaktinformasjonForDoedsboService {
         for (var type : person.getKontaktinformasjonForDoedsbo()) {
 
             if (isTrue(type.getIsNew())) {
-                validate(type);
 
-                handle(type, person);
+                handle(type, person.getIdent());
                 if (Strings.isBlank(type.getKilde())) {
                     type.setKilde("Dolly");
                 }
@@ -82,103 +77,107 @@ public class KontaktinformasjonForDoedsboService {
         return person.getKontaktinformasjonForDoedsbo();
     }
 
-    private void validate(KontaktinformasjonForDoedsboDTO kontaktinfo) {
+    @Override
+    public void validate(KontaktinformasjonForDoedsboDTO kontaktinfo) {
 
         if (isNull(kontaktinfo.getSkifteform())) {
             throw new InvalidRequestException(VALIDATION_SKIFTEFORM_MISSING);
         }
 
-        if (isNull(kontaktinfo.getAdressat())) {
-            throw new InvalidRequestException(VALIDATION_ADRESSAT_MISSING);
+        if (kontaktinfo.countKontakter() == 0) {
+            throw new InvalidRequestException(VALIDATION_KONTAKT_MISSING);
 
-        } else {
-            if (count(kontaktinfo.getAdressat().getAdvokatSomAdressat()) +
-                    count(kontaktinfo.getAdressat().getKontaktpersonMedIdNummerSomAdressat()) +
-                    count(kontaktinfo.getAdressat().getKontaktpersonUtenIdNummerSomAdressat()) +
-                    count(kontaktinfo.getAdressat().getOrganisasjonSomAdressat()) > 1) {
-                throw new InvalidRequestException(VALIDATION_ADRESSAT_AMBIGOUS);
-            }
-            if (nonNull(kontaktinfo.getAdressat().getKontaktpersonMedIdNummerSomAdressat()) &&
-                    isNotBlank(kontaktinfo.getAdressat().getKontaktpersonMedIdNummerSomAdressat().getIdentifikasjonsnummer()) &&
-                    !personRepository.existsByIdent(kontaktinfo.getAdressat().getKontaktpersonMedIdNummerSomAdressat().getIdentifikasjonsnummer())) {
-                throw new InvalidRequestException(format(VALIDATION_IDNUMBER_INVALID,
-                        kontaktinfo.getAdressat().getKontaktpersonMedIdNummerSomAdressat().getIdentifikasjonsnummer()));
-            }
-            if (nonNull(kontaktinfo.getAdressat().getKontaktpersonUtenIdNummerSomAdressat()) &&
-                    isNull(kontaktinfo.getAdressat().getKontaktpersonUtenIdNummerSomAdressat().getFoedselsdato())) {
-                throw new InvalidRequestException(VALIDATION_FOEDSELSDATO_MISSING);
-            }
-            if (!isValidPersonnavn(kontaktinfo.getAdressat())) {
-                throw new InvalidRequestException(VALIDATION_PERSONNAVN_INVALID);
-            }
-            if (!isValidOrganisasjonName(kontaktinfo.getAdressat())) {
-                throw new InvalidRequestException(VALIDATION_ORGANISASJON_NAVN_INVALID);
-            }
-            if (nonNull(kontaktinfo.getAdressat().getAdvokatSomAdressat())
-                    && !isValidOrgnummerOgNavn(kontaktinfo.getAdressat().getAdvokatSomAdressat()) ||
-                    nonNull(kontaktinfo.getAdressat().getOrganisasjonSomAdressat()) &&
-                            !isValidOrgnummerOgNavn(kontaktinfo.getAdressat().getOrganisasjonSomAdressat())) {
-                throw new InvalidRequestException(VALIDATION_ORGANISASJON_NUMMER_OR_NAME_INVALID);
-            }
+        }
+
+        if (kontaktinfo.countKontakter() > 1) {
+            throw new InvalidRequestException(VALIDATION_ADRESSAT_AMBIGOUS);
+        }
+
+        if (nonNull(kontaktinfo.getPersonSomKontakt()) &&
+                isNotBlank(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer()) &&
+                !personRepository.existsByIdent(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer())) {
+            throw new InvalidRequestException(format(VALIDATION_IDNUMBER_INVALID,
+                    kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer()));
+        }
+
+        if (nonNull(kontaktinfo.getPersonSomKontakt()) &&
+                nonNull(kontaktinfo.getPersonSomKontakt().getFoedselsdato()) &&
+                isNotBlank(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer())) {
+
+            throw new InvalidRequestException(VALIDATION_AMBIGUOUS_PERSON);
+        }
+
+        if (!isValidPersonnavn(kontaktinfo)) {
+            throw new InvalidRequestException(VALIDATION_PERSONNAVN_INVALID);
+        }
+
+        if (!isValidOrganisasjonName(kontaktinfo)) {
+            throw new InvalidRequestException(VALIDATION_ORGANISASJON_NAVN_INVALID);
+        }
+
+        if (nonNull(kontaktinfo.getAdvokatSomKontakt())
+                && !isValidOrganisasjonIMiljoe(kontaktinfo.getAdvokatSomKontakt()) ||
+                nonNull(kontaktinfo.getOrganisasjonSomKontakt()) &&
+                        !isValidOrganisasjonIMiljoe(kontaktinfo.getOrganisasjonSomKontakt())) {
+            throw new InvalidRequestException(VALIDATION_ORGANISASJON_NUMMER_OR_NAME_INVALID);
         }
     }
 
-    private void handle(KontaktinformasjonForDoedsboDTO kontaktinfo, PersonDTO person) {
+    private void handle(KontaktinformasjonForDoedsboDTO kontaktinfo, String hovedperson) {
 
         if (isNull(kontaktinfo.getAttestutstedelsesdato())) {
             kontaktinfo.setAttestutstedelsesdato(LocalDateTime.now());
         }
 
-        if (isBlank(kontaktinfo.getAdresselinje1())) {
+        if (nonNull(kontaktinfo.getPersonSomKontakt()) &&
+                nonNull(kontaktinfo.getPersonSomKontakt().getFoedselsdato())) {
 
-            var bostedadresse = person.getBostedsadresse().stream().findFirst();
-            if (bostedadresse.isPresent()) {
-                mapperFacade.map(bostedadresse.get(), kontaktinfo);
+            kontaktinfo.getPersonSomKontakt().setNavn(
+                    leggTilPersonnavn(kontaktinfo.getPersonSomKontakt().getNavn()));
 
-            } else {
-                mapperFacade.map(adresseServiceConsumer.getVegadresse(VegadresseDTO.builder()
-                        .postnummer(kontaktinfo.getPostnummer())
-                        .build(), null), kontaktinfo);
-            }
+        } else if (nonNull(kontaktinfo.getPersonSomKontakt()) &&
+                isBlank(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer())) {
+
+            leggTilNyAddressat(kontaktinfo.getPersonSomKontakt(), hovedperson);
+            kontaktinfo.setAdresse(mapperFacade.map(
+                    personRepository.findByIdent(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer()).get()
+                                    .getPerson().getBostedsadresse().stream().findFirst().get(),
+                            KontaktinformasjonForDoedsboAdresse.class));
+
+        } else if (nonNull(kontaktinfo.getAdvokatSomKontakt())) {
+
+            kontaktinfo.getAdvokatSomKontakt().setKontaktperson(
+                    leggTilPersonnavn(kontaktinfo.getAdvokatSomKontakt().getKontaktperson()));
+            setOrganisasjonsnavnOgAdresse(kontaktinfo, kontaktinfo.getAdvokatSomKontakt());
+
+        } else if (nonNull(kontaktinfo.getOrganisasjonSomKontakt())) {
+
+            kontaktinfo.getOrganisasjonSomKontakt().setKontaktperson(
+                    leggTilPersonnavn(kontaktinfo.getOrganisasjonSomKontakt().getKontaktperson()));
+            setOrganisasjonsnavnOgAdresse(kontaktinfo, kontaktinfo.getOrganisasjonSomKontakt());
         }
 
-        if (nonNull(kontaktinfo.getAdressat().getKontaktpersonMedIdNummerSomAdressat()) &&
-                isBlank(kontaktinfo.getAdressat().getKontaktpersonMedIdNummerSomAdressat().getIdentifikasjonsnummer())) {
+        if (isNull(kontaktinfo.getAdresse()) || isBlank(kontaktinfo.getAdresse().getAdresselinje1())) {
 
-            leggTilNyAddressat(kontaktinfo.getAdressat().getKontaktpersonMedIdNummerSomAdressat(), person);
-
-        } else  if (nonNull(kontaktinfo.getAdressat().getKontaktpersonUtenIdNummerSomAdressat())) {
-
-            kontaktinfo.getAdressat().getKontaktpersonUtenIdNummerSomAdressat().setNavn(
-                    leggTilPersonnavn(kontaktinfo.getAdressat().getKontaktpersonUtenIdNummerSomAdressat().getNavn()));
-            leggTilPersonnavn(kontaktinfo.getAdressat().getKontaktpersonUtenIdNummerSomAdressat().getNavn());
-
-        } else if (nonNull(kontaktinfo.getAdressat().getAdvokatSomAdressat())) {
-
-            kontaktinfo.getAdressat().getAdvokatSomAdressat().setKontaktperson(
-                    leggTilPersonnavn(kontaktinfo.getAdressat().getAdvokatSomAdressat().getKontaktperson()));
-            leggTilOrganisasjonsnavn(kontaktinfo.getAdressat().getAdvokatSomAdressat());
-
-        } else if (nonNull(kontaktinfo.getAdressat().getOrganisasjonSomAdressat())) {
-
-            kontaktinfo.getAdressat().getOrganisasjonSomAdressat().setKontaktperson(
-                    leggTilPersonnavn(kontaktinfo.getAdressat().getOrganisasjonSomAdressat().getKontaktperson()));
-            leggTilOrganisasjonsnavn(kontaktinfo.getAdressat().getOrganisasjonSomAdressat());
+           kontaktinfo.setAdresse(mapperFacade.map(adresseServiceConsumer.getVegadresse(VegadresseDTO.builder()
+                        .postnummer(nonNull(kontaktinfo.getAdresse()) ? kontaktinfo.getAdresse().getPostnummer() : null)
+                        .build(), null), KontaktinformasjonForDoedsboAdresse.class));
         }
     }
 
-    private void leggTilOrganisasjonsnavn(OrganisasjonDTO pdlOrganisasjon) {
+    private void setOrganisasjonsnavnOgAdresse(KontaktinformasjonForDoedsboDTO kontaktinfo, OrganisasjonDTO
+            organisasjonDto) {
 
-        if (isBlank(pdlOrganisasjon.getOrganisasjonsnavn())) {
-            var organisasjonsnavn = organisasjonForvalterConsumer.get(pdlOrganisasjon.getOrganisasjonsnummer())
-            .entrySet().stream()
-                    .filter(entry -> "q1".equals(entry.getKey()) || "q2".equals(entry.getKey()))
-                    .map(entry -> entry.getValue().get("organisasjonsnavn"))
-                    .findFirst();
+        var organisasjon = organisasjonForvalterConsumer.get(organisasjonDto.getOrganisasjonsnummer())
+                .entrySet().stream()
+                .filter(entry -> "q1".equals(entry.getKey()) || "q2".equals(entry.getKey()))
+                .map(Map.Entry::getValue)
+                .findFirst().get();
 
-            pdlOrganisasjon.setOrganisasjonsnavn(organisasjonsnavn.isPresent() ?
-                    organisasjonsnavn.get() : "Organisajonsnavn ikke funnet");
-        }
+        organisasjonDto.setOrganisasjonsnavn((String) organisasjon.get("organisasjonsnavn"));
+        kontaktinfo.setAdresse(!((List<Map>) organisasjon.get("adresser")).isEmpty() ?
+                mapperFacade.map(((List<Map>) organisasjon.get("adresser")).get(0), KontaktinformasjonForDoedsboAdresse.class) :
+                null);
     }
 
     private PersonNavnDTO leggTilPersonnavn(PersonNavnDTO navn) {
@@ -201,19 +200,19 @@ public class KontaktinformasjonForDoedsboService {
         return navn;
     }
 
-    private boolean isValidPersonnavn(AdressatDTO adressatDTO) {
+    private boolean isValidPersonnavn(KontaktinformasjonForDoedsboDTO kontakt) {
 
-        var utenIdNummer = isNull(adressatDTO.getKontaktpersonUtenIdNummerSomAdressat()) ||
-                isNull(adressatDTO.getKontaktpersonUtenIdNummerSomAdressat().getNavn()) ||
-                isValid(adressatDTO.getKontaktpersonUtenIdNummerSomAdressat().getNavn());
+        var utenIdNummer = isNull(kontakt.getPersonSomKontakt()) ||
+                isNull(kontakt.getPersonSomKontakt().getNavn()) ||
+                isValid(kontakt.getPersonSomKontakt().getNavn());
 
-        var advokat = isNull(adressatDTO.getAdvokatSomAdressat()) ||
-                isNull(adressatDTO.getAdvokatSomAdressat().getKontaktperson()) ||
-                isValid(adressatDTO.getAdvokatSomAdressat().getKontaktperson());
+        var advokat = isNull(kontakt.getAdvokatSomKontakt()) ||
+                isNull(kontakt.getAdvokatSomKontakt().getKontaktperson()) ||
+                isValid(kontakt.getAdvokatSomKontakt().getKontaktperson());
 
-        var organisasjon = isNull(adressatDTO.getOrganisasjonSomAdressat()) ||
-                isNull(adressatDTO.getOrganisasjonSomAdressat().getKontaktperson()) ||
-                isValid(adressatDTO.getOrganisasjonSomAdressat().getKontaktperson());
+        var organisasjon = isNull(kontakt.getOrganisasjonSomKontakt()) ||
+                isNull(kontakt.getOrganisasjonSomKontakt().getKontaktperson()) ||
+                isValid(kontakt.getOrganisasjonSomKontakt().getKontaktperson());
 
         return utenIdNummer && advokat && organisasjon;
     }
@@ -230,28 +229,28 @@ public class KontaktinformasjonForDoedsboService {
                         .build());
     }
 
-    private boolean isValidOrganisasjonName(AdressatDTO adressatDTO) {
+    private boolean isValidOrganisasjonName(KontaktinformasjonForDoedsboDTO kontakt) {
 
-        var advokat = isNull(adressatDTO.getAdvokatSomAdressat()) ||
-                isNotBlank(adressatDTO.getAdvokatSomAdressat().getOrganisasjonsnummer()) ||
-                isBlank(adressatDTO.getAdvokatSomAdressat().getOrganisasjonsnummer()) &&
-                        isBlank(adressatDTO.getAdvokatSomAdressat().getOrganisasjonsnavn());
+        var advokat = isNull(kontakt.getAdvokatSomKontakt()) ||
+                isNotBlank(kontakt.getAdvokatSomKontakt().getOrganisasjonsnummer()) ||
+                isBlank(kontakt.getAdvokatSomKontakt().getOrganisasjonsnummer()) &&
+                        isBlank(kontakt.getAdvokatSomKontakt().getOrganisasjonsnavn());
 
-        var organisasjon = isNull(adressatDTO.getOrganisasjonSomAdressat()) ||
-                isNotBlank(adressatDTO.getOrganisasjonSomAdressat().getOrganisasjonsnummer()) ||
-                isBlank(adressatDTO.getOrganisasjonSomAdressat().getOrganisasjonsnummer()) &&
-                        isBlank(adressatDTO.getOrganisasjonSomAdressat().getOrganisasjonsnavn());
+        var organisasjon = isNull(kontakt.getOrganisasjonSomKontakt()) ||
+                isNotBlank(kontakt.getOrganisasjonSomKontakt().getOrganisasjonsnummer()) ||
+                isBlank(kontakt.getOrganisasjonSomKontakt().getOrganisasjonsnummer()) &&
+                        isBlank(kontakt.getOrganisasjonSomKontakt().getOrganisasjonsnavn());
 
         return advokat && organisasjon;
     }
 
-    private boolean isValidOrgnummerOgNavn(OrganisasjonDTO pdlOrganisasjon) {
+    private boolean isValidOrganisasjonIMiljoe(OrganisasjonDTO pdlOrganisasjon) {
 
         if (isBlank(pdlOrganisasjon.getOrganisasjonsnummer())) {
             return false;
         }
         var organisasjoner = organisasjonForvalterConsumer.get(pdlOrganisasjon.getOrganisasjonsnummer());
-        if (organisasjoner.isEmpty() || !organisasjoner.containsKey("q1") && organisasjoner.containsKey("q2")) {
+        if (organisasjoner.isEmpty() || !organisasjoner.containsKey("q1") && !organisasjoner.containsKey("q2")) {
             return false;
         }
         return isBlank(pdlOrganisasjon.getOrganisasjonsnavn()) ||
@@ -259,28 +258,14 @@ public class KontaktinformasjonForDoedsboService {
                         .anyMatch(organisasjon -> pdlOrganisasjon.getOrganisasjonsnavn().equals(organisasjon.get("organisasjonsnavn")));
     }
 
-    private void leggTilNyAddressat(KontaktpersonMedIdNummerDTO adressat, PersonDTO person) {
+    private void leggTilNyAddressat(KontaktpersonDTO kontakt, String hovedperson) {
 
-        if (isNull(adressat.getNyKontaktPerson())) {
-            adressat.setNyKontaktPerson(new PersonRequestDTO());
-        }
-
-        if (isNull(adressat.getNyKontaktPerson().getAlder()) &&
-                isNull(adressat.getNyKontaktPerson().getFoedtEtter()) &&
-                isNull(adressat.getNyKontaktPerson().getFoedtFoer())) {
-
-            adressat.getNyKontaktPerson().setFoedtFoer(LocalDateTime.now().minusYears(18));
-            adressat.getNyKontaktPerson().setFoedtEtter(LocalDateTime.now().minusYears(67));
-        }
-
-        if (isNull(adressat.getNyKontaktPerson().getSyntetisk())) {
-            adressat.getNyKontaktPerson().setSyntetisk(SyntetiskFraIdentUtility.isSyntetisk(person.getIdent()));
-        }
-
-        adressat.setIdentifikasjonsnummer(
-                createPersonService.execute(adressat.getNyKontaktPerson()).getIdent());
-        relasjonService.setRelasjoner(person.getIdent(), RelasjonType.AVDOEDD_SIN_ADRESSAT,
-                adressat.getIdentifikasjonsnummer(), RelasjonType.ADRESSAT_FOR_DOEDSBO);
-        adressat.setNyKontaktPerson(null);
+        kontakt.setIdentifikasjonsnummer(
+                createPersonService.execute(PersonRequestDTO.builder()
+                        .foedtEtter(LocalDateTime.now().minusYears(18))
+                        .foedtEtter(LocalDateTime.now().minusYears(67))
+                        .build()).getIdent());
+        relasjonService.setRelasjoner(hovedperson, RelasjonType.AVDOEDD_FOR_KONTAKT,
+                kontakt.getIdentifikasjonsnummer(), RelasjonType.KONTAKT_FOR_DOEDSBO);
     }
 }

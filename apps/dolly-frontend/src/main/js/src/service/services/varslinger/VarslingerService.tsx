@@ -1,6 +1,6 @@
 import Request from '~/service/services/Request'
 
-const varslingerlUrl = '/testnorge-varslinger-api/api/v1/varslinger'
+const varslingerlUrl = '/testnav-varslinger-service/api/v1/varslinger'
 
 export default {
 	getVarslinger() {
@@ -15,5 +15,5 @@ export default {
 	updateVarslingerBruker(varslingId: string) {
 		const endpoint = `${varslingerlUrl}/person/ids/${varslingId}`
 		return Request.putWithoutResponse(endpoint)
-	}
+	},
 }

@@ -1,6 +1,8 @@
 server:
   port: 8020
 
+
+
 azure.app.client.id: ${client_id}
 azure.app.client.secret: ${client_secret}
 
@@ -9,4 +11,13 @@ DOLLY_BACKEND_URL: https://dolly-backend-dev.dev.adeo.no
 UDI_STUB_URL: https://udi-stub-dev.dev.adeo.no
 UDI_STUB_NAME: udi-stub-dev
 TPS_FORVALTERN_PROXY_NAME: tps-forvalteren-dev-proxy
-TPS_FORVALTERN_PROXY_URL:  https://tps-forvalteren-dev.dev.adeo.no
+TPS_FORVALTERN_PROXY_URL: https://tps-forvalteren-dev.dev.adeo.no
+
+POST_LOGOUT_REDIRECT_URI: 'http://localhost:3000/login'
+
+spring:
+  session:
+    timeout: 30m
+  redis:
+    host: localhost
+    port: 6379

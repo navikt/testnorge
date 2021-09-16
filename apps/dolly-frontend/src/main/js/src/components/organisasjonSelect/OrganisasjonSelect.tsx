@@ -16,12 +16,12 @@ export const OrganisasjonSelect = ({
 	label,
 	afterChange = null,
 	valueNavn = false,
-	kanHaArbeidsforhold
+	kanHaArbeidsforhold,
 }: OrganisasjonSelectProps) => (
 	<OrganisasjonLoader
 		kanHaArbeidsforhold={kanHaArbeidsforhold}
 		valueNavn={valueNavn}
-		render={liste => (
+		render={(liste) => (
 			<FormikSelect
 				name={path}
 				label={label}

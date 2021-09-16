@@ -33,6 +33,7 @@ import Files from '~/assets/icons/nav-ikoner/line/SVG/17-files/files-3.svg'
 import Synchronize from '~/assets/icons/nav-ikoner/filled/SVG/19-interface/synchronize-3.svg'
 import AddCircle from '~/assets/icons/nav-ikoner/line/SVG/19-interface/add-circle.svg'
 import RemoveCircle from '~/assets/icons/nav-ikoner/line/SVG/19-interface/remove-circle.svg'
+import Logout from '~/assets/icons/nav-ikoner/line/SVG/19-interface/logout.svg'
 import CheckCircle2 from '~/assets/icons/nav-ikoner/line/SVG/20-status/check-circle-2.svg'
 import Wrench from '~/assets/icons/nav-ikoner/line/SVG/21-settings/wrench.svg'
 import Calendar from '~/assets/icons/nav-ikoner/line/SVG/22-time/calendar-3.svg'
@@ -102,6 +103,7 @@ export const icons = {
 	ThumbsUp: ThumbsUp,
 	ThumbsDown: ThumbsDown,
 	lock: Lock,
+	logout: Logout,
 
 	man: Man,
 	manLight: ManLight,
@@ -150,17 +152,17 @@ export const icons = {
 	organisasjonLight: Hierarchy3Light,
 	fullmakt: Group2,
 	link: Link,
-	linkBroken: LinkBroken
+	linkBroken: LinkBroken,
 }
 
-const px = v => `${v}px`
+const px = (v) => `${v}px`
 
 export default function Icon({
 	kind,
 	title = undefined,
 	size = 24,
 	style = undefined,
-	className = undefined
+	className = undefined,
 }) {
 	if (!icons[kind]) return null
 

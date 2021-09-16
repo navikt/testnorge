@@ -7,16 +7,16 @@ import { onSuccess } from '~/ducks/utils/requestActions'
 export const actions = createActions(
 	{
 		getOrganisasjonBestilling: DollyApi.getOrganisasjonsnummerByUserId,
-		getOrganisasjoner: OrgforvalterApi.getOrganisasjonerInfo
+		getOrganisasjoner: OrgforvalterApi.getOrganisasjonerInfo,
 	},
 	{
-		prefix: 'organisasjon'
+		prefix: 'organisasjon',
 	}
 )
 
 const initialState = {
 	bestillinger: null,
-	organisasjoner: null
+	organisasjoner: null,
 }
 
 export default handleActions(
@@ -29,15 +29,15 @@ export default handleActions(
 		},
 		[onSuccess(actions.getOrganisasjoner)](state, action) {
 			state.organisasjoner = action.payload.data
-		}
+		},
 	},
 	initialState
 )
 
-export const fetchOrganisasjoner = dispatch => async brukerId => {
+export const fetchOrganisasjoner = (dispatch) => async (brukerId) => {
 	const { data } = await actions.getOrganisasjonBestilling(brukerId).payload
 	let orgNumre = []
-	data.forEach(org => {
+	data.forEach((org) => {
 		if (org.ferdig && org.organisasjonNummer !== 'NA') return orgNumre.push(org.organisasjonNummer)
 	})
 	dispatch(actions.getOrganisasjoner(orgNumre))

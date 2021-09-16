@@ -6,7 +6,7 @@ import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import Panel from '~/components/ui/panel/Panel'
-import { panelError, erForste } from '~/components/ui/form/formUtils'
+import { erForste, panelError } from '~/components/ui/form/formUtils'
 import { Boadresse } from './partials/boadresse/Boadresse'
 import { Postadresser } from './Postadresser'
 import { MidlertidigAdresse } from './MidlertidigAdresse'
@@ -23,10 +23,10 @@ export const boadressePaths = [
 	'tpsf.boadresse.bolignr',
 	'tpsf.boadresse.flyttedato',
 	'tpsf.boadresse.postnr',
-	'tpsf.adresseNrInfo'
+	'tpsf.adresseNrInfo',
 ]
 
-const initialBoType = formikBag => {
+const initialBoType = (formikBag) => {
 	const localBoType = sessionStorage.getItem('boType')
 	const adresseType = _get(formikBag.values, 'tpsf.boadresse.adressetype')
 	const nummertype = _get(formikBag.values, 'tpsf.adresseNrInfo.nummertype')
@@ -44,11 +44,11 @@ export const Adresser = ({ formikBag }) => {
 	const [boType, setBoType] = useState(initialBoType(formikBag))
 
 	// Sjekker om adresse er valgt på steg 1, da panelet ikke skal vises dersom bare diskresjonskoder (med UFB og kommunenummer) er valgt
-	const erValgt = [...boadressePaths, 'tpsf.postadresse', 'tpsf.midlertidigAdresse'].some(path =>
+	const erValgt = [...boadressePaths, 'tpsf.postadresse', 'tpsf.midlertidigAdresse'].some((path) =>
 		_has(formikBag.values, path)
 	)
 
-	const handleRadioChange = e => {
+	const handleRadioChange = (e) => {
 		const nyType = e.target.value
 		setBoType(nyType)
 		sessionStorage.setItem('boType', nyType)
@@ -58,7 +58,7 @@ export const Adresser = ({ formikBag }) => {
 			bolignr: _get(formikBag.values.tpsf.boadresse, 'bolignr') || '',
 			flyttedato: _get(formikBag.values.tpsf.boadresse, 'flyttedato') || '',
 			tilleggsadresse: _get(formikBag.values.tpsf.boadresse, 'tilleggsadresse') || undefined,
-			adressetype: 'GATE'
+			adressetype: 'GATE',
 		})
 
 		// Set and clear values
@@ -66,13 +66,13 @@ export const Adresser = ({ formikBag }) => {
 			case 'postnr':
 				formikBag.setFieldValue('tpsf.adresseNrInfo', {
 					nummertype: 'POSTNR',
-					nummer: ''
+					nummer: '',
 				})
 				break
 			case 'kommunenr':
 				formikBag.setFieldValue('tpsf.adresseNrInfo', {
 					nummertype: 'KOMMUNENR',
-					nummer: ''
+					nummer: '',
 				})
 				break
 			case 'gate':
@@ -86,7 +86,7 @@ export const Adresser = ({ formikBag }) => {
 					husnummer: '',
 					bolignr: formikBag.values.tpsf.boadresse.bolignr,
 					flyttedato: formikBag.values.tpsf.boadresse.flyttedato,
-					tilleggsadresse: formikBag.values.tpsf.boadresse.tilleggsadresse
+					tilleggsadresse: formikBag.values.tpsf.boadresse.tilleggsadresse,
 				})
 				break
 			case 'matrikkelsok':
@@ -102,7 +102,7 @@ export const Adresser = ({ formikBag }) => {
 					kommunenr: '',
 					bolignr: formikBag.values.tpsf.boadresse.bolignr,
 					flyttedato: formikBag.values.tpsf.boadresse.flyttedato,
-					tilleggsadresse: formikBag.values.tpsf.boadresse.tilleggsadresse
+					tilleggsadresse: formikBag.values.tpsf.boadresse.tilleggsadresse,
 				})
 				break
 			default:
@@ -127,20 +127,20 @@ export const Adresser = ({ formikBag }) => {
 								{
 									label: 'Tilfeldig gateadresse basert på postnummer ...',
 									value: 'postnr',
-									id: 'postnr'
+									id: 'postnr',
 								},
 								{
 									label: 'Tilfeldig gateadresse basert på kommunenummer ...',
 									value: 'kommunenr',
-									id: 'kommunenr'
+									id: 'kommunenr',
 								},
 								{
 									label: 'Tilfeldig matrikkeladressse ...',
 									value: 'matrikkelsok',
-									id: 'matrikkelsok'
+									id: 'matrikkelsok',
 								},
 								{ label: 'Gateadresse detaljert ...', value: 'gate', id: 'gate' },
-								{ label: 'Matrikkeladresse detaljert ...', value: 'matrikkel', id: 'matrikkel' }
+								{ label: 'Matrikkeladresse detaljert ...', value: 'matrikkel', id: 'matrikkel' },
 							]}
 							checked={boType}
 							onChange={handleRadioChange}

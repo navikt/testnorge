@@ -12,7 +12,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
-import reactor.netty.tcp.ProxyProvider;
+import reactor.netty.transport.ProxyProvider;
 import reactor.util.retry.Retry;
 
 import java.net.URI;
@@ -80,8 +80,8 @@ public class AccessTokenService {
         return generateOnBehalfOfAccessToken(accessScopes);
     }
 
-    public AccessToken generateClientCredentialAccessToken(Scopeable serverProperties) {
-        return generateClientCredentialAccessToken(new AccessScopes(serverProperties.toScope())).block();
+    public Mono<AccessToken> generateClientCredentialAccessToken(Scopeable serverProperties) {
+        return generateClientCredentialAccessToken(new AccessScopes(serverProperties.toScope()));
     }
 
 

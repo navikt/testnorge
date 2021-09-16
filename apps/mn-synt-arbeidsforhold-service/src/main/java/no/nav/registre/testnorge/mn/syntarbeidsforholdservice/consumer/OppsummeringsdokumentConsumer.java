@@ -23,7 +23,7 @@ import no.nav.testnav.libs.commands.GetOppsummeringsdokumenterCommand;
 import no.nav.testnav.libs.commands.SaveOppsummeringsdokumenterCommand;
 import no.nav.testnav.libs.servletcore.config.ApplicationProperties;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
-import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
+import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
 import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.config.credentials.OppsummeringsdokuemntServerProperties;
@@ -36,7 +36,7 @@ public class OppsummeringsdokumentConsumer {
     private static final int BYTE_COUNT = 16 * 1024 * 1024;
     private final WebClient webClient;
     private final AccessTokenService accessTokenService;
-    private final NaisServerProperties properties;
+    private final ServerProperties properties;
     private final Executor executor;
     private final ApplicationProperties applicationProperties;
 

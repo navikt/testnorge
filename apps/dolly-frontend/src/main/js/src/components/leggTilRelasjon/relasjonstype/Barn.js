@@ -7,7 +7,7 @@ import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
 export const Barn = ({ formikBag, lagOptions, identInfo, hovedIdent }) => {
 	const valgbareIdenter = lagOptions(
-		Object.keys(identInfo).filter(ident => !(ident === hovedIdent)),
+		Object.keys(identInfo).filter((ident) => !(ident === hovedIdent)),
 		identInfo
 	)
 
@@ -55,7 +55,7 @@ export const Barn = ({ formikBag, lagOptions, identInfo, hovedIdent }) => {
 	)
 }
 
-const muligeForeldre = props => {
+const muligeForeldre = (props) => {
 	const partnere = _get(props, 'values.tpsf.relasjoner.partnere', [])
 	return partnere.map((partner, idx) => {
 		return { value: partner.ident, label: `Partner ${idx + 1}` }
@@ -65,5 +65,5 @@ const muligeForeldre = props => {
 const initialBarn = {
 	ident: '',
 	partnerIdent: '',
-	borHos: 'MEG'
+	borHos: 'MEG',
 }

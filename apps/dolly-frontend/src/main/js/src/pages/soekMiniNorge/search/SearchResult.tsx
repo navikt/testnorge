@@ -34,12 +34,12 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 			text: 'Ident',
 			width: '20',
 			dataField: 'personIdent.id',
-			unique: true
+			unique: true,
 		},
 		{
 			text: 'Type',
 			width: '10',
-			dataField: 'personIdent.type'
+			dataField: 'personIdent.type',
 		},
 		{
 			text: 'Navn',
@@ -47,12 +47,12 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 			dataField: 'navn.fornavn',
 			formatter: (cell: string, row: Innhold) => {
 				return row.navn.fornavn + ' ' + row.navn.slektsnavn
-			}
+			},
 		},
 		{
 			text: 'Kjønn',
 			width: '10',
-			dataField: 'personInfo.kjoenn'
+			dataField: 'personInfo.kjoenn',
 		},
 		{
 			text: 'Alder',
@@ -64,7 +64,7 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 				const age_dt = new Date(diff_ms)
 
 				return Math.abs(age_dt.getUTCFullYear() - 1970)
-			}
+			},
 		},
 		{
 			text: 'Velg alle',
@@ -74,17 +74,17 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 				return (
 					<Button
 						onClick={() => {
-							const alleValgtPaaSiden = data.every(person =>
+							const alleValgtPaaSiden = data.every((person) =>
 								valgtePersoner.includes(person.personIdent.id)
 							)
 							alleValgtPaaSiden
 								? setValgtePersoner(
 										valgtePersoner.filter(
-											personId => !data.some(person => person.personIdent.id === personId)
+											(personId) => !data.some((person) => person.personIdent.id === personId)
 										)
 								  )
 								: setValgtePersoner(
-										valgtePersoner.concat(data.map(person => person.personIdent.id))
+										valgtePersoner.concat(data.map((person) => person.personIdent.id))
 								  )
 						}}
 					>
@@ -98,8 +98,8 @@ export const SearchResult = (props: SearchResultVisningProps) => {
 					valgtePersoner={valgtePersoner}
 					setValgtePersoner={setValgtePersoner}
 				/>
-			)
-		}
+			),
+		},
 	]
 
 	return (

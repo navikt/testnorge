@@ -43,7 +43,7 @@ export default ({ name, label, afterChange }: HelsepersonellSelect) => {
 		<ErrorBoundary>
 			<LoadableComponent
 				onFetch={() =>
-					SelectOptionsOppslag.hentHelsepersonell().then(response =>
+					SelectOptionsOppslag.hentHelsepersonell().then((response) =>
 						response.helsepersonell.map((helsepersonell: Option) => ({
 							value: helsepersonell.fnr,
 							label: `${helsepersonell.fnr} - ${helsepersonell.fornavn} 
@@ -55,7 +55,7 @@ export default ({ name, label, afterChange }: HelsepersonellSelect) => {
 							mellomnavn: helsepersonell.mellomnavn,
 							etternavn: helsepersonell.etternavn,
 							hprId: helsepersonell.hprId,
-							samhandlerType: mapSamhandlerType(helsepersonell.samhandlerType)
+							samhandlerType: mapSamhandlerType(helsepersonell.samhandlerType),
 						}))
 					)
 				}

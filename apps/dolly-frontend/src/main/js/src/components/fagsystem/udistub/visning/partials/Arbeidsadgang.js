@@ -5,14 +5,8 @@ import Formatters from '~/utils/DataFormatter'
 export const Arbeidsadgang = ({ arbeidsadgang }) => {
 	if (!arbeidsadgang) return false
 
-	const {
-		harArbeidsAdgang,
-		typeArbeidsadgang,
-		arbeidsOmfang,
-		periode,
-		hjemmel,
-		forklaring
-	} = arbeidsadgang
+	const { harArbeidsAdgang, typeArbeidsadgang, arbeidsOmfang, periode, hjemmel, forklaring } =
+		arbeidsadgang
 
 	return (
 		<div>

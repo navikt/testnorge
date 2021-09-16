@@ -33,7 +33,6 @@ dependencies {
     implementation 'no.nav.testnav.libs:servlet-security'
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
-    implementation 'no.nav.testnav.libs:servlet-security'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
@@ -62,6 +61,7 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
     testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
 
+    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'com.squareup.okhttp3:mockwebserver:4.7.2'

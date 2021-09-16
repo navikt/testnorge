@@ -7,10 +7,10 @@ rootProject.name = 'dolly-frontend'
 includeBuild '../../gradlePlugins'
 
 includeBuild '../../libs/reactive-core'
-includeBuild '../../libs/reactive-security'
+includeBuild '../../libs/reactive-session-security'
 includeBuild '../../libs/reactive-frontend'
-includeBuild '../../libs/data-transfer-objects'
 includeBuild '../../libs/reactive-proxy'
+includeBuild '../../libs/data-transfer-objects'
 
 gradleEnterprise {
     buildScan {

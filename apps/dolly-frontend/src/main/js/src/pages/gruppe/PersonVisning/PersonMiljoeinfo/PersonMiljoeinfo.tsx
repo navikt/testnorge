@@ -15,7 +15,7 @@ export const PersonMiljoeinfo = ({ ident, miljoe }: PersonMiljoeinfo) => {
 
 	const request = {
 		ident: ident,
-		miljoe: miljoe
+		miljoe: miljoe,
 	}
 
 	const state = useAsync(async () => {

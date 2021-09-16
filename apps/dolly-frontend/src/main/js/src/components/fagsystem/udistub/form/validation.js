@@ -2,7 +2,7 @@ import * as Yup from 'yup'
 import _isEmpty from 'lodash/isEmpty'
 import { ifPresent, requiredBoolean, requiredString } from '~/utils/YupValidations'
 
-const checkUndefined = value => {
+const checkUndefined = (value) => {
 	if (value !== undefined) {
 		return requiredString
 	}
@@ -15,9 +15,9 @@ const aliaser = Yup.array().of(
 		identtype: Yup.string()
 			.when('nyIdent', {
 				is: true,
-				then: requiredString
+				then: requiredString,
 			})
-			.nullable()
+			.nullable(),
 	})
 )
 
@@ -26,32 +26,30 @@ const arbeidsadgang = Yup.object({
 	harArbeidsAdgang: requiredString,
 	periode: Yup.object({
 		fra: Yup.date().nullable(),
-		til: Yup.date().nullable()
+		til: Yup.date().nullable(),
 	}),
 	typeArbeidsadgang: Yup.string().nullable(),
 	hjemmel: ifPresent(
 		'$udistub.arbeidsadgang.hjemmel',
 		requiredString.max(255, 'Hjemmel kan ikke være lenger enn 255 tegn').nullable()
 	),
-	forklaring: Yup.string()
-		.max(4000)
-		.nullable()
+	forklaring: Yup.string().max(4000).nullable(),
 })
 
 const oppholdSammeVilkaar = Yup.object({
 	oppholdSammeVilkaarPeriode: Yup.object({
 		fra: Yup.date().nullable(),
-		til: Yup.date().nullable()
+		til: Yup.date().nullable(),
 	}),
 	oppholdSammeVilkaarEffektuering: Yup.date().nullable(),
 	oppholdstillatelseVedtaksDato: Yup.date().nullable(),
-	oppholdstillatelseType: Yup.string().nullable()
+	oppholdstillatelseType: Yup.string().nullable(),
 })
 
 const ikkeOppholdSammeVilkaar = Yup.object({
 	avslagEllerBortfall: Yup.object({
-		avgjorelsesDato: Yup.date().nullable()
-	})
+		avgjorelsesDato: Yup.date().nullable(),
+	}),
 })
 
 const oppholdStatus = Yup.object()
@@ -59,23 +57,23 @@ const oppholdStatus = Yup.object()
 		eosEllerEFTABeslutningOmOppholdsrett: Yup.lazy(checkUndefined),
 		eosEllerEFTAVedtakOmVarigOppholdsrett: Yup.lazy(checkUndefined),
 		eosEllerEFTAOppholdstillatelse: Yup.lazy(checkUndefined),
-		ikkeOppholdSammeVilkaar: Yup.lazy(value => {
+		ikkeOppholdSammeVilkaar: Yup.lazy((value) => {
 			if (value !== undefined) {
 				return ikkeOppholdSammeVilkaar
 			}
 			return Yup.mixed().notRequired()
 		}),
-		oppholdSammeVilkaar: Yup.lazy(value => {
+		oppholdSammeVilkaar: Yup.lazy((value) => {
 			if (value !== undefined) {
 				return oppholdSammeVilkaar
 			}
 			return Yup.mixed().notRequired()
-		})
+		}),
 	})
 	.nullable()
 	// Sjekker om oppholdStatus er et tomt objekt. Objektet blir satt ved å fylle i feltene
 	// 'Oppholdsstatus' og 'Type opphold', men disse er ikke en del av selve formet.
-	.test('is-not-empty', function() {
+	.test('is-not-empty', function () {
 		const values = this.options.context
 		if (_isEmpty(values.udistub.oppholdStatus)) {
 			return values.udistub.harOppholdsTillatelse === false
@@ -94,7 +92,7 @@ export const validation = {
 			soeknadOmBeskyttelseUnderBehandling: ifPresent(
 				'$udistub.soeknadOmBeskyttelseUnderBehandling',
 				requiredString
-			)
+			),
 		})
-	)
+	),
 }

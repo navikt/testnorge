@@ -1,15 +1,15 @@
 import React from 'react'
 import _has from 'lodash/has'
 import {
-	Personinfo,
-	Nasjonalitet,
 	Boadresse,
-	Postadresse,
-	MidlertidigAdresse,
+	Fullmakt,
 	Identhistorikk,
+	MidlertidigAdresse,
+	Nasjonalitet,
+	Personinfo,
+	Postadresse,
 	Relasjoner,
 	Vergemaal,
-	Fullmakt
 } from './partials'
 
 export const TpsfVisning = ({ data }) => {
@@ -45,7 +45,7 @@ TpsfVisning.filterValues = (data, bestillingsListe) => {
 			...data,
 			innvandretUtvandret: data.innvandretUtvandret.filter(
 				(i, idx) => idx !== data.innvandretUtvandret.length - 1
-			)
+			),
 		}
 	return data
 }

@@ -5,8 +5,14 @@ metadata:
   namespace: dolly
   labels:
     team: dolly
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 50m
 spec:
-  webproxy: true
+  idporten:
+    enabled: true
+    redirectPath: /login/oauth2/code/idporten
+    postLogoutRedirectURIs:
+      - https://dolly-frontend-dev.dev.intern.nav.no/login
   azure:
     application:
       enabled: true
@@ -27,10 +33,11 @@ spec:
         - application: testnorge-profil-api
         - application: testnav-joark-dokument-service
         - application: testnav-organisasjon-faste-data-service
+        - application: testnav-varslinger-service
+        - application: dolly-dev-redis-session
       external:
         - host: person-search-service.dev-fss-pub.nais.io
         - host: udi-stub-dev.dev-fss-pub.nais.io
-        - host: testnorge-varslinger-api.dev-fss-pub.nais.io
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
         - host: testnav-testnorge-inst-proxy.dev-fss-pub.nais.io
@@ -44,7 +51,7 @@ spec:
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
   replicas:
     min: 1
-    max: 2
+    max: 3
   port: 8080
   ingresses:
     - https://dolly-frontend-dev.dev.intern.nav.no
@@ -82,3 +89,7 @@ spec:
       value: tps-forvalteren-dev-proxy
     - name: TPS_FORVALTERN_PROXY_URL
       value: https://tps-forvalteren-dev-proxy.dev-fss-pub.nais.io
+    - name: POST_LOGOUT_REDIRECT_URI
+      value: https://dolly-frontend-dev.dev.intern.nav.no/login
+    - name: REDIS_HOST
+      value: dolly-dev-redis-session.dolly.svc.cluster.local

@@ -17,6 +17,7 @@ public class Arbeidsavtale {
                 .antallTimerPrUke(toDouble(dto.getAntallTimerPrUke()))
                 .stillingsprosent(toDouble(dto.getStillingsprosent()))
                 .arbeidstidsordning(dto.getArbeidstidsordning())
+                .sisteLoennsendringsdato(dto.getSistLoennsendring())
                 .sistStillingsendring(dto.getSistStillingsendring())
                 .build();
     }

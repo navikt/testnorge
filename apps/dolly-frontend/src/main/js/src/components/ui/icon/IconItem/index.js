@@ -20,5 +20,5 @@ export {
 	GruppeIconItem,
 	LaastGruppeIconItem,
 	MalIconItem,
-	OrganisasjonItem
+	OrganisasjonItem,
 }

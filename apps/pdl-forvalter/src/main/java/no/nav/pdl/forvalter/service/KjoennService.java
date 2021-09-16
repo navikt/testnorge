@@ -1,5 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
+import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
@@ -12,9 +13,12 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNumeric;
 
 @Service
-public class KjoennService {
+public class KjoennService implements BiValidation<KjoennDTO, PersonDTO> {
+
+    private static final String INVALID_IDENT = "Ident må være på 11 tegn og numerisk";
 
     public List<KjoennDTO> convert(PersonDTO person) {
 
@@ -34,6 +38,17 @@ public class KjoennService {
 
         if (isNull(kjoenn.getKjoenn())) {
             kjoenn.setKjoenn(KjoennFraIdentUtility.getKjoenn(ident));
+        }
+    }
+
+    @Override
+    public void validate(KjoennDTO artifact, PersonDTO person) {
+
+        if (isNull(artifact) &&
+                !isNumeric(person.getIdent()) ||
+                person.getIdent().length() != 11) {
+
+            throw new InvalidRequestException(INVALID_IDENT);
         }
     }
 }

@@ -2,9 +2,11 @@ name: Deploy pdl-proxy
 
 on:
   push:
+    branches:
+      - master
     paths:
       - proxies/pdl-proxy/**
-
+      - libs/**
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/pdl-proxy:${{ github.sha }}

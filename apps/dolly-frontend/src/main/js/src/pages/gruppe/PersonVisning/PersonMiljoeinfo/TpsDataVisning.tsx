@@ -15,7 +15,7 @@ type Data = {
 }
 
 export const TpsDataVisning = ({ data }: TpsData) => {
-	data.sort(function(a, b) {
+	data.sort(function (a, b) {
 		if (a.environment < b.environment) {
 			return -1
 		}
@@ -41,7 +41,7 @@ export const TpsDataVisning = ({ data }: TpsData) => {
 						overlay={getPersonInfo(miljoe.person)}
 						placement="top"
 						align={{
-							offset: ['0', '-10']
+							offset: ['0', '-10'],
 						}}
 						mouseEnterDelay={0.1}
 						mouseLeaveDelay={0.1}

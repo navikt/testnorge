@@ -28,13 +28,13 @@ export const Steg1Person = ({ stateModifier }: any) => {
 		KontaktReservasjonsPanel,
 		ArenaPanel,
 		UdiPanel,
-		DokarkivPanel
+		DokarkivPanel,
 	]
-		.map(panel => ({
+		.map((panel) => ({
 			label: panel.heading,
-			values: stateModifier(panel.initialValues).checked
+			values: stateModifier(panel.initialValues).checked,
 		}))
-		.filter(v => v.values.length)
+		.filter((v) => v.values.length)
 
 	return (
 		<AttributtVelger checked={checked}>

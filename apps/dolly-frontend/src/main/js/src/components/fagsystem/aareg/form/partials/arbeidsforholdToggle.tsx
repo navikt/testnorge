@@ -1,4 +1,4 @@
-import React, { ReactElement, ReactFragment, useState } from 'react'
+import React, { ReactElement, useState } from 'react'
 import _get from 'lodash/get'
 import styled from 'styled-components'
 import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
@@ -6,16 +6,15 @@ import { AmeldingForm } from './ameldingForm'
 import { ArbeidsforholdForm } from './arbeidsforholdForm'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import {
-	initialValues,
 	initialAaregOrg,
+	initialAaregPers,
 	initialArbeidsforholdOrg,
 	initialArbeidsforholdPers,
-	initialAaregPers
+	initialValues,
 } from '../initialValues'
-import { ArbeidsgiverTyper } from '~/components/fagsystem/aareg/AaregTypes'
-import { AlertStripeInfo, AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
+import { AaregListe, ArbeidsgiverTyper } from '~/components/fagsystem/aareg/AaregTypes'
+import { AlertStripeAdvarsel, AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { FormikProps } from 'formik'
-import { AaregListe } from '~/components/fagsystem/aareg/AaregTypes'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
@@ -37,7 +36,7 @@ const fellesOrg = [
 	'967170232',
 	'805824352',
 	'907670201',
-	'947064649'
+	'947064649',
 ]
 
 export const ArbeidsforholdToggle = ({ formikBag }: ArbeidsforholdToggle): ReactElement => {
@@ -49,7 +48,7 @@ export const ArbeidsforholdToggle = ({ formikBag }: ArbeidsforholdToggle): React
 			? ArbeidsgiverTyper.egen
 			: _get(formikBag.values, 'aareg[0].arbeidsgiver.aktoertype') === 'PERS'
 			? ArbeidsgiverTyper.privat
-			: fellesOrg.some(org => org === _get(formikBag.values, 'aareg[0].arbeidsgiver.orgnummer'))
+			: fellesOrg.some((org) => org === _get(formikBag.values, 'aareg[0].arbeidsgiver.orgnummer'))
 			? ArbeidsgiverTyper.felles
 			: ArbeidsgiverTyper.fritekst
 
@@ -58,20 +57,20 @@ export const ArbeidsforholdToggle = ({ formikBag }: ArbeidsforholdToggle): React
 	const toggleValues = [
 		{
 			value: ArbeidsgiverTyper.egen,
-			label: 'Egen organisasjon'
+			label: 'Egen organisasjon',
 		},
 		{
 			value: ArbeidsgiverTyper.felles,
-			label: 'Felles organisasjoner'
+			label: 'Felles organisasjoner',
 		},
 		{
 			value: ArbeidsgiverTyper.fritekst,
-			label: 'Skriv inn org.nr.'
+			label: 'Skriv inn org.nr.',
 		},
 		{
 			value: ArbeidsgiverTyper.privat,
-			label: 'Privat arbeidsgiver'
-		}
+			label: 'Privat arbeidsgiver',
+		},
 	]
 
 	const handleToggleChange = (value: ArbeidsgiverTyper) => {
@@ -89,20 +88,20 @@ export const ArbeidsforholdToggle = ({ formikBag }: ArbeidsforholdToggle): React
 		<ErrorBoundary>
 			<LoadableComponent
 				onFetch={() =>
-					SelectOptionsOppslag.hentVirksomheterFraOrgforvalter().then(response => {
+					SelectOptionsOppslag.hentVirksomheterFraOrgforvalter().then((response) => {
 						return response
 					})
 				}
-				render={data => {
+				render={(data) => {
 					const harEgneOrg = data && data.length > 0 ? true : false
 					const orgLink = <a href="/organisasjoner">her</a>
 					return (
 						<div className="toggle--wrapper">
 							<ToggleArbeidsgiver
-								onChange={event => handleToggleChange(event.target.value)}
+								onChange={(event) => handleToggleChange(event.target.value)}
 								name={'arbeidsforhold'}
 							>
-								{toggleValues.map(type => (
+								{toggleValues.map((type) => (
 									<ToggleKnapp
 										key={type.value}
 										value={type.value}

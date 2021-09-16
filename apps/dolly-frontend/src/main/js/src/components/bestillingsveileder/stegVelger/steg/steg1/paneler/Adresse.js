@@ -33,13 +33,13 @@ AdressePanel.heading = 'Adresser'
 AdressePanel.initialValues = ({ set, setMulti, del, has }) => ({
 	boadresse: {
 		label: 'Har boadresse',
-		checked: boadressePaths.some(path => has(path)),
+		checked: boadressePaths.some((path) => has(path)),
 		add() {
 			setMulti(['tpsf.boadresse', { flyttedato: null, bolignr: '' }], ['tpsf.adresseNrInfo', null])
 		},
 		remove() {
 			del(['tpsf.boadresse', 'tpsf.adresseNrInfo'])
-		}
+		},
 	},
 	postadresse: {
 		label: 'Har postadresse',
@@ -50,10 +50,10 @@ AdressePanel.initialValues = ({ set, setMulti, del, has }) => ({
 					postLand: 'NOR',
 					postLinje1: '',
 					postLinje2: '',
-					postLinje3: ''
-				}
+					postLinje3: '',
+				},
 			]),
-		remove: () => del('tpsf.postadresse')
+		remove: () => del('tpsf.postadresse'),
 	},
 	midlertidigAdresse: {
 		label: 'Har midlertidig adresse',
@@ -61,8 +61,8 @@ AdressePanel.initialValues = ({ set, setMulti, del, has }) => ({
 		add: () =>
 			set('tpsf.midlertidigAdresse', {
 				adressetype: 'GATE',
-				gyldigTom: ''
+				gyldigTom: '',
 			}),
-		remove: () => del('tpsf.midlertidigAdresse')
-	}
+		remove: () => del('tpsf.midlertidigAdresse'),
+	},
 })

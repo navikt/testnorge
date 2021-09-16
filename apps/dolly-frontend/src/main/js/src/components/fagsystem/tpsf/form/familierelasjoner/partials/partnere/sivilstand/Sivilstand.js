@@ -4,20 +4,20 @@ import _has from 'lodash/has'
 import {
 	DollyFaBlokk,
 	DollyFieldArrayWrapper,
-	FieldArrayAddButton
+	FieldArrayAddButton,
 } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { nesteGyldigStatuser, tomSisteSivilstand } from './SivilstandOptions'
 import SivilstandForm from './sivilstandForm'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
-const isSivilstandNy = sivilstand => sivilstand.ny || !sivilstand.hasOwnProperty('ny')
+const isSivilstandNy = (sivilstand) => sivilstand.ny || !sivilstand.hasOwnProperty('ny')
 const initialValues = { sivilstand: '', sivilstandRegdato: '' }
 
 export const Sivilstand = ({ basePath, formikBag, locked, sivilstander, minDatoSivilstand }) => (
 	<FieldArray name={basePath}>
-		{arrayHelpers => {
+		{(arrayHelpers) => {
 			const antallTidligereSivilstander = sivilstander.filter(
-				sivilstand => !isSivilstandNy(sivilstand)
+				(sivilstand) => !isSivilstandNy(sivilstand)
 			).length
 
 			// Sjekk forrige (nest siste) sivilstandstatus, for å sette

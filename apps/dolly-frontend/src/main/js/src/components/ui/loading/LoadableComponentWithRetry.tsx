@@ -34,7 +34,7 @@ function LoadableComponentWithRetry<T>({ onFetch, render, label }: LoadableCompo
 				setData(response)
 				setLoading(false)
 			})
-			.catch(e => {
+			.catch((e) => {
 				console.error(e)
 				setError(true)
 				setLoading(false)
@@ -54,7 +54,7 @@ function LoadableComponentWithRetry<T>({ onFetch, render, label }: LoadableCompo
 				Noe gikk galt! Trykk på "Prøv på nytt" eller kontakt team Dolly.
 				<Knapp
 					form="kompakt"
-					onClick={event => {
+					onClick={(event) => {
 						event.preventDefault()
 						callPromise()
 					}}

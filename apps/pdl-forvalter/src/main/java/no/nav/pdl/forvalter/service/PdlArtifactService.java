@@ -9,14 +9,13 @@ import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-public abstract class PdlArtifactService<T extends DbVersjonDTO> {
+public abstract class PdlArtifactService<T extends DbVersjonDTO> implements Validation<T> {
 
     protected List<T> convert(List<T> request) {
 
         for (var type : request) {
 
             if (isTrue(type.getIsNew())) {
-                validate(type);
 
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
@@ -26,8 +25,6 @@ public abstract class PdlArtifactService<T extends DbVersjonDTO> {
         enforceIntegrity(request);
         return request;
     }
-
-    protected abstract void validate(T type);
 
     protected abstract void handle(T type);
 

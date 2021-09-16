@@ -1,6 +1,6 @@
-import React, { PureComponent, Fragment } from 'react'
+import React, { Fragment, PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { Formik, Form, getIn } from 'formik'
+import { Form, Formik, getIn } from 'formik'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import * as yup from 'yup'
 import Loading from '~/components/ui/loading/Loading'
@@ -13,12 +13,12 @@ export default class RedigerGruppe extends PureComponent {
 		gruppe: PropTypes.shape({
 			id: PropTypes.number,
 			navn: PropTypes.string,
-			hensikt: PropTypes.string
+			hensikt: PropTypes.string,
 		}),
 		createGruppe: PropTypes.func,
 		updateGruppe: PropTypes.func,
 		onCancel: PropTypes.func,
-		error: PropTypes.string
+		error: PropTypes.string,
 	}
 
 	erRedigering = Boolean(getIn(this.props.gruppe, 'id', false))
@@ -32,7 +32,7 @@ export default class RedigerGruppe extends PureComponent {
 
 		const initialValues = {
 			navn: getIn(gruppe, 'navn', ''),
-			hensikt: getIn(gruppe, 'hensikt', '')
+			hensikt: getIn(gruppe, 'hensikt', ''),
 		}
 
 		const buttons = (
@@ -75,7 +75,7 @@ export default class RedigerGruppe extends PureComponent {
 
 		const groupValues = {
 			hensikt: values.hensikt,
-			navn: values.navn
+			navn: values.navn,
 		}
 		this.erRedigering ? await updateGruppe(gruppe.id, groupValues) : await createGruppe(groupValues)
 		return !error && this.onCancel()
@@ -96,6 +96,6 @@ export default class RedigerGruppe extends PureComponent {
 				.string()
 				.trim()
 				.required('Gi en liten beskrivelse av hensikten med gruppen')
-				.max(200, 'Maksimalt 200 bokstaver')
+				.max(200, 'Maksimalt 200 bokstaver'),
 		})
 }

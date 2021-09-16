@@ -30,7 +30,7 @@ export default ({
 	label,
 	kodeverk,
 	formikBag,
-	size = 'medium'
+	size = 'medium',
 }: InntektsmeldingSelect) => {
 	const ytelsePath = `${path}.ytelse`
 
@@ -44,11 +44,11 @@ export default ({
 		<ErrorBoundary>
 			<LoadableComponent
 				onFetch={() =>
-					SelectOptionsOppslag.hentInntektsmeldingOptions(kodeverk).then(response =>
+					SelectOptionsOppslag.hentInntektsmeldingOptions(kodeverk).then((response) =>
 						response.map((value: string) => ({
 							value,
 							label: Formatters.codeToNorskLabel(value),
-							tema: findTema(value)
+							tema: findTema(value),
 						}))
 					)
 				}
@@ -93,19 +93,19 @@ const setYtelseOgTema = (value: Option, formikBag: FormikProps<{}>, path: string
 			...rest,
 			ytelse: value.value,
 			omsorgspenger: { harUtbetaltPliktigeDager: false },
-			sykepengerIArbeidsgiverperioden: { bruttoUtbetalt: '' }
+			sykepengerIArbeidsgiverperioden: { bruttoUtbetalt: '' },
 		})
 	} else if (value.value === Ytelser.Sykepenger) {
 		formikBag.setFieldValue(path, {
 			...rest,
 			ytelse: value.value,
-			sykepengerIArbeidsgiverperioden: { bruttoUtbetalt: '' }
+			sykepengerIArbeidsgiverperioden: { bruttoUtbetalt: '' },
 		})
 	} else if (value.value === Ytelser.Foreldrepenger) {
 		formikBag.setFieldValue(path, {
 			...rest,
 			ytelse: value.value,
-			startdatoForeldrepengeperiode: ''
+			startdatoForeldrepengeperiode: '',
 		})
 	} else if (
 		value.value === Ytelser.Pleiepenger ||
@@ -115,7 +115,7 @@ const setYtelseOgTema = (value: Option, formikBag: FormikProps<{}>, path: string
 		formikBag.setFieldValue(path, {
 			...rest,
 			ytelse: value.value,
-			pleiepengerPerioder: [{ fom: '', tom: '' }]
+			pleiepengerPerioder: [{ fom: '', tom: '' }],
 		})
 	} else {
 		// Foreløpig ingen spesielle keys for opplærings- og svangerskapspenger

@@ -54,12 +54,7 @@ describe('Table component', () => {
 		it('should render children (columns) inside columns container', () => {
 			const testChildren = 'TestChildren'
 			const wrapper = shallow(<Table.Row>{testChildren}</Table.Row>)
-			expect(
-				wrapper
-					.find('.dot-body-row-columns')
-					.childAt(0)
-					.text()
-			).toBe(testChildren)
+			expect(wrapper.find('.dot-body-row-columns').childAt(0).text()).toBe(testChildren)
 		})
 	})
 })

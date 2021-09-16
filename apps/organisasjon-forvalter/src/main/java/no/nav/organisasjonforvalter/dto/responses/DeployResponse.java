@@ -7,11 +7,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Objects.isNull;
 import static no.nav.organisasjonforvalter.dto.responses.DeployResponse.Status.ERROR;
 import static no.nav.organisasjonforvalter.dto.responses.DeployResponse.Status.OK;
 
@@ -22,13 +20,6 @@ import static no.nav.organisasjonforvalter.dto.responses.DeployResponse.Status.O
 public class DeployResponse {
 
     private Map<String, List<EnvStatus>> orgStatus;
-
-    public Map<String, List<EnvStatus>> getOrgStatus() {
-        if (isNull(orgStatus)) {
-            orgStatus = new HashMap<>();
-        }
-        return orgStatus;
-    }
 
     public enum Status {OK, ERROR}
 

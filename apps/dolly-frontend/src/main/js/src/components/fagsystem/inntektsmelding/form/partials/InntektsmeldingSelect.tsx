@@ -23,7 +23,7 @@ export default ({ path, label, kodeverk, size = 'medium' }: InntektsmeldingSelec
 		<ErrorBoundary>
 			<LoadableComponent
 				onFetch={() =>
-					SelectOptionsOppslag.hentInntektsmeldingOptions(kodeverk).then(response =>
+					SelectOptionsOppslag.hentInntektsmeldingOptions(kodeverk).then((response) =>
 						response.map((value: string) => ({ value, label: Formatters.codeToNorskLabel(value) }))
 					)
 				}

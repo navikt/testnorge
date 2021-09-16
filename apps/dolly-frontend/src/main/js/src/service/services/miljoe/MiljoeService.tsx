@@ -6,5 +6,5 @@ export default {
 	getAktiveMiljoer() {
 		const endpoint = miljoeUrl + '/miljoer'
 		return Request.get(endpoint)
-	}
+	},
 }

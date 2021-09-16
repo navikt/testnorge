@@ -48,4 +48,17 @@ public class FalskIdentitetDTO extends DbVersjonDTO {
         private NavnDTO personnavn;
         private List<String> statsborgerskap;
     }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class NavnDTO implements Serializable {
+
+        private String etternavn;
+        private String fornavn;
+        private String mellomnavn;
+        private Boolean hasMellomnavn;
+    }
 }

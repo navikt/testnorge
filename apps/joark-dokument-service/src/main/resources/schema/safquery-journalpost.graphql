@@ -2,6 +2,11 @@ query journalpost($journalpostId: String!) {
     journalpost(journalpostId: $journalpostId) {
         journalpostId
         temanavn
+        avsenderMottaker {
+            type
+            id
+            navn
+        }
         tittel
         dokumenter {
             dokumentInfoId

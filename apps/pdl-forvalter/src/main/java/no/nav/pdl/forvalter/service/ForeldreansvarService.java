@@ -11,7 +11,7 @@ import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.ROLLE;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO.Ansvar;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO.PersonnavnDTO;
@@ -39,7 +39,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
-public class ForeldreansvarService {
+public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, PersonDTO> {
 
     private static final String INVALID_EMPTY_ANSVAR_EXCEPTION = "Forelderansvar: hvem som har ansvar må oppgis";
     private static final String INVALID_AMBIGUOUS_ANSVARLIG_EXCEPTION = "Forelderansvar: kun et av feltene 'ansvarlig' " +
@@ -68,7 +68,6 @@ public class ForeldreansvarService {
         for (var type : person.getForeldreansvar()) {
 
             if (isTrue(type.getIsNew())) {
-                validate(type, person);
 
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
@@ -79,7 +78,8 @@ public class ForeldreansvarService {
         return emptyList();
     }
 
-    private void validate(ForeldreansvarDTO foreldreansvar, PersonDTO hovedperson) {
+    @Override
+    public void validate(ForeldreansvarDTO foreldreansvar, PersonDTO hovedperson) {
 
         if (isNull(foreldreansvar.getAnsvar())) {
             throw new InvalidRequestException(INVALID_EMPTY_ANSVAR_EXCEPTION);
@@ -139,8 +139,8 @@ public class ForeldreansvarService {
             Optional<DbPerson> barn = personRepository.findByIdent(relasjon.getRelatertPerson());
             return barn.isPresent() &&
                     barn.get().getPerson().getForelderBarnRelasjon().stream().anyMatch(forelderRelasjon ->
-                            forelderRelasjon.getRelatertPersonsRolle() == ROLLE.MOR ||
-                                    forelderRelasjon.getRelatertPersonsRolle() == ROLLE.MEDMOR);
+                            forelderRelasjon.getRelatertPersonsRolle() == Rolle.MOR ||
+                                    forelderRelasjon.getRelatertPersonsRolle() == Rolle.MEDMOR);
         });
     }
 
@@ -150,8 +150,8 @@ public class ForeldreansvarService {
                 .map(barnRelasjon -> {
                     DbPerson barn = personRepository.findByIdent(barnRelasjon.getRelatertPerson()).get();
                     return barn.getPerson().getForelderBarnRelasjon().stream()
-                            .filter(foreldreRelasjon -> foreldreRelasjon.getRelatertPersonsRolle() == ROLLE.MOR ||
-                                    foreldreRelasjon.getRelatertPersonsRolle() == ROLLE.MEDMOR)
+                            .filter(foreldreRelasjon -> foreldreRelasjon.getRelatertPersonsRolle() == Rolle.MOR ||
+                                    foreldreRelasjon.getRelatertPersonsRolle() == Rolle.MEDMOR)
                             .map(foreldreRelasjon -> BarnRelasjon.builder()
                                     .barn(barn)
                                     .ansvarlig(foreldreRelasjon.getRelatertPerson())
@@ -167,7 +167,7 @@ public class ForeldreansvarService {
             Optional<DbPerson> barn = personRepository.findByIdent(relasjon.getRelatertPerson());
             return barn.isPresent() &&
                     barn.get().getPerson().getForelderBarnRelasjon().stream().anyMatch(forelderRelasjon ->
-                            forelderRelasjon.getRelatertPersonsRolle() == ROLLE.FAR);
+                            forelderRelasjon.getRelatertPersonsRolle() == Rolle.FAR);
         });
     }
 
@@ -177,7 +177,7 @@ public class ForeldreansvarService {
                 .map(barnRelasjon -> {
                     DbPerson barn = personRepository.findByIdent(barnRelasjon.getRelatertPerson()).get();
                     return barn.getPerson().getForelderBarnRelasjon().stream()
-                            .filter(foreldreRelasjon -> foreldreRelasjon.getRelatertPersonsRolle() == ROLLE.FAR)
+                            .filter(foreldreRelasjon -> foreldreRelasjon.getRelatertPersonsRolle() == Rolle.FAR)
                             .map(foreldreRelasjon -> BarnRelasjon.builder()
                                     .barn(barn)
                                     .ansvarlig(foreldreRelasjon.getRelatertPerson())
@@ -232,7 +232,7 @@ public class ForeldreansvarService {
             }
 
             setRelasjoner(hovedperson.getForelderBarnRelasjon().stream()
-                    .filter(relasjon -> relasjon.getRelatertPersonsRolle() == ROLLE.BARN)
+                    .filter(relasjon -> relasjon.getRelatertPersonsRolle() == Rolle.BARN)
                     .map(relasjon -> relasjon.getRelatertPerson())
                     .map(ident -> personRepository.findByIdent(ident))
                     .map(dbperson -> BarnRelasjon.builder()

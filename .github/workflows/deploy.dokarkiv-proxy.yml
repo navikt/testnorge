@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - proxies/dokarkiv-proxy/**
-
+      - libs/**
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/dokarkiv-proxy:${{ github.sha }}

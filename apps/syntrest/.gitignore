@@ -31,3 +31,8 @@ doc/images/.Ds_Store
 mvnw
 mvnw.cmd
 *.ps1
+
+### gradle ###
+gradle
+gradlew
+gradlew.bat

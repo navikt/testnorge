@@ -1,10 +1,9 @@
-import gruppe from '../index'
-import { sokSelectorGruppeOversikt } from '../index'
+import gruppe, { sokSelectorGruppeOversikt } from '../index'
 
 describe('gruppeReducer', () => {
 	const initialState = {
 		data: null,
-		visning: 'mine'
+		visning: 'mine',
 	}
 
 	it('should return gruppe with initialstate', () => {
@@ -13,7 +12,7 @@ describe('gruppeReducer', () => {
 
 	it('should return initial state after LOCATION_CHANGE', () => {
 		const action = {
-			type: '@@router/LOCATION_CHANGE'
+			type: '@@router/LOCATION_CHANGE',
 		}
 
 		expect(gruppe({}, action)).toEqual(initialState)
@@ -23,11 +22,11 @@ describe('gruppeReducer', () => {
 		const testdata = 'test'
 		const action = {
 			type: 'GET_GRUPPE_SUCCESS',
-			payload: { data: testdata }
+			payload: { data: testdata },
 		}
 
 		const res = {
-			data: [testdata]
+			data: [testdata],
 		}
 
 		expect(gruppe({}, action)).toEqual(res)
@@ -38,28 +37,28 @@ describe('gruppeReducer', () => {
 
 		const action = {
 			type: 'GET_GRUPPER_SUCCESS',
-			payload: { data: testdata }
+			payload: { data: testdata },
 		}
 		const res = {
-			data: testdata
+			data: testdata,
 		}
 		expect(gruppe({}, action)).toEqual(res)
 	})
 
 	it('should handle success updating a datarow', () => {
 		const prevState = {
-			data: [{ id: 1, value: 'test' }]
+			data: [{ id: 1, value: 'test' }],
 		}
 
 		const newData = { id: 1, value: 'test_update' }
 
 		const action = {
 			type: 'UPDATE_GRUPPE_SUCCESS',
-			payload: { data: newData }
+			payload: { data: newData },
 		}
 
 		const res = {
-			data: [newData]
+			data: [newData],
 		}
 
 		expect(gruppe(prevState, action)).toEqual(res)
@@ -67,16 +66,16 @@ describe('gruppeReducer', () => {
 
 	it('should handle success deleting a row', () => {
 		const prevState = {
-			data: [{ id: 1, value: 'test' }]
+			data: [{ id: 1, value: 'test' }],
 		}
 
 		const action = {
 			type: 'DELETE_GRUPPE_SUCCESS',
-			meta: { gruppeId: 1 }
+			meta: { gruppeId: 1 },
 		}
 
 		const res = {
-			data: []
+			data: [],
 		}
 
 		expect(gruppe(prevState, action)).toEqual(res)
@@ -86,11 +85,11 @@ describe('gruppeReducer', () => {
 		const testdata = 'test'
 		const action = {
 			type: 'SETT_VISNING',
-			payload: testdata
+			payload: testdata,
 		}
 
 		const res = {
-			visning: testdata
+			visning: testdata,
 		}
 
 		expect(gruppe({}, action)).toEqual(res)

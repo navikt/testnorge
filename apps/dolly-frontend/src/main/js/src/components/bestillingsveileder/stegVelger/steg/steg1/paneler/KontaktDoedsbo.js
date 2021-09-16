@@ -34,11 +34,11 @@ KontaktDoedsboPanel.initialValues = ({ set, del, has }) => ({
 				poststedsnavn: '',
 				landkode: 'NOR',
 				skifteform: '',
-				utstedtDato: ''
+				utstedtDato: '',
 			})
 		},
 		remove() {
 			del('pdlforvalter.kontaktinformasjonForDoedsbo')
-		}
-	}
+		},
+	},
 })

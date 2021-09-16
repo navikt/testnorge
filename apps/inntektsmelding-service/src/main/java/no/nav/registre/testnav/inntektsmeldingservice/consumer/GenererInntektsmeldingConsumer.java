@@ -7,7 +7,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import no.nav.registre.testnav.inntektsmeldingservice.config.credentials.InntektsmeldingGeneratorServiceProperties;
 import no.nav.registre.testnav.inntektsmeldingservice.consumer.command.GenererInntektsmeldingCommand;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsInntektsmelding;
-import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
+import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 
 @Slf4j
@@ -16,7 +16,7 @@ public class GenererInntektsmeldingConsumer {
 
     private final WebClient webClient;
     private final AccessTokenService accessTokenService;
-    private final NaisServerProperties properties;
+    private final ServerProperties properties;
 
     public GenererInntektsmeldingConsumer(
             InntektsmeldingGeneratorServiceProperties properties,

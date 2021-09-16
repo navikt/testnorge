@@ -1,9 +1,7 @@
 import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
-import { panelError } from '~/components/ui/form/formUtils'
-import { erForste } from '~/components/ui/form/formUtils'
-import { Kategori } from '~/components/ui/form/kategori/Kategori'
+import { erForste, panelError } from '~/components/ui/form/formUtils'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
@@ -15,7 +13,7 @@ const initialValues = {
 	foedtFoer: null,
 	identtype: null,
 	kjonn: null,
-	regdato: null
+	regdato: null,
 }
 
 const hjelpetekst =

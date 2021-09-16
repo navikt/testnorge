@@ -18,7 +18,7 @@ import styled from 'styled-components'
 const initialValues = {
 	antall: 1,
 	identtype: Options('identtype')[0].value,
-	mal: null
+	mal: null,
 }
 
 const StyledH3 = styled.h3`
@@ -35,7 +35,7 @@ const validationSchema = yup.object({
 		.positive('Må være et positivt tall')
 		.min(1, 'Må minst opprette ${min} person')
 		.required('Oppgi antall personer'),
-	identtype: yup.string().required('Velg en identtype')
+	identtype: yup.string().required('Velg en identtype'),
 })
 
 export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
@@ -49,7 +49,7 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 	const zIdentOptions = state.value ? getZIdentOptions(state.value.malbestillinger) : []
 	const malOptions = state.value ? getMalOptions(state.value.malbestillinger, zIdent) : []
 
-	const handleMalChange = formikbag => {
+	const handleMalChange = (formikbag) => {
 		toggleMalAktiv()
 		if (formikbag.values.mal) {
 			formikbag.setFieldValue('mal', null)
@@ -62,13 +62,13 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 	}
 
 	const preSubmit = (values, formikBag) => {
-		if (values.mal) values.mal = malOptions.find(m => m.value === values.mal).data
+		if (values.mal) values.mal = malOptions.find((m) => m.value === values.mal).data
 		return onSubmit(values, formikBag)
 	}
 
 	return (
 		<Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={preSubmit}>
-			{formikBag => (
+			{(formikBag) => (
 				<div className="ny-ident-form">
 					<h3>Velg type og antall</h3>
 					<div className="ny-ident-form_selects">
@@ -99,7 +99,7 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 								isLoading={state.loading}
 								options={zIdentOptions}
 								size="medium"
-								onChange={e => handleBrukerChange(e, formikBag)}
+								onChange={(e) => handleBrukerChange(e, formikBag)}
 								value={zIdent}
 								isClearable={false}
 								disabled={!malAktiv}
@@ -133,17 +133,17 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 	)
 }
 
-const getZIdentOptions = malbestillinger =>
-	Object.keys(malbestillinger).map(ident => ({
+const getZIdentOptions = (malbestillinger) =>
+	Object.keys(malbestillinger).map((ident) => ({
 		value: ident,
-		label: ident
+		label: ident,
 	}))
 
 const getMalOptions = (malbestillinger, zIdent) => {
 	if (!malbestillinger || !malbestillinger[zIdent]) return []
-	return malbestillinger[zIdent].map(mal => ({
+	return malbestillinger[zIdent].map((mal) => ({
 		value: mal.id,
 		label: mal.malNavn,
-		data: { bestilling: mal.bestilling, malNavn: mal.malNavn }
+		data: { bestilling: mal.bestilling, malNavn: mal.malNavn },
 	}))
 }

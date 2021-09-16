@@ -11,11 +11,11 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 	const filterEnvironments = (miljoer, erOrg) => {
 		if (!erOrg) return miljoer
 		const filtrerteMiljoer = { ...miljoer }
-		filtrerteMiljoer.Q = filtrerteMiljoer.Q.filter(env => !env.id.includes('qx'))
+		filtrerteMiljoer.Q = filtrerteMiljoer.Q.filter((env) => !env.id.includes('qx'))
 		return filtrerteMiljoer
 	}
 
-	const environments = useSelector(state => state.environments.data)
+	const environments = useSelector((state) => state.environments.data)
 
 	if (!environments) return null
 	const erOrganisasjon = bestillingsdata?.hasOwnProperty('organisasjon')
@@ -34,23 +34,23 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 				{({ push, remove, form }) => {
 					const values = form.values.environments
 
-					const isChecked = id => values.includes(id)
+					const isChecked = (id) => values.includes(id)
 
-					const onClick = e => {
+					const onClick = (e) => {
 						const { id } = e.target
 						isChecked(id) ? remove(values.indexOf(id)) : push(id)
 					}
 
-					const velgAlle = type => {
-						const c = filteredEnvironments[type].filter(f => !isChecked(f.id)).map(a => a.id)
+					const velgAlle = (type) => {
+						const c = filteredEnvironments[type].filter((f) => !isChecked(f.id)).map((a) => a.id)
 						const n = values.concat(c)
 						form.setFieldValue('environments', n)
 					}
 
-					const fjernAlle = type => {
+					const fjernAlle = (type) => {
 						form.setFieldValue(
 							'environments',
-							values.filter(id => !filteredEnvironments[type].map(a => a.id).includes(id))
+							values.filter((id) => !filteredEnvironments[type].map((a) => a.id).includes(id))
 						)
 					}
 
@@ -64,17 +64,17 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 						push('q2')
 					}
 
-					return order.map(type => {
+					return order.map((type) => {
 						const category = filteredEnvironments[type]
 						if (!category) return null
 
-						const allDisabled = category.some(f => f.disabled)
+						const allDisabled = category.some((f) => f.disabled)
 
 						return (
 							<fieldset key={type} name={`Liste over ${type}-miljøer`}>
 								<h3>{type}-miljøer</h3>
 								<div className="miljo-velger_checkboxes">
-									{category.map(env => (
+									{category.map((env) => (
 										<DollyCheckbox
 											key={env.id}
 											id={env.id}

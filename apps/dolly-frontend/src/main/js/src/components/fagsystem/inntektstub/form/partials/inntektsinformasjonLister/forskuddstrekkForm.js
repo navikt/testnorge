@@ -6,7 +6,7 @@ import { InntektstubKodeverk } from '~/config/kodeverk'
 
 const initialValues = {
 	beloep: '',
-	beskrivelse: null
+	beskrivelse: null,
 }
 
 export const ForskuddstrekkForm = ({ formikBag, inntektsinformasjonPath }) => {
@@ -16,7 +16,7 @@ export const ForskuddstrekkForm = ({ formikBag, inntektsinformasjonPath }) => {
 			header="Forskuddstrekk"
 			newEntry={initialValues}
 		>
-			{path => (
+			{(path) => (
 				<React.Fragment>
 					<FormikTextInput name={`${path}.beloep`} label="Beløp" type="number" />
 					<FormikSelect

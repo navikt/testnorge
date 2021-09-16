@@ -7,7 +7,7 @@ describe('searchReducer', () => {
 
 	it('it should reset search to initial state', () => {
 		const action = {
-			type: 'SEARCH/RESET_SEARCH'
+			type: 'SEARCH/RESET_SEARCH',
 		}
 		expect(search('prevVal', action)).toEqual('')
 	})
@@ -16,7 +16,7 @@ describe('searchReducer', () => {
 		const testText = 'test'
 		const action = {
 			type: 'SEARCH/SET_TEXT',
-			payload: testText
+			payload: testText,
 		}
 
 		expect(search('', action)).toEqual(testText)

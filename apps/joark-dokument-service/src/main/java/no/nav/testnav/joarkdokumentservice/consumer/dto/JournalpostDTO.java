@@ -13,5 +13,6 @@ public class JournalpostDTO {
     Integer journalpostId;
     String tittel;
     String temanavn;
-    List<DokuemntDTO> dokumenter;
+    AvsenderMottakerDTO avsenderMottaker;
+    List<DokumentDTO> dokumenter;
 }

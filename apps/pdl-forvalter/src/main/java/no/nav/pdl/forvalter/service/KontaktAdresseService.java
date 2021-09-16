@@ -20,9 +20,9 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 @Service
 public class KontaktAdresseService extends AdresseService<KontaktadresseDTO> {
 
-    private static final String VALIDATION_ADDRESS_ABSENT_ERROR = "Én av adressene må velges (vegadresse, " +
+    private static final String VALIDATION_ADDRESS_ABSENT_ERROR = "Kontaktadresse: én av adressene må velges (vegadresse, " +
             "postboksadresse, utenlandskAdresse)";
-    private static final String VALIDATION_AMBIGUITY_ERROR = "Kun én adresse skal være satt (vegadresse, " +
+    private static final String VALIDATION_AMBIGUITY_ERROR = "Kontaktadresse: kun én adresse skal være satt (vegadresse, " +
             "postboksadresse, utenlandskAdresse)";
 
     private final AdresseServiceConsumer adresseServiceConsumer;
@@ -49,7 +49,6 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO> {
         for (var adresse : person.getKontaktadresse()) {
 
             if (isTrue(adresse.getIsNew())) {
-                validate(adresse);
 
                 handle(adresse);
                 populateMiscFields(adresse, person);
@@ -59,15 +58,12 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO> {
         return person.getKontaktadresse();
     }
 
-    private void validate(KontaktadresseDTO adresse) {
-        if (count(adresse.getPostboksadresse()) +
-                count(adresse.getUtenlandskAdresse()) +
-                count(adresse.getVegadresse()) == 0) {
+    @Override
+    public void validate(KontaktadresseDTO adresse) {
+        if (adresse.countAdresser() == 0) {
             throw new InvalidRequestException(VALIDATION_ADDRESS_ABSENT_ERROR);
         }
-        if (count(adresse.getPostboksadresse()) +
-                count(adresse.getUtenlandskAdresse()) +
-                count(adresse.getVegadresse()) > 1) {
+        if (adresse.countAdresser() > 1) {
             throw new InvalidRequestException(VALIDATION_AMBIGUITY_ERROR);
         }
         if (DbVersjonDTO.Master.PDL == adresse.getMaster() &&

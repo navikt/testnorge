@@ -1,6 +1,5 @@
 import Api from '../api'
 import { Level, Rating } from './types'
-import config from '../config'
 
 interface LogEvent {
 	level: Level
@@ -18,5 +17,5 @@ export default {
 			{ method: 'POST', headers: { 'Content-Type': 'application/json' } },
 			event
 		)
-	}
+	},
 }

@@ -1,7 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalEmbete;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalSakstype;
@@ -13,7 +12,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -35,14 +33,12 @@ class VergemaalServiceTest {
     @Test
     void whenEmbeteIsMissing_thenThrowExecption() {
 
-        var request = PersonDTO.builder()
-                .vergemaal(List.of(VergemaalDTO.builder()
+        var request = VergemaalDTO.builder()
                         .isNew(true)
-                        .build()))
-                .build();
+                        .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                vergemaalService.convert(request));
+                vergemaalService.validate(request));
 
         assertThat(exception.getMessage(), containsString("Embete for vergemål må angis"));
     }
@@ -50,15 +46,13 @@ class VergemaalServiceTest {
     @Test
     void whenTypeIsMissing_thenThrowExecption() {
 
-        var request = PersonDTO.builder()
-                .vergemaal(List.of(VergemaalDTO.builder()
+        var request = VergemaalDTO.builder()
                         .vergemaalEmbete(VergemaalEmbete.FMAV)
                         .isNew(true)
-                        .build()))
-                .build();
+                        .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                vergemaalService.convert(request));
+                vergemaalService.validate(request));
 
         assertThat(exception.getMessage(), containsString("Sakstype av vergemål må angis"));
     }
@@ -66,17 +60,15 @@ class VergemaalServiceTest {
     @Test
     void whenUgyldigDatoInterval_thenThrowExecption() {
 
-        var request = PersonDTO.builder()
-                .vergemaal(List.of(VergemaalDTO.builder()
+        var request = VergemaalDTO.builder()
                         .vergemaalEmbete(VergemaalEmbete.FMIN)
                         .gyldigFraOgMed(LocalDate.of(2012, 04, 05).atStartOfDay())
                         .gyldigTilOgMed(LocalDate.of(2012, 04, 04).atStartOfDay())
                         .isNew(true)
-                        .build()))
-                .build();
+                        .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                vergemaalService.convert(request));
+                vergemaalService.validate(request));
 
         assertThat(exception.getMessage(), containsString("Ugyldig datointervall: gyldigFom må være før gyldigTom"));
     }
@@ -86,17 +78,15 @@ class VergemaalServiceTest {
 
         when(personRepository.existsByIdent(IDENT)).thenReturn(false);
 
-        var request = PersonDTO.builder()
-                .vergemaal(List.of(VergemaalDTO.builder()
+        var request = VergemaalDTO.builder()
                         .vergemaalEmbete(VergemaalEmbete.FMNO)
                         .sakType(VergemaalSakstype.EMF)
                         .vergeIdent(IDENT)
                         .isNew(true)
-                        .build()))
-                .build();
+                        .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                vergemaalService.convert(request));
+                vergemaalService.validate(request));
 
         assertThat(exception.getMessage(), containsString(format("Vergeperson med ident %s ikke funnet i database", IDENT)));
     }

@@ -1,20 +1,19 @@
 package no.nav.registre.testnorge.arena.consumer.rs;
 
+import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.arena.consumer.rs.command.pdl.GetPdlPersonCommand;
+import no.nav.registre.testnorge.arena.consumer.rs.response.pdl.PdlPerson;
+import no.nav.registre.testnorge.arena.domain.FilLaster;
+import no.nav.testnav.libs.securitytokenservice.StsOidcTokenService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-
-import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.arena.consumer.rs.command.pdl.GetPdlPersonCommand;
-import no.nav.registre.testnorge.arena.consumer.rs.response.pdl.PdlPerson;
-
-import no.nav.registre.testnorge.arena.domain.FilLaster;
-import no.nav.testnav.libs.securitytokenservice.StsOidcTokenService;
 
 @Slf4j
 @Service
@@ -37,7 +36,7 @@ public class PdlPersonConsumer {
 
     public PdlPerson getPdlPerson(String ident) {
         var query = getSinglePersonQueryFromFile();
-        return new GetPdlPersonCommand(ident, query, tokenService.getToken(), webClient).call();
+        return new GetPdlPersonCommand(ident, query, tokenService.getToken().block(), webClient).call();
     }
 
     private static String getSinglePersonQueryFromFile() {
@@ -49,4 +48,5 @@ public class PdlPersonConsumer {
             return null;
         }
     }
+
 }
