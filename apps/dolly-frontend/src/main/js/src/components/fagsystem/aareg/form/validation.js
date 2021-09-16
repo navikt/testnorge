@@ -113,15 +113,15 @@ const fartoy = Yup.array().of(
 const requiredPeriode = Yup.mixed()
 	.when('$aareg[0].arbeidsforholdstype', {
 		is: 'frilanserOppdragstakerHonorarPersonerMm',
-		then: requiredString,
+		then: requiredDate,
 	})
 	.when('$aareg[0].arbeidsforholdstype', {
 		is: 'maritimtArbeidsforhold',
-		then: requiredString,
+		then: requiredDate,
 	})
 	.when('$aareg[0].arbeidsforholdstype', {
 		is: 'ordinaertArbeidsforhold',
-		then: requiredString,
+		then: requiredDate,
 	})
 	.nullable()
 
