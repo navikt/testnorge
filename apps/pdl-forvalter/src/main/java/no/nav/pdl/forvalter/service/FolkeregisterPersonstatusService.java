@@ -41,7 +41,8 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
                     FolkeregisterpersonstatusDTO.builder()
                             .status(getPersonstatus(person))
                             .id(person.getFolkeregisterpersonstatus().stream()
-                                    .findFirst().orElse(new FolkeregisterpersonstatusDTO()).getId() + 1)
+                                    .map(FolkeregisterpersonstatusDTO::getId)
+                                    .findFirst().orElse(0) + 1)
                             .kilde("Dolly")
                             .master(Master.FREG)
                             .build());

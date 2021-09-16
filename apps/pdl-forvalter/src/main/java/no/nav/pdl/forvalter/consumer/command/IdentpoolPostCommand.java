@@ -3,7 +3,10 @@ package no.nav.pdl.forvalter.consumer.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.dto.IdentDTO;
+import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.pdl.forvalter.exception.NotFoundException;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -19,6 +22,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class IdentpoolPostCommand implements Callable<Mono<List<IdentDTO>>> {
 
+    private static final String IDENTPOOL = "Identpool: ";
 
     private final WebClient webClient;
     private final String url;
@@ -48,8 +52,19 @@ public class IdentpoolPostCommand implements Callable<Mono<List<IdentDTO>>> {
                         .map(ident -> IdentDTO.builder()
                                 .ident(ident)
                                 .build())
-                                .map(IdentDTO.class::cast)
+                        .map(IdentDTO.class::cast)
                         .collect(Collectors.toList())))
-                .doOnError(throwable -> log.error(getMessage(throwable)));
+                .onErrorResume(throwable -> {
+                    log.error(getMessage(throwable));
+                    if (throwable instanceof WebClientResponseException) {
+                        if (((WebClientResponseException) throwable).getStatusCode() == HttpStatus.NOT_FOUND) {
+                            return Mono.error(new NotFoundException(IDENTPOOL + getMessage(throwable)));
+                        } else {
+                            return Mono.error(new InvalidRequestException(IDENTPOOL + getMessage(throwable)));
+                        }
+                    } else {
+                        return Mono.error(new InternalError(IDENTPOOL + getMessage(throwable)));
+                    }
+                });
     }
 }

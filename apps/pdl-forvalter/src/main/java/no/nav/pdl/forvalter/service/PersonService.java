@@ -16,7 +16,6 @@ import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
@@ -160,9 +159,6 @@ public class PersonService {
         }
         if (request.getPerson().getStatsborgerskap().isEmpty()) {
             request.getPerson().getStatsborgerskap().add(new StatsborgerskapDTO());
-        }
-        if (request.getPerson().getFolkeregisterpersonstatus().isEmpty()) {
-            request.getPerson().getFolkeregisterpersonstatus().add(new FolkeregisterpersonstatusDTO());
         }
 
         return updatePerson(request.getPerson().getIdent(), PersonUpdateRequestDTO.builder()
