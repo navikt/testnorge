@@ -47,12 +47,15 @@ public class SecurityConfig {
                         "/favicon.ico",
                         "/login",
                         "/main.*.css",
+                        "/main.*.js",
                         "/manifest.json",
                         "/bundle.*.js"
                 ).permitAll()
                 .anyExchange().authenticated()
-                .and().oauth2Login(oAuth2LoginSpec -> oAuth2LoginSpec.authenticationManager(authenticationManger))
-                .logout(logoutSpec -> logoutSpec
+                .and().oauth2Login(
+                        oAuth2LoginSpec -> oAuth2LoginSpec.authenticationManager(authenticationManger)
+                ).formLogin().loginPage("/login")
+                .and().logout(logoutSpec -> logoutSpec
                         .logoutUrl("/logout")
                         .logoutSuccessHandler(logoutSuccessHandler))
                 .build();

@@ -20,8 +20,8 @@ public class ForwardAndRedirectController {
     public RouterFunction<ServerResponse> htmlRouter(@Value("classpath:/static/index.html") Resource html) {
         HandlerFunction<ServerResponse> indexHandler = request -> ok().contentType(MediaType.TEXT_HTML).syncBody(html);
         return RouterFunctions
-                .route(RequestPredicates.GET("/access-token/**"), indexHandler);
-//                .andRoute(RequestPredicates.GET("/login"), indexHandler);
+                .route(RequestPredicates.GET("/access-token/**"), indexHandler)
+                .andRoute(RequestPredicates.GET("/login"), indexHandler);
     }
 
 }

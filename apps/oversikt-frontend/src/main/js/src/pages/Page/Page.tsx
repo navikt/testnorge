@@ -21,7 +21,7 @@ const Page = ({ children, loggedIn = true }: Props) => (
 						Magic Token
 					</HeaderLink>
 					<HeaderLink
-						href="/access-token/dolly-backend"
+						href="/access-token/dev-fss.dolly.dolly-backend"
 						isActive={() => window.location.pathname.includes('/access-token')}
 					>
 						Access Token
