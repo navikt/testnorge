@@ -71,39 +71,28 @@ public class PdlOrdreService {
                 .map(DbPerson::getIdent)
                 .collect(Collectors.toSet());
 
-
-        return Flux.fromStream(dbPersoner.stream())
+        return Flux.fromStream(dbPersoner.parallelStream())
                 .flatMap(person -> Mono.zip(
-                                        sendAlleInformasjonselementer(person, false)
-                                                .map(ordrer -> PersonHendelserDTO.builder().ident(person.getIdent()).ordrer(ordrer).build()),
-                                        Flux.concat(person.getRelasjoner()
+                                sendAlleInformasjonselementer(person, false)
+                                        .map(ordrer -> PersonHendelserDTO.builder()
+                                                .ident(person.getIdent())
+                                                .ordrer(ordrer)
+                                                .build()),
+                                Flux.concat(person.getRelasjoner()
                                                 .stream()
                                                 .map(DbRelasjon::getRelatertPerson)
                                                 .filter(relatertPerson -> !hovedpersoner.contains(relatertPerson.getIdent()))
                                                 .map(relatertPerson -> sendAlleInformasjonselementer(relatertPerson, true)
-                                                        .map(ordrer -> PersonHendelserDTO.builder().ident(relatertPerson.getIdent()).ordrer(ordrer).build())
-                                                ).collect(Collectors.toList())
-                                        ).collectList()
-                                ).map((mapper) -> OrdreResponseDTO.builder().hovedperson(mapper.getT1()).relasjoner(mapper.getT2()).build())
-                                .doOnNext(value -> log.info("Hovedperson ferdig {}", person.getIdent()))
-                );
-
-//        return Flux.fromStream(dbPersoner.parallelStream())
-//                .flatMap(person ->
-//                        Mono.just(OrdreResponseDTO.builder()
-//                                .hovedperson(PersonHendelserDTO.builder()
-//                                        .ident(person.getIdent())
-//                                        .ordrer(sendAlleInformasjonselementer(person, false))
-//                                        .build())
-//                                .relasjoner(person.getRelasjoner().stream()
-//                                        .map(DbRelasjon::getRelatertPerson)
-//                                        .filter(relatertPerson -> !hovedpersoner.contains(relatertPerson.getIdent()))
-//                                        .map(relatertPerson -> PersonHendelserDTO.builder()
-//                                                .ident(relatertPerson.getIdent())
-//                                                .ordrer(sendAlleInformasjonselementer(relatertPerson, true))
-//                                                .build())
-//                                        .collect(Collectors.toList()))
-//                                .build()));
+                                                        .map(ordrer -> PersonHendelserDTO.builder()
+                                                                .ident(relatertPerson.getIdent())
+                                                                .ordrer(ordrer)
+                                                                .build()))
+                                                .collect(Collectors.toList()))
+                                        .collectList())
+                        .map((mapper) -> OrdreResponseDTO.builder()
+                                .hovedperson(mapper.getT1())
+                                .relasjoner(mapper.getT2())
+                                .build()));
     }
 
     private Mono<List<OrdreResponseDTO.PdlStatusDTO>> sendAlleInformasjonselementer(DbPerson person, boolean isRelasjon) {

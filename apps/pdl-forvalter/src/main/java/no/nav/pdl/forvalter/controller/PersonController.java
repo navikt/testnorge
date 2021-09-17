@@ -10,6 +10,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -66,7 +67,7 @@ public class PersonController {
     }
 
     @ResponseBody
-    @PostMapping(value = "/ordre")
+    @PostMapping(value = "/ordre", produces = MediaType.APPLICATION_NDJSON_VALUE)
     @Operation(description = "Send person(er) til PDL (ordre)")
     public Flux<OrdreResponseDTO> sendPersonTilPdl(@RequestBody OrdreRequestDTO ordre) {
 

@@ -82,6 +82,8 @@ public class PdlTestdataConsumer {
 
     public Flux<OrdreResponseDTO.HendelseDTO> send(List<ArtifactValue> artifacts) {
 
+        log.info("Sender person {} med artifact {}", artifacts.get(0).getIdent(), artifacts.get(0).getArtifact());
+
         return accessTokenService
                 .generateToken(properties)
                 .flatMapMany(accessToken -> artifacts
