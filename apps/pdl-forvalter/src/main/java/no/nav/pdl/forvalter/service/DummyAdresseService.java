@@ -7,6 +7,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO.Postboksadresse
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
 import org.springframework.stereotype.Service;
 
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master.FREG;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
@@ -33,6 +34,8 @@ public class DummyAdresseService {
                         .postboks(POSTBOKS_ADRESSE_POSTBOKS)
                         .postnummer(POSTBOKS_ADRESSE_POSTNUMMER)
                         .build())
+                .master(FREG)
+                .kilde("Dolly")
                 .build();
     }
 

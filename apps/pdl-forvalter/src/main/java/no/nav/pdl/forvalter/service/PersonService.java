@@ -22,7 +22,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
@@ -153,9 +152,7 @@ public class PersonService {
             request.getPerson().getNavn().add(new NavnDTO());
         }
         if (request.getPerson().getBostedsadresse().isEmpty()) {
-            request.getPerson().getBostedsadresse().add(BostedadresseDTO.builder()
-                    .vegadresse(new VegadresseDTO())
-                    .build());
+            request.getPerson().getBostedsadresse().add(new BostedadresseDTO());
         }
         if (request.getPerson().getStatsborgerskap().isEmpty()) {
             request.getPerson().getStatsborgerskap().add(new StatsborgerskapDTO());

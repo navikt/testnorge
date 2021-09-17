@@ -67,7 +67,7 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
         if (FNR == IdenttypeFraIdentUtility.getIdenttype(person.getIdent()) &&
                 STRENGT_FORTROLIG == person.getAdressebeskyttelse().stream()
                         .findFirst().orElse(new AdressebeskyttelseDTO()).getGradering() &&
-                adresse.countAdresser() > 1) {
+                adresse.countAdresser() > 0) {
             throw new InvalidRequestException(VALIDATION_PROTECTED_ADDRESS);
         }
         if (DbVersjonDTO.Master.FREG == adresse.getMaster() && nonNull(adresse.getUtenlandskAdresse())) {
