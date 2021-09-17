@@ -22,7 +22,7 @@ export const Steg3 = ({ formikBag, erNyIdent }) => {
 			{!erOrganisasjon && erNyIdent && <IdentVelger formikBag={formikBag} />}
 			<MiljoVelger bestillingsdata={formikBag.values} heading="Hvilke miljøer vil du opprette i?" />
 			{!erOrganisasjon && <MalForm formikBag={formikBag} />}
-			{!erOrganisasjon && <OppsummeringKommentarForm formikBag={formikBag} />}
+			{!erOrganisasjon && <OppsummeringKommentarForm />}
 		</div>
 	)
 }
