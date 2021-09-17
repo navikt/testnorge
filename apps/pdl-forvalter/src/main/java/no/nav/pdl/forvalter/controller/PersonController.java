@@ -36,10 +36,10 @@ public class PersonController {
 
     @ResponseBody
     @GetMapping
-    @Operation(description = "Hent person")
-    public List<FullPersonDTO> getPerson(@RequestParam List<String> ident) {
+    @Operation(description = "Hent personer")
+    public List<FullPersonDTO> getPerson(@RequestParam List<String> identer) {
 
-        return personService.getPerson(ident);
+        return personService.getPerson(identer);
     }
 
     @ResponseBody
