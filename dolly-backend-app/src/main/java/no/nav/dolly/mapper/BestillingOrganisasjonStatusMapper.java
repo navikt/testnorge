@@ -19,7 +19,7 @@ import static no.nav.dolly.domain.resultset.SystemTyper.ORGANISASJON_FORVALTER;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BestillingOrganisasjonStatusMapper {
 
-    public static List<RsOrganisasjonStatusRapport> buildOrganisasjonStatusMap(OrganisasjonBestillingProgress progress) {
+    public static List<RsOrganisasjonStatusRapport> buildOrganisasjonStatusMap(OrganisasjonBestillingProgress progress, String detaljertStatus) {
 
         if (isNull(progress) || isNull(progress.getOrganisasjonsforvalterStatus())) {
             return emptyList();
@@ -57,6 +57,7 @@ public class BestillingOrganisasjonStatusMapper {
                                 .detaljert(entry.getValue().stream().map(value -> RsOrganisasjonStatusRapport.Detaljert.builder()
                                         .miljo(value)
                                         .orgnummer(progress.getOrganisasjonsnummer())
+                                        .detaljertStatus(detaljertStatus)
                                         .build()).collect(Collectors.toList()))
                                 .build())
                         .collect(Collectors.toList()))

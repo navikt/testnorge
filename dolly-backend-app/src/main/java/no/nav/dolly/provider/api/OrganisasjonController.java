@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.organisasjonforvalter.OrganisasjonClient;
-import no.nav.dolly.bestilling.organisasjonforvalter.OrganisasjonConsumer;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployRequest;
 import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling;
@@ -37,7 +36,6 @@ public class OrganisasjonController {
 
     private final OrganisasjonClient organisasjonClient;
     private final OrganisasjonBestillingService bestillingService;
-    private final OrganisasjonConsumer organisasjonConsumer;
 
     @ResponseStatus(HttpStatus.CREATED)
     @CacheEvict(value = CACHE_ORG_BESTILLING, allEntries = true)
@@ -76,7 +74,7 @@ public class OrganisasjonController {
     }
 
     @GetMapping("/bestilling")
-    @Cacheable(value = CACHE_ORG_BESTILLING)
+    @CacheEvict(value = CACHE_ORG_BESTILLING, allEntries = true)
     @Operation(description = "Hent status på bestilling basert på bestillingId")
     public RsOrganisasjonBestillingStatus hentBestilling(
             @Parameter(description = "ID på bestilling av organisasjon", example = "123") @RequestParam Long bestillingId) {

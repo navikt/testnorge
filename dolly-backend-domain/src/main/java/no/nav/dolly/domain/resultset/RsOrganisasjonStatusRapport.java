@@ -44,5 +44,6 @@ public class RsOrganisasjonStatusRapport {
 
         private String miljo;
         private String orgnummer;
+        private String detaljertStatus;
     }
 }

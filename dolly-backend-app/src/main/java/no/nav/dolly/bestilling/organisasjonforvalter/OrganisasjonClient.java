@@ -85,9 +85,9 @@ public class OrganisasjonClient {
                 log.error("Feilet med å opprette organisasjon(er)", e);
                 organisasjonBestillingService.setBestillingFeil(bestillingId, errorStatusDecoder.decodeRuntimeException(e));
                 organisasjonProgressService.setBestillingFeil(bestillingId, errorStatusDecoder.decodeRuntimeException(e));
+                organisasjonBestillingService.setBestillingFerdig(bestillingId);
             }
         });
-        organisasjonBestillingService.setBestillingFerdig(bestillingId);
     }
 
     @Async
@@ -143,7 +143,6 @@ public class OrganisasjonClient {
                 organisasjonBestillingProgress.setBestillingId(bestillingId);
                 organisasjonBestillingProgress.setOrganisasjonsnummer(orgStatus.getKey());
                 organisasjonBestillingProgress.setOrganisasjonsforvalterStatus(mapStatusFraDeploy(orgStatus));
-                organisasjonBestillingProgress.setUuid(mapUuidFraDeploy(orgStatus));
 
                 organisasjonProgressService.save(organisasjonBestillingProgress);
             });
@@ -151,7 +150,6 @@ public class OrganisasjonClient {
             organisasjonBestillingService.setBestillingFeil(bestillingId, FEIL_STATUS_ORGFORVALTER_DEPLOY);
             log.error(FEIL_STATUS_ORGFORVALTER_DEPLOY);
         }
-        organisasjonBestillingService.setBestillingFerdig(bestillingId);
     }
 
 
@@ -162,6 +160,12 @@ public class OrganisasjonClient {
         }
         StringBuilder status = new StringBuilder();
         orgStatus.getValue().forEach(envStatus -> {
+
+            log.info("Deploy har status: {} for org: {} i miljoe: {}",
+                    envStatus.getStatus(),
+                    orgStatus.getKey(),
+                    envStatus.getEnvironment());
+
             status.append(isNotBlank(status) ? ',' : "");
             status.append(envStatus.getEnvironment());
             status.append(':');
@@ -170,28 +174,6 @@ public class OrganisasjonClient {
                 status.append("-");
                 status.append(envStatus.getDetails());
             }
-        });
-        return status.toString();
-    }
-
-    private String mapUuidFraDeploy(Entry<String, List<EnvStatus>> orgStatus) {
-
-        if (isNull(orgStatus)) {
-            return null;
-        }
-        StringBuilder status = new StringBuilder();
-        orgStatus.getValue().forEach(envStatus -> {
-
-            log.info("Deploy har status: {} for org: {} i miljoe: {} med UUID: {}",
-                    envStatus.getStatus(),
-                    orgStatus.getKey(),
-                    envStatus.getEnvironment(),
-                    envStatus.getUuid());
-
-            status.append(isNotBlank(status) ? ',' : "");
-            status.append(envStatus.getEnvironment());
-            status.append(':');
-            status.append(envStatus.getUuid());
         });
         return status.toString();
     }

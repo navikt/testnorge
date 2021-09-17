@@ -4,8 +4,7 @@ on:
   push:
     branches:
       - master
-      - feature/pdl-testdata_breaking_changes
-      - bugfix/arena-maler
+      - feature/migrering-til-org-forvalter-v2
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/dolly-backend:${{ github.sha }}

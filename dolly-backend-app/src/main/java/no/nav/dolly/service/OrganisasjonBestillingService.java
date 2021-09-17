@@ -5,6 +5,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.organisasjonforvalter.OrganisasjonConsumer;
+import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDeployStatus;
+import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDeployStatus.OrgStatus;
+import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status;
 import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.jpa.OrganisasjonBestillingProgress;
 import no.nav.dolly.domain.jpa.OrganisasjonNummer;
@@ -32,9 +36,14 @@ import java.util.stream.Collectors;
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
+import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status.COMPLETED;
+import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status.ERROR;
+import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status.FAILED;
 import static no.nav.dolly.config.CachingConfig.CACHE_ORG_BESTILLING;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
+import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 
@@ -44,32 +53,47 @@ import static org.apache.logging.log4j.util.Strings.isBlank;
 @RequiredArgsConstructor
 public class OrganisasjonBestillingService {
 
+    private static final List<Status> DEPLOY_ENDED_STATUS_LIST = List.of(COMPLETED, ERROR, FAILED);
+
     private final OrganisasjonBestillingRepository bestillingRepository;
     private final OrganisasjonProgressService progressService;
+    private final OrganisasjonConsumer organisasjonConsumer;
     private final OrganisasjonNummerService organisasjonNummerService;
     private final BrukerService brukerService;
     private final ObjectMapper objectMapper;
     private final JsonBestillingMapper jsonBestillingMapper;
 
+    @Transactional
     public RsOrganisasjonBestillingStatus fetchBestillingStatusById(Long bestillingId) {
 
         OrganisasjonBestilling bestilling = bestillingRepository.findById(bestillingId)
                 .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND, format("Fant ikke bestilling på bestillingId %d", bestillingId)));
 
-        List<OrganisasjonBestillingProgress> bestillingProgressList = new ArrayList<>();
+        OrganisasjonBestillingProgress bestillingProgress;
+        OrgStatus orgStatus = null;
 
         try {
-            bestillingProgressList = progressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestillingId);
+            List<OrganisasjonBestillingProgress> bestillingProgressList = progressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestillingId);
+
+            if (bestillingProgressList.isEmpty()) {
+                throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+            }
+            bestillingProgress = bestillingProgressList.get(0);
+
+            if (isNotTrue(bestilling.getFerdig())) {
+                orgStatus = getOrgforvalterStatus(bestilling, bestillingProgress);
+            }
 
         } catch (HttpClientErrorException e) {
             log.info("Status ikke opprettet for bestilling enda");
+            return RsOrganisasjonBestillingStatus.builder().build();
         }
 
         return RsOrganisasjonBestillingStatus.builder()
-                .status(BestillingOrganisasjonStatusMapper.buildOrganisasjonStatusMap(!bestillingProgressList.isEmpty() ? bestillingProgressList.get(0) : null))
+                .status(BestillingOrganisasjonStatusMapper.buildOrganisasjonStatusMap(bestillingProgress, nonNull(orgStatus) ? orgStatus.getDetails() : null))
                 .bestilling(jsonBestillingMapper.mapOrganisasjonBestillingRequest(bestilling.getBestKriterier()))
                 .sistOppdatert(bestilling.getSistOppdatert())
-                .organisasjonNummer(!bestillingProgressList.isEmpty() ? bestillingProgressList.get(0).getOrganisasjonsnummer() : null)
+                .organisasjonNummer(bestillingProgress.getOrganisasjonsnummer())
                 .id(bestillingId)
                 .ferdig(isTrue(bestilling.getFerdig()))
                 .feil(bestilling.getFeil())
@@ -77,6 +101,7 @@ public class OrganisasjonBestillingService {
                 .antallLevert(isTrue(bestilling.getFerdig()) && isBlank(bestilling.getFeil()) ? 1 : 0)
                 .build();
     }
+
 
     public List<RsOrganisasjonBestillingStatus> fetchBestillingStatusByBrukerId(String brukerId) {
 
@@ -90,18 +115,18 @@ public class OrganisasjonBestillingService {
             } else {
                 log.info("Klarte ikke å hente organisasjon bestillinger på brukeren");
             }
-            return Collections.emptyList();
+            return emptyList();
         }
 
         List<RsOrganisasjonBestillingStatus> statusListe = new ArrayList<>();
         bestillingProgress.forEach(bestillingStatus -> {
 
-            OrganisasjonBestilling orgBestilling = bestillingRepository.findById(bestillingStatus.getBestillingId()).orElseThrow(() ->
-                    new HttpClientErrorException(HttpStatus.BAD_REQUEST,
-                            "Fant ikke noen bestillinger med bestillingId: " + bestillingStatus.getBestillingId())
-            );
-            statusListe.add(RsOrganisasjonBestillingStatus.builder()
-                    .status(BestillingOrganisasjonStatusMapper.buildOrganisasjonStatusMap(bestillingStatus))
+                    OrganisasjonBestilling orgBestilling = bestillingRepository.findById(bestillingStatus.getBestillingId()).orElseThrow(() ->
+                            new HttpClientErrorException(HttpStatus.BAD_REQUEST,
+                                    "Fant ikke noen bestillinger med bestillingId: " + bestillingStatus.getBestillingId())
+                    );
+                    statusListe.add(RsOrganisasjonBestillingStatus.builder()
+                            .status(BestillingOrganisasjonStatusMapper.buildOrganisasjonStatusMap(bestillingStatus, null))
                             .bestilling(jsonBestillingMapper.mapOrganisasjonBestillingRequest(orgBestilling.getBestKriterier()))
                             .sistOppdatert(orgBestilling.getSistOppdatert())
                             .organisasjonNummer(bestillingStatus.getOrganisasjonsnummer())
@@ -152,6 +177,7 @@ public class OrganisasjonBestillingService {
                 OrganisasjonBestilling.builder()
                         .antall(1)
                         .sistOppdatert(now())
+                        .ferdig(status.getFerdig())
                         .miljoer(join(",", status.getEnvironments()))
                         .bestKriterier(toJson(status.getBestilling()))
                         .bruker(brukerService.fetchOrCreateBruker(getUserId()))
@@ -196,6 +222,24 @@ public class OrganisasjonBestillingService {
         progressService.deleteByOrgnummer(orgnummer);
 
         bestillinger.forEach(bestillingRepository::deleteBestillingWithNoChildren);
+    }
+
+    private OrgStatus getOrgforvalterStatus(OrganisasjonBestilling bestilling, OrganisasjonBestillingProgress bestillingProgress) {
+        OrgStatus orgStatus;
+        OrganisasjonDeployStatus organisasjonDeployStatus = organisasjonConsumer.hentOrganisasjonStatus(Collections.singletonList(bestillingProgress.getOrganisasjonsnummer()));
+
+        List<OrgStatus> organisasjonStatusList = organisasjonDeployStatus.getOrgStatus().values().stream().findFirst().orElse(emptyList());
+        orgStatus = organisasjonStatusList.isEmpty() ? new OrgStatus() : organisasjonStatusList.get(0);
+        OrgStatus finalOrgStatus = orgStatus;
+
+        if (DEPLOY_ENDED_STATUS_LIST.stream().anyMatch(status -> status.equals(finalOrgStatus.getStatus()))) {
+            if (ERROR.equals(orgStatus.getStatus()) || FAILED.equals(orgStatus.getStatus())) {
+                log.error("Error i organisasjonForvalter: {}", orgStatus.getError());
+                setBestillingFeil(bestilling.getId(), orgStatus.getError());
+            }
+            setBestillingFerdig(bestilling.getId());
+        }
+        return orgStatus;
     }
 
     private String toJson(Object object) {
