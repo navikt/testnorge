@@ -60,11 +60,11 @@ export default class DollyEndpoints {
 		return `${organisasjonBase}/bestilling`
 	}
 
-	static organisasonStatusByBestillingId(bestillingId) {
+	static organisasjonStatusByBestillingId(bestillingId) {
 		return `${organisasjonBase}/bestilling?bestillingId=${bestillingId}`
 	}
 
-	static organisasonStatusByUser(userId) {
+	static organisasjonStatusByUser(userId) {
 		return `${organisasjonBase}/bestillingsstatus?brukerId=${userId}`
 	}
 

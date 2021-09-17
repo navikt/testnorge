@@ -1,6 +1,6 @@
 import Request from '~/service/services/Request'
 
-const orgForvalterUrl = '/testnav-organisasjon-forvalter/api/v1/organisasjon'
+const orgForvalterUrl = '/testnav-organisasjon-forvalter/api/v2/organisasjoner'
 
 export default {
 	getOrganisasjonerInfo(orgnummer: string[]) {
@@ -8,8 +8,14 @@ export default {
 			if (response != null) return response
 		})
 	},
+	getOrganisasjonerOrdrestatus(orgnummer: string[]) {
+		const endpoint = orgForvalterUrl + '/ordrestatus'
+		return Request.get(endpoint + '?orgnumre=' + orgnummer).then((response) => {
+			if (response != null) return response
+		})
+	},
 	getOrganisasjonerMiljoeInfo(orgnummer: string) {
-		const endpoint = orgForvalterUrl + '/import'
+		const endpoint = orgForvalterUrl + '/framiljoe'
 		return Request.get(endpoint + '?orgnummer=' + orgnummer).then((response) => {
 			if (response != null) return response
 		})
