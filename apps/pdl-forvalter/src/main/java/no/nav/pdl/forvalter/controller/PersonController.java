@@ -7,6 +7,7 @@ import no.nav.pdl.forvalter.service.PdlOrdreService;
 import no.nav.pdl.forvalter.service.PersonService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 
@@ -64,10 +66,10 @@ public class PersonController {
     }
 
     @ResponseBody
-    @PostMapping(value = "/{ident}/ordre")
-    @Operation(description = "Send person til PDL (ordre)")
-    public OrdreResponseDTO sendPersonTilPdl(@PathVariable String ident) {
+    @PostMapping(value = "/ordre")
+    @Operation(description = "Send person(er) til PDL (ordre)")
+    public Flux<OrdreResponseDTO> sendPersonTilPdl(@RequestBody OrdreRequestDTO ordre) {
 
-        return pdlOrdreService.send(ident);
+        return pdlOrdreService.send(ordre);
     }
 }

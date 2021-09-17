@@ -39,7 +39,6 @@ public class AdressebeskyttelseService implements BiValidation<Adressebeskyttels
         return person.getAdressebeskyttelse();
     }
 
-
     @Override
     public void validate(AdressebeskyttelseDTO adressebeskyttelse, PersonDTO person) {
 
