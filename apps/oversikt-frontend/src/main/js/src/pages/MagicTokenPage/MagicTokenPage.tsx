@@ -12,7 +12,7 @@ const MagicTokenPage = styled(Page)`
 export default () => (
   <MagicTokenPage>
     <FetchAccessToken
-      name="team-dolly-lokal-app"
+      name="dev-fss.dolly.team-dolly-lokal-app"
       labels={{
         header: "Magic Token",
         subHeader: "Generer lokalt utviklingstoken",

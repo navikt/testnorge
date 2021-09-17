@@ -1,0 +1,13 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+spring:
+  application:
+    name: testnav-geografiske-kodeverk-service
+    description: Tjeneste for å hente faste kodeverk-data
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          #The client_id of this application
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}

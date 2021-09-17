@@ -18,69 +18,14 @@ spring:
             token-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/token
             jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
 
-applications:
-  dolly-backend: dev-fss.dolly.dolly-backend
-  dolly-backend-dev: dev-fss.dolly.dolly-backend-dev
-  testnorge-tilbakemelding-api: 0f8c4430-19e4-4628-8e89-1dd89a1d613d
-  testnorge-arbeidsforhold-export-api: 06c9b9c1-d370-40ea-8181-2c4a6858392f
-  testnorge-ident-check-in-prod-service: bb4aa476-9040-48a1-bcac-79370c530f58
-  mn-synt-arbeidsforhold-service: 6d2a7d13-a1cc-4397-ac6b-5480049187c4
-  testnorge-tps-ident-service: 76276f3a-29d7-4bc4-ba1e-018007b7417b
-  testnorge-person-api: 607ab2ee-2473-4bfd-8d48-03a7aaceeda6
-  testnorge-person-api-dev: 51ec8e6e-20a1-4b8f-b66a-66dd6a9b00b9
-  endringsmelding-service: dev-gcp.dolly.endringsmelding-service
-  generer-navn-service: 92e61fa8-6fca-48e2-87b9-29d8bb6cf850
-  organisasjon-bestilling-service: dev-gcp.dolly.organisasjon-bestilling-service
-  organisasjon-orgnummer-service: cc5eab78-8ec7-4f4f-8b2f-7e6f46870a48
-  ereg-batch-status-service: 67f507ff-399c-4853-9eb3-3dc6aabc8289
-  testnav-miljoer-service: dev-gcp.dolly.testnav-miljoer-service
-  testnorge-organisasjon-api: f4167796-bf43-438b-a282-a480e8108d0c
-  team-dolly-lokal-app: dev-fss.dolly.team-dolly-lokal-app
-  applikasjonsanalyse-service: dev-gcp.dolly.applikasjonsanalyse-service
-  oppsummeringsdokument-service: 411963e3-5693-4ae8-8a2b-4d42dbeed5ee
-  mn-organiasasjon-api: a9109f54-8cae-4af2-98e3-8c56a1f5c9ad
-  udi-stub-dev: 4426ef7d-f148-4d19-8a03-b0d07a451938
-  udi-stub: f4620953-c7af-4e60-8cbb-03de57554b86
-  testnav-organisasjon-forvalter: dev-gcp.dolly.testnav-organisasjon-forvalter
-  person-search-service: dev-fss.dolly.person-search-service
-  mn-original-populasjon: dev-fss.dolly.mn-original-populasjon
-  testnav-statistikk-service: dev-gcp.dolly.testnav-statistikk-service
-  testnorge-batch-adeo-proxy: dev-fss.dolly.testnorge-batch-adeo-proxy
-  testnav-ereg-proxy: dev-fss.dolly.testnav-ereg-proxy
-  testnav-organisasjon-mottak-service: dev-gcp.dolly.testnav-organisasjon-mottak-service
-  testnav-jenkins-batch-status-service: dev-gcp.dolly.testnav-jenkins-batch-status-service
-  tps-identer-vedlikehold: dev-fss.dolly.tps-identer-vedlikehold
-  testnav-inntektsmelding-generator-service: dev-gcp.dolly.testnav-inntektsmelding-generator-service
-  testnav-helsepersonell-service: dev-gcp.dolly.testnav-helsepersonell-service
-  testnav-organisasjon-service: dev-gcp.dolly.testnav-organisasjon-service
-  testnav-pdl-proxy: dev-fss.dolly.testnav-pdl-proxy
-  testnav-aareg-proxy: dev-fss.dolly.testnav-aareg-proxy
-  testnav-syntrest-proxy: dev-fss.dolly.testnav-syntrest-proxy
-  testnav-saf-proxy: dev-fss.dolly.testnav-saf-proxy
-  testnav-arbeidsforhold-service: dev-gcp.dolly.testnav-arbeidsforhold-service
-  testnav-adresse-service: dev-gcp.dolly.testnav-adresse-service
-  testnav-pdl-forvalter: dev-gcp.dolly.testnav-pdl-forvalter
-  testnav-pdl-forvalter-dev: dev-gcp.dolly.testnav-pdl-forvalter-dev
-  testnav-organisasjon-faste-data-service: dev-gcp.dolly.testnav-organisasjon-faste-data-service
-  testnav-generer-organisasjon-populasjon-service: dev-gcp.dolly.testnav-generer-organisasjon-populasjon-service
-  testnav-generer-synt-amelding-service: dev-gcp.dolly.testnav-generer-synt-amelding-service
-  testnorge-profil-api-dev: dev-gcp.dolly.testnorge-profil-api-dev
-  testnorge-profil-api: dev-gcp.dolly.testnorge-profil-api
-  testnav-generer-arbeidsforhold-populasjon-service: dev-gcp.dolly.testnav-generer-arbeidsforhold-populasjon-service
-  testnav-inntektsmelding-service: dev-gcp.dolly.testnav-inntektsmelding-service
-  testnav-amelding-service: dev-gcp.dolly.testnav-amelding-service
-  testnav-joark-dokument-service: dev-gcp.dolly.testnav-joark-dokument-service
-  synthdata-tps-gcp: dev-gcp.dolly.synthdata-tps-gcp
-  testnav-person-faste-data-service: dev-gcp.dolly.testnav-person-faste-data-service
-  testnav-person-service: dev-gcp.dolly.testnav-person-service
-  testnav-inntektstub-proxy: dev-fss.dolly.testnav-inntektstub-proxy
-  tps-forvalteren-proxy: dev-fss.dolly.tps-forvalteren-proxy
-  tps-forvalteren-dev-proxy: dev-fss.dolly.tps-forvalteren-dev-proxy
-  testnav-varslinger-service: dev-gcp.dolly.testnav-varslinger-service
-
 consumers:
   testnorge-profil-api:
     cluster: dev-gcp
     namespace: dolly
     name: testnorge-profil-api
     url: https://testnorge-profil-api.dev.intern.nav.no/api
+  testnav-app-tilgang-analyse-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-app-tilgang-analyse-service
+    url: https://testnav-app-tilgang-analyse-service.dev.intern.nav.no

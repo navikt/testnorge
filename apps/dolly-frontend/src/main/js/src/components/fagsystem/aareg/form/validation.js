@@ -83,7 +83,7 @@ const arbeidsgiver = Yup.object({
 })
 
 const arbeidsavtale = Yup.object({
-	yrke: fullArbeidsforholdTest(Yup.string()),
+	yrke: fullArbeidsforholdTest(requiredString),
 	ansettelsesform: Yup.string(),
 	stillingsprosent: fullArbeidsforholdTest(
 		Yup.number()
@@ -113,15 +113,15 @@ const fartoy = Yup.array().of(
 const requiredPeriode = Yup.mixed()
 	.when('$aareg[0].arbeidsforholdstype', {
 		is: 'frilanserOppdragstakerHonorarPersonerMm',
-		then: requiredString,
+		then: requiredDate,
 	})
 	.when('$aareg[0].arbeidsforholdstype', {
 		is: 'maritimtArbeidsforhold',
-		then: requiredString,
+		then: requiredDate,
 	})
 	.when('$aareg[0].arbeidsforholdstype', {
 		is: 'ordinaertArbeidsforhold',
-		then: requiredString,
+		then: requiredDate,
 	})
 	.nullable()
 
