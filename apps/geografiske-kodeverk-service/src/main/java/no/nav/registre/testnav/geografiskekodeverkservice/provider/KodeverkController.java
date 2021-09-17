@@ -34,12 +34,12 @@ public class KodeverkController {
                 .body(kodeverkService.getKommuner(kommunenr));
     }
 
-    @GetMapping(value = "/landkoder")
-    public ResponseEntity<List<Kodeverk>> getLandkoder(@RequestParam(required = false) String land) {
+    @GetMapping(value = "/land")
+    public ResponseEntity<List<Kodeverk>> getLand(@RequestParam(required = false) String landkode) {
         return ResponseEntity
                 .ok()
                 .cacheControl(cacheControl)
-                .body(kodeverkService.getLandkoder(land));
+                .body(kodeverkService.getLand(landkode));
     }
 
     @GetMapping(value = "/postnummer")

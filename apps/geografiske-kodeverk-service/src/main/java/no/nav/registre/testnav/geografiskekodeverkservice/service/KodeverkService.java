@@ -3,6 +3,7 @@ package no.nav.registre.testnav.geografiskekodeverkservice.service;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnav.geografiskekodeverkservice.domain.Kodeverk;
+import no.nav.registre.testnav.geografiskekodeverkservice.utils.ArtifactUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -18,13 +19,13 @@ import java.util.stream.Collectors;
 public class KodeverkService {
 
     private static final List<Kodeverk> kommunerKodeverkListe;
-    private static final List<Kodeverk> landkoderKodeverkListe;
+    private static final List<Kodeverk> landKodeverkListe;
     private static final List<Kodeverk> postnummerKodeverkListe;
     private static final List<Kodeverk> embeterKodeverkListe;
 
     static {
         kommunerKodeverkListe = loadKodeverk("kommuner/kommuner.yaml");
-        landkoderKodeverkListe = loadKodeverk("landkoder/landkoder.yaml");
+        landKodeverkListe = loadKodeverk("landkoder/landkoder.yaml");
         postnummerKodeverkListe = loadKodeverk("postnummer/postnummer.yaml");
         embeterKodeverkListe = loadKodeverk("vergemaal/embeter.yaml");
     }
@@ -45,20 +46,23 @@ public class KodeverkService {
     }
 
     public List<Kodeverk> getKommuner(String kommunenr) {
+        ArtifactUtils.isKommunenummer(kommunenr);
         return kommunerKodeverkListe
                 .stream()
                 .filter(kodeverk -> kommunenr == null || kodeverk.getKode().equals(kommunenr))
                 .collect(Collectors.toList());
     }
 
-    public static List<Kodeverk> getLandkoder(String land) {
-        return landkoderKodeverkListe
+    public static List<Kodeverk> getLand(String landkode) {
+        ArtifactUtils.isLandkode(landkode);
+        return landKodeverkListe
                 .stream()
-                .filter(kodeverk -> land == null || kodeverk.getNavn().equals(land))
+                .filter(kodeverk -> landkode == null || kodeverk.getKode().equals(landkode))
                 .collect(Collectors.toList());
     }
 
     public static List<Kodeverk> getPostnummer(String poststed) {
+        ArtifactUtils.isPoststed(poststed);
         return postnummerKodeverkListe
                 .stream()
                 .filter(kodeverk -> poststed == null || kodeverk.getNavn().equals(poststed))

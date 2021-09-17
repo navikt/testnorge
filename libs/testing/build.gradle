@@ -28,6 +28,8 @@ dependencies {
     implementation "com.fasterxml.jackson.core:jackson-databind:${DependenciesPlugin.jackson}"
 
     implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    implementation 'org.mockito:mockito-core:3.12.4'
+    implementation 'org.mockito:mockito-all:1.10.19'
     annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
     testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
 }
