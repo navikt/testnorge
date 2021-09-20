@@ -1,4 +1,4 @@
-package no.nav.testnav.apps.oversiktfrontend.router.dto;
+package no.nav.testnav.apps.oversiktfrontend.dto;
 
 import lombok.NoArgsConstructor;
 import lombok.Value;

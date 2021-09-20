@@ -1,9 +1,8 @@
-package no.nav.testnav.libs.reactivesecurity.config;
+package no.nav.testnav.libs.reactivesecurity.decoder;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
@@ -12,7 +11,6 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.NimbusReactiveJwtDecoder;
 import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
-import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.transport.ProxyProvider;
@@ -22,22 +20,26 @@ import java.net.URI;
 import no.nav.testnav.libs.reactivesecurity.properties.ResourceServerProperties;
 
 @Slf4j
-@RequiredArgsConstructor
-public abstract class OAuth2ResourceServerConfiguration {
+@AllArgsConstructor
+public class JwtDecoder {
 
     private final ResourceServerProperties resourceServerProperties;
     private final String proxyHost;
 
     public class AudienceValidator implements OAuth2TokenValidator<Jwt> {
         public OAuth2TokenValidatorResult validate(Jwt jwt) {
-            var error = new OAuth2Error("invalid_token", String.format("None of required audience values '%s' found in token", resourceServerProperties.getAcceptedAudience()), null);
-            return jwt.getAudience().stream().anyMatch(resourceServerProperties.getAcceptedAudience()::contains)
+            var error = new OAuth2Error(
+                    "invalid_token",
+                    String.format("None of required audience values '%s' found in token", resourceServerProperties.getAcceptedAudience()),
+                    null
+            );
+            return  jwt.getAudience().stream().anyMatch(resourceServerProperties.getAcceptedAudience()::contains)
                     ? OAuth2TokenValidatorResult.success()
                     : OAuth2TokenValidatorResult.failure(error);
         }
     }
 
-    public WebClient webClient() {
+    private WebClient webClient() {
         var builder = WebClient.builder();
         if (proxyHost != null) {
             log.info("Setter opp proxy host {} for Client Credentials", proxyHost);
@@ -55,7 +57,7 @@ public abstract class OAuth2ResourceServerConfiguration {
         return builder.build();
     }
 
-    protected ReactiveJwtDecoder jwtDecoder() {
+    public ReactiveJwtDecoder jwtDecoder() {
         NimbusReactiveJwtDecoder jwtDecoder = NimbusReactiveJwtDecoder
                 .withJwkSetUri(resourceServerProperties.getJwkSetUri())
                 .webClient(webClient())
@@ -68,6 +70,4 @@ public abstract class OAuth2ResourceServerConfiguration {
         jwtDecoder.setJwtValidator(withAudience);
         return jwtDecoder;
     }
-
-    public abstract SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http);
 }

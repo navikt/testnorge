@@ -49,7 +49,10 @@ public class SecurityConfig {
                         "/main.*.css",
                         "/main.*.js",
                         "/manifest.json",
-                        "/bundle.*.js"
+                        "/bundle.*.js",
+                        "/swagger-ui.html",
+                        "/webjars/**",
+                        "/v3/api-docs/**"
                 ).permitAll()
                 .anyExchange().authenticated()
                 .and().oauth2Login(

@@ -27,7 +27,6 @@ public class TilgangAnalyseController {
         this.cacheControl = CacheControl.maxAge(10, TimeUnit.MINUTES).noTransform().mustRevalidate();
     }
 
-
     @GetMapping("/{name}/access")
     public ResponseEntity<Mono<AccessDTO>> app(
             @PathVariable String name,

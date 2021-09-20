@@ -2,9 +2,9 @@ name: Deploy oversikt-frontend
 
 on:
   push:
+    branches: master
     paths:
       - apps/oversikt-frontend/**
-
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/oversikt-frontend:${{ github.sha }}

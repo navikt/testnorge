@@ -40,7 +40,7 @@ public class OicdInMemorySessionConfiguration {
                 : sessionProperties.getTimeout()
         ).toSeconds();
         sessionRepository.setDefaultMaxInactiveInterval(defaultMaxInactiveInterval);
-        log.info("Set in-memory session defaultMaxInactiveInterval to {} seconds.", defaultMaxInactiveInterval);
+        log.info("Set in-memory session max inactive to {} seconds.", defaultMaxInactiveInterval);
         return sessionRepository;
     }
 
@@ -52,7 +52,7 @@ public class OicdInMemorySessionConfiguration {
             AzureAdTokenExchange azureAdTokenExchange
     ) {
         var tokenExchange = new TokenExchange(clientRegistrationIdResolver);
-        tokenExchange.addExchange("aad", azureAdTokenExchange);
+        tokenExchange.addExchange("aad", tokenXExchange);
         tokenExchange.addExchange("idporten", tokenXExchange);
         return tokenExchange;
     }

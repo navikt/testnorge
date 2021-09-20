@@ -61,6 +61,8 @@ public class TokenXExchange implements GenerateTokenExchange {
 
     @Override
     public Mono<AccessToken> generateToken(ServerProperties serverProperties, ServerWebExchange exchange) {
+        var scope = toScope(serverProperties);
+        log.info("Generer TokenX for {}.", scope);
         return tokenService.getToken(exchange).flatMap(token -> webClient
                 .get()
                 .uri(tokenX.getWellKnownUrl())// TODO load on startup
@@ -76,7 +78,7 @@ public class TokenXExchange implements GenerateTokenExchange {
                                         .with("client_assertion", createClientAssertion(config.getTokenEndpoint()))
                                         .with("subject_token_type", "urn:ietf:params:oauth:token-type:jwt")
                                         .with("subject_token", token.getValue())
-                                        .with("audience", toScope(serverProperties))
+                                        .with("audience", "dev-gcp:dolly:testnav-app-tilgang-analyse-service")
                                 ).retrieve()
                                 .bodyToMono(AccessToken.class)
                                 .doOnError(error -> {
