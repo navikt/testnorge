@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.pdl.forvalter.dto.BestillingRequest;
 import no.nav.pdl.forvalter.service.PdlOrdreService;
 import no.nav.pdl.forvalter.service.PersonService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
@@ -27,8 +26,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
-
-import java.util.List;
 
 import java.util.List;
 
@@ -83,9 +80,9 @@ public class PersonController {
     }
 
     @ResponseBody
-    @GetMapping
+    @GetMapping(value = "/soek")
     @Operation(description = "Søk basert på fragment av ident og/eller en eller to navn")
-    public List<PersonIDDTO> findPerson(@Parameter(description = "Partiell ident og/eller en eller flere navn",
+    public List<PersonIDDTO> findPerson(@Parameter(description = "Søk på (u)fullstendig ident og/eller en eller flere navn",
             examples = @ExampleObject(value = "nat 324 bær")) String fragment) {
 
         return mapperFacade.mapAsList(personService.searchPerson(fragment), PersonIDDTO.class);

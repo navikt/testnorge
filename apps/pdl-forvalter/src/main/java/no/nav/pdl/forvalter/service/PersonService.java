@@ -74,6 +74,9 @@ public class PersonService {
 
         var extendedArtifacts = personArtifactService.buildPerson(mergedPerson);
         dbPerson.setPerson(extendedArtifacts);
+        dbPerson.setFornavn(extendedArtifacts.getNavn().stream().findFirst().orElse(new NavnDTO()).getFornavn());
+        dbPerson.setMellomnavn(extendedArtifacts.getNavn().stream().findFirst().orElse(new NavnDTO()).getMellomnavn());
+        dbPerson.setEtternavn(extendedArtifacts.getNavn().stream().findFirst().orElse(new NavnDTO()).getEtternavn());
         dbPerson.setSistOppdatert(now());
 
         return personRepository.save(dbPerson).getIdent();
