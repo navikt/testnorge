@@ -27,4 +27,8 @@ public class PersonService {
             return tpsPersonAdapter.getPerson(ident, miljoe);
         }
     }
+
+    public Mono<Optional<Person>> getAktoerId(String ident, String miljoe) {
+            return pdlPersonAdapter.getPerson(ident, miljoe);
+    }
 }

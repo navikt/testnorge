@@ -1,6 +1,8 @@
 package no.nav.testnav.apps.personservice.controller;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.testnav.apps.personservice.service.PersonService;
+import no.nav.testnav.libs.dto.personservice.v1.Persondatasystem;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,9 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 import javax.validation.constraints.Size;
-
-import no.nav.testnav.apps.personservice.service.PersonService;
-import no.nav.testnav.libs.dto.personservice.v1.Persondatasystem;
 
 @RestController
 @RequestMapping("/api/v1/personer")
@@ -32,6 +31,20 @@ public class PersonController {
 
         return service
                 .getPerson(ident, miljoe, persondatasystem)
+                .map(value -> value
+                        .map(person -> ResponseEntity.ok(person.toDTO()))
+                        .orElse(ResponseEntity.notFound().build())
+                );
+    }
+
+    @GetMapping("/{ident}")
+    public Mono<ResponseEntity<?>> getAktoerId(
+            @RequestHeader(required = false) String miljoe,
+            @PathVariable("ident") @Size(min = 11, max = 11, message = "Ident må ha 11 siffer") String ident
+    ) {
+
+        return service
+                .getAktoerId(ident, miljoe)
                 .map(value -> value
                         .map(person -> ResponseEntity.ok(person.toDTO()))
                         .orElse(ResponseEntity.notFound().build())

@@ -1,0 +1,16 @@
+fragment vegadresseDetails on Vegadresse {
+    husnummer
+    adressenavn
+    postnummer
+    kommunenummer
+}
+
+query ($ident: ID!) {
+    hentIdenter(ident: $ident, historikk: true) {
+        identer {
+            ident,
+            historisk,
+            gruppe
+        }
+    }
+}
