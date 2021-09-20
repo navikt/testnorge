@@ -16,7 +16,7 @@ spec:
           cluster: dev-fss
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
-  idporten:
+  tokenx:
     enabled: true
   azure:
     application:

@@ -29,7 +29,7 @@ spec:
     outbound:
       external:
         - host: testnav-syntrest-proxy.dev-fss-pub.nais.io
-  idporten:
+  tokenx:
     enabled: true
   azure:
     application:

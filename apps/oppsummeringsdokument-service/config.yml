@@ -30,7 +30,7 @@ spec:
         - host: aareg-synt-services-proxy.dev-fss-pub.nais.io
   elastic:
     instance: testdata-gjeter
-  idporten:
+  tokenx:
     enabled: true
   azure:
     application:

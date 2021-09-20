@@ -32,7 +32,7 @@ spec:
     outbound:
       external:
         - host: testnav-saf-proxy.dev-fss-pub.nais.io
-  idporten:
+  tokenx:
     enabled: true
   azure:
     application:

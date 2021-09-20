@@ -78,7 +78,7 @@ public class TokenXExchange implements GenerateTokenExchange {
                                         .with("client_assertion", createClientAssertion(config.getTokenEndpoint()))
                                         .with("subject_token_type", "urn:ietf:params:oauth:token-type:jwt")
                                         .with("subject_token", token.getValue())
-                                        .with("audience", "dev-gcp:dolly:testnav-app-tilgang-analyse-service")
+                                        .with("audience", toScope(serverProperties))
                                 ).retrieve()
                                 .bodyToMono(AccessToken.class)
                                 .doOnError(error -> {

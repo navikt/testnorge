@@ -31,7 +31,7 @@ spec:
       external:
         - host: slack.com
         - host: login.microsoftonline.com
-  idporten:
+  tokenx:
     enabled: true
   azure:
     application:

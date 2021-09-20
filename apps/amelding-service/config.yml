@@ -30,7 +30,7 @@ spec:
     outbound:
       rules:
         - application: oppsummeringsdokument-service
-  idporten:
+  tokenx:
     enabled: true
   azure:
     application:

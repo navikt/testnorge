@@ -41,7 +41,7 @@ spec:
     outbound:
       external:
         - host: tps-forvalteren-proxy.dev-fss-pub.nais.io
-  idporten:
+  tokenx:
     enabled: true
   azure:
     application:

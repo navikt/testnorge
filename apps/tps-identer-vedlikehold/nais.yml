@@ -8,7 +8,7 @@ metadata:
 spec:
   image: {{ image }}
   webproxy: true
-  idporten:
+  tokenx:
     enabled: true
   azure:
     application:
