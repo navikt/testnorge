@@ -68,7 +68,7 @@ public class IdentService {
     }
 
     @Transactional
-    public Testident save(String ident, boolean iBruk) {
+    public Testident saveIdentIBruk(String ident, boolean iBruk) {
 
         Testident testident = identRepository.findByIdent(ident);
         if (nonNull(testident)) {
@@ -80,7 +80,7 @@ public class IdentService {
     }
 
     @Transactional
-    public Testident save(String ident, String beskrivelse) {
+    public Testident saveIdentBeskrivelse(String ident, String beskrivelse) {
 
         Testident testident = identRepository.findByIdent(ident);
         if (nonNull(testident)) {

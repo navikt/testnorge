@@ -64,6 +64,7 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                             BestillingProgress progress = new BestillingProgress(bestilling, gjenopprettFraProgress.getIdent(),
                                     gjenopprettFraProgress.getMaster());
                             bestKriterier.setNavSyntetiskIdent(isSyntetisk(gjenopprettFraProgress.getIdent()));
+                            bestKriterier.setBeskrivelse(bestilling.getBeskrivelse());
 
                             try {
                                 Optional<DollyPerson> dollyPerson = prepareDollyPersonTpsf(bestilling, progress);

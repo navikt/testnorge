@@ -156,7 +156,7 @@ public class BestillingService {
 
     @Transactional
     public Bestilling saveBestilling(Long gruppeId, RsDollyBestilling request, RsTpsfBasisBestilling tpsf, Integer antall,
-                                     List<String> opprettFraIdenter, Boolean navSyntetiskIdent) {
+                                     List<String> opprettFraIdenter, Boolean navSyntetiskIdent, String beskrivelse) {
         Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
         fixAaregAbstractClassProblem(request.getAareg());
         fixPdlAbstractClassProblem(request.getPdlforvalter());
@@ -172,6 +172,7 @@ public class BestillingService {
                         .opprettFraIdenter(nonNull(opprettFraIdenter) ? join(",", opprettFraIdenter) : null)
                         .malBestillingNavn(request.getMalBestillingNavn())
                         .bruker(brukerService.fetchOrCreateBruker(getUserId()))
+                        .beskrivelse(beskrivelse)
                         .build());
     }
 

@@ -4,7 +4,8 @@ on:
   push:
     branches:
       - master
-      - feature/migrering-til-org-forvalter-v2
+      - feature/pdl-testdata_breaking_changes
+      - feature/bestilling-med-kommentar
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/dolly-backend:${{ github.sha }}

@@ -18,6 +18,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -114,6 +115,9 @@ public class Bestilling {
 
     @OneToMany(mappedBy = "bestillingId", fetch = FetchType.LAZY)
     private List<TransaksjonMapping> transaksjonmapping;
+
+    @Transient
+    private String beskrivelse;
 
     public List<BestillingProgress> getProgresser() {
         if (isNull(progresser)) {

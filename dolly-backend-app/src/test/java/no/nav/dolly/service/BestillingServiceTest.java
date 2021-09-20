@@ -120,7 +120,7 @@ public class BestillingServiceTest {
         when(brukerService.fetchOrCreateBruker(BRUKERID)).thenReturn(Bruker.builder().build());
 
         bestillingService.saveBestilling(gruppeId, RsDollyBestilling.builder().environments(miljoer).build(),
-                RsTpsfUtvidetBestilling.builder().build(), antallIdenter, null, null);
+                RsTpsfUtvidetBestilling.builder().build(), antallIdenter, null, null, null);
 
         ArgumentCaptor<Bestilling> argCap = ArgumentCaptor.forClass(Bestilling.class);
         verify(bestillingRepository).save(argCap.capture());

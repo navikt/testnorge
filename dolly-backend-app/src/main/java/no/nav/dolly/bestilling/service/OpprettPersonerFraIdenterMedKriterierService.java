@@ -88,6 +88,8 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                                             .hovedperson(leverteIdenter.get(0))
                                             .master(Testident.Master.TPSF)
                                             .build();
+
+
                                     gjenopprettNonTpsf(dollyPerson, bestKriterier, progress, false);
                                 } else {
                                     progress.setFeil("NA:Feil= Ident er ikke tilgjengelig; " + identStatus.getStatus());

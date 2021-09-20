@@ -15,4 +15,6 @@ public class RsDollyUtvidetBestilling extends RsDollyBestilling {
     private RsTpsfUtvidetBestilling tpsf;
 
     private Boolean navSyntetiskIdent;
+
+    private String beskrivelse;
 }

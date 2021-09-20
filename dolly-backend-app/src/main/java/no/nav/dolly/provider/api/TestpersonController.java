@@ -65,7 +65,7 @@ public class TestpersonController {
     @ResponseStatus(HttpStatus.OK)
     public IdentAttributesResponse oppdaterTestidentBeskrivelse(@PathVariable String ident, @RequestBody RsIdentBeskrivelse beskrivelse) {
 
-        return mapperFacade.map(identService.save(ident, beskrivelse.getBeskrivelse()), IdentAttributesResponse.class);
+        return mapperFacade.map(identService.saveIdentBeskrivelse(ident, beskrivelse.getBeskrivelse()), IdentAttributesResponse.class);
     }
 
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
@@ -74,7 +74,7 @@ public class TestpersonController {
     @ResponseStatus(HttpStatus.OK)
     public IdentAttributesResponse oppdaterTestidentIbruk(@PathVariable String ident, @RequestParam boolean iBruk) {
 
-        return mapperFacade.map(identService.save(ident, iBruk), IdentAttributesResponse.class);
+        return mapperFacade.map(identService.saveIdentIBruk(ident, iBruk), IdentAttributesResponse.class);
     }
 
     @Operation(description = "Koble eksisterende personer i Dolly ")

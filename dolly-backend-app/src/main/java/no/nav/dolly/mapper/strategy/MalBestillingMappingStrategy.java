@@ -21,7 +21,8 @@ public class MalBestillingMappingStrategy implements MappingStrategy {
 
     private final JsonBestillingMapper jsonBestillingMapper;
 
-    @Override public void register(MapperFactory factory) {
+    @Override
+    public void register(MapperFactory factory) {
         factory.classMap(Bestilling.class, RsMalBestillingWrapper.RsBestilling.class)
                 .customize(new CustomMapper<>() {
                     @Override

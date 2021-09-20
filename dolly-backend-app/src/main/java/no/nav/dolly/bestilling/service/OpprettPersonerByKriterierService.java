@@ -29,6 +29,7 @@ import java.util.concurrent.ExecutorService;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.jpa.Testident.Master.TPSF;
+import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Slf4j
 @Service
@@ -37,6 +38,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
     private BestillingService bestillingService;
     private ErrorStatusDecoder errorStatusDecoder;
     private MapperFacade mapperFacade;
+    private IdentService identService;
     private TpsfService tpsfService;
     private ExecutorService dollyForkJoinPool;
 
@@ -55,6 +57,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
         this.bestillingService = bestillingService;
         this.errorStatusDecoder = errorStatusDecoder;
         this.mapperFacade = mapperFacade;
+        this.identService = identService;
         this.tpsfService = tpsfService;
         this.dollyForkJoinPool = dollyForkJoinPool;
     }
@@ -88,6 +91,10 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
                                 sendIdenterTilTPS(new ArrayList<>(List.of(bestilling.getMiljoer().split(","))),
                                         leverteIdenter, bestilling.getGruppe(), progress);
+
+                                if (isNotBlank(bestKriterier.getBeskrivelse())) {
+                                    identService.saveIdentBeskrivelse(dollyPerson.getHovedperson(), bestKriterier.getBeskrivelse());
+                                }
 
                                 gjenopprettNonTpsf(dollyPerson, bestKriterier, progress, false);
 
