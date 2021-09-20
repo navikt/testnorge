@@ -65,8 +65,6 @@ public class PdlApiConsumer {
         return tokenExchange
                 .generateToken(serviceProperties)
                 .flatMap(token -> new GetPdlAktoerCommand(webClient, ident, token.getTokenValue()).call())
-                .map(pdlPerson -> {
-                    return Optional.of(pdlPerson);
-                });
+                .map(Optional::of);
     }
 }

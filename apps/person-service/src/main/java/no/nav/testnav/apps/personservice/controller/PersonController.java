@@ -37,7 +37,7 @@ public class PersonController {
                 );
     }
 
-    @GetMapping("/{ident}")
+    @GetMapping("/{ident}/aktoerId")
     public Mono<ResponseEntity<?>> getAktoerId(
             @RequestHeader(required = false) String miljoe,
             @PathVariable("ident") @Size(min = 11, max = 11, message = "Ident må ha 11 siffer") String ident
