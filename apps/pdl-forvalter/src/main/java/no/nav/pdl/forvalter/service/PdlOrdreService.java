@@ -71,27 +71,27 @@ public class PdlOrdreService {
                 .map(DbPerson::getIdent)
                 .collect(Collectors.toSet());
 
-        return Flux.fromStream(dbPersoner.parallelStream())
+        return Flux.fromStream(dbPersoner.stream())
                 .flatMap(person -> Mono.zip(
-                                sendAlleInformasjonselementer(person, false)
-                                        .map(ordrer -> PersonHendelserDTO.builder()
-                                                .ident(person.getIdent())
-                                                .ordrer(ordrer)
-                                                .build()),
-                                Flux.concat(person.getRelasjoner()
-                                                .stream()
-                                                .map(DbRelasjon::getRelatertPerson)
-                                                .filter(relatertPerson -> !hovedpersoner.contains(relatertPerson.getIdent()))
-                                                .map(relatertPerson -> sendAlleInformasjonselementer(relatertPerson, true)
-                                                        .map(ordrer -> PersonHendelserDTO.builder()
-                                                                .ident(relatertPerson.getIdent())
-                                                                .ordrer(ordrer)
-                                                                .build()))
-                                                .collect(Collectors.toList()))
-                                        .collectList())
-                        .map((mapper) -> OrdreResponseDTO.builder()
-                                .hovedperson(mapper.getT1())
-                                .relasjoner(mapper.getT2())
+                        sendAlleInformasjonselementer(person, false)
+                                .map(ordrer -> PersonHendelserDTO.builder()
+                                        .ident(person.getIdent())
+                                        .ordrer(ordrer)
+                                        .build()),
+                        Flux.concat(person.getRelasjoner()
+                                        .stream()
+                                        .map(DbRelasjon::getRelatertPerson)
+                                        .filter(relatertPerson -> !hovedpersoner.contains(relatertPerson.getIdent()))
+                                        .map(relatertPerson -> sendAlleInformasjonselementer(relatertPerson, true)
+                                                .map(ordrer -> PersonHendelserDTO.builder()
+                                                        .ident(relatertPerson.getIdent())
+                                                        .ordrer(ordrer)
+                                                        .build()))
+                                        .collect(Collectors.toList()))
+                                .collectList(),
+                        (hovedPerson, relasjoner) -> OrdreResponseDTO.builder()
+                                .hovedperson(hovedPerson)
+                                .relasjoner(relasjoner)
                                 .build()));
     }
 
