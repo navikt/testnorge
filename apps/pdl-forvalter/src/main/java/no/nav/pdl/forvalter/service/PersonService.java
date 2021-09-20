@@ -14,11 +14,14 @@ import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -111,5 +114,21 @@ public class PersonService {
             throw new InvalidRequestException(
                     format(VIOLATION_ALIAS_EXISTS, alias.get().getPerson().getIdent()));
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<DbPerson> searchPerson(String query) {
+        Optional<String> ident = Stream.of(query.split(" "))
+                .filter(StringUtils::isNumeric)
+                .findFirst();
+
+        List<String> navn = List.of(query.split(" ")).stream()
+                .filter(fragment -> StringUtils.isNotBlank(fragment) && !StringUtils.isNumeric(fragment))
+                .collect(Collectors.toList());
+
+        return personRepository.findByWildcardIdent(ident.orElse(null),
+                !navn.isEmpty() ? navn.get(0).toUpperCase() : null,
+                navn.size() > 1 ? navn.get(1).toUpperCase() : null,
+                PageRequest.of(0, 10));
     }
 }

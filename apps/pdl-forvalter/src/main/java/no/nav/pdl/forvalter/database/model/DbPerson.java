@@ -47,6 +47,10 @@ public class DbPerson {
     private LocalDateTime sistOppdatert;
     private String ident;
 
+    private String fornavn;
+    private String mellomnavn;
+    private String etternavn;
+
     @Type(type = "JsonType")
     private PersonDTO person;
 
