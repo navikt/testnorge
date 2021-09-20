@@ -25,7 +25,6 @@ public class FalskIdentitetMappingStrategy implements MappingStrategy {
     @Override
     public void register(MapperFactory factory) {
 
-
         factory.classMap(FalskIdentitetDTO.class, PdlFalskIdentitet.class)
                 .customize(new CustomMapper<>() {
                     @Override
