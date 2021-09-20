@@ -84,7 +84,7 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 									{type}-miljøer{' '}
 									{type === 'Q' && erOrganisasjon && (
 										<Hjelpetekst hjelpetekstFor={'miljoer'}>
-											Q2 er disablet mens EREG jobb kjører. Forventes ferdigstilt Torsdag 24.09.21
+											Q2 er disablet mens EREG jobb kjører. Forventes ferdigstilt torsdag 24.09.21
 										</Hjelpetekst>
 									)}
 								</StyledH3>
