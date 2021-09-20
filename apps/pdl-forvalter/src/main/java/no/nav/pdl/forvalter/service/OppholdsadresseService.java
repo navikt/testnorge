@@ -69,7 +69,8 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
         }
         if (FNR == IdenttypeFraIdentUtility.getIdenttype(person.getIdent()) &&
                 STRENGT_FORTROLIG == person.getAdressebeskyttelse().stream()
-                        .findFirst().orElse(new AdressebeskyttelseDTO()).getGradering()) {
+                        .findFirst().orElse(new AdressebeskyttelseDTO()).getGradering() &&
+                adresse.countAdresser() > 0) {
             throw new InvalidRequestException(VALIDATION_PROTECTED_ADDRESS);
         }
         if (Master.FREG == adresse.getMaster() && nonNull(adresse.getUtenlandskAdresse())) {

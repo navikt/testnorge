@@ -68,6 +68,7 @@ class OppholdsadresseServiceTest {
     void whenAddressProvidedAndStrengtFortrolig_thenThrowExecption() {
 
         var request = OppholdsadresseDTO.builder()
+                .vegadresse(new VegadresseDTO())
                 .isNew(true)
                 .build();
 

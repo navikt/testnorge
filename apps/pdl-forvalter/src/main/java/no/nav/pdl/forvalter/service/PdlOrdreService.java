@@ -79,7 +79,7 @@ public class PdlOrdreService {
                                         .ordrer(ordrer)
                                         .build()),
                         Flux.concat(person.getRelasjoner()
-                                        .stream()
+                                        .parallelStream()
                                         .map(DbRelasjon::getRelatertPerson)
                                         .filter(relatertPerson -> !hovedpersoner.contains(relatertPerson.getIdent()))
                                         .map(relatertPerson -> sendAlleInformasjonselementer(relatertPerson, true)
