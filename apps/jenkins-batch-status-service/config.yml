@@ -23,6 +23,8 @@ spec:
         - application: organisasjon-bestilling-service
       external:
         - host: testnorge-batch-adeo-proxy.dev-fss-pub.nais.io
+  idporten:
+    enabled: true
   azure:
     application:
       enabled: true

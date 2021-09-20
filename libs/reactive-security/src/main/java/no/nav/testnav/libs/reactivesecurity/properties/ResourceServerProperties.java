@@ -12,4 +12,3 @@ public class ResourceServerProperties {
     private String jwkSetUri;
     private List<String> acceptedAudience;
 }
-

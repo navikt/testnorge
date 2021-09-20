@@ -11,6 +11,8 @@ spec:
       value: prod
   image: {{ image }}
   webproxy: true
+  idporten:
+    enabled: true
   azure:
     application:
       enabled: true

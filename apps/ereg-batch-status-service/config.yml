@@ -18,6 +18,8 @@ spec:
           cluster: dev-gcp
         - application: organisasjon-bestilling-service
           cluster: dev-gcp
+  idporten:
+    enabled: true
   azure:
     application:
       enabled: true

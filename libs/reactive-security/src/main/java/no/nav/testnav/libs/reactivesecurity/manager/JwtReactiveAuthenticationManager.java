@@ -42,7 +42,7 @@ public class JwtReactiveAuthenticationManager implements ReactiveAuthenticationM
                 .filter(props -> props.getIssuerUri().equals(getIssuer(jwt)))
                 .findFirst()
                 .map(props -> new JwtDecoder(props, proxy).jwtDecoder())
-                .orElseThrow();
+                .orElseThrow(() -> new AuthenticationServiceException("Finner ikke støtte for issuer " + getIssuer(jwt)));
     }
 
     @SneakyThrows
@@ -66,6 +66,7 @@ public class JwtReactiveAuthenticationManager implements ReactiveAuthenticationM
                 .cast(Authentication.class)
                 .onErrorMap(JwtException.class, this::onError);
     }
+
 
     private AuthenticationException onError(JwtException ex) {
         if (ex instanceof BadJwtException) {

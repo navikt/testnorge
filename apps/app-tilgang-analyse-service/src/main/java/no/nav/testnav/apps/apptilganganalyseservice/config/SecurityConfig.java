@@ -23,7 +23,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-
         return http.csrf().disable()
                 .authorizeExchange()
                 .pathMatchers(
@@ -35,11 +34,9 @@ public class SecurityConfig {
                         "/h2"
                 ).permitAll()
                 .anyExchange().authenticated()
-                .and()
-                .oauth2ResourceServer()
-                .jwt(a -> a.authenticationManager(jwtReactiveAuthenticationManager))
-                .and()
-                .build();
+                .and().oauth2ResourceServer()
+                .jwt(spec -> spec.authenticationManager(jwtReactiveAuthenticationManager))
+                .and().build();
     }
 }
 

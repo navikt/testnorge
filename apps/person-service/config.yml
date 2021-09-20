@@ -8,6 +8,8 @@ metadata:
 spec:
   image: {{ image }}
   port: 8080
+  idporten:
+    enabled: true
   azure:
     application:
       enabled: true

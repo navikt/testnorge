@@ -21,7 +21,7 @@ public class GetBlobFromShaCommand implements Callable<Mono<byte[]>> {
 
     @Override
     public Mono<byte[]> call() {
-        log.info("Henter blob fra sha {} fra {}/{}", sha, owner, repo);
+        log.info("Henter blob fra sha {} fra {}/{}.", sha, owner, repo);
         return webClient
                 .get()
                 .uri(builder -> builder.path("/repos/{owner}/{repo}/git/blobs/{sha}").build(owner, repo, sha))

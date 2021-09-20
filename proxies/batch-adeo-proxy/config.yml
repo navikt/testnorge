@@ -9,6 +9,8 @@ spec:
   image: {{ image }}
   port: 8080
   webproxy: true
+  idporten:
+    enabled: true
   azure:
     application:
       tenant: nav.no

@@ -7,10 +7,14 @@ spring:
   security:
     oauth2:
       resourceserver:
-        jwt:
+        aad:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+        idporten:
+          issuer-uri: https://tokendings.dev-gcp.nais.io
+          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          accepted-audience: dev-gcp:dolly:testnav-person-faste-data-service
 
 testnav:
   config:

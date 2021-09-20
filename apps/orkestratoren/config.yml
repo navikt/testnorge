@@ -8,6 +8,8 @@ metadata:
 spec:
   port: 8080
   webproxy: true
+  idporten:
+    enabled: true
   azure:
     application:
       enabled: true

@@ -24,6 +24,8 @@ spec:
           cluster: dev-gcp
         - application: team-dolly-lokal-app
           cluster: dev-fss
+  idporten:
+    enabled: true
   azure:
     application:
       enabled: true
