@@ -1,17 +1,38 @@
-plugins {
-    id 'no.nav.registre.testnorge.java-conventions'
-    id 'org.springframework.boot' version "${springBootVersion}"
-    id 'io.spring.dependency-management' version "${springDependencyManagement}"
-}
+import no.nav.testnav.dependencies.gradle.DependenciesPlugin
 
-dependencyManagement {
-    imports {
-        mavenBom  "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}" 
-    }
+plugins {
+    id 'no.nav.testnav.dependencies'
+    id 'java'
+    id 'org.springframework.boot' version "2.5.4"
+    id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
 
 bootJar {
     archiveFileName = "app.jar"
+}
+
+dependencyManagement {
+    imports {
+        mavenBom  "org.springframework.cloud:spring-cloud-dependencies:${DependenciesPlugin.springCloud}"
+    }
+}
+
+properties {
+    compileJava.options.encoding = 'UTF-8'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+repositories {
+    maven {
+        url = uri('https://repo1.maven.org/maven2/')
+    }
+    mavenLocal()
+    maven {
+        url = uri('https://packages.confluent.io/maven/')
+    }
 }
 
 dependencies {
@@ -25,9 +46,7 @@ dependencies {
     implementation 'no.nav.testnav.libs:servlet-security'
     implementation 'no.nav.testnav.libs:commands'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
-
-    implementation 'org.springframework.kafka:spring-kafka'
-    implementation 'io.confluent:kafka-avro-serializer:5.5.0'
+    testImplementation 'no.nav.testnav.libs:testing'
 
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
@@ -43,21 +62,17 @@ dependencies {
     implementation 'org.flywaydb:flyway-core:6.4.4'
     implementation 'io.projectreactor.addons:reactor-extra:3.4.2'
     implementation 'org.postgresql:postgresql'
-    implementation "org.springdoc:springdoc-openapi-ui:${springdocOpenapiUi}"
+    implementation "org.springdoc:springdoc-openapi-ui:${DependenciesPlugin.springdocOpenapi}"
 
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
     implementation 'org.hibernate.validator:hibernate-validator'
-    implementation "net.logstash.logback:logstash-logback-encoder:${logstashLogbackEncoder}"
+    implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
 
     implementation 'org.springframework.data:spring-data-commons'
 
     implementation 'javax.persistence:javax.persistence-api:2.2'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.11.2'
-
-    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'com.h2database:h2'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'no.nav.testnav.libs:testing'
 }
 
 description = 'organisasjon-forvalter'
