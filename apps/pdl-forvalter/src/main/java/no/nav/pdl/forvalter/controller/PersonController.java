@@ -1,6 +1,5 @@
 package no.nav.pdl.forvalter.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -10,10 +9,13 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.dto.BestillingRequest;
 import no.nav.pdl.forvalter.service.PdlOrdreService;
 import no.nav.pdl.forvalter.service.PersonService;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonIDDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,8 +23,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
+
+import java.util.List;
 
 import java.util.List;
 
@@ -37,19 +43,19 @@ public class PersonController {
     private final MapperFacade mapperFacade;
 
     @ResponseBody
-    @GetMapping(value = "/{ident}")
-    @Operation(description = "Hent person")
-    public FullPersonDTO getPerson(@PathVariable String ident) {
+    @GetMapping
+    @Operation(description = "Hent personer")
+    public List<FullPersonDTO> getPerson(@RequestParam List<String> identer) {
 
-        return personService.getPerson(ident);
+        return personService.getPerson(identer);
     }
 
     @ResponseBody
     @PostMapping
     @Operation(description = "Opprett person")
-    public JsonNode createPerson(@RequestBody BestillingRequest request) {
+    public String createPerson(@RequestBody BestillingRequestDTO request) {
 
-        throw new UnsupportedOperationException("opprette person er ikke implementert");
+        return personService.createPerson(request);
     }
 
     @ResponseBody
@@ -69,11 +75,11 @@ public class PersonController {
     }
 
     @ResponseBody
-    @PostMapping(value = "/{ident}/ordre")
-    @Operation(description = "Send person til PDL (ordre)")
-    public OrdreResponseDTO sendPersonTilPdl(@PathVariable String ident) {
+    @PostMapping(value = "/ordre", produces = MediaType.APPLICATION_NDJSON_VALUE)
+    @Operation(description = "Send person(er) til PDL (ordre)")
+    public Flux<OrdreResponseDTO> sendPersonTilPdl(@RequestBody OrdreRequestDTO ordre) {
 
-        return pdlOrdreService.send(ident);
+        return pdlOrdreService.send(ordre);
     }
 
     @ResponseBody
