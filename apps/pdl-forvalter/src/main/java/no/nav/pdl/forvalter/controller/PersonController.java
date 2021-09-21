@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.service.PdlOrdreService;
@@ -37,14 +38,17 @@ public class PersonController {
     @ResponseBody
     @GetMapping
     @Operation(description = "Hent personer")
-    public List<FullPersonDTO> getPerson(@RequestParam List<String> identer) {
+    public List<FullPersonDTO> getPerson(@Parameter(description = "Hent personer med angitte identer, eller")
+                                         @RequestParam(required = false) List<String> identer,
+                                         @Parameter(description = "Hent identitet ved søk på (u)fullstendig ident og/eller en eller flere navn")
+                                         @RequestParam(required = false) String fragment) {
 
-        return personService.getPerson(identer);
+        return personService.getPerson(identer, fragment);
     }
 
     @ResponseBody
     @PostMapping
-    @Operation(description = "Opprett person")
+    @Operation(description = "Opprett person basert på angitte informasjonselementer, minimum er {}")
     public String createPerson(@RequestBody BestillingRequestDTO request) {
 
         return personService.createPerson(request);
@@ -52,8 +56,10 @@ public class PersonController {
 
     @ResponseBody
     @PutMapping(value = "/{ident}")
-    @Operation(description = "Endre, legg-til på person")
-    public String updatePerson(@PathVariable String ident, @RequestBody PersonUpdateRequestDTO request) {
+    @Operation(description = "Oppdater testperson basert på angitte informasjonselementer")
+    public String updatePerson(@Parameter(description = "Ident på testperson som skal oppdateres")
+                               @PathVariable String ident,
+                               @RequestBody PersonUpdateRequestDTO request) {
 
         return personService.updatePerson(ident, request);
     }
@@ -61,7 +67,8 @@ public class PersonController {
     @ResponseBody
     @DeleteMapping(value = "/{ident}")
     @Operation(description = "Slett person")
-    public void deletePerson(@PathVariable String ident) {
+    public void deletePerson(@Parameter(description = "Slett angitt testperson med relasjoner")
+                             @PathVariable String ident) {
 
         personService.deletePerson(ident);
     }
@@ -69,7 +76,8 @@ public class PersonController {
     @ResponseBody
     @PostMapping(value = "/ordre", produces = MediaType.APPLICATION_NDJSON_VALUE)
     @Operation(description = "Send person(er) til PDL (ordre)")
-    public Flux<OrdreResponseDTO> sendPersonTilPdl(@RequestBody OrdreRequestDTO ordre) {
+    public Flux<OrdreResponseDTO> sendPersonTilPdl(@Parameter(description = "Send angitte testpersoner med relasjoner til PDL")
+                                                   @RequestBody OrdreRequestDTO ordre) {
 
         return pdlOrdreService.send(ordre);
     }

@@ -107,6 +107,9 @@ public class CreatePersonService {
         return personRepository.save(DbPerson.builder()
                         .person(mergedPerson)
                         .ident(mergedPerson.getIdent())
+                        .fornavn(mergedPerson.getNavn().stream().findFirst().orElse(new NavnDTO()).getFornavn())
+                        .mellomnavn(mergedPerson.getNavn().stream().findFirst().orElse(new NavnDTO()).getMellomnavn())
+                        .etternavn(mergedPerson.getNavn().stream().findFirst().orElse(new NavnDTO()).getEtternavn())
                         .sistOppdatert(LocalDateTime.now())
                         .build())
                 .getPerson();
