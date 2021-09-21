@@ -20,6 +20,7 @@ import static java.util.Objects.isNull;
 public class PersonDTO implements Serializable {
 
     private String ident;
+
     private List<FoedselDTO> foedsel;
     private List<NavnDTO> navn;
     private List<KjoennDTO> kjoenn;

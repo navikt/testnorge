@@ -1,15 +1,17 @@
 package no.nav.pdl.forvalter.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.pdl.forvalter.dto.BestillingRequest;
 import no.nav.pdl.forvalter.service.PdlOrdreService;
 import no.nav.pdl.forvalter.service.PersonService;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,8 +19,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -30,25 +36,30 @@ public class PersonController {
     private final PdlOrdreService pdlOrdreService;
 
     @ResponseBody
-    @GetMapping(value = "/{ident}")
-    @Operation(description = "Hent person")
-    public FullPersonDTO getPerson(@PathVariable String ident) {
+    @GetMapping
+    @Operation(description = "Hent personer")
+    public List<FullPersonDTO> getPerson(@Parameter(description = "Hent personer med angitte identer, eller")
+                                         @RequestParam(required = false) List<String> identer,
+                                         @Parameter(description = "Hent identitet ved søk på (u)fullstendig ident og/eller en eller flere navn")
+                                         @RequestParam(required = false) String fragment) {
 
-        return personService.getPerson(ident);
+        return personService.getPerson(identer, fragment);
     }
 
     @ResponseBody
     @PostMapping
-    @Operation(description = "Opprett person")
-    public JsonNode createPerson(@RequestBody BestillingRequest request) {
+    @Operation(description = "Opprett person basert på angitte informasjonselementer, minimum er {}")
+    public String createPerson(@RequestBody BestillingRequestDTO request) {
 
-        throw new UnsupportedOperationException("opprette person er ikke implementert");
+        return personService.createPerson(request);
     }
 
     @ResponseBody
     @PutMapping(value = "/{ident}")
-    @Operation(description = "Endre, legg-til på person")
-    public String updatePerson(@PathVariable String ident, @RequestBody PersonUpdateRequestDTO request) {
+    @Operation(description = "Oppdater testperson basert på angitte informasjonselementer")
+    public String updatePerson(@Parameter(description = "Ident på testperson som skal oppdateres")
+                               @PathVariable String ident,
+                               @RequestBody PersonUpdateRequestDTO request) {
 
         return personService.updatePerson(ident, request);
     }
@@ -56,16 +67,18 @@ public class PersonController {
     @ResponseBody
     @DeleteMapping(value = "/{ident}")
     @Operation(description = "Slett person")
-    public void deletePerson(@PathVariable String ident) {
+    public void deletePerson(@Parameter(description = "Slett angitt testperson med relasjoner")
+                             @PathVariable String ident) {
 
         personService.deletePerson(ident);
     }
 
     @ResponseBody
-    @PostMapping(value = "/{ident}/ordre")
-    @Operation(description = "Send person til PDL (ordre)")
-    public OrdreResponseDTO sendPersonTilPdl(@PathVariable String ident) {
+    @PostMapping(value = "/ordre", produces = MediaType.APPLICATION_NDJSON_VALUE)
+    @Operation(description = "Send person(er) til PDL (ordre)")
+    public Flux<OrdreResponseDTO> sendPersonTilPdl(@Parameter(description = "Send angitte testpersoner med relasjoner til PDL")
+                                                   @RequestBody OrdreRequestDTO ordre) {
 
-        return pdlOrdreService.send(ident);
+        return pdlOrdreService.send(ordre);
     }
 }

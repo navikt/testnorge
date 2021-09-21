@@ -25,6 +25,8 @@ public class PersonRequestDTO implements Serializable {
     private Boolean syntetisk;
 
     private NyttNavnDTO nyttNavn;
+    private String statsborgerskapLandkode;
+    private AdressebeskyttelseDTO.AdresseBeskyttelse gradering;
 
     @Data
     @Builder
@@ -33,6 +35,6 @@ public class PersonRequestDTO implements Serializable {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class NyttNavnDTO implements Serializable {
 
-        private boolean harMellomnavn;
+        private boolean hasMellomnavn;
     }
 }

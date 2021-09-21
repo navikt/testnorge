@@ -2,9 +2,10 @@ package no.nav.pdl.forvalter.service;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO.UkjentBostedDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
@@ -19,10 +20,12 @@ import org.springframework.web.client.HttpClientErrorException;
 import java.time.LocalDate;
 import java.util.List;
 
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -31,10 +34,14 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class BostedAdresseServiceTest {
 
-    private static final String IDENT = "12044512345";
+    private static final String FNR_IDENT = "12044512345";
+    private static final String DNR_IDENT = "45027812345";
 
     @Mock
     private AdresseServiceConsumer adresseServiceConsumer;
+
+    @Mock
+    private DummyAdresseService dummyAdresseService;
 
     @Mock
     private MapperFacade mapperFacade;
@@ -46,43 +53,50 @@ class BostedAdresseServiceTest {
     void whenMultipleAdressesProvided_thenThrowExecption() {
 
         var request = BostedadresseDTO.builder()
-                        .vegadresse(new VegadresseDTO())
-                        .matrikkeladresse(new MatrikkeladresseDTO())
-                        .isNew(true)
-                        .build();
+                .vegadresse(new VegadresseDTO())
+                .matrikkeladresse(new MatrikkeladresseDTO())
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.validate(request));
+                bostedAdresseService.validate(request, new PersonDTO()));
 
         assertThat(exception.getMessage(), containsString("én adresse skal være satt (vegadresse, " +
                 "matrikkeladresse, ukjentbosted, utenlandskAdresse)"));
     }
 
     @Test
-    void whenNoAdressProvided_thenThrowExecption() {
+    void whenAddressProvidedAndStrengtFortrolig_thenThrowExecption() {
 
         var request = BostedadresseDTO.builder()
-                        .isNew(true)
-                        .build();
+                .vegadresse(new VegadresseDTO())
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.validate(request));
+                bostedAdresseService.validate(request, PersonDTO.builder()
+                        .ident(FNR_IDENT)
+                        .adressebeskyttelse(List.of(AdressebeskyttelseDTO.builder()
+                                .gradering(STRENGT_FORTROLIG)
+                                .build()))
+                        .build()));
 
-        assertThat(exception.getMessage(), containsString("én av adressene må velges " +
-                "(vegadresse, matrikkeladresse, ukjentbosted, utenlandskAdresse)"));
+        assertThat(exception.getMessage(), containsString("STRENGT_FORTROLIG skal ikke ha bostedsadresse"));
     }
 
     @Test
     void whenUtenlandskAdresseProvidedAndMasterIsFreg_thenThrowExecption() {
 
         var request = BostedadresseDTO.builder()
-                        .utenlandskAdresse(new UtenlandskAdresseDTO())
-                        .master(DbVersjonDTO.Master.FREG)
-                        .isNew(true)
-                        .build();
+                .utenlandskAdresse(new UtenlandskAdresseDTO())
+                .master(Master.FREG)
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.validate(request));
+                bostedAdresseService.validate(request, PersonDTO.builder()
+                        .ident(FNR_IDENT)
+                        .build()));
 
         assertThat(exception.getMessage(), containsString("utenlandsk adresse krever at master er PDL"));
     }
@@ -91,14 +105,16 @@ class BostedAdresseServiceTest {
     void whenVegadresseWithBruksenhetsnummerInvalidFormat_thenThrowExecption() {
 
         var request = BostedadresseDTO.builder()
-                        .vegadresse(VegadresseDTO.builder()
-                                .bruksenhetsnummer("HK25419")
-                                .build())
-                        .isNew(true)
-                        .build();
+                .vegadresse(VegadresseDTO.builder()
+                        .bruksenhetsnummer("HK25419")
+                        .build())
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.validate(request));
+                bostedAdresseService.validate(request, PersonDTO.builder()
+                        .ident(FNR_IDENT)
+                        .build()));
 
         assertThat(exception.getMessage(), containsString("Gyldig format er Bokstaven H, L, U eller K etterfulgt av fire sifre"));
     }
@@ -107,14 +123,16 @@ class BostedAdresseServiceTest {
     void whenMatrikkeladresseWithBruksenhetsnummerInvalidFormat_thenThrowExecption() {
 
         var request = BostedadresseDTO.builder()
-                        .matrikkeladresse(MatrikkeladresseDTO.builder()
-                                .bruksenhetsnummer("F8021")
-                                .build())
-                        .isNew(true)
-                        .build();
+                .matrikkeladresse(MatrikkeladresseDTO.builder()
+                        .bruksenhetsnummer("F8021")
+                        .build())
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.validate(request));
+                bostedAdresseService.validate(request, PersonDTO.builder()
+                        .ident(FNR_IDENT)
+                        .build()));
 
         assertThat(exception.getMessage(), containsString("Gyldig format er Bokstaven H, L, U eller K etterfulgt av fire sifre"));
     }
@@ -123,14 +141,16 @@ class BostedAdresseServiceTest {
     void whenInvalidDateInterval_thenThrowExecption() {
 
         var request = BostedadresseDTO.builder()
-                        .vegadresse(new VegadresseDTO())
-                        .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
-                        .gyldigTilOgMed(LocalDate.of(2018, 1, 1).atStartOfDay())
-                        .isNew(true)
-                        .build();
+                .vegadresse(new VegadresseDTO())
+                .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
+                .gyldigTilOgMed(LocalDate.of(2018, 1, 1).atStartOfDay())
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.validate(request));
+                bostedAdresseService.validate(request, PersonDTO.builder()
+                        .ident(FNR_IDENT)
+                        .build()));
 
         assertThat(exception.getMessage(), containsString("Adresse: Overlappende adressedatoer er ikke lov"));
     }
@@ -144,7 +164,7 @@ class BostedAdresseServiceTest {
                 .thenReturn(new no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO());
 
         var request = PersonDTO.builder()
-                .ident(IDENT)
+                .ident(FNR_IDENT)
                 .bostedsadresse(List.of(BostedadresseDTO.builder()
                                 .vegadresse(new VegadresseDTO())
                                 .gyldigFraOgMed(LocalDate.of(2020, 1, 2).atStartOfDay())
@@ -170,7 +190,7 @@ class BostedAdresseServiceTest {
                 .thenReturn(new no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO());
 
         var request = PersonDTO.builder()
-                .ident(IDENT)
+                .ident(FNR_IDENT)
                 .bostedsadresse(List.of(BostedadresseDTO.builder()
                                 .gyldigFraOgMed(LocalDate.of(2020, 2, 3).atStartOfDay())
                                 .matrikkeladresse(new MatrikkeladresseDTO())
@@ -194,6 +214,7 @@ class BostedAdresseServiceTest {
     void whenFraDatoAndEmptyTilDato_thenAcceptRequest() {
 
         var request = PersonDTO.builder()
+                .ident(FNR_IDENT)
                 .bostedsadresse(List.of(BostedadresseDTO.builder()
                         .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
                         .ukjentBosted(new UkjentBostedDTO())
@@ -212,7 +233,7 @@ class BostedAdresseServiceTest {
         when(adresseServiceConsumer.getVegadresse(any(VegadresseDTO.class), isNull())).thenReturn(new no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO());
 
         var request = PersonDTO.builder()
-                .ident(IDENT)
+                .ident(FNR_IDENT)
                 .bostedsadresse(List.of(BostedadresseDTO.builder()
                                 .gyldigFraOgMed(LocalDate.of(2020, 2, 4).atStartOfDay())
                                 .vegadresse(new VegadresseDTO())
@@ -228,5 +249,61 @@ class BostedAdresseServiceTest {
         var target = bostedAdresseService.convert(request);
 
         assertThat(target.get(1).getGyldigTilOgMed(), is(equalTo(LocalDate.of(2020, 2, 3).atStartOfDay())));
+    }
+
+    @Test
+    void whenIdenttypeFnrAndStrengtFortrolig_thenMakeNoAdress() {
+
+        var request = PersonDTO.builder()
+                .ident(FNR_IDENT)
+                .bostedsadresse(List.of(BostedadresseDTO.builder()
+                        .isNew(true)
+                        .build()))
+                .adressebeskyttelse(List.of(AdressebeskyttelseDTO.builder()
+                        .gradering(STRENGT_FORTROLIG)
+                        .build()))
+                .build();
+
+        var target = bostedAdresseService.convert(request).get(0);
+
+        assertThat(target.countAdresser(), is(0));
+    }
+
+    @Test
+    void whenIdenttypeFnrAndNoAdresseBeskyttelse_thenMakeAdress() {
+
+        var request = PersonDTO.builder()
+                .ident(FNR_IDENT)
+                .bostedsadresse(List.of(BostedadresseDTO.builder()
+                        .isNew(true)
+                        .build()))
+                .build();
+
+        when(adresseServiceConsumer.getVegadresse(any(VegadresseDTO.class), any()))
+                .thenReturn(new no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO());
+
+        var target = bostedAdresseService.convert(request).get(0);
+
+        assertThat(target.countAdresser(), is(1));
+        assertThat(target.getVegadresse(), is(notNullValue()));
+    }
+
+    @Test
+    void whenIdenttypeDNr_thenMakeUtenlandskAdresse() {
+
+        var request = PersonDTO.builder()
+                .ident(DNR_IDENT)
+                .bostedsadresse(List.of(BostedadresseDTO.builder()
+                        .isNew(true)
+                        .build()))
+                .build();
+
+        when(dummyAdresseService.getUtenlandskAdresse(any())).thenReturn(new UtenlandskAdresseDTO());
+
+        var target = bostedAdresseService.convert(request).get(0);
+
+        assertThat(target.getMaster(), is(Master.PDL));
+        assertThat(target.countAdresser(), is(1));
+        assertThat(target.getUtenlandskAdresse(), is(notNullValue()));
     }
 }

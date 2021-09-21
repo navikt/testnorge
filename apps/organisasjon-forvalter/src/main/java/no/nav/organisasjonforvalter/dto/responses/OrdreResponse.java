@@ -15,17 +15,17 @@ import java.util.Map;
 @AllArgsConstructor
 public class OrdreResponse {
 
-    private Map<String, List<EnvStatus>> orgStatus;
+    private Map<String, List<StatusEnv>> orgStatus;
 
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class EnvStatus {
+    public static class StatusEnv {
 
         private String environment;
-        private String status;
+        private StatusDTO.Status status;
         private String details;
         private String error;
     }

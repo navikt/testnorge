@@ -13,7 +13,7 @@ public class SecurityConfig {
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         return http.authorizeExchange()
-                .pathMatchers("/internal/isReady", "/internal/isAlive").permitAll()
+                .pathMatchers("/internal/isReady", "/internal/isAlive", "/manifest.json").permitAll()
                 .anyExchange().authenticated()
                 .and().oauth2Login()
                 .and().build();
