@@ -2,8 +2,7 @@ package no.nav.registre.skd.service;
 
 import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.putFnrInnIMelding;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -23,16 +22,15 @@ import no.nav.testnav.libs.servletcore.util.IdentUtil;
 
 @Slf4j
 @Service
-@AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class FoedselService {
 
     private static final int MIN_FORELDER_ALDER = 16;
     private static final int MAKS_FORELDER_ALDER = 70;
 
-    private IdentPoolConsumer identPoolConsumer;
+    private final IdentPoolConsumer identPoolConsumer;
 
-    private Random rand;
+    private final Random rand;
 
     public List<String> behandleFoedselsmeldinger(
             IdentType identType,

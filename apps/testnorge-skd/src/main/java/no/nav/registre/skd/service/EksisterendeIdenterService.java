@@ -12,8 +12,7 @@ import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.
 import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.putFnrInnIMelding;
 
 import io.micrometer.core.annotation.Timed;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -32,6 +31,8 @@ import java.util.function.Predicate;
 import no.nav.registre.skd.consumer.HodejegerenConsumerSkd;
 import no.nav.registre.skd.consumer.dto.Relasjon;
 import no.nav.registre.skd.consumer.response.RelasjonsResponse;
+import no.nav.registre.skd.domain.Endringskoder;
+import no.nav.registre.skd.domain.KoderForSivilstand;
 import no.nav.registre.skd.exceptions.ManglendeInfoITpsException;
 import no.nav.registre.skd.exceptions.ManglerEksisterendeIdentException;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
@@ -40,8 +41,7 @@ import no.nav.testnav.libs.servletcore.util.IdentUtil;
 
 @Slf4j
 @Service
-@AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class EksisterendeIdenterService {
 
     private static final String SKD_MELDINGSNUMMER_FEILMELDING = "Kunne ikke finne ident for SkdMelding med meldingsnummer ";
@@ -56,11 +56,11 @@ public class EksisterendeIdenterService {
     static final String SIVILSTAND = "sivilstand";
     static final String STATSBORGER = "statsborger";
 
-    private HodejegerenConsumerSkd hodejegerenConsumerSkd;
+    private final HodejegerenConsumerSkd hodejegerenConsumerSkd;
 
-    private FoedselService foedselService;
+    private final FoedselService foedselService;
 
-    private Random rand;
+    private final Random rand;
 
     void behandleEksisterendeIdenter(
             List<RsMeldingstype> meldinger,

@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
+import no.nav.registre.skd.domain.Endringskoder;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
 

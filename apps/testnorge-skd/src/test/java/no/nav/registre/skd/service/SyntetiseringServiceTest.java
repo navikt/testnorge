@@ -1,6 +1,6 @@
 package no.nav.registre.skd.service;
 
-import static no.nav.registre.skd.service.Endringskoder.ENDRING_OPPHOLDSTILLATELSE;
+import static no.nav.registre.skd.domain.Endringskoder.ENDRING_OPPHOLDSTILLATELSE;
 import static no.nav.registre.skd.testutils.Utils.testLoggingInClass;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -40,6 +40,7 @@ import java.util.List;
 
 import no.nav.registre.skd.consumer.SyntTpsConsumer;
 import no.nav.registre.skd.consumer.TpsfConsumer;
+import no.nav.registre.skd.domain.Endringskoder;
 import no.nav.registre.skd.provider.rs.requests.GenereringsOrdreRequest;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;

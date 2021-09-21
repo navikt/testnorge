@@ -4,8 +4,7 @@ import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.
 import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.putFnrInnIMelding;
 import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.korrigerUtenFastBosted;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +13,7 @@ import java.util.List;
 
 import no.nav.registre.skd.consumer.IdentPoolConsumer;
 import no.nav.registre.skd.consumer.requests.HentIdenterRequest;
+import no.nav.registre.skd.domain.Endringskoder;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
 
@@ -22,11 +22,10 @@ import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
  */
 @Slf4j
 @Service
-@NoArgsConstructor
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class NyeIdenterService {
 
-    private IdentPoolConsumer identPoolConsumer;
+    private final IdentPoolConsumer identPoolConsumer;
 
     public List<String> settInnNyeIdenterITrans1Meldinger(HentIdenterRequest.IdentType identType, List<RsMeldingstype> meldinger) {
         var antallNyeIdenter = meldinger.size();

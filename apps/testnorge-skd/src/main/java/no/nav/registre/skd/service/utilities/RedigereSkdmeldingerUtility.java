@@ -1,6 +1,6 @@
 package no.nav.registre.skd.service.utilities;
 
-import no.nav.registre.skd.service.Endringskoder;
+import no.nav.registre.skd.domain.Endringskoder;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
 
 public class RedigereSkdmeldingerUtility {

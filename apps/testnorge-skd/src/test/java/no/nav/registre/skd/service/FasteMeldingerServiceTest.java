@@ -19,6 +19,7 @@ import java.util.List;
 
 import no.nav.registre.skd.consumer.SyntTpsConsumer;
 import no.nav.registre.skd.consumer.TpsfConsumer;
+import no.nav.registre.skd.domain.Endringskoder;
 import no.nav.registre.skd.provider.rs.requests.FastMeldingRequest;
 
 @RunWith(MockitoJUnitRunner.class)

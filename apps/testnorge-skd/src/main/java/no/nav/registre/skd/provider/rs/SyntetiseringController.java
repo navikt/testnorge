@@ -15,8 +15,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
 import no.nav.registre.skd.provider.rs.requests.FastMeldingRequest;
 import no.nav.registre.skd.provider.rs.requests.GenereringsOrdreRequest;
@@ -25,13 +24,12 @@ import no.nav.registre.skd.service.SyntetiseringService;
 
 @RestController
 @RequestMapping("api/v1/syntetisering")
-@NoArgsConstructor
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SyntetiseringController {
 
-    private SyntetiseringService syntetiseringService;
+    private final SyntetiseringService syntetiseringService;
 
-    private FasteMeldingerService fasteMeldingerService;
+    private final FasteMeldingerService fasteMeldingerService;
 
     @ApiOperation(value = "Her bestilles genererering av syntetiske meldinger for nye og eksisterende identer. "
             + "Disse meldingene lagres i angitt gruppe i TPSF. ", notes = "Eksisterende identer hentes fra avspillergruppen og status quo på disse hentes fra TPS i angitt miljø. " +

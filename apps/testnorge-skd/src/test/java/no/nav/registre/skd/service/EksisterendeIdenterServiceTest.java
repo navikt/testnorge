@@ -5,10 +5,10 @@ import static no.nav.registre.skd.service.EksisterendeIdenterService.FNR_RELASJO
 import static no.nav.registre.skd.service.EksisterendeIdenterService.RELASJON_MOR;
 import static no.nav.registre.skd.service.EksisterendeIdenterService.SIVILSTAND;
 import static no.nav.registre.skd.service.EksisterendeIdenterService.STATSBORGER;
-import static no.nav.registre.skd.service.Endringskoder.FARSKAP_MEDMORSKAP;
-import static no.nav.registre.skd.service.Endringskoder.SKILSMISSE;
-import static no.nav.registre.skd.service.KoderForSivilstand.GIFT;
-import static no.nav.registre.skd.service.KoderForSivilstand.SKILT;
+import static no.nav.registre.skd.domain.Endringskoder.FARSKAP_MEDMORSKAP;
+import static no.nav.registre.skd.domain.Endringskoder.SKILSMISSE;
+import static no.nav.registre.skd.domain.KoderForSivilstand.GIFT;
+import static no.nav.registre.skd.domain.KoderForSivilstand.SKILT;
 import static no.nav.registre.skd.testutils.Utils.testLoggingInClass;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -46,6 +46,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import no.nav.registre.skd.domain.Endringskoder;
+import no.nav.registre.skd.domain.KoderForSivilstand;
 import no.nav.registre.skd.exceptions.ManglendeInfoITpsException;
 import no.nav.registre.skd.exceptions.ManglerEksisterendeIdentException;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;

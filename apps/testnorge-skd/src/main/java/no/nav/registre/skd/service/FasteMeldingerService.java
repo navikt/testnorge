@@ -17,6 +17,7 @@ import no.nav.registre.skd.consumer.SyntTpsConsumer;
 import no.nav.registre.skd.consumer.TpsfConsumer;
 import no.nav.registre.skd.consumer.requests.SendToTpsRequest;
 import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
+import no.nav.registre.skd.domain.Endringskoder;
 import no.nav.registre.skd.provider.rs.requests.FastMeldingRequest;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;

@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import no.nav.registre.skd.domain.Endringskoder;
 import no.nav.registre.skd.exceptions.TomResponsFraTpsSyntException;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 

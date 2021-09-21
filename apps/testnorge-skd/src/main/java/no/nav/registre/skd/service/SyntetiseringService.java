@@ -2,10 +2,10 @@ package no.nav.registre.skd.service;
 
 import static no.nav.registre.skd.consumer.requests.HentIdenterRequest.IdentType.DNR;
 import static no.nav.registre.skd.consumer.requests.HentIdenterRequest.IdentType.FNR;
-import static no.nav.registre.skd.service.Endringskoder.FOEDSELSMELDING;
-import static no.nav.registre.skd.service.Endringskoder.FOEDSELSNUMMERKORREKSJON;
-import static no.nav.registre.skd.service.Endringskoder.INNVANDRING;
-import static no.nav.registre.skd.service.Endringskoder.TILDELING_DNUMMER;
+import static no.nav.registre.skd.domain.Endringskoder.FOEDSELSMELDING;
+import static no.nav.registre.skd.domain.Endringskoder.FOEDSELSNUMMERKORREKSJON;
+import static no.nav.registre.skd.domain.Endringskoder.INNVANDRING;
+import static no.nav.registre.skd.domain.Endringskoder.TILDELING_DNUMMER;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,6 +31,7 @@ import no.nav.registre.skd.consumer.SyntTpsConsumer;
 import no.nav.registre.skd.consumer.TpsfConsumer;
 import no.nav.registre.skd.consumer.requests.SendToTpsRequest;
 import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
+import no.nav.registre.skd.domain.Endringskoder;
 import no.nav.registre.skd.exceptions.KunneIkkeSendeTilTpsException;
 import no.nav.registre.skd.exceptions.ManglendeInfoITpsException;
 import no.nav.registre.skd.provider.rs.requests.GenereringsOrdreRequest;

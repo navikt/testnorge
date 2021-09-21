@@ -1,4 +1,4 @@
-package no.nav.registre.skd.service;
+package no.nav.registre.skd.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
