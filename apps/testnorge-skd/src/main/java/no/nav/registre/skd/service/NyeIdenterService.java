@@ -4,8 +4,8 @@ import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.
 import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.putFnrInnIMelding;
 import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.korrigerUtenFastBosted;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,9 +21,9 @@ import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class NyeIdenterService {
 
-    @Autowired
     private IdentPoolConsumer identPoolConsumer;
 
     public List<String> settInnNyeIdenterITrans1Meldinger(HentIdenterRequest.IdentType identType, List<RsMeldingstype> meldinger) {

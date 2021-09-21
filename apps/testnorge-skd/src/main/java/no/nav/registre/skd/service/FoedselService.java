@@ -5,7 +5,6 @@ import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -22,19 +21,17 @@ import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
 import no.nav.testnav.libs.servletcore.util.IdentUtil;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 @NoArgsConstructor
-@Slf4j
 public class FoedselService {
 
     private static final int MIN_FORELDER_ALDER = 16;
     private static final int MAKS_FORELDER_ALDER = 70;
 
-    @Autowired
     private IdentPoolConsumer identPoolConsumer;
 
-    @Autowired
     private Random rand;
 
     public List<String> behandleFoedselsmeldinger(

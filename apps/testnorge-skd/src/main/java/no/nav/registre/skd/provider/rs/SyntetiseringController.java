@@ -3,7 +3,6 @@ package no.nav.registre.skd.provider.rs;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +15,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
 import no.nav.registre.skd.provider.rs.requests.FastMeldingRequest;
 import no.nav.registre.skd.provider.rs.requests.GenereringsOrdreRequest;
@@ -24,12 +24,11 @@ import no.nav.registre.skd.service.SyntetiseringService;
 
 @RestController
 @RequestMapping("api/v1/syntetisering")
+@RequiredArgsConstructor
 public class SyntetiseringController {
 
-    @Autowired
     private SyntetiseringService syntetiseringService;
 
-    @Autowired
     private FasteMeldingerService fasteMeldingerService;
 
     @ApiOperation(value = "Her bestilles genererering av syntetiske meldinger for nye og eksisterende identer. "

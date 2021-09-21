@@ -1,7 +1,6 @@
 package no.nav.registre.skd.provider.rs;
 
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,15 +14,16 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.registre.skd.consumer.requests.SendToTpsRequest;
 import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
 import no.nav.registre.skd.service.IdentService;
 
 @RestController
 @RequestMapping("api/v1/ident")
+@RequiredArgsConstructor
 public class IdentController {
 
-    @Autowired
     private IdentService identService;
 
     @ApiOperation(value = "Her kan man slette alle skd-meldinger tilhørende identer fra en gitt avspillergruppe. Returnerer en liste av melding-idene som er sendt til sletting.")

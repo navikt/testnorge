@@ -15,7 +15,6 @@ import io.micrometer.core.annotation.Timed;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 
@@ -39,10 +38,10 @@ import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
 import no.nav.testnav.libs.servletcore.util.IdentUtil;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 @NoArgsConstructor
-@Slf4j
 public class EksisterendeIdenterService {
 
     private static final String SKD_MELDINGSNUMMER_FEILMELDING = "Kunne ikke finne ident for SkdMelding med meldingsnummer ";
@@ -57,13 +56,10 @@ public class EksisterendeIdenterService {
     static final String SIVILSTAND = "sivilstand";
     static final String STATSBORGER = "statsborger";
 
-    @Autowired
     private HodejegerenConsumerSkd hodejegerenConsumerSkd;
 
-    @Autowired
     private FoedselService foedselService;
 
-    @Autowired
     private Random rand;
 
     void behandleEksisterendeIdenter(
