@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 import javax.validation.constraints.Size;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/personer")
@@ -38,16 +39,10 @@ public class PersonController {
     }
 
     @GetMapping("/{ident}/aktoerId")
-    public Mono<ResponseEntity<?>> getAktoerId(
-            @RequestHeader(required = false) String miljoe,
+    public Mono<Optional<Object>> getAktoerId(
             @PathVariable("ident") @Size(min = 11, max = 11, message = "Ident må ha 11 siffer") String ident
     ) {
 
-        return service
-                .getAktoerId(ident, miljoe)
-                .map(value -> value
-                        .map(person -> ResponseEntity.ok(person.toDTO()))
-                        .orElse(ResponseEntity.notFound().build())
-                );
+        return service.getAktoerId(ident);
     }
 }

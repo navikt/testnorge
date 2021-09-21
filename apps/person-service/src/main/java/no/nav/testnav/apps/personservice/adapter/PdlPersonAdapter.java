@@ -19,7 +19,7 @@ public class PdlPersonAdapter implements PersonAdapter {
         return pdlApiConsumer.getPerson(ident);
     }
 
-    public Mono<Optional<Object>> getAktoer(String ident, String miljoe) {
+    public Mono<Optional<Object>> getAktoer(String ident) {
         return pdlApiConsumer.getAktoer(ident);
     }
 }

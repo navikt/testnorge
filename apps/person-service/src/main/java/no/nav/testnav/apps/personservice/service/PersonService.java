@@ -2,15 +2,14 @@ package no.nav.testnav.apps.personservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
-
-import java.util.Optional;
-
 import no.nav.testnav.apps.personservice.adapter.PdlPersonAdapter;
 import no.nav.testnav.apps.personservice.adapter.TpsPersonAdapter;
 import no.nav.testnav.apps.personservice.domain.Person;
 import no.nav.testnav.libs.dto.personservice.v1.Persondatasystem;
+import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
+
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -28,7 +27,7 @@ public class PersonService {
         }
     }
 
-    public Mono<Optional<Person>> getAktoerId(String ident, String miljoe) {
-            return pdlPersonAdapter.getPerson(ident, miljoe);
+    public Mono<Optional<Object>> getAktoerId(String ident) {
+        return pdlPersonAdapter.getAktoer(ident);
     }
 }
