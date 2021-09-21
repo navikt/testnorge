@@ -12,7 +12,6 @@ import java.util.List;
 import no.nav.registre.skd.consumer.command.GetSyntSkdMeldingerCommand;
 import no.nav.registre.skd.consumer.credential.SyntTpsGcpProperties;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
-import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
 import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 
 @Component
@@ -20,7 +19,7 @@ import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 public class SyntTpsConsumer {
 
     private final AccessTokenService tokenService;
-    private final NaisServerProperties serviceProperties;
+    private final SyntTpsGcpProperties serviceProperties;
     private final WebClient webClient;
 
     public SyntTpsConsumer(
@@ -37,7 +36,7 @@ public class SyntTpsConsumer {
             String endringskode,
             Integer antallMeldinger
     ) {
-        var accessToken = tokenService.generateClientCredentialAccessToken(serviceProperties).getTokenValue();
+        var accessToken = tokenService.generateClientCredentialAccessToken(serviceProperties).block().getTokenValue();
 
         var response = new GetSyntSkdMeldingerCommand(endringskode, antallMeldinger, accessToken, webClient).call();
 

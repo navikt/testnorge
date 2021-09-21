@@ -11,14 +11,13 @@ import org.springframework.web.reactive.function.client.WebClient;
 import no.nav.registre.skd.consumer.credential.PersonServiceProperties;
 import no.nav.testnav.libs.commands.CreatePersonCommand;
 import no.nav.testnav.libs.dto.person.v1.PersonDTO;
-import no.nav.testnav.libs.servletsecurity.config.NaisServerProperties;
 import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 
 @Component
 public class PersonConsumer {
     private final WebClient webClient;
     private final AccessTokenService tokenService;
-    private final NaisServerProperties serviceProperties;
+    private final PersonServiceProperties serviceProperties;
 
     public PersonConsumer(
             PersonServiceProperties personServiceProperties,
@@ -44,7 +43,7 @@ public class PersonConsumer {
     }
 
     public void createPerson(PersonDTO person, String kilde) {
-        var accessToken = tokenService.generateClientCredentialAccessToken(serviceProperties).getTokenValue();
+        var accessToken = tokenService.generateClientCredentialAccessToken(serviceProperties).block().getTokenValue();
         new CreatePersonCommand(webClient, person, accessToken, kilde).run();
     }
 }
