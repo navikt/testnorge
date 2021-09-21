@@ -3,6 +3,7 @@ package no.nav.registre.testnav.geografiskekodeverkservice.service;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnav.geografiskekodeverkservice.domain.Kodeverk;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -45,30 +46,30 @@ public class KodeverkService {
     }
 
     public List<Kodeverk> getKommuner(String kommunenr, String kommunenavn) {
-        boolean toParametre = kommunenr != null && kommunenavn != null;
+        boolean toParametre = StringUtils.isNotBlank(kommunenr) && StringUtils.isNotBlank(kommunenavn);
         return kommunerKodeverkListe
                 .stream()
-                .filter(kodeverk -> (kommunenr == null && kommunenavn == null) ||
+                .filter(kodeverk -> (StringUtils.isBlank(kommunenr) && StringUtils.isBlank(kommunenavn)) ||
                         (toParametre ? kodeverk.getKode().equals(kommunenr) && kodeverk.getNavn().equals(kommunenavn) :
                                 kodeverk.getKode().equals(kommunenr) || kodeverk.getNavn().equals(kommunenavn)))
                 .collect(Collectors.toList());
     }
 
     public List<Kodeverk> getLand(String landkode, String land) {
-        boolean toParametre = landkode != null && land != null;
+        boolean toParametre = StringUtils.isNotBlank(landkode) && StringUtils.isNotBlank(land);
         return landKodeverkListe
                 .stream()
-                .filter(kodeverk -> (landkode == null && land == null) ||
+                .filter(kodeverk -> (StringUtils.isBlank(landkode) && StringUtils.isBlank(land)) ||
                         (toParametre ? kodeverk.getKode().equals(landkode) && kodeverk.getNavn().equals(land) :
                                 kodeverk.getKode().equals(landkode) || kodeverk.getNavn().equals(land)))
                 .collect(Collectors.toList());
     }
 
     public List<Kodeverk> getPostnummer(String poststed, String postnummer) {
-        boolean toParametre = poststed != null && postnummer != null;
+        boolean toParametre = StringUtils.isNotBlank(poststed) && StringUtils.isNotBlank(postnummer);
         return postnummerKodeverkListe
                 .stream()
-                .filter(kodeverk -> (poststed == null && postnummer == null) ||
+                .filter(kodeverk -> (StringUtils.isBlank(poststed) && StringUtils.isBlank(postnummer)) ||
                         (toParametre ? kodeverk.getNavn().equals(poststed) && kodeverk.getKode().equals(postnummer) :
                                 kodeverk.getNavn().equals(poststed) || kodeverk.getKode().equals(postnummer)))
                 .collect(Collectors.toList());
