@@ -15,7 +15,8 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
 import no.nav.registre.skd.provider.rs.requests.FastMeldingRequest;
 import no.nav.registre.skd.provider.rs.requests.GenereringsOrdreRequest;
@@ -24,7 +25,8 @@ import no.nav.registre.skd.service.SyntetiseringService;
 
 @RestController
 @RequestMapping("api/v1/syntetisering")
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class SyntetiseringController {
 
     private SyntetiseringService syntetiseringService;

@@ -14,14 +14,16 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import no.nav.registre.skd.consumer.requests.SendToTpsRequest;
 import no.nav.registre.skd.consumer.response.SkdMeldingerTilTpsRespons;
 import no.nav.registre.skd.service.IdentService;
 
 @RestController
 @RequestMapping("api/v1/ident")
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class IdentController {
 
     private IdentService identService;

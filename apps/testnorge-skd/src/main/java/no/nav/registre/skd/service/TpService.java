@@ -4,11 +4,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import no.nav.registre.skd.consumer.TpConsumer;
 
 @Service
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class TpService {
 
     private TpConsumer tpConsumer;

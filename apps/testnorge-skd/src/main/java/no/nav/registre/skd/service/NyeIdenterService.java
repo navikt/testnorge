@@ -4,7 +4,8 @@ import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.
 import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.putFnrInnIMelding;
 import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.korrigerUtenFastBosted;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,8 @@ import no.nav.registre.skd.skdmelding.RsMeldingstype1Felter;
  */
 @Slf4j
 @Service
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class NyeIdenterService {
 
     private IdentPoolConsumer identPoolConsumer;
