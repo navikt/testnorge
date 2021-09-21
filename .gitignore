@@ -19,9 +19,6 @@ navikt/*/lib/
 .gradle
 *build/
 **/out/*
-**/gradlew
-**/gradlew.bat
-**/gradle/
 
 ##brreg-stub
 apps/brreg-stub/src/generated
