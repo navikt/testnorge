@@ -93,6 +93,7 @@ includeBuild './apps/organisasjon-bestilling-service'
 includeBuild './apps/geografiske-kodeverk-service'
 includeBuild './apps/testnorge-inntekt'
 includeBuild './apps/app-tilgang-analyse-service'
+includeBuild './apps/organisasjon-forvalter'
 
 includeBuild './xsd/arbeidsforhold-xsd'
 
@@ -149,7 +150,6 @@ include(':ident-check-in-prod-service')
 include(':mn-person-service')
 include(':mn-synt-arbeidsforhold-service')
 include(':organisasjon-orgnummer-service')
-include(':organisasjon-forvalter')
 include(':tps-identer-vedlikehold')
 
 project(":inntektsmelding-generator-service").projectDir = file('apps/inntektsmelding-generator-service')
@@ -201,7 +201,6 @@ project(":mn-person-service").projectDir = file('apps/mn-person-service')
 project(":mn-synt-arbeidsforhold-service").projectDir = file('apps/mn-synt-arbeidsforhold-service')
 project(":ident-check-in-prod-service").projectDir = file('apps/ident-check-in-prod-service')
 project(":organisasjon-orgnummer-service").projectDir = file('apps/organisasjon-orgnummer-service')
-project(":organisasjon-forvalter").projectDir = file('apps/organisasjon-forvalter')
 project(":tps-identer-vedlikehold").projectDir = file('apps/tps-identer-vedlikehold')
 
 include 'organisasjon-mottak-service'

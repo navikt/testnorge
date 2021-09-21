@@ -27,6 +27,7 @@ export default class BestillingProgresjon extends PureComponent {
 			failureIntervalCounter: 0,
 			failed: false,
 			sistOppdatert: props.bestilling.sistOppdatert,
+			orgStatus: null,
 		}
 	}
 
@@ -85,6 +86,7 @@ export default class BestillingProgresjon extends PureComponent {
 			ferdig: false,
 			antallLevert: data.antallLevert,
 			sistOppdatert: data.sistOppdatert,
+			orgStatus: data.status?.[0]?.statuser[0]?.detaljert?.[0]?.detaljertStatus,
 		}
 		this.setState(newState)
 
@@ -120,10 +122,10 @@ export default class BestillingProgresjon extends PureComponent {
 		const liveTimeStamp = new Date(sistOppdatert).getTime()
 		const oldTimeStamp = new Date(this.state.sistOppdatert).getTime()
 
-		if (liveTimeStamp == oldTimeStamp) {
+		if (liveTimeStamp === oldTimeStamp) {
 			this.setState({ failureIntervalCounter: this.state.failureIntervalCounter + 1 })
 			// Etter et bestemt intervall uten update av timestamp, setter bestilling til failed
-			if (this.state.failureIntervalCounter == this.TIME_BEFORE_WARNING_MESSAGE) {
+			if (this.state.failureIntervalCounter === this.TIME_BEFORE_WARNING_MESSAGE) {
 				this.setState({ failed: true })
 			}
 		} else {
@@ -151,7 +153,11 @@ export default class BestillingProgresjon extends PureComponent {
 		const aktivBestilling = sykemelding
 			? 'AKTIV BESTILLING (Syntetisert sykemelding behandler mye data og kan derfor ta litt tid)'
 			: organisasjon
-			? 'AKTIV BESTILLING (Bestillingen tar opptil flere minutter per valgte miljø)'
+			? `AKTIV BESTILLING (${
+					this.state.orgStatus
+						? this.state.orgStatus
+						: 'Bestillingen tar opptil flere minutter per valgte miljø'
+			  })`
 			: 'AKTIV BESTILLING'
 		const title = percent === 100 ? 'FERDIG' : aktivBestilling
 

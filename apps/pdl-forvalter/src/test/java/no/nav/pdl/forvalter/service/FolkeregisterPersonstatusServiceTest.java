@@ -31,6 +31,9 @@ import static org.hamcrest.Matchers.is;
 @ExtendWith(MockitoExtension.class)
 class FolkeregisterPersonstatusServiceTest {
 
+    private static final String FNR_IDENT = "12044512345";
+    private static final String DNR_IDENT = "45027812345";
+
     @InjectMocks
     private FolkeregisterPersonstatusService folkeregisterPersonstatusService;
 
@@ -105,6 +108,7 @@ class FolkeregisterPersonstatusServiceTest {
 
         var target = folkeregisterPersonstatusService.convert(
                 PersonDTO.builder()
+                        .ident(FNR_IDENT)
                         .folkeregisterpersonstatus(
                                 List.of(FolkeregisterpersonstatusDTO.builder()
                                         .isNew(true)
@@ -122,6 +126,7 @@ class FolkeregisterPersonstatusServiceTest {
 
         var target = folkeregisterPersonstatusService.convert(
                 PersonDTO.builder()
+                        .ident(FNR_IDENT)
                         .folkeregisterpersonstatus(
                                 List.of(FolkeregisterpersonstatusDTO.builder()
                                         .isNew(true)
@@ -139,6 +144,7 @@ class FolkeregisterPersonstatusServiceTest {
 
         var target = folkeregisterPersonstatusService.convert(
                 PersonDTO.builder()
+                        .ident(FNR_IDENT)
                         .folkeregisterpersonstatus(
                                 List.of(FolkeregisterpersonstatusDTO.builder()
                                         .isNew(true)
@@ -156,6 +162,7 @@ class FolkeregisterPersonstatusServiceTest {
 
         var target = folkeregisterPersonstatusService.convert(
                 PersonDTO.builder()
+                        .ident(FNR_IDENT)
                         .folkeregisterpersonstatus(
                                 List.of(FolkeregisterpersonstatusDTO.builder()
                                         .isNew(true)
