@@ -19,7 +19,7 @@ import no.nav.testnav.apps.personservice.consumer.command.PostTagsCommand;
 import no.nav.testnav.apps.personservice.consumer.exception.PdlCreatePersonException;
 import no.nav.testnav.apps.personservice.credentials.PdlServiceProperties;
 import no.nav.testnav.apps.personservice.domain.Person;
-import no.nav.testnav.libs.reactivesecurity.service.AccessTokenService;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
 
 @Slf4j
@@ -28,15 +28,15 @@ public class PdlTestdataConsumer {
 
     private final WebClient webClient;
     private final PdlServiceProperties serviceProperties;
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
 
     public PdlTestdataConsumer(
             PdlServiceProperties serviceProperties,
-            AccessTokenService accessTokenService,
+            TokenExchange tokenExchange,
             ObjectMapper objectMapper
     ) {
         this.serviceProperties = serviceProperties;
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
         ExchangeStrategies jacksonStrategy = ExchangeStrategies.builder()
                 .codecs(config -> {
                     config.defaultCodecs()
@@ -83,7 +83,7 @@ public class PdlTestdataConsumer {
         log.info("Oppretter person med ident {} i PDL", person.getIdent());
 
         try {
-            var accessToken = accessTokenService.generateToken(serviceProperties).block();
+            var accessToken = tokenExchange.generateToken(serviceProperties).block();
             opprettPerson(person, kilde, accessToken);
             opprettNavn(person, kilde, accessToken);
             opprettAdresse(person, kilde, accessToken);
