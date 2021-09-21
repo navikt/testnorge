@@ -17,6 +17,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO.PersonIDDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
@@ -39,12 +40,15 @@ import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class PersonService {
 
+    private static final String EMPTY_GET_REQUEST = "Angi en av parametrene 'identer' eller 'fragment'";
     private static final String VIOLATION_ALIAS_EXISTS = "Utgått ident kan ikke endres. Benytt gjeldende ident %s for denne operasjonen";
 
     private final PersonRepository personRepository;
@@ -114,27 +118,37 @@ public class PersonService {
     }
 
     @Transactional(readOnly = true)
-    public List<FullPersonDTO> getPerson(List<String> identer) {
+    public List<FullPersonDTO> getPerson(List<String> identer, String fragment) {
 
-        var query = new HashSet<>(identer);
-        var aliaser = aliasRepository.findByTidligereIdentIn(identer);
-        query.addAll(aliaser.stream()
-                .map(DbAlias::getPerson)
-                .map(DbPerson::getIdent)
-                .collect(Collectors.toSet()));
-        query.removeAll(aliaser.stream()
-                .map(DbAlias::getTidligereIdent)
-                .collect(Collectors.toSet()));
+        if (nonNull(identer) && !identer.isEmpty()) {
+            var query = new HashSet<>(identer);
+            var aliaser = aliasRepository.findByTidligereIdentIn(identer);
+            query.addAll(aliaser.stream()
+                    .map(DbAlias::getPerson)
+                    .map(DbPerson::getIdent)
+                    .collect(Collectors.toSet()));
+            query.removeAll(aliaser.stream()
+                    .map(DbAlias::getTidligereIdent)
+                    .collect(Collectors.toSet()));
 
-        return mapperFacade.mapAsList(personRepository.findByIdentIn(query), FullPersonDTO.class);
-    }
+            return mapperFacade.mapAsList(personRepository.findByIdentIn(query), FullPersonDTO.class);
 
-    private void checkAlias(String ident) {
+        } else if (isNotBlank(fragment)) {
 
-        var alias = aliasRepository.findByTidligereIdent(ident);
-        if (alias.isPresent()) {
-            throw new InvalidRequestException(
-                    format(VIOLATION_ALIAS_EXISTS, alias.get().getPerson().getIdent()));
+            return searchPerson(fragment).stream()
+                    .map(person -> FullPersonDTO.builder()
+                            .identitet(PersonIDDTO.builder()
+                                    .ident(person.getIdent())
+                                    .fornavn(person.getFornavn())
+                                    .mellomnavn(person.getMellomnavn())
+                                    .etternavn(person.getEtternavn())
+                                    .build())
+                            .build())
+                    .collect(Collectors.toList());
+
+        } else {
+
+            throw new InvalidRequestException(EMPTY_GET_REQUEST);
         }
     }
 
@@ -169,14 +183,22 @@ public class PersonService {
                 .build());
     }
 
-    @Transactional(readOnly = true)
-    public List<DbPerson> searchPerson(String query) {
+    private void checkAlias(String ident) {
+
+        var alias = aliasRepository.findByTidligereIdent(ident);
+        if (alias.isPresent()) {
+            throw new InvalidRequestException(
+                    format(VIOLATION_ALIAS_EXISTS, alias.get().getPerson().getIdent()));
+        }
+    }
+
+    private List<DbPerson> searchPerson(String query) {
         Optional<String> ident = Stream.of(query.split(" "))
                 .filter(StringUtils::isNumeric)
                 .findFirst();
 
         List<String> navn = List.of(query.split(" ")).stream()
-                .filter(fragment -> StringUtils.isNotBlank(fragment) && !StringUtils.isNumeric(fragment))
+                .filter(fragment -> isNotBlank(fragment) && !StringUtils.isNumeric(fragment))
                 .collect(Collectors.toList());
 
         return personRepository.findByWildcardIdent(ident.orElse(null),
