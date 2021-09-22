@@ -65,3 +65,6 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://testnorge-profil-api.dev.intern.nav.no"
+  env:
+    - name: ACCEPTED_AUDIENCE
+      value: dev-gcp:dolly:testnorge-profil-api

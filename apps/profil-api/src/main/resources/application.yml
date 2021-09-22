@@ -17,7 +17,7 @@ spring:
         tokenx:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
-          accepted-audience: dev-gcp:dolly:testnorge-profil-api-dev
+          accepted-audience: ${ACCEPTED_AUDIENCE}
 
 access.scopes:
   - https://graph.microsoft.com/.default
