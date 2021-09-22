@@ -3,6 +3,7 @@ package no.nav.registre.testnav.geografiskekodeverkservice.service;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnav.geografiskekodeverkservice.domain.Kodeverk;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -18,13 +19,13 @@ import java.util.stream.Collectors;
 public class KodeverkService {
 
     private static final List<Kodeverk> kommunerKodeverkListe;
-    private static final List<Kodeverk> landkoderKodeverkListe;
+    private static final List<Kodeverk> landKodeverkListe;
     private static final List<Kodeverk> postnummerKodeverkListe;
     private static final List<Kodeverk> embeterKodeverkListe;
 
     static {
         kommunerKodeverkListe = loadKodeverk("kommuner/kommuner.yaml");
-        landkoderKodeverkListe = loadKodeverk("landkoder/landkoder.yaml");
+        landKodeverkListe = loadKodeverk("landkoder/landkoder.yaml");
         postnummerKodeverkListe = loadKodeverk("postnummer/postnummer.yaml");
         embeterKodeverkListe = loadKodeverk("vergemaal/embeter.yaml");
     }
@@ -44,28 +45,31 @@ public class KodeverkService {
         }
     }
 
-    public List<Kodeverk> getKommuner(String kommunenr) {
+    public List<Kodeverk> getKommuner(String kommunenr, String kommunenavn) {
         return kommunerKodeverkListe
                 .stream()
-                .filter(kodeverk -> kommunenr == null || kodeverk.getKode().equals(kommunenr))
+                .filter(kodeverk -> StringUtils.isBlank(kommunenr) || kommunenr.equals(kodeverk.getKode()))
+                .filter(kodeverk -> StringUtils.isBlank(kommunenavn) || kommunenavn.equalsIgnoreCase(kodeverk.getNavn()))
                 .collect(Collectors.toList());
     }
 
-    public static List<Kodeverk> getLandkoder(String land) {
-        return landkoderKodeverkListe
+    public List<Kodeverk> getLand(String landkode, String land) {
+        return landKodeverkListe
                 .stream()
-                .filter(kodeverk -> land == null || kodeverk.getNavn().equals(land))
+                .filter(kodeverk -> StringUtils.isBlank(landkode) || landkode.equals(kodeverk.getKode()))
+                .filter(kodeverk -> StringUtils.isBlank(land) || land.equalsIgnoreCase(kodeverk.getNavn()))
                 .collect(Collectors.toList());
     }
 
-    public static List<Kodeverk> getPostnummer(String poststed) {
+    public List<Kodeverk> getPostnummer(String postnummer, String poststed) {
         return postnummerKodeverkListe
                 .stream()
-                .filter(kodeverk -> poststed == null || kodeverk.getNavn().equals(poststed))
+                .filter(kodeverk -> StringUtils.isBlank(postnummer) || postnummer.equals(kodeverk.getKode()))
+                .filter(kodeverk -> StringUtils.isBlank(poststed) || poststed.equalsIgnoreCase(kodeverk.getNavn()))
                 .collect(Collectors.toList());
     }
 
-    public static List<Kodeverk> getEmbeter() {
+    public List<Kodeverk> getEmbeter() {
         return embeterKodeverkListe;
     }
 }

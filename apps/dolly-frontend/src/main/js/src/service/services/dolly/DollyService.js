@@ -174,7 +174,7 @@ export default {
 
 	//* Organisasjoner
 	getOrganisasjonsnummerByUserId(userId) {
-		return Request.get(Endpoints.organisasonStatusByUser(userId))
+		return Request.get(Endpoints.organisasjonStatusByUser(userId))
 	},
 
 	createOrganisasjonBestilling(data) {
@@ -182,7 +182,7 @@ export default {
 	},
 
 	getOrganisasjonBestillingStatus(bestillingId) {
-		return Request.get(Endpoints.organisasonStatusByBestillingId(bestillingId))
+		return Request.get(Endpoints.organisasjonStatusByBestillingId(bestillingId))
 	},
 
 	gjenopprettOrganisasjonBestilling(bestillingId, envs) {

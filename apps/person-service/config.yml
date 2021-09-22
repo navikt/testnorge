@@ -25,6 +25,8 @@ spec:
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
+        - application: testnorge-skd
+          cluster: dev-fss
     outbound:
       external:
         - host: tps-forvalteren-proxy.dev-fss-pub.nais.io

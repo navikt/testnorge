@@ -28,7 +28,7 @@ public class PostAdresseCommand implements Callable<HendelseDTO> {
     public HendelseDTO call() {
         AdresseDTO body = new AdresseDTO(person, kilde);
         return webClient.post()
-                .uri("/api/v1/bestilling/bostedsadresse")
+                .uri("/pdl-testdata/api/v1/bestilling/bostedsadresse")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(PdlHeaders.NAV_PERSONIDENT, person.getIdent())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)

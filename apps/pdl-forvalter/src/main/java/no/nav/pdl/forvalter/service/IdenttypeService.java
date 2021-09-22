@@ -105,7 +105,6 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
         for (var type : person.getNyident()) {
 
             if (isTrue(type.getIsNew())) {
-                validate(type);
 
                 ident = handle(type, person);
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");

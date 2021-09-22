@@ -18,6 +18,7 @@ spring:
         format_sql: true
         default-schema: public
     show-sql: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
   cloud:
     vault:
       host: vault.adeo.no

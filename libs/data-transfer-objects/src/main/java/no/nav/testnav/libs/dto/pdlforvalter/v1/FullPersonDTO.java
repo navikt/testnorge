@@ -1,5 +1,6 @@
 package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,12 +16,15 @@ import static java.util.Objects.isNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class FullPersonDTO {
 
     private Long id;
     private PersonDTO person;
     private List<RelasjonDTO> relasjoner;
     private LocalDateTime sistOppdatert;
+
+    private PersonIDDTO identitet;
 
     public List<RelasjonDTO> getRelasjoner() {
         if (isNull(relasjoner)) {
@@ -40,5 +44,18 @@ public class FullPersonDTO {
         private LocalDateTime sistOppdatert;
         private RelasjonType relasjonType;
         private PersonDTO relatertPerson;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    public static class PersonIDDTO {
+
+        private String ident;
+        private String fornavn;
+        private String mellomnavn;
+        private String etternavn;
     }
 }
