@@ -69,7 +69,7 @@
         <!--suppress UnresolvedMavenProperty Ligger som secret i github-->
         <sonar.login>${SONAR_LOGIN}</sonar.login>
         <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
-        <springdoc-openapi.version>1.4.7</springdoc-openapi.version>
+        <springdoc-openapi.version>1.5.10</springdoc-openapi.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -79,6 +79,7 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
+            <version>1.18.20</version>
         </dependency>
 
         <dependency>
@@ -117,6 +118,12 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>no.nav.testnav.libs</groupId>
+                <artifactId>data-transfer-objects</artifactId>
+                <version>2021.09.22-08.24-387e68c824fa</version>
+            </dependency>
+
             <dependency>
                 <groupId>net.logstash.logback</groupId>
                 <artifactId>logstash-logback-encoder</artifactId>

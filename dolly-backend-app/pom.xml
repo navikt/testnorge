@@ -12,12 +12,6 @@
     <artifactId>dolly-backend-app</artifactId>
 
     <dependencies>
-        <!-- Testnorge -->
-        <dependency>
-            <groupId>no.nav.registre.testnorge.libs</groupId>
-            <artifactId>testnorge-data-transfer-objects</artifactId>
-            <version>2021.06.03-12.05-0590662d7994</version>
-        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -151,10 +145,8 @@
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
         <dependency>
-            <groupId>no.nav.registre.testnorge.libs</groupId>
-            <artifactId>testnorge-data-transfer-objects</artifactId>
-            <version>2021.07.02-10.26-2f84a9ae5eef</version>
-            <scope>compile</scope>
+            <groupId>no.nav.testnav.libs</groupId>
+            <artifactId>data-transfer-objects</artifactId>
         </dependency>
     </dependencies>
 

@@ -8,7 +8,8 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -32,13 +33,20 @@ public class PdlDataClient implements ClientRegister {
         try {
             if (nonNull(bestilling.getPdldata())) {
                 pdlDataConsumer.oppdaterPdl(dollyPerson.getHovedperson(),
-                        PersonUpdateRequestDTO.builder()
-                                .person(bestilling.getPdldata())
-                                .build())
+                                PersonUpdateRequestDTO.builder()
+                                        .person(bestilling.getPdldata())
+                                        .build())
                         .block();
             }
 
-            progress.setPdlDataStatus(pdlDataConsumer.sendOrdre(dollyPerson.getHovedperson()).block());
+            var ordreResultat = pdlDataConsumer.sendOrdre(
+                            OrdreRequestDTO.builder()
+                                    .identer(List.of(dollyPerson.getHovedperson()))
+                                    .build())
+                    .collectList()
+                    .block();
+
+            progress.setPdlDataStatus(ordreResultat.stream().findFirst().orElse("Feil: Ukjent ordrestatus"));
 
         } catch (JsonProcessingException e) {
 

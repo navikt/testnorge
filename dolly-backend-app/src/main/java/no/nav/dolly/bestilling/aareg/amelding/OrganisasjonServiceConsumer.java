@@ -5,7 +5,7 @@ import no.nav.dolly.config.credentials.OrganisasjonServiceProperties;
 import no.nav.dolly.security.oauth2.config.NaisServerProperties;
 import no.nav.dolly.security.oauth2.domain.AccessToken;
 import no.nav.dolly.security.oauth2.service.TokenService;
-import no.nav.registre.testnorge.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 

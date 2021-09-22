@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.registre.testnorge.libs.dto.ameldingservice.v1.PersonDTO;
+import no.nav.testnav.libs.dto.ameldingservice.v1.PersonDTO;
 
 import java.util.List;
 

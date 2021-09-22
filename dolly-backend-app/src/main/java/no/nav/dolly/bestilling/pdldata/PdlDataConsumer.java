@@ -9,7 +9,8 @@ import no.nav.dolly.bestilling.pdldata.command.PdlDataSlettCommand;
 import no.nav.dolly.config.credentials.PdlDataForvalterProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.oauth2.service.TokenService;
-import no.nav.registre.testnorge.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -36,10 +37,10 @@ public class PdlDataConsumer {
     }
 
     @Timed(name = "providers", tags = {"operation", "pdl_sendOrdre"})
-    public Mono<String> sendOrdre(String ident) {
+    public Flux<String> sendOrdre(OrdreRequestDTO identer) {
 
         return tokenService.generateToken(properties)
-                .flatMap(token -> new PdlDataOrdreCommand(webClient, ident, token.getTokenValue()).call());
+                .flatMapMany(token -> new PdlDataOrdreCommand(webClient, identer, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "pdl_delete"})

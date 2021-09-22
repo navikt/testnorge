@@ -8,7 +8,7 @@ import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.oauth2.config.NaisServerProperties;
 import no.nav.dolly.security.oauth2.domain.AccessToken;
 import no.nav.dolly.security.oauth2.service.TokenService;
-import no.nav.registre.testnorge.libs.dto.ameldingservice.v1.AMeldingDTO;
+import no.nav.testnav.libs.dto.ameldingservice.v1.AMeldingDTO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
