@@ -26,7 +26,6 @@ public class KodeverkProxyApplicationStarter {
         return builder.routes()
                 .route(spec -> spec
                         .path("/**")
-                        .filters(filterSpec -> filterSpec.removeRequestHeader("Origin"))
                         .uri("https://kodeverk.dev.adeo.no/")
                 )
                 .build();
