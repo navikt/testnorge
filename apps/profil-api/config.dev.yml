@@ -6,7 +6,7 @@ metadata:
   labels:
     team: dolly
 spec:
-  image: { { image } }
+  image: {{ image }}
   tokenx:
     enabled: true
   azure:
