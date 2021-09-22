@@ -2,6 +2,7 @@ package no.nav.testnav.libs.servletsecurity.decoder;
 
 import com.nimbusds.jwt.JWTParser;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 import no.nav.testnav.libs.servletsecurity.properties.ResourceServerProperties;
 
+@Slf4j
 public class MultipleIssuersJwtDecoder implements JwtDecoder {
     private final Map<String, NimbusJwtDecoder> decoderMap;
 
@@ -37,7 +39,13 @@ public class MultipleIssuersJwtDecoder implements JwtDecoder {
     @Override
     public Jwt decode(String token) throws JwtException {
         var jwt = JWTParser.parse(token);
-        return decoderMap.get(jwt.getJWTClaimsSet().getIssuer()).decode(token);
+
+        try {
+            return decoderMap.get(jwt.getJWTClaimsSet().getIssuer()).decode(token);
+        } catch (Exception e) {
+            log.error("Ukjent feil", e);
+            throw e;
+        }
     }
 
     private OAuth2TokenValidator<Jwt> oAuth2TokenValidator(ResourceServerProperties properties) {
