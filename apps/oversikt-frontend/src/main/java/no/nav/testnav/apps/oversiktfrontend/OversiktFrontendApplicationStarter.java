@@ -48,6 +48,7 @@ public class OversiktFrontendApplicationStarter {
                 });
     }
 
+
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder

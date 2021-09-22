@@ -77,7 +77,7 @@ public class TokenXExchange implements GenerateTokenExchange {
     @Override
     public Mono<AccessToken> generateToken(ServerProperties serverProperties, ServerWebExchange exchange) {
         var scope = toScope(serverProperties);
-        log.info("Generer TokenX for {}.", scope);
+        log.info("Generer TokenX for {}...", scope);
         return tokenService
                 .getToken(exchange)
                 .flatMap(token -> fetchWellKnownConfig()
@@ -91,7 +91,7 @@ public class TokenXExchange implements GenerateTokenExchange {
                                                 .with("client_assertion", createClientAssertion(config.getTokenEndpoint()))
                                                 .with("subject_token_type", "urn:ietf:params:oauth:token-type:jwt")
                                                 .with("subject_token", token.getValue())
-                                                .with("audience", toScope(serverProperties))
+                                                .with("audience", scope)
                                         ).retrieve()
                                         .bodyToMono(AccessToken.class)
                                         .doOnError(error -> {
@@ -105,6 +105,6 @@ public class TokenXExchange implements GenerateTokenExchange {
                                             }
                                         })
                         )
-                );
+                ).doOnNext(value -> log.info("Token generert for {}.", scope));
     }
 }
