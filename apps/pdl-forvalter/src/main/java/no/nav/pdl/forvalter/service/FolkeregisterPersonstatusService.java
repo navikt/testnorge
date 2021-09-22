@@ -35,7 +35,8 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
             personstatus.setKilde(isNotBlank(personstatus.getKilde()) ? personstatus.getKilde() : "Dolly");
             personstatus.setMaster(nonNull(personstatus.getMaster()) ? personstatus.getMaster() : Master.FREG);
 
-        } else if (getPersonstatus(person) != person.getFolkeregisterpersonstatus().stream()
+        } else if (!person.getFolkeregisterpersonstatus().isEmpty() &&
+                getPersonstatus(person) != person.getFolkeregisterpersonstatus().stream()
                         .findFirst().orElse(new FolkeregisterpersonstatusDTO()).getStatus()) {
 
             person.getFolkeregisterpersonstatus().add(0,

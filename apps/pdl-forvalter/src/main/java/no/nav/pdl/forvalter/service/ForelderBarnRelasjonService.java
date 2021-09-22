@@ -108,7 +108,7 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
                     .map(sivilstand -> personRepository.findByIdent(sivilstand.getRelatertVedSivilstand()).get())
                     .findFirst().get();
 
-            partner.getPerson().getForelderBarnRelasjon().add(
+            partner.getPerson().getForelderBarnRelasjon().add(0,
                     addForelderBarnRelasjon(mapperFacade.map(relasjon, ForelderBarnRelasjonDTO.class), partner.getPerson()));
             personRepository.save(partner);
         }
