@@ -13,3 +13,7 @@ sonarqube {
         property "sonar.login", System.getenv("SONAR_TOKEN")
     }
 }
+
+task sonarqubeSyntrest {
+    dependsOn gradle.includedBuild('syntrest').task(':sonarqube')
+}
