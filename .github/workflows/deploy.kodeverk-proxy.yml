@@ -1,13 +1,13 @@
-name: Deploy aktoerregister-proxy
+name: Deploy kodeverk-proxy
 
 on:
   push:
     paths:
-      - proxies/aktoerregister-proxy/**
+      - proxies/kodeverk-proxy/**
       - libs/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/aktoerregister-proxy:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/kodeverk-proxy:${{ github.sha }}
 
 jobs:
   build_and_deploy:
@@ -22,18 +22,18 @@ jobs:
             ~/.gradle
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
-            ${{ runner.os }}-gradle-aktoerregister-proxy
+            ${{ runner.os }}-gradle-kodeverk-proxy
       - uses: actions/setup-java@v1
         with:
           java-version: '11.x'
       - name: Compile
-        working-directory: proxies/aktoerregister-proxy/
+        working-directory: proxies/kodeverk-proxy/
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
         run: ./gradlew build
       - name: Build and publish Docker image
-        working-directory: proxies/aktoerregister-proxy/
+        working-directory: proxies/kodeverk-proxy/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -46,4 +46,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: proxies/aktoerregister-proxy/config.yml
+          RESOURCE: proxies/kodeverk-proxy/config.yml

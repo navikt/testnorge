@@ -1,14 +1,11 @@
 ﻿apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: aktoerregister-proxy
+  name: testnav-kodeverk-proxy
   namespace: dolly
   labels:
     team: dolly
 spec:
-  env:
-    - name: PROXY_URL
-      value: https://app-q2.dev.adeo.no
   image: {{image}}
   port: 8080
   webproxy: true
@@ -60,5 +57,5 @@ spec:
       cpu: 500m
       memory: 2048Mi
   ingresses:
-    - "https://aktoerregister-proxy.dev-fss-pub.nais.io"
-    - "https://aktoerregister-proxy.dev.intern.nav.no"
+    - "https://testnav-kodeverk-proxy.dev-fss-pub.nais.io"
+    - "https://testnav-kodeverk-proxy.dev.intern.nav.no"

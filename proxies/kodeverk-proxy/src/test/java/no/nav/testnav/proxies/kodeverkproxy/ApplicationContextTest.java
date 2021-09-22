@@ -1,4 +1,4 @@
-package no.nav.testnav.proxies.aktoerregisterproxy;
+package no.nav.testnav.proxies.kodeverkproxy;
 
 
 import org.junit.Test;

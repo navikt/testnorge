@@ -25,7 +25,7 @@ gradleEnterprise {
 }
 
 includeBuild './proxies/aareg-proxy'
-includeBuild './proxies/aktoerregister-proxy'
+includeBuild './proxies/kodeverk-proxy'
 includeBuild './proxies/batch-adeo-proxy'
 includeBuild './proxies/ident-pool-proxy'
 includeBuild './proxies/saf-proxy'

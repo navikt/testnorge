@@ -2,8 +2,8 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 
 spring:
   application:
-    name: aktoerregister-proxy
-    desciption: Proxy for aktoerregister som legger på sikkerhet.
+    name: testnav-kodeverk-proxy
+    description: Proxy for kodeverk som legger på sikkerhet.
   security:
     oauth2:
       resourceserver:
@@ -15,5 +15,3 @@ spring:
     gateway:
       httpclient:
         response-timeout: 30s
-
-proxy.url: ${PROXY_URL}
