@@ -80,7 +80,6 @@ public class EksisterendeIdenterServiceTest {
     private final String fnr2 = "02020202020";
     private final String fnr3 = "03030303030";
     private final String fnr4 = "04040404040";
-    private final String fnr5 = "05050505050";
 
     @Before
     public void setUp() {
@@ -198,6 +197,7 @@ public class EksisterendeIdenterServiceTest {
         // fnr2 er feilregistrert i TPS til ugift sivilstand.
         statusQuo = new HashMap<>();
         statusQuo.put(SIVILSTAND, KoderForSivilstand.UGIFT.getSivilstandKodeSKD());
+        String fnr5 = "05050505050";
         statusQuo.put(FNR_RELASJON, fnr5);
         when(hodejegerenConsumerSkd.getStatusQuoTilhoerendeEndringskode(anyString(), eq(environment), eq(fnr2))).thenReturn(statusQuo);
 
@@ -210,7 +210,8 @@ public class EksisterendeIdenterServiceTest {
         statusQuo.put(SIVILSTAND, GIFT.getSivilstandKodeSKD());
         statusQuo.put(FNR_RELASJON, fnr4);
         when(hodejegerenConsumerSkd.getStatusQuoTilhoerendeEndringskode(anyString(), eq(environment), eq(fnr3))).thenReturn(statusQuo);
-        return new ArrayList(Arrays.asList(fnr1, fnr2, fnr3, fnr4));
+
+        return new ArrayList<>(Arrays.asList(fnr1, fnr2, fnr3, fnr4));
     }
 
     /**

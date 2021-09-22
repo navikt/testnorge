@@ -3,7 +3,6 @@ package no.nav.registre.skd.consumer;
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -13,13 +12,14 @@ import no.nav.registre.skd.consumer.command.GetSyntSkdMeldingerCommand;
 import no.nav.registre.skd.consumer.credential.SyntTpsGcpProperties;
 import no.nav.registre.skd.skdmelding.RsMeldingstype;
 import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
 
 @Component
 @Slf4j
 public class SyntTpsConsumer {
 
     private final AccessTokenService tokenService;
-    private final SyntTpsGcpProperties serviceProperties;
+    private final ServerProperties serviceProperties;
     private final WebClient webClient;
 
     public SyntTpsConsumer(

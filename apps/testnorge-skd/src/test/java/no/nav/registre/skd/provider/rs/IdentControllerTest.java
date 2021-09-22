@@ -23,12 +23,12 @@ public class IdentControllerTest {
     @InjectMocks
     private IdentController identController;
 
-    private final Long avspillergruppeId = 123L;
     private final List<String> miljoer = new ArrayList<>(Collections.singletonList("t1"));
 
     @Test
     public void shouldSletteIdenterFraAvspillergruppe() {
         var identer = new ArrayList<>(Collections.singletonList("01010101010"));
+        Long avspillergruppeId = 123L;
         identController.slettIdenterFraAvspillergruppe(avspillergruppeId, miljoer, identer);
         verify(identService).slettIdenterFraAvspillergruppe(avspillergruppeId, miljoer, identer);
     }

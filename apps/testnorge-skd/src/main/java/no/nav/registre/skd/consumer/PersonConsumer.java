@@ -11,13 +11,14 @@ import org.springframework.web.reactive.function.client.WebClient;
 import no.nav.registre.skd.consumer.credential.PersonServiceProperties;
 import no.nav.testnav.libs.commands.CreatePersonCommand;
 import no.nav.testnav.libs.dto.person.v1.PersonDTO;
+import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 
 @Component
 public class PersonConsumer {
     private final WebClient webClient;
     private final AccessTokenService tokenService;
-    private final PersonServiceProperties serviceProperties;
+    private final ServerProperties serviceProperties;
 
     public PersonConsumer(
             PersonServiceProperties personServiceProperties,

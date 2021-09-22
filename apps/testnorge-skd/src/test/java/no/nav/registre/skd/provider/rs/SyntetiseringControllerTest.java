@@ -33,13 +33,12 @@ public class SyntetiseringControllerTest {
 
     private final Long avspillergruppeId = 123L;
     private final String miljoe = "t1";
-    private Map<String, Integer> antallMeldingerPerEndringskode;
     private GenereringsOrdreRequest genereringsOrdreRequest;
     private List<FastMeldingRequest> fasteMeldinger;
 
     @Before
     public void setUp() {
-        antallMeldingerPerEndringskode = new HashMap<>();
+        Map<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
         genereringsOrdreRequest = new GenereringsOrdreRequest(avspillergruppeId, miljoe, antallMeldingerPerEndringskode);
         fasteMeldinger = new ArrayList<>();
     }

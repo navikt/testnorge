@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.skd.consumer.credential.SyntTpsGcpProperties;
 import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import okhttp3.mockwebserver.Dispatcher;
@@ -23,6 +24,7 @@ import java.util.Arrays;
 import no.nav.registre.skd.testutils.AssertionUtils;
 import no.nav.testnav.libs.servletsecurity.domain.AzureClientCredentials;
 
+@Slf4j
 @TestPropertySource(locations = "classpath:application-test.properties")
 @ActiveProfiles("test")
 public class SyntTpsConsumerTest {
@@ -38,8 +40,14 @@ public class SyntTpsConsumerTest {
         Dispatcher dispatcher = getSyntTpsDispatcher();
         mockWebServer.setDispatcher(dispatcher);
 
+        var creds = new SyntTpsGcpProperties();
+        creds.setUrl(mockWebServer.url("/tpssynt").toString());
+        creds.setCluster("test");
+        creds.setNamespace("test");
+        creds.setName("synthdata-tps-gcp-test");
+
         this.consumer = new SyntTpsConsumer(
-                new SyntTpsGcpProperties(),
+                creds,
                 new AccessTokenService(null, mockWebServer.url("/token").toString(), null,
                         new AzureClientCredentials("dummy", "dummy")));
 
@@ -81,11 +89,11 @@ public class SyntTpsConsumerTest {
             @Override
             public MockResponse dispatch(RecordedRequest request) {
                 switch (request.getPath()) {
-                case "/api/v1/generate/tps/0211?numToGenerate=1":
+                case "/tpssynt/api/v1/generate/tps/0211?numToGenerate=1":
                     return new MockResponse().setResponseCode(200)
                             .addHeader("Content-Type", "application/json")
                             .setBody("[null]");
-                case "/api/v1/generate/tps/0110?numToGenerate=1":
+                case "/tpssynt/api/v1/generate/tps/0110?numToGenerate=1":
                     return new MockResponse().setResponseCode(200)
                             .addHeader("Content-Type", "application/json")
                             .setBody(getResourceFileContent("__files/tpssynt/tpsSynt_NotNullFields_Response.json"));
