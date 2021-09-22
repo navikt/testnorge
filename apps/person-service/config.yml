@@ -6,7 +6,7 @@ metadata:
   labels:
     team: dolly
 spec:
-  image: {{ image }}
+  image: {{image}}
   port: 8080
   azure:
     application:
@@ -23,6 +23,10 @@ spec:
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
+        - application: dolly-backend
+          cluster: dev-fss
+        - application: dolly-backend-dev
+          cluster: dev-fss
     outbound:
       external:
         - host: tps-forvalteren-proxy.dev-fss-pub.nais.io
