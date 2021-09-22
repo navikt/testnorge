@@ -10,7 +10,7 @@ module.exports = merge(common, {
 		port: 3000,
 		contentBase: path.join(__dirname, 'public'),
 		hot: true,
-		historyApiFallback: true,
+		historyApiFallback: { index: '/', disableDotRule: true },
 		proxy: {
 			'/api': {
 				target: 'http://localhost:8080',

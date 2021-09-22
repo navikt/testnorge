@@ -1,11 +1,18 @@
-import { Api } from "@navikt/dolly-lib";
+import { Api } from '@navikt/dolly-lib'
+import { Application } from '@/services/ApplicationService'
 
-const fetchToken = (scope: string) =>
-  Api.fetchJson<{ token: string }>(
-    `/api/v1/tokens/${scope}/token/on-behalf-of`,
-    {
-      method: "GET",
-    }
-  );
+const fetchToken = (application: Application) =>
+	Api.fetchJson<{ token: string }>(
+		`/api/v1/token`,
+		{
+			method: 'POST',
+		},
+		application
+	)
 
-export default { fetchToken };
+const fetchMagicToken = () =>
+	Api.fetchJson<{ token: string }>(`/api/v1/token`, {
+		method: 'POST',
+	})
+
+export default { fetchToken, fetchMagicToken }

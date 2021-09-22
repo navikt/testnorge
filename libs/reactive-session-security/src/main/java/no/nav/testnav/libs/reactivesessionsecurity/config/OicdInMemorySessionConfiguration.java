@@ -52,7 +52,7 @@ public class OicdInMemorySessionConfiguration {
             AzureAdTokenExchange azureAdTokenExchange
     ) {
         var tokenExchange = new TokenExchange(clientRegistrationIdResolver);
-        tokenExchange.addExchange("aad", tokenXExchange);
+        tokenExchange.addExchange("aad", azureAdTokenExchange);
         tokenExchange.addExchange("idporten", tokenXExchange);
         return tokenExchange;
     }

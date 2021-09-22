@@ -6,18 +6,9 @@ import ApplicationService from '@/services/ApplicationService'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import MagicTokenPage from '@/pages/MagicTokenPage'
 import AccessTokenPage from '@/pages/AccessTokenPage'
-import {
-	Header,
-	HeaderLink,
-	HeaderLinkGroup,
-	LoadableComponent,
-	ProfilLoader,
-} from '@navikt/dolly-komponenter'
-
-import ProfilService from './services/ProfilService'
+import { LoadableComponent } from '@navikt/dolly-komponenter'
 import styled from 'styled-components'
 import { ScopeAccessTokenPage } from '@/pages/ScopeAccessTokenPage'
-import index from '@/pages/LoginPage'
 import LoginPage from '@/pages/LoginPage'
 
 const Body = styled.div`
@@ -41,9 +32,16 @@ export default () => {
 							onFetch={ApplicationService.fetchApplications}
 							render={(items) => (
 								<AccessTokenPage
-									navigations={items.map((item: string) => ({
-										href: '/access-token/' + item,
-										label: item,
+									navigations={items.map((application) => ({
+										href:
+											'/access-token/' +
+											application.cluster +
+											'.' +
+											application.namespace +
+											'.' +
+											application.name,
+										label: application.name,
+										content: application,
 									}))}
 								/>
 							)}

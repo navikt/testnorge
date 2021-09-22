@@ -251,5 +251,5 @@ project(':joark-dokument-service').projectDir = file('apps/joark-dokument-servic
 include 'person-faste-data-service'
 project(':person-faste-data-service').projectDir = file('apps/person-faste-data-service')
 
-include(':brreg-stub')
-project(":brreg-stub").projectDir = file('apps/brreg-stub')
+//include(':brreg-stub')
+//project(":brreg-stub").projectDir = file('apps/brreg-stub')

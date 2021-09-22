@@ -15,7 +15,7 @@ import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenXExchange;
 import no.nav.testnav.libs.reactivesecurity.manager.JwtReactiveAuthenticationManager;
 import no.nav.testnav.libs.reactivesecurity.properties.AzureAdResourceServerProperties;
-import no.nav.testnav.libs.reactivesecurity.properties.IdportenResourceServerProperties;
+import no.nav.testnav.libs.reactivesecurity.properties.TokenxResourceServerProperties;
 import no.nav.testnav.libs.reactivesecurity.properties.ResourceServerProperties;
 import no.nav.testnav.libs.reactivesecurity.service.AuthenticationTokenResolver;
 import no.nav.testnav.libs.reactivesecurity.service.SecureJwtAuthenticationTokenResolver;
@@ -26,7 +26,7 @@ import no.nav.testnav.libs.reactivesecurity.service.SecureJwtAuthenticationToken
         AzureClientCredentials.class,
         AzureAdTokenExchange.class,
         TokenXExchange.class,
-        IdportenResourceServerProperties.class,
+        TokenxResourceServerProperties.class,
         AzureAdResourceServerProperties.class,
         TokenX.class
 })

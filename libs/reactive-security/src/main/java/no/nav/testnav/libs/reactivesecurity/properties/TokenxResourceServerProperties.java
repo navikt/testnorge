@@ -6,8 +6,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "spring.security.oauth2.resourceserver.idporten")
-@ConditionalOnProperty("spring.security.oauth2.resourceserver.idporten.issuer-uri")
-public class IdportenResourceServerProperties extends ResourceServerProperties {
+@ConfigurationProperties(prefix = "spring.security.oauth2.resourceserver.tokenx")
+@ConditionalOnProperty("spring.security.oauth2.resourceserver.tokenx.issuer-uri")
+public class TokenxResourceServerProperties extends ResourceServerProperties {
 
 }
