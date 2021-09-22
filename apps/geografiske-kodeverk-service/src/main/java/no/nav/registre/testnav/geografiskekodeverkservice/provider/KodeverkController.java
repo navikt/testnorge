@@ -1,6 +1,5 @@
 package no.nav.registre.testnav.geografiskekodeverkservice.provider;
 
-import lombok.RequiredArgsConstructor;
 import no.nav.registre.testnav.geografiskekodeverkservice.domain.Kodeverk;
 import no.nav.registre.testnav.geografiskekodeverkservice.service.KodeverkService;
 import org.springframework.http.CacheControl;
@@ -31,7 +30,7 @@ public class KodeverkController {
     @GetMapping(value = "/kommuner")
     public ResponseEntity<List<Kodeverk>> getKommuner(
             @RequestParam(required = false) @Pattern(regexp = "[0-9]{4}", message = "Kommunenummer må være fire sifre") String kommunenr,
-            @RequestParam(required = false) @Pattern(regexp = "[ÆØÅA-Z]{1}[æøåa-z]*", message = "Kommunenavn må være et ord med stor forbokstav") String kommunenavn
+            @RequestParam(required = false) @Pattern(regexp = "\\D+", message = "Kommunenavn må ikke være alfanumerisk") String kommunenavn
     ) {
         return ResponseEntity
                 .ok()
@@ -42,7 +41,7 @@ public class KodeverkController {
     @GetMapping(value = "/land")
     public ResponseEntity<List<Kodeverk>> getLand(
             @RequestParam(required = false) @Pattern(regexp = "[A-Z]{3}", message = "Landkode må være tre store bokstaver") String landkode,
-            @RequestParam(required = false) @Pattern(regexp = "[-()/._ ÆØÅA-Z]+", message = "Land må være et ord med store bokstaver") String land
+            @RequestParam(required = false) @Pattern(regexp = "\\D+", message = "Land må ikke være alfanumerisk") String land
     ) {
         return ResponseEntity
                 .ok()
@@ -52,14 +51,13 @@ public class KodeverkController {
 
     @GetMapping(value = "/postnummer")
     public ResponseEntity<List<Kodeverk>> getPostnummer(
-            @RequestParam(required = false) @Pattern(regexp = "[ÆØÅA-Z]+", message = "Poststed må være et ord med store bokstaver") String poststed,
-            @RequestParam(required = false) @Pattern(regexp = "[0-9]{4}", message = "Postnummer må være fire sifre") String postnummer
-            ) {
+            @RequestParam(required = false) @Pattern(regexp = "[0-9]{4}", message = "Postnummer må være fire sifre") String postnummer,
+            @RequestParam(required = false) @Pattern(regexp = "\\D+", message = "Poststed må ikke være alfanumerisk") String poststed
+    ) {
         return ResponseEntity
                 .ok()
                 .cacheControl(cacheControl)
-                .body(kodeverkService.getPostnummer(poststed, postnummer));
-
+                .body(kodeverkService.getPostnummer(postnummer, poststed));
     }
 
     @GetMapping(value = "/embeter")

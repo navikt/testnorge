@@ -128,6 +128,21 @@ class KodeverkControllerTest {
     }
 
     @Test
+    void should_return_myanmar_when_land_is_myanmar() throws Exception {
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.get("/api/v1/land")
+                        .queryParam("land", "MYANMAR (BURMA)")
+                ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        List<Kodeverk> kodeverk = readResponse(result);
+
+        Assertions.assertIterableEquals(
+                Collections.singletonList(Kodeverk.builder().kode("MMR").navn("MYANMAR (BURMA)").build()),
+                kodeverk
+        );
+    }
+
+    @Test
     void should_return_davik_when_poststed_is_davik() throws Exception {
         MvcResult result = mvc.perform(MockMvcRequestBuilders.get("/api/v1/postnummer")
                         .queryParam("poststed", "DAVIK")

@@ -46,32 +46,26 @@ public class KodeverkService {
     }
 
     public List<Kodeverk> getKommuner(String kommunenr, String kommunenavn) {
-        boolean toParametre = StringUtils.isNotBlank(kommunenr) && StringUtils.isNotBlank(kommunenavn);
         return kommunerKodeverkListe
                 .stream()
-                .filter(kodeverk -> (StringUtils.isBlank(kommunenr) && StringUtils.isBlank(kommunenavn)) ||
-                        (toParametre ? kodeverk.getKode().equals(kommunenr) && kodeverk.getNavn().equals(kommunenavn) :
-                                kodeverk.getKode().equals(kommunenr) || kodeverk.getNavn().equals(kommunenavn)))
+                .filter(kodeverk -> StringUtils.isBlank(kommunenr) || kommunenr.equals(kodeverk.getKode()))
+                .filter(kodeverk -> StringUtils.isBlank(kommunenavn) || kommunenavn.equalsIgnoreCase(kodeverk.getNavn()))
                 .collect(Collectors.toList());
     }
 
     public List<Kodeverk> getLand(String landkode, String land) {
-        boolean toParametre = StringUtils.isNotBlank(landkode) && StringUtils.isNotBlank(land);
         return landKodeverkListe
                 .stream()
-                .filter(kodeverk -> (StringUtils.isBlank(landkode) && StringUtils.isBlank(land)) ||
-                        (toParametre ? kodeverk.getKode().equals(landkode) && kodeverk.getNavn().equals(land) :
-                                kodeverk.getKode().equals(landkode) || kodeverk.getNavn().equals(land)))
+                .filter(kodeverk -> StringUtils.isBlank(landkode) || landkode.equals(kodeverk.getKode()))
+                .filter(kodeverk -> StringUtils.isBlank(land) || land.equalsIgnoreCase(kodeverk.getNavn()))
                 .collect(Collectors.toList());
     }
 
-    public List<Kodeverk> getPostnummer(String poststed, String postnummer) {
-        boolean toParametre = StringUtils.isNotBlank(poststed) && StringUtils.isNotBlank(postnummer);
+    public List<Kodeverk> getPostnummer(String postnummer, String poststed) {
         return postnummerKodeverkListe
                 .stream()
-                .filter(kodeverk -> (StringUtils.isBlank(poststed) && StringUtils.isBlank(postnummer)) ||
-                        (toParametre ? kodeverk.getNavn().equals(poststed) && kodeverk.getKode().equals(postnummer) :
-                                kodeverk.getNavn().equals(poststed) || kodeverk.getKode().equals(postnummer)))
+                .filter(kodeverk -> StringUtils.isBlank(postnummer) || postnummer.equals(kodeverk.getKode()))
+                .filter(kodeverk -> StringUtils.isBlank(poststed) || poststed.equalsIgnoreCase(kodeverk.getNavn()))
                 .collect(Collectors.toList());
     }
 
