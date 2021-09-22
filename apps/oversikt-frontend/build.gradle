@@ -28,7 +28,6 @@ repositories {
     mavenLocal()
 }
 
-
 dependencies {
     implementation 'no.nav.testnav.libs:reactive-core'
     implementation 'no.nav.testnav.libs:reactive-session-security'
