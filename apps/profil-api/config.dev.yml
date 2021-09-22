@@ -6,7 +6,7 @@ metadata:
   labels:
     team: dolly
 spec:
-  image: {{ image }}
+  image: { { image } }
   tokenx:
     enabled: true
   azure:
@@ -33,6 +33,9 @@ spec:
           cluster: dev-gcp
         - application: testnav-faste-data-frontend
           cluster: dev-gcp
+        - application: app-1
+          cluster: dev-gcp
+          namespace: plattformsikkerhet
   liveness:
     path: /internal/isAlive
     initialDelay: 4
