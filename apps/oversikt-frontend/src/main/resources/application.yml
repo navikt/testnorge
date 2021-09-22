@@ -25,7 +25,6 @@ spring:
             jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           idporten:
             issuer-uri: https://oidc-ver2.difi.no/idporten-oidc-provider/
-
 consumers:
   testnorge-profil-api:
     cluster: dev-gcp

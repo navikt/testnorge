@@ -44,7 +44,7 @@ public class TokenXExchange implements GenerateTokenExchange {
                         value -> Duration.ofDays(1),
                         value -> Duration.ZERO,
                         () -> Duration.ZERO
-                );
+                ).doOnNext(value -> log.info("Well known config {}.", value));
     }
 
 
