@@ -89,11 +89,11 @@ public class SyntTpsConsumerTest {
             @Override
             public MockResponse dispatch(RecordedRequest request) {
                 switch (request.getPath()) {
-                case "/tpssynt/api/v1/generate/tps/0211?numToGenerate=1":
+                case "/tpssynt/api/v1/generate/tps/0211?antall=1":
                     return new MockResponse().setResponseCode(200)
                             .addHeader("Content-Type", "application/json")
                             .setBody("[null]");
-                case "/tpssynt/api/v1/generate/tps/0110?numToGenerate=1":
+                case "/tpssynt/api/v1/generate/tps/0110?antall=1":
                     return new MockResponse().setResponseCode(200)
                             .addHeader("Content-Type", "application/json")
                             .setBody(getResourceFileContent("__files/tpssynt/tpsSynt_NotNullFields_Response.json"));
