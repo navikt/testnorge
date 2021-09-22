@@ -2,6 +2,7 @@ package no.nav.testnav.apps.personservice.adapter;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.personservice.consumer.PdlApiConsumer;
+import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.PdlAktoer.AktoerIdent;
 import no.nav.testnav.apps.personservice.domain.Person;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
@@ -19,7 +20,7 @@ public class PdlPersonAdapter implements PersonAdapter {
         return pdlApiConsumer.getPerson(ident);
     }
 
-    public Mono<Optional<Object>> getAktoer(String ident) {
+    public Mono<Optional<AktoerIdent>> getAktoer(String ident) {
         return pdlApiConsumer.getAktoer(ident);
     }
 }

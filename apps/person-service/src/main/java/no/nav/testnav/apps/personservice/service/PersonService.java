@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.personservice.adapter.PdlPersonAdapter;
 import no.nav.testnav.apps.personservice.adapter.TpsPersonAdapter;
+import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.PdlAktoer.AktoerIdent;
 import no.nav.testnav.apps.personservice.domain.Person;
 import no.nav.testnav.libs.dto.personservice.v1.Persondatasystem;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ public class PersonService {
         }
     }
 
-    public Mono<Optional<Object>> getAktoerId(String ident) {
+    public Mono<Optional<AktoerIdent>> getAktoerId(String ident) {
         return pdlPersonAdapter.getAktoer(ident);
     }
 }

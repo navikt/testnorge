@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.personservice.consumer.command.GetPdlAktoerCommand;
 import no.nav.testnav.apps.personservice.consumer.command.GetPdlPersonCommand;
+import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.PdlAktoer.AktoerIdent;
 import no.nav.testnav.apps.personservice.credentials.PdlServiceProperties;
 import no.nav.testnav.apps.personservice.domain.Person;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
@@ -60,11 +61,17 @@ public class PdlApiConsumer {
                 });
     }
 
-    public Mono<Optional<Object>> getAktoer(String ident) {
+    public Mono<Optional<AktoerIdent>> getAktoer(String ident) {
         log.info("Henter ident {} fra PDL", ident);
         return tokenExchange
                 .generateToken(serviceProperties)
                 .flatMap(token -> new GetPdlAktoerCommand(webClient, ident, token.getTokenValue()).call())
-                .map(Optional::of);
+                .map(pdlAktoer -> {
+                    if (pdlAktoer.getErrors().stream().anyMatch(value -> value.getMessage().equals("Fant ikke person"))) {
+                        return Optional.empty();
+                    }
+                    return Optional.of(pdlAktoer.getData().getHentIdenter().getIdenter().get(0));
+                });
+
     }
 }

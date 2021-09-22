@@ -2,6 +2,7 @@ package no.nav.testnav.apps.personservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.PdlAktoer;
 import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.Request;
 import no.nav.testnav.apps.personservice.consumer.header.PdlHeaders;
 import org.springframework.http.MediaType;
@@ -24,7 +25,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
 @RequiredArgsConstructor
-public class GetPdlAktoerCommand implements Callable<Mono<Object>> {
+public class GetPdlAktoerCommand implements Callable<Mono<PdlAktoer>> {
     private static final String TEMA_GENERELL = "GEN";
 
     private final WebClient webClient;
@@ -32,7 +33,7 @@ public class GetPdlAktoerCommand implements Callable<Mono<Object>> {
     private final String token;
 
     @Override
-    public Mono<Object> call() {
+    public Mono<PdlAktoer> call() {
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("ident", ident);
@@ -63,16 +64,16 @@ public class GetPdlAktoerCommand implements Callable<Mono<Object>> {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(graphQLRequest))
                 .retrieve()
-                .bodyToMono(Object.class)
+                .bodyToMono(PdlAktoer.class)
                 .doOnError(error -> {
                     if (error instanceof WebClientResponseException) {
                         log.error(
-                                "Feil ved person fra pdl. Feilmelding: {}.",
+                                "Feil ved henting av aktoer fra pdl. Feilmelding: {}.",
                                 ((WebClientResponseException) error).getResponseBodyAsString(),
                                 error
                         );
                     } else {
-                        log.error("Feil ved person fra pdl.", error);
+                        log.error("Feil ved henting av aktoer fra pdl.", error);
                     }
                 });
     }

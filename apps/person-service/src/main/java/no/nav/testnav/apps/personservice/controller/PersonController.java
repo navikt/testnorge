@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.personservice.controller;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.PdlAktoer.AktoerIdent;
 import no.nav.testnav.apps.personservice.service.PersonService;
 import no.nav.testnav.libs.dto.personservice.v1.Persondatasystem;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +40,7 @@ public class PersonController {
     }
 
     @GetMapping("/{ident}/aktoerId")
-    public Mono<Optional<Object>> getAktoerId(
+    public Mono<Optional<AktoerIdent>> getAktoerId(
             @PathVariable("ident") @Size(min = 11, max = 11, message = "Ident må ha 11 siffer") String ident
     ) {
 
