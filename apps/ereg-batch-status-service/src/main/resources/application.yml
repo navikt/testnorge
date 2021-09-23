@@ -7,7 +7,17 @@ spring:
     name: ereg-batch-status-service
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     description: Tjeneste for å hente ut batch status fra EREG.
-
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+        tokenx:
+          issuer-uri: https://tokendings.dev-gcp.nais.io
+          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          accepted-audience: dev-fss:dolly:ereg-batch-status-service
 ereg:
   envHostMap:
     q0: https://modapp-q0.adeo.no

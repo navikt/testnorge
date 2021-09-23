@@ -30,6 +30,8 @@ spec:
     outbound:
       rules:
         - application: oppsummeringsdokument-service
+  tokenx:
+    enabled: true
   azure:
     application:
       enabled: true

@@ -6,9 +6,14 @@ spring:
   security:
     oauth2:
       resourceserver:
-        jwt:
+        aad:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          accepted-audience: ${client_id}, api://${client_secret}
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+        tokenx:
+          issuer-uri: https://tokendings.dev-gcp.nais.io
+          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          accepted-audience: dev-fss:dolly:tps-identer-vedlikehold
   flyway:
     enabled: false
 

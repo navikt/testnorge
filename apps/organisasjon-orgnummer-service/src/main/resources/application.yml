@@ -4,7 +4,17 @@ spring:
   application:
     name: organisasjon-orgnummer-service
     description: Genererer gyldige organisasjonsnummer. Sjekker at det ikke finnes i q1.
-
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+        tokenx:
+          issuer-uri: https://tokendings.dev-gcp.nais.io
+          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          accepted-audience: dev-gcp:dolly:organisasjon-orgnummer-service
 
 consumers:
   testnav-organisasjon-service:

@@ -4,12 +4,6 @@ spring:
     hikari:
       maximum-pool-size: 3
       minimum-idle: 0
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
   flyway:
     locations: classpath:db/migration
     enabled: true

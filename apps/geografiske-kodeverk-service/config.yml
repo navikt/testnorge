@@ -19,6 +19,8 @@ spec:
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
+  tokenx:
+    enabled: true
   azure:
     application:
       enabled: true
