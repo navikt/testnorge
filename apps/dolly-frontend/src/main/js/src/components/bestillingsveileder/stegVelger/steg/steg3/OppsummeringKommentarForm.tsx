@@ -1,18 +1,16 @@
 import React from 'react'
 import { TextEditor } from '~/components/ui/form/inputs/textEditor/TextEditor'
-import { FormikBag } from 'formik'
+import _get from 'lodash/get'
 
-export const OppsummeringKommentarForm = (formikBag: FormikBag<any, any>) => {
+export const OppsummeringKommentarForm = ({ formikBag }) => {
+	const eksisterendeBeskrivelse = _get(formikBag.values, 'beskrivelse')
 	return (
 		<div className="input-oppsummering">
 			<h2>Send med kommentar</h2>
 			<TextEditor
 				text={null}
-				handleSubmit={(value) => {
-					console.log('value: ', value) //TODO - SLETT MEG
-					formikBag.setFieldValue('beskrivelse', value)
-				}}
-				placeholder="Skriv inn kommentar"
+				handleSubmit={(value) => formikBag.setFieldValue('beskrivelse', value)}
+				placeholder={eksisterendeBeskrivelse ? eksisterendeBeskrivelse : 'Skriv inn kommentar'}
 			/>
 		</div>
 	)
