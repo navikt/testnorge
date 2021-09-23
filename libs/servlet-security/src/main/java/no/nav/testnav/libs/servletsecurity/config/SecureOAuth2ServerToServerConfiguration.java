@@ -1,5 +1,6 @@
 package no.nav.testnav.libs.servletsecurity.config;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -30,6 +31,7 @@ import no.nav.testnav.libs.servletsecurity.service.SecureJwtAuthenticationTokenR
 public class SecureOAuth2ServerToServerConfiguration {
 
     @Bean
+    @ConditionalOnMissingBean
     public JwtDecoder jwtDecoder(List<ResourceServerProperties> properties) {
         return new MultipleIssuersJwtDecoder(properties);
     }

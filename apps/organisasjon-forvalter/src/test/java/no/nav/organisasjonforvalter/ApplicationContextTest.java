@@ -2,7 +2,9 @@ package no.nav.organisasjonforvalter;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -10,6 +12,8 @@ import org.springframework.test.context.TestPropertySource;
 @TestPropertySource(locations = "classpath:application-test.properties")
 public class ApplicationContextTest {
 
+    @MockBean
+    public JwtDecoder jwtDecoder;
     /**
      * Used to test app runtime dependency and properties
      */
