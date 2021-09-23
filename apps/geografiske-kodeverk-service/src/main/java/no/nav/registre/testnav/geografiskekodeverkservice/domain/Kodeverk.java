@@ -4,12 +4,10 @@ import lombok.*;
 
 import java.util.Map;
 
-//@Getter
-//@Setter
 @Value
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
-//@Builder
+@Builder
 public class Kodeverk {
 
     public Kodeverk(Map.Entry<Object, Object> entry) {

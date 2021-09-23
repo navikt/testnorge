@@ -27,7 +27,7 @@ public class PostNavnCommand implements Callable<HendelseDTO> {
     public HendelseDTO call() {
         NavnDTO body = new NavnDTO(person, kilde);
         return webClient.post()
-                .uri("/api/v1/bestilling/navn")
+                .uri("/pdl-testdata/api/v1/bestilling/navn")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(PdlHeaders.NAV_PERSONIDENT, person.getIdent())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)

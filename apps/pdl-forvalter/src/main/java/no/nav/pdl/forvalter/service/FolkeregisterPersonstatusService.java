@@ -2,24 +2,22 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DoedsfallDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility.getIdenttype;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.BOSATT;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.DOED;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.FOEDSELSREGISTRERT;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.IKKE_BOSATT;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.MIDLERTIDIG;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.UTFLYTTET;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FNR;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -29,49 +27,73 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
 
     public List<FolkeregisterpersonstatusDTO> convert(PersonDTO person) {
 
-        for (var type : person.getFolkeregisterpersonstatus()) {
+        if (person.getFolkeregisterpersonstatus().stream()
+                .anyMatch(personstatus -> isTrue(personstatus.getIsNew()))) {
 
-            if (isTrue(type.getIsNew())) {
+            var personstatus = person.getFolkeregisterpersonstatus().stream().findFirst().get();
+            personstatus.setStatus(getPersonstatus(person));
+            personstatus.setKilde(isNotBlank(personstatus.getKilde()) ? personstatus.getKilde() : "Dolly");
+            personstatus.setMaster(nonNull(personstatus.getMaster()) ? personstatus.getMaster() : Master.FREG);
 
-                handle(type,
-                        person.getBostedsadresse().stream().findFirst().orElse(null),
-                        person.getUtflytting().stream().findFirst().orElse(null),
-                        person.getOpphold().stream().findFirst().orElse(null),
-                        person.getDoedsfall().stream().findFirst().orElse(null));
-                type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
-                type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : DbVersjonDTO.Master.FREG);
-            }
+        } else if (!person.getFolkeregisterpersonstatus().isEmpty() &&
+                getPersonstatus(person) != person.getFolkeregisterpersonstatus().stream()
+                        .findFirst().orElse(new FolkeregisterpersonstatusDTO()).getStatus()) {
+
+            person.getFolkeregisterpersonstatus().add(0,
+                    FolkeregisterpersonstatusDTO.builder()
+                            .status(getPersonstatus(person))
+                            .id(person.getFolkeregisterpersonstatus().stream()
+                                    .map(FolkeregisterpersonstatusDTO::getId)
+                                    .findFirst().orElse(0) + 1)
+                            .kilde("Dolly")
+                            .master(Master.FREG)
+                            .build());
         }
+
         return person.getFolkeregisterpersonstatus();
     }
 
-    private void handle(FolkeregisterpersonstatusDTO status,
-                        BostedadresseDTO bostedadresse,
-                        UtflyttingDTO utflytting,
-                        OppholdDTO opphold,
-                        DoedsfallDTO doedsfall) {
+    private FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus getPersonstatus(PersonDTO person) {
 
-        if (isNull(status.getStatus())) {
+        if (person.getFolkeregisterpersonstatus()
+                .stream().anyMatch(status -> isTrue(status.getIsNew()) && nonNull(status.getStatus()))) {
 
-            if (nonNull(doedsfall)) {
-                status.setStatus(DOED);
+            return person.getFolkeregisterpersonstatus().stream()
+                    .filter(status -> isTrue(status.getIsNew()))
+                    .map(FolkeregisterpersonstatusDTO::getStatus)
+                    .findFirst().get();
 
-            } else if (nonNull(utflytting)) {
-                status.setStatus(UTFLYTTET);
+        } else if (!person.getDoedsfall().isEmpty()) {
 
-            } else if (nonNull(opphold)) {
-                status.setStatus(MIDLERTIDIG);
+            return DOED;
 
-            } else if (nonNull(bostedadresse) &&
-                    (nonNull(bostedadresse.getVegadresse()) || nonNull(bostedadresse.getMatrikkeladresse()))) {
-                status.setStatus(BOSATT);
+        } else if (!person.getUtflytting().isEmpty() && person.getInnflytting().isEmpty() ||
+                !person.getUtflytting().isEmpty() && !person.getInnflytting().isEmpty() &&
+                        person.getUtflytting().stream().findFirst().get().getUtflyttingsdato().isAfter(
+                                person.getInnflytting().stream().findFirst().get().getInnflyttingsdato())) {
 
-            } else if (nonNull(bostedadresse) && nonNull(bostedadresse.getUtenlandskAdresse())) {
-                status.setStatus(IKKE_BOSATT);
+            return UTFLYTTET;
 
-            } else {
-                status.setStatus(FOEDSELSREGISTRERT);
-            }
+        } else if (!person.getOpphold().isEmpty()) {
+
+            return MIDLERTIDIG;
+
+        } else if (!person.getBostedsadresse().isEmpty() &&
+                (person.getBostedsadresse().stream().findFirst().get().countAdresser() == 0 ||
+                        (nonNull(person.getBostedsadresse().stream().findFirst().get().getVegadresse()) ||
+                                nonNull(person.getBostedsadresse().stream().findFirst().get().getMatrikkeladresse())))) {
+
+            return BOSATT;
+
+        } else if (FNR != getIdenttype(person.getIdent()) &&
+                person.getBostedsadresse().stream().findFirst().orElse(new BostedadresseDTO()).countAdresser() == 0 ||
+                nonNull(person.getBostedsadresse().stream().findFirst().orElse(new BostedadresseDTO()).getUtenlandskAdresse())) {
+
+            return IKKE_BOSATT;
+
+        } else {
+
+            return FOEDSELSREGISTRERT;
         }
     }
 

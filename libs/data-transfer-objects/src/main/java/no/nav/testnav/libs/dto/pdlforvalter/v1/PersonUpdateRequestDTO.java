@@ -1,6 +1,5 @@
 package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,9 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PersonUpdateRequestDTO {
-
-    @JsonIgnore
-    private String ident;
 
     private PersonDTO person;
 }

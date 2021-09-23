@@ -31,7 +31,7 @@ public class StatusDTO {
             case NOT_FOUND:
                 return "Finner ikke bestilling. Loggene kan ha blitt slettet";
             case ADDING_TO_QUEUE:
-                return "Venter på at bestillingen får tildelt en position i køen";
+                return "Bestillingen venter på tildeling av plass i køen";
             case IN_QUEUE_WAITING_TO_START:
                 return "Bestillingen venter i køen";
             default:

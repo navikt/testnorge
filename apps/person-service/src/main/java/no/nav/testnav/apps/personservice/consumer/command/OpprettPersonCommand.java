@@ -20,7 +20,7 @@ public class OpprettPersonCommand implements Callable<OpprettPersonDTO> {
     @Override
     public OpprettPersonDTO call() {
         return webClient.post()
-                .uri("/api/v1/bestilling/opprettperson")
+                .uri("/pdl-testdata/api/v1/bestilling/opprettperson")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(PdlHeaders.NAV_PERSONIDENT, ident)
                 .header(PdlHeaders.KILDE, kilde)

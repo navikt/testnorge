@@ -23,7 +23,7 @@ public class OpprettFoedselCommand implements Callable<HendelseDTO> {
     @Override
     public HendelseDTO call() {
         return webClient.post()
-                .uri("/api/v1/bestilling/foedsel")
+                .uri("/pdl-testdata/api/v1/bestilling/foedsel")
                 .accept(MediaType.APPLICATION_JSON)
                 .header(PdlHeaders.NAV_PERSONIDENT, ident)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
