@@ -1,7 +1,9 @@
 package no.nav.testnav.libs.reactivesessionsecurity.exchange;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Primary;
+import no.nav.testnav.libs.reactivesessionsecurity.domain.AccessToken;
+import no.nav.testnav.libs.reactivesessionsecurity.domain.ServerProperties;
+import no.nav.testnav.libs.reactivesessionsecurity.resolver.ClientRegistrationIdResolver;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -9,10 +11,6 @@ import reactor.core.publisher.Mono;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
-
-import no.nav.testnav.libs.reactivesessionsecurity.domain.AccessToken;
-import no.nav.testnav.libs.reactivesessionsecurity.domain.ServerProperties;
-import no.nav.testnav.libs.reactivesessionsecurity.resolver.ClientRegistrationIdResolver;
 
 @Service
 @RequiredArgsConstructor

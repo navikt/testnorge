@@ -6,6 +6,7 @@ import { MiljoVelger } from '~/components/miljoVelger/MiljoVelger'
 import { MalForm } from './MalForm'
 import { BestillingInfoboks } from './BestillingInfoboks'
 import { IdentVelger } from './IdentVelger'
+import { OppsummeringKommentarForm } from '~/components/bestillingsveileder/stegVelger/steg/steg3/OppsummeringKommentarForm'
 
 export const Steg3 = ({ formikBag, erNyIdent }) => {
 	const erOrganisasjon = formikBag.values.hasOwnProperty('organisasjon')
@@ -21,6 +22,7 @@ export const Steg3 = ({ formikBag, erNyIdent }) => {
 			{!erOrganisasjon && erNyIdent && <IdentVelger formikBag={formikBag} />}
 			<MiljoVelger bestillingsdata={formikBag.values} heading="Hvilke miljøer vil du opprette i?" />
 			{!erOrganisasjon && <MalForm formikBag={formikBag} />}
+			{!erOrganisasjon && <OppsummeringKommentarForm formikBag={formikBag} />}
 		</div>
 	)
 }

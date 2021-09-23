@@ -14,7 +14,7 @@ export const MalForm = ({ formikBag }) => {
 
 	//TODO: Sjekke om malnavn allerede finnes
 	return (
-		<div className="input-mal-field">
+		<div className="input-oppsummering">
 			<div className="flexbox--align-center">
 				<h2>Lagre som mal</h2>
 				<DollyCheckbox name="lagre-mal" onChange={_toggle} label="Lagre som mal" isSwitch />
