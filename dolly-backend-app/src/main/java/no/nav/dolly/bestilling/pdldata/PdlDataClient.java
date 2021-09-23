@@ -46,7 +46,7 @@ public class PdlDataClient implements ClientRegister {
                     .collectList()
                     .block();
 
-            progress.setPdlDataStatus(ordreResultat.stream().findFirst().orElse("Feil: Ukjent ordrestatus"));
+            progress.setPdlDataStatus(ordreResultat.stream().findFirst().orElse(null));
 
         } catch (JsonProcessingException e) {
 
