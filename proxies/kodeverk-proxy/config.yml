@@ -22,16 +22,6 @@ spec:
           cluster: dev-fss
         - application: dolly-backend-dev
           cluster: dev-fss
-        - application: endringsmelding-service
-          cluster: dev-gcp
-        - application: testnav-miljoer-service
-          cluster: dev-gcp
-        - application: testnav-person-service
-          cluster: dev-gcp
-        - application: dolly-frontend
-          cluster: dev-fss
-        - application: dolly-frontend
-          cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
   liveness:
