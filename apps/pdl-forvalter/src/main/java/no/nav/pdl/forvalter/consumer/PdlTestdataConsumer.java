@@ -1,5 +1,8 @@
 package no.nav.pdl.forvalter.consumer;
 
+import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.getBestillingUrl;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_SLETTING;
+
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,25 +14,25 @@ import com.fasterxml.jackson.databind.ser.PropertyWriter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 import no.nav.pdl.forvalter.config.credentials.PdlServiceProperties;
 import no.nav.pdl.forvalter.consumer.command.PdlDeleteCommandPdl;
 import no.nav.pdl.forvalter.consumer.command.PdlOpprettArtifactCommandPdl;
 import no.nav.pdl.forvalter.consumer.command.PdlOpprettPersonCommandPdl;
 import no.nav.pdl.forvalter.domain.ArtifactValue;
+import no.nav.pdl.forvalter.domain.Ordre;
 import no.nav.pdl.forvalter.dto.HistoriskIdent;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlStatus;
 import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
 import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
-import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
-
-import java.util.List;
-
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.getBestillingUrl;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_SLETTING;
 
 @Slf4j
 @Service
@@ -80,16 +83,15 @@ public class PdlTestdataConsumer {
         this.objectMapper = objectMapper;
     }
 
-    public Flux<OrdreResponseDTO.HendelseDTO> send(List<ArtifactValue> artifacts) {
 
-        log.info("Sender person {} med artifact {}", artifacts.get(0).getIdent(), artifacts.get(0).getArtifact());
-
+    public Flux<OrdreResponseDTO.PdlStatusDTO> send(List<Ordre> orders) {
         return accessTokenService
                 .generateToken(properties)
-                .flatMapMany(accessToken -> artifacts
+                .flatMapMany(accessToken -> Flux.concat(orders
                         .stream()
-                        .map(values -> send(values, accessToken))
-                        .reduce(Flux.empty(), Flux::concat));
+                        .map(order -> order.apply(accessToken))
+                        .collect(Collectors.toList())
+                ));
     }
 
     public Flux<List<OrdreResponseDTO.HendelseDTO>> delete(List<String> identer) {
@@ -103,7 +105,7 @@ public class PdlTestdataConsumer {
                 .collectList());
     }
 
-    private Flux<OrdreResponseDTO.HendelseDTO> send(ArtifactValue value, AccessToken accessToken) {
+    public Flux<OrdreResponseDTO.HendelseDTO> send(ArtifactValue value, AccessToken accessToken) {
 
         String body;
         try {
