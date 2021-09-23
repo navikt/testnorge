@@ -475,7 +475,7 @@ export const validation = {
 				'$tpsf.fullmakt',
 				Yup.object({
 					kilde: requiredString,
-					omraader: Yup.array().of(Yup.string()).required('Velg minst ett område'),
+					omraader: Yup.array().min(1, 'Velg minst ett område'),
 					gyldigFom: requiredDate,
 					gyldigTom: requiredDate,
 				})
