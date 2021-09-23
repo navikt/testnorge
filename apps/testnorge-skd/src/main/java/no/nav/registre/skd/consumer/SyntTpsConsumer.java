@@ -4,6 +4,7 @@ import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
@@ -28,7 +29,14 @@ public class SyntTpsConsumer {
     ) {
         this.serviceProperties = syntTpsGcpProperties;
         this.tokenService = accessTokenService;
-        this.webClient = WebClient.builder().baseUrl(syntTpsGcpProperties.getUrl()).build();
+        this.webClient = WebClient.builder()
+                .exchangeStrategies(ExchangeStrategies.builder()
+                        .codecs(configurer -> configurer
+                                .defaultCodecs()
+                                .maxInMemorySize(16 * 1024 * 1024))
+                        .build())
+                .baseUrl(syntTpsGcpProperties.getUrl())
+                .build();
     }
 
     @Timed(value = "skd.resource.latency", extraTags = { "operation", "tps-syntetisereren" })

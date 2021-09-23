@@ -6,6 +6,7 @@ on:
       - master
     paths:
       - apps/person-service/**
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/person-service:${{ github.sha }}
