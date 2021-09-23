@@ -40,7 +40,7 @@ public class OicdInMemorySessionConfiguration {
                 : sessionProperties.getTimeout()
         ).toSeconds();
         sessionRepository.setDefaultMaxInactiveInterval(defaultMaxInactiveInterval);
-        log.info("Set in-memory session defaultMaxInactiveInterval to {} seconds.", defaultMaxInactiveInterval);
+        log.info("Set in-memory session max inactive to {} seconds.", defaultMaxInactiveInterval);
         return sessionRepository;
     }
 

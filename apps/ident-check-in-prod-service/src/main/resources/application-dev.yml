@@ -9,11 +9,3 @@ MQ_CHANNEL_HOSTNAME: dummy
 MQ_CHANNEL_PORT: dummy
 MQ_QUEUE_NAME: dummy
 MQ_TPS_SERVICEROUTINE: dummy
-
-spring:
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}

@@ -1,8 +1,7 @@
 package no.nav.testnav.apps.apptilganganalyseservice.config;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
@@ -10,24 +9,17 @@ import org.springframework.security.config.annotation.web.reactive.EnableWebFlux
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 
-import java.util.List;
-
-import no.nav.testnav.libs.reactivesecurity.config.OAuth2ResourceServerConfiguration;
+import no.nav.testnav.libs.reactivesecurity.manager.JwtReactiveAuthenticationManager;
 
 
 @Slf4j
 @Configuration
 @EnableWebFluxSecurity
 @EnableReactiveMethodSecurity
-public class SecurityConfig extends OAuth2ResourceServerConfiguration {
+@RequiredArgsConstructor
+public class SecurityConfig {
 
-    public SecurityConfig(
-            OAuth2ResourceServerProperties oAuth2ResourceServerProperties,
-            @Value("${spring.security.oauth2.resourceserver.jwt.accepted-audience}") List<String> acceptedAudience,
-            @Value("${http.proxy:#{null}}") String proxyHost
-    ) {
-        super(oAuth2ResourceServerProperties, acceptedAudience, proxyHost);
-    }
+    private final JwtReactiveAuthenticationManager jwtReactiveAuthenticationManager;
 
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
@@ -42,13 +34,9 @@ public class SecurityConfig extends OAuth2ResourceServerConfiguration {
                         "/h2"
                 ).permitAll()
                 .anyExchange().authenticated()
-                .and()
-                .oauth2ResourceServer()
-                .jwt()
-                .jwtDecoder(jwtDecoder())
-                .and()
-                .and()
-                .build();
+                .and().oauth2ResourceServer()
+                .jwt(spec -> spec.authenticationManager(jwtReactiveAuthenticationManager))
+                .and().build();
     }
 }
 

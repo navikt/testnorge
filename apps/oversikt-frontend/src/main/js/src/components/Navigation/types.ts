@@ -1,4 +1,5 @@
-type Navigation = {
-    href: string,
-    label: string
+type Navigation<T> = {
+	href: string
+	label: string
+	content: T
 }

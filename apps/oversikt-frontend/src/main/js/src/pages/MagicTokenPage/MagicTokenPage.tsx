@@ -1,24 +1,25 @@
-import React from "react";
+import React from 'react'
 
-import FetchAccessToken from "@/components/FetchAccessToken";
-import styled from "styled-components";
-import { Page } from "@navikt/dolly-komponenter";
+import FetchAccessToken from '@/components/FetchAccessToken'
+import styled from 'styled-components'
+import { Page } from '@/pages/Page'
 
-const MagicTokenPage = styled(Page)`
-  display: flex;
-  justify-content: center;
-`;
+const Content = styled.div`
+	display: flex;
+	justify-content: center;
+`
 
 export default () => (
-  <MagicTokenPage>
-    <FetchAccessToken
-      name="dev-fss.dolly.team-dolly-lokal-app"
-      labels={{
-        header: "Magic Token",
-        subHeader: "Generer lokalt utviklingstoken",
-        description:
-          "Dette token skal fungere for alle apper som kjøres lokalt.",
-      }}
-    />
-  </MagicTokenPage>
+	<Page>
+		<Content>
+			<FetchAccessToken
+				scope="dev-fss.dolly.team-dolly-lokal-app"
+				labels={{
+					header: 'Magic Token',
+					subHeader: 'Generer lokalt utviklingstoken',
+					description: 'Dette token skal fungere for alle apper som kjøres lokalt.',
+				}}
+			/>
+		</Content>
+	</Page>
 );

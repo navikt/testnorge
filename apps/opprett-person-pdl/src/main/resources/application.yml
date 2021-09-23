@@ -4,9 +4,14 @@ spring:
   security:
     oauth2:
       resourceserver:
-        jwt:
+        aad:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+        tokenx:
+          issuer-uri: https://tokendings.dev-gcp.nais.io
+          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          accepted-audience: dev-fss:dolly:testnorge-opprett-person-pdl
   application:
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     name: testnorge-opprett-person-pdl

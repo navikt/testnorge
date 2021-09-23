@@ -31,6 +31,8 @@ spec:
           cluster: dev-fss
         - application: testnav-generer-organisasjon-populasjon-service
           cluster: dev-gcp
+  tokenx:
+    enabled: true
   azure:
     application:
       enabled: true

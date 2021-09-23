@@ -7,12 +7,12 @@ elasticsearch:
     host: ${ELASTIC_HOST}
     port: ${ELASTIC_PORT}
 
-spring:
   security:
     oauth2:
       resourceserver:
-        jwt:
+        aad:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
   application:
     name: oppsummeringsdokument-service

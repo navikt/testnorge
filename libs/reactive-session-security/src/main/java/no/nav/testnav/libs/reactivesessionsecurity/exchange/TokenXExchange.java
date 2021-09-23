@@ -13,6 +13,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
@@ -32,6 +33,20 @@ public class TokenXExchange implements GenerateTokenExchange {
     private final TokenResolver tokenService;
     private final WebClient webClient;
     private final TokenX tokenX;
+
+    public Mono<WellKnownConfig> fetchWellKnownConfig() {
+        return webClient
+                .get()
+                .uri(tokenX.getWellKnownUrl())
+                .retrieve()
+                .bodyToMono(WellKnownConfig.class)
+                .cache(
+                        value -> Duration.ofDays(1),
+                        value -> Duration.ZERO,
+                        () -> Duration.ZERO
+                ).doOnNext(value -> log.info("Well known config {}.", value));
+    }
+
 
     TokenXExchange(TokenX tokenX, TokenResolver tokenService) {
         this.webClient = WebClient.builder().build();
@@ -61,35 +76,35 @@ public class TokenXExchange implements GenerateTokenExchange {
 
     @Override
     public Mono<AccessToken> generateToken(ServerProperties serverProperties, ServerWebExchange exchange) {
-        return tokenService.getToken(exchange).flatMap(token -> webClient
-                .get()
-                .uri(tokenX.getWellKnownUrl())// TODO load on startup
-                .retrieve()
-                .bodyToMono(WellKnownConfig.class)
-                .flatMap(config ->
-                        webClient
-                                .post()
-                                .uri(config.getTokenEndpoint())
-                                .body(BodyInserters
-                                        .fromFormData("grant_type", "urn:ietf:params:oauth:grant-type:token-exchange")
-                                        .with("client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer")
-                                        .with("client_assertion", createClientAssertion(config.getTokenEndpoint()))
-                                        .with("subject_token_type", "urn:ietf:params:oauth:token-type:jwt")
-                                        .with("subject_token", token.getValue())
-                                        .with("audience", toScope(serverProperties))
-                                ).retrieve()
-                                .bodyToMono(AccessToken.class)
-                                .doOnError(error -> {
-                                    if (error instanceof WebClientResponseException) {
-                                        log.error(
-                                                "Feil ved henting av access token. Feilmelding: {}.",
-                                                ((WebClientResponseException) error).getResponseBodyAsString()
-                                        );
-                                    } else {
-                                        log.error("Feil ved henting av access token.", error);
-                                    }
-                                })
-                )
-        );
+        var scope = toScope(serverProperties);
+        log.info("Generer TokenX for {}...", scope);
+        return tokenService
+                .getToken(exchange)
+                .flatMap(token -> fetchWellKnownConfig()
+                        .flatMap(config ->
+                                webClient
+                                        .post()
+                                        .uri(config.getTokenEndpoint())
+                                        .body(BodyInserters
+                                                .fromFormData("grant_type", config.getGrantTypesSupported().get(0))
+                                                .with("client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer")
+                                                .with("client_assertion", createClientAssertion(config.getTokenEndpoint()))
+                                                .with("subject_token_type", "urn:ietf:params:oauth:token-type:jwt")
+                                                .with("subject_token", token.getValue())
+                                                .with("audience", scope)
+                                        ).retrieve()
+                                        .bodyToMono(AccessToken.class)
+                                        .doOnError(error -> {
+                                            if (error instanceof WebClientResponseException) {
+                                                log.error(
+                                                        "Feil ved henting av access token. \n{}",
+                                                        ((WebClientResponseException) error).getResponseBodyAsString()
+                                                );
+                                            } else {
+                                                log.error("Feil ved henting av access token.", error);
+                                            }
+                                        })
+                        )
+                ).doOnNext(value -> log.info("Token generert for {}.", scope));
     }
 }

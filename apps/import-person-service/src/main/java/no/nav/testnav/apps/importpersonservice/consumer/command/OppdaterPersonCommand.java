@@ -6,6 +6,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import no.nav.testnav.apps.importpersonservice.consumer.request.OppdaterPersonRequest;

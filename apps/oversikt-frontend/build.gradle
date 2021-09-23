@@ -13,6 +13,7 @@ bootJar {
 dependencyManagement {
     imports {
         mavenBom  "org.springframework.cloud:spring-cloud-dependencies:${DependenciesPlugin.springCloud}"
+        mavenBom "org.springframework.session:spring-session-bom:${DependenciesPlugin.springSession}"
     }
 }
 
@@ -27,7 +28,6 @@ repositories {
     mavenLocal()
 }
 
-
 dependencies {
     implementation 'no.nav.testnav.libs:reactive-core'
     implementation 'no.nav.testnav.libs:reactive-session-security'
@@ -40,6 +40,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
 
+    implementation "org.springdoc:springdoc-openapi-webflux-ui:${DependenciesPlugin.springdocOpenapi}"
     implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
     implementation 'org.hibernate.validator:hibernate-validator'
 
