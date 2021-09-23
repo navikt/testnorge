@@ -1,11 +1,19 @@
 import React from 'react'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { TextEditor } from '~/components/ui/form/inputs/textEditor/TextEditor'
+import { FormikBag } from 'formik'
 
-export const OppsummeringKommentarForm = () => {
+export const OppsummeringKommentarForm = (formikBag: FormikBag<any, any>) => {
 	return (
 		<div className="input-oppsummering">
 			<h2>Send med kommentar</h2>
-			<FormikTextInput name="beskrivelse" />
+			<TextEditor
+				text={null}
+				handleSubmit={(value) => {
+					console.log('value: ', value) //TODO - SLETT MEG
+					formikBag.setFieldValue('beskrivelse', value)
+				}}
+				placeholder="Skriv inn kommentar"
+			/>
 		</div>
 	)
 }

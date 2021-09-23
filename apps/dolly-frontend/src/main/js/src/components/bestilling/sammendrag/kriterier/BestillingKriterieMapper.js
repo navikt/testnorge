@@ -77,7 +77,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					'Type testperson',
 					bestillingsinformasjon.navSyntetiskIdent ? 'NAV syntetisk' : 'Standard'
 				),
-				obj('Kommentar', bestillingsinformasjon.beskrivelse),
 				obj('Sist Oppdatert', Formatters.formatDate(bestillingsinformasjon.sistOppdatert)),
 				obj(
 					'Gjenopprettet fra',
