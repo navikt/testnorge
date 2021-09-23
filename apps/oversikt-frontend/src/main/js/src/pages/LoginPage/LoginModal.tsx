@@ -11,9 +11,9 @@ export default () => {
 		<div className="login-container">
 			<div className="login-modal">
 				<h1>Oversikt login</h1>
-				<p>Velg hvordan du ønker å logge inn</p>
+				<p>Velg hvordan du ønsker å logge inn</p>
 				<p>
-					BankId innlogging er bastert på Digdir testbrukere (
+					BankId innlogging er basert på Digdir testbrukere (
 					<a target="_blank" href="https://docs.digdir.no/idporten_testbrukere.html">
 						Trykk her
 					</a>
