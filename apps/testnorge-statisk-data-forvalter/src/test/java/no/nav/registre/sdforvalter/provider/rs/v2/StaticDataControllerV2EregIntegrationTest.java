@@ -42,6 +42,7 @@ import no.nav.registre.sdforvalter.domain.Opprinnelse;
 @TestPropertySource(
         locations = "classpath:application-test.properties"
 )
+@Ignore
 public class StaticDataControllerV2EregIntegrationTest {
     private static final String EREG_API = "/api/v1/faste-data/ereg/";
     @Autowired

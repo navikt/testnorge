@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import no.nav.testnav.apps.oversiktfrontend.consumer.command.GetApplicationAccessCommand;
 import no.nav.testnav.apps.oversiktfrontend.credentials.AppTilgangAnalyseServiceProperties;
+import no.nav.testnav.apps.oversiktfrontend.domain.Application;
 import no.nav.testnav.libs.reactivesessionsecurity.domain.AccessToken;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 
@@ -23,33 +24,41 @@ public class AppTilgangAnalyseConsumer {
 
     public AppTilgangAnalyseConsumer(AppTilgangAnalyseServiceProperties appTilgangAnalyseServiceProperties, TokenExchange tokenExchange) {
         this.appTilgangAnalyseServiceProperties = appTilgangAnalyseServiceProperties;
+        this.tokenExchange = tokenExchange;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(appTilgangAnalyseServiceProperties.getUrl())
                 .build();
-        this.tokenExchange = tokenExchange;
     }
 
-    public Flux<String> getScopes(ServerWebExchange serverWebExchange) {
+    public Flux<Application> getApplications(ServerWebExchange serverWebExchange) {
         return Flux.concat(
-                getScopes(serverWebExchange, getCommand("dolly-backend")),
-                getScopes(serverWebExchange, getCommand("testnorge"))
+                getApplications(serverWebExchange, getCommand("dolly-backend")),
+                getApplications(serverWebExchange, getCommand("testnorge"))
         );
     }
 
-    public Flux<String> getScopes(ServerWebExchange serverWebExchange, Function<AccessToken, GetApplicationAccessCommand> getCommand) {
+    private Flux<Application> getApplications(
+            ServerWebExchange serverWebExchange,
+            Function<AccessToken, GetApplicationAccessCommand> getCommand
+    ) {
         return tokenExchange
                 .generateToken(appTilgangAnalyseServiceProperties, serverWebExchange)
                 .flatMap(accessToken -> getCommand.apply(accessToken).call())
                 .map(access -> access
                         .getAccessTo()
                         .stream()
-                        .map(application -> application.getCluster() + "." + application.getNamespace() + "." + application.getName())
+                        .map(Application::new)
                         .collect(Collectors.toList())
                 ).flatMapMany(Flux::fromIterable);
     }
 
-    public Function<AccessToken, GetApplicationAccessCommand> getCommand(String repo) {
-        return (accessToken -> new GetApplicationAccessCommand(webClient, accessToken.getTokenValue(), "testnav-oversikt-frontend", repo));
+    private Function<AccessToken, GetApplicationAccessCommand> getCommand(String repo) {
+        return (accessToken -> new GetApplicationAccessCommand(
+                webClient,
+                accessToken.getTokenValue(),
+                "testnav-oversikt-frontend",
+                repo
+        ));
     }
 }

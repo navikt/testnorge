@@ -8,12 +8,12 @@ metadata:
 spec:
   tokenx:
     enabled: true
-  image: {{ image }}
-  port: 8080
   azure:
     application:
       enabled: true
       tenant: nav.no
+  image: {{ image }}
+  port: 8080
   accessPolicy:
     inbound:
       rules:

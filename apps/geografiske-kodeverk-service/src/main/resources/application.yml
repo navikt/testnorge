@@ -7,7 +7,11 @@ spring:
   security:
     oauth2:
       resourceserver:
-        jwt:
+        aad:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          #The client_id of this application
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+        tokenx:
+          issuer-uri: https://tokendings.dev-gcp.nais.io
+          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          accepted-audience: dev-gcp:dolly:testnav-geografiske-kodeverk-service

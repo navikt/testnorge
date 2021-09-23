@@ -1,15 +1,3 @@
-spring:
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
-
 consumers:
   profil-api:
     url: http://testnorge-profil-api.dolly.svc.cluster.local
-
-testnorge:
-  analyse:
-    enabled: true

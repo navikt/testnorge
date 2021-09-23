@@ -44,4 +44,5 @@
  :testnorge-inst-proxy:build \
  :sigrunstub-proxy:build \
  :pensjon-testdata-facade-proxy:build \
+ :geografiske-kodeverk-service:build \
  :testnorge-inntekt:build

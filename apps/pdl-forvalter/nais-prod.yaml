@@ -11,6 +11,8 @@ spec:
       value: prod
   image: {{ image }}
   webproxy: true
+  tokenx:
+    enabled: true
   azure:
     application:
       enabled: true

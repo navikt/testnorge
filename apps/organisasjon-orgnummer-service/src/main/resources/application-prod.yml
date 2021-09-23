@@ -1,10 +1,4 @@
 spring:
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
   datasource:
     url: jdbc:postgresql://b27dbvl023.preprod.local:5432/orgnummer-pool?useUnicode=yes&characterEncoding=UTF-8
     hikari:

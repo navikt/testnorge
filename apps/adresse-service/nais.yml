@@ -8,6 +8,8 @@ metadata:
 spec:
   image: {{ image }}
   webproxy: true
+  tokenx:
+    enabled: true
   azure:
     application:
       enabled: true
