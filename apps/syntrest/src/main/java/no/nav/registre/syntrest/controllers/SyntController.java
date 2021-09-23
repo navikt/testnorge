@@ -76,6 +76,7 @@ public class SyntController {
             @RequestBody List<String> fnrs
     ) throws ApiException, InterruptedException {
         var test = "";
+        var test2 = "";
         InputValidator.validateInput(fnrs);
         var response = aaregConsumer.synthesizeData(fnrs);
         doResponseValidation(response);
