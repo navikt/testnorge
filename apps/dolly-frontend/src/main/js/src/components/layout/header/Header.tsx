@@ -60,7 +60,11 @@ export default ({ brukerProfil, brukerBilde }: Props) => {
 					Dokumentasjon
 				</a>
 				<a
-					href="https://dolly-backend.dev.adeo.no/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config"
+					href={
+						window.location.hostname.includes('frontend')
+							? 'https://dolly-backend-dev.dev.adeo.no/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config'
+							: 'https://dolly-backend.dev.adeo.no/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config'
+					}
 					target="_blank"
 				>
 					API-dok
