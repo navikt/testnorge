@@ -94,6 +94,7 @@ includeBuild './apps/geografiske-kodeverk-service'
 includeBuild './apps/testnorge-inntekt'
 includeBuild './apps/app-tilgang-analyse-service'
 includeBuild './apps/organisasjon-forvalter'
+includeBuild './apps/testnorge-arena'
 
 includeBuild './xsd/arbeidsforhold-xsd'
 
@@ -113,7 +114,6 @@ include(':testnorge-aaregstub')
 include(':sam-domain')
 include(':medl-domain')
 include(':testnorge-sigrun')
-include(':testnorge-arena')
 include(':testnorge-token-provider')
 include(':nav-endringsmeldinger-core')
 include(':testnorge-tp')
@@ -171,7 +171,6 @@ project(":nav-endringsmeldinger-core").projectDir = file('apps/testnorge-nav-end
 project(":testnorge-tp").projectDir = file('apps/testnorge-tp')
 project(":udi-stub").projectDir = file('apps/udi-stub')
 project(":testnorge-hodejegeren").projectDir = file('apps/testnorge-hodejegeren')
-project(":testnorge-arena").projectDir = file('apps/testnorge-arena')
 project(":sigrun-core").projectDir = file('apps/testnorge-sigrun/sigrun-core')
 project(":testnorge-bisys").projectDir = file('apps/testnorge-bisys')
 project(":testnorge-statisk-data-forvalter").projectDir = file('apps/testnorge-statisk-data-forvalter')
