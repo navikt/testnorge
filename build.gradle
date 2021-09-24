@@ -19,5 +19,5 @@ task buildAll {
 }
 
 task sonarqubeAll {
-    dependsOn gradle.includedBuilds*.task(':sonarqube')
+    dependsOn gradle.includedBuilds*.task(':sonartest')
 }

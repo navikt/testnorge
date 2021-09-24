@@ -67,12 +67,15 @@ dependencies {
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'net.jodah:concurrentunit:0.4.6'
 }
-sonarqube {
-    properties {
-        property 'sonar.projectName', 'syntrest'
-        property 'sonar.sources', 'src/main'
-        property 'sonar.sourceEncoding', 'UTF-8'
-        property 'sonar.language', 'java'
+task sonarTest{
+    sonarqube {
+        properties {
+            property 'sonar.projectName', 'syntrest'
+            property 'sonar.sources', 'src/main'
+            property 'sonar.sourceEncoding', 'UTF-8'
+            property 'sonar.language', 'java'
+        }
     }
 }
+
 description = 'syntrest'
