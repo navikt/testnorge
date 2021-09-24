@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.pdlforvalter;
 
 import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlBostedsadresseHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDeltBosted.PdlDelteBosteder;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFullmaktHistorikk;
@@ -80,9 +81,9 @@ public class PdlForvalterClientTest {
         when(pdlForvalterConsumer.deleteIdent(eq(IDENT)))
                 .thenReturn(ResponseEntity.ok(instance.objectNode().put(HENDLSE_ID, HENDELSE_ID_SLETTING)));
 
-        when(mapperFacade.map(any(Person.class), eq(PdlOppholdsadresseHistorikk.class))).thenReturn(new PdlOppholdsadresseHistorikk());
-        when(mapperFacade.map(any(Person.class), eq(PdlKontaktadresseHistorikk.class))).thenReturn(new PdlKontaktadresseHistorikk());
-        when(mapperFacade.map(any(Person.class), eq(PdlBostedsadresseHistorikk.class))).thenReturn(new PdlBostedsadresseHistorikk());
+        when(mapperFacade.map(any(Person.class), eq(PdlOppholdsadresseHistorikk.class), any(MappingContext.class))).thenReturn(new PdlOppholdsadresseHistorikk());
+        when(mapperFacade.map(any(Person.class), eq(PdlKontaktadresseHistorikk.class), any(MappingContext.class))).thenReturn(new PdlKontaktadresseHistorikk());
+        when(mapperFacade.map(any(Person.class), eq(PdlBostedsadresseHistorikk.class), any(MappingContext.class))).thenReturn(new PdlBostedsadresseHistorikk());
         when(mapperFacade.map(any(Person.class), eq(PdlVergemaalHistorikk.class))).thenReturn((new PdlVergemaalHistorikk()));
         when(mapperFacade.map(any(Person.class), eq(PdlFullmaktHistorikk.class))).thenReturn((new PdlFullmaktHistorikk()));
         when(mapperFacade.map(any(Person.class), eq(PdlInnflyttingHistorikk.class))).thenReturn(new PdlInnflyttingHistorikk());

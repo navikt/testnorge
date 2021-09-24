@@ -31,5 +31,6 @@ public abstract class PdlOpplysning {
         private LocalDate ajourholdstidspunkt;
         private LocalDate gyldighetstidspunkt;
         private LocalDate opphoerstidspunkt;
+        private Boolean gjeldende;
     }
 }
