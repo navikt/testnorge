@@ -48,13 +48,13 @@ export const AppError = ({ error, stackTrace, style }) => (
 			Noe gikk galt under visning av elementet. <br />
 			Dersom refresh av siden ikke fungerer, forsøk å trykke{' '}
 			<b>
-				<aß
+				<a
 					href={
 						window.location.protocol + '//' + window.location.host + '/oauth2/authorization/aad'
 					}
 				>
 					her
-				</aß>
+				</a>
 			</b>
 			, eller kontakt Team Dolly på slack{' '}
 			<b>
