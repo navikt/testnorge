@@ -43,5 +43,4 @@ public class DeployService {
     public Flux<OrdreResponseDTO.PdlStatusDTO> sendOrders(List<Ordre> ordres) {
         return pdlTestdataConsumer.send(ordres);
     }
-
 }
