@@ -67,7 +67,6 @@ public class PdlOrdreService {
     private final DeployService deployService;
     private final PersonRepository personRepository;
     private final MapperFacade mapperFacade;
-    private final ExecutorService pdlForkJoinPool;
 
     public Flux<OrdreResponseDTO> send(OrdreRequestDTO ordre, Boolean isTpsMaster) {
 

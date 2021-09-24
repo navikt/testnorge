@@ -17,15 +17,4 @@ import java.util.concurrent.ForkJoinPool;
         SecureOAuth2ServerToServerConfiguration.class})
 public class ApplicationConfig {
 
-    private static final int THREADS_COUNT = 10;
-
-    @PostConstruct
-    public void enableAuthCtxOnSpawnedThreads() {
-        SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
-    }
-
-    @Bean
-    public ExecutorService pdlForkJoinPool() {
-        return new DelegatingSecurityContextExecutorService(new ForkJoinPool(THREADS_COUNT, new ForkJoinWorkerThreadFactory(), null, true));
-    }
 }
