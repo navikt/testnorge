@@ -1,5 +1,33 @@
 package no.nav.pdl.forvalter.service;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import ma.glasnost.orika.MapperFacade;
+import no.nav.pdl.forvalter.database.model.DbAlias;
+import no.nav.pdl.forvalter.database.model.DbPerson;
+import no.nav.pdl.forvalter.database.model.DbRelasjon;
+import no.nav.pdl.forvalter.database.repository.PersonRepository;
+import no.nav.pdl.forvalter.domain.Ordre;
+import no.nav.pdl.forvalter.dto.HistoriskIdent;
+import no.nav.pdl.forvalter.dto.PdlDelete;
+import no.nav.pdl.forvalter.dto.PdlFalskIdentitet;
+import no.nav.pdl.forvalter.dto.PdlForeldreansvar;
+import no.nav.pdl.forvalter.dto.PdlInnflytting;
+import no.nav.pdl.forvalter.dto.PdlKontaktadresse;
+import no.nav.pdl.forvalter.dto.PdlTilrettelagtKommunikasjon;
+import no.nav.pdl.forvalter.dto.PdlVergemaal;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO.PersonHendelserDTO;
+import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_ADRESSEBESKYTTELSE;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_BOSTEDADRESSE;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_DELTBOSTED;
@@ -27,34 +55,6 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_TILRETTELA
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_UTENLANDS_IDENTIFIKASJON_NUMMER;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_UTFLYTTING;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_VERGEMAAL;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import ma.glasnost.orika.MapperFacade;
-import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import no.nav.pdl.forvalter.database.model.DbAlias;
-import no.nav.pdl.forvalter.database.model.DbPerson;
-import no.nav.pdl.forvalter.database.model.DbRelasjon;
-import no.nav.pdl.forvalter.database.repository.PersonRepository;
-import no.nav.pdl.forvalter.dto.HistoriskIdent;
-import no.nav.pdl.forvalter.dto.PdlDelete;
-import no.nav.pdl.forvalter.dto.PdlFalskIdentitet;
-import no.nav.pdl.forvalter.dto.PdlForeldreansvar;
-import no.nav.pdl.forvalter.dto.PdlInnflytting;
-import no.nav.pdl.forvalter.dto.PdlKontaktadresse;
-import no.nav.pdl.forvalter.dto.PdlTilrettelagtKommunikasjon;
-import no.nav.pdl.forvalter.dto.PdlVergemaal;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreRequestDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO.PersonHendelserDTO;
 
 @Slf4j
 @Service
@@ -100,6 +100,7 @@ public class PdlOrdreService {
     private Flux<OrdreResponseDTO.PdlStatusDTO> sendAlleInformasjonselementer(DbPerson person, boolean isRelasjon) {
 
         var list = Stream.of(
+                conditionalDelete(person.getIdent(), isRelasjon),
                 deployService.createOrder(PDL_OPPRETT_PERSON, person.getIdent(), List.of(HistoriskIdent.builder().identer(person.getAlias().stream().map(DbAlias::getTidligereIdent).collect(Collectors.toList())).build())),
                 deployService.createOrder(PDL_NAVN, person.getIdent(), person.getPerson().getNavn()),
                 deployService.createOrder(PDL_KJOENN, person.getIdent(), person.getPerson().getKjoenn()),
@@ -128,13 +129,14 @@ public class PdlOrdreService {
                 deployService.createOrder(PDL_DOEDFOEDT_BARN, person.getIdent(), person.getPerson().getDoedfoedtBarn())
         ).collect(Collectors.toList());
 
-        if (isRelasjon) {
-            list.add(deployService.createOrder(PDL_SLETTING, person.getIdent(), List.of(new PdlDelete())));
-        }
-
         return deployService.sendOrders(list.parallelStream().reduce(Collections.emptyList(), (acc, next) -> {
             acc.addAll(next);
             return acc;
         }));
+    }
+
+    private List<Ordre> conditionalDelete(String ident, boolean isRelasjon) {
+
+        return isRelasjon ? deployService.createOrder(PDL_SLETTING, ident, List.of(new PdlDelete())) : Collections.emptyList();
     }
 }
