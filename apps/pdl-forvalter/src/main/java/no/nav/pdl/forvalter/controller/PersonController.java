@@ -75,10 +75,11 @@ public class PersonController {
 
     @ResponseBody
     @PostMapping(value = "/ordre", produces = MediaType.APPLICATION_NDJSON_VALUE)
-    @Operation(description = "Send person(er) til PDL (ordre)")
-    public Flux<OrdreResponseDTO> sendPersonTilPdl(@Parameter(description = "Send angitte testpersoner med relasjoner til PDL")
+    @Operation(description = "Send angitte testperson(er) med relasjoner til PDL")
+    public Flux<OrdreResponseDTO> sendPersonTilPdl(@Parameter(description = "Angir om TPS er master, true == hovedperson skal ikke slettes i PDL")
+                                                   @RequestParam(required = false) Boolean isTpsMaster,
                                                    @RequestBody OrdreRequestDTO ordre) {
 
-        return pdlOrdreService.send(ordre);
+        return pdlOrdreService.send(ordre, isTpsMaster);
     }
 }

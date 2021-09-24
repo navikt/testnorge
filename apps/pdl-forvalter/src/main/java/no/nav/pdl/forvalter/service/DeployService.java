@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.consumer.PdlTestdataConsumer;
 import no.nav.pdl.forvalter.domain.ArtifactValue;
+import no.nav.pdl.forvalter.domain.Ordre;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact;
@@ -20,23 +21,26 @@ public class DeployService {
 
     private final PdlTestdataConsumer pdlTestdataConsumer;
 
-    public Flux<OrdreResponseDTO.PdlStatusDTO> send(PdlArtifact type,
-                                                    String ident,
-                                                    List<? extends DbVersjonDTO> artifacter) {
-
-        return artifacter.isEmpty() ?
-                Flux.empty() :
-                pdlTestdataConsumer
-                        .send(artifacter.stream()
-                                .map(element -> ArtifactValue.builder()
-                                        .artifact(type)
-                                        .ident(ident)
-                                        .body(element)
-                                        .build())
-                                .collect(Collectors.toList()))
+    public List<Ordre> createOrder(PdlArtifact type, String ident, List<? extends DbVersjonDTO> artifacter) {
+        return artifacter
+                .stream()
+                .map(element -> ArtifactValue.builder()
+                        .artifact(type)
+                        .ident(ident)
+                        .body(element)
+                        .build())
+                .map(value -> (Ordre) accessToken ->
+                        pdlTestdataConsumer.send(value, accessToken)
                         .collectList()
-                        .flatMapMany(value -> Flux.fromStream(
-                                List.of(OrdreResponseDTO.PdlStatusDTO.builder().infoElement(type).hendelser(value).build()).stream())
-                        );
+                        .map(hendelser -> OrdreResponseDTO.PdlStatusDTO
+                                .builder()
+                                .infoElement(type)
+                                .hendelser(hendelser)
+                                .build()))
+                .collect(Collectors.toList());
+    }
+
+    public Flux<OrdreResponseDTO.PdlStatusDTO> sendOrders(List<Ordre> ordres) {
+        return pdlTestdataConsumer.send(ordres);
     }
 }
