@@ -17,3 +17,7 @@ sonarqube {
 task buildAll {
     dependsOn gradle.includedBuilds*.task(':build')
 }
+
+task sonarqubeAll {
+    dependsOn gradle.includedBuilds*.task(':sonarqube')
+}
