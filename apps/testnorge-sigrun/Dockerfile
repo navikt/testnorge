@@ -1,4 +1,4 @@
-FROM navikt/java:11
+FROM navikt/java:17
 LABEL maintainer="Team Dolly"
 
 ADD apps/testnorge-sigrun/sigrun-core/build/libs/app.jar /app/app.jar

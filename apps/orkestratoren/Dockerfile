@@ -1,4 +1,4 @@
-FROM navikt/java:11
+FROM navikt/java:17
 LABEL maintainer="Team Registre"
 
 COPY apps/orkestratoren/init.sh /init-scripts/init.sh
