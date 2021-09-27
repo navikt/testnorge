@@ -92,7 +92,7 @@ public class SyntConsumerConfig {
                 applicationManager,
                 "synthdata-aareg",
                 aaregUrl,
-                true,
+                false,
                 STRING_LIST_TYPE,
                 ARBEIDSFORHOLDSMELDING_LIST_TYPE,
                 webClientBuilder);
@@ -104,7 +104,7 @@ public class SyntConsumerConfig {
                 applicationManager,
                 "synthdata-arena-bisys",
                 bisysUrl,
-                true,
+                false,
                 BARNEBIDRAGSMELDING_LIST_TYPE,
                 webClientBuilder);
     }
@@ -115,7 +115,7 @@ public class SyntConsumerConfig {
                 applicationManager,
                 "synthdata-inst",
                 instUrl,
-                true,
+                false,
                 INSTITUSJONSMELDING_LIST_TYPE,
                 webClientBuilder
         );
@@ -127,7 +127,7 @@ public class SyntConsumerConfig {
                 applicationManager,
                 "synthdata-medl",
                 medlUrl,
-                true,
+                false,
                 MEDLEMSKAPSMELDING_LIST_TYPE,
                 webClientBuilder);
     }
@@ -149,7 +149,7 @@ public class SyntConsumerConfig {
                 applicationManager,
                 "synthdata-nav",
                 navEndringsmeldingUrl,
-                true,
+                false,
                 STRING_LIST_TYPE,
                 webClientBuilder);
     }
@@ -160,7 +160,7 @@ public class SyntConsumerConfig {
                 applicationManager,
                 "synthdata-popp",
                 poppUrl,
-                true,
+                false,
                 STRING_LIST_TYPE,
                 INNTEKTSMELDING_POPP_LIST_TYPE,
                 webClientBuilder);
@@ -172,7 +172,7 @@ public class SyntConsumerConfig {
                 applicationManager,
                 "synthdata-sam",
                 samUrl,
-                true,
+                false,
                 SAM_MELDING_LIST_TYPE,
                 webClientBuilder);
     }
@@ -184,7 +184,7 @@ public class SyntConsumerConfig {
                 applicationManager,
                 "synthdata-inntekt",
                 inntektUrl,
-                true,
+                false,
                 INNTEKTSMELDING_MAP_TYPE,
                 INNTEKTSMELDING_MAP_TYPE,
                 webClientBuilder);
@@ -196,7 +196,7 @@ public class SyntConsumerConfig {
                 applicationManager,
                 "synthdata-tp",
                 tpUrl,
-                true,
+                false,
                 TP_MELDING_LIST_TYPE,
                 webClientBuilder);
     }
@@ -218,7 +218,7 @@ public class SyntConsumerConfig {
                 applicationManager,
                 "synthdata-frikort",
                 frikortUrl,
-                true,
+                false,
                 STRING_INTEGER_MAP_TYPE,
                 STRING_FRIKORT_KVITTERING_MAP_TYPE,
                 webClientBuilder);
