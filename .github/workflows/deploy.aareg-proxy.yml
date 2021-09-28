@@ -25,7 +25,7 @@ jobs:
             ${{ runner.os }}-gradle-aareg-proxy
       - uses: actions/setup-java@v1
         with:
-          java-version: '11.x'
+          java-version: '17.x'
       - name: Compile
         working-directory: proxies/aareg-proxy/
         env:
