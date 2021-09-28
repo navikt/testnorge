@@ -13,7 +13,7 @@ repositories {
     mavenLocal()
 }
 
-java.sourceCompatibility = JavaVersion.VERSION_11
+java.sourceCompatibility = JavaVersion.VERSION_17
 
 dependencies {
     implementation 'javax.activation:activation:1.1'

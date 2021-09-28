@@ -1,4 +1,4 @@
-FROM navikt/java:11
+FROM navikt/java:17
 LABEL maintainer="Team Dolly"
 
 ADD apps/testnorge-tss/build/libs/app.jar /app/app.jar
