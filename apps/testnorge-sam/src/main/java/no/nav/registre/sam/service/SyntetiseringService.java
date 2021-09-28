@@ -1,6 +1,7 @@
 package no.nav.registre.sam.service;
 
 import io.micrometer.core.annotation.Timed;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.sam.domain.IdentMedData;
 import no.nav.registre.sam.domain.SamSaveInHodejegerenRequest;
@@ -17,7 +18,6 @@ import no.nav.registre.sam.domain.database.TSamMelding;
 import no.nav.registre.sam.domain.database.TSamVedtak;
 import no.nav.registre.sam.provider.rs.requests.SyntetiserSamRequest;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -30,32 +30,26 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class SyntetiseringService {
 
     private static final String SAM_NAME = "sam";
 
     public static final String ENDRET_OPPRETTET_AV = "Orkestratoren";
 
-    @Autowired
-    private SamSyntetisererenConsumer samSyntetisererenConsumer;
+    private final SamSyntetisererenConsumer samSyntetisererenConsumer;
 
-    @Autowired
-    private HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
+    private final HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
 
-    @Autowired
-    private HodejegerenConsumer hodejegerenConsumer;
+    private final HodejegerenConsumer hodejegerenConsumer;
 
-    @Autowired
-    private TPersonRepository tPersonRepository;
+    private final TPersonRepository tPersonRepository;
 
-    @Autowired
-    private TSamHendelseRepository tSamHendelseRepository;
+    private final TSamHendelseRepository tSamHendelseRepository;
 
-    @Autowired
-    private TSamMeldingRepository tSamMeldingRepository;
+    private final TSamMeldingRepository tSamMeldingRepository;
 
-    @Autowired
-    private TSamVedtakRepository tSamVedtakRepository;
+    private final TSamVedtakRepository tSamVedtakRepository;
 
     public ResponseEntity<String> opprettOgLagreSyntetiserteSamordningsmeldinger(
             List<String> identer

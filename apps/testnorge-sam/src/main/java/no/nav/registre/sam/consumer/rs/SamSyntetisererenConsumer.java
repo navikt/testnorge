@@ -22,12 +22,12 @@ public class SamSyntetisererenConsumer {
     private static final ParameterizedTypeReference<List<SyntetisertSamordningsmelding>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
 
-    @Autowired
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
-    private UriTemplate url;
+    private final UriTemplate url;
 
-    public SamSyntetisererenConsumer(@Value("${syntrest.rest.api.url}") String syntrestServerUrl) {
+    public SamSyntetisererenConsumer(RestTemplate restTemplate, @Value("${syntrest.rest.api.url}") String syntrestServerUrl) {
+        this.restTemplate = restTemplate;
         this.url = new UriTemplate(syntrestServerUrl + "/v1/generate/sam?numToGenerate={numToGenerate}");
     }
 
