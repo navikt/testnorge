@@ -14,14 +14,14 @@ import no.nav.testnav.apps.personservice.consumer.dto.pdl.HendelseDTO;
 import no.nav.testnav.apps.personservice.consumer.header.PdlHeaders;
 
 @RequiredArgsConstructor
-public class OpprettFoedselCommand implements Callable<HendelseDTO> {
+public class OpprettFoedselCommand implements Callable<Mono<HendelseDTO>> {
     private final WebClient webClient;
     private final FoedselDTO dto;
     private final String token;
     private final String ident;
 
     @Override
-    public HendelseDTO call() {
+    public Mono<HendelseDTO> call() {
         return webClient.post()
                 .uri("/pdl-testdata/api/v1/bestilling/foedsel")
                 .accept(MediaType.APPLICATION_JSON)
@@ -29,7 +29,6 @@ public class OpprettFoedselCommand implements Callable<HendelseDTO> {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .body(BodyInserters.fromPublisher(Mono.just(dto), FoedselDTO.class))
                 .retrieve()
-                .bodyToMono(HendelseDTO.class)
-                .block();
+                .bodyToMono(HendelseDTO.class);
     }
 }

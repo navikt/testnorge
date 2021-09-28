@@ -17,7 +17,7 @@ import no.nav.testnav.apps.personservice.domain.Person;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PostTagsCommand implements Callable<Void> {
+public class PostTagsCommand implements Callable<Mono<Void>> {
 
     private static final ParameterizedTypeReference<List<String>> REQUEST_TYPE = new ParameterizedTypeReference<>() {};
     private final WebClient webClient;
@@ -25,7 +25,7 @@ public class PostTagsCommand implements Callable<Void> {
     private final String token;
 
     @Override
-    public Void call() {
+    public Mono<Void> call() {
         List<String> ident = Collections.singletonList(person.getIdent());
         return webClient.post()
                 .uri(uriBuilder -> uriBuilder.path("/pdl-testdata/api/v1/bestilling/tags")
@@ -36,7 +36,6 @@ public class PostTagsCommand implements Callable<Void> {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .body(BodyInserters.fromPublisher(Mono.just(ident),REQUEST_TYPE))
                 .retrieve()
-                .bodyToMono(Void.class)
-                .block();
+                .bodyToMono(Void.class);
     }
 }

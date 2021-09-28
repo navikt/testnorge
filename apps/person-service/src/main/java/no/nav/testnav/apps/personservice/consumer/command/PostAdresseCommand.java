@@ -17,7 +17,7 @@ import no.nav.testnav.apps.personservice.domain.Person;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PostAdresseCommand implements Callable<HendelseDTO> {
+public class PostAdresseCommand implements Callable<Mono<HendelseDTO>> {
 
     private final WebClient webClient;
     private final Person person;
@@ -25,7 +25,7 @@ public class PostAdresseCommand implements Callable<HendelseDTO> {
     private final String token;
 
     @Override
-    public HendelseDTO call() {
+    public Mono<HendelseDTO> call() {
         AdresseDTO body = new AdresseDTO(person, kilde);
         return webClient.post()
                 .uri("/pdl-testdata/api/v1/bestilling/bostedsadresse")
@@ -34,7 +34,6 @@ public class PostAdresseCommand implements Callable<HendelseDTO> {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .body(BodyInserters.fromPublisher(Mono.just(body), AdresseDTO.class))
                 .retrieve()
-                .bodyToMono(HendelseDTO.class)
-                .block();
+                .bodyToMono(HendelseDTO.class);
     }
 }

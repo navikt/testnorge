@@ -17,14 +17,14 @@ import no.nav.testnav.apps.personservice.domain.Person;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PostNavnCommand implements Callable<HendelseDTO> {
+public class PostNavnCommand implements Callable<Mono<HendelseDTO>> {
     private final WebClient webClient;
     private final Person person;
     private final String kilde;
     private final String token;
 
     @Override
-    public HendelseDTO call() {
+    public Mono<HendelseDTO> call() {
         NavnDTO body = new NavnDTO(person, kilde);
         return webClient.post()
                 .uri("/pdl-testdata/api/v1/bestilling/navn")
@@ -33,7 +33,6 @@ public class PostNavnCommand implements Callable<HendelseDTO> {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .body(BodyInserters.fromPublisher(Mono.just(body), NavnDTO.class))
                 .retrieve()
-                .bodyToMono(HendelseDTO.class)
-                .block();
+                .bodyToMono(HendelseDTO.class);
     }
 }
