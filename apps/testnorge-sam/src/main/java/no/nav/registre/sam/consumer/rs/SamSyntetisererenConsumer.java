@@ -24,7 +24,7 @@ public class SamSyntetisererenConsumer {
     private final WebClient webClient;
 
     public SamSyntetisererenConsumer(
-            SyntSanGcpProperties syntSamGcpProperties,
+            SyntSamGcpProperties syntSamGcpProperties,
             AccessTokenService accessTokenService
     ) {
         this.serviceProperties = syntSamGcpProperties
