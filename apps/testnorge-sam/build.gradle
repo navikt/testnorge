@@ -30,6 +30,7 @@ repositories {
 
 dependencies {
     implementation 'no.nav.testnav.libs:servlet-core'
+    implementation 'no.nav.testnav.libs:servlet-security'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
@@ -43,7 +44,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     implementation 'org.apache.httpcomponents:httpclient:4.5.6'
     implementation 'org.aspectj:aspectjweaver:1.9.6'
