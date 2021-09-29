@@ -29,6 +29,17 @@ spec:
       cpu: 200m
       memory: 1024Mi
   image: {{ image }}
+  accessPolicy:
+    inbound:
+      rules:
+        - application: team-dolly-lokal-app
+          cluster: dev-fss
+        - application: orkestratoren
+          cluster: dev-fss
+  azure:
+    application:
+      enabled: true
+      tenant: nav.no
   ingresses:
     - "https://testnorge-sam.nais.preprod.local"
     - "https://testnorge-sam.dev-fss.nais.io"
