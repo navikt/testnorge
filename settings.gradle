@@ -95,6 +95,7 @@ includeBuild './apps/testnorge-inntekt'
 includeBuild './apps/app-tilgang-analyse-service'
 includeBuild './apps/organisasjon-forvalter'
 includeBuild './apps/testnorge-arena'
+includeBuild './apps/tilgang-service'
 
 includeBuild './xsd/arbeidsforhold-xsd'
 
@@ -246,6 +247,3 @@ project(':person-faste-data-service').projectDir = file('apps/person-faste-data-
 
 include(':brreg-stub')
 project(":brreg-stub").projectDir = file('apps/brreg-stub')
-include 'apps:tilgang-service'
-findProject(':apps:tilgang-service')?.name = 'tilgang-service'
-
