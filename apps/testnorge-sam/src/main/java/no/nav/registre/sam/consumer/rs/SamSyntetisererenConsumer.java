@@ -2,44 +2,51 @@ package no.nav.registre.sam.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.RequestEntity;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import no.nav.registre.sam.consumer.rs.command.GetSyntSamMeldingerCommand;
+import no.nav.registre.sam.consumer.rs.credential.SyntSamGcpProperties;
 import no.nav.registre.sam.domain.SyntetisertSamordningsmelding;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
+
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Component
 @Slf4j
 public class SamSyntetisererenConsumer {
 
-    private static final ParameterizedTypeReference<List<SyntetisertSamordningsmelding>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
-    };
+    private final AccessTokenService tokenService;
+    private final ServerProperties serviceProperties;
+    private final WebClient webClient;
 
-    private final RestTemplate restTemplate;
-
-    private final UriTemplate url;
-
-    public SamSyntetisererenConsumer(RestTemplate restTemplate, @Value("${syntrest.rest.api.url}") String syntrestServerUrl) {
-        this.restTemplate = restTemplate;
-        this.url = new UriTemplate(syntrestServerUrl + "/v1/generate/sam?numToGenerate={numToGenerate}");
+    public SamSyntetisererenConsumer(
+            SyntSanGcpProperties syntSamGcpProperties,
+            AccessTokenService accessTokenService
+    ) {
+        this.serviceProperties = syntSamGcpProperties
+        this.tokenService = accessTokenService;
+        this.webClient = WebClient.builder()
+                .exchangeStrategies(ExchangeStrategies.builder()
+                        .codecs(configurer -> configurer
+                                .defaultCodecs()
+                                .maxInMemorySize(16 * 1024 * 1024))
+                        .build())
+                .baseUrl(syntSamGcpProperties.getUrl())
+                .build();
     }
 
     @Timed(value = "sam.resource.latency", extraTags = {"operation", "sam-syntetisereren"})
     public List<SyntetisertSamordningsmelding> hentSammeldingerFromSyntRest(
             int numToGenerate
     ) {
-        var getRequest = RequestEntity.get(url.expand(numToGenerate)).build();
-
         List<SyntetisertSamordningsmelding> syntetiserteMeldinger = new ArrayList<>();
 
-        var response = restTemplate.exchange(getRequest, RESPONSE_TYPE).getBody();
+        var token = tokenService.generateClientCredentialAccessToken(serviceProperties).block().getTokenValue();
+        var response = new GetSyntSamMeldingerCommand(numToGenerate, token, webClient).call();
         if (response != null) {
             syntetiserteMeldinger.addAll(response);
         } else {
