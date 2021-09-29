@@ -85,11 +85,11 @@ public class SamSyntetisererenConsumerTest {
             @Override
             public MockResponse dispatch(RecordedRequest request) {
                 switch (request.getPath()) {
-                    case "/syntsam//api/v1/generate_sam/2":
+                    case "/syntsam/api/v1/generate_sam/2":
                         return new MockResponse().setResponseCode(200)
                                 .addHeader("Content-Type", "application/json")
                                 .setBody(getResourceFileContent("samordningsmelding.json"));
-                    case "/syntsam//api/v1/generate_sam/1":
+                    case "/syntsam/api/v1/generate_sam/1":
                         return new MockResponse().setResponseCode(200)
                                 .addHeader("Content-Type", "application/json");
                     case "/token/oauth2/v2.0/token":
