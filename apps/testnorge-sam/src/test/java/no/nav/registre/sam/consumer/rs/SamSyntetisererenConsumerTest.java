@@ -3,44 +3,60 @@ package no.nav.registre.sam.consumer.rs;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import lombok.extern.slf4j.Slf4j;
 import org.hamcrest.CoreMatchers;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import okhttp3.mockwebserver.Dispatcher;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
+
+import java.io.IOException;
+
 import static no.nav.registre.sam.testutils.ResourceUtils.getResourceFileContent;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 
-@RunWith(SpringRunner.class)
-@AutoConfigureWireMock(port = 0)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Slf4j
 @TestPropertySource(locations = "classpath:application-test.properties")
 @ActiveProfiles("test")
 public class SamSyntetisererenConsumerTest {
 
-    @Autowired
-    private SamSyntetisererenConsumer samSyntetisererenConsumer;
+    private SamSyntetisererenConsumer consumer;
 
-    private int antallMeldinger = 2;
+    private MockWebServer mockWebServer;
+
+    @Before
+    public void setUp() throws IOException {
+        this.mockWebServer = new MockWebServer();
+        this.mockWebServer.start();
+        Dispatcher dispatcher = getSyntSamDispatcher();
+        mockWebServer.setDispatcher(dispatcher);
+
+        var creds = new SyntSamGcpProperties();
+        creds.setUrl(mockWebServer.url("/syntsam").toString());
+        creds.setCluster("test");
+        creds.setNamespace("test");
+        creds.setName("synthdata-sam-gcp-test");
+
+        this.consumer = new SamSyntetisererenConsumer(
+                creds,
+                new AccessTokenService(null, mockWebServer.url("/token").toString(), null,
+                        new AzureClientCredentials("dummy", "dummy")));
+
+    }
 
     @Test
     public void shouldGetSyntetiserteMeldinger() {
-        stubSamSyntetisererenConsumer();
-
-        var response = samSyntetisererenConsumer.hentSammeldingerFromSyntRest(antallMeldinger);
+        var response = consumer.hentSammeldingerFromSyntRest(2);
 
         assertThat(response.get(0).getDatoEndret(), equalTo("10.02.2010"));
         assertThat(response.get(0).getKSamHendelseT(), equalTo("VEDTAKNAV"));
@@ -55,24 +71,36 @@ public class SamSyntetisererenConsumerTest {
         listAppender.start();
         logger.addAppender(listAppender);
 
-        stubSamSyntetisererenConsumerWithEmptyBody();
-
-        samSyntetisererenConsumer.hentSammeldingerFromSyntRest(antallMeldinger);
+        consumer.hentSammeldingerFromSyntRest(1);
 
         assertThat(listAppender.list.size(), is(CoreMatchers.equalTo(1)));
         assertThat(listAppender.list.get(0).toString(), containsString("Kunne ikke hente response body fra synthdata-sam: NullPointerException"));
     }
 
-    private void stubSamSyntetisererenConsumer() {
-        stubFor(get(urlEqualTo("/synthdata-sam/api/v1/generate/sam?numToGenerate=" + antallMeldinger))
-                .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(getResourceFileContent("samordningsmelding.json"))));
+    private Dispatcher getSyntSamDispatcher() {
+        return new Dispatcher() {
+            @Override
+            public MockResponse dispatch(RecordedRequest request) {
+                switch (request.getPath()) {
+                    case "/syntsam//api/v1/generate_sam/2":
+                        return new MockResponse().setResponseCode(200)
+                                .addHeader("Content-Type", "application/json")
+                                .setBody(getResourceFileContent("samordningsmelding.json"));
+                    case "/syntsam//api/v1/generate_sam/1":
+                        return new MockResponse().setResponseCode(200)
+                                .addHeader("Content-Type", "application/json");
+                    case "/token/oauth2/v2.0/token":
+                        return new MockResponse().setResponseCode(200)
+                                .addHeader("Content-Type", "application/json")
+                                .setBody("{\"access_token\": \"dummy\"}");
+                }
+                return new MockResponse().setResponseCode(404);
+            }
+        };
     }
 
-    private void stubSamSyntetisererenConsumerWithEmptyBody() {
-        stubFor(get(urlEqualTo("/synthdata-sam/api/v1/generate/sam?numToGenerate=" + antallMeldinger))
-                .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")));
+    @After
+    public void tearDown() throws IOException {
+        mockWebServer.shutdown();
     }
 }
