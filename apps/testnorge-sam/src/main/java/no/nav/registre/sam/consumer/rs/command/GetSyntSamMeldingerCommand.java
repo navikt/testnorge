@@ -3,6 +3,7 @@ package no.nav.registre.sam.consumer.rs.command;
 import lombok.RequiredArgsConstructor;
 import no.nav.registre.sam.domain.SyntetisertSamordningsmelding;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -20,15 +21,19 @@ public class GetSyntSamMeldingerCommand implements Callable<List<SyntetisertSamo
     };
 
     @Override
-    public List<SyntetisertSamordningsmelding> call(){
-        return webClient.get()
-                .uri(builder ->
-                        builder.path("/api/v1/generate_sam/{num_to_generate}")
-                                .build(antall)
-                )
-                .header("Authorization", "Bearer " + token)
-                .retrieve()
-                .bodyToMono(RESPONSE_TYPE)
-                .block();
+    public List<SyntetisertSamordningsmelding> call() {
+        try {
+            return webClient.get()
+                    .uri(builder ->
+                            builder.path("/api/v1/generate_sam/{num_to_generate}")
+                                    .build(antall)
+                    )
+                    .header("Authorization", "Bearer " + token)
+                    .retrieve()
+                    .bodyToMono(RESPONSE_TYPE)
+                    .block();
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
     }
 }

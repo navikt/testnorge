@@ -48,10 +48,10 @@ public class SamSyntetisererenConsumer {
 
         var token = tokenService.generateClientCredentialAccessToken(serviceProperties).block().getTokenValue();
         var response = new GetSyntSamMeldingerCommand(numToGenerate, token, webClient).call();
-        if (response != null) {
+        if (response != null && !response.isEmpty()) {
             syntetiserteMeldinger.addAll(response);
         } else {
-            log.error("Kunne ikke hente response body fra synthdata-sam: NullPointerException");
+            log.error("Klarte ikke hente sam-meldinger fra synt-sam-gcp.");
         }
 
         return syntetiserteMeldinger;
