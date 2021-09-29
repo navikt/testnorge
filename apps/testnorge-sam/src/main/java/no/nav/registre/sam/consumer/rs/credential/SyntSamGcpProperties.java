@@ -6,6 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
 
 @Configuration
-@ConfigurationProperties(prefix = "consumers.synt-san-gcp")
+@ConfigurationProperties(prefix = "consumers.synt-sam-gcp")
 public class SyntSamGcpProperties extends ServerProperties {
 }
