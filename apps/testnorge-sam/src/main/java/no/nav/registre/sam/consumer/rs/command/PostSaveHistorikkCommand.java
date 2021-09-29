@@ -3,7 +3,9 @@ package no.nav.registre.sam.consumer.rs.command;
 import lombok.RequiredArgsConstructor;
 import no.nav.registre.sam.domain.SamSaveInHodejegerenRequest;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -29,5 +31,4 @@ public class PostSaveHistorikkCommand implements Callable<List<String>> {
                 .bodyToMono(RESPONSE_TYPE)
                 .block();
     }
-}
 }
