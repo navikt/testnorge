@@ -31,6 +31,7 @@ spec:
   port: 8080
   ingresses:
     - https://dolly-backend.dev.adeo.no
+    - https://dolly-backend.dev.intern.nav.no
     - https://dolly-backend.dev-fss-pub.nais.io
   liveness:
     path: /internal/isAlive
