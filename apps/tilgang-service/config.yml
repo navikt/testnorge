@@ -12,6 +12,9 @@ spec:
     enabled: true
   maskinporten:
     enabled: true
+    scopes:
+      consumes:
+        - name: "altinn:serviceowner"
   azure:
     application:
       enabled: true
