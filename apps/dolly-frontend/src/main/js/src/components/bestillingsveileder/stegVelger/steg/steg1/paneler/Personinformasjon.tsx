@@ -53,7 +53,7 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 			<AttributtKategori title="Diverse">
 				<Attributt attr={sm.attrs.identtype} vis={leggTil} />
 				<Attributt attr={sm.attrs.identHistorikk} />
-				<Attributt attr={sm.attrs.kjonn} vis={!opprettFraEksisterende && !leggTil} />
+				<Attributt attr={sm.attrs.kjonn} vis={!opprettFraEksisterende} />
 				<Attributt attr={sm.attrs.harMellomnavn} />
 				<Attributt attr={sm.attrs.sprakKode} />
 				<Attributt attr={sm.attrs.egenAnsattDatoFom} />
@@ -141,8 +141,11 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		kjonn: {
 			label: 'Kjønn',
 			checked: has('tpsf.kjonn'),
-			add: () => set('tpsf.kjonn', ''),
-			remove: () => del('tpsf.kjonn'),
+			add: () =>
+				personFoerLeggTil
+					? setMulti(['tpsf.kjonn', ''], ['tpsf.identtype', 'FNR'])
+					: set(['tpsf.kjonn', '']),
+			remove: () => del(['tpsf.kjonn', 'tpsf.identtype']),
 		},
 		harMellomnavn: {
 			label: 'Har mellomnavn',

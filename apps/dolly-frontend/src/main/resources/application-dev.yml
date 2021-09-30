@@ -7,7 +7,7 @@ azure.app.client.id: ${client_id}
 azure.app.client.secret: ${client_secret}
 
 DOLLY_BACKEND_NAME: dolly-backend-dev
-DOLLY_BACKEND_URL: https://dolly-backend-dev.dev.adeo.no
+DOLLY_BACKEND_URL: https://dolly-backend-dev.dev.intern.nav.no
 UDI_STUB_URL: https://udi-stub-dev.dev.adeo.no
 UDI_STUB_NAME: udi-stub-dev
 TPS_FORVALTERN_PROXY_NAME: tps-forvalteren-dev-proxy
