@@ -1,14 +1,17 @@
 package no.nav.testnav.apps.tilgangservice.client.altinn.v1.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 
 import java.util.concurrent.Callable;
 
 import no.nav.testnav.apps.tilgangservice.client.altinn.v1.dto.RightDTO;
 
+@Slf4j
 @RequiredArgsConstructor
 public class GetRightsCommand implements Callable<Flux<RightDTO>> {
     private final WebClient webClient;
@@ -29,6 +32,13 @@ public class GetRightsCommand implements Callable<Flux<RightDTO>> {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header("ApiKey", apiKey)
                 .retrieve()
-                .bodyToFlux(RightDTO.class);
+                .bodyToFlux(RightDTO.class)
+                .doOnError(
+                        throwable -> throwable instanceof WebClientResponseException,
+                        throwable -> log.error(
+                                "Feil ved henting av retigheter i Altinn. \n{}",
+                                ((WebClientResponseException) throwable).getResponseBodyAsString()
+                        )
+                );
     }
 }
