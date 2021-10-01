@@ -48,4 +48,4 @@ spec:
     - "https://testnav-tilgang-service-dev.dev.intern.nav.no"
   env:
     - name: ACCEPTED_AUDIENCE
-      value: dev-gcp:dolly:testnav-tilgang-service-devv
+      value: dev-gcp:dolly:testnav-tilgang-service-dev
