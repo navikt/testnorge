@@ -33,6 +33,7 @@ import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -197,6 +198,10 @@ public class DollyBestillingService {
                 sendIdenterTilTPS(request.getEnvironments(),
                         oppdaterPersonResponse.getIdentTupler().stream()
                                 .map(RsOppdaterPersonResponse.IdentTuple::getIdent).collect(toList()), null, progress);
+
+                if (Strings.isNotBlank(request.getBeskrivelse())) {
+                    identService.saveIdentBeskrivelse(bestilling.getIdent(), request.getBeskrivelse());
+                }
 
                 dollyPerson.set(dollyPersonCache.prepareTpsPerson(oppdaterPersonResponse.getIdentTupler().stream()
                         .map(RsOppdaterPersonResponse.IdentTuple::getIdent)
