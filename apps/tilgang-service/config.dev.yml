@@ -22,6 +22,9 @@ spec:
           cluster: dev-fss
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
+    outbound:
+      external:
+        - host: tt02.altinn.no
   liveness:
     path: /internal/isAlive
     initialDelay: 4
