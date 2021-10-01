@@ -22,7 +22,7 @@ spring:
 
 altinn:
   api:
-    url: https://tt02.altinn.no
+    url: ${ALTINN_URL}
     key: ${ALTINN_API_KEY}
   service:
     code: 5748

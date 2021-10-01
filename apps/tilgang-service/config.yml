@@ -51,4 +51,6 @@ spec:
     - "https://testnav-tilgang-service.dev.intern.nav.no"
   env:
     - name: ACCEPTED_AUDIENCE
-      value: dev-gcp:dolly:testnav-tilgang-servicei
+      value: dev-gcp:dolly:testnav-tilgang-service
+    - name: ALTINN_URL
+      value: https://altinn.no
