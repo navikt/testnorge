@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import no.nav.testnav.apps.tilgangservice.controller.dto.OrganisajonDTO;
+import no.nav.testnav.apps.tilgangservice.controller.dto.OrganisasjonDTO;
 import no.nav.testnav.apps.tilgangservice.domain.Access;
 import no.nav.testnav.apps.tilgangservice.service.PersonTilgangSerivce;
 
@@ -21,13 +21,13 @@ public class PersonTilgangController {
     private final PersonTilgangSerivce tilgangSerivce;
 
     @GetMapping
-    public Flux<OrganisajonDTO> getOrganiasjoner() {
+    public Flux<OrganisasjonDTO> getOrganiasjoner() {
         return tilgangSerivce.getAccess().map(Access::toDTO);
     }
 
 
     @GetMapping("/{organisajonesnummer}")
-    public Mono<ResponseEntity<OrganisajonDTO>> getOrganiasjoner(@PathVariable String organisajonesnummer) {
+    public Mono<ResponseEntity<OrganisasjonDTO>> getOrganiasjoner(@PathVariable String organisajonesnummer) {
         return tilgangSerivce
                 .getAccess(organisajonesnummer)
                 .map(Access::toDTO)

@@ -6,7 +6,7 @@ metadata:
   labels:
     team: dolly
 spec:
-  image: {{ image }}
+  image: { { image } }
   port: 8080
   tokenx:
     enabled: true
@@ -18,9 +18,7 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: team-dolly-lokal-app
-          cluster: dev-fss
-        - application: testnav-oversikt-frontend
+        - application: dolly-frontend
           cluster: dev-gcp
     outbound:
       external:

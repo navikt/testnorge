@@ -12,35 +12,35 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import no.nav.testnav.apps.tilgangservice.controller.dto.OrganisajonDTO;
-import no.nav.testnav.apps.tilgangservice.controller.request.OrganiasjonAccessRequest;
-import no.nav.testnav.apps.tilgangservice.domain.Organisajon;
-import no.nav.testnav.apps.tilgangservice.service.OrganiasjonTilgangService;
+import no.nav.testnav.apps.tilgangservice.controller.dto.OrganisasjonDTO;
+import no.nav.testnav.apps.tilgangservice.controller.request.OrganisasjonAccessRequest;
+import no.nav.testnav.apps.tilgangservice.domain.Organisasjon;
+import no.nav.testnav.apps.tilgangservice.service.OrganisasjonTilgangService;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/organisajoner")
+@RequestMapping("/api/v1/organisasjoner")
 @RequiredArgsConstructor
-public class OrganiasjonTilgangConsumer {
+public class OrganisasjonTilgangConsumer {
 
-    private final OrganiasjonTilgangService service;
+    private final OrganisasjonTilgangService service;
 
     @GetMapping
-    public Flux<OrganisajonDTO> getAll() {
+    public Flux<OrganisasjonDTO> getAll() {
         return service.getAll()
-                .map(Organisajon::toDTO);
+                .map(Organisasjon::toDTO);
     }
 
     @PostMapping
-    public Mono<OrganisajonDTO> create(@RequestBody OrganiasjonAccessRequest request) {
+    public Mono<OrganisasjonDTO> create(@RequestBody OrganisasjonAccessRequest request) {
         return service
                 .create(request.organisajonsnummer(), request.gyldigTil())
-                .map(Organisajon::toDTO);
+                .map(Organisasjon::toDTO);
     }
 
-    @DeleteMapping("/{organisajonsnummer}")
-    public Flux<Void> delete(@PathVariable String organisajonsnummer) {
-        return service.delete(organisajonsnummer);
+    @DeleteMapping("/{organisasjonsnummer}")
+    public Flux<Void> delete(@PathVariable String organisasjonsnummer) {
+        return service.delete(organisasjonsnummer);
     }
 
 }

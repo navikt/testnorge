@@ -1,7 +1,7 @@
 package no.nav.testnav.apps.tilgangservice.domain;
 
 import no.nav.testnav.apps.tilgangservice.client.altinn.v1.dto.AccessDTO;
-import no.nav.testnav.apps.tilgangservice.controller.dto.OrganisajonDTO;
+import no.nav.testnav.apps.tilgangservice.controller.dto.OrganisasjonDTO;
 
 public class Access {
     private final String navn;
@@ -14,8 +14,8 @@ public class Access {
         this.orgnisajonsfrom = accessDTO.organizationForm();
     }
 
-    public OrganisajonDTO toDTO() {
-        return new OrganisajonDTO(
+    public OrganisasjonDTO toDTO() {
+        return new OrganisasjonDTO(
                 navn,
                 orgnisajonsnummer,
                 orgnisajonsfrom,

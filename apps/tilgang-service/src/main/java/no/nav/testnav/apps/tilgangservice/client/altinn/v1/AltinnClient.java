@@ -12,9 +12,9 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import no.nav.testnav.apps.tilgangservice.client.altinn.v1.command.CreateOrganiasjonAccessCommand;
-import no.nav.testnav.apps.tilgangservice.client.altinn.v1.command.DeleteOrganiasjonAccessCommand;
-import no.nav.testnav.apps.tilgangservice.client.altinn.v1.command.GetOrganiasjonCommand;
+import no.nav.testnav.apps.tilgangservice.client.altinn.v1.command.CreateOrganisasjonAccessCommand;
+import no.nav.testnav.apps.tilgangservice.client.altinn.v1.command.DeleteOrganisasjonAccessCommand;
+import no.nav.testnav.apps.tilgangservice.client.altinn.v1.command.GetOrganisasjonCommand;
 import no.nav.testnav.apps.tilgangservice.client.altinn.v1.command.GetPersonAccessCommand;
 import no.nav.testnav.apps.tilgangservice.client.altinn.v1.command.GetRightsCommand;
 import no.nav.testnav.apps.tilgangservice.client.altinn.v1.dto.AccessDTO;
@@ -22,7 +22,7 @@ import no.nav.testnav.apps.tilgangservice.client.altinn.v1.dto.RightDTO;
 import no.nav.testnav.apps.tilgangservice.client.maskinporten.v1.MaskinportenClient;
 import no.nav.testnav.apps.tilgangservice.config.AltinnConfig;
 import no.nav.testnav.apps.tilgangservice.domain.Access;
-import no.nav.testnav.apps.tilgangservice.domain.Organisajon;
+import no.nav.testnav.apps.tilgangservice.domain.Organisasjon;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserIdAction;
 
 @Component
@@ -90,7 +90,7 @@ public class AltinnClient {
                 .filter(value -> value.reportee().equals(organiasjonsnummer))
                 .flatMap(value -> maskinportenClient
                         .getAccessToken()
-                        .flatMap(accessToken -> new DeleteOrganiasjonAccessCommand(
+                        .flatMap(accessToken -> new DeleteOrganisasjonAccessCommand(
                                 webClient,
                                 accessToken.value(),
                                 altinnConfig.getApiKey(),
@@ -99,7 +99,7 @@ public class AltinnClient {
                 );
     }
 
-    public Mono<Organisajon> create(String organiasjonsnummer, LocalDateTime gyldigTil) {
+    public Mono<Organisasjon> create(String organiasjonsnummer, LocalDateTime gyldigTil) {
         var readRight = new RightDTO(
                 null,
                 organiasjonsnummer,
@@ -110,7 +110,7 @@ public class AltinnClient {
         );
         return maskinportenClient
                 .getAccessToken()
-                .flatMap(accessToken -> new CreateOrganiasjonAccessCommand(
+                .flatMap(accessToken -> new CreateOrganisasjonAccessCommand(
                                 webClient,
                                 accessToken.value(),
                                 altinnConfig.getApiKey(),
@@ -118,28 +118,28 @@ public class AltinnClient {
                         ).call()
                 ).flatMap(right -> maskinportenClient
                         .getAccessToken()
-                        .flatMap(accessToken -> new GetOrganiasjonCommand(
+                        .flatMap(accessToken -> new GetOrganisasjonCommand(
                                 webClient,
                                 accessToken.value(),
                                 right.reportee(),
                                 altinnConfig.getApiKey()
                         ).call())
-                        .map(value -> new Organisajon(value, right))
+                        .map(value -> new Organisasjon(value, right))
                 );
     }
 
 
-    public Flux<Organisajon> getOrganiasjoner() {
+    public Flux<Organisasjon> getOrganisasjoner() {
         return getRights()
                 .map(right -> maskinportenClient
                         .getAccessToken()
-                        .flatMap(accessToken -> new GetOrganiasjonCommand(
+                        .flatMap(accessToken -> new GetOrganisasjonCommand(
                                 webClient,
                                 accessToken.value(),
                                 right.reportee(),
                                 altinnConfig.getApiKey()
                         ).call())
-                        .map(value -> new Organisajon(value, right))
+                        .map(value -> new Organisasjon(value, right))
                 ).collectList()
                 .flatMapMany(Flux::concat);
     }

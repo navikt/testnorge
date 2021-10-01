@@ -14,7 +14,7 @@ import no.nav.testnav.apps.tilgangservice.client.altinn.v1.dto.RightDTO;
 
 @Slf4j
 @RequiredArgsConstructor
-public class CreateOrganiasjonAccessCommand implements Callable<Mono<RightDTO>> {
+public class CreateOrganisasjonAccessCommand implements Callable<Mono<RightDTO>> {
     private final WebClient webClient;
     private final String token;
     private final String apiKey;

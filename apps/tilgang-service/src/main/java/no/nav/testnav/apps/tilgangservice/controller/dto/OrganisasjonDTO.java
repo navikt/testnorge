@@ -5,10 +5,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.LocalDateTime;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public record OrganisajonDTO(
+public record OrganisasjonDTO(
         String navn,
-        String orgnisajonsnummer,
-        String orgnisajonsfrom,
+        String orgnisasjonsnummer,
+        String orgnisasjonsfrom,
         LocalDateTime gyldigTil
 ) {
 }

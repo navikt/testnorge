@@ -2,7 +2,7 @@ package no.nav.testnav.apps.tilgangservice.controller.request;
 
 import java.time.LocalDateTime;
 
-public record OrganiasjonAccessRequest(
+public record OrganisasjonAccessRequest(
         String organisajonsnummer,
         LocalDateTime gyldigTil
 ) {
