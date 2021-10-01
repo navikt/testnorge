@@ -24,21 +24,22 @@ import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
 import no.nav.testnav.libs.reactivesecurity.domain.AzureClientCredentials;
 import no.nav.testnav.libs.reactivesecurity.domain.ServerProperties;
 import no.nav.testnav.libs.reactivesecurity.domain.Token;
-import no.nav.testnav.libs.reactivesecurity.service.AuthenticationTokenResolver;
+import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedTokenAction;
 
 @Slf4j
 @Service
 public class AzureAdTokenExchange implements GenerateTokenExchange {
     private final WebClient webClient;
-    private final AuthenticationTokenResolver tokenResolver;
     private final AzureClientCredentials clientCredentials;
+    private final GetAuthenticatedTokenAction getAuthenticatedToken;
 
     public AzureAdTokenExchange(
             @Value("${http.proxy:#{null}}") String proxyHost,
             @Value("${AAD_ISSUER_URI}") String issuerUrl,
-            AuthenticationTokenResolver tokenResolver,
-            AzureClientCredentials clientCredentials
+            AzureClientCredentials clientCredentials,
+            GetAuthenticatedTokenAction getAuthenticatedToken
     ) {
+        this.getAuthenticatedToken = getAuthenticatedToken;
         WebClient.Builder builder = WebClient
                 .builder()
                 .baseUrl(issuerUrl + "/oauth2/v2.0/token")
@@ -57,15 +58,14 @@ public class AzureAdTokenExchange implements GenerateTokenExchange {
                     ));
             builder.clientConnector(new ReactorClientHttpConnector(httpClient));
         }
-        this.tokenResolver = tokenResolver;
         this.webClient = builder.build();
         this.clientCredentials = clientCredentials;
     }
 
     @Override
     public Mono<AccessToken> generateToken(ServerProperties serverProperties) {
-        return tokenResolver
-                .getToken()
+        return getAuthenticatedToken
+                .call()
                 .flatMap(token -> {
                     if (token.isClientCredentials()) {
                         return generateClientCredentialAccessToken(serverProperties);
@@ -77,8 +77,8 @@ public class AzureAdTokenExchange implements GenerateTokenExchange {
     // TODO Refactor to use format: cluster:namespace:app-name
     @Deprecated
     public Mono<AccessToken> generateToken(AccessScopes accessScopes) {
-        return tokenResolver
-                .getToken()
+        return getAuthenticatedToken
+                .call()
                 .flatMap(token -> generateOnBehalfOfAccessToken(token, accessScopes.getScopes().stream().findFirst().get()));
     }
 
@@ -124,7 +124,7 @@ public class AzureAdTokenExchange implements GenerateTokenExchange {
     }
 
     private Mono<AccessToken> generateOnBehalfOfAccessToken(Token token, String scope) {
-        String oid = token.getOid();
+        String oid = token.getUserId();
         if (oid != null) {
             Map<String, String> contextMap = MDC.getCopyOfContextMap();
             contextMap.put("oid", oid);

@@ -15,23 +15,23 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
+import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedTokenAction;
 import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
 import no.nav.testnav.libs.reactivesecurity.domain.ServerProperties;
 import no.nav.testnav.libs.reactivesecurity.domain.TokenX;
 import no.nav.testnav.libs.reactivesecurity.domain.WellKnownConfig;
-import no.nav.testnav.libs.reactivesecurity.service.AuthenticationTokenResolver;
 
 @Slf4j
 @Service
 public class TokenXExchange implements GenerateTokenExchange {
-    private final AuthenticationTokenResolver tokenResolver;
+    private final GetAuthenticatedTokenAction getAuthenticatedTokenAction;
     private final WebClient webClient;
     private final TokenX tokenX;
 
-    TokenXExchange(TokenX tokenX, AuthenticationTokenResolver tokenResolver) {
+    TokenXExchange(TokenX tokenX, GetAuthenticatedTokenAction tokenResolver) {
         this.webClient = WebClient.builder().build();
         this.tokenX = tokenX;
-        this.tokenResolver = tokenResolver;
+        this.getAuthenticatedTokenAction = tokenResolver;
     }
 
 
@@ -41,7 +41,7 @@ public class TokenXExchange implements GenerateTokenExchange {
 
     @Override
     public Mono<AccessToken> generateToken(ServerProperties serverProperties) {
-        return tokenResolver.getToken().flatMap(token -> webClient
+        return getAuthenticatedTokenAction.call().flatMap(token -> webClient
                 .get()
                 .uri(tokenX.getWellKnownUrl())
                 .retrieve()

@@ -9,4 +9,8 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnProperty("spring.security.oauth2.resourceserver.aad.issuer-uri")
 public class AzureAdResourceServerProperties extends ResourceServerProperties {
 
+    @Override
+    public ResourceServerType getType() {
+        return ResourceServerType.AZURE_AD;
+    }
 }

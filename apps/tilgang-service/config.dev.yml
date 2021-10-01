@@ -1,7 +1,7 @@
 ﻿apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: testnav-tilgang-service
+  name: testnav-tilgang-service-dev
   namespace: dolly
   labels:
     team: dolly
@@ -32,11 +32,11 @@ spec:
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500
-  envFrom:
-    - secret: altinn-dev
   replicas:
     min: 1
     max: 1
+  envFrom:
+    - secret: altinn-prod
   resources:
     requests:
       cpu: 200m
@@ -45,7 +45,7 @@ spec:
       cpu: 500m
       memory: 2048Mi
   ingresses:
-    - "https://testnav-tilgang-service.dev.intern.nav.no"
+    - "https://testnav-tilgang-service-dev.dev.intern.nav.no"
   env:
     - name: ACCEPTED_AUDIENCE
-      value: dev-gcp:dolly:testnav-tilgang-servicei
+      value: dev-gcp:dolly:testnav-tilgang-service-devv

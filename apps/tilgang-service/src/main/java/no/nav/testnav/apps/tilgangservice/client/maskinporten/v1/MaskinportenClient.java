@@ -1,4 +1,4 @@
-package no.nav.testnav.apps.tilgangservice.consumer;
+package no.nav.testnav.apps.tilgangservice.client.maskinporten.v1;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JOSEObjectType;
@@ -12,61 +12,53 @@ import com.nimbusds.jwt.SignedJWT;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
+import java.util.function.Function;
 
 import no.nav.testnav.apps.tilgangservice.config.MaskinportenConfig;
-import no.nav.testnav.apps.tilgangservice.config.WellKnown;
+import no.nav.testnav.apps.tilgangservice.client.maskinporten.v1.command.GetAccessTokenCommand;
+import no.nav.testnav.apps.tilgangservice.client.maskinporten.v1.command.GetWellKnownCommand;
+import no.nav.testnav.apps.tilgangservice.client.maskinporten.v1.dto.WellKnown;
+import no.nav.testnav.apps.tilgangservice.domain.AccessToken;
 
 @Slf4j
 @Component
-public class MaskinportenConsumer {
+public class MaskinportenClient {
 
     private final WebClient webClient;
     private final MaskinportenConfig maskinportenConfig;
+    private final Mono<WellKnown> wellKnown;
+    private final Mono<AccessToken> accessToken;
 
-    public MaskinportenConsumer(MaskinportenConfig maskinportenConfig) {
+    public MaskinportenClient(MaskinportenConfig maskinportenConfig) {
         this.webClient = WebClient.builder().build();
         this.maskinportenConfig = maskinportenConfig;
-    }
-
-    private Mono<WellKnown> getWellKnown() {
-        return webClient.get()
-                .uri(maskinportenConfig.getWellKnownUrl())
-                .retrieve()
-                .bodyToMono(WellKnown.class)
-                .cache(
-                        value -> Duration.ofDays(1),
-                        value -> Duration.ZERO,
-                        () -> Duration.ZERO
-                );
-    }
-
-    public Mono<String> generateToken() {
-        return getWellKnown().flatMap(wellKnown ->
-                webClient.post()
-                        .uri(wellKnown.token_endpoint())
-                        .body(BodyInserters
-                                .fromFormData("grant_type", wellKnown.grant_types_supported().get(0))
-                                .with("assertion", createJwtClaims(wellKnown.issuer()))
-                        )
-                        .retrieve()
-                        .bodyToMono(String.class)
-                        .doOnError(throwable -> {
-                            if (throwable instanceof WebClientResponseException) {
-                                log.error("Feil ved generering av token. \n{}", ((WebClientResponseException) throwable).getResponseBodyAsString());
-                            }
-                            log.error("Feil ved generering av token.", throwable);
-                        })
-
+        this.wellKnown = cache(
+                new GetWellKnownCommand(webClient, maskinportenConfig).call(),
+                value -> Duration.ofDays(1)
         );
+        this.accessToken = cache(
+                wellKnown.flatMap(wellKnown -> new GetAccessTokenCommand(webClient, wellKnown, createJwtClaims(wellKnown.issuer())).call()),
+                value -> Duration.ofSeconds(value.expires_in() - 10)
+        );
+    }
+
+    private static <T> Mono<T> cache(Mono<T> value, Function<? super T, Duration> ttlForValue) {
+        return value.cache(
+                ttlForValue,
+                throwable -> Duration.ZERO,
+                () -> Duration.ZERO
+        );
+    }
+
+    public Mono<AccessToken> getAccessToken() {
+        return accessToken;
     }
 
     @SneakyThrows

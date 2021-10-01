@@ -1,6 +1,5 @@
-package no.nav.testnav.libs.reactivesecurity.service;
+package no.nav.testnav.libs.reactivesecurity.action;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
@@ -12,12 +11,9 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
-import no.nav.testnav.libs.reactivesecurity.domain.Token;
+abstract class JwtResolver {
 
-@RequiredArgsConstructor
-public class SecureJwtAuthenticationTokenResolver implements AuthenticationTokenResolver {
-
-    private Mono<JwtAuthenticationToken> getJwtAuthenticationToken() {
+    Mono<JwtAuthenticationToken> getJwtAuthenticationToken() {
         return ReactiveSecurityContextHolder
                 .getContext()
                 .switchIfEmpty(Mono.error(new IllegalStateException("ReactiveSecurityContext is empty")))
@@ -32,23 +28,4 @@ public class SecureJwtAuthenticationTokenResolver implements AuthenticationToken
                 });
     }
 
-    @Override
-    public Mono<Token> getToken() {
-        return getJwtAuthenticationToken()
-                .map(jwtAuthenticationToken -> {
-                    var tokenAttributes = jwtAuthenticationToken.getTokenAttributes();
-                    return Token.builder()
-                            .value(jwtAuthenticationToken.getToken().getTokenValue())
-                            .clientCredentials(String.valueOf(tokenAttributes.get("oid"))
-                                    .equals(String.valueOf(tokenAttributes.get("sub"))))
-                            .oid(String.valueOf(tokenAttributes.get("oid")))
-                            .build();
-                });
-    }
-
-    @Override
-    public Mono<String> getClientRegistrationId() {
-        // TODO Read from token
-        return Mono.just("aad");
-    }
 }

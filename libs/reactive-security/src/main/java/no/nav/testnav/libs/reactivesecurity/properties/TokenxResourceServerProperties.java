@@ -10,4 +10,8 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnProperty("spring.security.oauth2.resourceserver.tokenx.issuer-uri")
 public class TokenxResourceServerProperties extends ResourceServerProperties {
 
+    @Override
+    public ResourceServerType getType() {
+        return ResourceServerType.TOKEN_X;
+    }
 }

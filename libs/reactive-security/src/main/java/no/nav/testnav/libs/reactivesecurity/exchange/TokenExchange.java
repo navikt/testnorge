@@ -9,24 +9,25 @@ import java.util.Map;
 
 import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
 import no.nav.testnav.libs.reactivesecurity.domain.ServerProperties;
-import no.nav.testnav.libs.reactivesecurity.service.AuthenticationTokenResolver;
+import no.nav.testnav.libs.reactivesecurity.properties.ResourceServerType;
+import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedResourceServerTypeAction;
 
 
 @Service
 @RequiredArgsConstructor
 public class TokenExchange {
-    private final AuthenticationTokenResolver tokenResolver;
 
-    private final Map<String, GenerateTokenExchange> exchanges = new HashMap<>();
+    private final GetAuthenticatedResourceServerTypeAction getAuthenticatedTypeAction;
+
+    private final Map<ResourceServerType, GenerateTokenExchange> exchanges = new HashMap<>();
 
     public Mono<AccessToken> generateToken(ServerProperties serverProperties) {
-        return tokenResolver
-                .getClientRegistrationId()
-                .flatMap(id -> exchanges.get(id).generateToken(serverProperties));
+        return getAuthenticatedTypeAction.call()
+                .flatMap(type -> exchanges.get(type).generateToken(serverProperties));
     }
 
-    public void addExchange(String id, GenerateTokenExchange exchange) {
-        exchanges.put(id, exchange);
+    public void addExchange(ResourceServerType type, GenerateTokenExchange exchange) {
+        exchanges.put(type, exchange);
     }
 
 }

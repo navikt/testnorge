@@ -1,4 +1,4 @@
-name: Deploy tilgang-service-dev
+name: Deploy tilgang-service
 
 on:
   push:
@@ -44,4 +44,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
-          RESOURCE: apps/tilgang-service/config.dev.yml
+          RESOURCE: apps/tilgang-service/config.yml

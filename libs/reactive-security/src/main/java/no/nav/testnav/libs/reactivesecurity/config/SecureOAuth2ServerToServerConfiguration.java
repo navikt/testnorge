@@ -15,19 +15,23 @@ import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenXExchange;
 import no.nav.testnav.libs.reactivesecurity.manager.JwtReactiveAuthenticationManager;
 import no.nav.testnav.libs.reactivesecurity.properties.AzureAdResourceServerProperties;
-import no.nav.testnav.libs.reactivesecurity.properties.TokenxResourceServerProperties;
 import no.nav.testnav.libs.reactivesecurity.properties.ResourceServerProperties;
-import no.nav.testnav.libs.reactivesecurity.service.AuthenticationTokenResolver;
-import no.nav.testnav.libs.reactivesecurity.service.SecureJwtAuthenticationTokenResolver;
+import no.nav.testnav.libs.reactivesecurity.properties.ResourceServerType;
+import no.nav.testnav.libs.reactivesecurity.properties.TokenxResourceServerProperties;
+import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedResourceServerTypeAction;
+import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedTokenAction;
+import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserIdAction;
 
 @Configuration
 @Import({
-        SecureJwtAuthenticationTokenResolver.class,
         AzureClientCredentials.class,
         AzureAdTokenExchange.class,
         TokenXExchange.class,
         TokenxResourceServerProperties.class,
         AzureAdResourceServerProperties.class,
+        GetAuthenticatedUserIdAction.class,
+        GetAuthenticatedResourceServerTypeAction.class,
+        GetAuthenticatedTokenAction.class,
         TokenX.class
 })
 public class SecureOAuth2ServerToServerConfiguration {
@@ -35,13 +39,13 @@ public class SecureOAuth2ServerToServerConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public TokenExchange tokenExchange(
-            AuthenticationTokenResolver tokenResolver,
+            GetAuthenticatedResourceServerTypeAction getAuthenticatedResourceServerType,
             AzureAdTokenExchange azureAdTokenExchange,
             TokenXExchange tokenXExchange
     ) {
-        var tokenExchange = new TokenExchange(tokenResolver);
-        tokenExchange.addExchange("aad", azureAdTokenExchange);
-        tokenExchange.addExchange("idporten", tokenXExchange);
+        var tokenExchange = new TokenExchange(getAuthenticatedResourceServerType);
+        tokenExchange.addExchange(ResourceServerType.AZURE_AD, azureAdTokenExchange);
+        tokenExchange.addExchange(ResourceServerType.TOKEN_X, tokenXExchange);
         return tokenExchange;
     }
 

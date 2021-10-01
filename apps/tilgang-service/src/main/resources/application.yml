@@ -15,4 +15,15 @@ spring:
         tokenx:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
-          accepted-audience: dev-gcp:dolly:testnav-tilgang-service
+          accepted-audience: ${ACCEPTED_AUDIENCE}
+  jackson:
+    serialization:
+      write_dates_as_timestamps: false
+
+altinn:
+  api:
+    url: https://tt02.altinn.no
+    key: ${ALTINN_API_KEY}
+  service:
+    code: 5748
+    edition: 1
