@@ -1,3 +1,4 @@
 azure.app.client.id: ${client_id}
 azure.app.client.secret: ${client_secret}
 ACCEPTED_AUDIENCE: dev-gcp:dolly:testnav-tilgang-service-dev
+ALTINN_URL: https://tt02.altinn.no
