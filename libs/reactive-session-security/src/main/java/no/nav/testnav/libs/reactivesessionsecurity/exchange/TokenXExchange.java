@@ -78,8 +78,8 @@ public class TokenXExchange implements GenerateTokenExchange {
                                 .withExpiresAt(new Date(date.getTimeInMillis() + (120 * 1000)))
                                 .withKeyId(jwk.getKeyID());
                         organisasjonsnummer.ifPresent(value -> {
-                            log.info("Legger til claim organisasjonsnummer {} i jwt.", organisasjonsnummer);
-                            builder.withClaim("organisasjonsnummer", value);
+                            log.info("Legger til claim organisasjonsnummer {} i jwt.", value);
+                            builder.withClaim("org", value);
                         });
                         return builder.sign(Algorithm.RSA256(null, jwk.toRSAKey().toRSAPrivateKey()));
                     } catch (JOSEException | ParseException e) {
