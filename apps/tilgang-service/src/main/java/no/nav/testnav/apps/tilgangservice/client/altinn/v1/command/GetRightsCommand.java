@@ -22,12 +22,6 @@ public class GetRightsCommand implements Callable<Flux<RightDTO>> {
 
     @Override
     public Flux<RightDTO> call() {
-
-        var apiLength = apiKey.length();
-        var tokenLength = token.length();
-        log.info("Set ApiKey {}****{} ({}).", apiKey.substring(0, 1), apiKey.substring(apiLength - 2, apiLength), apiLength);
-        log.info("Set Token {}****{} ({}).", token.substring(0, 1), token.substring(tokenLength - 2, tokenLength), tokenLength);
-
         return webClient
                 .get()
                 .uri(builder -> builder.path("/api/serviceowner/Srr")
