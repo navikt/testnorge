@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
-import no.nav.testnav.apps.tilgangservice.domain.AccessToken;
+import no.nav.testnav.apps.tilgangservice.client.maskinporten.v1.dto.AccessToken;
 import no.nav.testnav.apps.tilgangservice.client.maskinporten.v1.dto.WellKnown;
 
 @Slf4j

@@ -63,7 +63,7 @@ public class AltinnClient {
                         .getAccessToken()
                         .flatMap(accessToken -> new GetPersonAccessCommand(
                                         webClient,
-                                        accessToken.access_token(),
+                                        accessToken.value(),
                                         userId,
                                         altinnConfig.getCode(),
                                         altinnConfig.getEdition(),
@@ -92,7 +92,7 @@ public class AltinnClient {
                         .getAccessToken()
                         .flatMap(accessToken -> new DeleteOrganiasjonAccessCommand(
                                 webClient,
-                                accessToken.access_token(),
+                                accessToken.value(),
                                 altinnConfig.getApiKey(),
                                 value.id()
                         ).call())
@@ -112,7 +112,7 @@ public class AltinnClient {
                 .getAccessToken()
                 .flatMap(accessToken -> new CreateOrganiasjonAccessCommand(
                                 webClient,
-                                accessToken.access_token(),
+                                accessToken.value(),
                                 altinnConfig.getApiKey(),
                                 readRight
                         ).call()
@@ -120,7 +120,7 @@ public class AltinnClient {
                         .getAccessToken()
                         .flatMap(accessToken -> new GetOrganiasjonCommand(
                                 webClient,
-                                accessToken.access_token(),
+                                accessToken.value(),
                                 right.reportee(),
                                 altinnConfig.getApiKey()
                         ).call())
@@ -135,7 +135,7 @@ public class AltinnClient {
                         .getAccessToken()
                         .flatMap(accessToken -> new GetOrganiasjonCommand(
                                 webClient,
-                                accessToken.access_token(),
+                                accessToken.value(),
                                 right.reportee(),
                                 altinnConfig.getApiKey()
                         ).call())
@@ -150,7 +150,7 @@ public class AltinnClient {
                 .getAccessToken()
                 .flatMapMany(accessToken -> new GetRightsCommand(
                                 webClient,
-                                accessToken.access_token(),
+                                accessToken.value(),
                                 altinnConfig.getCode(),
                                 altinnConfig.getEdition(),
                                 altinnConfig.getApiKey()

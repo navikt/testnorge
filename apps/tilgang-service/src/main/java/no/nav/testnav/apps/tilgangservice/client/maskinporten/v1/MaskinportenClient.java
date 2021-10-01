@@ -25,7 +25,7 @@ import no.nav.testnav.apps.tilgangservice.config.MaskinportenConfig;
 import no.nav.testnav.apps.tilgangservice.client.maskinporten.v1.command.GetAccessTokenCommand;
 import no.nav.testnav.apps.tilgangservice.client.maskinporten.v1.command.GetWellKnownCommand;
 import no.nav.testnav.apps.tilgangservice.client.maskinporten.v1.dto.WellKnown;
-import no.nav.testnav.apps.tilgangservice.domain.AccessToken;
+import no.nav.testnav.apps.tilgangservice.client.maskinporten.v1.dto.AccessToken;
 
 @Slf4j
 @Component
@@ -45,7 +45,7 @@ public class MaskinportenClient {
         );
         this.accessToken = cache(
                 wellKnown.flatMap(wellKnown -> new GetAccessTokenCommand(webClient, wellKnown, createJwtClaims(wellKnown.issuer())).call()),
-                value -> Duration.ofSeconds(value.expires_in() - 10)
+                value -> Duration.ofSeconds(value.expiresIn() - 10)
         );
     }
 
@@ -57,8 +57,8 @@ public class MaskinportenClient {
         );
     }
 
-    public Mono<AccessToken> getAccessToken() {
-        return accessToken;
+    public Mono<no.nav.testnav.apps.tilgangservice.domain.AccessToken> getAccessToken() {
+        return accessToken.map(no.nav.testnav.apps.tilgangservice.domain.AccessToken::new);
     }
 
     @SneakyThrows
