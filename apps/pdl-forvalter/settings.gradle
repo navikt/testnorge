@@ -7,10 +7,11 @@ rootProject.name = 'pdl-forvalter'
 
 includeBuild '../../gradlePlugins'
 
-includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/database'
-includeBuild '../../libs/servlet-security'
 includeBuild '../../libs/data-transfer-objects'
+includeBuild '../../libs/reactive-core'
+includeBuild '../../libs/reactive-security'
+includeBuild '../../libs/testing'
 
 gradleEnterprise {
     buildScan {

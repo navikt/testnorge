@@ -13,24 +13,21 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.util.UrlPathHelper;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 
 @ControllerAdvice
 @RequiredArgsConstructor
 public class ExceptionAdvice {
 
-    private final HttpServletRequest httpServletRequest;
-    private final UrlPathHelper urlPathHelper;
+    //   private final ReactorServerHttpRequest httpServletRequest;
 
     private ExceptionInformation getExceptionInformation(HttpStatus statusCode, String statusText) {
         return ExceptionInformation.builder()
                 .error(statusCode.getReasonPhrase())
                 .status(statusCode.value())
                 .message(statusText)
-                .path(urlPathHelper.getPathWithinApplication(httpServletRequest))
+                //          .path(httpServletRequest.getPath().toString())
                 .timestamp(LocalDateTime.now())
                 .build();
     }
