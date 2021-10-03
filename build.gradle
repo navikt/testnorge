@@ -13,3 +13,7 @@ sonarqube {
         property "sonar.login", System.getenv("SONAR_TOKEN")
     }
 }
+
+task buildAll {
+    dependsOn gradle.includedBuilds*.task(':build')
+}

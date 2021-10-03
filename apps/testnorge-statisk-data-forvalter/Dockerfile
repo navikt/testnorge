@@ -1,4 +1,4 @@
-FROM navikt/java:11
+FROM navikt/java:17
 LABEL maintainer="Team Dolly"
 
 COPY apps/testnorge-statisk-data-forvalter/init.sh /init-scripts/init.sh

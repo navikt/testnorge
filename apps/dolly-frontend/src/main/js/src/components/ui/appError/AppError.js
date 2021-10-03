@@ -50,9 +50,7 @@ export const AppError = ({ error, stackTrace, style }) => (
 			<b>
 				<a
 					href={
-						window.location.hostname.includes('localhost')
-							? 'http://localhost:3000/oauth2/authorization/aad'
-							: 'https://dolly.ekstern.dev.nav.no/oauth2/authorization/aad'
+						window.location.protocol + '//' + window.location.host + '/oauth2/authorization/aad'
 					}
 				>
 					her
