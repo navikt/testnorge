@@ -15,13 +15,13 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 public class TokenExchange implements GenerateTokenExchange {
-    private final ClientRegistrationIdResolver clientRegistrationIdService;
+    private final ClientRegistrationIdResolver clientRegistrationIdResolver;
 
     private final Map<String, GenerateTokenExchange> exchanges = new HashMap<>();
 
     @Override
     public Mono<AccessToken> generateToken(ServerProperties serverProperties, ServerWebExchange exchange) {
-        return clientRegistrationIdService
+        return clientRegistrationIdResolver
                 .getClientRegistrationId()
                 .flatMap(id -> getExchange(id).generateToken(serverProperties, exchange));
     }
