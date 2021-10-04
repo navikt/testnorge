@@ -17,12 +17,12 @@ spec:
     path: /internal/isAlive
     initialDelay: 30
     periodSeconds: 30
-    failureThreshold: 200000
+    failureThreshold: 3
   readiness:
     path: /internal/isReady
     initialDelay: 30
     periodSeconds: 30
-    failureThreshold: 200000
+    failureThreshold: 3
   prometheus:
     path: /internal/prometheus
   replicas:
