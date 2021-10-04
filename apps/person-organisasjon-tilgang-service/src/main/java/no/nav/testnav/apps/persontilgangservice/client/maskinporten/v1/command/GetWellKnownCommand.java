@@ -27,7 +27,7 @@ public class GetWellKnownCommand implements Callable<Mono<WellKnown>> {
                 .doOnError(
                         throwable -> throwable instanceof WebClientResponseException,
                         throwable -> log.error(
-                                "Feil ved hening av well known for maskinporten. \n{}",
+                                "Feil ved  henting av well known for maskinporten. \n{}",
                                 ((WebClientResponseException) throwable).getResponseBodyAsString()
                         )
                 );

@@ -38,7 +38,7 @@ public class CreateOrganisasjonAccessCommand implements Callable<Mono<RightDTO>>
                 .doOnError(
                         throwable -> throwable instanceof WebClientResponseException,
                         throwable -> log.error(
-                                "Feil ved opprettelse av organiasjon tilgang i Altinn. \n{}",
+                                "Feil ved opprettelse av organisasjon tilgang i Altinn. \n{}",
                                 ((WebClientResponseException) throwable).getResponseBodyAsString()
                         )
                 );

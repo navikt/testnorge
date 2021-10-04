@@ -33,7 +33,7 @@ public class GetAccessTokenCommand implements Callable<Mono<AccessToken>> {
                 .doOnError(
                         throwable -> throwable instanceof WebClientResponseException,
                         throwable -> log.error(
-                                "Feil ved hening av AccessToken for maskinporten. \n{}",
+                                "Feil ved henting av AccessToken for maskinporten. \n{}",
                                 ((WebClientResponseException) throwable).getResponseBodyAsString()
                         )
                 );

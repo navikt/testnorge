@@ -14,7 +14,7 @@ import no.nav.testnav.apps.persontilgangservice.domain.Access;
 import no.nav.testnav.apps.persontilgangservice.service.PersonTilgangSerivce;
 
 @RestController
-@RequestMapping("/api/v1/person/organisajoner")
+@RequestMapping("/api/v1/person/organisasjoner")
 @RequiredArgsConstructor
 public class PersonTilgangController {
 
@@ -26,10 +26,10 @@ public class PersonTilgangController {
     }
 
 
-    @GetMapping("/{organisajonesnummer}")
-    public Mono<ResponseEntity<OrganisasjonDTO>> getOrganiasjoner(@PathVariable String organisajonesnummer) {
+    @GetMapping("/{organisasjonsnummer}")
+    public Mono<ResponseEntity<OrganisasjonDTO>> getOrganiasjoner(@PathVariable String organisasjonsnummer) {
         return tilgangSerivce
-                .getAccess(organisajonesnummer)
+                .getAccess(organisasjonsnummer)
                 .map(Access::toDTO)
                 .map(ResponseEntity::ok)
                 .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
