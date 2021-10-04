@@ -54,8 +54,8 @@ public class SamordningCompTest {
     @Autowired
     private SyntetiseringService syntetiseringService;
 
-    private String fnr1 = "01010101010";
-    private String fnr2 = "02020202020";
+    private final String fnr1 = "01010101010";
+    private final String fnr2 = "02020202020";
     private List<String> identer;
     private List<SyntetisertSamordningsmelding> syntetiserteSamordningsmeldinger;
 

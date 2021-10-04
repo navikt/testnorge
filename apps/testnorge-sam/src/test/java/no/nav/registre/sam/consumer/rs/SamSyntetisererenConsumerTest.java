@@ -77,27 +77,24 @@ public class SamSyntetisererenConsumerTest {
         consumer.hentSammeldingerFromSyntRest(1);
 
         assertThat(listAppender.list.size(), is(CoreMatchers.equalTo(1)));
-        assertThat(listAppender.list.get(0).toString(), containsString("Kunne ikke hente response body fra synthdata-sam: NullPointerException"));
+        assertThat(listAppender.list.get(0).toString(), containsString("[ERROR] Klarte ikke hente sam-meldinger fra synt-sam-gcp."));
     }
 
     private Dispatcher getSyntSamDispatcher() {
         return new Dispatcher() {
             @Override
             public MockResponse dispatch(RecordedRequest request) {
-                switch (request.getPath()) {
-                    case "/syntsam/api/v1/generate_sam/2":
-                        return new MockResponse().setResponseCode(200)
-                                .addHeader("Content-Type", "application/json")
-                                .setBody(getResourceFileContent("samordningsmelding.json"));
-                    case "/syntsam/api/v1/generate_sam/1":
-                        return new MockResponse().setResponseCode(200)
-                                .addHeader("Content-Type", "application/json");
-                    case "/token/oauth2/v2.0/token":
-                        return new MockResponse().setResponseCode(200)
-                                .addHeader("Content-Type", "application/json")
-                                .setBody("{\"access_token\": \"dummy\"}");
-                }
-                return new MockResponse().setResponseCode(404);
+                return switch (request.getPath()) {
+                    case "/syntsam/api/v1/generate_sam/2" -> new MockResponse().setResponseCode(200)
+                            .addHeader("Content-Type", "application/json")
+                            .setBody(getResourceFileContent("samordningsmelding.json"));
+                    case "/syntsam/api/v1/generate_sam/1" -> new MockResponse().setResponseCode(200)
+                            .addHeader("Content-Type", "application/json");
+                    case "/token/oauth2/v2.0/token" -> new MockResponse().setResponseCode(200)
+                            .addHeader("Content-Type", "application/json")
+                            .setBody("{\"access_token\": \"dummy\"}");
+                    default -> new MockResponse().setResponseCode(404);
+                };
             }
         };
     }

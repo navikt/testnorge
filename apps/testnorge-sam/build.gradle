@@ -37,9 +37,6 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
 
     implementation 'org.springframework.boot:spring-boot-autoconfigure'
-
-    implementation 'org.hibernate.validator:hibernate-validator'
-
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -48,17 +45,22 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
+    implementation 'org.hibernate.validator:hibernate-validator'
+
     implementation 'org.apache.httpcomponents:httpclient:4.5.6'
     implementation 'org.aspectj:aspectjweaver:1.9.6'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
+
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
 
     implementation 'io.springfox:springfox-swagger2:2.9.2'
     implementation 'io.springfox:springfox-swagger-ui:2.9.2'
     implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
 
-    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.9.0'
+    implementation 'com.fasterxml.jackson.core:jackson-core'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations'
+    implementation 'com.jayway.jsonpath:json-path:2.4.0'
 
-    implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'no.nav.registre:testnorge-consumers:1.12.0-RELEASE'
 
     implementation 'com.squareup.okhttp3:okhttp:4.7.2'
