@@ -1,0 +1,58 @@
+﻿apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: testnav-person-organisasjon-tilgang-service-dev
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  image: {{ image }}
+  port: 8080
+  tokenx:
+    enabled: true
+  maskinporten:
+    enabled: true
+    scopes:
+      consumes:
+        - name: "altinn:serviceowner/reportees"
+  accessPolicy:
+    inbound:
+      rules:
+        - application: dolly-frontend-dev
+          cluster: dev-gcp
+        - application: team-dolly-lokal-app
+          cluster: dev-fss
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
+    outbound:
+      external:
+        - host: tt02.altinn.no
+  liveness:
+    path: /internal/isAlive
+    initialDelay: 4
+    periodSeconds: 5
+    failureThreshold: 500
+  readiness:
+    path: /internal/isReady
+    initialDelay: 4
+    periodSeconds: 5
+    failureThreshold: 500
+  replicas:
+    min: 1
+    max: 1
+  envFrom:
+    - secret: altinn-dev
+  resources:
+    requests:
+      cpu: 200m
+      memory: 1024Mi
+    limits:
+      cpu: 500m
+      memory: 2048Mi
+  ingresses:
+    - "https://testnav-person-organisasjon-tilgang-service-dev.dev.intern.nav.no"
+  env:
+    - name: ACCEPTED_AUDIENCE
+      value: dev-gcp:dolly:testnav-person-organisasjon-tilgang-service-dev
+    - name: ALTINN_URL
+      value: https://tt02.altinn.no

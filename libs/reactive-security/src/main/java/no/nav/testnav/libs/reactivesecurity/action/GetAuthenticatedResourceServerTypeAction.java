@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.concurrent.Callable;
 
 import no.nav.testnav.libs.reactivesecurity.properties.ResourceServerProperties;
-import no.nav.testnav.libs.reactivesecurity.properties.ResourceServerType;
+import no.nav.testnav.libs.reactivesecurity.domain.ResourceServerType;
 
 @Component
 @RequiredArgsConstructor

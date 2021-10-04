@@ -1,33 +1,32 @@
 package no.nav.testnav.libs.reactivesecurity.exchange;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
-import no.nav.testnav.libs.reactivesecurity.domain.ServerProperties;
-import no.nav.testnav.libs.reactivesecurity.properties.ResourceServerType;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedResourceServerTypeAction;
+import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
+import no.nav.testnav.libs.reactivesecurity.domain.ResourceServerType;
+import no.nav.testnav.libs.reactivesecurity.domain.ServerProperties;
 
 
 @Service
-@RequiredArgsConstructor
 public class TokenExchange {
+
+    public TokenExchange(GetAuthenticatedResourceServerTypeAction getAuthenticatedTypeAction, List<TokenService> tokenServices) {
+        this.getAuthenticatedTypeAction = getAuthenticatedTypeAction;
+        tokenServices.forEach(tokenService -> exchanges.put(tokenService.getType(), tokenService));
+    }
 
     private final GetAuthenticatedResourceServerTypeAction getAuthenticatedTypeAction;
 
-    private final Map<ResourceServerType, GenerateTokenExchange> exchanges = new HashMap<>();
+    private final Map<ResourceServerType, GenerateToken> exchanges = new HashMap<>();
 
     public Mono<AccessToken> generateToken(ServerProperties serverProperties) {
         return getAuthenticatedTypeAction.call()
                 .flatMap(type -> exchanges.get(type).generateToken(serverProperties));
     }
-
-    public void addExchange(ResourceServerType type, GenerateTokenExchange exchange) {
-        exchanges.put(type, exchange);
-    }
-
 }

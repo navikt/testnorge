@@ -5,6 +5,8 @@ import lombok.Setter;
 
 import java.util.List;
 
+import no.nav.testnav.libs.reactivesecurity.domain.ResourceServerType;
+
 @Getter
 @Setter
 public abstract class ResourceServerProperties {
