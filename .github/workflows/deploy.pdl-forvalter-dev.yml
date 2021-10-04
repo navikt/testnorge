@@ -4,9 +4,10 @@ on:
   push:
     branches:
       - master
+      - feature/reactive_web_container
     paths:
       - apps/pdl-forvalter/**
-
+      - libs/**
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/testnav-pdl-forvalter:${{ github.sha }}
