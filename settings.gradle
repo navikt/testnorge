@@ -95,6 +95,7 @@ includeBuild './apps/testnorge-inntekt'
 includeBuild './apps/app-tilgang-analyse-service'
 includeBuild './apps/organisasjon-forvalter'
 includeBuild './apps/testnorge-arena'
+includeBuild './apps/testnorge-tss'
 includeBuild './apps/ident-pool'
 
 includeBuild './xsd/arbeidsforhold-xsd'
@@ -102,7 +103,6 @@ includeBuild './xsd/arbeidsforhold-xsd'
 includeBuild './gradlePlugins'
 include(':proxies')
 include(':inntektsmelding-generator-service')
-include(':testnorge-tss')
 include(':tp-domain')
 include(':sykemelding-api')
 include(':medl-core')
@@ -153,7 +153,6 @@ include(':organisasjon-orgnummer-service')
 include(':tps-identer-vedlikehold')
 
 project(":inntektsmelding-generator-service").projectDir = file('apps/inntektsmelding-generator-service')
-project(":testnorge-tss").projectDir = file('apps/testnorge-tss')
 project(":tp-domain").projectDir = file('apps/testnorge-tp/tp-domain')
 project(":sykemelding-api").projectDir = file('apps/sykemelding-api')
 project(":medl-core").projectDir = file('apps/testnorge-medl/medl-core')
