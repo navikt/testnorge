@@ -41,23 +41,27 @@ export default function PersonListe({
 	const previousValues = useRef(identer)
 	const previousIdenter = Object.values(previousValues.current)
 
-	const iBrukEndret = () => {
-		if (!previousValues) return false
+	const gruppeEndret = () => {
+		if (!previousValues) return true
 		previousValues.current = identer
 		const prevIbruk = previousIdenter.map((ident) => ({
 			ident: ident.ident,
 			ibruk: ident.ibruk,
 		}))
 
-		return prevIbruk.some((id) => {
+		const iBrukEndret = prevIbruk.some((id) => {
 			if (id.ibruk !== identer?.[id.ident]?.ibruk) {
 				return true
 			}
 		})
+
+		const identerEndret = previousIdenter.filter((prevIdent) => !identer[prevIdent.ident])
+
+		return !iBrukEndret || identerEndret.length > 0
 	}
 
 	useEffect(() => {
-		if (!iBrukEndret() || !identer[previousIdenter[previousIdenter.length - 1]?.ident]) {
+		if (gruppeEndret()) {
 			fetchTpsfPersoner()
 			previousValues.current = identer
 		}

@@ -2,9 +2,9 @@ package no.nav.identpool.ajourhold;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.logstash.logback.encoder.org.apache.commons.lang.exception.ExceptionUtils;
 import no.nav.identpool.domain.Ajourhold;
 import no.nav.identpool.repository.AjourholdRepository;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.stereotype.Service;
 
 import javax.batch.runtime.BatchStatus;
@@ -41,7 +41,7 @@ public class BatchService {
                 ajourholdRepository.delete(ajourhold);
             }
         } catch (Exception e) {
-            String exceptionString = ExceptionUtils.getFullStackTrace(e);
+            String exceptionString = ExceptionUtils.getStackTrace(e);
             if (exceptionString.length() > 1023) {
                 exceptionString = exceptionString.substring(0, 1023);
             }
