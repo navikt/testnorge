@@ -22,5 +22,4 @@ I utviklerimage brukes ikke naisdevice og du må legge til følgende ekstra argu
 ```
 -Djavax.net.ssl.trustStore=[path til lokal truststore]
 -Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
--Dspring.profiles.active=local
 ```
