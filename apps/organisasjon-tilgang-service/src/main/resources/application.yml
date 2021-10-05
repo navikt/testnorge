@@ -1,0 +1,25 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+spring:
+  application:
+    version: application.version.todo
+    name: testnav-organisasjon-tilgang-service
+    desciption: Tjeneste for hente og sette tilganger for orgnisasjoner
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+  jackson:
+    serialization:
+      write_dates_as_timestamps: false
+
+altinn:
+  api:
+    url: ${ALTINN_URL}
+    key: ${ALTINN_API_KEY}
+  service:
+    code: 5748
+    edition: 1
