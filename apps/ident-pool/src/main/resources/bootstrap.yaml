@@ -13,6 +13,7 @@ spring:
     properties:
       hibernate:
         default-schema: public
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         showSql: true
   cloud:
     vault:

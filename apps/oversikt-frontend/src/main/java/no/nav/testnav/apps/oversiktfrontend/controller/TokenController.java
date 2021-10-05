@@ -14,6 +14,7 @@ import no.nav.testnav.apps.oversiktfrontend.domain.Application;
 import no.nav.testnav.apps.oversiktfrontend.dto.ApplicationDTO;
 import no.nav.testnav.apps.oversiktfrontend.dto.TokenDTO;
 import no.nav.testnav.apps.oversiktfrontend.service.TokenService;
+import no.nav.testnav.libs.reactivesessionsecurity.resolver.ClientRegistrationIdResolver;
 
 @RestController
 @RequestMapping("/api/v1/token")

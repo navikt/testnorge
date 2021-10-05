@@ -96,7 +96,9 @@ includeBuild './apps/testnorge-inntekt'
 includeBuild './apps/app-tilgang-analyse-service'
 includeBuild './apps/organisasjon-forvalter'
 includeBuild './apps/testnorge-arena'
-
+includeBuild './apps/organisasjon-tilgang-service'
+includeBuild './apps/person-organisasjon-tilgang-service'
+includeBuild './apps/ident-pool'
 includeBuild './xsd/arbeidsforhold-xsd'
 
 includeBuild './gradlePlugins'
@@ -146,7 +148,6 @@ include(':testnorge-sam')
 include(':statistikk-service')
 
 include(':testnorge-medl')
-include(':ident-pool')
 include(':ident-check-in-prod-service')
 include(':mn-person-service')
 include(':mn-synt-arbeidsforhold-service')
@@ -196,7 +197,6 @@ project(":testnorge-sam").projectDir = file('apps/testnorge-sam')
 project(":statistikk-service").projectDir = file('apps/statistikk-service')
 
 project(":testnorge-medl").projectDir = file('apps/testnorge-medl')
-project(":ident-pool").projectDir = file('apps/ident-pool')
 project(":mn-person-service").projectDir = file('apps/mn-person-service')
 project(":mn-synt-arbeidsforhold-service").projectDir = file('apps/mn-synt-arbeidsforhold-service')
 project(":ident-check-in-prod-service").projectDir = file('apps/ident-check-in-prod-service')

@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { BaseSyntheticEvent, useEffect, useState } from 'react'
 import * as Yup from 'yup'
 import { ifPresent, requiredString } from '~/utils/YupValidations'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import Panel from '~/components/ui/panel/Panel'
 import { erForste, panelError } from '~/components/ui/form/formUtils'
 import { FormikProps } from 'formik'
@@ -132,7 +132,23 @@ export const DokarkivForm = ({ formikBag }: DokarkivForm) => {
 						size="xlarge"
 						isClearable={false}
 					/>
-					<FormikTextInput name="dokarkiv.journalfoerendeEnhet" label="Journalførende enhet" />
+					<DollyTextInput
+						onChange={(event: BaseSyntheticEvent) => {
+							console.log(_get(formikBag.errors, `dokarkiv.journalfoerendeEnhet`))
+							formikBag.setFieldValue(
+								'dokarkiv.journalfoerendeEnhet',
+								event.target.value === '' ? undefined : event.target.value
+							)
+						}}
+						feil={
+							_get(formikBag.errors, `dokarkiv.journalfoerendeEnhet`)
+								? { feilmelding: _get(formikBag.errors, `dokarkiv.journalfoerendeEnhet`) }
+								: null
+						}
+						// feil={'feil'}
+						name="dokarkiv.journalfoerendeEnhet"
+						label="Journalførende enhet"
+					/>
 					{digitalInnsending ? <Digitalinnsending /> : null}
 					<Kategori title={'Vedlegg'}>
 						<FilOpplaster
@@ -160,6 +176,7 @@ DokarkivForm.validation = {
 			tema: requiredString,
 			journalfoerendeEnhet: Yup.string()
 				.optional()
+				.nullable()
 				.matches(/^[0-9]*$/, 'Journalfoerende enhet må enten være blank eller et tall med 4 sifre')
 				.test(
 					'len',

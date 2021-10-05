@@ -8,18 +8,15 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 @Slf4j
-@Configuration
 public class IgnoreSetCookieFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         exchange.getResponse().beforeCommit(() -> {
-
             if (exchange.getResponse().getHeaders().containsKey("set-cookie")) {
                 exchange.getResponse().getHeaders().remove("set-cookie");
                 log.warn("Fjerner 'set-cookie' fra remote response siden vi ønsker at frontend skal håndtere cookies selv, ikke fra en remote app.");
             }
-
             return Mono.empty();
         });
         return chain.filter(exchange);
