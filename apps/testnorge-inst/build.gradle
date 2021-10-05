@@ -29,14 +29,20 @@ repositories {
 
 dependencies {
     implementation 'no.nav.testnav.libs:servlet-core'
+    implementation 'no.nav.testnav.libs:servlet-security'
 
-    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
-    implementation 'org.aspectj:aspectjweaver:1.9.6'
-    implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
+    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    implementation 'org.aspectj:aspectjweaver:1.9.6'
+    implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
+
     implementation 'org.apache.httpcomponents:httpclient:4.5.12'
     implementation 'javax.validation:validation-api:2.0.1.Final'
 
@@ -49,16 +55,15 @@ dependencies {
 
     implementation 'io.springfox:springfox-swagger2:2.9.2'
     implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+
     implementation 'no.nav.registre:testnorge-consumers:1.12.0-RELEASE'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
-    testImplementation 'org.springframework:spring-test'
+
+    implementation 'com.squareup.okhttp3:okhttp:4.7.2'
+
     testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.boot:spring-boot-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
-    testImplementation 'junit:junit:4.13'
-    testImplementation 'org.mockito:mockito-core:3.3.3'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:4.7.2'
 }
 
 description = 'testnorge-inst'

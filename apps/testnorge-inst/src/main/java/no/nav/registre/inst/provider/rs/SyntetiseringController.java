@@ -1,15 +1,10 @@
 package no.nav.registre.inst.provider.rs;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.registre.inst.provider.rs.requests.SyntetiserInstRequest;
 import no.nav.registre.inst.provider.rs.responses.OppholdResponse;
 import no.nav.registre.inst.service.SyntetiseringService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotBlank;
 import java.util.List;
@@ -20,10 +15,10 @@ import static no.nav.registre.inst.properties.HttpRequestConstants.HEADER_NAV_CO
 
 @RestController
 @RequestMapping("api/v1/syntetisering")
+@RequiredArgsConstructor
 public class SyntetiseringController {
 
-    @Autowired
-    private SyntetiseringService syntetiseringService;
+    private final SyntetiseringService syntetiseringService;
 
     @PostMapping(value = "/generer")
     public Map<String, List<OppholdResponse>> genererInstitusjonsmeldinger(

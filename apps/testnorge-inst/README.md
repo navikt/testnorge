@@ -11,9 +11,10 @@ Testnorge-Inst er en applikasjon som henter syntetiske institusjonsforholdsmeldi
 Swagger finnes under [/api](https://testnorge-inst.dev.intern.nav.no/api) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
-Ha naisdevice kjørende og kjør LocalApplicationStarter med følgende argumenter:
+Ha naisdevice kjørende og kjør TestnorgeInstApplicationStarter med følgende argumenter:
 ```
 -Dspring.cloud.vault.token=[kopier token fra vault]
+-Dspring.profiles.active=local
 ```
 
 ### Utviklerimage
