@@ -8,42 +8,33 @@ import org.springframework.context.annotation.Import;
 
 import java.util.List;
 
+import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedResourceServerTypeAction;
+import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedTokenAction;
+import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserIdAction;
 import no.nav.testnav.libs.reactivesecurity.domain.AzureClientCredentials;
 import no.nav.testnav.libs.reactivesecurity.domain.TokenX;
-import no.nav.testnav.libs.reactivesecurity.exchange.AzureAdTokenExchange;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
-import no.nav.testnav.libs.reactivesecurity.exchange.TokenXExchange;
+import no.nav.testnav.libs.reactivesecurity.exchange.AzureAdTokenService;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenXService;
 import no.nav.testnav.libs.reactivesecurity.manager.JwtReactiveAuthenticationManager;
 import no.nav.testnav.libs.reactivesecurity.properties.AzureAdResourceServerProperties;
-import no.nav.testnav.libs.reactivesecurity.properties.TokenxResourceServerProperties;
 import no.nav.testnav.libs.reactivesecurity.properties.ResourceServerProperties;
-import no.nav.testnav.libs.reactivesecurity.service.AuthenticationTokenResolver;
-import no.nav.testnav.libs.reactivesecurity.service.SecureJwtAuthenticationTokenResolver;
+import no.nav.testnav.libs.reactivesecurity.properties.TokenxResourceServerProperties;
 
 @Configuration
 @Import({
-        SecureJwtAuthenticationTokenResolver.class,
         AzureClientCredentials.class,
-        AzureAdTokenExchange.class,
-        TokenXExchange.class,
+        TokenXService.class,
         TokenxResourceServerProperties.class,
         AzureAdResourceServerProperties.class,
+        AzureAdTokenService.class,
+        TokenExchange.class,
+        GetAuthenticatedUserIdAction.class,
+        GetAuthenticatedResourceServerTypeAction.class,
+        GetAuthenticatedTokenAction.class,
         TokenX.class
 })
 public class SecureOAuth2ServerToServerConfiguration {
-
-    @Bean
-    @ConditionalOnMissingBean
-    public TokenExchange tokenExchange(
-            AuthenticationTokenResolver tokenResolver,
-            AzureAdTokenExchange azureAdTokenExchange,
-            TokenXExchange tokenXExchange
-    ) {
-        var tokenExchange = new TokenExchange(tokenResolver);
-        tokenExchange.addExchange("aad", azureAdTokenExchange);
-        tokenExchange.addExchange("idporten", tokenXExchange);
-        return tokenExchange;
-    }
 
     @Bean
     @ConditionalOnMissingBean
