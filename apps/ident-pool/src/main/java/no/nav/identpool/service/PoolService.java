@@ -3,6 +3,7 @@ package no.nav.identpool.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.identpool.domain.Ident;
+import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
 import no.nav.identpool.domain.TpsStatus;
 import no.nav.identpool.exception.ForFaaLedigeIdenterException;
@@ -68,7 +69,8 @@ public class PoolService {
 
         if (missingIdentCount > 0) {
 
-            Set<TpsStatus> tpsStatuses = identerAvailService.generateAndCheckIdenter(request, ATTEMPT_OBTAIN);
+            Set<TpsStatus> tpsStatuses = identerAvailService.generateAndCheckIdenter(request,
+                    Identtype.FDAT == request.getIdenttype() ? request.getAntall() : ATTEMPT_OBTAIN);
 
             List<Ident> identerFraTps = tpsStatuses.stream()
                     .map(this::buildIdent)
