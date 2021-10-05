@@ -2,7 +2,9 @@ name: Deploy inntektstub-proxy
 
 on:
   push:
-    branches: master
+    branches:
+      - master
+      - feature/legge-til-rapporteringsdato-inntekt
     paths:
       - proxies/inntektstub-proxy/**
 

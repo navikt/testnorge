@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - feature/legge-til-rapporteringsdato-inntekt
     paths:
       - proxies/pdl-proxy/**
       - libs/**
