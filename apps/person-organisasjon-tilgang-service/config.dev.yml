@@ -6,7 +6,7 @@ metadata:
   labels:
     team: dolly
 spec:
-  image: {{ image }}
+  image: { { image } }
   port: 8080
   tokenx:
     enabled: true
@@ -24,6 +24,9 @@ spec:
           cluster: dev-fss
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
+        - application: app-1
+          cluster: dev-gcp
+          namespace: plattformsikkerhet
     outbound:
       external:
         - host: tt02.altinn.no

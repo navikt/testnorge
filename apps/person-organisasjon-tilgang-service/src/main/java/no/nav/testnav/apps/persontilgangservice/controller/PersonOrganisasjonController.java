@@ -11,24 +11,23 @@ import reactor.core.publisher.Mono;
 
 import no.nav.testnav.apps.persontilgangservice.controller.dto.OrganisasjonDTO;
 import no.nav.testnav.apps.persontilgangservice.domain.Access;
-import no.nav.testnav.apps.persontilgangservice.service.PersonTilgangSerivce;
+import no.nav.testnav.apps.persontilgangservice.service.PersonOrganisasjonSerivce;
 
 @RestController
 @RequestMapping("/api/v1/person/organisasjoner")
 @RequiredArgsConstructor
-public class PersonTilgangController {
+public class PersonOrganisasjonController {
 
-    private final PersonTilgangSerivce tilgangSerivce;
+    private final PersonOrganisasjonSerivce personOrganisasjonSerivce;
 
     @GetMapping
     public Flux<OrganisasjonDTO> getOrganiasjoner() {
-        return tilgangSerivce.getAccess().map(Access::toDTO);
+        return personOrganisasjonSerivce.getAccess().map(Access::toDTO);
     }
-
 
     @GetMapping("/{organisasjonsnummer}")
     public Mono<ResponseEntity<OrganisasjonDTO>> getOrganiasjoner(@PathVariable String organisasjonsnummer) {
-        return tilgangSerivce
+        return personOrganisasjonSerivce
                 .getAccess(organisasjonsnummer)
                 .map(Access::toDTO)
                 .map(ResponseEntity::ok)
