@@ -6,7 +6,7 @@ on:
       - master
     paths:
       - apps/testnorge-inst/**
-
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/inst:${{ github.sha }}
