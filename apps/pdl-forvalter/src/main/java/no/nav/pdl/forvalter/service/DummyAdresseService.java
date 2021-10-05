@@ -1,7 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.pdl.forvalter.utils.TilfeldigLandService;
+import no.nav.pdl.forvalter.consumer.GeografiskeKodeverkConsumer;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO.PostboksadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
@@ -23,7 +23,7 @@ public class DummyAdresseService {
     private static final String ADRESSE_3_UTLAND = "CAPITAL WEST";
     private static final String ADRESSE_POSTKODE = "3000";
 
-    private final TilfeldigLandService tilfeldigLandService;
+    private final GeografiskeKodeverkConsumer geografiskeKodeverkConsumer;
 
     public static KontaktadresseDTO getStrengtFortroligKontaktadresse() {
 
@@ -46,7 +46,7 @@ public class DummyAdresseService {
                 .distriktnavn(ADRESSE_BY_STED)
                 .bySted(ADRESSE_3_UTLAND)
                 .postkode(ADRESSE_POSTKODE)
-                .landkode(isNotBlank(landkode) ? landkode : tilfeldigLandService.getLand())
+                .landkode(isNotBlank(landkode) ? landkode : geografiskeKodeverkConsumer.getTilfeldigLand())
                 .build();
     }
 }

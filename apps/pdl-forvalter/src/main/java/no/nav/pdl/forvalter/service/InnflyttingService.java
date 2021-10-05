@@ -1,8 +1,8 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.pdl.forvalter.consumer.GeografiskeKodeverkConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
-import no.nav.pdl.forvalter.utils.TilfeldigLandService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ public class InnflyttingService extends PdlArtifactService<InnflyttingDTO> {
 
     private static final String VALIDATION_LANDKODE_ERROR = "Landkode må oppgis i hht ISO-3 Landkoder på fraflyttingsland";
 
-    private final TilfeldigLandService tilfeldigLandService;
+    private final GeografiskeKodeverkConsumer geografiskeKodeverkConsumer;
 
     @Override
     public void validate(InnflyttingDTO innflytting) {
@@ -32,7 +32,7 @@ public class InnflyttingService extends PdlArtifactService<InnflyttingDTO> {
     protected void handle(InnflyttingDTO innflytting) {
 
         if (isBlank(innflytting.getFraflyttingsland())) {
-            innflytting.setFraflyttingsland(tilfeldigLandService.getLand());
+            innflytting.setFraflyttingsland(geografiskeKodeverkConsumer.getTilfeldigLand());
         }
     }
 

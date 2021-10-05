@@ -9,7 +9,7 @@ spec:
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: dev
-  image: {{ image }}
+  image: { { image } }
   webproxy: true
   tokenx:
     enabled: true
@@ -58,6 +58,8 @@ spec:
         - application: testnav-adresse-service
           cluster: dev-gcp
         - application: testnav-organisasjon-forvalter
+          cluster: dev-gcp
+         - application: testnav-geografiske-kodeverk-service
           cluster: dev-gcp
       external:
         - host: https://testnav-pdl-proxy.dev-fss-pub.nais.io

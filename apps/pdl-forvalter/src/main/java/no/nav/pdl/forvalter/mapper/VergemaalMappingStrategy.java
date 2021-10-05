@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
+import no.nav.pdl.forvalter.consumer.GeografiskeKodeverkConsumer;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.Folkeregistermetadata;
 import no.nav.pdl.forvalter.dto.PdlVergemaal;
@@ -27,7 +28,8 @@ import static java.util.Objects.nonNull;
 @RequiredArgsConstructor
 public class VergemaalMappingStrategy implements MappingStrategy {
 
-    private final EmbeteService embeteService;
+//    private final EmbeteService embeteService;
+    private final GeografiskeKodeverkConsumer geografiskeKodeverkConsumer;
     private final PersonRepository personRepository;
 
     private static Omfang getOmfang(VergemaalMandattype mandatType) {
@@ -92,7 +94,8 @@ public class VergemaalMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(VergemaalDTO kilde, PdlVergemaal destinasjon, MappingContext context) {
 
-                        destinasjon.setEmbete(embeteService.getNavn(kilde.getVergemaalEmbete().name()));
+                        destinasjon.setEmbete(geografiskeKodeverkConsumer.getEmbeteNavn(kilde.getVergemaalEmbete().name()));
+//                        destinasjon.setEmbete(embeteService.getNavn(kilde.getVergemaalEmbete().name()));
                         destinasjon.setType(getSakstype(kilde.getSakType()));
                         destinasjon.setFolkeregistermetadata(Folkeregistermetadata.builder()
                                 .ajourholdstidspunkt(LocalDate.now())

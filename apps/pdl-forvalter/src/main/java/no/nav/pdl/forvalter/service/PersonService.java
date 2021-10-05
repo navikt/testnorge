@@ -47,7 +47,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class PersonService {
+    public class PersonService {
 
     private static final String EMPTY_GET_REQUEST = "Angi en av parametrene 'identer' eller 'fragment'";
     private static final String VIOLATION_ALIAS_EXISTS = "Utgått ident kan ikke endres. Benytt gjeldende ident %s for denne operasjonen";
