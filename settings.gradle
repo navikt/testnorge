@@ -95,8 +95,9 @@ includeBuild './apps/testnorge-inntekt'
 includeBuild './apps/app-tilgang-analyse-service'
 includeBuild './apps/organisasjon-forvalter'
 includeBuild './apps/testnorge-arena'
+includeBuild './apps/organisasjon-tilgang-service'
+includeBuild './apps/person-organisasjon-tilgang-service'
 includeBuild './apps/ident-pool'
-
 includeBuild './xsd/arbeidsforhold-xsd'
 
 includeBuild './gradlePlugins'
