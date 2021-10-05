@@ -6,6 +6,9 @@ metadata:
   labels:
     team: dolly
 spec:
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
   image: {{ image }}
   webproxy: true
   port: 8080
@@ -17,12 +20,12 @@ spec:
     path: /internal/isAlive
     initialDelay: 30
     periodSeconds: 30
-    failureThreshold: 200000
+    failureThreshold: 3
   readiness:
     path: /internal/isReady
     initialDelay: 30
     periodSeconds: 30
-    failureThreshold: 200000
+    failureThreshold: 3
   prometheus:
     path: /internal/prometheus
   replicas:
