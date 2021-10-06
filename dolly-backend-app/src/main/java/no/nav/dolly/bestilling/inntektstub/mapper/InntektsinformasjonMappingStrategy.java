@@ -59,7 +59,7 @@ public class InntektsinformasjonMappingStrategy implements MappingStrategy {
                                                 .forskuddstrekksliste(mapperFacade.mapAsList(historikk.getForskuddstrekksliste(), Forskuddstrekk.class))
                                                 .arbeidsforholdsliste(mapperFacade.mapAsList(historikk.getArbeidsforholdsliste(), Arbeidsforhold.class))
                                                 .versjon(versjon.addAndGet(1))
-                                                .rapporteringsdato(inntektsinformasjon.getRapporteringsdato())
+                                                .rapporteringsdato(historikk.getRapporteringsdato())
                                                 .build())
                                 );
 
