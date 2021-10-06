@@ -16,6 +16,7 @@ type InntekstubVisning = {
 
 type Inntektsinformasjon = {
 	aarMaaned: string
+	rapporteringsdato: string
 	opplysningspliktig: string
 	virksomhet: string
 	inntektsliste: Array<unknown>
@@ -51,6 +52,13 @@ export const InntektstubVisning = ({ liste, loading }: InntekstubVisning) => {
 						<React.Fragment>
 							<div className="person-visning_content">
 								<TitleValue title="År/måned" value={inntektsinformasjon.aarMaaned} />
+								<TitleValue
+									title="Rapporteringsdato"
+									value={
+										inntektsinformasjon.rapporteringsdato &&
+										inntektsinformasjon.rapporteringsdato.substr(0, 10)
+									}
+								/>
 								<TitleValue title="Virksomhet (orgnr/id)" value={inntektsinformasjon.virksomhet} />
 								<TitleValue
 									title="Opplysningspliktig (orgnr/id)"
