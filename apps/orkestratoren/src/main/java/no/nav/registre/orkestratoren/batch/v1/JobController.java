@@ -112,13 +112,14 @@ public class JobController {
 
     @Scheduled(cron = "0 0 0 * * *")
     public void tpsSyntBatch() {
-        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
-            try {
-                testnorgeSkdService.genererSkdmeldinger(entry.getKey(), entry.getValue(), antallSkdmeldingerPerEndringskode);
-            } catch (HttpStatusCodeException e) {
-                log.warn(e.getResponseBodyAsString(), e);
-            }
-        }
+        log.info("Batch-kjøring for testnorge-skd midlertidig slått av.");
+//        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
+//            try {
+//                testnorgeSkdService.genererSkdmeldinger(entry.getKey(), entry.getValue(), antallSkdmeldingerPerEndringskode);
+//            } catch (HttpStatusCodeException e) {
+//                log.warn(e.getResponseBodyAsString(), e);
+//            }
+//        }
     }
 
     @Scheduled(cron = "0 0 0 * * *")
