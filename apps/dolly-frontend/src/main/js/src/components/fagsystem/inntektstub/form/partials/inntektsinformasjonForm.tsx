@@ -6,7 +6,7 @@ import InntektsinformasjonLister from './inntektsinformasjonLister/inntektsinfor
 import InntektsendringForm from './inntektsendringForm'
 import _get from 'lodash/get'
 import { Monthpicker } from '~/components/ui/form/inputs/monthpicker/Monthpicker'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
+import { FormikDateTimepicker } from '~/components/ui/form/inputs/timepicker/Timepicker'
 
 interface InntektsinformasjonForm {
 	path: string
@@ -36,10 +36,7 @@ export default ({ path, formikBag }: InntektsinformasjonForm) => {
 
 	const handleRapporteringDateChange = (selectedDate: Date) => {
 		setRapporteringsdato(selectedDate)
-		formikBag.setFieldValue(
-			`${path}.rapporteringsdato`,
-			selectedDate && selectedDate.toISOString().substr(0, 10)
-		)
+		formikBag.setFieldValue(`${path}.rapporteringsdato`, selectedDate && selectedDate.toISOString())
 	}
 
 	return (
@@ -57,7 +54,7 @@ export default ({ path, formikBag }: InntektsinformasjonForm) => {
 					label="Generer antall måneder"
 					type="number"
 				/>
-				<FormikDatepicker
+				<FormikDateTimepicker
 					formikBag={formikBag}
 					name={`${path}.rapporteringsdato`}
 					label="Rapporteringsdato"
