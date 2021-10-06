@@ -1,0 +1,3 @@
+azure.app.client.id: ${client_id}
+azure.app.client.secret: ${client_secret}
+ALTINN_URL: https://tt02.altinn.no

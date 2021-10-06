@@ -8,6 +8,7 @@ import no.nav.testnav.libs.reactivecore.router.InternalHandler;
 import no.nav.testnav.libs.reactivecore.router.InternalRouter;
 
 @Import({
+        RequestLogger.class,
         InternalHandler.class,
         InternalRouter.class,
         ApplicationProperties.class

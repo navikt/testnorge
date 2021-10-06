@@ -7,6 +7,6 @@ import lombok.Value;
 @Builder
 public class Token {
     String value;
-    String oid;
+    String userId;
     boolean clientCredentials;
 }
