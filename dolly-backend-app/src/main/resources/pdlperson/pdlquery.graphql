@@ -337,12 +337,27 @@ query($ident: ID!, $historikk: Boolean!) {
             foedeland,
             foedested,
             foedekommune,
+            folkeregistermetadata {
+                ...folkeregistermetadataDetails
+            }
+            metadata {
+                ...metadataDetails
+            }
+        },
+        doedfoedtBarn{
+          dato,
+            folkeregistermetadata {
+                ...folkeregistermetadataDetails
+            }
             metadata {
                 ...metadataDetails
             }
         },
         doedsfall {
             doedsdato,
+            folkeregistermetadata {
+                ...folkeregistermetadataDetails
+            }
             metadata {
                 ...metadataDetails
             }
@@ -409,7 +424,7 @@ query($ident: ID!, $historikk: Boolean!) {
             motpartsRolle,
             omraader,
             gyldigFraOgMed,
-            gyldigTilOgMed
+            gyldigTilOgMed,
             metadata {
                 ...metadataDetails
             }

@@ -3,20 +3,25 @@ package no.nav.dolly.bestilling.pdlforvalter.mapper;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDoedfoedtBarn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlForelderBarnRelasjon;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpplysning.Master;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand.Sivilstand;
 import no.nav.dolly.bestilling.pdlforvalter.domain.SivilstandWrapper;
+import no.nav.dolly.domain.resultset.IdentType;
+import no.nav.dolly.util.IdentTypeUtil;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.Relasjon;
 import no.nav.dolly.domain.resultset.tpsf.Sivilstand.Sivilstatus;
 import no.nav.dolly.mapper.MappingStrategy;
+import no.nav.dolly.util.DatoFraIdentUtil;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlForelderBarnRelasjon.decode;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand.Sivilstand.ENKE_ELLER_ENKEMANN;
 import static no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand.Sivilstand.GIFT;
@@ -72,17 +77,21 @@ public class PdlRelasjonerMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Relasjon relasjon, PdlForelderBarnRelasjon familierelasjon, MappingContext context) {
 
-                        familierelasjon.setRelatertPerson(relasjon.getPersonRelasjonMed().getIdent());
-                        familierelasjon.setRelatertPersonsRolle(decode(relasjon.getRelasjonTypeNavn()));
-                        familierelasjon.setMinRolleForPerson(decode(relasjon.getPersonRelasjonTil().getRelasjoner().stream()
-                                .filter(relasjon2 -> relasjon.getPersonRelasjonMed().getIdent().equals(relasjon2.getPerson().getIdent()) &&
-                                        (relasjon.isForelder() && relasjon2.isBarn() ||
-                                                relasjon.isBarn() && relasjon2.isForelder())
-                                )
-                                .map(Relasjon::getRelasjonTypeNavn)
-                                .findFirst().orElse(null)));
-                        familierelasjon.setKilde(CONSUMER);
-                        familierelasjon.setMaster(Master.FREG);
+                        if (!relasjon.isPartner() && nonNull(relasjon.getPersonRelasjonTil()) &&
+                         IdentType.FDAT != IdentTypeUtil.getIdentType(relasjon.getPersonRelasjonMed().getIdent())) {
+
+                            familierelasjon.setRelatertPerson(relasjon.getPersonRelasjonMed().getIdent());
+                            familierelasjon.setRelatertPersonsRolle(decode(relasjon.getRelasjonTypeNavn()));
+                            familierelasjon.setMinRolleForPerson(decode(relasjon.getPersonRelasjonTil().getRelasjoner().stream()
+                                    .filter(relasjon2 -> relasjon.getPersonRelasjonMed().getIdent().equals(relasjon2.getPerson().getIdent()) &&
+                                            (relasjon.isForelder() && relasjon2.isBarn() ||
+                                                    relasjon.isBarn() && relasjon2.isForelder())
+                                    )
+                                    .map(Relasjon::getRelasjonTypeNavn)
+                                    .findFirst().orElse(null)));
+                            familierelasjon.setKilde(CONSUMER);
+                            familierelasjon.setMaster(Master.FREG);
+                        }
                     }
                 })
                 .register();
@@ -102,6 +111,22 @@ public class PdlRelasjonerMappingStrategy implements MappingStrategy {
                                 .findFirst().orElse(null));
                         sivilstand.setKilde(CONSUMER);
                         sivilstand.setMaster(Master.FREG);
+                    }
+                })
+                .register();
+
+        factory.classMap(Relasjon.class, PdlDoedfoedtBarn.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(Relasjon relasjon, PdlDoedfoedtBarn doedfoedtBarn, MappingContext context) {
+
+                        if (relasjon.isBarn() &&
+                                IdentType.FDAT == IdentTypeUtil.getIdentType(relasjon.getPersonRelasjonMed().getIdent())) {
+
+                            doedfoedtBarn.setDato(DatoFraIdentUtil.getDato(relasjon.getPersonRelasjonMed().getIdent()));
+                            doedfoedtBarn.setKilde(CONSUMER);
+                            doedfoedtBarn.setMaster(Master.FREG);
+                        }
                     }
                 })
                 .register();

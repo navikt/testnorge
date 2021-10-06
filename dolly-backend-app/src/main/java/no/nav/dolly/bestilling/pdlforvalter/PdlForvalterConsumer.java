@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlBostedadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDeltBosted;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDoedfoedtBarn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDoedsfall;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFoedsel;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFolkeregisterpersonstatus;
@@ -57,6 +58,7 @@ public class PdlForvalterConsumer {
     private static final String PDL_BESTILLING_FOEDSEL_URL = PDL_BESTILLING_URL + "/foedsel";
     private static final String PDL_BESTILLING_FORELDER_BARN_RELASJON = PDL_BESTILLING_URL + "/forelderbarnrelasjon";
     private static final String PDL_BESTILLING_DOEDSFALL_URL = PDL_BESTILLING_URL + "/doedsfall";
+    private static final String PDL_BESTILLING_DOEDFOEDTBARN_URL = PDL_BESTILLING_URL + "/doedfoedtbarn";
     private static final String PDL_BESTILLING_ADRESSEBESKYTTELSE_URL = PDL_BESTILLING_URL + "/adressebeskyttelse";
     private static final String PDL_BESTILLING_NAVN_URL = PDL_BESTILLING_URL + "/navn";
     private static final String PDL_BESTILLING_KJOENN_URL = PDL_BESTILLING_URL + "/kjoenn";
@@ -161,6 +163,14 @@ public class PdlForvalterConsumer {
                 pdlDoedsfall, ident, "dødsmelding");
     }
 
+    @Timed(name = "providers", tags = { "operation", "pdl_doedfoedtBarn" })
+    public ResponseEntity<JsonNode> postDoedfoedtBarn(PdlDoedfoedtBarn doedfoedtBarn, String ident) {
+
+        return postRequest(
+                providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_DOEDFOEDTBARN_URL,
+                doedfoedtBarn, ident, "dødfødtBarn");
+    }
+
     @Timed(name = "providers", tags = { "operation", "pdl_foedsel" })
     public ResponseEntity<JsonNode> postFoedsel(PdlFoedsel pdlFoedsel, String ident) {
 
@@ -178,7 +188,7 @@ public class PdlForvalterConsumer {
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_familierelasjon" })
-    public ResponseEntity<JsonNode> postFamilierelasjon(PdlForelderBarnRelasjon familierelasjonn, String ident) {
+    public ResponseEntity<JsonNode> postForeldreBarnRelasjon(PdlForelderBarnRelasjon familierelasjonn, String ident) {
 
         return postRequest(
                 providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_FORELDER_BARN_RELASJON,

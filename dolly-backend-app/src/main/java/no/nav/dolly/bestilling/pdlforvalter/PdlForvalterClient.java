@@ -8,6 +8,7 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlBostedsadresseHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDeltBosted.PdlDelteBosteder;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDoedfoedtBarn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlDoedsfall;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFoedsel;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlFolkeregisterpersonstatus;
@@ -125,10 +126,10 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-   @Override
-   public boolean isTestnorgeRelevant() {
+    @Override
+    public boolean isTestnorgeRelevant() {
         return false;
-   }
+    }
 
     private void hentPersondetaljer(DollyPerson dollyPerson) {
 
@@ -148,7 +149,7 @@ public class PdlForvalterClient implements ClientRegister {
             dollyPerson.getPersondetaljer().stream()
                     .filter(person -> dollyPerson.getIdenthistorikk().stream().anyMatch(historisk -> historisk.equals(person.getIdent())))
                     .forEach(person ->
-                        sendArtifacter(bestilling, dollyPerson, person));
+                            sendArtifacter(bestilling, dollyPerson, person));
             // Send øvrige personer
             dollyPerson.getPersondetaljer().stream()
                     .filter(person -> dollyPerson.getIdenthistorikk().stream().noneMatch(historisk -> historisk.equals(person.getIdent())))
@@ -187,7 +188,7 @@ public class PdlForvalterClient implements ClientRegister {
         sendUtflytting(person);
         sendFolkeregisterpersonstatus(person);
         sendStatsborgerskap(person);
-        sendFamilierelasjoner(person);
+        sendForeldreBarnRelasjon(person);
         sendForeldreansvar(person);
         sendSivilstand(person);
         sendTelefonnummer(person);
@@ -195,6 +196,7 @@ public class PdlForvalterClient implements ClientRegister {
         sendOpphold(bestilling, person);
         sendVergemaal(person);
         sendFullmakt(person);
+        sendDoedfoedtBarn(person);
     }
 
     private void sendOpphold(RsDollyUtvidetBestilling bestilling, Person person) {
@@ -233,14 +235,11 @@ public class PdlForvalterClient implements ClientRegister {
         }
     }
 
-    private void sendFamilierelasjoner(Person person) {
+    private void sendForeldreBarnRelasjon(Person person) {
 
-        person.getRelasjoner().forEach(relasjon -> {
-            if (!relasjon.isPartner() && nonNull(relasjon.getPersonRelasjonTil())) {
-                pdlForvalterConsumer.postFamilierelasjon(mapperFacade.map(relasjon, PdlForelderBarnRelasjon.class),
-                        person.getIdent());
-            }
-        });
+        mapperFacade.mapAsList(person.getRelasjoner(), PdlForelderBarnRelasjon.class).stream()
+                .filter(relasjon -> nonNull(relasjon.getMinRolleForPerson()))
+                .forEach(relasjon -> pdlForvalterConsumer.postForeldreBarnRelasjon(relasjon, person.getIdent()));
     }
 
     private void sendForeldreansvar(Person person) {
@@ -357,6 +356,13 @@ public class PdlForvalterClient implements ClientRegister {
 
         mapperFacade.map(person, PdlFullmaktHistorikk.class).getFullmakter()
                 .forEach(fullmakt -> pdlForvalterConsumer.postFullmakt(fullmakt, person.getIdent()));
+    }
+
+    private void sendDoedfoedtBarn(Person person) {
+
+        mapperFacade.mapAsList(person.getRelasjoner(), PdlDoedfoedtBarn.class).stream()
+                .filter(hendelse -> nonNull(hendelse.getDato()))
+                .forEach(hendelse -> pdlForvalterConsumer.postDoedfoedtBarn(hendelse, person.getIdent()));
     }
 
     private void sendUtenlandsid(Pdldata pdldata, String ident, StringBuilder status) {

@@ -1,14 +1,18 @@
 package no.nav.dolly.appservices.tpsf.service;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-
 import no.nav.dolly.bestilling.sigrunstub.SigrunStubResponseHandler;
+import no.nav.dolly.bestilling.sigrunstub.dto.SigrunResponse;
+import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SigrunStubResponseHandlerTest {
@@ -18,15 +22,23 @@ public class SigrunStubResponseHandlerTest {
 
     @Test
     public void extractResponse_SjekkAtHttpOkReturnererOk() {
-        ResponseEntity<Object> response = ResponseEntity.ok().body("[200,200]");
+        ResponseEntity<SigrunResponse> response = ResponseEntity.ok().body(SigrunResponse.builder()
+                .opprettelseTilbakemeldingsListe(List.of(
+                        SigrunResponse.ResponseElement.builder().status(200).build(),
+                        SigrunResponse.ResponseElement.builder().status(200).build()))
+                .build());
         String progressUpdate = responseHandler.extractResponse(response);
         assertThat(progressUpdate, is("OK"));
     }
 
     @Test
     public void extractResponse_SjekkAtAnnetEnnHttpOkGirFeil() {
-        ResponseEntity<Object> response = ResponseEntity.badRequest().body("[200,400]");
+        ResponseEntity<SigrunResponse> response = ResponseEntity.badRequest().body(SigrunResponse.builder()
+                .opprettelseTilbakemeldingsListe(List.of(
+                        SigrunResponse.ResponseElement.builder().status(400).build(),
+                        SigrunResponse.ResponseElement.builder().status(200).build()))
+                .build());
         String progressUpdate = responseHandler.extractResponse(response);
-        assertThat(progressUpdate, is("FEIL"));
+        assertThat(progressUpdate, CoreMatchers.containsString("FEIL"));
     }
 }

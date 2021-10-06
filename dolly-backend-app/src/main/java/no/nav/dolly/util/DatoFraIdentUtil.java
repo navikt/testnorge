@@ -1,9 +1,10 @@
 package no.nav.dolly.util;
 
-import static java.lang.Integer.parseInt;
+import lombok.experimental.UtilityClass;
 
-import java.time.LocalDateTime;
-import org.springframework.stereotype.Service;
+import java.time.LocalDate;
+
+import static java.lang.Integer.parseInt;
 
 /**
  * INDIVID(POS 7-9) 500-749 OG ÅR > 54 => ÅRHUNDRE = 1800
@@ -11,10 +12,10 @@ import org.springframework.stereotype.Service;
  * INDIVID(POS 7-9) 900-999 OG ÅR > 39 => ÅRHUNDRE = 1900
  * INDIVID(POS 7-9) 500-999 OG ÅR < 40 => ÅRHUNDRE = 2000
  */
-@Service
-public class DatoFraIdentService {
+@UtilityClass
+public class DatoFraIdentUtil {
 
-    public LocalDateTime extract(String ident) {
+    public static LocalDate getDato(String ident) {
 
         int year = parseInt(ident.substring(4, 6));
         int individ = parseInt(ident.substring(6, 9));
@@ -31,7 +32,7 @@ public class DatoFraIdentService {
             century = 2000;
         }
 
-        return LocalDateTime.of(century + year, getMonth(ident), getDay(ident), 0, 0);
+        return LocalDate.of(century + year, getMonth(ident), getDay(ident));
     }
 
     private int getDay(String ident) {

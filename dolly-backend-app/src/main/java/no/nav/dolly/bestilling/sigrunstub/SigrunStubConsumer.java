@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.sigrunstub;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.sigrunstub.dto.SigrunResponse;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.properties.ProvidersProps;
@@ -52,7 +53,7 @@ public class SigrunStubConsumer {
     }
 
     @Timed(name = "providers", tags = {"operation", "sigrun_createGrunnlag"})
-    public ResponseEntity createSkattegrunnlag(List<OpprettSkattegrunnlag> request) {
+    public ResponseEntity<SigrunResponse> createSkattegrunnlag(List<OpprettSkattegrunnlag> request) {
 
         var callId = getNavCallId();
         log.info("Post til sigrun-stub med call-id {} og data {}", callId, request);
@@ -62,6 +63,6 @@ public class SigrunStubConsumer {
                         .header(HEADER_NAV_CALL_ID, callId)
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .body(request),
-                Object.class);
+                SigrunResponse.class);
     }
 }
