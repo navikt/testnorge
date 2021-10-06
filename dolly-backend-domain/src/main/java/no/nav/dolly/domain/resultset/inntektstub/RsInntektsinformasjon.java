@@ -141,5 +141,7 @@ public class RsInntektsinformasjon {
         private List<Forskuddstrekk> forskuddstrekksliste;
 
         private List<Arbeidsforhold> arbeidsforholdsliste;
+
+        private LocalDateTime rapporteringsdato;
     }
 }

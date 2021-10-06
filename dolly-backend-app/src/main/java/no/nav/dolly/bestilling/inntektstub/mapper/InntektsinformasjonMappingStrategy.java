@@ -28,7 +28,7 @@ public class InntektsinformasjonMappingStrategy implements MappingStrategy {
     @Override
     public void register(MapperFactory factory) {
         factory.classMap(InntektMultiplierWrapper.class, InntektsinformasjonWrapper.class)
-                .customize(new CustomMapper<InntektMultiplierWrapper, InntektsinformasjonWrapper>() {
+                .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(InntektMultiplierWrapper inntektMultiplierWrapper, InntektsinformasjonWrapper inntektsinformasjonWrapper, MappingContext context) {
 
