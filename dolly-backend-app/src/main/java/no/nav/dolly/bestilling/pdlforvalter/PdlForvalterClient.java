@@ -30,6 +30,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlVergemaalHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.Pdldata;
 import no.nav.dolly.bestilling.pdlforvalter.domain.SivilstandWrapper;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.IdentType;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.pdlforvalter.PdlOpplysning.Master;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
@@ -40,6 +41,7 @@ import no.nav.dolly.domain.resultset.tpsf.adresse.IdentHistorikk;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.service.DollyPersonCache;
+import no.nav.dolly.util.IdentTypeUtil;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -175,28 +177,31 @@ public class PdlForvalterClient implements ClientRegister {
     }
 
     private void sendArtifacter(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, Person person) {
-        sendOpprettPerson(person, dollyPerson);
-        sendFoedselsmelding(person);
-        sendNavn(person);
-        sendKjoenn(person);
-        sendAdressebeskyttelse(person);
-        sendOppholdsadresse(person);
-        sendKontaktadresse(person);
-        sendBostedadresse(person);
-        sendDeltBosted(person);
-        sendInnflytting(person);
-        sendUtflytting(person);
-        sendFolkeregisterpersonstatus(person);
-        sendStatsborgerskap(person);
-        sendForeldreBarnRelasjon(person);
-        sendForeldreansvar(person);
-        sendSivilstand(person);
-        sendTelefonnummer(person);
-        sendDoedsfall(person);
-        sendOpphold(bestilling, person);
-        sendVergemaal(person);
-        sendFullmakt(person);
-        sendDoedfoedtBarn(person);
+
+        if (IdentType.FDAT != IdentTypeUtil.getIdentType(person.getIdent())) {
+            sendOpprettPerson(person, dollyPerson);
+            sendFoedselsmelding(person);
+            sendNavn(person);
+            sendKjoenn(person);
+            sendAdressebeskyttelse(person);
+            sendOppholdsadresse(person);
+            sendKontaktadresse(person);
+            sendBostedadresse(person);
+            sendDeltBosted(person);
+            sendInnflytting(person);
+            sendUtflytting(person);
+            sendFolkeregisterpersonstatus(person);
+            sendStatsborgerskap(person);
+            sendForeldreBarnRelasjon(person);
+            sendForeldreansvar(person);
+            sendSivilstand(person);
+            sendTelefonnummer(person);
+            sendDoedsfall(person);
+            sendOpphold(bestilling, person);
+            sendVergemaal(person);
+            sendFullmakt(person);
+            sendDoedfoedtBarn(person);
+        }
     }
 
     private void sendOpphold(RsDollyUtvidetBestilling bestilling, Person person) {
