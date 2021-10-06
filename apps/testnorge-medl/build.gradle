@@ -46,4 +46,4 @@ dependencies {
     testImplementation 'com.h2database:h2:1.4.200'
 }
 
-description = 'medl-core'
+description = 'testnorge-medl'
