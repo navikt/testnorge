@@ -29,6 +29,17 @@ spec:
       cpu: 500m
       memory: 2048Mi
   image: {{ image }}
+  accessPolicy:
+    inbound:
+      rules:
+        - application: team-dolly-lokal-app
+          cluster: dev-fss
+        - application: orkestratoren
+          cluster: dev-fss
+  azure:
+    application:
+      enabled: true
+      tenant: nav.no
   ingresses:
     - "https://testnorge-medl.nais.preprod.local"
     - "https://testnorge-medl.dev-fss.nais.io"

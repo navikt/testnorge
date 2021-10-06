@@ -1,6 +1,6 @@
 package no.nav.registre.medl.provider.rs;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,10 +16,10 @@ import no.nav.registre.medl.service.SyntetiseringService;
 
 @RestController
 @RequestMapping("api/v1/syntetisering")
+@RequiredArgsConstructor
 public class SyntetiseringController {
 
-    @Autowired
-    private SyntetiseringService syntetiseringService;
+    private final SyntetiseringService syntetiseringService;
 
     @PostMapping(value = "/generer")
     public ResponseEntity<List<TMedlemPeriode>> genererMedlemskapsmeldinger(

@@ -1,73 +1,87 @@
 package no.nav.registre.medl.consumer.rs;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static no.nav.registre.medl.testutils.ResourceUtils.getResourceFileContent;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.read.ListAppender;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.medl.consumer.rs.credential.SyntMedlGcpProperties;
+import no.nav.testnav.libs.servletsecurity.domain.AzureClientCredentials;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import okhttp3.mockwebserver.Dispatcher;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureWireMock(port = 0)
+import java.io.IOException;
+
+@Slf4j
 @TestPropertySource(locations = "classpath:application-test.properties")
 @ActiveProfiles("test")
 public class MedlSyntConsumerTest {
 
-    @Autowired
-    private MedlSyntConsumer medlSyntConsumer;
+    private MedlSyntConsumer consumer;
+
+    private MockWebServer mockWebServer;
 
     private int numToGenerate = 2;
 
+    @Before
+    public void setUp() throws IOException {
+        this.mockWebServer = new MockWebServer();
+        this.mockWebServer.start();
+        Dispatcher dispatcher = getSyntMedlDispatcher();
+        mockWebServer.setDispatcher(dispatcher);
+
+        var creds = new SyntMedlGcpProperties();
+        creds.setUrl(mockWebServer.url("/synt-medl").toString());
+        creds.setCluster("test");
+        creds.setNamespace("test");
+        creds.setName("synthdata-tps-medl-test");
+
+        this.consumer = new MedlSyntConsumer(
+                creds,
+                new AccessTokenService(null, mockWebServer.url("/token").toString(), null,
+                        new AzureClientCredentials("dummy", "dummy")));
+
+    }
+
     @Test
     public void shouldGetMeldinger() {
-        stubMedlSyntetisererenConsumer();
-        var result = medlSyntConsumer.hentMedlemskapsmeldingerFromSyntRest(numToGenerate);
+        var result = consumer.hentMedlemskapsmeldingerFromSyntRest(numToGenerate);
 
         assertThat(result.size(), is(numToGenerate));
         assertThat(result.get(0).getGrunnlag(), equalTo("FTL_2-5"));
         assertThat(result.get(1).getGrunnlag(), equalTo("FTL_2-5"));
     }
 
-    @Test
-    public void shouldLogOnEmptyResponse() {
-        Logger logger = (Logger) LoggerFactory.getLogger(MedlSyntConsumer.class);
-        ListAppender<ILoggingEvent> listAppender = new ListAppender<>();
-        listAppender.start();
-        logger.addAppender(listAppender);
-
-        stubMedlSyntetisererenConsumerWithEmptyBody();
-
-        medlSyntConsumer.hentMedlemskapsmeldingerFromSyntRest(numToGenerate);
-
-        assertThat(listAppender.list.size(), is(equalTo(1)));
+    private Dispatcher getSyntMedlDispatcher() {
+        return new Dispatcher() {
+            @Override
+            public MockResponse dispatch(RecordedRequest request) {
+                switch (request.getPath()) {
+                    case "/synt-medl/api/v1/generate/medl/2":
+                        return new MockResponse().setResponseCode(200)
+                                .addHeader("Content-Type", "application/json")
+                                .setBody(getResourceFileContent("medlemskapsmelding.json"));
+                    case "/token/oauth2/v2.0/token":
+                        return new MockResponse().setResponseCode(200)
+                                .addHeader("Content-Type", "application/json")
+                                .setBody("{\"access_token\": \"dummy\"}");
+                }
+                return new MockResponse().setResponseCode(404);
+            }
+        };
     }
 
-    private void stubMedlSyntetisererenConsumer() {
-        stubFor(get(urlEqualTo("/synthdata-medl/api/v1/generate/medl?numToGenerate=" + numToGenerate))
-                .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(getResourceFileContent("medlemskapsmelding.json"))));
-    }
-
-    private void stubMedlSyntetisererenConsumerWithEmptyBody() {
-        stubFor(get(urlEqualTo("/synthdata-medl/api/v1/generate/medl?numToGenerate=" + numToGenerate))
-                .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")));
+    @After
+    public void tearDown() throws IOException {
+        mockWebServer.shutdown();
     }
 }

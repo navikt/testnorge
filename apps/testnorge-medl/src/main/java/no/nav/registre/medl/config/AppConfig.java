@@ -1,5 +1,6 @@
 package no.nav.registre.medl.config;
 
+import no.nav.testnav.libs.servletsecurity.config.SecureOAuth2ServerToServerConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +12,10 @@ import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @Configuration
-@Import(ApplicationCoreConfig.class)
+@Import(value = {
+        ApplicationCoreConfig.class,
+        SecureOAuth2ServerToServerConfiguration.class
+})
 public class AppConfig {
 
     @Value("${testnorge-hodejegeren.rest-api.url}")
