@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - feature/legge-til-rapporteringsdato-inntekt
     paths:
       - apps/person-service/**
   workflow_dispatch:

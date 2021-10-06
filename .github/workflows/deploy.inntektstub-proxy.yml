@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - feature/legge-til-rapporteringsdato-inntekt
     paths:
       - proxies/inntektstub-proxy/**
 
