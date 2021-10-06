@@ -12,7 +12,7 @@ import org.springframework.web.util.UriTemplate;
 
 import java.util.List;
 
-import no.nav.registre.medl.MedlSaveInHodejegerenRequest;
+import no.nav.registre.medl.domain.MedlSaveInHodejegerenRequest;
 
 @Component
 @Slf4j

@@ -23,9 +23,9 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import no.nav.registre.medl.IdentMedData;
-import no.nav.registre.medl.MedlSaveInHodejegerenRequest;
-import no.nav.registre.medl.TMedlemPeriodeBase;
+import no.nav.registre.medl.domain.IdentMedData;
+import no.nav.registre.medl.domain.MedlSaveInHodejegerenRequest;
+import no.nav.registre.medl.domain.TMedlemPeriodeBase;
 import no.nav.registre.medl.adapter.AktoerAdapter;
 import no.nav.registre.medl.consumer.rs.AktoerRegisteretConsumer;
 import no.nav.registre.medl.consumer.rs.HodejegerenHistorikkConsumer;

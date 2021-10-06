@@ -1,4 +1,4 @@
-package no.nav.registre.medl;
+package no.nav.registre.medl.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
