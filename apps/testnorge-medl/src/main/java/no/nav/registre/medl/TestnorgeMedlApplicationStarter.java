@@ -6,9 +6,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @EnableJpaRepositories
-public class ApplicationStarter {
+public class TestnorgeMedlApplicationStarter {
 
     public static void main(String[] args) {
-        SpringApplication.run(ApplicationStarter.class, args);
+        SpringApplication.run(TestnorgeMedlApplicationStarter.class, args);
     }
 }
