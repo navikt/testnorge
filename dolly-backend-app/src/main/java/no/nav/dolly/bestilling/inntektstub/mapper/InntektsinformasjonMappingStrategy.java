@@ -1,13 +1,5 @@
 package no.nav.dolly.bestilling.inntektstub.mapper;
 
-import static java.util.Objects.isNull;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-import org.springframework.stereotype.Component;
-
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
@@ -19,6 +11,14 @@ import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon.Fradrag;
 import no.nav.dolly.bestilling.inntektstub.domain.InntektsinformasjonWrapper;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
 import no.nav.dolly.mapper.MappingStrategy;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static java.util.Objects.isNull;
 
 @Component
 public class InntektsinformasjonMappingStrategy implements MappingStrategy {
@@ -50,16 +50,17 @@ public class InntektsinformasjonMappingStrategy implements MappingStrategy {
                                 AtomicInteger versjon = new AtomicInteger(0);
                                 inntektsinformasjon.getHistorikk().forEach(historikk ->
 
-                                    inntektsinformasjonWrapper.getInntektsinformasjon().add(Inntektsinformasjon.builder()
-                                            .aarMaaned(yearMonth.get().format(YEAR_MONTH_FORMAT))
-                                            .opplysningspliktig(inntektsinformasjon.getOpplysningspliktig())
-                                            .virksomhet(inntektsinformasjon.getVirksomhet())
-                                            .inntektsliste(mapperFacade.mapAsList(historikk.getInntektsliste(), Inntekt.class))
-                                            .fradragsliste(mapperFacade.mapAsList(historikk.getFradragsliste(), Fradrag.class))
-                                            .forskuddstrekksliste(mapperFacade.mapAsList(historikk.getForskuddstrekksliste(), Forskuddstrekk.class))
-                                            .arbeidsforholdsliste(mapperFacade.mapAsList(historikk.getArbeidsforholdsliste(), Arbeidsforhold.class))
-                                            .versjon(versjon.addAndGet(1))
-                                            .build())
+                                        inntektsinformasjonWrapper.getInntektsinformasjon().add(Inntektsinformasjon.builder()
+                                                .aarMaaned(yearMonth.get().format(YEAR_MONTH_FORMAT))
+                                                .opplysningspliktig(inntektsinformasjon.getOpplysningspliktig())
+                                                .virksomhet(inntektsinformasjon.getVirksomhet())
+                                                .inntektsliste(mapperFacade.mapAsList(historikk.getInntektsliste(), Inntekt.class))
+                                                .fradragsliste(mapperFacade.mapAsList(historikk.getFradragsliste(), Fradrag.class))
+                                                .forskuddstrekksliste(mapperFacade.mapAsList(historikk.getForskuddstrekksliste(), Forskuddstrekk.class))
+                                                .arbeidsforholdsliste(mapperFacade.mapAsList(historikk.getArbeidsforholdsliste(), Arbeidsforhold.class))
+                                                .versjon(versjon.addAndGet(1))
+                                                .rapporteringsdato(inntektsinformasjon.getRapporteringsdato())
+                                                .build())
                                 );
 
                                 yearMonth.updateAndGet(ym -> ym.minusMonths(1));

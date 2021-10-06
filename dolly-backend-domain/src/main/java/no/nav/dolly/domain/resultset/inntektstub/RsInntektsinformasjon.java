@@ -1,18 +1,18 @@
 package no.nav.dolly.domain.resultset.inntektstub;
 
-import static java.util.Objects.isNull;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Getter
 @Setter
@@ -50,6 +50,8 @@ public class RsInntektsinformasjon {
     private List<Arbeidsforhold> arbeidsforholdsliste;
 
     private List<Historikk> historikk;
+
+    private LocalDateTime rapporteringsdato;
 
     private Integer versjon;
 

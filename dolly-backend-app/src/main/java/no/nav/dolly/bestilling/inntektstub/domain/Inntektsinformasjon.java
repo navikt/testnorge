@@ -1,17 +1,18 @@
 package no.nav.dolly.bestilling.inntektstub.domain;
 
-import static java.util.Objects.isNull;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Getter
 @Setter
@@ -37,6 +38,8 @@ public class Inntektsinformasjon {
 
     @EqualsAndHashCode.Exclude
     private List<Arbeidsforhold> arbeidsforholdsliste;
+
+    private LocalDateTime rapporteringsdato;
 
     private Integer versjon;
 

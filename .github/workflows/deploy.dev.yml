@@ -4,9 +4,9 @@ on:
   push:
     branches:
       - master
+      - feature/rapporteringsdato-inntekt
       - feature/pdl-testdata_breaking_changes
-      - feature/bestilling-med-kommentar
-
+  workflow_dispatch:
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/dolly-backend:${{ github.sha }}
 

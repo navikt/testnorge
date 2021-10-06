@@ -8,14 +8,21 @@
 
 ## Avhenighetsanalyse
 
-**Kan kun brukes fra utviklerimage**
-https://dolly-backend.nais.preprod.local/swagger-ui.html
+## Utenfor utviklerimage
+
+https://dolly.ekstern.dev.nav.no/swagger-ui.html
+
+## Fra utviklerimage
+
+https://dolly-backend.dev.intern.nav.no/swagger-ui.html
 
 ## Kjør lokalt
 
-**NB: `navtunnel` må kjøre**
+https://dolly-backend.dev.intern.nav.no/swagger-ui.html
+**NB: `naisdevice` må kjøre og være grønn.**
 
 Legg inn dette i **din** maven settings.xml fil:
+
 ```
 <settings>
     <profiles>
