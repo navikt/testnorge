@@ -2,10 +2,11 @@ name: Deploy testnorge-frikort
 
 on:
   push:
-    branches: master
+    branches:
+      - master
     paths:
       - apps/testnorge-frikort/**
-
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/frikort:${{ github.sha }}
