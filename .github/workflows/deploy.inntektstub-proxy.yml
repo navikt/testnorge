@@ -2,7 +2,8 @@ name: Deploy inntektstub-proxy
 
 on:
   push:
-    branches: master
+    branches:
+      - master
     paths:
       - proxies/inntektstub-proxy/**
 
