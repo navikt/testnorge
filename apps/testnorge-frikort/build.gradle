@@ -60,8 +60,6 @@ dependencies {
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'no.nav.registre:testnorge-consumers:1.12.0-RELEASE'
 
-    implementation 'com.squareup.okhttp3:okhttp:4.7.2'
-
     implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
     testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
@@ -70,7 +68,6 @@ dependencies {
     testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'no.nav.testnav.libs:testing'
-    testImplementation 'com.squareup.okhttp3:mockwebserver:4.7.2'
 }
 
 description = 'testnorge-frikort'

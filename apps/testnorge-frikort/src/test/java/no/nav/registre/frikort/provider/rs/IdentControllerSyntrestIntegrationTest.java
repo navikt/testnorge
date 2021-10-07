@@ -67,6 +67,8 @@ public class IdentControllerSyntrestIntegrationTest {
 
         PersondataResponse hodejegerenGetPersondataResponse = PersondataResponse.builder().build();
 
+        var tokenResponse = "{\"access_token\": \"dummy\"}";
+
         JsonWiremockHelper
                 .builder(objectMapper)
                 .withUrlPathMatching("/testnorge-hodejegeren/api/v1/alle-identer/100001163")
@@ -83,7 +85,13 @@ public class IdentControllerSyntrestIntegrationTest {
 
         JsonWiremockHelper
                 .builder(objectMapper)
-                .withUrlPathMatching("/syntrest/api/v1/generate/frikort")
+                .withUrlPathMatching("/aad/oauth2/v2.0/token")
+                .withResponseBody(tokenResponse)
+                .stubPost();
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("/frikort/api/v1/generate/frikort")
                 .withRequestBody(syntRequest)
                 .withResponseBody(syntResponse)
                 .stubPost();
@@ -107,7 +115,13 @@ public class IdentControllerSyntrestIntegrationTest {
 
         JsonWiremockHelper
                 .builder(objectMapper)
-                .withUrlPathMatching("/syntrest/api/v1/generate/frikort")
+                .withUrlPathMatching("/aad/oauth2/v2.0/token")
+                .withResponseBody(tokenResponse)
+                .verifyPost();
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("/frikort/api/v1/generate/frikort")
                 .withRequestBody(syntRequest)
                 .verifyPost();
     }
