@@ -6,6 +6,7 @@ import no.nav.identpool.domain.Ajourhold;
 import no.nav.identpool.repository.AjourholdRepository;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.batch.runtime.BatchStatus;
 import java.time.LocalDateTime;
@@ -18,6 +19,7 @@ public class BatchService {
     private final AjourholdRepository ajourholdRepository;
     private final AjourholdService ajourholdService;
 
+    @Transactional
     public void startGeneratingIdentsBatch() {
         Ajourhold entity = Ajourhold.builder()
                 .sistOppdatert(LocalDateTime.now())
