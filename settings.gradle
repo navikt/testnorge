@@ -99,6 +99,7 @@ includeBuild './apps/testnorge-tss'
 includeBuild './apps/organisasjon-tilgang-service'
 includeBuild './apps/person-organisasjon-tilgang-service'
 includeBuild './apps/ident-pool'
+includeBuild './apps/testnorge-frikort'
 
 includeBuild './xsd/arbeidsforhold-xsd'
 
@@ -112,7 +113,6 @@ include(':mn-original-populasjon')
 include(':medl-local')
 include(':sigrun-local')
 include(':testnorge-nav-endringsmeldinger')
-include(':testnorge-frikort')
 include(':testnorge-aaregstub')
 include(':sam-domain')
 include(':medl-domain')
@@ -162,7 +162,6 @@ project(":mn-original-populasjon").projectDir = file('apps/mn-original-populasjo
 project(":medl-local").projectDir = file('apps/testnorge-medl/medl-local')
 project(":sigrun-local").projectDir = file('apps/testnorge-sigrun/sigrun-local')
 project(":testnorge-nav-endringsmeldinger").projectDir = file('apps/testnorge-nav-endringsmeldinger')
-project(":testnorge-frikort").projectDir = file('apps/testnorge-frikort')
 project(":testnorge-aaregstub").projectDir = file('apps/testnorge-aaregstub')
 project(":sam-domain").projectDir = file('apps/testnorge-sam/sam-domain')
 project(":medl-domain").projectDir = file('apps/testnorge-medl/medl-domain')
