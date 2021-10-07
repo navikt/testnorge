@@ -19,7 +19,6 @@ import no.nav.identpool.util.IdentGeneratorUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -229,7 +228,6 @@ public class AjourholdService {
     /**
      * Fjerner FNR/DNR/BNR fra ident-pool-databasen som finnes i prod
      */
-    @Transactional
     public void getIdentsAndCheckProd() {
 
         HentIdenterRequest request = HentIdenterRequest.builder()
