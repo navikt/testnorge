@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.identpool.domain.Ajourhold;
 import no.nav.identpool.repository.AjourholdRepository;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.batch.runtime.BatchStatus;
@@ -20,32 +20,41 @@ public class BatchService {
     private final AjourholdRepository ajourholdRepository;
     private final AjourholdService ajourholdService;
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Async
     public void startGeneratingIdentsBatch() {
-        Ajourhold entity = Ajourhold.builder()
-                .sistOppdatert(LocalDateTime.now())
-                .status(BatchStatus.STARTED)
-                .build();
-        ajourholdRepository.save(entity);
-        this.runNewAjourhold(entity);
+
+        runNewAjourhold();
     }
 
+    @Async
     public void updateDatabaseWithProdStatus() {
         ajourholdService.getIdentsAndCheckProd();
     }
 
-    private void runNewAjourhold(Ajourhold ajourhold) {
+    @Transactional
+    public void runNewAjourhold() {
+
+        var ajourhold = new Ajourhold();
 
         try {
+            ajourhold.setSistOppdatert(LocalDateTime.now());
+            ajourhold.setStatus(BatchStatus.STARTED);
+            ajourholdRepository.save(ajourhold);
+
             ajourholdService.checkCriticalAndGenerate();
+
+            ajourhold.setSistOppdatert(LocalDateTime.now());
             ajourhold.setStatus(BatchStatus.COMPLETED);
             ajourholdRepository.save(ajourhold);
 
         } catch (Exception e) {
 
             ajourhold.setFeilmelding(ExceptionUtils.getStackTrace(e).substring(0, 1023));
+
+            ajourhold.setSistOppdatert(LocalDateTime.now());
             ajourhold.setStatus(BatchStatus.FAILED);
             ajourholdRepository.save(ajourhold);
+
             log.error(e.getMessage(), e);
         }
     }

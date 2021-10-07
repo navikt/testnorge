@@ -11,6 +11,7 @@ import no.nav.testnav.libs.servletcore.provider.InternalController;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Configuration
@@ -19,6 +20,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
         LoggingWebConfig.class,
         FlywayConfiguration.class,
         VaultHikariConfiguration.class})
+@EnableAsync
 @EnableScheduling
 public class ApplicationConfig {
 
