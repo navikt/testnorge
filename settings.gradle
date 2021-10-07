@@ -99,6 +99,7 @@ includeBuild './apps/testnorge-tss'
 includeBuild './apps/organisasjon-tilgang-service'
 includeBuild './apps/person-organisasjon-tilgang-service'
 includeBuild './apps/ident-pool'
+includeBuild './apps/testnorge-medl'
 includeBuild './apps/testnorge-frikort'
 
 includeBuild './xsd/arbeidsforhold-xsd'
@@ -108,14 +109,11 @@ include(':proxies')
 include(':inntektsmelding-generator-service')
 include(':tp-domain')
 include(':sykemelding-api')
-include(':medl-core')
 include(':mn-original-populasjon')
-include(':medl-local')
 include(':sigrun-local')
 include(':testnorge-nav-endringsmeldinger')
 include(':testnorge-aaregstub')
 include(':sam-domain')
-include(':medl-domain')
 include(':testnorge-sigrun')
 include(':testnorge-token-provider')
 include(':nav-endringsmeldinger-core')
@@ -147,7 +145,6 @@ include(':synt-person-api')
 include(':testnorge-sam')
 include(':statistikk-service')
 
-include(':testnorge-medl')
 include(':ident-check-in-prod-service')
 include(':mn-person-service')
 include(':mn-synt-arbeidsforhold-service')
@@ -157,14 +154,11 @@ include(':tps-identer-vedlikehold')
 project(":inntektsmelding-generator-service").projectDir = file('apps/inntektsmelding-generator-service')
 project(":tp-domain").projectDir = file('apps/testnorge-tp/tp-domain')
 project(":sykemelding-api").projectDir = file('apps/sykemelding-api')
-project(":medl-core").projectDir = file('apps/testnorge-medl/medl-core')
 project(":mn-original-populasjon").projectDir = file('apps/mn-original-populasjon')
-project(":medl-local").projectDir = file('apps/testnorge-medl/medl-local')
 project(":sigrun-local").projectDir = file('apps/testnorge-sigrun/sigrun-local')
 project(":testnorge-nav-endringsmeldinger").projectDir = file('apps/testnorge-nav-endringsmeldinger')
 project(":testnorge-aaregstub").projectDir = file('apps/testnorge-aaregstub')
 project(":sam-domain").projectDir = file('apps/testnorge-sam/sam-domain')
-project(":medl-domain").projectDir = file('apps/testnorge-medl/medl-domain')
 project(":testnorge-sigrun").projectDir = file('apps/testnorge-sigrun')
 project(":testnorge-token-provider").projectDir = file('apps/testnorge-token-provider')
 project(":nav-endringsmeldinger-core").projectDir = file('apps/testnorge-nav-endringsmeldinger/nav-endringsmeldinger-core')
@@ -194,7 +188,6 @@ project(":synt-person-api").projectDir = file('apps/synt-person-api')
 project(":testnorge-sam").projectDir = file('apps/testnorge-sam')
 project(":statistikk-service").projectDir = file('apps/statistikk-service')
 
-project(":testnorge-medl").projectDir = file('apps/testnorge-medl')
 project(":mn-person-service").projectDir = file('apps/mn-person-service')
 project(":mn-synt-arbeidsforhold-service").projectDir = file('apps/mn-synt-arbeidsforhold-service')
 project(":ident-check-in-prod-service").projectDir = file('apps/ident-check-in-prod-service')
