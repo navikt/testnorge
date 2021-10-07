@@ -19,7 +19,7 @@ public class GeografiskeKodeverkConsumer {
     private static final String POSTNUMMER_URL = "/api/v1/postnummer";
     private static final String LAND_URL = "/api/v1/land";
     private static final String KOMMUNE_URL = "/api/v1/kommuner";
-    private static final String EMBETE_URL = "/api/vi/embeter";
+    private static final String EMBETE_URL = "/api/v1/embeter";
 
     private final WebClient webClient;
     private final AccessTokenService accessTokenService;
@@ -34,15 +34,6 @@ public class GeografiskeKodeverkConsumer {
                 .builder()
                 .baseUrl(properties.getUrl())
                 .build();
-    }
-
-    // TODO Trenger vi denne??
-    public List<GeografiskeKodeverkDTO> getKommuner(String kommunenr, String kommunenavn) {
-
-        return accessTokenService.generateToken(properties).flatMap(
-                        token -> new GeografiskeKodeverkCommand(webClient, KOMMUNE_URL,
-                                String.format("kommunenr=%s&kommunenavn=%s", kommunenr, kommunenavn), token.getTokenValue()).call())
-                .block();
     }
 
     public String getTilfeldigKommune() {
@@ -69,17 +60,11 @@ public class GeografiskeKodeverkConsumer {
         return poststed.get(0).navn();
     }
 
-    //TODO Trenger vi denne?
-    public List<GeografiskeKodeverkDTO> getEmbeter() {
-
-        return accessTokenService.generateToken(properties).flatMap(
-                token -> new GeografiskeKodeverkCommand(webClient, EMBETE_URL, null, token.getTokenValue()).call()).block();
-    }
-
     public String getEmbeteNavn(String embete) {
 
         List<GeografiskeKodeverkDTO> embeter = accessTokenService.generateToken(properties).flatMap(
-                token -> new GeografiskeKodeverkCommand(webClient, EMBETE_URL, embete, token.getTokenValue()).call()).block();
+                token -> new GeografiskeKodeverkCommand(webClient, EMBETE_URL,
+                        String.format("embetekode=%s", embete), token.getTokenValue()).call()).block();
 
         return embeter.get(0).navn();
     }
