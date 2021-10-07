@@ -31,13 +31,12 @@ public class SyntetiseringControllerTest {
     private SyntetiseringController syntetiseringController;
 
     private SyntetiserInstRequest syntetiserInstRequest;
-    private Long avspillergruppeId = 123L;
-    private String miljoe = "t1";
-    private int antallMeldinger = 2;
-    private String id = "test";
+    private final String miljoe = "t1";
 
     @Before
     public void setUp() {
+        Long avspillergruppeId = 123L;
+        int antallMeldinger = 2;
         syntetiserInstRequest = new SyntetiserInstRequest(avspillergruppeId, miljoe, antallMeldinger);
     }
 
@@ -48,6 +47,7 @@ public class SyntetiseringControllerTest {
         expectedResponse.put(fnr, Collections.singletonList(OppholdResponse.builder()
                 .status(HttpStatus.OK)
                 .build()));
+        String id = "test";
         when(syntetiseringService.finnSyntetiserteMeldingerOgLagreIInst2(id, id, miljoe, syntetiserInstRequest)).thenReturn(expectedResponse);
 
         var result = syntetiseringController.genererInstitusjonsmeldinger(id, id, miljoe, syntetiserInstRequest);

@@ -34,7 +34,7 @@ public class SyntetiseringService {
     private final HodejegerenConsumer hodejegerenConsumer;
     private final InstSyntetisererenConsumer instSyntetisererenConsumer;
     private final Inst2Consumer inst2Consumer;
-    private final Random rand;
+    private final Random rand = new Random();
 
     public Map<String, List<OppholdResponse>> finnSyntetiserteMeldingerOgLagreIInst2(
             String callId,

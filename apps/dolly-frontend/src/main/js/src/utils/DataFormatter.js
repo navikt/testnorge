@@ -6,6 +6,7 @@ import _isNil from 'lodash/isNil'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
 export const defaultDateFormat = 'dd.MM.yyyy'
+export const defaultDateTimeFormat = 'dd.MM.yyyy hh:mm'
 
 const Formatters = {}
 
@@ -28,6 +29,15 @@ Formatters.formatDate = (date) => {
 	// Parse date if not date
 	if (!isDate(date)) date = new Date(date)
 	return format(date, defaultDateFormat)
+}
+
+// Format dateTime to readable string format (AAAA-MM-DDTxx:xx:xx to DD.MM.AAAA hh:mm)
+// Date ---> String
+Formatters.formatDateTime = (date) => {
+	if (!date) return date
+	// Parse date if not date
+	if (!isDate(date)) date = new Date(date)
+	return format(date, defaultDateTimeFormat)
 }
 
 // Format string to Date format

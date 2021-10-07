@@ -95,23 +95,23 @@ includeBuild './apps/testnorge-inntekt'
 includeBuild './apps/app-tilgang-analyse-service'
 includeBuild './apps/organisasjon-forvalter'
 includeBuild './apps/testnorge-arena'
+includeBuild './apps/testnorge-tss'
 includeBuild './apps/organisasjon-tilgang-service'
 includeBuild './apps/person-organisasjon-tilgang-service'
 includeBuild './apps/ident-pool'
 includeBuild './apps/testnorge-medl'
+includeBuild './apps/testnorge-frikort'
 
 includeBuild './xsd/arbeidsforhold-xsd'
 
 includeBuild './gradlePlugins'
 include(':proxies')
 include(':inntektsmelding-generator-service')
-include(':testnorge-tss')
 include(':tp-domain')
 include(':sykemelding-api')
 include(':mn-original-populasjon')
 include(':sigrun-local')
 include(':testnorge-nav-endringsmeldinger')
-include(':testnorge-frikort')
 include(':testnorge-aaregstub')
 include(':sam-domain')
 include(':testnorge-sigrun')
@@ -152,13 +152,11 @@ include(':organisasjon-orgnummer-service')
 include(':tps-identer-vedlikehold')
 
 project(":inntektsmelding-generator-service").projectDir = file('apps/inntektsmelding-generator-service')
-project(":testnorge-tss").projectDir = file('apps/testnorge-tss')
 project(":tp-domain").projectDir = file('apps/testnorge-tp/tp-domain')
 project(":sykemelding-api").projectDir = file('apps/sykemelding-api')
 project(":mn-original-populasjon").projectDir = file('apps/mn-original-populasjon')
 project(":sigrun-local").projectDir = file('apps/testnorge-sigrun/sigrun-local')
 project(":testnorge-nav-endringsmeldinger").projectDir = file('apps/testnorge-nav-endringsmeldinger')
-project(":testnorge-frikort").projectDir = file('apps/testnorge-frikort')
 project(":testnorge-aaregstub").projectDir = file('apps/testnorge-aaregstub')
 project(":sam-domain").projectDir = file('apps/testnorge-sam/sam-domain')
 project(":testnorge-sigrun").projectDir = file('apps/testnorge-sigrun')
