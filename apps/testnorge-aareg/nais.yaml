@@ -6,6 +6,9 @@ metadata:
   labels:
     team: dolly
 spec:
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
   port: 8080
   tokenx:
     enabled: true
@@ -35,7 +38,7 @@ spec:
     limits:
       cpu: 1000m
       memory: 2048Mi
-  image: {{ image }}
+  image: {{image}}
   ingresses:
     - "https://testnorge-aareg.nais.preprod.local"
     - "https://testnorge-aareg.dev-fss.nais.io"

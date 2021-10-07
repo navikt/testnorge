@@ -3,6 +3,6 @@ LABEL maintainer="Team Dolly"
 
 ADD apps/testnorge-aareg/build/libs/app.jar /app/app.jar
 
-ENV JAVA_OPTS="-Dspring.profiles.active=prod"
+ENV JAVA_OPTS="--add-opens java.base/java.lang=ALL-UNNAMED"
 
 EXPOSE 8080

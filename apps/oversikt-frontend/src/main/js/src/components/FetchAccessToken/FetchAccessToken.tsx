@@ -9,6 +9,9 @@ import SessionTimer from '@/components/SessionTimer'
 import styled from 'styled-components'
 import { ErrorAlertstripe, WarningAlertstripe } from '@navikt/dolly-komponenter'
 import { NotFoundError } from '@navikt/dolly-lib'
+import { Input } from 'nav-frontend-skjema'
+
+import OrganisasjonService from '@/services/OrganisasjonService'
 
 type Props = {
 	scope: string
@@ -102,6 +105,13 @@ export default ({ labels = {}, scope }: Props) => {
 					<CopyToken disabled={loading}>Copy</CopyToken>
 				</CopyToClipboard>
 			</ButtonGroup>
+			<Input
+				label="Orgnummer (Midlertidig)"
+				type="text"
+				onBlur={(event) =>
+					event.target.value && OrganisasjonService.setOrganisasjonsnummer(event.target.value)
+				}
+			/>
 		</FetchAccessToken>
 	)
 }

@@ -32,7 +32,7 @@ DokarkivPanel.initialValues = ({ set, del, has }: any) => ({
 				tittel: '',
 				tema: '',
 				kanal: 'SKAN_IM',
-				journalfoerendeEnhet: '',
+				journalfoerendeEnhet: undefined,
 				dokumenter: [
 					{
 						tittel: '',
@@ -58,7 +58,7 @@ DokarkivPanel.initialValues = ({ set, del, has }: any) => ({
 					navn: '',
 					idType: '',
 				},
-				journalfoerendeEnhet: '',
+				journalfoerendeEnhet: undefined,
 				dokumenter: [
 					{
 						tittel: '',
