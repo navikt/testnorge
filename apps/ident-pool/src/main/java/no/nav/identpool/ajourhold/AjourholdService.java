@@ -54,47 +54,37 @@ public class AjourholdService {
     private final TpsfService tpsfService;
     private final TpsfConsumer tpsfConsumer;
 
-    private final Counter counter;
-
-    private LocalDate current;
-    private int newIdentCount;
-
-    public boolean checkCriticalAndGenerate() {
-
-        newIdentCount = 0;
-        current = LocalDate.now();
+    public void checkCriticalAndGenerate() {
 
         int minYearMinus = 110;
-        LocalDate minDate = current.minusYears(minYearMinus).with(firstDayOfYear());
-        while (minDate.isBefore(current.plusYears(1))) {
-            checkAndGenerateForDate(minDate, Identtype.FNR, false);
-            checkAndGenerateForDate(minDate, Identtype.FNR, true);
-            checkAndGenerateForDate(minDate, Identtype.DNR, false);
-            checkAndGenerateForDate(minDate, Identtype.DNR, true);
-            checkAndGenerateForDate(minDate, Identtype.BOST, false);
-            checkAndGenerateForDate(minDate, Identtype.BOST, true);
+        LocalDate minDate = LocalDate.now().minusYears(minYearMinus).with(firstDayOfYear());
+        while (minDate.isBefore(LocalDate.now().plusYears(1))) {
+            checkAndGenerateForDate(minDate.getYear(), Identtype.FNR, false);
+            checkAndGenerateForDate(minDate.getYear(), Identtype.FNR, true);
+            checkAndGenerateForDate(minDate.getYear(), Identtype.DNR, false);
+            checkAndGenerateForDate(minDate.getYear(), Identtype.DNR, true);
+            checkAndGenerateForDate(minDate.getYear(), Identtype.BOST, false);
+            checkAndGenerateForDate(minDate.getYear(), Identtype.BOST, true);
             minDate = minDate.plusYears(1);
         }
-        counter.increment(newIdentCount);
-        return newIdentCount > 0;
     }
 
     void checkAndGenerateForDate(
-            LocalDate date,
+            int year,
             Identtype type,
             boolean syntetiskIdent) {
 
         int numberOfMissingIdents;
-        int maxRuns = 3;
-        int runs = 0;
+        var maxRuns = 3;
+        var runs = 0;
 
         do {
-            numberOfMissingIdents = getNumberOfMissingIdents(date.getYear(), type, syntetiskIdent);
+            numberOfMissingIdents = getNumberOfMissingIdents(year, type, syntetiskIdent);
             if (numberOfMissingIdents > 0) {
-                numberOfMissingIdents -= generateForYear(date.getYear(), type, numberOfMissingIdents, syntetiskIdent);
+                numberOfMissingIdents -= generateForYear(year, type, numberOfMissingIdents, syntetiskIdent);
             } else {
                 log.info("Ajourhold: år {} {} {} identer har tilstrekkelig antall",
-                        date.getYear(), type, syntetiskIdent ? NAV_SYNTETISKE: VANLIGE);
+                        year, type, syntetiskIdent ? NAV_SYNTETISKE: VANLIGE);
                 break;
             }
             runs++;
@@ -109,7 +99,7 @@ public class AjourholdService {
 
         int antallPerDag = IdentDistribusjonUtil.antallPersonerPerDagPerAar(year);
         antallPerDag = adjustForYear(year, antallPerDag);
-        int days = (year == current.getYear() ? 365 - (365 - current.getDayOfYear()) : 365);
+        int days = (year == LocalDate.now().getYear() ? 365 - (365 - LocalDate.now().getDayOfYear()) : 365);
         long count = identRepository.countByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatusAndSyntetisk(
                 LocalDate.of(year, 1, 1),
                 LocalDate.of(year + 1, 1, 1),
@@ -130,8 +120,8 @@ public class AjourholdService {
 
         LocalDate firstDate = LocalDate.of(year, 1, 1);
         LocalDate lastDate = LocalDate.of(year + 1, 1, 1);
-        if (lastDate.isAfter(current)) {
-            lastDate = LocalDate.of(year, current.getMonth(), current.getDayOfMonth());
+        if (lastDate.isAfter(LocalDate.now())) {
+            lastDate = LocalDate.of(year, LocalDate.now().getMonth(), LocalDate.now().getDayOfMonth());
         }
         if (lastDate.isEqual(firstDate)) {
             lastDate = lastDate.plusDays(1);
@@ -178,7 +168,6 @@ public class AjourholdService {
                     .map(TpsStatus::getIdent)
                     .collect(Collectors.toList());
 
-            newIdentCount += rekvirert.size();
             saveIdents(rekvirert, Rekvireringsstatus.I_BRUK, "TPS");
 
             ledig.addAll(tpsStatuses.stream()
@@ -195,7 +184,6 @@ public class AjourholdService {
             ledig = ledig.subList(0, numberOfIdents);
         }
 
-        newIdentCount += ledig.size();
         var lagredeIdenter = saveIdents(ledig, LEDIG, null);
         return lagredeIdenter.size();
     }
@@ -258,13 +246,14 @@ public class AjourholdService {
             }
         }
         if (!usedIdents.isEmpty()) {
-            log.info("Fjerner identer som er i bruk i prod, men som er markert som LEDIG i ident-pool.");
+            log.info("Fjerner {} identer som er i bruk i prod, men som er markert som LEDIG i ident-pool.", usedIdents.size());
 
             usedIdents.forEach(usedIdent -> {
                 Ident ident = identRepository.findTopByPersonidentifikator(usedIdent);
                 ident.setRekvireringsstatus(Rekvireringsstatus.I_BRUK);
                 ident.setRekvirertAv("TPS");
                 identRepository.save(ident);
-            });        }
+            });
+        }
     }
 }

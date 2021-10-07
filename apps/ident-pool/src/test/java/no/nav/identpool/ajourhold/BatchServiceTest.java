@@ -19,6 +19,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -48,7 +50,7 @@ class BatchServiceTest {
 
     @Test
     void batchKjorer() {
-        when(ajourholdService.checkCriticalAndGenerate()).thenReturn(true);
+        doReturn(true).when(ajourholdService).checkCriticalAndGenerate();
         batchService.startGeneratingIdentsBatch();
         assertThat(entity.getStatus(), is(BatchStatus.COMPLETED));
     }
@@ -56,7 +58,7 @@ class BatchServiceTest {
     @Test
     void batchFeiler() {
         String exception = "Unique exception";
-        when(ajourholdService.checkCriticalAndGenerate()).thenThrow(new RuntimeException(exception));
+        doThrow(new RuntimeException(exception)).when(ajourholdService).checkCriticalAndGenerate();
         batchService.startGeneratingIdentsBatch();
         assertThat(entity.getStatus(), is(BatchStatus.FAILED));
         assertThat(entity.getFeilmelding(), containsString(exception));
@@ -68,7 +70,7 @@ class BatchServiceTest {
 
     @Test
     void batchKjorerMenGenerererIngenIdenter() {
-        when(ajourholdService.checkCriticalAndGenerate()).thenReturn(false);
+        doReturn(false).when(ajourholdService).checkCriticalAndGenerate();
         batchService.startGeneratingIdentsBatch();
         verify(ajourholdRepository, times(1)).delete(any(Ajourhold.class));
     }

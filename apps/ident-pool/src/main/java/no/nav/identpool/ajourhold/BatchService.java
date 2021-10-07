@@ -20,33 +20,36 @@ public class BatchService {
     private final AjourholdRepository ajourholdRepository;
     private final AjourholdService ajourholdService;
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public void startGeneratingIdentsBatch() {
-        Ajourhold entity = Ajourhold.builder()
-                .sistOppdatert(LocalDateTime.now())
-                .status(BatchStatus.STARTED)
-                .build();
-        ajourholdRepository.save(entity);
-        this.runNewAjourhold(entity);
-    }
 
-    public void updateDatabaseWithProdStatus() {
-        ajourholdService.getIdentsAndCheckProd();
-    }
-
-    private void runNewAjourhold(Ajourhold ajourhold) {
+        var ajourhold = new Ajourhold();
 
         try {
+            ajourhold.setSistOppdatert(LocalDateTime.now());
+            ajourhold.setStatus(BatchStatus.STARTED);
+            ajourholdRepository.save(ajourhold);
+
             ajourholdService.checkCriticalAndGenerate();
+
+            ajourhold.setSistOppdatert(LocalDateTime.now());
             ajourhold.setStatus(BatchStatus.COMPLETED);
             ajourholdRepository.save(ajourhold);
 
         } catch (Exception e) {
 
             ajourhold.setFeilmelding(ExceptionUtils.getStackTrace(e).substring(0, 1023));
+
+            ajourhold.setSistOppdatert(LocalDateTime.now());
             ajourhold.setStatus(BatchStatus.FAILED);
             ajourholdRepository.save(ajourhold);
+
             log.error(e.getMessage(), e);
         }
+    }
+
+    @Transactional
+    public void updateDatabaseWithProdStatus() {
+        ajourholdService.getIdentsAndCheckProd();
     }
 }

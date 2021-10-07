@@ -53,13 +53,10 @@ class AjourholdServiceTest {
 
     private final List<Ident> entities = new ArrayList<>();
 
-    @Mock
-    private Counter counter;
-
     @BeforeEach
     void init() {
         entities.clear();
-        ajourholdService = spy(new AjourholdService(identRepository, new IdentGeneratorService(), tpsfService, tpsfConsumer, counter));
+        ajourholdService = spy(new AjourholdService(identRepository, new IdentGeneratorService(), tpsfService, tpsfConsumer));
         ReflectionTestUtils.setField(ajourholdService, "current", LocalDate.now());
 
         when(identRepository.save(any(Ident.class))).thenAnswer((Answer<Void>) invocationOnMock -> {
