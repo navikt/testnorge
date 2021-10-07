@@ -23,7 +23,7 @@ public class BatchService {
                 .sistOppdatert(LocalDateTime.now())
                 .status(BatchStatus.STARTED)
                 .build();
-        ajourholdRepository.update(entity);
+        ajourholdRepository.save(entity);
         this.runNewAjourhold(entity);
     }
 
@@ -32,23 +32,18 @@ public class BatchService {
     }
 
     private void runNewAjourhold(Ajourhold ajourhold) {
+
         try {
-            boolean newIdentsAdded = ajourholdService.checkCriticalAndGenerate();
-            if (newIdentsAdded) {
-                ajourhold.setStatus(BatchStatus.COMPLETED);
-                ajourholdRepository.update(ajourhold);
-            } else {
-                ajourholdRepository.delete(ajourhold);
-            }
+            ajourholdService.checkCriticalAndGenerate();
+            ajourhold.setStatus(BatchStatus.COMPLETED);
+            ajourholdRepository.save(ajourhold);
+
         } catch (Exception e) {
-            String exceptionString = ExceptionUtils.getStackTrace(e);
-            if (exceptionString.length() > 1023) {
-                exceptionString = exceptionString.substring(0, 1023);
-            }
-            ajourhold.setFeilmelding(exceptionString);
+
+            ajourhold.setFeilmelding(ExceptionUtils.getStackTrace(e).substring(0, 1023));
             ajourhold.setStatus(BatchStatus.FAILED);
-            ajourholdRepository.update(ajourhold);
-            log.warn(e.getMessage());
+            ajourholdRepository.save(ajourhold);
+            log.error(e.getMessage(), e);
         }
     }
 }

@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - feature/deploy_av_ident_pool
+      - bugfix/ident_pool_batchjobb_fokus
     paths:
       - apps/ident-pool/**
 env:

@@ -42,6 +42,9 @@ import static no.nav.identpool.domain.Rekvireringsstatus.LEDIG;
 @RequiredArgsConstructor
 public class AjourholdService {
 
+    private static final String NAV_SYNTETISKE = "NAV-syntetiske";
+    private static final String VANLIGE = "vanlige";
+
     private static final int MAX_SIZE_TPS_QUEUE = 80;
     private static final int MIN_ANTALL_IDENTER_PER_DAG = 2;
     private static final int MIN_ANTALL_IDENTER_PER_DAG_SENERE_AAR = 10;
@@ -81,17 +84,22 @@ public class AjourholdService {
             Identtype type,
             boolean syntetiskIdent) {
 
+        int numberOfMissingIdents;
         int maxRuns = 3;
         int runs = 0;
-        while (runs < maxRuns) {
-            int numberOfMissingIdents = getNumberOfMissingIdents(date.getYear(), type, syntetiskIdent);
+
+        do {
+            numberOfMissingIdents = getNumberOfMissingIdents(date.getYear(), type, syntetiskIdent);
             if (numberOfMissingIdents > 0) {
-                generateForYear(date.getYear(), type, numberOfMissingIdents, syntetiskIdent);
+                numberOfMissingIdents -= generateForYear(date.getYear(), type, numberOfMissingIdents, syntetiskIdent);
             } else {
+                log.info("Ajourhold: år {} {} {} identer har tilstrekkelig antall",
+                        date.getYear(), type, syntetiskIdent ? NAV_SYNTETISKE: VANLIGE);
                 break;
             }
             runs++;
-        }
+
+        } while (numberOfMissingIdents > 0 && runs < maxRuns);
     }
 
     private int getNumberOfMissingIdents(
@@ -111,7 +119,7 @@ public class AjourholdService {
         return Math.toIntExact((antallPerDag * days) - count);
     }
 
-    void generateForYear(
+    int generateForYear(
             int year,
             Identtype type,
             int numberOfIdents,
@@ -131,7 +139,10 @@ public class AjourholdService {
 
         Map<LocalDate, List<String>> pinMap = identGeneratorService.genererIdenterMap(firstDate, lastDate, type, syntetiskIdent);
 
-        filterIdents(antallPerDag, pinMap, numberOfIdents);
+        var antall = filterIdents(antallPerDag, pinMap, numberOfIdents, syntetiskIdent);
+        log.info("Ajourhold: år {} {} {} identer har fått allokert antall nye: {}", year, type, syntetiskIdent ? NAV_SYNTETISKE : VANLIGE, antall);
+
+        return antall;
     }
 
     private int adjustForYear(
@@ -150,26 +161,34 @@ public class AjourholdService {
         return antallPerDag;
     }
 
-    private void filterIdents(
+    private int filterIdents(
             int identsPerDay,
             Map<LocalDate, List<String>> pinMap,
-            int numberOfIdents) {
+            int numberOfIdents,
+            boolean syntetiskIdent) {
 
-        Set<String> identsNotInDatabase = filterAgainstDatabase(identsPerDay, pinMap);
-        Set<TpsStatus> tpsStatuses = tpsfService.checkIdentsInTps(identsNotInDatabase);
+        var identsNotInDatabase = filterAgainstDatabase(identsPerDay, pinMap);
+        List<String> ledig = new ArrayList<>();
 
-        List<String> rekvirert = tpsStatuses.stream()
-                .filter(TpsStatus::isInUse)
-                .map(TpsStatus::getIdent)
-                .collect(Collectors.toList());
+        if (!syntetiskIdent) {
+            Set<TpsStatus> tpsStatuses = tpsfService.checkIdentsInTps(identsNotInDatabase);
 
-        newIdentCount += rekvirert.size();
-        saveIdents(rekvirert, Rekvireringsstatus.I_BRUK, "TPS");
+            List<String> rekvirert = tpsStatuses.stream()
+                    .filter(TpsStatus::isInUse)
+                    .map(TpsStatus::getIdent)
+                    .collect(Collectors.toList());
 
-        List<String> ledig = tpsStatuses.stream()
-                .filter(i -> !i.isInUse())
-                .map(TpsStatus::getIdent)
-                .collect(Collectors.toList());
+            newIdentCount += rekvirert.size();
+            saveIdents(rekvirert, Rekvireringsstatus.I_BRUK, "TPS");
+
+            ledig.addAll(tpsStatuses.stream()
+                    .filter(i -> !i.isInUse())
+                    .map(TpsStatus::getIdent)
+                    .collect(Collectors.toList()));
+        } else {
+            ledig.addAll(identsNotInDatabase.stream()
+                    .toList());
+        }
 
         if (ledig.size() > numberOfIdents) {
             Collections.shuffle(ledig);
@@ -177,7 +196,8 @@ public class AjourholdService {
         }
 
         newIdentCount += ledig.size();
-        saveIdents(ledig, LEDIG, null);
+        var lagredeIdenter = saveIdents(ledig, LEDIG, null);
+        return lagredeIdenter.size();
     }
 
     private Set<String> filterAgainstDatabase(
