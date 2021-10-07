@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -32,8 +31,8 @@ public class IdentServiceTest {
         var miljoe = "t1";
         var id = "test";
 
-        when(inst2Consumer.slettInstitusjonsoppholdMedIdent(eq(id), eq(id), eq(miljoe), eq(fnr1))).thenReturn(ResponseEntity.noContent().build());
-        when(inst2Consumer.slettInstitusjonsoppholdMedIdent(eq(id), eq(id), eq(miljoe), eq(fnr2))).thenReturn(ResponseEntity.noContent().build());
+        when(inst2Consumer.slettInstitusjonsoppholdMedIdent(id, id, miljoe, fnr1)).thenReturn(ResponseEntity.noContent().build());
+        when(inst2Consumer.slettInstitusjonsoppholdMedIdent(id, id, miljoe, fnr2)).thenReturn(ResponseEntity.noContent().build());
 
         identService.slettInstitusjonsoppholdTilIdenter(id, id, miljoe, identer);
 

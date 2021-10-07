@@ -1,12 +1,12 @@
-package no.nav.registre.frikort;
+package no.nav.registre.inst;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ApplicationStarter {
+public class TestnorgeInstApplicationStarter {
 
     public static void main(String[] args) {
-        SpringApplication.run(ApplicationStarter.class, args);
+        SpringApplication.run(TestnorgeInstApplicationStarter.class, args);
     }
 }

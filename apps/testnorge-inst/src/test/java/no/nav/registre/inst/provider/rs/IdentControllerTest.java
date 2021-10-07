@@ -25,15 +25,15 @@ public class IdentControllerTest {
     @InjectMocks
     private IdentController identController;
 
-    private String id = "test";
-    private String miljoe = "t1";
-    private String fnr1 = "01010101010";
-    private String fnr2 = "02020202020";
+    private final String id = "test";
+    private final String miljoe = "t1";
     private List<String> identer;
-    private InstitusjonsoppholdV2 institusjonsopphold = new InstitusjonsoppholdV2();
+    private final InstitusjonsoppholdV2 institusjonsopphold = new InstitusjonsoppholdV2();
 
     @Before
     public void setUp() {
+        String fnr1 = "01010101010";
+        String fnr2 = "02020202020";
         identer = new ArrayList<>(Arrays.asList(fnr1, fnr2));
     }
 

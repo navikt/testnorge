@@ -1,5 +1,6 @@
 package no.nav.registre.frikort.config;
 
+import no.nav.testnav.libs.servletsecurity.config.SecureOAuth2ServerToServerConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +22,10 @@ import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 @Configuration
 @ComponentScan
 @EnableAutoConfiguration
-@Import(ApplicationCoreConfig.class)
+@Import(value = {
+        ApplicationCoreConfig.class,
+        SecureOAuth2ServerToServerConfiguration.class
+})
 public class AppConfig {
 
     @Value("${testnorge.hodejegeren.url}")
