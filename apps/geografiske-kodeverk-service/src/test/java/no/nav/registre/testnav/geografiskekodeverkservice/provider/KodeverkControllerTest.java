@@ -178,6 +178,36 @@ class KodeverkControllerTest {
     }
 
     @Test
+    void should_return_rogaland_when_embetekode_is_fmro() throws Exception {
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.get("/api/v1/embeter")
+                        .queryParam("embetekode", "FMRO")
+                ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        List<Kodeverk> kodeverk = readResponse(result);
+
+        Assertions.assertIterableEquals(
+                Collections.singletonList(Kodeverk.builder().kode("FMRO").navn("Statsforvalteren i Rogaland").build()),
+                kodeverk
+        );
+    }
+
+    @Test
+    void should_return_FMVL_when_embetenavn_is_vestland() throws Exception {
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.get("/api/v1/embeter")
+                        .queryParam("embetenavn", "Statsforvalteren i Vestland")
+                ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        List<Kodeverk> kodeverk = readResponse(result);
+
+        Assertions.assertIterableEquals(
+                Collections.singletonList(Kodeverk.builder().kode("FMVL").navn("Statsforvalteren i Vestland").build()),
+                kodeverk
+        );
+    }
+
+    @Test
     void should_return_bad_request_when_kommunenummer_is_not_numerical() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get("/api/v1/kommuner")
                 .queryParam("kommunenr", "Oslo")
@@ -216,6 +246,20 @@ class KodeverkControllerTest {
     void should_return_bad_request_when_postnummer_is_not_numerical() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get("/api/v1/postnummer")
                 .queryParam("postnummer", "OSLO5")
+        ).andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    void should_return_bad_request_when_embetekode_is_not_four_letters() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get("/api/v1/embeter")
+                .queryParam("embetekode", "FMROO")
+        ).andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    void should_return_bad_request_when_embetenavn_is_not_alphabetical() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get("/api/v1/embeter")
+                .queryParam("embetenavn", "Statsforvalteren 1 Oslo og Viken")
         ).andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 

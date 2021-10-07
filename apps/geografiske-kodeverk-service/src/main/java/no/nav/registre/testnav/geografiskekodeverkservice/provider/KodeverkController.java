@@ -61,11 +61,14 @@ public class KodeverkController {
     }
 
     @GetMapping(value = "/embeter")
-    public ResponseEntity<List<Kodeverk>> getEmbeter() {
+    public ResponseEntity<List<Kodeverk>> getEmbeter(
+            @RequestParam(required = false) @Pattern(regexp = "[A-Z]{4}", message = "Embetekode må være fire store bokstaver") String embetekode,
+            @RequestParam(required = false) @Pattern(regexp = "\\D+", message = "Embetenavn må ikke være alfanumerisk") String embetenavn
+    ) {
         return ResponseEntity
                 .ok()
                 .cacheControl(cacheControl)
-                .body(kodeverkService.getEmbeter());
+                .body(kodeverkService.getEmbeter(embetekode, embetenavn));
 
     }
 }

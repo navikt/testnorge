@@ -7,6 +7,7 @@ metadata:
     team: dolly
 spec:
   image: {{ image }}
+  webproxy: true
   port: 8080
   liveness:
     path: /internal/isAlive
@@ -29,6 +30,17 @@ spec:
     requests:
       cpu: 200m
       memory: 1024Mi
+  accessPolicy:
+    inbound:
+      rules:
+        - application: team-dolly-lokal-app
+          cluster: dev-fss
+        - application: orkestratoren
+          cluster: dev-fss
+  azure:
+    application:
+      enabled: true
+      tenant: nav.no
   ingresses:
     - "https://testnorge-tss.nais.preprod.local"
     - "https://testnorge-tss.dev.adeo.no"
