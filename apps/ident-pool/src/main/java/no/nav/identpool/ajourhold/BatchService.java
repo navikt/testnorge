@@ -23,24 +23,13 @@ public class BatchService {
         var ajourhold = new Ajourhold();
 
         try {
-            ajourhold.setSistOppdatert(LocalDateTime.now());
-            ajourhold.setStatus(BatchStatus.MINING_STARTED);
-            ajourholdRepository.save(ajourhold);
-
+            updateStatus(ajourhold, BatchStatus.MINING_STARTED);
             ajourholdService.checkCriticalAndGenerate();
-
-            ajourhold.setSistOppdatert(LocalDateTime.now());
-            ajourhold.setStatus(BatchStatus.MINING_COMPLETE);
-            ajourholdRepository.save(ajourhold);
+            updateStatus(ajourhold, BatchStatus.MINING_COMPLETE);
 
         } catch (Exception e) {
-
             ajourhold.setFeilmelding(ExceptionUtils.getStackTrace(e).substring(0, 1023));
-
-            ajourhold.setSistOppdatert(LocalDateTime.now());
-            ajourhold.setStatus(BatchStatus.MINING_FAILED);
-            ajourholdRepository.save(ajourhold);
-
+            updateStatus(ajourhold, BatchStatus.MINING_FAILED);
             log.error(e.getMessage(), e);
         }
     }
@@ -50,25 +39,21 @@ public class BatchService {
         var ajourhold = new Ajourhold();
 
         try {
-            ajourhold.setSistOppdatert(LocalDateTime.now());
-            ajourhold.setStatus(BatchStatus.CLEAN_STARTED);
-            ajourholdRepository.save(ajourhold);
-
+            updateStatus(ajourhold, BatchStatus.CLEAN_STARTED);
             ajourholdService.getIdentsAndCheckProd();
-
-            ajourhold.setSistOppdatert(LocalDateTime.now());
-            ajourhold.setStatus(BatchStatus.CLEAN_COMPLETED);
-            ajourholdRepository.save(ajourhold);
+            updateStatus(ajourhold, BatchStatus.CLEAN_COMPLETED);
 
         } catch (Exception e) {
-
             ajourhold.setFeilmelding(ExceptionUtils.getStackTrace(e).substring(0, 1023));
-
-            ajourhold.setSistOppdatert(LocalDateTime.now());
-            ajourhold.setStatus(BatchStatus.CLEAN_FAILED);
-            ajourholdRepository.save(ajourhold);
-
+            updateStatus(ajourhold, BatchStatus.CLEAN_FAILED);
             log.error(e.getMessage(), e);
         }
+    }
+
+    private void updateStatus(Ajourhold ajourhold, BatchStatus status) {
+
+        ajourhold.setSistOppdatert(LocalDateTime.now());
+        ajourhold.setStatus(status);
+        ajourholdRepository.save(ajourhold);
     }
 }
