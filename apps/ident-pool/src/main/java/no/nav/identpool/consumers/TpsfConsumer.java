@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.retry.annotation.Retryable;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -35,7 +32,7 @@ public class TpsfConsumer {
     private final String serverUrl;
 
     public TpsfConsumer(RestTemplateBuilder restTemplateBuilder,
-            @Value("${tps-forvalteren.rest.api.url}") String serverUrl) {
+                        @Value("${tps-forvalteren.rest.api.url}") String serverUrl) {
 
         this.restTemplate = restTemplateBuilder.build();
         this.serverUrl = serverUrl;
@@ -55,7 +52,7 @@ public class TpsfConsumer {
     public TpsfStatusResponse getStatusFromTpsf(Collection<String> idents, Boolean includeProd) {
 
         ResponseEntity<TpsfStatusResponse> response = restTemplate.exchange(RequestEntity.get(new UriTemplate(serverUrl + TPS_STATUS)
-                .expand(String.join(",", idents), includeProd))
+                        .expand(String.join(",", idents), includeProd))
                 .build(), TpsfStatusResponse.class);
         return response.hasBody() ? response.getBody() : new TpsfStatusResponse();
     }
@@ -65,9 +62,9 @@ public class TpsfConsumer {
         List<List<String>> identChunks = Lists.partition(new ArrayList<>(idents), MAX_IDENTS);
         return TpsfStatusResponse.builder()
                 .statusPaaIdenter(identChunks.stream()
-                .map(chunk -> getStatusFromTpsf(chunk, includeProd))
-                .flatMap(response -> response.getStatusPaaIdenter().stream())
-                .collect(Collectors.toList()))
+                        .map(chunk -> getStatusFromTpsf(chunk, includeProd))
+                        .flatMap(response -> response.getStatusPaaIdenter().stream())
+                        .collect(Collectors.toList()))
                 .build();
     }
 }

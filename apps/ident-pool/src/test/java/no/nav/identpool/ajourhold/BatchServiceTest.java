@@ -1,6 +1,7 @@
 package no.nav.identpool.ajourhold;
 
 import no.nav.identpool.domain.Ajourhold;
+import no.nav.identpool.domain.BatchStatus;
 import no.nav.identpool.repository.AjourholdRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,8 +11,6 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import javax.batch.runtime.BatchStatus;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
@@ -47,7 +46,7 @@ class BatchServiceTest {
 
         verify(ajourholdRepository, times(2)).save(ajourholdArgumentCaptor.capture());
 
-        assertThat(ajourholdArgumentCaptor.getAllValues().stream().reduce((first, second) -> second).get().getStatus(), is(BatchStatus.COMPLETED));
+        assertThat(ajourholdArgumentCaptor.getAllValues().stream().reduce((first, second) -> second).get().getStatus(), is(BatchStatus.MINING_COMPLETE));
     }
 
     @Test
@@ -60,7 +59,7 @@ class BatchServiceTest {
 
         verify(ajourholdRepository, times(2)).save(ajourholdArgumentCaptor.capture());
 
-        assertThat(ajourholdArgumentCaptor.getAllValues().stream().reduce((first, second) -> second).get().getStatus(), is(BatchStatus.FAILED));
+        assertThat(ajourholdArgumentCaptor.getAllValues().stream().reduce((first, second) -> second).get().getStatus(), is(BatchStatus.MINING_FAILED));
         assertThat(ajourholdArgumentCaptor.getAllValues().stream().reduce((first, second) -> second).get().getFeilmelding(), containsString(exception));
     }
 }
