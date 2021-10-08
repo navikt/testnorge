@@ -70,7 +70,7 @@ public class SyntSykemeldingControllerIntegrationTest {
     private PersondataDTO hodejegerenResponse;
     private ArbeidsforholdDTO arbeidsforholdResponse;
     private OrganisasjonDTO organisasjonResponse;
-    private final Map<String, LocalDate> historikkRequest = Map.of(ident, LocalDate.now()); //TODO: matcher ikke i wiremock selv om inneholdet er det samme
+    private final Map<String, String> historikkRequest = Map.of(ident, LocalDate.now().toString());
     private Map<String, SyntSykemeldingHistorikkDTO> historikkResponse;
     private HelsepersonellListeDTO helsepersonellResponse;
     private SykemeldingDTO sykemeldingRequest;
@@ -138,6 +138,7 @@ public class SyntSykemeldingControllerIntegrationTest {
         JsonWiremockHelper
                 .builder(objectMapper)
                 .withUrlPathMatching(historikkUrl)
+                .withRequestBody(historikkRequest)
                 .withResponseBody(historikkResponse)
                 .stubPost();
 
@@ -181,6 +182,7 @@ public class SyntSykemeldingControllerIntegrationTest {
         JsonWiremockHelper
                 .builder(objectMapper)
                 .withUrlPathMatching(historikkUrl)
+                .withRequestBody(historikkRequest)
                 .withResponseBody(historikkResponse)
                 .verifyPost();
 

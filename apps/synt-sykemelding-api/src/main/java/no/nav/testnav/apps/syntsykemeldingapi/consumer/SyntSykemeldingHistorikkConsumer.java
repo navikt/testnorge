@@ -45,19 +45,15 @@ public class SyntSykemeldingHistorikkConsumer {
     public SyntSykemeldingHistorikkDTO genererSykemeldinger(String ident, LocalDate startDato) {
         log.info("Generererer sykemelding for {} fom {}", ident, startDato.toString());
 
-        try {
-            var request = Map.of(ident, startDato);
-            var accessToken = tokenService.generateClientCredentialAccessToken(serviceProperties).block().getTokenValue();
+        var request = Map.of(ident, startDato.toString());
+        var accessToken = tokenService.generateClientCredentialAccessToken(serviceProperties).block().getTokenValue();
 
-            var response = new PostSyntSykemeldingCommand(request, accessToken, webClient).call();
+        var response = new PostSyntSykemeldingCommand(request, accessToken, webClient).call();
 
-            if (response == null) {
-                throw new GenererSykemeldingerException("Klarte ikke å generere sykemeldinger. Response objectet er null.");
-            }
-            log.info("Sykemelding generert.");
-            return response.get(ident);
-        } catch (Exception e) {
+        if (response == null) {
             throw new GenererSykemeldingerException("Klarte ikke å generere sykemeldinger.");
         }
+        log.info("Sykemelding generert.");
+        return response.get(ident);
     }
 }
