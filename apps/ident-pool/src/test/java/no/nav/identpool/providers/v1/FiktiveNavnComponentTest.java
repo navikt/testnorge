@@ -2,6 +2,7 @@ package no.nav.identpool.providers.v1;
 
 import no.nav.identpool.ComponentTestbase;
 import no.nav.identpool.domain.Navn;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.RequestEntity;
@@ -14,6 +15,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+@Disabled
 class FiktiveNavnComponentTest extends ComponentTestbase {
 
     /**

@@ -4,8 +4,10 @@ import no.nav.identpool.domain.Navn;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
@@ -15,10 +17,11 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@ExtendWith(MockitoExtension.class)
 class NavnepoolServiceTest {
 
     private final List<String> validFornavn = Arrays.asList("fornavn1", "fornavn2");
-    private final List<String> validEtternavn = Arrays.asList( "etternavn1", "etternavn2", "etternavn3");
+    private final List<String> validEtternavn = Arrays.asList("etternavn1", "etternavn2", "etternavn3");
 
     private final NavnepoolService navnepoolService = new NavnepoolService();
 

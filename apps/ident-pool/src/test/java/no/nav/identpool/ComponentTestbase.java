@@ -1,5 +1,6 @@
 package no.nav.identpool;
 
+import ma.glasnost.orika.MapperFacade;
 import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;

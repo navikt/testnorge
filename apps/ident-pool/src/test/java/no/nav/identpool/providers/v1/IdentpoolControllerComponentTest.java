@@ -27,6 +27,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+@Disabled
 class IdentpoolControllerComponentTest extends ComponentTestbase {
 
     private static final String FNR_LEDIG = "10108000398";

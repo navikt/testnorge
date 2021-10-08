@@ -7,14 +7,14 @@ import no.nav.identpool.domain.Kjoenn;
 import no.nav.identpool.domain.TpsStatus;
 import no.nav.identpool.providers.v1.support.HentIdenterRequest;
 import no.nav.identpool.repository.IdentRepository;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -28,7 +28,7 @@ import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class IdenterAvailServiceTest {
 
     private static final String IDENT_1 = "11111111111";
@@ -54,7 +54,20 @@ public class IdenterAvailServiceTest {
 
     private HentIdenterRequest request;
 
-    @Before
+    private static TpsStatus getTpsStatus(String ident, boolean inUse) {
+        return TpsStatus.builder()
+                .ident(ident)
+                .inUse(inUse)
+                .build();
+    }
+
+    private static Ident getIdent(String ident) {
+        return Ident.builder()
+                .personidentifikator(ident)
+                .build();
+    }
+
+    @BeforeEach
     public void setup() {
         request = HentIdenterRequest.builder()
                 .antall(1)
@@ -84,18 +97,5 @@ public class IdenterAvailServiceTest {
         assertThat(argumentCaptor.getAllValues().size(), is(equalTo(1)));
         assertThat(argumentCaptor.getAllValues(),
                 containsInAnyOrder(Set.of(IDENT_1)));
-    }
-
-    private static TpsStatus getTpsStatus(String ident, boolean inUse) {
-        return TpsStatus.builder()
-                .ident(ident)
-                .inUse(inUse)
-                .build();
-    }
-
-    private static Ident getIdent(String ident) {
-        return Ident.builder()
-                .personidentifikator(ident)
-                .build();
     }
 }

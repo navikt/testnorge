@@ -25,6 +25,10 @@ bootJar {
     archiveFileName = "app.jar"
 }
 
+test {
+    useJUnitPlatform()
+}
+
 repositories {
     maven {
         url = uri('https://repo1.maven.org/maven2/')
@@ -66,7 +70,7 @@ dependencies {
     implementation 'com.h2database:h2'
 
     implementation 'org.flywaydb:flyway-core'
-    implementation 'org.postgresql:postgresql:42.2.16'
+    implementation 'org.postgresql:postgresql'
     implementation 'com.google.guava:guava:18.0'
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
@@ -80,7 +84,6 @@ dependencies {
     implementation "org.springdoc:springdoc-openapi-ui:${DependenciesPlugin.springdocOpenapi}"
     implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
 
-    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'no.nav.testnav.libs:testing'
 }
