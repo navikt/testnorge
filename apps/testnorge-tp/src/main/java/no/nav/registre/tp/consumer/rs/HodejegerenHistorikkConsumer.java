@@ -2,41 +2,30 @@ package no.nav.registre.tp.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.tp.consumer.rs.command.PostSaveHistorikkCommand;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
 import java.util.List;
 
 import no.nav.registre.tp.domain.TpSaveInHodejegerenRequest;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Component
 @Slf4j
 public class HodejegerenHistorikkConsumer {
 
-    private static final ParameterizedTypeReference<List<String>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
-    };
+    private final WebClient webClient;
 
-    private final RestTemplate restTemplate;
-    private final String hodejegerenSaveHistorikk;
-
-    public HodejegerenHistorikkConsumer(
-            RestTemplate restTemplate,
-            @Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenUrl
-    ) {
-        this.restTemplate = restTemplate;
-        this.hodejegerenSaveHistorikk = hodejegerenUrl + "/v1/historikk/";
+    public HodejegerenHistorikkConsumer(@Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenServerUrl) {
+        this.webClient = WebClient.builder().baseUrl(hodejegerenServerUrl).build();
     }
 
     @Timed(value = "tp.resource.latency", extraTags = { "operation", "hodejegeren" })
     public List<String> saveHistory(
             TpSaveInHodejegerenRequest request
     ) {
-        var postRequest = RequestEntity.post(URI.create(hodejegerenSaveHistorikk)).body(request);
-        return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
+        return new PostSaveHistorikkCommand(request, webClient).call();
     }
 
 }

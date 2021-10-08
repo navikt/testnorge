@@ -2,45 +2,51 @@ package no.nav.registre.tp.consumer.rs;
 
 import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import no.nav.registre.tp.consumer.rs.command.GetSyntTpYtelserCommand;
+import no.nav.registre.tp.consumer.rs.credential.SyntTpProperties;
+import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import no.nav.registre.tp.database.models.TYtelse;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Slf4j
 @Component
 public class TpSyntConsumer {
 
-    private static final ParameterizedTypeReference<List<TYtelse>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
-    };
-
-    private final RestTemplate restTemplate;
-    private final String syntRestApiUrl;
+    private final AccessTokenService tokenService;
+    private final ServerProperties serviceProperties;
+    private final WebClient webClient;
 
     public TpSyntConsumer(
-            RestTemplate restTemplate,
-            @Value("${syntrest.rest.api.url}") String syntRestApiUrl
+            SyntTpProperties syntTpProperties,
+            AccessTokenService accessTokenService
     ) {
-        this.restTemplate = restTemplate;
-        this.syntRestApiUrl = syntRestApiUrl + "/v1/generate/tp?numToGenerate={numToGenerate}";
+        this.serviceProperties = syntTpProperties;
+        this.tokenService = accessTokenService;
+        this.webClient = WebClient.builder()
+                .exchangeStrategies(ExchangeStrategies.builder()
+                        .codecs(configurer -> configurer
+                                .defaultCodecs()
+                                .maxInMemorySize(16 * 1024 * 1024))
+                        .build())
+                .baseUrl(syntTpProperties.getUrl())
+                .build();
     }
+
+    private static final ParameterizedTypeReference<List<TYtelse>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
+    };
 
     @Timed(value = "tp.resource.latency", extraTags = { "operation", "synt" })
     public List<TYtelse> getSyntYtelser(
             int numToGenerate
     ) {
-        var responseEntity = restTemplate.exchange(syntRestApiUrl, HttpMethod.GET, null, RESPONSE_TYPE, numToGenerate);
-        List<TYtelse> ytelser = new LinkedList<>();
-        if (responseEntity.getStatusCode() == HttpStatus.OK) {
-            ytelser = responseEntity.getBody();
-        }
-        return ytelser;
+        var token = tokenService.generateClientCredentialAccessToken(serviceProperties).block().getTokenValue();
+        return new GetSyntTpYtelserCommand(numToGenerate, token, webClient).call();
     }
 }

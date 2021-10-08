@@ -10,6 +10,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static org.junit.Assert.assertEquals;
@@ -29,6 +30,7 @@ public class TpSyntConsumerTest {
     @Test
     public void getYtelser() {
         stubForTpSynt();
+        stubToken();
         var ytelser = tpSyntConsumer.getSyntYtelser(numToGen);
         assertEquals(3, ytelser.size());
         assertEquals("UKJENT", ytelser.get(0).getKYtelseT());
@@ -38,7 +40,7 @@ public class TpSyntConsumerTest {
     }
 
     private void stubForTpSynt() {
-        stubFor(get("/tpSynt/api/v1/generate/tp?numToGenerate=" + numToGen).willReturn(okJson(
+        stubFor(get("/synt-tp/api/v1/generate/tp/" + numToGen).willReturn(okJson(
                 "[\n"
                         + "    {\n"
                         + "        \"dato_bruk_fom\": \"2011-09-24\",\n"
@@ -89,6 +91,12 @@ public class TpSyntConsumerTest {
                         + "        \"versjon\": \"2\"\n"
                         + "    }\n"
                         + "]"
+        )));
+    }
+
+    private void stubToken() {
+        stubFor(post("/aad/oauth2/v2.0/token").willReturn(okJson(
+                "{\"access_token\": \"dummy\"}"
         )));
     }
 }
