@@ -1,8 +1,8 @@
 package no.nav.registre.tp.service;
 
 import io.micrometer.core.annotation.Timed;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,31 +40,25 @@ import no.nav.registre.tp.provider.rs.request.SyntetiseringsRequest;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class TpService {
 
     private static final Integer MIN_AGE = 13;
     private static final String EIER = "synt";
 
-    @Autowired
-    private HodejegerenConsumer hodejegerenConsumer;
+    private final HodejegerenConsumer hodejegerenConsumer;
 
-    @Autowired
-    private TForholdYtelseHistorikkRepository tForholdYtelseHistorikkRepository;
+    private final TForholdYtelseHistorikkRepository tForholdYtelseHistorikkRepository;
 
-    @Autowired
-    private TForholdRepository tForholdRepository;
+    private final TForholdRepository tForholdRepository;
 
-    @Autowired
-    private TPersonRepository tPersonRepository;
+    private final TPersonRepository tPersonRepository;
 
-    @Autowired
-    private TYtelseRepository tYtelseRepository;
+    private final TYtelseRepository tYtelseRepository;
 
-    @Autowired
-    private TpSyntConsumer tpSyntConsumer;
+    private final TpSyntConsumer tpSyntConsumer;
 
-    @Autowired
-    private HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
+    private final HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
 
     private static final String TP_NAME = "tp";
     private static final int PARTITION_SIZE = 500;
@@ -313,7 +307,7 @@ public class TpService {
         return fullSavedForhold;
     }
 
-    @Timed(value = "tp.resource.latency", extraTags = { "operation", "hodejegeren" })
+    @Timed(value = "tp.resource.latency", extraTags = {"operation", "hodejegeren"})
     private List<String> getLivingIdentities(
             Long id,
             String env,
@@ -323,7 +317,7 @@ public class TpService {
         return hodejegerenConsumer.getLevende(id, env, numberOfIdents, minAge);
     }
 
-    @Timed(value = "tp.resource.latency", extraTags = { "operation", "hodejegeren" })
+    @Timed(value = "tp.resource.latency", extraTags = {"operation", "hodejegeren"})
     private List<String> getLivingIdentities(
             Long id
     ) {

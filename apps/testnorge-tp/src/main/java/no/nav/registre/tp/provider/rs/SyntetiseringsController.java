@@ -1,10 +1,10 @@
 package no.nav.registre.tp.provider.rs;
 
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import no.nav.registre.tp.database.multitenancy.TenantContext;
 import no.nav.registre.tp.provider.rs.request.SyntetiseringsRequest;
 import no.nav.registre.tp.service.TpService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,10 +17,10 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("api/v1/syntetisering")
+@RequiredArgsConstructor
 public class SyntetiseringsController {
 
-    @Autowired
-    private TpService tpService;
+    private final TpService tpService;
 
     @ApiOperation(value = "Dette endepunktet kan benyttes for å generere syntetiserte ytelser på tilfeldige personer i en gitt avspillergruppe som er definert i TPS-Forvalteren.")
     @PostMapping(value = "/generer")
