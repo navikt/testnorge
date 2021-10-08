@@ -8,9 +8,10 @@ import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 
 import java.security.SecureRandom;
-import java.util.List;
+import java.time.Duration;
 
 @Slf4j
 @Service
@@ -24,6 +25,8 @@ public class GeografiskeKodeverkConsumer {
     private final WebClient webClient;
     private final AccessTokenService accessTokenService;
     private final ServerProperties properties;
+    private Flux<GeografiskeKodeverkDTO> kommuneKodeverkFlux;
+    private Flux<GeografiskeKodeverkDTO> landkodeverkFlux;
 
     public GeografiskeKodeverkConsumer(AccessTokenService accessTokenService,
                                        GeografiskeKodeverkServiceProperties properties) {
@@ -36,36 +39,54 @@ public class GeografiskeKodeverkConsumer {
                 .build();
     }
 
+    private Flux<GeografiskeKodeverkDTO> cache(String url) {
+        return accessTokenService
+                .generateToken(properties)
+                .flatMapMany(token -> new GeografiskeKodeverkCommand(webClient, url, null, token.getTokenValue()).call())
+                .cache(Duration.ofDays(7));
+    }
+
     public String getTilfeldigKommune() {
-
-        List<GeografiskeKodeverkDTO> kommuner = accessTokenService.generateToken(properties).flatMap(
-                token -> new GeografiskeKodeverkCommand(webClient, KOMMUNE_URL, null, token.getTokenValue()).call()).block();
-
-        return kommuner.get(new SecureRandom().nextInt(kommuner.size())).kode();
+        if (kommuneKodeverkFlux == null) {
+            this.kommuneKodeverkFlux = cache(KOMMUNE_URL);
+        }
+        return kommuneKodeverkFlux
+                .collectList()
+                .blockOptional()
+                .map(list -> list.get(new SecureRandom().nextInt(list.size())))
+                .map(GeografiskeKodeverkDTO::kode)
+                .orElse(null);
     }
 
     public String getTilfeldigLand() {
-
-        List<GeografiskeKodeverkDTO> land = accessTokenService.generateToken(properties).flatMap(
-                token -> new GeografiskeKodeverkCommand(webClient, LAND_URL, null, token.getTokenValue()).call()).block();
-
-        return land.get(new SecureRandom().nextInt(land.size())).kode();
+        if (landkodeverkFlux == null) {
+            this.landkodeverkFlux = cache(LAND_URL);
+        }
+        return landkodeverkFlux
+                .collectList()
+                .blockOptional()
+                .map(list -> list.get(new SecureRandom().nextInt(list.size())))
+                .map(GeografiskeKodeverkDTO::kode)
+                .orElse("UKJENT");
     }
 
     public String getPoststedNavn(String postnummer) {
-
-        List<GeografiskeKodeverkDTO> poststed = accessTokenService.generateToken(properties).flatMap(
-                token -> new GeografiskeKodeverkCommand(webClient, POSTNUMMER_URL, postnummer, token.getTokenValue()).call()).block();
-
-        return poststed.get(0).navn();
+        return accessTokenService
+                .generateToken(properties)
+                .flatMapMany(token -> new GeografiskeKodeverkCommand(webClient, POSTNUMMER_URL, postnummer, token.getTokenValue()).call())
+                .next()
+                .blockOptional()
+                .map(GeografiskeKodeverkDTO::navn)
+                .orElse(null);
     }
 
     public String getEmbeteNavn(String embete) {
-
-        List<GeografiskeKodeverkDTO> embeter = accessTokenService.generateToken(properties).flatMap(
-                token -> new GeografiskeKodeverkCommand(webClient, EMBETE_URL,
-                        String.format("embetekode=%s", embete), token.getTokenValue()).call()).block();
-
-        return embeter.get(0).navn();
+        return accessTokenService
+                .generateToken(properties)
+                .flatMapMany(token -> new GeografiskeKodeverkCommand(webClient, EMBETE_URL, embete, token.getTokenValue()).call())
+                .next()
+                .blockOptional()
+                .map(GeografiskeKodeverkDTO::navn)
+                .orElse(null);
     }
 }
