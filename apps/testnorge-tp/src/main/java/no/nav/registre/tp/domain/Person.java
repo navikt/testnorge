@@ -1,4 +1,4 @@
-package no.nav.registre.tp;
+package no.nav.registre.tp.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

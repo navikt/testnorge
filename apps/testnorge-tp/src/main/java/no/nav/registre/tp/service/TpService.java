@@ -19,12 +19,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
-import no.nav.registre.tp.Forhold;
-import no.nav.registre.tp.FulltForhold;
-import no.nav.registre.tp.IdentMedData;
-import no.nav.registre.tp.Person;
-import no.nav.registre.tp.TpSaveInHodejegerenRequest;
-import no.nav.registre.tp.Ytelse;
+import no.nav.registre.tp.domain.Forhold;
+import no.nav.registre.tp.domain.FulltForhold;
+import no.nav.registre.tp.domain.IdentMedData;
+import no.nav.registre.tp.domain.Person;
+import no.nav.registre.tp.domain.TpSaveInHodejegerenRequest;
+import no.nav.registre.tp.domain.Ytelse;
 import no.nav.registre.tp.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.tp.consumer.rs.TpSyntConsumer;
 import no.nav.registre.tp.database.models.HistorikkComposityKey;

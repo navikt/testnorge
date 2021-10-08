@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 import java.util.List;
 
-import no.nav.registre.tp.TpSaveInHodejegerenRequest;
+import no.nav.registre.tp.domain.TpSaveInHodejegerenRequest;
 
 @Component
 @Slf4j
