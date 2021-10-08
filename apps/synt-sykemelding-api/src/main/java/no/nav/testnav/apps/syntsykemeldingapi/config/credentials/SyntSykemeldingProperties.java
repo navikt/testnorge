@@ -1,4 +1,4 @@
-package no.nav.testnav.apps.syntsykemeldingapi.consumer.credential;
+package no.nav.testnav.apps.syntsykemeldingapi.config.credentials;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

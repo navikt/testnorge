@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.Map;
 
 import no.nav.testnav.apps.syntsykemeldingapi.consumer.command.PostSyntSykemeldingCommand;
-import no.nav.testnav.apps.syntsykemeldingapi.consumer.credential.SyntSykemeldingProperties;
+import no.nav.testnav.apps.syntsykemeldingapi.config.credentials.SyntSykemeldingProperties;
 import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import org.springframework.stereotype.Component;

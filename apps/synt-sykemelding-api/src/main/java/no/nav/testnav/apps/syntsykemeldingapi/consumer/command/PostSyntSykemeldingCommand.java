@@ -34,7 +34,6 @@ public class PostSyntSykemeldingCommand implements Callable<HashMap<String, Synt
                         builder.path("/api/v1/generate_sykmeldings_history_json").build()
                 )
                 .header("Authorization", "Bearer " + token)
-                .header(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE)
                 .body(BodyInserters.fromPublisher(Mono.just(request), REQUEST_TYPE))
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)
