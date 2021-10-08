@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Deprecated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/fiktive-navn", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -20,14 +21,14 @@ public class FiktiveNavnController {
     private final NavnepoolService service;
 
     @Operation(description = "Returnerer en liste med fiktive navn du kan bruke for testpersoner. "
-            + "Dette er adjektiv og substantiv som det ikke er lov å navngi sine barn med, i Norge anno 2018.")
+            + "Dette er adjektiv og substantiv som det ikke er lov å navngi sine barn med, i Norge anno 2018.", deprecated = true)
     @GetMapping("/tilfeldig")
     public List<Navn> getRandomNames(@RequestParam(defaultValue = "1") Integer antall) {
         return service.hentTilfeldigeNavn(antall);
     }
 
     @Operation(description = "Validerer navn mot listen fra skatteetaten med fiktive navn. "
-            + "Dette er adjektiv og substantiv som det ikke er lov å navngi sine barn med, i Norge anno 2018.")
+            + "Dette er adjektiv og substantiv som det ikke er lov å navngi sine barn med, i Norge anno 2018.", deprecated = true)
     @GetMapping("/valider")
     public Boolean validate(Navn navn) {
         return service.isValid(navn);

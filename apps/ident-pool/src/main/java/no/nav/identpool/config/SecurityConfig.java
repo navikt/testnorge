@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 @Configuration
 @EnableWebSecurity
-@Profile({"prod", "local"})
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override

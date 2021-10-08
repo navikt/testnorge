@@ -16,6 +16,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @Disabled
+@Deprecated
 class FiktiveNavnComponentTest extends ComponentTestbase {
 
     /**

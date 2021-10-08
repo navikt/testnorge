@@ -20,7 +20,6 @@ public class BatchService {
     private final AjourholdRepository ajourholdRepository;
     private final AjourholdService ajourholdService;
 
-    @Transactional
     public void startGeneratingIdentsBatch() {
 
         var ajourhold = new Ajourhold();
