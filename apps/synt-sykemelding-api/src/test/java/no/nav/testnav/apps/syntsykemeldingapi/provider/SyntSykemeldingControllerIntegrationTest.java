@@ -77,26 +77,14 @@ public class SyntSykemeldingControllerIntegrationTest {
     private PersondataDTO hodejegerenResponse;
     private ArbeidsforholdDTO arbeidsforholdResponse;
     private OrganisasjonDTO organisasjonResponse;
-    private final Map<String, LocalDate> historikkRequest = Map.of(ident, LocalDate.now());
+    private final Map<String, LocalDate> historikkRequest = Map.of(ident, LocalDate.now()); //TODO: matcher ikke i wiremock selv om inneholdet er det samme
     private Map<String, SyntSykemeldingHistorikkDTO> historikkResponse;
     private HelsepersonellListeDTO helsepersonellResponse;
     private SykemeldingDTO sykemeldingRequest;
+    private final String tokenResponse = "{\"access_token\": \"dummy\"}";
 
     @Before
     public void setUp() {
-
-        JwtAuthenticationToken authentication = Mockito.mock(JwtAuthenticationToken.class);
-        Mockito.when(authentication.getCredentials())
-                .thenReturn(Jwt
-                        .withTokenValue("dummy_token")
-                        .expiresAt(LocalDateTime.now(ZoneOffset.UTC).plusHours(1).toInstant(ZoneOffset.UTC))
-                        .header("dummy", "dummy")
-                        .build()
-                );
-
-        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
-        SecurityContextHolder.setContext(securityContext);
 
         dto = SyntSykemeldingDTO.builder()
                 .arbeidsforholdId(arbeidsforholdId)
@@ -127,10 +115,6 @@ public class SyntSykemeldingControllerIntegrationTest {
 
     @Test
     public void shouldOpprettSyntSykemelding() throws Exception {
-
-        var tokenResponse = "{\"access_token\": \"dummy\"}";
-        var syntRequest = "{\"" + ident + "\": \"" + LocalDate.now() + "\"}";
-
         JsonWiremockHelper
                 .builder(objectMapper)
                 .withUrlPathMatching(hodejegerenUrl)
@@ -161,7 +145,6 @@ public class SyntSykemeldingControllerIntegrationTest {
         JsonWiremockHelper
                 .builder(objectMapper)
                 .withUrlPathMatching(historikkUrl)
-//                .withRequestBody(historikkRequest)
                 .withResponseBody(historikkResponse)
                 .stubPost();
 
@@ -205,7 +188,6 @@ public class SyntSykemeldingControllerIntegrationTest {
         JsonWiremockHelper
                 .builder(objectMapper)
                 .withUrlPathMatching(historikkUrl)
-//                .withRequestBody(historikkRequest)
                 .withResponseBody(historikkResponse)
                 .verifyPost();
 
