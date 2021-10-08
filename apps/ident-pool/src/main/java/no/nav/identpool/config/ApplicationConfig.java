@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
+import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Configuration
@@ -20,6 +21,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
         LoggingWebConfig.class,
         FlywayConfiguration.class,
         VaultHikariConfiguration.class})
+@EnableRetry
 @EnableScheduling
 public class ApplicationConfig {
 

@@ -7,7 +7,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriTemplate;
 
@@ -18,7 +23,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Component
+@Service
 public class TpsfConsumer {
 
     private static final int MAX_IDENTS = 80;
@@ -29,22 +34,24 @@ public class TpsfConsumer {
     private final UriTemplate url;
     private final String serverUrl;
 
-    public TpsfConsumer(
-            RestTemplateBuilder restTemplateBuilder,
-            @Value("${tps-forvalteren.rest.api.url}") String serverUrl
-    ) {
+    public TpsfConsumer(RestTemplateBuilder restTemplateBuilder,
+            @Value("${tps-forvalteren.rest.api.url}") String serverUrl) {
+
         this.restTemplate = restTemplateBuilder.build();
         this.serverUrl = serverUrl;
         this.url = new UriTemplate(serverUrl + "/api/v1/serviceroutine/FS03-FDLISTER-DISKNAVN-M?aksjonsKode=A2&antallFnr={numberOfIdents}&environment={environment}&nFnr={idents}");
     }
 
+    @Retryable(exclude = HttpClientErrorException.NotFound.class)
     public JsonNode getProdStatusFromTps(List<String> idents) throws IOException {
+
         String identsAsString = String.join(",", idents);
         RequestEntity<Void> getRequest = RequestEntity.get(url.expand(idents.size(), ENVIRONMENT, identsAsString)).build();
         ResponseEntity<String> response = restTemplate.exchange(getRequest, String.class);
         return new ObjectMapper().readTree(response.getBody()).findValue("data1");
     }
 
+    @Retryable(exclude = HttpClientErrorException.NotFound.class)
     public TpsfStatusResponse getStatusFromTpsf(Collection<String> idents, Boolean includeProd) {
 
         ResponseEntity<TpsfStatusResponse> response = restTemplate.exchange(RequestEntity.get(new UriTemplate(serverUrl + TPS_STATUS)
