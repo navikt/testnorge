@@ -1,0 +1,34 @@
+{
+  "properties": [
+    {
+      "name": "testnorge-hodejegeren.rest-api.url",
+      "type": "java.lang.String",
+      "description": "Description for testnorge-hodejegeren.rest-api.url."
+    },
+    {
+      "name": "syntrest.rest.api.url",
+      "type": "java.lang.String",
+      "description": "Description for syntrest.rest.api.url."
+    },
+    {
+      "name": "testnorge.inntektstub.rest.api.url",
+      "type": "java.lang.String",
+      "description": "Description for testnorge.inntektstub.rest.api.url."
+    },
+    {
+      "name": "tpDataSource.url",
+      "type": "java.lang.String",
+      "description": "Description for tpDataSource.url."
+    },
+    {
+      "name": "tpDataSource.username",
+      "type": "java.lang.String",
+      "description": "Description for tpDataSource.username."
+    },
+    {
+      "name": "tpDataSource.password",
+      "type": "java.lang.String",
+      "description": "Description for tpDataSource.password."
+    }
+  ]
+}
