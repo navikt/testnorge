@@ -61,6 +61,7 @@ dependencies {
 
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
 
     implementation 'org.aspectj:aspectjweaver'
     implementation 'io.micrometer:micrometer-registry-prometheus'

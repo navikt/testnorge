@@ -1,20 +1,4 @@
 spring:
-  datasource:
-    url: jdbc:postgresql://b27dbvl023.preprod.local/ident-pool-preprod
-    hikari:
-      maximum-pool-size: 3
-      minimum-idle: 1
-  flyway:
-    enabled: true
-    locations: classpath:/db/migration
-    baseline-on-migrate: false
-    validate-on-migrate: false
-  jpa:
-    properties:
-      hibernate:
-        default-schema: public
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        showSql: true
   cloud:
     vault:
       host: vault.adeo.no
@@ -22,7 +6,7 @@ spring:
       fail-fast: true
       connection-timeout: 15000
       read-timeout: 30000
-      generic:
+      kv:
         enabled: false
       database:
         backend: postgresql/preprod-fss
