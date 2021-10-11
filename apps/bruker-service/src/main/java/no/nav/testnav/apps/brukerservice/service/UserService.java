@@ -65,11 +65,6 @@ public class UserService {
                 .map(User::new);
     }
 
-    public Mono<User> getUserByRepresenting(String representing) {
-        return getAuthenticatedUserId.call()
-                .flatMap(userId -> getUser(cryptographyService.createId(userId, representing)));
-    }
-
     public Mono<User> getUserByBrukernavn(String username) {
         return repository.findByBrukernavn(username).map(User::new);
     }

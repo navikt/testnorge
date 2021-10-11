@@ -54,17 +54,6 @@ public class BrukerController {
                 .map(dto -> ResponseEntity.created(URI.create(serverHttpRequest.getURI() + "/" + dto.id())).body(dto));
     }
 
-
-    @GetMapping
-    public Mono<ResponseEntity<BrukerDTO>> getBruker(@RequestParam String organisasjonsnummer) {
-        return validateService.validateOrganiasjonsnummerAccess(organisasjonsnummer)
-                .then(userService.getUserByRepresenting(organisasjonsnummer))
-                .map(User::toDTO)
-                .map(ResponseEntity::ok)
-                .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
-    }
-
-
     @GetMapping("/{id}")
     public Mono<ResponseEntity<BrukerDTO>> getBruker(
             @PathVariable String id,

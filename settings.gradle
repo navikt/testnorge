@@ -98,6 +98,8 @@ includeBuild './apps/testnorge-arena'
 includeBuild './apps/organisasjon-tilgang-service'
 includeBuild './apps/person-organisasjon-tilgang-service'
 includeBuild './apps/ident-pool'
+includeBuild './apps/bruker-service'
+
 includeBuild './xsd/arbeidsforhold-xsd'
 
 includeBuild './gradlePlugins'
@@ -246,7 +248,4 @@ project(':person-faste-data-service').projectDir = file('apps/person-faste-data-
 
 include(':brreg-stub')
 project(":brreg-stub").projectDir = file('apps/brreg-stub')
-
-include 'apps:bruker-service'
-findProject(':apps:bruker-service')?.name = 'bruker-service'
 
