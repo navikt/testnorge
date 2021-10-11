@@ -19,6 +19,6 @@ consumers:
     namespace: dolly
     name: synthdata-arena-bisys
 
-AAD_ISSUER_URI: https://login:microsoftonline:com/62366534-1ec3-4962-8869-9b5535279d0b
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
 USE_HISTORICAL_MOTTATTDATO: 1
