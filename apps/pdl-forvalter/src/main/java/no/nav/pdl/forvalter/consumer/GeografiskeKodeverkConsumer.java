@@ -4,8 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.config.credentials.GeografiskeKodeverkServiceProperties;
 import no.nav.pdl.forvalter.consumer.command.GeografiskeKodeverkCommand;
 import no.nav.testnav.libs.dto.geografiskekodeverkservice.v1.GeografiskeKodeverkDTO;
-import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import no.nav.testnav.libs.reactivesecurity.domain.ServerProperties;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -23,12 +23,12 @@ public class GeografiskeKodeverkConsumer {
     private static final String EMBETE_URL = "/api/v1/embeter";
 
     private final WebClient webClient;
-    private final AccessTokenService accessTokenService;
+    private final TokenService accessTokenService;
     private final ServerProperties properties;
     private Flux<GeografiskeKodeverkDTO> kommuneKodeverkFlux;
     private Flux<GeografiskeKodeverkDTO> landkodeverkFlux;
 
-    public GeografiskeKodeverkConsumer(AccessTokenService accessTokenService,
+    public GeografiskeKodeverkConsumer(TokenService accessTokenService,
                                        GeografiskeKodeverkServiceProperties properties) {
 
         this.accessTokenService = accessTokenService;
