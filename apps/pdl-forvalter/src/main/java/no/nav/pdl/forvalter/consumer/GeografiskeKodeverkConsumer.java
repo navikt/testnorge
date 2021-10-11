@@ -67,7 +67,7 @@ public class GeografiskeKodeverkConsumer {
                 .blockOptional()
                 .map(list -> list.get(new SecureRandom().nextInt(list.size())))
                 .map(GeografiskeKodeverkDTO::kode)
-                .orElse("UKJENT");
+                .orElse(null);
     }
 
     public String getPoststedNavn(String postnummer) {
@@ -77,7 +77,7 @@ public class GeografiskeKodeverkConsumer {
                 .next()
                 .blockOptional()
                 .map(GeografiskeKodeverkDTO::navn)
-                .orElse(null);
+                .orElse("UKJENT");
     }
 
     public String getEmbeteNavn(String embete) {
@@ -87,6 +87,6 @@ public class GeografiskeKodeverkConsumer {
                 .next()
                 .blockOptional()
                 .map(GeografiskeKodeverkDTO::navn)
-                .orElse(null);
+                .orElse(embete);
     }
 }
