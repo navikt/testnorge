@@ -95,6 +95,7 @@ includeBuild './apps/jenkins-batch-status-service'
 includeBuild './apps/organisasjon-bestilling-service'
 includeBuild './apps/geografiske-kodeverk-service'
 includeBuild './apps/testnorge-inntekt'
+includeBuild './apps/udi-stub'
 includeBuild './apps/app-tilgang-analyse-service'
 includeBuild './apps/organisasjon-forvalter'
 includeBuild './apps/testnorge-arena'
@@ -123,7 +124,6 @@ include(':testnorge-sigrun')
 include(':testnorge-token-provider')
 include(':nav-endringsmeldinger-core')
 include(':testnorge-tp')
-include(':udi-stub')
 include(':testnorge-hodejegeren')
 include(':sigrun-core')
 include(':testnorge-bisys')
@@ -172,7 +172,6 @@ project(":testnorge-sigrun").projectDir = file('apps/testnorge-sigrun')
 project(":testnorge-token-provider").projectDir = file('apps/testnorge-token-provider')
 project(":nav-endringsmeldinger-core").projectDir = file('apps/testnorge-nav-endringsmeldinger/nav-endringsmeldinger-core')
 project(":testnorge-tp").projectDir = file('apps/testnorge-tp')
-project(":udi-stub").projectDir = file('apps/udi-stub')
 project(":testnorge-hodejegeren").projectDir = file('apps/testnorge-hodejegeren')
 project(":sigrun-core").projectDir = file('apps/testnorge-sigrun/sigrun-core')
 project(":testnorge-bisys").projectDir = file('apps/testnorge-bisys')
