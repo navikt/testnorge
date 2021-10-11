@@ -1,7 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.utils.TilfeldigKommuneService;
-import no.nav.pdl.forvalter.utils.TilfeldigLandService;
+import no.nav.pdl.forvalter.consumer.GeografiskeKodeverkConsumer;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
@@ -47,10 +46,7 @@ class FoedselServiceTest {
             .build();
 
     @Mock
-    private TilfeldigKommuneService tilfeldigKommuneService;
-
-    @Mock
-    private TilfeldigLandService tilfeldigLandService;
+    private GeografiskeKodeverkConsumer geografiskeKodeverkConsumer;
 
     @InjectMocks
     private FoedselService foedselService;
@@ -110,9 +106,9 @@ class FoedselServiceTest {
     }
 
     @Test
-    void whenIdentIsFnrAndKommuneOfBirthIsUnknown_thenVerifyTilfeldigKommuneServiceCalled() {
+    void whenIdentIsFnrAndKommuneOfBirthIsUnknown_thenVerifyGetTilfeldigKommuneIsCalled() {
 
-        when(tilfeldigKommuneService.getKommune()).thenReturn("4777");
+        when(geografiskeKodeverkConsumer.getTilfeldigKommune()).thenReturn("4777");
 
         var target = foedselService.convert(PersonDTO.builder()
                 .foedsel(List.of(FoedselDTO.builder()
@@ -122,7 +118,7 @@ class FoedselServiceTest {
                 .build())
                 .get(0);
 
-        verify(tilfeldigKommuneService).getKommune();
+        verify(geografiskeKodeverkConsumer).getTilfeldigKommune();
 
         assertThat(target.getFoedselsdato(), is(equalTo(LocalDate.of(1956, 10, 12).atStartOfDay())));
         assertThat(target.getFoedselsaar(), is(equalTo(1956)));
@@ -167,7 +163,7 @@ class FoedselServiceTest {
     @Test
     void whenIdentIsDnrAndLandOfBirthUnkown_thenLandkodeServiceIsCalled() {
 
-        when(tilfeldigLandService.getLand()).thenReturn("COL");
+        when(geografiskeKodeverkConsumer.getTilfeldigLand()).thenReturn("COL");
 
         var target = foedselService.convert(PersonDTO.builder()
                 .foedsel(List.of(FoedselDTO.builder()
@@ -177,7 +173,7 @@ class FoedselServiceTest {
                 .build())
                 .get(0);
 
-        verify(tilfeldigLandService).getLand();
+        verify(geografiskeKodeverkConsumer).getTilfeldigLand();
 
         assertThat(target.getFoedselsdato(), is(equalTo(LocalDate.of(1968, 5, 1).atStartOfDay())));
         assertThat(target.getFoedselsaar(), is(equalTo(1968)));
