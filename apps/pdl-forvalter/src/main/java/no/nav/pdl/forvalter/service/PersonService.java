@@ -43,12 +43,14 @@ import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNumeric;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class PersonService {
 
+    private static final String INVALID_IDENT = "Ident må være på 11 tegn og numerisk";
     private static final String EMPTY_GET_REQUEST = "Angi en av parametrene 'identer' eller 'fragment'";
     private static final String VIOLATION_ALIAS_EXISTS = "Utgått ident kan ikke endres. Benytt gjeldende ident %s for denne operasjonen";
 
@@ -63,6 +65,11 @@ public class PersonService {
 
     @Transactional
     public String updatePerson(String ident, PersonUpdateRequestDTO request) {
+
+        if (!isNumeric(ident) || ident.length() != 11) {
+
+            throw new InvalidRequestException(INVALID_IDENT);
+        }
 
         checkAlias(ident);
         var dbPerson = personRepository.findByIdent(ident)

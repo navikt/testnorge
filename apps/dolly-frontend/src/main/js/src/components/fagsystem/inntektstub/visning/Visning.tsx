@@ -8,6 +8,7 @@ import { FradragVisning } from './partials/FradragVisning'
 import { ForskuddstrekkVisning } from './partials/ForskuddstrekkVisning'
 import { ArbeidsforholdVisning } from './partials/ArbeidsforholdVisning'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import Formatters from '~/utils/DataFormatter'
 
 type InntekstubVisning = {
 	liste?: Array<Inntektsinformasjon>
@@ -16,6 +17,7 @@ type InntekstubVisning = {
 
 type Inntektsinformasjon = {
 	aarMaaned: string
+	rapporteringsdato: string
 	opplysningspliktig: string
 	virksomhet: string
 	inntektsliste: Array<unknown>
@@ -51,6 +53,10 @@ export const InntektstubVisning = ({ liste, loading }: InntekstubVisning) => {
 						<React.Fragment>
 							<div className="person-visning_content">
 								<TitleValue title="År/måned" value={inntektsinformasjon.aarMaaned} />
+								<TitleValue
+									title="Rapporteringsdato"
+									value={Formatters.formatDateTime(inntektsinformasjon.rapporteringsdato)}
+								/>
 								<TitleValue title="Virksomhet (orgnr/id)" value={inntektsinformasjon.virksomhet} />
 								<TitleValue
 									title="Opplysningspliktig (orgnr/id)"

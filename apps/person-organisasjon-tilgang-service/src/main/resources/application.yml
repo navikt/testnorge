@@ -1,0 +1,23 @@
+spring:
+  application:
+    version: application.version.todo
+    name: testnav-person-organisasjon-tilgang-service
+    desciption: Tjeneste for hente tilganger for personer
+  security:
+    oauth2:
+      resourceserver:
+        tokenx:
+          issuer-uri: https://tokendings.dev-gcp.nais.io
+          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          accepted-audience: ${ACCEPTED_AUDIENCE}
+  jackson:
+    serialization:
+      write_dates_as_timestamps: false
+
+altinn:
+  api:
+    url: ${ALTINN_URL}
+    key: ${ALTINN_API_KEY}
+  service:
+    code: 5748
+    edition: 1

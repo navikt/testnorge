@@ -69,7 +69,11 @@ public class KodeverkService {
                 .collect(Collectors.toList());
     }
 
-    public List<Kodeverk> getEmbeter() {
-        return embeterKodeverkListe;
+    public List<Kodeverk> getEmbeter(String embetekode, String embetenavn) {
+        return embeterKodeverkListe
+                .stream()
+                .filter(kodeverk -> StringUtils.isBlank(embetekode) || embetekode.equals(kodeverk.getKode()))
+                .filter(kodeverk -> StringUtils.isBlank(embetenavn) || embetenavn.equals(kodeverk.getNavn()))
+                .collect(Collectors.toList());
     }
 }

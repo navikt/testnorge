@@ -115,7 +115,7 @@ public class SyntConsumerConfig {
                 applicationManager,
                 "synthdata-inst",
                 instUrl,
-                false,
+                true,
                 INSTITUSJONSMELDING_LIST_TYPE,
                 webClientBuilder
         );
@@ -127,7 +127,7 @@ public class SyntConsumerConfig {
                 applicationManager,
                 "synthdata-medl",
                 medlUrl,
-                false,
+                true,
                 MEDLEMSKAPSMELDING_LIST_TYPE,
                 webClientBuilder);
     }
@@ -172,7 +172,7 @@ public class SyntConsumerConfig {
                 applicationManager,
                 "synthdata-sam",
                 samUrl,
-                false,
+                true,
                 SAM_MELDING_LIST_TYPE,
                 webClientBuilder);
     }
@@ -218,7 +218,7 @@ public class SyntConsumerConfig {
                 applicationManager,
                 "synthdata-frikort",
                 frikortUrl,
-                false,
+                true,
                 STRING_INTEGER_MAP_TYPE,
                 STRING_FRIKORT_KVITTERING_MAP_TYPE,
                 webClientBuilder);

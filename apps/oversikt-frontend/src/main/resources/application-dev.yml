@@ -1,6 +1,9 @@
 azure.app.client.id: ${client_id}
 azure.app.client.secret: ${client_secret}
 
+server:
+  port : 3000
+
 spring:
   security:
     oauth2:
