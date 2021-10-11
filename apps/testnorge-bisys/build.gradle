@@ -26,6 +26,14 @@ repositories {
         url = uri('https://repo1.maven.org/maven2/')
     }
     mavenLocal()
+    maven {
+        name = "GitHubPackages"
+        url = uri('https://maven.pkg.github.com/navikt/maven-release')
+        credentials(PasswordCredentials) {
+            password System.getenv("NAV_TOKEN")
+            username 'token'
+        }
+    }
 }
 
 dependencies {

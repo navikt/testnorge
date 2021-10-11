@@ -7,7 +7,18 @@ spring:
 
 management.endpoints.web.base-path: /internal
 management.endpoints.web.exposure.include: prometheus
-consumers.bidragsmelding.url: https://dummy.dev.adeo.no
-SYNTREST_REST_API: https://syntrest.dev.adeo.no/api
-HODEJEGEREN_REST_API: https://testnorge-hodejegeren.dev.adeo.no/api
+
+consumers:
+  bidragsmelding:
+    url: https://dummy.dev.adeo.no
+  hodejegeren:
+    url: https://testnorge-hodejegeren.dev.adeo.no/api
+  synt-bisys:
+    url: https://synthdata-arena-bisys.dev.intern.nav.no
+    cluster: dev-gcp
+    namespace: dolly
+    name: synthdata-arena-bisys
+
+AAD_ISSUER_URI: https://login:microsoftonline:com/62366534-1ec3-4962-8869-9b5535279d0b
+
 USE_HISTORICAL_MOTTATTDATO: 1
