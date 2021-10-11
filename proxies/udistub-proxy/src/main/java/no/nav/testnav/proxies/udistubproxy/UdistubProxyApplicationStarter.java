@@ -15,6 +15,8 @@ import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
+import java.util.function.Function;
+
 @Import({
         CoreConfig.class,
         DevConfig.class,
