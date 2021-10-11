@@ -11,28 +11,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.Map;
 
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO;
@@ -41,7 +33,6 @@ import no.nav.testnav.libs.dto.hodejegeren.v1.PersondataDTO;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import no.nav.testnav.libs.dto.sykemelding.v1.SykemeldingDTO;
 import no.nav.testnav.libs.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
-import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
 import no.nav.testnav.libs.testing.JsonWiremockHelper;
 import no.nav.testnav.apps.syntsykemeldingapi.consumer.dto.SyntSykemeldingHistorikkDTO;
 import no.nav.testnav.apps.syntsykemeldingapi.domain.Arbeidsforhold;
@@ -53,7 +44,7 @@ import no.nav.testnav.apps.syntsykemeldingapi.domain.Sykemelding;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc
-@TestPropertySource(locations = "classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:application-test.yml")
 @ActiveProfiles("test")
 public class SyntSykemeldingControllerIntegrationTest {
 
@@ -72,39 +63,22 @@ public class SyntSykemeldingControllerIntegrationTest {
     private static final String arbeidsforholdUrl = "(.*)/arbeidsforhold/api/v1/arbeidsforhold/" + ident + "/" + orgnr + "/" + arbeidsforholdId;
     private static final String organisasjonUrl = "(.*)/organisasjon/api/v1/organisasjoner/" + orgnr;
     private static final String historikkUrl = "(.*)/synt/api/v1/generate_sykmeldings_history_json";
-    private static final String helsepersonellUrl = "(.*)/helsepersonell/api/v1/helsepersonell";
+    private static final String helsepersonellUrl = "(.*)/testnav-helsepersonell/api/v1/helsepersonell";
     private static final String sykemeldingUrl = "(.*)/sykemelding/api/v1/sykemeldinger";
 
     private SyntSykemeldingDTO dto;
     private PersondataDTO hodejegerenResponse;
     private ArbeidsforholdDTO arbeidsforholdResponse;
     private OrganisasjonDTO organisasjonResponse;
-    private final Map<String, LocalDate> historikkRequest = Map.of(ident, LocalDate.now());
+    private final Map<String, String> historikkRequest = Map.of(ident, LocalDate.now().toString());
     private Map<String, SyntSykemeldingHistorikkDTO> historikkResponse;
     private HelsepersonellListeDTO helsepersonellResponse;
     private SykemeldingDTO sykemeldingRequest;
+    private final String tokenResponse = "{\"access_token\": \"dummy\"}";
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
 
-        JwtAuthenticationToken authentication = Mockito.mock(JwtAuthenticationToken.class);
-        Mockito.when(authentication.getCredentials())
-                .thenReturn(Jwt
-                        .withTokenValue("dummy_token")
-                        .expiresAt(LocalDateTime.now(ZoneOffset.UTC).plusHours(1).toInstant(ZoneOffset.UTC))
-                        .header("dummy", "dummy")
-                        .build()
-                );
-
-        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
-        SecurityContextHolder.setContext(securityContext);
-
-        JsonWiremockHelper
-                .builder(objectMapper)
-                .withUrlPathMatching("(.*)/oauth2/v2.0/token")
-                .withResponseBody(new AccessToken("dummy_token"))
-                .stubPost();
         dto = SyntSykemeldingDTO.builder()
                 .arbeidsforholdId(arbeidsforholdId)
                 .ident(ident)
@@ -132,10 +106,8 @@ public class SyntSykemeldingControllerIntegrationTest {
                 arbeidsforhold).toDTO();
     }
 
-    @Ignore //Midlertidig. Kjører ikke i utviklerimage
     @Test
     public void shouldOpprettSyntSykemelding() throws Exception {
-
         JsonWiremockHelper
                 .builder(objectMapper)
                 .withUrlPathMatching(hodejegerenUrl)
@@ -143,6 +115,13 @@ public class SyntSykemeldingControllerIntegrationTest {
                 .withQueryParam("miljoe", miljoe)
                 .withResponseBody(hodejegerenResponse)
                 .stubGet();
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("/token/oauth2/v2.0/token")
+                .withResponseBody(tokenResponse)
+                .stubPost();
+
 
         JsonWiremockHelper
                 .builder(objectMapper)
@@ -176,8 +155,8 @@ public class SyntSykemeldingControllerIntegrationTest {
                 .stubPost();
 
         mvc.perform(post("/api/v1/synt-sykemelding")
-                .content(objectMapper.writeValueAsString(dto))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(objectMapper.writeValueAsString(dto))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         JsonWiremockHelper
