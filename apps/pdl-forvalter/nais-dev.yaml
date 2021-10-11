@@ -9,7 +9,7 @@ spec:
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: dev
-  image: { { image } }
+  image: {{ image }}
   webproxy: true
   tokenx:
     enabled: true
