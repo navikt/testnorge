@@ -16,7 +16,7 @@ import no.nav.testnav.apps.persontilgangservice.client.altinn.v1.dto.AccessDTO;
 import no.nav.testnav.apps.persontilgangservice.client.maskinporten.v1.MaskinportenClient;
 import no.nav.testnav.apps.persontilgangservice.config.AltinnConfig;
 import no.nav.testnav.apps.persontilgangservice.domain.Access;
-import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserIdAction;
+import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
 
 @Component
 public class AltinnClient {
@@ -24,13 +24,13 @@ public class AltinnClient {
     private final WebClient webClient;
     private final AltinnConfig altinnConfig;
     private final MaskinportenClient maskinportenClient;
-    private final GetAuthenticatedUserIdAction getAuthenticatedUserId;
+    private final GetAuthenticatedUserId getAuthenticatedUserId;
 
     public AltinnClient(
             AltinnConfig altinnConfig,
             MaskinportenClient maskinportenClient,
             ObjectMapper objectMapper,
-            GetAuthenticatedUserIdAction getAuthenticatedUserId
+            GetAuthenticatedUserId getAuthenticatedUserId
     ) {
         this.altinnConfig = altinnConfig;
         this.maskinportenClient = maskinportenClient;

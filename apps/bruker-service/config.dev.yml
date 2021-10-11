@@ -1,0 +1,51 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: testnav-bruker-service-dev
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  image: {{ image }}
+  port: 8080
+  tokenx:
+    enabled: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: team-dolly-lokal-app
+          cluster: dev-fss
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
+  liveness:
+    path: /internal/isAlive
+    initialDelay: 4
+    periodSeconds: 5
+    failureThreshold: 500
+  readiness:
+    path: /internal/isReady
+    initialDelay: 4
+    periodSeconds: 5
+    failureThreshold: 500
+  envFrom:
+    - secret: user-encryption-dev
+  replicas:
+    min: 1
+    max: 1
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_12
+        databases:
+          - name: testnav-bruker-service-dev-db
+  resources:
+    requests:
+      cpu: 200m
+      memory: 1024Mi
+    limits:
+      cpu: 500m
+      memory: 2048Mi
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: dev
+  ingresses:
+    - "https://testnav-bruker-service-dev.dev.intern.nav.no"

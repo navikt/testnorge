@@ -16,7 +16,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
-import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedTokenAction;
+import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedToken;
 import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
 import no.nav.testnav.libs.reactivesecurity.domain.ResourceServerType;
 import no.nav.testnav.libs.reactivesecurity.domain.ServerProperties;
@@ -27,17 +27,16 @@ import no.nav.testnav.libs.reactivesecurity.domain.tokenx.v1.WellKnown;
 @Service
 @ConditionalOnProperty("spring.security.oauth2.resourceserver.tokenx.issuer-uri")
 public class TokenXService implements TokenService {
-    private final GetAuthenticatedTokenAction getAuthenticatedTokenAction;
+    private final GetAuthenticatedToken getAuthenticatedTokenAction;
     private final WebClient webClient;
     private final TokenX tokenX;
 
-    TokenXService(TokenX tokenX, GetAuthenticatedTokenAction tokenResolver) {
+    TokenXService(TokenX tokenX, GetAuthenticatedToken tokenResolver) {
         log.info("Init TokenX token exchange.");
         this.webClient = WebClient.builder().build();
         this.tokenX = tokenX;
         this.getAuthenticatedTokenAction = tokenResolver;
     }
-
 
     private String toScope(ServerProperties serverProperties) {
         return serverProperties.getCluster() + ":" + serverProperties.getNamespace() + ":" + serverProperties.getName();

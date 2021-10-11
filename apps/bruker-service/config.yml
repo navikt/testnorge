@@ -1,7 +1,7 @@
-﻿apiVersion: "nais.io/v1alpha1"
+apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: testnav-person-organisasjon-tilgang-service
+  name: testnav-bruker-service
   namespace: dolly
   labels:
     team: dolly
@@ -10,21 +10,11 @@ spec:
   port: 8080
   tokenx:
     enabled: true
-  maskinporten:
-    enabled: true
-    scopes:
-      consumes:
-        - name: "altinn:serviceowner/reportees"
   accessPolicy:
     inbound:
       rules:
         - application: dolly-frontend
           cluster: dev-gcp
-        - application: testnav-bruker-service
-          cluster: dev-gcp
-    outbound:
-      external:
-        - host: altinn.no
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -35,8 +25,13 @@ spec:
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_12
+        databases:
+          - name: testnav-bruker-service-db
   envFrom:
-    - secret: altinn-prod
+    - secret: user-encryption-prod
   replicas:
     min: 1
     max: 1
@@ -47,10 +42,8 @@ spec:
     limits:
       cpu: 500m
       memory: 2048Mi
-  ingresses:
-    - "https://testnav-person-organisasjon-tilgang-service.dev.intern.nav.no"
   env:
-    - name: ACCEPTED_AUDIENCE
-      value: dev-gcp:dolly:testnav-person-organisasjon-tilgang-service
-    - name: ALTINN_URL
-      value: https://altinn.no
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
+  ingresses:
+    - "https://testnav-bruker-service.dev.intern.nav.no"

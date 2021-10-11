@@ -8,9 +8,9 @@ import java.util.concurrent.Callable;
 
 @Component
 @RequiredArgsConstructor
-public class GetAuthenticatedUserIdAction extends JwtResolver implements Callable<Mono<String>> {
+public class GetAuthenticatedUserId extends JwtResolver implements Callable<Mono<String>> {
 
-    private final GetAuthenticatedResourceServerTypeAction getAuthenticatedResourceServerType;
+    private final GetAuthenticatedResourceServerType getAuthenticatedResourceServerType;
 
     @Override
     public Mono<String> call() {
