@@ -7,6 +7,8 @@ consumers:
     url: http://generer-navn-service.dolly.svc.cluster.local
   org-forvalter:
     url: http://testnav-organisasjon-forvalter.dolly.svc.cluster.local
+  geografiske-kodeverk-service:
+    url: http://testnav-geografiske-kodeverk-service.dolly.svc.cluster.local
 
 spring:
   application:
