@@ -1,6 +1,6 @@
 package no.nav.registre.sigrun.provider.rs;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,11 +15,11 @@ import no.nav.registre.sigrun.provider.rs.responses.SletteGrunnlagResponse;
 import no.nav.registre.sigrun.service.SigrunService;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("api/v1/ident")
 public class IdentController {
 
-    @Autowired
-    private SigrunService sigrunService;
+    private final SigrunService sigrunService;
 
     @GetMapping
     public List<String> hentEksisterendeIdenter(

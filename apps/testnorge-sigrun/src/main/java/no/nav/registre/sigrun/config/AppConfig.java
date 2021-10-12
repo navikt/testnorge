@@ -1,5 +1,6 @@
 package no.nav.registre.sigrun.config;
 
+import no.nav.testnav.libs.servletsecurity.config.SecureOAuth2ServerToServerConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +13,11 @@ import no.nav.registre.sigrun.provider.rs.SyntetiseringController;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @Configuration
-@Import({ SyntetiseringController.class, ApplicationCoreConfig.class})
+@Import(value = {
+        SyntetiseringController.class,
+        ApplicationCoreConfig.class,
+        SecureOAuth2ServerToServerConfiguration.class
+})
 public class AppConfig {
 
     @Value("${testnorge-hodejegeren.rest.api.url}")

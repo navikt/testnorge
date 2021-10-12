@@ -3,7 +3,7 @@ package no.nav.registre.sigrun.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -23,19 +23,16 @@ import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class SigrunService {
 
-    @Autowired
-    private PoppSyntetisererenConsumer poppSyntRestConsumer;
+    private final PoppSyntetisererenConsumer poppSyntRestConsumer;
 
-    @Autowired
-    private HodejegerenConsumer hodejegerenConsumer;
+    private final HodejegerenConsumer hodejegerenConsumer;
 
-    @Autowired
-    private HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
+    private final HodejegerenHistorikkConsumer hodejegerenHistorikkConsumer;
 
-    @Autowired
-    private SigrunStubConsumer sigrunStubConsumer;
+    private final SigrunStubConsumer sigrunStubConsumer;
 
     private static final String SIGRUN_NAME = "sigrun";
 
@@ -164,7 +161,7 @@ public class SigrunService {
         return poppSyntRestConsumer.hentPoppMeldingerFromSyntRest(fnrs);
     }
 
-    @Timed(value = "testnorge-sigrun.resource.latency", extraTags = { "operation", "hodejegeren" })
+    @Timed(value = "testnorge-sigrun.resource.latency", extraTags = {"operation", "hodejegeren"})
     private List<String> finnLevendeIdenter(SyntetiserSigrunRequest syntetiserSigrunRequest) {
         return hodejegerenConsumer.getLevende(
                 syntetiserSigrunRequest.getAvspillergruppeId(),
