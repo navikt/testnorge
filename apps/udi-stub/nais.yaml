@@ -26,6 +26,8 @@ spec:
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
+        - application: testnav-udistub-proxy
+          cluster: dev-fss
   liveness:
     path: /internal/isAlive
     periodSeconds: 30

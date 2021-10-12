@@ -28,6 +28,8 @@ spec:
           cluster: dev-gcp
         - application: team-dolly-lokal-app
           cluster: dev-fss
+        - application: testnav-udistub-proxy
+          cluster: dev-fss
   liveness:
     path: /internal/isAlive
     periodSeconds: 30

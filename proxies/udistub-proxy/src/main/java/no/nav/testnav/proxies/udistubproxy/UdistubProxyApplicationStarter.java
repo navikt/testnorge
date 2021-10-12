@@ -3,10 +3,9 @@ package no.nav.testnav.proxies.udistubproxy;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
-import org.springframework.beans.factory.annotation.Value;
+import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.Buildable;
@@ -20,7 +19,8 @@ import java.util.function.Function;
 @Import({
         CoreConfig.class,
         DevConfig.class,
-        SecurityConfig.class
+        SecurityConfig.class,
+        SecureOAuth2ServerToServerConfiguration.class
 })
 @SpringBootApplication
 public class UdistubProxyApplicationStarter {
