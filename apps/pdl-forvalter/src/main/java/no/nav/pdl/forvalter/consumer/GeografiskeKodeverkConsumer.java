@@ -5,7 +5,7 @@ import no.nav.pdl.forvalter.config.credentials.GeografiskeKodeverkServicePropert
 import no.nav.pdl.forvalter.consumer.command.GeografiskeKodeverkCommand;
 import no.nav.testnav.libs.dto.geografiskekodeverkservice.v1.GeografiskeKodeverkDTO;
 import no.nav.testnav.libs.reactivesecurity.domain.ServerProperties;
-import no.nav.testnav.libs.reactivesecurity.exchange.TokenService;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -23,15 +23,15 @@ public class GeografiskeKodeverkConsumer {
     private static final String EMBETE_URL = "/api/v1/embeter";
 
     private final WebClient webClient;
-    private final TokenService accessTokenService;
+    private final TokenExchange tokenExchange;
     private final ServerProperties properties;
-    private Flux<GeografiskeKodeverkDTO> kommuneKodeverkFlux;
-    private Flux<GeografiskeKodeverkDTO> landkodeverkFlux;
+    private Flux<GeografiskeKodeverkDTO> kommuneKodeverk;
+    private Flux<GeografiskeKodeverkDTO> landkodeverk;
 
-    public GeografiskeKodeverkConsumer(TokenService accessTokenService,
+    public GeografiskeKodeverkConsumer(TokenExchange tokenExchange,
                                        GeografiskeKodeverkServiceProperties properties) {
 
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
         this.properties = properties;
         this.webClient = WebClient
                 .builder()
@@ -40,17 +40,17 @@ public class GeografiskeKodeverkConsumer {
     }
 
     private Flux<GeografiskeKodeverkDTO> cache(String url) {
-        return accessTokenService
+        return tokenExchange
                 .generateToken(properties)
                 .flatMapMany(token -> new GeografiskeKodeverkCommand(webClient, url, null, token.getTokenValue()).call())
                 .cache(Duration.ofDays(7));
     }
 
     public String getTilfeldigKommune() {
-        if (kommuneKodeverkFlux == null) {
-            this.kommuneKodeverkFlux = cache(KOMMUNE_URL);
+        if (kommuneKodeverk == null) {
+            this.kommuneKodeverk = cache(KOMMUNE_URL);
         }
-        return kommuneKodeverkFlux
+        return kommuneKodeverk
                 .collectList()
                 .blockOptional()
                 .map(list -> list.get(new SecureRandom().nextInt(list.size())))
@@ -59,10 +59,10 @@ public class GeografiskeKodeverkConsumer {
     }
 
     public String getTilfeldigLand() {
-        if (landkodeverkFlux == null) {
-            this.landkodeverkFlux = cache(LAND_URL);
+        if (landkodeverk == null) {
+            this.landkodeverk = cache(LAND_URL);
         }
-        return landkodeverkFlux
+        return landkodeverk
                 .collectList()
                 .blockOptional()
                 .map(list -> list.get(new SecureRandom().nextInt(list.size())))
@@ -71,7 +71,7 @@ public class GeografiskeKodeverkConsumer {
     }
 
     public String getPoststedNavn(String postnummer) {
-        return accessTokenService
+        return tokenExchange
                 .generateToken(properties)
                 .flatMapMany(token -> new GeografiskeKodeverkCommand(webClient, POSTNUMMER_URL, postnummer, token.getTokenValue()).call())
                 .next()
@@ -81,7 +81,7 @@ public class GeografiskeKodeverkConsumer {
     }
 
     public String getEmbeteNavn(String embete) {
-        return accessTokenService
+        return tokenExchange
                 .generateToken(properties)
                 .flatMapMany(token -> new GeografiskeKodeverkCommand(webClient, EMBETE_URL, embete, token.getTokenValue()).call())
                 .next()
