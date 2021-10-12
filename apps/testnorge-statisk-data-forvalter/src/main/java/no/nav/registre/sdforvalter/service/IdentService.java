@@ -19,7 +19,6 @@ public class IdentService {
     private final HodejegerenConsumer hodejegerenConsumer;
     private final SkdConsumer skdConsumer;
     private final TpConsumer tpConsumer;
-    private final IdentPoolConsumer identPoolConsumer;
     private final GenererNavnConsumer genererNavnConsumer;
     private final PersonConsumer personConsumer;
     private final Long staticDataPlaygroup;
@@ -28,7 +27,6 @@ public class IdentService {
             TpsIdenterAdapter tpsIdenterAdapter,
             HodejegerenConsumer hodejegerenConsumer,
             SkdConsumer skdConsumer,
-            IdentPoolConsumer identPoolConsumer,
             GenererNavnConsumer genererNavnConsumer,
             PersonConsumer personConsumer,
             TpConsumer tpConsumer, @Value("${tps.statisk.avspillergruppeId}") Long staticDataPlaygroup
@@ -37,7 +35,6 @@ public class IdentService {
         this.hodejegerenConsumer = hodejegerenConsumer;
         this.skdConsumer = skdConsumer;
         this.tpConsumer = tpConsumer;
-        this.identPoolConsumer = identPoolConsumer;
         this.genererNavnConsumer = genererNavnConsumer;
         this.personConsumer = personConsumer;
         this.staticDataPlaygroup = staticDataPlaygroup;
