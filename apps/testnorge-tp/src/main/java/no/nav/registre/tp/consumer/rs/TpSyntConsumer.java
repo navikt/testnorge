@@ -39,9 +39,6 @@ public class TpSyntConsumer {
                 .build();
     }
 
-    private static final ParameterizedTypeReference<List<TYtelse>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
-    };
-
     @Timed(value = "tp.resource.latency", extraTags = { "operation", "synt" })
     public List<TYtelse> getSyntYtelser(
             int numToGenerate
