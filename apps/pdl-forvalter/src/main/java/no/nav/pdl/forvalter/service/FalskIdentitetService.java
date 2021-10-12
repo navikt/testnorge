@@ -85,7 +85,7 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
         }
 
         if (isNotBlank(identitet.getRettIdentitetVedIdentifikasjonsnummer()) &&
-                !personRepository.existsByIdent(identitet.getRettIdentitetVedIdentifikasjonsnummer())) {
+                isFalse(personRepository.existsByIdent(identitet.getRettIdentitetVedIdentifikasjonsnummer()).block())) {
             throw new InvalidRequestException(
                     format(VALIDATION_FALSK_IDENTITET_ERROR, identitet.getRettIdentitetVedIdentifikasjonsnummer()));
         }

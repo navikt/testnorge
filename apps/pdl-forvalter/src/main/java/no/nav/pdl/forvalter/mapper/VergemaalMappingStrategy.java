@@ -16,6 +16,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalMandattype;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalSakstype;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -101,11 +102,9 @@ public class VergemaalMappingStrategy implements MappingStrategy {
                                 .gjeldende(nonNull(kilde.getGyldigFraOgMed()) || nonNull(kilde.getGyldigTilOgMed()))
                                 .build());
 
-                        var person = personRepository.findByIdent(kilde.getVergeIdent());
-                        NavnDTO personnavn = new NavnDTO();
-                        if (person.isPresent()) {
-                            personnavn = person.get().getPerson().getNavn().stream().findFirst().orElse(new NavnDTO());
-                        }
+                        var personnavn = personRepository.findByIdent(kilde.getVergeIdent())
+                                .map(person -> person.getPerson().getNavn())
+                                        .flatMapMany(Flux::fromIterable);
 
                         destinasjon.setVergeEllerFullmektig(PdlVergemaal.VergeEllerFullmektig.builder()
                                 .motpartsPersonident(kilde.getVergeIdent())

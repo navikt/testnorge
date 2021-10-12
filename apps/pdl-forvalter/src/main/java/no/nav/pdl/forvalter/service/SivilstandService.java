@@ -29,6 +29,7 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.G
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.REGISTRERT_PARTNER;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.UGIFT;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.UOPPGITT;
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -79,7 +80,7 @@ public class SivilstandService implements Validation<SivilstandDTO> {
         if ((sivilstand.getType() == GIFT ||
                 sivilstand.getType() == REGISTRERT_PARTNER) &&
                 isNotBlank(sivilstand.getRelatertVedSivilstand()) &&
-                !personRepository.existsByIdent(sivilstand.getRelatertVedSivilstand())) {
+                isFalse(personRepository.existsByIdent(sivilstand.getRelatertVedSivilstand()).block())) {
 
             throw new InvalidRequestException(INVALID_RELATERT_VED_SIVILSTAND);
         }
@@ -141,7 +142,7 @@ public class SivilstandService implements Validation<SivilstandDTO> {
 
     private void createRelatertSivilstand(SivilstandDTO sivilstand, String hovedperson) {
 
-        DbPerson relatertPerson = personRepository.findByIdent(sivilstand.getRelatertVedSivilstand()).get();
+        DbPerson relatertPerson = personRepository.findByIdent(sivilstand.getRelatertVedSivilstand()).block();
         SivilstandDTO relatertSivilstand = mapperFacade.map(sivilstand, SivilstandDTO.class);
         relatertSivilstand.setRelatertVedSivilstand(hovedperson);
         relatertSivilstand.setId(relatertPerson.getPerson().getSivilstand().stream()

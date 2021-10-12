@@ -30,6 +30,7 @@ import java.util.stream.Stream;
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -97,7 +98,7 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
 
         if (nonNull(kontaktinfo.getPersonSomKontakt()) &&
                 isNotBlank(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer()) &&
-                !personRepository.existsByIdent(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer())) {
+                isFalse(personRepository.existsByIdent(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer()).block())) {
             throw new InvalidRequestException(format(VALIDATION_IDNUMBER_INVALID,
                     kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer()));
         }
@@ -146,7 +147,7 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
 
             leggTilNyAddressat(kontaktinfo.getPersonSomKontakt(), hovedperson);
             kontaktinfo.setAdresse(mapperFacade.map(
-                    personRepository.findByIdent(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer()).get()
+                    personRepository.findByIdent(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer()).block()
                             .getPerson().getBostedsadresse().stream().findFirst().get(),
                     KontaktinformasjonForDoedsboAdresse.class));
 

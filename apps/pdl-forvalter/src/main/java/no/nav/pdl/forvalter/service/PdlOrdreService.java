@@ -6,6 +6,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
+import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
 import no.nav.pdl.forvalter.domain.Ordre;
 import no.nav.pdl.forvalter.dto.HistoriskIdent;
 import no.nav.pdl.forvalter.dto.PdlDelete;
@@ -25,6 +26,7 @@ import reactor.core.publisher.Mono;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -64,25 +66,13 @@ public class PdlOrdreService {
 
     private final DeployService deployService;
     private final PersonRepository personRepository;
+    private final RelasjonRepository relasjonRepository;
     private final MapperFacade mapperFacade;
 
     public Flux<OrdreResponseDTO> send(OrdreRequestDTO ordre, Boolean isTpsMaster) {
 
-        var dbPersoner = personRepository.findByIdentIn(ordre.getIdenter());
-
-        var hovedpersoner = dbPersoner.stream()
-                .map(DbPerson::getIdent)
-                .collect(Collectors.toSet());
-
-        return Flux.fromStream(dbPersoner.stream())
-//                .flatMap(person -> sendAlleInformasjonselementer(person, isNotTrue(isTpsMaster))
-//                        .collectList()
-//                        .map(order -> OrdreResponseDTO.builder()
-//                                .hovedperson(PersonHendelserDTO.builder()
-//                                        .ident(person.getIdent())
-//                                        .ordrer(order)
-//                                        .build())
-//                                .build()));
+        return personRepository.findByIdentIn(ordre.getIdenter())
+                .filterWhen(person -> relasjonRepository.existsByPersonId(person.getId()))
                 .flatMap(person -> Mono.zip(
                         sendAlleInformasjonselementer(person, isNotTrue(isTpsMaster))
                                 .collectList()
@@ -93,7 +83,6 @@ public class PdlOrdreService {
                         Flux.concat(person.getRelasjoner()
                                         .parallelStream()
                                         .map(DbRelasjon::getRelatertPerson)
-                                        .filter(relatertPerson -> !hovedpersoner.contains(relatertPerson.getIdent()))
                                         .map(relatertPerson -> sendAlleInformasjonselementer(relatertPerson, true)
                                                 .collectList()
                                                 .map(ordrer -> PersonHendelserDTO.builder()

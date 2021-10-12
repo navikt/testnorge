@@ -17,6 +17,7 @@ import java.util.List;
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -64,7 +65,7 @@ public class VergemaalService implements Validation<VergemaalDTO> {
         }
 
         if (isNotBlank(vergemaal.getVergeIdent()) &&
-                !personRepository.existsByIdent(vergemaal.getVergeIdent())) {
+                isFalse(personRepository.existsByIdent(vergemaal.getVergeIdent()).block())) {
             throw new InvalidRequestException(format(VALIDATION_VERGEMAAL_ERROR, vergemaal.getVergeIdent()));
         }
     }

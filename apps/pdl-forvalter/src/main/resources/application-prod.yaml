@@ -21,7 +21,7 @@ spring:
     properties:
       hibernate:
         default-schema: public
-        dialect: no.nav.pdl.forvalter.database.PostgreSQLDialectExtended
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   flyway:
     enabled: true # Disabled by default as you should probably think twice before running Flyway-migrations
     locations: classpath:db/migration

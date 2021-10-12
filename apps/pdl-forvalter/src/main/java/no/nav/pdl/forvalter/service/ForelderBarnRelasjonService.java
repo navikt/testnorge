@@ -14,6 +14,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,7 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.KVINNE;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.MANN;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_BARN;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_FORELDER;
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -87,7 +89,7 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
         }
 
         if (isNotBlank(relasjon.getRelatertPerson()) &&
-                !personRepository.existsByIdent(relasjon.getRelatertPerson())) {
+                isFalse(personRepository.existsByIdent(relasjon.getRelatertPerson()).block())) {
 
             throw new InvalidRequestException(String.format(INVALID_RELATERT_PERSON_EXCEPTION,
                     relasjon.getRelatertPerson()));
@@ -103,14 +105,20 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
                 isNotTrue(relasjon.getPartnerErIkkeForelder()) && hovedperson.getSivilstand().stream()
                 .anyMatch(sivilstand -> nonNull(sivilstand.getRelatertVedSivilstand()))) {
 
-            DbPerson partner = hovedperson.getSivilstand().stream()
+            var partnerIdent = hovedperson.getSivilstand().stream()
                     .filter(sivilstand -> nonNull(sivilstand.getRelatertVedSivilstand()))
-                    .map(sivilstand -> personRepository.findByIdent(sivilstand.getRelatertVedSivilstand()).get())
-                    .findFirst().get();
+                    .map(SivilstandDTO::getRelatertVedSivilstand)
+                    .findFirst().orElse(null);
 
-            partner.getPerson().getForelderBarnRelasjon().add(0,
-                    addForelderBarnRelasjon(mapperFacade.map(relasjon, ForelderBarnRelasjonDTO.class), partner.getPerson()));
-            personRepository.save(partner);
+            if (nonNull(partnerIdent)) {
+                var partner = personRepository.findByIdent(partnerIdent)
+                        .map(partner1 -> {
+                            partner1.getPerson().getForelderBarnRelasjon().add(0,
+                                    addForelderBarnRelasjon(mapperFacade.map(relasjon, ForelderBarnRelasjonDTO.class), partner1.getPerson()));
+                            return partner1;
+                        });
+                personRepository.save(partner.block());
+            }
         }
         relasjon.setPartnerErIkkeForelder(null);
 
@@ -213,7 +221,7 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
 
     private void createMotsattRelasjon(ForelderBarnRelasjonDTO relasjon, String hovedperson) {
 
-        DbPerson relatertPerson = personRepository.findByIdent(relasjon.getRelatertPerson()).get();
+        DbPerson relatertPerson = personRepository.findByIdent(relasjon.getRelatertPerson()).block();
         ForelderBarnRelasjonDTO relatertFamilierelasjon = mapperFacade.map(relasjon, ForelderBarnRelasjonDTO.class);
         relatertFamilierelasjon.setRelatertPerson(hovedperson);
         swapRoller(relatertFamilierelasjon);

@@ -43,7 +43,7 @@ public class PersonController {
     @ResponseBody
     @GetMapping
     @Operation(description = "Hent personer")
-    public List<FullPersonDTO> getPerson(@Parameter(description = "Hent personer med angitte identer, eller")
+    public Flux<FullPersonDTO> getPerson(@Parameter(description = "Hent personer med angitte identer, eller")
                                          @RequestParam(required = false) List<String> identer,
                                          @Parameter(description = "Hent identitet ved søk på (u)fullstendig ident og/eller en eller flere navn")
                                          @RequestParam(required = false) String fragment) {

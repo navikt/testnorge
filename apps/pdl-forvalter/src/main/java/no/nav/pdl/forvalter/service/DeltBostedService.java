@@ -3,8 +3,8 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
-import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
+import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DeltBostedDTO;
@@ -12,6 +12,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.DeltBostedDTO.UkjentBostedDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,6 +36,7 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
     private final PersonRepository personRepository;
     private final AdresseServiceConsumer adresseServiceConsumer;
     private final MapperFacade mapperFacade;
+    private final RelasjonRepository relasjonRepository;
 
     public List<DeltBostedDTO> convert(PersonDTO person) {
 
@@ -95,30 +97,27 @@ public class DeltBostedService implements BiValidation<DeltBostedDTO, PersonDTO>
         } else if (isNull(deltbosted.getUkjentBosted()) &&
                 hovedperson.getSivilstand().stream().anyMatch(SivilstandDTO::isGift)) {
 
-            var partner = personRepository.findByIdent(
-                    hovedperson.getSivilstand().stream()
-                            .filter(SivilstandDTO::isGift)
-                            .findFirst().get().getRelatertVedSivilstand());
-
-            if (partner.isPresent()) {
-                var partneradresse = partner.get().getPerson()
-                        .getBostedsadresse().stream().findFirst();
-
-                if (partneradresse.isPresent()) {
-                    deltbosted.setVegadresse(partneradresse.get().getVegadresse());
-                    deltbosted.setMatrikkeladresse(partneradresse.get().getMatrikkeladresse());
-                    deltbosted.setUkjentBosted(nonNull(partneradresse.get().getUkjentBosted()) ?
-                            mapperFacade.map(partneradresse.get().getUkjentBosted(), UkjentBostedDTO.class) : null);
-                }
-            }
+            personRepository.findByIdent(
+                            hovedperson.getSivilstand().stream()
+                                    .filter(SivilstandDTO::isGift)
+                                    .findFirst().get().getRelatertVedSivilstand()
+                    )
+                    .map(person -> person.getPerson().getBostedsadresse().stream().findFirst())
+                    .map(partneradresse -> {
+                        deltbosted.setVegadresse(mapperFacade.map(partneradresse.get().getVegadresse(), VegadresseDTO.class));
+                        deltbosted.setMatrikkeladresse(partneradresse.get().getMatrikkeladresse());
+                        deltbosted.setUkjentBosted(nonNull(partneradresse.get().getUkjentBosted()) ?
+                                mapperFacade.map(partneradresse.get().getUkjentBosted(), UkjentBostedDTO.class) : null);
+                        return null;
+                    });
         }
 
         hovedperson.getForelderBarnRelasjon().stream()
                 .filter(ForelderBarnRelasjonDTO::hasBarn)
                 .map(ForelderBarnRelasjonDTO::getRelatertPerson)
-                .map(ident -> personRepository.findByIdent(ident).get())
-                .map(DbPerson::getPerson)
-                .forEach(barn -> setDeltBosted(barn, deltbosted));
+                .map(ident -> personRepository.findByIdent(ident)
+                        .map(barn -> barn.getPerson().getDeltBosted().add(deltbosted))
+                );
     }
 
     private void setDeltBosted(PersonDTO barn, DeltBostedDTO deltBosted) {

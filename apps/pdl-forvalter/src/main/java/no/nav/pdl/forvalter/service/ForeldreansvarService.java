@@ -92,7 +92,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
         }
 
         if (isNotBlank(foreldreansvar.getAnsvarlig()) &&
-                !personRepository.existsByIdent(foreldreansvar.getAnsvarlig())) {
+                isFalse(personRepository.existsByIdent(foreldreansvar.getAnsvarlig()).block())) {
 
             throw new InvalidRequestException(String.format(INVALID_ANSVARLIG_PERSON_EXCEPTION,
                     foreldreansvar.getAnsvarlig()));
@@ -136,9 +136,9 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
     private boolean isRelasjonMor(PersonDTO hovedperson) {
 
         return hovedperson.getForelderBarnRelasjon().stream().anyMatch(relasjon -> {
-            Optional<DbPerson> barn = personRepository.findByIdent(relasjon.getRelatertPerson());
-            return barn.isPresent() &&
-                    barn.get().getPerson().getForelderBarnRelasjon().stream().anyMatch(forelderRelasjon ->
+            var barn = personRepository.findByIdent(relasjon.getRelatertPerson()).block();
+            return nonNull(barn) &&
+                    barn.getPerson().getForelderBarnRelasjon().stream().anyMatch(forelderRelasjon ->
                             forelderRelasjon.getRelatertPersonsRolle() == Rolle.MOR ||
                                     forelderRelasjon.getRelatertPersonsRolle() == Rolle.MEDMOR);
         });
@@ -148,7 +148,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
 
         return hovedperson.getForelderBarnRelasjon().stream()
                 .map(barnRelasjon -> {
-                    DbPerson barn = personRepository.findByIdent(barnRelasjon.getRelatertPerson()).get();
+                    var barn = personRepository.findByIdent(barnRelasjon.getRelatertPerson()).block();
                     return barn.getPerson().getForelderBarnRelasjon().stream()
                             .filter(foreldreRelasjon -> foreldreRelasjon.getRelatertPersonsRolle() == Rolle.MOR ||
                                     foreldreRelasjon.getRelatertPersonsRolle() == Rolle.MEDMOR)
@@ -164,9 +164,9 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
     private boolean isRelasjonFar(PersonDTO hovedperson) {
 
         return hovedperson.getForelderBarnRelasjon().stream().anyMatch(relasjon -> {
-            Optional<DbPerson> barn = personRepository.findByIdent(relasjon.getRelatertPerson());
-            return barn.isPresent() &&
-                    barn.get().getPerson().getForelderBarnRelasjon().stream().anyMatch(forelderRelasjon ->
+            var barn = personRepository.findByIdent(relasjon.getRelatertPerson()).block();
+            return nonNull(barn) &&
+                    barn.getPerson().getForelderBarnRelasjon().stream().anyMatch(forelderRelasjon ->
                             forelderRelasjon.getRelatertPersonsRolle() == Rolle.FAR);
         });
     }
@@ -175,7 +175,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
 
         return hovedperson.getForelderBarnRelasjon().stream()
                 .map(barnRelasjon -> {
-                    DbPerson barn = personRepository.findByIdent(barnRelasjon.getRelatertPerson()).get();
+                    var barn = personRepository.findByIdent(barnRelasjon.getRelatertPerson()).block();
                     return barn.getPerson().getForelderBarnRelasjon().stream()
                             .filter(foreldreRelasjon -> foreldreRelasjon.getRelatertPersonsRolle() == Rolle.FAR)
                             .map(foreldreRelasjon -> BarnRelasjon.builder()
@@ -234,10 +234,10 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
             setRelasjoner(hovedperson.getForelderBarnRelasjon().stream()
                     .filter(relasjon -> relasjon.getRelatertPersonsRolle() == Rolle.BARN)
                     .map(relasjon -> relasjon.getRelatertPerson())
-                    .map(ident -> personRepository.findByIdent(ident))
+                    .map(ident -> personRepository.findByIdent(ident).block())
                     .map(dbperson -> BarnRelasjon.builder()
                             .ansvarlig(foreldreansvar.getAnsvarlig())
-                            .barn(dbperson.get())
+                            .barn(dbperson)
                             .build())
                     .collect(Collectors.toList()), foreldreansvar);
         }

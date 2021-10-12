@@ -8,9 +8,12 @@ import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
 import no.nav.pdl.forvalter.exception.InternalServerException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 
@@ -25,20 +28,16 @@ public class RelasjonService {
 
     public void setRelasjoner(String ident, RelasjonType relasjon, String identRelasjon, RelasjonType reverseRelasjon) {
 
-        var dbPersoner = personRepository.findByIdentIn(List.of(ident, identRelasjon));
-        var hovedperson = dbPersoner.stream()
-                .filter(person -> person.getIdent().equals(ident))
-                .findFirst().orElseThrow(() -> new InternalServerException(
-                        String.format(DB_ERROR, ident)));
-        var relasjonPerson = dbPersoner.stream()
-                .filter(person -> person.getIdent().equals(identRelasjon))
-                .findFirst().orElseThrow(() -> new InternalServerException(
-                        String.format(DB_ERROR, identRelasjon)));
+        var personIder = personRepository.findByIdentIn(List.of(ident, identRelasjon))
+                .collectList()
+                .block()
+                .stream()
+                .collect(Collectors.toMap(DbPerson::getIdent, DbPerson::getId));
 
-        createRelasjon(relasjonPerson, hovedperson, relasjon);
+        createRelasjon(personIder.get(identRelasjon), personIder.get(ident), relasjon);
 
         if (nonNull(reverseRelasjon)) {
-            createRelasjon(hovedperson, relasjonPerson, reverseRelasjon);
+            createRelasjon(personIder.get(ident), personIder.get(identRelasjon), reverseRelasjon);
         }
     }
 
@@ -47,11 +46,11 @@ public class RelasjonService {
        setRelasjoner(identRelasjon, relasjon, ident, null);
     }
 
-    private void createRelasjon(DbPerson person1, DbPerson person2, RelasjonType relasjon) {
+    private Mono<DbRelasjon> createRelasjon(Long person1Id, Long person2Id, RelasjonType relasjon) {
 
-        relasjonRepository.save(DbRelasjon.builder()
-                .person(person1)
-                .relatertPerson(person2)
+        return relasjonRepository.save(DbRelasjon.builder()
+                .personId(person1Id)
+                .relatertPersonId(person2Id)
                 .relasjonType(relasjon)
                 .sistOppdatert(LocalDateTime.now())
                 .build());

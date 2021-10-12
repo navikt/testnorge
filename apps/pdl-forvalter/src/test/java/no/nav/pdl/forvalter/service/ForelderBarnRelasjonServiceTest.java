@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.HttpClientErrorException;
+import reactor.core.publisher.Mono;
 
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle.BARN;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle.FAR;
@@ -98,7 +99,7 @@ class ForelderBarnRelasjonServiceTest {
                         .isNew(true)
                         .build();
 
-        when(personRepository.existsByIdent(IDENT)).thenReturn(false);
+        when(personRepository.existsByIdent(IDENT)).thenReturn(Mono.just(false));
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 forelderBarnRelasjonService.validate(request));

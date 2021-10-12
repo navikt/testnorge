@@ -111,7 +111,7 @@ public class CreatePersonService {
                         .mellomnavn(mergedPerson.getNavn().stream().findFirst().orElse(new NavnDTO()).getMellomnavn())
                         .etternavn(mergedPerson.getNavn().stream().findFirst().orElse(new NavnDTO()).getEtternavn())
                         .sistOppdatert(LocalDateTime.now())
-                        .build())
+                        .build()).block()
                 .getPerson();
     }
 }

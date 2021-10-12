@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.HttpClientErrorException;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 
@@ -76,7 +77,7 @@ class VergemaalServiceTest {
     @Test
     void whenStatedPersonDoesNotExist_thenThrowExecption() {
 
-        when(personRepository.existsByIdent(IDENT)).thenReturn(false);
+        when(personRepository.existsByIdent(IDENT)).thenReturn(Mono.just(false));
 
         var request = VergemaalDTO.builder()
                         .vergemaalEmbete(VergemaalEmbete.FMNO)

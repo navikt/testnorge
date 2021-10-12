@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.HttpClientErrorException;
+import reactor.core.publisher.Mono;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -66,7 +67,7 @@ class ForeldreansvarServiceTest {
     @Test
     void whenAnsvarligPersonDontExist_thenThrowExecption() {
 
-        when(personRepository.existsByIdent(IDENT_ANDRE)).thenReturn(false);
+        when(personRepository.existsByIdent(IDENT_ANDRE)).thenReturn(Mono.just(false));
 
         var request = ForeldreansvarDTO.builder()
                         .ansvar(Ansvar.ANDRE)

@@ -5,11 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.IdentPoolConsumer;
 import no.nav.pdl.forvalter.consumer.PdlTestdataConsumer;
-import no.nav.pdl.forvalter.database.model.DbAlias;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
+import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
 import no.nav.pdl.forvalter.dto.HentIdenterRequest;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
@@ -29,9 +29,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -62,6 +62,7 @@ public class PersonService {
     private final PdlTestdataConsumer pdlTestdataConsumer;
     private final AliasRepository aliasRepository;
     private final ValidateArtifactsService validateArtifactsService;
+    private final RelasjonRepository relasjonRepository;
 
     @Transactional
     public String updatePerson(String ident, PersonUpdateRequestDTO request) {
@@ -73,13 +74,13 @@ public class PersonService {
 
         checkAlias(ident);
         var dbPerson = personRepository.findByIdent(ident)
-                .orElseGet(() -> personRepository.save(DbPerson.builder()
+                .switchIfEmpty(Mono.defer(() -> personRepository.save(DbPerson.builder()
                         .ident(ident)
                         .person(PersonDTO.builder()
                                 .ident(ident)
                                 .build())
                         .sistOppdatert(now())
-                        .build()));
+                        .build()))).block();
 
         var mergedPerson = mergeService.merge(request.getPerson(), dbPerson.getPerson());
         validateArtifactsService.validate(mergedPerson);
@@ -91,7 +92,7 @@ public class PersonService {
         dbPerson.setEtternavn(extendedArtifacts.getNavn().stream().findFirst().orElse(new NavnDTO()).getEtternavn());
         dbPerson.setSistOppdatert(now());
 
-        return personRepository.save(dbPerson).getIdent();
+        return personRepository.save(dbPerson).block().getIdent();
     }
 
     @Transactional
@@ -100,50 +101,66 @@ public class PersonService {
         var startTime = currentTimeMillis();
 
         checkAlias(ident);
-        var dbPerson = personRepository.findByIdent(ident).orElseThrow(() ->
-                new NotFoundException(format("Ident %s ble ikke funnet", ident)));
-
-        var personer = Stream.of(List.of(dbPerson),
-                        dbPerson.getRelasjoner().stream()
-                                .map(DbRelasjon::getRelatertPerson)
+        var dbPerson = personRepository.findByIdent(ident)
+                .switchIfEmpty(Mono.error(() ->
+                        new NotFoundException(format("Ident %s ble ikke funnet", ident))))
+                .flatMap(person -> Mono.zip(
+                        relasjonRepository.findByPersonId(person.getId())
+                                .flatMap(relasjon -> Mono.zip(
+                                        personRepository.findById(relasjon.getRelatertPersonId()),
+                                        Mono.empty(),
+                                        (relatertPerson, empty) -> {
+                                            relasjon.setRelatertPerson(relatertPerson);
+                                            return relasjon;
+                                        }))
+                                .collectList(),
+                        aliasRepository.findByPersonId(person.getId())
+                                .collectList(),
+                        (relasjoner, aliaser) -> {
+                            person.setRelasjoner(relasjoner);
+                            person.setAlias(aliaser);
+                            return person;
+                        }))
+                .map(person ->
+                        Stream.of(List.of(person.getIdent()),
+                                        person.getRelasjoner().stream()
+                                                .map(DbRelasjon::getRelatertPerson)
+                                                .map(DbPerson::getIdent)
+                                                .collect(Collectors.toList()))
+                                .flatMap(Collection::stream)
                                 .collect(Collectors.toList()))
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
-
-        var identer = personer.stream()
-                .map(DbPerson::getIdent)
-                .collect(Collectors.toList());
-
-        Stream.of(
-                        pdlTestdataConsumer.delete(identer),
-                        identPoolConsumer.releaseIdents(identer),
-                        Flux.just(personRepository.deleteByIdentIn(identer)))
-                .reduce(Flux.empty(), Flux::merge)
-                .collectList()
-                .block();
+                .map(identer ->
+                        Stream.of(
+                                        pdlTestdataConsumer.delete(identer),
+                                        identPoolConsumer.releaseIdents(identer),
+                                        Flux.just(personRepository.deleteByIdentIn(identer)))
+                                .reduce(Flux.empty(), Flux::merge)
+                                .collectList()
+                                .block());
 
         log.info("Sletting av ident {} tok {} ms", ident, currentTimeMillis() - startTime);
     }
 
     @Transactional(readOnly = true)
-    public List<FullPersonDTO> getPerson(List<String> identer, String fragment) {
+    public Flux<FullPersonDTO> getPerson(List<String> identer, String fragment) {
 
         if (nonNull(identer) && !identer.isEmpty()) {
-            var query = new HashSet<>(identer);
-            var aliaser = aliasRepository.findByTidligereIdentIn(identer);
-            query.addAll(aliaser.stream()
-                    .map(DbAlias::getPerson)
-                    .map(DbPerson::getIdent)
-                    .collect(Collectors.toSet()));
-            query.removeAll(aliaser.stream()
-                    .map(DbAlias::getTidligereIdent)
-                    .collect(Collectors.toSet()));
 
-            return mapperFacade.mapAsList(personRepository.findByIdentIn(query), FullPersonDTO.class);
+            return Flux.concat(
+                            aliasRepository.findByTidligereIdentIn(identer)
+                                    .flatMap(alias -> personRepository.findById(alias.getPersonId())),
+                            personRepository.findByIdentIn(identer))
+                    .flatMap(person -> Mono.zip(relasjonRepository.findByPersonId(person.getId()).collectList(),
+                            Mono.empty(),
+                            (relasjoner, empty) -> {
+                                person.setRelasjoner(relasjoner);
+                                return person;
+                            }))
+                    .map(person -> mapperFacade.map(person, FullPersonDTO.class));
 
         } else if (isNotBlank(fragment)) {
 
-            return searchPerson(fragment).stream()
+            return searchPerson(fragment)
                     .map(person -> FullPersonDTO.builder()
                             .identitet(PersonIDDTO.builder()
                                     .ident(person.getIdent())
@@ -151,8 +168,7 @@ public class PersonService {
                                     .mellomnavn(person.getMellomnavn())
                                     .etternavn(person.getEtternavn())
                                     .build())
-                            .build())
-                    .collect(Collectors.toList());
+                            .build());
 
         } else {
 
@@ -196,14 +212,17 @@ public class PersonService {
 
     private void checkAlias(String ident) {
 
-        var alias = aliasRepository.findByTidligereIdent(ident);
-        if (alias.isPresent()) {
-            throw new InvalidRequestException(
-                    format(VIOLATION_ALIAS_EXISTS, alias.get().getPerson().getIdent()));
-        }
+        aliasRepository.findByTidligereIdent(ident)
+                .map(alias -> {
+                    if (nonNull(alias)) {
+                        throw new InvalidRequestException(
+                                format(VIOLATION_ALIAS_EXISTS, alias.getTidligereIdent()));
+                    }
+                    return null;
+                });
     }
 
-    private List<DbPerson> searchPerson(String query) {
+    private Flux<DbPerson> searchPerson(String query) {
         Optional<String> ident = Stream.of(query.split(" "))
                 .filter(StringUtils::isNumeric)
                 .findFirst();

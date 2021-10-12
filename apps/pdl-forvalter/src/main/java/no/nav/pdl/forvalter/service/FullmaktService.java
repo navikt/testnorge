@@ -17,6 +17,7 @@ import java.util.List;
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -66,7 +67,7 @@ public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
         }
 
         if (nonNull(fullmakt.getMotpartsPersonident()) &&
-                !personRepository.existsByIdent(fullmakt.getMotpartsPersonident())) {
+                isFalse(personRepository.existsByIdent(fullmakt.getMotpartsPersonident()).block())) {
             throw new InvalidRequestException(format(VALIDATION_FULLMEKTIG_ERROR, fullmakt.getMotpartsPersonident()));
         }
     }
