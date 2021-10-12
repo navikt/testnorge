@@ -11,9 +11,10 @@ Testnorge-Sigrun er adapteren for opprettelse av pensjonsopptjeningsmeldinger so
 Swagger finnes under [/api](https://testnorge-sigrun.dev.intern.nav.no/api) -endepunktet til applikasjonen.
 
 ### Lokal kjøring
-Ha naisdevice kjørende og kjør LocalApplicationStarter med følgende argumenter:
+Ha naisdevice kjørende og kjør TestnorgeSigrunApplicationStarter med følgende argumenter:
 ```
 -Dspring.cloud.vault.token=[kopier token fra vault]
+-Dspring.profiles.active=dev
 ```
 
 ### Utviklerimage
