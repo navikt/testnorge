@@ -103,7 +103,7 @@ class UdiStubITest extends ITestBase {
 
     private HttpHeaders createHeaders() {
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+        headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add(NAV_PERSON_IDENT, TEST_PERSON_FNR);
         headers.add(NAV_CONSUMER_ID, "test");
         return headers;
