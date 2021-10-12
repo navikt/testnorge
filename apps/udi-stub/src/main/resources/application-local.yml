@@ -19,7 +19,8 @@ spring:
         backend: postgresql/preprod-fss
         enabled: true
         role: udi-stub-dev-admin
-      enabled: false
+      kv:
+        enabled: false
   security:
     oauth2:
       resourceserver:
