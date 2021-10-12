@@ -1,33 +1,30 @@
-package no.nav.registre.tp.consumer.rs;
-
-import io.micrometer.core.annotation.Timed;
-import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.tp.consumer.rs.command.GetSyntTpYtelserCommand;
-import no.nav.registre.tp.consumer.rs.credential.SyntTpProperties;
-import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.stereotype.Component;
+package no.nav.registre.bisys.consumer.rs;
 
 import java.util.List;
 
-import no.nav.registre.tp.database.models.TYtelse;
+import no.nav.registre.bisys.consumer.rs.command.GetSyntBisysMeldingerCommand;
+import no.nav.registre.bisys.consumer.rs.credential.SyntBisysProperties;
+import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
-@Slf4j
+import io.micrometer.core.annotation.Timed;
+import no.nav.registre.bisys.consumer.rs.responses.SyntetisertBidragsmelding;
+
 @Component
-public class TpSyntConsumer {
+public class SyntBisysConsumer {
 
     private final AccessTokenService tokenService;
     private final ServerProperties serviceProperties;
     private final WebClient webClient;
 
-    public TpSyntConsumer(
-            SyntTpProperties syntTpProperties,
+    public SyntBisysConsumer(
+            SyntBisysProperties syntProperties,
             AccessTokenService accessTokenService
     ) {
-        this.serviceProperties = syntTpProperties;
+        this.serviceProperties = syntProperties;
         this.tokenService = accessTokenService;
         this.webClient = WebClient.builder()
                 .exchangeStrategies(ExchangeStrategies.builder()
@@ -35,15 +32,13 @@ public class TpSyntConsumer {
                                 .defaultCodecs()
                                 .maxInMemorySize(16 * 1024 * 1024))
                         .build())
-                .baseUrl(syntTpProperties.getUrl())
+                .baseUrl(syntProperties.getUrl())
                 .build();
     }
 
-    @Timed(value = "tp.resource.latency", extraTags = { "operation", "synt" })
-    public List<TYtelse> getSyntYtelser(
-            int numToGenerate
-    ) {
+    @Timed(value = "bisys.resource.latency", extraTags = {"operation", "bisys-syntetisereren"})
+    public List<SyntetisertBidragsmelding> getSyntetiserteBidragsmeldinger(int antallMeldinger) {
         var token = tokenService.generateClientCredentialAccessToken(serviceProperties).block().getTokenValue();
-        return new GetSyntTpYtelserCommand(numToGenerate, token, webClient).call();
+        return new GetSyntBisysMeldingerCommand(antallMeldinger, token, webClient).call();
     }
 }

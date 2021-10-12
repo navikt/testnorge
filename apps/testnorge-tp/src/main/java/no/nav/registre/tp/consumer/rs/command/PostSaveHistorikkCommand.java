@@ -23,7 +23,7 @@ public class PostSaveHistorikkCommand implements Callable<List<String>> {
     public List<String> call() {
         return webClient.post()
                 .uri(builder ->
-                        builder.path("/api/v1/historikk")
+                        builder.path("/v1/historikk")
                                 .build()
                 )
                 .body(BodyInserters.fromPublisher(Mono.just(request), TpSaveInHodejegerenRequest.class))
