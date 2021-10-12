@@ -26,3 +26,4 @@ spring:
         backend: postgresql/preprod-fss
         enabled: true
         role: ${database.name.role}
+      enabled: false
