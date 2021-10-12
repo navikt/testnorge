@@ -1,10 +1,6 @@
 package no.nav.registre.sigrun.consumer.rs;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static no.nav.registre.sigrun.testutils.ResourceUtils.getResourceFileContent;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -43,6 +39,7 @@ public class PoppSyntetisererenConsumerTest {
 
         var expectedResponse = Arrays.asList(new ObjectMapper().readValue(Resources.getResource("inntektsmeldinger_test.json"), PoppSyntetisererenResponse[].class));
 
+        stubToken();
         stubPoppSyntetisererenConsumer();
 
         var result = poppSyntetisererenConsumer.hentPoppMeldingerFromSyntRest(fnrs);
@@ -59,5 +56,11 @@ public class PoppSyntetisererenConsumerTest {
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody(getResourceFileContent("inntektsmeldinger_test.json"))));
+    }
+
+    private void stubToken() {
+        stubFor(post("/aad/oauth2/v2.0/token").willReturn(okJson(
+                "{\"access_token\": \"dummy\"}"
+        )));
     }
 }
