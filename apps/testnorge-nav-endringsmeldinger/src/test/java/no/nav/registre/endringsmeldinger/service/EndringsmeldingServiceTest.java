@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import no.nav.registre.endringsmeldinger.domain.Endringskoder;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

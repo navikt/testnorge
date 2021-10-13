@@ -1,6 +1,6 @@
 package no.nav.registre.endringsmeldinger.consumer.rs;
 
-import no.nav.registre.endringsmeldinger.service.Endringskoder;
+import no.nav.registre.endringsmeldinger.domain.Endringskoder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

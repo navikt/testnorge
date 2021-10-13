@@ -1,7 +1,7 @@
 package no.nav.registre.endringsmeldinger.provider.rs;
 
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,11 +16,11 @@ import no.nav.registre.endringsmeldinger.provider.rs.requests.GenererKontonummer
 import no.nav.registre.endringsmeldinger.service.TestdataService;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("api/v1/testdata")
 public class TestdataController {
 
-    @Autowired
-    private TestdataService testdataService;
+    private final TestdataService testdataService;
 
     @ApiOperation(value = "Her opprettes det meldinger for endring av norsk gironummer på en liste med identer. Alle identer får det gitte gironummeret, og endringsmeldingene sendes til angitt kø i det angitte miljøet.")
     @PostMapping(value = "/genererKontonummer")

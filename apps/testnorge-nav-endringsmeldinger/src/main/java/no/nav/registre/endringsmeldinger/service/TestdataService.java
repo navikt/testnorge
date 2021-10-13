@@ -3,8 +3,8 @@ package no.nav.registre.endringsmeldinger.service;
 import static no.nav.registre.endringsmeldinger.service.utils.NyttKontonummerUtil.opprettDokumentForNyttKontonummer;
 import static no.nav.registre.endringsmeldinger.service.utils.StatusFraTpsUtil.trekkUtStatusFraTps;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 
@@ -25,12 +25,12 @@ import no.nav.registre.endringsmeldinger.provider.rs.requests.GenererKontonummer
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class TestdataService {
 
     private static final Long TIMEOUT_SEKUNDER = 5L;
 
-    @Autowired
-    private TpsfConsumer tpsfConsumer;
+    private final TpsfConsumer tpsfConsumer;
 
     public List<RsPureXmlMessageResponse> genererKontonummerOgSendTilTps(
             String koeNavn,

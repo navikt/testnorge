@@ -3,8 +3,9 @@ package no.nav.registre.endringsmeldinger.service;
 import static no.nav.registre.endringsmeldinger.service.utils.StatusFraTpsUtil.trekkUtStatusFraTps;
 
 import io.micrometer.core.annotation.Timed;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import no.nav.registre.endringsmeldinger.domain.Endringskoder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -33,21 +34,18 @@ import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class EndringsmeldingService {
 
     private static final Long TIMEOUT_SEKUNDER = 5L;
 
-    @Autowired
-    private HodejegerenConsumer hodejegerenConsumer;
+    private final HodejegerenConsumer hodejegerenConsumer;
 
-    @Autowired
-    private TpsfConsumer tpsfConsumer;
+    private final TpsfConsumer tpsfConsumer;
 
-    @Autowired
-    private NavEndringsmeldingerSyntetisererenConsumer navEndringsmeldingerSyntetisererenConsumer;
+    private final NavEndringsmeldingerSyntetisererenConsumer navEndringsmeldingerSyntetisererenConsumer;
 
-    @Autowired
-    private Random rand;
+    private final Random rand;
 
     @Value("${SFE_ENDRINGSMELDING.queueName}")
     private String queueName;

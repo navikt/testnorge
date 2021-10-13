@@ -1,4 +1,4 @@
-package no.nav.registre.endringsmeldinger.service;
+package no.nav.registre.endringsmeldinger.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
