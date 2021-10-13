@@ -14,7 +14,7 @@ public class ValidateService {
     public Mono<Void> validateOrganiasjonsnummerAccess(String organisasjonsnummer) {
         return client
                 .getOrganisastion(organisasjonsnummer)
-                .switchIfEmpty(Mono.error(new UserHasNoAccessToOrgnisasjonException()))
+                .switchIfEmpty(Mono.error(new UserHasNoAccessToOrgnisasjonException(organisasjonsnummer)))
                 .then();
     }
 }

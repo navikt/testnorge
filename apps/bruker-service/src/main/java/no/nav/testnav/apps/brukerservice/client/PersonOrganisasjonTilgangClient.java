@@ -10,7 +10,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import no.nav.testnav.apps.brukerservice.client.command.GetOrganisasjonCommand;
-import no.nav.testnav.apps.brukerservice.client.dto.OrganisasjonDTO;
+import no.nav.testnav.apps.brukerservice.client.credentials.PersonOrganisasjonTilgangServiceProperties;
 import no.nav.testnav.apps.brukerservice.domain.Organisasjon;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 

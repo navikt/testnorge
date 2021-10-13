@@ -3,12 +3,15 @@ package no.nav.testnav.apps.brukerservice.controller;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -33,6 +36,7 @@ import no.nav.testnav.apps.brukerservice.service.UserService;
 import no.nav.testnav.apps.brukerservice.service.ValidateService;
 import no.nav.testnav.libs.reactivesecurity.config.UserConstant;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/brukere")
 @RequiredArgsConstructor
@@ -66,7 +70,7 @@ public class BrukerController {
                 .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
     }
 
-    @PutMapping("/{id}/brukernavn")
+    @PatchMapping("/{id}/brukernavn")
     public Mono<ResponseEntity<String>> oppdaterBrukernavn(
             @PathVariable String id,
             @RequestBody String brukernavn,
@@ -78,7 +82,6 @@ public class BrukerController {
                 .map(ResponseEntity::ok)
                 .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
     }
-
 
     @GetMapping("/brukernavn/{brukernavn}")
     public Mono<ResponseEntity<String>> getBrukernavn(
@@ -114,12 +117,14 @@ public class BrukerController {
     })
     @ResponseStatus(HttpStatus.CONFLICT)
     public String conflictHandler(Exception e) {
+        log.trace("CONFLICT: {}", e.getMessage());
         return e.getMessage();
     }
 
     @ExceptionHandler(TokenExpiredException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public String tokenExpiredHandler(Exception e) {
+        log.trace("UNAUTHORIZED: {}", e.getMessage());
         return e.getMessage();
     }
 
@@ -130,7 +135,7 @@ public class BrukerController {
     })
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public String forbiddenHandler(Exception e) {
+        log.trace("FORBIDDEN: {}", e.getMessage());
         return e.getMessage();
     }
-
 }

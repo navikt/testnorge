@@ -1,5 +1,6 @@
 package no.nav.testnav.libs.reactivesecurity.domain.tokenx.v1;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -15,9 +16,9 @@ import lombok.Value;
 @NoArgsConstructor(force = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WellKnown {
-    @JsonProperty("token_endpoint")
+    @JsonAlias("token_endpoint")
     String tokenEndpoint;
 
-    @JsonProperty("end_session_endpoint")
+    @JsonAlias("end_session_endpoint")
     String endSessionEndpoint;
 }

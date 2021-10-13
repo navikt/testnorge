@@ -23,8 +23,9 @@ public class GetAuthenticatedResourceServerType extends JwtResolver implements C
                 .stream()
                 .filter(properties -> properties
                         .getIssuerUri()
-                        .equalsIgnoreCase(token.getToken().getIssuer().toString())
-                ).findFirst().map(ResourceServerProperties::getType);
+                        .equalsIgnoreCase(token.getToken().getIssuer().toString()))
+                .findFirst()
+                .map(ResourceServerProperties::getType);
     }
 
     @Override

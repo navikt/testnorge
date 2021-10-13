@@ -1,4 +1,4 @@
-package no.nav.testnav.apps.brukerservice.client;
+package no.nav.testnav.apps.brukerservice.client.credentials;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
