@@ -85,12 +85,7 @@ const arbeidsgiver = Yup.object({
 const arbeidsavtale = Yup.object({
 	yrke: fullArbeidsforholdTest(requiredString),
 	ansettelsesform: Yup.string(),
-	stillingsprosent: fullArbeidsforholdTest(
-		Yup.number()
-			.min(0, 'Kan ikke være mindre enn ${min}')
-			.max(100, 'Kan ikke være større enn ${max}')
-			.typeError(messages.required)
-	),
+	stillingsprosent: Yup.number().typeError(messages.required),
 	endringsdatoStillingsprosent: Yup.date().nullable(),
 	sisteLoennsendringsdato: Yup.date().nullable(),
 	arbeidstidsordning: fullArbeidsforholdTest(Yup.string()),
