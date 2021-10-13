@@ -36,5 +36,4 @@ class R2DBCConfiguration extends AbstractR2dbcConfiguration {
                         env.getRequiredProperty("spring.flyway.password"))
         );
     }
-
 }
