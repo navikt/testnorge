@@ -5,16 +5,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+import lombok.RequiredArgsConstructor;
 import org.joda.time.LocalDate;
 import org.joda.time.Months;
 import org.joda.time.format.DateTimeFormat;
 
 import io.micrometer.core.annotation.Timed;
-import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknGrKomConstants;
 import no.nav.bidrag.ui.bisys.soknad.Soknad;
-import no.nav.registre.bisys.consumer.rs.BisysSyntetisererenConsumer;
+import no.nav.registre.bisys.consumer.rs.SyntBisysConsumer;
 import no.nav.registre.bisys.consumer.rs.responses.SyntetisertBidragsmelding;
 import no.nav.registre.bisys.exception.SyntetisertBidragsmeldingException;
 import no.nav.registre.bisys.provider.requests.SyntetiserBisysRequest;
@@ -22,9 +22,12 @@ import no.nav.registre.bisys.service.utils.Barn;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import no.nav.registre.testnorge.consumers.hodejegeren.responses.Relasjon;
 import no.nav.registre.testnorge.consumers.hodejegeren.responses.RelasjonsResponse;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 @Slf4j
-@Builder
+@Service
+@RequiredArgsConstructor
 public class SyntetiseringService {
 
     private static final String KIBANA_X_STATUS = "x_status";
@@ -35,10 +38,10 @@ public class SyntetiseringService {
     public static final LocalDate MIN_MOTTATT_DATO = new LocalDate(2007, 1, 1);
     public static final int MAX_AGE_BARN_AT_MOTTATTDATO = 20;
 
-    private HodejegerenConsumer hodejegerenConsumer;
+    private final HodejegerenConsumer hodejegerenConsumer;
+    private final SyntBisysConsumer syntBisysConsumer;
 
-    private BisysSyntetisererenConsumer bisysSyntetisererenConsumer;
-
+    @Value("${USE_HISTORICAL_MOTTATTDATO}")
     private boolean useHistoricalMottattdato;
 
     public List<SyntetisertBidragsmelding> generateBidragsmeldinger(
@@ -58,7 +61,7 @@ public class SyntetiseringService {
 
         if (!utvalgteIdenter.isEmpty()) {
 
-            List<SyntetisertBidragsmelding> bidragsmeldinger = bisysSyntetisererenConsumer.getSyntetiserteBidragsmeldinger(utvalgteIdenter.size());
+            List<SyntetisertBidragsmelding> bidragsmeldinger = syntBisysConsumer.getSyntetiserteBidragsmeldinger(utvalgteIdenter.size());
 
             setRelationsInBidragsmeldinger(utvalgteIdenter, bidragsmeldinger);
             return bidragsmeldinger;
@@ -288,7 +291,7 @@ public class SyntetiseringService {
 
     /**
      * Look for BA that is valid age range
-     * 
+     *
      * @param barnSelection
      * @return
      */
@@ -325,12 +328,12 @@ public class SyntetiseringService {
         return withinUpperBound && withinLowerBound;
     }
 
-    @Timed(value = "bisys.resource.latency", extraTags = { "operation", "hodejegeren" })
+    @Timed(value = "bisys.resource.latency", extraTags = {"operation", "hodejegeren"})
     private List<String> finnFoedteIdenter(Long avspillergruppeId) {
         return hodejegerenConsumer.getFoedte(avspillergruppeId);
     }
 
-    @Timed(value = "bisys.resource.latency", extraTags = { "operation", "hodejegeren" })
+    @Timed(value = "bisys.resource.latency", extraTags = {"operation", "hodejegeren"})
     public RelasjonsResponse finnRelasjonerTilIdent(String ident, String miljoe) {
         return hodejegerenConsumer.getRelasjoner(ident, miljoe);
     }
