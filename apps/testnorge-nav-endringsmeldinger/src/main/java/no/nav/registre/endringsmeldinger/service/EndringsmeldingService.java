@@ -24,7 +24,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import no.nav.registre.endringsmeldinger.consumer.rs.NavEndringsmeldingerSyntetisererenConsumer;
+import no.nav.registre.endringsmeldinger.consumer.rs.SyntNavConsumer;
 import no.nav.registre.endringsmeldinger.consumer.rs.TpsfConsumer;
 import no.nav.registre.endringsmeldinger.consumer.rs.exceptions.SyntetiseringsException;
 import no.nav.registre.endringsmeldinger.consumer.rs.requests.SendTilTpsRequest;
@@ -43,7 +43,7 @@ public class EndringsmeldingService {
 
     private final TpsfConsumer tpsfConsumer;
 
-    private final NavEndringsmeldingerSyntetisererenConsumer navEndringsmeldingerSyntetisererenConsumer;
+    private final SyntNavConsumer syntNavConsumer;
 
     private final Random rand = new Random();
 
@@ -65,8 +65,8 @@ public class EndringsmeldingService {
 
         for (var endringskode : filtrerteEndringskoder) {
             try {
-                var syntetiserteNavEndringsmeldinger = navEndringsmeldingerSyntetisererenConsumer
-                        .getSyntetiserteNavEndringsmeldinger(endringskode.getEndringskode(), antallMeldingerPerEndringskode.get(endringskode.getEndringskode())).getBody();
+                var syntetiserteNavEndringsmeldinger = syntNavConsumer
+                        .getSyntetiserteNavEndringsmeldinger(endringskode.getEndringskode(), antallMeldingerPerEndringskode.get(endringskode.getEndringskode()));
 
                 if (syntetiserteNavEndringsmeldinger != null) {
                     for (var document : syntetiserteNavEndringsmeldinger) {

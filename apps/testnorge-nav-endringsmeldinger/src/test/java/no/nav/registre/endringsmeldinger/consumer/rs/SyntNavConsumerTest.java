@@ -17,10 +17,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.StringWriter;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 
@@ -29,19 +27,20 @@ import static org.hamcrest.Matchers.containsString;
 @AutoConfigureWireMock(port = 0)
 @TestPropertySource(locations = "classpath:application-test.properties")
 @ActiveProfiles("test")
-public class NavEndringsmeldingerSyntetisererenConsumerTest {
+public class SyntNavConsumerTest {
 
     @Autowired
-    private NavEndringsmeldingerSyntetisererenConsumer syntetisererenConsumer;
+    private SyntNavConsumer syntetisererenConsumer;
 
     private String endringskode = Endringskoder.TELEFONNUMMER.getEndringskode();
     private int antallMeldinger = 1;
 
     @Test
     public void shouldGetSyntetiserteMeldinger() throws TransformerException {
+        stubToken();
         stubBisysSyntetisererenConsumer();
 
-        var syntetiserteNavEndringsmeldinger = syntetisererenConsumer.getSyntetiserteNavEndringsmeldinger(endringskode, antallMeldinger).getBody();
+        var syntetiserteNavEndringsmeldinger = syntetisererenConsumer.getSyntetiserteNavEndringsmeldinger(endringskode, antallMeldinger);
 
         var tf = TransformerFactory.newInstance();
         var transformer = tf.newTransformer();
@@ -55,7 +54,7 @@ public class NavEndringsmeldingerSyntetisererenConsumerTest {
     }
 
     private void stubBisysSyntetisererenConsumer() {
-        stubFor(get(urlEqualTo("/synthdata-nav-endringsmeldinger/api/v1/generate/nav/" + endringskode + "?numToGenerate=" + antallMeldinger))
+        stubFor(get(urlEqualTo("/synt-nav/api/v1/generate/nav/" + endringskode + "/" + antallMeldinger))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody("[\"<?xml version=\\\"1.0\\\" encoding=\\\"UTF-8\\\"?>"
@@ -73,5 +72,11 @@ public class NavEndringsmeldingerSyntetisererenConsumerTest {
                                 + "        </endreTelefon>"
                                 + "    </sfeAjourforing>"
                                 + "</sfePersonData>\"]")));
+    }
+
+    private void stubToken() {
+        stubFor(post("/aad/oauth2/v2.0/token").willReturn(okJson(
+                "{\"access_token\": \"dummy\"}"
+        )));
     }
 }

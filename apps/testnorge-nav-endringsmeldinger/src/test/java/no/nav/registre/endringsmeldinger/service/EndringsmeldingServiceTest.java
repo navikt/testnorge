@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import no.nav.registre.endringsmeldinger.consumer.rs.NavEndringsmeldingerSyntetisererenConsumer;
+import no.nav.registre.endringsmeldinger.consumer.rs.SyntNavConsumer;
 import no.nav.registre.endringsmeldinger.consumer.rs.TpsfConsumer;
 import no.nav.registre.endringsmeldinger.consumer.rs.responses.RsPureXmlMessageResponse;
 import no.nav.registre.endringsmeldinger.provider.rs.requests.SyntetiserNavEndringsmeldingerRequest;
@@ -42,7 +42,7 @@ public class EndringsmeldingServiceTest {
     private HodejegerenConsumer hodejegerenConsumer;
 
     @Mock
-    private NavEndringsmeldingerSyntetisererenConsumer syntConsumer;
+    private SyntNavConsumer syntConsumer;
 
     @Mock
     private TpsfConsumer tpsfConsumer;
@@ -121,7 +121,7 @@ public class EndringsmeldingServiceTest {
         levendeIdenter = new ArrayList<>(Arrays.asList(fnr1, fnr2));
 
         when(syntConsumer.getSyntetiserteNavEndringsmeldinger(endringskode.getEndringskode(), antallMeldinger))
-                .thenReturn(ResponseEntity.ok(Collections.singletonList(document)));
+                .thenReturn(Collections.singletonList(document));
 
         when(hodejegerenConsumer.getLevende(avspillergruppeId)).thenReturn(levendeIdenter);
 
@@ -129,7 +129,6 @@ public class EndringsmeldingServiceTest {
     }
 
     @Test
-    @Ignore
     public void shouldOppretteSyntetiskeNavEndringsmeldinger() throws TransformerException {
         var responses = endringsmeldingService.opprettSyntetiskeNavEndringsmeldinger(syntetiserNavEndringsmeldingerRequest);
 
