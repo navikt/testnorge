@@ -103,7 +103,7 @@ class BrukerControllerIntegrationTest {
         keyPair = kpg.generateKeyPair();
         var jwks = Jwks.create(generatePublicJwk((RSAPublicKey) keyPair.getPublic()));
 
-        var tokenXWellKnown = WellKnown.builder().tokenEndpoint(wireMockServer.baseUrl() + TEST_URL_PATH_PREFIX + "/token").build();
+        var tokenXWellKnown = WellKnown.builder().token_endpoint(wireMockServer.baseUrl() + TEST_URL_PATH_PREFIX + "/token").build();
 
         RSAKey jwk = new RSAKey.Builder((RSAPublicKey) keyPair.getPublic())
                 .privateKey(keyPair.getPrivate())

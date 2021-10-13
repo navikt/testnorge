@@ -52,11 +52,11 @@ public class TokenXService implements TokenService {
                 .flatMap(config ->
                         webClient
                                 .post()
-                                .uri(config.getTokenEndpoint())
+                                .uri(config.getToken_endpoint())
                                 .body(BodyInserters
                                         .fromFormData("grant_type", "urn:ietf:params:oauth:grant-type:token-exchange")
                                         .with("client_assertion_type", "urn:ietf:params:oauth:client-assertion-type:jwt-bearer")
-                                        .with("client_assertion", createClientAssertion(config.getTokenEndpoint()))
+                                        .with("client_assertion", createClientAssertion(config.getToken_endpoint()))
                                         .with("subject_token_type", "urn:ietf:params:oauth:token-type:jwt")
                                         .with("subject_token", token.getValue())
                                         .with("audience", toScope(serverProperties))
