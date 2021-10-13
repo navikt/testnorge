@@ -41,9 +41,9 @@ public class PersonOrganisasjonTilgangClient {
                 .build();
     }
 
-    public Mono<Organisasjon> getOrganisasjon(String ornummer) {
+    public Mono<Organisasjon> getOrganisasjon(String orgnummer) {
         return tokenExchange.generateToken(properties)
-                .flatMap(accessToken -> new GetOrganisasjonCommand(webClient, ornummer, accessToken.getTokenValue()).call())
+                .flatMap(accessToken -> new GetOrganisasjonCommand(webClient, orgnummer, accessToken.getTokenValue()).call())
                 .map(Organisasjon::new);
     }
 }
