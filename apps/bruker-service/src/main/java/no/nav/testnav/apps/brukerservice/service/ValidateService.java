@@ -11,9 +11,15 @@ import no.nav.testnav.apps.brukerservice.exception.UserHasNoAccessToOrgnisasjonE
 @RequiredArgsConstructor
 public class ValidateService {
     private final PersonOrganisasjonTilgangClient client;
+
     public Mono<Void> validateOrganiasjonsnummerAccess(String organisasjonsnummer) {
         return client
-                .getOrganisastion(organisasjonsnummer)
+                .getOrganisasjon(organisasjonsnummer)
+                .doOnNext(organisasjon -> {
+                    if (!organisasjon.getOrganisasjonsnummer().equals(organisasjonsnummer)) {
+                        throw new UserHasNoAccessToOrgnisasjonException(organisasjonsnummer);
+                    }
+                })
                 .switchIfEmpty(Mono.error(new UserHasNoAccessToOrgnisasjonException(organisasjonsnummer)))
                 .then();
     }
