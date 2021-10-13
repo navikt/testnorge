@@ -99,7 +99,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(testnavArenaForvalterenProxyProperties))
                 .route(createRoute(testnavTestnorgeInstProxyProperties))
                 .route(createRoute(testnavTestnorgeAaregProxyProperties))
-                .route(createRoute(testnavKrrstubProxyProperties))
+                .route(createRoute(testnavKrrstubProxyProperties, "testnav-krrstub-proxy"))
                 .route(createRoute(testnavOrganisasjonServiceProperties))
                 .route(createRoute(testnavSigrunstubProxyProperties))
                 .route(createRoute(udiStubProperties, "udi-stub"))
