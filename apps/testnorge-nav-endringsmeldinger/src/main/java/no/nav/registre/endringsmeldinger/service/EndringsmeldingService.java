@@ -45,7 +45,7 @@ public class EndringsmeldingService {
 
     private final NavEndringsmeldingerSyntetisererenConsumer navEndringsmeldingerSyntetisererenConsumer;
 
-    private final Random rand;
+    private final Random rand = new Random();
 
     @Value("${SFE_ENDRINGSMELDING.queueName}")
     private String queueName;
