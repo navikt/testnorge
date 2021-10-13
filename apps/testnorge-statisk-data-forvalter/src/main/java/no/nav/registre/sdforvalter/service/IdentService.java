@@ -1,6 +1,7 @@
 package no.nav.registre.sdforvalter.service;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.sdforvalter.consumer.rs.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -8,11 +9,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import no.nav.registre.sdforvalter.adapter.TpsIdenterAdapter;
-import no.nav.registre.sdforvalter.consumer.rs.HodejegerenConsumer;
-import no.nav.registre.sdforvalter.consumer.rs.IdentPoolConsumer;
-import no.nav.registre.sdforvalter.consumer.rs.PersonConsumer;
-import no.nav.registre.sdforvalter.consumer.rs.SkdConsumer;
-import no.nav.registre.sdforvalter.consumer.rs.TpConsumer;
 import no.nav.registre.sdforvalter.domain.TpsIdent;
 import no.nav.registre.sdforvalter.domain.TpsIdentListe;
 
@@ -23,7 +19,7 @@ public class IdentService {
     private final HodejegerenConsumer hodejegerenConsumer;
     private final SkdConsumer skdConsumer;
     private final TpConsumer tpConsumer;
-    private final IdentPoolConsumer identPoolConsumer;
+    private final GenererNavnConsumer genererNavnConsumer;
     private final PersonConsumer personConsumer;
     private final Long staticDataPlaygroup;
 
@@ -31,15 +27,15 @@ public class IdentService {
             TpsIdenterAdapter tpsIdenterAdapter,
             HodejegerenConsumer hodejegerenConsumer,
             SkdConsumer skdConsumer,
-            IdentPoolConsumer identPoolConsumer,
+            GenererNavnConsumer genererNavnConsumer,
             PersonConsumer personConsumer,
-            TpConsumer tpConsumer,  @Value("${tps.statisk.avspillergruppeId}") Long staticDataPlaygroup
+            TpConsumer tpConsumer, @Value("${tps.statisk.avspillergruppeId}") Long staticDataPlaygroup
     ) {
         this.tpsIdenterAdapter = tpsIdenterAdapter;
         this.hodejegerenConsumer = hodejegerenConsumer;
         this.skdConsumer = skdConsumer;
         this.tpConsumer = tpConsumer;
-        this.identPoolConsumer = identPoolConsumer;
+        this.genererNavnConsumer = genererNavnConsumer;
         this.personConsumer = personConsumer;
         this.staticDataPlaygroup = staticDataPlaygroup;
     }
@@ -84,10 +80,10 @@ public class IdentService {
     private TpsIdentListe leggTilNavn(TpsIdentListe liste) {
         var tpsIdentListe = liste.stream().map(ident -> {
             if (ident.getLastName() == null || ident.getFirstName() == null) {
-                var navn = identPoolConsumer.getFiktivtNavn();
+                var navn = genererNavnConsumer.genereNavn();
                 return new TpsIdent(ident.getFnr(),
-                        navn.getFornavn(),
-                        navn.getEtternavn(),
+                        navn.getAdjektiv(),
+                        navn.getSubstantiv(),
                         ident.getAddress(),
                         ident.getPostNr(),
                         ident.getCity(),
