@@ -1,6 +1,5 @@
 package no.nav.registre.endringsmeldinger.consumer.rs;
 
-import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.endringsmeldinger.consumer.rs.command.GetSyntNavMeldingerCommand;
 import no.nav.registre.endringsmeldinger.consumer.rs.credential.SyntNavProperties;
 import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
@@ -12,7 +11,6 @@ import org.w3c.dom.Document;
 
 import java.util.List;
 
-@Slf4j
 @Component
 public class SyntNavConsumer {
 
