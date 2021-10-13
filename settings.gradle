@@ -103,6 +103,7 @@ includeBuild './apps/testnorge-sam'
 includeBuild './apps/testnorge-medl'
 includeBuild './apps/testnorge-frikort'
 includeBuild './apps/testnorge-tp'
+includeBuild './apps/testnorge-statisk-data-forvalter'
 includeBuild './apps/testnorge-bisys'
 includeBuild './apps/testnorge-sigrun'
 
@@ -119,7 +120,6 @@ include(':testnorge-token-provider')
 include(':nav-endringsmeldinger-core')
 include(':udi-stub')
 include(':testnorge-hodejegeren')
-include(':testnorge-statisk-data-forvalter')
 include(':nav-endringsmeldinger-local')
 include(':testnorge-populasjoner')
 include(':tilbakemelding-api')
@@ -151,7 +151,6 @@ project(":testnorge-token-provider").projectDir = file('apps/testnorge-token-pro
 project(":nav-endringsmeldinger-core").projectDir = file('apps/testnorge-nav-endringsmeldinger/nav-endringsmeldinger-core')
 project(":udi-stub").projectDir = file('apps/udi-stub')
 project(":testnorge-hodejegeren").projectDir = file('apps/testnorge-hodejegeren')
-project(":testnorge-statisk-data-forvalter").projectDir = file('apps/testnorge-statisk-data-forvalter')
 project(":nav-endringsmeldinger-local").projectDir = file('apps/testnorge-nav-endringsmeldinger/nav-endringsmeldinger-local')
 project(":testnorge-populasjoner").projectDir = file('apps/testnorge-populasjoner')
 project(":tilbakemelding-api").projectDir = file('apps/tilbakemelding-api')
