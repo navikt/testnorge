@@ -104,6 +104,7 @@ includeBuild './apps/testnorge-medl'
 includeBuild './apps/testnorge-frikort'
 includeBuild './apps/testnorge-tp'
 includeBuild './apps/testnorge-bisys'
+includeBuild './apps/testnorge-nav-endringsmeldinger'
 
 includeBuild './xsd/arbeidsforhold-xsd'
 
@@ -113,7 +114,6 @@ include(':inntektsmelding-generator-service')
 include(':sykemelding-api')
 include(':mn-original-populasjon')
 include(':sigrun-local')
-include(':testnorge-nav-endringsmeldinger')
 include(':testnorge-aaregstub')
 include(':testnorge-sigrun')
 include(':testnorge-token-provider')
@@ -147,7 +147,6 @@ project(":inntektsmelding-generator-service").projectDir = file('apps/inntektsme
 project(":sykemelding-api").projectDir = file('apps/sykemelding-api')
 project(":mn-original-populasjon").projectDir = file('apps/mn-original-populasjon')
 project(":sigrun-local").projectDir = file('apps/testnorge-sigrun/sigrun-local')
-project(":testnorge-nav-endringsmeldinger").projectDir = file('apps/testnorge-nav-endringsmeldinger')
 project(":testnorge-aaregstub").projectDir = file('apps/testnorge-aaregstub')
 project(":testnorge-sigrun").projectDir = file('apps/testnorge-sigrun')
 project(":testnorge-token-provider").projectDir = file('apps/testnorge-token-provider')
