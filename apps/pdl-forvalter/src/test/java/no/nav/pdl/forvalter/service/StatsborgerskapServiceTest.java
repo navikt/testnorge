@@ -1,6 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.utils.TilfeldigLandService;
+import no.nav.pdl.forvalter.consumer.GeografiskeKodeverkConsumer;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
@@ -29,7 +29,7 @@ class StatsborgerskapServiceTest {
     private static final String DNR_IDENT = "42045612301";
 
     @Mock
-    private TilfeldigLandService tilfeldigLandService;
+    private GeografiskeKodeverkConsumer geografiskeKodeverkConsumer;
 
     @InjectMocks
     private StatsborgerskapService statsborgerskapService;
@@ -95,9 +95,9 @@ class StatsborgerskapServiceTest {
     }
 
     @Test
-    void whenLandkodeIsEmptyAndUnavailFromInnflyttingAndIdenttypeDNR_thenTilfeldigLandServiceIsCalled() {
+    void whenLandkodeIsEmptyAndUnavailFromInnflyttingAndIdenttypeDNR_thenGeografiskeKodeverkConsumerIsCalled() {
 
-        when(tilfeldigLandService.getLand()).thenReturn("CHL");
+        when(geografiskeKodeverkConsumer.getTilfeldigLand()).thenReturn("CHL");
 
         var target = statsborgerskapService.convert(PersonDTO.builder()
                 .statsborgerskap(List.of(StatsborgerskapDTO.builder()
@@ -107,7 +107,7 @@ class StatsborgerskapServiceTest {
                 .build())
                 .get(0);
 
-        verify(tilfeldigLandService).getLand();
+        verify(geografiskeKodeverkConsumer).getTilfeldigLand();
 
         assertThat(target.getLandkode(), is(equalTo("CHL")));
     }

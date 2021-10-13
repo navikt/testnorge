@@ -27,3 +27,8 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-organisasjon-forvalter
+  geografiske-kodeverk-service:
+    url: https://testnav-geografiske-kodeverk-service.dev.intern.nav.no
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-geografiske-kodeverk-service

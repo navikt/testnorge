@@ -1,10 +1,9 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.pdl.forvalter.consumer.GeografiskeKodeverkConsumer;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
-import no.nav.pdl.forvalter.utils.TilfeldigKommuneService;
-import no.nav.pdl.forvalter.utils.TilfeldigLandService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
@@ -26,8 +25,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class FoedselService implements BiValidation<FoedselDTO, PersonDTO> {
 
-    private final TilfeldigKommuneService tilfeldigKommuneService;
-    private final TilfeldigLandService tilfeldigLandService;
+    private final GeografiskeKodeverkConsumer geografiskeKodeverkConsumer;
 
     public List<FoedselDTO> convert(PersonDTO person) {
 
@@ -66,7 +64,7 @@ public class FoedselService implements BiValidation<FoedselDTO, PersonDTO> {
             } else if (nonNull(bostedadresse) && nonNull(bostedadresse.getUtenlandskAdresse())) {
                 foedsel.setFoedeland(bostedadresse.getUtenlandskAdresse().getLandkode());
             } else {
-                foedsel.setFoedeland(tilfeldigLandService.getLand());
+                foedsel.setFoedeland(geografiskeKodeverkConsumer.getTilfeldigLand());
             }
         }
     }
@@ -82,7 +80,7 @@ public class FoedselService implements BiValidation<FoedselDTO, PersonDTO> {
                     foedsel.setFodekommune(bostedadresse.getUkjentBosted().getBostedskommune());
                 }
             } else {
-                foedsel.setFodekommune(tilfeldigKommuneService.getKommune());
+                foedsel.setFodekommune(geografiskeKodeverkConsumer.getTilfeldigKommune());
             }
         }
     }
