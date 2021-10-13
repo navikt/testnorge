@@ -1,9 +1,0 @@
-plugins {
-    id 'no.nav.registre.testnorge.java-conventions'
-}
-
-dependencies {
-
-}
-
-description = 'tp-domain'

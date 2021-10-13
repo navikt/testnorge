@@ -1,6 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.utils.TilfeldigLandService;
+import no.nav.pdl.forvalter.consumer.GeografiskeKodeverkConsumer;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 class InnflyttingServiceTest {
 
     @Mock
-    private TilfeldigLandService tilfeldigLandService;
+    private GeografiskeKodeverkConsumer geografiskeKodeverkConsumer;
 
     @InjectMocks
     private InnflyttingService innflyttingService;
@@ -45,14 +45,14 @@ class InnflyttingServiceTest {
     @Test
     void whenEmptyLandkode_thenProvideRandomCountry() {
 
-        when(tilfeldigLandService.getLand()).thenReturn("IND");
+        when(geografiskeKodeverkConsumer.getTilfeldigLand()).thenReturn("IND");
 
         var target = innflyttingService.convert(List.of(InnflyttingDTO.builder()
                 .isNew(true)
                 .build()))
                 .get(0);
 
-        verify(tilfeldigLandService).getLand();
+        verify(geografiskeKodeverkConsumer).getTilfeldigLand();
 
         assertThat(target.getFraflyttingsland(), is(equalTo("IND")));
     }

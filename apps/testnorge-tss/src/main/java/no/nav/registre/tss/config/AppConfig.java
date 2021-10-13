@@ -11,9 +11,13 @@ import org.springframework.web.client.RestTemplate;
 
 import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
+import no.nav.testnav.libs.servletsecurity.config.SecureOAuth2ServerToServerConfiguration;
 
 @Configuration
-@Import(ApplicationCoreConfig.class)
+@Import(value = {
+        ApplicationCoreConfig.class,
+        SecureOAuth2ServerToServerConfiguration.class
+})
 public class AppConfig {
 
     @Value("${testnorge-hodejegeren.rest-api.url}")

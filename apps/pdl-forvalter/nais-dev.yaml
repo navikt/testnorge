@@ -59,6 +59,8 @@ spec:
           cluster: dev-gcp
         - application: testnav-organisasjon-forvalter
           cluster: dev-gcp
+        - application: testnav-geografiske-kodeverk-service
+          cluster: dev-gcp
       external:
         - host: https://testnav-pdl-proxy.dev-fss-pub.nais.io
         - host: https://testnav-ident-pool-proxy.dev-fss-pub.nais.io

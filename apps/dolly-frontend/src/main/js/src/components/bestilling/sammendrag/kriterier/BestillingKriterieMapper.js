@@ -603,6 +603,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				inntektStub.itemRows.push([
 					{ numberHeader: `Inntektsinformasjon ${i + 1}` },
 					obj('År/måned', inntektsinfo.sisteAarMaaned),
+					obj('Rapporteringsdato', inntektsinfo.rapporteringsdato),
 					obj('Generer antall måneder', inntektsinfo.antallMaaneder),
 					obj('Virksomhet (orgnr/id)', inntektsinfo.virksomhet),
 					obj('Opplysningspliktig (orgnr/id)', inntektsinfo.opplysningspliktig),

@@ -1,0 +1,40 @@
+AAD_ISSUER_URI: http://localhost:${wiremock.server.port}/token
+
+azure:
+  app:
+    client:
+      id: dummy
+
+spring:
+  cloud:
+    vault:
+      token: dummy
+
+consumers:
+  hodejegeren:
+    url: http://localhost:${wiremock.server.port}/hodejegeren
+  helsepersonell:
+    client_id: dummy
+    url: http://localhost:${wiremock.server.port}/helsepersonell
+  synt-sykemelding:
+    url: http://localhost:${wiremock.server.port}/synt
+    name: synthdata-elsam-gcp
+    cluster: dummy
+    namespace: dummy
+  sykemelding:
+    url: http://localhost:${wiremock.server.port}/sykemelding
+  testnav-organisasjon-service:
+    url: http://localhost:${wiremock.server.port}/organisasjon
+    name: testnav-organisasjon-service
+    cluster: dummy
+    namespace: dummy
+  testnav-arbeidsforhold-service:
+    url: http://localhost:${wiremock.server.port}/arbeidsforhold
+    cluster: dummy
+    namespace: dummy
+    name: testnav-arbeidsforhold-service
+  testnav-helsepersonell-service:
+    url: http://localhost:${wiremock.server.port}/testnav-helsepersonell
+    cluster: dummy
+    namespace: dummy
+    name: testnav-helsepersonell-service

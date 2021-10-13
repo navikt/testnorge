@@ -9,6 +9,7 @@ import {
 import { Arbeidsforhold, Forskudd, Fradrag, Inntekt } from './inntektstubTypes'
 import InntektsinformasjonLister from './inntektsinformasjonLister/inntektsinformasjonLister'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { FormikDateTimepicker } from '~/components/ui/form/inputs/timepicker/Timepicker'
 
 interface InntektendringForm {
 	formikBag: FormikProps<{}>
@@ -20,6 +21,7 @@ type Inntektslister = {
 	fradragsliste: Array<Fradrag>
 	forskuddstrekksliste: Array<Forskudd>
 	arbeidsforholdsliste: Array<Arbeidsforhold>
+	rapporteringsdato: string
 }
 
 const hjelpetekst = `Den øverste inntektinformasjonen er den gjeldende inntekten. All inntektsinformasjon merket med "Versjon #" er historiske endringer der økende versjonsnummer er nyere.`
@@ -31,9 +33,17 @@ export default ({ formikBag, path }: InntektendringForm) => {
 		forskuddstrekksliste: kopiAvGjeldendeInntekt.forskuddstrekksliste,
 		fradragsliste: kopiAvGjeldendeInntekt.fradragsliste,
 		inntektsliste: kopiAvGjeldendeInntekt.inntektsliste,
+		rapporteringsdato: kopiAvGjeldendeInntekt.rapporteringsdato,
 	}
 	const historikkPath = `${path}.historikk`
 	const data = _get(formikBag.values, historikkPath, [])
+
+	const handleRapporteringDateChange = (selectedDate: Date, listePath: string) => {
+		formikBag.setFieldValue(
+			`${listePath}.rapporteringsdato`,
+			selectedDate && selectedDate.toISOString()
+		)
+	}
 
 	return (
 		<FieldArray name={historikkPath}>
@@ -53,6 +63,12 @@ export default ({ formikBag, path }: InntektendringForm) => {
 										header={`Inntektsendring (versjon ${idx + 1})`}
 										handleRemove={clickRemove}
 									>
+										<FormikDateTimepicker
+											formikBag={formikBag}
+											name={`${listePath}.rapporteringsdato`}
+											label="Rapporteringsdato"
+											onChange={(date: Date) => handleRapporteringDateChange(date, listePath)}
+										/>
 										<InntektsinformasjonLister formikBag={formikBag} path={listePath} />
 									</DollyFaBlokk>
 								)

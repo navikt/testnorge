@@ -14,6 +14,7 @@ interface InntektstubForm {
 
 export const initialValues: Inntektsinformasjon = {
 	sisteAarMaaned: '',
+	rapporteringsdato: null,
 	antallMaaneder: '',
 	virksomhet: '',
 	opplysningspliktig: '',
