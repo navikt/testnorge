@@ -8,13 +8,11 @@ import static org.mockito.Mockito.when;
 
 import no.nav.registre.endringsmeldinger.domain.Endringskoder;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.ResponseEntity;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -33,7 +31,7 @@ import no.nav.registre.endringsmeldinger.consumer.rs.SyntNavConsumer;
 import no.nav.registre.endringsmeldinger.consumer.rs.TpsfConsumer;
 import no.nav.registre.endringsmeldinger.consumer.rs.responses.RsPureXmlMessageResponse;
 import no.nav.registre.endringsmeldinger.provider.rs.requests.SyntetiserNavEndringsmeldingerRequest;
-import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
+import no.nav.registre.endringsmeldinger.consumer.rs.HodejegerenConsumer;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EndringsmeldingServiceTest {
