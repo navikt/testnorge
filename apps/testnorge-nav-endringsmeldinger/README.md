@@ -11,9 +11,10 @@ Testnorge-Nav-Endringsmeldinger er adapteren for opprettelse av nav-endringsmeld
 Swagger finnes under [/api](https://testnorge-nav-endringsmeldinger.dev.intern.nav.no/api) -endepunktet til applikasjonen.
  
 ## Lokal kjøring
-Ha naisdevice kjørende og kjør LocalApplicationStarter med følgende argumenter:
+Ha naisdevice kjørende og kjør NavEndringsmeldingerApplicationStarter med følgende argumenter:
 ```
 -Dspring.cloud.vault.token=[kopier token fra vault]
+-Dspring.profiles.active=local
 ```
 
 ### Utviklerimage

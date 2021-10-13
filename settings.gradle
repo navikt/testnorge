@@ -105,6 +105,7 @@ includeBuild './apps/testnorge-frikort'
 includeBuild './apps/testnorge-tp'
 includeBuild './apps/testnorge-statisk-data-forvalter'
 includeBuild './apps/testnorge-bisys'
+includeBuild './apps/testnorge-nav-endringsmeldinger'
 includeBuild './apps/testnorge-sigrun'
 
 includeBuild './xsd/arbeidsforhold-xsd'
@@ -114,13 +115,10 @@ include(':proxies')
 include(':inntektsmelding-generator-service')
 include(':sykemelding-api')
 include(':mn-original-populasjon')
-include(':testnorge-nav-endringsmeldinger')
 include(':testnorge-aaregstub')
 include(':testnorge-token-provider')
-include(':nav-endringsmeldinger-core')
 include(':udi-stub')
 include(':testnorge-hodejegeren')
-include(':nav-endringsmeldinger-local')
 include(':testnorge-populasjoner')
 include(':tilbakemelding-api')
 include(':mn-organisasjon-api')
@@ -145,13 +143,10 @@ include(':tps-identer-vedlikehold')
 project(":inntektsmelding-generator-service").projectDir = file('apps/inntektsmelding-generator-service')
 project(":sykemelding-api").projectDir = file('apps/sykemelding-api')
 project(":mn-original-populasjon").projectDir = file('apps/mn-original-populasjon')
-project(":testnorge-nav-endringsmeldinger").projectDir = file('apps/testnorge-nav-endringsmeldinger')
 project(":testnorge-aaregstub").projectDir = file('apps/testnorge-aaregstub')
 project(":testnorge-token-provider").projectDir = file('apps/testnorge-token-provider')
-project(":nav-endringsmeldinger-core").projectDir = file('apps/testnorge-nav-endringsmeldinger/nav-endringsmeldinger-core')
 project(":udi-stub").projectDir = file('apps/udi-stub')
 project(":testnorge-hodejegeren").projectDir = file('apps/testnorge-hodejegeren')
-project(":nav-endringsmeldinger-local").projectDir = file('apps/testnorge-nav-endringsmeldinger/nav-endringsmeldinger-local')
 project(":testnorge-populasjoner").projectDir = file('apps/testnorge-populasjoner')
 project(":tilbakemelding-api").projectDir = file('apps/tilbakemelding-api')
 project(":mn-organisasjon-api").projectDir = file('apps/mn-organisasjon-api')
