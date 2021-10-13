@@ -15,6 +15,9 @@ spec:
       rules:
         - application: dolly-frontend
           cluster: dev-gcp
+    outbound:
+      rules:
+        - application: testnav-person-organisasjon-tilgang-service
   liveness:
     path: /internal/isAlive
     initialDelay: 4
