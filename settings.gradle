@@ -103,8 +103,10 @@ includeBuild './apps/testnorge-sam'
 includeBuild './apps/testnorge-medl'
 includeBuild './apps/testnorge-frikort'
 includeBuild './apps/testnorge-tp'
+includeBuild './apps/testnorge-statisk-data-forvalter'
 includeBuild './apps/testnorge-bisys'
 includeBuild './apps/testnorge-nav-endringsmeldinger'
+includeBuild './apps/testnorge-sigrun'
 
 includeBuild './xsd/arbeidsforhold-xsd'
 
@@ -113,14 +115,10 @@ include(':proxies')
 include(':inntektsmelding-generator-service')
 include(':sykemelding-api')
 include(':mn-original-populasjon')
-include(':sigrun-local')
 include(':testnorge-aaregstub')
-include(':testnorge-sigrun')
 include(':testnorge-token-provider')
 include(':udi-stub')
 include(':testnorge-hodejegeren')
-include(':sigrun-core')
-include(':testnorge-statisk-data-forvalter')
 include(':testnorge-populasjoner')
 include(':tilbakemelding-api')
 include(':mn-organisasjon-api')
@@ -130,7 +128,6 @@ include(':token-provider-core')
 include(':helsepersonell-service')
 include(':person-export-api')
 include(':apps')
-include(':sigrun-domain')
 include(':libs')
 include(':testnorge-spion')
 include(':opprett-person-pdl')
@@ -146,14 +143,10 @@ include(':tps-identer-vedlikehold')
 project(":inntektsmelding-generator-service").projectDir = file('apps/inntektsmelding-generator-service')
 project(":sykemelding-api").projectDir = file('apps/sykemelding-api')
 project(":mn-original-populasjon").projectDir = file('apps/mn-original-populasjon')
-project(":sigrun-local").projectDir = file('apps/testnorge-sigrun/sigrun-local')
 project(":testnorge-aaregstub").projectDir = file('apps/testnorge-aaregstub')
-project(":testnorge-sigrun").projectDir = file('apps/testnorge-sigrun')
 project(":testnorge-token-provider").projectDir = file('apps/testnorge-token-provider')
 project(":udi-stub").projectDir = file('apps/udi-stub')
 project(":testnorge-hodejegeren").projectDir = file('apps/testnorge-hodejegeren')
-project(":sigrun-core").projectDir = file('apps/testnorge-sigrun/sigrun-core')
-project(":testnorge-statisk-data-forvalter").projectDir = file('apps/testnorge-statisk-data-forvalter')
 project(":testnorge-populasjoner").projectDir = file('apps/testnorge-populasjoner')
 project(":tilbakemelding-api").projectDir = file('apps/tilbakemelding-api')
 project(":mn-organisasjon-api").projectDir = file('apps/mn-organisasjon-api')
@@ -162,7 +155,6 @@ project(":organisasjon-service").projectDir = file('apps/organisasjon-service')
 project(":token-provider-core").projectDir = file('apps/testnorge-token-provider/token-provider-core')
 project(":helsepersonell-service").projectDir = file('apps/helsepersonell-service')
 project(":person-export-api").projectDir = file('apps/person-export-api')
-project(":sigrun-domain").projectDir = file('apps/testnorge-sigrun/sigrun-domain')
 project(":testnorge-spion").projectDir = file('apps/testnorge-spion')
 project(":opprett-person-pdl").projectDir = file('apps/opprett-person-pdl')
 project(":synt-person-api").projectDir = file('apps/synt-person-api')
