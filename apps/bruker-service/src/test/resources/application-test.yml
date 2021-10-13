@@ -16,7 +16,3 @@ spring:
 consumers:
   testnav-person-organisasjon-tilgang-service:
     url: ${wiremockBaseUrl}
-#
-#TOKEN_X_CLIENT_ID: dummy
-#TOKEN_X_PRIVATE_JWK: dummy
-#TOKEN_X_WELL_KNOWN_URL: ${wiremockBaseUrl}/.well-known/oauth-authorization-server
