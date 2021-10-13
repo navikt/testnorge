@@ -52,3 +52,4 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://testnav-dokarkiv-proxy.dev-fss-pub.nais.io"
+    - "https://testnav-dokarkiv-proxy.dev.intern.nav.no"

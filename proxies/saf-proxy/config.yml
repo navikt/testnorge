@@ -56,3 +56,4 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://testnav-saf-proxy.dev-fss-pub.nais.io"
+    - "https://testnav-saf-proxy.dev.intern.nav.no"
