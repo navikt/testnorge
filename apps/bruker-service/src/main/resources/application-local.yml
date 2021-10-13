@@ -11,6 +11,8 @@ spring:
     oauth2:
       resourceserver:
         tokenx:
+          issuer-uri: https://tokendings.dev-gcp.nais.io
+          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
           accepted-audience: dev-gcp:dolly:testnav-bruker-service-dev
   flyway:
     url: jdbc:h2:mem:testdb
