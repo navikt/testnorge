@@ -1,13 +1,9 @@
 package no.nav.registre.endringsmeldinger.consumer.rs;
 
+import no.nav.registre.endringsmeldinger.consumer.rs.command.PostSendEndringsmeldingTpsfCommand;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.registre.endringsmeldinger.consumer.rs.requests.SendTilTpsRequest;
 import no.nav.registre.endringsmeldinger.consumer.rs.responses.RsPureXmlMessageResponse;
@@ -15,26 +11,21 @@ import no.nav.registre.endringsmeldinger.consumer.rs.responses.RsPureXmlMessageR
 @Component
 public class TpsfConsumer {
 
-    private static final ParameterizedTypeReference<RsPureXmlMessageResponse> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
-    };
-
-    private RestTemplate restTemplate;
-
-    private UriTemplate sendTilTpsUrl;
+    private final String username;
+    private final String password;
+    private final WebClient webClient;
 
     public TpsfConsumer(
-            RestTemplateBuilder restTemplateBuilder,
-            @Value("${tps-forvalteren.rest-api.url}") String serverUrl,
+            @Value("${consumers.tps-forvalteren.url}") String serverUrl,
             @Value("${testnorges.ida.credential.tpsf.username}") String username,
             @Value("${testnorges.ida.credential.tpsf.password}") String password
     ) {
-        this.sendTilTpsUrl = new UriTemplate(serverUrl + "/v1/xmlmelding");
-        this.restTemplate = restTemplateBuilder.build();
-        this.restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(username, password));
+        this.username = username;
+        this.password = password;
+        this.webClient = WebClient.builder().baseUrl(serverUrl).build();
     }
 
     public RsPureXmlMessageResponse sendEndringsmeldingTilTps(SendTilTpsRequest sendTilTpsRequest) {
-        var postRequest = RequestEntity.post(sendTilTpsUrl.expand()).body(sendTilTpsRequest);
-        return restTemplate.exchange(postRequest, RESPONSE_TYPE).getBody();
+        return new PostSendEndringsmeldingTpsfCommand(sendTilTpsRequest, username, password, webClient).call();
     }
 }
