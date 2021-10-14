@@ -17,11 +17,11 @@ spring:
     name: testnorge-opprett-person-pdl
 
 consumers:
-  person-api:
-    url: https://testnorge-person-api.dev.intern.nav.no
-    cluster: dev-fss
+  person-service:
+    url: https://testnav-person-service.dev.intern.nav.no
+    cluster: dev-gcp
     namespace: dolly
-    name: testnorge-person-api
+    name: testnav-person-service
 
 kafka:
   bootstrapservers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443

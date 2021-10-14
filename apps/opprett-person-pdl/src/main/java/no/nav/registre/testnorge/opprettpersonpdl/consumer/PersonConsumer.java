@@ -17,12 +17,12 @@ import no.nav.registre.testnorge.opprettpersonpdl.domain.Person;
 
 @Slf4j
 @Component
-public class PersonApiConsumer {
+public class PersonConsumer {
     private final WebClient webClient;
     private final PersonServiceProperties serviceProperties;
     private final AccessTokenService accessTokenService;
 
-    public PersonApiConsumer(
+    public PersonConsumer(
             PersonServiceProperties serviceProperties,
             AccessTokenService accessTokenService,
             ObjectMapper objectMapper
@@ -47,7 +47,7 @@ public class PersonApiConsumer {
 
 
     public void createPerson(Person person) {
-        AccessToken accessToken = accessTokenService.generateToken(serviceProperties).block();
+        AccessToken accessToken = accessTokenService.generateClientCredentialAccessToken(serviceProperties).block();
         new CreatePersonCommand(webClient, person.toDTO(), accessToken.getTokenValue(), person.toKommaseparerteTags()).run();
     }
 }
