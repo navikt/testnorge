@@ -1,6 +1,5 @@
 package no.nav.pdl.forvalter.database.repository;
 
-import lombok.Data;
 import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;

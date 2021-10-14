@@ -7,7 +7,6 @@ rootProject.name = 'pdl-forvalter'
 
 includeBuild '../../gradlePlugins'
 
-includeBuild '../../libs/database'
 includeBuild '../../libs/data-transfer-objects'
 includeBuild '../../libs/reactive-core'
 includeBuild '../../libs/reactive-security'

@@ -146,17 +146,17 @@ public class PersonService {
 
         if (nonNull(identer) && !identer.isEmpty()) {
 
-            return Flux.concat(
-                            aliasRepository.findByTidligereIdentIn(identer)
-                                    .flatMap(alias -> personRepository.findById(alias.getPersonId())),
-                            personRepository.findByIdentIn(identer))
-                    .flatMap(person -> Mono.zip(relasjonRepository.findByPersonId(person.getId()).collectList(),
-                            Mono.empty(),
-                            (relasjoner, empty) -> {
-                                person.setRelasjoner(relasjoner);
-                                return person;
-                            }))
-                    .map(person -> mapperFacade.map(person, FullPersonDTO.class));
+            return
+//                    Flux.concat(
+//                            aliasRepository.findByTidligereIdentIn(identer)
+//                                    .flatMap(alias -> personRepository.findById(alias.getPersonId())),
+                    personRepository.findByIdentIn(identer)
+                            .log()
+                            .map(person -> {
+                                System.out.println(person);
+                                return mapperFacade.map(person, FullPersonDTO.class);
+                            });
+
 
         } else if (isNotBlank(fragment)) {
 

@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,6 +18,7 @@ import static java.util.Objects.isNull;
 
 @Data
 @Builder
+@Table("person")
 @NoArgsConstructor
 @AllArgsConstructor
 public class DbPerson {
@@ -32,9 +35,11 @@ public class DbPerson {
 
     private PersonDTO person;
 
+    @Transient
     private List<DbRelasjon> relasjoner;
 
     @JsonIgnore
+    @Transient
     private List<DbAlias> alias;
 
     public List<DbRelasjon> getRelasjoner() {
@@ -44,7 +49,7 @@ public class DbPerson {
         return relasjoner;
     }
 
-    public List<DbAlias> getAlias() {
+    public List<DbAlias> getAliaser() {
         if (isNull(alias)) {
             alias = new ArrayList<>();
         }

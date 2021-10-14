@@ -82,7 +82,7 @@ public class JsonMapperConfig {
         return objectMapper;
     }
 
-    private static class TestnavLocalDateDeserializer extends JsonDeserializer<LocalDate> {
+    public static class TestnavLocalDateDeserializer extends JsonDeserializer<LocalDate> {
 
         @Override
         public LocalDate deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
@@ -95,7 +95,7 @@ public class JsonMapperConfig {
         }
     }
 
-    private static class TestnavLocalDateTimeDeserializer extends JsonDeserializer<LocalDateTime> {
+    public static class TestnavLocalDateTimeDeserializer extends JsonDeserializer<LocalDateTime> {
 
         @Override
         public LocalDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {

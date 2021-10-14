@@ -19,19 +19,19 @@ spring:
         role: pdl-forvalter-test-admin
   flyway:
     enabled: true # Disabled by default as you should probably think twice before running Flyway-migrations
-    locations: classpath:db/migration
-    baseline-on-migrate: true
-  datasource:
     url: jdbc:postgresql://dev-pg.intern.nav.no:5432/pdl-forvalter-test
+    user: ${spring.r2dbc.username}
+    password: ${spring.r2dbc.password}
+    locations: classpath:db/migration
+    schemas: public
+    baseline-on-migrate: true
+  r2dbc:
+    url: r2dbc:postgresql://dev-pg.intern.nav.no:5432/pdl-forvalter-test
+  datasource:
     hikari:
       maximum-pool-size: 3
       minimum-idle: 1
     driver-class-name: org.postgresql.Driver
-  jpa:
-    properties:
-      hibernate:
-        default-schema: public
-        dialect: org.hibernate.dialect.PostgreSQLDialect
   security:
     oauth2:
       resourceserver:

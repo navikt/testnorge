@@ -7,11 +7,13 @@ import lombok.NoArgsConstructor;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
 
 @Data
 @Builder
+@Table("relasjon")
 @NoArgsConstructor
 @AllArgsConstructor
 public class DbRelasjon {
