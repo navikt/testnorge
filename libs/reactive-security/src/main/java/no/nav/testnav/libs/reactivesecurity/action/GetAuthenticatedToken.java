@@ -10,9 +10,9 @@ import no.nav.testnav.libs.reactivesecurity.domain.Token;
 
 @Component
 @RequiredArgsConstructor
-public class GetAuthenticatedTokenAction extends JwtResolver implements Callable<Mono<Token>> {
+public class GetAuthenticatedToken extends JwtResolver implements Callable<Mono<Token>> {
 
-    private final GetAuthenticatedResourceServerTypeAction getAuthenticatedResourceServerType;
+    private final GetAuthenticatedResourceServerType getAuthenticatedResourceServerType;
 
     @Override
     public Mono<Token> call() {

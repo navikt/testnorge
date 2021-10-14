@@ -14,7 +14,7 @@ import no.nav.testnav.libs.reactivesecurity.domain.ResourceServerType;
 
 @Component
 @RequiredArgsConstructor
-public class GetAuthenticatedResourceServerTypeAction extends JwtResolver implements Callable<Mono<ResourceServerType>> {
+public class GetAuthenticatedResourceServerType extends JwtResolver implements Callable<Mono<ResourceServerType>> {
 
     private final List<ResourceServerProperties> resourceServerProperties;
 
@@ -23,8 +23,9 @@ public class GetAuthenticatedResourceServerTypeAction extends JwtResolver implem
                 .stream()
                 .filter(properties -> properties
                         .getIssuerUri()
-                        .equalsIgnoreCase(token.getToken().getIssuer().toString())
-                ).findFirst().map(ResourceServerProperties::getType);
+                        .equalsIgnoreCase(token.getToken().getIssuer().toString()))
+                .findFirst()
+                .map(ResourceServerProperties::getType);
     }
 
     @Override

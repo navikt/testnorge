@@ -20,6 +20,8 @@ spec:
       rules:
         - application: dolly-frontend
           cluster: dev-gcp
+        - application: testnav-bruker-service
+          cluster: dev-gcp
     outbound:
       external:
         - host: altinn.no

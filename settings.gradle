@@ -99,6 +99,7 @@ includeBuild './apps/testnorge-tss'
 includeBuild './apps/organisasjon-tilgang-service'
 includeBuild './apps/person-organisasjon-tilgang-service'
 includeBuild './apps/ident-pool'
+includeBuild './apps/bruker-service'
 includeBuild './apps/testnorge-sam'
 includeBuild './apps/testnorge-medl'
 includeBuild './apps/testnorge-frikort'
@@ -210,3 +211,4 @@ project(':person-faste-data-service').projectDir = file('apps/person-faste-data-
 
 include(':brreg-stub')
 project(":brreg-stub").projectDir = file('apps/brreg-stub')
+

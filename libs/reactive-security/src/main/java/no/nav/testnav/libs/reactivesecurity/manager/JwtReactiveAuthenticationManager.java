@@ -30,8 +30,8 @@ public class JwtReactiveAuthenticationManager implements ReactiveAuthenticationM
 
     private final GetJwtDecoder getJwtDecoder;
 
-    private Converter<Jwt, ? extends Mono<? extends AbstractAuthenticationToken>> jwtAuthenticationConverter = new ReactiveJwtAuthenticationConverterAdapter(
-            new JwtAuthenticationConverter());
+    private Converter<Jwt, ? extends Mono<? extends AbstractAuthenticationToken>> jwtAuthenticationConverter =
+            new ReactiveJwtAuthenticationConverterAdapter(new JwtAuthenticationConverter());
 
     public JwtReactiveAuthenticationManager(
             List<ResourceServerProperties> resourceServerProperties,

@@ -1,0 +1,18 @@
+CRYPTOGRAPHY_SECRET: DUMMY SUPER SECRET CRYPTOGRAPHY KEY THAT IS NOT SECURE
+JWT_SECRET: DUMMY SUPER SECRET JWT KEY THAT IS NOT SECURE
+spring:
+  flyway:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+  security:
+    oauth2:
+      resourceserver:
+        tokenx:
+          issuer-uri: ${wiremockBaseUrl}
+          jwk-set-uri: ${wiremockBaseUrl}/jwks
+          accepted-audience: test
+
+consumers:
+  testnav-person-organisasjon-tilgang-service:
+    url: ${wiremockBaseUrl}
