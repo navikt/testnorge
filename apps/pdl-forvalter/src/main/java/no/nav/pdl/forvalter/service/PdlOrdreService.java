@@ -66,10 +66,10 @@ public class PdlOrdreService {
     private final PersonRepository personRepository;
     private final MapperFacade mapperFacade;
 
-    public OrdreResponseDTO send(OrdreRequestDTO ordre, Boolean isTpsMaster) {
+    public OrdreResponseDTO send(String ident, Boolean isTpsMaster) {
 
-        var dbPerson = personRepository.findByIdent(ordre.getIdent())
-                .orElseThrow(() -> new NotFoundException(String.format("Ident %s finnes ikke i database", ordre.getIdent())));
+        var dbPerson = personRepository.findByIdent(ident)
+                .orElseThrow(() -> new NotFoundException(String.format("Ident %s finnes ikke i databasen", ident)));
 
         return OrdreResponseDTO.builder()
                 .hovedperson(PersonHendelserDTO.builder()

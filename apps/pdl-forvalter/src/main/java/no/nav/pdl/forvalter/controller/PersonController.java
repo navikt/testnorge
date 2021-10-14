@@ -4,15 +4,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.pdl.forvalter.domain.Data;
 import no.nav.pdl.forvalter.service.PdlOrdreService;
 import no.nav.pdl.forvalter.service.PersonService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,13 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Flux;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.concurrent.atomic.LongAccumulator;
 
 @Slf4j
 @RestController
@@ -79,12 +71,13 @@ public class PersonController {
     }
 
     @ResponseBody
-    @PostMapping(value = "/ordre", produces = MediaType.APPLICATION_NDJSON_VALUE)
+    @PostMapping(value = "/{ident}/ordre")
     @Operation(description = "Send angitte testperson(er) med relasjoner til PDL")
-    public OrdreResponseDTO sendPersonTilPdl(@Parameter(description = "Angir om TPS er master, true == hovedperson skal ikke slettes i PDL")
-                                                   @RequestParam(required = false) Boolean isTpsMaster,
-                                                   @RequestBody OrdreRequestDTO ordre) {
+    public OrdreResponseDTO sendPersonTilPdl(@Parameter(description = "Ident på hovedperson som skal sendes")
+                                             @PathVariable String ident,
+                                             @Parameter(description = "Angir om TPS er master, true == hovedperson skal ikke slettes i PDL")
+                                             @RequestParam(required = false) Boolean isTpsMaster) {
 
-        return pdlOrdreService.send(ordre, isTpsMaster);
+        return pdlOrdreService.send(ident, isTpsMaster);
     }
 }

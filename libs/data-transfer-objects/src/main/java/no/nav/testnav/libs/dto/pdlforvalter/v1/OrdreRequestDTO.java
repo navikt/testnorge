@@ -13,5 +13,5 @@ import java.util.List;
 @AllArgsConstructor
 public class OrdreRequestDTO {
 
-    private String ident;
+    private List<String> identer;
 }

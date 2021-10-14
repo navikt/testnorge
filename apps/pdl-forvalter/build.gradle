@@ -36,7 +36,6 @@ java.sourceCompatibility = JavaVersion.VERSION_17
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
@@ -44,21 +43,17 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
-    implementation 'com.fasterxml.jackson.core:jackson-databind'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     implementation 'no.nav.testnav.libs:database'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:servlet-security'
 
-    implementation 'ma.glasnost.orika:orika-core:1.5.2'
     implementation 'org.hibernate.validator:hibernate-validator'
-    implementation 'org.aspectj:aspectjweaver:1.9.6'
-
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.postgresql:postgresql'
 
+    implementation "ma.glasnost.orika:orika-core:${DependenciesPlugin.orikaVersion}"
     implementation "org.springdoc:springdoc-openapi-ui:${DependenciesPlugin.springdocOpenapi}"
     implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
 
