@@ -73,7 +73,7 @@ public class AltinnClient {
 
     public Mono<Access> getAccess(String organiasjonsnummer) {
         return getAccess()
-                .filter(value -> value.getOrgnisajonsnummer().equals(organiasjonsnummer))
+                .filter(value -> value.getOrganisajonsnummer().equals(organiasjonsnummer))
                 .next();
     }
 

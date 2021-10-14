@@ -9,8 +9,8 @@ public class Organisasjon {
 
     public Organisasjon(OrganisasjonDTO dto) {
         this.navn = dto.navn();
-        this.organisasjonsnummer = dto.orgnisasjonsnummer();
-        this.organisasjonsform = dto.orgnisasjonsfrom();
+        this.organisasjonsnummer = dto.organisasjonsnummer();
+        this.organisasjonsform = dto.organisasjonsfrom();
     }
 
     public String getNavn() {
