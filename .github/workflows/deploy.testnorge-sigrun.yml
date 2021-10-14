@@ -2,10 +2,11 @@ name: Deploy testnorge-sigrun
 
 on:
   push:
-    branches: master
+    branches:
+      - master
     paths:
       - apps/testnorge-sigrun/**
-
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/sigrun:${{ github.sha }}
@@ -31,7 +32,7 @@ jobs:
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew :sigrun-core:build
+        run: ./gradlew :testnorge-sigrun:build
       - name: Build and publish Docker image
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

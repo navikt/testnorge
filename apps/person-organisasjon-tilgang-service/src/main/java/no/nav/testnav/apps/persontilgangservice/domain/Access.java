@@ -5,25 +5,25 @@ import no.nav.testnav.apps.persontilgangservice.controller.dto.OrganisasjonDTO;
 
 public class Access {
     private final String navn;
-    private final String orgnisajonsnummer;
-    private final String orgnisajonsfrom;
+    private final String organisajonsnummer;
+    private final String organisajonsfrom;
 
     public Access(AccessDTO accessDTO) {
         this.navn = accessDTO.name();
-        this.orgnisajonsnummer = accessDTO.organizationNumber();
-        this.orgnisajonsfrom = accessDTO.organizationForm();
+        this.organisajonsnummer = accessDTO.organizationNumber();
+        this.organisajonsfrom = accessDTO.organizationForm();
     }
 
     public OrganisasjonDTO toDTO() {
         return new OrganisasjonDTO(
                 navn,
-                orgnisajonsnummer,
-                orgnisajonsfrom,
+                organisajonsnummer,
+                organisajonsfrom,
                 null // TODO Set gyldigTil
         );
     }
 
-    public String getOrgnisajonsnummer() {
-        return orgnisajonsnummer;
+    public String getOrganisajonsnummer() {
+        return organisajonsnummer;
     }
 }

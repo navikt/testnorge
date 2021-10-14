@@ -8,9 +8,9 @@ import org.springframework.context.annotation.Import;
 
 import java.util.List;
 
-import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedResourceServerTypeAction;
-import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedTokenAction;
-import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserIdAction;
+import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedResourceServerType;
+import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedToken;
+import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
 import no.nav.testnav.libs.reactivesecurity.domain.AzureClientCredentials;
 import no.nav.testnav.libs.reactivesecurity.domain.TokenX;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
@@ -29,9 +29,9 @@ import no.nav.testnav.libs.reactivesecurity.properties.TokenxResourceServerPrope
         AzureAdResourceServerProperties.class,
         AzureAdTokenService.class,
         TokenExchange.class,
-        GetAuthenticatedUserIdAction.class,
-        GetAuthenticatedResourceServerTypeAction.class,
-        GetAuthenticatedTokenAction.class,
+        GetAuthenticatedUserId.class,
+        GetAuthenticatedResourceServerType.class,
+        GetAuthenticatedToken.class,
         TokenX.class
 })
 public class SecureOAuth2ServerToServerConfiguration {

@@ -15,9 +15,10 @@ import lombok.Value;
 @NoArgsConstructor(force = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WellKnown {
-    @JsonProperty("token_endpoint")
-    String tokenEndpoint;
 
-    @JsonProperty("end_session_endpoint")
-    String endSessionEndpoint;
+    @JsonProperty
+    String token_endpoint;
+
+    @JsonProperty
+    String end_session_endpoint;
 }
