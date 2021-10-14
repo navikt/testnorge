@@ -21,14 +21,13 @@ public class UserService {
     private final GetAuthenticatedUserId getAuthenticatedUserId;
 
     public Mono<User> create(String username, String representing) {
-
         return getAuthenticatedUserId
                 .call()
                 .flatMap(userId -> validateCreateUser(userId, username, representing).then(Mono.just(userId)))
                 .map(userId -> {
                     var entity = new UserEntity();
                     entity.setId(cryptographyService.createId(userId, representing));
-                    entity.setOrganaiasjonsnummer(representing);
+                    entity.setOrganisasjonsnummer(representing);
                     entity.setBrukernavn(username);
                     entity.setNew(true);
                     return entity;
@@ -36,6 +35,13 @@ public class UserService {
                 .flatMap(repository::save)
                 .map(User::new);
 
+    }
+
+    public Mono<User> getUserFromOrganisasjonsnummer(String organisasjonsnummer){
+        return getAuthenticatedUserId
+                .call()
+                .map(userId -> cryptographyService.createId(userId, organisasjonsnummer))
+                .flatMap(this::getUser);
     }
 
 

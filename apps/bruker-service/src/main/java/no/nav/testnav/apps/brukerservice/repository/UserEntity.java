@@ -26,7 +26,7 @@ public class UserEntity implements Persistable<String> {
     private String brukernavn;
 
     @Column("ORGANISASJONSNUMMER")
-    private String organaiasjonsnummer;
+    private String organisasjonsnummer;
 
     @CreatedDate
     @Column("CREATED_AT")

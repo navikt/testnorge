@@ -13,7 +13,7 @@ public class User {
     private final LocalDateTime sisteLoggetinn;
 
     public User(UserEntity entity) {
-        this.organisasjonsnummer = entity.getOrganaiasjonsnummer();
+        this.organisasjonsnummer = entity.getOrganisasjonsnummer();
         this.id = entity.getId();
         this.brukernavn = entity.getBrukernavn();
         this.opprett = entity.getOpprettet();
