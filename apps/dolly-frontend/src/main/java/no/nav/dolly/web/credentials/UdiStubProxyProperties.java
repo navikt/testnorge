@@ -6,6 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import no.nav.testnav.libs.reactivesessionsecurity.domain.ServerProperties;
 
 @Configuration
-@ConfigurationProperties(prefix = "consumers.udi-stub")
-public class UdiStubProperties extends ServerProperties {
+@ConfigurationProperties(prefix = "consumers.testnav-udistub-proxy")
+public class UdiStubProxyProperties extends ServerProperties {
 }
