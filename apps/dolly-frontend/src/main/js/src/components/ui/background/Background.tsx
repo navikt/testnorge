@@ -1,15 +1,15 @@
 import React from 'react'
 import styled from 'styled-components'
 // @ts-ignore
-import Summer from '~/pages/loginPage/backgrounds/Summer.svg'
+import Summer from '~/components/ui/background/backgrounds/Summer.svg'
 // @ts-ignore
-import Christmas from '~/pages/loginPage/backgrounds/Christmas.svg'
+import Christmas from '~/components/ui/background/backgrounds/Christmas.svg'
 // @ts-ignore
-import Halloween from '~/pages/loginPage/backgrounds/Halloween.svg'
+import Halloween from '~/components/ui/background/backgrounds/Halloween.svg'
 // @ts-ignore
-import Snowing from '~/pages/loginPage/backgrounds/Snowing.svg'
+import Snowing from '~/components/ui/background/backgrounds/Snowing.svg'
 // @ts-ignore
-import Fall from '~/pages/loginPage/backgrounds/Fall.svg'
+import Fall from '~/components/ui/background/backgrounds/Fall.svg'
 
 export const SummerBackground = styled.div`
 	background-image: url(data:image/svg+xml;base64,${btoa(Summer)});

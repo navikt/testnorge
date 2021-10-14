@@ -1,7 +1,7 @@
 import React from 'react'
 import BlankHeader from '~/components/layout/blankHeader/BlankHeader'
-import LoginModal from '~/pages/loginPage/LoginModal'
-import './LoginPage.less'
+import BrukernavnModal from '~/pages/brukernavnPage/BrukernavnModel'
+import './BrukernavnPage.less'
 import { HalloweenBackground } from '~/components/ui/background/Background'
 
 export default () => {
@@ -9,7 +9,7 @@ export default () => {
 		<React.Fragment>
 			<BlankHeader />
 			<HalloweenBackground>
-				<LoginModal />
+				<BrukernavnModal />
 			</HalloweenBackground>
 		</React.Fragment>
 	)
