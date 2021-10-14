@@ -3,8 +3,8 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.pdl.forvalter.database.model.DbAlias;
 import no.nav.pdl.forvalter.database.model.DbPerson;
-import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.domain.Ordre;
 import no.nav.pdl.forvalter.dto.HistoriskIdent;
@@ -19,8 +19,8 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO.PersonHendelserDTO;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,46 +66,27 @@ public class PdlOrdreService {
     private final PersonRepository personRepository;
     private final MapperFacade mapperFacade;
 
-    public Flux<OrdreResponseDTO> send(OrdreRequestDTO ordre, Boolean isTpsMaster) {
+    public OrdreResponseDTO send(OrdreRequestDTO ordre, Boolean isTpsMaster) {
 
-        var dbPersoner = personRepository.findByIdentIn(ordre.getIdenter());
+        var dbPerson = personRepository.findByIdent(ordre.getIdent())
+                .orElseThrow(() -> new NotFoundException(String.format("Ident %s finnes ikke i database", ordre.getIdent())));
 
-        var hovedpersoner = dbPersoner.stream()
-                .map(DbPerson::getIdent)
-                .collect(Collectors.toSet());
-
-        return Flux.fromStream(dbPersoner.stream())
-//                .flatMap(person -> sendAlleInformasjonselementer(person, isNotTrue(isTpsMaster))
-//                        .collectList()
-//                        .map(order -> OrdreResponseDTO.builder()
-//                                .hovedperson(PersonHendelserDTO.builder()
-//                                        .ident(person.getIdent())
-//                                        .ordrer(order)
-//                                        .build())
-//                                .build()));
-                .flatMap(person -> Mono.zip(
-                        sendAlleInformasjonselementer(person, isNotTrue(isTpsMaster))
+        return OrdreResponseDTO.builder()
+                .hovedperson(PersonHendelserDTO.builder()
+                        .ident(dbPerson.getIdent())
+                        .ordrer(sendAlleInformasjonselementer(dbPerson, isNotTrue(isTpsMaster))
                                 .collectList()
-                                .map(ordrer -> PersonHendelserDTO.builder()
-                                        .ident(person.getIdent())
-                                        .ordrer(ordrer)
-                                        .build()),
-                        Flux.concat(person.getRelasjoner()
-                                        .parallelStream()
-                                        .map(DbRelasjon::getRelatertPerson)
-                                        .filter(relatertPerson -> !hovedpersoner.contains(relatertPerson.getIdent()))
-                                        .map(relatertPerson -> sendAlleInformasjonselementer(relatertPerson, true)
-                                                .collectList()
-                                                .map(ordrer -> PersonHendelserDTO.builder()
-                                                        .ident(relatertPerson.getIdent())
-                                                        .ordrer(ordrer)
-                                                        .build()))
-                                        .collect(Collectors.toList()))
-                                .collectList(),
-                        (hovedPerson, relasjoner) -> OrdreResponseDTO.builder()
-                                .hovedperson(hovedPerson)
-                                .relasjoner(relasjoner)
-                                .build()));
+                                .block())
+                        .build())
+                .relasjoner(dbPerson.getRelasjoner().stream()
+                        .map(relasjon -> PersonHendelserDTO.builder()
+                                .ident(relasjon.getRelatertPerson().getIdent())
+                                .ordrer(sendAlleInformasjonselementer(relasjon.getRelatertPerson(), true)
+                                        .collectList()
+                                        .block())
+                                .build())
+                        .collect(Collectors.toList()))
+                .build();
     }
 
     private Flux<OrdreResponseDTO.PdlStatusDTO> sendAlleInformasjonselementer(DbPerson person, boolean skalSlettes) {
@@ -113,8 +94,7 @@ public class PdlOrdreService {
         return deployService.sendOrders(
                 Stream.of(
                         conditionalDelete(person.getIdent(), skalSlettes),
-                        deployService.createOrder(PDL_OPPRETT_PERSON, person.getIdent(), List.of(HistoriskIdent.builder().build())),
-//TODO erstatt over med                 deployService.createOrder(PDL_OPPRETT_PERSON, person.getIdent(), List.of(HistoriskIdent.builder().identer(person.getAlias().stream().map(DbAlias::getTidligereIdent).collect(Collectors.toList())).build())),
+                        deployService.createOrder(PDL_OPPRETT_PERSON, person.getIdent(), List.of(HistoriskIdent.builder().identer(person.getAlias().stream().map(DbAlias::getTidligereIdent).collect(Collectors.toList())).build())),
                         deployService.createOrder(PDL_NAVN, person.getIdent(), person.getPerson().getNavn()),
                         deployService.createOrder(PDL_KJOENN, person.getIdent(), person.getPerson().getKjoenn()),
                         deployService.createOrder(PDL_FOEDSEL, person.getIdent(), person.getPerson().getFoedsel()),
