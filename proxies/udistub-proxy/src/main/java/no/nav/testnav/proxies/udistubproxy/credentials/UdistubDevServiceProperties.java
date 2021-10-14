@@ -1,0 +1,11 @@
+package no.nav.testnav.proxies.udistubproxy.credentials;
+
+import no.nav.testnav.libs.reactivesecurity.domain.ServerProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+
+
+@Configuration
+@ConfigurationProperties(prefix = "consumers.testnav-udistub-dev")
+public class UdistubDevServiceProperties extends ServerProperties {
+}

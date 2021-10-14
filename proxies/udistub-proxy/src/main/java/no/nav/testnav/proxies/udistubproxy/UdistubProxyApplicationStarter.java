@@ -3,9 +3,15 @@ package no.nav.testnav.proxies.udistubproxy;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
+import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
+import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.proxies.udistubproxy.credentials.UdistubDevServiceProperties;
+import no.nav.testnav.proxies.udistubproxy.credentials.UdistubServiceProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.Buildable;
@@ -28,21 +34,38 @@ public class UdistubProxyApplicationStarter {
         SpringApplication.run(UdistubProxyApplicationStarter.class, args);
     }
 
+    private final TokenExchange tokenExchange;
+    private final UdistubServiceProperties udistubServiceProperties;
+    private final UdistubDevServiceProperties udistubDevServiceProperties;
+
+    public UdistubProxyApplicationStarter(TokenExchange tokenExchange, UdistubServiceProperties udistubServiceProperties, UdistubDevServiceProperties udistubDevServiceProperties) {
+        this.tokenExchange = tokenExchange;
+        this.udistubServiceProperties = udistubServiceProperties;
+        this.udistubDevServiceProperties = udistubDevServiceProperties;
+    }
+
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
 
+        var addAuthenticationHeaderFilter = AddAuthenticationRequestGatewayFilterFactory
+                .createAuthenticationHeaderFilter(() -> tokenExchange.generateToken(udistubServiceProperties).map(AccessToken::getTokenValue));
+
+        var addAuthenticationHeaderDevFilter = AddAuthenticationRequestGatewayFilterFactory
+                .createAuthenticationHeaderFilter(() -> tokenExchange.generateToken(udistubDevServiceProperties).map(AccessToken::getTokenValue));
+
         return builder
                 .routes()
-                .route(createRoute("udistub", "https://udi-stub.dev.intern.nav.no"))
-                .route(createRoute("udistub-dev", "https://udi-stub-dev.dev.intern.nav.no"))
+                .route(createRoute("udistub", "https://udi-stub.dev.intern.nav.no", addAuthenticationHeaderFilter))
+                .route(createRoute("udistub-dev", "https://udi-stub-dev.dev.intern.nav.no", addAuthenticationHeaderDevFilter))
                 .build();
     }
 
-    private Function<PredicateSpec, Buildable<Route>> createRoute(String segment, String host) {
+    private Function<PredicateSpec, Buildable<Route>> createRoute(String segment, String host, GatewayFilter filter) {
         return spec -> spec
                 .path("/" + segment + "/**")
                 .filters(filterSpec -> filterSpec
                         .rewritePath("/" + segment + "/(?<segment>.*)", "/${segment}")
+                        .filter(filter)
                 ).uri(host);
     }
 

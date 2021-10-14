@@ -15,3 +15,15 @@ spring:
     gateway:
       httpclient:
         response-timeout: 30s
+
+consumers:
+  testnav-udistub:
+    url: https://udi-stub.dev.intern.nav.no
+    cluster: dev-fss
+    namespace: dolly
+    name: udi-stub
+  testnav-udistub-dev:
+    url: https://udi-stub-dev.dev.intern.nav.no
+    cluster: dev-fss
+    namespace: dolly
+    name: udi-stub-dev
