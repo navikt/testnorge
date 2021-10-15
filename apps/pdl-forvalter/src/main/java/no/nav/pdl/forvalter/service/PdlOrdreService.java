@@ -15,11 +15,11 @@ import no.nav.pdl.forvalter.dto.PdlInnflytting;
 import no.nav.pdl.forvalter.dto.PdlKontaktadresse;
 import no.nav.pdl.forvalter.dto.PdlTilrettelagtKommunikasjon;
 import no.nav.pdl.forvalter.dto.PdlVergemaal;
+import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO.PersonHendelserDTO;
 import org.springframework.stereotype.Service;
-import org.webjars.NotFoundException;
 import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
