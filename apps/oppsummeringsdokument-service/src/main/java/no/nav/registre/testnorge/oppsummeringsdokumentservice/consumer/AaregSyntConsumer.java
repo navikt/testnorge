@@ -31,7 +31,6 @@ public class AaregSyntConsumer {
 
     public void saveOpplysningspliktig(Oppsummeringsdokument oppsummeringsdokument, String miljo) {
         log.info("Oppsummeringsdokument med opplysningspliktig {} i {}.", oppsummeringsdokument.getOpplysningspliktigOrganisajonsnummer(), miljo);
-        var accessToken = accessTokenService.generateToken(properties).block();
         new SaveOpplysningspliktigCommand(
                 webClient,
                 oppsummeringsdokument.toXml(),
