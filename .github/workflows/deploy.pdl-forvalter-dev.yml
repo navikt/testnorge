@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - feature/reactive_web_container
+      - feature/pdl-forvalte_non_reactive_align
     paths:
       - apps/pdl-forvalter/**
       - libs/**

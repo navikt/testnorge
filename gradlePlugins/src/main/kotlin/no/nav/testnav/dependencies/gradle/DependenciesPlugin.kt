@@ -15,5 +15,6 @@ class DependenciesPlugin : Plugin<Project> {
         val logstashLogbackEncoder = "6.6"
         val springdocOpenapi = "1.5.9"
         val jackson = "2.11.2"
+        val orikaVersion = "1.5.4"
     }
 }
