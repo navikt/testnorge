@@ -16,7 +16,6 @@ spring:
           password: ${ELASTIC_PASSWORD}
           endpoints: ${ELASTIC_HOST}:${ELASTIC_PORT}
           use-ssl: true
-
   security:
     oauth2:
       resourceserver:
@@ -28,6 +27,11 @@ spring:
     name: oppsummeringsdokument-service
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     description: Tjeneste for å sende inn oppsummeringsdokument til aareg og søke i innstende oppsummeringsdokumenter.
+  elasticsearch:
+    rest:
+      username: ${ELASTIC_USERNAME}
+      password: ${ELASTIC_PASSWORD}
+      uris: ${ELASTIC_HOST}:${ELASTIC_PORT}
 
 consumers.aareg-synt-services:
   url: https://aareg-synt-services-proxy.dev-fss-pub.nais.io
