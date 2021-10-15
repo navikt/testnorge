@@ -9,9 +9,12 @@ export type Bruker = {
 }
 
 const getBruker = (orgnummer: string) =>
-	Api.fetchJson<Bruker>(`testnav-bruker-service/api/v1/brukere?organisasjonsnummer=${orgnummer}`, {
-		method: 'GET',
-	})
+	Api.fetchJson<Bruker[]>(
+		`testnav-bruker-service/api/v1/brukere?organisasjonsnummer=${orgnummer}`,
+		{
+			method: 'GET',
+		}
+	).then((brukere) => brukere[0])
 
 export default {
 	getBruker,

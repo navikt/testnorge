@@ -33,9 +33,21 @@ export default () => {
 				</tr>
 				<tr>
 					<td>
-						<Bold>Organisasjonsnummer</Bold>
+						<Bold>Orgnummer</Bold>
 					</td>
 					{bruker && <td>{bruker.organisasjonsnummer}</td>}
+				</tr>
+				<tr>
+					<td>
+						<Bold>Opprettet</Bold>
+					</td>
+					{bruker && <td>{bruker.opprettet}</td>}
+				</tr>
+				<tr>
+					<td>
+						<Bold>Sist Innlogget</Bold>
+					</td>
+					{bruker && <td>{bruker.sistInnlogget}</td>}
 				</tr>
 			</table>
 			<Input label="Orgnummer" type="text" onBlur={(event) => setOrgnummer(event.target.value)} />
