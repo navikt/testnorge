@@ -48,10 +48,10 @@ import no.nav.testnav.apps.brukerservice.dto.BrukerDTO;
 import no.nav.testnav.apps.brukerservice.initializer.H2Initializer;
 import no.nav.testnav.apps.brukerservice.initializer.WireMockInitializer;
 import no.nav.testnav.apps.brukerservice.repository.UserRepository;
-import no.nav.testnav.libs.reactivesecurity.config.UserConstant;
 import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
 import no.nav.testnav.libs.reactivesecurity.domain.TokenX;
 import no.nav.testnav.libs.reactivesecurity.domain.tokenx.v1.WellKnown;
+import no.nav.testnav.libs.securitycore.UserConstant;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
