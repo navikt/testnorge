@@ -36,6 +36,7 @@ spec:
         - application: testnav-varslinger-service-dev
         - application: dolly-dev-redis-session
         - application: testnav-person-organisasjon-tilgang-service-dev
+        - application: testnav-bruker-service-dev
       external:
         - host: person-search-service.dev-fss-pub.nais.io
         - host: udi-stub-dev.dev-fss-pub.nais.io
@@ -94,6 +95,10 @@ spec:
       value: testnav-person-organisasjon-tilgang-service-dev
     - name: TESTNAV_PERSON_ORG_TILGANG_SERVICE_URL
       value: https://testnav-person-organisasjon-tilgang-service-dev.dev.intern.nav.no
+    - name: TESTNAV_BRUKER_SERVICE_NAME
+      value: testnav-bruker-service-dev
+    - name: TESTNAV_BRUKER_SERVICE_URL
+      value: https://testnav-bruker-service-dev.dev.intern.nav.no
     - name: VARSLINGER_NAME
       value: testnav-varslinger-service-dev
     - name: VARSLINGER_URL

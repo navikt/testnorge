@@ -17,6 +17,8 @@ TPS_FORVALTERN_PROXY_NAME: tps-forvalteren-dev-proxy
 TPS_FORVALTERN_PROXY_URL: https://tps-forvalteren-dev.dev.adeo.no
 TESTNAV_PERSON_ORG_TILGANG_SERVICE_NAME: testnav-person-organisasjon-tilgang-service-dev
 TESTNAV_PERSON_ORG_TILGANG_SERVICE_URL: https://testnav-person-organisasjon-tilgang-service-dev.dev.intern.nav.no
+TESTNAV_BRUKER_SERVICE_NAME: testnav-bruker-service-dev
+TESTNAV_BRUKER_SERVICE_URL: https://testnav-bruker-service-dev.dev.intern.nav.no
 
 POST_LOGOUT_REDIRECT_URI: 'http://localhost:3000/login'
 
