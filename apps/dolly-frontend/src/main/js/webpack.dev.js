@@ -190,6 +190,11 @@ module.exports = (env) =>
 					changeOrigin: true,
 					secure: false,
 				},
+				'/testnav-person-organisasjon-tilgang-service/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false,
+				},
 			},
 		},
 		plugins: [
