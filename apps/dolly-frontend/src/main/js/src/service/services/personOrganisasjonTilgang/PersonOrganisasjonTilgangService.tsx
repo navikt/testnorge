@@ -1,9 +1,5 @@
 import Request from '~/service/services/Request'
 
-type Bruker = {
-	id?: string
-}
-
 const personOrgTilgangServiceUrl =
 	'/testnav-person-organisasjon-tilgang-service/api/v1/person/organisasjoner'
 
