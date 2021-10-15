@@ -111,6 +111,8 @@ includeBuild './apps/testnorge-sigrun'
 
 includeBuild './xsd/arbeidsforhold-xsd'
 
+includeBuild './examples/reactive-rest-example'
+
 includeBuild './gradlePlugins'
 include(':proxies')
 include(':inntektsmelding-generator-service')
@@ -211,4 +213,3 @@ project(':person-faste-data-service').projectDir = file('apps/person-faste-data-
 
 include(':brreg-stub')
 project(":brreg-stub").projectDir = file('apps/brreg-stub')
-
