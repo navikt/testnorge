@@ -185,6 +185,11 @@ module.exports = (env) =>
 					changeOrigin: true,
 					secure: false,
 				},
+				'/testnav-bruker-service/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false,
+				},
 			},
 		},
 		plugins: [
