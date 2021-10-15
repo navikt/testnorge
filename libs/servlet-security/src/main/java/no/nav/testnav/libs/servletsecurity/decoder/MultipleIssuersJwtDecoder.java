@@ -3,6 +3,7 @@ package no.nav.testnav.libs.servletsecurity.decoder;
 import com.nimbusds.jwt.JWTParser;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.servletsecurity.properties.ResourceServerProperties;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
@@ -17,8 +18,6 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import no.nav.testnav.libs.servletsecurity.properties.ResourceServerProperties;
 
 @Slf4j
 public class MultipleIssuersJwtDecoder implements JwtDecoder {
