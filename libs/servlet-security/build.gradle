@@ -15,6 +15,8 @@ repositories {
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 dependencies {
+    implementation 'no.nav.testnav.libs:security-core'
+
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:${DependenciesPlugin.springBoot}"
     implementation "org.springframework.boot:spring-boot-starter-actuator:${DependenciesPlugin.springBoot}"
     implementation "org.springframework.boot:spring-boot-starter-webflux:${DependenciesPlugin.springBoot}"

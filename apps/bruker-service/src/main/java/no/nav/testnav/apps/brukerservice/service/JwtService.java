@@ -15,7 +15,7 @@ import java.util.UUID;
 import no.nav.testnav.apps.brukerservice.domain.User;
 import no.nav.testnav.apps.brukerservice.exception.JwtIdMismatchException;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
-import no.nav.testnav.libs.reactivesecurity.config.UserConstant;
+import no.nav.testnav.libs.securitycore.UserConstant;
 
 @Service
 public class JwtService {

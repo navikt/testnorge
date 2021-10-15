@@ -20,6 +20,14 @@ module.exports = merge(common, {
 				target: 'http://localhost:8080',
 				changeOrigin: true,
 			},
+			'/testnav-person-organisasjon-tilgang-service/api': {
+				target: 'http://localhost:8080',
+				changeOrigin: true,
+			},
+			'/testnav-bruker-service/api': {
+				target: 'http://localhost:8080',
+				changeOrigin: true,
+			},
 			'/oauth2/authorization/aad': {
 				target: 'http://localhost:8080',
 				changeOrigin: true,

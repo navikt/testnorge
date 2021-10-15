@@ -64,6 +64,7 @@ includeBuild './libs/domain'
 includeBuild './libs/reporting'
 includeBuild './libs/slack'
 includeBuild './libs/reactive-session-security'
+includeBuild './libs/security-core'
 
 includeBuild './apps/person-service'
 includeBuild './apps/profil-api'

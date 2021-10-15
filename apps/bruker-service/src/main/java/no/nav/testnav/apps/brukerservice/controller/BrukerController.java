@@ -34,7 +34,7 @@ import no.nav.testnav.apps.brukerservice.exception.UsernameAlreadyTakenException
 import no.nav.testnav.apps.brukerservice.service.JwtService;
 import no.nav.testnav.apps.brukerservice.service.UserService;
 import no.nav.testnav.apps.brukerservice.service.ValidateService;
-import no.nav.testnav.libs.reactivesecurity.config.UserConstant;
+import no.nav.testnav.libs.securitycore.UserConstant;
 
 @Slf4j
 @RestController
@@ -45,7 +45,6 @@ public class BrukerController {
     private final ValidateService validateService;
     private final UserService userService;
     private final JwtService jwtService;
-
 
     @PostMapping
     public Mono<ResponseEntity<BrukerDTO>> createBruker(
