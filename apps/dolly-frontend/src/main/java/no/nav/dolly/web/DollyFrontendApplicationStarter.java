@@ -16,6 +16,7 @@ import no.nav.dolly.web.credentials.TestnavOrganisasjonFasteDataServicePropertie
 import no.nav.dolly.web.credentials.TestnavOrganisasjonForvalterProperties;
 import no.nav.dolly.web.credentials.TestnavOrganisasjonServiceProperties;
 import no.nav.dolly.web.credentials.TestnavPensjonTestdataFacadeProxyProperties;
+import no.nav.dolly.web.credentials.TestnavPersonOrganisasjonTilgangServiceProperties;
 import no.nav.dolly.web.credentials.TestnavSigrunstubProxyProperties;
 import no.nav.dolly.web.credentials.TestnavTestnorgeAaregProxyProperties;
 import no.nav.dolly.web.credentials.TestnavTestnorgeInstProxyProperties;
@@ -67,6 +68,7 @@ public class DollyFrontendApplicationStarter {
     private final TestnavTestnorgeInstProxyProperties testnavTestnorgeInstProxyProperties;
     private final TestnavSigrunstubProxyProperties testnavSigrunstubProxyProperties;
     private final TestnavPensjonTestdataFacadeProxyProperties testnavPensjonTestdataFacadeProxyProperties;
+    private final TestnavPersonOrganisasjonTilgangServiceProperties testnavPersonOrganisasjonTilgangServiceProperties;
     private final DollyBackendProperties dollyBackendProperties;
     private final TestnorgeProfilApiProperties testnorgeProfilApiProperties;
     private final TestnavVarslingerServiceProperties testnavVarslingerServiceProperties;
@@ -108,6 +110,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(udiStubProxyProperties, "udi-stub"))
                 .route(createRoute(testnavPdlForvalterProperties, "testnav-pdl-forvalter"))
                 .route(createRoute(personSearchServiceProperties))
+                .route(createRoute(testnavPersonOrganisasjonTilgangServiceProperties))
                 .build();
     }
 
