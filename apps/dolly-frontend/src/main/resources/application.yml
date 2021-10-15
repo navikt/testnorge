@@ -141,6 +141,11 @@ consumers:
     namespace: dolly
     name: ${TESTNAV_PERSON_ORG_TILGANG_SERVICE_NAME}
     url: ${TESTNAV_PERSON_ORG_TILGANG_SERVICE_URL}
+  testnav-bruker-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: ${TESTNAV_BRUKER_SERVICE_NAME}
+    url: ${TESTNAV_BRUKER_SERVICE_URL}
   testnav-pdl-forvalter:
     cluster: dev-gcp
     namespace: dolly
