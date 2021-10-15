@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { Organisasjon } from '~/pages/brukernavnPage/BrukernavnModel'
+import { Organisasjon } from '~/pages/brukerPage/BrukerModel'
 import styled from 'styled-components'
 
 type BrukernavnVelgerProps = {
