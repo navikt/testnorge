@@ -33,6 +33,7 @@ spec:
         - application: testnav-organisasjon-faste-data-service
         - application: testnav-varslinger-service
         - application: dolly-redis-session
+        - application: testnav-person-organisasjon-tilgang-service
       external:
         - host: person-search-service.dev-fss-pub.nais.io
         - host: udi-stub.dev-fss-pub.nais.io
@@ -83,6 +84,11 @@ spec:
       value: https://dolly.ekstern.dev.nav.no/login
     - name: REDIS_HOST
       value: dolly-redis-session.dolly.svc.cluster.local
+    - name: TESTNAV_PERSON_ORG_TILGANG_SERVICE_NAME
+      value: testnav-person-organisasjon-tilgang-service
+    - name: TESTNAV_PERSON_ORG_TILGANG_SERVICE_URL
+      value: https://testnav-person-organisasjon-tilgang-service.dev.intern.nav.no
+
     - name: VARSLINGER_NAME
       value: testnav-varslinger-service
     - name: VARSLINGER_URL

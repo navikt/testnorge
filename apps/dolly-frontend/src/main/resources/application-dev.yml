@@ -8,7 +8,6 @@ consumers:
     url: https://testnav-udistub-proxy.dev-fss-pub.nais.io/udistub-dev
     cluster: dev-fss
 
-
 azure.app.client.id: ${client_id}
 azure.app.client.secret: ${client_secret}
 
@@ -16,6 +15,8 @@ DOLLY_BACKEND_NAME: dolly-backend-dev
 DOLLY_BACKEND_URL: https://dolly-backend-dev.dev.intern.nav.no
 TPS_FORVALTERN_PROXY_NAME: tps-forvalteren-dev-proxy
 TPS_FORVALTERN_PROXY_URL: https://tps-forvalteren-dev.dev.adeo.no
+TESTNAV_PERSON_ORG_TILGANG_SERVICE_NAME: testnav-person-organisasjon-tilgang-service-dev
+TESTNAV_PERSON_ORG_TILGANG_SERVICE_URL: https://testnav-person-organisasjon-tilgang-service-dev.dev.intern.nav.no
 
 POST_LOGOUT_REDIRECT_URI: 'http://localhost:3000/login'
 

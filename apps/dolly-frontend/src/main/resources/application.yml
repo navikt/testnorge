@@ -132,3 +132,8 @@ consumers:
     namespace: dolly
     name: testnorge-tilbakemelding-api
     url: https://testnorge-tilbakemelding-api.dev.intern.nav.no
+  testnav-person-organisasjon-tilgang-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: ${TESTNAV_PERSON_ORG_TILGANG_SERVICE_NAME}
+    url: ${TESTNAV_PERSON_ORG_TILGANG_SERVICE_URL}
