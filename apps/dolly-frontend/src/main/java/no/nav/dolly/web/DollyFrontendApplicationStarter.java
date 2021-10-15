@@ -112,6 +112,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(personSearchServiceProperties))
                 .route(createRoute(testnavPersonOrganisasjonTilgangServiceProperties, "testnav-person-organisasjon-tilgang-service"))
                 .route(createRoute(testnavBrukerServiceProperties, "testnav-bruker-service"))
+                .route(createRoute(testnavBrukerServiceProperties))
                 .build();
     }
 
