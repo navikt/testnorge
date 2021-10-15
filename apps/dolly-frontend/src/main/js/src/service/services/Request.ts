@@ -28,8 +28,8 @@ export default class Request {
 		return api.fetch(url, { method: 'PUT' }, data)
 	}
 
-	static delete(url: string) {
-		return api.fetch(url, { method: 'DELETE' })
+	static delete(url: string, headers: Record<string, string> = {}) {
+		return api.fetch(url, { headers, method: 'DELETE' })
 	}
 
 	private static logError(error: any, url: string) {
