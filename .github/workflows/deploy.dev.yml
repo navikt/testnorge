@@ -5,7 +5,7 @@ on:
     branches:
       - master
       - feature/rapporteringsdato-inntekt
-      - feature/pdl-testdata_breaking_changes
+      - feature/align_with_pdl_forvalter
   workflow_dispatch:
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/dolly-backend:${{ github.sha }}

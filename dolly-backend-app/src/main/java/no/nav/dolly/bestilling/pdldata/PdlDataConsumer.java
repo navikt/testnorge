@@ -9,12 +9,10 @@ import no.nav.dolly.bestilling.pdldata.command.PdlDataSlettCommand;
 import no.nav.dolly.config.credentials.PdlDataForvalterProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.oauth2.service.TokenService;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -37,10 +35,11 @@ public class PdlDataConsumer {
     }
 
     @Timed(name = "providers", tags = {"operation", "pdl_sendOrdre"})
-    public Flux<String> sendOrdre(OrdreRequestDTO identer) {
+    public String sendOrdre(String ident) {
 
         return tokenService.generateToken(properties)
-                .flatMapMany(token -> new PdlDataOrdreCommand(webClient, identer, token.getTokenValue()).call());
+                .flatMap(token -> new PdlDataOrdreCommand(webClient, ident, token.getTokenValue()).call())
+                .block();
     }
 
     @Timed(name = "providers", tags = {"operation", "pdl_delete"})
@@ -54,11 +53,12 @@ public class PdlDataConsumer {
                 .block();
     }
 
-    public Mono<String> oppdaterPdl(String ident, PersonUpdateRequestDTO request) throws JsonProcessingException {
+    public String oppdaterPdl(String ident, PersonUpdateRequestDTO request) throws JsonProcessingException {
 
         var body = objectMapper.writeValueAsString(request);
         return tokenService.generateToken(properties)
                 .flatMap(token ->
-                        new PdlDataOppdateringCommand(webClient, ident, body, token.getTokenValue()).call());
+                        new PdlDataOppdateringCommand(webClient, ident, body, token.getTokenValue()).call())
+                .block();
     }
 }
