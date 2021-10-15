@@ -26,6 +26,7 @@ gradleEnterprise {
 
 includeBuild './proxies/aareg-proxy'
 includeBuild './proxies/kodeverk-proxy'
+includeBuild './proxies/statisk-data-forvalter-proxy'
 includeBuild './proxies/udistub-proxy'
 includeBuild './proxies/skjermingsregister-proxy'
 includeBuild './proxies/batch-adeo-proxy'
