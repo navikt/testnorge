@@ -10,7 +10,6 @@ type BrukernavnVelgerProps = {
 
 const Selector = styled.div`
 	display: flexbox;
-	align-items: center;
 	text-align: left;
 	justify-content: center;
 	margin-bottom: 20px;
@@ -18,8 +17,11 @@ const Selector = styled.div`
 
 export default ({ organisasjon }: BrukernavnVelgerProps) => {
 	const [brukernavn, setBrukernavn] = useState<string>('')
+	const [error, setError] = useState(null)
 
-	const clickVidere = () => {}
+	const onSubmit = () => {
+		setError(brukernavn)
+	}
 
 	return (
 		<React.Fragment>
@@ -36,8 +38,13 @@ export default ({ organisasjon }: BrukernavnVelgerProps) => {
 					// @ts-ignore
 					size="xlarge"
 					onChange={(e: any) => setBrukernavn(e.target.value)}
+					feil={
+						error && {
+							feilmelding: error,
+						}
+					}
 				/>
-				<NavButton type="hoved" className="videre-button">
+				<NavButton onClick={() => onSubmit()} type="hoved" className="videre-button">
 					Gå videre til Dolly
 				</NavButton>
 			</Selector>
