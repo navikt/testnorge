@@ -1,13 +1,22 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
-elasticsearch:
-  client:
-    username: ${ELASTIC_USERNAME}
-    password: ${ELASTIC_PASSWORD}
-    host: ${ELASTIC_HOST}
-    port: ${ELASTIC_PORT}
+#elasticsearch:
+#  client:
+#    username: ${ELASTIC_USERNAME}
+#    password: ${ELASTIC_PASSWORD}
+#    host: ${ELASTIC_HOST}
+#    port: ${ELASTIC_PORT}
 
 spring:
+  data:
+    elasticsearch:
+      client:
+        reactive:
+          username: ${ELASTIC_USERNAME}
+          password: ${ELASTIC_PASSWORD}
+          endpoints: ${ELASTIC_HOST}:${ELASTIC_PORT}
+          use-ssl: true
+
   security:
     oauth2:
       resourceserver:
