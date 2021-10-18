@@ -21,7 +21,7 @@ export default () => {
 		<Router>
 			<Body>
 				<Switch>
-					<Route path={['/login', '/oauth2/authorization/idporten']}>
+					<Route path="/login">
 						<LoginPage />
 					</Route>
 					<Route path="/access-token/scope/:scope">

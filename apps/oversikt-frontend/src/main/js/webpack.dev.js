@@ -34,6 +34,11 @@ module.exports = merge(common, {
 				changeOrigin: true,
 				secure: false,
 			},
+			'/oauth2/authorization/idporten': {
+				target: 'http://localhost:8080',
+				changeOrigin: true,
+				secure: false,
+			},
 		},
 	},
 	plugins: [new MiniCssExtractPlugin()],
