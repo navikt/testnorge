@@ -112,8 +112,8 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(udiStubProxyProperties, "udi-stub"))
                 .route(createRoute(testnavPdlForvalterProperties, "testnav-pdl-forvalter"))
                 .route(createRoute(personSearchServiceProperties))
-                .route(createRoute(testnavPersonOrganisasjonTilgangServiceProperties))
-                .route(createRoute(testnavBrukerServiceProperties))
+                .route(createRoute(testnavPersonOrganisasjonTilgangServiceProperties, "testnav-person-organisasjon-tilgang-service"))
+                .route(createRoute(testnavBrukerServiceProperties, "testnav-bruker-service"))
                 .build();
     }
 
