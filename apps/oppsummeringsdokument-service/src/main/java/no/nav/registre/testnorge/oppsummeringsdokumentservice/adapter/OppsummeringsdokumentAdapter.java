@@ -1,12 +1,15 @@
 package no.nav.registre.testnorge.oppsummeringsdokumentservice.adapter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.consumer.AaregSyntConsumer;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.domain.Oppsummeringsdokument;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.OppsummeringsdokumentRepository;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.OppsummeringsdokumentModel;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
+import org.elasticsearch.ElasticsearchStatusException;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
@@ -32,6 +35,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OppsummeringsdokumentAdapter {
 
+    private final ObjectMapper objectMapper;
     private final OppsummeringsdokumentRepository repository;
     private final ElasticsearchOperations operations;
     private final AaregSyntConsumer aaregSyntConsumer;
@@ -44,12 +48,20 @@ public class OppsummeringsdokumentAdapter {
         repository.deleteAllByMiljo(miljo);
     }
 
+    @SneakyThrows
     public String save(Oppsummeringsdokument oppsummeringsdokument, String miljo, String origin) {
         log.info("Oppretter oppsummeringsdokument for opplysningsplikitg {} i {}...", oppsummeringsdokument.getOpplysningspliktigOrganisajonsnummer(), miljo);
         aaregSyntConsumer.saveOpplysningspliktig(oppsummeringsdokument, miljo);
-        var id = repository.save(oppsummeringsdokument.toModel(miljo, origin)).getId();
-        log.info("Oppsummeringsdokument (id: {}) opprett for opplysningsplikitg {} i {}.", id, oppsummeringsdokument.getOpplysningspliktigOrganisajonsnummer(), miljo);
-        return id;
+
+        try {
+            var id = repository.save(oppsummeringsdokument.toModel(miljo, origin)).getId();
+            log.info("Oppsummeringsdokument (id: {}) opprett for opplysningsplikitg {} i {}.", id, oppsummeringsdokument.getOpplysningspliktigOrganisajonsnummer(), miljo);
+            return id;
+        } catch (ElasticsearchStatusException ex) {
+            log.error("Feil ved innsending av \n{}", objectMapper.writeValueAsString( oppsummeringsdokument.toDTO()), ex);
+            throw ex;
+        }
+
     }
 
     public Oppsummeringsdokument get(String id) {
@@ -86,6 +98,16 @@ public class OppsummeringsdokumentAdapter {
                 .withQuery(
                         QueryBuilders.matchQuery("miljo", miljo)
                 )
+        );
+    }
+
+    public Page<Oppsummeringsdokument> getAllCurrentDocumentsBy(String miljo, Integer page) {
+        var pageable = PageRequest.of(page, 1);
+        return getAllCurrentDocumentsBy(new NativeSearchQueryBuilder()
+                        .withQuery(
+                                QueryBuilders.matchQuery("miljo", miljo)
+                        ).withPageable(pageable),
+                pageable
         );
     }
 
