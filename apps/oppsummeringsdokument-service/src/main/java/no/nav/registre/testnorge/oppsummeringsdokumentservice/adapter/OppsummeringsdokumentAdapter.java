@@ -50,7 +50,8 @@ public class OppsummeringsdokumentAdapter {
 
     @SneakyThrows
     public String save(Oppsummeringsdokument oppsummeringsdokument, String miljo, String origin) {
-        log.info("Oppretter oppsummeringsdokument for opplysningsplikitg {} i {}...", oppsummeringsdokument.getOpplysningspliktigOrganisajonsnummer(), miljo);
+        log.info("Oppretter oppsummeringsdokument for opplysningspliktig {} i {}...",
+                oppsummeringsdokument.getOpplysningspliktigOrganisajonsnummer(), miljo);
         aaregSyntConsumer.saveOpplysningspliktig(oppsummeringsdokument, miljo);
 
         try {
@@ -58,7 +59,7 @@ public class OppsummeringsdokumentAdapter {
             log.info("Oppsummeringsdokument (id: {}) opprett for opplysningsplikitg {} i {}.", id, oppsummeringsdokument.getOpplysningspliktigOrganisajonsnummer(), miljo);
             return id;
         } catch (UncategorizedElasticsearchException ex) {
-            log.error("Feil ved innsending av \n{}", objectMapper.writeValueAsString( oppsummeringsdokument.toDTO()), ex);
+            log.error("Feil ved innsending av \n{}", objectMapper.writeValueAsString(oppsummeringsdokument.toDTO()), ex);
             throw ex;
         }
 
