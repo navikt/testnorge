@@ -6,7 +6,6 @@ import { applicationErrorSelector, clearAllErrors } from '~/ducks/errors'
 import { getCurrentBruker, getCurrentBrukerBilde, getCurrentBrukerProfil } from '~/ducks/bruker'
 import { getVarslinger, getVarslingerBruker, updateVarslingerBruker } from '~/ducks/varslinger'
 import { createLoadingSelector } from '~/ducks/loading'
-import ConfigService from '~/service/Config'
 
 const loadingVarslinger = createLoadingSelector(getVarslingerBruker)
 
@@ -20,7 +19,6 @@ const mapStateToProps = (state) => ({
 	isLoadingVarslinger: loadingVarslinger(state),
 	redirectTo: state.common.redirectTo,
 	applicationError: applicationErrorSelector(state),
-	configReady: ConfigService.verifyConfig(),
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
@@ -33,7 +31,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 	updateVarslingerBruker: (varslingId) => dispatch(updateVarslingerBruker(varslingId)),
 	clearAllErrors: () => dispatch(clearAllErrors()),
 	getEnvironments: () => dispatch(getEnvironments()),
-	fetchConfig: () => ConfigService.fetchConfig(),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)
