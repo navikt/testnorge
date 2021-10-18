@@ -2,6 +2,11 @@ package no.nav.registre.testnorge.oppsummeringsdokumentservice.adapter;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.oppsummeringsdokumentservice.consumer.AaregSyntConsumer;
+import no.nav.registre.testnorge.oppsummeringsdokumentservice.domain.Oppsummeringsdokument;
+import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.OppsummeringsdokumentRepository;
+import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.OppsummeringsdokumentModel;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
@@ -21,12 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
-import no.nav.registre.testnorge.oppsummeringsdokumentservice.consumer.AaregSyntConsumer;
-import no.nav.registre.testnorge.oppsummeringsdokumentservice.domain.Oppsummeringsdokument;
-import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.OppsummeringsdokumentRepository;
-import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.OppsummeringsdokumentModel;
 
 @Slf4j
 @Component

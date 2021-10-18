@@ -26,7 +26,7 @@ spring:
   application:
     name: oppsummeringsdokument-service
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
-    description: Tjeneste for å sende inn oppsummeringsdokument til aareg og søke i innstende oppsummeringsdokumenter.
+    description: Tjeneste for å sende inn oppsummeringsdokument til aareg og søke i innsendte oppsummeringsdokumenter.
   elasticsearch:
     rest:
       username: ${ELASTIC_USERNAME}
