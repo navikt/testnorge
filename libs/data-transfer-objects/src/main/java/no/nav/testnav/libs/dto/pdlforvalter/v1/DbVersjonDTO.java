@@ -21,8 +21,6 @@ import static java.util.Objects.nonNull;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class DbVersjonDTO implements Serializable {
 
-    public enum Master {FREG, PDL}
-
     @Schema(description = "Versjon av informasjonselement. Fravær av denne eller 0 betyr nytt element")
     private Integer id;
 
@@ -34,6 +32,10 @@ public abstract class DbVersjonDTO implements Serializable {
             description = "Hvem er master, FREG eller PDL?")
     private Master master;
 
+    @Schema(defaultValue = "true",
+            description = "true = gjeldende informasjon, false = historisk")
+    private Boolean erGjeldende;
+
     @JsonIgnore
     private Boolean isNew;
 
@@ -41,4 +43,6 @@ public abstract class DbVersjonDTO implements Serializable {
     protected static <T> int count(T artifact) {
         return nonNull(artifact) ? 1 : 0;
     }
+
+    public enum Master {FREG, PDL}
 }

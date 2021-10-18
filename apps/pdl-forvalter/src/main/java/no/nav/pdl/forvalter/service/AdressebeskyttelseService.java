@@ -34,6 +34,7 @@ public class AdressebeskyttelseService implements BiValidation<Adressebeskyttels
                 handle(type, person);
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
+                type.setErGjeldende(nonNull(type.getErGjeldende()) ? type.getErGjeldende(): true);
             }
         }
         return person.getAdressebeskyttelse();

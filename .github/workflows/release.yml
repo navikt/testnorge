@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - feature/pdl-forvalter_legge_til_gjeldende_attribute
     paths:
       - libs/**
 
