@@ -30,7 +30,7 @@ import static no.nav.dolly.domain.resultset.SystemTyper.PDL_DATA;
 public final class BestillingPdlDataStatusMapper {
 
     private static final String JSON_PARSE_ERROR = "Teknisk feil, se logg! Parsing av response fra PDL-forvalter feilet";
-    private static final String ELEMENT_ERROR_FMT = "Element: %s, Id: %d, Feil: %s";
+    private static final String ELEMENT_ERROR_FMT = "FEIL: Element: %s, Id: %d, Beskrivelse: %s";
 
     public static List<RsStatusRapport> buildPdlDataStatusMap(List<BestillingProgress> bestProgress, ObjectMapper objectMapper) {
 

@@ -28,7 +28,7 @@ public class BestillingPdlForvalterStatusMapperTest {
     @Test
     public void buildPdldataStatusMap_emptyList() {
 
-        List<RsStatusRapport> resultat = BestillingPdlForvalterStatusMapper.buildPdlForvalterStatusMap(List.of(BestillingProgress.builder().build()));
+        List<RsStatusRapport> resultat = BestillingPdlForvalterStatusMapper.buildPdlForvalterStatusMap(List.of(BestillingProgress.builder().build()), null);
 
         assertThat(resultat, is(empty()));
     }
@@ -45,7 +45,7 @@ public class BestillingPdlForvalterStatusMapperTest {
                                 .pdlforvalterStatus(PDL_STATUS_OK)
                                 .ident(IDENT_2)
                                 .build()
-                ));
+                ), null);
 
         assertThat(resultat.get(0).getId().name(), is(equalTo(UTENLANDS_PDL)));
         assertThat(resultat.get(0).getStatuser().get(0).getMelding(), is(equalTo("OK")));
@@ -64,7 +64,7 @@ public class BestillingPdlForvalterStatusMapperTest {
                                 .pdlforvalterStatus(PDL_STATUS_NOK)
                                 .ident(IDENT_2)
                                 .build()
-                ));
+                ), null);
 
         assertThat(resultat.get(0).getId().name(), is(equalTo(UTENLANDS_PDL)));
         assertThat(resultat.get(0).getStatuser(), hasSize(2));

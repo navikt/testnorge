@@ -15,6 +15,7 @@ import java.util.concurrent.Callable;
 public class PdlDataOrdreCommand implements Callable<Mono<String>> {
 
     private static final String PDL_FORVALTER_ORDRE_URL = "/api/v1/personer/{ident}/ordre";
+    private static final String IS_TPS_MASTER = "isTpsMaster";
 
     private final WebClient webClient;
     private final String ident;
@@ -24,7 +25,9 @@ public class PdlDataOrdreCommand implements Callable<Mono<String>> {
 
         return webClient
                 .post()
-                .uri(uriBuilder -> uriBuilder.path(PDL_FORVALTER_ORDRE_URL).build(ident))
+                .uri(uriBuilder -> uriBuilder.path(PDL_FORVALTER_ORDRE_URL)
+                        .queryParam(IS_TPS_MASTER, true)
+                        .build(ident))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .retrieve()
