@@ -9,7 +9,6 @@ import no.nav.registre.testnorge.oppsummeringsdokumentservice.domain.Oppsummerin
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.OppsummeringsdokumentRepository;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.repository.model.OppsummeringsdokumentModel;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
-import org.elasticsearch.ElasticsearchStatusException;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
@@ -19,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.UncategorizedElasticsearchException;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
@@ -57,7 +57,7 @@ public class OppsummeringsdokumentAdapter {
             var id = repository.save(oppsummeringsdokument.toModel(miljo, origin)).getId();
             log.info("Oppsummeringsdokument (id: {}) opprett for opplysningsplikitg {} i {}.", id, oppsummeringsdokument.getOpplysningspliktigOrganisajonsnummer(), miljo);
             return id;
-        } catch (ElasticsearchStatusException ex) {
+        } catch (UncategorizedElasticsearchException ex) {
             log.error("Feil ved innsending av \n{}", objectMapper.writeValueAsString( oppsummeringsdokument.toDTO()), ex);
             throw ex;
         }
