@@ -31,6 +31,7 @@ spec:
         - host: elastic-dolly-testdata-gjeter-nav-dev.aivencloud.com
   elastic:
     instance: testdata-gjeter
+    access: readwrite
   tokenx:
     enabled: true
   azure:
