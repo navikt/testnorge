@@ -5,11 +5,12 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = merge(common, {
 	mode: 'development',
-	devtool: 'inline-source-map',
+	devtool: 'eval-source-map',
 	devServer: {
 		port: 3000,
 		contentBase: path.join(__dirname, 'public'),
 		hot: true,
+		writeToDisk: false,
 		historyApiFallback: { index: '/', disableDotRule: true },
 		proxy: {
 			'/api': {

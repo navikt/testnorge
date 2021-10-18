@@ -8,28 +8,35 @@ const Bold = styled.td`
 	font-weight: bold;
 `
 
-export default () => (
+const OrgTableBox = () => (
 	<Box header="Organisasjonstilgang">
 		<LoadableComponent
 			onFetch={OrganisasjonService.getOrganisasjoner}
 			render={(list) => (
 				<table>
-					<tr>
-						<td>
-							<Bold>Navn</Bold>
-						</td>
-						<td>
-							<Bold>Orgnummer</Bold>
-						</td>
-					</tr>
-					{list.map((item) => (
+					<tbody>
 						<tr>
-							<td>{item.navn + (item.organisasjonsfrom === 'AS' ? ' AS' : '')}</td>
-							<td>{item.organisasjonsnummer}</td>
+							<td>
+								<Bold>Navn</Bold>
+							</td>
+							<td>
+								<Bold>Orgnummer</Bold>
+							</td>
 						</tr>
-					))}
+						{list &&
+							list.map((item) => (
+								<tr>
+									<td>{item.navn + (item.organisasjonsfrom === 'AS' ? ' AS' : '')}</td>
+									<td>{item.organisasjonsnummer}</td>
+								</tr>
+							))}
+					</tbody>
 				</table>
 			)}
 		/>
 	</Box>
 )
+
+OrgTableBox.displayName = 'OrgTableBox'
+
+export default OrgTableBox

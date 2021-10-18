@@ -2,8 +2,7 @@ import React from 'react'
 
 import { Page } from '@/pages/Page'
 import styled from 'styled-components'
-import { Fareknapp, Hovedknapp } from 'nav-frontend-knapper'
-import VelgBox from '@/pages/UserPage/VelgBox'
+import ChooseBox from '@/pages/UserPage/ChooseBox'
 import OrgTableBox from '@/pages/UserPage/OrgTableBox'
 import UserInfoBox from '@/pages/UserPage/UserInfoBox'
 import CreateUserBox from '@/pages/UserPage/CreateUserBox'
@@ -21,7 +20,7 @@ export default () => (
 		<Content>
 			<OrgTableBox />
 			<UserInfoBox />
-			<VelgBox />
+			<ChooseBox />
 			<CreateUserBox />
 			<DeleteUserBox />
 			<ChangeUsernameBox />

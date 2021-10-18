@@ -5,7 +5,7 @@ import { Hovedknapp } from 'nav-frontend-knapper'
 import { Input } from 'nav-frontend-skjema'
 import BrukerService, { Bruker } from '@/services/BrukerService'
 
-const Bold = styled.td`
+const HeaderTd = styled.td`
 	font-weight: bold;
 `
 
@@ -22,33 +22,32 @@ export default () => {
 			setBruker(value)
 		})
 
+	const formatDate = (value: string) => {
+		const date = new Date(Date.parse(value))
+		return date.toLocaleString('no-NO')
+	}
+
 	return (
 		<Box header="Brukerinfo">
 			<table>
-				<tr>
-					<td>
-						<Bold>Brukernavn</Bold>
-					</td>
-					{bruker && <td>{bruker.brukernavn}</td>}
-				</tr>
-				<tr>
-					<td>
-						<Bold>Orgnummer</Bold>
-					</td>
-					{bruker && <td>{bruker.organisasjonsnummer}</td>}
-				</tr>
-				<tr>
-					<td>
-						<Bold>Opprettet</Bold>
-					</td>
-					{bruker && <td>{bruker.opprettet}</td>}
-				</tr>
-				<tr>
-					<td>
-						<Bold>Sist Innlogget</Bold>
-					</td>
-					{bruker && <td>{bruker.sistInnlogget}</td>}
-				</tr>
+				<tbody>
+					<tr>
+						<HeaderTd>Brukernavn:</HeaderTd>
+						{bruker && <td>{bruker.brukernavn}</td>}
+					</tr>
+					<tr>
+						<HeaderTd>Orgnummer:</HeaderTd>
+						{bruker && <td>{bruker.organisasjonsnummer}</td>}
+					</tr>
+					<tr>
+						<HeaderTd>Opprettet:</HeaderTd>
+						{bruker && <td>{bruker.sistInnlogget}</td>}
+					</tr>
+					<tr>
+						<HeaderTd>Sist Innlogget:</HeaderTd>
+						{bruker && <td>{formatDate(bruker.sistInnlogget)}</td>}
+					</tr>
+				</tbody>
 			</table>
 			<Input label="Orgnummer" type="text" onBlur={(event) => setOrgnummer(event.target.value)} />
 			<StyledHovedknapp onClick={onSubmit}>Hent bruker</StyledHovedknapp>

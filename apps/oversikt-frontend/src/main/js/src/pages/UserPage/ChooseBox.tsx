@@ -9,7 +9,7 @@ const StyledHovedknapp = styled(Hovedknapp)`
 	margin: 5px 0;
 `
 
-export default () => {
+const ChooseBox = () => {
 	const [orgnummer, setOrgnummer] = useState('')
 	return (
 		<Box header="Velg organisasasjon">
@@ -20,3 +20,7 @@ export default () => {
 		</Box>
 	)
 }
+
+ChooseBox.displayName = 'ChooseBox'
+
+export default ChooseBox

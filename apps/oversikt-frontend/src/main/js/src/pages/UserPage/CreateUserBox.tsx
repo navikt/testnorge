@@ -8,10 +8,14 @@ const StyledHovedknapp = styled(Hovedknapp)`
 	margin: 5px 0;
 `
 
-export default () => (
+const CreateUserBox = () => (
 	<Box header="Opprett bruker">
 		<Input label="Brukernavn" type="text" />
 		<Input label="Orgnummer" type="text" />
 		<StyledHovedknapp>Opprett</StyledHovedknapp>
 	</Box>
 )
+
+CreateUserBox.displayName = 'CreateUserBox'
+
+export default CreateUserBox

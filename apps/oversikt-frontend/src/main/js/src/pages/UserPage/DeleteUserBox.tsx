@@ -6,8 +6,13 @@ import { Fareknapp } from 'nav-frontend-knapper'
 const StyledFareknapp = styled(Fareknapp)`
 	margin: 5px 0;
 `
-export default () => (
+
+const DeleteUserBox = () => (
 	<Box header="Slett bruker">
 		<StyledFareknapp>Slett</StyledFareknapp>
 	</Box>
 )
+
+DeleteUserBox.displayName = 'DeleteUserBox'
+
+export default DeleteUserBox

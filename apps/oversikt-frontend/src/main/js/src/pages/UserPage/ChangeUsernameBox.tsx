@@ -8,9 +8,13 @@ const StyledHovedknapp = styled(Hovedknapp)`
 	margin: 5px 0;
 `
 
-export default () => (
+const ChangeUsernameBox = () => (
 	<Box header="Endre brukernavn">
 		<Input label="Brukernavn" type="text" />
 		<StyledHovedknapp>Endre</StyledHovedknapp>
 	</Box>
 )
+
+ChangeUsernameBox.displayName = 'ChangeUsernameBox'
+
+export default ChangeUsernameBox
