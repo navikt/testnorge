@@ -5,8 +5,8 @@ import no.nav.pdl.forvalter.config.credentials.IdentPoolProperties;
 import no.nav.pdl.forvalter.consumer.command.IdentpoolPostCommand;
 import no.nav.pdl.forvalter.dto.HentIdenterRequest;
 import no.nav.pdl.forvalter.dto.IdentDTO;
-import no.nav.testnav.libs.reactivesecurity.domain.ServerProperties;
-import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -22,11 +22,11 @@ public class IdentPoolConsumer {
     private static final String REKVIRERT_AV = "rekvirertAv=PDLF";
 
     private final WebClient webClient;
-    private final TokenExchange tokenExchange;
+    private final AccessTokenService accessTokenService;
     private final ServerProperties properties;
 
-    public IdentPoolConsumer(TokenExchange tokenExchange, IdentPoolProperties properties) {
-        this.tokenExchange = tokenExchange;
+    public IdentPoolConsumer(AccessTokenService accessTokenService, IdentPoolProperties properties) {
+        this.accessTokenService = accessTokenService;
         this.properties = properties;
         this.webClient = WebClient
                 .builder()
@@ -36,14 +36,14 @@ public class IdentPoolConsumer {
 
     public Flux<List<IdentDTO>> getIdents(HentIdenterRequest request) {
 
-        return Flux.from(tokenExchange.generateToken(properties).flatMap(
+        return Flux.from(accessTokenService.generateToken(properties).flatMap(
                 token -> new IdentpoolPostCommand(webClient, ACQUIRE_IDENTS_URL, null, request,
                         token.getTokenValue()).call()));
     }
 
     public Flux<List<IdentDTO>> releaseIdents(List<String> identer) {
 
-        return Flux.from(tokenExchange.generateToken(properties).flatMap(
+        return Flux.from(accessTokenService.generateToken(properties).flatMap(
                 token -> new IdentpoolPostCommand(webClient, RELEASE_IDENTS_URL, REKVIRERT_AV, identer,
                         token.getTokenValue()).call()));
     }
