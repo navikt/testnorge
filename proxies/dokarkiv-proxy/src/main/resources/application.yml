@@ -3,7 +3,7 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 spring:
   application:
     name: testnav-dokarkiv-proxy
-    desciption: Proxy for dokarkiv som legger på sikkerhet og redirecter til riktig miljø.
+    desciption: Proxy for dokarkiv som legger på sikkerhet og redirecter til riktig miljø..
   security:
     oauth2:
       resourceserver:
