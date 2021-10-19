@@ -11,7 +11,7 @@ module.exports = (env) =>
 		devServer: {
 			port: 3000,
 			open: {
-				target: [`http://localhost:3000/oauth2/authorization/aad`],
+				target: [`http://localhost:3000/login`],
 				app: {
 					name: 'Google Chrome',
 				},
@@ -33,6 +33,10 @@ module.exports = (env) =>
 					secure: false,
 				},
 				'/oauth2/authorization/aad': {
+					target: env.backend,
+					secure: false,
+				},
+				'/oauth2/authorization/idporten': {
 					target: env.backend,
 					secure: false,
 				},
