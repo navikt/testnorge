@@ -14,7 +14,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import no.nav.testnav.libs.reactivesessionsecurity.domain.TestnavBrukerServiceServiceProperties;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.AzureAdTokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenXExchange;
@@ -29,7 +28,6 @@ import no.nav.testnav.libs.reactivesessionsecurity.resolver.InMemoryTokenResolve
         AzureAdTokenExchange.class,
         TokenXExchange.class,
         ClientRegistrationIdResolver.class,
-        TestnavBrukerServiceServiceProperties.class,
         UserJwtExchange.class
 })
 @RequiredArgsConstructor

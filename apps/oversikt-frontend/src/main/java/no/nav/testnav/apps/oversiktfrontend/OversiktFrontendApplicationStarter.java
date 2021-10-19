@@ -16,7 +16,7 @@ import java.util.function.Function;
 
 import no.nav.testnav.apps.oversiktfrontend.credentials.PersonOrganisasjonTilgangServiceProperties;
 import no.nav.testnav.apps.oversiktfrontend.credentials.ProfilApiServiceProperties;
-import no.nav.testnav.libs.reactivesessionsecurity.domain.TestnavBrukerServiceServiceProperties;
+import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.TestnavBrukerServiceProperties;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
 import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
@@ -36,7 +36,7 @@ public class OversiktFrontendApplicationStarter {
 
     private final ProfilApiServiceProperties profilApiServiceProperties;
     private final PersonOrganisasjonTilgangServiceProperties personOrganisasjonTilgangServiceProperties;
-    private final TestnavBrukerServiceServiceProperties testnavBrukerServiceServiceProperties;
+    private final TestnavBrukerServiceProperties testnavBrukerServiceServiceProperties;
     private final TokenExchange tokenExchange;
 
     public static void main(String[] args) {

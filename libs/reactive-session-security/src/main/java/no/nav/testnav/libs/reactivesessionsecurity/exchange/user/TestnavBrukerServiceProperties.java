@@ -1,4 +1,4 @@
-package no.nav.testnav.libs.reactivesessionsecurity.domain;
+package no.nav.testnav.libs.reactivesessionsecurity.exchange.user;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -8,5 +8,5 @@ import no.nav.testnav.libs.reactivesessionsecurity.domain.ServerProperties;
 
 @Configuration
 @ConfigurationProperties(prefix = "consumers.testnav-bruker-service")
-public class TestnavBrukerServiceServiceProperties extends ServerProperties {
+public class TestnavBrukerServiceProperties extends ServerProperties {
 }
