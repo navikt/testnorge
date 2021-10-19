@@ -6,13 +6,13 @@ const personOrgTilgangServiceUrl =
 export default {
 	getOrganisasjoner() {
 		return Request.get(`${personOrgTilgangServiceUrl}`).then((response) => {
-			if (response != null) return response
+			return response
 		})
 	},
 
 	getOrganisasjon(orgnr: string) {
 		return Request.get(`${personOrgTilgangServiceUrl}/${orgnr}`).then((response) => {
-			if (response != null) return response
+			return response
 		})
 	},
 }
