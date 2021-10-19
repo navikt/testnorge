@@ -1,0 +1,25 @@
+CRYPTOGRAPHY_SECRET: DUMMY SUPER SECRET CRYPTOGRAPHY KEY THAT IS NOT SECURE
+JWT_SECRET: DUMMY SUPER SECRET JWT KEY THAT IS NOT SECURE
+
+azure.app.client.id: ${client_id}
+azure.app.client.secret: ${client_secret}
+
+spring:
+  application:
+    name: testnav-bruker-service-dev
+  security:
+    oauth2:
+      resourceserver:
+        tokenx:
+          issuer-uri: https://tokendings.dev-gcp.nais.io
+          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          accepted-audience: dev-gcp:dolly:testnav-bruker-service-dev
+  flyway:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+
+consumers:
+  testnav-person-organisasjon-tilgang-service:
+    url: https://testnav-person-organisasjon-tilgang-service-dev.dev.intern.nav.no
+    name: testnav-person-organisasjon-tilgang-service-dev

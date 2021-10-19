@@ -95,41 +95,33 @@ includeBuild './apps/testnorge-inntekt'
 includeBuild './apps/app-tilgang-analyse-service'
 includeBuild './apps/organisasjon-forvalter'
 includeBuild './apps/testnorge-arena'
+includeBuild './apps/testnorge-tss'
 includeBuild './apps/organisasjon-tilgang-service'
 includeBuild './apps/person-organisasjon-tilgang-service'
 includeBuild './apps/ident-pool'
+includeBuild './apps/bruker-service'
+includeBuild './apps/testnorge-sam'
+includeBuild './apps/testnorge-medl'
+includeBuild './apps/testnorge-frikort'
+includeBuild './apps/testnorge-tp'
+includeBuild './apps/testnorge-statisk-data-forvalter'
+includeBuild './apps/testnorge-bisys'
+includeBuild './apps/testnorge-nav-endringsmeldinger'
+includeBuild './apps/testnorge-sigrun'
+
 includeBuild './xsd/arbeidsforhold-xsd'
 
 includeBuild './gradlePlugins'
 include(':proxies')
 include(':inntektsmelding-generator-service')
-include(':testnorge-tss')
-include(':tp-domain')
 include(':sykemelding-api')
-include(':medl-core')
 include(':mn-original-populasjon')
-include(':medl-local')
-include(':sigrun-local')
-include(':testnorge-nav-endringsmeldinger')
-include(':testnorge-frikort')
 include(':testnorge-aaregstub')
-include(':sam-domain')
-include(':medl-domain')
-include(':testnorge-sigrun')
 include(':testnorge-token-provider')
-include(':nav-endringsmeldinger-core')
-include(':testnorge-tp')
 include(':udi-stub')
 include(':testnorge-hodejegeren')
-include(':sigrun-core')
-include(':testnorge-bisys')
-include(':testnorge-statisk-data-forvalter')
-include(':nav-endringsmeldinger-local')
-include(':tp-local')
 include(':testnorge-populasjoner')
-include(':sam-core')
 include(':tilbakemelding-api')
-include(':sam-local')
 include(':mn-organisasjon-api')
 include(':organisasjon-service')
 include(':organisasjon-service')
@@ -137,16 +129,12 @@ include(':token-provider-core')
 include(':helsepersonell-service')
 include(':person-export-api')
 include(':apps')
-include(':sigrun-domain')
 include(':libs')
 include(':testnorge-spion')
 include(':opprett-person-pdl')
-include(':tp-core')
 include(':synt-person-api')
-include(':testnorge-sam')
 include(':statistikk-service')
 
-include(':testnorge-medl')
 include(':ident-check-in-prod-service')
 include(':mn-person-service')
 include(':mn-synt-arbeidsforhold-service')
@@ -154,48 +142,25 @@ include(':organisasjon-orgnummer-service')
 include(':tps-identer-vedlikehold')
 
 project(":inntektsmelding-generator-service").projectDir = file('apps/inntektsmelding-generator-service')
-project(":testnorge-tss").projectDir = file('apps/testnorge-tss')
-project(":tp-domain").projectDir = file('apps/testnorge-tp/tp-domain')
 project(":sykemelding-api").projectDir = file('apps/sykemelding-api')
-project(":medl-core").projectDir = file('apps/testnorge-medl/medl-core')
 project(":mn-original-populasjon").projectDir = file('apps/mn-original-populasjon')
-project(":medl-local").projectDir = file('apps/testnorge-medl/medl-local')
-project(":sigrun-local").projectDir = file('apps/testnorge-sigrun/sigrun-local')
-project(":testnorge-nav-endringsmeldinger").projectDir = file('apps/testnorge-nav-endringsmeldinger')
-project(":testnorge-frikort").projectDir = file('apps/testnorge-frikort')
 project(":testnorge-aaregstub").projectDir = file('apps/testnorge-aaregstub')
-project(":sam-domain").projectDir = file('apps/testnorge-sam/sam-domain')
-project(":medl-domain").projectDir = file('apps/testnorge-medl/medl-domain')
-project(":testnorge-sigrun").projectDir = file('apps/testnorge-sigrun')
 project(":testnorge-token-provider").projectDir = file('apps/testnorge-token-provider')
-project(":nav-endringsmeldinger-core").projectDir = file('apps/testnorge-nav-endringsmeldinger/nav-endringsmeldinger-core')
-project(":testnorge-tp").projectDir = file('apps/testnorge-tp')
 project(":udi-stub").projectDir = file('apps/udi-stub')
 project(":testnorge-hodejegeren").projectDir = file('apps/testnorge-hodejegeren')
-project(":sigrun-core").projectDir = file('apps/testnorge-sigrun/sigrun-core')
-project(":testnorge-bisys").projectDir = file('apps/testnorge-bisys')
-project(":testnorge-statisk-data-forvalter").projectDir = file('apps/testnorge-statisk-data-forvalter')
-project(":nav-endringsmeldinger-local").projectDir = file('apps/testnorge-nav-endringsmeldinger/nav-endringsmeldinger-local')
-project(":tp-local").projectDir = file('apps/testnorge-tp/tp-local')
 project(":testnorge-populasjoner").projectDir = file('apps/testnorge-populasjoner')
-project(":sam-core").projectDir = file('apps/testnorge-sam/sam-core')
 project(":tilbakemelding-api").projectDir = file('apps/tilbakemelding-api')
-project(":sam-local").projectDir = file('apps/testnorge-sam/sam-local')
 project(":mn-organisasjon-api").projectDir = file('apps/mn-organisasjon-api')
 project(":organisasjon-service").projectDir = file('apps/organisasjon-service')
 project(":organisasjon-service").projectDir = file('apps/organisasjon-service')
 project(":token-provider-core").projectDir = file('apps/testnorge-token-provider/token-provider-core')
 project(":helsepersonell-service").projectDir = file('apps/helsepersonell-service')
 project(":person-export-api").projectDir = file('apps/person-export-api')
-project(":sigrun-domain").projectDir = file('apps/testnorge-sigrun/sigrun-domain')
 project(":testnorge-spion").projectDir = file('apps/testnorge-spion')
 project(":opprett-person-pdl").projectDir = file('apps/opprett-person-pdl')
-project(":tp-core").projectDir = file('apps/testnorge-tp/tp-core')
 project(":synt-person-api").projectDir = file('apps/synt-person-api')
-project(":testnorge-sam").projectDir = file('apps/testnorge-sam')
 project(":statistikk-service").projectDir = file('apps/statistikk-service')
 
-project(":testnorge-medl").projectDir = file('apps/testnorge-medl')
 project(":mn-person-service").projectDir = file('apps/mn-person-service')
 project(":mn-synt-arbeidsforhold-service").projectDir = file('apps/mn-synt-arbeidsforhold-service')
 project(":ident-check-in-prod-service").projectDir = file('apps/ident-check-in-prod-service')
@@ -246,3 +211,4 @@ project(':person-faste-data-service').projectDir = file('apps/person-faste-data-
 
 include(':brreg-stub')
 project(":brreg-stub").projectDir = file('apps/brreg-stub')
+

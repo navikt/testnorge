@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import no.nav.registre.sdforvalter.adapter.EregAdapter;
 import no.nav.registre.sdforvalter.adapter.TpsIdenterAdapter;
@@ -79,9 +79,19 @@ public class FileController {
     public ResponseEntity<?> importTpsIdenter(@RequestParam("file") MultipartFile file,
                                               @Parameter(description = "Hvis true settes tilfeldig navn på personer uten fornavn og etternavn")
                                               @RequestParam(name = "Generer manglende navn", defaultValue = "false") Boolean genererManglendeNavn) throws IOException {
-        List<TpsIdent> list = TpsIdentCsvConverter.inst().read(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8));
+        List<TpsIdent> list = TpsIdentCsvConverter.inst().read(cleanInput(file.getInputStream()));
 
         identService.save(new TpsIdentListe(list), genererManglendeNavn);
         return ResponseEntity.ok().build();
     }
+
+    private Reader cleanInput(InputStream inputStream) {
+        String character = "\uFEFF";
+        return new StringReader(
+                new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))
+                        .lines()
+                        .collect(Collectors.joining("\n")).replace(character, "")
+        );
+    }
+
 }

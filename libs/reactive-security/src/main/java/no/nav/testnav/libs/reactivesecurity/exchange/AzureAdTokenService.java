@@ -20,7 +20,7 @@ import java.net.URI;
 import java.time.Duration;
 import java.util.Map;
 
-import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedTokenAction;
+import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedToken;
 import no.nav.testnav.libs.reactivesecurity.domain.AccessScopes;
 import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
 import no.nav.testnav.libs.reactivesecurity.domain.AzureClientCredentials;
@@ -34,13 +34,13 @@ import no.nav.testnav.libs.reactivesecurity.domain.Token;
 public class AzureAdTokenService implements TokenService {
     private final WebClient webClient;
     private final AzureClientCredentials clientCredentials;
-    private final GetAuthenticatedTokenAction getAuthenticatedToken;
+    private final GetAuthenticatedToken getAuthenticatedToken;
 
     public AzureAdTokenService(
             @Value("${http.proxy:#{null}}") String proxyHost,
             @Value("${AAD_ISSUER_URI}") String issuerUrl,
             AzureClientCredentials clientCredentials,
-            GetAuthenticatedTokenAction getAuthenticatedToken
+            GetAuthenticatedToken getAuthenticatedToken
     ) {
         log.info("Init AzureAd token exchange.");
         this.getAuthenticatedToken = getAuthenticatedToken;

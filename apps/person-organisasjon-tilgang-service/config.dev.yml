@@ -24,6 +24,8 @@ spec:
           cluster: dev-fss
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
+        - application: testnav-bruker-service-dev
+          cluster: dev-gcp
         - application: app-1
           cluster: dev-gcp
           namespace: plattformsikkerhet

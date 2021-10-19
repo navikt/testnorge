@@ -112,26 +112,26 @@ public class JobController {
 
     @Scheduled(cron = "0 0 0 * * *")
     public void tpsSyntBatch() {
-        log.info("Batch-kjøring for testnorge-skd midlertidig slått av.");
-//        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
-//            try {
-//                testnorgeSkdService.genererSkdmeldinger(entry.getKey(), entry.getValue(), antallSkdmeldingerPerEndringskode);
-//            } catch (HttpStatusCodeException e) {
-//                log.warn(e.getResponseBodyAsString(), e);
-//            }
-//        }
+        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
+            try {
+                testnorgeSkdService.genererSkdmeldinger(entry.getKey(), entry.getValue(), antallSkdmeldingerPerEndringskode);
+            } catch (HttpStatusCodeException e) {
+                log.warn(e.getResponseBodyAsString(), e);
+            }
+        }
     }
 
     @Scheduled(cron = "0 0 0 * * *")
     public void navSyntBatch() {
-        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
-            var syntetiserNavmeldingerRequest = SyntetiserNavmeldingerRequest.builder()
-                    .avspillergruppeId(entry.getKey())
-                    .miljoe(entry.getValue())
-                    .antallMeldingerPerEndringskode(antallNavmeldingerPerEndringskode)
-                    .build();
-            testnorgeSkdService.genererNavmeldinger(syntetiserNavmeldingerRequest);
-        }
+        log.info("Nav-endringsmeldinger batch midlertidig stanset.");
+//        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
+//            var syntetiserNavmeldingerRequest = SyntetiserNavmeldingerRequest.builder()
+//                    .avspillergruppeId(entry.getKey())
+//                    .miljoe(entry.getValue())
+//                    .antallMeldingerPerEndringskode(antallNavmeldingerPerEndringskode)
+//                    .build();
+//            testnorgeSkdService.genererNavmeldinger(syntetiserNavmeldingerRequest);
+//        }
     }
 
     @Scheduled(cron = "0 0 1 1 * *")

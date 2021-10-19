@@ -13,21 +13,26 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.util.UrlPathHelper;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 
 @ControllerAdvice
 @RequiredArgsConstructor
 public class ExceptionAdvice {
 
-    //   private final ReactorServerHttpRequest httpServletRequest;
+    private final HttpServletRequest httpServletRequest;
+    private final UrlPathHelper urlPathHelper;
 
-    private ExceptionInformation getExceptionInformation(HttpStatus statusCode, String statusText) {
+    private ExceptionInformation getExceptionInformation(HttpClientErrorException exception) {
+
         return ExceptionInformation.builder()
-                .error(statusCode.getReasonPhrase())
-                .status(statusCode.value())
-                .message(statusText)
-                //          .path(httpServletRequest.getPath().toString())
+                .error(exception.getStatusCode().getReasonPhrase())
+                .status(exception.getStatusCode().value())
+                .message(exception.getStatusText())
+                .path(urlPathHelper.getPathWithinApplication(httpServletRequest))
                 .timestamp(LocalDateTime.now())
                 .build();
     }
@@ -36,21 +41,21 @@ public class ExceptionAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidRequestException.class)
     public ExceptionInformation clientErrorException(InvalidRequestException exception) {
-        return getExceptionInformation(exception.getStatusCode(), exception.getStatusText());
+        return getExceptionInformation(exception);
     }
 
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NotFoundException.class)
     public ExceptionInformation clientErrorException(NotFoundException exception) {
-        return getExceptionInformation(exception.getStatusCode(), exception.getStatusText());
+        return getExceptionInformation(exception);
     }
 
     @ResponseBody
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(InternalServerException.class)
     public ExceptionInformation clientErrorException(InternalServerException exception) {
-        return getExceptionInformation(exception.getStatusCode(), exception.getStatusText());
+        return getExceptionInformation(exception);
     }
 
     @Data

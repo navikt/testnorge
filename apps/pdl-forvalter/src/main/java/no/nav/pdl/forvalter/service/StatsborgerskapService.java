@@ -1,10 +1,10 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.pdl.forvalter.consumer.GeografiskeKodeverkConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
-import no.nav.pdl.forvalter.utils.TilfeldigLandService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
@@ -30,7 +30,7 @@ public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
     private static final String VALIDATION_LANDKODE_ERROR = "Ugyldig landkode, må være i hht ISO-3 Landkoder";
     private static final String VALIDATION_DATOINTERVALL_ERROR = "Ugyldig datointervall: gyldigFom må være før gyldigTom";
 
-    private final TilfeldigLandService tilfeldigLandService;
+    private final GeografiskeKodeverkConsumer geografiskeKodeverkConsumer;
 
     public List<StatsborgerskapDTO> convert(PersonDTO person) {
 
@@ -67,7 +67,7 @@ public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
             } else if (FNR.equals(IdenttypeFraIdentUtility.getIdenttype(ident))) {
                 statsborgerskap.setLandkode(NORGE);
             } else {
-                statsborgerskap.setLandkode(tilfeldigLandService.getLand());
+                statsborgerskap.setLandkode(geografiskeKodeverkConsumer.getTilfeldigLand());
             }
         }
 

@@ -13,13 +13,6 @@ tps-forvalteren:
     api:
       url: https://tps-forvalteren.dev.adeo.no
 
-### NAVNEPOOL ###
-navnepool:
-  fornavn:
-    file: navnepool/adjektiv_fornavn.csv
-  etternavn:
-    file: navnepool/substantiv_etternavn.csv
-
 ### METRICS ###
 management:
   endpoints:
