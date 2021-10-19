@@ -72,7 +72,7 @@ public class BrukerController {
     @GetMapping("/{id}")
     public Mono<ResponseEntity<BrukerDTO>> getBruker(
             @PathVariable String id,
-            @RequestHeader(UserConstant.USER_ORGANISASJON_HEADER_JWT) String jwt
+            @RequestHeader(UserConstant.USER_HEADER_JWT) String jwt
     ) {
         return jwtService.verify(jwt, id)
                 .then(userService.getUser(id))
@@ -85,7 +85,7 @@ public class BrukerController {
     public Mono<ResponseEntity<String>> oppdaterBrukernavn(
             @PathVariable String id,
             @RequestBody String brukernavn,
-            @RequestHeader(UserConstant.USER_ORGANISASJON_HEADER_JWT) String jwt
+            @RequestHeader(UserConstant.USER_HEADER_JWT) String jwt
     ) {
         return jwtService.verify(jwt, id)
                 .then(userService.updateUsername(id, brukernavn))
@@ -107,7 +107,7 @@ public class BrukerController {
     @DeleteMapping("/{id}")
     public Mono<ResponseEntity<Object>> deleteBruker(
             @PathVariable String id,
-            @RequestHeader(UserConstant.USER_ORGANISASJON_HEADER_JWT) String jwt
+            @RequestHeader(UserConstant.USER_HEADER_JWT) String jwt
     ) {
         return jwtService.verify(jwt, id)
                 .then(userService.delete(id))

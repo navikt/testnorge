@@ -37,7 +37,7 @@ public class UserSessionFilter implements WebFilter {
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         return getClientId()
                 .flatMap(client -> exchange.getSession())
-                .map(session -> Optional.ofNullable(session.getAttribute(UserSessionConstant.USER_SESSION_PERSON_ORGANISASJON_ID_KEY)))
+                .map(session -> Optional.ofNullable(session.getAttribute(UserSessionConstant.SESSION_USER_ID_KEY)))
                 .flatMap(value -> value.map(Mono::just).orElseGet(Mono::empty))
                 .flatMap(value -> userJwtExchange.generateJwt((String) value, exchange))
                 .map(jwt -> exchange
@@ -45,7 +45,7 @@ public class UserSessionFilter implements WebFilter {
                         .request(exchange
                                 .getRequest()
                                 .mutate()
-                                .header(UserConstant.USER_ORGANISASJON_HEADER_JWT,  jwt)
+                                .header(UserConstant.USER_HEADER_JWT,  jwt)
                                 .build()
                         ).build())
                 .then()

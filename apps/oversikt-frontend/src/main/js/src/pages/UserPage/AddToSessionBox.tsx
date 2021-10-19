@@ -14,7 +14,7 @@ const AddToSessionBox = () => {
 	return (
 		<Box header="Legg til organisasjon til sessionen">
 			<Input label="Orgnummer" type="text" onBlur={(event) => setOrgnummer(event.target.value)} />
-			<StyledHovedknapp onClick={(event) => OrganisasjonService.setOrganisasjonsnummer(orgnummer)}>
+			<StyledHovedknapp onClick={() => OrganisasjonService.addToSession(orgnummer)}>
 				Velg
 			</StyledHovedknapp>
 		</Box>

@@ -16,7 +16,7 @@ public class GetTokenCommand implements Callable<Mono<String>> {
     @Override
     public Mono<String> call() {
         return webClient
-                .get()
+                .post()
                 .uri(builder ->builder.path("/api/v1/brukere/{id}/token").build(id))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
