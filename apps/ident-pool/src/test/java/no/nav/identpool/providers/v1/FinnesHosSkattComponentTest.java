@@ -3,17 +3,15 @@ package no.nav.identpool.providers.v1;
 import no.nav.identpool.ComponentTestbase;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
-import no.nav.identpool.providers.v1.support.ApiResponse;
 import no.nav.identpool.providers.v1.support.IdentRequest;
-import org.apache.http.client.utils.URIBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -27,11 +25,8 @@ class FinnesHosSkattComponentTest extends ComponentTestbase {
     private static final String NYTT_DNR = "50058000393";
     private static final String FNR = "10108000398";
 
-    private URI ROOT_URI;
-
     @BeforeEach
     void populerDatabaseMedTestidenter() throws URISyntaxException {
-        ROOT_URI = new URIBuilder(FINNESHOSSKATT_V1_BASEURL).build();
 
         identRepository.deleteAll();
         identRepository.save(
@@ -45,37 +40,38 @@ class FinnesHosSkattComponentTest extends ComponentTestbase {
     }
 
     @Test
-    void registrerFnrFinnesISkdMedGyldigOidc() {
-        IdentRequest request = new IdentRequest(FNR);
+    void registrerFnrErIkkeEnDnr() throws Exception {
 
-        ResponseEntity<ApiResponse> apiResponseResponseEntity = doPostRequest(ROOT_URI, createBodyEntity(request, true), ApiResponse.class);
-
-        //skal feile siden endepunktet kun skal ta DNR
-        assertThat(apiResponseResponseEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
+        mockMvc.perform(MockMvcRequestBuilders.post(FINNESHOSSKATT_V1_BASEURL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new IdentRequest(FNR))))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andReturn();
     }
 
     @Test
-    void registrerFinnesISkdOgIdentpoolMedGyldigOidc() {
-        IdentRequest request = new IdentRequest(DNR);
+    void registrerFinnesISkdOgIdentpool() throws Exception {
 
-        ResponseEntity<ApiResponse> apiResponseResponseEntity = doPostRequest(ROOT_URI, createBodyEntity(request, true), ApiResponse.class);
+        mockMvc.perform(MockMvcRequestBuilders.post(FINNESHOSSKATT_V1_BASEURL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new IdentRequest(DNR))))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
 
-        assertOK(apiResponseResponseEntity, DNR);
+        assertTrue(identRepository.findTopByPersonidentifikator(DNR).isFinnesHosSkatt());
+        assertThat(identRepository.findTopByPersonidentifikator(DNR).getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK));
     }
 
     @Test
-    void registrerFinnesISkdMenIkkeIIdentpoolMedGyldigOidc() {
-        IdentRequest request = new IdentRequest(NYTT_DNR);
+    void registrerFinnesISkdMenIkkeIIdentpool() throws Exception {
 
-        ResponseEntity<ApiResponse> apiResponseResponseEntity = doPostRequest(ROOT_URI, createBodyEntity(request, true), ApiResponse.class);
+        mockMvc.perform(MockMvcRequestBuilders.post(FINNESHOSSKATT_V1_BASEURL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new IdentRequest(NYTT_DNR))))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
 
-        assertOK(apiResponseResponseEntity, NYTT_DNR);
-    }
-
-    private void assertOK(ResponseEntity<ApiResponse> apiResponseResponseEntity, String dnr) {
-        assertThat(apiResponseResponseEntity.getStatusCode(), is(HttpStatus.OK));
-
-        assertTrue(identRepository.findTopByPersonidentifikator(dnr).isFinnesHosSkatt());
-        assertThat(identRepository.findTopByPersonidentifikator(dnr).getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK));
+        assertTrue(identRepository.findTopByPersonidentifikator(NYTT_DNR).isFinnesHosSkatt());
+        assertThat(identRepository.findTopByPersonidentifikator(NYTT_DNR).getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK));
     }
 }

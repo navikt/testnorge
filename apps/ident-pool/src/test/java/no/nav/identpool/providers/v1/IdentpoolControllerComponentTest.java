@@ -1,48 +1,43 @@
 package no.nav.identpool.providers.v1;
 
 import no.nav.identpool.ComponentTestbase;
+import no.nav.identpool.consumers.TpsfStatusResponse;
 import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Rekvireringsstatus;
-import no.nav.identpool.exception.ForFaaLedigeIdenterException;
-import no.nav.identpool.providers.v1.support.ApiError;
-import no.nav.identpool.providers.v1.support.ApiResponse;
 import no.nav.identpool.util.PersonidentUtil;
-import org.apache.http.client.utils.URIBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anySet;
+import static org.mockito.Mockito.when;
 
 class IdentpoolControllerComponentTest extends ComponentTestbase {
+
+    private static final String API_V1_IDENT_IBRUK = IDENT_V1_BASEURL + "/bruk";
+    private static final String API_V1_IDENT_LEDIG = IDENT_V1_BASEURL + "/ledig";
 
     private static final String FNR_LEDIG = "10108000398";
     private static final String DNR_LEDIG = "50108000381";
     private static final String FNR_IBRUK = "11108000327";
     private static final String NYTT_FNR_LEDIG = "20018049946";
 
-    private URI ROOT_URI;
-    private URI BRUK_URI;
-    private URI LEDIG_URI;
-
     @BeforeEach
-    void populerDatabaseMedTestidenter() throws URISyntaxException {
-        ROOT_URI = new URIBuilder(IDENT_V1_BASEURL).build();
-        BRUK_URI = new URIBuilder(IDENT_V1_BASEURL + "/bruk").build();
-        LEDIG_URI = new URIBuilder(IDENT_V1_BASEURL + "/ledig").build();
+    void populerDatabaseMedTestidenter() {
 
         identRepository.deleteAll();
         identRepository.saveAll(Arrays.asList(
@@ -59,37 +54,68 @@ class IdentpoolControllerComponentTest extends ComponentTestbase {
     }
 
     @Test
-    void hentLedigFnr() {
-        String body = "{\"antall\":\"1\", \"identtype\":\"FNR\",\"foedtEtter\":\"1900-01-01\" }";
+    void hentLedigFnr() throws Exception {
 
-        ResponseEntity<String[]> identListe = doPostRequest(ROOT_URI, createBodyEntity(body), String[].class);
+        String request = "{\"antall\":\"1\", \"identtype\":\"FNR\",\"foedtEtter\":\"1900-01-01\" }";
 
-        assertThat(identListe.getBody(), is(notNullValue()));
-        assertThat(PersonidentUtil.getIdentType(identListe.getBody()[0]), is(Identtype.FNR));
-        assertThat(identListe.getBody().length, is(1));
+        var result = mockMvc.perform(MockMvcRequestBuilders.post(IDENT_V1_BASEURL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(request))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        var identer = (List<String>) objectMapper.readValue(result.getResponse().getContentAsString(), List.class);
+
+        assertThat(PersonidentUtil.getIdentType(identer.get(0)), is(Identtype.FNR));
+        assertThat(identer, hasSize(1));
     }
 
     @Test
-    @Disabled
-    void hentLedigDnr() {
-        String body = "{\"antall\":\"2\", \"identtype\":\"DNR\",\"foedtEtter\":\"1900-01-01\" }";
+    void hentLedigDnr() throws Exception {
 
-        ResponseEntity<String[]> identListe = doPostRequest(ROOT_URI, createBodyEntity(body), String[].class);
+        String request = "{\"antall\":\"2\", \"identtype\":\"DNR\",\"foedtEtter\":\"1900-01-01\" }";
 
-        assertThat(identListe.getBody(), is(notNullValue()));
-        assertThat(PersonidentUtil.getIdentType(identListe.getBody()[0]), is(Identtype.DNR));
-        assertThat(identListe.getBody().length, is(2));
+        when(tpsfConsumer.getStatusFromTpsf(anySet(), anyBoolean())).thenReturn(TpsfStatusResponse.builder()
+                .statusPaaIdenter(List.of(
+                        TpsfStatusResponse.StatusPaaIdent.builder().ident("64038000169").build(),
+                        TpsfStatusResponse.StatusPaaIdent.builder().ident("53061600147").build(
+                        )))
+                .build());
+
+        var result = mockMvc.perform(MockMvcRequestBuilders.post(IDENT_V1_BASEURL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(request))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        var identer = (List<String>) objectMapper.readValue(result.getResponse().getContentAsString(), List.class);
+
+        assertThat(PersonidentUtil.getIdentType(identer.get(0)), is(Identtype.DNR));
+        assertThat(PersonidentUtil.getIdentType(identer.get(1)), is(Identtype.DNR));
+        assertThat(identer, hasSize(2));
     }
 
     @Test
-    @Disabled
-    void hentLedigIdent() {
-        String body = "{\"antall\":\"3\", \"identtype\":\"FNR\",\"foedtEtter\":\"1900-01-01\",\"foedtFoer\":\"1950-01-01\"}";
+    void hentLedigIdent() throws Exception {
 
-        ResponseEntity<String[]> identListe = doPostRequest(ROOT_URI, createBodyEntity(body), String[].class);
+        String request = "{\"antall\":\"3\", \"identtype\":\"FNR\",\"foedtEtter\":\"1900-01-01\",\"foedtFoer\":\"1950-01-01\"}";
 
-        assertThat(identListe.getBody(), is(notNullValue()));
-        assertThat(identListe.getBody().length, is(3));
+        when(tpsfConsumer.getStatusFromTpsf(anySet(), anyBoolean())).thenReturn(TpsfStatusResponse.builder()
+                .statusPaaIdenter(List.of(
+                        TpsfStatusResponse.StatusPaaIdent.builder().ident("15103300123").build(),
+                        TpsfStatusResponse.StatusPaaIdent.builder().ident("16022400197").build(),
+                        TpsfStatusResponse.StatusPaaIdent.builder().ident("09021000121").build()
+                )).build());
+
+        var result = mockMvc.perform(MockMvcRequestBuilders.post(IDENT_V1_BASEURL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(request))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        var identer = (List<String>) objectMapper.readValue(result.getResponse().getContentAsString(), List.class);
+
+        assertThat(identer, hasSize(3));
 
         long countDb = identRepository.countByFoedselsdatoBetweenAndIdenttypeAndRekvireringsstatusAndSyntetisk(
                 LocalDate.of(1900, 1, 1),
@@ -102,107 +128,126 @@ class IdentpoolControllerComponentTest extends ComponentTestbase {
     }
 
     @Test
-    @Disabled
-    void hentForMangeIdenterSomIkkeFinnesIDatabasen() {
-        String body = "{\"antall\":\"200\", \"foedtEtter\":\"1900-01-01\"}";
+    void hentForMangeIdenterSomIkkeFinnesIDatabasen() throws Exception {
 
-        ResponseEntity<ForFaaLedigeIdenterException> identListe = doPostRequest(ROOT_URI, createBodyEntity(body), ForFaaLedigeIdenterException.class);
+        String request = "{\"antall\":\"200\", \"foedtEtter\":\"1900-01-01\"}";
 
-        assertThat(identListe.getStatusCode(), is(HttpStatus.BAD_REQUEST));
+        when(tpsfConsumer.getStatusFromTpsf(anySet(), anyBoolean())).thenReturn(TpsfStatusResponse.builder()
+                .statusPaaIdenter(List.of(
+                        TpsfStatusResponse.StatusPaaIdent.builder().ident("15103300123").build()
+                )).build());
+
+        mockMvc.perform(MockMvcRequestBuilders.post(IDENT_V1_BASEURL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(request))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andReturn();
     }
 
     @Test
-    void skalFeileNaarUgyldigIdenttypeBrukes() {
-        String body = "{\"antall\":\"1\", \"identtype\":\"buksestoerrelse\" }";
+    void skalFeileNaarUgyldigIdenttypeBrukes() throws Exception {
 
-        ResponseEntity<ApiError> apiErrorResponseEntity = doPostRequest(ROOT_URI, createBodyEntity(body), ApiError.class);
+        String request = "{\"antall\":\"1\", \"identtype\":\"buksestoerrelse\" }";
 
-        assertThat(apiErrorResponseEntity.getStatusCode(), is(HttpStatus.BAD_REQUEST));
+        mockMvc.perform(MockMvcRequestBuilders.post(IDENT_V1_BASEURL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(request))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andReturn();
     }
 
     @Test
-    void markerIBrukPaaIdentAlleredeIBruk() {
-        String body = "{\"personidentifikator\":\"" + FNR_IBRUK + "\", \"bruker\":\"TesterMcTestFace\" }";
+    void markerIBrukPaaIdentAlleredeIBruk() throws Exception {
 
-        ResponseEntity<ApiError> apiErrorResponseEntity = doPostRequest(BRUK_URI, createBodyEntity(body), ApiError.class);
+        String request = "{\"personidentifikator\":\"" + FNR_IBRUK + "\", \"bruker\":\"TesterMcTestFace\" }";
 
-        assertThat(apiErrorResponseEntity.getStatusCode(), is(HttpStatus.CONFLICT));
-
+        mockMvc.perform(MockMvcRequestBuilders.post(API_V1_IDENT_IBRUK)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(request))
+                .andExpect(MockMvcResultMatchers.status().isConflict())
+                .andReturn();
     }
 
     @Test
-    void markerEksisterendeLedigIdentIBruk() {
+    void markerEksisterendeLedigIdentIBruk() throws Exception {
+
         assertThat(identRepository.findTopByPersonidentifikator(FNR_LEDIG).getRekvireringsstatus(), is(Rekvireringsstatus.LEDIG));
 
-        String body = "{\"personidentifikator\":\"" + FNR_LEDIG + "\", \"bruker\":\"TesterMcTestFace\" }";
+        String request = "{\"personidentifikator\":\"" + FNR_LEDIG + "\", \"bruker\":\"TesterMcTestFace\" }";
 
-        ResponseEntity<ApiResponse> apiResponseEntity = doPostRequest(BRUK_URI, createBodyEntity(body), ApiResponse.class);
+        mockMvc.perform(MockMvcRequestBuilders.post(API_V1_IDENT_IBRUK)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(request))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
 
-        assertThat(apiResponseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(identRepository.findTopByPersonidentifikator(FNR_LEDIG).getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK));
-
     }
 
     @Test
-    void markerNyLedigIdentIBruk() {
+    void markerNyLedigIdentIBruk() throws Exception {
+
         assertThat(identRepository.findTopByPersonidentifikator(NYTT_FNR_LEDIG), is(nullValue()));
 
-        String body = "{\"personidentifikator\":\"" + NYTT_FNR_LEDIG + "\", \"bruker\":\"TesterMcTestFace\" }";
+        String request = "{\"personidentifikator\":\"" + NYTT_FNR_LEDIG + "\", \"bruker\":\"TesterMcTestFace\" }";
 
-        ResponseEntity<ApiResponse> apiResponseEntity = doPostRequest(BRUK_URI, createBodyEntity(body), ApiResponse.class);
+        mockMvc.perform(MockMvcRequestBuilders.post(API_V1_IDENT_IBRUK)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(request))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
 
-        assertThat(apiResponseEntity.getStatusCode(), is(HttpStatus.OK));
         assertThat(identRepository.findTopByPersonidentifikator(NYTT_FNR_LEDIG).getRekvireringsstatus(), is(Rekvireringsstatus.I_BRUK));
         assertThat(identRepository.findTopByPersonidentifikator(NYTT_FNR_LEDIG).getIdenttype(), is(Identtype.FNR));
-
     }
 
     @Test
-    void sjekkOmLedigIdentErLedig() {
-        LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-        headers.add("personidentifikator", FNR_LEDIG);
+    void sjekkOmLedigIdentErLedig() throws Exception {
 
-        ResponseEntity<Boolean> apiResponseEntity = doGetRequest(LEDIG_URI, createHeaderEntity(headers), Boolean.class);
+        var result = mockMvc.perform(MockMvcRequestBuilders.get(API_V1_IDENT_LEDIG)
+                        .header("personidentifikator", FNR_LEDIG))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
 
-        assertThat(apiResponseEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(apiResponseEntity.getBody(), is(true));
-
+        assertThat(new Boolean(result.getResponse().getContentAsString()), is(true));
     }
 
     @Test
-    void sjekkOmUledigIdentErLedig() {
-        LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-        headers.add("personidentifikator", FNR_IBRUK);
+    void sjekkOmUledigIdentErLedig() throws Exception {
 
-        ResponseEntity<Boolean> apiResponseEntity = doGetRequest(LEDIG_URI, createHeaderEntity(headers), Boolean.class);
+        var result = mockMvc.perform(MockMvcRequestBuilders.get(API_V1_IDENT_LEDIG)
+                        .header("personidentifikator", FNR_IBRUK))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
 
-        assertThat(apiResponseEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(apiResponseEntity.getBody(), is(false));
-
+        assertThat(new Boolean(result.getResponse().getContentAsString()), is(false));
     }
 
     @Test
-    @Disabled
-    void eksistererIkkeIDbOgLedigITps() {
-        assertThat(identRepository.findTopByPersonidentifikator(NYTT_FNR_LEDIG), is(nullValue()));
-        LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-        headers.add("personidentifikator", NYTT_FNR_LEDIG);
+    void eksistererIkkeIDbOgLedigITps() throws Exception {
 
-        ResponseEntity<Boolean> apiResponseEntity = doGetRequest(LEDIG_URI, createHeaderEntity(headers), Boolean.class);
+        when(tpsfConsumer.getStatusFromTpsf(anySet(), anyBoolean())).thenReturn(TpsfStatusResponse.builder()
+                .statusPaaIdenter(List.of(
+                        TpsfStatusResponse.StatusPaaIdent.builder().ident(NYTT_FNR_LEDIG).build()
+                )).build());
 
-        assertThat(apiResponseEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(apiResponseEntity.getBody(), is(true));
+        var result = mockMvc.perform(MockMvcRequestBuilders.get(API_V1_IDENT_LEDIG)
+                        .header("personidentifikator", NYTT_FNR_LEDIG))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        assertThat(new Boolean(result.getResponse().getContentAsString()), is(true));
     }
 
     @Test
-    void lesIdenterTest() {
-        LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-        headers.add("personidentifikator", FNR_LEDIG);
+    void lesIdenterTest() throws Exception {
 
-        ResponseEntity<Ident> apiResponseEntity = doGetRequest(ROOT_URI, createHeaderEntity(headers), Ident.class);
+        var result = mockMvc.perform(MockMvcRequestBuilders.get(IDENT_V1_BASEURL)
+                        .header("personidentifikator", FNR_LEDIG))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
 
-        assertThat(apiResponseEntity.getStatusCode(), is(HttpStatus.OK));
         Ident expected = createIdentEntity(Identtype.FNR, FNR_LEDIG, Rekvireringsstatus.LEDIG, 10);
-        assertThat(apiResponseEntity.getBody(), is(expected));
+        assertThat(objectMapper.readValue(result.getResponse().getContentAsString(), Ident.class), is(expected));
     }
 }
