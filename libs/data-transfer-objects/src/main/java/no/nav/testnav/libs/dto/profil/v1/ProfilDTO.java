@@ -13,4 +13,5 @@ public class ProfilDTO {
     String visningsNavn;
     String epost;
     String avdeling;
+    String organisasjon;
 }

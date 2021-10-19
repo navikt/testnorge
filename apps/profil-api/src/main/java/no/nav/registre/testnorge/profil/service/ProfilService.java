@@ -27,7 +27,7 @@ public class ProfilService {
 
     public Profil getProfile() {
         if (isTokenX()) {
-            return new Profil("BankId", "[ukjent]", "[ikke relevant]");
+            return new Profil("BankId", "[ukjent]", "[ukjent]", "[ukjent]");
         }
 
         return azureAdProfileConsumer.getProfil();
