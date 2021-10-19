@@ -41,3 +41,8 @@ consumers:
     namespace: dolly
     name: testnav-person-organisasjon-tilgang-service-dev
     url: https://testnav-person-organisasjon-tilgang-service-dev.dev.intern.nav.no
+  testnav-bruker-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-bruker-service-dev
+    url: https://testnav-bruker-service-dev.dev.intern.nav.no

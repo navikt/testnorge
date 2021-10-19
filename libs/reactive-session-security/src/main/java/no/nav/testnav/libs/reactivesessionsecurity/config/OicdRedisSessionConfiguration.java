@@ -18,6 +18,7 @@ import org.springframework.session.data.redis.config.annotation.web.server.Enabl
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.AzureAdTokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenXExchange;
+import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.UserJwtExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.ClientRegistrationIdResolver;
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.RedisTokenResolver;
 
@@ -29,7 +30,8 @@ import no.nav.testnav.libs.reactivesessionsecurity.resolver.RedisTokenResolver;
         TokenXExchange.class,
         AzureAdTokenExchange.class,
         TokenXExchange.class,
-        ClientRegistrationIdResolver.class
+        ClientRegistrationIdResolver.class,
+        UserJwtExchange.class
 })
 public class OicdRedisSessionConfiguration {
 

@@ -15,7 +15,7 @@ import java.util.UUID;
 import no.nav.testnav.apps.brukerservice.domain.User;
 import no.nav.testnav.apps.brukerservice.exception.JwtIdMismatchException;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
-import no.nav.testnav.libs.reactivesecurity.config.UserConstant;
+import no.nav.testnav.libs.securitycore.UserConstant;
 
 @Service
 public class JwtService {
@@ -50,9 +50,9 @@ public class JwtService {
         return JWT
                 .create()
                 .withIssuer("dolly")
-                .withClaim(UserConstant.USER_ORGANISASJON_CLAIM_ID, user.getId())
-                .withClaim(UserConstant.USER_ORGANISASJON_CLAIM_USERNAME, user.getBrukernavn())
-                .withClaim(UserConstant.USER_ORGANISASJON_CLAIM_ORG, user.getOrganisasjonsnummer())
+                .withClaim(UserConstant.USER_CLAIM_ID, user.getId())
+                .withClaim(UserConstant.USER_CLAIM_USERNAME, user.getBrukernavn())
+                .withClaim(UserConstant.USER_CLAIM_ORG, user.getOrganisasjonsnummer())
                 .withIssuedAt(date.getTime())
                 .withNotBefore(date.getTime())
                 .withJWTId(UUID.randomUUID().toString())
@@ -65,7 +65,7 @@ public class JwtService {
         return getAuthenticatedUserId.call().map(ident -> {
             var verifier = JWT
                     .require(Algorithm.HMAC256(secretKey))
-                    .withClaim(UserConstant.USER_ORGANISASJON_CLAIM_ID, id)
+                    .withClaim(UserConstant.USER_CLAIM_ID, id)
                     .withIssuer("dolly")
                     .build();
             return verifier.verify(jwt);

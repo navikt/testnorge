@@ -14,7 +14,9 @@ import org.springframework.context.annotation.Import;
 
 import java.util.function.Function;
 
+import no.nav.testnav.apps.oversiktfrontend.credentials.PersonOrganisasjonTilgangServiceProperties;
 import no.nav.testnav.apps.oversiktfrontend.credentials.ProfilApiServiceProperties;
+import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.TestnavBrukerServiceProperties;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
 import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
@@ -33,6 +35,8 @@ import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 public class OversiktFrontendApplicationStarter {
 
     private final ProfilApiServiceProperties profilApiServiceProperties;
+    private final PersonOrganisasjonTilgangServiceProperties personOrganisasjonTilgangServiceProperties;
+    private final TestnavBrukerServiceProperties testnavBrukerServiceServiceProperties;
     private final TokenExchange tokenExchange;
 
     public static void main(String[] args) {
@@ -48,7 +52,6 @@ public class OversiktFrontendApplicationStarter {
                 });
     }
 
-
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder
@@ -57,6 +60,16 @@ public class OversiktFrontendApplicationStarter {
                         "testnorge-profil-api",
                         profilApiServiceProperties.getUrl(),
                         addAuthenticationHeaderFilterFrom(profilApiServiceProperties)
+                ))
+                .route(createRoute(
+                        "testnav-person-organisasjon-tilgang-service",
+                        personOrganisasjonTilgangServiceProperties.getUrl(),
+                        addAuthenticationHeaderFilterFrom(personOrganisasjonTilgangServiceProperties)
+                ))
+                .route(createRoute(
+                        "testnav-bruker-service",
+                        testnavBrukerServiceServiceProperties.getUrl(),
+                        addAuthenticationHeaderFilterFrom(testnavBrukerServiceServiceProperties)
                 ))
                 .build();
     }

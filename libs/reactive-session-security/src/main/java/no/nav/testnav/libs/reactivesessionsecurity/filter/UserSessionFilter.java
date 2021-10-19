@@ -1,5 +1,6 @@
 package no.nav.testnav.libs.reactivesessionsecurity.filter;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -12,11 +13,16 @@ import reactor.core.publisher.Mono;
 
 import java.util.Optional;
 
-import no.nav.testnav.libs.reactivesessionsecurity.config.TokenXConstants;
+import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.UserJwtExchange;
+import no.nav.testnav.libs.securitycore.UserConstant;
+import no.nav.testnav.libs.securitycore.UserSessionConstant;
 
 @Slf4j
 @Configuration
-public class TokenXSessionFilter implements WebFilter {
+@RequiredArgsConstructor
+public class UserSessionFilter implements WebFilter {
+
+    private final UserJwtExchange userJwtExchange;
 
     private Mono<String> getClientId() {
         return ReactiveSecurityContextHolder
@@ -31,14 +37,15 @@ public class TokenXSessionFilter implements WebFilter {
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         return getClientId()
                 .flatMap(client -> exchange.getSession())
-                .map(session -> Optional.ofNullable(session.getAttribute(TokenXConstants.TOKENX_PERSON_REPRESENTING_KEY)))
+                .map(session -> Optional.ofNullable(session.getAttribute(UserSessionConstant.SESSION_USER_ID_KEY)))
                 .flatMap(value -> value.map(Mono::just).orElseGet(Mono::empty))
-                .map(representing -> exchange
+                .flatMap(value -> userJwtExchange.generateJwt((String) value, exchange))
+                .map(jwt -> exchange
                         .mutate()
                         .request(exchange
                                 .getRequest()
                                 .mutate()
-                                .header(TokenXConstants.TOKENX_PERSON_REPRESENTING_HEADER, (String) representing)
+                                .header(UserConstant.USER_HEADER_JWT,  jwt)
                                 .build()
                         ).build())
                 .then()
