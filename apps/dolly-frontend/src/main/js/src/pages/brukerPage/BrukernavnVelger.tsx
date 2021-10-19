@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
+import styled from 'styled-components'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { Organisasjon } from '~/pages/brukerPage/BrukerModel'
-import styled from 'styled-components'
+import { Organisasjon } from '~/pages/brukerPage/types'
+import { BrukerApi } from '~/service/Api'
 
 type BrukernavnVelgerProps = {
 	organisasjon: Organisasjon
+	getTokenAndRedirect: (bruker: string) => void
 }
 
 const Selector = styled.div`
@@ -15,12 +17,42 @@ const Selector = styled.div`
 	margin-bottom: 20px;
 `
 
-export default ({ organisasjon }: BrukernavnVelgerProps) => {
+const feilmeldinger = {
+	ukjent: 'Noe gikk galt. Vennligst prøv på nytt.',
+	alleredeTatt: 'Brukernavn er allerede tatt. Vennligst velg et annet.',
+	feilLengde: 'Brukernavn må være minst 5 tegn og maksimalt 25 tegn.',
+}
+
+export default ({ organisasjon, getTokenAndRedirect }: BrukernavnVelgerProps) => {
 	const [brukernavn, setBrukernavn] = useState<string>('')
+	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState(null)
 
-	const onSubmit = () => {
-		setError(brukernavn)
+	const onSubmit = async () => {
+		setError(null)
+		setLoading(true)
+		if (brukernavn.length < 5 || brukernavn.length > 25) {
+			setError(feilmeldinger.feilLengde)
+		} else {
+			var brukernavnStatus = await BrukerApi.getBrukernavnStatus(brukernavn)
+
+			if (brukernavnStatus === 404) {
+				let opprettetBruker = await BrukerApi.opprettBruker(
+					brukernavn,
+					organisasjon.organisasjonsnummer
+				)
+				if (opprettetBruker) {
+					getTokenAndRedirect(opprettetBruker.id)
+				} else {
+					setError(feilmeldinger.ukjent)
+				}
+			} else if (brukernavnStatus === 200) {
+				setError(feilmeldinger.alleredeTatt)
+			} else {
+				setError(feilmeldinger.ukjent)
+			}
+		}
+		setLoading(false)
 	}
 
 	return (
@@ -38,6 +70,7 @@ export default ({ organisasjon }: BrukernavnVelgerProps) => {
 					// @ts-ignore
 					size="xlarge"
 					onChange={(e: any) => setBrukernavn(e.target.value)}
+					disabled={loading}
 					feil={
 						error && {
 							feilmelding: error,
