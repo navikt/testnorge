@@ -31,7 +31,8 @@ const diversePaths = [
 	'tpsf.utenFastBopel',
 	'tpsf.erForsvunnet',
 	'tpsf.harBankkontonr',
-	'tpsf.telefonnummer_1',
+	'pdldata.person.telefonnummer',
+	// 'tpsf.telefonnummer_1',
 ]
 
 const vergemaalPath = ['tpsf.vergemaal']

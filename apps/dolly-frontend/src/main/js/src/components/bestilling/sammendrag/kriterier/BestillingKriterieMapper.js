@@ -60,9 +60,15 @@ const _getTpsfBestillingData = (data) => {
 	]
 }
 
+// const _getListeData = (liste) => {
+// 	const objects = []
+// 	liste.map(item => )
+// }
+
 export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	if (!bestillingData) return null
-
+	console.log('bestillingData', bestillingData)
+	//TODO fortsett med denne!
 	const data = []
 
 	if (bestillingsinformasjon) {
@@ -88,6 +94,28 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			],
 		}
 		data.push(bestillingsInfo)
+	}
+
+	if (bestillingData.pdldata) {
+		const { telefonnummer } = bestillingData.pdldata.person
+		console.log('telefonnummer', telefonnummer)
+
+		const items = []
+
+		telefonnummer.map((item, idx) => {
+			items.push(obj(`Telefonnummer #${idx + 1}`, `${item.landskode} ${item.nummer}`))
+		})
+
+		const personinfo = {
+			header: 'Persondetaljer',
+			// items: [obj('Telefonnummer', `${telefonnummer[0].landskode} ${telefonnummer[0].nummer}`)],
+			items: items,
+			// items: telefonnummer.map((item, idx) => {
+			// 	return obj(`Telefonnummer #${idx + 1}`, `${item.landskode} ${item.nummer}`)
+			// }),
+		}
+		console.log('personinfo', personinfo)
+		data.push(personinfo)
 	}
 
 	if (bestillingData.tpsf) {

@@ -7,6 +7,7 @@ import { Identhistorikk } from './Identhistorikk'
 import { Familierelasjoner } from './familierelasjoner/Familierelasjoner'
 
 export const TpsfForm = ({ formikBag }) => {
+	console.log('formikBag', formikBag)
 	return (
 		<React.Fragment>
 			<Personinformasjon formikBag={formikBag} />

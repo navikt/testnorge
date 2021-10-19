@@ -59,7 +59,7 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 				<Attributt attr={sm.attrs.egenAnsattDatoFom} />
 				<Attributt attr={sm.attrs.erForsvunnet} />
 				<Attributt attr={sm.attrs.harBankkontonr} />
-				<Attributt attr={sm.attrs.telefonnummer_1} />
+				<Attributt attr={sm.attrs.telefonnummer} />
 				<Attributt attr={sm.attrs.spesreg} />
 				<Attributt attr={sm.attrs.vergemaal} />
 				<Attributt attr={sm.attrs.fullmakt} />
@@ -182,7 +182,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 				setMulti(['tpsf.erForsvunnet', true], ['tpsf.forsvunnetDato', null])
 			},
 			remove() {
-				del(['tpsf.erForsvunnet', 'tpsf.forsvunnetDato'])
+				del(['tpsf.erForsvunnet', 'tpsf.forsvunnetDFato'])
 			},
 		},
 		harBankkontonr: {
@@ -195,19 +195,17 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 				del(['tpsf.harBankkontonr', 'tpsf.bankkontonrRegdato'])
 			},
 		},
-		telefonnummer_1: {
+		telefonnummer: {
 			label: 'Telefonnummer',
-			checked: has('tpsf.telefonnummer_1'),
+			checked: has('pdldata.person.telefonnummer'),
 			add() {
-				setMulti(['tpsf.telefonLandskode_1', ''], ['tpsf.telefonnummer_1', ''])
+				set('pdldata.person.telefonnummer', [{
+					landskode: '',
+					nummer: ''
+				}])
 			},
 			remove() {
-				del([
-					'tpsf.telefonLandskode_1',
-					'tpsf.telefonnummer_1',
-					'tpsf.telefonLandskode_2',
-					'tpsf.telefonnummer_2',
-				])
+				del('pdldata.person.telefonnummer')
 			},
 		},
 		spesreg: {

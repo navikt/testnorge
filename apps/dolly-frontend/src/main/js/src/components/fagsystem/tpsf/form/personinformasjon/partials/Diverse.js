@@ -11,6 +11,7 @@ import { Diskresjonskoder } from './diskresjonskoder/Diskresjonskoder'
 import { Telefonnummer } from './telefonnummer/Telefonnummer'
 
 export const Diverse = ({ formikBag }) => {
+	console.log('formikBag', formikBag)
 	const handleChangeKontonr = (selected) => {
 		if (!selected) {
 			formikBag.setFieldValue(`tpsf.bankkontonrRegdato`, null)
@@ -74,7 +75,7 @@ export const Diverse = ({ formikBag }) => {
 				<FormikDatepicker
 					name="tpsf.forsvunnetDato"
 					label="Forsvunnet dato"
-					disabled={!formikBag.values.tpsf.erForsvunnet}
+					disabled={!formikBag.values.tpsf?.erForsvunnet}
 					fastfield={false}
 				/>
 			</Vis>
@@ -88,7 +89,7 @@ export const Diverse = ({ formikBag }) => {
 				<FormikDatepicker
 					name="tpsf.bankkontonrRegdato"
 					label="Bankkonto opprettet"
-					disabled={!formikBag.values.tpsf.harBankkontonr}
+					disabled={!formikBag.values.tpsf?.harBankkontonr}
 					fastfield={false}
 				/>
 			</Vis>
