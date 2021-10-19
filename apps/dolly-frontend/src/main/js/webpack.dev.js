@@ -41,6 +41,10 @@ module.exports = (env) =>
 					target: env.backend,
 					secure: false,
 				},
+				'/oauth2/authorization/idporten': {
+					target: env.backend,
+					secure: false,
+				},
 				'/login/oauth2/code/aad': {
 					target: env.backend,
 					secure: false,
