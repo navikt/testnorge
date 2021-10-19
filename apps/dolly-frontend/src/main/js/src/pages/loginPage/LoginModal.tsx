@@ -1,35 +1,52 @@
 import React from 'react'
-import useBoolean from '~/utils/hooks/useBoolean'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
+import Alertstripe from 'nav-frontend-alertstriper'
+import { Advarsler } from '~/pages/loginPage/advarsler'
+
+const getAdvarsel: () => string = () => {
+	let url = location.href
+	if (url.includes('login?')) {
+		let urlParts = url.split('login?')
+		if (urlParts.length === 1 || urlParts[1] === 'logout' || !(urlParts[1] in Advarsler)) {
+			return null
+		} else {
+			// @ts-ignore
+			return Advarsler[urlParts[1]]
+		}
+	}
+	return null
+}
 
 export default () => {
-	const [redirectToNavLogin, setRedirectNav] = useBoolean()
-	const handleNavClick = () => {
-		setRedirectNav()
-	}
+	const advarsel = getAdvarsel()
+	const modalHeight = advarsel ? 400 + (advarsel.length / 88) * 20 : 350
 
-	if (redirectToNavLogin) {
-		let url = location.protocol + '//' + location.host + '/oauth2/authorization/aad'
-		location.replace(url)
+	const redirectOnClick = (path: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
+		event.preventDefault()
+		location.replace(location.protocol + '//' + location.host + path)
 	}
 
 	return (
 		<div className="login-container">
-			<div className="login-modal">
+			<div className="login-modal" style={{ height: modalHeight + 'px' }}>
 				<h1>Velkommen til Dolly</h1>
 				<h3>
 					Dolly er NAVs selvbetjeningsløsning for å opprette syntetiske testdata. I Dolly kan du
 					opprette syntetiske testpersoner med forskjellige egenskaper, og tilgjengeliggjøre
 					testdataene i valgte testmiljøer.
 				</h3>
-				<NavButton className="login-modal_button-nav" type="hoved" onClick={handleNavClick}>
+				{advarsel && <Alertstripe type="advarsel">{advarsel}</Alertstripe>}
+				<NavButton
+					className="login-modal_button-nav"
+					type="hoved"
+					onClick={redirectOnClick('/oauth2/authorization/aad')}
+				>
 					Logg inn med NAV epost
 				</NavButton>
 				<NavButton
 					className="login-modal_button-bankid"
 					type="hoved"
-					disabled={true}
-					title="Kommer snart"
+					onClick={redirectOnClick('/oauth2/authorization/idporten')}
 				>
 					Logg inn med BankId
 				</NavButton>
