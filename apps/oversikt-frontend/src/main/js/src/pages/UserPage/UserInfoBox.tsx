@@ -1,26 +1,30 @@
 import React, { useState } from 'react'
 import { Box } from '@/components/Box'
 import styled from 'styled-components'
-import { Hovedknapp } from 'nav-frontend-knapper'
-import { Input } from 'nav-frontend-skjema'
 import BrukerService, { Bruker } from '@/services/BrukerService'
+// @ts-ignore
+import { CopyToClipboard } from 'react-copy-to-clipboard/lib/Component'
+// @ts-ignore
+import Search from '@/pages/UserPage/Search'
 
-const HeaderTd = styled.td`
+const Bold = styled.span`
 	font-weight: bold;
 `
 
-const StyledHovedknapp = styled(Hovedknapp)`
-	margin: 5px 0;
+const StyledTable = styled.table`
+	padding-bottom: 10px;
 `
 
 export default () => {
 	const [orgnummer, setOrgnummer] = useState<string>()
 	const [bruker, setBruker] = useState<Bruker>()
 
-	const onSubmit = () =>
-		BrukerService.getBruker(orgnummer).then((value) => {
+	const onSubmit = () => {
+		setBruker(null)
+		return BrukerService.getBruker(orgnummer).then((value) => {
 			setBruker(value)
 		})
+	}
 
 	const formatDate = (value: string) => {
 		const date = new Date(Date.parse(value))
@@ -29,28 +33,53 @@ export default () => {
 
 	return (
 		<Box header="Brukerinfo">
-			<table>
+			<StyledTable>
 				<tbody>
 					<tr>
-						<HeaderTd>Brukernavn:</HeaderTd>
+						<td>
+							<Bold>Id:</Bold>
+						</td>
+						{bruker && (
+							<td>
+								<CopyToClipboard text={bruker.id}>
+									<a href="" onClick={(event) => event.preventDefault()}>
+										(Copy id)
+									</a>
+								</CopyToClipboard>
+							</td>
+						)}
+					</tr>
+					<tr>
+						<td>
+							<Bold>Brukernavn:</Bold>
+						</td>
 						{bruker && <td>{bruker.brukernavn}</td>}
 					</tr>
 					<tr>
-						<HeaderTd>Orgnummer:</HeaderTd>
+						<td>
+							<Bold>Orgnummer:</Bold>
+						</td>
 						{bruker && <td>{bruker.organisasjonsnummer}</td>}
 					</tr>
 					<tr>
-						<HeaderTd>Opprettet:</HeaderTd>
-						{bruker && <td>{bruker.sistInnlogget}</td>}
+						<td>
+							<Bold>Opprettet:</Bold>
+						</td>
+						{bruker && <td>{formatDate(bruker.opprettet)}</td>}
 					</tr>
 					<tr>
-						<HeaderTd>Sist Innlogget:</HeaderTd>
+						<td>
+							<Bold>Sist Innlogget:</Bold>
+						</td>
 						{bruker && <td>{formatDate(bruker.sistInnlogget)}</td>}
 					</tr>
 				</tbody>
-			</table>
-			<Input label="Orgnummer" type="text" onBlur={(event) => setOrgnummer(event.target.value)} />
-			<StyledHovedknapp onClick={onSubmit}>Hent bruker</StyledHovedknapp>
+			</StyledTable>
+			<Search
+				onBlur={(event) => setOrgnummer(event.target.value)}
+				onSubmit={onSubmit}
+				texts={{ label: 'Orgnummer', button: 'Hent' }}
+			/>
 		</Box>
 	)
 }

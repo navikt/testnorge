@@ -15,9 +15,11 @@ import org.springframework.security.oauth2.client.web.server.ServerOAuth2Authori
 import org.springframework.security.oauth2.client.web.server.WebSessionServerOAuth2AuthorizedClientRepository;
 import org.springframework.session.data.redis.config.annotation.web.server.EnableRedisWebSession;
 
+import no.nav.testnav.libs.reactivesessionsecurity.domain.TestnavBrukerServiceServiceProperties;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.AzureAdTokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenXExchange;
+import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.UserJwtExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.ClientRegistrationIdResolver;
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.RedisTokenResolver;
 
@@ -29,7 +31,9 @@ import no.nav.testnav.libs.reactivesessionsecurity.resolver.RedisTokenResolver;
         TokenXExchange.class,
         AzureAdTokenExchange.class,
         TokenXExchange.class,
-        ClientRegistrationIdResolver.class
+        ClientRegistrationIdResolver.class,
+        TestnavBrukerServiceServiceProperties.class,
+        UserJwtExchange.class
 })
 public class OicdRedisSessionConfiguration {
 

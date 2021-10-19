@@ -9,10 +9,10 @@ const StyledHovedknapp = styled(Hovedknapp)`
 	margin: 5px 0;
 `
 
-const ChooseBox = () => {
+const AddToSessionBox = () => {
 	const [orgnummer, setOrgnummer] = useState('')
 	return (
-		<Box header="Velg organisasasjon">
+		<Box header="Legg til organisasjon til sessionen">
 			<Input label="Orgnummer" type="text" onBlur={(event) => setOrgnummer(event.target.value)} />
 			<StyledHovedknapp onClick={(event) => OrganisasjonService.setOrganisasjonsnummer(orgnummer)}>
 				Velg
@@ -21,6 +21,6 @@ const ChooseBox = () => {
 	)
 }
 
-ChooseBox.displayName = 'ChooseBox'
+AddToSessionBox.displayName = 'AddToSessionBox'
 
-export default ChooseBox
+export default AddToSessionBox

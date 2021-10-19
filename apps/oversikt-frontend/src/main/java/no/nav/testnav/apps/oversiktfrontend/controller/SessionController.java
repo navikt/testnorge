@@ -3,36 +3,29 @@ package no.nav.testnav.apps.oversiktfrontend.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import no.nav.testnav.apps.oversiktfrontend.consumer.PersonOrganisasjonTilgangConsumer;
-import no.nav.testnav.apps.oversiktfrontend.consumer.dto.OrganisasjonDTO;
 import no.nav.testnav.apps.oversiktfrontend.service.AccessService;
-import no.nav.testnav.libs.reactivesessionsecurity.config.TokenXConstants;
+import no.nav.testnav.apps.oversiktfrontend.service.BrukerService;
+import no.nav.testnav.libs.securitycore.UserSessionConstant;
 
 @RestController
-@RequestMapping("/api/v1/organisasjon")
+@RequestMapping("/api/v1/session/user")
 @RequiredArgsConstructor
-public class OrganisasjonController {
+public class SessionController {
 
     private final AccessService accessService;
-    private final PersonOrganisasjonTilgangConsumer personOrganisasjonTilgangConsumer;
+    private final BrukerService brukerService;
 
-    @GetMapping
-    public Flux<OrganisasjonDTO> getOrganisasjoner(ServerWebExchange exchange) {
-        return personOrganisasjonTilgangConsumer
-                .getOrganisasjoner(exchange);
-    }
-
-    @PutMapping("/{organisasjonsnummer}")
-    public Mono<ResponseEntity<?>> setOrganisasjonsnummer(@PathVariable String organisasjonsnummer, ServerWebExchange exchange) {
+    @PutMapping
+    public Mono<ResponseEntity<?>> addUserToSession(@RequestParam String organisasjonsnummer, ServerWebExchange exchange) {
         return accessService
                 .hasAccess(organisasjonsnummer, exchange)
                 .flatMap(hasAccess -> {
@@ -41,11 +34,12 @@ public class OrganisasjonController {
                                 .status(HttpStatus.FORBIDDEN)
                                 .build());
                     }
-                    return exchange
+                    return brukerService.getId(organisasjonsnummer, exchange).flatMap(id -> exchange
                             .getSession()
-                            .doOnSuccess(session -> session.getAttributes().put(TokenXConstants.TOKENX_PERSON_REPRESENTING_KEY, organisasjonsnummer))
+                            .doOnSuccess(session -> session.getAttributes().put(UserSessionConstant.USER_SESSION_PERSON_ORGANISASJON_ID_KEY, id))
                             .then()
-                            .map(value -> ResponseEntity.ok().build());
+                            .map(value -> ResponseEntity.ok().build())
+                    ).switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
                 });
     }
 }

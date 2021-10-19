@@ -16,7 +16,7 @@ import java.util.function.Function;
 
 import no.nav.testnav.apps.oversiktfrontend.credentials.PersonOrganisasjonTilgangServiceProperties;
 import no.nav.testnav.apps.oversiktfrontend.credentials.ProfilApiServiceProperties;
-import no.nav.testnav.apps.oversiktfrontend.credentials.TestnavBrukerServiceServiceProperties;
+import no.nav.testnav.libs.reactivesessionsecurity.domain.TestnavBrukerServiceServiceProperties;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
 import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;

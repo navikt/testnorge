@@ -15,9 +15,13 @@ const Box = styled.div`
 	border-radius: 25px;
 `
 
+const Header = styled.h3`
+	margin: 6px 0;
+`
+
 export default ({ children, header }: Props) => (
 	<Box>
-		<h3>{header}</h3>
+		<Header>{header}</Header>
 		{children}
 	</Box>
 )

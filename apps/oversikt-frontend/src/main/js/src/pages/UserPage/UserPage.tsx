@@ -2,12 +2,13 @@ import React from 'react'
 
 import { Page } from '@/pages/Page'
 import styled from 'styled-components'
-import ChooseBox from '@/pages/UserPage/ChooseBox'
 import OrgTableBox from '@/pages/UserPage/OrgTableBox'
 import UserInfoBox from '@/pages/UserPage/UserInfoBox'
 import CreateUserBox from '@/pages/UserPage/CreateUserBox'
 import DeleteUserBox from '@/pages/UserPage/DeleteUserBox'
 import ChangeUsernameBox from '@/pages/UserPage/ChangeUsernameBox'
+import LoginBox from '@/pages/UserPage/LoginBox'
+import AddToSessionBox from '@/pages/UserPage/AddToSessionBox'
 
 const Content = styled.div`
 	display: flex;
@@ -20,7 +21,8 @@ export default () => (
 		<Content>
 			<OrgTableBox />
 			<UserInfoBox />
-			<ChooseBox />
+			<LoginBox />
+			<AddToSessionBox />
 			<CreateUserBox />
 			<DeleteUserBox />
 			<ChangeUsernameBox />

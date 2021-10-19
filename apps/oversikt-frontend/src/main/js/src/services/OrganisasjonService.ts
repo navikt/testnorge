@@ -7,8 +7,8 @@ export type Organisasjon = {
 	gyldigTil: string
 }
 
-const setOrganisasjonsnummer = (orgnummer: string) =>
-	Api.fetch(`/api/v1/organisasjon/${orgnummer}`, { method: 'PUT' })
+const addToSession = (orgnummer: string) =>
+	Api.fetch(`/api/v1/session/user?organisasjonsnummer=${orgnummer}`, { method: 'PUT' })
 
 const getOrganisasjoner = (): Promise<Organisasjon[]> =>
 	Api.fetchJson('/testnav-person-organisasjon-tilgang-service/api/v1/person/organisasjoner', {
@@ -36,4 +36,4 @@ const getOrganisasjoner = (): Promise<Organisasjon[]> =>
 // 		)
 // 	})
 
-export default { setOrganisasjonsnummer, getOrganisasjoner }
+export default { addToSession, getOrganisasjoner }

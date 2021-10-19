@@ -16,6 +16,12 @@ const getBruker = (orgnummer: string) =>
 		}
 	).then((brukere) => brukere[0])
 
+const getToken = (id: string) =>
+	Api.fetch(`testnav-bruker-service/api/v1/brukere/${id}/token`, {
+		method: 'POST',
+	}).then((response) => response.text())
+
 export default {
 	getBruker,
+	getToken,
 }

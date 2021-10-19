@@ -4,7 +4,7 @@ import { LoadableComponent } from '@navikt/dolly-komponenter'
 import OrganisasjonService from '@/services/OrganisasjonService'
 import styled from 'styled-components'
 
-const Bold = styled.td`
+const Bold = styled.span`
 	font-weight: bold;
 `
 
@@ -24,8 +24,8 @@ const OrgTableBox = () => (
 							</td>
 						</tr>
 						{list &&
-							list.map((item) => (
-								<tr>
+							list.map((item, index) => (
+								<tr key={index}>
 									<td>{item.navn + (item.organisasjonsfrom === 'AS' ? ' AS' : '')}</td>
 									<td>{item.organisasjonsnummer}</td>
 								</tr>
