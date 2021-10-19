@@ -109,6 +109,10 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
 
     private void handle(FalskIdentitetDTO identitet, String ident) {
 
+        if (isTrue(identitet.getErFalsk())) {
+            return;
+        }
+
         if (isBlank(identitet.getRettIdentitetVedIdentifikasjonsnummer())) {
 
             if (isNull(identitet.getNyFalskIdentitetPerson())) {
