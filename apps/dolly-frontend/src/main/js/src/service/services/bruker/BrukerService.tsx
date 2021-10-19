@@ -1,48 +1,61 @@
 import Request from '~/service/services/Request'
+import api from '@/api'
+import { Bruker } from '~/pages/brukerPage/types'
+import { NotFoundError } from '~/error'
 
 const brukerServiceUrl = '/testnav-bruker-service/api/v1/brukere'
-const userOrgJwtHeader = 'User-Organaisasjon-Jwt'
-
-type Bruker = {
-	id?: string
-	brukernavn: string
-	organisasjonsnummer: string
-	opprettet?: string
-	sistInnlogget?: string
-}
+const userJwtHeader = 'User-Jwt'
 
 export default {
-	getBrukere() {
-		return Request.get(`${brukerServiceUrl}`).then((response) => {
-			if (response != null) return response
-		})
+	getBrukere(orgnr: string) {
+		return Request.get(`${brukerServiceUrl}?organisasjonsnummer=${orgnr}`)
 	},
 
-	opprettBruker(bruker: Bruker) {
-		return Request.post(`${brukerServiceUrl}`, bruker).then((response) => {
-			if (response != null) return response
-		})
+	opprettBruker(brukernavn: string, organisasjonsnummer: string) {
+		let bruker: Bruker = {
+			brukernavn: brukernavn,
+			organisasjonsnummer: organisasjonsnummer,
+		}
+		return api
+			.fetch(`${brukerServiceUrl}`, { method: 'POST' }, bruker)
+			.then((response: any) => {
+				return response
+			})
+			.catch((e: Error) => {
+				return null
+			})
 	},
 
 	opprettToken(id: string) {
-		return Request.post(`${brukerServiceUrl}/${id}/token`).then((response) => {
-			if (response != null) return response
-		})
+		return api.fetch(`${brukerServiceUrl}/${id}/token`, { method: 'GET' })
 	},
 
 	getBruker(id: string, orgJwt: string) {
 		return Request.get(`${brukerServiceUrl}/${id}`, {
-			[userOrgJwtHeader]: orgJwt,
-		}).then((response) => {
-			if (response != null) return response
+			[userJwtHeader]: orgJwt,
 		})
 	},
 
 	deleteBruker(id: string, orgJwt: string) {
-		return Request.delete(`${brukerServiceUrl}/${id}`, {
-			[userOrgJwtHeader]: orgJwt,
-		}).then((response) => {
-			if (response != null) return response
+		return api.fetch(`${brukerServiceUrl}/${id}`, {
+			method: 'DELETE',
+			headers: {
+				[userJwtHeader]: orgJwt,
+			},
 		})
+	},
+
+	getBrukernavnStatus(brukernavn: string) {
+		return api
+			.fetch(`${brukerServiceUrl}/brukernavn/${brukernavn}`, { method: 'GET' })
+			.then((response: any) => {
+				return response.status
+			})
+			.catch((e: NotFoundError) => {
+				return 404
+			})
+			.catch((e: Error) => {
+				return 500
+			})
 	},
 }
