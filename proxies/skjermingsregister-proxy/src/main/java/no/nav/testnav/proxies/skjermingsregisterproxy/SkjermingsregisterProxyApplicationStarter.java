@@ -8,16 +8,10 @@ import no.nav.testnav.libs.securitytokenservice.StsOidcTokenService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.gateway.filter.GatewayFilter;
-import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteLocator;
-import org.springframework.cloud.gateway.route.builder.Buildable;
-import org.springframework.cloud.gateway.route.builder.PredicateSpec;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-
-import java.util.function.Function;
 
 @Import({
         CoreConfig.class,
@@ -46,17 +40,12 @@ public class SkjermingsregisterProxyApplicationStarter {
                 .createAuthenticationHeaderFilter(stsOidcTokenService::getToken);
 
         return builder.routes()
-                .route(createRoute("/**", "https://skjermede-personer.dev.adeo.no/", addAuthenticationHeaderFilter))
+                .route(spec -> spec
+                        .path("/**")
+                        .filters(filterSpec -> filterSpec
+                                .filter(addAuthenticationHeaderFilter))
+                        .uri("https://skjermede-personer.dev.adeo.no/"))
                 .build();
-    }
-
-    private Function<PredicateSpec, Buildable<Route>> createRoute(String segment, String host, GatewayFilter filter) {
-        return spec -> spec
-                .path("/" + segment + "/**")
-                .filters(filterSpec -> filterSpec
-                        .rewritePath("/" + segment + "/(?<segment>.*)", "/${segment}")
-                        .filter(filter)
-                ).uri(host);
     }
 
 }
