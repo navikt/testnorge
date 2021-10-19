@@ -9,6 +9,8 @@ import DeleteUserBox from '@/pages/UserPage/DeleteUserBox'
 import ChangeUsernameBox from '@/pages/UserPage/ChangeUsernameBox'
 import LoginBox from '@/pages/UserPage/LoginBox'
 import AddToSessionBox from '@/pages/UserPage/AddToSessionBox'
+import ClearSessionBox from '@/pages/UserPage/ClearSessionBox'
+import JwtDecode from '@/pages/UserPage/JwtDecode'
 
 const Content = styled.div`
 	display: flex;
@@ -23,9 +25,11 @@ export default () => (
 			<UserInfoBox />
 			<LoginBox />
 			<AddToSessionBox />
+			<ClearSessionBox />
 			<CreateUserBox />
 			<DeleteUserBox />
 			<ChangeUsernameBox />
+			<JwtDecode />
 		</Content>
 	</Page>
 )

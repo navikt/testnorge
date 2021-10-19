@@ -3,6 +3,7 @@ package no.nav.testnav.apps.oversiktfrontend.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,9 +19,16 @@ import no.nav.testnav.libs.securitycore.UserSessionConstant;
 @RequestMapping("/api/v1/session/user")
 @RequiredArgsConstructor
 public class SessionController {
-
     private final AccessService accessService;
     private final BrukerService brukerService;
+
+    @DeleteMapping
+    public Mono<ResponseEntity<?>> delete(ServerWebExchange exchange) {
+        return exchange
+                .getSession()
+                .doOnSuccess(session -> session.getAttributes().remove(UserSessionConstant.SESSION_USER_ID_KEY))
+                .map(value -> ResponseEntity.noContent().build());
+    }
 
     @PutMapping
     public Mono<ResponseEntity<?>> addUserToSession(@RequestParam String organisasjonsnummer, ServerWebExchange exchange) {

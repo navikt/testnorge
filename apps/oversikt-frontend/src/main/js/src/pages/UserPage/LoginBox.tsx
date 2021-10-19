@@ -8,10 +8,6 @@ import BrukerService from '@/services/BrukerService'
 import { CopyToClipboard } from 'react-copy-to-clipboard/lib/Component'
 // @ts-ignore
 
-const StyledHovedknapp = styled(Hovedknapp)`
-	margin: 5px 0;
-`
-
 const AccessTokenTextArea = styled.textarea`
 	width: 100%;
 	min-height: 80px;
@@ -26,24 +22,25 @@ const CopyTokenKnapp = styled(Knapp)`
 
 const LoginBox = () => {
 	const [id, setId] = useState('')
-	const [token, setToken] = useState('')
-	const onSubmit = () => {
-		setToken('')
-		return BrukerService.getToken(id).then((value) => setToken(value))
-	}
-
 	return (
-		<Box header="Login">
-			<AccessTokenTextArea disabled={true} value={token} />
-			<CopyToClipboard text={token}>
-				<CopyTokenKnapp>Copy</CopyTokenKnapp>
-			</CopyToClipboard>
-			<Search
-				onBlur={(event) => setId(event.target.value)}
-				onSubmit={onSubmit}
-				texts={{ label: 'Logg inn med Id:', button: 'Login' }}
-			/>
-		</Box>
+		<Box
+			onSubmit={() => BrukerService.getToken(id)}
+			header="Login"
+			onRender={({ onSubmit, value, loading }) => (
+				<>
+					<AccessTokenTextArea disabled={true} value={value} />
+					<CopyToClipboard text={value}>
+						<CopyTokenKnapp>Copy</CopyTokenKnapp>
+					</CopyToClipboard>
+					<Search
+						onBlur={(event) => setId(event.target.value)}
+						onSubmit={onSubmit}
+						loading={loading}
+						texts={{ label: 'Logg inn med Id:', button: 'Login' }}
+					/>
+				</>
+			)}
+		/>
 	)
 }
 

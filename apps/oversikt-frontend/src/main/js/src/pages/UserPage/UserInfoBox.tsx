@@ -17,69 +17,72 @@ const StyledTable = styled.table`
 
 export default () => {
 	const [orgnummer, setOrgnummer] = useState<string>()
-	const [bruker, setBruker] = useState<Bruker>()
-
-	const onSubmit = () => {
-		setBruker(null)
-		return BrukerService.getBruker(orgnummer).then((value) => {
-			setBruker(value)
-		})
-	}
 
 	const formatDate = (value: string) => {
+		if (!value) {
+			return 'Ikke satt'
+		}
+
 		const date = new Date(Date.parse(value))
 		return date.toLocaleString('no-NO')
 	}
 
 	return (
-		<Box header="Brukerinfo">
-			<StyledTable>
-				<tbody>
-					<tr>
-						<td>
-							<Bold>Id:</Bold>
-						</td>
-						{bruker && (
-							<td>
-								<CopyToClipboard text={bruker.id}>
-									<a href="" onClick={(event) => event.preventDefault()}>
-										(Copy id)
-									</a>
-								</CopyToClipboard>
-							</td>
-						)}
-					</tr>
-					<tr>
-						<td>
-							<Bold>Brukernavn:</Bold>
-						</td>
-						{bruker && <td>{bruker.brukernavn}</td>}
-					</tr>
-					<tr>
-						<td>
-							<Bold>Orgnummer:</Bold>
-						</td>
-						{bruker && <td>{bruker.organisasjonsnummer}</td>}
-					</tr>
-					<tr>
-						<td>
-							<Bold>Opprettet:</Bold>
-						</td>
-						{bruker && <td>{formatDate(bruker.opprettet)}</td>}
-					</tr>
-					<tr>
-						<td>
-							<Bold>Sist Innlogget:</Bold>
-						</td>
-						{bruker && <td>{formatDate(bruker.sistInnlogget)}</td>}
-					</tr>
-				</tbody>
-			</StyledTable>
-			<Search
-				onBlur={(event) => setOrgnummer(event.target.value)}
-				onSubmit={onSubmit}
-				texts={{ label: 'Orgnummer', button: 'Hent' }}
-			/>
-		</Box>
+		<Box
+			onSubmit={() => BrukerService.getBruker(orgnummer)}
+			header="Brukerinfo"
+			onRender={({ onSubmit, value, loading }) => (
+				<>
+					<StyledTable>
+						<tbody>
+							<tr>
+								<td>
+									<Bold>Id:</Bold>
+								</td>
+								{value && (
+									<td>
+										<CopyToClipboard text={value.id}>
+											<a href="" onClick={(event) => event.preventDefault()}>
+												[Copy]
+											</a>
+										</CopyToClipboard>
+									</td>
+								)}
+							</tr>
+							<tr>
+								<td>
+									<Bold>Brukernavn:</Bold>
+								</td>
+								{value && <td>{value.brukernavn}</td>}
+							</tr>
+							<tr>
+								<td>
+									<Bold>Orgnummer:</Bold>
+								</td>
+								{value && <td>{value.organisasjonsnummer}</td>}
+							</tr>
+							<tr>
+								<td>
+									<Bold>Opprettet:</Bold>
+								</td>
+								{value && <td>{formatDate(value.opprettet)}</td>}
+							</tr>
+							<tr>
+								<td>
+									<Bold>Sist Innlogget:</Bold>
+								</td>
+								{value && <td>{formatDate(value.sistInnlogget)}</td>}
+							</tr>
+						</tbody>
+					</StyledTable>
+					<Search
+						onBlur={(event) => setOrgnummer(event.target.value)}
+						onSubmit={onSubmit}
+						loading={loading}
+						texts={{ label: 'Orgnummer', button: 'Hent' }}
+					/>
+				</>
+			)}
+		/>
 	)
 }

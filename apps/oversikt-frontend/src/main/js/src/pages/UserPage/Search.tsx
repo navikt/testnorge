@@ -21,43 +21,23 @@ const StyledInput = styled(Input)`
 
 type Props = {
 	onBlur: FocusEventHandler<HTMLInputElement>
-	onSubmit: (event: React.MouseEvent<HTMLButtonElement>) => Promise<unknown>
+	onSubmit: () => Promise<unknown>
+	loading?: boolean
 	texts: {
 		label: string
 		button: string
 	}
 }
 
-const Search = ({ onBlur, onSubmit, texts }: Props) => {
-	const [notFound, setNotFound] = useState<boolean>(false)
-	const [error, setError] = useState<boolean>(false)
-	const [loading, setLoading] = useState<boolean>(false)
-
-	const submit = (event: React.MouseEvent<HTMLButtonElement>) => {
-		setError(false)
-		setNotFound(false)
-		setLoading(true)
-		return onSubmit(event)
-			.catch((e: Error) => {
-				if (e && (e instanceof NotFoundError || e.name == 'NotFoundError')) {
-					setNotFound(true)
-				} else {
-					setError(true)
-				}
-			})
-			.finally(() => setLoading(false))
-	}
-
+const Search = ({ onBlur, onSubmit, loading = false, texts }: Props) => {
 	return (
 		<>
 			<StyledSearch>
 				<StyledInput label={texts.label} type="text" onBlur={onBlur} />
-				<StyledHovedknapp spinner={loading} disabled={loading} onClick={submit}>
+				<StyledHovedknapp spinner={loading} disabled={loading} onClick={onSubmit}>
 					{texts.button}
 				</StyledHovedknapp>
 			</StyledSearch>
-			{notFound && <WarningAlert label="Ikke funnet." />}
-			{error && <ErrorAlert label="Noe gikk galt." />}
 		</>
 	)
 }

@@ -29,5 +29,4 @@ public class UserJwtExchange {
         return tokenExchange.generateToken(serviceProperties, exchange)
                 .flatMap(accessToken -> new GetTokenCommand(webClient, accessToken.getTokenValue(), id).call());
     }
-
 }
