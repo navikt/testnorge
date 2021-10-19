@@ -1,6 +1,5 @@
 package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -17,8 +16,7 @@ import static java.util.Objects.nonNull;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonFilter("idFilter")
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public abstract class DbVersjonDTO implements Serializable {
 
     @Schema(description = "Versjon av informasjonselement. Fravær av denne eller 0 betyr nytt element")
@@ -34,10 +32,13 @@ public abstract class DbVersjonDTO implements Serializable {
 
     @Schema(defaultValue = "true",
             description = "true = gjeldende informasjon, false = historisk")
-    private Boolean erGjeldende;
+    private Boolean gjeldende;
 
     @JsonIgnore
     private Boolean isNew;
+
+    @Schema(description = "Denne kan også benyttes ved behov")
+    private FolkeregistermetadataDTO metadata;
 
     @JsonIgnore
     protected static <T> int count(T artifact) {

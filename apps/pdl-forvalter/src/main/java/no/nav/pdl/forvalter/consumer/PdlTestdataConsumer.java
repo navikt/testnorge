@@ -1,15 +1,7 @@
 package no.nav.pdl.forvalter.consumer;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
-import com.fasterxml.jackson.databind.ser.FilterProvider;
-import com.fasterxml.jackson.databind.ser.PropertyFilter;
-import com.fasterxml.jackson.databind.ser.PropertyWriter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.config.credentials.PdlServiceProperties;
 import no.nav.pdl.forvalter.consumer.command.PdlDeleteCommandPdl;
@@ -18,6 +10,7 @@ import no.nav.pdl.forvalter.consumer.command.PdlOpprettPersonCommandPdl;
 import no.nav.pdl.forvalter.domain.ArtifactValue;
 import no.nav.pdl.forvalter.domain.Ordre;
 import no.nav.pdl.forvalter.dto.HistoriskIdent;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregistermetadataDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlStatus;
 import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
@@ -30,39 +23,13 @@ import reactor.core.publisher.Flux;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.getBestillingUrl;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_SLETTING;
 
 @Slf4j
 @Service
 public class PdlTestdataConsumer {
-
-    private static final PropertyFilter removeIdFilter = new SimpleBeanPropertyFilter() {
-        @Override
-        public void serializeAsField
-                (Object pojo, JsonGenerator jgen, SerializerProvider provider, PropertyWriter writer)
-                throws Exception {
-            if (include(writer)) {
-                if (!writer.getName().equals("id")) {
-                    writer.serializeAsField(pojo, jgen, provider);
-                }
-            } else if (!jgen.canOmitFields()) {
-                writer.serializeAsOmittedField(pojo, jgen, provider);
-            }
-        }
-
-        @Override
-        protected boolean include(BeanPropertyWriter writer) {
-            return true;
-        }
-
-        @Override
-        protected boolean include(PropertyWriter writer) {
-            return true;
-        }
-    };
-
-    private static final FilterProvider filters = new SimpleFilterProvider().addFilter("idFilter", removeIdFilter);
 
     private final WebClient webClient;
     private final AccessTokenService accessTokenService;
@@ -75,8 +42,7 @@ public class PdlTestdataConsumer {
 
         this.accessTokenService = accessTokenService;
         this.properties = properties;
-        this.webClient = WebClient
-                .builder()
+        this.webClient = WebClient.builder()
                 .baseUrl(properties.getUrl())
                 .build();
         this.objectMapper = objectMapper;
@@ -107,7 +73,10 @@ public class PdlTestdataConsumer {
 
         String body;
         try {
-            body = objectMapper.writer(filters).writeValueAsString(value.getBody());
+            var artifact = value.getBody();
+            artifact.setMetadata(nonNull(artifact.getMetadata()) ? artifact.getMetadata() : new FolkeregistermetadataDTO());
+            artifact.getMetadata().setGjeldende(nonNull(artifact.getMetadata().getGjeldende()) ? artifact.getMetadata().getGjeldende() : artifact.getGjeldende());
+            body = objectMapper.writeValueAsString(artifact);
         } catch (JsonProcessingException e) {
             return Flux.just(
                     OrdreResponseDTO.HendelseDTO.builder()

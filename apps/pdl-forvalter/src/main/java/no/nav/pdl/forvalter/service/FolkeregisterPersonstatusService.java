@@ -34,7 +34,7 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
             personstatus.setStatus(getPersonstatus(person));
             personstatus.setKilde(isNotBlank(personstatus.getKilde()) ? personstatus.getKilde() : "Dolly");
             personstatus.setMaster(nonNull(personstatus.getMaster()) ? personstatus.getMaster() : Master.FREG);
-            personstatus.setErGjeldende(nonNull(personstatus.getErGjeldende()) ? personstatus.getErGjeldende(): true);
+            personstatus.setGjeldende(nonNull(personstatus.getGjeldende()) ? personstatus.getGjeldende(): true);
 
         } else if (!person.getFolkeregisterpersonstatus().isEmpty() &&
                 getPersonstatus(person) != person.getFolkeregisterpersonstatus().stream()
@@ -48,7 +48,7 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
                                     .findFirst().orElse(0) + 1)
                             .kilde("Dolly")
                             .master(Master.FREG)
-                            .erGjeldende(true)
+                            .gjeldende(true)
                             .build());
         }
 
