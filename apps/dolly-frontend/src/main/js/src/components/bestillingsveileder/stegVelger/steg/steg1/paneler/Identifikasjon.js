@@ -25,14 +25,16 @@ IdentifikasjonPanel.heading = 'Identifikasjon'
 IdentifikasjonPanel.initialValues = ({ set, del, has }) => ({
 	falskIdentitet: {
 		label: 'Har falsk identitet',
-		checked: has('pdlforvalter.falskIdentitet'),
+		checked: has('pdldata.person.falskIdentitet'),
 		add() {
-			set('pdlforvalter.falskIdentitet', {
-				rettIdentitet: { identitetType: 'UKJENT', rettIdentitetErUkjent: true },
-			})
+			set('pdldata.person.falskIdentitet', [
+				{
+					// rettIdentitetErUkjent: true,
+				},
+			])
 		},
 		remove() {
-			del('pdlforvalter.falskIdentitet')
+			del('pdldata.person.falskIdentitet')
 		},
 	},
 	utenlandskIdentifikasjonsnummer: {
