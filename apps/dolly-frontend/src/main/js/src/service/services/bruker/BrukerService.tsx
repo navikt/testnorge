@@ -27,7 +27,7 @@ export default {
 	},
 
 	opprettToken(id: string) {
-		return api.fetch(`${brukerServiceUrl}/${id}/token`, { method: 'GET' })
+		return api.fetch(`${brukerServiceUrl}/${id}/token`, { method: 'POST' })
 	},
 
 	getBruker(id: string, orgJwt: string) {
