@@ -58,6 +58,7 @@ public class ProfilService {
         return isTokenX() ? Optional.empty() : azureAdProfileConsumer.getProfilImage();
     }
 
+
     private boolean isTokenX() {
         return getJwtAuthenticationToken()
                 .getTokenAttributes()
