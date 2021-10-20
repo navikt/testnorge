@@ -6,7 +6,7 @@ import Loading from '~/components/ui/loading/Loading'
 import BrukernavnVelger from '~/pages/brukerPage/BrukernavnVelger'
 import OrganisasjonVelger from '~/pages/brukerPage/OrganisasjonVelger'
 import { BrukerResponse, OrgResponse, Organisasjon } from '~/pages/brukerPage/types'
-import { PersonOrgTilgangApi, BrukerApi } from '~/service/Api'
+import { PersonOrgTilgangApi, BrukerApi, SessionApi } from '~/service/Api'
 
 const UNKNOWN_ERROR = 'unknown_error'
 const ORGANISATION_ERROR = 'organisation_error'
@@ -16,18 +16,9 @@ const logout = (feilmelding: string = 'logout') => {
 	Api.fetch('/logout', { method: 'POST' }).then((response) => window.location.replace(url))
 }
 
-const getTokenAndRedirect = (id: string) => {
-	BrukerApi.opprettToken(id)
-		.then((response: any) => {
-			if (response.status === 200) {
-				window.location.replace(window.location.protocol + '//' + window.location.host)
-			} else {
-				logout(UNKNOWN_ERROR)
-			}
-		})
-		.catch(() => {
-			logout(UNKNOWN_ERROR)
-		})
+const opprettSessionAndRedirect = (org: string) => {
+	SessionApi.addToSession(org)
+	window.location.replace(window.location.protocol + '//' + window.location.host)
 }
 
 export default () => {
@@ -47,8 +38,11 @@ export default () => {
 				setModalHeight(310 + 55 * response.data.length)
 				setLoading(false)
 			})
-			.catch(() => {
+			.catch((e: NotFoundError) => {
 				logout(ORGANISATION_ERROR)
+			})
+			.catch((e: Error) => {
+				logout(UNKNOWN_ERROR)
 			})
 	}, [])
 
@@ -59,7 +53,7 @@ export default () => {
 		BrukerApi.getBrukere(org.organisasjonsnummer)
 			.then((response: BrukerResponse) => {
 				if (response !== null && response.data !== null && response.data.length !== 0) {
-					getTokenAndRedirect(response.data[0].id)
+					opprettSessionAndRedirect(org.organisasjonsnummer)
 				} else {
 					logout(UNKNOWN_ERROR)
 				}
@@ -81,7 +75,10 @@ export default () => {
 					<OrganisasjonVelger orgdata={organisasjoner} onClick={selectOrganisasjon} />
 				)}
 				{organisasjon && !loading && (
-					<BrukernavnVelger organisasjon={organisasjon} getTokenAndRedirect={getTokenAndRedirect} />
+					<BrukernavnVelger
+						organisasjon={organisasjon}
+						opprettSessionAndRedirect={opprettSessionAndRedirect}
+					/>
 				)}
 				<NavButton className="tilbake-button" onClick={logout}>
 					Tilbake til innlogging

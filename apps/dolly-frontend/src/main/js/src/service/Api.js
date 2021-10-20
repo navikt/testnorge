@@ -17,6 +17,7 @@ import OrganisasjonService from '~/service/services/organisasjonservice/Organisa
 import MiljoeService from '~/service/services/miljoe/MiljoeService'
 import PersonOrganisasjonTilgangService from '~/service/services/personOrganisasjonTilgang/PersonOrganisasjonTilgangService'
 import BrukerService from '~/service/services/bruker/BrukerService'
+import SessionService from '~/service/services/session/SessionService'
 
 export const DollyApi = DollyService
 export const ProfilApi = ProfilService
@@ -37,6 +38,7 @@ export const OrgserviceApi = OrganisasjonService
 export const MiljoeApi = MiljoeService
 export const PersonOrgTilgangApi = PersonOrganisasjonTilgangService
 export const BrukerApi = BrukerService
+export const SessionApi = SessionService
 
 export default {
 	DollyApi: DollyService,
@@ -58,4 +60,5 @@ export default {
 	MiljoeApi: MiljoeService,
 	PersonOrgTilgangApi: PersonOrganisasjonTilgangService,
 	BrukerApi: BrukerService,
+	SessionApi: SessionService,
 }

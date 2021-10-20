@@ -2,12 +2,12 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { Organisasjon } from '~/pages/brukerPage/types'
+import { Bruker, Organisasjon } from '~/pages/brukerPage/types'
 import { BrukerApi } from '~/service/Api'
 
 type BrukernavnVelgerProps = {
 	organisasjon: Organisasjon
-	getTokenAndRedirect: (bruker: string) => void
+	opprettSessionAndRedirect: (org: string) => void
 }
 
 const Selector = styled.div`
@@ -23,34 +23,36 @@ const feilmeldinger = {
 	feilLengde: 'Brukernavn må være minst 5 tegn og maksimalt 25 tegn.',
 }
 
-export default ({ organisasjon, getTokenAndRedirect }: BrukernavnVelgerProps) => {
+export default ({ organisasjon, opprettSessionAndRedirect }: BrukernavnVelgerProps) => {
 	const [brukernavn, setBrukernavn] = useState<string>('')
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState(null)
 
-	const onSubmit = async () => {
+	const onSubmit = () => {
 		setError(null)
 		setLoading(true)
 		if (brukernavn.length < 5 || brukernavn.length > 25) {
 			setError(feilmeldinger.feilLengde)
 		} else {
-			var brukernavnStatus = await BrukerApi.getBrukernavnStatus(brukernavn)
-
-			if (brukernavnStatus === 404) {
-				let opprettetBruker = await BrukerApi.opprettBruker(
-					brukernavn,
-					organisasjon.organisasjonsnummer
-				)
-				if (opprettetBruker) {
-					getTokenAndRedirect(opprettetBruker.id)
-				} else {
-					setError(feilmeldinger.ukjent)
-				}
-			} else if (brukernavnStatus === 200) {
-				setError(feilmeldinger.alleredeTatt)
-			} else {
-				setError(feilmeldinger.ukjent)
-			}
+			BrukerApi.getBrukernavnStatus(brukernavn)
+				.then((status: number) => {
+					if (status === 404) {
+						BrukerApi.opprettBruker(brukernavn, organisasjon.organisasjonsnummer)
+							.then((response: Bruker) => {
+								if (response !== null) {
+									opprettSessionAndRedirect(organisasjon.organisasjonsnummer)
+								} else {
+									setError(feilmeldinger.ukjent)
+								}
+							})
+							.catch(() => setError(feilmeldinger.ukjent))
+					} else if (status === 200) {
+						setError(feilmeldinger.alleredeTatt)
+					} else {
+						setError(feilmeldinger.ukjent)
+					}
+				})
+				.catch(() => setError(feilmeldinger.ukjent))
 		}
 		setLoading(false)
 	}
