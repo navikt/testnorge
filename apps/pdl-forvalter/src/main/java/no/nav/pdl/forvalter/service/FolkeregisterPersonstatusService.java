@@ -16,9 +16,11 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusD
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.FOEDSELSREGISTRERT;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.IKKE_BOSATT;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.MIDLERTIDIG;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.OPPHOERT;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.UTFLYTTET;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FNR;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
@@ -68,6 +70,11 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
         } else if (!person.getDoedsfall().isEmpty()) {
 
             return DOED;
+
+        } else if (!person.getFalskIdentitet().isEmpty() && person.getFalskIdentitet().stream()
+                .anyMatch(identitet -> isTrue(identitet.getErFalsk()) && isTrue(identitet.getGjeldende()))) {
+
+            return OPPHOERT;
 
         } else if (!person.getUtflytting().isEmpty() && person.getInnflytting().isEmpty() ||
                 !person.getUtflytting().isEmpty() && !person.getInnflytting().isEmpty() &&

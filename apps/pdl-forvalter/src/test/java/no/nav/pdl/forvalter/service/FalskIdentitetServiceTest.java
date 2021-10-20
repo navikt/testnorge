@@ -120,7 +120,7 @@ class FalskIdentitetServiceTest {
         var request = FalskIdentitetDTO.builder()
                         .erFalsk(true)
                         .rettIdentitetVedOpplysninger(FalskIdentitetDTO.IdentifiserendeInformasjonDTO.builder()
-                                .personnavn(FalskIdentitetDTO.NavnDTO.builder().etternavn(INVALID_NAME).build())
+                                .personnavn(FalskIdentitetDTO.FalsktNavnDTO.builder().etternavn(INVALID_NAME).build())
                                 .build())
                         .isNew(true)
                         .build();
