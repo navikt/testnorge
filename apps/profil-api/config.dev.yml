@@ -16,6 +16,8 @@ spec:
   port: 8080
   tracing:
     enabled: true
+  envFrom:
+    - secret: user-encryption-dev
   accessPolicy:
     inbound:
       rules:
