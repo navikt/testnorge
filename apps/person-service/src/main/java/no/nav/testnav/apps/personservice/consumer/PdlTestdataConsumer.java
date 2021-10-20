@@ -1,16 +1,7 @@
 package no.nav.testnav.apps.personservice.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.http.MediaType;
-import org.springframework.http.codec.json.Jackson2JsonDecoder;
-import org.springframework.http.codec.json.Jackson2JsonEncoder;
-import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeStrategies;
-import org.springframework.web.reactive.function.client.WebClient;
-
 import no.nav.testnav.apps.personservice.consumer.command.OpprettFoedselCommand;
 import no.nav.testnav.apps.personservice.consumer.command.OpprettPersonCommand;
 import no.nav.testnav.apps.personservice.consumer.command.PostAdresseCommand;
@@ -19,8 +10,14 @@ import no.nav.testnav.apps.personservice.consumer.command.PostTagsCommand;
 import no.nav.testnav.apps.personservice.consumer.exception.PdlCreatePersonException;
 import no.nav.testnav.apps.personservice.credentials.PdlServiceProperties;
 import no.nav.testnav.apps.personservice.domain.Person;
-import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
+import org.springframework.http.MediaType;
+import org.springframework.http.codec.json.Jackson2JsonDecoder;
+import org.springframework.http.codec.json.Jackson2JsonEncoder;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Slf4j
 @Component

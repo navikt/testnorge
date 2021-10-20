@@ -25,6 +25,10 @@ gradleEnterprise {
 }
 
 includeBuild './proxies/aareg-proxy'
+includeBuild './proxies/kodeverk-proxy'
+includeBuild './proxies/statisk-data-forvalter-proxy'
+includeBuild './proxies/udistub-proxy'
+includeBuild './proxies/skjermingsregister-proxy'
 includeBuild './proxies/batch-adeo-proxy'
 includeBuild './proxies/ident-pool-proxy'
 includeBuild './proxies/saf-proxy'
@@ -41,6 +45,7 @@ includeBuild './proxies/brregstub-proxy'
 includeBuild './proxies/arena-forvalteren-proxy'
 includeBuild './proxies/testnorge-aareg-proxy'
 includeBuild './proxies/krrstub-proxy'
+includeBuild './proxies/sykemelding-api-proxy'
 includeBuild './proxies/testnorge-inst-proxy'
 includeBuild './proxies/sigrunstub-proxy'
 includeBuild './proxies/pensjon-testdata-facade-proxy'
@@ -93,6 +98,7 @@ includeBuild './apps/jenkins-batch-status-service'
 includeBuild './apps/organisasjon-bestilling-service'
 includeBuild './apps/geografiske-kodeverk-service'
 includeBuild './apps/testnorge-inntekt'
+includeBuild './apps/udi-stub'
 includeBuild './apps/app-tilgang-analyse-service'
 includeBuild './apps/organisasjon-forvalter'
 includeBuild './apps/testnorge-arena'
@@ -119,7 +125,6 @@ include(':sykemelding-api')
 include(':mn-original-populasjon')
 include(':testnorge-aaregstub')
 include(':testnorge-token-provider')
-include(':udi-stub')
 include(':testnorge-hodejegeren')
 include(':testnorge-populasjoner')
 include(':tilbakemelding-api')
@@ -147,7 +152,6 @@ project(":sykemelding-api").projectDir = file('apps/sykemelding-api')
 project(":mn-original-populasjon").projectDir = file('apps/mn-original-populasjon')
 project(":testnorge-aaregstub").projectDir = file('apps/testnorge-aaregstub')
 project(":testnorge-token-provider").projectDir = file('apps/testnorge-token-provider')
-project(":udi-stub").projectDir = file('apps/udi-stub')
 project(":testnorge-hodejegeren").projectDir = file('apps/testnorge-hodejegeren')
 project(":testnorge-populasjoner").projectDir = file('apps/testnorge-populasjoner')
 project(":tilbakemelding-api").projectDir = file('apps/tilbakemelding-api')

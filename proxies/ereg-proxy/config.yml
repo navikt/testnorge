@@ -24,6 +24,10 @@ spec:
           cluster: dev-gcp
         - application: testnav-organisasjon-service
           cluster: dev-gcp
+        - application: dolly-backend
+          cluster: dev-fss
+        - application: dolly-backend-dev
+          cluster: dev-fss
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -46,3 +50,4 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://testnav-ereg-proxy.dev-fss-pub.nais.io"
+    - "https://testnav-ereg-proxy.dev.intern.nav.no"

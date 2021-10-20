@@ -22,7 +22,7 @@ import no.nav.dolly.web.credentials.TestnavTestnorgeInstProxyProperties;
 import no.nav.dolly.web.credentials.TestnavVarslingerServiceProperties;
 import no.nav.dolly.web.credentials.TestnorgeProfilApiProperties;
 import no.nav.dolly.web.credentials.TpsForvalterenProxyProperties;
-import no.nav.dolly.web.credentials.UdiStubProperties;
+import no.nav.dolly.web.credentials.UdiStubProxyProperties;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
 import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
@@ -71,7 +71,7 @@ public class DollyFrontendApplicationStarter {
     private final TestnavOrganisasjonForvalterProperties testnavOrganisasjonForvalterProperties;
     private final TestnavOrganisasjonServiceProperties testnavOrganisasjonServiceProperties;
     private final TestnavMiljoerServiceProperties testnavMiljoerServiceProperties;
-    private final UdiStubProperties udiStubProperties;
+    private final UdiStubProxyProperties udiStubProxyProperties;
     private final PersonSearchServiceProperties personSearchServiceProperties;
     private final TestnavAdresseServiceProperties testnavAdresseServiceProperties;
 
@@ -99,10 +99,10 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(testnavArenaForvalterenProxyProperties))
                 .route(createRoute(testnavTestnorgeInstProxyProperties))
                 .route(createRoute(testnavTestnorgeAaregProxyProperties))
-                .route(createRoute(testnavKrrstubProxyProperties))
+                .route(createRoute(testnavKrrstubProxyProperties, "testnav-krrstub-proxy"))
                 .route(createRoute(testnavOrganisasjonServiceProperties))
                 .route(createRoute(testnavSigrunstubProxyProperties))
-                .route(createRoute(udiStubProperties, "udi-stub"))
+                .route(createRoute(udiStubProxyProperties, "udi-stub"))
                 .route(createRoute(personSearchServiceProperties))
                 .build();
     }

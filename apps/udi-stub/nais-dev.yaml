@@ -6,7 +6,7 @@ metadata:
   labels:
     team: dolly
 spec:
-  image: {{ image }}
+  image: {{image}}
   port: 8080
   webproxy: true
   tokenx:
@@ -21,12 +21,10 @@ spec:
         - application: dolly-backend-dev
           cluster: dev-fss
         - application: dolly-frontend-dev
-          cluster: dev-fss
-        - application: dolly-frontend-dev
-          cluster: dev-gcp
-        - application: testnav-oversikt-frontend
           cluster: dev-gcp
         - application: team-dolly-lokal-app
+          cluster: dev-fss
+        - application: testnav-udistub-proxy
           cluster: dev-fss
   liveness:
     path: /internal/isAlive
