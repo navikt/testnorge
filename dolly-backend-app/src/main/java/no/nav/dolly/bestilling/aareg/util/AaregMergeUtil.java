@@ -11,10 +11,12 @@ import no.nav.dolly.domain.resultset.aareg.RsPersonAareg;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
+import static net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @UtilityClass
 @Slf4j
@@ -90,7 +92,8 @@ public class AaregMergeUtil {
             arbeidsforholdId = new AtomicInteger(
                     eksisterendeArbeidsforhold.stream()
                             .map(ArbeidsforholdResponse::getArbeidsforholdId)
-                            .map(id -> id.replaceAll("[^\\d]", ""))
+                            .map(id -> isNotBlank(id) ? id.replaceAll("[^\\d]", "") : null)
+                            .filter(Objects::nonNull)
                             .mapToInt(Integer::valueOf)
                             .max().orElse(0)
             );
