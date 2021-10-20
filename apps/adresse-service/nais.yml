@@ -56,7 +56,7 @@ spec:
           cluster: dev-gcp
         - application: dolly-frontend
           cluster: dev-gcp
-        - application: synthdata-tps-gcp-tmp
+        - application: synthdata-tps-gcp
           cluster: dev-gcp
     outbound:
       external:
