@@ -49,11 +49,19 @@ module.exports = (env) =>
 					target: env.backend,
 					secure: false,
 				},
+				'/login/oauth2/code/idporten': {
+					target: env.backend,
+					secure: false,
+				},
 				'/logout': {
 					target: env.backend,
 					secure: false,
 				},
 				'/session/ping': {
+					target: env.backend,
+					secure: false,
+				},
+				'/session/user': {
 					target: env.backend,
 					secure: false,
 				},
