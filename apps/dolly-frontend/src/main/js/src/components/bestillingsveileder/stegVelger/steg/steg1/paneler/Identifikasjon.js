@@ -12,7 +12,7 @@ export const IdentifikasjonPanel = ({ stateModifier }) => {
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="identifikasjon"
 		>
-			<AttributtKategori title="Identifikasjon">
+			<AttributtKategori>
 				<Attributt attr={sm.attrs.falskIdentitet} />
 				<Attributt attr={sm.attrs.utenlandskIdentifikasjonsnummer} />
 			</AttributtKategori>
@@ -29,7 +29,7 @@ IdentifikasjonPanel.initialValues = ({ set, del, has }) => ({
 		add() {
 			set('pdldata.person.falskIdentitet', [
 				{
-					// rettIdentitetErUkjent: true,
+					erFalsk: true,
 				},
 			])
 		},

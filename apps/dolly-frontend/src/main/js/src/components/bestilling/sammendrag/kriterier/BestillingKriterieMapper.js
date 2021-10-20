@@ -785,6 +785,44 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		data.push(krrStub)
 	}
 
+	const pdldataKriterier = bestillingData.pdldata?.person || bestillingData.pdlData?.person
+
+	if (pdldataKriterier) {
+		const { falskIdentitet } = pdldataKriterier
+
+		if (falskIdentitet) {
+			const falskIdentitetData = {
+				header: 'Falsk identitet',
+				itemRows: falskIdentitet.map((item, idx) => {
+					return [
+						{ numberHeader: `Falsk identitet ${idx + 1}` },
+						obj(
+							'Opplysninger om rett ident',
+							_has(item, 'rettIdentitetErUkjent')
+								? 'Ukjent'
+								: _has(item, 'rettIdentitetVedIdentifikasjonsnummer')
+								? 'Ved identifikasjonsnummer'
+								: _has(item, 'rettIdentitetVedOpplysninger')
+								? 'Ved personopplysninger'
+								: 'Ingen'
+						),
+						obj('Identifikasjonsnummer', item.rettIdentitetVedIdentifikasjonsnummer),
+						obj('Fornavn', item.rettIdentitetVedOpplysninger?.personnavn?.fornavn),
+						obj('Mellomnavn', item.rettIdentitetVedOpplysninger?.personnavn?.mellomnavn),
+						obj('Etternavn', item.rettIdentitetVedOpplysninger?.personnavn?.etternavn),
+						obj(
+							'Fødselsdato',
+							Formatters.formatDate(item.rettIdentitetVedOpplysninger?.foedselsdato)
+						),
+						obj('Kjønn', item.rettIdentitetVedOpplysninger?.kjoenn),
+						obj('Statsborgerskap', item.rettIdentitetVedOpplysninger?.statsborgerskap.join(', ')),
+					]
+				}),
+			}
+			data.push(falskIdentitetData)
+		}
+	}
+
 	const pdlforvalterKriterier = bestillingData.pdlforvalter
 
 	if (pdlforvalterKriterier) {
@@ -851,48 +889,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				])
 			})
 			data.push(uidnrObj)
-		}
-
-		if (pdlforvalterKriterier.falskIdentitet) {
-			const falskIdData = pdlforvalterKriterier.falskIdentitet.rettIdentitet
-
-			if (falskIdData.identitetType === 'UKJENT') {
-				const falskId = {
-					header: 'Falsk identitet',
-					items: [
-						{
-							label: 'Rett identitet',
-							value: 'Ukjent',
-						},
-					],
-				}
-				data.push(falskId)
-			} else if (falskIdData.identitetType === 'ENTYDIG') {
-				const falskId = {
-					header: 'Falsk identitet',
-					items: [
-						{
-							label: 'Rett fødselsnummer',
-							value: falskIdData.rettIdentitetVedIdentifikasjonsnummer,
-						},
-					],
-				}
-				data.push(falskId)
-			} else if (falskIdData.identitetType === 'OMTRENTLIG') {
-				const falskId = {
-					header: 'Falsk identitet',
-					items: [
-						obj('Rett identitet', 'Kjent ved personopplysninger'),
-						obj('Fornavn', falskIdData.personnavn.fornavn),
-						obj('Mellomnavn', falskIdData.personnavn.mellomnavn),
-						obj('Etternavn', falskIdData.personnavn.etternavn),
-						obj('Kjønn', falskIdData.kjoenn),
-						obj('Fødselsdato', Formatters.formatDate(falskIdData.foedselsdato)),
-						obj('Statsborgerskap', Formatters.arrayToString(falskIdData.statsborgerskap)),
-					],
-				}
-				data.push(falskId)
-			}
 		}
 	}
 	const arenaKriterier = bestillingData.arenaforvalter

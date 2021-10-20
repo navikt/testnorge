@@ -16,7 +16,7 @@ export const FalskIdentitet = ({ formikBag }) => {
 	// 	OMTRENTLIG: 'rettIdentitetVedOpplysninger',
 	// }
 
-	const [rettIdent, setRettIdent] = useState(null)
+	// const [rettIdent, setRettIdent] = useState(null)
 
 	// const getRettIdent = ()
 
@@ -37,20 +37,21 @@ export const FalskIdentitet = ({ formikBag }) => {
 	const settIdentitetType = (e, path) => {
 		console.log('path', path)
 		if (!e) {
-			formikBag.setFieldValue(path, {})
-			setRettIdent(null)
+			formikBag.setFieldValue(path, { erFalsk: true })
+			// setRettIdent(null)
 		} else if (e.value === 'UKJENT') {
 			formikBag.setFieldValue(path, { erFalsk: true, rettIdentitetErUkjent: true })
-			setRettIdent('UKJENT')
+			// setRettIdent('UKJENT')
 			// formikBag.setFieldValue(falskIdPath, { identitetType: e.value, rettIdentitetErUkjent: true })
 		} else if (e.value === 'ENTYDIG') {
 			formikBag.setFieldValue(path, {
-				// identitetType: e.value,
+				erFalsk: true,
 				rettIdentitetVedIdentifikasjonsnummer: '',
 			})
-			setRettIdent('ENTYDIG')
+			// setRettIdent('ENTYDIG')
 		} else if (e.value === 'OMTRENTLIG') {
 			formikBag.setFieldValue(path, {
+				erFalsk: true,
 				rettIdentitetVedOpplysninger: {
 					foedselsdato: '',
 					kjoenn: '',
@@ -58,9 +59,10 @@ export const FalskIdentitet = ({ formikBag }) => {
 					statsborgerskap: [],
 				},
 			})
-			setRettIdent('OMTRENTLIG')
+			// setRettIdent('OMTRENTLIG')
 		}
 		return e.value
+		// TODO funker ikke på clear??
 	}
 
 	return (
@@ -88,7 +90,7 @@ export const FalskIdentitet = ({ formikBag }) => {
 							// value={falskIdObj.identitetType}
 							onChange={(e) => settIdentitetType(e, path)}
 							// isClearable={false}
-							size="medium"
+							size="large"
 						/>
 
 						{identType === 'ENTYDIG' && (
