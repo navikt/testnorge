@@ -1,7 +1,14 @@
 import React from 'react'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import Alertstripe from 'nav-frontend-alertstriper'
-import { Advarsler } from '~/pages/loginPage/advarsler'
+
+const Advarsler = {
+	organisation_error:
+		'Du ble logget inn med BankId, men er ikke tilknyttet noen organisasjoner som har ' +
+		'tilgang til Dolly. Ta kontakt med administrator i din organisasjon dersom du ønsker tilgang' +
+		', eller velg en annen innloggingsmetode.',
+	unknown_error: 'Ukjent feil oppsto. Ta kontakt med Dolly hvis denne feilen vedvarer.',
+}
 
 const getAdvarsel: () => string = () => {
 	let url = location.href
