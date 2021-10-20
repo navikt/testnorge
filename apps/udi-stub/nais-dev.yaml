@@ -26,6 +26,9 @@ spec:
           cluster: dev-fss
         - application: testnav-udistub-proxy
           cluster: dev-fss
+        - application: app-1
+          namespace: plattformsikkerhet
+          cluster: dev-gcp
   liveness:
     path: /internal/isAlive
     periodSeconds: 30
