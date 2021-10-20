@@ -98,21 +98,6 @@ class FalskIdentitetServiceTest {
     }
 
     @Test
-    void whenStatsborgerskapDoesNotExist_thenThrowExecption() {
-
-        var request = FalskIdentitetDTO.builder()
-                        .erFalsk(true)
-                        .rettIdentitetVedOpplysninger(new FalskIdentitetDTO.IdentifiserendeInformasjonDTO())
-                        .isNew(true)
-                        .build();
-
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                falskIdentitetService.validate(request));
-
-        assertThat(exception.getMessage(), containsString("Falsk identitet: statborgerskap må oppgis"));
-    }
-
-    @Test
     void whenInvalidNameGiven_thenThrowExecption() {
 
         when(genererNavnServiceConsumer.verifyNavn(any(no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO.class))).thenReturn(false);
