@@ -99,6 +99,6 @@ public class RsBestillingStatus {
         private RsBregdata brregstub;
         private RsDokarkiv dokarkiv;
         private RsSykemelding sykemelding;
-        private PdlPersondata pdlData;
+        private PdlPersondata pdldata;
     }
 }

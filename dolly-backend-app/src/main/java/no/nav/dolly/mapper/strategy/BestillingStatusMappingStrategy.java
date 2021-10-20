@@ -78,7 +78,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildSkjermingsRegisterStatusMap(bestilling.getProgresser()));
                         bestillingStatus.setBestilling(RsBestillingStatus.RsBestilling.builder()
                                 .pdlforvalter(bestillingRequest.getPdlforvalter())
-                                .pdlData(bestillingRequest.getPdldata())
+                                .pdldata(bestillingRequest.getPdldata())
                                 .aareg(bestillingRequest.getAareg())
                                 .krrstub(bestillingRequest.getKrrstub())
                                 .arenaforvalter(bestillingRequest.getArenaforvalter())
