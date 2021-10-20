@@ -19,6 +19,7 @@ import PersonOrganisasjonTilgangService from '~/service/services/personOrganisas
 import BrukerService from '~/service/services/bruker/BrukerService'
 import PdlForvalterService from '~/service/services/pdl/PdlForvalterService'
 import TpsMessagingService from '~/service/services/tpsmessaging/TpsMessagingService'
+import SessionService from '~/service/services/session/SessionService'
 
 export const DollyApi = DollyService
 export const ProfilApi = ProfilService
@@ -41,6 +42,7 @@ export const MiljoeApi = MiljoeService
 export const PersonOrgTilgangApi = PersonOrganisasjonTilgangService
 export const BrukerApi = BrukerService
 export const PdlforvalterApi = PdlForvalterService
+export const SessionApi = SessionService
 
 export default {
 	DollyApi: DollyService,
@@ -63,4 +65,5 @@ export default {
 	PersonOrgTilgangApi: PersonOrganisasjonTilgangService,
 	BrukerApi: BrukerService,
 	PdlforvalterApi: PdlForvalterService,
+	SessionApi: SessionService,
 }
