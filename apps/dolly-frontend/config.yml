@@ -8,6 +8,11 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: 50m
 spec:
+  idporten:
+    enabled: true
+    redirectPath: /login/oauth2/code/idporten
+    postLogoutRedirectURIs:
+      - https://dolly-frontend.dev.intern.nav.no/login
   azure:
     application:
       enabled: true
