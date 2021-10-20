@@ -11,7 +11,10 @@ import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Data
 @SuperBuilder
@@ -45,8 +48,15 @@ public class FalskIdentitetDTO extends DbVersjonDTO {
 
         private LocalDateTime foedselsdato;
         private KjoennDTO.Kjoenn kjoenn;
-        private NavnDTO personnavn;
+        private FalsktNavnDTO personnavn;
         private List<String> statsborgerskap;
+
+        public List<String> getStatsborgerskap() {
+            if (isNull(statsborgerskap)) {
+                statsborgerskap = new ArrayList<>();
+            }
+            return statsborgerskap;
+        }
     }
 
     @Data
@@ -54,7 +64,7 @@ public class FalskIdentitetDTO extends DbVersjonDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class NavnDTO implements Serializable {
+    public static class FalsktNavnDTO implements Serializable {
 
         private String etternavn;
         private String fornavn;

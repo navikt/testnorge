@@ -2,8 +2,11 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
+import no.nav.pdl.forvalter.consumer.GeografiskeKodeverkConsumer;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
+import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FalskIdentitetDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
@@ -39,6 +42,7 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
     private final CreatePersonService createPersonService;
     private final RelasjonService relasjonService;
     private final GenererNavnServiceConsumer genererNavnServiceConsumer;
+    private final GeografiskeKodeverkConsumer geografiskeKodeverkConsumer;
 
     protected static <T> int count(T artifact) {
         return nonNull(artifact) ? 1 : 0;
@@ -48,7 +52,7 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
         return isNotBlank(value) ? value : defaultValue;
     }
 
-    private static boolean isNavnUpdateRequired(FalskIdentitetDTO.NavnDTO navn) {
+    private static boolean isNavnUpdateRequired(FalskIdentitetDTO.FalsktNavnDTO navn) {
         return isBlank(navn.getFornavn()) || isBlank(navn.getEtternavn()) ||
                 (isBlank(navn.getMellomnavn()) && isTrue(navn.getHasMellomnavn()));
     }
@@ -62,6 +66,7 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
                 handle(type, person.getIdent());
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
+                type.setGjeldende(nonNull(type.getGjeldende()) ? type.getGjeldende() : true);
             }
         }
         return person.getFalskIdentitet();
@@ -108,7 +113,44 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
 
     private void handle(FalskIdentitetDTO identitet, String ident) {
 
-        if (isBlank(identitet.getRettIdentitetVedIdentifikasjonsnummer())) {
+        if (isTrue(identitet.getRettIdentitetErUkjent())) {
+            return;
+
+        } else if (nonNull(identitet.getRettIdentitetVedOpplysninger())) {
+
+            if (isNull(identitet.getRettIdentitetVedOpplysninger().getPersonnavn())) {
+                identitet.getRettIdentitetVedOpplysninger().setPersonnavn(new FalskIdentitetDTO.FalsktNavnDTO());
+            }
+
+            if (isNavnUpdateRequired(identitet.getRettIdentitetVedOpplysninger().getPersonnavn())) {
+                var nyttNavn = genererNavnServiceConsumer.getNavn(1);
+                if (nyttNavn.isPresent()) {
+                    identitet.getRettIdentitetVedOpplysninger().getPersonnavn().setFornavn(
+                            blankCheck(identitet.getRettIdentitetVedOpplysninger().getPersonnavn().getFornavn(),
+                                    nyttNavn.get().getAdjektiv()));
+                    identitet.getRettIdentitetVedOpplysninger().getPersonnavn().setEtternavn(
+                            blankCheck(identitet.getRettIdentitetVedOpplysninger().getPersonnavn().getEtternavn(),
+                                    nyttNavn.get().getSubstantiv()));
+                    identitet.getRettIdentitetVedOpplysninger().getPersonnavn().setMellomnavn(
+                            blankCheck(identitet.getRettIdentitetVedOpplysninger().getPersonnavn().getMellomnavn(),
+                                    isTrue(identitet.getRettIdentitetVedOpplysninger().getPersonnavn().getHasMellomnavn()) ?
+                                            nyttNavn.get().getAdverb() : null));
+                }
+            }
+            identitet.getRettIdentitetVedOpplysninger().getPersonnavn().setHasMellomnavn(null);
+
+            if (isNull(identitet.getRettIdentitetVedOpplysninger().getFoedselsdato())) {
+                identitet.getRettIdentitetVedOpplysninger().setFoedselsdato(DatoFraIdentUtility.getDato(ident).atStartOfDay());
+            }
+            if (isNull(identitet.getRettIdentitetVedOpplysninger().getKjoenn())) {
+                identitet.getRettIdentitetVedOpplysninger().setKjoenn(KjoennFraIdentUtility.getKjoenn(ident));
+            }
+            if (identitet.getRettIdentitetVedOpplysninger().getStatsborgerskap().isEmpty()) {
+                identitet.getRettIdentitetVedOpplysninger().setStatsborgerskap(
+                        List.of(geografiskeKodeverkConsumer.getTilfeldigLand(), "NOR"));
+            }
+
+        } else if (isBlank(identitet.getRettIdentitetVedIdentifikasjonsnummer())) {
 
             if (isNull(identitet.getNyFalskIdentitetPerson())) {
                 identitet.setNyFalskIdentitetPerson(new PersonRequestDTO());
@@ -131,26 +173,6 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
             relasjonService.setRelasjoner(ident, RelasjonType.FALSK_IDENTITET,
                     identitet.getRettIdentitetVedIdentifikasjonsnummer(), RelasjonType.RIKTIG_IDENTITET);
             identitet.setNyFalskIdentitetPerson(null);
-        }
-
-        if (nonNull(identitet.getRettIdentitetVedOpplysninger()) &&
-                nonNull(identitet.getRettIdentitetVedOpplysninger().getPersonnavn()) &&
-                isNavnUpdateRequired(identitet.getRettIdentitetVedOpplysninger().getPersonnavn())) {
-
-            var nyttNavn = genererNavnServiceConsumer.getNavn(1);
-            if (nyttNavn.isPresent()) {
-                identitet.getRettIdentitetVedOpplysninger().getPersonnavn().setFornavn(
-                        blankCheck(identitet.getRettIdentitetVedOpplysninger().getPersonnavn().getFornavn(),
-                                nyttNavn.get().getAdjektiv()));
-                identitet.getRettIdentitetVedOpplysninger().getPersonnavn().setEtternavn(
-                        blankCheck(identitet.getRettIdentitetVedOpplysninger().getPersonnavn().getEtternavn(),
-                                nyttNavn.get().getSubstantiv()));
-                identitet.getRettIdentitetVedOpplysninger().getPersonnavn().setMellomnavn(
-                        blankCheck(identitet.getRettIdentitetVedOpplysninger().getPersonnavn().getMellomnavn(),
-                                isTrue(identitet.getRettIdentitetVedOpplysninger().getPersonnavn().getHasMellomnavn()) ?
-                                        nyttNavn.get().getAdverb() : null));
-            }
-            identitet.getRettIdentitetVedOpplysninger().getPersonnavn().setHasMellomnavn(null);
         }
     }
 }
