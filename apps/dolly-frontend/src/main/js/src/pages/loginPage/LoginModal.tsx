@@ -7,7 +7,7 @@ const getAdvarsel: () => string = () => {
 	let url = location.href
 	if (url.includes('login?')) {
 		let urlParts = url.split('login?')
-		if (urlParts.length === 1 || urlParts[1] === 'logout' || !(urlParts[1] in Advarsler)) {
+		if (urlParts.length === 1 || !(urlParts[1] in Advarsler)) {
 			return null
 		} else {
 			// @ts-ignore
