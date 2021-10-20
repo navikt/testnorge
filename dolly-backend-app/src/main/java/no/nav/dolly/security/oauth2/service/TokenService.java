@@ -1,6 +1,10 @@
 package no.nav.dolly.security.oauth2.service;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.security.domain.DollyBackendClientCredential;
+import no.nav.dolly.security.oauth2.config.Scopeable;
+import no.nav.dolly.security.oauth2.domain.AccessScopes;
+import no.nav.dolly.security.oauth2.domain.AccessToken;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -11,14 +15,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
-import reactor.netty.tcp.ProxyProvider;
+import reactor.netty.transport.ProxyProvider;
 
 import java.net.URI;
-
-import no.nav.dolly.security.domain.DollyBackendClientCredential;
-import no.nav.dolly.security.oauth2.config.Scopeable;
-import no.nav.dolly.security.oauth2.domain.AccessScopes;
-import no.nav.dolly.security.oauth2.domain.AccessToken;
 
 @Slf4j
 @Service

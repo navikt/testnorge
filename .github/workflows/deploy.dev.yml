@@ -4,8 +4,7 @@ on:
   push:
     branches:
       - master
-      - feature/rapporteringsdato-inntekt
-      - feature/align_with_pdl_forvalter
+      - feature/nybestilling_via_pdl_forvalter
   workflow_dispatch:
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/dolly-backend:${{ github.sha }}
@@ -24,7 +23,7 @@ jobs:
           restore-keys: ${{ runner.os }}-maven-
       - uses: actions/setup-java@v1
         with:
-          java-version: '11.x'
+          java-version: '17.x'
       - name: Compile with Maven
         env:
           USERNAME: token

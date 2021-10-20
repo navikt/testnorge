@@ -16,13 +16,13 @@ import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
+import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -99,6 +99,6 @@ public class RsBestillingStatus {
         private RsBregdata brregstub;
         private RsDokarkiv dokarkiv;
         private RsSykemelding sykemelding;
-        private PersonDTO pdlData;
+        private PdlPersondata pdlData;
     }
 }

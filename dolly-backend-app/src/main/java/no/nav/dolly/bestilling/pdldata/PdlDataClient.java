@@ -15,6 +15,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 import java.util.List;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Slf4j
@@ -30,10 +31,10 @@ public class PdlDataClient implements ClientRegister {
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         try {
-            if (nonNull(bestilling.getPdldata())) {
+            if (nonNull(bestilling.getPdldata()) && isNull(bestilling.getPdldata().getOpprettNyPerson())) {
                 pdlDataConsumer.oppdaterPdl(dollyPerson.getHovedperson(),
                         PersonUpdateRequestDTO.builder()
-                                .person(bestilling.getPdldata())
+                                .person(bestilling.getPdldata().getPerson())
                                 .build());
             }
 

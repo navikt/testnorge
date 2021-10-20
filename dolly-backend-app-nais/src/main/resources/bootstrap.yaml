@@ -25,3 +25,7 @@ spring:
         backend: postgresql/preprod-fss
         enabled: true
         role: ${postgresql.database.name}-admin
+      kv:
+        backend: kv/preprod/fss
+        application-name: dolly-backend-dev/dolly
+        default-context: dolly-backend-dev/dolly
