@@ -49,6 +49,9 @@ spec:
           cluster: dev-gcp
         - application: mn-synt-arbeidsforhold-service
           cluster: dev-fss
+        - application: app-1
+          namespace: plattformsikkerhet
+          cluster: dev-gcp
     outbound:
       external:
         - host: testnav-ereg-proxy.dev-fss-pub.nais.io

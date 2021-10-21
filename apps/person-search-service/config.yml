@@ -29,6 +29,9 @@ spec:
           cluster: dev-fss
         - application: dolly-frontend
           cluster: dev-gcp
+        - application: app-1
+          namespace: plattformsikkerhet
+          cluster: dev-gcp
   liveness:
     path: /internal/isAlive
     initialDelay: 4

@@ -29,6 +29,9 @@ spec:
           cluster: dev-gcp
         - application: testnav-faste-data-frontend
           cluster: dev-gcp
+        - application: app-1
+          namespace: plattformsikkerhet
+          cluster: dev-gcp
     outbound:
       rules:
         - application: organisasjon-bestilling-service
