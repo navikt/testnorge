@@ -18,6 +18,9 @@ spec:
           cluster: dev-gcp
         - application: team-dolly-lokal-app
           cluster: dev-fss
+        - application: app-1
+          namespace: plattformsikkerhet
+          cluster: dev-gcp
   tokenx:
     enabled: true
   azure:
