@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.pdl.forvalter.dto.Paginering;
 import no.nav.pdl.forvalter.service.PdlOrdreService;
 import no.nav.pdl.forvalter.service.PersonService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
@@ -38,9 +39,12 @@ public class PersonController {
     public List<FullPersonDTO> getPerson(@Parameter(description = "Hent personer med angitte identer, eller")
                                          @RequestParam(required = false) List<String> identer,
                                          @Parameter(description = "Hent identitet ved søk på (u)fullstendig ident og/eller en eller flere navn")
-                                         @RequestParam(required = false) String fragment) {
+                                         @RequestParam(required = false) String fragment,
+                                         @Parameter(description = "Sorterer basert på sist oppdatert (nyeste først), " +
+                                                 "henter angitt side med personer")
+                                         @RequestParam(required = false) Paginering paginering) {
 
-        return personService.getPerson(identer, fragment);
+        return personService.getPerson(identer, fragment, paginering);
     }
 
     @ResponseBody

@@ -11,6 +11,7 @@ import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.HentIdenterRequest;
+import no.nav.pdl.forvalter.dto.Paginering;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
@@ -26,6 +27,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
@@ -51,8 +53,10 @@ import static org.apache.commons.lang3.StringUtils.isNumeric;
 public class PersonService {
 
     private static final String INVALID_IDENT = "Ident må være på 11 tegn og numerisk";
-    private static final String EMPTY_GET_REQUEST = "Angi en av parametrene 'identer' eller 'fragment'";
     private static final String VIOLATION_ALIAS_EXISTS = "Utgått ident kan ikke endres. Benytt gjeldende ident %s for denne operasjonen";
+
+    private static final String SORTER_BY_FIELD = "sistOppdatert";
+    private static final int PAGE_SIZE = 10;
 
     private final PersonRepository personRepository;
     private final MergeService mergeService;
@@ -126,7 +130,7 @@ public class PersonService {
     }
 
     @Transactional(readOnly = true)
-    public List<FullPersonDTO> getPerson(List<String> identer, String fragment) {
+    public List<FullPersonDTO> getPerson(List<String> identer, String fragment, Paginering paginering) {
 
         if (nonNull(identer) && !identer.isEmpty()) {
             var query = new HashSet<>(identer);
@@ -139,11 +143,17 @@ public class PersonService {
                     .map(DbAlias::getTidligereIdent)
                     .collect(Collectors.toSet()));
 
-            return mapperFacade.mapAsList(personRepository.findByIdentIn(query), FullPersonDTO.class);
+            return mapperFacade.mapAsList(personRepository.findByIdentIn(query,
+                            PageRequest.of(nonNull(paginering) && nonNull(paginering.getSideNr()) ?
+                                            paginering.getSideNr() : 0,
+                                    nonNull(paginering) && nonNull(paginering.getSideStoerrelse()) ?
+                                            paginering.getSideStoerrelse() : PAGE_SIZE,
+                                    Sort.by(SORTER_BY_FIELD).descending())),
+                    FullPersonDTO.class);
 
         } else if (isNotBlank(fragment)) {
 
-            return searchPerson(fragment).stream()
+            return searchPerson(fragment, paginering).stream()
                     .map(person -> FullPersonDTO.builder()
                             .identitet(PersonIDDTO.builder()
                                     .ident(person.getIdent())
@@ -156,7 +166,13 @@ public class PersonService {
 
         } else {
 
-            throw new InvalidRequestException(EMPTY_GET_REQUEST);
+            return mapperFacade.mapAsList(personRepository.findAll(
+                            PageRequest.of(nonNull(paginering) && nonNull(paginering.getSideNr()) ?
+                                            paginering.getSideNr() : 0,
+                                    nonNull(paginering) && nonNull(paginering.getSideStoerrelse()) ?
+                                            paginering.getSideStoerrelse() : PAGE_SIZE,
+                                    Sort.by(SORTER_BY_FIELD).descending())),
+                    FullPersonDTO.class);
         }
     }
 
@@ -203,7 +219,7 @@ public class PersonService {
         }
     }
 
-    private List<DbPerson> searchPerson(String query) {
+    private List<DbPerson> searchPerson(String query, Paginering paginering) {
         Optional<String> ident = Stream.of(query.split(" "))
                 .filter(StringUtils::isNumeric)
                 .findFirst();
@@ -215,6 +231,10 @@ public class PersonService {
         return personRepository.findByWildcardIdent(ident.orElse(null),
                 !navn.isEmpty() ? navn.get(0).toUpperCase() : null,
                 navn.size() > 1 ? navn.get(1).toUpperCase() : null,
-                PageRequest.of(0, 10));
+                PageRequest.of(nonNull(paginering) && nonNull(paginering.getSideNr()) ?
+                                paginering.getSideNr() : 0,
+                        nonNull(paginering) && nonNull(paginering.getSideStoerrelse()) ?
+                                paginering.getSideStoerrelse() : PAGE_SIZE,
+                        Sort.by(SORTER_BY_FIELD).descending()));
     }
 }
