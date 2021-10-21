@@ -31,7 +31,7 @@ public class TestnorgeAaregProxyApplicationStarter {
                         .path("/**")
                         .filters(gatewayFilterSpec -> gatewayFilterSpec
                                 .addRequestHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
-                        .uri("https://testnorge-aareg.dev.adeo.no/")
+                        .uri("https://testnorge-aareg.dev.intern.nav.no/")
                 )
                 .build();
     }
