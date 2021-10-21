@@ -40,11 +40,15 @@ public class PersonController {
                                          @RequestParam(required = false) List<String> identer,
                                          @Parameter(description = "Hent identitet ved søk på (u)fullstendig ident og/eller en eller flere navn")
                                          @RequestParam(required = false) String fragment,
-                                         @Parameter(description = "Sorterer basert på sist oppdatert (nyeste først), " +
-                                                 "henter angitt side med personer")
-                                         @RequestParam(required = false) Paginering paginering) {
+                                         @Parameter(description = "Sidenummer ved sortering på \'sistOppdatert\' og nyeste først")
+                                         @RequestParam(required = false, defaultValue = "0") Integer sidenummer,
+                                         @Parameter(description = "Sidestørrelse ved sortering på \'sistOppdatert\' og nyeste først")
+                                         @RequestParam(required = false, defaultValue = "10") Integer sidestorrelse) {
 
-        return personService.getPerson(identer, fragment, paginering);
+        return personService.getPerson(identer, fragment, Paginering.builder()
+                .sidenummer(sidenummer)
+                .sidestoerrelse(sidestorrelse)
+                .build());
     }
 
     @ResponseBody

@@ -55,8 +55,7 @@ public class PersonService {
     private static final String INVALID_IDENT = "Ident må være på 11 tegn og numerisk";
     private static final String VIOLATION_ALIAS_EXISTS = "Utgått ident kan ikke endres. Benytt gjeldende ident %s for denne operasjonen";
 
-    private static final String SORTER_BY_FIELD = "sistOppdatert";
-    private static final int PAGE_SIZE = 10;
+    private static final String SORT_BY_FIELD = "sistOppdatert";
 
     private final PersonRepository personRepository;
     private final MergeService mergeService;
@@ -144,11 +143,9 @@ public class PersonService {
                     .collect(Collectors.toSet()));
 
             return mapperFacade.mapAsList(personRepository.findByIdentIn(query,
-                            PageRequest.of(nonNull(paginering) && nonNull(paginering.getSideNr()) ?
-                                            paginering.getSideNr() : 0,
-                                    nonNull(paginering) && nonNull(paginering.getSideStoerrelse()) ?
-                                            paginering.getSideStoerrelse() : PAGE_SIZE,
-                                    Sort.by(SORTER_BY_FIELD).descending())),
+                            PageRequest.of(paginering.getSidenummer(),
+                                    paginering.getSidestoerrelse(),
+                                    Sort.by(SORT_BY_FIELD).descending())),
                     FullPersonDTO.class);
 
         } else if (isNotBlank(fragment)) {
@@ -167,11 +164,9 @@ public class PersonService {
         } else {
 
             return mapperFacade.mapAsList(personRepository.findAll(
-                            PageRequest.of(nonNull(paginering) && nonNull(paginering.getSideNr()) ?
-                                            paginering.getSideNr() : 0,
-                                    nonNull(paginering) && nonNull(paginering.getSideStoerrelse()) ?
-                                            paginering.getSideStoerrelse() : PAGE_SIZE,
-                                    Sort.by(SORTER_BY_FIELD).descending())),
+                            PageRequest.of(paginering.getSidenummer(),
+                                    paginering.getSidestoerrelse(),
+                                    Sort.by(SORT_BY_FIELD).descending())),
                     FullPersonDTO.class);
         }
     }
@@ -231,10 +226,8 @@ public class PersonService {
         return personRepository.findByWildcardIdent(ident.orElse(null),
                 !navn.isEmpty() ? navn.get(0).toUpperCase() : null,
                 navn.size() > 1 ? navn.get(1).toUpperCase() : null,
-                PageRequest.of(nonNull(paginering) && nonNull(paginering.getSideNr()) ?
-                                paginering.getSideNr() : 0,
-                        nonNull(paginering) && nonNull(paginering.getSideStoerrelse()) ?
-                                paginering.getSideStoerrelse() : PAGE_SIZE,
-                        Sort.by(SORTER_BY_FIELD).descending()));
+                PageRequest.of(paginering.getSidenummer(),
+                        paginering.getSidestoerrelse(),
+                        Sort.by(SORT_BY_FIELD).descending()));
     }
 }
