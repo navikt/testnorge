@@ -1,3 +1,3 @@
-import BrukerPageConnector from './BrukerPageConnector'
+import BrukerPage from './BrukerPage'
 
-export default BrukerPageConnector
+export default BrukerPage
