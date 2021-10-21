@@ -58,6 +58,9 @@ spec:
           cluster: dev-gcp
         - application: synthdata-tps-gcp
           cluster: dev-gcp
+        - application: app-1
+          namespace: plattformsikkerhet
+          cluster: dev-gcp
     outbound:
       external:
         - host: https://testnav-pdl-proxy.dev-fss-pub.nais.io

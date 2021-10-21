@@ -38,6 +38,9 @@ spec:
           cluster: dev-gcp
         - application: testnav-faste-data-frontend
           cluster: dev-gcp
+        - application: app-1
+          namespace: plattformsikkerhet
+          cluster: dev-gcp
     outbound:
       external:
         - host: tps-forvalteren-proxy.dev-fss-pub.nais.io
