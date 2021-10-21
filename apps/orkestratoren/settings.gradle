@@ -11,8 +11,6 @@ includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/servlet-security'
 includeBuild '../../libs/domain'
 includeBuild '../../libs/data-transfer-objects'
-includeBuild '../../libs/reporting'
-includeBuild '../../libs/avro-schema'
 
 gradleEnterprise {
     buildScan {

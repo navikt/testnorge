@@ -15,45 +15,4 @@ spring:
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
           accepted-audience: dev-gcp:dolly:testnav-adresse-service
 
-
-batch:
-  avspillergruppeId.miljoe: {100000883:"q2"}
-  antallMeldingerPerEndringskode: {"0110":10,"0211":20}
-  navMeldinger: {"Z010":0}
-
-inntektbatch:
-  avspillergruppeId: 100000445
-
-poppbatch:
-  antallNyeIdenter: 1
-
-aaregbatch:
-  antallNyeIdenter: 1
-
-bisysbatch:
-  antallNyeIdenter: 1
-
-sambatch:
-  antallMeldinger: 1
-
-arenabatch:
-  antallNyeIdenter: 1
-
-frikortbatch:
-  antallNyeIdenter: 1
-
-medlbatch:
-  prosentfaktor: 0.1
-
-instbatch:
-  avspillergruppeId: 100000445
-  miljoe: t9
-  antallNyeIdenter: 1
-
-tpbatch:
-  antallPersoner: 10000
-
 ibm.mq.user-authentication-m-q-c-s-p: false
-
-SERVICEUSER_PASSWORD: dummy
-SERVICEUSER_USERNAME: dummy
