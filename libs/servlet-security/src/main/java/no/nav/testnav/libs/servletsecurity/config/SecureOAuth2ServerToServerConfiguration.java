@@ -8,6 +8,7 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 
 import java.util.List;
 
+import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedId;
 import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedResourceServerType;
 import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedToken;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
@@ -40,6 +41,7 @@ import no.nav.testnav.libs.servletsecurity.service.SecureJwtAuthenticationTokenR
         TokenExchange.class,
         GetAuthenticatedResourceServerType.class,
         GetAuthenticatedToken.class,
+        GetAuthenticatedId.class,
         TokenX.class,
         GetUserInfo.class,
         GetUserJwt.class

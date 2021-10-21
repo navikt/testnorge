@@ -1,7 +1,7 @@
 ﻿apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: testnav-varslinger-service
+  name: testnav-varslinger-service-dev
   namespace: dolly
   labels:
     team: dolly
@@ -13,12 +13,6 @@ spec:
     inbound:
       rules:
         - application: dolly-frontend-dev
-          cluster: dev-fss
-        - application: dolly-frontend
-          cluster: dev-fss
-        - application: dolly-frontend-dev
-          cluster: dev-gcp
-        - application: dolly-frontend
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
@@ -34,7 +28,7 @@ spec:
     sqlInstances:
       - type: POSTGRES_12
         databases:
-          - name: testnav-varslinger-db
+          - name: testnav-varslinger-db-dev
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -45,14 +39,14 @@ spec:
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500
-  envFrom:
-    - secret: user-encryption
-  env:
-    - name: SPRING_PROFILES_ACTIVE
-      value: prod
   replicas:
     min: 1
     max: 1
+  envFrom:
+    - secret: user-encryption-dev
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: dev
   resources:
     requests:
       cpu: 200m
@@ -61,4 +55,4 @@ spec:
       cpu: 500m
       memory: 2048Mi
   ingresses:
-    - "https://testnav-varslinger-service.dev.intern.nav.no"
+    - "https://testnav-varslinger-service-dev.dev.intern.nav.no"

@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtDecoders;
 import org.springframework.security.oauth2.jwt.JwtException;
+import org.springframework.security.oauth2.jwt.JwtValidationException;
 import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 
@@ -42,6 +43,9 @@ public class MultipleIssuersJwtDecoder implements JwtDecoder {
 
         try {
             return decoderMap.get(jwt.getJWTClaimsSet().getIssuer()).decode(token);
+        } catch (JwtValidationException e) {
+            log.error("Jwt valideringsfeil", e);
+            throw e;
         } catch (Exception e) {
             log.error("Ukjent feil", e);
             throw e;

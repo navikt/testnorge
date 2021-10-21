@@ -14,7 +14,6 @@ import no.nav.testnav.libs.servletsecurity.config.SecureOAuth2ServerToServerConf
 @Import({
         ApplicationCoreConfig.class,
         FlywayConfiguration.class,
-        VaultHikariConfiguration.class,
         SecureOAuth2ServerToServerConfiguration.class
 })
 public class ApplicationConfig {

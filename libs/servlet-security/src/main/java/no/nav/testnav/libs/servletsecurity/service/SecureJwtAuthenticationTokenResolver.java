@@ -37,7 +37,7 @@ public class SecureJwtAuthenticationTokenResolver implements AuthenticationToken
     @Override
     public String getOid() {
         Map<String, Object> tokenAttributes = getJwtAuthenticationToken().getTokenAttributes();
-        return String.valueOf(tokenAttributes.get("oid"));
+        return tokenAttributes.get("oid") == null ? null : String.valueOf(tokenAttributes.get("oid"));
     }
 
     @Override
