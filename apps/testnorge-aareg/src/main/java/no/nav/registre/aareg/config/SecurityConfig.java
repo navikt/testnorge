@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 @Configuration
 @Order(1)
-@Profile({ "prod", "dev" })
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override

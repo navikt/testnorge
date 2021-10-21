@@ -108,7 +108,6 @@ public class IdentServiceTest {
         when(testnorgeInstConsumer.slettIdenterFraInst(identer)).thenReturn(sletteInstitusjonsoppholdResponse);
         when(testnorgeSigrunConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer)).thenReturn(sletteSkattegrunnlagResponse);
         when(testnorgeSigrunConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer)).thenReturn(sletteSkattegrunnlagResponse);
-        when(testnorgeAaregConsumer.slettIdenterFraAaregstub(identer)).thenReturn(sletteArbeidsforholdResponse);
         // TODO: Fiks arena og legg inn denne igjen
         // when(arenaConsumer.slettIdenter(miljoe, identer)).thenReturn(sletteArenaResponse);
 
@@ -117,7 +116,6 @@ public class IdentServiceTest {
         verify(testnorgeSkdConsumer).slettIdenterFraAvspillerguppe(eq(avspillergruppeId), anyList(), eq(identer));
         verify(testnorgeInstConsumer).slettIdenterFraInst(identer);
         verify(testnorgeSigrunConsumer).slettIdenterFraSigrun(testdataEier, miljoe, identer);
-        verify(testnorgeAaregConsumer).slettIdenterFraAaregstub(identer);
         // TODO: Fiks arena og legg inn denne igjen
         // verify(arenaConsumer).slettIdenter(miljoe, identer);
 
@@ -146,7 +144,6 @@ public class IdentServiceTest {
         when(testnorgeSkdConsumer.slettIdenterFraAvspillerguppe(eq(avspillergruppeId), anyList(), eq(identer))).thenReturn(expectedMeldingIder);
         when(testnorgeInstConsumer.slettIdenterFraInst(identer)).thenReturn(SletteInstitusjonsoppholdResponse.builder().build());
         when(testnorgeSigrunConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer)).thenReturn(SletteSkattegrunnlagResponse.builder().build());
-        when(testnorgeAaregConsumer.slettIdenterFraAaregstub(identer)).thenReturn(SletteArbeidsforholdResponse.builder().build());
         // TODO: Fiks arena og legg inn denne igjen
         // when(arenaConsumer.slettIdenter(miljoe, identer)).thenReturn(SletteArenaResponse.builder().build());
 
@@ -158,7 +155,6 @@ public class IdentServiceTest {
         verify(testnorgeSkdConsumer).slettIdenterFraAvspillerguppe(eq(avspillergruppeId), anyList(), eq(identer));
         verify(testnorgeInstConsumer).slettIdenterFraInst(identer);
         verify(testnorgeSigrunConsumer).slettIdenterFraSigrun(testdataEier, miljoe, identer);
-        verify(testnorgeAaregConsumer).slettIdenterFraAaregstub(identer);
         // TODO: Fiks arena og legg inn denne igjen
         // verify(arenaConsumer).slettIdenter(miljoe, identer);
     }
@@ -169,7 +165,6 @@ public class IdentServiceTest {
         when(testnorgeSkdConsumer.slettIdenterFraAvspillerguppe(eq(avspillergruppeId), anyList(), eq(identer))).thenReturn(expectedMeldingIder);
         when(testnorgeInstConsumer.slettIdenterFraInst(identer)).thenReturn(SletteInstitusjonsoppholdResponse.builder().build());
         when(testnorgeSigrunConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer)).thenReturn(SletteSkattegrunnlagResponse.builder().build());
-        when(testnorgeAaregConsumer.slettIdenterFraAaregstub(identer)).thenReturn(SletteArbeidsforholdResponse.builder().build());
         // TODO: Fiks arena og legg inn denne igjen
         // when(arenaConsumer.slettIdenter(miljoe, identer)).thenReturn(SletteArenaResponse.builder().build());
 
@@ -181,7 +176,6 @@ public class IdentServiceTest {
         verify(testnorgeSkdConsumer).slettIdenterFraAvspillerguppe(eq(avspillergruppeId), anyList(), eq(identer));
         verify(testnorgeInstConsumer).slettIdenterFraInst(identer);
         verify(testnorgeSigrunConsumer).slettIdenterFraSigrun(testdataEier, miljoe, identer);
-        verify(testnorgeAaregConsumer).slettIdenterFraAaregstub(identer);
         // TODO: Fiks arena og legg inn denne igjen
         // verify(arenaConsumer).slettIdenter(miljoe, identer);
     }

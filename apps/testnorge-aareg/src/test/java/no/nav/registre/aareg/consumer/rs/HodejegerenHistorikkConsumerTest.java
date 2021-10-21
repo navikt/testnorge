@@ -1,32 +1,5 @@
 package no.nav.registre.aareg.consumer.rs;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.registre.aareg.AaregSaveInHodejegerenRequest;
-import no.nav.registre.aareg.IdentMedData;
-import no.nav.registre.aareg.domain.RsArbeidsavtale;
-import no.nav.registre.aareg.domain.RsArbeidsforhold;
-import no.nav.registre.aareg.domain.RsOrganisasjon;
-import no.nav.registre.aareg.domain.RsPeriode;
-import no.nav.registre.aareg.domain.RsPersonAareg;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.client.MockRestServiceServer;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
@@ -34,7 +7,35 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-@RunWith(SpringRunner.class)
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.web.client.MockRestServiceServer;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import no.nav.registre.aareg.AaregSaveInHodejegerenRequest;
+import no.nav.registre.aareg.IdentMedData;
+import no.nav.registre.aareg.domain.RsArbeidsavtale;
+import no.nav.registre.aareg.domain.RsArbeidsforhold;
+import no.nav.registre.aareg.domain.RsOrganisasjon;
+import no.nav.registre.aareg.domain.RsPeriode;
+import no.nav.registre.aareg.domain.RsPersonAareg;
+
+@ExtendWith(MockitoExtension.class)
 @RestClientTest(HodejegerenHistorikkConsumer.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
 @ActiveProfiles("test")
@@ -54,7 +55,7 @@ public class HodejegerenHistorikkConsumerTest {
     private List<RsArbeidsforhold> data;
     private String fnr = "01010101010";
 
-    @Before
+    @BeforeEach
     public void setUp() {
         data = new ArrayList<>(Collections.singletonList(RsArbeidsforhold.builder()
                 .ansettelsesPeriode(RsPeriode.builder()
