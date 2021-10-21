@@ -1,24 +1,5 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.client.MockRestServiceServer;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -28,28 +9,45 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-@RunWith(SpringRunner.class)
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.web.client.MockRestServiceServer;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserPoppRequest;
+
+@ExtendWith(MockitoExtension.class)
 @RestClientTest(TestnorgeSigrunConsumer.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
 @ActiveProfiles("test")
 public class TestnorgeSigrunConsumerTest {
 
-    @Autowired
-    private TestnorgeSigrunConsumer testnorgeSigrunConsumer;
-
-    @Autowired
-    private MockRestServiceServer server;
-
-    @Value("${testnorge-sigrun.rest.api.url}")
-    private String serverUrl;
-
     private static final Long AVSPILLERGRUPPE_ID = 123L;
     private static final String MILJOE = "t1";
+    @Autowired
+    private TestnorgeSigrunConsumer testnorgeSigrunConsumer;
+    @Autowired
+    private MockRestServiceServer server;
+    @Value("${testnorge-sigrun.rest.api.url}")
+    private String serverUrl;
     private List<String> identer;
     private SyntetiserPoppRequest syntetiserPoppRequest;
-    private String testdataEier = "test";
+    private final String testdataEier = "test";
 
-    @Before
+    @BeforeEach
     public void setUp() {
         identer = new ArrayList<>(Arrays.asList("01010101010", "02020202020"));
         syntetiserPoppRequest = new SyntetiserPoppRequest(AVSPILLERGRUPPE_ID, MILJOE, identer.size());
