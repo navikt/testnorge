@@ -22,7 +22,6 @@ import no.nav.testnav.libs.servletsecurity.exchange.TokenXService;
 import no.nav.testnav.libs.servletsecurity.properties.AzureAdResourceServerProperties;
 import no.nav.testnav.libs.servletsecurity.properties.ResourceServerProperties;
 import no.nav.testnav.libs.servletsecurity.properties.TokenXResourceServerProperties;
-import no.nav.testnav.libs.servletsecurity.reslover.RegistrationClientIdResolver;
 import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import no.nav.testnav.libs.servletsecurity.service.ClientCredentialGenerateAccessTokenService;
 import no.nav.testnav.libs.servletsecurity.service.SecureJwtAuthenticationTokenResolver;
@@ -35,7 +34,6 @@ import no.nav.testnav.libs.servletsecurity.service.SecureJwtAuthenticationTokenR
         AccessTokenService.class,
         TokenXResourceServerProperties.class,
         AzureAdResourceServerProperties.class,
-        RegistrationClientIdResolver.class,
         TokenXService.class,
         AzureAdTokenService.class,
         TokenExchange.class,
