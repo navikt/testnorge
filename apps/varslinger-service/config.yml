@@ -46,7 +46,7 @@ spec:
     periodSeconds: 5
     failureThreshold: 500
   envFrom:
-    - secret: user-encryption
+    - secret: user-encryption-prod
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: prod
