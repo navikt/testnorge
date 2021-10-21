@@ -13,6 +13,7 @@ class ApplicationContextTest {
 
     @MockBean
     public JwtDecoder jwtDecoder;
+
     /**
      * Used to test app runtime dependency and properties
      */
