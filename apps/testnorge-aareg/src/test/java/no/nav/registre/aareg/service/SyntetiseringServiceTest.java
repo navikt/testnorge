@@ -3,7 +3,6 @@ package no.nav.registre.aareg.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import no.nav.registre.aareg.consumer.rs.AaregSyntetisererenConsumer;
-import no.nav.registre.aareg.consumer.rs.AaregstubConsumer;
 import no.nav.registre.aareg.consumer.rs.HodejegerenHistorikkConsumer;
 import no.nav.registre.aareg.consumer.rs.KodeverkConsumer;
 import no.nav.registre.aareg.consumer.rs.response.KodeverkResponse;
@@ -58,9 +57,6 @@ public class SyntetiseringServiceTest {
     private AaregSyntetisererenConsumer aaregSyntetisererenConsumer;
 
     @Mock
-    private AaregstubConsumer aaregstubConsumer;
-
-    @Mock
     private AaregService aaregService;
 
     @Mock
@@ -99,7 +95,6 @@ public class SyntetiseringServiceTest {
 
         when(hodejegerenConsumer.getLevende(avspillergruppeId, MINIMUM_ALDER)).thenReturn(identer);
         when(aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(anyList())).thenReturn(syntetiserteMeldinger);
-        when(aaregstubConsumer.hentEksisterendeIdenter()).thenReturn(new ArrayList<>());
     }
 
     @Test
@@ -111,12 +106,10 @@ public class SyntetiseringServiceTest {
                 .build();
 
         when(aaregService.opprettArbeidsforhold(any())).thenReturn(rsAaregResponse);
-        when(aaregstubConsumer.sendTilAaregstub(anyList())).thenReturn(Collections.singletonList(fnr1));
         when(kodeverkConsumer.getYrkeskoder()).thenReturn(new KodeverkResponse(Collections.singletonList("0010961")));
 
         var response = syntetiseringService.opprettArbeidshistorikkOgSendTilAaregstub(syntetiserAaregRequest, sendAlleEksisterende);
 
-        verify(aaregstubConsumer, times(2)).sendTilAaregstub(Collections.singletonList(any()));
         verify(hodejegerenHistorikkConsumer, times(2)).saveHistory(any());
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }
@@ -124,7 +117,6 @@ public class SyntetiseringServiceTest {
     @Test
     public void shouldHenteIdenterMedArbeidsforhold() {
         when(hodejegerenConsumer.get(avspillergruppeId)).thenReturn(identer);
-        when(aaregstubConsumer.hentEksisterendeIdenter()).thenReturn(identer);
         when(aaregService.hentArbeidsforhold(anyString(), eq(miljoe))).thenReturn(ResponseEntity.ok().body(new ArrayList<>(Collections.singletonList(new Arbeidsforhold()))));
 
         var response = new ArrayList<>(syntetiseringService.hentIdenterIAvspillergruppeMedArbeidsforhold(avspillergruppeId, miljoe, true));
@@ -133,7 +125,6 @@ public class SyntetiseringServiceTest {
         assertThat(response, hasItem(identer.get(1)));
 
         verify(hodejegerenConsumer).get(avspillergruppeId);
-        verify(aaregstubConsumer).hentEksisterendeIdenter();
         verify(aaregService, times(2)).hentArbeidsforhold(anyString(), eq(miljoe));
     }
 }
