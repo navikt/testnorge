@@ -1,21 +1,22 @@
 package no.nav.registre.aareg.consumer.ws;
 
-import no.nav.registre.aareg.consumer.rs.MiljoerConsumer;
-import no.nav.registre.aareg.consumer.rs.response.MiljoerResponse;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
-import java.util.List;
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.List;
+
+import no.nav.registre.aareg.consumer.rs.MiljoerConsumer;
+import no.nav.registre.aareg.consumer.rs.response.MiljoerResponse;
+
+@ExtendWith(MockitoExtension.class)
 public class AaregBehandleArbeidsforholdTest {
 
     @Mock

@@ -1,52 +1,38 @@
 package no.nav.registre.aareg.security.sts;
 
-import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
-import no.nav.registre.aareg.fasit.FasitApiConsumer;
-import no.nav.registre.aareg.fasit.FasitResourceScope;
-import no.nav.registre.aareg.fasit.FasitResourceWithUnmappedProperties;
-import no.nav.registre.aareg.properties.Environment;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
+import no.nav.registre.aareg.fasit.FasitApiConsumer;
+import no.nav.registre.aareg.fasit.FasitResourceScope;
+import no.nav.registre.aareg.fasit.FasitResourceWithUnmappedProperties;
+import no.nav.registre.aareg.properties.Environment;
+
+@ExtendWith(MockitoExtension.class)
 public class StsSamlFasitConsumerTest {
 
     private static final Environment ENV = Environment.TEST;
     private static final String SAML_ALIAS = "securityTokenService";
 
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
     @Mock
     private FasitApiConsumer fasitApiConsumer;
 
     @InjectMocks
     private StsSamlFasitConsumer stsSamlFasitConsumer;
-
-    @Test
-    public void getStsSamlService_ugyldigMijoe() {
-        when(fasitApiConsumer.fetchResources(anyString(), anyString())).thenReturn(
-                new FasitResourceWithUnmappedProperties[]{});
-
-        expectedException.expect(TestnorgeAaregFunctionalException.class);
-        expectedException.expectMessage("Ugyldig sts-miljø/sts-miljø ikke funnet.");
-
-        stsSamlFasitConsumer.getStsSamlService(ENV);
-    }
 
     @Test
     public void getStsSamlService_ok() {
