@@ -60,7 +60,7 @@ public class SyntetiseringService {
     private final AaregSyntetisererenConsumer aaregSyntetisererenConsumer;
     private final AaregService aaregService;
     private final KodeverkConsumer kodeverkConsumer;
-    private final Random rand;
+    private final Random rand = new Random();
 
     public ResponseEntity<List<RsAaregResponse>> opprettArbeidshistorikkOgSendTilAaregstub(
             SyntetiserAaregRequest syntetiserAaregRequest,

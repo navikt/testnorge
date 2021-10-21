@@ -49,9 +49,6 @@ public class SyntetiseringServiceTest {
     private static final int MINIMUM_ALDER = 13;
 
     @Mock
-    private Random rand;
-
-    @Mock
     private HodejegerenConsumer hodejegerenConsumer;
 
     @Mock
@@ -94,12 +91,14 @@ public class SyntetiseringServiceTest {
             syntetiserteMeldinger.add(objectMapper.convertValue(o, RsAaregSyntetiseringsRequest.class));
         }
 
-        when(hodejegerenConsumer.getLevende(avspillergruppeId, MINIMUM_ALDER)).thenReturn(identer);
-        when(aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(anyList())).thenReturn(syntetiserteMeldinger);
+
+
     }
 
     @Test
     public void shouldOppretteArbeidshistorikk() {
+        when(hodejegerenConsumer.getLevende(avspillergruppeId, MINIMUM_ALDER)).thenReturn(identer);
+        when(aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(anyList())).thenReturn(syntetiserteMeldinger);
         Map<String, String> status = new HashMap<>();
         status.put(miljoe, STATUS_OK);
         var rsAaregResponse = RsAaregResponse.builder()
