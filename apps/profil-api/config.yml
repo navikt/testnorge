@@ -43,6 +43,9 @@ spec:
           cluster: dev-gcp
         - application: oppsummeringsdokument-frontend
           cluster: dev-gcp
+    outbound:
+      rules:
+        - application: testnorge-profil-api
   liveness:
     path: /internal/isAlive
     initialDelay: 4

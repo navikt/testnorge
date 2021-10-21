@@ -38,6 +38,9 @@ spec:
         - application: app-1
           cluster: dev-gcp
           namespace: plattformsikkerhet
+    outbound:
+      rules:
+        - application: testnorge-profil-api-dev
   liveness:
     path: /internal/isAlive
     initialDelay: 4
