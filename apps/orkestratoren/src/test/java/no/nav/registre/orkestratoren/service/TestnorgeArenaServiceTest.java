@@ -5,11 +5,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.hamcrest.collection.IsIterableContainingInOrder;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,7 +18,8 @@ import java.util.List;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeArenaConsumer;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserArenaRequest;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+
 public class TestnorgeArenaServiceTest {
 
     @Mock
@@ -27,12 +28,12 @@ public class TestnorgeArenaServiceTest {
     @InjectMocks
     private TestnorgeArenaService testnorgeArenaService;
 
-    private Long avspillergruppeId = 123L;
-    private String miljoe = "t1";
-    private int antallNyeIdenter = 2;
-    private String fnr1 = "01010101010";
-    private String fnr2 = "02020202020";
-    private List<String> expectedIdenter = new ArrayList<>(Arrays.asList(fnr1, fnr2));
+    private final Long avspillergruppeId = 123L;
+    private final String miljoe = "t1";
+    private final int antallNyeIdenter = 2;
+    private final String fnr1 = "01010101010";
+    private final String fnr2 = "02020202020";
+    private final List<String> expectedIdenter = new ArrayList<>(Arrays.asList(fnr1, fnr2));
 
     @Test
     public void shouldOppretteArbeidssokereIArena() {

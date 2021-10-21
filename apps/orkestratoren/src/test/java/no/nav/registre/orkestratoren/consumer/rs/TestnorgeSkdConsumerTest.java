@@ -1,11 +1,17 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
-import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsRespons;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+
 import org.hamcrest.collection.IsIterableContainingInOrder;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
@@ -13,7 +19,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 
 import java.util.ArrayList;
@@ -23,14 +28,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsRespons;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(MockitoExtension.class)
 @RestClientTest(TestnorgeSkdConsumer.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
 @ActiveProfiles("test")
@@ -45,15 +46,15 @@ public class TestnorgeSkdConsumerTest {
     @Value("${testnorge-skd.rest.api.url}")
     private String serverUrl;
 
-    private long avspillergruppeId = 10L;
-    private String miljoe = "t9";
-    private String endringskode = "0110";
-    private int antallPerEndringskode = 2;
+    private final long avspillergruppeId = 10L;
+    private final String miljoe = "t9";
+    private final String endringskode = "0110";
+    private final int antallPerEndringskode = 2;
     private List<Long> expectedMeldingsIds;
     private SyntetiserSkdmeldingerRequest ordreRequest;
     private List<String> identer;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         Map<String, Integer> antallMeldingerPerEndringskode = new HashMap<>();
         antallMeldingerPerEndringskode.put(endringskode, antallPerEndringskode);

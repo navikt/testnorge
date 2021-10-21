@@ -6,12 +6,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -25,7 +25,7 @@ import no.nav.registre.orkestratoren.consumer.rs.response.SkdMeldingerTilTpsResp
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserNavmeldingerRequest;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserSkdmeldingerRequest;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class TestnorgeSkdServiceTest {
 
     @Mock
@@ -40,14 +40,14 @@ public class TestnorgeSkdServiceTest {
     @InjectMocks
     private TestnorgeSkdService testnorgeSkdService;
 
-    private Long avspillergruppeId = 123L;
-    private String miljoe = "t1";
-    private Map<String, Integer> antallMeldingerPerEndringskodeSkd = new HashMap<>();
-    private Map<String, Integer> antallMeldingerPerEndringskodeNav = new HashMap<>();
+    private final Long avspillergruppeId = 123L;
+    private final String miljoe = "t1";
+    private final Map<String, Integer> antallMeldingerPerEndringskodeSkd = new HashMap<>();
+    private final Map<String, Integer> antallMeldingerPerEndringskodeNav = new HashMap<>();
     private ResponseEntity expectedResponseSkd;
     private ResponseEntity expectedResponseNav;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         var skdMeldingerTilTpsRespons = new SkdMeldingerTilTpsRespons();
         skdMeldingerTilTpsRespons.setAntallSendte(2);

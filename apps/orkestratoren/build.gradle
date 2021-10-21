@@ -71,10 +71,8 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
     testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
 
-    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
-    testImplementation 'org.junit.platform:junit-platform-commons:1.5.2'
 }
 
 description = 'orkestratoren'

@@ -1,21 +1,5 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.testnav.libs.domain.dto.namespacetps.TpsPersonDokumentType;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.client.MockRestServiceServer;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
@@ -23,7 +7,21 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-@RunWith(SpringRunner.class)
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.web.client.MockRestServiceServer;
+
+import no.nav.testnav.libs.domain.dto.namespacetps.TpsPersonDokumentType;
+
 @RestClientTest(HodejegerenHistorikkConsumer.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
 @ActiveProfiles("test")
@@ -39,10 +37,14 @@ public class HodejegerenHistorikkConsumerTest {
     private String serverUrl;
 
     private TpsPersonDokumentType tpsPersonDokument;
-    private String fnr = "01010101010";
-    private Long avspillergruppeId = 123L;
+    private final String fnr = "01010101010";
+    private final Long avspillergruppeId = 123L;
 
-    @Before
+    private static String asJsonString(final Object object) throws JsonProcessingException {
+        return new ObjectMapper().writeValueAsString(object);
+    }
+
+    @BeforeEach
     public void setUp() {
         tpsPersonDokument = new TpsPersonDokumentType();
     }
@@ -76,9 +78,5 @@ public class HodejegerenHistorikkConsumerTest {
         server.expect(requestToUriTemplate(expectedUri, avspillergruppeId))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess("Avspillergruppe " + avspillergruppeId + " ble oppdatert", MediaType.APPLICATION_JSON));
-    }
-
-    private static String asJsonString(final Object object) throws JsonProcessingException {
-        return new ObjectMapper().writeValueAsString(object);
     }
 }

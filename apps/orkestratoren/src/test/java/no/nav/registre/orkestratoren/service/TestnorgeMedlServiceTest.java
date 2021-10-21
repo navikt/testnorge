@@ -3,16 +3,17 @@ package no.nav.registre.orkestratoren.service;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeMedlConsumer;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserMedlRequest;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class TestnorgeMedlServiceTest {
 
     @Mock
@@ -21,8 +22,8 @@ public class TestnorgeMedlServiceTest {
     @InjectMocks
     private TestnorgeMedlService testnorgeMedlService;
 
-    private Long avspillergruppeId = 123L;
-    private String miljoe = "t1";
+    private final Long avspillergruppeId = 123L;
+    private final String miljoe = "t1";
 
     @Test
     public void shouldGenerereMedlemskap() {
@@ -37,9 +38,9 @@ public class TestnorgeMedlServiceTest {
         verify(testnorgeMedlConsumer).startSyntetisering(syntetiserMedlRequest);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldThrowExceptionOnUgyldigProsentfaktor() {
         var syntetiserMedlRequest = new SyntetiserMedlRequest(avspillergruppeId, miljoe, 1.2);
-        testnorgeMedlService.genererMedlemskap(syntetiserMedlRequest);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> testnorgeMedlService.genererMedlemskap(syntetiserMedlRequest));
     }
 }
