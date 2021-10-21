@@ -27,7 +27,8 @@ public class PensjonTestdataFacadeProxyApplicationStarter {
         return builder.routes()
                 .route(spec -> spec
                         .path("/**")
-                        .filters(gatewayFilterSpec -> gatewayFilterSpec.addRequestHeader(HttpHeaders.AUTHORIZATION, "dolly")) //Auth header er required men sjekkes ikke utover det
+                        .filters(gatewayFilterSpec -> gatewayFilterSpec
+                                .addRequestHeader(HttpHeaders.AUTHORIZATION, "dolly")) //Auth header er required men sjekkes ikke utover det
                         .uri("https://pensjon-testdata-facade.dev.adeo.no/"))
                 .build();
     }
