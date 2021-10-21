@@ -26,16 +26,6 @@ export default {
 			})
 	},
 
-	opprettToken(id: string) {
-		return api.fetch(`${brukerServiceUrl}/${id}/token`, { method: 'POST' })
-	},
-
-	getBruker(id: string, orgJwt: string) {
-		return Request.get(`${brukerServiceUrl}/${id}`, {
-			[userJwtHeader]: orgJwt,
-		})
-	},
-
 	deleteBruker(id: string, orgJwt: string) {
 		return api.fetch(`${brukerServiceUrl}/${id}`, {
 			method: 'DELETE',
