@@ -129,9 +129,6 @@ public class IdentServiceTest {
         assertThat(response.getSigrunStatus().getGrunnlagSomBleSlettet().get(0).getPersonidentifikator(), equalTo(fnr1));
         assertThat(response.getSigrunStatus().getGrunnlagSomBleSlettet().get(1).getPersonidentifikator(), equalTo(fnr2));
 
-        assertThat(response.getAaregStatus().getIdentermedArbeidsforholdIdSomBleSlettet().get(fnr1).get(0), equalTo(1L));
-        assertThat(response.getAaregStatus().getIdentermedArbeidsforholdIdSomBleSlettet().get(fnr1).get(1), equalTo(2L));
-
         // TODO: Fiks arena og legg inn denne igjen
         // assertThat(response.getArenaForvalterStatus().getSlettet().get(0), equalTo(fnr1));
         // assertThat(response.getArenaForvalterStatus().getSlettet().get(1), equalTo(fnr2));
