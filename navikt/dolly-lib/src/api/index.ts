@@ -7,13 +7,13 @@ type Config = {
   headers?: Record<string, string>;
 };
 
-const _fetch = (url: string, config: Config, body?: string): Promise<Response> =>
+const _fetch = (url: string, config: Config, body?: BodyInit): Promise<Response> =>
   window
     .fetch(url, {
       method: config.method,
       credentials: 'include',
       headers: config.headers,
-      body: JSON.stringify(body),
+      body: body,
     })
     .then((response: Response) => {
       if (!response.ok) {
@@ -34,7 +34,7 @@ const _fetch = (url: string, config: Config, body?: string): Promise<Response> =
       throw error;
     });
 
-const fetchJson = <T>(url: string, config: Config, body?: string): Promise<T> =>
+const fetchJson = <T>(url: string, config: Config, body?: BodyInit): Promise<T> =>
   _fetch(
     url,
     {

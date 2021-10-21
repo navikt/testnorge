@@ -14,4 +14,5 @@ public class ProfilDTO {
     String epost;
     String avdeling;
     String organisasjon;
+    String type;
 }

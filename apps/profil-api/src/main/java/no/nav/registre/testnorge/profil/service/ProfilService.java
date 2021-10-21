@@ -11,7 +11,6 @@ import java.util.Optional;
 import no.nav.registre.testnorge.profil.consumer.AzureAdProfileConsumer;
 import no.nav.registre.testnorge.profil.consumer.PersonOrganisasjonTilgangConsumer;
 import no.nav.registre.testnorge.profil.domain.Profil;
-import no.nav.testnav.libs.securitycore.UserInfo;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import no.nav.testnav.libs.servletsecurity.action.GetUserJwt;
 import no.nav.testnav.libs.servletsecurity.properties.TokenXResourceServerProperties;
@@ -36,19 +35,21 @@ public class ProfilService {
         if (isTokenX()) {
 
             return getUserInfo.call().map(userInfo ->
-                organisasjonTilgangConsumer
-                        .getOrganisasjon(userInfo.organisasjonsnummer())
-                        .map(dto -> new Profil(
-                                userInfo.brukernavn(),
-                                "[ukjent]",
-                                "[ukjent]",
-                                dto.organisasjonsnummer())
-                        ).block()
+                    organisasjonTilgangConsumer
+                            .getOrganisasjon(userInfo.organisasjonsnummer())
+                            .map(dto -> new Profil(
+                                    userInfo.brukernavn(),
+                                    "[ukjent]",
+                                    "[ukjent]",
+                                    dto.navn() + (dto.organisasjonsfrom().equals("AS") ? " AS" : ""),
+                                    "BankId")
+                            ).block()
             ).orElse(new Profil(
                     "BankId",
                     "[ukjent]",
                     "[ukjent]",
-                    "[ukjent]"
+                    "[ukjent]",
+                    "BankId"
             ));
         }
         return azureAdProfileConsumer.getProfil();
