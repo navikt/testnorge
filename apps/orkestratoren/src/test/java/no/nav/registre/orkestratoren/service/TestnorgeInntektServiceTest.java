@@ -5,12 +5,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.hamcrest.collection.IsIterableContainingInOrder;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,7 +21,8 @@ import java.util.Map;
 import no.nav.registre.orkestratoren.consumer.rs.TestnorgeInntektConsumer;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+
 public class TestnorgeInntektServiceTest {
 
     @Mock
@@ -30,11 +31,11 @@ public class TestnorgeInntektServiceTest {
     @InjectMocks
     private TestnorgeInntektService testnorgeInntektService;
 
-    private String fnr1 = "01010101010";
-    private Map<String, List<Object>> expectedFeiledeInntektsmeldinger = new HashMap<>();
-    private String inntektsmelding = "Feilet inntektsmelding";
+    private final String fnr1 = "01010101010";
+    private final Map<String, List<Object>> expectedFeiledeInntektsmeldinger = new HashMap<>();
+    private final String inntektsmelding = "Feilet inntektsmelding";
 
-    @Before
+    @BeforeEach
     public void setUp() {
         expectedFeiledeInntektsmeldinger.put(fnr1, new ArrayList<>(Collections.singletonList(inntektsmelding)));
     }

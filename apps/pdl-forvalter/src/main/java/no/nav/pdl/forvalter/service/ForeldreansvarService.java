@@ -71,6 +71,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
 
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
+                type.setGjeldende(nonNull(type.getGjeldende()) ? type.getGjeldende(): true);
                 handle(type, person);
             }
         }

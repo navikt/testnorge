@@ -1,7 +1,6 @@
 package no.nav.registre.varslingerservice.adapter;
 
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
 
@@ -9,13 +8,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import no.nav.testnav.libs.avro.personinfo.PersonInfo;
-import no.nav.testnav.libs.servletsecurity.service.AuthenticationTokenResolver;
-import no.nav.registre.varslingerservice.domain.Varsling;
 import no.nav.registre.varslingerservice.repository.BrukerRepository;
 import no.nav.registre.varslingerservice.repository.MottattVarslingRepository;
 import no.nav.registre.varslingerservice.repository.model.BrukerModel;
 import no.nav.registre.varslingerservice.repository.model.MottattVarslingModel;
+import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedId;
+import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedToken;
 
 @Component
 @RequiredArgsConstructor
@@ -23,20 +21,21 @@ public class PersonVarslingAdapter {
 
     private final MottattVarslingRepository mottattVarslingRepository;
     private final BrukerRepository brukerRepository;
-    private final AuthenticationTokenResolver authenticationTokenResolver;
     private final VarslingerAdapter varslingerAdapter;
+    private final GetAuthenticatedId getAuthenticatedId;
+    private final GetAuthenticatedToken getAuthenticatedToken;
 
     private BrukerModel getBruker() {
-        if (authenticationTokenResolver.isClientCredentials()) {
+        if (getAuthenticatedToken.call().clientCredentials()) {
             throw new BadCredentialsException("Kan ikke hente ut bruker fra en ikke-personlig innlogging.");
         }
-        var oid = authenticationTokenResolver.getOid();
+        var id = getAuthenticatedId.call();
         return brukerRepository
-                .findById(oid)
+                .findById(id)
                 .orElseGet(() -> brukerRepository.save(
                         BrukerModel
                                 .builder()
-                                .objectId(oid)
+                                .objectId(id)
                                 .build()
                 ));
     }
@@ -83,11 +82,5 @@ public class PersonVarslingAdapter {
     public String get(String varslingId) {
         Optional<MottattVarslingModel> mottattVarsling = getMottattVarsling(varslingId);
         return mottattVarsling.map(mottatt -> mottatt.getVarsling().getVarslingId()).orElse(null);
-    }
-
-    public void deleteAll(PersonInfo personInfo) {
-        var objectId = personInfo.getObjectId().toString();
-        mottattVarslingRepository.deleteAllByBrukerObjectId(objectId);
-        brukerRepository.deleteById(objectId);
     }
 }

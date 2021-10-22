@@ -2,6 +2,12 @@ package no.nav.testnav.apps.personservice.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.personservice.consumer.command.GetPdlAktoerCommand;
+import no.nav.testnav.apps.personservice.consumer.command.GetPdlPersonCommand;
+import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.PdlAktoer;
+import no.nav.testnav.apps.personservice.credentials.PdlServiceProperties;
+import no.nav.testnav.apps.personservice.domain.Person;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
@@ -11,11 +17,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.Optional;
-
-import no.nav.testnav.apps.personservice.consumer.command.GetPdlPersonCommand;
-import no.nav.testnav.apps.personservice.credentials.PdlServiceProperties;
-import no.nav.testnav.apps.personservice.domain.Person;
-import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 
 @Slf4j
 @Component
@@ -58,5 +59,19 @@ public class PdlApiConsumer {
                     }
                     return Optional.of(new Person(pdlPerson));
                 });
+    }
+
+    public Mono<Optional<PdlAktoer.AktoerIdent>> getAktoer(String ident) {
+        log.info("Henter ident {} fra PDL", ident);
+        return tokenExchange
+                .generateToken(serviceProperties)
+                .flatMap(token -> new GetPdlAktoerCommand(webClient, ident, token.getTokenValue()).call())
+                .map(pdlAktoer -> {
+                    if (pdlAktoer.getErrors().stream().anyMatch(value -> value.getMessage().equals("Fant ikke person"))) {
+                        return Optional.empty();
+                    }
+                    return Optional.of(pdlAktoer.getData().getHentIdenter().getIdenter().get(0));
+                });
+
     }
 }

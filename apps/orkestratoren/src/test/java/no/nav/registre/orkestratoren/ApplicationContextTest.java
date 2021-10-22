@@ -1,26 +1,16 @@
 package no.nav.registre.orkestratoren;
 
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.ActiveProfiles;
 
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(locations = "classpath:application-test.properties")
-public class ApplicationContextTest {
-
-    @MockBean
-    public JwtDecoder jwtDecoder;
-    /**
-     * Used to test app runtime dependency and properties
-     */
+@SpringBootTest
+@ActiveProfiles("test")
+class ApplicationContextTest {
     @Test
-    public void load_app_context() {
+    @SuppressWarnings("java:S2699")
+    void load_app_context() {
     }
 }

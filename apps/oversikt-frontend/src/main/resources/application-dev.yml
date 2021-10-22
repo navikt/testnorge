@@ -2,7 +2,7 @@ azure.app.client.id: ${client_id}
 azure.app.client.secret: ${client_secret}
 
 server:
-  port : 3000
+  port : 8080
 
 spring:
   security:
@@ -10,11 +10,5 @@ spring:
       client:
         registration:
           idporten:
+            redirect-uri: 'http://localhost:3000/login/oauth2/code/idporten'
             post-logout-redirect-uri: 'http://localhost:3000/login'
-
-consumers:
-  testnorge-profil-api:
-    cluster: dev-gcp
-    namespace: dolly
-    name: testnorge-profil-api-dev
-    url: https://testnorge-profil-api-dev.dev.intern.nav.no/api

@@ -8,7 +8,7 @@ metadata:
   labels:
     team: dolly
 spec:
-  image: {{ image }}
+  image: {{image}}
   port: 8080
   accessPolicy:
     inbound:
@@ -28,8 +28,10 @@ spec:
     outbound:
       external:
         - host: aareg-synt-services-proxy.dev-fss-pub.nais.io
+        - host: elastic-dolly-testdata-gjeter-nav-dev.aivencloud.com
   elastic:
     instance: testdata-gjeter
+    access: admin
   tokenx:
     enabled: true
   azure:

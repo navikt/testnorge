@@ -1,21 +1,22 @@
 package no.nav.registre.orkestratoren.service;
 
-import no.nav.registre.orkestratoren.consumer.rs.TestnorgeTpConsumer;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import no.nav.registre.orkestratoren.consumer.rs.TestnorgeTpConsumer;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
+
+@ExtendWith(MockitoExtension.class)
 public class TestnorgeTpServiceTest {
 
     @Mock

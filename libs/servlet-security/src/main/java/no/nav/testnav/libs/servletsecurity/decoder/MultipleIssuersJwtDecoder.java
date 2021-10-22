@@ -3,6 +3,7 @@ package no.nav.testnav.libs.servletsecurity.decoder;
 import com.nimbusds.jwt.JWTParser;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.servletsecurity.properties.ResourceServerProperties;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
@@ -11,14 +12,13 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtDecoders;
 import org.springframework.security.oauth2.jwt.JwtException;
+import org.springframework.security.oauth2.jwt.JwtValidationException;
 import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import no.nav.testnav.libs.servletsecurity.properties.ResourceServerProperties;
 
 @Slf4j
 public class MultipleIssuersJwtDecoder implements JwtDecoder {
@@ -42,6 +42,9 @@ public class MultipleIssuersJwtDecoder implements JwtDecoder {
 
         try {
             return decoderMap.get(jwt.getJWTClaimsSet().getIssuer()).decode(token);
+        } catch (JwtValidationException e) {
+            log.error("Jwt valideringsfeil", e);
+            throw e;
         } catch (Exception e) {
             log.error("Ukjent feil", e);
             throw e;

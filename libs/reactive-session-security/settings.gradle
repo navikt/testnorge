@@ -5,6 +5,7 @@ plugins {
 rootProject.name = 'reactive-session-security'
 
 includeBuild '../../gradlePlugins'
+includeBuild '../security-core'
 
 gradleEnterprise {
     buildScan {

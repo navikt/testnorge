@@ -24,6 +24,9 @@ spec:
           cluster: dev-gcp
         - application: team-dolly-lokal-app
           cluster: dev-fss
+        - application: app-1
+          namespace: plattformsikkerhet
+          cluster: dev-gcp
   tokenx:
     enabled: true
   azure:
@@ -45,15 +48,20 @@ spec:
     initialDelay: 4
     periodSeconds: 5
     failureThreshold: 500
+  envFrom:
+    - secret: user-encryption-prod
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
   replicas:
     min: 1
     max: 1
   resources:
     requests:
       cpu: 200m
-      memory: 4000Mi
+      memory: 1024Mi
     limits:
       cpu: 500m
-      memory: 5000Mi
+      memory: 2048Mi
   ingresses:
     - "https://testnav-varslinger-service.dev.intern.nav.no"

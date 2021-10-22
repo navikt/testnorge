@@ -29,6 +29,7 @@ public class KjoennService implements BiValidation<KjoennDTO, PersonDTO> {
                 handle(type, person.getIdent());
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : DbVersjonDTO.Master.FREG);
+                type.setGjeldende(nonNull(type.getGjeldende()) ? type.getGjeldende(): true);
             }
         }
         return person.getKjoenn();

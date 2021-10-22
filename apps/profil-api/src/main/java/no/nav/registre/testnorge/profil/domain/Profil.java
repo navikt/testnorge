@@ -10,11 +10,15 @@ public class Profil {
     private final String visningsNavn;
     private final String epost;
     private final String avdeling;
+    private final String organisasjon;
+    private final String type;
 
     public Profil(ProfileDTO dto) {
         this.visningsNavn = dto.getDisplayName();
         this.epost = dto.getMail();
         this.avdeling = dto.getOfficeLocation();
+        this.organisasjon = "NAV";
+        this.type = "AzureAD";
     }
 
     public ProfilDTO toDTO() {
@@ -23,6 +27,8 @@ public class Profil {
                 .visningsNavn(visningsNavn)
                 .epost(epost)
                 .avdeling(avdeling)
+                .organisasjon(organisasjon)
+                .type(type)
                 .build();
     }
 }

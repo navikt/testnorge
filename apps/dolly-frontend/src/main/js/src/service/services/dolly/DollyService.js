@@ -119,10 +119,6 @@ export default {
 		return Request.post(Endpoints.gjenopprettBestilling(bestillingId, envs))
 	},
 
-	getConfig() {
-		return Request.get(Endpoints.config())
-	},
-
 	postOpenAmBestilling(bestillingId) {
 		return Request.post(Endpoints.openAmBestilling(bestillingId))
 	},

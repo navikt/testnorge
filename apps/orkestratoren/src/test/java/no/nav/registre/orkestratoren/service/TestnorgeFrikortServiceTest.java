@@ -5,12 +5,12 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 import java.util.List;
@@ -19,7 +19,7 @@ import no.nav.registre.orkestratoren.consumer.rs.TestnorgeFrikortConsumer;
 import no.nav.registre.orkestratoren.consumer.rs.response.GenererFrikortResponse;
 import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserFrikortRequest;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class TestnorgeFrikortServiceTest {
 
     @Mock
@@ -30,7 +30,7 @@ public class TestnorgeFrikortServiceTest {
 
     private List<GenererFrikortResponse> expectedResponse;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         expectedResponse = Collections.singletonList(new GenererFrikortResponse(GenererFrikortResponse.LeggPaaKoeStatus.OK, "SomeXml"));
     }

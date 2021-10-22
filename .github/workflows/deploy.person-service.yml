@@ -2,8 +2,6 @@ name: Deploy person-service
 
 on:
   push:
-    branches:
-      - master
     paths:
       - apps/person-service/**
   workflow_dispatch:

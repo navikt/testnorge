@@ -1,0 +1,22 @@
+import no.nav.testnav.dependencies.gradle.DependenciesPlugin
+
+plugins {
+    id 'no.nav.testnav.dependencies'
+    id 'java-library'
+}
+
+group = 'no.nav.testnav.libs'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+java.sourceCompatibility = JavaVersion.VERSION_17
+
+dependencies {
+
+    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+}

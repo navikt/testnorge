@@ -38,7 +38,7 @@ batch:
   avspillergruppeId.miljoe: ${AVSPILLERGRUPPEID_MILJOE}
   antallMeldingerPerEndringskode: ${ANTALL_SKD_MELDINGER_PER_ENDRINGSKODE}
   navMeldinger: ${ANTALL_NAV_MELDINGER_PER_ENDRINGSKODE}
-  
+
 poppbatch.antallNyeIdenter:  ${POPP_ANTALL_NYE_IDENTER}
 aaregbatch.antallNyeIdenter:  ${AAREG_ANTALL_NYE_IDENTER}
 instbatch.antallNyeIdenter:  ${INST_ANTALL_NYE_IDENTER}

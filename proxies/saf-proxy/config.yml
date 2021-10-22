@@ -32,6 +32,9 @@ spec:
           cluster: dev-gcp
         - application: testnav-joark-dokument-service
           cluster: dev-gcp
+        - application: app-1
+          namespace: plattformsikkerhet
+          cluster: dev-gcp
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -56,3 +59,4 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://testnav-saf-proxy.dev-fss-pub.nais.io"
+    - "https://testnav-saf-proxy.dev.intern.nav.no"

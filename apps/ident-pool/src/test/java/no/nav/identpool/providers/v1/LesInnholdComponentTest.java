@@ -5,14 +5,11 @@ import no.nav.identpool.domain.Ident;
 import no.nav.identpool.domain.Identtype;
 import no.nav.identpool.domain.Kjoenn;
 import no.nav.identpool.domain.Rekvireringsstatus;
-import org.apache.http.client.utils.URIBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.time.LocalDate;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -20,6 +17,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 class LesInnholdComponentTest extends ComponentTestbase {
+
     private static final String PERSONIDENTIFIKATOR = "10108000398";
     private static final Identtype IDENTTYPE = Identtype.FNR;
     private static final Rekvireringsstatus REKVIRERINGSSTATUS = Rekvireringsstatus.I_BRUK;
@@ -37,15 +35,14 @@ class LesInnholdComponentTest extends ComponentTestbase {
     }
 
     @Test
-    void skalLeseInnholdIDatabase() throws URISyntaxException {
-        URI uri = new URIBuilder(IDENT_V1_BASEURL).build();
+    void skalLeseInnholdIDatabase() throws Exception {
 
-        LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-        headers.add("personidentifikator", PERSONIDENTIFIKATOR);
+        var resultat = mockMvc.perform(MockMvcRequestBuilders.get(IDENT_V1_BASEURL)
+                        .header("personidentifikator", PERSONIDENTIFIKATOR))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
 
-        ResponseEntity<Ident> identEntityResponseEntity = doGetRequest(uri, createHeaderEntity(headers), Ident.class);
-
-        Ident ident = identEntityResponseEntity.getBody();
+        Ident ident = objectMapper.readValue(resultat.getResponse().getContentAsString(), Ident.class);
 
         assertThat(ident, is(notNullValue()));
         assertThat(ident.getPersonidentifikator(), is(PERSONIDENTIFIKATOR));

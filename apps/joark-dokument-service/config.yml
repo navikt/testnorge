@@ -29,6 +29,9 @@ spec:
           cluster: dev-fss
         - application: dolly-backend-dev
           cluster: dev-fss
+        - application: app-1
+          namespace: plattformsikkerhet
+          cluster: dev-gcp
     outbound:
       external:
         - host: testnav-saf-proxy.dev-fss-pub.nais.io

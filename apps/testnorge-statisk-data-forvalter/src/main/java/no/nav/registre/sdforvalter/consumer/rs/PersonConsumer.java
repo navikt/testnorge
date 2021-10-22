@@ -2,6 +2,9 @@ package no.nav.registre.sdforvalter.consumer.rs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.sdforvalter.config.credentials.PersonServiceProperties;
+import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
+import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
@@ -20,7 +23,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-import no.nav.registre.sdforvalter.credentials.PersonApiClientCredential;
 import no.nav.registre.sdforvalter.domain.TpsIdent;
 import no.nav.registre.sdforvalter.domain.TpsIdentListe;
 import no.nav.registre.sdforvalter.domain.person.Person;
@@ -28,28 +30,25 @@ import no.nav.registre.sdforvalter.exception.UgyldigIdentException;
 import no.nav.testnav.libs.commands.CreatePersonCommand;
 import no.nav.testnav.libs.commands.GetPersonCommand;
 import no.nav.testnav.libs.dto.person.v1.Persondatasystem;
-import no.nav.testnav.libs.servletsecurity.domain.AccessScopes;
 import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.domain.ClientCredential;
-import no.nav.testnav.libs.servletsecurity.service.ClientCredentialGenerateAccessTokenService;
 
 @Slf4j
 @Component
 public class PersonConsumer {
 
     private final WebClient webClient;
-    private final ClientCredential clientCredential;
-    private final ClientCredentialGenerateAccessTokenService accessTokenService;
+    private final AccessTokenService tokenService;
+    private final ServerProperties serviceProperties;
     private final Executor executor;
 
     public PersonConsumer(
-            @Value("${consumers.person.url}") String baseUrl,
             ObjectMapper objectMapper, @Value("${consumers.person.threads}") Integer threads,
-            PersonApiClientCredential clientCredential,
-            ClientCredentialGenerateAccessTokenService accessTokenService
+            PersonServiceProperties personServiceProperties,
+            AccessTokenService accessTokenService
     ) {
-        this.clientCredential = clientCredential;
-        this.accessTokenService = accessTokenService;
+        this.serviceProperties = personServiceProperties;
+        this.tokenService = accessTokenService;
+
         ExchangeStrategies jacksonStrategy = ExchangeStrategies.builder()
                 .codecs(config -> {
                     config.defaultCodecs()
@@ -61,14 +60,13 @@ public class PersonConsumer {
         this.webClient = WebClient
                 .builder()
                 .exchangeStrategies(jacksonStrategy)
-                .baseUrl(baseUrl)
+                .baseUrl(personServiceProperties.getUrl())
                 .build();
         this.executor = Executors.newFixedThreadPool(threads);
     }
 
 
     private CompletableFuture<Person> hentPerson(String ident, AccessToken accessToken) {
-
         var command = new GetPersonCommand(webClient, ident, accessToken.getTokenValue(), Persondatasystem.PDL, null);
         return CompletableFuture.supplyAsync(
                 command::call,
@@ -77,10 +75,7 @@ public class PersonConsumer {
     }
 
     public List<Person> hentPersoner(Set<String> identer) {
-        AccessToken accessToken = accessTokenService.generateToken(
-                clientCredential,
-                new AccessScopes("api://" + clientCredential.getClientId() + "/.default")
-        );
+        AccessToken accessToken = tokenService.generateClientCredentialAccessToken(serviceProperties).block();
         List<Person> personer = new ArrayList<>();
         var futures = identer.stream().map(ident -> hentPerson(ident, accessToken)).collect(Collectors.toList());
         for (CompletableFuture<Person> future : futures) {
@@ -95,11 +90,7 @@ public class PersonConsumer {
     }
 
     public void opprettPersoner(TpsIdentListe identer) {
-        AccessToken accessToken = accessTokenService.generateToken(
-                clientCredential,
-                new AccessScopes("api://" + clientCredential.getClientId() + "/.default")
-        );
-
+        AccessToken accessToken = tokenService.generateClientCredentialAccessToken(serviceProperties).block();
         List<CompletableFuture<TpsIdent>> futures = identer.stream().map(ident -> CompletableFuture.supplyAsync(() -> {
                     try {
                         new CreatePersonCommand(webClient, ident.toDTO(), accessToken.getTokenValue(), ident.getOpprinnelse()).run();

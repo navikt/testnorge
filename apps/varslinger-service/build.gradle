@@ -38,11 +38,11 @@ dependencies {
         }
     }
 
+    implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:database'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
     implementation 'no.nav.testnav.libs:servlet-security'
-    implementation 'no.nav.testnav.libs:avro-schema'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
@@ -59,22 +59,17 @@ dependencies {
 
     implementation 'org.hibernate.validator:hibernate-validator'
 
-    implementation 'com.h2database:h2:1.4.200'
-    implementation 'com.zaxxer:HikariCP:3.4.5'
-    implementation 'org.flywaydb:flyway-core:6.4.4'
-    implementation 'org.postgresql:postgresql:42.2.16'
-    implementation 'org.apache.kafka:kafka-clients:2.5.1'
-    implementation 'io.confluent:kafka-avro-serializer:5.5.0'
-    implementation 'org.springframework.kafka:spring-kafka:2.5.6.RELEASE'
+    implementation 'com.h2database:h2'
+    implementation 'com.zaxxer:HikariCP'
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.postgresql:postgresql'
 
     implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
     testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
 
-    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
-    testImplementation 'no.nav.testnav.libs:testing'
 }
 
 description = 'varslinger-service'

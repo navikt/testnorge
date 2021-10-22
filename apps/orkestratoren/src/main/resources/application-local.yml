@@ -54,6 +54,3 @@ tpbatch:
   antallPersoner: 10000
 
 ibm.mq.user-authentication-m-q-c-s-p: false
-
-SERVICEUSER_PASSWORD: dummy
-SERVICEUSER_USERNAME: dummy

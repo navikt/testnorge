@@ -9,8 +9,8 @@ includeBuild '../../gradlePlugins'
 
 includeBuild '../../libs/database'
 includeBuild '../../libs/data-transfer-objects'
-includeBuild '../../libs/reactive-core'
-includeBuild '../../libs/reactive-security'
+includeBuild '../../libs/servlet-core'
+includeBuild '../../libs/servlet-security'
 includeBuild '../../libs/testing'
 
 gradleEnterprise {

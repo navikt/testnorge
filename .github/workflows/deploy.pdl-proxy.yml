@@ -2,8 +2,6 @@ name: Deploy pdl-proxy
 
 on:
   push:
-    branches:
-      - master
     paths:
       - proxies/pdl-proxy/**
       - libs/**

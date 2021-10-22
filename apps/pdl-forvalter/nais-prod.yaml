@@ -46,8 +46,6 @@ spec:
         - application: dolly-backend
           cluster: dev-fss
         - application: dolly-frontend
-          cluster: dev-fss
-        - application: dolly-frontend
           cluster: dev-gcp
     outbound:
       rules:

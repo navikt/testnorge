@@ -1,19 +1,19 @@
 import { BadRequestError, NotFoundError } from '../error';
 
-type Method = 'POST' | 'GET' | 'PUT' | 'DELETE';
+type Method = 'POST' | 'GET' | 'PUT' | 'DELETE' | 'PATCH';
 
 type Config = {
   method: Method;
   headers?: Record<string, string>;
 };
 
-const _fetch = (url: string, config: Config, body?: object): Promise<Response> =>
+const _fetch = (url: string, config: Config, body?: BodyInit): Promise<Response> =>
   window
     .fetch(url, {
       method: config.method,
       credentials: 'include',
       headers: config.headers,
-      body: JSON.stringify(body),
+      body: body,
     })
     .then((response: Response) => {
       if (!response.ok) {
@@ -34,7 +34,7 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
       throw error;
     });
 
-const fetchJson = <T>(url: string, config: Config, body?: object): Promise<T> =>
+const fetchJson = <T>(url: string, config: Config, body?: BodyInit): Promise<T> =>
   _fetch(
     url,
     {

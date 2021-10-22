@@ -2,7 +2,6 @@ name: Deploy udi-stub-dev
 
 on:
   push:
-    branches: master
     paths:
       - apps/udi-stub/**
 

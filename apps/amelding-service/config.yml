@@ -20,12 +20,11 @@ spec:
         - application: dolly-backend
           cluster: dev-fss
         - application: dolly-frontend-dev
-          cluster: dev-fss
-        - application: dolly-frontend-dev
           cluster: dev-gcp
         - application: dolly-frontend
-          cluster: dev-fss
-        - application: dolly-frontend
+          cluster: dev-gcp
+        - application: app-1
+          namespace: plattformsikkerhet
           cluster: dev-gcp
     outbound:
       rules:

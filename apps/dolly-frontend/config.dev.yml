@@ -81,10 +81,6 @@ spec:
       value: dolly-backend-dev
     - name: DOLLY_BACKEND_URL
       value: https://dolly-backend-dev.dev-fss-pub.nais.io
-    - name: UDI_STUB_URL
-      value: https://udi-stub-dev.dev-fss-pub.nais.io
-    - name: UDI_STUB_NAME
-      value: udi-stub-dev
     - name: TPS_FORVALTERN_PROXY_NAME
       value: tps-forvalteren-dev-proxy
     - name: TPS_FORVALTERN_PROXY_URL

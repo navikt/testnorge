@@ -1,8 +1,11 @@
+import no.nav.testnav.dependencies.gradle.DependenciesPlugin
+
 plugins {
-    id 'no.nav.registre.testnorge.java-conventions'
+    id 'no.nav.testnav.dependencies'
+    id 'java'
     id "uk.co.boothen.gradle.wsimport" version "0.16"
-    id 'org.springframework.boot' version "${springBootVersion}"
-    id 'io.spring.dependency-management' version "${springDependencyManagement}"
+    id 'org.springframework.boot' version "2.5.5"
+    id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
 
 wsimport {
@@ -11,7 +14,7 @@ wsimport {
 
 dependencyManagement {
     imports {
-        mavenBom  "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}" 
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${DependenciesPlugin.springCloud}"
     }
 }
 
@@ -19,10 +22,28 @@ bootJar {
     archiveFileName = "app.jar"
 }
 
+test {
+    useJUnitPlatform()
+}
+
+repositories {
+    maven {
+        url = uri('https://repo1.maven.org/maven2/')
+    }
+    mavenLocal()
+    maven {
+        name = "GitHubPackages"
+        url = uri('https://maven.pkg.github.com/navikt/maven-release')
+        credentials(PasswordCredentials) {
+            password System.getenv("NAV_TOKEN")
+            username 'token'
+        }
+    }
+}
+
 dependencies {
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:servlet-security'
-
     implementation 'no.nav.testnav.libs:database'
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -32,32 +53,39 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
+    implementation 'org.springframework.boot:spring-boot-configuration-processor'
+
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
 
     implementation 'org.springframework.ws:spring-ws-security'
     implementation 'org.springframework.boot:spring-boot-test'
 
-    implementation 'ma.glasnost.orika:orika-core:1.5.2'
-    implementation "org.springdoc:springdoc-openapi-ui:${springdocOpenapiUi}"
-    implementation "net.logstash.logback:logstash-logback-encoder:${logstashLogbackEncoder}"
+    implementation 'ma.glasnost.orika:orika-core:1.5.4'
+    implementation "org.springdoc:springdoc-openapi-ui:${DependenciesPlugin.springdocOpenapi}"
+    implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
 
-    implementation 'org.flywaydb:flyway-core:6.4.4'
-    implementation 'org.postgresql:postgresql:42.2.16'
+    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.postgresql:postgresql'
 
     implementation 'org.hibernate.validator:hibernate-validator'
-    implementation 'javax.validation:validation-api:2.0.1.Final'
     implementation 'wsdl4j:wsdl4j:1.6.3'
 
     testImplementation 'javax.inject:javax.inject:1'
-    testImplementation 'org.junit.vintage:junit-vintage-engine:5.6.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
-    testImplementation 'org.mockito:mockito-junit-jupiter:3.3.3'
     testImplementation 'com.h2database:h2:1.4.200'
-    
+
     testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
+
+    implementation 'org.junit.vintage:junit-vintage-engine:5.7.0'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
+    testImplementation 'no.nav.testnav.libs:testing'
 }
 
 description = 'udi-stub'
