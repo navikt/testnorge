@@ -8,15 +8,11 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
-import static java.util.Objects.nonNull;
-
 @Slf4j
 public class JsonDateDeserializer extends JsonDeserializer<LocalDateTime> {
 
     @Override
     public LocalDateTime deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
-        String value = jp.getValueAsString();
-        log.info("Prøver å parse: {}", value);
-        return nonNull(value) ? LocalDateTime.parse(value) : LocalDateTime.now();
+        return LocalDateTime.parse(jp.getValueAsString());
     }
 }
