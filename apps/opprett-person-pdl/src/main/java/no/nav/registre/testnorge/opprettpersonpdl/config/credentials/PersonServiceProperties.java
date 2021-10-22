@@ -7,6 +7,6 @@ import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
 
 
 @Configuration
-@ConfigurationProperties(prefix = "consumers.person-api")
+@ConfigurationProperties(prefix = "consumers.person-service")
 public class PersonServiceProperties extends ServerProperties {
 }

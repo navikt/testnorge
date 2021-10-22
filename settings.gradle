@@ -113,6 +113,7 @@ includeBuild './apps/testnorge-statisk-data-forvalter'
 includeBuild './apps/testnorge-bisys'
 includeBuild './apps/testnorge-nav-endringsmeldinger'
 includeBuild './apps/testnorge-sigrun'
+includeBuild './apps/opprett-person-pdl'
 
 includeBuild './xsd/arbeidsforhold-xsd'
 
@@ -132,7 +133,6 @@ include(':helsepersonell-service')
 include(':person-export-api')
 include(':apps')
 include(':libs')
-include(':opprett-person-pdl')
 include(':synt-person-api')
 
 include(':ident-check-in-prod-service')
@@ -153,7 +153,6 @@ project(":organisasjon-service").projectDir = file('apps/organisasjon-service')
 project(":token-provider-core").projectDir = file('apps/testnorge-token-provider/token-provider-core')
 project(":helsepersonell-service").projectDir = file('apps/helsepersonell-service')
 project(":person-export-api").projectDir = file('apps/person-export-api')
-project(":opprett-person-pdl").projectDir = file('apps/opprett-person-pdl')
 project(":synt-person-api").projectDir = file('apps/synt-person-api')
 
 project(":mn-person-service").projectDir = file('apps/mn-person-service')
