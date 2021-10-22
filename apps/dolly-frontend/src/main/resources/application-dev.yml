@@ -19,6 +19,9 @@ TPS_FORVALTERN_PROXY_URL: https://tps-forvalteren-dev.dev.adeo.no
 
 POST_LOGOUT_REDIRECT_URI: 'http://localhost:3000/login'
 
+VARSLINGER_NAME: testnav-varslinger-service-dev
+VARSLINGER_URL: https://testnav-varslinger-service-dev.dev.intern.nav.no
+
 spring:
   session:
     timeout: 30m

@@ -86,7 +86,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(testnavOrganisasjonFasteDataServiceProperties))
                 .route(createRoute(testnavAdresseServiceProperties))
                 .route(createRoute(testnavOrganisasjonForvalterProperties))
-                .route(createRoute(testnavVarslingerServiceProperties))
+                .route(createRoute(testnavVarslingerServiceProperties, "testnav-varslinger-service"))
                 .route(createRoute(testnorgeProfilApiProperties))
                 .route(createRoute(testnavMiljoerServiceProperties))
                 .route(createRoute(dollyBackendProperties, "dolly-backend"))
