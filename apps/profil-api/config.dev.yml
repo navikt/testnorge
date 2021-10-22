@@ -16,6 +16,8 @@ spec:
   port: 8080
   tracing:
     enabled: true
+  envFrom:
+    - secret: user-encryption-dev
   accessPolicy:
     inbound:
       rules:
@@ -36,6 +38,9 @@ spec:
         - application: app-1
           cluster: dev-gcp
           namespace: plattformsikkerhet
+    outbound:
+      rules:
+        - application: testnav-person-organisasjon-tilgang-service-dev
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -58,6 +63,3 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://testnorge-profil-api-dev.dev.intern.nav.no"
-  env:
-    - name: ACCEPTED_AUDIENCE
-      value: dev-gcp:dolly:testnorge-profil-api-dev

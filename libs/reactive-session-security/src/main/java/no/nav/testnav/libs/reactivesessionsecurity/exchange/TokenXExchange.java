@@ -23,14 +23,12 @@ import no.nav.testnav.libs.reactivesessionsecurity.domain.AccessToken;
 import no.nav.testnav.libs.reactivesessionsecurity.domain.ServerProperties;
 import no.nav.testnav.libs.reactivesessionsecurity.domain.TokenX;
 import no.nav.testnav.libs.reactivesessionsecurity.domain.tokenx.WellKnownConfig;
-import no.nav.testnav.libs.reactivesessionsecurity.filter.UserSessionFilter;
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.TokenResolver;
 
 @Slf4j
 @Service
 @Import({
-        TokenX.class,
-        UserSessionFilter.class
+        TokenX.class
 })
 public class TokenXExchange implements GenerateTokenExchange {
     private final TokenResolver tokenService;

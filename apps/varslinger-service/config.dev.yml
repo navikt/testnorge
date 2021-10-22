@@ -1,0 +1,61 @@
+﻿apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: testnav-varslinger-service-dev
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  image: {{ image }}
+  port: 8080
+  webproxy: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: dolly-frontend-dev
+          cluster: dev-gcp
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
+        - application: team-dolly-lokal-app
+          cluster: dev-fss
+        - application: app-1
+          namespace: plattformsikkerhet
+          cluster: dev-gcp
+  tokenx:
+    enabled: true
+  azure:
+    application:
+      enabled: true
+      tenant: nav.no
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_12
+        databases:
+          - name: testnav-varslinger-db-dev
+  liveness:
+    path: /internal/isAlive
+    initialDelay: 4
+    periodSeconds: 5
+    failureThreshold: 500
+  readiness:
+    path: /internal/isReady
+    initialDelay: 4
+    periodSeconds: 5
+    failureThreshold: 500
+  replicas:
+    min: 1
+    max: 1
+  envFrom:
+    - secret: user-encryption-dev
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: dev
+  resources:
+    requests:
+      cpu: 200m
+      memory: 1024Mi
+    limits:
+      cpu: 500m
+      memory: 2048Mi
+  ingresses:
+    - "https://testnav-varslinger-service-dev.dev.intern.nav.no"

@@ -1,4 +1,4 @@
-import { Api } from '@navikt/dolly-lib'
+import Api from './api'
 
 export type Bruker = {
 	id: string
@@ -18,14 +18,14 @@ const getBruker = (orgnummer: string) =>
 
 const createBruker = (orgnummer: string, brukernavn: string) =>
 	Api.fetchJson<Bruker>(
-		`testnav-bruker-service/api/v1/brukere?organisasjonsnummer=${orgnummer}`,
+		'testnav-bruker-service/api/v1/brukere',
 		{
 			method: 'POST',
 		},
-		{
+		JSON.stringify({
 			organisasjonsnummer: orgnummer,
 			brukernavn: brukernavn,
-		}
+		})
 	)
 
 const deleteBruker = (id: string, jwt?: string) =>
