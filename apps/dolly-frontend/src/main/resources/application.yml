@@ -95,8 +95,8 @@ consumers:
   testnav-varslinger-service:
     cluster: dev-gcp
     namespace: dolly
-    name: testnav-varslinger-service
-    url: https://testnav-varslinger-service.dev.intern.nav.no
+    name: ${VARSLINGER_NAME}
+    url: ${VARSLINGER_URL}
   testnav-organisasjon-forvalter:
     cluster: dev-gcp
     namespace: dolly

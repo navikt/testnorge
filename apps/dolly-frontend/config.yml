@@ -83,3 +83,7 @@ spec:
       value: https://dolly.ekstern.dev.nav.no/login
     - name: REDIS_HOST
       value: dolly-redis-session.dolly.svc.cluster.local
+    - name: VARSLINGER_NAME
+      value: testnav-varslinger-service
+    - name: VARSLINGER_URL
+      value: https://testnav-varslinger-service.dev.intern.nav.no
