@@ -7,7 +7,7 @@ import { BrukerApi } from '~/service/Api'
 
 type BrukernavnVelgerProps = {
 	organisasjon: Organisasjon
-	opprettSessionAndRedirect: (org: string) => void
+	addToSession: (org: string) => void
 }
 
 const Selector = styled.div`
@@ -23,7 +23,7 @@ const feilmeldinger = {
 	feilLengde: 'Brukernavn må være minst 5 tegn og maksimalt 25 tegn.',
 }
 
-export default ({ organisasjon, opprettSessionAndRedirect }: BrukernavnVelgerProps) => {
+export default ({ organisasjon, addToSession }: BrukernavnVelgerProps) => {
 	const [brukernavn, setBrukernavn] = useState<string>('')
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState(null)
@@ -40,7 +40,7 @@ export default ({ organisasjon, opprettSessionAndRedirect }: BrukernavnVelgerPro
 						BrukerApi.opprettBruker(brukernavn, organisasjon.organisasjonsnummer)
 							.then((response: Bruker) => {
 								if (response !== null) {
-									opprettSessionAndRedirect(organisasjon.organisasjonsnummer)
+									addToSession(organisasjon.organisasjonsnummer)
 								} else {
 									setError(feilmeldinger.ukjent)
 								}
