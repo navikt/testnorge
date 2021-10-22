@@ -136,7 +136,6 @@ include(':apps')
 include(':libs')
 include(':opprett-person-pdl')
 include(':synt-person-api')
-include(':statistikk-service')
 
 include(':ident-check-in-prod-service')
 include(':mn-person-service')
@@ -159,7 +158,6 @@ project(":helsepersonell-service").projectDir = file('apps/helsepersonell-servic
 project(":person-export-api").projectDir = file('apps/person-export-api')
 project(":opprett-person-pdl").projectDir = file('apps/opprett-person-pdl')
 project(":synt-person-api").projectDir = file('apps/synt-person-api')
-project(":statistikk-service").projectDir = file('apps/statistikk-service')
 
 project(":mn-person-service").projectDir = file('apps/mn-person-service')
 project(":mn-synt-arbeidsforhold-service").projectDir = file('apps/mn-synt-arbeidsforhold-service')
