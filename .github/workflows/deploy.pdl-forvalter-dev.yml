@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - feature/legge_til_funksjonalitet_for_lesing_av_alle_personer
+      - feature/pdl_forvalter_opprett_fra_ident
     paths:
       - apps/pdl-forvalter/**
       - libs/**

@@ -44,6 +44,7 @@ import static java.lang.System.currentTimeMillis;
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
 
@@ -54,6 +55,7 @@ public class PersonService {
 
     private static final String INVALID_IDENT = "Ident må være på 11 tegn og numerisk";
     private static final String VIOLATION_ALIAS_EXISTS = "Utgått ident kan ikke endres. Benytt gjeldende ident %s for denne operasjonen";
+    private static final String IDENT_ALREADY_EXISTS = "Ident %s eksisterer allerede i database";
 
     private static final String SORT_BY_FIELD = "sistOppdatert";
 
@@ -177,9 +179,17 @@ public class PersonService {
             request.setPerson(new PersonDTO());
         }
 
-        request.getPerson().setIdent(identPoolConsumer.getIdents(
-                        mapperFacade.map(request, HentIdenterRequest.class))
-                .blockFirst().stream().findFirst().get().getIdent());
+        if (isBlank(request.getOpprettFraIdent())) {
+            request.getPerson().setIdent(identPoolConsumer.getIdents(
+                            mapperFacade.map(request, HentIdenterRequest.class))
+                    .blockFirst().stream().findFirst().get().getIdent());
+        } else {
+            if (personRepository.existsByIdent(request.getOpprettFraIdent())) {
+                throw new InvalidRequestException(format(IDENT_ALREADY_EXISTS, request.getOpprettFraIdent()));
+            }
+            identPoolConsumer.allokerIdent(request.getOpprettFraIdent()).block();
+            request.getPerson().setIdent(request.getOpprettFraIdent());
+        }
 
         if (request.getPerson().getKjoenn().isEmpty()) {
             request.getPerson().getKjoenn().add(new KjoennDTO());
