@@ -49,8 +49,6 @@ public class IdentpoolPostVoidCommand implements Callable<Mono<Void>> {
                     if (throwable instanceof WebClientResponseException) {
                         if (((WebClientResponseException) throwable).getStatusCode() == HttpStatus.NOT_FOUND) {
                             return Mono.error(new NotFoundException(IDENTPOOL + getMessage(throwable)));
-                        } else if (((WebClientResponseException) throwable).getStatusCode() == HttpStatus.CONFLICT) {
-                            return Mono.error(new InvalidRequestException(IDENTPOOL + getMessage(throwable)));
                         } else {
                             return Mono.error(new InvalidRequestException(IDENTPOOL + getMessage(throwable)));
                         }
