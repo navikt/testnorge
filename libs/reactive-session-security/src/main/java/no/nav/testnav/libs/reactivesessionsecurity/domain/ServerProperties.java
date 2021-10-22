@@ -12,7 +12,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ServerProperties {
-
     private String url;
     private String cluster;
     private String name;
