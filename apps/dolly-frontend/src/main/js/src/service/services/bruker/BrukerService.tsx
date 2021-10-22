@@ -17,7 +17,7 @@ export default {
 			organisasjonsnummer: organisasjonsnummer,
 		}
 		return api
-			.fetch(`${brukerServiceUrl}`, { method: 'POST' }, bruker)
+			.fetchJson(`${brukerServiceUrl}`, { method: 'POST' }, bruker)
 			.then((response: any) => {
 				return response
 			})
@@ -26,12 +26,10 @@ export default {
 			})
 	},
 
-	deleteBruker(id: string, orgJwt: string) {
+	deleteBruker(id: string, jwt?: string) {
 		return api.fetch(`${brukerServiceUrl}/${id}`, {
 			method: 'DELETE',
-			headers: {
-				[userJwtHeader]: orgJwt,
-			},
+			headers: jwt ? { 'User-Jwt': jwt } : {},
 		})
 	},
 
