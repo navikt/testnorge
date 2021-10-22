@@ -34,7 +34,7 @@ public class PersonController {
     private final PdlOrdreService pdlOrdreService;
 
     @ResponseBody
-    @GetMapping
+    @GetMapping(produces = "application/json; charset=utf-8")
     @Operation(description = "Hent personer")
     public List<FullPersonDTO> getPerson(@Parameter(description = "Hent personer med angitte identer, eller")
                                          @RequestParam(required = false) List<String> identer,
@@ -52,7 +52,7 @@ public class PersonController {
     }
 
     @ResponseBody
-    @PostMapping
+    @PostMapping(produces = "application/json; charset=utf-8")
     @Operation(description = "Opprett person basert på angitte informasjonselementer, minimum er {}")
     public String createPerson(@RequestBody BestillingRequestDTO request) {
 
@@ -60,7 +60,7 @@ public class PersonController {
     }
 
     @ResponseBody
-    @PutMapping(value = "/{ident}")
+    @PutMapping(value = "/{ident}", produces = "application/json; charset=utf-8")
     @Operation(description = "Oppdater testperson basert på angitte informasjonselementer")
     public String updatePerson(@Parameter(description = "Ident på testperson som skal oppdateres")
                                @PathVariable String ident,
@@ -79,7 +79,7 @@ public class PersonController {
     }
 
     @ResponseBody
-    @PostMapping(value = "/{ident}/ordre")
+    @PostMapping(value = "/{ident}/ordre", produces = "application/json; charset=utf-8")
     @Operation(description = "Send angitte testperson(er) med relasjoner til PDL")
     public OrdreResponseDTO sendPersonTilPdl(@Parameter(description = "Ident på hovedperson som skal sendes")
                                              @PathVariable String ident,
