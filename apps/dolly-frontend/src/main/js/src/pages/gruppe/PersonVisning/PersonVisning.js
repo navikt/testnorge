@@ -40,6 +40,8 @@ export const PersonVisning = ({
 }) => {
 	useMount(fetchDataFraFagsystemer)
 
+	console.log('data', data)
+
 	return (
 		<div className="person-visning">
 			<div className="person-visning_actions">

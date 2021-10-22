@@ -14,6 +14,7 @@ import {
 	SigrunApi,
 	TpsfApi,
 	UdiApi,
+	PdlforvalterApi,
 } from '~/service/Api'
 import { onSuccess } from '~/ducks/utils/requestActions'
 import { selectIdentById } from '~/ducks/gruppe'
@@ -84,10 +85,18 @@ export const actions = createActions(
 				ident,
 			}),
 		],
+		// Todo: bør kunne slettes når alt er over på PdlforvalterApi?
 		getPDL: [
-			DollyApi.getPersonFraPdl,
+			// DollyApi.getPersonFraPdl,
+			PdlforvalterApi.getPersoner,
 			(ident) => ({
 				ident,
+			}),
+		],
+		getPDLny: [
+			PdlforvalterApi.getPersoner,
+			(identer) => ({
+				identer,
 			}),
 		],
 		slettPerson: [
@@ -131,6 +140,7 @@ const initialState = {
 	arenaforvalteren: {},
 	aareg: {},
 	pdlforvalter: {},
+	pdlforvalterny: {},
 	instdata: {},
 	udistub: {},
 	pensjonforvalter: {},
@@ -184,6 +194,9 @@ export default handleActions(
 		[onSuccess(actions.getPDL)](state, action) {
 			state.pdlforvalter[action.meta.ident] = action.payload.data
 		},
+		[onSuccess(actions.getPDLny)](state, action) {
+			state.pdlforvalterny[action.meta.ident] = action.payload.data
+		},
 		[onSuccess(actions.getInst)](state, action) {
 			state.instdata[action.meta.ident] = action.payload.data
 		},
@@ -195,6 +208,7 @@ export default handleActions(
 			delete state.arenaforvalteren[action.meta.ident]
 			delete state.aareg[action.meta.ident]
 			delete state.pdlforvalter[action.meta.ident]
+			delete state.pdlforvalterny[action.meta.ident]
 			delete state.instdata[action.meta.ident]
 			delete state.udistub[action.meta.ident]
 			delete state.pensjonforvalter[action.meta.ident]
@@ -251,6 +265,8 @@ export const fetchDataFraFagsystemer = (personId) => (dispatch, getState) => {
 				return dispatch(actions.getArena(personId))
 			case 'PDL':
 				return dispatch(actions.getPDL(personId))
+			case 'PDLNY':
+				return dispatch(actions.getPDLny(personId))
 			case 'UDISTUB':
 				return dispatch(actions.getUdi(personId))
 			case 'AAREG':
@@ -273,7 +289,8 @@ export const fetchDataFraFagsystemerForSoek = (personId) => (dispatch) => {
 		'INNTK',
 		'ARENA',
 		'PDL',
-		'INST2',
+		'PDLNY',
+		'INST2,',
 		'PEN_INNTEKT',
 		'AAREG',
 	]
@@ -291,6 +308,8 @@ export const fetchDataFraFagsystemerForSoek = (personId) => (dispatch) => {
 				return dispatch(actions.getArena(personId))
 			case 'PDL':
 				return dispatch(actions.getPDL(personId))
+			case 'PDLNY':
+				return dispatch(actions.getPDLny(personId))
 			case 'INST2':
 				return dispatch(actions.getInst(personId, 'q2'))
 			case 'PEN_INNTEKT':
@@ -376,6 +395,7 @@ export const selectDataForIdent = (state, ident) => {
 		arenaforvalteren: state.fagsystem.arenaforvalteren[ident],
 		aareg: state.fagsystem.aareg[ident],
 		pdlforvalter: state.fagsystem.pdlforvalter[ident],
+		pdlforvalterny: state.fagsystem.pdlforvalterny[ident],
 		instdata: state.fagsystem.instdata[ident],
 		udistub: state.fagsystem.udistub[ident],
 		pensjonforvalter: state.fagsystem.pensjonforvalter[ident],

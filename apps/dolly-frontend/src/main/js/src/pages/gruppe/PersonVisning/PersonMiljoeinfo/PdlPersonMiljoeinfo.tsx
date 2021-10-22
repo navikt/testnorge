@@ -1,6 +1,6 @@
 import React from 'react'
 import { useAsync } from 'react-use'
-import { DollyApi } from '~/service/Api'
+import { DollyApi, PdlforvalterApi } from '~/service/Api'
 import Loading from '~/components/ui/loading/Loading'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { PdlDataVisning } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataVisning'
@@ -14,10 +14,13 @@ export const PdlPersonMiljoeInfo = ({ ident }: PdlPersonMiljoeinfo) => {
 	if (!ident) return null
 
 	const state = useAsync(async () => {
-		const response = await DollyApi.getPersonFraPdl(ident)
-		return response.data
+		const response = await PdlforvalterApi.getPersoner(ident)
+		// const response = await DollyApi.getPersonFraPdl(ident)
+		// console.log('response', response)
+		return response.data[0]
 	}, [])
 
+	// console.log('state', state)
 	if (state.value && state.value.errors) {
 		return null
 	}
@@ -27,7 +30,7 @@ export const PdlPersonMiljoeInfo = ({ ident }: PdlPersonMiljoeinfo) => {
 				<SubOverskrift label="PDL" iconKind="visTpsData" />
 				{state.loading && <Loading label="Henter info fra PDL" />}
 				{/* @ts-ignore */}
-				{state.value && <PdlDataVisning data={state.value.data} />}
+				{state.value && <PdlDataVisning data={state.value} />}
 				{state.value && (
 					<p>
 						<i>Hold pekeren over PDL for å se dataene som finnes på denne personen i PDL</i>

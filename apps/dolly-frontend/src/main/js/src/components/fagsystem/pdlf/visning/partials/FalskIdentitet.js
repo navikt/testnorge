@@ -5,6 +5,7 @@ import { Personnavn } from './Personnavn'
 import Formatters from '~/utils/DataFormatter'
 
 export const FalskIdentitet = ({ data }) => {
+	console.log('data falsk ident', data)
 	if (!data) return false
 	const {
 		rettIdentitetVedOpplysninger,

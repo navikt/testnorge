@@ -153,6 +153,11 @@ module.exports = (env) =>
 					changeOrigin: true,
 					secure: false,
 				},
+				'/testnav-pdl-forvalter/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false,
+				},
 			},
 		},
 		plugins: [

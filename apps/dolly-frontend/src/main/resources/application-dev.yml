@@ -12,6 +12,8 @@ UDI_STUB_URL: https://udi-stub-dev.dev.adeo.no
 UDI_STUB_NAME: udi-stub-dev
 TPS_FORVALTERN_PROXY_NAME: tps-forvalteren-dev-proxy
 TPS_FORVALTERN_PROXY_URL: https://tps-forvalteren-dev.dev.adeo.no
+PDL_FORVALTER_URL: https://testnav-pdl-forvalter-dev.dev.intern.nav.no
+PDL_FORVALTER_NAME: testnav-pdl-forvalter-dev
 
 POST_LOGOUT_REDIRECT_URI: 'http://localhost:3000/login'
 
