@@ -4,7 +4,6 @@ import { Bruker } from '~/pages/brukerPage/types'
 import { NotFoundError } from '~/error'
 
 const brukerServiceUrl = '/testnav-bruker-service/api/v1/brukere'
-const userJwtHeader = 'User-Jwt'
 
 export default {
 	getBrukere(orgnr: string) {
