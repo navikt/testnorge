@@ -26,7 +26,7 @@ public class TestnorgeAaregProxyApplicationStarter {
         return builder
                 .routes()
                 .route(spec -> spec
-                        .path("/**")
+                        .path("/**", "/proxy/**")
                         .uri("https://testnorge-aareg.dev.intern.nav.no/")
                 )
                 .build();
