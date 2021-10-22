@@ -12,7 +12,6 @@ import no.nav.registre.testnorge.profil.consumer.AzureAdProfileConsumer;
 import no.nav.registre.testnorge.profil.consumer.PersonOrganisasjonTilgangConsumer;
 import no.nav.registre.testnorge.profil.domain.Profil;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
-import no.nav.testnav.libs.servletsecurity.action.GetUserJwt;
 import no.nav.testnav.libs.servletsecurity.properties.TokenXResourceServerProperties;
 
 @Service
@@ -21,7 +20,6 @@ public class ProfilService {
     private final AzureAdProfileConsumer azureAdProfileConsumer;
     private final TokenXResourceServerProperties tokenXResourceServerProperties;
     private final PersonOrganisasjonTilgangConsumer organisasjonTilgangConsumer;
-    private final GetUserJwt getUserJwt;
     private final GetUserInfo getUserInfo;
 
     private JwtAuthenticationToken getJwtAuthenticationToken() {
@@ -33,7 +31,6 @@ public class ProfilService {
 
     public Profil getProfile() {
         if (isTokenX()) {
-
             return getUserInfo.call().map(userInfo ->
                     organisasjonTilgangConsumer
                             .getOrganisasjon(userInfo.organisasjonsnummer())
@@ -41,7 +38,7 @@ public class ProfilService {
                                     userInfo.brukernavn(),
                                     "[ukjent]",
                                     "[ukjent]",
-                                    dto.navn() + (dto.organisasjonsfrom().equals("AS") ? " AS" : ""),
+                                    dto.navn() + ("AS".equals(dto.organisasjonsfrom()) ? " AS" : ""),
                                     "BankId")
                             ).block()
             ).orElse(new Profil(
@@ -58,7 +55,6 @@ public class ProfilService {
     public Optional<byte[]> getImage() {
         return isTokenX() ? Optional.empty() : azureAdProfileConsumer.getProfilImage();
     }
-
 
     private boolean isTokenX() {
         return getJwtAuthenticationToken()
