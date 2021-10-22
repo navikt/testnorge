@@ -7,6 +7,7 @@ import BrukernavnVelger from '~/pages/brukerPage/BrukernavnVelger'
 import OrganisasjonVelger from '~/pages/brukerPage/OrganisasjonVelger'
 import { BrukerResponse, OrgResponse, Organisasjon } from '~/pages/brukerPage/types'
 import { PersonOrgTilgangApi, BrukerApi, SessionApi } from '~/service/Api'
+import { Redirect } from 'react-router-dom'
 
 const UNKNOWN_ERROR = 'unknown_error'
 const ORGANISATION_ERROR = 'organisation_error'
@@ -16,16 +17,12 @@ const logout = (feilmelding: string = 'logout') => {
 	Api.fetch('/logout', { method: 'POST' }).then((response) => window.location.replace(url))
 }
 
-const opprettSessionAndRedirect = (org: string) => {
-	SessionApi.addToSession(org)
-	window.location.replace(window.location.protocol + '//' + window.location.host)
-}
-
 export default () => {
 	const [loading, setLoading] = useState(true)
 	const [organisasjoner, setOrganisasjoner] = useState([])
 	const [organisasjon, setOrganisasjon] = useState<Organisasjon>(null)
 	const [modalHeight, setModalHeight] = useState(310)
+	const [sessionUpdated, setSessionUpdated] = useState(false)
 
 	useEffect(() => {
 		PersonOrgTilgangApi.getOrganisasjoner()
@@ -53,7 +50,7 @@ export default () => {
 		BrukerApi.getBrukere(org.organisasjonsnummer)
 			.then((response: BrukerResponse) => {
 				if (response !== null && response.data !== null && response.data.length !== 0) {
-					opprettSessionAndRedirect(org.organisasjonsnummer)
+					addToSession(org.organisasjonsnummer)
 				} else {
 					logout(UNKNOWN_ERROR)
 				}
@@ -66,6 +63,13 @@ export default () => {
 			})
 	}
 
+	const addToSession = (org: string) => {
+		SessionApi.addToSession(org)
+		setSessionUpdated(true)
+	}
+
+	if (sessionUpdated) return <Redirect to={''} />
+
 	return (
 		<div className="bruker-container">
 			<div className="bruker-modal" style={{ height: modalHeight + 'px', display: 'flexbox' }}>
@@ -75,10 +79,7 @@ export default () => {
 					<OrganisasjonVelger orgdata={organisasjoner} onClick={selectOrganisasjon} />
 				)}
 				{organisasjon && !loading && (
-					<BrukernavnVelger
-						organisasjon={organisasjon}
-						opprettSessionAndRedirect={opprettSessionAndRedirect}
-					/>
+					<BrukernavnVelger organisasjon={organisasjon} addToSession={addToSession} />
 				)}
 				<NavButton className="tilbake-button" onClick={logout}>
 					Tilbake til innlogging
