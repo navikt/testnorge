@@ -21,6 +21,8 @@ public class ForwardAndRedirectController {
         HandlerFunction<ServerResponse> indexHandler = request -> ok().contentType(MediaType.TEXT_HTML).syncBody(html);
         return RouterFunctions
                 .route(RequestPredicates.GET("/access-token/**"), indexHandler)
+                .andRoute(RequestPredicates.GET("/magic-token/**"), indexHandler)
+                .andRoute(RequestPredicates.GET("/user/**"), indexHandler)
                 .andRoute(RequestPredicates.GET("/login"), indexHandler);
     }
 

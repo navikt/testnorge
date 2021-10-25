@@ -7,34 +7,6 @@ spring:
     name: orkestratoren
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
 
-consumers:
-  populasjoner:
-    url: https://testnorge-populasjoner.dev.adeo.no
-  hendelse:
-    url: https://testnorge-hendelse-api.dev.adeo.no
-  statistikk:
-    url: https://testnorge-statistikk-api.dev.adeo.no
-  arbeidsforhold:
-    url: https://testnorge-arbeidsforhold-api.dev.adeo.no
-    threads: 5
-  syntsykemelding:
-    url: https://testnorge-synt-sykemelding-api.dev.adeo.no
-    threads: 2
-  person:
-    url: https://testnorge-person-api.dev.adeo.no
-    client_id: 607ab2ee-2473-4bfd-8d48-03a7aaceeda6
-    threads: 10
-  syntarbeidsforhold:
-    url: https://testnorge-synt-arbeidsforhold-api.dev.adeo.no
-    threads: 2
-
-kafka:
-  bootstrapservers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443
-  schemaregistryservers: http://kafka-schema-registry.tpa.svc.nais.local:8081
-  groupid: orkestratoren-v1
-  topic: testnorge-rapportering-v2∂
-  
-  
 testnorge-aareg.rest.api.url: https://testnorge-aareg.nais.preprod.local/api
 testnorge-arena.rest.api.url: https://testnorge-arena.nais.preprod.local/api
 testnorge-bisys.rest.api.url: https://testnorge-bisys.nais.preprod.local/api

@@ -1,7 +1,19 @@
 package no.nav.registre.aareg.mapper.strategy;
 
+import static java.time.LocalDateTime.of;
+import static java.util.Collections.singletonList;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.MapperFacade;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.math.BigDecimal;
+
 import no.nav.registre.aareg.config.MappingStrategy;
 import no.nav.registre.aareg.domain.RsAntallTimerForTimeloennet;
 import no.nav.registre.aareg.domain.RsArbeidsavtale;
@@ -14,17 +26,6 @@ import no.nav.registre.aareg.domain.RsUtenlandsopphold;
 import no.nav.registre.aareg.testutils.MapperTestUtils;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidsforhold;
 import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Organisasjon;
-import org.junit.Before;
-import org.junit.Test;
-
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.math.BigDecimal;
-
-import static java.time.LocalDateTime.of;
-import static java.util.Collections.singletonList;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 public class AaregMappingStrategyTest {
 
@@ -33,7 +34,7 @@ public class AaregMappingStrategyTest {
     private MappingStrategy aaregMappingStrategy = new AaregMappingStrategy();
     private MapperFacade mapper;
 
-    @Before
+    @BeforeEach
     public void setup() {
         mapper = MapperTestUtils.createMapperFacadeForMappingStrategy(calendarConverter, aaregMappingStrategy);
     }

@@ -5,7 +5,7 @@ parent: Applikasjoner
 ---
 
 # Testnorge-Person-api
-API for person.
+API for oppretting og henting av personer fra PDL og TPS
 
 ## Swagger
 Swagger finnes under [/swagger-ui.html](https://testnav-person-service.dev.intern.nav.no/swagger-ui.html) -endepunktet til applikasjonen.

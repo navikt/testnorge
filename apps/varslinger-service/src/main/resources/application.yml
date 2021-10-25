@@ -7,8 +7,6 @@ spring:
     name: testnav-varslinger-service
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     description: Applikasjon for å registrere varslinger
-    cluster: dev-gcp
-    namespace: dolly
   security:
     oauth2:
       resourceserver:
@@ -19,9 +17,4 @@ spring:
         tokenx:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
-          accepted-audience: dev-gcp:dolly:testnav-varslinger-service
-
-kafka:
-  bootstrapservers: b27apvl00045.preprod.local:8443,b27apvl00046.preprod.local:8443,b27apvl00047.preprod.local:8443
-  schemaregistryservers: http://kafka-schema-registry.tpa.svc.nais.local:8081
-  groupid: testnorge-varsling-api-v1
+          accepted-audience: ${TOKEN_X_CLIENT_ID}

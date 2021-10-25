@@ -53,14 +53,13 @@ spec:
         - application: tps-forvalteren
           cluster: dev-fss
         - application: dolly-frontend-dev
-          cluster: dev-fss
-        - application: dolly-frontend-dev
           cluster: dev-gcp
         - application: dolly-frontend
-          cluster: dev-fss
-        - application: dolly-frontend
           cluster: dev-gcp
-        - application: synthdata-tps-gcp-tmp
+        - application: synthdata-tps-gcp
+          cluster: dev-gcp
+        - application: app-1
+          namespace: plattformsikkerhet
           cluster: dev-gcp
     outbound:
       external:

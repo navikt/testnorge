@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - feature/pdl-forvalte_non_reactive_align
+      - feature/legge_til_funksjonalitet_for_lesing_av_alle_personer
     paths:
       - apps/pdl-forvalter/**
       - libs/**

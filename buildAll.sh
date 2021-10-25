@@ -29,6 +29,10 @@
  :ident-pool-proxy:build \
  :saf-proxy:build \
  :dokarkiv-proxy:build \
+ :kodeverk-proxy:build \
+ :statisk-data-forvalter-proxy:build \
+ :skjermingsregister-proxy:build \
+ :udistub-proxy:build \
  :syntrest-proxy:build \
  :tps-forvalteren-proxy:build \
  :aareg-synt-services-proxy:build \

@@ -1,5 +1,8 @@
 CRYPTOGRAPHY_SECRET: DUMMY SUPER SECRET CRYPTOGRAPHY KEY THAT IS NOT SECURE
 JWT_SECRET: DUMMY SUPER SECRET JWT KEY THAT IS NOT SECURE
+
+TOKEN_X_CLIENT_ID: test
+
 spring:
   flyway:
     url: jdbc:h2:mem:testdb
@@ -11,7 +14,6 @@ spring:
         tokenx:
           issuer-uri: ${wiremockBaseUrl}
           jwk-set-uri: ${wiremockBaseUrl}/jwks
-          accepted-audience: test
 
 consumers:
   testnav-person-organisasjon-tilgang-service:

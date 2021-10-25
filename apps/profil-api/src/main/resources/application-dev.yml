@@ -5,4 +5,12 @@ spring:
     oauth2:
       resourceserver:
         tokenx:
-          accepted-audience: dev-gcp:dolly:testnorge-profil-dev
+          accepted-audience: dev-gcp:dolly:testnorge-profil-api-dev
+
+
+consumers:
+  testnav-person-organisasjon-tilgang-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-person-organisasjon-tilgang-service-dev
+    url: https://testnav-person-organisasjon-tilgang-service-dev.dev.intern.nav.no

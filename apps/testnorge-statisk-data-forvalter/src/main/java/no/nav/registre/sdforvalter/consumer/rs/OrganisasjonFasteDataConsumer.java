@@ -13,29 +13,28 @@ import no.nav.registre.sdforvalter.consumer.rs.domain.OrgTreeList;
 import no.nav.registre.sdforvalter.domain.EregListe;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.Gruppe;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Component
 public class OrganisasjonFasteDataConsumer {
     private final WebClient webClient;
     private final OrganisasjonFasteDataServiceProperties serverProperties;
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
     private final GenererNavnConsumer genererNavnConsumer;
 
     public OrganisasjonFasteDataConsumer(
             OrganisasjonFasteDataServiceProperties serverProperties,
-            AccessTokenService accessTokenService,
+            TokenExchange tokenExchange,
             GenererNavnConsumer genererNavnConsumer) {
         this.serverProperties = serverProperties;
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(serverProperties.getUrl())
                 .build();
         this.genererNavnConsumer = genererNavnConsumer;
     }
-
 
 
     private String genererNavn(String enhetstype) {
@@ -56,7 +55,7 @@ public class OrganisasjonFasteDataConsumer {
 
     private void opprett(OrgTree orgTree, AtomicInteger count) {
         var organisasjon = orgTree.getOrganisasjon();
-        var accessToken = accessTokenService.generateToken(serverProperties).block();
+        var accessToken = tokenExchange.generateToken(serverProperties).block();
         new SaveOrganisasjonFasteDataCommand(
                 webClient,
                 accessToken.getTokenValue(),

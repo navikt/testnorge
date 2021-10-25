@@ -8,12 +8,12 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 
 import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
-import no.nav.testnav.libs.servletsecurity.config.InsecureOAuth2ServerToServerConfiguration;
+import no.nav.testnav.libs.servletsecurity.config.InsecureJwtServerToServerConfiguration;
 
 @Configuration
 @Import({
         ApplicationCoreConfig.class,
-        InsecureOAuth2ServerToServerConfiguration.class
+        InsecureJwtServerToServerConfiguration.class
 })
 public class ApplicationConfig {
 

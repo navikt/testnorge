@@ -9,10 +9,9 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Setter
 @Configuration
-@ConfigurationProperties(prefix = "elasticsearch.client")
+@ConfigurationProperties(prefix = "spring.data.elasticsearch.client.reactive")
 public class ElasticSearchCredentials {
-    private String host;
-    private String port;
+    private String endpoints;
     private String username;
     private String password;
 }

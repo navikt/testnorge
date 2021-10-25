@@ -5,7 +5,6 @@ const identBase = `${uri}/ident`
 const brukerBase = `${uri}/bruker`
 const kodeverkBase = `${uri}/kodeverk`
 const bestillingBase = `${uri}/bestilling`
-const configBase = `${uri}/config`
 const openamBase = `${uri}/openam`
 const personoppslagBase = `${uri}/pdlperson`
 const fasteOrgnummerBase = `${uri}/orgnummer`
@@ -126,10 +125,6 @@ export default class DollyEndpoints {
 
 	static gjenopprettBestilling(bestillingId, envs) {
 		return `${bestillingBase}/gjenopprett/${bestillingId}?miljoer=${envs}`
-	}
-
-	static config() {
-		return configBase
 	}
 
 	static openAmBestilling(bestillingId) {

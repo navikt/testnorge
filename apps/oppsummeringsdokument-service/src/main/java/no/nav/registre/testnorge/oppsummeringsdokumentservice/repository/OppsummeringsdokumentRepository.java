@@ -10,4 +10,6 @@ public interface OppsummeringsdokumentRepository extends ElasticsearchRepository
     void deleteAllByMiljoAndPopulasjon(String miljo, Populasjon populasjon);
 
     void deleteAllByMiljo(String miljo);
+
+
 }

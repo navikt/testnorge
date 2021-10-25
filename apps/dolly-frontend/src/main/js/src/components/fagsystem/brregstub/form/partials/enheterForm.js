@@ -45,7 +45,12 @@ export const EnheterForm = ({ formikBag }) => {
 	}
 
 	return (
-		<FormikDollyFieldArray name="brregstub.enheter" header="Enhet" newEntry={initialValues}>
+		<FormikDollyFieldArray
+			name="brregstub.enheter"
+			header="Enhet"
+			newEntry={initialValues}
+			canBeEmpty={false}
+		>
 			{(path) => (
 				<>
 					<FormikSelect

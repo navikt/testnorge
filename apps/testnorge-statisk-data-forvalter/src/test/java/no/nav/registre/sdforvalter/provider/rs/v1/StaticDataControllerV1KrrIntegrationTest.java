@@ -7,16 +7,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
@@ -27,7 +27,7 @@ import no.nav.registre.sdforvalter.database.repository.KrrRepository;
 import no.nav.registre.sdforvalter.domain.Krr;
 import no.nav.registre.sdforvalter.domain.KrrListe;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(MockitoExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc
@@ -49,7 +49,7 @@ public class StaticDataControllerV1KrrIntegrationTest {
         KrrModel model = createKrrModel("0101011236");
         repository.save(model);
         String json = mvc.perform(get("/api/v1/faste-data/krr/")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -64,8 +64,8 @@ public class StaticDataControllerV1KrrIntegrationTest {
     public void shouldCreateKrr() throws Exception {
         Krr krr = createKrr("0101011236");
         mvc.perform(post("/api/v1/faste-data/krr/")
-                .content(objectMapper.writeValueAsString(createKrrListe(krr)))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(objectMapper.writeValueAsString(createKrrListe(krr)))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         assertThat(repository.findAll()).containsOnly(new KrrModel(krr, null, null));
@@ -78,9 +78,9 @@ public class StaticDataControllerV1KrrIntegrationTest {
         Krr krrGruppeDolly = createKrr("0101011236", "DOLLY");
 
         mvc.perform(post("/api/v1/faste-data/krr/")
-                .param("gruppe", "DOLLY")
-                .content(objectMapper.writeValueAsString(createKrrListe(krr, krrGruppeDolly)))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .param("gruppe", "DOLLY")
+                        .content(objectMapper.writeValueAsString(createKrrListe(krr, krrGruppeDolly)))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         assertThat(repository.findAll()).containsOnly(new KrrModel(krrGruppeDolly, null, null));
@@ -93,7 +93,7 @@ public class StaticDataControllerV1KrrIntegrationTest {
     private KrrModel createKrrModel(String fnr, String gruppe) {
         KrrModel model = new KrrModel();
         model.setFnr(fnr);
-        model.setGruppeModel(gruppe != null ? createGruppeModel(gruppe): null);
+        model.setGruppeModel(gruppe != null ? createGruppeModel(gruppe) : null);
         return model;
     }
 
@@ -115,7 +115,7 @@ public class StaticDataControllerV1KrrIntegrationTest {
     }
 
 
-    @After
+    @AfterEach
     public void cleanUp() {
         reset();
         repository.deleteAll();

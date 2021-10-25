@@ -1,22 +1,5 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
-import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.client.MockRestServiceServer;
-
-import java.util.Map;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
@@ -24,7 +7,25 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-@RunWith(SpringRunner.class)
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.web.client.MockRestServiceServer;
+
+import java.util.Map;
+
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserInntektsmeldingRequest;
+
+@ExtendWith(MockitoExtension.class)
 @RestClientTest(TestnorgeInntektConsumer.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
 @ActiveProfiles("test")
@@ -39,13 +40,13 @@ public class TestnorgeInntektConsumerTest {
     @Value("${testnorge-inntekt.rest.api.url}")
     private String serverUrl;
 
-    private long gruppeId = 10L;
-    private String miljoe = "t1";
-    private String fnr = "01010101010";
-    private Double beloep = 10000.0;
+    private final long gruppeId = 10L;
+    private final String miljoe = "t1";
+    private final String fnr = "01010101010";
+    private final Double beloep = 10000.0;
     private SyntetiserInntektsmeldingRequest syntetiserInntektsmeldingRequest;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         syntetiserInntektsmeldingRequest = new SyntetiserInntektsmeldingRequest(gruppeId, miljoe);
     }

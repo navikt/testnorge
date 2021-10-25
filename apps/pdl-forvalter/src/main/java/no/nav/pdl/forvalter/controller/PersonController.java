@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.pdl.forvalter.dto.Paginering;
 import no.nav.pdl.forvalter.service.PdlOrdreService;
 import no.nav.pdl.forvalter.service.PersonService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
@@ -33,18 +34,25 @@ public class PersonController {
     private final PdlOrdreService pdlOrdreService;
 
     @ResponseBody
-    @GetMapping
+    @GetMapping(produces = "application/json; charset=utf-8")
     @Operation(description = "Hent personer")
     public List<FullPersonDTO> getPerson(@Parameter(description = "Hent personer med angitte identer, eller")
                                          @RequestParam(required = false) List<String> identer,
                                          @Parameter(description = "Hent identitet ved søk på (u)fullstendig ident og/eller en eller flere navn")
-                                         @RequestParam(required = false) String fragment) {
+                                         @RequestParam(required = false) String fragment,
+                                         @Parameter(description = "Sidenummer ved sortering på \'sistOppdatert\' og nyeste først")
+                                         @RequestParam(required = false, defaultValue = "0") Integer sidenummer,
+                                         @Parameter(description = "Sidestørrelse ved sortering på \'sistOppdatert\' og nyeste først")
+                                         @RequestParam(required = false, defaultValue = "10") Integer sidestorrelse) {
 
-        return personService.getPerson(identer, fragment);
+        return personService.getPerson(identer, fragment, Paginering.builder()
+                .sidenummer(sidenummer)
+                .sidestoerrelse(sidestorrelse)
+                .build());
     }
 
     @ResponseBody
-    @PostMapping
+    @PostMapping(produces = "application/json; charset=utf-8")
     @Operation(description = "Opprett person basert på angitte informasjonselementer, minimum er {}")
     public String createPerson(@RequestBody BestillingRequestDTO request) {
 
@@ -52,7 +60,7 @@ public class PersonController {
     }
 
     @ResponseBody
-    @PutMapping(value = "/{ident}")
+    @PutMapping(value = "/{ident}", produces = "application/json; charset=utf-8")
     @Operation(description = "Oppdater testperson basert på angitte informasjonselementer")
     public String updatePerson(@Parameter(description = "Ident på testperson som skal oppdateres")
                                @PathVariable String ident,
@@ -71,7 +79,7 @@ public class PersonController {
     }
 
     @ResponseBody
-    @PostMapping(value = "/{ident}/ordre")
+    @PostMapping(value = "/{ident}/ordre", produces = "application/json; charset=utf-8")
     @Operation(description = "Send angitte testperson(er) med relasjoner til PDL")
     public OrdreResponseDTO sendPersonTilPdl(@Parameter(description = "Ident på hovedperson som skal sendes")
                                              @PathVariable String ident,

@@ -7,7 +7,7 @@ rootProject.name = 'synt-sykemelding-api'
 includeBuild '../../gradlePlugins'
 
 includeBuild '../../libs/servlet-core'
-includeBuild '../../libs/servlet-security'
+includeBuild '../../libs/servlet-insecure-security'
 includeBuild '../../libs/commands'
 includeBuild '../../libs/data-transfer-objects'
 includeBuild '../../libs/testing'

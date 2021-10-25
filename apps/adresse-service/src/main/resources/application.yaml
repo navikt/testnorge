@@ -15,7 +15,7 @@ spring:
         tokenx:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
-          accepted-audience: dev-gcp:dolly:testnav-adresse-service
+          accepted-audience: ${TOKEN_X_CLIENT_ID}
 
 
 consumers:

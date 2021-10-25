@@ -1,6 +1,10 @@
 package no.nav.registre.testnorge.oppsummeringsdokumentservice.controller;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.registre.testnorge.oppsummeringsdokumentservice.adapter.OppsummeringsdokumentAdapter;
+import no.nav.registre.testnorge.oppsummeringsdokumentservice.domain.Oppsummeringsdokument;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -20,11 +25,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
-import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
-import no.nav.registre.testnorge.oppsummeringsdokumentservice.adapter.OppsummeringsdokumentAdapter;
-import no.nav.registre.testnorge.oppsummeringsdokumentservice.domain.Oppsummeringsdokument;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/oppsummeringsdokumenter")
@@ -33,8 +33,10 @@ public class OppsummeringsdokumentController {
     private final OppsummeringsdokumentAdapter adapter;
 
     @GetMapping
-    public ResponseEntity<List<OppsummeringsdokumentDTO>> getAll(@RequestHeader("miljo") String miljo) {
-        var documents = adapter.getAllCurrentDocumentsBy(miljo);
+    public ResponseEntity<List<OppsummeringsdokumentDTO>> getAll(
+            @RequestHeader("miljo") String miljo,
+            @RequestParam("page") Integer page) {
+        var documents = adapter.getAllCurrentDocumentsBy(miljo, page);
         return ResponseEntity.ok(documents.stream().map(Oppsummeringsdokument::toDTO).collect(Collectors.toList()));
     }
 

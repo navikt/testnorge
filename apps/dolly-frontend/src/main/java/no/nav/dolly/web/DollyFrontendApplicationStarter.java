@@ -2,13 +2,34 @@ package no.nav.dolly.web;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.web.credentials.*;
+import no.nav.dolly.web.credentials.DollyBackendProperties;
+import no.nav.dolly.web.credentials.PersonSearchServiceProperties;
+import no.nav.dolly.web.credentials.TestnavAdresseServiceProperties;
+import no.nav.dolly.web.credentials.TestnavArenaForvalterenProxyProperties;
+import no.nav.dolly.web.credentials.TestnavBrregstubProxyProperties;
+import no.nav.dolly.web.credentials.TestnavHodejegerenProxyProperties;
+import no.nav.dolly.web.credentials.TestnavInntektstubProxyProperties;
+import no.nav.dolly.web.credentials.TestnavJoarkDokumentServiceProperties;
+import no.nav.dolly.web.credentials.TestnavKrrstubProxyProperties;
+import no.nav.dolly.web.credentials.TestnavMiljoerServiceProperties;
+import no.nav.dolly.web.credentials.TestnavOrganisasjonFasteDataServiceProperties;
+import no.nav.dolly.web.credentials.TestnavOrganisasjonForvalterProperties;
+import no.nav.dolly.web.credentials.TestnavOrganisasjonServiceProperties;
+import no.nav.dolly.web.credentials.TestnavPensjonTestdataFacadeProxyProperties;
+import no.nav.dolly.web.credentials.TestnavSigrunstubProxyProperties;
+import no.nav.dolly.web.credentials.TestnavTestnorgeAaregProxyProperties;
+import no.nav.dolly.web.credentials.TestnavTestnorgeInstProxyProperties;
+import no.nav.dolly.web.credentials.TestnavVarslingerServiceProperties;
+import no.nav.dolly.web.credentials.TestnorgeProfilApiProperties;
+import no.nav.dolly.web.credentials.TpsForvalterenProxyProperties;
+import no.nav.dolly.web.credentials.UdiStubProxyProperties;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
 import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivesessionsecurity.domain.AccessToken;
-import no.nav.testnav.libs.reactivesessionsecurity.domain.ServerProperties;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -51,7 +72,7 @@ public class DollyFrontendApplicationStarter {
     private final TestnavOrganisasjonForvalterProperties testnavOrganisasjonForvalterProperties;
     private final TestnavOrganisasjonServiceProperties testnavOrganisasjonServiceProperties;
     private final TestnavMiljoerServiceProperties testnavMiljoerServiceProperties;
-    private final UdiStubProperties udiStubProperties;
+    private final UdiStubProxyProperties udiStubProxyProperties;
     private final PersonSearchServiceProperties personSearchServiceProperties;
     private final TestnavAdresseServiceProperties testnavAdresseServiceProperties;
     private final TestnavPdlForvalterProperties testnavPdlForvalterProperties;
@@ -67,7 +88,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(testnavOrganisasjonFasteDataServiceProperties))
                 .route(createRoute(testnavAdresseServiceProperties))
                 .route(createRoute(testnavOrganisasjonForvalterProperties))
-                .route(createRoute(testnavVarslingerServiceProperties))
+                .route(createRoute(testnavVarslingerServiceProperties, "testnav-varslinger-service"))
                 .route(createRoute(testnorgeProfilApiProperties))
                 .route(createRoute(testnavMiljoerServiceProperties))
                 .route(createRoute(dollyBackendProperties, "dolly-backend"))
@@ -80,10 +101,10 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(testnavArenaForvalterenProxyProperties))
                 .route(createRoute(testnavTestnorgeInstProxyProperties))
                 .route(createRoute(testnavTestnorgeAaregProxyProperties))
-                .route(createRoute(testnavKrrstubProxyProperties))
+                .route(createRoute(testnavKrrstubProxyProperties, "testnav-krrstub-proxy"))
                 .route(createRoute(testnavOrganisasjonServiceProperties))
                 .route(createRoute(testnavSigrunstubProxyProperties))
-                .route(createRoute(udiStubProperties, "udi-stub"))
+                .route(createRoute(udiStubProxyProperties, "udi-stub"))
                 .route(createRoute(testnavPdlForvalterProperties, "testnav-pdl-forvalter"))
                 .route(createRoute(personSearchServiceProperties))
                 .build();

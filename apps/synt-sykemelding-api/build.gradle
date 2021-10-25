@@ -29,8 +29,9 @@ repositories {
 
 dependencies {
 
+    implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:servlet-core'
-    implementation 'no.nav.testnav.libs:servlet-security'
+    implementation 'no.nav.testnav.libs:servlet-insecure-security'
     implementation 'no.nav.testnav.libs:commands'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
 
@@ -48,7 +49,6 @@ dependencies {
     implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
 
     testImplementation 'no.nav.testnav.libs:testing'
-    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'org.assertj:assertj-core:3.16.1'

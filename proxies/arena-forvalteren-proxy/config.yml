@@ -28,7 +28,14 @@ spec:
           cluster: dev-fss
         - application: dolly-frontend-dev
           cluster: dev-gcp
+        - application: dolly-backend
+          cluster: dev-fss
+        - application: dolly-backend-dev
+          cluster: dev-fss
         - application: testnav-oversikt-frontend
+          cluster: dev-gcp
+        - application: app-1
+          namespace: plattformsikkerhet
           cluster: dev-gcp
   liveness:
     path: /internal/isAlive

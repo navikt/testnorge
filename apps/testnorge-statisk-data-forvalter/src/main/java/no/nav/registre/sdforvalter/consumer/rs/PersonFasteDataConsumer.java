@@ -13,7 +13,7 @@ import no.nav.registre.sdforvalter.consumer.rs.commnad.SavePersonFasteDataComman
 import no.nav.registre.sdforvalter.domain.TpsIdent;
 import no.nav.registre.sdforvalter.domain.TpsIdentListe;
 import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.dto.personservice.v1.Gruppe;
 
 @Slf4j
@@ -21,14 +21,14 @@ import no.nav.testnav.libs.dto.personservice.v1.Gruppe;
 public class PersonFasteDataConsumer {
     private final WebClient webClient;
     private final PersonFasteDataServiceProperties serverProperties;
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
 
     public PersonFasteDataConsumer(
             PersonFasteDataServiceProperties serverProperties,
-            AccessTokenService accessTokenService
+            TokenExchange tokenExchange
     ) {
         this.serverProperties = serverProperties;
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(serverProperties.getUrl())
@@ -36,7 +36,7 @@ public class PersonFasteDataConsumer {
     }
 
     public void opprett(TpsIdentListe tpsIdentListe) {
-        accessTokenService.generateToken(serverProperties)
+        tokenExchange.generateToken(serverProperties)
                 .flatMapMany(token -> Flux.concat(
                         tpsIdentListe.getListe().stream().map(value -> opprett(value, token)).collect(Collectors.toList())
                 ))

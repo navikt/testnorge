@@ -7,6 +7,7 @@ import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
 import no.nav.pdl.forvalter.exception.InternalServerException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -25,7 +26,8 @@ public class RelasjonService {
 
     public void setRelasjoner(String ident, RelasjonType relasjon, String identRelasjon, RelasjonType reverseRelasjon) {
 
-        var dbPersoner = personRepository.findByIdentIn(List.of(ident, identRelasjon));
+        var dbPersoner = personRepository.findByIdentIn(List.of(ident, identRelasjon),
+                PageRequest.of(0, 10));
         var hovedperson = dbPersoner.stream()
                 .filter(person -> person.getIdent().equals(ident))
                 .findFirst().orElseThrow(() -> new InternalServerException(

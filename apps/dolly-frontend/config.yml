@@ -41,6 +41,8 @@ spec:
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
         - host: testnav-testnorge-inst-proxy.dev-fss-pub.nais.io
         - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
+        - host: testnav-udistub-proxy.dev-fss-pub.nais.io
+        - host: testnav-kodeverk-proxy.dev-fss-pub.nais.io
         - host: testnav-testnorge-aareg-proxy.dev-fss-pub.nais.io
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
         - host: testnav-hodejegeren-proxy.dev-fss-pub.nais.io
@@ -74,10 +76,6 @@ spec:
       value: dolly-backend
     - name: DOLLY_BACKEND_URL
       value: https://dolly-backend.dev-fss-pub.nais.io
-    - name: UDI_STUB_URL
-      value: https://udi-stub.dev-fss-pub.nais.io
-    - name: UDI_STUB_NAME
-      value: udi-stub
     - name: TPS_FORVALTERN_PROXY_NAME
       value: tps-forvalteren-proxy
     - name: TPS_FORVALTERN_PROXY_URL
@@ -90,3 +88,7 @@ spec:
       value: https://testnav-pdl-forvalter.dev.intern.nav.no
     - name: PDL_FORVALTER_NAME
       value: testnav-pdl-forvalter
+    - name: VARSLINGER_NAME
+      value: testnav-varslinger-service
+    - name: VARSLINGER_URL
+      value: https://testnav-varslinger-service.dev.intern.nav.no

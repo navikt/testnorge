@@ -1,28 +1,5 @@
 package no.nav.registre.aareg.consumer.ws;
 
-import ma.glasnost.orika.MapperFacade;
-import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
-import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
-import no.nav.registre.aareg.domain.RsArbeidsforhold;
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.BehandleArbeidsforholdPortType;
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OppdaterArbeidsforholdSikkerhetsbegrensning;
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OpprettArbeidsforholdSikkerhetsbegrensning;
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.feil.Sikkerhetsbegrensning;
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidsforhold;
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.meldinger.OppdaterArbeidsforholdRequest;
-import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.meldinger.OpprettArbeidsforholdRequest;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.time.LocalDateTime;
-
 import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -34,7 +11,31 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+import ma.glasnost.orika.MapperFacade;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.time.LocalDateTime;
+
+import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
+import no.nav.registre.aareg.consumer.ws.request.RsAaregOpprettRequest;
+import no.nav.registre.aareg.domain.RsArbeidsforhold;
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.BehandleArbeidsforholdPortType;
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OppdaterArbeidsforholdSikkerhetsbegrensning;
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.OpprettArbeidsforholdSikkerhetsbegrensning;
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.feil.Sikkerhetsbegrensning;
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.informasjon.Arbeidsforhold;
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.meldinger.OppdaterArbeidsforholdRequest;
+import no.nav.tjeneste.domene.behandlearbeidsforhold.v1.meldinger.OpprettArbeidsforholdRequest;
+
+@ExtendWith(MockitoExtension.class)
 public class AaregWsConsumerTest {
 
     private Sikkerhetsbegrensning faultInfo = new Sikkerhetsbegrensning();
@@ -52,7 +53,7 @@ public class AaregWsConsumerTest {
     @InjectMocks
     private AaregWsConsumer aaregWsConsumer;
 
-    @Before
+    @BeforeEach
     public void setUp() throws DatatypeConfigurationException {
         datatypeFactory = DatatypeFactory.newInstance();
         var calendar = datatypeFactory.newXMLGregorianCalendar();

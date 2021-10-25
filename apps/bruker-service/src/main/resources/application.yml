@@ -3,6 +3,13 @@ spring:
     version: application.version.todo
     name: testnav-bruker-service
     desciption: Tjeneste for brukere
+  security:
+    oauth2:
+      resourceserver:
+        tokenx:
+          issuer-uri: https://tokendings.dev-gcp.nais.io
+          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          accepted-audience: ${TOKEN_X_CLIENT_ID}
   jackson:
     serialization:
       write_dates_as_timestamps: false

@@ -48,7 +48,7 @@ publishing {
 }
 
 dependencies {
-
+    implementation 'no.nav.testnav.libs:security-core'
 
     implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"

@@ -26,6 +26,9 @@ const Page = ({ children, loggedIn = true }: Props) => (
 					>
 						Access Token
 					</HeaderLink>
+					<HeaderLink href="/user" isActive={() => window.location.pathname.includes('/user')}>
+						User
+					</HeaderLink>
 				</HeaderLinkGroup>
 			)}
 		</Header>

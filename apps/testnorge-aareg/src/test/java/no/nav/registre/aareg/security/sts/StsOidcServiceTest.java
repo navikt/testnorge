@@ -8,27 +8,22 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import no.nav.registre.aareg.exception.TestnorgeAaregFunctionalException;
 import no.nav.registre.aareg.properties.CredentialsProps;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class StsOidcServiceTest {
 
     private static final String ENV = "u1";
 
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
     @Mock
     private RestTemplate restTemplate;
@@ -48,13 +43,6 @@ public class StsOidcServiceTest {
     @InjectMocks
     private StsOidcService stsOidcService;
 
-    @Test
-    public void getIdToken_sikkerhetsTokenKunneIkkeFornyes() {
-        expectedException.expect(TestnorgeAaregFunctionalException.class);
-        expectedException.expectMessage("Sikkerhet-token kunne ikke fornyes");
-
-        stsOidcService.getIdToken(ENV);
-    }
 
     @Test
     public void getIdToken_ok() {
