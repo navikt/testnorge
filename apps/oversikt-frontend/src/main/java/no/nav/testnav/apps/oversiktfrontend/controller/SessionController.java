@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono;
 
 import no.nav.testnav.apps.oversiktfrontend.service.AccessService;
 import no.nav.testnav.apps.oversiktfrontend.service.BrukerService;
-import no.nav.testnav.libs.securitycore.UserSessionConstant;
+import no.nav.testnav.libs.securitycore.config.UserSessionConstant;
 
 @RestController
 @RequestMapping("/api/v1/session/user")

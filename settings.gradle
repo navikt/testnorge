@@ -69,6 +69,7 @@ includeBuild './libs/domain'
 includeBuild './libs/slack'
 includeBuild './libs/reactive-session-security'
 includeBuild './libs/security-core'
+includeBuild './libs/servlet-insecure-security'
 
 includeBuild './apps/person-service'
 includeBuild './apps/profil-api'
@@ -113,6 +114,8 @@ includeBuild './apps/testnorge-statisk-data-forvalter'
 includeBuild './apps/testnorge-bisys'
 includeBuild './apps/testnorge-nav-endringsmeldinger'
 includeBuild './apps/testnorge-sigrun'
+includeBuild './apps/generer-arbeidsforhold-populasjon-service'
+includeBuild './apps/mn-synt-arbeidsforhold-service'
 includeBuild './apps/opprett-person-pdl'
 
 includeBuild './xsd/arbeidsforhold-xsd'
@@ -123,7 +126,6 @@ include(':inntektsmelding-generator-service')
 include(':sykemelding-api')
 include(':testnorge-token-provider')
 include(':testnorge-hodejegeren')
-include(':testnorge-populasjoner')
 include(':tilbakemelding-api')
 include(':mn-organisasjon-api')
 include(':organisasjon-service')
@@ -137,7 +139,6 @@ include(':synt-person-api')
 
 include(':ident-check-in-prod-service')
 include(':mn-person-service')
-include(':mn-synt-arbeidsforhold-service')
 include(':organisasjon-orgnummer-service')
 include(':tps-identer-vedlikehold')
 
@@ -145,7 +146,6 @@ project(":inntektsmelding-generator-service").projectDir = file('apps/inntektsme
 project(":sykemelding-api").projectDir = file('apps/sykemelding-api')
 project(":testnorge-token-provider").projectDir = file('apps/testnorge-token-provider')
 project(":testnorge-hodejegeren").projectDir = file('apps/testnorge-hodejegeren')
-project(":testnorge-populasjoner").projectDir = file('apps/testnorge-populasjoner')
 project(":tilbakemelding-api").projectDir = file('apps/tilbakemelding-api')
 project(":mn-organisasjon-api").projectDir = file('apps/mn-organisasjon-api')
 project(":organisasjon-service").projectDir = file('apps/organisasjon-service')
@@ -156,7 +156,6 @@ project(":person-export-api").projectDir = file('apps/person-export-api')
 project(":synt-person-api").projectDir = file('apps/synt-person-api')
 
 project(":mn-person-service").projectDir = file('apps/mn-person-service')
-project(":mn-synt-arbeidsforhold-service").projectDir = file('apps/mn-synt-arbeidsforhold-service')
 project(":ident-check-in-prod-service").projectDir = file('apps/ident-check-in-prod-service')
 project(":organisasjon-orgnummer-service").projectDir = file('apps/organisasjon-orgnummer-service')
 project(":tps-identer-vedlikehold").projectDir = file('apps/tps-identer-vedlikehold')
@@ -191,8 +190,6 @@ project(":organisasjon-faste-data-service").projectDir = file('apps/organisasjon
 include 'generer-organisasjon-populasjon-service'
 project(":generer-organisasjon-populasjon-service").projectDir = file('apps/generer-organisasjon-populasjon-service')
 
-include 'generer-arbeidsforhold-populasjon-service'
-project(":generer-arbeidsforhold-populasjon-service").projectDir = file('apps/generer-arbeidsforhold-populasjon-service')
 
 include 'inntektsmelding-service'
 project(':inntektsmelding-service').projectDir = file('apps/inntektsmelding-service')
@@ -205,4 +202,5 @@ project(':person-faste-data-service').projectDir = file('apps/person-faste-data-
 
 include(':brreg-stub')
 project(":brreg-stub").projectDir = file('apps/brreg-stub')
+
 

@@ -19,7 +19,7 @@ import no.nav.testnav.endringsmeldingservice.consumer.dto.DoedsmeldingDTO;
 import no.nav.testnav.endringsmeldingservice.consumer.request.FoedselsmeldingRequest;
 import no.nav.testnav.endringsmeldingservice.domain.Status;
 import no.nav.testnav.libs.dto.endringsmelding.v1.FoedselsmeldingDTO;
-import no.nav.testnav.libs.reactivesecurity.domain.ServerProperties;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 
 @Component

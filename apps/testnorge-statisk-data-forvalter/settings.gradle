@@ -6,7 +6,8 @@ rootProject.name = 'testnorge-statisk-data-forvalter'
 
 includeBuild '../../gradlePlugins'
 
-includeBuild '../../libs/servlet-security'
+includeBuild '../../libs/security-core'
+includeBuild '../../libs/servlet-insecure-security'
 includeBuild '../../libs/kafka-config'
 includeBuild '../../libs/kafka-producers'
 includeBuild '../../libs/avro-schema'

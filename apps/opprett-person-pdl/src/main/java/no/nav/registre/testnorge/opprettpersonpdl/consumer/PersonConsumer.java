@@ -11,23 +11,23 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import no.nav.testnav.libs.commands.CreatePersonCommand;
 import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import no.nav.registre.testnorge.opprettpersonpdl.config.credentials.PersonServiceProperties;
 import no.nav.registre.testnorge.opprettpersonpdl.domain.Person;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Component
 public class PersonConsumer {
     private final WebClient webClient;
     private final PersonServiceProperties serviceProperties;
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
 
     public PersonConsumer(
             PersonServiceProperties serviceProperties,
-            AccessTokenService accessTokenService,
+            TokenExchange tokenExchange,
             ObjectMapper objectMapper
     ) {
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
         this.serviceProperties = serviceProperties;
 
         ExchangeStrategies jacksonStrategy = ExchangeStrategies.builder()
@@ -47,7 +47,7 @@ public class PersonConsumer {
 
 
     public void createPerson(Person person) {
-        AccessToken accessToken = accessTokenService.generateClientCredentialAccessToken(serviceProperties).block();
+        AccessToken accessToken = tokenExchange.generateToken(serviceProperties).block();
         new CreatePersonCommand(webClient, person.toDTO(), accessToken.getTokenValue(), person.toKommaseparerteTags()).run();
     }
 }

@@ -7,21 +7,21 @@ import java.util.Set;
 
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.command.GetOpplysningspliktigOrgnummerCommand;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.credentials.GenererOrganisasjonPopulasjonServerProperties;
-import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Component
 public class GenererOrganisasjonPopulasjonConsumer {
     private final WebClient webClient;
     private final ServerProperties properties;
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
 
     public GenererOrganisasjonPopulasjonConsumer(
             GenererOrganisasjonPopulasjonServerProperties properties,
-            AccessTokenService accessTokenService
+            TokenExchange tokenExchange
     ) {
         this.properties = properties;
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(properties.getUrl())
@@ -29,7 +29,7 @@ public class GenererOrganisasjonPopulasjonConsumer {
     }
 
     public Set<String> getOpplysningspliktig(String miljo) {
-        return accessTokenService.generateToken(properties)
+        return tokenExchange.generateToken(properties)
                 .flatMap(accessToken -> new GetOpplysningspliktigOrgnummerCommand(
                                 webClient,
                                 accessToken.getTokenValue(),

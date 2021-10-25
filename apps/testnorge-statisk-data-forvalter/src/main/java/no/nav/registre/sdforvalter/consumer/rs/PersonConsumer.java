@@ -2,9 +2,6 @@ package no.nav.registre.sdforvalter.consumer.rs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.sdforvalter.config.credentials.PersonServiceProperties;
-import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
@@ -23,6 +20,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
+import no.nav.registre.sdforvalter.config.credentials.PersonServiceProperties;
 import no.nav.registre.sdforvalter.domain.TpsIdent;
 import no.nav.registre.sdforvalter.domain.TpsIdentListe;
 import no.nav.registre.sdforvalter.domain.person.Person;
@@ -30,24 +28,26 @@ import no.nav.registre.sdforvalter.exception.UgyldigIdentException;
 import no.nav.testnav.libs.commands.CreatePersonCommand;
 import no.nav.testnav.libs.commands.GetPersonCommand;
 import no.nav.testnav.libs.dto.person.v1.Persondatasystem;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Component
 public class PersonConsumer {
 
     private final WebClient webClient;
-    private final AccessTokenService tokenService;
+    private final TokenExchange tokenExchange;
     private final ServerProperties serviceProperties;
     private final Executor executor;
 
     public PersonConsumer(
             ObjectMapper objectMapper, @Value("${consumers.person.threads}") Integer threads,
             PersonServiceProperties personServiceProperties,
-            AccessTokenService accessTokenService
+            TokenExchange tokenExchange
     ) {
         this.serviceProperties = personServiceProperties;
-        this.tokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
 
         ExchangeStrategies jacksonStrategy = ExchangeStrategies.builder()
                 .codecs(config -> {
@@ -75,7 +75,7 @@ public class PersonConsumer {
     }
 
     public List<Person> hentPersoner(Set<String> identer) {
-        AccessToken accessToken = tokenService.generateClientCredentialAccessToken(serviceProperties).block();
+        AccessToken accessToken = tokenExchange.generateToken(serviceProperties).block();
         List<Person> personer = new ArrayList<>();
         var futures = identer.stream().map(ident -> hentPerson(ident, accessToken)).collect(Collectors.toList());
         for (CompletableFuture<Person> future : futures) {
@@ -90,7 +90,7 @@ public class PersonConsumer {
     }
 
     public void opprettPersoner(TpsIdentListe identer) {
-        AccessToken accessToken = tokenService.generateClientCredentialAccessToken(serviceProperties).block();
+        AccessToken accessToken = tokenExchange.generateToken(serviceProperties).block();
         List<CompletableFuture<TpsIdent>> futures = identer.stream().map(ident -> CompletableFuture.supplyAsync(() -> {
                     try {
                         new CreatePersonCommand(webClient, ident.toDTO(), accessToken.getTokenValue(), ident.getOpprinnelse()).run();

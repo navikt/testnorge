@@ -13,22 +13,22 @@ import java.util.stream.Collectors;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.command.GetOrganisasjonCommand;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.credentials.OrganisasjonServiceProperties;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Component
 @CacheConfig
 public class OrganisasjonConsumer {
     private final OrganisasjonServiceProperties serviceProperties;
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
     private final WebClient webClient;
 
     public OrganisasjonConsumer(
             OrganisasjonServiceProperties serviceProperties,
-            AccessTokenService accessTokenService
+            TokenExchange tokenExchange
     ) {
         this.serviceProperties = serviceProperties;
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(serviceProperties.getUrl())
@@ -37,7 +37,7 @@ public class OrganisasjonConsumer {
 
     @Cacheable("Mini-Norge-EREG")
     public Flux<OrganisasjonDTO> getOrganisasjoner(Set<String> orgnummerListe, String miljo) {
-        return accessTokenService.generateToken(serviceProperties)
+        return tokenExchange.generateToken(serviceProperties)
                 .flatMapMany(accessToken -> Flux.concat(
                         orgnummerListe.stream()
                                 .map(orgnummer -> new GetOrganisasjonCommand(webClient, accessToken.getTokenValue(), orgnummer, miljo).call())

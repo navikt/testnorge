@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Component
+@Deprecated
 public class SecureJwtAuthenticationTokenResolver implements AuthenticationTokenResolver {
 
     private JwtAuthenticationToken getJwtAuthenticationToken() {

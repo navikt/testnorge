@@ -51,7 +51,7 @@ import no.nav.testnav.apps.brukerservice.repository.UserRepository;
 import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
 import no.nav.testnav.libs.reactivesecurity.domain.TokenX;
 import no.nav.testnav.libs.reactivesecurity.domain.tokenx.v1.WellKnown;
-import no.nav.testnav.libs.securitycore.UserConstant;
+import no.nav.testnav.libs.securitycore.config.UserConstant;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")

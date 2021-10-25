@@ -10,10 +10,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Before;
-import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,26 +22,25 @@ import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.util.Map;
 
-import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO;
-import no.nav.testnav.libs.dto.helsepersonell.v1.HelsepersonellListeDTO;
-import no.nav.testnav.libs.dto.hodejegeren.v1.PersondataDTO;
-import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
-import no.nav.testnav.libs.dto.sykemelding.v1.SykemeldingDTO;
-import no.nav.testnav.libs.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
-import no.nav.testnav.libs.testing.JsonWiremockHelper;
 import no.nav.testnav.apps.syntsykemeldingapi.consumer.dto.SyntSykemeldingHistorikkDTO;
 import no.nav.testnav.apps.syntsykemeldingapi.domain.Arbeidsforhold;
 import no.nav.testnav.apps.syntsykemeldingapi.domain.Helsepersonell;
 import no.nav.testnav.apps.syntsykemeldingapi.domain.Person;
 import no.nav.testnav.apps.syntsykemeldingapi.domain.Sykemelding;
+import no.nav.testnav.libs.dto.helsepersonell.v1.HelsepersonellListeDTO;
+import no.nav.testnav.libs.dto.hodejegeren.v1.PersondataDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO;
+import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.testnav.libs.dto.sykemelding.v1.SykemeldingDTO;
+import no.nav.testnav.libs.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
+import no.nav.testnav.libs.testing.JsonWiremockHelper;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(MockitoExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc
@@ -76,7 +76,7 @@ public class SyntSykemeldingControllerIntegrationTest {
     private SykemeldingDTO sykemeldingRequest;
     private final String tokenResponse = "{\"access_token\": \"dummy\"}";
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         dto = SyntSykemeldingDTO.builder()

@@ -2,7 +2,7 @@ package no.nav.testnav.libs.reactivesessionsecurity.exchange;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.reactivesessionsecurity.domain.AccessToken;
-import no.nav.testnav.libs.reactivesessionsecurity.domain.ServerProperties;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.ClientRegistrationIdResolver;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ServerWebExchange;
