@@ -33,7 +33,7 @@ public class SykemeldingApiProxyApplicationStarter {
         return builder
                 .routes()
                 .route(createRoute("sykemelding", "https://testnorge-sykemelding-api.dev.intern.nav.no"))
-                .route(createRoute("synt-sykemelding", "https://testnorge-synt-sykemelding-api.dev.intern.nav.no"))
+                .route(createRoute("syntetisk", "https://testnorge-synt-sykemelding-api.dev.intern.nav.no"))
                 .build();
     }
 
