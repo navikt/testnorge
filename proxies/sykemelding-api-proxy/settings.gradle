@@ -9,6 +9,7 @@ includeBuild '../../gradlePlugins'
 includeBuild '../../libs/reactive-core'
 includeBuild '../../libs/reactive-proxy'
 includeBuild '../../libs/reactive-security'
+includeBuild '../../libs/security-core'
 
 gradleEnterprise {
     buildScan {

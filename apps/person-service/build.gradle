@@ -28,6 +28,7 @@ repositories {
 }
 
 dependencies {
+    implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:reactive-core'
     implementation 'no.nav.testnav.libs:reactive-security'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
@@ -44,7 +45,6 @@ dependencies {
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'org.hibernate.validator:hibernate-validator-annotation-processor:6.1.5.Final'
 
-    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 

@@ -8,6 +8,7 @@ includeBuild '../../gradlePlugins'
 
 includeBuild '../../libs/reactive-core'
 includeBuild '../../libs/reactive-session-security'
+includeBuild '../../libs/security-core'
 includeBuild '../../libs/reactive-frontend'
 includeBuild '../../libs/reactive-proxy'
 includeBuild '../../libs/data-transfer-objects'
