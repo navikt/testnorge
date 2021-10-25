@@ -14,7 +14,7 @@ export default (props: OrganisasjonVelgerProps) => {
 		<React.Fragment>
 			<h3>
 				Du er nå logget inn med BankID. Velg hvilken organisasjon du representerer for å ta i bruk
-				Dolly selvbetjeningsløsing.
+				Dolly selvbetjeningsløsning.
 			</h3>
 
 			<ErrorBoundary>
