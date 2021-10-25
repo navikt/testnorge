@@ -1,5 +1,6 @@
 import React, { useContext } from 'react'
 import _get from 'lodash/get'
+import _has from 'lodash/has'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import Formatters from '~/utils/DataFormatter'
@@ -199,7 +200,17 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			label: 'Telefonnummer',
 			checked: has('tpsf.telefonnummer_1'),
 			add() {
-				setMulti(['tpsf.telefonLandskode_1', ''], ['tpsf.telefonnummer_1', ''])
+				_has(personFoerLeggTil, 'tpsf.telefonnummer_2')
+					? setMulti(
+							['tpsf.telefonLandskode_1', _get(personFoerLeggTil, 'tpsf.telefonLandskode_1')],
+							['tpsf.telefonnummer_1', _get(personFoerLeggTil, 'tpsf.telefonnummer_1')],
+							['tpsf.telefonLandskode_2', _get(personFoerLeggTil, 'tpsf.telefonLandskode_2')],
+							['tpsf.telefonnummer_2', _get(personFoerLeggTil, 'tpsf.telefonnummer_2')]
+					  )
+					: setMulti(
+							['tpsf.telefonLandskode_1', _get(personFoerLeggTil, 'tpsf.telefonLandskode_1') || ''],
+							['tpsf.telefonnummer_1', _get(personFoerLeggTil, 'tpsf.telefonnummer_1') || '']
+					  )
 			},
 			remove() {
 				del([
