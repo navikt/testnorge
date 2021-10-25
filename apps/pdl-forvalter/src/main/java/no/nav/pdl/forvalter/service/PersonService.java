@@ -180,7 +180,7 @@ public class PersonService {
         }
 
         if (isBlank(request.getOpprettFraIdent())) {
-            request.getPerson().setIdent(identPoolConsumer.getIdents(
+            request.getPerson().setIdent(identPoolConsumer.acquireIdents(
                             mapperFacade.map(request, HentIdenterRequest.class))
                     .blockFirst().stream().findFirst().get().getIdent());
         } else {
