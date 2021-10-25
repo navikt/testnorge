@@ -16,7 +16,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
 
-import no.nav.testnav.libs.securitycore.UserConstant;
+import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.servletcore.config.ApplicationProperties;
 
 @Configuration

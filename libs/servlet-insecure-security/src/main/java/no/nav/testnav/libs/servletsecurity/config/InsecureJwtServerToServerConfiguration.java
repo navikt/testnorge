@@ -9,11 +9,11 @@ import java.util.List;
 
 import no.nav.testnav.libs.servletsecurity.decoder.MultipleIssuersJwtDecoder;
 import no.nav.testnav.libs.servletsecurity.domain.AzureClientCredentials;
+import no.nav.testnav.libs.servletsecurity.exchange.AzureAdTokenService;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.servletsecurity.properties.AzureAdResourceServerProperties;
 import no.nav.testnav.libs.servletsecurity.properties.ResourceServerProperties;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
-import no.nav.testnav.libs.servletsecurity.service.ClientCredentialGenerateAccessTokenService;
-import no.nav.testnav.libs.servletsecurity.service.InsecureAuthenticationTokenResolver;
+import no.nav.testnav.libs.servletsecurity.properties.TokenXResourceServerProperties;
 
 
 /**
@@ -21,14 +21,13 @@ import no.nav.testnav.libs.servletsecurity.service.InsecureAuthenticationTokenRe
  */
 @Configuration
 @Import({
-        InsecureAuthenticationTokenResolver.class,
-        ClientCredentialGenerateAccessTokenService.class,
-        AccessTokenService.class,
-        AzureClientCredentials.class,
-        AzureAdResourceServerProperties.class
+        TokenXResourceServerProperties.class,
+        AzureAdResourceServerProperties.class,
+        TokenExchange.class,
+        AzureAdTokenService.class,
+        AzureClientCredentials.class
 })
-public class InsecureOAuth2ServerToServerConfiguration {
-
+public class InsecureJwtServerToServerConfiguration {
     @Bean
     public JwtDecoder jwtDecoder(List<ResourceServerProperties> properties) {
         return new MultipleIssuersJwtDecoder(properties);

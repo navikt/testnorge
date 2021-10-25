@@ -10,7 +10,7 @@ import java.util.Map;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedResourceServerType;
 import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
 import no.nav.testnav.libs.reactivesecurity.domain.ResourceServerType;
-import no.nav.testnav.libs.reactivesecurity.domain.ServerProperties;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 
 
 @Service

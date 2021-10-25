@@ -7,10 +7,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
-import org.junit.After;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,7 +32,7 @@ import no.nav.registre.sdforvalter.domain.Opprinnelse;
 import no.nav.registre.sdforvalter.domain.TpsIdent;
 import no.nav.registre.sdforvalter.domain.TpsIdentListe;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(MockitoExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @TestPropertySource(
@@ -50,7 +52,7 @@ public class StaticDataControllerV1TpsIntegrationTest {
     private OpprinnelseRepository opprinnelseRepository;
 
     @Test
-    @Ignore
+    @Disabled
     public void shouldGetTpsIdentSetWithOpprinnelse() throws Exception {
         OpprinnelseModel altinn = opprinnelseRepository.save(new OpprinnelseModel("Altinn"));
         TpsIdentModel tpsIdentModel = createIdentModel("01010101011", "Petter", "Petterson", altinn);
@@ -68,7 +70,7 @@ public class StaticDataControllerV1TpsIntegrationTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void shouldAddTpsIdentSetToDatabase() throws Exception {
         TpsIdent tpsIdent = createIdent("01010101011", "Petter", "Petterson");
         mvc.perform(post("/api/v1/faste-data/tps?genererManglendeNavn=false")
@@ -80,7 +82,7 @@ public class StaticDataControllerV1TpsIntegrationTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void shouldAddOpprinnelseToDatabase() throws Exception {
         Opprinnelse altinn = new Opprinnelse("Altinn");
         final TpsIdent hans = createIdent("01010101011", "Hans", "Hansen");
@@ -101,7 +103,7 @@ public class StaticDataControllerV1TpsIntegrationTest {
     }
 
 
-    @After
+    @AfterEach
     public void cleanUp() {
         tpsIdenterRepository.deleteAll();
         opprinnelseRepository.deleteAll();

@@ -1,4 +1,4 @@
-package no.nav.testnav.libs.securitycore;
+package no.nav.testnav.libs.securitycore.config;
 
 public class UserSessionConstant {
     private UserSessionConstant(){

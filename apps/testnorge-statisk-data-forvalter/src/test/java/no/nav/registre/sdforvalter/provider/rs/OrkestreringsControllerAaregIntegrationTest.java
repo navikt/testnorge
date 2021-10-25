@@ -5,16 +5,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
@@ -27,7 +27,7 @@ import no.nav.registre.sdforvalter.database.repository.AaregRepository;
 import no.nav.registre.sdforvalter.domain.Aareg;
 import no.nav.testnav.libs.testing.JsonWiremockHelper;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(MockitoExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc
@@ -65,7 +65,7 @@ public class OrkestreringsControllerAaregIntegrationTest {
                 .stubPost();
 
         mvc.perform(post("/api/v1/orkestrering/aareg/" + ENVIRONMENT)
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         JsonWiremockHelper
@@ -82,7 +82,7 @@ public class OrkestreringsControllerAaregIntegrationTest {
         return model;
     }
 
-    @After
+    @AfterEach
     public void cleanUp() {
         reset();
         aaregRepository.deleteAll();

@@ -11,11 +11,12 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -23,7 +24,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.util.FileCopyUtils;
@@ -32,7 +32,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(MockitoExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureWireMock(port = 0)
@@ -56,7 +56,7 @@ public class AltinnInntektIntegrasjonsTest {
                 .copyToString(new InputStreamReader(this.getClass().getResourceAsStream(fileName)));
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
         try {
             satisfactoryJson = loadResourceAsString(satisfactoryJsonPath);
@@ -66,37 +66,37 @@ public class AltinnInntektIntegrasjonsTest {
         }
     }
 
-    @After
+    @AfterEach
     public void cleanup() {
         reset();
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void passingCall() throws Exception {
         stubForInntektsmelding();
         stubForAuthorization();
         stubForJournalpost();
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/altinnInntekt/enkeltident?includeXml=true")
-                .content(satisfactoryJson)
-                .header("Nav-Call-Id", "test")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(satisfactoryJson)
+                        .header("Nav-Call-Id", "test")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{\"fnr\":\"12345678910\",\"dokumenter\":[{\"journalpostId\":\"1\",\"dokumentInfoId\":\"2\"}]}"));
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void passingCallNoXml() throws Exception {
         stubForInntektsmelding();
         stubForAuthorization();
         stubForJournalpost();
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/altinnInntekt/enkeltident")
-                .content(satisfactoryJson)
-                .header("Nav-Call-Id", "test")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(satisfactoryJson)
+                        .header("Nav-Call-Id", "test")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{\"fnr\":\"12345678910\",\"dokumenter\":[{\"journalpostId\":\"1\",\"dokumentInfoId\":\"2\"}]}"));
     }

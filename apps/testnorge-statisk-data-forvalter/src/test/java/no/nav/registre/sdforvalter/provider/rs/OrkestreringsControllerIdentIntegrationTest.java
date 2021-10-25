@@ -5,10 +5,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -16,7 +17,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ import no.nav.registre.sdforvalter.database.model.TpsIdentModel;
 import no.nav.registre.sdforvalter.database.repository.TpsIdenterRepository;
 import no.nav.testnav.libs.testing.JsonWiremockHelper;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(MockitoExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc
@@ -57,7 +57,7 @@ public class OrkestreringsControllerIdentIntegrationTest {
     private String startAvspillingUrlPattern;
     private String levendeIdenterUrlPattern;
 
-    @Before
+    @BeforeEach
     public void setup() {
         hodejegerenUrlPattern = "(.*)/v1/alle-identer/" + staticDataPlaygroup;
         leggTilNyeMeldingerUrlPattern = "(.*)/v1/syntetisering/leggTilNyeMeldinger/" + staticDataPlaygroup;
@@ -99,7 +99,7 @@ public class OrkestreringsControllerIdentIntegrationTest {
                 .stubPost();
 
         mvc.perform(post("/api/v1/orkestrering/tps/" + ENVIRONMENT)
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         JsonWiremockHelper
@@ -175,7 +175,7 @@ public class OrkestreringsControllerIdentIntegrationTest {
         return model;
     }
 
-    @After
+    @AfterEach
     public void cleanUp() {
         reset();
         tpsIdenterRepository.deleteAll();

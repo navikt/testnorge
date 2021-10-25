@@ -34,7 +34,7 @@ import no.nav.testnav.apps.brukerservice.exception.UsernameAlreadyTakenException
 import no.nav.testnav.apps.brukerservice.service.JwtService;
 import no.nav.testnav.apps.brukerservice.service.UserService;
 import no.nav.testnav.apps.brukerservice.service.ValidateService;
-import no.nav.testnav.libs.securitycore.UserConstant;
+import no.nav.testnav.libs.securitycore.config.UserConstant;
 
 @Slf4j
 @RestController

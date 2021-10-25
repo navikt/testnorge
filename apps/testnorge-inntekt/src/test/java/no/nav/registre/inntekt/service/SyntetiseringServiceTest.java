@@ -9,13 +9,12 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import no.nav.testnav.libs.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
@@ -32,8 +31,9 @@ import no.nav.registre.inntekt.domain.inntektstub.RsInntekt;
 import no.nav.registre.inntekt.provider.rs.requests.SyntetiseringsRequest;
 import no.nav.registre.inntekt.testUtils.InntektGenerator;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
+import no.nav.testnav.libs.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SyntetiseringServiceTest {
 
     private static final int ALDER = 13;
@@ -60,14 +60,14 @@ public class SyntetiseringServiceTest {
     private SortedMap<String, List<RsInntekt>> inntekter = new TreeMap<>();
     private SyntetiseringsRequest request = new SyntetiseringsRequest(1L, "t1");
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ReflectionTestUtils.setField(syntetiseringService, "andelNyeIdenter", 1);
         double beloep = 1490;
         inntekter.put("10128400000", Collections.singletonList(InntektGenerator.genererInntekt(beloep)));
         when(hodejegerenConsumer.getLevende(request.getAvspillergruppeId(), ALDER)).thenReturn(identer);
         when(aaregService.hentIdenterMedArbeidsforhold(anyLong(), anyString())).thenReturn(identer);
-        when(inntektstubV2Consumer.leggInntekterIInntektstub(inntekter)).thenReturn(new ArrayList<>());
+
     }
 
     /**
@@ -76,6 +76,7 @@ public class SyntetiseringServiceTest {
      */
     @Test
     public void startSyntetiseringTestIngenFeil() {
+        when(inntektstubV2Consumer.leggInntekterIInntektstub(inntekter)).thenReturn(new ArrayList<>());
         when(inntektSyntConsumer.hentSyntetiserteInntektsmeldinger(anyMap())).thenReturn(inntekter);
 
         Map<String, List<RsInntekt>> feil = syntetiseringService.startSyntetisering(request, true);
@@ -90,6 +91,7 @@ public class SyntetiseringServiceTest {
      */
     @Test
     public void startSyntetiseringTestEnFeil() {
+        when(inntektstubV2Consumer.leggInntekterIInntektstub(inntekter)).thenReturn(new ArrayList<>());
         double beloep = 1490;
         List<Inntektsinformasjon> feiletInntekt = new ArrayList<>(Collections.singletonList(InntektGenerator.genererFeiletInntektsinformasjon("10128400000", beloep)));
         when(inntektSyntConsumer.hentSyntetiserteInntektsmeldinger(anyMap())).thenReturn(inntekter);

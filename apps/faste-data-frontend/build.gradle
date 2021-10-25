@@ -28,6 +28,7 @@ repositories {
 }
 
 dependencies {
+    implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:reactive-core'
     implementation 'no.nav.testnav.libs:reactive-session-security'
     implementation 'no.nav.testnav.libs:reactive-frontend'
