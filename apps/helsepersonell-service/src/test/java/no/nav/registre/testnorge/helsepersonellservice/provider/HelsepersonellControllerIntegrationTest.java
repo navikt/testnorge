@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,6 +37,7 @@ import no.nav.testnav.libs.testing.JsonWiremockHelper;
 @AutoConfigureMockMvc
 @DirtiesContext
 @TestPropertySource(locations = "classpath:application-test.properties")
+@Disabled
 public class HelsepersonellControllerIntegrationTest {
 
 

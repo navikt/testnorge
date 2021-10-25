@@ -34,8 +34,6 @@ import no.nav.testnav.libs.reactivesessionsecurity.resolver.RedisTokenResolver;
         UserJwtExchange.class
 })
 public class OicdRedisSessionConfiguration {
-
-
     @Bean
     @ConditionalOnMissingBean
     public TokenExchange tokenExchange(
@@ -53,7 +51,6 @@ public class OicdRedisSessionConfiguration {
     public LettuceConnectionFactory redisConnectionFactory(RedisStandaloneConfiguration redisStandaloneConfiguration) {
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
-
 
     @Bean
     @ConditionalOnMissingBean

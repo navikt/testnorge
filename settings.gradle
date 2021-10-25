@@ -24,6 +24,8 @@ gradleEnterprise {
     }
 }
 
+includeBuild './gradlePlugins'
+
 includeBuild './proxies/aareg-proxy'
 includeBuild './proxies/kodeverk-proxy'
 includeBuild './proxies/statisk-data-forvalter-proxy'
@@ -117,90 +119,38 @@ includeBuild './apps/testnorge-sigrun'
 includeBuild './apps/generer-arbeidsforhold-populasjon-service'
 includeBuild './apps/mn-synt-arbeidsforhold-service'
 includeBuild './apps/opprett-person-pdl'
+includeBuild './apps/brreg-stub'
+includeBuild './apps/ereg-batch-status-service'
+includeBuild './apps/generer-navn-service'
+includeBuild './apps/generer-organisasjon-populasjon-service'
+includeBuild './apps/generer-synt-amelding-service'
+includeBuild './apps/helsepersonell-service'
+includeBuild './apps/mn-person-service'
+includeBuild './apps/miljoer-service'
+includeBuild './apps/mn-organisasjon-api'
+includeBuild './apps/joark-dokument-service'
+includeBuild './apps/inntektsmelding-service'
+includeBuild './apps/ident-check-in-prod-service'
+includeBuild './apps/inntektsmelding-generator-service'
+includeBuild './apps/organisasjon-orgnummer-service'
+includeBuild './apps/organisasjon-mottak-service'
+includeBuild './apps/organisasjon-faste-data-service'
+includeBuild './apps/oppsummeringsdokument-service'
+includeBuild './apps/synt-person-api'
+includeBuild './apps/sykemelding-api'
+includeBuild './apps/person-search-service'
+includeBuild './apps/person-faste-data-service'
+includeBuild './apps/person-export-api'
+includeBuild './apps/organisasjon-service'
+includeBuild './apps/testnorge-hodejegeren'
+includeBuild './apps/tps-identer-vedlikehold'
+includeBuild './apps/tilbakemelding-api'
+includeBuild './apps/tps-identer-vedlikehold'
+includeBuild './apps/tps-ident-service'
+includeBuild './apps/testnorge-token-provider'
 
 includeBuild './xsd/arbeidsforhold-xsd'
 
-includeBuild './gradlePlugins'
 include(':proxies')
-include(':inntektsmelding-generator-service')
-include(':sykemelding-api')
-include(':testnorge-token-provider')
-include(':testnorge-hodejegeren')
-include(':tilbakemelding-api')
-include(':mn-organisasjon-api')
-include(':organisasjon-service')
-include(':organisasjon-service')
-include(':token-provider-core')
-include(':helsepersonell-service')
-include(':person-export-api')
 include(':apps')
 include(':libs')
-include(':synt-person-api')
-
-include(':ident-check-in-prod-service')
-include(':mn-person-service')
-include(':organisasjon-orgnummer-service')
-include(':tps-identer-vedlikehold')
-
-project(":inntektsmelding-generator-service").projectDir = file('apps/inntektsmelding-generator-service')
-project(":sykemelding-api").projectDir = file('apps/sykemelding-api')
-project(":testnorge-token-provider").projectDir = file('apps/testnorge-token-provider')
-project(":testnorge-hodejegeren").projectDir = file('apps/testnorge-hodejegeren')
-project(":tilbakemelding-api").projectDir = file('apps/tilbakemelding-api')
-project(":mn-organisasjon-api").projectDir = file('apps/mn-organisasjon-api')
-project(":organisasjon-service").projectDir = file('apps/organisasjon-service')
-project(":organisasjon-service").projectDir = file('apps/organisasjon-service')
-project(":token-provider-core").projectDir = file('apps/testnorge-token-provider/token-provider-core')
-project(":helsepersonell-service").projectDir = file('apps/helsepersonell-service')
-project(":person-export-api").projectDir = file('apps/person-export-api')
-project(":synt-person-api").projectDir = file('apps/synt-person-api')
-
-project(":mn-person-service").projectDir = file('apps/mn-person-service')
-project(":ident-check-in-prod-service").projectDir = file('apps/ident-check-in-prod-service')
-project(":organisasjon-orgnummer-service").projectDir = file('apps/organisasjon-orgnummer-service')
-project(":tps-identer-vedlikehold").projectDir = file('apps/tps-identer-vedlikehold')
-
-include 'organisasjon-mottak-service'
-project(":organisasjon-mottak-service").projectDir = file('apps/organisasjon-mottak-service')
-
-include 'tps-ident-service'
-project(":tps-ident-service").projectDir = file('apps/tps-ident-service')
-
-include 'generer-navn-service'
-project(":generer-navn-service").projectDir = file('apps/generer-navn-service')
-
-include 'generer-synt-amelding-service'
-project(":generer-synt-amelding-service").projectDir = file('apps/generer-synt-amelding-service')
-
-include 'miljoer-service'
-project(":miljoer-service").projectDir = file('apps/miljoer-service')
-
-include 'ereg-batch-status-service'
-project(":ereg-batch-status-service").projectDir = file('apps/ereg-batch-status-service')
-
-include 'oppsummeringsdokument-service'
-project(":oppsummeringsdokument-service").projectDir = file('apps/oppsummeringsdokument-service')
-
-include 'person-search-service'
-project(":person-search-service").projectDir = file('apps/person-search-service')
-
-include 'organisasjon-faste-data-service'
-project(":organisasjon-faste-data-service").projectDir = file('apps/organisasjon-faste-data-service')
-
-include 'generer-organisasjon-populasjon-service'
-project(":generer-organisasjon-populasjon-service").projectDir = file('apps/generer-organisasjon-populasjon-service')
-
-
-include 'inntektsmelding-service'
-project(':inntektsmelding-service').projectDir = file('apps/inntektsmelding-service')
-
-include 'joark-dokument-service'
-project(':joark-dokument-service').projectDir = file('apps/joark-dokument-service')
-
-include 'person-faste-data-service'
-project(':person-faste-data-service').projectDir = file('apps/person-faste-data-service')
-
-include(':brreg-stub')
-project(":brreg-stub").projectDir = file('apps/brreg-stub')
-
-

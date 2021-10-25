@@ -1,0 +1,18 @@
+plugins {
+    id "com.gradle.enterprise" version "3.4.1"
+}
+
+rootProject.name = 'joark-dokument-service'
+
+includeBuild '../../gradlePlugins'
+
+includeBuild '../../libs/servlet-core'
+includeBuild '../../libs/data-transfer-objects'
+includeBuild '../../libs/servlet-security'
+
+gradleEnterprise {
+    buildScan {
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
+    }
+}

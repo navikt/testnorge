@@ -1,18 +1,32 @@
+import no.nav.testnav.dependencies.gradle.DependenciesPlugin
+
 plugins {
-    id 'no.nav.registre.testnorge.java-conventions'
-    id 'org.springframework.boot' version "${springBootVersion}"
-    id 'io.spring.dependency-management' version "${springDependencyManagement}"
+    id 'no.nav.testnav.dependencies'
+    id 'java'
+    id 'org.springframework.boot' version "2.5.5"
+    id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
 bootJar {
     archiveFileName = "app.jar"
 }
+
 dependencyManagement {
     imports {
-        mavenBom  "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${DependenciesPlugin.springCloud}"
     }
 }
 
+test {
+    useJUnitPlatform()
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
 dependencies {
+
     implementation 'no.nav.testnav.libs:servlet-core'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
@@ -20,18 +34,19 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
-    implementation "net.logstash.logback:logstash-logback-encoder:${logstashLogbackEncoder}"
+    implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
 
     implementation 'org.apache.httpcomponents:httpclient:4.5.12'
 
     implementation 'io.springfox:springfox-swagger2:2.9.2'
     implementation 'io.springfox:springfox-swagger-ui:2.9.2'
-
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
-
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+
     testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-}
 
-description = 'token-provider-core'
+    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+}
