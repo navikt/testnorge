@@ -7,7 +7,7 @@ import reactor.core.publisher.Mono;
 
 import no.nav.testnav.apps.oversiktfrontend.domain.Application;
 import no.nav.testnav.libs.reactivesessionsecurity.domain.AccessToken;
-import no.nav.testnav.libs.reactivesessionsecurity.domain.ServerProperties;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.ClientRegistrationIdResolver;
 

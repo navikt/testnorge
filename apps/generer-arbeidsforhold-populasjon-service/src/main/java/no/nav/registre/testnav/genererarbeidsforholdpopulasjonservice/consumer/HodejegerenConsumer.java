@@ -7,26 +7,26 @@ import reactor.core.publisher.Flux;
 
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.command.GetLevendeIdenterCommand;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.credentials.HodejegerenServerProperties;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Component
 public class HodejegerenConsumer {
     private final WebClient webClient;
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
     private final HodejegerenServerProperties serverProperties;
 
     public HodejegerenConsumer(
-            AccessTokenService accessTokenService,
+            TokenExchange tokenExchange,
             HodejegerenServerProperties serverProperties
     ) {
         this.serverProperties = serverProperties;
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
         this.webClient = WebClient.builder().baseUrl(serverProperties.getUrl()).build();
     }
 
     public Flux<String> getIdenter(String miljo, int antall) {
-        var accessToken = accessTokenService.generateToken(serverProperties).block();
+        var accessToken = tokenExchange.generateToken(serverProperties).block();
         return new GetLevendeIdenterCommand(webClient, miljo, antall, accessToken.getTokenValue()).call();
     }
 }

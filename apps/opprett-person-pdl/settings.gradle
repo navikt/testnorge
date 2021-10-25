@@ -6,11 +6,12 @@ rootProject.name = 'opprett-person-pdl'
 
 includeBuild '../../gradlePlugins'
 
-includeBuild '../../libs/servlet-security'
-includeBuild '../../libs/avro-schema'
-includeBuild '../../libs/data-transfer-objects'
-includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/commands'
+includeBuild '../../libs/avro-schema'
+includeBuild '../../libs/servlet-core'
+includeBuild '../../libs/servlet-insecure-security'
+includeBuild '../../libs/security-core'
+includeBuild '../../libs/data-transfer-objects'
 
 gradleEnterprise {
     buildScan {

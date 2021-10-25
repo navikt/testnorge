@@ -5,7 +5,7 @@ plugins {
 rootProject.name = 'import-person-service'
 
 includeBuild '../../gradlePlugins'
-
+includeBuild '../../libs/security-core'
 includeBuild '../../libs/reactive-core'
 includeBuild '../../libs/reactive-security'
 includeBuild '../../libs/data-transfer-objects'

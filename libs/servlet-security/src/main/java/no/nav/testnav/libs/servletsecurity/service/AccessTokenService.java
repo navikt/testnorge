@@ -26,6 +26,7 @@ import no.nav.testnav.libs.servletsecurity.domain.AzureClientCredentials;
 
 @Slf4j
 @Service
+@Deprecated
 public class AccessTokenService {
     private final WebClient webClient;
     private final AuthenticationTokenResolver tokenResolver;

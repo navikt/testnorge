@@ -16,22 +16,22 @@ import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.c
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.credentials.SyntrestServiceProperties;
 import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdRequest;
 import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdResponse;
-import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Component
 public class SyntArbeidsforholdConsumer {
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
     private final ServerProperties properties;
     private final WebClient webClient;
     private final ObjectMapper objectMapper;
 
     public SyntArbeidsforholdConsumer(
-            AccessTokenService accessTokenService,
+            TokenExchange tokenExchange,
             SyntrestServiceProperties properties,
             ObjectMapper objectMapper
     ) {
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
         this.properties = properties;
         this.objectMapper = objectMapper;
         this.webClient = WebClient
@@ -49,13 +49,13 @@ public class SyntArbeidsforholdConsumer {
     }
 
     public Mono<List<ArbeidsforholdResponse>> genererStartArbeidsforhold(LocalDate startdato) {
-        return accessTokenService
+        return tokenExchange
                 .generateToken(properties)
                 .flatMap(accessToken -> new GenererStartArbeidsforholdCommand(webClient, startdato, accessToken.getTokenValue()).call());
     }
 
     public Mono<List<List<ArbeidsforholdResponse>>> genererArbeidsforholdHistorikk(List<ArbeidsforholdRequest> requests) {
-        return accessTokenService
+        return tokenExchange
                 .generateToken(properties)
                 .flatMap(accessToken -> new GenererArbeidsforholdHistorikkCommand(webClient, requests, accessToken.getTokenValue(), objectMapper).call());
     }

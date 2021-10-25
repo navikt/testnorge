@@ -5,25 +5,25 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import no.nav.testnav.apps.syntsykemeldingapi.config.credentials.HelsepersonellServiceProperties;
+import no.nav.testnav.apps.syntsykemeldingapi.domain.HelsepersonellListe;
 import no.nav.testnav.libs.commands.GetHelsepersonellCommand;
 import no.nav.testnav.libs.dto.helsepersonell.v1.HelsepersonellListeDTO;
 import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
-import no.nav.testnav.apps.syntsykemeldingapi.config.credentials.HelsepersonellServiceProperties;
-import no.nav.testnav.apps.syntsykemeldingapi.domain.HelsepersonellListe;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Component
 public class HelsepersonellConsumer {
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
     private final WebClient webClient;
     private final HelsepersonellServiceProperties serviceProperties;
 
     public HelsepersonellConsumer(
-            AccessTokenService accessTokenService,
+            TokenExchange tokenExchange,
             HelsepersonellServiceProperties serviceProperties
     ) {
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient
                 .builder()
@@ -33,7 +33,7 @@ public class HelsepersonellConsumer {
 
     @SneakyThrows
     public HelsepersonellListe hentHelsepersonell() {
-        AccessToken accessToken = accessTokenService.generateToken(serviceProperties).block();
+        AccessToken accessToken = tokenExchange.generateToken(serviceProperties).block();
         log.info("Henter helsepersonell...");
         HelsepersonellListeDTO dto = new GetHelsepersonellCommand(webClient, accessToken.getTokenValue()).call();
         log.info("{} helsepersonell hentet", dto.getHelsepersonell().size());

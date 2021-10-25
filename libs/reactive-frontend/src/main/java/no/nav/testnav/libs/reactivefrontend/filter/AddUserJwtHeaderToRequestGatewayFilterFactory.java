@@ -4,7 +4,7 @@ import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import reactor.core.publisher.Mono;
 
-import no.nav.testnav.libs.securitycore.UserConstant;
+import no.nav.testnav.libs.securitycore.config.UserConstant;
 
 public class AddUserJwtHeaderToRequestGatewayFilterFactory extends AbstractGatewayFilterFactory<GenerateToken> {
     @Override

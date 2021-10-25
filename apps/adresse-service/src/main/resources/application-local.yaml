@@ -1,2 +1,3 @@
 azure.app.client.id: ${client_id}
 azure.app.client.secret: ${client_secret}
+TOKEN_X_CLIENT_ID: dev-gcp:dolly:testnav-adresse-service
