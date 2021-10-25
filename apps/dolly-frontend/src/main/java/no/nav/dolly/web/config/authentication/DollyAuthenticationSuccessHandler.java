@@ -1,4 +1,4 @@
-package no.nav.dolly.web.config;
+package no.nav.dolly.web.config.authentication;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.server.DefaultServerRedirectStrategy;
@@ -20,11 +20,12 @@ public class DollyAuthenticationSuccessHandler implements ServerAuthenticationSu
     @Override
     public Mono<Void> onAuthenticationSuccess(WebFilterExchange webFilterExchange, Authentication authentication) {
         ServerWebExchange exchange = webFilterExchange.getExchange();
+        var requestPath = exchange.getRequest().getPath().toString();
 
-        if (exchange.getRequest().getPath().toString().equals("/login/oauth2/code/idporten")){
-            return this.redirectStrategy.sendRedirect(exchange, idPortenLocation);
+        if (requestPath.equals("/login/oauth2/code/idporten")){
+            return redirectStrategy.sendRedirect(exchange, idPortenLocation);
         }else {
-            return this.redirectStrategy.sendRedirect(exchange, defaultLocation);
+            return redirectStrategy.sendRedirect(exchange, defaultLocation);
         }
     }
 }

@@ -5,6 +5,7 @@ import com.nimbusds.jose.jwk.JWK;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import no.nav.dolly.web.config.authentication.DollyAuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +18,6 @@ import org.springframework.security.web.server.util.matcher.ServerWebExchangeMat
 import no.nav.testnav.libs.reactivesessionsecurity.handler.LogoutSuccessHandler;
 import no.nav.testnav.libs.reactivesessionsecurity.manager.AuthorizationCodeReactiveAuthenticationManger;
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.logut.IdportenOcidLogoutUrlResolver;
-
 
 @Slf4j
 @Configuration
@@ -44,6 +44,7 @@ public class SecurityConfig {
         var authenticationManger = new AuthorizationCodeReactiveAuthenticationManger(JWK.parse(jwk));
         var logoutSuccessHandler = new LogoutSuccessHandler();
         logoutSuccessHandler.applyOn("idporten", new IdportenOcidLogoutUrlResolver(wellKnownUrl, postLogoutRedirectUri));
+        var authenticationSuccessHandler = new DollyAuthenticationSuccessHandler();
 
         return http.cors()
                 .and().csrf().disable()
@@ -54,13 +55,14 @@ public class SecurityConfig {
                         "/oauth2/callback",
                         "/favicon.ico",
                         "/login",
-                        "/bruker",
                         "/main.*.css",
                         "/bundle.*.js",
                         "/*.png"
                 ).permitAll()
                 .anyExchange().authenticated()
-                .and().oauth2Login(oAuth2LoginSpec -> oAuth2LoginSpec.authenticationManager(authenticationManger))
+                .and().oauth2Login(oAuth2LoginSpec -> oAuth2LoginSpec
+                        .authenticationManager(authenticationManger)
+                        .authenticationSuccessHandler(authenticationSuccessHandler))
                 .formLogin().loginPage("/login")
                 .and().logout(logoutSpec -> logoutSpec
                         .logoutUrl("/logout")
