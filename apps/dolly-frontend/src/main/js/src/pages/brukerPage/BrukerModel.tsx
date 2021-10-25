@@ -12,9 +12,13 @@ import { Redirect } from 'react-router-dom'
 const UNKNOWN_ERROR = 'unknown_error'
 const ORGANISATION_ERROR = 'organisation_error'
 
-const logout = (feilmelding: string = 'logout') => {
-	let url = window.location.protocol + '//' + window.location.host + '/login?' + feilmelding
-	Api.fetch('/logout', { method: 'POST' }).then((response) => window.location.replace(url))
+const logout = (feilmelding: string = null) => {
+	Api.fetch('/logout', { method: 'POST' }).then((response) => {
+		let redirectUrl = feilmelding
+			? window.location.protocol + '//' + window.location.host + '/login?' + feilmelding
+			: response.url
+		window.location.replace(redirectUrl)
+	})
 }
 
 export default () => {
@@ -81,7 +85,7 @@ export default () => {
 				{organisasjon && !loading && (
 					<BrukernavnVelger organisasjon={organisasjon} addToSession={addToSession} />
 				)}
-				<NavButton className="tilbake-button" onClick={logout}>
+				<NavButton className="tilbake-button" onClick={() => logout()}>
 					Tilbake til innlogging
 				</NavButton>
 			</div>
