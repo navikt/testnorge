@@ -22,11 +22,6 @@ import java.util.function.Function;
 })
 @SpringBootApplication
 public class SykemeldingApiProxyApplicationStarter {
-    public static void main(String[] args) {
-        SpringApplication.run(SykemeldingApiProxyApplicationStarter.class, args);
-    }
-
-
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
 
@@ -35,6 +30,10 @@ public class SykemeldingApiProxyApplicationStarter {
                 .route(createRoute("sykemelding", "https://testnorge-sykemelding-api.dev.intern.nav.no"))
                 .route(createRoute("syntetisk", "https://testnorge-synt-sykemelding-api.dev.intern.nav.no"))
                 .build();
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(SykemeldingApiProxyApplicationStarter.class, args);
     }
 
     private Function<PredicateSpec, Buildable<Route>> createRoute(String segment, String host) {
