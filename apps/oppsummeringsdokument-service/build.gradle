@@ -26,6 +26,14 @@ repositories {
     maven {
         url = uri('https://packages.confluent.io/maven/')
     }
+    maven {
+        name = "GitHubPackages"
+        url = uri('https://maven.pkg.github.com/navikt/maven-release')
+        credentials(PasswordCredentials) {
+            password System.getenv("NAV_TOKEN")
+            username 'token'
+        }
+    }
 }
 
 dependencies {
