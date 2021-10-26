@@ -1,23 +1,34 @@
-plugins {
-    id 'no.nav.registre.testnorge.java-conventions'
-    id 'org.springframework.boot' version "${springBootVersion}"
-    id 'io.spring.dependency-management' version "${springDependencyManagement}"
-}
+import no.nav.testnav.dependencies.gradle.DependenciesPlugin
 
+plugins {
+    id 'no.nav.testnav.dependencies'
+    id 'java'
+    id 'org.springframework.boot' version "2.5.5"
+    id 'io.spring.dependency-management' version "1.0.11.RELEASE"
+}
 bootJar {
     archiveFileName = "app.jar"
 }
 
 dependencyManagement {
     imports {
-        mavenBom  "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}" 
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${DependenciesPlugin.springCloud}"
     }
 }
 
+test {
+    useJUnitPlatform()
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
 dependencies {
+
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:servlet-security'
-
     implementation 'no.nav.testnav.libs:slack'
 
     implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -32,12 +43,14 @@ dependencies {
     implementation 'org.aspectj:aspectjweaver:1.9.6'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
 
-    implementation "net.logstash.logback:logstash-logback-encoder:${logstashLogbackEncoder}"
-    implementation "org.springdoc:springdoc-openapi-ui:${springdocOpenapiUi}"
+    implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
+    implementation "org.springdoc:springdoc-openapi-ui:${DependenciesPlugin.springdocOpenapi}"
 
     testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
-}
 
-description = 'tps-identer-vedlikehold'
+    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+}
