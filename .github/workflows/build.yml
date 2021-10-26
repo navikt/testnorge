@@ -26,6 +26,7 @@ jobs:
         with:
           path: |
             ~/.gradle
+            ~/**/.gradle
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
@@ -33,9 +34,15 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.17
-      - name: Build & Analyze
+      - name: Sonar
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew build sonarqube --info --scan
+        run: ./gradlew sonarqube
+      - name: Build
+        env:
+          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew build --info --scan
