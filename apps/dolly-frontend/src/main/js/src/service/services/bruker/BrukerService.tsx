@@ -1,4 +1,3 @@
-import Request from '~/service/services/Request'
 import api from '@/api'
 import { Bruker } from '~/pages/brukerPage/types'
 import { NotFoundError } from '~/error'
@@ -6,8 +5,15 @@ import { NotFoundError } from '~/error'
 const brukerServiceUrl = '/testnav-bruker-service/api/v1/brukere'
 
 export default {
-	getBrukere(orgnr: string) {
-		return Request.get(`${brukerServiceUrl}?organisasjonsnummer=${orgnr}`)
+	getBruker(orgnummer: string) {
+		return api
+			.fetchJson<Bruker[]>(
+				`testnav-bruker-service/api/v1/brukere?organisasjonsnummer=${orgnummer}`,
+				{
+					method: 'GET',
+				}
+			)
+			.then((brukere) => brukere[0])
 	},
 
 	opprettBruker(brukernavn: string, organisasjonsnummer: string) {
@@ -16,11 +22,11 @@ export default {
 			organisasjonsnummer: organisasjonsnummer,
 		}
 		return api
-			.fetchJson(`${brukerServiceUrl}`, { method: 'POST' }, bruker)
-			.then((response: any) => {
-				return response
+			.fetchJson<Bruker>(`${brukerServiceUrl}`, { method: 'POST' }, bruker)
+			.then((bruker) => {
+				return bruker
 			})
-			.catch((e: Error) => {
+			.catch(() => {
 				return null
 			})
 	},
