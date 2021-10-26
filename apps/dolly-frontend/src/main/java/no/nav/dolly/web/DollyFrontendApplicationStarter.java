@@ -32,7 +32,7 @@ import no.nav.testnav.libs.reactivefrontend.filter.AddUserJwtHeaderToRequestGate
 import no.nav.testnav.libs.reactivesessionsecurity.domain.AccessToken;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.UserJwtExchange;
-import no.nav.testnav.libs.securitycore.UserSessionConstant;
+import no.nav.testnav.libs.securitycore.config.UserSessionConstant;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 
 import org.springframework.boot.SpringApplication;
