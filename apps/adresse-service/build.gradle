@@ -1,7 +1,7 @@
 import no.nav.testnav.dependencies.gradle.DependenciesPlugin
 
 plugins {
-    id "org.sonarqube" version "3.0"
+    id "org.sonarqube" version "3.3"
     id 'no.nav.testnav.dependencies'
     id 'java'
     id 'org.springframework.boot' version "2.5.5"
@@ -14,7 +14,6 @@ sonarqube {
         property "sonar.projectKey", "navit_testnorge_adresse_service"
         property "sonar.projectName", "testnav-adresse-service"
         property "sonar.organization", "navit"
-        property "sonar.sources", "src/main"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.login", System.getenv("SONAR_TOKEN")
     }
