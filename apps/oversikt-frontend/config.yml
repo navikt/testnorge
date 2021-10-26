@@ -28,7 +28,7 @@ spec:
   accessPolicy:
     outbound:
       rules:
-        - application: testnorge-profil-api
+        - application: testnorge-profil-api-dev
         - application: testnav-app-tilgang-analyse-service
   liveness:
     path: /internal/isAlive

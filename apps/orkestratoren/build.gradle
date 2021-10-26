@@ -31,13 +31,19 @@ repositories {
 }
 
 dependencies {
+
+    implementation('com.google.guava:guava') {
+        version {
+            strictly '20.0'
+        }
+    }
+
+
     implementation 'no.nav.testnav.libs:commands'
     implementation 'no.nav.testnav.libs:servlet-security'
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:domain'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
-    implementation 'no.nav.testnav.libs:reporting'
-    implementation 'no.nav.testnav.libs:avro-schema'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
@@ -59,15 +65,12 @@ dependencies {
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.2'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
 
-    implementation 'org.springframework.kafka:spring-kafka:2.5.6.RELEASE'
-    implementation 'io.confluent:kafka-avro-serializer:5.5.0'
     implementation 'no.nav.registre:testnorge-consumers:1.11.11-RELEASE'
 
     implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
     testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
 
-    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }

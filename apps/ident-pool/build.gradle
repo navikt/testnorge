@@ -25,6 +25,10 @@ bootJar {
     archiveFileName = "app.jar"
 }
 
+test {
+    useJUnitPlatform()
+}
+
 repositories {
     maven {
         url = uri('https://repo1.maven.org/maven2/')
@@ -57,18 +61,17 @@ dependencies {
 
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
+    implementation 'org.springframework.retry:spring-retry'
 
     implementation 'org.aspectj:aspectjweaver'
     implementation 'io.micrometer:micrometer-registry-prometheus'
 
-    implementation 'org.springframework.retry:spring-retry'
-    implementation 'javax:javaee-api:8.0.1'
     implementation 'com.h2database:h2'
 
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.postgresql:postgresql'
     implementation 'com.google.guava:guava:18.0'
-    implementation 'ma.glasnost.orika:orika-core:1.5.4'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-csv'
     implementation 'org.codehaus.woodstox:woodstox-core-asl:4.4.1'
@@ -76,11 +79,11 @@ dependencies {
     implementation 'no.nav.repository.fellesreg.tpsws:nav-repository-fellesregister-jaxb-tps-m201-domain:2020.08.27-09.53-183ead3d81eb'
     implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    implementation "ma.glasnost.orika:orika-core:${DependenciesPlugin.orikaVersion}"
 
     implementation "org.springdoc:springdoc-openapi-ui:${DependenciesPlugin.springdocOpenapi}"
     implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
 
-    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'no.nav.testnav.libs:testing'
 }

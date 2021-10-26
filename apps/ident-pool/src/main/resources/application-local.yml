@@ -7,8 +7,6 @@ spring:
         enabled: true
         role: ident-pool-test-admin
       fail-fast: true
-      generic:
-        enabled: false
       host: vault.adeo.no
       port: 443
       read-timeout: 30000
@@ -27,7 +25,3 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         default-schema: public
         showSql: true
-
-oracle:
-  datasource:
-    url: ${identpool.datasource.jdbc_url}

@@ -1,0 +1,29 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+spring:
+  application:
+    name: testnav-udistub-proxy
+    description: Proxy for udistub som legger på sikkerhet.
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+  cloud:
+    gateway:
+      httpclient:
+        response-timeout: 30s
+
+consumers:
+  testnav-udistub:
+    url: https://udi-stub.dev.intern.nav.no
+    cluster: dev-fss
+    namespace: dolly
+    name: udi-stub
+  testnav-udistub-dev:
+    url: https://udi-stub-dev.dev.intern.nav.no
+    cluster: dev-fss
+    namespace: dolly
+    name: udi-stub-dev

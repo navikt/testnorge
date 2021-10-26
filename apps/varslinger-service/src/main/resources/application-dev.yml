@@ -1,19 +1,16 @@
-azure.app.client.id: ${client_id}
-azure.app.client.secret: ${client_secret}
-
 spring:
-  h2:
-    console:
-      enabled: true
-      path: /h2
-  flyway:
-    enabled: true
+  application:
+    name: testnav-varslinger-service-dev
   datasource:
-    url: jdbc:h2:mem:testdb?useUnicode=yes&characterEncoding=UTF-8
-    username: sa
-    password:
-    driverClassName: org.h2.Driver
+    url: jdbc:postgresql://${NAIS_DATABASE_TESTNAV_VARSLINGER_SERVICE_DEV_TESTNAV_VARSLINGER_DB_DEV_HOST}:${NAIS_DATABASE_TESTNAV_VARSLINGER_SERVICE_DEV_TESTNAV_VARSLINGER_DB_DEV_PORT}/${NAIS_DATABASE_TESTNAV_VARSLINGER_SERVICE_DEV_TESTNAV_VARSLINGER_DB_DEV_DATABASE}?user=${NAIS_DATABASE_TESTNAV_VARSLINGER_SERVICE_DEV_TESTNAV_VARSLINGER_DB_DEV_USERNAME}&password=${NAIS_DATABASE_TESTNAV_VARSLINGER_SERVICE_DEV_TESTNAV_VARSLINGER_DB_DEV_PASSWORD}
+    hikari:
+      maximum-pool-size: 3
+      minimum-idle: 0
+  flyway:
+    locations: classpath:db/migration
+    enabled: true
   jpa:
+    database: POSTGRESQL
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect

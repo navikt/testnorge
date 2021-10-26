@@ -26,6 +26,9 @@ spec:
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
+        - application: app-1
+          namespace: plattformsikkerhet
+          cluster: dev-gcp
     outbound:
       external:
         - host: testnav-syntrest-proxy.dev-fss-pub.nais.io

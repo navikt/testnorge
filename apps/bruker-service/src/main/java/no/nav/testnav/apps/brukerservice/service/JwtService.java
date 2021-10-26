@@ -15,22 +15,24 @@ import java.util.UUID;
 import no.nav.testnav.apps.brukerservice.domain.User;
 import no.nav.testnav.apps.brukerservice.exception.JwtIdMismatchException;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
-import no.nav.testnav.libs.reactivesecurity.config.UserConstant;
+import no.nav.testnav.libs.securitycore.config.UserConstant;
 
 @Service
 public class JwtService {
     private final GetAuthenticatedUserId getAuthenticatedUserId;
     private final CryptographyService cryptographyService;
     private final String secretKey;
+    private final  String issuer;
 
     public JwtService(
             GetAuthenticatedUserId getAuthenticatedUserId,
             CryptographyService cryptographyService,
-            @Value("${JWT_SECRET}") String secretKey
-    ) {
+            @Value("${JWT_SECRET}") String secretKey,
+            @Value("${TOKEN_X_CLIENT_ID}") String issuer) {
         this.getAuthenticatedUserId = getAuthenticatedUserId;
         this.cryptographyService = cryptographyService;
         this.secretKey = secretKey;
+        this.issuer = issuer;
     }
 
     public Mono<String> getToken(User user) {
@@ -49,10 +51,10 @@ public class JwtService {
         var date = Calendar.getInstance();
         return JWT
                 .create()
-                .withIssuer("dolly")
-                .withClaim(UserConstant.USER_ORGANISASJON_CLAIM_ID, user.getId())
-                .withClaim(UserConstant.USER_ORGANISASJON_CLAIM_USERNAME, user.getBrukernavn())
-                .withClaim(UserConstant.USER_ORGANISASJON_CLAIM_ORG, user.getOrganisasjonsnummer())
+                .withIssuer(issuer)
+                .withClaim(UserConstant.USER_CLAIM_ID, user.getId())
+                .withClaim(UserConstant.USER_CLAIM_USERNAME, user.getBrukernavn())
+                .withClaim(UserConstant.USER_CLAIM_ORG, user.getOrganisasjonsnummer())
                 .withIssuedAt(date.getTime())
                 .withNotBefore(date.getTime())
                 .withJWTId(UUID.randomUUID().toString())
@@ -65,8 +67,8 @@ public class JwtService {
         return getAuthenticatedUserId.call().map(ident -> {
             var verifier = JWT
                     .require(Algorithm.HMAC256(secretKey))
-                    .withClaim(UserConstant.USER_ORGANISASJON_CLAIM_ID, id)
-                    .withIssuer("dolly")
+                    .withClaim(UserConstant.USER_CLAIM_ID, id)
+                    .withIssuer(issuer)
                     .build();
             return verifier.verify(jwt);
         });

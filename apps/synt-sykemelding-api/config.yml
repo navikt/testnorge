@@ -3,10 +3,12 @@ kind: "Application"
 metadata:
   name: testnorge-synt-sykemelding-api
   namespace: dolly
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "1200"
   labels:
     team: dolly
 spec:
-  image: {{ image }}
+  image: {{image}}
   port: 8080
   webproxy: true
   tokenx:

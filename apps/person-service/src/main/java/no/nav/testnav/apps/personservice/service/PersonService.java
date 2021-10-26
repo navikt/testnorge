@@ -1,18 +1,16 @@
 package no.nav.testnav.apps.personservice.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
+import no.nav.testnav.apps.personservice.adapter.PdlPersonAdapter;
+import no.nav.testnav.apps.personservice.adapter.TpsPersonAdapter;
 import no.nav.testnav.apps.personservice.consumer.PdlTestdataConsumer;
+import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.PdlAktoer.AktoerIdent;
+import no.nav.testnav.apps.personservice.domain.Person;
+import no.nav.testnav.libs.dto.personservice.v1.Persondatasystem;
+import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.util.Optional;
-
-import no.nav.testnav.apps.personservice.adapter.PdlPersonAdapter;
-import no.nav.testnav.apps.personservice.adapter.TpsPersonAdapter;
-import no.nav.testnav.apps.personservice.domain.Person;
-import no.nav.testnav.libs.dto.personservice.v1.Persondatasystem;
 
 @Service
 @RequiredArgsConstructor
@@ -32,5 +30,9 @@ public class PersonService {
         } else {
             return tpsPersonAdapter.getPerson(ident, miljoe);
         }
+    }
+
+    public Mono<Optional<AktoerIdent>> getAktoerId(String ident) {
+        return pdlPersonAdapter.getAktoer(ident);
     }
 }

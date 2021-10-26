@@ -10,11 +10,13 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
 
+import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.servletcore.config.ApplicationProperties;
 
 @Configuration
@@ -23,15 +25,27 @@ public class OpenApiConfig implements WebMvcConfigurer {
     @Bean
     public OpenAPI openApi(ApplicationProperties applicationProperties) {
         return new OpenAPI()
-                .components(new Components().addSecuritySchemes("bearer-jwt", new SecurityScheme()
-                        .type(SecurityScheme.Type.HTTP)
-                        .scheme("bearer")
-                        .bearerFormat("JWT")
-                        .in(SecurityScheme.In.HEADER)
-                        .name("Authorization")
-                ))
+                .components(new Components()
+                        .addSecuritySchemes("bearer-jwt", new SecurityScheme()
+                                .type(SecurityScheme.Type.HTTP)
+                                .scheme("bearer")
+                                .bearerFormat("JWT")
+                                .in(SecurityScheme.In.HEADER)
+                                .name(HttpHeaders.AUTHORIZATION)
+                        )
+                        .addSecuritySchemes("user-jwt", new SecurityScheme()
+                                .type(SecurityScheme.Type.APIKEY)
+                                .scheme("bearer")
+                                .bearerFormat("JWT")
+                                .in(SecurityScheme.In.HEADER)
+                                .name(UserConstant.USER_HEADER_JWT)
+                        )
+                )
                 .addSecurityItem(
-                        new SecurityRequirement().addList("bearer-jwt", Arrays.asList("read", "write")))
+                        new SecurityRequirement()
+                                .addList("bearer-jwt", Arrays.asList("read", "write"))
+                                .addList("user-jwt", Arrays.asList("read", "write"))
+                )
                 .info(new Info()
                         .title(applicationProperties.getName())
                         .version(applicationProperties.getVersion())
@@ -45,8 +59,7 @@ public class OpenApiConfig implements WebMvcConfigurer {
                         .license(new License()
                                 .name("MIT License")
                                 .url("https://opensource.org/licenses/MIT")
-                        )
-                );
+                        ));
     }
 
     @Override

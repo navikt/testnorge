@@ -3,7 +3,7 @@ package no.nav.testnav.apps.oversiktfrontend.domain;
 import lombok.Value;
 
 import no.nav.testnav.apps.oversiktfrontend.dto.ApplicationDTO;
-import no.nav.testnav.libs.reactivesessionsecurity.domain.ServerProperties;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 
 @Value
 public class Application {

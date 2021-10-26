@@ -14,22 +14,22 @@ import no.nav.registre.sdforvalter.config.credentials.OrganisasjonServicePropert
 import no.nav.registre.sdforvalter.domain.status.ereg.Organisasjon;
 import no.nav.testnav.libs.commands.organisasjonservice.v1.GetOrganisasjonCommand;
 import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Component
 public class OrganisasjonConsumer {
     private final WebClient webClient;
     private final OrganisasjonServiceProperties serverProperties;
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
     private final Executor executor;
 
     public OrganisasjonConsumer(
             OrganisasjonServiceProperties serverProperties,
-            AccessTokenService accessTokenService
+            TokenExchange tokenExchange
     ) {
         this.serverProperties = serverProperties;
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
         this.executor = Executors.newFixedThreadPool(serverProperties.getThreads());
         this.webClient = WebClient
                 .builder()
@@ -38,7 +38,7 @@ public class OrganisasjonConsumer {
     }
 
     private CompletableFuture<Organisasjon> getOrganisasjon(String orgnummer, String miljo, Executor executor) {
-        AccessToken accessToken = accessTokenService.generateToken(serverProperties).block();
+        AccessToken accessToken = tokenExchange.generateToken(serverProperties).block();
         return CompletableFuture.supplyAsync(
                 () -> {
                     try {

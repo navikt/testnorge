@@ -30,11 +30,13 @@ spec:
         - application: testnav-person-service
           cluster: dev-gcp
         - application: dolly-frontend
-          cluster: dev-fss
-        - application: dolly-frontend
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
+        - application: dolly-backend
+          cluster: dev-fss
+        - application: dolly-backend-dev
+          cluster: dev-fss
   liveness:
     path: /internal/isAlive
     initialDelay: 4

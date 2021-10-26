@@ -6,7 +6,7 @@ metadata:
   labels:
     team: dolly
 spec:
-  image: {{ image }}
+  image: {{image}}
   port: 8080
   tracing:
     enabled: true
@@ -23,6 +23,10 @@ spec:
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
+        - application: dolly-backend
+          cluster: dev-fss
+        - application: dolly-backend-dev
+          cluster: dev-fss
         - application: testnorge-statisk-data-forvalter
           cluster: dev-fss
         - application: testnav-generer-organisasjon-populasjon-service

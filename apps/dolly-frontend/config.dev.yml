@@ -33,7 +33,7 @@ spec:
         - application: testnorge-profil-api
         - application: testnav-joark-dokument-service
         - application: testnav-organisasjon-faste-data-service
-        - application: testnav-varslinger-service
+        - application: testnav-varslinger-service-dev
         - application: dolly-dev-redis-session
       external:
         - host: person-search-service.dev-fss-pub.nais.io
@@ -81,10 +81,6 @@ spec:
       value: dolly-backend-dev
     - name: DOLLY_BACKEND_URL
       value: https://dolly-backend-dev.dev-fss-pub.nais.io
-    - name: UDI_STUB_URL
-      value: https://udi-stub-dev.dev-fss-pub.nais.io
-    - name: UDI_STUB_NAME
-      value: udi-stub-dev
     - name: TPS_FORVALTERN_PROXY_NAME
       value: tps-forvalteren-dev-proxy
     - name: TPS_FORVALTERN_PROXY_URL
@@ -93,3 +89,7 @@ spec:
       value: https://dolly-frontend-dev.dev.intern.nav.no/login
     - name: REDIS_HOST
       value: dolly-dev-redis-session.dolly.svc.cluster.local
+    - name: VARSLINGER_NAME
+      value: testnav-varslinger-service-dev
+    - name: VARSLINGER_URL
+      value: https://testnav-varslinger-service-dev.dev.intern.nav.no

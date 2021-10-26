@@ -1,19 +1,29 @@
+import no.nav.testnav.dependencies.gradle.DependenciesPlugin
+
 plugins {
-    id 'no.nav.registre.testnorge.java-conventions'
-    id 'org.springframework.boot' version "${springBootVersion}"
-    id 'io.spring.dependency-management' version "${springDependencyManagement}"
+    id 'no.nav.testnav.dependencies'
+    id 'java'
+    id 'org.springframework.boot' version "2.5.5"
+    id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
-
-dependencyManagement {
-    imports {
-        mavenBom  "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-    }
-}
-
 bootJar {
     archiveFileName = "app.jar"
 }
 
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${DependenciesPlugin.springCloud}"
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
 dependencies {
 
     implementation 'no.nav.testnav.libs:servlet-core'
@@ -33,8 +43,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
 
-    implementation "org.springdoc:springdoc-openapi-ui:${springdocOpenapiUi}"
-    implementation "net.logstash.logback:logstash-logback-encoder:${logstashLogbackEncoder}"
+    implementation "org.springdoc:springdoc-openapi-ui:${DependenciesPlugin.springdocOpenapi}"
+    implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
 
     implementation 'org.hibernate.validator:hibernate-validator'
 
@@ -47,6 +57,8 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'no.nav.testnav.libs:testing'
-}
 
-description = 'mn-organisasjon-api'
+    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+}

@@ -1,9 +1,10 @@
 package no.nav.testnav.apps.personservice.consumer.command;
 
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.PdlPerson;
+import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.Request;
+import no.nav.testnav.apps.personservice.consumer.header.PdlHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -20,9 +21,7 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
-import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.PdlPerson;
-import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.Request;
-import no.nav.testnav.apps.personservice.consumer.header.PdlHeaders;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -70,12 +69,12 @@ public class GetPdlPersonCommand implements Callable<Mono<PdlPerson>> {
                 .doOnError(error -> {
                     if (error instanceof WebClientResponseException) {
                         log.error(
-                                "Feil ved person fra pdl. Feilmelding: {}.",
+                                "Feil ved henting av person fra pdl. Feilmelding: {}.",
                                 ((WebClientResponseException) error).getResponseBodyAsString(),
                                 error
                         );
                     } else {
-                        log.error("Feil ved person fra pdl.", error);
+                        log.error("Feil ved henting av person fra pdl.", error);
                     }
                 });
     }

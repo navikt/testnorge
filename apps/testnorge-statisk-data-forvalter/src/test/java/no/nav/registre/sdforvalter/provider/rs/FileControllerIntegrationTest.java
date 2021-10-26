@@ -4,21 +4,22 @@ import static com.github.tomakehurst.wiremock.client.WireMock.reset;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.List;
-import java.util.Set;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.util.List;
+import java.util.Set;
 
 import no.nav.registre.sdforvalter.database.model.GruppeModel;
 import no.nav.registre.sdforvalter.database.model.OpprinnelseModel;
@@ -31,7 +32,7 @@ import no.nav.registre.sdforvalter.database.repository.TpsIdentTagRepository;
 import no.nav.registre.sdforvalter.database.repository.TpsIdenterRepository;
 import no.nav.registre.sdforvalter.domain.TpsIdent;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(MockitoExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc
@@ -56,7 +57,7 @@ public class FileControllerIntegrationTest {
     @Autowired
     private TpsIdentTagRepository tpsIdentTagRepository;
 
-    @Before
+    @BeforeEach
     public void setup() {
         GruppeModel gruppeModel = new GruppeModel(null, "Gruppen", "Gruppenbeskrivelse");
         gruppeRepository.save(gruppeModel);
@@ -132,7 +133,7 @@ public class FileControllerIntegrationTest {
                 .containsAll(expectedTpsIdenterListe);
     }
 
-    @After
+    @AfterEach
     public void cleanUp() {
         reset();
         eregTagRepository.deleteAll();

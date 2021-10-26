@@ -22,6 +22,9 @@ spec:
           cluster: dev-fss
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
+        - application: app-1
+          namespace: plattformsikkerhet
+          cluster: dev-gcp
     outbound:
       external:
         - host: tt02.altinn.no

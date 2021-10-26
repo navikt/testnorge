@@ -18,37 +18,37 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-import no.nav.testnav.libs.commands.GetOppsummeringsdokumentCommand;
-import no.nav.testnav.libs.commands.GetOppsummeringsdokumenterCommand;
-import no.nav.testnav.libs.commands.SaveOppsummeringsdokumenterCommand;
-import no.nav.testnav.libs.servletcore.config.ApplicationProperties;
-import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
-import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.config.credentials.OppsummeringsdokuemntServerProperties;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Opplysningspliktig;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Organisajon;
+import no.nav.testnav.libs.commands.GetOppsummeringsdokumentCommand;
+import no.nav.testnav.libs.commands.GetOppsummeringsdokumenterCommand;
+import no.nav.testnav.libs.commands.SaveOppsummeringsdokumenterCommand;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.servletcore.config.ApplicationProperties;
+import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Component
 public class OppsummeringsdokumentConsumer {
     private static final int BYTE_COUNT = 16 * 1024 * 1024;
     private final WebClient webClient;
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
     private final ServerProperties properties;
     private final Executor executor;
     private final ApplicationProperties applicationProperties;
 
     public OppsummeringsdokumentConsumer(
-            AccessTokenService accessTokenService,
+            TokenExchange tokenExchange,
             OppsummeringsdokuemntServerProperties properties,
             ObjectMapper objectMapper,
             ApplicationProperties applicationProperties
     ) {
         this.applicationProperties = applicationProperties;
         this.executor = Executors.newFixedThreadPool(10);
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
         this.properties = properties;
         this.webClient = WebClient
                 .builder()
@@ -66,7 +66,7 @@ public class OppsummeringsdokumentConsumer {
     }
 
     private CompletableFuture<String> saveOpplysningspliktig(Opplysningspliktig opplysningspliktig, String miljo) {
-        AccessToken accessToken = accessTokenService.generateToken(properties).block();
+        AccessToken accessToken = tokenExchange.generateToken(properties).block();
         return CompletableFuture.supplyAsync(
                 () -> new SaveOppsummeringsdokumenterCommand(
                         webClient,
@@ -81,7 +81,7 @@ public class OppsummeringsdokumentConsumer {
     }
 
     public Optional<Opplysningspliktig> getOpplysningspliktig(Organisajon organisajon, LocalDate kalendermaaned, String miljo) {
-        AccessToken accessToken = accessTokenService.generateToken(properties).block();
+        AccessToken accessToken = tokenExchange.generateToken(properties).block();
         var dto = new GetOppsummeringsdokumentCommand(webClient, accessToken.getTokenValue(), organisajon.getOrgnummer(), kalendermaaned, miljo).call().block();
         if (dto == null) {
             return Optional.empty();
@@ -92,7 +92,7 @@ public class OppsummeringsdokumentConsumer {
 
     public List<Opplysningspliktig> getAlleOpplysningspliktig(String miljo) {
         log.info("Henter alle opplysningspliktige fra {}...", miljo);
-        AccessToken accessToken = accessTokenService.generateToken(properties).block();
+        AccessToken accessToken = tokenExchange.generateToken(properties).block();
         var list = new GetOppsummeringsdokumenterCommand(webClient, accessToken.getTokenValue(), miljo).call();
         log.info("Fant {} opplysningspliktig fra {}.", list.size(), miljo);
         return list.stream().map(value -> new Opplysningspliktig(value, new ArrayList<>())).collect(Collectors.toList());

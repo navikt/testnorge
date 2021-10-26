@@ -9,6 +9,7 @@ on:
       - libs/kafka-config/**
       - libs/kafka-producers/**
       - libs/avro-schema/**
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/organisasjon-forvalter:${{ github.sha }}

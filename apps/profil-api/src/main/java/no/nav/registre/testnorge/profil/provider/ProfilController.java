@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.profil.provider;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,8 @@ public class ProfilController {
 
     private final ProfilService profilService;
 
+
+    @SneakyThrows
     @GetMapping
     public ResponseEntity<ProfilDTO> getProfile() {
         var profil = profilService.getProfile();

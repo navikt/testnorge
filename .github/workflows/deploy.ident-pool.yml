@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - feature/deploy_av_ident_pool
     paths:
       - apps/ident-pool/**
 env:

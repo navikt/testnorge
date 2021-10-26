@@ -9,5 +9,4 @@ import java.util.List;
 @Repository
 public interface WhitelistRepository extends CrudRepository<Whitelist, Long> {
 
-    List<Whitelist> findAllBy();
 }

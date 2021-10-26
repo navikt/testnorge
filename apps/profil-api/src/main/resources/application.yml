@@ -17,9 +17,16 @@ spring:
         tokenx:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
-          accepted-audience: ${ACCEPTED_AUDIENCE}
+          accepted-audience: ${TOKEN_X_CLIENT_ID}
 
 access.scopes:
   - https://graph.microsoft.com/.default
 
 api.azuread.url: https://graph.microsoft.com
+
+consumers:
+  testnav-person-organisasjon-tilgang-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-person-organisasjon-tilgang-service-dev
+    url: https://testnav-person-organisasjon-tilgang-service-dev.dev.intern.nav.no

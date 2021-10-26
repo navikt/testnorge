@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/batch")
 @RequiredArgsConstructor
-@Profile("local")
 public class BatchController {
 
     private final BatchService batchService;

@@ -28,6 +28,7 @@ repositories {
 dependencies {
     implementation 'com.auth0:java-jwt:3.18.1'
 
+    implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:reactive-core'
     implementation 'no.nav.testnav.libs:reactive-security'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
@@ -55,7 +56,6 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'org.assertj:assertj-core:3.21.0'
-
 
     implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"

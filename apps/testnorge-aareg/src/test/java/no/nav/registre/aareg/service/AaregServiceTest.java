@@ -1,5 +1,25 @@
 package no.nav.registre.aareg.service;
 
+import static no.nav.registre.aareg.consumer.ws.AaregWsConsumer.STATUS_OK;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.ResponseEntity;
+
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import no.nav.registre.aareg.consumer.rs.AaregRestConsumer;
 import no.nav.registre.aareg.consumer.ws.AaregWsConsumer;
 import no.nav.registre.aareg.consumer.ws.request.RsAaregOppdaterRequest;
@@ -10,27 +30,8 @@ import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Arbeidsforhold;
 import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Organisasjon;
 import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Periode;
 import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Person;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDate;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import static no.nav.registre.aareg.consumer.ws.AaregWsConsumer.STATUS_OK;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AaregServiceTest {
 
     @Mock
@@ -48,7 +49,7 @@ public class AaregServiceTest {
     private String miljoe = "t1";
     private String navCallId = "test";
 
-    @Before
+    @BeforeEach
     public void setUp() {
         rsAaregOpprettRequest = new RsAaregOpprettRequest();
         rsAaregOppdaterRequest = new RsAaregOppdaterRequest();

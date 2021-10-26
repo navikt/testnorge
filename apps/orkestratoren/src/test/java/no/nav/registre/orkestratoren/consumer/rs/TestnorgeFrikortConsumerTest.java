@@ -1,20 +1,5 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
-import no.nav.registre.orkestratoren.consumer.rs.response.GenererFrikortResponse.LeggPaaKoeStatus;
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserFrikortRequest;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.client.MockRestServiceServer;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
@@ -22,29 +7,42 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-@RunWith(SpringRunner.class)
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.web.client.MockRestServiceServer;
+
+import no.nav.registre.orkestratoren.consumer.rs.response.GenererFrikortResponse.LeggPaaKoeStatus;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserFrikortRequest;
+
+@ExtendWith(MockitoExtension.class)
 @RestClientTest(TestnorgeFrikortConsumer.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
 @ActiveProfiles("test")
 public class TestnorgeFrikortConsumerTest {
 
-    @Autowired
-    private TestnorgeFrikortConsumer testnorgeFrikortConsumer;
-
-    @Autowired
-    private MockRestServiceServer server;
-
-    @Value("${testnorge-frikort.rest.api.url}")
-    private String serverUrl;
-
     private static final Long AVSPILLERGRUPPE_ID = 123L;
     private static final String MILJOE = "t1";
+    @Autowired
+    private TestnorgeFrikortConsumer testnorgeFrikortConsumer;
+    @Autowired
+    private MockRestServiceServer server;
+    @Value("${testnorge-frikort.rest.api.url}")
+    private String serverUrl;
     private SyntetiserFrikortRequest syntetiserFrikortRequest;
-    private int antallNyeIdenter = 2;
-    private String xml1 = "firstXml";
-    private String xml2 = "secondXml";
+    private final int antallNyeIdenter = 2;
+    private final String xml1 = "firstXml";
+    private final String xml2 = "secondXml";
 
-    @Before
+    @BeforeEach
     public void setUp() {
         syntetiserFrikortRequest = new SyntetiserFrikortRequest(AVSPILLERGRUPPE_ID, MILJOE, antallNyeIdenter);
     }

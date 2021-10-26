@@ -16,6 +16,7 @@ Ha naisdevice kjørende og kjør AdresseServiceApplicationStarter med følgende 
 ```
 -Dspring.cloud.vault.token=[kopier token fra vault]
 -Dspring.profiles.active=local
+--add-opens java.base/java.lang=ALL-UNNAMED
 ```
 
 ### Utviklerimage

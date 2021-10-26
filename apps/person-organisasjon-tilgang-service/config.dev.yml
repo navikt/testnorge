@@ -26,9 +26,13 @@ spec:
           cluster: dev-gcp
         - application: testnav-bruker-service-dev
           cluster: dev-gcp
+        - application: testnorge-profil-api-dev
+          cluster: dev-gcp
         - application: app-1
           cluster: dev-gcp
           namespace: plattformsikkerhet
+        - application: testnorge-profil-api-dev
+          cluster: dev-gcp
     outbound:
       external:
         - host: tt02.altinn.no

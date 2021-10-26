@@ -2,6 +2,8 @@ name: Deploy testnorge-statisk-data-forvalter
 
 on:
   push:
+    branches:
+      - master
     paths:
       - apps/testnorge-statisk-data-forvalter/**
 

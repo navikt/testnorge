@@ -123,14 +123,15 @@ public class JobController {
 
     @Scheduled(cron = "0 0 0 * * *")
     public void navSyntBatch() {
-        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
-            var syntetiserNavmeldingerRequest = SyntetiserNavmeldingerRequest.builder()
-                    .avspillergruppeId(entry.getKey())
-                    .miljoe(entry.getValue())
-                    .antallMeldingerPerEndringskode(antallNavmeldingerPerEndringskode)
-                    .build();
-            testnorgeSkdService.genererNavmeldinger(syntetiserNavmeldingerRequest);
-        }
+        log.info("Nav-endringsmeldinger batch midlertidig stanset.");
+//        for (var entry : avspillergruppeIdMedMiljoe.entrySet()) {
+//            var syntetiserNavmeldingerRequest = SyntetiserNavmeldingerRequest.builder()
+//                    .avspillergruppeId(entry.getKey())
+//                    .miljoe(entry.getValue())
+//                    .antallMeldingerPerEndringskode(antallNavmeldingerPerEndringskode)
+//                    .build();
+//            testnorgeSkdService.genererNavmeldinger(syntetiserNavmeldingerRequest);
+//        }
     }
 
     @Scheduled(cron = "0 0 1 1 * *")

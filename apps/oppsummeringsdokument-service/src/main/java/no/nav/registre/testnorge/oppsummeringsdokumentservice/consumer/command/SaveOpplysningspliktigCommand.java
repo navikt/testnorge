@@ -27,7 +27,7 @@ public class SaveOpplysningspliktigCommand implements Runnable {
                     .uri(builder -> builder.path("/oppsummeringsdokument").queryParam("targetEnvironment", miljo).build())
                     .body(BodyInserters.fromPublisher(Mono.just(xml), String.class))
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_XML_VALUE)
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                    .header(HttpHeaders.AUTHORIZATION, token)
                     .retrieve()
                     .bodyToMono(Void.class)
                     .block();

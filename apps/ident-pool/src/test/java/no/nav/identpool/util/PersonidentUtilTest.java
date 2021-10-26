@@ -1,8 +1,8 @@
 package no.nav.identpool.util;
 
-import no.nav.identpool.test.mockito.MockitoExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 

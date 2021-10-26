@@ -1,12 +1,14 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
-elasticsearch:
-  client:
-    username: ${ELASTIC_USERNAME}
-    password: ${ELASTIC_PASSWORD}
-    host: ${ELASTIC_HOST}
-    port: ${ELASTIC_PORT}
-
+spring:
+  data:
+    elasticsearch:
+      client:
+        reactive:
+          username: ${ELASTIC_USERNAME}
+          password: ${ELASTIC_PASSWORD}
+          endpoints: ${ELASTIC_HOST}:${ELASTIC_PORT}
+          use-ssl: true
   security:
     oauth2:
       resourceserver:
@@ -17,7 +19,12 @@ elasticsearch:
   application:
     name: oppsummeringsdokument-service
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
-    description: Tjeneste for å sende inn oppsummeringsdokument til aareg og søke i innstende oppsummeringsdokumenter.
+    description: Tjeneste for å sende inn oppsummeringsdokument til aareg og søke i innsendte oppsummeringsdokumenter.
+  elasticsearch:
+    rest:
+      username: ${ELASTIC_USERNAME}
+      password: ${ELASTIC_PASSWORD}
+      uris: ${ELASTIC_HOST}:${ELASTIC_PORT}
 
 consumers.aareg-synt-services:
   url: https://aareg-synt-services-proxy.dev-fss-pub.nais.io

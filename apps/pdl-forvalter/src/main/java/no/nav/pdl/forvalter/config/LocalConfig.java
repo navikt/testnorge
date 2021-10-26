@@ -1,5 +1,7 @@
 package no.nav.pdl.forvalter.config;
 
+import no.nav.testnav.libs.database.config.FlywayConfiguration;
+import no.nav.testnav.libs.database.config.VaultHikariConfiguration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
@@ -9,9 +11,6 @@ import org.springframework.vault.authentication.TokenAuthentication;
 import org.springframework.vault.client.VaultEndpoint;
 import org.springframework.vault.config.AbstractVaultConfiguration;
 
-import no.nav.testnav.libs.database.config.FlywayConfiguration;
-import no.nav.testnav.libs.database.config.VaultHikariConfiguration;
-
 @Configuration
 @Profile("local")
 @Import({
@@ -19,7 +18,7 @@ import no.nav.testnav.libs.database.config.VaultHikariConfiguration;
         VaultHikariConfiguration.class
 })
 @VaultPropertySource(value = "azuread/prod/creds/team-dolly-lokal-app", ignoreSecretNotFound = false)
-public class LocalConfig  extends AbstractVaultConfiguration {
+public class LocalConfig extends AbstractVaultConfiguration {
 
     @Override
     public VaultEndpoint vaultEndpoint() {

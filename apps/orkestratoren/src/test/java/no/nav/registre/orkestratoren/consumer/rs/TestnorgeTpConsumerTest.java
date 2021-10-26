@@ -1,8 +1,14 @@
 package no.nav.registre.orkestratoren.consumer.rs;
 
-import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
@@ -10,16 +16,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 
-import static org.junit.Assert.assertEquals;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestToUriTemplate;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+import no.nav.registre.orkestratoren.provider.rs.requests.SyntetiserTpRequest;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(MockitoExtension.class)
 @RestClientTest(TestnorgeTpConsumer.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
 @ActiveProfiles("test")
@@ -34,9 +35,9 @@ public class TestnorgeTpConsumerTest {
     @Value("${testnorge-tp.rest.api.url}")
     private String serverUrl;
 
-    private Long gruppeId = 10L;
-    private String miljoe = "t9";
-    private Integer antallPersoner = 3;
+    private final Long gruppeId = 10L;
+    private final String miljoe = "t9";
+    private final Integer antallPersoner = 3;
 
     @Test
     public void startSyntetisering() {

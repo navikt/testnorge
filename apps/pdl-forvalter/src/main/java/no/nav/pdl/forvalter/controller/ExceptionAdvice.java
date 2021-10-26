@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.exception.InternalServerException;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
@@ -13,20 +14,25 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.util.UrlPathHelper;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 
 @ControllerAdvice
+@RequiredArgsConstructor
 public class ExceptionAdvice {
 
-    private ExceptionInformation getExceptionInformation(ServerWebExchange request, HttpClientErrorException exception) {
+    private final HttpServletRequest httpServletRequest;
+    private final UrlPathHelper urlPathHelper;
+
+    private ExceptionInformation getExceptionInformation(HttpClientErrorException exception) {
 
         return ExceptionInformation.builder()
                 .error(exception.getStatusCode().getReasonPhrase())
                 .status(exception.getStatusCode().value())
                 .message(exception.getStatusText())
-                .path(request.getRequest().getPath().toString())
+                .path(urlPathHelper.getPathWithinApplication(httpServletRequest))
                 .timestamp(LocalDateTime.now())
                 .build();
     }
@@ -34,22 +40,22 @@ public class ExceptionAdvice {
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidRequestException.class)
-    public ExceptionInformation clientErrorException(ServerWebExchange request, InvalidRequestException exception) {
-        return getExceptionInformation(request, exception);
+    public ExceptionInformation clientErrorException(InvalidRequestException exception) {
+        return getExceptionInformation(exception);
     }
 
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NotFoundException.class)
-    public ExceptionInformation clientErrorException(ServerWebExchange request, NotFoundException exception) {
-        return getExceptionInformation(request, exception);
+    public ExceptionInformation clientErrorException(NotFoundException exception) {
+        return getExceptionInformation(exception);
     }
 
     @ResponseBody
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(InternalServerException.class)
-    public ExceptionInformation clientErrorException(ServerWebExchange request, InternalServerException exception) {
-        return getExceptionInformation(request, exception);
+    public ExceptionInformation clientErrorException(InternalServerException exception) {
+        return getExceptionInformation(exception);
     }
 
     @Data
