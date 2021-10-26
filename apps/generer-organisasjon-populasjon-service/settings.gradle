@@ -13,6 +13,7 @@ includeBuild '../../libs/data-transfer-objects'
 includeBuild '../../libs/kafka-config'
 includeBuild '../../libs/kafka-producers'
 includeBuild '../../libs/avro-schema'
+includeBuild '../../libs/commands'
 
 gradleEnterprise {
     buildScan {

@@ -9,6 +9,7 @@ includeBuild '../../gradlePlugins'
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/domain'
 includeBuild '../../libs/servlet-security'
+includeBuild '../../libs/testing'
 
 gradleEnterprise {
     buildScan {

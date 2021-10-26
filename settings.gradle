@@ -154,3 +154,4 @@ includeBuild './xsd/arbeidsforhold-xsd'
 include(':proxies')
 include(':apps')
 include(':libs')
+include(':xsd')

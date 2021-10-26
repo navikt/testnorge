@@ -8,6 +8,7 @@ includeBuild '../../gradlePlugins'
 
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/slack'
+includeBuild '../../libs/data-transfer-objects'
 includeBuild '../../libs/servlet-security'
 
 gradleEnterprise {

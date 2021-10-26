@@ -10,7 +10,6 @@ includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/csv-converter'
 includeBuild '../../libs/slack'
 includeBuild '../../libs/servlet-security'
-includeBuild '../../libs/testing'
 
 gradleEnterprise {
     buildScan {
