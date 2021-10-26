@@ -16,6 +16,7 @@ sonarqube {
         property "sonar.organization", "navit"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.project.monorepo.enabled", true
+        property "sonar.log.level", "DEBUG"
         property "sonar.login", System.getenv("SONAR_TOKEN")
     }
 }
