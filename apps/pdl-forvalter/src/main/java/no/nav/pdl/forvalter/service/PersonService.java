@@ -19,13 +19,11 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO.PersonIDDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -35,7 +33,6 @@ import reactor.core.publisher.Flux;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -45,7 +42,6 @@ import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
 
 @Slf4j
@@ -131,7 +127,7 @@ public class PersonService {
     }
 
     @Transactional(readOnly = true)
-    public List<FullPersonDTO> getPerson(List<String> identer, String fragment, Paginering paginering) {
+    public List<FullPersonDTO> getPerson(List<String> identer, Paginering paginering) {
 
         if (nonNull(identer) && !identer.isEmpty()) {
             var query = new HashSet<>(identer);
@@ -149,19 +145,6 @@ public class PersonService {
                                     paginering.getSidestoerrelse(),
                                     Sort.by(SORT_BY_FIELD).descending())),
                     FullPersonDTO.class);
-
-        } else if (isNotBlank(fragment)) {
-
-            return searchPerson(fragment, paginering).stream()
-                    .map(person -> FullPersonDTO.builder()
-                            .identitet(PersonIDDTO.builder()
-                                    .ident(person.getIdent())
-                                    .fornavn(person.getFornavn())
-                                    .mellomnavn(person.getMellomnavn())
-                                    .etternavn(person.getEtternavn())
-                                    .build())
-                            .build())
-                    .collect(Collectors.toList());
 
         } else {
 
@@ -222,22 +205,5 @@ public class PersonService {
             throw new InvalidRequestException(
                     format(VIOLATION_ALIAS_EXISTS, alias.get().getPerson().getIdent()));
         }
-    }
-
-    private List<DbPerson> searchPerson(String query, Paginering paginering) {
-        Optional<String> ident = Stream.of(query.split(" "))
-                .filter(StringUtils::isNumeric)
-                .findFirst();
-
-        List<String> navn = List.of(query.split(" ")).stream()
-                .filter(fragment -> isNotBlank(fragment) && !StringUtils.isNumeric(fragment))
-                .collect(Collectors.toList());
-
-        return personRepository.findByWildcardIdent(ident.orElse(null),
-                !navn.isEmpty() ? navn.get(0).toUpperCase() : null,
-                navn.size() > 1 ? navn.get(1).toUpperCase() : null,
-                PageRequest.of(paginering.getSidenummer(),
-                        paginering.getSidestoerrelse(),
-                        Sort.by(SORT_BY_FIELD).descending()));
     }
 }
