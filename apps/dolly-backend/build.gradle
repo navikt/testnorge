@@ -1,0 +1,71 @@
+import no.nav.testnav.dependencies.gradle.DependenciesPlugin
+
+plugins {
+    id 'no.nav.testnav.dependencies'
+    id 'java'
+    id 'org.springframework.boot' version "2.5.5"
+    id 'io.spring.dependency-management' version "1.0.11.RELEASE"
+}
+
+bootJar {
+    archiveFileName = "app.jar"
+}
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${DependenciesPlugin.springCloud}"
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    implementation 'org.projectlombok:lombok:1.18.20'
+    implementation "org.springframework.boot:spring-boot-starter-security:${DependenciesPlugin.springBoot}"
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap:3.0.4'
+    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config:3.0.4'
+    implementation 'org.springframework.cloud:spring-cloud-vault-config-databases:3.0.4'
+    implementation 'org.springframework.cloud:spring-cloud-contract-wiremock:3.0.4'
+    implementation 'org.springframework.security:spring-security-oauth2-client:5.5.2'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'net.sf.ehcache:ehcache-core:2.6.11'
+    implementation "org.springframework.boot:spring-boot-starter-web:${DependenciesPlugin.springBoot}"
+    implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.5'
+    implementation 'no.nav.dolly-backend:dolly-backend-domain:1.18.0-SNAPSHOT'
+    implementation 'org.postgresql:postgresql:42.2.23'
+    implementation 'org.flywaydb:flyway-core:7.7.3'
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:${DependenciesPlugin.springBoot}"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa:${DependenciesPlugin.springBoot}"
+    implementation "org.springframework.boot:spring-boot-starter-actuator:${DependenciesPlugin.springBoot}"
+    implementation 'org.springframework.cloud:spring-cloud-vault-config-databases:3.0.4'
+    implementation 'io.micrometer:micrometer-registry-prometheus:1.7.4'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.5.10'
+    implementation 'org.hibernate.validator:hibernate-validator:6.1.2.Final'
+    implementation 'ma.glasnost.orika:orika-core:1.5.4'
+    implementation 'org.codehaus.jettison:jettison:1.4.0'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.12.5'
+    implementation "org.springframework.boot:spring-boot-starter-webflux:${DependenciesPlugin.springBoot}"
+    implementation 'no.nav.testnav.libs:data-transfer-objects:2021.10.20-08.13-42b4dddd7e7c'
+    implementation 'org.projectlombok:lombok:1.18.20'
+    implementation "org.springframework.boot:spring-boot-starter-security:${DependenciesPlugin.springBoot}"
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap:3.0.4'
+    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config:3.0.4'
+    implementation 'org.springframework.security:spring-security-oauth2-client:5.5.2'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'net.sf.ehcache:ehcache-core:2.6.11'
+    testImplementation "org.springframework.boot:spring-boot-starter-test:${DependenciesPlugin.springBoot}"
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
+    testImplementation 'com.h2database:h2:1.4.200'
+    testImplementation 'org.springframework.security:spring-security-test:5.5.2'
+    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:3.0.4'
+    testImplementation 'org.bitbucket.b_c:jose4j:0.7.1'
+    testImplementation 'junit:junit:4.12'
+}
