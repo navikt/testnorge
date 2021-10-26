@@ -11,7 +11,7 @@ plugins {
 sonarqube {
     properties {
         property "sonar.sourceEncoding", "UTF-8"
-        property "sonar.projectKey", "navikt_testnav_adresse_service"
+        property "sonar.projectKey", "navit_testnorge_adresse_service"
         property "sonar.projectName", "testnav-adresse-service"
         property "sonar.organization", "navit"
         property "sonar.sources", "src/main"
