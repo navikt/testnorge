@@ -56,6 +56,14 @@ const selectOptions: SelectOptions = {
 		{ value: 'UTAD', label: 'Utenlandsk adresse' },
 	],
 
+	sikkerhetstiltakType: [
+		{ value: 'FYUS', label: 'Fysisk utestengelse' },
+		{ value: 'TFUS', label: 'Telefonisk utestengelse' },
+		{ value: 'FTUS', label: 'Fysisk/telefonisk utestengelse' },
+		{ value: 'DIUS', label: 'Digital utestengelse' },
+		{ value: 'TOAN', label: 'To ansatte i samtale' },
+	],
+
 	// SIGRUN
 	tjeneste: [
 		{ value: 'BEREGNET_SKATT', label: 'Beregnet skatt' },
