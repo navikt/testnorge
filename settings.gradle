@@ -151,6 +151,8 @@ includeBuild './apps/testnorge-token-provider'
 
 includeBuild './xsd/arbeidsforhold-xsd'
 
+includeBuild './examples/reactive-rest-example'
+
 include(':proxies')
 include(':apps')
 include(':libs')
