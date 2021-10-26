@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.aareg.amelding;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import org.springframework.http.HttpHeaders;
@@ -12,13 +11,9 @@ import java.time.Duration;
 import java.util.concurrent.Callable;
 
 @Slf4j
-@RequiredArgsConstructor
-public class GetOrganisasjonCommand implements Callable<OrganisasjonDTO> {
-    private final WebClient webClient;
-    private final String token;
-    private final String orgnummer;
-    private final String miljo;
-
+public record GetOrganisasjonCommand(WebClient webClient,
+                                     String token, String orgnummer,
+                                     String miljo) implements Callable<OrganisasjonDTO> {
     @Override
     public OrganisasjonDTO call() {
         log.info("Henter organisasjon med orgnummer {} fra {}...", orgnummer, miljo);
@@ -29,7 +24,7 @@ public class GetOrganisasjonCommand implements Callable<OrganisasjonDTO> {
                             .path("/api/v1/organisasjoner/{orgnummer}")
                             .build(orgnummer)
                     )
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                    .header(HttpHeaders.AUTHORIZATION, token)
                     .header("miljo", this.miljo)
                     .retrieve()
                     .bodyToMono(OrganisasjonDTO.class)

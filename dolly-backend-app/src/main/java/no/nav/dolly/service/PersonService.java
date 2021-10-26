@@ -6,7 +6,7 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ public class PersonService {
             try {
                 tpsfService.deletePerson(ident);
 
-            } catch (HttpClientErrorException e) {
+            } catch (WebClientResponseException e) {
                 if (!OK.equals(e.getStatusCode()) && !NOT_FOUND.equals(e.getStatusCode())) {
                     log.error("Sletting av identer i TPSF feilet: {}", e.getMessage(), e);
                 }

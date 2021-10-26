@@ -1,51 +1,54 @@
 package no.nav.dolly.bestilling.sigrunstub;
 
-import static java.util.Collections.singletonList;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withBadRequest;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
-
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.client.MockRestServiceServer;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import com.github.tomakehurst.wiremock.client.WireMock;
+import no.nav.dolly.bestilling.sigrunstub.dto.SigrunResponse;
+import no.nav.dolly.config.credentials.SigrunstubProxyProperties;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
-import no.nav.dolly.properties.ProvidersProps;
-import no.nav.dolly.security.sts.OidcTokenAuthentication;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.security.oauth2.domain.AccessToken;
+import no.nav.dolly.security.oauth2.service.TokenService;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Mono;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.badRequest;
+import static com.github.tomakehurst.wiremock.client.WireMock.delete;
+import static com.github.tomakehurst.wiremock.client.WireMock.matching;
+import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static java.util.Collections.singletonList;
+import static org.mockito.Mockito.when;
+import static wiremock.org.hamcrest.MatcherAssert.assertThat;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
-@RestClientTest(SigrunStubConsumer.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource(locations = "classpath:application-test.yaml")
+@AutoConfigureWireMock(port = 0)
 public class SigrunStubConsumerTest {
 
     private static final String IDENT = "111111111";
 
-    private MockRestServiceServer server;
-
-    @Autowired
-    private RestTemplate restTemplate;
+    @MockBean
+    private TokenService tokenService;
 
     @MockBean
-    private ProvidersProps providersProps;
+    private ErrorStatusDecoder errorStatusDecoder;
 
     @Autowired
     private SigrunStubConsumer sigrunStubConsumer;
@@ -54,35 +57,30 @@ public class SigrunStubConsumerTest {
 
     @Before
     public void setup() {
-        ProvidersProps.SigrunStub sigrunStub = ProvidersProps.SigrunStub.builder()
-                .url("https://localhost:8080").build();
-        when(providersProps.getSigrunStub()).thenReturn(sigrunStub);
+
+        WireMock.reset();
+
+        when(tokenService.generateToken(ArgumentMatchers.any(SigrunstubProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
 
         skattegrunnlag = OpprettSkattegrunnlag.builder()
                 .inntektsaar("1978")
                 .build();
-
-        server = MockRestServiceServer.createServer(restTemplate);
     }
 
     @Test
-    public void createSkattegrunnlag() throws Exception {
+    public void createSkattegrunnlag() {
 
-        server.expect(requestTo("https://localhost:8080/api/v1/lignetinntekt"))
-                .andExpect(method(HttpMethod.POST))
-                .andExpect(content().string(asJsonString(singletonList(skattegrunnlag))))
-                .andRespond(withSuccess("{}", MediaType.APPLICATION_JSON));
+        stubOpprettSkattegrunnlagOK();
 
-        sigrunStubConsumer.createSkattegrunnlag(singletonList(skattegrunnlag));
+        ResponseEntity<SigrunResponse> response = sigrunStubConsumer.createSkattegrunnlag(singletonList(this.skattegrunnlag));
+
+        assertThat("Response should be 200 successful", response.getStatusCode().is2xxSuccessful());
     }
 
-    @Test(expected = HttpClientErrorException.class)
+    @Test(expected = WebClientResponseException.class)
     public void createSkattegrunnlag_kasterSigrunExceptionHvisKallKasterClientException() throws Exception {
 
-        server.expect(requestTo("https://localhost:8080/api/v1/lignetinntekt"))
-                .andExpect(method(HttpMethod.POST))
-                .andExpect(content().string(asJsonString(singletonList(skattegrunnlag))))
-                .andRespond(withBadRequest());
+        stubOpprettSkattegrunnlagMedBadRequest();
 
         sigrunStubConsumer.createSkattegrunnlag(singletonList(skattegrunnlag));
     }
@@ -90,15 +88,37 @@ public class SigrunStubConsumerTest {
     @Test
     public void deleteSkattegrunnlag_Ok() {
 
-        server.expect(requestTo("https://localhost:8080/api/v1/slett"))
-                .andExpect(method(HttpMethod.DELETE))
-                .andExpect(header("personidentifikator", IDENT))
-                .andRespond(withSuccess());
+        stubDeleteSkattegrunnlagOK();
 
         sigrunStubConsumer.deleteSkattegrunnlag(IDENT);
     }
 
     private static String asJsonString(final Object object) throws JsonProcessingException {
         return new ObjectMapper().writeValueAsString(object);
+    }
+
+    private void stubOpprettSkattegrunnlagOK() {
+
+        stubFor(post(urlPathMatching("(.*)/sigrunstub/api/v1/lignetinntekt"))
+                .willReturn(ok()
+                        .withBody("{}")
+                        .withHeader("Content-Type", "application/json")));
+    }
+
+    private void stubOpprettSkattegrunnlagMedBadRequest() throws JsonProcessingException {
+
+        stubFor(post(urlPathMatching("(.*)/sigrunstub/api/v1/lignetinntekt"))
+                .willReturn(badRequest()
+                        .withBody(asJsonString(singletonList(skattegrunnlag)))
+                        .withHeader("Content-Type", "application/json")));
+    }
+
+    private void stubDeleteSkattegrunnlagOK() {
+
+        stubFor(delete(urlPathMatching("(.*)/sigrunstub/api/v1/slett"))
+                .withHeader("personidentifikator", matching(IDENT))
+                .willReturn(ok()
+                        .withBody("{}")
+                        .withHeader("Content-Type", "application/json")));
     }
 }

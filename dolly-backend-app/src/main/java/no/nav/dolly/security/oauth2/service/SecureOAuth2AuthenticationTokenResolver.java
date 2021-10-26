@@ -1,6 +1,5 @@
 package no.nav.dolly.security.oauth2.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
@@ -9,17 +8,8 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 
 import java.util.Optional;
 
-@RequiredArgsConstructor
-public class SecureOAuth2AuthenticationTokenResolver implements AuthenticationTokenResolver {
-
-    private final OAuth2AuthorizedClientService clientService;
-
-    private OAuth2AuthenticationToken oauth2AuthenticationToken() {
-        return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
-                .filter(o -> o instanceof OAuth2AuthenticationToken)
-                .map(OAuth2AuthenticationToken.class::cast)
-                .orElseThrow(() -> new RuntimeException("Finner ikke Authentication Token"));
-    }
+public record SecureOAuth2AuthenticationTokenResolver(
+        OAuth2AuthorizedClientService clientService) implements AuthenticationTokenResolver {
 
     @Override
     public String getTokenValue() {
@@ -47,5 +37,12 @@ public class SecureOAuth2AuthenticationTokenResolver implements AuthenticationTo
         if (!oauth2AuthenticationToken().isAuthenticated()) {
             throw new CredentialsExpiredException("Token er utloept");
         }
+    }
+
+    private OAuth2AuthenticationToken oauth2AuthenticationToken() {
+        return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
+                .filter(o -> o instanceof OAuth2AuthenticationToken)
+                .map(OAuth2AuthenticationToken.class::cast)
+                .orElseThrow(() -> new RuntimeException("Finner ikke Authentication Token"));
     }
 }

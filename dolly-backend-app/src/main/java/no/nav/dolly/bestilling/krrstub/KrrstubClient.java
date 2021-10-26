@@ -83,10 +83,10 @@ public class KrrstubClient implements ClientRegister {
     private void deleteIdent(String ident) {
 
         try {
-            ResponseEntity<DigitalKontaktdata[]> response = krrstubConsumer.getDigitalKontaktdata(ident);
+            ResponseEntity<List<DigitalKontaktdata>> response = krrstubConsumer.getDigitalKontaktdata(ident);
 
             if (response.hasBody()) {
-                List.of(response.getBody()).forEach(dkif -> {
+                response.getBody().forEach(dkif -> {
                     if (nonNull(dkif.getId())) {
                         krrstubConsumer.deleteDigitalKontaktdata(dkif.getId());
                     }

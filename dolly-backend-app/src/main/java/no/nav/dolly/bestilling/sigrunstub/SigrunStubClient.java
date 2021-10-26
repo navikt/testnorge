@@ -1,10 +1,5 @@
 package no.nav.dolly.bestilling.sigrunstub;
 
-import java.util.List;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import ma.glasnost.orika.MapperFacade;
@@ -14,6 +9,11 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+
+import java.util.List;
 
 @Log4j2
 @Service
@@ -25,7 +25,8 @@ public class SigrunStubClient implements ClientRegister {
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
 
-    @Override public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    @Override
+    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (!bestilling.getSigrunstub().isEmpty()) {
             try {
@@ -58,7 +59,7 @@ public class SigrunStubClient implements ClientRegister {
             // Alle skattegrunnlag har samme ident
             sigrunStubConsumer.deleteSkattegrunnlag(ident);
 
-        } catch (HttpClientErrorException error) {
+        } catch (WebClientResponseException error) {
             if (!HttpStatus.NOT_FOUND.equals(error.getStatusCode())) {
 
                 log.error("Feilet å slette ident {} fra Sigrunstub", ident, error);

@@ -1,55 +1,82 @@
 package no.nav.dolly.bestilling.instdata;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
+import no.nav.dolly.config.credentials.InstProxyProperties;
+import no.nav.dolly.domain.resultset.inst.Instdata;
+import no.nav.dolly.metrics.Timed;
+import no.nav.dolly.security.oauth2.config.NaisServerProperties;
+import no.nav.dolly.security.oauth2.service.TokenService;
+import no.nav.dolly.util.CheckAliveUtil;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import static java.lang.String.format;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 
-import java.net.URI;
-import java.util.List;
-import java.util.UUID;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
-import no.nav.dolly.domain.resultset.inst.Instdata;
-import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.properties.ProvidersProps;
-
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class InstdataConsumer {
 
     private static final String INSTDATA_URL = "/api/v1/ident";
-    private static final String DELETE_FMT_BLD = "%s" + INSTDATA_URL + "/batch?identer=%s&miljoe=%s";
-    private static final String POST_FMT_BLD = "%s" + INSTDATA_URL + "/batch?miljoe=%s";
-    private static final String INSTMILJO_URL = "%s/api/v1/miljoer";
-    private static final String GET_FMT_BLD = "%s" + INSTDATA_URL + "?identer=%s&miljoe=%s";
+    private static final String DELETE_POST_FMT_BLD = INSTDATA_URL + "/batch";
+    private static final String INSTMILJO_URL = "/api/v1/miljoer";
+
+    private static final String INST_IDENTER_QUERY = "identer";
+    private static final String INST_MILJOE_QUERY = "miljoe";
+
     private static final String DELETE_ERROR = "Feilet å slette person: {}, i INST miljø: {}";
 
-    private static final String[] DEFAULT_ENV = { "q2" };
+    private static final List<String> DEFAULT_ENV = List.of("q2");
 
-    private final RestTemplate restTemplate;
-    private final ProvidersProps providersProps;
-    private final ErrorStatusDecoder errorStatusDecoder;
+    private final WebClient webClient;
+    private final TokenService tokenService;
+    private final NaisServerProperties serviceProperties;
+
+    public InstdataConsumer(TokenService tokenService, InstProxyProperties serverProperties, ObjectMapper objectMapper) {
+        this.tokenService = tokenService;
+        this.serviceProperties = serverProperties;
+        this.webClient = WebClient.builder()
+                .baseUrl(serverProperties.getUrl())
+                .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .build();
+    }
 
     @Timed(name = "providers", tags = { "operation", "inst_getMiljoer" })
-    public String[] getMiljoer() {
+    public List<String> getMiljoer() {
 
         try {
-            return restTemplate.exchange(
-                    RequestEntity.get(URI.create(format(INSTMILJO_URL, providersProps.getInstdata().getUrl())))
-                            .header(HEADER_NAV_CALL_ID, getNavCallId())
-                            .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                            .build(), String[].class).getBody();
+            String[] response = webClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .path(INSTMILJO_URL)
+                            .build())
+                    .header(HEADER_NAV_CALL_ID, getNavCallId())
+                    .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                    .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                    .retrieve().bodyToMono(String[].class)
+                    .block();
+
+            if (isNull(response)) {
+                log.warn("Klarte ikke å hente miljøer fra testnorge-inst");
+                return DEFAULT_ENV;
+            }
+
+            return Arrays.asList(response);
 
         } catch (RuntimeException e) {
             log.error("Kunne ikke lese fra endepunkt for aa hente miljoer: {} ", e.getMessage(), e);
@@ -58,27 +85,41 @@ public class InstdataConsumer {
     }
 
     @Timed(name = "providers", tags = { "operation", "inst_getInstdata" })
-    public ResponseEntity getInstdata(String ident, String environment) {
-        return restTemplate.exchange(
-                RequestEntity.get(URI.create(format(GET_FMT_BLD, providersProps.getInstdata().getUrl(), ident, environment)))
+    public ResponseEntity<List<Instdata>> getInstdata(String ident, String environment) {
+        return
+                webClient.get()
+                        .uri(uriBuilder -> uriBuilder
+                                .path(INSTDATA_URL)
+                                .queryParam(INST_IDENTER_QUERY, ident)
+                                .queryParam(INST_MILJOE_QUERY, environment)
+                                .build())
                         .header(HEADER_NAV_CALL_ID, getNavCallId())
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                        .build(), Instdata[].class);
+                        .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                        .retrieve().toEntityList(Instdata.class)
+                        .block();
     }
 
     @Timed(name = "providers", tags = { "operation", "inst_deleteInstdata" })
     public void deleteInstdata(String ident, String environment) {
 
         try {
-            ResponseEntity<InstdataResponse[]> response = restTemplate.exchange(
-                    RequestEntity.delete(URI.create(format(DELETE_FMT_BLD, providersProps.getInstdata().getUrl(), ident, environment)))
+            ResponseEntity<List<InstdataResponse>> response =
+                    webClient.delete()
+                            .uri(uriBuilder -> uriBuilder
+                                    .path(DELETE_POST_FMT_BLD)
+                                    .queryParam(INST_IDENTER_QUERY, ident)
+                                    .queryParam(INST_MILJOE_QUERY, environment)
+                                    .build())
                             .header(HEADER_NAV_CALL_ID, getNavCallId())
                             .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                            .build(), InstdataResponse[].class);
+                            .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                            .retrieve().toEntityList(InstdataResponse.class)
+                            .block();
 
-            if (response.hasBody() && response.getBody().length > 0 &&
-                    !NOT_FOUND.equals(response.getBody()[0].getStatus()) &&
-                    !OK.equals(response.getBody()[0].getStatus())) {
+            if (nonNull(response) && response.hasBody() && !response.getBody().isEmpty() &&
+                    !NOT_FOUND.equals(response.getBody().get(0).getStatus()) &&
+                    !OK.equals(response.getBody().get(0).getStatus())) {
 
                 log.error(DELETE_ERROR, ident, environment);
             }
@@ -89,16 +130,26 @@ public class InstdataConsumer {
     }
 
     @Timed(name = "providers", tags = { "operation", "inst_postInstdata" })
-    public ResponseEntity postInstdata(List<Instdata> instdata, String environment) {
+    public ResponseEntity<List<InstdataResponse>> postInstdata(List<Instdata> instdata, String environment) {
 
-        return restTemplate.exchange(
-                RequestEntity.post(URI.create(format(POST_FMT_BLD, providersProps.getInstdata().getUrl(), environment)))
-                        .header(HEADER_NAV_CALL_ID, getNavCallId())
-                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                        .body(instdata), InstdataResponse[].class);
+        return webClient.post()
+                .uri(uriBuilder -> uriBuilder
+                        .path(DELETE_POST_FMT_BLD)
+                        .queryParam(INST_MILJOE_QUERY, environment)
+                        .build())
+                .bodyValue(instdata)
+                .header(HEADER_NAV_CALL_ID, getNavCallId())
+                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .retrieve().toEntityList(InstdataResponse.class)
+                .block();
+    }
+
+    public Map<String, String> checkAlive() {
+        return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 
     private static String getNavCallId() {
-        return format("%s %s", CONSUMER, UUID.randomUUID().toString());
+        return format("%s %s", CONSUMER, UUID.randomUUID());
     }
 }

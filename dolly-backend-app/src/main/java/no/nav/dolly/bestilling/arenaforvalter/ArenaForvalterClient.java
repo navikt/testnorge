@@ -17,6 +17,7 @@ import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -170,7 +171,6 @@ public class ArenaForvalterClient implements ClientRegister {
                 return;
             }
 
-            log.info("Sender Arenadata: \n" + Json.pretty(arenaNyeBrukere));
             ResponseEntity<ArenaNyeBrukereResponse> response = arenaForvalterConsumer.postArenadata(arenaNyeBrukere);
             if (response.hasBody()) {
                 if (nonNull((response.getBody().getArbeidsokerList()))) {
@@ -196,7 +196,7 @@ public class ArenaForvalterClient implements ClientRegister {
                 }
             }
 
-        } catch (HttpClientErrorException e) {
+        } catch (WebClientResponseException e) {
 
             arenaNyeBrukere.getNyeBrukere().forEach(bruker -> {
                 status.append(',')

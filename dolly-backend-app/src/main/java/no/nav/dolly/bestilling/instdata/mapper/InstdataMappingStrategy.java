@@ -41,41 +41,29 @@ public class InstdataMappingStrategy implements MappingStrategy {
 
                     private InstdataKategori decideKategori(InstdataInstitusjonstype type) {
 
-                        switch (type) {
-                            case AS:
-                                return InstdataKategori.A;
-                            case FO:
-                                return InstdataKategori.S;
-                            case HS:
-                            default:
-                                return InstdataKategori.R;
-                        }
+                        return switch (type) {
+                            case AS -> InstdataKategori.A;
+                            case FO -> InstdataKategori.S;
+                            default -> InstdataKategori.R;
+                        };
                     }
 
                     private InstdataKilde decideKilde(InstdataInstitusjonstype type) {
 
-                        switch (type) {
-                            case AS:
-                                return InstdataKilde.PP01;
-                            case FO:
-                                return InstdataKilde.IT;
-                            case HS:
-                            default:
-                                return InstdataKilde.INST;
-                        }
+                        return switch (type) {
+                            case AS -> InstdataKilde.PP01;
+                            case FO -> InstdataKilde.IT;
+                            default -> InstdataKilde.INST;
+                        };
                     }
 
                     private String decideTssEksternId(InstdataInstitusjonstype type) {
 
-                        switch (type) {
-                            case AS:
-                                return ADAMSTUEN_SYKEHJEM.getId();
-                            case FO:
-                                return INDRE_OSTFOLD_FENGSEL.getId();
-                            case HS:
-                            default:
-                                return HELGELANDSSYKEHUSET_HF.getId();
-                        }
+                        return switch (type) {
+                            case AS -> ADAMSTUEN_SYKEHJEM.getId();
+                            case FO -> INDRE_OSTFOLD_FENGSEL.getId();
+                            default -> HELGELANDSSYKEHUSET_HF.getId();
+                        };
                     }
                 })
                 .byDefault()

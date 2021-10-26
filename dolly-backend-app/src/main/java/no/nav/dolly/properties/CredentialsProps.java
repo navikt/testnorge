@@ -1,12 +1,11 @@
 package no.nav.dolly.properties;
 
-import static no.nav.dolly.properties.Environment.PREPROD;
-
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import lombok.Getter;
-import lombok.Setter;
+import static no.nav.dolly.properties.Environment.PREPROD;
 
 @Getter
 @Setter
@@ -30,7 +29,6 @@ public class CredentialsProps {
     public static class Preprod {
         private String username;
         private String password;
-
     }
 
     @Getter
@@ -38,6 +36,5 @@ public class CredentialsProps {
     public static class Test {
         private String username;
         private String password;
-
     }
 }

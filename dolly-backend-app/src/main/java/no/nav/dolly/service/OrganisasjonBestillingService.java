@@ -24,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -84,7 +85,7 @@ public class OrganisasjonBestillingService {
                 orgStatus = getOrgforvalterStatus(bestilling, bestillingProgress);
             }
 
-        } catch (HttpClientErrorException e) {
+        } catch (WebClientResponseException e) {
             log.info("Status ikke opprettet for bestilling enda");
             return RsOrganisasjonBestillingStatus.builder().build();
         }
@@ -109,7 +110,7 @@ public class OrganisasjonBestillingService {
 
         try {
             bestillingProgress = progressService.fetchOrganisasjonBestillingProgressByBrukerId(brukerId);
-        } catch (HttpClientErrorException e) {
+        } catch (WebClientResponseException e) {
             if (404 == e.getRawStatusCode()) {
                 log.info("Brukeren har ingen bestilte organisasjoner");
             } else {

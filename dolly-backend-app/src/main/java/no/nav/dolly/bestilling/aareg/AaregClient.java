@@ -2,7 +2,6 @@ package no.nav.dolly.bestilling.aareg;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -68,8 +67,6 @@ public class AaregClient implements ClientRegister {
         StringBuilder result = new StringBuilder();
 
         if (!bestilling.getAareg().isEmpty()) {
-            log.info("Aareg bestilling: " + Json.pretty(bestilling.getAareg()));
-
             bestilling.getEnvironments().forEach(env -> {
                 if (nonNull(bestilling.getAareg().get(0).getAmelding()) && !bestilling.getAareg().get(0).getAmelding().isEmpty()) {
                     sendAmelding(bestilling, dollyPerson, progress, result, env);
@@ -79,6 +76,11 @@ public class AaregClient implements ClientRegister {
             });
         }
         progress.setAaregStatus(result.length() > 1 ? result.substring(1) : null);
+    }
+
+    @Override
+    public void release(List<String> identer) {
+        identer.forEach(aaregConsumer::slettArbeidsforholdFraAlleMiljoer);
     }
 
     private void sendArbeidsforhold(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, boolean isOpprettEndre, StringBuilder result, String env) {
@@ -100,7 +102,6 @@ public class AaregClient implements ClientRegister {
                         .arbeidsforhold(arbforhold)
                         .environments(singletonList(env))
                         .build();
-                log.info("Sender Arbeidsforhold til Aareg: " + Json.pretty(aaregOpprettRequest));
                 appendResult(aaregConsumer.opprettArbeidsforhold(aaregOpprettRequest).getStatusPerMiljoe(), arbforhold.getArbeidsforholdID(), result);
             });
 
@@ -126,8 +127,6 @@ public class AaregClient implements ClientRegister {
                     .map(RsArbeidsgiver::getOrgnummer)
                     .collect(Collectors.toSet());
             List<OrganisasjonDTO> organisasjoner = organisasjonServiceConsumer.getOrganisasjoner(orgnumre, env);
-            log.info("Hentet organisajoner fra org-service: \n" + Json.pretty(organisasjoner));
-
             bestilling.getAareg().get(0).getAmelding().forEach(amelding -> {
 
 
@@ -148,10 +147,8 @@ public class AaregClient implements ClientRegister {
                 dtoMaanedMap.put(amelding.getMaaned(), mapperFacade.map(amelding, AMeldingDTO.class, context));
             });
 
-            log.info("Sender Amelding til service: " + Json.pretty(dtoMaanedMap.values()));
             Map<String, ResponseEntity<Void>> response = ameldingConsumer.putAmeldingList(dtoMaanedMap, env);
             response.forEach((maaned, resp) -> {
-                log.info("Response fra Amelding service: " + Json.pretty(resp));
                 if (resp.getStatusCode().is2xxSuccessful()) {
                     if (result.indexOf("OK") == NOT_FOUND) {
                         appendResult((singletonMap(env, "OK")), "1", result);
@@ -169,23 +166,6 @@ public class AaregClient implements ClientRegister {
             status.put(env, errorStatusDecoder.decodeRuntimeException(e));
             appendResult(status, "1", result);
         }
-    }
-
-    @Override
-    public void release(List<String> identer) {
-        identer.forEach(aaregConsumer::slettArbeidsforholdFraAlleMiljoer);
-    }
-
-    private static StringBuilder appendResult(Map<String, String> result, String arbeidsforholdId, StringBuilder builder) {
-        for (Map.Entry<String, String> entry : result.entrySet()) {
-            builder.append(',')
-                    .append(entry.getKey())
-                    .append(": arbforhold=")
-                    .append(arbeidsforholdId)
-                    .append('$')
-                    .append(entry.getValue().replaceAll(",", "&").replaceAll(":", "="));
-        }
-        return builder;
     }
 
     private void saveTransaksjonId(ResponseEntity<Void> response, String maaned, String ident, Long bestillingId, String miljoe) {
@@ -214,5 +194,17 @@ public class AaregClient implements ClientRegister {
             log.error("Feilet å konvertere transaksjonsId for aareg", e);
         }
         return null;
+    }
+
+    private static StringBuilder appendResult(Map<String, String> result, String arbeidsforholdId, StringBuilder builder) {
+        for (Map.Entry<String, String> entry : result.entrySet()) {
+            builder.append(',')
+                    .append(entry.getKey())
+                    .append(": arbforhold=")
+                    .append(arbeidsforholdId)
+                    .append('$')
+                    .append(entry.getValue().replaceAll(",", "&").replaceAll(":", "="));
+        }
+        return builder;
     }
 }

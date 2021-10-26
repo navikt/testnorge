@@ -28,32 +28,19 @@ public class PdlVergemaalMappingStrategy implements MappingStrategy {
     private static final String EMBETE_KODEVERK = "Vergemål_Fylkesmannsembeter";
     private final KodeverkConsumer kodeverkConsumer;
 
-    private static VergemaalType getSakstype(String vergemaalType) {
+    private Omfang getOmfang(String mandatType) {
 
-        if (isNull(vergemaalType)) {
+        if (isNull(mandatType)) {
             return null;
         }
 
-        switch (vergemaalType) {
-            case "MIM":
-                return VergemaalType.MIDLERTIDIG_FOR_MINDREAARIG;
-            case "ANN":
-                return VergemaalType.FORVALTNING_UTENFOR_VERGEMAAL;
-            case "VOK":
-                return VergemaalType.VOKSEN;
-            case "MIN":
-                return VergemaalType.MINDREAARIG;
-            case "VOM":
-                return VergemaalType.MIDLERTIDIG_FOR_VOKSEN;
-            case "FRE":
-                return VergemaalType.STADFESTET_FREMTIDSFULLMAKT;
-            case "EMA":
-                return VergemaalType.ENSLIG_MINDREAARIG_ASYLSOEKER;
-            case "EMF":
-                return VergemaalType.ENSLIG_MINDREAARIG_FLYKTNING;
-            default:
-                return null;
-        }
+        return switch (mandatType) {
+            case "FOR" -> Omfang.UTLENDINGSSAKER_PERSONLIGE_OG_OEKONOMISKE_INTERESSER;
+            case "CMB" -> Omfang.PERSONLIGE_OG_OEKONOMISKE_INTERESSER;
+            case "FIN" -> Omfang.OEKONOMISKE_INTERESSER;
+            case "PER" -> Omfang.PERSONLIGE_INTERESSER;
+            default -> null;
+        };
     }
 
     @Override
@@ -85,24 +72,22 @@ public class PdlVergemaalMappingStrategy implements MappingStrategy {
                 .register();
     }
 
-    private Omfang getOmfang(String mandatType) {
+    private static VergemaalType getSakstype(String vergemaalType) {
 
-        if (isNull(mandatType)) {
+        if (isNull(vergemaalType)) {
             return null;
         }
 
-        switch (mandatType) {
-            case "FOR":
-                return Omfang.UTLENDINGSSAKER_PERSONLIGE_OG_OEKONOMISKE_INTERESSER;
-            case "CMB":
-                return Omfang.PERSONLIGE_OG_OEKONOMISKE_INTERESSER;
-            case "FIN":
-                return Omfang.OEKONOMISKE_INTERESSER;
-            case "PER":
-                return Omfang.PERSONLIGE_INTERESSER;
-            case "ADP":
-            default:
-                return null;
-        }
+        return switch (vergemaalType) {
+            case "MIM" -> VergemaalType.MIDLERTIDIG_FOR_MINDREAARIG;
+            case "ANN" -> VergemaalType.FORVALTNING_UTENFOR_VERGEMAAL;
+            case "VOK" -> VergemaalType.VOKSEN;
+            case "MIN" -> VergemaalType.MINDREAARIG;
+            case "VOM" -> VergemaalType.MIDLERTIDIG_FOR_VOKSEN;
+            case "FRE" -> VergemaalType.STADFESTET_FREMTIDSFULLMAKT;
+            case "EMA" -> VergemaalType.ENSLIG_MINDREAARIG_ASYLSOEKER;
+            case "EMF" -> VergemaalType.ENSLIG_MINDREAARIG_FLYKTNING;
+            default -> null;
+        };
     }
 }

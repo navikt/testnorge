@@ -1,6 +1,7 @@
 package no.nav.dolly.security.oauth2.service;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.security.domain.DollyBackendClientCredential;
 import no.nav.dolly.security.oauth2.domain.AccessScopes;
 import no.nav.dolly.security.oauth2.domain.AccessToken;
@@ -16,7 +17,6 @@ import reactor.netty.http.client.HttpClient;
 import reactor.netty.transport.ProxyProvider;
 
 import java.net.URI;
-import java.security.AccessControlException;
 
 import static no.nav.dolly.util.CurrentAuthentication.getJwtToken;
 
@@ -45,11 +45,10 @@ class OnBehalfOfGenerateAccessTokenService {
 
             HttpClient httpClient = HttpClient
                     .create()
-                    .tcpConfiguration(tcpClient -> tcpClient.proxy(proxy -> proxy
+                    .proxy(proxy -> proxy
                             .type(ProxyProvider.Proxy.HTTP)
                             .host(uri.getHost())
-                            .port(uri.getPort())
-                    ));
+                            .port(uri.getPort()));
             builder.clientConnector(new ReactorClientHttpConnector(httpClient));
         }
 
@@ -58,7 +57,7 @@ class OnBehalfOfGenerateAccessTokenService {
 
     public AccessToken generateToken(AccessScopes accessScopes) {
         if (accessScopes.getScopes().isEmpty()) {
-            throw new AccessControlException("Kan ikke opprette accessToken uten clients");
+            throw new DollyFunctionalException("Kan ikke opprette accessToken uten clients");
         }
         String jwtToken = getJwtToken();
 

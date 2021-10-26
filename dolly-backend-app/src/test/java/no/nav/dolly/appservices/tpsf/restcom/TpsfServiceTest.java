@@ -1,155 +1,174 @@
 package no.nav.dolly.appservices.tpsf.restcom;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import no.nav.dolly.bestilling.tpsf.TpsfService;
+import no.nav.dolly.config.credentials.TpsForvalterenProxyProperties;
+import no.nav.dolly.domain.resultset.tpsf.RsSkdMeldingResponse;
+import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.exceptions.TpsfException;
+import no.nav.dolly.security.oauth2.domain.AccessToken;
+import no.nav.dolly.security.oauth2.service.TokenService;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Mono;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.serverError;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static no.nav.dolly.domain.resultset.IdentType.FNR;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.client.MockRestServiceServer;
-import org.springframework.web.client.RestTemplate;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import no.nav.dolly.bestilling.errorhandling.RestTemplateFailure;
-import no.nav.dolly.bestilling.tpsf.TpsfService;
-import no.nav.dolly.domain.resultset.tpsf.RsSkdMeldingResponse;
-import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
-import no.nav.dolly.domain.resultset.tpsf.TpsfIdenterMiljoer;
-import no.nav.dolly.exceptions.TpsfException;
-import no.nav.dolly.properties.ProvidersProps;
-
-@Ignore
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
-@RestClientTest(TpsfService.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource(locations = "classpath:application-test.yaml")
+@AutoConfigureWireMock(port = 0)
 public class TpsfServiceTest {
 
-    private static final TpsfBestilling standardTpsfBestilling = new TpsfBestilling();
-    private static final String standardIdent = "123";
-    private static final List<String> standardIdenter = new ArrayList<>(singleton(standardIdent));
-    private static final List<String> standardMiljoer_u1_t1 = Arrays.asList("u1", "t1");
+    private static final TpsfBestilling STANDARD_TPSF_BESTILLING = TpsfBestilling.builder().identtype(FNR).build();
+    private static final String STANDARD_IDENT = "123";
+    private static final List<String> STANDARD_IDENTER = new ArrayList<>(singleton(STANDARD_IDENT));
+    private static final List<String> STANDARD_MILJOER_U1_T1 = Arrays.asList("u1", "t1");
 
-    private MockRestServiceServer server;
 
-    @Autowired
-    private RestTemplate restTemplate;
+    @MockBean
+    private TokenService tokenService;
+
+    @MockBean
+    private ErrorStatusDecoder errorStatusDecoder;
+
+    @Mock
+    private ObjectMapper objectMapper;
 
     @Autowired
     private TpsfService tpsfService;
 
-    @MockBean
-    private ObjectMapper objectMapper;
-
-    @MockBean
-    private ProvidersProps providersProps;
-
     @Before
     public void setup() {
 
-        standardTpsfBestilling.setIdenttype(FNR);
+        WireMock.reset();
 
-        when(providersProps.getTpsf())
-                .thenReturn(ProvidersProps.Tpsf.builder()
-                        .url("https://localhost:8080")
-                        .build());
-        server = MockRestServiceServer.createServer(restTemplate);
+        when(tokenService.generateToken(ArgumentMatchers.any(TpsForvalterenProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
     }
 
     @Test
-    public void opprettPersonerTpsf_hvisSuksessfultKallReturnerListeAvStringIdenter() throws Exception {
-        standardTpsfBestilling.setIdenttype(FNR);
-        ResponseEntity<Object> ob = new ResponseEntity<>("body", HttpStatus.OK);
+    public void opprettPersonerTpsf_hvisSuksessfultKallReturnerListeAvStringIdenter() throws JsonProcessingException {
 
-        server.expect(requestTo("https://localhost:8080/api/v1/dolly/testdata/personer"))
-                .andExpect(method(HttpMethod.POST))
-                .andExpect(content().string(asJsonString(standardTpsfBestilling)))
-                .andRespond(withSuccess(asJsonString(ob), MediaType.APPLICATION_JSON));
+        stubPostTpsfDataReturnsOk();
 
-        when(objectMapper.convertValue(anyMap(), eq(List.class))).thenReturn(singletonList(FNR));
+        when(objectMapper.convertValue(anyList(), eq(List.class))).thenReturn(singletonList(FNR));
 
-        List<String> response = tpsfService.opprettIdenterTpsf(standardTpsfBestilling);
+        List<String> response = tpsfService.opprettIdenterTpsf(STANDARD_TPSF_BESTILLING);
 
-        assertThat(response.get(0), is(FNR));
+        assertThat(response.get(0), is(STANDARD_IDENT));
     }
 
     @Test(expected = TpsfException.class)
     public void opprettPersonerTpsf_hvisTpsfKasterExceptionSaaKastesTpsfException() throws Exception {
 
-        RestTemplateFailure failure = RestTemplateFailure.builder().error("tekst").status("feil").message("melding").build();
+        WebClientResponseException failure = WebClientResponseException.create(500, "Error", null, null, null);
 
-        server.expect(requestTo("https://localhost:8080/api/v1/dolly/testdata/personer"))
-                .andExpect(method(HttpMethod.POST))
-                .andExpect(content().string(asJsonString(standardTpsfBestilling)))
-                .andRespond(withServerError());
+        stubPostTpsfDataThrowExpection();
 
-        when(objectMapper.readValue(any(byte[].class), eq(RestTemplateFailure.class))).thenReturn(failure);
+        when(objectMapper.readValue(any(byte[].class), eq(WebClientResponseException.class))).thenReturn(failure);
 
-        tpsfService.opprettIdenterTpsf(standardTpsfBestilling);
+        tpsfService.opprettIdenterTpsf(STANDARD_TPSF_BESTILLING);
     }
 
     @Test(expected = TpsfException.class)
     public void sendIdenterTilTpsFraTPSF_hvisTpsfKasterExceptionSaaKastesTpsfException() throws Exception {
 
-        RestTemplateFailure failure = RestTemplateFailure.builder().error("tekst").status("feil").message("melding").build();
+        WebClientResponseException failure = WebClientResponseException.create(500, "Error", null, null, null);
 
-        server.expect(requestTo("https://localhost:8080/api/v1/dolly/testdata/tilTpsFlere"))
-                .andExpect(method(HttpMethod.POST))
-                .andExpect(content().string(asJsonString(new TpsfIdenterMiljoer(standardIdenter, standardMiljoer_u1_t1))))
-                .andRespond(withServerError());
+        stubPostTpsfDataForFlereThrowExpection();
 
-        when(objectMapper.readValue(any(byte[].class), eq(RestTemplateFailure.class))).thenReturn(failure);
+        when(objectMapper.readValue(any(byte[].class), eq(WebClientResponseException.class))).thenReturn(failure);
 
-        tpsfService.sendIdenterTilTpsFraTPSF(standardIdenter, standardMiljoer_u1_t1);
+        tpsfService.sendIdenterTilTpsFraTPSF(STANDARD_IDENTER, STANDARD_MILJOER_U1_T1);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void sendIdenterTilTpsFraTPSF_hvisIngenMiljoerErSpesifisertSaaKastesIllegalArgumentException() {
         List<String> tomListe = new ArrayList<>();
-        tpsfService.sendIdenterTilTpsFraTPSF(standardIdenter, tomListe);
+        tpsfService.sendIdenterTilTpsFraTPSF(STANDARD_IDENTER, tomListe);
     }
 
     @Test
-    public void sendTilTpsFraTPSF_happyPath() throws Exception {
+    public void sendTilTpsFraTPSF_happyPath() throws JsonProcessingException {
 
-        ResponseEntity<Object> ob = new ResponseEntity<>("{\"gruppeid\":\"1\"}", HttpStatus.OK);
         RsSkdMeldingResponse meldingResponse = RsSkdMeldingResponse.builder().gruppeid(1L).build();
 
-        server.expect(requestTo("https://localhost:8080/api/v1/dolly/testdata/tilTpsFlere"))
-                .andExpect(method(HttpMethod.POST))
-                .andExpect(content().string(asJsonString(new TpsfIdenterMiljoer(standardIdenter, standardMiljoer_u1_t1))))
-                .andRespond(withSuccess(asJsonString(ob), MediaType.APPLICATION_JSON));
+        stubPostTpsfDataForFlereReturnsOk(meldingResponse);
 
         when(objectMapper.convertValue(anyMap(), eq(RsSkdMeldingResponse.class))).thenReturn(meldingResponse);
 
-        RsSkdMeldingResponse response = tpsfService.sendIdenterTilTpsFraTPSF(standardIdenter, standardMiljoer_u1_t1);
+        RsSkdMeldingResponse response = tpsfService.sendIdenterTilTpsFraTPSF(STANDARD_IDENTER, STANDARD_MILJOER_U1_T1);
 
-        assertThat(response, is(meldingResponse));
+        assertThat(response.getGruppeid(), is(meldingResponse.getGruppeid()));
+    }
+
+    private void stubPostTpsfDataForFlereThrowExpection() {
+
+        stubFor(post(urlPathMatching("(.*)/tpsf/api/v1/dolly/testdata/tilTpsFlere"))
+                .willReturn(serverError()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(String.valueOf(List.of(STANDARD_IDENT)))
+                ));
+    }
+
+    private void stubPostTpsfDataForFlereReturnsOk(RsSkdMeldingResponse meldingResponse) throws JsonProcessingException {
+
+        stubFor(post(urlPathMatching("(.*)/tpsf/api/v1/dolly/testdata/tilTpsFlere"))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(asJsonString(meldingResponse))
+                ));
+    }
+
+    private void stubPostTpsfDataThrowExpection() {
+
+        stubFor(post(urlPathMatching("(.*)/tpsf/api/v1/dolly/testdata/personer"))
+                .willReturn(serverError()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{}")
+                ));
+    }
+
+    private void stubPostTpsfDataReturnsOk() throws JsonProcessingException {
+
+        stubFor(post(urlPathMatching("(.*)/tpsf/api/v1/dolly/testdata/personer"))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(asJsonString(List.of(STANDARD_IDENT)))
+                ));
     }
 
     private static String asJsonString(final Object object) throws JsonProcessingException {

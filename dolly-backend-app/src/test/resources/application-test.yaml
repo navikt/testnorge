@@ -8,6 +8,48 @@ CLIENT_ID: dummy
 CLIENT_SECRET: dummy
 UDI_CLIENT_ID: dummy
 
+consumers:
+  testnav-kodeverk-proxy:
+    name: kodeverk-mock
+    namespace: dolly
+    url: http://localhost:${wiremock.server.port:0}/kodeverk
+    cluster: dev-fss
+  testnav-krrstub-proxy:
+    name: krrstub-mock
+    namespace: dolly
+    url: http://localhost:${wiremock.server.port:0}/krrstub
+    cluster: dev-fss
+  testnav-inst-proxy:
+    name: inst-mock
+    namespace: dolly
+    url: http://localhost:${wiremock.server.port:0}/inst
+    cluster: dev-fss
+  testnav-sigrunstub-proxy:
+    name: sigrunstub-mock
+    namespace: dolly
+    url: http://localhost:${wiremock.server.port:0}/sigrunstub
+    cluster: dev-fss
+  testnav-testnorge-aareg-proxy:
+    name: aareg-mock
+    namespace: dolly
+    url: http://localhost:${wiremock.server.port:0}/aareg
+    cluster: dev-fss
+  testnav-pdl-proxy:
+    name: pdl-mock
+    namespace: dolly
+    url: http://localhost:${wiremock.server.port:0}/pdl
+    cluster: dev-fss
+  tps-forvalteren-proxy:
+    name: tps-mock
+    namespace: dolly
+    url: http://localhost:${wiremock.server.port:0}/tpsf
+    cluster: dev-fss
+  testnav-arena-forvalteren-proxy:
+    name: arena-forvalteren-mock
+    namespace: dolly
+    url: http://localhost:${wiremock.server.port:0}/arenaforvalter
+    cluster: dev-fss
+
 sts:
   token:
     provider:
@@ -15,6 +57,9 @@ sts:
       preprod: dummy
 
 spring:
+  cloud:
+    vault:
+      token: test
   datasource:
     url: jdbc:h2:mem:dollyDB
     username: sa

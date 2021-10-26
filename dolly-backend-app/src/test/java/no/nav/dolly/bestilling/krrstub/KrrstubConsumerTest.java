@@ -1,83 +1,107 @@
 package no.nav.dolly.bestilling.krrstub;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
-
+import no.nav.dolly.config.credentials.KrrstubProxyProperties;
+import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
+import no.nav.dolly.exceptions.DollyFunctionalException;
+import no.nav.dolly.security.oauth2.domain.AccessToken;
+import no.nav.dolly.security.oauth2.service.TokenService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpMethod;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.client.MockRestServiceServer;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
+import reactor.core.publisher.Mono;
 
-import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
-import no.nav.dolly.properties.ProvidersProps;
+import static com.github.tomakehurst.wiremock.client.WireMock.delete;
+import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static wiremock.org.hamcrest.MatcherAssert.assertThat;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
-@RestClientTest(KrrstubConsumer.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestPropertySource(locations = "classpath:application-test.yaml")
+@AutoConfigureWireMock(port = 0)
 public class KrrstubConsumerTest {
 
     private static final String EPOST = "morro.pa@landet.no";
     private static final String MOBIL = "11111111";
-    private static final boolean RESVERT = true;
-    private static final String BASE_URL = "baseUrl";
-
-    private MockRestServiceServer server;
-
-    @Autowired
-    private RestTemplate restTemplate;
+    private static final Long IDENT = 12345678901L;
+    private static final boolean RESERVERT = true;
 
     @MockBean
-    private ProvidersProps providersProps;
+    private TokenService tokenService;
 
     @Autowired
     private KrrstubConsumer krrStubConsumer;
 
     @Before
     public void setup() {
-        server = MockRestServiceServer.createServer(restTemplate);
+
+        when(tokenService.generateToken(ArgumentMatchers.any(KrrstubProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
     }
 
     @Test
     public void createDigitalKontaktdata_Ok() {
 
-        when(providersProps.getKrrStub()).thenReturn(ProvidersProps.KrrStub.builder()
-                .url(BASE_URL).build());
+        stubPostKrrData();
 
-        server.expect(requestTo("baseUrl/api/v1/kontaktinformasjon"))
-                .andExpect(method(HttpMethod.POST))
-                .andRespond(withSuccess());
-
-        krrStubConsumer.createDigitalKontaktdata(DigitalKontaktdata.builder()
+        ResponseEntity<Object> response = krrStubConsumer.createDigitalKontaktdata(DigitalKontaktdata.builder()
                 .epost(EPOST)
                 .mobil(MOBIL)
-                .reservert(RESVERT)
+                .reservert(RESERVERT)
                 .build());
 
-        verify(providersProps).getKrrStub();
+        assertThat("Response should be 200 successful", response.getStatusCode().is2xxSuccessful());
     }
 
-    @Test(expected = RuntimeException.class)
-    public void createDigitalKontaktdata_Feilet() {
+    @Test
+    public void deleteDigitalKontaktdata_Ok() {
 
-        when(providersProps.getKrrStub()).thenThrow(HttpClientErrorException.class);
+        stubDeleteKrrData();
+
+        ResponseEntity<Object> response = krrStubConsumer.deleteDigitalKontaktdata(IDENT);
+
+        assertThat("Response should be 200 successful", response.getStatusCode().is2xxSuccessful());
+    }
+
+    @Test(expected = DollyFunctionalException.class)
+    public void createDigitalKontaktdata_GenerateTokenFailed_ThrowsDollyFunctionalException() {
+
+        when(tokenService.generateToken(any(KrrstubProxyProperties.class))).thenReturn(Mono.empty());
 
         krrStubConsumer.createDigitalKontaktdata(DigitalKontaktdata.builder()
                 .epost(EPOST)
                 .mobil(MOBIL)
-                .reservert(RESVERT)
+                .reservert(RESERVERT)
                 .build());
 
-        verify(providersProps).getKrrStub();
+        verify(tokenService).generateToken(any(KrrstubProxyProperties.class));
+    }
+
+    private void stubPostKrrData() {
+
+        stubFor(post(urlPathMatching("(.*)/api/v1/kontaktinformasjon"))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")));
+    }
+
+    private void stubDeleteKrrData() {
+
+        stubFor(delete(urlPathMatching("(.*)/api/v1/kontaktinformasjon/" + IDENT))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")));
     }
 }

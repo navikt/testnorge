@@ -37,7 +37,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -254,7 +254,7 @@ public class DollyBestillingService {
 
             oppdaterProgress(bestilling, progress);
 
-        } catch (HttpClientErrorException e) {
+        } catch (WebClientResponseException e) {
             try {
                 String message = (String) objectMapper.readValue(e.getResponseBodyAsString(), Map.class).get("message");
                 log.warn("Bestilling med id={} på ident={} ble avsluttet med feil: {}", bestilling.getId(), ident, message);

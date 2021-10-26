@@ -108,7 +108,7 @@ public class TestgruppeService {
     public List<Testgruppe> saveGrupper(Collection<Testgruppe> testgrupper) {
         try {
             return testgrupper.stream()
-                    .map(gruppe -> testgruppeRepository.save(gruppe))
+                    .map(testgruppeRepository::save)
                     .collect(Collectors.toList());
         } catch (DataIntegrityViolationException e) {
             throw new ConstraintViolationException("En Testgruppe DB constraint er brutt! Kan ikke lagre testgruppe. Error: " + e.getMessage(), e);

@@ -43,11 +43,10 @@ public class TokenService {
 
             HttpClient httpClient = HttpClient
                     .create()
-                    .tcpConfiguration(tcpClient -> tcpClient.proxy(proxy -> proxy
+                    .proxy(proxy -> proxy
                             .type(ProxyProvider.Proxy.HTTP)
                             .host(uri.getHost())
-                            .port(uri.getPort())
-                    ));
+                            .port(uri.getPort()));
             builder.clientConnector(new ReactorClientHttpConnector(httpClient));
         }
 

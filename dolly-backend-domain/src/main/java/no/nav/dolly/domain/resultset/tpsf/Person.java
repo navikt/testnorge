@@ -146,15 +146,10 @@ public class Person {
             return false;
 
         } else {
-            switch (getSivilstand()) {
-                case GIFT:
-                case REPA:
-                case SEPR:
-                case SEPA:
-                    return true;
-                default:
-                    return false;
-            }
+            return switch (getSivilstand()) {
+                case GIFT, REPA, SEPR, SEPA -> true;
+                default -> false;
+            };
         }
     }
 

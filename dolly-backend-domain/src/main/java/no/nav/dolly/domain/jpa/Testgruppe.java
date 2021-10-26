@@ -101,10 +101,8 @@ public class Testgruppe {
         if (this == o)
             return true;
 
-        if (!(o instanceof Testgruppe))
+        if (!(o instanceof Testgruppe that))
             return false;
-
-        Testgruppe that = (Testgruppe) o;
 
         return new EqualsBuilder()
                 .append(getId(), that.getId())

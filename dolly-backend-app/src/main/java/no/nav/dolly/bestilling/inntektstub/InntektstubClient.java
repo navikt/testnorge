@@ -14,10 +14,8 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static java.lang.String.format;
@@ -63,12 +61,12 @@ public class InntektstubClient implements ClientRegister {
 
     private boolean existInntekter(List<Inntektsinformasjon> inntekterRequest) {
 
-        ResponseEntity<Inntektsinformasjon[]> inntekter =
+        ResponseEntity<List<Inntektsinformasjon>> inntekter =
                 inntektstubConsumer.getInntekter(inntekterRequest.get(0).getNorskIdent());
 
-        if (inntekter.hasBody() && inntekter.getBody().length > 0) {
+        if (inntekter.hasBody() && !inntekter.getBody().isEmpty()) {
 
-            return CompareUtil.isSubsetOf(inntekterRequest, Arrays.asList(inntekter.getBody()));
+            return CompareUtil.isSubsetOf(inntekterRequest, inntekter.getBody());
         }
         return false;
     }
@@ -76,11 +74,11 @@ public class InntektstubClient implements ClientRegister {
     private void opprettInntekter(List<Inntektsinformasjon> inntektsinformasjon, BestillingProgress progress) {
 
         try {
-            ResponseEntity<Inntektsinformasjon[]> response = inntektstubConsumer.postInntekter(inntektsinformasjon);
+            ResponseEntity<List<Inntektsinformasjon>> response = inntektstubConsumer.postInntekter(inntektsinformasjon);
 
-            if (response.hasBody() && response.getBody().length > 0) {
+            if (response.hasBody() && !response.getBody().isEmpty()) {
 
-                progress.setInntektstubStatus(Arrays.stream(response.getBody())
+                progress.setInntektstubStatus(response.getBody().stream()
                         .filter(inntekt -> isNotBlank(inntekt.getFeilmelding()))
                         .findFirst()
                         .orElse(Inntektsinformasjon.builder()
@@ -104,9 +102,10 @@ public class InntektstubClient implements ClientRegister {
     private void deleteInntekter(String hovedperson) {
 
         try {
-            inntektstubConsumer.deleteInntekter(hovedperson);
+            ResponseEntity<Inntektsinformasjon> response = inntektstubConsumer.deleteInntekter(hovedperson);
+            log.info("Slettet inntektsinformasjon om ident {} i Inntektstub: {}", hovedperson, nonNull(response) ? response.getBody() : null);
 
-        } catch (HttpClientErrorException | HttpServerErrorException e) {
+        } catch (WebClientResponseException e) {
 
             log.error("Feilet å slette informasjon om ident {} i Inntektstub. Feilmelding: {}", hovedperson, e.getResponseBodyAsString());
 

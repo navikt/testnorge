@@ -1,8 +1,5 @@
 package no.nav.dolly.consumer.jira;
 
-import static java.lang.String.format;
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.properties.JiraProps;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -13,6 +10,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
+import static java.lang.String.format;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Component
 @RequiredArgsConstructor

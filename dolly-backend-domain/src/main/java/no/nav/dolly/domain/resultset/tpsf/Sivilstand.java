@@ -26,6 +26,20 @@ public class Sivilstand {
     private LocalDateTime sivilstandRegdato;
     private Person personRelasjonMed;
 
+    @JsonIgnore
+    public boolean isGift() {
+
+        if (isNull(getSivilstand())) {
+            return false;
+
+        } else {
+            return switch (getSivilstand()) {
+                case GIFT, REPA, SEPR, SEPA -> true;
+                default -> false;
+            };
+        }
+    }
+
     public enum Sivilstatus {
         UGIF,
         GIFT,
@@ -37,24 +51,5 @@ public class Sivilstand {
         SKPA,
         GJPA,
         SAMB
-    }
-
-    @JsonIgnore
-    public boolean isGift() {
-
-        if (isNull(getSivilstand())) {
-            return false;
-
-        } else {
-            switch (getSivilstand()) {
-                case GIFT:
-                case REPA:
-                case SEPR:
-                case SEPA:
-                    return true;
-                default:
-                    return false;
-            }
-        }
     }
 }

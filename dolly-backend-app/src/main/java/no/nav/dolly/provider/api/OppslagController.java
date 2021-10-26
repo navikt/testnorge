@@ -1,12 +1,31 @@
 package no.nav.dolly.provider.api;
 
-import static java.util.Arrays.asList;
-import static no.nav.dolly.config.CachingConfig.CACHE_KODEVERK;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import no.nav.dolly.bestilling.aareg.AaregConsumer;
+import no.nav.dolly.bestilling.aareg.ArbeidsforholdServiceConsumer;
+import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdResponse;
+import no.nav.dolly.bestilling.inntektstub.InntektstubConsumer;
+import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
+import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer;
+import no.nav.dolly.bestilling.sykemelding.HelsepersonellConsumer;
+import no.nav.dolly.bestilling.sykemelding.domain.dto.HelsepersonellListeDTO;
+import no.nav.dolly.consumer.fastedatasett.DatasettType;
+import no.nav.dolly.consumer.fastedatasett.FasteDatasettConsumer;
+import no.nav.dolly.consumer.generernavn.GenererNavnConsumer;
+import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
+import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
+import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse;
+import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
+import no.nav.dolly.domain.PdlPerson.Navn;
+import no.nav.dolly.domain.resultset.SystemTyper;
+import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
+import no.nav.dolly.service.InntektsmeldingEnumService;
+import no.nav.dolly.service.InntektsmeldingEnumService.EnumTypes;
+import no.nav.dolly.service.RsTransaksjonMapping;
+import no.nav.dolly.service.TransaksjonMappingService;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,27 +42,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import no.nav.dolly.bestilling.aareg.AaregConsumer;
-import no.nav.dolly.bestilling.aareg.ArbeidsforholdServiceConsumer;
-import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdResponse;
-import no.nav.dolly.bestilling.inntektstub.InntektstubConsumer;
-import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
-import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer;
-import no.nav.dolly.bestilling.sykemelding.HelsepersonellConsumer;
-import no.nav.dolly.bestilling.sykemelding.domain.dto.HelsepersonellListeDTO;
-import no.nav.dolly.consumer.fastedatasett.DatasettType;
-import no.nav.dolly.consumer.fastedatasett.FasteDatasettConsumer;
-import no.nav.dolly.consumer.identpool.IdentpoolConsumer;
-import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
-import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
-import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse;
-import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
-import no.nav.dolly.domain.resultset.SystemTyper;
-import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
-import no.nav.dolly.service.InntektsmeldingEnumService;
-import no.nav.dolly.service.InntektsmeldingEnumService.EnumTypes;
-import no.nav.dolly.service.RsTransaksjonMapping;
-import no.nav.dolly.service.TransaksjonMappingService;
+import static java.util.Arrays.asList;
+import static no.nav.dolly.config.CachingConfig.CACHE_KODEVERK;
 
 @RestController
 @RequiredArgsConstructor
@@ -58,7 +58,7 @@ public class OppslagController {
     private final InntektstubConsumer inntektstubConsumer;
     private final FasteDatasettConsumer fasteDatasettConsumer;
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
-    private final IdentpoolConsumer identpoolConsumer;
+    private final GenererNavnConsumer genererNavnConsumer;
     private final InntektsmeldingEnumService inntektsmeldingEnumService;
     private final TransaksjonMappingService transaksjonMappingService;
     private final HelsepersonellConsumer helsepersonellConsumer;
@@ -142,7 +142,7 @@ public class OppslagController {
 
     @GetMapping("/popp/inntekt/{ident}/{miljoe}")
     @Operation(description = "Hent inntekter fra POPP-register")
-    public ResponseEntity getPoppInntekter(@PathVariable String ident, @PathVariable String miljoe) {
+    public JsonNode getPoppInntekter(@PathVariable String ident, @PathVariable String miljoe) {
         return pensjonforvalterConsumer.getInntekter(ident, miljoe);
     }
 
@@ -153,9 +153,9 @@ public class OppslagController {
     }
 
     @GetMapping("/personnavn")
-    @Operation(description = "Henter 10 syntetiske personnavn")
-    public ResponseEntity getPersonnavn() {
-        return identpoolConsumer.getPersonnavn();
+    @Operation(description = "Henter et gitt antall syntetiske personnavn")
+    public ResponseEntity<List<Navn>> getPersonnavn(@RequestParam(required = false, defaultValue = "10") Integer antall) {
+        return genererNavnConsumer.getPersonnavn(antall);
     }
 
     @GetMapping("/inntektsmelding/{enumtype}")

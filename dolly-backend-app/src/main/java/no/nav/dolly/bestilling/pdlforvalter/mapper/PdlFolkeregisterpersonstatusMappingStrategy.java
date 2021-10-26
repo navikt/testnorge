@@ -16,12 +16,13 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 @Component
 public class PdlFolkeregisterpersonstatusMappingStrategy implements MappingStrategy {
 
-    @Override public void register(MapperFactory factory) {
+    @Override
+    public void register(MapperFactory factory) {
         factory.classMap(Person.class, PdlFolkeregisterpersonstatus.class)
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(Person person,
-                            PdlFolkeregisterpersonstatus personstatus, MappingContext context) {
+                                        PdlFolkeregisterpersonstatus personstatus, MappingContext context) {
 
                         personstatus.setKilde(CONSUMER);
                         personstatus.setMaster(Master.FREG);
@@ -37,25 +38,15 @@ public class PdlFolkeregisterpersonstatusMappingStrategy implements MappingStrat
         if (isNull(status)) {
             return Folkeregisterpersonstatus.MIDLERTIDIG;
         }
-        switch (status) {
-        case "BOSA":
-            return Folkeregisterpersonstatus.BOSATT;
-        case "DØD":
-        case "DØDD":
-            return Folkeregisterpersonstatus.DOED;
-        case "FØDR":
-            return Folkeregisterpersonstatus.FOEDSELSREGISTRERT;
-        case "FOSV":
-            return Folkeregisterpersonstatus.FORSVUNNET;
-        case "UREG":
-        case "UTAN":
-            return Folkeregisterpersonstatus.IKKE_BOSATT;
-        case "UTPE":
-            return Folkeregisterpersonstatus.OPPHOERT;
-        case "UTVA":
-            return Folkeregisterpersonstatus.UTFLYTTET;
-        default:
-            return Folkeregisterpersonstatus.MIDLERTIDIG;
-        }
+        return switch (status) {
+            case "BOSA" -> Folkeregisterpersonstatus.BOSATT;
+            case "DØD", "DØDD" -> Folkeregisterpersonstatus.DOED;
+            case "FØDR" -> Folkeregisterpersonstatus.FOEDSELSREGISTRERT;
+            case "FOSV" -> Folkeregisterpersonstatus.FORSVUNNET;
+            case "UREG", "UTAN" -> Folkeregisterpersonstatus.IKKE_BOSATT;
+            case "UTPE" -> Folkeregisterpersonstatus.OPPHOERT;
+            case "UTVA" -> Folkeregisterpersonstatus.UTFLYTTET;
+            default -> Folkeregisterpersonstatus.MIDLERTIDIG;
+        };
     }
 }

@@ -45,7 +45,7 @@ import no.nav.dolly.util.IdentTypeUtil;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.List;
 
@@ -72,15 +72,6 @@ public class PdlForvalterClient implements ClientRegister {
     private final DollyPersonCache dollyPersonCache;
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
-
-    private static void appendName(String utenlandsIdentifikasjonsnummer, StringBuilder builder) {
-        builder.append('$')
-                .append(utenlandsIdentifikasjonsnummer);
-    }
-
-    private static void appendOkStatus(StringBuilder builder) {
-        builder.append("&OK");
-    }
 
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -428,7 +419,7 @@ public class PdlForvalterClient implements ClientRegister {
         try {
             dollyPerson.getPersondetaljer().forEach(person -> pdlForvalterConsumer.deleteIdent(person.getIdent()));
 
-        } catch (HttpClientErrorException e) {
+        } catch (WebClientResponseException e) {
 
             if (!HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
                 log.error(e.getMessage(), e);
@@ -443,5 +434,14 @@ public class PdlForvalterClient implements ClientRegister {
 
         builder.append('&')
                 .append(errorStatusDecoder.decodeRuntimeException(exception));
+    }
+
+    private static void appendName(String utenlandsIdentifikasjonsnummer, StringBuilder builder) {
+        builder.append('$')
+                .append(utenlandsIdentifikasjonsnummer);
+    }
+
+    private static void appendOkStatus(StringBuilder builder) {
+        builder.append("&OK");
     }
 }

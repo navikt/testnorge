@@ -3,12 +3,12 @@ package no.nav.dolly.bestilling.udistub;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.udistub.domain.UdiPerson;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonResponse;
+import no.nav.dolly.config.credentials.UdistubServerProperties;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.properties.ProvidersProps;
-import no.nav.dolly.security.oauth2.domain.AccessScopes;
+import no.nav.dolly.security.oauth2.config.NaisServerProperties;
 import no.nav.dolly.security.oauth2.service.TokenService;
-import org.springframework.beans.factory.annotation.Value;
+import no.nav.dolly.util.CheckAliveUtil;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -16,6 +16,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.Map;
 import java.util.UUID;
 
 import static java.lang.String.format;
@@ -30,22 +31,21 @@ public class UdiStubConsumer {
     private static final String NAV_PERSON_IDENT = "Nav-Personident";
     private static final String UDISTUB_PERSON = "/api/v1/person";
 
-    private final TokenService accessTokenService;
     private final WebClient webClient;
     private final ErrorStatusDecoder errorStatusDecoder;
-    private final String clientId;
+    private final TokenService tokenService;
+    private final NaisServerProperties serviceProperties;
 
     public UdiStubConsumer(
             ErrorStatusDecoder errorStatusDecoder,
             TokenService accessTokenService,
-            ProvidersProps providersProps,
-            @Value("${UDI_STUB_CLIENT_ID}") String clientId
+            UdistubServerProperties serverProperties
     ) {
-        this.accessTokenService = accessTokenService;
+        this.tokenService = accessTokenService;
+        this.serviceProperties = serverProperties;
         this.webClient = WebClient.builder()
-                .baseUrl(providersProps.getUdiStub().getUrl()).build();
+                .baseUrl(serverProperties.getUrl()).build();
         this.errorStatusDecoder = errorStatusDecoder;
-        this.clientId = clientId;
     }
 
     @Timed(name = "providers", tags = { "operation", "udi_getPerson" })
@@ -54,10 +54,11 @@ public class UdiStubConsumer {
         try {
             return webClient
                     .get()
-                    .uri(uriBuilder -> uriBuilder.path(UDISTUB_PERSON + "/" + ident).build())
+                    .uri(uriBuilder -> uriBuilder.path(UDISTUB_PERSON)
+                            .pathSegment(ident).build())
                     .header(HEADER_NAV_CALL_ID, getNavCallId())
                     .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                    .header(HttpHeaders.AUTHORIZATION, getBearerToken())
+                    .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
                     .retrieve()
                     .bodyToMono(UdiPersonResponse.class)
                     .block();
@@ -76,7 +77,7 @@ public class UdiStubConsumer {
                 .accept(MediaType.APPLICATION_JSON)
                 .header(HEADER_NAV_CALL_ID, getNavCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
+                .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
                 .body(BodyInserters.fromPublisher(Mono.just(udiPerson), UdiPerson.class))
                 .retrieve()
                 .bodyToMono(UdiPersonResponse.class)
@@ -92,7 +93,7 @@ public class UdiStubConsumer {
                 .uri(uriBuilder -> uriBuilder.path(UDISTUB_PERSON).build())
                 .header(HEADER_NAV_CALL_ID, getNavCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
+                .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
                 .body(BodyInserters.fromPublisher(Mono.just(udiPerson), UdiPerson.class))
                 .retrieve()
                 .bodyToMono(UdiPersonResponse.class)
@@ -109,8 +110,8 @@ public class UdiStubConsumer {
                     .header(HEADER_NAV_CALL_ID, getNavCallId())
                     .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                     .header(NAV_PERSON_IDENT, ident)
-                    .header(HttpHeaders.AUTHORIZATION, getBearerToken())
-                    .exchange()
+                    .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                    .retrieve().toBodilessEntity()
                     .block();
 
         } catch (RuntimeException e) {
@@ -118,11 +119,8 @@ public class UdiStubConsumer {
         }
     }
 
-    private String getBearerToken() {
-        String tokenValue = accessTokenService.generateToken(
-                new AccessScopes("api://" + clientId + "/.default")
-        ).block().getTokenValue();
-        return "Bearer " + tokenValue;
+    public Map<String, String> checkAlive() {
+        return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 
     private static String getNavCallId() {

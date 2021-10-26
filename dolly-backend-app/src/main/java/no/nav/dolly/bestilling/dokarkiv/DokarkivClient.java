@@ -17,7 +17,6 @@ import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.TransaksjonMappingService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -25,7 +24,6 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static java.util.Objects.requireNonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -64,13 +62,13 @@ public class DokarkivClient implements ClientRegister {
 
                 if (!transaksjonMappingService.existAlready(DOKARKIV, dollyPerson.getHovedperson(), environment) || isOpprettEndre) {
                     try {
-                        ResponseEntity<DokarkivResponse> response = dokarkivConsumer.postDokarkiv(environment, dokarkivRequest);
-                        if (response.hasBody()) {
+                        DokarkivResponse response = dokarkivConsumer.postDokarkiv(environment, dokarkivRequest).block();
+                        if (nonNull(response)) {
                             status.append(isNotBlank(status) ? ',' : "")
                                     .append(environment)
                                     .append(":OK");
 
-                            saveTransaksjonId(requireNonNull(response.getBody()), dollyPerson.getHovedperson(),
+                            saveTransaksjonId(response, dollyPerson.getHovedperson(),
                                     progress.getBestilling().getId(), environment);
                         }
 

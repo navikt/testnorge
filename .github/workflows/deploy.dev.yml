@@ -4,7 +4,8 @@ on:
   push:
     branches:
       - master
-      - feature/nybestilling_via_pdl_forvalter
+      - feature/pdl-testdata_breaking_changes
+      - bytte-til-proxy-endepunkt
   workflow_dispatch:
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/dolly-backend:${{ github.sha }}

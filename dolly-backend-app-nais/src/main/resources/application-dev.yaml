@@ -1,4 +1,3 @@
-
 consumers:
   testnav-helsepersonell-service:
     name: testnav-helsepersonell-service
@@ -20,3 +19,14 @@ consumers:
     namespace: dolly
     url: https://testnav-pdl-forvalter-dev.dev.intern.nav.no
     cluster: dev-gcp
+  tps-forvalteren-proxy:
+    url: https://tps-forvalteren-dev-proxy.dev.intern.nav.no
+    name: tps-forvalteren-dev-proxy
+    cluster: dev-fss
+    namespace: dolly
+  testnav-udistub-proxy:
+    name: testnav-udistub-proxy
+    namespace: dolly
+    #    url: https://testnav-udistub-proxy.dev-fss-pub.nais.io/udistub-dev
+    url: https://testnav-udistub-proxy.dev.intern.nav.no/udistub-dev
+    cluster: dev-fss

@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +37,7 @@ public class InstdataClient implements ClientRegister {
         if (!bestilling.getInstdata().isEmpty()) {
 
             StringBuilder status = new StringBuilder();
-            List<String> availEnvironments = new ArrayList<>(List.of(instdataConsumer.getMiljoer()));
+            List<String> availEnvironments = instdataConsumer.getMiljoer();
 
             List<String> environments = new ArrayList<>(List.copyOf(availEnvironments));
             environments.retainAll(bestilling.getEnvironments());
@@ -78,28 +77,28 @@ public class InstdataClient implements ClientRegister {
         }
     }
 
+    @Override
+    public void release(List<String> identer) {
+
+        List<String> environments = instdataConsumer.getMiljoer();
+        environments.forEach(environment ->
+                identer.forEach(ident -> instdataConsumer.deleteInstdata(ident, environment))
+        );
+    }
+
     private List<Instdata> filterInstdata(List<Instdata> instdataRequest, String miljoe) {
 
-        ResponseEntity<Instdata[]> eksisterendeInstdata = instdataConsumer.getInstdata(instdataRequest.get(0).getNorskident(), miljoe);
+        ResponseEntity<List<Instdata>> eksisterendeInstdata = instdataConsumer.getInstdata(instdataRequest.get(0).getNorskident(), miljoe);
 
-        if (eksisterendeInstdata.hasBody() && eksisterendeInstdata.getBody().length > 0) {
+        if (eksisterendeInstdata.hasBody() && !eksisterendeInstdata.getBody().isEmpty()) {
 
-            return instdataRequest.stream().filter(request -> Arrays.stream(eksisterendeInstdata.getBody())
+            return instdataRequest.stream().filter(request -> eksisterendeInstdata.getBody().stream()
                             .noneMatch(eksisterende -> eksisterende.equals(request)))
                     .collect(Collectors.toList());
         } else {
 
             return instdataRequest;
         }
-    }
-
-    @Override
-    public void release(List<String> identer) {
-
-        List<String> environments = List.of(instdataConsumer.getMiljoer());
-        environments.forEach(environment ->
-                identer.forEach(ident -> instdataConsumer.deleteInstdata(ident, environment))
-        );
     }
 
     private String postInstdata(boolean isNewOpphold, List<Instdata> instdata, String environment) {
@@ -109,20 +108,20 @@ public class InstdataClient implements ClientRegister {
         List<Instdata> newInstdata = isNewOpphold ? instdata : filterInstdata(instdata, environment);
 
         if (!newInstdata.isEmpty()) {
-            ResponseEntity<InstdataResponse[]> response = instdataConsumer.postInstdata(newInstdata, environment);
+            ResponseEntity<List<InstdataResponse>> response = instdataConsumer.postInstdata(newInstdata, environment);
 
             if (response.hasBody()) {
 
-                for (int i = 0; i < response.getBody().length; i++) {
+                for (int i = 0; i < response.getBody().size(); i++) {
                     status.append(',')
                             .append(environment)
                             .append(':')
                             .append("opphold=")
                             .append(i + 1)
                             .append('$')
-                            .append(CREATED.equals(response.getBody()[i].getStatus()) || OK.equals(response.getBody()[i].getStatus()) ? OK_RESULT :
-                                    errorStatusDecoder.getErrorText(response.getBody()[i].getStatus(),
-                                            response.getBody()[i].getFeilmelding()));
+                            .append(CREATED.equals(response.getBody().get(i).getStatus()) || OK.equals(response.getBody().get(i).getStatus()) ? OK_RESULT :
+                                    errorStatusDecoder.getErrorText(response.getBody().get(i).getStatus(),
+                                            response.getBody().get(i).getFeilmelding()));
                 }
             }
 

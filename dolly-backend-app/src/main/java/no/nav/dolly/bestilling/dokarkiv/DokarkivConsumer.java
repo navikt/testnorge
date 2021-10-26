@@ -1,57 +1,79 @@
 package no.nav.dolly.bestilling.dokarkiv;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
+import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
+import no.nav.dolly.config.credentials.DokarkivProxyServiceProperties;
+import no.nav.dolly.metrics.Timed;
+import no.nav.dolly.security.oauth2.config.NaisServerProperties;
+import no.nav.dolly.security.oauth2.service.TokenService;
+import no.nav.dolly.util.CheckAliveUtil;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Mono;
+
+import java.util.Map;
+import java.util.UUID;
+
 import static java.lang.String.format;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-
-import java.net.URI;
-import java.util.UUID;
-
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
-import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
-import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.properties.ProvidersProps;
-import no.nav.dolly.security.sts.StsOidcService;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class DokarkivConsumer {
 
-    private static final String DOKARKIV_URL = "/rest/journalpostapi/v1/journalpost";
-    private static final String FORSOEK_FERDIGSTILL = "?forsoekFerdigstill=true";
-    private static final String PREPROD_ENV = "q";
-    private static final String TEST_ENV = "t";
+    private final WebClient webClient;
+    private final TokenService tokenService;
+    private final NaisServerProperties serviceProperties;
 
-    private final RestTemplate restTemplate;
-    private final ProvidersProps providersProps;
-    private final StsOidcService stsOidcService;
+    public DokarkivConsumer(DokarkivProxyServiceProperties properties, TokenService tokenService, ObjectMapper objectMapper) {
+        this.serviceProperties = properties;
+        this.tokenService = tokenService;
+        this.webClient = WebClient.builder()
+                .baseUrl(properties.getUrl())
+                .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .build();
+    }
 
     @Timed(name = "providers", tags = { "operation", "dokarkiv-opprett" })
-    public ResponseEntity<DokarkivResponse> postDokarkiv(String environment, DokarkivRequest dokarkivRequest) {
+    public Mono<DokarkivResponse> postDokarkiv(String environment, DokarkivRequest dokarkivRequest) {
 
         String callId = getNavCallId();
-        log.info("Dokarkiv melding sendt, callId: {}, consumerId: {}, miljø: {}", callId, CONSUMER, environment);
+        log.info("Sender dokarkiv melding: callId: {}, consumerId: {}, miljø: {}", callId, CONSUMER, environment);
 
-        return restTemplate.exchange(
-                RequestEntity.post(URI.create(providersProps.getDokarkiv().getUrl().replace("$", environment) + DOKARKIV_URL + FORSOEK_FERDIGSTILL))
-                        .header(AUTHORIZATION, stsOidcService.getIdToken(environment.contains(PREPROD_ENV) ? PREPROD_ENV : TEST_ENV))
-                        .header(HEADER_NAV_CALL_ID, callId)
-                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                        .body(dokarkivRequest),
-                DokarkivResponse.class);
+        return webClient.post()
+                .uri(builder -> builder.path("/api/{miljo}/v1/journalpost").build(environment))
+                .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .header(HEADER_NAV_CALL_ID, callId)
+                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                .bodyValue(dokarkivRequest)
+                .retrieve()
+                .bodyToMono(DokarkivResponse.class)
+                .doOnError(error -> {
+                    if (error instanceof WebClientResponseException webClientResponseException) {
+                        log.error(
+                                "Feil ved opprettelse av journalpost av med body: {}.",
+                                webClientResponseException.getResponseBodyAsString(),
+                                error
+                        );
+                    } else {
+                        log.error("Feil ved opprettelse av journalpost.", error);
+                    }
+                });
+
+    }
+
+    public Map<String, String> checkAlive() {
+        return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 
     private static String getNavCallId() {
-        return format("%s %s", CONSUMER, UUID.randomUUID().toString());
+        return format("%s %s", CONSUMER, UUID.randomUUID());
     }
 }

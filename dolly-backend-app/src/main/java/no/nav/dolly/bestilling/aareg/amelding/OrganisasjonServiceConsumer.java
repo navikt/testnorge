@@ -3,14 +3,15 @@ package no.nav.dolly.bestilling.aareg.amelding;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.config.credentials.OrganisasjonServiceProperties;
 import no.nav.dolly.security.oauth2.config.NaisServerProperties;
-import no.nav.dolly.security.oauth2.domain.AccessToken;
 import no.nav.dolly.security.oauth2.service.TokenService;
+import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -35,15 +36,8 @@ public class OrganisasjonServiceConsumer {
                 .build();
     }
 
-    private CompletableFuture<OrganisasjonDTO> getFutureOrganisasjon(String orgnummer, AccessToken accessToken, String miljo) {
-        return CompletableFuture.supplyAsync(
-                () -> new GetOrganisasjonCommand(webClient, accessToken.getTokenValue(), orgnummer, miljo).call(),
-                executorService
-        );
-    }
-
     public List<OrganisasjonDTO> getOrganisasjoner(Set<String> orgnummerListe, String miljo) {
-        AccessToken accessToken = tokenService.generateToken(serviceProperties).flux().blockFirst();
+        String accessToken = serviceProperties.getAccessToken(tokenService);
         var futures = orgnummerListe.stream().map(value -> getFutureOrganisasjon(value, accessToken, miljo)).collect(Collectors.toList());
         List<OrganisasjonDTO> list = new ArrayList<>();
 
@@ -55,5 +49,16 @@ public class OrganisasjonServiceConsumer {
             }
         }
         return list;
+    }
+
+    public Map<String, String> checkAlive() {
+        return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
+    }
+
+    private CompletableFuture<OrganisasjonDTO> getFutureOrganisasjon(String orgnummer, String accessToken, String miljo) {
+        return CompletableFuture.supplyAsync(
+                () -> new GetOrganisasjonCommand(webClient, accessToken, orgnummer, miljo).call(),
+                executorService
+        );
     }
 }

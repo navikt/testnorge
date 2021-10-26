@@ -50,18 +50,13 @@ public class PdlOppholdsadresseMappingStrategy implements MappingStrategy {
         if (isBlank(spesregCode)) {
             return null;
         }
-        switch (spesregCode) {
-            case "MILI":
-                return OppholdAnnetSted.MILITAER;
-            case "SVAL":
-                return OppholdAnnetSted.PAA_SVALBARD;
-            case "URIK":
-                return OppholdAnnetSted.UTENRIKS;
-            case "PEND":
-                return OppholdAnnetSted.PENDLER;
-            default:
-                return null;
-        }
+        return switch (spesregCode) {
+            case "MILI" -> OppholdAnnetSted.MILITAER;
+            case "SVAL" -> OppholdAnnetSted.PAA_SVALBARD;
+            case "URIK" -> OppholdAnnetSted.UTENRIKS;
+            case "PEND" -> OppholdAnnetSted.PENDLER;
+            default -> null;
+        };
     }
 
     @Override

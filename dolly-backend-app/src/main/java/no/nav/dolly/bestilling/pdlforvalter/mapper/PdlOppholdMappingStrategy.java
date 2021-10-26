@@ -106,17 +106,11 @@ public class PdlOppholdMappingStrategy implements MappingStrategy {
         if (isNull(oppholdsrettType)) {
             return OppholdType.OPPLYSNING_MANGLER;
         }
-        switch (oppholdsrettType) {
-        case FAMILIE:
-        case VARIG:
-            return OppholdType.PERMANENT;
-        case TJENESTEYTING_ELLER_ETABLERING:
-            return OppholdType.MIDLERTIDIG;
-        case UAVKLART:
-        case INGEN_INFORMASJON:
-        default:
-            return OppholdType.OPPLYSNING_MANGLER;
-        }
+        return switch (oppholdsrettType) {
+            case FAMILIE, VARIG -> OppholdType.PERMANENT;
+            case TJENESTEYTING_ELLER_ETABLERING -> OppholdType.MIDLERTIDIG;
+            default -> OppholdType.OPPLYSNING_MANGLER;
+        };
     }
 
     public static OppholdType getOppholdType(UdiOppholdstillatelse oppholdstillatelse) {
@@ -125,18 +119,11 @@ public class PdlOppholdMappingStrategy implements MappingStrategy {
             return OppholdType.OPPLYSNING_MANGLER;
         }
 
-        switch (oppholdstillatelse) {
-        case FAMILIE:
-            return OppholdType.PERMANENT;
-        case ARBEID:
-        case EGNE_MIDLER_ELLER_FASTE_PERIODISKE_YTELSER:
-        case TJENESTEYTING_ELLER_ETABLERING:
-        case UTDANNING:
-            return OppholdType.MIDLERTIDIG;
-        case UAVKLART:
-        default:
-            return OppholdType.OPPLYSNING_MANGLER;
-        }
+        return switch (oppholdstillatelse) {
+            case FAMILIE -> OppholdType.PERMANENT;
+            case ARBEID, EGNE_MIDLER_ELLER_FASTE_PERIODISKE_YTELSER, TJENESTEYTING_ELLER_ETABLERING, UTDANNING -> OppholdType.MIDLERTIDIG;
+            default -> OppholdType.OPPLYSNING_MANGLER;
+        };
     }
 
     public static OppholdType getOppholdType(UdiVarighetOpphold varigOpphold) {
@@ -144,17 +131,11 @@ public class PdlOppholdMappingStrategy implements MappingStrategy {
         if (isNull(varigOpphold)) {
             return OppholdType.OPPLYSNING_MANGLER;
         }
-        switch (varigOpphold) {
-        case FAMILIE:
-        case VARIG:
-            return OppholdType.PERMANENT;
-        case TJENESTEYTING_ELLER_ETABLERING:
-            return OppholdType.MIDLERTIDIG;
-        case UAVKLART:
-        case INGEN_INFORMASJON:
-        default:
-            return OppholdType.OPPLYSNING_MANGLER;
-        }
+        return switch (varigOpphold) {
+            case FAMILIE, VARIG -> OppholdType.PERMANENT;
+            case TJENESTEYTING_ELLER_ETABLERING -> OppholdType.MIDLERTIDIG;
+            default -> OppholdType.OPPLYSNING_MANGLER;
+        };
     }
 
     public static OppholdType getOppholdType(UdiOppholdstillatelseType oppholdstillatelseType) {
@@ -162,12 +143,9 @@ public class PdlOppholdMappingStrategy implements MappingStrategy {
         if (isNull(oppholdstillatelseType)) {
             return OppholdType.OPPLYSNING_MANGLER;
         }
-        switch (oppholdstillatelseType) {
-        case PERMANENT:
-            return OppholdType.PERMANENT;
-        case MIDLERTIDIG:
-        default:
-            return OppholdType.MIDLERTIDIG;
-        }
+        return switch (oppholdstillatelseType) {
+            case PERMANENT -> OppholdType.PERMANENT;
+            default -> OppholdType.MIDLERTIDIG;
+        };
     }
 }

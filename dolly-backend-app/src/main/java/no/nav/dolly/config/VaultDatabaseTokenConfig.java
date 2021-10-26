@@ -32,9 +32,8 @@ class VaultDatabaseTokenConfig implements InitializingBean {
 
         container.addLeaseListener(leaseEvent -> {
             log.info("Vault: Lease Event: {}", leaseEvent);
-            if (leaseEvent.getSource() == secret && leaseEvent instanceof SecretLeaseCreatedEvent) {
+            if (leaseEvent.getSource() == secret && leaseEvent instanceof SecretLeaseCreatedEvent lease) {
                 log.info("Vault: Refreshing database credentials. Lease Event: {}", leaseEvent);
-                var lease = (SecretLeaseCreatedEvent) leaseEvent;
                 var username = lease.getSecrets().get("username").toString();
                 var password = lease.getSecrets().get("password").toString();
 

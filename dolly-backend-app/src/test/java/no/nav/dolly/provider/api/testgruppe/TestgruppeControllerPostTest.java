@@ -1,7 +1,10 @@
 package no.nav.dolly.provider.api.testgruppe;
 
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
+import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,16 +17,19 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
+import java.time.LocalDate;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Disabled
 @DisplayName("POST /api/v1/gruppe")
-@EnableAutoConfiguration(exclude = {SecurityAutoConfiguration.class,
+@EnableAutoConfiguration(exclude = { SecurityAutoConfiguration.class,
         OAuth2ResourceServerAutoConfiguration.class,
         OAuth2ClientAutoConfiguration.class,
-        ManagementWebSecurityAutoConfiguration.class})
+        ManagementWebSecurityAutoConfiguration.class })
 @AutoConfigureMockMvc(addFilters = false)
 class TestgruppeControllerPostTest extends TestgruppeTestBase {
 
@@ -48,9 +54,8 @@ class TestgruppeControllerPostTest extends TestgruppeTestBase {
         assertThat(resp.getOpprettetAv().getBrukerId(), is("NAVIDENT"));
     }
 
-    /*
-    // feiler fordi tpsfKriterier og bestKriterier i RsBestillingStatus ikke er av typen String
     @Test
+    @Disabled
     @DisplayName("Oppretter TPS bestilling")
     void createTpsBestilling() {
         Long gruppeId = dataFactory.createTestgruppe("Test gruppe").getId();
@@ -72,5 +77,4 @@ class TestgruppeControllerPostTest extends TestgruppeTestBase {
 
         assertNotNull(resp.getBestilling().getTpsf());
     }
-    */
 }

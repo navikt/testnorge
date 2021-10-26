@@ -6,15 +6,17 @@ import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdResponse;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.oauth2.config.NaisServerProperties;
 import no.nav.dolly.security.oauth2.service.TokenService;
+import no.nav.dolly.util.CheckAliveUtil;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static java.lang.String.format;
@@ -31,11 +33,11 @@ public class ArbeidsforholdServiceConsumer {
 
     private final TokenService tokenService;
     private final WebClient webClient;
-    private final NaisServerProperties serverProperties;
+    private final NaisServerProperties serviceProperties;
 
     public ArbeidsforholdServiceConsumer(TokenService tokenService, ArbeidsforholdServiceProperties serviceProperties) {
         this.tokenService = tokenService;
-        this.serverProperties = serviceProperties;
+        this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serviceProperties.getUrl())
                 .build();
@@ -45,11 +47,11 @@ public class ArbeidsforholdServiceConsumer {
     public List<ArbeidsforholdResponse> hentArbeidsforhold(String ident, String miljoe) {
 
         try {
-            String tokenValue = tokenService.generateToken(serverProperties).block().getTokenValue();
+            String tokenValue = serviceProperties.getAccessToken(tokenService);
 
             ResponseEntity<List<ArbeidsforholdResponse>> response = webClient.get()
-                    .uri(URI.create(format(HENT_ARBEIDSFORHOLD, serverProperties.getUrl(), ident)))
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenValue)
+                    .uri(URI.create(format(HENT_ARBEIDSFORHOLD, serviceProperties.getUrl(), ident)))
+                    .header(HttpHeaders.AUTHORIZATION, tokenValue)
                     .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                     .header("miljo", miljoe)
                     .header("Nav-Call-Id", getNavCallId())
@@ -57,13 +59,17 @@ public class ArbeidsforholdServiceConsumer {
                     .toEntityList(ArbeidsforholdResponse.class).block();
 
             return response.hasBody() ? response.getBody() : emptyList();
-        } catch (HttpClientErrorException e) {
+        } catch (WebClientResponseException e) {
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
                 return emptyList();
             } else {
                 throw e;
             }
         }
+    }
+
+    public Map<String, String> checkAlive() {
+        return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 
     private static String getNavCallId() {

@@ -1,23 +1,22 @@
 package no.nav.dolly.consumer.kodeverk;
 
+import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse.Beskrivelse;
+import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse.Betydning;
+import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
-
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
-
-import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse.Beskrivelse;
-import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse.Betydning;
-import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 
 public class KodeverkMapperTest {
 
@@ -38,7 +37,7 @@ public class KodeverkMapperTest {
 
     @Before
     public void setup() {
-        betydninger.put(STANDARD_KODE, Arrays.asList(standardBetydning));
+        betydninger.put(STANDARD_KODE, List.of(standardBetydning));
         beskrivelser.put(KODE_BOKMAAL, standardBeskrivelse);
         standardBetydning.setBeskrivelser(beskrivelser);
     }
@@ -50,7 +49,7 @@ public class KodeverkMapperTest {
         beskrivelser2.put(KODE_BOKMAAL, beskrivelse2);
 
         Betydning betydning2 = Betydning.builder().beskrivelser(beskrivelser2).gyldigFra(STANDARD_GYLDIGFRA).gyldigTil(STANDARD_GYLDIGTIL).build();
-        betydninger.put(STANDARD_KODE_2, Arrays.asList(betydning2));
+        betydninger.put(STANDARD_KODE_2, List.of(betydning2));
 
         KodeverkAdjusted kodeverk = kodeverkMapper.mapBetydningToAdjustedKodeverk("navn", betydninger);
 

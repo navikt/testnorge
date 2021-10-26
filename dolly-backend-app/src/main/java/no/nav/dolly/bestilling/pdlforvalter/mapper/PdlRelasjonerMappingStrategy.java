@@ -10,12 +10,12 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand.Sivilstand;
 import no.nav.dolly.bestilling.pdlforvalter.domain.SivilstandWrapper;
 import no.nav.dolly.domain.resultset.IdentType;
-import no.nav.dolly.util.IdentTypeUtil;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.Relasjon;
 import no.nav.dolly.domain.resultset.tpsf.Sivilstand.Sivilstatus;
 import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.dolly.util.DatoFraIdentUtil;
+import no.nav.dolly.util.IdentTypeUtil;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -43,29 +43,18 @@ public class PdlRelasjonerMappingStrategy implements MappingStrategy {
         if (isNull(sivilstatus)) {
             return UOPPGITT;
         } else {
-            switch (sivilstatus) {
-                case UGIF:
-                    return UGIFT;
-                case GIFT:
-                    return GIFT;
-                case ENKE:
-                    return ENKE_ELLER_ENKEMANN;
-                case SKIL:
-                    return SKILT;
-                case SEPR:
-                    return SEPARERT;
-                case REPA:
-                    return REGISTRERT_PARTNER;
-                case SEPA:
-                    return SEPARERT_PARTNER;
-                case SKPA:
-                    return SKILT_PARTNER;
-                case GJPA:
-                    return GJENLEVENDE_PARTNER;
-                case SAMB:
-                default:
-                    return UOPPGITT;
-            }
+            return switch (sivilstatus) {
+                case UGIF -> UGIFT;
+                case GIFT -> GIFT;
+                case ENKE -> ENKE_ELLER_ENKEMANN;
+                case SKIL -> SKILT;
+                case SEPR -> SEPARERT;
+                case REPA -> REGISTRERT_PARTNER;
+                case SEPA -> SEPARERT_PARTNER;
+                case SKPA -> SKILT_PARTNER;
+                case GJPA -> GJENLEVENDE_PARTNER;
+                default -> UOPPGITT;
+            };
         }
     }
 

@@ -1,61 +1,100 @@
 package no.nav.dolly.bestilling.inntektstub;
 
-import static java.lang.String.format;
-
-import java.net.URI;
-import java.util.List;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
-import lombok.RequiredArgsConstructor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
+import no.nav.dolly.config.credentials.InntektstubProxyProperties;
 import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.properties.ProvidersProps;
+import no.nav.dolly.security.oauth2.config.NaisServerProperties;
+import no.nav.dolly.security.oauth2.service.TokenService;
+import no.nav.dolly.util.CheckAliveUtil;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.List;
+import java.util.Map;
+
+import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Service
-@RequiredArgsConstructor
+@Slf4j
 public class InntektstubConsumer {
 
     private static final String INNTEKTER_URL = "/api/v2/inntektsinformasjon";
-    private static final String DELETE_INNTEKTER_URL = "/api/v2/personer?norske-identer=";
+    private static final String DELETE_INNTEKTER_URL = "/api/v2/personer";
     private static final String VALIDER_INNTEKTER_URL = "/api/v2/valider";
-    private static final String GET_INNTEKTER_URL = INNTEKTER_URL + "?norske-identer=";
+    private static final String NORSKE_IDENTER_QUERY = "norske-identer";
 
-    private final RestTemplate restTemplate;
-    private final ProvidersProps providersProps;
+    private final WebClient webClient;
+    private final TokenService tokenService;
+    private final NaisServerProperties serviceProperties;
+
+    public InntektstubConsumer(TokenService tokenService, InntektstubProxyProperties serverProperties, ObjectMapper objectMapper) {
+        this.tokenService = tokenService;
+        this.serviceProperties = serverProperties;
+        this.webClient = WebClient.builder()
+                .baseUrl(serverProperties.getUrl())
+                .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .build();
+    }
 
     @Timed(name = "providers", tags = { "operation", "inntk_getInntekter" })
-    public ResponseEntity getInntekter(String ident) {
+    public ResponseEntity<List<Inntektsinformasjon>> getInntekter(String ident) {
 
-        return restTemplate.exchange(RequestEntity.get(
-                URI.create(format("%s%s%s", providersProps.getInntektstub().getUrl(), GET_INNTEKTER_URL, ident)))
-                .build(), Inntektsinformasjon[].class);
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path(INNTEKTER_URL)
+                        .queryParam(NORSKE_IDENTER_QUERY, ident)
+                        .build())
+                .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .retrieve().toEntityList(Inntektsinformasjon.class)
+                .block();
     }
 
     @Timed(name = "providers", tags = { "operation", "inntk_deleteInntekter" })
-    public ResponseEntity deleteInntekter(String ident) {
+    public ResponseEntity<Inntektsinformasjon> deleteInntekter(String ident) {
 
-        return restTemplate.exchange(RequestEntity.delete(
-                URI.create(format("%s%s%s", providersProps.getInntektstub().getUrl(), DELETE_INNTEKTER_URL, ident)))
-                .build(), Inntektsinformasjon.class);
+        return webClient.delete()
+                .uri(uriBuilder -> uriBuilder
+                        .path(DELETE_INNTEKTER_URL)
+                        .queryParam(NORSKE_IDENTER_QUERY, ident)
+                        .pathSegment(ident).build())
+                .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .retrieve().toEntity(Inntektsinformasjon.class)
+                .block();
     }
 
     @Timed(name = "providers", tags = { "operation", "inntk_postInntekter" })
-    public ResponseEntity<Inntektsinformasjon[]> postInntekter(List<Inntektsinformasjon> inntektsinformasjon) {
+    public ResponseEntity<List<Inntektsinformasjon>> postInntekter(List<Inntektsinformasjon> inntektsinformasjon) {
 
-        return restTemplate.exchange(RequestEntity.post(
-                URI.create(providersProps.getInntektstub().getUrl() + INNTEKTER_URL))
-                .body(inntektsinformasjon), Inntektsinformasjon[].class);
+        return
+                webClient.post()
+                        .uri(uriBuilder -> uriBuilder
+                                .path(INNTEKTER_URL)
+                                .build())
+                        .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                        .bodyValue(inntektsinformasjon)
+                        .retrieve().toEntityList(Inntektsinformasjon.class)
+                        .block();
     }
 
     @Timed(name = "providers", tags = { "operation", "inntk_validerInntekt" })
-    public ResponseEntity validerInntekter(ValiderInntekt validerInntekt) {
+    public ResponseEntity<Object> validerInntekter(ValiderInntekt validerInntekt) {
 
-        return restTemplate.exchange(RequestEntity.post(
-                URI.create(providersProps.getInntektstub().getUrl() + VALIDER_INNTEKTER_URL))
-                .body(validerInntekt), Object.class);
+        return webClient.post()
+                .uri(uriBuilder -> uriBuilder
+                        .path(VALIDER_INNTEKTER_URL)
+                        .build())
+                .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .bodyValue(validerInntekt)
+                .retrieve().toEntity(Object.class)
+                .block();
+    }
+
+    public Map<String, String> checkAlive() {
+        return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 }

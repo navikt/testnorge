@@ -16,7 +16,7 @@ import no.nav.dolly.service.DollyPersonCache;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.List;
 
@@ -45,9 +45,9 @@ public class SkjermingsRegisterClient implements ClientRegister {
             for (Person person : dollyPerson.getPersondetaljer()) {
                 try {
                     SkjermingsDataRequest skjermingsDataRequest = mapperFacade.map(BestillingPersonWrapper.builder()
-                            .bestilling(bestilling.getTpsf())
-                            .person(person)
-                            .build(),
+                                    .bestilling(bestilling.getTpsf())
+                                    .person(person)
+                                    .build(),
                             SkjermingsDataRequest.class);
                     if (isAlleredeSkjermet(person) && nonNull(bestilling.getTpsf().getEgenAnsattDatoTom())) {
                         skjermingsRegisterConsumer.putSkjerming(person.getIdent());
@@ -77,7 +77,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
             if (skjermingResponseEntity.getStatusCode().equals(HttpStatus.OK)) {
                 return true;
             }
-        } catch (HttpClientErrorException e) {
+        } catch (WebClientResponseException e) {
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
                 return false;
             }

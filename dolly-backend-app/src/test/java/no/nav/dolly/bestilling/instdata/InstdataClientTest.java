@@ -1,5 +1,23 @@
 package no.nav.dolly.bestilling.instdata;
 
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
+import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
+import no.nav.dolly.domain.resultset.inst.Instdata;
+import no.nav.dolly.domain.resultset.inst.RsInstdata;
+import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import java.util.List;
+
 import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -9,24 +27,6 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
-
-import java.util.List;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.inst.Instdata;
-import no.nav.dolly.domain.resultset.inst.RsInstdata;
-import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
-import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InstdataClientTest {
@@ -62,7 +62,7 @@ public class InstdataClientTest {
 
         BestillingProgress progress = new BestillingProgress();
 
-        when(instdataConsumer.getMiljoer()).thenReturn(new String[] { "u5" });
+        when(instdataConsumer.getMiljoer()).thenReturn(List.of("u5"));
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setInstdata(List.of(RsInstdata.builder().build()));
@@ -77,10 +77,10 @@ public class InstdataClientTest {
 
         BestillingProgress progress = new BestillingProgress();
 
-        when(instdataConsumer.getMiljoer()).thenReturn(new String[] { "q2" });
+        when(instdataConsumer.getMiljoer()).thenReturn(List.of("q2"));
         when(mapperFacade.mapAsList(anyList(), eq(Instdata.class))).thenReturn(List.of(Instdata.builder().build()));
-        when(instdataConsumer.getInstdata(IDENT, ENVIRONMENT)).thenReturn(ResponseEntity.ok(new Instdata[] {}));
-        InstdataResponse[] instdataResponse = new InstdataResponse[] { InstdataResponse.builder().status(HttpStatus.CREATED).build() };
+        when(instdataConsumer.getInstdata(IDENT, ENVIRONMENT)).thenReturn(ResponseEntity.ok(List.of(new Instdata())));
+        List<InstdataResponse> instdataResponse = List.of(InstdataResponse.builder().status(HttpStatus.CREATED).build());
         when(instdataConsumer.postInstdata(anyList(), anyString())).thenReturn(ResponseEntity.ok(instdataResponse));
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
