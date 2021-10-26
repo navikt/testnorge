@@ -15,6 +15,7 @@ sonarqube {
         property "sonar.projectName", "testnav-adresse-service"
         property "sonar.organization", "navit"
         property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.project.monorepo.enabled", true
         property "sonar.login", System.getenv("SONAR_TOKEN")
     }
 }
