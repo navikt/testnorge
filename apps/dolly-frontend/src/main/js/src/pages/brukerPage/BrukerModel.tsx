@@ -14,10 +14,8 @@ const ORGANISATION_ERROR = 'organisation_error'
 
 const logout = (feilmelding: string = null) => {
 	Api.fetch('/logout', { method: 'POST' }).then((response) => {
-		let redirectUrl = feilmelding
-			? window.location.protocol + '//' + window.location.host + '/login?' + feilmelding
-			: response.url
-		window.location.replace(redirectUrl)
+		const redirectUrl = feilmelding ? response.url + '&state=' + feilmelding : response.url
+		location.replace(redirectUrl)
 	})
 }
 
