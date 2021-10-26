@@ -1,13 +1,15 @@
-name: Deploy udistub-proxy
+name: Deploy aareg-proxy
 
 on:
   push:
     paths:
-      - proxies/udistub-proxy/**
-      - libs/**
+      - proxies/aareg-proxy/**
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
+      - libs/security-token-service/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/udistub-proxy:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/aareg-proxy:${{ github.sha }}
 
 jobs:
   build_and_deploy:
@@ -22,18 +24,18 @@ jobs:
             ~/.gradle
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
-            ${{ runner.os }}-gradle-udistub-proxy
+            ${{ runner.os }}-gradle-aareg-proxy
       - uses: actions/setup-java@v1
         with:
           java-version: '17.x'
       - name: Compile
-        working-directory: proxies/udistub-proxy/
+        working-directory: proxies/aareg-proxy/
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
         run: ./gradlew build
       - name: Build and publish Docker image
-        working-directory: proxies/udistub-proxy/
+        working-directory: proxies/aareg-proxy/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -46,4 +48,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: proxies/udistub-proxy/config.yml
+          RESOURCE: proxies/aareg-proxy/config.yml

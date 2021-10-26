@@ -1,13 +1,14 @@
-name: Deploy pdl-proxy
+name: Deploy brregstub-proxy
 
 on:
   push:
     paths:
-      - proxies/pdl-proxy/**
-      - libs/**
+      - proxies/brregstub-proxy/**
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/pdl-proxy:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/brregstub-proxy:${{ github.sha }}
 
 jobs:
   build_and_deploy:
@@ -27,13 +28,12 @@ jobs:
         with:
           java-version: '17.x'
       - name: Compile
-        working-directory: proxies/pdl-proxy/
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew build
+        run: ./gradlew :brregstub-proxy:build
       - name: Build and publish Docker image
-        working-directory: proxies/pdl-proxy/
+        working-directory: proxies/brregstub-proxy/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -46,4 +46,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: proxies/pdl-proxy/config.yml
+          RESOURCE: proxies/brregstub-proxy/config.yml

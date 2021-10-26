@@ -1,13 +1,14 @@
-name: Deploy syntrest-proxy
+name: Deploy krrstub-proxy
 
 on:
   push:
     paths:
-      - proxies/syntrest-proxy/**
-
+      - proxies/krrstub-proxy/**
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/syntrest-proxy:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/krrstub-proxy:${{ github.sha }}
 
 jobs:
   build_and_deploy:
@@ -27,13 +28,12 @@ jobs:
         with:
           java-version: '17.x'
       - name: Compile
-        working-directory: proxies/syntrest-proxy/
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew build
+        run: ./gradlew :krrstub-proxy:build
       - name: Build and publish Docker image
-        working-directory: proxies/syntrest-proxy/
+        working-directory: proxies/krrstub-proxy/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -46,4 +46,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: proxies/syntrest-proxy/config.yml
+          RESOURCE: proxies/krrstub-proxy/config.yml

@@ -1,13 +1,14 @@
-name: Deploy arena-forvalteren-proxy
+name: Deploy ident-pool-proxy
 
 on:
   push:
     paths:
-      - proxies/arena-forvalteren-proxy/**
-
+      - proxies/ident-pool-proxy/**
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/arena-forvalteren-proxy:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/ident-pool-proxy:${{ github.sha }}
 
 jobs:
   build_and_deploy:
@@ -27,12 +28,13 @@ jobs:
         with:
           java-version: '17.x'
       - name: Compile
+        working-directory: proxies/ident-pool-proxy/
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew :arena-forvalteren-proxy:build
+        run: ./gradlew build
       - name: Build and publish Docker image
-        working-directory: proxies/arena-forvalteren-proxy/
+        working-directory: proxies/ident-pool-proxy/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -45,4 +47,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: proxies/arena-forvalteren-proxy/config.yml
+          RESOURCE: proxies/ident-pool-proxy/config.yml

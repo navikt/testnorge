@@ -4,7 +4,8 @@ on:
   push:
     paths:
       - proxies/batch-adeo-proxy/**
-
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/batch-adeo-proxy:${{ github.sha }}

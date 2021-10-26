@@ -1,13 +1,16 @@
-name: Deploy sykemelding-api-proxy
+name: Deploy inntektstub-proxy
 
 on:
   push:
+    branches:
+      - master
     paths:
-      - proxies/sykemelding-api-proxy/**
-      - libs/**
+      - proxies/inntektstub-proxy/**
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/sykemelding-api-proxy:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/inntektstub-proxy:${{ github.sha }}
 
 jobs:
   build_and_deploy:
@@ -27,13 +30,12 @@ jobs:
         with:
           java-version: '17.x'
       - name: Compile
-        working-directory: proxies/sykemelding-api-proxy/
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew build
+        run: ./gradlew :inntektstub-proxy:build
       - name: Build and publish Docker image
-        working-directory: proxies/sykemelding-api-proxy/
+        working-directory: proxies/inntektstub-proxy/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -46,4 +48,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: proxies/sykemelding-api-proxy/config.yml
+          RESOURCE: proxies/inntektstub-proxy/config.yml

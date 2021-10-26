@@ -1,13 +1,16 @@
-name: Deploy kodeverk-proxy
+name: Deploy udistub-proxy
 
 on:
   push:
     paths:
-      - proxies/kodeverk-proxy/**
-      - libs/**
+      - proxies/udistub-proxy/**
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
+      - libs/reactive-security/**
+      - libs/security-core/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/kodeverk-proxy:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/udistub-proxy:${{ github.sha }}
 
 jobs:
   build_and_deploy:
@@ -22,18 +25,18 @@ jobs:
             ~/.gradle
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
-            ${{ runner.os }}-gradle-kodeverk-proxy
+            ${{ runner.os }}-gradle-udistub-proxy
       - uses: actions/setup-java@v1
         with:
           java-version: '17.x'
       - name: Compile
-        working-directory: proxies/kodeverk-proxy/
+        working-directory: proxies/udistub-proxy/
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
         run: ./gradlew build
       - name: Build and publish Docker image
-        working-directory: proxies/kodeverk-proxy/
+        working-directory: proxies/udistub-proxy/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -46,4 +49,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: proxies/kodeverk-proxy/config.yml
+          RESOURCE: proxies/udistub-proxy/config.yml

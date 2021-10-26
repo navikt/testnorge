@@ -1,13 +1,15 @@
-name: Deploy skjermingsregister-proxy
+name: Deploy hodejegeren-proxy
 
 on:
   push:
     paths:
-      - proxies/skjermingsregister-proxy/**
-      - libs/**
+      - proxies/hodejegeren-proxy/**
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
+      - libs/security-token-service/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/skjermingsregister-proxy:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/hodejegeren-proxy:${{ github.sha }}
 
 jobs:
   build_and_deploy:
@@ -22,18 +24,18 @@ jobs:
             ~/.gradle
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
-            ${{ runner.os }}-gradle-skjermingsregister-proxy
+            ${{ runner.os }}-gradle-
       - uses: actions/setup-java@v1
         with:
           java-version: '17.x'
       - name: Compile
-        working-directory: proxies/skjermingsregister-proxy/
+        working-directory: proxies/hodejegeren-proxy/
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
         run: ./gradlew build
       - name: Build and publish Docker image
-        working-directory: proxies/skjermingsregister-proxy/
+        working-directory: proxies/hodejegeren-proxy/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -46,4 +48,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: proxies/skjermingsregister-proxy/config.yml
+          RESOURCE: proxies/hodejegeren-proxy/config.yml

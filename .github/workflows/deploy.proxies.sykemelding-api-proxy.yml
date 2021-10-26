@@ -1,13 +1,16 @@
-name: Deploy dokarkiv-proxy
+name: Deploy sykemelding-api-proxy
 
 on:
   push:
     paths:
-      - proxies/dokarkiv-proxy/**
-      - libs/**
+      - proxies/sykemelding-api-proxy/**
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
+      - libs/reactive-security/**
+      - libs/security-core/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/dokarkiv-proxy:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/sykemelding-api-proxy:${{ github.sha }}
 
 jobs:
   build_and_deploy:
@@ -27,13 +30,13 @@ jobs:
         with:
           java-version: '17.x'
       - name: Compile
-        working-directory: proxies/dokarkiv-proxy/
+        working-directory: proxies/sykemelding-api-proxy/
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
         run: ./gradlew build
       - name: Build and publish Docker image
-        working-directory: proxies/dokarkiv-proxy/
+        working-directory: proxies/sykemelding-api-proxy/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -46,4 +49,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: proxies/dokarkiv-proxy/config.yml
+          RESOURCE: proxies/sykemelding-api-proxy/config.yml

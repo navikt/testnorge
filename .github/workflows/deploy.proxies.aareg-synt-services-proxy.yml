@@ -1,12 +1,14 @@
-name: Deploy pensjon-testdata-facade-proxy
+name: Deploy aareg-synt-services-proxy
 
 on:
   push:
     paths:
-      - proxies/pensjon-testdata-facade-proxy/**
+      - proxies/aareg-synt-services-proxy/**
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/krrstub-proxy:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/aareg-synt-services-proxy:${{ github.sha }}
 
 jobs:
   build_and_deploy:
@@ -26,12 +28,13 @@ jobs:
         with:
           java-version: '17.x'
       - name: Compile
+        working-directory: proxies/aareg-synt-services-proxy/
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew :pensjon-testdata-facade-proxy:build
+        run: ./gradlew build
       - name: Build and publish Docker image
-        working-directory: proxies/pensjon-testdata-facade-proxy/
+        working-directory: proxies/aareg-synt-services-proxy/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -44,4 +47,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: proxies/pensjon-testdata-facade-proxy/config.yml
+          RESOURCE: proxies/aareg-synt-services-proxy/config.yml

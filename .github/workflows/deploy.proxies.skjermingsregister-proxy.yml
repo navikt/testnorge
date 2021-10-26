@@ -1,13 +1,15 @@
-name: Deploy aareg-proxy
+name: Deploy skjermingsregister-proxy
 
 on:
   push:
     paths:
-      - proxies/aareg-proxy/**
-      - libs/**
+      - proxies/skjermingsregister-proxy/**
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
+      - libs/security-token-service/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/aareg-proxy:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/skjermingsregister-proxy:${{ github.sha }}
 
 jobs:
   build_and_deploy:
@@ -22,18 +24,18 @@ jobs:
             ~/.gradle
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
-            ${{ runner.os }}-gradle-aareg-proxy
+            ${{ runner.os }}-gradle-skjermingsregister-proxy
       - uses: actions/setup-java@v1
         with:
           java-version: '17.x'
       - name: Compile
-        working-directory: proxies/aareg-proxy/
+        working-directory: proxies/skjermingsregister-proxy/
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
         run: ./gradlew build
       - name: Build and publish Docker image
-        working-directory: proxies/aareg-proxy/
+        working-directory: proxies/skjermingsregister-proxy/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -46,4 +48,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: proxies/aareg-proxy/config.yml
+          RESOURCE: proxies/skjermingsregister-proxy/config.yml

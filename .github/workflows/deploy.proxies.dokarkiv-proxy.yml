@@ -1,12 +1,14 @@
-name: Deploy krrstub-proxy
+name: Deploy dokarkiv-proxy
 
 on:
   push:
     paths:
-      - proxies/krrstub-proxy/**
+      - proxies/dokarkiv-proxy/**
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/krrstub-proxy:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/dokarkiv-proxy:${{ github.sha }}
 
 jobs:
   build_and_deploy:
@@ -26,12 +28,13 @@ jobs:
         with:
           java-version: '17.x'
       - name: Compile
+        working-directory: proxies/dokarkiv-proxy/
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew :krrstub-proxy:build
+        run: ./gradlew build
       - name: Build and publish Docker image
-        working-directory: proxies/krrstub-proxy/
+        working-directory: proxies/dokarkiv-proxy/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -44,4 +47,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: proxies/krrstub-proxy/config.yml
+          RESOURCE: proxies/dokarkiv-proxy/config.yml
