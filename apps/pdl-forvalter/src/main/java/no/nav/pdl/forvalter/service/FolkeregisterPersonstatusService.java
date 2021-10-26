@@ -20,7 +20,6 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusD
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.UTFLYTTET;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FNR;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
@@ -38,7 +37,7 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
             personstatus.setMaster(nonNull(personstatus.getMaster()) ? personstatus.getMaster() : Master.FREG);
             personstatus.setGjeldende(nonNull(personstatus.getGjeldende()) ? personstatus.getGjeldende(): true);
 
-        } else if (person.getFolkeregisterpersonstatus().isEmpty() ||
+        } else if (person.getFolkeregisterpersonstatus().isEmpty() && !person.getFalskIdentitet().isEmpty() ||
                 getPersonstatus(person) != person.getFolkeregisterpersonstatus().stream()
                         .findFirst().orElse(new FolkeregisterpersonstatusDTO()).getStatus()) {
 

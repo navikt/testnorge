@@ -36,16 +36,14 @@ public class PersonController {
     @ResponseBody
     @GetMapping(produces = "application/json; charset=utf-8")
     @Operation(description = "Hent personer")
-    public List<FullPersonDTO> getPerson(@Parameter(description = "Hent personer med angitte identer, eller")
+    public List<FullPersonDTO> getPerson(@Parameter(description = "Hent person(er) med angitt(e) ident(er) eller alle")
                                          @RequestParam(required = false) List<String> identer,
-                                         @Parameter(description = "Hent identitet ved søk på (u)fullstendig ident og/eller en eller flere navn")
-                                         @RequestParam(required = false) String fragment,
-                                         @Parameter(description = "Sidenummer ved sortering på \'sistOppdatert\' og nyeste først")
+                                         @Parameter(description = "Sidenummer ved sortering på 'sistOppdatert' og nyeste først")
                                          @RequestParam(required = false, defaultValue = "0") Integer sidenummer,
-                                         @Parameter(description = "Sidestørrelse ved sortering på \'sistOppdatert\' og nyeste først")
+                                         @Parameter(description = "Sidestørrelse ved sortering på 'sistOppdatert' og nyeste først")
                                          @RequestParam(required = false, defaultValue = "10") Integer sidestorrelse) {
 
-        return personService.getPerson(identer, fragment, Paginering.builder()
+        return personService.getPerson(identer,Paginering.builder()
                 .sidenummer(sidenummer)
                 .sidestoerrelse(sidestorrelse)
                 .build());
