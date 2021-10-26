@@ -321,7 +321,7 @@ public class PdlForvalterConsumer {
     public ResponseEntity<JsonNode> postSikkerhetstiltak(PdlSikkerhetstiltak sikkerhetstiltak, String ident) {
 
         return postRequest(
-                providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_SIKKERHET_TILTAK_URL,
+                PDL_BESTILLING_SIKKERHET_TILTAK_URL,
                 sikkerhetstiltak, ident, "sikkerhetstiltak");
     }
 
