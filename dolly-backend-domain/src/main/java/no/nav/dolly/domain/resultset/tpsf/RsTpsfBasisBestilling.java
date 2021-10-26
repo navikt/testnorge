@@ -11,6 +11,7 @@ import no.nav.dolly.domain.resultset.tpsf.adresse.RsAdresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsMidlertidigAdresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
 
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -124,4 +125,19 @@ public class RsTpsfBasisBestilling {
     @Schema(type = "String",
             description = "Telefonnummer 2, maxs 20 sifre")
     private String telefonnummer_2;
+
+    @Size(min = 4, max = 4)
+    @Schema(description = "Type av sikkerhetstiltak, alternativer: FYUS, TFUS, FTUS, DIUS og TOAN")
+    private String typeSikkerhetTiltak;
+
+    @Size(min = 1, max = 50)
+    @Schema(description = "Beskrivelse av type sikkerhetstiltak: \'Fysisk utestengelse\', \'Telefonisk utestengelse\', " +
+            "\'Fysisk/telefonisk utestengelse\', \'Digital utestengelse\' og \'To ansatte i samtale\'")
+    private String beskrSikkerhetTiltak;
+
+    @Schema(description = "Når sikkerhetstiltaket starter, dato fra-og-med")
+    private LocalDateTime sikkerhetTiltakDatoFom;
+
+    @Schema(description = "Når sikkerhetstiltaket opphører, dato til-og-med")
+    private LocalDateTime sikkerhetTiltakDatoTom;
 }

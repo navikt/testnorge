@@ -71,13 +71,13 @@ public class TpsfBestilling {
 
     private LocalDateTime egenAnsattDatoTom;
 
-    private String typeSikkerhetsTiltak;
+    private String typeSikkerhetTiltak;
 
-    private LocalDateTime sikkerhetsTiltakDatoFom;
+    private LocalDateTime sikkerhetTiltakDatoFom;
 
-    private LocalDateTime sikkerhetsTiltakDatoTom;
+    private LocalDateTime sikkerhetTiltakDatoTom;
 
-    private String beskrSikkerhetsTiltak;
+    private String beskrSikkerhetTiltak;
 
     private String sprakKode;
 

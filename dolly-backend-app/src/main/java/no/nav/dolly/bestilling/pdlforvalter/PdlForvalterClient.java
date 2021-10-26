@@ -22,6 +22,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpphold;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresseHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpprettPerson;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlSikkerhetstiltak;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlStatsborgerskap;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlTelefonnummer;
@@ -55,6 +56,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.containsSynthEnv;
 import static no.nav.dolly.domain.CommonKeysAndUtils.getSynthEnv;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Order(1)
@@ -192,6 +194,7 @@ public class PdlForvalterClient implements ClientRegister {
             sendVergemaal(person);
             sendFullmakt(person);
             sendDoedfoedtBarn(person);
+            sendSikkerhetstiltak(person);
         }
     }
 
@@ -359,6 +362,13 @@ public class PdlForvalterClient implements ClientRegister {
         mapperFacade.mapAsList(person.getRelasjoner(), PdlDoedfoedtBarn.class).stream()
                 .filter(hendelse -> nonNull(hendelse.getDato()))
                 .forEach(hendelse -> pdlForvalterConsumer.postDoedfoedtBarn(hendelse, person.getIdent()));
+    }
+
+    private void sendSikkerhetstiltak(Person person) {
+
+        if (isNotBlank(person.getTypeSikkerhetTiltak())) {
+            pdlForvalterConsumer.postSikkerhetstiltak(mapperFacade.map(person, PdlSikkerhetstiltak.class), person.getIdent());
+        }
     }
 
     private void sendUtenlandsid(Pdldata pdldata, String ident, StringBuilder status) {

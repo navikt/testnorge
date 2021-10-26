@@ -65,6 +65,10 @@ public class Person {
     private LocalDateTime egenAnsattDatoTom;
     private List<RsVergemaal> vergemaal;
     private List<RsFullmakt> fullmakt;
+    private String typeSikkerhetTiltak;
+    private String beskrSikkerhetTiltak;
+    private LocalDateTime sikkerhetTiltakDatoFom;
+    private LocalDateTime sikkerhetTiltakDatoTom;
 
     public List<MidlertidigAdresse> getMidlertidigAdresse() {
         if (isNull(midlertidigAdresse)) {

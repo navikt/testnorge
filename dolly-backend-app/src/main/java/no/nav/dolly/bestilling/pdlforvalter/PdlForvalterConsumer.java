@@ -21,6 +21,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlNavn;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpphold;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOppholdsadresse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlOpprettPerson;
+import no.nav.dolly.bestilling.pdlforvalter.domain.PdlSikkerhetstiltak;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlSivilstand;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlStatsborgerskap;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlTelefonnummer;
@@ -76,6 +77,7 @@ public class PdlForvalterConsumer {
     private static final String PDL_BESTILLING_OPPHOLD_URL = PDL_BESTILLING_URL + "/opphold";
     private static final String PDL_BESTILLING_VERGEMAAL_URL = PDL_BESTILLING_URL + "/vergemaal";
     private static final String PDL_BESTILLING_FULLMAKT_URL = PDL_BESTILLING_URL + "/fullmakt";
+    private static final String PDL_BESTILLING_SIKKERHET_TILTAK_URL = PDL_BESTILLING_URL + "/sikkerhetstiltak";
     private static final String PDL_IDENTHISTORIKK_PARAMS = "?historiskePersonidenter=";
     private static final String PDL_IDENTHISTORIKK_PARAMS_2 = "&historiskePersonidenter=";
     private static final String PDL_BESTILLING_FOLKEREGISTERPERSONSTATUS_URL = PDL_BESTILLING_URL + "/folkeregisterpersonstatus";
@@ -313,6 +315,14 @@ public class PdlForvalterConsumer {
         return postRequest(
                 PDL_BESTILLING_FULLMAKT_URL,
                 fullmakt, ident, "fullmakt");
+    }
+
+    @Timed(name = "providers", tags = { "operation", "pdl_sikkerhetstiltak" })
+    public ResponseEntity<JsonNode> postSikkerhetstiltak(PdlSikkerhetstiltak sikkerhetstiltak, String ident) {
+
+        return postRequest(
+                providersProps.getPdlForvalter().getUrl() + PDL_BESTILLING_SIKKERHET_TILTAK_URL,
+                sikkerhetstiltak, ident, "sikkerhetstiltak");
     }
 
     private ResponseEntity<JsonNode> postRequest(String url, Object body, String ident, String beskrivelse) {
