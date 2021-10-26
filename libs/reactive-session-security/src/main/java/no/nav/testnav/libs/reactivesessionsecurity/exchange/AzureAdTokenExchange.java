@@ -11,6 +11,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
+
+import java.time.Duration;
 
 import no.nav.testnav.libs.reactivesessionsecurity.domain.AccessToken;
 import no.nav.testnav.libs.reactivesessionsecurity.domain.AzureClientCredentials;
@@ -63,6 +66,36 @@ public class AzureAdTokenExchange implements GenerateTokenExchange {
         return "api://" + serverProperties.getCluster() + "." + serverProperties.getNamespace() + "." + serverProperties.getName() + "/.default";
     }
 
+    public Mono<AccessToken> generateClientCredentialAccessToken(ServerProperties serverProperties) {
+        log.trace("Henter OAuth2 access token fra client credential...");
+
+        var scope = String.join(" ", toScope(serverProperties));
+        var body = BodyInserters
+                .fromFormData("scope", scope)
+                .with("client_id", clientCredentials.getClientId())
+                .with("client_secret", clientCredentials.getClientSecret())
+                .with("grant_type", "client_credentials");
+
+        log.trace("Access token opprettet for OAuth 2.0 Client Credentials flow.");
+        return webClient.post()
+                .body(body)
+                .retrieve()
+                .bodyToMono(AccessToken.class)
+                .retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(1))
+                        .filter(throwable -> !(throwable instanceof WebClientResponseException.BadRequest))
+                        .doBeforeRetry(value -> log.warn("Prøver å opprette tilkobling til azure på nytt."))
+                ).doOnError(error -> {
+                    if (error instanceof WebClientResponseException) {
+                        log.error(
+                                "Feil ved henting av access token for {}. Feilmelding: {}.",
+                                scope,
+                                ((WebClientResponseException) error).getResponseBodyAsString()
+                        );
+                    } else {
+                        log.error("Feil ved henting av access token for {}", scope, error);
+                    }
+                });
+    }
 
     private Mono<AccessToken> generateOnBehalfOfAccessToken(Token token, String scope) {
         if (clientCredentials.getClientSecret() == null) {
