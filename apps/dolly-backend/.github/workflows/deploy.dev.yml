@@ -1,0 +1,56 @@
+name: Deploy dev
+
+on:
+  push:
+    branches:
+      - master
+      - feature/pdl-testdata_breaking_changes
+      - bytte-til-proxy-endepunkt
+  workflow_dispatch:
+env:
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/dolly-backend:${{ github.sha }}
+
+jobs:
+  build_and_deploy:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Cache Dependencies
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '17.x'
+      - name: Compile with Maven
+        env:
+          USERNAME: token
+          TOKEN: ${{ secrets.NAV_TOKEN }}
+        run: mvn --settings maven-settings.xml compile
+      - name: Test with Maven
+        env:
+          USERNAME: token
+          TOKEN: ${{ secrets.NAV_TOKEN }}
+        run: mvn -T 10 --settings maven-settings.xml test
+      - name: Package with Maven
+        env:
+          USERNAME: token
+          TOKEN: ${{ secrets.NAV_TOKEN }}
+        run: mvn --settings maven-settings.xml package -Dmaven.test.skip
+      - name: Build and publish Docker image
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          docker build --tag $IMAGE .
+          docker login docker.pkg.github.com -u $GITHUB_REPOSITORY -p $GITHUB_TOKEN
+          docker push $IMAGE
+      - name: Deploy to nais
+        timeout-minutes: 5
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_API_KEY }}
+          CLUSTER: dev-fss
+          RESOURCE: nais_dev-fss_dev_template.yaml

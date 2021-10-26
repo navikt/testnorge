@@ -1,0 +1,29 @@
+spring:
+  flyway:
+    enabled: true # Disabled by default as you should probably think twice before running Flyway-migrations
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+  datasource:
+    url: jdbc:postgresql://${postgresql.database.host}:${postgresql.database.port}/${postgresql.database.name}
+    hikari:
+      maximum-pool-size: 3
+      minimum-idle: 1
+  jpa:
+    properties:
+      hibernate:
+        default-schema: public
+  cloud:
+    vault:
+      host: vault.adeo.no
+      port: 443
+      fail-fast: true
+      connection-timeout: 15000
+      read-timeout: 30000
+      database:
+        backend: postgresql/preprod-fss
+        enabled: true
+        role: ${postgresql.database.name}-admin
+      kv:
+        backend: kv/preprod/fss
+        application-name: dolly-backend-dev/dolly
+        default-context: dolly-backend-dev/dolly
