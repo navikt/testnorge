@@ -17,7 +17,3 @@ export type Bruker = {
 	opprettet?: string
 	sistInnlogget?: string
 }
-
-export type BrukerResponse = {
-	data: Bruker[]
-}

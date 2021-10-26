@@ -5,7 +5,7 @@ import NavButton from '~/components/ui/button/NavButton/NavButton'
 import Loading from '~/components/ui/loading/Loading'
 import BrukernavnVelger from '~/pages/brukerPage/BrukernavnVelger'
 import OrganisasjonVelger from '~/pages/brukerPage/OrganisasjonVelger'
-import { BrukerResponse, OrgResponse, Organisasjon } from '~/pages/brukerPage/types'
+import { Bruker, OrgResponse, Organisasjon } from '~/pages/brukerPage/types'
 import { PersonOrgTilgangApi, BrukerApi, SessionApi } from '~/service/Api'
 import { Redirect } from 'react-router-dom'
 
@@ -51,9 +51,9 @@ export default () => {
 		setLoading(true)
 		setOrganisasjon(org)
 		setModalHeight(420)
-		BrukerApi.getBrukere(org.organisasjonsnummer)
-			.then((response: BrukerResponse) => {
-				if (response !== null && response.data !== null && response.data.length !== 0) {
+		BrukerApi.getBruker(org.organisasjonsnummer)
+			.then((response: Bruker) => {
+				if (response !== null) {
 					addToSession(org.organisasjonsnummer)
 				} else {
 					logout(UNKNOWN_ERROR)
@@ -67,8 +67,8 @@ export default () => {
 			})
 	}
 
-	const addToSession = (org: string) => {
-		SessionApi.addToSession(org)
+	const addToSession = async (org: string) => {
+		await SessionApi.addToSession(org)
 		setSessionUpdated(true)
 	}
 
