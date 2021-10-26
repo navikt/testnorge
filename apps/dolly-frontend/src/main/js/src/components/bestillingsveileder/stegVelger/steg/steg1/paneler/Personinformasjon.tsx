@@ -271,10 +271,10 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			checked: has('tpsf.typeSikkerhetTiltak'),
 			add: () =>
 				setMulti(
-					['tpsf.typeSikkerhetTiltak', null],
-					['tpsf.beskrSikkerhetTiltak', null],
-					['tpsf.sikkerhetTiltakDatoFom', null],
-					['tpsf.sikkerhetTiltakDatoTom', null]
+					['tpsf.typeSikkerhetTiltak', ''],
+					['tpsf.beskrSikkerhetTiltak', ''],
+					['tpsf.sikkerhetTiltakDatoFom', new Date()],
+					['tpsf.sikkerhetTiltakDatoTom', '']
 				),
 			remove: () =>
 				del([

@@ -17,6 +17,7 @@ export const PdlPersonInfo = ({ data, visTittel = true }) => {
 	const personKjoenn = data.kjoenn?.length > 0 ? data.kjoenn[0] : null
 	const personSivilstand = data.sivilstand?.length > 0 ? data.sivilstand[0] : null
 	const personFoedsel = data.foedsel?.length > 0 ? data.foedsel[0] : null
+	const sikkerhetstiltak = data.sikkerhetstiltak?.length > 0 ? data.sikkerhetstiltak[0] : null
 
 	return (
 		<ErrorBoundary>
@@ -46,6 +47,26 @@ export const PdlPersonInfo = ({ data, visTittel = true }) => {
 									value={Formatters.formatDate(
 										adressebeskyttelse?.folkeregistermetadata?.gyldighetstidspunkt
 									)}
+								/>
+							</div>
+						</div>
+					)}
+					{sikkerhetstiltak && (
+						<div className="person-visning_content">
+							<h4 style={{ marginTop: '5px' }}>Sikkerhetstiltak</h4>
+							<div className="person-visning_content">
+								<TitleValue title="Type sikkerhetstiltak" value={sikkerhetstiltak.tiltakstype} />
+								<TitleValue
+									title="Beskrivelse sikkerhetstiltak"
+									value={sikkerhetstiltak.beskrivelse}
+								/>
+								<TitleValue
+									title="Sikkerhetstiltak starter"
+									value={Formatters.formatDate(sikkerhetstiltak.gyldigFraOgMed)}
+								/>
+								<TitleValue
+									title="Sikkerhetstiltak opphører"
+									value={Formatters.formatDate(sikkerhetstiltak.gyldigTilOgMed)}
 								/>
 							</div>
 						</div>

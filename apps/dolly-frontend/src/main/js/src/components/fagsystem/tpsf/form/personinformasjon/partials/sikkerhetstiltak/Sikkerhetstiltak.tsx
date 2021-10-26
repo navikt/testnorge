@@ -30,9 +30,14 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 		sikkerhetTiltakDatoTom: 'tpsf.sikkerhetTiltakDatoTom',
 	}
 
+	const indexBeskrSikkerhetTiltak = 7
+
 	const handleSikkerhetstiltakChange = (option: Option) => {
 		formikBag.setFieldValue(paths.typeSikkerhetTiltak, option.value)
-		formikBag.setFieldValue(paths.beskrSikkerhetTiltak, option.label)
+		formikBag.setFieldValue(
+			paths.beskrSikkerhetTiltak,
+			option.label.substring(indexBeskrSikkerhetTiltak)
+		)
 	}
 
 	return (
@@ -46,8 +51,11 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 					onChange={handleSikkerhetstiltakChange}
 					value={_get(formikBag.values, paths.typeSikkerhetTiltak)}
 					isClearable={false}
-					// TODO: Vise value i label???
-					// TODO: Validering - alt er påkrevd
+					feil={
+						_get(formikBag.values, paths.typeSikkerhetTiltak) === '' && {
+							feilmelding: 'Feltet er påkrevd',
+						}
+					}
 				/>
 				<FormikDatepicker name={paths.sikkerhetTiltakDatoFom} label="Sikkerhetstiltak starter" />
 				<FormikDatepicker name={paths.sikkerhetTiltakDatoTom} label="Sikkerhetstiltak opphører" />

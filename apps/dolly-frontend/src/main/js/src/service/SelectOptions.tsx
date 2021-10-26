@@ -57,11 +57,11 @@ const selectOptions: SelectOptions = {
 	],
 
 	sikkerhetstiltakType: [
-		{ value: 'FYUS', label: 'Fysisk utestengelse' },
-		{ value: 'TFUS', label: 'Telefonisk utestengelse' },
-		{ value: 'FTUS', label: 'Fysisk/telefonisk utestengelse' },
-		{ value: 'DIUS', label: 'Digital utestengelse' },
-		{ value: 'TOAN', label: 'To ansatte i samtale' },
+		{ value: 'FYUS', label: 'FYUS - Fysisk utestengelse' },
+		{ value: 'TFUS', label: 'TFUS - Telefonisk utestengelse' },
+		{ value: 'FTUS', label: 'FTUS - Fysisk/telefonisk utestengelse' },
+		{ value: 'DIUS', label: 'DIUS - Digital utestengelse' },
+		{ value: 'TOAN', label: 'TOAN - To ansatte i samtale' },
 	],
 
 	// SIGRUN
