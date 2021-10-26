@@ -27,8 +27,9 @@ import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
 import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivesessionsecurity.domain.AccessToken;
-import no.nav.testnav.libs.reactivesessionsecurity.domain.ServerProperties;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -86,7 +87,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(testnavOrganisasjonFasteDataServiceProperties))
                 .route(createRoute(testnavAdresseServiceProperties))
                 .route(createRoute(testnavOrganisasjonForvalterProperties))
-                .route(createRoute(testnavVarslingerServiceProperties))
+                .route(createRoute(testnavVarslingerServiceProperties, "testnav-varslinger-service"))
                 .route(createRoute(testnorgeProfilApiProperties))
                 .route(createRoute(testnavMiljoerServiceProperties))
                 .route(createRoute(dollyBackendProperties, "dolly-backend"))

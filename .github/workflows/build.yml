@@ -38,4 +38,4 @@ jobs:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew build sonarqube buildAll --info --scan
+        run: ./gradlew build sonarqube --info --scan

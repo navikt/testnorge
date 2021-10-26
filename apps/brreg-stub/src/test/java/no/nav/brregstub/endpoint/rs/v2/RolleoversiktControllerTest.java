@@ -33,7 +33,7 @@ import no.nav.brregstub.database.domene.Rolleoversikt;
 import no.nav.brregstub.database.repository.HentRolleRepository;
 import no.nav.brregstub.database.repository.RolleoversiktRepository;
 
-@ActiveProfiles("local")
+@ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)

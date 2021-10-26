@@ -12,7 +12,7 @@ import no.nav.testnav.apps.importpersonservice.consumer.request.OppdaterPersonRe
 import no.nav.testnav.apps.importpersonservice.credentias.TestnavPdlForvalterProperties;
 import no.nav.testnav.apps.importpersonservice.domain.PersonList;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
-import no.nav.testnav.libs.reactivesecurity.domain.ServerProperties;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 
 @Component

@@ -35,7 +35,8 @@ repositories {
 dependencies {
     implementation 'com.google.guava:guava:30.0-jre'
 
-    implementation 'no.nav.testnav.libs:servlet-security'
+    implementation 'no.nav.testnav.libs:security-core'
+    implementation 'no.nav.testnav.libs:servlet-insecure-security'
     implementation 'no.nav.testnav.libs:kafka-config'
     implementation 'no.nav.testnav.libs:kafka-producers'
     implementation 'no.nav.testnav.libs:avro-schema'
@@ -78,10 +79,9 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
     testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
 
+    testImplementation 'no.nav.testnav.libs:testing'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'no.nav.testnav.libs:testing'
-    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
 }
 
 description = 'testnorge-statisk-data-forvalter'

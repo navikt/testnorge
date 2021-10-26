@@ -9,8 +9,6 @@ import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 
 @Import({
         CoreConfig.class,
@@ -28,9 +26,7 @@ public class TestnorgeAaregProxyApplicationStarter {
         return builder
                 .routes()
                 .route(spec -> spec
-                        .path("/**")
-                        .filters(gatewayFilterSpec -> gatewayFilterSpec
-                                .addRequestHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
+                        .path("/**", "/proxy/**")
                         .uri("https://testnorge-aareg.dev.intern.nav.no/")
                 )
                 .build();

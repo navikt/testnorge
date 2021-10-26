@@ -8,6 +8,7 @@ import { Hovedknapp, Knapp } from 'nav-frontend-knapper'
 import SessionTimer from '@/components/SessionTimer'
 import styled from 'styled-components'
 import { ErrorAlertstripe, WarningAlertstripe } from '@navikt/dolly-komponenter'
+import { Checkbox } from 'nav-frontend-skjema'
 import { NotFoundError } from '@navikt/dolly-lib'
 import { Input } from 'nav-frontend-skjema'
 
@@ -49,8 +50,13 @@ const AccessTokenTextArea = styled.textarea`
 	background: white;
 `
 
+const StyledCheckbox = styled(Checkbox)`
+	padding: 5px 0px;
+`
+
 export default ({ labels = {}, scope }: Props) => {
 	const [accessToken, setAccessToken] = useState(null)
+	const [clientCredentials, setClientCredentials] = useState(false)
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState(null)
 
@@ -60,11 +66,14 @@ export default ({ labels = {}, scope }: Props) => {
 		setLoading(true)
 		setError(null)
 		setAccessToken(null)
-		TokenService.fetchToken({
-			cluster: parts[0],
-			namespace: parts[1],
-			name: parts[2],
-		})
+		TokenService.fetchToken(
+			{
+				cluster: parts[0],
+				namespace: parts[1],
+				name: parts[2],
+			},
+			clientCredentials
+		)
 			.then((response: any) => {
 				setAccessToken(response.token)
 				setLoading(false)
@@ -97,6 +106,13 @@ export default ({ labels = {}, scope }: Props) => {
 			/>
 			<SessionTimer />
 			{getError()}
+			<StyledCheckbox
+				name="client-credentials-radio"
+				label="Client credentials?"
+				// @ts-ignore
+				value={clientCredentials}
+				onChange={(event) => setClientCredentials(event.target.checked)}
+			/>
 			<ButtonGroup>
 				<GetToken disabled={loading} onClick={onClick}>
 					Hent token

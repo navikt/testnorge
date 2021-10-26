@@ -29,8 +29,15 @@ repositories {
 
 dependencies {
 
-    implementation 'no.nav.testnav.libs:servlet-security'
+    implementation('com.google.guava:guava') {
+        version {
+            strictly '20.0'
+        }
+    }
+
+    implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:servlet-core'
+    implementation 'no.nav.testnav.libs:servlet-insecure-security'
     implementation 'no.nav.testnav.libs:database'
     implementation 'no.nav.testnav.libs:domain'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
@@ -50,8 +57,7 @@ dependencies {
     implementation 'commons-lang:commons-lang:2.6'
 
     implementation 'no.nav.registre:testnorge-consumers:1.12.0-RELEASE'
-    implementation 'io.springfox:springfox-swagger2:2.9.2'
-    implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+    implementation "org.springdoc:springdoc-openapi-ui:${DependenciesPlugin.springdocOpenapi}"
     implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
 
     implementation 'org.hibernate.validator:hibernate-validator'
@@ -62,9 +68,7 @@ dependencies {
     implementation 'org.postgresql:postgresql'
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
-    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'no.nav.testnav.libs:testing'
 
     implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"

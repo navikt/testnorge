@@ -9,10 +9,10 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.testnav.libs.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
@@ -20,7 +20,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 
@@ -33,10 +32,11 @@ import java.util.Map;
 import no.nav.registre.inntekt.consumer.rs.ConsumerUtils;
 import no.nav.registre.inntekt.consumer.rs.InntektstubV2Consumer;
 import no.nav.registre.inntekt.domain.inntektstub.RsInntekt;
+import no.nav.testnav.libs.domain.dto.aordningen.inntektsinformasjon.v2.inntekter.Inntektsinformasjon;
 
-@RunWith(SpringRunner.class)
-@RestClientTest({ InntektstubV2Consumer.class, ConsumerUtils.class })
-@ContextConfiguration(classes = { InntektstubV2Consumer.class, ConsumerUtils.class, RestTemplate.class })
+@ExtendWith(MockitoExtension.class)
+@RestClientTest({InntektstubV2Consumer.class, ConsumerUtils.class})
+@ContextConfiguration(classes = {InntektstubV2Consumer.class, ConsumerUtils.class, RestTemplate.class})
 @ActiveProfiles("test")
 public class InntektstubV2ConsumerTest {
 
@@ -51,7 +51,7 @@ public class InntektstubV2ConsumerTest {
 
     private List<String> identer;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         identer = Arrays.asList("01010101010", "02020202020");
     }

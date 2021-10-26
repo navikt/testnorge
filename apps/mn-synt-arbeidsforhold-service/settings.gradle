@@ -1,0 +1,20 @@
+plugins {
+    id "com.gradle.enterprise" version "3.4.1"
+}
+
+rootProject.name = 'mn-synt-arbeidsforhold-service'
+
+includeBuild '../../gradlePlugins'
+includeBuild '../../libs/security-core'
+includeBuild '../../libs/servlet-core'
+includeBuild '../../libs/servlet-insecure-security'
+includeBuild '../../libs/commands'
+includeBuild '../../libs/database'
+includeBuild '../../libs/data-transfer-objects'
+
+gradleEnterprise {
+    buildScan {
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
+    }
+}

@@ -3,10 +3,10 @@ package no.nav.registre.inntekt.utils;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,14 +14,14 @@ import java.util.List;
 
 import no.nav.registre.inntekt.domain.inntektstub.RsInntekt;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class DatoParserTest {
 
     private List<RsInntekt> inntekterMedHoyereAar;
     private List<RsInntekt> inntekterMedHoyereMaaned;
     //    private List<RsInntekt> inntekterMedSammeAar
 
-    @Before
+    @BeforeEach
     public void setUp() {
         RsInntekt.builder()
                 .aar("2017")

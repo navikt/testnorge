@@ -1,0 +1,13 @@
+# Rename from vault name to AzureAd name
+azure.app.client.id: ${client_id}
+azure.app.client.secret: ${client_secret}
+
+spring:
+  application:
+    # Override name
+    name: reactive-rest-example-local
+  flyway:
+    # InMemmory database
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:

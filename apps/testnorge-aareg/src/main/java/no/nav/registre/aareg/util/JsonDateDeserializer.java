@@ -13,7 +13,6 @@ public class JsonDateDeserializer extends JsonDeserializer<LocalDateTime> {
 
     @Override
     public LocalDateTime deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
-        log.info("Prøver å parse: {}", jp.getText());
         return LocalDateTime.parse(jp.getValueAsString());
     }
 }
