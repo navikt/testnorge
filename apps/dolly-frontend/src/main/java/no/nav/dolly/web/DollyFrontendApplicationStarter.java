@@ -28,8 +28,11 @@ import no.nav.dolly.web.credentials.UdiStubProxyProperties;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
 import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
+import no.nav.testnav.libs.reactivefrontend.filter.AddUserJwtHeaderToRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivesessionsecurity.domain.AccessToken;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.UserJwtExchange;
+import no.nav.testnav.libs.securitycore.UserSessionConstant;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 
 import org.springframework.boot.SpringApplication;
@@ -42,7 +45,9 @@ import org.springframework.cloud.gateway.route.builder.PredicateSpec;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import reactor.core.publisher.Mono;
 
+import java.util.Optional;
 import java.util.function.Function;
 
 @Slf4j
@@ -55,6 +60,7 @@ import java.util.function.Function;
 public class DollyFrontendApplicationStarter {
 
     private final TokenExchange tokenExchange;
+    private final UserJwtExchange userJwtExchange;
 
     private final TestnavOrganisasjonFasteDataServiceProperties testnavOrganisasjonFasteDataServiceProperties;
     private final TestnavJoarkDokumentServiceProperties testnavJoarkDokumentServiceProperties;
@@ -123,6 +129,16 @@ public class DollyFrontendApplicationStarter {
                 });
     }
 
+    private GatewayFilter addUserJwtHeaderFilter() {
+        return new AddUserJwtHeaderToRequestGatewayFilterFactory().apply(exchange -> {
+            return exchange.getSession()
+                    .flatMap(session -> Optional.ofNullable(session.getAttribute(UserSessionConstant.SESSION_USER_ID_KEY))
+                            .map(value -> Mono.just((String) value))
+                            .orElse(Mono.empty())
+                    ).flatMap(id -> userJwtExchange.generateJwt(id, exchange));
+        });
+    }
+
     private Function<PredicateSpec, Buildable<Route>> createRoute(ServerProperties serverProperties) {
         return createRoute(
                 serverProperties.getName(),
@@ -140,12 +156,11 @@ public class DollyFrontendApplicationStarter {
     }
 
     private Function<PredicateSpec, Buildable<Route>> createRoute(String segment, String host, GatewayFilter filter) {
-        log.info("Redirect fra segment {} til host {}.", segment, host);
         return spec -> spec
                 .path("/" + segment + "/**")
                 .filters(filterSpec -> filterSpec
                         .rewritePath("/" + segment + "/(?<segment>.*)", "/${segment}")
-                        .filter(filter)
+                        .filters(filter, addUserJwtHeaderFilter())
                 ).uri(host);
     }
 
