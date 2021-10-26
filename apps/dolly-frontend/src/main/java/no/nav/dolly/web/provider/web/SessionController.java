@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import no.nav.testnav.libs.securitycore.UserSessionConstant;
+import no.nav.testnav.libs.securitycore.config.UserSessionConstant;
 
 @RestController
 @RequestMapping("/session")
