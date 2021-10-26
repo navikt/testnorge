@@ -37,20 +37,21 @@ public class IdentService {
 
         var validIdents = IdentValidCheck.isIdentValid(identer);
 
-        var existsInDatabase = personRepository.findByIdentIn(validIdents, PageRequest.of(0, 1000));
+        var existsInDatabase = personRepository.findByIdentIn(validIdents, PageRequest.of(0, 1000)).stream()
+                .map(DbPerson::getIdent)
+                .collect(Collectors.toSet());
 
-        var identpoolStatus = identPoolConsumer.getIdents(existsInDatabase.stream()
-                        .map(DbPerson::getIdent)
+        var identpoolStatus = identPoolConsumer.getIdents(validIdents.stream()
+                        .filter(ident -> !existsInDatabase.contains(ident))
                         .collect(Collectors.toSet()))
                 .collectList()
                 .block();
 
         return Stream.of(identer.stream()
-                                .filter(ident -> !identer.contains(ident))
+                                .filter(ident -> !validIdents.contains(ident))
                                 .map(ident -> new AvailibilityResponseDTO(ident, INVALID_IDENT, false))
                                 .collect(Collectors.toList()),
                         existsInDatabase.stream()
-                                .map(DbPerson::getIdent)
                                 .map(ident -> new AvailibilityResponseDTO(ident, IDENT_EXISTS_IN_DB, false))
                                 .collect(Collectors.toList()),
                         identpoolStatus.stream()

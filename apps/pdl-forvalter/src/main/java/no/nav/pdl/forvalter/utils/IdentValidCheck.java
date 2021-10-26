@@ -1,10 +1,13 @@
 package no.nav.pdl.forvalter.utils;
 
 import lombok.experimental.UtilityClass;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static org.apache.commons.lang3.StringUtils.isNumeric;
 
 @UtilityClass
 public class IdentValidCheck {
@@ -15,7 +18,8 @@ public class IdentValidCheck {
     public Set<String> isIdentValid(Collection<String> identer) {
 
         return identer.stream()
-                .filter(ident -> ident.length() == 11 &&
+                .filter(ident -> isNumeric(ident) &&
+                        ident.length() == 11 &&
                         isValidFnrDnrOrBost(ident) &&
                         isCheckDigitValid(ident))
                 .collect(Collectors.toSet());
