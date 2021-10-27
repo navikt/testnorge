@@ -6,7 +6,7 @@ on:
     paths-ignore:
       - 'navikt/**'
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [ opened, synchronize, reopened ]
 
 jobs:
   build:
@@ -15,12 +15,6 @@ jobs:
       - uses: actions/checkout@v2
       - name: Fetch git history
         run: git fetch --unshallow
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v2
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
       - name: Gradle cache
         uses: actions/cache@v2
         with:
@@ -34,12 +28,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.17
-      - name: Sonar
-        env:
-          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew sonarqube --scan
       - name: Build
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
