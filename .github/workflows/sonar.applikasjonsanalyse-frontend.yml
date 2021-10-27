@@ -4,8 +4,6 @@ on:
   push:
     paths:
       - apps/applikasjonsanalyse-frontend/**
-  pull_request:
-    types: [opened, synchronize, reopened]
 
 jobs:
   build:
