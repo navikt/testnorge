@@ -5,6 +5,8 @@ import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Se
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import _get from 'lodash/get'
+import { useContext } from 'react'
+import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 
 interface SikkerhetstiltakValues {
 	typeSikkerhetTiltak: string
@@ -23,6 +25,9 @@ type Option = {
 }
 
 export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
+	const opts = useContext(BestillingsveilederContext)
+	console.log('opts', opts)
+
 	const paths = {
 		typeSikkerhetTiltak: 'tpsf.typeSikkerhetTiltak',
 		beskrSikkerhetTiltak: 'tpsf.beskrSikkerhetTiltak',
@@ -36,7 +41,7 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 		formikBag.setFieldValue(paths.typeSikkerhetTiltak, option.value)
 		formikBag.setFieldValue(
 			paths.beskrSikkerhetTiltak,
-			option.label.substring(indexBeskrSikkerhetTiltak)
+			option.label === 'Opphørt' ? option.label : option.label.substring(indexBeskrSikkerhetTiltak)
 		)
 	}
 
@@ -46,7 +51,11 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 				<DollySelect
 					name={paths.typeSikkerhetTiltak}
 					label="Type sikkerhetstiltak"
-					options={Options('sikkerhetstiltakType')}
+					options={
+						opts.personFoerLeggTil
+							? Options('sikkerhetstiltakType')
+							: Options('sikkerhetstiltakType').filter((option) => option.label !== 'Opphørt')
+					}
 					size="large"
 					onChange={handleSikkerhetstiltakChange}
 					value={_get(formikBag.values, paths.typeSikkerhetTiltak)}

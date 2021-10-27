@@ -22,7 +22,6 @@ export const PdlPersonMiljoeInfo = ({ ident }: PdlPersonMiljoeinfo) => {
 		return null
 	}
 
-	console.log('state', state)
 	return (
 		<ErrorBoundary>
 			<div>

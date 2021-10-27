@@ -57,6 +57,7 @@ const selectOptions: SelectOptions = {
 	],
 
 	sikkerhetstiltakType: [
+		{ value: 'OPPH', label: 'Opphørt' },
 		{ value: 'FYUS', label: 'FYUS - Fysisk utestengelse' },
 		{ value: 'TFUS', label: 'TFUS - Telefonisk utestengelse' },
 		{ value: 'FTUS', label: 'FTUS - Fysisk/telefonisk utestengelse' },

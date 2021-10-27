@@ -36,7 +36,6 @@ export const TpsDataVisning = ({ data }: TpsData) => {
 	return (
 		<div className="flexbox--flex-wrap">
 			{data.map((miljoe, idx) => {
-				// console.log('miljoe', miljoe)
 				return (
 					<Tooltip
 						overlay={getPersonInfo(miljoe.person)}

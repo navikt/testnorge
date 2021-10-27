@@ -55,10 +55,9 @@ export const PdlPersonInfo = ({ data, visTittel = true }) => {
 						<div className="person-visning_content">
 							<h4 style={{ marginTop: '5px' }}>Sikkerhetstiltak</h4>
 							<div className="person-visning_content">
-								<TitleValue title="Type sikkerhetstiltak" value={sikkerhetstiltak.tiltakstype} />
 								<TitleValue
-									title="Beskrivelse sikkerhetstiltak"
-									value={sikkerhetstiltak.beskrivelse}
+									title="Type sikkerhetstiltak"
+									value={`${sikkerhetstiltak.tiltakstype} - ${sikkerhetstiltak.beskrivelse}`}
 								/>
 								<TitleValue
 									title="Sikkerhetstiltak starter"

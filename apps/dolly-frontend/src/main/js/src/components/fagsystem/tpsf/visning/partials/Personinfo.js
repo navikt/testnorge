@@ -6,7 +6,6 @@ import Formatters from '~/utils/DataFormatter'
 import { GtKodeverk, PersoninformasjonKodeverk } from '~/config/kodeverk'
 
 export const Personinfo = ({ data, visTittel = true }) => {
-	// console.log('data', data)
 	return (
 		<div>
 			{visTittel && <SubOverskrift label="Persondetaljer" iconKind="personinformasjon" />}
@@ -106,8 +105,10 @@ export const Personinfo = ({ data, visTittel = true }) => {
 				)}
 				{data.typeSikkerhetTiltak && (
 					<>
-						<TitleValue title="Type sikkerhetstiltak" value={data.typeSikkerhetTiltak} />
-						<TitleValue title="Beskrivelse sikkerhetstiltak" value={data.beskrSikkerhetTiltak} />
+						<TitleValue
+							title="Type sikkerhetstiltak"
+							value={`${data.typeSikkerhetTiltak} - ${data.beskrSikkerhetTiltak}`}
+						/>
 						<TitleValue
 							title="Sikkerhetstiltak starter"
 							value={Formatters.formatDate(data.sikkerhetTiltakDatoFom)}
