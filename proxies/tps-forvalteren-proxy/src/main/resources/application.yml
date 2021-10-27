@@ -14,6 +14,6 @@ spring:
   cloud:
     gateway:
       httpclient:
-        response-timeout: 30s
+        response-timeout: 1200s
 
 proxy.url: ${PROXY_URL}
