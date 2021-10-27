@@ -16,7 +16,6 @@ sonarqube {
         property "sonar.organization", "navit"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.project.monorepo.enabled", true
-        property "sonar.log.level", "DEBUG"
         property "sonar.login", System.getenv("SONAR_TOKEN")
     }
 }
@@ -64,6 +63,8 @@ dependencies {
 
     implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
     implementation "org.springdoc:springdoc-openapi-ui:${DependenciesPlugin.springdocOpenapi}"
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
