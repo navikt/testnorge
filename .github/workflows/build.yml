@@ -34,12 +34,12 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.17
-#      - name: Sonar
-#        env:
-#          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        run: ./gradlew sonarqube --scan
+      - name: Sonar
+        env:
+          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew sonarqube --scan
       - name: Build
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
