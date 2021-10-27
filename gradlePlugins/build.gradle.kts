@@ -1,5 +1,12 @@
 plugins {
+    java
     `kotlin-dsl`
+    id("org.sonarqube") version "3.3"
+}
+
+
+sonarqube {
+    isSkipProject = true
 }
 
 repositories {
