@@ -1,4 +1,4 @@
-name: Sonar Analysis amelding-service
+name: Sonar Analysis [amelding-service]
 
 on:
   push:

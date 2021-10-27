@@ -1,4 +1,4 @@
-name: Sonar Analysis applikasjonsanalyse-frontend
+name: Sonar Analysis [applikasjonsanalyse-frontend]
 
 on:
   push:

@@ -1,4 +1,4 @@
-name: Deploy synt-person-api prod
+name: Deploy synt-person-api
 
 on:
   push:

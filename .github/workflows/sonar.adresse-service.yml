@@ -1,4 +1,4 @@
-name: Sonar Analysis adresse-service
+name: Sonar Analysis [adresse-service]
 
 on:
   push:

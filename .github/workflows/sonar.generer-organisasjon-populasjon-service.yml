@@ -1,9 +1,9 @@
-name: Sonar Analysis [app-tilgang-analyse-service]
+name: Sonar Analysis [generer-organisasjon-populasjon-service]
 
 on:
   push:
     paths:
-      - apps/app-tilgang-analyse-service/**
+      - apps/generer-organisasjon-populasjon-service/**
 
 jobs:
   build:
@@ -21,7 +21,7 @@ jobs:
         with:
           java-version: 1.17
       - name: Sonar Analysis
-        working-directory: apps/app-tilgang-analyse-service/
+        working-directory: apps/generer-organisasjon-populasjon-service/
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

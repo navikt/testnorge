@@ -1,9 +1,9 @@
-name: Sonar Analysis [app-tilgang-analyse-service]
+name: Sonar Analysis [reactive-core]
 
 on:
   push:
     paths:
-      - apps/app-tilgang-analyse-service/**
+      - libs/reactive-core/**
 
 jobs:
   build:
@@ -21,7 +21,7 @@ jobs:
         with:
           java-version: 1.17
       - name: Sonar Analysis
-        working-directory: apps/app-tilgang-analyse-service/
+        working-directory: libs/reactive-core/
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
