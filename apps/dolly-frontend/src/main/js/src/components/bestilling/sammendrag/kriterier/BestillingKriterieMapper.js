@@ -61,7 +61,7 @@ const _getTpsfBestillingData = (data) => {
 			'Type sikkerhetstiltak',
 			data.beskrSikkerhetTiltak === 'Opphørt'
 				? data.beskrSikkerhetTiltak
-				: `${data.typeSikkerhetTiltak} - ${data.beskrSikkerhetTiltak}`
+				: data.typeSikkerhetTiltak && `${data.typeSikkerhetTiltak} - ${data.beskrSikkerhetTiltak}`
 		),
 		obj('Sikkerhetstiltak starter', Formatters.formatDate(data.sikkerhetTiltakDatoFom)),
 		obj('Sikkerhetstiltak opphører', Formatters.formatDate(data.sikkerhetTiltakDatoTom)),

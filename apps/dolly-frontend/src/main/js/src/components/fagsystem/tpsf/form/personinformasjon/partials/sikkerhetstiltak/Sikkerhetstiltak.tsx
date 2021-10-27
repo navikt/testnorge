@@ -26,7 +26,6 @@ type Option = {
 
 export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 	const opts = useContext(BestillingsveilederContext)
-	console.log('opts', opts)
 
 	const paths = {
 		typeSikkerhetTiltak: 'tpsf.typeSikkerhetTiltak',
