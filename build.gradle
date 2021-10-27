@@ -7,5 +7,5 @@ task build {
 }
 
 task sonarqube {
-    dependsOn gradle.includedBuild("adresse-service").task(':sonarqube')
+    dependsOn gradle.includedBuilds*.task(':sonarqube')
 }
