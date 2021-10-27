@@ -14,7 +14,7 @@ spring:
   cloud:
     gateway:
       httpclient:
-        response-timeout: 120s
+        response-timeout: 1200s
 
 consumers:
   testnav-udistub:

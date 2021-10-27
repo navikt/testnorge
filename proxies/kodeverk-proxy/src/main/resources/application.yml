@@ -14,4 +14,4 @@ spring:
   cloud:
     gateway:
       httpclient:
-        response-timeout: 120s
+        response-timeout: 240s
