@@ -21,6 +21,7 @@ export const PdlPersonMiljoeInfo = ({ ident }: PdlPersonMiljoeinfo) => {
 	if (state.value && state.value.errors) {
 		return null
 	}
+
 	return (
 		<ErrorBoundary>
 			<div>

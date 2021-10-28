@@ -19,12 +19,12 @@ public class GetAuthenticatedToken extends JwtResolver implements Callable<Token
         return switch (getAuthenticatedResourceServerType.call()) {
             case AZURE_AD -> new Token(
                     jwt.getToken().getTokenValue(),
-                    null,
+                    jwt.getTokenAttributes().get("oid").toString(),
                     jwt.getTokenAttributes().get("oid").equals(jwt.getTokenAttributes().get("sub"))
             );
             case TOKEN_X -> new Token(
                     jwt.getToken().getTokenValue(),
-                    null,
+                    jwt.getTokenAttributes().get("pid").toString(),
                     false
             );
         };

@@ -64,6 +64,7 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 				<Attributt attr={sm.attrs.spesreg} />
 				<Attributt attr={sm.attrs.vergemaal} />
 				<Attributt attr={sm.attrs.fullmakt} />
+				<Attributt attr={sm.attrs.sikkerhetstiltak} />
 			</AttributtKategori>
 		</Panel>
 	)
@@ -264,6 +265,30 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 					harMellomnavn: null,
 				}),
 			remove: () => del('tpsf.fullmakt'),
+		},
+		sikkerhetstiltak: {
+			label: 'Sikkerhetstiltak',
+			checked: has('tpsf.typeSikkerhetTiltak'),
+			add: () =>
+				setMulti(
+					['tpsf.typeSikkerhetTiltak', _get(personFoerLeggTil, 'tpsf.typeSikkerhetTiltak') || ''],
+					['tpsf.beskrSikkerhetTiltak', _get(personFoerLeggTil, 'tpsf.beskrSikkerhetTiltak') || ''],
+					[
+						'tpsf.sikkerhetTiltakDatoFom',
+						_get(personFoerLeggTil, 'tpsf.sikkerhetTiltakDatoFom') || new Date(),
+					],
+					[
+						'tpsf.sikkerhetTiltakDatoTom',
+						_get(personFoerLeggTil, 'tpsf.sikkerhetTiltakDatoTom') || '',
+					]
+				),
+			remove: () =>
+				del([
+					'tpsf.typeSikkerhetTiltak',
+					'tpsf.beskrSikkerhetTiltak',
+					'tpsf.sikkerhetTiltakDatoFom',
+					'tpsf.sikkerhetTiltakDatoTom',
+				]),
 		},
 	}
 }

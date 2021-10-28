@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 import _get from 'lodash/get'
-import { addDays, isAfter, isBefore } from 'date-fns'
+import { addDays, differenceInWeeks, isAfter, isBefore, isSameDay } from 'date-fns'
 import Dataformatter from '~/utils/DataFormatter'
 import {
 	ifKeyHasValue,
@@ -479,6 +479,36 @@ export const validation = {
 					gyldigFom: requiredDate,
 					gyldigTom: requiredDate,
 				})
+			),
+			typeSikkerhetTiltak: ifPresent('$tpsf.typeSikkerhetTiltak', requiredString),
+			beskrSikkerhetTiltak: ifPresent('$tpsf.beskrSikkerhetTiltak', requiredString),
+			sikkerhetTiltakDatoFom: ifPresent('$tpsf.sikkerhetTiltakDatoFom', requiredDate),
+			sikkerhetTiltakDatoTom: ifPresent(
+				'$tpsf.sikkerhetTiltakDatoTom',
+				Yup.string()
+					.test(
+						'is-after-startdato',
+						'Dato må være lik eller etter startdato, og ikke mer enn 12 uker etter startdato',
+						function validDate(dato) {
+							const values = this.options.context
+							const test = differenceInWeeks(
+								new Date(dato),
+								new Date(_get(values, 'tpsf.sikkerhetTiltakDatoFom'))
+							)
+							return (
+								(isAfter(new Date(dato), new Date(_get(values, 'tpsf.sikkerhetTiltakDatoFom'))) ||
+									isSameDay(
+										new Date(dato),
+										new Date(_get(values, 'tpsf.sikkerhetTiltakDatoFom'))
+									)) &&
+								differenceInWeeks(
+									new Date(dato),
+									new Date(_get(values, 'tpsf.sikkerhetTiltakDatoFom'))
+								) <= 12
+							)
+						}
+					)
+					.nullable()
 			),
 			boadresse: ifPresent('$tpsf.boadresse', boadresse),
 			adresseNrInfo: ifPresent('$tpsf.adresseNrInfo', adresseNrInfo),

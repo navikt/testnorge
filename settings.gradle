@@ -154,6 +154,8 @@ includeBuild './xsd/arbeidsforhold-xsd'
 includeBuild './examples/reactive-rest-example'
 
 include(':proxies')
+include(':navikt')
 include(':apps')
 include(':libs')
+include(':examples')
 include(':xsd')
