@@ -1,12 +1,8 @@
 ![Build](https://github.com/navikt/testnorge/workflows/Build/badge.svg)
 ![Release](https://github.com/navikt/testnorge/workflows/Release/badge.svg)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=navikt_testnorge&metric=alert_status)](https://sonarcloud.io/dashboard?id=navikt_testnorge)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=navikt_testnorge&metric=coverage)](https://sonarcloud.io/dashboard?id=navikt_testnorge)
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=navikt_testnorge&metric=ncloc)](https://sonarcloud.io/dashboard?id=navikt_testnorge)
-[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=navikt_testnorge&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=navikt_testnorge)
 [![tag](https://img.shields.io/github/v/tag/navikt/testnorge)](https://github.com/navikt/testnorge/releases)
 
-# testnorge
+# testnav
 
 Info/lenker til Team Dollys interne verktøy finnes [her](https://navikt.github.io/dolly/).
 
