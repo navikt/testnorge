@@ -3,14 +3,13 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.consumer.PdlTestdataConsumer;
-import no.nav.pdl.forvalter.domain.ArtifactValue;
-import no.nav.pdl.forvalter.domain.Ordre;
+import no.nav.pdl.forvalter.dto.ArtifactValue;
+import no.nav.pdl.forvalter.dto.Ordre;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.stream.Collectors;
