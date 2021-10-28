@@ -11,9 +11,6 @@ jobs:
     if: ${{ github.actor != 'dependabot[bot]' }}
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: "16.x"
       - name: Cache SonarCloud packages
         uses: actions/cache@v2
         with:
