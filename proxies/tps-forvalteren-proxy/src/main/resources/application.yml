@@ -3,7 +3,7 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 spring:
   application:
     name: tps-forvateren-proxy
-    desciption: Proxy for tps-forvateren-proxy som legger på sikkerhet
+    desciption: Proxy for tps-forvateren-proxy som legger på sikkerhet.
   security:
     oauth2:
       resourceserver:
