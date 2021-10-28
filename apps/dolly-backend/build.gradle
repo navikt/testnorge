@@ -80,7 +80,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.7.4'
     implementation 'org.hibernate.validator:hibernate-validator:6.1.2.Final'
-    implementation 'ma.glasnost.orika:orika-core:1.5.4'
+    implementation 'ma.glasnost.orika:orika-core'
     implementation 'org.codehaus.jettison:jettison:1.4.0'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.12.5'
     implementation "org.springframework.boot:spring-boot-starter-webflux:${DependenciesPlugin.springBoot}"

@@ -44,4 +44,4 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-fss
-          RESOURCE: nais_dev-fss_dev_template.yaml
+          RESOURCE: apps/dolly-backend/config.dev.yml
