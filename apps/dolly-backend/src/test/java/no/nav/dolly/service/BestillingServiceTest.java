@@ -14,13 +14,16 @@ import no.nav.dolly.repository.BestillingKontrollRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import org.apache.http.entity.ContentType;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -39,7 +42,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class BestillingServiceTest {
 
     private final static String BRUKERID = "123";
@@ -63,23 +67,14 @@ public class BestillingServiceTest {
     @InjectMocks
     private BestillingService bestillingService;
 
-    @BeforeClass
-    public static void setup() {
-        SecurityContextHolder.getContext().setAuthentication(new JwtAuthenticationToken(Jwt.withTokenValue("test")
-                .claim("oid", BRUKERID)
-                .claim("name", BRUKERNAVN)
-                .claim("epost", EPOST)
-                .header(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON)
-                .build()));
-    }
-
-    @Test(expected = NotFoundException.class)
+    @Test
     public void fetchBestillingByIdKasterExceptionHvisBestillingIkkeFunnet() {
         Optional<Bestilling> bes = Optional.empty();
 
         when(bestillingRepository.findById(any())).thenReturn(bes);
 
-        bestillingService.fetchBestillingById(1l);
+        Assertions.assertThrows(NotFoundException.class, () ->
+                bestillingService.fetchBestillingById(1l));
     }
 
     @Test
@@ -94,10 +89,11 @@ public class BestillingServiceTest {
         assertThat(bestilling, is(mock));
     }
 
-    @Test(expected = ConstraintViolationException.class)
+    @Test
     public void saveBestillingToDBKasterExceptionHvisDBConstraintBlirBrutt() {
         when(bestillingRepository.save(any())).thenThrow(DataIntegrityViolationException.class);
-        bestillingService.saveBestillingToDB(new Bestilling());
+        Assertions.assertThrows(ConstraintViolationException.class, () ->
+                bestillingService.saveBestillingToDB(new Bestilling()));
     }
 
     @Test
@@ -117,7 +113,6 @@ public class BestillingServiceTest {
         int antallIdenter = 4;
 
         when(testgruppeRepository.findById(gruppeId)).thenReturn(Optional.of(gruppe));
-        when(brukerService.fetchOrCreateBruker(BRUKERID)).thenReturn(Bruker.builder().build());
 
         bestillingService.saveBestilling(gruppeId, RsDollyBestilling.builder().environments(miljoer).build(),
                 RsTpsfUtvidetBestilling.builder().build(), antallIdenter, null, null, null);
@@ -143,11 +138,12 @@ public class BestillingServiceTest {
         verify(bestillingKontrollRepository).save(any(BestillingKontroll.class));
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void cancelBestilling_NotFound() {
 
         when(bestillingRepository.findById(BEST_ID)).thenThrow(NotFoundException.class);
-        bestillingService.cancelBestilling(1L);
+        Assertions.assertThrows(NotFoundException.class, () ->
+                bestillingService.cancelBestilling(1L));
     }
 
     @Test
@@ -164,15 +160,16 @@ public class BestillingServiceTest {
         verify(bestillingRepository).save(any(Bestilling.class));
     }
 
-    @Test(expected = DollyFunctionalException.class)
+    @Test
     public void createBestillingForGjenopprett_notFerdig() {
 
         when(bestillingRepository.findById(BEST_ID)).thenReturn(Optional.of(Bestilling.builder().build()));
 
-        bestillingService.createBestillingForGjenopprettFraBestilling(BEST_ID, singletonList("u1"));
+        Assertions.assertThrows(DollyFunctionalException.class, () ->
+                bestillingService.createBestillingForGjenopprettFraBestilling(BEST_ID, singletonList("u1")));
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void createBestillingForGjenopprett_noTestidenter() {
 
         when(bestillingRepository.findById(BEST_ID)).thenReturn(Optional.of(
@@ -180,7 +177,8 @@ public class BestillingServiceTest {
                         .gruppe(Testgruppe.builder().build())
                         .build()));
 
-        bestillingService.createBestillingForGjenopprettFraBestilling(BEST_ID, singletonList("u1"));
+        Assertions.assertThrows(NotFoundException.class, () ->
+                bestillingService.createBestillingForGjenopprettFraBestilling(BEST_ID, singletonList("u1")));
     }
 
     @Test
@@ -189,5 +187,15 @@ public class BestillingServiceTest {
         bestillingService.isStoppet(BEST_ID);
 
         verify(bestillingKontrollRepository).findByBestillingId(BEST_ID);
+    }
+
+    @BeforeEach
+    public void setup() {
+        SecurityContextHolder.getContext().setAuthentication(new JwtAuthenticationToken(Jwt.withTokenValue("test")
+                .claim("oid", BRUKERID)
+                .claim("name", BRUKERNAVN)
+                .claim("epost", EPOST)
+                .header(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON)
+                .build()));
     }
 }

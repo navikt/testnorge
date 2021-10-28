@@ -4,8 +4,8 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -27,7 +27,7 @@ public class DigitalKontaktMappingStrategyTest {
 
     private MapperFacade mapperFacade;
 
-    @Before
+    @BeforeEach
     public void setup() {
         mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new DigitalKontaktMappingStrategy());
     }

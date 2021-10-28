@@ -9,9 +9,10 @@ import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,7 +21,7 @@ import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
@@ -36,7 +37,7 @@ import static org.mockito.Mockito.when;
 import static wiremock.org.hamcrest.MatcherAssert.assertThat;
 
 @ActiveProfiles("test")
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application.yaml")
 @AutoConfigureWireMock(port = 0)
@@ -55,7 +56,7 @@ public class SigrunStubConsumerTest {
 
     private OpprettSkattegrunnlag skattegrunnlag;
 
-    @Before
+    @BeforeEach
     public void setup() {
 
         WireMock.reset();
@@ -77,12 +78,13 @@ public class SigrunStubConsumerTest {
         assertThat("Response should be 200 successful", response.getStatusCode().is2xxSuccessful());
     }
 
-    @Test(expected = WebClientResponseException.class)
+    @Test
     public void createSkattegrunnlag_kasterSigrunExceptionHvisKallKasterClientException() throws Exception {
 
         stubOpprettSkattegrunnlagMedBadRequest();
 
-        sigrunStubConsumer.createSkattegrunnlag(singletonList(skattegrunnlag));
+        Assertions.assertThrows(WebClientResponseException.class, () ->
+                sigrunStubConsumer.createSkattegrunnlag(singletonList(skattegrunnlag)));
     }
 
     @Test
@@ -91,10 +93,6 @@ public class SigrunStubConsumerTest {
         stubDeleteSkattegrunnlagOK();
 
         sigrunStubConsumer.deleteSkattegrunnlag(IDENT);
-    }
-
-    private static String asJsonString(final Object object) throws JsonProcessingException {
-        return new ObjectMapper().writeValueAsString(object);
     }
 
     private void stubOpprettSkattegrunnlagOK() {
@@ -120,5 +118,9 @@ public class SigrunStubConsumerTest {
                 .willReturn(ok()
                         .withBody("{}")
                         .withHeader("Content-Type", "application/json")));
+    }
+
+    private static String asJsonString(final Object object) throws JsonProcessingException {
+        return new ObjectMapper().writeValueAsString(object);
     }
 }

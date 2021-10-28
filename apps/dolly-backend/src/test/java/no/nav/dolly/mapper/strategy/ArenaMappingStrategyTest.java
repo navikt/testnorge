@@ -6,10 +6,10 @@ import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.arenaforvalter.RsArenaAap;
 import no.nav.dolly.domain.resultset.arenaforvalter.RsArenaAap115;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 
@@ -23,7 +23,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ArenaMappingStrategyTest {
 
     private static final LocalDateTime TIME_NOW = LocalDateTime.now();
@@ -32,7 +32,7 @@ public class ArenaMappingStrategyTest {
 
     private MapperFacade mapperFacade;
 
-    @Before
+    @BeforeEach
     public void setup() {
         mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new LocalDateCustomMapping(), new ArenaMappingStrategy());
     }

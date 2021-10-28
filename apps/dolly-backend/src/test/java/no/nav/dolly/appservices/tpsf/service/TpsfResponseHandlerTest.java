@@ -1,21 +1,21 @@
 package no.nav.dolly.appservices.tpsf.service;
 
-import static java.util.Collections.singletonList;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-
-import java.util.HashMap;
-import java.util.Map;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
-
 import no.nav.dolly.bestilling.tpsf.TpsfResponseHandler;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.tpsf.SendSkdMeldingTilTpsResponse;
 import no.nav.dolly.exceptions.TpsfException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static java.util.Collections.singletonList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
 public class TpsfResponseHandlerTest {
 
@@ -30,7 +30,7 @@ public class TpsfResponseHandlerTest {
 
     private TpsfResponseHandler tpsfResponseHandler = new TpsfResponseHandler();
 
-    @Before
+    @BeforeEach
     public void setup() {
         status_SuccU1T2_FailQ3.put("u1", SUCCESS_CODE_TPS);
         status_SuccU1T2_FailQ3.put("t2", SUCCESS_CODE_TPS);

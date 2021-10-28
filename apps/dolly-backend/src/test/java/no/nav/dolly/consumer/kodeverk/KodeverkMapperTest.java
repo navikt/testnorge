@@ -3,8 +3,8 @@ package no.nav.dolly.consumer.kodeverk;
 import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse.Beskrivelse;
 import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse.Betydning;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -35,7 +35,7 @@ public class KodeverkMapperTest {
     private Beskrivelse standardBeskrivelse = Beskrivelse.builder().tekst("tekst").term(STANDARD_TERM).build();
     private Betydning standardBetydning = Betydning.builder().beskrivelser(beskrivelser).gyldigTil(STANDARD_GYLDIGTIL).gyldigFra(STANDARD_GYLDIGFRA).build();
 
-    @Before
+    @BeforeEach
     public void setup() {
         betydninger.put(STANDARD_KODE, List.of(standardBetydning));
         beskrivelser.put(KODE_BOKMAAL, standardBeskrivelse);

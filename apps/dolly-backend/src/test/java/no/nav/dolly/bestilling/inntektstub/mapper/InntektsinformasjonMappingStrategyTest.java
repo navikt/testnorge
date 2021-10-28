@@ -1,15 +1,5 @@
 package no.nav.dolly.bestilling.inntektstub.mapper;
 
-import static java.util.Collections.singletonList;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import org.junit.Before;
-import org.junit.Test;
-
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.inntektstub.domain.InntektsinformasjonWrapper;
 import no.nav.dolly.domain.resultset.inntektstub.Inntekt;
@@ -18,6 +8,16 @@ import no.nav.dolly.domain.resultset.inntektstub.RsInntektsinformasjon;
 import no.nav.dolly.domain.resultset.inntektstub.Tilleggsinformasjon;
 import no.nav.dolly.mapper.strategy.LocalDateCustomMapping;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+import static java.util.Collections.singletonList;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class InntektsinformasjonMappingStrategyTest {
 
@@ -35,7 +35,7 @@ public class InntektsinformasjonMappingStrategyTest {
 
     private MapperFacade mapperFacade;
 
-    @Before
+    @BeforeEach
     public void setup() {
         mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new LocalDateCustomMapping(), new InntektsinformasjonMappingStrategy());
     }
@@ -72,9 +72,9 @@ public class InntektsinformasjonMappingStrategyTest {
 
         assertThat(result.getInntektsinformasjon().get(0).getInntektsliste().get(0).getBeloep(), is(equalTo(BELOEP)));
         assertThat(result.getInntektsinformasjon().get(11).getInntektsliste().get(0).getBeloep(), is(equalTo(BELOEP)));
-        assertThat(result.getInntektsinformasjon().get(12).getInntektsliste().get(0).getBeloep(),is(equalTo(BELOEP)));
-        assertThat(result.getInntektsinformasjon().get(24).getInntektsliste().get(0).getBeloep(),is(equalTo(BELOEP)));
-        assertThat(result.getInntektsinformasjon().get(35).getInntektsliste().get(0).getBeloep(),is(equalTo(BELOEP)));
+        assertThat(result.getInntektsinformasjon().get(12).getInntektsliste().get(0).getBeloep(), is(equalTo(BELOEP)));
+        assertThat(result.getInntektsinformasjon().get(24).getInntektsliste().get(0).getBeloep(), is(equalTo(BELOEP)));
+        assertThat(result.getInntektsinformasjon().get(35).getInntektsliste().get(0).getBeloep(), is(equalTo(BELOEP)));
     }
 
     private InntektMultiplierWrapper prepInntektMultiplierWrapper() {

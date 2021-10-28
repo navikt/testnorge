@@ -9,9 +9,8 @@ import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testident.RsTestident;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
 import org.apache.http.entity.ContentType;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -32,19 +31,16 @@ public class TestgruppeMappingStrategyTest {
 
     private MapperFacade mapper;
 
-    @BeforeClass
-    public static void setup() {
+    @BeforeEach
+    public void setUpHappyPath() {
+        mapper = MapperTestUtils.createMapperFacadeForMappingStrategy(new TestgruppeMappingStrategy());
+
         SecurityContextHolder.getContext().setAuthentication(new JwtAuthenticationToken(Jwt.withTokenValue("test")
                 .claim("oid", BRUKERID)
                 .claim("name", BRUKERNAVN)
                 .claim("epost", EPOST)
                 .header(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON)
                 .build()));
-    }
-
-    @Before
-    public void setUpHappyPath() {
-        mapper = MapperTestUtils.createMapperFacadeForMappingStrategy(new TestgruppeMappingStrategy());
     }
 
     @Test

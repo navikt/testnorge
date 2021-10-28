@@ -8,13 +8,14 @@ import no.nav.dolly.domain.resultset.entity.testident.RsTestident;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.Arrays;
@@ -27,7 +28,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class IdentServiceTest {
 
     private static final String STANDARD_IDENTER_1 = "en";
@@ -48,7 +49,7 @@ public class IdentServiceTest {
     private Testgruppe testgruppe = new Testgruppe();
     private Testgruppe standardGruppe = new Testgruppe();
 
-    @Before
+    @BeforeEach
     public void setup() {
         testgruppe.setId(1L);
     }
@@ -70,7 +71,7 @@ public class IdentServiceTest {
         verify(identRepository).saveAll(testidenter);
     }
 
-    @Test(expected = ConstraintViolationException.class)
+    @Test
     public void persisterTestidenter_shouldThrowExceptionWhenADBConstraintIsBroken() {
 
         RsTestident rsi1 = RsTestident.builder().ident(STANDARD_IDENTER_1).build();
@@ -79,7 +80,8 @@ public class IdentServiceTest {
 
         when(identRepository.saveAll(any())).thenThrow(DataIntegrityViolationException.class);
 
-        identService.persisterTestidenter(rsTestidenter);
+        Assertions.assertThrows(ConstraintViolationException.class, () ->
+                identService.persisterTestidenter(rsTestidenter));
     }
 
     @Test

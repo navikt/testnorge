@@ -11,9 +11,10 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.TpsfException;
 import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
@@ -47,7 +48,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application.yaml")
 @AutoConfigureWireMock(port = 0)
@@ -71,7 +72,7 @@ public class TpsfServiceTest {
     @Autowired
     private TpsfService tpsfService;
 
-    @Before
+    @BeforeEach
     public void setup() {
 
         WireMock.reset();
@@ -91,7 +92,7 @@ public class TpsfServiceTest {
         assertThat(response.get(0), is(STANDARD_IDENT));
     }
 
-    @Test(expected = TpsfException.class)
+    @Test
     public void opprettPersonerTpsf_hvisTpsfKasterExceptionSaaKastesTpsfException() throws Exception {
 
         WebClientResponseException failure = WebClientResponseException.create(500, "Error", null, null, null);
@@ -100,10 +101,11 @@ public class TpsfServiceTest {
 
         when(objectMapper.readValue(any(byte[].class), eq(WebClientResponseException.class))).thenReturn(failure);
 
-        tpsfService.opprettIdenterTpsf(STANDARD_TPSF_BESTILLING);
+        Assertions.assertThrows(TpsfException.class, () ->
+                tpsfService.opprettIdenterTpsf(STANDARD_TPSF_BESTILLING));
     }
 
-    @Test(expected = TpsfException.class)
+    @Test
     public void sendIdenterTilTpsFraTPSF_hvisTpsfKasterExceptionSaaKastesTpsfException() throws Exception {
 
         WebClientResponseException failure = WebClientResponseException.create(500, "Error", null, null, null);
@@ -112,13 +114,15 @@ public class TpsfServiceTest {
 
         when(objectMapper.readValue(any(byte[].class), eq(WebClientResponseException.class))).thenReturn(failure);
 
-        tpsfService.sendIdenterTilTpsFraTPSF(STANDARD_IDENTER, STANDARD_MILJOER_U1_T1);
+        Assertions.assertThrows(TpsfException.class, () ->
+                tpsfService.sendIdenterTilTpsFraTPSF(STANDARD_IDENTER, STANDARD_MILJOER_U1_T1));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void sendIdenterTilTpsFraTPSF_hvisIngenMiljoerErSpesifisertSaaKastesIllegalArgumentException() {
         List<String> tomListe = new ArrayList<>();
-        tpsfService.sendIdenterTilTpsFraTPSF(STANDARD_IDENTER, tomListe);
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+                tpsfService.sendIdenterTilTpsFraTPSF(STANDARD_IDENTER, tomListe));
     }
 
     @Test

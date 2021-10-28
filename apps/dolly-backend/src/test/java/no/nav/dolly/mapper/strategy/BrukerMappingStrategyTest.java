@@ -6,8 +6,8 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 import java.util.List;
@@ -20,7 +20,7 @@ public class BrukerMappingStrategyTest {
 
     private MapperFacade mapper;
 
-    @Before
+    @BeforeEach
     public void setUpHappyPath() {
         mapper = MapperTestUtils.createMapperFacadeForMappingStrategy(new BrukerMappingStrategy());
     }

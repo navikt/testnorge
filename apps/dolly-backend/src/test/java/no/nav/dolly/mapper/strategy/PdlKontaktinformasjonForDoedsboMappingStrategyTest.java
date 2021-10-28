@@ -13,17 +13,17 @@ import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.RsPdlKontaktpersonMedI
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.RsPdlOrganisasjon;
 import no.nav.dolly.domain.resultset.pdlforvalter.doedsbo.RsRsPdlKontaktpersonUtenIdNummer;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PdlKontaktinformasjonForDoedsboMappingStrategyTest {
 
     private static final String IDENT = "11111111111";
@@ -42,7 +42,7 @@ public class PdlKontaktinformasjonForDoedsboMappingStrategyTest {
 
     private MapperFacade mapperFacade;
 
-    @Before
+    @BeforeEach
     public void setup() {
         mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new LocalDateCustomMapping(), new PdlKontaktinformasjonForDoedsboMappingStrategy());
     }

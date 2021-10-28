@@ -2,7 +2,7 @@ package no.nav.dolly.mapper;
 
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 

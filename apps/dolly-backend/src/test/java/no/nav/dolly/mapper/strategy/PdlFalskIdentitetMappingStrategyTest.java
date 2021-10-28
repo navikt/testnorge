@@ -1,17 +1,5 @@
 package no.nav.dolly.mapper.strategy;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
-
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.pdlforvalter.mapper.PdlFalskIdentitetMappingStrategy;
 import no.nav.dolly.domain.resultset.pdlforvalter.PdlPersonnavn;
@@ -22,8 +10,20 @@ import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlRettIdentite
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.RsPdlFalskIdentitet;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.RsPdlRettIdentitetVedOpplysninger;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+
+@ExtendWith(MockitoExtension.class)
 public class PdlFalskIdentitetMappingStrategyTest {
 
     private static final LocalDateTime FOEDSEL_DATO = LocalDateTime.of(1989, 8, 7, 0, 0);
@@ -36,7 +36,7 @@ public class PdlFalskIdentitetMappingStrategyTest {
 
     private MapperFacade mapperFacade;
 
-    @Before
+    @BeforeEach
     public void setup() {
         mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new LocalDateCustomMapping(), new PdlFalskIdentitetMappingStrategy());
     }

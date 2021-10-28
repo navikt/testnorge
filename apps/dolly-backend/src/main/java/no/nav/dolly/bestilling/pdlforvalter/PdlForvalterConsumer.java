@@ -40,6 +40,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.util.List;
 import java.util.Map;
 
 import static java.lang.String.format;
@@ -78,8 +79,7 @@ public class PdlForvalterConsumer {
     private static final String PDL_BESTILLING_VERGEMAAL_URL = PDL_BESTILLING_URL + "/vergemaal";
     private static final String PDL_BESTILLING_FULLMAKT_URL = PDL_BESTILLING_URL + "/fullmakt";
     private static final String PDL_BESTILLING_SIKKERHET_TILTAK_URL = PDL_BESTILLING_URL + "/sikkerhetstiltak";
-    private static final String PDL_IDENTHISTORIKK_PARAMS = "?historiskePersonidenter=";
-    private static final String PDL_IDENTHISTORIKK_PARAMS_2 = "&historiskePersonidenter=";
+    private static final String PDL_IDENTHISTORIKK_QUERY = "historiskePersonidenter";
     private static final String PDL_BESTILLING_FOLKEREGISTERPERSONSTATUS_URL = PDL_BESTILLING_URL + "/folkeregisterpersonstatus";
 
     private static final String PDL_BESTILLING_SLETTING_URL = "/api/v1/personident";
@@ -92,13 +92,13 @@ public class PdlForvalterConsumer {
     private final WebClient webClient;
     private final ErrorStatusDecoder errorStatusDecoder;
 
-    public PdlForvalterConsumer(TokenExchange tokenService, PdlProxyProperties serviceProperties, ErrorStatusDecoder errorStatusDecoder, ObjectMapper objectMapper) {
+    public PdlForvalterConsumer(TokenExchange tokenService, PdlProxyProperties serverProperties, ErrorStatusDecoder errorStatusDecoder, ObjectMapper objectMapper) {
 
-        this.serviceProperties = serviceProperties;
+        this.serviceProperties = serverProperties;
         this.tokenService = tokenService;
         this.errorStatusDecoder = errorStatusDecoder;
         webClient = WebClient.builder()
-                .baseUrl(serviceProperties.getUrl())
+                .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
     }
@@ -120,11 +120,10 @@ public class PdlForvalterConsumer {
     public ResponseEntity<JsonNode> postOpprettPerson(PdlOpprettPerson opprettPerson, String ident) {
 
         return postRequest(
-                PDL_BESTILLING_OPPRETT_PERSON +
-                        (opprettPerson.getHistoriskeIdenter().isEmpty() ? "" :
-                                PDL_IDENTHISTORIKK_PARAMS + String.join(PDL_IDENTHISTORIKK_PARAMS_2, opprettPerson.getHistoriskeIdenter())),
+                opprettPerson.getHistoriskeIdenter(),
                 opprettPerson, ident, "opprett person");
     }
+
 
     @Timed(name = "providers", tags = { "operation", "pdl_navn" })
     public ResponseEntity<JsonNode> postNavn(PdlNavn pdlNavn, String ident) {
@@ -325,6 +324,15 @@ public class PdlForvalterConsumer {
                 sikkerhetstiltak, ident, "sikkerhetstiltak");
     }
 
+    public Map<String, String> checkAlive() {
+        try {
+            return Map.of(serviceProperties.getName() + PDL_FORVALTER_URL, serviceProperties.checkIsAlive(webClient, serviceProperties.getAccessToken(tokenService)));
+        } catch (SecurityException | WebClientResponseException ex) {
+            log.error("{} feilet mot URL: {}", serviceProperties.getName(), serviceProperties.getUrl(), ex);
+            return Map.of(serviceProperties.getName(), String.format("%s, URL: %s", ex.getMessage(), serviceProperties.getUrl()));
+        }
+    }
+
     private ResponseEntity<JsonNode> postRequest(String url, Object body, String ident, String beskrivelse) {
 
         try {
@@ -348,6 +356,29 @@ public class PdlForvalterConsumer {
         }
     }
 
+    private ResponseEntity<JsonNode> postRequest(List<String> historiskeIdenter, Object body, String ident, String beskrivelse) {
+
+        try {
+            return
+                    webClient.post()
+                            .uri(uriBuilder -> uriBuilder
+                                    .path(PDL_FORVALTER_URL)
+                                    .path(PDL_BESTILLING_OPPRETT_PERSON)
+                                    .queryParam(PDL_IDENTHISTORIKK_QUERY, historiskeIdenter)
+                                    .build())
+                            .contentType(APPLICATION_JSON)
+                            .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                            .header(HEADER_NAV_PERSON_IDENT, ident)
+                            .bodyValue(body)
+                            .retrieve().toEntity(JsonNode.class)
+                            .block();
+
+        } catch (RuntimeException e) {
+            throw new DollyFunctionalException(format(SEND_ERROR, beskrivelse,
+                    errorStatusDecoder.decodeRuntimeException(e)), e);
+        }
+    }
+
     private ResponseEntity<JsonNode> postRequest(String url, Object body, String ident) {
 
         return
@@ -362,14 +393,5 @@ public class PdlForvalterConsumer {
                         .bodyValue(body)
                         .retrieve().toEntity(JsonNode.class)
                         .block();
-    }
-
-    public Map<String, String> checkAlive() {
-        try {
-            return Map.of(serviceProperties.getName() + PDL_FORVALTER_URL, serviceProperties.checkIsAlive(webClient, serviceProperties.getAccessToken(tokenService)));
-        } catch (SecurityException | WebClientResponseException ex) {
-            log.error("{} feilet mot URL: {}", serviceProperties.getName(), serviceProperties.getUrl(), ex);
-            return Map.of(serviceProperties.getName(), String.format("%s, URL: %s", ex.getMessage(), serviceProperties.getUrl()));
-        }
     }
 }

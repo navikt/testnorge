@@ -1,15 +1,15 @@
 package no.nav.dolly.domain.resultset;
 
+import no.nav.dolly.util.IdentTypeUtil;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-import no.nav.dolly.util.IdentTypeUtil;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
-
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class IdentTypeUtilTest {
 
     private static final String FNR_IDENT = "10101020312";

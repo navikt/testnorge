@@ -16,10 +16,10 @@ import no.nav.testnav.libs.dto.ameldingservice.v1.ArbeidsforholdDTO;
 import no.nav.testnav.libs.dto.ameldingservice.v1.PermisjonDTO;
 import no.nav.testnav.libs.dto.ameldingservice.v1.PersonDTO;
 import no.nav.testnav.libs.dto.ameldingservice.v1.VirksomhetDTO;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -32,7 +32,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AmeldingRequestMappingStrategyTest {
 
     private static final String IDENT = "1234567890";
@@ -56,7 +56,7 @@ public class AmeldingRequestMappingStrategyTest {
     private List<RsAmeldingRequest> rsAmeldingRequest;
     private AMeldingDTO validAmeldingDto;
 
-    @Before
+    @BeforeEach
     public void setup() {
         mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new AmeldingRequestMappingStrategy());
 

@@ -3,10 +3,10 @@ package no.nav.dolly.appservices.tpsf.service;
 import no.nav.dolly.bestilling.sigrunstub.SigrunStubResponseHandler;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunResponse;
 import org.hamcrest.CoreMatchers;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SigrunStubResponseHandlerTest {
 
     @InjectMocks

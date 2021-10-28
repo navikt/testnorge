@@ -1,5 +1,27 @@
 package no.nav.dolly.service;
 
+import no.nav.dolly.consumer.jira.JiraConsumer;
+import no.nav.dolly.domain.jira.AllowedValue;
+import no.nav.dolly.domain.jira.Field;
+import no.nav.dolly.domain.jira.Fields;
+import no.nav.dolly.domain.jira.Issuetypes;
+import no.nav.dolly.domain.jira.JiraResponse;
+import no.nav.dolly.domain.jira.Project;
+import no.nav.dolly.domain.resultset.RsOpenAmResponse;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpServerErrorException;
+
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -12,27 +34,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import no.nav.dolly.domain.jira.AllowedValue;
-import no.nav.dolly.domain.jira.Field;
-import no.nav.dolly.domain.jira.Fields;
-import no.nav.dolly.domain.jira.Issuetypes;
-import no.nav.dolly.domain.jira.JiraResponse;
-import no.nav.dolly.domain.jira.Project;
-import no.nav.dolly.domain.resultset.RsOpenAmResponse;
-import no.nav.dolly.consumer.jira.JiraConsumer;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpServerErrorException;
-
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class OpenAmServiceTest {
 
     private static final String IDENT1 = "11111111111";
@@ -61,7 +64,7 @@ public class OpenAmServiceTest {
     @Mock
     private HttpServerErrorException httpServerErrorException;
 
-    @Before
+    @BeforeEach
     public void setup() {
         when(jiraConsumer.excuteRequest(anyString(), eq(HttpMethod.GET), any(HttpEntity.class), eq(Project.class))).thenReturn(projectResponseEntity);
         when(jiraConsumer.excuteRequest(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(JiraResponse.class))).thenReturn(jiraResponseEntity);

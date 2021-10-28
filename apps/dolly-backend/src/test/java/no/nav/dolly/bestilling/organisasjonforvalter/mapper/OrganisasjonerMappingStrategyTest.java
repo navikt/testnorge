@@ -6,15 +6,15 @@ import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling.SyntetiskOrganisas
 import no.nav.dolly.mapper.utils.MapperTestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 class OrganisasjonerMappingStrategyTest {
 
     @Autowired
@@ -25,6 +25,41 @@ class OrganisasjonerMappingStrategyTest {
         mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new OrganisasjonerMappingStrategy());
     }
 
+    private SyntetiskOrganisasjon prepMinimumRsOrganisasjonBestilling() {
+
+        return SyntetiskOrganisasjon.builder()
+                .forretningsadresse(SyntetiskOrganisasjon.Adresse.builder()
+                        .landkode("NO")
+                        .build())
+                .build();
+    }
+
+    private SyntetiskOrganisasjon prepRsOrganisasjonBestilling() {
+
+        return SyntetiskOrganisasjon.builder()
+                .enhetstype("Enhet")
+                .formaal("Testing")
+                .epost("Test@nav.no")
+                .underenheter(Collections.singletonList(SyntetiskOrganisasjon.builder()
+                        .formaal("Underenhet1")
+                        .underenheter(Collections.singletonList(SyntetiskOrganisasjon.builder()
+                                .formaal("Underenhet2")
+                                .build()))
+                        .build()))
+                .forretningsadresse(SyntetiskOrganisasjon.Adresse.builder()
+                        .adresselinjer(Collections.singletonList("Gate 1"))
+                        .kommunenr("123")
+                        .landkode("NO")
+                        .postnr("1234")
+                        .build())
+                .postadresse(SyntetiskOrganisasjon.Adresse.builder()
+                        .adresselinjer(Collections.singletonList("Gate 2"))
+                        .kommunenr("123")
+                        .landkode("NO")
+                        .postnr("1234")
+                        .build())
+                .build();
+    }
 
     @Test
     void should_return_nonnull_element_after_mapping() {
@@ -75,41 +110,5 @@ class OrganisasjonerMappingStrategyTest {
         assertThat(result.getUnderenheter().get(0).getFormaal()).isEqualTo("Underenhet1");
         assertThat(result.getUnderenheter().get(0).getUnderenheter()).hasSize(1);
         assertThat(result.getUnderenheter().get(0).getUnderenheter().get(0).getFormaal()).isEqualTo("Underenhet2");
-    }
-
-    private SyntetiskOrganisasjon prepMinimumRsOrganisasjonBestilling() {
-
-        return SyntetiskOrganisasjon.builder()
-                .forretningsadresse(SyntetiskOrganisasjon.Adresse.builder()
-                        .landkode("NO")
-                        .build())
-                .build();
-    }
-
-    private SyntetiskOrganisasjon prepRsOrganisasjonBestilling() {
-
-        return SyntetiskOrganisasjon.builder()
-                .enhetstype("Enhet")
-                .formaal("Testing")
-                .epost("Test@nav.no")
-                .underenheter(Collections.singletonList(SyntetiskOrganisasjon.builder()
-                        .formaal("Underenhet1")
-                        .underenheter(Collections.singletonList(SyntetiskOrganisasjon.builder()
-                                .formaal("Underenhet2")
-                                .build()))
-                        .build()))
-                .forretningsadresse(SyntetiskOrganisasjon.Adresse.builder()
-                        .adresselinjer(Collections.singletonList("Gate 1"))
-                        .kommunenr("123")
-                        .landkode("NO")
-                        .postnr("1234")
-                        .build())
-                .postadresse(SyntetiskOrganisasjon.Adresse.builder()
-                        .adresselinjer(Collections.singletonList("Gate 2"))
-                        .kommunenr("123")
-                        .landkode("NO")
-                        .postnr("1234")
-                        .build())
-                .build();
     }
 }

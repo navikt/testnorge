@@ -11,12 +11,12 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.OrganisasjonBestillingService;
 import no.nav.dolly.service.OrganisasjonNummerService;
 import no.nav.dolly.service.OrganisasjonProgressService;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -28,11 +28,12 @@ import java.util.Set;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class OrganisasjonClientTest {
 
     private static final String ORG_NUMMER = "123456789";
@@ -65,7 +66,7 @@ public class OrganisasjonClientTest {
 
     private RsOrganisasjonBestilling bestilling;
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         DeployResponse deployResponse = DeployResponse.builder()
@@ -100,10 +101,10 @@ public class OrganisasjonClientTest {
         Set<String> orgnummer = new HashSet<>();
         orgnummer.add(ORG_NUMMER);
 
-        when(mapperFacade.map(any(), eq(BestillingRequest.SyntetiskOrganisasjon.class))).thenReturn(requestOrganisasjon);
-        when(organisasjonConsumer.postOrganisasjon(any())).thenReturn(new ResponseEntity<>(new BestillingResponse(orgnummer), HttpStatus.CREATED));
-        when(organisasjonConsumer.deployOrganisasjon(any())).thenReturn(new ResponseEntity<>(deployResponse, HttpStatus.OK));
-        when(organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(any())).thenReturn(Collections.singletonList(new OrganisasjonBestillingProgress()));
+        lenient().when(mapperFacade.map(any(), eq(BestillingRequest.SyntetiskOrganisasjon.class))).thenReturn(requestOrganisasjon);
+        lenient().when(organisasjonConsumer.postOrganisasjon(any())).thenReturn(new ResponseEntity<>(new BestillingResponse(orgnummer), HttpStatus.CREATED));
+        lenient().when(organisasjonConsumer.deployOrganisasjon(any())).thenReturn(new ResponseEntity<>(deployResponse, HttpStatus.OK));
+        lenient().when(organisasjonProgressService.fetchOrganisasjonBestillingProgressByBestillingsId(any())).thenReturn(Collections.singletonList(new OrganisasjonBestillingProgress()));
     }
 
     @Test

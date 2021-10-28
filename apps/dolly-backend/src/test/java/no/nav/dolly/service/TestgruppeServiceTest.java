@@ -11,14 +11,16 @@ import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
 import org.apache.http.entity.ContentType;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.http.HttpHeaders;
@@ -45,7 +47,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class TestgruppeServiceTest {
 
     private final static String BRUKERID = "123";
@@ -82,17 +85,7 @@ public class TestgruppeServiceTest {
 
     private Testgruppe testGruppe;
 
-    @BeforeClass
-    public static void establishSecurity() {
-        SecurityContextHolder.getContext().setAuthentication(new JwtAuthenticationToken(Jwt.withTokenValue("test")
-                .claim("oid", BRUKERID)
-                .claim("name", BRUKERNAVN)
-                .claim("epost", EPOST)
-                .header(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON)
-                .build()));
-    }
-
-    @Before
+    @BeforeEach
     public void setup() {
 
         List<Testident> gruppe =
@@ -121,12 +114,13 @@ public class TestgruppeServiceTest {
         assertThat(res.getSistEndretAv(), is(bruker));
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void fetchTestgruppeById_KasterExceptionHvisGruppeIkkeErFunnet() throws Exception {
         Optional<Testgruppe> op = Optional.empty();
         when(testgruppeRepository.findById(any())).thenReturn(op);
 
-        testgruppeService.fetchTestgruppeById(1L);
+        Assertions.assertThrows(NotFoundException.class, () ->
+                testgruppeService.fetchTestgruppeById(1L));
     }
 
     @Test
@@ -177,33 +171,38 @@ public class TestgruppeServiceTest {
         verify(testgruppeRepository).deleteTestgruppeById(GROUP_ID);
     }
 
-    @Test(expected = ConstraintViolationException.class)
+    @Test
     public void saveGruppeTilDB_kasterExceptionHvisDBConstraintErBrutt() {
         when(testgruppeRepository.save(any())).thenThrow(DataIntegrityViolationException.class);
-        testgruppeService.saveGruppeTilDB(new Testgruppe());
+        Assertions.assertThrows(ConstraintViolationException.class, () ->
+                testgruppeService.saveGruppeTilDB(new Testgruppe()));
     }
 
-    @Test(expected = DollyFunctionalException.class)
-    public void saveGruppeTilDB_kasterDollyExceptionHvisDBConstraintErBrutt() throws Exception {
+    @Test
+    public void saveGruppeTilDB_kasterDollyExceptionHvisDBConstraintErBrutt() {
         when(testgruppeRepository.save(any())).thenThrow(nonTransientDataAccessException);
-        testgruppeService.saveGruppeTilDB(new Testgruppe());
+        Assertions.assertThrows(DollyFunctionalException.class, () ->
+                testgruppeService.saveGruppeTilDB(new Testgruppe()));
     }
 
-    @Test(expected = ConstraintViolationException.class)
+    @Test
     public void saveGrupper_kasterExceptionHvisDBConstraintErBrutt() {
         when(testgruppeRepository.save(any(Testgruppe.class))).thenThrow(DataIntegrityViolationException.class);
-        testgruppeService.saveGrupper(new HashSet<>(singletonList(new Testgruppe())));
+        Assertions.assertThrows(ConstraintViolationException.class, () ->
+                testgruppeService.saveGrupper(new HashSet<>(singletonList(new Testgruppe()))));
     }
 
-    @Test(expected = DollyFunctionalException.class)
+    @Test
     public void saveGrupper_kasterDollyExceptionHvisDBConstraintErBrutt() {
         when(testgruppeRepository.save(any(Testgruppe.class))).thenThrow(nonTransientDataAccessException);
-        testgruppeService.saveGrupper(new HashSet<>(singletonList(new Testgruppe())));
+        Assertions.assertThrows(DollyFunctionalException.class, () ->
+                testgruppeService.saveGrupper(new HashSet<>(singletonList(new Testgruppe()))));
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void fetchGrupperByIdsIn_kasterExceptionOmGruppeIkkeFinnes() {
-        testgruppeService.fetchGrupperByIdsIn(singletonList(anyLong()));
+        Assertions.assertThrows(NotFoundException.class, () ->
+                testgruppeService.fetchGrupperByIdsIn(singletonList(anyLong())));
     }
 
     @Test
@@ -221,5 +220,15 @@ public class TestgruppeServiceTest {
     public void getTestgrupper() {
         testgruppeService.getTestgruppeByBrukerId(null);
         verify(testgruppeRepository).findAllByOrderByNavn();
+    }
+
+    @BeforeEach
+    public void establishSecurity() {
+        SecurityContextHolder.getContext().setAuthentication(new JwtAuthenticationToken(Jwt.withTokenValue("test")
+                .claim("oid", BRUKERID)
+                .claim("name", BRUKERNAVN)
+                .claim("epost", EPOST)
+                .header(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON)
+                .build()));
     }
 }
