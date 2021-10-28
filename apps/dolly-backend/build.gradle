@@ -72,7 +72,6 @@ dependencies {
     implementation 'net.sf.ehcache:ehcache-core:2.6.11'
     implementation "org.springframework.boot:spring-boot-starter-web:${DependenciesPlugin.springBoot}"
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.5'
-    implementation 'no.nav.dolly-backend:dolly-backend-domain:1.18.0-SNAPSHOT'
     implementation 'org.postgresql:postgresql'
     implementation 'org.flywaydb:flyway-core'
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:${DependenciesPlugin.springBoot}"
