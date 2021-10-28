@@ -13,6 +13,8 @@ sonarqube {
         property "sonar.sourceEncoding", "UTF-8"
         property "sonar.projectKey", "navit_testnorge_applikasjonsanalyse_frontend"
         property "sonar.projectName", "testnav-applikasjonsanalyse-frontend"
+        property 'sonar.sources', 'src/main/java,src/main/js'
+        property 'sonar.tests', 'src/test/java'
         property "sonar.organization", "navit"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.project.monorepo.enabled", true

@@ -29,7 +29,7 @@ jobs:
           java-version: '17.x'
       - uses: actions/setup-node@v1
         with:
-          node-version: "12.x"
+          node-version: "16.x"
       - name: Install js libs
         run: |
           npm ci

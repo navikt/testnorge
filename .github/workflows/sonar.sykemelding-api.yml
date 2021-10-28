@@ -11,6 +11,8 @@ jobs:
     if: ${{ github.actor != 'dependabot[bot]' }}
     steps:
       - uses: actions/checkout@v2
+      - name: Fetch git history
+        run: git fetch --unshallow
       - name: Cache SonarCloud packages
         uses: actions/cache@v2
         with:
