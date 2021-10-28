@@ -49,6 +49,12 @@ consumers:
     namespace: dolly
     url: http://localhost:${wiremock.server.port:0}/arenaforvalter
     cluster: dev-fss
+  testnav-organisasjon-service:
+    url: https://testnav-organisasjon-service.dev.intern.nav.no
+    name: testnav-organisasjon-service
+    cluster: dev-gcp
+    namespace: dolly
+    threads: 5
 
 sts:
   token:
@@ -60,6 +66,7 @@ spring:
   cloud:
     vault:
       token: test
+      enabled: false
   datasource:
     url: jdbc:h2:mem:dollyDB
     username: sa

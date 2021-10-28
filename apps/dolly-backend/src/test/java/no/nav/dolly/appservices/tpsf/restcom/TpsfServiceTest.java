@@ -49,7 +49,7 @@ import static org.mockito.Mockito.when;
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(locations = "classpath:application-test.yaml")
+@TestPropertySource(locations = "classpath:application.yaml")
 @AutoConfigureWireMock(port = 0)
 public class TpsfServiceTest {
 

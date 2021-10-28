@@ -21,22 +21,43 @@ test {
 }
 
 repositories {
-    mavenCentral()
+    maven {
+        url = uri('https://repo1.maven.org/maven2/')
+    }
+    maven {
+        name = "GitHubPackages"
+        url = uri('https://maven.pkg.github.com/navikt/maven-release')
+        credentials(PasswordCredentials) {
+            password System.getenv("NAV_TOKEN")
+            username 'token'
+        }
+    }
     mavenLocal()
+    mavenCentral()
 }
 
 dependencies {
-    implementation 'org.projectlombok:lombok:1.18.20'
+
+    implementation 'no.nav.testnav.libs:servlet-core'
+    implementation 'no.nav.testnav.libs:servlet-security'
+    implementation 'no.nav.testnav.libs:servlet-insecure-security'
+    implementation 'no.nav.testnav.libs:security-core'
+    implementation 'no.nav.testnav.libs:domain'
+    implementation 'no.nav.testnav.libs:data-transfer-objects'
+
+    implementation 'com.papertrailapp:logback-syslog4j:1.0.0'
+
     implementation "org.springframework.boot:spring-boot-starter-security:${DependenciesPlugin.springBoot}"
-    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap:3.0.4'
-    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config:3.0.4'
-    implementation 'org.springframework.cloud:spring-cloud-vault-config-databases:3.0.4'
-    implementation 'org.springframework.cloud:spring-cloud-contract-wiremock:3.0.4'
-    implementation 'org.springframework.security:spring-security-oauth2-client:5.5.2'
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
+    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
+    implementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
+    implementation 'org.springframework.security:spring-security-oauth2-client'
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'net.sf.ehcache:ehcache-core:2.6.11'
     implementation "org.springframework.boot:spring-boot-starter-web:${DependenciesPlugin.springBoot}"
-    implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.5'
     implementation 'no.nav.dolly-backend:dolly-backend-domain:1.18.0-SNAPSHOT'
     implementation 'org.postgresql:postgresql:42.2.23'
@@ -44,28 +65,33 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:${DependenciesPlugin.springBoot}"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa:${DependenciesPlugin.springBoot}"
     implementation "org.springframework.boot:spring-boot-starter-actuator:${DependenciesPlugin.springBoot}"
-    implementation 'org.springframework.cloud:spring-cloud-vault-config-databases:3.0.4'
+    implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.7.4'
-    implementation 'org.springdoc:springdoc-openapi-ui:1.5.10'
     implementation 'org.hibernate.validator:hibernate-validator:6.1.2.Final'
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
     implementation 'org.codehaus.jettison:jettison:1.4.0'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.12.5'
     implementation "org.springframework.boot:spring-boot-starter-webflux:${DependenciesPlugin.springBoot}"
     implementation 'no.nav.testnav.libs:data-transfer-objects:2021.10.20-08.13-42b4dddd7e7c'
-    implementation 'org.projectlombok:lombok:1.18.20'
     implementation "org.springframework.boot:spring-boot-starter-security:${DependenciesPlugin.springBoot}"
-    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap:3.0.4'
-    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config:3.0.4'
-    implementation 'org.springframework.security:spring-security-oauth2-client:5.5.2'
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
+    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+    implementation 'org.springframework.security:spring-security-oauth2-client'
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'net.sf.ehcache:ehcache-core:2.6.11'
     testImplementation "org.springframework.boot:spring-boot-starter-test:${DependenciesPlugin.springBoot}"
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
     testImplementation 'com.h2database:h2:1.4.200'
-    testImplementation 'org.springframework.security:spring-security-test:5.5.2'
-    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:3.0.4'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'org.bitbucket.b_c:jose4j:0.7.1'
     testImplementation 'junit:junit:4.12'
+
+    implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
+    implementation "org.springdoc:springdoc-openapi-ui:${DependenciesPlugin.springdocOpenapi}"
+
+    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
 }

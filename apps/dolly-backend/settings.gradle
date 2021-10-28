@@ -9,6 +9,8 @@ includeBuild '../../gradlePlugins'
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/servlet-security'
 includeBuild '../../libs/security-core'
+includeBuild '../../libs/servlet-insecure-security'
+includeBuild '../../libs/domain'
 includeBuild '../../libs/data-transfer-objects'
 
 gradleEnterprise {
