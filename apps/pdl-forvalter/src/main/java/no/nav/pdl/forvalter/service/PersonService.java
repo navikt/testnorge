@@ -189,8 +189,8 @@ public class PersonService {
         if (request.getPerson().getStatsborgerskap().isEmpty()) {
             request.getPerson().getStatsborgerskap().add(new StatsborgerskapDTO());
         }
-        if (request.getPerson().getFolkeregisterpersonstatus().isEmpty()) {
-            request.getPerson().getFolkeregisterpersonstatus().add(new FolkeregisterpersonstatusDTO());
+        if (request.getPerson().getFolkeregisterPersonstatus().isEmpty()) {
+            request.getPerson().getFolkeregisterPersonstatus().add(new FolkeregisterpersonstatusDTO());
         }
 
         return updatePerson(request.getPerson().getIdent(), PersonUpdateRequestDTO.builder()

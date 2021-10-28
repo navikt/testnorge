@@ -28,23 +28,23 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
 
     public List<FolkeregisterpersonstatusDTO> convert(PersonDTO person) {
 
-        if (person.getFolkeregisterpersonstatus().stream()
+        if (person.getFolkeregisterPersonstatus().stream()
                 .anyMatch(personstatus -> isTrue(personstatus.getIsNew()))) {
 
-            var personstatus = person.getFolkeregisterpersonstatus().stream().findFirst().get();
+            var personstatus = person.getFolkeregisterPersonstatus().stream().findFirst().get();
             personstatus.setStatus(getPersonstatus(person));
             personstatus.setKilde(isNotBlank(personstatus.getKilde()) ? personstatus.getKilde() : "Dolly");
             personstatus.setMaster(nonNull(personstatus.getMaster()) ? personstatus.getMaster() : Master.FREG);
             personstatus.setGjeldende(nonNull(personstatus.getGjeldende()) ? personstatus.getGjeldende(): true);
 
-        } else if (person.getFolkeregisterpersonstatus().isEmpty() && !person.getFalskIdentitet().isEmpty() ||
-                getPersonstatus(person) != person.getFolkeregisterpersonstatus().stream()
+        } else if (person.getFolkeregisterPersonstatus().isEmpty() && !person.getFalskIdentitet().isEmpty() ||
+                getPersonstatus(person) != person.getFolkeregisterPersonstatus().stream()
                         .findFirst().orElse(new FolkeregisterpersonstatusDTO()).getStatus()) {
 
-            person.getFolkeregisterpersonstatus().add(0,
+            person.getFolkeregisterPersonstatus().add(0,
                     FolkeregisterpersonstatusDTO.builder()
                             .status(getPersonstatus(person))
-                            .id(person.getFolkeregisterpersonstatus().stream()
+                            .id(person.getFolkeregisterPersonstatus().stream()
                                     .map(FolkeregisterpersonstatusDTO::getId)
                                     .findFirst().orElse(0) + 1)
                             .kilde("Dolly")
@@ -53,15 +53,15 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
                             .build());
         }
 
-        return person.getFolkeregisterpersonstatus();
+        return person.getFolkeregisterPersonstatus();
     }
 
     private FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus getPersonstatus(PersonDTO person) {
 
-        if (person.getFolkeregisterpersonstatus()
+        if (person.getFolkeregisterPersonstatus()
                 .stream().anyMatch(status -> isTrue(status.getIsNew()) && nonNull(status.getStatus()))) {
 
-            return person.getFolkeregisterpersonstatus().stream()
+            return person.getFolkeregisterPersonstatus().stream()
                     .filter(status -> isTrue(status.getIsNew()))
                     .map(FolkeregisterpersonstatusDTO::getStatus)
                     .findFirst().get();

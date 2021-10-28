@@ -126,7 +126,7 @@ public class PersonDTO implements Serializable {
         return navn;
     }
 
-    public List<FolkeregisterpersonstatusDTO> getFolkeregisterpersonstatus() {
+    public List<FolkeregisterpersonstatusDTO> getFolkeregisterPersonstatus() {
         if (isNull(folkeregisterpersonstatus)) {
             folkeregisterpersonstatus = new ArrayList<>();
         }
