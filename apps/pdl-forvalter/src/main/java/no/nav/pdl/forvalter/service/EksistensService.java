@@ -50,22 +50,22 @@ public class EksistensService {
         return Stream.of(identer.stream()
                                 .filter(ident -> !validIdents.contains(ident))
                                 .map(ident -> new AvailibilityResponseDTO(ident, INVALID_IDENT, false))
-                                .collect(Collectors.toList()),
+                                .toList(),
                         existsInDatabase.stream()
                                 .map(ident -> new AvailibilityResponseDTO(ident, IDENT_EXISTS_IN_DB, false))
-                                .collect(Collectors.toList()),
+                                .toList(),
                         identpoolStatus.stream()
                                 .filter(identStatus -> I_BRUK == identStatus.getRekvireringsstatus())
                                 .map(IdentpoolStatusDTO::getPersonidentifikator)
                                 .map(ident -> new AvailibilityResponseDTO(ident, IDENT_EXISTS_IN_ENV, false))
-                                .collect(Collectors.toList()),
+                                .toList(),
                         identpoolStatus.stream()
                                 .filter(identStatus -> LEDIG == identStatus.getRekvireringsstatus())
                                 .map(IdentpoolStatusDTO::getPersonidentifikator)
                                 .map(ident -> new AvailibilityResponseDTO(ident, IDENT_AVAIL, true))
-                                .collect(Collectors.toList())
+                                .toList()
                 )
                 .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+                .toList();
     }
 }
