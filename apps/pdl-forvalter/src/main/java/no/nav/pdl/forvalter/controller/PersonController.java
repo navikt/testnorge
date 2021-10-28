@@ -35,8 +35,8 @@ public class PersonController {
 
     @ResponseBody
     @GetMapping(produces = "application/json; charset=utf-8")
-    @Operation(description = "Hent personer")
-    public List<FullPersonDTO> getPerson(@Parameter(description = "Hent person(er) med angitt(e) ident(er) eller alle")
+    @Operation(description = "Hent person(er) med angitt(e) ident(er) eller alle")
+    public List<FullPersonDTO> getPerson(@Parameter(description = "Ident(er) på personer som skal hentes")
                                          @RequestParam(required = false) List<String> identer,
                                          @Parameter(description = "Sidenummer ved sortering på 'sistOppdatert' og nyeste først")
                                          @RequestParam(required = false, defaultValue = "0") Integer sidenummer,
