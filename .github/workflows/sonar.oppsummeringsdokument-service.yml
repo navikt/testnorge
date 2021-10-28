@@ -1,0 +1,29 @@
+name: Sonar Analysis [oppsummeringsdokument-service]
+
+on:
+  push:
+    paths:
+      - apps/oppsummeringsdokument-service/**
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Set up JDK 1.17
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.17
+      - name: Sonar Analysis
+        working-directory: apps/oppsummeringsdokument-service/
+        env:
+          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew sonarqube --scan
