@@ -14,23 +14,22 @@ export const PdlPersonMiljoeInfo = ({ ident }: PdlPersonMiljoeinfo) => {
 	if (!ident) return null
 
 	const state = useAsync(async () => {
-		const response = await PdlforvalterApi.getPersoner(ident)
-		// const response = await DollyApi.getPersonFraPdl(ident)
-		// console.log('response', response)
-		return response.data[0]
+		// const response = await PdlforvalterApi.getPersoner(ident)
+		const response = await DollyApi.getPersonFraPdl(ident)
+		return response.data
 	}, [])
 
-	// console.log('state', state)
 	if (state.value && state.value.errors) {
 		return null
 	}
+
 	return (
 		<ErrorBoundary>
 			<div>
 				<SubOverskrift label="PDL" iconKind="visTpsData" />
 				{state.loading && <Loading label="Henter info fra PDL" />}
 				{/* @ts-ignore */}
-				{state.value && <PdlDataVisning data={state.value} />}
+				{state.value && <PdlDataVisning data={state.value.data} />}
 				{state.value && (
 					<p>
 						<i>Hold pekeren over PDL for å se dataene som finnes på denne personen i PDL</i>

@@ -3,20 +3,22 @@ import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { Personnavn } from './Personnavn'
 import Formatters from '~/utils/DataFormatter'
+import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 
 export const FalskIdentitet = ({ data }) => {
-	console.log('data falsk ident', data)
 	if (!data) return false
-	const {
-		rettIdentitetVedOpplysninger,
-		rettIdentitetErUkjent,
-		rettIdentitetVedIdentifikasjonsnummer,
-	} = data
+	const erListe = Array.isArray(data)
 
-	return (
-		<div>
-			<SubOverskrift label="Falsk identitet" iconKind="identifikasjon" />
-			<div className="person-visning_content">
+	const FalskIdentVisning = ({ enhet, id }) => {
+		const {
+			rettIdentitetVedOpplysninger,
+			rettIdentitetErUkjent,
+			rettIdentitetVedIdentifikasjonsnummer,
+		} = enhet
+
+		return (
+			<div className="person-visning_content" key={id}>
 				{rettIdentitetErUkjent && <TitleValue title="Rett identitet" value={'UKJENT'} />}
 
 				<TitleValue title="Rett fnr/dnr/bost" value={rettIdentitetVedIdentifikasjonsnummer} />
@@ -29,8 +31,11 @@ export const FalskIdentitet = ({ data }) => {
 
 						<TitleValue
 							title="Fødselsdato"
-							value={Formatters.formatStringDates(rettIdentitetVedOpplysninger.foedselsdato)}
+							value={Formatters.formatDate(rettIdentitetVedOpplysninger.foedselsdato)}
 						/>
+
+						<TitleValue title="Kjønn" value={rettIdentitetVedOpplysninger.kjoenn} />
+
 						<TitleValue
 							title="Statsborgerskap"
 							value={
@@ -38,10 +43,25 @@ export const FalskIdentitet = ({ data }) => {
 								rettIdentitetVedOpplysninger.statsborgerskap.join(', ')
 							}
 						/>
-
-						<TitleValue title="Kjønn" value={rettIdentitetVedOpplysninger.kjoenn} />
 					</Fragment>
 				)}
+			</div>
+		)
+	}
+
+	return (
+		<div>
+			<SubOverskrift label="Falsk identitet" iconKind="identifikasjon" />
+			<div className="person-visning_content">
+				<ErrorBoundary>
+					{erListe ? (
+						<DollyFieldArray data={data} header="" nested>
+							{(enhet, idx) => <FalskIdentVisning enhet={enhet} id={idx} />}
+						</DollyFieldArray>
+					) : (
+						<FalskIdentVisning enhet={data} id={0} />
+					)}
+				</ErrorBoundary>
 			</div>
 		</div>
 	)

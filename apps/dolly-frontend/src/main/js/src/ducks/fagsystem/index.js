@@ -85,15 +85,13 @@ export const actions = createActions(
 				ident,
 			}),
 		],
-		// Todo: bør kunne slettes når alt er over på PdlforvalterApi?
 		getPDL: [
-			// DollyApi.getPersonFraPdl,
-			PdlforvalterApi.getPersoner,
+			DollyApi.getPersonFraPdl,
 			(ident) => ({
 				ident,
 			}),
 		],
-		getPDLny: [
+		getPdlForvalter: [
 			PdlforvalterApi.getPersoner,
 			(identer) => ({
 				identer,
@@ -139,8 +137,8 @@ const initialState = {
 	krrstub: {},
 	arenaforvalteren: {},
 	aareg: {},
+	pdl: {},
 	pdlforvalter: {},
-	pdlforvalterny: {},
 	instdata: {},
 	udistub: {},
 	pensjonforvalter: {},
@@ -192,10 +190,10 @@ export default handleActions(
 			state.brregstub[action.meta.ident] = action.payload.data
 		},
 		[onSuccess(actions.getPDL)](state, action) {
-			state.pdlforvalter[action.meta.ident] = action.payload.data
+			state.pdl[action.meta.ident] = action.payload.data
 		},
-		[onSuccess(actions.getPDLny)](state, action) {
-			state.pdlforvalterny[action.meta.ident] = action.payload.data
+		[onSuccess(actions.getPdlForvalter)](state, action) {
+			state.pdlforvalter[action.meta.identer] = action.payload.data
 		},
 		[onSuccess(actions.getInst)](state, action) {
 			state.instdata[action.meta.ident] = action.payload.data
@@ -207,8 +205,8 @@ export default handleActions(
 			delete state.krrstub[action.meta.ident]
 			delete state.arenaforvalteren[action.meta.ident]
 			delete state.aareg[action.meta.ident]
+			delete state.pdl[action.meta.ident]
 			delete state.pdlforvalter[action.meta.ident]
-			delete state.pdlforvalterny[action.meta.ident]
 			delete state.instdata[action.meta.ident]
 			delete state.udistub[action.meta.ident]
 			delete state.pensjonforvalter[action.meta.ident]
@@ -248,8 +246,10 @@ export const fetchDataFraFagsystemer = (personId) => (dispatch, getState) => {
 	const success = successMiljoSelector(statusArray)
 
 	// Samle alt fra PDL under en ID
+	//TODO endre på denne?
 	if (Object.keys(success).some((a) => a.substring(0, 3) === 'PDL')) {
 		success.PDL = 'PDL'
+		success.PDL_FORVALTER = 'PDL_FORVALTER'
 	}
 
 	Object.keys(success).forEach((system) => {
@@ -265,8 +265,8 @@ export const fetchDataFraFagsystemer = (personId) => (dispatch, getState) => {
 				return dispatch(actions.getArena(personId))
 			case 'PDL':
 				return dispatch(actions.getPDL(personId))
-			case 'PDLNY':
-				return dispatch(actions.getPDLny(personId))
+			case 'PDL_FORVALTER':
+				return dispatch(actions.getPdlForvalter(personId))
 			case 'UDISTUB':
 				return dispatch(actions.getUdi(personId))
 			case 'AAREG':
@@ -289,7 +289,7 @@ export const fetchDataFraFagsystemerForSoek = (personId) => (dispatch) => {
 		'INNTK',
 		'ARENA',
 		'PDL',
-		'PDLNY',
+		'PDL_FORVALTER',
 		'INST2,',
 		'PEN_INNTEKT',
 		'AAREG',
@@ -308,8 +308,8 @@ export const fetchDataFraFagsystemerForSoek = (personId) => (dispatch) => {
 				return dispatch(actions.getArena(personId))
 			case 'PDL':
 				return dispatch(actions.getPDL(personId))
-			case 'PDLNY':
-				return dispatch(actions.getPDLny(personId))
+			case 'PDL_FORVALTER':
+				return dispatch(actions.getPdlForvalter(personId))
 			case 'INST2':
 				return dispatch(actions.getInst(personId, 'q2'))
 			case 'PEN_INNTEKT':
@@ -394,8 +394,8 @@ export const selectDataForIdent = (state, ident) => {
 		krrstub: state.fagsystem.krrstub[ident],
 		arenaforvalteren: state.fagsystem.arenaforvalteren[ident],
 		aareg: state.fagsystem.aareg[ident],
+		pdl: state.fagsystem.pdl[ident],
 		pdlforvalter: state.fagsystem.pdlforvalter[ident],
-		pdlforvalterny: state.fagsystem.pdlforvalterny[ident],
 		instdata: state.fagsystem.instdata[ident],
 		udistub: state.fagsystem.udistub[ident],
 		pensjonforvalter: state.fagsystem.pensjonforvalter[ident],

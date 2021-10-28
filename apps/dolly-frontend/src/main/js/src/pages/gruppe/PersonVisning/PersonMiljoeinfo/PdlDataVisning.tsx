@@ -16,7 +16,7 @@ type PdlData = {
 
 type Data = {
 	hentIdenter: { identer: [Ident] }
-	person: HentPerson
+	hentPerson: HentPerson
 	hentGeografiskTilknytning: object
 }
 
@@ -40,12 +40,9 @@ type FullmaktData = {
 }
 
 export const PdlDataVisning = ({ data }: PdlData) => {
-	// console.log('data', data)
-	if (!data || !data.person) {
+	if (!data || !data.hentPerson) {
 		return null
 	}
-
-	// console.log('data', data)
 
 	const gjeldendeAdresse = (adresseListe) => {
 		if (!adresseListe || adresseListe.length === 0) return null
@@ -54,15 +51,14 @@ export const PdlDataVisning = ({ data }: PdlData) => {
 	}
 
 	const getPersonInfo = (identInfo: Data) => {
-		// console.log('identInfo', identInfo)
 		return (
 			<div className="boks">
-				<PdlPersonInfo data={identInfo.person} />
-				{/*<IdentInfo pdlResponse={identInfo.hentIdenter} />*/}
-				{/*<GeografiskTilknytning data={identInfo.hentGeografiskTilknytning} />*/}
-				{/*<PdlNasjonalitet data={identInfo.hentPerson} />*/}
-				{/*<PdlBoadresse data={gjeldendeAdresse(identInfo.hentPerson.bostedsadresse)} />*/}
-				{/*<PdlFullmakt data={identInfo.hentPerson.fullmakt[0]} />*/}
+				<PdlPersonInfo data={identInfo.hentPerson} />
+				<IdentInfo pdlResponse={identInfo.hentIdenter} />
+				<GeografiskTilknytning data={identInfo.hentGeografiskTilknytning} />
+				<PdlNasjonalitet data={identInfo.hentPerson} />
+				<PdlBoadresse data={gjeldendeAdresse(identInfo.hentPerson.bostedsadresse)} />
+				<PdlFullmakt data={identInfo.hentPerson.fullmakt[0]} />
 			</div>
 		)
 	}

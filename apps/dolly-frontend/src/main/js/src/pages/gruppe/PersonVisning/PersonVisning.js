@@ -40,8 +40,6 @@ export const PersonVisning = ({
 }) => {
 	useMount(fetchDataFraFagsystemer)
 
-	console.log('data', data)
-
 	return (
 		<div className="person-visning">
 			<div className="person-visning_actions">
@@ -61,7 +59,12 @@ export const PersonVisning = ({
 				)}
 			</div>
 			<TpsfVisning data={TpsfVisning.filterValues(data.tpsf, bestillingsListe)} />
-			<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
+			<PdlfVisning
+				dataPdl={data.pdl}
+				dataPdlforvalter={data.pdlforvalter}
+				loadingPdl={loading.pdl}
+				loadingPdlforvalter={loading.pdlforvalter}
+			/>
 			<AaregVisning liste={data.aareg} loading={loading.aareg} />
 			<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
 			<PensjonVisning data={data.pensjonforvalter} loading={loading.pensjonforvalter} />

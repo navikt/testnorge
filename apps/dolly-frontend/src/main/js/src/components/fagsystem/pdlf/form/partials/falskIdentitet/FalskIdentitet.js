@@ -35,7 +35,6 @@ export const FalskIdentitet = ({ formikBag }) => {
 	const navnOgFnrOptions = SelectOptionsOppslag.formatOptions('navnOgFnr', dollyGruppeInfo)
 
 	const settIdentitetType = (e, path) => {
-		console.log('path', path)
 		if (!e) {
 			formikBag.setFieldValue(path, { erFalsk: true })
 			// setRettIdent(null)
