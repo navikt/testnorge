@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -46,7 +45,7 @@ public class IdentitetService {
                         .mellomnavn(person.getMellomnavn())
                         .etternavn(person.getEtternavn())
                         .build())
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private List<DbPerson> searchPerson(String query, Paginering paginering) {
@@ -56,7 +55,7 @@ public class IdentitetService {
 
         List<String> navn = List.of(query.split(" ")).stream()
                 .filter(fragment -> isNotBlank(fragment) && !StringUtils.isNumeric(fragment))
-                .collect(Collectors.toList());
+                .toList();
 
         return personRepository.findByWildcardIdent(ident.orElse(null),
                 !navn.isEmpty() ? navn.get(0).toUpperCase() : null,

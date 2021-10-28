@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.dto.IdentpoolStatusDTO.Rekvireringsstatus.I_BRUK;
 import static no.nav.pdl.forvalter.dto.IdentpoolStatusDTO.Rekvireringsstatus.LEDIG;
 
@@ -54,17 +55,17 @@ public class EksistensService {
                         existsInDatabase.stream()
                                 .map(ident -> new AvailibilityResponseDTO(ident, IDENT_EXISTS_IN_DB, false))
                                 .toList(),
-                        identpoolStatus.stream()
+                        nonNull(identpoolStatus) ? identpoolStatus.stream()
                                 .filter(identStatus -> I_BRUK == identStatus.getRekvireringsstatus())
                                 .map(IdentpoolStatusDTO::getPersonidentifikator)
                                 .map(ident -> new AvailibilityResponseDTO(ident, IDENT_EXISTS_IN_ENV, false))
-                                .toList(),
-                        identpoolStatus.stream()
+                                .toList() : null,
+                        nonNull(identpoolStatus) ? identpoolStatus.stream()
                                 .filter(identStatus -> LEDIG == identStatus.getRekvireringsstatus())
                                 .map(IdentpoolStatusDTO::getPersonidentifikator)
                                 .map(ident -> new AvailibilityResponseDTO(ident, IDENT_AVAIL, true))
-                                .toList()
-                )
+                                .toList() : null
+                        )
                 .flatMap(Collection::stream)
                 .toList();
     }
