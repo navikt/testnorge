@@ -6,8 +6,9 @@ on:
       - libs/servlet-insecure-security/**
 
 jobs:
-  build:
+  scan:
     runs-on: ubuntu-latest
+    if: ${{ github.actor != 'dependabot[bot]' }}
     steps:
       - uses: actions/checkout@v2
       - name: Cache SonarCloud packages
