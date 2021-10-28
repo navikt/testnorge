@@ -2,14 +2,10 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.pdl.forvalter.consumer.IdentPoolConsumer;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
-import no.nav.pdl.forvalter.dto.IdentpoolStatusDTO;
 import no.nav.pdl.forvalter.dto.Paginering;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
-import no.nav.pdl.forvalter.utils.IdentValidCheck;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.AvailibilityResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonIDDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
@@ -17,14 +13,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static no.nav.pdl.forvalter.dto.IdentpoolStatusDTO.Rekvireringsstatus.I_BRUK;
-import static no.nav.pdl.forvalter.dto.IdentpoolStatusDTO.Rekvireringsstatus.LEDIG;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
