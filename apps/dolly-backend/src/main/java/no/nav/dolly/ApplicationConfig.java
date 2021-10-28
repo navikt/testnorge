@@ -7,9 +7,9 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.conn.ssl.DefaultHostnameVerifier;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.SystemDefaultRoutePlanner;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.concurrent.DelegatingSecurityContextExecutorService;
@@ -21,7 +21,7 @@ import java.net.ProxySelector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
 
-@Configuration
+@SpringBootApplication
 @Import({ ApplicationCoreConfig.class,
         SecureOAuth2ServerToServerConfiguration.class })
 public class ApplicationConfig {
