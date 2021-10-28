@@ -10,6 +10,7 @@ includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/servlet-security'
 includeBuild '../../libs/data-transfer-objects'
 
+
 gradleEnterprise {
     buildScan {
         termsOfServiceUrl = "https://gradle.com/terms-of-service"

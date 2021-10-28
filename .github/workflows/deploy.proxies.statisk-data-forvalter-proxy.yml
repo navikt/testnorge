@@ -1,0 +1,50 @@
+name: Deploy statisk-data-forvalter-proxy
+
+on:
+  push:
+    paths:
+      - proxies/statisk-data-forvalter-proxy/**
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
+
+env:
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/statisk-data-forvalter-proxy:${{ github.sha }}
+
+jobs:
+  build_and_deploy:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Gradle cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-statisk-data-forvalter-proxy
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '17.x'
+      - name: Compile
+        working-directory: proxies/statisk-data-forvalter-proxy/
+        env:
+          GITHUB_USERNAME: token
+          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+        run: ./gradlew build
+      - name: Build and publish Docker image
+        working-directory: proxies/statisk-data-forvalter-proxy/
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          docker build --tag $IMAGE .
+          docker login docker.pkg.github.com -u $GITHUB_REPOSITORY -p $GITHUB_TOKEN
+          docker push $IMAGE
+      - name: Deploy to nais
+        timeout-minutes: 5
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+          CLUSTER: dev-fss
+          RESOURCE: proxies/statisk-data-forvalter-proxy/config.yml
