@@ -252,7 +252,7 @@ public class ArtifactDeleteService {
         var dbPerson = fetchPerson(ident);
 
         if (dbPerson.getPerson().getFolkeregisterPersonstatus().stream().noneMatch(type -> id.equals(type.getId()))) {
-            throw new InvalidRequestException(format(INFO_NOT_FOUND, "olkeregisterPersonstatus", id));
+            throw new InvalidRequestException(format(INFO_NOT_FOUND, "FolkeregisterPersonstatus", id));
 
         } else {
             dbPerson.getPerson().setFolkeregisterpersonstatus(dbPerson.getPerson().getFolkeregisterPersonstatus().stream()
