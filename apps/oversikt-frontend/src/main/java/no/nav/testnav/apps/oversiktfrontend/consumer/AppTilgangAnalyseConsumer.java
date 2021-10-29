@@ -33,7 +33,6 @@ public class AppTilgangAnalyseConsumer {
 
     public Flux<Application> getApplications(ServerWebExchange serverWebExchange) {
         return Flux.concat(
-                getApplications(serverWebExchange, getCommand("dolly-backend")),
                 getApplications(serverWebExchange, getCommand("testnorge"))
         );
     }

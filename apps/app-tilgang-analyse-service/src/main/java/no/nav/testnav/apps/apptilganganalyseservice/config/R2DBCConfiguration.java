@@ -27,7 +27,7 @@ class R2DBCConfiguration extends AbstractR2dbcConfiguration {
     private final Environment env;
 
     @Bean
-    @Profile("dev")
+    @Profile("local")
     public ConnectionFactory connectionFactory() {
         return H2ConnectionFactory.inMemory("testdb");
     }

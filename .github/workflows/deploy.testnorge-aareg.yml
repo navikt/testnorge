@@ -10,16 +10,17 @@ env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/aareg:${{ github.sha }}
 
 jobs:
-  build-jar:
+  build_and_deploy:
     name: Build and deploy
     runs-on: ubuntu-latest
+    if: ${{ github.actor != 'dependabot[bot]' }}
     steps:
       - uses: actions/checkout@v1
       - name: Gradle cache
         uses: actions/cache@v2
         with:
           path: |
-            ~/.gradle
+            ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
