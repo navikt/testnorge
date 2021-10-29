@@ -4,7 +4,7 @@ plugins {
     id "org.sonarqube" version "3.3"
     id 'no.nav.testnav.dependencies'
     id 'java'
-    id 'org.springframework.boot' version "2.5.5"
+    id 'org.springframework.boot' version "2.5.6"
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
 
@@ -62,7 +62,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
 
     implementation 'io.confluent:kafka-avro-serializer:6.1.0'
-    implementation 'javax.validation:validation-api:2.0.1.Final'
+    implementation "javax.validation:validation-api:${DependenciesPlugin.validationApi}"
     implementation 'org.flywaydb:flyway-core:6.4.4'
     implementation 'com.h2database:h2:1.4.200'
     implementation 'com.zaxxer:HikariCP:3.4.5'

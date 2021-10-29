@@ -4,7 +4,7 @@ plugins {
     id "org.sonarqube" version "3.3"
     id 'no.nav.testnav.dependencies'
     id 'java'
-    id 'org.springframework.boot' version "2.5.5"
+    id 'org.springframework.boot' version "2.5.6"
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
 
@@ -13,6 +13,8 @@ sonarqube {
         property "sonar.sourceEncoding", "UTF-8"
         property "sonar.projectKey", "testnav-endringsmelding-frontend"
         property "sonar.projectName", "testnav-endringsmelding-frontend"
+        property 'sonar.sources', 'src/main/java,src/main/js'
+        property 'sonar.tests', 'src/test/java'
         property "sonar.organization", "navit"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.project.monorepo.enabled", true
