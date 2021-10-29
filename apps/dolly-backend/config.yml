@@ -1,7 +1,7 @@
 apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
-  name: dolly-backend-dev
+  name: dolly-backend
   namespace: dolly
   labels:
     team: dolly
@@ -9,40 +9,39 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: dolly-frontend
+          cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
-        - application: dolly-frontend-dev
-          cluster: dev-gcp
-        - application: team-dolly-lokal-app
   webproxy: true
   azure:
     application:
       enabled: true
       tenant: nav.no
-  image: {{image}}
+  image: {{ image }}
   env:
     - name: SPRING_PROFILES_ACTIVE
-      value: dev
+      value: prod
     - name: UDI_CLIENT_ID
-      value: 4426ef7d-f148-4d19-8a03-b0d07a451938
+      value: f4620953-c7af-4e60-8cbb-03de57554b86
   replicas:
     min: 1
     max: 2
   port: 8080
   ingresses:
-    - https://dolly-backend-dev.dev.adeo.no
-    - https://dolly-backend-dev.dev.intern.nav.no
-    - https://dolly-backend-dev.dev-fss-pub.nais.io
+    - https://dolly-backend.dev.adeo.no
+    - https://dolly-backend.dev.intern.nav.no
+    - https://dolly-backend.dev-fss-pub.nais.io
   liveness:
     path: /internal/isAlive
     initialDelay: 20
     periodSeconds: 2
-    failureThreshold: 140
+    failureThreshold: 900
   readiness:
     path: /internal/isReady
     initialDelay: 20
     periodSeconds: 2
-    failureThreshold: 140
+    failureThreshold: 900
   prometheus:
     enabled: true
     path: /internal/metrics
@@ -56,5 +55,5 @@ spec:
   vault:
     enabled: true
     paths:
-      - kvPath: /kv/preprod/fss/dolly-backend-dev/dolly
+      - kvPath: /kv/preprod/fss/dolly-backend/dolly
         mountPath: /var/run/secrets/nais.io/vault
