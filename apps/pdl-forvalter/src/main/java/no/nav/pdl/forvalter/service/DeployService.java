@@ -11,6 +11,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,6 +25,7 @@ public class DeployService {
     public List<Ordre> createOrder(PdlArtifact type, String ident, List<? extends DbVersjonDTO> artifacter) {
         return artifacter
                 .stream()
+                .sorted(Comparator.comparing(DbVersjonDTO::getId))
                 .map(element -> ArtifactValue.builder()
                         .artifact(type)
                         .ident(ident)
