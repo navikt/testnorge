@@ -17,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor(force = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WellKnownConfig {
+
     @JsonProperty("token_endpoint")
     String tokenEndpoint;
 

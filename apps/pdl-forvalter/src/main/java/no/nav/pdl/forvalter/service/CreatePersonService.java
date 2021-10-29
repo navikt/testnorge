@@ -77,7 +77,7 @@ public class CreatePersonService {
                 new PersonDTO());
 
         var delivery = Stream.of(
-                        identPoolConsumer.getIdents(
+                        identPoolConsumer.acquireIdents(
                                 mapperFacade.map(nonNull(request) ? request : new PersonRequestDTO(), HentIdenterRequest.class)),
                         Flux.just(navnService.convert(mergedPerson.getNavn())))
                 .reduce(Flux.empty(), Flux::merge)

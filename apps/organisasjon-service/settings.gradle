@@ -1,0 +1,20 @@
+plugins {
+    id "com.gradle.enterprise" version "3.7.1"
+}
+
+rootProject.name = 'organisasjon-service'
+
+includeBuild '../../gradlePlugins'
+
+includeBuild '../../libs/servlet-core'
+includeBuild '../../libs/servlet-security'
+includeBuild '../../libs/data-transfer-objects'
+includeBuild '../../libs/commands'
+includeBuild '../../libs/testing'
+
+gradleEnterprise {
+    buildScan {
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
+    }
+}

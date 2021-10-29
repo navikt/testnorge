@@ -1,0 +1,15 @@
+{
+  "name": "pdl-api",
+  "schemaPath": "pdl-api-schema.graphql",
+  "extensions": {
+    "endpoints": {
+      "PDL GraphQL Endpoint": {
+        "url": "https://pdl-api.dev.adeo.no/graphql",
+        "headers": {
+          "user-agent": ""
+        },
+        "introspect": false
+      }
+    }
+  }
+}

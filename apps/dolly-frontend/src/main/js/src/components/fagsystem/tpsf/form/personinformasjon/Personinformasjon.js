@@ -10,6 +10,7 @@ import { Diverse } from './partials/Diverse'
 import { Alder } from './partials/alder/Alder'
 import { Vergemaal } from './partials/vergemaal/Vergemaal'
 import { Fullmakt } from './partials/fullmakt/Fullmakt'
+import { Sikkerhetstiltak } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/sikkerhetstiltak/Sikkerhetstiltak'
 
 const alderPaths = ['tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer', 'tpsf.doedsdato']
 
@@ -37,7 +38,21 @@ const diversePaths = [
 const vergemaalPath = ['tpsf.vergemaal']
 const fullmaktPath = ['tpsf.fullmakt']
 
-const panelPaths = [alderPaths, nasjonalitetPaths, diversePaths, vergemaalPath, fullmaktPath].flat()
+const sikkerhetstiltakPaths = [
+	'tpsf.typeSikkerhetTiltak',
+	'tpsf.beskrSikkerhetTiltak',
+	'tpsf.sikkerhetTiltakDatoFom',
+	'tpsf.sikkerhetTiltakDatoTom',
+]
+
+const panelPaths = [
+	alderPaths,
+	nasjonalitetPaths,
+	diversePaths,
+	vergemaalPath,
+	fullmaktPath,
+	sikkerhetstiltakPaths,
+].flat()
 
 export const Personinformasjon = ({ formikBag }) => (
 	<Vis attributt={panelPaths}>
@@ -100,6 +115,9 @@ export const Personinformasjon = ({ formikBag }) => (
 			</Kategori>
 			<Kategori title="Fullmakt" vis={fullmaktPath}>
 				<Fullmakt />
+			</Kategori>
+			<Kategori title="Sikkerhetstiltak" vis={sikkerhetstiltakPaths}>
+				<Sikkerhetstiltak formikBag={formikBag} />
 			</Kategori>
 		</Panel>
 	</Vis>

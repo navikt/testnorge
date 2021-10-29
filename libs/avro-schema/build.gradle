@@ -1,6 +1,7 @@
 import no.nav.testnav.dependencies.gradle.DependenciesPlugin
 
 plugins {
+    id "org.sonarqube" version "3.3"
     id 'no.nav.testnav.dependencies'
     id 'java-library'
     id 'maven-publish'
@@ -8,6 +9,10 @@ plugins {
 }
 
 group = 'no.nav.testnav.libs'
+
+sonarqube {
+    skipProject = true
+}
 
 repositories {
     mavenCentral()

@@ -1,14 +1,32 @@
+import no.nav.testnav.dependencies.gradle.DependenciesPlugin
+
 plugins {
-    id 'no.nav.registre.testnorge.java-conventions'
+    id "org.sonarqube" version "3.3"
+    id 'no.nav.testnav.dependencies'
+    id 'java'
     id "uk.co.boothen.gradle.wsimport" version "0.16"
     id 'com.ewerk.gradle.plugins.jaxb2' version '1.0.10'
-    id 'org.springframework.boot' version "${springBootVersion}"
-    id 'io.spring.dependency-management' version "${springDependencyManagement}"
+    id 'org.springframework.boot' version "2.5.6"
+    id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
+
+sonarqube {
+    properties {
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.projectKey", "brreg-stub"
+        property "sonar.projectName", "brreg-stub"
+        property "sonar.organization", "navit"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.project.monorepo.enabled", true
+        property "sonar.login", System.getenv("SONAR_TOKEN")
+    }
+}
+
+
 
 dependencyManagement {
     imports {
-        mavenBom  "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        mavenBom  "org.springframework.cloud:spring-cloud-dependencies:${DependenciesPlugin.springCloud}"
     }
 }
 
@@ -20,6 +38,16 @@ wsimport {
     wsdl("Grunndata.wsdl") {
         packageName("no.nav.brregstub.tjenestekontrakter.ws")
     }
+}
+
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+test {
+    useJUnitPlatform()
 }
 
 jaxb2 {
@@ -67,9 +95,9 @@ dependencies {
 
     implementation 'org.apache.cxf:cxf-rt-frontend-jaxws:3.3.6'
     implementation 'wsdl4j:wsdl4j:1.6.3'
-    implementation "net.logstash.logback:logstash-logback-encoder:${logstashLogbackEncoder}"
+    implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
     implementation 'org.hibernate.validator:hibernate-validator'
-    implementation 'javax.validation:validation-api:2.0.1.Final'
+    implementation "javax.validation:validation-api:${DependenciesPlugin.validationApi}"
     implementation 'io.springfox:springfox-swagger2:2.9.2'
     implementation 'io.springfox:springfox-swagger-ui:2.9.2'
     implementation 'no.nav.common:cxf:1.2019.11.06-15.14-6ca860e6cead'
@@ -79,7 +107,8 @@ dependencies {
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'no.nav.testnav.libs:testing'
-}
 
-description = 'brreg-stub'
+    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+}

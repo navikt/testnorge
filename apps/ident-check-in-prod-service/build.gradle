@@ -1,20 +1,42 @@
+import no.nav.testnav.dependencies.gradle.DependenciesPlugin
+
 plugins {
-    id 'no.nav.registre.testnorge.java-conventions'
-    id 'org.springframework.boot' version "${springBootVersion}"
-    id 'io.spring.dependency-management' version "${springDependencyManagement}"
+    id "org.sonarqube" version "3.3"
+    id 'no.nav.testnav.dependencies'
+    id 'java'
+    id 'org.springframework.boot' version "2.5.6"
+    id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
 
-dependencyManagement {
-    imports {
-        mavenBom  "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+sonarqube {
+    properties {
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.projectKey", "testnav-ident-check-in-prod-service"
+        property "sonar.projectName", "testnav-ident-check-in-prod-service"
+        property "sonar.organization", "navit"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.project.monorepo.enabled", true
+        property "sonar.login", System.getenv("SONAR_TOKEN")
     }
 }
-
-
 bootJar {
     archiveFileName = "app.jar"
 }
 
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${DependenciesPlugin.springCloud}"
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
 dependencies {
 
     implementation 'no.nav.testnav.libs:servlet-core'
@@ -38,8 +60,8 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-ui:1.4.8'
 
     implementation 'org.hibernate.validator:hibernate-validator'
-    implementation "org.springdoc:springdoc-openapi-ui:${springdocOpenapiUi}"
-    implementation "net.logstash.logback:logstash-logback-encoder:${logstashLogbackEncoder}"
+    implementation "org.springdoc:springdoc-openapi-ui:${DependenciesPlugin.springdocOpenapi}"
+    implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
 
     implementation 'com.oracle.database.jdbc:ojdbc8:19.8.0.0'
     implementation 'com.ibm.mq:mq-jms-spring-boot-starter:2.3.4'
@@ -53,6 +75,9 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'no.nav.testnav.libs:testing'
+
+    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
 }
 
-description = 'ident-check-in-prod-service'

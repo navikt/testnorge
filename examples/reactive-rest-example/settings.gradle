@@ -1,0 +1,16 @@
+plugins {
+    id "com.gradle.enterprise" version "3.7.1"
+}
+
+rootProject.name = 'reactive-rest-example'
+
+includeBuild '../../gradlePlugins'
+includeBuild '../../libs/reactive-core'
+includeBuild '../../libs/reactive-security'
+
+gradleEnterprise {
+    buildScan {
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
+    }
+}

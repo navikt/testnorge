@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - feature/legge_til_funksjonalitet_for_lesing_av_alle_personer
+      - feature/pdl_forvalter_opprett_fra_ident
     paths:
       - apps/pdl-forvalter/**
       - libs/**
@@ -16,13 +16,14 @@ jobs:
   build_and_deploy:
     name: Build and deploy
     runs-on: ubuntu-latest
+    if: ${{ github.actor != 'dependabot[bot]' }}
     steps:
       - uses: actions/checkout@v1
       - name: Gradle cache
         uses: actions/cache@v2
         with:
           path: |
-            ~/.gradle
+            ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
             ${{ runner.os }}-gradle-

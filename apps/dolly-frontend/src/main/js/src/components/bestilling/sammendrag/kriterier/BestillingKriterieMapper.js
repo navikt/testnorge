@@ -57,6 +57,14 @@ const _getTpsfBestillingData = (data) => {
 		),
 		obj('Skjerming fra', Formatters.formatDate(data.egenAnsattDatoFom)),
 		obj('Skjerming til', Formatters.formatDate(data.egenAnsattDatoTom)),
+		obj(
+			'Type sikkerhetstiltak',
+			data.beskrSikkerhetTiltak === 'Opphørt'
+				? data.beskrSikkerhetTiltak
+				: data.typeSikkerhetTiltak && `${data.typeSikkerhetTiltak} - ${data.beskrSikkerhetTiltak}`
+		),
+		obj('Sikkerhetstiltak starter', Formatters.formatDate(data.sikkerhetTiltakDatoFom)),
+		obj('Sikkerhetstiltak opphører', Formatters.formatDate(data.sikkerhetTiltakDatoTom)),
 	]
 }
 

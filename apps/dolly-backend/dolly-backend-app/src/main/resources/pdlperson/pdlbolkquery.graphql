@@ -1,0 +1,533 @@
+fragment folkeregistermetadataDetails on Folkeregistermetadata {
+    aarsak
+    ajourholdstidspunkt
+    gyldighetstidspunkt
+    kilde
+    opphoerstidspunkt
+    sekvens
+}
+
+fragment metadataDetails on Metadata {
+    endringer {
+        kilde
+        registrert
+        registrertAv
+        systemkilde
+        type
+    }
+    historisk
+    master
+    opplysningsId
+}
+
+query($identer: [ID!]!) {
+    hentPersonBolk(identer: $identer) {
+        ident,
+        person {
+            falskIdentitet {
+                erFalsk,
+                rettIdentitetErUkjent,
+                rettIdentitetVedIdentifikasjonsnummer,
+                rettIdentitetVedOpplysninger {
+                    personnavn {
+                        fornavn,
+                        mellomnavn,
+                        etternavn
+                    }
+                    foedselsdato,
+                    statsborgerskap,
+                    kjoenn
+                },
+                metadata {
+                    ...metadataDetails
+                }
+            },
+            bostedsadresse(historikk: false) {
+                angittFlyttedato,
+                coAdressenavn,
+                gyldigFraOgMed,
+                gyldigTilOgMed,
+                vegadresse {
+                    matrikkelId,
+                    husbokstav,
+                    husnummer,
+                    adressenavn,
+                    bruksenhetsnummer,
+                    tilleggsnavn,
+                    postnummer,
+                    kommunenummer,
+                    koordinater {
+                        x,
+                        y,
+                        z
+                        kvalitet
+                    }
+                },
+                matrikkeladresse {
+                    matrikkelId,
+                    bruksenhetsnummer,
+                    tilleggsnavn,
+                    postnummer,
+                    kommunenummer,
+                    koordinater {
+                        x,
+                        y,
+                        z
+                        kvalitet
+                    }
+                },
+                ukjentBosted {
+                    bostedskommune
+                },
+                utenlandskAdresse {
+                    adressenavnNummer,
+                    bygningEtasjeLeilighet,
+                    postboksNummerNavn,
+                    postkode,
+                    bySted,
+                    regionDistriktOmraade,
+                    landkode
+                }
+                folkeregistermetadata {
+                    ...folkeregistermetadataDetails
+                }
+                metadata {
+                    ...metadataDetails
+                }
+            },
+            oppholdsadresse(historikk: false) {
+                utenlandskAdresse {
+                    adressenavnNummer,
+                    bygningEtasjeLeilighet,
+                    postboksNummerNavn,
+                    postkode,
+                    bySted,
+                    regionDistriktOmraade,
+                    landkode
+                },
+                vegadresse {
+                    matrikkelId,
+                    husbokstav,
+                    husnummer,
+                    adressenavn,
+                    bruksenhetsnummer,
+                    tilleggsnavn,
+                    postnummer,
+                    kommunenummer,
+                    koordinater {
+                        x,
+                        y,
+                        z
+                        kvalitet
+                    }
+                },
+                matrikkeladresse {
+                    matrikkelId,
+                    bruksenhetsnummer,
+                    tilleggsnavn,
+                    postnummer,
+                    kommunenummer,
+                    koordinater {
+                        x,
+                        y,
+                        z
+                        kvalitet
+                    }
+                },
+                oppholdAnnetSted,
+                coAdressenavn,
+                gyldigFraOgMed,
+                folkeregistermetadata {
+                    ...folkeregistermetadataDetails
+                }
+                metadata {
+                    ...metadataDetails
+                }
+            }
+            deltBosted(historikk: false) {
+                startdatoForKontrakt,
+                sluttdatoForKontrakt,
+                coAdressenavn,
+                vegadresse {
+                    matrikkelId,
+                    adressenavn,
+                    husnummer,
+                    husbokstav,
+                    bruksenhetsnummer,
+                    tilleggsnavn,
+                    postnummer,
+                    kommunenummer,
+                    koordinater {
+                        x,
+                        y,
+                        z
+                        kvalitet
+                    }
+                },
+                matrikkeladresse {
+                    matrikkelId,
+                    bruksenhetsnummer,
+                    tilleggsnavn,
+                    postnummer,
+                    kommunenummer,
+                    koordinater {
+                        x,
+                        y,
+                        z
+                        kvalitet
+                    }
+                },
+                ukjentBosted {
+                    bostedskommune
+                },
+                folkeregistermetadata {
+                    ...folkeregistermetadataDetails
+                }
+                metadata {
+                    ...metadataDetails
+                }
+            },
+            forelderBarnRelasjon {
+                relatertPersonsIdent,
+                relatertPersonsRolle,
+                minRolleForPerson,
+                folkeregistermetadata {
+                    ...folkeregistermetadataDetails
+                }
+                metadata {
+                    ...metadataDetails
+                }
+            },
+            kontaktadresse(historikk: false) {
+                gyldigFraOgMed,
+                gyldigTilOgMed,
+                type,
+                coAdressenavn,
+                postboksadresse {
+                    postbokseier,
+                    postboks,
+                    postnummer
+                },
+                vegadresse {
+                    matrikkelId,
+                    husbokstav,
+                    husnummer,
+                    adressenavn,
+                    bruksenhetsnummer,
+                    tilleggsnavn,
+                    postnummer,
+                    kommunenummer,
+                    koordinater {
+                        x,
+                        y,
+                        z
+                        kvalitet
+                    }
+                },
+                postadresseIFrittFormat {
+                    adresselinje1,
+                    adresselinje2,
+                    adresselinje3,
+                    postnummer
+                },
+                utenlandskAdresse {
+                    adressenavnNummer,
+                    bygningEtasjeLeilighet,
+                    postboksNummerNavn,
+                    postkode,
+                    bySted,
+                    regionDistriktOmraade,
+                    landkode
+                },
+                utenlandskAdresseIFrittFormat {
+                    adresselinje1,
+                    adresselinje2,
+                    adresselinje3,
+                    postkode,
+                    byEllerStedsnavn,
+                    landkode
+                }
+                folkeregistermetadata {
+                    ...folkeregistermetadataDetails
+                }
+                metadata {
+                    ...metadataDetails
+                }
+            },
+            kontaktinformasjonForDoedsbo(historikk: false) {
+                skifteform,
+                attestutstedelsesdato,
+                folkeregistermetadata {
+                    ajourholdstidspunkt,
+                    gyldighetstidspunkt,
+                    opphoerstidspunkt,
+                    aarsak,
+                    kilde
+                }
+                personSomKontakt {
+                    foedselsdato,
+                    personnavn {
+                        fornavn,
+                        mellomnavn,
+                        etternavn
+                    },
+                    identifikasjonsnummer
+                },
+                advokatSomKontakt {
+                    personnavn {
+                        fornavn,
+                        mellomnavn,
+                        etternavn
+                    },
+                    organisasjonsnavn,
+                    organisasjonsnummer
+                },
+                organisasjonSomKontakt {
+                    kontaktperson {
+                        fornavn,
+                        mellomnavn,
+                        etternavn
+                    },
+                    organisasjonsnavn,
+                    organisasjonsnummer
+                },
+                adresse {
+                    adresselinje1,
+                    adresselinje2,
+                    poststedsnavn,
+                    postnummer,
+                    landkode
+                },
+                metadata {
+                    ...metadataDetails
+                }
+            },
+            utenlandskIdentifikasjonsnummer(historikk: false) {
+                identifikasjonsnummer,
+                utstederland,
+                opphoert,
+                metadata {
+                    ...metadataDetails
+                }
+            },
+            adressebeskyttelse(historikk: false) {
+                gradering,
+                folkeregistermetadata {
+                    ...folkeregistermetadataDetails
+                }
+                metadata {
+                    ...metadataDetails
+                }
+            },
+            foedsel {
+                foedselsaar,
+                foedselsdato,
+                foedeland,
+                foedested,
+                foedekommune,
+                metadata {
+                    ...metadataDetails
+                }
+            },
+            doedsfall {
+                doedsdato,
+                metadata {
+                    ...metadataDetails
+                }
+            },
+            kjoenn(historikk: false) {
+                kjoenn,
+                folkeregistermetadata {
+                    ...folkeregistermetadataDetails
+                }
+                metadata {
+                    ...metadataDetails
+                }
+            },
+            navn(historikk: false) {
+                fornavn,
+                mellomnavn,
+                etternavn,
+                forkortetNavn,
+                originaltNavn {
+                    fornavn,
+                    mellomnavn,
+                    etternavn
+                },
+                gyldigFraOgMed,
+                folkeregistermetadata {
+                    ...folkeregistermetadataDetails
+                }
+                metadata {
+                    ...metadataDetails
+                }
+            },
+            folkeregisterpersonstatus(historikk: false) {
+                status,
+                forenkletStatus,
+                folkeregistermetadata {
+                    ...folkeregistermetadataDetails
+                }
+                metadata {
+                    ...metadataDetails
+                }
+            },
+            identitetsgrunnlag(historikk: false) {
+                status,
+                folkeregistermetadata {
+                    ...folkeregistermetadataDetails
+                }
+                metadata {
+                    ...metadataDetails
+                }
+            },
+            tilrettelagtKommunikasjon {
+                talespraaktolk {
+                    spraak
+                },
+                tegnspraaktolk {
+                    spraak
+                }
+                metadata {
+                    ...metadataDetails
+                }
+            },
+            fullmakt(historikk: false) {
+                motpartsPersonident,
+                motpartsRolle,
+                omraader,
+                gyldigFraOgMed,
+                gyldigTilOgMed
+                metadata {
+                    ...metadataDetails
+                }
+            },
+            folkeregisteridentifikator(historikk: false) {
+                identifikasjonsnummer,
+                status,
+                type,
+                folkeregistermetadata {
+                    ...folkeregistermetadataDetails
+                }
+                metadata {
+                    ...metadataDetails
+                }
+            },
+            statsborgerskap(historikk: false) {
+                land,
+                gyldigFraOgMed,
+                gyldigTilOgMed,
+                folkeregistermetadata {
+                    ...folkeregistermetadataDetails
+                },
+                metadata {
+                    ...metadataDetails
+                }
+            },
+            sikkerhetstiltak {
+                tiltakstype,
+                beskrivelse,
+                kontaktperson {
+                    personident,
+                    enhet
+                }
+                gyldigFraOgMed,
+                gyldigTilOgMed,
+                metadata {
+                    ...metadataDetails
+                }
+            },
+            opphold(historikk: false) {
+                type,
+                oppholdFra,
+                oppholdTil,
+                folkeregistermetadata {
+                    ...folkeregistermetadataDetails
+                },
+                metadata {
+                    ...metadataDetails
+                }
+            },
+            sivilstand(historikk: false) {
+                type,
+                gyldigFraOgMed,
+                relatertVedSivilstand,
+                bekreftelsesdato,
+                folkeregistermetadata {
+                    ...folkeregistermetadataDetails
+                },
+                metadata {
+                    ...metadataDetails
+                }
+            },
+            telefonnummer {
+                landskode,
+                nummer,
+                prioritet,
+                metadata {
+                    ...metadataDetails
+                }
+            },
+            innflyttingTilNorge {
+                fraflyttingsland,
+                fraflyttingsstedIUtlandet,
+                folkeregistermetadata {
+                    ...folkeregistermetadataDetails
+                },
+                metadata {
+                    ...metadataDetails
+                }
+            },
+            utflyttingFraNorge {
+                tilflyttingsland,
+                tilflyttingsstedIUtlandet,
+                folkeregistermetadata {
+                    ...folkeregistermetadataDetails
+                },
+                metadata {
+                    ...metadataDetails
+                }
+            },
+            vergemaalEllerFremtidsfullmakt(historikk: false) {
+                type,
+                embete,
+                vergeEllerFullmektig {
+                    navn {
+                        fornavn,
+                        mellomnavn,
+                        etternavn
+                    },
+                    motpartsPersonident,
+                    omfang,
+                    omfangetErInnenPersonligOmraade
+                },
+                folkeregistermetadata {
+                    ...folkeregistermetadataDetails
+                },
+                metadata {
+                    ...metadataDetails
+                }
+            },
+            foreldreansvar(historikk: false) {
+                ansvar,
+                ansvarlig,
+                ansvarligUtenIdentifikator {
+                    navn {
+                        fornavn,
+                        mellomnavn,
+                        etternavn
+                    },
+                    foedselsdato,
+                    statsborgerskap,
+                    kjoenn
+                },
+                folkeregistermetadata {
+                    ...folkeregistermetadataDetails
+                },
+                metadata {
+                    ...metadataDetails
+                }
+            }
+        }
+    }
+}

@@ -1,10 +1,23 @@
 import no.nav.testnav.dependencies.gradle.DependenciesPlugin
 
 plugins {
+    id "org.sonarqube" version "3.3"
     id 'no.nav.testnav.dependencies'
     id 'java'
-    id 'org.springframework.boot' version "2.5.5"
+    id 'org.springframework.boot' version "2.5.6"
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
+}
+
+sonarqube {
+    properties {
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.projectKey", "testnorge-tp"
+        property "sonar.projectName", "testnorge-tp"
+        property "sonar.organization", "navit"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.project.monorepo.enabled", true
+        property "sonar.login", System.getenv("SONAR_TOKEN")
+    }
 }
 
 bootJar {
@@ -43,7 +56,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-configuration-processor'
 
-    implementation 'javax.validation:validation-api:2.0.1.Final'
+    implementation "javax.validation:validation-api:${DependenciesPlugin.validationApi}"
 
     implementation 'org.aspectj:aspectjweaver:1.9.6'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
