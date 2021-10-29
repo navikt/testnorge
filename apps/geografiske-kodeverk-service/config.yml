@@ -17,6 +17,8 @@ spec:
           cluster: dev-fss
         - application: pdl-forvalteren
           cluster: dev-gcp
+        - application: pdl-forvalteren-dev
+          cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
   tokenx:
