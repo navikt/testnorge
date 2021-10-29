@@ -1,34 +1,16 @@
-import React, { useState } from 'react'
+import React from 'react'
 import _get from 'lodash/get'
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { getPlaceholder, setNavn, setValue } from '../utils'
+import { setNavn } from '../utils'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import _has from 'lodash/has'
+import Hjelpetekst from '~/components/hjelpetekst'
 
 export const FalskIdentitet = ({ formikBag }) => {
-	// const rettIdentTyper = {
-	// 	UKJENT: 'rettIdentitetErUkjent',
-	// 	ENTYDIG: 'rettIdentitetVedIdentifikasjonsnummer',
-	// 	OMTRENTLIG: 'rettIdentitetVedOpplysninger',
-	// }
-
-	// const [rettIdent, setRettIdent] = useState(null)
-
-	// const getRettIdent = ()
-
-	// const initialFalskIdent = {
-	//
-	// }
-
-	// console.log('formikBag', formikBag)
-	// const falskIdPath = 'pdldata.person.falskIdentitet'
-	// const falskIdObj = formikBag.values.pdldata.person.falskIdentitet
-	// console.log('falskIdObj', falskIdObj)
-
 	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
 	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
 	const dollyGruppeInfo = SelectOptionsOppslag.hentGruppe()
@@ -37,38 +19,34 @@ export const FalskIdentitet = ({ formikBag }) => {
 	const settIdentitetType = (e, path) => {
 		if (!e) {
 			formikBag.setFieldValue(path, { erFalsk: true })
-			// setRettIdent(null)
+			return null
 		} else if (e.value === 'UKJENT') {
 			formikBag.setFieldValue(path, { erFalsk: true, rettIdentitetErUkjent: true })
-			// setRettIdent('UKJENT')
-			// formikBag.setFieldValue(falskIdPath, { identitetType: e.value, rettIdentitetErUkjent: true })
 		} else if (e.value === 'ENTYDIG') {
 			formikBag.setFieldValue(path, {
 				erFalsk: true,
-				rettIdentitetVedIdentifikasjonsnummer: '',
+				rettIdentitetVedIdentifikasjonsnummer: null,
 			})
-			// setRettIdent('ENTYDIG')
 		} else if (e.value === 'OMTRENTLIG') {
 			formikBag.setFieldValue(path, {
 				erFalsk: true,
 				rettIdentitetVedOpplysninger: {
-					foedselsdato: '',
-					kjoenn: '',
-					personnavn: { fornavn: '', mellomnavn: '', etternavn: '' },
+					foedselsdato: null,
+					kjoenn: null,
+					personnavn: null,
 					statsborgerskap: [],
 				},
 			})
-			// setRettIdent('OMTRENTLIG')
 		}
 		return e.value
-		// TODO funker ikke på clear??
 	}
 
 	return (
 		<FormikDollyFieldArray
 			name="pdldata.person.falskIdentitet"
 			header="Falsk identitet"
-			newEntry={{}}
+			newEntry={{ erFalsk: true }}
+			canBeEmpty={false}
 		>
 			{(path, idx) => {
 				const identType = _has(formikBag.values, `${path}.rettIdentitetErUkjent`)
@@ -80,38 +58,42 @@ export const FalskIdentitet = ({ formikBag }) => {
 					: null
 
 				return (
-					<div key={idx}>
+					<div className="flexbox--flex-wrap" key={idx}>
 						<FormikSelect
-							name={`${path}.identitetType`} // TODO hva gjør jeg med denne?
+							name={`${path}.identitetType`}
 							label="Opplysninger om rett identitet"
 							options={Options('identitetType')}
 							value={identType}
-							// value={falskIdObj.identitetType}
 							onChange={(e) => settIdentitetType(e, path)}
-							// isClearable={false}
 							size="large"
 						/>
 
 						{identType === 'ENTYDIG' && (
-							<DollySelect
-								name={`${path}.rettIdentitetVedIdentifikasjonsnummer`}
-								label="Navn og identifikasjonsnummer"
-								size="large"
-								options={navnOgFnrOptions}
-								isLoading={dollyGruppeInfo.loading}
-								onChange={(id) =>
-									setValue(
-										id,
-										`${path}.rettIdentitetVedIdentifikasjonsnummer`,
-										formikBag.setFieldValue
-									)
-								}
-								value={_get(formikBag.values, `${path}.rettIdentitetVedIdentifikasjonsnummer`)}
-								isClearable={false}
-							/>
+							<div className="flexbox--align-center">
+								<DollySelect
+									name={`${path}.rettIdentitetVedIdentifikasjonsnummer`}
+									label="Navn og identifikasjonsnummer"
+									size="large"
+									options={navnOgFnrOptions}
+									isLoading={dollyGruppeInfo.loading}
+									onChange={(id) =>
+										formikBag.setFieldValue(
+											`${path}.rettIdentitetVedIdentifikasjonsnummer`,
+											id ? id.value : null
+										)
+									}
+									value={_get(formikBag.values, `${path}.rettIdentitetVedIdentifikasjonsnummer`)}
+									disabled={true}
+								/>
+								<Hjelpetekst hjelpetekstFor={`${path}.rettIdentitetVedIdentifikasjonsnummer`}>
+									{
+										'For øyeblikket er det ikke mulig å velge eksisterende ident - ved bestilling vil det automatisk opprettes en ny ident.'
+									}
+								</Hjelpetekst>
+							</div>
 						)}
 						{identType === 'OMTRENTLIG' && (
-							<div className="flexbox--flex-wrap">
+							<>
 								<DollySelect
 									name={`${path}.rettIdentitetVedOpplysninger.personnavn.fornavn`}
 									label="Navn"
@@ -125,11 +107,9 @@ export const FalskIdentitet = ({ formikBag }) => {
 											formikBag.setFieldValue
 										)
 									}
-									value={_get(formikBag.values, `${path}.personnavn.fornavn`)}
-									isClearable={false}
-									placeholder={getPlaceholder(
+									value={_get(
 										formikBag.values,
-										`${path}.rettIdentitetVedOpplysninger.personnavn`
+										`${path}.rettIdentitetVedOpplysninger.personnavn.fornavn`
 									)}
 								/>
 								<FormikDatepicker
@@ -140,7 +120,6 @@ export const FalskIdentitet = ({ formikBag }) => {
 									name={`${path}.rettIdentitetVedOpplysninger.kjoenn`}
 									label="Kjønn"
 									options={Options('kjoennFalskIdentitet')}
-									isClearable={false}
 								/>
 								<FormikSelect
 									name={`${path}.rettIdentitetVedOpplysninger.statsborgerskap`}
@@ -151,7 +130,7 @@ export const FalskIdentitet = ({ formikBag }) => {
 									fastfield={false}
 									size="large"
 								/>
-							</div>
+							</>
 						)}
 					</div>
 				)

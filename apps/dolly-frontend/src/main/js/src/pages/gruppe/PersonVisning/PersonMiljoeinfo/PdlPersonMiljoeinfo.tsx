@@ -14,7 +14,6 @@ export const PdlPersonMiljoeInfo = ({ ident }: PdlPersonMiljoeinfo) => {
 	if (!ident) return null
 
 	const state = useAsync(async () => {
-		// const response = await PdlforvalterApi.getPersoner(ident)
 		const response = await DollyApi.getPersonFraPdl(ident)
 		return response.data
 	}, [])
