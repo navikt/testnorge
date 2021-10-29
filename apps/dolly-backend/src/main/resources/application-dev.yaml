@@ -32,6 +32,11 @@ consumers:
     namespace: dolly
     url: https://generer-navn-service.dev.intern.nav.no
     cluster: dev-gcp
+  testnav-profil-api:
+    name: testnorge-profil-api-dev
+    namespace: dolly
+    url: https://testnorge-profil-api-dev.dev.intern.nav.no
+    cluster: dev-gcp
   testnav-person-service:
     name: testnav-person-service
     namespace: dolly
@@ -141,22 +146,16 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     threads: 5
-  testnav-profil-api:
-    name: testnorge-profil-api
-    namespace: dolly
-    url: https://testnorge-profil-api.dev.intern.nav.no
-    cluster: dev-gcp
   tps-forvalteren-proxy:
-    url: https://tps-forvalteren-proxy.dev.intern.nav.no
-    #url: https://tps-forvalteren-facade-proxy.dev-fss-pub.nais.io TODO Bytte til denne når backend er i GCP
-    name: tps-forvalteren-proxy
+    url: https://tps-forvalteren-dev-proxy.dev.intern.nav.no
+    name: tps-forvalteren-dev-proxy
     cluster: dev-fss
     namespace: dolly
   testnav-udistub-proxy:
     name: testnav-udistub-proxy
     namespace: dolly
-    #    url: https://testnav-udistub-proxy.dev-fss-pub.nais.io/udistub
-    url: https://testnav-udistub-proxy.dev.intern.nav.no/udistub
+    #    url: https://testnav-udistub-proxy.dev-fss-pub.nais.io/udistub-dev
+    url: https://testnav-udistub-proxy.dev.intern.nav.no/udistub-dev
     cluster: dev-fss
 
 #### APP DB ####
