@@ -1,6 +1,7 @@
 package no.nav.dolly;
 
 import no.nav.dolly.config.ForkJoinWorkerThreadFactory;
+import no.nav.testnav.libs.database.config.VaultHikariConfiguration;
 import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
 import no.nav.testnav.libs.servletsecurity.config.SecureOAuth2ServerToServerConfiguration;
 import org.apache.http.client.config.RequestConfig;
@@ -23,6 +24,7 @@ import java.util.concurrent.ForkJoinPool;
 
 @SpringBootApplication
 @Import({ ApplicationCoreConfig.class,
+        VaultHikariConfiguration.class,
         SecureOAuth2ServerToServerConfiguration.class })
 public class ApplicationConfig {
 
