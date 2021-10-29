@@ -71,12 +71,12 @@ dependencies {
     implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
     implementation "org.springdoc:springdoc-openapi-ui:${DependenciesPlugin.springdocOpenapi}"
 
-    implementation "org.springframework.boot:spring-boot-starter-security:${DependenciesPlugin.springBoot}"
-    implementation "org.springframework.boot:spring-boot-starter-web:${DependenciesPlugin.springBoot}"
-    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:${DependenciesPlugin.springBoot}"
-    implementation "org.springframework.boot:spring-boot-starter-data-jpa:${DependenciesPlugin.springBoot}"
-    implementation "org.springframework.boot:spring-boot-starter-actuator:${DependenciesPlugin.springBoot}"
-    implementation "org.springframework.boot:spring-boot-starter-webflux:${DependenciesPlugin.springBoot}"
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+    implementation "org.springframework.boot:spring-boot-starter-webflux"
 
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'net.sf.ehcache:ehcache-core:2.6.11'
@@ -84,7 +84,7 @@ dependencies {
     implementation 'org.postgresql:postgresql:42.2.24.jre7'
     implementation 'org.flywaydb:flyway-core:8.0.1'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.7.5'
-    implementation 'ma.glasnost.orika:orika-core:1.5.4'
+    implementation "ma.glasnost.orika:orika-core:${DependenciesPlugin.orikaVersion}"
     implementation 'org.codehaus.jettison:jettison:1.4.1'
     implementation 'no.nav.testnav.libs:data-transfer-objects:2021.10.20-08.13-42b4dddd7e7c'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
@@ -93,7 +93,7 @@ dependencies {
     implementation 'net.sf.ehcache:ehcache-core:2.6.11'
 
 
-    testImplementation "org.springframework.boot:spring-boot-starter-test:${DependenciesPlugin.springBoot}"
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'com.h2database:h2:1.4.200'
