@@ -793,7 +793,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		data.push(krrStub)
 	}
 
-	const pdldataKriterier = bestillingData.pdldata?.person || bestillingData.pdlData?.person
+	const pdldataKriterier = bestillingData.pdldata?.person
 
 	if (pdldataKriterier) {
 		const { falskIdentitet } = pdldataKriterier
