@@ -25,8 +25,6 @@ spec:
       value: dev
     - name: UDI_CLIENT_ID
       value: 4426ef7d-f148-4d19-8a03-b0d07a451938
-  envFrom:
-    - secret: user-encryption-prod
   replicas:
     min: 1
     max: 2
