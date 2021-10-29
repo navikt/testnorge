@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static java.lang.String.format;
+import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +19,7 @@ public class ArtifactDeleteService {
     private static final String INFO_NOT_FOUND = "%s med id: %s ble ikke funnet";
 
     private final PersonRepository personRepository;
+    private final PersonService personService;
 
     @Transactional
     public void deleteFoedsel(String ident, Integer id) {
@@ -255,7 +257,7 @@ public class ArtifactDeleteService {
             throw new InvalidRequestException(format(INFO_NOT_FOUND, "FolkeregisterPersonstatus", id));
 
         } else {
-            dbPerson.getPerson().setFolkeregisterpersonstatus(dbPerson.getPerson().getFolkeregisterPersonstatus().stream()
+            dbPerson.getPerson().setFolkeregisterPersonstatus(dbPerson.getPerson().getFolkeregisterPersonstatus().stream()
                     .filter(type -> !id.equals(type.getId()))
                     .toList());
         }
@@ -354,13 +356,30 @@ public class ArtifactDeleteService {
     @Transactional
     public void deleteVergemaal(String ident, Integer id) {
 
-        var dbPerson = fetchPerson(ident);
+        var hovedPerson = fetchPerson(ident);
 
-        if (dbPerson.getPerson().getVergemaal().stream().noneMatch(type -> id.equals(type.getId()))) {
+        if (hovedPerson.getPerson().getVergemaal().stream().noneMatch(type -> id.equals(type.getId()))) {
             throw new InvalidRequestException(format(INFO_NOT_FOUND, "Vergemaal", id));
 
         } else {
-            dbPerson.getPerson().setVergemaal(dbPerson.getPerson().getVergemaal().stream()
+
+            hovedPerson.getPerson().getVergemaal().stream()
+                    .filter(vergemaal -> id.equals(vergemaal.getId()))
+                    .forEach(vergemaal -> {
+                        var vergeperson = fetchPerson(vergemaal.getVergeIdent());
+                        vergeperson.setRelasjoner(vergeperson.getRelasjoner().stream()
+                                .filter(relasjon -> !relasjon.getRelatertPerson().getIdent().equals(ident))
+                                .toList());
+                        if (isNotTrue(vergemaal.getIsIdentExternal())) {
+                            personService.deletePerson(vergeperson.getIdent());
+                        } else {
+                            hovedPerson.setRelasjoner(hovedPerson.getRelasjoner().stream()
+                                    .filter(relasjon -> !relasjon.getRelatertPerson().getIdent().equals(vergeperson.getIdent()))
+                                    .toList());
+                        }
+                    });
+
+            hovedPerson.getPerson().setVergemaal(hovedPerson.getPerson().getVergemaal().stream()
                     .filter(type -> !id.equals(type.getId()))
                     .toList());
         }

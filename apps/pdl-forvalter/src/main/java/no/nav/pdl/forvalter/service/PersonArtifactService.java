@@ -51,7 +51,7 @@ public class PersonArtifactService {
         person.setOpphold(oppholdService.convert(person.getOpphold()));
         person.setTilrettelagtKommunikasjon(tilrettelagtKommunikasjonService.convert(person.getTilrettelagtKommunikasjon()));
         person.setDoedsfall(doedsfallService.convert(person.getDoedsfall()));
-        person.setFolkeregisterpersonstatus(folkeregisterPersonstatusService.convert(person));
+        person.setFolkeregisterPersonstatus(folkeregisterPersonstatusService.convert(person));
         person.setFullmakt(fullmaktService.convert(person));
         person.setKontaktadresse(kontaktAdresseService.convert(person));
         person.setUtenlandskIdentifikasjonsnummer(utenlandsidentifikasjonsnummerService
