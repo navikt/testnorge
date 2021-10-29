@@ -6,7 +6,7 @@ metadata:
   labels:
     team: dolly
 spec:
-  image: {{ image }}
+  image: {{image}}
   tokenx:
     enabled: true
   azure:
@@ -25,14 +25,14 @@ spec:
           cluster: dev-fss
         - application: endringsmelding-frontend
           cluster: dev-gcp
-        - application: dolly-frontend-dev
+        - application: dolly-backend-dev
           cluster: dev-fss
-        - application: dolly-frontend-dev
-          cluster: dev-gcp
+        - application: dolly-backend
+          cluster: dev-fss
         - application: testnorge-tilbakemelding-api
           cluster: dev-gcp
-        - application: dolly-frontend
-          cluster: dev-fss
+        - application: dolly-frontend-dev
+          cluster: dev-gcp
         - application: dolly-frontend
           cluster: dev-gcp
         - application: testnav-faste-data-frontend

@@ -9,7 +9,6 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: dolly-frontend-dev
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
         - application: dolly-frontend-dev
@@ -20,12 +19,14 @@ spec:
     application:
       enabled: true
       tenant: nav.no
-  image: {{ image }}
+  image: {{image}}
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: dev
     - name: UDI_CLIENT_ID
       value: 4426ef7d-f148-4d19-8a03-b0d07a451938
+  envFrom:
+    - secret: user-encryption-prod
   replicas:
     min: 1
     max: 2

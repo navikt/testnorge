@@ -10,7 +10,6 @@ spec:
     inbound:
       rules:
         - application: dolly-frontend
-        - application: dolly-frontend
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
@@ -25,6 +24,8 @@ spec:
       value: prod
     - name: UDI_CLIENT_ID
       value: f4620953-c7af-4e60-8cbb-03de57554b86
+  envFrom:
+    - secret: user-encryption-dev
   replicas:
     min: 1
     max: 2
