@@ -49,13 +49,16 @@ export const FalskIdentitet = ({ formikBag }) => {
 			canBeEmpty={false}
 		>
 			{(path, idx) => {
-				const identType = _has(formikBag.values, `${path}.rettIdentitetErUkjent`)
-					? 'UKJENT'
-					: _has(formikBag.values, `${path}.rettIdentitetVedIdentifikasjonsnummer`)
-					? 'ENTYDIG'
-					: _has(formikBag.values, `${path}.rettIdentitetVedOpplysninger`)
-					? 'OMTRENTLIG'
-					: null
+				const identType = () => {
+					if (_has(formikBag.values, `${path}.rettIdentitetErUkjent`)) {
+						return 'UKJENT'
+					} else if (_has(formikBag.values, `${path}.rettIdentitetVedIdentifikasjonsnummer`)) {
+						return 'ENTYDIG'
+					}
+					return _has(formikBag.values, `${path}.rettIdentitetVedOpplysninger`)
+						? 'OMTRENTLIG'
+						: null
+				}
 
 				return (
 					<div className="flexbox--flex-wrap" key={idx}>
@@ -63,12 +66,12 @@ export const FalskIdentitet = ({ formikBag }) => {
 							name={`${path}.identitetType`}
 							label="Opplysninger om rett identitet"
 							options={Options('identitetType')}
-							value={identType}
+							value={identType()}
 							onChange={(e) => settIdentitetType(e, path)}
 							size="large"
 						/>
 
-						{identType === 'ENTYDIG' && (
+						{identType() === 'ENTYDIG' && (
 							<div className="flexbox--align-center">
 								<DollySelect
 									name={`${path}.rettIdentitetVedIdentifikasjonsnummer`}
@@ -92,7 +95,7 @@ export const FalskIdentitet = ({ formikBag }) => {
 								</Hjelpetekst>
 							</div>
 						)}
-						{identType === 'OMTRENTLIG' && (
+						{identType() === 'OMTRENTLIG' && (
 							<>
 								<DollySelect
 									name={`${path}.rettIdentitetVedOpplysninger.personnavn.fornavn`}

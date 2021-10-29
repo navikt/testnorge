@@ -246,7 +246,6 @@ export const fetchDataFraFagsystemer = (personId) => (dispatch, getState) => {
 	const success = successMiljoSelector(statusArray)
 
 	// Samle alt fra PDL under en ID
-	//TODO endre på denne?
 	if (Object.keys(success).some((a) => a.substring(0, 3) === 'PDL')) {
 		success.PDL = 'PDL'
 		success.PDL_FORVALTER = 'PDL_FORVALTER'

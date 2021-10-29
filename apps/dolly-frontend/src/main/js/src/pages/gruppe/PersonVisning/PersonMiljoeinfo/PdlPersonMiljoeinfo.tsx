@@ -1,6 +1,6 @@
 import React from 'react'
 import { useAsync } from 'react-use'
-import { DollyApi, PdlforvalterApi } from '~/service/Api'
+import { DollyApi } from '~/service/Api'
 import Loading from '~/components/ui/loading/Loading'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { PdlDataVisning } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataVisning'

@@ -798,22 +798,22 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	if (pdldataKriterier) {
 		const { falskIdentitet } = pdldataKriterier
 
+		const sjekkRettIdent = (item) => {
+			if (_has(item, 'rettIdentitetErUkjent')) {
+				return 'Ukjent'
+			} else if (_has(item, 'rettIdentitetVedIdentifikasjonsnummer')) {
+				return 'Ved identifikasjonsnummer'
+			}
+			return _has(item, 'rettIdentitetVedOpplysninger') ? 'Ved personopplysninger' : 'Ingen'
+		}
+
 		if (falskIdentitet) {
 			const falskIdentitetData = {
 				header: 'Falsk identitet',
 				itemRows: falskIdentitet.map((item, idx) => {
 					return [
 						{ numberHeader: `Falsk identitet ${idx + 1}` },
-						obj(
-							'Opplysninger om rett ident',
-							_has(item, 'rettIdentitetErUkjent')
-								? 'Ukjent'
-								: _has(item, 'rettIdentitetVedIdentifikasjonsnummer')
-								? 'Ved identifikasjonsnummer'
-								: _has(item, 'rettIdentitetVedOpplysninger')
-								? 'Ved personopplysninger'
-								: 'Ingen'
-						),
+						obj('Opplysninger om rett ident', sjekkRettIdent(item)),
 						obj('Identifikasjonsnummer', item.rettIdentitetVedIdentifikasjonsnummer),
 						obj('Fornavn', item.rettIdentitetVedOpplysninger?.personnavn?.fornavn),
 						obj('Mellomnavn', item.rettIdentitetVedOpplysninger?.personnavn?.mellomnavn),
