@@ -70,3 +70,15 @@ updates:
     directory: "/apps/endringsmelding-frontend/src/main/js"
     schedule:
       interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/ereg-batch-status-service/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/faste-data-frontend/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "npm"
+    directory: "/apps/faste-data-frontend/src/main/js"
+    schedule:
+      interval: "daily"

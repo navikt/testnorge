@@ -4,8 +4,6 @@ plugins {
 
 rootProject.name = 'faste-data-frontend'
 
-includeBuild '../../gradlePlugins'
-
 includeBuild '../../libs/reactive-core'
 includeBuild '../../libs/security-core'
 includeBuild '../../libs/reactive-session-security'
