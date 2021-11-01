@@ -1,10 +1,10 @@
 version: 2
 updates:
   - package-ecosystem: "gradle"
-    directory: "/" 
+    directory: "/apps/adresse-service/" 
     schedule:
       interval: "daily"
   - package-ecosystem: "gradle"
-    directory: "/apps/adresse-service/" 
+    directory: "/apps/amelding-service/"
     schedule:
       interval: "daily"

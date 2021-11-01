@@ -1,5 +1,3 @@
-import no.nav.testnav.dependencies.gradle.DependenciesPlugin
-
 plugins {
     id "org.sonarqube" version "3.3"
     id 'no.nav.testnav.dependencies'
@@ -27,7 +25,7 @@ bootJar {
 
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${DependenciesPlugin.springCloud}"
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.4'
     }
 }
 
@@ -60,13 +58,11 @@ dependencies {
 
     implementation 'org.hibernate.validator:hibernate-validator'
 
-    implementation "org.springdoc:springdoc-openapi-webflux-ui:${DependenciesPlugin.springdocOpenapi}"
+    implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.5.12'
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
 
-    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
-    testImplementation 'no.nav.testnav.libs:testing'
 
     implementation 'org.projectlombok:lombok:1.18.20'
     annotationProcessor 'org.projectlombok:lombok:1.18.20'
