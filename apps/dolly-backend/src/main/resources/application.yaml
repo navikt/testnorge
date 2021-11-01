@@ -6,10 +6,8 @@ APP_NAME: dolly
 APP_VERSION: ${application.version}
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
-CLIENT_ID: f0174d28-cb33-44f9-a7b5-09e52582e601
 UDI_STUB_CLIENT_ID: ${UDI_CLIENT_ID}
 
-CLIENT_SECRET: ${azure.app.client.secret}
 
 consumers:
   testnav-helsepersonell-service:
@@ -184,10 +182,10 @@ spring:
   security:
     oauth2:
       resourceserver:
-        jwt:
+        aad:
           issuer-uri: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b/v2.0
           #The client_id of this application
-          accepted-audience: ${CLIENT_ID}, api://${CLIENT_ID}
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
 
 management:
   endpoints:
