@@ -30,7 +30,7 @@ jobs:
       - name: Compile
         env:
           GITHUB_USERNAME: token
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
         run: ./gradlew :oppsummeringsdokument-service:build
       - name: Build and publish Docker image
         working-directory: apps/oppsummeringsdokument-service/
