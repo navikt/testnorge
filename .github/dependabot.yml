@@ -20,3 +20,11 @@ updates:
     directory: "/apps/applikasjonsanalyse-frontend/src/main/js"
     schedule:
       interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/applikasjonsanalyse-service/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/arbeidsforhold-export-api/"
+    schedule:
+      interval: "daily"
