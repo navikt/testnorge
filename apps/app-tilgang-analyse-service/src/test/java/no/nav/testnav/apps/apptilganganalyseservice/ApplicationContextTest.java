@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.avhengighetsanalysefrontend;
+package no.nav.testnav.apps.apptilganganalyseservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
