@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@navikt/dolly-komponenter": "^1.1.14",
-    "@navikt/dolly-lib": "^1.1.3",
+    "@navikt/dolly-lib": "^1.1.8",
     "buffer": "^6.0.3",
     "d3": "^5.5.0",
     "os-browserify": "^0.3.0",
