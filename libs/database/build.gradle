@@ -42,7 +42,7 @@ dependencies {
     implementation 'org.springframework.vault:spring-vault-core:2.2.0.RELEASE'
     implementation "org.springframework.boot:spring-boot-starter-data-jpa:${DependenciesPlugin.springBoot}"
 
-    implementation 'org.projectlombok:lombok:1.18.20'
-    annotationProcessor 'org.projectlombok:lombok:1.18.20'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
+    implementation 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
 }

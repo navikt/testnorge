@@ -85,9 +85,9 @@ dependencies {
 
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
 
-    implementation 'org.projectlombok:lombok:1.18.20'
-    annotationProcessor 'org.projectlombok:lombok:1.18.20'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
+    implementation 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
 
     implementation 'no.nav.tjenestespesifikasjoner:nav-fim-behandleArbeidsforhold-v1-tjenestespesifikasjon:1.2020.04.30-11.45-a45e1248c063'
     implementation 'org.apache.neethi:neethi:3.1.1'
