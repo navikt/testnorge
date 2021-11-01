@@ -77,9 +77,9 @@ dependencies {
     jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics-runtime:0.9.5'
     jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics-ant:0.9.5'
     jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics:0.9.5'
-    jaxb2 'com.sun.xml.bind:jaxb-core:3.0.2'
-    jaxb2 'com.sun.xml.bind:jaxb-xjc:3.0.2'
-    jaxb2 'com.sun.xml.bind:jaxb-impl:3.0.2'
+    jaxb2 'com.sun.xml.bind:jaxb-core:2.2.11'
+    jaxb2 'com.sun.xml.bind:jaxb-xjc:2.2.11'
+    jaxb2 'com.sun.xml.bind:jaxb-impl:2.2.11'
     jaxb2 'javax.xml.bind:jaxb-api:2.3.1'
 
     implementation 'org.postgresql:postgresql'
@@ -98,8 +98,8 @@ dependencies {
     implementation 'com.h2database:h2'
     implementation 'jakarta.jws:jakarta.jws-api:2.1.0'
 
-    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'junit:junit:4.13.2' //TODO upgrade to JUnit5
+    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     implementation 'org.projectlombok:lombok:1.18.22'

@@ -34,6 +34,11 @@ updates:
       interval: "daily"
   - package-ecosystem: "gradle"
     directory: "/apps/brreg-stub/"
+    ignore:
+      - dependency-name: "com.sun.xml.bind:jaxb-impl"
+      - dependency-name: "com.sun.xml.bind:jaxb-xjc"
+      - dependency-name: "com.sun.xml.bind:jaxb-core"
+      - dependency-name: "uk.co.boothen.gradle.wsimport"
     schedule:
       interval: "daily"
   - package-ecosystem: "gradle"
