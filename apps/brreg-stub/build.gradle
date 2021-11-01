@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id "org.sonarqube" version "3.3"
-    id "uk.co.boothen.gradle.wsimport" version "0.16"
+    id "uk.co.boothen.gradle.wsimport" version "0.18"
     id 'com.ewerk.gradle.plugins.jaxb2' version '1.0.10'
     id 'org.springframework.boot' version "2.5.6"
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
@@ -86,7 +86,7 @@ dependencies {
     implementation 'org.postgresql:postgresql'
     implementation 'com.zaxxer:HikariCP'
 
-    implementation 'org.flywaydb:flyway-core:6.4.4'
+    implementation 'org.flywaydb:flyway-core:8.0.2'
     implementation 'com.h2database:h2'
 
     implementation 'org.apache.cxf:cxf-rt-frontend-jaxws:3.3.6'
@@ -95,13 +95,13 @@ dependencies {
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'javax.validation:validation-api:2.0.1.Final'
     implementation 'io.springfox:springfox-swagger2:2.9.2'
-    implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+    implementation 'io.springfox:springfox-swagger-ui:3.0.0'
     implementation 'no.nav.common:cxf:1.2019.11.06-15.14-6ca860e6cead'
     implementation 'com.h2database:h2'
     implementation 'jakarta.jws:jakarta.jws-api:2.1.0'
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
-    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
+    testImplementation 'junit:junit:4.13.2' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     implementation 'org.projectlombok:lombok:1.18.22'
