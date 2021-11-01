@@ -80,7 +80,7 @@ dependencies {
     jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics:0.9.5'
     jaxb2 'com.sun.xml.bind:jaxb-core:3.0.2'
     jaxb2 'com.sun.xml.bind:jaxb-xjc:2.2.11'
-    jaxb2 'com.sun.xml.bind:jaxb-impl:2.2.11'
+    jaxb2 'com.sun.xml.bind:jaxb-impl:3.0.2'
     jaxb2 'javax.xml.bind:jaxb-api:2.3.1'
     
     implementation 'org.postgresql:postgresql'
