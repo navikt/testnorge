@@ -36,7 +36,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.auth0:java-jwt:3.18.1'
+    implementation 'com.auth0:java-jwt:3.18.2'
 
     implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:reactive-core'
