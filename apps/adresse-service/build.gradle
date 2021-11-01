@@ -58,7 +58,7 @@ dependencies {
 
     implementation 'ma.glasnost.orika:orika-core:1.5.2'
     implementation 'org.hibernate.validator:hibernate-validator'
-    implementation 'org.aspectj:aspectjweaver:1.9.6'
+    implementation 'org.aspectj:aspectjweaver:1.9.7'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.7.5'
 
     implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
