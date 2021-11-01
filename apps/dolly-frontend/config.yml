@@ -110,3 +110,7 @@ spec:
       value: testnav-varslinger-service
     - name: VARSLINGER_URL
       value: https://testnav-varslinger-service.dev.intern.nav.no
+    - name: TESTNORGE_PROFIL_API_NAME
+      value: testnorge-profil-api
+    - name: TESTNORGE_PROFIL_API_URL
+      value: https://testnorge-profil-api.dev.intern.nav.no

@@ -21,6 +21,8 @@ PDL_FORVALTER_URL: https://testnav-pdl-forvalter-dev.dev.intern.nav.no
 PDL_FORVALTER_NAME: testnav-pdl-forvalter-dev
 TESTNAV_BRUKER_SERVICE_NAME: testnav-bruker-service-dev
 TESTNAV_BRUKER_SERVICE_URL: https://testnav-bruker-service-dev.dev.intern.nav.no
+TESTNORGE_PROFIL_API_NAME: testnorge-profil-api-dev
+TESTNORGE_PROFIL_API_URL: https://testnorge-profil-api-dev.dev.intern.nav.no
 
 POST_LOGOUT_REDIRECT_URI: 'http://localhost:3000/login'
 

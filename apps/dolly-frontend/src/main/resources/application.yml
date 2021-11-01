@@ -102,8 +102,8 @@ consumers:
   testnorge-profil-api:
     cluster: dev-gcp
     namespace: dolly
-    name: testnorge-profil-api
-    url: https://testnorge-profil-api.dev.intern.nav.no
+    name: ${TESTNORGE_PROFIL_API_NAME}
+    url: ${TESTNORGE_PROFIL_API_URL}
   testnav-varslinger-service:
     cluster: dev-gcp
     namespace: dolly

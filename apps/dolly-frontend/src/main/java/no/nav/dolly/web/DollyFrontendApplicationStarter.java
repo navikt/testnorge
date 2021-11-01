@@ -114,6 +114,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(testnavVarslingerServiceProperties, "testnav-varslinger-service"))
                 .route(createRoute(testnorgeProfilApiProperties))
                 .route(createRoute(tpsMessagingServiceProperties, "testnav-tps-messaging-service"))
+                .route(createRoute(testnorgeProfilApiProperties, "testnorge-profil-api"))
                 .route(createRoute(testnavMiljoerServiceProperties))
                 .route(createRoute(dollyBackendProperties, "dolly-backend"))
                 .route(createRoute(testnavJoarkDokumentServiceProperties))
