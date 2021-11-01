@@ -25,7 +25,7 @@
     "@types/styled-components": "^5.1.15",
     "babel-loader": "^8.2.2",
     "babel-plugin-styled-components": "^1.12.0",
-    "clean-webpack-plugin": "^4.0.0-alpha.0",
+    "clean-webpack-plugin": "^4.0.0",
     "css-loader": "^5.2.4",
     "html-webpack-plugin": "^5.5.0",
     "less": "^4.1.2",
