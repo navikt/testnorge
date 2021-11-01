@@ -17,10 +17,12 @@ public class DollyBackendApplicationStarter {
 
         Map<String, Object> properties = new HashMap<>();
         if (deployEnvironments.stream().anyMatch(env -> env.equals(System.getProperty("spring.profiles.active")))) {
+            log.info("Profile er i if: {}", System.getProperty("spring.profiles.active"));
             properties = PropertyReader.builder()
                     .readSecret("spring.cloud.vault.token", "/var/run/secrets/nais.io/vault/vault_token")
                     .build();
         }
+        log.info("Profile er: {}", System.getProperty("spring.profiles.active"));
 
         new SpringApplicationBuilder()
                 .sources(ApplicationConfig.class)
