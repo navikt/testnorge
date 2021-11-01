@@ -30,14 +30,8 @@ jobs:
           java-version: 1.17
       - name: Build
         env:
-          DUMMY_TOKEN: ${{ secrets.DUMMY_TOKEN }}
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
         run: |
-          if test -z "$DUMMY_TOKEN"
-          then
-                echo "\$DUMMY_TOKEN is empty"
-          else
-                echo "\$DUMMY_TOKEN is NOT empty"
-          fi
           ./gradlew build --info --scan
