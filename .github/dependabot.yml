@@ -39,6 +39,15 @@ updates:
       - dependency-name: "com.sun.xml.bind:jaxb-xjc"
       - dependency-name: "com.sun.xml.bind:jaxb-core"
       - dependency-name: "uk.co.boothen.gradle.wsimport"
+      - dependency-name: "org.jvnet.jaxb2_commons:jaxb2-basics-runtime"
+        versions:
+          - 1.11.1-PUBLISHED-BY-MISTAKE
+      - dependency-name: "org.jvnet.jaxb2_commons:jaxb2-basics-ant"
+        versions:
+          - 1.11.1-PUBLISHED-BY-MISTAKE
+      - dependency-name: "org.jvnet.jaxb2_commons:jaxb2-basics"
+        versions:
+          - 1.11.1-PUBLISHED-BY-MISTAKE
     schedule:
       interval: "daily"
   - package-ecosystem: "gradle"
