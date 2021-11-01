@@ -41,10 +41,10 @@ repositories {
     }
     maven {
         name = "GitHubPackages"
-        url = uri('https://maven.pkg.github.com/navikt/freg-security')
+        url = uri('https://maven.pkg.github.com/navikt/maven-release')
         credentials(PasswordCredentials) {
-            password System.getenv("GITHUB_TOKEN")
-            username System.getenv("GITHUB_USERNAME")
+            password System.getenv("NAV_TOKEN")
+            username 'token'
         }
     }
 }
@@ -59,7 +59,6 @@ dependencies {
     implementation 'javax.xml.bind:jaxb-api'
     implementation 'javax.activation:activation:1.1'
     implementation 'org.glassfish.jaxb:jaxb-runtime'
-
 
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
