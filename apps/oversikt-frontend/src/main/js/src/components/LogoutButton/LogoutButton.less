@@ -1,0 +1,32 @@
+.logout-button {
+  border: none;
+  border-bottom: 1px solid transparent;
+  background: none;
+  cursor: pointer;
+  padding: 5px 0 5px 0;
+
+  span {
+    padding: 0 5px;
+  }
+
+  &:hover {
+    border-color: lightblue;
+    .svg-icon {
+      fill: lightblue;
+    }
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    border-color: transparent;
+  }
+
+  .svg-icon {
+    g {
+      stroke: white !important;
+      stroke-width: 2;
+    }
+    width: 20px;
+    height: 20px;
+  }
+}
