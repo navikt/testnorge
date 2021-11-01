@@ -8,13 +8,11 @@ import { setNavn } from '../utils'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import _has from 'lodash/has'
-import Hjelpetekst from '~/components/hjelpetekst'
+import { FalskIdentitetToggle } from '~/components/fagsystem/pdlf/form/partials/falskIdentitet/FalskIdentitetToggle'
 
 export const FalskIdentitet = ({ formikBag }) => {
 	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
 	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
-	const dollyGruppeInfo = SelectOptionsOppslag.hentGruppe()
-	const navnOgFnrOptions = SelectOptionsOppslag.formatOptions('navnOgFnr', dollyGruppeInfo)
 
 	const settIdentitetType = (e, path) => {
 		if (!e) {
@@ -72,28 +70,7 @@ export const FalskIdentitet = ({ formikBag }) => {
 						/>
 
 						{identType() === 'ENTYDIG' && (
-							<div className="flexbox--align-center">
-								<DollySelect
-									name={`${path}.rettIdentitetVedIdentifikasjonsnummer`}
-									label="Navn og identifikasjonsnummer"
-									size="large"
-									options={navnOgFnrOptions}
-									isLoading={dollyGruppeInfo.loading}
-									onChange={(id) =>
-										formikBag.setFieldValue(
-											`${path}.rettIdentitetVedIdentifikasjonsnummer`,
-											id ? id.value : null
-										)
-									}
-									value={_get(formikBag.values, `${path}.rettIdentitetVedIdentifikasjonsnummer`)}
-									disabled={true}
-								/>
-								<Hjelpetekst hjelpetekstFor={`${path}.rettIdentitetVedIdentifikasjonsnummer`}>
-									{
-										'For øyeblikket er det ikke mulig å velge eksisterende ident - ved bestilling vil det automatisk opprettes en ny ident.'
-									}
-								</Hjelpetekst>
-							</div>
+							<FalskIdentitetToggle formikBag={formikBag} path={path} />
 						)}
 						{identType() === 'OMTRENTLIG' && (
 							<>
