@@ -43,7 +43,7 @@ repositories {
         name = "GitHubPackages"
         url = uri('https://maven.pkg.github.com/navikt/maven-release')
         credentials(PasswordCredentials) {
-            password System.getenv("NAV_TOKEN")
+            password System.getenv("GITHUB_TOKEN")
             username 'token'
         }
     }
