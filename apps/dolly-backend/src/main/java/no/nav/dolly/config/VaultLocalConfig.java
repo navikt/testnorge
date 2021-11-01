@@ -12,12 +12,10 @@ import org.springframework.vault.config.AbstractVaultConfiguration;
 
 @Slf4j
 @Configuration
-@Profile("!test")
+@Profile("local")
 @RequiredArgsConstructor
-@VaultPropertySource(value = "serviceuser/dev/srvfregdolly", propertyNamePrefix = "jira.", ignoreSecretNotFound = false)
-@VaultPropertySource(value = "serviceuser/test/srvdolly-backend", propertyNamePrefix = "credentials.test.", ignoreSecretNotFound = false)
-@VaultPropertySource(value = "serviceuser/dev/srvdolly-preprod-env", propertyNamePrefix = "credentials.preprod.", ignoreSecretNotFound = false)
-public class VaultConfig extends AbstractVaultConfiguration {
+@VaultPropertySource(value = "kv/preprod/fss/dolly-backend/local", ignoreSecretNotFound = false)
+public class VaultLocalConfig extends AbstractVaultConfiguration {
     @Override
     public VaultEndpoint vaultEndpoint() {
         return VaultEndpoint.create("vault.adeo.no", 443);
