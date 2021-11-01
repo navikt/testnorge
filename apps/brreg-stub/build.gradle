@@ -96,7 +96,7 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
     implementation 'no.nav.common:cxf:2.2021.09.13_10.34-f267beb49e1e'
     implementation 'com.h2database:h2'
-    implementation 'jakarta.jws:jakarta.jws-api:2.1.0'
+    implementation 'jakarta.jws:jakarta.jws-api:'
 
     testImplementation 'junit:junit:4.13.2' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'

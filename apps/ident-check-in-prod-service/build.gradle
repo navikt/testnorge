@@ -63,7 +63,7 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
 
-    implementation 'com.oracle.database.jdbc:ojdbc8:19.8.0.0'
+    implementation 'com.oracle.database.jdbc:ojdbc8'
     implementation 'com.ibm.mq:mq-jms-spring-boot-starter:2.3.4'
     implementation 'javax.jms:javax.jms-api:2.0.1'
     implementation 'org.json:json:20200518'

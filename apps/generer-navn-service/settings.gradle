@@ -4,8 +4,6 @@ plugins {
 
 rootProject.name = 'generer-navn-service'
 
-includeBuild '../../gradlePlugins'
-
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/commands'
 includeBuild '../../libs/data-transfer-objects'

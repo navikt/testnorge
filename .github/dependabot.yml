@@ -82,3 +82,31 @@ updates:
     directory: "/apps/faste-data-frontend/src/main/js"
     schedule:
       interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/generer-arbeidsforhold-populasjon-service/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/generer-navn-service/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/generer-organisasjon-populasjon-service/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/generer-synt-amelding-service/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/geografiske-kodeverk-service/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/helsepersonell-service/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/ident-check-in-prod-service/"
+    schedule:
+      interval: "daily"
