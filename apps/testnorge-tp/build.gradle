@@ -54,7 +54,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-configuration-processor'
 
-    implementation "javax.validation:validation-api:${DependenciesPlugin.validationApi}"
+    implementation 'javax.validation:validation-api:2.0.1.Final'
 
     implementation 'org.aspectj:aspectjweaver:1.9.6'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'

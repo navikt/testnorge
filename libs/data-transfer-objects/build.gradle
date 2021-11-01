@@ -38,7 +38,7 @@ repositories {
 dependencies {
     implementation "com.fasterxml.jackson.core:jackson-annotations:${DependenciesPlugin.jackson}"
     implementation "com.fasterxml.jackson.core:jackson-databind:${DependenciesPlugin.jackson}"
-    implementation "javax.validation:validation-api:${DependenciesPlugin.validationApi}"
+    implementation 'javax.validation:validation-api:2.0.1.Final'
     implementation "org.springdoc:springdoc-openapi-common:${DependenciesPlugin.springdocOpenapi}"
 
     implementation 'no.nav.tjenestespesifikasjoner:nav-altinn-inntektsmelding:1.2019.08.16-13.46-35cbdfd492d4'

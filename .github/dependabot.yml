@@ -28,3 +28,7 @@ updates:
     directory: "/apps/arbeidsforhold-export-api/"
     schedule:
       interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/testnav-arbeidsforhold-service/"
+    schedule:
+      interval: "daily"
