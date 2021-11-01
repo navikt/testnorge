@@ -5,6 +5,7 @@ on:
       - master
     paths-ignore:
       - 'navikt/**'
+      - '.github/**'
   pull_request:
     types: [ opened, synchronize, reopened ]
 
