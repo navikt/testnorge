@@ -36,3 +36,11 @@ updates:
     directory: "/apps/brreg-stub/"
     schedule:
       interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/bruker-service/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/dolly-frontend/"
+    schedule:
+      interval: "daily"
