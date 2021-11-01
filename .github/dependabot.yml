@@ -32,3 +32,7 @@ updates:
     directory: "/apps/testnav-arbeidsforhold-service/"
     schedule:
       interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/brreg-stub/"
+    schedule:
+      interval: "daily"
