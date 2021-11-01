@@ -1,7 +1,3 @@
-plugins {
-    id 'no.nav.testnav.dependencies'
-}
-
 task build {
     dependsOn gradle.includedBuilds*.task(':build')
 }
