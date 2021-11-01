@@ -59,9 +59,9 @@ publishing {
     }
 }
 dependencies {
-    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    implementation 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
 
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:${DependenciesPlugin.springBoot}"
     implementation "org.springframework.boot:spring-boot-starter-webflux:${DependenciesPlugin.springBoot}"

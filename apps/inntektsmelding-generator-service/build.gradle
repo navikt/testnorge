@@ -52,14 +52,14 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
 
     implementation 'org.hibernate.validator:hibernate-validator'
-    implementation "org.springdoc:springdoc-openapi-ui:${DependenciesPlugin.springdocOpenapi}"
+    implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
 
     implementation 'org.aspectj:aspectjweaver:1.9.6'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
     implementation "javax.validation:validation-api:${DependenciesPlugin.validationApi}"
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.11.2'
 
-    implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
+    implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
     implementation 'no.nav.tjenestespesifikasjoner:nav-altinn-inntektsmelding:1.2019.08.16-13.46-35cbdfd492d4'
 
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
@@ -70,7 +70,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 
-    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    implementation 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
 }

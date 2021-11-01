@@ -58,16 +58,16 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
 
     implementation 'org.hibernate.validator:hibernate-validator'
-    implementation "org.springdoc:springdoc-openapi-ui:${DependenciesPlugin.springdocOpenapi}"
-    implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
+    implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
+    implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
 
     testImplementation 'no.nav.testnav.libs:testing'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'org.assertj:assertj-core:3.16.1'
 
-    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    implementation 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
 }
 

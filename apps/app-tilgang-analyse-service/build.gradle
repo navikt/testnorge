@@ -62,10 +62,10 @@ dependencies {
     implementation 'org.flywaydb:flyway-core'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml'
 
-    implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
+    implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
     implementation "org.springdoc:springdoc-openapi-webflux-ui:${DependenciesPlugin.springdocOpenapi}"
 
-    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    implementation 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
 }

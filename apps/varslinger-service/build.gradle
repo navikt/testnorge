@@ -67,8 +67,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
-    implementation "org.springdoc:springdoc-openapi-ui:${DependenciesPlugin.springdocOpenapi}"
-    implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
+    implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
+    implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
 
     implementation 'org.hibernate.validator:hibernate-validator'
 
@@ -77,9 +77,9 @@ dependencies {
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.postgresql:postgresql'
 
-    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    implementation 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'

@@ -67,13 +67,13 @@ dependencies {
     implementation 'org.postgresql:postgresql'
 
     implementation "ma.glasnost.orika:orika-core:${DependenciesPlugin.orikaVersion}"
-    implementation "org.springdoc:springdoc-openapi-ui:${DependenciesPlugin.springdocOpenapi}"
-    implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
+    implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
+    implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
 
-    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    implementation 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
 
     testImplementation 'no.nav.testnav.libs:testing'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
 }
