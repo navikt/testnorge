@@ -27,7 +27,6 @@ dependencyManagement {
     }
 }
 
-
 test {
     useJUnitPlatform()
 }
