@@ -34,5 +34,10 @@ jobs:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo $DUMMY_TOKEN
+          if test -z "$DUMMY_TOKEN"
+          then
+                echo "\$DUMMY_TOKEN is empty"
+          else
+                echo "\$DUMMY_TOKEN is NOT empty"
+          fi
           ./gradlew build --info --scan
