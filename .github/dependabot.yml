@@ -66,3 +66,7 @@ updates:
     directory: "/apps/endringsmelding-frontend/"
     schedule:
       interval: "daily"
+  - package-ecosystem: "npm"
+    directory: "/apps/endringsmelding-frontend/src/main/js"
+    schedule:
+      interval: "daily"
