@@ -1,6 +1,5 @@
 package no.nav.brregstub.api.common;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +18,6 @@ import java.util.List;
 @NoArgsConstructor
 public class RsSamendring {
 
-    @ApiModelProperty(dataType = "java.lang.String", example = "2004-01-01", required = true)
     @NotNull
     private LocalDate registringsDato;
 
