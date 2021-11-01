@@ -1,4 +1,4 @@
-package no.nav.testnav.endringsmeldingservice;
+package no.nav.registre.testnav.dollyfrontendredirect;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

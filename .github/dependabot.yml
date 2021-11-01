@@ -58,3 +58,11 @@ updates:
     directory: "/apps/dolly-frontend/"
     schedule:
       interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/dolly-frontend-redirect/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/endringsmelding-frontend/"
+    schedule:
+      interval: "daily"
