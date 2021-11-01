@@ -94,7 +94,7 @@ dependencies {
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'javax.validation:validation-api:2.0.1.Final'
     implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
-    implementation 'no.nav.common:cxf:1.2019.11.06-15.14-6ca860e6cead'
+    implementation 'no.nav.common:cxf:2.2021.09.13_10.34-f267beb49e1e'
     implementation 'com.h2database:h2'
     implementation 'jakarta.jws:jakarta.jws-api:2.1.0'
 
