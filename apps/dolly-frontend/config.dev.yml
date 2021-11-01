@@ -8,6 +8,8 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: 50m
 spec:
+  tokenx:
+    enabled: true
   idporten:
     enabled: true
     redirectPath: /login/oauth2/code/idporten
