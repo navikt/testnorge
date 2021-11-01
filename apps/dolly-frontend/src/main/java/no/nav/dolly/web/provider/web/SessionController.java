@@ -45,7 +45,7 @@ public class SessionController {
         return accessService
                 .hasAccess(organisasjonsnummer, exchange)
                 .flatMap(hasAccess -> {
-                    if (!hasAccess) {
+                    if (Boolean.FALSE.equals(hasAccess)) {
                         return Mono.just(ResponseEntity
                                 .status(HttpStatus.FORBIDDEN)
                                 .build());
