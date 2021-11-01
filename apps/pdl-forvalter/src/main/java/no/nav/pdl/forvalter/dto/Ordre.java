@@ -1,4 +1,4 @@
-package no.nav.pdl.forvalter.domain;
+package no.nav.pdl.forvalter.dto;
 
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.servletsecurity.domain.AccessToken;

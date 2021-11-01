@@ -25,4 +25,6 @@ public class VergemaalDTO extends DbVersjonDTO {
     private PersonRequestDTO nyVergeIdent;
     private String vergeIdent;
     private VergemaalMandattype mandatType;
+
+    private Boolean isIdentExternal;
 }
