@@ -35,9 +35,7 @@ test {
 }
 
 repositories {
-    maven {
-        url = uri('https://repo1.maven.org/maven2/')
-    }
+    mavenCentral()
     mavenLocal()
 }
 
@@ -61,7 +59,7 @@ dependencies {
     implementation 'org.aspectj:aspectjweaver:1.9.6'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
 
-    implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
+    implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
     implementation 'org.hibernate:hibernate-core:5.4.21.Final'
     implementation 'org.hibernate.validator:hibernate-validator'
 
@@ -71,9 +69,9 @@ dependencies {
 
     runtimeOnly 'com.oracle.database.jdbc:ojdbc8:19.7.0.0'
 
-    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    implementation 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
 
     testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

@@ -35,9 +35,7 @@ test {
 }
 
 repositories {
-    maven {
-        url = uri('https://repo1.maven.org/maven2/')
-    }
+    mavenCentral()
     mavenLocal()
 }
 
@@ -60,7 +58,7 @@ dependencies {
     implementation 'org.apache.commons:commons-math3:3.6.1'
     implementation 'org.aspectj:aspectjweaver:1.9.6'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
-    implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
+    implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
     implementation 'org.apache.httpcomponents:httpclient:4.5.6'
 
     implementation 'io.springfox:springfox-swagger2:2.9.2'
@@ -73,9 +71,9 @@ dependencies {
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'no.nav.registre:testnorge-consumers:1.12.0-RELEASE'
 
-    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    implementation 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5

@@ -34,9 +34,7 @@ test {
 }
 
 repositories {
-    maven {
-        url = uri('https://repo1.maven.org/maven2/')
-    }
+    mavenCentral()
     mavenLocal()
     maven {
         url = uri('https://packages.confluent.io/maven/')
@@ -70,8 +68,8 @@ dependencies {
     implementation "javax.validation:validation-api:${DependenciesPlugin.validationApi}"
     implementation 'org.aspectj:aspectjweaver:1.9.6'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
-    implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
-    implementation "org.springdoc:springdoc-openapi-ui:${DependenciesPlugin.springdocOpenapi}"
+    implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
     implementation 'com.ibm.mq:mq-jms-spring-boot-starter:2.0.0'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.11.2'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.2'
@@ -80,9 +78,9 @@ dependencies {
 
     implementation 'no.nav.registre:testnorge-consumers:1.11.11-RELEASE'
 
-    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    implementation 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'

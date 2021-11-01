@@ -60,8 +60,8 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-ui:1.4.8'
 
     implementation 'org.hibernate.validator:hibernate-validator'
-    implementation "org.springdoc:springdoc-openapi-ui:${DependenciesPlugin.springdocOpenapi}"
-    implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
+    implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
+    implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
 
     implementation 'com.oracle.database.jdbc:ojdbc8:19.8.0.0'
     implementation 'com.ibm.mq:mq-jms-spring-boot-starter:2.3.4'
@@ -76,8 +76,8 @@ dependencies {
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'no.nav.testnav.libs:testing'
 
-    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    implementation 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
 }
 

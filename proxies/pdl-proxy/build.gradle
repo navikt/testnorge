@@ -30,9 +30,7 @@ dependencyManagement {
 }
 
 repositories {
-    maven {
-        url = uri('https://repo1.maven.org/maven2/')
-    }
+    mavenCentral()
     mavenLocal()
 }
 
@@ -53,7 +51,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
 
-    implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
+    implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
     implementation 'org.hibernate.validator:hibernate-validator'
 
     testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5

@@ -32,7 +32,7 @@ java.sourceCompatibility = JavaVersion.VERSION_17
 
 dependencyManagement {
     imports {
-        mavenBom  "org.springframework.cloud:spring-cloud-dependencies:${DependenciesPlugin.springCloud}"
+        mavenBom  'org.springframework.cloud:spring-cloud-dependencies:2020.0.4'
     }
 }
 
@@ -42,7 +42,7 @@ dependencies {
     implementation 'org.springframework.vault:spring-vault-core:2.2.0.RELEASE'
     implementation "org.springframework.boot:spring-boot-starter-data-jpa:${DependenciesPlugin.springBoot}"
 
-    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    implementation 'org.projectlombok:lombok:1.18.20'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
 }
