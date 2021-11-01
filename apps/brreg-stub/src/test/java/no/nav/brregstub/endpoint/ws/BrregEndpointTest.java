@@ -14,7 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import no.nav.brregstub.tjenestekontrakter.ws.ErFr;
-import no.nav.sbl.dialogarena.common.cxf.CXFClient;
+import no.nav.common.cxf.CXFClient;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
