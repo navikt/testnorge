@@ -32,7 +32,7 @@ spec:
         - application: testnav-miljoer-service
         - application: testnav-organisasjon-service
         - application: testnav-organisasjon-forvalter
-        - application: testnorge-profil-api
+        - application: testnorge-profil-api-dev
         - application: testnav-joark-dokument-service
         - application: testnav-organisasjon-faste-data-service
         - application: testnav-varslinger-service-dev
@@ -110,3 +110,7 @@ spec:
       value: testnav-varslinger-service-dev
     - name: VARSLINGER_URL
       value: https://testnav-varslinger-service-dev.dev.intern.nav.no
+    - name: TESTNORGE_PROFIL_API_NAME
+      value: testnorge-profil-api-dev
+    - name: TESTNORGE_PROFIL_API_URL
+      value: https://testnorge-profil-api-dev.dev.intern.nav.no
