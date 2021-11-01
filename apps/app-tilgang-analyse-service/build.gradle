@@ -51,15 +51,17 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
 
     runtimeOnly 'com.h2database:h2'
-    implementation 'io.r2dbc:r2dbc-h2'
     runtimeOnly 'org.postgresql:postgresql'
-    implementation 'io.r2dbc:r2dbc-postgresql'
+    implementation 'io.r2dbc:r2dbc-h2'
     implementation 'io.r2dbc:r2dbc-postgresql'
     implementation 'org.flywaydb:flyway-core'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml'
 
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
     implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.5.12'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 
     implementation 'org.projectlombok:lombok:1.18.22'
     annotationProcessor 'org.projectlombok:lombok:1.18.22'

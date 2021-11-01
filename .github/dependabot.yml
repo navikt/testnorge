@@ -12,3 +12,11 @@ updates:
     directory: "/apps/app-tilgang-analyse-service/"
     schedule:
       interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/applikasjonsanalyse-frontend/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "npm"
+    directory: "/apps/applikasjonsanalyse-frontend/src/main/js"
+    schedule:
+      interval: "daily"
