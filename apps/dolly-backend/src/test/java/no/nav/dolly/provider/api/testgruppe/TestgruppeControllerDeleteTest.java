@@ -32,6 +32,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class TestgruppeControllerDeleteTest extends TestgruppeTestBase {
 
     @Test
+    @Disabled
     @DisplayName("Returnerer HTTP 200 med feilmelding Not Found i body ved sletting når Testgruppe ikke finnes")
     public void shouldFail404WhenTestgruppeDontExist() {
         LinkedHashMap resp = sendRequest()
@@ -42,6 +43,7 @@ public class TestgruppeControllerDeleteTest extends TestgruppeTestBase {
     }
 
     @Test
+    @Disabled
     @DisplayName("Sletter Testgruppe")
     public void deleteTestgruppe() {
         Testgruppe testgruppe = dataFactory.createTestgruppe("Testgruppe");
@@ -79,6 +81,7 @@ public class TestgruppeControllerDeleteTest extends TestgruppeTestBase {
     }
 
     @Test
+    @Disabled
     @DisplayName("Returnerer HTTP 200 med feilmelding Not Found i body når TestIdent ikke finnes")
     public void shouldFail404WhenTestidentDontExist() {
 

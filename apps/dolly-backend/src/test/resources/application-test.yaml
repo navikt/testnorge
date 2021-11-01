@@ -7,6 +7,11 @@ APP_VERSION: ${application.version}
 CLIENT_ID: dummy
 CLIENT_SECRET: dummy
 UDI_CLIENT_ID: dummy
+azure:
+  app:
+    client:
+      id: dummy
+      secret: dummy
 
 consumers:
   testnav-kodeverk-proxy:

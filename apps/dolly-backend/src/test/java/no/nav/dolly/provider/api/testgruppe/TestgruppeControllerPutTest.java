@@ -30,6 +30,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 class TestgruppeControllerPutTest extends TestgruppeTestBase {
 
     @Test
+    @Disabled
     @DisplayName("Returnerer HTTP 200 med feilmelding Not Found i body når Testgruppe ikke finnes")
     void shouldFail404WhenTestgruppeDontExist() {
 

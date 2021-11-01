@@ -78,6 +78,7 @@ class TestgruppeControllerGetTest extends TestgruppeTestBase {
     }
 
     @Test
+    @Disabled
     @DisplayName("Returnerer HTTP 200 med feilmelding Not Found i body")
     void shouldFail404NotFound() {
         String url = ENDPOINT_BASE_URI + "/123";
