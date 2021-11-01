@@ -95,7 +95,10 @@ public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
             fullmakt.setMotpartsPersonident(createPersonService.execute(fullmakt.getNyFullmektig()).getIdent());
             relasjonService.setRelasjoner(ident, RelasjonType.FULLMAKTSGIVER,
                     fullmakt.getMotpartsPersonident(), RelasjonType.FULLMEKTIG);
-            fullmakt.setNyFullmektig(null);
+
+        } else {
+
+            fullmakt.setIsIdentExternal(true);
         }
 
         fullmakt.setMaster(Master.PDL);

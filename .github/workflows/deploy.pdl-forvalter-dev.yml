@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - feature/pdl_forvalter_opprett_fra_ident
+      - feature/pdl-forvalter_refaktorere_endepunkt
     paths:
       - apps/pdl-forvalter/**
       - libs/**

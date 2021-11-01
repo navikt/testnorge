@@ -3,7 +3,7 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
 
@@ -11,41 +11,41 @@ import java.util.List;
 
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility.getIdenttype;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.BOSATT;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.DOED;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.FOEDSELSREGISTRERT;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.IKKE_BOSATT;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.MIDLERTIDIG;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.OPPHOERT;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.UTFLYTTET;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.BOSATT;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.DOED;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.FOEDSELSREGISTRERT;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.IKKE_BOSATT;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.MIDLERTIDIG;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.OPPHOERT;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.UTFLYTTET;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FNR;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
-public class FolkeregisterPersonstatusService implements BiValidation<FolkeregisterpersonstatusDTO, PersonDTO> {
+public class FolkeregisterPersonstatusService implements BiValidation<FolkeregisterPersonstatusDTO, PersonDTO> {
 
-    public List<FolkeregisterpersonstatusDTO> convert(PersonDTO person) {
+    public List<FolkeregisterPersonstatusDTO> convert(PersonDTO person) {
 
-        if (person.getFolkeregisterpersonstatus().stream()
+        if (person.getFolkeregisterPersonstatus().stream()
                 .anyMatch(personstatus -> isTrue(personstatus.getIsNew()))) {
 
-            var personstatus = person.getFolkeregisterpersonstatus().stream().findFirst().get();
+            var personstatus = person.getFolkeregisterPersonstatus().stream().findFirst().get();
             personstatus.setStatus(getPersonstatus(person));
             personstatus.setKilde(isNotBlank(personstatus.getKilde()) ? personstatus.getKilde() : "Dolly");
             personstatus.setMaster(nonNull(personstatus.getMaster()) ? personstatus.getMaster() : Master.FREG);
             personstatus.setGjeldende(nonNull(personstatus.getGjeldende()) ? personstatus.getGjeldende(): true);
 
-        } else if (person.getFolkeregisterpersonstatus().isEmpty() && !person.getFalskIdentitet().isEmpty() ||
-                getPersonstatus(person) != person.getFolkeregisterpersonstatus().stream()
-                        .findFirst().orElse(new FolkeregisterpersonstatusDTO()).getStatus()) {
+        } else if (person.getFolkeregisterPersonstatus().isEmpty() && !person.getFalskIdentitet().isEmpty() ||
+                getPersonstatus(person) != person.getFolkeregisterPersonstatus().stream()
+                        .findFirst().orElse(new FolkeregisterPersonstatusDTO()).getStatus()) {
 
-            person.getFolkeregisterpersonstatus().add(0,
-                    FolkeregisterpersonstatusDTO.builder()
+            person.getFolkeregisterPersonstatus().add(0,
+                    FolkeregisterPersonstatusDTO.builder()
                             .status(getPersonstatus(person))
-                            .id(person.getFolkeregisterpersonstatus().stream()
-                                    .map(FolkeregisterpersonstatusDTO::getId)
+                            .id(person.getFolkeregisterPersonstatus().stream()
+                                    .map(FolkeregisterPersonstatusDTO::getId)
                                     .findFirst().orElse(0) + 1)
                             .kilde("Dolly")
                             .master(Master.FREG)
@@ -53,17 +53,17 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
                             .build());
         }
 
-        return person.getFolkeregisterpersonstatus();
+        return person.getFolkeregisterPersonstatus();
     }
 
-    private FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus getPersonstatus(PersonDTO person) {
+    private FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus getPersonstatus(PersonDTO person) {
 
-        if (person.getFolkeregisterpersonstatus()
+        if (person.getFolkeregisterPersonstatus()
                 .stream().anyMatch(status -> isTrue(status.getIsNew()) && nonNull(status.getStatus()))) {
 
-            return person.getFolkeregisterpersonstatus().stream()
+            return person.getFolkeregisterPersonstatus().stream()
                     .filter(status -> isTrue(status.getIsNew()))
-                    .map(FolkeregisterpersonstatusDTO::getStatus)
+                    .map(FolkeregisterPersonstatusDTO::getStatus)
                     .findFirst().get();
 
         } else if (!person.getDoedsfall().isEmpty()) {
@@ -106,7 +106,7 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
     }
 
     @Override
-    public void validate(FolkeregisterpersonstatusDTO artifact, PersonDTO person) {
+    public void validate(FolkeregisterPersonstatusDTO artifact, PersonDTO person) {
 
         // Ingen validering
     }

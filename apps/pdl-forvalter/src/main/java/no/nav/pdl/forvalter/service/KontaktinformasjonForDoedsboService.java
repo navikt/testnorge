@@ -142,14 +142,18 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
                     .collectList()
                     .block();
 
-        } else if (nonNull(kontaktinfo.getPersonSomKontakt()) &&
-                isBlank(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer())) {
+        } else if (nonNull(kontaktinfo.getPersonSomKontakt())) {
+                if (isBlank(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer())) {
 
-            leggTilNyAddressat(kontaktinfo.getPersonSomKontakt(), hovedperson);
-            kontaktinfo.setAdresse(mapperFacade.map(
-                    personRepository.findByIdent(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer()).get()
-                            .getPerson().getBostedsadresse().stream().findFirst().get(),
-                    KontaktinformasjonForDoedsboAdresse.class));
+                    leggTilNyAddressat(kontaktinfo.getPersonSomKontakt(), hovedperson);
+                    kontaktinfo.setAdresse(mapperFacade.map(
+                            personRepository.findByIdent(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer()).get()
+                                    .getPerson().getBostedsadresse().stream().findFirst().get(),
+                            KontaktinformasjonForDoedsboAdresse.class));
+
+                } else {
+                    kontaktinfo.getPersonSomKontakt().setIsIdentExternal(true);
+                }
 
         } else if (nonNull(kontaktinfo.getAdvokatSomKontakt())) {
 
@@ -227,7 +231,6 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
                 navn.setMellomnavn(blankCheck(navn.getMellomnavn(),
                         isTrue(navn.getHasMellomnavn()) ? nyttNavn.get().getAdverb() : null));
             }
-            navn.setHasMellomnavn(null);
         }
 
         return navn;

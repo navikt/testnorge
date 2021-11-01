@@ -58,7 +58,7 @@ public class ValidateArtifactsService {
                 validate(oppholdService, person.getOpphold()),
                 validate(tilrettelagtKommunikasjonService, person.getTilrettelagtKommunikasjon()),
                 validate(doedsfallService, person.getDoedsfall()),
-                validate(folkeregisterPersonstatusService, person.getFolkeregisterpersonstatus(), person),
+                validate(folkeregisterPersonstatusService, person.getFolkeregisterPersonstatus(), person),
                 validate(fullmaktService, person.getFullmakt(), person),
                 validate(kontaktAdresseService, person.getKontaktadresse(), person),
                 validate(utenlandsidentifikasjonsnummerService, person.getUtenlandskIdentifikasjonsnummer()),

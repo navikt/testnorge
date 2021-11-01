@@ -11,9 +11,9 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class FolkeregisterpersonstatusDTO extends DbVersjonDTO {
+public class FolkeregisterPersonstatusDTO extends DbVersjonDTO {
 
-    public enum Folkeregisterpersonstatus {
+    public enum FolkeregisterPersonstatus {
         BOSATT,
         UTFLYTTET,
         FORSVUNNET,
@@ -25,5 +25,5 @@ public class FolkeregisterpersonstatusDTO extends DbVersjonDTO {
         INAKTIV
     }
 
-    private Folkeregisterpersonstatus status;
+    private FolkeregisterPersonstatus status;
 }

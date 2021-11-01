@@ -1,10 +1,62 @@
 version: 2
+registries:
+  freg-security:
+    type: maven-repository
+    url: https://maven.pkg.github.com/navikt/freg-security
+    username: x-access-token
+    password: "${{secrets.NAV_TOKEN}}"
 updates:
   - package-ecosystem: "gradle"
-    directory: "/" 
+    directory: "/apps/adresse-service/"
+    registries:
+      - freg-security
     schedule:
       interval: "daily"
   - package-ecosystem: "gradle"
-    directory: "/apps/adresse-service/" 
+    directory: "/apps/amelding-service/"
+    registries:
+      - freg-security
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/app-tilgang-analyse-service/"
+    registries:
+      - freg-security
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/applikasjonsanalyse-frontend/"
+    registries:
+      - freg-security
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "npm"
+    directory: "/apps/applikasjonsanalyse-frontend/src/main/js"
+    registries:
+      - freg-security
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/applikasjonsanalyse-service/"
+    registries:
+      - freg-security
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/arbeidsforhold-export-api/"
+    registries:
+      - freg-security
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/testnav-arbeidsforhold-service/"
+    registries:
+      - freg-security
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/brreg-stub/"
+    registries:
+      - freg-security
     schedule:
       interval: "daily"

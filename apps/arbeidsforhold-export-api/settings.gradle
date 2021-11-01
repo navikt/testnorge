@@ -4,12 +4,9 @@ plugins {
 
 rootProject.name = 'arbeidsforhold-export-api'
 
-includeBuild '../../gradlePlugins'
-
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/servlet-security'
 includeBuild '../../libs/csv-converter'
-includeBuild '../../libs/testing'
 
 includeBuild '../../xsd/arbeidsforhold-xsd'
 

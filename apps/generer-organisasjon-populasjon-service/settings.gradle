@@ -14,6 +14,7 @@ includeBuild '../../libs/kafka-config'
 includeBuild '../../libs/kafka-producers'
 includeBuild '../../libs/avro-schema'
 includeBuild '../../libs/commands'
+includeBuild '../../libs/testing'
 
 gradleEnterprise {
     buildScan {

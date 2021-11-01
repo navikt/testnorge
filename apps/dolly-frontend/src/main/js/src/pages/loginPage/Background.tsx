@@ -47,5 +47,5 @@ export const FallBackground = styled.div`
 	background-size: 100% auto;
 	background-repeat: no-repeat;
 	background-position: bottom;
-	background-color: #c0b2d2;
+	background-color: #cce4ee;
 `

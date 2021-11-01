@@ -4,8 +4,6 @@ plugins {
 
 rootProject.name = 'adresse-service'
 
-includeBuild '../../gradlePlugins'
-
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/servlet-security'
 includeBuild '../../libs/data-transfer-objects'

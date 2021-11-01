@@ -5,6 +5,7 @@ on:
       - master
     paths-ignore:
       - 'navikt/**'
+      - '.github/**'
   pull_request:
     types: [ opened, synchronize, reopened ]
 
@@ -29,7 +30,14 @@ jobs:
           java-version: 1.17
       - name: Build
         env:
+          DUMMY_TOKEN: ${{ secrets.DUMMY_TOKEN }}
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew build --info --scan
+        run: |
+          if test -z "$DUMMY_TOKEN"
+          then
+                echo "\$DUMMY_TOKEN is empty"
+          else
+                echo "\$DUMMY_TOKEN is NOT empty"
+          fi
+          ./gradlew build --info --scan

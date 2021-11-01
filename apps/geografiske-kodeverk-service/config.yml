@@ -15,7 +15,9 @@ spec:
       rules:
         - application: team-dolly-lokal-app
           cluster: dev-fss
-        - application: pdl-forvalteren
+        - application: testnav-pdl-forvalter
+          cluster: dev-gcp
+        - application: testnav-pdl-forvalter-dev
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
