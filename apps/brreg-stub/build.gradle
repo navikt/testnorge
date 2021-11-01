@@ -1,9 +1,6 @@
-import no.nav.testnav.dependencies.gradle.DependenciesPlugin
-
 plugins {
-    id "org.sonarqube" version "3.3"
-    id 'no.nav.testnav.dependencies'
     id 'java'
+    id "org.sonarqube" version "3.3"
     id "uk.co.boothen.gradle.wsimport" version "0.16"
     id 'com.ewerk.gradle.plugins.jaxb2' version '1.0.10'
     id 'org.springframework.boot' version "2.5.6"
@@ -81,7 +78,6 @@ dependencies {
     jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics-runtime:0.9.5'
     jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics-ant:0.9.5'
     jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics:0.9.5'
-    // default JAXB libs added by the plugin
     jaxb2 'com.sun.xml.bind:jaxb-core:2.2.11'
     jaxb2 'com.sun.xml.bind:jaxb-xjc:2.2.11'
     jaxb2 'com.sun.xml.bind:jaxb-impl:2.2.11'
@@ -97,7 +93,7 @@ dependencies {
     implementation 'wsdl4j:wsdl4j:1.6.3'
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
     implementation 'org.hibernate.validator:hibernate-validator'
-    implementation "javax.validation:validation-api:${DependenciesPlugin.validationApi}"
+    implementation 'javax.validation:validation-api:2.0.1.Final'
     implementation 'io.springfox:springfox-swagger2:2.9.2'
     implementation 'io.springfox:springfox-swagger-ui:2.9.2'
     implementation 'no.nav.common:cxf:1.2019.11.06-15.14-6ca860e6cead'
