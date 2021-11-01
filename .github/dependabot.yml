@@ -8,3 +8,7 @@ updates:
     directory: "/apps/amelding-service/"
     schedule:
       interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/app-tilgang-analyse-service/"
+    schedule:
+      interval: "daily"
