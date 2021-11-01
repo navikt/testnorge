@@ -4,7 +4,7 @@ registries:
     type: maven-repository
     url: https://maven.pkg.github.com/navikt/freg-security
     username: x-access-token
-    password: "${{secrets.NAV_TOKEN}}"
+    password: "${{ secrets.NAV_TOKEN }}"
 updates:
   - package-ecosystem: "gradle"
     directory: "/apps/adresse-service/"
