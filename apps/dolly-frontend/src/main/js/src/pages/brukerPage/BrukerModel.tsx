@@ -66,8 +66,7 @@ export default () => {
 	}
 
 	const addToSession = (org: string) => {
-		SessionApi.addToSession(org)
-		setSessionUpdated(true)
+		SessionApi.addToSession(org).then(() => setSessionUpdated(true))
 	}
 
 	if (sessionUpdated) return <Redirect to={''} />
