@@ -99,6 +99,5 @@ public class VergemaalService implements Validation<VergemaalDTO> {
 
         relasjonService.setRelasjoner(ident, RelasjonType.VERGE_MOTTAKER,
                 fullmakt.getVergeIdent(), RelasjonType.VERGE);
-        fullmakt.setNyVergeIdent(null);
     }
 }

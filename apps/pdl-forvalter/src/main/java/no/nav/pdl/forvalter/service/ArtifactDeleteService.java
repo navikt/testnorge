@@ -5,11 +5,14 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
@@ -174,15 +177,28 @@ public class ArtifactDeleteService {
     @Transactional
     public void deleteKontaktinformasjonForDoedsbo(String ident, Integer id) {
 
-        var dbPerson = fetchPerson(ident);
+        var hovedPerson = fetchPerson(ident);
 
-        if (dbPerson.getPerson().getKontaktinformasjonForDoedsbo().stream().noneMatch(type -> id.equals(type.getId()))) {
+        if (hovedPerson.getPerson().getKontaktinformasjonForDoedsbo().stream().noneMatch(type -> id.equals(type.getId()))) {
             throw new InvalidRequestException(format(INFO_NOT_FOUND, "KontaktinformasjonForDoedsbo", id));
 
         } else {
 
-            dbPerson.getPerson().setKontaktinformasjonForDoedsbo(
-                    dbPerson.getPerson().getKontaktinformasjonForDoedsbo().stream()
+            hovedPerson.getPerson().getKontaktinformasjonForDoedsbo().stream()
+                    .filter(doedsbo -> id.equals(doedsbo.getId()) &&
+                            nonNull(doedsbo.getPersonSomKontakt()) &&
+                            isNotBlank(doedsbo.getPersonSomKontakt().getIdentifikasjonsnummer()))
+                    .forEach(doedsbo -> {
+                        deleteRelasjon(hovedPerson, doedsbo.getPersonSomKontakt().getIdentifikasjonsnummer(), RelasjonType.KONTAKT_FOR_DOEDSBO);
+                        deleteRelasjon(fetchPerson(doedsbo.getPersonSomKontakt().getIdentifikasjonsnummer()), hovedPerson.getIdent(), RelasjonType.AVDOEDD_FOR_KONTAKT);
+
+                        if (isNotTrue(doedsbo.getPersonSomKontakt().getIsIdentExternal())) {
+                            personService.deletePerson(doedsbo.getPersonSomKontakt().getIdentifikasjonsnummer());
+                        }
+                    });
+
+            hovedPerson.getPerson().setKontaktinformasjonForDoedsbo(
+                    hovedPerson.getPerson().getKontaktinformasjonForDoedsbo().stream()
                             .filter(type -> !id.equals(type.getId()))
                             .toList());
         }
@@ -341,13 +357,25 @@ public class ArtifactDeleteService {
     @Transactional
     public void deleteFullmakt(String ident, Integer id) {
 
-        var dbPerson = fetchPerson(ident);
+        var hovedPerson = fetchPerson(ident);
 
-        if (dbPerson.getPerson().getFullmakt().stream().noneMatch(type -> id.equals(type.getId()))) {
+        if (hovedPerson.getPerson().getFullmakt().stream().noneMatch(type -> id.equals(type.getId()))) {
             throw new InvalidRequestException(format(INFO_NOT_FOUND, "Fullmakt", id));
 
         } else {
-            dbPerson.getPerson().setFullmakt(dbPerson.getPerson().getFullmakt().stream()
+
+            hovedPerson.getPerson().getFullmakt().stream()
+                    .filter(type -> id.equals(type.getId()))
+                    .forEach(fullmakt -> {
+                        deleteRelasjon(hovedPerson, fullmakt.getMotpartsPersonident(), RelasjonType.FULLMEKTIG);
+                        deleteRelasjon(fetchPerson(fullmakt.getMotpartsPersonident()), hovedPerson.getIdent(), RelasjonType.FULLMAKTSGIVER);
+
+                        if (isNotTrue(fullmakt.getIsIdentExternal())) {
+                            personService.deletePerson(fullmakt.getMotpartsPersonident());
+                        }
+                    });
+
+            hovedPerson.getPerson().setFullmakt(hovedPerson.getPerson().getFullmakt().stream()
                     .filter(type -> !id.equals(type.getId()))
                     .toList());
         }
@@ -364,18 +392,13 @@ public class ArtifactDeleteService {
         } else {
 
             hovedPerson.getPerson().getVergemaal().stream()
-                    .filter(vergemaal -> id.equals(vergemaal.getId()))
+                    .filter(type -> id.equals(type.getId()))
                     .forEach(vergemaal -> {
-                        var vergeperson = fetchPerson(vergemaal.getVergeIdent());
-                        vergeperson.setRelasjoner(vergeperson.getRelasjoner().stream()
-                                .filter(relasjon -> !relasjon.getRelatertPerson().getIdent().equals(ident))
-                                .toList());
+                        deleteRelasjon(hovedPerson, vergemaal.getVergeIdent(), RelasjonType.VERGE);
+                        deleteRelasjon(fetchPerson(vergemaal.getVergeIdent()), hovedPerson.getIdent(), RelasjonType.VERGE_MOTTAKER);
+
                         if (isNotTrue(vergemaal.getIsIdentExternal())) {
-                            personService.deletePerson(vergeperson.getIdent());
-                        } else {
-                            hovedPerson.setRelasjoner(hovedPerson.getRelasjoner().stream()
-                                    .filter(relasjon -> !relasjon.getRelatertPerson().getIdent().equals(vergeperson.getIdent()))
-                                    .toList());
+                            personService.deletePerson(vergemaal.getVergeIdent());
                         }
                     });
 
@@ -404,5 +427,18 @@ public class ArtifactDeleteService {
 
         return personRepository.findByIdent(ident)
                 .orElseThrow(() -> new NotFoundException(format(IDENT_NOT_FOUND, ident)));
+    }
+
+    private void deleteRelasjon(DbPerson person, String relasjonIdent, RelasjonType type) {
+
+        var relasjonIterator = person.getRelasjoner().iterator();
+        while (relasjonIterator.hasNext()) {
+
+            var thisRelasjon = relasjonIterator.next();
+            if (thisRelasjon.getRelasjonType() == type && thisRelasjon.getRelatertPerson().getIdent().equals(relasjonIdent)) {
+                relasjonIterator.remove();
+                break;
+            }
+        }
     }
 }
