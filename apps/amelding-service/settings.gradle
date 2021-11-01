@@ -4,14 +4,12 @@ plugins {
 
 rootProject.name = 'amelding-service'
 
-includeBuild '../../gradlePlugins'
 includeBuild '../../libs/security-core'
 includeBuild '../../libs/reactive-core'
 includeBuild '../../libs/reactive-security'
 includeBuild '../../libs/commands'
 includeBuild '../../libs/avro-schema'
 includeBuild '../../libs/data-transfer-objects'
-includeBuild '../../libs/testing'
 
 gradleEnterprise {
     buildScan {

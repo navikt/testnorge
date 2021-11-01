@@ -50,7 +50,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
 
-    implementation "org.springdoc:springdoc-openapi-webflux-ui:${DependenciesPlugin.springdocOpenapi}"
+    implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.5.12'
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
     implementation "javax.validation:validation-api:${DependenciesPlugin.validationApi}"
     implementation 'org.hibernate.validator:hibernate-validator'
