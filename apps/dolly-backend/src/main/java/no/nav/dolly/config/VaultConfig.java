@@ -12,7 +12,7 @@ import org.springframework.vault.config.AbstractVaultConfiguration;
 
 @Slf4j
 @Configuration
-@Profile("!test")
+@Profile({"dev", "prod"})
 @RequiredArgsConstructor
 @VaultPropertySource(value = "serviceuser/dev/srvfregdolly", propertyNamePrefix = "jira.", ignoreSecretNotFound = false)
 @VaultPropertySource(value = "serviceuser/test/srvdolly-backend", propertyNamePrefix = "credentials.test.", ignoreSecretNotFound = false)
