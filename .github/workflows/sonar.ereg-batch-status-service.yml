@@ -3,7 +3,7 @@ name: Sonar Analysis [ereg-batch-status-service]
 on:
   push:
     paths:
-      - apps/endringsmelding-service/**
+      - apps/ereg-batch-status-service/**
 
 jobs:
   scan:
@@ -32,7 +32,7 @@ jobs:
         with:
           java-version: 1.17
       - name: Sonar Analysis
-        working-directory: apps/endringsmelding-service/
+        working-directory: apps/ereg-batch-status-service/
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
