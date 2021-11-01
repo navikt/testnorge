@@ -23,8 +23,8 @@ export default {
 		}
 		return api
 			.fetchJson<Bruker>(`${brukerServiceUrl}`, { method: 'POST' }, bruker)
-			.then((bruker) => {
-				return bruker
+			.then((response) => {
+				return response
 			})
 			.catch(() => {
 				return null

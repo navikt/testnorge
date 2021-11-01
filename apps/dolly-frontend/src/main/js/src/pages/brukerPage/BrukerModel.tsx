@@ -65,8 +65,8 @@ export default () => {
 			})
 	}
 
-	const addToSession = async (org: string) => {
-		await SessionApi.addToSession(org)
+	const addToSession = (org: string) => {
+		SessionApi.addToSession(org)
 		setSessionUpdated(true)
 	}
 
