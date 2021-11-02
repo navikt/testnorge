@@ -10,6 +10,11 @@ consumers:
     name: tps-forvalteren-proxy
     cluster: dev-fss
     namespace: dolly
+  testnav-pdl-forvalter:
+    name: testnav-pdl-forvalter
+    namespace: dolly
+    url: https://testnav-pdl-forvalter.dev.intern.nav.no
+    cluster: dev-gcp
   testnav-udistub-proxy:
     name: testnav-udistub-proxy
     namespace: dolly
