@@ -4,8 +4,17 @@ import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
+import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 
-const initialValues = { identifikasjonsnummer: '', kilde: '', opphoert: '', utstederland: '' }
+const initialValues = {
+	identifikasjonsnummer: '',
+	opphoert: false,
+	utstederland: '',
+	kilde: 'Dolly',
+	master: 'FREG',
+	gjeldende: true,
+}
 
 export const UtenlandsId = ({ formikBag }) => (
 	<FormikDollyFieldArray
@@ -16,13 +25,6 @@ export const UtenlandsId = ({ formikBag }) => (
 		{(path, idx) => (
 			<React.Fragment key={idx}>
 				<FormikTextInput name={`${path}.identifikasjonsnummer`} label="Identifikasjonsnummer" />
-				{/*<FormikTextInput name={`${path}.kilde`} label="Kilde" />*/}
-				<FormikSelect
-					name={`${path}.opphoert`}
-					label="Opphørt"
-					options={Options('boolean')}
-					isClearable={false}
-				/>
 				<FormikSelect
 					name={`${path}.utstederland`}
 					label="Utstederland"
@@ -30,6 +32,8 @@ export const UtenlandsId = ({ formikBag }) => (
 					isClearable={false}
 					size="large"
 				/>
+				<FormikCheckbox name={`${path}.opphoert`} label="Er opphørt" checkboxMargin />
+				<AvansertForm formikBag={formikBag} path={path} />
 			</React.Fragment>
 		)}
 	</FormikDollyFieldArray>

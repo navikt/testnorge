@@ -9,7 +9,6 @@ const personnavnSchema = Yup.object({
 
 const falskIdentitet = Yup.array().of(
 	Yup.object({
-		// identitetType: requiredString,
 		rettIdentErUkjent: Yup.boolean(),
 		rettIdentitetVedIdentifikasjonsnummer: Yup.string().nullable(),
 		rettIdentitetVedOpplysninger: Yup.object({
@@ -18,30 +17,12 @@ const falskIdentitet = Yup.array().of(
 			personnavn: personnavnSchema.nullable(),
 			statsborgerskap: Yup.array().of(Yup.string()),
 		}),
-		// personnavn: ifKeyHasValue(
-		// 	'$pdlforvalter.falskIdentitet.rettIdentitet.identitetType',
-		// 	['OMTRENTLIG'],
-		// 	personnavnSchema
-		// ),
-		// foedselsdato: Yup.mixed().when('identitetType', {
-		// 	is: 'OMTRENTLIG',
-		// 	then: requiredDate,
-		// }),
-		// kjoenn: Yup.mixed().when('identitetType', {
-		// 	is: 'OMTRENTLIG',
-		// 	then: requiredString,
-		// }),
-		// statsborgerskap: Yup.mixed().when('identitetType', {
-		// 	is: 'OMTRENTLIG',
-		// 	then: requiredString,
-		// }),
 	})
 )
 
 const utenlandskId = Yup.array().of(
 	Yup.object({
 		identifikasjonsnummer: requiredString,
-		// kilde: requiredString,
 		opphoert: requiredString,
 		utstederland: requiredString,
 	})

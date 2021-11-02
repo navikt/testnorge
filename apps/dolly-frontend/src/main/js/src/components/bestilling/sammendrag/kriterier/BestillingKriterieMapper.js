@@ -884,38 +884,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			}
 			data.push(doedsbo)
 		}
-
-		// if (pdlforvalterKriterier.utenlandskIdentifikasjonsnummer) {
-		// 	const uidnr = pdlforvalterKriterier.utenlandskIdentifikasjonsnummer
-		//
-		// 	const flatUidnrKriterier = []
-		// 	uidnr.forEach((ui) => {
-		// 		flatUidnrKriterier.push({
-		// 			identifikasjonsnummer: ui.identifikasjonsnummer,
-		// 			kilde: ui.kilde,
-		// 			opphoert: ui.opphoert,
-		// 			utstederland: ui.utstederland,
-		// 		})
-		// 	})
-		//
-		// 	const uidnrObj = {
-		// 		header: 'Utenlandsk identifikasjonsnummer',
-		// 		itemRows: [],
-		// 	}
-		//
-		// 	flatUidnrKriterier.forEach((uidr, i) => {
-		// 		uidnrObj.itemRows.push([
-		// 			{
-		// 				numberHeader: `Utenlandsk identifikasjonsnummer ${i + 1}`,
-		// 			},
-		// 			obj('Utenlandsk ID', uidr.identifikasjonsnummer),
-		// 			obj('Kilde', uidr.kilde),
-		// 			obj('Utenlandsk ID opphørt', Formatters.oversettBoolean(uidr.opphoert)),
-		// 			obj('Utstederland', uidr.utstederland, AdresseKodeverk.Utstederland),
-		// 		])
-		// 	})
-		// 	data.push(uidnrObj)
-		// }
 	}
 	const arenaKriterier = bestillingData.arenaforvalter
 

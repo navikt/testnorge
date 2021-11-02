@@ -17,7 +17,7 @@ export const PdlfVisning = ({ dataPdl, dataPdlforvalter, loadingPdl, loadingPdlf
 	return (
 		<ErrorBoundary>
 			<div>
-				<UtenlandsId data={dataPdl?.data?.hentPerson?.utenlandskIdentifikasjonsnummer} />
+				<UtenlandsId data={dataPdlforvalter[0]?.person?.utenlandskIdentifikasjonsnummer} />
 				<FalskIdentitet data={dataPdlforvalter[0]?.person?.falskIdentitet} />
 				<KontaktinformasjonForDoedsbo
 					data={dataPdl?.data?.hentPerson?.kontaktinformasjonForDoedsbo}
