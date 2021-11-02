@@ -53,6 +53,19 @@ public final class BestillingPdlForvalterStatusMapper {
 
         var pdlDataStatus = BestillingPdlDataStatusMapper.buildPdlDataStatusMap(progressList, objectMapper);
 
+        if (statusRapporter.isEmpty() && !pdlDataStatus.isEmpty()) {
+            statusRapporter.add(RsStatusRapport.builder()
+                    .id(PDL_FORVALTER)
+                    .navn(PDL_FORVALTER.getBeskrivelse())
+                    .statuser(new ArrayList<>(List.of(RsStatusRapport.Status.builder()
+                            .melding("OK")
+                            .identer(progressList.stream()
+                                    .map(BestillingProgress::getIdent)
+                                    .collect(Collectors.toList()))
+                            .build())))
+                    .build());
+        }
+
         if (!pdlDataStatus.isEmpty()) {
             pdlDataStatus.stream().findFirst().get()
                     .getStatuser().stream()
@@ -72,7 +85,7 @@ public final class BestillingPdlForvalterStatusMapper {
                 .collect(Collectors.toSet());
 
         Iterator<RsStatusRapport.Status> it = statusRapporter.getStatuser().iterator();
-        while(it.hasNext()) {
+        while (it.hasNext()) {
             RsStatusRapport.Status status = it.next();
 
             if (OKEY.equals(status.getMelding())) {
