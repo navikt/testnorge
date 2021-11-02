@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - apps/oversikt-frontend/**
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/oversikt-frontend:${{ github.sha }}
