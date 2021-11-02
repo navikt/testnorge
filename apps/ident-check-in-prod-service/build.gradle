@@ -71,7 +71,7 @@ dependencies {
     implementation 'org.springframework:spring-messaging:5.2.10.RELEASE'
     implementation 'org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1'
 
-    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
+    testImplementation 'junit:junit:4.13.2' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'no.nav.testnav.libs:testing'
