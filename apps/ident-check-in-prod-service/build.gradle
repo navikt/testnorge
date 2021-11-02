@@ -68,7 +68,7 @@ dependencies {
     implementation 'javax.jms:javax.jms-api:2.0.1'
     implementation 'org.json:json:20210307'
     implementation 'org.springframework:spring-jms:5.3.12'
-    implementation 'org.springframework:spring-messaging:5.2.10.RELEASE'
+    implementation 'org.springframework:spring-messaging:5.3.12'
     implementation 'org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1'
 
     testImplementation 'junit:junit:4.13.2' //TODO upgrade to JUnit5
