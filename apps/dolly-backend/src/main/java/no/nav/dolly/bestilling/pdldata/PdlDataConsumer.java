@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.pdldata;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataCheckIdentCommand;
+import no.nav.dolly.bestilling.pdldata.command.PdlDataHentCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataOppdateringCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataOpprettingCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataOrdreCommand;
@@ -13,12 +14,15 @@ import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.dolly.util.JacksonExchangeStrategyUtil;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AvailibilityResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -64,6 +68,11 @@ public class PdlDataConsumer {
     public String oppdaterPdl(String ident, PersonUpdateRequestDTO request) {
 
         return new PdlDataOppdateringCommand(webClient, ident, request, serviceProperties.getAccessToken(tokenService)).call().block();
+    }
+
+    public List<FullPersonDTO> getPersoner(List<String> identer) {
+
+        return List.of(new PdlDataHentCommand(webClient, identer, serviceProperties.getAccessToken(tokenService)).call().block());
     }
 
     public List<AvailibilityResponseDTO> identCheck(List<String> identer) {
