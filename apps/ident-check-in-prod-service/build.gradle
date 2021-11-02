@@ -64,7 +64,7 @@ dependencies {
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
 
     implementation 'com.oracle.database.jdbc:ojdbc8'
-    implementation 'com.ibm.mq:mq-jms-spring-boot-starter:2.3.4'
+    implementation 'com.ibm.mq:mq-jms-spring-boot-starter:2.5.5'
     implementation 'javax.jms:javax.jms-api:2.0.1'
     implementation 'org.json:json:20210307'
     implementation 'org.springframework:spring-jms:5.3.12'
