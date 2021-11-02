@@ -1,9 +1,0 @@
-<settings>
-    <servers>
-        <server>
-            <id>github-package-registry-navikt</id>
-            <username>${USERNAME}</username>
-            <password>${TOKEN}</password>
-        </server>
-    </servers>
-</settings>

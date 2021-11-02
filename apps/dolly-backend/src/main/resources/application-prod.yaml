@@ -1,0 +1,18 @@
+consumers:
+  testnav-profil-api:
+    name: testnorge-profil-api
+    namespace: dolly
+    url: https://testnorge-profil-api.dev.intern.nav.no
+    cluster: dev-gcp
+  tps-forvalteren-proxy:
+    url: https://tps-forvalteren-proxy.dev.intern.nav.no
+    #url: https://tps-forvalteren-facade-proxy.dev-fss-pub.nais.io TODO Bytte til denne når backend er i GCP
+    name: tps-forvalteren-proxy
+    cluster: dev-fss
+    namespace: dolly
+  testnav-udistub-proxy:
+    name: testnav-udistub-proxy
+    namespace: dolly
+    #    url: https://testnav-udistub-proxy.dev-fss-pub.nais.io/udistub
+    url: https://testnav-udistub-proxy.dev.intern.nav.no/udistub
+    cluster: dev-fss
