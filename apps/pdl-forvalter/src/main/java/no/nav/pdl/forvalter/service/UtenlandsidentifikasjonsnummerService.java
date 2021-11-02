@@ -32,19 +32,19 @@ public class UtenlandsidentifikasjonsnummerService extends PdlArtifactService<Ut
             throw new InvalidRequestException(VALIDATION_UTSTEDER_LAND_MISSING);
         }
 
-        if (!identifikasjon.getUtstederland().matches("[0-9]{3}")) {
+        if (!identifikasjon.getUtstederland().matches("[A-Z]{3}")) {
             throw new InvalidRequestException(VALIDATION_LANDKODE_ILLEGAL_FORMAT);
         }
     }
 
     @Override
-    protected void handle(UtenlandskIdentifikasjonsnummerDTO innflytting) {
+    protected void handle(UtenlandskIdentifikasjonsnummerDTO identifikasjon) {
 
         // Ingen håndtering av data
     }
 
     @Override
-    protected void enforceIntegrity(List<UtenlandskIdentifikasjonsnummerDTO> innflytting) {
+    protected void enforceIntegrity(List<UtenlandskIdentifikasjonsnummerDTO> identifikasjon) {
 
         // Ingen referanseintegritet å håndtere
     }
