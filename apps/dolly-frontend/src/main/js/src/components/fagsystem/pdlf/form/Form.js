@@ -9,7 +9,7 @@ import { UtenlandsId } from './partials/utenlandsId/UtenlandsId'
 import { KontaktinformasjonForDoedsbo } from './partials/kontaktinformasjonForDoedsbo/KontaktinformasjonForDoedsbo'
 
 const identifikasjonAttributt = [
-	'pdlforvalter.falskIdentitet',
+	'pdldata.person.falskIdentitet',
 	'pdlforvalter.utenlandskIdentifikasjonsnummer',
 ]
 const doedsboAttributt = 'pdlforvalter.kontaktinformasjonForDoedsbo'
@@ -23,7 +23,7 @@ export const PdlfForm = ({ formikBag }) => (
 				iconType="identifikasjon"
 				startOpen={() => erForste(formikBag.values, identifikasjonAttributt)}
 			>
-				<Kategori title="Falsk identitet" vis="pdlforvalter.falskIdentitet">
+				<Kategori title="Falsk identitet" vis="pdldata.person.falskIdentitet">
 					<FalskIdentitet formikBag={formikBag} />
 				</Kategori>
 				<Kategori

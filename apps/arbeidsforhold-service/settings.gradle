@@ -4,13 +4,10 @@ plugins {
 
 rootProject.name = 'arbeidsforhold-service'
 
-includeBuild '../../gradlePlugins'
-
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/servlet-security'
 includeBuild '../../libs/data-transfer-objects'
 includeBuild '../../libs/commands'
-includeBuild '../../libs/testing'
 
 gradleEnterprise {
     buildScan {

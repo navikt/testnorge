@@ -1,10 +1,7 @@
-import no.nav.testnav.dependencies.gradle.DependenciesPlugin
-
 plugins {
-    id "org.sonarqube" version "3.3"
-    id 'no.nav.testnav.dependencies'
     id 'java'
-    id "uk.co.boothen.gradle.wsimport" version "0.16"
+    id "org.sonarqube" version "3.3"
+    id "uk.co.boothen.gradle.wsimport" version "0.17"
     id 'com.ewerk.gradle.plugins.jaxb2' version '1.0.10'
     id 'org.springframework.boot' version "2.5.6"
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
@@ -23,10 +20,9 @@ sonarqube {
 }
 
 
-
 dependencyManagement {
     imports {
-        mavenBom  "org.springframework.cloud:spring-cloud-dependencies:${DependenciesPlugin.springCloud}"
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.4'
     }
 }
 
@@ -78,37 +74,35 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
 
-    jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics-runtime:0.9.5'
-    jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics-ant:0.9.5'
-    jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics:0.9.5'
-    // default JAXB libs added by the plugin
+    jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics-runtime:1.11.1'
+    jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics-ant:1.11.1'
+    jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics:1.11.1'
     jaxb2 'com.sun.xml.bind:jaxb-core:2.2.11'
     jaxb2 'com.sun.xml.bind:jaxb-xjc:2.2.11'
     jaxb2 'com.sun.xml.bind:jaxb-impl:2.2.11'
     jaxb2 'javax.xml.bind:jaxb-api:2.3.1'
-    
+
     implementation 'org.postgresql:postgresql'
     implementation 'com.zaxxer:HikariCP'
 
-    implementation 'org.flywaydb:flyway-core:6.4.4'
+    implementation 'org.flywaydb:flyway-core'
     implementation 'com.h2database:h2'
 
-    implementation 'org.apache.cxf:cxf-rt-frontend-jaxws:3.3.6'
+    implementation 'org.apache.cxf:cxf-rt-frontend-jaxws:3.4.5'
     implementation 'wsdl4j:wsdl4j:1.6.3'
-    implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
+    implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
     implementation 'org.hibernate.validator:hibernate-validator'
-    implementation "javax.validation:validation-api:${DependenciesPlugin.validationApi}"
-    implementation 'io.springfox:springfox-swagger2:2.9.2'
-    implementation 'io.springfox:springfox-swagger-ui:2.9.2'
-    implementation 'no.nav.common:cxf:1.2019.11.06-15.14-6ca860e6cead'
+    implementation 'javax.validation:validation-api:2.0.1.Final'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
+    implementation 'no.nav.common:cxf:2.2021.09.13_10.34-f267beb49e1e'
     implementation 'com.h2database:h2'
-    implementation 'jakarta.jws:jakarta.jws-api:2.1.0'
+    implementation 'jakarta.jws:jakarta.jws-api:3.0.0'
 
+    testImplementation 'junit:junit:4.13.2' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
-    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    implementation 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
 }

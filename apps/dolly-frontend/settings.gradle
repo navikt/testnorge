@@ -4,8 +4,6 @@ plugins {
 
 rootProject.name = 'dolly-frontend'
 
-includeBuild '../../gradlePlugins'
-
 includeBuild '../../libs/reactive-core'
 includeBuild '../../libs/reactive-session-security'
 includeBuild '../../libs/security-core'

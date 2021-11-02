@@ -5,16 +5,23 @@ import { KontaktinformasjonForDoedsbo } from './partials/KontaktinformasjonForDo
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import Loading from '~/components/ui/loading/Loading'
 
-export const PdlfVisning = ({ data, loading }) => {
-	if (loading) return <Loading label="Laster PDL-data" />
-	if (!data || !data.data || !data.data.hentPerson) return false
-	const { hentPerson } = data.data
+export const PdlfVisning = ({ dataPdl, dataPdlforvalter, loadingPdl, loadingPdlforvalter }) => {
+	if (loadingPdl) return <Loading label="Laster PDL-data" />
+	if (loadingPdlforvalter) return <Loading label="Laster PDL-forvalter-data" />
+	if (
+		(!dataPdl || dataPdl.length < 1 || !dataPdl.data.hentPerson) &&
+		(!dataPdlforvalter || dataPdlforvalter.length < 1 || !dataPdlforvalter[0].person)
+	)
+		return null
+
 	return (
 		<ErrorBoundary>
 			<div>
-				<UtenlandsId data={hentPerson.utenlandskIdentifikasjonsnummer} />
-				<FalskIdentitet data={hentPerson.falskIdentitet} />
-				<KontaktinformasjonForDoedsbo data={hentPerson.kontaktinformasjonForDoedsbo} />
+				<UtenlandsId data={dataPdl?.data?.hentPerson?.utenlandskIdentifikasjonsnummer} />
+				<FalskIdentitet data={dataPdlforvalter[0]?.person?.falskIdentitet} />
+				<KontaktinformasjonForDoedsbo
+					data={dataPdl?.data?.hentPerson?.kontaktinformasjonForDoedsbo}
+				/>
 			</div>
 		</ErrorBoundary>
 	)

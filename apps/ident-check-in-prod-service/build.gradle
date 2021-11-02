@@ -25,7 +25,7 @@ bootJar {
 
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${DependenciesPlugin.springCloud}"
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.4'
     }
 }
 
@@ -54,19 +54,19 @@ dependencies {
 
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.11.2'
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
-    implementation 'org.mockito:mockito-core:3.6.0'
+    implementation 'org.mockito:mockito-core:4.0.0'
     implementation 'com.google.guava:guava:30.0-jre'
 
     implementation 'org.springdoc:springdoc-openapi-ui:1.4.8'
 
     implementation 'org.hibernate.validator:hibernate-validator'
-    implementation "org.springdoc:springdoc-openapi-ui:${DependenciesPlugin.springdocOpenapi}"
-    implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
+    implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
+    implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
 
-    implementation 'com.oracle.database.jdbc:ojdbc8:19.8.0.0'
+    implementation 'com.oracle.database.jdbc:ojdbc8'
     implementation 'com.ibm.mq:mq-jms-spring-boot-starter:2.3.4'
     implementation 'javax.jms:javax.jms-api:2.0.1'
-    implementation 'org.json:json:20200518'
+    implementation 'org.json:json:20210307'
     implementation 'org.springframework:spring-jms:5.2.10.RELEASE'
     implementation 'org.springframework:spring-messaging:5.2.10.RELEASE'
     implementation 'org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1'
@@ -76,8 +76,8 @@ dependencies {
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'no.nav.testnav.libs:testing'
 
-    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    implementation 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
 }
 

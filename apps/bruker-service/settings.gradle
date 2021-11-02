@@ -4,8 +4,6 @@ plugins {
 
 rootProject.name = 'bruker-service'
 
-includeBuild '../../gradlePlugins'
-
 includeBuild '../../libs/reactive-core'
 includeBuild '../../libs/reactive-security'
 includeBuild '../../libs/security-core'

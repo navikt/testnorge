@@ -37,7 +37,7 @@ public class PersonDTO implements Serializable {
     private List<FalskIdentitetDTO> falskIdentitet;
     private List<AdressebeskyttelseDTO> adressebeskyttelse;
     private List<DoedsfallDTO> doedsfall;
-    private List<FolkeregisterpersonstatusDTO> folkeregisterpersonstatus;
+    private List<FolkeregisterPersonstatusDTO> folkeregisterPersonstatus;
     private List<TilrettelagtKommunikasjonDTO> tilrettelagtKommunikasjon;
     private List<StatsborgerskapDTO> statsborgerskap;
     private List<OppholdDTO> opphold;
@@ -45,6 +45,7 @@ public class PersonDTO implements Serializable {
     private List<TelefonnummerDTO> telefonnummer;
     private List<FullmaktDTO> fullmakt;
     private List<VergemaalDTO> vergemaal;
+
     private List<DoedfoedtBarnDTO> doedfoedtBarn;
     private List<IdentRequestDTO> nyident;
 
@@ -126,11 +127,11 @@ public class PersonDTO implements Serializable {
         return navn;
     }
 
-    public List<FolkeregisterpersonstatusDTO> getFolkeregisterpersonstatus() {
-        if (isNull(folkeregisterpersonstatus)) {
-            folkeregisterpersonstatus = new ArrayList<>();
+    public List<FolkeregisterPersonstatusDTO> getFolkeregisterPersonstatus() {
+        if (isNull(folkeregisterPersonstatus)) {
+            folkeregisterPersonstatus = new ArrayList<>();
         }
-        return folkeregisterpersonstatus;
+        return folkeregisterPersonstatus;
     }
 
     public List<FullmaktDTO> getFullmakt() {

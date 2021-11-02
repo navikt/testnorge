@@ -18,14 +18,11 @@ spring:
   cloud:
     vault:
       database:
-          enabled: true
-          locations: "classpath:db/migration/postgresql"
+        enabled: true
+        locations: "classpath:db/migration/postgresql"
   http:
     encoding:
       charset: UTF-8
 
 app.db.flyway.role: brreg-stub-admin
 app.db.flyway.backend: postgresql/preprod-fss/creds
-
-logging:
-  config: "classpath:logback-spring.xml"

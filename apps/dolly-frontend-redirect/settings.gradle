@@ -3,8 +3,6 @@ plugins {
 }
 
 rootProject.name = 'dolly-frontend-redirect'
-
-includeBuild '../../gradlePlugins'
 includeBuild '../../libs/servlet-core'
 
 gradleEnterprise {

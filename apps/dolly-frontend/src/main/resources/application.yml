@@ -132,3 +132,8 @@ consumers:
     namespace: dolly
     name: testnorge-tilbakemelding-api
     url: https://testnorge-tilbakemelding-api.dev.intern.nav.no
+  testnav-pdl-forvalter:
+    cluster: dev-gcp
+    namespace: dolly
+    name: ${PDL_FORVALTER_NAME}
+    url: ${PDL_FORVALTER_URL}

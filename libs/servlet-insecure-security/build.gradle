@@ -39,7 +39,7 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web:${DependenciesPlugin.springBoot}"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-client:${DependenciesPlugin.springBoot}"
 
-    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    implementation 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
 }

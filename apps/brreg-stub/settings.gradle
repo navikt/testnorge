@@ -4,8 +4,6 @@ plugins {
 
 rootProject.name = 'brreg-stub'
 
-includeBuild '../../gradlePlugins'
-
 includeBuild '../../libs/database'
 includeBuild '../../libs/servlet-core'
 

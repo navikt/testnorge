@@ -1,6 +1,3 @@
-logging:
-  config: "classpath:logback-local.xml"
-
 spring:
   datasource:
     url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
@@ -19,6 +16,6 @@ spring:
     vault:
       enabled: false
       database:
-          enabled: false
+        enabled: false
   flyway:
     enabled: true

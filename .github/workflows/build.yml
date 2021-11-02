@@ -5,8 +5,10 @@ on:
       - master
     paths-ignore:
       - 'navikt/**'
-  pull_request:
-    types: [ opened, synchronize, reopened ]
+      - '.github/**'
+  pull_request_target:
+    types: [assigned, opened, synchronize, reopened]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -30,6 +32,7 @@ jobs:
       - name: Build
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew build --info --scan
+          GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
+        run: |
+          ./gradlew build --info --scan

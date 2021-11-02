@@ -4,8 +4,6 @@ plugins {
 
 rootProject.name = 'generer-organisasjon-populasjon-service'
 
-includeBuild '../../gradlePlugins'
-
 includeBuild '../../libs/database'
 includeBuild '../../libs/servlet-security'
 includeBuild '../../libs/servlet-core'

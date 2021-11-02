@@ -1,4 +1,4 @@
-package no.nav.pdl.forvalter.domain;
+package no.nav.pdl.forvalter.dto;
 
 import lombok.Builder;
 import lombok.Data;
