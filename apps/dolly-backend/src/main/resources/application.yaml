@@ -6,6 +6,8 @@ APP_NAME: dolly
 APP_VERSION: ${application.version}
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
+TOKEN_X_CLIENT_ID: dev-fss:dolly:dolly-backend-dev
+
 consumers:
   testnav-helsepersonell-service:
     name: testnav-helsepersonell-service
@@ -183,6 +185,10 @@ spring:
           issuer-uri: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b/v2.0
           #The client_id of this application
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+        tokenx:
+          issuer-uri: https://tokendings.dev-gcp.nais.io
+          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          accepted-audience: ${TOKEN_X_CLIENT_ID}
 
 management:
   endpoints:

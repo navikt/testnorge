@@ -6,6 +6,8 @@ metadata:
   labels:
     team: dolly
 spec:
+  tokenx:
+    enabled: true
   accessPolicy:
     inbound:
       rules:

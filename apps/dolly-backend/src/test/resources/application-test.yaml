@@ -2,10 +2,13 @@
 server.port: 8080
 
 APP_NAME: dolly
-environment: localhost
 APP_VERSION: ${application.version}
+environment: localhost
 CLIENT_ID: dummy
 CLIENT_SECRET: dummy
+
+TOKEN_X_CLIENT_ID: test
+
 azure:
   app:
     client:
