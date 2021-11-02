@@ -34,6 +34,8 @@ test {
     useJUnitPlatform()
 }
 
+java.sourceCompatibility = JavaVersion.VERSION_17
+
 repositories {
     maven {
         url = uri('https://repo1.maven.org/maven2/')
@@ -87,7 +89,6 @@ dependencies {
     implementation 'io.micrometer:micrometer-registry-prometheus:1.7.5'
     implementation "ma.glasnost.orika:orika-core:${DependenciesPlugin.orikaVersion}"
     implementation 'org.codehaus.jettison:jettison:1.4.1'
-    implementation 'no.nav.testnav.libs:data-transfer-objects:2021.10.20-08.13-42b4dddd7e7c'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
     implementation 'org.springframework.security:spring-security-oauth2-client'
     implementation 'org.apache.commons:commons-lang3:3.12.0'
