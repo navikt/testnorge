@@ -43,3 +43,40 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./gradlew sonarqube --scan
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Gradle cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '17.x'
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "16.x"
+      - name: Install js libs
+        run: |
+          npm ci
+        working-directory: ./apps/oversikt-frontend/src/main/js
+      - name: Build js
+        run: |
+          npm run build
+        working-directory: ./apps/oversikt-frontend/src/main/js
+      - name: Move js build
+        run: |
+          mv build ../resources/static
+        working-directory: ./apps/oversikt-frontend/src/main/js
+      - name: Compile
+        working-directory: ./apps/oversikt-frontend/
+        env:
+          GITHUB_USERNAME: token
+          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+        run: ./gradlew build
