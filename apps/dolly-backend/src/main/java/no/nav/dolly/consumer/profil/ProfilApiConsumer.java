@@ -1,7 +1,6 @@
 package no.nav.dolly.consumer.profil;
 
 import lombok.extern.slf4j.Slf4j;
-import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.config.credentials.ProfilApiProperties;
 import no.nav.dolly.consumer.profil.command.GetProfilCommand;
 import no.nav.dolly.security.config.NaisServerProperties;
@@ -29,12 +28,10 @@ public class ProfilApiConsumer {
     private final TokenExchange tokenService;
     private final WebClient webClient;
     private final NaisServerProperties serviceProperties;
-    private final MapperFacade mapper;
 
-    public ProfilApiConsumer(TokenExchange tokenService, ProfilApiProperties serverProperties, MapperFacade mapperFacade) {
+    public ProfilApiConsumer(TokenExchange tokenService, ProfilApiProperties serverProperties) {
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
-        this.mapper = mapperFacade;
         this.webClient = WebClient.builder()
                 .baseUrl(serverProperties.getUrl()).build();
     }
@@ -47,9 +44,7 @@ public class ProfilApiConsumer {
         if (nonNull(response) && !response.hasBody()) {
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
         }
-
         return response;
-
     }
 
     public Map<String, String> checkAlive() {
