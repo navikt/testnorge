@@ -1,4 +1,4 @@
-name: Sonar Analysis [dokarkiv-proxy]
+name: Build & Analysis [dokarkiv-proxy]
 
 on:
   push:
@@ -7,6 +7,7 @@ on:
 
 jobs:
   scan:
+    name: Sonar scan
     runs-on: ubuntu-latest
     if: ${{ github.actor != 'dependabot[bot]' }}
     steps:

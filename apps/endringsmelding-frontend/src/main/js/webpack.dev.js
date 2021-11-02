@@ -8,8 +8,8 @@ module.exports = merge(common, {
   devtool: 'inline-source-map',
   devServer: {
     port: 3000,
-    contentBase: path.join(__dirname, 'public'),
     historyApiFallback: true,
+    static: path.join(__dirname, 'public'),
     proxy: {
       '/endringsmelding-service/api': {
         target: 'http://localhost:8080',
