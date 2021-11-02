@@ -59,7 +59,7 @@ dependencies {
 
 
     testImplementation 'no.nav.testnav.libs:testing'
-    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
+    testImplementation 'junit:junit:4.13.2' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'org.assertj:assertj-core:3.16.1'
