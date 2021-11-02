@@ -796,7 +796,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	const pdldataKriterier = bestillingData.pdldata?.person
 
 	if (pdldataKriterier) {
-		const { falskIdentitet } = pdldataKriterier
+		const { falskIdentitet, utenlandskIdentifikasjonsnummer } = pdldataKriterier
 
 		const sjekkRettIdent = (item) => {
 			if (_has(item, 'rettIdentitetErUkjent')) {
@@ -828,6 +828,24 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				}),
 			}
 			data.push(falskIdentitetData)
+		}
+
+		if (utenlandskIdentifikasjonsnummer) {
+			const utenlandskIdentData = {
+				header: 'Utenlandsk identifikasjonsnummer',
+				itemRows: utenlandskIdentifikasjonsnummer.map((item, idx) => {
+					return [
+						{
+							numberHeader: `Utenlandsk ID ${idx + 1}`,
+						},
+						obj('Utenlandsk ID', item.identifikasjonsnummer),
+						// obj('Kilde', item.kilde),
+						obj('Utenlandsk ID opphørt', Formatters.oversettBoolean(item.opphoert)),
+						obj('Utstederland', item.utstederland, AdresseKodeverk.Utstederland),
+					]
+				}),
+			}
+			data.push(utenlandskIdentData)
 		}
 	}
 
@@ -867,37 +885,37 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			data.push(doedsbo)
 		}
 
-		if (pdlforvalterKriterier.utenlandskIdentifikasjonsnummer) {
-			const uidnr = pdlforvalterKriterier.utenlandskIdentifikasjonsnummer
-
-			const flatUidnrKriterier = []
-			uidnr.forEach((ui) => {
-				flatUidnrKriterier.push({
-					identifikasjonsnummer: ui.identifikasjonsnummer,
-					kilde: ui.kilde,
-					opphoert: ui.opphoert,
-					utstederland: ui.utstederland,
-				})
-			})
-
-			const uidnrObj = {
-				header: 'Utenlandsk identifikasjonsnummer',
-				itemRows: [],
-			}
-
-			flatUidnrKriterier.forEach((uidr, i) => {
-				uidnrObj.itemRows.push([
-					{
-						numberHeader: `Utenlandsk identifikasjonsnummer ${i + 1}`,
-					},
-					obj('Utenlandsk ID', uidr.identifikasjonsnummer),
-					obj('Kilde', uidr.kilde),
-					obj('Utenlandsk ID opphørt', Formatters.oversettBoolean(uidr.opphoert)),
-					obj('Utstederland', uidr.utstederland, AdresseKodeverk.Utstederland),
-				])
-			})
-			data.push(uidnrObj)
-		}
+		// if (pdlforvalterKriterier.utenlandskIdentifikasjonsnummer) {
+		// 	const uidnr = pdlforvalterKriterier.utenlandskIdentifikasjonsnummer
+		//
+		// 	const flatUidnrKriterier = []
+		// 	uidnr.forEach((ui) => {
+		// 		flatUidnrKriterier.push({
+		// 			identifikasjonsnummer: ui.identifikasjonsnummer,
+		// 			kilde: ui.kilde,
+		// 			opphoert: ui.opphoert,
+		// 			utstederland: ui.utstederland,
+		// 		})
+		// 	})
+		//
+		// 	const uidnrObj = {
+		// 		header: 'Utenlandsk identifikasjonsnummer',
+		// 		itemRows: [],
+		// 	}
+		//
+		// 	flatUidnrKriterier.forEach((uidr, i) => {
+		// 		uidnrObj.itemRows.push([
+		// 			{
+		// 				numberHeader: `Utenlandsk identifikasjonsnummer ${i + 1}`,
+		// 			},
+		// 			obj('Utenlandsk ID', uidr.identifikasjonsnummer),
+		// 			obj('Kilde', uidr.kilde),
+		// 			obj('Utenlandsk ID opphørt', Formatters.oversettBoolean(uidr.opphoert)),
+		// 			obj('Utstederland', uidr.utstederland, AdresseKodeverk.Utstederland),
+		// 		])
+		// 	})
+		// 	data.push(uidnrObj)
+		// }
 	}
 	const arenaKriterier = bestillingData.arenaforvalter
 

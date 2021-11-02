@@ -10,7 +10,7 @@ import { KontaktinformasjonForDoedsbo } from './partials/kontaktinformasjonForDo
 
 const identifikasjonAttributt = [
 	'pdldata.person.falskIdentitet',
-	'pdlforvalter.utenlandskIdentifikasjonsnummer',
+	'pdldata.person.utenlandskIdentifikasjonsnummer',
 ]
 const doedsboAttributt = 'pdlforvalter.kontaktinformasjonForDoedsbo'
 
@@ -28,7 +28,7 @@ export const PdlfForm = ({ formikBag }) => (
 				</Kategori>
 				<Kategori
 					title="Utenlandsk identifikasjonsnummer"
-					vis="pdlforvalter.utenlandskIdentifikasjonsnummer"
+					vis="pdldata.person.utenlandskIdentifikasjonsnummer"
 					flex={false}
 				>
 					<UtenlandsId formikBag={formikBag} />

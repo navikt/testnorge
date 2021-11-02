@@ -9,14 +9,14 @@ const initialValues = { identifikasjonsnummer: '', kilde: '', opphoert: '', utst
 
 export const UtenlandsId = ({ formikBag }) => (
 	<FormikDollyFieldArray
-		name="pdlforvalter.utenlandskIdentifikasjonsnummer"
+		name="pdldata.person.utenlandskIdentifikasjonsnummer"
 		header="Utenlandsk ID"
 		newEntry={initialValues}
 	>
 		{(path, idx) => (
 			<React.Fragment key={idx}>
 				<FormikTextInput name={`${path}.identifikasjonsnummer`} label="Identifikasjonsnummer" />
-				<FormikTextInput name={`${path}.kilde`} label="Kilde" />
+				{/*<FormikTextInput name={`${path}.kilde`} label="Kilde" />*/}
 				<FormikSelect
 					name={`${path}.opphoert`}
 					label="Opphørt"
