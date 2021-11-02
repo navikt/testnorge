@@ -15,7 +15,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlStatus;
 import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -32,15 +32,15 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_SLETTING;
 public class PdlTestdataConsumer {
 
     private final WebClient webClient;
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
     private final ServerProperties properties;
     private final ObjectMapper objectMapper;
 
-    public PdlTestdataConsumer(AccessTokenService accessTokenService,
+    public PdlTestdataConsumer(TokenExchange tokenExchange,
                                PdlServiceProperties properties,
                                ObjectMapper objectMapper) {
 
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
         this.properties = properties;
         this.webClient = WebClient.builder()
                 .baseUrl(properties.getUrl())
@@ -49,7 +49,7 @@ public class PdlTestdataConsumer {
     }
 
     public Flux<OrdreResponseDTO.PdlStatusDTO> send(List<Ordre> orders) {
-        return accessTokenService
+        return tokenExchange
                 .generateToken(properties)
                 .flatMapMany(accessToken -> Flux.concat(orders
                         .stream()
@@ -60,7 +60,7 @@ public class PdlTestdataConsumer {
 
     public Flux<List<OrdreResponseDTO.HendelseDTO>> delete(List<String> identer) {
 
-        return Flux.from(accessTokenService
+        return Flux.from(tokenExchange
                 .generateToken(properties)
                 .flatMapMany(accessToken -> identer
                         .stream()

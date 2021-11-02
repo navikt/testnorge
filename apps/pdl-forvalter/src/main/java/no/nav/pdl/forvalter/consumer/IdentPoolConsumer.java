@@ -10,7 +10,7 @@ import no.nav.pdl.forvalter.dto.HentIdenterRequest;
 import no.nav.pdl.forvalter.dto.IdentDTO;
 import no.nav.pdl.forvalter.dto.IdentpoolStatusDTO;
 import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -31,11 +31,11 @@ public class IdentPoolConsumer {
     private static final String REKVIRERT_AV = "rekvirertAv=" + BRUKER;
 
     private final WebClient webClient;
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
     private final ServerProperties properties;
 
-    public IdentPoolConsumer(AccessTokenService accessTokenService, IdentPoolProperties properties) {
-        this.accessTokenService = accessTokenService;
+    public IdentPoolConsumer(TokenExchange tokenExchange, IdentPoolProperties properties) {
+        this.tokenExchange = tokenExchange;
         this.properties = properties;
         this.webClient = WebClient
                 .builder()
@@ -45,21 +45,21 @@ public class IdentPoolConsumer {
 
     public Flux<List<IdentDTO>> acquireIdents(HentIdenterRequest request) {
 
-        return Flux.from(accessTokenService.generateToken(properties).flatMap(
+        return Flux.from(tokenExchange.generateToken(properties).flatMap(
                 token -> new IdentpoolPostCommand(webClient, ACQUIRE_IDENTS_URL, null, request,
                         token.getTokenValue()).call()));
     }
 
     public Flux<List<IdentDTO>> releaseIdents(List<String> identer) {
 
-        return Flux.from(accessTokenService.generateToken(properties).flatMap(
+        return Flux.from(tokenExchange.generateToken(properties).flatMap(
                 token -> new IdentpoolPostCommand(webClient, RELEASE_IDENTS_URL, REKVIRERT_AV, identer,
                         token.getTokenValue()).call()));
     }
 
     public Flux<IdentpoolStatusDTO> getIdents(Set<String> identer) {
 
-        return accessTokenService.generateToken(properties)
+        return tokenExchange.generateToken(properties)
                 .flatMapMany(token -> Flux.concat(identer.stream()
                         .map(ident ->
                                 new IdentpoolGetCommand(webClient, ACQUIRE_IDENTS_URL, ident, token.getTokenValue()).call())
@@ -69,7 +69,7 @@ public class IdentPoolConsumer {
 
     public Mono<Void> allokerIdent(String ident) {
 
-        return Mono.from(accessTokenService.generateToken(properties).flatMap(
+        return Mono.from(tokenExchange.generateToken(properties).flatMap(
                 token -> new IdentpoolPostVoidCommand(webClient, IBRUK_IDENTS_URL, null,
                         AllokerIdentRequest.builder()
                                 .personidentifikator(ident)
