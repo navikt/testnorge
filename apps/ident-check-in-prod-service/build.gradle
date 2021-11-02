@@ -54,7 +54,7 @@ dependencies {
 
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.11.2'
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
-    implementation 'org.mockito:mockito-core:3.6.0'
+    implementation 'org.mockito:mockito-core:4.0.0'
     implementation 'com.google.guava:guava:30.0-jre'
 
     implementation 'org.springdoc:springdoc-openapi-ui:1.4.8'
