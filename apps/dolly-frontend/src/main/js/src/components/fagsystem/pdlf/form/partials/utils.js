@@ -11,10 +11,16 @@ export const getPlaceholder = (values, selectedValuePath) => {
 }
 
 export const setNavn = (navn, path, setFieldValue) => {
-	const deltNavn = navn.label.split(' ')
-	setFieldValue(`${path}.fornavn`, navn.value)
-	setFieldValue(`${path}.mellomnavn`, deltNavn.length === 3 ? deltNavn[1] : '')
-	setFieldValue(`${path}.etternavn`, deltNavn[deltNavn.length - 1])
+	if (!navn) {
+		setFieldValue(path, null)
+	} else {
+		const deltNavn = navn.label.split(' ')
+		setFieldValue(path, {
+			fornavn: navn.value,
+			mellomnavn: deltNavn.length === 3 ? deltNavn[1] : '',
+			etternavn: deltNavn[deltNavn.length - 1],
+		})
+	}
 }
 
 export const setValue = (value, path, setFieldValue) => {

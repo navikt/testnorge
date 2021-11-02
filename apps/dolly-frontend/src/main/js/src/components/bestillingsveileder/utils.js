@@ -2,6 +2,7 @@ import _has from 'lodash/has'
 
 export const rootPaths = [
 	'tpsf',
+	'pdldata',
 	'pdlforvalter',
 	'aareg',
 	'sigrunstub',

@@ -23,6 +23,7 @@ import no.nav.dolly.web.credentials.TestnavVarslingerServiceProperties;
 import no.nav.dolly.web.credentials.TestnorgeProfilApiProperties;
 import no.nav.dolly.web.credentials.TpsForvalterenProxyProperties;
 import no.nav.dolly.web.credentials.UdiStubProxyProperties;
+import no.nav.dolly.web.credentials.TestnavPdlForvalterProperties;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
 import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
@@ -75,6 +76,7 @@ public class DollyFrontendApplicationStarter {
     private final UdiStubProxyProperties udiStubProxyProperties;
     private final PersonSearchServiceProperties personSearchServiceProperties;
     private final TestnavAdresseServiceProperties testnavAdresseServiceProperties;
+    private final TestnavPdlForvalterProperties testnavPdlForvalterProperties;
 
     public static void main(String[] args) {
         SpringApplication.run(DollyFrontendApplicationStarter.class, args);
@@ -104,6 +106,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(testnavOrganisasjonServiceProperties))
                 .route(createRoute(testnavSigrunstubProxyProperties))
                 .route(createRoute(udiStubProxyProperties, "udi-stub"))
+                .route(createRoute(testnavPdlForvalterProperties, "testnav-pdl-forvalter"))
                 .route(createRoute(personSearchServiceProperties))
                 .build();
     }

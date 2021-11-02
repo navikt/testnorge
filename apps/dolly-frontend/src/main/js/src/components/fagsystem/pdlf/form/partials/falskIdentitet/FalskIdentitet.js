@@ -4,98 +4,117 @@ import { AdresseKodeverk } from '~/config/kodeverk'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { getPlaceholder, setNavn, setValue } from '../utils'
+import { setNavn } from '../utils'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import _has from 'lodash/has'
+import { FalskIdentitetToggle } from '~/components/fagsystem/pdlf/form/partials/falskIdentitet/FalskIdentitetToggle'
 
 export const FalskIdentitet = ({ formikBag }) => {
-	const falskIdPath = 'pdlforvalter.falskIdentitet.rettIdentitet'
-	const falskIdObj = formikBag.values.pdlforvalter.falskIdentitet.rettIdentitet
-
 	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
 	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
-	const dollyGruppeInfo = SelectOptionsOppslag.hentGruppe()
-	const navnOgFnrOptions = SelectOptionsOppslag.formatOptions('navnOgFnr', dollyGruppeInfo)
 
-	const settIdentitetType = (e) => {
-		if (e.value === 'UKJENT') {
-			formikBag.setFieldValue(falskIdPath, { identitetType: e.value, rettIdentitetErUkjent: true })
+	const settIdentitetType = (e, path) => {
+		if (!e) {
+			formikBag.setFieldValue(path, { erFalsk: true })
+			return null
+		} else if (e.value === 'UKJENT') {
+			formikBag.setFieldValue(path, { erFalsk: true, rettIdentitetErUkjent: true })
 		} else if (e.value === 'ENTYDIG') {
-			formikBag.setFieldValue(falskIdPath, {
-				identitetType: e.value,
-				rettIdentitetVedIdentifikasjonsnummer: '',
+			formikBag.setFieldValue(path, {
+				erFalsk: true,
+				rettIdentitetVedIdentifikasjonsnummer: null,
 			})
-		} else {
-			formikBag.setFieldValue(falskIdPath, {
-				identitetType: e.value,
-				foedselsdato: '',
-				kjoenn: '',
-				personnavn: { fornavn: '', mellomnavn: '', etternavn: '' },
-				statsborgerskap: '',
+		} else if (e.value === 'OMTRENTLIG') {
+			formikBag.setFieldValue(path, {
+				erFalsk: true,
+				rettIdentitetVedOpplysninger: {
+					foedselsdato: null,
+					kjoenn: null,
+					personnavn: null,
+					statsborgerskap: [],
+				},
 			})
 		}
 		return e.value
 	}
 
 	return (
-		<div>
-			<FormikSelect
-				name={`${falskIdPath}.identitetType`}
-				label="Opplysninger om rett identitet"
-				options={Options('identitetType')}
-				value={falskIdObj.identitetType}
-				onChange={settIdentitetType}
-				isClearable={false}
-				size="medium"
-			/>
-
-			{falskIdObj.identitetType === 'ENTYDIG' && (
-				<DollySelect
-					name={`${falskIdPath}.rettIdentitetVedIdentifikasjonsnummer`}
-					label="Navn og identifikasjonsnummer"
-					size="large"
-					options={navnOgFnrOptions}
-					isLoading={dollyGruppeInfo.loading}
-					onChange={(id) =>
-						setValue(
-							id,
-							`${falskIdPath}.rettIdentitetVedIdentifikasjonsnummer`,
-							formikBag.setFieldValue
-						)
+		<FormikDollyFieldArray
+			name="pdldata.person.falskIdentitet"
+			header="Falsk identitet"
+			newEntry={{ erFalsk: true }}
+			canBeEmpty={false}
+		>
+			{(path, idx) => {
+				const identType = () => {
+					if (_has(formikBag.values, `${path}.rettIdentitetErUkjent`)) {
+						return 'UKJENT'
+					} else if (_has(formikBag.values, `${path}.rettIdentitetVedIdentifikasjonsnummer`)) {
+						return 'ENTYDIG'
 					}
-					value={_get(formikBag.values, `${falskIdPath}.rettIdentitetVedIdentifikasjonsnummer`)}
-					isClearable={false}
-				/>
-			)}
-			{falskIdObj.identitetType === 'OMTRENTLIG' && (
-				<div className="flexbox--flex-wrap">
-					<DollySelect
-						name={`${falskIdPath}.personnavn.fornavn`}
-						label="Navn"
-						options={navnOptions}
-						size="large"
-						isLoading={navnInfo.loading}
-						onChange={(navn) => setNavn(navn, `${falskIdPath}.personnavn`, formikBag.setFieldValue)}
-						value={_get(formikBag.values, `${falskIdPath}.personnavn.fornavn`)}
-						isClearable={false}
-						placeholder={getPlaceholder(formikBag.values, `${falskIdPath}.personnavn`)}
-					/>
-					<FormikDatepicker name={`${falskIdPath}.foedselsdato`} label="Fødselsdato" />
-					<FormikSelect
-						name={`${falskIdPath}.kjoenn`}
-						label="Kjønn"
-						options={Options('kjoennFalskIdentitet')}
-						isClearable={false}
-					/>
-					<FormikSelect
-						name={`${falskIdPath}.statsborgerskap`}
-						label="Statsborgerskap"
-						kodeverk={AdresseKodeverk.StatsborgerskapLand}
-						isClearable={false}
-						isMulti={true}
-						size="large"
-					/>
-				</div>
-			)}
-		</div>
+					return _has(formikBag.values, `${path}.rettIdentitetVedOpplysninger`)
+						? 'OMTRENTLIG'
+						: null
+				}
+
+				return (
+					<div className="flexbox--flex-wrap" key={idx}>
+						<FormikSelect
+							name={`${path}.identitetType`}
+							label="Opplysninger om rett identitet"
+							options={Options('identitetType')}
+							value={identType()}
+							onChange={(e) => settIdentitetType(e, path)}
+							size="large"
+						/>
+
+						{identType() === 'ENTYDIG' && (
+							<FalskIdentitetToggle formikBag={formikBag} path={path} />
+						)}
+						{identType() === 'OMTRENTLIG' && (
+							<>
+								<DollySelect
+									name={`${path}.rettIdentitetVedOpplysninger.personnavn.fornavn`}
+									label="Navn"
+									options={navnOptions}
+									size="large"
+									isLoading={navnInfo.loading}
+									onChange={(navn) =>
+										setNavn(
+											navn,
+											`${path}.rettIdentitetVedOpplysninger.personnavn`,
+											formikBag.setFieldValue
+										)
+									}
+									value={_get(
+										formikBag.values,
+										`${path}.rettIdentitetVedOpplysninger.personnavn.fornavn`
+									)}
+								/>
+								<FormikDatepicker
+									name={`${path}.rettIdentitetVedOpplysninger.foedselsdato`}
+									label="Fødselsdato"
+								/>
+								<FormikSelect
+									name={`${path}.rettIdentitetVedOpplysninger.kjoenn`}
+									label="Kjønn"
+									options={Options('kjoennFalskIdentitet')}
+								/>
+								<FormikSelect
+									name={`${path}.rettIdentitetVedOpplysninger.statsborgerskap`}
+									label="Statsborgerskap"
+									kodeverk={AdresseKodeverk.StatsborgerskapLand}
+									isClearable={false}
+									isMulti={true}
+									fastfield={false}
+									size="large"
+								/>
+							</>
+						)}
+					</div>
+				)
+			}}
+		</FormikDollyFieldArray>
 	)
 }
