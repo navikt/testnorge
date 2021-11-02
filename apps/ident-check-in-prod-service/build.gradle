@@ -52,7 +52,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
 
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.11.2'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.13.0'
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
     implementation 'org.mockito:mockito-core:4.0.0'
     implementation 'com.google.guava:guava:30.0-jre'
