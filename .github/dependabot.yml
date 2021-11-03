@@ -137,3 +137,379 @@ updates:
     directory: "/apps/joark-dokument-service/"
     schedule:
       interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/miljoer-service/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/mn-organisasjon-api/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/mn-person-service/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/mn-synt-arbeidsforhold-service/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/opprett-person-pdl/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/oppsummeringsdokument-service/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/organisasjon-bestilling-service/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/organisasjon-bestilling-service/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/organisasjon-faste-data-service/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/organisasjon-faste-data-service/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/testnav-organisasjon-forvalter/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/organisasjon-mottak-service/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/organisasjon-orgnummer-service/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/organisasjon-service/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/organisasjon-tilgang-service/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/orkestratoren/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/oversikt-frontend/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/oversikt-frontend/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/pdl-forvalter/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/person-export-api/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/person-faste-data-service/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/person-organisasjon-tilgang-service/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/person-search-service/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/person-service/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/profil-api/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/synt-person-api/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/sykemelding-api/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/synt-sykemelding-api/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/syntrest/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/testnorge-aareg/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/testnorge-arena/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/testnorge-bisys/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/testnorge-frikort/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/testnorge-hodejegeren/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/testnorge-inntekt/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/testnorge-inst/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/testnorge-medl/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/testnorge-nav-endringsmeldinger/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/testnorge-sam/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/testnorge-sigrun/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/testnorge-skd/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/testnorge-statisk-data-forvalter/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/testnorge-token-provider/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/testnorge-tp/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/tilbakemelding-api/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/tps-ident-service/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/tps-identer-vedlikehold/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/udi-stub/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/varslinger-service/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/examples/reactive-rest-example/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/libs/avro-schema/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/libs/commands/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/libs/csv-converter/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/libs/data-transfer-objects/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/libs/database/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/libs/domain/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/libs/kafka-config/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/libs/kafka-producers/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/libs/reactive-core/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/libs/reactive-frontend/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/libs/reactive-proxy/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/libs/reactive-security/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/libs/reactive-session-security/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/libs/security-core/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/libs/security-token-service/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/libs/servlet-core/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/libs/servlet-insecure-security/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/libs/servlet-security/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/libs/slack/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/libs/testing/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/proxies/aareg-proxy/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/proxies/aareg-synt-services-proxy/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/proxies/arena-forvalteren-proxy/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/proxies/batch-adeo-proxy/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/proxies/brregstub-proxy/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/proxies/dokarkiv-proxy/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/proxies/ereg-proxy/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/proxies/hodejegeren-proxy/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/proxies/inntektstub-proxy/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/proxies/kodeverk-proxy/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/proxies/krrstub-proxy/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/proxies/pdl-proxy/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/proxies/pensjon-testdata-facade-proxy/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/proxies/saf-proxy/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/proxies/samhandlerregisteret-proxy/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/proxies/sigrunstub-proxy/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/proxies/skjermingsregister-proxy/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/proxies/statisk-data-forvalter-proxy/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/proxies/sykemelding-api-proxy/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/proxies/syntrest-proxy/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/proxies/testnorge-aareg-proxy/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/proxies/testnorge-inst-proxy/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/proxies/tps-forvalteren-proxy/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/proxies/udistub-proxy/"
+    schedule:
+      interval: "daily"
