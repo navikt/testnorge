@@ -105,8 +105,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
 
                 sendIdenterTilTPS(new ArrayList<>(List.of(bestilling.getMiljoer().split(","))),
                         oppdaterPersonResponse.getIdentTupler().stream()
-                                .map(RsOppdaterPersonResponse.IdentTuple::getIdent).collect(toList()), null,
-                        progress, bestilling.getBeskrivelse());
+                                .map(RsOppdaterPersonResponse.IdentTuple::getIdent).collect(toList()), null, progress);
                 dollyPerson = dollyPersonCache.prepareTpsPerson(bestilling.getIdent());
 
             } else {

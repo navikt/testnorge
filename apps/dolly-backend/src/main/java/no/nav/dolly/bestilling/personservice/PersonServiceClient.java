@@ -57,4 +57,9 @@ public class PersonServiceClient implements ClientRegister {
     public void release(List<String> identer) {
 
     }
+
+    @Override
+    public boolean isTestnorgeRelevant() {
+        return false;
+    }
 }

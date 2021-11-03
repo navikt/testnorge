@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public interface IdentRepository extends PagingAndSortingRepository<Testident, String> {
 
-    Optional<Testident> findByIdent(String ident);
+    Testident findByIdent(String ident);
 
     List<Testident> findByIdentIn(Collection<String> identer);
 

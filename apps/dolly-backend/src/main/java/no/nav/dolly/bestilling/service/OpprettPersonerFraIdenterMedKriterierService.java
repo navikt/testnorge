@@ -3,14 +3,16 @@ package no.nav.dolly.bestilling.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.tpsf.TpsfResponseHandler;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
+import no.nav.dolly.domain.resultset.tpsf.CheckStatusResponse;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
+import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.service.BestillingProgressService;
@@ -26,7 +28,6 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
 
 @Service
 public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillingService {
@@ -36,8 +37,6 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
     private MapperFacade mapperFacade;
     private TpsfService tpsfService;
     private ExecutorService dollyForkJoinPool;
-    private PdlDataConsumer pdlDataConsumer;
-    private IdentService identService;
 
     public OpprettPersonerFraIdenterMedKriterierService(TpsfResponseHandler tpsfResponseHandler, TpsfService tpsfService,
                                                         DollyPersonCache dollyPersonCache, IdentService identService,
@@ -46,7 +45,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                                                         CacheManager cacheManager, ObjectMapper objectMapper,
                                                         List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
                                                         ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool,
-                                                        PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer) {
+                                                        PdlPersonConsumer pdlPersonConsumer) {
         super(tpsfResponseHandler, tpsfService, dollyPersonCache, identService, bestillingProgressService, bestillingService,
                 mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry, pdlPersonConsumer);
 
@@ -55,8 +54,6 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
         this.mapperFacade = mapperFacade;
         this.tpsfService = tpsfService;
         this.dollyForkJoinPool = dollyForkJoinPool;
-        this.pdlDataConsumer = pdlDataConsumer;
-        this.identService = identService;
     }
 
     @Async
@@ -66,39 +63,36 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
 
         if (nonNull(bestKriterier)) {
 
-            var tilgjengeligeIdenter = new AvailCheckCommand(bestilling.getOpprettFraIdenter(),
-                    bestKriterier.getPdldata(), tpsfService, pdlDataConsumer).call();
+            CheckStatusResponse tilgjengeligeIdenter = tpsfService.checkEksisterendeIdenter(
+                    new ArrayList<>(List.of(bestilling.getOpprettFraIdenter().split(","))));
 
             dollyForkJoinPool.submit(() -> {
-                tilgjengeligeIdenter.parallelStream()
+                tilgjengeligeIdenter.getStatuser().parallelStream()
                         .filter(ident -> !bestillingService.isStoppet(bestilling.getId()))
                         .forEach(identStatus -> {
 
-                            BestillingProgress progress = new BestillingProgress(bestilling, identStatus.getIdent(), identStatus.getMaster());
-
+                            BestillingProgress progress = new BestillingProgress(bestilling, identStatus.getIdent(), Testident.Master.TPSF);
                             try {
                                 if (identStatus.isAvailable()) {
 
-                                    var leverteIdenter = new OpprettCommand(identStatus, bestKriterier, tpsfService,
-                                            pdlDataConsumer, mapperFacade).call();
+                                    TpsfBestilling tpsfBestilling = nonNull(bestKriterier.getTpsf()) ?
+                                            mapperFacade.map(bestKriterier.getTpsf(), TpsfBestilling.class) : new TpsfBestilling();
+                                    tpsfBestilling.setOpprettFraIdenter(new ArrayList<>(List.of(identStatus.getIdent())));
+                                    tpsfBestilling.setAntall(tpsfBestilling.getOpprettFraIdenter().size());
+                                    List<String> leverteIdenter = tpsfService.opprettIdenterTpsf(tpsfBestilling);
 
-                                    if (identStatus.isTpsf()) {
-                                        sendIdenterTilTPS(new ArrayList<>(List.of(bestilling.getMiljoer().split(","))),
-                                                leverteIdenter, bestilling.getGruppe(), progress, bestilling.getBeskrivelse());
-
-                                    } else {
-                                        identService.saveIdentTilGruppe(identStatus.getIdent(), bestilling.getGruppe(),
-                                                PDL, bestKriterier.getBeskrivelse());
-                                    }
+                                    sendIdenterTilTPS(new ArrayList<>(List.of(bestilling.getMiljoer().split(","))),
+                                            leverteIdenter, bestilling.getGruppe(), progress);
 
                                     DollyPerson dollyPerson = DollyPerson.builder()
                                             .hovedperson(leverteIdenter.get(0))
-                                            .master(identStatus.getMaster())
+                                            .master(Testident.Master.TPSF)
                                             .build();
 
-                                    gjenopprettNonTpsf(dollyPerson, bestKriterier, progress, true);
+
+                                    gjenopprettNonTpsf(dollyPerson, bestKriterier, progress, false);
                                 } else {
-                                    progress.setFeil("NA:Feil= Ident er ikke tilgjengelig; " + identStatus.getMessage());
+                                    progress.setFeil("NA:Feil= Ident er ikke tilgjengelig; " + identStatus.getStatus());
                                 }
                             } catch (RuntimeException e) {
                                 progress.setFeil("NA:" + errorStatusDecoder.decodeRuntimeException(e));

@@ -11,4 +11,8 @@ public interface ClientRegister {
     void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre);
 
     void release(List<String> identer);
+
+    default boolean isTestnorgeRelevant() {
+        return true;
+    }
 }

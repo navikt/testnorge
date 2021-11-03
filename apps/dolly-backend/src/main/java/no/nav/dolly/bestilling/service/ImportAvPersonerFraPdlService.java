@@ -72,8 +72,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
 
                                 PdlPerson pdlPerson = objectMapper.readValue(pdlPersonConsumer.getPdlPerson(ident).toString(), PdlPerson.class);
                                 DollyPerson dollyPerson = dollyPersonCache.preparePdlPersoner(pdlPerson);
-                                identService.saveIdentTilGruppe(dollyPerson.getHovedperson(), bestilling.getGruppe(),
-                                        PDL, bestilling.getBeskrivelse());
+                                identService.saveIdentTilGruppe(dollyPerson.getHovedperson(), bestilling.getGruppe(), PDL);
                                 gjenopprettNonTpsf(dollyPerson, bestKriterier, progress, false);
                                 progress.setPdlImportStatus(SUCCESS);
 

@@ -1,9 +1,6 @@
 package no.nav.dolly.mapper;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.arenaforvalter.RsMeldingStatusIdent;
+import static no.nav.dolly.util.ListUtil.listOf;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,7 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import static no.nav.dolly.util.ListUtil.listOf;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.arenaforvalter.RsMeldingStatusIdent;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingMeldingStatusIdentMapper {

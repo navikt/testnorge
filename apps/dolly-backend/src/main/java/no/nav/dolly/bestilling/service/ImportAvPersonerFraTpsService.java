@@ -78,8 +78,7 @@ public class ImportAvPersonerFraTpsService extends DollyBestillingService {
 
                                 sendIdenterTilTPS(List.of(bestilling.getMiljoer().split(","))
                                         .stream().filter(miljoe -> !bestilling.getKildeMiljoe().equalsIgnoreCase(miljoe))
-                                        .collect(toList()), singletonList(ident), bestilling.getGruppe(), progress,
-                                        bestilling.getBeskrivelse());
+                                        .collect(toList()), singletonList(ident), bestilling.getGruppe(), progress);
 
                                 DollyPerson dollyPerson = dollyPersonCache.prepareTpsPersoner(person);
                                 gjenopprettNonTpsf(dollyPerson, bestKriterier, progress, false);

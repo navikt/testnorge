@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.udistub;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.udistub.domain.UdiPerson;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonResponse;
@@ -9,7 +8,6 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
-import no.nav.dolly.util.JacksonExchangeStrategyUtil;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -41,15 +39,12 @@ public class UdiStubConsumer {
     public UdiStubConsumer(
             ErrorStatusDecoder errorStatusDecoder,
             TokenExchange accessTokenService,
-            UdistubServerProperties serverProperties,
-            ObjectMapper objectMapper
+            UdistubServerProperties serverProperties
     ) {
         this.tokenService = accessTokenService;
         this.serviceProperties = serverProperties;
         this.webClient = WebClient.builder()
-                .baseUrl(serverProperties.getUrl())
-                .exchangeStrategies(JacksonExchangeStrategyUtil.getJacksonStrategy(objectMapper))
-                .build();
+                .baseUrl(serverProperties.getUrl()).build();
         this.errorStatusDecoder = errorStatusDecoder;
     }
 

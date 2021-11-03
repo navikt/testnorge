@@ -33,6 +33,7 @@ import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -101,7 +102,7 @@ public class DollyBestillingService {
     }
 
     private static void removeUnsuccessfulMessages(String hovedperson, RsSkdMeldingResponse response, Set<String> successMiljoer) {
-        for (ServiceRoutineResponseStatus sendSkdMldResponse : response.getServiceRoutineStatusResponsene()) {
+        for (SendSkdMeldingTilTpsResponse sendSkdMldResponse : response.getSendSkdMeldingTilTpsResponsene()) {
             if (hovedperson.equals(sendSkdMldResponse.getPersonId())) {
                 for (Map.Entry<String, String> entry : sendSkdMldResponse.getStatus().entrySet()) {
                     if (!entry.getValue().contains(SUCCESS)) {
@@ -196,8 +197,11 @@ public class DollyBestillingService {
                 RsOppdaterPersonResponse oppdaterPersonResponse = tpsfService.endreLeggTilPaaPerson(bestilling.getIdent(), tpsfBestilling);
                 sendIdenterTilTPS(request.getEnvironments(),
                         oppdaterPersonResponse.getIdentTupler().stream()
-                                .map(RsOppdaterPersonResponse.IdentTuple::getIdent).collect(toList()), null,
-                        progress, request.getBeskrivelse());
+                                .map(RsOppdaterPersonResponse.IdentTuple::getIdent).collect(toList()), null, progress);
+
+                if (Strings.isNotBlank(request.getBeskrivelse())) {
+                    identService.saveIdentBeskrivelse(bestilling.getIdent(), request.getBeskrivelse());
+                }
 
                 dollyPerson.set(dollyPersonCache.prepareTpsPerson(oppdaterPersonResponse.getIdentTupler().stream()
                         .map(RsOppdaterPersonResponse.IdentTuple::getIdent)
@@ -241,9 +245,9 @@ public class DollyBestillingService {
             BestillingProgress progress = new BestillingProgress(bestilling, ident, TPSF);
             TpsfRelasjonRequest tpsfBestilling = mapperFacade.map(request.getTpsf(), TpsfRelasjonRequest.class);
             List<String> identer = tpsfService.relasjonPerson(ident, tpsfBestilling);
+            sendIdenterTilTPS(request.getEnvironments(), identer, null, progress);
 
             RsDollyBestillingRequest utvidetBestilling = getDollyBestillingRequest(bestilling);
-            sendIdenterTilTPS(request.getEnvironments(), identer, null, progress, utvidetBestilling.getBeskrivelse());
 
             DollyPerson dollyPerson = dollyPersonCache.prepareTpsPerson(bestilling.getIdent());
             gjenopprettNonTpsf(dollyPerson, utvidetBestilling, progress, true);
@@ -292,6 +296,7 @@ public class DollyBestillingService {
 
         counterCustomRegistry.invoke(bestKriterier);
         clientRegisters.stream()
+                .filter(clientRegister -> clientRegister.isTestnorgeRelevant() || dollyPerson.isTpsfMaster())
                 .forEach(clientRegister ->
                         clientRegister.gjenopprett(bestKriterier, dollyPerson, progress, isOpprettEndre));
     }
@@ -322,8 +327,7 @@ public class DollyBestillingService {
         }
     }
 
-    protected void sendIdenterTilTPS(List<String> environments, List<String> identer, Testgruppe testgruppe,
-                                     BestillingProgress progress, String beskrivelse) {
+    protected void sendIdenterTilTPS(List<String> environments, List<String> identer, Testgruppe testgruppe, BestillingProgress progress) {
         try {
             RsSkdMeldingResponse response = null;
             if (!environments.isEmpty()) {
@@ -343,7 +347,7 @@ public class DollyBestillingService {
             }
 
             if (nonNull(testgruppe)) {
-                identService.saveIdentTilGruppe(hovedperson, testgruppe, TPSF, beskrivelse);
+                identService.saveIdentTilGruppe(hovedperson, testgruppe, TPSF);
             }
             if (!successMiljoer.isEmpty()) {
                 progress.setTpsfSuccessEnv(join(",", successMiljoer));
@@ -369,7 +373,7 @@ public class DollyBestillingService {
                         Stream.of(List.of(dollyPerson.getHovedperson()), dollyPerson.getPartnere(), dollyPerson.getBarn())
                                 .flatMap(Collection::stream)
                                 .collect(toList()),
-                        bestilling.getGruppe(), progress, bestilling.getBeskrivelse());
+                        bestilling.getGruppe(), progress);
             }
 
         } else if (progress.isPdl()) {

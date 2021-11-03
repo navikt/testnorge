@@ -1,10 +1,10 @@
 package no.nav.dolly.mapper;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsStatusRapport;
-import no.nav.dolly.domain.resultset.SystemTyper;
+import static java.util.Objects.nonNull;
+import static no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient.PENSJON_FORVALTER;
+import static no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient.POPP_INNTEKTSREGISTER;
+import static no.nav.dolly.domain.resultset.SystemTyper.PEN_FORVALTER;
+import static no.nav.dolly.domain.resultset.SystemTyper.PEN_INNTEKT;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,11 +13,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.nonNull;
-import static no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient.PENSJON_FORVALTER;
-import static no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient.POPP_INNTEKTSREGISTER;
-import static no.nav.dolly.domain.resultset.SystemTyper.PEN_FORVALTER;
-import static no.nav.dolly.domain.resultset.SystemTyper.PEN_INNTEKT;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsStatusRapport;
+import no.nav.dolly.domain.resultset.SystemTyper;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingPensjonforvalterStatusMapper {
