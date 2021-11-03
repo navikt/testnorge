@@ -12,10 +12,12 @@ import no.nav.dolly.domain.jpa.Testident.Master;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
+import org.apache.commons.lang3.BooleanUtils;
 
 import java.util.concurrent.Callable;
 
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @RequiredArgsConstructor
 public class OriginatorCommand implements Callable<OriginatorCommand.Originator> {
@@ -38,11 +40,11 @@ public class OriginatorCommand implements Callable<OriginatorCommand.Originator>
 
         } else if (nonNull(bestillingRequest.getTpsf())) {
 
-            var context = new MappingContext.Factory().getContext();
-            context.setProperty("navSyntetiskIdent", bestillingRequest.getNavSyntetiskIdent());
+            var tpsfBestilling = mapperFacade.map(bestillingRequest.getTpsf(), TpsfBestilling.class);
+            tpsfBestilling.setNavSyntetiskIdent(bestillingRequest.getNavSyntetiskIdent());
 
             return Originator.builder()
-                    .tpsfBestilling(mapperFacade.map(bestillingRequest.getTpsf(), TpsfBestilling.class, context))
+                    .tpsfBestilling(tpsfBestilling)
                     .master(Master.TPSF)
                     .build();
 

@@ -36,7 +36,6 @@ public class OriginatorMappingStrategy implements MappingStrategy {
                     public void mapAtoB(RsTpsfUtvidetBestilling kilde, TpsfBestilling destinasjon, MappingContext context) {
 
                         destinasjon.setAntall(1);
-                        destinasjon.setNavSyntetiskIdent((Boolean) context.getProperty("navSyntetiskIdent"));
                     }
                 })
                 .byDefault()
