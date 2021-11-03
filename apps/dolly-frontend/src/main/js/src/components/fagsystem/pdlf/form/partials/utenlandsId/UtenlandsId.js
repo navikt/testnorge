@@ -33,7 +33,7 @@ export const UtenlandsId = ({ formikBag }) => (
 					size="large"
 				/>
 				<FormikCheckbox name={`${path}.opphoert`} label="Er opphørt" checkboxMargin />
-				<AvansertForm formikBag={formikBag} path={path} />
+				<AvansertForm path={path} />
 			</React.Fragment>
 		)}
 	</FormikDollyFieldArray>

@@ -6,6 +6,10 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import Loading from '~/components/ui/loading/Loading'
 
 export const PdlfVisning = ({ dataPdl, dataPdlforvalter, loadingPdl, loadingPdlforvalter }) => {
+	console.log('dataPdl', dataPdl)
+	console.log('dataPdlforvalter', dataPdlforvalter)
+	console.log('loadingPdl', loadingPdl)
+	console.log('loadingPdlforvalter', loadingPdlforvalter)
 	if (loadingPdl) return <Loading label="Laster PDL-data" />
 	if (loadingPdlforvalter) return <Loading label="Laster PDL-forvalter-data" />
 	if (
@@ -17,11 +21,15 @@ export const PdlfVisning = ({ dataPdl, dataPdlforvalter, loadingPdl, loadingPdlf
 	return (
 		<ErrorBoundary>
 			<div>
-				<UtenlandsId data={dataPdlforvalter[0]?.person?.utenlandskIdentifikasjonsnummer} />
-				<FalskIdentitet data={dataPdlforvalter[0]?.person?.falskIdentitet} />
-				<KontaktinformasjonForDoedsbo
-					data={dataPdl?.data?.hentPerson?.kontaktinformasjonForDoedsbo}
-				/>
+				{dataPdlforvalter && (
+					<UtenlandsId data={dataPdlforvalter[0]?.person?.utenlandskIdentifikasjonsnummer} />
+				)}
+				{dataPdlforvalter && <FalskIdentitet data={dataPdlforvalter[0]?.person?.falskIdentitet} />}
+				{dataPdl && (
+					<KontaktinformasjonForDoedsbo
+						data={dataPdl?.data?.hentPerson?.kontaktinformasjonForDoedsbo}
+					/>
+				)}
 			</div>
 		</ErrorBoundary>
 	)
