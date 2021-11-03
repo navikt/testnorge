@@ -133,3 +133,7 @@ updates:
     directory: "/apps/jenkins-batch-status-service/"
     schedule:
       interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/joark-dokument-service/"
+    schedule:
+      interval: "daily"
