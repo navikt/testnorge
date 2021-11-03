@@ -129,3 +129,7 @@ updates:
     directory: "/apps/inntektsmelding-service/"
     schedule:
       interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/jenkins-batch-status-service/"
+    schedule:
+      interval: "daily"
