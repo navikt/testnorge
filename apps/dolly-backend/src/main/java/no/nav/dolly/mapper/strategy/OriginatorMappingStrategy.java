@@ -10,7 +10,7 @@ import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 import org.springframework.stereotype.Component;
 
-import static java.util.Objects.nonNull;
+import static wiremock.org.eclipse.jetty.util.TypeUtil.isTrue;
 
 @Component
 public class OriginatorMappingStrategy implements MappingStrategy {
@@ -25,9 +25,7 @@ public class OriginatorMappingStrategy implements MappingStrategy {
 
                         destinasjon.setPerson(kilde.getPerson());
                         mapperFacade.map(kilde.getOpprettNyPerson(), destinasjon);
-
-                        Object navSyntetiskIdent = context.getProperty("navSyntetiskIdent");
-                        destinasjon.setSyntetisk(nonNull(navSyntetiskIdent) ? (Boolean) navSyntetiskIdent : false);
+                        destinasjon.setSyntetisk(isTrue(context.getProperty("navSyntetiskIdent")));
                     }
                 })
                 .exclude("person")
@@ -40,9 +38,7 @@ public class OriginatorMappingStrategy implements MappingStrategy {
                     public void mapAtoB(RsTpsfUtvidetBestilling kilde, TpsfBestilling destinasjon, MappingContext context) {
 
                         destinasjon.setAntall(1);
-
-                        Object navSyntetiskIdent = context.getProperty("navSyntetiskIdent");
-                        destinasjon.setNavSyntetiskIdent(nonNull(navSyntetiskIdent) ? (Boolean) navSyntetiskIdent : false);
+                        destinasjon.setNavSyntetiskIdent(isTrue(context.getProperty("navSyntetiskIdent")));
                     }
                 })
                 .byDefault()
