@@ -1,14 +1,14 @@
 package no.nav.dolly.mapper;
 
-import static java.lang.String.format;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import static java.lang.String.format;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AbstractRsStatusMiljoeIdentForhold {
