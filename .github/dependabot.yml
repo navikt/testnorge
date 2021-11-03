@@ -166,14 +166,6 @@ updates:
     schedule:
       interval: "daily"
   - package-ecosystem: "gradle"
-    directory: "/apps/organisasjon-bestilling-service/"
-    schedule:
-      interval: "daily"
-  - package-ecosystem: "gradle"
-    directory: "/apps/organisasjon-faste-data-service/"
-    schedule:
-      interval: "daily"
-  - package-ecosystem: "gradle"
     directory: "/apps/organisasjon-faste-data-service/"
     schedule:
       interval: "daily"
@@ -199,10 +191,6 @@ updates:
       interval: "daily"
   - package-ecosystem: "gradle"
     directory: "/apps/orkestratoren/"
-    schedule:
-      interval: "daily"
-  - package-ecosystem: "gradle"
-    directory: "/apps/oversikt-frontend/"
     schedule:
       interval: "daily"
   - package-ecosystem: "gradle"
