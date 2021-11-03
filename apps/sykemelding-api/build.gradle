@@ -64,7 +64,7 @@ dependencies {
     implementation 'io.springfox:springfox-swagger-ui:2.9.2'
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
     implementation 'no.nav.helse.xml:kith-hodemelding:2019.07.30-12-26-5c924ef4f04022bbb850aaf299eb8e4464c1ca6a'
-    implementation 'no.nav.helse.xml:xmlfellesformat:2019.07.30-12-26-5c924ef4f04022bbb850aaf299eb8e4464c1ca6a'
+    implementation 'no.nav.helse.xml:xmlfellesformat:2019.09.09-08-50-693492ddc1d3f98e70c1638c94dcb95a66036d12'
     implementation 'no.nav.tjenestespesifikasjoner:digisyfo-sykmelding:1.2019.02.28-20.22-e0a79af1ccde'
     implementation 'com.ibm.mq:mq-jms-spring-boot-starter:2.0.0'
     implementation 'org.springframework.kafka:spring-kafka:2.5.6.RELEASE'
