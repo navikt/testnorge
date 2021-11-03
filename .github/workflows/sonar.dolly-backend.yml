@@ -1,13 +1,18 @@
-name: Sonar Analysis [dolly-backend]
+name: Build & Analysis [dolly-backend]
 
 on:
   push:
     paths:
       - apps/dolly-backend/**
+  pull_request_target:
+    types: [assigned, opened, synchronize, reopened]
+  workflow_dispatch:
 
 jobs:
-  build:
+  scan:
+    name: Sonar scan
     runs-on: ubuntu-latest
+    if: ${{ github.actor != 'dependabot[bot]' }}
     steps:
       - uses: actions/checkout@v2
       - name: Cache SonarCloud packages
