@@ -54,7 +54,7 @@ dependencies {
         }
     }
 
-    implementation 'com.sun.xml.ws:jaxws-ri:2.3.3'
+    implementation 'com.sun.xml.ws:jaxws-ri:3.0.2'
 
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:security-core'
