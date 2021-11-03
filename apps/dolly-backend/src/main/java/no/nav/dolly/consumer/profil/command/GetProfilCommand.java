@@ -10,7 +10,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
@@ -26,7 +25,6 @@ public record GetProfilCommand(WebClient webClient,
     @Override
     public Mono<ResponseEntity<ProfilDTO>> call() {
 
-        log.info("Jwt token er: {}", nonNull(jwtToken) ? jwtToken.substring(0, 15) : null);
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder.path(PROFIL_URL)
                         .build())

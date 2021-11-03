@@ -9,21 +9,16 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import java.util.Map;
 import java.util.Optional;
 
+import static java.util.Objects.nonNull;
+
 @UtilityClass
 @Slf4j
 public final class CurrentAuthentication {
 
-    private static JwtAuthenticationToken getToken() {
-        return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
-                .filter(o -> o instanceof JwtAuthenticationToken)
-                .map(JwtAuthenticationToken.class::cast)
-                .orElseThrow(() -> new RuntimeException("Finner ikke Jwt Authentication Token"));
-    }
-
     public static Bruker getAuthUser() {
         JwtAuthenticationToken token = getToken();
         return Bruker.builder()
-                .brukerId((String) token.getToken().getClaims().get("oid"))
+                .brukerId(getUserId())
                 .brukernavn(Optional.ofNullable((String) token.getToken().getClaims().get("name")).orElse("Systembruker"))
                 .epost((String) token.getToken().getClaims().get("preferred_username"))
                 .build();
@@ -36,6 +31,16 @@ public final class CurrentAuthentication {
     }
 
     public static String getUserId() {
-        return (String) getToken().getToken().getClaims().get("oid");
+        String userJwt = TokenXUtil.getUserJwt();
+        return nonNull(userJwt)
+                ? userJwt
+                : (String) getToken().getToken().getClaims().get("oid");
+    }
+
+    private static JwtAuthenticationToken getToken() {
+        return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
+                .filter(o -> o instanceof JwtAuthenticationToken)
+                .map(JwtAuthenticationToken.class::cast)
+                .orElseThrow(() -> new RuntimeException("Finner ikke Jwt Authentication Token"));
     }
 }
