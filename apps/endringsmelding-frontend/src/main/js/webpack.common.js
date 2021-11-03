@@ -1,6 +1,5 @@
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
 const path = require('path');
 
 module.exports = {
@@ -47,6 +46,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebPackPlugin({
+      inject: true,
       template: './public/index.html',
       filename: './index.html',
     }),

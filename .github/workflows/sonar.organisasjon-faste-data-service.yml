@@ -1,4 +1,4 @@
-name: Sonar Analysis [organisasjon-faste-data-service]
+name: Build & Analysis [organisasjon-faste-data-service]
 
 on:
   push:
@@ -7,6 +7,7 @@ on:
 
 jobs:
   scan:
+    name: Sonar scan
     runs-on: ubuntu-latest
     if: ${{ github.actor != 'dependabot[bot]' }}
     steps:

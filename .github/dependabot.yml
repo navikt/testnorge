@@ -20,6 +20,9 @@ updates:
     directory: "/apps/applikasjonsanalyse-frontend/src/main/js"
     schedule:
       interval: "daily"
+    ignore:
+      - dependency-name: "d3"
+        update-types: ["version-update:semver-patch"]
   - package-ecosystem: "gradle"
     directory: "/apps/applikasjonsanalyse-service/"
     schedule:

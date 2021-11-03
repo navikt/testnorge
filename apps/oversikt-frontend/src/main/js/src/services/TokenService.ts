@@ -7,7 +7,7 @@ const fetchToken = (application: Application, clientCredentials: boolean = false
 		{
 			method: 'POST',
 		},
-		application
+		JSON.stringify(application)
 	)
 
 const fetchMagicToken = () =>

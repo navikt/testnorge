@@ -1,4 +1,4 @@
-name: Sonar Analysis [testnorge-arena]
+name: Build & Analysis [testnorge-arena]
 
 on:
   push:
@@ -7,6 +7,7 @@ on:
 
 jobs:
   scan:
+    name: Sonar scan
     runs-on: ubuntu-latest
     if: ${{ github.actor != 'dependabot[bot]' }}
     steps:

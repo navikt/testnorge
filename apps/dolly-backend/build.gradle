@@ -1,0 +1,110 @@
+import no.nav.testnav.dependencies.gradle.DependenciesPlugin
+
+plugins {
+    id "org.sonarqube" version "3.3"
+    id 'no.nav.testnav.dependencies'
+    id 'java'
+    id 'org.springframework.boot' version "2.5.6"
+    id 'io.spring.dependency-management' version "1.0.11.RELEASE"
+}
+
+sonarqube {
+    properties {
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.projectKey", "testnav-dolly-backend"
+        property "sonar.projectName", "testnav-dolly-backend"
+        property "sonar.organization", "navit"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.project.monorepo.enabled", true
+        property "sonar.login", System.getenv("SONAR_TOKEN")
+    }
+}
+
+bootJar {
+    archiveFileName = "app.jar"
+    mainClassName = 'no.nav.dolly.DollyBackendApplicationStarter'
+}
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${DependenciesPlugin.springCloud}"
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+java.sourceCompatibility = JavaVersion.VERSION_17
+
+repositories {
+    maven {
+        url = uri('https://repo1.maven.org/maven2/')
+    }
+    maven {
+        name = "GitHubPackages"
+        url = uri('https://maven.pkg.github.com/navikt/maven-release')
+        credentials(PasswordCredentials) {
+            password System.getenv("NAV_TOKEN")
+            username 'token'
+        }
+    }
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+
+    implementation 'no.nav.testnav.libs:servlet-core'
+    implementation 'no.nav.testnav.libs:servlet-security'
+    implementation 'no.nav.testnav.libs:servlet-insecure-security'
+    implementation 'no.nav.testnav.libs:security-core'
+    implementation 'no.nav.testnav.libs:database'
+    implementation 'no.nav.testnav.libs:data-transfer-objects'
+
+    implementation 'com.papertrailapp:logback-syslog4j:1.0.0'
+
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
+    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
+    implementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
+    implementation 'org.springframework.security:spring-security-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
+    implementation "org.springdoc:springdoc-openapi-ui:${DependenciesPlugin.springdocOpenapi}"
+
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+    implementation "org.springframework.boot:spring-boot-starter-webflux"
+
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'net.sf.ehcache:ehcache-core:2.6.11'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.5'
+    implementation 'org.postgresql:postgresql:42.2.24.jre7'
+    implementation 'org.flywaydb:flyway-core:8.0.1'
+    implementation 'io.micrometer:micrometer-registry-prometheus:1.7.5'
+    implementation "ma.glasnost.orika:orika-core:${DependenciesPlugin.orikaVersion}"
+    implementation 'org.codehaus.jettison:jettison:1.4.1'
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
+    implementation 'org.springframework.security:spring-security-oauth2-client'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'net.sf.ehcache:ehcache-core:2.6.11'
+
+
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
+    testImplementation 'com.h2database:h2:1.4.200'
+    testImplementation 'org.bitbucket.b_c:jose4j:0.7.1'
+    testImplementation(enforcedPlatform("org.junit:junit-bom:5.8.1"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+
+
+    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+}

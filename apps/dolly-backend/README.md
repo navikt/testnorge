@@ -21,27 +21,7 @@ https://dolly-backend.dev.intern.nav.no/swagger-ui.html
 https://dolly-backend.dev.intern.nav.no/swagger-ui.html
 **NB: `naisdevice` må kjøre og være grønn.**
 
-Legg inn dette i **din** maven settings.xml fil:
-
-```
-<settings>
-    <profiles>
-        <profile>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <repositories>
-                <repository>
-                    <id>internal-mirror-github-navikt</id>
-                    <url>https://repo.adeo.no/repository/github-package-registry-navikt/</url>
-                </repository>
-            </repositories>
-        </profile>
-    </profiles>
-</settings>
-```
-
-Så kjør `mvn clean install`
+Så kjør `gradle clean build`
 
 ## Deploy status
 

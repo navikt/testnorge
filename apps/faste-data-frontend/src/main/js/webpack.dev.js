@@ -8,7 +8,7 @@ module.exports = merge(common, {
   devtool: 'inline-source-map',
   devServer: {
     port: 3000,
-    contentBase: path.join(__dirname, 'public'),
+    static: path.join(__dirname, 'public'),
     historyApiFallback: true,
     proxy: {
       '/testnav-person-service': {
