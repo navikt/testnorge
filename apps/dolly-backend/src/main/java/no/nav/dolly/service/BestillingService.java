@@ -42,11 +42,9 @@ import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toSet;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Service
@@ -61,6 +59,28 @@ public class BestillingService {
     private final ObjectMapper objectMapper;
     private final TestgruppeRepository testgruppeRepository;
     private final BrukerService brukerService;
+
+    private static void fixAaregAbstractClassProblem(List<RsAareg> aaregdata) {
+
+        aaregdata.forEach(arbeidforhold -> {
+            if (nonNull(arbeidforhold.getArbeidsgiver())) {
+                arbeidforhold.getArbeidsgiver().setAktoertype(
+                        arbeidforhold.getArbeidsgiver() instanceof RsOrganisasjon ? "ORG" : "PERS");
+            }
+        });
+    }
+
+    private static void fixPdlAbstractClassProblem(RsPdldata pdldata) {
+
+        if (nonNull(pdldata)) {
+            if (nonNull(pdldata.getKontaktinformasjonForDoedsbo())) {
+                pdldata.getKontaktinformasjonForDoedsbo().setAdressat(pdldata.getKontaktinformasjonForDoedsbo().getAdressat());
+            }
+            if (nonNull(pdldata.getFalskIdentitet())) {
+                pdldata.getFalskIdentitet().setRettIdentitet(pdldata.getFalskIdentitet().getRettIdentitet());
+            }
+        }
+    }
 
     public Bestilling fetchBestillingById(Long bestillingId) {
         return bestillingRepository.findById(bestillingId)
@@ -112,10 +132,8 @@ public class BestillingService {
     @Transactional
     public Bestilling saveBestilling(String ident, RsDollyRelasjonRequest request) {
 
-        Testident testident = identRepository.findByIdent(ident);
-        if (isNull(testident) || isBlank(testident.getIdent())) {
-            throw new NotFoundException(format("Testindent %s ble ikke funnet", ident));
-        }
+        Testident testident = identRepository.findByIdent(ident)
+                .orElseThrow(() -> new NotFoundException(format("Testident %s ble ikke funnet", ident)));
 
         return saveBestillingToDB(
                 Bestilling.builder()
@@ -133,10 +151,9 @@ public class BestillingService {
     @Transactional
     public Bestilling saveBestilling(RsDollyUpdateRequest request, String ident) {
 
-        Testident testident = identRepository.findByIdent(ident);
-        if (isNull(testident) || isBlank(testident.getIdent())) {
-            throw new NotFoundException(format("Testindent %s ble ikke funnet", ident));
-        }
+        Testident testident = identRepository.findByIdent(ident)
+                .orElseThrow(() -> new NotFoundException(format("Testident %s ble ikke funnet", ident)));
+
         fixAaregAbstractClassProblem(request.getAareg());
         fixPdlAbstractClassProblem(request.getPdlforvalter());
         return saveBestillingToDB(
@@ -309,28 +326,6 @@ public class BestillingService {
             bestillingKontrollRepository.deleteByBestillingWithNoChildren(id);
             bestillingRepository.deleteBestillingWithNoChildren(id);
         });
-    }
-
-    private static void fixAaregAbstractClassProblem(List<RsAareg> aaregdata) {
-
-        aaregdata.forEach(arbeidforhold -> {
-            if (nonNull(arbeidforhold.getArbeidsgiver())) {
-                arbeidforhold.getArbeidsgiver().setAktoertype(
-                        arbeidforhold.getArbeidsgiver() instanceof RsOrganisasjon ? "ORG" : "PERS");
-            }
-        });
-    }
-
-    private static void fixPdlAbstractClassProblem(RsPdldata pdldata) {
-
-        if (nonNull(pdldata)) {
-            if (nonNull(pdldata.getKontaktinformasjonForDoedsbo())) {
-                pdldata.getKontaktinformasjonForDoedsbo().setAdressat(pdldata.getKontaktinformasjonForDoedsbo().getAdressat());
-            }
-            if (nonNull(pdldata.getFalskIdentitet())) {
-                pdldata.getFalskIdentitet().setRettIdentitet(pdldata.getFalskIdentitet().getRettIdentitet());
-            }
-        }
     }
 
     private String toJson(Object object) {
