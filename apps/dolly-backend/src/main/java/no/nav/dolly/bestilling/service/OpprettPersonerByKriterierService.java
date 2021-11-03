@@ -100,7 +100,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                 progress = new BestillingProgress(bestilling, dollyPerson.getHovedperson(), originator.getMaster());
 
                                 if (originator.isTpsf()) {
-                                    sendIdenterTilTPS(new ArrayList<>(List.of(bestilling.getMiljoer().split(","))),
+                                    sendIdenterTilTPS(List.of(bestilling.getMiljoer().split(",")),
                                             opprettedeIdenter, bestilling.getGruppe(), progress, bestKriterier.getBeskrivelse());
 
                                 } else {

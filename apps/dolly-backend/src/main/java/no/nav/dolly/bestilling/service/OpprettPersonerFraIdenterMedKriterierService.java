@@ -83,7 +83,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                                             pdlDataConsumer, mapperFacade).call();
 
                                     if (identStatus.isTpsf()) {
-                                        sendIdenterTilTPS(new ArrayList<>(List.of(bestilling.getMiljoer().split(","))),
+                                        sendIdenterTilTPS(List.of(bestilling.getMiljoer().split(",")),
                                                 leverteIdenter, bestilling.getGruppe(), progress, bestilling.getBeskrivelse());
 
                                     } else {
