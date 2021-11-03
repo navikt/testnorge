@@ -53,7 +53,7 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
 
     implementation 'org.aspectj:aspectjweaver:1.9.6'
-    implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
+    implementation 'io.micrometer:micrometer-registry-prometheus:1.7.5'
     implementation 'javax.validation:validation-api:2.0.1.Final'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.11.2'
 
