@@ -30,6 +30,9 @@ IdentifikasjonPanel.initialValues = ({ set, del, has }) => ({
 			set('pdldata.person.falskIdentitet', [
 				{
 					erFalsk: true,
+					kilde: 'Dolly',
+					master: 'FREG',
+					gjeldende: true,
 				},
 			])
 		},

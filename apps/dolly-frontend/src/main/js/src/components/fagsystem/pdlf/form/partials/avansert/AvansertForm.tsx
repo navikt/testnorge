@@ -13,11 +13,11 @@ export const AvansertForm = ({ path }) => {
 		<div className="flexbox--full-width">
 			{visAvansert ? (
 				<Button onClick={setSkjulAvansert} kind={'collapse'}>
-					SKJUL AVANSERT
+					SKJUL AVANSERTE VALG
 				</Button>
 			) : (
 				<Button onClick={setVisAvansert} kind={'expand'}>
-					VIS AVANSERT
+					VIS AVANSERTE VALG
 				</Button>
 			)}
 			{visAvansert && (
