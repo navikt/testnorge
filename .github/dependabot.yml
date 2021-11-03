@@ -113,3 +113,19 @@ updates:
     directory: "/apps/ident-check-in-prod-service/"
     schedule:
       interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/ident-pool/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/import-person-service/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/inntektsmelding-generator-service/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "/apps/inntektsmelding-service/"
+    schedule:
+      interval: "daily"
