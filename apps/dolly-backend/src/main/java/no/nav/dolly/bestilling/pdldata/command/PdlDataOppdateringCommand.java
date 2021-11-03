@@ -15,7 +15,7 @@ import java.util.concurrent.Callable;
 @RequiredArgsConstructor
 public class PdlDataOppdateringCommand implements Callable<Mono<String>> {
 
-    private static final String PDL_FORVALTER_URL = "/api/v1/personer/{ident}";
+    private static final String PDL_FORVALTER_PERSONER_URL = "/api/v1/personer/{ident}";
 
     private final WebClient webClient;
     private final String ident;
@@ -26,7 +26,7 @@ public class PdlDataOppdateringCommand implements Callable<Mono<String>> {
 
         return webClient
                 .put()
-                .uri(PDL_FORVALTER_URL, ident)
+                .uri(PDL_FORVALTER_PERSONER_URL, ident)
                 .header(HttpHeaders.AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(body))

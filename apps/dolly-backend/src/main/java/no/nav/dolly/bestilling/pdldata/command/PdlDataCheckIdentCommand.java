@@ -15,7 +15,7 @@ import java.util.concurrent.Callable;
 @RequiredArgsConstructor
 public class PdlDataCheckIdentCommand implements Callable<Mono<AvailibilityResponseDTO[]>> {
 
-    private static final String PDL_FORVALTER_ORDRE_URL = "/api/v1/identer";
+    private static final String PDL_FORVALTER_EKSISTENS_URL = "/api/v1/eksistens";
     private static final String IDENTER = "identer";
 
     private final WebClient webClient;
@@ -26,7 +26,7 @@ public class PdlDataCheckIdentCommand implements Callable<Mono<AvailibilityRespo
 
         return webClient
                 .get()
-                .uri(uriBuilder -> uriBuilder.path(PDL_FORVALTER_ORDRE_URL)
+                .uri(uriBuilder -> uriBuilder.path(PDL_FORVALTER_EKSISTENS_URL)
                         .queryParam(IDENTER, identer)
                         .build())
                 .header(HttpHeaders.AUTHORIZATION, token)

@@ -48,10 +48,10 @@ public class NavigasjonService {
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
 
-        List<Testident> identsFound = identRepository.findByIdentIn(identer);
-        if (!identsFound.isEmpty()) {
+        var identerFound = identRepository.findByIdentIn(identer);
+        if (!identerFound.isEmpty()) {
 
-            Testident testident = identsFound.get(0);
+            Testident testident = identerFound.get(0);
             return RsWhereAmI.builder()
                     .gruppe(mapperFacade.map(testident.getTestgruppe(), RsTestgruppe.class))
                     .identHovedperson(testident.getIdent())

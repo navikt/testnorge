@@ -66,7 +66,8 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
 
         if (nonNull(bestKriterier)) {
 
-            var tilgjengeligeIdenter = new AvailCheckCommand(bestilling, tpsfService, pdlDataConsumer).call();
+            var tilgjengeligeIdenter = new AvailCheckCommand(bestilling.getOpprettFraIdenter(),
+                    bestKriterier.getPdldata(), tpsfService, pdlDataConsumer).call();
 
             dollyForkJoinPool.submit(() -> {
                 tilgjengeligeIdenter.parallelStream()
