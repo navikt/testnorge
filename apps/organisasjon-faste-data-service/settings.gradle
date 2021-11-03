@@ -4,8 +4,6 @@ plugins {
 
 rootProject.name = 'organisasjon-faste-data-service'
 
-includeBuild '../../gradlePlugins'
-
 includeBuild '../../libs/database'
 includeBuild '../../libs/servlet-security'
 includeBuild '../../libs/servlet-core'
@@ -14,7 +12,6 @@ includeBuild '../../libs/commands'
 includeBuild '../../libs/kafka-config'
 includeBuild '../../libs/kafka-producers'
 includeBuild '../../libs/avro-schema'
-includeBuild '../../libs/testing'
 
 gradleEnterprise {
     buildScan {
