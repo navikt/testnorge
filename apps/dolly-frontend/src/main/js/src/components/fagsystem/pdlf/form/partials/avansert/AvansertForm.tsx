@@ -6,7 +6,12 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 
-export const AvansertForm = ({ path }) => {
+interface AvansertForm {
+	path: string
+	kanVelgeMaster?: boolean
+}
+
+export const AvansertForm = ({ path, kanVelgeMaster = true }: AvansertForm) => {
 	const [visAvansert, setVisAvansert, setSkjulAvansert] = useBoolean(false)
 
 	return (
@@ -23,7 +28,12 @@ export const AvansertForm = ({ path }) => {
 			{visAvansert && (
 				<div className={'flexbox--flex-wrap'} style={{ marginTop: '10px' }}>
 					<FormikTextInput name={`${path}.kilde`} label="Kilde" />
-					<FormikSelect name={`${path}.master`} label="Master" options={Options('master')} />
+					<FormikSelect
+						name={`${path}.master`}
+						label="Master"
+						options={Options('master')}
+						disabled={!kanVelgeMaster}
+					/>
 					<FormikCheckbox name={`${path}.gjeldende`} label="Er gjeldende" checkboxMargin />
 				</div>
 			)}

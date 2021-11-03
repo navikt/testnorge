@@ -129,7 +129,7 @@ export const FalskIdentitet = ({ formikBag }) => {
 								</>
 							)}
 						</div>
-						<AvansertForm path={path} />
+						<AvansertForm path={path} kanVelgeMaster={false} />
 					</>
 				)
 			}}
