@@ -79,7 +79,7 @@ dependencies {
 
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.postgresql:postgresql'
-    implementation 'com.google.guava:guava:18.0'
+    implementation 'com.google.guava:guava:23.0'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-csv'
     implementation 'org.codehaus.woodstox:woodstox-core-asl:4.4.1'
