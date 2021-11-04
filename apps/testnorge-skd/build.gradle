@@ -55,7 +55,7 @@ dependencies {
 
     implementation 'com.jayway.jsonpath:json-path:2.6.0'
     implementation 'org.aspectj:aspectjweaver:1.9.7'
-    implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
+    implementation 'io.micrometer:micrometer-registry-prometheus:1.7.5'
 
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'javax.validation:validation-api:2.0.1.Final'
