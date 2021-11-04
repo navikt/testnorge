@@ -56,7 +56,7 @@ dependencies {
 
     implementation 'com.jayway.jsonpath:json-path:2.4.0'
     implementation 'org.aspectj:aspectjweaver:1.9.6'
-    implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
+    implementation 'io.micrometer:micrometer-registry-prometheus:1.7.5'
 
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
     implementation 'io.springfox:springfox-swagger2:2.9.2'
