@@ -241,6 +241,8 @@ updates:
       interval: "daily"
   - package-ecosystem: "gradle"
     directory: "/apps/syntrest/"
+    ignore:
+      - dependency-name: "io.kubernetes:client-java"
     schedule:
       interval: "daily"
   - package-ecosystem: "gradle"
