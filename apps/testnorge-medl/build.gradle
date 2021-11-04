@@ -42,7 +42,7 @@ dependencies {
     implementation 'no.nav.testnav.libs:servlet-security'
 
     implementation 'org.aspectj:aspectjweaver:1.9.7'
-    implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
+    implementation 'io.micrometer:micrometer-registry-prometheus:1.7.5'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
