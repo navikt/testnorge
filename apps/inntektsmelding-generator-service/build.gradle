@@ -66,6 +66,7 @@ dependencies {
     implementation 'javax.activation:activation:1.1'
     implementation 'org.glassfish.jaxb:jaxb-runtime:3.0.2'
 
+    testImplementation 'junit:junit:4.13.2' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 
