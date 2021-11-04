@@ -64,13 +64,14 @@ dependencies {
 
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'javax.validation:validation-api:2.0.1.Final'
-    implementation 'org.aspectj:aspectjweaver:1.9.6'
-    implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
+    implementation 'org.aspectj:aspectjweaver:1.9.7'
+    implementation 'io.micrometer:micrometer-registry-prometheus:1.7.5'
+
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
     implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
     implementation 'com.ibm.mq:mq-jms-spring-boot-starter:2.0.0'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.11.2'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.2'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
 
