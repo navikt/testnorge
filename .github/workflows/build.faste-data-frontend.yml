@@ -4,8 +4,6 @@ on:
   push:
     paths:
       - apps/faste-data-frontend/**
-  pull_request:
-    types: [assigned, opened, synchronize, reopened]
   workflow_dispatch:
 
 jobs:

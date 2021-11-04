@@ -191,6 +191,8 @@ updates:
       interval: "daily"
   - package-ecosystem: "gradle"
     directory: "/apps/orkestratoren/"
+    ignore:
+      - dependency-name: "no.nav.registre:testnorge-consumers"
     schedule:
       interval: "daily"
   - package-ecosystem: "gradle"

@@ -47,11 +47,21 @@ dependencies {
         }
     }
 
-    implementation 'no.nav.testnav.libs:commands'
+    implementation ('no.nav.testnav.libs:commands'){
+        exclude group: 'com.fasterxml.jackson.core', module: 'jackson-annotations'
+        exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
+    }
     implementation 'no.nav.testnav.libs:servlet-security'
     implementation 'no.nav.testnav.libs:servlet-core'
-    implementation 'no.nav.testnav.libs:domain'
-    implementation 'no.nav.testnav.libs:data-transfer-objects'
+    implementation('no.nav.testnav.libs:domain') {
+        exclude group: 'com.fasterxml.jackson.core', module: 'jackson-annotations'
+        exclude group: 'com.fasterxml.jackson.dataformat', module: 'jackson-dataformat-xml'
+        exclude group: 'com.fasterxml.jackson.datatype', module: 'jackson-datatype-jsr310'
+    }
+    implementation ('no.nav.testnav.libs:data-transfer-objects'){
+        exclude group: 'com.fasterxml.jackson.core', module: 'jackson-annotations'
+        exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
+    }
 
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
@@ -71,7 +81,7 @@ dependencies {
     implementation 'com.ibm.mq:mq-jms-spring-boot-starter:2.5.5'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
 
-    implementation 'no.nav.registre:testnorge-consumers:1.12.0-RELEASE'
+    implementation 'no.nav.registre:testnorge-consumers:1.11.11-RELEASE'
 
     implementation 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
