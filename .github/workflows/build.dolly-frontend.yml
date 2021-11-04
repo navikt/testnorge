@@ -4,8 +4,6 @@ on:
   push:
     paths:
       - apps/dolly-frontend/**
-  pull_request_target:
-    types: [assigned, opened, synchronize, reopened]
   workflow_dispatch:
 
 jobs:

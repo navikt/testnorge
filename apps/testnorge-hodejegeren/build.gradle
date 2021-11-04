@@ -51,14 +51,15 @@ dependencies {
 
     implementation 'com.jayway.jsonpath:json-path:2.6.0'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
-
     implementation 'org.aspectj:aspectjweaver:1.9.7'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
+
     implementation 'io.springfox:springfox-swagger2:3.0.0'
     implementation 'io.springfox:springfox-swagger-ui:3.0.0'
 
     implementation 'no.nav.registre:testnorge-consumers:1.12.0-RELEASE'
+    implementation 'com.google.guava:guava:31.0.1-jre'
 
     implementation 'org.hibernate.validator:hibernate-validator'
 
@@ -66,7 +67,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 
-    implementation 'org.projectlombok:lombok:1.18.22'
-    annotationProcessor 'org.projectlombok:lombok:1.18.22'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
+    implementation 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 }

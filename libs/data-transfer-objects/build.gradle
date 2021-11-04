@@ -2,6 +2,7 @@ plugins {
     id "org.sonarqube" version "3.3"
     id 'java-library'
     id 'maven-publish'
+    id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
 
 sonarqube {
@@ -16,6 +17,11 @@ sonarqube {
     }
 }
 
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.boot:spring-boot-dependencies:2.5.6'
+    }
+}
 
 group = 'no.nav.testnav.libs'
 
@@ -33,16 +39,16 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.13.0'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
     implementation 'javax.validation:validation-api:2.0.1.Final'
     implementation 'org.springdoc:springdoc-openapi-common:1.5.12'
 
     implementation 'no.nav.tjenestespesifikasjoner:nav-altinn-inntektsmelding:1.2019.08.16-13.46-35cbdfd492d4'
 
-    implementation 'org.projectlombok:lombok:1.18.22'
-    annotationProcessor 'org.projectlombok:lombok:1.18.22'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
+    implementation 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
 if (project.hasProperty("releaseVersion")) {

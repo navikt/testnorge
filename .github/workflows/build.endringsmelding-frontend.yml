@@ -4,8 +4,6 @@ on:
   push:
     paths:
       - apps/endringsmelding-frontend/**
-  pull_request_target:
-    types: [assigned, opened, synchronize, reopened]
   workflow_dispatch:
 
 jobs:

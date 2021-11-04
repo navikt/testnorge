@@ -73,7 +73,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     implementation 'org.hibernate.validator:hibernate-validator'
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.0'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     implementation 'org.aspectj:aspectjweaver:1.9.7'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.7.5'
 

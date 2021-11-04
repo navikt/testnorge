@@ -58,10 +58,6 @@ dependencies {
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
     implementation 'org.hibernate.validator:hibernate-validator'
 
-    implementation 'org.projectlombok:lombok:1.18.22'
-    annotationProcessor 'org.projectlombok:lombok:1.18.22'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
-
     implementation 'io.springfox:springfox-swagger2:3.0.0'
     implementation 'io.springfox:springfox-swagger-ui:3.0.0'
 
@@ -73,6 +69,10 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'com.squareup.okhttp3:mockwebserver:4.9.2'
+
+    implementation 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
 description = 'testnorge-inst'

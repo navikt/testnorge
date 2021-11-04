@@ -15,6 +15,12 @@ sonarqube {
         property "sonar.login", System.getenv("SONAR_TOKEN")
     }
 }
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.boot:spring-boot-dependencies:2.5.6'
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.4'
+    }
+}
 
 
 group = 'no.nav.testnav.libs'
@@ -26,20 +32,14 @@ repositories {
 
 java.sourceCompatibility = JavaVersion.VERSION_17
 
-
-dependencyManagement {
-    imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.4'
-    }
-}
-
 dependencies {
-    implementation 'org.flywaydb:flyway-core:8.0.3'
-    implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
-    implementation 'org.springframework.vault:spring-vault-core:2.3.2'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.5.6'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-    implementation 'org.projectlombok:lombok:1.18.22'
-    annotationProcessor 'org.projectlombok:lombok:1.18.22'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
+    implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
+    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+    implementation 'org.flywaydb:flyway-core'
+
+    implementation 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 }
