@@ -4,7 +4,6 @@ plugins {
 
 rootProject.name = 'reactive-core'
 
-
 gradleEnterprise {
     buildScan {
         termsOfServiceUrl = "https://gradle.com/terms-of-service"

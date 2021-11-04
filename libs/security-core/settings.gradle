@@ -4,6 +4,7 @@ plugins {
 
 rootProject.name = 'security-core'
 
+includeBuild '../security-core'
 
 gradleEnterprise {
     buildScan {

@@ -4,7 +4,6 @@ plugins {
 
 rootProject.name = 'varslinger-service'
 
-
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/security-core'
 includeBuild '../../libs/database'

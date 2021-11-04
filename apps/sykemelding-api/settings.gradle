@@ -8,7 +8,6 @@ rootProject.name = 'sykemelding-api'
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/avro-schema'
 includeBuild '../../libs/data-transfer-objects'
-includeBuild '../../libs/testing'
 
 gradleEnterprise {
     buildScan {

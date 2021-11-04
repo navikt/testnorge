@@ -4,6 +4,8 @@ plugins {
 
 rootProject.name = 'kafka-producers'
 
+includeBuild '../kafka-config'
+includeBuild '../avro-schema'
 
 gradleEnterprise {
     buildScan {

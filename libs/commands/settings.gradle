@@ -4,6 +4,7 @@ plugins {
 
 rootProject.name = 'commands'
 
+includeBuild '../data-transfer-objects'
 
 gradleEnterprise {
     buildScan {

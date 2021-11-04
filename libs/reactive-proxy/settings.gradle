@@ -4,6 +4,7 @@ plugins {
 
 rootProject.name = 'reactive-proxy'
 
+includeBuild '../security-core'
 
 gradleEnterprise {
     buildScan {
