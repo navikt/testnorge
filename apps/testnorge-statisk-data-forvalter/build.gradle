@@ -42,7 +42,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.google.guava:guava:30.0-jre'
+    implementation 'com.google.guava:guava:31.0.1-jre'
 
     implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:servlet-insecure-security'
@@ -56,7 +56,7 @@ dependencies {
     implementation 'no.nav.testnav.libs:csv-converter'
 
     implementation 'org.springframework.kafka:spring-kafka'
-    implementation 'io.confluent:kafka-avro-serializer:6.1.0'
+    implementation 'io.confluent:kafka-avro-serializer:7.0.0'
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -80,7 +80,7 @@ dependencies {
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'javax.validation:validation-api:2.0.1.Final'
 
-    implementation 'org.apache.httpcomponents:httpclient:4.5.12'
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
 

@@ -56,11 +56,11 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-annotations'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
-    implementation 'org.aspectj:aspectjweaver:1.9.6'
+    implementation 'org.aspectj:aspectjweaver:1.9.7'
 
     implementation 'no.nav.registre:testnorge-consumers:1.12.0-RELEASE'
 
-    implementation 'com.squareup.okhttp3:okhttp:4.7.2'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.2'
     implementation 'io.springfox:springfox-swagger2:2.9.2'
     implementation 'io.springfox:springfox-swagger-ui:2.9.2'
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
@@ -70,11 +70,11 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
 
     implementation 'org.hibernate.validator:hibernate-validator'
-    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
+    testImplementation 'junit:junit:4.13.2' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'no.nav.testnav.libs:testing'
-    testImplementation 'com.squareup.okhttp3:mockwebserver:4.7.2'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:4.9.2'
 }
 
 description = 'testnorge-arena'

@@ -61,19 +61,19 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
     implementation 'no.nav.bidrag.ui:bisys-ui-connect:2020.09.23-11.42-60270558f930'
-    implementation 'org.aspectj:aspectjweaver:1.9.6'
+    implementation 'org.aspectj:aspectjweaver:1.9.7'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
     implementation 'org.hibernate.validator:hibernate-validator'
 
     implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
-    implementation 'no.nav.registre:testnorge-consumers:1.8.0-RELEASE'
+    implementation 'no.nav.registre:testnorge-consumers:1.12.0-RELEASE'
 
     implementation 'org.projectlombok:lombok:1.18.22'
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
 
-    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
+    testImplementation 'junit:junit:4.13.2' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }

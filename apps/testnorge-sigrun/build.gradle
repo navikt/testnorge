@@ -54,8 +54,8 @@ dependencies {
 
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'org.apache.httpcomponents:httpclient:4.5.12'
-    implementation 'org.aspectj:aspectjweaver:1.9.6'
-    implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
+    implementation 'org.aspectj:aspectjweaver:1.9.7'
+    implementation 'io.micrometer:micrometer-registry-prometheus:1.7.5'
 
     implementation 'io.springfox:springfox-swagger2:2.9.2'
     implementation 'io.springfox:springfox-swagger-ui:2.9.2'
@@ -66,7 +66,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
 
-    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
+    testImplementation 'junit:junit:4.13.2' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.boot:spring-boot-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
