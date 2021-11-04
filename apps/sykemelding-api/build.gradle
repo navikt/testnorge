@@ -1,12 +1,10 @@
-import no.nav.testnav.dependencies.gradle.DependenciesPlugin
-
 plugins {
-    id "org.sonarqube" version "3.3"
-    id 'no.nav.testnav.dependencies'
     id 'java'
+    id "org.sonarqube" version "3.3"
     id 'org.springframework.boot' version "2.5.6"
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
+
 
 sonarqube {
     properties {
@@ -72,11 +70,9 @@ dependencies {
 
     implementation 'org.apache.kafka:kafka-clients:2.5.1'
     implementation 'io.confluent:kafka-avro-serializer:5.5.0'
-    
-    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
-    testImplementation 'no.nav.testnav.libs:testing'
 
     implementation 'org.projectlombok:lombok:1.18.22'
     annotationProcessor 'org.projectlombok:lombok:1.18.22'

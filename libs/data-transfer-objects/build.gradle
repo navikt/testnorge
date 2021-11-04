@@ -1,8 +1,5 @@
-import no.nav.testnav.dependencies.gradle.DependenciesPlugin
-
 plugins {
     id "org.sonarqube" version "3.3"
-    id 'no.nav.testnav.dependencies'
     id 'java-library'
     id 'maven-publish'
 }
@@ -36,10 +33,10 @@ repositories {
 }
 
 dependencies {
-    implementation "com.fasterxml.jackson.core:jackson-annotations:${DependenciesPlugin.jackson}"
-    implementation "com.fasterxml.jackson.core:jackson-databind:${DependenciesPlugin.jackson}"
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.13.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
     implementation 'javax.validation:validation-api:2.0.1.Final'
-    implementation "org.springdoc:springdoc-openapi-common:${DependenciesPlugin.springdocOpenapi}"
+    implementation 'org.springdoc:springdoc-openapi-common:1.5.12'
 
     implementation 'no.nav.tjenestespesifikasjoner:nav-altinn-inntektsmelding:1.2019.08.16-13.46-35cbdfd492d4'
 

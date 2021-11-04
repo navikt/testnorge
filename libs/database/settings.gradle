@@ -4,7 +4,6 @@ plugins {
 
 rootProject.name = 'database'
 
-includeBuild '../../gradlePlugins'
 
 gradleEnterprise {
     buildScan {

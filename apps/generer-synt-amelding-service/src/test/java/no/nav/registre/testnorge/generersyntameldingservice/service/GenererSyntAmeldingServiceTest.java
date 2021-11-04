@@ -1,23 +1,24 @@
 package no.nav.registre.testnorge.generersyntameldingservice.service;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.web.server.ResponseStatusException;
-
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 
-@RunWith(MockitoJUnitRunner.class)
-public class GenererSyntAmeldingServiceTest {
+@ExtendWith(MockitoExtension.class)
+class GenererSyntAmeldingServiceTest {
 
     @InjectMocks
     private GenererSyntAmeldingService service;
 
     @Test
-    public void shouldGetCorrectAntallMeldinger() {
+    void shouldGetCorrectAntallMeldinger() {
         assertThat(service.getAntallMeldinger(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 1, 7))).isEqualTo(1);
         assertThat(service.getAntallMeldinger(LocalDate.of(2020, 1, 1), LocalDate.of(2021, 1, 1))).isEqualTo(13);
         assertThat(service.getAntallMeldinger(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 10, 15))).isEqualTo(10);
@@ -26,8 +27,11 @@ public class GenererSyntAmeldingServiceTest {
         assertThat(service.getAntallMeldinger(LocalDate.of(2020, 1, 1), LocalDate.of(2020, 1, 1))).isEqualTo(1);
     }
 
-    @Test(expected = ResponseStatusException.class)
-    public void shouldThrowExceptionWithIncorrectDates() {
-        service.getAntallMeldinger(LocalDate.of(2020, 3, 1), LocalDate.of(2020, 2, 1));
+    @Test
+    void shouldThrowExceptionWithIncorrectDates() {
+        Assertions.assertThrows(
+                ResponseStatusException.class,
+                () -> service.getAntallMeldinger(LocalDate.of(2020, 3, 1), LocalDate.of(2020, 2, 1))
+        );
     }
 }
