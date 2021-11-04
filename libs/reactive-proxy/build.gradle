@@ -1,8 +1,5 @@
-import no.nav.testnav.dependencies.gradle.DependenciesPlugin
-
 plugins {
     id "org.sonarqube" version "3.3"
-    id 'no.nav.testnav.dependencies'
     id 'java-library'
     id 'maven-publish'
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
@@ -29,7 +26,7 @@ repositories {
 
 dependencyManagement {
     imports {
-        mavenBom  'org.springframework.cloud:spring-cloud-dependencies:2020.0.4'
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.4'
     }
 }
 
@@ -61,8 +58,8 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
 
-    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:${DependenciesPlugin.springBoot}"
-    implementation "org.springframework.boot:spring-boot-starter-webflux:${DependenciesPlugin.springBoot}"
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server:2.5.6'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux:2.5.6'
 
     implementation "org.springframework.cloud:spring-cloud-starter-vault-config"
     implementation "org.springframework.cloud:spring-cloud-starter-gateway"

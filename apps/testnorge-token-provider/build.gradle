@@ -1,12 +1,10 @@
-import no.nav.testnav.dependencies.gradle.DependenciesPlugin
-
 plugins {
-    id "org.sonarqube" version "3.3"
-    id 'no.nav.testnav.dependencies'
     id 'java'
+    id "org.sonarqube" version "3.3"
     id 'org.springframework.boot' version "2.5.6"
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
+
 
 sonarqube {
     properties {
@@ -49,14 +47,14 @@ dependencies {
 
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
 
-    implementation 'org.apache.httpcomponents:httpclient:4.5.12'
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
 
     implementation 'io.springfox:springfox-swagger2:2.9.2'
     implementation 'io.springfox:springfox-swagger-ui:2.9.2'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
 
-    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
+    testImplementation 'junit:junit:4.13.2' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     implementation 'org.projectlombok:lombok:1.18.22'

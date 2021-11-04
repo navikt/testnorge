@@ -4,7 +4,6 @@ plugins {
 
 rootProject.name = 'synt-person-api'
 
-includeBuild '../../gradlePlugins'
 
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/servlet-security'

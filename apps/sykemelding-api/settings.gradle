@@ -4,12 +4,10 @@ plugins {
 
 rootProject.name = 'sykemelding-api'
 
-includeBuild '../../gradlePlugins'
 
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/avro-schema'
 includeBuild '../../libs/data-transfer-objects'
-includeBuild '../../libs/testing'
 
 gradleEnterprise {
     buildScan {

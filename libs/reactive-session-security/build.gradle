@@ -1,8 +1,5 @@
-import no.nav.testnav.dependencies.gradle.DependenciesPlugin
-
 plugins {
     id "org.sonarqube" version "3.3"
-    id 'no.nav.testnav.dependencies'
     id 'java-library'
 }
 
@@ -28,17 +25,17 @@ repositories {
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 dependencies {
-    implementation 'com.auth0:java-jwt:3.18.1'
+    implementation 'com.auth0:java-jwt:3.18.2'
     implementation 'no.nav.testnav.libs:security-core'
     // Session
-    implementation "org.springframework.session:spring-session-core:2.5.2"
-    implementation "org.springframework.session:spring-session-data-redis:2.5.2"
+    implementation "org.springframework.session:spring-session-core:2.5.3"
+    implementation "org.springframework.session:spring-session-data-redis:2.5.3"
 
-    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:${DependenciesPlugin.springBoot}"
-    implementation "org.springframework.boot:spring-boot-starter-webflux:${DependenciesPlugin.springBoot}"
-    implementation "org.springframework.boot:spring-boot-starter-oauth2-client:${DependenciesPlugin.springBoot}"
-    implementation "org.springframework.boot:spring-boot-starter-security:${DependenciesPlugin.springBoot}"
-    implementation "org.springframework.boot:spring-boot-starter-data-redis:${DependenciesPlugin.springBoot}"
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server:2.5.6'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux:2.5.6'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client:2.5.6'
+    implementation 'org.springframework.boot:spring-boot-starter-security:2.5.6'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis:2.5.6'
 
     implementation 'org.projectlombok:lombok:1.18.22'
     annotationProcessor 'org.projectlombok:lombok:1.18.22'

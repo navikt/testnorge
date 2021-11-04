@@ -4,7 +4,6 @@ plugins {
 
 rootProject.name = 'avro-schema'
 
-includeBuild '../../gradlePlugins'
 
 gradleEnterprise {
     buildScan {
