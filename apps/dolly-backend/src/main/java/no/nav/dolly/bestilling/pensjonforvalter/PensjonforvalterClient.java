@@ -78,10 +78,10 @@ public class PensjonforvalterClient implements ClientRegister {
         try {
             dollyPersonCache.fetchIfEmpty(dollyPerson);
             dollyPerson.getPersondetaljer().forEach(person -> {
-                OpprettPersonRequest opprettPersonRequest =
+                var opprettPersonRequest =
                         mapperFacade.map(person, OpprettPersonRequest.class);
                 opprettPersonRequest.setMiljoer(new ArrayList<>(miljoer));
-                PensjonforvalterResponse response = pensjonforvalterConsumer.opprettPerson(opprettPersonRequest);
+                var response = pensjonforvalterConsumer.opprettPerson(opprettPersonRequest);
                 if (dollyPerson.getHovedperson().equals(person.getIdent())) {
                     decodeStatus(response, status);
                 }

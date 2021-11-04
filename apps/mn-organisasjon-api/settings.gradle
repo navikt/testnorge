@@ -4,14 +4,11 @@ plugins {
 
 rootProject.name = 'mn-organisasjon-api'
 
-includeBuild '../../gradlePlugins'
-
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/commands'
 includeBuild '../../libs/data-transfer-objects'
 includeBuild '../../libs/servlet-security'
 includeBuild '../../libs/database'
-includeBuild '../../libs/testing'
 
 gradleEnterprise {
     buildScan {

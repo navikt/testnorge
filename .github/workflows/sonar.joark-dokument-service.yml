@@ -1,12 +1,13 @@
-name: Sonar Analysis [joark-dokument-service]
+name: Build & Analysis [joark-dokument-service]
 
 on:
   push:
     paths:
-      - apps/jenkins-batch-status-service/**
+      - apps/joark-dokument-service/**
 
 jobs:
   scan:
+    name: Sonar scan
     runs-on: ubuntu-latest
     if: ${{ github.actor != 'dependabot[bot]' }}
     steps:
@@ -32,7 +33,7 @@ jobs:
         with:
           java-version: 1.17
       - name: Sonar Analysis
-        working-directory: apps/jenkins-batch-status-service/
+        working-directory: apps/joark-dokument-service/
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

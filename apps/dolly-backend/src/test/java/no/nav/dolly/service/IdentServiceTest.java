@@ -88,7 +88,7 @@ public class IdentServiceTest {
     public void saveIdentTilGruppe_saveAvIdentInnholderInputIdentstringOgTestgruppe() {
         when(identRepository.save(any())).thenReturn(new Testident());
 
-        identService.saveIdentTilGruppe(STANDARD_IDENTER_1, standardGruppe, TPSF);
+        identService.saveIdentTilGruppe(STANDARD_IDENTER_1, standardGruppe, TPSF, null);
 
         ArgumentCaptor<Testident> cap = ArgumentCaptor.forClass(Testident.class);
         verify(identRepository).save(cap.capture());

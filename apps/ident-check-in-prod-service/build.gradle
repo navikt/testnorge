@@ -52,26 +52,26 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
 
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.11.2'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.13.0'
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
     implementation 'org.mockito:mockito-core:4.0.0'
-    implementation 'com.google.guava:guava:30.0-jre'
+    implementation 'com.google.guava:guava:31.0.1-jre'
 
-    implementation 'org.springdoc:springdoc-openapi-ui:1.4.8'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
 
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
 
     implementation 'com.oracle.database.jdbc:ojdbc8'
-    implementation 'com.ibm.mq:mq-jms-spring-boot-starter:2.3.4'
+    implementation 'com.ibm.mq:mq-jms-spring-boot-starter:2.5.5'
     implementation 'javax.jms:javax.jms-api:2.0.1'
     implementation 'org.json:json:20210307'
-    implementation 'org.springframework:spring-jms:5.2.10.RELEASE'
-    implementation 'org.springframework:spring-messaging:5.2.10.RELEASE'
+    implementation 'org.springframework:spring-jms:5.3.12'
+    implementation 'org.springframework:spring-messaging:5.3.12'
     implementation 'org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1'
 
-    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
+    testImplementation 'junit:junit:4.13.2' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'no.nav.testnav.libs:testing'

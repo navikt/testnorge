@@ -1,10 +1,9 @@
 package no.nav.dolly.mapper;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
-import static java.util.Objects.nonNull;
-import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
-import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.checkAndUpdateStatus;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsStatusRapport;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,10 +12,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsStatusRapport;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+import static java.util.Objects.nonNull;
+import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
+import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.checkAndUpdateStatus;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingDokarkivStatusMapper {
@@ -40,13 +40,13 @@ public final class BestillingDokarkivStatusMapper {
         return statusEnvIdents.isEmpty() ? emptyList() :
                 singletonList(RsStatusRapport.builder().id(DOKARKIV).navn(DOKARKIV.getBeskrivelse())
                         .statuser(statusEnvIdents.entrySet().stream().map(status -> RsStatusRapport.Status.builder()
-                                .melding(status.getKey())
-                                .detaljert(status.getValue().entrySet().stream().map(envIdent -> RsStatusRapport.Detaljert.builder()
-                                        .miljo(envIdent.getKey())
-                                        .identer(new ArrayList<>(envIdent.getValue()))
+                                        .melding(status.getKey())
+                                        .detaljert(status.getValue().entrySet().stream().map(envIdent -> RsStatusRapport.Detaljert.builder()
+                                                        .miljo(envIdent.getKey())
+                                                        .identer(new ArrayList<>(envIdent.getValue()))
+                                                        .build())
+                                                .collect(Collectors.toList()))
                                         .build())
-                                        .collect(Collectors.toList()))
-                                .build())
                                 .collect(Collectors.toList()))
                         .build());
     }

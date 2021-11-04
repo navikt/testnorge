@@ -49,7 +49,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.List;
-import java.util.Objects;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
@@ -79,7 +78,7 @@ public class PdlForvalterClient implements ClientRegister {
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (containsSynthEnv(bestilling.getEnvironments()) || nonNull(bestilling.getPdlforvalter())) {
+        if (progress.isTpsf() && containsSynthEnv(bestilling.getEnvironments()) || nonNull(bestilling.getPdlforvalter())) {
 
             StringBuilder status = new StringBuilder();
 
@@ -120,11 +119,6 @@ public class PdlForvalterClient implements ClientRegister {
         } catch (RuntimeException e) {
             log.error(e.getMessage(), e);
         }
-    }
-
-    @Override
-    public boolean isTestnorgeRelevant() {
-        return false;
     }
 
     private void hentPersondetaljer(DollyPerson dollyPerson) {
