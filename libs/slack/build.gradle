@@ -1,6 +1,7 @@
 plugins {
     id "org.sonarqube" version "3.3"
     id 'java-library'
+    id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
 
 sonarqube {
@@ -12,6 +13,11 @@ sonarqube {
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.project.monorepo.enabled", true
         property "sonar.login", System.getenv("SONAR_TOKEN")
+    }
+}
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.boot:spring-boot-dependencies:2.5.6'
     }
 }
 
@@ -26,10 +32,10 @@ repositories {
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-webflux:2.5.6'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework:spring-web:5.3.12'
 
-    implementation 'org.projectlombok:lombok:1.18.22'
-    annotationProcessor 'org.projectlombok:lombok:1.18.22'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
+    implementation 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 }
