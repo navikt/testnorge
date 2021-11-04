@@ -4,8 +4,6 @@ plugins {
 
 rootProject.name = 'reactive-proxy'
 
-includeBuild '../security-core'
-
 gradleEnterprise {
     buildScan {
         termsOfServiceUrl = "https://gradle.com/terms-of-service"

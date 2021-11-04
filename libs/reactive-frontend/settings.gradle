@@ -4,6 +4,8 @@ plugins {
 
 rootProject.name = 'reactive-frontend'
 
+includeBuild '../security-core'
+
 gradleEnterprise {
     buildScan {
         termsOfServiceUrl = "https://gradle.com/terms-of-service"
