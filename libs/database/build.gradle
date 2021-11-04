@@ -36,7 +36,7 @@ dependencyManagement {
 dependencies {
     implementation 'org.flywaydb:flyway-core:8.0.3'
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
-    implementation 'org.springframework.vault:spring-vault-core:2.2.0.RELEASE'
+    implementation 'org.springframework.vault:spring-vault-core:2.3.2'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.5.6'
 
     implementation 'org.projectlombok:lombok:1.18.22'
