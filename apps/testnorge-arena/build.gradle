@@ -57,6 +57,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
     implementation 'org.aspectj:aspectjweaver:1.9.7'
+    implementation 'com.google.guava:guava:31.0.1-jre'
 
     implementation 'no.nav.registre:testnorge-consumers:1.12.0-RELEASE'
 
