@@ -55,7 +55,7 @@ dependencies {
     implementation 'javax.validation:validation-api:2.0.1.Final'
 
     implementation 'org.aspectj:aspectjweaver:1.9.6'
-    implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
+    implementation 'io.micrometer:micrometer-registry-prometheus:1.7.5'
 
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
     implementation 'org.hibernate:hibernate-core:5.4.21.Final'
