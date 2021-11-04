@@ -42,7 +42,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.google.guava:guava:30.0-jre'
+    implementation 'com.google.guava:guava:31.0.1-jre'
 
     implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:servlet-insecure-security'
