@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - apps/orkestratoren/**
+  workflow_dispatch:
 
 jobs:
   scan:
