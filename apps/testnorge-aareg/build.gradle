@@ -79,7 +79,7 @@ dependencies {
 
     implementation "org.springdoc:springdoc-openapi-ui:1.5.12"
 
-    implementation 'com.jayway.jsonpath:json-path:2.4.0'
+    implementation 'com.jayway.jsonpath:json-path:2.6.0'
 
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
 
