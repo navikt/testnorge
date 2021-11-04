@@ -61,7 +61,7 @@ dependencies {
     implementation 'com.graphql-java:graphql-java-tools:5.2.4'
     implementation 'com.graphql-java:graphiql-spring-boot-starter:5.0.2'
     implementation 'com.microsoft.azure:adal4j:1.6.3'
-    implementation 'org.aspectj:aspectjrt:1.7.3'
+    implementation 'org.aspectj:aspectjrt:1.9.7'
     implementation 'org.aspectj:aspectjweaver:1.9.6'
     implementation 'io.kubernetes:client-java:3.0.0'
     implementation 'org.springframework.retry:spring-retry:1.1.5.RELEASE'
