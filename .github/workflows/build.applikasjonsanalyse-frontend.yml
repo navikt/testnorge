@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - apps/applikasjonsanalyse-frontend/**
-  pull_request_target:
+  pull_request:
     types: [assigned, opened, synchronize, reopened]
   workflow_dispatch:
 
