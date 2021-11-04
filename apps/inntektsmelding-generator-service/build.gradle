@@ -61,7 +61,7 @@ dependencies {
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
     implementation 'no.nav.tjenestespesifikasjoner:nav-altinn-inntektsmelding:1.2019.08.16-13.46-35cbdfd492d4'
 
-    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+    implementation 'javax.xml.bind:jaxb-api'
     implementation 'javax.activation:activation:1.1.1'
     implementation 'org.glassfish.jaxb:jaxb-runtime:3.0.2'
 

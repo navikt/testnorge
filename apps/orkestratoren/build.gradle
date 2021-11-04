@@ -47,21 +47,11 @@ dependencies {
         }
     }
 
-    implementation ('no.nav.testnav.libs:commands'){
-        exclude group: 'com.fasterxml.jackson.core', module: 'jackson-annotations'
-        exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
-    }
+    implementation 'no.nav.testnav.libs:commands'
     implementation 'no.nav.testnav.libs:servlet-security'
     implementation 'no.nav.testnav.libs:servlet-core'
-    implementation('no.nav.testnav.libs:domain') {
-        exclude group: 'com.fasterxml.jackson.core', module: 'jackson-annotations'
-        exclude group: 'com.fasterxml.jackson.dataformat', module: 'jackson-dataformat-xml'
-        exclude group: 'com.fasterxml.jackson.datatype', module: 'jackson-datatype-jsr310'
-    }
-    implementation ('no.nav.testnav.libs:data-transfer-objects'){
-        exclude group: 'com.fasterxml.jackson.core', module: 'jackson-annotations'
-        exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
-    }
+    implementation'no.nav.testnav.libs:domain'
+    implementation 'no.nav.testnav.libs:data-transfer-objects'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
