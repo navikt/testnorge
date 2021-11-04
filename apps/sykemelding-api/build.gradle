@@ -58,7 +58,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
 
-    implementation 'io.springfox:springfox-swagger2:2.9.2'
+    implementation 'io.springfox:springfox-swagger2:3.0.0'
     implementation 'io.springfox:springfox-swagger-ui:3.0.0'
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
     implementation 'no.nav.helse.xml:kith-hodemelding:2019.09.09-08-50-693492ddc1d3f98e70c1638c94dcb95a66036d12'
