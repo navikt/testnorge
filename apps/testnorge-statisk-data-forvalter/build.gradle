@@ -68,7 +68,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
 
-    implementation 'org.aspectj:aspectjweaver:1.9.6'
+    implementation 'org.aspectj:aspectjweaver:1.9.7'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.7.5'
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
     implementation 'org.postgresql:postgresql'
