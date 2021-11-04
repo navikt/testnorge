@@ -69,7 +69,7 @@ dependencies {
 
     implementation 'com.squareup.okhttp3:okhttp:4.7.2'
 
-    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
+    testImplementation 'junit:junit:4.13.2' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'com.squareup.okhttp3:mockwebserver:4.7.2'
