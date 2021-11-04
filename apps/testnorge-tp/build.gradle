@@ -62,7 +62,7 @@ dependencies {
     implementation 'org.hibernate.validator:hibernate-validator'
 
     implementation 'io.springfox:springfox-swagger2:3.0.0'
-    implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+    implementation 'io.springfox:springfox-swagger-ui:3.0.0'
     implementation 'no.nav.registre:testnorge-consumers:1.12.0-RELEASE'
 
     runtimeOnly 'com.oracle.database.jdbc:ojdbc8:21.3.0.0'
