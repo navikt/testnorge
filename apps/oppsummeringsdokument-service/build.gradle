@@ -55,7 +55,7 @@ dependencies {
     }
 
     implementation 'javax.xml.bind:jaxb-api'
-    implementation 'javax.activation:activation:1.1'
+    implementation 'javax.activation:activation:1.1.1'
     implementation 'org.glassfish.jaxb:jaxb-runtime'
 
     implementation 'no.nav.testnav.libs:servlet-core'
