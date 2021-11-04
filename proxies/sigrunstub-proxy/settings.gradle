@@ -4,7 +4,6 @@ plugins {
 
 rootProject.name = 'sigrunstub-proxy'
 
-includeBuild '../../gradlePlugins'
 
 includeBuild '../../libs/reactive-core'
 includeBuild '../../libs/reactive-proxy'

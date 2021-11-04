@@ -1,11 +1,9 @@
-
 plugins {
     id "com.gradle.enterprise" version "3.7.1"
 }
 
 rootProject.name = 'organisasjon-forvalter'
 
-includeBuild '../../gradlePlugins'
 
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/database'

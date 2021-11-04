@@ -1,8 +1,5 @@
-import no.nav.testnav.dependencies.gradle.DependenciesPlugin
-
 plugins {
     id "org.sonarqube" version "3.3"
-    id 'no.nav.testnav.dependencies'
     id 'java-library'
 }
 
@@ -19,7 +16,6 @@ sonarqube {
 }
 
 
-
 group = 'no.nav.testnav.libs'
 
 repositories {
@@ -31,9 +27,9 @@ java.sourceCompatibility = JavaVersion.VERSION_17
 
 dependencies {
 
-    implementation "com.fasterxml.jackson.core:jackson-annotations:${DependenciesPlugin.jackson}"
-    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${DependenciesPlugin.jackson}"
-    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${DependenciesPlugin.jackson}"
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.13.0'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.13.0'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.0'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'io.springfox:springfox-swagger2:2.9.2'
 

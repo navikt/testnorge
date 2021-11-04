@@ -4,7 +4,6 @@ plugins {
 
 rootProject.name = 'testnorge-token-provider'
 
-includeBuild '../../gradlePlugins'
 
 includeBuild '../../libs/servlet-core'
 

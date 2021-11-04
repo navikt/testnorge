@@ -4,8 +4,6 @@ plugins {
 
 rootProject.name = 'testing'
 
-includeBuild '../../gradlePlugins'
-
 gradleEnterprise {
     buildScan {
         termsOfServiceUrl = "https://gradle.com/terms-of-service"
