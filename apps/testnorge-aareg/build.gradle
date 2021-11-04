@@ -77,7 +77,7 @@ dependencies {
     implementation 'org.aspectj:aspectjweaver:1.9.7'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
 
-    implementation "org.springdoc:springdoc-openapi-ui:1.4.6"
+    implementation "org.springdoc:springdoc-openapi-ui:1.5.12"
 
     implementation 'com.jayway.jsonpath:json-path:2.4.0'
 
