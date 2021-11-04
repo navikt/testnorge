@@ -55,7 +55,7 @@ dependencies {
     implementation 'org.aspectj:aspectjweaver:1.9.7'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
-    implementation 'io.springfox:springfox-swagger2:2.9.2'
+    implementation 'io.springfox:springfox-swagger2:3.0.0'
     implementation 'io.springfox:springfox-swagger-ui:2.9.2'
     implementation 'no.nav.registre:testnorge-consumers:1.12.0-RELEASE'
 
