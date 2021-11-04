@@ -53,7 +53,7 @@ dependencies {
 
     implementation 'org.hibernate.validator:hibernate-validator'
 
-    implementation 'org.apache.httpcomponents:httpclient:4.5.12'
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
 
     implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
     implementation 'org.json:json:20180813'
