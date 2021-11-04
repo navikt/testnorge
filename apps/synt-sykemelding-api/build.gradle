@@ -60,7 +60,7 @@ dependencies {
     testImplementation 'no.nav.testnav.libs:testing'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
-    testImplementation 'org.assertj:assertj-core:3.16.1'
+    testImplementation 'org.assertj:assertj-core:3.21.0'
 
     implementation 'org.projectlombok:lombok:1.18.22'
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
