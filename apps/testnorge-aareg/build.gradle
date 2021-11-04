@@ -90,7 +90,7 @@ dependencies {
     implementation 'no.nav.tjenestespesifikasjoner:nav-fim-behandleArbeidsforhold-v1-tjenestespesifikasjon:1.2020.04.30-11.45-a45e1248c063'
     implementation 'org.apache.neethi:neethi:3.1.1'
     implementation 'no.nav.registre:testnorge-consumers:1.12.0-RELEASE'
-    implementation 'org.apache.cxf:cxf-spring-boot-starter-jaxws:3.3.3'
+    implementation 'org.apache.cxf:cxf-spring-boot-starter-jaxws:3.4.5'
     implementation 'org.apache.cxf:cxf-rt-ws-security:3.4.5'
     implementation 'javax.xml.ws:jaxws-api:2.3.0'
     implementation 'org.apache.commons:commons-lang3:3.10'
