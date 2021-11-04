@@ -53,14 +53,14 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
-    implementation 'com.jayway.jsonpath:json-path:2.4.0'
+    implementation 'com.jayway.jsonpath:json-path:2.6.0'
     implementation 'org.aspectj:aspectjweaver:1.9.6'
     implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
 
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'javax.validation:validation-api:2.0.1.Final'
 
-    implementation 'io.springfox:springfox-swagger2:2.9.2'
+    implementation 'io.springfox:springfox-swagger2:3.0.0'
     implementation 'io.springfox:springfox-swagger-ui:2.9.2'
 
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
@@ -75,7 +75,7 @@ dependencies {
     testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
-    testImplementation 'com.squareup.okhttp3:mockwebserver:4.7.2'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:4.9.2'
 }
 
 description = 'testnorge-skd'
