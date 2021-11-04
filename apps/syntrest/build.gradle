@@ -38,7 +38,7 @@ repositories {
 
 dependencies {
     implementation 'org.eclipse.jetty:jetty-server:9.4.32.v20200930'
-    implementation 'org.eclipse.jetty:jetty-servlet:9.4.32.v20200930'
+    implementation 'org.eclipse.jetty:jetty-servlet:11.0.7'
 
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:domain'
