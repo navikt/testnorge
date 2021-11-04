@@ -49,7 +49,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
 
-    implementation 'com.jayway.jsonpath:json-path:2.4.0'
+    implementation 'com.jayway.jsonpath:json-path:2.6.0'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
 
     implementation 'org.aspectj:aspectjweaver:1.9.6'
