@@ -13,6 +13,7 @@ import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
+import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.data.domain.Page;
@@ -42,9 +43,10 @@ public class TestgruppeService {
     private final IdentService identService;
     private final BestillingService bestillingService;
     private final PersonService personService;
+    private final GetUserInfo getUserInfo;
 
     public Testgruppe opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
-        Bruker bruker = brukerService.fetchBruker(getUserId());
+        Bruker bruker = brukerService.fetchBruker(getUserId(getUserInfo));
 
         return saveGruppeTilDB(Testgruppe.builder()
                 .navn(rsTestgruppe.getNavn())
@@ -135,7 +137,7 @@ public class TestgruppeService {
 
         testgruppe.setHensikt(endreGruppe.getHensikt());
         testgruppe.setNavn(endreGruppe.getNavn());
-        testgruppe.setSistEndretAv(brukerService.fetchBruker(getUserId()));
+        testgruppe.setSistEndretAv(brukerService.fetchBruker(getUserId(getUserInfo)));
         testgruppe.setDatoEndret(LocalDate.now());
 
         return saveGruppeTilDB(testgruppe);

@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingKontroll;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.BestilteKriterier;
@@ -29,6 +30,7 @@ import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
+import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,6 +63,7 @@ public class BestillingService {
     private final ObjectMapper objectMapper;
     private final TestgruppeRepository testgruppeRepository;
     private final BrukerService brukerService;
+    private final GetUserInfo getUserInfo;
 
     public Bestilling fetchBestillingById(Long bestillingId) {
         return bestillingRepository.findById(bestillingId)
@@ -99,7 +102,7 @@ public class BestillingService {
         bestilling.setStoppet(true);
         bestilling.setFerdig(true);
         bestilling.setSistOppdatert(now());
-        bestilling.setBruker(brukerService.fetchOrCreateBruker(getUserId()));
+        bestilling.setBruker(fetchOrCreateBruker());
         saveBestillingToDB(bestilling);
         return bestilling;
     }
@@ -126,7 +129,7 @@ public class BestillingService {
                         .miljoer(join(",", request.getEnvironments()))
                         .tpsfKriterier(toJson(request.getTpsf()))
                         .bestKriterier("{}")
-                        .bruker(brukerService.fetchOrCreateBruker(getUserId()))
+                        .bruker(fetchOrCreateBruker())
                         .build());
     }
 
@@ -150,7 +153,7 @@ public class BestillingService {
                         .tpsfKriterier(toJson(request.getTpsf()))
                         .bestKriterier(getBestKriterier(request))
                         .malBestillingNavn(request.getMalBestillingNavn())
-                        .bruker(brukerService.fetchOrCreateBruker(getUserId()))
+                        .bruker(fetchOrCreateBruker())
                         .build());
     }
 
@@ -171,7 +174,7 @@ public class BestillingService {
                         .bestKriterier(getBestKriterier(request))
                         .opprettFraIdenter(nonNull(opprettFraIdenter) ? join(",", opprettFraIdenter) : null)
                         .malBestillingNavn(request.getMalBestillingNavn())
-                        .bruker(brukerService.fetchOrCreateBruker(getUserId()))
+                        .bruker(fetchOrCreateBruker())
                         .beskrivelse(beskrivelse)
                         .build());
     }
@@ -196,7 +199,7 @@ public class BestillingService {
                         .opprettetFraId(bestillingId)
                         .tpsfKriterier(bestilling.getTpsfKriterier())
                         .bestKriterier(bestilling.getBestKriterier())
-                        .bruker(brukerService.fetchOrCreateBruker(getUserId()))
+                        .bruker(fetchOrCreateBruker())
                         .build());
     }
 
@@ -219,7 +222,7 @@ public class BestillingService {
                         .sistOppdatert(now())
                         .miljoer(miljoer)
                         .opprettetFraGruppeId(gruppeId)
-                        .bruker(brukerService.fetchOrCreateBruker(getUserId()))
+                        .bruker(fetchOrCreateBruker())
                         .build());
     }
 
@@ -235,7 +238,7 @@ public class BestillingService {
                         .kildeMiljoe(request.getKildeMiljoe())
                         .miljoer(join(",", request.getEnvironments()))
                         .sistOppdatert(now())
-                        .bruker(brukerService.fetchOrCreateBruker(getUserId()))
+                        .bruker(fetchOrCreateBruker())
                         .antallIdenter(request.getIdenter().size())
                         .bestKriterier(getBestKriterier(request))
                         .tpsImport(join(",", request.getIdenter()))
@@ -254,7 +257,7 @@ public class BestillingService {
                         .kildeMiljoe("PDL")
                         .miljoer(join(",", request.getEnvironments()))
                         .sistOppdatert(now())
-                        .bruker(brukerService.fetchOrCreateBruker(getUserId()))
+                        .bruker(fetchOrCreateBruker())
                         .antallIdenter(request.getIdenter().size())
                         .bestKriterier(getBestKriterier(request))
                         .pdlImport(join(",", request.getIdenter()))
@@ -272,7 +275,7 @@ public class BestillingService {
                         .gruppe(gruppe)
                         .miljoer(join(",", request.getEnvironments()))
                         .sistOppdatert(now())
-                        .bruker(brukerService.fetchOrCreateBruker(getUserId()))
+                        .bruker(fetchOrCreateBruker())
                         .antallIdenter(gruppe.getTestidenter().size())
                         .navSyntetiskIdent(request.getNavSyntetiskIdent())
                         .bestKriterier(getBestKriterier(request))
@@ -311,26 +314,13 @@ public class BestillingService {
         });
     }
 
-    private static void fixAaregAbstractClassProblem(List<RsAareg> aaregdata) {
-
-        aaregdata.forEach(arbeidforhold -> {
-            if (nonNull(arbeidforhold.getArbeidsgiver())) {
-                arbeidforhold.getArbeidsgiver().setAktoertype(
-                        arbeidforhold.getArbeidsgiver() instanceof RsOrganisasjon ? "ORG" : "PERS");
-            }
-        });
+    @Transactional
+    public void swapIdent(String oldIdent, String newIdent) {
+        bestillingRepository.swapIdent(oldIdent, newIdent);
     }
 
-    private static void fixPdlAbstractClassProblem(RsPdldata pdldata) {
-
-        if (nonNull(pdldata)) {
-            if (nonNull(pdldata.getKontaktinformasjonForDoedsbo())) {
-                pdldata.getKontaktinformasjonForDoedsbo().setAdressat(pdldata.getKontaktinformasjonForDoedsbo().getAdressat());
-            }
-            if (nonNull(pdldata.getFalskIdentitet())) {
-                pdldata.getFalskIdentitet().setRettIdentitet(pdldata.getFalskIdentitet().getRettIdentitet());
-            }
-        }
+    private Bruker fetchOrCreateBruker() {
+        return brukerService.fetchOrCreateBruker(getUserId(getUserInfo));
     }
 
     private String toJson(Object object) {
@@ -363,8 +353,25 @@ public class BestillingService {
                 .build());
     }
 
-    @Transactional
-    public void swapIdent(String oldIdent, String newIdent) {
-        bestillingRepository.swapIdent(oldIdent, newIdent);
+    private static void fixAaregAbstractClassProblem(List<RsAareg> aaregdata) {
+
+        aaregdata.forEach(arbeidforhold -> {
+            if (nonNull(arbeidforhold.getArbeidsgiver())) {
+                arbeidforhold.getArbeidsgiver().setAktoertype(
+                        arbeidforhold.getArbeidsgiver() instanceof RsOrganisasjon ? "ORG" : "PERS");
+            }
+        });
+    }
+
+    private static void fixPdlAbstractClassProblem(RsPdldata pdldata) {
+
+        if (nonNull(pdldata)) {
+            if (nonNull(pdldata.getKontaktinformasjonForDoedsbo())) {
+                pdldata.getKontaktinformasjonForDoedsbo().setAdressat(pdldata.getKontaktinformasjonForDoedsbo().getAdressat());
+            }
+            if (nonNull(pdldata.getFalskIdentitet())) {
+                pdldata.getFalskIdentitet().setRettIdentitet(pdldata.getFalskIdentitet().getRettIdentitet());
+            }
+        }
     }
 }

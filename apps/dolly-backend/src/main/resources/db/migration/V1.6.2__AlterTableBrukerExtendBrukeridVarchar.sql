@@ -3,5 +3,4 @@
 ------------------------------
 
 alter table bruker
-    add column bankid_brukernavn varchar(100),
-    add column bankid_token      varchar(50) unique;
+    alter column bruker_id type character varying(100);

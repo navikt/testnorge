@@ -50,12 +50,6 @@ public class Bruker {
     @Column(name = "BRUKERNAVN")
     private String brukernavn;
 
-    @Column(name = "BANKID_BRUKERNAVN")
-    private String bankidBrukernavn;
-
-    @Column(name = "BANKID_TOKEN")
-    private String bankidToken;
-
     @Column(name = "EPOST")
     private String epost;
 

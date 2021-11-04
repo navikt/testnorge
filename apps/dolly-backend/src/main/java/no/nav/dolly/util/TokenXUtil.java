@@ -3,6 +3,7 @@ package no.nav.dolly.util;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
+import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import no.nav.testnav.libs.servletsecurity.properties.TokenXResourceServerProperties;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.JwtClaimNames;
@@ -19,6 +20,7 @@ import static java.util.Objects.isNull;
 public final class TokenXUtil {
 
     public static String getUserJwt() {
+
         var requestAttributes = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes());
         if (isNull(requestAttributes)) {
             log.info("Klarte ikke å hente ut User-Jwt");
@@ -28,13 +30,30 @@ public final class TokenXUtil {
     }
 
     public static boolean isTokenX(TokenXResourceServerProperties serverProperties) {
+
         return getJwtAuthenticationToken()
                 .getTokenAttributes()
                 .get(JwtClaimNames.ISS)
                 .equals(serverProperties.getIssuerUri());
     }
 
+    public static String getBankidUserId(GetUserInfo getUserInfo) {
+
+        try {
+            return getUserInfo.call()
+                    .map(userInfo -> {
+                        log.info("Fant BankID bruker med ID: {}", userInfo.id());
+                        return userInfo.id();
+                    })
+                    .orElse(null);
+        } catch (NullPointerException e) {
+            log.info("Fant ikke BankID request");
+            return null;
+        }
+    }
+
     private static JwtAuthenticationToken getJwtAuthenticationToken() {
+
         return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
                 .filter(o -> o instanceof JwtAuthenticationToken)
                 .map(JwtAuthenticationToken.class::cast)
