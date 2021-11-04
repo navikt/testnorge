@@ -28,19 +28,11 @@ module.exports = merge(common, {
 				target: 'http://localhost:8080',
 				changeOrigin: true,
 			},
-			'/oauth2/authorization/aad': {
+			'/oauth2/authorization': {
 				target: 'http://localhost:8080',
 				secure: false,
 			},
-			'/oauth2/authorization/idporten': {
-				target: 'http://localhost:8080',
-				secure: false,
-			},
-			'/login/oauth2/code/idporten': {
-				target: 'http://localhost:8080',
-				secure: false,
-			},
-			'/login/oauth2/code/aad': {
+			'/login/oauth2/code': {
 				target: 'http://localhost:8080',
 				secure: false,
 			},
