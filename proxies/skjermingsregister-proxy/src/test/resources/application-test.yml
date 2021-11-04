@@ -1,0 +1,6 @@
+spring.cloud.vault.token: dummy
+azure.app.client.id: dummy
+azure.app.client.secret: dummy
+proxy.url: http://localhost
+STS_TOKEN_PROVIDER_USERNAME: dummy
+STS_TOKEN_PROVIDER_PASSWORD: dummy

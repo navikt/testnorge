@@ -1,12 +1,10 @@
-import no.nav.testnav.dependencies.gradle.DependenciesPlugin
-
 plugins {
-    id "org.sonarqube" version "3.3"
-    id 'no.nav.testnav.dependencies'
     id 'java'
+    id "org.sonarqube" version "3.3"
     id 'org.springframework.boot' version "2.5.6"
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
+
 
 sonarqube {
     properties {
@@ -25,7 +23,7 @@ bootJar {
 
 dependencyManagement {
     imports {
-        mavenBom  'org.springframework.cloud:spring-cloud-dependencies:2020.0.4'
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.4'
     }
 }
 

@@ -4,7 +4,6 @@ plugins {
 
 rootProject.name = 'person-search-service'
 
-includeBuild '../../gradlePlugins'
 
 includeBuild '../../libs/reactive-security'
 includeBuild '../../libs/reactive-core'

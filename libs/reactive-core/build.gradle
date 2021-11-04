@@ -1,8 +1,5 @@
-import no.nav.testnav.dependencies.gradle.DependenciesPlugin
-
 plugins {
     id "org.sonarqube" version "3.3"
-    id 'no.nav.testnav.dependencies'
     id 'java-library'
     id 'maven-publish'
 }
@@ -56,5 +53,5 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
 
-    implementation "org.springframework.boot:spring-boot-starter-webflux:${DependenciesPlugin.springBoot}"
+    implementation 'org.springframework.boot:spring-boot-starter-webflux:2.5.6'
 }

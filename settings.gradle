@@ -24,8 +24,6 @@ gradleEnterprise {
     }
 }
 
-includeBuild './gradlePlugins'
-
 includeBuild './proxies/aareg-proxy'
 includeBuild './proxies/kodeverk-proxy'
 includeBuild './proxies/statisk-data-forvalter-proxy'

@@ -4,7 +4,6 @@ plugins {
 
 rootProject.name = 'reactive-frontend'
 
-includeBuild '../../gradlePlugins'
 
 gradleEnterprise {
     buildScan {

@@ -4,8 +4,6 @@ plugins {
 
 rootProject.name = 'dolly-backend'
 
-includeBuild '../../gradlePlugins'
-
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/servlet-security'
 includeBuild '../../libs/security-core'
