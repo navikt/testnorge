@@ -21,6 +21,7 @@ export const UtenlandsId = ({ formikBag }) => (
 		name="pdldata.person.utenlandskIdentifikasjonsnummer"
 		header="Utenlandsk ID"
 		newEntry={initialValues}
+		canBeEmpty={false}
 	>
 		{(path, idx) => (
 			<React.Fragment key={idx}>
