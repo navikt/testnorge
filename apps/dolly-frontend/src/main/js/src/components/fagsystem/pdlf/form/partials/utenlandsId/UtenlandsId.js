@@ -1,6 +1,5 @@
 import React from 'react'
 import { AdresseKodeverk } from '~/config/kodeverk'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
@@ -16,7 +15,7 @@ const initialValues = {
 	gjeldende: true,
 }
 
-export const UtenlandsId = ({ formikBag }) => (
+export const UtenlandsId = () => (
 	<FormikDollyFieldArray
 		name="pdldata.person.utenlandskIdentifikasjonsnummer"
 		header="Utenlandsk ID"

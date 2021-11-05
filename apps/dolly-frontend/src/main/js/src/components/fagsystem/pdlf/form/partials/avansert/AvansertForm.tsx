@@ -6,12 +6,12 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 
-interface AvansertForm {
+interface AvansertFormValues {
 	path: string
 	kanVelgeMaster?: boolean
 }
 
-export const AvansertForm = ({ path, kanVelgeMaster = true }: AvansertForm) => {
+export const AvansertForm = ({ path, kanVelgeMaster = true }: AvansertFormValues) => {
 	const [visAvansert, setVisAvansert, setSkjulAvansert] = useBoolean(false)
 
 	return (

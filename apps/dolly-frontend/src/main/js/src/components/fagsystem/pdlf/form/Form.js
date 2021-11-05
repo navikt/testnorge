@@ -31,7 +31,7 @@ export const PdlfForm = ({ formikBag }) => (
 					vis="pdldata.person.utenlandskIdentifikasjonsnummer"
 					flex={false}
 				>
-					<UtenlandsId formikBag={formikBag} />
+					<UtenlandsId />
 				</Kategori>
 			</Panel>
 		</Vis>
