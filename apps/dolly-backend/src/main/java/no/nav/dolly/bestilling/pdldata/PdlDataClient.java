@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.pdldata;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
@@ -15,7 +14,6 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 import java.util.List;
 
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Slf4j
@@ -31,18 +29,14 @@ public class PdlDataClient implements ClientRegister {
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         try {
-            if (nonNull(bestilling.getPdldata()) && isNull(bestilling.getPdldata().getOpprettNyPerson())) {
-                pdlDataConsumer.oppdaterPdl(dollyPerson.getHovedperson(),
-                        PersonUpdateRequestDTO.builder()
-                                .person(bestilling.getPdldata().getPerson())
-                                .build());
+            if (progress.isTpsf() && nonNull(bestilling.getPdldata()) && isOpprettEndre) {
+                    pdlDataConsumer.oppdaterPdl(dollyPerson.getHovedperson(),
+                            PersonUpdateRequestDTO.builder()
+                                    .person(bestilling.getPdldata().getPerson())
+                                    .build());
             }
 
-            progress.setPdlDataStatus(pdlDataConsumer.sendOrdre(dollyPerson.getHovedperson()));
-
-        } catch (JsonProcessingException e) {
-
-            progress.setPdlDataStatus(errorStatusDecoder.decodeException(e));
+            progress.setPdlDataStatus(pdlDataConsumer.sendOrdre(dollyPerson.getHovedperson(), progress.isTpsf()));
 
         } catch (WebClientResponseException e) {
 
@@ -54,10 +48,5 @@ public class PdlDataClient implements ClientRegister {
     public void release(List<String> identer) {
 
         pdlDataConsumer.slettPdl(identer);
-    }
-
-    @Override
-    public boolean isTestnorgeRelevant() {
-        return false;
     }
 }

@@ -4,10 +4,9 @@ plugins {
 
 rootProject.name = 'person-search-service'
 
-includeBuild '../../gradlePlugins'
 
-includeBuild '../../libs/reactive-security'
-includeBuild '../../libs/reactive-core'
+includeBuild '../../libs/servlet-security'
+includeBuild '../../libs/servlet-core'
 
 gradleEnterprise {
     buildScan {

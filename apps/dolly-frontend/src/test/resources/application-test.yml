@@ -1,0 +1,5 @@
+spring.cloud.vault.token: dummy
+VARSLINGER_URL: http://localhost:0
+DOLLY_BACKEND_URL: http://localhost:0
+TPS_FORVALTERN_PROXY_URL: http://localhost:0
+PDL_FORVALTER_URL: http://localhost:0

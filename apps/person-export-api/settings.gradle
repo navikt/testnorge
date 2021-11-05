@@ -4,7 +4,6 @@ plugins {
 
 rootProject.name = 'person-export-api'
 
-includeBuild '../../gradlePlugins'
 
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/csv-converter'

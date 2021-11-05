@@ -4,8 +4,6 @@ plugins {
 
 rootProject.name = 'dokarkiv-proxy'
 
-includeBuild '../../gradlePlugins'
-
 includeBuild '../../libs/reactive-core'
 includeBuild '../../libs/reactive-proxy'
 includeBuild '../../libs/security-token-service'

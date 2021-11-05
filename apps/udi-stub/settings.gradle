@@ -4,12 +4,9 @@ plugins {
 
 rootProject.name = 'udi-stub'
 
-includeBuild '../../gradlePlugins'
-
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/servlet-security'
 includeBuild '../../libs/data-transfer-objects'
-includeBuild '../../libs/testing'
 includeBuild '../../libs/database'
 
 gradleEnterprise {

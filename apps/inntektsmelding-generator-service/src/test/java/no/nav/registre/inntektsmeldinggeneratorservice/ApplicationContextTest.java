@@ -1,20 +1,18 @@
 package no.nav.registre.inntektsmeldinggeneratorservice;
 
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(locations = "classpath:application-test.properties")
+@SpringBootTest
 public class ApplicationContextTest {
-    /**
-     * Used to test app runtime dependency and properties and properties
-     */
+
+    @MockBean
+    public JwtDecoder jwtDecoder;
+
     @Test
-    public void load_app_context() {
+    @SuppressWarnings("java:S2699")
+    void load_app_context() {
     }
 }

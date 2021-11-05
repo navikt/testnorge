@@ -4,8 +4,6 @@ plugins {
 
 rootProject.name = 'inntektsmelding-generator-service'
 
-includeBuild '../../gradlePlugins'
-
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/data-transfer-objects'
 includeBuild '../../libs/servlet-security'

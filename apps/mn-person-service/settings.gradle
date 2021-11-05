@@ -4,8 +4,6 @@ plugins {
 
 rootProject.name = 'mn-person-service'
 
-includeBuild '../../gradlePlugins'
-
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/servlet-security'
 includeBuild '../../libs/commands'

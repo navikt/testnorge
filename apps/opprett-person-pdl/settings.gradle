@@ -4,8 +4,6 @@ plugins {
 
 rootProject.name = 'opprett-person-pdl'
 
-includeBuild '../../gradlePlugins'
-
 includeBuild '../../libs/commands'
 includeBuild '../../libs/avro-schema'
 includeBuild '../../libs/servlet-core'

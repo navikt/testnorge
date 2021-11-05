@@ -1,12 +1,10 @@
-import no.nav.testnav.dependencies.gradle.DependenciesPlugin
-
 plugins {
-    id "org.sonarqube" version "3.3"
-    id 'no.nav.testnav.dependencies'
     id 'java'
+    id "org.sonarqube" version "3.3"
     id 'org.springframework.boot' version "2.5.6"
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
+
 
 sonarqube {
     properties {
@@ -22,7 +20,7 @@ sonarqube {
 
 dependencyManagement {
     imports {
-        mavenBom  'org.springframework.cloud:spring-cloud-dependencies:2020.0.4'
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.4'
     }
 }
 
@@ -44,7 +42,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.google.guava:guava:30.0-jre'
+    implementation 'com.google.guava:guava:31.0.1-jre'
 
     implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:servlet-insecure-security'
@@ -58,7 +56,7 @@ dependencies {
     implementation 'no.nav.testnav.libs:csv-converter'
 
     implementation 'org.springframework.kafka:spring-kafka'
-    implementation 'io.confluent:kafka-avro-serializer:6.1.0'
+    implementation 'io.confluent:kafka-avro-serializer:7.0.0'
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -70,8 +68,8 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
 
-    implementation 'org.aspectj:aspectjweaver:1.9.6'
-    implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
+    implementation 'org.aspectj:aspectjweaver:1.9.7'
+    implementation 'io.micrometer:micrometer-registry-prometheus:1.7.5'
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
     implementation 'org.postgresql:postgresql'
     implementation 'com.zaxxer:HikariCP'
@@ -82,7 +80,7 @@ dependencies {
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'javax.validation:validation-api:2.0.1.Final'
 
-    implementation 'org.apache.httpcomponents:httpclient:4.5.12'
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
 

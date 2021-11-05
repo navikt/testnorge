@@ -1,9 +1,6 @@
-import no.nav.testnav.dependencies.gradle.DependenciesPlugin
-
 plugins {
-    id "org.sonarqube" version "3.3"
-    id 'no.nav.testnav.dependencies'
     id 'java'
+    id "org.sonarqube" version "3.3"
     id 'org.springframework.boot' version "2.5.6"
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
@@ -82,21 +79,22 @@ dependencies {
 
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.postgresql:postgresql'
-    implementation 'com.google.guava:guava:18.0'
+    implementation 'com.google.guava:guava:23.0'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-csv'
     implementation 'org.codehaus.woodstox:woodstox-core-asl:4.4.1'
     implementation 'com.fasterxml.woodstox:woodstox-core'
     implementation 'no.nav.repository.fellesreg.tpsws:nav-repository-fellesregister-jaxb-tps-m201-domain:2020.08.27-09.53-183ead3d81eb'
-    implementation 'org.projectlombok:lombok:1.18.22'
-    annotationProcessor 'org.projectlombok:lombok:1.18.22'
-    implementation "ma.glasnost.orika:orika-core:${DependenciesPlugin.orikaVersion}"
+    implementation 'ma.glasnost.orika:orika-core:1.5.4'
 
     implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'no.nav.testnav.libs:testing'
+
+    implementation 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
 }
 
 description = 'ident-pool'
