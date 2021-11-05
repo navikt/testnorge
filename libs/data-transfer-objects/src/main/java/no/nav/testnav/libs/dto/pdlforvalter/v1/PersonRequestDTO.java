@@ -28,6 +28,7 @@ public class PersonRequestDTO implements Serializable {
     private String statsborgerskapLandkode;
     private AdressebeskyttelseDTO.AdresseBeskyttelse gradering;
 
+
     @Data
     @Builder
     @NoArgsConstructor
