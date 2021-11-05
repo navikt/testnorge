@@ -38,7 +38,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework:spring-tx:5.2.9.RELEASE'
+    implementation 'org.springframework:spring-tx:5.3.12'
 
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:servlet-security'
@@ -54,27 +54,28 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
     implementation 'org.apache.commons:commons-math3:3.6.1'
-    implementation 'org.aspectj:aspectjweaver:1.9.6'
-    implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
+    implementation 'org.aspectj:aspectjweaver:1.9.7'
+    implementation 'io.micrometer:micrometer-registry-prometheus:1.7.5'
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
-    implementation 'org.apache.httpcomponents:httpclient:4.5.6'
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
 
-    implementation 'io.springfox:springfox-swagger2:2.9.2'
-    implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+    implementation 'io.springfox:springfox-swagger2:3.0.0'
+    implementation 'io.springfox:springfox-swagger-ui:3.0.0'
 
-    implementation 'com.sun.xml.bind:jaxb-core:2.3.0.1'
+    implementation 'com.sun.xml.bind:jaxb-core:3.0.2'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
-    implementation 'com.sun.xml.bind:jaxb-impl:2.3.1'
-    implementation 'com.ibm.mq:mq-jms-spring-boot-starter:2.0.0'
+    implementation 'com.sun.xml.bind:jaxb-impl:3.0.2'
+    implementation 'com.ibm.mq:mq-jms-spring-boot-starter:2.5.5'
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'no.nav.registre:testnorge-consumers:1.12.0-RELEASE'
+    implementation 'com.google.guava:guava:31.0.1-jre'
 
-    implementation 'org.projectlombok:lombok:1.18.22'
-    annotationProcessor 'org.projectlombok:lombok:1.18.22'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
+    implementation 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
-    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
+    testImplementation 'junit:junit:4.13.2' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'no.nav.testnav.libs:testing'
 }

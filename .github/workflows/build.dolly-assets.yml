@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - navikt/dolly-assets/**
+  workflow_dispatch:
 
 jobs:
   build:
