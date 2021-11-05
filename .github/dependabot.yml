@@ -265,6 +265,8 @@ updates:
       interval: "daily"
   - package-ecosystem: "gradle"
     directory: "/apps/testnorge-frikort/"
+    ignore:
+      - dependency-name: "com.sun.xml.bind:jaxb-ri"
     schedule:
       interval: "daily"
   - package-ecosystem: "gradle"
