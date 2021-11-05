@@ -21,8 +21,6 @@ spec:
       enabled: true
       tenant: nav.no
   image: {{image}}
-  envFrom:
-    - secret: user-encryption-prod
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: prod
