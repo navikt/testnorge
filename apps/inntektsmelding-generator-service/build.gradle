@@ -53,17 +53,17 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
 
     implementation 'org.aspectj:aspectjweaver:1.9.7'
+
     implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation 'javax.validation:validation-api:2.0.1.Final'
+    runtimeOnly 'com.sun.xml.bind:jaxb-ri:2.3.5'
 
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
 
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
     implementation 'no.nav.tjenestespesifikasjoner:nav-altinn-inntektsmelding:1.2019.08.16-13.46-35cbdfd492d4'
 
-    implementation 'javax.xml.bind:jaxb-api'
     implementation 'javax.activation:activation:1.1.1'
-    implementation 'org.glassfish.jaxb:jaxb-runtime:3.0.2'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
