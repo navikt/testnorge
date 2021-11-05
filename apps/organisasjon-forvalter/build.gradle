@@ -68,7 +68,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
 
     implementation 'org.apache.avro:avro:1.10.0'
-    implementation 'org.flywaydb:flyway-core:6.4.4'
+    implementation 'org.flywaydb:flyway-core'
     implementation 'io.projectreactor.addons:reactor-extra:3.4.2'
     implementation 'org.postgresql:postgresql'
     implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
@@ -80,10 +80,10 @@ dependencies {
     implementation 'org.springframework.data:spring-data-commons'
 
     implementation 'javax.persistence:javax.persistence-api:2.2'
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.11.2'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
 
-    implementation 'org.projectlombok:lombok:1.18.22'
-    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+    implementation 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
 
     testImplementation 'com.h2database:h2'
     testImplementation 'no.nav.testnav.libs:testing'
