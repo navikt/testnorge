@@ -125,7 +125,6 @@ updates:
     directory: "/apps/inntektsmelding-generator-service/"
     ignore:
       - dependency-name: "com.sun.xml.bind:jaxb-ri"
-        update-types: [ "version-update:semver-patch" ]
     schedule:
       interval: "daily"
   - package-ecosystem: "gradle"
