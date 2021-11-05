@@ -1,12 +1,10 @@
-import no.nav.testnav.dependencies.gradle.DependenciesPlugin
-
 plugins {
-    id "org.sonarqube" version "3.3"
-    id 'no.nav.testnav.dependencies'
     id 'java'
+    id "org.sonarqube" version "3.3"
     id 'org.springframework.boot' version "2.5.6"
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
+
 
 sonarqube {
     properties {
@@ -54,7 +52,7 @@ dependencies {
         }
     }
 
-    implementation 'com.sun.xml.ws:jaxws-ri:2.3.3'
+    implementation 'com.sun.xml.ws:jaxws-ri:3.0.2'
 
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:security-core'
@@ -75,13 +73,13 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     implementation 'org.hibernate.validator:hibernate-validator'
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.2'
-    implementation 'org.aspectj:aspectjweaver:1.9.6'
-    implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    implementation 'org.aspectj:aspectjweaver:1.9.7'
+    implementation 'io.micrometer:micrometer-registry-prometheus:1.7.5'
 
-    implementation "org.springdoc:springdoc-openapi-ui:1.4.6"
+    implementation "org.springdoc:springdoc-openapi-ui:1.5.12"
 
-    implementation 'com.jayway.jsonpath:json-path:2.4.0'
+    implementation 'com.jayway.jsonpath:json-path:2.6.0'
 
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
 
@@ -92,9 +90,9 @@ dependencies {
     implementation 'no.nav.tjenestespesifikasjoner:nav-fim-behandleArbeidsforhold-v1-tjenestespesifikasjon:1.2020.04.30-11.45-a45e1248c063'
     implementation 'org.apache.neethi:neethi:3.1.1'
     implementation 'no.nav.registre:testnorge-consumers:1.12.0-RELEASE'
-    implementation 'org.apache.cxf:cxf-spring-boot-starter-jaxws:3.3.3'
-    implementation 'org.apache.cxf:cxf-rt-ws-security:3.3.3'
-    implementation 'javax.xml.ws:jaxws-api:2.3.0'
+    implementation 'org.apache.cxf:cxf-spring-boot-starter-jaxws:3.4.5'
+    implementation 'org.apache.cxf:cxf-rt-ws-security:3.4.5'
+    implementation 'javax.xml.ws:jaxws-api:2.3.1'
     implementation 'org.apache.commons:commons-lang3:3.10'
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
 

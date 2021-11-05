@@ -4,7 +4,7 @@ plugins {
 
 rootProject.name = 'servlet-security'
 
-includeBuild '../../gradlePlugins'
+
 includeBuild '../security-core'
 
 gradleEnterprise {

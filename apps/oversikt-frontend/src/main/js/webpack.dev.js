@@ -8,7 +8,7 @@ module.exports = merge(common, {
 	devtool: 'eval-source-map',
 	devServer: {
 		port: 3000,
-		static: path.join(__dirname, 'public'),
+		contentBase: path.join(__dirname, 'public'),
 		hot: true,
 		historyApiFallback: { index: '/', disableDotRule: true },
 		proxy: {
@@ -28,14 +28,16 @@ module.exports = merge(common, {
 				target: 'http://localhost:8080',
 				changeOrigin: true,
 			},
-			'/oauth2/authorization/aad': {
+			'/oauth2/authorization': {
 				target: 'http://localhost:8080',
-				changeOrigin: true,
 				secure: false,
 			},
-			'/oauth2/authorization/idporten': {
+			'/login/oauth2/code': {
 				target: 'http://localhost:8080',
-				changeOrigin: true,
+				secure: false,
+			},
+			'/logout': {
+				target: 'http://localhost:8080',
 				secure: false,
 			},
 		},

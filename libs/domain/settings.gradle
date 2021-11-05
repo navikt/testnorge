@@ -4,7 +4,6 @@ plugins {
 
 rootProject.name = 'domain'
 
-includeBuild '../../gradlePlugins'
 
 gradleEnterprise {
     buildScan {

@@ -4,7 +4,6 @@ plugins {
 
 rootProject.name = 'testnorge-skd'
 
-includeBuild '../../gradlePlugins'
 
 includeBuild '../../libs/commands'
 includeBuild '../../libs/servlet-core'

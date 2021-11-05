@@ -4,7 +4,6 @@ plugins {
 
 rootProject.name = 'person-faste-data-service'
 
-includeBuild '../../gradlePlugins'
 
 includeBuild '../../libs/reactive-security'
 includeBuild '../../libs/reactive-core'
