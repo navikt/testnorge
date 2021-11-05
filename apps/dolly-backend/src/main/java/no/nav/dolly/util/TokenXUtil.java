@@ -3,6 +3,7 @@ package no.nav.dolly.util;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
+import no.nav.testnav.libs.securitycore.domain.UserInfo;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import no.nav.testnav.libs.servletsecurity.properties.TokenXResourceServerProperties;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,14 +38,10 @@ public final class TokenXUtil {
                 .equals(serverProperties.getIssuerUri());
     }
 
-    public static String getBankidUserId(GetUserInfo getUserInfo) {
+    public static UserInfo getBankidUser(GetUserInfo getUserInfo) {
 
         try {
             return getUserInfo.call()
-                    .map(userInfo -> {
-                        log.info("Fant BankID bruker med ID: {}", userInfo.id());
-                        return userInfo.id();
-                    })
                     .orElse(null);
         } catch (NullPointerException e) {
             log.info("Fant ikke BankID request");
