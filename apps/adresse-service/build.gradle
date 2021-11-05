@@ -54,7 +54,7 @@ dependencies {
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'org.aspectj:aspectjweaver:1.9.7'
-    implementation 'io.micrometer:micrometer-registry-prometheus:1.7.5'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
 
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
     implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'

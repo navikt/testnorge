@@ -84,7 +84,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.5'
     implementation 'org.postgresql:postgresql:42.2.24.jre7'
     implementation 'org.flywaydb:flyway-core:8.0.1'
-    implementation 'io.micrometer:micrometer-registry-prometheus:1.7.5'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
     implementation 'org.codehaus.jettison:jettison:1.4.1'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
