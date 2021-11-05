@@ -249,6 +249,8 @@ updates:
       interval: "daily"
   - package-ecosystem: "gradle"
     directory: "/apps/testnorge-aareg/"
+    ignore:
+      - dependency-name: "com.sun.xml.ws:jaxws-ri"
     schedule:
       interval: "daily"
   - package-ecosystem: "gradle"
