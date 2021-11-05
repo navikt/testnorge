@@ -100,6 +100,8 @@ export const icons = {
 	'chevron-up': ChevronUp,
 	'chevron-left': ChevronLeft,
 	'chevron-right': ChevronRight,
+	expand: ChevronDown,
+	collapse: ChevronUp,
 	ThumbsUp: ThumbsUp,
 	ThumbsDown: ThumbsDown,
 	lock: Lock,
