@@ -66,6 +66,10 @@ updates:
     schedule:
       interval: "daily"
   - package-ecosystem: "gradle"
+    directory: "/apps/dolly-backend/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
     directory: "/apps/endringsmelding-frontend/"
     schedule:
       interval: "daily"
