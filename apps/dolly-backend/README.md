@@ -21,7 +21,13 @@ https://dolly-backend.dev.intern.nav.no/swagger-ui.html
 https://dolly-backend.dev.intern.nav.no/swagger-ui.html
 **NB: `naisdevice` må kjøre og være grønn.**
 
-Så kjør `gradle clean build`
+Så kjør `./gradlew clean build`
+
+Deretter kan DollyBackendApplicationStarter startes med disse VM options:
+
+`-Dspring.profiles.active=local 
+--add-opens java.base/java.lang=ALL-UNNAMED 
+-Dspring.cloud.vault.token=*TOKEN*`
 
 ## Deploy status
 
