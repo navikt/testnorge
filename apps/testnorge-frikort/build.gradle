@@ -53,7 +53,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
-    runtimeOnly 'com.sun.xml.bind:jaxb-ri:2.3.5'
+    runtimeOnly 'com.sun.xml.bind:jaxb-ri:3.0.2'
 
     implementation 'org.apache.commons:commons-math3:3.6.1'
     implementation 'org.aspectj:aspectjweaver:1.9.7'
