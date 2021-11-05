@@ -95,6 +95,12 @@ const selectOptions: SelectOptions = {
 		{ value: '985675143', label: '985675143 - Stumtjener Butlerservice' },
 	],
 
+	//PDL
+	master: [
+		{ value: 'FREG', label: 'FREG' },
+		{ value: 'PDL', label: 'PDL' },
+	],
+
 	//PDLF - kontaktinformasjon dødsbo
 	adressatType: [
 		{ value: 'ADVOKAT', label: 'Advokat' },

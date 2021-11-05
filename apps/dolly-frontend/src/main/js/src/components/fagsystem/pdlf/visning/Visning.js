@@ -17,11 +17,15 @@ export const PdlfVisning = ({ dataPdl, dataPdlforvalter, loadingPdl, loadingPdlf
 	return (
 		<ErrorBoundary>
 			<div>
-				<UtenlandsId data={dataPdl?.data?.hentPerson?.utenlandskIdentifikasjonsnummer} />
-				<FalskIdentitet data={dataPdlforvalter[0]?.person?.falskIdentitet} />
-				<KontaktinformasjonForDoedsbo
-					data={dataPdl?.data?.hentPerson?.kontaktinformasjonForDoedsbo}
-				/>
+				{dataPdlforvalter && (
+					<UtenlandsId data={dataPdlforvalter[0]?.person?.utenlandskIdentifikasjonsnummer} />
+				)}
+				{dataPdlforvalter && <FalskIdentitet data={dataPdlforvalter[0]?.person?.falskIdentitet} />}
+				{dataPdl && (
+					<KontaktinformasjonForDoedsbo
+						data={dataPdl?.data?.hentPerson?.kontaktinformasjonForDoedsbo}
+					/>
+				)}
 			</div>
 		</ErrorBoundary>
 	)

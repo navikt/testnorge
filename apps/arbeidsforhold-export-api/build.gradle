@@ -58,19 +58,14 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
 
     implementation 'org.hibernate.validator:hibernate-validator'
-    implementation 'com.oracle.database.xml:xdb'
-    implementation 'com.oracle.database.xml:xmlparserv2'
-    implementation 'org.hibernate.validator:hibernate-validator'
-    implementation 'org.glassfish.jaxb:jaxb-runtime:3.0.2'
-    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
     runtimeOnly 'com.oracle.database.jdbc:ojdbc8'
-    runtimeOnly 'javax.xml.bind:jaxb-api:2.3.1'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 
-    implementation 'org.projectlombok:lombok:1.18.22'
-    annotationProcessor 'org.projectlombok:lombok:1.18.22'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
+    implementation 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 }

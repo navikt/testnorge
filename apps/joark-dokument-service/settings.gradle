@@ -5,6 +5,7 @@ plugins {
 rootProject.name = 'joark-dokument-service'
 
 includeBuild '../../libs/servlet-core'
+includeBuild '../../libs/domain'
 includeBuild '../../libs/data-transfer-objects'
 includeBuild '../../libs/servlet-security'
 

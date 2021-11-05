@@ -4,7 +4,6 @@ plugins {
 
 rootProject.name = 'servlet-core'
 
-includeBuild '../../gradlePlugins'
 
 gradleEnterprise {
     buildScan {

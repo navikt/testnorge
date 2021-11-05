@@ -4,7 +4,6 @@ plugins {
 
 rootProject.name = 'testnorge-arena'
 
-includeBuild '../../gradlePlugins'
 
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/domain'

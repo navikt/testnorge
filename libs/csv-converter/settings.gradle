@@ -4,7 +4,6 @@ plugins {
 
 rootProject.name = 'csv-converter'
 
-includeBuild '../../gradlePlugins'
 
 gradleEnterprise {
     buildScan {
