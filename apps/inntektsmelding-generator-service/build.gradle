@@ -56,7 +56,7 @@ dependencies {
 
     implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation 'javax.validation:validation-api:2.0.1.Final'
-    runtimeOnly 'com.sun.xml.bind:jaxb-ri:2.3.5'
+    runtimeOnly 'com.sun.xml.bind:jaxb-ri:3.0.2'
 
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
 
