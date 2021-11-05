@@ -406,20 +406,20 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			data.push(vergemaalKriterier)
 		}
 
-		if (fullmakt) {
-			const fullmaktKriterier = {
-				header: 'Fullmakt',
-				items: [
-					obj('Kilde', fullmakt.kilde),
-					obj('Områder', Formatters.omraaderArrayToString(fullmakt.omraader)),
-					obj('Gyldig fra og med', Formatters.formatDate(fullmakt.gyldigFom)),
-					obj('Gyldig til og med', Formatters.formatDate(fullmakt.gyldigTom)),
-					obj('Fullmektiges identtype', fullmakt.identType),
-					obj('Fullmektig har mellomnavn', Formatters.oversettBoolean(fullmakt.harMellomnavn)),
-				],
-			}
-			data.push(fullmaktKriterier)
-		}
+		// if (fullmakt) {
+		// 	const fullmaktKriterier = {
+		// 		header: 'Fullmakt',
+		// 		items: [
+		// 			obj('Kilde', fullmakt.kilde),
+		// 			obj('Områder', Formatters.omraaderArrayToString(fullmakt.omraader)),
+		// 			obj('Gyldig fra og med', Formatters.formatDate(fullmakt.gyldigFom)),
+		// 			obj('Gyldig til og med', Formatters.formatDate(fullmakt.gyldigTom)),
+		// 			obj('Fullmektiges identtype', fullmakt.identType),
+		// 			obj('Fullmektig har mellomnavn', Formatters.oversettBoolean(fullmakt.harMellomnavn)),
+		// 		],
+		// 	}
+		// 	data.push(fullmaktKriterier)
+		// }
 	}
 
 	const aaregKriterier = bestillingData.aareg
@@ -796,7 +796,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	const pdldataKriterier = bestillingData.pdldata?.person
 
 	if (pdldataKriterier) {
-		const { falskIdentitet } = pdldataKriterier
+		const { falskIdentitet, fullmakt } = pdldataKriterier
 
 		const sjekkRettIdent = (item) => {
 			if (_has(item, 'rettIdentitetErUkjent')) {
@@ -828,6 +828,27 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				}),
 			}
 			data.push(falskIdentitetData)
+		}
+
+		if (fullmakt) {
+			const fullmaktData = {
+				header: 'Fullmakt',
+				itemRows: fullmakt.map((item, idx) => {
+					return [
+						{ numberHeader: `Fullmakt ${idx + 1}` },
+						obj('Områder', Formatters.omraaderArrayToString(item.omraader)),
+						obj('Gyldig fra og med', Formatters.formatDate(item.gyldigFraOgMed)),
+						obj('Gyldig til og med', Formatters.formatDate(item.gyldigTilOgMed)),
+						obj('Fullmektiges identtype', item.nyFullmektig?.identtype),
+						obj(
+							'Fullmektig har mellomnavn',
+							Formatters.oversettBoolean(item.nyFullmektig?.nyttNavn?.harMellomnavn)
+						),
+						// obj('Kilde', item.kilde),
+					]
+				}),
+			}
+			data.push(fullmaktData)
 		}
 	}
 

@@ -5,48 +5,83 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+
+const initialFullmakt = {
+	omraader: [],
+	gyldigFraOgMed: null,
+	gyldigTilOgMed: null,
+	nyFullmektig: {
+		identtype: null,
+		nyttNavn: {
+			harMellomnavn: false,
+		},
+	},
+	// motpartsPersonident???: null,
+	kilde: 'Dolly',
+	master: 'PDL',
+	gjeldende: true,
+}
 
 export const Fullmakt = () => {
 	const paths = {
-		kilde: 'tpsf.fullmakt.kilde',
-		omraader: 'tpsf.fullmakt.omraader',
-		gyldigFom: 'tpsf.fullmakt.gyldigFom',
-		gyldigTom: 'tpsf.fullmakt.gyldigTom',
-		identType: 'tpsf.fullmakt.identType',
-		harMellomnavn: 'tpsf.fullmakt.harMellomnavn',
+		omraader: 'omraader',
+		gyldigFraOgMed: 'gyldigFraOgMed',
+		gyldigTilOgMed: 'gyldigTilOgMed',
+		identtype: 'nyFullmektig.identtype',
+		harMellomnavn: 'nyFullmektig.nyttNavn.harMellomnavn',
+		kilde: 'kilde',
+		master: 'master',
+		gjeldende: 'fullmakt.gjeldende',
 	}
 
 	const fullmaktOmraader = SelectOptionsOppslag.hentFullmaktOmraader()
 	const fullmaktOptions = SelectOptionsOppslag.formatOptions('fullmaktOmraader', fullmaktOmraader)
 
 	return (
-		<Vis attributt={Object.values(paths)} formik>
-			<div className="flexbox--flex-wrap">
-				<FormikTextInput name={paths.kilde} label="Kilde" size="xlarge" />
-				<div className="flexbox--full-width">
-					<FormikSelect
-						name={paths.omraader}
-						label="Områder"
-						options={fullmaktOptions}
-						size="grow"
-						isMulti={true}
-						isClearable={false}
-						fastfield={false}
-					/>
-				</div>
-				<FormikDatepicker name={paths.gyldigFom} label="Gyldig fra og med" />
-				<FormikDatepicker name={paths.gyldigTom} label="Gyldig til og med" />
-				<FormikSelect
-					name={paths.identType}
-					label="Fullmektig identtype"
-					options={Options('identtype')}
-				/>
-				<FormikSelect
-					name={paths.harMellomnavn}
-					label="Fullmektig har mellomnavn"
-					options={Options('boolean')}
-				/>
-			</div>
-		</Vis>
+		<FormikDollyFieldArray
+			name="pdldata.person.fullmakt"
+			header="Fullmakt"
+			newEntry={initialFullmakt}
+			canBeEmpty={false}
+		>
+			{(path, idx) => {
+				return (
+					<div className="flexbox--flex-wrap">
+						<div className="flexbox--full-width">
+							<FormikSelect
+								name={`${path}.${paths.omraader}`}
+								label="Områder"
+								options={fullmaktOptions}
+								size="grow"
+								isMulti={true}
+								isClearable={false}
+								fastfield={false}
+							/>
+						</div>
+						<FormikDatepicker name={`${path}.${paths.gyldigFraOgMed}`} label="Gyldig fra og med" />
+						<FormikDatepicker name={`${path}.${paths.gyldigTilOgMed}`} label="Gyldig til og med" />
+						<FormikSelect
+							name={`${path}.${paths.identtype}`}
+							label="Fullmektig identtype"
+							options={Options('identtype')}
+						/>
+						{/*<FormikSelect*/}
+						{/*	name={`${path}.${paths.harMellomnavn}`}*/}
+						{/*	label="Fullmektig har mellomnavn"*/}
+						{/*	options={Options('boolean')}*/}
+						{/*/>*/}
+						<FormikCheckbox
+							name={`${path}.${paths.harMellomnavn}`}
+							label="Fullmektig har mellomnavn"
+							size="grow"
+							checkboxMargin
+						/>
+						<FormikTextInput name={`${path}.${paths.kilde}`} label="Kilde" size="xlarge" />
+					</div>
+				)
+			}}
+		</FormikDollyFieldArray>
 	)
 }

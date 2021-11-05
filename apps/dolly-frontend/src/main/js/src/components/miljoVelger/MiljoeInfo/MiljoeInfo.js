@@ -40,6 +40,7 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 					</li>
 				)}
 
+				{pdldata && pdldata.person?.fullmakt && <li>Fullmakt: Q2</li>}
 				{pdldata && pdldata.person?.falskIdentitet && <li>Falsk identitet: Q2</li>}
 				{pdlforvalter && pdlforvalter.utenlandskIdentifikasjonsnummer && (
 					<li>Utenlandsk identifikasjonsnummer: Q2</li>

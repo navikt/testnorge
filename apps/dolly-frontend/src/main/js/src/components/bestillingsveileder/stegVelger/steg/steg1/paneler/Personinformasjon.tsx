@@ -254,16 +254,25 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		},
 		fullmakt: {
 			label: 'Fullmakt',
-			checked: has('tpsf.fullmakt'),
+			checked: has('pdldata.person.fullmakt'),
 			add: () =>
-				set('tpsf.fullmakt', {
-					kilde: '',
-					omraader: [],
-					gyldigFom: null,
-					gyldigTom: null,
-					identType: null,
-					harMellomnavn: null,
-				}),
+				set('pdldata.person.fullmakt', [
+					{
+						omraader: [],
+						gyldigFraOgMed: null,
+						gyldigTilOgMed: null,
+						nyFullmektig: {
+							identtype: null,
+							nyttNavn: {
+								harMellomnavn: false,
+							},
+						},
+						// motpartsPersonident???: null,
+						kilde: 'Dolly',
+						master: 'PDL',
+						gjeldende: true,
+					},
+				]),
 			remove: () => del('tpsf.fullmakt'),
 		},
 		sikkerhetstiltak: {

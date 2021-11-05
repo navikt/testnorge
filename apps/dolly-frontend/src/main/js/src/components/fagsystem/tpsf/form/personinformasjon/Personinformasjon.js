@@ -36,7 +36,7 @@ const diversePaths = [
 ]
 
 const vergemaalPath = ['tpsf.vergemaal']
-const fullmaktPath = ['tpsf.fullmakt']
+const fullmaktPath = ['pdldata.person.fullmakt']
 
 const sikkerhetstiltakPaths = [
 	'tpsf.typeSikkerhetTiltak',
