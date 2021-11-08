@@ -1,4 +1,4 @@
-package no.nav.dolly.mapper;
+package no.nav.dolly.config;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -30,6 +30,7 @@ public class JsonMapperConfig {
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
         objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 
         SimpleModule simpleModule = new SimpleModule();
