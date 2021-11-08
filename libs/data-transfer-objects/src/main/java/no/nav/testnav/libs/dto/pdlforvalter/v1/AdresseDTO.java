@@ -41,6 +41,6 @@ public abstract class AdresseDTO extends DbVersjonDTO {
         private String etternavn;
         private String fornavn;
         private String mellomnavn;
-        private Boolean harMellomnavn;
+        private Boolean hasMellomnavn;
     }
 }
