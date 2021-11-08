@@ -62,7 +62,7 @@ dependencies {
 
     implementation 'no.nav.bidrag.ui:bisys-ui-connect:2020.09.23-11.42-60270558f930'
     implementation 'org.aspectj:aspectjweaver:1.9.7'
-    implementation 'io.micrometer:micrometer-registry-prometheus:1.7.5'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
 
     implementation 'org.hibernate.validator:hibernate-validator'
 

@@ -2,42 +2,27 @@ import * as Yup from 'yup'
 import { ifKeyHasValue, ifPresent, requiredDate, requiredString } from '~/utils/YupValidations'
 
 const personnavnSchema = Yup.object({
-	fornavn: requiredString,
+	fornavn: Yup.string(),
 	mellomnavn: Yup.string(),
-	etternavn: requiredString,
+	etternavn: Yup.string(),
 })
 
-const falskIdentitet = Yup.object({
-	rettIdentitet: Yup.object({
-		identitetType: requiredString,
-		rettIdentitetVedIdentifikasjonsnummer: Yup.mixed().when('identitetType', {
-			is: 'ENTYDIG',
-			then: requiredString,
+const falskIdentitet = Yup.array().of(
+	Yup.object({
+		rettIdentErUkjent: Yup.boolean(),
+		rettIdentitetVedIdentifikasjonsnummer: Yup.string().nullable(),
+		rettIdentitetVedOpplysninger: Yup.object({
+			foedselsdato: Yup.string().nullable(),
+			kjoenn: Yup.string().nullable(),
+			personnavn: personnavnSchema.nullable(),
+			statsborgerskap: Yup.array().of(Yup.string()),
 		}),
-		personnavn: ifKeyHasValue(
-			'$pdlforvalter.falskIdentitet.rettIdentitet.identitetType',
-			['OMTRENTLIG'],
-			personnavnSchema
-		),
-		foedselsdato: Yup.mixed().when('identitetType', {
-			is: 'OMTRENTLIG',
-			then: requiredDate,
-		}),
-		kjoenn: Yup.mixed().when('identitetType', {
-			is: 'OMTRENTLIG',
-			then: requiredString,
-		}),
-		statsborgerskap: Yup.mixed().when('identitetType', {
-			is: 'OMTRENTLIG',
-			then: requiredString,
-		}),
-	}),
-})
+	})
+)
 
 const utenlandskId = Yup.array().of(
 	Yup.object({
 		identifikasjonsnummer: requiredString,
-		kilde: requiredString,
 		opphoert: requiredString,
 		utstederland: requiredString,
 	})
@@ -86,14 +71,18 @@ const kontaktDoedsbo = Yup.object({
 
 export const validation = {
 	pdlforvalter: Yup.object({
-		falskIdentitet: ifPresent('$pdlforvalter.falskIdentitet', falskIdentitet),
-		utenlandskIdentifikasjonsnummer: ifPresent(
-			'$pdlforvalter.utenlandskIdentifikasjonsnummer',
-			utenlandskId
-		),
 		kontaktinformasjonForDoedsbo: ifPresent(
 			'$pdlforvalter.kontaktinformasjonForDoedsbo',
 			kontaktDoedsbo
 		),
+	}),
+	pdldata: Yup.object({
+		person: Yup.object({
+			falskIdentitet: ifPresent('$pdldata.person.falskIdentitet', falskIdentitet),
+			utenlandskIdentifikasjonsnummer: ifPresent(
+				'$pdldata.person.utenlandskIdentifikasjonsnummer',
+				utenlandskId
+			),
+		}),
 	}),
 }

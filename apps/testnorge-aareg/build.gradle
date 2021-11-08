@@ -52,13 +52,12 @@ dependencies {
         }
     }
 
-    implementation 'com.sun.xml.ws:jaxws-ri:3.0.2'
-
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:servlet-insecure-security'
     implementation 'no.nav.testnav.libs:domain'
 
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -70,12 +69,11 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     implementation 'org.aspectj:aspectjweaver:1.9.7'
-    implementation 'io.micrometer:micrometer-registry-prometheus:1.7.5'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
 
     implementation "org.springdoc:springdoc-openapi-ui:1.5.12"
 
@@ -83,18 +81,20 @@ dependencies {
 
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
 
-    implementation 'org.projectlombok:lombok:1.18.22'
-    annotationProcessor 'org.projectlombok:lombok:1.18.22'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
-
     implementation 'no.nav.tjenestespesifikasjoner:nav-fim-behandleArbeidsforhold-v1-tjenestespesifikasjon:1.2020.04.30-11.45-a45e1248c063'
     implementation 'org.apache.neethi:neethi:3.1.1'
     implementation 'no.nav.registre:testnorge-consumers:1.12.0-RELEASE'
     implementation 'org.apache.cxf:cxf-spring-boot-starter-jaxws:3.4.5'
     implementation 'org.apache.cxf:cxf-rt-ws-security:3.4.5'
-    implementation 'javax.xml.ws:jaxws-api:2.3.1'
+
     implementation 'org.apache.commons:commons-lang3:3.10'
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
+
+    implementation 'com.sun.xml.ws:jaxws-ri:2.3.5'
+
+    implementation 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.boot:spring-boot-test'

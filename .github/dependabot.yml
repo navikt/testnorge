@@ -66,6 +66,10 @@ updates:
     schedule:
       interval: "daily"
   - package-ecosystem: "gradle"
+    directory: "/apps/dolly-backend/"
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
     directory: "/apps/endringsmelding-frontend/"
     schedule:
       interval: "daily"
@@ -123,6 +127,8 @@ updates:
       interval: "daily"
   - package-ecosystem: "gradle"
     directory: "/apps/inntektsmelding-generator-service/"
+    ignore:
+      - dependency-name: "com.sun.xml.bind:jaxb-ri"
     schedule:
       interval: "daily"
   - package-ecosystem: "gradle"
@@ -247,6 +253,8 @@ updates:
       interval: "daily"
   - package-ecosystem: "gradle"
     directory: "/apps/testnorge-aareg/"
+    ignore:
+      - dependency-name: "com.sun.xml.ws:jaxws-ri"
     schedule:
       interval: "daily"
   - package-ecosystem: "gradle"
@@ -261,6 +269,8 @@ updates:
       interval: "daily"
   - package-ecosystem: "gradle"
     directory: "/apps/testnorge-frikort/"
+    ignore:
+      - dependency-name: "com.sun.xml.bind:jaxb-ri"
     schedule:
       interval: "daily"
   - package-ecosystem: "gradle"

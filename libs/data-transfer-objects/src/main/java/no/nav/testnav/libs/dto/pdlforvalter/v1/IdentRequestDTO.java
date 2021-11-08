@@ -36,6 +36,6 @@ public class IdentRequestDTO extends DbVersjonDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class NyttNavnDTO implements Serializable {
 
-        private Boolean harMellomnavn;
+        private Boolean hasMellomnavn;
     }
 }
