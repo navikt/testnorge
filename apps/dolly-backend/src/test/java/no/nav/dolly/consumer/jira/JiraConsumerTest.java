@@ -48,7 +48,7 @@ import static org.mockito.Mockito.when;
 @AutoConfigureWireMock(port = 0)
 public class JiraConsumerTest {
 
-    private static final String HOST = "jira/api/v1";
+    private static final String HOST = "jira/api/v1/test";
     private static final String AUX_HEADER = "header";
     private static final String AUX_HEADER_CONTENTS = "aux";
     private static final String METADATA = "/createmeta";
@@ -73,54 +73,6 @@ public class JiraConsumerTest {
         when(httpEntity.getHeaders()).thenReturn(HttpHeaders.EMPTY);
     }
 
-    @Test
-    public void excuteRequest() {
-
-        stubGetJira();
-
-        ResponseEntity<Project> response = jiraConsumer.excuteRequest("api/v1/test", HttpMethod.GET, httpEntity, Project.class);
-
-        assertThat(response.getStatusCode(), is(HttpStatus.OK));
-    }
-
-    @Test
-    public void excuteMetadataRequest() {
-
-        MultiValueMap<String, String> queries = new LinkedMultiValueMap<>();
-
-        queries.add("projectKeys", "testy");
-        queries.add("issuetypeIds", "1234");
-        queries.add("expand", "projects.issuetypes.fields");
-
-        stubGetMetadataJira();
-
-        ResponseEntity<Project> response = jiraConsumer.getOpenAmMetadata(format("%s%s", "api/v1/test", METADATA),
-                httpEntity,
-                queries);
-
-        assertThat(response.getStatusCode(), is(HttpStatus.OK));
-    }
-
-    @Test
-    public void createHttpHeaders() {
-        HttpHeaders httpHeaders = jiraConsumer.createHttpHeaders(MediaType.APPLICATION_JSON);
-
-        assertThat(httpHeaders.size(), is(equalTo(3)));
-        assertThat(httpHeaders.get("X-Atlassian-Token"), containsInAnyOrder("no-check"));
-        assertThat(httpHeaders.get(HttpHeaders.CONTENT_TYPE), containsInAnyOrder(MediaType.APPLICATION_JSON_VALUE));
-        assertThat(httpHeaders.get(HttpHeaders.AUTHORIZATION), containsInAnyOrder("Basic ZHVtbXk6ZHVtbXk="));
-    }
-
-    @Test
-    public void createHttpHeadersExtraHeader() {
-        HttpHeaders inputHeaders = new HttpHeaders();
-        inputHeaders.add(AUX_HEADER, AUX_HEADER_CONTENTS);
-        HttpHeaders httpHeaders = jiraConsumer.createHttpHeaders(MediaType.MULTIPART_FORM_DATA, inputHeaders);
-
-        assertThat(httpHeaders.get(HttpHeaders.CONTENT_TYPE), containsInAnyOrder(MediaType.MULTIPART_FORM_DATA_VALUE));
-        assertThat(httpHeaders.get(AUX_HEADER), containsInAnyOrder(AUX_HEADER_CONTENTS));
-    }
-
     private void stubGetJira() {
 
         stubFor(get(urlPathMatching("(.*)/jira/api/v1/test"))
@@ -138,5 +90,53 @@ public class JiraConsumerTest {
                 .willReturn(ok()
                         .withBody("{}")
                         .withHeader("Content-Type", "application/json")));
+    }
+
+    @Test
+    void createHttpHeaders() {
+        HttpHeaders httpHeaders = jiraConsumer.createHttpHeaders(MediaType.APPLICATION_JSON);
+
+        assertThat(httpHeaders.size(), is(equalTo(3)));
+        assertThat(httpHeaders.get("X-Atlassian-Token"), containsInAnyOrder("no-check"));
+        assertThat(httpHeaders.get(HttpHeaders.CONTENT_TYPE), containsInAnyOrder(MediaType.APPLICATION_JSON_VALUE));
+        assertThat(httpHeaders.get(HttpHeaders.AUTHORIZATION), containsInAnyOrder("Basic ZHVtbXk6ZHVtbXk="));
+    }
+
+    @Test
+    void createHttpHeadersExtraHeader() {
+        HttpHeaders inputHeaders = new HttpHeaders();
+        inputHeaders.add(AUX_HEADER, AUX_HEADER_CONTENTS);
+        HttpHeaders httpHeaders = jiraConsumer.createHttpHeaders(MediaType.MULTIPART_FORM_DATA, inputHeaders);
+
+        assertThat(httpHeaders.get(HttpHeaders.CONTENT_TYPE), containsInAnyOrder(MediaType.MULTIPART_FORM_DATA_VALUE));
+        assertThat(httpHeaders.get(AUX_HEADER), containsInAnyOrder(AUX_HEADER_CONTENTS));
+    }
+
+    @Test
+    void excuteRequest() {
+
+        stubGetJira();
+
+        ResponseEntity<Project> response = jiraConsumer.excuteRequest(HOST, HttpMethod.GET, httpEntity, Project.class);
+
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
+    }
+
+    @Test
+    void excuteMetadataRequest() {
+
+        MultiValueMap<String, String> queries = new LinkedMultiValueMap<>();
+
+        queries.add("projectKeys", "testy");
+        queries.add("issuetypeIds", "1234");
+        queries.add("expand", "projects.issuetypes.fields");
+
+        stubGetMetadataJira();
+
+        ResponseEntity<Project> response = jiraConsumer.getOpenAmMetadata(format("%s%s", HOST, METADATA),
+                httpEntity,
+                queries);
+
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
     }
 }

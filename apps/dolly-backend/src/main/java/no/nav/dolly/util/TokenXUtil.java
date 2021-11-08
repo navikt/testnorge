@@ -52,7 +52,7 @@ public final class TokenXUtil {
     private static JwtAuthenticationToken getJwtAuthenticationToken() {
 
         return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
-                .filter(o -> o instanceof JwtAuthenticationToken)
+                .filter(JwtAuthenticationToken.class::isInstance)
                 .map(JwtAuthenticationToken.class::cast)
                 .orElseThrow();
     }

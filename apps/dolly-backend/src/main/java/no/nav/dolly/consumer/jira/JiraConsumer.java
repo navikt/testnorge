@@ -33,7 +33,7 @@ public class JiraConsumer {
 
     public <T> ResponseEntity<T> excuteRequest(String url, HttpMethod httpMethod, HttpEntity httpEntity, Class<T> responseClass) {
 
-        return httpMethod == HttpMethod.POST
+        return httpMethod == HttpMethod.POST && httpEntity.hasBody()
                 ? webClient
                 .method(httpMethod)
                 .uri(uriBuilder -> uriBuilder
@@ -54,7 +54,7 @@ public class JiraConsumer {
                 .block();
     }
 
-    public <T> ResponseEntity<Project> getOpenAmMetadata(String url, HttpEntity httpEntity, MultiValueMap<String, String> queries) {
+    public ResponseEntity<Project> getOpenAmMetadata(String url, HttpEntity httpEntity, MultiValueMap<String, String> queries) {
 
         return webClient
                 .get()
