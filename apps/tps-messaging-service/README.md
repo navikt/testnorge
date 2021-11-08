@@ -13,9 +13,9 @@ Swagger finnes under [/api](https://testnav-tps-messaging-service.dev.intern.nav
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør TpsMessagingServiceApplicationStarter med følgende argumenter:
 ```
--Dspring.cloud.vault.token=[kopier token fra vault]
+--add-opens java.base/java.lang=ALL-UNNAMED 
 -Dspring.profiles.active=local
---add-opens java.base/java.lang=ALL-UNNAMED
+-Dspring.cloud.vault.token=[kopier token fra vault]
 ```
 
 ### Utviklerimage

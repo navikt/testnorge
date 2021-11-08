@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 public class EndringsMeldingCommand implements Callable<String> {
 
     private static final long TIMEOUT_VAL = 5000;
-    private static final String FEIL_KOENAVN = "Feil i kønavn eller miljø";
+    private static final String FEIL_KOENAVN = "Feil i kÃ¸navn eller miljÃ¸";
 
     private final ConnectionFactory connectionFactory;
     private final String requestQueueName;

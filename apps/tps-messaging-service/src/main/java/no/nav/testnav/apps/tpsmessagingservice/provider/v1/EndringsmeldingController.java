@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,7 @@ public class EndringsmeldingController {
     }
 
     @PostMapping("/kontaktopplysninger")
-    public Map<String, String> sendKontaktopplysninger(@RequestBody KontaktopplysningerRequestDTO kontaktopplysninger, List<String> miljoer) {
+    public Map<String, String> sendKontaktopplysninger(@RequestParam List<String> miljoer, @RequestBody KontaktopplysningerRequestDTO kontaktopplysninger) {
 
         return endringsmeldingService.sendKontaktopplysninger(kontaktopplysninger, miljoer);
     }

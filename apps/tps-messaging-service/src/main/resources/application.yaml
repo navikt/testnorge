@@ -24,6 +24,7 @@ ibm:
     port: 1413
     user: ${credentials.mq.username}
     password: ${credentials.mq.password}
+    conn-name: b27apvl057.preprod.local
 
 #  queueManagers:
 #    - environment: d
