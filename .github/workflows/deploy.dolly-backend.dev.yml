@@ -4,10 +4,10 @@ on:
   push:
     paths:
       - apps/dolly-backend/**
+      - libs/data-transfer-objects/**
 
     branches:
       - master
-      - libs/data-transfer-objects/**
 
   workflow_dispatch:
 env:
