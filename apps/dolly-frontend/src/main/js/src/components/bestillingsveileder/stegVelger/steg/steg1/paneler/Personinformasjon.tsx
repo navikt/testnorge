@@ -15,6 +15,11 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 	const opprettFraEksisterende = opts.is.opprettFraIdenter
 	const leggTil = opts.is.leggTil
 	const { personFoerLeggTil } = opts
+
+	const tomInnvandretUtvandret =
+		personFoerLeggTil && _get(personFoerLeggTil, 'tpsf.innvandretUtvandret').length < 1
+
+	const harFnr = _get(personFoerLeggTil, 'tpsf.identtype') === 'FNR'
 	//Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
 
 	return (
@@ -34,18 +39,22 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 				<Attributt attr={sm.attrs.statsborgerskap} />
 				<Attributt
 					attr={sm.attrs.innvandretFraLand}
-					disabled={innvandret(personFoerLeggTil)}
+					disabled={
+						(tomInnvandretUtvandret && harFnr) ||
+						(!tomInnvandretUtvandret && innvandret(personFoerLeggTil))
+					}
 					title={
-						innvandret(personFoerLeggTil)
+						(tomInnvandretUtvandret && harFnr) ||
+						(!tomInnvandretUtvandret && innvandret(personFoerLeggTil))
 							? 'Personen må utvandre før den kan innvandre igjen'
 							: null
 					}
 				/>
 				<Attributt
 					attr={sm.attrs.utvandretTilLand}
-					disabled={leggTil && !innvandret(personFoerLeggTil)}
+					disabled={leggTil && !tomInnvandretUtvandret && !innvandret(personFoerLeggTil)}
 					title={
-						leggTil && !innvandret(personFoerLeggTil)
+						leggTil && !tomInnvandretUtvandret && !innvandret(personFoerLeggTil)
 							? 'Personen må innvandre før den kan utvandre igjen'
 							: null
 					}

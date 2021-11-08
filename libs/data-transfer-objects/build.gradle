@@ -1,10 +1,8 @@
-import no.nav.testnav.dependencies.gradle.DependenciesPlugin
-
 plugins {
     id "org.sonarqube" version "3.3"
-    id 'no.nav.testnav.dependencies'
     id 'java-library'
     id 'maven-publish'
+    id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
 
 sonarqube {
@@ -19,6 +17,11 @@ sonarqube {
     }
 }
 
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.boot:spring-boot-dependencies:2.5.6'
+    }
+}
 
 group = 'no.nav.testnav.libs'
 
@@ -36,16 +39,16 @@ repositories {
 }
 
 dependencies {
-    implementation "com.fasterxml.jackson.core:jackson-annotations:${DependenciesPlugin.jackson}"
-    implementation "com.fasterxml.jackson.core:jackson-databind:${DependenciesPlugin.jackson}"
+    implementation 'com.fasterxml.jackson.core:jackson-annotations'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
     implementation 'javax.validation:validation-api:2.0.1.Final'
-    implementation "org.springdoc:springdoc-openapi-common:${DependenciesPlugin.springdocOpenapi}"
+    implementation 'org.springdoc:springdoc-openapi-common:1.5.12'
 
     implementation 'no.nav.tjenestespesifikasjoner:nav-altinn-inntektsmelding:1.2019.08.16-13.46-35cbdfd492d4'
 
-    implementation 'org.projectlombok:lombok:1.18.22'
-    annotationProcessor 'org.projectlombok:lombok:1.18.22'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
+    implementation 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
 if (project.hasProperty("releaseVersion")) {

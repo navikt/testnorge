@@ -4,7 +4,6 @@ plugins {
 
 rootProject.name = 'generer-synt-amelding-service'
 
-includeBuild '../../gradlePlugins'
 
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/domain'

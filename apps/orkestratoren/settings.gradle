@@ -4,8 +4,6 @@ plugins {
 
 rootProject.name = 'orkestratoren'
 
-includeBuild '../../gradlePlugins'
-
 includeBuild '../../libs/commands'
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/servlet-security'

@@ -4,7 +4,6 @@ plugins {
 
 rootProject.name = 'testnorge-inntekt'
 
-includeBuild '../../gradlePlugins'
 
 includeBuild '../../libs/security-core'
 includeBuild '../../libs/servlet-core'

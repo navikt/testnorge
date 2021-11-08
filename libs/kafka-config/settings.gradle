@@ -4,8 +4,6 @@ plugins {
 
 rootProject.name = 'kafka-config'
 
-includeBuild '../../gradlePlugins'
-
 gradleEnterprise {
     buildScan {
         termsOfServiceUrl = "https://gradle.com/terms-of-service"

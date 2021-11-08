@@ -221,6 +221,8 @@ const innvandringUtvandringDatoTest = (schema) => {
 			if (!dato || !personFoerLeggTil) return true
 
 			const sisteDato = _get(personFoerLeggTil, 'tpsf.innvandretUtvandret[0].flyttedato')
+			if (!sisteDato) return true
+
 			const dateValid = isAfter(new Date(dato), new Date(sisteDato))
 
 			return (

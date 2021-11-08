@@ -4,7 +4,6 @@ plugins {
 
 rootProject.name = 'oversikt-frontend'
 
-includeBuild '../../gradlePlugins'
 
 includeBuild '../../libs/reactive-core'
 includeBuild '../../libs/security-core'

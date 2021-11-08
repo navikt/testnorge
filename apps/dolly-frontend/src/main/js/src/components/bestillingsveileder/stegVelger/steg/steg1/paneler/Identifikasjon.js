@@ -30,6 +30,9 @@ IdentifikasjonPanel.initialValues = ({ set, del, has }) => ({
 			set('pdldata.person.falskIdentitet', [
 				{
 					erFalsk: true,
+					kilde: 'Dolly',
+					master: 'FREG',
+					gjeldende: true,
 				},
 			])
 		},
@@ -39,11 +42,18 @@ IdentifikasjonPanel.initialValues = ({ set, del, has }) => ({
 	},
 	utenlandskIdentifikasjonsnummer: {
 		label: 'Har utenlandsk ID',
-		checked: has('pdlforvalter.utenlandskIdentifikasjonsnummer'),
+		checked: has('pdldata.person.utenlandskIdentifikasjonsnummer'),
 		add: () =>
-			set('pdlforvalter.utenlandskIdentifikasjonsnummer', [
-				{ identifikasjonsnummer: '', kilde: '', opphoert: '', utstederland: '' },
+			set('pdldata.person.utenlandskIdentifikasjonsnummer', [
+				{
+					identifikasjonsnummer: '',
+					opphoert: false,
+					utstederland: '',
+					kilde: 'Dolly',
+					master: 'FREG',
+					gjeldende: true,
+				},
 			]),
-		remove: () => del('pdlforvalter.utenlandskIdentifikasjonsnummer'),
+		remove: () => del('pdldata.person.utenlandskIdentifikasjonsnummer'),
 	},
 })

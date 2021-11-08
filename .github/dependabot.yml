@@ -123,6 +123,8 @@ updates:
       interval: "daily"
   - package-ecosystem: "gradle"
     directory: "/apps/inntektsmelding-generator-service/"
+    ignore:
+      - dependency-name: "com.sun.xml.bind:jaxb-ri"
     schedule:
       interval: "daily"
   - package-ecosystem: "gradle"
@@ -191,6 +193,8 @@ updates:
       interval: "daily"
   - package-ecosystem: "gradle"
     directory: "/apps/orkestratoren/"
+    ignore:
+      - dependency-name: "no.nav.registre:testnorge-consumers"
     schedule:
       interval: "daily"
   - package-ecosystem: "gradle"
@@ -239,10 +243,14 @@ updates:
       interval: "daily"
   - package-ecosystem: "gradle"
     directory: "/apps/syntrest/"
+    ignore:
+      - dependency-name: "io.kubernetes:client-java"
     schedule:
       interval: "daily"
   - package-ecosystem: "gradle"
     directory: "/apps/testnorge-aareg/"
+    ignore:
+      - dependency-name: "com.sun.xml.ws:jaxws-ri"
     schedule:
       interval: "daily"
   - package-ecosystem: "gradle"
@@ -251,10 +259,14 @@ updates:
       interval: "daily"
   - package-ecosystem: "gradle"
     directory: "/apps/testnorge-bisys/"
+    ignore:
+      - dependency-name: "no.nav.registre:testnorge-consumers"
     schedule:
       interval: "daily"
   - package-ecosystem: "gradle"
     directory: "/apps/testnorge-frikort/"
+    ignore:
+      - dependency-name: "com.sun.xml.bind:jaxb-ri"
     schedule:
       interval: "daily"
   - package-ecosystem: "gradle"
@@ -315,6 +327,8 @@ updates:
       interval: "daily"
   - package-ecosystem: "gradle"
     directory: "/apps/udi-stub/"
+    ignore:
+      - dependency-name: "uk.co.boothen.gradle.wsimport"
     schedule:
       interval: "daily"
   - package-ecosystem: "gradle"
