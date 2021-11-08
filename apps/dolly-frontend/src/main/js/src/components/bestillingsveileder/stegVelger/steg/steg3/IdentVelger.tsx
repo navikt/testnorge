@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { RadioPanelGruppe } from 'nav-frontend-skjema'
 import Hjelpetekst from '~/components/hjelpetekst'
 import { FormikProps } from 'formik'
+import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
 
 type Form = {
 	formikBag: FormikProps<{}>
@@ -54,13 +55,15 @@ const informasjonstekst =
 	'Om ikke lenge kommer Dolly til å gå fra å opprette testpersoner som har ekte identifikasjonsnummer til å kun opprette testpersoner med syntetisk identifikasjonsnummer. Frem til det vil det være mulig å velge selv om man ønsker å opprette testpersonene med standard eller syntetisk identifikasjonsnummer. Siden syntetisk identifikasjonsnummer en dag kommer til å bli den nye standarden oppfordrer vi alle til å ta dette i bruk allerede nå.'
 
 export const IdentVelger = ({ formikBag }: Form) => {
+	const erArenaBestilling = formikBag.values.hasOwnProperty('arenaforvalter')
+
 	const [type, setType] = useState(
 		_get(formikBag.values, `navSyntetiskIdent`) === true ? IdentType.SYNTETISK : IdentType.STANDARD
 	)
 
-	const handleIdentTypeChange = (value: string) => {
+	const handleIdentTypeChange = (value: IdentType) => {
 		setType(value)
-		formikBag.setFieldValue('navSyntetiskIdent', value === IdentType.SYNTETISK ? true : false)
+		formikBag.setFieldValue('navSyntetiskIdent', value === IdentType.SYNTETISK)
 	}
 
 	return (
@@ -78,8 +81,17 @@ export const IdentVelger = ({ formikBag }: Form) => {
 					{ label: 'NAV syntetisk', value: IdentType.SYNTETISK },
 				]}
 				checked={type}
-				onChange={(e) => handleIdentTypeChange(e.target.value)}
+				onChange={(e) =>
+					handleIdentTypeChange((e.target as HTMLTextAreaElement).value as IdentType)
+				}
 			/>
+
+			{erArenaBestilling && type === IdentType.SYNTETISK && (
+				<AlertStripeAdvarsel>
+					Arenaforvalteren støtter foreløpig ikke syntetisk ident, velg standard ident for gyldig
+					arena bestilling
+				</AlertStripeAdvarsel>
+			)}
 		</IdentVelgerField>
 	)
 }
