@@ -27,24 +27,13 @@ dependencyManagement {
     }
 }
 
+java.sourceCompatibility = JavaVersion.VERSION_17
+
 test {
     useJUnitPlatform()
 }
 
-java.sourceCompatibility = JavaVersion.VERSION_17
-
 repositories {
-    maven {
-        url = uri('https://repo1.maven.org/maven2/')
-    }
-    maven {
-        name = "GitHubPackages"
-        url = uri('https://maven.pkg.github.com/navikt/maven-release')
-        credentials(PasswordCredentials) {
-            password System.getenv("NAV_TOKEN")
-            username 'token'
-        }
-    }
     mavenLocal()
     mavenCentral()
 }
@@ -60,9 +49,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
 
-    implementation 'org.springframework.boot:spring-boot-starter-activemq'
     implementation 'com.ibm.mq:mq-jms-spring-boot-starter:2.5.5'
-    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'

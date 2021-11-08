@@ -19,28 +19,29 @@ spring:
 
 ibm:
   mq:
-    queueManager: MDLCLIENT01
-    channel: Q1_TPSF
-    connName: b27apvl057.preprod.local
+    host: b27apvl057.preprod.local
+    queueManager: MQLS03
     port: 1413
+    user: ${credentials.mq.username}
+    password: ${credentials.mq.password}
 
-  queueManagers:
-    - environment: d
-      hostname: e26apvl025.test.local
-      queMgrName: MDLCLIENT01
-      port: 1411
-    - environment: t
-      hostname: d26apvl126.test.local
-      queMgrName: MTLCLIENT01
-      port: 1412
-    - environment: q
-      hostname: b27apvl057.preprod.local
-      queMgrName: MQLCLIENT01
-      port: 1413
-    - environment: p
-      hostname:  e26apvl025.test.local
-      queMgrName: MPLCLIENT01
-      port: 1414
+#  queueManagers:
+#    - environment: d
+#      hostname: e26apvl025.test.local
+#      queMgrName: MDLCLIENT01
+#      port: 1411
+#    - environment: t
+#      hostname: d26apvl126.test.local
+#      queMgrName: MTLCLIENT01
+#      port: 1412
+#    - environment: q
+#      hostname: b27apvl057.preprod.local
+#      queMgrName: MQLCLIENT01
+#      port: 1413
+#    - environment: p
+#      hostname:  e26apvl025.test.local
+#      queMgrName: MPLCLIENT01
+#      port: 1414
 
 
 consumers:
@@ -50,22 +51,22 @@ consumers:
     namespace: dolly
     name: testnav-pdl-proxy
 
-
-
-
-- u5
-- t0
-- t1
-- t2
-- t3
-- t4
-- t5
-- t6
-- t13
-- q0
-- q1
-- q2
-- q4
-- q5
-- q6
-- qx
+#
+#
+#
+#- u5
+#- t0
+#- t1
+#- t2
+#- t3
+#- t4
+#- t5
+#- t6
+#- t13
+#- q0
+#- q1
+#- q2
+#- q4
+#- q5
+#- q6
+#- qx
