@@ -155,7 +155,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			add: () =>
 				personFoerLeggTil
 					? setMulti(['tpsf.kjonn', ''], ['tpsf.identtype', 'FNR'])
-					: set(['tpsf.kjonn', '']),
+					: set('tpsf.kjonn', ''),
 			remove: () => del(['tpsf.kjonn', 'tpsf.identtype']),
 		},
 		harMellomnavn: {
