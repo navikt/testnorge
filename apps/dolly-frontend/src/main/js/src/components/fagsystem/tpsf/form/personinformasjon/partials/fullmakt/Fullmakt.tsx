@@ -8,6 +8,7 @@ import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
+import { PdlPersonForm } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonForm'
 
 const initialFullmakt = {
 	omraader: [],
@@ -68,17 +69,13 @@ export const Fullmakt = () => {
 							label="Fullmektig identtype"
 							options={Options('identtype')}
 						/>
-						{/*<FormikSelect*/}
-						{/*	name={`${path}.${paths.harMellomnavn}`}*/}
-						{/*	label="Fullmektig har mellomnavn"*/}
-						{/*	options={Options('boolean')}*/}
-						{/*/>*/}
 						<FormikCheckbox
 							name={`${path}.${paths.harMellomnavn}`}
 							label="Fullmektig har mellomnavn"
 							size="grow"
 							checkboxMargin
 						/>
+						<PdlPersonForm path={`${path}.nyFullmektig`} label={'FULLMEKTIG'} />
 						{/*<FormikTextInput name={`${path}.${paths.kilde}`} label="Kilde" size="xlarge" />*/}
 						<AvansertForm path={path} kanVelgeMaster={false} />
 					</div>

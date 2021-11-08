@@ -5,6 +5,7 @@ import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import Formatters from '~/utils/DataFormatter'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
+import { initialPdlPerson } from '~/components/fagsystem/pdlf/form/initialValues'
 
 const innvandret = (personFoerLeggTil) =>
 	_get(personFoerLeggTil, 'tpsf.innvandretUtvandret[0].innutvandret') === 'INNVANDRET'
@@ -155,7 +156,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			add: () =>
 				personFoerLeggTil
 					? setMulti(['tpsf.kjonn', ''], ['tpsf.identtype', 'FNR'])
-					: set(['tpsf.kjonn', '']),
+					: set('tpsf.kjonn', ''),
 			remove: () => del(['tpsf.kjonn', 'tpsf.identtype']),
 		},
 		harMellomnavn: {
@@ -270,12 +271,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 						omraader: [],
 						gyldigFraOgMed: null,
 						gyldigTilOgMed: null,
-						nyFullmektig: {
-							identtype: null,
-							nyttNavn: {
-								harMellomnavn: false,
-							},
-						},
+						nyFullmektig: initialPdlPerson,
 						// motpartsPersonident???: null,
 						kilde: 'Dolly',
 						master: 'PDL',

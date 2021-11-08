@@ -115,7 +115,7 @@ export const FalskIdentitet = ({ formikBag }) => {
 									<FormikSelect
 										name={`${path}.rettIdentitetVedOpplysninger.kjoenn`}
 										label="Kjønn"
-										options={Options('kjoennFalskIdentitet')}
+										options={Options('kjoenn')}
 									/>
 									<FormikSelect
 										name={`${path}.rettIdentitetVedOpplysninger.statsborgerskap`}
