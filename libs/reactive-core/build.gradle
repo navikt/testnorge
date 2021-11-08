@@ -25,6 +25,10 @@ dependencyManagement {
     }
 }
 
+bootJar {
+    archiveFileName = "app.jar"
+}
+
 
 group = 'no.nav.testnav.libs'
 
