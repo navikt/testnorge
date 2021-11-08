@@ -8,6 +8,7 @@ import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.testnav.libs.dto.ameldingservice.v1.AMeldingDTO;
+import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import java.util.Map;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
+import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Service
 @Slf4j
@@ -60,6 +62,7 @@ public class AmeldingConsumer {
         ResponseEntity<Void> response = webClient.put()
                 .uri(uriBuilder -> uriBuilder.path("/api/v1/amelding").build())
                 .header(HttpHeaders.AUTHORIZATION, accessTokenValue)
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .header("Nav-Call-Id", generateCallId())
                 .header("miljo", miljoe)
                 .bodyValue(amelding)

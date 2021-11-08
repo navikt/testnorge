@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.pdldata.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
+import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -12,6 +13,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.concurrent.Callable;
+
+import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -32,6 +35,7 @@ public class PdlDataHentCommand implements Callable<Mono<FullPersonDTO[]>> {
                         .queryParam(IDENTER, identer)
                         .build())
                 .header(HttpHeaders.AUTHORIZATION, token)
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
                 .bodyToMono(FullPersonDTO[].class)
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,

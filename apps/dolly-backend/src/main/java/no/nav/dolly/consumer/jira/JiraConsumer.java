@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.dolly.domain.jira.Project;
 import no.nav.dolly.properties.JiraProps;
 import no.nav.dolly.util.JacksonExchangeStrategyUtil;
+import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -16,6 +17,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Component
 public class JiraConsumer {
@@ -41,6 +43,7 @@ public class JiraConsumer {
                         .build())
                 .bodyValue(httpEntity.getBody())
                 .headers(httpHeaders -> httpHeaders.addAll(httpEntity.getHeaders()))
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve().toEntity(responseClass)
                 .block()
 
@@ -50,6 +53,7 @@ public class JiraConsumer {
                         .pathSegment(url.split("/"))
                         .build())
                 .headers(httpHeaders -> httpHeaders.addAll(httpEntity.getHeaders()))
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve().toEntity(responseClass)
                 .block();
     }
@@ -63,6 +67,7 @@ public class JiraConsumer {
                         .queryParams(queries)
                         .build())
                 .headers(httpHeaders -> httpHeaders.addAll(httpEntity.getHeaders()))
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve().toEntity(Project.class)
                 .block();
     }

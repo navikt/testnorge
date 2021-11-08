@@ -21,7 +21,6 @@ import java.util.UUID;
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
 @Component
@@ -50,7 +49,6 @@ public class ProfilApiConsumer {
         ResponseEntity<ProfilDTO> response =
                 new GetProfilCommand(webClient,
                         serviceProperties.getAccessToken(tokenService),
-                        getUserJwt(),
                         getNavCallId()).call().block();
 
         if (nonNull(response) && !response.hasBody()) {

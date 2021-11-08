@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.aareg.amelding;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.aareg.amelding.command.GetOrganisasjonCommand;
 import no.nav.dolly.config.credentials.OrganisasjonServiceProperties;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;

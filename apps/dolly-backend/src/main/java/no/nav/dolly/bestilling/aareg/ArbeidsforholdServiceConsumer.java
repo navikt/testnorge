@@ -6,6 +6,7 @@ import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdResponse;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
+import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
 @Component
@@ -52,6 +54,7 @@ public class ArbeidsforholdServiceConsumer {
             ResponseEntity<List<ArbeidsforholdResponse>> response = webClient.get()
                     .uri(URI.create(format(HENT_ARBEIDSFORHOLD, serviceProperties.getUrl(), ident)))
                     .header(HttpHeaders.AUTHORIZATION, tokenValue)
+                    .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                     .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                     .header("miljo", miljoe)
                     .header("Nav-Call-Id", getNavCallId())
