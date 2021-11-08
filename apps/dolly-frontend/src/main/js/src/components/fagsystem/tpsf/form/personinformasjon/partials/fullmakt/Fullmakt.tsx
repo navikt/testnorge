@@ -7,6 +7,7 @@ import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 
 const initialFullmakt = {
 	omraader: [],
@@ -78,7 +79,8 @@ export const Fullmakt = () => {
 							size="grow"
 							checkboxMargin
 						/>
-						<FormikTextInput name={`${path}.${paths.kilde}`} label="Kilde" size="xlarge" />
+						{/*<FormikTextInput name={`${path}.${paths.kilde}`} label="Kilde" size="xlarge" />*/}
+						<AvansertForm path={path} kanVelgeMaster={false} />
 					</div>
 				)
 			}}

@@ -4,6 +4,7 @@ import { FalskIdentitet } from './partials/FalskIdentitet'
 import { KontaktinformasjonForDoedsbo } from './partials/KontaktinformasjonForDoedsbo'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import Loading from '~/components/ui/loading/Loading'
+import { Fullmakt } from '~/components/fagsystem/pdlf/visning/partials/Fullmakt'
 
 export const PdlfVisning = ({ dataPdl, dataPdlforvalter, loadingPdl, loadingPdlforvalter }) => {
 	if (loadingPdl) return <Loading label="Laster PDL-data" />
@@ -17,6 +18,12 @@ export const PdlfVisning = ({ dataPdl, dataPdlforvalter, loadingPdl, loadingPdlf
 	return (
 		<ErrorBoundary>
 			<div>
+				{dataPdlforvalter && (
+					<Fullmakt
+						data={dataPdlforvalter[0]?.person?.fullmakt}
+						relasjoner={dataPdlforvalter[0]?.relasjoner}
+					/>
+				)}
 				{dataPdlforvalter && (
 					<UtenlandsId data={dataPdlforvalter[0]?.person?.utenlandskIdentifikasjonsnummer} />
 				)}

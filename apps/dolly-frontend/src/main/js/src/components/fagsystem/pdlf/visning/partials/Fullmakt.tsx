@@ -9,10 +9,12 @@ import styled from 'styled-components'
 
 type Data = {
 	data: FullmaktData
+	relasjoner: any //TODO: fix
 }
 
 type DataListe = {
 	data: Array<FullmaktData>
+	relasjoner: any // TODO: fix
 }
 
 type FullmaktData = {
@@ -44,9 +46,11 @@ const Tema = styled.div`
 	}
 `
 
-export const Visning = ({ data }: Data) => {
-	const { etternavn, fornavn, ident, identtype, kjonn, mellomnavn } = data.fullmektig
-
+export const Visning = ({ data, relasjon }: Data) => {
+	console.log('data', data)
+	console.log('relasjon', relasjon)
+	// const { etternavn, fornavn, ident, identtype, kjonn, mellomnavn } = data.fullmektig
+	const { fornavn, mellomnavn, etternavn } = relasjon?.relatertPerson?.navn?.[0]
 	return (
 		<>
 			<ErrorBoundary>
@@ -72,25 +76,32 @@ export const Visning = ({ data }: Data) => {
 				</Tema>
 				<div className="person-visning_content">
 					<h4 style={{ width: '100%' }}>Fullmektig</h4>
-					<TitleValue title={identtype} value={ident} />
+					<TitleValue title="Ident" value={relasjon?.relatertPerson?.ident} />
+					{/*<TitleValue title={identtype} value={relasjon?.relatertPerson?.ident} />*/}
 					<TitleValue title="Fornavn" value={fornavn} />
 					<TitleValue title="Mellomnavn" value={mellomnavn} />
 					<TitleValue title="Etternavn" value={etternavn} />
-					<TitleValue title="Kjønn" value={Formatters.kjonnToString(kjonn)} />
+					<TitleValue title="Kjønn" value={relasjon?.relatertPerson?.kjoenn?.[0].kjoenn} />
 				</div>
 			</ErrorBoundary>
 		</>
 	)
 }
 
-export const Fullmakt = ({ data }: DataListe) => {
+export const Fullmakt = ({ data, relasjoner }: DataListe) => {
 	if (!data || data.length < 1) return null
+	const fullmaktRelasjoner = relasjoner?.filter(
+		(relasjon) => relasjon.relasjonType === 'FULLMEKTIG'
+	)
+
 	return (
 		<div>
 			<SubOverskrift label="Fullmakt" iconKind="fullmakt" />
 
 			<DollyFieldArray data={data} nested>
-				{(fullmakt: FullmaktData) => <Visning key={fullmakt.id} data={fullmakt} />}
+				{(fullmakt: FullmaktData, idx: number) => (
+					<Visning key={fullmakt.id} data={fullmakt} relasjon={fullmaktRelasjoner[idx]} />
+				)}
 			</DollyFieldArray>
 		</div>
 	)
