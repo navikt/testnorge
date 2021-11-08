@@ -3,9 +3,16 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'com.github.davidmc24.gradle.plugin.avro' version '1.2.1'
+    id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
 
 group = 'no.nav.testnav.libs'
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.boot:spring-boot-dependencies:2.5.6'
+    }
+}
 
 sonarqube {
     skipProject = true
@@ -15,6 +22,9 @@ repositories {
     mavenCentral()
     mavenLocal()
 }
+
+
+
 
 if (project.hasProperty("releaseVersion")) {
     version = releaseVersion
@@ -34,8 +44,8 @@ publishing {
         }
     }
     publications {
-        gpr(MavenPublication) {
-            from(components.java)
+        bootJava(MavenPublication) {
+            artifact bootJar
         }
     }
 }
