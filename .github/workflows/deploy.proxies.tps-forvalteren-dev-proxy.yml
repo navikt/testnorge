@@ -2,10 +2,13 @@ name: Deploy tps-forvalteren-dev-proxy
 
 on:
   push:
+    branches:
+      - master
     paths:
       - proxies/tps-forvalteren-proxy/**
       - libs/reactive-core/**
       - libs/reactive-proxy/**
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/tps-forvalteren-proxy:${{ github.sha }}

@@ -2,9 +2,11 @@ name: Deploy tilbakemelding-api
 
 on:
   push:
+    branches:
+      - master
     paths:
       - apps/tilbakemelding-api/**
-
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/tilbakemelding-api:${{ github.sha }}

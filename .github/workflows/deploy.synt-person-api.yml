@@ -2,9 +2,11 @@ name: Deploy synt-person-api
 
 on:
   push:
+    branches:
+      - master
     paths:
       - apps/synt-person-api/**
-
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/synt-person-api:${{ github.sha }}

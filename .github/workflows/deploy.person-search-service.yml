@@ -2,9 +2,11 @@ name: Deploy person-search-service
 
 on:
   push:
+    branches:
+      - master
     paths:
       - apps/person-search-service/**
-
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/person-search-service:${{ github.sha }}

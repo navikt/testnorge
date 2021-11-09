@@ -2,10 +2,11 @@ name: Deploy testnorge-token-provider
 
 on:
   push:
-    branches: master
+    branches:
+      - master
     paths:
       - apps/testnorge-token-provider/**
-
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/token-provider:${{ github.sha }}

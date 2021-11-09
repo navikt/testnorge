@@ -6,7 +6,6 @@ on:
       - master
     paths:
       - apps/testnorge-statisk-data-forvalter/**
-
   workflow_dispatch:
 
 env:

@@ -2,14 +2,11 @@ name: Deploy orkestratoren
 
 on:
   push:
-    branches: master
+    branches:
+      - master
     paths:
       - apps/orkestratoren/**
-
   workflow_dispatch:
-    paths:
-      - apps/orkestratoren/**
-
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/orkestrator:${{ github.sha }}

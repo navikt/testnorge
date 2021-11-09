@@ -2,8 +2,12 @@ name: Update Kafka Topics
 
 on:
   push:
+    branches:
+      - master
     paths:
       - '.nais/topics.yml'
+  workflow_dispatch:
+
 
 jobs:
   deploy-kafka-topics-dev:

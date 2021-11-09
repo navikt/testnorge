@@ -2,8 +2,11 @@ name: Deploy bruker-service dev
 
 on:
   push:
+    branches:
+      - master
     paths:
       - apps/bruker-service/**
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/bruker-service:${{ github.sha }}

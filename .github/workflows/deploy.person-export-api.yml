@@ -2,10 +2,11 @@ name: Deploy person-export-api
 
 on:
   push:
-    branches: master
+    branches:
+      - master
     paths:
       - apps/person-export-api/**
-
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/person-export-api:${{ github.sha }}

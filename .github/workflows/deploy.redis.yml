@@ -2,8 +2,12 @@ name: Deploy redis
 
 on:
   push:
+    branches:
+      - master
     paths:
       - '.nais/redis.yml'
+  workflow_dispatch:
+
 jobs:
   deploy-redis:
     name: Deploy redis

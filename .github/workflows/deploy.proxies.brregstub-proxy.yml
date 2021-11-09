@@ -2,10 +2,13 @@ name: Deploy brregstub-proxy
 
 on:
   push:
+    branches:
+      - master
     paths:
       - proxies/brregstub-proxy/**
       - libs/reactive-core/**
       - libs/reactive-proxy/**
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/brregstub-proxy:${{ github.sha }}

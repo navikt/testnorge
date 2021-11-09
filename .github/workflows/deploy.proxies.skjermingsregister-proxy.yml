@@ -2,11 +2,14 @@ name: Deploy skjermingsregister-proxy
 
 on:
   push:
+    branches:
+      - master
     paths:
       - proxies/skjermingsregister-proxy/**
       - libs/reactive-core/**
       - libs/reactive-proxy/**
       - libs/security-token-service/**
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/skjermingsregister-proxy:${{ github.sha }}

@@ -8,6 +8,7 @@ on:
     paths:
       - apps/pdl-forvalter/**
       - libs/**
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/testnav-pdl-forvalter:${{ github.sha }}
