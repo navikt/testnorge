@@ -2,10 +2,13 @@ name: Deploy krrstub-proxy
 
 on:
   push:
+    branches:
+      - master
     paths:
       - proxies/krrstub-proxy/**
       - libs/reactive-core/**
       - libs/reactive-proxy/**
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/krrstub-proxy:${{ github.sha }}

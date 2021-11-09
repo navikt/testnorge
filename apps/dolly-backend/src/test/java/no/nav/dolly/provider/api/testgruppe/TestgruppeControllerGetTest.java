@@ -35,6 +35,7 @@ import static org.hamcrest.Matchers.hasProperty;
         OAuth2ClientAutoConfiguration.class,
         ManagementWebSecurityAutoConfiguration.class})
 @AutoConfigureMockMvc(addFilters = false)
+@Disabled
 class TestgruppeControllerGetTest extends TestgruppeTestBase {
 
     private static final ParameterizedTypeReference<List<RsTestgruppe>> expectedResponseRsTestgruppe =

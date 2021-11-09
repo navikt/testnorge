@@ -1,14 +1,6 @@
 package no.nav.dolly.provider;
 
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import no.nav.dolly.common.TestdataFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,7 +13,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
-import no.nav.dolly.common.TestdataFactory;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 @ActiveProfiles("test")
 //@DirtiesContext
@@ -38,23 +38,6 @@ public abstract class RestTestBase {
 
     @Autowired
     protected TestRestTemplate restTestTemplate;
-
-    @BeforeEach
-    void init() {
-        dataFactory.clearDatabase();
-    }
-
-    protected EndpointRequestBuilder sendRequest() {
-        return send(null);
-    }
-
-    protected EndpointRequestBuilder sendRequest(Object requestBody) {
-        return send(requestBody);
-    }
-
-    protected String getErrMsg(LinkedHashMap resp) {
-        return (String) resp.get(ERR_MSG_KEY);
-    }
 
     private EndpointRequestBuilder send(Object requestBody) {
         return new EndpointRequestBuilder(requestBody)
@@ -118,5 +101,22 @@ public abstract class RestTestBase {
 
             return restTestTemplate.exchange(uri, method, new HttpEntity<>(requestBody, headers), expectedResponseType);
         }
+    }
+
+    @BeforeEach
+    void init() {
+        dataFactory.clearDatabase();
+    }
+
+    protected EndpointRequestBuilder sendRequest() {
+        return send(null);
+    }
+
+    protected EndpointRequestBuilder sendRequest(Object requestBody) {
+        return send(requestBody);
+    }
+
+    protected String getErrMsg(LinkedHashMap resp) {
+        return (String) resp.get(ERR_MSG_KEY);
     }
 }

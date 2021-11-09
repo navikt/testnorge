@@ -2,11 +2,14 @@ name: Deploy aareg-proxy
 
 on:
   push:
+    branches:
+      - master
     paths:
       - proxies/aareg-proxy/**
       - libs/reactive-core/**
       - libs/reactive-proxy/**
       - libs/security-token-service/**
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/aareg-proxy:${{ github.sha }}

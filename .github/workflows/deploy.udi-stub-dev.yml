@@ -2,9 +2,11 @@ name: Deploy udi-stub-dev
 
 on:
   push:
+    branches:
+      - master
     paths:
       - apps/udi-stub/**
-
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/udi-stub-v2:${{ github.sha }}

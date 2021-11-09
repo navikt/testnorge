@@ -6,6 +6,8 @@ metadata:
   labels:
     team: dolly
 spec:
+  tokenx:
+    enabled: true
   accessPolicy:
     inbound:
       rules:
@@ -23,8 +25,6 @@ spec:
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: dev
-    - name: UDI_CLIENT_ID
-      value: 4426ef7d-f148-4d19-8a03-b0d07a451938
   replicas:
     min: 1
     max: 2

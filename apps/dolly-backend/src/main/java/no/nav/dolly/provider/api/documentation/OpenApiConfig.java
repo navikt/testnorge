@@ -1,16 +1,5 @@
 package no.nav.dolly.provider.api.documentation;
 
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
-
-import org.springdoc.core.customizers.OperationCustomizer;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.util.StringUtils;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
@@ -19,6 +8,19 @@ import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.parameters.Parameter;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import no.nav.testnav.libs.securitycore.config.UserConstant;
+import org.springdoc.core.customizers.OperationCustomizer;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.util.StringUtils;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.Arrays;
+
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 
 @Configuration
 public class OpenApiConfig implements WebMvcConfigurer {
@@ -42,7 +44,8 @@ public class OpenApiConfig implements WebMvcConfigurer {
 
     @Bean
     public OpenAPI openApi() {
-        final String securitySchemeName = "bearerAuth";
+        final String bearerAuth = "bearerAuth";
+        final String userJwt = "user-jwt";
         final String apiTitle = String.format("%s API", StringUtils.capitalize(apiV1Name));
 
         return new OpenAPI()
@@ -60,16 +63,29 @@ public class OpenApiConfig implements WebMvcConfigurer {
                                 .name("MIT License")
                                 .url("https://opensource.org/licenses/MIT")
                         ))
-                .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
+                .addSecurityItem(
+                        new SecurityRequirement()
+                                .addList(bearerAuth, Arrays.asList("read", "write"))
+                                .addList(userJwt, Arrays.asList("read", "write"))
+                )
                 .components(
                         new Components()
-                                .addSecuritySchemes(securitySchemeName,
+                                .addSecuritySchemes(bearerAuth,
                                         new SecurityScheme()
                                                 .description("Legg inn token kun, uten \"Bearer \"")
-                                                .name(securitySchemeName)
+                                                .name(bearerAuth)
                                                 .type(SecurityScheme.Type.HTTP)
                                                 .scheme("bearer")
-                                                .bearerFormat("JWT")));
+                                                .bearerFormat("JWT"))
+                                .addSecuritySchemes(userJwt,
+                                        new SecurityScheme()
+                                                .name(UserConstant.USER_HEADER_JWT)
+                                                .type(SecurityScheme.Type.APIKEY)
+                                                .in(SecurityScheme.In.HEADER)
+                                                .scheme("bearer")
+                                                .bearerFormat("JWT")
+                                )
+                );
     }
 
     @Bean

@@ -2,10 +2,13 @@ name: Deploy sigrunstub-proxy
 
 on:
   push:
+    branches:
+      - master
     paths:
       - proxies/sigrunstub-proxy/**
       - libs/reactive-core/**
       - libs/reactive-proxy/**
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/sigrunstub-proxy:${{ github.sha }}

@@ -18,6 +18,7 @@ import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.mapper.BestillingOrganisasjonStatusMapper;
 import no.nav.dolly.mapper.strategy.JsonBestillingMapper;
 import no.nav.dolly.repository.OrganisasjonBestillingRepository;
+import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -63,6 +64,7 @@ public class OrganisasjonBestillingService {
     private final BrukerService brukerService;
     private final ObjectMapper objectMapper;
     private final JsonBestillingMapper jsonBestillingMapper;
+    private final GetUserInfo getUserInfo;
 
     @Transactional
     public RsOrganisasjonBestillingStatus fetchBestillingStatusById(Long bestillingId) {
@@ -166,7 +168,7 @@ public class OrganisasjonBestillingService {
                         .sistOppdatert(now())
                         .miljoer(join(",", request.getEnvironments()))
                         .bestKriterier(toJson(request.getOrganisasjon()))
-                        .bruker(brukerService.fetchOrCreateBruker(getUserId()))
+                        .bruker(brukerService.fetchOrCreateBruker(getUserId(getUserInfo)))
                         .build());
     }
 
@@ -181,7 +183,7 @@ public class OrganisasjonBestillingService {
                         .ferdig(status.getFerdig())
                         .miljoer(join(",", status.getEnvironments()))
                         .bestKriterier(toJson(status.getBestilling()))
-                        .bruker(brukerService.fetchOrCreateBruker(getUserId()))
+                        .bruker(brukerService.fetchOrCreateBruker(getUserId(getUserInfo)))
                         .build());
     }
 

@@ -2,10 +2,13 @@ name: Deploy testnorge-aareg-proxy
 
 on:
   push:
+    branches:
+      - master
     paths:
       - proxies/testnorge-aareg-proxy/**
       - libs/reactive-core/**
       - libs/reactive-proxy/**
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/testnorge-aareg-proxy:${{ github.sha }}

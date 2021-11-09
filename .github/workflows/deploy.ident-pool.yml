@@ -6,6 +6,8 @@ on:
       - master
     paths:
       - apps/ident-pool/**
+  workflow_dispatch:
+
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/ident-pool:${{ github.sha }}
 

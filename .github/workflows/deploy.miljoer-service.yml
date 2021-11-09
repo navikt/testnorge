@@ -2,9 +2,11 @@ name: Deploy miljoer-service
 
 on:
   push:
+    branches:
+      - master
     paths:
       - apps/miljoer-service/**
-
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/miljoer-service:${{ github.sha }}

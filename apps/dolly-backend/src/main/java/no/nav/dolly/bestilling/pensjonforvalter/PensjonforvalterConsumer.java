@@ -11,6 +11,7 @@ import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
+import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
+import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
@@ -63,6 +65,7 @@ public class PensjonforvalterConsumer {
                             .path(MILJOER_HENT_TILGJENGELIGE_URL)
                             .build())
                     .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                    .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                     .header(HEADER_NAV_CALL_ID, generateCallId())
                     .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                     .retrieve().toEntity(String[].class)
@@ -86,6 +89,7 @@ public class PensjonforvalterConsumer {
                         .path(PENSJON_OPPRETT_PERSON_URL)
                         .build())
                 .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .bodyValue(opprettPersonRequest)
@@ -109,6 +113,7 @@ public class PensjonforvalterConsumer {
                         .path(PENSJON_INNTEKT_URL)
                         .build())
                 .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .bodyValue(lagreInntektRequest)
@@ -134,6 +139,7 @@ public class PensjonforvalterConsumer {
                         .queryParam(MILJO_QUERY, miljoe)
                         .build())
                 .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .retrieve().toEntity(JsonNode.class)

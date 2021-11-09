@@ -2,11 +2,14 @@ name: Deploy saf-proxy
 
 on:
   push:
+    branches:
+      - master
     paths:
       - proxies/saf-proxy/**
       - libs/reactive-core/**
       - libs/reactive-proxy/**
       - libs/security-token-service/**
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/saf-proxy:${{ github.sha }}

@@ -2,10 +2,11 @@ name: Deploy tps-ident-service
 
 on:
   push:
-    branches: master
+    branches:
+      - master
     paths:
       - apps/tps-ident-service/**
-
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/tps-ident-service:${{ github.sha }}

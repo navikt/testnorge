@@ -13,6 +13,7 @@ import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeDagpengerResponse;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
+import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -29,6 +30,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
+import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Component
 @Slf4j
@@ -63,6 +65,7 @@ public class ArenaForvalterConsumer {
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve().toEntity(ArenaArbeidssokerBruker.class).block();
 
         if (nonNull(response) && response.hasBody()) {
@@ -83,6 +86,7 @@ public class ArenaForvalterConsumer {
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
                 .toEntity(JsonNode.class)
                 .block();
@@ -98,6 +102,7 @@ public class ArenaForvalterConsumer {
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .bodyValue(arenaNyeBrukere)
                 .retrieve()
                 .toEntity(ArenaNyeBrukereResponse.class)
@@ -114,6 +119,7 @@ public class ArenaForvalterConsumer {
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .bodyValue(arenaDagpenger)
                 .retrieve()
                 .toEntity(ArenaNyeDagpengerResponse.class)
@@ -130,6 +136,7 @@ public class ArenaForvalterConsumer {
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<String>>() {
                 })

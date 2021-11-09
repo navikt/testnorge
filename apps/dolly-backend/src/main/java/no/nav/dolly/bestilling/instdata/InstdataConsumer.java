@@ -8,6 +8,7 @@ import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
+import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
+import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -68,6 +70,7 @@ public class InstdataConsumer {
                     .header(HEADER_NAV_CALL_ID, getNavCallId())
                     .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                     .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                    .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                     .retrieve().bodyToMono(String[].class)
                     .block();
 
@@ -96,6 +99,7 @@ public class InstdataConsumer {
                         .header(HEADER_NAV_CALL_ID, getNavCallId())
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                        .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                         .retrieve().toEntityList(Instdata.class)
                         .block();
     }
@@ -114,6 +118,7 @@ public class InstdataConsumer {
                             .header(HEADER_NAV_CALL_ID, getNavCallId())
                             .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                             .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                            .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                             .retrieve().toEntityList(InstdataResponse.class)
                             .block();
 
@@ -141,6 +146,7 @@ public class InstdataConsumer {
                 .header(HEADER_NAV_CALL_ID, getNavCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve().toEntityList(InstdataResponse.class)
                 .block();
     }
