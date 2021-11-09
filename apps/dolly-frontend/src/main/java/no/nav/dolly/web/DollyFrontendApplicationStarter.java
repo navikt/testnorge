@@ -6,7 +6,6 @@ import no.nav.dolly.web.credentials.DollyBackendProperties;
 import no.nav.dolly.web.credentials.PersonSearchServiceProperties;
 import no.nav.dolly.web.credentials.TestnavAdresseServiceProperties;
 import no.nav.dolly.web.credentials.TestnavArenaForvalterenProxyProperties;
-import no.nav.dolly.web.credentials.TestnavBrukerServiceProperties;
 import no.nav.dolly.web.credentials.TestnavBrregstubProxyProperties;
 import no.nav.dolly.web.credentials.TestnavHodejegerenProxyProperties;
 import no.nav.dolly.web.credentials.TestnavInntektstubProxyProperties;
@@ -32,6 +31,7 @@ import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequ
 import no.nav.testnav.libs.reactivefrontend.filter.AddUserJwtHeaderToRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivesessionsecurity.domain.AccessToken;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.TestnavBrukerServiceProperties;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.UserJwtExchange;
 import no.nav.testnav.libs.securitycore.config.UserSessionConstant;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;

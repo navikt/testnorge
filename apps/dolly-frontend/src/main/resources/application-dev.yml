@@ -23,11 +23,10 @@ TESTNAV_BRUKER_SERVICE_NAME: testnav-bruker-service-dev
 TESTNAV_BRUKER_SERVICE_URL: https://testnav-bruker-service-dev.dev.intern.nav.no
 TESTNORGE_PROFIL_API_NAME: testnorge-profil-api-dev
 TESTNORGE_PROFIL_API_URL: https://testnorge-profil-api-dev.dev.intern.nav.no
-
-POST_LOGOUT_REDIRECT_URI: 'http://localhost:3000/login'
-
 VARSLINGER_NAME: testnav-varslinger-service-dev
 VARSLINGER_URL: https://testnav-varslinger-service-dev.dev.intern.nav.no
+
+POST_LOGOUT_REDIRECT_URI: 'http://localhost:3000/login'
 
 spring:
   session:
