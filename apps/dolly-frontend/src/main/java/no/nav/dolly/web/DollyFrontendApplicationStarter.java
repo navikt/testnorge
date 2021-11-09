@@ -21,7 +21,6 @@ import no.nav.dolly.web.credentials.DollyBackendProperties;
 import no.nav.dolly.web.credentials.PersonSearchServiceProperties;
 import no.nav.dolly.web.credentials.TestnavAdresseServiceProperties;
 import no.nav.dolly.web.credentials.TestnavArenaForvalterenProxyProperties;
-import no.nav.dolly.web.credentials.TestnavBrukerServiceProperties;
 import no.nav.dolly.web.credentials.TestnavBrregstubProxyProperties;
 import no.nav.dolly.web.credentials.TestnavHodejegerenProxyProperties;
 import no.nav.dolly.web.credentials.TestnavInntektstubProxyProperties;
