@@ -2,6 +2,8 @@ name: Deploy varslinger-service dev
 
 on:
   push:
+    branches:
+      - master
     paths:
       - apps/varslinger-service/**
   workflow_dispatch:

@@ -2,10 +2,13 @@ name: Deploy ident-pool-proxy
 
 on:
   push:
+    branches:
+      - master
     paths:
       - proxies/ident-pool-proxy/**
       - libs/reactive-core/**
       - libs/reactive-proxy/**
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/ident-pool-proxy:${{ github.sha }}

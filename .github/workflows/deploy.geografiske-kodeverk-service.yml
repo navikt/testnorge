@@ -2,9 +2,11 @@ name: Deploy geografiske-kodeverk-service
 
 on:
   push:
+    branches:
+      - master
     paths:
       - apps/geografiske-kodeverk-service/**
-
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/testnav-geografiske-kodeverk-service:${{ github.sha }}

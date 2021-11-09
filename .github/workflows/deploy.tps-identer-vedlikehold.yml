@@ -2,10 +2,11 @@ name: Deploy tps-identer-vedlikehold
 
 on:
   push:
-    branches: master
+    branches:
+      - master
     paths:
       - apps/tps-identer-vedlikehold/**
-
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/tps-identer-vedlikehold:${{ github.sha }}

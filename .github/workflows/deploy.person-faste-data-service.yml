@@ -2,6 +2,8 @@ name: Deploy person-faste-data-service
 
 on:
   push:
+    branches:
+      - master
     paths:
       - apps/person-faste-data-service/**
   workflow_dispatch:

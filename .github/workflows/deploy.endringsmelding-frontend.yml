@@ -2,9 +2,11 @@ name: Deploy endringsmelding-frontend
 
 on:
   push:
+    branches:
+      - master
     paths:
       - apps/endringsmelding-frontend/**
-
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/endringsmelding-frontend:${{ github.sha }}

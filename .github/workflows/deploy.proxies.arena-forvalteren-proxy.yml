@@ -2,10 +2,13 @@ name: Deploy arena-forvalteren-proxy
 
 on:
   push:
+    branches:
+      - master
     paths:
       - proxies/arena-forvalteren-proxy/**
       - libs/reactive-core/**
       - libs/reactive-proxy/**
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/arena-forvalteren-proxy:${{ github.sha }}

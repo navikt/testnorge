@@ -2,9 +2,11 @@ name: Deploy oppsummeringsdokument-service
 
 on:
   push:
+    branches:
+      - master
     paths:
       - apps/oppsummeringsdokument-service/**
-
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/oppsummeringsdokument-service:${{ github.sha }}

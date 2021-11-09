@@ -2,9 +2,11 @@ name: Deploy generer-organisasjon-populasjon-service
 
 on:
   push:
+    branches:
+      - master
     paths:
       - apps/generer-organisasjon-populasjon-service/**
-
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/generer-organisasjon-populasjon-service:${{ github.sha }}

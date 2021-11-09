@@ -2,9 +2,11 @@ name: Deploy jenkins-batch-status-service
 
 on:
   push:
+    branches:
+      - master
     paths:
       - apps/jenkins-batch-status-service/**
-
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/jenkins-batch-status-service:${{ github.sha }}

@@ -2,9 +2,11 @@ name: Deploy arbeidsforhold-export-api
 
 on:
   push:
+    branches:
+      - master
     paths:
       - apps/arbeidsforhold-export-api/**
-
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/arbeidsforhold-export-api:${{ github.sha }}

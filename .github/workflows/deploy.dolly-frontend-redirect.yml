@@ -6,6 +6,7 @@ on:
       - master
     paths:
       - apps/dolly-frontend-redirect/**
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/dolly-frontend-redirect:${{ github.sha }}

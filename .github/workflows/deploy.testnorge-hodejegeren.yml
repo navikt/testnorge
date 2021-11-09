@@ -2,9 +2,11 @@ name: Deploy testnorge-hodejegeren
 
 on:
   push:
+    branches:
+      - master
     paths:
       - apps/testnorge-hodejegeren/**
-
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/hodejegeren:${{ github.sha }}
