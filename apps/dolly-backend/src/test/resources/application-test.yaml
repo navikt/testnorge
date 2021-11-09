@@ -2,11 +2,18 @@
 server.port: 8080
 
 APP_NAME: dolly
-environment: localhost
 APP_VERSION: ${application.version}
+environment: localhost
 CLIENT_ID: dummy
 CLIENT_SECRET: dummy
-UDI_CLIENT_ID: dummy
+
+TOKEN_X_CLIENT_ID: test
+
+jira:
+  host: http://localhost:${wiremock.server.port:0}/jira
+  username: dummy
+  password: dummy
+
 azure:
   app:
     client:
@@ -86,22 +93,3 @@ spring:
     console:
       enabled: true
       path: /h2
-
-providers:
-  tpsf:
-    url: http://localhost:${wiremock.server.port}/tpsf
-  sigrun:
-    url: http://sigrundummy
-  kodeverk:
-    url: http://kodeverkdummy
-  sigrunstub:
-    url: http://sigrunstubdummy
-  krrstub:
-    url: http://krrstubdummy
-  arenaforvalter:
-    url: http://localhost:${wiremock.server.port:0}/arenaforvalter
-  aaregdata:
-    url: http://aaregdatadummy
-  udistub:
-    url: http://udi-stubdummy
-

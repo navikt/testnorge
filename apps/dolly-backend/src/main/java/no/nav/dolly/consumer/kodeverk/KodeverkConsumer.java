@@ -7,6 +7,7 @@ import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
+import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpHeaders;
@@ -26,6 +27,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
+import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Component
 @Slf4j
@@ -90,6 +92,7 @@ public class KodeverkConsumer {
                             .queryParam("spraak", "nb")
                             .build())
                     .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                    .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                     .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                     .header(HEADER_NAV_CALL_ID, generateCallId())
                     .retrieve().toEntity(KodeverkBetydningerResponse.class).block();

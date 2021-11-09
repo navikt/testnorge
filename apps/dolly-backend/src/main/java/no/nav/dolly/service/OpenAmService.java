@@ -1,10 +1,8 @@
 package no.nav.dolly.service;
 
-import static java.lang.String.format;
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.consumer.jira.JiraConsumer;
 import no.nav.dolly.domain.jira.AllowedValue;
 import no.nav.dolly.domain.jira.Field;
 import no.nav.dolly.domain.jira.Fields;
@@ -12,7 +10,6 @@ import no.nav.dolly.domain.jira.JiraResponse;
 import no.nav.dolly.domain.jira.Project;
 import no.nav.dolly.domain.resultset.RsOpenAmResponse;
 import no.nav.dolly.exceptions.JiraException;
-import no.nav.dolly.consumer.jira.JiraConsumer;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.core.io.FileSystemResource;
@@ -23,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import java.io.File;
@@ -32,13 +30,17 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.List;
 
+import static java.lang.String.format;
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class OpenAmService {
 
     private static final String ISSUE_CREATE = "/rest/api/2/issue";
-    private static final String METADATA = "/createmeta?projectKeys=DEPLOY&issuetypeIds=16001&expand=projects.issuetypes.fields";
+    private static final String METADATA = "/createmeta";
+
     private static final String ATTACHMENTS = "/attachments";
     private static final String BROWSE = "/browse";
     private static final String FEILMELDING = "En feil oppsto. Bestilling kan ikke utføres.";
@@ -138,8 +140,15 @@ public class OpenAmService {
     }
 
     private Fields readOpenAmMetadata() {
-        ResponseEntity<Project> metadata = jiraConsumer.excuteRequest(format("%s%s", ISSUE_CREATE, METADATA), HttpMethod.GET,
-                new HttpEntity<>("", jiraConsumer.createHttpHeaders(MediaType.APPLICATION_JSON)), Project.class);
+        MultiValueMap<String, String> queries = new LinkedMultiValueMap<>();
+
+        queries.add("projectKeys", "DEPLOY");
+        queries.add("issuetypeIds", "16001");
+        queries.add("expand", "projects.issuetypes.fields");
+
+        ResponseEntity<Project> metadata = jiraConsumer.getOpenAmMetadata(format("%s%s", ISSUE_CREATE, METADATA),
+                new HttpEntity<>("", jiraConsumer.createHttpHeaders(MediaType.APPLICATION_JSON)),
+                queries);
 
         if (metadata != null && metadata.getBody() != null && isMetadataNotEmpty(metadata)) {
             return metadata.getBody().getProjects().get(0).getIssuetypes().get(0).getFields();

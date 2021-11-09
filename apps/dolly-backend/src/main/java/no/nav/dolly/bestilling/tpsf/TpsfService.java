@@ -18,6 +18,7 @@ import no.nav.dolly.exceptions.TpsfException;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
+import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
+import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -80,6 +82,7 @@ public class TpsfService {
         return webClient.get().uri(uriBuilder -> uriBuilder
                         .path(TPSF_GET_ENVIRONMENTS).build())
                 .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve().toEntity(EnvironmentsResponse.class)
                 .block();
     }
@@ -91,6 +94,7 @@ public class TpsfService {
                         .path(TPSF_DELETE_PERSON_URL)
                         .queryParam(TPSF_IDENT_QUERY, ident).build())
                 .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve().toEntity(Object.class)
                 .block();
     }
@@ -101,6 +105,7 @@ public class TpsfService {
         return webClient.post().uri(uriBuilder -> uriBuilder
                         .path(TPSF_CREATE_ALIASES).build())
                 .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .bodyValue(request)
                 .retrieve().toEntity(RsAliasResponse.class)
                 .block();
@@ -145,6 +150,7 @@ public class TpsfService {
                         .queryParam(TPSF_IDENT_QUERY, ident).build())
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .bodyValue(tpsfBestilling)
                 .retrieve().toEntity(RsOppdaterPersonResponse.class)
                 .block();
@@ -163,6 +169,7 @@ public class TpsfService {
                         .queryParam(TPSF_IDENT_QUERY, ident).build())
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .bodyValue(tpsfBestilling)
                 .retrieve().toEntityList(String.class)
                 .block();
@@ -180,6 +187,7 @@ public class TpsfService {
                         .path(TPSF_IMPORTER_PERSON).build())
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .bodyValue(tpsfImportPersonRequest)
                 .retrieve().toEntity(Person.class)
                 .block();
@@ -202,6 +210,7 @@ public class TpsfService {
                             .pathSegment(addtionalUrl).build())
                     .contentType(MediaType.APPLICATION_JSON)
                     .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                    .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                     .bodyValue(request)
                     .retrieve().toEntity(Object.class)
                     .block();

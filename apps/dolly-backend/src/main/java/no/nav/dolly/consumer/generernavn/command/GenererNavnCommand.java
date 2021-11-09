@@ -1,6 +1,7 @@
 package no.nav.dolly.consumer.generernavn.command;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -11,6 +12,7 @@ import java.util.concurrent.Callable;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 public record GenererNavnCommand(WebClient webClient,
                                  String token, Integer antall,
@@ -25,6 +27,7 @@ public record GenererNavnCommand(WebClient webClient,
                         .queryParam("antall", antall)
                         .build())
                 .header(HttpHeaders.AUTHORIZATION, token)
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .header(HEADER_NAV_CALL_ID, callId)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .retrieve()
