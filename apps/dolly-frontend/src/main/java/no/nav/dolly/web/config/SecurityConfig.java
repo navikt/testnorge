@@ -9,6 +9,7 @@ import no.nav.dolly.web.config.authentication.DollyAuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
@@ -16,6 +17,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 import no.nav.testnav.libs.reactivesessionsecurity.handler.LogoutSuccessHandler;
 import no.nav.testnav.libs.reactivesessionsecurity.manager.AuthorizationCodeReactiveAuthenticationManger;
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.logut.IdportenOcidLogoutUrlResolver;
+import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
 
 @Slf4j
 @Configuration
@@ -64,6 +66,7 @@ public class SecurityConfig {
                 .formLogin().loginPage("/login")
                 .and().logout(logoutSpec -> logoutSpec
                         .logoutUrl("/logout")
+                        .requiresLogout(ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, "/logout"))
                         .logoutSuccessHandler(logoutSuccessHandler))
                 .build();
     }

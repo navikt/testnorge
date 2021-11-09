@@ -22,10 +22,7 @@ type Props = {
 export default ({ brukerProfil, brukerBilde }: Props) => {
 	const location = useLocation()
 
-	const logout = () =>
-		Api.fetch('/logout', { method: 'POST' }).then((response) =>
-			window.location.replace(response.url)
-		)
+	const logout = () => (window.location.href = '/logout')
 
 	return (
 		<header className="app-header">
