@@ -5,7 +5,7 @@ import { Input as NavInput } from 'nav-frontend-skjema';
 import { ErrorAlert, SuccessAlert, WarningAlert, Knapp } from '@navikt/dolly-komponenter';
 import { NotFoundError } from '@navikt/dolly-lib';
 
-const Search = styled.div`
+const GruppeSearch = styled.div`
   display: flex;
   flex-direction: row;
 `;
@@ -59,7 +59,7 @@ export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => 
   };
 
   return (
-    <Search>
+    <GruppeSearch>
       <Input
         label={labels.label}
         defaultValue=""
@@ -84,6 +84,6 @@ export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => 
           <SuccessAlert label={labels.onFound} />
         )}
       </Alert>
-    </Search>
+    </GruppeSearch>
   );
 };
