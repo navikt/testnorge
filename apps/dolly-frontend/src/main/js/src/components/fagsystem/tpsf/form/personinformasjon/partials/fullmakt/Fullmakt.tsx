@@ -26,21 +26,10 @@ const initialFullmakt = {
 	gjeldende: true,
 }
 
-export const Fullmakt = () => {
-	const paths = {
-		omraader: 'omraader',
-		gyldigFraOgMed: 'gyldigFraOgMed',
-		gyldigTilOgMed: 'gyldigTilOgMed',
-		identtype: 'nyFullmektig.identtype',
-		harMellomnavn: 'nyFullmektig.nyttNavn.harMellomnavn',
-		kilde: 'kilde',
-		master: 'master',
-		gjeldende: 'fullmakt.gjeldende',
-	}
-
+export const Fullmakt = ({ formikBag }) => {
 	const fullmaktOmraader = SelectOptionsOppslag.hentFullmaktOmraader()
 	const fullmaktOptions = SelectOptionsOppslag.formatOptions('fullmaktOmraader', fullmaktOmraader)
-
+	console.log('formikBag', formikBag)
 	return (
 		<FormikDollyFieldArray
 			name="pdldata.person.fullmakt"
@@ -53,7 +42,7 @@ export const Fullmakt = () => {
 					<div className="flexbox--flex-wrap">
 						<div className="flexbox--full-width">
 							<FormikSelect
-								name={`${path}.${paths.omraader}`}
+								name={`${path}.omraader`}
 								label="Områder"
 								options={fullmaktOptions}
 								size="grow"
@@ -62,21 +51,13 @@ export const Fullmakt = () => {
 								fastfield={false}
 							/>
 						</div>
-						<FormikDatepicker name={`${path}.${paths.gyldigFraOgMed}`} label="Gyldig fra og med" />
-						<FormikDatepicker name={`${path}.${paths.gyldigTilOgMed}`} label="Gyldig til og med" />
-						<FormikSelect
-							name={`${path}.${paths.identtype}`}
-							label="Fullmektig identtype"
-							options={Options('identtype')}
+						<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig fra og med" />
+						<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig til og med" />
+						<PdlPersonForm
+							path={`${path}.nyFullmektig`}
+							label={'FULLMEKTIG'}
+							formikBag={formikBag}
 						/>
-						<FormikCheckbox
-							name={`${path}.${paths.harMellomnavn}`}
-							label="Fullmektig har mellomnavn"
-							size="grow"
-							checkboxMargin
-						/>
-						<PdlPersonForm path={`${path}.nyFullmektig`} label={'FULLMEKTIG'} />
-						{/*<FormikTextInput name={`${path}.${paths.kilde}`} label="Kilde" size="xlarge" />*/}
 						<AvansertForm path={path} kanVelgeMaster={false} />
 					</div>
 				)

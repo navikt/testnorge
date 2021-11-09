@@ -114,7 +114,7 @@ export const Personinformasjon = ({ formikBag }) => (
 				<Vergemaal />
 			</Kategori>
 			<Kategori title="Fullmakt" vis={fullmaktPath}>
-				<Fullmakt />
+				<Fullmakt formikBag={formikBag} />
 			</Kategori>
 			<Kategori title="Sikkerhetstiltak" vis={sikkerhetstiltakPaths}>
 				<Sikkerhetstiltak formikBag={formikBag} />

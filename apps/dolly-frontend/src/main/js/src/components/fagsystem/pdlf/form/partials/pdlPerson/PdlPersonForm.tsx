@@ -1,4 +1,6 @@
 import React from 'react'
+import _has from 'lodash/has'
+import _get from 'lodash/get'
 import useBoolean from '~/utils/hooks/useBoolean'
 import Button from '~/components/ui/button/Button'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
@@ -11,10 +13,17 @@ import { AdresseKodeverk } from '~/config/kodeverk'
 interface PdlPersonValues {
 	path: string
 	label: string
+	formikBag: any //TODO fix
 }
 
-export const PdlPersonForm = ({ path, label }: PdlPersonValues) => {
+export const PdlPersonForm = ({ path, label, formikBag }: PdlPersonValues) => {
 	const [visPersonValg, setVisPersonValg, setSkjulPersonValg] = useBoolean(false)
+
+	const disableAlder =
+		_get(formikBag.values, `${path}.foedtEtter`) != null ||
+		_get(formikBag.values, `${path}.foedtFoer`) != null
+
+	const disableFoedtDato = _get(formikBag.values, `${path}.alder`) != ''
 
 	return (
 		<div className="flexbox--full-width">
@@ -35,9 +44,24 @@ export const PdlPersonForm = ({ path, label }: PdlPersonValues) => {
 						options={Options('identtype')}
 					/>
 					<FormikSelect name={`${path}.kjoenn`} label="Kjønn" options={Options('kjoenn')} />
-					<FormikDatepicker name={`${path}.foedtEtter`} label="Født etter" />
-					<FormikDatepicker name={`${path}.foedtFoer`} label="Født før" />
-					<FormikTextInput name={`${path}.alder`} type="number" label="Alder" disabled={true} />
+					<FormikDatepicker
+						name={`${path}.foedtEtter`}
+						label="Født etter"
+						disabled={disableFoedtDato}
+						fastfield={false}
+					/>
+					<FormikDatepicker
+						name={`${path}.foedtFoer`}
+						label="Født før"
+						disabled={disableFoedtDato}
+						fastfield={false}
+					/>
+					<FormikTextInput
+						name={`${path}.alder`}
+						type="number"
+						label="Alder"
+						disabled={disableAlder}
+					/>
 					<FormikSelect
 						name={`${path}.statsborgerskapLandkode`}
 						label="Statsborgerskap"

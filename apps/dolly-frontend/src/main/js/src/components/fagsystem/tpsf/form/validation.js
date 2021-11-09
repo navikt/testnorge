@@ -473,15 +473,6 @@ export const validation = {
 					vedtakDato: requiredDate,
 				})
 			),
-			fullmakt: ifPresent(
-				'$tpsf.fullmakt',
-				Yup.object({
-					kilde: requiredString,
-					omraader: Yup.array().min(1, 'Velg minst ett område'),
-					gyldigFom: requiredDate,
-					gyldigTom: requiredDate,
-				})
-			),
 			typeSikkerhetTiltak: ifPresent('$tpsf.typeSikkerhetTiltak', requiredString),
 			beskrSikkerhetTiltak: ifPresent('$tpsf.beskrSikkerhetTiltak', requiredString),
 			sikkerhetTiltakDatoFom: ifPresent('$tpsf.sikkerhetTiltakDatoFom', requiredDate),

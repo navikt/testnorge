@@ -46,18 +46,26 @@ const Tema = styled.div`
 	}
 `
 
-export const Visning = ({ data, relasjon }: Data) => {
-	console.log('data', data)
-	console.log('relasjon', relasjon)
-	// const { etternavn, fornavn, ident, identtype, kjonn, mellomnavn } = data.fullmektig
-	const { fornavn, mellomnavn, etternavn } = relasjon?.relatertPerson?.navn?.[0]
+export const Visning = ({ data, relasjoner }: Data) => {
+	const fullmektigIdent = data.motpartsPersonident
+	const fullmektig = relasjoner.find(
+		(relasjon) => relasjon.relatertPerson?.ident === fullmektigIdent
+	)
+	const { fornavn, mellomnavn, etternavn } = fullmektig?.relatertPerson?.navn?.[0]
+
 	return (
 		<>
 			<ErrorBoundary>
 				<div className="person-visning_content">
-					<TitleValue title="Kilde" value={data.kilde} />
-					<TitleValue title="Gyldig fra og med" value={Formatters.formatDate(data.gyldigFom)} />
-					<TitleValue title="Gyldig til og med" value={Formatters.formatDate(data.gyldigTom)} />
+					{/*<TitleValue title="Kilde" value={data.kilde} />*/}
+					<TitleValue
+						title="Gyldig fra og med"
+						value={Formatters.formatDate(data.gyldigFraOgMed)}
+					/>
+					<TitleValue
+						title="Gyldig til og med"
+						value={Formatters.formatDate(data.gyldigTilOgMed)}
+					/>
 				</div>
 				<Tema>
 					<h4>Tema</h4>
@@ -76,12 +84,12 @@ export const Visning = ({ data, relasjon }: Data) => {
 				</Tema>
 				<div className="person-visning_content">
 					<h4 style={{ width: '100%' }}>Fullmektig</h4>
-					<TitleValue title="Ident" value={relasjon?.relatertPerson?.ident} />
+					<TitleValue title="Ident" value={fullmektig?.relatertPerson?.ident} />
 					{/*<TitleValue title={identtype} value={relasjon?.relatertPerson?.ident} />*/}
 					<TitleValue title="Fornavn" value={fornavn} />
 					<TitleValue title="Mellomnavn" value={mellomnavn} />
 					<TitleValue title="Etternavn" value={etternavn} />
-					<TitleValue title="Kjønn" value={relasjon?.relatertPerson?.kjoenn?.[0].kjoenn} />
+					<TitleValue title="Kjønn" value={fullmektig?.relatertPerson?.kjoenn?.[0].kjoenn} />
 				</div>
 			</ErrorBoundary>
 		</>
@@ -99,8 +107,8 @@ export const Fullmakt = ({ data, relasjoner }: DataListe) => {
 			<SubOverskrift label="Fullmakt" iconKind="fullmakt" />
 
 			<DollyFieldArray data={data} nested>
-				{(fullmakt: FullmaktData, idx: number) => (
-					<Visning key={fullmakt.id} data={fullmakt} relasjon={fullmaktRelasjoner[idx]} />
+				{(fullmakt: FullmaktData) => (
+					<Visning key={fullmakt.id} data={fullmakt} relasjoner={fullmaktRelasjoner} />
 				)}
 			</DollyFieldArray>
 		</div>

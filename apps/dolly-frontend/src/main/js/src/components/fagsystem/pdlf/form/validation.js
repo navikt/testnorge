@@ -7,6 +7,14 @@ const personnavnSchema = Yup.object({
 	etternavn: Yup.string(),
 })
 
+const fullmakt = Yup.array().of(
+	Yup.object({
+		omraader: Yup.array().min(1, 'Velg minst ett område'),
+		gyldigFraOgMed: requiredDate,
+		gyldigTilOgMed: requiredDate,
+	})
+)
+
 const falskIdentitet = Yup.array().of(
 	Yup.object({
 		rettIdentErUkjent: Yup.boolean(),
@@ -78,6 +86,7 @@ export const validation = {
 	}),
 	pdldata: Yup.object({
 		person: Yup.object({
+			fullmakt: ifPresent('$pdldata.person.fullmakt', fullmakt),
 			falskIdentitet: ifPresent('$pdldata.person.falskIdentitet', falskIdentitet),
 			utenlandskIdentifikasjonsnummer: ifPresent(
 				'$pdldata.person.utenlandskIdentifikasjonsnummer',

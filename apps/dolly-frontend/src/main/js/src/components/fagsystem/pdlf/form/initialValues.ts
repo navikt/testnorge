@@ -3,7 +3,7 @@ export const initialPdlPerson = {
 	kjoenn: '',
 	foedtEtter: null,
 	foedtFoer: null,
-	alder: null,
+	alder: '',
 	syntetisk: false,
 	nyttNavn: {
 		hasMellomnavn: false,
