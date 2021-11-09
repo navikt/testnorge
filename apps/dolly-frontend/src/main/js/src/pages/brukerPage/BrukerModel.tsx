@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import Api from '~/api'
 import { NotFoundError } from '~/error'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import Loading from '~/components/ui/loading/Loading'
@@ -9,15 +8,7 @@ import { Bruker, OrgResponse, Organisasjon } from '~/pages/brukerPage/types'
 import { PersonOrgTilgangApi, BrukerApi, SessionApi } from '~/service/Api'
 import { Redirect } from 'react-router-dom'
 
-const UNKNOWN_ERROR = 'unknown_error'
-const ORGANISATION_ERROR = 'organisation_error'
-
-const logout = (feilmelding: string = null) => {
-	Api.fetch('/logout', { method: 'POST' }).then((response) => {
-		const redirectUrl = feilmelding ? response.url + '&state=' + feilmelding : response.url
-		location.replace(redirectUrl)
-	})
-}
+const logout = () => (window.location.href = '/logout')
 
 export default () => {
 	const [loading, setLoading] = useState(true)
@@ -30,18 +21,15 @@ export default () => {
 		PersonOrgTilgangApi.getOrganisasjoner()
 			.then((response: OrgResponse) => {
 				if (response === null || response.data === null || response.data.length === 0) {
-					logout(UNKNOWN_ERROR)
+					logout()
 				}
 
 				setOrganisasjoner(response.data)
 				setModalHeight(310 + 55 * response.data.length)
 				setLoading(false)
 			})
-			.catch((e: NotFoundError) => {
-				logout(ORGANISATION_ERROR)
-			})
-			.catch((e: Error) => {
-				logout(UNKNOWN_ERROR)
+			.catch(() => {
+				logout()
 			})
 	}, [])
 
@@ -54,14 +42,14 @@ export default () => {
 				if (response !== null) {
 					addToSession(org.organisasjonsnummer)
 				} else {
-					logout(UNKNOWN_ERROR)
+					logout()
 				}
 			})
 			.catch((e: NotFoundError) => {
 				setLoading(false)
 			})
 			.catch((e: Error) => {
-				logout(UNKNOWN_ERROR)
+				logout()
 			})
 	}
 
