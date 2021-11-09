@@ -5,6 +5,7 @@ import { FormikProps } from 'formik'
 import { InputWrapper } from '~/components/ui/form/inputWrapper/InputWrapper'
 import { Label } from '~/components/ui/form/inputs/label/Label'
 import { TextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { add } from 'date-fns'
 
 interface Monthpicker {
 	formikBag: FormikProps<any>
@@ -12,9 +13,17 @@ interface Monthpicker {
 	label: string
 	date: Date
 	handleDateChange: (dato: string, type: string) => void
+	minDate?: Date
 }
 
-export const Monthpicker = ({ formikBag, name, label, date, handleDateChange }: Monthpicker) => {
+export const Monthpicker = ({
+	formikBag,
+	name,
+	label,
+	date,
+	handleDateChange,
+	minDate = null,
+}: Monthpicker) => {
 	const getFeilmelding = (formikProps: FormikProps<any>, formikPath: string) => {
 		const feilmelding = _get(formikProps.errors, formikPath)
 		return feilmelding ? { feilmelding: feilmelding } : null
@@ -34,6 +43,7 @@ export const Monthpicker = ({ formikBag, name, label, date, handleDateChange }: 
 					customInput={<TextInput icon="calendar" feil={getFeilmelding(formikBag, name)} />}
 					dropdownMode="select"
 					autoComplete="off"
+					minDate={minDate}
 				/>
 			</Label>
 		</InputWrapper>
