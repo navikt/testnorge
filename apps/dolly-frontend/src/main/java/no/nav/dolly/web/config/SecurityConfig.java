@@ -18,6 +18,7 @@ import org.springframework.security.web.server.util.matcher.ServerWebExchangeMat
 import no.nav.testnav.libs.reactivesessionsecurity.handler.LogoutSuccessHandler;
 import no.nav.testnav.libs.reactivesessionsecurity.manager.AuthorizationCodeReactiveAuthenticationManger;
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.logut.IdportenOcidLogoutUrlResolver;
+import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
 
 
 @Slf4j

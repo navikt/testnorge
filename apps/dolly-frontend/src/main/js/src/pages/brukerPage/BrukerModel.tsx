@@ -26,7 +26,7 @@ export default () => {
 		PersonOrgTilgangApi.getOrganisasjoner()
 			.then((response: OrgResponse) => {
 				if (response === null || response.data === null || response.data.length === 0) {
-					logout(UNKNOWN_ERROR)
+					logout()
 				}
 				setOrganisasjoner(response.data)
 				setModalHeight(310 + 55 * response.data.length)
@@ -45,14 +45,14 @@ export default () => {
 				if (response !== null) {
 					addToSession(org.organisasjonsnummer)
 				} else {
-					logout(UNKNOWN_ERROR)
+					logout()
 				}
 			})
 			.catch((e: NotFoundError) => {
 				setLoading(false)
 			})
 			.catch((e: Error) => {
-				logout(UNKNOWN_ERROR)
+				logout()
 			})
 	}
 
