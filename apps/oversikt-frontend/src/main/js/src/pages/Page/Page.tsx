@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Api } from '@navikt/dolly-lib'
 import { Header, HeaderLink, HeaderLinkGroup, ProfilLoader } from '@navikt/dolly-komponenter'
 import { ProfilService } from '@/services'
 import LogoutButton from '@/components/LogoutButton'
@@ -19,9 +18,7 @@ const Profile = () => (
 	<ProfileContainer>
 		<LogoutButton
 			onClick={() => {
-				Api.fetch('/logout', { method: 'POST' }).then((response: any) =>
-					window.location.replace(response.url)
-				)
+				window.location.href = '/logout'
 			}}
 		/>
 		<ProfilLoader {...ProfilService} />
