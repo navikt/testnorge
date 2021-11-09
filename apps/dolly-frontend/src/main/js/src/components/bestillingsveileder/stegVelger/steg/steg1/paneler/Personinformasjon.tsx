@@ -5,6 +5,7 @@ import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import Formatters from '~/utils/DataFormatter'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
+import { addDays, subDays } from 'date-fns'
 
 const innvandret = (personFoerLeggTil) =>
 	_get(personFoerLeggTil, 'tpsf.innvandretUtvandret[0].innutvandret') === 'INNVANDRET'
@@ -95,7 +96,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			label: 'Dødsdato',
 			checked: has('tpsf.doedsdato'),
 			add: () => set('tpsf.doedsdato', null),
-			remove: () => del('tpsf.doedsdato'),
+			remove: () => del(['tpsf.doedsdato', 'tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer']),
 		},
 		statsborgerskap: {
 			label: 'Statsborgerskap',
@@ -246,9 +247,15 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			checked: has('tpsf.identtype'),
 			add: () =>
 				setMulti(
-					['tpsf.identtype', ''],
-					['tpsf.foedtFoer', personFoerLeggTil?.tpsf?.foedselsdato],
-					['tpsf.foedtEtter', personFoerLeggTil?.tpsf?.foedselsdato]
+					['tpsf.identtype', 'FNR'],
+					personFoerLeggTil?.tpsf?.foedselsdato && [
+						'tpsf.foedtFoer',
+						addDays(new Date(personFoerLeggTil.tpsf.foedselsdato), 14),
+					],
+					personFoerLeggTil?.tpsf?.foedselsdato && [
+						'tpsf.foedtEtter',
+						subDays(new Date(personFoerLeggTil.tpsf.foedselsdato), 14),
+					]
 				),
 			remove: () => del(['tpsf.identtype', 'tpsf.foedtEtter', 'tpsf.foedtFoer']),
 		},

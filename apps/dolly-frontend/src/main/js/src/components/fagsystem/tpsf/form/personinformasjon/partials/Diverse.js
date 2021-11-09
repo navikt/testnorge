@@ -1,14 +1,15 @@
 import React, { useContext } from 'react'
-import { isAfter } from 'date-fns'
+import { addDays, isAfter, subDays } from 'date-fns'
 import { PersoninformasjonKodeverk } from '~/config/kodeverk'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import { DollyCheckbox, FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { Diskresjonskoder } from './diskresjonskoder/Diskresjonskoder'
 import { Telefonnummer } from './telefonnummer/Telefonnummer'
+import _get from 'lodash/get'
 
 export const Diverse = ({ formikBag }) => {
 	const handleChangeKontonr = (selected) => {
@@ -35,6 +36,22 @@ export const Diverse = ({ formikBag }) => {
 				visHvisAvhuket
 				isClearable={false}
 			/>
+
+			{personFoerLeggTil && _get(formikBag.values, 'tpsf.identtype') && (
+				<DollyCheckbox
+					label={'Behold helt nøyaktig fødselsdato'}
+					onChange={(e) => {
+						const foedselsdato = new Date(personFoerLeggTil.tpsf.foedselsdato)
+						if (e.target.value) {
+							formikBag.setFieldValue('tpsf.foedtFoer', foedselsdato)
+							formikBag.setFieldValue('tpsf.foedtEtter', foedselsdato)
+						} else {
+							formikBag.setFieldValue('tpsf.foedtFoer', addDays(foedselsdato, 14))
+							formikBag.setFieldValue('tpsf.foedtEtter', subDays(foedselsdato, 14))
+						}
+					}}
+				/>
+			)}
 
 			<FormikSelect
 				name="tpsf.kjonn"
