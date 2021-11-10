@@ -19,17 +19,12 @@ const StyledCheckbox = styled(NavCheckbox)`
 		.skjemaelement__label {
 			font-size: 0.75em;
 		}
-
-		margin-top: 30px;
+		margin-top: 17px;
 	}
 `
 
-const StyledHelptext = styled(Hjelpetekst)`
-	&&& {
-		.hjelpetekst {
-			margin-top: 30px;
-		}
-	}
+const StyledDiv = styled.div`
+	margin-top: 3px;
 `
 
 export const Diverse = ({ formikBag }) => {
@@ -59,7 +54,7 @@ export const Diverse = ({ formikBag }) => {
 			/>
 
 			{personFoerLeggTil && _get(formikBag.values, 'tpsf.identtype') && (
-				<>
+				<StyledDiv className={'flexbox--align-center'}>
 					<StyledCheckbox
 						label={'Behold fødselsdato'}
 						onChange={(e) => {
@@ -73,12 +68,12 @@ export const Diverse = ({ formikBag }) => {
 							}
 						}}
 					/>
-					<StyledHelptext hjelpetekstFor="Beholde fødselsdato">
+					<Hjelpetekst hjelpetekstFor="Beholde fødselsdato">
 						Endring av identtype vil som standard velge ny fødselsdato innen et intervall på 14
 						dager frem og tilbake i tid. Ved å beholde fødselsdato vil født før og født etter settes
 						til den samme fødselsdato som den gjeldende identen.
-					</StyledHelptext>
-				</>
+					</Hjelpetekst>
+				</StyledDiv>
 			)}
 
 			<FormikSelect
