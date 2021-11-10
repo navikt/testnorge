@@ -8,7 +8,12 @@ import { Bruker, OrgResponse, Organisasjon } from '~/pages/brukerPage/types'
 import { PersonOrgTilgangApi, BrukerApi, SessionApi } from '~/service/Api'
 import { Redirect } from 'react-router-dom'
 
-const logout = () => (window.location.href = '/logout')
+const ORG_ERROR = 'organisation_error'
+const UNKNOWN_ERROR = 'unknown_error'
+
+const logout = (feilmelding: string = null) => {
+	window.location.href = '/logout' + (feilmelding ? '?state=' + feilmelding : '')
+}
 
 export default () => {
 	const [loading, setLoading] = useState(true)
@@ -21,16 +26,14 @@ export default () => {
 		PersonOrgTilgangApi.getOrganisasjoner()
 			.then((response: OrgResponse) => {
 				if (response === null || response.data === null || response.data.length === 0) {
-					logout()
+					logout(UNKNOWN_ERROR)
 				}
-
 				setOrganisasjoner(response.data)
 				setModalHeight(310 + 55 * response.data.length)
 				setLoading(false)
 			})
-			.catch(() => {
-				logout()
-			})
+			.catch((e: NotFoundError) => logout(ORG_ERROR))
+			.catch((e: Error) => logout(UNKNOWN_ERROR))
 	}, [])
 
 	const selectOrganisasjon = (org: Organisasjon) => {
@@ -42,14 +45,14 @@ export default () => {
 				if (response !== null) {
 					addToSession(org.organisasjonsnummer)
 				} else {
-					logout()
+					logout(UNKNOWN_ERROR)
 				}
 			})
 			.catch((e: NotFoundError) => {
 				setLoading(false)
 			})
 			.catch((e: Error) => {
-				logout()
+				logout(UNKNOWN_ERROR)
 			})
 	}
 
