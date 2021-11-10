@@ -2,10 +2,13 @@ name: Deploy samhandlerregisteret-proxy
 
 on:
   push:
+    branches:
+      - master
     paths:
       - proxies/samhandlerregisteret-proxy/**
       - libs/reactive-core/**
       - libs/reactive-proxy/**
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/samhandlerregisteret-proxy:${{ github.sha }}

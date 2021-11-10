@@ -2,10 +2,11 @@ name: Deploy mn-person-service
 
 on:
   push:
-    branches: master
+    branches:
+      - master
     paths:
       - apps/mn-person-service/**
-
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/mn-person-service:${{ github.sha }}

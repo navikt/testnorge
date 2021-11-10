@@ -8,6 +8,7 @@ import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
+import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ public class BrukerService {
 
     private final BrukerRepository brukerRepository;
     private final TestgruppeRepository testgruppeRepository;
+    private final GetUserInfo getUserInfo;
 
     public Bruker fetchBruker(String brukerId) {
         return brukerRepository.findBrukerByBrukerId(brukerId)
@@ -45,14 +47,14 @@ public class BrukerService {
             bruker.getFavoritter().addAll(brukere.stream().map(Bruker::getFavoritter).flatMap(Collection::stream).collect(Collectors.toSet()));
             return bruker;
         } catch (NotFoundException e) {
-            return brukerRepository.save(getAuthUser());
+            return brukerRepository.save(getAuthUser(getUserInfo));
         }
     }
 
     @Transactional
     public Bruker leggTilFavoritt(Long gruppeId) {
 
-        Bruker bruker = fetchBruker(getUserId());
+        Bruker bruker = fetchBruker(getUserId(getUserInfo));
         List<Bruker> brukere = brukerRepository.fetchEidAv(bruker);
         brukere.add(bruker);
         if (brukere.stream().map(Bruker::getFavoritter)
@@ -69,7 +71,7 @@ public class BrukerService {
 
     public Bruker fjernFavoritt(Long gruppeId) {
 
-        Bruker bruker = fetchBruker(getUserId());
+        Bruker bruker = fetchBruker(getUserId(getUserInfo));
         Testgruppe gruppe = fetchTestgruppe(gruppeId);
 
         List<Bruker> brukere = brukerRepository.fetchEidAv(bruker);

@@ -2,9 +2,11 @@ name: Deploy inntektsmelding-service
 
 on:
   push:
+    branches:
+      - master
     paths:
       - apps/inntektsmelding-service/**
-
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/inntektsmelding-service:${{ github.sha }}

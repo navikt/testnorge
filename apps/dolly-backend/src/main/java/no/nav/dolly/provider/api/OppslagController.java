@@ -19,6 +19,7 @@ import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
 import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
+import no.nav.dolly.consumer.profil.ProfilApiConsumer;
 import no.nav.dolly.domain.PdlPerson.Navn;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
@@ -26,6 +27,7 @@ import no.nav.dolly.service.InntektsmeldingEnumService;
 import no.nav.dolly.service.InntektsmeldingEnumService.EnumTypes;
 import no.nav.dolly.service.RsTransaksjonMapping;
 import no.nav.dolly.service.TransaksjonMappingService;
+import no.nav.testnav.libs.dto.profil.v1.ProfilDTO;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -60,6 +62,7 @@ public class OppslagController {
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
     private final GenererNavnConsumer genererNavnConsumer;
     private final InntektsmeldingEnumService inntektsmeldingEnumService;
+    private final ProfilApiConsumer profilApiConsumer;
     private final TransaksjonMappingService transaksjonMappingService;
     private final HelsepersonellConsumer helsepersonellConsumer;
 
@@ -163,6 +166,13 @@ public class OppslagController {
     public List<String> getInntektsmeldingeTyper(@PathVariable EnumTypes enumtype) {
 
         return inntektsmeldingEnumService.getEnumType(enumtype);
+    }
+
+    @GetMapping("/profil")
+    @Operation(description = "Henter profil for innlogget bruker")
+    public ProfilDTO getInntektsmeldingeTyper() {
+
+        return profilApiConsumer.getProfil().getBody();
     }
 
     @GetMapping("/transaksjonid")

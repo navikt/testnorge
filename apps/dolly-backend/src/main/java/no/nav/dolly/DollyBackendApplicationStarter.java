@@ -12,7 +12,7 @@ public class DollyBackendApplicationStarter {
     public static void main(String[] args) {
 
         if (!"local".equals(System.getProperty("spring.profiles.active"))) {
-            log.info("Starter lesing av Vault token ...");
+            log.info("Starter lesing av Vault token...");
             VaultUtil.initCloudVaultToken();
         }
 

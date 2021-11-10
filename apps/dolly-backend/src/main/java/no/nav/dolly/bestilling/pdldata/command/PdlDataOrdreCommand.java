@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.pdldata.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -9,6 +10,8 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
+
+import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -30,6 +33,7 @@ public class PdlDataOrdreCommand implements Callable<Mono<String>> {
                         .queryParam(IS_TPS_MASTER, isTpsfMaster)
                         .build(ident))
                 .header(HttpHeaders.AUTHORIZATION, token)
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(String.class)

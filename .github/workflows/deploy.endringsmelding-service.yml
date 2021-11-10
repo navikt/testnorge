@@ -2,9 +2,11 @@ name: Deploy endringsmelding-service
 
 on:
   push:
+    branches:
+      - master
     paths:
       - apps/endringsmelding-service/**
-
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/endringsmelding-service:${{ github.sha }}

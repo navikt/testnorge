@@ -2,9 +2,11 @@ name: Deploy testnorge-inntekt
 
 on:
   push:
+    branches:
+      - master
     paths:
       - apps/testnorge-inntekt/**
-
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/inntekt:${{ github.sha }}

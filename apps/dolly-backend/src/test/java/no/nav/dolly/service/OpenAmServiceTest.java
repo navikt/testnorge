@@ -67,6 +67,7 @@ public class OpenAmServiceTest {
     @BeforeEach
     public void setup() {
         when(jiraConsumer.excuteRequest(anyString(), eq(HttpMethod.GET), any(HttpEntity.class), eq(Project.class))).thenReturn(projectResponseEntity);
+        when(jiraConsumer.getOpenAmMetadata(anyString(), any(HttpEntity.class), any())).thenReturn(projectResponseEntity);
         when(jiraConsumer.excuteRequest(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(JiraResponse.class))).thenReturn(jiraResponseEntity);
         when(jiraResponseEntity.getBody()).thenReturn(JiraResponse.builder().build());
         when(jiraConsumer.excuteRequest(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class))).thenReturn(stringResponseEntity);
@@ -104,7 +105,8 @@ public class OpenAmServiceTest {
 
         RsOpenAmResponse openAmResponse = openAmService.opprettIdenter(asList(IDENT1, IDENT2), MILJOE1);
 
-        verify(jiraConsumer, times(3)).excuteRequest(anyString(), any(HttpMethod.class), any(HttpEntity.class), any());
+        verify(jiraConsumer, times(2)).excuteRequest(anyString(), any(HttpMethod.class), any(HttpEntity.class), any());
+        verify(jiraConsumer, times(1)).getOpenAmMetadata(anyString(), any(HttpEntity.class), any());
         assertThat(openAmResponse.getHttpCode(), is(equalTo(HttpStatus.OK.value())));
         assertThat(openAmResponse.getStatus(), is(HttpStatus.OK));
         assertThat(openAmResponse.getMiljoe(), is(equalTo(MILJOE1)));
@@ -116,7 +118,7 @@ public class OpenAmServiceTest {
 
         RsOpenAmResponse openAmResponse = openAmService.opprettIdenter(asList(IDENT1, IDENT2), MILJOE1);
 
-        verify(jiraConsumer).excuteRequest(anyString(), any(HttpMethod.class), any(HttpEntity.class), any());
+        verify(jiraConsumer).getOpenAmMetadata(anyString(), any(HttpEntity.class), any());
         assertThat(openAmResponse.getMessage(), is(equalTo(FEILMELDING1)));
         assertThat(openAmResponse.getHttpCode(), is(equalTo(HttpStatus.INTERNAL_SERVER_ERROR.value())));
         assertThat(openAmResponse.getStatus(), is(HttpStatus.INTERNAL_SERVER_ERROR));
@@ -135,7 +137,7 @@ public class OpenAmServiceTest {
 
         RsOpenAmResponse openAmResponse = openAmService.opprettIdenter(asList(IDENT1, IDENT2), MILJOE1);
 
-        verify(jiraConsumer).excuteRequest(anyString(), any(HttpMethod.class), any(HttpEntity.class), any());
+        verify(jiraConsumer).getOpenAmMetadata(anyString(), any(HttpEntity.class), any());
         assertThat(openAmResponse.getMessage(), is(equalTo(FEILMELDING1)));
         assertThat(openAmResponse.getHttpCode(), is(equalTo(HttpStatus.INTERNAL_SERVER_ERROR.value())));
         assertThat(openAmResponse.getStatus(), is(HttpStatus.INTERNAL_SERVER_ERROR));
@@ -158,7 +160,7 @@ public class OpenAmServiceTest {
 
         RsOpenAmResponse openAmResponse = openAmService.opprettIdenter(asList(IDENT1, IDENT2), MILJOE1);
 
-        verify(jiraConsumer).excuteRequest(anyString(), any(HttpMethod.class), any(HttpEntity.class), any());
+        verify(jiraConsumer).getOpenAmMetadata(anyString(), any(HttpEntity.class), any());
         assertThat(openAmResponse.getMessage(), is(equalTo(FEILMELDING1)));
         assertThat(openAmResponse.getHttpCode(), is(equalTo(HttpStatus.INTERNAL_SERVER_ERROR.value())));
         assertThat(openAmResponse.getStatus(), is(HttpStatus.INTERNAL_SERVER_ERROR));
@@ -196,7 +198,7 @@ public class OpenAmServiceTest {
 
         RsOpenAmResponse openAmResponse = openAmService.opprettIdenter(asList(IDENT1, IDENT2), MILJOE1);
 
-        verify(jiraConsumer).excuteRequest(anyString(), any(HttpMethod.class), any(HttpEntity.class), any());
+        verify(jiraConsumer).getOpenAmMetadata(anyString(), any(HttpEntity.class), any());
         assertThat(openAmResponse.getMessage(), is(equalTo(FEILMELDING2)));
         assertThat(openAmResponse.getHttpCode(), is(equalTo(HttpStatus.BAD_REQUEST.value())));
         assertThat(openAmResponse.getStatus(), is(HttpStatus.BAD_REQUEST));
@@ -206,12 +208,12 @@ public class OpenAmServiceTest {
     @Test
     public void opprettIdentThrowsHttpException() {
 
-        when(jiraConsumer.excuteRequest(anyString(), eq(HttpMethod.GET), any(HttpEntity.class), eq(Project.class))).thenThrow(httpServerErrorException);
+        when(jiraConsumer.getOpenAmMetadata(anyString(), any(HttpEntity.class), any())).thenThrow(httpServerErrorException);
         when(httpServerErrorException.getStatusCode()).thenReturn(HttpStatus.UNAUTHORIZED);
 
         RsOpenAmResponse openAmResponse = openAmService.opprettIdenter(asList(IDENT1, IDENT2), MILJOE1);
 
-        verify(jiraConsumer).excuteRequest(anyString(), any(HttpMethod.class), any(HttpEntity.class), any());
+        verify(jiraConsumer).getOpenAmMetadata(anyString(), any(HttpEntity.class), any());
         assertThat(openAmResponse.getHttpCode(), is(equalTo(HttpStatus.UNAUTHORIZED.value())));
         assertThat(openAmResponse.getStatus(), is(HttpStatus.UNAUTHORIZED));
         assertThat(openAmResponse.getMiljoe(), is(equalTo(MILJOE1)));

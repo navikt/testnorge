@@ -2,12 +2,11 @@ name: Deploy syntrest
 
 on:
   push:
-    branches: master
+    branches:
+      - master
     paths:
       - apps/syntrest/**
-
   workflow_dispatch:
-
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/syntrest:${{ github.sha }}

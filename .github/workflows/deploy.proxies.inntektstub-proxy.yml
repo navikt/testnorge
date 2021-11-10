@@ -8,6 +8,7 @@ on:
       - proxies/inntektstub-proxy/**
       - libs/reactive-core/**
       - libs/reactive-proxy/**
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/inntektstub-proxy:${{ github.sha }}

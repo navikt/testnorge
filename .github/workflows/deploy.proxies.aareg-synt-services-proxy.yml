@@ -2,10 +2,13 @@ name: Deploy aareg-synt-services-proxy
 
 on:
   push:
+    branches:
+      - master
     paths:
       - proxies/aareg-synt-services-proxy/**
       - libs/reactive-core/**
       - libs/reactive-proxy/**
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/aareg-synt-services-proxy:${{ github.sha }}

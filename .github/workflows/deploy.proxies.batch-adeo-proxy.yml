@@ -2,10 +2,13 @@ name: Deploy batch-adeo-proxy
 
 on:
   push:
+    branches:
+      - master
     paths:
       - proxies/batch-adeo-proxy/**
       - libs/reactive-core/**
       - libs/reactive-proxy/**
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/batch-adeo-proxy:${{ github.sha }}

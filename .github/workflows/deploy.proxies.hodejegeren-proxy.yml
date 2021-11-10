@@ -2,11 +2,14 @@ name: Deploy hodejegeren-proxy
 
 on:
   push:
+    branches:
+      - master
     paths:
       - proxies/hodejegeren-proxy/**
       - libs/reactive-core/**
       - libs/reactive-proxy/**
       - libs/security-token-service/**
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/hodejegeren-proxy:${{ github.sha }}

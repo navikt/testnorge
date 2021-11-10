@@ -2,10 +2,13 @@ name: Deploy statisk-data-forvalter-proxy
 
 on:
   push:
+    branches:
+      - master
     paths:
       - proxies/statisk-data-forvalter-proxy/**
       - libs/reactive-core/**
       - libs/reactive-proxy/**
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/statisk-data-forvalter-proxy:${{ github.sha }}

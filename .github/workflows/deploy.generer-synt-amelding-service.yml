@@ -2,10 +2,11 @@ name: Deploy generer-synt-amelding-service
 
 on:
   push:
-    branches: master
+    branches:
+      - master
     paths:
       - apps/generer-synt-amelding-service/**
-
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/generer-synt-amelding-service:${{ github.sha }}

@@ -2,10 +2,13 @@ name: Deploy pensjon-testdata-facade-proxy
 
 on:
   push:
+    branches:
+      - master
     paths:
       - proxies/pensjon-testdata-facade-proxy/**
       - libs/reactive-core/**
       - libs/reactive-proxy/**
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/krrstub-proxy:${{ github.sha }}

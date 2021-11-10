@@ -1,7 +1,8 @@
-package no.nav.dolly.bestilling.aareg.amelding;
+package no.nav.dolly.bestilling.aareg.amelding.command;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -9,6 +10,8 @@ import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.concurrent.Callable;
+
+import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
 public record GetOrganisasjonCommand(WebClient webClient,
@@ -25,6 +28,7 @@ public record GetOrganisasjonCommand(WebClient webClient,
                             .build(orgnummer)
                     )
                     .header(HttpHeaders.AUTHORIZATION, token)
+                    .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                     .header("miljo", this.miljo)
                     .retrieve()
                     .bodyToMono(OrganisasjonDTO.class)

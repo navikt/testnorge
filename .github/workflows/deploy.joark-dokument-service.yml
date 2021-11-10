@@ -2,9 +2,11 @@ name: Deploy joark-dokument-service
 
 on:
   push:
+    branches:
+      - master
     paths:
       - apps/joark-dokument-service/**
-
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/joark-dokument-service:${{ github.sha }}

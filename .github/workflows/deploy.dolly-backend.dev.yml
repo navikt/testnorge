@@ -2,9 +2,13 @@ name: Deploy dolly-backend dev
 
 on:
   push:
+    branches:
+      - master
     paths:
       - apps/dolly-backend/**
+      - libs/data-transfer-objects/**
   workflow_dispatch:
+
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/testnav-dolly-backend:${{ github.sha }}
 
@@ -12,6 +16,7 @@ jobs:
   build_and_deploy:
     name: Build and deploy
     runs-on: ubuntu-latest
+    if: ${{ github.actor != 'dependabot[bot]' }}
     steps:
       - uses: actions/checkout@v1
       - name: Cache Dependencies

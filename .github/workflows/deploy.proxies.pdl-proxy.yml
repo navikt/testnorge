@@ -2,11 +2,14 @@ name: Deploy pdl-proxy
 
 on:
   push:
+    branches:
+      - master
     paths:
       - proxies/pdl-proxy/**
       - libs/reactive-core/**
       - libs/reactive-proxy/**
       - libs/security-token-service/**
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/pdl-proxy:${{ github.sha }}

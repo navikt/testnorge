@@ -5,7 +5,7 @@ import _get from 'lodash/get'
 import _has from 'lodash/has'
 import _set from 'lodash/set'
 import _cloneDeep from 'lodash/cloneDeep'
-import { eachMonthOfInterval, format } from 'date-fns'
+import { add, eachMonthOfInterval, format } from 'date-fns'
 import Hjelpetekst from '~/components/hjelpetekst'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { ArbeidKodeverk } from '~/config/kodeverk'
@@ -215,6 +215,7 @@ export const AmeldingForm = ({ formikBag }: AmeldingForm): ReactFragment => {
 						label="F.o.m. kalendermåned"
 						date={fom}
 						handleDateChange={(dato: string) => handlePeriodeChange(dato, 'fom')}
+						minDate={add(new Date(), { years: -25 })}
 					/>
 					<Monthpicker
 						formikBag={formikBag}
@@ -222,6 +223,7 @@ export const AmeldingForm = ({ formikBag }: AmeldingForm): ReactFragment => {
 						label="T.o.m. kalendermåned"
 						date={tom}
 						handleDateChange={(dato: string) => handlePeriodeChange(dato, 'tom')}
+						minDate={add(new Date(), { years: -25 })}
 					/>
 					<div className="flexbox--full-width">
 						<div className="flexbox--flex-wrap">

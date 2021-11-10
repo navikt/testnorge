@@ -2,11 +2,13 @@ name: Deploy dolly-backend
 
 on:
   push:
-    paths:
-      - apps/dolly-backend/**
     branches:
       - master
+    paths:
+      - apps/dolly-backend/**
+      - libs/data-transfer-objects/**
   workflow_dispatch:
+
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/testnav-dolly-backend:${{ github.sha }}
 

@@ -2,10 +2,13 @@ name: Deploy syntrest-proxy
 
 on:
   push:
+    branches:
+      - master
     paths:
       - proxies/syntrest-proxy/**
       - libs/reactive-core/**
       - libs/reactive-proxy/**
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/syntrest-proxy:${{ github.sha }}

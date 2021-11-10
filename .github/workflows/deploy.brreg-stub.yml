@@ -2,10 +2,11 @@ name: Deploy brreg-stub
 
 on:
   push:
-    branches: master
+    branches:
+      - master
     paths:
       - apps/brreg-stub/**
-
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/brreg-stub-v2:${{ github.sha }}
