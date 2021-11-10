@@ -1,101 +1,25 @@
 package no.nav.testnav.libs.dto.tpsmessagingservice.v1;
 
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@XmlRootElement(name = "endreKontaktopplysninger")
-public class KontaktopplysningerRequestDTO extends TpsServiceRoutineEndringDTO {
+public class KontaktopplysningerRequestDTO {
 
+    private String ident;
     private Spraak endringAvSprak;
     private Kontonummer endringAvKontonr;
-    private NavAdresse endringAvNAVadresse;
-    private Telefon endringAvTelefon;
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    public static class NavAdresse {
-
-        private TiadAdresse nyAdresseNavNorge;
-        private UtadAdresse nyAdresseNavUtland;
-    }
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    public static class TiadAdresse {
-
-        private String datoTom; //yyyy-mm-dd
-        private String typeAdresseNavNorge;
-        private String typeTilleggsLinje;
-        private String tilleggsLinje;
-        private String kommunenr;
-        private String gatekode;
-        private String gatenavn;
-        private String husnr;
-        private String husbokstav;
-        private String eiendomsnavn;
-        private String bolignr;
-        private String postboksnr;
-        private String postboksAnlegg;
-        private String postnr;
-    }
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    public static class UtadAdresse {
-
-        private String datoTom; //yyyy-mm-dd
-        private String adresse1;
-        private String adresse2;
-        private String adresse3;
-        private String kodeLand;
-    }
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    public static class Telefon {
-
-        @JacksonXmlElementWrapper(useWrapping = false)
-        private List<NyTelefon> nyTelefon;
-    }
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    public static class NyTelefon {
-
-        private String typeTelefon;
-        private String telefonLandkode;
-        private String telefonNr;
-    }
 
     @Data
     @Builder
@@ -131,6 +55,7 @@ public class KontaktopplysningerRequestDTO extends TpsServiceRoutineEndringDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @XmlType(propOrder = {"sprakKode", "datoSprak"})
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class NyttSprak {
         private String sprakKode;

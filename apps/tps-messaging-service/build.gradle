@@ -49,6 +49,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
 
+    implementation 'com.fasterxml.jackson.core:jackson-annotations'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
     implementation 'com.ibm.mq:mq-jms-spring-boot-starter:2.5.5'
     implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
     implementation 'com.sun.xml.bind:jaxb-core:2.3.0.1'
