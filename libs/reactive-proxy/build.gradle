@@ -63,7 +63,10 @@ publishing {
         }
     }
 }
+
 dependencies {
+
+    implementation 'no.nav.testnav.libs:reactive-security'
     implementation 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
