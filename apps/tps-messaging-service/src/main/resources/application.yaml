@@ -19,12 +19,11 @@ spring:
 
 ibm:
   mq:
-    host: b27apvl057.preprod.local
-    queueManager: MQLS03
+    conn-name: b27apvl057.preprod.local
     port: 1413
+    queueManager: MQLS03
     user: ${credentials.mq.username}
     password: ${credentials.mq.password}
-    conn-name: b27apvl057.preprod.local
 
 #  queueManagers:
 #    - environment: d

@@ -20,19 +20,7 @@ import no.nav.testnav.libs.dto.tpsmessagingservice.v1.KontaktopplysningerRequest
 @RequiredArgsConstructor
 public class EndringsmeldingController {
 
-   private final JmsTemplate jmsTemplate;
    private final EndringsmeldingService endringsmeldingService;
-
-    @GetMapping("/send")
-    String send(){
-        try{
-            jmsTemplate.convertAndSend("DEV.QUEUE.1", "Hello World!");
-            return "OK";
-        }catch(JmsException ex){
-            ex.printStackTrace();
-            return "FAIL";
-        }
-    }
 
     @PostMapping("/kontaktopplysninger")
     public Map<String, String> sendKontaktopplysninger(@RequestParam List<String> miljoer, @RequestBody KontaktopplysningerRequestDTO kontaktopplysninger) {

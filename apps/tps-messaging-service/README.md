@@ -18,6 +18,10 @@ Ha naisdevice kjørende og kjør TpsMessagingServiceApplicationStarter med følg
 -Dspring.cloud.vault.token=[kopier token fra vault]
 ```
 
+På Naisdevice er det ikke åpnet opp for kjøring mot MQ. Det er mulig å teste mot et Dockerimage som innholder en test-MQ,
+i hht denne lenke:
+https://developer.ibm.com/tutorials/mq-connect-app-queue-manager-containers/
+
 ### Utviklerimage
 I utviklerimage brukes ikke naisdevice og du må legge til følgende ekstra argumenter:
 ```

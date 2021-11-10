@@ -1,3 +1,11 @@
 azure.app.client.id: ${client_id}
 azure.app.client.secret: ${client_secret}
 TOKEN_X_CLIENT_ID: dev-gcp:dolly:testnav-adresse-service
+
+ibm:
+  mq:
+    conn-name: localhost
+    port: 1414
+    queueManager: QM1
+    user: admin
+    password: passw0rd

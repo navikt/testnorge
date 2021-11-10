@@ -20,8 +20,8 @@ public class CachedConnectionFactoryFactory implements ConnectionFactoryFactory 
 
         MQQueueConnectionFactory factory = new MQQueueConnectionFactory();
         factory.setTransportType(1);
-        factory.setQueueManager(queueManager.name());
-        factory.setHostName(queueManager.hostname());
+        factory.setQueueManager(queueManager.queueManagerName());
+        factory.setHostName(queueManager.host());
         factory.setPort(queueManager.port());
         factory.setChannel(queueManager.channel());
 
