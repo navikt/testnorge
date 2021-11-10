@@ -1,8 +1,10 @@
 package no.nav.testnav.apps.tpsmessagingservice.service;
 
+import com.sun.xml.bind.v2.ContextFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.EndringsmeldingConsumer;
 import no.nav.testnav.apps.tpsmessagingservice.dto.KontaktopplysningerRequest;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.KontaktopplysningerRequestDTO;
@@ -18,7 +20,7 @@ import java.util.Map;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class EndringsmeldingService {
+public class KontaktopplysningerService {
 
     private final MapperFacade mapperFacade;
     private final EndringsmeldingConsumer endringsmeldingConsumer;
@@ -36,10 +38,13 @@ public class EndringsmeldingService {
         return stringWriter.toString();
     }
 
-    public Map<String, String> sendKontaktopplysninger(KontaktopplysningerRequestDTO kontaktopplysninger, List<String> miljoer) {
+    public Map<String, String> sendKontaktopplysninger(String ident, KontaktopplysningerRequestDTO kontaktopplysninger, List<String> miljoer) {
 
         try {
-            var request = mapperFacade.map(kontaktopplysninger, KontaktopplysningerRequest.class);
+            var context = new MappingContext.Factory().getContext();
+            context.setProperty("ident", ident);
+
+            var request = mapperFacade.map(kontaktopplysninger, KontaktopplysningerRequest.class, context);
             var xml = jaxbKontanktInformasjonToXML(request);
             return endringsmeldingConsumer.sendEndringsmelding(xml, List.of("Q4"));
 

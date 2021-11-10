@@ -20,17 +20,23 @@ public class KontaktopplysningerMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(KontaktopplysningerRequestDTO source, KontaktopplysningerRequest target, MappingContext context) {
 
-                        target.setSystemInfo(TpsSystemInfo.builder()
+                        var sfeAjourforing = new KontaktopplysningerRequest.SfeAjourforing();
+
+                        sfeAjourforing.setSystemInfo(TpsSystemInfo.builder()
                                 .kilde("Dolly")
                                 .brukerID("anonymousUser")
                                 .build());
-                        target.setEndreKontaktopplysninger(TpsServiceRoutineEndring.builder()
+                        sfeAjourforing.setEndreKontaktopplysninger(TpsServiceRoutineEndring.builder()
                                 .serviceRutinenavn("KontaktopplysningEndringer")
-                                .offentligIdent(source.getIdent())
+                                .offentligIdent((String) context.getProperty("ident"))
                                 .build());
+
+                        sfeAjourforing.setEndringAvSprak(mapperFacade.map(source.getEndringAvSprak(), KontaktopplysningerRequestDTO.Spraak.class));
+                        sfeAjourforing.setEndringAvKontonr(mapperFacade.map(source.getEndringAvKontonr(), KontaktopplysningerRequestDTO.Kontonummer.class));
+
+                        target.setSfeAjourforing(sfeAjourforing);
                     }
                 })
-                .byDefault()
                 .register();
     }
 }

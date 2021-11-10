@@ -7,13 +7,19 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 @Data
-@XmlRootElement(name = "sfeAjourforing")
-@XmlType(propOrder = {"systemInfo", "endreKontaktopplysninger", "endringAvSprak", "endringAvKontonr"})
+@XmlRootElement(name = "sfePersonData")
 public class KontaktopplysningerRequest {
 
-    private TpsSystemInfo systemInfo;
-    private TpsServiceRoutineEndring endreKontaktopplysninger;
+    private SfeAjourforing sfeAjourforing;
 
-    private KontaktopplysningerRequestDTO.Spraak endringAvSprak;
-    private KontaktopplysningerRequestDTO.Kontonummer endringAvKontonr;
+    @Data
+    @XmlType(propOrder = {"systemInfo", "endreKontaktopplysninger", "endringAvSprak", "endringAvKontonr"})
+    public static class SfeAjourforing {
+
+        private TpsSystemInfo systemInfo;
+        private TpsServiceRoutineEndring endreKontaktopplysninger;
+
+        private KontaktopplysningerRequestDTO.Spraak endringAvSprak;
+        private KontaktopplysningerRequestDTO.Kontonummer endringAvKontonr;
+    }
 }
