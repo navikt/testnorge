@@ -88,7 +88,7 @@ export const IdentVelger = ({ formikBag }: Form) => {
 
 			{erArenaBestilling && type === IdentType.SYNTETISK && (
 				<AlertStripeAdvarsel>
-					Syntetisk ident er foreløpig ikke støttet i Arena, velg standard ident for gyldig
+					Syntetisk ident er foreløpig ikke støttet for Arbeidsytelser (Arena), velg standard ident for gyldig
 					bestilling.
 				</AlertStripeAdvarsel>
 			)}
