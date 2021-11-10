@@ -71,12 +71,11 @@ export const Personinformasjon = ({ formikBag }) => {
 					)
 				}
 			>
-				{!personFoerLeggTil ||
-					(_get(formikBag.values, 'tpsf.doedsdato') && (
-						<Kategori title="Alder" vis={alderPaths}>
-							<Alder basePath="tpsf" formikBag={formikBag} />
-						</Kategori>
-					))}
+				{(!personFoerLeggTil || _get(formikBag.touched, 'tpsf.doedsdato')) && (
+					<Kategori title="Alder" vis={alderPaths}>
+						<Alder basePath="tpsf" formikBag={formikBag} />
+					</Kategori>
+				)}
 
 				<Kategori title="Nasjonalitet" vis={nasjonalitetPaths}>
 					<Vis attributt="tpsf.statsborgerskap">
