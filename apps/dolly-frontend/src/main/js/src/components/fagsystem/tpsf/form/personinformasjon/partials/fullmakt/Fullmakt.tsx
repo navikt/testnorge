@@ -1,35 +1,31 @@
 import * as React from 'react'
-import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { PdlPersonForm } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonForm'
+import { initialPdlPerson } from '~/components/fagsystem/pdlf/form/initialValues'
+import { FormikProps } from 'formik'
+
+interface FullmaktForm {
+	formikBag: FormikProps<{}>
+}
 
 const initialFullmakt = {
 	omraader: [],
 	gyldigFraOgMed: null,
 	gyldigTilOgMed: null,
-	nyFullmektig: {
-		identtype: null,
-		nyttNavn: {
-			harMellomnavn: false,
-		},
-	},
-	// motpartsPersonident???: null,
+	nyFullmektig: initialPdlPerson,
 	kilde: 'Dolly',
 	master: 'PDL',
 	gjeldende: true,
 }
 
-export const Fullmakt = ({ formikBag }) => {
+export const Fullmakt = ({ formikBag }: FullmaktForm) => {
 	const fullmaktOmraader = SelectOptionsOppslag.hentFullmaktOmraader()
 	const fullmaktOptions = SelectOptionsOppslag.formatOptions('fullmaktOmraader', fullmaktOmraader)
-	console.log('formikBag', formikBag)
+
 	return (
 		<FormikDollyFieldArray
 			name="pdldata.person.fullmakt"
@@ -37,7 +33,7 @@ export const Fullmakt = ({ formikBag }) => {
 			newEntry={initialFullmakt}
 			canBeEmpty={false}
 		>
-			{(path, idx) => {
+			{(path: string) => {
 				return (
 					<div className="flexbox--flex-wrap">
 						<div className="flexbox--full-width">

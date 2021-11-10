@@ -272,7 +272,6 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 						gyldigFraOgMed: null,
 						gyldigTilOgMed: null,
 						nyFullmektig: initialPdlPerson,
-						// motpartsPersonident???: null,
 						kilde: 'Dolly',
 						master: 'PDL',
 						gjeldende: true,

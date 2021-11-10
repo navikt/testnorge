@@ -9,30 +9,35 @@ import styled from 'styled-components'
 
 type Data = {
 	data: FullmaktData
-	relasjoner: any //TODO: fix
+	relasjoner: Array<relasjon>
 }
 
 type DataListe = {
 	data: Array<FullmaktData>
-	relasjoner: any // TODO: fix
+	relasjoner: Array<relasjon>
 }
 
 type FullmaktData = {
-	gyldigFom: Date
-	gyldigTom: Date
-	kilde: string
-	omraader: []
-	fullmektig: Fullmektig
+	gyldigFraOgMed: Date
+	gyldigTilOgMed: Date
+	omraader: Array<string>
+	motpartsPersonident: string
 	id: number
 }
 
-type Fullmektig = {
-	fornavn: string
-	mellomnavn?: string
-	etternavn: string
-	ident: string
-	identtype: string
-	kjonn: string
+type relasjon = {
+	relasjonType: string
+	relatertPerson: {
+		ident: string
+		navn: Array<{
+			fornavn: string
+			mellomnavn?: string
+			etternavn: string
+		}>
+		kjoenn: Array<{
+			kjoenn: string
+		}>
+	}
 }
 
 const Tema = styled.div`
@@ -57,7 +62,6 @@ export const Visning = ({ data, relasjoner }: Data) => {
 		<>
 			<ErrorBoundary>
 				<div className="person-visning_content">
-					{/*<TitleValue title="Kilde" value={data.kilde} />*/}
 					<TitleValue
 						title="Gyldig fra og med"
 						value={Formatters.formatDate(data.gyldigFraOgMed)}
@@ -85,7 +89,6 @@ export const Visning = ({ data, relasjoner }: Data) => {
 				<div className="person-visning_content">
 					<h4 style={{ width: '100%' }}>Fullmektig</h4>
 					<TitleValue title="Ident" value={fullmektig?.relatertPerson?.ident} />
-					{/*<TitleValue title={identtype} value={relasjon?.relatertPerson?.ident} />*/}
 					<TitleValue title="Fornavn" value={fornavn} />
 					<TitleValue title="Mellomnavn" value={mellomnavn} />
 					<TitleValue title="Etternavn" value={etternavn} />

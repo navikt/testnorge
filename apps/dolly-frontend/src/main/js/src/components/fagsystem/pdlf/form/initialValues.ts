@@ -1,6 +1,6 @@
 export const initialPdlPerson = {
-	identtype: '',
-	kjoenn: '',
+	identtype: null,
+	kjoenn: null,
 	foedtEtter: null,
 	foedtFoer: null,
 	alder: '',
@@ -8,6 +8,6 @@ export const initialPdlPerson = {
 	nyttNavn: {
 		hasMellomnavn: false,
 	},
-	statsborgerskapLandkode: '',
-	gradering: '',
+	statsborgerskapLandkode: null,
+	gradering: null,
 }

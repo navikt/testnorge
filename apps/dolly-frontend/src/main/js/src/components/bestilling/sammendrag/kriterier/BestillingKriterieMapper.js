@@ -405,21 +405,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			}
 			data.push(vergemaalKriterier)
 		}
-
-		// if (fullmakt) {
-		// 	const fullmaktKriterier = {
-		// 		header: 'Fullmakt',
-		// 		items: [
-		// 			obj('Kilde', fullmakt.kilde),
-		// 			obj('Områder', Formatters.omraaderArrayToString(fullmakt.omraader)),
-		// 			obj('Gyldig fra og med', Formatters.formatDate(fullmakt.gyldigFom)),
-		// 			obj('Gyldig til og med', Formatters.formatDate(fullmakt.gyldigTom)),
-		// 			obj('Fullmektiges identtype', fullmakt.identType),
-		// 			obj('Fullmektig har mellomnavn', Formatters.oversettBoolean(fullmakt.harMellomnavn)),
-		// 		],
-		// 	}
-		// 	data.push(fullmaktKriterier)
-		// }
 	}
 
 	const aaregKriterier = bestillingData.aareg
@@ -807,12 +792,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						obj('Områder', Formatters.omraaderArrayToString(item.omraader)),
 						obj('Gyldig fra og med', Formatters.formatDate(item.gyldigFraOgMed)),
 						obj('Gyldig til og med', Formatters.formatDate(item.gyldigTilOgMed)),
-						obj('Fullmektiges identtype', item.nyFullmektig?.identtype),
-						obj(
-							'Fullmektig har mellomnavn',
-							Formatters.oversettBoolean(item.nyFullmektig?.nyttNavn?.harMellomnavn)
-						),
-						// obj('Kilde', item.kilde),
 					]
 				}),
 			}

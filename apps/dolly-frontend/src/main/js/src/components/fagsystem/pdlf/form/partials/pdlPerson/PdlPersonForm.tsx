@@ -1,5 +1,4 @@
 import React from 'react'
-import _has from 'lodash/has'
 import _get from 'lodash/get'
 import useBoolean from '~/utils/hooks/useBoolean'
 import Button from '~/components/ui/button/Button'
@@ -9,11 +8,12 @@ import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { AdresseKodeverk } from '~/config/kodeverk'
+import { FormikProps } from 'formik'
 
 interface PdlPersonValues {
 	path: string
 	label: string
-	formikBag: any //TODO fix
+	formikBag: FormikProps<{}>
 }
 
 export const PdlPersonForm = ({ path, label, formikBag }: PdlPersonValues) => {

@@ -7,11 +7,26 @@ const personnavnSchema = Yup.object({
 	etternavn: Yup.string(),
 })
 
+const nyPerson = Yup.object({
+	identtype: Yup.string().nullable(),
+	kjoenn: Yup.string().nullable(),
+	foedtEtter: Yup.string().nullable(),
+	foedtFoer: Yup.string().nullable(),
+	alder: Yup.string().nullable(),
+	syntetisk: Yup.boolean(),
+	nyttNavn: Yup.object({
+		hasMellomnavn: Yup.boolean(),
+	}),
+	statsborgerskapLandkode: Yup.string().nullable(),
+	gradering: Yup.string().nullable(),
+})
+
 const fullmakt = Yup.array().of(
 	Yup.object({
 		omraader: Yup.array().min(1, 'Velg minst ett område'),
 		gyldigFraOgMed: requiredDate,
 		gyldigTilOgMed: requiredDate,
+		nyFullmektig: nyPerson,
 	})
 )
 
