@@ -3,7 +3,7 @@ name: Build & Analysis [saf-proxy]
 on:
   push:
     paths:
-      - apps/saf-proxy/**
+      - proxies/saf-proxy/**
 
 jobs:
   scan:

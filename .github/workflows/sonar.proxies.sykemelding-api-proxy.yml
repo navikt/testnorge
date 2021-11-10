@@ -3,7 +3,7 @@ name: Build & Analysis [sykemelding-api-proxy]
 on:
   push:
     paths:
-      - apps/sykemelding-api-proxy/**
+      - proxies/sykemelding-api-proxy/**
 
 jobs:
   scan:

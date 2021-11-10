@@ -3,7 +3,7 @@ name: Build & Analysis [syntrest-proxy]
 on:
   push:
     paths:
-      - apps/syntrest-proxy/**
+      - proxies/syntrest-proxy/**
 
 jobs:
   scan:

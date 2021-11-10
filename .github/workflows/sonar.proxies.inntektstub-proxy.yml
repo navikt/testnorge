@@ -3,7 +3,7 @@ name: Build & Analysis [inntektstub-proxy]
 on:
   push:
     paths:
-      - apps/inntektstub-proxy/**
+      - proxies/inntektstub-proxy/**
 
 jobs:
   scan:

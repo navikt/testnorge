@@ -3,7 +3,7 @@ name: Build & Analysis [samhandlerregisteret-proxy]
 on:
   push:
     paths:
-      - apps/samhandlerregisteret-proxy/**
+      - proxies/samhandlerregisteret-proxy/**
 
 jobs:
   scan:

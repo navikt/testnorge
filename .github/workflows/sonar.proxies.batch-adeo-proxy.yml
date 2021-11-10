@@ -3,7 +3,7 @@ name: Build & Analysis [batch-adeo-proxy]
 on:
   push:
     paths:
-      - apps/batch-adeo-proxy/**
+      - proxies/batch-adeo-proxy/**
 
 jobs:
   scan:

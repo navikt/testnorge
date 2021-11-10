@@ -3,7 +3,7 @@ name: Build & Analysis [pdl-proxy]
 on:
   push:
     paths:
-      - apps/krrstub-proxy/**
+      - proxies/krrstub-proxy/**
 
 jobs:
   scan:

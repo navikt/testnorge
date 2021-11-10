@@ -3,7 +3,7 @@ name: Build & Analysis [testnorge-inst-proxy]
 on:
   push:
     paths:
-      - apps/testnorge-inst-proxy/**
+      - proxies/testnorge-inst-proxy/**
 
 jobs:
   scan:

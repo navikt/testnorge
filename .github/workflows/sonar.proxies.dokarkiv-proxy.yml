@@ -3,7 +3,7 @@ name: Build & Analysis [dokarkiv-proxy]
 on:
   push:
     paths:
-      - apps/dokarkiv-proxy/**
+      - proxies/dokarkiv-proxy/**
 
 jobs:
   scan:

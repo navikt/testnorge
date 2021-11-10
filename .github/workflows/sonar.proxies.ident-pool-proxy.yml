@@ -3,7 +3,7 @@ name: Build & Analysis [ident-pool-proxy]
 on:
   push:
     paths:
-      - apps/ident-pool-proxy/**
+      - proxies/ident-pool-proxy/**
 
 jobs:
   scan:

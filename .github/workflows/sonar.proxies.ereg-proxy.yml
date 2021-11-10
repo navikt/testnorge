@@ -3,7 +3,7 @@ name: Build & Analysis [ereg-proxy]
 on:
   push:
     paths:
-      - apps/ereg-proxy/**
+      - proxies/ereg-proxy/**
 
 jobs:
   scan:

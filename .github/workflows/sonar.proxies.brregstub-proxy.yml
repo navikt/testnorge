@@ -3,7 +3,7 @@ name: Build & Analysis [brregstub-proxy]
 on:
   push:
     paths:
-      - apps/brregstub-proxy/**
+      - proxies/brregstub-proxy/**
 
 jobs:
   scan:

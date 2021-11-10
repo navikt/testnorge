@@ -3,7 +3,7 @@ name: Build & Analysis [statisk-data-forvalter-proxy]
 on:
   push:
     paths:
-      - apps/statisk-data-forvalter-proxy/**
+      - proxies/statisk-data-forvalter-proxy/**
 
 jobs:
   scan:

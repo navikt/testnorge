@@ -3,7 +3,7 @@ name: Build & Analysis [aareg-proxy]
 on:
   push:
     paths:
-      - apps/aareg-proxy/**
+      - proxies/aareg-proxy/**
 
 jobs:
   scan:

@@ -3,7 +3,7 @@ name: Build & Analysis [arena-forvalteren-proxy]
 on:
   push:
     paths:
-      - apps/arena-forvalteren-proxy/**
+      - proxies/arena-forvalteren-proxy/**
 
 jobs:
   scan:

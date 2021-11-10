@@ -3,7 +3,7 @@ name: Build & Analysis [aareg-synt-services-proxy]
 on:
   push:
     paths:
-      - apps/aareg-synt-services-proxy/**
+      - proxies/aareg-synt-services-proxy/**
 
 jobs:
   scan:

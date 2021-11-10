@@ -3,7 +3,7 @@ name: Build & Analysis [pensjon-testdata-facade-proxy]
 on:
   push:
     paths:
-      - apps/pensjon-testdata-facade-proxy/**
+      - proxies/pensjon-testdata-facade-proxy/**
 
 jobs:
   scan:

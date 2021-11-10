@@ -3,7 +3,7 @@ name: Build & Analysis [kodeverk-proxy]
 on:
   push:
     paths:
-      - apps/kodeverk-proxy/**
+      - proxies/kodeverk-proxy/**
 
 jobs:
   scan:

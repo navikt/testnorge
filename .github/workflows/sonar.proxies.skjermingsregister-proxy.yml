@@ -3,7 +3,7 @@ name: Build & Analysis [skjermingsregister-proxy]
 on:
   push:
     paths:
-      - apps/skjermingsregister-proxy/**
+      - proxies/skjermingsregister-proxy/**
 
 jobs:
   scan:

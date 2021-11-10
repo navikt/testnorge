@@ -3,7 +3,7 @@ name: Build & Analysis [sigrunstub-proxy]
 on:
   push:
     paths:
-      - apps/sigrunstub-proxy/**
+      - proxies/sigrunstub-proxy/**
 
 jobs:
   scan:
