@@ -244,8 +244,13 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		identtype: {
 			label: 'Identtype',
 			checked: has('tpsf.identtype'),
-			add: () => setMulti(['tpsf.identtype', ''], ['tpsf.alder', personFoerLeggTil?.tpsf?.alder]),
-			remove: () => del(['tpsf.identtype', 'tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer']),
+			add: () =>
+				setMulti(
+					['tpsf.identtype', ''],
+					['tpsf.foedtFoer', personFoerLeggTil?.tpsf?.foedselsdato],
+					['tpsf.foedtEtter', personFoerLeggTil?.tpsf?.foedselsdato]
+				),
+			remove: () => del(['tpsf.identtype', 'tpsf.foedtEtter', 'tpsf.foedtFoer']),
 		},
 		vergemaal: {
 			label: 'Vergemål',

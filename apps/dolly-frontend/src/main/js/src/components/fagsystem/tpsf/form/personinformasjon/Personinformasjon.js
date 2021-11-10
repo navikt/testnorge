@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
@@ -11,6 +11,7 @@ import { Alder } from './partials/alder/Alder'
 import { Vergemaal } from './partials/vergemaal/Vergemaal'
 import { Fullmakt } from './partials/fullmakt/Fullmakt'
 import { Sikkerhetstiltak } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/sikkerhetstiltak/Sikkerhetstiltak'
+import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 
 const alderPaths = ['tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer', 'tpsf.doedsdato']
 
@@ -54,71 +55,75 @@ const panelPaths = [
 	sikkerhetstiltakPaths,
 ].flat()
 
-export const Personinformasjon = ({ formikBag }) => (
-	<Vis attributt={panelPaths}>
-		<Panel
-			heading="Personinformasjon"
-			hasErrors={panelError(formikBag, panelPaths)}
-			iconType={'personinformasjon'}
-			startOpen={() =>
-				erForste(
-					formikBag.values,
-					alderPaths.concat(nasjonalitetPaths, diversePaths, vergemaalPath, fullmaktPath)
-				)
-			}
-		>
-			<Kategori title="Alder" vis={alderPaths}>
-				<Alder basePath="tpsf" formikBag={formikBag} />
-			</Kategori>
+export const Personinformasjon = ({ formikBag }) => {
+	const { personFoerLeggTil } = useContext(BestillingsveilederContext)
+	return (
+		<Vis attributt={panelPaths}>
+			<Panel
+				heading="Personinformasjon"
+				hasErrors={panelError(formikBag, panelPaths)}
+				iconType={'personinformasjon'}
+				startOpen={() =>
+					erForste(
+						formikBag.values,
+						alderPaths.concat(nasjonalitetPaths, diversePaths, vergemaalPath, fullmaktPath)
+					)
+				}
+			>
+				{!personFoerLeggTil && (
+					<Kategori title="Alder" vis={alderPaths}>
+						<Alder basePath="tpsf" formikBag={formikBag} />
+					</Kategori>
+				)}
 
-			<Kategori title="Nasjonalitet" vis={nasjonalitetPaths}>
-				<Vis attributt="tpsf.statsborgerskap">
-					<FormikSelect
-						name="tpsf.statsborgerskap"
-						label="Statsborgerskap"
-						kodeverk={AdresseKodeverk.StatsborgerskapLand}
-						size="large"
-						isClearable={false}
-					/>
-					<FormikDatepicker name="tpsf.statsborgerskapRegdato" label="Statsborgerskap fra" />
-					<FormikDatepicker name="tpsf.statsborgerskapTildato" label="Statsborgerskap til" />
-				</Vis>
+				<Kategori title="Nasjonalitet" vis={nasjonalitetPaths}>
+					<Vis attributt="tpsf.statsborgerskap">
+						<FormikSelect
+							name="tpsf.statsborgerskap"
+							label="Statsborgerskap"
+							kodeverk={AdresseKodeverk.StatsborgerskapLand}
+							size="large"
+							isClearable={false}
+						/>
+						<FormikDatepicker name="tpsf.statsborgerskapRegdato" label="Statsborgerskap fra" />
+						<FormikDatepicker name="tpsf.statsborgerskapTildato" label="Statsborgerskap til" />
+					</Vis>
 
-				<Vis attributt="tpsf.innvandretFraLand">
-					<FormikSelect
-						name="tpsf.innvandretFraLand"
-						label="Innvandret fra"
-						kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
-						size="large"
-						isClearable={false}
-					/>
-					<FormikDatepicker name="tpsf.innvandretFraLandFlyttedato" label="Innvandret dato" />
-				</Vis>
+					<Vis attributt="tpsf.innvandretFraLand">
+						<FormikSelect
+							name="tpsf.innvandretFraLand"
+							label="Innvandret fra"
+							kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
+							size="large"
+							isClearable={false}
+						/>
+						<FormikDatepicker name="tpsf.innvandretFraLandFlyttedato" label="Innvandret dato" />
+					</Vis>
 
-				<Vis attributt="tpsf.utvandretTilLand">
-					<FormikSelect
-						name="tpsf.utvandretTilLand"
-						label="Utvandret til"
-						kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
-						size="large"
-						isClearable={false}
-					/>
-					<FormikDatepicker name="tpsf.utvandretTilLandFlyttedato" label="Utvandret dato" />
-				</Vis>
-			</Kategori>
-
-			<Kategori title="Diverse" vis={diversePaths}>
-				<Diverse formikBag={formikBag} />
-			</Kategori>
-			<Kategori title="Vergemål" vis={vergemaalPath}>
-				<Vergemaal />
-			</Kategori>
-			<Kategori title="Fullmakt" vis={fullmaktPath}>
-				<Fullmakt />
-			</Kategori>
-			<Kategori title="Sikkerhetstiltak" vis={sikkerhetstiltakPaths}>
-				<Sikkerhetstiltak formikBag={formikBag} />
-			</Kategori>
-		</Panel>
-	</Vis>
-)
+					<Vis attributt="tpsf.utvandretTilLand">
+						<FormikSelect
+							name="tpsf.utvandretTilLand"
+							label="Utvandret til"
+							kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
+							size="large"
+							isClearable={false}
+						/>
+						<FormikDatepicker name="tpsf.utvandretTilLandFlyttedato" label="Utvandret dato" />
+					</Vis>
+				</Kategori>
+				<Kategori title="Diverse" vis={diversePaths}>
+					<Diverse formikBag={formikBag} />
+				</Kategori>
+				<Kategori title="Vergemål" vis={vergemaalPath}>
+					<Vergemaal />
+				</Kategori>
+				<Kategori title="Fullmakt" vis={fullmaktPath}>
+					<Fullmakt />
+				</Kategori>
+				<Kategori title="Sikkerhetstiltak" vis={sikkerhetstiltakPaths}>
+					<Sikkerhetstiltak formikBag={formikBag} />
+				</Kategori>
+			</Panel>
+		</Vis>
+	)
+}
