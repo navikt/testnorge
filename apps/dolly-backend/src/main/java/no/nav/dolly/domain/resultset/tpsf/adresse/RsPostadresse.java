@@ -45,7 +45,7 @@ public class RsPostadresse {
         if (isNotBlank(postLinje3)) {
             count++;
         }
-        return count > 1;
+        return count > 0;
     }
 
     @JsonIgnore
