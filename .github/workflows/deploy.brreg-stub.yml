@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - bugfix/brreg-crashbackloop
     paths:
       - apps/brreg-stub/**
   workflow_dispatch:
