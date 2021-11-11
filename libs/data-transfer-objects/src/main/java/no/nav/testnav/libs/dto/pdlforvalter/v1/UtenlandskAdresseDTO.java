@@ -20,7 +20,7 @@ public class UtenlandskAdresseDTO implements Serializable {
     private String bySted;
     private String bygning;
     private String bygningEtasjeLeilighet;
-    private String distriktnavn;
+    private String distriktsnavn;
     private String etasjenummer;
     private String landkode;
     private String postboksNummerNavn;
