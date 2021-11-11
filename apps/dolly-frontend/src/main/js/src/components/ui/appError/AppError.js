@@ -56,7 +56,7 @@ export const AppError = ({ error, stackTrace, style }) => (
 					her
 				</a>
 			</b>
-			, slette cache, eller kontakt Team Dolly på slack{' '}
+			, slette cache eller kontakt Team Dolly på slack{' '}
 			<b>
 				<a href="https://nav-it.slack.com/archives/CA3P9NGA2">#dolly</a>
 			</b>{' '}
