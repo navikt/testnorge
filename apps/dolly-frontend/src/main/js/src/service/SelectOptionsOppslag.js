@@ -7,72 +7,54 @@ const uri = `/dolly-backend/api/v1`
 
 export const SelectOptionsOppslag = {
 	hentOrgnr: () => {
-		const orgnr = useAsync(async () => {
-			const response = await Api.fetchJson(`${uri}/orgnummer`, { method: 'GET' })
-			return response
+		return useAsync(async () => {
+			return await Api.fetchJson(`${uri}/orgnummer`, { method: 'GET' })
 		}, [Api.fetchJson])
-		return orgnr
 	},
 
 	hentHelsepersonell: () => Api.fetchJson(`${uri}/helsepersonell`, { method: 'GET' }),
 
 	hentKrrLeverandoerer: () => {
-		const sdpLeverandoerer = useAsync(async () => {
-			const response = await KrrApi.getSdpLeverandoerListe()
-			return response
+		return useAsync(async () => {
+			return await KrrApi.getSdpLeverandoerListe()
 		}, [KrrApi.getSdpLeverandoerListe])
-		return sdpLeverandoerer
 	},
 
 	hentPersonnavn: () => {
-		const navnInfo = useAsync(async () => {
-			const response = await DollyApi.getPersonnavn()
-			return response
+		return useAsync(async () => {
+			return await DollyApi.getPersonnavn()
 		}, [DollyApi.getPersonnavn])
-		return navnInfo
 	},
 
 	hentGruppe: () => {
-		const datasettInfo = useAsync(async () => {
-			const response = await DollyApi.getFasteDatasettGruppe('DOLLY')
-			return response
+		return useAsync(async () => {
+			return await DollyApi.getFasteDatasettGruppe('DOLLY')
 		}, [DollyApi.getFasteDatasettGruppe])
-		return datasettInfo
 	},
 
 	hentInntektsmeldingOptions: (enumtype) =>
 		Api.fetchJson(`${uri}/inntektsmelding/${enumtype}`, { method: 'GET' }),
 
 	hentArbeidsforholdstyperInntektstub: () => {
-		const arbeidsforholdstyper = useAsync(async () => {
-			const response = await DollyApi.getKodeverkByNavn('Arbeidsforholdstyper')
-			return response
-		}, [DollyApi.getKodeverkByNavn])
-		return arbeidsforholdstyper
+		return useAsync(
+			async () => await DollyApi.getKodeverkByNavn('Arbeidsforholdstyper'),
+			[DollyApi.getKodeverkByNavn]
+		)
 	},
 
 	hentFullmaktOmraader: () => {
-		const omraader = useAsync(async () => {
-			const response = await DollyApi.getKodeverkByNavn('Tema')
-			return response
-		}, [DollyApi.getKodeverkByNavn])
-		return omraader
+		return useAsync(
+			async () => await DollyApi.getKodeverkByNavn('Tema'),
+			[DollyApi.getKodeverkByNavn]
+		)
 	},
 
 	hentRollerFraBrregstub: () => {
-		const rollerInfo = useAsync(async () => {
-			const response = await BrregstubApi.getRoller()
-			return response
-		}, [BrregstubApi.getRoller])
-		return rollerInfo
+		return useAsync(async () => await BrregstubApi.getRoller(), [BrregstubApi.getRoller])
 	},
 
 	hentUnderstatusFraBrregstub: () => {
-		const understatusInfo = useAsync(async () => {
-			const response = await BrregstubApi.getUnderstatus()
-			return response
-		}, [BrregstubApi.getUnderstatus])
-		return understatusInfo
+		return useAsync(async () => await BrregstubApi.getUnderstatus(), [BrregstubApi.getUnderstatus])
 	},
 
 	hentVirksomheterFraOrgforvalter: () => {
