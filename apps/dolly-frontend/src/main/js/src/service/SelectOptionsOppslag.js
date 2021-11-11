@@ -7,29 +7,27 @@ const uri = `/dolly-backend/api/v1`
 
 export const SelectOptionsOppslag = {
 	hentOrgnr: () => {
-		return useAsync(async () => {
-			return await Api.fetchJson(`${uri}/orgnummer`, { method: 'GET' })
-		}, [Api.fetchJson])
+		return useAsync(
+			async () => Api.fetchJson(`${uri}/orgnummer`, { method: 'GET' }),
+			[Api.fetchJson]
+		)
 	},
 
 	hentHelsepersonell: () => Api.fetchJson(`${uri}/helsepersonell`, { method: 'GET' }),
 
 	hentKrrLeverandoerer: () => {
-		return useAsync(async () => {
-			return await KrrApi.getSdpLeverandoerListe()
-		}, [KrrApi.getSdpLeverandoerListe])
+		return useAsync(async () => KrrApi.getSdpLeverandoerListe(), [KrrApi.getSdpLeverandoerListe])
 	},
 
 	hentPersonnavn: () => {
-		return useAsync(async () => {
-			return await DollyApi.getPersonnavn()
-		}, [DollyApi.getPersonnavn])
+		return useAsync(async () => DollyApi.getPersonnavn(), [DollyApi.getPersonnavn])
 	},
 
 	hentGruppe: () => {
-		return useAsync(async () => {
-			return await DollyApi.getFasteDatasettGruppe('DOLLY')
-		}, [DollyApi.getFasteDatasettGruppe])
+		return useAsync(
+			async () => DollyApi.getFasteDatasettGruppe('DOLLY'),
+			[DollyApi.getFasteDatasettGruppe]
+		)
 	},
 
 	hentInntektsmeldingOptions: (enumtype) =>
@@ -37,24 +35,21 @@ export const SelectOptionsOppslag = {
 
 	hentArbeidsforholdstyperInntektstub: () => {
 		return useAsync(
-			async () => await DollyApi.getKodeverkByNavn('Arbeidsforholdstyper'),
+			async () => DollyApi.getKodeverkByNavn('Arbeidsforholdstyper'),
 			[DollyApi.getKodeverkByNavn]
 		)
 	},
 
 	hentFullmaktOmraader: () => {
-		return useAsync(
-			async () => await DollyApi.getKodeverkByNavn('Tema'),
-			[DollyApi.getKodeverkByNavn]
-		)
+		return useAsync(async () => DollyApi.getKodeverkByNavn('Tema'), [DollyApi.getKodeverkByNavn])
 	},
 
 	hentRollerFraBrregstub: () => {
-		return useAsync(async () => await BrregstubApi.getRoller(), [BrregstubApi.getRoller])
+		return useAsync(async () => BrregstubApi.getRoller(), [BrregstubApi.getRoller])
 	},
 
 	hentUnderstatusFraBrregstub: () => {
-		return useAsync(async () => await BrregstubApi.getUnderstatus(), [BrregstubApi.getUnderstatus])
+		return useAsync(async () => BrregstubApi.getUnderstatus(), [BrregstubApi.getUnderstatus])
 	},
 
 	hentVirksomheterFraOrgforvalter: () => {
