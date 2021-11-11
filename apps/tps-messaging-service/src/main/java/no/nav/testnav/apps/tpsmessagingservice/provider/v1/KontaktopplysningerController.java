@@ -3,6 +3,7 @@ package no.nav.testnav.apps.tpsmessagingservice.provider.v1;
 import java.util.List;
 import java.util.Map;
 
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.EndringsmeldingResponseDTO;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,9 +23,9 @@ public class KontaktopplysningerController {
    private final KontaktopplysningerService kontaktopplysningerService;
 
     @PostMapping("/{ident}")
-    public Map<String, String> sendKontaktopplysninger(@PathVariable String ident,
-                                                       @RequestParam List<String> miljoer,
-                                                       @RequestBody KontaktopplysningerRequestDTO kontaktopplysninger) {
+    public Map<String, EndringsmeldingResponseDTO> sendKontaktopplysninger(@PathVariable String ident,
+                                                                           @RequestParam List<String> miljoer,
+                                                                           @RequestBody KontaktopplysningerRequestDTO kontaktopplysninger) {
 
         return kontaktopplysningerService.sendKontaktopplysninger(ident, kontaktopplysninger, miljoer);
     }

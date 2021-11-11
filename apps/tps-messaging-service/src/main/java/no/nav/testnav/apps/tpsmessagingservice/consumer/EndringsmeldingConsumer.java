@@ -75,14 +75,14 @@ public class EndringsmeldingConsumer {
 
         miljoer.forEach(miljoe -> {
             try {
-                resultat.put(miljoe,
-                        new EndringsMeldingCommand(
-                                connectionFactoryFactory.createConnectionFactory(
-                                        new QueueManager(queueManager, host, port, getChannelName(channel, miljoe))),
-                                getQueueName(queue, miljoe),
-                                username,
-                                password,
-                                melding).call());
+                resultat.put(miljoe, new EndringsMeldingCommand(
+                        connectionFactoryFactory.createConnectionFactory(
+                                new QueueManager(queueManager, host, port, getChannelName(channel, miljoe))),
+                        getQueueName(queue, miljoe),
+                        username,
+                        password,
+                        melding).call());
+
             } catch (JMSException e) {
                 resultat.put(miljoe, e.getMessage());
                 log.error(e.getMessage(), e);
