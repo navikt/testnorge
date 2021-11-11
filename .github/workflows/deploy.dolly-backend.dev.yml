@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - feature/serviceproperties-backend
     paths:
       - apps/dolly-backend/**
       - libs/data-transfer-objects/**
