@@ -1,4 +1,9 @@
+app.db.flyway.role: brreg-stub-admin
+app.db.flyway.backend: postgresql/preprod-fss/creds
+
 spring:
+  flyway:
+    locations: "classpath:db/migration/postgresql"
   main.banner-mode: "off"
   datasource:
     url: "jdbc:postgresql://b27dbvl013.preprod.local:5432/brreg-stub"
@@ -17,12 +22,16 @@ spring:
     open-in-view: false
   cloud:
     vault:
+      host: vault.adeo.no
+      port: 443
+      connection-timeout: 15000
+      read-timeout: 30000
+      application-name: preprod/fss/brreg-stub
       database:
         enabled: true
-        locations: "classpath:db/migration/postgresql"
-  http:
+        backend: postgresql/preprod-fss
+
+server:
+  servlet:
     encoding:
       charset: UTF-8
-
-app.db.flyway.role: brreg-stub-admin
-app.db.flyway.backend: postgresql/preprod-fss/creds
