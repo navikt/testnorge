@@ -2,8 +2,13 @@ name: Deploy tps-messaging-service
 
 on:
   push:
+    branches:
+      - master
+
     paths:
       - apps/tps-messaging-service/**
+
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/tps-messaging-service:${{ github.sha }}

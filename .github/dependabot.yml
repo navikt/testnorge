@@ -330,6 +330,10 @@ updates:
     schedule:
       interval: "daily"
   - package-ecosystem: "gradle"
+      directory: "/apps/tps-messaging-service/"
+      schedule:
+        interval: "daily"
+  - package-ecosystem: "gradle"
     directory: "/apps/udi-stub/"
     ignore:
       - dependency-name: "uk.co.boothen.gradle.wsimport"
