@@ -330,9 +330,9 @@ updates:
     schedule:
       interval: "daily"
   - package-ecosystem: "gradle"
-      directory: "/apps/tps-messaging-service/"
-      schedule:
-        interval: "daily"
+    directory: "/apps/tps-messaging-service/"
+    schedule:
+      interval: "daily"
   - package-ecosystem: "gradle"
     directory: "/apps/udi-stub/"
     ignore:
