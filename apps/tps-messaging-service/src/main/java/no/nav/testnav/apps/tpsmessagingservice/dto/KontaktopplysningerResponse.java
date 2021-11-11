@@ -8,10 +8,10 @@ import javax.xml.bind.annotation.XmlType;
 
 @Data
 @XmlRootElement(name = "sfePersonData")
-public class KontaktopplysningerResponse {
+@XmlType(propOrder = {"sfeAjourforing", "sfeTilbakemelding"})
+public class KontaktopplysningerResponse extends EndringsmeldingResponse {
 
     private SfeAjourforing sfeAjourforing;
-    private SfeTilbakemelding sfeTilbakemelding;
 
     @Data
     @XmlType(propOrder = {"systemInfo", "endreKontaktopplysninger", "endringAvSprak", "endringAvKontonr"})

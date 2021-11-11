@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlType;
 
 @Data
 @XmlRootElement(name = "sfePersonData")
-public class KontaktopplysningerRequest {
+public class KontaktopplysningerRequest extends EndringsmeldingRequest {
 
     private SfeAjourforing sfeAjourforing;
 

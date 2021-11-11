@@ -2,13 +2,14 @@ package no.nav.testnav.apps.tpsmessagingservice.factory;
 
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
+
+import no.nav.testnav.apps.tpsmessagingservice.dto.QueueManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import com.ibm.mq.jms.MQQueueConnectionFactory;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tpsmessagingservice.config.CacheConfig;
-import no.nav.testnav.apps.tpsmessagingservice.dto.QueueManager;
 
 @Slf4j
 @Component
