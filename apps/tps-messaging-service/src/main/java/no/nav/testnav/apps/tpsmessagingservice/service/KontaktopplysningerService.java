@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil.getErrorStatus;
-import static no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil.getOkeyStatus;
+import static no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil.getResponseStatus;
 import static no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil.marshallToXML;
 import static no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil.unmarshallFromXml;
 
@@ -53,7 +53,7 @@ public class KontaktopplysningerService {
 
                         try {
                             var response = (KontaktopplysningerResponse) unmarshallFromXml(responseContext, entry.getValue());
-                            return getOkeyStatus(response.getSfeTilbakemelding().getSvarStatus());
+                            return getResponseStatus(response);
 
                         } catch (JAXBException e) {
                             log.error(e.getMessage(), e);

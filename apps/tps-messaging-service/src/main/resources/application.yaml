@@ -17,7 +17,7 @@ spring:
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
           accepted-audience: ${TOKEN_X_CLIENT_ID}
 
-ibm:
+config:
   mq:
     conn-name: b27apvl057.preprod.local
     port: 1413

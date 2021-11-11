@@ -2,7 +2,7 @@ package no.nav.testnav.apps.tpsmessagingservice.utils;
 
 import lombok.experimental.UtilityClass;
 import no.nav.testnav.apps.tpsmessagingservice.dto.EndringsmeldingRequest;
-import no.nav.testnav.apps.tpsmessagingservice.dto.KontaktopplysningerResponse;
+import no.nav.testnav.apps.tpsmessagingservice.dto.EndringsmeldingResponse;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.EndringsmeldingResponseDTO;
 
 import javax.xml.bind.JAXBContext;
@@ -10,6 +10,9 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import java.io.StringReader;
 import java.io.StringWriter;
+
+import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @UtilityClass
 public class EndringsmeldingUtil {
@@ -22,13 +25,21 @@ public class EndringsmeldingUtil {
         return "00".equals(status) || "04".equals(status);
     }
 
-    public static EndringsmeldingResponseDTO getOkeyStatus(EndringsmeldingResponseDTO response) {
+    public static EndringsmeldingResponseDTO getResponseStatus(EndringsmeldingResponse response) {
 
-        return EndringsmeldingResponseDTO.builder()
-                .returStatus(isStatusOk(response.getReturStatus()) ? STATUS_OK : STATUS_ERROR)
-                .returMelding(response.getReturMelding())
-                .utfyllendeMelding(response.getUtfyllendeMelding())
-                .build();
+        if (nonNull(response)) {
+            return EndringsmeldingResponseDTO.builder()
+                    .returStatus(isStatusOk(response.getSfeTilbakemelding().getSvarStatus().getReturStatus()) ? STATUS_OK : STATUS_ERROR)
+                    .returMelding(response.getSfeTilbakemelding().getSvarStatus().getReturMelding())
+                    .utfyllendeMelding(response.getSfeTilbakemelding().getSvarStatus().getUtfyllendeMelding())
+                    .build();
+        } else {
+            return EndringsmeldingResponseDTO.builder()
+                    .returStatus(STATUS_ERROR)
+                    .returMelding("Teknisk feil!")
+                    .utfyllendeMelding("Ingen svarstatus mottatt fra TPS")
+                    .build();
+        }
     }
 
     public static EndringsmeldingResponseDTO getErrorStatus(JAXBException e) {
@@ -51,10 +62,18 @@ public class EndringsmeldingUtil {
         return writer.toString();
     }
 
-    public static Object unmarshallFromXml(JAXBContext responseContext, String kontaktopplysningerResponse) throws JAXBException {
+    public static Object unmarshallFromXml(JAXBContext responseContext, String endringsmeldingResponse) throws JAXBException {
 
-        var unmarshaller = responseContext.createUnmarshaller();
-        var reader = new StringReader(kontaktopplysningerResponse);
-        return unmarshaller.unmarshal(reader);
+        if (isNotBlank(endringsmeldingResponse)) {
+
+            var unmarshaller = responseContext.createUnmarshaller();
+            var reader = new StringReader(endringsmeldingResponse);
+
+            return unmarshaller.unmarshal(reader);
+
+        } else {
+
+            return null;
+        }
     }
 }

@@ -27,7 +27,6 @@ public class KontaktopplysningerMappingStrategy implements MappingStrategy {
                                 .brukerID("anonymousUser")
                                 .build());
                         sfeAjourforing.setEndreKontaktopplysninger(TpsServiceRoutineEndring.builder()
-                                .serviceRutinenavn("KontaktopplysningEndringer")
                                 .offentligIdent((String) context.getProperty("ident"))
                                 .build());
 

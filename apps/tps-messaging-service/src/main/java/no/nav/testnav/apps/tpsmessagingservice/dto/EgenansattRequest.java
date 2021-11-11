@@ -16,18 +16,16 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @XmlRootElement(name = "sfePersonData")
-@XmlType(propOrder = {"sfeAjourforing", "sfeTilbakemelding"})
-public class OpprettEgenansattResponse extends EndringsmeldingResponse {
+public class EgenansattRequest extends EndringsmeldingRequest {
 
     private SfeAjourforing sfeAjourforing;
 
     @Data
-    @XmlType(propOrder = {"systemInfo", "endreEgenAnsatt", "fom"})
+    @XmlType(propOrder = {"systemInfo", "endreEgenAnsatt", "opphorEgenAnsatt"})
     public static class SfeAjourforing {
 
         private TpsSystemInfo systemInfo;
         private TpsServiceRoutineEndring endreEgenAnsatt;
-
-        private LocalDate fom;
+        private TpsServiceRoutineEndring opphorEgenAnsatt;
     }
 }

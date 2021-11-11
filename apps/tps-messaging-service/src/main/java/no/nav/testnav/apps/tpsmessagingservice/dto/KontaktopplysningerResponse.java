@@ -1,14 +1,18 @@
 package no.nav.testnav.apps.tpsmessagingservice.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.KontaktopplysningerRequestDTO;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 @Data
+@SuperBuilder
+@NoArgsConstructor
 @XmlRootElement(name = "sfePersonData")
-@XmlType(propOrder = {"sfeAjourforing", "sfeTilbakemelding"})
 public class KontaktopplysningerResponse extends EndringsmeldingResponse {
 
     private SfeAjourforing sfeAjourforing;

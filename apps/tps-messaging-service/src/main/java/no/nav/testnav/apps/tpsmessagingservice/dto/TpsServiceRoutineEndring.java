@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.tpsmessagingservice.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,10 +13,10 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@XmlType(propOrder = {"serviceRutinenavn", "offentligIdent", "fom"})
+@XmlType(propOrder = {"offentligIdent", "fom"})
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TpsServiceRoutineEndring {
 
-    private String serviceRutinenavn;
     private String offentligIdent;
     private LocalDate fom;
 }

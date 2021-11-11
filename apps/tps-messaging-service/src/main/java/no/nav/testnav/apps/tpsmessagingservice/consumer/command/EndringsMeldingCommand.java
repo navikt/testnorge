@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.tpsmessagingservice.consumer.command;
 
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -14,6 +15,8 @@ import com.ibm.msg.client.wmq.compat.jms.internal.JMSC;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -72,7 +75,7 @@ public class EndringsMeldingCommand implements Callable<String> {
                     responseMessage = (TextMessage) consumer.receive(TIMEOUT_VAL);
                 }
 
-                return responseMessage != null ? responseMessage.getText() : "";
+                return nonNull(responseMessage) ? responseMessage.getText() : null;
             }
         }
     }

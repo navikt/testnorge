@@ -1,14 +1,20 @@
 package no.nav.testnav.apps.tpsmessagingservice.consumer;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.command.EndringsMeldingCommand;
+import no.nav.testnav.apps.tpsmessagingservice.dto.EndringsmeldingErrorResponse;
 import no.nav.testnav.apps.tpsmessagingservice.dto.QueueManager;
+import no.nav.testnav.apps.tpsmessagingservice.dto.SfeTilbakemelding;
 import no.nav.testnav.apps.tpsmessagingservice.factory.ConnectionFactoryFactory;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.EndringsmeldingResponseDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.jms.JMSException;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,42 +23,37 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class EndringsmeldingConsumer {
 
-    public static final String REQUEST_QUEUE_SERVICE_RUTINE_ALIAS = "TPS_FORESPORSEL_XML_O";
     public static final String REQUEST_QUEUE_ENDRINGSMELDING_ALIAS = "SFE_ENDRINGSMELDING";
 
     public static final String CHANNEL_SUFFIX = "_TESTNAV_TPS_MSG_S";
-    public static final String TPSF_KILDE = "TPSF";
 
-    protected static final String DEV_ENVIRONMENT = "D8";
     protected static final String PREFIX_MQ_QUEUES = "QA.";
     protected static final String MID_PREFIX_QUEUE_ENDRING = "_412.";
-    protected static final String MID_PREFIX_QUEUE_HENTING = "_411.";
 
     private final ConnectionFactoryFactory connectionFactoryFactory;
-
-    @Value("${ibm.mq.queueManager}")
+    private final JAXBContext responseErrorContext;
+    @Value("${config.mq.queueManager}")
     private String queueManager;
-
-    @Value("${ibm.mq.conn-name}")
+    @Value("${config.mq.conn-name}")
     private String host;
-
-    @Value("${ibm.mq.port}")
+    @Value("${config.mq.port}")
     private Integer port;
-
-    @Value("${ibm.mq.user}")
+    @Value("${config.mq.user}")
     private String username;
-
-    @Value("${ibm.mq.password}")
+    @Value("${config.mq.password}")
     private String password;
-
-    @Value("${ibm.mq.channel:}")
+    @Value("${config.mq.channel:}")
     private String channel;
-
-    @Value("${ibm.mq.queue:}")
+    @Value("${config.mq.queue:}")
     private String queue;
+
+    public EndringsmeldingConsumer(ConnectionFactoryFactory connectionFactoryFactory) throws JAXBException {
+
+        this.connectionFactoryFactory = connectionFactoryFactory;
+        this.responseErrorContext = JAXBContext.newInstance(EndringsmeldingErrorResponse.class);
+    }
 
     private static String getQueueName(String queue, String miljoe) {
 
@@ -67,6 +68,17 @@ public class EndringsmeldingConsumer {
         return isBlank(channel) ?
                 miljoe.toUpperCase() + CHANNEL_SUFFIX :
                 channel;
+    }
+
+    private String marshallToXML(EndringsmeldingErrorResponse errorResponse) throws JAXBException {
+
+        var marshaller = responseErrorContext.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+
+        var writer = new StringWriter();
+        marshaller.marshal(errorResponse, writer);
+
+        return writer.toString();
     }
 
     public Map<String, String> sendEndringsmelding(String melding, List<String> miljoer) {
@@ -84,7 +96,22 @@ public class EndringsmeldingConsumer {
                         melding).call());
 
             } catch (JMSException e) {
-                resultat.put(miljoe, e.getMessage());
+                try {
+                    resultat.put(miljoe, marshallToXML(EndringsmeldingErrorResponse.builder()
+                            .sfeTilbakemelding(SfeTilbakemelding.builder()
+                                    .svarStatus(EndringsmeldingResponseDTO.builder()
+                                            .returStatus("08")
+                                            .returMelding("Teknisk feil, se logg!")
+                                            .utfyllendeMelding(e.getMessage())
+                                            .build())
+                                    .build())
+                            .build()));
+
+                } catch (JAXBException ex) {
+
+                    log.error("Marshalling av feilmelding feilet", ex);
+                }
+
                 log.error(e.getMessage(), e);
             }
         });
