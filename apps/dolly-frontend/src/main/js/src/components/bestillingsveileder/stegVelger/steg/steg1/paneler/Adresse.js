@@ -15,6 +15,7 @@ export const AdressePanel = ({ stateModifier }) => {
 		>
 			<AttributtKategori title="Boadresse">
 				<Attributt attr={sm.attrs.boadresse} />
+				<Attributt attr={sm.attrs.utenlandskAdresse} />
 			</AttributtKategori>
 
 			<AttributtKategori title="Postadresse">
@@ -24,6 +25,10 @@ export const AdressePanel = ({ stateModifier }) => {
 			<AttributtKategori title="Midlertidig adresse">
 				<Attributt attr={sm.attrs.midlertidigAdresse} />
 			</AttributtKategori>
+
+			{/*<AttributtKategori title="Utenlandsk bostedsadresse">*/}
+			{/*	<Attributt attr={sm.attrs.utenlandskAdresse} />*/}
+			{/*</AttributtKategori>*/}
 		</Panel>
 	)
 }
@@ -40,6 +45,33 @@ AdressePanel.initialValues = ({ set, setMulti, del, has }) => ({
 		remove() {
 			del(['tpsf.boadresse', 'tpsf.adresseNrInfo'])
 		},
+	},
+	utenlandskAdresse: {
+		label: 'Har utenlandsk boadresse',
+		checked: has('pdldata.person.bostedsadresse'),
+		add: () =>
+			set('pdldata.person.bostedsadresse', [
+				{
+					utenlandskAdresse: {
+						adressenavnNummer: null,
+						postboksNummerNavn: null,
+						postkode: null,
+						bySted: null,
+						landkode: null,
+						bygningEtasjeLeilighet: null,
+						regionDistriktOmraade: null,
+						bygning: null,
+						etasjenummer: null,
+						boenhet: null,
+						region: null,
+						distriktsnavn: null,
+					},
+					kilde: 'Dolly',
+					master: 'FREG',
+					gjeldende: true,
+				},
+			]),
+		remove: () => del('pdldata.person.bostedsadresse'),
 	},
 	postadresse: {
 		label: 'Har postadresse',
