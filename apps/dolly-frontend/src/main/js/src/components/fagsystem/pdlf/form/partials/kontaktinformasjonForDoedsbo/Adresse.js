@@ -3,37 +3,27 @@ import { AdresseKodeverk } from '~/config/kodeverk'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import _get from 'lodash/get'
 
-export const Adresse = ({ formikBag }) => {
+export const Adresse = ({ formikBag, path }) => {
 	const handleAfterChange = (selected) => {
-		return formikBag.setFieldValue(
-			'pdlforvalter.kontaktinformasjonForDoedsbo.poststedsnavn',
-			selected.data
-		)
+		return formikBag.setFieldValue(`${path}.poststedsnavn`, selected.data)
 	}
 
 	return (
 		<Kategori title="Adresse">
 			<FormikSelect
-				name="pdlforvalter.kontaktinformasjonForDoedsbo.landkode"
+				name={`${path}.landkode`}
 				label="Land"
 				kodeverk={AdresseKodeverk.PostadresseLand}
 				size="large"
 				isClearable={false}
 			/>
-			<div>
-				<FormikTextInput
-					name="pdlforvalter.kontaktinformasjonForDoedsbo.adresselinje1"
-					label="Adresselinje 1"
-				/>
-				<FormikTextInput
-					name="pdlforvalter.kontaktinformasjonForDoedsbo.adresselinje2"
-					label="Adresselinje 2"
-				/>
-			</div>
-			{formikBag.values.pdlforvalter.kontaktinformasjonForDoedsbo.landkode === 'NOR' ? (
+			<FormikTextInput name={`${path}.adresselinje1`} label="Adresselinje 1" />
+			<FormikTextInput name={`${path}.adresselinje2`} label="Adresselinje 2" />
+			{_get(formikBag.values, `${path}.landkode`) === 'NOR' ? (
 				<FormikSelect
-					name="pdlforvalter.kontaktinformasjonForDoedsbo.postnummer"
+					name={`${path}.postnummer`}
 					label="Postnummer og -sted"
 					kodeverk={AdresseKodeverk.Postnummer}
 					afterChange={handleAfterChange}
@@ -41,16 +31,10 @@ export const Adresse = ({ formikBag }) => {
 					size="large"
 				/>
 			) : (
-				<div>
-					<FormikTextInput
-						name="pdlforvalter.kontaktinformasjonForDoedsbo.postnummer"
-						label="Postnummer"
-					/>
-					<FormikTextInput
-						name="pdlforvalter.kontaktinformasjonForDoedsbo.poststedsnavn"
-						label="Poststed"
-					/>
-				</div>
+				<>
+					<FormikTextInput name={`${path}.postnummer`} label="Postnummer" />
+					<FormikTextInput name={`${path}.poststedsnavn`} label="Poststed" />
+				</>
 			)}
 		</Kategori>
 	)
