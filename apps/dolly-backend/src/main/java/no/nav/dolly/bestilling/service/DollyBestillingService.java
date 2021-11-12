@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -192,6 +193,8 @@ public class DollyBestillingService {
 
             AtomicReference<DollyPerson> dollyPerson = new AtomicReference<>(null);
             if (testident.isTpsf()) {
+
+                log.info("Tpsf bestilling: {}", Json.pretty(tpsfBestilling));
 
                 RsOppdaterPersonResponse oppdaterPersonResponse = tpsfService.endreLeggTilPaaPerson(bestilling.getIdent(), tpsfBestilling);
                 sendIdenterTilTPS(request.getEnvironments(),
