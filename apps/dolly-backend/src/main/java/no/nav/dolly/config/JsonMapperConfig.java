@@ -1,6 +1,7 @@
 package no.nav.dolly.config;
 
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonDeserializer;
@@ -41,6 +42,8 @@ public class JsonMapperConfig {
         simpleModule.addDeserializer(ZonedDateTime.class, new DollyZonedDateTimeDeserializer());
         simpleModule.addSerializer(ZonedDateTime.class, new ZonedDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME));
 
+        simpleModule.addDeserializer(String.class, new StringDeserializer());
+
         objectMapper.registerModule(simpleModule);
         return objectMapper;
     }
@@ -77,6 +80,18 @@ public class JsonMapperConfig {
             }
             String dateTime = node.asText().length() > 19 ? node.asText().substring(0, 19) : node.asText();
             return dateTime.length() > 10 ? LocalDateTime.parse(dateTime) : LocalDate.parse(dateTime).atStartOfDay();
+        }
+    }
+
+    public static class StringDeserializer extends JsonDeserializer<String> {
+
+        @Override
+        public String deserialize(JsonParser jsonParser, DeserializationContext context) throws IOException {
+            JsonNode node = jsonParser.readValueAsTree();
+            if (node.asText().isEmpty()) {
+                return null;
+            }
+            return node.toString();
         }
     }
 }
