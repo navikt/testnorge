@@ -45,9 +45,11 @@ export const PdlDataVisning = ({ data }: PdlData) => {
 	}
 
 	const gjeldendeAdresse = (adresseListe) => {
+		console.log('adresseListe', adresseListe)
 		if (!adresseListe || adresseListe.length === 0) return null
 		const filteredArray = adresseListe.filter((adresse) => adresse.metadata.historisk != true)
-		return filteredArray.length > 0 ? filteredArray[0] : adresseListe[0]
+		return filteredArray.length > 0 ? filteredArray : adresseListe
+		// return filteredArray.length > 0 ? filteredArray[0] : adresseListe[0]
 	}
 
 	const getPersonInfo = (identInfo: Data) => {

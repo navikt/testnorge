@@ -814,8 +814,10 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				itemRows: bostedsadresse.map((item, idx) => {
 					if (item.utenlandskAdresse) {
 						const adresseData = item.utenlandskAdresse
+						const isEmpty = Object.values(adresseData).every((x) => x === null || x === '')
 						return [
 							{ numberHeader: `Utenlandsk boadresse ${idx + 1}` },
+							obj('', isEmpty && 'Ingen verdier satt'),
 							obj('Gatenavn og husnummer', adresseData.adressenavnNummer),
 							obj('Postnummer og -navn', adresseData.postboksNummerNavn),
 							obj('Postkode', adresseData.postkode),
