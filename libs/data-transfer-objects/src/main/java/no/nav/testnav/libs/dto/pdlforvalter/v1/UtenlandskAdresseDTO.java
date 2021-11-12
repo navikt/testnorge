@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class UtenlandskAdresseDTO implements Serializable {
 
     private String adressenavnNummer;
@@ -20,7 +20,7 @@ public class UtenlandskAdresseDTO implements Serializable {
     private String bySted;
     private String bygning;
     private String bygningEtasjeLeilighet;
-    private String distriktnavn;
+    private String distriktsnavn;
     private String etasjenummer;
     private String landkode;
     private String postboksNummerNavn;

@@ -71,6 +71,7 @@ export const Gateadresse = ({ formikBag }: Gateadresse) => {
 					tilleggsadresse: _get(formikBag.values, tilleggsadresse),
 				})
 				formikBag.setFieldValue(gateadresseNrInfo, undefined)
+				break
 			default:
 				break
 		}

@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class KontaktinformasjonForDoedsboDTO extends DbVersjonDTO {
 
     @Schema(required = true,
@@ -44,7 +44,7 @@ public class KontaktinformasjonForDoedsboDTO extends DbVersjonDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class KontaktinformasjonForDoedsboAdresse implements Serializable {
 
         @Schema(description = "Dødsboets adresse, adresselinje 1")
@@ -67,7 +67,7 @@ public class KontaktinformasjonForDoedsboDTO extends DbVersjonDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class KontaktpersonDTO implements Serializable {
 
         private String identifikasjonsnummer;
@@ -81,7 +81,7 @@ public class KontaktinformasjonForDoedsboDTO extends DbVersjonDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class OrganisasjonDTO implements Serializable {
 
         private PersonNavnDTO kontaktperson;
@@ -94,7 +94,7 @@ public class KontaktinformasjonForDoedsboDTO extends DbVersjonDTO {
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class PersonNavnDTO implements Serializable {
 
         private String etternavn;
