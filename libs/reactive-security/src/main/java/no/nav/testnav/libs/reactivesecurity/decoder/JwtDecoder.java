@@ -42,7 +42,7 @@ public class JwtDecoder {
     private WebClient webClient() {
         var builder = WebClient.builder();
         if (proxyHost != null) {
-            log.info("Setter opp proxy host {} for Client Credentials", proxyHost);
+            log.info("Setter opp proxy host {} for jwt decoder.", proxyHost);
             var uri = URI.create(proxyHost);
 
             HttpClient httpClient = HttpClient
@@ -58,10 +58,10 @@ public class JwtDecoder {
     }
 
     public ReactiveJwtDecoder jwtDecoder() {
-        NimbusReactiveJwtDecoder jwtDecoder = NimbusReactiveJwtDecoder
-                .withJwkSetUri(resourceServerProperties.getJwkSetUri())
-                .webClient(webClient())
-                .build();
+        NimbusReactiveJwtDecoder jwtDecoder = switch (resourceServerProperties.getType()) {
+            case TOKEN_X -> NimbusReactiveJwtDecoder.withJwkSetUri(resourceServerProperties.getJwkSetUri()).build();
+            case AZURE_AD -> NimbusReactiveJwtDecoder.withJwkSetUri(resourceServerProperties.getJwkSetUri()).webClient(webClient()).build();
+        };
 
         OAuth2TokenValidator<Jwt> audienceValidator = new AudienceValidator();
         OAuth2TokenValidator<Jwt> withIssuer = JwtValidators.createDefaultWithIssuer(resourceServerProperties.getIssuerUri());
