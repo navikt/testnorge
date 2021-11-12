@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - feature/endre-navn-dolly
     paths:
       - apps/dolly-backend/**
       - libs/data-transfer-objects/**
