@@ -517,6 +517,8 @@ export const validation = {
 			midlertidigAdresse: ifPresent('$tpsf.midlertidigAdresse', midlertidigAdresse),
 			postadresse: Yup.array().of(
 				Yup.object({
+					postLinje1: Yup.string().when('postLinje2', { is: '', then: requiredString }),
+					postLinje2: Yup.string(),
 					postLinje3: Yup.string().when('postLand', {
 						is: 'NOR',
 						then: requiredString,
