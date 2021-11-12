@@ -35,6 +35,8 @@ spec:
     requests:
       cpu: 300m
       memory: 1024Mi
+  envFrom:
+    - secret: testnav-tps-messaging-service
   accessPolicy:
     inbound:
       rules:
