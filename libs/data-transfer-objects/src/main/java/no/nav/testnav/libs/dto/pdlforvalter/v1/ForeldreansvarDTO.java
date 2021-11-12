@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(Include.NON_NULL)
+@JsonInclude(Include.NON_EMPTY)
 public class ForeldreansvarDTO extends DbVersjonDTO {
 
     private Ansvar ansvar;
@@ -32,7 +32,7 @@ public class ForeldreansvarDTO extends DbVersjonDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(Include.NON_NULL)
+    @JsonInclude(Include.NON_EMPTY)
     public static class RelatertBiPersonDTO implements Serializable {
 
         private LocalDateTime foedselsdato;
@@ -45,7 +45,7 @@ public class ForeldreansvarDTO extends DbVersjonDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(Include.NON_NULL)
+    @JsonInclude(Include.NON_EMPTY)
     public static class PersonnavnDTO implements Serializable {
 
         private String etternavn;
