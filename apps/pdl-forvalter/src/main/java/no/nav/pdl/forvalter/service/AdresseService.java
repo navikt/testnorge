@@ -114,16 +114,16 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
 
     protected void enforceIntegrity(List<T> adresse) {
 
-        for (var i = 0; i < adresse.size(); i++) {
-            if (i + 1 < adresse.size()) {
-                if (isOverlapGyldigTom(adresse, i) || isOverlapGyldigFom(adresse, i)) {
-                    throw new InvalidRequestException(VALIDATION_ADRESSE_OVELAP_ERROR);
-                }
-                if (isNull(adresse.get(i + 1).getGyldigTilOgMed()) && nonNull(adresse.get(i).getGyldigFraOgMed())) {
-                    adresse.get(i + 1).setGyldigTilOgMed(adresse.get(i).getGyldigFraOgMed().minusDays(1));
-                }
-            }
-        }
+//        for (var i = 0; i < adresse.size(); i++) {
+//            if (i + 1 < adresse.size()) {
+//                if (isOverlapGyldigTom(adresse, i) || isOverlapGyldigFom(adresse, i)) {
+//                    throw new InvalidRequestException(VALIDATION_ADRESSE_OVELAP_ERROR);
+//                }
+//                if (isNull(adresse.get(i + 1).getGyldigTilOgMed()) && nonNull(adresse.get(i).getGyldigFraOgMed())) {
+//                    adresse.get(i + 1).setGyldigTilOgMed(adresse.get(i).getGyldigFraOgMed().minusDays(1));
+//                }
+//            }
+//        }
     }
 
     private boolean isOverlapGyldigFom(List<T> adresse, int i) {
