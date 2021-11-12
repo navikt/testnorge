@@ -2,6 +2,7 @@ import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { boadressePaths } from '~/components/fagsystem/tpsf/form/adresser/Adresser'
 import { Attributt, AttributtKategori } from '../Attributt'
+import { initialUtenlandskAdresse } from '~/components/fagsystem/pdlf/form/initialValues'
 
 export const AdressePanel = ({ stateModifier }) => {
 	const sm = stateModifier(AdressePanel.initialValues)
@@ -52,22 +53,15 @@ AdressePanel.initialValues = ({ set, setMulti, del, has }) => ({
 		add: () =>
 			set('pdldata.person.bostedsadresse', [
 				{
-					utenlandskAdresse: {
-						adressenavnNummer: null,
-						postboksNummerNavn: null,
-						postkode: null,
-						bySted: null,
-						landkode: null,
-						bygningEtasjeLeilighet: null,
-						regionDistriktOmraade: null,
-						bygning: null,
-						etasjenummer: null,
-						boenhet: null,
-						region: null,
-						distriktsnavn: null,
-					},
+					utenlandskAdresse: initialUtenlandskAdresse,
+					// bygning: null,
+					// etasjenummer: null,
+					// boenhet: null,
+					// region: null,
+					// distriktsnavn: null,
+
 					kilde: 'Dolly',
-					master: 'FREG',
+					master: 'PDL',
 					gjeldende: true,
 				},
 			]),

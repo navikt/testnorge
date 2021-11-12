@@ -5,28 +5,43 @@ import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import _get from 'lodash/get'
+import { initialUtenlandskAdresse } from '~/components/fagsystem/pdlf/form/initialValues'
 
 export const UtenlandskAdresse = ({ formikBag }) => {
 	return (
 		<FormikDollyFieldArray
 			name="pdldata.person.bostedsadresse"
 			header="Utenlandsk boadresse"
-			newEntry={null} // TODO fix
+			newEntry={{
+				utenlandskAdresse: initialUtenlandskAdresse,
+				kilde: 'Dolly',
+				master: 'PDL',
+				gjeldende: true,
+			}}
 			canBeEmpty={false}
 		>
 			{(path, idx) => {
 				const utenlandskAdressePath = `${path}.utenlandskAdresse`
-				const master = _get(formikBag.values, `${path}.master`)
+				const harAdressenavn =
+					_get(formikBag.values, `${utenlandskAdressePath}.adressenavnNummer`) !== '' &&
+					_get(formikBag.values, `${utenlandskAdressePath}.adressenavnNummer`) !== null
+				const harPostboksnummer =
+					_get(formikBag.values, `${utenlandskAdressePath}.postboksNummerNavn`) !== '' &&
+					_get(formikBag.values, `${utenlandskAdressePath}.postboksNummerNavn`) !== null
+				// const master = _get(formikBag.values, `${path}.master`)
+
 				return (
 					<>
 						<div className="flexbox--flex-wrap" key={idx}>
 							<FormikTextInput
 								name={`${utenlandskAdressePath}.adressenavnNummer`}
 								label="Gatenavn og husnummer"
+								disabled={harPostboksnummer}
 							/>
 							<FormikTextInput
 								name={`${utenlandskAdressePath}.postboksNummerNavn`}
 								label="Postboksnummer og -navn"
+								disabled={harAdressenavn}
 							/>
 							<FormikTextInput name={`${utenlandskAdressePath}.postkode`} label="Postkode" />
 							<FormikTextInput name={`${utenlandskAdressePath}.bySted`} label="By eller sted" />
@@ -37,39 +52,42 @@ export const UtenlandskAdresse = ({ formikBag }) => {
 								isClearable={false}
 								size="large"
 							/>
-							{master === 'PDL' ? (
-								<>
-									{/* if master er PDL:*/}
-									<FormikTextInput
-										name={`${utenlandskAdressePath}.bygningEtasjeLeilighet`}
-										label="Bygg-/leilighetsinfo"
-									/>
-									<FormikTextInput
-										name={`${utenlandskAdressePath}.regionDistriktOmraade`}
-										label="Region/distrikt/område"
-									/>
-								</>
-							) : (
-								<>
-									{/* if master er FREG:*/}
-									<FormikTextInput name={`${utenlandskAdressePath}.bygning`} label="Navn på bygg" />
-									<FormikTextInput
-										name={`${utenlandskAdressePath}.etasjenummer`}
-										label="Etasje i bygg"
-									/>
-									<FormikTextInput
-										name={`${utenlandskAdressePath}.boenhet`}
-										label="Leilighetsnummer o.l."
-									/>
-									<FormikTextInput name={`${utenlandskAdressePath}.region`} label="Region" />
-									<FormikTextInput
-										name={`${utenlandskAdressePath}.distriktsnavn`}
-										label="Distrikt"
-									/>
-								</>
-							)}
+							{/*{master === 'PDL' ? (*/}
+							{/*	<>*/}
+							{/* if master er PDL:*/}
+							<FormikTextInput
+								name={`${utenlandskAdressePath}.bygningEtasjeLeilighet`}
+								label="Bygg-/leilighetsinfo"
+							/>
+							<FormikTextInput
+								name={`${utenlandskAdressePath}.regionDistriktOmraade`}
+								label="Region/distrikt/område"
+							/>
+							{/*	</>*/}
+							{/*) : (*/}
+							{/*	<>*/}
+							{/*		/!* if master er FREG eller tom:*!/*/}
+							{/*		<FormikTextInput name={`${utenlandskAdressePath}.bygning`} label="Navn på bygg" />*/}
+							{/*		<FormikTextInput*/}
+							{/*			name={`${utenlandskAdressePath}.etasjenummer`}*/}
+							{/*			label="Etasje i bygg"*/}
+							{/*		/>*/}
+							{/*		<FormikTextInput*/}
+							{/*			name={`${utenlandskAdressePath}.boenhet`}*/}
+							{/*			label="Leilighetsnummer o.l."*/}
+							{/*		/>*/}
+							{/*		<FormikTextInput name={`${utenlandskAdressePath}.region`} label="Region" />*/}
+							{/*		<FormikTextInput*/}
+							{/*			name={`${utenlandskAdressePath}.distriktsnavn`}*/}
+							{/*			label="Distrikt"*/}
+							{/*		/>*/}
+							{/*	</>*/}
+							{/*)}*/}
 						</div>
-						<AvansertForm path={path} />
+						{/*TODO: lag onchangehandler for master
+						    Evt ikke?? Fra dok: "Utenlandsk bostedsadresse vil alltid ha PDL som master"
+						*/}
+						<AvansertForm path={path} kanVelgeMaster={false} />
 					</>
 				)
 			}}
