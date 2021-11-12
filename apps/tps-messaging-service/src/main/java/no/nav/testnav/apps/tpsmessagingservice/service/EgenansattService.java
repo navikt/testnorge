@@ -4,9 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.EndringsmeldingConsumer;
-import no.nav.testnav.apps.tpsmessagingservice.dto.EndringsmeldingRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.EgenansattRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.EgenansattResponse;
+import no.nav.testnav.apps.tpsmessagingservice.dto.EndringsmeldingRequest;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.EndringsmeldingResponseDTO;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +15,7 @@ import javax.xml.bind.JAXBException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import static no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil.getErrorStatus;
@@ -73,7 +74,7 @@ public class EgenansattService {
             var miljoerResponse = endringsmeldingConsumer.sendEndringsmelding(requestXml, miljoer);
 
             return miljoerResponse.entrySet().stream()
-                    .collect(Collectors.toMap(entry -> entry.getKey(), entry -> {
+                    .collect(Collectors.toMap(Entry::getKey, entry -> {
 
                         try {
                             var response = (EgenansattResponse) unmarshallFromXml(responseContext, entry.getValue());

@@ -14,6 +14,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import static no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil.getErrorStatus;
@@ -49,7 +50,7 @@ public class KontaktopplysningerService {
             var miljoerResponse = endringsmeldingConsumer.sendEndringsmelding(requestXml, miljoer);
 
             return miljoerResponse.entrySet().stream()
-                    .collect(Collectors.toMap(entry -> entry.getKey(), entry -> {
+                    .collect(Collectors.toMap(Entry::getKey, entry -> {
 
                         try {
                             var response = (KontaktopplysningerResponse) unmarshallFromXml(responseContext, entry.getValue());

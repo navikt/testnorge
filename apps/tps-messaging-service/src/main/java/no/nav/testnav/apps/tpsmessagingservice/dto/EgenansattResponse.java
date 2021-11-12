@@ -1,8 +1,6 @@
 package no.nav.testnav.apps.tpsmessagingservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -10,7 +8,6 @@ import lombok.experimental.SuperBuilder;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import java.time.LocalDate;
 
 @Data
 @SuperBuilder
