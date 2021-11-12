@@ -66,6 +66,7 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 				<Attributt attr={sm.attrs.identHistorikk} />
 				<Attributt attr={sm.attrs.kjonn} vis={!opprettFraEksisterende} />
 				<Attributt attr={sm.attrs.harMellomnavn} />
+				<Attributt attr={sm.attrs.harNyttNavn} vis={leggTil} />
 				<Attributt attr={sm.attrs.sprakKode} />
 				<Attributt attr={sm.attrs.egenAnsattDatoFom} />
 				<Attributt attr={sm.attrs.erForsvunnet} />
@@ -164,6 +165,12 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			checked: has('tpsf.harMellomnavn'),
 			add: () => set('tpsf.harMellomnavn', true),
 			remove: () => del('tpsf.harMellomnavn'),
+		},
+		harNyttNavn: {
+			label: 'Nytt navn',
+			checked: has('tpsf.harNyttNavn'),
+			add: () => set('tpsf.harNyttNavn', true),
+			remove: () => del('tpsf.harNyttNavn'),
 		},
 		sprakKode: {
 			label: 'Språk',

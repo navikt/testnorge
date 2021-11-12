@@ -19,6 +19,7 @@ const StyledCheckbox = styled(NavCheckbox)`
 		.skjemaelement__label {
 			font-size: 0.75em;
 		}
+
 		margin-top: 17px;
 	}
 `
@@ -86,6 +87,13 @@ export const Diverse = ({ formikBag }) => {
 			<FormikSelect
 				name="tpsf.harMellomnavn"
 				label="Har mellomnavn"
+				options={Options('boolean')}
+				visHvisAvhuket
+			/>
+
+			<FormikSelect
+				name="tpsf.harNyttNavn"
+				label="Har nytt navn"
 				options={Options('boolean')}
 				visHvisAvhuket
 			/>

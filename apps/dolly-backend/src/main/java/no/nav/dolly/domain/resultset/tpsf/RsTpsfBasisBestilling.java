@@ -29,6 +29,9 @@ public class RsTpsfBasisBestilling {
     @Schema(description = "Når satt genereres mellomnavn på testpersonen")
     private Boolean harMellomnavn;
 
+    @Schema(description = "Når satt genereres nytt navn på testpersonen")
+    private Boolean harNyttNavn;
+
     private AdresseNrInfo adresseNrInfo;
 
     @Schema(description = "Merknad: Boadresse er enten gateadresse (GATE) eller matrikkeladresse (MATR)")
