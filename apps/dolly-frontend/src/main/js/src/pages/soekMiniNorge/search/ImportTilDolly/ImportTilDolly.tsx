@@ -5,11 +5,11 @@ import NavButton from '~/components/ui/button/NavButton/NavButton'
 import { ImportTilDollyModal } from './ImportTilDollyModal'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
-interface ImportTilDolly {
+interface ImportTilDollyProps {
 	valgtePersoner: Array<string>
 }
 
-export const ImportTilDolly = ({ valgtePersoner }: ImportTilDolly) => {
+export const ImportTilDolly = ({ valgtePersoner }: ImportTilDollyProps) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 
 	const personerValgt = valgtePersoner.length > 0

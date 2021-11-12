@@ -5,12 +5,12 @@ import Loading from '~/components/ui/loading/Loading'
 import { TpsDataVisning } from './TpsDataVisning'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 
-type PersonMiljoeinfo = {
+type PersonMiljoeinfoProps = {
 	ident: string
 	miljoe: Array<string>
 }
 
-export const PersonMiljoeinfo = ({ ident, miljoe }: PersonMiljoeinfo) => {
+export const PersonMiljoeinfo = ({ ident, miljoe }: PersonMiljoeinfoProps) => {
 	if (!ident) return null
 
 	const request = {

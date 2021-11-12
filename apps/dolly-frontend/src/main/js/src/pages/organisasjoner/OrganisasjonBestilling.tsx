@@ -9,7 +9,7 @@ import { OrgStatus } from '~/components/fagsystem/organisasjoner/types'
 import Spinner from '~/components/ui/loading/Spinner'
 import Formatters from '~/utils/DataFormatter'
 
-type OrganisasjonBestilling = {
+type OrganisasjonBestillingProps = {
 	brukerId: string
 	bestillinger: Array<OrgStatus>
 }
@@ -21,7 +21,10 @@ const ikonTypeMap = {
 	Stoppet: 'report-problem-triangle',
 }
 
-export default function OrganisasjonBestilling({ brukerId, bestillinger }: OrganisasjonBestilling) {
+export default function OrganisasjonBestilling({
+	brukerId,
+	bestillinger,
+}: OrganisasjonBestillingProps) {
 	if (!bestillinger) {
 		return null
 	}
