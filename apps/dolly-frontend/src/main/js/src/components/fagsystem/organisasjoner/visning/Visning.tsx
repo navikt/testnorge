@@ -4,7 +4,7 @@ import { Detaljer } from './Detaljer'
 import { TidligereBestillinger } from '~/pages/gruppe/PersonVisning/TidligereBestillinger/TidligereBestillinger'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { EnhetBestilling, EnhetData } from '../types'
-import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/SammendragModal'
+import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/BestillingSammendragModal'
 import { DollyApi } from '~/service/Api'
 import { OrganisasjonMiljoeinfo } from '~/components/fagsystem/organisasjoner/visning/miljoevisning/OrganisasjonMiljoeinfo'
 

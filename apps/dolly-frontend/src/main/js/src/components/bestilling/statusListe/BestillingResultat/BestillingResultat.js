@@ -4,7 +4,7 @@ import { Feedback } from '~/components/feedback'
 import ApiFeilmelding from '~/components/ui/apiFeilmelding/ApiFeilmelding'
 import FagsystemStatus from './FagsystemStatus/FagsystemStatus'
 import antallIdenterOpprettet from '~/components/bestilling/utils/antallIdenterOpprettet'
-import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/SammendragModal'
+import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/BestillingSammendragModal'
 
 import './BestillingResultat.less'
 
