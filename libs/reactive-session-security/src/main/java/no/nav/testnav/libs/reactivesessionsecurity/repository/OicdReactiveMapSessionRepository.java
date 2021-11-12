@@ -11,14 +11,14 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.Objects;
 
-public class OicdReactiveSessionRepository implements ReactiveSessionRepository<MapSession> {
+public class OicdReactiveMapSessionRepository implements ReactiveSessionRepository<MapSession> {
 
     private Integer defaultMaxInactiveInterval;
 
     private final Map<String, Session> sessions;
 
 
-    public OicdReactiveSessionRepository(Map<String, Session> sessions) {
+    public OicdReactiveMapSessionRepository(Map<String, Session> sessions) {
         if (sessions == null) {
             throw new IllegalArgumentException("sessions cannot be null");
         }

@@ -1,11 +1,10 @@
 package no.nav.testnav.libs.reactivesessionsecurity.config;
 
+import no.nav.testnav.libs.reactivesessionsecurity.repository.OicdReactiveMapSessionRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.session.SessionProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-import org.springframework.session.ReactiveMapSessionRepository;
-import org.springframework.session.ReactiveSessionRepository;
 import org.springframework.session.config.annotation.web.server.EnableSpringWebSession;
 
 import java.time.Duration;
@@ -36,8 +35,8 @@ public class OicdInMemorySessionConfiguration {
     private final SessionProperties sessionProperties;
 
     @Bean
-    public ReactiveSessionRepository reactiveSessionRepository() {
-        ReactiveMapSessionRepository sessionRepository = new ReactiveMapSessionRepository(new ConcurrentHashMap<>());
+    public OicdReactiveMapSessionRepository reactiveSessionRepository() {
+        OicdReactiveMapSessionRepository sessionRepository = new OicdReactiveMapSessionRepository(new ConcurrentHashMap<>());
         int defaultMaxInactiveInterval = (int) (sessionProperties.getTimeout() == null
                 ? Duration.ofMinutes(30)
                 : sessionProperties.getTimeout()
@@ -59,5 +58,4 @@ public class OicdInMemorySessionConfiguration {
         tokenExchange.addExchange("idporten", tokenXExchange);
         return tokenExchange;
     }
-
 }
