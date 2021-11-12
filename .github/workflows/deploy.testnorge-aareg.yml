@@ -2,9 +2,11 @@ name: Deploy testnorge-aareg
 
 on:
   push:
+    branches:
+      - master
     paths:
       - apps/testnorge-aareg/**
-
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/aareg:${{ github.sha }}

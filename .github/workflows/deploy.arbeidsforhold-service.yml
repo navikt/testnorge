@@ -2,9 +2,11 @@ name: Deploy arbeidsforhold-service
 
 on:
   push:
+    branches:
+      - master
     paths:
       - apps/arbeidsforhold-service/**
-
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/arbeidsforhold-service:${{ github.sha }}

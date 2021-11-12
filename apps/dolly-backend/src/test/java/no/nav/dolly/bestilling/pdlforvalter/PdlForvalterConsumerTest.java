@@ -21,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -49,6 +50,9 @@ import static wiremock.org.hamcrest.MatcherAssert.assertThat;
 public class PdlForvalterConsumerTest {
 
     private static final String IDENT = "11111111111";
+
+    @MockBean
+    private JwtDecoder jwtDecoder;
 
     @MockBean
     private TokenExchange tokenService;

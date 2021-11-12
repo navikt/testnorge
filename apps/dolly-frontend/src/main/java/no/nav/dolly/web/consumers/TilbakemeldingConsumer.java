@@ -42,10 +42,10 @@ public class TilbakemeldingConsumer {
                         .retrieve()
                         .bodyToMono(Void.class)
                         .doOnError(error -> {
-                            if (error instanceof WebClientResponseException) {
+                            if (error instanceof WebClientResponseException webClientResponseException) {
                                 log.error(
                                         "Feil ved innsendelse av tilbakemelding: {}.",
-                                        ((WebClientResponseException) error).getResponseBodyAsString(),
+                                        webClientResponseException.getResponseBodyAsString(),
                                         error
                                 );
                             } else {

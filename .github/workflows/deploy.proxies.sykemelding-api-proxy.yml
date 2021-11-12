@@ -2,12 +2,14 @@ name: Deploy sykemelding-api-proxy
 
 on:
   push:
+    branches:
+      - master
     paths:
       - proxies/sykemelding-api-proxy/**
       - libs/reactive-core/**
       - libs/reactive-proxy/**
       - libs/reactive-security/**
-      - libs/security-core/**
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/sykemelding-api-proxy:${{ github.sha }}

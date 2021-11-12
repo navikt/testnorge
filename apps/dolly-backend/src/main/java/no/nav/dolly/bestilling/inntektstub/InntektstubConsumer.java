@@ -8,6 +8,7 @@ import no.nav.dolly.config.credentials.InntektstubProxyProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
+import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
+import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Service
 @Slf4j
@@ -50,6 +52,7 @@ public class InntektstubConsumer {
                         .queryParam(NORSKE_IDENTER_QUERY, ident)
                         .build())
                 .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve().toEntityList(Inntektsinformasjon.class)
                 .block();
     }
@@ -63,6 +66,7 @@ public class InntektstubConsumer {
                         .queryParam(NORSKE_IDENTER_QUERY, ident)
                         .pathSegment(ident).build())
                 .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve().toEntity(Inntektsinformasjon.class)
                 .block();
     }
@@ -76,6 +80,7 @@ public class InntektstubConsumer {
                                 .path(INNTEKTER_URL)
                                 .build())
                         .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                        .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                         .bodyValue(inntektsinformasjon)
                         .retrieve().toEntityList(Inntektsinformasjon.class)
                         .block();
@@ -89,6 +94,7 @@ public class InntektstubConsumer {
                         .path(VALIDER_INNTEKTER_URL)
                         .build())
                 .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .bodyValue(validerInntekt)
                 .retrieve().toEntity(Object.class)
                 .block();

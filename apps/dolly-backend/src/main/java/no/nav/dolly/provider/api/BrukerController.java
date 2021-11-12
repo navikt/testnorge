@@ -1,12 +1,14 @@
 package no.nav.dolly.provider.api;
 
-import static no.nav.dolly.config.CachingConfig.CACHE_BRUKER;
-import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
-import static no.nav.dolly.util.CurrentAuthentication.getUserId;
-import static org.apache.logging.log4j.util.Strings.isBlank;
-
-import java.util.Collection;
-import java.util.List;
+import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
+import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
+import no.nav.dolly.service.BrukerService;
+import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
@@ -19,14 +21,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.v3.oas.annotations.Operation;
-import lombok.RequiredArgsConstructor;
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
-import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
-import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
-import no.nav.dolly.service.BrukerService;
+import java.util.Collection;
+import java.util.List;
+
+import static no.nav.dolly.config.CachingConfig.CACHE_BRUKER;
+import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
+import static no.nav.dolly.util.CurrentAuthentication.getUserId;
+import static org.apache.logging.log4j.util.Strings.isBlank;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,6 +36,7 @@ public class BrukerController {
 
     private final BrukerService brukerService;
     private final MapperFacade mapperFacade;
+    private final GetUserInfo getUserInfo;
 
     @Cacheable(CACHE_BRUKER)
     @GetMapping("/{brukerId}")
@@ -47,7 +49,7 @@ public class BrukerController {
     @GetMapping("/current")
     @Operation(description = "Hent pålogget Bruker")
     public RsBruker getCurrentBruker() {
-        Bruker bruker = brukerService.fetchOrCreateBruker(getUserId());
+        Bruker bruker = brukerService.fetchOrCreateBruker(getUserId(getUserInfo));
         return mapperFacade.map(bruker, RsBruker.class);
     }
 
@@ -55,14 +57,14 @@ public class BrukerController {
     @PutMapping("/migrer")
     @Operation(description = "Legg til Nav Ident på ny Azure bruker")
     public int leggTilIdentPaaNyBruker(@RequestParam(required = false) String brukerId, @RequestParam Collection<String> navIdenter) {
-        return brukerService.migrerBruker(navIdenter, isBlank(brukerId) ? getUserId() : brukerId);
+        return brukerService.migrerBruker(navIdenter, isBlank(brukerId) ? getUserId(getUserInfo) : brukerId);
     }
 
     @Transactional
     @PutMapping("/fjernMigrering")
     @Operation(description = "Fjerner migrering av Azure bruker og denne brukerens relasjoner til Nav Identer")
     public int fjernMigrering(@RequestParam(required = false) String brukerId) {
-        return brukerService.fjernMigreringAvBruker(isBlank(brukerId) ? getUserId() : brukerId);
+        return brukerService.fjernMigreringAvBruker(isBlank(brukerId) ? getUserId(getUserInfo) : brukerId);
     }
 
     @Cacheable(CACHE_BRUKER)
@@ -73,7 +75,7 @@ public class BrukerController {
     }
 
     @Transactional
-    @CacheEvict(value = {CACHE_BRUKER, CACHE_GRUPPE}, allEntries = true)
+    @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE }, allEntries = true)
     @PutMapping("/leggTilFavoritt")
     @Operation(description = "Legg til Favoritt-testgruppe til pålogget Bruker")
     public RsBruker leggTilFavoritt(@RequestBody RsBrukerUpdateFavoritterReq request) {
@@ -81,7 +83,7 @@ public class BrukerController {
     }
 
     @Transactional
-    @CacheEvict(value = {CACHE_BRUKER, CACHE_GRUPPE}, allEntries = true)
+    @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE }, allEntries = true)
     @PutMapping("/fjernFavoritt")
     @Operation(description = "Fjern Favoritt-testgruppe fra pålogget Bruker")
     public RsBruker fjernFavoritt(@RequestBody RsBrukerUpdateFavoritterReq request) {

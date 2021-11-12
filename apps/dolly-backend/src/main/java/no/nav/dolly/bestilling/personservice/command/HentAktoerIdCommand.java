@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.personservice.command;
 
 import no.nav.dolly.bestilling.personservice.domain.AktoerIdent;
+import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -11,6 +12,7 @@ import java.util.concurrent.Callable;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 public record HentAktoerIdCommand(WebClient webClient,
                                   String token, String ident,
@@ -28,6 +30,7 @@ public record HentAktoerIdCommand(WebClient webClient,
                         .pathSegment("aktoerId")
                         .build())
                 .header(HttpHeaders.AUTHORIZATION, token)
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .header(HEADER_NAV_CALL_ID, callId)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .retrieve()

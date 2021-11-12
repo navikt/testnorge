@@ -29,6 +29,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
         OAuth2ClientAutoConfiguration.class,
         ManagementWebSecurityAutoConfiguration.class })
 @AutoConfigureMockMvc(addFilters = false)
+@Disabled
 public class TestgruppeControllerDeleteTest extends TestgruppeTestBase {
 
     @Test

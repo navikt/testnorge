@@ -11,6 +11,7 @@ import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDetaljer
 import no.nav.dolly.config.credentials.OrganisasjonForvalterProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.util.CheckAliveUtil;
+import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
+import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
@@ -60,6 +62,7 @@ public class OrganisasjonConsumer {
                                 .queryParam("orgnumre", orgnumre)
                                 .build())
                 .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .header(HEADER_NAV_CALL_ID, navCallId)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .retrieve()
@@ -79,6 +82,7 @@ public class OrganisasjonConsumer {
                                 .queryParam("orgnumre", orgnumre)
                                 .build())
                 .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .header(HEADER_NAV_CALL_ID, navCallId)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .retrieve()
@@ -94,6 +98,7 @@ public class OrganisasjonConsumer {
                 .post()
                 .uri(uriBuilder -> uriBuilder.path(ORGANISASJON_FORVALTER_URL).build())
                 .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .header(HEADER_NAV_CALL_ID, navCallId)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .bodyValue(bestillingRequest)
@@ -120,6 +125,7 @@ public class OrganisasjonConsumer {
                 .post()
                 .uri(uriBuilder -> uriBuilder.path(ORGANISASJON_DEPLOYMENT_URL).build())
                 .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .header(HEADER_NAV_CALL_ID, callId)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .bodyValue(deployRequest)

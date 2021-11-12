@@ -2,12 +2,14 @@ name: Deploy udistub-proxy
 
 on:
   push:
+    branches:
+      - master
     paths:
       - proxies/udistub-proxy/**
       - libs/reactive-core/**
       - libs/reactive-proxy/**
       - libs/reactive-security/**
-      - libs/security-core/**
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/udistub-proxy:${{ github.sha }}

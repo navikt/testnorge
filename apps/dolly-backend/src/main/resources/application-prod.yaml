@@ -1,3 +1,5 @@
+TOKEN_X_CLIENT_ID: dev-fss:dolly:dolly-backend
+
 consumers:
   testnav-profil-api:
     name: testnorge-profil-api

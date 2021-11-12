@@ -2,14 +2,15 @@ import React, { useReducer } from 'react';
 import { Search } from '@/components/search';
 import { Hovedknapp } from 'nav-frontend-knapper';
 
-import { Form, Line } from '@navikt/dolly-komponenter';
-import EndringsmeldingService from '@/service/EndringsmeldingService';
-import { State, reducer, Action } from './EndringsmeldingReducer';
 import {
   ErrorAlertstripe,
+  Form,
+  Line,
   SuccessAlertstripe,
   WarningAlertstripe,
 } from '@navikt/dolly-komponenter';
+import EndringsmeldingService from '@/service/EndringsmeldingService';
+import { Action, reducer, State } from './EndringsmeldingReducer';
 import { BadRequestError } from '@navikt/dolly-lib/lib/error';
 
 type Props<T> = {
@@ -44,6 +45,7 @@ export default <T extends {}>({
 }: Props<T>) => {
   const [state, dispatch] = useReducer(reducer, initState);
 
+  console.log(state.warningMessages);
   const onSearch = (value: string) =>
     EndringsmeldingService.fetchMiljoer(value)
       .then((response) => {
@@ -110,8 +112,8 @@ export default <T extends {}>({
       {!!state.successMessage && <SuccessAlertstripe label={state.successMessage} />}
       {!!state.errorMessage && <ErrorAlertstripe label={state.errorMessage} />}
       {!!state.warningMessages &&
-        state.warningMessages.map((warring, index) => (
-          <WarningAlertstripe key={index} label={warring} />
+        state.warningMessages.map((warning, index) => (
+          <WarningAlertstripe key={index} label={warning} />
         ))}
     </Form>
   );

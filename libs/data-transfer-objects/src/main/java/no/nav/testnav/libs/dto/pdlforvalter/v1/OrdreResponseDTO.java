@@ -42,7 +42,7 @@ public class OrdreResponseDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class HendelseDTO {
 
         private Integer id;

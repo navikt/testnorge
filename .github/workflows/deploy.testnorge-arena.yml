@@ -2,10 +2,12 @@ name: Deploy testnorge-arena
 
 on:
   push:
-    branches: master
+    branches:
+      - master
     paths:
       - apps/testnorge-arena/**
       - libs/**
+  workflow_dispatch:
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/arena:${{ github.sha }}
