@@ -3,6 +3,7 @@ name: Deploy tps-forvalteren-dev-proxy
 on:
   push:
     branches:
+      - testnav-404-proxy
       - master
     paths:
       - proxies/tps-forvalteren-proxy/**
