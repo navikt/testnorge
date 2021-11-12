@@ -31,7 +31,6 @@ repositories {
     mavenLocal()
 }
 
-
 test {
     useJUnitPlatform()
 }

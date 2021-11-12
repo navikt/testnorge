@@ -3,7 +3,7 @@ name: Build & Analysis [tps-forvalteren-proxy]
 on:
   push:
     paths:
-      - apps/tps-forvalteren-proxy/**
+      - proxies/tps-forvalteren-proxy/**
 
 jobs:
   scan:
@@ -33,7 +33,7 @@ jobs:
         with:
           java-version: 1.17
       - name: Sonar Analysis
-        working-directory: apps/tps-forvalteren-proxy/
+        working-directory: proxies/tps-forvalteren-proxy/
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
