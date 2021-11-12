@@ -49,11 +49,10 @@ public class TpsfConsumer {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken.getTokenValue())
                 .retrieve()
                 .toEntity(MiljoerResponse.class)
-                .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(3))
-                        .filter(throwable -> throwable instanceof WebClientResponseException
-                                && ((WebClientResponseException) throwable).getStatusCode().is5xxServerError()
-                        ))
-                .block();
+                .retryWhen(Retry
+                        .fixedDelay(3, Duration.ofSeconds(3))
+                        .filter(throwable -> throwable instanceof WebClientResponseException error && error.getStatusCode().is5xxServerError())
+                ).block();
 
         if (response == null || isNull(response.getBody()) || isNull(response.getBody().getEnvironments())) {
             throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Fant ingen miljøer");
