@@ -9,15 +9,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
 
-import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import no.nav.registre.testnorge.miljoerservice.config.credentias.TpsForvalterenProxyServiceProperties;
 import no.nav.registre.testnorge.miljoerservice.response.MiljoerResponse;
+import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Service
 @Slf4j
@@ -49,7 +49,10 @@ public class TpsfConsumer {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken.getTokenValue())
                 .retrieve()
                 .toEntity(MiljoerResponse.class)
-                .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(3)))
+                .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(3))
+                        .filter(throwable -> throwable instanceof WebClientResponseException
+                                && ((WebClientResponseException) throwable).getStatusCode().is5xxServerError()
+                        ))
                 .block();
 
         if (response == null || isNull(response.getBody()) || isNull(response.getBody().getEnvironments())) {
