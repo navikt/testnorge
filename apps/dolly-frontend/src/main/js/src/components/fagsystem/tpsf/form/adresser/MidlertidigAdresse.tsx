@@ -11,7 +11,7 @@ import { Gateadresse } from './partials/midlertidigAdresse/Gateadresse'
 import { Tilleggsadresse } from '~/components/fagsystem/tpsf/form/adresser/partials/Tilleggsadresse/Tilleggsadresse'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 
-interface MidlertidigAdresse {
+interface MidlertidigAdresseProps {
 	formikBag: FormikProps<{}>
 }
 
@@ -28,7 +28,7 @@ enum AdresseTyper {
 	UTAD = 'UTAD',
 }
 
-export const MidlertidigAdresse = ({ formikBag }: MidlertidigAdresse) => {
+export const MidlertidigAdresse = ({ formikBag }: MidlertidigAdresseProps) => {
 	const adressetypePath = 'tpsf.midlertidigAdresse.adressetype'
 	const gyldigTom = 'tpsf.midlertidigAdresse.gyldigTom'
 	const tilleggsadresse = 'tpsf.midlertidigAdresse.norskAdresse.tilleggsadresse'

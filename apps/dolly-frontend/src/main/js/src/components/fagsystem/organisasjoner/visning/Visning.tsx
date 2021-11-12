@@ -8,12 +8,12 @@ import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/Sa
 import { DollyApi } from '~/service/Api'
 import { OrganisasjonMiljoeinfo } from '~/components/fagsystem/organisasjoner/visning/miljoevisning/OrganisasjonMiljoeinfo'
 
-type OrganisasjonVisning = {
+type OrganisasjonVisningProps = {
 	data: EnhetData
 	bestillinger: Array<EnhetBestilling>
 }
 
-export const OrganisasjonVisning = ({ data, bestillinger }: OrganisasjonVisning) => {
+export const OrganisasjonVisning = ({ data, bestillinger }: OrganisasjonVisningProps) => {
 	if (!data) return null
 
 	const [selectedId, setSelectedId] = useState('0')

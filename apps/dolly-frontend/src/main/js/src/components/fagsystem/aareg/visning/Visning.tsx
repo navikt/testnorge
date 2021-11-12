@@ -13,7 +13,7 @@ import { Utenlandsopphold } from './partials/Utenlandsopphold'
 import { ArbeidKodeverk } from '~/config/kodeverk'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
-type AaregVisning = {
+type AaregVisningProps = {
 	liste?: Array<Arbeidsforhold>
 	loading?: boolean
 }
@@ -23,14 +23,14 @@ type Arbeidsforhold = {
 	ansettelsesperiode?: Ansettelsesperiode
 	antallTimerForTimeloennet?: Array<unknown>
 	arbeidsavtaler?: Array<unknown>
-	arbeidsgiver?: Arbeidsgiver
+	arbeidsgiver?: ArbeidsgiverProps
 	fartoy?: Array<any>
 	permisjonPermitteringer?: Array<unknown>
 	utenlandsopphold?: Array<unknown>
 	arbeidsforholdId?: string
 }
 
-type Arbeidsgiver = {
+type ArbeidsgiverProps = {
 	type?: string
 	organisasjonsnummer?: string
 	offentligIdent?: string
@@ -53,7 +53,7 @@ const getHeader = (data: Arbeidsforhold) => {
 	})`
 }
 
-export const AaregVisning = ({ liste, loading }: AaregVisning) => {
+export const AaregVisning = ({ liste, loading }: AaregVisningProps) => {
 	if (loading) return <Loading label="Laster Aareg-data" />
 	if (!liste) return null
 

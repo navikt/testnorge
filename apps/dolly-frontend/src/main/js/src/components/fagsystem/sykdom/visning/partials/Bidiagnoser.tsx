@@ -4,11 +4,11 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { Diagnose } from '~/components/fagsystem/sykdom/SykemeldingTypes'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
-type Bidiagnoser = {
+type BidiagnoserProps = {
 	data: Array<Diagnose>
 }
 
-export const Bidiagnoser = ({ data }: Bidiagnoser) => {
+export const Bidiagnoser = ({ data }: BidiagnoserProps) => {
 	if (!data || data.length === 0) return null
 	return (
 		<>

@@ -7,7 +7,7 @@ import { AdresseKodeverk } from '~/config/kodeverk'
 import { FormikProps } from 'formik'
 import { EnhetBestilling } from '../../types'
 
-type Adresser = {
+type AdresserProps = {
 	formikBag: FormikProps<{ organisasjon: EnhetBestilling }>
 	path: string
 }
@@ -15,7 +15,7 @@ type Adresser = {
 const hjelpetekstAdresser =
 	'For å få generert en gyldig norsk adresse kan du velge å fylle ut postnummer, kommunenummer, eller ingen ting. Det vil opprettes en gyldig adresse på grunnlag av det du har fylt ut, og har du ikke fylt ut noe blir adressen en tilfeldig gyldig adresse.'
 
-export const Adresser = ({ formikBag, path }: Adresser) => {
+export const Adresser = ({ formikBag, path }: AdresserProps) => {
 	const landForretningsadresse = _get(formikBag, `values.${path}.forretningsadresse.landkode`)
 	const landPostadresse = _get(formikBag, `values.${path}.postadresse.landkode`)
 

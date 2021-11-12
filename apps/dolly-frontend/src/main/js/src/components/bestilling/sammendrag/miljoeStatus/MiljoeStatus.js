@@ -5,8 +5,6 @@ import FagsystemStatus from './fagsystemStatus/FagsystemStatus'
 import ApiFeilmelding from '~/components/ui/apiFeilmelding/ApiFeilmelding'
 import antallIdenterOpprettet from '~/components/bestilling/utils/antallIdenterOpprettet'
 
-import './MiljoeStatus.less'
-
 const mapStatusrapport = (bestillingstatus) => {
 	const successFirst = (a) => (a.melding ? 1 : -1)
 	return bestillingstatus
