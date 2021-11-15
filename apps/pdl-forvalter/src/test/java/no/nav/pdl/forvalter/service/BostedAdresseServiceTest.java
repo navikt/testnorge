@@ -10,7 +10,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -156,7 +155,6 @@ class BostedAdresseServiceTest {
         assertThat(exception.getMessage(), containsString("Adresse: Overlappende adressedatoer er ikke lov"));
     }
 
-    @Disabled
     @Test
     void whenOverlappingDateIntervalsInInput_thenThrowExecption() {
 
@@ -185,7 +183,6 @@ class BostedAdresseServiceTest {
         assertThat(exception.getMessage(), containsString("Adresse: Overlappende adressedatoer er ikke lov"));
     }
 
-    @Disabled
     @Test
     void whenOverlappingDateIntervalsInInput2_thenThrowExecption() {
 
@@ -230,7 +227,6 @@ class BostedAdresseServiceTest {
         assertThat(target.getGyldigFraOgMed(), is(equalTo(LocalDate.of(2020, 1, 1).atStartOfDay())));
     }
 
-    @Disabled
     @Test
     void whenPreviousOppholdHasEmptyTilDato_thenFixPreviousOppholdTilDato() {
 

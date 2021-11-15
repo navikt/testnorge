@@ -7,6 +7,20 @@ const personnavnSchema = Yup.object({
 	etternavn: Yup.string(),
 })
 
+const bostedsadresse = Yup.array().of(
+	Yup.object({
+		utenlandskAdresse: Yup.object({
+			adressenavnNummer: Yup.string().nullable(),
+			postboksNummerNavn: Yup.string().nullable(),
+			postkode: Yup.string().nullable(),
+			bySted: Yup.string().nullable(),
+			landkode: Yup.string().nullable(),
+			bygningEtasjeLeilighet: Yup.string().nullable(),
+			regionDistriktOmraade: Yup.string().nullable(),
+		}),
+	})
+)
+
 const falskIdentitet = Yup.array().of(
 	Yup.object({
 		rettIdentErUkjent: Yup.boolean(),
@@ -78,6 +92,7 @@ export const validation = {
 	}),
 	pdldata: Yup.object({
 		person: Yup.object({
+			bostedsadresse: ifPresent('$pdldata.person.bostedsadresse', bostedsadresse),
 			falskIdentitet: ifPresent('$pdldata.person.falskIdentitet', falskIdentitet),
 			utenlandskIdentifikasjonsnummer: ifPresent(
 				'$pdldata.person.utenlandskIdentifikasjonsnummer',

@@ -3,20 +3,25 @@ import cn from 'classnames'
 // @ts-ignore
 import ExpandButton from '~/components/ui/button/ExpandButton'
 
-type Numbering = {
+type NumberingProps = {
 	idx: number
 }
 
-interface ExpandableBlokk<T> {
+interface ExpandableBlokkProps<T> {
 	idx: number
 	children: React.ReactNode
 	data: T
 	getHeader: (data: T) => string
 }
 
-const Numbering = ({ idx }: Numbering) => <span className="dfa-blokk-number">{idx + 1}</span>
+const Numbering = ({ idx }: NumberingProps) => <span className="dfa-blokk-number">{idx + 1}</span>
 
-export default function ExpandableBlokk<T>({ getHeader, idx, children, data }: ExpandableBlokk<T>) {
+export default function ExpandableBlokk<T>({
+	getHeader,
+	idx,
+	children,
+	data,
+}: ExpandableBlokkProps<T>) {
 	const [isExpanded, setIsExpanded] = useState(false)
 	const headerClass = cn('dfa-blokk_header', { clickable: true })
 

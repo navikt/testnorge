@@ -11,7 +11,7 @@ import React, { useState } from 'react'
 import { Redirect } from 'react-router-dom'
 import Icon from '~/components/ui/icon/Icon'
 
-type FinnPerson = {
+type FinnPersonProps = {
 	naviger: Function
 }
 
@@ -40,7 +40,7 @@ type Respons = {
 	}
 }
 
-export default function FinnPerson({ naviger }: FinnPerson) {
+export default function FinnPerson({ naviger }: FinnPersonProps) {
 	const [redirectToGruppe, setRedirect] = useBoolean()
 
 	const [gruppe, setGruppe] = useState(null)

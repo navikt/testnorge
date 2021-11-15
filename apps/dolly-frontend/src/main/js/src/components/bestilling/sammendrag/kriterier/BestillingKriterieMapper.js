@@ -35,6 +35,7 @@ const _getTpsfBestillingData = (data) => {
 		obj('Statsborgerskap til', Formatters.formatDate(data.statsborgerskapTildato)),
 		obj('Kjønn', Formatters.kjonn(data.kjonn, data.alder)),
 		obj('Har mellomnavn', Formatters.oversettBoolean(data.harMellomnavn)),
+		obj('Har nytt navn', Formatters.oversettBoolean(data.harNyttNavn)),
 		obj('Sivilstand', data.sivilstand, PersoninformasjonKodeverk.Sivilstander),
 		obj('Diskresjonskoder', data.spesreg !== 'UFB' && data.spesreg, 'Diskresjonskoder'),
 		obj('Uten fast bopel', (data.utenFastBopel || data.spesreg === 'UFB') && 'JA'),
@@ -796,7 +797,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	const pdldataKriterier = bestillingData.pdldata?.person
 
 	if (pdldataKriterier) {
-		const { falskIdentitet, utenlandskIdentifikasjonsnummer } = pdldataKriterier
+		const { falskIdentitet, utenlandskIdentifikasjonsnummer, bostedsadresse } = pdldataKriterier
 
 		const sjekkRettIdent = (item) => {
 			if (_has(item, 'rettIdentitetErUkjent')) {
@@ -805,6 +806,31 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				return 'Ved identifikasjonsnummer'
 			}
 			return _has(item, 'rettIdentitetVedOpplysninger') ? 'Ved personopplysninger' : 'Ingen'
+		}
+
+		if (bostedsadresse) {
+			const bostedsadresseData = {
+				header: 'Bostedsadresse',
+				itemRows: bostedsadresse.map((item, idx) => {
+					if (item.utenlandskAdresse) {
+						const adresseData = item.utenlandskAdresse
+						const isEmpty =
+							adresseData.empty || Object.values(adresseData).every((x) => x === null || x === '')
+						return [
+							{ numberHeader: `Utenlandsk boadresse ${idx + 1}` },
+							obj('', isEmpty && 'Ingen verdier satt'),
+							obj('Gatenavn og husnummer', adresseData.adressenavnNummer),
+							obj('Postnummer og -navn', adresseData.postboksNummerNavn),
+							obj('Postkode', adresseData.postkode),
+							obj('By eller sted', adresseData.bySted),
+							obj('Land', adresseData.landkode, AdresseKodeverk.StatsborgerskapLand),
+							obj('Bygg-/leilighetsinfo', adresseData.bygningEtasjeLeilighet),
+							obj('Region/distrikt/område', adresseData.regionDistriktOmraade),
+						]
+					}
+				}),
+			}
+			data.push(bostedsadresseData)
 		}
 
 		if (falskIdentitet) {

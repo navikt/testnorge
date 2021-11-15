@@ -3,12 +3,12 @@ import { Enhetstre, OrgTree } from '~/components/enhetstre'
 import { mapBestillingData } from './BestillingKriterieMapper'
 import { EnhetBestilling } from '~/components/fagsystem/organisasjoner/types'
 
-type OrganisasjonKriterier = {
+type OrganisasjonKriterierProps = {
 	data: EnhetBestilling
 	render: Function
 }
 
-export const OrganisasjonKriterier = ({ data, render }: OrganisasjonKriterier) => {
+export const OrganisasjonKriterier = ({ data, render }: OrganisasjonKriterierProps) => {
 	if (!data) return null
 
 	const [selectedId, setSelectedId] = useState('0')

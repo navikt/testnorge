@@ -5,8 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
+import java.util.stream.Stream;
 
 @Data
 @Builder
@@ -27,4 +29,21 @@ public class UtenlandskAdresseDTO implements Serializable {
     private String postkode;
     private String region;
     private String regionDistriktOmraade;
+
+    public boolean isEmpty() {
+
+        return Stream.of(adressenavnNummer,
+                        boenhet,
+                        bySted,
+                        bygning,
+                        bygningEtasjeLeilighet,
+                        distriktsnavn,
+                        etasjenummer,
+                        landkode,
+                        postboksNummerNavn,
+                        postkode,
+                        region,
+                        regionDistriktOmraade)
+                .allMatch(StringUtils::isBlank);
+    }
 }

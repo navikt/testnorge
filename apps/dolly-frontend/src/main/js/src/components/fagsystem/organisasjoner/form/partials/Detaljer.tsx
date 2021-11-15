@@ -16,7 +16,7 @@ import { EnhetBestilling } from '../../types'
 import { Kontaktdata } from './Kontaktdata'
 import { Adresser } from './Adresser'
 
-type Detaljer = {
+type DetaljerProps = {
 	formikBag: FormikProps<{ organisasjon: EnhetBestilling }>
 	path: string
 	level: number
@@ -29,7 +29,13 @@ enum TypeUnderenhet {
 	VIRKSOMHET = 'VIRKSOMHET',
 }
 
-export const Detaljer = ({ formikBag, path, level, number, maaHaUnderenhet = true }: Detaljer) => {
+export const Detaljer = ({
+	formikBag,
+	path,
+	level,
+	number,
+	maaHaUnderenhet = true,
+}: DetaljerProps) => {
 	const initialValues = _omit(formikBag.values.organisasjon, ['underenheter', 'sektorkode'])
 	initialValues.enhetstype = ''
 

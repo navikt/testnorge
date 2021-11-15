@@ -49,9 +49,11 @@ const getUpdatedInntektstubData = (inntektstubData: any) => {
 const getUpdatedAaregData = (aaregData: any) => {
 	return aaregData.map((data: any) => {
 		data = updateData(data, initialValues.aareg[0])
-		data.permisjon = data.permisjon?.map((data: any) => updateData(data, initialValues.permisjon))
-		data.utenlandsopphold = data.utenlandsopphold?.map((data: any) =>
-			updateData(data, initialValues.utenlandsopphold)
+		data.permisjon = data.permisjon?.map((permisjon: any) =>
+			updateData(permisjon, initialValues.permisjon)
+		)
+		data.utenlandsopphold = data.utenlandsopphold?.map((opphold: any) =>
+			updateData(opphold, initialValues.utenlandsopphold)
 		)
 		return data
 	})

@@ -19,7 +19,7 @@ import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
-interface ArbeidsforholdToggle {
+interface ArbeidsforholdToggleProps {
 	formikBag: FormikProps<{ aareg: AaregListe }>
 }
 
@@ -39,7 +39,7 @@ const fellesOrg = [
 	'947064649',
 ]
 
-export const ArbeidsforholdToggle = ({ formikBag }: ArbeidsforholdToggle): ReactElement => {
+export const ArbeidsforholdToggle = ({ formikBag }: ArbeidsforholdToggleProps): ReactElement => {
 	// const fellesOrg = SelectOptionsOppslag.hentOrgnr().value?.liste
 	// TODO hent felles organisasjoner fra api istedenfor hardkodet liste
 

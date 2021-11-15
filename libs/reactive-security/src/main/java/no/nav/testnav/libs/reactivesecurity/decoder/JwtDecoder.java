@@ -1,6 +1,5 @@
 package no.nav.testnav.libs.reactivesecurity.decoder;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
@@ -20,11 +19,15 @@ import java.net.URI;
 import no.nav.testnav.libs.reactivesecurity.properties.ResourceServerProperties;
 
 @Slf4j
-@AllArgsConstructor
 public class JwtDecoder {
 
     private final ResourceServerProperties resourceServerProperties;
-    private final String proxyHost;
+    private final WebClient proxyWebClient;
+
+    public JwtDecoder(ResourceServerProperties resourceServerProperties, String proxyHost) {
+        this.resourceServerProperties = resourceServerProperties;
+        this.proxyWebClient = buildProxyWebClient(proxyHost);
+    }
 
     public class AudienceValidator implements OAuth2TokenValidator<Jwt> {
         public OAuth2TokenValidatorResult validate(Jwt jwt) {
@@ -33,16 +36,16 @@ public class JwtDecoder {
                     String.format("None of required audience values '%s' found in token", resourceServerProperties.getAcceptedAudience()),
                     null
             );
-            return  jwt.getAudience().stream().anyMatch(resourceServerProperties.getAcceptedAudience()::contains)
+            return jwt.getAudience().stream().anyMatch(resourceServerProperties.getAcceptedAudience()::contains)
                     ? OAuth2TokenValidatorResult.success()
                     : OAuth2TokenValidatorResult.failure(error);
         }
     }
 
-    private WebClient webClient() {
+    private WebClient buildProxyWebClient(String proxyHost) {
         var builder = WebClient.builder();
         if (proxyHost != null) {
-            log.info("Setter opp proxy host {} for Client Credentials", proxyHost);
+            log.info("Setter opp proxy host {} for jwt decoder.", proxyHost);
             var uri = URI.create(proxyHost);
 
             HttpClient httpClient = HttpClient
@@ -58,10 +61,10 @@ public class JwtDecoder {
     }
 
     public ReactiveJwtDecoder jwtDecoder() {
-        NimbusReactiveJwtDecoder jwtDecoder = NimbusReactiveJwtDecoder
-                .withJwkSetUri(resourceServerProperties.getJwkSetUri())
-                .webClient(webClient())
-                .build();
+        NimbusReactiveJwtDecoder jwtDecoder = switch (resourceServerProperties.getType()) {
+            case TOKEN_X -> NimbusReactiveJwtDecoder.withJwkSetUri(resourceServerProperties.getJwkSetUri()).build();
+            case AZURE_AD -> NimbusReactiveJwtDecoder.withJwkSetUri(resourceServerProperties.getJwkSetUri()).webClient(proxyWebClient).build();
+        };
 
         OAuth2TokenValidator<Jwt> audienceValidator = new AudienceValidator();
         OAuth2TokenValidator<Jwt> withIssuer = JwtValidators.createDefaultWithIssuer(resourceServerProperties.getIssuerUri());

@@ -26,6 +26,7 @@ const diversePaths = [
 	'tpsf.kjonn',
 	'tpsf.identtype',
 	'tpsf.harMellomnavn',
+	'tpsf.harNyttNavn',
 	'tpsf.sivilstand',
 	'tpsf.sprakKode',
 	'tpsf.egenAnsattDatoFom',

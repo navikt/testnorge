@@ -5,7 +5,7 @@
   "dependencies": {
     "@navikt/dolly-komponenter": "^1.1.14",
     "@navikt/dolly-lib": "^1.1.8",
-    "@navikt/ds-icons": "^0.6.2",
+    "@navikt/ds-icons": "^0.6.3",
     "@navikt/fnrvalidator": "^1.1.4",
     "classnames": "^2.3.1",
     "dayjs": "^1.10.7",
@@ -39,7 +39,7 @@
     "react-router-dom": "^6.0.2",
     "react-scripts": "4.0.3",
     "react-select": "^5.2.1",
-    "react-syntax-highlighter": "^15.4.4",
+    "react-syntax-highlighter": "^15.4.5",
     "stream-browserify": "^3.0.0",
     "styled-components": "^5.3.3"
   },
