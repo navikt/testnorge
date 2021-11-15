@@ -3,7 +3,7 @@ name: Build & Analysis [syntrest-proxy]
 on:
   push:
     paths:
-      - apps/syntrest-proxy/**
+      - proxies/syntrest-proxy/**
 
 jobs:
   scan:
@@ -33,7 +33,7 @@ jobs:
         with:
           java-version: 1.17
       - name: Sonar Analysis
-        working-directory: apps/syntrest-proxy/
+        working-directory: proxies/syntrest-proxy/
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

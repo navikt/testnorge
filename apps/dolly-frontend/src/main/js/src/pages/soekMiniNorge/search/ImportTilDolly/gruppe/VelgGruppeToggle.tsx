@@ -3,7 +3,7 @@ import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import EksisterendeGruppeConnector from './EksisterendeGruppeConnector'
 import NyGruppe from './NyGruppe'
 
-interface VelgGruppeToggle {
+interface VelgGruppeToggleProps {
 	setValgtGruppe: React.Dispatch<React.SetStateAction<string>>
 	valgtGruppe: string
 }
@@ -14,7 +14,7 @@ enum Gruppevalg {
 	NY = 'Ny',
 }
 
-export const VelgGruppeToggle = ({ setValgtGruppe, valgtGruppe }: VelgGruppeToggle) => {
+export const VelgGruppeToggle = ({ setValgtGruppe, valgtGruppe }: VelgGruppeToggleProps) => {
 	const [gruppevalg, setGruppevalg] = useState(Gruppevalg.EKSISTERENDE)
 
 	const handleToggleChange = (e: React.ChangeEvent<any>) => {

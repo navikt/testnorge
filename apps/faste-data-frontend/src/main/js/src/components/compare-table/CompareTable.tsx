@@ -13,7 +13,6 @@ type Props<T extends Item> = {
     id?: string;
   };
   miljo: string;
-  linkPath: string;
   fetchCompare: (miljo: string, item: T) => Promise<boolean>;
 };
 
@@ -25,7 +24,6 @@ type Row = {
 
 function CompareTable<T extends Item>({
   labels = { id: 'ID' },
-  linkPath,
   miljo,
   items,
   fetchCompare,
@@ -69,7 +67,7 @@ function CompareTable<T extends Item>({
                 <Link
                   target="_blank"
                   to={{
-                    pathname: `${linkPath}/${row.id}/${miljo}`,
+                    pathname: `/organisasjon/${row.id}/${miljo}`,
                   }}
                 >
                   Se differanse

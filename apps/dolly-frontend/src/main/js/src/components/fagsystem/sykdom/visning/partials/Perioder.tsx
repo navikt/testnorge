@@ -5,11 +5,11 @@ import Formatters from '~/utils/DataFormatter'
 import { Periode } from '~/components/fagsystem/sykdom/SykemeldingTypes'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
-type Perioder = {
+type PerioderProps = {
 	data: Array<Periode>
 }
 
-export const Perioder = ({ data }: Perioder) => {
+export const Perioder = ({ data }: PerioderProps) => {
 	if (!data || data.length === 0) return null
 	return (
 		<>

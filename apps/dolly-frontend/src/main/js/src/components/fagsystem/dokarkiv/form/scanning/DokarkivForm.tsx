@@ -134,7 +134,6 @@ export const DokarkivForm = ({ formikBag }: DokarkivForm) => {
 					/>
 					<DollyTextInput
 						onChange={(event: BaseSyntheticEvent) => {
-							console.log(_get(formikBag.errors, `dokarkiv.journalfoerendeEnhet`))
 							formikBag.setFieldValue(
 								'dokarkiv.journalfoerendeEnhet',
 								event.target.value === '' ? undefined : event.target.value

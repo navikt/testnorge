@@ -6,7 +6,7 @@ import { Identhistorikk } from './Identhistorikk'
 import { Relasjoner } from './Relasjoner'
 import { MidlertidigAdresse } from './MidlertidigAdresse'
 import { Vergemaal } from './Vergemaal'
-import { Fullmakt } from '../../../pdlf/visning/partials/Fullmakt'
+import { Fullmakt } from '~/components/fagsystem/pdlf/visning/partials/Fullmakt'
 
 export {
 	Personinfo,

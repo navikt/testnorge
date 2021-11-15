@@ -2,13 +2,13 @@ import React, { Dispatch, SetStateAction } from 'react'
 import { Checkbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { Innhold } from '../../hodejegeren/types'
 
-interface VelgPerson {
+interface VelgPersonProps {
 	personinfo: Innhold
 	valgtePersoner: Array<string>
 	setValgtePersoner: Dispatch<SetStateAction<Array<string>>>
 }
 
-export const VelgPerson = ({ personinfo, valgtePersoner, setValgtePersoner }: VelgPerson) => {
+export const VelgPerson = ({ personinfo, valgtePersoner, setValgtePersoner }: VelgPersonProps) => {
 	const gjeldendePerson = personinfo.personIdent.id
 	const avhuket = valgtePersoner.some((id) => id === gjeldendePerson)
 

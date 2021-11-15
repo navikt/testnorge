@@ -38,7 +38,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework:spring-tx:5.3.12'
+    implementation 'org.springframework:spring-tx:5.3.13'
 
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:servlet-security'

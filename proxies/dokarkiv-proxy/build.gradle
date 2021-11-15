@@ -16,6 +16,7 @@ sonarqube {
         property "sonar.login", System.getenv("SONAR_TOKEN")
     }
 }
+
 bootJar {
     archiveFileName = "app.jar"
 }

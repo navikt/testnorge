@@ -1,107 +1,44 @@
 package no.nav.testnav.libs.reactiveproxy.config;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.context.annotation.Import;
+import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
-import org.springframework.security.oauth2.core.OAuth2Error;
-import org.springframework.security.oauth2.core.OAuth2TokenValidator;
-import org.springframework.security.oauth2.core.OAuth2TokenValidatorResult;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtValidators;
-import org.springframework.security.oauth2.jwt.NimbusReactiveJwtDecoder;
-import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.netty.http.client.HttpClient;
-import reactor.netty.transport.ProxyProvider;
 
-import java.net.URI;
-import java.util.List;
+import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
+import no.nav.testnav.libs.reactivesecurity.manager.JwtReactiveAuthenticationManager;
 
 
 @Slf4j
 @Configuration
 @EnableWebFluxSecurity
+@EnableReactiveMethodSecurity
+@RequiredArgsConstructor
+@Import(SecureOAuth2ServerToServerConfiguration.class)
 public class SecurityConfig {
 
-    private final OAuth2ResourceServerProperties oAuth2ResourceServerProperties;
-    private final List<String> acceptedAudience;
-    private final String proxyHost;
-
-    public SecurityConfig(
-            OAuth2ResourceServerProperties oAuth2ResourceServerProperties,
-            @Value("${spring.security.oauth2.resourceserver.jwt.accepted-audience}") List<String> acceptedAudience,
-            @Value("${http.proxy:#{null}}") String proxyHost
-    ) {
-        this.oAuth2ResourceServerProperties = oAuth2ResourceServerProperties;
-        this.acceptedAudience = acceptedAudience;
-        this.proxyHost = proxyHost;
-    }
-
-
-    public class AudienceValidator implements OAuth2TokenValidator<Jwt> {
-        public OAuth2TokenValidatorResult validate(Jwt jwt) {
-            var error = new OAuth2Error("invalid_token", String.format("None of required audience values '%s' found in token", acceptedAudience), null);
-            return jwt.getAudience().stream().anyMatch(acceptedAudience::contains)
-                    ? OAuth2TokenValidatorResult.success()
-                    : OAuth2TokenValidatorResult.failure(error);
-        }
-    }
-
-    public WebClient webClient() {
-        var builder = WebClient.builder();
-        if (proxyHost != null) {
-            log.info("Setter opp proxy host {} for Client Credentials", proxyHost);
-            var uri = URI.create(proxyHost);
-
-            HttpClient httpClient = HttpClient
-                    .create()
-                    .tcpConfiguration(tcpClient -> tcpClient.proxy(proxy -> proxy
-                            .type(ProxyProvider.Proxy.HTTP)
-                            .host(uri.getHost())
-                            .port(uri.getPort())
-                    ));
-            builder.clientConnector(new ReactorClientHttpConnector(httpClient));
-        }
-        return builder.build();
-    }
-
-
-    private ReactiveJwtDecoder jwtDecoder() {
-        NimbusReactiveJwtDecoder jwtDecoder = NimbusReactiveJwtDecoder
-                .withJwkSetUri(oAuth2ResourceServerProperties.getJwt().getJwkSetUri())
-                .webClient(webClient())
-                .build();
-
-
-        OAuth2TokenValidator<Jwt> audienceValidator = new AudienceValidator();
-        OAuth2TokenValidator<Jwt> withIssuer = JwtValidators.createDefaultWithIssuer(oAuth2ResourceServerProperties.getJwt().getIssuerUri());
-        OAuth2TokenValidator<Jwt> withAudience = new DelegatingOAuth2TokenValidator<>(withIssuer, audienceValidator);
-
-        jwtDecoder.setJwtValidator(withAudience);
-
-        return jwtDecoder;
-    }
-
+    private final JwtReactiveAuthenticationManager jwtReactiveAuthenticationManager;
 
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-        http.csrf().disable()
+        return http.csrf().disable()
                 .authorizeExchange()
-                .pathMatchers("/internal/isReady", "/internal/isAlive").permitAll()
+                .pathMatchers(
+                        "/swagger-ui.html",
+                        "/webjars/**",
+                        "/v3/api-docs/**",
+                        "/internal/isReady",
+                        "/internal/isAlive"
+                ).permitAll()
                 .anyExchange().authenticated()
                 .and()
                 .oauth2ResourceServer()
-                .jwt()
-                .jwtDecoder(jwtDecoder());
-        return http.build();
+                .jwt(spec -> spec.authenticationManager(jwtReactiveAuthenticationManager))
+                .and().build();
     }
-
 }
-

@@ -91,6 +91,8 @@ public class TpsfBestilling {
 
     private Boolean harMellomnavn;
 
+    private Boolean harNyttNavn;
+
     private String innvandretFraLand;
 
     private LocalDateTime innvandretFraLandFlyttedato;

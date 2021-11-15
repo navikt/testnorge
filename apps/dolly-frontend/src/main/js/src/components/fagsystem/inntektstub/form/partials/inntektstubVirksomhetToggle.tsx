@@ -5,7 +5,7 @@ import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { InntektstubOrgnummerSelect } from './inntektstubOrgnummerSelect'
 
-type InntektstubVirksomhetToggle = {
+type InntektstubVirksomhetToggleProps = {
 	formikBag: FormikProps<{}>
 	path: string
 }
@@ -15,7 +15,10 @@ enum ToggleValg {
 	PRIVAT = 'PRIVAT',
 }
 
-export const InntektstubVirksomhetToggle = ({ formikBag, path }: InntektstubVirksomhetToggle) => {
+export const InntektstubVirksomhetToggle = ({
+	formikBag,
+	path,
+}: InntektstubVirksomhetToggleProps) => {
 	const virksomhetPath = `${path}.virksomhet`
 	const opplysningspliktigPath = `${path}.opplysningspliktig`
 	const orgnummerLength = 9

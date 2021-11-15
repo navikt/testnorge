@@ -1,5 +1,5 @@
 import React from 'react'
-import Bestillingskriterier from './kriterier/Kriterier'
+import Bestillingskriterier from './kriterier/Bestillingskriterier'
 import MiljoeStatus from './miljoeStatus/MiljoeStatus'
 import JiraLenker from '~/components/bestilling/jiraLenker/JiraLenker'
 

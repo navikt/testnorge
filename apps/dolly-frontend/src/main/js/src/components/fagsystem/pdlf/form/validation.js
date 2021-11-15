@@ -21,6 +21,20 @@ const nyPerson = Yup.object({
 	gradering: Yup.string().nullable(),
 })
 
+const bostedsadresse = Yup.array().of(
+	Yup.object({
+		utenlandskAdresse: Yup.object({
+			adressenavnNummer: Yup.string().nullable(),
+			postboksNummerNavn: Yup.string().nullable(),
+			postkode: Yup.string().nullable(),
+			bySted: Yup.string().nullable(),
+			landkode: Yup.string().nullable(),
+			bygningEtasjeLeilighet: Yup.string().nullable(),
+			regionDistriktOmraade: Yup.string().nullable(),
+		}),
+	})
+)
+
 const fullmakt = Yup.array().of(
 	Yup.object({
 		omraader: Yup.array().min(1, 'Velg minst ett område'),
@@ -101,6 +115,7 @@ export const validation = {
 	}),
 	pdldata: Yup.object({
 		person: Yup.object({
+			bostedsadresse: ifPresent('$pdldata.person.bostedsadresse', bostedsadresse),
 			fullmakt: ifPresent('$pdldata.person.fullmakt', fullmakt),
 			falskIdentitet: ifPresent('$pdldata.person.falskIdentitet', falskIdentitet),
 			utenlandskIdentifikasjonsnummer: ifPresent(

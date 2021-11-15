@@ -1,7 +1,7 @@
 import React from 'react'
 import * as Yup from 'yup'
 import { harAvhukedeAttributter } from '~/components/bestillingsveileder/utils'
-import Bestillingskriterier from '~/components/bestilling/sammendrag/kriterier/Kriterier'
+import Bestillingskriterier from '~/components/bestilling/sammendrag/kriterier/Bestillingskriterier'
 import { MiljoVelger } from '~/components/miljoVelger/MiljoVelger'
 import { MalForm } from './MalForm'
 import { BestillingInfoboks } from './BestillingInfoboks'

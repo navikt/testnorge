@@ -10,7 +10,7 @@ import { Form, Formik } from 'formik'
 import './ImporterGrupper.less'
 import { AsyncState } from 'react-use/lib/useAsync'
 
-type ImporterGrupper = {
+type ImporterGrupperProps = {
 	importZIdent: Function
 }
 
@@ -28,7 +28,7 @@ type SelectOptions = {
 	label: string
 }
 
-export default function ImporterGrupper({ importZIdent }: ImporterGrupper) {
+export default function ImporterGrupper({ importZIdent }: ImporterGrupperProps) {
 	const [isImportModalOpen, openImportModal, closeImportModal] = useBoolean(false)
 
 	const ZIdenter: AsyncState<any> = useAsync(async () => {

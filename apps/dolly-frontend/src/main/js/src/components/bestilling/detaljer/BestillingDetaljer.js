@@ -1,11 +1,11 @@
 import React from 'react'
 import useBoolean from '~/utils/hooks/useBoolean'
 import Button from '~/components/ui/button/Button'
-import BestillingSammendrag from '~/components/bestilling/sammendrag/Sammendrag'
+import BestillingSammendrag from '~/components/bestilling/sammendrag/BestillingSammendrag'
 import GjenopprettConnector from '~/components/bestilling/gjenopprett/GjenopprettBestillingConnector'
 import SendOpenAmConnector from '~/components/bestilling/sendOpenAm/SendOpenAmConnector'
 
-import './Detaljer.less'
+import './BestillingDetaljer.less'
 import { MalModal } from '~/pages/minSide/maler/MalModal'
 
 export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId }) {
