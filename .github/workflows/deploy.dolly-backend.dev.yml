@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - feature/endre-navn-dolly
+      - feature/backend-logstash-encoder-7
     paths:
       - apps/dolly-backend/**
       - libs/data-transfer-objects/**
