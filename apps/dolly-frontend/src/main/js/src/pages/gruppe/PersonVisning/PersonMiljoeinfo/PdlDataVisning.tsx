@@ -27,8 +27,14 @@ type Ident = {
 }
 
 type HentPerson = {
-	bostedsadresse: [object]
+	bostedsadresse: Array<BostedData>
 	fullmakt: [FullmaktData]
+}
+
+type BostedData = {
+	metadata: {
+		historisk: boolean
+	}
 }
 
 type FullmaktData = {
@@ -44,12 +50,12 @@ export const PdlDataVisning = ({ data }: PdlData) => {
 		return null
 	}
 
-	const gjeldendeAdresse = (adresseListe) => {
-		console.log('adresseListe', adresseListe)
+	const gjeldendeAdresse = (adresseListe: Array<BostedData>) => {
 		if (!adresseListe || adresseListe.length === 0) return null
-		const filteredArray = adresseListe.filter((adresse) => adresse.metadata.historisk != true)
+		const filteredArray = adresseListe.filter(
+			(adresse: BostedData) => adresse.metadata.historisk != true
+		)
 		return filteredArray.length > 0 ? filteredArray : adresseListe
-		// return filteredArray.length > 0 ? filteredArray[0] : adresseListe[0]
 	}
 
 	const getPersonInfo = (identInfo: Data) => {

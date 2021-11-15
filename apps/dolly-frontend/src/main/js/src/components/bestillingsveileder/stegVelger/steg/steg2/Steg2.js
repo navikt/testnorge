@@ -34,6 +34,7 @@ export const Steg2 = ({ formikBag }) => {
 	return (
 		<div>
 			<TpsfForm formikBag={formikBag} />
+			<PdlfForm formikBag={formikBag} />
 			<AaregForm formikBag={formikBag} />
 			<SigrunstubForm formikBag={formikBag} />
 			<PensjonForm formikBag={formikBag} />
@@ -41,7 +42,6 @@ export const Steg2 = ({ formikBag }) => {
 			<InntektsmeldingForm formikBag={formikBag} />
 			<SykdomForm formikBag={formikBag} />
 			<BrregstubForm formikBag={formikBag} />
-			<PdlfForm formikBag={formikBag} />
 			<InstForm formikBag={formikBag} />
 			<KrrstubForm formikBag={formikBag} />
 			<ArenaForm formikBag={formikBag} />

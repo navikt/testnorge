@@ -1,23 +1,23 @@
 export const initialPdlPerson = {
-	identtype: null,
-	kjoenn: null,
-	foedtEtter: null,
-	foedtFoer: null,
+	identtype: null as string,
+	kjoenn: null as string,
+	foedtEtter: null as string,
+	foedtFoer: null as string,
 	alder: '',
 	syntetisk: false,
 	nyttNavn: {
 		hasMellomnavn: false,
 	},
-	statsborgerskapLandkode: null,
-	gradering: null,
+	statsborgerskapLandkode: null as string,
+	gradering: null as string,
 }
 
 export const initialUtenlandskAdresse = {
-	adressenavnNummer: null,
-	postboksNummerNavn: null,
-	postkode: null,
-	bySted: null,
-	landkode: null,
-	bygningEtasjeLeilighet: null,
-	regionDistriktOmraade: null,
+	adressenavnNummer: null as string,
+	postboksNummerNavn: null as string,
+	postkode: null as string,
+	bySted: null as string,
+	landkode: null as string,
+	bygningEtasjeLeilighet: null as string,
+	regionDistriktOmraade: null as string,
 }

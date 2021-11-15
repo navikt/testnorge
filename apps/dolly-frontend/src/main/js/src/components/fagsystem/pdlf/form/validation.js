@@ -12,19 +12,8 @@ const bostedsadresse = Yup.array().of(
 		utenlandskAdresse: Yup.object({
 			adressenavnNummer: Yup.string().nullable(),
 			postboksNummerNavn: Yup.string().nullable(),
-			// adressenavnNummer: Yup.string()
-			// 	.when('postboksNummerNavn', {
-			// 		is: '' || null,
-			// 		then: requiredString.nullable(),
-			// 	})
-			// 	.nullable(),
-			// postboksNummerNavn: Yup.string().when('adressenavnNummer', {
-			// 	is: '' || null,
-			// 	then: requiredString,
-			// }),
 			postkode: Yup.string().nullable(),
 			bySted: Yup.string().nullable(),
-			// landkode: requiredString.nullable(),
 			landkode: Yup.string().nullable(),
 			bygningEtasjeLeilighet: Yup.string().nullable(),
 			regionDistriktOmraade: Yup.string().nullable(),

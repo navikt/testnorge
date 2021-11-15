@@ -794,7 +794,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	}
 
 	const pdldataKriterier = bestillingData.pdldata?.person
-	console.log('pdldataKriterier', pdldataKriterier)
 
 	if (pdldataKriterier) {
 		const { falskIdentitet, utenlandskIdentifikasjonsnummer, bostedsadresse } = pdldataKriterier
@@ -814,7 +813,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				itemRows: bostedsadresse.map((item, idx) => {
 					if (item.utenlandskAdresse) {
 						const adresseData = item.utenlandskAdresse
-						const isEmpty = Object.values(adresseData).every((x) => x === null || x === '')
+						const isEmpty =
+							adresseData.empty || Object.values(adresseData).every((x) => x === null || x === '')
 						return [
 							{ numberHeader: `Utenlandsk boadresse ${idx + 1}` },
 							obj('', isEmpty && 'Ingen verdier satt'),

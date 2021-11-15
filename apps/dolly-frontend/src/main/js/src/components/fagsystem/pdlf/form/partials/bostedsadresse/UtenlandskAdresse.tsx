@@ -6,8 +6,13 @@ import { AdresseKodeverk } from '~/config/kodeverk'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import _get from 'lodash/get'
 import { initialUtenlandskAdresse } from '~/components/fagsystem/pdlf/form/initialValues'
+import { FormikProps } from 'formik'
 
-export const UtenlandskAdresse = ({ formikBag }) => {
+interface UtenlandskAdresseForm {
+	formikBag: FormikProps<{}>
+}
+
+export const UtenlandskAdresse = ({ formikBag }: UtenlandskAdresseForm) => {
 	return (
 		<FormikDollyFieldArray
 			name="pdldata.person.bostedsadresse"
@@ -20,7 +25,7 @@ export const UtenlandskAdresse = ({ formikBag }) => {
 			}}
 			canBeEmpty={false}
 		>
-			{(path, idx) => {
+			{(path: string, idx: number) => {
 				const utenlandskAdressePath = `${path}.utenlandskAdresse`
 				const harAdressenavn =
 					_get(formikBag.values, `${utenlandskAdressePath}.adressenavnNummer`) !== '' &&
@@ -28,7 +33,6 @@ export const UtenlandskAdresse = ({ formikBag }) => {
 				const harPostboksnummer =
 					_get(formikBag.values, `${utenlandskAdressePath}.postboksNummerNavn`) !== '' &&
 					_get(formikBag.values, `${utenlandskAdressePath}.postboksNummerNavn`) !== null
-				// const master = _get(formikBag.values, `${path}.master`)
 
 				return (
 					<>
@@ -36,11 +40,13 @@ export const UtenlandskAdresse = ({ formikBag }) => {
 							<FormikTextInput
 								name={`${utenlandskAdressePath}.adressenavnNummer`}
 								label="Gatenavn og husnummer"
+								// @ts-ignore
 								disabled={harPostboksnummer}
 							/>
 							<FormikTextInput
 								name={`${utenlandskAdressePath}.postboksNummerNavn`}
 								label="Postboksnummer og -navn"
+								// @ts-ignore
 								disabled={harAdressenavn}
 							/>
 							<FormikTextInput name={`${utenlandskAdressePath}.postkode`} label="Postkode" />
@@ -52,9 +58,6 @@ export const UtenlandskAdresse = ({ formikBag }) => {
 								isClearable={false}
 								size="large"
 							/>
-							{/*{master === 'PDL' ? (*/}
-							{/*	<>*/}
-							{/* if master er PDL:*/}
 							<FormikTextInput
 								name={`${utenlandskAdressePath}.bygningEtasjeLeilighet`}
 								label="Bygg-/leilighetsinfo"
@@ -63,30 +66,7 @@ export const UtenlandskAdresse = ({ formikBag }) => {
 								name={`${utenlandskAdressePath}.regionDistriktOmraade`}
 								label="Region/distrikt/område"
 							/>
-							{/*	</>*/}
-							{/*) : (*/}
-							{/*	<>*/}
-							{/*		/!* if master er FREG eller tom:*!/*/}
-							{/*		<FormikTextInput name={`${utenlandskAdressePath}.bygning`} label="Navn på bygg" />*/}
-							{/*		<FormikTextInput*/}
-							{/*			name={`${utenlandskAdressePath}.etasjenummer`}*/}
-							{/*			label="Etasje i bygg"*/}
-							{/*		/>*/}
-							{/*		<FormikTextInput*/}
-							{/*			name={`${utenlandskAdressePath}.boenhet`}*/}
-							{/*			label="Leilighetsnummer o.l."*/}
-							{/*		/>*/}
-							{/*		<FormikTextInput name={`${utenlandskAdressePath}.region`} label="Region" />*/}
-							{/*		<FormikTextInput*/}
-							{/*			name={`${utenlandskAdressePath}.distriktsnavn`}*/}
-							{/*			label="Distrikt"*/}
-							{/*		/>*/}
-							{/*	</>*/}
-							{/*)}*/}
 						</div>
-						{/*TODO: lag onchangehandler for master
-						    Evt ikke?? Fra dok: "Utenlandsk bostedsadresse vil alltid ha PDL som master"
-						*/}
 						<AvansertForm path={path} kanVelgeMaster={false} />
 					</>
 				)

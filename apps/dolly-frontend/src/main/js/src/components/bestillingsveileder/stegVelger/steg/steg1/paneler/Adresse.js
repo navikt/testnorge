@@ -26,10 +26,6 @@ export const AdressePanel = ({ stateModifier }) => {
 			<AttributtKategori title="Midlertidig adresse">
 				<Attributt attr={sm.attrs.midlertidigAdresse} />
 			</AttributtKategori>
-
-			{/*<AttributtKategori title="Utenlandsk bostedsadresse">*/}
-			{/*	<Attributt attr={sm.attrs.utenlandskAdresse} />*/}
-			{/*</AttributtKategori>*/}
 		</Panel>
 	)
 }
@@ -54,12 +50,6 @@ AdressePanel.initialValues = ({ set, setMulti, del, has }) => ({
 			set('pdldata.person.bostedsadresse', [
 				{
 					utenlandskAdresse: initialUtenlandskAdresse,
-					// bygning: null,
-					// etasjenummer: null,
-					// boenhet: null,
-					// region: null,
-					// distriktsnavn: null,
-
 					kilde: 'Dolly',
 					master: 'PDL',
 					gjeldende: true,

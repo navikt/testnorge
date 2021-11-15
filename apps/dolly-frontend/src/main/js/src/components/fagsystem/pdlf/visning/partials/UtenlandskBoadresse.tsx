@@ -1,17 +1,35 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import { Personnavn } from '~/components/fagsystem/pdlf/visning/partials/Personnavn'
-import Formatters from '~/utils/DataFormatter'
 import { AdresseKodeverk } from '~/config/kodeverk'
 
-export const UtenlandskBoadresse = ({ data }) => {
-	console.log('data', data)
+type DataListe = {
+	data: Array<Data>
+}
+
+type Data = {
+	enhet: Enhet
+	idx: number
+}
+
+type Enhet = {
+	utenlandskAdresse?: {
+		adressenavnNummer?: string
+		postboksNummerNavn?: string
+		postkode?: string
+		bySted?: string
+		landkode?: string
+		bygningEtasjeLeilighet?: string
+		regionDistriktOmraade?: string
+	}
+}
+
+export const UtenlandskBoadresse = ({ data }: DataListe) => {
 	if (!data || data.length === 0) return false
 
-	const UtenlandskBoadresseVisning = ({ enhet, id }) => {
+	const UtenlandskBoadresseVisning = ({ enhet, idx }: Data) => {
 		if (!enhet.utenlandskAdresse) return null
 		const {
 			adressenavnNummer,
@@ -24,7 +42,7 @@ export const UtenlandskBoadresse = ({ data }) => {
 		} = enhet.utenlandskAdresse
 
 		return (
-			<div className="person-visning_content" key={id}>
+			<div className="person-visning_content" key={idx}>
 				<TitleValue title="Gatenavn og husnummer" value={adressenavnNummer} />
 				<TitleValue title="Postboksnummer og -navn" value={postboksNummerNavn} />
 				<TitleValue title="Postkode" value={postkode} />
@@ -42,7 +60,7 @@ export const UtenlandskBoadresse = ({ data }) => {
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header="" nested>
-						{(enhet, idx) => <UtenlandskBoadresseVisning enhet={enhet} id={idx} />}
+						{(enhet: Enhet, idx: number) => <UtenlandskBoadresseVisning enhet={enhet} idx={idx} />}
 					</DollyFieldArray>
 				</ErrorBoundary>
 			</div>
