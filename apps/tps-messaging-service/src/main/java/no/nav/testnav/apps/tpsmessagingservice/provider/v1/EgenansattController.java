@@ -3,6 +3,7 @@ package no.nav.testnav.apps.tpsmessagingservice.provider.v1;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.tpsmessagingservice.service.EgenansattService;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.EndringsmeldingResponseDTO;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +24,9 @@ public class EgenansattController {
 
     @PostMapping("/{ident}")
     public Map<String, EndringsmeldingResponseDTO> opprettEgenansatt(@PathVariable String ident,
-                                                                     @RequestParam LocalDate fraOgMed,
+                                                                     @RequestParam
+                                                                     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+                                                                             LocalDate fraOgMed,
                                                                      @RequestParam List<String> miljoer) {
 
         return egenansattService.opprettEgenansatt(ident, fraOgMed, miljoer);
