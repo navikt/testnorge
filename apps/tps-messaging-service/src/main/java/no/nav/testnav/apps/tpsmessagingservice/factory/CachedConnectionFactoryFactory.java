@@ -1,15 +1,15 @@
 package no.nav.testnav.apps.tpsmessagingservice.factory;
 
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
-
+import com.ibm.mq.jms.MQQueueConnectionFactory;
+import com.ibm.msg.client.jms.JmsConstants;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.tpsmessagingservice.config.CacheConfig;
 import no.nav.testnav.apps.tpsmessagingservice.dto.QueueManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
-import com.ibm.mq.jms.MQQueueConnectionFactory;
 
-import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.tpsmessagingservice.config.CacheConfig;
+import javax.jms.ConnectionFactory;
+import javax.jms.JMSException;
 
 @Slf4j
 @Component
@@ -25,6 +25,7 @@ public class CachedConnectionFactoryFactory implements ConnectionFactoryFactory 
         factory.setHostName(queueManager.host());
         factory.setPort(queueManager.port());
         factory.setChannel(queueManager.channel());
+        factory.setBooleanProperty(JmsConstants.USER_AUTHENTICATION_MQCSP, true);
 
         if (log.isInfoEnabled()) {
             log.info(String.format("Creating connection factory '%s@%s:%d' on channel '%s' using transport type '%d'",
