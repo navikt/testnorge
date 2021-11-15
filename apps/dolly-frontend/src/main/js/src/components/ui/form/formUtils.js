@@ -44,6 +44,7 @@ export const erForste = (values, attributt) => {
 		'tpsf.boadresse',
 		'tpsf.postadresse',
 		'tpsf.midlertidigAdresse',
+		'pdldata.person.bostedsadresse',
 		'tpsf.relasjoner',
 		'aareg',
 		'sigrunstub',

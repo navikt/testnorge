@@ -7,7 +7,9 @@ import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FalskIdentitet } from './partials/falskIdentitet/FalskIdentitet'
 import { UtenlandsId } from './partials/utenlandsId/UtenlandsId'
 import { KontaktinformasjonForDoedsbo } from './partials/kontaktinformasjonForDoedsbo/KontaktinformasjonForDoedsbo'
+import { UtenlandskAdresse } from './partials/bostedsadresse/UtenlandskAdresse'
 
+const bostedsadresseAttributt = 'pdldata.person.bostedsadresse'
 const identifikasjonAttributt = [
 	'pdldata.person.falskIdentitet',
 	'pdldata.person.utenlandskIdentifikasjonsnummer',
@@ -16,6 +18,19 @@ const doedsboAttributt = 'pdlforvalter.kontaktinformasjonForDoedsbo'
 
 export const PdlfForm = ({ formikBag }) => (
 	<React.Fragment>
+		<Vis attributt={bostedsadresseAttributt}>
+			<Panel
+				heading="Bostedsadresse"
+				hasErrors={panelError(formikBag, bostedsadresseAttributt)}
+				iconType="adresse"
+				startOpen={() => erForste(formikBag.values, bostedsadresseAttributt)}
+			>
+				<Kategori title="Utenlandsk boadresse" vis="pdldata.person.bostedsadresse">
+					<UtenlandskAdresse formikBag={formikBag} />
+				</Kategori>
+			</Panel>
+		</Vis>
+
 		<Vis attributt={identifikasjonAttributt}>
 			<Panel
 				heading="Identifikasjon"
