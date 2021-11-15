@@ -44,7 +44,7 @@ public class KontaktopplysningerRequestDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class UtenlandskKontonummer {
 
         private String giroNrUtland;
@@ -72,7 +72,7 @@ public class KontaktopplysningerRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     @XmlType(propOrder = {"sprakKode", "datoSprak"})
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class NyttSprak {
         private String sprakKode;
         private LocalDate datoSprak;
