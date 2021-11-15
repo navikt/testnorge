@@ -12,7 +12,7 @@ import {
 import { MismatchTable } from '@/components/mismatch-table';
 
 export default () => {
-  const { orgnummer, miljo } = useParams<{ orgnummer: string; miljo: string }>();
+  const { orgnummer, miljo } = useParams() as { orgnummer: string; miljo: string };
 
   const onFetch = () =>
     Promise.all([

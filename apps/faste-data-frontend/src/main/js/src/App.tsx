@@ -1,13 +1,15 @@
 import React from 'react';
-import { Header, ProfilLoader } from '@navikt/dolly-komponenter';
-import { HashRouter as Router, Switch, Route } from 'react-router-dom';
-import { FasteDataPage } from '@/pages';
+import { Header, HeaderLink, HeaderLinkGroup, ProfilLoader } from '@navikt/dolly-komponenter';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { CompareOrganisasjonPage } from '@/pages/compare-organisasjon-page';
 import ProfilService from './service/ProfilService';
+import { FastePersonDataPage } from '@/pages/FastePersonDataPage';
+import { FasteOrganiasjonDataPage } from '@/pages/FasteOrganiasjonDataPage';
+import { HomePage } from '@/pages/HomePage';
 
 function App() {
   return (
-    <div>
+    <Router>
       <Header
         title="Faste Data"
         profile={
@@ -16,18 +18,31 @@ function App() {
             fetchBilde={ProfilService.fetchBilde}
           />
         }
-      />
-      <Router>
-        <Switch>
-          <Route path="/organisasjon/:orgnummer/:miljo">
-            <CompareOrganisasjonPage />
-          </Route>
-          <Route path="/">
-            <FasteDataPage />
-          </Route>
-        </Switch>
-      </Router>
-    </div>
+      >
+        <HeaderLinkGroup>
+          <HeaderLink href="/" isActive={() => window.location.pathname == '/'}>
+            Hjem
+          </HeaderLink>
+
+          <HeaderLink href="/person" isActive={() => window.location.pathname == '/person'}>
+            Person
+          </HeaderLink>
+          <HeaderLink
+            href="/organisasjon"
+            isActive={() => window.location.pathname == '/organisasjon'}
+          >
+            Organiasjon
+          </HeaderLink>
+        </HeaderLinkGroup>
+      </Header>
+
+      <Routes>
+        <Route path="/organisasjon/:orgnummer/:miljo" element={<CompareOrganisasjonPage />} />
+        <Route path="/organisasjon" element={<FasteOrganiasjonDataPage />} />
+        <Route path="/person" element={<FastePersonDataPage />} />
+        <Route path="/" element={<HomePage />} />
+      </Routes>
+    </Router>
   );
 }
 
