@@ -13,7 +13,7 @@ import javax.xml.bind.annotation.XmlType;
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 @XmlRootElement(name = "sfePersonData")
 public class EgenansattResponse extends EndringsmeldingResponse {
 
