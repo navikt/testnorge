@@ -147,6 +147,7 @@ public class BrukerService {
         String hentetBrukernavn = getAuthUser(getUserInfo).getBrukernavn();
         if (!bruker.getBrukernavn().equals(hentetBrukernavn)) {
             bruker.setBrukernavn(hentetBrukernavn);
+            brukerRepository.save(bruker);
         }
     }
 
