@@ -1,7 +1,10 @@
 package no.nav.testnav.apps.tpsmessagingservice.consumer.command;
 
-import java.util.Objects;
-import java.util.concurrent.Callable;
+import com.ibm.mq.jms.MQQueue;
+import com.ibm.msg.client.wmq.compat.jms.internal.JMSC;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
@@ -10,11 +13,7 @@ import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
-import com.ibm.mq.jms.MQQueue;
-import com.ibm.msg.client.wmq.compat.jms.internal.JMSC;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.concurrent.Callable;
 
 import static java.util.Objects.nonNull;
 
@@ -48,8 +47,8 @@ public class EndringsMeldingCommand implements Callable<String> {
                     responseDestination = session.createTemporaryQueue();
                 }
 
-                if (requestDestination instanceof MQQueue) {
-                    ((MQQueue) requestDestination).setTargetClient(JMSC.MQJMS_CLIENT_NONJMS_MQ);
+                if (requestDestination instanceof MQQueue destination) {
+                    destination.setTargetClient(JMSC.MQJMS_CLIENT_NONJMS_MQ);
                 }
 
                 /* Prepare request message */
