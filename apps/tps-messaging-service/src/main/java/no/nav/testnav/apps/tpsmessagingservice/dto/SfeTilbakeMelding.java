@@ -12,7 +12,7 @@ import no.nav.testnav.libs.dto.tpsmessagingservice.v1.EndringsmeldingResponseDTO
 @ToString(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class SfeTilbakemelding {
+public class SfeTilbakeMelding {
 
     private EndringsmeldingResponseDTO svarStatus;
 }

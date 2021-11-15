@@ -11,5 +11,5 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class EndringsmeldingResponse {
 
-    private SfeTilbakemelding sfeTilbakemelding;
+    private SfeTilbakeMelding sfeTilbakeMelding;
 }

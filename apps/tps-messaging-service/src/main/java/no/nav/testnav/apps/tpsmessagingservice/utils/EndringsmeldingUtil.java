@@ -32,9 +32,9 @@ public class EndringsmeldingUtil {
         if (nonNull(response)) {
             log.info("Svarmelding mottatt fra TPS: {}", response);
             return EndringsmeldingResponseDTO.builder()
-                    .returStatus(isStatusOk(response.getSfeTilbakemelding().getSvarStatus().getReturStatus()) ? STATUS_OK : STATUS_ERROR)
-                    .returMelding(response.getSfeTilbakemelding().getSvarStatus().getReturMelding())
-                    .utfyllendeMelding(response.getSfeTilbakemelding().getSvarStatus().getUtfyllendeMelding())
+                    .returStatus(isStatusOk(response.getSfeTilbakeMelding().getSvarStatus().getReturStatus()) ? STATUS_OK : STATUS_ERROR)
+                    .returMelding(response.getSfeTilbakeMelding().getSvarStatus().getReturMelding())
+                    .utfyllendeMelding(response.getSfeTilbakeMelding().getSvarStatus().getUtfyllendeMelding())
                     .build();
         } else {
             return EndringsmeldingResponseDTO.builder()
