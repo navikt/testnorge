@@ -30,9 +30,9 @@ jobs:
     needs: build
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
-      resource: 'apps/organisasjon-tilgang-service/config.yml'
+      resource: 'apps/organisasjon-tilgang-service/config.prod.yml'
       app-name: 'organisasjon-tilgang-service'
-      cluster: 'dev-gcp'
+      cluster: 'prod-gcp'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
   deploy-dev:

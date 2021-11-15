@@ -1,7 +1,7 @@
 ﻿apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: testnav-organisasjon-tilgang-service-dev
+  name: testnav-organisasjon-tilgang-service
   namespace: dolly
   labels:
     team: dolly
@@ -55,7 +55,7 @@ spec:
       cpu: 500m
       memory: 2048Mi
   ingresses:
-    - "https://testnav-organisasjon-tilgang-service-dev.dev.intern.nav.no"
+    - "https://testnav-organisasjon-tilgang-service.dev.intern.nav.no"
   env:
     - name: ALTINN_URL
       value: https://tt02.altinn.no
