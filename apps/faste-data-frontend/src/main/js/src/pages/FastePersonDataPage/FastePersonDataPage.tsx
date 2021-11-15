@@ -48,10 +48,10 @@ const FastePersonDataPage = () => {
   const [tag, setTag] = useState<string>('');
   const [opprinnelse, setOpprinnelse] = useState<string>('');
 
-  const onSearch = (gruppe: Gruppe) => {
+  const onSearch = (value: Gruppe) => {
     setLoading(true);
     PersonFasteDataService.fetchPersoner(
-      gruppe,
+      value,
       !tag ? null : tag,
       !opprinnelse ? null : opprinnelse
     )
@@ -73,7 +73,7 @@ const FastePersonDataPage = () => {
         <Line>
           <SelectFormItem
             label="Gruppe"
-            htmlId="gruppe-selec"
+            htmlId="gruppe-select"
             // @ts-ignore
             onChange={(value: Gruppe) => setGruppe(value)}
             options={toOptions(grupper)}
@@ -121,9 +121,8 @@ const FastePersonDataPage = () => {
               <CompareTable
                 key={index}
                 miljo={miljo}
-                linkPath="organisasjon"
-                fetchCompare={(miljo, item) =>
-                  PersonService.fetchPerson(item.ident, miljo).then(
+                fetchCompare={(_miljo, item) =>
+                  PersonService.fetchPerson(item.ident, _miljo).then(
                     (response) => !PersonComperator.compare(item, response).isMismatch
                   )
                 }

@@ -1,1 +1,1 @@
-export { default as FasteOrganiasjonDataPage } from './FasteOrganiasjonDataPage';
+export { default as FasteOrganiasjonDataPage } from './FasteOrganisasjonDataPage';

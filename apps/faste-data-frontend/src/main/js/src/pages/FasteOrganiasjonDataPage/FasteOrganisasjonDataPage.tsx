@@ -42,7 +42,7 @@ const toOptions = (options: string[]) =>
     label: value.toUpperCase(),
   }));
 
-const FasteOrganiasjonDataPage = () => {
+const FasteOrganisasjonDataPage = () => {
   const [organisasjoner, setOrganisasjoner] = useState<FasteDataOrganisasjon[]>();
   const [gruppe, setGruppe] = useState<Gruppe>('DOLLY');
   const [miljo, setMiljo] = useState<string>('q1');
@@ -50,10 +50,10 @@ const FasteOrganiasjonDataPage = () => {
   const [tag, setTag] = useState<string>('');
   const [opprinnelse, setOpprinnelse] = useState<string>('');
 
-  const onSearch = (gruppe: Gruppe) => {
+  const onSearch = (value: Gruppe) => {
     setLoading(true);
     OrganisasjonFasteDataService.fetchOrganisasjoner(
-      gruppe,
+      value,
       !tag ? null : tag,
       !opprinnelse ? null : opprinnelse
     )
@@ -73,7 +73,7 @@ const FasteOrganiasjonDataPage = () => {
       <h1>Organisasjon Faste Data</h1>
       <CodeSearch
         labels={{
-          input: 'Søk etter organiasjon i faste data',
+          input: 'Søk etter organisasjon i faste data',
           button: 'Søk',
         }}
         onSearch={(value) =>
@@ -135,8 +135,8 @@ const FasteOrganiasjonDataPage = () => {
               <CompareTable
                 key={index}
                 miljo={miljo}
-                fetchCompare={(miljo, item) =>
-                  OrganisasjonService.fetchOrganisasjon(item.orgnummer, miljo).then(
+                fetchCompare={(_miljo, item) =>
+                  OrganisasjonService.fetchOrganisasjon(item.orgnummer, _miljo).then(
                     (response) => !OrganisasjonComperator.compare(item, response).isMismatch
                   )
                 }
@@ -150,6 +150,6 @@ const FasteOrganiasjonDataPage = () => {
   );
 };
 
-FasteOrganiasjonDataPage.displayName = 'FasteOrganiasjonDataPage';
+FasteOrganisasjonDataPage.displayName = 'FasteOrganiasjonDataPage';
 
-export default FasteOrganiasjonDataPage;
+export default FasteOrganisasjonDataPage;

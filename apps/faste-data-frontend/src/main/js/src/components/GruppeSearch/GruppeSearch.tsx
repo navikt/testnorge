@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import styled from 'styled-components';
 import { Input as NavInput } from 'nav-frontend-skjema';
-import { ErrorAlert, SuccessAlert, WarningAlert, Knapp } from '@navikt/dolly-komponenter';
+import { ErrorAlert, Knapp, SuccessAlert, WarningAlert } from '@navikt/dolly-komponenter';
 import { NotFoundError } from '@navikt/dolly-lib';
 
 const GruppeSearch = styled.div`
@@ -40,11 +40,11 @@ export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => 
   const [success, setSuccess] = useState(undefined);
   const [error, setError] = useState(false);
 
-  const _onSearch = (value: string) => {
+  const _onSearch = (search: string) => {
     setLoading(true);
     setSuccess(undefined);
     setError(false);
-    return onSearch(value)
+    return onSearch(search)
       .then((response) => {
         setSuccess(true);
         return response;
@@ -74,15 +74,9 @@ export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => 
         {labels.button}
       </Knapp>
       <Alert>
-        {success == undefined ? null : !success ? (
-          error ? (
-            <ErrorAlert label={labels.onError} />
-          ) : (
-            <WarningAlert label={labels.onNotFound} />
-          )
-        ) : (
-          <SuccessAlert label={labels.onFound} />
-        )}
+        {success && <SuccessAlert label={labels.onFound} />}
+        {error && <ErrorAlert label={labels.onError} />}
+        {!(success && error) && <WarningAlert label={labels.onNotFound} />}
       </Alert>
     </GruppeSearch>
   );

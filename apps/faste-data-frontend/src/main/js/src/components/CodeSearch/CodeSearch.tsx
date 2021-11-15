@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { SearchProps } from '@/components/Search';
 import Search from '@/components/Search/Search';
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { a11yDark as customStyle } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
-type Props = {} & SearchProps<string>;
+type Props = SearchProps<string>;
 
 const CodeSearch = <T extends unknown>(props: Props) => {
   const [code, setCode] = useState(null);
@@ -22,7 +22,7 @@ const CodeSearch = <T extends unknown>(props: Props) => {
         }}
       />
       {code && (
-        <SyntaxHighlighter language="javascript" style={docco}>
+        <SyntaxHighlighter language="json" style={customStyle}>
           {code}
         </SyntaxHighlighter>
       )}
