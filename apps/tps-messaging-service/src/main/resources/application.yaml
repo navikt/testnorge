@@ -22,8 +22,8 @@ config:
     conn-name: b27apvl221.preprod.local
     port: 1413
     queueManager: MQLS03
-    user: ${mq.dev.username}
-    password: ${mq.dev.password}
+    user: ${mq.test.username}
+    password: ${mq.test.password}
 
 #  queueManagers:
 #    - environment: d
