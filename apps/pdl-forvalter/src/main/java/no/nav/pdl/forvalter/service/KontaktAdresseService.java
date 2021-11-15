@@ -119,7 +119,8 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
             mapperFacade.map(vegadresse, kontaktadresse.getVegadresse());
 
         } else if (nonNull(kontaktadresse.getUtenlandskAdresse()) &&
-                isBlank(kontaktadresse.getUtenlandskAdresse().getAdressenavnNummer())) {
+                kontaktadresse.getUtenlandskAdresse().isEmpty()) {
+
             kontaktadresse.setUtenlandskAdresse(
                     dummyAdresseService.getUtenlandskAdresse(
                             person.getStatsborgerskap().stream()
