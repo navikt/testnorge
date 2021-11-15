@@ -35,6 +35,7 @@ const _getTpsfBestillingData = (data) => {
 		obj('Statsborgerskap til', Formatters.formatDate(data.statsborgerskapTildato)),
 		obj('Kjønn', Formatters.kjonn(data.kjonn, data.alder)),
 		obj('Har mellomnavn', Formatters.oversettBoolean(data.harMellomnavn)),
+		obj('Har nytt navn', Formatters.oversettBoolean(data.harNyttNavn)),
 		obj('Sivilstand', data.sivilstand, PersoninformasjonKodeverk.Sivilstander),
 		obj('Diskresjonskoder', data.spesreg !== 'UFB' && data.spesreg, 'Diskresjonskoder'),
 		obj('Uten fast bopel', (data.utenFastBopel || data.spesreg === 'UFB') && 'JA'),
