@@ -52,9 +52,7 @@ export const PdlDataVisning = ({ data }: PdlData) => {
 
 	const gjeldendeAdresse = (adresseListe: Array<BostedData>) => {
 		if (!adresseListe || adresseListe.length === 0) return null
-		const filteredArray = adresseListe.filter(
-			(adresse: BostedData) => adresse.metadata.historisk != true
-		)
+		const filteredArray = adresseListe.filter((adresse: BostedData) => !adresse.metadata.historisk)
 		return filteredArray.length > 0 ? filteredArray : adresseListe
 	}
 
