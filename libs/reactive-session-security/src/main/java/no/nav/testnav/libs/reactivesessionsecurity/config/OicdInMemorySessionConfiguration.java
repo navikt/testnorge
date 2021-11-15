@@ -1,6 +1,6 @@
 package no.nav.testnav.libs.reactivesessionsecurity.config;
 
-import no.nav.testnav.libs.reactivesessionsecurity.repository.OicdReactiveMapSessionRepository;
+import no.nav.testnav.libs.reactivesessionsecurity.repository.OidcReactiveMapSessionRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.session.SessionProperties;
 import org.springframework.context.annotation.Bean;
@@ -35,8 +35,8 @@ public class OicdInMemorySessionConfiguration {
     private final SessionProperties sessionProperties;
 
     @Bean
-    public OicdReactiveMapSessionRepository reactiveSessionRepository() {
-        OicdReactiveMapSessionRepository sessionRepository = new OicdReactiveMapSessionRepository(new ConcurrentHashMap<>());
+    public OidcReactiveMapSessionRepository reactiveSessionRepository() {
+        OidcReactiveMapSessionRepository sessionRepository = new OidcReactiveMapSessionRepository(new ConcurrentHashMap<>());
         int defaultMaxInactiveInterval = (int) (sessionProperties.getTimeout() == null
                 ? Duration.ofMinutes(30)
                 : sessionProperties.getTimeout()

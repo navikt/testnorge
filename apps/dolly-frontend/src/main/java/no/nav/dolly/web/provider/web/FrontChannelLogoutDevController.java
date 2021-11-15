@@ -1,7 +1,7 @@
 package no.nav.dolly.web.provider.web;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.libs.reactivesessionsecurity.repository.OicdReactiveMapSessionRepository;
+import no.nav.testnav.libs.reactivesessionsecurity.repository.OidcReactiveMapSessionRepository;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono;
 @Profile({"dev", "test"})
 public class FrontChannelLogoutDevController {
 
-    private final OicdReactiveMapSessionRepository reactiveSessionRepository;
+    private final OidcReactiveMapSessionRepository reactiveSessionRepository;
 
     @GetMapping()
     public Mono<Void> logout(@RequestParam String sid) {
