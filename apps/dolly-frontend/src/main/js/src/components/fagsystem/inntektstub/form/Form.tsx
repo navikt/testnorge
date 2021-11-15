@@ -8,7 +8,7 @@ import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFiel
 import InntektsinformasjonForm from './partials/inntektsinformasjonForm'
 import { Inntektsinformasjon } from './partials/inntektstubTypes'
 
-interface InntektstubForm {
+interface InntektstubFormProps {
 	formikBag: FormikProps<{}>
 }
 
@@ -38,7 +38,7 @@ const inntektstubPath = 'inntektstub.inntektsinformasjon'
 const infotekst =
 	'For å generere samme inntektsinformasjon for flere måneder - fyll inn siste måned/år, samt antall måneder bakover inntektsinformasjonen skal genereres for.'
 
-export const InntektstubForm = ({ formikBag }: InntektstubForm) => (
+export const InntektstubForm = ({ formikBag }: InntektstubFormProps) => (
 	//@ts-ignore
 	<Vis attributt={inntektstubAttributt}>
 		<Panel

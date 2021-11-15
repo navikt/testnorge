@@ -1,14 +1,12 @@
 spring.cloud.vault:
-  enabled: false
   host: vault.adeo.no
   port: 443
   connection-timeout: 15000
   read-timeout: 30000
   application-name: preprod/fss/brreg-stub
-
   authentication: TOKEN
 
-  generic:
+  kv:
     enabled: false
     backend: kv
     application-name: preprod/fss/brreg-stub/default

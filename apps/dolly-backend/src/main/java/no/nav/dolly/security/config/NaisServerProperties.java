@@ -21,15 +21,6 @@ import static java.util.Objects.nonNull;
 @Setter
 @Slf4j
 public class NaisServerProperties extends ServerProperties {
-    private String url;
-    private String cluster;
-    private String name;
-    private String namespace;
-
-    @Override
-    public String toScope() {
-        return "api://" + cluster + "." + namespace + "." + name + "/.default";
-    }
 
     public String getAccessToken(TokenExchange tokenService) {
         if (isNull(MDC.getCopyOfContextMap())) {
@@ -37,7 +28,7 @@ public class NaisServerProperties extends ServerProperties {
         }
         AccessToken token = tokenService.generateToken(this).block();
         if (isNull(token)) {
-            throw new SecurityException(String.format("Klarte ikke å generere AccessToken for %s", this.getName()));
+            throw new SecurityException(String.format("Klarte ikke å generere AccessToken for %s", getName()));
         }
         return "Bearer " + token.getTokenValue();
     }
@@ -45,7 +36,7 @@ public class NaisServerProperties extends ServerProperties {
     public String checkIsAlive(WebClient webClient, String accessToken) {
         try {
             ResponseEntity<Void> response = webClient.get().uri(uriBuilder -> uriBuilder
-                            .pathSegment(name.contains("proxy") ? "proxy" : null)
+                            .pathSegment(getName().contains("proxy") ? "proxy" : null)
                             .pathSegment("internal", "isAlive")
                             .build())
                     .header(HttpHeaders.AUTHORIZATION, accessToken)
@@ -55,7 +46,7 @@ public class NaisServerProperties extends ServerProperties {
                 return response.getStatusCode().name();
             }
         } catch (WebClientResponseException ex) {
-            String feilmelding = String.format("%s, URL: %s", ex.getStatusCode(), url);
+            String feilmelding = String.format("%s, URL: %s", ex.getStatusCode(), getUrl());
             log.error(feilmelding, ex);
             return feilmelding;
         }

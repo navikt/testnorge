@@ -4,7 +4,7 @@ import Etikett, { EtikettBaseProps } from 'nav-frontend-etiketter'
 
 import './etikett.less'
 
-interface ImportFraEtikett {
+interface ImportFraEtikettProps {
 	importFra: string
 	type: EtikettBaseProps
 	venstreMargin?: boolean
@@ -15,7 +15,7 @@ const importType = (fra: string) => {
 	else return 'Ukjent'
 }
 
-const ImportFraEtikett = ({ importFra, type, venstreMargin }: ImportFraEtikett) => {
+const ImportFraEtikett = ({ importFra, type, venstreMargin }: ImportFraEtikettProps) => {
 	if (!importFra) return null
 
 	const css = cn('dolly-etikett', { 'dolly-etikett--venstre-margin': venstreMargin })

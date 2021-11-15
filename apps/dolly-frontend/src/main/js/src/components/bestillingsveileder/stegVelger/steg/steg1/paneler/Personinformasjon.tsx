@@ -5,6 +5,8 @@ import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import Formatters from '~/utils/DataFormatter'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
+import { initialPdlPerson } from '~/components/fagsystem/pdlf/form/initialValues'
+import { addDays, subDays } from 'date-fns'
 
 const innvandret = (personFoerLeggTil) =>
 	_get(personFoerLeggTil, 'tpsf.innvandretUtvandret[0].innutvandret') === 'INNVANDRET'
@@ -65,6 +67,7 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 				<Attributt attr={sm.attrs.identHistorikk} />
 				<Attributt attr={sm.attrs.kjonn} vis={!opprettFraEksisterende} />
 				<Attributt attr={sm.attrs.harMellomnavn} />
+				<Attributt attr={sm.attrs.harNyttNavn} vis={leggTil} />
 				<Attributt attr={sm.attrs.sprakKode} />
 				<Attributt attr={sm.attrs.egenAnsattDatoFom} />
 				<Attributt attr={sm.attrs.erForsvunnet} />
@@ -95,7 +98,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			label: 'Dødsdato',
 			checked: has('tpsf.doedsdato'),
 			add: () => set('tpsf.doedsdato', null),
-			remove: () => del('tpsf.doedsdato'),
+			remove: () => del(['tpsf.doedsdato', 'tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer']),
 		},
 		statsborgerskap: {
 			label: 'Statsborgerskap',
@@ -163,6 +166,12 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			checked: has('tpsf.harMellomnavn'),
 			add: () => set('tpsf.harMellomnavn', true),
 			remove: () => del('tpsf.harMellomnavn'),
+		},
+		harNyttNavn: {
+			label: 'Nytt navn',
+			checked: has('tpsf.harNyttNavn'),
+			add: () => set('tpsf.harNyttNavn', true),
+			remove: () => del('tpsf.harNyttNavn'),
 		},
 		sprakKode: {
 			label: 'Språk',
@@ -244,8 +253,19 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		identtype: {
 			label: 'Identtype',
 			checked: has('tpsf.identtype'),
-			add: () => setMulti(['tpsf.identtype', ''], ['tpsf.alder', personFoerLeggTil?.tpsf?.alder]),
-			remove: () => del(['tpsf.identtype', 'tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer']),
+			add: () =>
+				setMulti(
+					['tpsf.identtype', 'FNR'],
+					personFoerLeggTil?.tpsf?.foedselsdato && [
+						'tpsf.foedtFoer',
+						addDays(new Date(personFoerLeggTil.tpsf.foedselsdato), 14),
+					],
+					personFoerLeggTil?.tpsf?.foedselsdato && [
+						'tpsf.foedtEtter',
+						subDays(new Date(personFoerLeggTil.tpsf.foedselsdato), 14),
+					]
+				),
+			remove: () => del(['tpsf.identtype', 'tpsf.foedtEtter', 'tpsf.foedtFoer']),
 		},
 		vergemaal: {
 			label: 'Vergemål',
@@ -263,16 +283,19 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		},
 		fullmakt: {
 			label: 'Fullmakt',
-			checked: has('tpsf.fullmakt'),
+			checked: has('pdldata.person.fullmakt'),
 			add: () =>
-				set('tpsf.fullmakt', {
-					kilde: '',
-					omraader: [],
-					gyldigFom: null,
-					gyldigTom: null,
-					identType: null,
-					harMellomnavn: null,
-				}),
+				set('pdldata.person.fullmakt', [
+					{
+						omraader: [],
+						gyldigFraOgMed: null,
+						gyldigTilOgMed: null,
+						nyFullmektig: initialPdlPerson,
+						kilde: 'Dolly',
+						master: 'PDL',
+						gjeldende: true,
+					},
+				]),
 			remove: () => del('tpsf.fullmakt'),
 		},
 		sikkerhetstiltak: {
@@ -280,16 +303,10 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			checked: has('tpsf.typeSikkerhetTiltak'),
 			add: () =>
 				setMulti(
-					['tpsf.typeSikkerhetTiltak', _get(personFoerLeggTil, 'tpsf.typeSikkerhetTiltak') || ''],
-					['tpsf.beskrSikkerhetTiltak', _get(personFoerLeggTil, 'tpsf.beskrSikkerhetTiltak') || ''],
-					[
-						'tpsf.sikkerhetTiltakDatoFom',
-						_get(personFoerLeggTil, 'tpsf.sikkerhetTiltakDatoFom') || new Date(),
-					],
-					[
-						'tpsf.sikkerhetTiltakDatoTom',
-						_get(personFoerLeggTil, 'tpsf.sikkerhetTiltakDatoTom') || '',
-					]
+					['tpsf.typeSikkerhetTiltak', ''],
+					['tpsf.beskrSikkerhetTiltak', ''],
+					['tpsf.sikkerhetTiltakDatoFom', new Date()],
+					['tpsf.sikkerhetTiltakDatoTom', '']
 				),
 			remove: () =>
 				del([

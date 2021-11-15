@@ -21,7 +21,6 @@ import static java.util.Objects.nonNull;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FNR;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
-import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Service
@@ -125,7 +124,7 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
             mapperFacade.map(matrikkeladresse, oppholdsadresse.getMatrikkeladresse());
 
         } else if (nonNull(oppholdsadresse.getUtenlandskAdresse()) &&
-                isBlank(oppholdsadresse.getUtenlandskAdresse().getAdressenavnNummer())) {
+                oppholdsadresse.getUtenlandskAdresse().isEmpty()) {
             oppholdsadresse.setUtenlandskAdresse(
                     dummyAdresseService.getUtenlandskAdresse(
                             person.getStatsborgerskap().stream()

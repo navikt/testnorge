@@ -12,7 +12,7 @@ import Icon from '~/components/ui/icon/Icon'
 import { OrganisasjonVisning } from '~/components/fagsystem/organisasjoner/visning/Visning'
 import { EnhetBestilling, EnhetData, OrgStatus } from '~/components/fagsystem/organisasjoner/types'
 
-type OrganisasjonListe = {
+type OrganisasjonListeProps = {
 	bestillinger: Array<EnhetBestilling>
 	organisasjoner: OrgStatus
 }
@@ -24,7 +24,10 @@ const ikonTypeMap = {
 	Stoppet: 'report-problem-triangle',
 }
 
-export default function OrganisasjonListe({ bestillinger, organisasjoner }: OrganisasjonListe) {
+export default function OrganisasjonListe({
+	bestillinger,
+	organisasjoner,
+}: OrganisasjonListeProps) {
 	if (!organisasjoner) {
 		return null
 	}

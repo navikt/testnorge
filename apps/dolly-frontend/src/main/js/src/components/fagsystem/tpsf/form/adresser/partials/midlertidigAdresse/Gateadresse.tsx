@@ -7,7 +7,7 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { GateadresseDetaljert } from './GateadresseDetaljert'
 
-interface Gateadresse {
+interface GateadresseProps {
 	formikBag: FormikProps<{}>
 }
 
@@ -18,7 +18,7 @@ enum GateadresseTyper {
 	GATE = 'GATE',
 }
 
-export const Gateadresse = ({ formikBag }: Gateadresse) => {
+export const Gateadresse = ({ formikBag }: GateadresseProps) => {
 	const gateadresseNrInfo = 'tpsf.midlertidigAdresse.gateadresseNrInfo'
 	const norskAdresse = 'tpsf.midlertidigAdresse.norskAdresse'
 	const tilleggsadresse = 'tpsf.midlertidigAdresse.norskAdresse.tilleggsadresse'
@@ -71,6 +71,7 @@ export const Gateadresse = ({ formikBag }: Gateadresse) => {
 					tilleggsadresse: _get(formikBag.values, tilleggsadresse),
 				})
 				formikBag.setFieldValue(gateadresseNrInfo, undefined)
+				break
 			default:
 				break
 		}

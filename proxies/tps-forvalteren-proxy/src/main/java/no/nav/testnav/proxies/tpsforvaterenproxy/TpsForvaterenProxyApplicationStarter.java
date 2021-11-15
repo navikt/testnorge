@@ -15,7 +15,7 @@ import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
 @Import({
         CoreConfig.class,
         DevConfig.class,
-        SecurityConfig.class
+        SecurityConfig.class,
 })
 @SpringBootApplication
 public class TpsForvaterenProxyApplicationStarter {
@@ -30,8 +30,6 @@ public class TpsForvaterenProxyApplicationStarter {
                         .path("/**")
                         .filters(filterSpec -> filterSpec.removeRequestHeader("Origin"))
                         .uri(url)
-                )
-                .build();
+                ).build();
     }
-
 }

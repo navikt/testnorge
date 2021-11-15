@@ -1,0 +1,72 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+spring:
+  application:
+    name: adresse-service
+  flyway:
+    enabled: false
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+        tokenx:
+          issuer-uri: https://tokendings.dev-gcp.nais.io
+          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          accepted-audience: ${TOKEN_X_CLIENT_ID}
+
+config:
+  mq:
+    conn-name: b27apvl221.preprod.local
+    port: 1413
+    queueManager: MQLS03
+    user: ${mq.dev.username}
+    password: ${mq.dev.password}
+
+#  queueManagers:
+#    - environment: d
+#      hostname: e26apvl025.test.local
+#      queMgrName: MDLCLIENT01
+#      port: 1411
+#    - environment: t
+#      hostname: d26apvl126.test.local
+#      queMgrName: MTLCLIENT01
+#      port: 1412
+#    - environment: q
+#      hostname: b27apvl057.preprod.local
+#      queMgrName: MQLCLIENT01
+#      port: 1413
+#    - environment: p
+#      hostname:  e26apvl025.test.local
+#      queMgrName: MPLCLIENT01
+#      port: 1414
+
+
+consumers:
+  pdl-services:
+    url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-pdl-proxy
+
+#
+#
+#
+#- u5
+#- t0
+#- t1
+#- t2
+#- t3
+#- t4
+#- t5
+#- t6
+#- t13
+#- q0
+#- q1
+#- q2
+#- q4
+#- q5
+#- q6
+#- qx

@@ -21,8 +21,8 @@ const LoadableComponent = ({ onFetch, render, label }: LoadableComponentProps) =
 				setData(response)
 				setLoading(false)
 			})
-			.catch((error: any) => {
-				setError(error)
+			.catch((e: any) => {
+				setError(e)
 				setLoading(false)
 			})
 	}, [])

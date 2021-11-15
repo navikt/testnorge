@@ -4,16 +4,16 @@ import { Detaljer } from './Detaljer'
 import { TidligereBestillinger } from '~/pages/gruppe/PersonVisning/TidligereBestillinger/TidligereBestillinger'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { EnhetBestilling, EnhetData } from '../types'
-import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/SammendragModal'
+import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/BestillingSammendragModal'
 import { DollyApi } from '~/service/Api'
 import { OrganisasjonMiljoeinfo } from '~/components/fagsystem/organisasjoner/visning/miljoevisning/OrganisasjonMiljoeinfo'
 
-type OrganisasjonVisning = {
+type OrganisasjonVisningProps = {
 	data: EnhetData
 	bestillinger: Array<EnhetBestilling>
 }
 
-export const OrganisasjonVisning = ({ data, bestillinger }: OrganisasjonVisning) => {
+export const OrganisasjonVisning = ({ data, bestillinger }: OrganisasjonVisningProps) => {
 	if (!data) return null
 
 	const [selectedId, setSelectedId] = useState('0')

@@ -101,6 +101,19 @@ const selectOptions: SelectOptions = {
 		{ value: 'PDL', label: 'PDL' },
 	],
 
+	kjoenn: [
+		{ value: 'KVINNE', label: 'Kvinne' },
+		{ value: 'MANN', label: 'Mann' },
+		{ value: 'UKJENT', label: 'Ukjent' },
+	],
+
+	gradering: [
+		{ value: 'STRENGT_FORTROLIG_UTLAND', label: 'Strengt fortrolig utland' },
+		{ value: 'STRENGT_FORTROLIG', label: 'Strengt fortrolig' },
+		{ value: 'FORTROLIG', label: 'Fortrolig' },
+		{ value: 'UGRADERT', label: 'Ugradert' },
+	],
+
 	//PDLF - kontaktinformasjon dødsbo
 	kontaktType: [
 		{ value: 'ADVOKAT', label: 'Advokat' },
@@ -118,12 +131,6 @@ const selectOptions: SelectOptions = {
 		{ value: 'UKJENT', label: 'Ukjent' },
 		{ value: 'ENTYDIG', label: 'Ved identifikasjonsnummer' },
 		{ value: 'OMTRENTLIG', label: 'Ved personopplysninger' },
-	],
-
-	kjoennFalskIdentitet: [
-		{ value: 'KVINNE', label: 'Kvinne' },
-		{ value: 'MANN', label: 'Mann' },
-		{ value: 'UKJENT', label: 'Ukjent' },
 	],
 
 	// Arena

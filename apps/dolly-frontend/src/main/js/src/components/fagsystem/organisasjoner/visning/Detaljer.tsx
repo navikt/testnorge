@@ -8,11 +8,11 @@ import Formatters from '~/utils/DataFormatter'
 import AdresseDetaljer from './AdresseDetaljer'
 import KontaktdataDetaljer from './KontaktdataDetaljer'
 
-type Detaljer = {
+type DetaljerProps = {
 	data: Array<EnhetData>
 }
 
-export const Detaljer = ({ data }: Detaljer) => {
+export const Detaljer = ({ data }: DetaljerProps) => {
 	return (
 		<section className="person-visning">
 			<SubOverskrift label="Detaljer" iconKind="personinformasjon" />

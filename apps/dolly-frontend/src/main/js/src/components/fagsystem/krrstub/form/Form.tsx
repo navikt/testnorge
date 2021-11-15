@@ -13,7 +13,7 @@ import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { FormikProps } from 'formik'
 
-type KrrstubForm = {
+type KrrstubFormProps = {
 	formikBag: FormikProps<{}>
 }
 
@@ -23,14 +23,14 @@ type Change = {
 
 const krrAttributt = 'krrstub'
 
-export const KrrstubForm = ({ formikBag }: KrrstubForm) => {
+export const KrrstubForm = ({ formikBag }: KrrstubFormProps) => {
 	const leverandoerer = SelectOptionsOppslag.hentKrrLeverandoerer()
 	//@ts-ignore
 	const leverandoerOptions = SelectOptionsOppslag.formatOptions('sdpLeverandoer', leverandoerer)
 	const registrert = _get(formikBag, 'values.krrstub.registrert')
 
-	const handleRegistrertChange = (registrert: Change) => {
-		if (!registrert.value) {
+	const handleRegistrertChange = (newRegistrert: Change) => {
+		if (!newRegistrert.value) {
 			formikBag.setFieldValue('krrstub', {
 				epost: '',
 				gyldigFra: null,
@@ -38,7 +38,7 @@ export const KrrstubForm = ({ formikBag }: KrrstubForm) => {
 				sdpAdresse: '',
 				sdpLeverandoer: '',
 				spraak: '',
-				registrert: registrert.value,
+				registrert: newRegistrert.value,
 				reservert: null,
 			})
 		} else {
