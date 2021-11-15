@@ -1,8 +1,12 @@
 package no.nav.testnav.libs.reactivesessionsecurity.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.reactivesessionsecurity.repository.OidcReactiveMapSessionRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.session.SessionProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -22,6 +26,10 @@ import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.UserJwtExchange
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.ClientRegistrationIdResolver;
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.RedisTokenResolver;
 
+import java.time.Duration;
+import java.util.concurrent.ConcurrentHashMap;
+
+@Slf4j
 @Configuration
 @EnableRedisWebSession
 @Import({
@@ -33,7 +41,11 @@ import no.nav.testnav.libs.reactivesessionsecurity.resolver.RedisTokenResolver;
         ClientRegistrationIdResolver.class,
         UserJwtExchange.class
 })
+@RequiredArgsConstructor
 public class OicdRedisSessionConfiguration {
+
+    private final SessionProperties sessionProperties;
+
     @Bean
     @ConditionalOnMissingBean
     public TokenExchange tokenExchange(
@@ -72,6 +84,18 @@ public class OicdRedisSessionConfiguration {
     @Bean
     public RedisSerializer<Object> springSessionRedisSerializer() {
         return new GenericJackson2JsonRedisSerializer(objectMapper());
+    }
+
+    @Bean
+    public OidcReactiveMapSessionRepository reactiveSessionRepository() {
+        OidcReactiveMapSessionRepository sessionRepository = new OidcReactiveMapSessionRepository(new ConcurrentHashMap<>());
+        int defaultMaxInactiveInterval = (int) (sessionProperties.getTimeout() == null
+                ? Duration.ofMinutes(30)
+                : sessionProperties.getTimeout()
+        ).toSeconds();
+        sessionRepository.setDefaultMaxInactiveInterval(defaultMaxInactiveInterval);
+        log.info("Set in-memory session max inactive to {} seconds.", defaultMaxInactiveInterval);
+        return sessionRepository;
     }
 
     private ObjectMapper objectMapper() {

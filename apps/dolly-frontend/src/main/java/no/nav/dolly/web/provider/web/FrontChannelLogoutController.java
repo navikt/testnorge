@@ -12,8 +12,7 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/oauth2/logout")
 @RequiredArgsConstructor
-@Profile({"dev", "test"})
-public class FrontChannelLogoutDevController {
+public class FrontChannelLogoutController {
 
     private final OidcReactiveMapSessionRepository reactiveSessionRepository;
 
