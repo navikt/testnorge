@@ -64,7 +64,7 @@ export const PdlDataVisning = ({ data }: PdlData) => {
 				<GeografiskTilknytning data={identInfo.hentGeografiskTilknytning} />
 				<PdlNasjonalitet data={identInfo.hentPerson} />
 				<PdlBoadresse data={gjeldendeAdresse(identInfo.hentPerson.bostedsadresse)} />
-				<PdlFullmakt data={identInfo.hentPerson.fullmakt[0]} />
+				<PdlFullmakt data={identInfo.hentPerson.fullmakt} />
 			</div>
 		)
 	}

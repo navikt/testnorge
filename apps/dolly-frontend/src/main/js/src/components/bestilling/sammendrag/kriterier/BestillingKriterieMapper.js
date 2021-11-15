@@ -406,21 +406,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			}
 			data.push(vergemaalKriterier)
 		}
-
-		if (fullmakt) {
-			const fullmaktKriterier = {
-				header: 'Fullmakt',
-				items: [
-					obj('Kilde', fullmakt.kilde),
-					obj('Områder', Formatters.omraaderArrayToString(fullmakt.omraader)),
-					obj('Gyldig fra og med', Formatters.formatDate(fullmakt.gyldigFom)),
-					obj('Gyldig til og med', Formatters.formatDate(fullmakt.gyldigTom)),
-					obj('Fullmektiges identtype', fullmakt.identType),
-					obj('Fullmektig har mellomnavn', Formatters.oversettBoolean(fullmakt.harMellomnavn)),
-				],
-			}
-			data.push(fullmaktKriterier)
-		}
 	}
 
 	const aaregKriterier = bestillingData.aareg
@@ -797,15 +782,22 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	const pdldataKriterier = bestillingData.pdldata?.person
 
 	if (pdldataKriterier) {
-		const { falskIdentitet, utenlandskIdentifikasjonsnummer, bostedsadresse } = pdldataKriterier
+		const { fullmakt, falskIdentitet, utenlandskIdentifikasjonsnummer, bostedsadresse } =
+			pdldataKriterier
 
-		const sjekkRettIdent = (item) => {
-			if (_has(item, 'rettIdentitetErUkjent')) {
-				return 'Ukjent'
-			} else if (_has(item, 'rettIdentitetVedIdentifikasjonsnummer')) {
-				return 'Ved identifikasjonsnummer'
+		if (fullmakt) {
+			const fullmaktData = {
+				header: 'Fullmakt',
+				itemRows: fullmakt.map((item, idx) => {
+					return [
+						{ numberHeader: `Fullmakt ${idx + 1}` },
+						obj('Områder', Formatters.omraaderArrayToString(item.omraader)),
+						obj('Gyldig fra og med', Formatters.formatDate(item.gyldigFraOgMed)),
+						obj('Gyldig til og med', Formatters.formatDate(item.gyldigTilOgMed)),
+					]
+				}),
 			}
-			return _has(item, 'rettIdentitetVedOpplysninger') ? 'Ved personopplysninger' : 'Ingen'
+			data.push(fullmaktData)
 		}
 
 		if (bostedsadresse) {
@@ -831,6 +823,15 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				}),
 			}
 			data.push(bostedsadresseData)
+		}
+
+		const sjekkRettIdent = (item) => {
+			if (_has(item, 'rettIdentitetErUkjent')) {
+				return 'Ukjent'
+			} else if (_has(item, 'rettIdentitetVedIdentifikasjonsnummer')) {
+				return 'Ved identifikasjonsnummer'
+			}
+			return _has(item, 'rettIdentitetVedOpplysninger') ? 'Ved personopplysninger' : 'Ingen'
 		}
 
 		if (falskIdentitet) {

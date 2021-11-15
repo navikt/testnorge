@@ -9,28 +9,35 @@ import styled from 'styled-components'
 
 type Data = {
 	data: FullmaktData
+	relasjoner: Array<relasjon>
 }
 
 type DataListe = {
 	data: Array<FullmaktData>
+	relasjoner: Array<relasjon>
 }
 
 type FullmaktData = {
-	gyldigFom: Date
-	gyldigTom: Date
-	kilde: string
-	omraader: []
-	fullmektig: Fullmektig
+	gyldigFraOgMed: Date
+	gyldigTilOgMed: Date
+	omraader: Array<string>
+	motpartsPersonident: string
 	id: number
 }
 
-type Fullmektig = {
-	fornavn: string
-	mellomnavn?: string
-	etternavn: string
-	ident: string
-	identtype: string
-	kjonn: string
+type relasjon = {
+	relasjonType: string
+	relatertPerson: {
+		ident: string
+		navn: Array<{
+			fornavn: string
+			mellomnavn?: string
+			etternavn: string
+		}>
+		kjoenn: Array<{
+			kjoenn: string
+		}>
+	}
 }
 
 const Tema = styled.div`
@@ -44,16 +51,25 @@ const Tema = styled.div`
 	}
 `
 
-export const Visning = ({ data }: Data) => {
-	const { etternavn, fornavn, ident, identtype, kjonn, mellomnavn } = data.fullmektig
+export const Visning = ({ data, relasjoner }: Data) => {
+	const fullmektigIdent = data.motpartsPersonident
+	const fullmektig = relasjoner.find(
+		(relasjon) => relasjon.relatertPerson?.ident === fullmektigIdent
+	)
+	const { fornavn, mellomnavn, etternavn } = fullmektig?.relatertPerson?.navn?.[0]
 
 	return (
 		<>
 			<ErrorBoundary>
 				<div className="person-visning_content">
-					<TitleValue title="Kilde" value={data.kilde} />
-					<TitleValue title="Gyldig fra og med" value={Formatters.formatDate(data.gyldigFom)} />
-					<TitleValue title="Gyldig til og med" value={Formatters.formatDate(data.gyldigTom)} />
+					<TitleValue
+						title="Gyldig fra og med"
+						value={Formatters.formatDate(data.gyldigFraOgMed)}
+					/>
+					<TitleValue
+						title="Gyldig til og med"
+						value={Formatters.formatDate(data.gyldigTilOgMed)}
+					/>
 				</div>
 				<Tema>
 					<h4>Tema</h4>
@@ -72,25 +88,31 @@ export const Visning = ({ data }: Data) => {
 				</Tema>
 				<div className="person-visning_content">
 					<h4 style={{ width: '100%' }}>Fullmektig</h4>
-					<TitleValue title={identtype} value={ident} />
+					<TitleValue title="Ident" value={fullmektig?.relatertPerson?.ident} />
 					<TitleValue title="Fornavn" value={fornavn} />
 					<TitleValue title="Mellomnavn" value={mellomnavn} />
 					<TitleValue title="Etternavn" value={etternavn} />
-					<TitleValue title="Kjønn" value={Formatters.kjonnToString(kjonn)} />
+					<TitleValue title="Kjønn" value={fullmektig?.relatertPerson?.kjoenn?.[0].kjoenn} />
 				</div>
 			</ErrorBoundary>
 		</>
 	)
 }
 
-export const Fullmakt = ({ data }: DataListe) => {
+export const Fullmakt = ({ data, relasjoner }: DataListe) => {
 	if (!data || data.length < 1) return null
+	const fullmaktRelasjoner = relasjoner?.filter(
+		(relasjon) => relasjon.relasjonType === 'FULLMEKTIG'
+	)
+
 	return (
 		<div>
 			<SubOverskrift label="Fullmakt" iconKind="fullmakt" />
 
 			<DollyFieldArray data={data} nested>
-				{(fullmakt: FullmaktData) => <Visning key={fullmakt.id} data={fullmakt} />}
+				{(fullmakt: FullmaktData) => (
+					<Visning key={fullmakt.id} data={fullmakt} relasjoner={fullmaktRelasjoner} />
+				)}
 			</DollyFieldArray>
 		</div>
 	)

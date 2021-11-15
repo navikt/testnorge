@@ -5,6 +5,7 @@ import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import Formatters from '~/utils/DataFormatter'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
+import { initialPdlPerson } from '~/components/fagsystem/pdlf/form/initialValues'
 import { addDays, subDays } from 'date-fns'
 
 const innvandret = (personFoerLeggTil) =>
@@ -282,16 +283,19 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		},
 		fullmakt: {
 			label: 'Fullmakt',
-			checked: has('tpsf.fullmakt'),
+			checked: has('pdldata.person.fullmakt'),
 			add: () =>
-				set('tpsf.fullmakt', {
-					kilde: '',
-					omraader: [],
-					gyldigFom: null,
-					gyldigTom: null,
-					identType: null,
-					harMellomnavn: null,
-				}),
+				set('pdldata.person.fullmakt', [
+					{
+						omraader: [],
+						gyldigFraOgMed: null,
+						gyldigTilOgMed: null,
+						nyFullmektig: initialPdlPerson,
+						kilde: 'Dolly',
+						master: 'PDL',
+						gjeldende: true,
+					},
+				]),
 			remove: () => del('tpsf.fullmakt'),
 		},
 		sikkerhetstiltak: {

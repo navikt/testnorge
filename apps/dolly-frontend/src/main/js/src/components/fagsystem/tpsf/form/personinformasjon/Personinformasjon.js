@@ -39,7 +39,7 @@ const diversePaths = [
 ]
 
 const vergemaalPath = ['tpsf.vergemaal']
-const fullmaktPath = ['tpsf.fullmakt']
+const fullmaktPath = ['pdldata.person.fullmakt']
 
 const sikkerhetstiltakPaths = [
 	'tpsf.typeSikkerhetTiltak',
@@ -120,7 +120,7 @@ export const Personinformasjon = ({ formikBag }) => {
 					<Vergemaal />
 				</Kategori>
 				<Kategori title="Fullmakt" vis={fullmaktPath}>
-					<Fullmakt />
+					<Fullmakt formikBag={formikBag} />
 				</Kategori>
 				<Kategori title="Sikkerhetstiltak" vis={sikkerhetstiltakPaths}>
 					<Sikkerhetstiltak formikBag={formikBag} />
