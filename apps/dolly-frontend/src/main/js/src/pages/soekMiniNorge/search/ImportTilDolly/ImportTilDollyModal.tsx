@@ -5,7 +5,7 @@ import { VelgGruppeToggle } from './gruppe/VelgGruppeToggle'
 import ModalActionKnapper from '~/components/ui/modal/ModalActionKnapper'
 import useBoolean from '~/utils/hooks/useBoolean'
 
-interface ImportTilDollyModal {
+interface ImportTilDollyModalProps {
 	valgtePersoner: Array<string>
 	onAvbryt: () => void
 }
@@ -13,7 +13,7 @@ interface ImportTilDollyModal {
 const KILDE_MILJOE = 'q2'
 const DOLLY_MILJOE = ['q2']
 
-export const ImportTilDollyModal = ({ valgtePersoner, onAvbryt }: ImportTilDollyModal) => {
+export const ImportTilDollyModal = ({ valgtePersoner, onAvbryt }: ImportTilDollyModalProps) => {
 	const [valgtGruppe, setValgtGruppe] = useState('')
 	const [feilmelding, setFeilmelding] = useState('')
 	const [redirectToGruppe, setRedirect] = useBoolean()

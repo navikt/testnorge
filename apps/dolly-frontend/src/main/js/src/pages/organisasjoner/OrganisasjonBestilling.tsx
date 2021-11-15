@@ -4,12 +4,12 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import { OrganisasjonItem } from '~/components/ui/icon/IconItem'
 import Icon from '~/components/ui/icon/Icon'
-import BestillingDetaljer from '~/components/bestilling/detaljer/Detaljer'
+import BestillingDetaljer from '~/components/bestilling/detaljer/BestillingDetaljer'
 import { OrgStatus } from '~/components/fagsystem/organisasjoner/types'
 import Spinner from '~/components/ui/loading/Spinner'
 import Formatters from '~/utils/DataFormatter'
 
-type OrganisasjonBestilling = {
+type OrganisasjonBestillingProps = {
 	brukerId: string
 	bestillinger: Array<OrgStatus>
 }
@@ -21,7 +21,10 @@ const ikonTypeMap = {
 	Stoppet: 'report-problem-triangle',
 }
 
-export default function OrganisasjonBestilling({ brukerId, bestillinger }: OrganisasjonBestilling) {
+export default function OrganisasjonBestilling({
+	brukerId,
+	bestillinger,
+}: OrganisasjonBestillingProps) {
 	if (!bestillinger) {
 		return null
 	}

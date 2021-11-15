@@ -238,13 +238,13 @@ const innvandringUtvandringDatoTest = (schema) => {
 	)
 }
 
-const foedtFoerOgEtterTest = (validation, validerFoedtFoer) => {
+const foedtFoerOgEtterTest = (mainValidation, validerFoedtFoer) => {
 	const errorMsgFoedtFoer =
 		'Født Før dato kan ikke være før Født Etter dato eller etter dagens dato'
 	const errorMsgFoedtEtter =
 		'Født Etter dato kan ikke være etter Født Før dato eller etter dagens dato.'
 
-	return validation.test(
+	return mainValidation.test(
 		'range',
 		validerFoedtFoer ? errorMsgFoedtFoer : errorMsgFoedtEtter,
 		function isWithinTest(val) {
@@ -493,10 +493,6 @@ export const validation = {
 						'Dato må være lik eller etter startdato, og ikke mer enn 12 uker etter startdato',
 						function validDate(dato) {
 							const values = this.options.context
-							const test = differenceInWeeks(
-								new Date(dato),
-								new Date(_get(values, 'tpsf.sikkerhetTiltakDatoFom'))
-							)
 							return (
 								(isAfter(new Date(dato), new Date(_get(values, 'tpsf.sikkerhetTiltakDatoFom'))) ||
 									isSameDay(

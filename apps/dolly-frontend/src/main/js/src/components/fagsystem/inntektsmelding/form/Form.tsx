@@ -32,7 +32,7 @@ import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSe
 import { AlertAaregRequired } from '~/components/ui/brukerAlert/AlertAaregRequired'
 import { InputWarning } from '~/components/ui/form/inputWarning/inputWarning'
 
-interface InntektsmeldingForm {
+interface InntektsmeldingFormProps {
 	formikBag: FormikProps<{}>
 }
 
@@ -76,7 +76,7 @@ export const initialValues = (type: string) => ({
 const inntektsmeldingAttributt = 'inntektsmelding'
 const informasjonstekst = 'Personen må ha et arbeidsforhold knyttet til den valgte virksomheten.'
 
-export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingForm) => {
+export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => {
 	const [typeArbeidsgiver, setTypeArbeidsgiver] = useState(
 		_get(formikBag.values, 'inntektsmelding.inntekter[0].arbeidsgiverPrivat')
 			? TypeArbeidsgiver.PRIVATPERSON

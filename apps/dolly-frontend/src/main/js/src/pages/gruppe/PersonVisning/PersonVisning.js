@@ -21,7 +21,7 @@ import {
 } from '~/components/fagsystem'
 import BeskrivelseConnector from '~/components/beskrivelse/BeskrivelseConnector'
 import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
-import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/SammendragModal'
+import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/BestillingSammendragModal'
 import { LeggTilRelasjonModal } from '~/components/leggTilRelasjon/LeggTilRelasjonModal'
 
 import './PersonVisning.less'

@@ -9,13 +9,13 @@ import { erForste, panelError } from '~/components/ui/form/formUtils'
 import { FormikProps } from 'formik'
 import { EnhetBestilling } from '~/components/fagsystem/organisasjoner/types'
 
-type OrganisasjonForm = {
+type OrganisasjonFormProps = {
 	formikBag: FormikProps<{ organisasjon: EnhetBestilling }>
 }
 
 const detaljerPaths = [organisasjonPaths, kontaktPaths, adressePaths].flat()
 
-export const OrganisasjonForm = ({ formikBag }: OrganisasjonForm) => {
+export const OrganisasjonForm = ({ formikBag }: OrganisasjonFormProps) => {
 	return (
 		<>
 			{/* @ts-ignore */}

@@ -4,7 +4,7 @@ import React from 'react'
 import { GjenopprettModal } from '~/components/bestilling/gjenopprett/GjenopprettModal'
 import { DollyApi } from '~/service/Api'
 
-type GjenopprettGruppe = {
+type GjenopprettGruppeProps = {
 	onCancel: any
 	gruppe: Gruppe
 	gruppeId: string
@@ -28,7 +28,7 @@ export const GjenopprettGruppe = ({
 	gruppe,
 	bestillingStatuser,
 	getBestillinger,
-}: GjenopprettGruppe) => {
+}: GjenopprettGruppeProps) => {
 	const bestilteMiljoer = () => {
 		const miljoer: Set<string> = new Set()
 		Object.values(bestillingStatuser).forEach((bestillingstatus: BestillingStatus) =>

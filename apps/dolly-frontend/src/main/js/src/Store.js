@@ -31,17 +31,17 @@ const locationMiddleware = (store) => (next) => (action) => {
 	return next(action)
 }
 
-const configureReduxStore = (history) => {
+const configureReduxStore = (currentHistory) => {
 	const allMiddleware = [
 		locationMiddleware,
 		thunkMiddleware,
 		createPromise({ promiseTypeSuffixes: ['REQUEST', 'SUCCESS', 'FAILURE'] }),
-		routerMiddleware(history),
+		routerMiddleware(currentHistory),
 	]
 
-	const rootReducer = (history) =>
+	const rootReducer = (data) =>
 		combineReducers({
-			router: connectRouter(history),
+			router: connectRouter(data),
 			bestveil: bestillingReducer,
 			bestillingStatuser: bestillingStatusReducer,
 			gruppe: gruppeReducer,
@@ -58,7 +58,10 @@ const configureReduxStore = (history) => {
 			organisasjon: organisasjonReducer,
 		})
 
-	return createStore(rootReducer(history), composeWithDevTools(applyMiddleware(...allMiddleware)))
+	return createStore(
+		rootReducer(currentHistory),
+		composeWithDevTools(applyMiddleware(...allMiddleware))
+	)
 }
 
 export default configureReduxStore(history)

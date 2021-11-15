@@ -4,7 +4,7 @@ import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 
-type EgenOrganisasjonSelect = {
+type EgenOrganisasjonSelectProps = {
 	name: string
 	isClearable?: boolean
 	onChange?: (selected: any) => void
@@ -14,7 +14,7 @@ export const EgenOrganisasjonSelect = ({
 	name,
 	isClearable = true,
 	onChange = null,
-}: EgenOrganisasjonSelect) => {
+}: EgenOrganisasjonSelectProps) => {
 	return (
 		<ErrorBoundary>
 			<LoadableComponent

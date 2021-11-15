@@ -26,7 +26,7 @@ import KjedeIcon from '~/components/dollyKjede/KjedeIcon'
 import { FormikProps } from 'formik'
 import { AaregListe, Amelding, KodeverkValue } from '~/components/fagsystem/aareg/AaregTypes'
 
-interface AmeldingForm {
+interface AmeldingFormProps {
 	formikBag: FormikProps<{ aareg: AaregListe }>
 }
 
@@ -45,7 +45,7 @@ const Slettknapp = styled(Button)`
 	margin: 10px 0;
 `
 
-export const AmeldingForm = ({ formikBag }: AmeldingForm): ReactFragment => {
+export const AmeldingForm = ({ formikBag }: AmeldingFormProps): ReactFragment => {
 	const arbeidsforholdstype = _get(formikBag.values, 'aareg[0].arbeidsforholdstype')
 
 	const fom = _get(formikBag.values, 'aareg[0].genererPeriode.fom')
