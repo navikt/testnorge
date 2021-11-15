@@ -94,8 +94,7 @@ public class BrukerService {
         Map<Long, Bruker> brukereMap = brukere.stream().collect(Collectors.toMap(Bruker::getId, bruker -> bruker));
         brukereMap.values().stream()
                 .filter(bruker -> nonNull(bruker.getEidAv()))
-                .map(bruker -> brukereMap.get(bruker.getEidAv().getId()).getFavoritter().addAll(bruker.getFavoritter()))
-                .collect(Collectors.toList());
+                .forEach(bruker -> brukereMap.get(bruker.getEidAv().getId()).getFavoritter().addAll(bruker.getFavoritter()));
         return brukereMap.values().stream().filter(bruker -> isNull(bruker.getEidAv())).collect(Collectors.toList());
     }
 
