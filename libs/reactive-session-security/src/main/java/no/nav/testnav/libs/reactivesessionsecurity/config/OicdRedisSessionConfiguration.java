@@ -41,10 +41,7 @@ import java.util.concurrent.ConcurrentHashMap;
         ClientRegistrationIdResolver.class,
         UserJwtExchange.class
 })
-@RequiredArgsConstructor
 public class OicdRedisSessionConfiguration {
-
-    private final SessionProperties sessionProperties;
 
     @Bean
     @ConditionalOnMissingBean
@@ -84,18 +81,6 @@ public class OicdRedisSessionConfiguration {
     @Bean
     public RedisSerializer<Object> springSessionRedisSerializer() {
         return new GenericJackson2JsonRedisSerializer(objectMapper());
-    }
-
-    @Bean
-    public OidcReactiveMapSessionRepository reactiveSessionRepository() {
-        OidcReactiveMapSessionRepository sessionRepository = new OidcReactiveMapSessionRepository(new ConcurrentHashMap<>());
-        int defaultMaxInactiveInterval = (int) (sessionProperties.getTimeout() == null
-                ? Duration.ofMinutes(30)
-                : sessionProperties.getTimeout()
-        ).toSeconds();
-        sessionRepository.setDefaultMaxInactiveInterval(defaultMaxInactiveInterval);
-        log.info("Set in-memory session max inactive to {} seconds.", defaultMaxInactiveInterval);
-        return sessionRepository;
     }
 
     private ObjectMapper objectMapper() {
