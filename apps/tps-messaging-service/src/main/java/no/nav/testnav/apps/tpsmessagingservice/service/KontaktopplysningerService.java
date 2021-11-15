@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.nonNull;
 import static no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil.getErrorStatus;
 import static no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil.getResponseStatus;
 import static no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil.marshallToXML;
@@ -44,6 +45,8 @@ public class KontaktopplysningerService {
         try {
             var context = new MappingContext.Factory().getContext();
             context.setProperty("ident", ident);
+            context.setProperty("datoSprak", nonNull(kontaktopplysninger.getEndringAvSprak()) ?
+                    kontaktopplysninger.getEndringAvSprak().getEndreSprak().getDatoSprak() : null);
 
             var request = mapperFacade.map(kontaktopplysninger, KontaktopplysningerRequest.class, context);
             var requestXml = marshallToXML(requestContext, request);

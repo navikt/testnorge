@@ -2,15 +2,14 @@ package no.nav.testnav.apps.tpsmessagingservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.xml.bind.annotation.XmlType;
-import java.time.LocalDate;
 
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @XmlType(propOrder = {"offentligIdent", "fom"})
@@ -18,5 +17,5 @@ import java.time.LocalDate;
 public class TpsServiceRoutineEndring {
 
     private String offentligIdent;
-    private LocalDate fom;
+    private String fom;
 }
