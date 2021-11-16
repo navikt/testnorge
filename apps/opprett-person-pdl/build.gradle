@@ -62,7 +62,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
 
     implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
-    implementation 'org.springframework.kafka:spring-kafka:2.7.8'
+    implementation 'org.springframework.kafka:spring-kafka:2.8.0'
     implementation 'org.apache.kafka:kafka-clients:7.0.0-ce'
     implementation 'io.confluent:kafka-avro-serializer:7.0.0'
     implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
