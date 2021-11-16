@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.tpsmessagingservice.utils;
 
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tpsmessagingservice.dto.EndringsmeldingRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.EndringsmeldingResponse;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.EndringsmeldingResponseDTO;
@@ -14,6 +15,7 @@ import java.io.StringWriter;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+@Slf4j
 @UtilityClass
 public class EndringsmeldingUtil {
 
@@ -28,10 +30,11 @@ public class EndringsmeldingUtil {
     public static EndringsmeldingResponseDTO getResponseStatus(EndringsmeldingResponse response) {
 
         if (nonNull(response)) {
+            log.info("Svarmelding mottatt fra TPS: {}", response);
             return EndringsmeldingResponseDTO.builder()
-                    .returStatus(isStatusOk(response.getSfeTilbakemelding().getSvarStatus().getReturStatus()) ? STATUS_OK : STATUS_ERROR)
-                    .returMelding(response.getSfeTilbakemelding().getSvarStatus().getReturMelding())
-                    .utfyllendeMelding(response.getSfeTilbakemelding().getSvarStatus().getUtfyllendeMelding())
+                    .returStatus(isStatusOk(response.getSfeTilbakeMelding().getSvarStatus().getReturStatus()) ? STATUS_OK : STATUS_ERROR)
+                    .returMelding(response.getSfeTilbakeMelding().getSvarStatus().getReturMelding())
+                    .utfyllendeMelding(response.getSfeTilbakeMelding().getSvarStatus().getUtfyllendeMelding())
                     .build();
         } else {
             return EndringsmeldingResponseDTO.builder()

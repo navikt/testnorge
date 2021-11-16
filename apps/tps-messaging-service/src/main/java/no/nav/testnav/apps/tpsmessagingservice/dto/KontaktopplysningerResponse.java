@@ -25,7 +25,7 @@ public class KontaktopplysningerResponse extends EndringsmeldingResponse {
         private TpsSystemInfo systemInfo;
         private TpsServiceRoutineEndring endreKontaktopplysninger;
 
-        private KontaktopplysningerRequestDTO.Spraak endringAvSprak;
+        private SfeSpraak endringAvSprak;
         private KontaktopplysningerRequestDTO.Kontonummer endringAvKontonr;
     }
 }

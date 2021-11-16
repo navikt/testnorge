@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.command.EndringsMeldingCommand;
 import no.nav.testnav.apps.tpsmessagingservice.dto.EndringsmeldingErrorResponse;
 import no.nav.testnav.apps.tpsmessagingservice.dto.QueueManager;
-import no.nav.testnav.apps.tpsmessagingservice.dto.SfeTilbakemelding;
+import no.nav.testnav.apps.tpsmessagingservice.dto.SfeTilbakeMelding;
 import no.nav.testnav.apps.tpsmessagingservice.factory.ConnectionFactoryFactory;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.EndringsmeldingResponseDTO;
 import org.springframework.beans.factory.annotation.Value;
@@ -98,7 +98,7 @@ public class EndringsmeldingConsumer {
             } catch (JMSException e) {
                 try {
                     resultat.put(miljoe, marshallToXML(EndringsmeldingErrorResponse.builder()
-                            .sfeTilbakemelding(SfeTilbakemelding.builder()
+                            .sfeTilbakeMelding(SfeTilbakeMelding.builder()
                                     .svarStatus(EndringsmeldingResponseDTO.builder()
                                             .returStatus("08")
                                             .returMelding("Teknisk feil, se logg!")

@@ -55,7 +55,7 @@ dependencies {
     implementation 'org.apache.httpcomponents:httpclient:4.5.13'
     implementation 'javax.validation:validation-api:2.0.1.Final'
 
-    implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.0'
     implementation 'org.hibernate.validator:hibernate-validator'
 
     implementation 'io.springfox:springfox-swagger2:3.0.0'
