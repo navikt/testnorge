@@ -50,7 +50,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
 
     implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
-    implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.0'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     implementation 'org.springframework.boot:spring-boot-starter-webflux:2.5.6'
 
