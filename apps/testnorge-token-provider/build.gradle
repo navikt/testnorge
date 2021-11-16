@@ -51,7 +51,7 @@ dependencies {
 
     implementation 'io.springfox:springfox-swagger2:3.0.0'
     implementation 'io.springfox:springfox-swagger-ui:3.0.0'
-    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+    implementation 'javax.xml.bind:jaxb-api'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
 
     testImplementation 'junit:junit:4.13.2' //TODO upgrade to JUnit5
