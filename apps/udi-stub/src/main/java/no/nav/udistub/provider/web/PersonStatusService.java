@@ -20,7 +20,7 @@ import v1.mt_1067_nav.no.udi.MT1067NAVV1Interface;
 import v1.mt_1067_nav.no.udi.PingFault;
 
 import static java.util.Objects.nonNull;
-import static net.logstash.logback.encoder.org.apache.commons.lang3.BooleanUtils.isNotTrue;
+import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 
 @Service
 @RequiredArgsConstructor

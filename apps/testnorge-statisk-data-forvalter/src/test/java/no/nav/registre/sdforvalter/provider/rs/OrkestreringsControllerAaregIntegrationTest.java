@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -34,6 +35,7 @@ import no.nav.testnav.libs.testing.JsonWiremockHelper;
 @TestPropertySource(
         locations = "classpath:application-test.properties"
 )
+@Disabled
 public class OrkestreringsControllerAaregIntegrationTest {
 
     private static final String ENVIRONMENT = "t1";
