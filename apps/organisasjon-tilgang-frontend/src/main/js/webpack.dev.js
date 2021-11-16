@@ -16,6 +16,11 @@ module.exports = merge(common, {
         changeOrigin: true,
         secure: false,
       },
+      '/organisasjon-tilgang-service': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        secure: false,
+      },
     },
   },
   plugins: [

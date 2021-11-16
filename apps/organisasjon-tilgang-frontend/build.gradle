@@ -1,15 +1,15 @@
 plugins {
     id 'java'
     id "org.sonarqube" version "3.3"
-    id 'org.springframework.boot' version "2.5.7"
+    id 'org.springframework.boot' version "2.5.6"
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
 
 sonarqube {
     properties {
         property "sonar.sourceEncoding", "UTF-8"
-        property "sonar.projectKey", "testnav-endringsmelding-frontend"
-        property "sonar.projectName", "testnav-endringsmelding-frontend"
+        property "sonar.projectKey", "testnav-organisasjon-tilgang-frontend"
+        property "sonar.projectName", "testnav-organisasjon-tilgang-frontend"
         property 'sonar.sources', 'src/main/java,src/main/js'
         property 'sonar.tests', 'src/test/java'
         property "sonar.organization", "navit"
@@ -51,7 +51,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
 
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
+    implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
     implementation 'org.hibernate.validator:hibernate-validator'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

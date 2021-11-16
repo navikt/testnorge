@@ -1,0 +1,11 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+azure.app.client.id: ${client_id}
+azure.app.client.secret: ${client_secret}
+
+consumers:
+  testnav-organisasjon-tilgang-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-organisasjon-tilgang-service
+    url: https://testnav-organisasjon-tilgang-service.dev.intern.nav.no
