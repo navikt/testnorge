@@ -52,9 +52,9 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-annotations'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
     implementation 'com.ibm.mq:mq-jms-spring-boot-starter:2.5.5'
-    implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
+    implementation 'javax.xml.bind:jaxb-api'
     implementation 'com.sun.xml.bind:jaxb-core:2.3.0.1'
-    implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.1'
+    implementation 'org.glassfish.jaxb:jaxb-runtime'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
@@ -62,9 +62,9 @@ dependencies {
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'org.aspectj:aspectjweaver:1.9.7'
-    implementation 'io.micrometer:micrometer-registry-prometheus:1.7.5'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
 
-    implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.0'
     implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

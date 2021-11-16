@@ -25,9 +25,7 @@ Så kjør `./gradlew clean build`
 
 Deretter kan DollyBackendApplicationStarter startes med disse VM options:
 
-`-Dspring.profiles.active=local 
---add-opens java.base/java.lang=ALL-UNNAMED 
--Dspring.cloud.vault.token=*TOKEN*`
+`-Dspring.profiles.active=local --add-opens java.base/java.lang=ALL-UNNAMED -Dspring.cloud.vault.token=*TOKEN*`
 
 ## Deploy status
 

@@ -22,7 +22,7 @@ public class SfeSpraak {
     @NoArgsConstructor
     @AllArgsConstructor
     @XmlType(propOrder = {"sprakKode", "datoSprak"})
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class NyttSprak {
         private String sprakKode;
         private String datoSprak;

@@ -60,14 +60,14 @@ dependencies {
 
     implementation 'io.springfox:springfox-swagger2:3.0.0'
     implementation 'io.springfox:springfox-swagger-ui:3.0.0'
-    implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.0'
     implementation 'no.nav.helse.xml:kith-hodemelding:2019.09.09-08-50-693492ddc1d3f98e70c1638c94dcb95a66036d12'
     implementation 'no.nav.helse.xml:xmlfellesformat:2019.09.09-08-50-693492ddc1d3f98e70c1638c94dcb95a66036d12'
     implementation 'no.nav.tjenestespesifikasjoner:digisyfo-sykmelding:1.2019.09.25-00.21-49b69f0625e0'
 
     implementation 'com.ibm.mq:mq-jms-spring-boot-starter:2.5.5'
-    implementation 'org.springframework.kafka:spring-kafka:2.7.8'
-    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+    implementation 'org.springframework.kafka:spring-kafka'
+    implementation 'javax.xml.bind:jaxb-api'
 
     implementation 'org.apache.kafka:kafka-clients:7.0.0-ce'
     implementation 'io.confluent:kafka-avro-serializer:7.0.0'
