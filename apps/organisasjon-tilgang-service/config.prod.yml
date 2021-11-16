@@ -18,6 +18,9 @@ spec:
       consumes:
         - name: "altinn:serviceowner"
   accessPolicy:
+    inbound:
+      rules:
+        - application: testnav-organisasjon-tilgang-frontend
     outbound:
       external:
         - host: altinn.no
