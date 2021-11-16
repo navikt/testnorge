@@ -20,13 +20,11 @@ export const initialUtenlandskAdresse = {
 	landkode: null as string,
 	bygningEtasjeLeilighet: null as string,
 	regionDistriktOmraade: null as string,
-	statsborgerskapLandkode: null,
-	gradering: null,
 }
 
 export const initialKontaktinfoForDoedebo = {
-	skifteform: null,
-	attestutstedelsesdato: null,
+	skifteform: null as string,
+	attestutstedelsesdato: null as string,
 	adresse: {
 		adresselinje1: '',
 		adresselinje2: '',
