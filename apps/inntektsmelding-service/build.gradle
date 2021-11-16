@@ -60,7 +60,7 @@ dependencies {
 
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
 
-    implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.0'
     implementation 'no.nav.tjenestespesifikasjoner:nav-altinn-inntektsmelding:1.2019.08.16-13.46-35cbdfd492d4'
 
     implementation 'org.apache.commons:commons-io:1.3.2'
