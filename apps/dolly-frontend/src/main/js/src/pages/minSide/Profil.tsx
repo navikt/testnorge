@@ -7,14 +7,17 @@ type Props = {
 		visningsNavn: string
 		epost: string
 		avdeling: string
+		organisasjon: string
+		type: string
 	}
 }
 
 export default function Profil({ bilde, info }: Props) {
+	const bankIdProfil = info && info.type && info.type === 'BankId'
 	return (
 		<div className="profil">
 			<img alt="Profilbilde" src={(bilde && bilde.url) || dolly} />
-			{info && (
+			{info && !bankIdProfil && (
 				<div className="person-info">
 					<p>
 						<span className="blokk">NAVN</span>
@@ -27,6 +30,18 @@ export default function Profil({ bilde, info }: Props) {
 					<p>
 						<span className="blokk">AVDELING</span>
 						<span>{info.avdeling}</span>
+					</p>
+				</div>
+			)}
+			{info && bankIdProfil && (
+				<div className="person-info">
+					<p>
+						<span className="blokk">BRUKERNAVN</span>
+						<span>{info.visningsNavn}</span>
+					</p>
+					<p>
+						<span className="blokk">ORGANISASJON</span>
+						<span>{info.organisasjon}</span>
 					</p>
 				</div>
 			)}
