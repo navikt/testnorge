@@ -60,7 +60,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' //TODO remove legacy bootstrap config
 
-    implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.0'
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'javax.servlet:javax.servlet-api:4.0.1'
 
