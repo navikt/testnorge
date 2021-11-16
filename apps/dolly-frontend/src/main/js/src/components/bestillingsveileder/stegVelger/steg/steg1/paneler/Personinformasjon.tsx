@@ -24,7 +24,7 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 	const harFnr = opts.identtype === 'FNR'
 	const harFnrLeggTil = _get(personFoerLeggTil, 'tpsf.identtype') === 'FNR'
 	//Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
-	console.log('harFnr', harFnr)
+
 	const utvandretTitle = () => {
 		if (!harFnr) {
 			return 'Personer med identtype DNR eller BOST kan ikke utvandre fordi de ikke har norsk statsborgerskap'
@@ -67,11 +67,6 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 						!harFnr || (leggTil && !tomInnvandretUtvandret && !innvandret(personFoerLeggTil))
 					}
 					title={utvandretTitle()}
-					// title={
-					// 	!harFnr || (leggTil && !tomInnvandretUtvandret && !innvandret(personFoerLeggTil))
-					// 		? 'Personen må innvandre før den kan utvandre igjen'
-					// 		: null
-					// }
 				/>
 			</AttributtKategori>
 			<AttributtKategori title="Diverse">
