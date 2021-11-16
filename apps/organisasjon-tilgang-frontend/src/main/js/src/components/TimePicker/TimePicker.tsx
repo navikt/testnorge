@@ -6,8 +6,13 @@ import { addYears, subYears } from 'date-fns';
 import locale_nb from 'date-fns/locale/nb';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Input } from 'nav-frontend-skjema';
+import styled from 'styled-components';
 
 registerLocale('nb', locale_nb);
+
+const StyledInput = styled(Input)`
+  margin-top: 5px;
+`;
 
 export const TimePicker = ({
   // @ts-ignore
@@ -54,7 +59,7 @@ export const TimePicker = ({
       name={name}
       id={name}
       autoComplete="off"
-      customInput={<Input label={label} />}
+      customInput={<StyledInput label={label} />}
       excludeDates={excludeDates}
     />
   );

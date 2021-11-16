@@ -57,5 +57,5 @@ spec:
   ingresses:
     - "https://testnav-organisasjon-tilgang-service.dev.intern.nav.no"
   env:
-    - name: ALTINN_URL
-      value: https://tt02.altinn.no
+    - name: SPRING_PROFILES_ACTIVE
+      value: dev

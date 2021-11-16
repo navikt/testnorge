@@ -8,14 +8,14 @@ metadata:
 spec:
   env:
     - name: SPRING_PROFILES_ACTIVE
-      value: dev
+      value: prod
   port: 8080
   azure:
     application:
       enabled: true
       tenant: nav.no
       replyURLs:
-        - "https://testnav-organisasjon-tilgang.dev.intern.nav.no/login/oauth2/code/aad"
+        - "https://testnav-organisasjon-tilgang.intern.nav.no/login/oauth2/code/aad"
         - "http://localhost:8080/login/oauth2/code/aad"
       claims:
         groups:
@@ -45,4 +45,4 @@ spec:
       memory: 512Mi
   image: {{ image }}
   ingresses:
-    - "https://testnav-organisasjon-tilgang.dev.intern.nav.no"
+    - "https://testnav-organisasjon-tilgang.intern.nav.no"

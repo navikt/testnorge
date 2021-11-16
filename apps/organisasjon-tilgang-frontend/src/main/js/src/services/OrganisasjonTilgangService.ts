@@ -19,7 +19,13 @@ const createOrganisasjonTilgang = (organisajonsnummer: string, gyldigTil: string
     JSON.stringify({ organisajonsnummer, gyldigTil })
   );
 
+const deleteOrganisasjonTilgang = (organisajonsnummer: string) =>
+  Api.fetch(`/organisasjon-tilgang-service/api/v1/organisasjoner/${organisajonsnummer}`, {
+    method: 'DELETE',
+  });
+
 export default {
   getOrganisasjonTilganger,
   createOrganisasjonTilgang,
+  deleteOrganisasjonTilgang,
 };

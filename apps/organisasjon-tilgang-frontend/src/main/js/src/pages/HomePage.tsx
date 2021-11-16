@@ -1,16 +1,19 @@
 import React from 'react';
 import { Page } from '@navikt/dolly-komponenter';
 import { AccessList } from '@/components/AccessList';
-import AccessFrom from '@/components/AccessFrom/AccessFrom';
+import AccessForm from '@/components/AccessForm/AccessForm';
+import styled from 'styled-components';
+
+const StyledPage = styled(Page)`
+  display: flex;
+`;
 
 const HomePage = () => {
   return (
-    <Page>
-      <h2>Gi organisasjon tilgang til Dolly</h2>
-      <AccessFrom />
-      <h2>Organisasjoner som har tilgang til Dolly</h2>
+    <StyledPage>
+      <AccessForm />
       <AccessList />
-    </Page>
+    </StyledPage>
   );
 };
 

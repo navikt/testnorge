@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - tilgang-frontend
     paths:
       - apps/organisasjon-tilgang-frontend/**
   workflow_dispatch:
@@ -64,5 +63,5 @@ jobs:
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-          CLUSTER: dev-gcp
-          RESOURCE: apps/organisasjon-tilgang-frontend/config.dev.yml
+          CLUSTER: prod-gcp
+          RESOURCE: apps/organisasjon-tilgang-frontend/config.prod.yml
