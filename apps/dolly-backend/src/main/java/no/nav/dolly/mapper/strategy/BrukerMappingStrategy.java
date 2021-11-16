@@ -1,10 +1,5 @@
 package no.nav.dolly.mapper.strategy;
 
-import static java.util.Objects.nonNull;
-import static java.util.stream.Collectors.toList;
-
-import org.springframework.stereotype.Component;
-
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
@@ -12,6 +7,10 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 import no.nav.dolly.mapper.MappingStrategy;
+import org.springframework.stereotype.Component;
+
+import static java.util.Objects.nonNull;
+import static java.util.stream.Collectors.toList;
 
 @Component
 public class BrukerMappingStrategy implements MappingStrategy {
@@ -39,6 +38,7 @@ public class BrukerMappingStrategy implements MappingStrategy {
                         if (nonNull(bruker.getEidAv())) {
                             rsBruker.setBrukerId(bruker.getEidAv().getBrukerId());
                             rsBruker.setBrukernavn(bruker.getEidAv().getBrukernavn());
+                            rsBruker.setBrukertype(bruker.getBrukertype());
                             rsBruker.setEpost(bruker.getEidAv().getEpost());
                             rsBruker.setNavIdent(null);
                         }

@@ -11,6 +11,8 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import java.util.Optional;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.domain.jpa.Bruker.Brukertype.AZURE;
+import static no.nav.dolly.domain.jpa.Bruker.Brukertype.BANKID;
 import static no.nav.dolly.util.TokenXUtil.getBankidUser;
 
 @UtilityClass
@@ -26,6 +28,7 @@ public final class CurrentAuthentication {
                         ? bankidUser.brukernavn()
                         : Optional.ofNullable((String) token.getToken().getClaims().get("name")).orElse("Systembruker"))
                 .epost((String) token.getToken().getClaims().get("preferred_username"))
+                .brukertype(nonNull(bankidUser) ? BANKID : AZURE)
                 .build();
     }
 
@@ -33,7 +36,7 @@ public final class CurrentAuthentication {
         UserInfo bankidUser = getBankidUser(userInfo);
         return nonNull(bankidUser)
                 ? bankidUser.id()
-                : (String) getToken().getToken().getClaims().get("oid");
+                : azureUserId();
     }
 
     public static String azureUserId() {

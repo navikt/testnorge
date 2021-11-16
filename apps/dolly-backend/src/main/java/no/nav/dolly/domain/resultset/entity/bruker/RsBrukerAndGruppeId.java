@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.dolly.domain.jpa.Bruker.Brukertype;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ public class RsBrukerAndGruppeId {
 
     private String brukerId;
     private String brukernavn;
+    private Brukertype brukertype;
     private String epost;
     private String navIdent;
     private List<String> favoritter;

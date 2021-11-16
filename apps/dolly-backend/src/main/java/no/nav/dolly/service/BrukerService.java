@@ -35,17 +35,24 @@ public class BrukerService {
     private final GetUserInfo getUserInfo;
 
     public Bruker fetchBruker(String brukerId) {
+
         return brukerRepository.findBrukerByBrukerId(brukerId)
                 .orElseGet(() -> brukerRepository.findBrukerByNavIdent(brukerId.toUpperCase())
                         .orElseThrow(() -> new NotFoundException("Bruker ikke funnet")));
     }
 
     public Bruker fetchOrCreateBruker(String brukerId) {
+
         try {
             Bruker bruker = fetchBruker(brukerId);
             List<Bruker> brukere = brukerRepository.fetchEidAv(bruker);
-            bruker.getFavoritter().addAll(brukere.stream().map(Bruker::getFavoritter).flatMap(Collection::stream).collect(Collectors.toSet()));
+            bruker.getFavoritter().addAll(brukere.stream().map(Bruker::getFavoritter)
+                    .flatMap(Collection::stream).collect(Collectors.toSet()));
+
+            oppdaterBrukernavn(bruker);
+
             return bruker;
+
         } catch (NotFoundException e) {
             return brukerRepository.save(getAuthUser(getUserInfo));
         }
@@ -90,12 +97,12 @@ public class BrukerService {
     }
 
     public List<Bruker> fetchBrukere() {
+
         List<Bruker> brukere = brukerRepository.findAllByOrderById();
         Map<Long, Bruker> brukereMap = brukere.stream().collect(Collectors.toMap(Bruker::getId, bruker -> bruker));
         brukereMap.values().stream()
                 .filter(bruker -> nonNull(bruker.getEidAv()))
-                .map(bruker -> brukereMap.get(bruker.getEidAv().getId()).getFavoritter().addAll(bruker.getFavoritter()))
-                .collect(Collectors.toList());
+                .forEach(bruker -> brukereMap.get(bruker.getEidAv().getId()).getFavoritter().addAll(bruker.getFavoritter()));
         return brukereMap.values().stream().filter(bruker -> isNull(bruker.getEidAv())).collect(Collectors.toList());
     }
 
@@ -104,6 +111,7 @@ public class BrukerService {
     }
 
     public Bruker saveBrukerTilDB(Bruker b) {
+
         try {
             return brukerRepository.save(b);
         } catch (DataIntegrityViolationException e) {
@@ -114,12 +122,14 @@ public class BrukerService {
     }
 
     public int migrerBruker(Collection<String> navIdenter, String brukerId) {
+
         fetchOrCreateBruker(brukerId);
         brukerRepository.saveBrukerIdMigrert(brukerId);
         return brukerRepository.saveNavIdentToBruker(navIdenter, brukerId);
     }
 
     public int fjernMigreringAvBruker(String brukerId) {
+
         Bruker bruker = fetchOrCreateBruker(brukerId);
         if (isFalse(bruker.getMigrert())) {
             throw new DollyFunctionalException(format("Bruker %s er ikke migrert enda", bruker.getBrukernavn()));
@@ -132,11 +142,21 @@ public class BrukerService {
         return brukerRepository.fetchEidAv(bruker);
     }
 
+    private void oppdaterBrukernavn(Bruker bruker) {
+
+        String hentetBrukernavn = getAuthUser(getUserInfo).getBrukernavn();
+        if (!bruker.getBrukernavn().equals(hentetBrukernavn)) {
+            bruker.setBrukernavn(hentetBrukernavn);
+            brukerRepository.save(bruker);
+        }
+    }
+
     private Testgruppe fetchTestgruppe(Long gruppeId) {
         return testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
     }
 
     private Testgruppe saveGruppe(Testgruppe testgruppe) {
+
         try {
             return testgruppeRepository.save(testgruppe);
         } catch (DataIntegrityViolationException e) {

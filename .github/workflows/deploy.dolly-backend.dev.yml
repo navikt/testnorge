@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - feature/endre-navn-dolly
+      - feature/brukertype-azure-bankid
     paths:
       - apps/dolly-backend/**
       - libs/data-transfer-objects/**

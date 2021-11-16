@@ -12,6 +12,8 @@ import org.hibernate.annotations.Parameter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -43,29 +45,24 @@ public class Bruker {
             @Parameter(name = "increment_size", value = "1")
     })
     private Long id;
-
     @Column(name = "BRUKER_ID")
     private String brukerId;
-
     @Column(name = "BRUKERNAVN")
     private String brukernavn;
-
     @Column(name = "EPOST")
     private String epost;
-
     @Column(name = "NAV_IDENT", length = 10)
     private String navIdent;
-
     @Column(name = "MIGRERT")
     private Boolean migrert;
-
+    @Column(name = "BRUKERTYPE")
+    @Enumerated(EnumType.STRING)
+    private Brukertype brukertype;
     @ManyToOne
     @JoinColumn(name = "EID_AV_ID")
     private Bruker eidAv;
-
     @OneToMany(mappedBy = "opprettetAv")
     private Set<Testgruppe> testgrupper;
-
     @ManyToMany
     @JoinTable(name = "BRUKER_FAVORITTER",
             joinColumns = @JoinColumn(name = "bruker_id"),
@@ -115,4 +112,6 @@ public class Bruker {
                 .append(getMigrert())
                 .toHashCode();
     }
+
+    public enum Brukertype {AZURE, BANKID, BASIC}
 }
