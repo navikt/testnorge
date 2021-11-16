@@ -52,7 +52,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
 
     implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.5.12'
-    implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.0'
     implementation 'org.hibernate.validator:hibernate-validator'
 
     implementation 'io.r2dbc:r2dbc-h2'

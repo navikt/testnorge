@@ -60,7 +60,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
 
     implementation 'org.hibernate.validator:hibernate-validator'
-    implementation 'org.springframework.kafka:spring-kafka:2.7.8'
+    implementation 'org.springframework.kafka:spring-kafka'
     implementation 'org.apache.kafka:kafka-clients:7.0.0-ce'
     implementation 'io.confluent:kafka-avro-serializer:7.0.0'
 

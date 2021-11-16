@@ -19,7 +19,7 @@ java.sourceCompatibility = JavaVersion.VERSION_17
 
 dependencies {
     implementation 'javax.activation:activation:1.1'
-    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+    implementation 'javax.xml.bind:jaxb-api'
 
     xjc 'javax.xml.bind:jaxb-api:2.3.1'
     xjc 'com.sun.xml.bind:jaxb-xjc:2.3.1'

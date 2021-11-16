@@ -81,7 +81,7 @@ dependencies {
     implementation 'javax.validation:validation-api:2.0.1.Final'
 
     implementation 'org.apache.httpcomponents:httpclient:4.5.13'
-    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+    implementation 'javax.xml.bind:jaxb-api'
     implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
 
     implementation 'org.projectlombok:lombok'
