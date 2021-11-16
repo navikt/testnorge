@@ -1,6 +1,6 @@
 package no.nav.registre.inntekt.config;
 
-import static net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;

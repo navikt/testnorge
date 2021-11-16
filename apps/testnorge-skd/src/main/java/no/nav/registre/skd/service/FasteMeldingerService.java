@@ -1,6 +1,6 @@
 package no.nav.registre.skd.service;
 
-import static net.logstash.logback.encoder.org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.opprettStatsborgerendringsmelding;
 import static no.nav.registre.skd.service.utilities.RedigereSkdmeldingerUtility.setObligatoriskeFelt;
 
