@@ -150,6 +150,7 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
                             personRepository.findByIdent(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer()).get()
                                     .getPerson().getBostedsadresse().stream().findFirst().get(),
                             KontaktinformasjonForDoedsboAdresse.class));
+                    kontaktinfo.getPersonSomKontakt().setNavn(null);
 
                 } else {
                     kontaktinfo.getPersonSomKontakt().setIsIdentExternal(true);
