@@ -31,7 +31,7 @@ public class FrontChannelLogoutProdController {
         var redisOperations = sessionRepository.getSessionRedisOperations();
         return redisOperations.delete(redisOperations.scan(ScanOptions.NONE)
                 .flatMap(sessionKey -> Mono.zip(Mono.just(sessionKey), sessionContainsSid(sessionKey, sid)))
-                .filter(ziped -> ziped.getT2())
+                .filter(Tuple2::getT2)
                 .map(Tuple2::getT1)
                 .collectList()
                 .flatMapMany(Flux::fromIterable)
