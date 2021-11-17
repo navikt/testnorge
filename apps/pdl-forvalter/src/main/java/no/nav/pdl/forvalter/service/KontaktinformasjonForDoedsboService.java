@@ -306,11 +306,20 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
 
     private void leggTilNyAddressat(KontaktpersonDTO kontakt, String hovedperson) {
 
+        if (isNull(kontakt.getNyKontaktperson())) {
+            kontakt.setNyKontaktperson(new PersonRequestDTO());
+        }
+
+        if (isNull(kontakt.getNyKontaktperson().getAlder()) &&
+                isNull(kontakt.getNyKontaktperson().getFoedtEtter()) &&
+                isNull(kontakt.getNyKontaktperson().getFoedtFoer())) {
+
+            kontakt.getNyKontaktperson().setFoedtFoer(LocalDateTime.now().minusYears(18));
+            kontakt.getNyKontaktperson().setFoedtEtter(LocalDateTime.now().minusYears(75));
+        }
+
         kontakt.setIdentifikasjonsnummer(
-                createPersonService.execute(PersonRequestDTO.builder()
-                        .foedtFoer(LocalDateTime.now().minusYears(18))
-                        .foedtEtter(LocalDateTime.now().minusYears(67))
-                        .build()).getIdent());
+                createPersonService.execute(kontakt.getNyKontaktperson()).getIdent());
         relasjonService.setRelasjoner(hovedperson, RelasjonType.AVDOEDD_FOR_KONTAKT,
                 kontakt.getIdentifikasjonsnummer(), RelasjonType.KONTAKT_FOR_DOEDSBO);
     }
