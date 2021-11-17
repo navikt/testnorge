@@ -47,14 +47,19 @@ AdressePanel.initialValues = ({ set, setMulti, del, has }) => ({
 		label: 'Har utenlandsk boadresse',
 		checked: has('pdldata.person.bostedsadresse'),
 		add: () =>
-			setMulti(['pdldata.person.bostedsadresse', [
-				{
-					utenlandskAdresse: initialUtenlandskAdresse,
-					kilde: 'Dolly',
-					master: 'PDL',
-					gjeldende: true,
-				},
-			], ['tpsf.harUtenlandskadresse'], true]),
+			setMulti([
+				'pdldata.person.bostedsadresse',
+				[
+					{
+						utenlandskAdresse: initialUtenlandskAdresse,
+						kilde: 'Dolly',
+						master: 'PDL',
+						gjeldende: true,
+					},
+				],
+				['tpsf.harUtenlandskadresse'],
+				true,
+			]),
 		remove: () => del(['pdldata.person.bostedsadresse', 'tpsf.harUtenlandskadresse']),
 	},
 	postadresse: {
