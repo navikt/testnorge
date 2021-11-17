@@ -8,6 +8,7 @@ import org.springframework.session.Session;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
 
@@ -64,17 +65,20 @@ public class OidcReactiveMapSessionRepository implements ReactiveSessionReposito
     }
 
     public Mono<Void> deleteBySid(String sid) {
-        if (sid == null) return Mono.empty();
+        return Mono.fromRunnable(() -> {
+            if (sid == null) return;
 
-        for (Map.Entry<String, Session> entry : sessions.entrySet()) {
-            var securityContext = (SecurityContextImpl) entry.getValue().getAttribute("SPRING_SECURITY_CONTEXT");
-            if (securityContext == null) {
-                continue;
-            }
-            var principal = (DefaultOidcUser) securityContext.getAuthentication().getPrincipal();
-            if (Objects.equals(sid, principal.getClaims().get("sid"))) return this.deleteById(entry.getKey());
-        }
+            var sessionsToBeDeleted = new ArrayList<String>();
 
-        return Mono.empty();
+            sessions.forEach((key, value) -> {
+                var securityContext = (SecurityContextImpl) value.getAttribute("SPRING_SECURITY_CONTEXT");
+                if (securityContext != null) {
+                    var principal = (DefaultOidcUser) securityContext.getAuthentication().getPrincipal();
+                    if (Objects.equals(sid, principal.getClaims().get("sid"))) sessionsToBeDeleted.add(key);
+                }
+            });
+
+            sessionsToBeDeleted.forEach(this.sessions::remove);
+        });
     }
 }
