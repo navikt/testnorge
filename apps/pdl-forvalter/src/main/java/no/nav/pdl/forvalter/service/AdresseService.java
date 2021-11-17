@@ -100,8 +100,8 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
 
     protected void populateMiscFields(AdresseDTO adresse, PersonDTO person) {
 
-        if (isNull(adresse.getGyldigFraOgMed())) {
-            adresse.setGyldigFraOgMed(person.getBostedsadresse().stream()
+        if (isNull(adresse.getAngittFlyttedato())) {
+            adresse.setAngittFlyttedato(person.getBostedsadresse().stream()
                     .reduce((a1, a2) -> a2)
                     .filter(adr -> isNull(adr.getGyldigFraOgMed()))
                     .map(adr -> DatoFraIdentUtility.getDato(person.getIdent()).plusDays(1).atStartOfDay())

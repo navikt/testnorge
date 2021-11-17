@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 public abstract class AdresseDTO extends DbVersjonDTO {
 
     private String adresseIdentifikatorFraMatrikkelen;
+    private LocalDateTime angittFlyttedato;
     private LocalDateTime gyldigFraOgMed;
     private LocalDateTime gyldigTilOgMed;
 
