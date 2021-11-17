@@ -7,6 +7,7 @@ on:
       - feature/frontend-testcafe
     paths:
       - apps/dolly-frontend/**
+      - .github/workflows/deploy.dolly-frontend.dev.yml
   workflow_dispatch:
 
 env:
@@ -54,7 +55,7 @@ jobs:
         uses: DevExpress/testcafe-action@latest
         with:
           skip-install: true
-          args: chrome:headless tests/ --app-init-delay 60000 --app "npm start" --cache
+          args: chrome:headless tests/ --app-init-delay 60000 --app "npm run start" --cache
       - name: Build and publish Docker image
         working-directory: ./apps/dolly-frontend/
         env:
@@ -70,10 +71,3 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
           RESOURCE: apps/dolly-frontend/config.dev.yml
-  test:
-    name: Run TestCafe Tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out the repository
-        uses: actions/checkout@v1
-      - run: npm ci
