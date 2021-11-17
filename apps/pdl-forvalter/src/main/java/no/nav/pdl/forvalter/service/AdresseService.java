@@ -104,7 +104,7 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
             adresse.setGyldigFraOgMed(person.getBostedsadresse().stream()
                     .reduce((a1, a2) -> a2)
                     .filter(adr -> isNull(adr.getGyldigFraOgMed()))
-                    .map(adr -> DatoFraIdentUtility.getDato(person.getIdent()).atStartOfDay())
+                    .map(adr -> DatoFraIdentUtility.getDato(person.getIdent()).atTime(12,00))
                     .orElse(LocalDateTime.now()));
         }
         adresse.setKilde(StringUtils.isNotBlank(adresse.getKilde()) ? adresse.getKilde() : "Dolly");
