@@ -24,7 +24,6 @@ import no.nav.testnav.libs.reactivesessionsecurity.resolver.ClientRegistrationId
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.RedisTokenResolver;
 
 
-@Slf4j
 @Configuration
 @EnableRedisWebSession
 @Import({
@@ -37,7 +36,6 @@ import no.nav.testnav.libs.reactivesessionsecurity.resolver.RedisTokenResolver;
         UserJwtExchange.class
 })
 public class OicdRedisSessionConfiguration {
-
     @Bean
     @ConditionalOnMissingBean
     public TokenExchange tokenExchange(
