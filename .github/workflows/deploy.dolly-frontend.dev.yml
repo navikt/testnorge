@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - feature/endre-navn-dolly
+      - feature/disable-automatisk-adresse-tpsf
     paths:
       - apps/dolly-frontend/**
   workflow_dispatch:

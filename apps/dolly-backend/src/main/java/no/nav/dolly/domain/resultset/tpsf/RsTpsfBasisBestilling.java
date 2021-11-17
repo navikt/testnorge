@@ -37,6 +37,9 @@ public class RsTpsfBasisBestilling {
     @Schema(description = "Merknad: Boadresse er enten gateadresse (GATE) eller matrikkeladresse (MATR)")
     private RsAdresse boadresse;
 
+    @Schema(description = "Når satt skal ikke automatisk adresse genereres i TPSF")
+    private Boolean harUtenlandskAdresse;
+
     @Schema(description = "Merknad: Foreløbig benyttes kun første postadresse i tabell")
     private List<RsPostadresse> postadresse;
 
