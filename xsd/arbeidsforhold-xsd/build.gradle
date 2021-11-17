@@ -21,7 +21,7 @@ dependencies {
     implementation 'javax.activation:activation:1.1.1'
     implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
 
-    xjc 'javax.xml.bind:jaxb-api'
+    xjc 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
     xjc 'com.sun.xml.bind:jaxb-xjc:3.0.1'
     xjc 'com.sun.xml.bind:jaxb-impl:3.0.1'
     xjc 'com.sun.istack:istack-commons-runtime:4.0.1'
