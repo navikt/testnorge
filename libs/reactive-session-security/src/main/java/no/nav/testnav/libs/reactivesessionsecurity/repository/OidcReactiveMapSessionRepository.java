@@ -64,9 +64,9 @@ public class OidcReactiveMapSessionRepository implements ReactiveSessionReposito
     }
 
     public Mono<Void> deleteBySid(String sid) {
-        if (sid == null) return null;
+        if (sid == null) return Mono.empty();
 
-        for(Map.Entry<String,Session> entry: sessions.entrySet()){
+        for (Map.Entry<String, Session> entry : sessions.entrySet()) {
             var securityContext = (SecurityContextImpl) entry.getValue().getAttribute("SPRING_SECURITY_CONTEXT");
             if (securityContext == null) {
                 continue;
@@ -75,6 +75,6 @@ public class OidcReactiveMapSessionRepository implements ReactiveSessionReposito
             if (Objects.equals(sid, principal.getClaims().get("sid"))) return this.deleteById(entry.getKey());
         }
 
-        return null;
+        return Mono.empty();
     }
 }
