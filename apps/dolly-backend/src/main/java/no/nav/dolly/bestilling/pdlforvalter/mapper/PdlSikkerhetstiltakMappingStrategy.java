@@ -56,7 +56,7 @@ public class PdlSikkerhetstiltakMappingStrategy implements MappingStrategy {
                         sikkerhetstiltak.setBeskrivelse(nullcheckSetDefaultValue(person.getBeskrSikkerhetTiltak(),
                                 getBeskrivelse(person.getTypeSikkerhetTiltak())));
                         sikkerhetstiltak.setGyldigFraOgMed(getDate(person.getSikkerhetTiltakDatoFom()));
-                        sikkerhetstiltak.setGyldigTilOgMed(getDate(person.getSikkerhetTiltakDatoFom()));
+                        sikkerhetstiltak.setGyldigTilOgMed(getDate(person.getSikkerhetTiltakDatoTom()));
 
                         sikkerhetstiltak.setKilde(CONSUMER);
                         sikkerhetstiltak.setMaster(Master.PDL);

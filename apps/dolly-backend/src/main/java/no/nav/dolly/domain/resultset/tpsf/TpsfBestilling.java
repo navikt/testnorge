@@ -43,6 +43,8 @@ public class TpsfBestilling {
 
     private RsAdresse boadresse;
 
+    private Boolean harIngenAdresse;
+
     private List<RsPostadresse> postadresse;
 
     private RsMidlertidigAdresse midlertidigAdresse;

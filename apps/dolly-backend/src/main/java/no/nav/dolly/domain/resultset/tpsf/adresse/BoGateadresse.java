@@ -1,5 +1,6 @@
 package no.nav.dolly.domain.resultset.tpsf.adresse;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
@@ -24,6 +25,7 @@ public class BoGateadresse extends BoAdresse {
 
     @Override
     public String getAdressetype() {
-        return "GATE";
+
+        return !"UTEN FAST BOSTED".equals(getGateadresse()) ? "GATE" : "ANNET";
     }
 }
