@@ -10,11 +10,11 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Service
-public class EndringsmeldingConsumer extends TpsConsumer {
+public class ServicerutineConsumer extends TpsConsumer {
 
-    public static final String XML_REQUEST_QUEUE_ENDRINGSMELDING_ALIAS = "412.SFE_ENDRINGSMELDING";
+    private static final String XML_REQUEST_QUEUE_SERVICE_RUTINE_ALIAS = "411.TPS_FORESPORSEL_XML_O";
 
-    public EndringsmeldingConsumer(ConnectionFactoryFactory connectionFactoryFactory) throws JAXBException {
+    public ServicerutineConsumer(ConnectionFactoryFactory connectionFactoryFactory) throws JAXBException {
         super(connectionFactoryFactory);
     }
 
@@ -23,7 +23,7 @@ public class EndringsmeldingConsumer extends TpsConsumer {
 
         return isBlank(queue) ?
                 String.format("%s%s_%s", PREFIX_MQ_QUEUES, miljoe.toUpperCase(),
-                        XML_REQUEST_QUEUE_ENDRINGSMELDING_ALIAS) :
+                        XML_REQUEST_QUEUE_SERVICE_RUTINE_ALIAS) :
                 queue;
     }
 }

@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlType;
 @AllArgsConstructor
 @XmlType(propOrder = {"offentligIdent", "fom"})
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class TpsServiceRoutineEndring {
+public class TpsEndringsopplysninger {
 
     private String offentligIdent;
     private String fom;

@@ -50,7 +50,7 @@ public class KontaktopplysningerService {
 
             var request = mapperFacade.map(kontaktopplysninger, KontaktopplysningerRequest.class, context);
             var requestXml = marshallToXML(requestContext, request);
-            var miljoerResponse = endringsmeldingConsumer.sendEndringsmelding(requestXml, miljoer);
+            var miljoerResponse = endringsmeldingConsumer.sendMessage(requestXml, miljoer);
 
             return miljoerResponse.entrySet().stream()
                     .collect(Collectors.toMap(Entry::getKey, entry -> {

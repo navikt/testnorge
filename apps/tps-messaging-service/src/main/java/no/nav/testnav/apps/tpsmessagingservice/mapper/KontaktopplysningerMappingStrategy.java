@@ -5,7 +5,7 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.apps.tpsmessagingservice.dto.KontaktopplysningerRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.SfeSpraak;
-import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServiceRoutineEndring;
+import no.nav.testnav.apps.tpsmessagingservice.dto.TpsEndringsopplysninger;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsSystemInfo;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.KontaktopplysningerRequestDTO;
 import org.springframework.stereotype.Component;
@@ -29,7 +29,7 @@ public class KontaktopplysningerMappingStrategy implements MappingStrategy {
                                 .kilde("Dolly")
                                 .brukerID("anonymousUser")
                                 .build());
-                        sfeAjourforing.setEndreKontaktopplysninger(TpsServiceRoutineEndring.builder()
+                        sfeAjourforing.setEndreKontaktopplysninger(TpsEndringsopplysninger.builder()
                                 .offentligIdent((String) context.getProperty("ident"))
                                 .build());
 

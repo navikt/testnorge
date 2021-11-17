@@ -8,7 +8,6 @@ import no.nav.testnav.libs.dto.tpsmessagingservice.v1.EndringsmeldingResponseDTO
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -57,7 +56,6 @@ public class EndringsmeldingUtil {
     public static String marshallToXML(JAXBContext requestContext, EndringsmeldingRequest endringsmelding) throws JAXBException {
 
         var marshaller = requestContext.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
         var writer = new StringWriter();
         marshaller.marshal(endringsmelding, writer);

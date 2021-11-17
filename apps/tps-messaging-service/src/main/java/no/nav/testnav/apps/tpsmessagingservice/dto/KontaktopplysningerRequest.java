@@ -25,7 +25,7 @@ public class KontaktopplysningerRequest extends EndringsmeldingRequest {
     public static class SfeAjourforing {
 
         private TpsSystemInfo systemInfo;
-        private TpsServiceRoutineEndring endreKontaktopplysninger;
+        private TpsEndringsopplysninger endreKontaktopplysninger;
 
         private SfeSpraak endringAvSprak;
         private KontaktopplysningerRequestDTO.Kontonummer endringAvKontonr;

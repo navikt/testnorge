@@ -24,6 +24,7 @@ config:
     queueManager: MQLS03
     user: ${mq.dev.username}
     password: ${mq.dev.password}
+  miljoer: u5, t0, t1, t2, t3, t4, t5, t6, t13, q0, q1, q2, q4, q5, q6, qx
 
 #  queueManagers:
 #    - environment: d
@@ -50,23 +51,3 @@ consumers:
     cluster: dev-fss
     namespace: dolly
     name: testnav-pdl-proxy
-
-#
-#
-#
-#- u5
-#- t0
-#- t1
-#- t2
-#- t3
-#- t4
-#- t5
-#- t6
-#- t13
-#- q0
-#- q1
-#- q2
-#- q4
-#- q5
-#- q6
-#- qx

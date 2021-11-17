@@ -71,7 +71,7 @@ public class EgenansattService {
             var request = mapperFacade.map(new EndringsmeldingRequest(), EgenansattRequest.class, context);
 
             var requestXml = marshallToXML(requestContext, updateRequest(request, isOpprett));
-            var miljoerResponse = endringsmeldingConsumer.sendEndringsmelding(requestXml, miljoer);
+            var miljoerResponse = endringsmeldingConsumer.sendMessage(requestXml, miljoer);
 
             return miljoerResponse.entrySet().stream()
                     .collect(Collectors.toMap(Entry::getKey, entry -> {

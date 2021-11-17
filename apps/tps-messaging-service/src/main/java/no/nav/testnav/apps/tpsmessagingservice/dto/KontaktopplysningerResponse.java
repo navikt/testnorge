@@ -23,7 +23,7 @@ public class KontaktopplysningerResponse extends EndringsmeldingResponse {
     public static class SfeAjourforing {
 
         private TpsSystemInfo systemInfo;
-        private TpsServiceRoutineEndring endreKontaktopplysninger;
+        private TpsEndringsopplysninger endreKontaktopplysninger;
 
         private SfeSpraak endringAvSprak;
         private KontaktopplysningerRequestDTO.Kontonummer endringAvKontonr;
