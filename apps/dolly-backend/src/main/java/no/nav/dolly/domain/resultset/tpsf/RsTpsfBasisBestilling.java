@@ -37,8 +37,8 @@ public class RsTpsfBasisBestilling {
     @Schema(description = "Merknad: Boadresse er enten gateadresse (GATE) eller matrikkeladresse (MATR)")
     private RsAdresse boadresse;
 
-    @Schema(description = "Når satt skal ikke automatisk adresse genereres i TPSF")
-    private Boolean harUtenlandskAdresse;
+    @Schema(description = "Når satt skal TPSF ikke generere implisitte adresser")
+    private Boolean harIngenAdresse;
 
     @Schema(description = "Merknad: Foreløbig benyttes kun første postadresse i tabell")
     private List<RsPostadresse> postadresse;
@@ -137,8 +137,8 @@ public class RsTpsfBasisBestilling {
     private String typeSikkerhetTiltak;
 
     @Size(min = 1, max = 50)
-    @Schema(description = "Beskrivelse av type sikkerhetstiltak: \'Fysisk utestengelse\', \'Telefonisk utestengelse\', " +
-            "\'Fysisk/telefonisk utestengelse\', \'Digital utestengelse\' og \'To ansatte i samtale\'")
+    @Schema(description = "Beskrivelse av type sikkerhetstiltak: 'Fysisk utestengelse', 'Telefonisk utestengelse', " +
+            "'Fysisk/telefonisk utestengelse', 'Digital utestengelse' og 'To ansatte i samtale'")
     private String beskrSikkerhetTiltak;
 
     @Schema(description = "Når sikkerhetstiltaket starter, dato fra-og-med")

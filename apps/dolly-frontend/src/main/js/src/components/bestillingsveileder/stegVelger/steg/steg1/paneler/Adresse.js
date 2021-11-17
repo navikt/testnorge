@@ -57,10 +57,10 @@ AdressePanel.initialValues = ({ set, setMulti, del, has }) => ({
 						gjeldende: true,
 					},
 				],
-				['tpsf.harUtenlandskadresse'],
+				['tpsf.harIngenAdresse'],
 				true,
 			]),
-		remove: () => del(['pdldata.person.bostedsadresse', 'tpsf.harUtenlandskadresse']),
+		remove: () => del(['pdldata.person.bostedsadresse', 'tpsf.harIngenAdresse']),
 	},
 	postadresse: {
 		label: 'Har postadresse',

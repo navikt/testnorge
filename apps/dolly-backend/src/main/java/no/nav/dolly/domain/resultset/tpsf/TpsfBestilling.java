@@ -43,7 +43,7 @@ public class TpsfBestilling {
 
     private RsAdresse boadresse;
 
-    private Boolean harUtenlandskadresse;
+    private Boolean harIngenAdresse;
 
     private List<RsPostadresse> postadresse;
 
