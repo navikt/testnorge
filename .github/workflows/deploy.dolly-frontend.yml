@@ -49,6 +49,11 @@ jobs:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
         run: ./gradlew :dolly-frontend:build
+      - name: Run testCafe tests
+        uses: DevExpress/testcafe-action@latest
+        with:
+          skip-install: true
+          args: chrome:headless tests/ --app-init-delay 60000 --app "npm start" --cache
       - name: Build and publish Docker image
         working-directory: ./apps/dolly-frontend/
         env:

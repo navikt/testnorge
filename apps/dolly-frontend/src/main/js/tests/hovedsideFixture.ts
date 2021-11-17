@@ -34,8 +34,8 @@ const gruppeHentet = {
 	id: 1,
 	navn: 'Testytest',
 	hensikt: 'Testing av testytest',
-	opprettetAv: { brukerId: '1234-5678-12', brukernavn: 'Cafe, Test', epost: 'Testcafe@nav.no' },
-	sistEndretAv: { brukerId: '1234-5678-12', brukernavn: 'Cafe, Test', epost: 'Testcafe@nav.no' },
+	opprettetAv: gjeldendeBruker,
+	sistEndretAv: gjeldendeBruker,
 	datoEndret: '1980-01-12',
 	antallIdenter: 0,
 	antallIBruk: 0,
@@ -47,8 +47,6 @@ const gruppeHentet = {
 const cookieMock = RequestMock()
 	.onRequestTo(miljoer)
 	.respond('["q1","q2","q4","q5","qx","t0","t1","t13","t2","t3","t4","t5","t6","u5"]', 200)
-	.onRequestTo(dollyLogg)
-	.respond(null, 200)
 	.onRequestTo(hentGrupper)
 	.respond('[]', 200)
 	.onRequestTo(spesifikkGruppe)
@@ -58,7 +56,7 @@ const cookieMock = RequestMock()
 	.onRequestTo(ids)
 	.respond('["VELKOMMEN_TIL_DOLLY"]', 200)
 	.onRequestTo(azureAuth)
-	.respond("<script>window.location.href='http://localhost:3000/';</script>", 200)
+	.respond(null, 200)
 	.onRequestTo(dollyLogg)
 	.respond(null, 200)
 	.onRequestTo(bestillingGruppe)
