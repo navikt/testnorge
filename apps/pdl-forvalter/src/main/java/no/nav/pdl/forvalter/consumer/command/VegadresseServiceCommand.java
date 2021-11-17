@@ -38,6 +38,7 @@ public class VegadresseServiceCommand implements Callable<Mono<VegadresseDTO[]>>
                 .postnummer("0661")
                 .husnummer(2)
                 .kommunenummer("0301")
+                .poststed("Oslo")
                 .build();
     }
 

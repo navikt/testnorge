@@ -182,11 +182,20 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
 
     private Flux<Void> setAdresse(KontaktinformasjonForDoedsboDTO kontaktinfo) {
 
-        kontaktinfo.setAdresse(mapperFacade.map(adresseServiceConsumer.getVegadresse(VegadresseDTO.builder()
-                .postnummer(nonNull(kontaktinfo.getAdresse()) ? kontaktinfo.getAdresse().getPostnummer() : null)
-                .build(), null), KontaktinformasjonForDoedsboAdresse.class));
-
+        kontaktinfo.setAdresse(getAdresse(kontaktinfo));
         return Flux.empty();
+    }
+
+    private KontaktinformasjonForDoedsboAdresse getAdresse(KontaktinformasjonForDoedsboDTO kontaktinfo) {
+
+        if (nonNull(kontaktinfo.getAdresse()) && isNotBlank(kontaktinfo.getAdresse().getAdresselinje1())) {
+            return kontaktinfo.getAdresse();
+
+        } else {
+            return mapperFacade.map(adresseServiceConsumer.getVegadresse(VegadresseDTO.builder()
+                    .postnummer(nonNull(kontaktinfo.getAdresse()) ? kontaktinfo.getAdresse().getPostnummer() : null)
+                    .build(), null), KontaktinformasjonForDoedsboAdresse.class);
+        }
     }
 
     private Flux<Void> setOrganisasjonsnavnOgAdresse(KontaktinformasjonForDoedsboDTO kontaktinfo, OrganisasjonDTO
