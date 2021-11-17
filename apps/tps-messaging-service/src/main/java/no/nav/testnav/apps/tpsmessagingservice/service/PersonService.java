@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.ServicerutineConsumer;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServicerutineRequest;
 import no.nav.testnav.apps.tpsmessagingservice.utils.ServiceRutineUtil;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
 import no.nav.tps.ctg.s610.domain.S610PersonType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Objects.isNull;
 import static no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil.getErrorStatus;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -40,9 +43,11 @@ public class PersonService {
     private final ServicerutineConsumer servicerutineConsumer;
     private final JAXBContext requestContext;
     private final JAXBContext responseContext;
+    private final MiljoerService miljoerService;
 
-    public PersonService(ServicerutineConsumer servicerutineConsumer) throws JAXBException {
+    public PersonService(ServicerutineConsumer servicerutineConsumer, MiljoerService miljoerService) throws JAXBException {
         this.servicerutineConsumer = servicerutineConsumer;
+        this.miljoerService = miljoerService;
         this.requestContext = JAXBContext.newInstance(TpsServicerutineRequest.class);
         this.responseContext = JAXBContext.newInstance(S610PersonType.class);
     }
@@ -62,7 +67,11 @@ public class PersonService {
         }
     }
 
-    public void getPerson(String ident, List<String> miljoer) {
+    public Map<String, PersonDTO> getPerson(String ident, List<String> miljoer) {
+
+        if (miljoer.isEmpty()) {
+            miljoer = miljoerService.getMiljoer();
+        }
 
         try {
             var request = TpsServicerutineRequest.builder()

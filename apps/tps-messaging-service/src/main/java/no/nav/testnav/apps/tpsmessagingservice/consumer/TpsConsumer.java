@@ -1,5 +1,9 @@
 package no.nav.testnav.apps.tpsmessagingservice.consumer;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.command.EndringsMeldingCommand;
 import no.nav.testnav.apps.tpsmessagingservice.dto.EndringsmeldingErrorResponse;
@@ -18,7 +22,10 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
@@ -27,7 +34,8 @@ public abstract class TpsConsumer {
 
     protected static final String PREFIX_MQ_QUEUES = "QA.";
     private static final String CHANNEL_SUFFIX = "_TESTNAV_TPS_MSG_S";
-
+    private final ConnectionFactoryFactory connectionFactoryFactory;
+    private final JAXBContext responseErrorContext;
     @Value("${config.mq.queueManager}")
     private String queueManager;
     @Value("${config.mq.conn-name}")
@@ -43,16 +51,11 @@ public abstract class TpsConsumer {
     @Value("${config.mq.queue:}")
     private String queue;
 
-    private final ConnectionFactoryFactory connectionFactoryFactory;
-    private final JAXBContext responseErrorContext;
-
     public TpsConsumer(ConnectionFactoryFactory connectionFactoryFactory) throws JAXBException {
 
         this.connectionFactoryFactory = connectionFactoryFactory;
         this.responseErrorContext = JAXBContext.newInstance(EndringsmeldingErrorResponse.class);
     }
-
-    protected abstract String getQueueName(String queue, String miljoe);
 
     private static String getChannelName(String channel, String miljoe) {
 
@@ -60,6 +63,8 @@ public abstract class TpsConsumer {
                 miljoe.toUpperCase() + CHANNEL_SUFFIX :
                 channel;
     }
+
+    protected abstract String getQueueName(String queue, String miljoe);
 
     private String marshallToXML(EndringsmeldingErrorResponse errorResponse) throws JAXBException {
 
@@ -74,39 +79,51 @@ public abstract class TpsConsumer {
 
     public Map<String, String> sendMessage(String melding, List<String> miljoer) {
 
-        var resultat = new HashMap<String, String>();
+        return miljoer.parallelStream()
+                .map(miljoe -> {
+                    try {
+                        return Map.Entry(miljoe,
+                                        new EndringsMeldingCommand(
+                                                connectionFactoryFactory.createConnectionFactory(
+                                                        new QueueManager(queueManager, host, port, getChannelName(channel, miljoe))),
+                                                getQueueName(queue, miljoe),
+                                                username,
+                                                password,
+                                                melding).call());
 
-        miljoer.forEach(miljoe -> {
-            try {
-                resultat.put(miljoe, new EndringsMeldingCommand(
-                        connectionFactoryFactory.createConnectionFactory(
-                                new QueueManager(queueManager, host, port, getChannelName(channel, miljoe))),
-                        getQueueName(queue, miljoe),
-                        username,
-                        password,
-                        melding).call());
+                    } catch (JMSException e) {
+                        try {
+                            return Map.of(miljoe,
+                                    marshallToXML(EndringsmeldingErrorResponse.builder()
+                                            .sfeTilbakeMelding(SfeTilbakeMelding.builder()
+                                                    .svarStatus(EndringsmeldingResponseDTO.builder()
+                                                            .returStatus("08")
+                                                            .returMelding("Teknisk feil, se logg!")
+                                                            .utfyllendeMelding(e.getMessage())
+                                                            .build())
+                                                    .build())
+                                            .build()));
 
-            } catch (JMSException e) {
-                try {
-                    resultat.put(miljoe, marshallToXML(EndringsmeldingErrorResponse.builder()
-                            .sfeTilbakeMelding(SfeTilbakeMelding.builder()
-                                    .svarStatus(EndringsmeldingResponseDTO.builder()
-                                            .returStatus("08")
-                                            .returMelding("Teknisk feil, se logg!")
-                                            .utfyllendeMelding(e.getMessage())
-                                            .build())
-                                    .build())
-                            .build()));
+                        } catch (JAXBException ex) {
 
-                } catch (JAXBException ex) {
+                            log.error("Marshalling av feilmelding feilet", ex);
+                        }
 
-                    log.error("Marshalling av feilmelding feilet", ex);
-                }
+                        log.error(e.getMessage(), e);
+                    }
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .collect(toMap(entry -> entry.getMiljoe(), entry -> entry.get));
+    }
 
-                log.error(e.getMessage(), e);
-            }
-        });
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    private static class TpsMiljoeResultat {
 
-        return resultat;
+        private String miljoe;
+        private String resultat;
     }
 }

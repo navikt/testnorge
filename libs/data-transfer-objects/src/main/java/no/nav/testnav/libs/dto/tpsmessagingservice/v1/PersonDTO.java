@@ -1,38 +1,21 @@
 package no.nav.testnav.libs.dto.tpsmessagingservice.v1;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-import static javax.persistence.CascadeType.ALL;
-import static no.nav.tps.forvalteren.domain.jpa.InnvandretUtvandret.InnUtvandret.INNVANDRET;
-import static no.nav.tps.forvalteren.domain.jpa.InnvandretUtvandret.InnUtvandret.UTVANDRET;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.validation.constraints.Size;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.tps.forvalteren.domain.jpa.embedded.ChangeStamp;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.InnvandretUtvandretDTO.InnUtvandret.INNVANDRET;
+import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.InnvandretUtvandretDTO.InnUtvandret.UTVANDRET;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Data
 @Builder
@@ -54,7 +37,7 @@ public class PersonDTO {
 
     private String forkortetNavn;
 
-    private List<Statsborgerskap> statsborgerskap;
+    private List<StatsborgerskapDTO> statsborgerskap;
 
     private String spesreg;
 
@@ -64,11 +47,11 @@ public class PersonDTO {
 
     private String sivilstand;
 
-    private List<Sivilstand> sivilstander;
+    private List<SivilstandDTO> sivilstander;
 
     private LocalDateTime sivilstandRegdato;
 
-    private List<InnvandretUtvandret> innvandretUtvandret;
+    private List<InnvandretUtvandretDTO> innvandretUtvandret;
 
     private LocalDateTime egenAnsattDatoFom;
 
@@ -82,19 +65,15 @@ public class PersonDTO {
 
     private String beskrSikkerhetTiltak;
 
-    private List<Adresse> boadresse;
+    private List<AdresseDTO> boadresse;
 
-    private List<Postadresse> postadresse;
+    private List<PostadresseDTO> postadresse;
 
     private LocalDateTime regdato;
 
-    private List<Relasjon> relasjoner;
+    private List<RelasjonDTO> relasjoner;
 
-    private List<IdentHistorikk> identHistorikk;
-
-    private List<MidlertidigAdresse> midlertidigAdresse;
-
-    private List<Vergemaal> vergemaal;
+    private List<MidlertidigAdresseDTO> midlertidigAdresse;
 
     private LocalDateTime opprettetDato;
 
@@ -132,90 +111,60 @@ public class PersonDTO {
 
     private String telefonnummer_2;
 
-    @Transient
-    private String replacedByIdent;
-
-    @Transient
-    private LocalDateTime aliasRegdato;
-
-    @Transient
-    private boolean isNyPerson;
-
-    public List<Postadresse> getPostadresse() {
+    public List<PostadresseDTO> getPostadresse() {
         if (isNull(postadresse)) {
             postadresse = new ArrayList<>();
         }
         return postadresse;
     }
 
-    public List<Relasjon> getRelasjoner() {
+    public List<RelasjonDTO> getRelasjoner() {
         if (isNull(relasjoner)) {
             relasjoner = new ArrayList<>();
         }
         return relasjoner;
     }
 
-    public List<IdentHistorikk> getIdentHistorikk() {
-        if (isNull(identHistorikk)) {
-            identHistorikk = new ArrayList<>();
-        }
-        return identHistorikk;
-    }
-
-    public List<Sivilstand> getSivilstander() {
+    public List<SivilstandDTO> getSivilstander() {
         if (isNull(sivilstander)) {
             sivilstander = new ArrayList<>();
         }
         return sivilstander;
     }
 
-    public List<Adresse> getBoadresse() {
+    public List<AdresseDTO> getBoadresse() {
         if (isNull(boadresse)) {
             boadresse = new ArrayList<>();
         }
         return boadresse;
     }
 
-    public List<Statsborgerskap> getStatsborgerskap() {
+    public List<StatsborgerskapDTO> getStatsborgerskap() {
         if (isNull(statsborgerskap)) {
             statsborgerskap = new ArrayList<>();
         }
         return statsborgerskap;
     }
 
-    public List<InnvandretUtvandret> getInnvandretUtvandret() {
+    public List<InnvandretUtvandretDTO> getInnvandretUtvandret() {
         if (isNull(innvandretUtvandret)) {
             innvandretUtvandret = new ArrayList<>();
         }
         return innvandretUtvandret;
     }
 
-    public List<MidlertidigAdresse> getMidlertidigAdresse() {
+    public List<MidlertidigAdresseDTO> getMidlertidigAdresse() {
         if (isNull(midlertidigAdresse)) {
             midlertidigAdresse = new ArrayList<>();
         }
         return midlertidigAdresse;
     }
 
-    public List<Vergemaal> getVergemaal() {
-        if (isNull(vergemaal)) {
-            vergemaal = new ArrayList<>();
-        }
-        return vergemaal;
-    }
-
-    public List<Fullmakt> getFullmakt() {
-        if (isNull(fullmakt)) {
-            fullmakt = new ArrayList<>();
-        }
-        return fullmakt;
-    }
-
     public String getLandkodeOfFirstInnvandret() {
 
         return getInnvandretUtvandret().stream()
                 .filter(innutvandret -> INNVANDRET == innutvandret.getInnutvandret())
-                .map(InnvandretUtvandret::getLandkode)
+                .map(InnvandretUtvandretDTO::getLandkode)
                 .reduce((a, b) -> b).orElse(null);
     }
 
@@ -223,7 +172,7 @@ public class PersonDTO {
 
         return getInnvandretUtvandret().stream()
                 .filter(innutvandret -> INNVANDRET == innutvandret.getInnutvandret())
-                .map(InnvandretUtvandret::getFlyttedato)
+                .map(InnvandretUtvandretDTO::getFlyttedato)
                 .reduce((a, b) -> b).orElse(null);
     }
 
@@ -244,8 +193,8 @@ public class PersonDTO {
             setIdenttype(getIdenttype().toUpperCase());
         }
 
-        getBoadresse().forEach(Adresse::toUppercase);
-        getPostadresse().forEach(Postadresse::toUppercase);
+        getBoadresse().forEach(AdresseDTO::toUppercase);
+        getPostadresse().forEach(PostadresseDTO::toUppercase);
 
         return this;
     }
