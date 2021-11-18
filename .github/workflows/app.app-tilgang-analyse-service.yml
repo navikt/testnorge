@@ -1,4 +1,4 @@
-name: app-tilgang-analyse-service
+name: App app-tilgang-analyse-service
 
 on:
   push:
@@ -17,7 +17,7 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    if: ${{  github.ref != 'refs/heads/master' && github.actor != 'dependabot[bot]' %% $INPUT_IS_PUBLISH_AND_DEPLOY != 'true' }}
+    if: ${{  github.ref != 'refs/heads/master' && github.actor != 'dependabot[bot]' && $INPUT_IS_PUBLISH_AND_DEPLOY != 'true' }}
     steps:
       - uses: actions/checkout@v1
       - name: Gradle cache
