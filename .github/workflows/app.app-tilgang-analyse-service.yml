@@ -20,8 +20,7 @@ jobs:
   build:
     uses: navikt/testnorge/.github/workflows/common.build.yml@github-workflows-new
     with:
-      buildPath: 'apps/app-tilgang-analyse-service/'
-      image: ${{ env.IMAGE }}
+      working-directory: 'apps/app-tilgang-analyse-service/'
   deploy-dev-gcp:
     name: Deploy til dev-gcp
     needs: build
