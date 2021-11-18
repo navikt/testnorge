@@ -5,18 +5,14 @@ on:
     paths:
       - apps/app-tilgang-analyse-service/**
       - .github/workflows/app.app-tilgang-analyse-service.yml
-  workflow_dispatch:
-    inputs:
-      deploy:
-        description: 'Should deploy?'
-        required: true
-        default: 'true'
-
-env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/app-tilgang-analyse-service:${{ github.sha }}
-  BUILD_PATH: 'apps/app-tilgang-analyse-service/'
 
 jobs:
+  scan:
+    uses: navikt/testnorge/.github/workflows/common.sonar.yml@github-workflows-new
+    with:
+      working-directory: 'apps/app-tilgang-analyse-service/'
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   build:
     uses: navikt/testnorge/.github/workflows/common.build.yml@github-workflows-new
     with:
@@ -24,15 +20,10 @@ jobs:
       appName: 'app-tilgang-analyse-service'
   deploy-dev-gcp:
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@github-workflows-new
+    needs: build
     with:
-      resource: 'apps/app-tilgang-analyse-service//config.yml'
+      resource: 'apps/app-tilgang-analyse-service/config.yml'
       appName: 'app-tilgang-analyse-service'
       cluster: 'dev-gcp'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-  scan:
-    uses: navikt/testnorge/.github/workflows/common.sonar.yml@github-workflows-new
-    with:
-      working-directory: 'apps/app-tilgang-analyse-service/'
-    secrets:
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
