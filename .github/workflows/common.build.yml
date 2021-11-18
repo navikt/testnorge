@@ -1,14 +1,18 @@
 on:
   workflow_call:
     inputs:
-      buildPath:
+      working-directory:
         description: "Build path for the app"
         type: string
         required: true
-      image:
-        description: "Image"
+      appName:
+        description: "Application name"
         type: string
         required: true
+
+
+env:
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/${{ inputs.appName }}:${{ github.sha }}
 
 jobs:
   build:
@@ -32,13 +36,12 @@ jobs:
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        working-directory: ${{ inputs.buildPath }}
+        working-directory: ${{ inputs.working-directory }}
         run: ./gradlew build
       - name: Build and publish Docker image
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          IMAGE: ${{ inputs.image }}
-        working-directory: ${{ inputs.buildPath }}
+        working-directory: ${{ inputs.working-directory }}
         run: |
           docker build --tag $IMAGE .
           docker login docker.pkg.github.com -u $GITHUB_REPOSITORY -p $GITHUB_TOKEN

@@ -39,6 +39,6 @@ jobs:
   scan:
     uses: navikt/testnorge/.github/workflows/common.sonar.yml@github-workflows-new
     with:
-      buildPath: 'apps/app-tilgang-analyse-service/'
+      working-directory: 'apps/app-tilgang-analyse-service/'
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
