@@ -158,11 +158,7 @@ export const Kontakt = ({ formikBag, path }) => {
 			)}
 
 			{kontaktType === 'NY_PERSON' && (
-				<PdlPersonForm
-					path={`${personPath}.nyKontaktperson`}
-					label={'Ny kontaktperson'}
-					formikBag={formikBag}
-				/>
+				<PdlPersonForm path={`${personPath}.nyKontaktperson`} formikBag={formikBag} />
 			)}
 		</Kategori>
 	)
