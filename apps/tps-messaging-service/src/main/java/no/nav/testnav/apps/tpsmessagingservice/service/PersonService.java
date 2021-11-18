@@ -103,7 +103,6 @@ public class PersonService {
     }
 
 
-
     private void attachReleasjoner(List<PersonRelasjonDiv> personRelasjoner) {
 
         personRelasjoner.forEach(personRelasjon -> {
