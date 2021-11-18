@@ -18,41 +18,15 @@ env:
 
 jobs:
   build:
-    name: Build
-    runs-on: ubuntu-latest
-    if: ${{ github.actor != 'dependabot[bot]' }}
-    steps:
-      - uses: actions/checkout@v1
-      - name: Gradle cache
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-      - uses: actions/setup-java@v1
-        with:
-          java-version: '17.x'
-      - name: Compile
-        env:
-          GITHUB_USERNAME: token
-          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        working-directory: ${{ env.BUILD_PATH }}
-        run: ./gradlew build
-      - name: Build and publish Docker image
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        working-directory: ${{ env.BUILD_PATH }}
-        run: |
-          docker build --tag $IMAGE .
-          docker login docker.pkg.github.com -u $GITHUB_REPOSITORY -p $GITHUB_TOKEN
-          docker push $IMAGE
-  deploy:
-    name: Deploy
+    uses: navikt/testnorge/.github/workflows/common.build.yml@github-workflows-new
+    with:
+      buildPath: 'apps/app-tilgang-analyse-service/'
+      image: ${{ env.IMAGE }}
+  deploy-dev-gcp:
+    name: Deploy til dev-gcp
     needs: build
     runs-on: ubuntu-latest
-    if: ${{  github.ref != 'refs/heads/master' && github.actor != 'dependabot[bot]' }}
+    if: ${{  github.ref == 'refs/heads/master' && github.actor != 'dependabot[bot]' }}
     steps:
       - uses: actions/checkout@v1
       - name: Deploy to dev-gcp
@@ -63,7 +37,7 @@ jobs:
           CLUSTER: dev-gcp
           RESOURCE: ${{ env.BUILD_PATH }}/config.yml
   scan:
-    uses: navikt/testnorge/.github/workflows/sonar.yml@github-workflows-new
+    uses: navikt/testnorge/.github/workflows/common.sonar.yml@github-workflows-new
     with:
       buildPath: 'apps/app-tilgang-analyse-service/'
     secrets:
