@@ -78,6 +78,7 @@ export default function GruppeOversikt({
 				setSidetall={setSidetall}
 				sideStoerrelse={sideStoerrelse}
 				setSideStoerrelse={setSideStoerrelse}
+				brukerProfil={brukerProfil}
 			/>
 		</div>
 	)
