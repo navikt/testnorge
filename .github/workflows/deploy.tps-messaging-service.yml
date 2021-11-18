@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - feature/tps-messaging-service
+      - feature/tps-services_flere_endepunkter
 
     paths:
       - apps/tps-messaging-service/**
