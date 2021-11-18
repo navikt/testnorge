@@ -11,6 +11,7 @@ on:
         description: 'Should deploy?'
         required: true
         default: 'true'
+
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/app-tilgang-analyse-service:${{ github.sha }}
   BUILD_PATH: 'apps/app-tilgang-analyse-service/'
@@ -19,7 +20,7 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    if: ${{  github.ref != 'refs/heads/master' && github.actor != 'dependabot[bot]' && env.DEPLOY != 'true' }}
+    if: ${{  github.ref != 'refs/heads/master' && github.actor != 'dependabot[bot]' }}
     steps:
       - uses: actions/checkout@v1
       - name: Gradle cache
@@ -42,7 +43,7 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    if: ${{  github.ref == 'refs/heads/master' && github.actor != 'dependabot[bot]' || env.DEPLOY == 'true' }}
+    if: ${{  github.ref == 'refs/heads/master' && github.actor != 'dependabot[bot]' }}
     steps:
       - uses: actions/checkout@v1
       - name: Gradle cache
@@ -80,7 +81,7 @@ jobs:
   scan:
     name: Sonar scan
     runs-on: ubuntu-latest
-    if: ${{ github.actor != 'dependabot[bot]' && env.DEPLOY != 'true' }}
+    if: ${{ github.actor != 'dependabot[bot]' }}
     steps:
       - uses: actions/checkout@v2
       - name: Fetch git history
