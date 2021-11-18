@@ -150,6 +150,7 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
                             personRepository.findByIdent(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer()).get()
                                     .getPerson().getBostedsadresse().stream().findFirst().get(),
                             KontaktinformasjonForDoedsboAdresse.class));
+                    kontaktinfo.getPersonSomKontakt().setNavn(null);
 
                 } else {
                     kontaktinfo.getPersonSomKontakt().setIsIdentExternal(true);
@@ -182,11 +183,20 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
 
     private Flux<Void> setAdresse(KontaktinformasjonForDoedsboDTO kontaktinfo) {
 
-        kontaktinfo.setAdresse(mapperFacade.map(adresseServiceConsumer.getVegadresse(VegadresseDTO.builder()
-                .postnummer(nonNull(kontaktinfo.getAdresse()) ? kontaktinfo.getAdresse().getPostnummer() : null)
-                .build(), null), KontaktinformasjonForDoedsboAdresse.class));
-
+        kontaktinfo.setAdresse(getAdresse(kontaktinfo));
         return Flux.empty();
+    }
+
+    private KontaktinformasjonForDoedsboAdresse getAdresse(KontaktinformasjonForDoedsboDTO kontaktinfo) {
+
+        if (nonNull(kontaktinfo.getAdresse()) && isNotBlank(kontaktinfo.getAdresse().getAdresselinje1())) {
+            return kontaktinfo.getAdresse();
+
+        } else {
+            return mapperFacade.map(adresseServiceConsumer.getVegadresse(VegadresseDTO.builder()
+                    .postnummer(nonNull(kontaktinfo.getAdresse()) ? kontaktinfo.getAdresse().getPostnummer() : null)
+                    .build(), null), KontaktinformasjonForDoedsboAdresse.class);
+        }
     }
 
     private Flux<Void> setOrganisasjonsnavnOgAdresse(KontaktinformasjonForDoedsboDTO kontaktinfo, OrganisasjonDTO
@@ -296,11 +306,20 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
 
     private void leggTilNyAddressat(KontaktpersonDTO kontakt, String hovedperson) {
 
+        if (isNull(kontakt.getNyKontaktperson())) {
+            kontakt.setNyKontaktperson(new PersonRequestDTO());
+        }
+
+        if (isNull(kontakt.getNyKontaktperson().getAlder()) &&
+                isNull(kontakt.getNyKontaktperson().getFoedtEtter()) &&
+                isNull(kontakt.getNyKontaktperson().getFoedtFoer())) {
+
+            kontakt.getNyKontaktperson().setFoedtFoer(LocalDateTime.now().minusYears(18));
+            kontakt.getNyKontaktperson().setFoedtEtter(LocalDateTime.now().minusYears(75));
+        }
+
         kontakt.setIdentifikasjonsnummer(
-                createPersonService.execute(PersonRequestDTO.builder()
-                        .foedtFoer(LocalDateTime.now().minusYears(18))
-                        .foedtEtter(LocalDateTime.now().minusYears(67))
-                        .build()).getIdent());
+                createPersonService.execute(kontakt.getNyKontaktperson()).getIdent());
         relasjonService.setRelasjoner(hovedperson, RelasjonType.AVDOEDD_FOR_KONTAKT,
                 kontakt.getIdentifikasjonsnummer(), RelasjonType.KONTAKT_FOR_DOEDSBO);
     }

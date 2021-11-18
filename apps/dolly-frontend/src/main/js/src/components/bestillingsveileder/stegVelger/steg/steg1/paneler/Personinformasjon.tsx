@@ -21,8 +21,17 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 	const tomInnvandretUtvandret =
 		personFoerLeggTil && _get(personFoerLeggTil, 'tpsf.innvandretUtvandret').length < 1
 
-	const harFnr = _get(personFoerLeggTil, 'tpsf.identtype') === 'FNR'
+	const harFnr = opts.identtype === 'FNR'
+	const harFnrLeggTil = _get(personFoerLeggTil, 'tpsf.identtype') === 'FNR'
 	//Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
+
+	const utvandretTitle = () => {
+		if (!harFnr) {
+			return 'Personer med identtype DNR eller BOST kan ikke utvandre fordi de ikke har norsk statsborgerskap'
+		} else if (leggTil && !tomInnvandretUtvandret && !innvandret(personFoerLeggTil)) {
+			return 'Personen må innvandre før den kan utvandre igjen'
+		} else return null
+	}
 
 	return (
 		<Panel
@@ -42,11 +51,11 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 				<Attributt
 					attr={sm.attrs.innvandretFraLand}
 					disabled={
-						(tomInnvandretUtvandret && harFnr) ||
+						(tomInnvandretUtvandret && harFnrLeggTil) ||
 						(!tomInnvandretUtvandret && innvandret(personFoerLeggTil))
 					}
 					title={
-						(tomInnvandretUtvandret && harFnr) ||
+						(tomInnvandretUtvandret && harFnrLeggTil) ||
 						(!tomInnvandretUtvandret && innvandret(personFoerLeggTil))
 							? 'Personen må utvandre før den kan innvandre igjen'
 							: null
@@ -54,12 +63,10 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 				/>
 				<Attributt
 					attr={sm.attrs.utvandretTilLand}
-					disabled={leggTil && !tomInnvandretUtvandret && !innvandret(personFoerLeggTil)}
-					title={
-						leggTil && !tomInnvandretUtvandret && !innvandret(personFoerLeggTil)
-							? 'Personen må innvandre før den kan utvandre igjen'
-							: null
+					disabled={
+						!harFnr || (leggTil && !tomInnvandretUtvandret && !innvandret(personFoerLeggTil))
 					}
+					title={utvandretTitle()}
 				/>
 			</AttributtKategori>
 			<AttributtKategori title="Diverse">

@@ -10,7 +10,7 @@ Prosjekt for å opprette og konfigurere testpersoner knyttet til fellesregistren
 
 ## Dokumentasjon
 ### Swagger
-Swagger finnes under /swagger-ui.html.
+Swagger finnes under /swagger-ui.html
 
 ## Lokal kjøring
 

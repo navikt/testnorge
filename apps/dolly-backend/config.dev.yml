@@ -16,6 +16,9 @@ spec:
         - application: dolly-frontend-dev
           cluster: dev-gcp
         - application: team-dolly-lokal-app
+        - application: app-1
+          namespace: plattformsikkerhet
+          cluster: dev-gcp
   webproxy: true
   azure:
     application:
