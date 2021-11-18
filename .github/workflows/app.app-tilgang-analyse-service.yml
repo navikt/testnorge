@@ -98,7 +98,7 @@ jobs:
         with:
           java-version: 1.17
       - name: Sonar Analysis
-        working-directory: ${{ $BUILD_PATH }}
+        working-directory: ${{ $env.BUILD_PATH }}
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
