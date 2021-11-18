@@ -69,38 +69,38 @@ const kontaktDoedsbo = Yup.array().of(
 	Yup.object({
 		skifteform: requiredString.nullable(),
 		attestutstedelsesdato: requiredDate,
-		adresse: Yup.object({
-			adresselinje1: requiredString,
-			adresselinje2: Yup.string().nullable(),
-			postnummer: requiredString,
-			poststedsnavn: requiredString,
-			landkode: requiredString,
-		}),
-		advokatSomKontakt: ifPresent(
-			'$pdldata.person.kontaktinformasjonForDoedsbo[0].advokatSomKontakt', //TODO: fix så den funker på alle
-			Yup.object({
-				organisasjonsnummer: Yup.string().nullable(),
-				organisasjonsnavn: Yup.string().nullable(),
-				kontaktperson: Yup.object({
-					fornavn: requiredString.nullable(),
-					mellomnavn: Yup.string().nullable(),
-					etternavn: requiredString.nullable(),
-				}),
-			})
-		),
-		personSomKontakt: ifPresent(
-			'$pdldata.person.kontaktinformasjonForDoedsbo[0].personSomKontakt', //TODO: fix så den funker på alle
-			Yup.object({
-				identifikasjonsnummer: Yup.string().nullable(),
-				foedselsdato: Yup.string().nullable(),
-				navn: Yup.object({
-					// TODO: bare hvis ikke identifikasjonsnummer er satt
-					fornavn: requiredString.nullable(),
-					mellomnavn: Yup.string().nullable(),
-					etternavn: requiredString.nullable(),
-				}),
-			})
-		),
+		// adresse: Yup.object({
+		// 	adresselinje1: Yup.string().nullable(),
+		// 	adresselinje2: Yup.string().nullable(),
+		// 	postnummer: requiredString,
+		// 	poststedsnavn: requiredString,
+		// 	landkode: requiredString,
+		// }),
+		// advokatSomKontakt: ifPresent(
+		// 	'$pdldata.person.kontaktinformasjonForDoedsbo[0].advokatSomKontakt', //TODO: fix så den funker på alle
+		// 	Yup.object({
+		// 		organisasjonsnummer: Yup.string().nullable(),
+		// 		organisasjonsnavn: Yup.string().nullable(),
+		// 		kontaktperson: Yup.object({
+		// 			fornavn: requiredString.nullable(),
+		// 			mellomnavn: Yup.string().nullable(),
+		// 			etternavn: requiredString.nullable(),
+		// 		}),
+		// 	})
+		// ),
+		// personSomKontakt: ifPresent(
+		// 	'$pdldata.person.kontaktinformasjonForDoedsbo[0].personSomKontakt', //TODO: fix så den funker på alle
+		// 	Yup.object({
+		// 		identifikasjonsnummer: Yup.string().nullable(),
+		// 		foedselsdato: Yup.string().nullable(),
+		// 		navn: Yup.object({
+		// 			// TODO: bare hvis ikke identifikasjonsnummer er satt
+		// 			fornavn: requiredString.nullable(),
+		// 			mellomnavn: Yup.string().nullable(),
+		// 			etternavn: requiredString.nullable(),
+		// 		}),
+		// 	})
+		// ),
 		organisasjonSomKontakt: ifPresent(
 			'$pdldata.person.kontaktinformasjonForDoedsbo[0].organisasjonSomKontakt', //TODO: fix så den funker på alle
 			Yup.object({

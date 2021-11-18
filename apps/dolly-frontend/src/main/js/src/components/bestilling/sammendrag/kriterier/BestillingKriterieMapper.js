@@ -919,19 +919,19 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						obj('Fødselsdato', Formatters.formatDate(item.personSomKontakt?.foedselsdato)),
 
 						obj(
-							'Fornavn',
+							'Kontaktperson fornavn',
 							item.advokatSomKontakt?.kontaktperson?.fornavn ||
 								item.organisasjonSomKontakt?.kontaktperson?.fornavn ||
 								item.personSomKontakt?.navn?.fornavn
 						),
 						obj(
-							'Mellomnavn',
+							'Kontaktperson mellomnavn',
 							item.advokatSomKontakt?.kontaktperson?.mellomnavn ||
 								item.organisasjonSomKontakt?.kontaktperson?.mellomnavn ||
 								item.personSomKontakt?.navn?.mellomnavn
 						),
 						obj(
-							'Etternavn',
+							'Kontaktperson etternavn',
 							item.advokatSomKontakt?.kontaktperson?.etternavn ||
 								item.organisasjonSomKontakt?.kontaktperson?.etternavn ||
 								item.personSomKontakt?.navn?.etternavn

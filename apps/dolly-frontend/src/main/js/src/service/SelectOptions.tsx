@@ -119,6 +119,7 @@ const selectOptions: SelectOptions = {
 		{ value: 'ADVOKAT', label: 'Advokat' },
 		{ value: 'ORGANISASJON', label: 'Organisasjon' },
 		{ value: 'PERSON', label: 'Person' },
+		{ value: 'NY_PERSON', label: 'Ny person' },
 	],
 
 	skifteform: [

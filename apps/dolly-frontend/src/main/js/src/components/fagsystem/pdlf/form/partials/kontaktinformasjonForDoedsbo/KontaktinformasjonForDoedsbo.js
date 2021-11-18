@@ -29,8 +29,8 @@ export const KontaktinformasjonForDoedsbo = ({ formikBag }) => {
 							name={`${path}.attestutstedelsesdato`}
 							label="Utstedelsesdato skifteattest"
 						/>
-						<Adresse formikBag={formikBag} path={`${path}.adresse`} />
 						<Kontakt formikBag={formikBag} path={path} />
+						<Adresse formikBag={formikBag} path={`${path}.adresse`} />
 						<AvansertForm path={path} kanVelgeMaster={false} />
 					</>
 				)
