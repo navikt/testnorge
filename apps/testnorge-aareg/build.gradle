@@ -79,7 +79,7 @@ dependencies {
 
     implementation 'com.jayway.jsonpath:json-path:2.6.0'
 
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.0'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
 
     implementation 'no.nav.tjenestespesifikasjoner:nav-fim-behandleArbeidsforhold-v1-tjenestespesifikasjon:1.2020.04.30-11.45-a45e1248c063'
     implementation 'org.apache.neethi:neethi:3.2.0'
