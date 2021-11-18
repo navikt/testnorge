@@ -6,23 +6,34 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ma.glasnost.orika.MapperFacade;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.ServicerutineConsumer;
+import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServiceRutine;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServicerutineRequest;
 import no.nav.testnav.apps.tpsmessagingservice.exception.BadRequestException;
 import no.nav.testnav.apps.tpsmessagingservice.utils.ServiceRutineUtil;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.RelasjonDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SivilstandDTO;
+import no.nav.tps.ctg.s610.domain.PersondataFraTpsS610Type;
 import no.nav.tps.ctg.s610.domain.RelasjonType;
-import no.nav.tps.ctg.s610.domain.S610PersonType;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import static java.util.Collections.emptyList;
+import static java.util.Objects.nonNull;
+import static no.nav.testnav.apps.tpsmessagingservice.mapper.S610PersonMappingStrategy.getSivilstand;
+import static no.nav.testnav.apps.tpsmessagingservice.mapper.S610PersonMappingStrategy.getTimestamp;
 import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.RelasjonDTO.ROLLE.FAR;
 import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.RelasjonDTO.ROLLE.MOR;
 import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.RelasjonDTO.ROLLE.PARTNER;
@@ -48,147 +59,15 @@ public class PersonService {
     private final JAXBContext requestContext;
     private final MiljoerService miljoerService;
     private final ObjectMapper objectMapper;
+    private final MapperFacade mapperFacade;
 
-    public PersonService(ServicerutineConsumer servicerutineConsumer, ObjectMapper objectMapper, MiljoerService miljoerService) throws JAXBException {
+    public PersonService(ServicerutineConsumer servicerutineConsumer, ObjectMapper objectMapper, MapperFacade mapperFacade, MiljoerService miljoerService) throws JAXBException {
         this.servicerutineConsumer = servicerutineConsumer;
         this.objectMapper = objectMapper;
+        this.mapperFacade = mapperFacade;
         this.miljoerService = miljoerService;
         this.requestContext = JAXBContext.newInstance(TpsServicerutineRequest.class);
     }
-
-    public Map<String, PersonDTO> getPerson(String ident, List<String> miljoer) {
-
-        if (miljoer.isEmpty()) {
-            miljoer = miljoerService.getMiljoer();
-        }
-
-        try {
-            var request = TpsServicerutineRequest.builder()
-                    .tpsServiceRutine(TpsServicerutineRequest.TpsServiceRutine.builder()
-                            .serviceRutinenavn(PERSON_KERNINFO_SERVICE_ROUTINE)
-                            .fnr(ident)
-                            .aksjonsKode("D")
-                            .aksjonsKode2("1")
-                            .build())
-                    .build();
-
-            var xmlRequest = ServiceRutineUtil.marshallToXML(requestContext, request);
-            var miljoerResponse = servicerutineConsumer.sendMessage(xmlRequest, miljoer);
-            miljoerResponse.entrySet().stream()
-                    .forEach(entry -> log.info("Miljø: {} XML: {}", entry.getKey(), entry.getValue()));
-//            var tpsPersoner = miljoerResponse.entrySet().stream()
-//                            .collect(Collectors.toMap(Entry::getKey, objectMapper.convertValue(((Map) response.getResponse()).get("data1"), S610PersonType.class)))
-//
-//            miljoerResponse.entrySet().stream()
-//                    .collect(Collectors.toMap(Entry::getKey, entry -> {
-//
-//                        try {
-//                            var tpsPerson = unmarshallFromXml(entry.getValue());
-//
-//                            Map<String, PersonRelasjon> relasjoner = getRelasjoner(miljoePerson);
-//
-//                            return !miljoePerson.isEmpty() ? buildMiljoePersonWithRelasjon(relasjoner) : emptyMap();
-//                        } catch (JAXBException e) {
-//                            log.error(e.getMessage(), e);
-//                            return getErrorStatus(e);
-//                        }
-//                        return null;
-//                    }));
-
-        } catch (JAXBException e) {
-            log.error(e.getMessage(), e);
-        }
-
-        throw new BadRequestException("Endepunkt er ennå ikke støttet, beklager dette! ");
-    }
-
-
-    private void attachReleasjoner(List<PersonRelasjonDiv> personRelasjoner) {
-
-        personRelasjoner.forEach(personRelasjon -> {
-            personRelasjon.getPerson().setSivilstander(personRelasjon.getSivilstander());
-            personRelasjon.getPerson().setRelasjoner(personRelasjon.getRelasjoner());
-        });
-    }
-
-//    private List<PersonRelasjonDiv> detachReleasjoner(Person person) {
-//
-//        List<Person> personer = new ArrayList<>();
-//        Stream.of(singletonList(person), person.getRelasjoner().stream()
-//                .map(Relasjon::getPersonRelasjonMed)
-//                .collect(Collectors.toList())).forEach(personer::addAll);
-//
-//        List<PersonRelasjonDiv> personRelasjoner = personer.stream().map(person1 ->
-//                        PersonRelasjonDiv.builder()
-//                                .person(person1)
-//                                .relasjoner(person1.getRelasjoner())
-//                                .sivilstander(person1.getSivilstander())
-//                                .build())
-//                .collect(Collectors.toList());
-//
-//        personRelasjoner.forEach(personRelasjon -> {
-//            personRelasjon.getPerson().setSivilstander(null);
-//            personRelasjon.getPerson().setRelasjoner(null);
-//        });
-//
-//        return personRelasjoner;
-//    }
-
-//    private Map<String, Person> buildMiljoePersonWithRelasjon(Map<String, PersonRelasjon> personRelasjon) {
-//
-//        return personRelasjon.entrySet().parallelStream()
-//                .map(entry -> PersonMiljoe.builder()
-//                        .miljoe(entry.getKey())
-//                        .person(buildPersonWithRelasjon(entry.getValue()))
-//                        .build())
-//                .collect(Collectors.toMap(PersonMiljoe::getMiljoe, PersonMiljoe::getPerson));
-//    }
-
-//    private Person buildPersonWithRelasjon(PersonRelasjon personRelasjon) {
-//
-//        List<S610PersonType> tpsFamilie = new ArrayList<>();
-//        Stream.of(singletonList(personRelasjon.getHovedperson()), personRelasjon.getRelasjoner()).forEach(tpsFamilie::addAll);
-//
-//        Map<String, Person> familie = tpsFamilie.parallelStream()
-//                .map(person -> mapperFacade.map(person, Person.class))
-//                .collect(Collectors.toMap(Person::getIdent, person -> person));
-//
-//        tpsFamilie.forEach(person ->
-//                familie.get(person.getFodselsnummer()).getRelasjoner().addAll(
-//                        nonNull(person.getBruker().getRelasjoner()) ?
-//                                person.getBruker().getRelasjoner().getRelasjon().stream()
-//                                        .filter(relasjon ->
-//                                                tpsFamilie.stream().anyMatch(person1 ->
-//                                                        relasjon.getFnrRelasjon().equals(person1.getFodselsnummer())))
-//                                        .map(relasjon -> Relasjon.builder()
-//                                                .relasjonTypeNavn(mapRelasjonType(relasjon.getTypeRelasjon()))
-//                                                .personRelasjonMed(familie.get(relasjon.getFnrRelasjon()))
-//                                                .person(familie.get(person.getFodselsnummer()))
-//                                                .build())
-//                                        .collect(Collectors.toList()) : emptyList()));
-//
-//        mapSivilstand(tpsFamilie, familie);
-//
-//        return familie.get(personRelasjon.getHovedperson().getFodselsnummer());
-//    }
-
-//    private void mapSivilstand(List<S610PersonType> tpsFamilie, Map<String, Person> familie) {
-//
-//        tpsFamilie.forEach(person ->
-//                familie.get(person.getFodselsnummer()).getSivilstander().addAll(
-//                        nonNull(person.getBruker().getRelasjoner()) &&
-//                                person.getBruker().getRelasjoner().getRelasjon().stream()
-//                                        .anyMatch(relasjon -> isGift(relasjon.getTypeRelasjon())) ?
-//                                singletonList(Sivilstand.builder()
-//                                        .sivilstand(getSivilstand(person))
-//                                        .sivilstandRegdato(getTimestamp(person.getSivilstandDetalj().getDatoSivilstand()))
-//                                        .person(familie.get(person.getFodselsnummer()))
-//                                        .personRelasjonMed(familie.get(person.getBruker().getRelasjoner().getRelasjon().stream()
-//                                                .filter(relasjon -> isGift(relasjon.getTypeRelasjon()))
-//                                                .findFirst().get().getFnrRelasjon()))
-//                                        .build()) :
-//                                emptyList()));
-//    }
 
     private static boolean isGift(RelasjonType relasjonType) {
 
@@ -202,56 +81,6 @@ public class PersonService {
                 GJPA == relasjonType ||
                 GLAD == relasjonType;
     }
-
-//    private TpsPersonMiljoe readFromTps(String ident, String environment) {
-//
-//        try {
-//            TpsServiceRoutineResponse response = tpsServiceRoutineService.execute(PERSON_KERNINFO_SERVICE_ROUTINE,
-//                    buildRequest(ident, environment), true);
-//
-//            if (isStatusOK(((ResponseStatus) ((Map) response.getResponse()).get(STATUS)))) {
-//                return TpsPersonMiljoe.builder()
-//                        .person(objectMapper.convertValue(((Map) response.getResponse()).get("data1"), S610PersonType.class))
-//                        .miljoe(environment)
-//                        .build();
-//            } else {
-//                return TpsPersonMiljoe.builder()
-//                        .errorMsg(((ResponseStatus) ((Map) response.getResponse()).get(STATUS)).getUtfyllendeMelding())
-//                        .miljoe(environment)
-//                        .build();
-//            }
-//
-//        } catch (Exception e) {
-//            log.error(MILJOE_IKKE_FUNNET, environment, e);
-//            return TpsPersonMiljoe.builder()
-//                    .errorMsg(e.getMessage())
-//                    .miljoe(environment)
-//                    .build();
-//        }
-//    }
-
-//    private Map<String, PersonRelasjon> getRelasjoner(Map<String, S610PersonType> tpsPerson) {
-//
-//        return tpsPerson.entrySet().parallelStream()
-//                .map(entry -> PersonRelasjonMiljoe.builder()
-//                        .miljoe(entry.getKey())
-//                        .personRelasjon(getRelasjoner(entry.getValue(), entry.getKey()))
-//                        .build())
-//                .collect(Collectors.toMap(PersonRelasjonMiljoe::getMiljoe, PersonRelasjonMiljoe::getPersonRelasjon));
-//    }
-
-//    private PersonRelasjon getRelasjoner(S610PersonType tpsPerson, String miljoe) {
-//
-//        return PersonRelasjon.builder()
-//                .relasjoner(nonNull(tpsPerson.getBruker().getRelasjoner()) ?
-//                        tpsPerson.getBruker().getRelasjoner().getRelasjon().parallelStream()
-//                                .map(relasjon -> readFromTps(relasjon.getFnrRelasjon(), miljoe).getPerson())
-//                                .filter(Objects::nonNull)
-//                                .collect(Collectors.toList()) :
-//                        emptyList())
-//                .hovedperson(tpsPerson)
-//                .build();
-//    }
 
     private static Map<String, Object> buildRequest(String ident, String environment) {
 
@@ -283,60 +112,160 @@ public class PersonService {
         }
     }
 
-//    private static boolean isStatusOK(EndringsmeldingResponseDTO status) {
-//        return STATUS_OK.equals(status.getKode()) || STATUS_WARN.equals(status.getKode());
-//    }
+    private Map<String, PersonDTO> buildMiljoePersonWithRelasjon(Map<String, PersonRelasjon> personRelasjon) {
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-private static class PersonRelasjon {
+        return personRelasjon.entrySet().parallelStream()
+                .map(entry -> PersonMiljoe.builder()
+                        .miljoe(entry.getKey())
+                        .person(buildPersonWithRelasjon(entry.getValue()))
+                        .build())
+                .collect(Collectors.toMap(PersonMiljoe::getMiljoe, PersonMiljoe::getPerson));
+    }
 
-    private S610PersonType hovedperson;
-    private List<S610PersonType> relasjoner;
-}
+    private void mapSivilstand(List<PersondataFraTpsS610Type> tpsFamilie, Map<String, PersonDTO> familie) {
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-private static class PersonRelasjonMiljoe {
+        tpsFamilie.forEach(person ->
+                familie.get(person.getPerson().getFodselsnummer()).getSivilstander().addAll(
+                        nonNull(person.getPerson().getBruker().getRelasjoner()) &&
+                                person.getPerson().getBruker().getRelasjoner().getRelasjon().stream()
+                                        .anyMatch(relasjon -> isGift(relasjon.getTypeRelasjon())) ?
+                                List.of(SivilstandDTO.builder()
+                                        .sivilstand(getSivilstand(person.getPerson()))
+                                        .sivilstandRegdato(getTimestamp(person.getPerson().getSivilstandDetalj().getDatoSivilstand()))
+                                        .person(familie.get(person.getPerson().getFodselsnummer()))
+                                        .personRelasjonMed(familie.get(person.getPerson().getBruker().getRelasjoner().getRelasjon().stream()
+                                                .filter(relasjon -> isGift(relasjon.getTypeRelasjon()))
+                                                .findFirst().get().getFnrRelasjon()))
+                                        .build()) :
+                                emptyList()));
+    }
 
-    private String miljoe;
-    private PersonRelasjon personRelasjon;
-}
+    private PersonDTO buildPersonWithRelasjon(PersonRelasjon personRelasjon) {
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-private static class PersonMiljoe {
+        var tpsFamilie = Stream.of(List.of(personRelasjon.getHovedperson()), personRelasjon.getRelasjoner())
+                .flatMap(Collection::stream).toList();
 
-    private String miljoe;
-    private PersonDTO person;
-}
+        Map<String, PersonDTO> familie = tpsFamilie.parallelStream()
+                .map(person -> mapperFacade.map(person.getPerson(), PersonDTO.class))
+                .collect(Collectors.toMap(PersonDTO::getIdent, person -> person));
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-private static class TpsPersonMiljoe {
+        tpsFamilie.forEach(person ->
+                familie.get(person.getPerson().getFodselsnummer()).getRelasjoner().addAll(
+                        nonNull(person.getPerson().getBruker().getRelasjoner()) ?
+                                person.getPerson().getBruker().getRelasjoner().getRelasjon().stream()
+                                        .filter(relasjon ->
+                                                tpsFamilie.stream().anyMatch(person1 ->
+                                                        relasjon.getFnrRelasjon().equals(person1.getPerson().getFodselsnummer())))
+                                        .map(relasjon -> RelasjonDTO.builder()
+                                                .relasjonTypeNavn(mapRelasjonType(relasjon.getTypeRelasjon()))
+                                                .personRelasjonMed(familie.get(relasjon.getFnrRelasjon()))
+                                                .person(familie.get(person.getPerson().getFodselsnummer()))
+                                                .build())
+                                        .collect(Collectors.toList()) : emptyList()));
 
-    private String miljoe;
-    private S610PersonType person;
-    private String errorMsg;
-}
+        mapSivilstand(tpsFamilie, familie);
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-private static class PersonRelasjonDiv {
+        return familie.get(personRelasjon.getHovedperson().getPerson().getFodselsnummer());
+    }
 
-    private PersonDTO person;
-    private List<SivilstandDTO> sivilstander;
-    private List<RelasjonDTO> relasjoner;
-}
+    private Map<String, PersonRelasjon> getRelasjoner(Map<String, PersondataFraTpsS610Type> tpsPerson) {
 
+        return tpsPerson.entrySet().parallelStream()
+                .map(entry -> PersonRelasjonMiljoe.builder()
+                        .miljoe(entry.getKey())
+                        .personRelasjon(getRelasjoner(entry.getKey(), entry.getValue()))
+                        .build())
+                .collect(Collectors.toMap(PersonRelasjonMiljoe::getMiljoe, PersonRelasjonMiljoe::getPersonRelasjon));
+    }
+
+    private PersonRelasjon getRelasjoner(String miljoe, PersondataFraTpsS610Type tpsPerson) {
+
+        return PersonRelasjon.builder()
+                .relasjoner(nonNull(tpsPerson.getPerson().getBruker().getRelasjoner()) ?
+                        tpsPerson.getPerson().getBruker().getRelasjoner().getRelasjon().parallelStream()
+                                .map(relasjon -> {
+                                    try {
+                                        return readFromTps(relasjon.getFnrRelasjon(), List.of(miljoe)).get(miljoe);
+                                    } catch (JAXBException e) {
+                                        log.error(e.getMessage(), e);
+                                        return null;
+                                    }
+                                })
+                                .filter(Objects::nonNull)
+                                .collect(Collectors.toList()) :
+                        emptyList())
+                .hovedperson(tpsPerson)
+                .build();
+    }
+
+    private Map<String, PersondataFraTpsS610Type> readFromTps(String ident, List<String> miljoer) throws JAXBException {
+        var request = TpsServicerutineRequest.builder()
+                .tpsServiceRutine(TpsServiceRutine.builder()
+                        .serviceRutinenavn(PERSON_KERNINFO_SERVICE_ROUTINE)
+                        .fnr(ident)
+                        .aksjonsKode("D")
+                        .aksjonsKode2("1")
+                        .build())
+                .build();
+
+        var xmlRequest = ServiceRutineUtil.marshallToXML(requestContext, request);
+        var miljoerResponse = servicerutineConsumer.sendMessage(xmlRequest, miljoer);
+
+        miljoerResponse.entrySet().stream()
+                .forEach(entry -> log.info("Miljø: {} XML: {}", entry.getKey(), entry.getValue()));
+
+        return miljoerResponse.entrySet().stream()
+                .collect(Collectors.toMap(entry -> entry.getKey(),
+                        entry -> objectMapper.convertValue(entry.getValue(), PersondataFraTpsS610Type.class)));
+    }
+
+    public Map<String, PersonDTO> getPerson(String ident, List<String> miljoer) {
+
+        if (miljoer.isEmpty()) {
+            miljoer = miljoerService.getMiljoer();
+        }
+
+        try {
+            var tpsPersoner = readFromTps(ident, miljoer);
+
+            var relasjoner = getRelasjoner(tpsPersoner);
+
+            return !tpsPersoner.isEmpty() ? buildMiljoePersonWithRelasjon(relasjoner) : Collections.emptyMap();
+
+        } catch (JAXBException e) {
+            log.error(e.getMessage(), e);
+        }
+
+        throw new BadRequestException("Endepunkt er ennå ikke støttet, beklager dette! ");
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    private static class PersonRelasjon {
+
+        private PersondataFraTpsS610Type hovedperson;
+        private List<PersondataFraTpsS610Type> relasjoner;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    private static class PersonRelasjonMiljoe {
+
+        private String miljoe;
+        private PersonRelasjon personRelasjon;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    private static class PersonMiljoe {
+
+        private String miljoe;
+        private PersonDTO person;
+    }
 }

@@ -19,7 +19,7 @@ import static java.util.Objects.nonNull;
 
 @Slf4j
 @RequiredArgsConstructor
-public class EndringsMeldingCommand implements Callable<String> {
+public class TpsMeldingCommand implements Callable<String> {
 
     private static final long TIMEOUT_VAL = 5000;
     private static final String FEIL_KOENAVN = "Feil i kønavn eller miljø";

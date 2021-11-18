@@ -24,7 +24,7 @@ public class MidlertidigAdresseDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class MidlertidigGateAdresse extends MidlertidigAdresseDTO {
+    public static class MidlertidigGateAdresseDTO extends MidlertidigAdresseDTO {
 
         private String gatenavn;
 
@@ -39,7 +39,7 @@ public class MidlertidigAdresseDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class MidlertidigStedAdresse extends MidlertidigAdresseDTO {
+    public static class MidlertidigStedAdresseDTO extends MidlertidigAdresseDTO {
 
         private String eiendomsnavn;
     }
@@ -48,7 +48,7 @@ public class MidlertidigAdresseDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class MidlertidigPboxAdresse extends MidlertidigAdresseDTO {
+    public static class MidlertidigPboxAdresseDTO extends MidlertidigAdresseDTO {
 
         private String postboksnr;
 
@@ -59,7 +59,7 @@ public class MidlertidigAdresseDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class MidlertidigUtadAdresse extends MidlertidigAdresseDTO {
+    public static class MidlertidigUtadAdresseDTO extends MidlertidigAdresseDTO {
 
         private String postLinje1;
 

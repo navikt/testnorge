@@ -5,12 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.tpsmessagingservice.consumer.command.EndringsMeldingCommand;
-import no.nav.testnav.apps.tpsmessagingservice.dto.EndringsmeldingErrorResponse;
+import no.nav.testnav.apps.tpsmessagingservice.consumer.command.TpsMeldingCommand;
 import no.nav.testnav.apps.tpsmessagingservice.dto.QueueManager;
 import no.nav.testnav.apps.tpsmessagingservice.dto.SfeTilbakeMelding;
+import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingErrorResponse;
+import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
 import no.nav.testnav.apps.tpsmessagingservice.factory.ConnectionFactoryFactory;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.EndringsmeldingResponseDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -52,7 +52,7 @@ public abstract class TpsConsumer {
     public TpsConsumer(ConnectionFactoryFactory connectionFactoryFactory) throws JAXBException {
 
         this.connectionFactoryFactory = connectionFactoryFactory;
-        this.responseErrorContext = JAXBContext.newInstance(EndringsmeldingErrorResponse.class);
+        this.responseErrorContext = JAXBContext.newInstance(TpsMeldingErrorResponse.class);
     }
 
     private static String getChannelName(String channel, String miljoe) {
@@ -64,7 +64,7 @@ public abstract class TpsConsumer {
 
     protected abstract String getQueueName(String queue, String miljoe);
 
-    private String marshallToXML(EndringsmeldingErrorResponse errorResponse) throws JAXBException {
+    private String marshallToXML(TpsMeldingErrorResponse errorResponse) throws JAXBException {
 
         var marshaller = responseErrorContext.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
@@ -77,27 +77,27 @@ public abstract class TpsConsumer {
 
     public Map<String, String> sendMessage(String melding, List<String> miljoer) {
 
-        return miljoer.stream()
+        return miljoer.parallelStream()
                 .map(miljoe -> {
                     try {
                         return TpsMiljoeResultat.builder()
                                 .miljoe(miljoe)
-                                .resultat(new EndringsMeldingCommand(
-                                                connectionFactoryFactory.createConnectionFactory(
-                                                        new QueueManager(queueManager, host, port, getChannelName(channel, miljoe))),
-                                                getQueueName(queue, miljoe),
-                                                username,
-                                                password,
-                                                melding).call())
+                                .resultat(new TpsMeldingCommand(
+                                        connectionFactoryFactory.createConnectionFactory(
+                                                new QueueManager(queueManager, host, port, getChannelName(channel, miljoe))),
+                                        getQueueName(queue, miljoe),
+                                        username,
+                                        password,
+                                        melding).call())
                                 .build();
 
                     } catch (JMSException e) {
                         try {
                             return TpsMiljoeResultat.builder()
                                     .miljoe(miljoe)
-                                    .resultat(marshallToXML(EndringsmeldingErrorResponse.builder()
+                                    .resultat(marshallToXML(TpsMeldingErrorResponse.builder()
                                             .sfeTilbakeMelding(SfeTilbakeMelding.builder()
-                                                    .svarStatus(EndringsmeldingResponseDTO.builder()
+                                                    .svarStatus(TpsMeldingResponse.builder()
                                                             .returStatus("FEIL")
                                                             .returMelding("Teknisk feil, se logg!")
                                                             .utfyllendeMelding(e.getMessage())
@@ -115,7 +115,7 @@ public abstract class TpsConsumer {
                     }
                     return null;
                 })
-                .filter(entry-> nonNull(entry.getResultat()))
+                .filter(entry -> nonNull(entry.getResultat()))
                 .collect(toMap(TpsMiljoeResultat::getMiljoe, TpsMiljoeResultat::getResultat));
     }
 

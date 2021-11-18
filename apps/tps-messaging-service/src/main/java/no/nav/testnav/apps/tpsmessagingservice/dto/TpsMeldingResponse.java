@@ -6,15 +6,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@XmlRootElement(name = "sfePersonData")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class TpsServicerutineRequest {
+public class TpsMeldingResponse {
 
-    private TpsServiceRutine tpsServiceRutine;
+    private String returStatus;
+    private String returMelding;
+    private String utfyllendeMelding;
 }

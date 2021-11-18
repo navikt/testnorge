@@ -7,7 +7,7 @@ import no.nav.testnav.apps.tpsmessagingservice.consumer.EndringsmeldingConsumer;
 import no.nav.testnav.apps.tpsmessagingservice.dto.EgenansattRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.EgenansattResponse;
 import no.nav.testnav.apps.tpsmessagingservice.dto.EndringsmeldingRequest;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.EndringsmeldingResponseDTO;
+import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.JAXBContext;
@@ -52,17 +52,17 @@ public class EgenansattService {
         return request;
     }
 
-    public Map<String, EndringsmeldingResponseDTO> opprettEgenansatt(String ident, LocalDate fraOgMed, List<String> miljoer) {
+    public Map<String, TpsMeldingResponse> opprettEgenansatt(String ident, LocalDate fraOgMed, List<String> miljoer) {
 
         return endreEgenansatt(true, ident, fraOgMed, miljoer);
     }
 
-    public Map<String, EndringsmeldingResponseDTO> opphoerEgenansatt(String ident, List<String> miljoer) {
+    public Map<String, TpsMeldingResponse> opphoerEgenansatt(String ident, List<String> miljoer) {
 
         return endreEgenansatt(false, ident, null, miljoer);
     }
 
-    private Map<String, EndringsmeldingResponseDTO> endreEgenansatt(boolean isOpprett, String ident, LocalDate fraOgMed, List<String> miljoer) {
+    private Map<String, TpsMeldingResponse> endreEgenansatt(boolean isOpprett, String ident, LocalDate fraOgMed, List<String> miljoer) {
         try {
             var context = new MappingContext.Factory().getContext();
             context.setProperty("ident", ident);

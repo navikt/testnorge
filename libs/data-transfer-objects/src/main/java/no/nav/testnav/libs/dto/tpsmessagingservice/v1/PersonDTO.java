@@ -111,6 +111,8 @@ public class PersonDTO {
 
     private String telefonnummer_2;
 
+    private String importFra;
+
     public List<PostadresseDTO> getPostadresse() {
         if (isNull(postadresse)) {
             postadresse = new ArrayList<>();

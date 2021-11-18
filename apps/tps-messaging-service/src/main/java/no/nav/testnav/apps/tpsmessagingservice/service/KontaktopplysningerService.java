@@ -6,7 +6,7 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.EndringsmeldingConsumer;
 import no.nav.testnav.apps.tpsmessagingservice.dto.KontaktopplysningerRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.KontaktopplysningerResponse;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.EndringsmeldingResponseDTO;
+import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.KontaktopplysningerRequestDTO;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +40,7 @@ public class KontaktopplysningerService {
         this.responseContext = JAXBContext.newInstance(KontaktopplysningerResponse.class);
     }
 
-    public Map<String, EndringsmeldingResponseDTO> sendKontaktopplysninger(String ident, KontaktopplysningerRequestDTO kontaktopplysninger, List<String> miljoer) {
+    public Map<String, TpsMeldingResponse> sendKontaktopplysninger(String ident, KontaktopplysningerRequestDTO kontaktopplysninger, List<String> miljoer) {
 
         try {
             var context = new MappingContext.Factory().getContext();
