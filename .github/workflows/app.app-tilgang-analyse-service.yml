@@ -79,6 +79,6 @@ jobs:
           CLUSTER: dev-gcp
           RESOURCE: ${{ env.BUILD_PATH }}/config.yml
   scan:
-    uses: .github/workflows/sonar.yaml
+    uses: .github/workflows/sonar.yaml@github-workflows-new
     with:
       buildPath: ${{ env.BUILD_PATH }}
