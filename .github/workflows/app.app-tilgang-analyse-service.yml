@@ -21,6 +21,7 @@ jobs:
   deploy-dev-gcp:
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@github-workflows-new
     needs: build
+    if: ${{ github.ref == 'refs/heads/master' }}
     with:
       resource: 'apps/app-tilgang-analyse-service/config.yml'
       appName: 'app-tilgang-analyse-service'

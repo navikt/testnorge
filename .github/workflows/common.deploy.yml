@@ -19,7 +19,7 @@ env:
 
 jobs:
   deploy:
-    name: Deploy
+    name: Deploy to ${{ inputs.cluster }}
     runs-on: ubuntu-latest
     if: ${{ github.actor != 'dependabot[bot]' }}
     steps:
