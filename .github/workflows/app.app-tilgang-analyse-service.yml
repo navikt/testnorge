@@ -23,19 +23,13 @@ jobs:
       working-directory: 'apps/app-tilgang-analyse-service/'
       appName: 'app-tilgang-analyse-service'
   deploy-dev-gcp:
-    name: Deploy til dev-gcp
-    needs: build
-    runs-on: ubuntu-latest
-    if: ${{  github.ref == 'refs/heads/master' && github.actor != 'dependabot[bot]' }}
-    steps:
-      - uses: actions/checkout@v1
-      - name: Deploy to dev-gcp
-        timeout-minutes: 5
-        uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-          CLUSTER: dev-gcp
-          RESOURCE: ${{ env.BUILD_PATH }}/config.yml
+    uses: navikt/testnorge/.github/workflows/common.deploy.yml@github-workflows-new
+    with:
+      resource: 'apps/app-tilgang-analyse-service//config.yml'
+      appName: 'app-tilgang-analyse-service'
+      cluster: 'dev-gcp'
+    secrets:
+      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
   scan:
     uses: navikt/testnorge/.github/workflows/common.sonar.yml@github-workflows-new
     with:
