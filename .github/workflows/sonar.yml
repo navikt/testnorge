@@ -2,8 +2,11 @@ on:
   workflow_call:
     inputs:
       buildPath:
-        description: "Build path"
+        description: "Build path for the app"
         type: string
+        required: true
+    secrets:
+      SONAR_TOKEN:
         required: true
 
 jobs:
