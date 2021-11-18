@@ -81,4 +81,4 @@ jobs:
   scan:
     uses: navikt/testnorge/.github/workflows/sonar.yml@github-workflows-new
     with:
-      buildPath: ${{ env.BUILD_PATH }}
+      buildPath: 'apps/app-tilgang-analyse-service/'
