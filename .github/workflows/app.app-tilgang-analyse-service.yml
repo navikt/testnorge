@@ -4,16 +4,20 @@ on:
   push:
     paths:
       - apps/app-tilgang-analyse-service/**
+  workflow_dispatch:
+    isPublishAndDeploy:
+      description: 'Should publish and deploy?'
+      required: true
+      default: 'true'
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/app-tilgang-analyse-service:${{ github.sha }}
-
 
 jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    if: ${{  github.ref != 'refs/heads/master' && github.actor != 'dependabot[bot]' }}
+    if: ${{  github.ref != 'refs/heads/master' && github.actor != 'dependabot[bot]' %% $INPUT_IS_PUBLISH_AND_DEPLOY != 'true' }}
     steps:
       - uses: actions/checkout@v1
       - name: Gradle cache
@@ -35,7 +39,7 @@ jobs:
   build-and-publish:
     name: Build & Publish
     runs-on: ubuntu-latest
-    if: ${{  github.ref == 'refs/heads/master' && github.actor != 'dependabot[bot]' }}
+    if: ${{  github.ref == 'refs/heads/master' && github.actor != 'dependabot[bot]' || $INPUT_IS_PUBLISH_AND_DEPLOY == 'true' }}
     steps:
       - uses: actions/checkout@v1
       - name: Gradle cache
@@ -102,7 +106,7 @@ jobs:
         with:
           java-version: 1.17
       - name: Sonar Analysis
-        working-directory: apps/app-tilgang-analyse-service/
+        working-directory: ${{ apps/app-tilgang-analyse-service/ }}
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
