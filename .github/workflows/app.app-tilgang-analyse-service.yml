@@ -103,7 +103,7 @@ jobs:
         with:
           java-version: 1.17
       - name: Sonar Analysis
-        working-directory: ${{ apps/app-tilgang-analyse-service/ }}
+        working-directory: ${{ 'apps/app-tilgang-analyse-service/' }}
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
