@@ -4,11 +4,8 @@ on:
   push:
     paths:
       - apps/app-tilgang-analyse-service/**
+      - .github/workflows/app.app-tilgang-analyse-service.yml
   workflow_dispatch:
-    isPublishAndDeploy:
-      description: 'Should publish and deploy?'
-      required: true
-      default: 'true'
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/app-tilgang-analyse-service:${{ github.sha }}
@@ -17,7 +14,7 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    if: ${{  github.ref != 'refs/heads/master' && github.actor != 'dependabot[bot]' && $INPUT_IS_PUBLISH_AND_DEPLOY != 'true' }}
+    if: ${{  github.ref != 'refs/heads/master' && github.actor != 'dependabot[bot]' }}
     steps:
       - uses: actions/checkout@v1
       - name: Gradle cache
@@ -39,7 +36,7 @@ jobs:
   build-and-publish:
     name: Build & Publish
     runs-on: ubuntu-latest
-    if: ${{  github.ref == 'refs/heads/master' && github.actor != 'dependabot[bot]' || $INPUT_IS_PUBLISH_AND_DEPLOY == 'true' }}
+    if: ${{  github.ref == 'refs/heads/master' && github.actor != 'dependabot[bot]' }}
     steps:
       - uses: actions/checkout@v1
       - name: Gradle cache
