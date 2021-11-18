@@ -19,12 +19,10 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import java.io.StringWriter;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -79,30 +77,34 @@ public abstract class TpsConsumer {
 
     public Map<String, String> sendMessage(String melding, List<String> miljoer) {
 
-        return miljoer.parallelStream()
+        return miljoer.stream()
                 .map(miljoe -> {
                     try {
-                        return Map.Entry(miljoe,
-                                        new EndringsMeldingCommand(
+                        return TpsMiljoeResultat.builder()
+                                .miljoe(miljoe)
+                                .resultat(new EndringsMeldingCommand(
                                                 connectionFactoryFactory.createConnectionFactory(
                                                         new QueueManager(queueManager, host, port, getChannelName(channel, miljoe))),
                                                 getQueueName(queue, miljoe),
                                                 username,
                                                 password,
-                                                melding).call());
+                                                melding).call())
+                                .build();
 
                     } catch (JMSException e) {
                         try {
-                            return Map.of(miljoe,
-                                    marshallToXML(EndringsmeldingErrorResponse.builder()
+                            return TpsMiljoeResultat.builder()
+                                    .miljoe(miljoe)
+                                    .resultat(marshallToXML(EndringsmeldingErrorResponse.builder()
                                             .sfeTilbakeMelding(SfeTilbakeMelding.builder()
                                                     .svarStatus(EndringsmeldingResponseDTO.builder()
-                                                            .returStatus("08")
+                                                            .returStatus("FEIL")
                                                             .returMelding("Teknisk feil, se logg!")
                                                             .utfyllendeMelding(e.getMessage())
                                                             .build())
                                                     .build())
-                                            .build()));
+                                            .build()))
+                                    .build();
 
                         } catch (JAXBException ex) {
 
@@ -113,8 +115,8 @@ public abstract class TpsConsumer {
                     }
                     return null;
                 })
-                .filter(Objects::nonNull)
-                .collect(toMap(entry -> entry.getMiljoe(), entry -> entry.get));
+                .filter(entry-> nonNull(entry.getResultat()))
+                .collect(toMap(TpsMiljoeResultat::getMiljoe, TpsMiljoeResultat::getResultat));
     }
 
     @Data
