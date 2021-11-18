@@ -45,6 +45,7 @@ export const erForste = (values, attributt) => {
 		'tpsf.harIngenAdresse',
 		'tpsf.postadresse',
 		'tpsf.midlertidigAdresse',
+		'tpsf.utenlandskBankkonto',
 		'pdldata.person.bostedsadresse',
 		'tpsf.relasjoner',
 		'aareg',

@@ -84,6 +84,7 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 				<Attributt attr={sm.attrs.vergemaal} />
 				<Attributt attr={sm.attrs.fullmakt} />
 				<Attributt attr={sm.attrs.sikkerhetstiltak} />
+				<Attributt attr={sm.attrs.utenlandskBankkonto} />
 			</AttributtKategori>
 		</Panel>
 	)
@@ -322,6 +323,24 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 					'tpsf.sikkerhetTiltakDatoFom',
 					'tpsf.sikkerhetTiltakDatoTom',
 				]),
+		},
+		utenlandskBankkonto: {
+			label: 'Utenlandsk bank',
+			checked: has('tpsf.utenlandskBankkonto'),
+			add: () =>
+				set('tpsf.utenlandskBankkonto', [
+					{
+						giroNrUtland: '',
+						kodeSwift: '',
+						kodeLand: null,
+						bankNavn: '',
+						valuta: null,
+						bankAdresse1: '',
+						bankAdresse2: '',
+						bankAdresse3: '',
+					},
+				]),
+			remove: () => del('tpsf.utenlandskBankkonto'),
 		},
 	}
 }

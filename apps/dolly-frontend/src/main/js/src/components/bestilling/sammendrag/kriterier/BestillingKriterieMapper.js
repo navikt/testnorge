@@ -109,6 +109,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			relasjoner,
 			vergemaal,
 			fullmakt,
+			utenlandskBankkonto,
 			harIngenAdresse,
 			...persondetaljer
 		} = bestillingData.tpsf
@@ -407,6 +408,26 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			}
 			data.push(vergemaalKriterier)
 		}
+	}
+
+	if (utenlandskBankkonto) {
+		const utenlandskBankkontoData = {
+			header: 'Utenlandsk bankkonto',
+			itemRows: utenlandskBankkonto.map((item, idx) => {
+				return [
+					{ numberHeader: `Bankkonto ${idx + 1}` },
+					obj('Giro nummer', item.giroNrUtland),
+					obj('Swift kode', item.kodeSwift),
+					obj('Land', item.kodeLand),
+					obj('Banknavn', item.bankNavn),
+					obj('Valuta', item.valuta),
+					obj('BankAdresse 1', item.bankAdresse1),
+					obj('BankAdresse 2', item.bankAdresse2),
+					obj('BankAdresse 3', item.bankAdresse3),
+				]
+			}),
+		}
+		data.push(utenlandskBankkontoData)
 	}
 
 	const aaregKriterier = bestillingData.aareg

@@ -13,6 +13,7 @@ import { Sikkerhetstiltak } from '~/components/fagsystem/tpsf/form/personinforma
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import _get from 'lodash/get'
 import { Alder } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/alder/Alder'
+import { UtenlandskBankkonto } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/utenlandskbankkonto/UtenlandskBankkonto'
 
 const alderPaths = ['tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer', 'tpsf.doedsdato']
 
@@ -40,6 +41,7 @@ const diversePaths = [
 
 const vergemaalPath = ['tpsf.vergemaal']
 const fullmaktPath = ['pdldata.person.fullmakt']
+const utenlandskBankkontoPath = ['tpsf.utenlandskBankkonto']
 
 const sikkerhetstiltakPaths = [
 	'tpsf.typeSikkerhetTiltak',
@@ -54,6 +56,7 @@ const panelPaths = [
 	diversePaths,
 	vergemaalPath,
 	fullmaktPath,
+	utenlandskBankkontoPath,
 	sikkerhetstiltakPaths,
 ].flat()
 
@@ -124,6 +127,9 @@ export const Personinformasjon = ({ formikBag }) => {
 				</Kategori>
 				<Kategori title="Sikkerhetstiltak" vis={sikkerhetstiltakPaths}>
 					<Sikkerhetstiltak formikBag={formikBag} />
+				</Kategori>
+				<Kategori title="Utenlandsk bankkonto" vis={utenlandskBankkontoPath}>
+					<UtenlandskBankkonto formikBag={formikBag} />
 				</Kategori>
 			</Panel>
 		</Vis>

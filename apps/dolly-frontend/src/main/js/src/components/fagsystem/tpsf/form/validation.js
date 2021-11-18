@@ -473,6 +473,21 @@ export const validation = {
 					vedtakDato: requiredDate,
 				})
 			),
+			utenlandskBankkonto: ifPresent(
+				'$tpsf.utenlandskBankkonto',
+				Yup.array().of(
+					Yup.object({
+						giroNrUtland: Yup.string().optional(),
+						swiftKode: Yup.string().optional(),
+						kodeLand: requiredString.nullable(),
+						valuta: requiredString.nullable(),
+						bankNavn: requiredString,
+						bankAdresse1: requiredString,
+						bankAdresse2: Yup.string().optional(),
+						bankAdresse3: Yup.string().optional(),
+					})
+				)
+			),
 			typeSikkerhetTiltak: ifPresent('$tpsf.typeSikkerhetTiltak', requiredString),
 			beskrSikkerhetTiltak: ifPresent('$tpsf.beskrSikkerhetTiltak', requiredString),
 			sikkerhetTiltakDatoFom: ifPresent('$tpsf.sikkerhetTiltakDatoFom', requiredDate),
