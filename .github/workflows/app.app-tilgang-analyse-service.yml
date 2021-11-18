@@ -48,7 +48,7 @@ jobs:
             ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
-            ${{ runner.os }}-gradle-
+            ${{ runner.os }}-gradle-${{ env.BUILD_PATH }}
       - uses: actions/setup-java@v1
         with:
           java-version: '17.x'
@@ -66,7 +66,7 @@ jobs:
           docker build --tag $IMAGE .
           docker login docker.pkg.github.com -u $GITHUB_REPOSITORY -p $GITHUB_TOKEN
           docker push $IMAGE
-      - name: Deploy to nais
+      - name: Deploy to dev-gcp
         timeout-minutes: 5
         uses: nais/deploy/actions/deploy@v1
         env:
@@ -94,7 +94,7 @@ jobs:
             ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
-            ${{ runner.os }}-gradle-
+            ${{ runner.os }}-gradle-${{ env.BUILD_PATH }}
       - name: Set up JDK 1.17
         uses: actions/setup-java@v1
         with:
