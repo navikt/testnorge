@@ -33,7 +33,8 @@ jobs:
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew :app-tilgang-analyse-service:build
+        working-directory: ${{ env.BUILD_PATH }}
+        run: ./gradlew build
   build-and-deploy:
     name: Build & Deploy
     runs-on: ubuntu-latest
@@ -52,12 +53,13 @@ jobs:
         with:
           java-version: '17.x'
       - name: Compile
+        working-directory: ${{ env.BUILD_PATH }}
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: ./gradlew :app-tilgang-analyse-service:build
+        run: ./gradlew build
       - name: Build and publish Docker image
-        working-directory: apps/app-tilgang-analyse-service/
+        working-directory: ${{ env.BUILD_PATH }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -70,7 +72,7 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
-          RESOURCE: apps/app-tilgang-analyse-service/config.yml
+          RESOURCE: ${{ env.BUILD_PATH }}/config.yml
   scan:
     name: Sonar scan
     runs-on: ubuntu-latest
@@ -95,8 +97,6 @@ jobs:
             ${{ runner.os }}-gradle-
       - name: Set up JDK 1.17
         uses: actions/setup-java@v1
-        env:
-          base_directory: ./apps/app-tilgang-analyse-service/
         with:
           java-version: 1.17
       - name: Sonar Analysis
