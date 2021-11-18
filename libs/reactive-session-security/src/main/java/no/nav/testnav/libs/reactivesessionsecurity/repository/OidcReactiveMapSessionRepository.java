@@ -70,7 +70,7 @@ public class OidcReactiveMapSessionRepository implements ReactiveSessionReposito
 
             var sessionsToBeDeleted = new ArrayList<String>();
 
-            sessions.forEach((key, value) -> {
+            this.sessions.forEach((key, value) -> {
                 var securityContext = (SecurityContextImpl) value.getAttribute("SPRING_SECURITY_CONTEXT");
                 if (securityContext != null) {
                     var principal = (DefaultOidcUser) securityContext.getAuthentication().getPrincipal();
