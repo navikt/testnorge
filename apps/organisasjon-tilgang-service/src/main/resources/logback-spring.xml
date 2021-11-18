@@ -22,7 +22,29 @@
         </root>
     </springProfile>
 
-    <springProfile name="dev">
+    <springProfile name="prod">
+        <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                    <rootCauseFirst>true</rootCauseFirst>
+                    <maxDepthPerThrowable>256</maxDepthPerThrowable>
+                    <maxLength>10280</maxLength>
+                    <shortenedClassNameLength>20</shortenedClassNameLength>
+                    <exclude>^sun\.reflect\..*\.invoke</exclude>
+                    <exclude>^net\.sf\.cglib\.proxy\.MethodProxy\.invoke</exclude>
+                    <exclude>java\.util\.concurrent\..*</exclude>
+                    <exclude>org\.apache\.catalina\..*</exclude>
+                    <exclude>org\.apache\.coyote\..*</exclude>
+                    <exclude>org\.apache\.tomcat\..*</exclude>
+                </throwableConverter>
+            </encoder>
+        </appender>
+        <root level="INFO">
+            <appender-ref ref="stdout_json"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="local">
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
                 <pattern>
