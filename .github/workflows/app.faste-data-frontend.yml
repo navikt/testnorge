@@ -17,7 +17,7 @@ jobs:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   build:
     name: Build
-    uses: navikt/testnorge/.github/workflows/common.build.frontend.yml@github-workflows-new
+    uses: navikt/testnorge/.github/workflows/common.build-and-publish.frontend.yml@github-workflows-new
     with:
       working-directory: 'apps/faste-data-frontend/'
       app-name: 'faste-data-frontend'

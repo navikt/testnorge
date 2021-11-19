@@ -19,7 +19,7 @@ jobs:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   build:
     name: Build
-    uses: navikt/testnorge/.github/workflows/common.build.backend.yml@github-workflows-new
+    uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@github-workflows-new
     with:
       working-directory: 'proxies/brregstub-proxy/'
       app-name: 'brregstub-proxy'
