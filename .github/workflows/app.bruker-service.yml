@@ -19,7 +19,7 @@ jobs:
     uses: navikt/testnorge/.github/workflows/common.build.backend.yml@github-workflows-new
     with:
       working-directory: 'apps/bruker-service/'
-      app-name: 'brreg-stub'
+      app-name: 'bruker-service'
   deploy:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@github-workflows-new
