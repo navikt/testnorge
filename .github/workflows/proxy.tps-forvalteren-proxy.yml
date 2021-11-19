@@ -25,13 +25,24 @@ jobs:
       app-name: 'tps-forvalteren-proxy'
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-  deploy-dev:
+  deploy:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@github-workflows-new
     needs: build
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
       resource: 'proxies/tps-forvalteren-proxy/config.yml'
+      app-name: 'tps-forvalteren-proxy'
+      cluster: 'dev-fss'
+    secrets:
+      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+  deploy-dev:
+    name: Deploy dev
+    uses: navikt/testnorge/.github/workflows/common.deploy.yml@github-workflows-new
+    needs: build
+    if: ${{ github.ref == 'refs/heads/master' }}
+    with:
+      resource: 'proxies/tps-forvalteren-dev-proxy/config.dev.yml'
       app-name: 'tps-forvalteren-proxy'
       cluster: 'dev-fss'
     secrets:

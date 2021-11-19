@@ -23,7 +23,7 @@ jobs:
       app-name: 'orkestratoren'
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-  deploy-dev:
+  deploy:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@github-workflows-new
     needs: build
