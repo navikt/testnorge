@@ -198,7 +198,7 @@ public class PersonService {
 
             var jsonResponse = XML.toJSONObject(endringsmeldingResponse);
             var jsonRoot = objectMapper.readTree(jsonResponse.toString())
-                    .at("/sfePersonData");
+                    .at("/tpsPersonData");
 
             return objectMapper.readValue(jsonRoot.toString(), TpsServicerutineS610Response.class);
 
