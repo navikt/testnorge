@@ -1,33 +1,33 @@
-name: App dolly-backend
+name: App dolly-frontend
 
 on:
   push:
     paths:
-      - apps/dolly-backend/**
-      - .github/workflows/app.dolly-backend.yml
+      - apps/dolly-frontend/**
+      - .github/workflows/app.dolly-frontend.yml
 
 jobs:
   scan:
     name: Scan
     uses: navikt/testnorge/.github/workflows/common.sonar.yml@github-workflows-new
     with:
-      working-directory: 'apps/dolly-backend/'
+      working-directory: 'apps/dolly-frontend/'
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   build:
     name: Build
-    uses: navikt/testnorge/.github/workflows/common.build.backend.yml@github-workflows-new
+    uses: navikt/testnorge/.github/workflows/common.build.frontend.yml@github-workflows-new
     with:
-      working-directory: 'apps/dolly-backend/'
-      app-name: 'testnav-dolly-backend'
+      working-directory: 'apps/dolly-frontend/'
+      app-name: 'testnav-dolly-frontend'
   deploy:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@github-workflows-new
     needs: build
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
-      resource: 'apps/dolly-backend/config.yml'
-      app-name: 'testnav-dolly-backend'
+      resource: 'apps/dolly-frontend/config.yml'
+      app-name: 'testnav-dolly-frontend'
       cluster: 'dev-gcp'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
@@ -37,8 +37,8 @@ jobs:
     needs: build
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
-      resource: 'apps/dolly-backend/config.dev.yml'
-      app-name: 'testnav-dolly-backend'
+      resource: 'apps/dolly-frontend/config.dev.yml'
+      app-name: 'testnav-dolly-frontend'
       cluster: 'dev-gcp'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
