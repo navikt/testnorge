@@ -19,6 +19,7 @@ export default function GruppeOversikt({
 	history,
 	searchActive,
 	importerteZIdenter,
+	brukerProfil,
 }) {
 	const [visning, setVisning] = useState('mine')
 	const [sidetall, setSidetall] = useState(0)
