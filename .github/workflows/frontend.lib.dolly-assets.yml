@@ -1,0 +1,22 @@
+name: Frontend lib dolly-assets
+
+on:
+  push:
+    paths:
+      - navikt/dolly-assets/**
+      - .github/workflows/frontend.lib.dolly-assets.yml
+
+jobs:
+  build:
+    name: Scan
+    uses: navikt/testnorge/.github/workflows/common.js.build.yml@github-workflows-new
+    with:
+      working-directory: 'navikt/dolly-assets/'
+  publish:
+    name: Build
+    uses: navikt/testnorge/.github/workflows/common.js.publish.yml@github-workflows-new
+    if: ${{ github.ref == 'refs/heads/master' }}
+    with:
+      working-directory: 'navikt/dolly-assets/'
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

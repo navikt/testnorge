@@ -1,12 +1,12 @@
-name: Publish dolly-assets til npmjs
-
 on:
-  push:
-    branches:
-      - master
-    paths:
-      - navikt/dolly-assets/**
-  workflow_dispatch:
+  workflow_call:
+    inputs:
+      working-directory:
+        type: string
+        required: true
+    secrets:
+      NPM_TOKEN:
+        required: true
 
 jobs:
   build:
@@ -16,13 +16,13 @@ jobs:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
         with:
-          node-version: '11.x'
+          node-version: '16.x'
           registry-url: https://registry.npmjs.org/
       - name: Build code
         run: |
           npm ci
           npm run build
-        working-directory: navikt/dolly-assets/
+        working-directory: ${{ inputs.working-directory }}
       - name: Bump version
         run: |
           git config --global user.email "dolly@nav.no"
@@ -33,7 +33,7 @@ jobs:
           PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]')
           git commit -m "Bump to version $PACKAGE_VERSION, $COMMIT_MESSAGE, [skip ci]"
           git tag $PACKAGE_VERSION
-        working-directory: navikt/dolly-assets/
+        working-directory: ${{ inputs.working-directory }}
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
@@ -41,6 +41,6 @@ jobs:
           branch: ${{ github.ref }}
       - name: Publish
         run: npm publish --access public
-        working-directory: navikt/dolly-assets/
+        working-directory: ${{ inputs.working-directory }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
