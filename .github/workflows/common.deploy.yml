@@ -7,7 +7,7 @@ on:
       cluster:
         type: string
         required: true
-      appName:
+      app-name:
         type: string
         required: true
     secrets:
@@ -15,7 +15,7 @@ on:
         required: true
 
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/${{ inputs.appName }}:${{ github.sha }}
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/${{ inputs.app-name }}:${{ github.sha }}
 
 jobs:
   deploy:

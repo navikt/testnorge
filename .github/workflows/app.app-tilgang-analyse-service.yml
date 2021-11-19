@@ -6,7 +6,8 @@ on:
       - apps/app-tilgang-analyse-service/**
       - .github/workflows/app.app-tilgang-analyse-service.yml
 
-value: 'dummy'
+env:
+  TEST: 'value'
 
 jobs:
   scan:
@@ -16,17 +17,17 @@ jobs:
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   build:
-    uses: navikt/testnorge/.github/workflows/common.build.yml@github-workflows-new
+    uses: navikt/testnorge/.github/workflows/common.build-backend.yml@github-workflows-new
     with:
       working-directory: 'apps/app-tilgang-analyse-service/'
-      appName: 'app-tilgang-analyse-service'
+      app-name: 'app-tilgang-analyse-service'
   deploy-dev:
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@github-workflows-new
     needs: build
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
       resource: 'apps/app-tilgang-analyse-service/config.yml'
-      appName: 'app-tilgang-analyse-service'
+      app-name: 'app-tilgang-analyse-service'
       cluster: 'dev-gcp'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
