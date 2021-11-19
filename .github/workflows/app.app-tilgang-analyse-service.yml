@@ -7,21 +7,24 @@ on:
       - .github/workflows/app.app-tilgang-analyse-service.yml
 
 env:
-  TEST: 'value'
+  TEST: 'apps/app-tilgang-analyse-service/'
 
 jobs:
   scan:
+    name: Scan
     uses: navikt/testnorge/.github/workflows/common.sonar.yml@github-workflows-new
     with:
-      working-directory: 'apps/app-tilgang-analyse-service/'
+      working-directory: ${{ env.TEST }}
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   build:
+    name: Build
     uses: navikt/testnorge/.github/workflows/common.build-backend.yml@github-workflows-new
     with:
       working-directory: 'apps/app-tilgang-analyse-service/'
       app-name: 'app-tilgang-analyse-service'
   deploy-dev:
+    name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@github-workflows-new
     needs: build
     if: ${{ github.ref == 'refs/heads/master' }}
