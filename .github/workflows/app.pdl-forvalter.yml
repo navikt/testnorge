@@ -1,0 +1,47 @@
+name: App pdl-forvalter
+
+on:
+  push:
+    paths:
+      - apps/pdl-forvalter/**
+      - .github/workflows/app.pdl-forvalter.yml
+
+jobs:
+  scan:
+    name: Scan
+    uses: navikt/testnorge/.github/workflows/common.sonar.yml@github-workflows-new
+    with:
+      working-directory: 'apps/pdl-forvalter/'
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  build:
+    name: Build
+    uses: navikt/testnorge/.github/workflows/common.build.backend.yml@github-workflows-new
+    with:
+      working-directory: 'apps/pdl-forvalter/'
+      app-name: 'testnav-pdl-forvalter'
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+  deploy:
+    name: Deploy
+    uses: navikt/testnorge/.github/workflows/common.deploy.yml@github-workflows-new
+    needs: build
+    if: ${{ github.ref == 'refs/heads/master' }}
+    with:
+      resource: 'apps/pdl-forvalter/nais-prod.yaml'
+      app-name: 'testnav-pdl-forvalter'
+      cluster: 'dev-gcp'
+    secrets:
+      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+  deploy-dev:
+    name: Deploy dev
+    uses: navikt/testnorge/.github/workflows/common.deploy.yml@github-workflows-new
+    needs: build
+    if: ${{ github.ref == 'refs/heads/master' }}
+    with:
+      resource: 'apps/pdl-forvalter/nais-dev.yaml'
+      app-name: 'testnav-pdl-forvalter'
+      cluster: 'dev-gcp'
+    secrets:
+      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
