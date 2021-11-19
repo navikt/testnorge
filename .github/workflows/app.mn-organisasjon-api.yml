@@ -1,0 +1,36 @@
+name: App mn-organisasjon-api
+
+on:
+  push:
+    paths:
+      - apps/mn-organisasjon-api/**
+      - .github/workflows/app.mn-organisasjon-api.yml
+
+jobs:
+  scan:
+    name: Scan
+    uses: navikt/testnorge/.github/workflows/common.sonar.yml@github-workflows-new
+    with:
+      working-directory: 'apps/mn-organisasjon-api/'
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  build:
+    name: Build
+    uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@github-workflows-new
+    with:
+      working-directory: 'apps/mn-organisasjon-api/'
+      app-name: 'mn-organisasjon-api'
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+  deploy-dev:
+    name: Deploy
+    uses: navikt/testnorge/.github/workflows/common.deploy.yml@github-workflows-new
+    needs: build
+    if: ${{ github.ref == 'refs/heads/master' }}
+    with:
+      resource: 'apps/mn-organisasjon-api/config.yml'
+      app-name: 'mn-organisasjon-api'
+      cluster: 'dev-fss'
+    secrets:
+      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}

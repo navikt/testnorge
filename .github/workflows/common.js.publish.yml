@@ -1,0 +1,46 @@
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        type: string
+        required: true
+    secrets:
+      NPM_TOKEN:
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '16.x'
+          registry-url: https://registry.npmjs.org/
+      - name: Build code
+        run: |
+          npm ci
+          npm run build
+        working-directory: ${{ inputs.working-directory }}
+      - name: Bump version
+        run: |
+          git config --global user.email "dolly@nav.no"
+          git config --global user.name $GITHUB_ACTOR
+          COMMIT_MESSAGE=`git log -1 --pretty=%B`
+          npm version patch
+          git add package.json && git add package-lock.json
+          PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]')
+          git commit -m "Bump to version $PACKAGE_VERSION, $COMMIT_MESSAGE, [skip ci]"
+          git tag $PACKAGE_VERSION
+        working-directory: ${{ inputs.working-directory }}
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+      - name: Publish
+        run: npm publish --access public
+        working-directory: ${{ inputs.working-directory }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

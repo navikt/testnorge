@@ -1,0 +1,36 @@
+name: App tilbakemelding-api
+
+on:
+  push:
+    paths:
+      - apps/tilbakemelding-api/**
+      - .github/workflows/app.tilbakemelding-api.yml
+
+jobs:
+  scan:
+    name: Scan
+    uses: navikt/testnorge/.github/workflows/common.sonar.yml@github-workflows-new
+    with:
+      working-directory: 'apps/tilbakemelding-api/'
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  build:
+    name: Build
+    uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@github-workflows-new
+    with:
+      working-directory: 'apps/tilbakemelding-api/'
+      app-name: 'tilbakemelding-api'
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+  deploy:
+    name: Deploy
+    uses: navikt/testnorge/.github/workflows/common.deploy.yml@github-workflows-new
+    needs: build
+    if: ${{ github.ref == 'refs/heads/master' }}
+    with:
+      resource: 'apps/tilbakemelding-api/config.yml'
+      app-name: 'tilbakemelding-api'
+      cluster: 'dev-gcp'
+    secrets:
+      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
