@@ -109,7 +109,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			relasjoner,
 			vergemaal,
 			fullmakt,
-			utenlandskBankkonto,
 			harIngenAdresse,
 			...persondetaljer
 		} = bestillingData.tpsf
@@ -410,7 +409,9 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		}
 	}
 
-	if (utenlandskBankkonto) {
+	const tpsMessaging = _get(bestillingData, 'tpsMessaging')
+
+	if (tpsMessaging?.utenlandskBankkonto) {
 		const utenlandskBankkontoData = {
 			header: 'Utenlandsk bankkonto',
 			itemRows: utenlandskBankkonto.map((item, idx) => {

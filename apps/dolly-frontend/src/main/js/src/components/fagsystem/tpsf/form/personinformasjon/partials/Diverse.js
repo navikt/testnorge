@@ -13,6 +13,7 @@ import _get from 'lodash/get'
 import styled from 'styled-components'
 import { Checkbox as NavCheckbox } from 'nav-frontend-skjema'
 import Hjelpetekst from '~/components/hjelpetekst'
+import { UtenlandskBankkonto } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/utenlandskbankkonto/UtenlandskBankkonto'
 
 const StyledCheckbox = styled(NavCheckbox)`
 	&&& {
@@ -142,6 +143,7 @@ export const Diverse = ({ formikBag }) => {
 			</Vis>
 			<Telefonnummer formikBag={formikBag} />
 			<Diskresjonskoder basePath="tpsf" formikBag={formikBag} />
+			<UtenlandskBankkonto formikBag={formikBag} />
 		</React.Fragment>
 	)
 }
