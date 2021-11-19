@@ -42,33 +42,26 @@ public class KontaktopplysningerService {
 
     public Map<String, TpsMeldingResponse> sendKontaktopplysninger(String ident, KontaktopplysningerRequestDTO kontaktopplysninger, List<String> miljoer) {
 
-        try {
-            var context = new MappingContext.Factory().getContext();
-            context.setProperty("ident", ident);
-            context.setProperty("datoSprak", nonNull(kontaktopplysninger.getEndringAvSprak()) ?
-                    kontaktopplysninger.getEndringAvSprak().getEndreSprak().getDatoSprak() : null);
+        var context = new MappingContext.Factory().getContext();
+        context.setProperty("ident", ident);
+        context.setProperty("datoSprak", nonNull(kontaktopplysninger.getEndringAvSprak()) ?
+                kontaktopplysninger.getEndringAvSprak().getEndreSprak().getDatoSprak() : null);
 
-            var request = mapperFacade.map(kontaktopplysninger, KontaktopplysningerRequest.class, context);
-            var requestXml = marshallToXML(requestContext, request);
-            var miljoerResponse = endringsmeldingConsumer.sendMessage(requestXml, miljoer);
+        var request = mapperFacade.map(kontaktopplysninger, KontaktopplysningerRequest.class, context);
+        var requestXml = marshallToXML(requestContext, request);
+        var miljoerResponse = endringsmeldingConsumer.sendMessage(requestXml, miljoer);
 
-            return miljoerResponse.entrySet().stream()
-                    .collect(Collectors.toMap(Entry::getKey, entry -> {
+        return miljoerResponse.entrySet().stream()
+                .collect(Collectors.toMap(Entry::getKey, entry -> {
 
-                        try {
-                            var response = (KontaktopplysningerResponse) unmarshallFromXml(responseContext, entry.getValue());
-                            return getResponseStatus(response);
+                    try {
+                        var response = (KontaktopplysningerResponse) unmarshallFromXml(responseContext, entry.getValue());
+                        return getResponseStatus(response);
 
-                        } catch (JAXBException e) {
-                            log.error(e.getMessage(), e);
-                            return getErrorStatus(e);
-                        }
-                    }));
-
-        } catch (JAXBException e) {
-
-            log.error(e.getMessage(), e);
-            return Map.of("NA", getErrorStatus(e));
-        }
+                    } catch (JAXBException e) {
+                        log.error(e.getMessage(), e);
+                        return getErrorStatus(e);
+                    }
+                }));
     }
 }

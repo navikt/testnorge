@@ -28,6 +28,6 @@ public class TpsServicerutineS610Response {
     public static class TpsSvar {
 
         private TpsMeldingResponse svarStatus;
-        private PersondataFraTpsS610Type persondataS610;
+        private PersondataFraTpsS610Type personDataS610;
     }
 }

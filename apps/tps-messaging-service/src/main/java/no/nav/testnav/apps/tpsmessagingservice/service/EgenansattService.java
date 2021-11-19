@@ -63,33 +63,27 @@ public class EgenansattService {
     }
 
     private Map<String, TpsMeldingResponse> endreEgenansatt(boolean isOpprett, String ident, LocalDate fraOgMed, List<String> miljoer) {
-        try {
-            var context = new MappingContext.Factory().getContext();
-            context.setProperty("ident", ident);
-            context.setProperty("fraOgMed", fraOgMed);
 
-            var request = mapperFacade.map(new EndringsmeldingRequest(), EgenansattRequest.class, context);
+        var context = new MappingContext.Factory().getContext();
+        context.setProperty("ident", ident);
+        context.setProperty("fraOgMed", fraOgMed);
 
-            var requestXml = marshallToXML(requestContext, updateRequest(request, isOpprett));
-            var miljoerResponse = endringsmeldingConsumer.sendMessage(requestXml, miljoer);
+        var request = mapperFacade.map(new EndringsmeldingRequest(), EgenansattRequest.class, context);
 
-            return miljoerResponse.entrySet().stream()
-                    .collect(Collectors.toMap(Entry::getKey, entry -> {
+        var requestXml = marshallToXML(requestContext, updateRequest(request, isOpprett));
+        var miljoerResponse = endringsmeldingConsumer.sendMessage(requestXml, miljoer);
 
-                        try {
-                            var response = (EgenansattResponse) unmarshallFromXml(responseContext, entry.getValue());
-                            return getResponseStatus(response);
+        return miljoerResponse.entrySet().stream()
+                .collect(Collectors.toMap(Entry::getKey, entry -> {
 
-                        } catch (JAXBException e) {
-                            log.error(e.getMessage(), e);
-                            return getErrorStatus(e);
-                        }
-                    }));
+                    try {
+                        var response = (EgenansattResponse) unmarshallFromXml(responseContext, entry.getValue());
+                        return getResponseStatus(response);
 
-        } catch (JAXBException e) {
-
-            log.error(e.getMessage(), e);
-            return Map.of("NA", getErrorStatus(e));
-        }
+                    } catch (JAXBException e) {
+                        log.error(e.getMessage(), e);
+                        return getErrorStatus(e);
+                    }
+                }));
     }
 }

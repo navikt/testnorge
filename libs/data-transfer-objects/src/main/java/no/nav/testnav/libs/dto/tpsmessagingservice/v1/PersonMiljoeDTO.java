@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class PersonMiljoeDTO {
 
     private String miljoe;
+
     private PersonDTO person;
 
     private String status;

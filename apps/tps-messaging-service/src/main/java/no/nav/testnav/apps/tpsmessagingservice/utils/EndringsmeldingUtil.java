@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.tpsmessagingservice.utils;
 
+import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tpsmessagingservice.dto.EndringsmeldingRequest;
@@ -53,7 +54,8 @@ public class EndringsmeldingUtil {
                 .build();
     }
 
-    public static String marshallToXML(JAXBContext requestContext, EndringsmeldingRequest endringsmelding) throws JAXBException {
+    @SneakyThrows
+    public static String marshallToXML(JAXBContext requestContext, EndringsmeldingRequest endringsmelding) {
 
         var marshaller = requestContext.createMarshaller();
 

@@ -1,16 +1,17 @@
 package no.nav.testnav.apps.tpsmessagingservice.utils;
 
+import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServicerutineRequest;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import java.io.StringWriter;
 
 @UtilityClass
 public class ServiceRutineUtil {
 
-    public static String marshallToXML(JAXBContext requestContext, TpsServicerutineRequest endringsmelding) throws JAXBException {
+    @SneakyThrows
+    public static String marshallToXML(JAXBContext requestContext, TpsServicerutineRequest endringsmelding) {
 
         var marshaller = requestContext.createMarshaller();
 

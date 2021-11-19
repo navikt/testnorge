@@ -74,7 +74,9 @@ public class TpsMeldingCommand implements Callable<String> {
                     responseMessage = (TextMessage) consumer.receive(TIMEOUT_VAL);
                 }
 
-                return nonNull(responseMessage) ? responseMessage.getText() : null;
+                var response = nonNull(responseMessage) ? responseMessage.getText() : null;
+
+                return response;
             }
         }
     }

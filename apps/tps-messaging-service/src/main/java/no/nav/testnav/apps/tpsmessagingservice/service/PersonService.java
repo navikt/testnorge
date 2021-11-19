@@ -20,12 +20,12 @@ import no.nav.testnav.libs.dto.tpsmessagingservice.v1.RelasjonDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SivilstandDTO;
 import no.nav.tps.ctg.s610.domain.PersondataFraTpsS610Type;
 import no.nav.tps.ctg.s610.domain.RelasjonType;
+import org.json.XML;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -48,6 +48,7 @@ import static no.nav.tps.ctg.s610.domain.RelasjonType.SEPA;
 import static no.nav.tps.ctg.s610.domain.RelasjonType.SEPR;
 import static no.nav.tps.ctg.s610.domain.RelasjonType.SKIL;
 import static no.nav.tps.ctg.s610.domain.RelasjonType.SKPA;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -82,14 +83,6 @@ public class PersonService {
                 SKPA == relasjonType ||
                 GJPA == relasjonType ||
                 GLAD == relasjonType;
-    }
-
-    private static Map<String, Object> buildRequest(String ident, String environment) {
-
-        return new HashMap<>(Map.of(
-                "fnr", ident,
-                "aksjonsKode", "D1",
-                "environment", environment));
     }
 
     private static String mapRelasjonType(RelasjonType relasjonType) {
@@ -189,7 +182,7 @@ public class PersonService {
                 .relasjoner(nonNull(tpsPerson.getPerson().getBruker().getRelasjoner()) ?
                         tpsPerson.getPerson().getBruker().getRelasjoner().getRelasjon().parallelStream()
                                 .map(relasjon -> {
-                                    return readFromTps(relasjon.getFnrRelasjon(), List.of(miljoe)).get(miljoe).getTpsSvar().getPersondataS610();
+                                    return readFromTps(relasjon.getFnrRelasjon(), List.of(miljoe)).get(miljoe).getTpsSvar().getPersonDataS610();
                                 })
                                 .filter(Objects::nonNull)
                                 .collect(Collectors.toList()) :
@@ -199,6 +192,22 @@ public class PersonService {
     }
 
     @SneakyThrows
+    public TpsServicerutineS610Response unmarshallFromXml(String endringsmeldingResponse) {
+
+        if (isNotBlank(endringsmeldingResponse)) {
+
+            var jsonResponse = XML.toJSONObject(endringsmeldingResponse);
+            var jsonRoot = objectMapper.readTree(jsonResponse.toString())
+                    .at("/sfePersonData");
+
+            return objectMapper.readValue(jsonRoot.toString(), TpsServicerutineS610Response.class);
+
+        } else {
+
+            return null;
+        }
+    }
+
     private Map<String, TpsServicerutineS610Response> readFromTps(String ident, List<String> miljoer) {
 
         var request = TpsServicerutineRequest.builder()
@@ -219,7 +228,7 @@ public class PersonService {
 
         return miljoerResponse.entrySet().stream()
                 .collect(Collectors.toMap(entry -> entry.getKey(),
-                        entry -> objectMapper.convertValue(entry.getValue(), TpsServicerutineS610Response.class)));
+                        entry -> unmarshallFromXml(entry.getValue())));
     }
 
     public List<PersonMiljoeDTO> getPerson(String ident, List<String> miljoer) {
@@ -232,7 +241,7 @@ public class PersonService {
 
         var relasjoner = getRelasjoner(tpsPersoner.entrySet().stream()
                 .filter(entry -> isStatusOK(entry.getValue().getTpsSvar().getSvarStatus()))
-                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getTpsSvar().getPersondataS610())));
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getTpsSvar().getPersonDataS610())));
 
         var personerMedRelasjoner = buildMiljoePersonWithRelasjon(relasjoner).entrySet().stream()
                 .map(entry -> PersonMiljoeDTO.builder()
