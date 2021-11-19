@@ -1,14 +1,9 @@
 import * as React from 'react'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { FormikProps } from 'formik'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { AdresseKodeverk, ArbeidKodeverk } from '~/config/kodeverk'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
-
-interface utenlandskBankkonto {
-	formikBag: FormikProps<{}>
-}
 
 const initialUtenlandskBankkonto = {
 	giroNrUtland: '',
@@ -21,9 +16,9 @@ const initialUtenlandskBankkonto = {
 	bankAdresse3: '',
 }
 
-export const UtenlandskBankkonto = ({ formikBag }: utenlandskBankkonto) => {
+export const UtenlandskBankkonto = () => {
 	return (
-		<Vis attributt="tpsMessaging.utenlandskBankkonto" formik>
+		<Vis attributt={'tpsMessaging.utenlandskBankkonto'} formik>
 			<FormikDollyFieldArray
 				name="tpsMessaging.utenlandskBankkonto"
 				header="Utenlandsk Bankkonto"

@@ -414,7 +414,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	if (tpsMessaging?.utenlandskBankkonto) {
 		const utenlandskBankkontoData = {
 			header: 'Utenlandsk bankkonto',
-			itemRows: utenlandskBankkonto.map((item, idx) => {
+			itemRows: tpsMessaging.utenlandskBankkonto.map((item, idx) => {
 				return [
 					{ numberHeader: `Bankkonto ${idx + 1}` },
 					obj('Giro nummer', item.giroNrUtland),
