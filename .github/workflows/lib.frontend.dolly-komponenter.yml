@@ -9,12 +9,12 @@ on:
 jobs:
   build:
     name: Build
-    uses: navikt/testnorge/.github/workflows/common.js.build.yml@github-workflows-new
+    uses: navikt/testnorge/.github/workflows/common.js.build.yml@master
     with:
       working-directory: 'navikt/dolly-komponenter/'
   publish:
     name: Publish
-    uses: navikt/testnorge/.github/workflows/common.js.publish.yml@github-workflows-new
+    uses: navikt/testnorge/.github/workflows/common.js.publish.yml@master
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
       working-directory: 'navikt/dolly-komponenter/'

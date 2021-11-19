@@ -9,7 +9,7 @@ on:
 jobs:
   scan:
     name: Scan
-    uses: navikt/testnorge/.github/workflows/common.sonar.yml@github-workflows-new
+    uses: navikt/testnorge/.github/workflows/common.sonar.yml@master
     with:
       working-directory: 'libs/reactive-frontend/'
     secrets:
@@ -17,7 +17,7 @@ jobs:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   build:
     name: Build
-    uses: navikt/testnorge/.github/workflows/common.java-build.yml@github-workflows-new
+    uses: navikt/testnorge/.github/workflows/common.java-build.yml@master
     with:
       working-directory: 'libs/reactive-frontend/'
     secrets:

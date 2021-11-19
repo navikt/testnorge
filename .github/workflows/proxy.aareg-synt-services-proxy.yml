@@ -11,7 +11,7 @@ on:
 jobs:
   scan:
     name: Scan
-    uses: navikt/testnorge/.github/workflows/common.sonar.yml@github-workflows-new
+    uses: navikt/testnorge/.github/workflows/common.sonar.yml@master
     with:
       working-directory: 'proxies/aareg-synt-services-proxy/'
     secrets:
@@ -19,7 +19,7 @@ jobs:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   build:
     name: Build
-    uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@github-workflows-new
+    uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@master
     with:
       working-directory: 'proxies/aareg-synt-services-proxy/'
       app-name: 'aareg-synt-services-proxy'
@@ -27,7 +27,7 @@ jobs:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
   deploy-dev:
     name: Deploy
-    uses: navikt/testnorge/.github/workflows/common.deploy.yml@github-workflows-new
+    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
     if: ${{ github.ref == 'refs/heads/master' }}
     with:

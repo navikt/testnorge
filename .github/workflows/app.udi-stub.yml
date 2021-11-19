@@ -9,7 +9,7 @@ on:
 jobs:
   scan:
     name: Scan
-    uses: navikt/testnorge/.github/workflows/common.sonar.yml@github-workflows-new
+    uses: navikt/testnorge/.github/workflows/common.sonar.yml@master
     with:
       working-directory: 'apps/udi-stub/'
     secrets:
@@ -17,7 +17,7 @@ jobs:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   build:
     name: Build
-    uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@github-workflows-new
+    uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@master
     with:
       working-directory: 'apps/udi-stub/'
       app-name: 'testnav-udi-stub'
@@ -25,7 +25,7 @@ jobs:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
   deploy:
     name: Deploy
-    uses: navikt/testnorge/.github/workflows/common.deploy.yml@github-workflows-new
+    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
@@ -36,7 +36,7 @@ jobs:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
   deploy-dev:
     name: Deploy dev
-    uses: navikt/testnorge/.github/workflows/common.deploy.yml@github-workflows-new
+    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
