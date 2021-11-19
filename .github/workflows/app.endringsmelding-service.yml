@@ -1,0 +1,33 @@
+name: App endringsmelding-service
+
+on:
+  push:
+    paths:
+      - apps/endringsmelding-service/**
+      - .github/workflows/app.endringsmelding-service.yml
+
+jobs:
+  scan:
+    name: Scan
+    uses: navikt/testnorge/.github/workflows/common.sonar.yml@github-workflows-new
+    with:
+      working-directory: 'apps/endringsmelding-service/'
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  build:
+    name: Build
+    uses: navikt/testnorge/.github/workflows/common.build.backend.yml@github-workflows-new
+    with:
+      working-directory: 'apps/endringsmelding-service/'
+      app-name: 'endringsmelding-service'
+  deploy-dev:
+    name: Deploy
+    uses: navikt/testnorge/.github/workflows/common.deploy.yml@github-workflows-new
+    needs: build
+    if: ${{ github.ref == 'refs/heads/master' }}
+    with:
+      resource: 'apps/endringsmelding-service/config.yml'
+      app-name: 'endringsmelding-service'
+      cluster: 'dev-gcp'
+    secrets:
+      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
