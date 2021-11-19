@@ -6,6 +6,8 @@ on:
       - apps/app-tilgang-analyse-service/**
       - .github/workflows/app.app-tilgang-analyse-service.yml
 
+value: 'dummy'
+
 jobs:
   scan:
     uses: navikt/testnorge/.github/workflows/common.sonar.yml@github-workflows-new
@@ -18,10 +20,10 @@ jobs:
     with:
       working-directory: 'apps/app-tilgang-analyse-service/'
       appName: 'app-tilgang-analyse-service'
-  deploy-dev-gcp:
+  deploy-dev:
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@github-workflows-new
     needs: build
-#    if: ${{ github.ref == 'refs/heads/master' }}
+    if: ${{ github.ref == 'refs/heads/master' }}
     with:
       resource: 'apps/app-tilgang-analyse-service/config.yml'
       appName: 'app-tilgang-analyse-service'
