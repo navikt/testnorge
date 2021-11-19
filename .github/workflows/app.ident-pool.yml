@@ -13,6 +13,7 @@ jobs:
     with:
       working-directory: 'apps/ident-pool/'
     secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   build:
     name: Build
@@ -20,6 +21,8 @@ jobs:
     with:
       working-directory: 'apps/ident-pool/'
       app-name: 'ident-pool'
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
   deploy-dev:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@github-workflows-new
@@ -28,6 +31,6 @@ jobs:
     with:
       resource: 'apps/ident-pool/nais.yml'
       app-name: 'ident-pool'
-      cluster: 'dev-gcp'
+      cluster: 'dev-fss'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}

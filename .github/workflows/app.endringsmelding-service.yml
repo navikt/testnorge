@@ -11,8 +11,8 @@ jobs:
     name: Scan
     uses: navikt/testnorge/.github/workflows/common.sonar.yml@github-workflows-new
     with:
-      working-directory: 'apps/endringsmelding-service/'
     secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   build:
     name: Build
@@ -20,6 +20,8 @@ jobs:
     with:
       working-directory: 'apps/endringsmelding-service/'
       app-name: 'endringsmelding-service'
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
   deploy-dev:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@github-workflows-new

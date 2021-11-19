@@ -13,6 +13,7 @@ jobs:
     with:
       working-directory: 'apps/dolly-backend/'
     secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   build:
     name: Build
@@ -20,6 +21,8 @@ jobs:
     with:
       working-directory: 'apps/dolly-backend/'
       app-name: 'testnav-dolly-backend'
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
   deploy:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@github-workflows-new
@@ -28,7 +31,7 @@ jobs:
     with:
       resource: 'apps/dolly-backend/config.yml'
       app-name: 'testnav-dolly-backend'
-      cluster: 'dev-gcp'
+      cluster: 'dev-fss'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
   deploy-dev:
@@ -39,6 +42,6 @@ jobs:
     with:
       resource: 'apps/dolly-backend/config.dev.yml'
       app-name: 'testnav-dolly-backend'
-      cluster: 'dev-gcp'
+      cluster: 'dev-fss'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}

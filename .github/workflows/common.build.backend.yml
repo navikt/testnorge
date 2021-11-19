@@ -7,6 +7,9 @@ on:
       app-name:
         type: string
         required: true
+    secrets:
+      NAV_TOKEN:
+        required: false
 
 env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/${{ inputs.app-name }}:${{ github.sha }}
