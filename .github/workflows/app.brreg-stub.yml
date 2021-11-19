@@ -20,7 +20,7 @@ jobs:
     uses: navikt/testnorge/.github/workflows/common.build.backend.yml@github-workflows-new
     with:
       working-directory: 'apps/brreg-stub/'
-      app-name: 'brreg-stub'
+      app-name: 'testnav-brreg-stub'
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
   deploy-dev:
@@ -30,7 +30,7 @@ jobs:
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
       resource: 'apps/brreg-stub/config.yml'
-      app-name: 'brreg-stub'
+      app-name: 'testnav-brreg-stub'
       cluster: 'dev-fss'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}

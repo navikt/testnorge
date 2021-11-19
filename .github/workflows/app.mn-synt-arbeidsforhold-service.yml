@@ -1,17 +1,17 @@
-name: App orkestratoren
+name: App mn-synt-arbeidsforhold-service
 
 on:
   push:
     paths:
-      - apps/orkestratoren/**
-      - .github/workflows/app.orkestratoren.yml
+      - apps/mn-synt-arbeidsforhold-service/**
+      - .github/workflows/app.mn-synt-arbeidsforhold-service.yml
 
 jobs:
   scan:
     name: Scan
     uses: navikt/testnorge/.github/workflows/common.sonar.yml@github-workflows-new
     with:
-      working-directory: 'apps/orkestratoren/'
+      working-directory: 'apps/mn-synt-arbeidsforhold-service/'
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -19,8 +19,8 @@ jobs:
     name: Build
     uses: navikt/testnorge/.github/workflows/common.build.backend.yml@github-workflows-new
     with:
-      working-directory: 'apps/orkestratoren/'
-      app-name: 'orkestratoren'
+      working-directory: 'apps/mn-synt-arbeidsforhold-service/'
+      app-name: 'mn-synt-arbeidsforhold-service'
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
   deploy-dev:
@@ -29,8 +29,8 @@ jobs:
     needs: build
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
-      resource: 'apps/orkestratoren/config.yml'
-      app-name: 'orkestratoren'
+      resource: 'apps/mn-synt-arbeidsforhold-service/config.yml'
+      app-name: 'mn-synt-arbeidsforhold-service'
       cluster: 'dev-fss'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}

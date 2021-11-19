@@ -3,15 +3,15 @@ name: App orkestratoren
 on:
   push:
     paths:
-      - apps/orkestratoren/**
-      - .github/workflows/app.orkestratoren.yml
+      - apps/opprett-person-pdl/**
+      - .github/workflows/app.opprett-person-pdl.yml
 
 jobs:
   scan:
     name: Scan
     uses: navikt/testnorge/.github/workflows/common.sonar.yml@github-workflows-new
     with:
-      working-directory: 'apps/orkestratoren/'
+      working-directory: 'apps/opprett-person-pdl/'
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -19,8 +19,8 @@ jobs:
     name: Build
     uses: navikt/testnorge/.github/workflows/common.build.backend.yml@github-workflows-new
     with:
-      working-directory: 'apps/orkestratoren/'
-      app-name: 'orkestratoren'
+      working-directory: 'apps/opprett-person-pdl/'
+      app-name: 'opprett-person-pdl'
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
   deploy-dev:
@@ -29,8 +29,8 @@ jobs:
     needs: build
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
-      resource: 'apps/orkestratoren/config.yml'
-      app-name: 'orkestratoren'
+      resource: 'apps/opprett-person-pdl/config.yml'
+      app-name: 'opprett-person-pdl'
       cluster: 'dev-fss'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
