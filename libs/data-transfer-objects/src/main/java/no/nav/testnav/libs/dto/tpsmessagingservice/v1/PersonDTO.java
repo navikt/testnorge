@@ -1,6 +1,6 @@
 package no.nav.testnav.libs.dto.tpsmessagingservice.v1;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,16 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.InnvandretUtvandretDTO.InnUtvandret.INNVANDRET;
-import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.InnvandretUtvandretDTO.InnUtvandret.UTVANDRET;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class PersonDTO {
 
     private String ident;
@@ -160,80 +156,5 @@ public class PersonDTO {
             midlertidigAdresse = new ArrayList<>();
         }
         return midlertidigAdresse;
-    }
-
-    public String getLandkodeOfFirstInnvandret() {
-
-        return getInnvandretUtvandret().stream()
-                .filter(innutvandret -> INNVANDRET == innutvandret.getInnutvandret())
-                .map(InnvandretUtvandretDTO::getLandkode)
-                .reduce((a, b) -> b).orElse(null);
-    }
-
-    public LocalDateTime getFlyttedatoOfFirstInnvandret() {
-
-        return getInnvandretUtvandret().stream()
-                .filter(innutvandret -> INNVANDRET == innutvandret.getInnutvandret())
-                .map(InnvandretUtvandretDTO::getFlyttedato)
-                .reduce((a, b) -> b).orElse(null);
-    }
-
-    public PersonDTO toUppercase() {
-        if (isNotBlank(getFornavn())) {
-            setFornavn(getFornavn().toUpperCase());
-        }
-        if (isNotBlank(getMellomnavn())) {
-            setMellomnavn(getMellomnavn().toUpperCase());
-        }
-        if (isNotBlank(getEtternavn())) {
-            setEtternavn(getEtternavn().toUpperCase());
-        }
-        if (isNotBlank(getForkortetNavn())) {
-            setForkortetNavn(getForkortetNavn().toUpperCase());
-        }
-        if (isNotBlank(getIdenttype())) {
-            setIdenttype(getIdenttype().toUpperCase());
-        }
-
-        getBoadresse().forEach(AdresseDTO::toUppercase);
-        getPostadresse().forEach(PostadresseDTO::toUppercase);
-
-        return this;
-    }
-
-    @JsonIgnore
-    public boolean isUtenFastBopel() {
-        return isTrue(utenFastBopel) || "UFB".equals(getSpesreg());
-    }
-
-    @JsonIgnore
-    public boolean isKode6() {
-        return "SPSF".equals(getSpesreg());
-    }
-
-    @JsonIgnore
-    public boolean isForsvunnet() {
-        return nonNull(getForsvunnetDato());
-    }
-
-    @JsonIgnore
-    public boolean isEgenansatt() {
-        return nonNull(getEgenAnsattDatoFom()) && isNull(getEgenAnsattDatoTom());
-    }
-
-    @JsonIgnore
-    public boolean isUtvandret() {
-        return !getInnvandretUtvandret().isEmpty() &&
-                UTVANDRET == getInnvandretUtvandret().get(0).getInnutvandret();
-    }
-
-    @JsonIgnore
-    public boolean isDoedFoedt() {
-        return "FDAT".equals(getIdenttype());
-    }
-
-    @JsonIgnore
-    public boolean isKvinne() {
-        return "K".equals(getKjonn());
     }
 }

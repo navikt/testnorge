@@ -1,11 +1,9 @@
 package no.nav.testnav.libs.dto.tpsmessagingservice.v1;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AccessLevel;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -14,11 +12,9 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class InnvandretUtvandretDTO {
 
-    @JsonIgnore
-    @Getter(AccessLevel.NONE)
-    private PersonDTO person;
     private InnUtvandret innutvandret;
     private String landkode;
     private LocalDateTime flyttedato;

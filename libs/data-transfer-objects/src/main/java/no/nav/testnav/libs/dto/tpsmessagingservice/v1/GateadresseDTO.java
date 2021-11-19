@@ -1,5 +1,6 @@
 package no.nav.testnav.libs.dto.tpsmessagingservice.v1;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,9 +12,10 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class GateadresseDTO extends AdresseDTO {
 
     private String adresse;

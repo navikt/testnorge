@@ -25,13 +25,6 @@ public class PersonController {
     public List<PersonMiljoeDTO> getPerson(@PathVariable String ident,
                                            @RequestParam(required = false) List<String> miljoer) {
 
-        var resultat = personService.getPerson(ident, nonNull(miljoer) ? miljoer : emptyList());
-
-        return resultat.entrySet().stream()
-                .map(entry -> PersonMiljoeDTO.builder()
-                        .miljoe(entry.getKey())
-                        .person(entry.getValue())
-                        .build())
-                .toList();
+        return personService.getPerson(ident, nonNull(miljoer) ? miljoer : emptyList());
     }
 }

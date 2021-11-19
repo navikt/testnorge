@@ -1,5 +1,6 @@
 package no.nav.testnav.libs.dto.tpsmessagingservice.v1;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,27 +12,12 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class SivilstandDTO {
-
-    private PersonDTO person;
 
     private String sivilstand;
 
     private LocalDateTime sivilstandRegdato;
 
     private PersonDTO personRelasjonMed;
-
-
-    public boolean isSivilstandGift() {
-
-        switch (SivilstatusDTO.lookup(getSivilstand())) {
-            case GIFT:
-            case SEPARERT:
-            case REGISTRERT_PARTNER:
-            case SEPARERT_PARTNER:
-                return true;
-            default:
-                return false;
-        }
-    }
 }
