@@ -14,7 +14,7 @@ jobs:
     name: Scan
     uses: navikt/testnorge/.github/workflows/common.sonar.yml@github-workflows-new
     with:
-      working-directory: ${{ env.TEST }}
+      working-directory: ${{ TEST }}
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   build:
