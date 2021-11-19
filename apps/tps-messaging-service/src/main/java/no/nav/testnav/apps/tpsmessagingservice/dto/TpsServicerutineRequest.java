@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@XmlRootElement(name = "sfePersonData")
+@XmlRootElement(name = "tpsPersonData")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class TpsServicerutineRequest {
 
