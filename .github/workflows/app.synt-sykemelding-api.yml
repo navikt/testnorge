@@ -1,17 +1,17 @@
-name: App profil-api
+name: App synt-sykemelding-api
 
 on:
   push:
     paths:
-      - apps/profil-api/**
-      - .github/workflows/app.profil-api.yml
+      - apps/synt-sykemelding-api/**
+      - .github/workflows/app.synt-sykemelding-api.yml
 
 jobs:
   scan:
     name: Scan
     uses: navikt/testnorge/.github/workflows/common.sonar.yml@github-workflows-new
     with:
-      working-directory: 'apps/profil-api/'
+      working-directory: 'apps/synt-sykemelding-api/'
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -19,8 +19,8 @@ jobs:
     name: Build
     uses: navikt/testnorge/.github/workflows/common.build.backend.yml@github-workflows-new
     with:
-      working-directory: 'apps/profil-api/'
-      app-name: 'profil-api'
+      working-directory: 'apps/synt-sykemelding-api/'
+      app-name: 'synt-sykemelding-api'
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
   deploy:
@@ -29,19 +29,8 @@ jobs:
     needs: build
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
-      resource: 'apps/profil-api/config.yml'
-      app-name: 'profil-api'
-      cluster: 'dev-gcp'
-    secrets:
-      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-  deploy-dev:
-    name: Deploy dev
-    uses: navikt/testnorge/.github/workflows/common.deploy.yml@github-workflows-new
-    needs: build
-    if: ${{ github.ref == 'refs/heads/master' }}
-    with:
-      resource: 'apps/profil-api/config.dev.yml'
-      app-name: 'profil-api'
-      cluster: 'dev-gcp'
+      resource: 'apps/synt-sykemelding-api/config.yml'
+      app-name: 'synt-sykemelding-api'
+      cluster: 'dev-fss'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
