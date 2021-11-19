@@ -474,7 +474,7 @@ export const validation = {
 				})
 			),
 			utenlandskBankkonto: ifPresent(
-				'$tpsf.utenlandskBankkonto',
+				'$tpsMessaging.utenlandskBankkonto',
 				Yup.array().of(
 					Yup.object({
 						giroNrUtland: Yup.string().optional(),

@@ -41,7 +41,7 @@ const diversePaths = [
 
 const vergemaalPath = ['tpsf.vergemaal']
 const fullmaktPath = ['pdldata.person.fullmakt']
-const utenlandskBankkontoPath = ['tpsf.utenlandskBankkonto']
+const utenlandskBankkontoPath = ['tpsMessaging.utenlandskBankkonto']
 
 const sikkerhetstiltakPaths = [
 	'tpsf.typeSikkerhetTiltak',

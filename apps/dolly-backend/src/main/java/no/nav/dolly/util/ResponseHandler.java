@@ -1,14 +1,14 @@
-package no.nav.dolly.bestilling.krrstub;
-
-import static java.lang.String.format;
-import static java.util.Objects.nonNull;
+package no.nav.dolly.util;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import static java.lang.String.format;
+import static java.util.Objects.nonNull;
+
 @Component
-public class KrrstubResponseHandler {
+public class ResponseHandler {
 
     private static boolean isOkStatus(ResponseEntity<Object> response) {
         return HttpStatus.OK == response.getStatusCode() ||

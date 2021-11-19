@@ -23,7 +23,7 @@ const initialUtenlandskBankkonto = {
 export const UtenlandskBankkonto = ({ formikBag }: utenlandskBankkonto) => {
 	return (
 		<FormikDollyFieldArray
-			name="tpsf.utenlandskBankkonto"
+			name="tpsMessaging.utenlandskBankkonto"
 			header="Utenlandsk Bankkonto"
 			newEntry={initialUtenlandskBankkonto}
 			canBeEmpty={false}

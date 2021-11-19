@@ -20,6 +20,7 @@ import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
+import no.nav.dolly.domain.resultset.tpsmessagingservice.RsTpsMessaging;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 
 import java.util.ArrayList;
@@ -68,6 +69,8 @@ public class RsDollyBestilling {
     private RsDokarkiv dokarkiv;
 
     private RsSykemelding sykemelding;
+
+    private RsTpsMessaging tpsMessaging;
 
     public List<RsAareg> getAareg() {
         if (isNull(aareg)) {

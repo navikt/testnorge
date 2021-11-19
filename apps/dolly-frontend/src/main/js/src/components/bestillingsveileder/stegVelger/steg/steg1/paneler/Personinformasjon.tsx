@@ -326,9 +326,9 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		},
 		utenlandskBankkonto: {
 			label: 'Utenlandsk bank',
-			checked: has('tpsf.utenlandskBankkonto'),
+			checked: has('tpsMessaging.utenlandskBankkonto'),
 			add: () =>
-				set('tpsf.utenlandskBankkonto', [
+				set('tpsMessaging.utenlandskBankkonto', [
 					{
 						giroNrUtland: '',
 						kodeSwift: '',
@@ -340,7 +340,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 						bankAdresse3: '',
 					},
 				]),
-			remove: () => del('tpsf.utenlandskBankkonto'),
+			remove: () => del('tpsMessaging.utenlandskBankkonto'),
 		},
 	}
 }
