@@ -38,7 +38,7 @@ jobs:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
         working-directory: ${{ inputs.working-directory }}
         run: ./gradlew build
-      - name: Build and publish Docker image
+      - name: Build & Publish Docker image
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         working-directory: ${{ inputs.working-directory }}

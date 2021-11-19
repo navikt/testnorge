@@ -1,19 +1,19 @@
-name: Proxy aareg-proxy
+name: Proxy arena-forvalteren-proxy
 
 on:
   push:
     paths:
-      - proxies/aareg-proxy/**
+      - proxies/arena-forvalteren-proxy/**
       - libs/reactive-core/**
       - libs/reactive-proxy/**
-      - .github/workflows/proxy.aareg-proxy.yml
+      - .github/workflows/proxy.arena-forvalteren-proxy.yml
 
 jobs:
   scan:
     name: Scan
     uses: navikt/testnorge/.github/workflows/common.sonar.yml@github-workflows-new
     with:
-      working-directory: 'proxies/aareg-proxy/'
+      working-directory: 'proxies/arena-forvalteren-proxy/'
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -21,8 +21,8 @@ jobs:
     name: Build
     uses: navikt/testnorge/.github/workflows/common.build.backend.yml@github-workflows-new
     with:
-      working-directory: 'proxies/aareg-proxy/'
-      app-name: 'aareg-proxy'
+      working-directory: 'proxies/arena-forvalteren-proxy/'
+      app-name: 'arena-forvalteren-proxy'
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
   deploy-dev:
@@ -31,8 +31,8 @@ jobs:
     needs: build
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
-      resource: 'proxies/aareg-proxy/config.yml'
-      app-name: 'aareg-proxy'
+      resource: 'proxies/arena-forvalteren-proxy/config.yml'
+      app-name: 'arena-forvalteren-proxy'
       cluster: 'dev-fss'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}

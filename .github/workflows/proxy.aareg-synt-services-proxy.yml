@@ -6,7 +6,7 @@ on:
       - proxies/aareg-synt-services-proxy/**
       - libs/reactive-core/**
       - libs/reactive-proxy/**
-      - .github/workflows/app.aareg-proxy.yml
+      - .github/workflows/proxy.aareg-synt-services-proxy.yml
 
 jobs:
   scan:
