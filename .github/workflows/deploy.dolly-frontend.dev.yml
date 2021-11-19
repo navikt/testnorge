@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - feature/disable-automatisk-adresse-tpsf
+      - feature/utenlandsk-bankkonto
     paths:
       - apps/dolly-frontend/**
   workflow_dispatch:
