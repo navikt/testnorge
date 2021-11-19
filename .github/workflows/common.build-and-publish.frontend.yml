@@ -1,0 +1,63 @@
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        type: string
+        required: true
+      app-name:
+        type: string
+        required: true
+    secrets:
+      NAV_TOKEN:
+        required: false
+
+env:
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/${{ inputs.app-name }}:${{ github.sha }}
+
+jobs:
+  build:
+    name: Build Frontend
+    runs-on: ubuntu-latest
+    if: ${{ github.actor != 'dependabot[bot]' }}
+    steps:
+      - uses: actions/checkout@v1
+      - name: Gradle cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "16.x"
+      - name: Install js libs
+        run: |
+          npm ci
+        working-directory: ${{ inputs.working-directory }}/src/main/js
+      - name: Build js
+        run: |
+          npm run build
+        working-directory: ${{ inputs.working-directory }}/src/main/js
+      - name: Move js build
+        run: |
+          mv build ../resources/static
+        working-directory: ${{ inputs.working-directory }}/src/main/js
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '17.x'
+      - name: Compile
+        env:
+          GITHUB_USERNAME: token
+          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+        working-directory: ${{ inputs.working-directory }}
+        run: ./gradlew build
+      - name: Build & Publish Docker image
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        working-directory: ${{ inputs.working-directory }}
+        run: |
+          docker build --tag $IMAGE .
+          docker login docker.pkg.github.com -u $GITHUB_REPOSITORY -p $GITHUB_TOKEN
+          docker push $IMAGE

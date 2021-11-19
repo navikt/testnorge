@@ -67,7 +67,7 @@ dependencies {
     implementation 'com.h2database:h2'
     implementation 'com.zaxxer:HikariCP'
 
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.0'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
     implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
     implementation 'org.projectreactor:reactor-spring:1.0.1.RELEASE'
     implementation 'org.hibernate.validator:hibernate-validator'

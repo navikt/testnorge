@@ -3,6 +3,6 @@ LABEL maintainer="Team Registre"
 
 ENV JAVA_OPTS="-Dspring.profiles.active=prod"
 
-ADD apps/testnorge-skd/build/libs/app.jar /app/app.jar
+ADD /build/libs/app.jar /app/app.jar
 
 EXPOSE 8080
