@@ -20,7 +20,7 @@ jobs:
     uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@github-workflows-new
     with:
       working-directory: 'apps/testnorge-sam/'
-      app-name: 'testnorge-sam'
+      app-name: 'testnav-sam'
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
   deploy:
@@ -30,7 +30,7 @@ jobs:
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
       resource: 'apps/testnorge-sam/nais.yml'
-      app-name: 'testnorge-sam'
+      app-name: 'testnav-sam'
       cluster: 'dev-fss'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}

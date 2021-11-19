@@ -1,17 +1,17 @@
-name: Lib commands
+name: Lib csv-converter
 
 on:
   push:
     paths:
-      - libs/commands/**
-      - .github/workflows/lib.commands.yml
+      - libs/csv-converter/**
+      - .github/workflows/lib.csv-converter.yml
 
 jobs:
   scan:
     name: Scan
     uses: navikt/testnorge/.github/workflows/common.sonar.yml@github-workflows-new
     with:
-      working-directory: 'libs/commands/'
+      working-directory: 'libs/csv-converter/'
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -19,6 +19,6 @@ jobs:
     name: Build
     uses: navikt/testnorge/.github/workflows/common.java-build.yml@github-workflows-new
     with:
-      working-directory: 'libs/commands/'
+      working-directory: 'libs/csv-converter/'
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}

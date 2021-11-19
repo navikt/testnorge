@@ -1,17 +1,17 @@
-name: Lib commands
+name: Lib data-transfer-objects
 
 on:
   push:
     paths:
-      - libs/commands/**
-      - .github/workflows/lib.commands.yml
+      - libs/data-transfer-objects/**
+      - .github/workflows/lib.data-transfer-objects.yml
 
 jobs:
   scan:
     name: Scan
     uses: navikt/testnorge/.github/workflows/common.sonar.yml@github-workflows-new
     with:
-      working-directory: 'libs/commands/'
+      working-directory: 'libs/data-transfer-objects/'
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -19,6 +19,6 @@ jobs:
     name: Build
     uses: navikt/testnorge/.github/workflows/common.java-build.yml@github-workflows-new
     with:
-      working-directory: 'libs/commands/'
+      working-directory: 'libs/data-transfer-objects/'
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
