@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - apps/applikasjonsanalyse-frontend/**
+      - .github/workflows/app.applikasjonsanalyse-frontend.yml
 
 jobs:
   scan:

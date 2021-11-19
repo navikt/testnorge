@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - apps/app-tilgang-analyse-service/**
-      - .github/workflows/app.applikasjonsanalyse-frontend.yml
+      - .github/workflows/app.app-tilgang-analyse-service.yml
 
 jobs:
   scan:

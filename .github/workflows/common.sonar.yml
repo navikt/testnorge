@@ -10,7 +10,7 @@ on:
 
 jobs:
   scan:
-    name: Sonar scan
+    name: Sonar Scan
     runs-on: ubuntu-latest
     if: ${{ github.actor != 'dependabot[bot]' }}
     steps:
