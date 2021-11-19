@@ -1,0 +1,32 @@
+name: App applikasjonsanalyse-frontend
+
+on:
+  push:
+    paths:
+      - apps/applikasjonsanalyse-frontend/**
+
+jobs:
+  scan:
+    name: Scan
+    uses: navikt/testnorge/.github/workflows/common.sonar.yml@github-workflows-new
+    with:
+      working-directory: 'apps/applikasjonsanalyse-frontend/'
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  build:
+    name: Build
+    uses: navikt/testnorge/.github/workflows/common.build.frontend.yml@github-workflows-new
+    with:
+      working-directory: 'apps/applikasjonsanalyse-frontend/'
+      app-name: 'applikasjonsanalyse-frontend'
+  deploy-dev:
+    name: Deploy
+    uses: navikt/testnorge/.github/workflows/common.deploy.yml@github-workflows-new
+    needs: build
+#    if: ${{ github.ref == 'refs/heads/master' }}
+    with:
+      resource: 'apps/applikasjonsanalyse-frontend/config.yml'
+      app-name: 'applikasjonsanalyse-frontend'
+      cluster: 'dev-gcp'
+    secrets:
+      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
