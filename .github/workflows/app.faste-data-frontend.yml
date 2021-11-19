@@ -24,7 +24,7 @@ jobs:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@github-workflows-new
     needs: build
-#    if: ${{ github.ref == 'refs/heads/master' }}
+    if: ${{ github.ref == 'refs/heads/master' }}
     with:
       resource: 'apps/faste-data-frontend/config.yml'
       app-name: 'faste-data-frontend'
