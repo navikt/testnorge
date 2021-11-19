@@ -7,18 +7,25 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.tps.ctg.s610.domain.PersondataFraTpsS610Type;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@XmlRootElement(name = "sfePersonData")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class TpsServicerutineS610Response {
 
-    private TpsServiceRutine tpsServiceRutine;
-    private TpsSvar tpsSvar;
+    private TpsPersonData tpsPersonData;
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    public static class TpsPersonData {
+
+        private TpsServiceRutine tpsServiceRutine;
+        private TpsSvar tpsSvar;
+    }
 
     @Data
     @Builder

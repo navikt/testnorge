@@ -18,8 +18,8 @@ import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.RelasjonDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SivilstandDTO;
-import no.nav.tps.ctg.s610.domain.PersondataFraTpsS610Type;
 import no.nav.tps.ctg.s610.domain.RelasjonType;
+import no.nav.tps.ctg.s610.domain.S610PersonType;
 import org.json.XML;
 import org.springframework.stereotype.Service;
 
@@ -122,17 +122,17 @@ public class PersonService {
                 .collect(Collectors.toMap(PersonMiljoe::getMiljoe, PersonMiljoe::getPerson));
     }
 
-    private void mapSivilstand(List<PersondataFraTpsS610Type> tpsFamilie, Map<String, PersonDTO> familie) {
+    private void mapSivilstand(List<S610PersonType> tpsFamilie, Map<String, PersonDTO> familie) {
 
         tpsFamilie.forEach(person ->
-                familie.get(person.getPerson().getFodselsnummer()).getSivilstander().addAll(
-                        nonNull(person.getPerson().getBruker().getRelasjoner()) &&
-                                person.getPerson().getBruker().getRelasjoner().getRelasjon().stream()
+                familie.get(person.getFodselsnummer()).getSivilstander().addAll(
+                        nonNull(person.getBruker().getRelasjoner()) &&
+                                person.getBruker().getRelasjoner().getRelasjon().stream()
                                         .anyMatch(relasjon -> isGift(relasjon.getTypeRelasjon())) ?
                                 List.of(SivilstandDTO.builder()
-                                        .sivilstand(getSivilstand(person.getPerson()))
-                                        .sivilstandRegdato(getTimestamp(person.getPerson().getSivilstandDetalj().getDatoSivilstand()))
-                                        .personRelasjonMed(familie.get(person.getPerson().getBruker().getRelasjoner().getRelasjon().stream()
+                                        .sivilstand(getSivilstand(person))
+                                        .sivilstandRegdato(getTimestamp(person.getSivilstandDetalj().getDatoSivilstand()))
+                                        .personRelasjonMed(familie.get(person.getBruker().getRelasjoner().getRelasjon().stream()
                                                 .filter(relasjon -> isGift(relasjon.getTypeRelasjon()))
                                                 .findFirst().get().getFnrRelasjon()))
                                         .build()) :
@@ -145,16 +145,16 @@ public class PersonService {
                 .flatMap(Collection::stream).toList();
 
         Map<String, PersonDTO> familie = tpsFamilie.parallelStream()
-                .map(person -> mapperFacade.map(person.getPerson(), PersonDTO.class))
+                .map(person -> mapperFacade.map(person, PersonDTO.class))
                 .collect(Collectors.toMap(PersonDTO::getIdent, person -> person));
 
         tpsFamilie.forEach(person ->
-                familie.get(person.getPerson().getFodselsnummer()).getRelasjoner().addAll(
-                        nonNull(person.getPerson().getBruker().getRelasjoner()) ?
-                                person.getPerson().getBruker().getRelasjoner().getRelasjon().stream()
+                familie.get(person.getFodselsnummer()).getRelasjoner().addAll(
+                        nonNull(person.getBruker().getRelasjoner()) ?
+                                person.getBruker().getRelasjoner().getRelasjon().stream()
                                         .filter(relasjon ->
                                                 tpsFamilie.stream().anyMatch(person1 ->
-                                                        relasjon.getFnrRelasjon().equals(person1.getPerson().getFodselsnummer())))
+                                                        relasjon.getFnrRelasjon().equals(person1.getFodselsnummer())))
                                         .map(relasjon -> RelasjonDTO.builder()
                                                 .relasjonTypeNavn(mapRelasjonType(relasjon.getTypeRelasjon()))
                                                 .personRelasjonMed(familie.get(relasjon.getFnrRelasjon()))
@@ -163,10 +163,10 @@ public class PersonService {
 
         mapSivilstand(tpsFamilie, familie);
 
-        return familie.get(personRelasjon.getHovedperson().getPerson().getFodselsnummer());
+        return familie.get(personRelasjon.getHovedperson().getFodselsnummer());
     }
 
-    private Map<String, PersonRelasjon> getRelasjoner(Map<String, PersondataFraTpsS610Type> tpsPerson) {
+    private Map<String, PersonRelasjon> getRelasjoner(Map<String, S610PersonType> tpsPerson) {
 
         return tpsPerson.entrySet().parallelStream()
                 .map(entry -> PersonRelasjonMiljoe.builder()
@@ -176,13 +176,18 @@ public class PersonService {
                 .collect(Collectors.toMap(PersonRelasjonMiljoe::getMiljoe, PersonRelasjonMiljoe::getPersonRelasjon));
     }
 
-    private PersonRelasjon getRelasjoner(String miljoe, PersondataFraTpsS610Type tpsPerson) {
+    private PersonRelasjon getRelasjoner(String miljoe, S610PersonType tpsPerson) {
 
         return PersonRelasjon.builder()
-                .relasjoner(nonNull(tpsPerson.getPerson().getBruker().getRelasjoner()) ?
-                        tpsPerson.getPerson().getBruker().getRelasjoner().getRelasjon().parallelStream()
+                .relasjoner(nonNull(tpsPerson.getBruker().getRelasjoner()) ?
+                        tpsPerson.getBruker().getRelasjoner().getRelasjon().parallelStream()
                                 .map(relasjon -> {
-                                    return readFromTps(relasjon.getFnrRelasjon(), List.of(miljoe)).get(miljoe).getTpsSvar().getPersonDataS610();
+                                    return readFromTps(relasjon.getFnrRelasjon(), List.of(miljoe))
+                                            .get(miljoe)
+                                            .getTpsPersonData()
+                                            .getTpsSvar()
+                                            .getPersonDataS610()
+                                            .getPerson();
                                 })
                                 .filter(Objects::nonNull)
                                 .collect(Collectors.toList()) :
@@ -196,9 +201,7 @@ public class PersonService {
 
         if (isNotBlank(endringsmeldingResponse)) {
 
-            var jsonResponse = XML.toJSONObject(endringsmeldingResponse);
-            var jsonRoot = objectMapper.readTree(jsonResponse.toString())
-                    .at("/tpsPersonData");
+            var jsonRoot = XML.toJSONObject(endringsmeldingResponse);
 
             return objectMapper.readValue(jsonRoot.toString(), TpsServicerutineS610Response.class);
 
@@ -240,8 +243,12 @@ public class PersonService {
         var tpsPersoner = readFromTps(ident, miljoer);
 
         var relasjoner = getRelasjoner(tpsPersoner.entrySet().stream()
-                .filter(entry -> isStatusOK(entry.getValue().getTpsSvar().getSvarStatus()))
-                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getTpsSvar().getPersonDataS610())));
+                .filter(entry -> isStatusOK(entry.getValue().getTpsPersonData().getTpsSvar().getSvarStatus()))
+                .collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue()
+                        .getTpsPersonData()
+                        .getTpsSvar()
+                        .getPersonDataS610()
+                        .getPerson())));
 
         var personerMedRelasjoner = buildMiljoePersonWithRelasjon(relasjoner).entrySet().stream()
                 .map(entry -> PersonMiljoeDTO.builder()
@@ -252,11 +259,12 @@ public class PersonService {
                 .toList();
 
         var hentingMedFeil = tpsPersoner.entrySet().stream()
+                .filter(entry -> !isStatusOK(entry.getValue().getTpsPersonData().getTpsSvar().getSvarStatus()))
                 .map(entry -> PersonMiljoeDTO.builder()
                         .miljoe(entry.getKey())
                         .status("FEIL")
-                        .melding(entry.getValue().getTpsSvar().getSvarStatus().getReturMelding())
-                        .utfyllendeMelding(entry.getValue().getTpsSvar().getSvarStatus().getUtfyllendeMelding())
+                        .melding(entry.getValue().getTpsPersonData().getTpsSvar().getSvarStatus().getReturMelding())
+                        .utfyllendeMelding(entry.getValue().getTpsPersonData().getTpsSvar().getSvarStatus().getUtfyllendeMelding())
                         .build())
                 .toList();
 
@@ -271,8 +279,8 @@ public class PersonService {
     @AllArgsConstructor
     private static class PersonRelasjon {
 
-        private PersondataFraTpsS610Type hovedperson;
-        private List<PersondataFraTpsS610Type> relasjoner;
+        private S610PersonType hovedperson;
+        private List<S610PersonType> relasjoner;
     }
 
     @Data
