@@ -5,7 +5,6 @@ import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.EndringsmeldingConsumer;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.command.TpsMeldingCommand;
-import no.nav.testnav.apps.tpsmessagingservice.dto.KontaktopplysningerResponse;
 import no.nav.testnav.apps.tpsmessagingservice.dto.SpraakRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.SpraakResponse;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
@@ -56,7 +55,7 @@ public class SpraakService {
                         if (TpsMeldingCommand.NO_RESPONSE.equals(entry.getValue())) {
                             return getResponseStatus(null);
                         } else {
-                            var response = (KontaktopplysningerResponse) unmarshallFromXml(responseContext, entry.getValue());
+                            var response = (SpraakResponse) unmarshallFromXml(responseContext, entry.getValue());
                             return getResponseStatus(response);
                         }
 
