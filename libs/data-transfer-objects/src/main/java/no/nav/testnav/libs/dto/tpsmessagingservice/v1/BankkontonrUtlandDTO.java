@@ -20,6 +20,7 @@ public class BankkontonrUtlandDTO {
     private String kodeSwift;
     private String kodeLand;
     private String bankNavn;
+    private String kodeBank;
     private String valuta;
     private String bankAdresse1;
     private String bankAdresse2;

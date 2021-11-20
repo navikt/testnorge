@@ -76,7 +76,7 @@ public class PersonController {
         return convert(egenansattService.opphoerEgenansatt(ident, miljoer));
     }
 
-    @PostMapping("/{ident}/spraak-kode")
+    @PostMapping("/{ident}/spraakkoder")
     public List<TpsMeldingResponseDTO> endreSpraakkode(@PathVariable String ident,
                                                        @RequestBody SpraakDTO spraak,
                                                        @RequestParam List<String> miljoer) {
@@ -84,7 +84,7 @@ public class PersonController {
         return convert(spraakService.sendSpraakkode(ident, spraak, miljoer));
     }
 
-    @PostMapping("/{ident}/bankkonto-norsk")
+    @PostMapping("/{ident}/bankkonti-norsk")
     public List<TpsMeldingResponseDTO> endreNorskBankkonto(@PathVariable String ident,
                                                            @RequestBody BankkontonrNorskDTO bankkontonrNorsk,
                                                            @RequestParam List<String> miljoer) {
@@ -92,7 +92,7 @@ public class PersonController {
         return convert(bankkontoNorskService.sendBankkontonrNorsk(ident, bankkontonrNorsk, miljoer));
     }
 
-    @PostMapping("/{ident}/bankkonto-utenlandsk")
+    @PostMapping("/{ident}/bankkonti-utenlandsk")
     public List<TpsMeldingResponseDTO> endreUtenlandskBankkonto(@PathVariable String ident,
                                                                 @RequestBody BankkontonrUtlandDTO bankkontonrUtland,
                                                                 @RequestParam List<String> miljoer) {

@@ -31,7 +31,7 @@ public class BankkontoUtlandRequest extends EndringsmeldingRequest {
     @SuperBuilder
     @NoArgsConstructor
     @XmlType(propOrder = {"offentligIdent", "giroNrUtland", "datoGiroNr", "kodeSwift", "kodeLand",
-            "bankNavn", "valuta", "bankAdresse1", "bankAdresse2", "bankAdresse3"})
+            "bankNavn", "kodeBank", "valuta", "bankAdresse1", "bankAdresse2", "bankAdresse3"})
     public static class EndreGironrUtl {
 
         private String offentligIdent;
@@ -40,6 +40,7 @@ public class BankkontoUtlandRequest extends EndringsmeldingRequest {
         private String kodeSwift;
         private String kodeLand;
         private String bankNavn;
+        private String kodeBank;
         private String valuta;
         private String bankAdresse1;
         private String bankAdresse2;
