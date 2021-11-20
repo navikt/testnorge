@@ -32,8 +32,8 @@ public class EgenansattMappingStrategy implements MappingStrategy {
                                 .build());
                         sfeAjourforing.setEndreEgenAnsatt(TpsEndringsopplysninger.builder()
                                 .offentligIdent((String) context.getProperty("ident"))
-                                .fom(isNull(context.getProperty("fraOgMed")) ? null :
-                                        ((LocalDate) context.getProperty("fraOgMed")).toString())
+                                .fom((isNull(context.getProperty("fraOgMed")) ? LocalDate.now() :
+                                        (LocalDate) context.getProperty("fraOgMed")).toString())
                                 .build());
                         sfeAjourforing.setOpphorEgenAnsatt(TpsEndringsopplysninger.builder()
                                 .offentligIdent((String) context.getProperty("ident"))

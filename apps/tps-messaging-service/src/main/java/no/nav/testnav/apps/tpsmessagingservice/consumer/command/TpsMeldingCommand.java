@@ -21,6 +21,7 @@ import static java.util.Objects.nonNull;
 @RequiredArgsConstructor
 public class TpsMeldingCommand implements Callable<String> {
 
+    public static final String NO_RESPONSE = "zzzZZZzzz";
     private static final long TIMEOUT_VAL = 5000;
     private static final String FEIL_KOENAVN = "Feil i kønavn eller miljø";
 
@@ -74,7 +75,7 @@ public class TpsMeldingCommand implements Callable<String> {
                     responseMessage = (TextMessage) consumer.receive(TIMEOUT_VAL);
                 }
 
-                var response = nonNull(responseMessage) ? responseMessage.getText() : null;
+                var response = nonNull(responseMessage) ? responseMessage.getText() : NO_RESPONSE;
 
                 return response;
             }

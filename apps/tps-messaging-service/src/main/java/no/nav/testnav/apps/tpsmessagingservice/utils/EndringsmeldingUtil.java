@@ -49,8 +49,8 @@ public class EndringsmeldingUtil {
 
         return TpsMeldingResponse.builder()
                 .returStatus(STATUS_ERROR)
-                .returMelding(e.getErrorCode())
-                .utfyllendeMelding(e.getMessage())
+                .returMelding(e.getMessage())
+                .utfyllendeMelding(e.getLocalizedMessage())
                 .build();
     }
 

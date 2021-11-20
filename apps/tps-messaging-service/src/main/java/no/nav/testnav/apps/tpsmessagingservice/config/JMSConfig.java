@@ -7,5 +7,4 @@ import org.springframework.jms.annotation.EnableJms;
 @Configuration
 public class JMSConfig {
 
-
 }

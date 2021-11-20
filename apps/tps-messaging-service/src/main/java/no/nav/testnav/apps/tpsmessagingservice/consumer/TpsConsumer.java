@@ -21,8 +21,8 @@ import javax.xml.bind.Marshaller;
 import java.io.StringWriter;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
-import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -115,7 +115,7 @@ public abstract class TpsConsumer {
                     }
                     return null;
                 })
-                .filter(entry -> nonNull(entry.getResultat()))
+                .filter(Objects::nonNull)
                 .collect(toMap(TpsMiljoeResultat::getMiljoe, TpsMiljoeResultat::getResultat));
     }
 

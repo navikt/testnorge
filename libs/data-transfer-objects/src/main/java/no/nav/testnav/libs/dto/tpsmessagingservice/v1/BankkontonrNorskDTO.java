@@ -1,4 +1,4 @@
-package no.nav.testnav.apps.tpsmessagingservice.dto;
+package no.nav.testnav.libs.dto.tpsmessagingservice.v1;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -13,8 +13,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class SfeSpraak {
+public class BankkontonrNorskDTO {
 
-    private String sprakKode;
-    private LocalDate datoSprak;
+    private String giroNrNorsk;
+    private LocalDate datoGiroNrNorsk;
 }
