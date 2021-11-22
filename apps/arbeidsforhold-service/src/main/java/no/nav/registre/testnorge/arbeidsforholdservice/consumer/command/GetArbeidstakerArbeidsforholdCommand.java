@@ -36,6 +36,8 @@ public class GetArbeidstakerArbeidsforholdCommand implements Callable<List<Arbei
                             .build(miljo))
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .header(NAV_PERSON_IDENT, ident)
+                    .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                    .header(HEADER_NAV_CALL_ID, getNavCallId())
                     .retrieve()
                     .bodyToMono(ArbeidsforholdDTO[].class)
                     .block();
