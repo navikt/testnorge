@@ -59,7 +59,7 @@ public class PersonController {
         return personService.getPerson(ident, nonNull(miljoer) ? miljoer : emptyList());
     }
 
-    @PostMapping("/{ident}/egenansatte")
+    @PostMapping("/{ident}/egenansatt")
     public List<TpsMeldingResponseDTO> opprettEgenansatt(@PathVariable String ident,
                                                          @RequestParam
                                                          @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
@@ -69,14 +69,14 @@ public class PersonController {
         return convert(egenansattService.opprettEgenansatt(ident, fraOgMed, miljoer));
     }
 
-    @DeleteMapping("/{ident}/egenansatte")
+    @DeleteMapping("/{ident}/egenansatt")
     public List<TpsMeldingResponseDTO> opphoerEgenansatt(@PathVariable String ident,
                                                          @RequestParam List<String> miljoer) {
 
         return convert(egenansattService.opphoerEgenansatt(ident, miljoer));
     }
 
-    @PostMapping("/{ident}/spraakkoder")
+    @PostMapping("/{ident}/spraakkode")
     public List<TpsMeldingResponseDTO> endreSpraakkode(@PathVariable String ident,
                                                        @RequestBody SpraakDTO spraak,
                                                        @RequestParam List<String> miljoer) {
@@ -84,7 +84,7 @@ public class PersonController {
         return convert(spraakService.sendSpraakkode(ident, spraak, miljoer));
     }
 
-    @PostMapping("/{ident}/bankkonti-norske")
+    @PostMapping("/{ident}/bankkonto-norsk")
     public List<TpsMeldingResponseDTO> endreNorskBankkonto(@PathVariable String ident,
                                                            @RequestBody BankkontonrNorskDTO bankkontonrNorsk,
                                                            @RequestParam List<String> miljoer) {
@@ -92,7 +92,7 @@ public class PersonController {
         return convert(bankkontoNorskService.sendBankkontonrNorsk(ident, bankkontonrNorsk, miljoer));
     }
 
-    @PostMapping("/{ident}/bankkonti-utenlandske")
+    @PostMapping("/{ident}/bankkonto-utenlandsk")
     public List<TpsMeldingResponseDTO> endreUtenlandskBankkonto(@PathVariable String ident,
                                                                 @RequestBody BankkontonrUtlandDTO bankkontonrUtland,
                                                                 @RequestParam List<String> miljoer) {
