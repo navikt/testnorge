@@ -1,9 +1,9 @@
 package no.nav.dolly.domain.resultset.tpsmessagingservice.utenlandskbankkonto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-public record RsUtenlandskBankkonto(String kontonummerUtland, String kodeSwift, String kodeLand,
-                                    LocalDate kontoRegdato, String iban,
-                                    String bankNavn, String valuta, String bankAdresse1,
+public record RsUtenlandskBankkonto(String kontonummer, String swift, String landkode,
+                                    LocalDateTime kontoRegdato, String iban,
+                                    String banknavn, String valuta, String bankAdresse1,
                                     String bankAdresse2, String bankAdresse3) {
 }

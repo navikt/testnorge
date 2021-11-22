@@ -7,12 +7,12 @@ import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 
 const initialUtenlandskBankkonto = {
-	kontonummerUtland: '',
+	kontonummer: '',
 	// @ts-ignore
 	kontoRegdato: null,
-	kodeSwift: '',
-	kodeLand: '',
-	bankNavn: '',
+	swift: '',
+	landkode: '',
+	banknavn: '',
 	iban: '',
 	valuta: '',
 	bankAdresse1: '',
@@ -32,16 +32,16 @@ export const UtenlandskBankkonto = () => {
 				{(path: string) => {
 					return (
 						<div className="flexbox--flex-wrap">
-							<FormikTextInput name={`${path}.kontonummerUtland`} label={'Kontonummer'} />
+							<FormikTextInput name={`${path}.kontonummer`} label={'Kontonummer'} />
 							<FormikDatepicker name={`${path}.kontoRegdato`} label={'Registrert dato'} />
-							<FormikTextInput name={`${path}.kodeSwift`} label={'Swift kode'} />
+							<FormikTextInput name={`${path}.swift`} label={'Swift kode'} />
 							<FormikSelect
-								name={`${path}.kodeLand`}
+								name={`${path}.landkode`}
 								label={'Land'}
 								kodeverk={AdresseKodeverk.ArbeidOgInntektLand}
 								size={'xlarge'}
 							/>
-							<FormikTextInput name={`${path}.bankNavn`} label={'Banknavn'} />
+							<FormikTextInput name={`${path}.banknavn`} label={'Banknavn'} />
 							<FormikTextInput name={`${path}.iban`} label={'IBAN'} />
 							<FormikSelect
 								name={`${path}.valuta`}
