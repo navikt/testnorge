@@ -1,0 +1,36 @@
+name: App opprett-person-pdl
+
+on:
+  push:
+    paths:
+      - apps/opprett-person-pdl/**
+      - .github/workflows/app.opprett-person-pdl.yml
+
+jobs:
+  scan:
+    name: Scan
+    uses: navikt/testnorge/.github/workflows/common.sonar.yml@master
+    with:
+      working-directory: 'apps/opprett-person-pdl/'
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  build:
+    name: Build
+    uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@master
+    with:
+      working-directory: 'apps/opprett-person-pdl/'
+      app-name: 'opprett-person-pdl'
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+  deploy-dev:
+    name: Deploy
+    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
+    needs: build
+    if: ${{ github.ref == 'refs/heads/master' }}
+    with:
+      resource: 'apps/opprett-person-pdl/config.yml'
+      app-name: 'opprett-person-pdl'
+      cluster: 'dev-fss'
+    secrets:
+      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}

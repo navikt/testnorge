@@ -1,0 +1,49 @@
+name: Proxy tps-forvalteren-proxy
+
+on:
+  push:
+    paths:
+      - proxies/tps-forvalteren-proxy/**
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
+      - .github/workflows/proxy.tps-forvalteren-proxy.yml
+
+jobs:
+  scan:
+    name: Scan
+    uses: navikt/testnorge/.github/workflows/common.sonar.yml@master
+    with:
+      working-directory: 'proxies/tps-forvalteren-proxy/'
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  build:
+    name: Build
+    uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@master
+    with:
+      working-directory: 'proxies/tps-forvalteren-proxy/'
+      app-name: 'tps-forvalteren-proxy'
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+  deploy:
+    name: Deploy
+    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
+    needs: build
+    if: ${{ github.ref == 'refs/heads/master' }}
+    with:
+      resource: 'proxies/tps-forvalteren-proxy/config.yml'
+      app-name: 'tps-forvalteren-proxy'
+      cluster: 'dev-fss'
+    secrets:
+      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+  deploy-dev:
+    name: Deploy dev
+    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
+    needs: build
+    if: ${{ github.ref == 'refs/heads/master' }}
+    with:
+      resource: 'proxies/tps-forvalteren-dev-proxy/config.dev.yml'
+      app-name: 'tps-forvalteren-proxy'
+      cluster: 'dev-fss'
+    secrets:
+      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}

@@ -1,0 +1,22 @@
+name: Frontend lib dolly-lib
+
+on:
+  push:
+    paths:
+      - navikt/dolly-lib/**
+      - .github/workflows/lib.frontend.dolly-lib.yml
+
+jobs:
+  build:
+    name: Build
+    uses: navikt/testnorge/.github/workflows/common.js.build.yml@master
+    with:
+      working-directory: 'navikt/dolly-lib/'
+  publish:
+    name: Publish
+    uses: navikt/testnorge/.github/workflows/common.js.publish.yml@master
+    if: ${{ github.ref == 'refs/heads/master' }}
+    with:
+      working-directory: 'navikt/dolly-lib/'
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
