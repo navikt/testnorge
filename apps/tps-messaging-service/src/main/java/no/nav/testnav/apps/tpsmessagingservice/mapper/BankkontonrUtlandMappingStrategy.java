@@ -45,7 +45,7 @@ public class BankkontonrUtlandMappingStrategy implements MappingStrategy {
                         target.setDatoGiroNr((isNull(source.getKontoRegdato()) ? LocalDate.now() :
                                 source.getKontoRegdato().toLocalDate()).toString());
                         target.setKodeBank(source.getIban());
-                        target.setGiroNrUtland(source.getKontonummerUtland());
+                        target.setGiroNrUtland(source.getKontonummer());
                     }
                 })
                 .byDefault()
@@ -56,9 +56,13 @@ public class BankkontonrUtlandMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(KontoNrUtlandType source, BankkontonrUtlandDTO target, MappingContext context) {
 
-                        target.setKontonummerUtland(source.getGiroNrUtland());
+                        target.setKontonummer(source.getGiroNrUtland());
                         target.setKontoRegdato(isBlank(source.getRegTidspunkt()) ? null :
                                 LocalDate.parse(source.getRegTidspunkt()).atStartOfDay());
+                        target.setBanknavn(source.getBankNavnUtland());
+                        target.setSwift(source.getSwiftKodeUtland());
+                        target.setLandkode(source.getBankLandKode());
+                        target.setValuta(source.getBankValuta());
                     }
                 })
                 .byDefault()

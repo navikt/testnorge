@@ -15,14 +15,14 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class BankkontonrUtlandDTO {
 
-    private String kontonummerUtland;
-    private LocalDateTime kontoRegdato;
-    private String kodeSwift;
-    private String kodeLand;
-    private String bankNavn;
+    private String kontonummer;
+    private String swift;
     private String iban;
+    private String banknavn;
     private String valuta;
     private String bankAdresse1;
     private String bankAdresse2;
     private String bankAdresse3;
+    private String landkode;
+    private LocalDateTime kontoRegdato;
 }
