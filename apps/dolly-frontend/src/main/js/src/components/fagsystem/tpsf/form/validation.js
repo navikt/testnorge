@@ -477,14 +477,13 @@ export const validation = {
 				'$tpsMessaging.utenlandskBankkonto',
 				Yup.array().of(
 					Yup.object({
-						kontonummer: Yup.string().nullable().optional(),
-						kontoRegdato: Yup.date().nullable().optional(),
+						kontonummer: requiredString.nullable(),
 						swift: Yup.string().nullable().optional(),
 						landkode: requiredString.nullable(),
-						iban: requiredString.nullable(),
+						iban: Yup.string().nullable().optional(),
 						valuta: requiredString.nullable(),
-						banknavn: requiredString.nullable(),
-						bankAdresse1: requiredString.nullable(),
+						banknavn: Yup.string().nullable().optional(),
+						bankAdresse1: Yup.string().nullable().optional(),
 						bankAdresse2: Yup.string().nullable().optional(),
 						bankAdresse3: Yup.string().nullable().optional(),
 					})

@@ -32,7 +32,7 @@ public class TpsMessagingClient implements ClientRegister {
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        log.info("Bestilling fra frontend: {}", Json.pretty(bestilling));
+        log.info("Bestilling fra Dolly-Frontend: {}", Json.pretty(bestilling));
         if (nonNull(bestilling.getTpsMessaging()))
 
             if (!bestilling.getTpsMessaging().getUtenlandskBankkonto().isEmpty()) {

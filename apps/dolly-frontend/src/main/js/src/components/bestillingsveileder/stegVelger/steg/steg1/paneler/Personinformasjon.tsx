@@ -331,7 +331,6 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 				set('tpsMessaging.utenlandskBankkonto', [
 					{
 						kontonummer: '',
-						kontoRegdato: null,
 						swift: '',
 						landkode: null,
 						banknavn: '',

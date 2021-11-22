@@ -418,7 +418,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				return [
 					{ numberHeader: `Bankkonto ${idx + 1}` },
 					obj('Kontonummer', item.kontonummer),
-					obj('Registrert dato', Formatters.formatDate(item.kontoRegdato)),
 					obj('Swift kode', item.swift),
 					obj('Land', item.landkode),
 					obj('Banknavn', item.banknavn),

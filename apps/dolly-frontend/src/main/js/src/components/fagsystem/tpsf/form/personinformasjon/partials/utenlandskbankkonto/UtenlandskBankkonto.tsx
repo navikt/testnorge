@@ -9,7 +9,6 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 const initialUtenlandskBankkonto = {
 	kontonummer: '',
 	// @ts-ignore
-	kontoRegdato: null,
 	swift: '',
 	landkode: '',
 	banknavn: '',
@@ -33,7 +32,6 @@ export const UtenlandskBankkonto = () => {
 					return (
 						<div className="flexbox--flex-wrap">
 							<FormikTextInput name={`${path}.kontonummer`} label={'Kontonummer'} />
-							<FormikDatepicker name={`${path}.kontoRegdato`} label={'Registrert dato'} />
 							<FormikTextInput name={`${path}.swift`} label={'Swift kode'} />
 							<FormikSelect
 								name={`${path}.landkode`}
