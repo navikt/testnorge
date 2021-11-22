@@ -30,7 +30,7 @@ public class SpraakMappingStrategy implements MappingStrategy {
                                         .offentligIdent((String) context.getProperty("ident"))
                                         .sprakKode(source.getSprakKode())
                                         .datoSprak(isNull(source.getDatoSprak()) ? null :
-                                                source.getDatoSprak())
+                                                source.getDatoSprak().toString())
                                         .build())
                                 .build());
                     }

@@ -48,6 +48,7 @@ public class BankkontonrUtlandMappingStrategy implements MappingStrategy {
                         target.setGiroNrUtland(source.getKontonummer());
                         target.setKodeLand(source.getLandkode());
                         target.setKodeSwift(source.getSwift());
+                        target.setBankNavn(source.getBanknavn());
                     }
                 })
                 .byDefault()

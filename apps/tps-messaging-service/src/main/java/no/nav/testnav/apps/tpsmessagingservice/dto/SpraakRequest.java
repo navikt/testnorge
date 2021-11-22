@@ -7,7 +7,6 @@ import lombok.experimental.SuperBuilder;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import java.time.LocalDate;
 
 @Data
 @SuperBuilder
@@ -36,6 +35,6 @@ public class SpraakRequest extends EndringsmeldingRequest {
 
         private String offentligIdent;
         private String sprakKode;
-        private LocalDate datoSprak;
+        private String datoSprak;
     }
 }
