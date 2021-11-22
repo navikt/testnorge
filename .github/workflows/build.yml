@@ -5,7 +5,6 @@ on:
       - master
     paths-ignore:
       - 'navikt/**'
-      - '.github/**'
   pull_request_target:
     types: [assigned, opened, synchronize, reopened]
   workflow_dispatch:
@@ -21,7 +20,8 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
-            ~/.gradle/caches/caches
+            ~/.gradle/caches
+            ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
