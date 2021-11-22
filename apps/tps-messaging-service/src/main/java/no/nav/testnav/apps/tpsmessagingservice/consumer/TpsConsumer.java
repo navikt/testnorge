@@ -7,18 +7,12 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.command.TpsMeldingCommand;
 import no.nav.testnav.apps.tpsmessagingservice.dto.QueueManager;
-import no.nav.testnav.apps.tpsmessagingservice.dto.SfeTilbakeMelding;
-import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingErrorResponse;
-import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
 import no.nav.testnav.apps.tpsmessagingservice.factory.ConnectionFactoryFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.jms.JMSException;
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import java.io.StringWriter;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -33,7 +27,7 @@ public abstract class TpsConsumer {
     protected static final String PREFIX_MQ_QUEUES = "QA.";
     private static final String CHANNEL_SUFFIX = "_TESTNAV_TPS_MSG_S";
     private final ConnectionFactoryFactory connectionFactoryFactory;
-    private final JAXBContext responseErrorContext;
+
     @Value("${config.mq.queueManager}")
     private String queueManager;
     @Value("${config.mq.conn-name}")
@@ -49,10 +43,9 @@ public abstract class TpsConsumer {
     @Value("${config.mq.queue:}")
     private String queue;
 
-    public TpsConsumer(ConnectionFactoryFactory connectionFactoryFactory) throws JAXBException {
+    public TpsConsumer(ConnectionFactoryFactory connectionFactoryFactory) {
 
         this.connectionFactoryFactory = connectionFactoryFactory;
-        this.responseErrorContext = JAXBContext.newInstance(TpsMeldingErrorResponse.class);
     }
 
     private static String getChannelName(String channel, String miljoe) {
@@ -64,16 +57,7 @@ public abstract class TpsConsumer {
 
     protected abstract String getQueueName(String queue, String miljoe);
 
-    private String marshallToXML(TpsMeldingErrorResponse errorResponse) throws JAXBException {
-
-        var marshaller = responseErrorContext.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-
-        var writer = new StringWriter();
-        marshaller.marshal(errorResponse, writer);
-
-        return writer.toString();
-    }
+    protected abstract String getErrorMessage(JMSException e) throws JAXBException;
 
     public Map<String, String> sendMessage(String melding, List<String> miljoer) {
 
@@ -95,15 +79,7 @@ public abstract class TpsConsumer {
                         try {
                             return TpsMiljoeResultat.builder()
                                     .miljoe(miljoe)
-                                    .resultat(marshallToXML(TpsMeldingErrorResponse.builder()
-                                            .sfeTilbakeMelding(SfeTilbakeMelding.builder()
-                                                    .svarStatus(TpsMeldingResponse.builder()
-                                                            .returStatus("08")
-                                                            .returMelding("Teknisk feil, se logg!")
-                                                            .utfyllendeMelding(e.getMessage())
-                                                            .build())
-                                                    .build())
-                                            .build()))
+                                    .resultat(getErrorMessage(e))
                                     .build();
 
                         } catch (JAXBException ex) {

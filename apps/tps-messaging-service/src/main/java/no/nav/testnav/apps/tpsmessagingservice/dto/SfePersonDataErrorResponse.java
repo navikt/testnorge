@@ -8,5 +8,5 @@ import javax.xml.bind.annotation.XmlRootElement;
 @SuperBuilder
 @NoArgsConstructor
 @XmlRootElement(name = "sfePersonData")
-public class TpsMeldingErrorResponse extends EndringsmeldingResponse {
+public class SfePersonDataErrorResponse extends EndringsmeldingResponse {
 }
