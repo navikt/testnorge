@@ -45,7 +45,6 @@ public class S610PersonMappingStrategy implements MappingStrategy {
     private static final String POST_UTLAND = "PUTL";
     private static final String POST_NORGE = "POST";
     private static final String NORGE = "NOR";
-    private static final String TRUE = "J";
     private static final String TPS = "TPS";
 
     public static LocalDateTime getTimestamp(String dato) {

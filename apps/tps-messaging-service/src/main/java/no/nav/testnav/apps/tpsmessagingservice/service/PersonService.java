@@ -28,6 +28,7 @@ import javax.xml.bind.JAXBException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -92,15 +93,7 @@ public class PersonService {
                 return MOR.name();
             case FARA:
                 return FAR.name();
-            case EKTE:
-            case ENKE:
-            case SKIL:
-            case SEPR:
-            case REPA:
-            case SEPA:
-            case SKPA:
-            case GJPA:
-            case GLAD:
+            case EKTE, ENKE, SKIL, SEPR, REPA, SEPA, SKPA, GJPA, GLAD:
                 return PARTNER.name();
             default:
                 return relasjonType.name();
@@ -181,14 +174,13 @@ public class PersonService {
         return PersonRelasjon.builder()
                 .relasjoner(nonNull(tpsPerson.getBruker().getRelasjoner()) ?
                         tpsPerson.getBruker().getRelasjoner().getRelasjon().parallelStream()
-                                .map(relasjon -> {
-                                    return readFromTps(relasjon.getFnrRelasjon(), List.of(miljoe))
+                                .map(relasjon ->
+                                    readFromTps(relasjon.getFnrRelasjon(), List.of(miljoe))
                                             .get(miljoe)
                                             .getTpsPersonData()
                                             .getTpsSvar()
                                             .getPersonDataS610()
-                                            .getPerson();
-                                })
+                                            .getPerson())
                                 .filter(Objects::nonNull)
                                 .collect(Collectors.toList()) :
                         emptyList())
@@ -230,7 +222,7 @@ public class PersonService {
                 .forEach(entry -> log.info("Miljø: {} XML: {}", entry.getKey(), entry.getValue()));
 
         return miljoerResponse.entrySet().stream()
-                .collect(Collectors.toMap(entry -> entry.getKey(),
+                .collect(Collectors.toMap(Entry::getKey,
                         entry -> unmarshallFromXml(entry.getValue())));
     }
 
@@ -244,7 +236,7 @@ public class PersonService {
 
         var relasjoner = getRelasjoner(tpsPersoner.entrySet().stream()
                 .filter(entry -> isStatusOK(entry.getValue().getTpsPersonData().getTpsSvar().getSvarStatus()))
-                .collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue()
+                .collect(Collectors.toMap(Entry::getKey, entry -> entry.getValue()
                         .getTpsPersonData()
                         .getTpsSvar()
                         .getPersonDataS610()

@@ -43,7 +43,7 @@ public abstract class TpsConsumer {
     @Value("${config.mq.queue:}")
     private String queue;
 
-    public TpsConsumer(ConnectionFactoryFactory connectionFactoryFactory) {
+    protected TpsConsumer(ConnectionFactoryFactory connectionFactoryFactory) {
 
         this.connectionFactoryFactory = connectionFactoryFactory;
     }
