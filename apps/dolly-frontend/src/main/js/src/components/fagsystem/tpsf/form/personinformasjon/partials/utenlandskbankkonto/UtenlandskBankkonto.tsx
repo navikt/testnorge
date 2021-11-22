@@ -4,12 +4,16 @@ import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFiel
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { AdresseKodeverk, ArbeidKodeverk } from '~/config/kodeverk'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
+import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 
 const initialUtenlandskBankkonto = {
-	giroNrUtland: '',
+	kontonummerUtland: '',
+	// @ts-ignore
+	kontoRegdato: null,
 	kodeSwift: '',
 	kodeLand: '',
 	bankNavn: '',
+	iban: '',
 	valuta: '',
 	bankAdresse1: '',
 	bankAdresse2: '',
@@ -28,7 +32,8 @@ export const UtenlandskBankkonto = () => {
 				{(path: string) => {
 					return (
 						<div className="flexbox--flex-wrap">
-							<FormikTextInput name={`${path}.giroNrUtland`} label={'Giro nummer'} />
+							<FormikTextInput name={`${path}.kontonummerUtland`} label={'Kontonummer'} />
+							<FormikDatepicker name={`${path}.kontoRegdato`} label={'Registrert dato'} />
 							<FormikTextInput name={`${path}.kodeSwift`} label={'Swift kode'} />
 							<FormikSelect
 								name={`${path}.kodeLand`}
@@ -37,6 +42,7 @@ export const UtenlandskBankkonto = () => {
 								size={'xlarge'}
 							/>
 							<FormikTextInput name={`${path}.bankNavn`} label={'Banknavn'} />
+							<FormikTextInput name={`${path}.iban`} label={'IBAN'} />
 							<FormikSelect
 								name={`${path}.valuta`}
 								label="Valuta"

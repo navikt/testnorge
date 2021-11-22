@@ -3,7 +3,7 @@ package no.nav.dolly.bestilling.tpsmessagingservice;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.config.credentials.TpsMessagingServiceProperties;
-import no.nav.dolly.domain.resultset.tpsmessagingservice.utenlandskbankkonto.KontaktopplysningRequest;
+import no.nav.dolly.domain.resultset.tpsmessagingservice.utenlandskbankkonto.UtenlandskBankkontoRequest;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
@@ -29,7 +29,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 @Service
 public class TpsMessagingConsumer {
 
-    private static final String KONTAKTOPPLYSNING_URL = "/api/v1/kontaktopplysninger";
+    private static final String UTENLANDSK_BANKKONTO_URL = "/api/v1/personer/{ident}/bankkonto-utenlandsk";
     private static final String MILJOER_QUERY = "miljoer";
 
     private final WebClient webClient;
@@ -45,17 +45,16 @@ public class TpsMessagingConsumer {
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "tps_messaging_createKontaktopplysninger" })
-    public ResponseEntity<Object> createTpsKontaktopplysninger(KontaktopplysningRequest request) {
+    @Timed(name = "providers", tags = { "operation", "tps_messaging_createUtenlandskBankkonto" })
+    public ResponseEntity<Object> sendUtenlandskBankkontoRequest(UtenlandskBankkontoRequest request) {
 
-        log.info("Sender request på ident: {} til TPS messaging service: {}", request.ident(), request.body());
+        log.info("Sender utenlandsk bankkonto request på ident: {} til TPS messaging service: {}", request.ident(), request.body());
 
         return webClient.post()
                 .uri(uriBuilder -> uriBuilder
-                        .path(KONTAKTOPPLYSNING_URL)
-                        .pathSegment(request.ident())
+                        .path(UTENLANDSK_BANKKONTO_URL)
                         .queryParam(MILJOER_QUERY, request.miljoer())
-                        .build())
+                        .build(request.ident()))
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HEADER_NAV_CALL_ID, getNavCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)

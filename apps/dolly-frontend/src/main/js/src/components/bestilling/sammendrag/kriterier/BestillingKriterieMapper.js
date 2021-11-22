@@ -417,10 +417,12 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			itemRows: tpsMessaging.utenlandskBankkonto.map((item, idx) => {
 				return [
 					{ numberHeader: `Bankkonto ${idx + 1}` },
-					obj('Giro nummer', item.giroNrUtland),
+					obj('Kontonummer', item.kontonummerUtland),
+					obj('Registrert dato', item.kontoRegdato),
 					obj('Swift kode', item.kodeSwift),
 					obj('Land', item.kodeLand),
 					obj('Banknavn', item.bankNavn),
+					obj('IBAN', item.iban),
 					obj('Valuta', item.valuta),
 					obj('BankAdresse 1', item.bankAdresse1),
 					obj('BankAdresse 2', item.bankAdresse2),

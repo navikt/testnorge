@@ -330,10 +330,12 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			add: () =>
 				set('tpsMessaging.utenlandskBankkonto', [
 					{
-						giroNrUtland: '',
+						kontonummerUtland: '',
+						kontoRegdato: null,
 						kodeSwift: '',
 						kodeLand: null,
 						bankNavn: '',
+						iban: '',
 						valuta: null,
 						bankAdresse1: '',
 						bankAdresse2: '',
