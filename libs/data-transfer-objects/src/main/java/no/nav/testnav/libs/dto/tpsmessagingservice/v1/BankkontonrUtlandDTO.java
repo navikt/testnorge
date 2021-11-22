@@ -15,12 +15,12 @@ import java.time.LocalDate;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class BankkontonrUtlandDTO {
 
-    private String giroNrUtland;
-    private LocalDate datoGiroNr;
+    private String kontonummerUtland;
+    private LocalDate kontoRegdato;
     private String kodeSwift;
     private String kodeLand;
     private String bankNavn;
-    private String kodeBank;
+    private String iban;
     private String valuta;
     private String bankAdresse1;
     private String bankAdresse2;

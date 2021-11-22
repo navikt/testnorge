@@ -40,7 +40,9 @@ public class BankkontonrUtlandMappingStrategy implements MappingStrategy {
                     public void mapAtoB(BankkontonrUtlandDTO source, BankkontoUtlandRequest.EndreGironrUtl target, MappingContext context) {
 
                         target.setOffentligIdent((String) context.getProperty("ident"));
-                        target.setDatoGiroNr((isNull(source.getDatoGiroNr()) ? LocalDate.now() : source.getDatoGiroNr()).toString());
+                        target.setDatoGiroNr((isNull(source.getKontoRegdato()) ? LocalDate.now() : source.getKontoRegdato()).toString());
+                        target.setKodeBank(source.getIban());
+                        target.setGiroNrUtland(source.getKontonummerUtland());
                     }
                 })
                 .byDefault()
