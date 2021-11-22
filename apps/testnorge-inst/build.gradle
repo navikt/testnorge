@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id "org.sonarqube" version "3.3"
-    id 'org.springframework.boot' version "2.5.6"
+    id 'org.springframework.boot' version "2.5.7"
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
 
@@ -55,7 +55,7 @@ dependencies {
     implementation 'org.apache.httpcomponents:httpclient:4.5.13'
     implementation 'javax.validation:validation-api:2.0.1.Final'
 
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.0'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
     implementation 'org.hibernate.validator:hibernate-validator'
 
     implementation 'io.springfox:springfox-swagger2:3.0.0'

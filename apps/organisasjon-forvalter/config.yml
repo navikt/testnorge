@@ -41,6 +41,8 @@ spec:
           cluster: dev-fss
         - application: testnav-pdl-forvalter
           cluster: dev-gcp
+        - application: testnav-pdl-forvalter-dev
+          cluster: dev-gcp
         - application: app-1
           namespace: plattformsikkerhet
           cluster: dev-gcp
