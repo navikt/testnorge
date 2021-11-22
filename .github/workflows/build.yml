@@ -5,6 +5,7 @@ on:
       - master
     paths-ignore:
       - 'navikt/**'
+      - '.github/**'
   pull_request_target:
     types: [assigned, opened, synchronize, reopened]
   workflow_dispatch:
@@ -22,9 +23,12 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-build-${{ hashFiles('**/*.gradle*') }}
+          key: ${{ runner.os }}-gradle-build-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
+            ${{ runner.os }}-gradle-build-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
             ${{ runner.os }}-gradle-build-
+            ${{ runner.os }}-gradle-
+            ${{ runner.os }}-
       - name: Set up JDK 1.17
         uses: actions/setup-java@v1
         with:
