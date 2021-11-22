@@ -20,6 +20,7 @@ public class SpraakRequest extends EndringsmeldingRequest {
 
     @Data
     @SuperBuilder
+    @NoArgsConstructor
     @XmlType(propOrder = {"systemInfo", "endreSprak"})
     public static class SfeAjourforing {
 
@@ -29,6 +30,7 @@ public class SpraakRequest extends EndringsmeldingRequest {
 
     @Data
     @SuperBuilder
+    @NoArgsConstructor
     @XmlType(propOrder = {"offentligIdent", "sprakKode", "datoSprak"})
     public static class EndreSpraak{
 
