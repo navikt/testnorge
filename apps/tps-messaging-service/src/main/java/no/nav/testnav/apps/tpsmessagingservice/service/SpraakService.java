@@ -44,7 +44,7 @@ public class SpraakService {
         var context = new MappingContext.Factory().getContext();
         context.setProperty("ident", ident);
 
-        var request = mapperFacade.map(spraak, SpraakRequest.class);
+        var request = mapperFacade.map(spraak, SpraakRequest.class, context);
         var requestXml = marshallToXML(requestContext, request);
         var miljoerResponse = endringsmeldingConsumer.sendMessage(requestXml, miljoer);
 

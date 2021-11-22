@@ -272,7 +272,7 @@ public class S610PersonMappingStrategy implements MappingStrategy {
                         person.setGtVerdi(getGtVerdi(tpsPerson.getBruker().getGeografiskTilknytning()));
                         person.setGtRegel(tpsPerson.getBruker().getRegelForGeografiskTilknytning());
                         person.setSprakKode(tpsPerson.getBruker().getPreferanser().getSprak());
-                        person.setBankkontonrNorsk(isNull(person.getBankkontonrNorsk()) ? null:
+                        person.setBankkontonrNorsk(isNull(tpsPerson.getBankkontoNorge()) ? null:
                                 mapperFacade.map(person, BankkontonrNorskDTO.class));
                         person.setBankkontonrUtland(getBankkontonrUtland(mapperFacade, tpsPerson.getBruker()));
                         person.setTelefonLandskode_1(getTlfnrLandskode(tpsPerson.getBruker().getTelefoner(), MOBIL));
