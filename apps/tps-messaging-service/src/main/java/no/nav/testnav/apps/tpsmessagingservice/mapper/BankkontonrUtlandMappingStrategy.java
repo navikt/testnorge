@@ -46,6 +46,8 @@ public class BankkontonrUtlandMappingStrategy implements MappingStrategy {
                                 source.getKontoRegdato().toLocalDate()).toString());
                         target.setKodeBank(source.getIban());
                         target.setGiroNrUtland(source.getKontonummer());
+                        target.setKodeLand(source.getLandkode());
+                        target.setKodeSwift(source.getSwift());
                     }
                 })
                 .byDefault()
