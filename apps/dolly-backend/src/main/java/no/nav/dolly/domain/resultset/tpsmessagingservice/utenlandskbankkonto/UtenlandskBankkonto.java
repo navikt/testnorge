@@ -8,14 +8,14 @@ import lombok.Data;
 @Data
 @Builder
 @JsonInclude(value = JsonInclude.Include.NON_EMPTY)
-public final class UtenlandskBankkonto {
-    private final String kontonummer;
-    private final String swift;
-    private final String landkode;
-    private final String iban;
-    private final String banknavn;
-    private final String valuta;
-    private final String bankAdresse1;
-    private final String bankAdresse2;
-    private final String bankAdresse3;
+public class UtenlandskBankkonto {
+    private String kontonummer;
+    private String swift;
+    private String landkode;
+    private String iban;
+    private String banknavn;
+    private String valuta;
+    private String bankAdresse1;
+    private String bankAdresse2;
+    private String bankAdresse3;
 }
