@@ -29,6 +29,15 @@ public class TpsMessagingMappingStrategy implements MappingStrategy {
                         utenlandskBankkonto.setBankAdresse3(rsUtenlandskBankkonto.bankAdresse3());
                     }
                 })
+                .exclude("kontonummer")
+                .exclude("swift")
+                .exclude("landkode")
+                .exclude("iban")
+                .exclude("banknavn")
+                .exclude("valuta")
+                .exclude("bankAdresse1")
+                .exclude("bankAdresse2")
+                .exclude("bankAdresse3")
                 .register();
     }
 }
