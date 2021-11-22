@@ -45,7 +45,6 @@ public class BankkontonrNorskMappingStrategy implements MappingStrategy {
                         target.setOffentligIdent((String) context.getProperty("ident"));
                         target.setDatoGiroNrNorsk((isNull(source.getKontoRegdato()) ? LocalDate.now() :
                                 source.getKontoRegdato().toLocalDate()).toString());
-                        target.setDatoGiroNrNorsk(source.getKontonummer());
                     }
                 })
                 .byDefault()
