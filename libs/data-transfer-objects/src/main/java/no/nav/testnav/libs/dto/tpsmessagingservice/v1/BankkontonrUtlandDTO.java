@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -16,7 +16,7 @@ import java.time.LocalDate;
 public class BankkontonrUtlandDTO {
 
     private String kontonummerUtland;
-    private LocalDate kontoRegdato;
+    private LocalDateTime kontoRegdato;
     private String kodeSwift;
     private String kodeLand;
     private String bankNavn;

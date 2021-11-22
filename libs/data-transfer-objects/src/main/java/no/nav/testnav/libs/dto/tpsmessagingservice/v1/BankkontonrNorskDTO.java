@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -15,6 +15,6 @@ import java.time.LocalDate;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class BankkontonrNorskDTO {
 
-    private String giroNrNorsk;
-    private LocalDate datoGiroNrNorsk;
+    private String kontonummer;
+    private LocalDateTime kontoRegdato;
 }

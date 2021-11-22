@@ -1,16 +1,18 @@
 package no.nav.testnav.apps.tpsmessagingservice.mapper;
 
 import ma.glasnost.orika.CustomMapper;
+import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.AdresseDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrNorskDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.GateadresseDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.MatrikkeladresseDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.MidlertidigAdresseDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PostadresseDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.StatsborgerskapDTO;
-import no.nav.tps.ctg.s610.domain.BankkontoNorgeType;
 import no.nav.tps.ctg.s610.domain.BoAdresseType;
 import no.nav.tps.ctg.s610.domain.NavTIADType;
 import no.nav.tps.ctg.s610.domain.PostAdresseType;
@@ -25,6 +27,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static java.lang.String.format;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.MidlertidigAdressetypeDTO.PBOX;
 import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.MidlertidigAdressetypeDTO.STED;
@@ -192,19 +195,6 @@ public class S610PersonMappingStrategy implements MappingStrategy {
         }
     }
 
-    private static LocalDateTime getBankkontoRegdato(BankkontoNorgeType bankkontoNorge) {
-
-        return nonNull(bankkontoNorge) && isNotBlank(bankkontoNorge.getRegTidspunkt()) ?
-                LocalDate.parse(bankkontoNorge.getRegTidspunkt()).atStartOfDay() : null;
-    }
-
-    private static String getBankkontnr(BankkontoNorgeType bankkontoNorge) {
-
-        return nonNull(bankkontoNorge) && isNotBlank(bankkontoNorge.getKontoNummer()) ?
-                format("%s.%s.%s", bankkontoNorge.getKontoNummer().substring(0, 4),
-                        bankkontoNorge.getKontoNummer().substring(4, 6), bankkontoNorge.getKontoNummer().substring(6)) : null;
-    }
-
     private static String getTlfnrLandskode(S610BrukerType.Telefoner telefoner, String telefontype) {
 
         return nonNull(telefoner) ? telefoner.getTelefon().stream()
@@ -249,6 +239,13 @@ public class S610PersonMappingStrategy implements MappingStrategy {
         return null;
     }
 
+    private BankkontonrUtlandDTO getBankkontonrUtland(MapperFacade mapperFacade, S610BrukerType brukerType) {
+
+        return nonNull(brukerType) && nonNull(brukerType.getBankkontoUtland()) ?
+                mapperFacade.map(brukerType.getBankkontoUtland(), BankkontonrUtlandDTO.class) :
+                null;
+    }
+
     @Override
     public void register(MapperFactory factory) {
         factory.classMap(S610PersonType.class, PersonDTO.class)
@@ -276,9 +273,9 @@ public class S610PersonMappingStrategy implements MappingStrategy {
                         person.setGtVerdi(getGtVerdi(tpsPerson.getBruker().getGeografiskTilknytning()));
                         person.setGtRegel(tpsPerson.getBruker().getRegelForGeografiskTilknytning());
                         person.setSprakKode(tpsPerson.getBruker().getPreferanser().getSprak());
-                        person.setBankkontonr(getBankkontnr(tpsPerson.getBankkontoNorge()));
-                        person.setBankkontonrRegdato(getBankkontoRegdato(tpsPerson.getBankkontoNorge()));
-                        person.setBankkontonrRegdato(getBankkontoRegdato(tpsPerson.getBankkontoNorge()));
+                        person.setBankkontonrNorsk(isNull(person.getBankkontonrNorsk()) ? null:
+                                mapperFacade.map(person, BankkontonrNorskDTO.class));
+                        person.setBankkontonrUtland(getBankkontonrUtland(mapperFacade, tpsPerson.getBruker()));
                         person.setTelefonLandskode_1(getTlfnrLandskode(tpsPerson.getBruker().getTelefoner(), MOBIL));
                         person.setTelefonnummer_1(getTelefonnr(tpsPerson.getBruker().getTelefoner(), MOBIL));
                         person.setTelefonLandskode_2(getTlfnrLandskode(tpsPerson.getBruker().getTelefoner(), HJEM));

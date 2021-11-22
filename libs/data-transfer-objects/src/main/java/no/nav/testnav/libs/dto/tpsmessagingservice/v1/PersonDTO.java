@@ -95,10 +95,6 @@ public class PersonDTO {
 
     private LocalDateTime forsvunnetDato;
 
-    private String bankkontonr;
-
-    private LocalDateTime bankkontonrRegdato;
-
     private String telefonLandskode_1;
 
     private String telefonnummer_1;
@@ -108,6 +104,9 @@ public class PersonDTO {
     private String telefonnummer_2;
 
     private String importFra;
+
+    private BankkontonrUtlandDTO bankkontonrUtland;
+    private BankkontonrNorskDTO bankkontonrNorsk;
 
     public List<PostadresseDTO> getPostadresse() {
         if (isNull(postadresse)) {

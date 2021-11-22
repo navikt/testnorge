@@ -6,11 +6,13 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.apps.tpsmessagingservice.dto.BankkontoUtlandRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsSystemInfo;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrUtlandDTO;
+import no.nav.tps.ctg.s610.domain.KontoNrUtlandType;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
 import static java.util.Objects.isNull;
+import static org.apache.logging.log4j.util.Strings.isBlank;
 
 @Component
 public class BankkontonrUtlandMappingStrategy implements MappingStrategy {
@@ -40,9 +42,23 @@ public class BankkontonrUtlandMappingStrategy implements MappingStrategy {
                     public void mapAtoB(BankkontonrUtlandDTO source, BankkontoUtlandRequest.EndreGironrUtl target, MappingContext context) {
 
                         target.setOffentligIdent((String) context.getProperty("ident"));
-                        target.setDatoGiroNr((isNull(source.getKontoRegdato()) ? LocalDate.now() : source.getKontoRegdato()).toString());
+                        target.setDatoGiroNr((isNull(source.getKontoRegdato()) ? LocalDate.now() :
+                                source.getKontoRegdato().toLocalDate()).toString());
                         target.setKodeBank(source.getIban());
                         target.setGiroNrUtland(source.getKontonummerUtland());
+                    }
+                })
+                .byDefault()
+                .register();
+
+        factory.classMap(KontoNrUtlandType.class, BankkontonrUtlandDTO.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(KontoNrUtlandType source, BankkontonrUtlandDTO target, MappingContext context) {
+
+                        target.setKontonummerUtland(source.getGiroNrUtland());
+                        target.setKontoRegdato(isBlank(source.getRegTidspunkt()) ? null :
+                                LocalDate.parse(source.getRegTidspunkt()).atStartOfDay());
                     }
                 })
                 .byDefault()
