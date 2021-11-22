@@ -22,11 +22,14 @@ jobs:
       - name: Cache SonarCloud packages
         uses: actions/cache@v2
         with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
-            ${{ runner.os }}-sonar-${{ inputs.working-directory }}
-            ${{ runner.os }}-sonar
+            ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+            ${{ runner.os }}-gradle-
+            ${{ runner.os }}-
       - name: Gradle cache
         uses: actions/cache@v2
         with:
