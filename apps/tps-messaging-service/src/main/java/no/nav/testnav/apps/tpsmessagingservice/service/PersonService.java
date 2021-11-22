@@ -182,7 +182,7 @@ public class PersonService {
                                             .getPersonDataS610()
                                             .getPerson())
                                 .filter(Objects::nonNull)
-                                .collect(Collectors.toList()) :
+                                .toList() :
                         emptyList())
                 .hovedperson(tpsPerson)
                 .build();
