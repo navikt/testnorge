@@ -1,6 +1,7 @@
 package no.nav.testnav.libs.dto.tpsmessagingservice.v1;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,5 +25,6 @@ public class BankkontonrUtlandDTO {
     private String bankAdresse2;
     private String bankAdresse3;
     private String landkode;
+    @Schema(description = "Feltet benyttes til lesning kun")
     private LocalDateTime kontoRegdato;
 }

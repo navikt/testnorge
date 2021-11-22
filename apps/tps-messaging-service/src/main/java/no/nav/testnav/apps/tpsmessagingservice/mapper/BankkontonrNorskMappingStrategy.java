@@ -43,6 +43,7 @@ public class BankkontonrNorskMappingStrategy implements MappingStrategy {
                     public void mapAtoB(BankkontonrNorskDTO source, BankkontoNorskRequest.EndreGironrNorsk target, MappingContext context) {
 
                         target.setOffentligIdent((String) context.getProperty("ident"));
+                        target.setGiroNrNorsk(source.getKontonummer());
                         target.setDatoGiroNrNorsk((isNull(source.getKontoRegdato()) ? LocalDate.now() :
                                 source.getKontoRegdato().toLocalDate()).toString());
                     }
