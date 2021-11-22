@@ -5,18 +5,16 @@ import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.EndringsmeldingConsumer;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.command.TpsMeldingCommand;
-import no.nav.testnav.apps.tpsmessagingservice.dto.EgenansattRequest;
-import no.nav.testnav.apps.tpsmessagingservice.dto.EgenansattResponse;
-import no.nav.testnav.apps.tpsmessagingservice.dto.EndringsmeldingRequest;
+import no.nav.testnav.apps.tpsmessagingservice.dto.SpraakRequest;
+import no.nav.testnav.apps.tpsmessagingservice.dto.SpraakResponse;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SpraakDTO;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import static no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil.getErrorStatus;
@@ -26,62 +24,38 @@ import static no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil.
 
 @Slf4j
 @Service
-public class EgenansattService {
+public class SpraakService {
 
     private final MapperFacade mapperFacade;
     private final EndringsmeldingConsumer endringsmeldingConsumer;
     private final JAXBContext requestContext;
     private final JAXBContext responseContext;
 
-    public EgenansattService(MapperFacade mapperFacade, EndringsmeldingConsumer endringsmeldingConsumer) throws JAXBException {
+    public SpraakService(MapperFacade mapperFacade, EndringsmeldingConsumer endringsmeldingConsumer) throws JAXBException {
         this.mapperFacade = mapperFacade;
         this.endringsmeldingConsumer = endringsmeldingConsumer;
 
-        this.requestContext = JAXBContext.newInstance(EgenansattRequest.class);
-        this.responseContext = JAXBContext.newInstance(EgenansattResponse.class);
+        this.requestContext = JAXBContext.newInstance(SpraakRequest.class);
+        this.responseContext = JAXBContext.newInstance(SpraakResponse.class);
     }
 
-    private static EgenansattRequest updateRequest(EgenansattRequest request, boolean isOpprett) {
-
-        if (isOpprett) {
-            request.getSfeAjourforing().setOpphorEgenAnsatt(null);
-
-        } else {
-            request.getSfeAjourforing().setEndreEgenAnsatt(null);
-        }
-
-        return request;
-    }
-
-    public Map<String, TpsMeldingResponse> opprettEgenansatt(String ident, LocalDate fraOgMed, List<String> miljoer) {
-
-        return endreEgenansatt(true, ident, fraOgMed, miljoer);
-    }
-
-    public Map<String, TpsMeldingResponse> opphoerEgenansatt(String ident, List<String> miljoer) {
-
-        return endreEgenansatt(false, ident, null, miljoer);
-    }
-
-    private Map<String, TpsMeldingResponse> endreEgenansatt(boolean isOpprett, String ident, LocalDate fraOgMed, List<String> miljoer) {
+    public Map<String, TpsMeldingResponse> sendSpraakkode(String ident, SpraakDTO spraak, List<String> miljoer) {
 
         var context = new MappingContext.Factory().getContext();
         context.setProperty("ident", ident);
-        context.setProperty("fraOgMed", fraOgMed);
 
-        var request = mapperFacade.map(new EndringsmeldingRequest(), EgenansattRequest.class, context);
-
-        var requestXml = marshallToXML(requestContext, updateRequest(request, isOpprett));
+        var request = mapperFacade.map(spraak, SpraakRequest.class, context);
+        var requestXml = marshallToXML(requestContext, request);
         var miljoerResponse = endringsmeldingConsumer.sendMessage(requestXml, miljoer);
 
         return miljoerResponse.entrySet().stream()
-                .collect(Collectors.toMap(Entry::getKey, entry -> {
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> {
 
                     try {
                         if (TpsMeldingCommand.NO_RESPONSE.equals(entry.getValue())) {
                             return getResponseStatus(null);
                         } else {
-                            var response = (EgenansattResponse) unmarshallFromXml(responseContext, entry.getValue());
+                            var response = (SpraakResponse) unmarshallFromXml(responseContext, entry.getValue());
                             return getResponseStatus(response);
                         }
 

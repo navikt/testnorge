@@ -1,14 +1,14 @@
 package no.nav.testnav.apps.tpsmessagingservice.utils;
 
+import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tpsmessagingservice.dto.EndringsmeldingRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.EndringsmeldingResponse;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.EndringsmeldingResponseDTO;
+import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -27,17 +27,17 @@ public class EndringsmeldingUtil {
         return "00".equals(status) || "04".equals(status);
     }
 
-    public static EndringsmeldingResponseDTO getResponseStatus(EndringsmeldingResponse response) {
+    public static TpsMeldingResponse getResponseStatus(EndringsmeldingResponse response) {
 
         if (nonNull(response)) {
             log.info("Svarmelding mottatt fra TPS: {}", response);
-            return EndringsmeldingResponseDTO.builder()
+            return TpsMeldingResponse.builder()
                     .returStatus(isStatusOk(response.getSfeTilbakeMelding().getSvarStatus().getReturStatus()) ? STATUS_OK : STATUS_ERROR)
                     .returMelding(response.getSfeTilbakeMelding().getSvarStatus().getReturMelding())
                     .utfyllendeMelding(response.getSfeTilbakeMelding().getSvarStatus().getUtfyllendeMelding())
                     .build();
         } else {
-            return EndringsmeldingResponseDTO.builder()
+            return TpsMeldingResponse.builder()
                     .returStatus(STATUS_ERROR)
                     .returMelding("Teknisk feil!")
                     .utfyllendeMelding("Ingen svarstatus mottatt fra TPS")
@@ -45,19 +45,19 @@ public class EndringsmeldingUtil {
         }
     }
 
-    public static EndringsmeldingResponseDTO getErrorStatus(JAXBException e) {
+    public static TpsMeldingResponse getErrorStatus(JAXBException e) {
 
-        return EndringsmeldingResponseDTO.builder()
+        return TpsMeldingResponse.builder()
                 .returStatus(STATUS_ERROR)
-                .returMelding(e.getErrorCode())
-                .utfyllendeMelding(e.getMessage())
+                .returMelding(e.getMessage())
+                .utfyllendeMelding(e.getLocalizedMessage())
                 .build();
     }
 
-    public static String marshallToXML(JAXBContext requestContext, EndringsmeldingRequest endringsmelding) throws JAXBException {
+    @SneakyThrows
+    public static String marshallToXML(JAXBContext requestContext, EndringsmeldingRequest endringsmelding) {
 
         var marshaller = requestContext.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
         var writer = new StringWriter();
         marshaller.marshal(endringsmelding, writer);

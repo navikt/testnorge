@@ -1,6 +1,5 @@
 package no.nav.testnav.apps.tpsmessagingservice.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -12,9 +11,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 @XmlRootElement(name = "sfePersonData")
-public class EgenansattResponse extends EndringsmeldingResponse {
+public class BankkontoNorskResponse extends EndringsmeldingResponse {
 
-    private EgenansattRequest.SfeAjourforing sfeAjourforing;
+    private BankkontoNorskRequest.SfeAjourforing sfeAjourforing;
 }

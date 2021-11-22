@@ -31,6 +31,7 @@ public class JsonMapperConfig {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+        objectMapper.configure(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL, true);
         objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 
         SimpleModule simpleModule = new SimpleModule();

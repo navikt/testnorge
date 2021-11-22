@@ -1,6 +1,5 @@
 package no.nav.testnav.apps.tpsmessagingservice.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -13,18 +12,29 @@ import javax.xml.bind.annotation.XmlType;
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 @XmlRootElement(name = "sfePersonData")
-public class EgenansattRequest extends EndringsmeldingRequest {
+public class BankkontoNorskRequest extends EndringsmeldingRequest {
 
     private SfeAjourforing sfeAjourforing;
 
     @Data
-    @XmlType(propOrder = {"systemInfo", "endreEgenAnsatt", "opphorEgenAnsatt"})
+    @SuperBuilder
+    @NoArgsConstructor
+    @XmlType(propOrder = {"systemInfo", "endreGironrNorsk"})
     public static class SfeAjourforing {
 
         private TpsSystemInfo systemInfo;
-        private TpsEndringsopplysninger endreEgenAnsatt;
-        private TpsEndringsopplysninger opphorEgenAnsatt;
+        private EndreGironrNorsk endreGironrNorsk;
+    }
+
+    @Data
+    @SuperBuilder
+    @NoArgsConstructor
+    @XmlType(propOrder = {"offentligIdent", "giroNrNorsk", "datoGiroNrNorsk"})
+    public static class EndreGironrNorsk {
+
+        private String offentligIdent;
+        private String giroNrNorsk;
+        private String datoGiroNrNorsk;
     }
 }

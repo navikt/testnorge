@@ -1,20 +1,21 @@
 package no.nav.testnav.apps.tpsmessagingservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 @Data
 @SuperBuilder
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
+@AllArgsConstructor
+@XmlType(propOrder = {"offentligIdent", "fom"})
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@XmlRootElement(name = "sfePersonData")
-public class EgenansattResponse extends EndringsmeldingResponse {
+public class TpsEndringsopplysninger {
 
-    private EgenansattRequest.SfeAjourforing sfeAjourforing;
+    private String offentligIdent;
+    private String fom;
 }

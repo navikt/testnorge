@@ -1,9 +1,8 @@
 package no.nav.testnav.apps.tpsmessagingservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.tpsmessagingservice.dto.SfePersonDataErrorResponse;
-import no.nav.testnav.apps.tpsmessagingservice.dto.SfeTilbakeMelding;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
+import no.nav.testnav.apps.tpsmessagingservice.dto.TpsPersonDataErrorResponse;
 import no.nav.testnav.apps.tpsmessagingservice.factory.ConnectionFactoryFactory;
 import org.springframework.stereotype.Service;
 
@@ -17,14 +16,14 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Service
-public class EndringsmeldingConsumer extends TpsConsumer {
+public class ServicerutineConsumer extends TpsConsumer {
 
-    public static final String XML_REQUEST_QUEUE_ENDRINGSMELDING_ALIAS = "412.SFE_ENDRINGSMELDING";
+    private static final String XML_REQUEST_QUEUE_SERVICE_RUTINE_ALIAS = "411.TPS_FORESPORSEL_XML_O";
     private final JAXBContext responseErrorContext;
 
-    public EndringsmeldingConsumer(ConnectionFactoryFactory connectionFactoryFactory) throws JAXBException {
+    public ServicerutineConsumer(ConnectionFactoryFactory connectionFactoryFactory) throws JAXBException {
         super(connectionFactoryFactory);
-        this.responseErrorContext = JAXBContext.newInstance(SfePersonDataErrorResponse.class);
+        this.responseErrorContext = JAXBContext.newInstance(TpsPersonDataErrorResponse.class);
     }
 
     @Override
@@ -32,15 +31,15 @@ public class EndringsmeldingConsumer extends TpsConsumer {
 
         return isBlank(queue) ?
                 String.format("%s%s_%s", PREFIX_MQ_QUEUES, miljoe.toUpperCase(),
-                        XML_REQUEST_QUEUE_ENDRINGSMELDING_ALIAS) :
+                        XML_REQUEST_QUEUE_SERVICE_RUTINE_ALIAS) :
                 queue;
     }
 
     @Override
     protected String getErrorMessage(JMSException e) throws JAXBException {
 
-        return marshallToXML(SfePersonDataErrorResponse.builder()
-                .sfeTilbakeMelding(SfeTilbakeMelding.builder()
+        return marshallToXML(TpsPersonDataErrorResponse.builder()
+                .tpsSvar(TpsPersonDataErrorResponse.TpsSvar.builder()
                         .svarStatus(TpsMeldingResponse.builder()
                                 .returStatus("FEIL")
                                 .returMelding("Teknisk feil, se logg!")
@@ -50,7 +49,7 @@ public class EndringsmeldingConsumer extends TpsConsumer {
                 .build());
     }
 
-    private String marshallToXML(SfePersonDataErrorResponse errorResponse) throws JAXBException {
+    private String marshallToXML(TpsPersonDataErrorResponse errorResponse) throws JAXBException {
 
         var marshaller = responseErrorContext.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
