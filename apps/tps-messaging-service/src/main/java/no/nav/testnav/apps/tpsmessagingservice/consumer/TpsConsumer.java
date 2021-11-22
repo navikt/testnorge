@@ -98,7 +98,7 @@ public abstract class TpsConsumer {
                                     .resultat(marshallToXML(TpsMeldingErrorResponse.builder()
                                             .sfeTilbakeMelding(SfeTilbakeMelding.builder()
                                                     .svarStatus(TpsMeldingResponse.builder()
-                                                            .returStatus("FEIL")
+                                                            .returStatus("08")
                                                             .returMelding("Teknisk feil, se logg!")
                                                             .utfyllendeMelding(e.getMessage())
                                                             .build())
