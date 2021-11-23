@@ -76,7 +76,10 @@ public class TpsMeldingCommand implements Callable<String> {
                     responseMessage = (TextMessage) consumer.receive(TIMEOUT_VAL);
                 }
 
-                return nonNull(responseMessage) && isNotBlank(requestMessage.getText()) ? responseMessage.getText() : NO_RESPONSE;
+                var response = nonNull(responseMessage) && isNotBlank(requestMessage.getText()) ? responseMessage.getText() : NO_RESPONSE;
+                log.info("Mottatt fra MQ: {}", response);
+
+                return response;
             }
         }
     }
