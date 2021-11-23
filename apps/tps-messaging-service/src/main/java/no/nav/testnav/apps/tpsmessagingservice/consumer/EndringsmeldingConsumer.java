@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import javax.jms.JMSException;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import java.io.StringWriter;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -53,7 +52,6 @@ public class EndringsmeldingConsumer extends TpsConsumer {
     private String marshallToXML(SfePersonDataErrorResponse errorResponse) throws JAXBException {
 
         var marshaller = responseErrorContext.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
         var writer = new StringWriter();
         marshaller.marshal(errorResponse, writer);

@@ -92,6 +92,9 @@ public abstract class TpsConsumer {
 
                     } catch (JMSException e) {
                         try {
+
+                            log.error(e.getMessage(), e);
+
                             return TpsMiljoeResultat.builder()
                                     .miljoe(miljoe)
                                     .resultat(getErrorMessage(e))
@@ -101,8 +104,6 @@ public abstract class TpsConsumer {
 
                             log.error("Marshalling av feilmelding feilet", ex);
                         }
-
-                        log.error(e.getMessage(), e);
                     }
                     return null;
                 })

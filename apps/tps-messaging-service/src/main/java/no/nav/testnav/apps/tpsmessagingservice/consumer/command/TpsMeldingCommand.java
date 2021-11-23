@@ -16,6 +16,7 @@ import javax.jms.TextMessage;
 import java.util.concurrent.Callable;
 
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -75,7 +76,7 @@ public class TpsMeldingCommand implements Callable<String> {
                     responseMessage = (TextMessage) consumer.receive(TIMEOUT_VAL);
                 }
 
-                return nonNull(responseMessage) ? responseMessage.getText() : NO_RESPONSE;
+                return nonNull(responseMessage) && isNotBlank(requestMessage.getText()) ? responseMessage.getText() : NO_RESPONSE;
             }
         }
     }
