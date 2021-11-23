@@ -22,10 +22,7 @@ public class TelefonnummerMappingStrategy implements MappingStrategy {
                     public void mapAtoB(TelefonnummerDTO source, TelefonnummerRequest target, MappingContext context) {
 
                         target.setSfeAjourforing(TelefonnummerRequest.SfeAjourforing.builder()
-                                .systemInfo(TpsSystemInfo.builder()
-                                        .kilde("Dolly")
-                                        .brukerID("anonymousUser")
-                                        .build())
+                                .systemInfo(TpsSystemInfo.getDefault())
                                 .endreTelefon(mapperFacade.map(source, TelefonnummerRequest.TelefonOpplysninger.class, context))
                                 .opphorTelefon(mapperFacade.map(source, TelefonnummerRequest.BrukertypeIdentifikasjon.class, context))
                                 .build());
@@ -38,13 +35,11 @@ public class TelefonnummerMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(TelefonnummerDTO source, TelefonnummerRequest.TelefonOpplysninger target, MappingContext context) {
 
-                        target.setOffentligIdent((String) context.getProperty("ident"));
                         target.setTelefonNr(source.getTelefonnummer());
                         target.setTelefonLandkode(source.getLandkode());
                         target.setDatoTelefon(LocalDate.now().toString());
                     }
                 })
-                .byDefault()
                 .register();
 
         factory.classMap(TelefonnummerDTO.class, TelefonnummerRequest.BrukertypeIdentifikasjon.class)
@@ -53,9 +48,9 @@ public class TelefonnummerMappingStrategy implements MappingStrategy {
                     public void mapAtoB(TelefonnummerDTO source, TelefonnummerRequest.BrukertypeIdentifikasjon target, MappingContext context) {
 
                         target.setOffentligIdent((String) context.getProperty("ident"));
+                        target.setTypeTelefon(source.getTelefontype());
                     }
                 })
-                .byDefault()
                 .register();
     }
 }

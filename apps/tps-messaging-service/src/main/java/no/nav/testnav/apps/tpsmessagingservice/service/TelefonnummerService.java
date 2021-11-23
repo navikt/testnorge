@@ -65,6 +65,7 @@ public class TelefonnummerService {
     private Map<String, TpsMeldingResponse> endreTelefonnummer(boolean isEndre, String ident, TelefonnummerDTO telefonnummer, List<String> miljoer) {
 
         var context = new MappingContext.Factory().getContext();
+        context.setProperty("ident", ident);
 
         var request = mapperFacade.map(telefonnummer, TelefonnummerRequest.class, context);
 

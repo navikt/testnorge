@@ -25,10 +25,7 @@ public class EgenansattMappingStrategy implements MappingStrategy {
                     public void mapAtoB(EndringsmeldingRequest source, EgenansattRequest target, MappingContext context) {
 
                         target.setSfeAjourforing(EgenansattRequest.SfeAjourforing.builder()
-                                .systemInfo(TpsSystemInfo.builder()
-                                        .kilde("Dolly")
-                                        .brukerID("anonymousUser")
-                                        .build())
+                                .systemInfo(TpsSystemInfo.getDefault())
                                 .endreEgenAnsatt(TpsEndringsopplysninger.builder()
                                         .offentligIdent((String) context.getProperty("ident"))
                                         .fom((isNull(context.getProperty("fraOgMed")) ? LocalDate.now() :
