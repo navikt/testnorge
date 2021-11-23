@@ -53,13 +53,7 @@ public class PersonDTO {
 
     private LocalDateTime egenAnsattDatoTom;
 
-    private String typeSikkerhetTiltak;
-
-    private LocalDateTime sikkerhetTiltakDatoFom;
-
-    private LocalDateTime sikkerhetTiltakDatoTom;
-
-    private String beskrSikkerhetTiltak;
+    private SikkerhetstiltakDTO sikkerhetstiltak;
 
     private List<AdresseDTO> boadresse;
 

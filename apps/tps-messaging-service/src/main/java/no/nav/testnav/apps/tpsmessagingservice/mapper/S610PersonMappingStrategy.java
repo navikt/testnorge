@@ -11,6 +11,7 @@ import no.nav.testnav.libs.dto.tpsmessagingservice.v1.MatrikkeladresseDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.MidlertidigAdresseDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PostadresseDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SikkerhetstiltakDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.StatsborgerskapDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonnummerDTO;
 import no.nav.tps.ctg.s610.domain.BoAdresseType;
@@ -39,8 +40,6 @@ public class S610PersonMappingStrategy implements MappingStrategy {
     private static final String GATE_ADRESSE = "OFFA";
     private static final String MATR_ADRESSE = "MATR";
     private static final String BOLIGNR = "BOLIGNR: ";
-    private static final String MOBIL = "MOBI";
-    private static final String HJEM = "HJET";
     private static final String POST_UTLAND = "PUTL";
     private static final String POST_NORGE = "POST";
     private static final String NORGE = "NOR";
@@ -253,10 +252,10 @@ public class S610PersonMappingStrategy implements MappingStrategy {
                                 !tpsPerson.getBruker().getTelefoner().getTelefon().isEmpty() ?
                                 mapperFacade.mapAsList(tpsPerson.getBruker().getTelefoner().getTelefon(), TelefonnummerDTO.class) : null);
                         person.setPersonStatus(tpsPerson.getPersonstatusDetalj().getKodePersonstatus().name());
-                        person.setBeskrSikkerhetTiltak(tpsPerson.getBruker().getSikkerhetsTiltak().getBeskrSikkerhetsTiltak());
-                        person.setTypeSikkerhetTiltak(tpsPerson.getBruker().getSikkerhetsTiltak().getTypeSikkerhetsTiltak());
-                        person.setSikkerhetTiltakDatoFom(getTimestamp(tpsPerson.getBruker().getSikkerhetsTiltak().getSikrFom()));
-                        person.setSikkerhetTiltakDatoTom(getTimestamp(tpsPerson.getBruker().getSikkerhetsTiltak().getSikrTom()));
+                        person.setSikkerhetstiltak(nonNull(tpsPerson.getBruker()) && nonNull(tpsPerson.getBruker().getSikkerhetsTiltak()) &&
+                                isNotBlank(tpsPerson.getBruker().getSikkerhetsTiltak().getTypeSikkerhetsTiltak()) ?
+                                mapperFacade.map(tpsPerson.getBruker().getSikkerhetsTiltak().getTypeSikkerhetsTiltak(),
+                                        SikkerhetstiltakDTO.class) : null);
                         mapBoadresse(tpsPerson, person);
                         mapPostadresse(tpsPerson, person);
                         mapUtadAdresse(tpsPerson, person);

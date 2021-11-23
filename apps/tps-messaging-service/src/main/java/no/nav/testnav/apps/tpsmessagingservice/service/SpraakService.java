@@ -52,12 +52,8 @@ public class SpraakService {
                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> {
 
                     try {
-                        if (TpsMeldingCommand.NO_RESPONSE.equals(entry.getValue())) {
-                            return getResponseStatus(null);
-                        } else {
-                            var response = (SpraakResponse) unmarshallFromXml(responseContext, entry.getValue());
-                            return getResponseStatus(response);
-                        }
+                        return getResponseStatus(TpsMeldingCommand.NO_RESPONSE.equals(entry.getValue()) ? null :
+                                (SpraakResponse) unmarshallFromXml(responseContext, entry.getValue()));
 
                     } catch (JAXBException e) {
                         log.error(e.getMessage(), e);

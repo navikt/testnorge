@@ -76,12 +76,8 @@ public class TelefonnummerService {
                 .collect(Collectors.toMap(Entry::getKey, entry -> {
 
                     try {
-                        if (TpsMeldingCommand.NO_RESPONSE.equals(entry.getValue())) {
-                            return getResponseStatus(null);
-                        } else {
-                            var response = (TelefonnummerResponse) unmarshallFromXml(responseContext, entry.getValue());
-                            return getResponseStatus(response);
-                        }
+                        return getResponseStatus(TpsMeldingCommand.NO_RESPONSE.equals(entry.getValue()) ? null :
+                                (TelefonnummerResponse) unmarshallFromXml(responseContext, entry.getValue()));
 
                     } catch (JAXBException e) {
                         log.error(e.getMessage(), e);
