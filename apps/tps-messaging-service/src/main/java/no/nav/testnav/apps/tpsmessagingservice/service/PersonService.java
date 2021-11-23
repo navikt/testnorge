@@ -9,10 +9,12 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.ServicerutineConsumer;
+import no.nav.testnav.apps.tpsmessagingservice.consumer.command.TpsMeldingCommand;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServiceRutine;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServicerutineRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServicerutineS610Response;
+import no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil;
 import no.nav.testnav.apps.tpsmessagingservice.utils.ServiceRutineUtil;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
@@ -49,7 +51,6 @@ import static no.nav.tps.ctg.s610.domain.RelasjonType.SEPA;
 import static no.nav.tps.ctg.s610.domain.RelasjonType.SEPR;
 import static no.nav.tps.ctg.s610.domain.RelasjonType.SKIL;
 import static no.nav.tps.ctg.s610.domain.RelasjonType.SKPA;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -175,12 +176,12 @@ public class PersonService {
                 .relasjoner(nonNull(tpsPerson.getBruker().getRelasjoner()) ?
                         tpsPerson.getBruker().getRelasjoner().getRelasjon().parallelStream()
                                 .map(relasjon ->
-                                    readFromTps(relasjon.getFnrRelasjon(), List.of(miljoe))
-                                            .get(miljoe)
-                                            .getTpsPersonData()
-                                            .getTpsSvar()
-                                            .getPersonDataS610()
-                                            .getPerson())
+                                        readFromTps(relasjon.getFnrRelasjon(), List.of(miljoe))
+                                                .get(miljoe)
+                                                .getTpsPersonData()
+                                                .getTpsSvar()
+                                                .getPersonDataS610()
+                                                .getPerson())
                                 .filter(Objects::nonNull)
                                 .toList() :
                         emptyList())
@@ -191,15 +192,20 @@ public class PersonService {
     @SneakyThrows
     public TpsServicerutineS610Response unmarshallFromXml(String endringsmeldingResponse) {
 
-        if (isNotBlank(endringsmeldingResponse)) {
+        if (TpsMeldingCommand.NO_RESPONSE.equals(endringsmeldingResponse)) {
+
+            return TpsServicerutineS610Response.builder()
+                    .tpsPersonData(TpsServicerutineS610Response.TpsPersonData.builder()
+                            .tpsSvar(TpsServicerutineS610Response.TpsSvar.builder()
+                                    .svarStatus(EndringsmeldingUtil.getNoAnswerStatus())
+                                    .build())
+                            .build())
+                    .build();
+        } else {
 
             var jsonRoot = XML.toJSONObject(endringsmeldingResponse);
 
             return objectMapper.readValue(jsonRoot.toString(), TpsServicerutineS610Response.class);
-
-        } else {
-
-            return null;
         }
     }
 

@@ -95,15 +95,9 @@ public class PersonDTO {
 
     private LocalDateTime forsvunnetDato;
 
-    private String telefonLandskode_1;
-
-    private String telefonnummer_1;
-
-    private String telefonLandskode_2;
-
-    private String telefonnummer_2;
-
     private String importFra;
+
+    private List<TelefonnummerDTO> telefonnumre;
 
     private BankkontonrUtlandDTO bankkontonrUtland;
     private BankkontonrNorskDTO bankkontonrNorsk;

@@ -6,6 +6,8 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TelefonnummerRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsSystemInfo;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonnummerDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonnummerDTO.TypeTelefon;
+import no.nav.tps.ctg.s610.domain.TelefonType;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -49,6 +51,18 @@ public class TelefonnummerMappingStrategy implements MappingStrategy {
 
                         target.setOffentligIdent((String) context.getProperty("ident"));
                         target.setTypeTelefon(source.getTelefontype());
+                    }
+                })
+                .register();
+
+        factory.classMap(TelefonType.class, TelefonnummerDTO.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(TelefonType source, TelefonnummerDTO target, MappingContext context) {
+
+                        target.setTelefonnummer(source.getTlfNummer());
+                        target.setLandkode(source.getTlfLandkode());
+                        target.setTelefontype(TypeTelefon.valueOf(source.getTlfType()));
                     }
                 })
                 .register();
