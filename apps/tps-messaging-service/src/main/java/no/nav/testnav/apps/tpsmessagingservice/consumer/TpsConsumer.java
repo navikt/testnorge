@@ -1,6 +1,5 @@
 package no.nav.testnav.apps.tpsmessagingservice.consumer;
 
-import com.ibm.mq.jmqi.JmqiException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +11,6 @@ import no.nav.testnav.apps.tpsmessagingservice.factory.ConnectionFactoryFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.jms.JMSException;
 import javax.xml.bind.JAXBException;
 import java.util.List;
 import java.util.Map;
@@ -91,7 +89,7 @@ public abstract class TpsConsumer {
                                         melding).call())
                                 .build();
 
-                    } catch (JMSException | JmqiException e) {
+                    } catch (Exception e) {
                         try {
 
                             log.error(e.getMessage(), e);

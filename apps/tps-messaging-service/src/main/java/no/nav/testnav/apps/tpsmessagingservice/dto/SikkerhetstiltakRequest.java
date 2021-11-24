@@ -35,6 +35,7 @@ public class SikkerhetstiltakRequest extends EndringsmeldingRequest {
 
     @Data
     @SuperBuilder
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @AllArgsConstructor
     @XmlType(propOrder = {"typeSikkerhetsTiltak", "beskrSikkerhetsTiltak", "fom", "tom"})

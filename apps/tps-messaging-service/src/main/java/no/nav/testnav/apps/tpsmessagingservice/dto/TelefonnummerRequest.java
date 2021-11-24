@@ -36,6 +36,7 @@ public class TelefonnummerRequest extends EndringsmeldingRequest {
 
     @Data
     @SuperBuilder
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @XmlType(propOrder = {"telefonLandkode", "telefonNr", "datoTelefon"})
     public static class TelefonOpplysninger extends BrukertypeIdentifikasjon{
