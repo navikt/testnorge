@@ -9,7 +9,6 @@ import dolly from '~/assets/favicon.ico'
 import './Header.less'
 import Logger from '~/logger'
 import { useLocation } from 'react-use'
-import Api from '~/api'
 
 type Props = {
 	brukerProfil: {
@@ -22,10 +21,7 @@ type Props = {
 export default ({ brukerProfil, brukerBilde }: Props) => {
 	const location = useLocation()
 
-	const logout = () =>
-		Api.fetch('/logout', { method: 'POST' }).then((response) =>
-			window.location.replace(response.url)
-		)
+	const logout = () => (window.location.href = '/logout')
 
 	return (
 		<header className="app-header">
