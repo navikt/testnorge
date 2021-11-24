@@ -18,26 +18,9 @@ public class TpsMessagingMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(RsUtenlandskBankkonto rsUtenlandskBankkonto, UtenlandskBankkonto utenlandskBankkonto, MappingContext context) {
 
-                        utenlandskBankkonto.setKontonummer(rsUtenlandskBankkonto.kontonummer());
-                        utenlandskBankkonto.setSwift(rsUtenlandskBankkonto.swift());
-                        utenlandskBankkonto.setLandkode(rsUtenlandskBankkonto.landkode());
-                        utenlandskBankkonto.setIban(rsUtenlandskBankkonto.iban());
-                        utenlandskBankkonto.setBanknavn(rsUtenlandskBankkonto.banknavn());
-                        utenlandskBankkonto.setValuta(rsUtenlandskBankkonto.valuta());
-                        utenlandskBankkonto.setBankAdresse1(rsUtenlandskBankkonto.bankAdresse1());
-                        utenlandskBankkonto.setBankAdresse2(rsUtenlandskBankkonto.bankAdresse2());
-                        utenlandskBankkonto.setBankAdresse3(rsUtenlandskBankkonto.bankAdresse3());
                     }
                 })
-                .exclude("kontonummer")
-                .exclude("swift")
-                .exclude("landkode")
-                .exclude("iban")
-                .exclude("banknavn")
-                .exclude("valuta")
-                .exclude("bankAdresse1")
-                .exclude("bankAdresse2")
-                .exclude("bankAdresse3")
+                .byDefault()
                 .register();
     }
 }
