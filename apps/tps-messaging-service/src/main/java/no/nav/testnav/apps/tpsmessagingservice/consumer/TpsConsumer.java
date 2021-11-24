@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.tpsmessagingservice.consumer;
 
+import com.ibm.mq.jmqi.JmqiException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -73,7 +74,7 @@ public abstract class TpsConsumer {
 
     protected abstract String getQueueName(String queue, String miljoe);
 
-    protected abstract String getErrorMessage(JMSException e) throws JAXBException;
+    protected abstract String getErrorMessage(Exception e) throws JAXBException;
 
     public Map<String, String> sendMessage(String melding, List<String> miljoer) {
 
@@ -90,7 +91,7 @@ public abstract class TpsConsumer {
                                         melding).call())
                                 .build();
 
-                    } catch (JMSException e) {
+                    } catch (JMSException | JmqiException e) {
                         try {
 
                             log.error(e.getMessage(), e);

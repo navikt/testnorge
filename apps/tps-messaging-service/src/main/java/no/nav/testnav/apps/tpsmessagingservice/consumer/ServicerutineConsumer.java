@@ -6,7 +6,6 @@ import no.nav.testnav.apps.tpsmessagingservice.dto.TpsPersonDataErrorResponse;
 import no.nav.testnav.apps.tpsmessagingservice.factory.ConnectionFactoryFactory;
 import org.springframework.stereotype.Service;
 
-import javax.jms.JMSException;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import java.io.StringWriter;
@@ -35,7 +34,7 @@ public class ServicerutineConsumer extends TpsConsumer {
     }
 
     @Override
-    protected String getErrorMessage(JMSException e) throws JAXBException {
+    protected String getErrorMessage(Exception e) throws JAXBException {
 
         return marshallToXML(TpsPersonDataErrorResponse.builder()
                 .tpsSvar(TpsPersonDataErrorResponse.TpsSvar.builder()
