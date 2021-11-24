@@ -15,6 +15,7 @@ import no.nav.dolly.web.credentials.TestnavMiljoerServiceProperties;
 import no.nav.dolly.web.credentials.TestnavOrganisasjonFasteDataServiceProperties;
 import no.nav.dolly.web.credentials.TestnavOrganisasjonForvalterProperties;
 import no.nav.dolly.web.credentials.TestnavOrganisasjonServiceProperties;
+import no.nav.dolly.web.credentials.TestnavPdlForvalterProperties;
 import no.nav.dolly.web.credentials.TestnavPensjonTestdataFacadeProxyProperties;
 import no.nav.dolly.web.credentials.TestnavSigrunstubProxyProperties;
 import no.nav.dolly.web.credentials.TestnavTestnorgeAaregProxyProperties;
@@ -22,15 +23,14 @@ import no.nav.dolly.web.credentials.TestnavTestnorgeInstProxyProperties;
 import no.nav.dolly.web.credentials.TestnavVarslingerServiceProperties;
 import no.nav.dolly.web.credentials.TestnorgeProfilApiProperties;
 import no.nav.dolly.web.credentials.TpsForvalterenProxyProperties;
+import no.nav.dolly.web.credentials.TpsMessagingServiceProperties;
 import no.nav.dolly.web.credentials.UdiStubProxyProperties;
-import no.nav.dolly.web.credentials.TestnavPdlForvalterProperties;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
 import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivesessionsecurity.domain.AccessToken;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -59,6 +59,7 @@ public class DollyFrontendApplicationStarter {
     private final TestnavJoarkDokumentServiceProperties testnavJoarkDokumentServiceProperties;
     private final TestnavInntektstubProxyProperties testnavInntektstubProxyProperties;
     private final TpsForvalterenProxyProperties tpsForvalterenProxyProperties;
+    private final TpsMessagingServiceProperties tpsMessagingServiceProperties;
     private final TestnavBrregstubProxyProperties testnavBrregstubProxyProperties;
     private final TestnavHodejegerenProxyProperties testnavHodejegerenProxyProperties;
     private final TestnavArenaForvalterenProxyProperties testnavArenaForvalterenProxyProperties;
@@ -78,10 +79,6 @@ public class DollyFrontendApplicationStarter {
     private final TestnavAdresseServiceProperties testnavAdresseServiceProperties;
     private final TestnavPdlForvalterProperties testnavPdlForvalterProperties;
 
-    public static void main(String[] args) {
-        SpringApplication.run(DollyFrontendApplicationStarter.class, args);
-    }
-
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder
@@ -91,6 +88,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(testnavOrganisasjonForvalterProperties))
                 .route(createRoute(testnavVarslingerServiceProperties, "testnav-varslinger-service"))
                 .route(createRoute(testnorgeProfilApiProperties))
+                .route(createRoute(tpsMessagingServiceProperties, "testnav-tps-messaging-service"))
                 .route(createRoute(testnavMiljoerServiceProperties))
                 .route(createRoute(dollyBackendProperties, "dolly-backend"))
                 .route(createRoute(testnavJoarkDokumentServiceProperties))
@@ -109,6 +107,10 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(testnavPdlForvalterProperties, "testnav-pdl-forvalter"))
                 .route(createRoute(personSearchServiceProperties))
                 .build();
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(DollyFrontendApplicationStarter.class, args);
     }
 
     private GatewayFilter addAuthenticationHeaderFilterFrom(ServerProperties serverProperties) {

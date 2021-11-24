@@ -53,6 +53,11 @@ module.exports = (env) =>
 					changeOrigin: true,
 					secure: false,
 				},
+				'/testnav-tps-messaging-service/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false,
+				},
 				'/testnav-adresse-service/api': {
 					target: env.backend,
 					changeOrigin: true,

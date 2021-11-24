@@ -33,6 +33,7 @@ spec:
         - application: testnorge-profil-api
         - application: testnav-joark-dokument-service
         - application: testnav-organisasjon-faste-data-service
+        - application: testnav-tps-messaging-service
         - application: testnav-varslinger-service-dev
         - application: dolly-dev-redis-session
         - application: testnav-pdl-forvalter-dev

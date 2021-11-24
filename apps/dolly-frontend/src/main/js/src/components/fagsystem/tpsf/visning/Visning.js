@@ -20,7 +20,7 @@ export const TpsfVisning = ({ data }) => {
 			<Personinfo data={data} />
 			<Nasjonalitet data={data} />
 			<Vergemaal data={data.vergemaal} />
-			<Fullmakt data={data.fullmakt} />
+			<Fullmakt data={data.fullmakt} relasjoner={data.relasjoner} />
 			<Boadresse boadresse={data.boadresse} />
 			<Postadresse postadresse={data.postadresse} />
 			<MidlertidigAdresse midlertidigAdresse={data.midlertidigAdresse} />

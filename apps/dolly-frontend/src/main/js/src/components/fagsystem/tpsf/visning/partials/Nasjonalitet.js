@@ -45,7 +45,7 @@ export const Nasjonalitet = ({ data, visTittel = true }) => {
 				<TitleValue title="Språk" kodeverk={PersoninformasjonKodeverk.Spraak} value={sprakKode} />
 			</div>
 
-			{innvandretUtvandret.length > 0 && (
+			{innvandretUtvandret?.length > 0 && (
 				<ErrorBoundary>
 					<DollyFieldArray data={innvandretUtvandret} header={'Innvandret/utvandret'} nested>
 						{(id, idx) => (
