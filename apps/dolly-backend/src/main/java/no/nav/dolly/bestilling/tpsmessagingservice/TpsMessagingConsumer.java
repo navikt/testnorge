@@ -50,7 +50,7 @@ public class TpsMessagingConsumer {
 
         log.info("Sender utenlandsk bankkonto request på ident: {} til TPS messaging service: {}", request.ident(), request.body());
 
-        return webClient.post()
+        ResponseEntity<Object> response = webClient.post()
                 .uri(uriBuilder -> uriBuilder
                         .path(UTENLANDSK_BANKKONTO_URL)
                         .queryParam(MILJOER_QUERY, request.miljoer())
@@ -63,6 +63,9 @@ public class TpsMessagingConsumer {
                 .bodyValue(request.body())
                 .retrieve().toEntity(Object.class)
                 .block();
+
+        log.info("Response fra TPS messaging service: {}", response);
+        return response;
     }
 
     public Map<String, String> checkAlive() {

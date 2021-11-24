@@ -2,9 +2,8 @@ import * as React from 'react'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { AdresseKodeverk, ArbeidKodeverk } from '~/config/kodeverk'
+import { ArbeidKodeverk, GtKodeverk } from '~/config/kodeverk'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 
 const initialUtenlandskBankkonto = {
 	kontonummer: '',
@@ -36,7 +35,7 @@ export const UtenlandskBankkonto = () => {
 							<FormikSelect
 								name={`${path}.landkode`}
 								label={'Land'}
-								kodeverk={AdresseKodeverk.ArbeidOgInntektLand}
+								kodeverk={GtKodeverk.LAND}
 								size={'xlarge'}
 							/>
 							<FormikTextInput name={`${path}.banknavn`} label={'Banknavn'} />
