@@ -9,7 +9,6 @@ import dolly from '~/assets/favicon.ico'
 import './Header.less'
 import Logger from '~/logger'
 import { useLocation } from 'react-use'
-import Api from '~/api'
 
 type Props = {
 	brukerProfil: {
