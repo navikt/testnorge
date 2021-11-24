@@ -3,6 +3,7 @@ package no.nav.testnav.apps.tpsmessagingservice.mapper;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
+import no.nav.testnav.apps.tpsmessagingservice.dto.KontaktopplysningerRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TelefonnummerRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsSystemInfo;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonnummerDTO;
@@ -17,6 +18,29 @@ public class TelefonnummerMappingStrategy implements MappingStrategy {
 
     @Override
     public void register(MapperFactory factory) {
+
+        factory.classMap(TelefonnummerDTO.class, KontaktopplysningerRequest.TelefonData.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(TelefonnummerDTO source, KontaktopplysningerRequest.TelefonData target, MappingContext context) {
+
+                        target.setTypeTelefon(source.getTelefontype());
+                        target.setTelefonNr(source.getTelefonnummer());
+                        target.setTelefonLandkode(source.getLandkode());
+                        target.setDatoTelefon(LocalDate.now().toString());
+                    }
+                })
+                .register();
+
+        factory.classMap(TypeTelefon.class, TelefonType.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(TypeTelefon source, TelefonType target, MappingContext context) {
+
+                        target.setTlfType(source.toString());
+                    }
+                })
+                .register();
 
         factory.classMap(TelefonnummerDTO.class, TelefonnummerRequest.class)
                 .customize(new CustomMapper<>() {

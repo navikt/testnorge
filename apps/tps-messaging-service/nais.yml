@@ -63,6 +63,10 @@ spec:
         - application: app-1
           namespace: plattformsikkerhet
           cluster: dev-gcp
+        - application: dolly-backend-dev
+          cluster: dev-fss
+        - application: dolly-backend
+          cluster: dev-fss
     outbound:
       external:
         - host: https://testnav-pdl-proxy.dev-fss-pub.nais.io
