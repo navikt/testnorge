@@ -52,12 +52,8 @@ public class BankkontoNorskService {
                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> {
 
                     try {
-                        if (TpsMeldingCommand.NO_RESPONSE.equals(entry.getValue())) {
-                            return getResponseStatus(null);
-                        } else {
-                            var response = (BankkontoNorskResponse) unmarshallFromXml(responseContext, entry.getValue());
-                            return getResponseStatus(response);
-                        }
+                        return getResponseStatus(TpsMeldingCommand.NO_RESPONSE.equals(entry.getValue()) ? null :
+                                (BankkontoNorskResponse) unmarshallFromXml(responseContext, entry.getValue()));
 
                     } catch (JAXBException e) {
                         log.error(e.getMessage(), e);

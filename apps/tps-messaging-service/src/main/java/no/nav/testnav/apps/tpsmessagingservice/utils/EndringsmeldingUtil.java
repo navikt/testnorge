@@ -37,11 +37,7 @@ public class EndringsmeldingUtil {
                     .utfyllendeMelding(response.getSfeTilbakeMelding().getSvarStatus().getUtfyllendeMelding())
                     .build();
         } else {
-            return TpsMeldingResponse.builder()
-                    .returStatus(STATUS_ERROR)
-                    .returMelding("Teknisk feil!")
-                    .utfyllendeMelding("Ingen svarstatus mottatt fra TPS")
-                    .build();
+            return getNoAnswerStatus();
         }
     }
 
@@ -78,5 +74,13 @@ public class EndringsmeldingUtil {
 
             return null;
         }
+    }
+    public static TpsMeldingResponse getNoAnswerStatus() {
+
+        return TpsMeldingResponse.builder()
+                .returStatus("FEIL")
+                .returMelding("Teknisk feil!")
+                .utfyllendeMelding("Ingen svarstatus mottatt fra TPS")
+                .build();
     }
 }

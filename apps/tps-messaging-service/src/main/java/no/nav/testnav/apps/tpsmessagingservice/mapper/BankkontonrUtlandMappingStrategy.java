@@ -26,10 +26,7 @@ public class BankkontonrUtlandMappingStrategy implements MappingStrategy {
                     public void mapAtoB(BankkontonrUtlandDTO source, BankkontoUtlandRequest target, MappingContext context) {
 
                         target.setSfeAjourforing(BankkontoUtlandRequest.SfeAjourforing.builder()
-                                .systemInfo(TpsSystemInfo.builder()
-                                        .kilde("Dolly")
-                                        .brukerID("anonymousUser")
-                                        .build())
+                                .systemInfo(TpsSystemInfo.getDefault())
                                 .endreGironrUtl(mapperFacade.map(source, BankkontoUtlandRequest.EndreGironrUtl.class, context))
                                 .build());
                     }

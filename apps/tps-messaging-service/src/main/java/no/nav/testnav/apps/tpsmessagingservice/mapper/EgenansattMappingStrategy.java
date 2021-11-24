@@ -24,22 +24,17 @@ public class EgenansattMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(EndringsmeldingRequest source, EgenansattRequest target, MappingContext context) {
 
-                        var sfeAjourforing = new EgenansattRequest.SfeAjourforing();
-
-                        sfeAjourforing.setSystemInfo(TpsSystemInfo.builder()
-                                .kilde("Dolly")
-                                .brukerID("anonymousUser")
+                        target.setSfeAjourforing(EgenansattRequest.SfeAjourforing.builder()
+                                .systemInfo(TpsSystemInfo.getDefault())
+                                .endreEgenAnsatt(TpsEndringsopplysninger.builder()
+                                        .offentligIdent((String) context.getProperty("ident"))
+                                        .fom((isNull(context.getProperty("fraOgMed")) ? LocalDate.now() :
+                                                (LocalDate) context.getProperty("fraOgMed")).toString())
+                                        .build())
+                                .opphorEgenAnsatt(TpsEndringsopplysninger.builder()
+                                        .offentligIdent((String) context.getProperty("ident"))
+                                        .build())
                                 .build());
-                        sfeAjourforing.setEndreEgenAnsatt(TpsEndringsopplysninger.builder()
-                                .offentligIdent((String) context.getProperty("ident"))
-                                .fom((isNull(context.getProperty("fraOgMed")) ? LocalDate.now() :
-                                        (LocalDate) context.getProperty("fraOgMed")).toString())
-                                .build());
-                        sfeAjourforing.setOpphorEgenAnsatt(TpsEndringsopplysninger.builder()
-                                .offentligIdent((String) context.getProperty("ident"))
-                                .build());
-
-                        target.setSfeAjourforing(sfeAjourforing);
                     }
                 })
                 .register();

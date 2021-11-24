@@ -5,15 +5,14 @@ import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.EndringsmeldingConsumer;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.command.TpsMeldingCommand;
-import no.nav.testnav.apps.tpsmessagingservice.dto.EgenansattRequest;
-import no.nav.testnav.apps.tpsmessagingservice.dto.EgenansattResponse;
-import no.nav.testnav.apps.tpsmessagingservice.dto.EndringsmeldingRequest;
+import no.nav.testnav.apps.tpsmessagingservice.dto.TelefonnummerRequest;
+import no.nav.testnav.apps.tpsmessagingservice.dto.TelefonnummerResponse;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonnummerDTO;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -26,52 +25,51 @@ import static no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil.
 
 @Slf4j
 @Service
-public class EgenansattService {
+public class TelefonnummerService {
 
     private final MapperFacade mapperFacade;
     private final EndringsmeldingConsumer endringsmeldingConsumer;
     private final JAXBContext requestContext;
     private final JAXBContext responseContext;
 
-    public EgenansattService(MapperFacade mapperFacade, EndringsmeldingConsumer endringsmeldingConsumer) throws JAXBException {
+    public TelefonnummerService(MapperFacade mapperFacade, EndringsmeldingConsumer endringsmeldingConsumer) throws JAXBException {
         this.mapperFacade = mapperFacade;
         this.endringsmeldingConsumer = endringsmeldingConsumer;
 
-        this.requestContext = JAXBContext.newInstance(EgenansattRequest.class);
-        this.responseContext = JAXBContext.newInstance(EgenansattResponse.class);
+        this.requestContext = JAXBContext.newInstance(TelefonnummerRequest.class);
+        this.responseContext = JAXBContext.newInstance(TelefonnummerResponse.class);
     }
 
-    private static EgenansattRequest updateRequest(EgenansattRequest request, boolean isOpprett) {
+    private static TelefonnummerRequest updateRequest(TelefonnummerRequest request, boolean isEndre) {
 
-        if (isOpprett) {
-            request.getSfeAjourforing().setOpphorEgenAnsatt(null);
+        if (isEndre) {
+            request.getSfeAjourforing().setOpphorTelefon(null);
 
         } else {
-            request.getSfeAjourforing().setEndreEgenAnsatt(null);
+            request.getSfeAjourforing().setEndreTelefon(null);
         }
 
         return request;
     }
 
-    public Map<String, TpsMeldingResponse> opprettEgenansatt(String ident, LocalDate fraOgMed, List<String> miljoer) {
+    public Map<String, TpsMeldingResponse> endreTelefonnummer(String ident, TelefonnummerDTO telefonnummer, List<String> miljoer) {
 
-        return endreEgenansatt(true, ident, fraOgMed, miljoer);
+        return endreTelefonnummer(true, ident, telefonnummer, miljoer);
     }
 
-    public Map<String, TpsMeldingResponse> opphoerEgenansatt(String ident, List<String> miljoer) {
+    public Map<String, TpsMeldingResponse> opphoerTelefonnummer(String ident, TelefonnummerDTO telefonnummer, List<String> miljoer) {
 
-        return endreEgenansatt(false, ident, null, miljoer);
+        return endreTelefonnummer(false, ident, telefonnummer, miljoer);
     }
 
-    private Map<String, TpsMeldingResponse> endreEgenansatt(boolean isOpprett, String ident, LocalDate fraOgMed, List<String> miljoer) {
+    private Map<String, TpsMeldingResponse> endreTelefonnummer(boolean isEndre, String ident, TelefonnummerDTO telefonnummer, List<String> miljoer) {
 
         var context = new MappingContext.Factory().getContext();
         context.setProperty("ident", ident);
-        context.setProperty("fraOgMed", fraOgMed);
 
-        var request = mapperFacade.map(new EndringsmeldingRequest(), EgenansattRequest.class, context);
+        var request = mapperFacade.map(telefonnummer, TelefonnummerRequest.class, context);
 
-        var requestXml = marshallToXML(requestContext, updateRequest(request, isOpprett));
+        var requestXml = marshallToXML(requestContext, updateRequest(request, isEndre));
         var miljoerResponse = endringsmeldingConsumer.sendMessage(requestXml, miljoer);
 
         return miljoerResponse.entrySet().stream()
@@ -79,7 +77,7 @@ public class EgenansattService {
 
                     try {
                         return getResponseStatus(TpsMeldingCommand.NO_RESPONSE.equals(entry.getValue()) ? null :
-                                (EgenansattResponse) unmarshallFromXml(responseContext, entry.getValue()));
+                                (TelefonnummerResponse) unmarshallFromXml(responseContext, entry.getValue()));
 
                     } catch (JAXBException e) {
                         log.error(e.getMessage(), e);

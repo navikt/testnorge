@@ -1,7 +1,6 @@
 package no.nav.testnav.libs.dto.tpsmessagingservice.v1;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,10 +13,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class BankkontonrNorskDTO {
+public class SikkerhetstiltakDTO {
 
-    private String kontonummer;
-
-    @Schema(description = "Datofeltet benyttes til lesning kun")
-    private LocalDateTime kontoRegdato;
+    private String tiltakstype;
+    private String beskrivelse;
+    private LocalDateTime gyldigFraOgMed;
+    private LocalDateTime gyldigTilOgMed;
 }

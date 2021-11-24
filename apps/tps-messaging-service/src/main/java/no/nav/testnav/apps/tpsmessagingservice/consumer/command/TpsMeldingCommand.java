@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.tpsmessagingservice.consumer.command;
 
+import com.ibm.mq.jmqi.JmqiException;
 import com.ibm.mq.jms.MQQueue;
 import com.ibm.msg.client.wmq.compat.jms.internal.JMSC;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import javax.jms.TextMessage;
 import java.util.concurrent.Callable;
 
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -31,7 +33,7 @@ public class TpsMeldingCommand implements Callable<String> {
     private final String password;
     private final String requestMessageContent;
 
-    public String call() throws JMSException {
+    public String call() throws JMSException, JmqiException {
 
         try (Connection connection = connectionFactory.createConnection(username, password)) {
             connection.start();
@@ -75,7 +77,7 @@ public class TpsMeldingCommand implements Callable<String> {
                     responseMessage = (TextMessage) consumer.receive(TIMEOUT_VAL);
                 }
 
-                return nonNull(responseMessage) ? responseMessage.getText() : NO_RESPONSE;
+                return nonNull(responseMessage) && isNotBlank(requestMessage.getText()) ? responseMessage.getText() : NO_RESPONSE;
             }
         }
     }

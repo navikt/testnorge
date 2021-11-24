@@ -22,10 +22,7 @@ public class SpraakMappingStrategy implements MappingStrategy {
                     public void mapAtoB(SpraakDTO source, SpraakRequest target, MappingContext context) {
 
                         target.setSfeAjourforing(SpraakRequest.SfeAjourforing.builder()
-                                .systemInfo(TpsSystemInfo.builder()
-                                        .kilde("Dolly")
-                                        .brukerID("anonymousUser")
-                                        .build())
+                                .systemInfo(TpsSystemInfo.getDefault())
                                 .endreSprak(SpraakRequest.EndreSpraak.builder()
                                         .offentligIdent((String) context.getProperty("ident"))
                                         .sprakKode(source.getSprakKode())

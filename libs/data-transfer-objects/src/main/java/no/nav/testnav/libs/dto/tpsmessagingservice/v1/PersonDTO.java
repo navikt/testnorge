@@ -53,13 +53,7 @@ public class PersonDTO {
 
     private LocalDateTime egenAnsattDatoTom;
 
-    private String typeSikkerhetTiltak;
-
-    private LocalDateTime sikkerhetTiltakDatoFom;
-
-    private LocalDateTime sikkerhetTiltakDatoTom;
-
-    private String beskrSikkerhetTiltak;
+    private SikkerhetstiltakDTO sikkerhetstiltak;
 
     private List<AdresseDTO> boadresse;
 
@@ -95,15 +89,9 @@ public class PersonDTO {
 
     private LocalDateTime forsvunnetDato;
 
-    private String telefonLandskode_1;
-
-    private String telefonnummer_1;
-
-    private String telefonLandskode_2;
-
-    private String telefonnummer_2;
-
     private String importFra;
+
+    private List<TelefonnummerDTO> telefonnumre;
 
     private BankkontonrUtlandDTO bankkontonrUtland;
     private BankkontonrNorskDTO bankkontonrNorsk;
