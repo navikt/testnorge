@@ -18,6 +18,7 @@ jobs:
   build:
     name: Build
     uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@master
+    if: ${{ github.ref == 'refs/heads/master' }}
     with:
       working-directory: 'apps/syntrest/'
       app-name: 'syntrest'
