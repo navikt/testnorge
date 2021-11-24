@@ -19,7 +19,7 @@ jobs:
   build:
     name: Build
     uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@master
-    if: ${{ github.ref == 'refs/heads/master' }}
+    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/feature/utenlandsk-bankkonto'  }}
     with:
       working-directory: 'apps/dolly-backend/'
       app-name: 'testnav-dolly-backend'
