@@ -254,7 +254,7 @@ public class S610PersonMappingStrategy implements MappingStrategy {
                         person.setPersonStatus(tpsPerson.getPersonstatusDetalj().getKodePersonstatus().name());
                         person.setSikkerhetstiltak(nonNull(tpsPerson.getBruker()) && nonNull(tpsPerson.getBruker().getSikkerhetsTiltak()) &&
                                 isNotBlank(tpsPerson.getBruker().getSikkerhetsTiltak().getTypeSikkerhetsTiltak()) ?
-                                mapperFacade.map(tpsPerson.getBruker().getSikkerhetsTiltak().getTypeSikkerhetsTiltak(),
+                                mapperFacade.map(tpsPerson.getBruker().getSikkerhetsTiltak(),
                                         SikkerhetstiltakDTO.class) : null);
                         mapBoadresse(tpsPerson, person);
                         mapPostadresse(tpsPerson, person);
