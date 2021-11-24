@@ -18,6 +18,7 @@ jobs:
   build:
     name: Build
     uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@master
+    if: ${{ github.ref == 'refs/heads/master' }}
     with:
       working-directory: 'apps/varslinger-service/'
       app-name: 'varslinger-service'
@@ -31,7 +32,7 @@ jobs:
     with:
       resource: 'apps/varslinger-service/config.yml'
       app-name: 'varslinger-service'
-      cluster: 'dev-fss'
+      cluster: 'dev-gcp'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
   deploy-dev:
@@ -42,6 +43,6 @@ jobs:
     with:
       resource: 'apps/varslinger-service/config.dev.yml'
       app-name: 'varslinger-service'
-      cluster: 'dev-fss'
+      cluster: 'dev-gcp'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}

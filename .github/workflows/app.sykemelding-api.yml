@@ -18,6 +18,7 @@ jobs:
   build:
     name: Build
     uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@master
+    if: ${{ github.ref == 'refs/heads/master' }}
     with:
       working-directory: 'apps/sykemelding-api/'
       app-name: 'sykemelding-api'
@@ -29,7 +30,7 @@ jobs:
     needs: build
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
-      resource: 'apps/sykemelding-api/nais.yml'
+      resource: 'apps/sykemelding-api/nais.yaml'
       app-name: 'sykemelding-api'
       cluster: 'dev-fss'
     secrets:

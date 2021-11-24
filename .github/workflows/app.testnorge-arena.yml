@@ -18,6 +18,7 @@ jobs:
   build:
     name: Build
     uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@master
+    if: ${{ github.ref == 'refs/heads/master' }}
     with:
       working-directory: 'apps/testnorge-arena/'
       app-name: 'testnav-arena'
@@ -29,7 +30,7 @@ jobs:
     needs: build
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
-      resource: 'apps/testnorge-arena/nais.yml'
+      resource: 'apps/testnorge-arena/nais.yaml'
       app-name: 'testnav-arena'
       cluster: 'dev-fss'
     secrets:
