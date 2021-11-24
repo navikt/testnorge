@@ -5,7 +5,7 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.apps.tpsmessagingservice.dto.EgenansattRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.EndringsmeldingRequest;
-import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServiceRoutineEndring;
+import no.nav.testnav.apps.tpsmessagingservice.dto.TpsEndringsopplysninger;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsSystemInfo;
 import org.springframework.stereotype.Component;
 
@@ -30,12 +30,12 @@ public class EgenansattMappingStrategy implements MappingStrategy {
                                 .kilde("Dolly")
                                 .brukerID("anonymousUser")
                                 .build());
-                        sfeAjourforing.setEndreEgenAnsatt(TpsServiceRoutineEndring.builder()
+                        sfeAjourforing.setEndreEgenAnsatt(TpsEndringsopplysninger.builder()
                                 .offentligIdent((String) context.getProperty("ident"))
-                                .fom(isNull(context.getProperty("fraOgMed")) ? null :
-                                        ((LocalDate) context.getProperty("fraOgMed")).toString())
+                                .fom((isNull(context.getProperty("fraOgMed")) ? LocalDate.now() :
+                                        (LocalDate) context.getProperty("fraOgMed")).toString())
                                 .build());
-                        sfeAjourforing.setOpphorEgenAnsatt(TpsServiceRoutineEndring.builder()
+                        sfeAjourforing.setOpphorEgenAnsatt(TpsEndringsopplysninger.builder()
                                 .offentligIdent((String) context.getProperty("ident"))
                                 .build());
 

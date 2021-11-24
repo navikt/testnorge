@@ -2,20 +2,19 @@ package no.nav.testnav.apps.tpsmessagingservice.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @Data
-@SuperBuilder
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@XmlType(propOrder = {"offentligIdent", "fom"})
+@XmlRootElement(name = "tpsPersonData")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class TpsServiceRoutineEndring {
+public class TpsServicerutineRequest {
 
-    private String offentligIdent;
-    private String fom;
+    private TpsServiceRutine tpsServiceRutine;
 }

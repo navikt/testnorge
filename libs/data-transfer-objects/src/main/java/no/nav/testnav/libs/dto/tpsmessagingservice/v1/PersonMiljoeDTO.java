@@ -11,9 +11,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class EndringsmeldingResponseDTO {
+public class PersonMiljoeDTO {
 
-    private String returStatus;
-    private String returMelding;
+    private String miljoe;
+
+    private PersonDTO person;
+
+    private String status;
+    private String melding;
     private String utfyllendeMelding;
 }

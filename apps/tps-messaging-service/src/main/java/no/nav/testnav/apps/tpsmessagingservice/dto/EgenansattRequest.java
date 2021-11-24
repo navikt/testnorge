@@ -24,7 +24,7 @@ public class EgenansattRequest extends EndringsmeldingRequest {
     public static class SfeAjourforing {
 
         private TpsSystemInfo systemInfo;
-        private TpsServiceRoutineEndring endreEgenAnsatt;
-        private TpsServiceRoutineEndring opphorEgenAnsatt;
+        private TpsEndringsopplysninger endreEgenAnsatt;
+        private TpsEndringsopplysninger opphorEgenAnsatt;
     }
 }

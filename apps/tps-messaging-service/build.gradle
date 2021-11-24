@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id "org.sonarqube" version "3.3"
-    id 'org.springframework.boot' version "2.5.6"
+    id 'org.springframework.boot' version "2.5.7"
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
 
@@ -36,6 +36,14 @@ test {
 repositories {
     mavenLocal()
     mavenCentral()
+    maven {
+        name = "GitHubPackages"
+        url = uri('https://maven.pkg.github.com/navikt/maven-release')
+        credentials(PasswordCredentials) {
+            password System.getenv("NAV_TOKEN")
+            username 'token'
+        }
+    }
 }
 
 dependencies {
@@ -58,6 +66,9 @@ dependencies {
 
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+
+    implementation 'no.nav.repository.fellesreg.tpsws:nav-repository-fellesregister-jaxb-tps-s610-domain:2020.08.27-09.53-183ead3d81eb'
+    implementation 'no.nav.repository.fellesreg.tpsws:nav-repository-fellesregister-jaxb-tps-m201-domain:2020.08.27-09.53-183ead3d81eb'
 
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
     implementation 'org.hibernate.validator:hibernate-validator'

@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.KontaktopplysningerRequestDTO;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -14,18 +13,28 @@ import javax.xml.bind.annotation.XmlType;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @XmlRootElement(name = "sfePersonData")
-public class KontaktopplysningerResponse extends EndringsmeldingResponse {
+public class SpraakRequest extends EndringsmeldingRequest {
 
     private SfeAjourforing sfeAjourforing;
 
     @Data
-    @XmlType(propOrder = {"systemInfo", "endreKontaktopplysninger", "endringAvSprak", "endringAvKontonr"})
+    @SuperBuilder
+    @NoArgsConstructor
+    @XmlType(propOrder = {"systemInfo", "endreSprak"})
     public static class SfeAjourforing {
 
         private TpsSystemInfo systemInfo;
-        private TpsServiceRoutineEndring endreKontaktopplysninger;
+        private EndreSpraak endreSprak;
+    }
 
-        private SfeSpraak endringAvSprak;
-        private KontaktopplysningerRequestDTO.Kontonummer endringAvKontonr;
+    @Data
+    @SuperBuilder
+    @NoArgsConstructor
+    @XmlType(propOrder = {"offentligIdent", "sprakKode", "datoSprak"})
+    public static class EndreSpraak{
+
+        private String offentligIdent;
+        private String sprakKode;
+        private String datoSprak;
     }
 }
