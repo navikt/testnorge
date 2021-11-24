@@ -251,7 +251,8 @@ public class S610PersonMappingStrategy implements MappingStrategy {
                         person.setTelefonnumre(nonNull(tpsPerson.getBruker()) && nonNull(tpsPerson.getBruker().getTelefoner()) &&
                                 !tpsPerson.getBruker().getTelefoner().getTelefon().isEmpty() ?
                                 mapperFacade.mapAsList(tpsPerson.getBruker().getTelefoner().getTelefon(), TelefonnummerDTO.class) : null);
-                        person.setPersonStatus(tpsPerson.getPersonstatusDetalj().getKodePersonstatus().name());
+                        person.setPersonStatus(nonNull(tpsPerson.getPersonstatusDetalj()) && nonNull(tpsPerson.getPersonstatusDetalj().getKodePersonstatus()) ?
+                                tpsPerson.getPersonstatusDetalj().getKodePersonstatus().name() : null);
                         person.setSikkerhetstiltak(nonNull(tpsPerson.getBruker()) && nonNull(tpsPerson.getBruker().getSikkerhetsTiltak()) &&
                                 isNotBlank(tpsPerson.getBruker().getSikkerhetsTiltak().getTypeSikkerhetsTiltak()) ?
                                 mapperFacade.map(tpsPerson.getBruker().getSikkerhetsTiltak(),
