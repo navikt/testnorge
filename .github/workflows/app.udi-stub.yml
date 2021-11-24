@@ -30,7 +30,7 @@ jobs:
     needs: build
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
-      resource: 'apps/udi-stub/nais.yml'
+      resource: 'apps/udi-stub/nais.yaml'
       app-name: 'testnav-udi-stub'
       cluster: 'dev-fss'
     secrets:
@@ -41,7 +41,7 @@ jobs:
     needs: build
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
-      resource: 'apps/udi-stub/nais-dev.yml'
+      resource: 'apps/udi-stub/nais-dev.yaml'
       app-name: 'testnav-udi-stub'
       cluster: 'dev-fss'
     secrets:

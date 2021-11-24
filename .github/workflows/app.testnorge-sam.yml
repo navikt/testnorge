@@ -30,7 +30,7 @@ jobs:
     needs: build
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
-      resource: 'apps/testnorge-sam/nais.yml'
+      resource: 'apps/testnorge-sam/nais.yaml'
       app-name: 'testnav-sam'
       cluster: 'dev-fss'
     secrets:
