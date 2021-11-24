@@ -43,7 +43,7 @@ jobs:
     needs: build
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
-      resource: 'proxies/tps-forvalteren-dev-proxy/config.dev.yml'
+      resource: 'proxies/tps-forvalteren-proxy/config.dev.yml'
       app-name: 'tps-forvalteren-proxy'
       cluster: 'dev-fss'
     secrets:

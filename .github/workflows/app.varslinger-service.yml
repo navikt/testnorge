@@ -32,7 +32,7 @@ jobs:
     with:
       resource: 'apps/varslinger-service/config.yml'
       app-name: 'varslinger-service'
-      cluster: 'dev-fss'
+      cluster: 'dev-gcp'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
   deploy-dev:
@@ -43,6 +43,6 @@ jobs:
     with:
       resource: 'apps/varslinger-service/config.dev.yml'
       app-name: 'varslinger-service'
-      cluster: 'dev-fss'
+      cluster: 'dev-gcp'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}

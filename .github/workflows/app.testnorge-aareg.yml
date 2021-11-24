@@ -30,7 +30,7 @@ jobs:
     needs: build
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
-      resource: 'apps/testnorge-aareg/nais.yml'
+      resource: 'apps/testnorge-aareg/nais.yaml'
       app-name: 'testnav-aareg'
       cluster: 'dev-fss'
     secrets:

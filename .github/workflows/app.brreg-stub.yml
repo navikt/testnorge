@@ -30,7 +30,7 @@ jobs:
     needs: build
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
-      resource: 'apps/brreg-stub/config.yml'
+      resource: 'apps/brreg-stub/nais.yaml'
       app-name: 'testnav-brreg-stub'
       cluster: 'dev-fss'
     secrets:

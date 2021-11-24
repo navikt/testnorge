@@ -30,7 +30,7 @@ jobs:
     needs: build
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
-      resource: 'apps/synt-person-api/config.yml'
+      resource: 'apps/synt-person-api/config.yaml'
       app-name: 'synt-person-api'
       cluster: 'dev-fss'
     secrets:
