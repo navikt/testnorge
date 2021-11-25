@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.tpsmessagingservice.mapper;
 
 import ma.glasnost.orika.CustomMapper;
+import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.AdresseDTO;
@@ -14,24 +15,20 @@ import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PostadresseDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SikkerhetstiltakDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.StatsborgerskapDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonnummerDTO;
-import no.nav.tps.ctg.s610.domain.BoAdresseType;
-import no.nav.tps.ctg.s610.domain.NavTIADType;
-import no.nav.tps.ctg.s610.domain.PostAdresseType;
+import no.nav.tps.ctg.s610.domain.EnkelBoAdresseType;
 import no.nav.tps.ctg.s610.domain.S610BrukerType;
 import no.nav.tps.ctg.s610.domain.S610PersonType;
-import no.nav.tps.ctg.s610.domain.UtlandsAdresseType;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 
-import static java.lang.String.format;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.MidlertidigAdressetypeDTO.PBOX;
 import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.MidlertidigAdressetypeDTO.STED;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Component
@@ -40,9 +37,6 @@ public class S610PersonMappingStrategy implements MappingStrategy {
     private static final String GATE_ADRESSE = "OFFA";
     private static final String MATR_ADRESSE = "MATR";
     private static final String BOLIGNR = "BOLIGNR: ";
-    private static final String POST_UTLAND = "PUTL";
-    private static final String POST_NORGE = "POST";
-    private static final String NORGE = "NOR";
     private static final String TPS = "TPS";
 
     public static LocalDateTime getTimestamp(String dato) {
@@ -56,130 +50,74 @@ public class S610PersonMappingStrategy implements MappingStrategy {
                 tpsPerson.getSivilstandDetalj().getKodeSivilstand().name() : null;
     }
 
-    private static void mapTiadAdresse(S610PersonType tpsPerson, PersonDTO person) {
+    private static List<MidlertidigAdresseDTO> mapTiadAdresse(S610BrukerType bruker) {
 
-        NavTIADType tiadAdresse = tpsPerson.getBruker().getPostadresseNorgeNAV();
+        MidlertidigAdresseDTO midlertidigAdresse = null;
 
-        if (nonNull(tiadAdresse) && isNotBlank(tiadAdresse.getTypeAdresseNavNorge())) {
-            MidlertidigAdresseDTO midlertidigAdresse;
+        if (nonNull(bruker) && nonNull(bruker.getPostadresseNorgeNAV()) &&
+                isNotBlank(bruker.getPostadresseNorgeNAV().getTypeAdresseNavNorge())) {
 
-            if (STED.name().equals(tiadAdresse.getTypeAdresseNavNorge())) {
+            if (STED.name().equals(bruker.getPostadresseNorgeNAV().getTypeAdresseNavNorge())) {
                 midlertidigAdresse = MidlertidigAdresseDTO.MidlertidigStedAdresseDTO.builder()
-                        .eiendomsnavn(tiadAdresse.getEiendomsnavn())
+                        .eiendomsnavn(bruker.getPostadresseNorgeNAV().getEiendomsnavn())
                         .build();
-            } else if (PBOX.name().equals(tiadAdresse.getTypeAdresseNavNorge())) {
+            } else if (PBOX.name().equals(bruker.getPostadresseNorgeNAV().getTypeAdresseNavNorge())) {
                 midlertidigAdresse = MidlertidigAdresseDTO.MidlertidigPboxAdresseDTO.builder()
-                        .postboksAnlegg(tiadAdresse.getPostboksAnlegg())
-                        .postboksnr(tiadAdresse.getPostboksnr())
+                        .postboksAnlegg(bruker.getPostadresseNorgeNAV().getPostboksAnlegg())
+                        .postboksnr(bruker.getPostadresseNorgeNAV().getPostboksnr())
                         .build();
             } else {
                 midlertidigAdresse = MidlertidigAdresseDTO.MidlertidigGateAdresseDTO.builder()
-                        .gatenavn(tiadAdresse.getGatenavn())
-                        .gatekode(tiadAdresse.getGatekode())
-                        .husnr(tiadAdresse.getHusnr())
+                        .gatenavn(bruker.getPostadresseNorgeNAV().getGatenavn())
+                        .gatekode(bruker.getPostadresseNorgeNAV().getGatekode())
+                        .husnr(bruker.getPostadresseNorgeNAV().getHusnr())
                         .build();
             }
-            midlertidigAdresse.setGyldigTom(getTimestamp(tiadAdresse.getDatoTom()));
-            midlertidigAdresse.setPostnr(tiadAdresse.getPostnr());
-            if (isNotBlank(tiadAdresse.getTilleggsLinje())) {
-                midlertidigAdresse.setTilleggsadresse(tiadAdresse.getTilleggsLinje());
-            } else if (isNotBlank(tiadAdresse.getBolignr())) {
-                midlertidigAdresse.setTilleggsadresse(BOLIGNR + tiadAdresse.getBolignr());
+            midlertidigAdresse.setGyldigTom(getTimestamp(bruker.getPostadresseNorgeNAV().getDatoTom()));
+            midlertidigAdresse.setPostnr(bruker.getPostadresseNorgeNAV().getPostnr());
+            if (isNotBlank(bruker.getPostadresseNorgeNAV().getTilleggsLinje())) {
+                midlertidigAdresse.setTilleggsadresse(bruker.getPostadresseNorgeNAV().getTilleggsLinje());
+            } else if (isNotBlank(bruker.getPostadresseNorgeNAV().getBolignr())) {
+                midlertidigAdresse.setTilleggsadresse(BOLIGNR + bruker.getPostadresseNorgeNAV().getBolignr());
             }
-            person.getMidlertidigAdresse().add(midlertidigAdresse);
+        }
+        return nonNull(midlertidigAdresse) ? List.of(midlertidigAdresse) : Collections.emptyList();
+    }
+
+    private static List<MidlertidigAdresseDTO> mapUtadAdresse(MapperFacade mapperFacade, S610BrukerType bruker) {
+
+            if (nonNull(bruker) && nonNull(bruker.getPostadresseUtlandNAV()) &&
+                    isNotBlank(bruker.getPostadresseUtlandNAV().getAdresseType())) {
+                return List.of(mapperFacade.map(bruker.getPostadresseNorgeNAV(), MidlertidigAdresseDTO.MidlertidigUtadAdresseDTO.class));
+            } else {
+                return Collections.emptyList();
         }
     }
 
-    private static void mapUtadAdresse(S610PersonType tpsPerson, PersonDTO person) {
-
-        UtlandsAdresseType utenlandsadresse = tpsPerson.getBruker().getPostadresseUtlandNAV();
-
-        if (nonNull(utenlandsadresse) && isNotBlank(utenlandsadresse.getAdresseType())) {
-            var midlertidigAdresse = MidlertidigAdresseDTO.MidlertidigUtadAdresseDTO.builder()
-                    .postLinje1(utenlandsadresse.getAdresse1())
-                    .postLinje2(utenlandsadresse.getAdresse2())
-                    .postLinje3(utenlandsadresse.getAdresse3())
-                    .postLand(utenlandsadresse.getLandKode())
-                    .build();
-            person.getMidlertidigAdresse().add(midlertidigAdresse);
-        }
-    }
-
-    private static void mapPostadresse(S610PersonType tpsPerson, PersonDTO person) {
-
-        PostAdresseType tpsPostadresse = tpsPerson.getPostAdresse().getFullPostAdresse();
-
-        if (isNotBlank(tpsPostadresse.getAdresseType())) {
-
-            var postadresse = PostadresseDTO.builder()
-                    .postLinje1(tpsPostadresse.getAdresse1())
-                    .postLinje2(tpsPostadresse.getAdresse2())
-                    .postLinje3(tpsPostadresse.getAdresse3())
-                    .person(person)
-                    .build();
-
-            if (POST_NORGE.equals(tpsPostadresse.getAdresseType())) {
-
-                String poststed = format("%s %s", tpsPostadresse.getPostnr(), tpsPostadresse.getPoststed());
-                if (isBlank(postadresse.getPostLinje1())) {
-                    postadresse.setPostLinje1(poststed);
-                } else if (isBlank(postadresse.getPostLinje2())) {
-                    postadresse.setPostLinje2(poststed);
-                } else if (isBlank(postadresse.getPostLinje3())) {
-                    postadresse.setPostLinje3(poststed);
-                }
-                postadresse.setPostLand(NORGE);
-
-            } else if (POST_UTLAND.equals(tpsPostadresse.getAdresseType())) {
-
-                postadresse.setPostLand(tpsPostadresse.getLandKode());
-            }
-            person.getPostadresse().add(postadresse);
-        }
-    }
-
-    private static void mapBoadresse(S610PersonType tpsPerson, PersonDTO person) {
-
-        BoAdresseType tpsBoadresse = tpsPerson.getBostedsAdresse().getFullBostedsAdresse();
+    private static AdresseDTO getBoadresse(MapperFacade mapperFacade, EnkelBoAdresseType boadresse) {
 
         AdresseDTO adresse = null;
-        if (GATE_ADRESSE.equals(tpsBoadresse.getAdresseType())) {
+        if (nonNull(boadresse) && nonNull(boadresse.getFullBostedsAdresse()) &&
+                GATE_ADRESSE.equals(boadresse.getFullBostedsAdresse().getAdresseType())) {
 
-            adresse = GateadresseDTO.builder()
-                    .adresse(tpsBoadresse.getOffAdresse().getGateNavn())
-                    .husnummer(skipLeadZeros(tpsBoadresse.getOffAdresse().getHusnr()))
-                    .gatekode(tpsBoadresse.getOffAdresse().getGatekode())
-                    .build();
+            adresse = mapperFacade.map(boadresse.getFullBostedsAdresse().getOffAdresse(), GateadresseDTO.class);
 
-        } else if (MATR_ADRESSE.equals(tpsBoadresse.getAdresseType())) {
+        } else if (nonNull(boadresse) && nonNull(boadresse.getFullBostedsAdresse()) &&
+                MATR_ADRESSE.equals(boadresse.getFullBostedsAdresse().getAdresseType())) {
 
-            adresse = MatrikkeladresseDTO.builder()
-                    .mellomnavn(tpsBoadresse.getMatrAdresse().getMellomAdresse())
-                    .gardsnr(skipLeadZeros(tpsBoadresse.getMatrAdresse().getGardsnr()))
-                    .bruksnr(skipLeadZeros(tpsBoadresse.getMatrAdresse().getBruksnr()))
-                    .festenr(skipLeadZeros(tpsBoadresse.getMatrAdresse().getFestenr()))
-                    .undernr(skipLeadZeros(tpsBoadresse.getMatrAdresse().getUndernr()))
-                    .build();
+            adresse = mapperFacade.map(boadresse.getFullBostedsAdresse().getMatrAdresse(), MatrikkeladresseDTO.class);
         }
 
         if (nonNull(adresse)) {
 
-            if (isNotBlank(tpsBoadresse.getTilleggsAdresseSKD())) {
-                adresse.setTilleggsadresse(tpsBoadresse.getTilleggsAdresseSKD());
-            } else if (isNotBlank(tpsBoadresse.getBolignr())) {
-                adresse.setTilleggsadresse(BOLIGNR + tpsBoadresse.getBolignr());
+            if (isNotBlank(boadresse.getFullBostedsAdresse().getTilleggsAdresseSKD())) {
+                adresse.setTilleggsadresse(boadresse.getFullBostedsAdresse().getTilleggsAdresseSKD());
+            } else if (isNotBlank(boadresse.getFullBostedsAdresse().getBolignr())) {
+                adresse.setTilleggsadresse(BOLIGNR + boadresse.getFullBostedsAdresse().getBolignr());
             }
-            adresse.setPostnr(tpsBoadresse.getPostnr());
-            adresse.setKommunenr(tpsBoadresse.getKommunenr());
-            person.getBoadresse().add(adresse);
         }
-    }
 
-    private static String skipLeadZeros(String number) {
-
-        return StringUtils.isNumeric(number) ?
-                Integer.valueOf(number).toString() :
-                number;
+        return adresse;
     }
 
     private static String getTknr(S610BrukerType.NAVenhetDetalj naVenhetDetalj) {
@@ -229,11 +167,7 @@ public class S610PersonMappingStrategy implements MappingStrategy {
                         person.setMellomnavn(tpsPerson.getPersonnavn().getAllePersonnavn().getMellomnavn());
                         person.setEtternavn(tpsPerson.getPersonnavn().getAllePersonnavn().getEtternavn());
                         person.setForkortetNavn(tpsPerson.getPersonnavn().getAllePersonnavn().getKortnavn());
-                        person.getStatsborgerskap().add(StatsborgerskapDTO.builder()
-                                .statsborgerskap(tpsPerson.getStatsborgerskapDetalj().getKodeStatsborgerskap())
-                                .statsborgerskapRegdato(getTimestamp(tpsPerson.getStatsborgerskapDetalj().getDatoStatsborgerskap()))
-                                .person(person)
-                                .build());
+                        person.setStatsborgerskap(getStatsborgerskap(tpsPerson));
                         person.setDoedsdato(isNotBlank(tpsPerson.getDatoDo()) ?
                                 LocalDate.parse(tpsPerson.getDatoDo()).atStartOfDay() : null);
                         person.setTknr(getTknr(tpsPerson.getBruker().getNAVenhetDetalj()));
@@ -242,25 +176,15 @@ public class S610PersonMappingStrategy implements MappingStrategy {
                         person.setGtVerdi(getGtVerdi(tpsPerson.getBruker().getGeografiskTilknytning()));
                         person.setGtRegel(tpsPerson.getBruker().getRegelForGeografiskTilknytning());
                         person.setSprakKode(tpsPerson.getBruker().getPreferanser().getSprak());
-                        person.setBankkontonrNorsk(isNull(tpsPerson.getBankkontoNorge()) ||
-                                isBlank(tpsPerson.getBankkontoNorge().getKontoNummer()) ? null :
-                                mapperFacade.map(person, BankkontonrNorskDTO.class));
-                        person.setBankkontonrUtland(nonNull(tpsPerson.getBruker()) && nonNull(tpsPerson.getBruker().getBankkontoUtland()) &&
-                                isNotBlank(tpsPerson.getBruker().getBankkontoUtland().getGiroNrUtland()) ?
-                                mapperFacade.map(tpsPerson.getBruker().getBankkontoUtland(), BankkontonrUtlandDTO.class) : null);
-                        person.setTelefonnumre(nonNull(tpsPerson.getBruker()) && nonNull(tpsPerson.getBruker().getTelefoner()) &&
-                                !tpsPerson.getBruker().getTelefoner().getTelefon().isEmpty() ?
-                                mapperFacade.mapAsList(tpsPerson.getBruker().getTelefoner().getTelefon(), TelefonnummerDTO.class) : null);
-                        person.setPersonStatus(nonNull(tpsPerson.getPersonstatusDetalj()) && nonNull(tpsPerson.getPersonstatusDetalj().getKodePersonstatus()) ?
-                                tpsPerson.getPersonstatusDetalj().getKodePersonstatus().name() : null);
-                        person.setSikkerhetstiltak(nonNull(tpsPerson.getBruker()) && nonNull(tpsPerson.getBruker().getSikkerhetsTiltak()) &&
-                                isNotBlank(tpsPerson.getBruker().getSikkerhetsTiltak().getTypeSikkerhetsTiltak()) ?
-                                mapperFacade.map(tpsPerson.getBruker().getSikkerhetsTiltak(),
-                                        SikkerhetstiltakDTO.class) : null);
-                        mapBoadresse(tpsPerson, person);
-                        mapPostadresse(tpsPerson, person);
-                        mapUtadAdresse(tpsPerson, person);
-                        mapTiadAdresse(tpsPerson, person);
+                        person.setBankkontonrNorsk(getBankkontonrNorsk(tpsPerson, person));
+                        person.setBankkontonrUtland(getBankkontonrUtland(tpsPerson));
+                        person.setTelefonnumre(getTelefonnumre(tpsPerson));
+                        person.setPersonStatus(getPersonStatus(tpsPerson));
+                        person.setSikkerhetstiltak(getSikkerhetstiltak(tpsPerson));
+                        person.setPostadresse(getPostadresse(tpsPerson));
+                        person.setBoadresse(getBoadresse(mapperFacade, tpsPerson.getBostedsAdresse()));
+                        person.getMidlertidigAdresse().addAll(mapTiadAdresse(tpsPerson.getBruker()));
+                        person.getMidlertidigAdresse().addAll(mapUtadAdresse(mapperFacade, tpsPerson.getBruker()));
                         person.setSpesreg(tpsPerson.getBruker().getDiskresjonDetalj().getKodeDiskresjon());
                         person.setSpesregDato(getTimestamp(tpsPerson.getBruker().getDiskresjonDetalj().getDiskresjonTidspunkt()));
                         person.setEgenAnsattDatoFom(isNotBlank(tpsPerson.getBruker().getEgenAnsatt().getFom()) ?
@@ -270,6 +194,46 @@ public class S610PersonMappingStrategy implements MappingStrategy {
                         person.setImportFra(TPS);
                     }
 
+                    private StatsborgerskapDTO getStatsborgerskap(S610PersonType tpsPerson) {
+                        return nonNull(tpsPerson.getStatsborgerskapDetalj()) &&
+                               isNotBlank(tpsPerson.getStatsborgerskapDetalj().getKodeStatsborgerskap()) ?
+                                mapperFacade.map(tpsPerson.getStatsborgerskapDetalj(), StatsborgerskapDTO.class) : null;
+                    }
+
+                    private BankkontonrNorskDTO getBankkontonrNorsk(S610PersonType tpsPerson, PersonDTO person) {
+                        return isNull(tpsPerson.getBankkontoNorge()) ||
+                                isNotBlank(tpsPerson.getBankkontoNorge().getKontoNummer()) ? null :
+                                mapperFacade.map(person, BankkontonrNorskDTO.class);
+                    }
+
+                    private BankkontonrUtlandDTO getBankkontonrUtland(S610PersonType tpsPerson) {
+                        return nonNull(tpsPerson.getBruker()) && nonNull(tpsPerson.getBruker().getBankkontoUtland()) &&
+                                isNotBlank(tpsPerson.getBruker().getBankkontoUtland().getGiroNrUtland()) ?
+                                mapperFacade.map(tpsPerson.getBruker().getBankkontoUtland(), BankkontonrUtlandDTO.class) : null;
+                    }
+
+                    private List<TelefonnummerDTO> getTelefonnumre(S610PersonType tpsPerson) {
+                        return nonNull(tpsPerson.getBruker()) && nonNull(tpsPerson.getBruker().getTelefoner()) &&
+                                !tpsPerson.getBruker().getTelefoner().getTelefon().isEmpty() ?
+                                mapperFacade.mapAsList(tpsPerson.getBruker().getTelefoner().getTelefon(), TelefonnummerDTO.class) : null;
+                    }
+
+                    private String getPersonStatus(S610PersonType tpsPerson) {
+                        return nonNull(tpsPerson.getPersonstatusDetalj()) && nonNull(tpsPerson.getPersonstatusDetalj().getKodePersonstatus()) ?
+                                tpsPerson.getPersonstatusDetalj().getKodePersonstatus().name() : null;
+                    }
+
+                    private SikkerhetstiltakDTO getSikkerhetstiltak(S610PersonType tpsPerson) {
+                        return nonNull(tpsPerson.getBruker()) && nonNull(tpsPerson.getBruker().getSikkerhetsTiltak()) &&
+                                isNotBlank(tpsPerson.getBruker().getSikkerhetsTiltak().getTypeSikkerhetsTiltak()) ?
+                                mapperFacade.map(tpsPerson.getBruker().getSikkerhetsTiltak(),
+                                        SikkerhetstiltakDTO.class) : null;
+                    }
+
+                    private PostadresseDTO getPostadresse(S610PersonType tpsPerson) {
+                        return nonNull(tpsPerson.getPostAdresse()) && nonNull(tpsPerson.getPostAdresse().getFullPostAdresse()) ?
+                                mapperFacade.map(tpsPerson.getPostAdresse().getFullPostAdresse(), PostadresseDTO.class) : null;
+                    }
                 })
                 .exclude("statsborgerskap")
                 .byDefault()

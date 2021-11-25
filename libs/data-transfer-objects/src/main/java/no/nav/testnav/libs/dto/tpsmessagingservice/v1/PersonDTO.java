@@ -33,7 +33,7 @@ public class PersonDTO {
 
     private String forkortetNavn;
 
-    private List<StatsborgerskapDTO> statsborgerskap;
+    private StatsborgerskapDTO statsborgerskap;
 
     private String spesreg;
 
@@ -55,9 +55,9 @@ public class PersonDTO {
 
     private SikkerhetstiltakDTO sikkerhetstiltak;
 
-    private List<AdresseDTO> boadresse;
+    private AdresseDTO boadresse;
 
-    private List<PostadresseDTO> postadresse;
+    private PostadresseDTO postadresse;
 
     private LocalDateTime regdato;
 
@@ -96,13 +96,6 @@ public class PersonDTO {
     private BankkontonrUtlandDTO bankkontonrUtland;
     private BankkontonrNorskDTO bankkontonrNorsk;
 
-    public List<PostadresseDTO> getPostadresse() {
-        if (isNull(postadresse)) {
-            postadresse = new ArrayList<>();
-        }
-        return postadresse;
-    }
-
     public List<RelasjonDTO> getRelasjoner() {
         if (isNull(relasjoner)) {
             relasjoner = new ArrayList<>();
@@ -115,27 +108,6 @@ public class PersonDTO {
             sivilstander = new ArrayList<>();
         }
         return sivilstander;
-    }
-
-    public List<AdresseDTO> getBoadresse() {
-        if (isNull(boadresse)) {
-            boadresse = new ArrayList<>();
-        }
-        return boadresse;
-    }
-
-    public List<StatsborgerskapDTO> getStatsborgerskap() {
-        if (isNull(statsborgerskap)) {
-            statsborgerskap = new ArrayList<>();
-        }
-        return statsborgerskap;
-    }
-
-    public List<InnvandretUtvandretDTO> getInnvandretUtvandret() {
-        if (isNull(innvandretUtvandret)) {
-            innvandretUtvandret = new ArrayList<>();
-        }
-        return innvandretUtvandret;
     }
 
     public List<MidlertidigAdresseDTO> getMidlertidigAdresse() {
