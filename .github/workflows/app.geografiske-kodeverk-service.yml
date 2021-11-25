@@ -1,0 +1,37 @@
+name: App geografiske-kodeverk-service
+
+on:
+  push:
+    paths:
+      - apps/geografiske-kodeverk-service/**
+      - .github/workflows/app.geografiske-kodeverk-service.yml
+
+jobs:
+  scan:
+    name: Scan
+    uses: navikt/testnorge/.github/workflows/common.sonar.yml@master
+    with:
+      working-directory: 'apps/geografiske-kodeverk-service/'
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  build:
+    name: Build
+    uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@master
+    if: ${{ github.ref == 'refs/heads/master' }}
+    with:
+      working-directory: 'apps/geografiske-kodeverk-service/'
+      app-name: 'geografiske-kodeverk-service'
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+  deploy-dev:
+    name: Deploy
+    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
+    needs: build
+    if: ${{ github.ref == 'refs/heads/master' }}
+    with:
+      resource: 'apps/geografiske-kodeverk-service/config.yml'
+      app-name: 'geografiske-kodeverk-service'
+      cluster: 'dev-gcp'
+    secrets:
+      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}

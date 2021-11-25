@@ -3,7 +3,7 @@ plugins {
     id "org.sonarqube" version "3.3"
     id "uk.co.boothen.gradle.wsimport" version "0.17"
     id 'com.ewerk.gradle.plugins.jaxb2' version '1.0.10'
-    id 'org.springframework.boot' version "2.5.6"
+    id 'org.springframework.boot' version "2.5.7"
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
 
@@ -77,10 +77,10 @@ dependencies {
     jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics-runtime:1.11.1'
     jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics-ant:1.11.1'
     jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics:1.11.1'
-    jaxb2 'com.sun.xml.bind:jaxb-core:3.0.2'
-    jaxb2 'com.sun.xml.bind:jaxb-xjc:3.0.2'
-    jaxb2 'com.sun.xml.bind:jaxb-impl:3.0.2'
-    jaxb2 'javax.xml.bind:jaxb-api'
+    jaxb2 'com.sun.xml.bind:jaxb-core:2.2.11'
+    jaxb2 'com.sun.xml.bind:jaxb-xjc:2.2.11'
+    jaxb2 'com.sun.xml.bind:jaxb-impl:2.2.11'
+    jaxb2 'javax.xml.bind:jaxb-api:2.3.1'
 
     implementation 'org.postgresql:postgresql'
     implementation 'com.zaxxer:HikariCP'
@@ -90,7 +90,7 @@ dependencies {
 
     implementation 'org.apache.cxf:cxf-rt-frontend-jaxws:3.4.5'
     implementation 'wsdl4j:wsdl4j:1.6.3'
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.0'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'javax.validation:validation-api:2.0.1.Final'
     implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'

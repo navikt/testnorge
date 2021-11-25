@@ -109,6 +109,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			relasjoner,
 			vergemaal,
 			fullmakt,
+			harIngenAdresse,
 			...persondetaljer
 		} = bestillingData.tpsf
 

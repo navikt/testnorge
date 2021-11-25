@@ -59,7 +59,9 @@ export const StegVelger = ({ initialValues, onSubmit, children }) => {
 		<Formik initialValues={initialValues} validate={_validate} onSubmit={_handleSubmit}>
 			{(formikBag) => {
 				const stateModifier = stateModifierFns(formikBag.values, formikBag.setValues, opts)
-				const erLokalt = window.location.hostname.includes('localhost')
+				const devEnabled =
+					window.location.hostname.includes('localhost') ||
+					window.location.hostname.includes('dolly-frontend-dev')
 
 				return (
 					<Fragment>
@@ -73,7 +75,7 @@ export const StegVelger = ({ initialValues, onSubmit, children }) => {
 							erNyIdent={!personFoerLeggTil}
 						/>
 
-						{erLokalt && <DisplayFormikState {...formikBag} />}
+						{devEnabled && <DisplayFormikState {...formikBag} />}
 
 						<Navigation
 							showPrevious={step > 0}

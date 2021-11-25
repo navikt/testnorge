@@ -2,12 +2,14 @@ package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.apache.commons.lang3.StringUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -98,13 +100,13 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
 
     protected void populateMiscFields(AdresseDTO adresse, PersonDTO person) {
 
-//        if (isNull(adresse.getGyldigFraOgMed())) {
-//            adresse.setGyldigFraOgMed(person.getBostedsadresse().stream()
-//                    .reduce((a1, a2) -> a2)
-//                    .filter(adr -> isNull(adr.getGyldigFraOgMed()))
-//                    .map(adr -> DatoFraIdentUtility.getDato(person.getIdent()).atStartOfDay())
-//                    .orElse(LocalDateTime.now()));
-//        }
+        if (isNull(adresse.getGyldigFraOgMed())) {
+            adresse.setGyldigFraOgMed(person.getBostedsadresse().stream()
+                    .reduce((a1, a2) -> a2)
+                    .filter(adr -> isNull(adr.getGyldigFraOgMed()))
+                    .map(adr -> DatoFraIdentUtility.getDato(person.getIdent()).atStartOfDay())
+                    .orElse(LocalDateTime.now()));
+        }
         adresse.setKilde(StringUtils.isNotBlank(adresse.getKilde()) ? adresse.getKilde() : "Dolly");
         adresse.setMaster(nonNull(adresse.getMaster()) ? adresse.getMaster() : DbVersjonDTO.Master.FREG);
         adresse.setGjeldende(nonNull(adresse.getGjeldende()) ? adresse.getGjeldende(): true);

@@ -71,6 +71,8 @@ public class KontaktinformasjonForDoedsboDTO extends DbVersjonDTO {
     public static class KontaktpersonDTO implements Serializable {
 
         private String identifikasjonsnummer;
+        private PersonRequestDTO nyKontaktperson;
+
         private LocalDateTime foedselsdato;
         private PersonNavnDTO navn;
 
