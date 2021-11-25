@@ -23,7 +23,7 @@ jobs:
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
       working-directory: 'proxies/samhandlerregisteret-proxy/'
-      app-name: 'aareg-proxy'
+      app-name: 'samhandlerregisteret-proxy'
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
   deploy-dev:
