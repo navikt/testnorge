@@ -26,8 +26,13 @@ const Statsborgerskap = ({ statsborgerskap }) =>
 	) : null
 
 export const PdlNasjonalitet = ({ data, visTittel = true }) => {
-	const { statsborgerskap, innflyttingTilNorge } = data
-	if (statsborgerskap?.length < 1 && innflyttingTilNorge?.length < 1) return null
+	const { statsborgerskap, innflyttingTilNorge, utflyttingFraNorge } = data
+	if (
+		statsborgerskap?.length < 1 &&
+		innflyttingTilNorge?.length < 1 &&
+		utflyttingFraNorge?.length < 1
+	)
+		return null
 
 	return (
 		<div>
@@ -46,11 +51,26 @@ export const PdlNasjonalitet = ({ data, visTittel = true }) => {
 
 			{innflyttingTilNorge?.length > 0 && (
 				<ErrorBoundary>
-					<DollyFieldArray data={innflyttingTilNorge} header={'Innvandret/utvandret'} nested>
+					<DollyFieldArray data={innflyttingTilNorge} header={'Innvandret'} nested>
 						{(id, idx) => (
 							<TitleValue
 								title="Fraflyttingsland"
 								value={innflyttingTilNorge[idx].fraflyttingsland}
+								kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
+							/>
+						)}
+					</DollyFieldArray>
+				</ErrorBoundary>
+			)}
+
+			{utflyttingFraNorge?.length > 0 && (
+				<ErrorBoundary>
+					<DollyFieldArray data={utflyttingFraNorge} header={'Utvandret'} nested>
+						{(id, idx) => (
+							<TitleValue
+								title="Tilflyttingsland"
+								value={utflyttingFraNorge[idx].tilflyttingsland}
+								kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
 							/>
 						)}
 					</DollyFieldArray>
