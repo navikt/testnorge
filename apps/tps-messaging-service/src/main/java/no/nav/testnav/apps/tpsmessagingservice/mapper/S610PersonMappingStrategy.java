@@ -22,7 +22,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -50,12 +49,12 @@ public class S610PersonMappingStrategy implements MappingStrategy {
                 tpsPerson.getSivilstandDetalj().getKodeSivilstand().name() : null;
     }
 
-    private static List<MidlertidigAdresseDTO> mapTiadAdresse(S610BrukerType bruker) {
-
-        MidlertidigAdresseDTO midlertidigAdresse = null;
+    private static MidlertidigAdresseDTO getNavAdresse(MapperFacade mapperFacade, S610BrukerType bruker) {
 
         if (nonNull(bruker) && nonNull(bruker.getPostadresseNorgeNAV()) &&
                 isNotBlank(bruker.getPostadresseNorgeNAV().getTypeAdresseNavNorge())) {
+
+            MidlertidigAdresseDTO midlertidigAdresse;
 
             if (STED.name().equals(bruker.getPostadresseNorgeNAV().getTypeAdresseNavNorge())) {
                 midlertidigAdresse = MidlertidigAdresseDTO.MidlertidigStedAdresseDTO.builder()
@@ -80,17 +79,15 @@ public class S610PersonMappingStrategy implements MappingStrategy {
             } else if (isNotBlank(bruker.getPostadresseNorgeNAV().getBolignr())) {
                 midlertidigAdresse.setTilleggsadresse(BOLIGNR + bruker.getPostadresseNorgeNAV().getBolignr());
             }
-        }
-        return nonNull(midlertidigAdresse) ? List.of(midlertidigAdresse) : Collections.emptyList();
-    }
+            return midlertidigAdresse;
 
-    private static List<MidlertidigAdresseDTO> mapUtadAdresse(MapperFacade mapperFacade, S610BrukerType bruker) {
+        } else if (nonNull(bruker) && nonNull(bruker.getPostadresseUtlandNAV()) &&
+                isNotBlank(bruker.getPostadresseUtlandNAV().getAdresseType())) {
 
-            if (nonNull(bruker) && nonNull(bruker.getPostadresseUtlandNAV()) &&
-                    isNotBlank(bruker.getPostadresseUtlandNAV().getAdresseType())) {
-                return List.of(mapperFacade.map(bruker.getPostadresseNorgeNAV(), MidlertidigAdresseDTO.MidlertidigUtadAdresseDTO.class));
-            } else {
-                return Collections.emptyList();
+            return mapperFacade.map(bruker.getPostadresseNorgeNAV(), MidlertidigAdresseDTO.MidlertidigUtadAdresseDTO.class);
+
+        } else {
+            return null;
         }
     }
 
@@ -183,8 +180,7 @@ public class S610PersonMappingStrategy implements MappingStrategy {
                         person.setSikkerhetstiltak(getSikkerhetstiltak(tpsPerson));
                         person.setPostadresse(getPostadresse(tpsPerson));
                         person.setBoadresse(getBoadresse(mapperFacade, tpsPerson.getBostedsAdresse()));
-                        person.getMidlertidigAdresse().addAll(mapTiadAdresse(tpsPerson.getBruker()));
-                        person.getMidlertidigAdresse().addAll(mapUtadAdresse(mapperFacade, tpsPerson.getBruker()));
+                        person.setMidlertidigAdresse(getNavAdresse(mapperFacade, tpsPerson.getBruker()));
                         person.setSpesreg(tpsPerson.getBruker().getDiskresjonDetalj().getKodeDiskresjon());
                         person.setSpesregDato(getTimestamp(tpsPerson.getBruker().getDiskresjonDetalj().getDiskresjonTidspunkt()));
                         person.setEgenAnsattDatoFom(isNotBlank(tpsPerson.getBruker().getEgenAnsatt().getFom()) ?
@@ -196,7 +192,7 @@ public class S610PersonMappingStrategy implements MappingStrategy {
 
                     private StatsborgerskapDTO getStatsborgerskap(S610PersonType tpsPerson) {
                         return nonNull(tpsPerson.getStatsborgerskapDetalj()) &&
-                               isNotBlank(tpsPerson.getStatsborgerskapDetalj().getKodeStatsborgerskap()) ?
+                                isNotBlank(tpsPerson.getStatsborgerskapDetalj().getKodeStatsborgerskap()) ?
                                 mapperFacade.map(tpsPerson.getStatsborgerskapDetalj(), StatsborgerskapDTO.class) : null;
                     }
 

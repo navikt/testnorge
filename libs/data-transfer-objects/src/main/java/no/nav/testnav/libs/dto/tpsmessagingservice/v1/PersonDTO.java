@@ -63,7 +63,7 @@ public class PersonDTO {
 
     private List<RelasjonDTO> relasjoner;
 
-    private List<MidlertidigAdresseDTO> midlertidigAdresse;
+    private MidlertidigAdresseDTO midlertidigAdresse;
 
     private LocalDateTime opprettetDato;
 
@@ -108,12 +108,5 @@ public class PersonDTO {
             sivilstander = new ArrayList<>();
         }
         return sivilstander;
-    }
-
-    public List<MidlertidigAdresseDTO> getMidlertidigAdresse() {
-        if (isNull(midlertidigAdresse)) {
-            midlertidigAdresse = new ArrayList<>();
-        }
-        return midlertidigAdresse;
     }
 }
