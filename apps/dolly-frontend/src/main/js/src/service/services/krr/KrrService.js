@@ -1,7 +1,7 @@
 import Request from '~/service/services/Request'
 import { v4 as _uuid } from 'uuid'
 
-const getKrrUrl = () => '/testnav-krrstub-proxy/api/v1'
+const getKrrUrl = () => '/testnav-krrstub-proxy/api/v2'
 
 export default {
 	getPerson(ident) {
