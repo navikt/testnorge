@@ -18,7 +18,7 @@ jobs:
   build:
     name: Build
     uses: navikt/testnorge/.github/workflows/common.build-and-publish.frontend.yml@master
-    if: ${{ github.ref == 'refs/heads/master' }}
+    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/feature/endre-til-krr-stub-v2)'}}
     with:
       working-directory: 'apps/dolly-frontend/'
       app-name: 'testnav-dolly-frontend'
@@ -39,7 +39,7 @@ jobs:
     name: Deploy dev
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' }}
+    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/feature/endre-til-krr-stub-v2)'}}
     with:
       resource: 'apps/dolly-frontend/config.dev.yml'
       app-name: 'testnav-dolly-frontend'
