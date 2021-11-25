@@ -97,12 +97,12 @@ public class S610PersonMappingStrategy implements MappingStrategy {
         if (nonNull(boadresse) && nonNull(boadresse.getFullBostedsAdresse()) &&
                 GATE_ADRESSE.equals(boadresse.getFullBostedsAdresse().getAdresseType())) {
 
-            adresse = mapperFacade.map(boadresse.getFullBostedsAdresse().getOffAdresse(), GateadresseDTO.class);
+            adresse = mapperFacade.map(boadresse.getFullBostedsAdresse(), GateadresseDTO.class);
 
         } else if (nonNull(boadresse) && nonNull(boadresse.getFullBostedsAdresse()) &&
                 MATR_ADRESSE.equals(boadresse.getFullBostedsAdresse().getAdresseType())) {
 
-            adresse = mapperFacade.map(boadresse.getFullBostedsAdresse().getMatrAdresse(), MatrikkeladresseDTO.class);
+            adresse = mapperFacade.map(boadresse.getFullBostedsAdresse(), MatrikkeladresseDTO.class);
         }
 
         if (nonNull(adresse)) {

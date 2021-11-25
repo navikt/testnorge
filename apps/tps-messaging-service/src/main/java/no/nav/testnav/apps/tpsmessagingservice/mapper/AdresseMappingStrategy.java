@@ -13,7 +13,11 @@ import no.nav.tps.ctg.s610.domain.UtlandsAdresseType;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 
 @Component
 public class AdresseMappingStrategy implements MappingStrategy {
@@ -26,6 +30,11 @@ public class AdresseMappingStrategy implements MappingStrategy {
         return StringUtils.isNumeric(number) ?
                 Integer.valueOf(number).toString() :
                 number;
+    }
+
+    private static LocalDateTime getDate(String dato) {
+
+        return nonNull(dato) ? LocalDate.parse(dato).atStartOfDay() : null;
     }
 
     @Override
@@ -59,6 +68,7 @@ public class AdresseMappingStrategy implements MappingStrategy {
                         target.setAdresse(source.getOffAdresse().getGateNavn());
                         target.setHusnummer(skipLeadZeros(source.getOffAdresse().getHusnr()));
                         target.setGatekode(source.getOffAdresse().getGatekode());
+                        target.setFlyttedato(getDate(source.getDatoFom()));
                     }
                 })
                 .byDefault()
@@ -74,6 +84,7 @@ public class AdresseMappingStrategy implements MappingStrategy {
                         target.setBruksnr(skipLeadZeros(source.getMatrAdresse().getBruksnr()));
                         target.setFestenr(skipLeadZeros(source.getMatrAdresse().getFestenr()));
                         target.setUndernr(skipLeadZeros(source.getMatrAdresse().getUndernr()));
+                        target.setFlyttedato(getDate(source.getDatoFom()));
                     }
                 })
                 .byDefault()
