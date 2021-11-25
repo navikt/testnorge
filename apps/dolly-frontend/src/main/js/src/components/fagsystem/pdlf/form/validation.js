@@ -1,5 +1,30 @@
 import * as Yup from 'yup'
 import { ifKeyHasValue, ifPresent, requiredDate, requiredString } from '~/utils/YupValidations'
+import _get from 'lodash/get'
+import _isUndefined from 'lodash/isUndefined'
+
+// const kontakttypeTest = (validation) => {
+// 	return validation.test('isRequired', 'Feltet er påkrevd', function checkRequired() {
+// 		let gyldig = false
+// 		const values = this.options.context
+// 		const index = this.options.index
+// 		const { advokatSomKontakt, personSomKontakt, organisasjonSomKontakt } = _get(
+// 			values,
+// 			`pdldata.person.kontaktinformasjonForDoedsbo[${index}]`
+// 		)
+// 		if (advokatSomKontakt || personSomKontakt || organisasjonSomKontakt) {
+// 			gyldig = true
+// 		}
+// 		return gyldig
+// 	})
+// }
+
+// const advokatTest = (validation) => {
+// 	return validation.test('harAttributt', 'Har attributt', function checkAttribute() {
+// 		const index = this.options.index
+// 		return ifPresent(`$pdldata.person.kontaktinformasjonForDoedsbo[${index}].advokatSomKontakt`)
+// 	})
+// }
 
 const personnavnSchema = Yup.object({
 	fornavn: Yup.string(),
@@ -66,84 +91,62 @@ const utenlandskId = Yup.array().of(
 )
 
 const kontaktDoedsbo = Yup.array().of(
-	Yup.object({
+	Yup.object().shape({
 		skifteform: requiredString.nullable(),
 		attestutstedelsesdato: requiredDate,
-		// adresse: Yup.object({
-		// 	adresselinje1: Yup.string().nullable(),
-		// 	adresselinje2: Yup.string().nullable(),
-		// 	postnummer: requiredString,
-		// 	poststedsnavn: requiredString,
-		// 	landkode: requiredString,
-		// }),
-		// advokatSomKontakt: ifPresent(
-		// 	'$pdldata.person.kontaktinformasjonForDoedsbo[0].advokatSomKontakt', //TODO: fix så den funker på alle
-		// 	Yup.object({
-		// 		organisasjonsnummer: Yup.string().nullable(),
-		// 		organisasjonsnavn: Yup.string().nullable(),
-		// 		kontaktperson: Yup.object({
-		// 			fornavn: requiredString.nullable(),
-		// 			mellomnavn: Yup.string().nullable(),
-		// 			etternavn: requiredString.nullable(),
-		// 		}),
-		// 	})
-		// ),
-		// personSomKontakt: ifPresent(
-		// 	'$pdldata.person.kontaktinformasjonForDoedsbo[0].personSomKontakt', //TODO: fix så den funker på alle
-		// 	Yup.object({
-		// 		identifikasjonsnummer: Yup.string().nullable(),
-		// 		foedselsdato: Yup.string().nullable(),
-		// 		navn: Yup.object({
-		// 			// TODO: bare hvis ikke identifikasjonsnummer er satt
-		// 			fornavn: requiredString.nullable(),
-		// 			mellomnavn: Yup.string().nullable(),
-		// 			etternavn: requiredString.nullable(),
-		// 		}),
-		// 	})
-		// ),
-		organisasjonSomKontakt: ifPresent(
-			'$pdldata.person.kontaktinformasjonForDoedsbo[0].organisasjonSomKontakt', //TODO: fix så den funker på alle
-			Yup.object({
-				organisasjonsnummer: Yup.string().nullable(),
-				organisasjonsnavn: requiredString.nullable(),
+		kontaktType: requiredString.nullable(),
+		adresse: Yup.object({
+			adresselinje1: Yup.string().nullable(),
+			adresselinje2: Yup.string().nullable(),
+			postnummer: Yup.string().nullable(),
+			poststedsnavn: Yup.string().nullable(),
+			landkode: Yup.string().nullable(),
+		}),
+
+		advokatSomKontakt: Yup.object().when('kontaktType', {
+			is: 'ADVOKAT',
+			then: Yup.object({
+				organisasjonsnummer: requiredString.nullable(),
+				organisasjonsnavn: Yup.string().nullable(),
 				kontaktperson: Yup.object({
 					fornavn: Yup.string().nullable(),
 					mellomnavn: Yup.string().nullable(),
 					etternavn: Yup.string().nullable(),
 				}),
+			}),
+		}),
+
+		organisasjonSomKontakt: Yup.object().when('kontaktType', {
+			is: 'ORGANISASJON',
+			then: Yup.object({
+				organisasjonsnummer: requiredString.nullable(),
+				organisasjonsnavn: Yup.string().nullable(),
+				kontaktperson: Yup.object({
+					fornavn: Yup.string().nullable(),
+					mellomnavn: Yup.string().nullable(),
+					etternavn: Yup.string().nullable(),
+				}),
+			}),
+		}),
+
+		personSomKontakt: Yup.object()
+			.when('kontaktType', {
+				is: 'PERSON',
+				then: Yup.object({
+					foedselsdato: requiredString.nullable(),
+					navn: Yup.object({
+						fornavn: Yup.string().nullable(),
+						mellomnavn: Yup.string().nullable(),
+						etternavn: Yup.string().nullable(),
+					}),
+				}),
 			})
-		),
-		// adressat: Yup.object({
-		// 	// adressatType: requiredString,
-		// 	kontaktperson: ifKeyHasValue(
-		// 		'$pdlforvalter.kontaktinformasjonForDoedsbo.adressat.adressatType',
-		// 		['ADVOKAT', 'ORGANISASJON'],
-		// 		personnavnSchema
-		// 	),
-		// 	organisasjonsnavn: Yup.string().when('adressatType', {
-		// 		is: 'ORGANISASJON',
-		// 		then: requiredString,
-		// 	}),
-		// 	organisasjonsnummer: Yup.string().when('adressatType', {
-		// 		is: 'ADVOKAT' || 'ORGANISASJON',
-		// 		then: Yup.string().matches(/^[0-9]{9}$/, {
-		// 			message: 'Organisasjonsnummeret må være et tall med 9 sifre',
-		// 			excludeEmptyString: true,
-		// 		}),
-		// 	}),
-		// 	idnummer: Yup.string().when('adressatType', {
-		// 		is: 'PERSON_MEDID',
-		// 		then: requiredString.matches(/^[0-9]{11}$/, {
-		// 			message: 'Id-nummeret må være et tall med 11 sifre',
-		// 			excludeEmptyString: true,
-		// 		}),
-		// 	}),
-		// 	navn: ifKeyHasValue(
-		// 		'$pdlforvalter.kontaktinformasjonForDoedsbo.adressat.adressatType',
-		// 		['PERSON_UTENID'],
-		// 		personnavnSchema
-		// 	),
-		// }),
+			.when('kontaktType', {
+				is: 'NY_PERSON',
+				then: Yup.object({
+					nyKontaktperson: nyPerson,
+				}),
+			}),
 	})
 )
 

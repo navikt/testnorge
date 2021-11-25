@@ -892,17 +892,11 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						? 'Organisasjon'
 						: null
 
+					// todo: hent ut values først!! Og ta en sjekk på postnummer/sted
 					return [
 						{ numberHeader: `Kontaktinformasjon for dødsbo ${idx + 1}` },
 						obj('Skifteform', item.skifteform),
 						obj('Utstedelsesdato skifteattest', Formatters.formatDate(item.attestutstedelsesdato)),
-						obj('Land', item.adresse?.landkode, AdresseKodeverk.PostadresseLand),
-						obj('Adresselinje 1', item.adresse?.adresselinje1),
-						obj('Adresselinje 2', item.adresse?.adresselinje2),
-						obj(
-							'Postnummer og -sted',
-							`${item.adresse?.postnummer} ${item.adresse?.poststedsnavn}`
-						),
 						obj('Kontakttype', kontaktType),
 
 						obj(
@@ -935,6 +929,13 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 							item.advokatSomKontakt?.kontaktperson?.etternavn ||
 								item.organisasjonSomKontakt?.kontaktperson?.etternavn ||
 								item.personSomKontakt?.navn?.etternavn
+						),
+						obj('Land', item.adresse?.landkode, AdresseKodeverk.PostadresseLand),
+						obj('Adresselinje 1', item.adresse?.adresselinje1),
+						obj('Adresselinje 2', item.adresse?.adresselinje2),
+						obj(
+							'Postnummer og -sted',
+							`${item.adresse?.postnummer} ${item.adresse?.poststedsnavn}`
 						),
 					]
 				}),

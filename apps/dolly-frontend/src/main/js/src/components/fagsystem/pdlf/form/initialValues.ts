@@ -25,6 +25,7 @@ export const initialUtenlandskAdresse = {
 export const initialKontaktinfoForDoedebo = {
 	skifteform: null as string,
 	attestutstedelsesdato: null as string,
+	kontaktType: null as string,
 	adresse: {
 		adresselinje1: '',
 		adresselinje2: '',

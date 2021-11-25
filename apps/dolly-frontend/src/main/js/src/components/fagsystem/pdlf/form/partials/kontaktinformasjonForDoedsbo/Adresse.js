@@ -10,7 +10,7 @@ import Button from '~/components/ui/button/Button'
 export const Adresse = ({ formikBag, path }) => {
 	const [visAdresse, setVisAdresse, setSkjulAdresse] = useBoolean(false)
 	const handleAfterChange = (selected) => {
-		return formikBag.setFieldValue(`${path}.poststedsnavn`, selected.data)
+		return formikBag.setFieldValue(`${path}.poststedsnavn`, selected?.data || null)
 	}
 
 	return (
@@ -41,7 +41,6 @@ export const Adresse = ({ formikBag, path }) => {
 							label="Postnummer og -sted"
 							kodeverk={AdresseKodeverk.Postnummer}
 							afterChange={handleAfterChange}
-							isClearable={false}
 							size="large"
 						/>
 					) : (
