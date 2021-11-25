@@ -41,11 +41,7 @@ public class PersonDTO {
 
     private LocalDateTime doedsdato;
 
-    private String sivilstand;
-
-    private List<SivilstandDTO> sivilstander;
-
-    private LocalDateTime sivilstandRegdato;
+    private SivilstandDTO sivilstand;
 
     private List<InnvandretUtvandretDTO> innvandretUtvandret;
 
@@ -101,12 +97,5 @@ public class PersonDTO {
             relasjoner = new ArrayList<>();
         }
         return relasjoner;
-    }
-
-    public List<SivilstandDTO> getSivilstander() {
-        if (isNull(sivilstander)) {
-            sivilstander = new ArrayList<>();
-        }
-        return sivilstander;
     }
 }

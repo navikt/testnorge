@@ -16,8 +16,5 @@ import java.time.LocalDateTime;
 public class SivilstandDTO {
 
     private String sivilstand;
-
     private LocalDateTime sivilstandRegdato;
-
-    private PersonDTO personRelasjonMed;
 }

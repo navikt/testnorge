@@ -13,6 +13,7 @@ import no.nav.testnav.libs.dto.tpsmessagingservice.v1.MidlertidigAdresseDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PostadresseDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SikkerhetstiltakDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.StatsborgerskapDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonnummerDTO;
 import no.nav.tps.ctg.s610.domain.EnkelBoAdresseType;
@@ -43,10 +44,10 @@ public class S610PersonMappingStrategy implements MappingStrategy {
         return isNotBlank(dato) ? LocalDate.parse(dato).atStartOfDay() : LocalDateTime.now();
     }
 
-    public static String getSivilstand(S610PersonType tpsPerson) {
+    public static SivilstandDTO getSivilstand(MapperFacade mapperFacade, S610PersonType.SivilstandDetalj sivilstand) {
 
-        return nonNull(tpsPerson.getSivilstandDetalj()) && nonNull(tpsPerson.getSivilstandDetalj().getKodeSivilstand()) ?
-                tpsPerson.getSivilstandDetalj().getKodeSivilstand().name() : null;
+        return nonNull(sivilstand) && nonNull(sivilstand.getKodeSivilstand()) ?
+                mapperFacade.map(sivilstand, SivilstandDTO.class) : null;
     }
 
     private static MidlertidigAdresseDTO getNavAdresse(MapperFacade mapperFacade, S610BrukerType bruker) {
@@ -185,8 +186,7 @@ public class S610PersonMappingStrategy implements MappingStrategy {
                         person.setSpesregDato(getTimestamp(tpsPerson.getBruker().getDiskresjonDetalj().getDiskresjonTidspunkt()));
                         person.setEgenAnsattDatoFom(isNotBlank(tpsPerson.getBruker().getEgenAnsatt().getFom()) ?
                                 LocalDate.parse(tpsPerson.getBruker().getEgenAnsatt().getFom()).atStartOfDay() : null);
-                        person.setSivilstand(getSivilstand(tpsPerson));
-                        person.setSivilstandRegdato(getTimestamp(tpsPerson.getSivilstandDetalj().getSivilstTidspunkt()));
+                        person.setSivilstand(getSivilstand(mapperFacade, tpsPerson.getSivilstandDetalj()));
                         person.setImportFra(TPS);
                     }
 

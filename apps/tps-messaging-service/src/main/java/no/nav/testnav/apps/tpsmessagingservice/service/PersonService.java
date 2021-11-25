@@ -19,7 +19,6 @@ import no.nav.testnav.apps.tpsmessagingservice.utils.ServiceRutineUtil;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.RelasjonDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SivilstandDTO;
 import no.nav.tps.ctg.s610.domain.RelasjonType;
 import no.nav.tps.ctg.s610.domain.S610PersonType;
 import org.json.XML;
@@ -37,20 +36,9 @@ import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
-import static no.nav.testnav.apps.tpsmessagingservice.mapper.S610PersonMappingStrategy.getSivilstand;
-import static no.nav.testnav.apps.tpsmessagingservice.mapper.S610PersonMappingStrategy.getTimestamp;
 import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.RelasjonDTO.ROLLE.FAR;
 import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.RelasjonDTO.ROLLE.MOR;
 import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.RelasjonDTO.ROLLE.PARTNER;
-import static no.nav.tps.ctg.s610.domain.RelasjonType.EKTE;
-import static no.nav.tps.ctg.s610.domain.RelasjonType.ENKE;
-import static no.nav.tps.ctg.s610.domain.RelasjonType.GJPA;
-import static no.nav.tps.ctg.s610.domain.RelasjonType.GLAD;
-import static no.nav.tps.ctg.s610.domain.RelasjonType.REPA;
-import static no.nav.tps.ctg.s610.domain.RelasjonType.SEPA;
-import static no.nav.tps.ctg.s610.domain.RelasjonType.SEPR;
-import static no.nav.tps.ctg.s610.domain.RelasjonType.SKIL;
-import static no.nav.tps.ctg.s610.domain.RelasjonType.SKPA;
 
 @Slf4j
 @Service
@@ -72,19 +60,6 @@ public class PersonService {
         this.mapperFacade = mapperFacade;
         this.miljoerService = miljoerService;
         this.requestContext = JAXBContext.newInstance(TpsServicerutineRequest.class);
-    }
-
-    private static boolean isGift(RelasjonType relasjonType) {
-
-        return EKTE == relasjonType ||
-                ENKE == relasjonType ||
-                SKIL == relasjonType ||
-                SEPR == relasjonType ||
-                REPA == relasjonType ||
-                SEPA == relasjonType ||
-                SKPA == relasjonType ||
-                GJPA == relasjonType ||
-                GLAD == relasjonType;
     }
 
     private static String mapRelasjonType(RelasjonType relasjonType) {
@@ -116,23 +91,6 @@ public class PersonService {
                 .collect(Collectors.toMap(PersonMiljoe::getMiljoe, PersonMiljoe::getPerson));
     }
 
-    private void mapSivilstand(List<S610PersonType> tpsFamilie, Map<String, PersonDTO> familie) {
-
-        tpsFamilie.forEach(person ->
-                familie.get(person.getFodselsnummer()).getSivilstander().addAll(
-                        nonNull(person.getBruker().getRelasjoner()) &&
-                                person.getBruker().getRelasjoner().getRelasjon().stream()
-                                        .anyMatch(relasjon -> isGift(relasjon.getTypeRelasjon())) ?
-                                List.of(SivilstandDTO.builder()
-                                        .sivilstand(getSivilstand(person))
-                                        .sivilstandRegdato(getTimestamp(person.getSivilstandDetalj().getDatoSivilstand()))
-                                        .personRelasjonMed(familie.get(person.getBruker().getRelasjoner().getRelasjon().stream()
-                                                .filter(relasjon -> isGift(relasjon.getTypeRelasjon()))
-                                                .findFirst().get().getFnrRelasjon()))
-                                        .build()) :
-                                emptyList()));
-    }
-
     private PersonDTO buildPersonWithRelasjon(PersonRelasjon personRelasjon) {
 
         var tpsFamilie = Stream.of(List.of(personRelasjon.getHovedperson()), personRelasjon.getRelasjoner())
@@ -154,8 +112,6 @@ public class PersonService {
                                                 .personRelasjonMed(familie.get(relasjon.getFnrRelasjon()))
                                                 .build())
                                         .collect(Collectors.toList()) : emptyList()));
-
-        mapSivilstand(tpsFamilie, familie);
 
         return familie.get(personRelasjon.getHovedperson().getFodselsnummer());
     }
