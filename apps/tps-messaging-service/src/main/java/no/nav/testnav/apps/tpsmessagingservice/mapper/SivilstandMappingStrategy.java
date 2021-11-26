@@ -5,7 +5,6 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SivilstandDTO;
 import no.nav.tps.ctg.s610.domain.S610PersonType;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -15,16 +14,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Component
 public class SivilstandMappingStrategy implements MappingStrategy {
-
-    private static final String POST_NORGE = "POST";
-    private static final String NORGE = "NOR";
-
-    private static String skipLeadZeros(String number) {
-
-        return StringUtils.isNumeric(number) ?
-                Integer.valueOf(number).toString() :
-                number;
-    }
 
     private static LocalDateTime getDate(String dato) {
 

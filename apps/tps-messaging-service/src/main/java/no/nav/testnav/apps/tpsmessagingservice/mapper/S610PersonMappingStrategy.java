@@ -200,7 +200,7 @@ public class S610PersonMappingStrategy implements MappingStrategy {
                     private BankkontonrNorskDTO getBankkontonrNorsk(S610PersonType tpsPerson, PersonDTO person) {
                         return isNull(tpsPerson.getBankkontoNorge()) ||
                                 isBlank(tpsPerson.getBankkontoNorge().getKontoNummer()) ? null :
-                                mapperFacade.map(person, BankkontonrNorskDTO.class);
+                                mapperFacade.map(tpsPerson.getBankkontoNorge(), BankkontonrNorskDTO.class);
                     }
 
                     private BankkontonrUtlandDTO getBankkontonrUtland(S610PersonType tpsPerson) {

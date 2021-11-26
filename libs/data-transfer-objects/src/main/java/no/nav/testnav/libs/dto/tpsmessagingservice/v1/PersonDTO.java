@@ -43,8 +43,6 @@ public class PersonDTO {
 
     private SivilstandDTO sivilstand;
 
-    private List<InnvandretUtvandretDTO> innvandretUtvandret;
-
     private LocalDateTime egenAnsattDatoFom;
 
     private LocalDateTime egenAnsattDatoTom;
@@ -97,5 +95,12 @@ public class PersonDTO {
             relasjoner = new ArrayList<>();
         }
         return relasjoner;
+    }
+
+    public List<TelefonnummerDTO> getTelefonnumre() {
+        if (isNull(telefonnumre)) {
+            telefonnumre = new ArrayList<>();
+        }
+        return telefonnumre;
     }
 }
