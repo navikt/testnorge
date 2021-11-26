@@ -43,6 +43,7 @@ public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
 
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
+                type.setGjeldende(nonNull(type.getGjeldende()) ? type.getGjeldende(): true);
                 handle(type, person.getIdent());
             }
         }
@@ -94,7 +95,10 @@ public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
             fullmakt.setMotpartsPersonident(createPersonService.execute(fullmakt.getNyFullmektig()).getIdent());
             relasjonService.setRelasjoner(ident, RelasjonType.FULLMAKTSGIVER,
                     fullmakt.getMotpartsPersonident(), RelasjonType.FULLMEKTIG);
-            fullmakt.setNyFullmektig(null);
+
+        } else {
+
+            fullmakt.setIsIdentExternal(true);
         }
 
         fullmakt.setMaster(Master.PDL);

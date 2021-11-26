@@ -24,14 +24,14 @@ const sendDodsmelding = (dodsmelding: Dodsmelding, miljoer: string[]) =>
   Api.fetch(
     '/endringsmelding-service/api/v1/endringsmelding/doedsmelding',
     { method: 'POST', headers: { miljoer: miljoer.join(','), 'Content-Type': 'application/json' } },
-    dodsmelding
+    JSON.stringify(dodsmelding)
   );
 
 const sendFodselsmelding = (fodselsmelding: Fodselsmelding, miljoer: string[]): Promise<string> =>
   Api.fetch(
     '/endringsmelding-service/api/v1/endringsmelding/foedeselsmelding',
     { method: 'POST', headers: { miljoer: miljoer.join(','), 'Content-Type': 'application/json' } },
-    fodselsmelding
+    JSON.stringify(fodselsmelding)
   ).then((response) => response.text() as Promise<string>);
 
 export default {

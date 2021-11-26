@@ -10,6 +10,7 @@ import { LoadableComponent } from '@navikt/dolly-komponenter'
 import styled from 'styled-components'
 import { ScopeAccessTokenPage } from '@/pages/ScopeAccessTokenPage'
 import LoginPage from '@/pages/LoginPage'
+import { UserPage } from '@/pages/UserPage'
 
 const Body = styled.div`
 	border-bottom: solid 1px #c6c2bf;
@@ -46,6 +47,9 @@ export default () => {
 								/>
 							)}
 						/>
+					</Route>
+					<Route path="/user">
+						<UserPage />
 					</Route>
 					<Route path="/">
 						<MagicTokenPage />

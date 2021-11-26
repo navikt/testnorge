@@ -1,5 +1,3 @@
-application:
-  name: brreg-stub
-
-logging:
-  config: "classpath:logback-spring.xml"
+spring:
+  application:
+    name: brreg-stub

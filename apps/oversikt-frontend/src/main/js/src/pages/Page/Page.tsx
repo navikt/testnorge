@@ -1,15 +1,33 @@
 import React from 'react'
+import styled from 'styled-components'
 import { Header, HeaderLink, HeaderLinkGroup, ProfilLoader } from '@navikt/dolly-komponenter'
 import { ProfilService } from '@/services'
+import LogoutButton from '@/components/LogoutButton'
 
 type Props = {
 	children?: React.ReactNode
 	loggedIn?: boolean
 }
 
+const ProfileContainer = styled.div`
+	display: flex;
+	align-items: center;
+`
+
+const Profile = () => (
+	<ProfileContainer>
+		<LogoutButton
+			onClick={() => {
+				window.location.href = '/logout'
+			}}
+		/>
+		<ProfilLoader {...ProfilService} />
+	</ProfileContainer>
+)
+
 const Page = ({ children, loggedIn = true }: Props) => (
 	<>
-		<Header title="Generer token" profile={loggedIn && <ProfilLoader {...ProfilService} />}>
+		<Header title="Generer token" profile={loggedIn && <Profile />}>
 			{loggedIn && (
 				<HeaderLinkGroup>
 					<HeaderLink
@@ -25,6 +43,9 @@ const Page = ({ children, loggedIn = true }: Props) => (
 						isActive={() => window.location.pathname.includes('/access-token')}
 					>
 						Access Token
+					</HeaderLink>
+					<HeaderLink href="/user" isActive={() => window.location.pathname.includes('/user')}>
+						User
 					</HeaderLink>
 				</HeaderLinkGroup>
 			)}

@@ -1,0 +1,72 @@
+apiVersion: nais.io/v1alpha1
+kind: Application
+metadata:
+  name: testnav-tps-messaging-service
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  image: {{ image }}
+  webproxy: true
+  tokenx:
+    enabled: true
+  azure:
+    application:
+      enabled: true
+      tenant: nav.no
+  ingresses:
+    - "https://testnav-tps-messaging-service.dev.intern.nav.no"
+  liveness:
+    path: /internal/isAlive
+    periodSeconds: 30
+    initialDelay: 30
+  readiness:
+    path: /internal/isReady
+    initialDelay: 30
+  prometheus:
+    path: /internal/prometheus
+  replicas:
+    min: 1
+    max: 1
+  resources:
+    limits:
+      cpu: 600m
+      memory: 2048Mi
+    requests:
+      cpu: 300m
+      memory: 1024Mi
+  envFrom:
+    - secret: testnav-tps-messaging-service
+  accessPolicy:
+    inbound:
+      rules:
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
+        - application: team-dolly-lokal-app
+          cluster: dev-fss
+        - application: testnav-organisasjon-forvalter
+          cluster: dev-gcp
+        - application: testnav-pdl-forvalter
+          cluster: dev-gcp
+        - application: testnav-pdl-forvalter-dev
+          cluster: dev-gcp
+        - application: tps-forvalteren-dev
+          cluster: dev-fss
+        - application: tps-forvalteren
+          cluster: dev-fss
+        - application: dolly-frontend-dev
+          cluster: dev-gcp
+        - application: dolly-frontend
+          cluster: dev-gcp
+        - application: synthdata-tps-gcp
+          cluster: dev-gcp
+        - application: app-1
+          namespace: plattformsikkerhet
+          cluster: dev-gcp
+        - application: dolly-backend-dev
+          cluster: dev-fss
+        - application: dolly-backend
+          cluster: dev-fss
+    outbound:
+      external:
+        - host: https://testnav-pdl-proxy.dev-fss-pub.nais.io

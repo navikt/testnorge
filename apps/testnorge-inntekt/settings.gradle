@@ -1,13 +1,13 @@
 plugins {
-    id "com.gradle.enterprise" version "3.4.1"
+    id "com.gradle.enterprise" version "3.7.2"
 }
 
 rootProject.name = 'testnorge-inntekt'
 
-includeBuild '../../gradlePlugins'
 
+includeBuild '../../libs/security-core'
 includeBuild '../../libs/servlet-core'
-includeBuild '../../libs/servlet-security'
+includeBuild '../../libs/servlet-insecure-security'
 includeBuild '../../libs/domain'
 includeBuild '../../libs/database'
 includeBuild '../../libs/data-transfer-objects'

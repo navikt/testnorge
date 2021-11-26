@@ -18,7 +18,6 @@ export default class App extends Component {
 	}
 
 	async componentDidMount() {
-		await this.props.fetchConfig().catch((err) => this.setState({ criticalError: err }))
 		await this.props.getEnvironments().catch((err) => this.setState({ criticalError: err }))
 		await this.props.getCurrentBruker().catch((err) => this.setState({ criticalError: err }))
 		await this.props.getCurrentBrukerProfil().catch((err) => this.setState({ apiError: err }))
@@ -36,7 +35,6 @@ export default class App extends Component {
 		const {
 			applicationError,
 			clearAllErrors,
-			configReady,
 			brukerData,
 			brukerProfil,
 			brukerBilde,
@@ -48,7 +46,7 @@ export default class App extends Component {
 
 		if (this.state.criticalError) return <CriticalError error={this.state.criticalError.stack} />
 
-		if (!brukerData || !configReady) return <Loading label="Laster Dolly applikasjon" fullpage />
+		if (!brukerData) return <Loading label="Laster Dolly applikasjon" fullpage />
 		return (
 			<React.Fragment>
 				<Utlogging />

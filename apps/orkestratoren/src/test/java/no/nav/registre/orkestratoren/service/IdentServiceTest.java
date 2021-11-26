@@ -8,12 +8,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.hamcrest.collection.IsIterableContainingInOrder;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ import no.nav.registre.orkestratoren.consumer.rs.response.SletteInstitusjonsopph
 import no.nav.registre.orkestratoren.consumer.rs.response.SletteSkattegrunnlagResponse;
 import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class IdentServiceTest {
 
     @Mock
@@ -63,11 +63,11 @@ public class IdentServiceTest {
     @InjectMocks
     private IdentService identService;
 
-    private Long avspillergruppeId = 123L;
-    private String miljoe = "t1";
-    private String testdataEier = "orkestratoren";
-    private String fnr1 = "01010101010";
-    private String fnr2 = "02020202020";
+    private final Long avspillergruppeId = 123L;
+    private final String miljoe = "t1";
+    private final String testdataEier = "orkestratoren";
+    private final String fnr1 = "01010101010";
+    private final String fnr2 = "02020202020";
     private List<String> identer;
     private List<Long> expectedMeldingIder;
     private SletteInstitusjonsoppholdResponse sletteInstitusjonsoppholdResponse;
@@ -75,7 +75,7 @@ public class IdentServiceTest {
     private SletteArbeidsforholdResponse sletteArbeidsforholdResponse;
     private SletteArenaResponse sletteArenaResponse;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         identer = new ArrayList<>(Arrays.asList(fnr1, fnr2));
         expectedMeldingIder = new ArrayList<>(Arrays.asList(123L, 456L));
@@ -108,7 +108,6 @@ public class IdentServiceTest {
         when(testnorgeInstConsumer.slettIdenterFraInst(identer)).thenReturn(sletteInstitusjonsoppholdResponse);
         when(testnorgeSigrunConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer)).thenReturn(sletteSkattegrunnlagResponse);
         when(testnorgeSigrunConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer)).thenReturn(sletteSkattegrunnlagResponse);
-        when(testnorgeAaregConsumer.slettIdenterFraAaregstub(identer)).thenReturn(sletteArbeidsforholdResponse);
         // TODO: Fiks arena og legg inn denne igjen
         // when(arenaConsumer.slettIdenter(miljoe, identer)).thenReturn(sletteArenaResponse);
 
@@ -117,7 +116,6 @@ public class IdentServiceTest {
         verify(testnorgeSkdConsumer).slettIdenterFraAvspillerguppe(eq(avspillergruppeId), anyList(), eq(identer));
         verify(testnorgeInstConsumer).slettIdenterFraInst(identer);
         verify(testnorgeSigrunConsumer).slettIdenterFraSigrun(testdataEier, miljoe, identer);
-        verify(testnorgeAaregConsumer).slettIdenterFraAaregstub(identer);
         // TODO: Fiks arena og legg inn denne igjen
         // verify(arenaConsumer).slettIdenter(miljoe, identer);
 
@@ -131,9 +129,6 @@ public class IdentServiceTest {
         assertThat(response.getSigrunStatus().getGrunnlagSomBleSlettet().get(0).getPersonidentifikator(), equalTo(fnr1));
         assertThat(response.getSigrunStatus().getGrunnlagSomBleSlettet().get(1).getPersonidentifikator(), equalTo(fnr2));
 
-        assertThat(response.getAaregStatus().getIdentermedArbeidsforholdIdSomBleSlettet().get(fnr1).get(0), equalTo(1L));
-        assertThat(response.getAaregStatus().getIdentermedArbeidsforholdIdSomBleSlettet().get(fnr1).get(1), equalTo(2L));
-
         // TODO: Fiks arena og legg inn denne igjen
         // assertThat(response.getArenaForvalterStatus().getSlettet().get(0), equalTo(fnr1));
         // assertThat(response.getArenaForvalterStatus().getSlettet().get(1), equalTo(fnr2));
@@ -146,7 +141,6 @@ public class IdentServiceTest {
         when(testnorgeSkdConsumer.slettIdenterFraAvspillerguppe(eq(avspillergruppeId), anyList(), eq(identer))).thenReturn(expectedMeldingIder);
         when(testnorgeInstConsumer.slettIdenterFraInst(identer)).thenReturn(SletteInstitusjonsoppholdResponse.builder().build());
         when(testnorgeSigrunConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer)).thenReturn(SletteSkattegrunnlagResponse.builder().build());
-        when(testnorgeAaregConsumer.slettIdenterFraAaregstub(identer)).thenReturn(SletteArbeidsforholdResponse.builder().build());
         // TODO: Fiks arena og legg inn denne igjen
         // when(arenaConsumer.slettIdenter(miljoe, identer)).thenReturn(SletteArenaResponse.builder().build());
 
@@ -158,7 +152,6 @@ public class IdentServiceTest {
         verify(testnorgeSkdConsumer).slettIdenterFraAvspillerguppe(eq(avspillergruppeId), anyList(), eq(identer));
         verify(testnorgeInstConsumer).slettIdenterFraInst(identer);
         verify(testnorgeSigrunConsumer).slettIdenterFraSigrun(testdataEier, miljoe, identer);
-        verify(testnorgeAaregConsumer).slettIdenterFraAaregstub(identer);
         // TODO: Fiks arena og legg inn denne igjen
         // verify(arenaConsumer).slettIdenter(miljoe, identer);
     }
@@ -169,7 +162,6 @@ public class IdentServiceTest {
         when(testnorgeSkdConsumer.slettIdenterFraAvspillerguppe(eq(avspillergruppeId), anyList(), eq(identer))).thenReturn(expectedMeldingIder);
         when(testnorgeInstConsumer.slettIdenterFraInst(identer)).thenReturn(SletteInstitusjonsoppholdResponse.builder().build());
         when(testnorgeSigrunConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer)).thenReturn(SletteSkattegrunnlagResponse.builder().build());
-        when(testnorgeAaregConsumer.slettIdenterFraAaregstub(identer)).thenReturn(SletteArbeidsforholdResponse.builder().build());
         // TODO: Fiks arena og legg inn denne igjen
         // when(arenaConsumer.slettIdenter(miljoe, identer)).thenReturn(SletteArenaResponse.builder().build());
 
@@ -181,7 +173,6 @@ public class IdentServiceTest {
         verify(testnorgeSkdConsumer).slettIdenterFraAvspillerguppe(eq(avspillergruppeId), anyList(), eq(identer));
         verify(testnorgeInstConsumer).slettIdenterFraInst(identer);
         verify(testnorgeSigrunConsumer).slettIdenterFraSigrun(testdataEier, miljoe, identer);
-        verify(testnorgeAaregConsumer).slettIdenterFraAaregstub(identer);
         // TODO: Fiks arena og legg inn denne igjen
         // verify(arenaConsumer).slettIdenter(miljoe, identer);
     }

@@ -48,10 +48,10 @@ import no.nav.testnav.apps.brukerservice.dto.BrukerDTO;
 import no.nav.testnav.apps.brukerservice.initializer.H2Initializer;
 import no.nav.testnav.apps.brukerservice.initializer.WireMockInitializer;
 import no.nav.testnav.apps.brukerservice.repository.UserRepository;
-import no.nav.testnav.libs.reactivesecurity.config.UserConstant;
 import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
 import no.nav.testnav.libs.reactivesecurity.domain.TokenX;
 import no.nav.testnav.libs.reactivesecurity.domain.tokenx.v1.WellKnown;
+import no.nav.testnav.libs.securitycore.config.UserConstant;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
@@ -260,7 +260,7 @@ class BrukerControllerIntegrationTest {
         var userResponseFromGetEndpoint = webClient.get()
                 .uri(builder -> builder.path("/api/v1/brukere/{id}").build(user.id()))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtWith(Map.of("pid", FIRST_PERSON_IDENT)))
-                .header(UserConstant.USER_ORGANISASJON_HEADER_JWT, jwt)
+                .header(UserConstant.USER_HEADER_JWT, jwt)
                 .exchange()
                 .expectBody()
                 .returnResult()
@@ -332,7 +332,7 @@ class BrukerControllerIntegrationTest {
         var brukernavnResponse = webClient.patch()
                 .uri(builder -> builder.path("/api/v1/brukere/{id}/brukernavn").build(user.id()))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtWith(Map.of("pid", FIRST_PERSON_IDENT)))
-                .header(UserConstant.USER_ORGANISASJON_HEADER_JWT, jwt)
+                .header(UserConstant.USER_HEADER_JWT, jwt)
                 .body(BodyInserters.fromValue("username2"))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE)
                 .exchange()
@@ -347,7 +347,7 @@ class BrukerControllerIntegrationTest {
         var userResponseFromGetEndpoint = webClient.get()
                 .uri(builder -> builder.path("/api/v1/brukere/{id}").build(user.id()))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtWith(Map.of("pid", FIRST_PERSON_IDENT)))
-                .header(UserConstant.USER_ORGANISASJON_HEADER_JWT, jwt)
+                .header(UserConstant.USER_HEADER_JWT, jwt)
                 .exchange()
                 .expectBody()
                 .returnResult()
@@ -393,7 +393,7 @@ class BrukerControllerIntegrationTest {
         webClient.delete()
                 .uri(builder -> builder.path("/api/v1/brukere/{id}").build(user.id()))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtWith(Map.of("pid", FIRST_PERSON_IDENT)))
-                .header(UserConstant.USER_ORGANISASJON_HEADER_JWT, jwt)
+                .header(UserConstant.USER_HEADER_JWT, jwt)
                 .exchange()
                 .expectStatus()
                 .is2xxSuccessful();
@@ -401,7 +401,7 @@ class BrukerControllerIntegrationTest {
         webClient.get()
                 .uri(builder -> builder.path("/api/v1/brukere/{id}").build(user.id()))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtWith(Map.of("pid", FIRST_PERSON_IDENT)))
-                .header(UserConstant.USER_ORGANISASJON_HEADER_JWT, jwt)
+                .header(UserConstant.USER_HEADER_JWT, jwt)
                 .exchange()
                 .expectStatus()
                 .isNotFound();
@@ -489,7 +489,7 @@ class BrukerControllerIntegrationTest {
         webClient.delete()
                 .uri(builder -> builder.path("/api/v1/brukere/{id}").build(firstUser.id()))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtWith(Map.of("pid", SECOND_PERSON_IDENT)))
-                .header(UserConstant.USER_ORGANISASJON_HEADER_JWT, jwt)
+                .header(UserConstant.USER_HEADER_JWT, jwt)
                 .exchange()
                 .expectStatus()
                 .isForbidden();
@@ -547,7 +547,7 @@ class BrukerControllerIntegrationTest {
         webClient.get()
                 .uri(builder -> builder.path("/api/v1/brukere/{id}").build(firstUser.id()))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtWith(Map.of("pid", SECOND_PERSON_IDENT)))
-                .header(UserConstant.USER_ORGANISASJON_HEADER_JWT, jwt)
+                .header(UserConstant.USER_HEADER_JWT, jwt)
                 .exchange()
                 .expectStatus()
                 .isForbidden();

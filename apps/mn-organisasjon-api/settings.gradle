@@ -1,0 +1,18 @@
+plugins {
+    id "com.gradle.enterprise" version "3.7.2"
+}
+
+rootProject.name = 'mn-organisasjon-api'
+
+includeBuild '../../libs/servlet-core'
+includeBuild '../../libs/commands'
+includeBuild '../../libs/data-transfer-objects'
+includeBuild '../../libs/servlet-security'
+includeBuild '../../libs/database'
+
+gradleEnterprise {
+    buildScan {
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
+    }
+}

@@ -21,6 +21,7 @@ import no.nav.testnav.libs.servletsecurity.domain.ClientCredential;
 
 @Slf4j
 @Service
+@Deprecated
 public class ClientCredentialGenerateAccessTokenService {
     private final WebClient webClient;
     private final AuthenticationTokenResolver tokenResolver;

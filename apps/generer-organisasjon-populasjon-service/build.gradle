@@ -1,7 +1,20 @@
 plugins {
-    id 'no.nav.registre.testnorge.java-conventions'
-    id 'org.springframework.boot' version "${springBootVersion}"
-    id 'io.spring.dependency-management' version "${springDependencyManagement}"
+    id 'java'
+    id "org.sonarqube" version "3.3"
+    id 'org.springframework.boot' version "2.5.7"
+    id 'io.spring.dependency-management' version "1.0.11.RELEASE"
+}
+
+sonarqube {
+    properties {
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.projectKey", "testnav-generer-organisasjon-populasjon-service"
+        property "sonar.projectName", "testnav-generer-organisasjon-populasjon-service"
+        property "sonar.organization", "navit"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.project.monorepo.enabled", true
+        property "sonar.login", System.getenv("SONAR_TOKEN")
+    }
 }
 bootJar {
     archiveFileName = "app.jar"
@@ -9,10 +22,21 @@ bootJar {
 
 dependencyManagement {
     imports {
-        mavenBom  "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}" 
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.4'
     }
 }
 
+test {
+    useJUnitPlatform()
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven {
+        url = uri('https://packages.confluent.io/maven/')
+    }
+}
 dependencies {
 
     implementation 'no.nav.testnav.libs:database'
@@ -37,22 +61,22 @@ dependencies {
 
     implementation 'org.springframework.kafka:spring-kafka'
 
-    implementation 'io.confluent:kafka-avro-serializer:6.1.0'
+    implementation 'io.confluent:kafka-avro-serializer:7.0.0'
     implementation 'javax.validation:validation-api:2.0.1.Final'
     implementation 'org.flywaydb:flyway-core'
     implementation 'com.h2database:h2'
     implementation 'com.zaxxer:HikariCP'
 
-    implementation "net.logstash.logback:logstash-logback-encoder:${logstashLogbackEncoder}"
-    implementation "org.springdoc:springdoc-openapi-ui:${springdocOpenapiUi}"
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
     implementation 'org.projectreactor:reactor-spring:1.0.1.RELEASE'
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'org.postgresql:postgresql'
 
-    testImplementation 'no.nav.testnav.libs:testing'
-    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
-}
 
-description = 'generer-organisasjon-service'
+    implementation 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+}

@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 import _get from 'lodash/get'
-import { addDays, isAfter, isBefore } from 'date-fns'
+import { addDays, differenceInWeeks, isAfter, isBefore, isSameDay } from 'date-fns'
 import Dataformatter from '~/utils/DataFormatter'
 import {
 	ifKeyHasValue,
@@ -221,6 +221,8 @@ const innvandringUtvandringDatoTest = (schema) => {
 			if (!dato || !personFoerLeggTil) return true
 
 			const sisteDato = _get(personFoerLeggTil, 'tpsf.innvandretUtvandret[0].flyttedato')
+			if (!sisteDato) return true
+
 			const dateValid = isAfter(new Date(dato), new Date(sisteDato))
 
 			return (
@@ -236,13 +238,13 @@ const innvandringUtvandringDatoTest = (schema) => {
 	)
 }
 
-const foedtFoerOgEtterTest = (validation, validerFoedtFoer) => {
+const foedtFoerOgEtterTest = (mainValidation, validerFoedtFoer) => {
 	const errorMsgFoedtFoer =
 		'Født Før dato kan ikke være før Født Etter dato eller etter dagens dato'
 	const errorMsgFoedtEtter =
 		'Født Etter dato kan ikke være etter Født Før dato eller etter dagens dato.'
 
-	return validation.test(
+	return mainValidation.test(
 		'range',
 		validerFoedtFoer ? errorMsgFoedtFoer : errorMsgFoedtEtter,
 		function isWithinTest(val) {
@@ -471,20 +473,39 @@ export const validation = {
 					vedtakDato: requiredDate,
 				})
 			),
-			fullmakt: ifPresent(
-				'$tpsf.fullmakt',
-				Yup.object({
-					kilde: requiredString,
-					omraader: Yup.array().min(1, 'Velg minst ett område'),
-					gyldigFom: requiredDate,
-					gyldigTom: requiredDate,
-				})
+			typeSikkerhetTiltak: ifPresent('$tpsf.typeSikkerhetTiltak', requiredString),
+			beskrSikkerhetTiltak: ifPresent('$tpsf.beskrSikkerhetTiltak', requiredString),
+			sikkerhetTiltakDatoFom: ifPresent('$tpsf.sikkerhetTiltakDatoFom', requiredDate),
+			sikkerhetTiltakDatoTom: ifPresent(
+				'$tpsf.sikkerhetTiltakDatoTom',
+				Yup.string()
+					.test(
+						'is-after-startdato',
+						'Dato må være lik eller etter startdato, og ikke mer enn 12 uker etter startdato',
+						function validDate(dato) {
+							const values = this.options.context
+							return (
+								(isAfter(new Date(dato), new Date(_get(values, 'tpsf.sikkerhetTiltakDatoFom'))) ||
+									isSameDay(
+										new Date(dato),
+										new Date(_get(values, 'tpsf.sikkerhetTiltakDatoFom'))
+									)) &&
+								differenceInWeeks(
+									new Date(dato),
+									new Date(_get(values, 'tpsf.sikkerhetTiltakDatoFom'))
+								) <= 12
+							)
+						}
+					)
+					.nullable()
 			),
 			boadresse: ifPresent('$tpsf.boadresse', boadresse),
 			adresseNrInfo: ifPresent('$tpsf.adresseNrInfo', adresseNrInfo),
 			midlertidigAdresse: ifPresent('$tpsf.midlertidigAdresse', midlertidigAdresse),
 			postadresse: Yup.array().of(
 				Yup.object({
+					postLinje1: Yup.string().when('postLinje2', { is: '', then: requiredString }),
+					postLinje2: Yup.string(),
 					postLinje3: Yup.string().when('postLand', {
 						is: 'NOR',
 						then: requiredString,

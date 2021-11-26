@@ -9,14 +9,22 @@ type NodeProps<T> = {
 	onNodeClick: (id: string) => void
 }
 
+const nodeClassName = (hasChildren: boolean, isSelected: boolean) => {
+	if (hasChildren) {
+		if (isSelected) {
+			return 'rectangle-corner-selected'
+		} else {
+			return 'rectangle-corner'
+		}
+	} else if (isSelected) {
+		return 'rectangle-selected'
+	} else {
+		return 'rectangle'
+	}
+}
+
 export function Node<T>(props: NodeProps<T>) {
-	const className = props.hasChildren
-		? props.isSelected
-			? 'rectangle-corner-selected'
-			: 'rectangle-corner'
-		: props.isSelected
-		? 'rectangle-selected'
-		: 'rectangle'
+	const className = nodeClassName(props.hasChildren, props.isSelected)
 
 	return (
 		<div onClick={() => props.onNodeClick(props.enhet.getId())} className={className}>

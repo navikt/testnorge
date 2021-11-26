@@ -29,8 +29,8 @@ consumers:
   testnorge-profil-api:
     cluster: dev-gcp
     namespace: dolly
-    name: testnorge-profil-api
-    url: https://testnorge-profil-api.dev.intern.nav.no/api
+    name: testnorge-profil-api-dev
+    url: https://testnorge-profil-api-dev.dev.intern.nav.no/api
   testnav-app-tilgang-analyse-service:
     cluster: dev-gcp
     namespace: dolly
@@ -41,3 +41,8 @@ consumers:
     namespace: dolly
     name: testnav-person-organisasjon-tilgang-service-dev
     url: https://testnav-person-organisasjon-tilgang-service-dev.dev.intern.nav.no
+  testnav-bruker-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-bruker-service-dev
+    url: https://testnav-bruker-service-dev.dev.intern.nav.no

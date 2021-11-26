@@ -56,6 +56,15 @@ const selectOptions: SelectOptions = {
 		{ value: 'UTAD', label: 'Utenlandsk adresse' },
 	],
 
+	sikkerhetstiltakType: [
+		{ value: 'OPPH', label: 'Opphørt' },
+		{ value: 'FYUS', label: 'FYUS - Fysisk utestengelse' },
+		{ value: 'TFUS', label: 'TFUS - Telefonisk utestengelse' },
+		{ value: 'FTUS', label: 'FTUS - Fysisk/telefonisk utestengelse' },
+		{ value: 'DIUS', label: 'DIUS - Digital utestengelse' },
+		{ value: 'TOAN', label: 'TOAN - To ansatte i samtale' },
+	],
+
 	// SIGRUN
 	tjeneste: [
 		{ value: 'BEREGNET_SKATT', label: 'Beregnet skatt' },
@@ -86,6 +95,25 @@ const selectOptions: SelectOptions = {
 		{ value: '985675143', label: '985675143 - Stumtjener Butlerservice' },
 	],
 
+	//PDL
+	master: [
+		{ value: 'FREG', label: 'FREG' },
+		{ value: 'PDL', label: 'PDL' },
+	],
+
+	kjoenn: [
+		{ value: 'KVINNE', label: 'Kvinne' },
+		{ value: 'MANN', label: 'Mann' },
+		{ value: 'UKJENT', label: 'Ukjent' },
+	],
+
+	gradering: [
+		{ value: 'STRENGT_FORTROLIG_UTLAND', label: 'Strengt fortrolig utland' },
+		{ value: 'STRENGT_FORTROLIG', label: 'Strengt fortrolig' },
+		{ value: 'FORTROLIG', label: 'Fortrolig' },
+		{ value: 'UGRADERT', label: 'Ugradert' },
+	],
+
 	//PDLF - kontaktinformasjon dødsbo
 	adressatType: [
 		{ value: 'ADVOKAT', label: 'Advokat' },
@@ -104,12 +132,6 @@ const selectOptions: SelectOptions = {
 		{ value: 'UKJENT', label: 'Ukjent' },
 		{ value: 'ENTYDIG', label: 'Ved identifikasjonsnummer' },
 		{ value: 'OMTRENTLIG', label: 'Ved personopplysninger' },
-	],
-
-	kjoennFalskIdentitet: [
-		{ value: 'KVINNE', label: 'Kvinne' },
-		{ value: 'MANN', label: 'Mann' },
-		{ value: 'UKJENT', label: 'Ukjent' },
 	],
 
 	// Arena

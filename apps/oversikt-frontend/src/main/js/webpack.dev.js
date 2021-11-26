@@ -5,10 +5,10 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = merge(common, {
 	mode: 'development',
-	devtool: 'inline-source-map',
+	devtool: 'eval-source-map',
 	devServer: {
 		port: 3000,
-		contentBase: path.join(__dirname, 'public'),
+		static: path.join(__dirname, 'public'),
 		hot: true,
 		historyApiFallback: { index: '/', disableDotRule: true },
 		proxy: {
@@ -20,9 +20,24 @@ module.exports = merge(common, {
 				target: 'http://localhost:8080',
 				changeOrigin: true,
 			},
-			'/oauth2/authorization/aad': {
+			'/testnav-person-organisasjon-tilgang-service/api': {
 				target: 'http://localhost:8080',
 				changeOrigin: true,
+			},
+			'/testnav-bruker-service/api': {
+				target: 'http://localhost:8080',
+				changeOrigin: true,
+			},
+			'/oauth2/authorization': {
+				target: 'http://localhost:8080',
+				secure: false,
+			},
+			'/login/oauth2/code': {
+				target: 'http://localhost:8080',
+				secure: false,
+			},
+			'/logout': {
+				target: 'http://localhost:8080',
 				secure: false,
 			},
 		},

@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Component
+@Deprecated
 public class SecureJwtAuthenticationTokenResolver implements AuthenticationTokenResolver {
 
     private JwtAuthenticationToken getJwtAuthenticationToken() {
@@ -37,7 +38,7 @@ public class SecureJwtAuthenticationTokenResolver implements AuthenticationToken
     @Override
     public String getOid() {
         Map<String, Object> tokenAttributes = getJwtAuthenticationToken().getTokenAttributes();
-        return String.valueOf(tokenAttributes.get("oid"));
+        return tokenAttributes.get("oid") == null ? null : String.valueOf(tokenAttributes.get("oid"));
     }
 
     @Override

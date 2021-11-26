@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.config.credentials.OrgForvalterServiceProperties;
 import no.nav.pdl.forvalter.consumer.command.OrganisasjonForvalterCommand;
 import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -17,13 +17,13 @@ public class OrganisasjonForvalterConsumer {
     private static final String IMPORT_ORG_URL = "/api/v2/organisasjoner/framiljoe";
 
     private final WebClient webClient;
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
     private final ServerProperties properties;
 
-    public OrganisasjonForvalterConsumer(AccessTokenService accessTokenService,
+    public OrganisasjonForvalterConsumer(TokenExchange tokenExchange,
                                          OrgForvalterServiceProperties properties) {
 
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
         this.properties = properties;
         this.webClient = WebClient
                 .builder()
@@ -33,7 +33,7 @@ public class OrganisasjonForvalterConsumer {
 
     public Map<String, Map<String, Object>> get(String orgNummer) {
 
-        return accessTokenService.generateToken(properties).flatMap(
+        return tokenExchange.generateToken(properties).flatMap(
                         token -> new OrganisasjonForvalterCommand(webClient, IMPORT_ORG_URL,
                                 String.format("orgnummer=%s", orgNummer), token.getTokenValue()).call())
                 .block();

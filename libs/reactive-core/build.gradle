@@ -1,17 +1,33 @@
-import no.nav.testnav.dependencies.gradle.DependenciesPlugin
-
 plugins {
-    id 'no.nav.testnav.dependencies'
+    id "org.sonarqube" version "3.3"
     id 'java-library'
     id 'maven-publish'
+    id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
+
+sonarqube {
+    properties {
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.projectKey", "testnav-reactive-core"
+        property "sonar.projectName", "testnav-reactive-core"
+        property "sonar.organization", "navit"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.project.monorepo.enabled", true
+        property "sonar.login", System.getenv("SONAR_TOKEN")
+    }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.boot:spring-boot-dependencies:2.5.7'
+    }
+}
+
 
 group = 'no.nav.testnav.libs'
 
 repositories {
-    maven {
-        url = uri('https://repo1.maven.org/maven2/')
-    }
+    mavenCentral()
     mavenLocal()
 }
 
@@ -35,14 +51,23 @@ publishing {
     publications {
         gpr(MavenPublication) {
             from(components.java)
+
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
         }
     }
 }
 
 dependencies {
-    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    implementation 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 
-    implementation "org.springframework.boot:spring-boot-starter-webflux:${DependenciesPlugin.springBoot}"
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
 }

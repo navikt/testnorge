@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProfile name="prod,dev">
+        <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                    <rootCauseFirst>true</rootCauseFirst>
+                    <maxDepthPerThrowable>256</maxDepthPerThrowable>
+                    <maxLength>10280</maxLength>
+                    <shortenedClassNameLength>20</shortenedClassNameLength>
+                    <exclude>^sun\.reflect\..*\.invoke</exclude>
+                    <exclude>^net\.sf\.cglib\.proxy\.MethodProxy\.invoke</exclude>
+                    <exclude>java\.util\.concurrent\..*</exclude>
+                    <exclude>org\.apache\.catalina\..*</exclude>
+                    <exclude>org\.apache\.coyote\..*</exclude>
+                    <exclude>org\.apache\.tomcat\..*</exclude>
+                </throwableConverter>
+            </encoder>
+        </appender>
+        <root level="INFO">
+            <appender-ref ref="stdout_json"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="local">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <charset>UTF-8</charset>
+                <pattern>
+                    %d{HH:mm:ss.SSS} %highlight(%p) | %yellow(%logger{0}): %m%n
+                </pattern>
+            </encoder>
+        </appender>
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <logger name="no.nav.testnav.libs.reactivecore.filter.RequestLogger">
+        <level value="TRACE"/>
+    </logger>
+</configuration>

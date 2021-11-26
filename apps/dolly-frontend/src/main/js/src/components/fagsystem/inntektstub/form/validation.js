@@ -3,9 +3,9 @@ import _get from 'lodash/get'
 import { addDays, areIntervalsOverlapping, subMonths } from 'date-fns'
 import { messages, requiredDate, requiredNumber, requiredString } from '~/utils/YupValidations'
 
-const unikOrgMndTest = (validation) => {
+const unikOrgMndTest = (unikValidation) => {
 	const errorMsg = 'Kombinasjonen av år, måned og virksomhet er ikke unik'
-	return validation.test('unikhet', errorMsg, function isUniqueCombination(orgnr) {
+	return unikValidation.test('unikhet', errorMsg, function isUniqueCombination(orgnr) {
 		if (!orgnr) return true
 
 		const values = this.options.context

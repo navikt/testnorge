@@ -2,7 +2,7 @@ package no.nav.pdl.forvalter.service;
 
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DoedsfallDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
@@ -17,13 +17,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.BOSATT;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.DOED;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.FOEDSELSREGISTRERT;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.FORSVUNNET;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.IKKE_BOSATT;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.MIDLERTIDIG;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO.Folkeregisterpersonstatus.UTFLYTTET;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.BOSATT;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.DOED;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.FOEDSELSREGISTRERT;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.FORSVUNNET;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.IKKE_BOSATT;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.MIDLERTIDIG;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.UTFLYTTET;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -32,7 +32,6 @@ import static org.hamcrest.Matchers.is;
 class FolkeregisterPersonstatusServiceTest {
 
     private static final String FNR_IDENT = "12044512345";
-    private static final String DNR_IDENT = "45027812345";
 
     @InjectMocks
     private FolkeregisterPersonstatusService folkeregisterPersonstatusService;
@@ -42,7 +41,7 @@ class FolkeregisterPersonstatusServiceTest {
 
         var target = folkeregisterPersonstatusService.convert(
                 PersonDTO.builder()
-                        .folkeregisterpersonstatus(List.of(FolkeregisterpersonstatusDTO.builder()
+                        .folkeregisterPersonstatus(List.of(FolkeregisterPersonstatusDTO.builder()
                                 .status(FORSVUNNET)
                                 .isNew(true)
                                 .build()))
@@ -56,8 +55,8 @@ class FolkeregisterPersonstatusServiceTest {
 
         var target = folkeregisterPersonstatusService.convert(
                 PersonDTO.builder()
-                        .folkeregisterpersonstatus(
-                                List.of(FolkeregisterpersonstatusDTO.builder()
+                        .folkeregisterPersonstatus(
+                                List.of(FolkeregisterPersonstatusDTO.builder()
                                         .isNew(true)
                                         .build()))
                         .doedsfall(List.of(
@@ -74,8 +73,8 @@ class FolkeregisterPersonstatusServiceTest {
 
         var target = folkeregisterPersonstatusService.convert(
                 PersonDTO.builder()
-                        .folkeregisterpersonstatus(
-                                List.of(FolkeregisterpersonstatusDTO.builder()
+                        .folkeregisterPersonstatus(
+                                List.of(FolkeregisterPersonstatusDTO.builder()
                                         .isNew(true)
                                         .build()))
                         .opphold(List.of(OppholdDTO.builder()
@@ -91,8 +90,8 @@ class FolkeregisterPersonstatusServiceTest {
 
         var target = folkeregisterPersonstatusService.convert(
                 PersonDTO.builder()
-                        .folkeregisterpersonstatus(
-                                List.of(FolkeregisterpersonstatusDTO.builder()
+                        .folkeregisterPersonstatus(
+                                List.of(FolkeregisterPersonstatusDTO.builder()
                                         .isNew(true)
                                         .build()))
                         .utflytting(List.of(UtflyttingDTO.builder()
@@ -109,8 +108,8 @@ class FolkeregisterPersonstatusServiceTest {
         var target = folkeregisterPersonstatusService.convert(
                 PersonDTO.builder()
                         .ident(FNR_IDENT)
-                        .folkeregisterpersonstatus(
-                                List.of(FolkeregisterpersonstatusDTO.builder()
+                        .folkeregisterPersonstatus(
+                                List.of(FolkeregisterPersonstatusDTO.builder()
                                         .isNew(true)
                                         .build()))
                         .bostedsadresse(List.of(BostedadresseDTO.builder()
@@ -127,8 +126,8 @@ class FolkeregisterPersonstatusServiceTest {
         var target = folkeregisterPersonstatusService.convert(
                 PersonDTO.builder()
                         .ident(FNR_IDENT)
-                        .folkeregisterpersonstatus(
-                                List.of(FolkeregisterpersonstatusDTO.builder()
+                        .folkeregisterPersonstatus(
+                                List.of(FolkeregisterPersonstatusDTO.builder()
                                         .isNew(true)
                                         .build()))
                         .bostedsadresse(List.of(BostedadresseDTO.builder()
@@ -145,8 +144,8 @@ class FolkeregisterPersonstatusServiceTest {
         var target = folkeregisterPersonstatusService.convert(
                 PersonDTO.builder()
                         .ident(FNR_IDENT)
-                        .folkeregisterpersonstatus(
-                                List.of(FolkeregisterpersonstatusDTO.builder()
+                        .folkeregisterPersonstatus(
+                                List.of(FolkeregisterPersonstatusDTO.builder()
                                         .isNew(true)
                                         .build()))
                         .bostedsadresse(List.of(BostedadresseDTO.builder()
@@ -163,8 +162,8 @@ class FolkeregisterPersonstatusServiceTest {
         var target = folkeregisterPersonstatusService.convert(
                 PersonDTO.builder()
                         .ident(FNR_IDENT)
-                        .folkeregisterpersonstatus(
-                                List.of(FolkeregisterpersonstatusDTO.builder()
+                        .folkeregisterPersonstatus(
+                                List.of(FolkeregisterPersonstatusDTO.builder()
                                         .isNew(true)
                                         .build()))
                         .build()).get(0);

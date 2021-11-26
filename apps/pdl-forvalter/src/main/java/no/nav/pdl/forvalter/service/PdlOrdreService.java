@@ -6,8 +6,8 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.database.model.DbAlias;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
-import no.nav.pdl.forvalter.domain.Ordre;
 import no.nav.pdl.forvalter.dto.HistoriskIdent;
+import no.nav.pdl.forvalter.dto.Ordre;
 import no.nav.pdl.forvalter.dto.PdlDelete;
 import no.nav.pdl.forvalter.dto.PdlFalskIdentitet;
 import no.nav.pdl.forvalter.dto.PdlForeldreansvar;
@@ -16,7 +16,6 @@ import no.nav.pdl.forvalter.dto.PdlKontaktadresse;
 import no.nav.pdl.forvalter.dto.PdlTilrettelagtKommunikasjon;
 import no.nav.pdl.forvalter.dto.PdlVergemaal;
 import no.nav.pdl.forvalter.exception.NotFoundException;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO.PersonHendelserDTO;
 import org.springframework.stereotype.Service;
@@ -98,7 +97,7 @@ public class PdlOrdreService {
                         deployService.createOrder(PDL_NAVN, person.getIdent(), person.getPerson().getNavn()),
                         deployService.createOrder(PDL_KJOENN, person.getIdent(), person.getPerson().getKjoenn()),
                         deployService.createOrder(PDL_FOEDSEL, person.getIdent(), person.getPerson().getFoedsel()),
-                        deployService.createOrder(PDL_FOLKEREGISTER_PERSONSTATUS, person.getIdent(), person.getPerson().getFolkeregisterpersonstatus()),
+                        deployService.createOrder(PDL_FOLKEREGISTER_PERSONSTATUS, person.getIdent(), person.getPerson().getFolkeregisterPersonstatus()),
                         deployService.createOrder(PDL_STATSBORGERSKAP, person.getIdent(), person.getPerson().getStatsborgerskap()),
                         deployService.createOrder(PDL_KONTAKTADRESSE, person.getIdent(), mapperFacade.mapAsList(person.getPerson().getKontaktadresse(), PdlKontaktadresse.class)),
                         deployService.createOrder(PDL_BOSTEDADRESSE, person.getIdent(), person.getPerson().getBostedsadresse()),

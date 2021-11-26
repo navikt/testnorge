@@ -1,0 +1,24 @@
+name: Lib csv-converter
+
+on:
+  push:
+    paths:
+      - libs/csv-converter/**
+      - .github/workflows/lib.csv-converter.yml
+
+jobs:
+  scan:
+    name: Scan
+    uses: navikt/testnorge/.github/workflows/common.sonar.yml@master
+    with:
+      working-directory: 'libs/csv-converter/'
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  build:
+    name: Build
+    uses: navikt/testnorge/.github/workflows/common.java-build.yml@master
+    with:
+      working-directory: 'libs/csv-converter/'
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}

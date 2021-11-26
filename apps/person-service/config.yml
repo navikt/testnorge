@@ -31,6 +31,8 @@ spec:
           cluster: dev-fss
         - application: dolly-backend-dev
           cluster: dev-fss
+        - application: testnorge-opprett-person-pdl
+          cluster: dev-fss
     outbound:
       external:
         - host: tps-forvalteren-proxy.dev-fss-pub.nais.io
@@ -57,3 +59,4 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://testnav-person-service.dev.intern.nav.no"
+    - "https://testnav-person-service.dev.adeo.no"

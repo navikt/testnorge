@@ -11,7 +11,7 @@ import no.nav.pdl.forvalter.dto.IdentDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
@@ -64,8 +64,8 @@ public class CreatePersonService {
                 .adressebeskyttelse(nonNull(request.getGradering()) ? List.of(AdressebeskyttelseDTO.builder()
                         .gradering(request.getGradering())
                         .build()) : null)
-                .folkeregisterpersonstatus(
-                        List.of(FolkeregisterpersonstatusDTO.builder().build()))
+                .folkeregisterPersonstatus(
+                        List.of(FolkeregisterPersonstatusDTO.builder().build()))
                 .build();
     }
 
@@ -77,7 +77,7 @@ public class CreatePersonService {
                 new PersonDTO());
 
         var delivery = Stream.of(
-                        identPoolConsumer.getIdents(
+                        identPoolConsumer.acquireIdents(
                                 mapperFacade.map(nonNull(request) ? request : new PersonRequestDTO(), HentIdenterRequest.class)),
                         Flux.just(navnService.convert(mergedPerson.getNavn())))
                 .reduce(Flux.empty(), Flux::merge)

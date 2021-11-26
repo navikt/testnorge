@@ -3,14 +3,18 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 spring:
   application:
     name: testnav-dokarkiv-proxy
-    desciption: Proxy for dokarkiv som legger på sikkerhet og redirecter til riktig miljø.
+    desciption: Proxy for dokarkiv som legger på sikkerhet og redirecter til riktig miljø..
   security:
     oauth2:
       resourceserver:
-        jwt:
+        aad:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+        tokenx:
+          issuer-uri: https://tokendings.dev-gcp.nais.io
+          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          accepted-audience: ${TOKEN_X_CLIENT_ID}
   cloud:
     gateway:
       httpclient:

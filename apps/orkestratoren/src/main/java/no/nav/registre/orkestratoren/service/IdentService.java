@@ -51,7 +51,6 @@ public class IdentService {
         slettedeIdenterResponse.getTpsfStatus().setSlettedeMeldingIderFraTpsf(testnorgeSkdConsumer.slettIdenterFraAvspillerguppe(avspillergruppeId, Collections.singletonList(miljoe), identer));
         slettedeIdenterResponse.setInstStatus(testnorgeInstConsumer.slettIdenterFraInst(identer));
         slettedeIdenterResponse.setSigrunStatus(testnorgeSigrunConsumer.slettIdenterFraSigrun(testdataEier, miljoe, identer));
-        slettedeIdenterResponse.setAaregStatus(testnorgeAaregConsumer.slettIdenterFraAaregstub(identer));
         // TODO: Fiks arena og legg inn denne igjen
         // slettedeIdenterResponse.setArenaForvalterStatus(arenaConsumer.slettIdenter(miljoe, identer));
 

@@ -21,7 +21,6 @@ import static no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility.getIdenttype;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FNR;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
-import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Service
@@ -106,26 +105,26 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
         }
 
         if (nonNull(bostedadresse.getVegadresse())) {
+
             var vegadresse =
                     adresseServiceConsumer.getVegadresse(bostedadresse.getVegadresse(), bostedadresse.getAdresseIdentifikatorFraMatrikkelen());
             bostedadresse.setAdresseIdentifikatorFraMatrikkelen(vegadresse.getMatrikkelId());
             mapperFacade.map(vegadresse, bostedadresse.getVegadresse());
 
         } else if (nonNull(bostedadresse.getMatrikkeladresse())) {
+
             var matrikkeladresse =
                     adresseServiceConsumer.getMatrikkeladresse(bostedadresse.getMatrikkeladresse(), bostedadresse.getAdresseIdentifikatorFraMatrikkelen());
             bostedadresse.setAdresseIdentifikatorFraMatrikkelen(matrikkeladresse.getMatrikkelId());
             mapperFacade.map(matrikkeladresse, bostedadresse.getMatrikkeladresse());
 
-        } else if (nonNull(bostedadresse.getUtenlandskAdresse())) {
+        } else if (nonNull(bostedadresse.getUtenlandskAdresse()) && bostedadresse.getUtenlandskAdresse().isEmpty()) {
 
             bostedadresse.setMaster(DbVersjonDTO.Master.PDL);
-            if (isBlank(bostedadresse.getUtenlandskAdresse().getAdressenavnNummer())) {
-                bostedadresse.setUtenlandskAdresse(
-                        dummyAdresseService.getUtenlandskAdresse(
-                                person.getStatsborgerskap().stream()
-                                        .findFirst().orElse(new StatsborgerskapDTO()).getLandkode()));
-            }
+            bostedadresse.setUtenlandskAdresse(
+                    dummyAdresseService.getUtenlandskAdresse(
+                            person.getStatsborgerskap().stream()
+                                    .findFirst().orElse(new StatsborgerskapDTO()).getLandkode()));
         }
 
         bostedadresse.setCoAdressenavn(genererCoNavn(bostedadresse.getOpprettCoAdresseNavn()));

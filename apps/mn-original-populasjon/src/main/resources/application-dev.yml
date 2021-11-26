@@ -1,5 +1,0 @@
-azure.app.client.id: ${client_id}
-azure.app.client.secret: ${client_secret}
-
-SERVICEUSER_USERNAME: dummy
-SERVICEUSER_PASSWORD: dummy

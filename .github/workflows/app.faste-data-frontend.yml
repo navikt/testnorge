@@ -1,0 +1,37 @@
+name: App faste-data-frontend
+
+on:
+  push:
+    paths:
+      - apps/faste-data-frontend/**
+      - .github/workflows/app.faste-data-frontend.yml
+
+jobs:
+  scan:
+    name: Scan
+    uses: navikt/testnorge/.github/workflows/common.sonar.yml@master
+    with:
+      working-directory: 'apps/faste-data-frontend/'
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  build:
+    name: Build
+    uses: navikt/testnorge/.github/workflows/common.build-and-publish.frontend.yml@master
+    if: ${{ github.ref == 'refs/heads/master' }}
+    with:
+      working-directory: 'apps/faste-data-frontend/'
+      app-name: 'faste-data-frontend'
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+  deploy-dev:
+    name: Deploy
+    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
+    needs: build
+    if: ${{ github.ref == 'refs/heads/master' }}
+    with:
+      resource: 'apps/faste-data-frontend/config.yml'
+      app-name: 'faste-data-frontend'
+      cluster: 'dev-gcp'
+    secrets:
+      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}

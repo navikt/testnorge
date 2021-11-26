@@ -1,0 +1,56 @@
+plugins {
+    id 'java'
+    id "org.sonarqube" version "3.3"
+    id 'org.springframework.boot' version "2.5.7"
+    id 'io.spring.dependency-management' version "1.0.11.RELEASE"
+}
+
+sonarqube {
+    properties {
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.projectKey", "testnav-kodeverk-proxy"
+        property "sonar.projectName", "testnav-kodeverk-proxy"
+        property "sonar.organization", "navit"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.project.monorepo.enabled", true
+        property "sonar.login", System.getenv("SONAR_TOKEN")
+    }
+}
+
+bootJar {
+    archiveFileName = "app.jar"
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.4'
+    }
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+test {
+    useJUnitPlatform()
+}
+
+dependencies {
+
+    implementation 'no.nav.testnav.libs:reactive-core'
+    implementation 'no.nav.testnav.libs:reactive-proxy'
+
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
+    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+    implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
+    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
+    implementation 'org.hibernate.validator:hibernate-validator'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
+}

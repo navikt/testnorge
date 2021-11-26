@@ -40,6 +40,9 @@ module.exports = {
     ],
   },
   resolve: {
+    fallback: {
+      stream: require.resolve('stream-browserify'),
+    },
     alias: {
       '@': path.resolve(__dirname, 'src'),
     },

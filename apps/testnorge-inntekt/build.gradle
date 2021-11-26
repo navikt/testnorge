@@ -1,10 +1,21 @@
-import no.nav.testnav.dependencies.gradle.DependenciesPlugin
-
 plugins {
-    id 'no.nav.testnav.dependencies'
     id 'java'
-    id 'org.springframework.boot' version "2.5.5"
+    id "org.sonarqube" version "3.3"
+    id 'org.springframework.boot' version "2.5.7"
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
+}
+
+
+sonarqube {
+    properties {
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.projectKey", "testnorge-inntekt"
+        property "sonar.projectName", "testnorge-inntekt"
+        property "sonar.organization", "navit"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.project.monorepo.enabled", true
+        property "sonar.login", System.getenv("SONAR_TOKEN")
+    }
 }
 
 bootJar {
@@ -12,7 +23,7 @@ bootJar {
 }
 dependencyManagement {
     imports {
-        mavenBom  "org.springframework.cloud:spring-cloud-dependencies:${DependenciesPlugin.springCloud}"
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.4'
     }
 }
 
@@ -21,16 +32,21 @@ test {
 }
 
 repositories {
-    maven {
-        url = uri('https://repo1.maven.org/maven2/')
-    }
+    mavenCentral()
     mavenLocal()
 }
 
 dependencies {
 
-    implementation 'no.nav.testnav.libs:servlet-security'
+    implementation('com.google.guava:guava') {
+        version {
+            strictly '20.0'
+        }
+    }
+
+    implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:servlet-core'
+    implementation 'no.nav.testnav.libs:servlet-insecure-security'
     implementation 'no.nav.testnav.libs:database'
     implementation 'no.nav.testnav.libs:domain'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
@@ -50,9 +66,8 @@ dependencies {
     implementation 'commons-lang:commons-lang:2.6'
 
     implementation 'no.nav.registre:testnorge-consumers:1.12.0-RELEASE'
-    implementation 'io.springfox:springfox-swagger2:2.9.2'
-    implementation 'io.springfox:springfox-swagger-ui:2.9.2'
-    implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
+    implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
 
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'javax.validation:validation-api:2.0.1.Final'
@@ -62,11 +77,9 @@ dependencies {
     implementation 'org.postgresql:postgresql'
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
-    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'no.nav.testnav.libs:testing'
 
-    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    implementation 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 }

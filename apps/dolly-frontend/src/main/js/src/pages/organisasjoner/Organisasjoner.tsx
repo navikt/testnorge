@@ -16,7 +16,7 @@ import _isEmpty from 'lodash/isEmpty'
 import { dollySlack } from '~/components/dollySlack/dollySlack'
 import TomOrgListe from './TomOrgliste'
 
-type Organisasjoner = {
+type OrganisasjonerProps = {
 	history: History
 	state: any
 	isFetching: boolean
@@ -55,7 +55,7 @@ export default function Organisasjoner({
 	getOrganisasjonBestillingStatus,
 	getOrganisasjonBestilling,
 	fetchOrganisasjoner,
-}: Organisasjoner) {
+}: OrganisasjonerProps) {
 	const [visning, setVisning] = useState(VISNING_ORGANISASJONER)
 	const byttVisning = (event: React.ChangeEvent<any>) => setVisning(event.target.value)
 

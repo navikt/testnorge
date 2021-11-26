@@ -1,17 +1,14 @@
 plugins {
-    id "com.gradle.enterprise" version "3.4.1"
+    id "com.gradle.enterprise" version "3.7.2"
 }
 
 rootProject.name = 'varslinger-service'
 
-includeBuild '../../gradlePlugins'
-
 includeBuild '../../libs/servlet-core'
+includeBuild '../../libs/security-core'
 includeBuild '../../libs/database'
 includeBuild '../../libs/data-transfer-objects'
 includeBuild '../../libs/servlet-security'
-includeBuild '../../libs/avro-schema'
-includeBuild '../../libs/testing'
 
 gradleEnterprise {
     buildScan {

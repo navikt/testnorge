@@ -5,8 +5,8 @@ export type ErrorAlertstripeProps = {
   label: string;
 };
 
-const ErrorAlertstripe = ({ label }: ErrorAlertstripeProps) => (
-  <Alertstripe label={label} type="feil" />
+const ErrorAlertstripe = ({ label, ...props }: ErrorAlertstripeProps) => (
+  <Alertstripe {...props} label={label} type="feil" />
 );
 
 ErrorAlertstripe.displayName = 'ErrorAlertstripe';

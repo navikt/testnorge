@@ -11,11 +11,11 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { Adresse } from '~/service/services/AdresseService'
 import { AdresseVelger } from '~/components/adresseVelger'
 
-interface GateadresseDetaljert {
+interface GateadresseDetaljertProps {
 	formikBag: FormikProps<{}>
 }
 
-export const GateadresseDetaljert = ({ formikBag }: GateadresseDetaljert) => {
+export const GateadresseDetaljert = ({ formikBag }: GateadresseDetaljertProps) => {
 	const norskAdresse = 'tpsf.midlertidigAdresse.norskAdresse'
 
 	const settAdresse = (adresse: Adresse) => {

@@ -7,7 +7,7 @@ export const CriticalError = (props: { error: string }) => {
 			return 'Problemer med å hente gyldige miljøer. Prøv å refresh siden (ctrl + R).'
 		else if (stackTrace.includes('current'))
 			return 'Problemer med å hente Azure id for innlogget bruker. Prøv å refresh siden (ctrl + R).'
-		else return 'Problemer med å hente dolly config. Prøv å refresh siden (ctrl + R).'
+		else return 'Problemer med Dolly. Prøv å refresh siden (ctrl + R).'
 	}
 
 	return (

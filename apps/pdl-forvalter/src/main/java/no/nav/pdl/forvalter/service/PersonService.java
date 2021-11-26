@@ -11,21 +11,21 @@ import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.HentIdenterRequest;
+import no.nav.pdl.forvalter.dto.Paginering;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterpersonstatusDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO.PersonIDDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
@@ -33,7 +33,6 @@ import reactor.core.publisher.Flux;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -42,7 +41,7 @@ import static java.lang.System.currentTimeMillis;
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
 
 @Slf4j
@@ -51,8 +50,10 @@ import static org.apache.commons.lang3.StringUtils.isNumeric;
 public class PersonService {
 
     private static final String INVALID_IDENT = "Ident må være på 11 tegn og numerisk";
-    private static final String EMPTY_GET_REQUEST = "Angi en av parametrene 'identer' eller 'fragment'";
     private static final String VIOLATION_ALIAS_EXISTS = "Utgått ident kan ikke endres. Benytt gjeldende ident %s for denne operasjonen";
+    private static final String IDENT_ALREADY_EXISTS = "Ident %s eksisterer allerede i database";
+
+    private static final String SORT_BY_FIELD = "sistOppdatert";
 
     private final PersonRepository personRepository;
     private final MergeService mergeService;
@@ -126,7 +127,7 @@ public class PersonService {
     }
 
     @Transactional(readOnly = true)
-    public List<FullPersonDTO> getPerson(List<String> identer, String fragment) {
+    public List<FullPersonDTO> getPerson(List<String> identer, Paginering paginering) {
 
         if (nonNull(identer) && !identer.isEmpty()) {
             var query = new HashSet<>(identer);
@@ -139,24 +140,19 @@ public class PersonService {
                     .map(DbAlias::getTidligereIdent)
                     .collect(Collectors.toSet()));
 
-            return mapperFacade.mapAsList(personRepository.findByIdentIn(query), FullPersonDTO.class);
-
-        } else if (isNotBlank(fragment)) {
-
-            return searchPerson(fragment).stream()
-                    .map(person -> FullPersonDTO.builder()
-                            .identitet(PersonIDDTO.builder()
-                                    .ident(person.getIdent())
-                                    .fornavn(person.getFornavn())
-                                    .mellomnavn(person.getMellomnavn())
-                                    .etternavn(person.getEtternavn())
-                                    .build())
-                            .build())
-                    .collect(Collectors.toList());
+            return mapperFacade.mapAsList(personRepository.findByIdentIn(query,
+                            PageRequest.of(paginering.getSidenummer(),
+                                    paginering.getSidestoerrelse(),
+                                    Sort.by(SORT_BY_FIELD).descending())),
+                    FullPersonDTO.class);
 
         } else {
 
-            throw new InvalidRequestException(EMPTY_GET_REQUEST);
+            return mapperFacade.mapAsList(personRepository.findAll(
+                            PageRequest.of(paginering.getSidenummer(),
+                                    paginering.getSidestoerrelse(),
+                                    Sort.by(SORT_BY_FIELD).descending())),
+                    FullPersonDTO.class);
         }
     }
 
@@ -166,9 +162,17 @@ public class PersonService {
             request.setPerson(new PersonDTO());
         }
 
-        request.getPerson().setIdent(identPoolConsumer.getIdents(
-                        mapperFacade.map(request, HentIdenterRequest.class))
-                .blockFirst().stream().findFirst().get().getIdent());
+        if (isBlank(request.getOpprettFraIdent())) {
+            request.getPerson().setIdent(identPoolConsumer.acquireIdents(
+                            mapperFacade.map(request, HentIdenterRequest.class))
+                    .blockFirst().stream().findFirst().get().getIdent());
+        } else {
+            if (personRepository.existsByIdent(request.getOpprettFraIdent())) {
+                throw new InvalidRequestException(format(IDENT_ALREADY_EXISTS, request.getOpprettFraIdent()));
+            }
+            identPoolConsumer.allokerIdent(request.getOpprettFraIdent()).block();
+            request.getPerson().setIdent(request.getOpprettFraIdent());
+        }
 
         if (request.getPerson().getKjoenn().isEmpty()) {
             request.getPerson().getKjoenn().add(new KjoennDTO());
@@ -185,8 +189,8 @@ public class PersonService {
         if (request.getPerson().getStatsborgerskap().isEmpty()) {
             request.getPerson().getStatsborgerskap().add(new StatsborgerskapDTO());
         }
-        if (request.getPerson().getFolkeregisterpersonstatus().isEmpty()) {
-            request.getPerson().getFolkeregisterpersonstatus().add(new FolkeregisterpersonstatusDTO());
+        if (request.getPerson().getFolkeregisterPersonstatus().isEmpty()) {
+            request.getPerson().getFolkeregisterPersonstatus().add(new FolkeregisterPersonstatusDTO());
         }
 
         return updatePerson(request.getPerson().getIdent(), PersonUpdateRequestDTO.builder()
@@ -201,20 +205,5 @@ public class PersonService {
             throw new InvalidRequestException(
                     format(VIOLATION_ALIAS_EXISTS, alias.get().getPerson().getIdent()));
         }
-    }
-
-    private List<DbPerson> searchPerson(String query) {
-        Optional<String> ident = Stream.of(query.split(" "))
-                .filter(StringUtils::isNumeric)
-                .findFirst();
-
-        List<String> navn = List.of(query.split(" ")).stream()
-                .filter(fragment -> isNotBlank(fragment) && !StringUtils.isNumeric(fragment))
-                .collect(Collectors.toList());
-
-        return personRepository.findByWildcardIdent(ident.orElse(null),
-                !navn.isEmpty() ? navn.get(0).toUpperCase() : null,
-                navn.size() > 1 ? navn.get(1).toUpperCase() : null,
-                PageRequest.of(0, 10));
     }
 }

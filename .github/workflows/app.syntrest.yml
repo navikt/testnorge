@@ -1,0 +1,37 @@
+name: App syntrest
+
+on:
+  push:
+    paths:
+      - apps/syntrest/**
+      - .github/workflows/app.syntrest.yml
+
+jobs:
+  scan:
+    name: Scan
+    uses: navikt/testnorge/.github/workflows/common.sonar.yml@master
+    with:
+      working-directory: 'apps/syntrest/'
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  build:
+    name: Build
+    uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@master
+    if: ${{ github.ref == 'refs/heads/master' }}
+    with:
+      working-directory: 'apps/syntrest/'
+      app-name: 'syntrest'
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+  deploy:
+    name: Deploy
+    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
+    needs: build
+    if: ${{ github.ref == 'refs/heads/master' }}
+    with:
+      resource: 'apps/syntrest/nais.yaml'
+      app-name: 'syntrest'
+      cluster: 'dev-fss'
+    secrets:
+      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}

@@ -1,0 +1,39 @@
+name: Proxy batch-adeo-proxy
+
+on:
+  push:
+    paths:
+      - proxies/batch-adeo-proxy/**
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
+      - .github/workflows/proxy.batch-adeo-proxy.yml
+
+jobs:
+  scan:
+    name: Scan
+    uses: navikt/testnorge/.github/workflows/common.sonar.yml@master
+    with:
+      working-directory: 'proxies/batch-adeo-proxy/'
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  build:
+    name: Build
+    uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@master
+    if: ${{ github.ref == 'refs/heads/master' }}
+    with:
+      working-directory: 'proxies/batch-adeo-proxy/'
+      app-name: 'batch-adeo-proxy'
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+  deploy-dev:
+    name: Deploy
+    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
+    needs: build
+    if: ${{ github.ref == 'refs/heads/master' }}
+    with:
+      resource: 'proxies/batch-adeo-proxy/config.yml'
+      app-name: 'batch-adeo-proxy'
+      cluster: 'dev-fss'
+    secrets:
+      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}

@@ -103,6 +103,22 @@ export const Personinfo = ({ data, visTittel = true }) => {
 						)}
 					</>
 				)}
+				{data.typeSikkerhetTiltak && (
+					<>
+						<TitleValue
+							title="Type sikkerhetstiltak"
+							value={`${data.typeSikkerhetTiltak} - ${data.beskrSikkerhetTiltak}`}
+						/>
+						<TitleValue
+							title="Sikkerhetstiltak starter"
+							value={Formatters.formatDate(data.sikkerhetTiltakDatoFom)}
+						/>
+						<TitleValue
+							title="Sikkerhetstiltak opphører"
+							value={Formatters.formatDate(data.sikkerhetTiltakDatoTom)}
+						/>
+					</>
+				)}
 			</div>
 		</div>
 	)

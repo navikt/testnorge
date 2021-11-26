@@ -1,13 +1,15 @@
-import no.nav.testnav.dependencies.gradle.DependenciesPlugin
-
 plugins {
-    id 'no.nav.testnav.dependencies'
+    id "org.sonarqube" version "3.3"
     id 'java-library'
     id 'maven-publish'
-    id 'com.github.davidmc24.gradle.plugin.avro' version '1.2.0'
+    id 'com.github.davidmc24.gradle.plugin.avro' version '1.3.0'
 }
 
 group = 'no.nav.testnav.libs'
+
+sonarqube {
+    skipProject = true
+}
 
 repositories {
     mavenCentral()
@@ -39,6 +41,6 @@ publishing {
 }
 
 dependencies {
-    implementation 'org.apache.avro:avro-compiler:1.10.0'
-    implementation 'org.apache.avro:avro-maven-plugin:1.10.0'
+    implementation 'org.apache.avro:avro-compiler:1.11.0'
+    implementation 'org.apache.avro:avro-maven-plugin:1.11.0'
 }

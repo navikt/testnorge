@@ -1,0 +1,63 @@
+plugins {
+    id 'java'
+    id "org.sonarqube" version "3.3"
+    id 'org.springframework.boot' version "2.5.7"
+    id 'io.spring.dependency-management' version "1.0.11.RELEASE"
+}
+
+
+sonarqube {
+    properties {
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.projectKey", "testnorge-token-provider"
+        property "sonar.projectName", "testnorge-token-provider"
+        property "sonar.organization", "navit"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.project.monorepo.enabled", true
+        property "sonar.login", System.getenv("SONAR_TOKEN")
+    }
+}
+bootJar {
+    archiveFileName = "app.jar"
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.4'
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+
+    implementation 'no.nav.testnav.libs:servlet-core'
+
+    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
+
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+
+    implementation 'io.springfox:springfox-swagger2:3.0.0'
+    implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+    implementation 'javax.xml.bind:jaxb-api'
+    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+
+    testImplementation 'junit:junit:4.13.2' //TODO upgrade to JUnit5
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    implementation 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+}

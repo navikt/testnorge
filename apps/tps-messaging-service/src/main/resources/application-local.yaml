@@ -1,0 +1,20 @@
+azure.app.client.id: ${client_id}
+azure.app.client.secret: ${client_secret}
+TOKEN_X_CLIENT_ID: dev-gcp:dolly:testnav-adresse-service
+
+config:
+  mq:
+    test:
+      host: localhost
+      port: 1414
+      queueManager: QM1
+      user: admin
+      password: passw0rd
+    preprod:
+      host: localhost
+      port: 1414
+      queueManager: QM1
+      user: admin
+      password: passw0rd
+    channel: DEV.ADMIN.SVRCONN
+    queue: DEV.QUEUE.1

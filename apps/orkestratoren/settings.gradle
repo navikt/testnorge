@@ -1,18 +1,14 @@
 plugins {
-    id "com.gradle.enterprise" version "3.4.1"
+    id "com.gradle.enterprise" version "3.7.2"
 }
 
 rootProject.name = 'orkestratoren'
-
-includeBuild '../../gradlePlugins'
 
 includeBuild '../../libs/commands'
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/servlet-security'
 includeBuild '../../libs/domain'
 includeBuild '../../libs/data-transfer-objects'
-includeBuild '../../libs/reporting'
-includeBuild '../../libs/avro-schema'
 
 gradleEnterprise {
     buildScan {

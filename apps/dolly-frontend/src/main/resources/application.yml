@@ -10,12 +10,6 @@ spring:
     oauth2:
       client:
         registration:
-#          idporten:
-#            client-id: ${IDPORTEN_CLIENT_ID}
-#            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
-#            post-logout-redirect-uri: ${POST_LOGOUT_REDIRECT_URI}
-#            scope: openid
-#            client-authentication-method: private_key_jwt
           aad:
             client-id: ${azure.app.client.id}
             client-secret: ${azure.app.client.secret}
@@ -27,8 +21,6 @@ spring:
             authorization-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/authorize
             token-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/token
             jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
-#          idporten:
-#            issuer-uri: https://oidc-ver2.difi.no/idporten-oidc-provider/
 consumers:
   testnav-organisasjon-faste-data-service:
     cluster: dev-gcp
@@ -103,8 +95,8 @@ consumers:
   testnav-varslinger-service:
     cluster: dev-gcp
     namespace: dolly
-    name: testnav-varslinger-service
-    url: https://testnav-varslinger-service.dev.intern.nav.no
+    name: ${VARSLINGER_NAME}
+    url: ${VARSLINGER_URL}
   testnav-organisasjon-forvalter:
     cluster: dev-gcp
     namespace: dolly
@@ -120,11 +112,11 @@ consumers:
     namespace: dolly
     name: testnav-miljoer-service
     url: https://testnav-miljoer-service.dev.intern.nav.no
-  udi-stub:
-    cluster: dev-fss
+  testnav-udistub-proxy:
+    name: testnav-udistub-proxy
     namespace: dolly
-    name: ${UDI_STUB_NAME}
-    url: ${UDI_STUB_URL}
+    url: https://testnav-udistub-proxy.dev-fss-pub.nais.io/udistub
+    cluster: dev-fss
   person-search-service:
     cluster: dev-fss
     namespace: dolly
@@ -140,3 +132,8 @@ consumers:
     namespace: dolly
     name: testnorge-tilbakemelding-api
     url: https://testnorge-tilbakemelding-api.dev.intern.nav.no
+  testnav-pdl-forvalter:
+    cluster: dev-gcp
+    namespace: dolly
+    name: ${PDL_FORVALTER_NAME}
+    url: ${PDL_FORVALTER_URL}

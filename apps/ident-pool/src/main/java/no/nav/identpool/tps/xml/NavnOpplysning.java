@@ -10,8 +10,6 @@ import java.util.List;
 @Getter
 public class NavnOpplysning extends TpsServiceRutine {
 
-
-
     @JacksonXmlProperty(localName = "antallFnr")
     private final int antallFnr;
 

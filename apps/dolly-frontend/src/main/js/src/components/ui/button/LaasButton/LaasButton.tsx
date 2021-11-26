@@ -7,13 +7,13 @@ import Icon from '~/components/ui/icon/Icon'
 import Loading from '~/components/ui/loading/Loading'
 import './LaasModal.less'
 
-type LaasButton = {
+type LaasButtonProps = {
 	action: () => void
 	loading: boolean
 	children: string
 }
 
-export const LaasButton = ({ action, loading, children }: LaasButton) => {
+export const LaasButton = ({ action, loading, children }: LaasButtonProps) => {
 	if (loading) return <Loading label="låser..." />
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 

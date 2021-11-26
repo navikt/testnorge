@@ -1,10 +1,21 @@
-import no.nav.testnav.dependencies.gradle.DependenciesPlugin
-
 plugins {
-    id 'no.nav.testnav.dependencies'
     id 'java'
-    id 'org.springframework.boot' version "2.5.5"
+    id "org.sonarqube" version "3.3"
+    id 'org.springframework.boot' version "2.5.7"
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
+}
+
+
+sonarqube {
+    properties {
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.projectKey", "testnorge-medl"
+        property "sonar.projectName", "testnorge-medl"
+        property "sonar.organization", "navit"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.project.monorepo.enabled", true
+        property "sonar.login", System.getenv("SONAR_TOKEN")
+    }
 }
 
 bootJar {
@@ -13,7 +24,7 @@ bootJar {
 
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${DependenciesPlugin.springCloud}"
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.4'
     }
 }
 
@@ -22,9 +33,7 @@ test {
 }
 
 repositories {
-    maven {
-        url = uri('https://repo1.maven.org/maven2/')
-    }
+    mavenCentral()
     mavenLocal()
 }
 
@@ -32,8 +41,8 @@ dependencies {
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:servlet-security'
 
-    implementation 'org.aspectj:aspectjweaver:1.9.6'
-    implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
+    implementation 'org.aspectj:aspectjweaver:1.9.7'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
@@ -47,30 +56,31 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
-    implementation 'org.apache.httpcomponents:httpclient:4.5.12'
-    implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
-    implementation 'org.hibernate:hibernate-core:5.4.21.Final'
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
+    implementation 'org.hibernate:hibernate-core:5.6.1.Final'
     implementation 'org.hibernate.validator:hibernate-validator'
-    implementation 'io.springfox:springfox-swagger2:2.9.2'
-    implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+    implementation 'io.springfox:springfox-swagger2:3.0.0'
+    implementation 'io.springfox:springfox-swagger-ui:3.0.0'
     implementation 'no.nav.registre:testnorge-consumers:1.12.0-RELEASE'
+    implementation 'com.google.guava:guava:31.0.1-jre'
 
     implementation 'com.h2database:h2'
-    implementation 'com.squareup.okhttp3:okhttp:4.7.2'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
 
-    runtimeOnly 'com.oracle.database.jdbc:ojdbc8:19.7.0.0'
+    runtimeOnly 'com.oracle.database.jdbc:ojdbc8:21.3.0.0'
 
-    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    implementation 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.boot:spring-boot-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
-    testImplementation 'junit:junit:4.13'  //TODO upgrade to JUnit5
-    testImplementation 'org.mockito:mockito-core:3.3.3'
+    testImplementation 'junit:junit:4.13.2'  //TODO upgrade to JUnit5
+    testImplementation 'org.mockito:mockito-core:4.1.0'
     testImplementation 'com.h2database:h2:1.4.200'
-    testImplementation 'com.squareup.okhttp3:mockwebserver:4.7.2'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:4.9.3'
 }
 
 description = 'testnorge-medl'

@@ -2,6 +2,7 @@ import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { boadressePaths } from '~/components/fagsystem/tpsf/form/adresser/Adresser'
 import { Attributt, AttributtKategori } from '../Attributt'
+import { initialUtenlandskAdresse } from '~/components/fagsystem/pdlf/form/initialValues'
 
 export const AdressePanel = ({ stateModifier }) => {
 	const sm = stateModifier(AdressePanel.initialValues)
@@ -15,6 +16,7 @@ export const AdressePanel = ({ stateModifier }) => {
 		>
 			<AttributtKategori title="Boadresse">
 				<Attributt attr={sm.attrs.boadresse} />
+				<Attributt attr={sm.attrs.utenlandskAdresse} />
 			</AttributtKategori>
 
 			<AttributtKategori title="Postadresse">
@@ -40,6 +42,26 @@ AdressePanel.initialValues = ({ set, setMulti, del, has }) => ({
 		remove() {
 			del(['tpsf.boadresse', 'tpsf.adresseNrInfo'])
 		},
+	},
+	utenlandskAdresse: {
+		label: 'Har utenlandsk boadresse',
+		checked: has('pdldata.person.bostedsadresse'),
+		add: () =>
+			setMulti(
+				[
+					'pdldata.person.bostedsadresse',
+					[
+						{
+							utenlandskAdresse: initialUtenlandskAdresse,
+							kilde: 'Dolly',
+							master: 'PDL',
+							gjeldende: true,
+						},
+					],
+				],
+				['tpsf.harIngenAdresse', true]
+			),
+		remove: () => del(['pdldata.person.bostedsadresse', 'tpsf.harIngenAdresse']),
 	},
 	postadresse: {
 		label: 'Har postadresse',

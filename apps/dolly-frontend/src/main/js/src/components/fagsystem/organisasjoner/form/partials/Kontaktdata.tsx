@@ -3,11 +3,11 @@ import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { kontaktPaths } from '../paths'
 
-type Kontaktdata = {
+type KontaktdataProps = {
 	path: string
 }
 
-export const Kontaktdata = ({ path }: Kontaktdata) => {
+export const Kontaktdata = ({ path }: KontaktdataProps) => {
 	return (
 		<Kategori title="Kontaktdata" vis={kontaktPaths}>
 			<FormikTextInput name={`${path}.telefon`} label="Telefon" size="large" type="number" />

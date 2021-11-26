@@ -3,9 +3,14 @@ import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 
 type Data = {
 	data: FullmaktData
+}
+
+type DataListe = {
+	data: Array<FullmaktData>
 }
 
 type FullmaktData = {
@@ -21,9 +26,6 @@ export const Visning = ({ data }: Data) => {
 		<>
 			<div className="person-visning_content">
 				<ErrorBoundary>
-					<TitleValue title="Områder" value={Formatters.omraaderArrayToString(data.omraader)} />
-					<TitleValue title="Motparts personident" value={data.motpartsPersonident} />
-					<TitleValue title="Motparts rolle" value={data.motpartsRolle} />
 					<TitleValue
 						title="Gyldig fra og med"
 						value={Formatters.formatDate(data.gyldigFraOgMed)}
@@ -32,19 +34,24 @@ export const Visning = ({ data }: Data) => {
 						title="Gyldig til og med"
 						value={Formatters.formatDate(data.gyldigTilOgMed)}
 					/>
+					<TitleValue title="Områder" value={Formatters.omraaderArrayToString(data.omraader)} />
+					<TitleValue title="Motparts personident" value={data.motpartsPersonident} />
+					<TitleValue title="Motparts rolle" value={data.motpartsRolle} />
 				</ErrorBoundary>
 			</div>
 		</>
 	)
 }
 
-export const PdlFullmakt = ({ data }: Data) => {
+export const PdlFullmakt = ({ data }: DataListe) => {
 	if (!data) return null
 	return (
 		<div>
 			<SubOverskrift label="Fullmakt" iconKind="fullmakt" />
 			{/* @ts-ignore */}
-			<Visning data={data} />
+			<DollyFieldArray data={data} nested>
+				{(fullmakt: FullmaktData) => <Visning data={fullmakt} />}
+			</DollyFieldArray>
 		</div>
 	)
 }

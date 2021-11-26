@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class BostedadresseDTO extends AdresseDTO {
 
     private LocalDateTime angittFlyttedato;
@@ -29,6 +29,7 @@ public class BostedadresseDTO extends AdresseDTO {
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class UkjentBostedDTO implements Serializable {
 
         private String bostedskommune;

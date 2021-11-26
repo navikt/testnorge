@@ -7,15 +7,30 @@ import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FalskIdentitet } from './partials/falskIdentitet/FalskIdentitet'
 import { UtenlandsId } from './partials/utenlandsId/UtenlandsId'
 import { KontaktinformasjonForDoedsbo } from './partials/kontaktinformasjonForDoedsbo/KontaktinformasjonForDoedsbo'
+import { UtenlandskAdresse } from './partials/bostedsadresse/UtenlandskAdresse'
 
+const bostedsadresseAttributt = 'pdldata.person.bostedsadresse'
 const identifikasjonAttributt = [
-	'pdlforvalter.falskIdentitet',
-	'pdlforvalter.utenlandskIdentifikasjonsnummer',
+	'pdldata.person.falskIdentitet',
+	'pdldata.person.utenlandskIdentifikasjonsnummer',
 ]
 const doedsboAttributt = 'pdlforvalter.kontaktinformasjonForDoedsbo'
 
 export const PdlfForm = ({ formikBag }) => (
 	<React.Fragment>
+		<Vis attributt={bostedsadresseAttributt}>
+			<Panel
+				heading="Bostedsadresse"
+				hasErrors={panelError(formikBag, bostedsadresseAttributt)}
+				iconType="adresse"
+				startOpen={() => erForste(formikBag.values, bostedsadresseAttributt)}
+			>
+				<Kategori title="Utenlandsk boadresse" vis="pdldata.person.bostedsadresse">
+					<UtenlandskAdresse formikBag={formikBag} />
+				</Kategori>
+			</Panel>
+		</Vis>
+
 		<Vis attributt={identifikasjonAttributt}>
 			<Panel
 				heading="Identifikasjon"
@@ -23,15 +38,15 @@ export const PdlfForm = ({ formikBag }) => (
 				iconType="identifikasjon"
 				startOpen={() => erForste(formikBag.values, identifikasjonAttributt)}
 			>
-				<Kategori title="Falsk identitet" vis="pdlforvalter.falskIdentitet">
+				<Kategori title="Falsk identitet" vis="pdldata.person.falskIdentitet">
 					<FalskIdentitet formikBag={formikBag} />
 				</Kategori>
 				<Kategori
 					title="Utenlandsk identifikasjonsnummer"
-					vis="pdlforvalter.utenlandskIdentifikasjonsnummer"
+					vis="pdldata.person.utenlandskIdentifikasjonsnummer"
 					flex={false}
 				>
-					<UtenlandsId formikBag={formikBag} />
+					<UtenlandsId />
 				</Kategori>
 			</Panel>
 		</Vis>

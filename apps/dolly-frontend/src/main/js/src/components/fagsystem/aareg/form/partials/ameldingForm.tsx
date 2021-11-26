@@ -5,7 +5,7 @@ import _get from 'lodash/get'
 import _has from 'lodash/has'
 import _set from 'lodash/set'
 import _cloneDeep from 'lodash/cloneDeep'
-import { eachMonthOfInterval, format } from 'date-fns'
+import { add, eachMonthOfInterval, format } from 'date-fns'
 import Hjelpetekst from '~/components/hjelpetekst'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { ArbeidKodeverk } from '~/config/kodeverk'
@@ -26,7 +26,7 @@ import KjedeIcon from '~/components/dollyKjede/KjedeIcon'
 import { FormikProps } from 'formik'
 import { AaregListe, Amelding, KodeverkValue } from '~/components/fagsystem/aareg/AaregTypes'
 
-interface AmeldingForm {
+interface AmeldingFormProps {
 	formikBag: FormikProps<{ aareg: AaregListe }>
 }
 
@@ -45,7 +45,7 @@ const Slettknapp = styled(Button)`
 	margin: 10px 0;
 `
 
-export const AmeldingForm = ({ formikBag }: AmeldingForm): ReactFragment => {
+export const AmeldingForm = ({ formikBag }: AmeldingFormProps): ReactFragment => {
 	const arbeidsforholdstype = _get(formikBag.values, 'aareg[0].arbeidsforholdstype')
 
 	const fom = _get(formikBag.values, 'aareg[0].genererPeriode.fom')
@@ -215,6 +215,7 @@ export const AmeldingForm = ({ formikBag }: AmeldingForm): ReactFragment => {
 						label="F.o.m. kalendermåned"
 						date={fom}
 						handleDateChange={(dato: string) => handlePeriodeChange(dato, 'fom')}
+						minDate={add(new Date(), { years: -25 })}
 					/>
 					<Monthpicker
 						formikBag={formikBag}
@@ -222,6 +223,7 @@ export const AmeldingForm = ({ formikBag }: AmeldingForm): ReactFragment => {
 						label="T.o.m. kalendermåned"
 						date={tom}
 						handleDateChange={(dato: string) => handlePeriodeChange(dato, 'tom')}
+						minDate={add(new Date(), { years: -25 })}
 					/>
 					<div className="flexbox--full-width">
 						<div className="flexbox--flex-wrap">

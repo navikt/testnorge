@@ -15,6 +15,7 @@ import VarslingerService from './services/varslinger/VarslingerService'
 import OrganisasjonForvalterService from '~/service/services/organisasjonforvalter/OrganisasjonForvalterService'
 import OrganisasjonService from '~/service/services/organisasjonservice/OrganisasjonService'
 import MiljoeService from '~/service/services/miljoe/MiljoeService'
+import PdlForvalterService from '~/service/services/pdl/PdlForvalterService'
 
 export const DollyApi = DollyService
 export const ProfilApi = ProfilService
@@ -33,6 +34,7 @@ export const VarslingerApi = VarslingerService
 export const OrgforvalterApi = OrganisasjonForvalterService
 export const OrgserviceApi = OrganisasjonService
 export const MiljoeApi = MiljoeService
+export const PdlforvalterApi = PdlForvalterService
 
 export default {
 	DollyApi: DollyService,
@@ -52,4 +54,5 @@ export default {
 	OrgforvalterApi: OrganisasjonForvalterService,
 	OrgserviceApi: OrganisasjonService,
 	MiljoeApi: MiljoeService,
+	PdlforvalterApi: PdlForvalterService,
 }

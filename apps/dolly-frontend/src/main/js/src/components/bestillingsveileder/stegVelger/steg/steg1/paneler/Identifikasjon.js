@@ -12,7 +12,7 @@ export const IdentifikasjonPanel = ({ stateModifier }) => {
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="identifikasjon"
 		>
-			<AttributtKategori title="Identifikasjon">
+			<AttributtKategori>
 				<Attributt attr={sm.attrs.falskIdentitet} />
 				<Attributt attr={sm.attrs.utenlandskIdentifikasjonsnummer} />
 			</AttributtKategori>
@@ -25,23 +25,35 @@ IdentifikasjonPanel.heading = 'Identifikasjon'
 IdentifikasjonPanel.initialValues = ({ set, del, has }) => ({
 	falskIdentitet: {
 		label: 'Har falsk identitet',
-		checked: has('pdlforvalter.falskIdentitet'),
+		checked: has('pdldata.person.falskIdentitet'),
 		add() {
-			set('pdlforvalter.falskIdentitet', {
-				rettIdentitet: { identitetType: 'UKJENT', rettIdentitetErUkjent: true },
-			})
+			set('pdldata.person.falskIdentitet', [
+				{
+					erFalsk: true,
+					kilde: 'Dolly',
+					master: 'FREG',
+					gjeldende: true,
+				},
+			])
 		},
 		remove() {
-			del('pdlforvalter.falskIdentitet')
+			del('pdldata.person.falskIdentitet')
 		},
 	},
 	utenlandskIdentifikasjonsnummer: {
 		label: 'Har utenlandsk ID',
-		checked: has('pdlforvalter.utenlandskIdentifikasjonsnummer'),
+		checked: has('pdldata.person.utenlandskIdentifikasjonsnummer'),
 		add: () =>
-			set('pdlforvalter.utenlandskIdentifikasjonsnummer', [
-				{ identifikasjonsnummer: '', kilde: '', opphoert: '', utstederland: '' },
+			set('pdldata.person.utenlandskIdentifikasjonsnummer', [
+				{
+					identifikasjonsnummer: '',
+					opphoert: false,
+					utstederland: '',
+					kilde: 'Dolly',
+					master: 'FREG',
+					gjeldende: true,
+				},
 			]),
-		remove: () => del('pdlforvalter.utenlandskIdentifikasjonsnummer'),
+		remove: () => del('pdldata.person.utenlandskIdentifikasjonsnummer'),
 	},
 })

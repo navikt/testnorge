@@ -1,9 +1,11 @@
-import no.nav.testnav.dependencies.gradle.DependenciesPlugin
-
 plugins {
-    id 'no.nav.testnav.dependencies'
+    id "org.sonarqube" version "3.3"
     id 'java-library'
     id 'com.github.edeandrea.xjc-generation' version '1.5'
+}
+
+sonarqube {
+    skipProject = true
 }
 
 group = 'no.nav.testnav.xsd'
@@ -23,7 +25,6 @@ dependencies {
     xjc 'com.sun.xml.bind:jaxb-xjc:2.3.1'
     xjc 'com.sun.xml.bind:jaxb-impl:2.3.1'
     xjc 'com.sun.istack:istack-commons-runtime:3.0.11'
-
 }
 
 xjcGeneration {

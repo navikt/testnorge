@@ -1,7 +1,21 @@
 plugins {
-    id 'no.nav.registre.testnorge.java-conventions'
-    id 'org.springframework.boot' version "${springBootVersion}"
-    id 'io.spring.dependency-management' version "${springDependencyManagement}"
+    id 'java'
+    id "org.sonarqube" version "3.3"
+    id 'org.springframework.boot' version "2.5.7"
+    id 'io.spring.dependency-management' version "1.0.11.RELEASE"
+}
+
+
+sonarqube {
+    properties {
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.projectKey", "testnorge-tps-ident-service"
+        property "sonar.projectName", "testnorge-tps-ident-service"
+        property "sonar.organization", "navit"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.project.monorepo.enabled", true
+        property "sonar.login", System.getenv("SONAR_TOKEN")
+    }
 }
 bootJar {
     archiveFileName = "app.jar"
@@ -9,8 +23,17 @@ bootJar {
 
 dependencyManagement {
     imports {
-        mavenBom  "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}" 
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.4'
     }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
@@ -30,10 +53,13 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
 
     implementation 'org.hibernate.validator:hibernate-validator'
-    implementation "org.springdoc:springdoc-openapi-ui:${springdocOpenapiUi}"
-    implementation "net.logstash.logback:logstash-logback-encoder:${logstashLogbackEncoder}"
+    implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
 
-    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
+
+    implementation 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 }

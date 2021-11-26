@@ -1,7 +1,22 @@
 package no.nav.registre.aareg.util;
 
+import static no.nav.registre.aareg.testutils.ResourceUtils.getResourceFileContent;
+import static no.nav.registre.aareg.util.ArbeidsforholdMappingUtil.mapArbeidsforholdToRsArbeidsforhold;
+import static no.nav.registre.aareg.util.ArbeidsforholdMappingUtil.mapToArbeidsforhold;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Collections;
+
 import no.nav.registre.aareg.domain.RsOrganisasjon;
 import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Ansettelsesperiode;
 import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.AntallTimerForTimeloennet;
@@ -13,22 +28,8 @@ import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.PermisjonPermitt
 import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Person;
 import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Sporingsinformasjon;
 import no.nav.testnav.libs.domain.dto.aordningen.arbeidsforhold.Utenlandsopphold;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
 
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Collections;
-
-import static no.nav.registre.aareg.testutils.ResourceUtils.getResourceFileContent;
-import static no.nav.registre.aareg.util.ArbeidsforholdMappingUtil.mapArbeidsforholdToRsArbeidsforhold;
-import static no.nav.registre.aareg.util.ArbeidsforholdMappingUtil.mapToArbeidsforhold;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ArbeidsforholdMappingUtilTest {
 
     @Test

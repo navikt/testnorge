@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class IdentRequestDTO extends DbVersjonDTO {
 
     // All fields are optional
@@ -33,9 +33,9 @@ public class IdentRequestDTO extends DbVersjonDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class NyttNavnDTO implements Serializable {
 
-        private Boolean harMellomnavn;
+        private Boolean hasMellomnavn;
     }
 }

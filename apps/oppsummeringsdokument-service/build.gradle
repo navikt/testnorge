@@ -1,7 +1,21 @@
 plugins {
-    id 'no.nav.registre.testnorge.java-conventions'
-    id 'org.springframework.boot' version "${springBootVersion}"
-    id 'io.spring.dependency-management' version "${springDependencyManagement}"
+    id 'java'
+    id "org.sonarqube" version "3.3"
+    id 'org.springframework.boot' version "2.5.7"
+    id 'io.spring.dependency-management' version "1.0.11.RELEASE"
+}
+
+
+sonarqube {
+    properties {
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.projectKey", "oppsummeringsdokument-service"
+        property "sonar.projectName", "oppsummeringsdokument-service"
+        property "sonar.organization", "navit"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.project.monorepo.enabled", true
+        property "sonar.login", System.getenv("SONAR_TOKEN")
+    }
 }
 bootJar {
     archiveFileName = "app.jar"
@@ -9,7 +23,27 @@ bootJar {
 
 dependencyManagement {
     imports {
-        mavenBom  "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}" 
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.4'
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven {
+        url = uri('https://packages.confluent.io/maven/')
+    }
+    maven {
+        name = "GitHubPackages"
+        url = uri('https://maven.pkg.github.com/navikt/maven-release')
+        credentials(PasswordCredentials) {
+            password System.getenv("NAV_TOKEN")
+            username 'token'
+        }
     }
 }
 
@@ -21,9 +55,8 @@ dependencies {
     }
 
     implementation 'javax.xml.bind:jaxb-api'
-    implementation 'javax.activation:activation:1.1'
+    implementation 'javax.activation:activation:1.1.1'
     implementation 'org.glassfish.jaxb:jaxb-runtime'
-
 
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
@@ -43,18 +76,20 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
 
-    implementation "net.logstash.logback:logstash-logback-encoder:${logstashLogbackEncoder}"
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
     implementation 'org.springframework.kafka:spring-kafka'
-    implementation 'org.apache.kafka:kafka-clients:2.5.1'
-    implementation 'io.confluent:kafka-avro-serializer:5.5.0'
+    implementation 'org.apache.kafka:kafka-clients:7.0.0-ce'
+    implementation 'io.confluent:kafka-avro-serializer:7.0.0'
 
-    implementation "org.springdoc:springdoc-openapi-ui:${springdocOpenapiUi}"
+    implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'no.nav.freg:freg-security-oidc:2c24d35d'
 
-    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
+
+    implementation 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
-description = 'oppsummeringsdokument-service'

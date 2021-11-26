@@ -1,0 +1,36 @@
+on:
+  workflow_call:
+    inputs:
+      resource:
+        type: string
+        required: true
+      cluster:
+        type: string
+        required: true
+      app-name:
+        type: string
+        required: true
+    secrets:
+      API_KEY:
+        required: true
+
+env:
+  IMAGE: docker.pkg.github.com/${{ github.repository }}/${{ inputs.app-name }}:${{ github.sha }}
+
+jobs:
+  deploy:
+    name: Deploy to ${{ inputs.cluster }}
+    runs-on: ubuntu-latest
+    if: ${{ github.actor != 'dependabot[bot]' }}
+    steps:
+      - uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ github.token }}
+      - uses: actions/checkout@v1
+      - name: Deploy
+        timeout-minutes: 5
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.API_KEY }}
+          CLUSTER: ${{ inputs.cluster }}
+          RESOURCE: ${{ inputs.resource }}

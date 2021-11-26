@@ -33,6 +33,9 @@ spec:
           cluster: dev-gcp
         - application: testnav-faste-data-frontend
           cluster: dev-gcp
+        - application: app-1
+          namespace: plattformsikkerhet
+          cluster: dev-gcp
   gcp:
     sqlInstances:
       - type: POSTGRES_12

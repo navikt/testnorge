@@ -11,14 +11,17 @@ import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Data
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class FalskIdentitetDTO extends DbVersjonDTO {
 
     @Schema(description = "Informasjon om rett identitet for folkeregisterperson som er opphørt som fiktiv, eller falsk. " +
@@ -40,21 +43,28 @@ public class FalskIdentitetDTO extends DbVersjonDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class IdentifiserendeInformasjonDTO implements Serializable {
 
         private LocalDateTime foedselsdato;
         private KjoennDTO.Kjoenn kjoenn;
-        private NavnDTO personnavn;
+        private FalsktNavnDTO personnavn;
         private List<String> statsborgerskap;
+
+        public List<String> getStatsborgerskap() {
+            if (isNull(statsborgerskap)) {
+                statsborgerskap = new ArrayList<>();
+            }
+            return statsborgerskap;
+        }
     }
 
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class NavnDTO implements Serializable {
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    public static class FalsktNavnDTO implements Serializable {
 
         private String etternavn;
         private String fornavn;

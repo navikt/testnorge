@@ -17,17 +17,14 @@ export const UtenlandsId = ({ data }) => {
 					{(id, idx) => (
 						<div className="person-visning_content" key={idx}>
 							<TitleValue title="Identifikasjonsnummer" value={id.identifikasjonsnummer} />
-							{id.metadata && id.metadata.endringer && (
-								<TitleValue title="Kilde" value={id.metadata.endringer[0].kilde} />
-							)}
-							<TitleValue
-								title="Opphørt"
-								value={Formatters.oversettBoolean(Boolean(id.opphoert))}
-							/>
 							<TitleValue
 								title="Utstederland"
 								value={id.utstederland}
 								kodeverk={AdresseKodeverk.Utstederland}
+							/>
+							<TitleValue
+								title="Opphørt"
+								value={Formatters.oversettBoolean(Boolean(id.opphoert))}
 							/>
 						</div>
 					)}

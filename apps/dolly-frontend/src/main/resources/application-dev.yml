@@ -1,6 +1,12 @@
 server:
   port: 8020
 
+consumers:
+  testnav-udistub-proxy:
+    name: testnav-udistub-proxy
+    namespace: dolly
+    url: https://testnav-udistub-proxy.dev-fss-pub.nais.io/udistub-dev
+    cluster: dev-fss
 
 
 azure.app.client.id: ${client_id}
@@ -8,12 +14,15 @@ azure.app.client.secret: ${client_secret}
 
 DOLLY_BACKEND_NAME: dolly-backend-dev
 DOLLY_BACKEND_URL: https://dolly-backend-dev.dev.intern.nav.no
-UDI_STUB_URL: https://udi-stub-dev.dev.adeo.no
-UDI_STUB_NAME: udi-stub-dev
 TPS_FORVALTERN_PROXY_NAME: tps-forvalteren-dev-proxy
 TPS_FORVALTERN_PROXY_URL: https://tps-forvalteren-dev.dev.adeo.no
+PDL_FORVALTER_URL: https://testnav-pdl-forvalter-dev.dev.intern.nav.no
+PDL_FORVALTER_NAME: testnav-pdl-forvalter-dev
 
 POST_LOGOUT_REDIRECT_URI: 'http://localhost:3000/login'
+
+VARSLINGER_NAME: testnav-varslinger-service-dev
+VARSLINGER_URL: https://testnav-varslinger-service-dev.dev.intern.nav.no
 
 spring:
   session:

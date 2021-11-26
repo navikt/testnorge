@@ -27,7 +27,6 @@ import FileChecklist from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-chec
 import FileChecklistLight from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-checklistLight.svg'
 import FileRefresh from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-refresh.svg'
 import Copy from '~/assets/icons/nav-ikoner/line/SVG/17-files/copy-1.svg'
-// import NewFile from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-new-1.svg'
 import NewFile from '~/assets/icons/nav-ikoner/filled/SVG/17-files/file-add.svg'
 import Files from '~/assets/icons/nav-ikoner/line/SVG/17-files/files-3.svg'
 import Synchronize from '~/assets/icons/nav-ikoner/filled/SVG/19-interface/synchronize-3.svg'
@@ -100,6 +99,8 @@ export const icons = {
 	'chevron-up': ChevronUp,
 	'chevron-left': ChevronLeft,
 	'chevron-right': ChevronRight,
+	expand: ChevronDown,
+	collapse: ChevronUp,
 	ThumbsUp: ThumbsUp,
 	ThumbsDown: ThumbsDown,
 	lock: Lock,

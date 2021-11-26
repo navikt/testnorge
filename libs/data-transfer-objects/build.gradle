@@ -1,17 +1,32 @@
-import no.nav.testnav.dependencies.gradle.DependenciesPlugin
-
 plugins {
-    id 'no.nav.testnav.dependencies'
+    id "org.sonarqube" version "3.3"
     id 'java-library'
     id 'maven-publish'
+    id 'io.spring.dependency-management' version "1.0.11.RELEASE"
+}
+
+sonarqube {
+    properties {
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.projectKey", "testnav-data-transfer-objects"
+        property "sonar.projectName", "testnav-data-transfer-objects"
+        property "sonar.organization", "navit"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.project.monorepo.enabled", true
+        property "sonar.login", System.getenv("SONAR_TOKEN")
+    }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.boot:spring-boot-dependencies:2.5.7'
+    }
 }
 
 group = 'no.nav.testnav.libs'
 
 repositories {
-    maven {
-        url = uri('https://repo1.maven.org/maven2/')
-    }
+    mavenCentral()
     maven {
         name = "GitHubPackages"
         url = uri('https://maven.pkg.github.com/navikt/maven-release')
@@ -24,16 +39,17 @@ repositories {
 }
 
 dependencies {
-    implementation "com.fasterxml.jackson.core:jackson-annotations:${DependenciesPlugin.jackson}"
-    implementation "com.fasterxml.jackson.core:jackson-databind:${DependenciesPlugin.jackson}"
+    implementation 'com.fasterxml.jackson.core:jackson-annotations'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
     implementation 'javax.validation:validation-api:2.0.1.Final'
-    implementation "org.springdoc:springdoc-openapi-common:${DependenciesPlugin.springdocOpenapi}"
+    implementation 'org.springdoc:springdoc-openapi-common:1.5.12'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.13.0'
 
     implementation 'no.nav.tjenestespesifikasjoner:nav-altinn-inntektsmelding:1.2019.08.16-13.46-35cbdfd492d4'
 
-    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    implementation 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
 if (project.hasProperty("releaseVersion")) {

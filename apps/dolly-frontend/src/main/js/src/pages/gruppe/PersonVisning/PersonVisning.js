@@ -21,7 +21,7 @@ import {
 } from '~/components/fagsystem'
 import BeskrivelseConnector from '~/components/beskrivelse/BeskrivelseConnector'
 import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
-import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/SammendragModal'
+import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/BestillingSammendragModal'
 import { LeggTilRelasjonModal } from '~/components/leggTilRelasjon/LeggTilRelasjonModal'
 
 import './PersonVisning.less'
@@ -59,7 +59,12 @@ export const PersonVisning = ({
 				)}
 			</div>
 			<TpsfVisning data={TpsfVisning.filterValues(data.tpsf, bestillingsListe)} />
-			<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
+			<PdlfVisning
+				dataPdl={data.pdl}
+				dataPdlforvalter={data.pdlforvalter}
+				loadingPdl={loading.pdl}
+				loadingPdlforvalter={loading.pdlforvalter}
+			/>
 			<AaregVisning liste={data.aareg} loading={loading.aareg} />
 			<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
 			<PensjonVisning data={data.pensjonforvalter} loading={loading.pensjonforvalter} />

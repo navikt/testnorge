@@ -1,11 +1,4 @@
 spring:
-  security:
-    oauth2:
-      resourceserver:
-        tokenx:
-          issuer-uri: https://tokendings.dev-gcp.nais.io
-          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
-          accepted-audience: dev-gcp:dolly:testnav-bruker-service
   r2dbc:
     url: r2dbc:postgresql://${NAIS_DATABASE_TESTNAV_BRUKER_SERVICE_TESTNAV_BRUKER_SERVICE_DB_HOST}:${NAIS_DATABASE_TESTNAV_BRUKER_SERVICE_TESTNAV_BRUKER_SERVICE_DB_PORT}/${NAIS_DATABASE_TESTNAV_BRUKER_SERVICE_TESTNAV_BRUKER_SERVICE_DB_DATABASE}
     username: ${NAIS_DATABASE_TESTNAV_BRUKER_SERVICE_TESTNAV_BRUKER_SERVICE_DB_USERNAME}

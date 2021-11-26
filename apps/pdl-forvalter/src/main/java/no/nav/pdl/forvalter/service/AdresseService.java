@@ -72,14 +72,14 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
 
         if (nonNull(coNavn)) {
             if (StringUtils.isBlank(coNavn.getFornavn()) || StringUtils.isBlank(coNavn.getEtternavn()) ||
-                    (StringUtils.isBlank(coNavn.getMellomnavn()) && isTrue(coNavn.getHarMellomnavn()))) {
+                    (StringUtils.isBlank(coNavn.getMellomnavn()) && isTrue(coNavn.getHasMellomnavn()))) {
 
                 var nyttNavn = genererNavnServiceConsumer.getNavn(1);
                 if (nyttNavn.isPresent()) {
                     coNavn.setFornavn(blankCheck(coNavn.getFornavn(), nyttNavn.get().getAdjektiv()));
                     coNavn.setEtternavn(blankCheck(coNavn.getEtternavn(), nyttNavn.get().getSubstantiv()));
                     coNavn.setMellomnavn(blankCheck(coNavn.getMellomnavn(),
-                            isTrue(coNavn.getHarMellomnavn()) ? nyttNavn.get().getAdverb() : null));
+                            isTrue(coNavn.getHasMellomnavn()) ? nyttNavn.get().getAdverb() : null));
                 }
             }
             return buildNavn(coNavn);
@@ -92,8 +92,8 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
                 .append("c/o ")
                 .append(coNavn.getFornavn())
                 .append(' ')
-                .append(isTrue(coNavn.getHarMellomnavn()) ? coNavn.getMellomnavn() : "")
-                .append(isTrue(coNavn.getHarMellomnavn()) ? ' ' : "")
+                .append(isTrue(coNavn.getHasMellomnavn()) ? coNavn.getMellomnavn() : "")
+                .append(isTrue(coNavn.getHasMellomnavn()) ? ' ' : "")
                 .append(coNavn.getEtternavn())
                 .toString();
     }
@@ -109,6 +109,7 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
         }
         adresse.setKilde(StringUtils.isNotBlank(adresse.getKilde()) ? adresse.getKilde() : "Dolly");
         adresse.setMaster(nonNull(adresse.getMaster()) ? adresse.getMaster() : DbVersjonDTO.Master.FREG);
+        adresse.setGjeldende(nonNull(adresse.getGjeldende()) ? adresse.getGjeldende(): true);
     }
 
     protected void enforceIntegrity(List<T> adresse) {

@@ -24,8 +24,6 @@ public class FullPersonDTO {
     private List<RelasjonDTO> relasjoner;
     private LocalDateTime sistOppdatert;
 
-    private PersonIDDTO identitet;
-
     public List<RelasjonDTO> getRelasjoner() {
         if (isNull(relasjoner)) {
             relasjoner = new ArrayList<>();
@@ -44,18 +42,5 @@ public class FullPersonDTO {
         private LocalDateTime sistOppdatert;
         private RelasjonType relasjonType;
         private PersonDTO relatertPerson;
-    }
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    public static class PersonIDDTO {
-
-        private String ident;
-        private String fornavn;
-        private String mellomnavn;
-        private String etternavn;
     }
 }

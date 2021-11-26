@@ -1,0 +1,47 @@
+plugins {
+    id "org.sonarqube" version "3.3"
+    id 'java-library'
+    id 'io.spring.dependency-management' version "1.0.11.RELEASE"
+}
+
+sonarqube {
+    properties {
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.projectKey", "testnav-servelt-insecure-security"
+        property "sonar.projectName", "testnav-servelt-insecure-security"
+        property "sonar.organization", "navit"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.project.monorepo.enabled", true
+        property "sonar.login", System.getenv("SONAR_TOKEN")
+    }
+}
+
+group = 'no.nav.testnav.libs'
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.boot:spring-boot-dependencies:2.5.7'
+    }
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+java.sourceCompatibility = JavaVersion.VERSION_17
+
+dependencies {
+
+    implementation 'no.nav.testnav.libs:security-core'
+
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    implementation 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+}

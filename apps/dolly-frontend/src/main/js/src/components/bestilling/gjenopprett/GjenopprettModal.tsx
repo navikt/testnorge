@@ -8,7 +8,7 @@ import NavButton from '~/components/ui/button/NavButton/NavButton'
 import * as yup from 'yup'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
-type GjenopprettModal = {
+type GjenopprettModalProps = {
 	gjenopprettHeader: any
 	environments?: Array<string>
 	submitFormik: any
@@ -22,7 +22,7 @@ export const GjenopprettModal = ({
 	submitFormik,
 	closeModal,
 	bestilling,
-}: GjenopprettModal) => {
+}: GjenopprettModalProps) => {
 	const tilgjengeligeEnvironments = useSelector((state: any) => state.environments.data)
 
 	const schemaValidation = yup.object().shape({

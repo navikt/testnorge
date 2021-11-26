@@ -43,7 +43,7 @@ public class DummyAdresseService {
 
         return UtenlandskAdresseDTO.builder()
                 .adressenavnNummer(ADRESSE_NAVN_NUMMER)
-                .distriktnavn(ADRESSE_BY_STED)
+                .regionDistriktOmraade(ADRESSE_BY_STED)
                 .bySted(ADRESSE_3_UTLAND)
                 .postkode(ADRESSE_POSTKODE)
                 .landkode(isNotBlank(landkode) ? landkode : geografiskeKodeverkConsumer.getTilfeldigLand())

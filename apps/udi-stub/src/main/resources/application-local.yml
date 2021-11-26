@@ -15,18 +15,12 @@ spring:
         default-schema: public
   cloud:
     vault:
-      host: vault.adeo.no
-      port: 443
-      fail-fast: true
-      connection-timeout: 15000
-      read-timeout: 30000
-      generic:
-        enabled: false
-      application-name: preprod/fss/udi-stub-dev
       database:
         backend: postgresql/preprod-fss
         enabled: true
         role: udi-stub-dev-admin
+      kv:
+        enabled: false
   security:
     oauth2:
       resourceserver:

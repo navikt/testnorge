@@ -8,7 +8,7 @@ module.exports = merge(common, {
   devtool: 'inline-source-map',
   devServer: {
     port: 3000,
-    contentBase: './build',
+    static: path.join(__dirname, 'public'),
     hot: true,
     proxy: {
       '/applikasjonsanalyse-service/api': {

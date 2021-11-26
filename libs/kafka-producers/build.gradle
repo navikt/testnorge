@@ -1,10 +1,26 @@
-import no.nav.testnav.dependencies.gradle.DependenciesPlugin
-
 plugins {
-    id 'no.nav.testnav.dependencies'
+    id "org.sonarqube" version "3.3"
     id 'java-library'
+    id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
 
+sonarqube {
+    properties {
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.projectKey", "testnav-kafka-producers"
+        property "sonar.projectName", "testnav-kafka-producers"
+        property "sonar.organization", "navit"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.project.monorepo.enabled", true
+        property "sonar.login", System.getenv("SONAR_TOKEN")
+    }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.boot:spring-boot-dependencies:2.5.7'
+    }
+}
 group = 'no.nav.testnav.libs'
 
 repositories {
@@ -22,11 +38,12 @@ dependencies {
     implementation 'no.nav.testnav.libs:kafka-config'
     implementation 'no.nav.testnav.libs:avro-schema'
 
-    implementation 'org.springframework.kafka:spring-kafka:2.7.6'
-    implementation 'io.confluent:kafka-avro-serializer:6.1.0'
-    implementation "org.springframework.boot:spring-boot-starter-web:${DependenciesPlugin.springBoot}"
+    implementation 'org.springframework.kafka:spring-kafka'
+    implementation 'io.confluent:kafka-avro-serializer:7.0.0'
 
-    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    implementation 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 }

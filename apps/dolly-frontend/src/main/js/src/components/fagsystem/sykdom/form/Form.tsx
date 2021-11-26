@@ -9,13 +9,13 @@ import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { FormikProps } from 'formik'
 import { AlertAaregRequired } from '~/components/ui/brukerAlert/AlertAaregRequired'
 
-interface SykdomForm {
+interface SykdomFormProps {
 	formikBag: FormikProps<{}>
 }
 
 const sykdomAttributt = 'sykemelding'
 
-export const SykdomForm = ({ formikBag }: SykdomForm) => (
+export const SykdomForm = ({ formikBag }: SykdomFormProps) => (
 	// @ts-ignore
 	<Vis attributt={sykdomAttributt}>
 		<Panel

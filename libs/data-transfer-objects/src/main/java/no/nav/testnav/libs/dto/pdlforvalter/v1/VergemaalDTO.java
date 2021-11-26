@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class VergemaalDTO extends DbVersjonDTO {
 
     private VergemaalEmbete vergemaalEmbete;
@@ -25,4 +25,6 @@ public class VergemaalDTO extends DbVersjonDTO {
     private PersonRequestDTO nyVergeIdent;
     private String vergeIdent;
     private VergemaalMandattype mandatType;
+
+    private Boolean isIdentExternal;
 }

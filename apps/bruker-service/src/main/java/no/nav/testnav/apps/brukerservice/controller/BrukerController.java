@@ -34,7 +34,7 @@ import no.nav.testnav.apps.brukerservice.exception.UsernameAlreadyTakenException
 import no.nav.testnav.apps.brukerservice.service.JwtService;
 import no.nav.testnav.apps.brukerservice.service.UserService;
 import no.nav.testnav.apps.brukerservice.service.ValidateService;
-import no.nav.testnav.libs.reactivesecurity.config.UserConstant;
+import no.nav.testnav.libs.securitycore.config.UserConstant;
 
 @Slf4j
 @RestController
@@ -45,7 +45,6 @@ public class BrukerController {
     private final ValidateService validateService;
     private final UserService userService;
     private final JwtService jwtService;
-
 
     @PostMapping
     public Mono<ResponseEntity<BrukerDTO>> createBruker(
@@ -73,7 +72,7 @@ public class BrukerController {
     @GetMapping("/{id}")
     public Mono<ResponseEntity<BrukerDTO>> getBruker(
             @PathVariable String id,
-            @RequestHeader(UserConstant.USER_ORGANISASJON_HEADER_JWT) String jwt
+            @RequestHeader(UserConstant.USER_HEADER_JWT) String jwt
     ) {
         return jwtService.verify(jwt, id)
                 .then(userService.getUser(id))
@@ -86,7 +85,7 @@ public class BrukerController {
     public Mono<ResponseEntity<String>> oppdaterBrukernavn(
             @PathVariable String id,
             @RequestBody String brukernavn,
-            @RequestHeader(UserConstant.USER_ORGANISASJON_HEADER_JWT) String jwt
+            @RequestHeader(UserConstant.USER_HEADER_JWT) String jwt
     ) {
         return jwtService.verify(jwt, id)
                 .then(userService.updateUsername(id, brukernavn))
@@ -108,7 +107,7 @@ public class BrukerController {
     @DeleteMapping("/{id}")
     public Mono<ResponseEntity<Object>> deleteBruker(
             @PathVariable String id,
-            @RequestHeader(UserConstant.USER_ORGANISASJON_HEADER_JWT) String jwt
+            @RequestHeader(UserConstant.USER_HEADER_JWT) String jwt
     ) {
         return jwtService.verify(jwt, id)
                 .then(userService.delete(id))

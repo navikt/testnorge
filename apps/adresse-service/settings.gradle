@@ -1,14 +1,13 @@
 plugins {
-    id "com.gradle.enterprise" version "3.4.1"
+    id "com.gradle.enterprise" version "3.7.2"
 }
 
 rootProject.name = 'adresse-service'
 
-includeBuild '../../gradlePlugins'
-
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/servlet-security'
 includeBuild '../../libs/data-transfer-objects'
+
 
 gradleEnterprise {
     buildScan {

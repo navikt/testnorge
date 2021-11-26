@@ -21,8 +21,8 @@ import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
 import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivesessionsecurity.config.OicdInMemorySessionConfiguration;
 import no.nav.testnav.libs.reactivesessionsecurity.domain.AccessToken;
-import no.nav.testnav.libs.reactivesessionsecurity.domain.ServerProperties;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 
 @Import({
         CoreConfig.class,

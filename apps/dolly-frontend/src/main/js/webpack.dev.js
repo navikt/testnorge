@@ -11,7 +11,7 @@ module.exports = (env) =>
 		devServer: {
 			port: 3000,
 			open: {
-				target: [`http://localhost:3000/oauth2/authorization/aad`],
+				target: [`http://localhost:3000/login`],
 				app: {
 					name: 'Google Chrome',
 				},
@@ -149,6 +149,11 @@ module.exports = (env) =>
 					secure: false,
 				},
 				'/person-search-service/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false,
+				},
+				'/testnav-pdl-forvalter/api': {
 					target: env.backend,
 					changeOrigin: true,
 					secure: false,

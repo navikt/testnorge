@@ -1,0 +1,17 @@
+plugins {
+    id "com.gradle.enterprise" version "3.7.2"
+}
+
+rootProject.name = 'skjermingsregister-proxy'
+
+
+includeBuild '../../libs/reactive-core'
+includeBuild '../../libs/reactive-proxy'
+includeBuild '../../libs/security-token-service'
+
+gradleEnterprise {
+    buildScan {
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
+    }
+}

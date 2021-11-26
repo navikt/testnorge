@@ -1,15 +1,26 @@
-import no.nav.testnav.dependencies.gradle.DependenciesPlugin
-
 plugins {
-    id 'no.nav.testnav.dependencies'
     id 'java'
-    id 'org.springframework.boot' version "2.5.5"
+    id "org.sonarqube" version "3.3"
+    id 'org.springframework.boot' version "2.5.7"
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
+}
+
+
+sonarqube {
+    properties {
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.projectKey", "testnorge-sam"
+        property "sonar.projectName", "testnorge-sam"
+        property "sonar.organization", "navit"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.project.monorepo.enabled", true
+        property "sonar.login", System.getenv("SONAR_TOKEN")
+    }
 }
 
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${DependenciesPlugin.springCloud}"
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.4'
     }
 }
 
@@ -22,9 +33,7 @@ test {
 }
 
 repositories {
-    maven {
-        url = uri('https://repo1.maven.org/maven2/')
-    }
+    mavenCentral()
     mavenLocal()
 }
 
@@ -47,37 +56,40 @@ dependencies {
 
     implementation 'org.hibernate.validator:hibernate-validator'
 
-    implementation 'org.apache.httpcomponents:httpclient:4.5.6'
-    implementation 'org.aspectj:aspectjweaver:1.9.6'
-    implementation 'io.micrometer:micrometer-registry-prometheus:1.5.5'
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+    implementation 'org.aspectj:aspectjweaver:1.9.7'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
 
-    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+    implementation 'javax.xml.bind:jaxb-api'
 
-    implementation 'io.springfox:springfox-swagger2:2.9.2'
-    implementation 'io.springfox:springfox-swagger-ui:2.9.2'
-    implementation "net.logstash.logback:logstash-logback-encoder:${DependenciesPlugin.logstashLogbackEncoder}"
+    implementation 'com.google.guava:guava:31.0.1-jre'
+
+    implementation 'io.springfox:springfox-swagger2:3.0.0'
+    implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
 
     implementation 'com.fasterxml.jackson.core:jackson-core'
     implementation 'com.fasterxml.jackson.core:jackson-annotations'
-    implementation 'com.jayway.jsonpath:json-path:2.4.0'
+
+    implementation 'com.jayway.jsonpath:json-path:2.6.0'
 
     implementation 'no.nav.registre:testnorge-consumers:1.12.0-RELEASE'
 
-    implementation 'com.squareup.okhttp3:okhttp:4.7.2'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
 
-    runtimeOnly 'org.hibernate:hibernate-entitymanager:5.2.10.Final'
-    runtimeOnly 'mysql:mysql-connector-java:6.0.6'
-    runtimeOnly 'com.oracle.database.jdbc:ojdbc8:19.7.0.0'
+    runtimeOnly 'org.hibernate:hibernate-entitymanager:5.6.1.Final'
+    runtimeOnly 'mysql:mysql-connector-java:8.0.27'
+    runtimeOnly 'com.oracle.database.jdbc:ojdbc8:21.3.0.0'
 
-    implementation "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    annotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
-    testAnnotationProcessor "org.projectlombok:lombok:${DependenciesPlugin.lombokVersion}"
+    implementation 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 
-    testImplementation 'junit:junit:4.12' //TODO upgrade to JUnit5
+    testImplementation 'junit:junit:4.13.2' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
-    testImplementation 'com.h2database:h2:1.4.195'
-    testImplementation 'com.squareup.okhttp3:mockwebserver:4.7.2'
+    testImplementation 'com.h2database:h2'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:4.9.3'
 }
 
 description = 'testnorge-sam'

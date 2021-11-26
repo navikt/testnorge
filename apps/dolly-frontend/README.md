@@ -6,11 +6,11 @@
 ![Deploy u2](https://github.com/navikt/dolly-frontend/workflows/Deploy%20u2/badge.svg)
 
 # Dolly
-Prosjekt for å opprette og konfigurere testpersoner knyttet til fellesregistrene i NAV
+Prosjekt for å opprette og konfigurere testpersoner knyttet til fellesregistrene i NAV.
 
 ## Dokumentasjon
 ### Swagger
-Swagger finnes under /swagger-ui.html.
+Swagger finnes under /swagger-ui.html
 
 ## Lokal kjøring
 

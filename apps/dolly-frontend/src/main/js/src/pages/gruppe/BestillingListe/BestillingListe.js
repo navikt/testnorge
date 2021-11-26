@@ -3,7 +3,7 @@ import _orderBy from 'lodash/orderBy'
 import DollyTable from '~/components/ui/dollyTable/DollyTable'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import Loading from '~/components/ui/loading/Loading'
-import BestillingDetaljer from '~/components/bestilling/detaljer/Detaljer'
+import BestillingDetaljer from '~/components/bestilling/detaljer/BestillingDetaljer'
 import { BestillingIconItem } from '~/components/ui/icon/IconItem'
 
 import Icon from '~/components/ui/icon/Icon'

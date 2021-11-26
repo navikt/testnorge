@@ -17,7 +17,7 @@ public interface PersonRepository extends PagingAndSortingRepository<DbPerson, L
 
     Optional<DbPerson> findByIdent(String ident);
 
-    List<DbPerson> findByIdentIn(Collection<String> identer);
+    List<DbPerson> findByIdentIn(Collection<String> identer, Pageable pageable);
 
     List<DbPerson> findByIdIn(List<Long> identer);
 

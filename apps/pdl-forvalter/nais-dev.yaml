@@ -48,8 +48,9 @@ spec:
         - application: dolly-backend-dev
           cluster: dev-fss
         - application: dolly-frontend-dev
-          cluster: dev-fss
-        - application: dolly-frontend-dev
+          cluster: dev-gcp
+        - application: app-1
+          namespace: plattformsikkerhet
           cluster: dev-gcp
     outbound:
       rules:

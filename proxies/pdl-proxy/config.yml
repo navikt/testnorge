@@ -58,3 +58,4 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://testnav-pdl-proxy.dev-fss-pub.nais.io"
+    - "https://testnav-pdl-proxy.dev.intern.nav.no"

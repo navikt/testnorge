@@ -5,6 +5,7 @@ import no.nav.pdl.forvalter.database.model.DbAlias;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -42,7 +43,8 @@ public class SwopIdentsService {
 
     public void execute(String ident1, String ident2, boolean newNavn) {
 
-        var personer = personRepository.findByIdentIn(List.of(ident1, ident2));
+        var personer = personRepository.findByIdentIn(List.of(ident1, ident2),
+                PageRequest.of(0, 10));
         var person1 = personer.stream()
                 .filter(person -> ident1.equals(person.getIdent()))
                 .findFirst();
