@@ -1,30 +1,5 @@
 import * as Yup from 'yup'
-import { ifKeyHasValue, ifPresent, requiredDate, requiredString } from '~/utils/YupValidations'
-import _get from 'lodash/get'
-import _isUndefined from 'lodash/isUndefined'
-
-// const kontakttypeTest = (validation) => {
-// 	return validation.test('isRequired', 'Feltet er påkrevd', function checkRequired() {
-// 		let gyldig = false
-// 		const values = this.options.context
-// 		const index = this.options.index
-// 		const { advokatSomKontakt, personSomKontakt, organisasjonSomKontakt } = _get(
-// 			values,
-// 			`pdldata.person.kontaktinformasjonForDoedsbo[${index}]`
-// 		)
-// 		if (advokatSomKontakt || personSomKontakt || organisasjonSomKontakt) {
-// 			gyldig = true
-// 		}
-// 		return gyldig
-// 	})
-// }
-
-// const advokatTest = (validation) => {
-// 	return validation.test('harAttributt', 'Har attributt', function checkAttribute() {
-// 		const index = this.options.index
-// 		return ifPresent(`$pdldata.person.kontaktinformasjonForDoedsbo[${index}].advokatSomKontakt`)
-// 	})
-// }
+import { ifPresent, requiredDate, requiredString } from '~/utils/YupValidations'
 
 const personnavnSchema = Yup.object({
 	fornavn: Yup.string(),

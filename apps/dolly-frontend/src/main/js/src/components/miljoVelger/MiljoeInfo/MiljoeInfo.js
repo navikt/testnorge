@@ -5,18 +5,10 @@ import { ArenaApi, InstApi, PensjonApi } from '~/service/Api'
 import TilgjengeligeMiljoer from './TilgjengeligeMiljoer'
 
 export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
-	const {
-		instdata,
-		pdlforvalter,
-		pdldata,
-		arenaforvalter,
-		pensjonforvalter,
-		sykemelding,
-		udistub,
-	} = bestillingsdata
+	const { instdata, pdldata, arenaforvalter, pensjonforvalter, sykemelding, udistub } =
+		bestillingsdata
 	if (
 		!instdata &&
-		!pdlforvalter &&
 		!pdldata &&
 		!arenaforvalter &&
 		!pensjonforvalter &&

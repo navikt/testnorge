@@ -11,6 +11,22 @@ import { OrganisasjonSelect } from '~/components/organisasjonSelect'
 import _cloneDeep from 'lodash/cloneDeep'
 import _set from 'lodash/set'
 import { PdlPersonExpander } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
+import { FormikProps } from 'formik'
+
+interface KontaktValues {
+	formikBag: FormikProps<{}>
+	path: string
+}
+
+type TypeValues = {
+	value: string
+	label: string
+}
+
+type OrgValues = {
+	orgnr: string
+	navn: string
+}
 
 const initialOrganisasjon = {
 	organisasjonsnummer: null as string,
@@ -35,7 +51,7 @@ const initialNyPerson = {
 	nyKontaktperson: initialPdlPerson,
 }
 
-export const Kontakt = ({ formikBag, path }) => {
+export const Kontakt = ({ formikBag, path }: KontaktValues) => {
 	const advokatPath = `${path}.advokatSomKontakt`
 	const organisasjonPath = `${path}.organisasjonSomKontakt`
 	const personPath = `${path}.personSomKontakt`
@@ -45,7 +61,8 @@ export const Kontakt = ({ formikBag, path }) => {
 	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
 	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
 
-	const handleAfterChange = ({ value }) => {
+	const handleAfterChange = (type: TypeValues) => {
+		const { value } = type
 		const kontaktinfo = _get(formikBag.values, path)
 		const kontaktinfoClone = _cloneDeep(kontaktinfo)
 
@@ -72,7 +89,7 @@ export const Kontakt = ({ formikBag, path }) => {
 		formikBag.setFieldValue(path, kontaktinfoClone)
 	}
 
-	const organisasjonHandleChange = (values, path) => {
+	const organisasjonHandleChange = (values: OrgValues, path: string) => {
 		formikBag.setFieldValue(`${path}.organisasjonsnummer`, values.orgnr)
 		formikBag.setFieldValue(`${path}.organisasjonsnavn`, values.navn)
 	}
@@ -93,7 +110,7 @@ export const Kontakt = ({ formikBag, path }) => {
 					<OrganisasjonSelect
 						path={`${advokatPath}.organisasjonsnummer`}
 						label="Organisasjonsnummer"
-						afterChange={(val) => organisasjonHandleChange(val, advokatPath)}
+						afterChange={(val: OrgValues) => organisasjonHandleChange(val, advokatPath)}
 					/>
 					<DollySelect
 						name={`${advokatPath}.kontaktperson.fornavn`}
@@ -102,7 +119,7 @@ export const Kontakt = ({ formikBag, path }) => {
 						size="xlarge"
 						placeholder={getPlaceholder(formikBag.values, `${advokatPath}.kontaktperson`)}
 						isLoading={navnInfo.loading}
-						onChange={(navn) =>
+						onChange={(navn: string) =>
 							setNavn(navn, `${advokatPath}.kontaktperson`, formikBag.setFieldValue)
 						}
 						value={_get(formikBag.values, `${advokatPath}.kontaktperson.fornavn`)}
@@ -115,7 +132,7 @@ export const Kontakt = ({ formikBag, path }) => {
 					<OrganisasjonSelect
 						path={`${organisasjonPath}.organisasjonsnummer`}
 						label="Organisasjonsnummer"
-						afterChange={(val) => organisasjonHandleChange(val, organisasjonPath)}
+						afterChange={(val: OrgValues) => organisasjonHandleChange(val, organisasjonPath)}
 					/>
 					<DollySelect
 						name={`${organisasjonPath}.kontaktperson.fornavn`}
@@ -124,7 +141,7 @@ export const Kontakt = ({ formikBag, path }) => {
 						size="xlarge"
 						placeholder={getPlaceholder(formikBag.values, `${organisasjonPath}.kontaktperson`)}
 						isLoading={navnInfo.loading}
-						onChange={(navn) =>
+						onChange={(navn: string) =>
 							setNavn(navn, `${organisasjonPath}.kontaktperson`, formikBag.setFieldValue)
 						}
 						value={_get(formikBag.values, `${organisasjonPath}.kontaktperson.fornavn`)}
@@ -142,7 +159,9 @@ export const Kontakt = ({ formikBag, path }) => {
 						size="xlarge"
 						placeholder={getPlaceholder(formikBag.values, `${personPath}.navn`)}
 						isLoading={navnInfo.loading}
-						onChange={(navn) => setNavn(navn, `${personPath}.navn`, formikBag.setFieldValue)}
+						onChange={(navn: string) =>
+							setNavn(navn, `${personPath}.navn`, formikBag.setFieldValue)
+						}
 						value={_get(formikBag.values, `${personPath}.navn.fornavn`)}
 					/>
 				</>

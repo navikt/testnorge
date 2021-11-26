@@ -30,7 +30,7 @@ KontaktDoedsboPanel.initialValues = ({ set, del, has }) => ({
 			set('pdldata.person.kontaktinformasjonForDoedsbo', [initialKontaktinfoForDoedebo])
 		},
 		remove() {
-			del('pdlforvalter.kontaktinformasjonForDoedsbo')
+			del('pdldata.person.kontaktinformasjonForDoedsbo')
 		},
 	},
 })
