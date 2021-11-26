@@ -5,7 +5,7 @@
   "homepage": "/",
   "dependencies": {
     "@navikt/dolly-komponenter": "^1.1.14",
-    "@navikt/dolly-lib": "^1.1.8",
+    "@navikt/dolly-lib": "^1.1.9",
     "@navikt/ds-icons": "^0.6.3",
     "@navikt/fnrvalidator": "^1.1.4",
     "classnames": "^2.3.1",
