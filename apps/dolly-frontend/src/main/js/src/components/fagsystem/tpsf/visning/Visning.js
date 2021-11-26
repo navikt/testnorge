@@ -9,6 +9,8 @@ import {
 	Personinfo,
 	Postadresse,
 	Relasjoner,
+	UtenlandskBankkonto,
+	NorskBankkonto,
 	Vergemaal,
 } from './partials'
 
@@ -24,6 +26,8 @@ export const TpsfVisning = ({ data }) => {
 			<Boadresse boadresse={data.boadresse} />
 			<Postadresse postadresse={data.postadresse} />
 			<MidlertidigAdresse midlertidigAdresse={data.midlertidigAdresse} />
+			<UtenlandskBankkonto data={data.bankkontonrUtland} />
+			<NorskBankkonto data={data.bankkontonrNorsk} />
 			<Identhistorikk identhistorikk={data.identHistorikk} />
 			<Relasjoner relasjoner={data.relasjoner} />
 		</div>

@@ -1,7 +1,7 @@
 package no.nav.dolly.bestilling.tpsmessagingservice;
 
 import no.nav.dolly.config.credentials.TpsMessagingServiceProperties;
-import no.nav.dolly.domain.resultset.tpsmessagingservice.utenlandskbankkonto.UtenlandskBankkonto;
+import no.nav.dolly.domain.resultset.tpsmessagingservice.utenlandskbankkonto.RsUtenlandskBankkonto;
 import no.nav.dolly.domain.resultset.tpsmessagingservice.utenlandskbankkonto.UtenlandskBankkontoRequest;
 import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
@@ -65,7 +65,7 @@ public class TpsMessagingConsumerTest {
         ResponseEntity<Object> response = tpsMessagingConsumer.sendUtenlandskBankkontoRequest(new UtenlandskBankkontoRequest(
                 IDENT,
                 MILJOER,
-                UtenlandskBankkonto.builder().build()
+                RsUtenlandskBankkonto.builder().build()
 
         ));
 
@@ -80,7 +80,7 @@ public class TpsMessagingConsumerTest {
         Assertions.assertThrows(SecurityException.class, () -> tpsMessagingConsumer.sendUtenlandskBankkontoRequest(new UtenlandskBankkontoRequest(
                 IDENT,
                 MILJOER,
-                UtenlandskBankkonto.builder().build()
+                RsUtenlandskBankkonto.builder().build()
         )));
 
         verify(tokenService).generateToken(any(TpsMessagingServiceProperties.class));

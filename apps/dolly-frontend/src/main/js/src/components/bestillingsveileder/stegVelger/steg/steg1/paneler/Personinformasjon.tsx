@@ -78,13 +78,13 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 				<Attributt attr={sm.attrs.sprakKode} />
 				<Attributt attr={sm.attrs.egenAnsattDatoFom} />
 				<Attributt attr={sm.attrs.erForsvunnet} />
-				<Attributt attr={sm.attrs.harBankkontonr} />
+				<Attributt attr={sm.attrs.norskBankkonto} />
+				<Attributt attr={sm.attrs.utenlandskBankkonto} />
 				<Attributt attr={sm.attrs.telefonnummer_1} />
 				<Attributt attr={sm.attrs.spesreg} />
 				<Attributt attr={sm.attrs.vergemaal} />
 				<Attributt attr={sm.attrs.fullmakt} />
 				<Attributt attr={sm.attrs.sikkerhetstiltak} />
-				<Attributt attr={sm.attrs.utenlandskBankkonto} />
 			</AttributtKategori>
 		</Panel>
 	)
@@ -213,16 +213,6 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 				del(['tpsf.erForsvunnet', 'tpsf.forsvunnetDato'])
 			},
 		},
-		harBankkontonr: {
-			label: 'Bankkontonummer',
-			checked: has('tpsf.harBankkontonr'),
-			add() {
-				setMulti(['tpsf.harBankkontonr', true], ['tpsf.bankkontonrRegdato', null])
-			},
-			remove() {
-				del(['tpsf.harBankkontonr', 'tpsf.bankkontonrRegdato'])
-			},
-		},
 		telefonnummer_1: {
 			label: 'Telefonnummer',
 			checked: has('tpsf.telefonnummer_1'),
@@ -342,6 +332,17 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 					},
 				]),
 			remove: () => del('tpsMessaging.utenlandskBankkonto'),
+		},
+		norskBankkonto: {
+			label: 'Norsk bank',
+			checked: has('tpsMessaging.norskBankkonto'),
+			add: () =>
+				set('tpsMessaging.norskBankkonto', [
+					{
+						kontonummer: '',
+					},
+				]),
+			remove: () => del('tpsMessaging.norskBankkonto'),
 		},
 	}
 }

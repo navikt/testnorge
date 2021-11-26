@@ -31,7 +31,7 @@ export const Personinfo = ({ data, visTittel = true }) => (
 			<TitleValue
 				title="Sivilstand"
 				kodeverk={PersoninformasjonKodeverk.Sivilstander}
-				value={data.sivilstand}
+				value={data.sivilstand instanceof String ? data.sivilstand : data.sivilstand?.sivilstand}
 			/>
 
 			<TitleValue title="Bankkontonummer" value={data.bankkontonr} />

@@ -7,6 +7,9 @@ import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 const Statsborgerskap = ({ statsborgerskap }) => {
+	if (!statsborgerskap) {
+		return null
+	}
 	return (
 		<div className="person-visning_content">
 			<TitleValue

@@ -411,6 +411,16 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 
 	const tpsMessaging = _get(bestillingData, 'tpsMessaging')
 
+	if (tpsMessaging?.norskBankkonto) {
+		const norskBankkontoData = {
+			header: 'Norsk bankkonto',
+			itemRows: tpsMessaging.norskBankkonto.map((item, idx) => {
+				return [{ numberHeader: `Bankkonto ${idx + 1}` }, obj('Kontonummer', item.kontonummer)]
+			}),
+		}
+		data.push(norskBankkontoData)
+	}
+
 	if (tpsMessaging?.utenlandskBankkonto) {
 		const utenlandskBankkontoData = {
 			header: 'Utenlandsk bankkonto',

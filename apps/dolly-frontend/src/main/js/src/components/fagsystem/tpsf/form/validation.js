@@ -489,6 +489,14 @@ export const validation = {
 					})
 				)
 			),
+			norskBankkonto: ifPresent(
+				'$tpsMessaging.norskBankkonto',
+				Yup.array().of(
+					Yup.object({
+						kontonummer: requiredString.nullable(),
+					})
+				)
+			),
 			typeSikkerhetTiltak: ifPresent('$tpsf.typeSikkerhetTiltak', requiredString),
 			beskrSikkerhetTiltak: ifPresent('$tpsf.beskrSikkerhetTiltak', requiredString),
 			sikkerhetTiltakDatoFom: ifPresent('$tpsf.sikkerhetTiltakDatoFom', requiredDate),

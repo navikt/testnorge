@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.dolly.domain.resultset.tpsmessagingservice.utenlandskbankkonto.RsNorskBankkonto;
 import no.nav.dolly.domain.resultset.tpsmessagingservice.utenlandskbankkonto.RsUtenlandskBankkonto;
 
 import java.util.ArrayList;
@@ -20,12 +21,21 @@ import static java.util.Objects.isNull;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RsTpsMessaging {
+
     private List<RsUtenlandskBankkonto> utenlandskBankkonto;
+    private List<RsNorskBankkonto> norskBankkonto;
 
     public List<RsUtenlandskBankkonto> getUtenlandskBankkonto() {
         if (isNull(utenlandskBankkonto)) {
             utenlandskBankkonto = new ArrayList<>();
         }
         return utenlandskBankkonto;
+    }
+
+    public List<RsNorskBankkonto> getNorskBankkonto() {
+        if (isNull(norskBankkonto)) {
+            norskBankkonto = new ArrayList<>();
+        }
+        return norskBankkonto;
     }
 }

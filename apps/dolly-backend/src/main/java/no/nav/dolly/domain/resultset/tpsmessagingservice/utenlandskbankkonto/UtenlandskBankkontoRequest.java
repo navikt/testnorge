@@ -4,6 +4,6 @@ import java.util.List;
 
 public record UtenlandskBankkontoRequest(String ident,
                                          List<String> miljoer,
-                                         UtenlandskBankkonto body
+                                         RsUtenlandskBankkonto body
 ) {
 }

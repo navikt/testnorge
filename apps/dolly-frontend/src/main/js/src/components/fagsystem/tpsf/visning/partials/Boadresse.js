@@ -61,13 +61,17 @@ export const Adressevisning = ({ boadresse }) => {
 }
 
 export const Boadresse = ({ boadresse }) => {
-	if (!boadresse || boadresse.length < 1) return false
-
+	console.log('boadresse: ', boadresse) //TODO - SLETT MEG
+	if (!boadresse || (boadresse instanceof Array && boadresse.length < 1)) return false
 	return (
 		<>
 			<SubOverskrift label="Boadresse" iconKind="adresse" />
 			<div className="person-visning_content">
-				<Historikk component={Adressevisning} propName="boadresse" data={boadresse} />
+				<Historikk
+					component={Adressevisning}
+					propName="boadresse"
+					data={boadresse instanceof Array ? boadresse : [boadresse]}
+				/>
 			</div>
 		</>
 	)

@@ -1,3 +1,4 @@
+import { Fullmakt } from '~/components/fagsystem/pdlf/visning/partials/Fullmakt'
 import { Personinfo } from './Personinfo'
 import { Nasjonalitet } from './Nasjonalitet'
 import { Boadresse } from './Boadresse'
@@ -6,7 +7,8 @@ import { Identhistorikk } from './Identhistorikk'
 import { Relasjoner } from './Relasjoner'
 import { MidlertidigAdresse } from './MidlertidigAdresse'
 import { Vergemaal } from './Vergemaal'
-import { Fullmakt } from '~/components/fagsystem/pdlf/visning/partials/Fullmakt'
+import { UtenlandskBankkonto } from './UtenlandskBankkonto'
+import { NorskBankkonto } from './NorskBankkonto'
 
 export {
 	Personinfo,
@@ -18,4 +20,6 @@ export {
 	Relasjoner,
 	Vergemaal,
 	Fullmakt,
+	UtenlandskBankkonto,
+	NorskBankkonto,
 }

@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.tpsmessagingservice;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.config.credentials.TpsMessagingServiceProperties;
+import no.nav.dolly.domain.resultset.tpsmessagingservice.utenlandskbankkonto.NorskBankkontoRequest;
 import no.nav.dolly.domain.resultset.tpsmessagingservice.utenlandskbankkonto.UtenlandskBankkontoRequest;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
@@ -30,6 +31,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 public class TpsMessagingConsumer {
 
     private static final String UTENLANDSK_BANKKONTO_URL = "/api/v1/personer/{ident}/bankkonto-utenlandsk";
+    private static final String NORSK_BANKKONTO_URL = "/api/v1/personer/{ident}/bankkonto-norsk";
     private static final String MILJOER_QUERY = "miljoer";
 
     private final WebClient webClient;
@@ -53,6 +55,29 @@ public class TpsMessagingConsumer {
         ResponseEntity<Object> response = webClient.post()
                 .uri(uriBuilder -> uriBuilder
                         .path(UTENLANDSK_BANKKONTO_URL)
+                        .queryParam(MILJOER_QUERY, request.miljoer())
+                        .build(request.ident()))
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HEADER_NAV_CALL_ID, getNavCallId())
+                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .bodyValue(request.body())
+                .retrieve().toEntity(Object.class)
+                .block();
+
+        log.info("Response fra TPS messaging service: {}", response);
+        return response;
+    }
+
+    @Timed(name = "providers", tags = { "operation", "tps_messaging_createNorskBankkonto" })
+    public ResponseEntity<Object> sendNorskBankkontoRequest(NorskBankkontoRequest request) {
+
+        log.info("Sender norsk bankkonto request på ident: {} til TPS messaging service: {}", request.ident(), request.body());
+
+        ResponseEntity<Object> response = webClient.post()
+                .uri(uriBuilder -> uriBuilder
+                        .path(NORSK_BANKKONTO_URL)
                         .queryParam(MILJOER_QUERY, request.miljoer())
                         .build(request.ident()))
                 .contentType(MediaType.APPLICATION_JSON)

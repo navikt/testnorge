@@ -14,6 +14,7 @@ import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bes
 import _get from 'lodash/get'
 import { Alder } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/alder/Alder'
 import { UtenlandskBankkonto } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/utenlandskbankkonto/UtenlandskBankkonto'
+import { NorskBankkonto } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/norskbankkonto/NorskBankkonto'
 
 const alderPaths = ['tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer', 'tpsf.doedsdato']
 
@@ -35,14 +36,13 @@ const diversePaths = [
 	'tpsf.spesreg',
 	'tpsf.utenFastBopel',
 	'tpsf.erForsvunnet',
-	'tpsf.harBankkontonr',
 	'tpsf.telefonnummer_1',
 ]
 
 const vergemaalPath = ['tpsf.vergemaal']
 const fullmaktPath = ['pdldata.person.fullmakt']
 
-const tpsMessagingPath = ['tpsMessaging.utenlandskBankkonto']
+const tpsMessagingPath = ['tpsMessaging.utenlandskBankkonto', 'tpsMessaging.norskBankkonto']
 
 const sikkerhetstiltakPaths = [
 	'tpsf.typeSikkerhetTiltak',
@@ -128,6 +128,7 @@ export const Personinformasjon = ({ formikBag }) => {
 				</Kategori>
 				<Kategori title="Tps messaging" vis={tpsMessagingPath}>
 					<UtenlandskBankkonto />
+					<NorskBankkonto />
 				</Kategori>
 				<Kategori title="Sikkerhetstiltak" vis={sikkerhetstiltakPaths}>
 					<Sikkerhetstiltak formikBag={formikBag} />

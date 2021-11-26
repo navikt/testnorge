@@ -16,7 +16,6 @@ module.exports = (env) =>
 					name: 'Google Chrome',
 				},
 			},
-			static: path.join(__dirname, 'public'),
 			historyApiFallback: true,
 			client: {
 				overlay: {
