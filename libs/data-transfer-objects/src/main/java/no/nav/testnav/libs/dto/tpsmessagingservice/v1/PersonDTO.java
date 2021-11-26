@@ -33,7 +33,7 @@ public class PersonDTO {
 
     private String forkortetNavn;
 
-    private List<StatsborgerskapDTO> statsborgerskap;
+    private StatsborgerskapDTO statsborgerskap;
 
     private String spesreg;
 
@@ -41,35 +41,23 @@ public class PersonDTO {
 
     private LocalDateTime doedsdato;
 
-    private String sivilstand;
-
-    private List<SivilstandDTO> sivilstander;
-
-    private LocalDateTime sivilstandRegdato;
-
-    private List<InnvandretUtvandretDTO> innvandretUtvandret;
+    private SivilstandDTO sivilstand;
 
     private LocalDateTime egenAnsattDatoFom;
 
     private LocalDateTime egenAnsattDatoTom;
 
-    private String typeSikkerhetTiltak;
+    private SikkerhetstiltakDTO sikkerhetstiltak;
 
-    private LocalDateTime sikkerhetTiltakDatoFom;
+    private AdresseDTO boadresse;
 
-    private LocalDateTime sikkerhetTiltakDatoTom;
-
-    private String beskrSikkerhetTiltak;
-
-    private List<AdresseDTO> boadresse;
-
-    private List<PostadresseDTO> postadresse;
+    private PostadresseDTO postadresse;
 
     private LocalDateTime regdato;
 
     private List<RelasjonDTO> relasjoner;
 
-    private List<MidlertidigAdresseDTO> midlertidigAdresse;
+    private MidlertidigAdresseDTO midlertidigAdresse;
 
     private LocalDateTime opprettetDato;
 
@@ -95,25 +83,12 @@ public class PersonDTO {
 
     private LocalDateTime forsvunnetDato;
 
-    private String telefonLandskode_1;
-
-    private String telefonnummer_1;
-
-    private String telefonLandskode_2;
-
-    private String telefonnummer_2;
-
     private String importFra;
+
+    private List<TelefonnummerDTO> telefonnumre;
 
     private BankkontonrUtlandDTO bankkontonrUtland;
     private BankkontonrNorskDTO bankkontonrNorsk;
-
-    public List<PostadresseDTO> getPostadresse() {
-        if (isNull(postadresse)) {
-            postadresse = new ArrayList<>();
-        }
-        return postadresse;
-    }
 
     public List<RelasjonDTO> getRelasjoner() {
         if (isNull(relasjoner)) {
@@ -122,38 +97,10 @@ public class PersonDTO {
         return relasjoner;
     }
 
-    public List<SivilstandDTO> getSivilstander() {
-        if (isNull(sivilstander)) {
-            sivilstander = new ArrayList<>();
+    public List<TelefonnummerDTO> getTelefonnumre() {
+        if (isNull(telefonnumre)) {
+            telefonnumre = new ArrayList<>();
         }
-        return sivilstander;
-    }
-
-    public List<AdresseDTO> getBoadresse() {
-        if (isNull(boadresse)) {
-            boadresse = new ArrayList<>();
-        }
-        return boadresse;
-    }
-
-    public List<StatsborgerskapDTO> getStatsborgerskap() {
-        if (isNull(statsborgerskap)) {
-            statsborgerskap = new ArrayList<>();
-        }
-        return statsborgerskap;
-    }
-
-    public List<InnvandretUtvandretDTO> getInnvandretUtvandret() {
-        if (isNull(innvandretUtvandret)) {
-            innvandretUtvandret = new ArrayList<>();
-        }
-        return innvandretUtvandret;
-    }
-
-    public List<MidlertidigAdresseDTO> getMidlertidigAdresse() {
-        if (isNull(midlertidigAdresse)) {
-            midlertidigAdresse = new ArrayList<>();
-        }
-        return midlertidigAdresse;
+        return telefonnumre;
     }
 }

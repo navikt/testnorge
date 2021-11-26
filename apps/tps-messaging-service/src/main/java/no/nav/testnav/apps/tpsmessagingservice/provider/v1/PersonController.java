@@ -6,11 +6,15 @@ import no.nav.testnav.apps.tpsmessagingservice.service.BankkontoNorskService;
 import no.nav.testnav.apps.tpsmessagingservice.service.BankkontoUtlandService;
 import no.nav.testnav.apps.tpsmessagingservice.service.EgenansattService;
 import no.nav.testnav.apps.tpsmessagingservice.service.PersonService;
+import no.nav.testnav.apps.tpsmessagingservice.service.SikkerhetstiltakService;
 import no.nav.testnav.apps.tpsmessagingservice.service.SpraakService;
+import no.nav.testnav.apps.tpsmessagingservice.service.TelefonnummerService;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrNorskDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SikkerhetstiltakDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SpraakDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonnummerDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,6 +43,8 @@ public class PersonController {
     private final SpraakService spraakService;
     private final BankkontoUtlandService bankkontoUtlandService;
     private final BankkontoNorskService bankkontoNorskService;
+    private final TelefonnummerService telefonnummerService;
+    private final SikkerhetstiltakService sikkerhetstiltakService;
 
     private static List<TpsMeldingResponseDTO> convert(Map<String, TpsMeldingResponse> tpsMeldingDTO) {
 
@@ -98,6 +104,37 @@ public class PersonController {
                                                                 @RequestParam List<String> miljoer) {
 
         return convert(bankkontoUtlandService.sendBankkontonrUtland(ident, bankkontonrUtland, miljoer));
+    }
+
+    @PostMapping("/{ident}/telefonnumre")
+    public List<TpsMeldingResponseDTO> endreTelefonnummer(@PathVariable String ident,
+                                                          @RequestBody List<TelefonnummerDTO> telefonnumre,
+                                                          @RequestParam List<String> miljoer) {
+
+        return convert(telefonnummerService.endreTelefonnummer(ident, telefonnumre, miljoer));
+    }
+
+    @DeleteMapping("/{ident}/telefonnumre")
+    public List<TpsMeldingResponseDTO> opphoerTelefonnummer(@PathVariable String ident,
+                                                            @RequestParam List<TelefonnummerDTO.TypeTelefon> telefontyper,
+                                                            @RequestParam List<String> miljoer) {
+
+        return convert(telefonnummerService.opphoerTelefonnummer(ident, telefontyper, miljoer));
+    }
+
+    @PostMapping("/{ident}/sikkerhetstiltak")
+    public List<TpsMeldingResponseDTO> endreSikkerhetstiltak(@PathVariable String ident,
+                                                             @RequestBody SikkerhetstiltakDTO sikkerhetstiltak,
+                                                             @RequestParam List<String> miljoer) {
+
+        return convert(sikkerhetstiltakService.endreSikkerhetstiltak(ident, sikkerhetstiltak, miljoer));
+    }
+
+    @DeleteMapping("/{ident}/sikkerhetstiltak")
+    public List<TpsMeldingResponseDTO> opphoerSikkerhetstiltak(@PathVariable String ident,
+                                                             @RequestParam List<String> miljoer) {
+
+        return convert(sikkerhetstiltakService.opphoerSikkerhetstiltak(ident, miljoer));
     }
 }
 
