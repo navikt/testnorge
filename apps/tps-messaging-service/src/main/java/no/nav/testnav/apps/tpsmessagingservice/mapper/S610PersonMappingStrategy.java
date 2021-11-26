@@ -152,6 +152,11 @@ public class S610PersonMappingStrategy implements MappingStrategy {
         return null;
     }
 
+    private static String getPersonStatus(S610PersonType tpsPerson) {
+        return nonNull(tpsPerson.getPersonstatusDetalj()) && nonNull(tpsPerson.getPersonstatusDetalj().getKodePersonstatus()) ?
+                tpsPerson.getPersonstatusDetalj().getKodePersonstatus().name() : null;
+    }
+
     @Override
     public void register(MapperFactory factory) {
         factory.classMap(S610PersonType.class, PersonDTO.class)
@@ -175,7 +180,7 @@ public class S610PersonMappingStrategy implements MappingStrategy {
                         person.setGtVerdi(getGtVerdi(tpsPerson.getBruker().getGeografiskTilknytning()));
                         person.setGtRegel(tpsPerson.getBruker().getRegelForGeografiskTilknytning());
                         person.setSprakKode(tpsPerson.getBruker().getPreferanser().getSprak());
-                        person.setBankkontonrNorsk(getBankkontonrNorsk(tpsPerson, person));
+                        person.setBankkontonrNorsk(getBankkontonrNorsk(tpsPerson));
                         person.setBankkontonrUtland(getBankkontonrUtland(tpsPerson));
                         person.setTelefonnumre(getTelefonnumre(tpsPerson));
                         person.setPersonStatus(getPersonStatus(tpsPerson));
@@ -197,7 +202,7 @@ public class S610PersonMappingStrategy implements MappingStrategy {
                                 mapperFacade.map(tpsPerson.getStatsborgerskapDetalj(), StatsborgerskapDTO.class) : null;
                     }
 
-                    private BankkontonrNorskDTO getBankkontonrNorsk(S610PersonType tpsPerson, PersonDTO person) {
+                    private BankkontonrNorskDTO getBankkontonrNorsk(S610PersonType tpsPerson) {
                         return isNull(tpsPerson.getBankkontoNorge()) ||
                                 isBlank(tpsPerson.getBankkontoNorge().getKontoNummer()) ? null :
                                 mapperFacade.map(tpsPerson.getBankkontoNorge(), BankkontonrNorskDTO.class);
@@ -213,11 +218,6 @@ public class S610PersonMappingStrategy implements MappingStrategy {
                         return nonNull(tpsPerson.getBruker()) && nonNull(tpsPerson.getBruker().getTelefoner()) &&
                                 !tpsPerson.getBruker().getTelefoner().getTelefon().isEmpty() ?
                                 mapperFacade.mapAsList(tpsPerson.getBruker().getTelefoner().getTelefon(), TelefonnummerDTO.class) : null;
-                    }
-
-                    private String getPersonStatus(S610PersonType tpsPerson) {
-                        return nonNull(tpsPerson.getPersonstatusDetalj()) && nonNull(tpsPerson.getPersonstatusDetalj().getKodePersonstatus()) ?
-                                tpsPerson.getPersonstatusDetalj().getKodePersonstatus().name() : null;
                     }
 
                     private SikkerhetstiltakDTO getSikkerhetstiltak(S610PersonType tpsPerson) {

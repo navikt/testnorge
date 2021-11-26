@@ -42,7 +42,7 @@ public class TelefonnummerService {
 
     public Map<String, TpsMeldingResponse> endreTelefonnummer(String ident, List<TelefonnummerDTO> telefonnummer, List<String> miljoer) {
 
-        return endreTelefonnummer(ident, KontaktopplysningerRequest.builder()
+        return endreTelefonnummer(KontaktopplysningerRequest.builder()
                 .sfeAjourforing(KontaktopplysningerRequest.SfeAjourforing.builder()
                         .systemInfo(TpsSystemInfo.getDefault())
                         .endreKontaktopplysninger(KontaktopplysningerRequest.KontaktOpplysninger.builder()
@@ -57,7 +57,7 @@ public class TelefonnummerService {
 
     public Map<String, TpsMeldingResponse> opphoerTelefonnummer(String ident, List<TelefonnummerDTO.TypeTelefon> typer, List<String> miljoer) {
 
-        return endreTelefonnummer(ident, KontaktopplysningerRequest.builder()
+        return endreTelefonnummer(KontaktopplysningerRequest.builder()
                 .sfeAjourforing(KontaktopplysningerRequest.SfeAjourforing.builder()
                         .systemInfo(TpsSystemInfo.getDefault())
                         .endreKontaktopplysninger(KontaktopplysningerRequest.KontaktOpplysninger.builder()
@@ -70,7 +70,7 @@ public class TelefonnummerService {
                 .build(), miljoer);
     }
 
-    private Map<String, TpsMeldingResponse> endreTelefonnummer(String ident, KontaktopplysningerRequest request, List<String> miljoer) {
+    private Map<String, TpsMeldingResponse> endreTelefonnummer(KontaktopplysningerRequest request, List<String> miljoer) {
 
         var requestXml = marshallToXML(requestContext, request);
 
