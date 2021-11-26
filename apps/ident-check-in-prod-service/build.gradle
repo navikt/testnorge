@@ -51,7 +51,7 @@ dependencies {
 
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
-    implementation 'org.mockito:mockito-core:4.0.0'
+    implementation 'org.mockito:mockito-core:4.1.0'
     implementation 'com.google.guava:guava:31.0.1-jre'
 
     implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
@@ -61,7 +61,7 @@ dependencies {
     implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
 
     implementation 'com.oracle.database.jdbc:ojdbc8'
-    implementation 'com.ibm.mq:mq-jms-spring-boot-starter:2.5.5'
+    implementation 'com.ibm.mq:mq-jms-spring-boot-starter:2.5.7'
     implementation 'javax.jms:javax.jms-api:2.0.1'
     implementation 'org.json:json:20210307'
     implementation 'org.springframework:spring-jms:5.3.13'
