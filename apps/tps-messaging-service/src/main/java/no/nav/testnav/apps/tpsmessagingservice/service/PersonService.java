@@ -19,6 +19,7 @@ import no.nav.testnav.apps.tpsmessagingservice.utils.ServiceRutineUtil;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.RelasjonDTO;
+import no.nav.tps.ctg.s610.domain.PersondataFraTpsS610Type;
 import no.nav.tps.ctg.s610.domain.RelasjonType;
 import no.nav.tps.ctg.s610.domain.S610PersonType;
 import org.json.XML;
@@ -142,14 +143,14 @@ public class PersonService {
         return PersonRelasjon.builder()
                 .relasjoner(nonNull(tpsPerson.getBruker().getRelasjoner()) ?
                         tpsPerson.getBruker().getRelasjoner().getRelasjon().parallelStream()
-                                .map(relasjon ->
-                                        readFromTps(relasjon.getFnrRelasjon(), List.of(miljoe))
-                                                .get(miljoe)
-                                                .getTpsPersonData()
-                                                .getTpsSvar()
-                                                .getPersonDataS610()
-                                                .getPerson())
+                                .map(relasjon -> readFromTps(relasjon.getFnrRelasjon(), List.of(miljoe)))
                                 .filter(Objects::nonNull)
+                                .map(entry -> entry.get(miljoe))
+                                .map(TpsServicerutineS610Response::getTpsPersonData)
+                                .map(TpsServicerutineS610Response.TpsPersonData::getTpsSvar)
+                                .map(TpsServicerutineS610Response.TpsSvar::getPersonDataS610)
+                                .filter(Objects::nonNull)
+                                .map(PersondataFraTpsS610Type::getPerson)
                                 .toList() :
                         emptyList())
                 .hovedperson(tpsPerson)
