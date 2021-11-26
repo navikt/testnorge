@@ -99,7 +99,7 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                                                             kontaktadresse.setPostadresseIFrittFormat(mapperFacade.map(
                                                                     postadresse, PostadresseIFrittFormat.class));
                                                             kontaktadresse.setKilde(CONSUMER);
-                                                            kontaktadresse.setMaster(Master.PDL);
+                                                            kontaktadresse.setMaster(Master.FREG);
                                                             kontaktadresse.setGyldigFraOgMed(LocalDate.now().minusYears(1));
                                                             kontaktadresse.setGyldigTilOgMed(LocalDate.now().plusYears(10));
                                                             setUtgaatt(kontaktadresse, context);
@@ -114,7 +114,7 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                                                             kontaktadresse.setUtenlandskAdresseIFrittFormat(mapperFacade.map(
                                                                     postadresse, UtenlandskAdresseIFrittFormat.class));
                                                             kontaktadresse.setKilde(CONSUMER);
-                                                            kontaktadresse.setMaster(Master.FREG);
+                                                            kontaktadresse.setMaster(Master.PDL);
                                                             setUtgaatt(kontaktadresse, context);
                                                             return kontaktadresse;
                                                         })
