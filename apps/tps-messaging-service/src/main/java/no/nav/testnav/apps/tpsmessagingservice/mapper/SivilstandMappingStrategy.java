@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Component
 public class SivilstandMappingStrategy implements MappingStrategy {
@@ -28,7 +28,7 @@ public class SivilstandMappingStrategy implements MappingStrategy {
 
     private static LocalDateTime getDate(String dato) {
 
-        return nonNull(dato) ? LocalDate.parse(dato).atStartOfDay() : null;
+        return isNotBlank(dato) ? LocalDate.parse(dato).atStartOfDay() : null;
     }
 
     @Override
