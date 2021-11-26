@@ -118,7 +118,7 @@ const selectOptions: SelectOptions = {
 	kontaktType: [
 		{ value: 'ADVOKAT', label: 'Advokat' },
 		{ value: 'ORGANISASJON', label: 'Organisasjon' },
-		{ value: 'PERSON', label: 'Person' },
+		{ value: 'PERSON_FDATO', label: 'Person med fødselsdato' },
 		{ value: 'NY_PERSON', label: 'Ny person' },
 	],
 

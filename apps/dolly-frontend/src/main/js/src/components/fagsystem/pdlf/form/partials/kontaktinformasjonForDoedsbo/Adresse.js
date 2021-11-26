@@ -31,7 +31,6 @@ export const Adresse = ({ formikBag, path }) => {
 						label="Land"
 						kodeverk={AdresseKodeverk.PostadresseLand}
 						size="large"
-						isClearable={false}
 					/>
 					<FormikTextInput name={`${path}.adresselinje1`} label="Adresselinje 1" />
 					<FormikTextInput name={`${path}.adresselinje2`} label="Adresselinje 2" />

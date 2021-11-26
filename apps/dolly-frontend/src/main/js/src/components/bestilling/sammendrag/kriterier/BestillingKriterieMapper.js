@@ -884,59 +884,71 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			const doedsboData = {
 				header: 'Kontaktinformasjon for dødsbo',
 				itemRows: kontaktinformasjonForDoedsbo.map((item, idx) => {
-					// todo: refactor
-					const kontaktType = _has(item, 'advokatSomKontakt')
-						? 'Advokat'
-						: _has(item, 'personSomKontakt')
-						? 'Person'
-						: _has(item, 'organisasjonSomKontakt')
-						? 'Organisasjon'
-						: null
+					const {
+						skifteform,
+						attestutstedelsesdato,
+						kontaktType,
+						advokatSomKontakt,
+						organisasjonSomKontakt,
+						personSomKontakt,
+						adresse,
+					} = item
 
-					// todo: hent ut values først!! Og ta en sjekk på postnummer/sted
+					const getKontakttype = () => {
+						if (advokatSomKontakt) {
+							return 'Advokat'
+						} else if (personSomKontakt) {
+							return 'Person'
+						} else if (organisasjonSomKontakt) {
+							return 'Organisasjon'
+						} else return null
+					}
+
 					return [
 						{ numberHeader: `Kontaktinformasjon for dødsbo ${idx + 1}` },
-						obj('Skifteform', item.skifteform),
-						obj('Utstedelsesdato skifteattest', Formatters.formatDate(item.attestutstedelsesdato)),
-						obj('Kontakttype', kontaktType),
+						obj('Skifteform', skifteform),
+						obj('Utstedelsesdato skifteattest', Formatters.formatDate(attestutstedelsesdato)),
+						obj(
+							'Kontakttype',
+							kontaktType ? Formatters.showLabel('kontaktType', kontaktType) : getKontakttype()
+						),
 
 						obj(
 							'Organisasjonsnummer',
-							item.advokatSomKontakt?.organisasjonsnummer ||
-								item.organisasjonSomKontakt?.organisasjonsnummer
+							advokatSomKontakt?.organisasjonsnummer || organisasjonSomKontakt?.organisasjonsnummer
 						),
 						obj(
 							'Organisasjonsnavn',
-							item.advokatSomKontakt?.organisasjonsnavn ||
-								item.organisasjonSomKontakt?.organisasjonsnavn
+							advokatSomKontakt?.organisasjonsnavn || organisasjonSomKontakt?.organisasjonsnavn
 						),
-						obj('Identifikasjonsnummer', item.personSomKontakt?.identifikasjonsnummer),
-						obj('Fødselsdato', Formatters.formatDate(item.personSomKontakt?.foedselsdato)),
+						obj('Identifikasjonsnummer', personSomKontakt?.identifikasjonsnummer),
+						obj('Fødselsdato', Formatters.formatDate(personSomKontakt?.foedselsdato)),
 
 						obj(
 							'Kontaktperson fornavn',
-							item.advokatSomKontakt?.kontaktperson?.fornavn ||
-								item.organisasjonSomKontakt?.kontaktperson?.fornavn ||
-								item.personSomKontakt?.navn?.fornavn
+							advokatSomKontakt?.kontaktperson?.fornavn ||
+								organisasjonSomKontakt?.kontaktperson?.fornavn ||
+								personSomKontakt?.navn?.fornavn
 						),
 						obj(
 							'Kontaktperson mellomnavn',
-							item.advokatSomKontakt?.kontaktperson?.mellomnavn ||
-								item.organisasjonSomKontakt?.kontaktperson?.mellomnavn ||
-								item.personSomKontakt?.navn?.mellomnavn
+							advokatSomKontakt?.kontaktperson?.mellomnavn ||
+								organisasjonSomKontakt?.kontaktperson?.mellomnavn ||
+								personSomKontakt?.navn?.mellomnavn
 						),
 						obj(
 							'Kontaktperson etternavn',
-							item.advokatSomKontakt?.kontaktperson?.etternavn ||
-								item.organisasjonSomKontakt?.kontaktperson?.etternavn ||
-								item.personSomKontakt?.navn?.etternavn
+							advokatSomKontakt?.kontaktperson?.etternavn ||
+								organisasjonSomKontakt?.kontaktperson?.etternavn ||
+								personSomKontakt?.navn?.etternavn
 						),
-						obj('Land', item.adresse?.landkode, AdresseKodeverk.PostadresseLand),
-						obj('Adresselinje 1', item.adresse?.adresselinje1),
-						obj('Adresselinje 2', item.adresse?.adresselinje2),
+						obj('Land', adresse?.landkode, AdresseKodeverk.PostadresseLand),
+						obj('Adresselinje 1', adresse?.adresselinje1),
+						obj('Adresselinje 2', adresse?.adresselinje2),
 						obj(
 							'Postnummer og -sted',
-							`${item.adresse?.postnummer} ${item.adresse?.poststedsnavn}`
+							(adresse?.postnummer || adresse?.poststedsnavn) &&
+								`${adresse?.postnummer} ${adresse?.poststedsnavn}`
 						),
 					]
 				}),

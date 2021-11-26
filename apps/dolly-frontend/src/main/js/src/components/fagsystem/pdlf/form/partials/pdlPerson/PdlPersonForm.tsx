@@ -44,12 +44,8 @@ export const PdlPersonForm = ({ path, formikBag }: PdlPersonValues) => {
 				size="large"
 			/>
 			<FormikSelect name={`${path}.gradering`} label="Gradering" options={Options('gradering')} />
-			<FormikCheckbox name={`${path}.syntetisk`} label="Er syntetisk" checkboxMargin />
-			<FormikCheckbox
-				name={`${path}.nyttNavn.hasMellomnavn`}
-				label="Har mellomnavn"
-				checkboxMargin
-			/>
+			<FormikCheckbox name={`${path}.syntetisk`} label="Er syntetisk" />
+			<FormikCheckbox name={`${path}.nyttNavn.hasMellomnavn`} label="Har mellomnavn" />
 		</>
 	)
 }

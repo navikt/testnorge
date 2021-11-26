@@ -16,8 +16,16 @@ export const KontaktinformasjonForDoedsbo = ({ data }) => {
 			<ErrorBoundary>
 				<DollyFieldArray data={data} nested>
 					{(item, idx) => {
-						const getKontaktype = () => {
-							const { advokatSomKontakt, personSomKontakt, organisasjonSomKontakt } = item
+						const {
+							skifteform,
+							attestutstedelsesdato,
+							adresse,
+							advokatSomKontakt,
+							organisasjonSomKontakt,
+							personSomKontakt,
+						} = item
+
+						const getKontakttype = () => {
 							if (advokatSomKontakt) {
 								return 'Advokat'
 							} else if (personSomKontakt) {
@@ -29,51 +37,51 @@ export const KontaktinformasjonForDoedsbo = ({ data }) => {
 
 						return (
 							<div className="person-visning_content" key={idx}>
-								<TitleValue title="Skifteform" value={item.skifteform} />
+								<TitleValue title="Skifteform" value={skifteform} />
 								<TitleValue
 									title="Utstedelsesdato skifteattest"
-									value={Formatters.formatDate(item.attestutstedelsesdato)}
+									value={Formatters.formatDate(attestutstedelsesdato)}
 								/>
 								<TitleValue
 									title="Land"
-									value={item.adresse?.landkode}
+									value={adresse?.landkode}
 									kodeverk={AdresseKodeverk.PostadresseLand}
 								/>
-								<TitleValue title="Adresselinje 1" value={item.adresse?.adresselinje1} />
-								<TitleValue title="Adresselinje 2" value={item.adresse?.adresselinje2} />
+								<TitleValue title="Adresselinje 1" value={adresse?.adresselinje1} />
+								<TitleValue title="Adresselinje 2" value={adresse?.adresselinje2} />
 								<TitleValue
 									title="Postnummer og -sted"
-									value={item.adresse?.postnummer + ' ' + item.adresse?.poststedsnavn}
+									value={adresse?.postnummer + ' ' + adresse?.poststedsnavn}
 								/>
-								<TitleValue title="Kontakttype" value={getKontaktype()} />
+								<TitleValue title="Kontakttype" value={getKontakttype()} />
 								<TitleValue
 									title="Organisasjonsnummer"
 									value={
-										item.advokatSomKontakt?.organisasjonsnummer ||
-										item.organisasjonSomKontakt?.organisasjonsnummer
+										advokatSomKontakt?.organisasjonsnummer ||
+										organisasjonSomKontakt?.organisasjonsnummer
 									}
 								/>
 								<TitleValue
 									title="Organisasjonsnavn"
 									value={
-										item.advokatSomKontakt?.organisasjonsnavn ||
-										item.organisasjonSomKontakt?.organisasjonsnavn
+										advokatSomKontakt?.organisasjonsnavn ||
+										organisasjonSomKontakt?.organisasjonsnavn
 									}
 								/>
 								<TitleValue
 									title="Identifikasjonsnummer"
-									value={item.personSomKontakt?.identifikasjonsnummer}
+									value={personSomKontakt?.identifikasjonsnummer}
 								/>
 								<TitleValue
 									title="Fødselsdato"
-									value={Formatters.formatDate(item.personSomKontakt?.foedselsdato)}
+									value={Formatters.formatDate(personSomKontakt?.foedselsdato)}
 								/>
 								<Personnavn
 									data={
-										item.advokatSomKontakt?.kontaktperson ||
-										item.organisasjonSomKontakt?.kontaktperson ||
-										item.personSomKontakt?.navn ||
-										item.personSomKontakt?.personnavn
+										advokatSomKontakt?.kontaktperson ||
+										organisasjonSomKontakt?.kontaktperson ||
+										personSomKontakt?.navn ||
+										personSomKontakt?.personnavn
 									}
 								/>
 							</div>

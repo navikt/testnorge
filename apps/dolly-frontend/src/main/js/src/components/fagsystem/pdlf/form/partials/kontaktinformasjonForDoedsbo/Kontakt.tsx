@@ -1,41 +1,38 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
-import { getPlaceholder, setNavn, setValue } from '../utils'
+import { getPlaceholder, setNavn } from '../utils'
 import _get from 'lodash/get'
-import _has from 'lodash/has'
 import { initialPdlPerson } from '~/components/fagsystem/pdlf/form/initialValues'
-import { PdlPersonForm } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonForm'
 import { OrganisasjonSelect } from '~/components/organisasjonSelect'
 import _cloneDeep from 'lodash/cloneDeep'
 import _set from 'lodash/set'
+import { PdlPersonExpander } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 
 const initialOrganisasjon = {
-	organisasjonsnummer: null,
-	organisasjonsnavn: null,
+	organisasjonsnummer: null as string,
+	organisasjonsnavn: null as string,
 	kontaktperson: {
-		fornavn: null,
-		mellomnavn: null,
-		etternavn: null,
+		fornavn: null as string,
+		mellomnavn: null as string,
+		etternavn: null as string,
 	},
 }
 
 const initialPerson = {
-	foedselsdato: null,
+	foedselsdato: null as string,
 	navn: {
-		fornavn: null,
-		mellomnavn: null,
-		etternavn: null,
+		fornavn: null as string,
+		mellomnavn: null as string,
+		etternavn: null as string,
 	},
 }
 
 const initialNyPerson = {
 	nyKontaktperson: initialPdlPerson,
-	// identifikasjonsnummer: null
 }
 
 export const Kontakt = ({ formikBag, path }) => {
@@ -43,26 +40,10 @@ export const Kontakt = ({ formikBag, path }) => {
 	const organisasjonPath = `${path}.organisasjonSomKontakt`
 	const personPath = `${path}.personSomKontakt`
 
-	// todo: refactor
-	// const [kontaktType, setKontaktType] = useState(
-	// 	_has(formikBag.values, advokatPath)
-	// 		? 'ADVOKAT'
-	// 		: _has(formikBag.values, organisasjonPath)
-	// 		? 'ORGANISASJON'
-	// 		: _has(formikBag.values, personPath) && _has(formikBag.values, `${personPath}.foedselsdato`)
-	// 		? 'PERSON'
-	// 		: _has(formikBag.values, personPath) &&
-	// 		  _has(formikBag.values, `${personPath}.nyKontaktperson`)
-	// 		? 'NY_PERSON'
-	// 		: null
-	// )
 	const kontaktType = _get(formikBag.values, `${path}.kontaktType`)
-	// console.log('formikBag', formikBag)
-	// console.log('kontaktType', kontaktType)
+
 	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
 	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
-	// const dollyGruppeInfo = SelectOptionsOppslag.hentGruppe()
-	// const navnOgFnrOptions = SelectOptionsOppslag.formatOptions('navnOgFnr', dollyGruppeInfo)
 
 	const handleAfterChange = ({ value }) => {
 		const kontaktinfo = _get(formikBag.values, path)
@@ -78,7 +59,7 @@ export const Kontakt = ({ formikBag, path }) => {
 				_set(kontaktinfoClone, 'organisasjonSomKontakt', initialOrganisasjon)
 				_set(kontaktinfoClone, 'advokatSomKontakt', undefined)
 				_set(kontaktinfoClone, 'personSomKontakt', undefined)
-			} else if (value === 'PERSON') {
+			} else if (value === 'PERSON_FDATO') {
 				_set(kontaktinfoClone, 'personSomKontakt', initialPerson)
 				_set(kontaktinfoClone, 'advokatSomKontakt', undefined)
 				_set(kontaktinfoClone, 'organisasjonSomKontakt', undefined)
@@ -88,28 +69,12 @@ export const Kontakt = ({ formikBag, path }) => {
 				_set(kontaktinfoClone, 'organisasjonSomKontakt', undefined)
 			}
 		}
-		// setKontaktType(value)
 		formikBag.setFieldValue(path, kontaktinfoClone)
+	}
 
-		// if (value !== kontaktType) {
-		// 	if (value === 'ADVOKAT') {
-		// 		formikBag.setFieldValue(`${path}.advokatSomKontakt`, initialOrganisasjon)
-		// 		formikBag.setFieldValue(`${path}.organisasjonSomKontakt`, undefined)
-		// 		formikBag.setFieldValue(`${path}.personSomKontakt`, undefined)
-		// 	} else if (value === 'ORGANISASJON') {
-		// 		formikBag.setFieldValue(`${path}.organisasjonSomKontakt`, initialOrganisasjon)
-		// 		formikBag.setFieldValue(`${path}.advokatSomKontakt`, undefined)
-		// 		formikBag.setFieldValue(`${path}.personSomKontakt`, undefined)
-		// 	} else if (value === 'PERSON') {
-		// 		formikBag.setFieldValue(`${path}.personSomKontakt`, initialPerson)
-		// 		formikBag.setFieldValue(`${path}.advokatSomKontakt`, undefined)
-		// 		formikBag.setFieldValue(`${path}.organisasjonSomKontakt`, undefined)
-		// 	} else if (value === 'NY_PERSON') {
-		// 		formikBag.setFieldValue(`${path}.personSomKontakt`, initialNyPerson)
-		// 		formikBag.setFieldValue(`${path}.advokatSomKontakt`, undefined)
-		// 		formikBag.setFieldValue(`${path}.organisasjonSomKontakt`, undefined)
-		// 	}
-		// }
+	const organisasjonHandleChange = (values, path) => {
+		formikBag.setFieldValue(`${path}.organisasjonsnummer`, values.orgnr)
+		formikBag.setFieldValue(`${path}.organisasjonsnavn`, values.navn)
 	}
 
 	return (
@@ -121,58 +86,42 @@ export const Kontakt = ({ formikBag, path }) => {
 				options={Options('kontaktType')}
 				onChange={handleAfterChange}
 				isClearable={false}
-				// feil={
-				// 	!kontaktType && {
-				// 		feilmelding: 'Feltet er påkrevd',
-				// 	}
-				// }
+				size="medium"
 			/>
 			{kontaktType === 'ADVOKAT' && (
 				<>
-					{/*<FormikTextInput*/}
-					{/*	name={`${advokatPath}.organisasjonsnummer`}*/}
-					{/*	label="Organisasjonsnummer"*/}
-					{/*/>*/}
 					<OrganisasjonSelect
 						path={`${advokatPath}.organisasjonsnummer`}
 						label="Organisasjonsnummer"
+						afterChange={(val) => organisasjonHandleChange(val, advokatPath)}
 					/>
-					<FormikTextInput name={`${advokatPath}.organisasjonsnavn`} label="Organisasjonsnavn" />
 					<DollySelect
 						name={`${advokatPath}.kontaktperson.fornavn`}
 						label="Kontaktperson navn"
 						options={navnOptions}
-						size="large"
+						size="xlarge"
 						placeholder={getPlaceholder(formikBag.values, `${advokatPath}.kontaktperson`)}
 						isLoading={navnInfo.loading}
 						onChange={(navn) =>
 							setNavn(navn, `${advokatPath}.kontaktperson`, formikBag.setFieldValue)
 						}
 						value={_get(formikBag.values, `${advokatPath}.kontaktperson.fornavn`)}
-						isClearable={false}
 					/>
 				</>
 			)}
 
 			{kontaktType === 'ORGANISASJON' && (
 				<>
-					{/*<FormikTextInput*/}
-					{/*	name={`${organisasjonPath}.organisasjonsnummer`}*/}
-					{/*	label="Organisasjonsnummer"*/}
-					{/*/>*/}
 					<OrganisasjonSelect
 						path={`${organisasjonPath}.organisasjonsnummer`}
 						label="Organisasjonsnummer"
-					/>
-					<FormikTextInput
-						name={`${organisasjonPath}.organisasjonsnavn`}
-						label="Organisasjonsnavn"
+						afterChange={(val) => organisasjonHandleChange(val, organisasjonPath)}
 					/>
 					<DollySelect
 						name={`${organisasjonPath}.kontaktperson.fornavn`}
 						label="Kontaktperson navn"
 						options={navnOptions}
-						size="large"
+						size="xlarge"
 						placeholder={getPlaceholder(formikBag.values, `${organisasjonPath}.kontaktperson`)}
 						isLoading={navnInfo.loading}
 						onChange={(navn) =>
@@ -183,30 +132,28 @@ export const Kontakt = ({ formikBag, path }) => {
 				</>
 			)}
 
-			{kontaktType === 'PERSON' && (
+			{kontaktType === 'PERSON_FDATO' && (
 				<>
 					<FormikDatepicker name={`${personPath}.foedselsdato`} label="Fødselsdato" />
 					<DollySelect
 						name={`${personPath}.navn.fornavn`}
 						label="Kontaktperson navn"
 						options={navnOptions}
-						size="large"
+						size="xlarge"
 						placeholder={getPlaceholder(formikBag.values, `${personPath}.navn`)}
 						isLoading={navnInfo.loading}
 						onChange={(navn) => setNavn(navn, `${personPath}.navn`, formikBag.setFieldValue)}
-						value={_get(formikBag.values, `${personPath}.navn`)}
-						isClearable={false}
+						value={_get(formikBag.values, `${personPath}.navn.fornavn`)}
 					/>
-					{/*<FormikTextInput*/}
-					{/*	name={`${personPath}.identifikasjonsnummer`}*/}
-					{/*	label="Identifikasjonsnummer"*/}
-					{/*/>*/}
-					{/*// todo: Eget field for navn??*/}
 				</>
 			)}
 
 			{kontaktType === 'NY_PERSON' && (
-				<PdlPersonForm path={`${personPath}.nyKontaktperson`} formikBag={formikBag} />
+				<PdlPersonExpander
+					path={`${personPath}.nyKontaktperson`}
+					label="KONTAKTPERSON"
+					formikBag={formikBag}
+				/>
 			)}
 		</Kategori>
 	)

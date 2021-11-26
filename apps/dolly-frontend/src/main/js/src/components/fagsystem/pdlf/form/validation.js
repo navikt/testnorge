@@ -112,7 +112,7 @@ const kontaktDoedsbo = Yup.array().of(
 					fornavn: Yup.string().nullable(),
 					mellomnavn: Yup.string().nullable(),
 					etternavn: Yup.string().nullable(),
-				}),
+				}).nullable(),
 			}),
 		}),
 
@@ -125,20 +125,20 @@ const kontaktDoedsbo = Yup.array().of(
 					fornavn: Yup.string().nullable(),
 					mellomnavn: Yup.string().nullable(),
 					etternavn: Yup.string().nullable(),
-				}),
+				}).nullable(),
 			}),
 		}),
 
 		personSomKontakt: Yup.object()
 			.when('kontaktType', {
-				is: 'PERSON',
+				is: 'PERSON_FDATO',
 				then: Yup.object({
 					foedselsdato: requiredString.nullable(),
 					navn: Yup.object({
 						fornavn: Yup.string().nullable(),
 						mellomnavn: Yup.string().nullable(),
 						etternavn: Yup.string().nullable(),
-					}),
+					}).nullable(),
 				}),
 			})
 			.when('kontaktType', {
