@@ -29,6 +29,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.MidlertidigAdressetypeDTO.PBOX;
 import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.MidlertidigAdressetypeDTO.STED;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Component
@@ -198,7 +199,7 @@ public class S610PersonMappingStrategy implements MappingStrategy {
 
                     private BankkontonrNorskDTO getBankkontonrNorsk(S610PersonType tpsPerson, PersonDTO person) {
                         return isNull(tpsPerson.getBankkontoNorge()) ||
-                                isNotBlank(tpsPerson.getBankkontoNorge().getKontoNummer()) ? null :
+                                isBlank(tpsPerson.getBankkontoNorge().getKontoNummer()) ? null :
                                 mapperFacade.map(person, BankkontonrNorskDTO.class);
                     }
 
@@ -227,7 +228,8 @@ public class S610PersonMappingStrategy implements MappingStrategy {
                     }
 
                     private PostadresseDTO getPostadresse(S610PersonType tpsPerson) {
-                        return nonNull(tpsPerson.getPostAdresse()) && nonNull(tpsPerson.getPostAdresse().getFullPostAdresse()) ?
+                        return nonNull(tpsPerson.getPostAdresse()) && nonNull(tpsPerson.getPostAdresse().getFullPostAdresse()) &&
+                                isNotBlank(tpsPerson.getPostAdresse().getFullPostAdresse().getAdresse1()) ?
                                 mapperFacade.map(tpsPerson.getPostAdresse().getFullPostAdresse(), PostadresseDTO.class) : null;
                     }
                 })

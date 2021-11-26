@@ -100,18 +100,13 @@ public class PersonService {
                 .map(person -> mapperFacade.map(person, PersonDTO.class))
                 .collect(Collectors.toMap(PersonDTO::getIdent, person -> person));
 
-        tpsFamilie.forEach(person ->
-                familie.get(person.getFodselsnummer()).getRelasjoner().addAll(
-                        nonNull(person.getBruker().getRelasjoner()) ?
-                                person.getBruker().getRelasjoner().getRelasjon().stream()
-                                        .filter(relasjon ->
-                                                tpsFamilie.stream().anyMatch(person1 ->
-                                                        relasjon.getFnrRelasjon().equals(person1.getFodselsnummer())))
-                                        .map(relasjon -> RelasjonDTO.builder()
-                                                .relasjonTypeNavn(mapRelasjonType(relasjon.getTypeRelasjon()))
-                                                .personRelasjonMed(familie.get(relasjon.getFnrRelasjon()))
-                                                .build())
-                                        .collect(Collectors.toList()) : emptyList()));
+        familie.get(personRelasjon.getHovedperson().getFodselsnummer()).setRelasjoner(personRelasjon.getHovedperson()
+                        .getBruker().getRelasjoner().getRelasjon().stream()
+                        .map(relasjon -> RelasjonDTO.builder()
+                                .personRelasjonMed(familie.get(relasjon.getFnrRelasjon()))
+                                .relasjonTypeNavn(mapRelasjonType(relasjon.getTypeRelasjon()))
+                                .build())
+                        .collect(Collectors.toList()));
 
         return familie.get(personRelasjon.getHovedperson().getFodselsnummer());
     }
