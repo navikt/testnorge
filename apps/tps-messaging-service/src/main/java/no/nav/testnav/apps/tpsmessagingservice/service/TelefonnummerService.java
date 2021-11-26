@@ -2,12 +2,12 @@ package no.nav.testnav.apps.tpsmessagingservice.service;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.EndringsmeldingConsumer;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.command.TpsMeldingCommand;
-import no.nav.testnav.apps.tpsmessagingservice.dto.TelefonnummerRequest;
-import no.nav.testnav.apps.tpsmessagingservice.dto.TelefonnummerResponse;
+import no.nav.testnav.apps.tpsmessagingservice.dto.KontaktopplysningerRequest;
+import no.nav.testnav.apps.tpsmessagingservice.dto.KontaktopplysningerResponse;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
+import no.nav.testnav.apps.tpsmessagingservice.dto.TpsSystemInfo;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonnummerDTO;
 import org.springframework.stereotype.Service;
 
@@ -36,40 +36,44 @@ public class TelefonnummerService {
         this.mapperFacade = mapperFacade;
         this.endringsmeldingConsumer = endringsmeldingConsumer;
 
-        this.requestContext = JAXBContext.newInstance(TelefonnummerRequest.class);
-        this.responseContext = JAXBContext.newInstance(TelefonnummerResponse.class);
+        this.requestContext = JAXBContext.newInstance(KontaktopplysningerRequest.class);
+        this.responseContext = JAXBContext.newInstance(KontaktopplysningerResponse.class);
     }
 
-    private static TelefonnummerRequest updateRequest(TelefonnummerRequest request, boolean isEndre) {
+    public Map<String, TpsMeldingResponse> endreTelefonnummer(String ident, List<TelefonnummerDTO> telefonnummer, List<String> miljoer) {
 
-        if (isEndre) {
-            request.getSfeAjourforing().setOpphorTelefon(null);
-
-        } else {
-            request.getSfeAjourforing().setEndreTelefon(null);
-        }
-
-        return request;
+        return endreTelefonnummer(KontaktopplysningerRequest.builder()
+                .sfeAjourforing(KontaktopplysningerRequest.SfeAjourforing.builder()
+                        .systemInfo(TpsSystemInfo.getDefault())
+                        .endreKontaktopplysninger(KontaktopplysningerRequest.KontaktOpplysninger.builder()
+                                .offentligIdent(ident)
+                                .endringAvTelefon(KontaktopplysningerRequest.TelefonOpplysninger.builder()
+                                        .nyTelefon(mapperFacade.mapAsList(telefonnummer, KontaktopplysningerRequest.TelefonData.class))
+                                        .build())
+                                .build())
+                        .build())
+                .build(), miljoer);
     }
 
-    public Map<String, TpsMeldingResponse> endreTelefonnummer(String ident, TelefonnummerDTO telefonnummer, List<String> miljoer) {
+    public Map<String, TpsMeldingResponse> opphoerTelefonnummer(String ident, List<TelefonnummerDTO.TypeTelefon> typer, List<String> miljoer) {
 
-        return endreTelefonnummer(true, ident, telefonnummer, miljoer);
+        return endreTelefonnummer(KontaktopplysningerRequest.builder()
+                .sfeAjourforing(KontaktopplysningerRequest.SfeAjourforing.builder()
+                        .systemInfo(TpsSystemInfo.getDefault())
+                        .endreKontaktopplysninger(KontaktopplysningerRequest.KontaktOpplysninger.builder()
+                                .offentligIdent(ident)
+                                .endringAvTelefon(KontaktopplysningerRequest.TelefonOpplysninger.builder()
+                                        .opphorTelefon(mapperFacade.mapAsList(typer, KontaktopplysningerRequest.Telefontype.class))
+                                        .build())
+                                .build())
+                        .build())
+                .build(), miljoer);
     }
 
-    public Map<String, TpsMeldingResponse> opphoerTelefonnummer(String ident, TelefonnummerDTO telefonnummer, List<String> miljoer) {
+    private Map<String, TpsMeldingResponse> endreTelefonnummer(KontaktopplysningerRequest request, List<String> miljoer) {
 
-        return endreTelefonnummer(false, ident, telefonnummer, miljoer);
-    }
+        var requestXml = marshallToXML(requestContext, request);
 
-    private Map<String, TpsMeldingResponse> endreTelefonnummer(boolean isEndre, String ident, TelefonnummerDTO telefonnummer, List<String> miljoer) {
-
-        var context = new MappingContext.Factory().getContext();
-        context.setProperty("ident", ident);
-
-        var request = mapperFacade.map(telefonnummer, TelefonnummerRequest.class, context);
-
-        var requestXml = marshallToXML(requestContext, updateRequest(request, isEndre));
         var miljoerResponse = endringsmeldingConsumer.sendMessage(requestXml, miljoer);
 
         return miljoerResponse.entrySet().stream()
@@ -77,7 +81,7 @@ public class TelefonnummerService {
 
                     try {
                         return getResponseStatus(TpsMeldingCommand.NO_RESPONSE.equals(entry.getValue()) ? null :
-                                (TelefonnummerResponse) unmarshallFromXml(responseContext, entry.getValue()));
+                                (KontaktopplysningerResponse) unmarshallFromXml(responseContext, entry.getValue()));
 
                     } catch (JAXBException e) {
                         log.error(e.getMessage(), e);

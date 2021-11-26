@@ -48,7 +48,7 @@ TpsfVisning.filterValues = (data, bestillingsListe) => {
 		data = {
 			...data,
 			innvandretUtvandret: data.innvandretUtvandret.filter(
-				(i, idx) => idx !== data.innvandretUtvandret.length - 1
+				(i, idx) => idx !== data.innvandretUtvandret.length - 1 || i.innutvandret === 'UTVANDRET'
 			),
 		}
 	return data

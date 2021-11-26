@@ -106,36 +106,32 @@ public class PersonController {
         return convert(bankkontoUtlandService.sendBankkontonrUtland(ident, bankkontonrUtland, miljoer));
     }
 
-    @PostMapping("/{ident}/telefonnummer")
+    @PostMapping("/{ident}/telefonnumre")
     public List<TpsMeldingResponseDTO> endreTelefonnummer(@PathVariable String ident,
-                                                          @RequestBody TelefonnummerDTO telefonnummer,
+                                                          @RequestBody List<TelefonnummerDTO> telefonnumre,
                                                           @RequestParam List<String> miljoer) {
 
-        return convert(telefonnummerService.endreTelefonnummer(ident, telefonnummer, miljoer));
+        return convert(telefonnummerService.endreTelefonnummer(ident, telefonnumre, miljoer));
     }
 
-    @DeleteMapping("/{ident}/telefonnummer")
+    @DeleteMapping("/{ident}/telefonnumre")
     public List<TpsMeldingResponseDTO> opphoerTelefonnummer(@PathVariable String ident,
-                                                            @RequestParam TelefonnummerDTO.TypeTelefon telefontype,
+                                                            @RequestParam List<TelefonnummerDTO.TypeTelefon> telefontyper,
                                                             @RequestParam List<String> miljoer) {
 
-        return convert(telefonnummerService.opphoerTelefonnummer(ident,
-                TelefonnummerDTO.builder()
-                        .telefontype(telefontype)
-                        .build(),
-                miljoer));
+        return convert(telefonnummerService.opphoerTelefonnummer(ident, telefontyper, miljoer));
     }
 
     @PostMapping("/{ident}/sikkerhetstiltak")
     public List<TpsMeldingResponseDTO> endreSikkerhetstiltak(@PathVariable String ident,
-                                                          @RequestBody SikkerhetstiltakDTO sikkerhetstiltak,
-                                                          @RequestParam List<String> miljoer) {
+                                                             @RequestBody SikkerhetstiltakDTO sikkerhetstiltak,
+                                                             @RequestParam List<String> miljoer) {
 
         return convert(sikkerhetstiltakService.endreSikkerhetstiltak(ident, sikkerhetstiltak, miljoer));
     }
 
     @DeleteMapping("/{ident}/sikkerhetstiltak")
-    public List<TpsMeldingResponseDTO> endreSikkerhetstiltak(@PathVariable String ident,
+    public List<TpsMeldingResponseDTO> opphoerSikkerhetstiltak(@PathVariable String ident,
                                                              @RequestParam List<String> miljoer) {
 
         return convert(sikkerhetstiltakService.opphoerSikkerhetstiltak(ident, miljoer));

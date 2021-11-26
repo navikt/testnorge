@@ -49,8 +49,7 @@ const Utlogging = () => {
 		}
 	}, [milliseconds])
 
-	const logout = () =>
-		Api.fetch('/logout', { method: 'POST' }).then((response) => location.replace(response.url))
+	const logout = () => (window.location.href = '/logout')
 	const continueSession = () => Api.fetch('/session/ping', { method: 'GET' })
 
 	if (milliseconds <= 0) {

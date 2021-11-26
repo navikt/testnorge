@@ -301,7 +301,8 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
         }
         return isBlank(pdlOrganisasjon.getOrganisasjonsnavn()) ||
                 organisasjoner.values().stream()
-                        .anyMatch(organisasjon -> pdlOrganisasjon.getOrganisasjonsnavn().equals(organisasjon.get("organisasjonsnavn")));
+                        .anyMatch(organisasjon -> pdlOrganisasjon.getOrganisasjonsnavn()
+                                .equalsIgnoreCase((String) organisasjon.get("organisasjonsnavn")));
     }
 
     private void leggTilNyAddressat(KontaktpersonDTO kontakt, String hovedperson) {
