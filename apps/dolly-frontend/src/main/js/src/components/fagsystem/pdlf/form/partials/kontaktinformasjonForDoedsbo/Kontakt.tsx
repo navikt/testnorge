@@ -89,9 +89,9 @@ export const Kontakt = ({ formikBag, path }: KontaktValues) => {
 		formikBag.setFieldValue(path, kontaktinfoClone)
 	}
 
-	const organisasjonHandleChange = (values: OrgValues, path: string) => {
-		formikBag.setFieldValue(`${path}.organisasjonsnummer`, values.orgnr)
-		formikBag.setFieldValue(`${path}.organisasjonsnavn`, values.navn)
+	const organisasjonHandleChange = (values: OrgValues, orgPath: string) => {
+		formikBag.setFieldValue(`${orgPath}.organisasjonsnummer`, values.orgnr)
+		formikBag.setFieldValue(`${orgPath}.organisasjonsnavn`, values.navn)
 	}
 
 	return (
