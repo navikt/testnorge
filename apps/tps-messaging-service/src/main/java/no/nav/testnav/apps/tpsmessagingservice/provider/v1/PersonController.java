@@ -131,7 +131,7 @@ public class PersonController {
     }
 
     @DeleteMapping("/{ident}/sikkerhetstiltak")
-    public List<TpsMeldingResponseDTO> endreSikkerhetstiltak(@PathVariable String ident,
+    public List<TpsMeldingResponseDTO> opphoerSikkerhetstiltak(@PathVariable String ident,
                                                              @RequestParam List<String> miljoer) {
 
         return convert(sikkerhetstiltakService.opphoerSikkerhetstiltak(ident, miljoer));
