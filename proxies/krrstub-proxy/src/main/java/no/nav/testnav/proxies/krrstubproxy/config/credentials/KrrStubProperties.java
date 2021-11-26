@@ -1,6 +1,6 @@
 package no.nav.testnav.proxies.krrstubproxy.config.credentials;
 
-import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
