@@ -20,7 +20,7 @@ jobs:
   build:
     name: Build
     uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@master
-    if: ${{ github.ref == 'refs/heads/master' }}
+    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'feature/oppdatere_url_til_krrstub'}}
     with:
       working-directory: 'proxies/krrstub-proxy/'
       app-name: 'krrstub-proxy'
@@ -30,7 +30,7 @@ jobs:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' }}
+    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'feature/oppdatere_url_til_krrstub'}}
     with:
       resource: 'proxies/krrstub-proxy/config.yml'
       app-name: 'krrstub-proxy'

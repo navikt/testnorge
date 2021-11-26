@@ -3,6 +3,9 @@ package no.nav.testnav.proxies.krrstubproxy;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
+import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.proxies.krrstubproxy.config.credentials.KrrStubProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -22,9 +25,16 @@ public class KrrstubProxyApplicationStarter {
     }
 
     @Bean
-    public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+    public RouteLocator customRouteLocator(RouteLocatorBuilder builder, TokenExchange tokenExchange, KrrStubProperties properties) {
+
         return builder.routes()
-                .route(spec -> spec.path("/**").uri("https://digdir-krr-stub.dev.intern.nav.no/"))
+                .route(spec -> spec.path("**/v1/**").uri(properties.getUrl()))
+                .route(spec -> spec.path("**/v2/**")
+                        .filters(filterSpec -> filterSpec
+                                .filter(AddAuthenticationRequestGatewayFilterFactory
+                                        .createAuthenticationHeaderFilter(() ->
+                                                tokenExchange.generateToken(properties).map(token -> token.getTokenValue()))))
+                        .uri(properties.getUrl()))
                 .build();
     }
 }

@@ -7,6 +7,8 @@ rootProject.name = 'krrstub-proxy'
 
 includeBuild '../../libs/reactive-core'
 includeBuild '../../libs/reactive-proxy'
+includeBuild '../../libs/servlet-security'
+includeBuild '../../libs/security-core'
 
 gradleEnterprise {
     buildScan {
