@@ -113,14 +113,16 @@ public class PersonService {
                 .map(person -> mapperFacade.map(person, PersonDTO.class))
                 .collect(Collectors.toMap(PersonDTO::getIdent, person -> person));
 
-        familie.get(personRelasjon.getHovedperson().getFodselsnummer()).setRelasjoner(personRelasjon.getHovedperson()
-                        .getBruker().getRelasjoner().getRelasjon().stream()
-                        .filter(relasjon -> isGift(relasjon.getTypeRelasjon()))
-                        .map(relasjon -> RelasjonDTO.builder()
-                                .personRelasjonMed(familie.get(relasjon.getFnrRelasjon()))
-                                .relasjonTypeNavn(mapRelasjonType(relasjon.getTypeRelasjon()))
-                                .build())
-                        .collect(Collectors.toList()));
+        if (nonNull(personRelasjon.getHovedperson().getBruker().getRelasjoner())) {
+            familie.get(personRelasjon.getHovedperson().getFodselsnummer()).setRelasjoner(personRelasjon.getHovedperson()
+                    .getBruker().getRelasjoner().getRelasjon().stream()
+                    .filter(relasjon -> isGift(relasjon.getTypeRelasjon()))
+                    .map(relasjon -> RelasjonDTO.builder()
+                            .personRelasjonMed(familie.get(relasjon.getFnrRelasjon()))
+                            .relasjonTypeNavn(mapRelasjonType(relasjon.getTypeRelasjon()))
+                            .build())
+                    .collect(Collectors.toList()));
+        }
 
         return familie.get(personRelasjon.getHovedperson().getFodselsnummer());
     }
