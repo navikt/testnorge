@@ -38,6 +38,22 @@ public class FrontChannelLogoutProdController {
         ).then();
     }
 
+    @GetMapping("/test")
+    public Mono<Void> testLogout() {
+        var redisOperations = sessionRepository.getSessionRedisOperations();
+        return redisOperations.delete(redisOperations.scan(ScanOptions.NONE)
+                .flatMap(sessionKey -> Mono.zip(Mono.just(sessionKey), sessionContainsSpringSec(sessionKey)))
+                .filter(Tuple2::getT2)
+                .map(Tuple2::getT1)
+                .collectList()
+                .flatMapMany(Flux::fromIterable)
+        ).then();
+    }
+
+    private Mono<Boolean> sessionContainsSpringSec(String sessionKey) {
+        return Mono.just((Session) ThreadUtil.Instance().resolve(sessionRepository.findById(sessionKey)))
+                .map(session -> session.getAttribute("SPRING_SECURITY_CONTEXT") != null);
+    }
 
     private Mono<Boolean> sessionContainsSid(String sessionKey, String sid) {
         return Mono.just((Session) ThreadUtil.Instance().resolve(sessionRepository.findById(sessionKey)))
