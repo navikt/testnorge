@@ -2,7 +2,7 @@
 apiVersion: nais.io/v1
 kind: AzureAdApplication
 metadata:
-  name: testnav-krrstub-proxy
+  name: testnav-krrstub-proxy-trygdeetaten
   namespace: dolly
   labels:
     team: dolly
