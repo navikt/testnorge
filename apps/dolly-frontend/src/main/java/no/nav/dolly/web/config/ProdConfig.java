@@ -17,7 +17,10 @@ import redis.clients.jedis.Jedis;
 public class ProdConfig {
 
     @Bean
-    public Jedis jedis(@Value("${spring.redis.host}") String host){
-        return new Jedis(host, 6379);
+    public Jedis jedis(
+            @Value("${spring.redis.host}") String host,
+            @Value("${spring.redis.port}") Integer port
+    ){
+        return new Jedis(host, port);
     }
 }
