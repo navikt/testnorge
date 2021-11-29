@@ -35,8 +35,8 @@ public class KrrstubProxyApplicationStarter {
                 .createAuthenticationHeaderFilter(() -> tokenExchange.generateToken(properties).map(AccessToken::getTokenValue));
 
         return builder.routes()
-                .route(spec -> spec.path("**/v1/**").uri(properties.getUrl()))
-                .route(spec -> spec.path("**/v2/**")
+                .route(spec -> spec.path("/api/v1/**").uri(properties.getUrl()))
+                .route(spec -> spec.path("/api/v2/**")
                         .filters(filterSpec -> filterSpec.filter(addAuthenticationHeaderDevFilter))
                         .uri(properties.getUrl()))
                 .build();
