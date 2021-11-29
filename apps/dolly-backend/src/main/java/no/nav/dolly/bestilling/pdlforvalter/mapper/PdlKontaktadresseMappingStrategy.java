@@ -100,8 +100,6 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                                                                     postadresse, PostadresseIFrittFormat.class));
                                                             kontaktadresse.setKilde(CONSUMER);
                                                             kontaktadresse.setMaster(Master.FREG);
-                                                            kontaktadresse.setGyldigFraOgMed(LocalDate.now().minusYears(1));
-                                                            kontaktadresse.setGyldigTilOgMed(LocalDate.now().plusYears(10));
                                                             setUtgaatt(kontaktadresse, context);
                                                             return kontaktadresse;
                                                         })
@@ -115,6 +113,8 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                                                                     postadresse, UtenlandskAdresseIFrittFormat.class));
                                                             kontaktadresse.setKilde(CONSUMER);
                                                             kontaktadresse.setMaster(Master.PDL);
+                                                            kontaktadresse.setGyldigFraOgMed(LocalDate.now().minusYears(1));
+                                                            kontaktadresse.setGyldigTilOgMed(LocalDate.now().plusYears(10));
                                                             setUtgaatt(kontaktadresse, context);
                                                             return kontaktadresse;
                                                         })
