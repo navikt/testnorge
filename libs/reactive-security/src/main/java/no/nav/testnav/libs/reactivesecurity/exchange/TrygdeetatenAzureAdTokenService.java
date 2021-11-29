@@ -25,7 +25,6 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 
 @Slf4j
 @Service
-@ConditionalOnBean(TrygdeetatenConfig.class)
 public class TrygdeetatenAzureAdTokenService implements GenerateToken {
 
     private final WebClient webClient;

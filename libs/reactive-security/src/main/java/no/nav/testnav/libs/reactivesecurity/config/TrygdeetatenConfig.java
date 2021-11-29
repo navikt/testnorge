@@ -7,16 +7,15 @@ import org.springframework.context.annotation.Configuration;
 
 @Getter
 @Configuration
-@ConditionalOnProperty("AZURE_TRYGDEETATEN_OPENID_CONFIG_TOKEN_ENDPOINT")
 public class TrygdeetatenConfig {
     private final String tokenEndpoint;
     private final String clientId;
     private final String clientSecret;
 
     public TrygdeetatenConfig(
-            @Value("${AZURE_TRYGDEETATEN_OPENID_CONFIG_TOKEN_ENDPOINT}") String tokenEndpoint,
-            @Value("${AZURE_TRYGDEETATEN_APP_CLIENT_ID}") String clientId,
-            @Value("${AZURE_TRYGDEETATEN_APP_CLIENT_SECRET}") String clientSecret
+            @Value("${AZURE_TRYGDEETATEN_OPENID_CONFIG_TOKEN_ENDPOINT:#{null}") String tokenEndpoint,
+            @Value("${AZURE_TRYGDEETATEN_APP_CLIENT_ID:#{null}}") String clientId,
+            @Value("${AZURE_TRYGDEETATEN_APP_CLIENT_SECRET:#{null}}") String clientSecret
     ) {
         this.tokenEndpoint = tokenEndpoint;
         this.clientId = clientId;
