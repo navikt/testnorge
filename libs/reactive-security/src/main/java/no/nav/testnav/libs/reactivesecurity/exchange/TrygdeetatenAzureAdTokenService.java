@@ -75,7 +75,7 @@ public class TrygdeetatenAzureAdTokenService implements GenerateToken {
                         .filter(throwable -> !(throwable instanceof WebClientResponseException.BadRequest))
                         .doBeforeRetry(value -> log.warn("Prøver å opprette tilkobling til azure på nytt."))
                 ).doOnError(
-                        throwable -> throwable instanceof WebClientResponseException,
+                        WebClientResponseException.class::isInstance,
                         throwable -> log.error(
                                 "Feil ved henting av access token for {}. Feilmelding: {}.",
                                 scope,
