@@ -7,7 +7,7 @@ metadata:
   labels:
     team: dolly
 spec:
-  secretName: azure-trygdeetaten-testnav-krrstub-proxy
+  secretName: azure-trygdeetaten-testnav-krrstub-proxy-trygdeetaten
   secretKeyPrefix: "AZURE_TRYGDEETATEN"
   tenant: trygdeetaten.no
 ---
@@ -69,7 +69,7 @@ spec:
       cpu: 500m
       memory: 2048Mi
   envFrom:
-    - secret: azure-trygdeetaten-testnav-krrstub-proxy
+    - secret: azure-trygdeetaten-testnav-krrstub-proxy-trygdeetaten
   ingresses:
     - "https://testnav-krrstub-proxy.dev.intern.nav.no"
     - "https://testnav-krrstub-proxy.dev-fss-pub.nais.io"
