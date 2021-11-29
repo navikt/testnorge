@@ -13,7 +13,6 @@ import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
 import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
 import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
-import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesecurity.exchange.TrygdeetatenAzureAdTokenService;
 import no.nav.testnav.proxies.krrstubproxy.config.credentials.KrrStubProperties;
 

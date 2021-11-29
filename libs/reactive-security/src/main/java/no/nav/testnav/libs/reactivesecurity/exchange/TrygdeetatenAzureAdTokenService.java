@@ -2,8 +2,6 @@ package no.nav.testnav.libs.reactivesecurity.exchange;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -76,17 +74,19 @@ public class TrygdeetatenAzureAdTokenService implements GenerateToken {
                 .retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(1))
                         .filter(throwable -> !(throwable instanceof WebClientResponseException.BadRequest))
                         .doBeforeRetry(value -> log.warn("Prøver å opprette tilkobling til azure på nytt."))
-                ).doOnError(error -> {
-                    if (error instanceof WebClientResponseException) {
-                        log.error(
+                ).doOnError(
+                        throwable -> throwable instanceof WebClientResponseException,
+                        throwable -> log.error(
                                 "Feil ved henting av access token for {}. Feilmelding: {}.",
                                 scope,
-                                ((WebClientResponseException) error).getResponseBodyAsString()
-                        );
-                    } else {
-                        log.error("Feil ved henting av access token for {}", scope, error);
-                    }
-                });
+                                ((WebClientResponseException) throwable).getResponseBodyAsString()
+                        )
+                )
+                .doOnError(
+                        throwable -> !(throwable instanceof WebClientResponseException),
+                        throwable -> log.error("Feil ved henting av access token for {}", scope, throwable)
+                );
+
     }
 
     private String toScope(ServerProperties serverProperties) {
