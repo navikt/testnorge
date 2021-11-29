@@ -14,6 +14,7 @@ import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayF
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
 import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.reactivesecurity.exchange.TrygdeetatenAzureAdTokenService;
 import no.nav.testnav.proxies.krrstubproxy.config.credentials.KrrStubProperties;
 
 @Import({
@@ -30,10 +31,10 @@ public class KrrstubProxyApplicationStarter {
     }
 
     @Bean
-    public RouteLocator customRouteLocator(RouteLocatorBuilder builder, TokenExchange tokenExchange, KrrStubProperties properties) {
+    public RouteLocator customRouteLocator(RouteLocatorBuilder builder, TrygdeetatenAzureAdTokenService tokenService, KrrStubProperties properties) {
 
         var addAuthenticationHeaderDevFilter = AddAuthenticationRequestGatewayFilterFactory
-                .createAuthenticationHeaderFilter(() -> tokenExchange.generateToken(properties).map(AccessToken::getTokenValue));
+                .createAuthenticationHeaderFilter(() -> tokenService.generateToken(properties).map(AccessToken::getTokenValue));
 
         return builder.routes()
                 .route(spec -> spec.path("/api/v1/**").uri(properties.getUrl()))
