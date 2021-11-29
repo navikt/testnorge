@@ -31,8 +31,8 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 @Service
 public class KrrstubConsumer {
 
-    private static final String DIGITAL_KONTAKT_URL = "/api/v2/kontaktinformasjon";
-    private static final String PERSON_DIGITAL_KONTAKT_URL = "/api/v2/person/kontaktinformasjon";
+    private static final String DIGITAL_KONTAKT_URL = "/api/v1/kontaktinformasjon";
+    private static final String PERSON_DIGITAL_KONTAKT_URL = "/api/v1/person/kontaktinformasjon";
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
