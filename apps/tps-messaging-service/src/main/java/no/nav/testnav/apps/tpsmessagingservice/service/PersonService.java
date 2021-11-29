@@ -46,7 +46,6 @@ import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.RelasjonDTO.ROLLE.P
 public class PersonService {
 
     private static final String STATUS_OK = "00";
-    private static final String STATUS_WARN = "04";
     private static final String PERSON_KERNINFO_SERVICE_ROUTINE = "FS03-FDNUMMER-KERNINFO-O";
 
     private final ServicerutineConsumer servicerutineConsumer;
@@ -92,7 +91,7 @@ public class PersonService {
 
     private static boolean isStatusOK(TpsMeldingResponse response) {
 
-        return STATUS_OK.equals(response.getReturStatus()) || STATUS_WARN.equals(response.getReturStatus());
+        return STATUS_OK.equals(response.getReturStatus());
     }
 
     private Map<String, PersonDTO> buildMiljoePersonWithRelasjon(Map<String, PersonRelasjon> personRelasjon) {
