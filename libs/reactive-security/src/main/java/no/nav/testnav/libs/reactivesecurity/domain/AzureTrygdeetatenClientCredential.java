@@ -1,23 +1,22 @@
-package no.nav.testnav.libs.reactivesecurity.config;
+package no.nav.testnav.libs.reactivesecurity.domain;
 
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
-@Getter
 @Configuration
-public class TrygdeetatenConfig {
+public class AzureTrygdeetatenClientCredential extends ClientCredential {
     private final String tokenEndpoint;
-    private final String clientId;
-    private final String clientSecret;
 
-    public TrygdeetatenConfig(
+    public AzureTrygdeetatenClientCredential(
             @Value("${AZURE_TRYGDEETATEN_OPENID_CONFIG_TOKEN_ENDPOINT:#{null}}") String tokenEndpoint,
             @Value("${AZURE_TRYGDEETATEN_APP_CLIENT_ID:#{null}}") String clientId,
             @Value("${AZURE_TRYGDEETATEN_APP_CLIENT_SECRET:#{null}}") String clientSecret
     ) {
+        super(clientId, clientSecret);
         this.tokenEndpoint = tokenEndpoint;
-        this.clientId = clientId;
-        this.clientSecret = clientSecret;
+    }
+
+    public String getTokenEndpoint() {
+        return tokenEndpoint;
     }
 }

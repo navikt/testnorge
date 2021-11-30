@@ -1,4 +1,4 @@
-package no.nav.testnav.libs.reactivesecurity.exchange;
+package no.nav.testnav.libs.reactivesecurity.exchange.tokenx;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -21,6 +21,7 @@ import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
 import no.nav.testnav.libs.reactivesecurity.domain.ResourceServerType;
 import no.nav.testnav.libs.reactivesecurity.domain.TokenX;
 import no.nav.testnav.libs.reactivesecurity.domain.tokenx.v1.WellKnown;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenService;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 
 @Slf4j

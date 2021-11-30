@@ -4,8 +4,8 @@ import lombok.Data;
 
 @Data
 public class ClientCredential {
-    final String clientId;
-    final String clientSecret;
+    private final String clientId;
+    private final String clientSecret;
 
     @Override
     public final String toString() {
