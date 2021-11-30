@@ -63,16 +63,17 @@ public class TokenXService implements TokenService {
                                         .with("audience", toScope(serverProperties))
                                 ).retrieve()
                                 .bodyToMono(AccessToken.class)
-                                .doOnError(error -> {
-                                    if (error instanceof WebClientResponseException) {
-                                        log.error(
+                                .doOnError(
+                                        WebClientResponseException.class::isInstance,
+                                        throwable -> log.error(
                                                 "Feil ved henting av access token. Feilmelding: {}.",
-                                                ((WebClientResponseException) error).getResponseBodyAsString()
-                                        );
-                                    } else {
-                                        log.error("Feil ved henting av access token.", error);
-                                    }
-                                })
+                                                ((WebClientResponseException) throwable).getResponseBodyAsString()
+                                        )
+                                )
+                                .doOnError(
+                                        throwable -> !(throwable instanceof WebClientResponseException),
+                                        throwable -> log.error("Feil ved henting av access token.", throwable)
+                                )
                 )
         );
     }

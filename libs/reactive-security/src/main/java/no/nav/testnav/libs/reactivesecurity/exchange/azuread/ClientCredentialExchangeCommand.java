@@ -16,7 +16,7 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 
 @Slf4j
 @RequiredArgsConstructor
-class ClientCredentialExchangeCommand extends ExchangeCommand {
+class ClientCredentialExchangeCommand implements ExchangeCommand {
     private final WebClient webClient;
     private final ClientCredential clientCredential;
     private final ServerProperties serverProperties;
