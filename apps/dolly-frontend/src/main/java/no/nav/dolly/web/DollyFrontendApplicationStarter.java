@@ -2,6 +2,7 @@ package no.nav.dolly.web;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.web.config.WebSessionConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -55,7 +56,8 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 @Slf4j
 @Import({
         CoreConfig.class,
-        FrontendConfig.class
+        FrontendConfig.class,
+        WebSessionConfig.class
 })
 @SpringBootApplication
 @RequiredArgsConstructor

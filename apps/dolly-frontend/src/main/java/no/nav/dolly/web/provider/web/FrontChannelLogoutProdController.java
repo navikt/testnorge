@@ -1,6 +1,7 @@
 package no.nav.dolly.web.provider.web;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.dolly.web.config.WebSessionConfig;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.springframework.web.server.WebSession;
 import org.springframework.web.server.session.DefaultWebSessionManager;
 import org.springframework.web.server.session.WebSessionManager;
 import reactor.core.publisher.Flux;
@@ -26,6 +28,7 @@ public class FrontChannelLogoutProdController {
 
     private final WebSessionManager webSessionManager;
     private final Jedis jedis;
+    private final WebSessionConfig webSessionConfig;
 
     @GetMapping()
     public Mono<Void> logout(@RequestParam String sid) {
@@ -39,13 +42,15 @@ public class FrontChannelLogoutProdController {
 
         return Mono.just(sessionIds)
                 .flatMapMany(Flux::fromIterable)
-                .flatMap(session -> Mono.zip(Mono.just(session),  store.retrieveSession(session)
+                .map(store::retrieveSession)
+                .flatMap(session -> Mono.zip(Mono.just(session),  session
                         .mapNotNull(ses -> (SecurityContextImpl) ses.getAttribute("SPRING_SECURITY_CONTEXT"))
                         .map(securityContext -> (DefaultOidcUser) securityContext.getAuthentication().getPrincipal())
                         .map(principal -> Objects.equals(sid, principal.getClaims().get("sid")))))
                 .filter(Tuple2::getT2)
-                .map(Tuple2::getT1)
-                .map(store::removeSession)
+                .flatMap(Tuple2::getT1)
+                .map(WebSession::getId)
+                .flatMap(webSessionConfig::addExpiredSID)
                 .then();
     }
 }
