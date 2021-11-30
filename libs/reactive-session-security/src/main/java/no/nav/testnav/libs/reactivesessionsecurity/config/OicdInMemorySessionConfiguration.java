@@ -1,10 +1,10 @@
 package no.nav.testnav.libs.reactivesessionsecurity.config;
 
+import no.nav.testnav.libs.reactivesessionsecurity.repository.OidcReactiveMapSessionRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.session.SessionProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-import org.springframework.session.ReactiveMapSessionRepository;
 import org.springframework.session.ReactiveSessionRepository;
 
 import java.time.Duration;
@@ -19,11 +19,10 @@ import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenXExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.UserJwtExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.ClientRegistrationIdResolver;
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.InMemoryTokenResolver;
-import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
-import org.springframework.web.server.session.DefaultWebSessionManager;
-import org.springframework.web.server.session.WebSessionManager;
+import org.springframework.session.config.annotation.web.server.EnableSpringWebSession;
 
 @Slf4j
+@EnableSpringWebSession
 @Import({
         InMemoryTokenResolver.class,
         AzureAdTokenExchange.class,
@@ -38,7 +37,7 @@ public class OicdInMemorySessionConfiguration {
 
     @Bean
     public ReactiveSessionRepository reactiveSessionRepository() {
-        ReactiveMapSessionRepository sessionRepository = new ReactiveMapSessionRepository(new ConcurrentHashMap<>());
+        OidcReactiveMapSessionRepository sessionRepository = new OidcReactiveMapSessionRepository(new ConcurrentHashMap<>());
         int defaultMaxInactiveInterval = (int) (sessionProperties.getTimeout() == null
                 ? Duration.ofMinutes(30)
                 : sessionProperties.getTimeout()
@@ -47,12 +46,6 @@ public class OicdInMemorySessionConfiguration {
         log.info("Set in-memory session max inactive to {} seconds.", defaultMaxInactiveInterval);
         return sessionRepository;
     }
-
-    @Bean(WebHttpHandlerBuilder.WEB_SESSION_MANAGER_BEAN_NAME)
-    public WebSessionManager webSessionManager() {
-        return new DefaultWebSessionManager();
-    }
-
 
     @Bean
     @ConditionalOnMissingBean
