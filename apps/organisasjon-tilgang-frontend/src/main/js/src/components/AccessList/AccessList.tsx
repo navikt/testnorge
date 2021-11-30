@@ -27,9 +27,9 @@ const AccessList = () => (
             <tbody>
               {list.map((item, index) => (
                 <tr key={index}>
-                  <td>{item.orgnisasjonsnummer}</td>
+                  <td>{item.organisasjonsnummer}</td>
                   <td>{item.navn}</td>
-                  <td>{item.orgnisasjonsfrom}</td>
+                  <td>{item.organisasjonsform}</td>
                   <td>{format(new Date(item.gyldigTil))}</td>
                   <td>
                     <Fareknapp
@@ -37,7 +37,7 @@ const AccessList = () => (
                         event.preventDefault();
                         if (window.confirm('Er du sikker pa at du ønsker å slette tilgangen?')) {
                           OrganisasjonTilgangService.deleteOrganisasjonTilgang(
-                            item.orgnisasjonsnummer
+                            item.organisasjonsnummer
                           ).then(() => {
                             window.location.reload();
                           });
