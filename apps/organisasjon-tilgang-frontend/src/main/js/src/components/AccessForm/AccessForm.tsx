@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { Input } from 'nav-frontend-skjema';
 import { TimePicker } from '@/components/TimePicker';
-import { Hovedknapp } from 'nav-frontend-knapper';
-import styled from 'styled-components';
 import { SubmitForm } from '@/components/SubmitForm';
 import { OrganisasjonTilgangService } from '@/services';
 
