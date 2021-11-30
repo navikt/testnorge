@@ -2,8 +2,8 @@ import { Api } from '@navikt/dolly-lib';
 
 type Organisasjon = {
   navn: string;
-  orgnisasjonsnummer: string;
-  orgnisasjonsfrom: string;
+  organisasjonsnummer: string;
+  organisasjonsform: string;
   gyldigTil: string;
 };
 
@@ -12,15 +12,15 @@ const getOrganisasjonTilganger = () =>
     method: 'GET',
   });
 
-const createOrganisasjonTilgang = (organisajonsnummer: string, gyldigTil: string) =>
+const createOrganisasjonTilgang = (organisasjonsnummer: string, gyldigTil: string) =>
   Api.fetchJson<Organisasjon>(
     '/organisasjon-tilgang-service/api/v1/organisasjoner',
     { method: 'POST' },
-    JSON.stringify({ organisajonsnummer, gyldigTil })
+    JSON.stringify({ organisasjonsnummer, gyldigTil })
   );
 
-const deleteOrganisasjonTilgang = (organisajonsnummer: string) =>
-  Api.fetch(`/organisasjon-tilgang-service/api/v1/organisasjoner/${organisajonsnummer}`, {
+const deleteOrganisasjonTilgang = (organisasjonsnummer: string) =>
+  Api.fetch(`/organisasjon-tilgang-service/api/v1/organisasjoner/${organisasjonsnummer}`, {
     method: 'DELETE',
   });
 

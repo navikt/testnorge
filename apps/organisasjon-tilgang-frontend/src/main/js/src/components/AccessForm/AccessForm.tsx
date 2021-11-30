@@ -15,23 +15,22 @@ const createDefaultDate = () => {
 };
 
 const AccessForm = () => {
-  const [gydligTil, setGydligTil] = useState<Date>(createDefaultDate());
+  const [gyldigTil, setGyldigTil] = useState<Date>(createDefaultDate());
   const [orgnummer, setOrgnummer] = useState<string>('');
   return (
     <SubmitForm
       onSubmit={() =>
-        OrganisasjonTilgangService.createOrganisasjonTilgang(orgnummer, gydligTil.toISOString())
+        OrganisasjonTilgangService.createOrganisasjonTilgang(orgnummer, gyldigTil.toISOString())
       }
     >
       <h2>Opprett tilgang</h2>
       <Input label="Organisasjonsnummer" onBlur={(event) => setOrgnummer(event.target.value)} />
       {/* @ts-ignore */}
       <TimePicker
-        value={gydligTil}
+        value={gyldigTil}
         label="Gyldig Til"
         onChange={(value: Date) => {
-          console.log(value);
-          setGydligTil(value);
+          setGyldigTil(value);
         }}
       />
     </SubmitForm>
