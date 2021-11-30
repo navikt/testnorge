@@ -3,6 +3,8 @@ package no.nav.testnav.libs.reactivesecurity.domain;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Objects;
+
 @Configuration
 public class AzureTrygdeetatenClientCredential extends ClientCredential {
     private final String tokenEndpoint;
@@ -18,5 +20,20 @@ public class AzureTrygdeetatenClientCredential extends ClientCredential {
 
     public String getTokenEndpoint() {
         return tokenEndpoint;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        AzureTrygdeetatenClientCredential that = (AzureTrygdeetatenClientCredential) o;
+        return Objects.equals(tokenEndpoint, that.tokenEndpoint);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), tokenEndpoint);
     }
 }
