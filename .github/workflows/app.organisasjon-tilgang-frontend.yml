@@ -1,27 +1,27 @@
-name: App organisasjon-tilgang-service
+name: App organisasjon-tilgang-frontend
 
 on:
   push:
     paths:
-      - apps/organisasjon-tilgang-service/**
-      - .github/workflows/app.organisasjon-tilgang-service.yml
+      - apps/organisasjon-tilgang-frontend/**
+      - .github/workflows/app.organisasjon-tilgang-frontend.yml
 
 jobs:
   scan:
     name: Scan
     uses: navikt/testnorge/.github/workflows/common.sonar.yml@master
     with:
-      working-directory: 'apps/organisasjon-tilgang-service/'
+      working-directory: 'apps/organisasjon-tilgang-frontend/'
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   build:
     name: Build
-    uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@master
+    uses: navikt/testnorge/.github/workflows/common.build-and-publish.frontend.yml@master
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
-      working-directory: 'apps/organisasjon-tilgang-service/'
-      app-name: 'organisasjon-tilgang-service'
+      working-directory: 'apps/organisasjon-tilgang-frontend/'
+      app-name: 'organisasjon-tilgang-frontend'
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
   deploy:
@@ -30,8 +30,8 @@ jobs:
     needs: build
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
-      resource: 'apps/organisasjon-tilgang-service/config.prod.yml'
-      app-name: 'organisasjon-tilgang-service'
+      resource: 'apps/organisasjon-tilgang-frontend/config.prod.yml'
+      app-name: 'organisasjon-tilgang-frontend'
       cluster: 'prod-gcp'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
@@ -41,8 +41,8 @@ jobs:
     needs: build
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
-      resource: 'apps/organisasjon-tilgang-service/config.dev.yml'
-      app-name: 'organisasjon-tilgang-service'
+      resource: 'apps/organisasjon-tilgang-frontend/config.dev.yml'
+      app-name: 'organisasjon-tilgang-frontend'
       cluster: 'dev-gcp'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
