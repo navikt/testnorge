@@ -473,30 +473,6 @@ export const validation = {
 					vedtakDato: requiredDate,
 				})
 			),
-			utenlandskBankkonto: ifPresent(
-				'$tpsMessaging.utenlandskBankkonto',
-				Yup.array().of(
-					Yup.object({
-						kontonummer: requiredString.nullable(),
-						swift: Yup.string().nullable().optional(),
-						landkode: requiredString.nullable(),
-						iban: Yup.string().nullable().optional(),
-						valuta: requiredString.nullable(),
-						banknavn: Yup.string().nullable().optional(),
-						bankAdresse1: Yup.string().nullable().optional(),
-						bankAdresse2: Yup.string().nullable().optional(),
-						bankAdresse3: Yup.string().nullable().optional(),
-					})
-				)
-			),
-			norskBankkonto: ifPresent(
-				'$tpsMessaging.norskBankkonto',
-				Yup.array().of(
-					Yup.object({
-						kontonummer: requiredString.nullable(),
-					})
-				)
-			),
 			typeSikkerhetTiltak: ifPresent('$tpsf.typeSikkerhetTiltak', requiredString),
 			beskrSikkerhetTiltak: ifPresent('$tpsf.beskrSikkerhetTiltak', requiredString),
 			sikkerhetTiltakDatoFom: ifPresent('$tpsf.sikkerhetTiltakDatoFom', requiredDate),
@@ -543,6 +519,35 @@ export const validation = {
 				foreldre: ifPresent('$tpsf.relasjoner.foreldre', foreldre),
 			}),
 			identtype: ifPresent('$tpsf.identtype', requiredString),
+		})
+	),
+	tpsMessaging: ifPresent(
+		'$tpsMessaging',
+		Yup.object({
+			utenlandskBankkonto: ifPresent(
+				'$tpsMessaging.utenlandskBankkonto',
+				Yup.array().of(
+					Yup.object().shape({
+						kontonummer: requiredString.nullable(),
+						swift: Yup.string().nullable().optional(),
+						landkode: requiredString.nullable(),
+						iban: Yup.string().nullable().optional(),
+						valuta: requiredString.nullable(),
+						banknavn: Yup.string().nullable().optional(),
+						bankAdresse1: Yup.string().nullable().optional(),
+						bankAdresse2: Yup.string().nullable().optional(),
+						bankAdresse3: Yup.string().nullable().optional(),
+					})
+				)
+			),
+			norskBankkonto: ifPresent(
+				'$tpsMessaging.norskBankkonto',
+				Yup.array().of(
+					Yup.object().shape({
+						kontonummer: requiredString.nullable(),
+					})
+				)
+			),
 		})
 	),
 }

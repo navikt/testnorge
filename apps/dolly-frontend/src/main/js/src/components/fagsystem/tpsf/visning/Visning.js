@@ -35,8 +35,12 @@ export const TpsfVisning = ({ data, environments }) => {
 			<Boadresse boadresse={data.boadresse} />
 			<Postadresse postadresse={data.postadresse} />
 			<MidlertidigAdresse midlertidigAdresse={data.midlertidigAdresse} />
-			<UtenlandskBankkonto data={data.bankkontonrUtland} />
-			<NorskBankkonto data={data.bankkontonrNorsk} />
+			<UtenlandskBankkonto
+				data={tpsMessagingData ? tpsMessagingData.bankkontonrUtland : data.bankkontonrUtland}
+			/>
+			<NorskBankkonto
+				data={tpsMessagingData ? tpsMessagingData.bankkontonrNorsk : data.bankkontonrNorsk}
+			/>
 			<Identhistorikk identhistorikk={data.identHistorikk} />
 			<Relasjoner relasjoner={data.relasjoner} />
 		</div>

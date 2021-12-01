@@ -26,6 +26,8 @@ export const UtenlandskBankkonto = () => {
 				header="Utenlandsk Bankkonto"
 				newEntry={initialUtenlandskBankkonto}
 				canBeEmpty={false}
+				maxEntries={1}
+				maxReachedDescription={'Kun 1 bankkonto støttet foreløpig'}
 			>
 				{(path: string) => {
 					return (
