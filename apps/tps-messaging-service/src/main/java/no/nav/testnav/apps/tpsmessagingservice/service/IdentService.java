@@ -69,7 +69,8 @@ public class IdentService {
                 .map(ident -> TpsIdentStatusDTO.builder()
                         .ident(ident)
                         .miljoer(tpsResponse.entrySet().parallelStream()
-                                .filter(entry -> nonNull(entry.getValue().getTpsSvar().getPersonDataM201()) &&
+                                .filter(entry -> nonNull(entry.getValue().getTpsSvar()) &&
+                                        nonNull(entry.getValue().getTpsSvar().getPersonDataM201()) &&
                                         nonNull(entry.getValue().getTpsSvar().getPersonDataM201().getAFnr()) &&
                                         entry.getValue().getTpsSvar().getPersonDataM201().getAFnr().getEFnr().stream()
                                                 .anyMatch(eFnr -> ident.equals(eFnr.getFnr()) && isNotBlank(eFnr.getKn())))
