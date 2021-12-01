@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.tpsmessagingservice.service;
 
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.ServicerutineConsumer;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.List;
 import java.util.Map;
@@ -32,12 +32,14 @@ public class IdentService {
     private final JAXBContext requestContext;
     private final JAXBContext responseContext;
     private final MiljoerService miljoerService;
+    private final XmlMapper xmlMapper;
 
-    public IdentService(ServicerutineConsumer servicerutineConsumer, MiljoerService miljoerService) throws JAXBException {
+    public IdentService(ServicerutineConsumer servicerutineConsumer, MiljoerService miljoerService, XmlMapper xmlMapper) throws JAXBException {
         this.servicerutineConsumer = servicerutineConsumer;
         this.miljoerService = miljoerService;
         this.requestContext = JAXBContext.newInstance(TpsPersonData.class);
         this.responseContext = JAXBContext.newInstance(TpsPersonData.class);
+        this.xmlMapper = xmlMapper;
     }
 
     @SneakyThrows
@@ -82,12 +84,15 @@ public class IdentService {
                         }));
     }
 
+    @SneakyThrows
     private TpsPersonData unmarshallFromXml(String endringsmeldingResponse) throws JAXBException {
 
-        var unmarshaller = responseContext.createUnmarshaller();
-        var reader = new StringReader(endringsmeldingResponse);
+//        var unmarshaller = responseContext.createUnmarshaller();
+//        var reader = new StringReader(endringsmeldingResponse);
+//
+//        return (TpsPersonData) unmarshaller.unmarshal(reader);
 
-        return (TpsPersonData) unmarshaller.unmarshal(reader);
+        return xmlMapper.readValue(endringsmeldingResponse, TpsPersonData.class);
     }
 
     private TpsPersonData prepareRequest(List<String> identer) {
