@@ -36,6 +36,7 @@ repositories {
 }
 dependencies {
 
+    implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
     implementation 'no.nav.testnav.libs:servlet-security'

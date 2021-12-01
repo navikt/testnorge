@@ -17,8 +17,8 @@ import no.nav.testnav.libs.commands.SaveOppsummeringsdokumenterCommand;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
 import no.nav.testnav.libs.reactivecore.config.ApplicationProperties;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 
 @Component
 public class OppsummeringsdokumentConsumer {
@@ -54,7 +54,7 @@ public class OppsummeringsdokumentConsumer {
 
     public Mono<String> save(OppsummeringsdokumentDTO dto, String miljo) {
         return tokenExchange
-                .generateToken(properties)
+                .exchange(properties)
                 .flatMap(accessToken -> new SaveOppsummeringsdokumenterCommand(
                         webClient,
                         accessToken.getTokenValue(),
@@ -68,7 +68,7 @@ public class OppsummeringsdokumentConsumer {
 
     public Mono<OppsummeringsdokumentDTO> get(String opplysningspliktigOrgnummer, LocalDate kalendermaaned, String miljo) {
         return tokenExchange
-                .generateToken(properties)
+                .exchange(properties)
                 .flatMap(accessToken -> new GetOppsummeringsdokumentCommand(
                         webClient,
                         accessToken.getTokenValue(),
@@ -80,7 +80,7 @@ public class OppsummeringsdokumentConsumer {
 
     public Mono<OppsummeringsdokumentDTO> get(String id) {
         return tokenExchange
-                .generateToken(properties)
+                .exchange(properties)
                 .flatMap(accessToken -> new GetOppsummeringsdokumentByIdCommand(
                         webClient,
                         accessToken.getTokenValue(),

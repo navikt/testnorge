@@ -1,46 +1,41 @@
 package no.nav.testnav.libs.servletsecurity.exchange;
 
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.transport.ProxyProvider;
-import reactor.util.retry.Retry;
 
 import java.net.URI;
-import java.time.Duration;
-import java.util.Map;
 
+import no.nav.testnav.libs.securitycore.command.azuread.ClientCredentialExchangeCommand;
+import no.nav.testnav.libs.securitycore.command.azuread.OnBehalfOfExchangeCommand;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.securitycore.domain.Token;
+import no.nav.testnav.libs.securitycore.domain.azuread.AzureNavClientCredential;
+import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
 import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedToken;
-import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.domain.AccessScopes;
-import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.domain.AzureClientCredentials;
 import no.nav.testnav.libs.servletsecurity.domain.ResourceServerType;
-import no.nav.testnav.libs.servletsecurity.domain.Token;
-
 
 @Slf4j
 @Service
 @ConditionalOnProperty("spring.security.oauth2.resourceserver.aad.issuer-uri")
 public class AzureAdTokenService implements TokenService {
     private final WebClient webClient;
-    private final AzureClientCredentials clientCredentials;
+    private final ClientCredential clientCredential;
     private final GetAuthenticatedToken getAuthenticatedToken;
 
     public AzureAdTokenService(
             @Value("${http.proxy:#{null}}") String proxyHost,
             @Value("${AAD_ISSUER_URI}") String issuerUrl,
-            AzureClientCredentials clientCredentials,
+            AzureNavClientCredential clientCredential,
             GetAuthenticatedToken getAuthenticatedToken
     ) {
         log.info("Init AzureAd token exchange.");
@@ -64,106 +59,26 @@ public class AzureAdTokenService implements TokenService {
             builder.clientConnector(new ReactorClientHttpConnector(httpClient));
         }
         this.webClient = builder.build();
-        this.clientCredentials = clientCredentials;
+        this.clientCredential = clientCredential;
     }
 
     @Override
-    public Mono<AccessToken> generateToken(ServerProperties serverProperties) {
+    public Mono<AccessToken> exchange(ServerProperties serverProperties) {
         var token = getAuthenticatedToken.call();
 
-        if (token.clientCredentials()) {
+        if (token.isClientCredentials()) {
             return generateClientCredentialAccessToken(serverProperties);
         }
         return generateOnBehalfOfAccessToken(token, serverProperties);
     }
 
-    // TODO Refactor to use format: cluster:namespace:app-name
-    @Deprecated
-    public Mono<AccessToken> generateToken(AccessScopes accessScopes) {
-        var token = getAuthenticatedToken.call();
-
-        return generateOnBehalfOfAccessToken(token, accessScopes.getScopes().stream().findFirst().get());
-    }
-
     private Mono<AccessToken> generateClientCredentialAccessToken(ServerProperties serverProperties) {
-        log.trace("Henter OAuth2 access token fra client credential...");
+        return new ClientCredentialExchangeCommand(webClient, clientCredential, serverProperties.toAzureAdScope()).call();
 
-        var scope = String.join(" ", toScope(serverProperties));
-        var body = BodyInserters
-                .fromFormData("scope", scope)
-                .with("client_id", clientCredentials.getClientId())
-                .with("client_secret", clientCredentials.getClientSecret())
-                .with("grant_type", "client_credentials");
-
-        log.trace("Access token opprettet for OAuth 2.0 Client Credentials flow.");
-        return webClient.post()
-                .body(body)
-                .retrieve()
-                .bodyToMono(AccessToken.class)
-                .retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(1))
-                        .filter(throwable -> !(throwable instanceof WebClientResponseException.BadRequest))
-                        .doBeforeRetry(value -> log.warn("Prøver å opprette tilkobling til azure på nytt."))
-                ).doOnError(error -> {
-                    if (error instanceof WebClientResponseException) {
-                        log.error(
-                                "Feil ved henting av access token for {}. Feilmelding: {}.",
-                                scope,
-                                ((WebClientResponseException) error).getResponseBodyAsString()
-                        );
-                    } else {
-                        log.error("Feil ved henting av access token for {}", scope, error);
-                    }
-                });
-
-    }
-
-
-    private String toScope(ServerProperties serverProperties) {
-        return "api://" + serverProperties.getCluster() + "." + serverProperties.getNamespace() + "." + serverProperties.getName() + "/.default";
     }
 
     private Mono<AccessToken> generateOnBehalfOfAccessToken(Token token, ServerProperties serverProperties) {
-        return generateOnBehalfOfAccessToken(token, toScope(serverProperties));
-    }
-
-    private Mono<AccessToken> generateOnBehalfOfAccessToken(Token token, String scope) {
-        String oid = token.id();
-        if (oid != null) {
-            Map<String, String> contextMap = MDC.getCopyOfContextMap();
-            contextMap.put("oid", oid);
-            MDC.setContextMap(contextMap);
-        }
-
-        if (clientCredentials.getClientSecret() == null) {
-            log.error("Client secret er null.");
-        }
-
-        var body = BodyInserters
-                .fromFormData("scope", scope)
-                .with("client_id", clientCredentials.getClientId())
-                .with("client_secret", clientCredentials.getClientSecret())
-                .with("assertion", token.value())
-                .with("requested_token_use", "on_behalf_of")
-                .with("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
-
-        log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow. Scope: {}.", scope);
-        return webClient
-                .post()
-                .body(body)
-                .retrieve()
-                .bodyToMono(AccessToken.class)
-                .doOnError(error -> {
-                    if (error instanceof WebClientResponseException) {
-                        log.error(
-                                "Feil ved henting av access token for {}. Feilmelding: {}.",
-                                scope,
-                                ((WebClientResponseException) error).getResponseBodyAsString()
-                        );
-                    } else {
-                        log.error("Feil ved henting av access token for {}", scope, error);
-                    }
-                });
-
+        return new OnBehalfOfExchangeCommand(webClient, clientCredential, serverProperties.toAzureAdScope(), token).call();
     }
 
     @Override

@@ -48,10 +48,10 @@ import no.nav.testnav.apps.brukerservice.dto.BrukerDTO;
 import no.nav.testnav.apps.brukerservice.initializer.H2Initializer;
 import no.nav.testnav.apps.brukerservice.initializer.WireMockInitializer;
 import no.nav.testnav.apps.brukerservice.repository.UserRepository;
-import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
-import no.nav.testnav.libs.reactivesecurity.domain.TokenX;
-import no.nav.testnav.libs.reactivesecurity.domain.tokenx.v1.WellKnown;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.tokenx.TokenXProperties;
+import no.nav.testnav.libs.securitycore.domain.tokenx.WellKnown;
 
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
@@ -66,34 +66,28 @@ class BrukerControllerIntegrationTest {
 
     private static final Comparator<BrukerDTO> BRUKER_DTO_COMPARATOR = (o1, o2) -> o1.brukernavn().compareTo(o2.brukernavn())
             + o1.organisasjonsnummer().compareTo(o2.organisasjonsnummer());
-
+    private static ObjectMapper wiremockObjectMapper = new ObjectMapper();
     @Autowired
     private com.fasterxml.jackson.databind.ObjectMapper projectObjectMapper;
-
     @Autowired
     private WireMockServer wireMockServer;
-
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private WebTestClient webClient;
-
-    @AfterEach
-    void cleanUpAfterEachTest() {
-        userRepository.deleteAll().block();
-        wireMockServer.resetAll();
-    }
-
     @MockBean
-    private TokenX mockTokenX;
-
-    private static ObjectMapper wiremockObjectMapper = new ObjectMapper();
+    private TokenXProperties mockTokenX;
     private KeyPair keyPair;
 
     @BeforeAll
     static void beforeAll() {
         wiremockObjectMapper = new ObjectMapper();
+    }
+
+    @AfterEach
+    void cleanUpAfterEachTest() {
+        userRepository.deleteAll().block();
+        wireMockServer.resetAll();
     }
 
     @BeforeEach
@@ -129,12 +123,6 @@ class BrukerControllerIntegrationTest {
                         .withJsonBody(convertToJsonNode(tokenXWellKnown))
                         .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
         );
-    }
-
-    private record Jwks(List<Map<String, Object>> keys) {
-        private static Jwks create(Map<String, Object> map) {
-            return new Jwks(Collections.singletonList(map));
-        }
     }
 
     private <T> JsonNode convertToJsonNode(T value) throws Exception {
@@ -272,7 +260,6 @@ class BrukerControllerIntegrationTest {
         assertThat(actual).usingComparator(BRUKER_DTO_COMPARATOR).isEqualTo(expected);
     }
 
-
     @Test
     void should_get_username_when_taken() throws Exception {
         wireMockServer.stubFor(get(urlEqualTo(TEST_URL_PATH_PREFIX + "/api/v1/person/organisasjoner/999999999"))
@@ -407,7 +394,6 @@ class BrukerControllerIntegrationTest {
                 .isNotFound();
     }
 
-
     @Test
     void must_be_logged_inn_to_delete_person() throws Exception {
         wireMockServer.stubFor(get(urlEqualTo(TEST_URL_PATH_PREFIX + "/api/v1/person/organisasjoner/999999999"))
@@ -495,7 +481,6 @@ class BrukerControllerIntegrationTest {
                 .isForbidden();
     }
 
-
     @Test
     void only_user_can_get_user() throws Exception {
         wireMockServer.stubFor(get(urlEqualTo(TEST_URL_PATH_PREFIX + "/api/v1/person/organisasjoner/999999999"))
@@ -553,7 +538,6 @@ class BrukerControllerIntegrationTest {
                 .isForbidden();
     }
 
-
     private Map<String, Object> generatePublicJwk(RSAPublicKey rsa) {
         Map<String, Object> values = new HashMap<>();
         values.put("kty", rsa.getAlgorithm());
@@ -578,5 +562,11 @@ class BrukerControllerIntegrationTest {
         claims.forEach(builder::withClaim);
         return builder
                 .sign(Algorithm.RSA256(null, (RSAPrivateKey) keyPair.getPrivate()));
+    }
+
+    private record Jwks(List<Map<String, Object>> keys) {
+        private static Jwks create(Map<String, Object> map) {
+            return new Jwks(Collections.singletonList(map));
+        }
     }
 }
