@@ -98,14 +98,14 @@ public class KrrstubConsumerTest {
 
     private void stubPostKrrData() {
 
-        stubFor(post(urlPathMatching("(.*)/api/v1/kontaktinformasjon"))
+        stubFor(post(urlPathMatching("(.*)/api/v2/kontaktinformasjon"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")));
     }
 
     private void stubDeleteKrrData() {
 
-        stubFor(delete(urlPathMatching("(.*)/api/v1/kontaktinformasjon/" + IDENT))
+        stubFor(delete(urlPathMatching("(.*)/api/v2/kontaktinformasjon/" + IDENT))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")));
     }

@@ -16,6 +16,7 @@ import no.nav.testnav.libs.reactivesecurity.domain.TokenX;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesecurity.exchange.AzureAdTokenService;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenXService;
+import no.nav.testnav.libs.reactivesecurity.exchange.TrygdeetatenAzureAdTokenService;
 import no.nav.testnav.libs.reactivesecurity.manager.JwtReactiveAuthenticationManager;
 import no.nav.testnav.libs.reactivesecurity.properties.AzureAdResourceServerProperties;
 import no.nav.testnav.libs.reactivesecurity.properties.ResourceServerProperties;
@@ -32,7 +33,9 @@ import no.nav.testnav.libs.reactivesecurity.properties.TokenxResourceServerPrope
         GetAuthenticatedUserId.class,
         GetAuthenticatedResourceServerType.class,
         GetAuthenticatedToken.class,
-        TokenX.class
+        TokenX.class,
+        TrygdeetatenConfig.class,
+        TrygdeetatenAzureAdTokenService.class
 })
 public class SecureOAuth2ServerToServerConfiguration {
 

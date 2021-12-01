@@ -9,9 +9,9 @@ import org.springframework.vault.client.VaultEndpoint;
 import org.springframework.vault.config.AbstractVaultConfiguration;
 
 @Configuration
-@Profile("dev")
+@Profile("local")
 @VaultPropertySource(value = "azuread/prod/creds/team-dolly-lokal-app", ignoreSecretNotFound = false)
-public class DevConfig extends AbstractVaultConfiguration {
+public class LocalVaultConfig extends AbstractVaultConfiguration {
 
     @Override
     public VaultEndpoint vaultEndpoint() {
