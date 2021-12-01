@@ -43,7 +43,7 @@ public class FrontChannelLogoutProdController {
         return Mono.just(sessionIds)
                 .flatMapMany(Flux::fromIterable)
                 .map(store::retrieveSession)
-                .flatMap(session -> Mono.zip(Mono.just(session),  session
+                .flatMap(session -> Mono.zip(Mono.just(session), session
                         .mapNotNull(ses -> (SecurityContextImpl) ses.getAttribute("SPRING_SECURITY_CONTEXT"))
                         .map(securityContext -> (DefaultOidcUser) securityContext.getAuthentication().getPrincipal())
                         .map(principal -> Objects.equals(sid, principal.getClaims().get("sid")))))

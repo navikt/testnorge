@@ -11,15 +11,15 @@ public class WebSessionConfig {
 
     private final List<String> expiredSIDs = new ArrayList<>();
 
-    public Mono<Void> addExpiredSID(String sid){
+    public Mono<Void> addExpiredSID(String sid) {
         return Mono.fromRunnable((() -> {
             if (sid != null && !expiredSIDs.contains(sid)) this.expiredSIDs.add(sid);
         }));
     }
 
-    public Mono<Void> removeExpiredSID(String sid){
+    public Mono<Void> removeExpiredSID(String sid) {
         return Mono.fromRunnable((() -> {
-            if (sid!= null) this.expiredSIDs.remove(sid);
+            if (sid != null) this.expiredSIDs.remove(sid);
         }));
     }
 
