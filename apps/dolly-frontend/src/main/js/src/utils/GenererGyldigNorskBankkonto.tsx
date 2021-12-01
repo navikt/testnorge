@@ -1,5 +1,5 @@
-const KONTROLL_SIFFER_1 = [3, 7, 6, 1, 8, 9, 4, 5, 2]
-const KONTROLL_SIFFER_2 = [5, 4, 3, 2, 7, 6, 5, 4, 3, 2]
+const CHECK_DIGIT_1 = [3, 7, 6, 1, 8, 9, 4, 5, 2]
+const CHECK_DIGIT_2 = [5, 4, 3, 2, 7, 6, 5, 4, 3, 2]
 
 const kontrollsiffer = (kontonummer: string, kontrollsifferliste: number[]) => {
 	let siffer = 0
@@ -14,10 +14,10 @@ const kontrollsiffer = (kontonummer: string, kontrollsifferliste: number[]) => {
 const createValidBankkontoNummer = () => {
 	const bankkontoNrWithoutCheckDigits = `00${Math.floor(Math.random() * 8999999) + 1000000}`
 	const bankkontoNrWithFirstCheckDigit = bankkontoNrWithoutCheckDigits.concat(
-		String(kontrollsiffer(bankkontoNrWithoutCheckDigits, KONTROLL_SIFFER_1))
+		String(kontrollsiffer(bankkontoNrWithoutCheckDigits, CHECK_DIGIT_1))
 	)
 	return bankkontoNrWithFirstCheckDigit.concat(
-		String(kontrollsiffer(bankkontoNrWithFirstCheckDigit, KONTROLL_SIFFER_2))
+		String(kontrollsiffer(bankkontoNrWithFirstCheckDigit, CHECK_DIGIT_2))
 	)
 }
 
@@ -29,7 +29,7 @@ const gyldigKontonummerMod11 = (kontonummer: string) => {
 		const kontonummerUtenSjekksiffer = kontonummer.substring(0, 10)
 		let sum = 0
 		for (let index = 0; index < 10; index++) {
-			sum += parseInt(kontonummerUtenSjekksiffer.charAt(index), 10) * KONTROLL_SIFFER_2[index]
+			sum += parseInt(kontonummerUtenSjekksiffer.charAt(index), 10) * CHECK_DIGIT_2[index]
 		}
 		const remainder = sum % 11
 		return sjekksiffer === (remainder === 0 ? 0 : 11 - remainder)

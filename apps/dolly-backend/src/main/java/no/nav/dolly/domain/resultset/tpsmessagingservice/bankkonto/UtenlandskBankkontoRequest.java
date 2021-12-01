@@ -1,4 +1,4 @@
-package no.nav.dolly.domain.resultset.tpsmessagingservice.utenlandskbankkonto;
+package no.nav.dolly.domain.resultset.tpsmessagingservice.bankkonto;
 
 import java.util.List;
 

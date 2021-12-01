@@ -1,9 +1,10 @@
 package no.nav.dolly.bestilling.tpsmessagingservice;
 
 import no.nav.dolly.config.credentials.TpsMessagingServiceProperties;
-import no.nav.dolly.domain.resultset.tpsmessagingservice.utenlandskbankkonto.RsUtenlandskBankkonto;
-import no.nav.dolly.domain.resultset.tpsmessagingservice.utenlandskbankkonto.UtenlandskBankkontoRequest;
-import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
+import no.nav.dolly.domain.resultset.tpsmessagingservice.bankkonto.RsUtenlandskBankkonto;
+import no.nav.dolly.domain.resultset.tpsmessagingservice.bankkonto.TpsMessagingResponse;
+import no.nav.dolly.domain.resultset.tpsmessagingservice.bankkonto.UtenlandskBankkontoRequest;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,7 +55,14 @@ class TpsMessagingConsumerTest {
     @BeforeEach
     public void setup() {
 
-        when(tokenService.generateToken(ArgumentMatchers.any(TpsMessagingServiceProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
+        when(tokenService.exchange(ArgumentMatchers.any(TpsMessagingServiceProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
+    }
+
+    private void stubPostUtenlandskBankkontoData() {
+
+        stubFor(post(urlPathMatching("(.*)/api/v1/personer/12345678901/bankkonto-utenlandsk"))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")));
     }
 
     @Test
@@ -62,10 +70,10 @@ class TpsMessagingConsumerTest {
 
         stubPostUtenlandskBankkontoData();
 
-        ResponseEntity<Object> response = tpsMessagingConsumer.sendUtenlandskBankkontoRequest(new UtenlandskBankkontoRequest(
+        ResponseEntity<TpsMessagingResponse> response = tpsMessagingConsumer.sendUtenlandskBankkontoRequest(new UtenlandskBankkontoRequest(
                 IDENT,
                 MILJOER,
-                RsUtenlandskBankkonto.builder().build()
+                new RsUtenlandskBankkonto()
 
         ));
 
@@ -75,7 +83,7 @@ class TpsMessagingConsumerTest {
     @Test
     void createDigitalKontaktdata_GenerateTokenFailed_ThrowsDollyFunctionalException() {
 
-        when(tokenService.generateToken(any(TpsMessagingServiceProperties.class))).thenReturn(Mono.empty());
+        when(tokenService.exchange(any(TpsMessagingServiceProperties.class))).thenReturn(Mono.empty());
         UtenlandskBankkontoRequest utenlandskBankkontoRequest = new UtenlandskBankkontoRequest(
                 IDENT,
                 MILJOER,
@@ -83,13 +91,6 @@ class TpsMessagingConsumerTest {
         );
         Assertions.assertThrows(SecurityException.class, () -> tpsMessagingConsumer.sendUtenlandskBankkontoRequest(utenlandskBankkontoRequest));
 
-        verify(tokenService).generateToken(any(TpsMessagingServiceProperties.class));
-    }
-
-    private void stubPostUtenlandskBankkontoData() {
-
-        stubFor(post(urlPathMatching("(.*)/api/v1/personer/12345678901/bankkonto-utenlandsk"))
-                .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")));
+        verify(tokenService).exchange(any(TpsMessagingServiceProperties.class));
     }
 }

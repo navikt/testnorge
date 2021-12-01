@@ -7,16 +7,17 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
-import no.nav.dolly.domain.resultset.tpsmessagingservice.utenlandskbankkonto.NorskBankkontoRequest;
-import no.nav.dolly.domain.resultset.tpsmessagingservice.utenlandskbankkonto.UtenlandskBankkontoRequest;
+import no.nav.dolly.domain.resultset.tpsmessagingservice.bankkonto.NorskBankkontoRequest;
+import no.nav.dolly.domain.resultset.tpsmessagingservice.bankkonto.TpsMessagingResponse;
+import no.nav.dolly.domain.resultset.tpsmessagingservice.bankkonto.UtenlandskBankkontoRequest;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.util.ResponseHandler;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 import static java.util.Objects.nonNull;
+import static net.logstash.logback.util.StringUtils.isBlank;
 
 @Slf4j
 @Service
@@ -24,35 +25,38 @@ import static java.util.Objects.nonNull;
 public class TpsMessagingClient implements ClientRegister {
 
     private final TpsMessagingConsumer tpsMessagingConsumer;
-    private final ResponseHandler responseHandler;
     private final ErrorStatusDecoder errorStatusDecoder;
 
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
+        StringBuilder status = new StringBuilder();
+
         try {
             log.info("Bestilling fra Dolly-frontend: {}", Json.pretty(bestilling));
             if (nonNull(bestilling.getTpsMessaging())) {
 
-
                 if (!bestilling.getTpsMessaging().getUtenlandskBankkonto().isEmpty()) {
-                    sendUtenlandskBankkonto(
+                    ResponseEntity<TpsMessagingResponse> response = sendUtenlandskBankkonto(
                             bestilling,
-                            dollyPerson.getHovedperson(),
-                            progress);
+                            dollyPerson.getHovedperson());
+
+                    appendResponseStatus(response, status);
                 }
 
                 if (!bestilling.getTpsMessaging().getNorskBankkonto().isEmpty()) {
-                    sendNorskBankkonto(
+                    ResponseEntity<TpsMessagingResponse> response = sendNorskBankkonto(
                             bestilling,
-                            dollyPerson.getHovedperson(),
-                            progress);
+                            dollyPerson.getHovedperson());
+
+                    appendResponseStatus(response, status);
                 }
             }
         } catch (RuntimeException e) {
-            progress.setTpsImportStatus(errorStatusDecoder.decodeRuntimeException(e));
+            status.append(errorStatusDecoder.decodeRuntimeException(e));
             log.error("Kall til TPS messaging service feilet: {}", e.getMessage(), e);
         }
+        progress.setTpsImportStatus(status.toString());
     }
 
     @Override
@@ -61,22 +65,36 @@ public class TpsMessagingClient implements ClientRegister {
         throw new UnsupportedOperationException("Release ikke implementert");
     }
 
-    private void sendUtenlandskBankkonto(RsDollyUtvidetBestilling bestilling, String hovedPerson, BestillingProgress progress) {
-        ResponseEntity<Object> tpsMessagingResponse = tpsMessagingConsumer.sendUtenlandskBankkontoRequest(
+
+    private ResponseEntity<TpsMessagingResponse> sendUtenlandskBankkonto(RsDollyUtvidetBestilling bestilling, String hovedPerson) {
+        return tpsMessagingConsumer.sendUtenlandskBankkontoRequest(
                 new UtenlandskBankkontoRequest(
                         hovedPerson,
                         bestilling.getEnvironments(),
                         bestilling.getTpsMessaging().getUtenlandskBankkonto().get(0)));
-        progress.setTpsImportStatus(responseHandler.extractResponse(tpsMessagingResponse));
-
     }
 
-    private void sendNorskBankkonto(RsDollyUtvidetBestilling bestilling, String hovedPerson, BestillingProgress progress) {
-        ResponseEntity<Object> tpsMessagingResponse = tpsMessagingConsumer.sendNorskBankkontoRequest(
+    private ResponseEntity<TpsMessagingResponse> sendNorskBankkonto(RsDollyUtvidetBestilling bestilling, String hovedPerson) {
+        return tpsMessagingConsumer.sendNorskBankkontoRequest(
                 new NorskBankkontoRequest(
                         hovedPerson,
                         bestilling.getEnvironments(),
                         bestilling.getTpsMessaging().getNorskBankkonto().get(0)));
-        progress.setTpsImportStatus(responseHandler.extractResponse(tpsMessagingResponse));
+    }
+
+    private void appendResponseStatus(ResponseEntity<TpsMessagingResponse> response, StringBuilder status) {
+
+        if (nonNull(response) && response.hasBody()) {
+            if (response.getStatusCode().is2xxSuccessful()) {
+                status.append(isBlank(status) ? null : ",");
+                status.append(response.getBody().miljoe());
+                status.append(":");
+                status.append(response.getBody().status().equals("OK") ? "OK" : "FEIL: " + response.getBody().utfyllendeMelding());
+            } else {
+                status.append("FEIL: ").append(response.getBody().utfyllendeMelding());
+            }
+        } else {
+            status.append("Mottok ikke svar fra TPS import");
+        }
     }
 }

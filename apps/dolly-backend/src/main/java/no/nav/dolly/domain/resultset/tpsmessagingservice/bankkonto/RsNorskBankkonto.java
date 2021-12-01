@@ -1,4 +1,4 @@
-package no.nav.dolly.domain.resultset.tpsmessagingservice.utenlandskbankkonto;
+package no.nav.dolly.domain.resultset.tpsmessagingservice.bankkonto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
