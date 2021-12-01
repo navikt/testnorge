@@ -61,7 +61,6 @@ export const Adressevisning = ({ boadresse }) => {
 }
 
 export const Boadresse = ({ boadresse }) => {
-	console.log('boadresse: ', boadresse) //TODO - SLETT MEG
 	if (!boadresse || (boadresse instanceof Array && boadresse.length < 1)) return false
 	return (
 		<>

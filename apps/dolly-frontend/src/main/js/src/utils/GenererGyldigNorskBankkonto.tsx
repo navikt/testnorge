@@ -1,10 +1,11 @@
 const KONTROLL_SIFFER_1 = [3, 7, 6, 1, 8, 9, 4, 5, 2]
 const KONTROLL_SIFFER_2 = [5, 4, 3, 2, 7, 6, 5, 4, 3, 2]
 
-const kontrollsiffer = (kontonummer, kontrollsifferliste) => {
+const kontrollsiffer = (kontonummer: string, kontrollsifferliste: number[]) => {
 	let siffer = 0
 
 	for (let i = 0; i < kontrollsifferliste.length; i++) {
+		// @ts-ignore
 		siffer += kontonummer.charAt(i) * kontrollsifferliste[i]
 	}
 	return (11 - (siffer % 11)) % 11
@@ -15,12 +16,9 @@ const createValidBankkontoNummer = () => {
 	const bankkontoNrWithFirstCheckDigit = bankkontoNrWithoutCheckDigits.concat(
 		String(kontrollsiffer(bankkontoNrWithoutCheckDigits, KONTROLL_SIFFER_1))
 	)
-	const bankkontoNrWithBothCheckDigits = bankkontoNrWithFirstCheckDigit.concat(
+	return bankkontoNrWithFirstCheckDigit.concat(
 		String(kontrollsiffer(bankkontoNrWithFirstCheckDigit, KONTROLL_SIFFER_2))
 	)
-
-	console.log('bankkontoNrWithBothCheckDigits: ', bankkontoNrWithBothCheckDigits) //TODO - SLETT MEG
-	return bankkontoNrWithBothCheckDigits
 }
 
 const gyldigKontonummerMod11 = (kontonummer: string) => {

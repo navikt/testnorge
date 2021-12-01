@@ -21,7 +21,6 @@ module.exports = {
 		'regenerator-runtime/runtime',
 		'./src/index.js',
 	],
-
 	output: {
 		path: path.join(__dirname, 'dist/dev'),
 		filename: 'bundle.js',

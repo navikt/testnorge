@@ -58,7 +58,10 @@ export const PersonVisning = ({
 					</SlettButton>
 				)}
 			</div>
-			<TpsfVisning data={TpsfVisning.filterValues(data.tpsf, bestillingsListe)} />
+			<TpsfVisning
+				data={TpsfVisning.filterValues(data.tpsf, bestillingsListe)}
+				environments={bestilling.environments}
+			/>
 			<PdlfVisning
 				dataPdl={data.pdl}
 				dataPdlforvalter={data.pdlforvalter}

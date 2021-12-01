@@ -9,6 +9,8 @@ module.exports = (env) =>
 		mode: 'development',
 		devtool: 'inline-source-map',
 		devServer: {
+			static: path.join(__dirname, 'dist/dev'),
+			compress: true,
 			port: 3000,
 			open: {
 				target: [`http://localhost:3000/login`],
