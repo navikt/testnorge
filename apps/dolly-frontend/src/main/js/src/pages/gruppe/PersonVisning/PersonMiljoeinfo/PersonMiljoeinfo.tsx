@@ -13,9 +13,7 @@ type PersonMiljoeinfoProps = {
 export const PersonMiljoeinfo = ({ ident, miljoe }: PersonMiljoeinfoProps) => {
 	if (!ident) return null
 
-	const state = useAsync(async () => {
-		return await TpsMessagingApi.getTpsPersonInfo(ident, miljoe)
-	}, [])
+	const state = useAsync(async () => await TpsMessagingApi.getTpsPersonInfo(ident, miljoe), [])
 
 	return (
 		<div>
