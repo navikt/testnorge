@@ -12,7 +12,9 @@ import no.nav.tps.ctg.m201.domain.TpsServiceRutineType;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @Builder
@@ -62,6 +64,13 @@ public class TpsServicerutineM201Response {
         @JacksonXmlElementWrapper(useWrapping = false)
         @JacksonXmlProperty(localName = "eFnr")
         private List<EFnr> eFnr;
+
+        public List<EFnr> getEFnr() {
+            if (Objects.isNull(eFnr)) {
+                eFnr = new ArrayList<>();
+            }
+            return eFnr;
+        }
     }
 
     @Data

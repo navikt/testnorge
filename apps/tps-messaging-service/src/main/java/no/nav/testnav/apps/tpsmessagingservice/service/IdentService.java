@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -61,8 +63,20 @@ public class IdentService {
         if (identer.size() > MAX_LIMIT) {
             throw new BadRequestException(BAD_REQUEST);
         }
-        var response = readFromTps(identer, isNull(miljoer) ? miljoerService.getMiljoer() : miljoer);
-        return null;
+        var tpsResponse = readFromTps(identer, isNull(miljoer) ? miljoerService.getMiljoer() : miljoer);
+
+        return identer.parallelStream()
+                .map(ident -> TpsIdentStatusDTO.builder()
+                        .ident(ident)
+                        .miljoer(tpsResponse.entrySet().parallelStream()
+                                .filter(entry -> nonNull(entry.getValue().getTpsSvar().getPersonDataM201()) &&
+                                        nonNull(entry.getValue().getTpsSvar().getPersonDataM201().getAFnr()) &&
+                                        entry.getValue().getTpsSvar().getPersonDataM201().getAFnr().getEFnr().stream()
+                                                .anyMatch(eFnr -> ident.equals(eFnr.getFnr()) && isNotBlank(eFnr.getKn())))
+                                .map(entry -> entry.getKey())
+                                .toList())
+                        .build())
+                .toList();
     }
 
     private Map<String, TpsServicerutineM201Response> readFromTps(List<String> identer, List<String> miljoer) {
@@ -75,7 +89,7 @@ public class IdentService {
         miljoerResponse.entrySet().stream()
                 .forEach(entry -> log.info("Miljø: {} XML: {}", entry.getKey(), entry.getValue()));
 
-        return miljoerResponse.entrySet().stream()
+        return miljoerResponse.entrySet().parallelStream()
                 .collect(Collectors.toMap(Map.Entry::getKey,
                         entry -> {
                             try {
