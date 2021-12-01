@@ -25,8 +25,8 @@ import no.nav.testnav.libs.reactivesecurity.domain.AccessScopes;
 import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
 import no.nav.testnav.libs.reactivesecurity.domain.AzureClientCredentials;
 import no.nav.testnav.libs.reactivesecurity.domain.ResourceServerType;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.reactivesecurity.domain.Token;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 
 @Slf4j
 @Service
@@ -104,17 +104,18 @@ public class AzureAdTokenService implements TokenService {
                 .retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(1))
                         .filter(throwable -> !(throwable instanceof WebClientResponseException.BadRequest))
                         .doBeforeRetry(value -> log.warn("Prøver å opprette tilkobling til azure på nytt."))
-                ).doOnError(error -> {
-                    if (error instanceof WebClientResponseException) {
-                        log.error(
+                ).doOnError(
+                        WebClientResponseException.class::isInstance,
+                        throwable -> log.error(
                                 "Feil ved henting av access token for {}. Feilmelding: {}.",
                                 scope,
-                                ((WebClientResponseException) error).getResponseBodyAsString()
-                        );
-                    } else {
-                        log.error("Feil ved henting av access token for {}", scope, error);
-                    }
-                });
+                                ((WebClientResponseException) throwable).getResponseBodyAsString()
+                        )
+                )
+                .doOnError(
+                        throwable -> !(throwable instanceof WebClientResponseException),
+                        throwable -> log.error("Feil ved henting av access token for {}", scope, throwable)
+                );
 
     }
 
@@ -153,17 +154,18 @@ public class AzureAdTokenService implements TokenService {
                 .body(body)
                 .retrieve()
                 .bodyToMono(AccessToken.class)
-                .doOnError(error -> {
-                    if (error instanceof WebClientResponseException) {
-                        log.error(
+                .doOnError(
+                        WebClientResponseException.class::isInstance,
+                        throwable -> log.error(
                                 "Feil ved henting av access token for {}. Feilmelding: {}.",
                                 scope,
-                                ((WebClientResponseException) error).getResponseBodyAsString()
-                        );
-                    } else {
-                        log.error("Feil ved henting av access token for {}", scope, error);
-                    }
-                });
+                                ((WebClientResponseException) throwable).getResponseBodyAsString()
+                        )
+                )
+                .doOnError(
+                        throwable -> !(throwable instanceof WebClientResponseException),
+                        throwable -> log.error("Feil ved henting av access token for {}", scope, throwable)
+                );
 
     }
 

@@ -11,16 +11,6 @@ module.exports = merge(common, {
     historyApiFallback: true,
     static: path.join(__dirname, 'public'),
     proxy: {
-      '/endringsmelding-service/api': {
-        target: 'http://localhost:8080',
-        changeOrigin: true,
-        secure: false,
-      },
-      '/testnorge-profil-api/api': {
-        target: 'http://localhost:8080',
-        changeOrigin: true,
-        secure: false,
-      },
       '/oauth2/authorization/aad': {
         target: 'http://localhost:8080',
         changeOrigin: true,

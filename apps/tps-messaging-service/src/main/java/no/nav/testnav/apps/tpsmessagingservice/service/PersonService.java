@@ -19,6 +19,7 @@ import no.nav.testnav.apps.tpsmessagingservice.utils.ServiceRutineUtil;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.RelasjonDTO;
+import no.nav.tps.ctg.s610.domain.PersondataFraTpsS610Type;
 import no.nav.tps.ctg.s610.domain.RelasjonType;
 import no.nav.tps.ctg.s610.domain.S610PersonType;
 import org.json.XML;
@@ -39,13 +40,14 @@ import static java.util.Objects.nonNull;
 import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.RelasjonDTO.ROLLE.FAR;
 import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.RelasjonDTO.ROLLE.MOR;
 import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.RelasjonDTO.ROLLE.PARTNER;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Service
 public class PersonService {
 
     private static final String STATUS_OK = "00";
-    private static final String STATUS_WARN = "04";
+    private static final String NOT_FOUND = "PERSON IKKE FUNNET";
     private static final String PERSON_KERNINFO_SERVICE_ROUTINE = "FS03-FDNUMMER-KERNINFO-O";
 
     private final ServicerutineConsumer servicerutineConsumer;
@@ -91,7 +93,7 @@ public class PersonService {
 
     private static boolean isStatusOK(TpsMeldingResponse response) {
 
-        return STATUS_OK.equals(response.getReturStatus()) || STATUS_WARN.equals(response.getReturStatus());
+        return STATUS_OK.equals(response.getReturStatus());
     }
 
     private Map<String, PersonDTO> buildMiljoePersonWithRelasjon(Map<String, PersonRelasjon> personRelasjon) {
@@ -142,14 +144,14 @@ public class PersonService {
         return PersonRelasjon.builder()
                 .relasjoner(nonNull(tpsPerson.getBruker().getRelasjoner()) ?
                         tpsPerson.getBruker().getRelasjoner().getRelasjon().parallelStream()
-                                .map(relasjon ->
-                                        readFromTps(relasjon.getFnrRelasjon(), List.of(miljoe))
-                                                .get(miljoe)
-                                                .getTpsPersonData()
-                                                .getTpsSvar()
-                                                .getPersonDataS610()
-                                                .getPerson())
+                                .map(relasjon -> readFromTps(relasjon.getFnrRelasjon(), List.of(miljoe)))
                                 .filter(Objects::nonNull)
+                                .map(entry -> entry.get(miljoe))
+                                .map(TpsServicerutineS610Response::getTpsPersonData)
+                                .map(TpsServicerutineS610Response.TpsPersonData::getTpsSvar)
+                                .map(TpsServicerutineS610Response.TpsSvar::getPersonDataS610)
+                                .filter(Objects::nonNull)
+                                .map(PersondataFraTpsS610Type::getPerson)
                                 .toList() :
                         emptyList())
                 .hovedperson(tpsPerson)
@@ -235,6 +237,7 @@ public class PersonService {
 
         return Stream.of(personerMedRelasjoner, hentingMedFeil)
                 .flatMap(Collection::stream)
+                .filter(entry -> isBlank(entry.getUtfyllendeMelding()) || !NOT_FOUND.equals(entry.getUtfyllendeMelding()))
                 .toList();
     }
 

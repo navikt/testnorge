@@ -99,9 +99,7 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                                                             kontaktadresse.setPostadresseIFrittFormat(mapperFacade.map(
                                                                     postadresse, PostadresseIFrittFormat.class));
                                                             kontaktadresse.setKilde(CONSUMER);
-                                                            kontaktadresse.setMaster(Master.PDL);
-                                                            kontaktadresse.setGyldigFraOgMed(LocalDate.now().minusYears(1));
-                                                            kontaktadresse.setGyldigTilOgMed(LocalDate.now().plusYears(10));
+                                                            kontaktadresse.setMaster(Master.FREG);
                                                             setUtgaatt(kontaktadresse, context);
                                                             return kontaktadresse;
                                                         })
@@ -114,7 +112,9 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
                                                             kontaktadresse.setUtenlandskAdresseIFrittFormat(mapperFacade.map(
                                                                     postadresse, UtenlandskAdresseIFrittFormat.class));
                                                             kontaktadresse.setKilde(CONSUMER);
-                                                            kontaktadresse.setMaster(Master.FREG);
+                                                            kontaktadresse.setMaster(Master.PDL);
+                                                            kontaktadresse.setGyldigFraOgMed(LocalDate.now().minusYears(1));
+                                                            kontaktadresse.setGyldigTilOgMed(LocalDate.now().plusYears(10));
                                                             setUtgaatt(kontaktadresse, context);
                                                             return kontaktadresse;
                                                         })

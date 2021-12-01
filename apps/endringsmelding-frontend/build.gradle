@@ -37,8 +37,6 @@ repositories {
     mavenLocal()
 }
 
-
-
 dependencies {
     implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:reactive-core'

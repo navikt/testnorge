@@ -148,6 +148,7 @@ includeBuild './apps/tps-identer-vedlikehold'
 includeBuild './apps/tps-ident-service'
 includeBuild './apps/testnorge-token-provider'
 includeBuild './apps/tps-messaging-service'
+includeBuild './apps/organisasjon-tilgang-frontend'
 
 includeBuild './xsd/arbeidsforhold-xsd'
 
