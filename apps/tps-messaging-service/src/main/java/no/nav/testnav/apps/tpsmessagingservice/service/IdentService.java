@@ -4,7 +4,10 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.ServicerutineConsumer;
+import no.nav.testnav.apps.tpsmessagingservice.consumer.command.TpsMeldingCommand;
+import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServicerutineM201Response;
 import no.nav.testnav.apps.tpsmessagingservice.exception.BadRequestException;
+import no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsIdentStatusDTO;
 import no.nav.tps.ctg.m201.domain.SRnavn;
 import no.nav.tps.ctg.m201.domain.TpsPersonData;
@@ -62,7 +65,7 @@ public class IdentService {
         return null;
     }
 
-    private Map<String, TpsPersonData> readFromTps(List<String> identer, List<String> miljoer) {
+    private Map<String, TpsServicerutineM201Response> readFromTps(List<String> identer, List<String> miljoer) {
 
         var request = prepareRequest(identer);
         var xmlRequest = marshallToXML(requestContext, request);
@@ -85,14 +88,19 @@ public class IdentService {
     }
 
     @SneakyThrows
-    private TpsPersonData unmarshallFromXml(String endringsmeldingResponse) throws JAXBException {
+    private TpsServicerutineM201Response unmarshallFromXml(String endringsmeldingResponse) throws JAXBException {
 
-//        var unmarshaller = responseContext.createUnmarshaller();
-//        var reader = new StringReader(endringsmeldingResponse);
-//
-//        return (TpsPersonData) unmarshaller.unmarshal(reader);
+        if (TpsMeldingCommand.NO_RESPONSE.equals(endringsmeldingResponse)) {
 
-        return xmlMapper.readValue(endringsmeldingResponse, TpsPersonData.class);
+            return TpsServicerutineM201Response.builder()
+                    .tpsSvar(TpsServicerutineM201Response.TpsSvar.builder()
+                            .svarStatus(EndringsmeldingUtil.getNoAnswerStatus())
+                            .build())
+                    .build();
+        } else {
+
+            return xmlMapper.readValue(endringsmeldingResponse, TpsServicerutineM201Response.class);
+        }
     }
 
     private TpsPersonData prepareRequest(List<String> identer) {
