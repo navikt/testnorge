@@ -37,7 +37,7 @@ import static wiremock.org.hamcrest.MatcherAssert.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application.yaml")
 @AutoConfigureWireMock(port = 0)
-public class TpsMessagingConsumerTest {
+class TpsMessagingConsumerTest {
 
     private static final String IDENT = "12345678901";
     private static final List<String> MILJOER = List.of("q1", "q2");
@@ -58,7 +58,7 @@ public class TpsMessagingConsumerTest {
     }
 
     @Test
-    public void createUtenlandskbankkonto_OK() {
+    void createUtenlandskbankkonto_OK() {
 
         stubPostUtenlandskBankkontoData();
 
@@ -73,15 +73,15 @@ public class TpsMessagingConsumerTest {
     }
 
     @Test
-    public void createDigitalKontaktdata_GenerateTokenFailed_ThrowsDollyFunctionalException() {
+    void createDigitalKontaktdata_GenerateTokenFailed_ThrowsDollyFunctionalException() {
 
         when(tokenService.generateToken(any(TpsMessagingServiceProperties.class))).thenReturn(Mono.empty());
-
-        Assertions.assertThrows(SecurityException.class, () -> tpsMessagingConsumer.sendUtenlandskBankkontoRequest(new UtenlandskBankkontoRequest(
+        UtenlandskBankkontoRequest utenlandskBankkontoRequest = new UtenlandskBankkontoRequest(
                 IDENT,
                 MILJOER,
                 RsUtenlandskBankkonto.builder().build()
-        )));
+        );
+        Assertions.assertThrows(SecurityException.class, () -> tpsMessagingConsumer.sendUtenlandskBankkontoRequest(utenlandskBankkontoRequest));
 
         verify(tokenService).generateToken(any(TpsMessagingServiceProperties.class));
     }
