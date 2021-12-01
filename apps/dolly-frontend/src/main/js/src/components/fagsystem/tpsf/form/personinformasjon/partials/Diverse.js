@@ -8,7 +8,6 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { Diskresjonskoder } from './diskresjonskoder/Diskresjonskoder'
-import { Telefonnummer } from './telefonnummer/Telefonnummer'
 import _get from 'lodash/get'
 import styled from 'styled-components'
 import { Checkbox as NavCheckbox } from 'nav-frontend-skjema'
@@ -141,7 +140,6 @@ export const Diverse = ({ formikBag }) => {
 					fastfield={false}
 				/>
 			</Vis>
-			<Telefonnummer formikBag={formikBag} />
 			<Diskresjonskoder basePath="tpsf" formikBag={formikBag} />
 		</React.Fragment>
 	)

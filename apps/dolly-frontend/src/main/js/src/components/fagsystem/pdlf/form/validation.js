@@ -1,5 +1,6 @@
 import * as Yup from 'yup'
 import { ifKeyHasValue, ifPresent, requiredDate, requiredString } from '~/utils/YupValidations'
+import _get from 'lodash/get'
 
 const personnavnSchema = Yup.object({
 	fornavn: Yup.string(),
@@ -106,6 +107,40 @@ const kontaktDoedsbo = Yup.object({
 	utstedtDato: requiredDate,
 })
 
+const testTelefonnummer = () =>
+	Yup.string()
+		.max(20, 'Telefonnummer kan ikke ha mer enn 20 sifre')
+		// TODO: Fiks denne med context!
+		// .when(`telefonLandskode_${nr}`, {
+		// 	is: '+47',
+		// 	then: Yup.string().length(8, 'Norsk telefonnummer må ha 8 sifre'),
+		// })
+		.required('Feltet er påkrevd')
+		.matches(/^[1-9][0-9]*$/, 'Telefonnummer må være numerisk, og kan ikke starte med 0')
+
+const testPrioritet = (validation) => {
+	return validation.test('prioritet', 'Kan kun brukes en gang', function erEgenPrio(val) {
+		const values = this.options.context
+		const index = this.options.index
+		const tlfListe = _get(values, 'pdldata.person.telefonnummer')
+
+		// TODO: Sjekk at prio er 1 når lengde er 1
+		if (tlfListe.length < 2) return true
+
+		const index2 = index === 0 ? 1 : 0
+		if (tlfListe[index].prioritet === tlfListe[index2].prioritet) return false
+		return true
+	})
+}
+
+const telefonnummer = Yup.array().of(
+	Yup.object({
+		landskode: requiredString,
+		nummer: testTelefonnummer(),
+		prioritet: testPrioritet(requiredString).nullable(),
+	})
+)
+
 export const validation = {
 	pdlforvalter: Yup.object({
 		kontaktinformasjonForDoedsbo: ifPresent(
@@ -118,6 +153,7 @@ export const validation = {
 			bostedsadresse: ifPresent('$pdldata.person.bostedsadresse', bostedsadresse),
 			fullmakt: ifPresent('$pdldata.person.fullmakt', fullmakt),
 			falskIdentitet: ifPresent('$pdldata.person.falskIdentitet', falskIdentitet),
+			telefonnummer: ifPresent('$pdldata.person.telefonnummer', telefonnummer),
 			utenlandskIdentifikasjonsnummer: ifPresent(
 				'$pdldata.person.utenlandskIdentifikasjonsnummer',
 				utenlandskId

@@ -48,14 +48,6 @@ const _getTpsfBestillingData = (data) => {
 		obj('Forsvunnet dato', Formatters.formatDate(data.forsvunnetDato)),
 		obj('Har bankkontonummer', Formatters.oversettBoolean(data.harBankkontonr)),
 		obj('Bankkonto opprettet', Formatters.formatDate(data.bankkontonrRegdato)),
-		obj(
-			data.telefonnummer_2 ? 'Telefonnummer 1' : 'Telefonnummer',
-			data.telefonnummer_1 && `${data.telefonLandskode_1} ${data.telefonnummer_1}`
-		),
-		obj(
-			'Telefonnummer 2',
-			data.telefonnummer_2 && `${data.telefonLandskode_2} ${data.telefonnummer_2}`
-		),
 		obj('Skjerming fra', Formatters.formatDate(data.egenAnsattDatoFom)),
 		obj('Skjerming til', Formatters.formatDate(data.egenAnsattDatoTom)),
 		obj(
@@ -68,11 +60,6 @@ const _getTpsfBestillingData = (data) => {
 		obj('Sikkerhetstiltak opphører', Formatters.formatDate(data.sikkerhetTiltakDatoTom)),
 	]
 }
-
-// const _getListeData = (liste) => {
-// 	const objects = []
-// 	liste.map(item => )
-// }
 
 export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	if (!bestillingData) return null

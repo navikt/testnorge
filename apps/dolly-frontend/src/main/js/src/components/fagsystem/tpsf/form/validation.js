@@ -393,15 +393,15 @@ const foreldre = Yup.array()
 	)
 	.nullable()
 
-const testTelefonnummer = (nr) =>
-	Yup.string()
-		.max(20, 'Telefonnummer kan ikke ha mer enn 20 sifre')
-		.when(`telefonLandskode_${nr}`, {
-			is: '+47',
-			then: Yup.string().length(8, 'Norsk telefonnummer må ha 8 sifre'),
-		})
-		.required(messages.required)
-		.matches(/^[1-9][0-9]*$/, 'Telefonnummer må være numerisk, og kan ikke starte med 0')
+// const testTelefonnummer = (nr) =>
+// 	Yup.string()
+// 		.max(20, 'Telefonnummer kan ikke ha mer enn 20 sifre')
+// 		.when(`telefonLandskode_${nr}`, {
+// 			is: '+47',
+// 			then: Yup.string().length(8, 'Norsk telefonnummer må ha 8 sifre'),
+// 		})
+// 		.required(messages.required)
+// 		.matches(/^[1-9][0-9]*$/, 'Telefonnummer må være numerisk, og kan ikke starte med 0')
 
 export const validation = {
 	tpsf: ifPresent(
@@ -450,10 +450,10 @@ export const validation = {
 					}
 				)
 			),
-			telefonLandskode_1: ifPresent('$tpsf.telefonLandskode_1', requiredString),
-			telefonnummer_1: ifPresent('$tpsf.telefonnummer_1', testTelefonnummer('1')),
-			telefonLandskode_2: ifPresent('$tpsf.telefonLandskode_2', requiredString).nullable(),
-			telefonnummer_2: ifPresent('$tpsf.telefonnummer_2', testTelefonnummer('2')).nullable(),
+			// telefonLandskode_1: ifPresent('$tpsf.telefonLandskode_1', requiredString),
+			// telefonnummer_1: ifPresent('$tpsf.telefonnummer_1', testTelefonnummer('1')),
+			// telefonLandskode_2: ifPresent('$tpsf.telefonLandskode_2', requiredString).nullable(),
+			// telefonnummer_2: ifPresent('$tpsf.telefonnummer_2', testTelefonnummer('2')).nullable(),
 			spesreg: ifPresent(
 				'$tpsf.spesreg',
 				Yup.string().when('utenFastBopel', {

@@ -13,6 +13,7 @@ import { Sikkerhetstiltak } from '~/components/fagsystem/tpsf/form/personinforma
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import _get from 'lodash/get'
 import { Alder } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/alder/Alder'
+import { Telefonnummer } from '~/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
 
 const alderPaths = ['tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer', 'tpsf.doedsdato']
 
@@ -35,10 +36,9 @@ const diversePaths = [
 	'tpsf.utenFastBopel',
 	'tpsf.erForsvunnet',
 	'tpsf.harBankkontonr',
-	'pdldata.person.telefonnummer',
-	// 'tpsf.telefonnummer_1',
 ]
 
+const telefonnummerPath = ['pdldata.person.telefonnummer']
 const vergemaalPath = ['tpsf.vergemaal']
 const fullmaktPath = ['pdldata.person.fullmakt']
 
@@ -53,6 +53,7 @@ const panelPaths = [
 	alderPaths,
 	nasjonalitetPaths,
 	diversePaths,
+	telefonnummerPath,
 	vergemaalPath,
 	fullmaktPath,
 	sikkerhetstiltakPaths,
@@ -116,6 +117,9 @@ export const Personinformasjon = ({ formikBag }) => {
 				</Kategori>
 				<Kategori title="Diverse" vis={diversePaths}>
 					<Diverse formikBag={formikBag} />
+				</Kategori>
+				<Kategori title="Telefonnummer" vis={telefonnummerPath}>
+					<Telefonnummer formikBag={formikBag} />
 				</Kategori>
 				<Kategori title="Vergemål" vis={vergemaalPath}>
 					<Vergemaal />

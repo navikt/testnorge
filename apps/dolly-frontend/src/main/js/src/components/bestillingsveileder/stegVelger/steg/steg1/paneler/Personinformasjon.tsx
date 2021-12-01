@@ -79,8 +79,8 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 				<Attributt attr={sm.attrs.egenAnsattDatoFom} />
 				<Attributt attr={sm.attrs.erForsvunnet} />
 				<Attributt attr={sm.attrs.harBankkontonr} />
-				<Attributt attr={sm.attrs.telefonnummer} />
 				<Attributt attr={sm.attrs.spesreg} />
+				<Attributt attr={sm.attrs.telefonnummer} />
 				<Attributt attr={sm.attrs.vergemaal} />
 				<Attributt attr={sm.attrs.fullmakt} />
 				<Attributt attr={sm.attrs.sikkerhetstiltak} />
@@ -226,10 +226,17 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			label: 'Telefonnummer',
 			checked: has('pdldata.person.telefonnummer'),
 			add() {
-				set('pdldata.person.telefonnummer', [{
-					landskode: '',
-					nummer: ''
-				}])
+				set('pdldata.person.telefonnummer', [
+					{
+						landskode: '',
+						nummer: '',
+						prioritet: 1,
+						kilde: 'Dolly',
+						master: 'PDL',
+						gjeldende: true,
+					},
+				])
+				// TODO tilpass dette til nytt tlf.nr.!!!
 				// _has(personFoerLeggTil, 'tpsf.telefonnummer_2')
 				// 	? setMulti(
 				// 			['tpsf.telefonLandskode_1', _get(personFoerLeggTil, 'tpsf.telefonLandskode_1')],
@@ -302,7 +309,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 						gjeldende: true,
 					},
 				]),
-			remove: () => del('tpsf.fullmakt'),
+			remove: () => del('pdldata.person.fullmakt'),
 		},
 		sikkerhetstiltak: {
 			label: 'Sikkerhetstiltak',
