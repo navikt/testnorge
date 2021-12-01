@@ -14,7 +14,7 @@ const identifikasjonAttributt = [
 	'pdldata.person.falskIdentitet',
 	'pdldata.person.utenlandskIdentifikasjonsnummer',
 ]
-const doedsboAttributt = 'pdlforvalter.kontaktinformasjonForDoedsbo'
+const doedsboAttributt = 'pdldata.person.kontaktinformasjonForDoedsbo'
 
 export const PdlfForm = ({ formikBag }) => (
 	<React.Fragment>

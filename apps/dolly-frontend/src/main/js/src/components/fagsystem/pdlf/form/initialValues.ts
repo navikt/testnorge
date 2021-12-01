@@ -21,3 +21,19 @@ export const initialUtenlandskAdresse = {
 	bygningEtasjeLeilighet: null as string,
 	regionDistriktOmraade: null as string,
 }
+
+export const initialKontaktinfoForDoedebo = {
+	skifteform: null as string,
+	attestutstedelsesdato: null as string,
+	kontaktType: null as string,
+	adresse: {
+		adresselinje1: '',
+		adresselinje2: '',
+		postnummer: '',
+		poststedsnavn: '',
+		landkode: '',
+	},
+	kilde: 'Dolly',
+	master: 'FREG',
+	gjeldende: true,
+}

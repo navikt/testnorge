@@ -4,7 +4,7 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { PdlPersonForm } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonForm'
+import { PdlPersonExpander } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import { initialPdlPerson } from '~/components/fagsystem/pdlf/form/initialValues'
 import { FormikProps } from 'formik'
 
@@ -49,7 +49,7 @@ export const Fullmakt = ({ formikBag }: FullmaktForm) => {
 						</div>
 						<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig fra og med" />
 						<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig til og med" />
-						<PdlPersonForm
+						<PdlPersonExpander
 							path={`${path}.nyFullmektig`}
 							label={'FULLMEKTIG'}
 							formikBag={formikBag}

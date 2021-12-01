@@ -1,6 +1,7 @@
 import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
+import { initialKontaktinfoForDoedebo } from '~/components/fagsystem/pdlf/form/initialValues'
 
 export const KontaktDoedsboPanel = ({ stateModifier }) => {
 	const sm = stateModifier(KontaktDoedsboPanel.initialValues)
@@ -24,21 +25,12 @@ KontaktDoedsboPanel.heading = 'Kontaktinformasjon for dødsbo'
 KontaktDoedsboPanel.initialValues = ({ set, del, has }) => ({
 	kontaktinformasjonForDoedsbo: {
 		label: 'Har kontaktinformasjon for dødsbo',
-		checked: has('pdlforvalter.kontaktinformasjonForDoedsbo'),
+		checked: has('pdldata.person.kontaktinformasjonForDoedsbo'),
 		add() {
-			set('pdlforvalter.kontaktinformasjonForDoedsbo', {
-				adressat: { adressatType: '' },
-				adresselinje1: '',
-				adresselinje2: '',
-				postnummer: '',
-				poststedsnavn: '',
-				landkode: 'NOR',
-				skifteform: '',
-				utstedtDato: '',
-			})
+			set('pdldata.person.kontaktinformasjonForDoedsbo', [initialKontaktinfoForDoedebo])
 		},
 		remove() {
-			del('pdlforvalter.kontaktinformasjonForDoedsbo')
+			del('pdldata.person.kontaktinformasjonForDoedsbo')
 		},
 	},
 })
