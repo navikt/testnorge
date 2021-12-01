@@ -44,7 +44,7 @@ public class PdlRelasjonerMappingStrategy implements MappingStrategy {
             return UOPPGITT;
         } else {
             return switch (sivilstatus) {
-                case UGIF -> UGIFT;
+                case UGIF, SAMB -> UGIFT;
                 case GIFT -> GIFT;
                 case ENKE -> ENKE_ELLER_ENKEMANN;
                 case SKIL -> SKILT;
