@@ -242,7 +242,7 @@ export const FormikDollyFieldArray = ({
 							)
 						})}
 						<FieldArrayAddButton
-							hoverText={title || (values.length === maxEntries && maxReachedDescription)}
+							hoverText={title || (maxEntries === values.length && maxReachedDescription)}
 							addEntryButtonText={header}
 							onClick={addNewEntry}
 							disabled={disabled || maxEntries === values.length}
