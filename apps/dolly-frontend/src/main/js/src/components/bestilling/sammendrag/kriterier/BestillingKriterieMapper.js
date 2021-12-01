@@ -11,6 +11,7 @@ import {
 	SigrunKodeverk,
 	VergemaalKodeverk,
 } from '~/config/kodeverk'
+import { Telefonnummer } from '~/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
 
 // TODO: Flytte til selector?
 // - Denne kan forminskes ved bruk av hjelpefunksjoner
@@ -63,8 +64,7 @@ const _getTpsfBestillingData = (data) => {
 
 export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	if (!bestillingData) return null
-	console.log('bestillingData', bestillingData)
-	//TODO fortsett med denne!
+
 	const data = []
 
 	if (bestillingsinformasjon) {
@@ -90,28 +90,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			],
 		}
 		data.push(bestillingsInfo)
-	}
-
-	if (bestillingData.pdldata) {
-		const { telefonnummer } = bestillingData.pdldata.person
-		console.log('telefonnummer', telefonnummer)
-
-		const items = []
-
-		telefonnummer.map((item, idx) => {
-			items.push(obj(`Telefonnummer #${idx + 1}`, `${item.landskode} ${item.nummer}`))
-		})
-
-		const personinfo = {
-			header: 'Persondetaljer',
-			// items: [obj('Telefonnummer', `${telefonnummer[0].landskode} ${telefonnummer[0].nummer}`)],
-			items: items,
-			// items: telefonnummer.map((item, idx) => {
-			// 	return obj(`Telefonnummer #${idx + 1}`, `${item.landskode} ${item.nummer}`)
-			// }),
-		}
-		console.log('personinfo', personinfo)
-		data.push(personinfo)
 	}
 
 	if (bestillingData.tpsf) {
@@ -421,6 +399,121 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				],
 			}
 			data.push(vergemaalKriterier)
+		}
+	}
+
+	const pdldataKriterier = bestillingData.pdldata?.person
+
+	if (pdldataKriterier) {
+		const {
+			telefonnummer,
+			fullmakt,
+			falskIdentitet,
+			utenlandskIdentifikasjonsnummer,
+			bostedsadresse,
+		} = pdldataKriterier
+
+		if (telefonnummer) {
+			const telefonnummerData = {
+				header: 'Telefonnummer',
+				itemRows: telefonnummer.map((item, idx) => {
+					return [
+						{ numberHeader: `Telefonnummer ${idx + 1}` },
+						obj('Telefonnummer', `${item.landskode} ${item.nummer}`),
+						obj('Prioritet', item.prioritet),
+					]
+				}),
+			}
+			data.push(telefonnummerData)
+		}
+
+		if (fullmakt) {
+			const fullmaktData = {
+				header: 'Fullmakt',
+				itemRows: fullmakt.map((item, idx) => {
+					return [
+						{ numberHeader: `Fullmakt ${idx + 1}` },
+						obj('Områder', Formatters.omraaderArrayToString(item.omraader)),
+						obj('Gyldig fra og med', Formatters.formatDate(item.gyldigFraOgMed)),
+						obj('Gyldig til og med', Formatters.formatDate(item.gyldigTilOgMed)),
+					]
+				}),
+			}
+			data.push(fullmaktData)
+		}
+
+		if (bostedsadresse) {
+			const bostedsadresseData = {
+				header: 'Bostedsadresse',
+				itemRows: bostedsadresse.map((item, idx) => {
+					if (item.utenlandskAdresse) {
+						const adresseData = item.utenlandskAdresse
+						const isEmpty =
+							adresseData.empty || Object.values(adresseData).every((x) => x === null || x === '')
+						return [
+							{ numberHeader: `Utenlandsk boadresse ${idx + 1}` },
+							obj('', isEmpty && 'Ingen verdier satt'),
+							obj('Gatenavn og husnummer', adresseData.adressenavnNummer),
+							obj('Postnummer og -navn', adresseData.postboksNummerNavn),
+							obj('Postkode', adresseData.postkode),
+							obj('By eller sted', adresseData.bySted),
+							obj('Land', adresseData.landkode, AdresseKodeverk.StatsborgerskapLand),
+							obj('Bygg-/leilighetsinfo', adresseData.bygningEtasjeLeilighet),
+							obj('Region/distrikt/område', adresseData.regionDistriktOmraade),
+						]
+					}
+				}),
+			}
+			data.push(bostedsadresseData)
+		}
+
+		const sjekkRettIdent = (item) => {
+			if (_has(item, 'rettIdentitetErUkjent')) {
+				return 'Ukjent'
+			} else if (_has(item, 'rettIdentitetVedIdentifikasjonsnummer')) {
+				return 'Ved identifikasjonsnummer'
+			}
+			return _has(item, 'rettIdentitetVedOpplysninger') ? 'Ved personopplysninger' : 'Ingen'
+		}
+
+		if (falskIdentitet) {
+			const falskIdentitetData = {
+				header: 'Falsk identitet',
+				itemRows: falskIdentitet.map((item, idx) => {
+					return [
+						{ numberHeader: `Falsk identitet ${idx + 1}` },
+						obj('Opplysninger om rett ident', sjekkRettIdent(item)),
+						obj('Identifikasjonsnummer', item.rettIdentitetVedIdentifikasjonsnummer),
+						obj('Fornavn', item.rettIdentitetVedOpplysninger?.personnavn?.fornavn),
+						obj('Mellomnavn', item.rettIdentitetVedOpplysninger?.personnavn?.mellomnavn),
+						obj('Etternavn', item.rettIdentitetVedOpplysninger?.personnavn?.etternavn),
+						obj(
+							'Fødselsdato',
+							Formatters.formatDate(item.rettIdentitetVedOpplysninger?.foedselsdato)
+						),
+						obj('Kjønn', item.rettIdentitetVedOpplysninger?.kjoenn),
+						obj('Statsborgerskap', item.rettIdentitetVedOpplysninger?.statsborgerskap.join(', ')),
+					]
+				}),
+			}
+			data.push(falskIdentitetData)
+		}
+
+		if (utenlandskIdentifikasjonsnummer) {
+			const utenlandskIdentData = {
+				header: 'Utenlandsk identifikasjonsnummer',
+				itemRows: utenlandskIdentifikasjonsnummer.map((item, idx) => {
+					return [
+						{
+							numberHeader: `Utenlandsk ID ${idx + 1}`,
+						},
+						obj('Utenlandsk ID', item.identifikasjonsnummer),
+						obj('Utenlandsk ID opphørt', Formatters.oversettBoolean(item.opphoert)),
+						obj('Utstederland', item.utstederland, AdresseKodeverk.Utstederland),
+					]
+				}),
+			}
+			data.push(utenlandskIdentData)
 		}
 	}
 
@@ -793,102 +886,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		}
 
 		data.push(krrStub)
-	}
-
-	const pdldataKriterier = bestillingData.pdldata?.person
-
-	if (pdldataKriterier) {
-		const { fullmakt, falskIdentitet, utenlandskIdentifikasjonsnummer, bostedsadresse } =
-			pdldataKriterier
-
-		if (fullmakt) {
-			const fullmaktData = {
-				header: 'Fullmakt',
-				itemRows: fullmakt.map((item, idx) => {
-					return [
-						{ numberHeader: `Fullmakt ${idx + 1}` },
-						obj('Områder', Formatters.omraaderArrayToString(item.omraader)),
-						obj('Gyldig fra og med', Formatters.formatDate(item.gyldigFraOgMed)),
-						obj('Gyldig til og med', Formatters.formatDate(item.gyldigTilOgMed)),
-					]
-				}),
-			}
-			data.push(fullmaktData)
-		}
-
-		if (bostedsadresse) {
-			const bostedsadresseData = {
-				header: 'Bostedsadresse',
-				itemRows: bostedsadresse.map((item, idx) => {
-					if (item.utenlandskAdresse) {
-						const adresseData = item.utenlandskAdresse
-						const isEmpty =
-							adresseData.empty || Object.values(adresseData).every((x) => x === null || x === '')
-						return [
-							{ numberHeader: `Utenlandsk boadresse ${idx + 1}` },
-							obj('', isEmpty && 'Ingen verdier satt'),
-							obj('Gatenavn og husnummer', adresseData.adressenavnNummer),
-							obj('Postnummer og -navn', adresseData.postboksNummerNavn),
-							obj('Postkode', adresseData.postkode),
-							obj('By eller sted', adresseData.bySted),
-							obj('Land', adresseData.landkode, AdresseKodeverk.StatsborgerskapLand),
-							obj('Bygg-/leilighetsinfo', adresseData.bygningEtasjeLeilighet),
-							obj('Region/distrikt/område', adresseData.regionDistriktOmraade),
-						]
-					}
-				}),
-			}
-			data.push(bostedsadresseData)
-		}
-
-		const sjekkRettIdent = (item) => {
-			if (_has(item, 'rettIdentitetErUkjent')) {
-				return 'Ukjent'
-			} else if (_has(item, 'rettIdentitetVedIdentifikasjonsnummer')) {
-				return 'Ved identifikasjonsnummer'
-			}
-			return _has(item, 'rettIdentitetVedOpplysninger') ? 'Ved personopplysninger' : 'Ingen'
-		}
-
-		if (falskIdentitet) {
-			const falskIdentitetData = {
-				header: 'Falsk identitet',
-				itemRows: falskIdentitet.map((item, idx) => {
-					return [
-						{ numberHeader: `Falsk identitet ${idx + 1}` },
-						obj('Opplysninger om rett ident', sjekkRettIdent(item)),
-						obj('Identifikasjonsnummer', item.rettIdentitetVedIdentifikasjonsnummer),
-						obj('Fornavn', item.rettIdentitetVedOpplysninger?.personnavn?.fornavn),
-						obj('Mellomnavn', item.rettIdentitetVedOpplysninger?.personnavn?.mellomnavn),
-						obj('Etternavn', item.rettIdentitetVedOpplysninger?.personnavn?.etternavn),
-						obj(
-							'Fødselsdato',
-							Formatters.formatDate(item.rettIdentitetVedOpplysninger?.foedselsdato)
-						),
-						obj('Kjønn', item.rettIdentitetVedOpplysninger?.kjoenn),
-						obj('Statsborgerskap', item.rettIdentitetVedOpplysninger?.statsborgerskap.join(', ')),
-					]
-				}),
-			}
-			data.push(falskIdentitetData)
-		}
-
-		if (utenlandskIdentifikasjonsnummer) {
-			const utenlandskIdentData = {
-				header: 'Utenlandsk identifikasjonsnummer',
-				itemRows: utenlandskIdentifikasjonsnummer.map((item, idx) => {
-					return [
-						{
-							numberHeader: `Utenlandsk ID ${idx + 1}`,
-						},
-						obj('Utenlandsk ID', item.identifikasjonsnummer),
-						obj('Utenlandsk ID opphørt', Formatters.oversettBoolean(item.opphoert)),
-						obj('Utstederland', item.utstederland, AdresseKodeverk.Utstederland),
-					]
-				}),
-			}
-			data.push(utenlandskIdentData)
-		}
 	}
 
 	const pdlforvalterKriterier = bestillingData.pdlforvalter

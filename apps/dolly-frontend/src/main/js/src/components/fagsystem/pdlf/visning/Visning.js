@@ -6,37 +6,21 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import Loading from '~/components/ui/loading/Loading'
 import { Fullmakt } from '~/components/fagsystem/pdlf/visning/partials/Fullmakt'
 import { UtenlandskBoadresse } from '~/components/fagsystem/pdlf/visning/partials/UtenlandskBoadresse'
+import { Telefonnummer } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
 
-export const PdlfVisning = ({ dataPdl, dataPdlforvalter, loadingPdl, loadingPdlforvalter }) => {
-	if (loadingPdl) return <Loading label="Laster PDL-data" />
-	if (loadingPdlforvalter) return <Loading label="Laster PDL-forvalter-data" />
-	if (
-		(!dataPdl || dataPdl.length < 1 || !dataPdl.data.hentPerson) &&
-		(!dataPdlforvalter || dataPdlforvalter.length < 1 || !dataPdlforvalter[0].person)
-	)
-		return null
+export const PdlfVisning = ({ data, loading }) => {
+	if (loading) return <Loading label="Laster PDL-data" />
+	if (!data || data.length < 1 || !data[0].person) return null
 
 	return (
 		<ErrorBoundary>
 			<div>
-				{dataPdlforvalter && (
-					<UtenlandskBoadresse data={dataPdlforvalter[0]?.person?.bostedsadresse} />
-				)}
-				{dataPdlforvalter && (
-					<Fullmakt
-						data={dataPdlforvalter[0]?.person?.fullmakt}
-						relasjoner={dataPdlforvalter[0]?.relasjoner}
-					/>
-				)}
-				{dataPdlforvalter && (
-					<UtenlandsId data={dataPdlforvalter[0]?.person?.utenlandskIdentifikasjonsnummer} />
-				)}
-				{dataPdlforvalter && <FalskIdentitet data={dataPdlforvalter[0]?.person?.falskIdentitet} />}
-				{dataPdl && (
-					<KontaktinformasjonForDoedsbo
-						data={dataPdl?.data?.hentPerson?.kontaktinformasjonForDoedsbo}
-					/>
-				)}
+				<Telefonnummer data={data[0]?.person?.telefonnummer} />
+				<UtenlandskBoadresse data={data[0]?.person?.bostedsadresse} />
+				<Fullmakt data={data[0]?.person?.fullmakt} relasjoner={data[0]?.relasjoner} />
+				<UtenlandsId data={data[0]?.person?.utenlandskIdentifikasjonsnummer} />
+				<FalskIdentitet data={data[0]?.person?.falskIdentitet} />
+				<KontaktinformasjonForDoedsbo data={data[0]?.person?.kontaktinformasjonForDoedsbo} />
 			</div>
 		</ErrorBoundary>
 	)

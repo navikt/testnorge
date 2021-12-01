@@ -59,12 +59,7 @@ export const PersonVisning = ({
 				)}
 			</div>
 			<TpsfVisning data={TpsfVisning.filterValues(data.tpsf, bestillingsListe)} />
-			<PdlfVisning
-				dataPdl={data.pdl}
-				dataPdlforvalter={data.pdlforvalter}
-				loadingPdl={loading.pdl}
-				loadingPdlforvalter={loading.pdlforvalter}
-			/>
+			<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
 			<AaregVisning liste={data.aareg} loading={loading.aareg} />
 			<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
 			<PensjonVisning data={data.pensjonforvalter} loading={loading.pensjonforvalter} />
