@@ -70,7 +70,7 @@ class TpsMessagingConsumerTest {
 
         stubPostUtenlandskBankkontoData();
 
-        ResponseEntity<TpsMessagingResponse> response = tpsMessagingConsumer.sendUtenlandskBankkontoRequest(new UtenlandskBankkontoRequest(
+        ResponseEntity<List<TpsMessagingResponse>> response = tpsMessagingConsumer.sendUtenlandskBankkontoRequest(new UtenlandskBankkontoRequest(
                 IDENT,
                 MILJOER,
                 new RsUtenlandskBankkonto()

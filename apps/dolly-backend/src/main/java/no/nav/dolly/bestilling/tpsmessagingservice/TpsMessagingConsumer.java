@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -45,11 +46,11 @@ public class TpsMessagingConsumer {
     }
 
     @Timed(name = "providers", tags = { "operation", "tps_messaging_createUtenlandskBankkonto" })
-    public ResponseEntity<TpsMessagingResponse> sendUtenlandskBankkontoRequest(UtenlandskBankkontoRequest request) {
+    public ResponseEntity<List<TpsMessagingResponse>> sendUtenlandskBankkontoRequest(UtenlandskBankkontoRequest request) {
 
         log.info("Sender utenlandsk bankkonto request på ident: {} til TPS messaging service: {}", request.ident(), request.body());
 
-        ResponseEntity<TpsMessagingResponse> response = webClient.post()
+        ResponseEntity<List<TpsMessagingResponse>> response = webClient.post()
                 .uri(uriBuilder -> uriBuilder
                         .path(UTENLANDSK_BANKKONTO_URL)
                         .queryParam(MILJOER_QUERY, request.miljoer())
@@ -57,7 +58,7 @@ public class TpsMessagingConsumer {
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
                 .bodyValue(request.body())
-                .retrieve().toEntity(TpsMessagingResponse.class)
+                .retrieve().toEntityList(TpsMessagingResponse.class)
                 .block();
 
         log.info("Response fra TPS messaging service: {}", response);
@@ -65,11 +66,11 @@ public class TpsMessagingConsumer {
     }
 
     @Timed(name = "providers", tags = { "operation", "tps_messaging_createNorskBankkonto" })
-    public ResponseEntity<TpsMessagingResponse> sendNorskBankkontoRequest(NorskBankkontoRequest request) {
+    public ResponseEntity<List<TpsMessagingResponse>> sendNorskBankkontoRequest(NorskBankkontoRequest request) {
 
         log.info("Sender norsk bankkonto request på ident: {} til TPS messaging service: {}", request.ident(), request.body());
 
-        ResponseEntity<TpsMessagingResponse> response = webClient.post()
+        ResponseEntity<List<TpsMessagingResponse>> response = webClient.post()
                 .uri(uriBuilder -> uriBuilder
                         .path(NORSK_BANKKONTO_URL)
                         .queryParam(MILJOER_QUERY, request.miljoer())
@@ -77,7 +78,7 @@ public class TpsMessagingConsumer {
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
                 .bodyValue(request.body())
-                .retrieve().toEntity(TpsMessagingResponse.class)
+                .retrieve().toEntityList(TpsMessagingResponse.class)
                 .block();
 
         log.info("Response fra TPS messaging service: {}", response);

@@ -37,7 +37,7 @@ public class TpsMessagingClient implements ClientRegister {
             if (nonNull(bestilling.getTpsMessaging())) {
 
                 if (!bestilling.getTpsMessaging().getUtenlandskBankkonto().isEmpty()) {
-                    ResponseEntity<TpsMessagingResponse> response = sendUtenlandskBankkonto(
+                    ResponseEntity<List<TpsMessagingResponse>> response = sendUtenlandskBankkonto(
                             bestilling,
                             dollyPerson.getHovedperson());
 
@@ -45,7 +45,7 @@ public class TpsMessagingClient implements ClientRegister {
                 }
 
                 if (!bestilling.getTpsMessaging().getNorskBankkonto().isEmpty()) {
-                    ResponseEntity<TpsMessagingResponse> response = sendNorskBankkonto(
+                    ResponseEntity<List<TpsMessagingResponse>> response = sendNorskBankkonto(
                             bestilling,
                             dollyPerson.getHovedperson());
 
@@ -66,7 +66,7 @@ public class TpsMessagingClient implements ClientRegister {
     }
 
 
-    private ResponseEntity<TpsMessagingResponse> sendUtenlandskBankkonto(RsDollyUtvidetBestilling bestilling, String hovedPerson) {
+    private ResponseEntity<List<TpsMessagingResponse>> sendUtenlandskBankkonto(RsDollyUtvidetBestilling bestilling, String hovedPerson) {
         return tpsMessagingConsumer.sendUtenlandskBankkontoRequest(
                 new UtenlandskBankkontoRequest(
                         hovedPerson,
@@ -74,7 +74,7 @@ public class TpsMessagingClient implements ClientRegister {
                         bestilling.getTpsMessaging().getUtenlandskBankkonto().get(0)));
     }
 
-    private ResponseEntity<TpsMessagingResponse> sendNorskBankkonto(RsDollyUtvidetBestilling bestilling, String hovedPerson) {
+    private ResponseEntity<List<TpsMessagingResponse>> sendNorskBankkonto(RsDollyUtvidetBestilling bestilling, String hovedPerson) {
         return tpsMessagingConsumer.sendNorskBankkontoRequest(
                 new NorskBankkontoRequest(
                         hovedPerson,
@@ -82,19 +82,17 @@ public class TpsMessagingClient implements ClientRegister {
                         bestilling.getTpsMessaging().getNorskBankkonto().get(0)));
     }
 
-    private void appendResponseStatus(ResponseEntity<TpsMessagingResponse> response, StringBuilder status) {
+    private void appendResponseStatus(ResponseEntity<List<TpsMessagingResponse>> responseList, StringBuilder status) {
 
-        if (nonNull(response) && response.hasBody()) {
-            if (response.getStatusCode().is2xxSuccessful()) {
+        if (nonNull(responseList) && responseList.hasBody()) {
+            responseList.getBody().forEach(response -> {
                 status.append(isBlank(status) ? null : ",");
-                status.append(response.getBody().miljoe());
+                status.append(response.miljoe());
                 status.append(":");
-                status.append(response.getBody().status().equals("OK") ? "OK" : "FEIL: " + response.getBody().utfyllendeMelding());
-            } else {
-                status.append("FEIL: ").append(response.getBody().utfyllendeMelding());
-            }
+                status.append(response.status().equals("OK") ? "OK" : "FEIL:" + response.utfyllendeMelding());
+            });
         } else {
-            status.append("Mottok ikke svar fra TPS import");
+            status.append("NA:FEIL: Mottok ikke svar fra TPS import");
         }
     }
 }
