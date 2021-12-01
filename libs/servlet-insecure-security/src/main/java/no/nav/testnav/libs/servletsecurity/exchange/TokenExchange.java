@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
 
 
 @Service
@@ -14,7 +14,7 @@ public class TokenExchange {
 
     private final AzureAdTokenService azureAdTokenService;
 
-    public Mono<AccessToken> generateToken(ServerProperties serverProperties) {
-        return azureAdTokenService.generateToken(serverProperties);
+    public Mono<AccessToken> exchange(ServerProperties serverProperties) {
+        return azureAdTokenService.exchange(serverProperties);
     }
 }

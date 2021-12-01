@@ -6,10 +6,10 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import no.nav.testnav.apps.oversiktfrontend.domain.Application;
-import no.nav.testnav.libs.reactivesessionsecurity.domain.AccessToken;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.AzureAdTokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.ClientRegistrationIdResolver;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 
 @Service
@@ -23,7 +23,7 @@ public class TokenService {
         return clientRegistrationIdResolver
                 .getClientRegistrationId().flatMap(clientId -> {
                     if (clientId.equals("idporten")) {
-                        return tokenExchange.generateToken(
+                        return tokenExchange.exchange(
                                 ServerProperties
                                         .builder()
                                         .name("app-2")
@@ -33,7 +33,7 @@ public class TokenService {
                                 exchange
                         );
                     }
-                    return tokenExchange.generateToken(ServerProperties
+                    return tokenExchange.exchange(ServerProperties
                                     .builder()
                                     .name("team-dolly-lokal-app")
                                     .cluster("dev-fss")
@@ -48,6 +48,6 @@ public class TokenService {
         if (clientCredentials) {
             return azureAdTokenExchange.generateClientCredentialAccessToken(application.toServerProperties());
         }
-        return tokenExchange.generateToken(application.toServerProperties(), exchange);
+        return tokenExchange.exchange(application.toServerProperties(), exchange);
     }
 }

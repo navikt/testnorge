@@ -78,12 +78,8 @@ public class EgenansattService {
                 .collect(Collectors.toMap(Entry::getKey, entry -> {
 
                     try {
-                        if (TpsMeldingCommand.NO_RESPONSE.equals(entry.getValue())) {
-                            return getResponseStatus(null);
-                        } else {
-                            var response = (EgenansattResponse) unmarshallFromXml(responseContext, entry.getValue());
-                            return getResponseStatus(response);
-                        }
+                        return getResponseStatus(TpsMeldingCommand.NO_RESPONSE.equals(entry.getValue()) ? null :
+                                (EgenansattResponse) unmarshallFromXml(responseContext, entry.getValue()));
 
                     } catch (JAXBException e) {
                         log.error(e.getMessage(), e);

@@ -7,25 +7,23 @@ import no.nav.testnav.apps.organisasjontilgangservice.client.altinn.v1.dto.Right
 
 public class Organisasjon {
     private final String navn;
-    private final String orgnisasjonsnummer;
-    private final String orgnisasjonsfrom;
+    private final String organisasjonsnummer;
+    private final String organisasjonsfrom;
     private final LocalDateTime gyldigTil;
 
     public Organisasjon(OrganisasjonDTO dto, RightDTO rightDTO) {
         this.navn = dto.Name();
-        this.orgnisasjonsnummer = dto.OrganizationNumber();
-        this.orgnisasjonsfrom = dto.Type();
+        this.organisasjonsnummer = dto.OrganizationNumber();
+        this.organisasjonsfrom = dto.Type();
         this.gyldigTil = rightDTO.validTo();
     }
 
     public no.nav.testnav.apps.organisasjontilgangservice.controller.dto.OrganisasjonDTO toDTO() {
         return new no.nav.testnav.apps.organisasjontilgangservice.controller.dto.OrganisasjonDTO(
                 navn,
-                orgnisasjonsnummer,
-                orgnisasjonsfrom,
+                organisasjonsnummer,
+                organisasjonsfrom,
                 gyldigTil
         );
     }
-
-
 }

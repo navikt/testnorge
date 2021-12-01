@@ -34,7 +34,7 @@ public class OrganisasjonTilgangConsumer {
     @PostMapping
     public Mono<OrganisasjonDTO> create(@RequestBody OrganisasjonAccessRequest request) {
         return service
-                .create(request.organisajonsnummer(), request.gyldigTil())
+                .create(request.organisasjonsnummer(), request.gyldigTil())
                 .map(Organisasjon::toDTO);
     }
 

@@ -32,7 +32,7 @@ public class TilbakemeldingConsumer {
 
     public Mono<Void> send(TilbakemeldingDTO dto, ServerWebExchange exchange) {
         return tokenExchange
-                .generateToken(testnorgeTilbakemeldingApiProperties, exchange)
+                .exchange(testnorgeTilbakemeldingApiProperties, exchange)
                 .flatMap(accessToken -> webClient
                         .post()
                         .uri("/api/v1/tilbakemelding")

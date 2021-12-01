@@ -9,39 +9,38 @@ import no.nav.registre.testnorge.jenkinsbatchstatusservice.consumer.command.GetB
 import no.nav.registre.testnorge.jenkinsbatchstatusservice.consumer.command.GetQueueItemCommand;
 import no.nav.testnav.libs.commands.GetCrumbCommand;
 import no.nav.testnav.libs.dto.jenkins.v1.JenkinsCrumb;
-import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Component
 public class JenkinsConsumer {
     private final WebClient webClient;
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
     private final ServerProperties properties;
 
     public JenkinsConsumer(
             JenkinsServiceProperties properties,
-            AccessTokenService accessTokenService
+            TokenExchange tokenExchange
     ) {
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
         this.properties = properties;
         this.webClient = WebClient.builder().baseUrl(properties.getUrl()).build();
     }
 
     private JenkinsCrumb getCrumb() {
-        AccessToken accessToken = accessTokenService.generateToken(properties).block();
+        var accessToken = tokenExchange.exchange(properties).block();
         return new GetCrumbCommand(webClient, accessToken.getTokenValue()).call();
     }
 
     public Long getJobNumber(Long itemId) {
-        AccessToken accessToken = accessTokenService.generateToken(properties).block();
+        var accessToken = tokenExchange.exchange(properties).block();
         var dto = new GetQueueItemCommand(webClient, accessToken.getTokenValue(), getCrumb(), itemId).call();
         return dto.getNumber();
     }
 
     public String getJobLog(Long jobNumber) {
-        AccessToken accessToken = accessTokenService.generateToken(properties).block();
+        var accessToken = tokenExchange.exchange(properties).block();
         return new GetBEREG007LogCommand(webClient, accessToken.getTokenValue(), jobNumber).call();
     }
 }

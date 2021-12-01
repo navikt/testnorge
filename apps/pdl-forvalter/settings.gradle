@@ -4,7 +4,7 @@ plugins {
 
 rootProject.name = 'pdl-forvalter'
 
-
+includeBuild '../../libs/security-core'
 includeBuild '../../libs/database'
 includeBuild '../../libs/data-transfer-objects'
 includeBuild '../../libs/servlet-core'

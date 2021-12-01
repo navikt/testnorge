@@ -1,10 +1,15 @@
 package no.nav.dolly.bestilling.krrstub;
 
-import no.nav.dolly.config.credentials.KrrstubProxyProperties;
-import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
-import no.nav.dolly.exceptions.DollyFunctionalException;
-import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import static com.github.tomakehurst.wiremock.client.WireMock.delete;
+import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static wiremock.org.hamcrest.MatcherAssert.assertThat;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,15 +26,10 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.delete;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static wiremock.org.hamcrest.MatcherAssert.assertThat;
+import no.nav.dolly.config.credentials.KrrstubProxyProperties;
+import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
@@ -55,7 +55,7 @@ public class KrrstubConsumerTest {
     @BeforeEach
     public void setup() {
 
-        when(tokenService.generateToken(ArgumentMatchers.any(KrrstubProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
+        when(tokenService.exchange(ArgumentMatchers.any(KrrstubProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
     }
 
     @Test
@@ -85,7 +85,7 @@ public class KrrstubConsumerTest {
     @Test
     public void createDigitalKontaktdata_GenerateTokenFailed_ThrowsDollyFunctionalException() {
 
-        when(tokenService.generateToken(any(KrrstubProxyProperties.class))).thenReturn(Mono.empty());
+        when(tokenService.exchange(any(KrrstubProxyProperties.class))).thenReturn(Mono.empty());
 
         Assertions.assertThrows(SecurityException.class, () -> krrStubConsumer.createDigitalKontaktdata(DigitalKontaktdata.builder()
                 .epost(EPOST)
@@ -93,19 +93,19 @@ public class KrrstubConsumerTest {
                 .reservert(RESERVERT)
                 .build()));
 
-        verify(tokenService).generateToken(any(KrrstubProxyProperties.class));
+        verify(tokenService).exchange(any(KrrstubProxyProperties.class));
     }
 
     private void stubPostKrrData() {
 
-        stubFor(post(urlPathMatching("(.*)/api/v1/kontaktinformasjon"))
+        stubFor(post(urlPathMatching("(.*)/api/v2/kontaktinformasjon"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")));
     }
 
     private void stubDeleteKrrData() {
 
-        stubFor(delete(urlPathMatching("(.*)/api/v1/kontaktinformasjon/" + IDENT))
+        stubFor(delete(urlPathMatching("(.*)/api/v2/kontaktinformasjon/" + IDENT))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")));
     }

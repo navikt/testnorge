@@ -45,10 +45,11 @@ dependencies {
     implementation 'no.nav.testnav.libs:kafka-producers'
 
     implementation 'no.nav.testnav.libs:servlet-core'
+    implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:avro-schema'
     implementation 'no.nav.testnav.libs:commands'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
-    implementation 'no.nav.testnav.libs:servlet-security'
+    implementation 'no.nav.testnav.libs:servlet-insecure-security'
 
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'

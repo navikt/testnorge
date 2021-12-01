@@ -16,7 +16,7 @@ import java.time.Duration;
 
 import no.nav.registre.testnorge.miljoerservice.config.credentias.TpsForvalterenProxyServiceProperties;
 import no.nav.registre.testnorge.miljoerservice.response.MiljoerResponse;
-import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Service
@@ -42,7 +42,7 @@ public class TpsfConsumer {
 
     public MiljoerResponse getAktiveMiljoer() {
         log.info("Henter aktive miljøer fra TPSF.");
-        var accessToken = tokenExchange.generateToken(serverProperties).block();
+        var accessToken = tokenExchange.exchange(serverProperties).block();
         ResponseEntity<MiljoerResponse> response = webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder.path("/api/v1/environments").build())

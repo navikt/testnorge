@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 public class BankkontonrNorskDTO {
 
     private String kontonummer;
-    @Schema(description = "Feltet benyttes til lesning kun")
+
+    @Schema(description = "Datofeltet benyttes til lesning kun")
     private LocalDateTime kontoRegdato;
 }

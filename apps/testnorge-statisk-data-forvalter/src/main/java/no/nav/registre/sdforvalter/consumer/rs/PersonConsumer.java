@@ -28,8 +28,8 @@ import no.nav.registre.sdforvalter.exception.UgyldigIdentException;
 import no.nav.testnav.libs.commands.CreatePersonCommand;
 import no.nav.testnav.libs.commands.GetPersonCommand;
 import no.nav.testnav.libs.dto.person.v1.Persondatasystem;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
@@ -75,7 +75,7 @@ public class PersonConsumer {
     }
 
     public List<Person> hentPersoner(Set<String> identer) {
-        AccessToken accessToken = tokenExchange.generateToken(serviceProperties).block();
+        AccessToken accessToken = tokenExchange.exchange(serviceProperties).block();
         List<Person> personer = new ArrayList<>();
         var futures = identer.stream().map(ident -> hentPerson(ident, accessToken)).collect(Collectors.toList());
         for (CompletableFuture<Person> future : futures) {
@@ -90,10 +90,10 @@ public class PersonConsumer {
     }
 
     public void opprettPersoner(TpsIdentListe identer) {
-        AccessToken accessToken = tokenExchange.generateToken(serviceProperties).block();
+        AccessToken accessToken = tokenExchange.exchange(serviceProperties).block();
         List<CompletableFuture<TpsIdent>> futures = identer.stream().map(ident -> CompletableFuture.supplyAsync(() -> {
                     try {
-                        new CreatePersonCommand(webClient, ident.toDTO(), accessToken.getTokenValue(), ident.getOpprinnelse()).run();
+                        new CreatePersonCommand(webClient, ident.toDTO(), accessToken.getTokenValue(), ident.getOpprinnelse()).call().block();
                         return ident;
                     } catch (Exception e) {
                         log.error("Kunne ikke opprette ident {}", ident.getFnr(), e);

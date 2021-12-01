@@ -9,15 +9,17 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.ServicerutineConsumer;
+import no.nav.testnav.apps.tpsmessagingservice.consumer.command.TpsMeldingCommand;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServiceRutine;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServicerutineRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServicerutineS610Response;
+import no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil;
 import no.nav.testnav.apps.tpsmessagingservice.utils.ServiceRutineUtil;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.RelasjonDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SivilstandDTO;
+import no.nav.tps.ctg.s610.domain.PersondataFraTpsS610Type;
 import no.nav.tps.ctg.s610.domain.RelasjonType;
 import no.nav.tps.ctg.s610.domain.S610PersonType;
 import org.json.XML;
@@ -35,28 +37,17 @@ import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
-import static no.nav.testnav.apps.tpsmessagingservice.mapper.S610PersonMappingStrategy.getSivilstand;
-import static no.nav.testnav.apps.tpsmessagingservice.mapper.S610PersonMappingStrategy.getTimestamp;
 import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.RelasjonDTO.ROLLE.FAR;
 import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.RelasjonDTO.ROLLE.MOR;
 import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.RelasjonDTO.ROLLE.PARTNER;
-import static no.nav.tps.ctg.s610.domain.RelasjonType.EKTE;
-import static no.nav.tps.ctg.s610.domain.RelasjonType.ENKE;
-import static no.nav.tps.ctg.s610.domain.RelasjonType.GJPA;
-import static no.nav.tps.ctg.s610.domain.RelasjonType.GLAD;
-import static no.nav.tps.ctg.s610.domain.RelasjonType.REPA;
-import static no.nav.tps.ctg.s610.domain.RelasjonType.SEPA;
-import static no.nav.tps.ctg.s610.domain.RelasjonType.SEPR;
-import static no.nav.tps.ctg.s610.domain.RelasjonType.SKIL;
-import static no.nav.tps.ctg.s610.domain.RelasjonType.SKPA;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Service
 public class PersonService {
 
     private static final String STATUS_OK = "00";
-    private static final String STATUS_WARN = "04";
+    private static final String NOT_FOUND = "PERSON IKKE FUNNET";
     private static final String PERSON_KERNINFO_SERVICE_ROUTINE = "FS03-FDNUMMER-KERNINFO-O";
 
     private final ServicerutineConsumer servicerutineConsumer;
@@ -73,19 +64,6 @@ public class PersonService {
         this.requestContext = JAXBContext.newInstance(TpsServicerutineRequest.class);
     }
 
-    private static boolean isGift(RelasjonType relasjonType) {
-
-        return EKTE == relasjonType ||
-                ENKE == relasjonType ||
-                SKIL == relasjonType ||
-                SEPR == relasjonType ||
-                REPA == relasjonType ||
-                SEPA == relasjonType ||
-                SKPA == relasjonType ||
-                GJPA == relasjonType ||
-                GLAD == relasjonType;
-    }
-
     private static String mapRelasjonType(RelasjonType relasjonType) {
 
         switch (relasjonType) {
@@ -100,9 +78,22 @@ public class PersonService {
         }
     }
 
+    private static boolean isGift(RelasjonType relasjonType) {
+
+        return RelasjonType.EKTE == relasjonType ||
+                RelasjonType.ENKE == relasjonType ||
+                RelasjonType.SKIL == relasjonType ||
+                RelasjonType.SEPR == relasjonType ||
+                RelasjonType.REPA == relasjonType ||
+                RelasjonType.SEPA == relasjonType ||
+                RelasjonType.SKPA == relasjonType ||
+                RelasjonType.GJPA == relasjonType ||
+                RelasjonType.GLAD == relasjonType;
+    }
+
     private static boolean isStatusOK(TpsMeldingResponse response) {
 
-        return STATUS_OK.equals(response.getReturStatus()) || STATUS_WARN.equals(response.getReturStatus());
+        return STATUS_OK.equals(response.getReturStatus());
     }
 
     private Map<String, PersonDTO> buildMiljoePersonWithRelasjon(Map<String, PersonRelasjon> personRelasjon) {
@@ -115,23 +106,6 @@ public class PersonService {
                 .collect(Collectors.toMap(PersonMiljoe::getMiljoe, PersonMiljoe::getPerson));
     }
 
-    private void mapSivilstand(List<S610PersonType> tpsFamilie, Map<String, PersonDTO> familie) {
-
-        tpsFamilie.forEach(person ->
-                familie.get(person.getFodselsnummer()).getSivilstander().addAll(
-                        nonNull(person.getBruker().getRelasjoner()) &&
-                                person.getBruker().getRelasjoner().getRelasjon().stream()
-                                        .anyMatch(relasjon -> isGift(relasjon.getTypeRelasjon())) ?
-                                List.of(SivilstandDTO.builder()
-                                        .sivilstand(getSivilstand(person))
-                                        .sivilstandRegdato(getTimestamp(person.getSivilstandDetalj().getDatoSivilstand()))
-                                        .personRelasjonMed(familie.get(person.getBruker().getRelasjoner().getRelasjon().stream()
-                                                .filter(relasjon -> isGift(relasjon.getTypeRelasjon()))
-                                                .findFirst().get().getFnrRelasjon()))
-                                        .build()) :
-                                emptyList()));
-    }
-
     private PersonDTO buildPersonWithRelasjon(PersonRelasjon personRelasjon) {
 
         var tpsFamilie = Stream.of(List.of(personRelasjon.getHovedperson()), personRelasjon.getRelasjoner())
@@ -141,20 +115,16 @@ public class PersonService {
                 .map(person -> mapperFacade.map(person, PersonDTO.class))
                 .collect(Collectors.toMap(PersonDTO::getIdent, person -> person));
 
-        tpsFamilie.forEach(person ->
-                familie.get(person.getFodselsnummer()).getRelasjoner().addAll(
-                        nonNull(person.getBruker().getRelasjoner()) ?
-                                person.getBruker().getRelasjoner().getRelasjon().stream()
-                                        .filter(relasjon ->
-                                                tpsFamilie.stream().anyMatch(person1 ->
-                                                        relasjon.getFnrRelasjon().equals(person1.getFodselsnummer())))
-                                        .map(relasjon -> RelasjonDTO.builder()
-                                                .relasjonTypeNavn(mapRelasjonType(relasjon.getTypeRelasjon()))
-                                                .personRelasjonMed(familie.get(relasjon.getFnrRelasjon()))
-                                                .build())
-                                        .collect(Collectors.toList()) : emptyList()));
-
-        mapSivilstand(tpsFamilie, familie);
+        if (nonNull(personRelasjon.getHovedperson().getBruker().getRelasjoner())) {
+            familie.get(personRelasjon.getHovedperson().getFodselsnummer()).setRelasjoner(personRelasjon.getHovedperson()
+                    .getBruker().getRelasjoner().getRelasjon().stream()
+                    .filter(relasjon -> isGift(relasjon.getTypeRelasjon()))
+                    .map(relasjon -> RelasjonDTO.builder()
+                            .personRelasjonMed(familie.get(relasjon.getFnrRelasjon()))
+                            .relasjonTypeNavn(mapRelasjonType(relasjon.getTypeRelasjon()))
+                            .build())
+                    .collect(Collectors.toList()));
+        }
 
         return familie.get(personRelasjon.getHovedperson().getFodselsnummer());
     }
@@ -174,14 +144,14 @@ public class PersonService {
         return PersonRelasjon.builder()
                 .relasjoner(nonNull(tpsPerson.getBruker().getRelasjoner()) ?
                         tpsPerson.getBruker().getRelasjoner().getRelasjon().parallelStream()
-                                .map(relasjon ->
-                                    readFromTps(relasjon.getFnrRelasjon(), List.of(miljoe))
-                                            .get(miljoe)
-                                            .getTpsPersonData()
-                                            .getTpsSvar()
-                                            .getPersonDataS610()
-                                            .getPerson())
+                                .map(relasjon -> readFromTps(relasjon.getFnrRelasjon(), List.of(miljoe)))
                                 .filter(Objects::nonNull)
+                                .map(entry -> entry.get(miljoe))
+                                .map(TpsServicerutineS610Response::getTpsPersonData)
+                                .map(TpsServicerutineS610Response.TpsPersonData::getTpsSvar)
+                                .map(TpsServicerutineS610Response.TpsSvar::getPersonDataS610)
+                                .filter(Objects::nonNull)
+                                .map(PersondataFraTpsS610Type::getPerson)
                                 .toList() :
                         emptyList())
                 .hovedperson(tpsPerson)
@@ -191,15 +161,20 @@ public class PersonService {
     @SneakyThrows
     public TpsServicerutineS610Response unmarshallFromXml(String endringsmeldingResponse) {
 
-        if (isNotBlank(endringsmeldingResponse)) {
+        if (TpsMeldingCommand.NO_RESPONSE.equals(endringsmeldingResponse)) {
+
+            return TpsServicerutineS610Response.builder()
+                    .tpsPersonData(TpsServicerutineS610Response.TpsPersonData.builder()
+                            .tpsSvar(TpsServicerutineS610Response.TpsSvar.builder()
+                                    .svarStatus(EndringsmeldingUtil.getNoAnswerStatus())
+                                    .build())
+                            .build())
+                    .build();
+        } else {
 
             var jsonRoot = XML.toJSONObject(endringsmeldingResponse);
 
             return objectMapper.readValue(jsonRoot.toString(), TpsServicerutineS610Response.class);
-
-        } else {
-
-            return null;
         }
     }
 
@@ -262,6 +237,7 @@ public class PersonService {
 
         return Stream.of(personerMedRelasjoner, hentingMedFeil)
                 .flatMap(Collection::stream)
+                .filter(entry -> isBlank(entry.getUtfyllendeMelding()) || !NOT_FOUND.equals(entry.getUtfyllendeMelding()))
                 .toList();
     }
 

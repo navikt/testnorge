@@ -11,7 +11,6 @@ import no.nav.testnav.apps.tpsmessagingservice.factory.ConnectionFactoryFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.jms.JMSException;
 import javax.xml.bind.JAXBException;
 import java.util.List;
 import java.util.Map;
@@ -28,16 +27,26 @@ public abstract class TpsConsumer {
     private static final String CHANNEL_SUFFIX = "_TESTNAV_TPS_MSG_S";
     private final ConnectionFactoryFactory connectionFactoryFactory;
 
-    @Value("${config.mq.queueManager}")
-    private String queueManager;
-    @Value("${config.mq.conn-name}")
-    private String host;
-    @Value("${config.mq.port}")
-    private Integer port;
-    @Value("${config.mq.user}")
-    private String username;
-    @Value("${config.mq.password}")
-    private String password;
+    @Value("${config.mq.preprod.queueManager}")
+    private String queueManagerPreprod;
+    @Value("${config.mq.preprod.host}")
+    private String hostPreprod;
+    @Value("${config.mq.preprod.port}")
+    private Integer portPreprod;
+    @Value("${config.mq.preprod.user}")
+    private String usernamePreprod;
+    @Value("${config.mq.preprod.password}")
+    private String passwordPreprod;
+    @Value("${config.mq.test.queueManager}")
+    private String queueManagerTest;
+    @Value("${config.mq.test.host}")
+    private String hostTest;
+    @Value("${config.mq.test.port}")
+    private Integer portTest;
+    @Value("${config.mq.test.user}")
+    private String usernameTest;
+    @Value("${config.mq.test.password}")
+    private String passwordTest;
     @Value("${config.mq.channel:}")
     private String channel;
     @Value("${config.mq.queue:}")
@@ -51,13 +60,19 @@ public abstract class TpsConsumer {
     private static String getChannelName(String channel, String miljoe) {
 
         return isBlank(channel) ?
-                miljoe.toUpperCase() + CHANNEL_SUFFIX :
+                // 20 er maksimum IBM MQ kanallengde
+                (miljoe.toUpperCase() + CHANNEL_SUFFIX).substring(0, 20) :
                 channel;
+    }
+
+    private static boolean isPreprod(String miljoe) {
+
+        return "Q".equalsIgnoreCase(miljoe.substring(0, 1));
     }
 
     protected abstract String getQueueName(String queue, String miljoe);
 
-    protected abstract String getErrorMessage(JMSException e) throws JAXBException;
+    protected abstract String getErrorMessage(Exception e) throws JAXBException;
 
     public Map<String, String> sendMessage(String melding, List<String> miljoer) {
 
@@ -67,16 +82,18 @@ public abstract class TpsConsumer {
                         return TpsMiljoeResultat.builder()
                                 .miljoe(miljoe)
                                 .resultat(new TpsMeldingCommand(
-                                        connectionFactoryFactory.createConnectionFactory(
-                                                new QueueManager(queueManager, host, port, getChannelName(channel, miljoe))),
+                                        connectionFactoryFactory.createConnectionFactory(getQueueManager(miljoe)),
                                         getQueueName(queue, miljoe),
-                                        username,
-                                        password,
+                                        isPreprod(miljoe) ? usernamePreprod : usernameTest,
+                                        isPreprod(miljoe) ? passwordPreprod : passwordTest,
                                         melding).call())
                                 .build();
 
-                    } catch (JMSException e) {
+                    } catch (Exception e) {
                         try {
+
+                            log.error(e.getMessage(), e);
+
                             return TpsMiljoeResultat.builder()
                                     .miljoe(miljoe)
                                     .resultat(getErrorMessage(e))
@@ -86,13 +103,18 @@ public abstract class TpsConsumer {
 
                             log.error("Marshalling av feilmelding feilet", ex);
                         }
-
-                        log.error(e.getMessage(), e);
                     }
                     return null;
                 })
                 .filter(Objects::nonNull)
                 .collect(toMap(TpsMiljoeResultat::getMiljoe, TpsMiljoeResultat::getResultat));
+    }
+
+    private QueueManager getQueueManager(String miljoe) {
+
+        return isPreprod(miljoe) ?
+                new QueueManager(queueManagerPreprod, hostPreprod, portPreprod, getChannelName(channel, miljoe)) :
+                new QueueManager(queueManagerTest, hostTest, portTest, getChannelName(channel, miljoe));
     }
 
     @Data

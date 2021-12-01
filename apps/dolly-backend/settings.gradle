@@ -5,6 +5,7 @@ plugins {
 rootProject.name = 'dolly-backend'
 
 includeBuild '../../libs/servlet-core'
+includeBuild '../../libs/security-core'
 includeBuild '../../libs/servlet-security'
 includeBuild '../../libs/security-core'
 includeBuild '../../libs/servlet-insecure-security'

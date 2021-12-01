@@ -5,8 +5,9 @@ plugins {
 rootProject.name = 'testnorge-medl'
 
 
+includeBuild '../../libs/security-core'
 includeBuild '../../libs/servlet-core'
-includeBuild '../../libs/servlet-security'
+includeBuild '../../libs/servlet-insecure-security'
 
 gradleEnterprise {
     buildScan {

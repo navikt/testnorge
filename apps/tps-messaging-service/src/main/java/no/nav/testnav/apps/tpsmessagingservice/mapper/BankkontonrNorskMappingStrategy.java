@@ -27,10 +27,7 @@ public class BankkontonrNorskMappingStrategy implements MappingStrategy {
                     public void mapAtoB(BankkontonrNorskDTO source, BankkontoNorskRequest target, MappingContext context) {
 
                         target.setSfeAjourforing(BankkontoNorskRequest.SfeAjourforing.builder()
-                                .systemInfo(TpsSystemInfo.builder()
-                                        .kilde("Dolly")
-                                        .brukerID("anonymousUser")
-                                        .build())
+                                .systemInfo(TpsSystemInfo.getDefault())
                                 .endreGironrNorsk(mapperFacade.map(source, BankkontoNorskRequest.EndreGironrNorsk.class, context))
                                 .build());
                     }

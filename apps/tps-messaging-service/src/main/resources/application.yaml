@@ -19,31 +19,20 @@ spring:
 
 config:
   mq:
-    conn-name: b27apvl221.preprod.local
-    port: 1413
-    queueManager: MQLS03
-    user: ${mq.dev.username}
-    password: ${mq.dev.password}
+    test:
+      host: 10.52.129.178
+#      host: d26apvl300.test.local
+      port: 1412
+      queueManager: MTLS03
+      user: ${mq.test.username}
+      password: ${mq.test.password}
+    preprod:
+      host: b27apvl221.preprod.local
+      port: 1413
+      queueManager: MQLS03
+      user: ${mq.dev.username}
+      password: ${mq.dev.password}
   miljoer: t0, t1, t2, t3, t4, t5, t6, t13, q1, q2, q4, q5, q6, qx
-
-#  queueManagers:
-#    - environment: d
-#      hostname: e26apvl025.test.local
-#      queMgrName: MDLCLIENT01
-#      port: 1411
-#    - environment: t
-#      hostname: d26apvl126.test.local
-#      queMgrName: MTLCLIENT01
-#      port: 1412
-#    - environment: q
-#      hostname: b27apvl057.preprod.local
-#      queMgrName: MQLCLIENT01
-#      port: 1413
-#    - environment: p
-#      hostname:  e26apvl025.test.local
-#      queMgrName: MPLCLIENT01
-#      port: 1414
-
 
 consumers:
   pdl-services:

@@ -50,6 +50,7 @@ dependencies {
     implementation 'org.glassfish.jaxb:jaxb-runtime'
 
     implementation 'no.nav.testnav.libs:servlet-core'
+    implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
     implementation 'no.nav.testnav.libs:commands'
     implementation 'no.nav.testnav.libs:servlet-security'
