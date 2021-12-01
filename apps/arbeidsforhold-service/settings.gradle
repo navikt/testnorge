@@ -4,6 +4,7 @@ plugins {
 
 rootProject.name = 'arbeidsforhold-service'
 
+includeBuild '../../libs/security-core'
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/servlet-security'
 includeBuild '../../libs/data-transfer-objects'

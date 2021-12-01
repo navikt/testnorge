@@ -48,12 +48,12 @@ public class PersonOrganisasjonTilgangConsumer {
     }
 
     public Flux<OrganisasjonDTO> getOrganisasjoner(ServerWebExchange serverWebExchange) {
-        return tokenExchange.generateToken(serviceProperties, serverWebExchange)
+        return tokenExchange.exchange(serviceProperties, serverWebExchange)
                 .flatMapMany(accessToken -> new GetPersonOrganisasjonerTilgangCommand(webClient, accessToken.getTokenValue()).call());
     }
 
     public Mono<Boolean> hasAccess(String organisasjonsnummer, ServerWebExchange serverWebExchange) {
-        return tokenExchange.generateToken(serviceProperties, serverWebExchange)
+        return tokenExchange.exchange(serviceProperties, serverWebExchange)
                 .flatMap(accessToken -> new GetPersonOrganisasjonTilgangCommand(webClient, accessToken.getTokenValue(), organisasjonsnummer).call())
                 .onErrorResume(
                         throwable -> throwable instanceof WebClientResponseException,

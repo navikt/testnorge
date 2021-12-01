@@ -9,8 +9,8 @@ import reactor.core.publisher.Mono;
 import no.nav.testnav.apps.oversiktfrontend.consumer.command.GetBrukerCommand;
 import no.nav.testnav.apps.oversiktfrontend.consumer.command.GetTokenCommand;
 import no.nav.testnav.apps.oversiktfrontend.consumer.dto.BrukerDTO;
-import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.TestnavBrukerServiceProperties;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.TestnavBrukerServiceProperties;
 
 @Slf4j
 @Component
@@ -29,12 +29,12 @@ public class BrukerConsumer {
     }
 
     public Mono<BrukerDTO> getBruker(String orgnummer, ServerWebExchange serverWebExchange) {
-        return tokenExchange.generateToken(serviceProperties, serverWebExchange)
+        return tokenExchange.exchange(serviceProperties, serverWebExchange)
                 .flatMap(accessToken -> new GetBrukerCommand(webClient, accessToken.getTokenValue(), orgnummer).call());
     }
 
-    public Mono<String> getToken(String id, ServerWebExchange serverWebExchange){
-        return tokenExchange.generateToken(serviceProperties, serverWebExchange)
+    public Mono<String> getToken(String id, ServerWebExchange serverWebExchange) {
+        return tokenExchange.exchange(serviceProperties, serverWebExchange)
                 .flatMap(accessToken -> new GetTokenCommand(webClient, accessToken.getTokenValue(), id).call());
     }
 

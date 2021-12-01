@@ -5,23 +5,23 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 
-import no.nav.testnav.libs.dto.organiasjonbestilling.v1.ItemDTO;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import no.nav.registre.testnorge.organisasjonfastedataservice.config.credentials.OrganisasjonBestillingServiceProperties;
 import no.nav.registre.testnorge.organisasjonfastedataservice.consumer.command.GetOrdreCommand;
+import no.nav.testnav.libs.dto.organiasjonbestilling.v1.ItemDTO;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Component
 public class OrganisasjonBestillingConsumer {
     private final WebClient webClient;
     private final OrganisasjonBestillingServiceProperties serverProperties;
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
 
     public OrganisasjonBestillingConsumer(
             OrganisasjonBestillingServiceProperties serverProperties,
-            AccessTokenService accessTokenService
+            TokenExchange tokenExchange
     ) {
         this.serverProperties = serverProperties;
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(serverProperties.getUrl())
@@ -29,7 +29,7 @@ public class OrganisasjonBestillingConsumer {
     }
 
     public List<ItemDTO> getOrdreStatus(String ordreId) {
-        var accessToken = accessTokenService.generateToken(serverProperties).block();
+        var accessToken = tokenExchange.exchange(serverProperties).block();
         var command = new GetOrdreCommand(webClient, accessToken.getTokenValue(), ordreId);
         return command.call();
     }

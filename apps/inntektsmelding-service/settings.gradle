@@ -5,6 +5,7 @@ plugins {
 rootProject.name = 'inntektsmelding-service'
 
 includeBuild '../../libs/servlet-core'
+includeBuild '../../libs/security-core'
 includeBuild '../../libs/data-transfer-objects'
 includeBuild '../../libs/servlet-security'
 

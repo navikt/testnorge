@@ -6,7 +6,8 @@ rootProject.name = 'testnorge-sam'
 
 
 includeBuild '../../libs/servlet-core'
-includeBuild '../../libs/servlet-security'
+includeBuild '../../libs/servlet-insecure-security'
+includeBuild '../../libs/security-core'
 
 gradleEnterprise {
     buildScan {

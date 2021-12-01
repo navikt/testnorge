@@ -45,7 +45,7 @@ public class SyntSykemeldingHistorikkConsumer {
         log.info("Generererer sykemelding for {} fom {}", ident, startDato.toString());
 
         var request = Map.of(ident, startDato.toString());
-        var accessToken = tokenExchange.generateToken(serviceProperties).block().getTokenValue();
+        var accessToken = tokenExchange.exchange(serviceProperties).block().getTokenValue();
 
         var response = new PostSyntSykemeldingCommand(request, accessToken, webClient).call();
 

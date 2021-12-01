@@ -12,22 +12,22 @@ import no.nav.testnav.apps.organisasjonbestillingservice.consumer.dto.BuildDTO;
 import no.nav.testnav.apps.organisasjonbestillingservice.consumer.dto.ItemDTO;
 import no.nav.testnav.apps.organisasjonbestillingservice.credentials.JenkinsServiceProperties;
 import no.nav.testnav.libs.dto.jenkins.v1.JenkinsCrumb;
-import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Component
 public class JenkinsConsumer {
 
     private final WebClient webClient;
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
     private final ServerProperties properties;
 
     public JenkinsConsumer(
             JenkinsServiceProperties properties,
-            AccessTokenService accessTokenService
+            TokenExchange tokenExchange
     ) {
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
         this.properties = properties;
         this.webClient = WebClient.builder().baseUrl(properties.getUrl()).build();
     }
@@ -37,8 +37,8 @@ public class JenkinsConsumer {
     }
 
     public Mono<Long> getBuildId(Long itemId) {
-        return accessTokenService
-                .generateToken(properties)
+        return tokenExchange
+                .exchange(properties)
                 .flatMap(accessToken -> getCrumb(accessToken)
                         .flatMap(jenkinsCrumb -> new GetQueueItemCommand(webClient, accessToken.getTokenValue(), jenkinsCrumb, itemId).call())
                         .map(ItemDTO::getNumber)
@@ -46,14 +46,14 @@ public class JenkinsConsumer {
     }
 
     public Mono<String> getBuildLog(Long buildId) {
-        return accessTokenService
-                .generateToken(properties)
+        return tokenExchange
+                .exchange(properties)
                 .flatMap(accessToken -> new GetBEREG007LogCommand(webClient, accessToken.getTokenValue(), buildId).call());
     }
 
     public Mono<BuildDTO> getBuild(Long buildId) {
-        return accessTokenService
-                .generateToken(properties)
+        return tokenExchange
+                .exchange(properties)
                 .flatMap(accessToken -> new GetBEREG007Command(webClient, accessToken.getTokenValue(), buildId).call());
     }
 

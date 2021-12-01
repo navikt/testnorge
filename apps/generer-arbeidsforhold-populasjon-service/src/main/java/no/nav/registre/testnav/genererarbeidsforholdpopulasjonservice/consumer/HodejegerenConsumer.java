@@ -26,7 +26,7 @@ public class HodejegerenConsumer {
     }
 
     public Flux<String> getIdenter(String miljo, int antall) {
-        var accessToken = tokenExchange.generateToken(serverProperties).block();
+        var accessToken = tokenExchange.exchange(serverProperties).block();
         return new GetLevendeIdenterCommand(webClient, miljo, antall, accessToken.getTokenValue()).call();
     }
 }

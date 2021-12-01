@@ -16,4 +16,12 @@ public class ServerProperties {
     private String cluster;
     private String name;
     private String namespace;
+
+    public String toTokenXScope() {
+        return cluster + ":" + namespace + ":" + name;
+    }
+
+    public String toAzureAdScope() {
+        return "api://" + cluster + "." + namespace + "." + name + "/.default";
+    }
 }

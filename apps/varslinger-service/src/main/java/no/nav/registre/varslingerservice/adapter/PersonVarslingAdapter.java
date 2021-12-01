@@ -26,7 +26,7 @@ public class PersonVarslingAdapter {
     private final GetAuthenticatedToken getAuthenticatedToken;
 
     private BrukerModel getBruker() {
-        if (getAuthenticatedToken.call().clientCredentials()) {
+        if (getAuthenticatedToken.call().isClientCredentials()) {
             throw new BadCredentialsException("Kan ikke hente ut bruker fra en ikke-personlig innlogging.");
         }
         var id = getAuthenticatedId.call();

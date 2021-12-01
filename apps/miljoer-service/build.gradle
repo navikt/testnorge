@@ -37,6 +37,7 @@ repositories {
 
 dependencies {
 
+    implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:commands'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
@@ -50,7 +51,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
-    
+
     implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
 
     implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'

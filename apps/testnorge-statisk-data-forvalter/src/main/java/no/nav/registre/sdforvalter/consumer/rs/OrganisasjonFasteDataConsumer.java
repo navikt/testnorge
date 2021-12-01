@@ -55,7 +55,7 @@ public class OrganisasjonFasteDataConsumer {
 
     private void opprett(OrgTree orgTree, AtomicInteger count) {
         var organisasjon = orgTree.getOrganisasjon();
-        var accessToken = tokenExchange.generateToken(serverProperties).block();
+        var accessToken = tokenExchange.exchange(serverProperties).block();
         new SaveOrganisasjonFasteDataCommand(
                 webClient,
                 accessToken.getTokenValue(),

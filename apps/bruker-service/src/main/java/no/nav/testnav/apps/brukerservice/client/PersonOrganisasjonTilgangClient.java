@@ -42,7 +42,7 @@ public class PersonOrganisasjonTilgangClient {
     }
 
     public Mono<Organisasjon> getOrganisasjon(String orgnummer) {
-        return tokenExchange.generateToken(properties)
+        return tokenExchange.exchange(properties)
                 .flatMap(accessToken -> new GetOrganisasjonCommand(webClient, orgnummer, accessToken.getTokenValue()).call())
                 .map(Organisasjon::new);
     }

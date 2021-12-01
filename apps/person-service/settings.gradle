@@ -4,7 +4,6 @@ plugins {
 
 rootProject.name = 'person-service'
 
-
 includeBuild '../../libs/reactive-core'
 includeBuild '../../libs/security-core'
 includeBuild '../../libs/reactive-security'

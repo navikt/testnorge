@@ -37,7 +37,7 @@ public class OrganisasjonConsumer {
 
     @Cacheable("Mini-Norge-EREG")
     public Flux<OrganisasjonDTO> getOrganisasjoner(Set<String> orgnummerListe, String miljo) {
-        return tokenExchange.generateToken(serviceProperties)
+        return tokenExchange.exchange(serviceProperties)
                 .flatMapMany(accessToken -> Flux.concat(
                         orgnummerListe.stream()
                                 .map(orgnummer -> new GetOrganisasjonCommand(webClient, accessToken.getTokenValue(), orgnummer, miljo).call())

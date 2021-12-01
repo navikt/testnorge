@@ -12,8 +12,8 @@ import no.nav.testnav.apps.importpersonservice.consumer.request.OppdaterPersonRe
 import no.nav.testnav.apps.importpersonservice.credentias.TestnavPdlForvalterProperties;
 import no.nav.testnav.apps.importpersonservice.domain.PersonList;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 
 @Component
 public class PdlForvalterConsumer {
@@ -36,7 +36,7 @@ public class PdlForvalterConsumer {
 
     public Flux<String> opprett(PersonList list) {
         Flux<OrdreResponseDTO> ordreResponseDTOFlux = tokenExchange
-                .generateToken(serverProperties)
+                .exchange(serverProperties)
                 .flatMapMany(accessToken -> Flux.concat(list
                                 .getList()
                                 .stream()
