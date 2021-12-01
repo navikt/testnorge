@@ -1,9 +1,10 @@
 package no.nav.organisasjonforvalter.consumer;
 
+import static java.lang.String.format;
+import static java.lang.System.currentTimeMillis;
+import static java.util.Objects.requireNonNull;
+
 import lombok.extern.slf4j.Slf4j;
-import no.nav.organisasjonforvalter.config.credentials.OrganisasjonOrgnummerServiceProperties;
-import no.nav.organisasjonforvalter.consumer.command.OrganisasjonOrgnummerServiceCommand;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -14,34 +15,34 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.lang.String.format;
-import static java.lang.System.currentTimeMillis;
-import static java.util.Objects.requireNonNull;
+import no.nav.organisasjonforvalter.config.credentials.OrganisasjonOrgnummerServiceProperties;
+import no.nav.organisasjonforvalter.consumer.command.OrganisasjonOrgnummerServiceCommand;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Service
 public class OrganisasjonOrgnummerServiceConsumer {
 
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
     private final WebClient webClient;
     private final OrganisasjonOrgnummerServiceProperties serviceProperties;
 
     public OrganisasjonOrgnummerServiceConsumer(
             OrganisasjonOrgnummerServiceProperties serviceProperties,
-            AccessTokenService accessTokenService) {
+            TokenExchange tokenExchange) {
 
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serviceProperties.getUrl())
                 .build();
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
     }
 
     public List<String> getOrgnummer(Integer antall) {
 
         long startTime = currentTimeMillis();
         try {
-            var response = accessTokenService.generateToken(serviceProperties)
+            var response = tokenExchange.generateToken(serviceProperties)
                     .flatMap(token -> new OrganisasjonOrgnummerServiceCommand(webClient, antall, token.getTokenValue()).call())
                     .block();
 

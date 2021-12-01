@@ -15,13 +15,15 @@ import reactor.netty.transport.ProxyProvider;
 import java.net.URI;
 
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedToken;
-import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
-import no.nav.testnav.libs.reactivesecurity.domain.AzureNavClientCredential;
-import no.nav.testnav.libs.reactivesecurity.domain.ClientCredential;
 import no.nav.testnav.libs.reactivesecurity.domain.ResourceServerType;
-import no.nav.testnav.libs.reactivesecurity.domain.Token;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenService;
+import no.nav.testnav.libs.securitycore.command.azuread.ClientCredentialExchangeCommand;
+import no.nav.testnav.libs.securitycore.command.azuread.OnBehalfOfExchangeCommand;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.securitycore.domain.Token;
+import no.nav.testnav.libs.securitycore.domain.azuread.AzureNavClientCredential;
+import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
 
 @Slf4j
 @Service
@@ -79,7 +81,7 @@ public class AzureAdTokenService implements TokenService {
         return new ClientCredentialExchangeCommand(
                 webClient,
                 clientCredential,
-                serverProperties
+                serverProperties.toAzureAdScope()
         ).call();
     }
 
@@ -87,7 +89,7 @@ public class AzureAdTokenService implements TokenService {
         return new OnBehalfOfExchangeCommand(
                 webClient,
                 clientCredential,
-                serverProperties,
+                serverProperties.toAzureAdScope(),
                 token
         ).call();
     }

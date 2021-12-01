@@ -7,7 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import no.nav.testnav.libs.reactivesessionsecurity.domain.Token;
+import no.nav.testnav.libs.securitycore.domain.Token;
+
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +23,6 @@ public class RedisTokenResolver extends Oauth2AuthenticationToken implements Tok
                                 authenticationToken,
                                 exchange
                         ).map(OAuth2AuthorizedClient::getAccessToken)
-                ).map(accessToken -> Token.builder().value(accessToken.getTokenValue()).build());
+                ).map(accessToken -> Token.builder().value(accessToken.getTokenValue()).clientCredentials(false).build());
     }
 }

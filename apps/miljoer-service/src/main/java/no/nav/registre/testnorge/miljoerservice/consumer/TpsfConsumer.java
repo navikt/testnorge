@@ -16,7 +16,7 @@ import java.time.Duration;
 
 import no.nav.registre.testnorge.miljoerservice.config.credentias.TpsForvalterenProxyServiceProperties;
 import no.nav.registre.testnorge.miljoerservice.response.MiljoerResponse;
-import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Service

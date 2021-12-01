@@ -6,7 +6,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
-import no.nav.testnav.libs.reactivesecurity.domain.Token;
+import no.nav.testnav.libs.securitycore.domain.Token;
 
 @Component
 @RequiredArgsConstructor

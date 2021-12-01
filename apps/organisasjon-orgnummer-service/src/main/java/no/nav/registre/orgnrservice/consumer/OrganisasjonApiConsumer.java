@@ -17,25 +17,25 @@ import no.nav.registre.orgnrservice.config.credentials.OrganisasjonServiceProper
 import no.nav.registre.orgnrservice.consumer.exceptions.OrganisasjonApiException;
 import no.nav.testnav.libs.commands.organisasjonservice.v1.GetOrganisasjonCommand;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Component
 public class OrganisasjonApiConsumer {
 
     private final WebClient webClient;
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
     private final OrganisasjonServiceProperties serviceProperties;
     private final ExecutorService executorService;
     private final MiljoerConsumer miljoerConsumer;
 
     OrganisasjonApiConsumer(
             OrganisasjonServiceProperties serviceProperties,
-            AccessTokenService accessTokenService,
+            TokenExchange tokenExchange,
             MiljoerConsumer miljoerConsumer
     ) {
         this.serviceProperties = serviceProperties;
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
         this.executorService = Executors.newFixedThreadPool(serviceProperties.getThreads());
         this.miljoerConsumer = miljoerConsumer;
         this.webClient = WebClient.builder()
@@ -55,7 +55,7 @@ public class OrganisasjonApiConsumer {
         List<String> miljoer = miljoerConsumer.hentMiljoer().getEnvironments();
         Set<String> ekskluderteMiljoer = Set.of("qx", "u5");
 
-        var token = accessTokenService.generateToken(serviceProperties).block().getTokenValue();
+        var token = tokenExchange.generateToken(serviceProperties).block().getTokenValue();
 
         var futures = miljoer.stream()
                 .filter(miljoe -> !ekskluderteMiljoer.contains(miljoe))

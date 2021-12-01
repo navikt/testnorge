@@ -4,10 +4,6 @@ import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.orgnrservice.config.credentials.MiljoerServiceProperties;
-import no.nav.registre.orgnrservice.consumer.response.MiljoerResponse;
-import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -19,6 +15,10 @@ import reactor.netty.http.client.HttpClient;
 
 import java.util.List;
 
+import no.nav.registre.orgnrservice.config.credentials.MiljoerServiceProperties;
+import no.nav.registre.orgnrservice.consumer.response.MiljoerResponse;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+
 @Slf4j
 @Component
 public class MiljoerConsumer {
@@ -26,13 +26,13 @@ public class MiljoerConsumer {
     private static final int TIMEOUT_S = 10;
     private static final String MILJOER_URL = "/api/v1/miljoer";
 
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
     private final WebClient webClient;
     private final MiljoerServiceProperties serviceProperties;
 
     public MiljoerConsumer(
             MiljoerServiceProperties serviceProperties,
-            AccessTokenService accessTokenService) {
+            TokenExchange tokenExchange) {
 
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder()
@@ -46,13 +46,13 @@ public class MiljoerConsumer {
                                                         .addHandlerLast(new ReadTimeoutHandler(TIMEOUT_S))
                                                         .addHandlerLast(new WriteTimeoutHandler(TIMEOUT_S))))))
                 .build();
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
     }
 
     public MiljoerResponse hentMiljoer() {
 
         log.info("Genererer AccessToken for {}", serviceProperties.getName());
-        AccessToken accessToken = accessTokenService.generateToken(serviceProperties).block();
+        var accessToken = tokenExchange.generateToken(serviceProperties).block();
         List<String> response = webClient
                 .get()
                 .uri(MILJOER_URL)

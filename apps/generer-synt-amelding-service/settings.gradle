@@ -5,6 +5,7 @@ plugins {
 rootProject.name = 'generer-synt-amelding-service'
 
 
+includeBuild '../../libs/security-core'
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/domain'
 includeBuild '../../libs/servlet-security'

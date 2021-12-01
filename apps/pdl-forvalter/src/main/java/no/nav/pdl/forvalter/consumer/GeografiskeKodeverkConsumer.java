@@ -1,17 +1,18 @@
 package no.nav.pdl.forvalter.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.pdl.forvalter.config.credentials.GeografiskeKodeverkServiceProperties;
-import no.nav.pdl.forvalter.consumer.command.GeografiskeKodeverkCommand;
-import no.nav.testnav.libs.dto.geografiskekodeverkservice.v1.GeografiskeKodeverkDTO;
-import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
 import java.security.SecureRandom;
 import java.time.Duration;
+
+import no.nav.pdl.forvalter.config.credentials.GeografiskeKodeverkServiceProperties;
+import no.nav.pdl.forvalter.consumer.command.GeografiskeKodeverkCommand;
+import no.nav.testnav.libs.dto.geografiskekodeverkservice.v1.GeografiskeKodeverkDTO;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Service

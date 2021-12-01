@@ -22,7 +22,7 @@ bootJar {
 }
 dependencyManagement {
     imports {
-        mavenBom  'org.springframework.cloud:spring-cloud-dependencies:2020.0.4'
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.4'
     }
 }
 
@@ -38,6 +38,7 @@ repositories {
 dependencies {
 
 
+    implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:commands'
     implementation 'no.nav.testnav.libs:servlet-security'

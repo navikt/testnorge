@@ -14,7 +14,7 @@ import no.nav.registre.testnorge.helsepersonellservice.config.credentials.Hodeje
 import no.nav.registre.testnorge.helsepersonellservice.consumer.command.GetAlleIdenterCommand;
 import no.nav.registre.testnorge.helsepersonellservice.consumer.command.GetPersondataCommand;
 import no.nav.registre.testnorge.helsepersonellservice.domain.Persondata;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Component
@@ -23,23 +23,23 @@ public class HodejegerenConsumer {
     private final Executor executor;
     private final Long helsepersonellAvspillingsgruppeId;
     private final WebClient webClient;
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
     private final HodejegerenServerProperties hodejegerenServerProperties;
 
     public HodejegerenConsumer(
-            AccessTokenService accessTokenService,
+            TokenExchange tokenExchange,
             HodejegerenServerProperties hodejegerenServerProperties,
             @Value("${avspillingsgruppe.helsepersonell.id}") Long helsepersonellAvspillingsgruppeId
     ) {
         this.hodejegerenServerProperties = hodejegerenServerProperties;
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
         this.webClient = WebClient.builder().baseUrl(hodejegerenServerProperties.getUrl()).build();
         this.executor = Executors.newFixedThreadPool(hodejegerenServerProperties.getThreads());
         this.helsepersonellAvspillingsgruppeId = helsepersonellAvspillingsgruppeId;
     }
 
     public CompletableFuture<Persondata> getPersondata(String ident) {
-        var accessToken = accessTokenService.generateToken(hodejegerenServerProperties).block();
+        var accessToken = tokenExchange.generateToken(hodejegerenServerProperties).block();
         return CompletableFuture.supplyAsync(
                 () -> new Persondata(new GetPersondataCommand(ident, MILJOE, webClient, accessToken.getTokenValue()).call()),
                 executor
@@ -47,7 +47,7 @@ public class HodejegerenConsumer {
     }
 
     public Set<String> getHelsepersonell() {
-        var accessToken = accessTokenService.generateToken(hodejegerenServerProperties).block();
+        var accessToken = tokenExchange.generateToken(hodejegerenServerProperties).block();
         return new GetAlleIdenterCommand(helsepersonellAvspillingsgruppeId, webClient, accessToken.getTokenValue()).call();
     }
 }

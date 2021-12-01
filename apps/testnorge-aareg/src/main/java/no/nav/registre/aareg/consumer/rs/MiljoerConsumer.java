@@ -17,7 +17,6 @@ import java.util.List;
 
 import no.nav.registre.aareg.config.credentials.MiljoeServiceProperties;
 import no.nav.registre.aareg.consumer.rs.response.MiljoerResponse;
-import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Component
@@ -50,7 +49,7 @@ public class MiljoerConsumer {
 
     public MiljoerResponse hentMiljoer() {
         log.info("Genererer AccessToken for {}", serviceProperties.getName());
-        AccessToken accessToken = tokenExchange.generateToken(serviceProperties).block();
+        var accessToken = tokenExchange.generateToken(serviceProperties).block();
         List<String> response = webClient
                 .get()
                 .uri(MILJOER_URL)

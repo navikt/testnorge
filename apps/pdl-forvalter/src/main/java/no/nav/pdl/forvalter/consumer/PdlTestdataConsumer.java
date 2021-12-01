@@ -1,8 +1,19 @@
 package no.nav.pdl.forvalter.consumer;
 
+import static java.util.Objects.nonNull;
+import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.getBestillingUrl;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_SLETTING;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 import no.nav.pdl.forvalter.config.credentials.PdlServiceProperties;
 import no.nav.pdl.forvalter.consumer.command.PdlDeleteCommandPdl;
 import no.nav.pdl.forvalter.consumer.command.PdlOpprettArtifactCommandPdl;
@@ -13,19 +24,9 @@ import no.nav.pdl.forvalter.dto.Ordre;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregistermetadataDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlStatus;
-import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
-import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static java.util.Objects.nonNull;
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.getBestillingUrl;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_SLETTING;
 
 @Slf4j
 @Service

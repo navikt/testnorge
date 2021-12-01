@@ -1,11 +1,11 @@
 package no.nav.dolly.security.config;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.slf4j.MDC;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -14,19 +14,19 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 import java.util.HashMap;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Getter
 @Setter
 @Slf4j
 public class NaisServerProperties extends ServerProperties {
 
-    public String getAccessToken(TokenExchange tokenService) {
+    public String getAccessToken(TokenExchange tokenExchange) {
         if (isNull(MDC.getCopyOfContextMap())) {
             MDC.setContextMap(new HashMap<>());
         }
-        AccessToken token = tokenService.generateToken(this).block();
+        var token = tokenExchange.generateToken(this).block();
         if (isNull(token)) {
             throw new SecurityException(String.format("Klarte ikke å generere AccessToken for %s", getName()));
         }

@@ -1,14 +1,13 @@
 package no.nav.organisasjonforvalter.consumer;
 
+import static java.lang.System.currentTimeMillis;
+import static java.util.Objects.nonNull;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.organisasjonforvalter.config.credentials.OrganisasjonServiceProperties;
-import no.nav.testnav.libs.commands.organisasjonservice.v1.GetOrganisasjonCommand;
-import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -20,27 +19,29 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-import static java.lang.System.currentTimeMillis;
-import static java.util.Objects.nonNull;
+import no.nav.organisasjonforvalter.config.credentials.OrganisasjonServiceProperties;
+import no.nav.testnav.libs.commands.organisasjonservice.v1.GetOrganisasjonCommand;
+import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Service
 public class OrganisasjonServiceConsumer {
 
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
     private final WebClient webClient;
     private final OrganisasjonServiceProperties serviceProperties;
     private final ExecutorService executorService;
 
     public OrganisasjonServiceConsumer(
             OrganisasjonServiceProperties serviceProperties,
-            AccessTokenService accessTokenService) {
+            TokenExchange tokenExchange) {
 
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serviceProperties.getUrl())
                 .build();
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
         this.executorService = Executors.newFixedThreadPool(serviceProperties.getThreads());
     }
 
@@ -58,7 +59,7 @@ public class OrganisasjonServiceConsumer {
 
         long startTime = currentTimeMillis();
 
-        var token = accessTokenService.generateToken(serviceProperties).block().getTokenValue();
+        var token = tokenExchange.generateToken(serviceProperties).block().getTokenValue();
 
         var completables = miljoer.stream()
                 .map(miljoe -> OrgFutureDTO.builder()

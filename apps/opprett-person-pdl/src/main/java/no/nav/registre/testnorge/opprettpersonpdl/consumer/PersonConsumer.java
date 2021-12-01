@@ -9,10 +9,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import no.nav.testnav.libs.commands.CreatePersonCommand;
-import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
 import no.nav.registre.testnorge.opprettpersonpdl.config.credentials.PersonServiceProperties;
 import no.nav.registre.testnorge.opprettpersonpdl.domain.Person;
+import no.nav.testnav.libs.commands.CreatePersonCommand;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
@@ -47,7 +46,7 @@ public class PersonConsumer {
 
 
     public void createPerson(Person person) {
-        AccessToken accessToken = tokenExchange.generateToken(serviceProperties).block();
-        new CreatePersonCommand(webClient, person.toDTO(), accessToken.getTokenValue(), person.toKommaseparerteTags()).run();
+        var accessToken = tokenExchange.generateToken(serviceProperties).block();
+        new CreatePersonCommand(webClient, person.toDTO(), accessToken.getTokenValue(), person.toKommaseparerteTags()).call().block();
     }
 }

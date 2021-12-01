@@ -2,6 +2,19 @@ package no.nav.dolly.web;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.gateway.filter.GatewayFilter;
+import org.springframework.cloud.gateway.route.Route;
+import org.springframework.cloud.gateway.route.RouteLocator;
+import org.springframework.cloud.gateway.route.builder.Buildable;
+import org.springframework.cloud.gateway.route.builder.PredicateSpec;
+import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
+
+import java.util.function.Function;
+
 import no.nav.dolly.web.credentials.DollyBackendProperties;
 import no.nav.dolly.web.credentials.PersonSearchServiceProperties;
 import no.nav.dolly.web.credentials.TestnavAdresseServiceProperties;
@@ -15,6 +28,7 @@ import no.nav.dolly.web.credentials.TestnavMiljoerServiceProperties;
 import no.nav.dolly.web.credentials.TestnavOrganisasjonFasteDataServiceProperties;
 import no.nav.dolly.web.credentials.TestnavOrganisasjonForvalterProperties;
 import no.nav.dolly.web.credentials.TestnavOrganisasjonServiceProperties;
+import no.nav.dolly.web.credentials.TestnavPdlForvalterProperties;
 import no.nav.dolly.web.credentials.TestnavPensjonTestdataFacadeProxyProperties;
 import no.nav.dolly.web.credentials.TestnavSigrunstubProxyProperties;
 import no.nav.dolly.web.credentials.TestnavTestnorgeAaregProxyProperties;
@@ -23,26 +37,12 @@ import no.nav.dolly.web.credentials.TestnavVarslingerServiceProperties;
 import no.nav.dolly.web.credentials.TestnorgeProfilApiProperties;
 import no.nav.dolly.web.credentials.TpsForvalterenProxyProperties;
 import no.nav.dolly.web.credentials.UdiStubProxyProperties;
-import no.nav.dolly.web.credentials.TestnavPdlForvalterProperties;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
 import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
-import no.nav.testnav.libs.reactivesessionsecurity.domain.AccessToken;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.gateway.filter.GatewayFilter;
-import org.springframework.cloud.gateway.route.Route;
-import org.springframework.cloud.gateway.route.RouteLocator;
-import org.springframework.cloud.gateway.route.builder.Buildable;
-import org.springframework.cloud.gateway.route.builder.PredicateSpec;
-import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
-
-import java.util.function.Function;
 
 @Slf4j
 @Import({

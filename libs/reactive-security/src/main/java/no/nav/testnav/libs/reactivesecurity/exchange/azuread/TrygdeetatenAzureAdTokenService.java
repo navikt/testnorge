@@ -12,13 +12,13 @@ import reactor.netty.http.client.HttpClient;
 import reactor.netty.transport.ProxyProvider;
 
 import java.net.URI;
-import java.util.Objects;
 
 import no.nav.testnav.libs.reactivesecurity.domain.AzureTrygdeetatenClientCredential;
-import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
-import no.nav.testnav.libs.reactivesecurity.domain.ClientCredential;
 import no.nav.testnav.libs.reactivesecurity.exchange.GenerateToken;
+import no.nav.testnav.libs.securitycore.command.azuread.ClientCredentialExchangeCommand;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
 
 @Slf4j
 @Service
@@ -59,21 +59,8 @@ public class TrygdeetatenAzureAdTokenService implements GenerateToken {
         return new ClientCredentialExchangeCommand(
                 webClient,
                 clientCredential,
-                serverProperties
+                serverProperties.toAzureAdScope()
         ).call();
 
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        TrygdeetatenAzureAdTokenService that = (TrygdeetatenAzureAdTokenService) o;
-        return Objects.equals(webClient, that.webClient) && Objects.equals(clientCredential, that.clientCredential);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(webClient, clientCredential);
     }
 }

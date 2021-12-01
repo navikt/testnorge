@@ -11,22 +11,22 @@ import org.springframework.web.reactive.function.client.WebClient;
 import no.nav.registre.skd.consumer.credential.PersonServiceProperties;
 import no.nav.testnav.libs.commands.CreatePersonCommand;
 import no.nav.testnav.libs.dto.person.v1.PersonDTO;
-import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Component
 public class PersonConsumer {
     private final WebClient webClient;
-    private final AccessTokenService tokenService;
+    private final TokenExchange tokenExchange;
     private final ServerProperties serviceProperties;
 
     public PersonConsumer(
             PersonServiceProperties personServiceProperties,
-            AccessTokenService accessTokenService,
+            TokenExchange tokenExchange,
             ObjectMapper objectMapper
     ) {
         this.serviceProperties = personServiceProperties;
-        this.tokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
 
         ExchangeStrategies jacksonStrategy = ExchangeStrategies.builder()
                 .codecs(config -> {
@@ -44,7 +44,8 @@ public class PersonConsumer {
     }
 
     public void createPerson(PersonDTO person, String kilde) {
-        var accessToken = tokenService.generateClientCredentialAccessToken(serviceProperties).block().getTokenValue();
-        new CreatePersonCommand(webClient, person, accessToken, kilde).run();
+        tokenExchange.generateToken(serviceProperties)
+                .flatMap(accessToken -> new CreatePersonCommand(webClient, person, accessToken.getTokenValue(), kilde).call())
+                .block();
     }
 }

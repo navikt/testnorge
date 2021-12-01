@@ -1,14 +1,5 @@
 package no.nav.testnav.proxies.udistubproxy;
 
-import no.nav.testnav.libs.reactivecore.config.CoreConfig;
-import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
-import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
-import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
-import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
-import no.nav.testnav.libs.reactivesecurity.domain.AccessToken;
-import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
-import no.nav.testnav.proxies.udistubproxy.credentials.UdistubDevServiceProperties;
-import no.nav.testnav.proxies.udistubproxy.credentials.UdistubServiceProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -22,6 +13,16 @@ import org.springframework.context.annotation.Import;
 
 import java.util.function.Function;
 
+import no.nav.testnav.libs.reactivecore.config.CoreConfig;
+import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
+import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
+import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
+import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.proxies.udistubproxy.credentials.UdistubDevServiceProperties;
+import no.nav.testnav.proxies.udistubproxy.credentials.UdistubServiceProperties;
+
 @Import({
         CoreConfig.class,
         DevConfig.class,
@@ -30,18 +31,17 @@ import java.util.function.Function;
 })
 @SpringBootApplication
 public class UdistubProxyApplicationStarter {
-    public static void main(String[] args) {
-        SpringApplication.run(UdistubProxyApplicationStarter.class, args);
-    }
-
     private final TokenExchange tokenExchange;
     private final UdistubServiceProperties udistubServiceProperties;
     private final UdistubDevServiceProperties udistubDevServiceProperties;
-
     public UdistubProxyApplicationStarter(TokenExchange tokenExchange, UdistubServiceProperties udistubServiceProperties, UdistubDevServiceProperties udistubDevServiceProperties) {
         this.tokenExchange = tokenExchange;
         this.udistubServiceProperties = udistubServiceProperties;
         this.udistubDevServiceProperties = udistubDevServiceProperties;
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(UdistubProxyApplicationStarter.class, args);
     }
 
     @Bean

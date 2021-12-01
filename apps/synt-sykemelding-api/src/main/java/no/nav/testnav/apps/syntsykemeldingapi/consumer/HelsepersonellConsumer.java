@@ -9,7 +9,6 @@ import no.nav.testnav.apps.syntsykemeldingapi.config.credentials.HelsepersonellS
 import no.nav.testnav.apps.syntsykemeldingapi.domain.HelsepersonellListe;
 import no.nav.testnav.libs.commands.GetHelsepersonellCommand;
 import no.nav.testnav.libs.dto.helsepersonell.v1.HelsepersonellListeDTO;
-import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
@@ -33,7 +32,7 @@ public class HelsepersonellConsumer {
 
     @SneakyThrows
     public HelsepersonellListe hentHelsepersonell() {
-        AccessToken accessToken = tokenExchange.generateToken(serviceProperties).block();
+        var accessToken = tokenExchange.generateToken(serviceProperties).block();
         log.info("Henter helsepersonell...");
         HelsepersonellListeDTO dto = new GetHelsepersonellCommand(webClient, accessToken.getTokenValue()).call();
         log.info("{} helsepersonell hentet", dto.getHelsepersonell().size());

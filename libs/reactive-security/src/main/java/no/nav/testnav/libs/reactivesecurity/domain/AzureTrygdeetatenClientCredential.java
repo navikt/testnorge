@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.Objects;
 
+import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
+
 @Configuration
 public class AzureTrygdeetatenClientCredential extends ClientCredential {
     private final String tokenEndpoint;

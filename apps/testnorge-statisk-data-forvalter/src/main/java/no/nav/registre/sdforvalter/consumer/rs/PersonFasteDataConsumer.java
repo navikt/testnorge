@@ -12,9 +12,9 @@ import no.nav.registre.sdforvalter.config.credentials.PersonFasteDataServiceProp
 import no.nav.registre.sdforvalter.consumer.rs.commnad.SavePersonFasteDataCommand;
 import no.nav.registre.sdforvalter.domain.TpsIdent;
 import no.nav.registre.sdforvalter.domain.TpsIdentListe;
-import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.dto.personservice.v1.Gruppe;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Component

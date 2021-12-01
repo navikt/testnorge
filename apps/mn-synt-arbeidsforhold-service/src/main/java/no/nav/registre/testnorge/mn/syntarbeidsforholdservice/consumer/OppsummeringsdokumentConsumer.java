@@ -25,9 +25,9 @@ import no.nav.testnav.libs.commands.GetOppsummeringsdokumentCommand;
 import no.nav.testnav.libs.commands.GetOppsummeringsdokumenterCommand;
 import no.nav.testnav.libs.commands.SaveOppsummeringsdokumenterCommand;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletcore.config.ApplicationProperties;
-import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j

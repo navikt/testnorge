@@ -14,22 +14,22 @@ import no.nav.registre.testnav.inntektsmeldingservice.domain.FilLaster;
 import no.nav.testnav.libs.dto.dokarkiv.v1.DokmotRequest;
 import no.nav.testnav.libs.dto.dokarkiv.v1.InntektDokument;
 import no.nav.testnav.libs.dto.dokarkiv.v1.ProsessertInntektDokument;
-import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Component
 public class DokmotConsumer {
 
     private final WebClient webClient;
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
     private final ServerProperties properties;
 
     public DokmotConsumer(
             DokarkivProxyServiceProperties properties,
-            AccessTokenService accessTokenService
+            TokenExchange tokenExchange
     ) {
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
         this.properties = properties;
         this.webClient = WebClient.builder().baseUrl(properties.getUrl()).build();
     }
@@ -38,22 +38,22 @@ public class DokmotConsumer {
         log.info("Oppretter {} journalpost(er) i miljø {} for inntektsdokument(er).\nNav-Call-Id: {}", inntektDokumenter.size(), miljoe, navCallId);
         var pdf = FilLaster.instans().hentDummyPDF();
 
-        return accessTokenService
+        return tokenExchange
                 .generateToken(properties)
                 .flatMapMany(token -> Flux.concat(
-                        inntektDokumenter
-                                .stream()
-                                .map(inntektDokument -> new OpprettJournalpostCommand(webClient, token.getTokenValue(), new DokmotRequest(inntektDokument, pdf), navCallId, miljoe)
-                                        .call()
-                                        .map(response -> {
-                                            log.info(
-                                                    "Lagt inn dokument i joark med journalpostId: {} og eksternReferanseId: {}",
-                                                    response.getJournalpostId(),
-                                                    inntektDokument.getMetadata().getEksternReferanseId()
-                                            );
-                                            return new ProsessertInntektDokument(inntektDokument, response);
-                                        })
-                                ).collect(Collectors.toList())
+                                inntektDokumenter
+                                        .stream()
+                                        .map(inntektDokument -> new OpprettJournalpostCommand(webClient, token.getTokenValue(), new DokmotRequest(inntektDokument, pdf), navCallId, miljoe)
+                                                .call()
+                                                .map(response -> {
+                                                    log.info(
+                                                            "Lagt inn dokument i joark med journalpostId: {} og eksternReferanseId: {}",
+                                                            response.getJournalpostId(),
+                                                            inntektDokument.getMetadata().getEksternReferanseId()
+                                                    );
+                                                    return new ProsessertInntektDokument(inntektDokument, response);
+                                                })
+                                        ).collect(Collectors.toList())
                         )
                 )
                 .collectList()

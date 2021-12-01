@@ -13,7 +13,6 @@ import java.util.concurrent.Executors;
 import no.nav.registre.sdforvalter.config.credentials.OrganisasjonServiceProperties;
 import no.nav.registre.sdforvalter.domain.status.ereg.Organisasjon;
 import no.nav.testnav.libs.commands.organisasjonservice.v1.GetOrganisasjonCommand;
-import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
@@ -38,7 +37,7 @@ public class OrganisasjonConsumer {
     }
 
     private CompletableFuture<Organisasjon> getOrganisasjon(String orgnummer, String miljo, Executor executor) {
-        AccessToken accessToken = tokenExchange.generateToken(serverProperties).block();
+        var accessToken = tokenExchange.generateToken(serverProperties).block();
         return CompletableFuture.supplyAsync(
                 () -> {
                     try {

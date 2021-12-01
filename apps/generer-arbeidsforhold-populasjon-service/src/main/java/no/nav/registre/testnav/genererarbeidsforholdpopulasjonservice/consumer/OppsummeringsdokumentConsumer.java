@@ -23,11 +23,10 @@ import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.c
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.amelding.Oppsummeringsdokument;
 import no.nav.testnav.libs.commands.GetOppsummeringsdokumenterByIdentCommand;
 import no.nav.testnav.libs.commands.GetOppsummeringsdokumenterCommand;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletcore.config.ApplicationProperties;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
-import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.servletcore.config.ApplicationProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
@@ -92,7 +91,7 @@ public class OppsummeringsdokumentConsumer {
 
     public List<OppsummeringsdokumentDTO> getAll(String miljo) {
         log.info("Henter alle oppsummeringsdokument fra {}...", miljo);
-        AccessToken accessToken = tokenExchange.generateToken(properties).block();
+        var accessToken = tokenExchange.generateToken(properties).block();
         var list = new GetOppsummeringsdokumenterCommand(webClient, accessToken.getTokenValue(), miljo).call();
         log.info("Fant {} opplysningspliktig fra {}.", list.size(), miljo);
         return list;
