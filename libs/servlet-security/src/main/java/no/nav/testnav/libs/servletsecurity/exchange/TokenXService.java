@@ -33,7 +33,7 @@ public class TokenXService implements TokenService {
     }
 
     @Override
-    public Mono<AccessToken> generateToken(ServerProperties serverProperties) {
+    public Mono<AccessToken> exchange(ServerProperties serverProperties) {
         var token = getAuthenticatedTokenAction.call();
         return new OnBehalfOfExchangeCommand(webClient, tokenXProperties, serverProperties.toTokenXScope(), token).call();
     }

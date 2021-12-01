@@ -46,21 +46,21 @@ public class IdentPoolConsumer {
 
     public Flux<List<IdentDTO>> acquireIdents(HentIdenterRequest request) {
 
-        return Flux.from(tokenExchange.generateToken(properties).flatMap(
+        return Flux.from(tokenExchange.exchange(properties).flatMap(
                 token -> new IdentpoolPostCommand(webClient, ACQUIRE_IDENTS_URL, null, request,
                         token.getTokenValue()).call()));
     }
 
     public Flux<List<IdentDTO>> releaseIdents(List<String> identer) {
 
-        return Flux.from(tokenExchange.generateToken(properties).flatMap(
+        return Flux.from(tokenExchange.exchange(properties).flatMap(
                 token -> new IdentpoolPostCommand(webClient, RELEASE_IDENTS_URL, REKVIRERT_AV, identer,
                         token.getTokenValue()).call()));
     }
 
     public Flux<IdentpoolStatusDTO> getIdents(Set<String> identer) {
 
-        return tokenExchange.generateToken(properties)
+        return tokenExchange.exchange(properties)
                 .flatMapMany(token -> Flux.concat(identer.stream()
                         .map(ident ->
                                 new IdentpoolGetCommand(webClient, ACQUIRE_IDENTS_URL, ident, token.getTokenValue()).call())
@@ -70,7 +70,7 @@ public class IdentPoolConsumer {
 
     public Mono<Void> allokerIdent(String ident) {
 
-        return Mono.from(tokenExchange.generateToken(properties).flatMap(
+        return Mono.from(tokenExchange.exchange(properties).flatMap(
                 token -> new IdentpoolPostVoidCommand(webClient, IBRUK_IDENTS_URL, null,
                         AllokerIdentRequest.builder()
                                 .personidentifikator(ident)

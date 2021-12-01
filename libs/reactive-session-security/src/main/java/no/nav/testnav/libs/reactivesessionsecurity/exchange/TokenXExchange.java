@@ -18,7 +18,7 @@ import no.nav.testnav.libs.securitycore.domain.tokenx.TokenXProperties;
 @Import({
         TokenXProperties.class
 })
-public class TokenXExchange implements GenerateTokenExchange {
+public class TokenXExchange implements ExchangeToken {
     private final TokenResolver tokenService;
     private final WebClient webClient;
     private final TokenXProperties tokenX;
@@ -31,7 +31,7 @@ public class TokenXExchange implements GenerateTokenExchange {
 
 
     @Override
-    public Mono<AccessToken> generateToken(ServerProperties serverProperties, ServerWebExchange exchange) {
+    public Mono<AccessToken> exchange(ServerProperties serverProperties, ServerWebExchange exchange) {
         return tokenService
                 .getToken(exchange)
                 .flatMap(token -> new OnBehalfOfExchangeCommand(

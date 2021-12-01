@@ -49,7 +49,7 @@ public class AdresseServiceConsumer {
         long startTime = currentTimeMillis();
 
         try {
-            var adresser = tokenExchange.generateToken(serviceProperties)
+            var adresser = tokenExchange.exchange(serviceProperties)
                     .flatMap(token -> new AdresseServiceCommand(webClient, query, token.getTokenValue()).call()).block();
 
             log.info("Adresseoppslag tok {} ms", currentTimeMillis() - startTime);

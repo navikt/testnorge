@@ -36,7 +36,7 @@ public class SafConsumer {
 
     public Journalpost getJournalpost(Integer journalpostId, String miljo) {
         return tokenExchange
-                .generateToken(properties)
+                .exchange(properties)
                 .flatMap(accessToken -> new GetDokumentInfoCommand(
                         webClient,
                         accessToken.getTokenValue(),
@@ -52,7 +52,7 @@ public class SafConsumer {
 
     public String getDokument(Integer journalpostId, Integer dokumentInfoId, DokumentType dokumentType, String miljo) {
         return tokenExchange
-                .generateToken(properties)
+                .exchange(properties)
                 .flatMap(accessToken -> new GetDokumentCommand(
                                 webClient,
                                 accessToken.getTokenValue(),
@@ -66,7 +66,7 @@ public class SafConsumer {
 
     public byte[] getPDF(Integer journalpostId, Integer dokumentInfoId, String miljo) {
         return tokenExchange
-                .generateToken(properties)
+                .exchange(properties)
                 .flatMap(accessToken -> new GetPDFCommand(
                                 webClient,
                                 accessToken.getTokenValue(),

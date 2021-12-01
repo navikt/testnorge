@@ -51,7 +51,7 @@ public class PdlTestdataConsumer {
 
     public Flux<OrdreResponseDTO.PdlStatusDTO> send(List<Ordre> orders) {
         return tokenExchange
-                .generateToken(properties)
+                .exchange(properties)
                 .flatMapMany(accessToken -> Flux.concat(orders
                         .stream()
                         .map(order -> order.apply(accessToken))
@@ -62,7 +62,7 @@ public class PdlTestdataConsumer {
     public Flux<List<OrdreResponseDTO.HendelseDTO>> delete(List<String> identer) {
 
         return Flux.from(tokenExchange
-                .generateToken(properties)
+                .exchange(properties)
                 .flatMapMany(accessToken -> identer
                         .stream()
                         .map(ident -> Flux.from(new PdlDeleteCommandPdl(webClient, getBestillingUrl().get(PDL_SLETTING), ident, accessToken.getTokenValue()).call()))

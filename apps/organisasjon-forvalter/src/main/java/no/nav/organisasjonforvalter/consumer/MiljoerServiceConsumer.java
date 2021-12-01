@@ -39,7 +39,7 @@ public class MiljoerServiceConsumer {
     public Set<String> getOrgMiljoer() {
 
         try {
-            return Stream.of(tokenExchange.generateToken(serviceProperties)
+            return Stream.of(tokenExchange.exchange(serviceProperties)
                             .flatMap(token ->
                                     new MiljoerServiceCommand(webClient, token.getTokenValue()).call()).block())
                     .filter(env -> !env.equals("u5") && !env.equals("qx"))

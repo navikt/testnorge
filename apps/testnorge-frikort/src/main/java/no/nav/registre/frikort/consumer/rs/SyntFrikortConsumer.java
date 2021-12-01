@@ -40,7 +40,7 @@ public class SyntFrikortConsumer {
 
     public Map<String, List<SyntFrikortResponse>> hentSyntetiskeEgenandelerFraSyntRest(Map<String, Integer> request) {
         try {
-            var accessToken = tokenExchange.generateToken(serviceProperties).block().getTokenValue();
+            var accessToken = tokenExchange.exchange(serviceProperties).block().getTokenValue();
             return new PostSyntFrikortMeldingerCommand(request, accessToken, webClient).call();
         } catch (Exception e) {
             log.error("Uventet feil ved henting av syntetiske egenandeler fra synth-frikort-gcp.", e);

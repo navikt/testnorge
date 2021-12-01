@@ -27,7 +27,7 @@ public class EregBatchStatusConsumer {
     }
 
     public Long getStatusKode(no.nav.testnav.apps.organisasjonbestillingservice.domain.v1.Order order) {
-        var accessToken = tokenExchange.generateToken(serviceProperties).block();
+        var accessToken = tokenExchange.exchange(serviceProperties).block();
         var command = new GetEregBatchStatusCommand(
                 webClient,
                 order.getBatchId(),
@@ -38,7 +38,7 @@ public class EregBatchStatusConsumer {
     }
 
     public Long getStatusKode(Order order) {
-        var accessToken = tokenExchange.generateToken(serviceProperties).block();
+        var accessToken = tokenExchange.exchange(serviceProperties).block();
         var command = new GetEregBatchStatusCommand(
                 webClient,
                 order.getBatchId(),

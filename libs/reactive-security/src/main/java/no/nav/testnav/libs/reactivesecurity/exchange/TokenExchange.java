@@ -14,18 +14,19 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 
 
 @Service
-public class TokenExchange {
+public class TokenExchange implements ExchangeToken {
 
     private final GetAuthenticatedResourceServerType getAuthenticatedTypeAction;
-    private final Map<ResourceServerType, GenerateToken> exchanges = new HashMap<>();
+    private final Map<ResourceServerType, ExchangeToken> exchanges = new HashMap<>();
 
     public TokenExchange(GetAuthenticatedResourceServerType getAuthenticatedTypeAction, List<TokenService> tokenServices) {
         this.getAuthenticatedTypeAction = getAuthenticatedTypeAction;
         tokenServices.forEach(tokenService -> exchanges.put(tokenService.getType(), tokenService));
     }
 
-    public Mono<AccessToken> generateToken(ServerProperties serverProperties) {
+    @Override
+    public Mono<AccessToken> exchange(ServerProperties serverProperties) {
         return getAuthenticatedTypeAction.call()
-                .flatMap(type -> exchanges.get(type).generateToken(serverProperties));
+                .flatMap(type -> exchanges.get(type).exchange(serverProperties));
     }
 }

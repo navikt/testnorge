@@ -45,7 +45,7 @@ public class JenkinsConsumer {
     }
 
     public void send(Flatfil flatFile, String miljo, Set<String> uuids) {
-        var accessToken = tokenExchange.generateToken(properties).block();
+        var accessToken = tokenExchange.exchange(properties).block();
 
         var server = env.getProperty("JENKINS_SERVER_" + miljo.toUpperCase());
         if (server == null) {

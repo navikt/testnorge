@@ -55,7 +55,7 @@ public class AaregConsumer {
     }
 
     public List<ArbeidsforholdDTO> getArbeidsforholds(String ident, String miljo) {
-        var token = tokenExchange.generateToken(serverProperties).block();
+        var token = tokenExchange.exchange(serverProperties).block();
         if (nonNull(token)) {
             return new GetArbeidstakerArbeidsforholdCommand(webClient, miljo, token.getTokenValue(), ident).call();
         }

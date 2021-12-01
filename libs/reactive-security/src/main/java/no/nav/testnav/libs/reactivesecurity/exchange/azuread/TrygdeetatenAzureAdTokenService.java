@@ -14,7 +14,7 @@ import reactor.netty.transport.ProxyProvider;
 import java.net.URI;
 
 import no.nav.testnav.libs.reactivesecurity.domain.AzureTrygdeetatenClientCredential;
-import no.nav.testnav.libs.reactivesecurity.exchange.GenerateToken;
+import no.nav.testnav.libs.reactivesecurity.exchange.ExchangeToken;
 import no.nav.testnav.libs.securitycore.command.azuread.ClientCredentialExchangeCommand;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -22,7 +22,7 @@ import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
 
 @Slf4j
 @Service
-public class TrygdeetatenAzureAdTokenService implements GenerateToken {
+public class TrygdeetatenAzureAdTokenService implements ExchangeToken {
 
     private final WebClient webClient;
     private final ClientCredential clientCredential;
@@ -55,7 +55,7 @@ public class TrygdeetatenAzureAdTokenService implements GenerateToken {
     }
 
     @Override
-    public Mono<AccessToken> generateToken(ServerProperties serverProperties) {
+    public Mono<AccessToken> exchange(ServerProperties serverProperties) {
         return new ClientCredentialExchangeCommand(
                 webClient,
                 clientCredential,

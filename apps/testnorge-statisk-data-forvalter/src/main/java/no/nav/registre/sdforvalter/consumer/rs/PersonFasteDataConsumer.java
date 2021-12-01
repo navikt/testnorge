@@ -36,7 +36,7 @@ public class PersonFasteDataConsumer {
     }
 
     public void opprett(TpsIdentListe tpsIdentListe) {
-        tokenExchange.generateToken(serverProperties)
+        tokenExchange.exchange(serverProperties)
                 .flatMapMany(token -> Flux.concat(
                         tpsIdentListe.getListe().stream().map(value -> opprett(value, token)).collect(Collectors.toList())
                 ))

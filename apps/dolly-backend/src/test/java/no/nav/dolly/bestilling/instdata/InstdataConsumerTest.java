@@ -60,7 +60,7 @@ public class InstdataConsumerTest {
     @BeforeEach
     public void setup() {
 
-        when(tokenService.generateToken(ArgumentMatchers.any(InstProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
+        when(tokenService.exchange(ArgumentMatchers.any(InstProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
     }
 
     @Test
@@ -70,7 +70,7 @@ public class InstdataConsumerTest {
 
         instdataConsumer.deleteInstdata(IDENT, ENVIRONMENT);
 
-        verify(tokenService).generateToken(ArgumentMatchers.any(InstProxyProperties.class));
+        verify(tokenService).exchange(ArgumentMatchers.any(InstProxyProperties.class));
     }
 
     @Test

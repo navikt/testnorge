@@ -42,7 +42,7 @@ public class TpSyntConsumer {
     public List<TYtelse> getSyntYtelser(
             int numToGenerate
     ) {
-        var token = tokenExchange.generateToken(serviceProperties).block().getTokenValue();
+        var token = tokenExchange.exchange(serviceProperties).block().getTokenValue();
         return new GetSyntTpYtelserCommand(numToGenerate, token, webClient).call();
     }
 }

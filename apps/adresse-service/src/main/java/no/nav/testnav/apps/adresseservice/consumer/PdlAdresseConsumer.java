@@ -26,7 +26,7 @@ public class PdlAdresseConsumer {
     }
 
     public PdlAdresseResponse sendAdressesoek(GraphQLRequest adresseQuery) {
-        return tokenExchange.generateToken(properties)
+        return tokenExchange.exchange(properties)
                 .flatMap(token -> new PdlAdresseSoekCommand(webClient, adresseQuery, token.getTokenValue()).call())
                 .block();
     }

@@ -26,7 +26,7 @@ public class NaisServerProperties extends ServerProperties {
         if (isNull(MDC.getCopyOfContextMap())) {
             MDC.setContextMap(new HashMap<>());
         }
-        var token = tokenExchange.generateToken(this).block();
+        var token = tokenExchange.exchange(this).block();
         if (isNull(token)) {
             throw new SecurityException(String.format("Klarte ikke å generere AccessToken for %s", getName()));
         }

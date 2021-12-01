@@ -32,21 +32,21 @@ public class OrganisasjonBestillingConsumer {
 
     public Flux<BestillingStatus> getBestillingStatus(Status status) {
 
-        return Flux.from(tokenExchange.generateToken(serviceProperties)
+        return Flux.from(tokenExchange.exchange(serviceProperties)
                 .flatMap(token -> new OrganisasjonBestillingStatusCommand(webClient, status,
                         token.getTokenValue()).call()));
     }
 
     public Flux<Status> getBestillingId(Status status) {
 
-        return Flux.from(tokenExchange.generateToken(serviceProperties)
+        return Flux.from(tokenExchange.exchange(serviceProperties)
                 .flatMap(token -> new OrganisasjonBestillingIdsCommand(webClient, status,
                         token.getTokenValue()).call()));
     }
 
     public BestillingStatus getBestillingStatus(String uuid) {
 
-        return tokenExchange.generateToken(serviceProperties)
+        return tokenExchange.exchange(serviceProperties)
                 .flatMap(token -> new OrganisasjonBestillingCommand(webClient, Status.builder()
                         .uuid(uuid)
                         .build(),

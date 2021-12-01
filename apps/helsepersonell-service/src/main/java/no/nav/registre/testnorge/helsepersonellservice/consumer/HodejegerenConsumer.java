@@ -39,7 +39,7 @@ public class HodejegerenConsumer {
     }
 
     public CompletableFuture<Persondata> getPersondata(String ident) {
-        var accessToken = tokenExchange.generateToken(hodejegerenServerProperties).block();
+        var accessToken = tokenExchange.exchange(hodejegerenServerProperties).block();
         return CompletableFuture.supplyAsync(
                 () -> new Persondata(new GetPersondataCommand(ident, MILJOE, webClient, accessToken.getTokenValue()).call()),
                 executor
@@ -47,7 +47,7 @@ public class HodejegerenConsumer {
     }
 
     public Set<String> getHelsepersonell() {
-        var accessToken = tokenExchange.generateToken(hodejegerenServerProperties).block();
+        var accessToken = tokenExchange.exchange(hodejegerenServerProperties).block();
         return new GetAlleIdenterCommand(helsepersonellAvspillingsgruppeId, webClient, accessToken.getTokenValue()).call();
     }
 }

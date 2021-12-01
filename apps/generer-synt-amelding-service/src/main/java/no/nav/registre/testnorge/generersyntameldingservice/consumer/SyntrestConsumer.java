@@ -30,12 +30,12 @@ public class SyntrestConsumer {
     }
 
     public Arbeidsforhold getEnkeltArbeidsforhold(ArbeidsforholdPeriode periode, ArbeidsforholdType arbeidsforholdType) {
-        var accessToken = tokenExchange.generateToken(properties).block();
+        var accessToken = tokenExchange.exchange(properties).block();
         return new PostArbeidsforholdCommand(periode, webClient, arbeidsforholdType.getPath(), accessToken.getTokenValue()).call();
     }
 
     public List<Arbeidsforhold> getHistorikk(Arbeidsforhold arbeidsforhold) {
-        var accessToken = tokenExchange.generateToken(properties).block();
+        var accessToken = tokenExchange.exchange(properties).block();
         return new PostHistorikkCommand(webClient, arbeidsforhold, accessToken.getTokenValue()).call();
     }
 }

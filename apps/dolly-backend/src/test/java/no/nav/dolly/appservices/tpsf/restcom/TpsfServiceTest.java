@@ -85,7 +85,7 @@ public class TpsfServiceTest {
 
         WireMock.reset();
 
-        when(tokenService.generateToken(ArgumentMatchers.any(TpsForvalterenProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
+        when(tokenService.exchange(ArgumentMatchers.any(TpsForvalterenProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
     }
 
     @Test

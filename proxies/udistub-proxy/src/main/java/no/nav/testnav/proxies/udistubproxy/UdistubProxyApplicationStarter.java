@@ -34,6 +34,7 @@ public class UdistubProxyApplicationStarter {
     private final TokenExchange tokenExchange;
     private final UdistubServiceProperties udistubServiceProperties;
     private final UdistubDevServiceProperties udistubDevServiceProperties;
+
     public UdistubProxyApplicationStarter(TokenExchange tokenExchange, UdistubServiceProperties udistubServiceProperties, UdistubDevServiceProperties udistubDevServiceProperties) {
         this.tokenExchange = tokenExchange;
         this.udistubServiceProperties = udistubServiceProperties;
@@ -48,10 +49,10 @@ public class UdistubProxyApplicationStarter {
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
 
         var addAuthenticationHeaderFilter = AddAuthenticationRequestGatewayFilterFactory
-                .createAuthenticationHeaderFilter(() -> tokenExchange.generateToken(udistubServiceProperties).map(AccessToken::getTokenValue));
+                .createAuthenticationHeaderFilter(() -> tokenExchange.exchange(udistubServiceProperties).map(AccessToken::getTokenValue));
 
         var addAuthenticationHeaderDevFilter = AddAuthenticationRequestGatewayFilterFactory
-                .createAuthenticationHeaderFilter(() -> tokenExchange.generateToken(udistubDevServiceProperties).map(AccessToken::getTokenValue));
+                .createAuthenticationHeaderFilter(() -> tokenExchange.exchange(udistubDevServiceProperties).map(AccessToken::getTokenValue));
 
         return builder
                 .routes()

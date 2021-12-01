@@ -65,7 +65,7 @@ public class AzureAdTokenService implements TokenService {
     }
 
     @Override
-    public Mono<AccessToken> generateToken(ServerProperties serverProperties) {
+    public Mono<AccessToken> exchange(ServerProperties serverProperties) {
         return getAuthenticatedToken
                 .call()
                 .flatMap(token -> {

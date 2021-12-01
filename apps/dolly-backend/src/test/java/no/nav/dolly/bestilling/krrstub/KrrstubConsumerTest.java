@@ -55,7 +55,7 @@ public class KrrstubConsumerTest {
     @BeforeEach
     public void setup() {
 
-        when(tokenService.generateToken(ArgumentMatchers.any(KrrstubProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
+        when(tokenService.exchange(ArgumentMatchers.any(KrrstubProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
     }
 
     @Test
@@ -85,7 +85,7 @@ public class KrrstubConsumerTest {
     @Test
     public void createDigitalKontaktdata_GenerateTokenFailed_ThrowsDollyFunctionalException() {
 
-        when(tokenService.generateToken(any(KrrstubProxyProperties.class))).thenReturn(Mono.empty());
+        when(tokenService.exchange(any(KrrstubProxyProperties.class))).thenReturn(Mono.empty());
 
         Assertions.assertThrows(SecurityException.class, () -> krrStubConsumer.createDigitalKontaktdata(DigitalKontaktdata.builder()
                 .epost(EPOST)
@@ -93,7 +93,7 @@ public class KrrstubConsumerTest {
                 .reservert(RESERVERT)
                 .build()));
 
-        verify(tokenService).generateToken(any(KrrstubProxyProperties.class));
+        verify(tokenService).exchange(any(KrrstubProxyProperties.class));
     }
 
     private void stubPostKrrData() {

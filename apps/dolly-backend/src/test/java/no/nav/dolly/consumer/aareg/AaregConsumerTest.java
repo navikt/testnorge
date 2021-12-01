@@ -79,7 +79,7 @@ public class AaregConsumerTest {
 
     @BeforeEach
     public void setUp() {
-        when(tokenService.generateToken(ArgumentMatchers.any(TestnorgeAaregProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
+        when(tokenService.exchange(ArgumentMatchers.any(TestnorgeAaregProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
 
         opprettRequest = AaregOpprettRequest.builder()
                 .arbeidsforhold(Arbeidsforhold.builder()

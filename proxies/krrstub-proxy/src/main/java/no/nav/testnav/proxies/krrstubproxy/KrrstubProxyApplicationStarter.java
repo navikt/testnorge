@@ -33,7 +33,7 @@ public class KrrstubProxyApplicationStarter {
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder, TrygdeetatenAzureAdTokenService tokenService, KrrStubProperties properties) {
 
         var addAuthenticationHeaderDevFilter = AddAuthenticationRequestGatewayFilterFactory
-                .createAuthenticationHeaderFilter(() -> tokenService.generateToken(properties).map(AccessToken::getTokenValue));
+                .createAuthenticationHeaderFilter(() -> tokenService.exchange(properties).map(AccessToken::getTokenValue));
 
         return builder.routes()
                 .route(spec -> spec.path("/api/v1/**").uri(properties.getUrl()))

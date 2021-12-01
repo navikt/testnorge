@@ -38,7 +38,7 @@ public class OrganisasjonBestillingConsumer {
                     .uuid(uuid)
                     .build();
 
-            var order = tokenExchange.generateToken(properties)
+            var order = tokenExchange.exchange(properties)
                     .flatMap(accessToken -> new RegisterBestillingCommand(webClient, accessToken.getTokenValue(), orderDTO).call())
                     .block();
             log.info("Ordre med {} opprettet.", order.getId());

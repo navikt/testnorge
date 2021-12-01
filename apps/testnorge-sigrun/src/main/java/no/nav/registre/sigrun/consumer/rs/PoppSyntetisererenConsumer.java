@@ -39,7 +39,7 @@ public class PoppSyntetisererenConsumer {
 
 
     public List<PoppSyntetisererenResponse> hentPoppMeldingerFromSyntRest(List<String> fnrs) {
-        var token = tokenExchange.generateToken(serviceProperties).block().getTokenValue();
+        var token = tokenExchange.exchange(serviceProperties).block().getTokenValue();
         return new PostSyntPoppMeldingerCommand(fnrs, token, webClient).call();
     }
 }

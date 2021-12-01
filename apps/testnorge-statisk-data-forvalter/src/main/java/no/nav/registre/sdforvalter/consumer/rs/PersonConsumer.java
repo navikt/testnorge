@@ -75,7 +75,7 @@ public class PersonConsumer {
     }
 
     public List<Person> hentPersoner(Set<String> identer) {
-        AccessToken accessToken = tokenExchange.generateToken(serviceProperties).block();
+        AccessToken accessToken = tokenExchange.exchange(serviceProperties).block();
         List<Person> personer = new ArrayList<>();
         var futures = identer.stream().map(ident -> hentPerson(ident, accessToken)).collect(Collectors.toList());
         for (CompletableFuture<Person> future : futures) {
@@ -90,7 +90,7 @@ public class PersonConsumer {
     }
 
     public void opprettPersoner(TpsIdentListe identer) {
-        AccessToken accessToken = tokenExchange.generateToken(serviceProperties).block();
+        AccessToken accessToken = tokenExchange.exchange(serviceProperties).block();
         List<CompletableFuture<TpsIdent>> futures = identer.stream().map(ident -> CompletableFuture.supplyAsync(() -> {
                     try {
                         new CreatePersonCommand(webClient, ident.toDTO(), accessToken.getTokenValue(), ident.getOpprinnelse()).call().block();

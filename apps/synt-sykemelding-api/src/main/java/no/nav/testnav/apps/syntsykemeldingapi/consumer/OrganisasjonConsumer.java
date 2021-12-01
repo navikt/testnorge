@@ -28,7 +28,7 @@ public class OrganisasjonConsumer {
 
 
     public OrganisasjonDTO getOrganisasjon(String orgnummer) {
-        var accessToken = tokenExchange.generateToken(serviceProperties).block();
+        var accessToken = tokenExchange.exchange(serviceProperties).block();
         return new GetOrganisasjonCommand(webClient, accessToken.getTokenValue(), orgnummer, "q1").call();
     }
 }

@@ -32,7 +32,7 @@ public class HelsepersonellConsumer {
 
     @SneakyThrows
     public HelsepersonellListe hentHelsepersonell() {
-        var accessToken = tokenExchange.generateToken(serviceProperties).block();
+        var accessToken = tokenExchange.exchange(serviceProperties).block();
         log.info("Henter helsepersonell...");
         HelsepersonellListeDTO dto = new GetHelsepersonellCommand(webClient, accessToken.getTokenValue()).call();
         log.info("{} helsepersonell hentet", dto.getHelsepersonell().size());

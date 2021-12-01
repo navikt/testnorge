@@ -61,7 +61,7 @@ public class ArenaForvalterConsumerTest {
     @BeforeEach
     public void setup() {
 
-        when(tokenService.generateToken(ArgumentMatchers.any(ArenaforvalterProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
+        when(tokenService.exchange(ArgumentMatchers.any(ArenaforvalterProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
     }
 
     @Test

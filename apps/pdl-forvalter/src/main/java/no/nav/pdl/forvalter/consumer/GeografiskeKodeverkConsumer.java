@@ -42,7 +42,7 @@ public class GeografiskeKodeverkConsumer {
 
     private Flux<GeografiskeKodeverkDTO> cache(String url) {
         return tokenExchange
-                .generateToken(properties)
+                .exchange(properties)
                 .flatMapMany(token -> new GeografiskeKodeverkCommand(webClient, url, null, token.getTokenValue()).call())
                 .cache(Duration.ofDays(7));
     }
@@ -73,7 +73,7 @@ public class GeografiskeKodeverkConsumer {
 
     public String getPoststedNavn(String postnummer) {
         return tokenExchange
-                .generateToken(properties)
+                .exchange(properties)
                 .flatMapMany(token -> new GeografiskeKodeverkCommand(webClient, POSTNUMMER_URL, postnummer, token.getTokenValue()).call())
                 .next()
                 .blockOptional()
@@ -83,7 +83,7 @@ public class GeografiskeKodeverkConsumer {
 
     public String getEmbeteNavn(String embete) {
         return tokenExchange
-                .generateToken(properties)
+                .exchange(properties)
                 .flatMapMany(token -> new GeografiskeKodeverkCommand(webClient, EMBETE_URL, embete, token.getTokenValue()).call())
                 .next()
                 .blockOptional()

@@ -53,7 +53,7 @@ public class OversiktFrontendApplicationStarter {
         return new AddAuthenticationHeaderToRequestGatewayFilterFactory()
                 .apply(exchange -> {
                     return tokenExchange
-                            .generateToken(serverProperties, exchange)
+                            .exchange(serverProperties, exchange)
                             .map(AccessToken::getTokenValue);
                 });
     }

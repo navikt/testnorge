@@ -67,7 +67,7 @@ public class PdlForvalterConsumerTest {
     @BeforeEach
     public void setup() {
 
-        when(tokenService.generateToken(ArgumentMatchers.any(PdlProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
+        when(tokenService.exchange(ArgumentMatchers.any(PdlProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
     }
 
     @Test

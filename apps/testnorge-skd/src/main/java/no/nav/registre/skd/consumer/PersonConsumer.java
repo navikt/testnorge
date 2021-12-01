@@ -44,7 +44,7 @@ public class PersonConsumer {
     }
 
     public void createPerson(PersonDTO person, String kilde) {
-        tokenExchange.generateToken(serviceProperties)
+        tokenExchange.exchange(serviceProperties)
                 .flatMap(accessToken -> new CreatePersonCommand(webClient, person, accessToken.getTokenValue(), kilde).call())
                 .block();
     }

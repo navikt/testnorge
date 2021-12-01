@@ -38,7 +38,7 @@ public class JenkinsConsumer {
 
     public Mono<Long> getBuildId(Long itemId) {
         return tokenExchange
-                .generateToken(properties)
+                .exchange(properties)
                 .flatMap(accessToken -> getCrumb(accessToken)
                         .flatMap(jenkinsCrumb -> new GetQueueItemCommand(webClient, accessToken.getTokenValue(), jenkinsCrumb, itemId).call())
                         .map(ItemDTO::getNumber)
@@ -47,13 +47,13 @@ public class JenkinsConsumer {
 
     public Mono<String> getBuildLog(Long buildId) {
         return tokenExchange
-                .generateToken(properties)
+                .exchange(properties)
                 .flatMap(accessToken -> new GetBEREG007LogCommand(webClient, accessToken.getTokenValue(), buildId).call());
     }
 
     public Mono<BuildDTO> getBuild(Long buildId) {
         return tokenExchange
-                .generateToken(properties)
+                .exchange(properties)
                 .flatMap(accessToken -> new GetBEREG007Command(webClient, accessToken.getTokenValue(), buildId).call());
     }
 

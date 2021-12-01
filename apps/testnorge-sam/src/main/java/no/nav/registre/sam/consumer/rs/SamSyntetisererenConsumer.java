@@ -45,7 +45,7 @@ public class SamSyntetisererenConsumer {
     ) {
         List<SyntetisertSamordningsmelding> syntetiserteMeldinger = new ArrayList<>();
 
-        var token = tokenExchange.generateToken(serviceProperties).block().getTokenValue();
+        var token = tokenExchange.exchange(serviceProperties).block().getTokenValue();
         var response = new GetSyntSamMeldingerCommand(numToGenerate, token, webClient).call();
         if (response != null && !response.isEmpty()) {
             syntetiserteMeldinger.addAll(response);

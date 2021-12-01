@@ -7,6 +7,6 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 
 
 @FunctionalInterface
-public interface GenerateToken {
-    Mono<AccessToken> generateToken(ServerProperties serverProperties);
+public interface ExchangeToken {
+    Mono<AccessToken> exchange(ServerProperties serverProperties);
 }

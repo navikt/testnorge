@@ -46,7 +46,7 @@ public class PersonOrganisasjonTilgangConsumer {
     }
 
     public Mono<OrganisasjonDTO> getOrganisasjon(String organisasjonsnummer) {
-            return tokenExchange.generateToken(serviceProperties)
+        return tokenExchange.exchange(serviceProperties)
                 .flatMap(accessToken -> new GetPersonOrganisasjonTilgangCommand(webClient, accessToken.getTokenValue(), organisasjonsnummer).call())
                 .onErrorResume(
                         throwable -> throwable instanceof WebClientResponseException,

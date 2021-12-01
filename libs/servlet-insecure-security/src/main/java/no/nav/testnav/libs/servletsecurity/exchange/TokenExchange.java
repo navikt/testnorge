@@ -14,7 +14,7 @@ public class TokenExchange {
 
     private final AzureAdTokenService azureAdTokenService;
 
-    public Mono<AccessToken> generateToken(ServerProperties serverProperties) {
-        return azureAdTokenService.generateToken(serverProperties);
+    public Mono<AccessToken> exchange(ServerProperties serverProperties) {
+        return azureAdTokenService.exchange(serverProperties);
     }
 }

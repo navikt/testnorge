@@ -81,7 +81,7 @@ public class PdlTestdataConsumer {
         log.info("Oppretter person med ident {} i PDL", person.getIdent());
 
         try {
-            var accessToken = tokenExchange.generateToken(serviceProperties).block();
+            var accessToken = tokenExchange.exchange(serviceProperties).block();
             opprettPerson(person, kilde, accessToken);
             opprettNavn(person, kilde, accessToken);
             opprettAdresse(person, kilde, accessToken);

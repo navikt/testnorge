@@ -42,7 +42,7 @@ public class AppTilgangAnalyseConsumer {
             Function<AccessToken, GetApplicationAccessCommand> getCommand
     ) {
         return tokenExchange
-                .generateToken(appTilgangAnalyseServiceProperties, serverWebExchange)
+                .exchange(appTilgangAnalyseServiceProperties, serverWebExchange)
                 .flatMap(accessToken -> getCommand.apply(accessToken).call())
                 .map(access -> access
                         .getAccessTo()

@@ -29,18 +29,18 @@ public class JenkinsConsumer {
     }
 
     private JenkinsCrumb getCrumb() {
-        var accessToken = tokenExchange.generateToken(properties).block();
+        var accessToken = tokenExchange.exchange(properties).block();
         return new GetCrumbCommand(webClient, accessToken.getTokenValue()).call();
     }
 
     public Long getJobNumber(Long itemId) {
-        var accessToken = tokenExchange.generateToken(properties).block();
+        var accessToken = tokenExchange.exchange(properties).block();
         var dto = new GetQueueItemCommand(webClient, accessToken.getTokenValue(), getCrumb(), itemId).call();
         return dto.getNumber();
     }
 
     public String getJobLog(Long jobNumber) {
-        var accessToken = tokenExchange.generateToken(properties).block();
+        var accessToken = tokenExchange.exchange(properties).block();
         return new GetBEREG007LogCommand(webClient, accessToken.getTokenValue(), jobNumber).call();
     }
 }

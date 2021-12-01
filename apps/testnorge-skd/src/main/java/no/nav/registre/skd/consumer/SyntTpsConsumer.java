@@ -43,7 +43,7 @@ public class SyntTpsConsumer {
             String endringskode,
             Integer antallMeldinger
     ) {
-        var response = tokenExchange.generateToken(serviceProperties)
+        var response = tokenExchange.exchange(serviceProperties)
                 .flatMap(accessToken -> new GetSyntSkdMeldingerCommand(endringskode, antallMeldinger, accessToken.getTokenValue(), webClient).call())
                 .block();
 

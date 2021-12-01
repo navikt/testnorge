@@ -41,7 +41,7 @@ public class SamhandlerregisteretConsumer {
     }
 
     public CompletableFuture<List<Samhandler>> getSamhandler(String ident) {
-        var accessToken = tokenExchange.generateToken(serverProperties).block();
+        var accessToken = tokenExchange.exchange(serverProperties).block();
         return CompletableFuture.supplyAsync(
                 () -> Arrays
                         .stream(new GetSamhandlerCommand(ident, webClient, accessToken.getTokenValue()).call())

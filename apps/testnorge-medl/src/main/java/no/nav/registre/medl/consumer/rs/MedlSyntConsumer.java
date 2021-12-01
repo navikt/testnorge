@@ -42,7 +42,7 @@ public class MedlSyntConsumer {
     public List<MedlSyntResponse> hentMedlemskapsmeldingerFromSyntRest(
             int numToGenerate
     ) {
-        var accessToken = tokenExchange.generateToken(serviceProperties).block().getTokenValue();
+        var accessToken = tokenExchange.exchange(serviceProperties).block().getTokenValue();
         return new GetSyntMeldMeldingerCommand(numToGenerate, accessToken, webClient).call();
     }
 }

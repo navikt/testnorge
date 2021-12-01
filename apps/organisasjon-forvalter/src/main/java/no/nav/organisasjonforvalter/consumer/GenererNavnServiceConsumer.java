@@ -42,7 +42,7 @@ public class GenererNavnServiceConsumer {
 
         long startTime = currentTimeMillis();
         try {
-            var accessToken = tokenExchange.generateToken(serviceProperties);
+            var accessToken = tokenExchange.exchange(serviceProperties);
             var navn = new GenererNavnCommand(webClient, accessToken.block().getTokenValue(), antall).call();
 
             log.info("Generer-navn-service svarte etter {} ms", currentTimeMillis() - startTime);

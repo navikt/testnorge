@@ -38,7 +38,7 @@ public class SyntBisysConsumer {
 
     @Timed(value = "bisys.resource.latency", extraTags = {"operation", "bisys-syntetisereren"})
     public List<SyntetisertBidragsmelding> getSyntetiserteBidragsmeldinger(int antallMeldinger) {
-        var token = tokenExchange.generateToken(serviceProperties).block().getTokenValue();
+        var token = tokenExchange.exchange(serviceProperties).block().getTokenValue();
         return new GetSyntBisysMeldingerCommand(antallMeldinger, token, webClient).call();
     }
 }

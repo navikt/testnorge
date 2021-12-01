@@ -39,7 +39,7 @@ public class AdresseServiceConsumer {
         var startTime = currentTimeMillis();
 
         try {
-            var adresser = tokenExchange.generateToken(properties).flatMap(
+            var adresser = tokenExchange.exchange(properties).flatMap(
                             token -> new VegadresseServiceCommand(webClient, vegadresse, matrikkelId, token.getTokenValue()).call())
                     .block();
 
@@ -60,7 +60,7 @@ public class AdresseServiceConsumer {
         var startTime = currentTimeMillis();
 
         try {
-            var adresser = tokenExchange.generateToken(properties).flatMap(
+            var adresser = tokenExchange.exchange(properties).flatMap(
                             token -> new MatrikkeladresseServiceCommand(webClient, adresse, matrikkelId, token.getTokenValue()).call())
                     .block();
 

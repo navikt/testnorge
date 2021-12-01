@@ -63,7 +63,7 @@ public class AzureAdTokenService implements TokenService {
     }
 
     @Override
-    public Mono<AccessToken> generateToken(ServerProperties serverProperties) {
+    public Mono<AccessToken> exchange(ServerProperties serverProperties) {
         var token = getAuthenticatedToken.call();
 
         if (token.isClientCredentials()) {

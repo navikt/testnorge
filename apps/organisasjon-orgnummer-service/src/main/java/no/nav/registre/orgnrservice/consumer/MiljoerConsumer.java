@@ -52,7 +52,7 @@ public class MiljoerConsumer {
     public MiljoerResponse hentMiljoer() {
 
         log.info("Genererer AccessToken for {}", serviceProperties.getName());
-        var accessToken = tokenExchange.generateToken(serviceProperties).block();
+        var accessToken = tokenExchange.exchange(serviceProperties).block();
         List<String> response = webClient
                 .get()
                 .uri(MILJOER_URL)

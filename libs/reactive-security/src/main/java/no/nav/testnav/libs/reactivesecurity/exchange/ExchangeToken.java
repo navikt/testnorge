@@ -1,12 +1,11 @@
-package no.nav.testnav.libs.servletsecurity.exchange;
+package no.nav.testnav.libs.reactivesecurity.exchange;
 
 import reactor.core.publisher.Mono;
 
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 
-
 @FunctionalInterface
-public interface GenerateToken {
-    Mono<AccessToken> generateToken(ServerProperties serverProperties);
+public interface ExchangeToken {
+    Mono<AccessToken> exchange(ServerProperties serverProperties);
 }

@@ -39,7 +39,7 @@ public class DokmotConsumer {
         var pdf = FilLaster.instans().hentDummyPDF();
 
         return tokenExchange
-                .generateToken(properties)
+                .exchange(properties)
                 .flatMapMany(token -> Flux.concat(
                                 inntektDokumenter
                                         .stream()

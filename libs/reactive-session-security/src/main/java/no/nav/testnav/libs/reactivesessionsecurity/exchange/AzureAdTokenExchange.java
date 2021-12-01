@@ -23,7 +23,7 @@ import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
 @Import({
         AzureNavClientCredential.class
 })
-public class AzureAdTokenExchange implements GenerateTokenExchange {
+public class AzureAdTokenExchange implements ExchangeToken {
     private final WebClient webClient;
     private final TokenResolver tokenResolver;
     private final ClientCredential clientCredential;
@@ -43,7 +43,7 @@ public class AzureAdTokenExchange implements GenerateTokenExchange {
     }
 
     @Override
-    public Mono<AccessToken> generateToken(ServerProperties serverProperties, ServerWebExchange exchange) {
+    public Mono<AccessToken> exchange(ServerProperties serverProperties, ServerWebExchange exchange) {
         return tokenResolver
                 .getToken(exchange)
                 .flatMap(token -> new OnBehalfOfExchangeCommand(

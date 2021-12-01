@@ -40,7 +40,7 @@ public class AaregSyntConsumer {
     }
 
     private String getAccessToken() {
-        var token = tokenExchange.generateToken(properties).block();
+        var token = tokenExchange.exchange(properties).block();
         if (isNull(token)) {
             throw new NotFoundException("Klarte ikke å generere AccessToken for AaregSyntService");
         }

@@ -70,7 +70,7 @@ public class SigrunStubConsumerTest {
 
         WireMock.reset();
 
-        when(tokenService.generateToken(ArgumentMatchers.any(SigrunstubProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
+        when(tokenService.exchange(ArgumentMatchers.any(SigrunstubProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
 
         skattegrunnlag = OpprettSkattegrunnlag.builder()
                 .inntektsaar("1978")

@@ -29,7 +29,7 @@ public class GenererOrganisasjonPopulasjonConsumer {
     }
 
     public Set<String> getOpplysningspliktig(String miljo) {
-        return tokenExchange.generateToken(properties)
+        return tokenExchange.exchange(properties)
                 .flatMap(accessToken -> new GetOpplysningspliktigOrgnummerCommand(
                                 webClient,
                                 accessToken.getTokenValue(),

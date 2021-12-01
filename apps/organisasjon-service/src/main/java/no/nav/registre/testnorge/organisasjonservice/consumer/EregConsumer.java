@@ -29,7 +29,7 @@ public class EregConsumer {
     }
 
     public Organisasjon getOrganisasjon(String orgnummer, String miljo) {
-        var accessToken = tokenExchange.generateToken(serviceProperties).block();
+        var accessToken = tokenExchange.exchange(serviceProperties).block();
         OrganisasjonDTO dto = new GetOrganisasjonCommand(webClient, accessToken.getTokenValue(), miljo, orgnummer).call();
         return dto != null ? new Organisasjon(dto) : null;
     }

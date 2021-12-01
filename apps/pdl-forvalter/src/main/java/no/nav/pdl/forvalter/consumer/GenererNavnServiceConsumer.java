@@ -36,7 +36,7 @@ public class GenererNavnServiceConsumer {
 
     public Optional<NavnDTO> getNavn(Integer antall) {
 
-        return Arrays.asList(tokenExchange.generateToken(properties).flatMap(
+        return Arrays.asList(tokenExchange.exchange(properties).flatMap(
                                 token -> new GenererNavnServiceCommand(webClient, NAVN_URL, antall, token.getTokenValue()).call())
                         .block())
                 .stream().findFirst();
@@ -44,7 +44,7 @@ public class GenererNavnServiceConsumer {
 
     public Boolean verifyNavn(NavnDTO navn) {
 
-        return tokenExchange.generateToken(properties).flatMap(
+        return tokenExchange.exchange(properties).flatMap(
                         token -> new VerifiserNavnServiceCommand(webClient, NAVN_CHECK_URL, navn, token.getTokenValue()).call())
                 .block();
     }

@@ -29,7 +29,7 @@ public class OrganisasjonBestillingConsumer {
     }
 
     public List<ItemDTO> getOrdreStatus(String ordreId) {
-        var accessToken = tokenExchange.generateToken(serverProperties).block();
+        var accessToken = tokenExchange.exchange(serverProperties).block();
         var command = new GetOrdreCommand(webClient, accessToken.getTokenValue(), ordreId);
         return command.call();
     }

@@ -41,7 +41,7 @@ public class InstSyntetisererenConsumer {
 
     @Timed(value = "inst.resource.latency", extraTags = {"operation", "inst-syntetisereren"})
     public List<InstitusjonsoppholdV2> hentInstMeldingerFromSyntRest(int numToGenerate) {
-        var accessToken = tokenExchange.generateToken(serviceProperties).block().getTokenValue();
+        var accessToken = tokenExchange.exchange(serviceProperties).block().getTokenValue();
         return new GetSyntInstMeldingerCommand(numToGenerate, accessToken, webClient).call();
     }
 }

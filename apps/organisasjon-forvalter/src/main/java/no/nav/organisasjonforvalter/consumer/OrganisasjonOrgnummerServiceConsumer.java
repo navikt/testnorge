@@ -42,7 +42,7 @@ public class OrganisasjonOrgnummerServiceConsumer {
 
         long startTime = currentTimeMillis();
         try {
-            var response = tokenExchange.generateToken(serviceProperties)
+            var response = tokenExchange.exchange(serviceProperties)
                     .flatMap(token -> new OrganisasjonOrgnummerServiceCommand(webClient, antall, token.getTokenValue()).call())
                     .block();
 

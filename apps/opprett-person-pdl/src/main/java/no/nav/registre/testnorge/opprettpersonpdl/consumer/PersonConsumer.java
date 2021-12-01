@@ -47,7 +47,7 @@ public class PersonConsumer {
 
     public void createPerson(Person person) {
         tokenExchange
-                .generateToken(serviceProperties)
+                .exchange(serviceProperties)
                 .doOnNext(accessToken -> new CreatePersonCommand(webClient, person.toDTO(), accessToken.getTokenValue(), person.toKommaseparerteTags()).call())
                 .block();
     }
