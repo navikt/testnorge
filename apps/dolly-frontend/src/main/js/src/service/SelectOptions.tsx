@@ -115,11 +115,11 @@ const selectOptions: SelectOptions = {
 	],
 
 	//PDLF - kontaktinformasjon dødsbo
-	adressatType: [
+	kontaktType: [
 		{ value: 'ADVOKAT', label: 'Advokat' },
 		{ value: 'ORGANISASJON', label: 'Organisasjon' },
-		{ value: 'PERSON_MEDID', label: 'Kontaktperson med id' },
-		{ value: 'PERSON_UTENID', label: 'Kontaktperson uten id' },
+		{ value: 'PERSON_FDATO', label: 'Person med fødselsdato' },
+		{ value: 'NY_PERSON', label: 'Ny person' },
 	],
 
 	skifteform: [
