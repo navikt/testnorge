@@ -39,7 +39,8 @@ repositories {
 
 dependencies {
     implementation 'no.nav.testnav.libs:servlet-core'
-    implementation 'no.nav.testnav.libs:servlet-security'
+    implementation 'no.nav.testnav.libs:servlet-insecure-security'
+    implementation 'no.nav.testnav.libs:security-core'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'

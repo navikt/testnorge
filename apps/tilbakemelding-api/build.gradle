@@ -38,6 +38,7 @@ repositories {
 
 dependencies {
 
+    implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:slack'
     implementation 'no.nav.testnav.libs:servlet-security'

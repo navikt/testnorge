@@ -23,11 +23,10 @@ import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.c
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.amelding.Oppsummeringsdokument;
 import no.nav.testnav.libs.commands.GetOppsummeringsdokumenterByIdentCommand;
 import no.nav.testnav.libs.commands.GetOppsummeringsdokumenterCommand;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletcore.config.ApplicationProperties;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
-import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.servletcore.config.ApplicationProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
@@ -76,7 +75,7 @@ public class OppsummeringsdokumentConsumer {
     private CompletableFuture<String> saveFuture(OppsummeringsdokumentDTO dto, String miljo) {
         return CompletableFuture.supplyAsync(
                 () -> tokenExchange
-                        .generateToken(properties)
+                        .exchange(properties)
                         .flatMap(accessToken -> new SaveOppsummeringsdokumenterCommand(
                                 webClient,
                                 accessToken.getTokenValue(),
@@ -92,20 +91,20 @@ public class OppsummeringsdokumentConsumer {
 
     public List<OppsummeringsdokumentDTO> getAll(String miljo) {
         log.info("Henter alle oppsummeringsdokument fra {}...", miljo);
-        AccessToken accessToken = tokenExchange.generateToken(properties).block();
+        var accessToken = tokenExchange.exchange(properties).block();
         var list = new GetOppsummeringsdokumenterCommand(webClient, accessToken.getTokenValue(), miljo).call();
         log.info("Fant {} opplysningspliktig fra {}.", list.size(), miljo);
         return list;
     }
 
     public Mono<List<OppsummeringsdokumentDTO>> getAllForIdent(String ident, String miljo) {
-        return tokenExchange.generateToken(properties)
+        return tokenExchange.exchange(properties)
                 .flatMap(accessToken -> new GetOppsummeringsdokumenterByIdentCommand(webClient, accessToken.getTokenValue(), ident, miljo).call());
     }
 
     public Mono<Oppsummeringsdokument> getOppsummeringsdokument(String opplysningspliktigOrgnummer, LocalDate kalendermaaned, String miljo) {
         return tokenExchange
-                .generateToken(properties)
+                .exchange(properties)
                 .flatMap(accessToken -> new GetOppsummeringsdokumentCommand(
                         webClient,
                         accessToken.getTokenValue(),

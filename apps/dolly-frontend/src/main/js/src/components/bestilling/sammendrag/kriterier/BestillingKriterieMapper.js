@@ -411,6 +411,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			falskIdentitet,
 			utenlandskIdentifikasjonsnummer,
 			bostedsadresse,
+			kontaktinformasjonForDoedsbo,
 		} = pdldataKriterier
 
 		if (telefonnummer) {
@@ -514,6 +515,82 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				}),
 			}
 			data.push(utenlandskIdentData)
+		}
+
+		if (kontaktinformasjonForDoedsbo) {
+			const doedsboData = {
+				header: 'Kontaktinformasjon for dødsbo',
+				itemRows: kontaktinformasjonForDoedsbo.map((item, idx) => {
+					const {
+						skifteform,
+						attestutstedelsesdato,
+						kontaktType,
+						advokatSomKontakt,
+						organisasjonSomKontakt,
+						personSomKontakt,
+						adresse,
+					} = item
+
+					const getKontakttype = () => {
+						if (advokatSomKontakt) {
+							return 'Advokat'
+						} else if (personSomKontakt) {
+							return 'Person'
+						} else if (organisasjonSomKontakt) {
+							return 'Organisasjon'
+						} else return null
+					}
+
+					return [
+						{ numberHeader: `Kontaktinformasjon for dødsbo ${idx + 1}` },
+						obj('Skifteform', skifteform),
+						obj('Utstedelsesdato skifteattest', Formatters.formatDate(attestutstedelsesdato)),
+						obj(
+							'Kontakttype',
+							kontaktType ? Formatters.showLabel('kontaktType', kontaktType) : getKontakttype()
+						),
+
+						obj(
+							'Organisasjonsnummer',
+							advokatSomKontakt?.organisasjonsnummer || organisasjonSomKontakt?.organisasjonsnummer
+						),
+						obj(
+							'Organisasjonsnavn',
+							advokatSomKontakt?.organisasjonsnavn || organisasjonSomKontakt?.organisasjonsnavn
+						),
+						obj('Identifikasjonsnummer', personSomKontakt?.identifikasjonsnummer),
+						obj('Fødselsdato', Formatters.formatDate(personSomKontakt?.foedselsdato)),
+
+						obj(
+							'Kontaktperson fornavn',
+							advokatSomKontakt?.kontaktperson?.fornavn ||
+								organisasjonSomKontakt?.kontaktperson?.fornavn ||
+								personSomKontakt?.navn?.fornavn
+						),
+						obj(
+							'Kontaktperson mellomnavn',
+							advokatSomKontakt?.kontaktperson?.mellomnavn ||
+								organisasjonSomKontakt?.kontaktperson?.mellomnavn ||
+								personSomKontakt?.navn?.mellomnavn
+						),
+						obj(
+							'Kontaktperson etternavn',
+							advokatSomKontakt?.kontaktperson?.etternavn ||
+								organisasjonSomKontakt?.kontaktperson?.etternavn ||
+								personSomKontakt?.navn?.etternavn
+						),
+						obj('Land', adresse?.landkode, AdresseKodeverk.PostadresseLand),
+						obj('Adresselinje 1', adresse?.adresselinje1),
+						obj('Adresselinje 2', adresse?.adresselinje2),
+						obj(
+							'Postnummer og -sted',
+							(adresse?.postnummer || adresse?.poststedsnavn) &&
+								`${adresse?.postnummer} ${adresse?.poststedsnavn}`
+						),
+					]
+				}),
+			}
+			data.push(doedsboData)
 		}
 	}
 
@@ -888,42 +965,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		data.push(krrStub)
 	}
 
-	const pdlforvalterKriterier = bestillingData.pdlforvalter
-
-	if (pdlforvalterKriterier) {
-		const doedsboKriterier = pdlforvalterKriterier.kontaktinformasjonForDoedsbo
-		if (doedsboKriterier) {
-			const navnType = doedsboKriterier.adressat.navn
-				? 'navn'
-				: doedsboKriterier.adressat.kontaktperson
-				? 'kontaktperson'
-				: null
-			const doedsbo = {
-				header: 'Kontaktinformasjon for dødsbo',
-				items: [
-					obj('Fornavn', navnType && doedsboKriterier.adressat[navnType].fornavn),
-					obj('Mellomnavn', navnType && doedsboKriterier.adressat[navnType].mellomnavn),
-					obj('Etternavn', navnType && doedsboKriterier.adressat[navnType].etternavn),
-					obj('Fnr/dnr/BOST', doedsboKriterier.adressat.idnummer),
-					obj('Fødselsdato', Formatters.formatDate(doedsboKriterier.adressat.foedselsdato)),
-					obj('Organisasjonsnavn', doedsboKriterier.adressat.organisasjonsnavn),
-					obj('Organisasjonsnummer', doedsboKriterier.adressat.organisasjonsnummer),
-					obj('Adresselinje 1', doedsboKriterier.adresselinje1),
-					obj('Adresselinje 2', doedsboKriterier.adresselinje2),
-					obj(
-						'Postnummer og -sted',
-						`${doedsboKriterier.postnummer} ${doedsboKriterier.poststedsnavn}`
-					),
-					obj('Land', doedsboKriterier.landkode, AdresseKodeverk.PostadresseLand),
-					obj('Skifteform', doedsboKriterier.skifteform),
-					obj('Dato utstedt', Formatters.formatDate(doedsboKriterier.utstedtDato)),
-					obj('Gyldig fra', Formatters.formatDate(doedsboKriterier.gyldigFom)),
-					obj('Gyldig til', Formatters.formatDate(doedsboKriterier.gyldigTom)),
-				],
-			}
-			data.push(doedsbo)
-		}
-	}
 	const arenaKriterier = bestillingData.arenaforvalter
 
 	if (arenaKriterier) {

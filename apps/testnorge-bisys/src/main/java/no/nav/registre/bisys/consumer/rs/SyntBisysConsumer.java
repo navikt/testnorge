@@ -1,31 +1,31 @@
 package no.nav.registre.bisys.consumer.rs;
 
-import java.util.List;
-
-import no.nav.registre.bisys.consumer.rs.command.GetSyntBisysMeldingerCommand;
-import no.nav.registre.bisys.consumer.rs.credential.SyntBisysProperties;
-import no.nav.testnav.libs.servletsecurity.config.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import io.micrometer.core.annotation.Timed;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import io.micrometer.core.annotation.Timed;
+import java.util.List;
+
+import no.nav.registre.bisys.consumer.rs.command.GetSyntBisysMeldingerCommand;
+import no.nav.registre.bisys.consumer.rs.credential.SyntBisysProperties;
 import no.nav.registre.bisys.consumer.rs.responses.SyntetisertBidragsmelding;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Component
 public class SyntBisysConsumer {
 
-    private final AccessTokenService tokenService;
+    private final TokenExchange tokenExchange;
     private final ServerProperties serviceProperties;
     private final WebClient webClient;
 
     public SyntBisysConsumer(
             SyntBisysProperties syntProperties,
-            AccessTokenService accessTokenService
+            TokenExchange tokenExchange
     ) {
         this.serviceProperties = syntProperties;
-        this.tokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
         this.webClient = WebClient.builder()
                 .exchangeStrategies(ExchangeStrategies.builder()
                         .codecs(configurer -> configurer
@@ -38,7 +38,7 @@ public class SyntBisysConsumer {
 
     @Timed(value = "bisys.resource.latency", extraTags = {"operation", "bisys-syntetisereren"})
     public List<SyntetisertBidragsmelding> getSyntetiserteBidragsmeldinger(int antallMeldinger) {
-        var token = tokenService.generateClientCredentialAccessToken(serviceProperties).block().getTokenValue();
+        var token = tokenExchange.exchange(serviceProperties).block().getTokenValue();
         return new GetSyntBisysMeldingerCommand(antallMeldinger, token, webClient).call();
     }
 }

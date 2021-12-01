@@ -23,8 +23,8 @@ public class GenererNavnConsumer {
                 .build();
     }
 
-    public NavnDTO genereNavn(){
-        var accessToken = tokenExchange.generateToken(properties).block();
+    public NavnDTO genereNavn() {
+        var accessToken = tokenExchange.exchange(properties).block();
         GenererNavnCommand command = new GenererNavnCommand(webClient, accessToken.getTokenValue(), 1);
         return command.call()[0];
     }

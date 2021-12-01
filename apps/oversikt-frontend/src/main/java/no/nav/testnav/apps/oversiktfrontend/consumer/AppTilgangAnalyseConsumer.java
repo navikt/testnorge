@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 import no.nav.testnav.apps.oversiktfrontend.consumer.command.GetApplicationAccessCommand;
 import no.nav.testnav.apps.oversiktfrontend.credentials.AppTilgangAnalyseServiceProperties;
 import no.nav.testnav.apps.oversiktfrontend.domain.Application;
-import no.nav.testnav.libs.reactivesessionsecurity.domain.AccessToken;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
 
 @Slf4j
 @Component
@@ -42,7 +42,7 @@ public class AppTilgangAnalyseConsumer {
             Function<AccessToken, GetApplicationAccessCommand> getCommand
     ) {
         return tokenExchange
-                .generateToken(appTilgangAnalyseServiceProperties, serverWebExchange)
+                .exchange(appTilgangAnalyseServiceProperties, serverWebExchange)
                 .flatMap(accessToken -> getCommand.apply(accessToken).call())
                 .map(access -> access
                         .getAccessTo()

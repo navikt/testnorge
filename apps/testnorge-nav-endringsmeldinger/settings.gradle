@@ -6,7 +6,8 @@ rootProject.name = 'testnorge-nav-endringsmeldinger'
 
 
 includeBuild '../../libs/servlet-core'
-includeBuild '../../libs/servlet-security'
+includeBuild '../../libs/security-core'
+includeBuild '../../libs/servlet-insecure-security'
 
 gradleEnterprise {
     buildScan {

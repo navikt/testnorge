@@ -14,22 +14,22 @@ import java.util.stream.Collectors;
 import no.nav.registre.testnorge.helsepersonellservice.config.credentials.SamhandlerregisteretServerProperties;
 import no.nav.registre.testnorge.helsepersonellservice.consumer.command.GetSamhandlerCommand;
 import no.nav.registre.testnorge.helsepersonellservice.domain.Samhandler;
-import no.nav.testnav.libs.servletsecurity.service.AccessTokenService;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
 @Component
 public class SamhandlerregisteretConsumer {
     private final Executor executor;
     private final WebClient webClient;
-    private final AccessTokenService accessTokenService;
+    private final TokenExchange tokenExchange;
     private final SamhandlerregisteretServerProperties serverProperties;
 
     public SamhandlerregisteretConsumer(
-            AccessTokenService accessTokenService,
+            TokenExchange tokenExchange,
             SamhandlerregisteretServerProperties serverProperties
     ) {
         this.serverProperties = serverProperties;
-        this.accessTokenService = accessTokenService;
+        this.tokenExchange = tokenExchange;
         this.webClient = WebClient
                 .builder()
                 .codecs(configurer -> configurer
@@ -41,7 +41,7 @@ public class SamhandlerregisteretConsumer {
     }
 
     public CompletableFuture<List<Samhandler>> getSamhandler(String ident) {
-        var accessToken = accessTokenService.generateToken(serverProperties).block();
+        var accessToken = tokenExchange.exchange(serverProperties).block();
         return CompletableFuture.supplyAsync(
                 () -> Arrays
                         .stream(new GetSamhandlerCommand(ident, webClient, accessToken.getTokenValue()).call())

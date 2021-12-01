@@ -6,6 +6,7 @@ rootProject.name = 'oppsummeringsdokument-service'
 
 
 includeBuild '../../libs/servlet-core'
+includeBuild '../../libs/security-core'
 includeBuild '../../libs/data-transfer-objects'
 includeBuild '../../libs/servlet-security'
 includeBuild '../../xsd/arbeidsforhold-xsd'

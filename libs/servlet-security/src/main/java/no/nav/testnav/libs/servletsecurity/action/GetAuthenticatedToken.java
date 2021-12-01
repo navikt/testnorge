@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.concurrent.Callable;
 
-import no.nav.testnav.libs.servletsecurity.domain.Token;
+import no.nav.testnav.libs.securitycore.domain.Token;
 
 @Component
 @RequiredArgsConstructor

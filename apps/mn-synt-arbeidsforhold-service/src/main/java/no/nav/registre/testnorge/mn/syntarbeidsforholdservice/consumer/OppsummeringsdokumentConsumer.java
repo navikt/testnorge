@@ -25,9 +25,9 @@ import no.nav.testnav.libs.commands.GetOppsummeringsdokumentCommand;
 import no.nav.testnav.libs.commands.GetOppsummeringsdokumenterCommand;
 import no.nav.testnav.libs.commands.SaveOppsummeringsdokumenterCommand;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletcore.config.ApplicationProperties;
-import no.nav.testnav.libs.servletsecurity.domain.AccessToken;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 
 @Slf4j
@@ -66,7 +66,7 @@ public class OppsummeringsdokumentConsumer {
     }
 
     private CompletableFuture<String> saveOpplysningspliktig(Opplysningspliktig opplysningspliktig, String miljo) {
-        AccessToken accessToken = tokenExchange.generateToken(properties).block();
+        AccessToken accessToken = tokenExchange.exchange(properties).block();
         return CompletableFuture.supplyAsync(
                 () -> new SaveOppsummeringsdokumenterCommand(
                         webClient,
@@ -81,7 +81,7 @@ public class OppsummeringsdokumentConsumer {
     }
 
     public Optional<Opplysningspliktig> getOpplysningspliktig(Organisajon organisajon, LocalDate kalendermaaned, String miljo) {
-        AccessToken accessToken = tokenExchange.generateToken(properties).block();
+        AccessToken accessToken = tokenExchange.exchange(properties).block();
         var dto = new GetOppsummeringsdokumentCommand(webClient, accessToken.getTokenValue(), organisajon.getOrgnummer(), kalendermaaned, miljo).call().block();
         if (dto == null) {
             return Optional.empty();
@@ -92,7 +92,7 @@ public class OppsummeringsdokumentConsumer {
 
     public List<Opplysningspliktig> getAlleOpplysningspliktig(String miljo) {
         log.info("Henter alle opplysningspliktige fra {}...", miljo);
-        AccessToken accessToken = tokenExchange.generateToken(properties).block();
+        AccessToken accessToken = tokenExchange.exchange(properties).block();
         var list = new GetOppsummeringsdokumenterCommand(webClient, accessToken.getTokenValue(), miljo).call();
         log.info("Fant {} opplysningspliktig fra {}.", list.size(), miljo);
         return list.stream().map(value -> new Opplysningspliktig(value, new ArrayList<>())).collect(Collectors.toList());

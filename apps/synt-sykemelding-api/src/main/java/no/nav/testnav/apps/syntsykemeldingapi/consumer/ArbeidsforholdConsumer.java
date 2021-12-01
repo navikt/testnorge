@@ -32,7 +32,7 @@ public class ArbeidsforholdConsumer {
     @SneakyThrows
     public ArbeidsforholdDTO getArbeidsforhold(String ident, String orgnummer, String arbeidsforholdId) {
         log.info("Henter arbeidsforhold for {} i org {} med id {}", ident, orgnummer, arbeidsforholdId);
-        var token = tokenExchange.generateToken(serviceProperties).block().getTokenValue();
+        var token = tokenExchange.exchange(serviceProperties).block().getTokenValue();
 
         ArbeidsforholdDTO arbeidsforholdDTO = new GetArbeidsforholdCommand(
                 webClient,
