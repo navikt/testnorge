@@ -1,4 +1,4 @@
-package no.nav.testnav.apps.adresseservice;
+package no.nav.testnav.apps.tpsmessagingservice;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
