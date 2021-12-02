@@ -78,8 +78,8 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 				<Attributt attr={sm.attrs.sprakKode} />
 				<Attributt attr={sm.attrs.egenAnsattDatoFom} />
 				<Attributt attr={sm.attrs.erForsvunnet} />
-				<Attributt attr={sm.attrs.norskBankkonto} disabled={sm.attrs.utenlandskBankkonto} />
-				<Attributt attr={sm.attrs.utenlandskBankkonto} disabled={sm.attrs.norskBankkonto} />
+				<Attributt attr={sm.attrs.norskBankkonto} disabled={sm.attrs.utenlandskBankkonto.checked} />
+				<Attributt attr={sm.attrs.utenlandskBankkonto} disabled={sm.attrs.norskBankkonto.checked} />
 				<Attributt attr={sm.attrs.telefonnummer_1} />
 				<Attributt attr={sm.attrs.spesreg} />
 				<Attributt attr={sm.attrs.vergemaal} />
@@ -318,30 +318,26 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			label: 'Utenlandsk bank',
 			checked: has('tpsMessaging.utenlandskBankkonto'),
 			add: () =>
-				set('tpsMessaging.utenlandskBankkonto', [
-					{
-						kontonummer: '',
-						swift: '',
-						landkode: null,
-						banknavn: '',
-						iban: '',
-						valuta: null,
-						bankAdresse1: '',
-						bankAdresse2: '',
-						bankAdresse3: '',
-					},
-				]),
+				set('tpsMessaging.utenlandskBankkonto', {
+					kontonummer: '',
+					swift: '',
+					landkode: null,
+					banknavn: '',
+					iban: '',
+					valuta: null,
+					bankAdresse1: '',
+					bankAdresse2: '',
+					bankAdresse3: '',
+				}),
 			remove: () => del('tpsMessaging.utenlandskBankkonto'),
 		},
 		norskBankkonto: {
 			label: 'Norsk bank',
 			checked: has('tpsMessaging.norskBankkonto'),
 			add: () =>
-				set('tpsMessaging.norskBankkonto', [
-					{
-						kontonummer: '',
-					},
-				]),
+				set('tpsMessaging.norskBankkonto', {
+					kontonummer: '',
+				}),
 			remove: () => del('tpsMessaging.norskBankkonto'),
 		},
 	}

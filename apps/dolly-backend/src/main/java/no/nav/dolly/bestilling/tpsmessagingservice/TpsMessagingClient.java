@@ -36,7 +36,7 @@ public class TpsMessagingClient implements ClientRegister {
             log.info("Bestilling fra Dolly-frontend: {}", Json.pretty(bestilling));
             if (nonNull(bestilling.getTpsMessaging())) {
 
-                if (!bestilling.getTpsMessaging().getUtenlandskBankkonto().isEmpty()) {
+                if (nonNull(bestilling.getTpsMessaging().getUtenlandskBankkonto())) {
                     ResponseEntity<List<TpsMessagingResponse>> response = sendUtenlandskBankkonto(
                             bestilling,
                             dollyPerson.getHovedperson());
@@ -44,7 +44,7 @@ public class TpsMessagingClient implements ClientRegister {
                     appendResponseStatus(response, status);
                 }
 
-                if (!bestilling.getTpsMessaging().getNorskBankkonto().isEmpty()) {
+                if (nonNull(bestilling.getTpsMessaging().getNorskBankkonto())) {
                     ResponseEntity<List<TpsMessagingResponse>> response = sendNorskBankkonto(
                             bestilling,
                             dollyPerson.getHovedperson());
@@ -71,7 +71,7 @@ public class TpsMessagingClient implements ClientRegister {
                 new UtenlandskBankkontoRequest(
                         hovedPerson,
                         bestilling.getEnvironments(),
-                        bestilling.getTpsMessaging().getUtenlandskBankkonto().get(0)));
+                        bestilling.getTpsMessaging().getUtenlandskBankkonto()));
     }
 
     private ResponseEntity<List<TpsMessagingResponse>> sendNorskBankkonto(RsDollyUtvidetBestilling bestilling, String hovedPerson) {
@@ -79,7 +79,7 @@ public class TpsMessagingClient implements ClientRegister {
                 new NorskBankkontoRequest(
                         hovedPerson,
                         bestilling.getEnvironments(),
-                        bestilling.getTpsMessaging().getNorskBankkonto().get(0)));
+                        bestilling.getTpsMessaging().getNorskBankkonto()));
     }
 
     private void appendResponseStatus(ResponseEntity<List<TpsMessagingResponse>> responseList, StringBuilder status) {

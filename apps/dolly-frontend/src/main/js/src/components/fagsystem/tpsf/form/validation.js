@@ -526,27 +526,23 @@ export const validation = {
 		Yup.object({
 			utenlandskBankkonto: ifPresent(
 				'$tpsMessaging.utenlandskBankkonto',
-				Yup.array().of(
-					Yup.object().shape({
-						kontonummer: requiredString.nullable(),
-						swift: Yup.string().nullable().optional(),
-						landkode: requiredString.nullable(),
-						iban: Yup.string().nullable().optional(),
-						valuta: requiredString.nullable(),
-						banknavn: Yup.string().nullable().optional(),
-						bankAdresse1: Yup.string().nullable().optional(),
-						bankAdresse2: Yup.string().nullable().optional(),
-						bankAdresse3: Yup.string().nullable().optional(),
-					})
-				)
+				Yup.object().shape({
+					kontonummer: requiredString.nullable(),
+					swift: Yup.string().nullable().optional(),
+					landkode: requiredString.nullable(),
+					iban: Yup.string().nullable().optional(),
+					valuta: requiredString.nullable(),
+					banknavn: Yup.string().nullable().optional(),
+					bankAdresse1: Yup.string().nullable().optional(),
+					bankAdresse2: Yup.string().nullable().optional(),
+					bankAdresse3: Yup.string().nullable().optional(),
+				})
 			),
 			norskBankkonto: ifPresent(
 				'$tpsMessaging.norskBankkonto',
-				Yup.array().of(
-					Yup.object().shape({
-						kontonummer: requiredString.nullable(),
-					})
-				)
+				Yup.object().shape({
+					kontonummer: requiredString.nullable(),
+				})
 			),
 		})
 	),

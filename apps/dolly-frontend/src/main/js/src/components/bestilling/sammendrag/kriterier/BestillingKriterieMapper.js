@@ -414,9 +414,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	if (tpsMessaging?.norskBankkonto) {
 		const norskBankkontoData = {
 			header: 'Norsk bankkonto',
-			itemRows: tpsMessaging.norskBankkonto.map((item, idx) => {
-				return [{ numberHeader: `Bankkonto ${idx + 1}` }, obj('Kontonummer', item.kontonummer)]
-			}),
+			items: [obj('Kontonummer', tpsMessaging.norskBankkonto.kontonummer)],
 		}
 		data.push(norskBankkontoData)
 	}
@@ -424,20 +422,17 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	if (tpsMessaging?.utenlandskBankkonto) {
 		const utenlandskBankkontoData = {
 			header: 'Utenlandsk bankkonto',
-			itemRows: tpsMessaging.utenlandskBankkonto.map((item, idx) => {
-				return [
-					{ numberHeader: `Bankkonto ${idx + 1}` },
-					obj('Kontonummer', item.kontonummer),
-					obj('Swift kode', item.swift),
-					obj('Land', item.landkode),
-					obj('Banknavn', item.banknavn),
-					obj('IBAN', item.iban),
-					obj('Valuta', item.valuta),
-					obj('BankAdresse 1', item.bankAdresse1),
-					obj('BankAdresse 2', item.bankAdresse2),
-					obj('BankAdresse 3', item.bankAdresse3),
-				]
-			}),
+			items: [
+				obj('Kontonummer', tpsMessaging.utenlandskBankkonto.kontonummer),
+				obj('Swift kode', tpsMessaging.utenlandskBankkonto.swift),
+				obj('Land', tpsMessaging.utenlandskBankkonto.landkode),
+				obj('Banknavn', tpsMessaging.utenlandskBankkonto.banknavn),
+				obj('IBAN', tpsMessaging.utenlandskBankkonto.iban),
+				obj('Valuta', tpsMessaging.utenlandskBankkonto.valuta),
+				obj('BankAdresse 1', tpsMessaging.utenlandskBankkonto.bankAdresse1),
+				obj('BankAdresse 2', tpsMessaging.utenlandskBankkonto.bankAdresse2),
+				obj('BankAdresse 3', tpsMessaging.utenlandskBankkonto.bankAdresse3),
+			],
 		}
 		data.push(utenlandskBankkontoData)
 	}
