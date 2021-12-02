@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -31,11 +32,11 @@ public class IdentService {
 
     private static final int MAX_LIMIT = 80;
     private static final String BAD_REQUEST = "Antall identer kan ikke være større enn " + MAX_LIMIT;
-    private static final String STATUS_OK = "00";
+    private static final String PROD = "p";
+    private static final String PROD_LIKE_ENV = "q2";
 
     private final ServicerutineConsumer servicerutineConsumer;
     private final JAXBContext requestContext;
-    private final JAXBContext responseContext;
     private final MiljoerService miljoerService;
     private final XmlMapper xmlMapper;
 
@@ -43,7 +44,6 @@ public class IdentService {
         this.servicerutineConsumer = servicerutineConsumer;
         this.miljoerService = miljoerService;
         this.requestContext = JAXBContext.newInstance(TpsPersonData.class);
-        this.responseContext = JAXBContext.newInstance(TpsPersonData.class);
         this.xmlMapper = xmlMapper;
     }
 
@@ -63,26 +63,36 @@ public class IdentService {
         if (identer.size() > MAX_LIMIT) {
             throw new BadRequestException(BAD_REQUEST);
         }
-        var tpsResponse = readFromTps(identer, isNull(miljoer) ? miljoerService.getMiljoer() : miljoer);
+
+        var tpsResponse = readFromTps(identer, isNull(miljoer) ? miljoerService.getMiljoer() : miljoer, false);
+
+        if (isTrue(includeProd)) {
+            tpsResponse.put(PROD, readFromTps(identer, List.of(PROD_LIKE_ENV), true).get(PROD_LIKE_ENV));
+        }
 
         return identer.parallelStream()
                 .map(ident -> TpsIdentStatusDTO.builder()
                         .ident(ident)
                         .miljoer(tpsResponse.entrySet().parallelStream()
-                                .filter(entry -> nonNull(entry.getValue().getTpsSvar()) &&
-                                        nonNull(entry.getValue().getTpsSvar().getPersonDataM201()) &&
-                                        nonNull(entry.getValue().getTpsSvar().getPersonDataM201().getAFnr()) &&
-                                        entry.getValue().getTpsSvar().getPersonDataM201().getAFnr().getEFnr().stream()
-                                                .anyMatch(eFnr -> ident.equals(eFnr.getFnr()) && isNotBlank(eFnr.getKn())))
-                                .map(entry -> entry.getKey())
+                                .filter(entry -> exists(ident, entry.getValue()))
+                                .map(Map.Entry::getKey)
                                 .toList())
                         .build())
                 .toList();
     }
 
-    private Map<String, TpsServicerutineM201Response> readFromTps(List<String> identer, List<String> miljoer) {
+    private boolean exists(String ident, TpsServicerutineM201Response response) {
 
-        var request = prepareRequest(identer);
+        return nonNull(response.getTpsSvar()) &&
+                nonNull(response.getTpsSvar().getPersonDataM201()) &&
+                nonNull(response.getTpsSvar().getPersonDataM201().getAFnr()) &&
+                response.getTpsSvar().getPersonDataM201().getAFnr().getEFnr().stream()
+                        .anyMatch(eFnr -> ident.equals(eFnr.getFnr()) && isNotBlank(eFnr.getKn()));
+    }
+
+    private Map<String, TpsServicerutineM201Response> readFromTps(List<String> identer, List<String> miljoer, boolean isProd) {
+
+        var request = prepareRequest(identer, isProd);
         var xmlRequest = marshallToXML(requestContext, request);
 
         var miljoerResponse = servicerutineConsumer.sendMessage(xmlRequest, miljoer);
@@ -118,13 +128,13 @@ public class IdentService {
         }
     }
 
-    private TpsPersonData prepareRequest(List<String> identer) {
+    private TpsPersonData prepareRequest(List<String> identer, boolean isProd) {
 
         var request = new TpsPersonData();
         request.setTpsServiceRutine(new TpsServiceRutineType());
         request.getTpsServiceRutine().setServiceRutinenavn(SRnavn.FS_03_FDLISTER_DISKNAVN_M);
         request.getTpsServiceRutine().setAksjonsKode("A");
-        request.getTpsServiceRutine().setAksjonsKode2("0");
+        request.getTpsServiceRutine().setAksjonsKode2(isProd ? "2" : "0");
         request.getTpsServiceRutine().setAntallFnr(Integer.toString(identer.size()));
         request.getTpsServiceRutine().setNFnr(new TpsServiceRutineType.NFnr());
         request.getTpsServiceRutine().getNFnr().getFnr().addAll(identer);
