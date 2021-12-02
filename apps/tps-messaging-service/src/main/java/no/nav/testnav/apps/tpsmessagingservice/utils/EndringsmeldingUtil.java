@@ -75,6 +75,7 @@ public class EndringsmeldingUtil {
             return null;
         }
     }
+
     public static TpsMeldingResponse getNoAnswerStatus() {
 
         return TpsMeldingResponse.builder()
