@@ -59,4 +59,5 @@ public class OicdInMemorySessionConfiguration {
         tokenExchange.addExchange("idporten", tokenXExchange);
         return tokenExchange;
     }
+
 }
