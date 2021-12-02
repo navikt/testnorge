@@ -1,7 +1,6 @@
 package no.nav.dolly.web.provider.web;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.web.config.WebSessionConfig;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
@@ -18,6 +17,7 @@ import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 import redis.clients.jedis.Jedis;
 
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -27,17 +27,13 @@ import java.util.Objects;
 public class FrontChannelLogoutProdController {
 
     private final WebSessionManager webSessionManager;
-    private final Jedis jedis;
 
     @GetMapping()
-    public Mono<Void> logout(@RequestParam String sid) {
+    public Mono<Void> logout(@RequestParam String sid, Jedis jedis) {
         var manager = (DefaultWebSessionManager) webSessionManager;
         var store = manager.getSessionStore();
 
-        var sessionIds = jedis.keys("*").stream().map(key -> {
-            var keySplit = key.split(":");
-            return keySplit[keySplit.length - 1];
-        }).toList();
+        var sessionIds = getAllSessionIds(jedis);
 
         return Mono.just(sessionIds)
                 .flatMapMany(Flux::fromIterable)
@@ -50,5 +46,9 @@ public class FrontChannelLogoutProdController {
                 .flatMap(Tuple2::getT1)
                 .flatMap(WebSession::invalidate)
                 .then();
+    }
+
+    private List<String> getAllSessionIds(Jedis jedis) {
+        return jedis.keys("*").stream().map(session -> session.split(":")[session.split(":").length - 1]).toList();
     }
 }

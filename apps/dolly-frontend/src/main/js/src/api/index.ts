@@ -18,9 +18,9 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 			body: JSON.stringify(body),
 		})
 		.then((response: Response) => {
-			if (response.redirected) {
-				window.location.href = response.url
-			}
+			// if (response.redirected) {
+			// 	window.location.href = response.url
+			// }
 			if (!response.ok) {
 				if (response.status === 404) {
 					throw new NotFoundError()
