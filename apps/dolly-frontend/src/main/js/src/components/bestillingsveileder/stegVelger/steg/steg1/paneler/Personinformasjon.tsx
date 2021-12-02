@@ -7,6 +7,7 @@ import Formatters from '~/utils/DataFormatter'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import { initialPdlPerson } from '~/components/fagsystem/pdlf/form/initialValues'
 import { addDays, subDays } from 'date-fns'
+import { cloneDeep } from 'lodash'
 
 const innvandret = (personFoerLeggTil) =>
 	_get(personFoerLeggTil, 'tpsf.innvandretUtvandret[0].innutvandret') === 'INNVANDRET'
@@ -93,6 +94,17 @@ PersoninformasjonPanel.heading = 'Personinformasjon'
 
 PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 	const { personFoerLeggTil } = opts
+
+	const telefonnummerFoerLeggTil = () => {
+		const tlfListe = _get(personFoerLeggTil, 'pdlforvalter[0].person.telefonnummer')
+		const tlfListeClone = cloneDeep(tlfListe)
+		tlfListeClone.forEach((nr) => {
+			if (_has(nr, 'id')) {
+				delete nr.id
+			}
+		})
+		return tlfListeClone
+	}
 
 	return {
 		alder: {
@@ -209,7 +221,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 				setMulti(['tpsf.erForsvunnet', true], ['tpsf.forsvunnetDato', null])
 			},
 			remove() {
-				del(['tpsf.erForsvunnet', 'tpsf.forsvunnetDFato'])
+				del(['tpsf.erForsvunnet', 'tpsf.forsvunnetDato'])
 			},
 		},
 		harBankkontonr: {
@@ -226,28 +238,18 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			label: 'Telefonnummer',
 			checked: has('pdldata.person.telefonnummer'),
 			add() {
-				set('pdldata.person.telefonnummer', [
-					{
-						landskode: '',
-						nummer: '',
-						prioritet: 1,
-						kilde: 'Dolly',
-						master: 'PDL',
-						gjeldende: true,
-					},
-				])
-				// TODO tilpass dette til nytt tlf.nr.!!!
-				// _has(personFoerLeggTil, 'tpsf.telefonnummer_2')
-				// 	? setMulti(
-				// 			['tpsf.telefonLandskode_1', _get(personFoerLeggTil, 'tpsf.telefonLandskode_1')],
-				// 			['tpsf.telefonnummer_1', _get(personFoerLeggTil, 'tpsf.telefonnummer_1')],
-				// 			['tpsf.telefonLandskode_2', _get(personFoerLeggTil, 'tpsf.telefonLandskode_2')],
-				// 			['tpsf.telefonnummer_2', _get(personFoerLeggTil, 'tpsf.telefonnummer_2')]
-				// 	  )
-				// 	: setMulti(
-				// 			['tpsf.telefonLandskode_1', _get(personFoerLeggTil, 'tpsf.telefonLandskode_1') || ''],
-				// 			['tpsf.telefonnummer_1', _get(personFoerLeggTil, 'tpsf.telefonnummer_1') || '']
-				// 	  )
+				_has(personFoerLeggTil, 'pdlforvalter[0].person.telefonnummer')
+					? set('pdldata.person.telefonnummer', telefonnummerFoerLeggTil())
+					: set('pdldata.person.telefonnummer', [
+							{
+								landskode: '',
+								nummer: '',
+								prioritet: 1,
+								kilde: 'Dolly',
+								master: 'PDL',
+								gjeldende: true,
+							},
+					  ])
 			},
 			remove() {
 				del('pdldata.person.telefonnummer')

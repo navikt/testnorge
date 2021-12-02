@@ -11,7 +11,6 @@ import {
 	SigrunKodeverk,
 	VergemaalKodeverk,
 } from '~/config/kodeverk'
-import { Telefonnummer } from '~/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
 
 // TODO: Flytte til selector?
 // - Denne kan forminskes ved bruk av hjelpefunksjoner
