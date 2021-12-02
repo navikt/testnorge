@@ -9,7 +9,7 @@ import {
 	ArbeidKodeverk,
 	PersoninformasjonKodeverk,
 	SigrunKodeverk,
-	VergemaalKodeverk
+	VergemaalKodeverk,
 } from '~/config/kodeverk'
 
 // TODO: Flytte til selector?
