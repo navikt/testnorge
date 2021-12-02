@@ -13,6 +13,7 @@ spec:
   idporten:
     enabled: true
     redirectPath: /login/oauth2/code/idporten
+    frontchannelLogoutPath: /oauth2/logout
     postLogoutRedirectURIs:
       - https://dolly-frontend-dev.dev.intern.nav.no/login
   azure:

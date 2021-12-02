@@ -57,6 +57,7 @@ public class SecurityConfig {
                         "/login",
                         "/main.*.css",
                         "/bundle.*.js",
+                        "/oauth2/logout",
                         "/*.png"
                 ).permitAll()
                 .anyExchange().authenticated()
