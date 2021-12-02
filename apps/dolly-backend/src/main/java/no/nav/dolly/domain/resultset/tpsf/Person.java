@@ -172,4 +172,9 @@ public class Person {
         return "FDAT".equals(getIdenttype());
     }
 
+    @JsonIgnore
+    public boolean isKode6() {
+
+        return "SPSF".equals(getSpesreg());
+    }
 }
