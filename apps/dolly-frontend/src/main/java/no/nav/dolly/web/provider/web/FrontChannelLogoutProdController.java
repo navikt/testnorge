@@ -28,7 +28,6 @@ public class FrontChannelLogoutProdController {
 
     private final WebSessionManager webSessionManager;
     private final Jedis jedis;
-    private final WebSessionConfig webSessionConfig;
 
     @GetMapping()
     public Mono<Void> logout(@RequestParam String sid) {
