@@ -74,6 +74,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 
 	const data = []
 
+	console.log('bestillingData: ', bestillingData) //TODO - SLETT MEG
+
 	if (bestillingsinformasjon) {
 		const bestillingsInfo = {
 			header: 'Bestillingsinformasjon',
