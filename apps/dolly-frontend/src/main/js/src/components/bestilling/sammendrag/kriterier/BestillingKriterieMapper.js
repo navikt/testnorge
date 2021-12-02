@@ -9,7 +9,7 @@ import {
 	ArbeidKodeverk,
 	PersoninformasjonKodeverk,
 	SigrunKodeverk,
-	VergemaalKodeverk,
+	VergemaalKodeverk
 } from '~/config/kodeverk'
 
 // TODO: Flytte til selector?
@@ -73,8 +73,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	if (!bestillingData) return null
 
 	const data = []
-
-	console.log('bestillingData: ', bestillingData) //TODO - SLETT MEG
 
 	if (bestillingsinformasjon) {
 		const bestillingsInfo = {
