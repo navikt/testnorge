@@ -30,9 +30,9 @@ export const Visning = ({ data }: Data) => (
 				<TitleValue title={'Banknavn'} value={data.banknavn} />
 				<TitleValue title={'IBAN'} value={data.iban} />
 				<TitleValue title={'Valuta'} kodeverk={ArbeidKodeverk.Valutaer} value={data.valuta} />
-				<TitleValue title={'Bank Adresse 1'} value={data.bankAdresse1} />
-				<TitleValue title={'Bank Adresse 2'} value={data.bankAdresse2} />
-				<TitleValue title={'Bank Adresse 3'} value={data.bankAdresse3} />
+				<TitleValue title={'Adresselinje 1'} value={data.bankAdresse1} />
+				<TitleValue title={'Adresselinje 2'} value={data.bankAdresse2} />
+				<TitleValue title={'Adresselinje 3'} value={data.bankAdresse3} />
 			</ErrorBoundary>
 		</div>
 	</>
@@ -42,7 +42,7 @@ export const UtenlandskBankkonto = ({ data }: Data) => {
 	if (!data) return null
 	return (
 		<div>
-			<SubOverskrift label="Utenlandsk Bankkonto" iconKind="nasjonalitet" />
+			<SubOverskrift label="Utenlandsk bankkonto" iconKind="bankkonto" />
 			<Visning data={data} />
 		</div>
 	)

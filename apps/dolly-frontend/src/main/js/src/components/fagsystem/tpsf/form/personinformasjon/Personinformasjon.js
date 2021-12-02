@@ -126,7 +126,7 @@ export const Personinformasjon = ({ formikBag }) => {
 				<Kategori title="Fullmakt" vis={fullmaktPath}>
 					<Fullmakt formikBag={formikBag} />
 				</Kategori>
-				<Kategori title="Tps messaging" vis={tpsMessagingPath}>
+				<Kategori title="Bankkonto" vis={tpsMessagingPath}>
 					<UtenlandskBankkonto />
 					<NorskBankkonto formikBag={formikBag} />
 				</Kategori>

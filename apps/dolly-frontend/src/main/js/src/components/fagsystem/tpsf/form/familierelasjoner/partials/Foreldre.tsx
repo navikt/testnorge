@@ -68,6 +68,7 @@ export const Foreldre = ({ formikBag, personFoerLeggTil }: ForeldreType) => {
 			tag={null}
 			newEntry={initialValues}
 			maxEntries={2}
+			maxReachedDescription={'Begge foreldre er lagt til'}
 		>
 			{(path: string, idx: number) => {
 				const eksisterendeForelder = _get(formikBag.values, `${path}.ident`)

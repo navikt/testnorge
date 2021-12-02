@@ -19,6 +19,7 @@ export const NorskBankkonto = ({ formikBag }: { formikBag: FormikProps<{}> }) =>
 	}, [])
 	return (
 		<Vis attributt={path} formik>
+			<h4>Norsk bankkonto</h4>
 			<div className="flexbox--flex-wrap">
 				<FormikSelect
 					value={kontonummer}

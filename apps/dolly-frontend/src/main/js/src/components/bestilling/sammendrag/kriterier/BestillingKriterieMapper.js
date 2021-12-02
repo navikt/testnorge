@@ -9,7 +9,7 @@ import {
 	ArbeidKodeverk,
 	PersoninformasjonKodeverk,
 	SigrunKodeverk,
-	VergemaalKodeverk,
+	VergemaalKodeverk
 } from '~/config/kodeverk'
 
 // TODO: Flytte til selector?
@@ -429,9 +429,9 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				obj('Banknavn', tpsMessaging.utenlandskBankkonto.banknavn),
 				obj('IBAN', tpsMessaging.utenlandskBankkonto.iban),
 				obj('Valuta', tpsMessaging.utenlandskBankkonto.valuta),
-				obj('BankAdresse 1', tpsMessaging.utenlandskBankkonto.bankAdresse1),
-				obj('BankAdresse 2', tpsMessaging.utenlandskBankkonto.bankAdresse2),
-				obj('BankAdresse 3', tpsMessaging.utenlandskBankkonto.bankAdresse3),
+				obj('Adresselinje 1', tpsMessaging.utenlandskBankkonto.bankAdresse1),
+				obj('Adresselinje 2', tpsMessaging.utenlandskBankkonto.bankAdresse2),
+				obj('Adresselinje 3', tpsMessaging.utenlandskBankkonto.bankAdresse3),
 			],
 		}
 		data.push(utenlandskBankkontoData)

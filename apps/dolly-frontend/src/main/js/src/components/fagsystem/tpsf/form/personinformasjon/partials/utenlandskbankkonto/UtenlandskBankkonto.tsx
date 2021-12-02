@@ -8,6 +8,7 @@ const path = 'tpsMessaging.utenlandskBankkonto'
 
 export const UtenlandskBankkonto = () => (
 	<Vis attributt={path} formik>
+		<h4>Utenlandsk bankkonto</h4>
 		<div className="flexbox--flex-wrap">
 			<FormikTextInput name={`${path}.kontonummer`} label={'Kontonummer'} />
 			<FormikTextInput name={`${path}.swift`} label={'Swift kode'} />
@@ -25,9 +26,9 @@ export const UtenlandskBankkonto = () => (
 				kodeverk={ArbeidKodeverk.Valutaer}
 				size={'xlarge'}
 			/>
-			<FormikTextInput name={`${path}.bankAdresse1`} label={'Bank Adresse 1'} />
-			<FormikTextInput name={`${path}.bankAdresse2`} label={'Bank Adresse 2'} />
-			<FormikTextInput name={`${path}.bankAdresse3`} label={'Bank Adresse 3'} />
+			<FormikTextInput name={`${path}.bankAdresse1`} label={'Adresselinje 1'} />
+			<FormikTextInput name={`${path}.bankAdresse2`} label={'Adresselinje 2'} />
+			<FormikTextInput name={`${path}.bankAdresse3`} label={'Adresselinje 3'} />
 		</div>
 	</Vis>
 )
