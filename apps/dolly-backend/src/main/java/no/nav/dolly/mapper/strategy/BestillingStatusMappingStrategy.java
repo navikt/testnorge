@@ -44,10 +44,6 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
     private final JsonBestillingMapper jsonBestillingMapper;
     private final ObjectMapper objectMapper;
 
-    private static List<String> mapIdents(String idents) {
-        return isNotBlank(idents) ? Arrays.asList(idents.split(",")) : Collections.emptyList();
-    }
-
     @Override
     public void register(MapperFactory factory) {
         factory.classMap(Bestilling.class, RsBestillingStatus.class)
@@ -94,6 +90,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                                 .tpsf(jsonBestillingMapper.mapTpsfRequest(bestilling.getTpsfKriterier()))
                                 .importFraTps(mapIdents(bestilling.getTpsImport()))
                                 .importFraPdl(mapIdents(bestilling.getPdlImport()))
+                                .tpsMessaging(bestillingRequest.getTpsMessaging())
                                 .kildeMiljoe(bestilling.getKildeMiljoe())
                                 .navSyntetiskIdent(bestilling.getNavSyntetiskIdent())
                                 .build());
@@ -103,5 +100,9 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                 .exclude("bruker")
                 .byDefault()
                 .register();
+    }
+
+    private static List<String> mapIdents(String idents) {
+        return isNotBlank(idents) ? Arrays.asList(idents.split(",")) : Collections.emptyList();
     }
 }

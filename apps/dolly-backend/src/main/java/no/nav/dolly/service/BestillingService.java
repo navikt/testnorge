@@ -330,7 +330,6 @@ public class BestillingService {
     }
 
     private String getBestKriterier(RsDollyBestilling request) {
-        log.info("Request som skal mappes til best kriterier: {}", request);
         return toJson(BestilteKriterier.builder()
                 .aareg(request.getAareg())
                 .krrstub(request.getKrrstub())
