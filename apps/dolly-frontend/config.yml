@@ -12,6 +12,7 @@ spec:
     enabled: true
   idporten:
     enabled: true
+    frontchannelLogoutPath: "/oauth2/logout"
     redirectPath: /login/oauth2/code/idporten
     postLogoutRedirectURIs:
       - https://dolly-frontend.dev.intern.nav.no/login
