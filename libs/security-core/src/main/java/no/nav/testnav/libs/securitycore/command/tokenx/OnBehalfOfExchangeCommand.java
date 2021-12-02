@@ -32,6 +32,7 @@ public class OnBehalfOfExchangeCommand implements ExchangeCommand {
 
     @Override
     public Mono<AccessToken> call() {
+        log.info("Access token opprettet for OAuth 2.0 On-Behalf-Of Flow. Scope: {}.", scope);
         return webClient
                 .get()
                 .uri(tokenX.getWellKnownUrl())
