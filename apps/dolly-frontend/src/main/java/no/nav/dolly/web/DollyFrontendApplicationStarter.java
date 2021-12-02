@@ -58,9 +58,7 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 @Slf4j
 @Import({
         CoreConfig.class,
-        FrontendConfig.class,
-        WebSessionConfig.class,
-        WebSessionFilter.class
+        FrontendConfig.class
 })
 @SpringBootApplication
 @RequiredArgsConstructor

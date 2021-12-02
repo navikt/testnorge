@@ -49,8 +49,7 @@ public class FrontChannelLogoutProdController {
                         .map(principal -> Objects.equals(sid, principal.getClaims().get("sid")))))
                 .filter(Tuple2::getT2)
                 .flatMap(Tuple2::getT1)
-                .map(WebSession::getId)
-                .flatMap(webSessionConfig::addExpiredSID)
+                .map(WebSession::invalidate)
                 .then();
     }
 }
