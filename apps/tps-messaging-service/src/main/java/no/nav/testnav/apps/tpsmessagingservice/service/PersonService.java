@@ -228,7 +228,9 @@ public class PersonService {
                 .toList();
 
         var hentingMedFeil = tpsPersoner.entrySet().stream()
-                .filter(entry -> !isStatusOK(entry.getValue().getTpsPersonData().getTpsSvar().getSvarStatus()))
+                .filter(entry -> nonNull(entry.getValue().getTpsPersonData()) &&
+                        nonNull(entry.getValue().getTpsPersonData().getTpsSvar()) &&
+                        !isStatusOK(entry.getValue().getTpsPersonData().getTpsSvar().getSvarStatus()))
                 .map(entry -> PersonMiljoeDTO.builder()
                         .miljoe(entry.getKey())
                         .status("FEIL")
