@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static net.logstash.logback.util.StringUtils.isBlank;
 
@@ -56,7 +57,9 @@ public class TpsMessagingClient implements ClientRegister {
             status.append(errorStatusDecoder.decodeRuntimeException(e));
             log.error("Kall til TPS messaging service feilet: {}", e.getMessage(), e);
         }
-        progress.setTpsImportStatus(progress.getTpsImportStatus().isBlank() ? status.toString() : ", " + status);
+        progress.setTpsImportStatus(isNull(progress.getTpsImportStatus()) || progress.getTpsImportStatus().isBlank()
+                ? status.toString()
+                : progress.getTpsImportStatus() + ", " + status);
     }
 
     @Override
