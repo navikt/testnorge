@@ -2,7 +2,6 @@ package no.nav.dolly.web;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.web.config.WebSessionConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -18,7 +17,6 @@ import reactor.core.publisher.Mono;
 import java.util.Optional;
 import java.util.function.Function;
 
-import no.nav.dolly.web.config.filter.WebSessionFilter;
 import no.nav.dolly.web.credentials.DollyBackendProperties;
 import no.nav.dolly.web.credentials.PersonSearchServiceProperties;
 import no.nav.dolly.web.credentials.TestnavAdresseServiceProperties;
