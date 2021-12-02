@@ -20,6 +20,7 @@ import no.nav.testnav.libs.reactivesessionsecurity.manager.AuthorizationCodeReac
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.logut.IdportenOcidLogoutUrlResolver;
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
 
+
 @Slf4j
 @Configuration
 @EnableWebFluxSecurity
@@ -58,6 +59,7 @@ public class SecurityConfig {
                         "/login",
                         "/main.*.css",
                         "/bundle.*.js",
+                        "/oauth2/logout",
                         "/*.png"
                 ).permitAll()
                 .anyExchange().authenticated()
