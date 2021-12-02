@@ -18,6 +18,7 @@ import reactor.core.publisher.Mono;
 import java.util.Optional;
 import java.util.function.Function;
 
+import no.nav.dolly.web.config.filter.WebSessionFilter;
 import no.nav.dolly.web.credentials.DollyBackendProperties;
 import no.nav.dolly.web.credentials.PersonSearchServiceProperties;
 import no.nav.dolly.web.credentials.TestnavAdresseServiceProperties;
@@ -53,11 +54,13 @@ import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 
 
+
 @Slf4j
 @Import({
         CoreConfig.class,
         FrontendConfig.class,
-        WebSessionConfig.class
+        WebSessionConfig.class,
+        WebSessionFilter.class
 })
 @SpringBootApplication
 @RequiredArgsConstructor
@@ -169,5 +172,4 @@ public class DollyFrontendApplicationStarter {
                         .filters(filter, addUserJwtHeaderFilter())
                 ).uri(host);
     }
-
 }

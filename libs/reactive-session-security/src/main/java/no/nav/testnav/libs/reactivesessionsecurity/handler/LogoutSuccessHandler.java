@@ -1,7 +1,6 @@
 package no.nav.testnav.libs.reactivesessionsecurity.handler;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -12,7 +11,6 @@ import org.springframework.web.server.WebSession;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -31,8 +29,8 @@ public class LogoutSuccessHandler implements ServerLogoutSuccessHandler {
         response.getCookies().remove("sessionExpiry");
         response.getCookies().remove("serverTime");
 
-        if (authentication instanceof OAuth2AuthenticationToken) {
-            var registrationId = ((OAuth2AuthenticationToken) authentication).getAuthorizedClientRegistrationId();
+        if (authentication instanceof OAuth2AuthenticationToken oAuth2AuthenticationToken) {
+            var registrationId = oAuth2AuthenticationToken.getAuthorizedClientRegistrationId();
             var logOutState = getLogoutState(exchange, registrationId);
             return Optional
                     .ofNullable(resolvers.get(registrationId))
