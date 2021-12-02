@@ -30,7 +30,7 @@ jobs:
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
       resource: 'apps/jenkins-batch-status-service/config.yml'
-      app-name: 'orkestratoren'
+      app-name: 'jenkins-batch-status-service'
       cluster: 'dev-gcp'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
