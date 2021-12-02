@@ -57,7 +57,6 @@ public class SecurityConfig {
                         "/oauth2/callback",
                         "/favicon.ico",
                         "/login",
-                        "/bruker",
                         "/main.*.css",
                         "/bundle.*.js",
                         "/oauth2/logout",
