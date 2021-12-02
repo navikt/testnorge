@@ -4,11 +4,11 @@ import Alertstripe from 'nav-frontend-alertstriper'
 
 const Advarsler = {
 	organisation_error:
-		'Du ble logget inn med BankId, men er ikke tilknyttet noen organisasjoner som har ' +
-		'tilgang til Dolly. Ta kontakt med administrator i din organisasjon dersom du ønsker tilgang' +
-		', eller velg en annen innloggingsmetode.',
+		'En feil oppsto og du ble logget ut. Sjekk om du er tilknyttet en organisasjon som har tilgang til Dolly. ' +
+		'Ta kontakt med en administrator i din organisasjon dersom tilgang mangler eller velg en annen innloggingsmetode. ' +
+		'Ta kontakt med Dolly hvis feilen vedvarer.',
 	unknown_error:
-		'Ukjent feil oppsto og du ble logget ut. Ta kontakt med Dolly hvis denne feilen vedvarer.',
+		'Ukjent feil oppsto og du ble logget ut. Ta kontakt med Dolly hvis feilen vedvarer.',
 }
 
 const getAdvarsel: () => string = () => {
