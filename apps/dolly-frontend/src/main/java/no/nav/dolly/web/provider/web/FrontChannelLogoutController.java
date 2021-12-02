@@ -14,36 +14,36 @@ import org.springframework.web.server.session.DefaultWebSessionManager;
 import org.springframework.web.server.session.WebSessionManager;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.function.Tuple2;
 import redis.clients.jedis.Jedis;
 
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/oauth2/logout")
 @RequiredArgsConstructor
 @Profile("prod")
-public class FrontChannelLogoutProdController {
+public class FrontChannelLogoutController {
 
     private final WebSessionManager webSessionManager;
 
     @GetMapping()
     public Mono<Void> logout(@RequestParam String sid, Jedis jedis) {
-        var manager = (DefaultWebSessionManager) webSessionManager;
-        var store = manager.getSessionStore();
-
         var sessionIds = getAllSessionIds(jedis);
+        var manager = (DefaultWebSessionManager) this.webSessionManager;
+        var sessions = Flux.concat(sessionIds
+                .stream()
+                .map(sessionId -> manager.getSessionStore().retrieveSession(sessionId))
+                .toList());
 
-        return Mono.just(sessionIds)
-                .flatMapMany(Flux::fromIterable)
-                .map(store::retrieveSession)
-                .flatMap(session -> Mono.zip(Mono.just(session), session
-                        .mapNotNull(ses -> (SecurityContextImpl) ses.getAttribute("SPRING_SECURITY_CONTEXT"))
-                        .map(securityContext -> (DefaultOidcUser) securityContext.getAuthentication().getPrincipal())
-                        .map(principal -> Objects.equals(sid, principal.getClaims().get("sid")))))
-                .filter(Tuple2::getT2)
-                .flatMap(Tuple2::getT1)
+        return sessions
+                .filter(session -> session.getAttribute("SPRING_SECURITY_CONTEXT") != null)
+                .filter(session -> {
+                    var securityContext = (SecurityContextImpl) session.getAttribute("SPRING_SECURITY_CONTEXT");
+                    if (securityContext.getAuthentication().getPrincipal() instanceof DefaultOidcUser user) {
+                        return user.getIdToken().getClaim("sid").equals(sid);
+                    }
+                    return false;
+                })
                 .flatMap(WebSession::invalidate)
                 .then();
     }

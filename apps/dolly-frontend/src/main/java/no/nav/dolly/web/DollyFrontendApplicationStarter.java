@@ -54,7 +54,6 @@ import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 
 
-
 @Slf4j
 @Import({
         CoreConfig.class,
@@ -170,4 +169,5 @@ public class DollyFrontendApplicationStarter {
                         .filters(filter, addUserJwtHeaderFilter())
                 ).uri(host);
     }
+
 }
