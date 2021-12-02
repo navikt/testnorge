@@ -210,7 +210,9 @@ public class PersonService {
         var tpsPersoner = readFromTps(ident, miljoer);
 
         var relasjoner = getRelasjoner(tpsPersoner.entrySet().stream()
-                .filter(entry -> isStatusOK(entry.getValue().getTpsPersonData().getTpsSvar().getSvarStatus()))
+                .filter(entry -> nonNull(entry.getValue().getTpsPersonData()) &&
+                        nonNull(entry.getValue().getTpsPersonData().getTpsSvar()) &&
+                        isStatusOK(entry.getValue().getTpsPersonData().getTpsSvar().getSvarStatus()))
                 .collect(Collectors.toMap(Entry::getKey, entry -> entry.getValue()
                         .getTpsPersonData()
                         .getTpsSvar()
