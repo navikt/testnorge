@@ -9,6 +9,7 @@ public class TpsMessagingServiceApplicationStarter {
     public static void main(String[] args) {
 
         SpringApplication.run(TpsMessagingServiceApplicationStarter.class, args);
+
     }
 }
 
