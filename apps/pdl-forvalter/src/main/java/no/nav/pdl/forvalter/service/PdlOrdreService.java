@@ -102,7 +102,6 @@ public class PdlOrdreService {
                         deployService.createOrder(PDL_KONTAKTADRESSE, person.getIdent(), mapperFacade.mapAsList(person.getPerson().getKontaktadresse(), PdlKontaktadresse.class)),
                         deployService.createOrder(PDL_BOSTEDADRESSE, person.getIdent(), person.getPerson().getBostedsadresse()),
                         deployService.createOrder(PDL_OPPHOLDSADRESSE, person.getIdent(), person.getPerson().getOppholdsadresse()),
-                        deployService.createOrder(PDL_ADRESSEBESKYTTELSE, person.getIdent(), person.getPerson().getAdressebeskyttelse()),
                         deployService.createOrder(PDL_INNFLYTTING, person.getIdent(), mapperFacade.mapAsList(person.getPerson().getInnflytting(), PdlInnflytting.class)),
                         deployService.createOrder(PDL_UTFLYTTING, person.getIdent(), person.getPerson().getUtflytting()),
                         deployService.createOrder(PDL_DELTBOSTED, person.getIdent(), person.getPerson().getDeltBosted()),
@@ -118,6 +117,7 @@ public class PdlOrdreService {
                         deployService.createOrder(PDL_UTENLANDS_IDENTIFIKASJON_NUMMER, person.getIdent(), person.getPerson().getUtenlandskIdentifikasjonsnummer()),
                         deployService.createOrder(PDL_FALSK_IDENTITET, person.getIdent(), mapperFacade.mapAsList(person.getPerson().getFalskIdentitet(), PdlFalskIdentitet.class)),
                         deployService.createOrder(PDL_TILRETTELAGT_KOMMUNIKASJON, person.getIdent(), mapperFacade.mapAsList(person.getPerson().getTilrettelagtKommunikasjon(), PdlTilrettelagtKommunikasjon.class)),
+                        deployService.createOrder(PDL_ADRESSEBESKYTTELSE, person.getIdent(), person.getPerson().getAdressebeskyttelse()),
                         deployService.createOrder(PDL_DOEDFOEDT_BARN, person.getIdent(), person.getPerson().getDoedfoedtBarn())
                 ).reduce(new ArrayList(), (acc, next) -> {
                     acc.addAll(next);
