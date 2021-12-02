@@ -1,11 +1,12 @@
 package no.nav.testnav.libs.reactivesessionsecurity.config;
 
-import no.nav.testnav.libs.reactivesessionsecurity.repository.OidcReactiveMapSessionRepository;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.session.SessionProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.session.ReactiveMapSessionRepository;
 import org.springframework.session.ReactiveSessionRepository;
+import org.springframework.session.config.annotation.web.server.EnableSpringWebSession;
 
 import java.time.Duration;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,7 +20,6 @@ import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenXExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.UserJwtExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.ClientRegistrationIdResolver;
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.InMemoryTokenResolver;
-import org.springframework.session.config.annotation.web.server.EnableSpringWebSession;
 
 @Slf4j
 @EnableSpringWebSession
@@ -37,7 +37,7 @@ public class OicdInMemorySessionConfiguration {
 
     @Bean
     public ReactiveSessionRepository reactiveSessionRepository() {
-        OidcReactiveMapSessionRepository sessionRepository = new OidcReactiveMapSessionRepository(new ConcurrentHashMap<>());
+        ReactiveMapSessionRepository sessionRepository = new ReactiveMapSessionRepository(new ConcurrentHashMap<>());
         int defaultMaxInactiveInterval = (int) (sessionProperties.getTimeout() == null
                 ? Duration.ofMinutes(30)
                 : sessionProperties.getTimeout()
