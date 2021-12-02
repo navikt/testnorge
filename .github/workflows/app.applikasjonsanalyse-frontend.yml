@@ -18,7 +18,6 @@ jobs:
   build:
     name: Build
     uses: navikt/testnorge/.github/workflows/common.build-and-publish.frontend.yml@master
-    if: ${{ github.ref == 'refs/heads/master' }}
     with:
       working-directory: 'apps/applikasjonsanalyse-frontend/'
       app-name: 'applikasjonsanalyse-frontend'
