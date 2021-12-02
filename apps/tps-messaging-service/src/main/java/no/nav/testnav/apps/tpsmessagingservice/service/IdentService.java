@@ -102,18 +102,11 @@ public class IdentService {
 
         return miljoerResponse.entrySet().parallelStream()
                 .collect(Collectors.toMap(Map.Entry::getKey,
-                        entry -> {
-                            try {
-                                return unmarshallFromXml(entry.getValue());
-                            } catch (JAXBException e) {
-                                e.printStackTrace();
-                            }
-                            return null;
-                        }));
+                        entry ->  unmarshallFromXml(entry.getValue())));
     }
 
     @SneakyThrows
-    private TpsServicerutineM201Response unmarshallFromXml(String endringsmeldingResponse) throws JAXBException {
+    private TpsServicerutineM201Response unmarshallFromXml(String endringsmeldingResponse) {
 
         if (TpsMeldingCommand.NO_RESPONSE.equals(endringsmeldingResponse)) {
 
