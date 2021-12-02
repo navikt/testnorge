@@ -45,7 +45,7 @@ public class PersonOrganisasjonTilgangConsumer {
     }
 
     public Mono<Boolean> hasAccess(String organisasjonsnummer, ServerWebExchange serverWebExchange) {
-        return tokenExchange.generateToken(serviceProperties, serverWebExchange)
+        return tokenExchange.exchange(serviceProperties, serverWebExchange)
                 .flatMap(accessToken -> new GetPersonOrganisasjonTilgangCommand(webClient, accessToken.getTokenValue(), organisasjonsnummer).call())
                 .onErrorResume(
                         WebClientResponseException.class::isInstance,

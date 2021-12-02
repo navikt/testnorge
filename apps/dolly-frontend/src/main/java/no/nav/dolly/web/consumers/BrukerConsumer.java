@@ -29,12 +29,12 @@ public class BrukerConsumer {
     }
 
     public Mono<BrukerDTO> getBruker(String orgnummer, ServerWebExchange serverWebExchange) {
-        return tokenExchange.generateToken(serviceProperties, serverWebExchange)
+        return tokenExchange.exchange(serviceProperties, serverWebExchange)
                 .flatMap(accessToken -> new GetBrukerCommand(webClient, accessToken.getTokenValue(), orgnummer).call());
     }
 
     public Mono<String> getToken(String id, ServerWebExchange serverWebExchange){
-        return tokenExchange.generateToken(serviceProperties, serverWebExchange)
+        return tokenExchange.exchange(serviceProperties, serverWebExchange)
                 .flatMap(accessToken -> new GetTokenCommand(webClient, accessToken.getTokenValue(), id).call());
     }
 
