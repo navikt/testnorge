@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { useEffect } from 'react'
 // @ts-ignore
 import useBoolean from '~/utils/hooks/useBoolean'
 // @ts-ignore
@@ -42,9 +42,14 @@ const initialTelefonnummer = {
 }
 
 export const Telefonnummer = ({ formikBag }: TelefonnummerProps) => {
-	console.log('formikBag', formikBag)
 	const tlfListe = _get(formikBag.values, 'pdldata.person.telefonnummer')
 	if (!tlfListe) return null
+
+	useEffect(() => {
+		if (tlfListe.length === 1) {
+			formikBag.setFieldValue('pdldata.person.telefonnummer[0].prioritet', 1)
+		}
+	}, [tlfListe])
 
 	const optionsPrioritet = () => {
 		if (tlfListe.length === 1) {
@@ -86,6 +91,7 @@ export const Telefonnummer = ({ formikBag }: TelefonnummerProps) => {
 							label="Prioritet"
 							options={optionsPrioritet()}
 							size="xsmall"
+							isClearable={false}
 						/>
 						<AvansertForm path={path} kanVelgeMaster={false} />
 					</>

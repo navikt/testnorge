@@ -22,7 +22,6 @@ import { OrganisasjonForm } from '~/components/fagsystem/organisasjoner/form/For
 export const Steg2 = ({ formikBag }) => {
 	const opts = useContext(BestillingsveilederContext)
 	const leggTil = opts.is.leggTil
-	console.log('formikBag', formikBag)
 
 	if (!harAvhukedeAttributter(formikBag.values)) {
 		const message = leggTil

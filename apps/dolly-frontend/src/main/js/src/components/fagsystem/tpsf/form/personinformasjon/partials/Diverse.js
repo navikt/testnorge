@@ -28,7 +28,6 @@ const StyledDiv = styled.div`
 `
 
 export const Diverse = ({ formikBag }) => {
-	console.log('formikBag', formikBag)
 	const handleChangeKontonr = (selected) => {
 		if (!selected) {
 			formikBag.setFieldValue(`tpsf.bankkontonrRegdato`, null)
