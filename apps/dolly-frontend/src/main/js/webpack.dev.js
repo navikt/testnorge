@@ -1,13 +1,17 @@
 const path = require('path')
 const merge = require('webpack-merge')
 const common = require('./webpack.common.js')
-const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = (env) =>
 	merge(common, {
 		mode: 'development',
 		devtool: 'inline-source-map',
+		resolve: {
+			alias: {
+				'react-dom$': 'react-dom/profiling',
+			},
+		},
 		devServer: {
 			static: path.join(__dirname, 'dist/dev'),
 			compress: true,
