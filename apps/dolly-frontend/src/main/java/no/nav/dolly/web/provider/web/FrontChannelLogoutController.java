@@ -30,7 +30,7 @@ public class FrontChannelLogoutController {
     @GetMapping()
     public Mono<Void> logout(@RequestParam String sid) {
         var sessionIds = getAllSessionIds();
-        var manager = (DefaultWebSessionManager) webSessionManager;
+        var manager = (DefaultWebSessionManager) this.webSessionManager;
         var sessions = Flux.concat(sessionIds
                 .stream()
                 .map(sessionId -> manager.getSessionStore().retrieveSession(sessionId))
