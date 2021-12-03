@@ -44,7 +44,7 @@ public class PdlDeltBostedMappingStrategy implements MappingStrategy {
                                         Stream.of(
                                                 boadresser.stream()
                                                         .filter(boAdresse -> isTrue(boAdresse.getDeltAdresse()) &&
-                                                                boAdresse.isGateadresse())
+                                                                boAdresse.isGateadresse() && !person.isKode6())
                                                         .map(boAdresse -> PdlDeltBosted.builder()
                                                                 .vegadresse(mapperFacade.map(boAdresse, PdlVegadresse.class))
                                                                 .kilde(CONSUMER)
@@ -55,7 +55,7 @@ public class PdlDeltBostedMappingStrategy implements MappingStrategy {
 
                                                 boadresser.stream()
                                                         .filter(boAdresse -> isTrue(boAdresse.getDeltAdresse()) &&
-                                                                boAdresse.isMatrikkeladresse())
+                                                                boAdresse.isMatrikkeladresse() && !person.isKode6())
                                                         .map(boAdresse -> PdlDeltBosted.builder()
                                                                 .matrikkeladresse(mapperFacade.map(boAdresse, PdlMatrikkeladresse.class))
                                                                 .kilde(CONSUMER)

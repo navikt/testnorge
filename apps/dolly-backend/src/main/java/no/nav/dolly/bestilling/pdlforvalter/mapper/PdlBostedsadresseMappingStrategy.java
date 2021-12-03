@@ -79,7 +79,7 @@ public class PdlBostedsadresseMappingStrategy implements MappingStrategy {
                                 Stream.of(
                                                 bostedsadresse.stream()
                                                         .filter(boAdresse -> isNotTrue(boAdresse.getDeltAdresse()) &&
-                                                                person.isUtenFastBopel())
+                                                                person.isUtenFastBopel() && !person.isKode6())
                                                         .map(boAdresse -> {
                                                             PdlBostedadresse bostedadresse = prepBoadresse(boAdresse, context);
                                                             bostedadresse.setUkjentBosted(PdlBostedadresse.UkjentBosted.builder()
@@ -90,7 +90,7 @@ public class PdlBostedsadresseMappingStrategy implements MappingStrategy {
                                                         .collect(Collectors.toList()),
                                                 bostedsadresse.stream()
                                                         .filter(boAdresse -> isNotTrue(boAdresse.getDeltAdresse()) &&
-                                                                boAdresse.isGateadresse())
+                                                                boAdresse.isGateadresse() && !person.isKode6())
                                                         .map(boAdresse -> {
                                                             PdlBostedadresse bostedadresse = prepBoadresse(boAdresse, context);
                                                             bostedadresse.setVegadresse(mapperFacade.map(
@@ -100,7 +100,7 @@ public class PdlBostedsadresseMappingStrategy implements MappingStrategy {
                                                         .collect(Collectors.toList()),
                                                 bostedsadresse.stream()
                                                         .filter(boAdresse -> isNotTrue(boAdresse.getDeltAdresse()) &&
-                                                                boAdresse.isMatrikkeladresse())
+                                                                boAdresse.isMatrikkeladresse() && !person.isKode6())
                                                         .map(boAdresse -> {
                                                             PdlBostedadresse bostedadresse = prepBoadresse(boAdresse, context);
                                                             bostedadresse.setMatrikkeladresse(mapperFacade.map(
