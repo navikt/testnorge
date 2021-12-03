@@ -1,7 +1,6 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
 spring:
-
   application:
     name: dolly-frontend
   main:
@@ -22,6 +21,11 @@ spring:
             token-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/token
             jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
 consumers:
+  testnav-tps-messaging-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-tps-messaging-service
+    url: https://testnav-tps-messaging-service.dev.intern.nav.no
   testnav-organisasjon-faste-data-service:
     cluster: dev-gcp
     namespace: dolly

@@ -8,6 +8,7 @@ import { Historikk } from '~/components/ui/historikk/Historikk'
 export const Adressevisning = ({ boadresse }) => {
 	const {
 		adressetype,
+		adresse,
 		gateadresse,
 		husnummer,
 		mellomnavn,
@@ -21,7 +22,7 @@ export const Adressevisning = ({ boadresse }) => {
 		tilleggsadresse,
 	} = boadresse
 
-	const gate = <div>{`${gateadresse} ${husnummer}`}</div>
+	const gate = <div>{`${adresse ? adresse : gateadresse} ${husnummer}`}</div>
 
 	const matrikkel = (
 		<div>
@@ -33,7 +34,7 @@ export const Adressevisning = ({ boadresse }) => {
 		</div>
 	)
 
-	if (gateadresse === 'UTEN FAST BOSTED') {
+	if (adresse === 'UTEN FAST BOSTED' || gateadresse === 'UTEN FAST BOSTED') {
 		return (
 			<TitleValue title="Bosted" size="medium">
 				Uten fast bosted
@@ -44,7 +45,7 @@ export const Adressevisning = ({ boadresse }) => {
 	return (
 		<>
 			<TitleValue title={Formatters.adressetypeToString(adressetype)} size="medium">
-				{adressetype === 'GATE' && gate}
+				{(!adressetype || adressetype === 'GATE') && gate}
 				{adressetype === 'MATR' && matrikkel}
 				{postnr && (
 					<KodeverkConnector navn="Postnummer" value={postnr}>
@@ -60,13 +61,16 @@ export const Adressevisning = ({ boadresse }) => {
 }
 
 export const Boadresse = ({ boadresse }) => {
-	if (!boadresse || boadresse.length < 1) return false
-
+	if (!boadresse || (boadresse instanceof Array && boadresse.length < 1)) return false
 	return (
 		<>
 			<SubOverskrift label="Boadresse" iconKind="adresse" />
 			<div className="person-visning_content">
-				<Historikk component={Adressevisning} propName="boadresse" data={boadresse} />
+				<Historikk
+					component={Adressevisning}
+					propName="boadresse"
+					data={boadresse instanceof Array ? boadresse : [boadresse]}
+				/>
 			</div>
 		</>
 	)

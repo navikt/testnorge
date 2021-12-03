@@ -1,5 +1,4 @@
 import React from 'react'
-import _isEmpty from 'lodash/isEmpty'
 import { validation } from './validation'
 import { Personinformasjon } from './personinformasjon/Personinformasjon'
 import { Adresser } from './adresser/Adresser'

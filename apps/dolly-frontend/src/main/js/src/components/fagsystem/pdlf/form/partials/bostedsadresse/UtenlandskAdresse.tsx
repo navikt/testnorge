@@ -24,6 +24,7 @@ export const UtenlandskAdresse = ({ formikBag }: UtenlandskAdresseForm) => {
 				gjeldende: true,
 			}}
 			canBeEmpty={false}
+			maxEntries={1}
 		>
 			{(path: string, idx: number) => {
 				const utenlandskAdressePath = `${path}.utenlandskAdresse`

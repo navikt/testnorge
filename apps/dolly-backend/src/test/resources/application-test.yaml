@@ -26,6 +26,11 @@ consumers:
     namespace: dolly
     url: http://localhost:${wiremock.server.port:0}/kodeverk
     cluster: dev-fss
+  testnav-tps-messaging-service:
+    name: tps-messaging-mock
+    namespace: dolly
+    url: http://localhost:${wiremock.server.port:0}/tps-messaging
+    cluster: dev-fss
   testnav-krrstub-proxy:
     name: krrstub-mock
     namespace: dolly

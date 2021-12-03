@@ -8,6 +8,7 @@ import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.util.ResponseHandler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -34,7 +35,7 @@ public class KrrstubClientTest {
     private KrrstubConsumer krrstubConsumer;
 
     @Mock
-    private KrrstubResponseHandler krrStubResponseHandler;
+    private ResponseHandler krrStubResponseHandler;
 
     @Mock
     private MapperFacade mapperFacade;
