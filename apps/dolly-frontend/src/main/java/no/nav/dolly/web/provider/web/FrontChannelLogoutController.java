@@ -29,22 +29,20 @@ public class FrontChannelLogoutController {
 
     @GetMapping()
     public Mono<Void> logout(@RequestParam String sid) {
-        var sessionIds = getAllSessionIds(jedis);
-        var manager = (DefaultWebSessionManager) this.webSessionManager;
-        var sessions = Flux.concat(sessionIds
-                .stream()
-                .map(sessionId -> manager.getSessionStore().retrieveSession(sessionId))
-                .toList());
+        var manager = (DefaultWebSessionManager) webSessionManager;
+        var store = manager.getSessionStore();
 
-        return sessions
-                .filter(session -> session.getAttribute("SPRING_SECURITY_CONTEXT") != null)
-                .filter(session -> {
-                    var securityContext = (SecurityContextImpl) session.getAttribute("SPRING_SECURITY_CONTEXT");
-                    if (securityContext.getAuthentication().getPrincipal() instanceof DefaultOidcUser user) {
-                        return user.getIdToken().getClaim("sid").equals(sid);
-                    }
-                    return false;
-                })
+        var sessionIds = getAllSessionIds(jedis);
+
+        return Mono.just(sessionIds)
+                .flatMapMany(Flux::fromIterable)
+                .map(store::retrieveSession)
+                .flatMap(session -> Mono.zip(Mono.just(session), session
+                        .mapNotNull(ses -> (SecurityContextImpl) ses.getAttribute("SPRING_SECURITY_CONTEXT"))
+                        .map(securityContext -> (DefaultOidcUser) securityContext.getAuthentication().getPrincipal())
+                        .map(principal -> Objects.equals(sid, principal.getClaims().get("sid")))))
+                .filter(Tuple2::getT2)
+                .flatMap(Tuple2::getT1)
                 .flatMap(WebSession::invalidate)
                 .then();
     }
