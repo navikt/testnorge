@@ -27,7 +27,7 @@ jobs:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' }}
+    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/oversikt-frontend/front-channel-utlogging' }}
     with:
       resource: 'apps/oversikt-frontend/config.yml'
       app-name: 'oversikt-frontend'
