@@ -34,7 +34,7 @@ public class FrontChannelLogoutController {
         var manager = (DefaultWebSessionManager) webSessionManager;
         var store = manager.getSessionStore();
 
-        var sessionIds = var sessionIds = jedis.keys("*").stream().map(key -> {
+        var sessionIds = jedis.keys("*").stream().map(key -> {
             var keySplit = key.split(":");
             return keySplit[keySplit.length - 1];
         }).toList();
