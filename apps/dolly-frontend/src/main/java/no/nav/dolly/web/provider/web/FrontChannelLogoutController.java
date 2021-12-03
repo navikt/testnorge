@@ -34,10 +34,7 @@ public class FrontChannelLogoutController {
         var manager = (DefaultWebSessionManager) webSessionManager;
         var store = manager.getSessionStore();
 
-        var sessionIds = jedis.keys("*").stream().map(key -> {
-            var keySplit = key.split(":");
-            return keySplit[keySplit.length - 1];
-        }).toList();
+        var sessionIds = getAllSessionIds();
 
         return Mono.just(sessionIds)
                 .flatMapMany(Flux::fromIterable)
@@ -50,5 +47,9 @@ public class FrontChannelLogoutController {
                 .flatMap(Tuple2::getT1)
                 .flatMap(WebSession::invalidate)
                 .then();
+    }
+
+    private List<String> getAllSessionIds() {
+        return this.jedis.keys("*").stream().map(session -> session.split(":")[session.split(":").length - 1]).toList();
     }
 }
