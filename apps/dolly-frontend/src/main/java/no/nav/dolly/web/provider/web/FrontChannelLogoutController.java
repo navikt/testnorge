@@ -25,10 +25,11 @@ import java.util.List;
 public class FrontChannelLogoutController {
 
     private final WebSessionManager webSessionManager;
+    private final Jedis jedis;
 
     @GetMapping()
-    public Mono<Void> logout(@RequestParam String sid, Jedis jedis) {
-        var sessionIds = getAllSessionIds(jedis);
+    public Mono<Void> logout(@RequestParam String sid) {
+        var sessionIds = getAllSessionIds();
         var manager = (DefaultWebSessionManager) this.webSessionManager;
         var sessions = Flux.concat(sessionIds
                 .stream()
@@ -48,7 +49,7 @@ public class FrontChannelLogoutController {
                 .then();
     }
 
-    private List<String> getAllSessionIds(Jedis jedis) {
-        return jedis.keys("*").stream().map(session -> session.split(":")[session.split(":").length - 1]).toList();
+    private List<String> getAllSessionIds() {
+        return this.jedis.keys("*").stream().map(session -> session.split(":")[session.split(":").length - 1]).toList();
     }
 }
