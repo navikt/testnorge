@@ -6,8 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.dolly.domain.resultset.tpsmessagingservice.bankkonto.RsNorskBankkonto;
-import no.nav.dolly.domain.resultset.tpsmessagingservice.bankkonto.RsUtenlandskBankkonto;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrNorskDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrUtlandDTO;
 
 import java.time.LocalDate;
 
@@ -22,6 +22,6 @@ public class RsTpsMessaging {
     private String spraakkode;
     private LocalDate egenAnsattDatoFom;
     private LocalDate egenAnsattDatoTom;
-    private RsUtenlandskBankkonto utenlandskBankkonto;
-    private RsNorskBankkonto norskBankkonto;
+    private BankkontonrUtlandDTO utenlandskBankkonto;
+    private BankkontonrNorskDTO norskBankkonto;
 }

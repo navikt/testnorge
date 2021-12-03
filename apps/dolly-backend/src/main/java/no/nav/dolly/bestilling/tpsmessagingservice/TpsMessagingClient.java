@@ -7,10 +7,9 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
-import no.nav.dolly.domain.resultset.tpsmessagingservice.bankkonto.TpsMessagingRequest;
-import no.nav.dolly.domain.resultset.tpsmessagingservice.bankkonto.TpsMessagingResponse;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import org.springframework.http.ResponseEntity;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrUtlandDTO;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -39,6 +38,11 @@ public class TpsMessagingClient implements ClientRegister {
         try {
             log.trace("Bestilling fra Dolly-frontend: {}", Json.pretty(bestilling));
 
+                if (nonNull(bestilling.getTpsMessaging().getUtenlandskBankkonto())) {
+                    appendResponseStatus(sendUtenlandskBankkonto(
+                            bestilling,
+                            dollyPerson.getHovedperson()), status);
+                }
             if (nonNull(bestilling.getTpsMessaging().getSpraakkode())) {
                 appendResponseStatus(
                         sendSpraakkode(bestilling, dollyPerson.getHovedperson()),
@@ -53,6 +57,12 @@ public class TpsMessagingClient implements ClientRegister {
                 );
             }
 
+                if (nonNull(bestilling.getTpsMessaging().getNorskBankkonto())) {
+                    appendResponseStatus(sendNorskBankkonto(
+                            bestilling,
+                            dollyPerson.getHovedperson()), status);
+                }
+            }
             if (nonNull(bestilling.getTpsMessaging().getEgenAnsattDatoTom()) &&
                     bestilling.getTpsMessaging().getEgenAnsattDatoTom().isBefore(LocalDate.now())) {
                 appendResponseStatus(
@@ -94,7 +104,8 @@ public class TpsMessagingClient implements ClientRegister {
         }
     }
 
-    private ResponseEntity<List<TpsMessagingResponse>> sendUtenlandskBankkonto(RsDollyUtvidetBestilling bestilling, String hovedPerson) {
+    private List<TpsMeldingResponseDTO> sendUtenlandskBankkonto(RsDollyUtvidetBestilling bestilling, String hovedPerson) {
+
         return tpsMessagingConsumer.sendUtenlandskBankkontoRequest(
                 new TpsMessagingRequest(
                         hovedPerson,
@@ -102,7 +113,8 @@ public class TpsMessagingClient implements ClientRegister {
                         bestilling.getTpsMessaging().getUtenlandskBankkonto()));
     }
 
-    private ResponseEntity<List<TpsMessagingResponse>> sendNorskBankkonto(RsDollyUtvidetBestilling bestilling, String hovedPerson) {
+    private List<TpsMeldingResponseDTO> sendNorskBankkonto(RsDollyUtvidetBestilling bestilling, String hovedPerson) {
+
         return tpsMessagingConsumer.sendNorskBankkontoRequest(
                 new TpsMessagingRequest(
                         hovedPerson,
@@ -135,17 +147,13 @@ public class TpsMessagingClient implements ClientRegister {
     }
 
 
-    private void appendResponseStatus(ResponseEntity<List<TpsMessagingResponse>> responseList, StringBuilder status) {
+    private void appendResponseStatus(List<TpsMeldingResponseDTO> responseList, StringBuilder status) {
 
-        if (nonNull(responseList) && responseList.hasBody()) {
-            responseList.getBody().forEach(response -> {
-                status.append(isBlank(status) ? null : ",");
-                status.append(response.miljoe());
-                status.append(":");
-                status.append(response.status().equals("OK") ? "OK" : "FEIL:" + response.utfyllendeMelding());
-            });
-        } else {
-            status.append("NA:FEIL: Mottok ikke svar fra TPS import");
-        }
+        responseList.forEach(response -> {
+            status.append(isBlank(status) ? null : ",");
+            status.append(response.getMiljoe());
+            status.append(":");
+            status.append(response.getStatus().equals("OK") ? "OK" : "FEIL:" + response.getUtfyllendeMelding());
+        });
     }
 }
