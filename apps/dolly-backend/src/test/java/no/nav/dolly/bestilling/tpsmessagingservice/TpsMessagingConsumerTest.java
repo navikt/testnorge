@@ -2,8 +2,8 @@ package no.nav.dolly.bestilling.tpsmessagingservice;
 
 import no.nav.dolly.config.credentials.TpsMessagingServiceProperties;
 import no.nav.dolly.domain.resultset.tpsmessagingservice.bankkonto.RsUtenlandskBankkonto;
+import no.nav.dolly.domain.resultset.tpsmessagingservice.bankkonto.TpsMessagingRequest;
 import no.nav.dolly.domain.resultset.tpsmessagingservice.bankkonto.TpsMessagingResponse;
-import no.nav.dolly.domain.resultset.tpsmessagingservice.bankkonto.UtenlandskBankkontoRequest;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.Assertions;
@@ -70,7 +70,7 @@ class TpsMessagingConsumerTest {
 
         stubPostUtenlandskBankkontoData();
 
-        ResponseEntity<List<TpsMessagingResponse>> response = tpsMessagingConsumer.sendUtenlandskBankkontoRequest(new UtenlandskBankkontoRequest(
+        ResponseEntity<List<TpsMessagingResponse>> response = tpsMessagingConsumer.sendUtenlandskBankkontoRequest(new TpsMessagingRequest(
                 IDENT,
                 MILJOER,
                 new RsUtenlandskBankkonto()
@@ -84,12 +84,12 @@ class TpsMessagingConsumerTest {
     void createDigitalKontaktdata_GenerateTokenFailed_ThrowsDollyFunctionalException() {
 
         when(tokenService.exchange(any(TpsMessagingServiceProperties.class))).thenReturn(Mono.empty());
-        UtenlandskBankkontoRequest utenlandskBankkontoRequest = new UtenlandskBankkontoRequest(
+        TpsMessagingRequest tpsMessagingRequest = new TpsMessagingRequest(
                 IDENT,
                 MILJOER,
                 RsUtenlandskBankkonto.builder().build()
         );
-        Assertions.assertThrows(SecurityException.class, () -> tpsMessagingConsumer.sendUtenlandskBankkontoRequest(utenlandskBankkontoRequest));
+        Assertions.assertThrows(SecurityException.class, () -> tpsMessagingConsumer.sendUtenlandskBankkontoRequest(tpsMessagingRequest));
 
         verify(tokenService).exchange(any(TpsMessagingServiceProperties.class));
     }

@@ -7,13 +7,13 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
-import no.nav.dolly.domain.resultset.tpsmessagingservice.bankkonto.NorskBankkontoRequest;
+import no.nav.dolly.domain.resultset.tpsmessagingservice.bankkonto.TpsMessagingRequest;
 import no.nav.dolly.domain.resultset.tpsmessagingservice.bankkonto.TpsMessagingResponse;
-import no.nav.dolly.domain.resultset.tpsmessagingservice.bankkonto.UtenlandskBankkontoRequest;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -31,28 +31,38 @@ public class TpsMessagingClient implements ClientRegister {
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
+        if (isNull(bestilling.getTpsMessaging())) {
+            return;
+        }
         StringBuilder status = new StringBuilder();
 
         try {
             log.trace("Bestilling fra Dolly-frontend: {}", Json.pretty(bestilling));
-            if (nonNull(bestilling.getTpsMessaging())) {
 
-                if (nonNull(bestilling.getTpsMessaging().getUtenlandskBankkonto())) {
-                    ResponseEntity<List<TpsMessagingResponse>> response = sendUtenlandskBankkonto(
-                            bestilling,
-                            dollyPerson.getHovedperson());
-
-                    appendResponseStatus(response, status);
-                }
-
-                if (nonNull(bestilling.getTpsMessaging().getNorskBankkonto())) {
-                    ResponseEntity<List<TpsMessagingResponse>> response = sendNorskBankkonto(
-                            bestilling,
-                            dollyPerson.getHovedperson());
-
-                    appendResponseStatus(response, status);
-                }
+            if (nonNull(bestilling.getTpsMessaging().getSpraakkode())) {
+                appendResponseStatus(
+                        sendSpraakkode(bestilling, dollyPerson.getHovedperson()),
+                        status
+                );
             }
+
+            if (nonNull(bestilling.getTpsMessaging().getEgenAnsattDatoFom())) {
+                appendResponseStatus(
+                        sendEgenansatt(bestilling, dollyPerson.getHovedperson()),
+                        status
+                );
+            }
+
+            if (nonNull(bestilling.getTpsMessaging().getEgenAnsattDatoTom()) &&
+                    bestilling.getTpsMessaging().getEgenAnsattDatoTom().isBefore(LocalDate.now())) {
+                appendResponseStatus(
+                        deleteEgenansatt(bestilling, dollyPerson.getHovedperson()),
+                        status
+                );
+            }
+
+            sendBankkontoer(bestilling, dollyPerson, status);
+
         } catch (RuntimeException e) {
             status.append(errorStatusDecoder.decodeRuntimeException(e));
             log.error("Kall til TPS messaging service feilet: {}", e.getMessage(), e);
@@ -68,10 +78,25 @@ public class TpsMessagingClient implements ClientRegister {
         throw new UnsupportedOperationException("Release ikke implementert");
     }
 
+    private void sendBankkontoer(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, StringBuilder status) {
+        if (nonNull(bestilling.getTpsMessaging().getUtenlandskBankkonto())) {
+
+            appendResponseStatus(sendUtenlandskBankkonto(
+                    bestilling,
+                    dollyPerson.getHovedperson()), status);
+        }
+
+        if (nonNull(bestilling.getTpsMessaging().getNorskBankkonto())) {
+
+            appendResponseStatus(sendNorskBankkonto(
+                    bestilling,
+                    dollyPerson.getHovedperson()), status);
+        }
+    }
 
     private ResponseEntity<List<TpsMessagingResponse>> sendUtenlandskBankkonto(RsDollyUtvidetBestilling bestilling, String hovedPerson) {
         return tpsMessagingConsumer.sendUtenlandskBankkontoRequest(
-                new UtenlandskBankkontoRequest(
+                new TpsMessagingRequest(
                         hovedPerson,
                         bestilling.getEnvironments(),
                         bestilling.getTpsMessaging().getUtenlandskBankkonto()));
@@ -79,11 +104,36 @@ public class TpsMessagingClient implements ClientRegister {
 
     private ResponseEntity<List<TpsMessagingResponse>> sendNorskBankkonto(RsDollyUtvidetBestilling bestilling, String hovedPerson) {
         return tpsMessagingConsumer.sendNorskBankkontoRequest(
-                new NorskBankkontoRequest(
+                new TpsMessagingRequest(
                         hovedPerson,
                         bestilling.getEnvironments(),
                         bestilling.getTpsMessaging().getNorskBankkonto()));
     }
+
+    private ResponseEntity<List<TpsMessagingResponse>> sendSpraakkode(RsDollyUtvidetBestilling bestilling, String hovedPerson) {
+        return tpsMessagingConsumer.sendSpraakkodeRequest(
+                new TpsMessagingRequest(
+                        hovedPerson,
+                        bestilling.getEnvironments(),
+                        bestilling.getTpsMessaging().getSpraakkode()));
+    }
+
+    private ResponseEntity<List<TpsMessagingResponse>> sendEgenansatt(RsDollyUtvidetBestilling bestilling, String hovedPerson) {
+        return tpsMessagingConsumer.sendEgenansattRequest(
+                new TpsMessagingRequest(
+                        hovedPerson,
+                        bestilling.getEnvironments(),
+                        bestilling.getTpsMessaging().getEgenAnsattDatoFom()));
+    }
+
+    private ResponseEntity<List<TpsMessagingResponse>> deleteEgenansatt(RsDollyUtvidetBestilling bestilling, String hovedPerson) {
+        return tpsMessagingConsumer.deleteEgenansattRequest(
+                new TpsMessagingRequest(
+                        hovedPerson,
+                        bestilling.getEnvironments(),
+                        null));
+    }
+
 
     private void appendResponseStatus(ResponseEntity<List<TpsMessagingResponse>> responseList, StringBuilder status) {
 

@@ -183,24 +183,31 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		},
 		sprakKode: {
 			label: 'Språk',
-			checked: has('tpsf.sprakKode'),
-			add: () => set('tpsf.sprakKode', ''),
-			remove: () => del('tpsf.sprakKode'),
+			checked: has('tpsf.sprakKode') || has('tpsMessaging.sprakKode'),
+			add: () => set('tpsMessaging.sprakKode', ''),
+			remove: () => del(['tpsMessaging.sprakKode', 'tpsf.sprakKode']),
 		},
 		egenAnsattDatoFom: {
 			label: 'Skjerming',
-			checked: has('tpsf.egenAnsattDatoFom'),
+			checked: has('tpsf.egenAnsattDatoFom') || has('tpsMessaging.egenAnsattDatoFom'),
 			add() {
 				setMulti(
 					[
-						'tpsf.egenAnsattDatoFom',
-						_get(personFoerLeggTil, 'tpsf.egenAnsattDatoFom') || new Date(),
+						'tpsMessaging.egenAnsattDatoFom',
+						_get(personFoerLeggTil, 'tpsf.egenAnsattDatoFom') ||
+							_get(personFoerLeggTil, 'tpsMessaging.egenAnsattDatoFom') ||
+							new Date(),
 					],
-					['tpsf.egenAnsattDatoTom', undefined]
+					['tpsMessaging.egenAnsattDatoTom', undefined]
 				)
 			},
 			remove() {
-				del(['tpsf.egenAnsattDatoFom', 'tpsf.egenAnsattDatoTom'])
+				del([
+					'tpsMessaging.egenAnsattDatoFom',
+					'tpsMessaging.egenAnsattDatoTom',
+					'tpsf.egenAnsattDatoFom',
+					'tpsf.egenAnsattDatoTom',
+				])
 			},
 		},
 		erForsvunnet: {

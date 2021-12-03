@@ -9,6 +9,8 @@ import lombok.Setter;
 import no.nav.dolly.domain.resultset.tpsmessagingservice.bankkonto.RsNorskBankkonto;
 import no.nav.dolly.domain.resultset.tpsmessagingservice.bankkonto.RsUtenlandskBankkonto;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @Builder
@@ -17,6 +19,9 @@ import no.nav.dolly.domain.resultset.tpsmessagingservice.bankkonto.RsUtenlandskB
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RsTpsMessaging {
 
+    private String spraakkode;
+    private LocalDate egenAnsattDatoFom;
+    private LocalDate egenAnsattDatoTom;
     private RsUtenlandskBankkonto utenlandskBankkonto;
     private RsNorskBankkonto norskBankkonto;
 }
