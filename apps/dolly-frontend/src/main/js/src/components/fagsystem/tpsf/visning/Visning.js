@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import _has from 'lodash/has'
 import {
 	Boadresse,
@@ -6,13 +6,24 @@ import {
 	Identhistorikk,
 	MidlertidigAdresse,
 	Nasjonalitet,
+	NorskBankkonto,
 	Personinfo,
 	Postadresse,
 	Relasjoner,
+	UtenlandskBankkonto,
 	Vergemaal,
 } from './partials'
+import { TpsMessagingApi } from '~/service/Api'
 
-export const TpsfVisning = ({ data }) => {
+export const TpsfVisning = ({ data, environments }) => {
+	const [tpsMessagingData, setTpsMessagingData] = useState(null)
+	useEffect(() => {
+		if (environments && environments.length > 0) {
+			TpsMessagingApi.getTpsPersonInfo(data.ident, environments[0]).then((response) => {
+				setTpsMessagingData(response?.data[0]?.person)
+			})
+		}
+	}, [])
 	if (!data) return null
 
 	return (
@@ -20,10 +31,16 @@ export const TpsfVisning = ({ data }) => {
 			<Personinfo data={data} />
 			<Nasjonalitet data={data} />
 			<Vergemaal data={data.vergemaal} />
-			<Fullmakt data={data.fullmakt} />
+			<Fullmakt data={data.fullmakt} relasjoner={data.relasjoner} />
 			<Boadresse boadresse={data.boadresse} />
 			<Postadresse postadresse={data.postadresse} />
 			<MidlertidigAdresse midlertidigAdresse={data.midlertidigAdresse} />
+			<UtenlandskBankkonto
+				data={tpsMessagingData ? tpsMessagingData.bankkontonrUtland : data.bankkontonrUtland}
+			/>
+			<NorskBankkonto
+				data={tpsMessagingData ? tpsMessagingData.bankkontonrNorsk : data.bankkontonrNorsk}
+			/>
 			<Identhistorikk identhistorikk={data.identHistorikk} />
 			<Relasjoner relasjoner={data.relasjoner} />
 		</div>

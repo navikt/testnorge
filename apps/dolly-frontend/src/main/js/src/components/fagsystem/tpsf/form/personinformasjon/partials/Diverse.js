@@ -5,7 +5,6 @@ import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bes
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { Diskresjonskoder } from './diskresjonskoder/Diskresjonskoder'
 import { Telefonnummer } from './telefonnummer/Telefonnummer'
@@ -29,11 +28,6 @@ const StyledDiv = styled.div`
 `
 
 export const Diverse = ({ formikBag }) => {
-	const handleChangeKontonr = (selected) => {
-		if (!selected) {
-			formikBag.setFieldValue(`tpsf.bankkontonrRegdato`, null)
-		}
-	}
 	const opts = useContext(BestillingsveilederContext)
 	const { personFoerLeggTil } = opts
 	const harSkjerming = personFoerLeggTil
@@ -123,20 +117,6 @@ export const Diverse = ({ formikBag }) => {
 					name="tpsf.forsvunnetDato"
 					label="Forsvunnet dato"
 					disabled={!formikBag.values.tpsf.erForsvunnet}
-					fastfield={false}
-				/>
-			</Vis>
-			<Vis attributt="tpsf.harBankkontonr">
-				<FormikCheckbox
-					name="tpsf.harBankkontonr"
-					label="Har bankkontonummer"
-					afterChange={handleChangeKontonr}
-					checkboxMargin
-				/>
-				<FormikDatepicker
-					name="tpsf.bankkontonrRegdato"
-					label="Bankkonto opprettet"
-					disabled={!formikBag.values.tpsf.harBankkontonr}
 					fastfield={false}
 				/>
 			</Vis>

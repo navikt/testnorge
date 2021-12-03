@@ -24,6 +24,11 @@ consumers:
     namespace: dolly
     url: https://testnav-inntektsmelding-service.dev.intern.nav.no
     cluster: dev-gcp
+  testnav-tps-messaging-service:
+    name: testnav-tps-messaging-service
+    namespace: dolly
+    url: https://testnav-tps-messaging-service.dev.intern.nav.no
+    cluster: dev-gcp
   testnav-generer-navn-service:
     name: generer-navn-service
     namespace: dolly

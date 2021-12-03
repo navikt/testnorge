@@ -16,10 +16,12 @@ import OrganisasjonForvalterService from '~/service/services/organisasjonforvalt
 import OrganisasjonService from '~/service/services/organisasjonservice/OrganisasjonService'
 import MiljoeService from '~/service/services/miljoe/MiljoeService'
 import PdlForvalterService from '~/service/services/pdl/PdlForvalterService'
+import TpsMessagingService from '~/service/services/tpsmessaging/TpsMessagingService'
 
 export const DollyApi = DollyService
 export const ProfilApi = ProfilService
 export const TpsfApi = TpsfService
+export const TpsMessagingApi = TpsMessagingService
 export const SigrunApi = SigrunService
 export const KrrApi = KrrService
 export const ArenaApi = ArenaService

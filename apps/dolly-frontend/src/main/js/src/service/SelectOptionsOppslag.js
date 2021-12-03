@@ -44,6 +44,13 @@ export const SelectOptionsOppslag = {
 		return useAsync(async () => DollyApi.getKodeverkByNavn('Tema'), [DollyApi.getKodeverkByNavn])
 	},
 
+	hentValutaer: () => {
+		return useAsync(
+			async () => DollyApi.getKodeverkByNavn('Valutaer'),
+			[DollyApi.getKodeverkByNavn]
+		)
+	},
+
 	hentRollerFraBrregstub: () => {
 		return useAsync(async () => BrregstubApi.getRoller(), [BrregstubApi.getRoller])
 	},
