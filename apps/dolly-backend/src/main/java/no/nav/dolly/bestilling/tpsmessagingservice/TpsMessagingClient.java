@@ -34,7 +34,7 @@ public class TpsMessagingClient implements ClientRegister {
         StringBuilder status = new StringBuilder();
 
         try {
-            log.info("Bestilling fra Dolly-frontend: {}", Json.pretty(bestilling));
+            log.trace("Bestilling fra Dolly-frontend: {}", Json.pretty(bestilling));
             if (nonNull(bestilling.getTpsMessaging())) {
 
                 if (nonNull(bestilling.getTpsMessaging().getUtenlandskBankkonto())) {

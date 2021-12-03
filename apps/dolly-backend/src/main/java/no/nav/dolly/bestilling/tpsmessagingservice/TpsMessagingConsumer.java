@@ -45,7 +45,7 @@ public class TpsMessagingConsumer {
     @Timed(name = "providers", tags = { "operation", "tps_messaging_createUtenlandskBankkonto" })
     public ResponseEntity<List<TpsMessagingResponse>> sendUtenlandskBankkontoRequest(UtenlandskBankkontoRequest request) {
 
-        log.info("Sender utenlandsk bankkonto request på ident: {} til TPS messaging service: {}", request.ident(), request.body());
+        log.trace("Sender utenlandsk bankkonto request på ident: {} til TPS messaging service: {}", request.ident(), request.body());
 
         ResponseEntity<List<TpsMessagingResponse>> response = webClient.post()
                 .uri(uriBuilder -> uriBuilder
@@ -58,14 +58,14 @@ public class TpsMessagingConsumer {
                 .retrieve().toEntityList(TpsMessagingResponse.class)
                 .block();
 
-        log.info("Response fra TPS messaging service: {}", response);
+        log.trace("Response fra TPS messaging service: {}", response);
         return response;
     }
 
     @Timed(name = "providers", tags = { "operation", "tps_messaging_createNorskBankkonto" })
     public ResponseEntity<List<TpsMessagingResponse>> sendNorskBankkontoRequest(NorskBankkontoRequest request) {
 
-        log.info("Sender norsk bankkonto request på ident: {} til TPS messaging service: {}", request.ident(), request.body());
+        log.trace("Sender norsk bankkonto request på ident: {} til TPS messaging service: {}", request.ident(), request.body());
 
         ResponseEntity<List<TpsMessagingResponse>> response = webClient.post()
                 .uri(uriBuilder -> uriBuilder
@@ -78,7 +78,7 @@ public class TpsMessagingConsumer {
                 .retrieve().toEntityList(TpsMessagingResponse.class)
                 .block();
 
-        log.info("Response fra TPS messaging service: {}", response);
+        log.trace("Response fra TPS messaging service: {}", response);
         return response;
     }
 
