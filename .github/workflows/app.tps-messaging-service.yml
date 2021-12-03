@@ -18,7 +18,6 @@ jobs:
   build:
     name: Build
     uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@master
-    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/feature/legge_til_nytt_endepunkt' }}
     with:
       working-directory: 'apps/tps-messaging-service/'
       app-name: 'tps-messaging-service'
@@ -28,7 +27,7 @@ jobs:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/feature/legge_til_nytt_endepunkt' }}
+    if: ${{ github.ref == 'refs/heads/master' }}
     with:
       resource: 'apps/tps-messaging-service/nais.yml'
       app-name: 'tps-messaging-service'

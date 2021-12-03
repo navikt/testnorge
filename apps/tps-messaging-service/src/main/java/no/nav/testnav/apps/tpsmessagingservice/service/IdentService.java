@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -87,7 +86,7 @@ public class IdentService {
                 nonNull(response.getTpsSvar().getPersonDataM201()) &&
                 nonNull(response.getTpsSvar().getPersonDataM201().getAFnr()) &&
                 response.getTpsSvar().getPersonDataM201().getAFnr().getEFnr().stream()
-                        .anyMatch(eFnr -> ident.equals(eFnr.getFnr()) && isNotBlank(eFnr.getKn()));
+                        .anyMatch(eFnr -> ident.equals(eFnr.getFnr()) && isNull(eFnr.getSvarStatus()));
     }
 
     private Map<String, TpsServicerutineM201Response> readFromTps(List<String> identer, List<String> miljoer, boolean isProd) {
