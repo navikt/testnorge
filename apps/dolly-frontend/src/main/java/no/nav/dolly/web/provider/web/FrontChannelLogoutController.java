@@ -14,11 +14,9 @@ import org.springframework.web.server.session.DefaultWebSessionManager;
 import org.springframework.web.server.session.WebSessionManager;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.function.Tuple2;
 import redis.clients.jedis.Jedis;
 
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/oauth2/logout")
@@ -31,10 +29,8 @@ public class FrontChannelLogoutController {
 
     @GetMapping()
     public Mono<Void> logout(@RequestParam String sid) {
-        var manager = (DefaultWebSessionManager) webSessionManager;
-        var store = manager.getSessionStore();
-
         var sessionIds = getAllSessionIds();
+        var manager = (DefaultWebSessionManager) webSessionManager;
         var sessions = Flux.concat(sessionIds
                 .stream()
                 .map(sessionId -> manager.getSessionStore().retrieveSession(sessionId))
