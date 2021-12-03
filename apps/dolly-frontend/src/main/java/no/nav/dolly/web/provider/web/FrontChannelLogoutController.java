@@ -25,9 +25,10 @@ import java.util.List;
 public class FrontChannelLogoutController {
 
     private final WebSessionManager webSessionManager;
+    private final Jedis jedis;
 
     @GetMapping()
-    public Mono<Void> logout(@RequestParam String sid, Jedis jedis) {
+    public Mono<Void> logout(@RequestParam String sid) {
         var sessionIds = getAllSessionIds(jedis);
         var manager = (DefaultWebSessionManager) this.webSessionManager;
         var sessions = Flux.concat(sessionIds
