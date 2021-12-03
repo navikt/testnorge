@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,8 +18,8 @@ import java.time.LocalDateTime;
         @JsonSubTypes.Type(value = RsGateadresse.class, name = "GATE"),
         @JsonSubTypes.Type(value = RsMatrikkeladresse.class, name = "MATR")
 })
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -53,8 +55,8 @@ public abstract class RsAdresse {
 
     public abstract String getAdressetype();
 
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class TilleggAdressetype {

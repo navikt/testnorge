@@ -2,14 +2,16 @@ package no.nav.dolly.domain.resultset.tpsf.adresse;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class RsMidlertidigAdresse {
@@ -35,8 +37,8 @@ public class RsMidlertidigAdresse {
     @Schema(description = "Benyttes ved UTAD. Postland må være annet enn \"NOR\"")
     private RsPostadresse utenlandskAdresse;
 
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class NorskAdresse {
@@ -72,8 +74,8 @@ public class RsMidlertidigAdresse {
         private String postboksAnlegg;
     }
 
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class MidlertidigTilleggAdresse {
