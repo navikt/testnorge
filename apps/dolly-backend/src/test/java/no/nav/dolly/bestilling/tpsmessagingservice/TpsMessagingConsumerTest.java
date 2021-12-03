@@ -1,12 +1,8 @@
 package no.nav.dolly.bestilling.tpsmessagingservice;
 
 import no.nav.dolly.config.credentials.TpsMessagingServiceProperties;
-import no.nav.dolly.domain.resultset.tpsmessagingservice.UtenlandskBankkontoRequest;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
-import no.nav.dolly.domain.resultset.tpsmessagingservice.bankkonto.RsUtenlandskBankkonto;
-import no.nav.dolly.domain.resultset.tpsmessagingservice.bankkonto.TpsMessagingRequest;
-import no.nav.dolly.domain.resultset.tpsmessagingservice.bankkonto.TpsMessagingResponse;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.Assertions;
@@ -64,6 +60,7 @@ class TpsMessagingConsumerTest {
 
         stubFor(post(urlPathMatching("(.*)/api/v1/personer/12345678901/bankkonto-utenlandsk"))
                 .willReturn(ok()
+                        .withBody("[{\"miljoe\" : \"q1\", \"status\" : \"OK\"}]")
                         .withHeader("Content-Type", "application/json")));
     }
 
@@ -72,24 +69,23 @@ class TpsMessagingConsumerTest {
 
         stubPostUtenlandskBankkontoData();
 
-        List<TpsMeldingResponseDTO> response = tpsMessagingConsumer.sendUtenlandskBankkontoRequest(new TpsMessagingRequest(
+        List<TpsMeldingResponseDTO> response = tpsMessagingConsumer.sendUtenlandskBankkontoRequest(
                 IDENT,
                 MILJOER,
-                new BankkontonrUtlandDTO()));
+                new BankkontonrUtlandDTO());
 
-        assertThat(response.get(0).getMiljoe(), equals("q1"));
+        assertThat("First env should be q1", response.get(0).getMiljoe().equals("q1"));
     }
 
     @Test
     void createDigitalKontaktdata_GenerateTokenFailed_ThrowsDollyFunctionalException() {
 
         when(tokenService.exchange(any(TpsMessagingServiceProperties.class))).thenReturn(Mono.empty());
-        TpsMessagingRequest tpsMessagingRequest = new TpsMessagingRequest(
+
+        Assertions.assertThrows(SecurityException.class, () -> tpsMessagingConsumer.sendUtenlandskBankkontoRequest(
                 IDENT,
                 MILJOER,
-                new BankkontonrUtlandDTO());
-
-        Assertions.assertThrows(SecurityException.class, () -> tpsMessagingConsumer.sendUtenlandskBankkontoRequest(tpsMessagingRequest));
+                new BankkontonrUtlandDTO()));
 
         verify(tokenService).exchange(any(TpsMessagingServiceProperties.class));
     }

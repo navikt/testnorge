@@ -8,7 +8,6 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import org.springframework.stereotype.Service;
 
@@ -38,36 +37,35 @@ public class TpsMessagingClient implements ClientRegister {
         try {
             log.trace("Bestilling fra Dolly-frontend: {}", Json.pretty(bestilling));
 
-                if (nonNull(bestilling.getTpsMessaging().getUtenlandskBankkonto())) {
-                    appendResponseStatus(sendUtenlandskBankkonto(
-                            bestilling,
-                            dollyPerson.getHovedperson()), status);
-                }
             if (nonNull(bestilling.getTpsMessaging().getSpraakkode())) {
                 appendResponseStatus(
-                        sendSpraakkode(bestilling, dollyPerson.getHovedperson()),
-                        status
+                        tpsMessagingConsumer.sendSpraakkodeRequest(
+                                dollyPerson.getHovedperson(),
+                                bestilling.getEnvironments(),
+                                bestilling.getTpsMessaging().getSpraakkode()),
+                        status,
+                        "Spraakkode"
                 );
             }
 
             if (nonNull(bestilling.getTpsMessaging().getEgenAnsattDatoFom())) {
                 appendResponseStatus(
-                        sendEgenansatt(bestilling, dollyPerson.getHovedperson()),
-                        status
+                        tpsMessagingConsumer.sendEgenansattRequest(
+                                dollyPerson.getHovedperson(),
+                                bestilling.getEnvironments(),
+                                bestilling.getTpsMessaging().getEgenAnsattDatoFom()),
+                        status,
+                        "Egenansatt_send"
                 );
-            }
-
-                if (nonNull(bestilling.getTpsMessaging().getNorskBankkonto())) {
-                    appendResponseStatus(sendNorskBankkonto(
-                            bestilling,
-                            dollyPerson.getHovedperson()), status);
-                }
             }
             if (nonNull(bestilling.getTpsMessaging().getEgenAnsattDatoTom()) &&
                     bestilling.getTpsMessaging().getEgenAnsattDatoTom().isBefore(LocalDate.now())) {
                 appendResponseStatus(
-                        deleteEgenansatt(bestilling, dollyPerson.getHovedperson()),
-                        status
+                        tpsMessagingConsumer.deleteEgenansattRequest(
+                                dollyPerson.getHovedperson(),
+                                bestilling.getEnvironments()),
+                        status,
+                        "Egenansatt_delete"
                 );
             }
 
@@ -91,66 +89,28 @@ public class TpsMessagingClient implements ClientRegister {
     private void sendBankkontoer(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, StringBuilder status) {
         if (nonNull(bestilling.getTpsMessaging().getUtenlandskBankkonto())) {
 
-            appendResponseStatus(sendUtenlandskBankkonto(
-                    bestilling,
-                    dollyPerson.getHovedperson()), status);
+            appendResponseStatus(tpsMessagingConsumer.sendUtenlandskBankkontoRequest(
+                            dollyPerson.getHovedperson(),
+                            bestilling.getEnvironments(),
+                            bestilling.getTpsMessaging().getUtenlandskBankkonto()),
+                    status, "UtenlandskBankkonto");
         }
 
         if (nonNull(bestilling.getTpsMessaging().getNorskBankkonto())) {
 
-            appendResponseStatus(sendNorskBankkonto(
-                    bestilling,
-                    dollyPerson.getHovedperson()), status);
+            appendResponseStatus(tpsMessagingConsumer.sendNorskBankkontoRequest(
+                            dollyPerson.getHovedperson(),
+                            bestilling.getEnvironments(),
+                            bestilling.getTpsMessaging().getNorskBankkonto()),
+                    status, "NorskBankkonto");
         }
     }
 
-    private List<TpsMeldingResponseDTO> sendUtenlandskBankkonto(RsDollyUtvidetBestilling bestilling, String hovedPerson) {
-
-        return tpsMessagingConsumer.sendUtenlandskBankkontoRequest(
-                new TpsMessagingRequest(
-                        hovedPerson,
-                        bestilling.getEnvironments(),
-                        bestilling.getTpsMessaging().getUtenlandskBankkonto()));
-    }
-
-    private List<TpsMeldingResponseDTO> sendNorskBankkonto(RsDollyUtvidetBestilling bestilling, String hovedPerson) {
-
-        return tpsMessagingConsumer.sendNorskBankkontoRequest(
-                new TpsMessagingRequest(
-                        hovedPerson,
-                        bestilling.getEnvironments(),
-                        bestilling.getTpsMessaging().getNorskBankkonto()));
-    }
-
-    private ResponseEntity<List<TpsMessagingResponse>> sendSpraakkode(RsDollyUtvidetBestilling bestilling, String hovedPerson) {
-        return tpsMessagingConsumer.sendSpraakkodeRequest(
-                new TpsMessagingRequest(
-                        hovedPerson,
-                        bestilling.getEnvironments(),
-                        bestilling.getTpsMessaging().getSpraakkode()));
-    }
-
-    private ResponseEntity<List<TpsMessagingResponse>> sendEgenansatt(RsDollyUtvidetBestilling bestilling, String hovedPerson) {
-        return tpsMessagingConsumer.sendEgenansattRequest(
-                new TpsMessagingRequest(
-                        hovedPerson,
-                        bestilling.getEnvironments(),
-                        bestilling.getTpsMessaging().getEgenAnsattDatoFom()));
-    }
-
-    private ResponseEntity<List<TpsMessagingResponse>> deleteEgenansatt(RsDollyUtvidetBestilling bestilling, String hovedPerson) {
-        return tpsMessagingConsumer.deleteEgenansattRequest(
-                new TpsMessagingRequest(
-                        hovedPerson,
-                        bestilling.getEnvironments(),
-                        null));
-    }
-
-
-    private void appendResponseStatus(List<TpsMeldingResponseDTO> responseList, StringBuilder status) {
+    private void appendResponseStatus(List<TpsMeldingResponseDTO> responseList, StringBuilder status, String enhet) {
 
         responseList.forEach(response -> {
             status.append(isBlank(status) ? null : ",");
+            status.append(enhet).append("-");
             status.append(response.getMiljoe());
             status.append(":");
             status.append(response.getStatus().equals("OK") ? "OK" : "FEIL:" + response.getUtfyllendeMelding());
