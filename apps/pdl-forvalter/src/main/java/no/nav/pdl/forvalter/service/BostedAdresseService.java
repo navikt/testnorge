@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility.getIdenttype;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
@@ -49,8 +50,8 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
 
             if (isTrue(adresse.getIsNew())) {
 
-                handle(adresse, person);
                 populateMiscFields(adresse, person);
+                handle(adresse, person);
             }
         }
         enforceIntegrity(person.getBostedsadresse());
@@ -129,5 +130,9 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
 
         bostedadresse.setCoAdressenavn(genererCoNavn(bostedadresse.getOpprettCoAdresseNavn()));
         bostedadresse.setOpprettCoAdresseNavn(null);
+
+        if (isNull(bostedadresse.getAngittFlyttedato())) {
+            bostedadresse.setAngittFlyttedato(bostedadresse.getGyldigFraOgMed());
+        }
     }
 }
