@@ -30,11 +30,12 @@ public class ProfilApiConsumer {
 
     public ProfilDTO getBruker() {
         log.info("Henter bruker fra Azure.");
-        return tokenExchange.exchange(properties).flatMap(accessToken -> webClient.get()
-                .uri("/api/v1/profil")
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken.getTokenValue())
-                .retrieve()
-                .bodyToMono(ProfilDTO.class)
-        ).block();
+        return tokenExchange.exchange(properties)
+                .flatMap(accessToken -> webClient.get()
+                        .uri("/api/v1/profil")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken.getTokenValue())
+                        .retrieve()
+                        .bodyToMono(ProfilDTO.class)
+                ).block();
     }
 }

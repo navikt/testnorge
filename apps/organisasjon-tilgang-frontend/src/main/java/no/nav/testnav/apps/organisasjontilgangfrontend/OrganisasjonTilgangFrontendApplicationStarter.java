@@ -19,8 +19,8 @@ import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
 import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivesessionsecurity.config.OicdInMemorySessionConfiguration;
-import no.nav.testnav.libs.reactivesessionsecurity.domain.AccessToken;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 
 @Import({
@@ -43,7 +43,7 @@ public class OrganisasjonTilgangFrontendApplicationStarter {
         return new AddAuthenticationHeaderToRequestGatewayFilterFactory()
                 .apply(exchange -> {
                     return tokenExchange
-                            .generateToken(serverProperties, exchange)
+                            .exchange(serverProperties, exchange)
                             .map(AccessToken::getTokenValue);
                 });
     }
