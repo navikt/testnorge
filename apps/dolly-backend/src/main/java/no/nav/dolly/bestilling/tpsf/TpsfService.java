@@ -20,22 +20,26 @@ import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import org.slf4j.Logger;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.emptyList;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
@@ -76,7 +80,29 @@ public class TpsfService {
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "tpsf_getEnvironments" })
+    public static Mono<DollyFunctionalException> handleError(Logger log, ClientResponse clientResponse, String legend) {
+
+        if (clientResponse.statusCode().is4xxClientError()) {
+
+            return clientResponse.bodyToMono(WebClientResponseException.class).flatMap(response -> {
+                log.error(response.getResponseBodyAsString(), response);
+                return Mono.error(new DollyFunctionalException(response.getResponseBodyAsString()));
+            });
+
+        } else {
+
+            return clientResponse.bodyToMono(Exception.class).flatMap(response -> {
+                log.error(response.getMessage(), response);
+                return Mono.error(new DollyFunctionalException(legend));
+            });
+        }
+    }
+
+    private static boolean isBodyNotNull(ResponseEntity<Object> response) {
+        return nonNull(response) && nonNull(response.getBody()) && isNotBlank(response.getBody().toString());
+    }
+
+    @Timed(name = "providers", tags = {"operation", "tpsf_getEnvironments"})
     public ResponseEntity<EnvironmentsResponse> getEnvironments() {
 
         return webClient.get().uri(uriBuilder -> uriBuilder
@@ -87,7 +113,7 @@ public class TpsfService {
                 .block();
     }
 
-    @Timed(name = "providers", tags = { "operation", "tpsf_deletePersons" })
+    @Timed(name = "providers", tags = {"operation", "tpsf_deletePersons"})
     public ResponseEntity<Object> deletePerson(String ident) {
 
         return webClient.delete().uri(uriBuilder -> uriBuilder
@@ -99,7 +125,7 @@ public class TpsfService {
                 .block();
     }
 
-    @Timed(name = "providers", tags = { "operation", "tpsf_createAliases" })
+    @Timed(name = "providers", tags = {"operation", "tpsf_createAliases"})
     public ResponseEntity<RsAliasResponse> createAliases(RsAliasRequest request) {
 
         return webClient.post().uri(uriBuilder -> uriBuilder
@@ -111,26 +137,26 @@ public class TpsfService {
                 .block();
     }
 
-    @Timed(name = "providers", tags = { "operation", "tpsf_checkEksisterendeIdenter" })
+    @Timed(name = "providers", tags = {"operation", "tpsf_checkEksisterendeIdenter"})
     public CheckStatusResponse checkEksisterendeIdenter(List<String> identer) {
         ResponseEntity<Object> response = postToTpsf(TPSF_CHECK_IDENT_STATUS, identer);
         return isBodyNotNull(response) ? objectMapper.convertValue(response.getBody(), CheckStatusResponse.class) : null;
     }
 
-    @Timed(name = "providers", tags = { "operation", "tpsf_opprettIdenter" })
+    @Timed(name = "providers", tags = {"operation", "tpsf_opprettIdenter"})
     public List<String> opprettIdenterTpsf(TpsfBestilling request) {
         ResponseEntity<Object> response = postToTpsf(TPSF_OPPRETT_URL, request);
         return isBodyNotNull(response) ? objectMapper.convertValue(response.getBody(), List.class) : null;
     }
 
-    @Timed(name = "providers", tags = { "operation", "tpsf_sendIdenterTilMiljoe" })
+    @Timed(name = "providers", tags = {"operation", "tpsf_sendIdenterTilMiljoe"})
     public RsSkdMeldingResponse sendIdenterTilTpsFraTPSF(List<String> identer, List<String> environments) {
         validateEnvironments(environments);
         ResponseEntity<Object> response = postToTpsf(TPSF_SEND_TPS_FLERE_URL, new TpsfIdenterMiljoer(identer, environments));
         return isBodyNotNull(response) ? objectMapper.convertValue(response.getBody(), RsSkdMeldingResponse.class) : null;
     }
 
-    @Timed(name = "providers", tags = { "operation", "tpsf_hentTestpersoner" })
+    @Timed(name = "providers", tags = {"operation", "tpsf_hentTestpersoner"})
     public List<Person> hentTestpersoner(List<String> identer) {
         if (identer.isEmpty()) {
             return emptyList();
@@ -142,60 +168,55 @@ public class TpsfService {
         return emptyList();
     }
 
-    @Timed(name = "providers", tags = { "operation", "tpsf_leggTIlPaaPerson" })
+    @Timed(name = "providers", tags = {"operation", "tpsf_leggTIlPaaPerson"})
     public RsOppdaterPersonResponse endreLeggTilPaaPerson(String ident, TpsfBestilling tpsfBestilling) {
 
-        ResponseEntity<RsOppdaterPersonResponse> response = webClient.post().uri(uriBuilder -> uriBuilder
+        return webClient.post().uri(uriBuilder -> uriBuilder
                         .path(TPSF_UPDATE_PERSON_URL)
                         .queryParam(TPSF_IDENT_QUERY, ident).build())
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .bodyValue(tpsfBestilling)
-                .retrieve().toEntity(RsOppdaterPersonResponse.class)
+                .retrieve()
+                .onStatus(HttpStatus::isError, response -> handleError(log, response,
+                        String.format("Klarte ikke å legge til på ident %s i TPS-Forvalteren", ident)))
+                .bodyToMono(RsOppdaterPersonResponse.class)
                 .block();
-
-        if (isNull(response) || !response.hasBody()) {
-            throw new DollyFunctionalException(String.format("Klarte ikke å legge til på ident %s i tps-forvalteren", ident));
-        }
-        return response.getBody();
     }
 
-    @Timed(name = "providers", tags = { "operation", "tpsf_relasjonPerson" })
+    @Timed(name = "providers", tags = {"operation", "tpsf_relasjonPerson"})
     public List<String> relasjonPerson(String ident, TpsfRelasjonRequest tpsfBestilling) {
 
-        ResponseEntity<List<String>> response = webClient.post().uri(uriBuilder -> uriBuilder
+        return Arrays.asList(webClient.post().uri(uriBuilder -> uriBuilder
                         .path(TPSF_PERSON_RELASJON)
                         .queryParam(TPSF_IDENT_QUERY, ident).build())
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .bodyValue(tpsfBestilling)
-                .retrieve().toEntityList(String.class)
-                .block();
-
-        if (isNull(response) || !response.hasBody()) {
-            throw new DollyFunctionalException(String.format("Klarte ikke å legge til på ident %s i tps-forvalteren", ident));
-        }
-        return response.getBody();
+                .retrieve()
+                .onStatus(HttpStatus::isError, response -> handleError(log, response,
+                        String.format("Klarte ikke å legge til på ident %s i TPS-Forvalteren", ident)))
+                .bodyToMono(String[].class)
+                .block());
     }
 
-    @Timed(name = "providers", tags = { "operation", "tpsf_hentPersonFraTps" })
-    public Person importerPersonFraTps(TpsfImportPersonRequest tpsfImportPersonRequest) {
+    @Timed(name = "providers", tags = {"operation", "tpsf_hentPersonFraTps"})
+    public Person importerPersonFraTps(TpsfImportPersonRequest request) {
 
-        ResponseEntity<Person> response = webClient.post().uri(uriBuilder -> uriBuilder
+        return webClient.post().uri(uriBuilder -> uriBuilder
                         .path(TPSF_IMPORTER_PERSON).build())
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .bodyValue(tpsfImportPersonRequest)
-                .retrieve().toEntity(Person.class)
+                .bodyValue(request)
+                .retrieve()
+                .onStatus(HttpStatus::isError, response -> handleError(log, response,
+                        String.format("Klarte ikke å importere person %s og miljø %s fra TPS-Forvalteren",
+                                request.getIdent(), request.getMiljoe())))
+                .bodyToMono(Person.class)
                 .block();
-
-        if (isNull(response) || !response.hasBody()) {
-            throw new DollyFunctionalException("Klarte ikke å importere person fra tps-forvalteren");
-        }
-        return response.getBody();
     }
 
     public Map<String, String> checkAlive() {
@@ -238,9 +259,5 @@ public class TpsfService {
         if (nonNull(environments) && environments.isEmpty()) {
             throw new IllegalArgumentException("Ingen TPS miljoer er spesifisert for sending av testdata");
         }
-    }
-
-    private static boolean isBodyNotNull(ResponseEntity<Object> response) {
-        return nonNull(response) && nonNull(response.getBody()) && isNotBlank(response.getBody().toString());
     }
 }

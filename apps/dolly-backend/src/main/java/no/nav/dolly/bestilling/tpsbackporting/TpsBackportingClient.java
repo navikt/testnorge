@@ -9,6 +9,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
+import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import org.springframework.core.annotation.Order;
@@ -18,7 +19,6 @@ import java.util.List;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.CommonKeysAndUtils.getNonPdlTpsCreateEnv;
-import static no.nav.dolly.domain.CommonKeysAndUtils.isPdlTpsCreate;
 
 @Service
 @Order(8)
@@ -43,7 +43,8 @@ public class TpsBackportingClient implements ClientRegister {
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (isOpprettEndre && dollyPerson.isTpsfMaster() && !isPdlTpsCreate(bestilling.getEnvironments()) &&
+        if (isOpprettEndre && dollyPerson.isTpsfMaster() &&
+                !getNonPdlTpsCreateEnv(bestilling.getEnvironments()).isEmpty() &&
                 nonNull(bestilling.getPdldata()) && bestilling.getPdldata().isTpsdataPresent()) {
 
             var pdldata = pdlDataConsumer.getPersoner(List.of(dollyPerson.getHovedperson()));
@@ -56,9 +57,15 @@ public class TpsBackportingClient implements ClientRegister {
 
                 mapAtrifacter(pdlPerson, tpsfBestilling);
 
-                tpsfService.endreLeggTilPaaPerson(dollyPerson.getHovedperson(), tpsfBestilling);
-                tpsfService.sendIdenterTilTpsFraTPSF(List.of(dollyPerson.getHovedperson()),
+                try {
+                    var oppretting = tpsfService.endreLeggTilPaaPerson(dollyPerson.getHovedperson(), tpsfBestilling);
+                } catch (DollyFunctionalException e) {
+                    progress.setFeil(e.getMessage());
+                }
+                var status = tpsfService.sendIdenterTilTpsFraTPSF(List.of(dollyPerson.getHovedperson()),
                         getNonPdlTpsCreateEnv(bestilling.getEnvironments()));
+
+                System.out.println(status);
             }
         }
     }
