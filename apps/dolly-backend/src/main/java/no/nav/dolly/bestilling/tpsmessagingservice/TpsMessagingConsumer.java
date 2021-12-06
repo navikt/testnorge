@@ -30,6 +30,7 @@ public class TpsMessagingConsumer {
     private static final String NORSK_BANKKONTO_URL = "/api/v1/personer/{ident}/bankkonto-norsk";
     private static final String SPRAAKKODE_URL = "/api/v1/personer/{ident}/spraakkode";
     private static final String EGENANSATT_URL = "/api/v1/personer/{ident}/egenansatt";
+    private static final String TELEFONNUMMER_URL = "/api/v1/personer/{ident}/telefonnummer";
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
@@ -73,6 +74,12 @@ public class TpsMessagingConsumer {
     public List<TpsMeldingResponseDTO> sendSpraakkodeRequest(String ident, List<String> miljoer, Object body) {
 
         return new SendTpsMessagingCommand(webClient, ident, miljoer, body, SPRAAKKODE_URL, serviceProperties.getAccessToken(tokenService)).call();
+    }
+
+    @Timed(name = "providers", tags = {"operation", "tps_messaging_createTelefonnummer"})
+    public List<TpsMeldingResponseDTO> sendTelefonnummerRequest(String ident, List<String> miljoer, Object body) {
+
+        return new SendTpsMessagingCommand(webClient, ident, miljoer, body, TELEFONNUMMER_URL, serviceProperties.getAccessToken(tokenService)).call();
     }
 
     public Map<String, String> checkAlive() {

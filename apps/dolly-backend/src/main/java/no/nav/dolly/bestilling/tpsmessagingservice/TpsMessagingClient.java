@@ -69,6 +69,17 @@ public class TpsMessagingClient implements ClientRegister {
                 );
             }
 
+            if (nonNull(bestilling.getTpsMessaging().getTelefonnummer())) {
+                appendResponseStatus(
+                        tpsMessagingConsumer.sendTelefonnummerRequest(
+                                dollyPerson.getHovedperson(),
+                                bestilling.getEnvironments(),
+                                bestilling.getTpsMessaging().getTelefonnummer()),
+                        status,
+                        "Telefonnummer_send"
+                );
+            }
+
             sendBankkontoer(bestilling, dollyPerson, status);
 
         } catch (RuntimeException e) {
