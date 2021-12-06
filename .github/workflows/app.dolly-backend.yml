@@ -40,7 +40,7 @@ jobs:
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
     if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/dolly-frontend-bruk-pdl-attributter'  }}
-    with:g
+    with:
       resource: 'apps/dolly-backend/config.dev.yml'
       app-name: 'testnav-dolly-backend'
       cluster: 'dev-fss'
