@@ -18,6 +18,22 @@ public class PdlPersondata {
     private PdlPerson opprettNyPerson;
     private PersonDTO person;
 
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PdlPerson {
+
+        private Identtype identtype;
+
+        private LocalDateTime foedtEtter;
+        private LocalDateTime foedtFoer;
+        private Integer alder;
+        private Boolean syntetisk;
+
+
+        public enum Identtype {FNR, DNR, BOST;}
+    }
+
     @JsonIgnore
     public boolean isTpsdataPresent() {
 
@@ -32,17 +48,12 @@ public class PdlPersondata {
                         !person.getDoedsfall().isEmpty());
     }
 
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class PdlPerson {
+    @JsonIgnore
+    public boolean isPdlAdresse() {
 
-        private Identtype identtype;
-        private LocalDateTime foedtEtter;
-        private LocalDateTime foedtFoer;
-        private Integer alder;
-        private Boolean syntetisk;
-
-        public enum Identtype {FNR, DNR, BOST}
+        return nonNull(person) &&
+                (!person.getBostedsadresse().isEmpty() ||
+                        !person.getKontaktadresse().isEmpty() ||
+                        !person.getOppholdsadresse().isEmpty());
     }
 }
