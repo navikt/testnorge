@@ -1,6 +1,7 @@
 import React from 'react'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import Alertstripe from 'nav-frontend-alertstriper'
+import NavHjelpeTekst from 'nav-frontend-hjelpetekst'
 
 const Advarsler = {
 	organisation_error:
@@ -58,6 +59,10 @@ export default () => {
 				>
 					Logg inn med BankId
 				</NavButton>
+				<NavHjelpeTekst>
+					For å ta i bruk BankId innlogging må du være tilknyttet en organisasjon som har tilgang
+					til Dolly. Ta kontakt med en administrator i din organisasjon hvis tilgang mangler.
+				</NavHjelpeTekst>
 			</div>
 		</div>
 	)
