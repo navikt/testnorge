@@ -37,12 +37,12 @@ public class TpsMessagingClient implements ClientRegister {
         try {
             log.trace("Bestilling fra Dolly-frontend: {}", Json.pretty(bestilling));
 
-            if (nonNull(bestilling.getTpsMessaging().getSpraakkode())) {
+            if (nonNull(bestilling.getTpsMessaging().getSpraakKode())) {
                 appendResponseStatus(
                         tpsMessagingConsumer.sendSpraakkodeRequest(
                                 dollyPerson.getHovedperson(),
                                 bestilling.getEnvironments(),
-                                bestilling.getTpsMessaging().getSpraakkode()),
+                                bestilling.getTpsMessaging().getSpraakKode()),
                         status,
                         "Spraakkode"
                 );
