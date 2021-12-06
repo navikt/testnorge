@@ -1,6 +1,6 @@
-package no.nav.dolly.bestilling.personservice.command;
+package no.nav.dolly.bestilling.aktoeridsyncservice.command;
 
-import no.nav.dolly.bestilling.personservice.domain.AktoerIdent;
+import no.nav.dolly.bestilling.aktoeridsyncservice.domain.AktoerIdent;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.personservice;
+package no.nav.dolly.bestilling.aktoeridsyncservice;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,12 +18,12 @@ import static org.apache.logging.log4j.util.Strings.isBlank;
 @Service
 @Order(3)
 @RequiredArgsConstructor
-public class PersonServiceClient implements ClientRegister {
+public class AktoerIdSyncClient implements ClientRegister {
 
     private static final int MAX_COUNT = 200;
     private static final int TIMEOUT = 50;
 
-    private final PersonServiceConsumer personServiceConsumer;
+    private final AktoerIdSyncConsumer personServiceConsumer;
 
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {

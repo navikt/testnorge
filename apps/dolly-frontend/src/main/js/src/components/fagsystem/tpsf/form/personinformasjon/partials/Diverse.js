@@ -27,6 +27,9 @@ const StyledDiv = styled.div`
 `
 
 export const Diverse = ({ formikBag }) => {
+	if (!formikBag.values.tpsf) {
+		return null
+	}
 	const opts = useContext(BestillingsveilederContext)
 	const { personFoerLeggTil } = opts
 	const harSkjerming = personFoerLeggTil
