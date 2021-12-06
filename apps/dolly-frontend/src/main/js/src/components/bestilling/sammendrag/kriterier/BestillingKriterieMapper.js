@@ -401,7 +401,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		}
 	}
 
-<<<<<<< HEAD
 	const pdldataKriterier = bestillingData.pdldata?.person
 
 	if (pdldataKriterier) {
@@ -592,7 +591,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			}
 			data.push(doedsboData)
 		}
-=======
+	}
+
 	const tpsMessaging = _get(bestillingData, 'tpsMessaging')
 
 	if (tpsMessaging) {

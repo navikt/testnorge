@@ -11,6 +11,8 @@ import _get from 'lodash/get'
 import styled from 'styled-components'
 import { Checkbox as NavCheckbox } from 'nav-frontend-skjema'
 import Hjelpetekst from '~/components/hjelpetekst'
+import { Telefonnummer } from '~/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
+import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 
 const StyledCheckbox = styled(NavCheckbox)`
 	&&& {
@@ -122,7 +124,6 @@ export const Diverse = ({ formikBag }) => {
 					fastfield={false}
 				/>
 			</Vis>
-<<<<<<< HEAD
 			<Vis attributt="tpsf.harBankkontonr">
 				<FormikCheckbox
 					name="tpsf.harBankkontonr"
@@ -137,9 +138,7 @@ export const Diverse = ({ formikBag }) => {
 					fastfield={false}
 				/>
 			</Vis>
-=======
 			<Telefonnummer formikBag={formikBag} />
->>>>>>> master
 			<Diskresjonskoder basePath="tpsf" formikBag={formikBag} />
 		</React.Fragment>
 	)
