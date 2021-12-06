@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.DeleteEgenansattCommand;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.HentIdenterCommand;
+import no.nav.dolly.bestilling.tpsmessagingservice.command.SendEgenansattCommand;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.SendTpsMessagingCommand;
 import no.nav.dolly.config.credentials.TpsMessagingServiceProperties;
 import no.nav.dolly.metrics.Timed;
@@ -15,6 +16,7 @@ import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -56,9 +58,9 @@ public class TpsMessagingConsumer {
     }
 
     @Timed(name = "providers", tags = { "operation", "tps_messaging_createNorskBankkonto" })
-    public List<TpsMeldingResponseDTO> sendEgenansattRequest(String ident, List<String> miljoer, Object body) {
+    public List<TpsMeldingResponseDTO> sendEgenansattRequest(String ident, List<String> miljoer, LocalDate fraOgMed) {
 
-        return new SendTpsMessagingCommand(webClient, ident, miljoer, body, EGENANSATT_URL, serviceProperties.getAccessToken(tokenService)).call();
+        return new SendEgenansattCommand(webClient, ident, miljoer, fraOgMed, EGENANSATT_URL, serviceProperties.getAccessToken(tokenService)).call();
     }
 
     @Timed(name = "providers", tags = { "operation", "tps_messaging_createNorskBankkonto" })
