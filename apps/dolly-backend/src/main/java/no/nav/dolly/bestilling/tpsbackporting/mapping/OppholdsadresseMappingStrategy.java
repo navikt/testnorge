@@ -21,6 +21,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class OppholdsadresseMappingStrategy implements MappingStrategy {
 
+    private static final String KODE_NAVN = "%s %s";
+
     private final KodeverkConsumer kodeverkConsumer;
 
     @Override
@@ -32,9 +34,9 @@ public class OppholdsadresseMappingStrategy implements MappingStrategy {
 
                         if (nonNull(source.getVegadresse())) {
                             target.setPostadresse(List.of(RsPostadresse.builder()
-                                    .postLinje1(format("%s %s", source.getVegadresse().getAdressenavn(),
+                                    .postLinje1(format(KODE_NAVN, source.getVegadresse().getAdressenavn(),
                                             source.getVegadresse().getHusnummer()))
-                                    .postLinje3(format("%s %s", source.getVegadresse().getPostnummer(),
+                                    .postLinje3(format(KODE_NAVN, source.getVegadresse().getPostnummer(),
                                             kodeverkConsumer.getKodeverkByName("Postnummer")
                                                     .get(source.getVegadresse().getPostnummer())))
                                     .build()));
@@ -48,7 +50,7 @@ public class OppholdsadresseMappingStrategy implements MappingStrategy {
                                             source.getMatrikkeladresse().getKommunenummer(),
                                             kodeverkConsumer.getKodeverkByName("Kommuner")
                                                     .get(source.getMatrikkeladresse().getKommunenummer())))
-                                    .postLinje3(format("%s %s",
+                                    .postLinje3(format(KODE_NAVN,
                                             source.getMatrikkeladresse().getPostnummer(),
                                             kodeverkConsumer.getKodeverkByName("Postnummer")
                                                     .get(source.getMatrikkeladresse().getPostnummer())))
@@ -60,7 +62,7 @@ public class OppholdsadresseMappingStrategy implements MappingStrategy {
                                     .postLinje1(isNotBlank(source.getUtenlandskAdresse().getAdressenavnNummer()) ?
                                             source.getUtenlandskAdresse().getAdressenavnNummer() :
                                             source.getUtenlandskAdresse().getPostboksNummerNavn())
-                                    .postLinje2(String.format("%s %s", source.getUtenlandskAdresse().getBySted(),
+                                    .postLinje2(String.format(KODE_NAVN, source.getUtenlandskAdresse().getBySted(),
                                             source.getUtenlandskAdresse().getPostkode()))
                                     .postLinje3(isNotBlank(source.getUtenlandskAdresse().getRegion()) ?
                                             source.getUtenlandskAdresse().getRegion() :

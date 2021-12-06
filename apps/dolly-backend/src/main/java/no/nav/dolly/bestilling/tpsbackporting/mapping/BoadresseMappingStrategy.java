@@ -4,16 +4,13 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
-import no.nav.dolly.domain.resultset.tpsf.adresse.RsAdresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsGateadresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsMatrikkeladresse;
-import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
 import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import org.springframework.stereotype.Component;
 
 import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Component
 public class BoadresseMappingStrategy implements MappingStrategy {

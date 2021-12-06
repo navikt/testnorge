@@ -24,13 +24,6 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public abstract class MidlertidigAdresse {
 
-    public enum MidlertidigAdressetype {
-        PBOX,
-        GATE,
-        STED,
-        UTAD
-    }
-
     private Long id;
     private LocalDateTime gyldigTom;
     private MidlertidigAdressetype adressetype;
@@ -51,6 +44,13 @@ public abstract class MidlertidigAdresse {
 
     public abstract MidlertidigAdressetype getAdressetype();
 
+    public enum MidlertidigAdressetype {
+        PBOX,
+        GATE,
+        STED,
+        UTAD
+    }
+
     @Getter
     @Setter
     @NoArgsConstructor
@@ -63,7 +63,8 @@ public abstract class MidlertidigAdresse {
         private String husnr;
         private String matrikkelId;
 
-        @Override public MidlertidigAdressetype getAdressetype() {
+        @Override
+        public MidlertidigAdressetype getAdressetype() {
             return MidlertidigAdressetype.GATE;
         }
     }
@@ -77,7 +78,8 @@ public abstract class MidlertidigAdresse {
 
         private String eiendomsnavn;
 
-        @Override public MidlertidigAdressetype getAdressetype() {
+        @Override
+        public MidlertidigAdressetype getAdressetype() {
             return MidlertidigAdressetype.STED;
         }
     }
@@ -92,7 +94,8 @@ public abstract class MidlertidigAdresse {
         private String postboksnr;
         private String postboksAnlegg;
 
-        @Override public MidlertidigAdressetype getAdressetype() {
+        @Override
+        public MidlertidigAdressetype getAdressetype() {
             return MidlertidigAdressetype.PBOX;
         }
     }
@@ -109,7 +112,8 @@ public abstract class MidlertidigAdresse {
         private String postLinje3;
         private String postLand;
 
-        @Override public MidlertidigAdressetype getAdressetype() {
+        @Override
+        public MidlertidigAdressetype getAdressetype() {
             return MidlertidigAdressetype.UTAD;
         }
     }

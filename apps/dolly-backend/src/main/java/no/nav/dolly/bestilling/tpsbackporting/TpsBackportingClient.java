@@ -52,34 +52,39 @@ public class TpsBackportingClient implements ClientRegister {
                         .harIngenAdresse(true)
                         .build();
 
-                if (!pdlPerson.getBostedsadresse().isEmpty()) {
-                    mapperFacade.map(pdlPerson.getBostedsadresse().get(0), tpsfBestilling);
-                }
-                if (!pdlPerson.getKontaktadresse().isEmpty()) {
-                    mapperFacade.map(pdlPerson.getKontaktadresse().get(0), tpsfBestilling);
-                }
-                if (!pdlPerson.getKontaktadresse().isEmpty()) {
-                    mapperFacade.map(pdlPerson.getOppholdsadresse().get(0), tpsfBestilling);
-                }
-                if (!pdlPerson.getAdressebeskyttelse().isEmpty()) {
-                    mapperFacade.map(pdlPerson.getAdressebeskyttelse().get(0), tpsfBestilling);
-                }
-                if (!pdlPerson.getInnflytting().isEmpty()) {
-                    mapperFacade.map(pdlPerson.getInnflytting().get(0), tpsfBestilling);
-                }
-                if (!pdlPerson.getUtflytting().isEmpty()) {
-                    mapperFacade.map(pdlPerson.getUtflytting().get(0), tpsfBestilling);
-                }
-                if (!pdlPerson.getStatsborgerskap().isEmpty()) {
-                    mapperFacade.map(getStatborgerskap(pdlPerson), tpsfBestilling);
-                }
-                if (!pdlPerson.getDoedsfall().isEmpty()) {
-                    tpsfBestilling.setDoedsdato(pdlPerson.getDoedsfall().get(0).getDoedsdato());
-                }
+                mapAtrifacter(pdlPerson, tpsfBestilling);
 
-                var tpsresponse = tpsfService.endreLeggTilPaaPerson(dollyPerson.getHovedperson(), tpsfBestilling);
+                tpsfService.endreLeggTilPaaPerson(dollyPerson.getHovedperson(), tpsfBestilling);
                 tpsfService.sendIdenterTilTpsFraTPSF(List.of(dollyPerson.getHovedperson()), bestilling.getEnvironments());
             }
+        }
+    }
+
+    private void mapAtrifacter(PersonDTO pdlPerson, TpsfBestilling tpsfBestilling) {
+
+        if (!pdlPerson.getBostedsadresse().isEmpty()) {
+            mapperFacade.map(pdlPerson.getBostedsadresse().get(0), tpsfBestilling);
+        }
+        if (!pdlPerson.getKontaktadresse().isEmpty()) {
+            mapperFacade.map(pdlPerson.getKontaktadresse().get(0), tpsfBestilling);
+        }
+        if (!pdlPerson.getKontaktadresse().isEmpty()) {
+            mapperFacade.map(pdlPerson.getOppholdsadresse().get(0), tpsfBestilling);
+        }
+        if (!pdlPerson.getAdressebeskyttelse().isEmpty()) {
+            mapperFacade.map(pdlPerson.getAdressebeskyttelse().get(0), tpsfBestilling);
+        }
+        if (!pdlPerson.getInnflytting().isEmpty()) {
+            mapperFacade.map(pdlPerson.getInnflytting().get(0), tpsfBestilling);
+        }
+        if (!pdlPerson.getUtflytting().isEmpty()) {
+            mapperFacade.map(pdlPerson.getUtflytting().get(0), tpsfBestilling);
+        }
+        if (!pdlPerson.getStatsborgerskap().isEmpty()) {
+            mapperFacade.map(getStatborgerskap(pdlPerson), tpsfBestilling);
+        }
+        if (!pdlPerson.getDoedsfall().isEmpty()) {
+            tpsfBestilling.setDoedsdato(pdlPerson.getDoedsfall().get(0).getDoedsdato());
         }
     }
 

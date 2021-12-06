@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.tpssyncservice;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.tpsmessagingservice.TpsMessagingConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -16,6 +17,7 @@ import java.util.List;
 import static no.nav.dolly.domain.CommonKeysAndUtils.PDL_TPS_CREATE_ENV;
 import static no.nav.dolly.domain.CommonKeysAndUtils.isPdlTpsCreate;
 
+@Slf4j
 @Service
 @Order(7)
 @RequiredArgsConstructor
@@ -29,7 +31,7 @@ public class TpsSyncClient implements ClientRegister {
 
         if (isPdlTpsCreate(bestilling.getEnvironments())) {
 
-            var timestamp = System.currentTimeMillis();
+            var startTime = System.currentTimeMillis();
             List<TpsIdentStatusDTO> response;
 
             do {
@@ -37,7 +39,9 @@ public class TpsSyncClient implements ClientRegister {
                         new ArrayList<>(PDL_TPS_CREATE_ENV));
 
             } while (response.stream().anyMatch(elem -> elem.getMiljoer().isEmpty()) &&
-                    timestamp + TIMEOUT < System.currentTimeMillis());
+                    startTime + TIMEOUT < System.currentTimeMillis());
+
+            log.info("Synk mot TPS tok {} ms", System.currentTimeMillis() - startTime);
         }
     }
 
