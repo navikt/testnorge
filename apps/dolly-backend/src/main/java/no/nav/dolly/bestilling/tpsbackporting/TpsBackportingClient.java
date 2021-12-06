@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.domain.CommonKeysAndUtils.getNonPdlTpsCreateEnv;
+import static no.nav.dolly.domain.CommonKeysAndUtils.isPdlTpsCreate;
 
 @Service
 @Order(8)
@@ -41,7 +43,7 @@ public class TpsBackportingClient implements ClientRegister {
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (isOpprettEndre && dollyPerson.isTpsfMaster() &&
+        if (isOpprettEndre && dollyPerson.isTpsfMaster() && !isPdlTpsCreate(bestilling.getEnvironments()) &&
                 nonNull(bestilling.getPdldata()) && bestilling.getPdldata().isTpsdataPresent()) {
 
             var pdldata = pdlDataConsumer.getPersoner(List.of(dollyPerson.getHovedperson()));
@@ -55,7 +57,8 @@ public class TpsBackportingClient implements ClientRegister {
                 mapAtrifacter(pdlPerson, tpsfBestilling);
 
                 tpsfService.endreLeggTilPaaPerson(dollyPerson.getHovedperson(), tpsfBestilling);
-                tpsfService.sendIdenterTilTpsFraTPSF(List.of(dollyPerson.getHovedperson()), bestilling.getEnvironments());
+                tpsfService.sendIdenterTilTpsFraTPSF(List.of(dollyPerson.getHovedperson()),
+                        getNonPdlTpsCreateEnv(bestilling.getEnvironments()));
             }
         }
     }
@@ -68,7 +71,7 @@ public class TpsBackportingClient implements ClientRegister {
         if (!pdlPerson.getKontaktadresse().isEmpty()) {
             mapperFacade.map(pdlPerson.getKontaktadresse().get(0), tpsfBestilling);
         }
-        if (!pdlPerson.getKontaktadresse().isEmpty()) {
+        if (!pdlPerson.getOppholdsadresse().isEmpty()) {
             mapperFacade.map(pdlPerson.getOppholdsadresse().get(0), tpsfBestilling);
         }
         if (!pdlPerson.getAdressebeskyttelse().isEmpty()) {

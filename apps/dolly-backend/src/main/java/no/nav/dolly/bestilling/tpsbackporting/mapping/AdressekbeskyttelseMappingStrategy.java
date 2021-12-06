@@ -19,9 +19,8 @@ public class AdressekbeskyttelseMappingStrategy implements MappingStrategy {
             return null;
         }
         return switch (beskyttelse) {
-            case STRENGT_FORTROLIG -> "SPSF";
+            case STRENGT_FORTROLIG, STRENGT_FORTROLIG_UTLAND -> "SPSF";
             case FORTROLIG -> "SPFO";
-            case STRENGT_FORTROLIG_UTLAND -> "SFUT";
             default -> null;
         };
     }

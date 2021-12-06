@@ -39,4 +39,11 @@ public final class CommonKeysAndUtils {
                 .anyMatch(synth -> environments.stream()
                         .anyMatch(env -> env.equals(synth)));
     }
+
+    public static List<String> getNonPdlTpsCreateEnv(List<String> environments) {
+
+        return environments.stream()
+                .filter(env -> !PDL_TPS_CREATE_ENV.contains(env))
+                .toList();
+    }
 }
