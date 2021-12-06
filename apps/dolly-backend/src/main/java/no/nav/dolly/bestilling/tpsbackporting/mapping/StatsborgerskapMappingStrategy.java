@@ -8,6 +8,8 @@ import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class StatsborgerskapMappingStrategy implements MappingStrategy {
 

@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.tpssyncservice;
 
-import jdk.incubator.vector.VectorSpecies;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.tpsmessagingservice.TpsMessagingConsumer;
