@@ -180,7 +180,7 @@ public class OrganisasjonBestillingService {
                 OrganisasjonBestilling.builder()
                         .antall(1)
                         .sistOppdatert(now())
-                        .ferdig(status.getFerdig())
+                        .ferdig(isTrue(status.getFerdig()))
                         .miljoer(join(",", status.getEnvironments()))
                         .bestKriterier(toJson(status.getBestilling()))
                         .bruker(brukerService.fetchOrCreateBruker(getUserId(getUserInfo)))

@@ -10,8 +10,8 @@ import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.domain.resultset.tpsmessagingservice.NorskBankkontoRequest;
 import no.nav.dolly.domain.resultset.tpsmessagingservice.UtenlandskBankkontoRequest;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,6 +22,7 @@ import static net.logstash.logback.util.StringUtils.isBlank;
 
 @Slf4j
 @Service
+@Order(6)
 @RequiredArgsConstructor
 public class TpsMessagingClient implements ClientRegister {
 

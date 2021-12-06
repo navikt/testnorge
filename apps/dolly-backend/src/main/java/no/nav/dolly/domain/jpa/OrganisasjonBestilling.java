@@ -57,7 +57,7 @@ public class OrganisasjonBestilling {
     private String feil;
 
     @Column(name = "ferdig", columnDefinition = "Boolean default false")
-    private Boolean ferdig = false;
+    private Boolean ferdig;
 
     @Column(name = "opprettet_fra_id")
     private Long opprettetFraId;

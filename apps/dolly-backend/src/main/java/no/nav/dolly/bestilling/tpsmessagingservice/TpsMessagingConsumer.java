@@ -62,7 +62,7 @@ public class TpsMessagingConsumer {
                 .bodyToMono(TpsMeldingResponseDTO[].class)
                 .block();
 
-        log.trace("Response fra TPS messaging service: {}", response);
+        List.of(response).forEach(entry -> log.trace("Response fra TPS messaging service: {}", entry));
         return Arrays.asList(response);
     }
 
@@ -83,7 +83,7 @@ public class TpsMessagingConsumer {
                 .bodyToMono(TpsMeldingResponseDTO[].class)
                 .block();
 
-        log.trace("Response fra TPS messaging service: {}", response);
+        List.of(response).forEach(entry -> log.trace("Response fra TPS messaging service: {}", entry));
         return Arrays.asList(response);
     }
 

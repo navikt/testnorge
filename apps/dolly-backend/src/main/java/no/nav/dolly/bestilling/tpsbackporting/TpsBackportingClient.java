@@ -12,6 +12,7 @@ import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsAdresse;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.List;
 import static java.util.Objects.nonNull;
 
 @Service
+@Order(8)
 @RequiredArgsConstructor
 public class TpsBackportingClient implements ClientRegister {
 

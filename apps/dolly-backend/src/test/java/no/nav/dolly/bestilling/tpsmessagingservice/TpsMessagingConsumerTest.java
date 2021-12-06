@@ -3,7 +3,6 @@ package no.nav.dolly.bestilling.tpsmessagingservice;
 import no.nav.dolly.config.credentials.TpsMessagingServiceProperties;
 import no.nav.dolly.domain.resultset.tpsmessagingservice.UtenlandskBankkontoRequest;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrUtlandDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.Assertions;
@@ -27,10 +26,12 @@ import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static wiremock.org.hamcrest.MatcherAssert.assertThat;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
@@ -57,24 +58,21 @@ class TpsMessagingConsumerTest {
         when(tokenService.exchange(ArgumentMatchers.any(TpsMessagingServiceProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
     }
 
-    private void stubPostUtenlandskBankkontoData() {
-
-        stubFor(post(urlPathMatching("(.*)/api/v1/personer/12345678901/bankkonto-utenlandsk"))
-                .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")));
-    }
-
     @Test
     void createUtenlandskbankkonto_OK() {
 
-        stubPostUtenlandskBankkontoData();
+        stubFor(post(urlPathMatching("(.*)/api/v1/personer/12345678901/bankkonto-utenlandsk"))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("[{\"miljoe\":\"q1\", \"status\":\"OK\", \"melding\":null, \"utfyllendeMelding\":null}]")));
 
-        List<TpsMeldingResponseDTO> response = tpsMessagingConsumer.sendUtenlandskBankkontoRequest(new UtenlandskBankkontoRequest(
+        var response = tpsMessagingConsumer.sendUtenlandskBankkontoRequest(new UtenlandskBankkontoRequest(
                 IDENT,
                 MILJOER,
                 new BankkontonrUtlandDTO()));
 
-        assertThat(response.get(0).getMiljoe(), equals("q1"));
+        assertThat(response.get(0).getMiljoe(), is(equalTo("q1")));
+        assertThat(response.get(0).getStatus(), is(equalTo("OK")));
     }
 
     @Test

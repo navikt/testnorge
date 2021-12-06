@@ -50,7 +50,7 @@ public class BoadresseMappingStrategy implements MappingStrategy {
 
                                    } else if (nonNull(source.getUkjentBosted())) {
                                        target.setUtenFastBopel(true);
-                                       target.setBoadresse(RsAdresse.builder()
+                                       target.setBoadresse(RsGateadresse.builder()
                                                .kommunenr(source.getUkjentBosted().getBostedskommune())
                                                .build());
                                    }
