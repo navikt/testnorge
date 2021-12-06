@@ -6,7 +6,7 @@ metadata:
   labels:
     team: dolly
 spec:
-  image: {{ image }}
+  image: {{image}}
   webproxy: true
   tokenx:
     enabled: true
@@ -30,10 +30,10 @@ spec:
     max: 1
   resources:
     limits:
-      cpu: 600m
+      cpu: 3000m
       memory: 2048Mi
     requests:
-      cpu: 300m
+      cpu: 2000m
       memory: 1024Mi
   envFrom:
     - secret: testnav-tps-messaging-service
@@ -58,6 +58,10 @@ spec:
           cluster: dev-gcp
         - application: dolly-frontend
           cluster: dev-gcp
+        - application: dolly-backend-dev
+          cluster: dev-fss
+        - application: dolly-backend
+          cluster: dev-fss
         - application: synthdata-tps-gcp
           cluster: dev-gcp
         - application: app-1

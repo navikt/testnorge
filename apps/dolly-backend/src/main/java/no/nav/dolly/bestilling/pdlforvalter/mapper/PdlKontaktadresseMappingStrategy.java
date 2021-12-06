@@ -107,6 +107,7 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
 
                                                 postadresser.stream()
                                                         .filter(RsPostadresse::isUtenlandsk)
+                                                        .filter(adr -> !person.isKode6())
                                                         .map(postadresse -> {
                                                             PdlKontaktadresse kontaktadresse = new PdlKontaktadresse();
                                                             kontaktadresse.setUtenlandskAdresseIFrittFormat(mapperFacade.map(
@@ -122,6 +123,7 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
 
                                                 midlertidigAdresser.stream()
                                                         .filter(MidlertidigAdresse::isGateAdr)
+                                                        .filter(adr -> !person.isKode6())
                                                         .map(midlertidigAdresse -> {
                                                             PdlKontaktadresse kontaktadresse = buildKontaktadresse(midlertidigAdresse, context);
                                                             kontaktadresse.setVegadresseForPost(
@@ -132,6 +134,7 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
 
                                                 midlertidigAdresser.stream()
                                                         .filter(MidlertidigAdresse::isPostBox)
+                                                        .filter(adr -> !person.isKode6())
                                                         .map(midlertidigAdresse -> {
                                                             PdlKontaktadresse kontaktadresse = buildKontaktadresse(midlertidigAdresse, context);
                                                             kontaktadresse.setPostboksadresse(
@@ -142,6 +145,7 @@ public class PdlKontaktadresseMappingStrategy implements MappingStrategy {
 
                                                 midlertidigAdresser.stream()
                                                         .filter(MidlertidigAdresse::isUtenlandsk)
+                                                        .filter(adr -> !person.isKode6())
                                                         .map(midlertidigAdresse -> {
                                                             PdlKontaktadresse kontaktadresse = buildKontaktadresse(midlertidigAdresse, context);
                                                             kontaktadresse.setUtenlandskAdresseIFrittFormat(

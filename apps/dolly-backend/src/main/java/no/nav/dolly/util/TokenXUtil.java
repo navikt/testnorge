@@ -24,7 +24,6 @@ public final class TokenXUtil {
 
         var requestAttributes = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes());
         if (isNull(requestAttributes)) {
-            log.info("Klarte ikke å hente ut User-Jwt");
             return null;
         }
         return requestAttributes.getRequest().getHeader(UserConstant.USER_HEADER_JWT);

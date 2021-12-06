@@ -2,19 +2,6 @@ package no.nav.dolly.web;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.gateway.filter.GatewayFilter;
-import org.springframework.cloud.gateway.route.Route;
-import org.springframework.cloud.gateway.route.RouteLocator;
-import org.springframework.cloud.gateway.route.builder.Buildable;
-import org.springframework.cloud.gateway.route.builder.PredicateSpec;
-import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
-
-import java.util.function.Function;
-
 import no.nav.dolly.web.credentials.DollyBackendProperties;
 import no.nav.dolly.web.credentials.PersonSearchServiceProperties;
 import no.nav.dolly.web.credentials.TestnavAdresseServiceProperties;
@@ -36,6 +23,7 @@ import no.nav.dolly.web.credentials.TestnavTestnorgeInstProxyProperties;
 import no.nav.dolly.web.credentials.TestnavVarslingerServiceProperties;
 import no.nav.dolly.web.credentials.TestnorgeProfilApiProperties;
 import no.nav.dolly.web.credentials.TpsForvalterenProxyProperties;
+import no.nav.dolly.web.credentials.TpsMessagingServiceProperties;
 import no.nav.dolly.web.credentials.UdiStubProxyProperties;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
@@ -43,6 +31,18 @@ import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequ
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.gateway.filter.GatewayFilter;
+import org.springframework.cloud.gateway.route.Route;
+import org.springframework.cloud.gateway.route.RouteLocator;
+import org.springframework.cloud.gateway.route.builder.Buildable;
+import org.springframework.cloud.gateway.route.builder.PredicateSpec;
+import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
+
+import java.util.function.Function;
 
 @Slf4j
 @Import({
@@ -59,6 +59,7 @@ public class DollyFrontendApplicationStarter {
     private final TestnavJoarkDokumentServiceProperties testnavJoarkDokumentServiceProperties;
     private final TestnavInntektstubProxyProperties testnavInntektstubProxyProperties;
     private final TpsForvalterenProxyProperties tpsForvalterenProxyProperties;
+    private final TpsMessagingServiceProperties tpsMessagingServiceProperties;
     private final TestnavBrregstubProxyProperties testnavBrregstubProxyProperties;
     private final TestnavHodejegerenProxyProperties testnavHodejegerenProxyProperties;
     private final TestnavArenaForvalterenProxyProperties testnavArenaForvalterenProxyProperties;
@@ -78,10 +79,6 @@ public class DollyFrontendApplicationStarter {
     private final TestnavAdresseServiceProperties testnavAdresseServiceProperties;
     private final TestnavPdlForvalterProperties testnavPdlForvalterProperties;
 
-    public static void main(String[] args) {
-        SpringApplication.run(DollyFrontendApplicationStarter.class, args);
-    }
-
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder
@@ -91,6 +88,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(testnavOrganisasjonForvalterProperties))
                 .route(createRoute(testnavVarslingerServiceProperties, "testnav-varslinger-service"))
                 .route(createRoute(testnorgeProfilApiProperties))
+                .route(createRoute(tpsMessagingServiceProperties, "testnav-tps-messaging-service"))
                 .route(createRoute(testnavMiljoerServiceProperties))
                 .route(createRoute(dollyBackendProperties, "dolly-backend"))
                 .route(createRoute(testnavJoarkDokumentServiceProperties))
@@ -109,6 +107,10 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(testnavPdlForvalterProperties, "testnav-pdl-forvalter"))
                 .route(createRoute(personSearchServiceProperties))
                 .build();
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(DollyFrontendApplicationStarter.class, args);
     }
 
     private GatewayFilter addAuthenticationHeaderFilterFrom(ServerProperties serverProperties) {
@@ -145,5 +147,4 @@ public class DollyFrontendApplicationStarter {
                         .filter(filter)
                 ).uri(host);
     }
-
 }

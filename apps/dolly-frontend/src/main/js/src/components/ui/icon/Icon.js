@@ -135,6 +135,7 @@ export const icons = {
 	institusjon: Institusjon,
 	arbeid: Wrench,
 	sigrun: BankNote,
+	bankkonto: BankNote,
 	inntektstub: MoneyBag,
 	inntektsmelding: CoinBankNote,
 	udi: Globe,

@@ -1,14 +1,20 @@
 const path = require('path')
 const merge = require('webpack-merge')
 const common = require('./webpack.common.js')
-const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = (env) =>
 	merge(common, {
 		mode: 'development',
 		devtool: 'inline-source-map',
+		resolve: {
+			alias: {
+				'react-dom$': 'react-dom/profiling',
+			},
+		},
 		devServer: {
+			static: path.join(__dirname, 'dist/dev'),
+			compress: true,
 			port: 3000,
 			open: {
 				target: [`http://localhost:3000/login`],
@@ -16,7 +22,6 @@ module.exports = (env) =>
 					name: 'Google Chrome',
 				},
 			},
-			static: path.join(__dirname, 'public'),
 			historyApiFallback: true,
 			client: {
 				overlay: {
@@ -49,6 +54,11 @@ module.exports = (env) =>
 					secure: false,
 				},
 				'/testnav-organisasjon-faste-data-service/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false,
+				},
+				'/testnav-tps-messaging-service/api': {
 					target: env.backend,
 					changeOrigin: true,
 					secure: false,

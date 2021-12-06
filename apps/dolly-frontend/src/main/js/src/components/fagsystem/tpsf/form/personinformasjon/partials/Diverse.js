@@ -5,7 +5,6 @@ import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bes
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { Diskresjonskoder } from './diskresjonskoder/Diskresjonskoder'
 import _get from 'lodash/get'
@@ -28,11 +27,6 @@ const StyledDiv = styled.div`
 `
 
 export const Diverse = ({ formikBag }) => {
-	const handleChangeKontonr = (selected) => {
-		if (!selected) {
-			formikBag.setFieldValue(`tpsf.bankkontonrRegdato`, null)
-		}
-	}
 	const opts = useContext(BestillingsveilederContext)
 	const { personFoerLeggTil } = opts
 	const harSkjerming = personFoerLeggTil
@@ -125,6 +119,7 @@ export const Diverse = ({ formikBag }) => {
 					fastfield={false}
 				/>
 			</Vis>
+<<<<<<< HEAD
 			<Vis attributt="tpsf.harBankkontonr">
 				<FormikCheckbox
 					name="tpsf.harBankkontonr"
@@ -139,6 +134,9 @@ export const Diverse = ({ formikBag }) => {
 					fastfield={false}
 				/>
 			</Vis>
+=======
+			<Telefonnummer formikBag={formikBag} />
+>>>>>>> master
 			<Diskresjonskoder basePath="tpsf" formikBag={formikBag} />
 		</React.Fragment>
 	)

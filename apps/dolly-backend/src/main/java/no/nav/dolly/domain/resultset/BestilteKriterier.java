@@ -19,6 +19,7 @@ import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
+import no.nav.dolly.domain.resultset.tpsmessagingservice.RsTpsMessaging;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 
 import java.util.List;
@@ -46,5 +47,6 @@ public class BestilteKriterier {
     private RsInntektsmelding inntektsmelding;
     private RsBregdata brregstub;
     private RsDokarkiv dokarkiv;
+    private RsTpsMessaging tpsMessaging;
     private RsSykemelding sykemelding;
 }

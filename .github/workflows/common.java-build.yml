@@ -34,4 +34,4 @@ jobs:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
         working-directory: ${{ inputs.working-directory }}
-        run: ./gradlew build
+        run: ./gradlew build --scan

@@ -10,6 +10,7 @@ import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.util.ResponseHandler;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 public class KrrstubClient implements ClientRegister {
 
     private final KrrstubConsumer krrstubConsumer;
-    private final KrrstubResponseHandler krrstubResponseHandler;
+    private final ResponseHandler responseHandler;
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
 
@@ -55,7 +56,7 @@ public class KrrstubClient implements ClientRegister {
                 }
 
                 ResponseEntity<Object> krrstubResponse = krrstubConsumer.createDigitalKontaktdata(digitalKontaktdata);
-                progress.setKrrstubStatus(krrstubResponseHandler.extractResponse(krrstubResponse));
+                progress.setKrrstubStatus(responseHandler.extractResponse(krrstubResponse));
 
             } catch (RuntimeException e) {
 

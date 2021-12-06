@@ -507,4 +507,29 @@ export const validation = {
 			identtype: ifPresent('$tpsf.identtype', requiredString),
 		})
 	),
+	tpsMessaging: ifPresent(
+		'$tpsMessaging',
+		Yup.object({
+			utenlandskBankkonto: ifPresent(
+				'$tpsMessaging.utenlandskBankkonto',
+				Yup.object().shape({
+					kontonummer: requiredString.nullable(),
+					swift: Yup.string().nullable().optional(),
+					landkode: requiredString.nullable(),
+					iban: Yup.string().nullable().optional(),
+					valuta: requiredString.nullable(),
+					banknavn: Yup.string().nullable().optional(),
+					bankAdresse1: Yup.string().nullable().optional(),
+					bankAdresse2: Yup.string().nullable().optional(),
+					bankAdresse3: Yup.string().nullable().optional(),
+				})
+			),
+			norskBankkonto: ifPresent(
+				'$tpsMessaging.norskBankkonto',
+				Yup.object().shape({
+					kontonummer: requiredString.nullable(),
+				})
+			),
+		})
+	),
 }

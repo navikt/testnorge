@@ -36,7 +36,11 @@ export const erForste = (values, attributt) => {
 		'tpsf.egenAnsattDatoTom',
 		'tpsf.spesreg',
 		'tpsf.erForsvunnet',
+<<<<<<< HEAD
 		'tpsf.harBankkontonr',
+=======
+		'tpsf.telefonnummer_1',
+>>>>>>> master
 		'tpsf.identHistorikk',
 		'tpsf.vergemaal',
 		'tpsf.fullmakt',
@@ -44,6 +48,8 @@ export const erForste = (values, attributt) => {
 		'tpsf.harIngenAdresse',
 		'tpsf.postadresse',
 		'tpsf.midlertidigAdresse',
+		'tpsMessaging.utenlandskBankkonto',
+		'tpsMessaging.harBankkontonr',
 		'pdldata.person.bostedsadresse',
 		'tpsf.relasjoner',
 		'aareg',

@@ -171,7 +171,6 @@ public class PdlForvalterClient implements ClientRegister {
             sendFoedselsmelding(person);
             sendNavn(person);
             sendKjoenn(person);
-            sendAdressebeskyttelse(person);
             sendOppholdsadresse(person);
             sendKontaktadresse(person);
             sendBostedadresse(person);
@@ -190,6 +189,7 @@ public class PdlForvalterClient implements ClientRegister {
             sendFullmakt(person);
             sendDoedfoedtBarn(person);
             sendSikkerhetstiltak(person);
+            sendAdressebeskyttelse(person);
         }
     }
 

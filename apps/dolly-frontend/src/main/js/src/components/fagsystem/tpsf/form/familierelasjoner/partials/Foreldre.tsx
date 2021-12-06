@@ -61,15 +61,14 @@ export const Foreldre = ({ formikBag, personFoerLeggTil }: ForeldreType) => {
 		formikBag.setFieldValue(`${path}.identtype`, ident.value)
 	}
 
-	const antallForeldre = formikBag.values.tpsf?.relasjoner?.foreldre?.length
-
 	return (
 		<FormikDollyFieldArray
 			name="tpsf.relasjoner.foreldre"
 			header="Forelder"
 			tag={null}
-			newEntry={antallForeldre < 2 ? initialValues : null}
-			disabled={antallForeldre >= 2}
+			newEntry={initialValues}
+			maxEntries={2}
+			maxReachedDescription={'Begge foreldre er lagt til'}
 		>
 			{(path: string, idx: number) => {
 				const eksisterendeForelder = _get(formikBag.values, `${path}.ident`)
