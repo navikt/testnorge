@@ -236,13 +236,10 @@ public class PdlForvalterClient implements ClientRegister {
     private void sendAdressebeskyttelse(Person person, PdlPersondata persondata) {
 
         if ((isNull(persondata) || isNull(persondata.getPerson()) ||
-                persondata.getPerson().getDoedsfall().isEmpty()) &&
-                nonNull(person.getDoedsdato())) {
-
-            if ("SPSF".equals(person.getSpesreg()) || "SPFO".equals(person.getSpesreg()) || "SFU".equals(person.getSpesreg())) {
-                pdlForvalterConsumer.postAdressebeskyttelse(mapperFacade.map(person, PdlAdressebeskyttelse.class),
-                        person.getIdent());
-            }
+                persondata.getPerson().getAdressebeskyttelse().isEmpty()) &&
+                ("SPSF".equals(person.getSpesreg()) || "SPFO".equals(person.getSpesreg()) || "SFU".equals(person.getSpesreg()))) {
+            pdlForvalterConsumer.postAdressebeskyttelse(mapperFacade.map(person, PdlAdressebeskyttelse.class),
+                    person.getIdent());
         }
     }
 
