@@ -10,7 +10,7 @@ import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bes
 
 const bankkontoPath = ['tpsMessaging.utenlandskBankkonto', 'tpsMessaging.norskBankkonto']
 
-export const TpsImportDiverse = ({ formikBag }) => {
+export const TpsMessagingDiverse = ({ formikBag }) => {
 	const { personFoerLeggTil } = useContext(BestillingsveilederContext)
 	console.log('personFoerLeggTil: ', personFoerLeggTil) //TODO - SLETT MEG
 	const HarAktivSkjerming = () => {

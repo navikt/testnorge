@@ -35,7 +35,7 @@ public class TpsMessagingClient implements ClientRegister {
         StringBuilder status = new StringBuilder();
 
         try {
-            log.trace("Bestilling fra Dolly-frontend: {}", Json.pretty(bestilling));
+            log.info("Bestilling fra Dolly-frontend: {}", Json.pretty(bestilling));
 
             if (nonNull(bestilling.getTpsMessaging().getSpraakKode())) {
                 appendResponseStatus(
@@ -59,7 +59,7 @@ public class TpsMessagingClient implements ClientRegister {
                 );
             }
             if (nonNull(bestilling.getTpsMessaging().getEgenAnsattDatoTom()) &&
-                    bestilling.getTpsMessaging().getEgenAnsattDatoTom().isBefore(LocalDate.now())) {
+                    !bestilling.getTpsMessaging().getEgenAnsattDatoTom().isAfter(LocalDate.now())) {
                 appendResponseStatus(
                         tpsMessagingConsumer.deleteEgenansattRequest(
                                 dollyPerson.getHovedperson(),

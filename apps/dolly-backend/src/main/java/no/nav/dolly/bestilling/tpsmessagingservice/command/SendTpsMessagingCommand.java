@@ -27,7 +27,7 @@ public class SendTpsMessagingCommand implements Callable<List<TpsMeldingResponse
     @Override
     public List<TpsMeldingResponseDTO> call() {
 
-        log.trace("Sender request på ident: {} til TPS messaging service: {}", ident, body);
+        log.info("Sender request på ident: {} til TPS messaging service: {}", ident, body);
 
         var response = webClient.post()
                 .uri(uriBuilder -> uriBuilder
@@ -41,7 +41,7 @@ public class SendTpsMessagingCommand implements Callable<List<TpsMeldingResponse
                 .bodyToMono(TpsMeldingResponseDTO[].class)
                 .block();
 
-        log.trace("Response fra TPS messaging service: {}", response);
+        log.info("Response fra TPS messaging service: {}", response);
         return Arrays.asList(response);
     }
 }

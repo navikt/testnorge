@@ -167,8 +167,7 @@ export default handleActions(
 			state.sigrunstub[action.meta.ident] = action.payload.data.responseList
 		},
 		[onSuccess(actions.getTpsMessaging)](state, action) {
-			console.log('action: ', action) //TODO - SLETT MEG
-			state.tpsMessaging[action.meta.ident] = action.payload.data
+			state.tpsMessaging[action.meta.ident] = action?.payload.data?.[0]?.person
 		},
 		[onSuccess(actions.getSigrunSekvensnr)](state, action) {
 			const inntektData = state.sigrunstub[action.meta.ident]
@@ -257,7 +256,6 @@ export const fetchDataFraFagsystemer = (personId) => (dispatch, getState) => {
 	// Liste over systemer som har data
 	const success = successMiljoSelector(statusArray)
 
-	console.log('statusArray: ', statusArray) //TODO - SLETT MEG
 	// Samle alt fra PDL under en ID
 	if (Object.keys(success).some((a) => a.substring(0, 3) === 'PDL')) {
 		success.PDL = 'PDL'

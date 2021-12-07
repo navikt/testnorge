@@ -13,7 +13,7 @@ import { Sikkerhetstiltak } from '~/components/fagsystem/tpsf/form/personinforma
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import _get from 'lodash/get'
 import { Alder } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/alder/Alder'
-import { TpsImportDiverse } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/tpsimport/TpsImportDiverse'
+import { TpsMessagingDiverse } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/tpsmessaging/TpsMessagingDiverse'
 
 const alderPaths = ['tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer', 'tpsf.doedsdato']
 
@@ -120,7 +120,7 @@ export const Personinformasjon = ({ formikBag }) => {
 				</Kategori>
 				<Kategori title="Diverse" vis={diversePaths}>
 					<Diverse formikBag={formikBag} />
-					<TpsImportDiverse formikBag={formikBag} />
+					<TpsMessagingDiverse formikBag={formikBag} />
 				</Kategori>
 				<Kategori title="Vergemål" vis={vergemaalPath}>
 					<Vergemaal />
