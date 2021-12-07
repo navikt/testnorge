@@ -24,7 +24,7 @@ public class BestillingTpsMessagingStatusMapperTest {
 
     private static final List<BestillingProgress> ERROR_STATUS = List.of(
             BestillingProgress.builder().ident("IDENT_1")
-                    .tpsMessagingStatus("Feil= error=Bad Request")
+                    .tpsMessagingStatus("Feil=error=Bad Request")
                     .build()
     );
 

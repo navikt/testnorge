@@ -28,10 +28,12 @@ public final class BestillingTpsMessagingStatusMapper {
             if (nonNull(progress.getTpsMessagingStatus())) {
                 List<String> statusPerMiljoe = List.of(progress.getTpsMessagingStatus().split(","));
                 statusPerMiljoe.forEach(status -> {
-                    if (statusMap.containsKey(status)) {
-                        statusMap.get(status).add(progress.getIdent());
+                    var formattedStatus = status.replaceAll("=\\s?", ":");
+                    if (statusMap.containsKey(formattedStatus)) {
+                        statusMap.get(formattedStatus).add(progress.getIdent());
                     } else {
-                        statusMap.put(status.replace("=", ":"), new ArrayList<>(List.of(progress.getIdent())));
+                        statusMap.put(formattedStatus,
+                                new ArrayList<>(List.of(progress.getIdent())));
                     }
                 });
             }
@@ -43,7 +45,7 @@ public final class BestillingTpsMessagingStatusMapper {
                         .map(entry -> RsStatusRapport.Status.builder()
                                 .melding(entry.getKey().contains(":OK")
                                         ? "OK"
-                                        : entry.getKey().substring(entry.getKey().indexOf(":") + 2))
+                                        : entry.getKey().substring(entry.getKey().indexOf(":") + 1))
                                 .identer(entry.getValue())
                                 .detaljert(singletonList(RsStatusRapport.Detaljert.builder()
                                         .identer(entry.getValue())
