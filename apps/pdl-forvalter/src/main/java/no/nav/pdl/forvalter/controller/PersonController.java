@@ -319,6 +319,16 @@ public class PersonController {
         artifactDeleteService.deleteVergemaal(ident, id);
     }
 
+    @DeleteMapping(value = "/{ident}/sikkerhetstiltak/{id}")
+    @Operation(description = "Slett indikert sikkerhetstiltak for person")
+    public void deleteSikkerhetstiltak(@Parameter(description = "Ident for testperson")
+                                @PathVariable String ident,
+                                @Parameter(description = "id som identifiserer sikkerhetstiltak")
+                                @PathVariable Integer id) {
+
+        artifactDeleteService.deleteSikkerhetstiltak(ident, id);
+    }
+
     @DeleteMapping(value = "/{ident}/doedfoedtbarn/{id}")
     @Operation(description = "Slett indikert doedfoedtbarn for person")
     public void deleteDoedfoedtBarn(@Parameter(description = "Ident for testperson")
