@@ -34,6 +34,7 @@ const validationSchema = yup.object({
 		.number()
 		.positive('Må være et positivt tall')
 		.min(1, 'Må minst opprette ${min} person')
+		.max(50, 'Kan kun bestille max 50 identer om gangen.')
 		.required('Oppgi antall personer'),
 	identtype: yup.string().required('Velg en identtype'),
 })
