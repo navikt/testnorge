@@ -12,7 +12,7 @@ on:
 
 jobs:
   bruker-service:
-    name: Integraion test for bruker-service
+    name: Test of bruker-service
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
