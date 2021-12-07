@@ -2,11 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import { TpsfApi } from '~/service/Api'
-import { Adressevisning } from './Boadresse'
-import { PostadresseVisning } from './Postadresse'
-import { Historikk } from '~/components/ui/historikk/Historikk'
 import { PersoninformasjonKodeverk } from '~/config/kodeverk'
-import isArray from 'redux-actions/lib/utils/isArray'
+import { Adressevalg } from '~/components/fagsystem/tpsf/visning/partials/Adressevalg'
 
 export const Barn = ({ data, type }) => {
 	if (!data) return null
@@ -54,26 +51,7 @@ export const Barn = ({ data, type }) => {
 					/>
 				)}
 			</div>
-			{data.boadresse &&
-				(isArray(data.boadresse) ? (
-					data.boadresse.length > 0 && (
-						<Historikk component={Adressevisning} propName="boadresse" data={data.boadresse} />
-					)
-				) : (
-					<Adressevisning boadresse={data.boadresse} />
-				))}
-			{data.postadresse &&
-				(isArray(data.postadresse) ? (
-					data.postadresse.length > 0 && (
-						<Historikk
-							component={PostadresseVisning}
-							propName="postadresse"
-							data={data.postadresse}
-						/>
-					)
-				) : (
-					<PostadresseVisning postadresse={data.postadresse} />
-				))}
+			<Adressevalg data={data} />
 		</>
 	)
 }
