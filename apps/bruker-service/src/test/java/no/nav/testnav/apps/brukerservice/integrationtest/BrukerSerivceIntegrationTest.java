@@ -12,7 +12,7 @@ import no.nav.testnav.integrationtest.client.TokendingsClient;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 
 @Tag("integration")
-public class BrukerSerivceIntegrationTest {
+class BrukerSerivceIntegrationTest {
 
     private static final String PID = "01810048413";
     private static final String ORGNUMMER = "811306312";
