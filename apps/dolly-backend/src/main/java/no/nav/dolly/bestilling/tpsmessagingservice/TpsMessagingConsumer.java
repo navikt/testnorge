@@ -30,7 +30,7 @@ public class TpsMessagingConsumer {
     private static final String NORSK_BANKKONTO_URL = "/api/v1/personer/{ident}/bankkonto-norsk";
     private static final String SPRAAKKODE_URL = "/api/v1/personer/{ident}/spraakkode";
     private static final String EGENANSATT_URL = "/api/v1/personer/{ident}/egenansatt";
-    private static final String TELEFONNUMMER_URL = "/api/v1/personer/{ident}/telefonnummer";
+    private static final String TELEFONNUMMER_URL = "/api/v1/personer/{ident}/telefonnumre";
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
