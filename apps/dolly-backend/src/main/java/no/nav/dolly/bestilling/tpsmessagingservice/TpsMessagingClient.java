@@ -47,7 +47,7 @@ public class TpsMessagingClient implements ClientRegister {
                                 bestilling.getEnvironments(),
                                 mapperFacade.map(bestilling.getTpsMessaging().getSpraakKode(), SpraakDTO.class)),
                         status,
-                        "Spraakkode"
+                        "SprakKode"
                 );
             }
 
