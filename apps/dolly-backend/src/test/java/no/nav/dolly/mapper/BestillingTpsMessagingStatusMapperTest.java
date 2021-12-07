@@ -14,7 +14,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 
 @ExtendWith(MockitoExtension.class)
-public class BestillingTpsMessagingStatusMapperTest {
+class BestillingTpsMessagingStatusMapperTest {
 
     private static final List<BestillingProgress> RUN_STATUS = List.of(
             BestillingProgress.builder().ident("IDENT_1")
@@ -29,7 +29,7 @@ public class BestillingTpsMessagingStatusMapperTest {
     );
 
     @Test
-    public void buildTpsMessagingStatusMap_OK() {
+    void buildTpsMessagingStatusMap_OK() {
 
         List<RsStatusRapport> identStatuses = BestillingTpsMessagingStatusMapper.buildTpsMessagingStatusMap(RUN_STATUS);
 
@@ -44,7 +44,7 @@ public class BestillingTpsMessagingStatusMapperTest {
     }
 
     @Test
-    public void buildTpsMessagingStatusMap_ERROR() {
+    void buildTpsMessagingStatusMap_ERROR() {
 
         List<RsStatusRapport> identStatuses = BestillingTpsMessagingStatusMapper.buildTpsMessagingStatusMap(ERROR_STATUS);
 

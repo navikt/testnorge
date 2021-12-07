@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -24,7 +23,6 @@ public final class BestillingTpsMessagingStatusMapper {
         Map<String, List<String>> statusMap = new HashMap<>();
 
         progressList.forEach(progress -> {
-            System.out.println(progress);
             if (nonNull(progress.getTpsMessagingStatus())) {
                 List<String> statusPerMiljoe = List.of(progress.getTpsMessagingStatus().split(","));
                 statusPerMiljoe.forEach(status -> {
@@ -39,8 +37,11 @@ public final class BestillingTpsMessagingStatusMapper {
             }
         });
 
-        return statusMap.isEmpty() ? emptyList()
-                : singletonList(RsStatusRapport.builder().id(TPS_MESSAGING).navn(TPS_MESSAGING.getBeskrivelse())
+        if (statusMap.isEmpty()) {
+            return emptyList();
+        }
+
+        return singletonList(RsStatusRapport.builder().id(TPS_MESSAGING).navn(TPS_MESSAGING.getBeskrivelse())
                 .statuser(statusMap.entrySet().stream()
                         .map(entry -> RsStatusRapport.Status.builder()
                                 .melding(entry.getKey().contains(":OK")
@@ -54,7 +55,7 @@ public final class BestillingTpsMessagingStatusMapper {
                                                 : "NA")
                                         .build()))
                                 .build())
-                        .collect(Collectors.toList()))
+                        .toList())
                 .build());
     }
 }
