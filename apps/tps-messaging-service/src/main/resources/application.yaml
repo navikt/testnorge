@@ -32,7 +32,7 @@ config:
       queueManager: MQLS03
       user: ${mq.dev.username}
       password: ${mq.dev.password}
-  miljoer: t0, t1, t2, t3, t4, t5, t6, t13, q1, q2, q4, q5, q6, qx
+  miljoer: t0, t1, t3, t4, t5, t6, t13, q1, q2, q4, q5, q6, qx
 
 consumers:
   pdl-services:
