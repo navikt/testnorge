@@ -16,7 +16,7 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static net.logstash.logback.util.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -107,8 +107,10 @@ public class TpsMessagingClient implements ClientRegister {
     private void appendResponseStatus(List<TpsMeldingResponseDTO> responseList, StringBuilder status, String enhet) {
 
         responseList.forEach(response -> {
-            status.append(isBlank(status) ? null : ",");
-            status.append(enhet).append("-");
+            if (isNotBlank(status)) {
+                status.append(",");
+            }
+            status.append(enhet).append("#");
             status.append(response.getMiljoe());
             status.append(":");
             status.append(response.getStatus().equals("OK") ? "OK" : "FEIL:" + response.getUtfyllendeMelding());

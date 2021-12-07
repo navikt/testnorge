@@ -116,6 +116,7 @@ export const sokSelector = (state, searchStr) => {
 // StatusArray = state.bestillingStatus[0].status
 export const successMiljoSelector = (statusArray) => {
 	const success_list = statusArray.reduce((acc, curr) => {
+		console.log('curr.statuser: ', curr.statuser) //TODO - SLETT MEG
 		const statuser = curr.statuser.filter((v) => v.melding === 'OK')
 
 		if (statuser.length) {

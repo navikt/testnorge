@@ -24,12 +24,16 @@ public final class BestillingTpsMessagingStatusMapper {
         Map<String, List<String>> statusMap = new HashMap<>();
 
         progressList.forEach(progress -> {
+            System.out.println(progress);
             if (nonNull(progress.getTpsMessagingStatus())) {
-                if (statusMap.containsKey(progress.getTpsMessagingStatus())) {
-                    statusMap.get(progress.getTpsMessagingStatus()).add(progress.getIdent());
-                } else {
-                    statusMap.put(progress.getTpsMessagingStatus(), new ArrayList<>(List.of(progress.getIdent())));
-                }
+                List<String> statusPerMiljoe = List.of(progress.getTpsMessagingStatus().split(","));
+                statusPerMiljoe.forEach(status -> {
+                    if (statusMap.containsKey(status)) {
+                        statusMap.get(status).add(progress.getIdent());
+                    } else {
+                        statusMap.put(status, new ArrayList<>(List.of(progress.getIdent())));
+                    }
+                });
             }
         });
 
@@ -37,8 +41,16 @@ public final class BestillingTpsMessagingStatusMapper {
                 : singletonList(RsStatusRapport.builder().id(TPS_MESSAGING).navn(TPS_MESSAGING.getBeskrivelse())
                 .statuser(statusMap.entrySet().stream()
                         .map(entry -> RsStatusRapport.Status.builder()
-                                .melding(entry.getKey().replace('=', ':'))
+                                .melding(entry.getKey().contains(":OK")
+                                        ? "OK"
+                                        : entry.getKey().substring(entry.getKey().lastIndexOf(":") + 1))
                                 .identer(entry.getValue())
+                                .detaljert(singletonList(RsStatusRapport.Detaljert.builder()
+                                        .identer(entry.getValue())
+                                        .miljo(entry.getKey().contains("#")
+                                                ? entry.getKey().substring(entry.getKey().lastIndexOf("#") + 1, entry.getKey().lastIndexOf(":"))
+                                                : entry.getKey().substring(entry.getKey().lastIndexOf("-") + 1, entry.getKey().lastIndexOf(":")))
+                                        .build()))
                                 .build())
                         .collect(Collectors.toList()))
                 .build());
