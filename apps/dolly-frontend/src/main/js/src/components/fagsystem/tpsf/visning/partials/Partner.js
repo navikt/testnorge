@@ -8,9 +8,11 @@ import { PostadresseVisning } from './Postadresse'
 
 import { PersoninformasjonKodeverk } from '~/config/kodeverk'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { isArray } from 'node-forge/lib/util'
 
 export const Partner = ({ data }) => {
 	if (!data) return null
+	console.log('data', data)
 
 	return (
 		<React.Fragment>
@@ -28,10 +30,10 @@ export const Partner = ({ data }) => {
 					value={data.spesreg}
 				/>
 				<TitleValue title="Uten fast bopel" value={data.utenFastBopel && 'Ja'} />
-				{data.boadresse.length > 0 && (
+				{data.boadresse?.length > 0 && (
 					<Historikk component={Adressevisning} propName="boadresse" data={data.boadresse} />
 				)}
-				{data.postadresse.length > 0 && (
+				{data.postadresse?.length > 0 && (
 					<Historikk
 						component={PostadresseVisning}
 						propName="postadresse"
@@ -39,25 +41,40 @@ export const Partner = ({ data }) => {
 					/>
 				)}
 			</div>
-			{data.sivilstander.length > 0 && (
-				<ErrorBoundary>
-					<DollyFieldArray header="Forhold" data={data.sivilstander} nested>
-						{(forhold, idx) => (
-							<div key={idx} className="person-visning_content">
-								<TitleValue
-									title="Forhold til partner (sivilstand)"
-									kodeverk={PersoninformasjonKodeverk.Sivilstander}
-									value={forhold.sivilstand}
-									size="medium"
-								/>
-								<TitleValue
-									title="Sivilstand fra dato"
-									value={Formatters.formatDate(forhold.sivilstandRegdato)}
-								/>
-							</div>
-						)}
-					</DollyFieldArray>
-				</ErrorBoundary>
+			{isArray(data.sivilstander) ? (
+				data.sivilstander.length > 0 && (
+					<ErrorBoundary>
+						<DollyFieldArray header="Forhold" data={data.sivilstander} nested>
+							{(forhold, idx) => (
+								<div key={idx} className="person-visning_content">
+									<TitleValue
+										title="Forhold til partner (sivilstand)"
+										kodeverk={PersoninformasjonKodeverk.Sivilstander}
+										value={forhold.sivilstand}
+										size="medium"
+									/>
+									<TitleValue
+										title="Sivilstand fra dato"
+										value={Formatters.formatDate(forhold.sivilstandRegdato)}
+									/>
+								</div>
+							)}
+						</DollyFieldArray>
+					</ErrorBoundary>
+				)
+			) : (
+				<>
+					<TitleValue
+						title="Forhold til partner (sivilstand)"
+						kodeverk={PersoninformasjonKodeverk.Sivilstander}
+						value={data.sivilstand}
+						size="medium"
+					/>
+					<TitleValue
+						title="Sivilstand fra dato"
+						value={Formatters.formatDate(data.sivilstandRegdato)}
+					/>
+				</>
 			)}
 		</React.Fragment>
 	)

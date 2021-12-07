@@ -53,10 +53,10 @@ export const Barn = ({ data, type }) => {
 					/>
 				)}
 			</div>
-			{data.boadresse.length > 0 && (
+			{data.boadresse?.length > 0 && (
 				<Historikk component={Adressevisning} propName="boadresse" data={data.boadresse} />
 			)}
-			{data.postadresse.length > 0 && (
+			{data.postadresse?.length > 0 && (
 				<Historikk component={PostadresseVisning} propName="postadresse" data={data.postadresse} />
 			)}
 		</>
