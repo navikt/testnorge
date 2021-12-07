@@ -32,6 +32,7 @@ import static no.nav.dolly.mapper.BestillingPensjonforvalterStatusMapper.buildPe
 import static no.nav.dolly.mapper.BestillingSigrunStubStatusMapper.buildSigrunStubStatusMap;
 import static no.nav.dolly.mapper.BestillingSkjermingsRegisterStatusMapper.buildSkjermingsRegisterStatusMap;
 import static no.nav.dolly.mapper.BestillingSykemeldingStatusMapper.buildSykemeldingStatusMap;
+import static no.nav.dolly.mapper.BestillingTpsMessagingStatusMapper.buildTpsMessagingStatusMap;
 import static no.nav.dolly.mapper.BestillingTpsfStatusMapper.buildTpsfStatusMap;
 import static no.nav.dolly.mapper.BestillingUdiStubStatusMapper.buildUdiStubStatusMap;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -64,6 +65,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildInstdataStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildUdiStubStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildInntektstubStatusMap(bestilling.getProgresser()));
+                        bestillingStatus.getStatus().addAll(buildTpsMessagingStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildPensjonforvalterStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildInntektsmeldingStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildBrregStubStatusMap(bestilling.getProgresser()));
@@ -89,6 +91,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                                 .sykemelding(bestillingRequest.getSykemelding())
                                 .tpsf(jsonBestillingMapper.mapTpsfRequest(bestilling.getTpsfKriterier()))
                                 .importFraTps(mapIdents(bestilling.getTpsImport()))
+                                .tpsMessaging(bestillingRequest.getTpsMessaging())
                                 .importFraPdl(mapIdents(bestilling.getPdlImport()))
                                 .tpsMessaging(bestillingRequest.getTpsMessaging())
                                 .kildeMiljoe(bestilling.getKildeMiljoe())

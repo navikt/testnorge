@@ -6,7 +6,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient;
-import no.nav.dolly.bestilling.personservice.PersonServiceClient;
+import no.nav.dolly.bestilling.aktoeridsyncservice.AktoerIdSyncClient;
 import no.nav.dolly.bestilling.tpsf.TpsfResponseHandler;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
@@ -85,7 +85,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                             .map(bestilling1 -> clientRegisters.stream()
                                                     .filter(register ->
                                                             !(register instanceof PdlForvalterClient ||
-                                                                    register instanceof PersonServiceClient ||
+                                                                    register instanceof AktoerIdSyncClient ||
                                                                     register instanceof PensjonforvalterClient))
                                                     .map(register -> {
                                                         register.gjenopprett(getDollyBestillingRequest(

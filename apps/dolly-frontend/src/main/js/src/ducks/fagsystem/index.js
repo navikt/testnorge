@@ -10,11 +10,12 @@ import {
 	InntektstubApi,
 	InstApi,
 	KrrApi,
+	PdlforvalterApi,
 	PensjonApi,
 	SigrunApi,
 	TpsfApi,
+	TpsMessagingApi,
 	UdiApi,
-	PdlforvalterApi,
 } from '~/service/Api'
 import { onSuccess } from '~/ducks/utils/requestActions'
 import { selectIdentById } from '~/ducks/gruppe'
@@ -25,6 +26,12 @@ import Formatters from '~/utils/DataFormatter'
 export const actions = createActions(
 	{
 		getTpsf: TpsfApi.getPersoner,
+		getTpsMessaging: [
+			TpsMessagingApi.getTpsPersonInfoAllEnvs,
+			(ident) => ({
+				ident,
+			}),
+		],
 		getSigrun: [
 			SigrunApi.getPerson,
 			(ident) => ({
@@ -132,6 +139,7 @@ export const actions = createActions(
 
 const initialState = {
 	tpsf: {},
+	tpsMessaging: {},
 	sigrunstub: {},
 	inntektstub: {},
 	krrstub: {},
@@ -157,6 +165,9 @@ export default handleActions(
 		},
 		[onSuccess(actions.getSigrun)](state, action) {
 			state.sigrunstub[action.meta.ident] = action.payload.data.responseList
+		},
+		[onSuccess(actions.getTpsMessaging)](state, action) {
+			state.tpsMessaging[action.meta.ident] = action?.payload.data?.[0]?.person
 		},
 		[onSuccess(actions.getSigrunSekvensnr)](state, action) {
 			const inntektData = state.sigrunstub[action.meta.ident]
@@ -260,6 +271,8 @@ export const fetchDataFraFagsystemer = (personId) => (dispatch, getState) => {
 				return dispatch(actions.getSigrunSekvensnr(personId))
 			case 'INNTK':
 				return dispatch(actions.getInntektstub(personId))
+			case 'TPS_MESSAGING':
+				return dispatch(actions.getTpsMessaging(personId))
 			case 'ARENA':
 				return dispatch(actions.getArena(personId))
 			case 'PDL':
@@ -388,6 +401,7 @@ export const selectPersonListe = (state) => {
 export const selectDataForIdent = (state, ident) => {
 	return {
 		tpsf: state.fagsystem.tpsf[ident],
+		tpsMessaging: state.fagsystem.tpsMessaging[ident],
 		sigrunstub: state.fagsystem.sigrunstub[ident],
 		inntektstub: state.fagsystem.inntektstub[ident],
 		krrstub: state.fagsystem.krrstub[ident],

@@ -411,30 +411,42 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 
 	const tpsMessaging = _get(bestillingData, 'tpsMessaging')
 
-	if (tpsMessaging?.norskBankkonto) {
-		const norskBankkontoData = {
-			header: 'Norsk bankkonto',
-			items: [obj('Kontonummer', tpsMessaging.norskBankkonto.kontonummer)],
-		}
-		data.push(norskBankkontoData)
-	}
-
-	if (tpsMessaging?.utenlandskBankkonto) {
-		const utenlandskBankkontoData = {
-			header: 'Utenlandsk bankkonto',
+	if (tpsMessaging) {
+		const tpsMessagingData = {
+			header: 'Personinformasjon',
 			items: [
-				obj('Kontonummer', tpsMessaging.utenlandskBankkonto.kontonummer),
-				obj('Swift kode', tpsMessaging.utenlandskBankkonto.swift),
-				obj('Land', tpsMessaging.utenlandskBankkonto.landkode),
-				obj('Banknavn', tpsMessaging.utenlandskBankkonto.banknavn),
-				obj('IBAN', tpsMessaging.utenlandskBankkonto.iban),
-				obj('Valuta', tpsMessaging.utenlandskBankkonto.valuta),
-				obj('Adresselinje 1', tpsMessaging.utenlandskBankkonto.bankAdresse1),
-				obj('Adresselinje 2', tpsMessaging.utenlandskBankkonto.bankAdresse2),
-				obj('Adresselinje 3', tpsMessaging.utenlandskBankkonto.bankAdresse3),
+				obj('Språk', tpsMessaging.spraakKode, PersoninformasjonKodeverk.Spraak),
+				obj('Skjerming fra', Formatters.formatDate(tpsMessaging.egenAnsattDatoFom)),
+				obj('Skjerming til', Formatters.formatDate(tpsMessaging.egenAnsattDatoTom)),
 			],
 		}
-		data.push(utenlandskBankkontoData)
+		data.push(tpsMessagingData)
+
+		if (tpsMessaging.norskBankkonto) {
+			const norskBankkontoData = {
+				header: 'Norsk bankkonto',
+				items: [obj('Kontonummer', tpsMessaging.norskBankkonto.kontonummer)],
+			}
+			data.push(norskBankkontoData)
+		}
+
+		if (tpsMessaging.utenlandskBankkonto) {
+			const utenlandskBankkontoData = {
+				header: 'Utenlandsk bankkonto',
+				items: [
+					obj('Kontonummer', tpsMessaging.utenlandskBankkonto.kontonummer),
+					obj('Swift kode', tpsMessaging.utenlandskBankkonto.swift),
+					obj('Land', tpsMessaging.utenlandskBankkonto.landkode),
+					obj('Banknavn', tpsMessaging.utenlandskBankkonto.banknavn),
+					obj('IBAN', tpsMessaging.utenlandskBankkonto.iban),
+					obj('Valuta', tpsMessaging.utenlandskBankkonto.valuta),
+					obj('Adresselinje 1', tpsMessaging.utenlandskBankkonto.bankAdresse1),
+					obj('Adresselinje 2', tpsMessaging.utenlandskBankkonto.bankAdresse2),
+					obj('Adresselinje 3', tpsMessaging.utenlandskBankkonto.bankAdresse3),
+				],
+			}
+			data.push(utenlandskBankkontoData)
+		}
 	}
 
 	const aaregKriterier = bestillingData.aareg

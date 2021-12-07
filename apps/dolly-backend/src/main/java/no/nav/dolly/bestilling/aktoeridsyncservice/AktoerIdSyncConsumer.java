@@ -1,7 +1,7 @@
-package no.nav.dolly.bestilling.personservice;
+package no.nav.dolly.bestilling.aktoeridsyncservice;
 
-import no.nav.dolly.bestilling.personservice.command.HentAktoerIdCommand;
-import no.nav.dolly.bestilling.personservice.domain.AktoerIdent;
+import no.nav.dolly.bestilling.aktoeridsyncservice.command.HentAktoerIdCommand;
+import no.nav.dolly.bestilling.aktoeridsyncservice.domain.AktoerIdent;
 import no.nav.dolly.config.credentials.PersonServiceProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
@@ -19,13 +19,13 @@ import static java.util.Objects.isNull;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 
 @Service
-public class PersonServiceConsumer {
+public class AktoerIdSyncConsumer {
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
     private final NaisServerProperties serviceProperties;
 
-    public PersonServiceConsumer(TokenExchange tokenService, PersonServiceProperties serverProperties) {
+    public AktoerIdSyncConsumer(TokenExchange tokenService, PersonServiceProperties serverProperties) {
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
         this.webClient = WebClient.builder()

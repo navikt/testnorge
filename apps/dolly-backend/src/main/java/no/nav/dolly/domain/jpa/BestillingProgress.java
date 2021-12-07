@@ -94,6 +94,9 @@ public class BestillingProgress {
     @Column(name = "TPS_IMPORT_STATUS")
     private String tpsImportStatus;
 
+    @Column(name = "TPS_MESSAGING_STATUS")
+    private String tpsMessagingStatus;
+
     @Column(name = "PDL_IMPORT_STATUS")
     private String pdlImportStatus;
 
