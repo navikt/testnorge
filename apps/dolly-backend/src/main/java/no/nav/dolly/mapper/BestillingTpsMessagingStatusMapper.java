@@ -51,7 +51,7 @@ public final class BestillingTpsMessagingStatusMapper {
                                 .detaljert(singletonList(RsStatusRapport.Detaljert.builder()
                                         .identer(entry.getValue())
                                         .miljo(entry.getKey().contains("#")
-                                                ? entry.getKey().substring(entry.getKey().lastIndexOf("#") + 1, entry.getKey().lastIndexOf(":"))
+                                                ? entry.getKey().substring(entry.getKey().lastIndexOf("#") + 1, entry.getKey().indexOf(":"))
                                                 : "NA")
                                         .build()))
                                 .build())
