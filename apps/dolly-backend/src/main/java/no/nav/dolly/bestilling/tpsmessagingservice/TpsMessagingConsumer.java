@@ -57,19 +57,19 @@ public class TpsMessagingConsumer {
         return new SendTpsMessagingCommand(webClient, ident, miljoer, body, NORSK_BANKKONTO_URL, serviceProperties.getAccessToken(tokenService)).call();
     }
 
-    @Timed(name = "providers", tags = { "operation", "tps_messaging_createNorskBankkonto" })
+    @Timed(name = "providers", tags = { "operation", "tps_messaging_createSkjerming" })
     public List<TpsMeldingResponseDTO> sendEgenansattRequest(String ident, List<String> miljoer, LocalDate fraOgMed) {
 
         return new SendEgenansattCommand(webClient, ident, miljoer, fraOgMed, EGENANSATT_URL, serviceProperties.getAccessToken(tokenService)).call();
     }
 
-    @Timed(name = "providers", tags = { "operation", "tps_messaging_createNorskBankkonto" })
+    @Timed(name = "providers", tags = { "operation", "tps_messaging_deleteSkjerming" })
     public List<TpsMeldingResponseDTO> deleteEgenansattRequest(String ident, List<String> miljoer) {
 
         return new DeleteEgenansattCommand(webClient, ident, miljoer, EGENANSATT_URL, serviceProperties.getAccessToken(tokenService)).call();
     }
 
-    @Timed(name = "providers", tags = { "operation", "tps_messaging_createNorskBankkonto" })
+    @Timed(name = "providers", tags = { "operation", "tps_messaging_createSpraakkode" })
     public List<TpsMeldingResponseDTO> sendSpraakkodeRequest(String ident, List<String> miljoer, Object body) {
 
         return new SendTpsMessagingCommand(webClient, ident, miljoer, body, SPRAAKKODE_URL, serviceProperties.getAccessToken(tokenService)).call();

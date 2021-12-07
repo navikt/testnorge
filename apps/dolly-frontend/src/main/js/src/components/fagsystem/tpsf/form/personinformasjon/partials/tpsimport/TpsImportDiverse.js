@@ -1,25 +1,26 @@
 import React, { useContext } from 'react'
 import { isAfter } from 'date-fns'
 import { PersoninformasjonKodeverk } from '~/config/kodeverk'
-import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { UtenlandskBankkonto } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/utenlandskbankkonto/UtenlandskBankkonto'
 import { NorskBankkonto } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/norskbankkonto/NorskBankkonto'
+import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 
 const bankkontoPath = ['tpsMessaging.utenlandskBankkonto', 'tpsMessaging.norskBankkonto']
 
 export const TpsImportDiverse = ({ formikBag }) => {
-	const opts = useContext(BestillingsveilederContext)
-	const { personFoerLeggTil } = opts
-	const harSkjerming = personFoerLeggTil
-		? personFoerLeggTil.tpsf.hasOwnProperty('egenAnsattDatoFom')
-			? personFoerLeggTil.tpsf.hasOwnProperty('egenAnsattDatoTom')
-				? isAfter(new Date(personFoerLeggTil.tpsf.egenAnsattDatoTom), new Date())
+	const { personFoerLeggTil } = useContext(BestillingsveilederContext)
+	const HarAktivSkjerming = () => {
+		return personFoerLeggTil?.tpsMessaging?.hasOwnProperty('egenAnsattDatoFom')
+			? personFoerLeggTil?.tpsMessaging?.hasOwnProperty('egenAnsattDatoTom')
+				? isAfter(new Date(personFoerLeggTil?.tpsMessaging?.egenAnsattDatoTom), new Date())
 				: true
 			: false
-		: false
+	}
+
+	const harSkjerming = HarAktivSkjerming()
 
 	return (
 		<React.Fragment>
