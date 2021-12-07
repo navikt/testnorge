@@ -12,13 +12,14 @@ const bankkontoPath = ['tpsMessaging.utenlandskBankkonto', 'tpsMessaging.norskBa
 
 export const TpsMessagingDiverse = ({ formikBag }) => {
 	const { personFoerLeggTil } = useContext(BestillingsveilederContext)
-	console.log('personFoerLeggTil: ', personFoerLeggTil) //TODO - SLETT MEG
 	const HarAktivSkjerming = () => {
-		return personFoerLeggTil?.tpsMessaging?.hasOwnProperty('egenAnsattDatoFom')
-			? personFoerLeggTil?.tpsMessaging?.hasOwnProperty('egenAnsattDatoTom')
+		if (personFoerLeggTil?.tpsMessaging?.hasOwnProperty('egenAnsattDatoTom')) {
+			return personFoerLeggTil?.tpsMessaging?.hasOwnProperty('egenAnsattDatoFom')
 				? isAfter(new Date(personFoerLeggTil?.tpsMessaging?.egenAnsattDatoTom), new Date())
-				: true
-			: false
+				: false
+		} else {
+			return personFoerLeggTil?.tpsMessaging?.hasOwnProperty('egenAnsattDatoFom')
+		}
 	}
 
 	const harSkjerming = HarAktivSkjerming()
