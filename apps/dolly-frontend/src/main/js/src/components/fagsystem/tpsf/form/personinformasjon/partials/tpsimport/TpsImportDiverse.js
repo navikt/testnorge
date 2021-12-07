@@ -12,6 +12,7 @@ const bankkontoPath = ['tpsMessaging.utenlandskBankkonto', 'tpsMessaging.norskBa
 
 export const TpsImportDiverse = ({ formikBag }) => {
 	const { personFoerLeggTil } = useContext(BestillingsveilederContext)
+	console.log('personFoerLeggTil: ', personFoerLeggTil) //TODO - SLETT MEG
 	const HarAktivSkjerming = () => {
 		return personFoerLeggTil?.tpsMessaging?.hasOwnProperty('egenAnsattDatoFom')
 			? personFoerLeggTil?.tpsMessaging?.hasOwnProperty('egenAnsattDatoTom')
