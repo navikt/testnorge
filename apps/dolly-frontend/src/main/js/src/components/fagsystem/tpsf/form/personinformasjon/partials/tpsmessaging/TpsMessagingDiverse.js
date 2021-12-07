@@ -26,7 +26,7 @@ export const TpsMessagingDiverse = ({ formikBag }) => {
 	return (
 		<React.Fragment>
 			<FormikSelect
-				name="tpsMessaging.sprakKode"
+				name="tpsMessaging.spraakKode"
 				label="Språk"
 				kodeverk={PersoninformasjonKodeverk.Spraak}
 				size="large"

@@ -38,7 +38,7 @@ const diversePaths = [
 	'tpsf.telefonnummer_1',
 	'tpsMessaging.utenlandskBankkonto',
 	'tpsMessaging.norskBankkonto',
-	'tpsMessaging.sprakKode',
+	'tpsMessaging.spraakKode',
 	'tpsMessaging.egenAnsattDatoFom',
 	'tpsMessaging.egenAnsattDatoTom',
 ]

@@ -31,7 +31,7 @@ public final class BestillingTpsMessagingStatusMapper {
                     if (statusMap.containsKey(status)) {
                         statusMap.get(status).add(progress.getIdent());
                     } else {
-                        statusMap.put(status, new ArrayList<>(List.of(progress.getIdent())));
+                        statusMap.put(status.replace("=", ":"), new ArrayList<>(List.of(progress.getIdent())));
                     }
                 });
             }
@@ -43,13 +43,13 @@ public final class BestillingTpsMessagingStatusMapper {
                         .map(entry -> RsStatusRapport.Status.builder()
                                 .melding(entry.getKey().contains(":OK")
                                         ? "OK"
-                                        : entry.getKey().substring(entry.getKey().lastIndexOf(":") + 1))
+                                        : entry.getKey().substring(entry.getKey().indexOf(":") + 2))
                                 .identer(entry.getValue())
                                 .detaljert(singletonList(RsStatusRapport.Detaljert.builder()
                                         .identer(entry.getValue())
                                         .miljo(entry.getKey().contains("#")
                                                 ? entry.getKey().substring(entry.getKey().lastIndexOf("#") + 1, entry.getKey().lastIndexOf(":"))
-                                                : entry.getKey().substring(entry.getKey().lastIndexOf("-") + 1, entry.getKey().lastIndexOf(":")))
+                                                : "NA")
                                         .build()))
                                 .build())
                         .collect(Collectors.toList()))

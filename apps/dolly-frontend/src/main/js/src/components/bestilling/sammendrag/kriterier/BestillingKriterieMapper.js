@@ -414,7 +414,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	if (tpsMessaging) {
 		const tpsMessagingData = {
 			header: 'Personinformasjon',
-			items: [obj('Språk', tpsMessaging.sprakKode, PersoninformasjonKodeverk.Spraak)],
+			items: [obj('Språk', tpsMessaging.spraakKode, PersoninformasjonKodeverk.Spraak)],
 		}
 		data.push(tpsMessagingData)
 

@@ -18,7 +18,13 @@ public class BestillingTpsMessagingStatusMapperTest {
 
     private static final List<BestillingProgress> RUN_STATUS = List.of(
             BestillingProgress.builder().ident("IDENT_1")
-                    .tpsMessagingStatus("Egenansatt_send#t4:OK,Egenansatt_send#t9:FEIL=Miljø ikke støttet")
+                    .tpsMessagingStatus("Egenansatt_send#t4:OK,Feil= error=Miljø ikke støttet")
+                    .build()
+    );
+
+    private static final List<BestillingProgress> ERROR_STATUS = List.of(
+            BestillingProgress.builder().ident("IDENT_1")
+                    .tpsMessagingStatus("Feil= error=Bad Request")
                     .build()
     );
 
@@ -31,9 +37,19 @@ public class BestillingTpsMessagingStatusMapperTest {
         assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getMiljo(), is(equalTo("t4")));
         assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getIdenter(), containsInAnyOrder("IDENT_1"));
 
-        assertThat(identStatuses.get(0).getStatuser().get(1).getMelding(), is(equalTo("FEIL=Miljø ikke støttet")));
-        assertThat(identStatuses.get(0).getStatuser().get(1).getDetaljert().get(0).getMiljo(), is(equalTo("t9")));
+        assertThat(identStatuses.get(0).getStatuser().get(1).getMelding(), is(equalTo("error:Miljø ikke støttet")));
+        assertThat(identStatuses.get(0).getStatuser().get(1).getDetaljert().get(0).getMiljo(), is(equalTo("NA")));
         assertThat(identStatuses.get(0).getStatuser().get(1).getDetaljert().get(0).getIdenter(), containsInAnyOrder("IDENT_1"));
 
+    }
+
+    @Test
+    public void buildTpsMessagingStatusMap_ERROR() {
+
+        List<RsStatusRapport> identStatuses = BestillingTpsMessagingStatusMapper.buildTpsMessagingStatusMap(ERROR_STATUS);
+
+        assertThat(identStatuses.get(0).getStatuser().get(0).getMelding(), is(equalTo("error:Bad Request")));
+        assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getMiljo(), is(equalTo("NA")));
+        assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getIdenter(), containsInAnyOrder("IDENT_1"));
     }
 }
