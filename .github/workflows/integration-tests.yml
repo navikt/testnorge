@@ -1,4 +1,4 @@
-name: Integraion Test
+name: Integraion Tests
 on:
   push:
     branches:
@@ -11,8 +11,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  tests:
-    name: Tests
+  bruker-service:
+    name: Run integraion test for bruker-service
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -29,9 +29,10 @@ jobs:
           GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
         run: |
           ./gradlew assemble --scan
-      - name: Run integration tests for bruker-service
+      - name: Run integraion test
         timeout-minutes: 5
         run: |
           docker-compose up -d
-          bash -c 'while [[ "$(curl --connect-timeout 2 -s -o /dev/null -w ''%{http_code}'' https://testnav-bruker-service:8080/internal/isAlive)" != "200" ]]; do echo ..; sleep 5; done; echo testnav-bruker-service is up; ./gradlew :bruker-service:iTest'
+          ./wait-for-it.sh -t 0 https://localhost:8002/internal/isAlive/internal/isAlive
+          ./gradlew :bruker-service:iTest
           docker-compose down -v --remove-orphans
