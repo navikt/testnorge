@@ -39,17 +39,17 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
         run: |
-          ./gradlew assemble --scan
-      - name: docker-compose up
+          ./gradlew assemble
+      - name: Start docker containers
         run: |
-          docker-compose up -d
-      - name: Health Check
+          docker-compose up -d --build
+      - name: Health check
         timeout-minutes: 5
         run: |
-          ./wait-for-it.sh -t 0 http://localhost:8002/internal/isAlive
+          bash -c 'while [[ "$(curl --connect-timeout 2 -s -o /dev/null -w ''%{http_code}'' http://localhost:8002/internal/isAlive)" != "200" ]]; do echo ..; sleep 5; done; echo service is up;'
       - name: Run integraion tests
         run: |
           JWK=$(cat ./mocks/jwk.json) ./gradlew :bruker-service:iTest
-      - name: docker-compose down
+      - name: Stop docker containers
         run: |
           docker-compose down -v --remove-orphans

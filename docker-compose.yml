@@ -47,7 +47,6 @@ services:
       - POSTGRES_PASSWORD=compose-postgres
   testnav-bruker-service:
     container_name: testnav-bruker-service
-    command: /bin/bash ./wait-for-it.sh -t 0 http://testnav-person-organisasjon-tilgang-service:8080/internal/isAlive
     environment:
       - SPRING_PROFILES_ACTIVE=virtual
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005

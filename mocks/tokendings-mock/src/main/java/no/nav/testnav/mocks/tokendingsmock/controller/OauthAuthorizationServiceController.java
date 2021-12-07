@@ -28,11 +28,11 @@ import no.nav.testnav.mocks.tokendingsmock.service.JwtService;
 public class OauthAuthorizationServiceController {
 
     private static final String jwks;
-    private static final String wellKnwon;
+    private static final String wellknown;
 
     static {
         jwks = loadJson("static/jwks.json");
-        wellKnwon = loadJson("static/well-known.json");
+        wellknown = loadJson("static/well-known.json");
     }
 
     private final JwtService jwtService;
@@ -55,7 +55,7 @@ public class OauthAuthorizationServiceController {
 
     @GetMapping(value = "/.well-known/oauth-authorization-server", produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<String> getWellKnown() {
-        return Mono.just(wellKnwon);
+        return Mono.just(wellknown);
     }
 
     @PostMapping(value = "/token", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
