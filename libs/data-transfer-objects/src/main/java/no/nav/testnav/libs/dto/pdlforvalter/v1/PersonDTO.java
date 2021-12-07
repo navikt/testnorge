@@ -45,7 +45,7 @@ public class PersonDTO implements Serializable {
     private List<TelefonnummerDTO> telefonnummer;
     private List<FullmaktDTO> fullmakt;
     private List<VergemaalDTO> vergemaal;
-
+    private List<SikkerhetstiltakDTO> sikkerhetstiltak;
     private List<DoedfoedtBarnDTO> doedfoedtBarn;
     private List<IdentRequestDTO> nyident;
 
@@ -230,5 +230,12 @@ public class PersonDTO implements Serializable {
             doedfoedtBarn = new ArrayList<>();
         }
         return doedfoedtBarn;
+    }
+
+    public List<SikkerhetstiltakDTO> getSikkerhetstiltak() {
+        if (isNull(sikkerhetstiltak)) {
+            sikkerhetstiltak = new ArrayList<>();
+        }
+        return sikkerhetstiltak;
     }
 }
