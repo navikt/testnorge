@@ -28,9 +28,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
         run: |
-          ./gradlew assemble
+          ./gradlew assemble --scan
       - name: Run integration tests for bruker-service
+        timeout-minutes: 5
         run: |
           docker-compose up -d
-          ./gradlew :bruker-service:iTest
+          bash -c 'while [[ "$(curl --connect-timeout 2 -s -o /dev/null -w ''%{http_code}'' https://testnav-bruker-service:8080/internal/isAlive)" != "200" ]]; do echo ..; sleep 5; done; echo testnav-bruker-service is up; ./gradlew :bruker-service:iTest'
           docker-compose down -v --remove-orphans

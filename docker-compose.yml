@@ -47,6 +47,7 @@ services:
       - POSTGRES_PASSWORD=compose-postgres
   testnav-bruker-service:
     container_name: testnav-bruker-service
+    command: bash -c 'while [[ "$(curl --connect-timeout 2 -s -o /dev/null -w ''%{http_code}'' https://testnav-person-organisasjon-tilgang-service:8080/internal/isAlive)" != "200" ]]; do echo ..; sleep 5; done; echo testnav-person-organisasjon-tilgang-service is up; echo ready to start'
     environment:
       - SPRING_PROFILES_ACTIVE=virtual
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
