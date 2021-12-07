@@ -3,11 +3,13 @@ package no.nav.dolly.bestilling.tpsmessagingservice;
 import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SpraakDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,7 @@ public class TpsMessagingClient implements ClientRegister {
 
     private final TpsMessagingConsumer tpsMessagingConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
+    private final MapperFacade mapperFacade;
 
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -42,7 +45,7 @@ public class TpsMessagingClient implements ClientRegister {
                         tpsMessagingConsumer.sendSpraakkodeRequest(
                                 dollyPerson.getHovedperson(),
                                 bestilling.getEnvironments(),
-                                bestilling.getTpsMessaging().getSpraakKode()),
+                                mapperFacade.map(bestilling.getTpsMessaging().getSpraakKode(), SpraakDTO.class)),
                         status,
                         "Spraakkode"
                 );
