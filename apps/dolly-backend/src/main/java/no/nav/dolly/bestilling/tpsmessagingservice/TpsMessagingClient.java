@@ -116,7 +116,7 @@ public class TpsMessagingClient implements ClientRegister {
             status.append(enhet).append("#");
             status.append(response.getMiljoe());
             status.append(":");
-            status.append(response.getStatus().equals("OK") ? "OK" : "FEIL:" + response.getUtfyllendeMelding());
+            status.append(response.getStatus().equals("OK") ? "OK" : "FEIL:" + enhet + "-" + response.getUtfyllendeMelding());
         });
     }
 }
