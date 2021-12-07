@@ -12,7 +12,7 @@ on:
 
 jobs:
   bruker-service:
-    name: Run integraion test for bruker-service
+    name: Integraion test for bruker-service
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -29,10 +29,14 @@ jobs:
           GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
         run: |
           ./gradlew assemble --scan
-      - name: Run integraion test
+      - name: docker-compose up
         timeout-minutes: 5
         run: |
           docker-compose up -d
-          ./wait-for-it.sh -t 0 https://localhost:8002/internal/isAlive/internal/isAlive
+          ./wait-for-it.sh -t 0 https://localhost:8002/internal/isAlive
+      - name: Run integraion tests
+        run: |
           ./gradlew :bruker-service:iTest
+      - name: docker-compose down
+        run: |
           docker-compose down -v --remove-orphans
