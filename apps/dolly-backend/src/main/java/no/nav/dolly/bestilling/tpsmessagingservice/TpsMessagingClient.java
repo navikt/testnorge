@@ -71,6 +71,13 @@ public class TpsMessagingClient implements ClientRegister {
 
             if (nonNull(bestilling.getTpsMessaging().getTelefonnummer())) {
                 appendResponseStatus(
+                        tpsMessagingConsumer.deleteTelefonnummerRequest(
+                                dollyPerson.getHovedperson(),
+                                bestilling.getEnvironments()),
+                        status,
+                        "Telefonnummer_delete"
+                );
+                appendResponseStatus(
                         tpsMessagingConsumer.sendTelefonnummerRequest(
                                 dollyPerson.getHovedperson(),
                                 bestilling.getEnvironments(),

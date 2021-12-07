@@ -2,10 +2,7 @@ package no.nav.dolly.bestilling.tpsmessagingservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.tpsmessagingservice.command.DeleteEgenansattCommand;
-import no.nav.dolly.bestilling.tpsmessagingservice.command.HentIdenterCommand;
-import no.nav.dolly.bestilling.tpsmessagingservice.command.SendEgenansattCommand;
-import no.nav.dolly.bestilling.tpsmessagingservice.command.SendTpsMessagingCommand;
+import no.nav.dolly.bestilling.tpsmessagingservice.command.*;
 import no.nav.dolly.config.credentials.TpsMessagingServiceProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
@@ -17,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +29,8 @@ public class TpsMessagingConsumer {
     private static final String SPRAAKKODE_URL = "/api/v1/personer/{ident}/spraakkode";
     private static final String EGENANSATT_URL = "/api/v1/personer/{ident}/egenansatt";
     private static final String TELEFONNUMMER_URL = "/api/v1/personer/{ident}/telefonnumre";
+
+    private static final List<String> TELEFONTYPER_LISTE = Arrays.asList("ARBT", "HJET", "MOBI");
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
@@ -80,6 +80,12 @@ public class TpsMessagingConsumer {
     public List<TpsMeldingResponseDTO> sendTelefonnummerRequest(String ident, List<String> miljoer, Object body) {
 
         return new SendTpsMessagingCommand(webClient, ident, miljoer, body, TELEFONNUMMER_URL, serviceProperties.getAccessToken(tokenService)).call();
+    }
+
+    @Timed(name = "providers", tags = {"operation", "tps_messaging_deleteTelefonnummer"})
+    public List<TpsMeldingResponseDTO> deleteTelefonnummerRequest(String ident, List<String> miljoer) {
+
+        return new DeleteTelefonnummerCommand(webClient, ident, miljoer, TELEFONTYPER_LISTE, TELEFONNUMMER_URL, serviceProperties.getAccessToken(tokenService)).call();
     }
 
     public Map<String, String> checkAlive() {
