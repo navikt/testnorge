@@ -13,6 +13,7 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlUtflyttingHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlVergemaalHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.Pdldata;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.Testident.Master;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.pdlforvalter.falskidentitet.PdlFalskIdentitet;
@@ -97,7 +98,7 @@ public class PdlForvalterClientTest {
     @Test
     public void gjenopprett_kontaktinformasjonDoedsbo_OK() {
 
-        BestillingProgress progress = new BestillingProgress();
+        BestillingProgress progress = BestillingProgress.builder().master(Master.TPSF).build();
 
         when(mapperFacade.map(any(RsPdldata.class), eq(Pdldata.class))).thenReturn(Pdldata.builder()
                 .kontaktinformasjonForDoedsbo(PdlKontaktinformasjonForDoedsbo.builder().build()).build());
@@ -122,7 +123,7 @@ public class PdlForvalterClientTest {
     @Test
     public void gjenopprett_kontaktinformasjonDoedsbo_Feil() {
 
-        BestillingProgress progress = new BestillingProgress();
+        BestillingProgress progress = BestillingProgress.builder().master(Master.TPSF).build();
 
         when(mapperFacade.map(any(RsPdldata.class), eq(Pdldata.class))).thenReturn(Pdldata.builder()
                 .kontaktinformasjonForDoedsbo(PdlKontaktinformasjonForDoedsbo.builder().build()).build());
@@ -148,7 +149,7 @@ public class PdlForvalterClientTest {
     @Test
     public void gjenopprett_utenlandsIdent_OK() {
 
-        BestillingProgress progress = new BestillingProgress();
+        BestillingProgress progress = BestillingProgress.builder().master(Master.TPSF).build();
 
         when(mapperFacade.map(any(RsPdldata.class), eq(Pdldata.class))).thenReturn(Pdldata.builder()
                 .utenlandskIdentifikasjonsnummer(singletonList(PdlUtenlandskIdentifikasjonsnummer.builder().build())).build());
@@ -173,7 +174,7 @@ public class PdlForvalterClientTest {
     @Test
     public void gjenopprett_utenlandsIdent_Feil() {
 
-        BestillingProgress progress = new BestillingProgress();
+        BestillingProgress progress = BestillingProgress.builder().master(Master.TPSF).build();
 
         when(mapperFacade.map(any(RsPdldata.class), eq(Pdldata.class))).thenReturn(Pdldata.builder()
                 .utenlandskIdentifikasjonsnummer(singletonList(PdlUtenlandskIdentifikasjonsnummer.builder().build())).build());
@@ -199,7 +200,7 @@ public class PdlForvalterClientTest {
     @Test
     public void gjenopprett_falskidentitet_OK() {
 
-        BestillingProgress progress = new BestillingProgress();
+        BestillingProgress progress = BestillingProgress.builder().master(Master.TPSF).build();
 
         when(mapperFacade.map(any(RsPdldata.class), eq(Pdldata.class))).thenReturn(Pdldata.builder()
                 .falskIdentitet(PdlFalskIdentitet.builder().build()).build());
@@ -224,7 +225,7 @@ public class PdlForvalterClientTest {
     @Test
     public void gjenopprett_falskIdentitet_Feil() {
 
-        BestillingProgress progress = new BestillingProgress();
+        BestillingProgress progress = BestillingProgress.builder().master(Master.TPSF).build();
 
         when(mapperFacade.map(any(RsPdldata.class), eq(Pdldata.class))).thenReturn(Pdldata.builder()
                 .falskIdentitet(PdlFalskIdentitet.builder().build()).build());
@@ -250,7 +251,7 @@ public class PdlForvalterClientTest {
     @Test
     public void gjenopprett_ikkeRelvantMiljoe() {
 
-        BestillingProgress progress = new BestillingProgress();
+        BestillingProgress progress = BestillingProgress.builder().master(Master.TPSF).build();
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setPdlforvalter(RsPdldata.builder().build());
