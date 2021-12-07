@@ -8,7 +8,7 @@ spring:
           accepted-audience: dev-gcp:dolly:testnav-person-organisasjon-tilgang-service
 altinn:
   api:
-    url: http://alinn:8080
+    url: http://altinn:8080
     key: dummy-altinn-key
 
 

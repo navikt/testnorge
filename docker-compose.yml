@@ -12,7 +12,7 @@ services:
     depends_on:
       - tokendings
       - maskinporten
-      - alinn
+      - altinn
     ports:
       - "8001:8080"
       - "5001:5005"
@@ -32,12 +32,12 @@ services:
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
     ports:
       - "9002:8080"
-  alinn:
+  altinn:
     image: wiremock/wiremock
-    container_name: alinn
+    container_name: altinn
     volumes:
-      - ./mocks/alinn-mock/wiremock/__files:/home/wiremock/__files
-      - ./mocks/alinn-mock/wiremock/mappings:/home/wiremock/mappings
+      - ./mocks/altinn-mock/wiremock/__files:/home/wiremock/__files
+      - ./mocks/altinn-mock/wiremock/mappings:/home/wiremock/mappings
   testnav-bruker-service-db:
     image: postgres
     restart: always
