@@ -70,6 +70,7 @@ includeBuild './libs/slack'
 includeBuild './libs/reactive-session-security'
 includeBuild './libs/security-core'
 includeBuild './libs/servlet-insecure-security'
+includeBuild './libs/integration-test'
 
 includeBuild './apps/person-service'
 includeBuild './apps/profil-api'
@@ -152,9 +153,13 @@ includeBuild './xsd/arbeidsforhold-xsd'
 
 includeBuild './examples/reactive-rest-example'
 
+includeBuild './mocks/tokendings-mock'
+includeBuild './mocks/maskinporten-mock'
+
 include(':proxies')
 include(':navikt')
 include(':apps')
 include(':libs')
 include(':examples')
 include(':xsd')
+include(':mocks')

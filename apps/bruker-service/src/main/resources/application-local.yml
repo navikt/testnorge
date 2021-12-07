@@ -5,7 +5,7 @@ azure.app.client.id: ${client_id}
 azure.app.client.secret: ${client_secret}
 
 TOKEN_X_CLIENT_ID: dev-gcp:dolly:testnav-bruker-service-dev
-
+TOKENDINGS_URL: https://tokendings.dev-gcp.nais.io
 spring:
   application:
     name: testnav-bruker-service-dev
