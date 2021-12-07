@@ -11,7 +11,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  tests:
+    name: Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
