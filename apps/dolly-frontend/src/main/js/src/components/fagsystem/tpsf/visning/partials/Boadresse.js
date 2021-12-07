@@ -44,7 +44,10 @@ export const Adressevisning = ({ boadresse }) => {
 
 	return (
 		<>
-			<TitleValue title={Formatters.adressetypeToString(adressetype)} size="medium">
+			<TitleValue
+				title={adressetype ? Formatters.adressetypeToString(adressetype) : 'Boadresse'}
+				size="medium"
+			>
 				{(!adressetype || adressetype === 'GATE') && gate}
 				{adressetype === 'MATR' && matrikkel}
 				{postnr && (

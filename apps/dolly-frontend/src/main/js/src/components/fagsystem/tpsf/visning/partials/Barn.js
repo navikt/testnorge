@@ -6,6 +6,7 @@ import { Adressevisning } from './Boadresse'
 import { PostadresseVisning } from './Postadresse'
 import { Historikk } from '~/components/ui/historikk/Historikk'
 import { PersoninformasjonKodeverk } from '~/config/kodeverk'
+import isArray from 'redux-actions/lib/utils/isArray'
 
 export const Barn = ({ data, type }) => {
 	if (!data) return null
@@ -53,12 +54,26 @@ export const Barn = ({ data, type }) => {
 					/>
 				)}
 			</div>
-			{data.boadresse?.length > 0 && (
-				<Historikk component={Adressevisning} propName="boadresse" data={data.boadresse} />
-			)}
-			{data.postadresse?.length > 0 && (
-				<Historikk component={PostadresseVisning} propName="postadresse" data={data.postadresse} />
-			)}
+			{data.boadresse &&
+				(isArray(data.boadresse) ? (
+					data.boadresse.length > 0 && (
+						<Historikk component={Adressevisning} propName="boadresse" data={data.boadresse} />
+					)
+				) : (
+					<Adressevisning boadresse={data.boadresse} />
+				))}
+			{data.postadresse &&
+				(isArray(data.postadresse) ? (
+					data.postadresse.length > 0 && (
+						<Historikk
+							component={PostadresseVisning}
+							propName="postadresse"
+							data={data.postadresse}
+						/>
+					)
+				) : (
+					<PostadresseVisning postadresse={data.postadresse} />
+				))}
 		</>
 	)
 }
