@@ -39,7 +39,6 @@ class BrukerServiceIntegrationTest {
                 .comparingOnlyFields("brukernavn", "organisasjonsnummer")
                 .isEqualTo(expected);
 
-
         // Login user
         var userJwt = webClient.post()
                 .uri(builder -> builder.path("/api/v1/brukere/{id}/token").build(bruker.id()))
@@ -47,7 +46,6 @@ class BrukerServiceIntegrationTest {
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
-
 
         // Change username
         webClient.patch()

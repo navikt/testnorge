@@ -7,16 +7,13 @@ on:
       healthcheck:
         type: string
         required: true
-      app-name:
-        type: string
-        required: true
     secrets:
       NAV_TOKEN:
         required: true
 
 jobs:
   integration-test:
-    name: Test of ${{ inputs.app-name }}
+    name: Integration Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -59,4 +56,3 @@ jobs:
       - name: Stop docker containers
         run: |
           docker-compose down -v --remove-orphans
-

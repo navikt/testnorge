@@ -1,4 +1,4 @@
-name: Integration Tests
+name: Tests
 on:
   push:
     branches:
@@ -12,11 +12,16 @@ on:
 
 jobs:
   bruker-service:
-    name: Integration Test
     uses: navikt/testnorge/.github/workflows/common.integtation-test.yml@docker-compose-testnorge
     with:
-      app-name: 'bruker-service'
       working-directory: 'apps/bruker-service/'
       healthcheck: 'http://localhost:8002/internal/isAlive'
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+  person-organisasjon-tilgang-service:
+    uses: navikt/testnorge/.github/workflows/common.integtation-test.yml@docker-compose-testnorge
+    with:
+      working-directory: 'apps/person-organisasjon-tilgang-service/'
+      healthcheck: 'http://localhost:8001/internal/isAlive'
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
