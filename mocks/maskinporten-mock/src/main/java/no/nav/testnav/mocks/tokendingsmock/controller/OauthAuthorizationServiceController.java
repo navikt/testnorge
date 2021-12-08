@@ -44,7 +44,7 @@ public class OauthAuthorizationServiceController {
         } catch (IOException e) {
             throw new RuntimeException("Feil med paring av " + path + ".", e);
         }
-    }æ____________________________;:ØO
+    }
 
     @GetMapping(value = "/jwks", produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<String> getJwks() {
