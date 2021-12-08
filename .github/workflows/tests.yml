@@ -12,14 +12,14 @@ on:
 
 jobs:
   bruker-service:
-    uses: navikt/testnorge/.github/workflows/common.integtation-test.yml@docker-compose-testnorge
+    uses: navikt/testnorge/.github/workflows/common.integtation-test.yml@master
     with:
       working-directory: 'apps/bruker-service/'
       healthcheck: 'http://localhost:8002/internal/isAlive'
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
   person-organisasjon-tilgang-service:
-    uses: navikt/testnorge/.github/workflows/common.integtation-test.yml@docker-compose-testnorge
+    uses: navikt/testnorge/.github/workflows/common.integtation-test.yml@master
     with:
       working-directory: 'apps/person-organisasjon-tilgang-service/'
       healthcheck: 'http://localhost:8001/internal/isAlive'
