@@ -79,7 +79,7 @@ public class TpsfServiceTest {
     }
 
     @Test
-    public void opprettPersonerTpsf_hvisSuksessfultKallReturnerListeAvStringIdenter() throws JsonProcessingException {
+    void opprettPersonerTpsf_hvisSuksessfultKallReturnerListeAvStringIdenter() throws JsonProcessingException {
 
         stubPostTpsfDataReturnsOk();
 
@@ -91,7 +91,7 @@ public class TpsfServiceTest {
     }
 
     @Test
-    public void opprettPersonerTpsf_hvisTpsfKasterExceptionSaaKastesTpsfException() {
+    void opprettPersonerTpsf_hvisTpsfKasterExceptionSaaKastesTpsfException() {
 
         stubPostTpsfDataThrowExpection();
 
@@ -100,7 +100,7 @@ public class TpsfServiceTest {
     }
 
     @Test
-    public void sendIdenterTilTpsFraTPSF_hvisTpsfKasterExceptionSaaKastesInternalException() {
+    void sendIdenterTilTpsFraTPSF_hvisTpsfKasterExceptionSaaKastesInternalException() {
 
         stubPostTpsfDataForFlereThrowExpection();
 
@@ -109,14 +109,14 @@ public class TpsfServiceTest {
     }
 
     @Test
-    public void sendIdenterTilTpsFraTPSF_hvisIngenMiljoerErSpesifisertSaaKastesIllegalArgumentException() {
+    void sendIdenterTilTpsFraTPSF_hvisIngenMiljoerErSpesifisertSaaKastesIllegalArgumentException() {
         List<String> tomListe = new ArrayList<>();
         Assertions.assertThrows(IllegalArgumentException.class, () ->
                 tpsfService.sendIdenterTilTpsFraTPSF(STANDARD_IDENTER, tomListe));
     }
 
     @Test
-    public void sendTilTpsFraTPSF_happyPath() throws JsonProcessingException {
+    void sendTilTpsFraTPSF_happyPath() throws JsonProcessingException {
 
         RsSkdMeldingResponse meldingResponse = RsSkdMeldingResponse.builder().gruppeid(1L).build();
 
