@@ -47,7 +47,7 @@ public class SendEgenansattCommand implements Callable<List<TpsMeldingResponseDT
                 .block();
 
         if (log.isTraceEnabled() && nonNull(response)) {
-            Stream.of(response).forEach(entry -> log.trace("Response fra TPS-messaging-service. opprett egenansatt: {}", entry));
+            Stream.of(response).forEach(entry -> log.trace("Response fra TPS-messaging-service opprett egenansatt: {}", entry));
         }
         return Arrays.asList(response);
     }
