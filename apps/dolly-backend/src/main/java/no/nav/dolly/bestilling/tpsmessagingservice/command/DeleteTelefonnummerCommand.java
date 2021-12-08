@@ -9,6 +9,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.stream.Stream;
+
+import static java.util.Objects.nonNull;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -32,15 +35,17 @@ public class DeleteTelefonnummerCommand implements Callable<List<TpsMeldingRespo
         var response = webClient.delete()
                 .uri(uriBuilder -> uriBuilder
                         .path(urlPath)
-                        .queryParam(MILJOER_PARAM, miljoer)
                         .queryParam(TELEFONTYPER_PARAM, telefontyper)
+                        .queryParam(MILJOER_PARAM, miljoer)
                         .build(ident))
                 .header(HttpHeaders.AUTHORIZATION, token)
                 .retrieve()
                 .bodyToMono(TpsMeldingResponseDTO[].class)
                 .block();
 
-        log.trace("Response fra TPS messaging service: {}", response);
+        if (log.isTraceEnabled() && nonNull(response)) {
+            Stream.of(response).forEach(entry -> log.trace("Response fra tps-messaging-service delete telefonnummer: {}", entry));
+        }
         return Arrays.asList(response);
     }
 }

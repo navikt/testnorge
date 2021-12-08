@@ -75,6 +75,7 @@ public class TpsMessagingClient implements ClientRegister {
             }
 
             if (nonNull(bestilling.getTpsMessaging().getTelefonnummer())) {
+                // TODO + sjekk om person har telefonnr?
                 appendResponseStatus(
                         tpsMessagingConsumer.deleteTelefonnummerRequest(
                                 dollyPerson.getHovedperson(),
@@ -82,6 +83,9 @@ public class TpsMessagingClient implements ClientRegister {
                         status,
                         "Telefonnummer_delete"
                 );
+            }
+
+            if (nonNull(bestilling.getTpsMessaging().getTelefonnummer())) {
                 appendResponseStatus(
                         tpsMessagingConsumer.sendTelefonnummerRequest(
                                 dollyPerson.getHovedperson(),
