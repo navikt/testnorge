@@ -52,13 +52,14 @@ const mapStateToProps = (state, ownProps) => ({
 const mapDispatchToProps = (dispatch, ownProps) => ({
 	fetchDataFraFagsystemer: () => dispatch(fetchDataFraFagsystemer(ownProps.personId)),
 	slettPerson: () => dispatch(actions.slettPerson(ownProps.personId)),
-	leggTilPaaPerson: (data, bestillinger) =>
-		dispatch(
+	leggTilPaaPerson: (data, bestillinger) => {
+		return dispatch(
 			push(`/gruppe/${ownProps.match.params.gruppeId}/bestilling/${ownProps.personId}`, {
 				personFoerLeggTil: data,
 				tidligereBestillinger: bestillinger,
 			})
-		),
+		)
+	},
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PersonVisning))

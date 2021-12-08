@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.xml.bind.annotation.XmlType;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -16,6 +16,7 @@ import java.time.LocalDate;
 @XmlType(propOrder = {"sprakKode", "datoSprak"})
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class SpraakDTO {
+
     private String sprakKode;
-    private LocalDate datoSprak;
+    private LocalDateTime datoSprak;
 }

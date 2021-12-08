@@ -8,7 +8,9 @@ import no.nav.testnav.apps.tpsmessagingservice.dto.TpsSystemInfo;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SpraakDTO;
 import org.springframework.stereotype.Component;
 
-import static java.util.Objects.isNull;
+import java.time.LocalDateTime;
+
+import static java.util.Objects.nonNull;
 
 @Component
 public class SpraakMappingStrategy implements MappingStrategy {
@@ -26,8 +28,9 @@ public class SpraakMappingStrategy implements MappingStrategy {
                                 .endreSprak(SpraakRequest.EndreSpraak.builder()
                                         .offentligIdent((String) context.getProperty("ident"))
                                         .sprakKode(source.getSprakKode())
-                                        .datoSprak(isNull(source.getDatoSprak()) ? null :
-                                                source.getDatoSprak().toString())
+                                        .datoSprak((nonNull(source.getDatoSprak()) ? source.getDatoSprak() :
+                                                LocalDateTime.now())
+                                                .toLocalDate().toString())
                                         .build())
                                 .build());
                     }

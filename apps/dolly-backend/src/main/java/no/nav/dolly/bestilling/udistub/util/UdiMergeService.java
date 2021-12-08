@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.bestilling.udistub.domain.RsAliasRequest;
-import no.nav.dolly.bestilling.udistub.domain.RsAliasResponse;
 import no.nav.dolly.bestilling.udistub.domain.UdiPerson;
 import no.nav.dolly.bestilling.udistub.domain.UdiPerson.UdiAlias;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonResponse;
@@ -16,7 +15,6 @@ import no.nav.dolly.domain.resultset.udistub.model.RsUdiAlias;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 import no.nav.dolly.domain.resultset.udistub.model.UdiPersonNavn;
 import no.nav.dolly.service.DollyPersonCache;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -56,9 +54,9 @@ public class UdiMergeService {
         }
         else if (dollyPerson.isTpsfMaster() && nonNull(request)) {
             request.setEnvironments(environments);
-            ResponseEntity<RsAliasResponse> response = tpsfService.createAliases(request);
-            return response.hasBody() ?
-                    mapperFacade.mapAsList(tpsfService.createAliases(request).getBody().getAliaser(), UdiAlias.class) :
+            var response = tpsfService.createAliases(request);
+            return nonNull(response) ?
+                    mapperFacade.mapAsList(response.getAliaser(), UdiAlias.class) :
                     emptyList();
         } else {
             return emptyList();

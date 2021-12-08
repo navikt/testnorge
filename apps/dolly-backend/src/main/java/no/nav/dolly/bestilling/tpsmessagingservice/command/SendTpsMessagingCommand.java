@@ -10,6 +10,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.stream.Stream;
+
+import static java.util.Objects.nonNull;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -27,7 +30,7 @@ public class SendTpsMessagingCommand implements Callable<List<TpsMeldingResponse
     @Override
     public List<TpsMeldingResponseDTO> call() {
 
-        log.trace("Sender request på ident: {} til TPS messaging service: {}", ident, body);
+        log.info("Sender request på ident: {} til TPS messaging service: {}", ident, body);
 
         var response = webClient.post()
                 .uri(uriBuilder -> uriBuilder
@@ -41,7 +44,10 @@ public class SendTpsMessagingCommand implements Callable<List<TpsMeldingResponse
                 .bodyToMono(TpsMeldingResponseDTO[].class)
                 .block();
 
-        log.trace("Response fra TPS messaging service: {}", response);
+        if (log.isTraceEnabled() && nonNull(response)) {
+            Stream.of(response).forEach(entry -> log.trace("Response fra TPS messaging service: {}", entry));
+        }
+
         return Arrays.asList(response);
     }
 }

@@ -280,6 +280,21 @@ public class ArtifactDeleteService {
     }
 
     @Transactional
+    public void deleteSikkerhetstiltak(String ident, Integer id) {
+
+        var dbPerson = fetchPerson(ident);
+
+        if (dbPerson.getPerson().getSikkerhetstiltak().stream().noneMatch(type -> id.equals(type.getId()))) {
+            throw new InvalidRequestException(format(INFO_NOT_FOUND, "Sikkerhetstiltak", id));
+
+        } else {
+            dbPerson.getPerson().setSikkerhetstiltak(dbPerson.getPerson().getSikkerhetstiltak().stream()
+                    .filter(type -> !id.equals(type.getId()))
+                    .toList());
+        }
+    }
+
+    @Transactional
     public void deleteTilrettelagtKommunikasjon(String ident, Integer id) {
 
         var dbPerson = fetchPerson(ident);

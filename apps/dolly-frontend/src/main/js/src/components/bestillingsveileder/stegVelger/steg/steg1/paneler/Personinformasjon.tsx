@@ -195,9 +195,9 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		},
 		sprakKode: {
 			label: 'Språk',
-			checked: has('tpsf.sprakKode') || has('tpsMessaging.sprakKode'),
-			add: () => set('tpsMessaging.sprakKode', ''),
-			remove: () => del(['tpsMessaging.sprakKode', 'tpsf.sprakKode']),
+			checked: has('tpsf.sprakKode') || has('tpsMessaging.spraakKode'),
+			add: () => set('tpsMessaging.spraakKode', ''),
+			remove: () => del(['tpsMessaging.spraakKode', 'tpsf.spraakKode']),
 		},
 		egenAnsattDatoFom: {
 			label: 'Skjerming',

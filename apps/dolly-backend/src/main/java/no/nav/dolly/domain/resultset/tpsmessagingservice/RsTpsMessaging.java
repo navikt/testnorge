@@ -21,7 +21,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RsTpsMessaging {
 
-    private String spraakkode;
+    private String spraakKode;
     private LocalDate egenAnsattDatoFom;
     private LocalDate egenAnsattDatoTom;
     private BankkontonrUtlandDTO utenlandskBankkonto;

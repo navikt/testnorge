@@ -13,8 +13,8 @@ import { Sikkerhetstiltak } from '~/components/fagsystem/tpsf/form/personinforma
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import _get from 'lodash/get'
 import { Alder } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/alder/Alder'
+import { TpsMessagingDiverse } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/tpsmessaging/TpsMessagingDiverse'
 import { Telefonnummer } from '~/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
-import { TpsImportDiverse } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/tpsimport/TpsImportDiverse'
 
 const alderPaths = ['tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer', 'tpsf.doedsdato']
 
@@ -37,10 +37,9 @@ const diversePaths = [
 	'tpsf.utenFastBopel',
 	'tpsf.erForsvunnet',
 	'tpsf.harBankkontonr',
-	'tpsf.telefonnummer_1',
 	'tpsMessaging.utenlandskBankkonto',
 	'tpsMessaging.norskBankkonto',
-	'tpsMessaging.sprakKode',
+	'tpsMessaging.spraakKode',
 	'tpsMessaging.egenAnsattDatoFom',
 	'tpsMessaging.egenAnsattDatoTom',
 ]
@@ -124,7 +123,7 @@ export const Personinformasjon = ({ formikBag }) => {
 				</Kategori>
 				<Kategori title="Diverse" vis={diversePaths}>
 					<Diverse formikBag={formikBag} />
-					<TpsImportDiverse formikBag={formikBag} />
+					<TpsMessagingDiverse formikBag={formikBag} />
 				</Kategori>
 				<Kategori title="Telefonnummer" vis={telefonnummerPath}>
 					<Telefonnummer formikBag={formikBag} />

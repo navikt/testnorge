@@ -3,9 +3,8 @@ package no.nav.dolly.domain.resultset.tpsf;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import no.nav.dolly.domain.resultset.IdentType;
 import no.nav.dolly.domain.resultset.tpsf.adresse.AdresseNrInfo;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsAdresse;
@@ -15,8 +14,7 @@ import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

@@ -3,12 +3,15 @@ package no.nav.dolly.bestilling.tpsmessagingservice;
 import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SpraakDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -16,15 +19,17 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static net.logstash.logback.util.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
+@Order(6)
 @RequiredArgsConstructor
 public class TpsMessagingClient implements ClientRegister {
 
     private final TpsMessagingConsumer tpsMessagingConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
+    private final MapperFacade mapperFacade;
 
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -35,16 +40,16 @@ public class TpsMessagingClient implements ClientRegister {
         StringBuilder status = new StringBuilder();
 
         try {
-            log.trace("Bestilling fra Dolly-frontend: {}", Json.pretty(bestilling));
+            log.info("Bestilling fra Dolly-frontend: {}", Json.pretty(bestilling));
 
-            if (nonNull(bestilling.getTpsMessaging().getSpraakkode())) {
+            if (nonNull(bestilling.getTpsMessaging().getSpraakKode())) {
                 appendResponseStatus(
                         tpsMessagingConsumer.sendSpraakkodeRequest(
                                 dollyPerson.getHovedperson(),
                                 bestilling.getEnvironments(),
-                                bestilling.getTpsMessaging().getSpraakkode()),
+                                mapperFacade.map(bestilling.getTpsMessaging().getSpraakKode(), SpraakDTO.class)),
                         status,
-                        "Spraakkode"
+                        "SprakKode"
                 );
             }
 
@@ -59,7 +64,7 @@ public class TpsMessagingClient implements ClientRegister {
                 );
             }
             if (nonNull(bestilling.getTpsMessaging().getEgenAnsattDatoTom()) &&
-                    bestilling.getTpsMessaging().getEgenAnsattDatoTom().isBefore(LocalDate.now())) {
+                    !bestilling.getTpsMessaging().getEgenAnsattDatoTom().isAfter(LocalDate.now())) {
                 appendResponseStatus(
                         tpsMessagingConsumer.deleteEgenansattRequest(
                                 dollyPerson.getHovedperson(),
@@ -93,9 +98,7 @@ public class TpsMessagingClient implements ClientRegister {
             status.append(errorStatusDecoder.decodeRuntimeException(e));
             log.error("Kall til TPS messaging service feilet: {}", e.getMessage(), e);
         }
-        progress.setTpsImportStatus(isNull(progress.getTpsImportStatus()) || progress.getTpsImportStatus().isBlank()
-                ? status.toString()
-                : progress.getTpsImportStatus() + ", " + status);
+        progress.setTpsMessagingStatus(status.toString());
     }
 
     @Override
@@ -127,11 +130,14 @@ public class TpsMessagingClient implements ClientRegister {
     private void appendResponseStatus(List<TpsMeldingResponseDTO> responseList, StringBuilder status, String enhet) {
 
         responseList.forEach(response -> {
-            status.append(isBlank(status) ? null : ",");
+            if (isNotBlank(status)) {
+                status.append(",");
+            }
+            status.append(enhet).append("#");
             status.append(enhet).append("-");
             status.append(response.getMiljoe());
             status.append(":");
-            status.append(response.getStatus().equals("OK") ? "OK" : "FEIL:" + response.getUtfyllendeMelding());
+            status.append(response.getStatus().equals("OK") ? "OK" : "FEIL:" + enhet + "-" + response.getUtfyllendeMelding());
         });
     }
 }

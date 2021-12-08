@@ -82,10 +82,12 @@ class TpsMessagingConsumerTest {
 
         when(tokenService.exchange(any(TpsMessagingServiceProperties.class))).thenReturn(Mono.empty());
 
+        BankkontonrUtlandDTO bankkontonrUtlandDTO = new BankkontonrUtlandDTO();
+
         Assertions.assertThrows(SecurityException.class, () -> tpsMessagingConsumer.sendUtenlandskBankkontoRequest(
                 IDENT,
                 MILJOER,
-                new BankkontonrUtlandDTO()));
+                bankkontonrUtlandDTO));
 
         verify(tokenService).exchange(any(TpsMessagingServiceProperties.class));
     }

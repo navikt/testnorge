@@ -598,7 +598,11 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	if (tpsMessaging) {
 		const tpsMessagingData = {
 			header: 'Personinformasjon',
-			items: [obj('Språk', tpsMessaging.sprakKode, PersoninformasjonKodeverk.Spraak)],
+			items: [
+				obj('Språk', tpsMessaging.spraakKode, PersoninformasjonKodeverk.Spraak),
+				obj('Skjerming fra', Formatters.formatDate(tpsMessaging.egenAnsattDatoFom)),
+				obj('Skjerming til', Formatters.formatDate(tpsMessaging.egenAnsattDatoTom)),
+			],
 		}
 		data.push(tpsMessagingData)
 

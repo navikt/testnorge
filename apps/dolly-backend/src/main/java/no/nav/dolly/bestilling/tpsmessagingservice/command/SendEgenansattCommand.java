@@ -11,6 +11,9 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.stream.Stream;
+
+import static java.util.Objects.nonNull;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -43,7 +46,9 @@ public class SendEgenansattCommand implements Callable<List<TpsMeldingResponseDT
                 .bodyToMono(TpsMeldingResponseDTO[].class)
                 .block();
 
-        log.trace("Response fra TPS messaging service: {}", response);
+        if (log.isTraceEnabled() && nonNull(response)) {
+            Stream.of(response).forEach(entry -> log.trace("Response fra TPS-messaging-service opprett egenansatt: {}", entry));
+        }
         return Arrays.asList(response);
     }
 }
