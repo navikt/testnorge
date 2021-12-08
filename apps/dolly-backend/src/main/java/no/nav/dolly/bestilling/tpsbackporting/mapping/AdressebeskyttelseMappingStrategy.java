@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import static java.util.Objects.isNull;
 
 @Component
-public class AdressekbeskyttelseMappingStrategy implements MappingStrategy {
+public class AdressebeskyttelseMappingStrategy implements MappingStrategy {
 
     private static String getSpesreg(AdressebeskyttelseDTO.AdresseBeskyttelse beskyttelse) {
 

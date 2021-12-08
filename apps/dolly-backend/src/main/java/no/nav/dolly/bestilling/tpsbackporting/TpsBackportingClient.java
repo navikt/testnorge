@@ -9,7 +9,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
-import no.nav.dolly.exceptions.DollyFunctionalException;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import org.springframework.core.annotation.Order;
@@ -28,6 +28,7 @@ public class TpsBackportingClient implements ClientRegister {
     private final PdlDataConsumer pdlDataConsumer;
     private final MapperFacade mapperFacade;
     private final TpsfService tpsfService;
+    private final ErrorStatusDecoder errorStatusDecoder;
 
     private static StatsborgerskapDTO getStatborgerskap(PersonDTO pdlPerson) {
 
@@ -58,14 +59,13 @@ public class TpsBackportingClient implements ClientRegister {
                 mapAtrifacter(pdlPerson, tpsfBestilling);
 
                 try {
-                    var oppretting = tpsfService.endreLeggTilPaaPerson(dollyPerson.getHovedperson(), tpsfBestilling);
-                } catch (DollyFunctionalException e) {
-                    progress.setFeil(e.getMessage());
-                }
-                var status = tpsfService.sendIdenterTilTpsFraTPSF(List.of(dollyPerson.getHovedperson()),
-                        getNonPdlTpsCreateEnv(bestilling.getEnvironments()));
+                    tpsfService.endreLeggTilPaaPerson(dollyPerson.getHovedperson(), tpsfBestilling);
+                    tpsfService.sendIdenterTilTpsFraTPSF(List.of(dollyPerson.getHovedperson()),
+                            getNonPdlTpsCreateEnv(bestilling.getEnvironments()));
 
-                System.out.println(status);
+                } catch (RuntimeException e) {
+                    progress.setFeil(errorStatusDecoder.decodeRuntimeException(e));
+                }
             }
         }
     }
