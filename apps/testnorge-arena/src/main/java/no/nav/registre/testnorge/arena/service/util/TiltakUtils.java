@@ -39,7 +39,7 @@ import static no.nav.registre.testnorge.arena.service.util.VedtakUtils.getTiltak
 @RequiredArgsConstructor
 public class TiltakUtils {
 
-    private final Random rand;
+    private final Random rand = new Random();
     private final ServiceUtils serviceUtils;
 
     private static final Map<String, List<KodeMedSannsynlighet>> adminkodeTilDeltakerstatus;

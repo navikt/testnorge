@@ -41,8 +41,10 @@ repositories {
 
 dependencies {
     implementation 'no.nav.testnav.libs:servlet-core'
+    implementation 'no.nav.testnav.libs:servlet-insecure-security'
     implementation 'no.nav.testnav.libs:domain'
     implementation 'no.nav.testnav.libs:security-token-service'
+    implementation 'no.nav.testnav.libs:security-core'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'

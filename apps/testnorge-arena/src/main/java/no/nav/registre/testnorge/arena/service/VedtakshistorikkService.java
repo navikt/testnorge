@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.testnorge.arena.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.testnorge.arena.consumer.rs.request.RettighetRequest;
-import no.nav.registre.testnorge.arena.consumer.rs.VedtakshistorikkSyntConsumer;
+import no.nav.registre.testnorge.arena.consumer.rs.SyntVedtakshistorikkConsumer;
 import no.nav.registre.testnorge.arena.service.util.RequestUtils;
 import no.nav.registre.testnorge.arena.service.util.TilleggUtils;
 import no.nav.registre.testnorge.arena.service.util.TiltakUtils;
@@ -65,7 +65,7 @@ import static no.nav.registre.testnorge.arena.service.util.VedtakUtils.getTilleg
 @RequiredArgsConstructor
 public class VedtakshistorikkService {
 
-    private final VedtakshistorikkSyntConsumer vedtakshistorikkSyntConsumer;
+    private final SyntVedtakshistorikkConsumer syntVedtakshistorikkConsumer;
     private final RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
 
     private final IdentService identService;
@@ -110,7 +110,7 @@ public class VedtakshistorikkService {
             String miljoe,
             Map<String, List<NyttVedtakResponse>> responses
     ) {
-        var vedtakshistorikkListe = vedtakshistorikkSyntConsumer.syntetiserVedtakshistorikk(1);
+        var vedtakshistorikkListe = syntVedtakshistorikkConsumer.syntetiserVedtakshistorikk(1);
 
         if (!vedtakshistorikkListe.isEmpty()) {
             var vedtakshistorikk = vedtakshistorikkListe.get(0);
