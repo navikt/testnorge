@@ -1,0 +1,31 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        tokenx:
+          issuer-uri: http://tokendings:8080
+          jwk-set-uri: http://tokendings:8080/jwks
+          accepted-audience: dev-gcp:dolly:testnav-bruker-service
+  jackson:
+    serialization:
+      write_dates_as_timestamps: false
+  r2dbc:
+    url: r2dbc:postgresql://testnav-bruker-service-db:5432/compose-postgres
+    username: compose-postgres
+    password: compose-postgres
+  flyway:
+    url: jdbc:postgresql://testnav-bruker-service-db:5432/compose-postgres
+    username: compose-postgres
+    password: compose-postgres
+
+consumers:
+  testnav-person-organisasjon-tilgang-service:
+    url: http://testnav-person-organisasjon-tilgang-service:8080
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-person-organisasjon-tilgang-service
+
+TOKEN_X_WELL_KNOWN_URL: http://tokendings:8080/.well-known/oauth-authorization-server
+TOKEN_X_CLIENT_ID: dev-gcp:dolly:testnav-bruker-service
+JWT_SECRET: dummy
+CRYPTOGRAPHY_SECRET: DUMMY SUPER SECRET CRYPTOGRAPHY KEY THAT IS NOT SECURE

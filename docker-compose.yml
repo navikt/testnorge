@@ -1,0 +1,62 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  testnav-person-organisasjon-tilgang-service:
+    container_name: testnav-person-organisasjon-tilgang-service
+    environment:
+      - SPRING_PROFILES_ACTIVE=virtual
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+      - TOKEN_X_PRIVATE_JWK=${JWK}
+      - MASKINPORTEN_CLIENT_JWK=${JWK}
+    build:
+      context: ./apps/person-organisasjon-tilgang-service
+    depends_on:
+      - tokendings
+      - maskinporten
+      - altinn
+    ports:
+      - "8001:8080"
+      - "5001:5005"
+  tokendings:
+    container_name: tokendings
+    build:
+      context: ./mocks/tokendings-mock
+    environment:
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+    ports:
+      - "9001:8080"
+  maskinporten:
+    container_name: maskinporten
+    build:
+      context: ./mocks/maskinporten-mock
+    environment:
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+    ports:
+      - "9002:8080"
+  altinn:
+    image: wiremock/wiremock
+    container_name: altinn
+    volumes:
+      - ./mocks/altinn-mock/wiremock/__files:/home/wiremock/__files
+      - ./mocks/altinn-mock/wiremock/mappings:/home/wiremock/mappings
+  testnav-bruker-service-db:
+    image: postgres
+    restart: always
+    container_name: testnav-bruker-service-db
+    environment:
+      - POSTGRES_USER=compose-postgres
+      - POSTGRES_PASSWORD=compose-postgres
+  testnav-bruker-service:
+    container_name: testnav-bruker-service
+    environment:
+      - SPRING_PROFILES_ACTIVE=virtual
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+      - TOKEN_X_PRIVATE_JWK=${JWK}
+    build:
+      context: ./apps/bruker-service
+    depends_on:
+      - testnav-bruker-service-db
+      - testnav-person-organisasjon-tilgang-service
+      - tokendings
+    ports:
+      - "8002:8080"
+      - "5002:5005"

@@ -1,5 +1,6 @@
 package no.nav.testnav.libs.securitycore.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -20,6 +21,7 @@ public class AccessToken {
         access_token = null;
     }
 
+    @JsonIgnore
     public String getTokenValue() {
         return access_token;
     }

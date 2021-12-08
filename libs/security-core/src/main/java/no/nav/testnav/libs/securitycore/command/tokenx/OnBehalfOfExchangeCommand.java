@@ -36,8 +36,7 @@ public class OnBehalfOfExchangeCommand implements ExchangeCommand {
         return webClient
                 .get()
                 .uri(tokenX.getWellKnownUrl())
-                .retrieve()
-                .bodyToMono(WellKnown.class)
+                .retrieve().bodyToMono(WellKnown.class)
                 .flatMap(config ->
                         webClient
                                 .post()
