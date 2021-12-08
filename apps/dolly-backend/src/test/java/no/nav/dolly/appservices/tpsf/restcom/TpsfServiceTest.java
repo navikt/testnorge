@@ -1,24 +1,14 @@
 package no.nav.dolly.appservices.tpsf.restcom;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.serverError;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static java.util.Collections.singleton;
-import static java.util.Collections.singletonList;
-import static no.nav.dolly.domain.resultset.IdentType.FNR;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyMap;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import no.nav.dolly.bestilling.tpsf.TpsfService;
+import no.nav.dolly.config.credentials.TpsForvalterenProxyProperties;
+import no.nav.dolly.domain.resultset.tpsf.RsSkdMeldingResponse;
+import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -40,14 +29,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import no.nav.dolly.bestilling.tpsf.TpsfService;
-import no.nav.dolly.config.credentials.TpsForvalterenProxyProperties;
-import no.nav.dolly.domain.resultset.tpsf.RsSkdMeldingResponse;
-import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
-import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.exceptions.TpsfException;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import static com.github.tomakehurst.wiremock.client.WireMock.badRequest;
+import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.serverError;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static java.util.Collections.singleton;
+import static java.util.Collections.singletonList;
+import static no.nav.dolly.domain.resultset.IdentType.FNR;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
@@ -62,13 +58,7 @@ public class TpsfServiceTest {
     private static final List<String> STANDARD_MILJOER_U1_T1 = Arrays.asList("u1", "t1");
 
     @MockBean
-    private JwtDecoder jwtDecoder;
-
-    @MockBean
     private TokenExchange tokenService;
-
-    @MockBean
-    private ErrorStatusDecoder errorStatusDecoder;
 
     @Mock
     private ObjectMapper objectMapper;
@@ -101,28 +91,20 @@ public class TpsfServiceTest {
     }
 
     @Test
-    public void opprettPersonerTpsf_hvisTpsfKasterExceptionSaaKastesTpsfException() throws Exception {
-
-        WebClientResponseException failure = WebClientResponseException.create(500, "Error", null, null, null);
+    public void opprettPersonerTpsf_hvisTpsfKasterExceptionSaaKastesTpsfException() {
 
         stubPostTpsfDataThrowExpection();
 
-        when(objectMapper.readValue(any(byte[].class), eq(WebClientResponseException.class))).thenReturn(failure);
-
-        Assertions.assertThrows(TpsfException.class, () ->
+        Assertions.assertThrows(WebClientResponseException.BadRequest.class, () ->
                 tpsfService.opprettIdenterTpsf(STANDARD_TPSF_BESTILLING));
     }
 
     @Test
-    public void sendIdenterTilTpsFraTPSF_hvisTpsfKasterExceptionSaaKastesTpsfException() throws Exception {
-
-        WebClientResponseException failure = WebClientResponseException.create(500, "Error", null, null, null);
+    public void sendIdenterTilTpsFraTPSF_hvisTpsfKasterExceptionSaaKastesInternalException() {
 
         stubPostTpsfDataForFlereThrowExpection();
 
-        when(objectMapper.readValue(any(byte[].class), eq(WebClientResponseException.class))).thenReturn(failure);
-
-        Assertions.assertThrows(TpsfException.class, () ->
+        Assertions.assertThrows(WebClientResponseException.InternalServerError.class, () ->
                 tpsfService.sendIdenterTilTpsFraTPSF(STANDARD_IDENTER, STANDARD_MILJOER_U1_T1));
     }
 
@@ -168,7 +150,7 @@ public class TpsfServiceTest {
     private void stubPostTpsfDataThrowExpection() {
 
         stubFor(post(urlPathMatching("(.*)/tpsf/api/v1/dolly/testdata/personer"))
-                .willReturn(serverError()
+                .willReturn(badRequest()
                         .withHeader("Content-Type", "application/json")
                         .withBody("{}")
                 ));
