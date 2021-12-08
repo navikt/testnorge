@@ -5,7 +5,40 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import { GtKodeverk, PersoninformasjonKodeverk } from '~/config/kodeverk'
 
-export const Personinfo = ({ data, visTittel = true }) => (
+function hentSkjermingData(skjermingPath) {
+	if (!skjermingPath) {
+		return null
+	}
+	return (
+		<>
+			{skjermingPath.egenAnsattDatoFom && (
+				<>
+					<TitleValue
+						title="Har skjerming"
+						value={
+							skjermingPath.egenAnsattDatoTom &&
+							isBefore(new Date(skjermingPath.egenAnsattDatoTom), addDays(new Date(), -1))
+								? 'NEI'
+								: 'JA'
+						}
+					/>
+					<TitleValue
+						title="Skjerming fra"
+						value={Formatters.formatDate(skjermingPath.egenAnsattDatoFom)}
+					/>
+					{skjermingPath.egenAnsattDatoTom && (
+						<TitleValue
+							title="Skjerming til"
+							value={Formatters.formatDate(skjermingPath.egenAnsattDatoTom)}
+						/>
+					)}
+				</>
+			)}
+		</>
+	)
+}
+
+export const Personinfo = ({ data, visTittel = true, tpsMessagingData }) => (
 	<div>
 		{visTittel && <SubOverskrift label="Persondetaljer" iconKind="personinformasjon" />}
 		<div className="person-visning_content">
@@ -79,26 +112,8 @@ export const Personinfo = ({ data, visTittel = true }) => (
 				value={data.tknavn ? `${data.tknr} - ${data.tknavn}` : data.tknr}
 				size="medium"
 			/>
-			{data.egenAnsattDatoFom && (
-				<>
-					<TitleValue
-						title="Har skjerming"
-						value={
-							data.egenAnsattDatoTom &&
-							isBefore(new Date(data.egenAnsattDatoTom), addDays(new Date(), -1))
-								? 'NEI'
-								: 'JA'
-						}
-					/>
-					<TitleValue title="Skjerming fra" value={Formatters.formatDate(data.egenAnsattDatoFom)} />
-					{data.egenAnsattDatoTom && (
-						<TitleValue
-							title="Skjerming til"
-							value={Formatters.formatDate(data.egenAnsattDatoTom)}
-						/>
-					)}
-				</>
-			)}
+			{hentSkjermingData(data)}
+			{hentSkjermingData(tpsMessagingData)}
 			{data.typeSikkerhetTiltak && (
 				<>
 					<TitleValue

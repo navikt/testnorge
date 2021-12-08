@@ -78,19 +78,6 @@ public class PersonService {
         }
     }
 
-    private static boolean isGift(RelasjonType relasjonType) {
-
-        return RelasjonType.EKTE == relasjonType ||
-                RelasjonType.ENKE == relasjonType ||
-                RelasjonType.SKIL == relasjonType ||
-                RelasjonType.SEPR == relasjonType ||
-                RelasjonType.REPA == relasjonType ||
-                RelasjonType.SEPA == relasjonType ||
-                RelasjonType.SKPA == relasjonType ||
-                RelasjonType.GJPA == relasjonType ||
-                RelasjonType.GLAD == relasjonType;
-    }
-
     private static boolean isStatusOK(TpsMeldingResponse response) {
 
         return STATUS_OK.equals(response.getReturStatus());
@@ -118,7 +105,6 @@ public class PersonService {
         if (nonNull(personRelasjon.getHovedperson().getBruker().getRelasjoner())) {
             familie.get(personRelasjon.getHovedperson().getFodselsnummer()).setRelasjoner(personRelasjon.getHovedperson()
                     .getBruker().getRelasjoner().getRelasjon().stream()
-                    .filter(relasjon -> isGift(relasjon.getTypeRelasjon()))
                     .map(relasjon -> RelasjonDTO.builder()
                             .personRelasjonMed(familie.get(relasjon.getFnrRelasjon()))
                             .relasjonTypeNavn(mapRelasjonType(relasjon.getTypeRelasjon()))

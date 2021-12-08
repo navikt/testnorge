@@ -524,6 +524,30 @@ export const validation = {
 	tpsMessaging: ifPresent(
 		'$tpsMessaging',
 		Yup.object({
+			egenAnsattDatoFom: ifPresent(
+				'$tpsMessaging.egenAnsattDatoFom',
+				Yup.string().test(
+					'is-before-today',
+					'Dato kan ikke være etter dagens dato',
+					function validDate(dato) {
+						return isBefore(new Date(dato), new Date())
+					}
+				)
+			),
+			egenAnsattDatoTom: ifPresent(
+				'$tpsMessaging.egenAnsattDatoTom',
+				Yup.string().test(
+					'is-after-dato-fom',
+					'Dato må være etter fra-dato og senest dagens dato',
+					function validDate(dato) {
+						const values = this.options.context
+						return (
+							isAfter(new Date(dato), new Date(_get(values, 'tpsMessaging.egenAnsattDatoFom'))) &&
+							!isAfter(new Date(dato), new Date())
+						)
+					}
+				)
+			),
 			utenlandskBankkonto: ifPresent(
 				'$tpsMessaging.utenlandskBankkonto',
 				Yup.object().shape({

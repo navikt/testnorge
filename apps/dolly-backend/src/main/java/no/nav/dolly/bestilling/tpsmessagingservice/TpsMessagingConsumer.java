@@ -2,21 +2,21 @@ package no.nav.dolly.bestilling.tpsmessagingservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.tpsmessagingservice.command.DeleteEgenansattCommand;
+import no.nav.dolly.bestilling.tpsmessagingservice.command.HentIdenterCommand;
+import no.nav.dolly.bestilling.tpsmessagingservice.command.SendEgenansattCommand;
+import no.nav.dolly.bestilling.tpsmessagingservice.command.SendTpsMessagingCommand;
 import no.nav.dolly.config.credentials.TpsMessagingServiceProperties;
-import no.nav.dolly.domain.resultset.tpsmessagingservice.NorskBankkontoRequest;
-import no.nav.dolly.domain.resultset.tpsmessagingservice.UtenlandskBankkontoRequest;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsIdentStatusDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.Arrays;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -28,9 +28,8 @@ public class TpsMessagingConsumer {
 
     private static final String UTENLANDSK_BANKKONTO_URL = "/api/v1/personer/{ident}/bankkonto-utenlandsk";
     private static final String NORSK_BANKKONTO_URL = "/api/v1/personer/{ident}/bankkonto-norsk";
-    private static final String IDENTER_URL = "/api/v1/identer";
-    private static final String MILJOER_PARAM = "miljoer";
-    private static final String IDENTER_PARAM = "identer";
+    private static final String SPRAAKKODE_URL = "/api/v1/personer/{ident}/spraakkode";
+    private static final String EGENANSATT_URL = "/api/v1/personer/{ident}/egenansatt";
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
@@ -46,63 +45,43 @@ public class TpsMessagingConsumer {
     }
 
     @Timed(name = "providers", tags = {"operation", "tps_messaging_createUtenlandskBankkonto"})
-    public List<TpsMeldingResponseDTO> sendUtenlandskBankkontoRequest(UtenlandskBankkontoRequest request) {
+    public List<TpsMeldingResponseDTO> sendUtenlandskBankkontoRequest(String ident, List<String> miljoer, Object body) {
 
-        log.trace("Sender utenlandsk bankkonto request på ident: {} til TPS messaging service: {}", request.ident(), request.body());
-
-        var response = webClient.post()
-                .uri(uriBuilder -> uriBuilder
-                        .path(UTENLANDSK_BANKKONTO_URL)
-                        .queryParam(MILJOER_PARAM, request.miljoer())
-                        .build(request.ident()))
-                .contentType(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .bodyValue(request.body())
-                .retrieve()
-                .bodyToMono(TpsMeldingResponseDTO[].class)
-                .block();
-
-        List.of(response).forEach(entry -> log.trace("Response fra TPS messaging service: {}", entry));
-        return Arrays.asList(response);
+        return new SendTpsMessagingCommand(webClient, ident, miljoer, body, UTENLANDSK_BANKKONTO_URL, serviceProperties.getAccessToken(tokenService)).call();
     }
+
 
     @Timed(name = "providers", tags = {"operation", "tps_messaging_createNorskBankkonto"})
-    public List<TpsMeldingResponseDTO> sendNorskBankkontoRequest(NorskBankkontoRequest request) {
+    public List<TpsMeldingResponseDTO> sendNorskBankkontoRequest(String ident, List<String> miljoer, Object body) {
 
-        log.trace("Sender norsk bankkonto request på ident: {} til TPS messaging service: {}", request.ident(), request.body());
-
-        var response = webClient.post()
-                .uri(uriBuilder -> uriBuilder
-                        .path(NORSK_BANKKONTO_URL)
-                        .queryParam(MILJOER_PARAM, request.miljoer())
-                        .build(request.ident()))
-                .contentType(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .bodyValue(request.body())
-                .retrieve()
-                .bodyToMono(TpsMeldingResponseDTO[].class)
-                .block();
-
-        List.of(response).forEach(entry -> log.trace("Response fra TPS messaging service: {}", entry));
-        return Arrays.asList(response);
+        return new SendTpsMessagingCommand(webClient, ident, miljoer, body, NORSK_BANKKONTO_URL, serviceProperties.getAccessToken(tokenService)).call();
     }
 
-    @Timed(name = "providers", tags = {"operation", "tps_messaging_getIdenter"})
-    public List<TpsIdentStatusDTO> getIdenter(List<String> identer, List<String> miljoer) {
+    @Timed(name = "providers", tags = { "operation", "tps_messaging_createSkjerming" })
+    public List<TpsMeldingResponseDTO> sendEgenansattRequest(String ident, List<String> miljoer, LocalDate fraOgMed) {
 
-        return Arrays.asList(webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path(IDENTER_URL)
-                        .queryParam(MILJOER_PARAM, miljoer)
-                        .queryParam(IDENTER_PARAM, identer)
-                        .build())
-                .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .retrieve()
-                .bodyToMono(TpsIdentStatusDTO[].class)
-                .block());
+        return new SendEgenansattCommand(webClient, ident, miljoer, fraOgMed, EGENANSATT_URL, serviceProperties.getAccessToken(tokenService)).call();
+    }
+
+    @Timed(name = "providers", tags = { "operation", "tps_messaging_deleteSkjerming" })
+    public List<TpsMeldingResponseDTO> deleteEgenansattRequest(String ident, List<String> miljoer) {
+
+        return new DeleteEgenansattCommand(webClient, ident, miljoer, EGENANSATT_URL, serviceProperties.getAccessToken(tokenService)).call();
+    }
+
+    @Timed(name = "providers", tags = { "operation", "tps_messaging_createSpraakkode" })
+    public List<TpsMeldingResponseDTO> sendSpraakkodeRequest(String ident, List<String> miljoer, Object body) {
+
+        return new SendTpsMessagingCommand(webClient, ident, miljoer, body, SPRAAKKODE_URL, serviceProperties.getAccessToken(tokenService)).call();
     }
 
     public Map<String, String> checkAlive() {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
+    }
+
+    @Timed(name = "providers", tags = { "operation", "tps_messaging_getIdenter" })
+    public List<TpsIdentStatusDTO> getIdenter(List<String> identer, List<String> miljoer) {
+
+        return new HentIdenterCommand(webClient, miljoer, identer, serviceProperties.getAccessToken(tokenService)).call();
     }
 }
