@@ -55,6 +55,6 @@ public class AktoerIdSyncClient implements ClientRegister {
 
     @Override
     public void release(List<String> identer) {
-
+        // Ikke relevant
     }
 }

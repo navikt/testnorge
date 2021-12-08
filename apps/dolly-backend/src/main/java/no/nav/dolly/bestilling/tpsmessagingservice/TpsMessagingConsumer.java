@@ -44,14 +44,14 @@ public class TpsMessagingConsumer {
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "tps_messaging_createUtenlandskBankkonto" })
+    @Timed(name = "providers", tags = {"operation", "tps_messaging_createUtenlandskBankkonto"})
     public List<TpsMeldingResponseDTO> sendUtenlandskBankkontoRequest(String ident, List<String> miljoer, Object body) {
 
         return new SendTpsMessagingCommand(webClient, ident, miljoer, body, UTENLANDSK_BANKKONTO_URL, serviceProperties.getAccessToken(tokenService)).call();
     }
 
 
-    @Timed(name = "providers", tags = { "operation", "tps_messaging_createNorskBankkonto" })
+    @Timed(name = "providers", tags = {"operation", "tps_messaging_createNorskBankkonto"})
     public List<TpsMeldingResponseDTO> sendNorskBankkontoRequest(String ident, List<String> miljoer, Object body) {
 
         return new SendTpsMessagingCommand(webClient, ident, miljoer, body, NORSK_BANKKONTO_URL, serviceProperties.getAccessToken(tokenService)).call();
