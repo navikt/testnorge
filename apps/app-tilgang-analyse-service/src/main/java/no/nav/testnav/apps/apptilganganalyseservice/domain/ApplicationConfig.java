@@ -19,13 +19,14 @@ public class ApplicationConfig {
         try {
             String value = entity.getContent()
                     .replace("{{ image }}", "unknown")
+                    .replace("{ { image } }", "unknown")
                     .replace("{{image}}", "unknown");
             this.kindApplikasjon = YAMLUtil.Instance().read(
                     value,
                     KindApplikasjon.class
             );
         } catch (Exception e) {
-            throw new RuntimeException("Klarer ikke å convertere til yaml.", e);
+            throw new RuntimeException("Klarer ikke å convertere til yaml. ( " + entity.getPath() + " )", e);
         }
     }
 
