@@ -75,27 +75,26 @@ export const Telefonnummer = ({ formikBag }: TelefonnummerProps) => {
 		formikBag.setFieldValue('tpsMessaging.telefonnummer', [...tlfListeTps, initialTpsTelefonnummer])
 	}
 
-	const handleRemoveEntry = (idx) => {
+	const handleRemoveEntry = (idx: number) => {
 		tlfListe.splice(idx, 1)
 		tlfListeTps.splice(idx, 1)
 		formikBag.setFieldValue('pdldata.person.telefonnummer', tlfListe)
 		formikBag.setFieldValue('tpsMessaging.telefonnummer', tlfListeTps)
-		//TODO: Stygt - endre??
 		formikBag.setFieldValue('pdldata.person.telefonnummer[0].prioritet', 1)
 		formikBag.setFieldValue('tpsMessaging.telefonnummer[0].telefontype', 'MOBI')
 	}
 
-	const handleChangeLandkode = (value, path, idx) => {
+	const handleChangeLandkode = (value: string, path: string, idx: number) => {
 		formikBag.setFieldValue(`${path}.landskode`, value)
 		formikBag.setFieldValue(`tpsMessaging.telefonnummer[${idx}].landkode`, value)
 	}
 
-	const handleChangeNummer = (target, path, idx) => {
+	const handleChangeNummer = (target: { value: string }, path: string, idx: number) => {
 		formikBag.setFieldValue(`${path}.nummer`, target.value)
 		formikBag.setFieldValue(`tpsMessaging.telefonnummer[${idx}].telefonnummer`, target.value)
 	}
 
-	const handleChangePrioritet = (value, path, idx) => {
+	const handleChangePrioritet = (value: number, path: string, idx: number) => {
 		formikBag.setFieldValue(`${path}.prioritet`, value)
 		formikBag.setFieldValue(
 			`tpsMessaging.telefonnummer[${idx}].telefontype`,
@@ -121,22 +120,25 @@ export const Telefonnummer = ({ formikBag }: TelefonnummerProps) => {
 							name={`${path}.landskode`}
 							label="Landkode"
 							kodeverk={PersoninformasjonKodeverk.Retningsnumre}
-							onChange={({ value }) => handleChangeLandkode(value, path, idx)}
+							onChange={({ value }: { value: string }) => handleChangeLandkode(value, path, idx)}
 							size="large"
 							isClearable={false}
 						/>
 						<DollyTextInput
 							name={`${path}.nummer`}
 							label="Telefonnummer"
-							onChange={({ target }) => handleChangeNummer(target, path, idx)}
+							onChange={({ target }: { target: { value: string } }) =>
+								handleChangeNummer(target, path, idx)
+							}
 							value={_get(formikBag.values, `${path}.nummer`)}
+							/*@ts-ignore*/
 							size="large"
 						/>
 						<FormikSelect
 							name={`${path}.prioritet`}
 							label="Prioritet"
 							options={optionsPrioritet()}
-							onChange={({ value }) => handleChangePrioritet(value, path, idx)}
+							onChange={({ value }: { value: number }) => handleChangePrioritet(value, path, idx)}
 							size="xsmall"
 							isClearable={false}
 						/>
