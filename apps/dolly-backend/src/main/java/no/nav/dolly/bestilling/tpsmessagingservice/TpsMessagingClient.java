@@ -76,10 +76,14 @@ public class TpsMessagingClient implements ClientRegister {
 
             if (nonNull(bestilling.getTpsMessaging().getTelefonnummer())) {
                 // TODO + sjekk om person har telefonnr?
-                appendResponseStatus(
-                        tpsMessagingConsumer.deleteTelefonnummerRequest(
-                                dollyPerson.getHovedperson(),
-                                bestilling.getEnvironments()),
+                var tlfStatus = tpsMessagingConsumer.deleteTelefonnummerRequest(
+                        dollyPerson.getHovedperson(),
+                        bestilling.getEnvironments());
+
+                appendResponseStatus(tlfStatus.stream()
+                                .filter(result -> !result.getUtfyllendeMelding().contains("ingen aktiv telefonr funnet") &&
+                                        !result.getUtfyllendeMelding().contains("ei opphør"))
+                                .toList(),
                         status,
                         "Telefonnummer_delete"
                 );
