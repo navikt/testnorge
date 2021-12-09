@@ -1,17 +1,9 @@
 import React, { useEffect } from 'react'
 // @ts-ignore
-import useBoolean from '~/utils/hooks/useBoolean'
-// @ts-ignore
-import Button from '~/components/ui/button/Button'
-// @ts-ignore
-import { Vis } from '~/components/bestillingsveileder/VisAttributt'
-// @ts-ignore
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-// @ts-ignore
-import { DollyTextInput, FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 // @ts-ignore
 import { PersoninformasjonKodeverk } from '~/config/kodeverk'
-
 import { FormikProps } from 'formik'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
@@ -133,6 +125,11 @@ export const Telefonnummer = ({ formikBag }: TelefonnummerProps) => {
 							value={_get(formikBag.values, `${path}.nummer`)}
 							/*@ts-ignore*/
 							size="large"
+							feil={
+								_get(formikBag.errors, `${path}.nummer`)
+									? { feilmelding: _get(formikBag.errors, `${path}.nummer`) }
+									: null
+							}
 						/>
 						<FormikSelect
 							name={`${path}.prioritet`}

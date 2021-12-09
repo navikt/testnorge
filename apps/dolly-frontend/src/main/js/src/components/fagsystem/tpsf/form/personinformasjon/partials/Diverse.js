@@ -12,7 +12,6 @@ import styled from 'styled-components'
 import { Checkbox as NavCheckbox } from 'nav-frontend-skjema'
 import Hjelpetekst from '~/components/hjelpetekst'
 import { Telefonnummer } from '~/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
-import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 
 const StyledCheckbox = styled(NavCheckbox)`
 	&&& {

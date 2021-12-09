@@ -134,17 +134,16 @@ const testTelefonnummer = () =>
 			then: Yup.string().length(8, 'Norsk telefonnummer må ha 8 sifre'),
 		})
 		.required('Feltet er påkrevd')
-		.matches(/^[1-9][0-9]*$/, 'Telefonnummer må være numerisk, og kan ikke starte med 0')
+		.matches(/^[1-9]\d*$/, 'Telefonnummer må være numerisk, og kan ikke starte med 0')
 
-const testPrioritet = (validation) => {
-	return validation.test('prioritet', 'Kan ikke ha lik prioritet', function erEgenPrio() {
+const testPrioritet = (val) => {
+	return val.test('prioritet', 'Kan ikke ha lik prioritet', function erEgenPrio() {
 		const values = this.options.context
 		const index = this.options.index
 		const tlfListe = _get(values, 'pdldata.person.telefonnummer')
 		if (tlfListe.length < 2) return true
 		const index2 = index === 0 ? 1 : 0
-		if (tlfListe[index]?.prioritet === tlfListe[index2]?.prioritet) return false
-		return true
+		return tlfListe[index]?.prioritet !== tlfListe[index2]?.prioritet
 	})
 }
 
