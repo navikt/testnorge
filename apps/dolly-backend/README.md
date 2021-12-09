@@ -21,7 +21,7 @@ https://dolly-backend.dev.intern.nav.no/swagger-ui.html
 https://dolly-backend.dev.intern.nav.no/swagger-ui.html
 **NB: `naisdevice` må kjøre og være grønn.**
 
-Så kjør `./gradlew clean build`.
+Så kjør `./gradlew clean build`
 
 Deretter kan DollyBackendApplicationStarter startes med disse VM options:
 
