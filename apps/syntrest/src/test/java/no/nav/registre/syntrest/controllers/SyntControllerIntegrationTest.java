@@ -61,50 +61,6 @@ public class SyntControllerIntegrationTest {
     }
 
     @Test
-    public void getConsumerTest() throws Exception {
-        launchApplicationStubs("synthdata-nav");
-        mockApiMethods();
-        stubFor(get(urlEqualTo("/generate_nav/2/Z010"))
-                .withHeader("Accept", equalTo("application/json"))
-                .willReturn(
-                        aResponse().withStatus(200)
-                                .withHeader("Content-Type", "application/json")
-                                .withBody("[\"hello\", \"world\"]")));
-
-        // var result = mockMvc.perform(MockMvcRequestBuilders.get("/nav/Z010").queryParam("numToGenerate", "2"));
-        var result = syntController.generateNavEndringsmelding("Z010", 2);
-        assertThat(!isNull(result.getBody()), is(true));
-        assertThat(result.getBody().size(), is(2));
-    }
-
-    @Test
-    public void postConsumerTest() throws Exception {
-        launchApplicationStubs("synthdata-popp");
-        mockApiMethods();
-        stubFor(post(urlEqualTo("/generate_popp"))
-                .willReturn(
-                        aResponse().withStatus(200)
-                                .withHeader("Content-Type", "application/json")
-                                .withBody("[{"
-                                        + "\"grunnlag\": [{\"tekniskNavn\": \"Mr.Roboto\", \"verdi\": \"9001\"}], "
-                                        + "\"inntektsaar\": \"1994\", "
-                                        + "\"personidentifikator\": \"10101010101\", "
-                                        + "\"testdataEier\": \"Mulberry House\", "
-                                        + "\"tjeneste\": \"integrasjonstesting\""
-                                        + "},{"
-                                        + "\"grunnlag\": [{\"tekniskNavn\": \"MegaMan\", \"verdi\": \"402\"}], "
-                                        + "\"inntektsaar\": \"2001\", "
-                                        + "\"personidentifikator\": \"20202020202\", "
-                                        + "\"testdataEier\": \"Frankenstein Division\", "
-                                        + "\"tjeneste\": \"ekstra\""
-                                        + "}]")
-                ));
-        var result = syntController.generateInntektsmeldingPopp(Arrays.asList("10101010101", "20202020202"));
-        assertThat(!isNull(result.getBody()), is(true));
-        assertThat(result.getBody().size(), is(2));
-    }
-
-    @Test
     public void addQueryParamTest() throws Exception {
         launchApplicationStubs("synthdata-arena-meldekort");
         mockApiMethods();
