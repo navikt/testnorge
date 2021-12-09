@@ -32,7 +32,7 @@ public class ArenaBrukerUtils {
     private static final Map<String, List<KodeMedSannsynlighet>> aktivitestsfaserMedInnsatsIARBS;
     private static final Map<String, List<KodeMedSannsynlighet>> aktivitestsfaserMedFormidlingsgruppe;
 
-    private final Random rand;
+    private final Random rand = new Random();
     private final ServiceUtils serviceUtils;
 
     static {

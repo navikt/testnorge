@@ -18,7 +18,7 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class PensjonService {
 
-    private final Random rand;
+    private final Random rand = new Random();
     private final PensjonTestdataFacadeConsumer pensjonTestdataFacadeConsumer;
 
     private static final String REGEX_RN = "[\r\n]";

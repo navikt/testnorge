@@ -25,9 +25,6 @@ import no.nav.registre.testnorge.arena.consumer.rs.response.pensjon.PensjonTestd
 public class PensjonServiceTest {
 
     @Mock
-    private Random rand;
-
-    @Mock
     private PensjonTestdataFacadeConsumer pensjonTestdataFacadeConsumer;
 
     @InjectMocks

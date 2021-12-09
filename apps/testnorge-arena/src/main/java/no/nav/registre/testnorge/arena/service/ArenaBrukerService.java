@@ -46,7 +46,7 @@ public class ArenaBrukerService {
 
     private final BrukereArenaForvalterConsumer brukereArenaForvalterConsumer;
     private final HodejegerenConsumer hodejegerenConsumer;
-    private final Random random;
+    private final Random random = new Random();
     private final ArenaBrukerUtils arenaBrukerUtils;
 
     public NyeBrukereResponse sendArbeidssoekereTilArenaForvalter(

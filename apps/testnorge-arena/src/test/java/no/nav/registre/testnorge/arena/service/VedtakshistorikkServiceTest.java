@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import static no.nav.registre.testnorge.arena.service.util.ServiceUtils.ARENA_AAP_UNG_UFOER_DATE_LIMIT;
 
-import no.nav.registre.testnorge.arena.consumer.rs.VedtakshistorikkSyntConsumer;
+import no.nav.registre.testnorge.arena.consumer.rs.SyntVedtakshistorikkConsumer;
 import no.nav.registre.testnorge.arena.consumer.rs.RettighetArenaForvalterConsumer;
 import no.nav.registre.testnorge.arena.service.util.RequestUtils;
 import no.nav.registre.testnorge.arena.service.util.TilleggUtils;
@@ -42,7 +42,7 @@ import no.nav.registre.testnorge.consumers.hodejegeren.response.KontoinfoRespons
 public class VedtakshistorikkServiceTest {
 
     @Mock
-    private VedtakshistorikkSyntConsumer vedtakshistorikkSyntConsumer;
+    private SyntVedtakshistorikkConsumer syntVedtakshistorikkConsumer;
     @Mock
     private RettighetArenaForvalterConsumer rettighetArenaForvalterConsumer;
 
@@ -117,7 +117,7 @@ public class VedtakshistorikkServiceTest {
                         .fnr(forvalterFnr)
                         .kontonummer(kontonummer)
                         .build())));
-        when(vedtakshistorikkSyntConsumer.syntetiserVedtakshistorikk(antallIdenter)).thenReturn(vedtakshistorikkListe);
+        when(syntVedtakshistorikkConsumer.syntetiserVedtakshistorikk(antallIdenter)).thenReturn(vedtakshistorikkListe);
 
         var nyRettighetAapResponse = NyttVedtakResponse.builder()
                 .nyeRettigheterAap(aapRettigheter)
@@ -150,7 +150,7 @@ public class VedtakshistorikkServiceTest {
         var response = vedtakshistorikkService.genererVedtakshistorikk(avspillergruppeId, miljoe, antallIdenter);
 
         verify(identService).getUtvalgteIdenterIAldersgruppe(eq(avspillergruppeId), eq(antallIdenter), anyInt(), anyInt(), eq(miljoe), eq(ARENA_AAP_UNG_UFOER_DATE_LIMIT.minusDays(7)));
-        verify(vedtakshistorikkSyntConsumer).syntetiserVedtakshistorikk(antallIdenter);
+        verify(syntVedtakshistorikkConsumer).syntetiserVedtakshistorikk(antallIdenter);
         verify(pensjonService).opprettetPersonOgInntektIPopp(anyString(), anyString(), any(LocalDate.class));
         verify(rettighetArenaForvalterConsumer).opprettRettighet(anyList());
 
