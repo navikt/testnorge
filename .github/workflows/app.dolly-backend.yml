@@ -39,7 +39,7 @@ jobs:
     name: Deploy dev
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/feature/tps-messaging-spraakkode-egenansatt'  }}
+    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/feature/fjerne_eksplisitt_tps_messaging_status'  }}
     with:
       resource: 'apps/dolly-backend/config.dev.yml'
       app-name: 'testnav-dolly-backend'

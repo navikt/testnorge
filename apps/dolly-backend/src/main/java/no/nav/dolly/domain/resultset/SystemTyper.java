@@ -27,7 +27,6 @@ public enum SystemTyper {
     INNTKMELD("Inntektsmelding (ALTINN/JOARK)"),
     BRREGSTUB("Brønnøysundregistrene (BRREGSTUB)"),
     DOKARKIV("Dokumentarkiv (JOARK)"),
-    TPS_MESSAGING("Testnav TPS messaging"),
     SYKEMELDING("Testnorge Sykemelding"),
     TPSIMPORT("Import av identer (MINI-NORGE)"),
     PDLIMPORT("Import av identer (TESTNORGE)"),

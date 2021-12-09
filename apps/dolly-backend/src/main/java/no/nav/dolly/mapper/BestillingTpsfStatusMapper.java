@@ -43,6 +43,8 @@ public final class BestillingTpsfStatusMapper {
             }
         });
 
+        errorEnvIdents.putAll(BestillingTpsMessagingStatusMapper.buildTpsMessagingStatusMap(progressList));
+
         return errorEnvIdents.isEmpty() ? emptyList() :
                 singletonList(RsStatusRapport.builder().id(TPSF).navn(TPSF.getBeskrivelse())
                         .statuser(errorEnvIdents.entrySet().stream().map(status ->
