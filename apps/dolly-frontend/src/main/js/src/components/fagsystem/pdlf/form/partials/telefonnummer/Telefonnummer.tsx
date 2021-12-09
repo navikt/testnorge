@@ -109,11 +109,11 @@ export const Telefonnummer = ({ formikBag }: TelefonnummerProps) => {
 				name={'pdldata.person.telefonnummer'}
 				header="Telefonnummer"
 				newEntry={initialTelefonnummer}
-				disabled={tlfListe.length > 1}
-				title={tlfListe.length > 1 ? 'En person kan maksimalt ha to telefonnumre' : null}
 				canBeEmpty={false}
 				handleNewEntry={handleNewEntry}
 				handleRemoveEntry={handleRemoveEntry}
+				maxEntries={2}
+				maxReachedDescription={'En person kan maksimalt ha to telefonnumre'}
 			>
 				{(path: string, idx: number) => (
 					<>

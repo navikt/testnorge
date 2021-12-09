@@ -595,7 +595,13 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 
 	const tpsMessaging = _get(bestillingData, 'tpsMessaging')
 
-	if (tpsMessaging) {
+	if (
+		tpsMessaging?.spraakKode ||
+		tpsMessaging?.egenAnsattDatoFom ||
+		tpsMessaging?.egenAnsattDatoTom ||
+		tpsMessaging?.norskBankkonto ||
+		tpsMessaging?.utenlandskBankkonto
+	) {
 		const tpsMessagingData = {
 			header: 'Personinformasjon',
 			items: [
