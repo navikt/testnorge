@@ -124,20 +124,6 @@ export const Diverse = ({ formikBag }) => {
 					fastfield={false}
 				/>
 			</Vis>
-			<Vis attributt="tpsf.harBankkontonr">
-				<FormikCheckbox
-					name="tpsf.harBankkontonr"
-					label="Har bankkontonummer"
-					afterChange={handleChangeKontonr}
-					checkboxMargin
-				/>
-				<FormikDatepicker
-					name="tpsf.bankkontonrRegdato"
-					label="Bankkonto opprettet"
-					disabled={!formikBag.values.tpsf?.harBankkontonr}
-					fastfield={false}
-				/>
-			</Vis>
 			<Telefonnummer formikBag={formikBag} />
 			<Diskresjonskoder basePath="tpsf" formikBag={formikBag} />
 		</React.Fragment>

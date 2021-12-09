@@ -36,7 +36,6 @@ const diversePaths = [
 	'tpsf.spesreg',
 	'tpsf.utenFastBopel',
 	'tpsf.erForsvunnet',
-	'tpsf.harBankkontonr',
 	'tpsMessaging.utenlandskBankkonto',
 	'tpsMessaging.norskBankkonto',
 	'tpsMessaging.spraakKode',
