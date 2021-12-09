@@ -237,8 +237,10 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			checked: has('pdldata.person.telefonnummer'),
 			add() {
 				_has(personFoerLeggTil, 'pdlforvalter[0].person.telefonnummer')
-					? //TODO: Før legg til må settes i TpsMessaging også når backend er klar.
-					  set('pdldata.person.telefonnummer', telefonnummerFoerLeggTil())
+					? setMulti(
+							['pdldata.person.telefonnummer', telefonnummerFoerLeggTil()],
+							['tpsMessaging.telefonnummer', _get(personFoerLeggTil, 'tpsMessaging.telefonnumre')]
+					  )
 					: setMulti(
 							[
 								'pdldata.person.telefonnummer',
