@@ -54,7 +54,7 @@ export default function MiljoeStatus({ bestilling }) {
 					{statusrapport.length < 1 && <ApiFeilmelding feilmelding={bestilling.feil} container />}
 				</div>
 			)}
-			<FagsystemStatus statusrapport={statusrapport} />
+			<FagsystemStatus statusrapportListe={statusrapport} />
 		</div>
 	)
 }

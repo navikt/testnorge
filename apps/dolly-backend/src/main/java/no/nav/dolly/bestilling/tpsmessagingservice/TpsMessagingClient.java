@@ -53,6 +53,17 @@ public class TpsMessagingClient implements ClientRegister {
                 );
             }
 
+            if (nonNull(bestilling.getTpsMessaging().getSikkerhetstiltak())) {
+                appendResponseStatus(
+                        tpsMessagingConsumer.sendSikkerhetstiltakRequest(
+                                dollyPerson.getHovedperson(),
+                                bestilling.getEnvironments(),
+                                bestilling.getTpsMessaging().getSikkerhetstiltak()),
+                        status,
+                        "Sikkerhetstiltak_opprett"
+                );
+            }
+
             if (nonNull(bestilling.getTpsMessaging().getEgenAnsattDatoFom())) {
                 appendResponseStatus(
                         tpsMessagingConsumer.sendEgenansattRequest(
@@ -118,7 +129,7 @@ public class TpsMessagingClient implements ClientRegister {
             status.append(enhet).append("#");
             status.append(response.getMiljoe());
             status.append(":");
-            status.append(response.getStatus().equals("OK") ? "OK" : "FEIL:" + enhet + "-" + response.getUtfyllendeMelding());
+            status.append(response.getStatus().equals("OK") ? "OK" : "FEIL:" + response.getUtfyllendeMelding());
         });
     }
 }

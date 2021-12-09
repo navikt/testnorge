@@ -28,6 +28,7 @@ public class TpsMessagingConsumer {
 
     private static final String UTENLANDSK_BANKKONTO_URL = "/api/v1/personer/{ident}/bankkonto-utenlandsk";
     private static final String NORSK_BANKKONTO_URL = "/api/v1/personer/{ident}/bankkonto-norsk";
+    private static final String SIKKERHETSTILTAK_URL = "/api/v1/personer/{ident}/sikkerhetstiltak";
     private static final String SPRAAKKODE_URL = "/api/v1/personer/{ident}/spraakkode";
     private static final String EGENANSATT_URL = "/api/v1/personer/{ident}/egenansatt";
 
@@ -44,17 +45,23 @@ public class TpsMessagingConsumer {
                 .build();
     }
 
-    @Timed(name = "providers", tags = {"operation", "tps_messaging_createUtenlandskBankkonto"})
+    @Timed(name = "providers", tags = { "operation", "tps_messaging_createUtenlandskBankkonto" })
     public List<TpsMeldingResponseDTO> sendUtenlandskBankkontoRequest(String ident, List<String> miljoer, Object body) {
 
         return new SendTpsMessagingCommand(webClient, ident, miljoer, body, UTENLANDSK_BANKKONTO_URL, serviceProperties.getAccessToken(tokenService)).call();
     }
 
 
-    @Timed(name = "providers", tags = {"operation", "tps_messaging_createNorskBankkonto"})
+    @Timed(name = "providers", tags = { "operation", "tps_messaging_createNorskBankkonto" })
     public List<TpsMeldingResponseDTO> sendNorskBankkontoRequest(String ident, List<String> miljoer, Object body) {
 
         return new SendTpsMessagingCommand(webClient, ident, miljoer, body, NORSK_BANKKONTO_URL, serviceProperties.getAccessToken(tokenService)).call();
+    }
+
+    @Timed(name = "providers", tags = { "operation", "tps_messaging_createSikkerhetstiltak" })
+    public List<TpsMeldingResponseDTO> sendSikkerhetstiltakRequest(String ident, List<String> miljoer, Object body) {
+
+        return new SendTpsMessagingCommand(webClient, ident, miljoer, body, SIKKERHETSTILTAK_URL, serviceProperties.getAccessToken(tokenService)).call();
     }
 
     @Timed(name = "providers", tags = { "operation", "tps_messaging_createSkjerming" })
