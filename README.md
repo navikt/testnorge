@@ -79,3 +79,18 @@ Eller kjør:
 ```
 /bin/bash  ./.tools/migrate.sh $REPO_NAVN
 ```
+
+## Virtuelt miljø 
+Kjør kommandoen: 
+
+```
+JWK=$(cat ./mocks/jwk.json) docker-compose up --build
+```
+
+Deretter kan itegrasjonstester kjøres med kommandoen: 
+
+```
+./gradlew iTest
+```
+
+NB: Dette vil kun fungere hvis appen støtter itegrasjonstester. 
