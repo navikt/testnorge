@@ -17,11 +17,11 @@ public class DeployConfig {
     }
 
     public boolean isDeploying(ApplicationConfig applicationConfig) {
-        return content.contains("RESOURCE: " + applicationConfig.getPath());
+        return content.contains("resource: '" + applicationConfig.getPath() + "'");
     }
 
     private String findCluster(String value) {
-        var pattern = Pattern.compile("(CLUSTER: )([a-zA-Z\\-]+)", Pattern.MULTILINE);
+        var pattern = Pattern.compile("(cluster: ')([a-zA-Z\\-]+)(')", Pattern.MULTILINE);
         var matcher = pattern.matcher(value);
         if (matcher.find()) {
             return matcher.group(2);

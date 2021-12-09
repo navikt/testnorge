@@ -24,7 +24,7 @@ public class ReadDeployConfigService extends ReadConfigService {
                 .builder()
                 .addLanguage("yml")
                 .addLanguage("yaml")
-                .addSearchString("uses: nais/deploy/actions/deploy")
+                .addSearchString("uses: navikt/testnorge/.github/workflows/common.deploy.yml")
                 .repo(repo)
                 .owner(owner)
                 .build();
@@ -35,6 +35,6 @@ public class ReadDeployConfigService extends ReadConfigService {
 
     @Override
     DocumentType getType() {
-        return DocumentType.DEPLOY_V1;
+        return DocumentType.DEPLOY_V2;
     }
 }

@@ -6,7 +6,7 @@ metadata:
   labels:
     team: dolly
 spec:
-  image: { { image } }
+  image: {{ image }}
   port: 8080
   tokenx:
     enabled: true
