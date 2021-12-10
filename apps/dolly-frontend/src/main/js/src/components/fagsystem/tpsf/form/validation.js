@@ -216,6 +216,13 @@ const innvandringUtvandringDatoTest = (schema) => {
 		'datoEtterSisteInnUtvandring',
 		`Datoen må være etter siste inn-/utvandring (${''})`,
 		function erEtterSisteDato(dato) {
+			if (isAfter(new Date(dato), new Date())) {
+				return this.createError({
+					message: 'Dato kan ikke være etter dagens dato',
+					path: this.options.path,
+				})
+			}
+
 			const values = this.options.context
 			const personFoerLeggTil = values.personFoerLeggTil
 			if (!dato || !personFoerLeggTil) return true
