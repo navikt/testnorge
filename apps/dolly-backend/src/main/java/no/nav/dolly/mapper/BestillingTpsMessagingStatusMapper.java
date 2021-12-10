@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.TPS_MESSAGING;
 
@@ -66,7 +67,7 @@ public final class BestillingTpsMessagingStatusMapper {
                     }
                 });
 
-        return List.of(RsStatusRapport.builder()
+        return nonNull(statusMap) ? List.of(RsStatusRapport.builder()
                 .id(TPS_MESSAGING)
                 .navn(TPS_MESSAGING.getBeskrivelse())
                 .statuser(statusMap.entrySet().stream()
@@ -80,7 +81,8 @@ public final class BestillingTpsMessagingStatusMapper {
                                         .toList())
                                 .build())
                         .toList())
-                .build());
+                .build()) :
+                emptyList();
     }
 
     private static String cleanOK(String status) {
