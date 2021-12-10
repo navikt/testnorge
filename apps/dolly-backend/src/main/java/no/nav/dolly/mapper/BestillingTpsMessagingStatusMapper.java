@@ -85,7 +85,7 @@ public final class BestillingTpsMessagingStatusMapper {
 
     private static String cleanOK(String status) {
 
-        return status.contains("OK") ? "OK" : status;
+        return status.contains(OKEY) ? OKEY : status;
     }
 
     @Data

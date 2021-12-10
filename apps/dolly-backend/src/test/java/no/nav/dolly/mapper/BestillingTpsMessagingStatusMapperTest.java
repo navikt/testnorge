@@ -22,7 +22,7 @@ class BestillingTpsMessagingStatusMapperTest {
                     .build()
     );
 
-    private static final List<BestillingProgress> ERROR_NO_ENV = List.of(
+    private static final List<BestillingProgress> ERROR_AND_OK = List.of(
             BestillingProgress.builder().ident("IDENT_1")
                     .tpsMessagingStatus("Telefonnummer#t4:Feil= Bad Request$Sprakkode#t4:OK")
                     .build()
@@ -52,7 +52,7 @@ class BestillingTpsMessagingStatusMapperTest {
     @Test
     void buildTpsMessagingStatusMap_ERROR_AND_OK() {
 
-        List<RsStatusRapport> identStatuses = BestillingTpsMessagingStatusMapper.buildTpsMessagingStatusMap(ERROR_NO_ENV);
+        List<RsStatusRapport> identStatuses = BestillingTpsMessagingStatusMapper.buildTpsMessagingStatusMap(ERROR_AND_OK);
 
         assertThat(identStatuses.get(0).getStatuser().get(0).getMelding(), is(equalTo("Telefonnummer Feil: Bad Request")));
         assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getMiljo(), is(equalTo("t4")));
