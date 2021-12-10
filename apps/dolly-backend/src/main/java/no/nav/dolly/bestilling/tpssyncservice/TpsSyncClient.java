@@ -19,7 +19,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.isPdlTpsCreate;
 
 @Slf4j
 @Service
-@Order(7)
+@Order(6)
 @RequiredArgsConstructor
 public class TpsSyncClient implements ClientRegister {
 

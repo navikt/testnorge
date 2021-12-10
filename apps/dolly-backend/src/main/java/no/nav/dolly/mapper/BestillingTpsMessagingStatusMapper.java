@@ -1,61 +1,101 @@
 package no.nav.dolly.mapper;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
+import org.apache.logging.log4j.util.Strings;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Stream;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.TPS_MESSAGING;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingTpsMessagingStatusMapper {
 
+    private static final String OKEY = "OK";
+
     public static List<RsStatusRapport> buildTpsMessagingStatusMap(List<BestillingProgress> progressList) {
 
-        Map<String, List<String>> statusMap = new HashMap<>();
+        //melding     miljø     identer
+        Map<String, Map<String, Set<String>>> statusMap = new HashMap<>();
 
-        progressList.forEach(progress -> {
-            if (nonNull(progress.getTpsMessagingStatus())) {
-                List<String> statusPerMiljoe = List.of(progress.getTpsMessagingStatus().split(","));
-                statusPerMiljoe.forEach(status -> {
-                    var formattedStatus = status.replaceAll("=\\s?", ":");
-                    if (statusMap.containsKey(formattedStatus)) {
-                        statusMap.get(formattedStatus).add(progress.getIdent());
+        var intermediateStatus = progressList.stream()
+                .filter(progress -> nonNull(progress.getTpsMessagingStatus()))
+                .map(progress ->
+                        Stream.of(progress.getTpsMessagingStatus().split("\\$"))
+                                .filter(Strings::isNotBlank)
+                                .map(melding ->
+                                        Stream.of(melding.split("#")[1].split(","))
+                                                .map(status -> StatusTemp.builder()
+                                                        .ident(progress.getIdent())
+                                                        .melding(cleanOK(String.format("%s %s", melding.split("#")[0],
+                                                                status.split(":")[1]).replace("=", ":")))
+                                                        .miljoe(status.split(":")[0])
+                                                        .build())
+                                                .toList())
+                                .flatMap(Collection::stream)
+                                .toList())
+                .flatMap(Collection::stream)
+                .toList();
+
+        intermediateStatus.stream()
+                .filter(status -> OKEY.equals(status.getMelding()) && intermediateStatus.stream()
+                        .noneMatch(status2 -> !OKEY.equals(status2.getMelding()) && status.getMiljoe().equals(status2.getMiljoe())) ||
+                        !OKEY.equals(status.getMelding()))
+                .forEach(entry -> {
+                    if (statusMap.containsKey(entry.getMelding())) {
+                        if (statusMap.get(entry.getMelding()).containsKey(entry.getMiljoe())) {
+                            statusMap.get(entry.getMelding()).get(entry.getMiljoe()).add(entry.getIdent());
+                        } else {
+                            statusMap.get(entry.getMelding()).put(entry.getMiljoe(), new HashSet<>(Set.of(entry.getIdent())));
+                        }
                     } else {
-                        statusMap.put(formattedStatus,
-                                new ArrayList<>(List.of(progress.getIdent())));
+                        statusMap.put(entry.getMelding(), new HashMap<>(Map.of(entry.getMiljoe(), new HashSet<>(Set.of(entry.getIdent())))));
                     }
                 });
-            }
-        });
 
-        if (statusMap.isEmpty()) {
-            return emptyList();
-        }
-
-        return singletonList(RsStatusRapport.builder().id(TPS_MESSAGING).navn(TPS_MESSAGING.getBeskrivelse())
+        return List.of(RsStatusRapport.builder()
+                .id(TPS_MESSAGING)
+                .navn(TPS_MESSAGING.getBeskrivelse())
                 .statuser(statusMap.entrySet().stream()
-                        .map(entry -> RsStatusRapport.Status.builder()
-                                .melding(entry.getKey().contains(":OK")
-                                        ? "OK"
-                                        : entry.getKey().substring(entry.getKey().indexOf(":") + 1))
-                                .identer(entry.getValue())
-                                .detaljert(singletonList(RsStatusRapport.Detaljert.builder()
-                                        .identer(entry.getValue())
-                                        .miljo(entry.getKey().contains("#")
-                                                ? entry.getKey().substring(entry.getKey().lastIndexOf("#") + 1, entry.getKey().indexOf(":"))
-                                                : "NA")
-                                        .build()))
+                        .map(status -> RsStatusRapport.Status.builder()
+                                .melding(status.getKey())
+                                .detaljert(status.getValue().entrySet().stream()
+                                        .map(miljoIdenter -> RsStatusRapport.Detaljert.builder()
+                                                .miljo(miljoIdenter.getKey())
+                                                .identer(new ArrayList<>(miljoIdenter.getValue()))
+                                                .build())
+                                        .toList())
                                 .build())
                         .toList())
                 .build());
+    }
+
+    private static String cleanOK(String status) {
+
+        return status.contains(OKEY) ? OKEY : status;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    private static class StatusTemp {
+
+        private String ident;
+        private String melding;
+        private String miljoe;
     }
 }

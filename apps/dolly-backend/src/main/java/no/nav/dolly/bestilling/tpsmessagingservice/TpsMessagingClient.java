@@ -19,11 +19,10 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
-@Order(6)
+@Order(7)
 @RequiredArgsConstructor
 public class TpsMessagingClient implements ClientRegister {
 
@@ -60,7 +59,7 @@ public class TpsMessagingClient implements ClientRegister {
                                 bestilling.getEnvironments(),
                                 bestilling.getTpsMessaging().getEgenAnsattDatoFom()),
                         status,
-                        "Egenansatt_send"
+                        "Egenansatt_opprett"
                 );
             }
             if (nonNull(bestilling.getTpsMessaging().getEgenAnsattDatoTom()) &&
@@ -70,7 +69,7 @@ public class TpsMessagingClient implements ClientRegister {
                                 dollyPerson.getHovedperson(),
                                 bestilling.getEnvironments()),
                         status,
-                        "Egenansatt_delete"
+                        "Egenansatt_slett"
                 );
             }
 
@@ -109,16 +108,16 @@ public class TpsMessagingClient implements ClientRegister {
         }
     }
 
-    private void appendResponseStatus(List<TpsMeldingResponseDTO> responseList, StringBuilder status, String enhet) {
+    private void appendResponseStatus(List<TpsMeldingResponseDTO> responseList, StringBuilder status, String melding) {
 
+        status.append('$')
+                .append(melding)
+                .append('#');
         responseList.forEach(response -> {
-            if (isNotBlank(status)) {
-                status.append(",");
-            }
-            status.append(enhet).append("#");
             status.append(response.getMiljoe());
-            status.append(":");
-            status.append(response.getStatus().equals("OK") ? "OK" : "FEIL:" + enhet + "-" + response.getUtfyllendeMelding());
+            status.append(':');
+            status.append("OK".equals(response.getStatus()) ? "OK" : "FEIL= " + response.getUtfyllendeMelding());
+            status.append(',');
         });
     }
 }
