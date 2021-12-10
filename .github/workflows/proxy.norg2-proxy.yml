@@ -29,7 +29,7 @@ jobs:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/feature/tps-messaging-sikkerhetstiltak }}
+    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/feature/tps-messaging-sikkerhetstiltak' }}
     with:
       resource: 'proxies/norg2-proxy/config.yml'
       app-name: 'norg2-proxy'
