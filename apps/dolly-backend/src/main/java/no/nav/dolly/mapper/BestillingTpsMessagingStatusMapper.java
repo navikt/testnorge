@@ -67,7 +67,7 @@ public final class BestillingTpsMessagingStatusMapper {
                     }
                 });
 
-        return nonNull(statusMap) ? List.of(RsStatusRapport.builder()
+        return !statusMap.isEmpty() ? List.of(RsStatusRapport.builder()
                 .id(TPS_MESSAGING)
                 .navn(TPS_MESSAGING.getBeskrivelse())
                 .statuser(statusMap.entrySet().stream()
