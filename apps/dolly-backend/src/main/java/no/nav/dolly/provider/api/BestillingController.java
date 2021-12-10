@@ -43,7 +43,7 @@ public class BestillingController {
     private final MalBestillingService malBestillingService;
     private final GjenopprettBestillingService gjenopprettBestillingService;
 
-//    @Cacheable(value = CACHE_BESTILLING)
+    @Cacheable(value = CACHE_BESTILLING)
     @GetMapping("/{bestillingId}")
     @Operation(description = "Hent Bestilling med bestillingsId")
     public RsBestillingStatus getBestillingById(@PathVariable("bestillingId") Long bestillingId) {
