@@ -115,6 +115,7 @@ export const icons = {
 	groupLight: GroupLight,
 	groupDark: GroupDark,
 	lockedGroup: LockedGroup,
+	sikkerhetstiltak: Lock,
 	bestilling: FileChecklist,
 	bestillingLight: FileChecklistLight,
 	newFile: NewFile,

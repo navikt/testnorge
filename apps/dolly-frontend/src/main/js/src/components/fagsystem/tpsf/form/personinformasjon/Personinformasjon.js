@@ -38,6 +38,7 @@ const diversePaths = [
 	'tpsf.telefonnummer_1',
 	'tpsMessaging.utenlandskBankkonto',
 	'tpsMessaging.norskBankkonto',
+	'tpsMessaging.sikkerhetstiltak',
 	'tpsMessaging.spraakKode',
 	'tpsMessaging.egenAnsattDatoFom',
 	'tpsMessaging.egenAnsattDatoTom',
@@ -47,6 +48,10 @@ const vergemaalPath = ['tpsf.vergemaal']
 const fullmaktPath = ['pdldata.person.fullmakt']
 
 const sikkerhetstiltakPaths = [
+	'pdldata.person.sikkerhetstiltak.tiltakstype',
+	'pdldata.person.sikkerhetstiltak.beskrivelse',
+	'pdldata.person.sikkerhetstiltak.gyldigFraOgMed',
+	'pdldata.person.sikkerhetstiltak.gyldigTilOgMed',
 	'tpsf.typeSikkerhetTiltak',
 	'tpsf.beskrSikkerhetTiltak',
 	'tpsf.sikkerhetTiltakDatoFom',

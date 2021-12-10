@@ -46,6 +46,11 @@ consumers:
     namespace: dolly
     name: testnav-inntektstub-proxy
     url: https://testnav-inntektstub-proxy.dev-fss-pub.nais.io
+  testnav-norg2-proxy:
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-norg2-proxy
+    url: https://testnav-norg2-proxy.dev-fss-pub.nais.io
   tps-forvalteren-proxy:
     cluster: dev-fss
     namespace: dolly

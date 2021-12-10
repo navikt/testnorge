@@ -4,21 +4,7 @@ import Icon from '~/components/ui/icon/Icon'
 
 import './FagsystemStatus.less'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-
-function fixNamesAndDuplicatesOfStatus(statusListe) {
-	return [
-		...new Map(
-			statusListe
-				.map((status) => {
-					if (status.navn?.includes('Testnav TPS messaging')) {
-						status.navn = 'Tjenestebasert personsystem (TPS)'
-					}
-					return status
-				})
-				.map((v) => [JSON.stringify([v.navn, v.miljo]), v])
-		).values(),
-	]
-}
+import { fixNamesAndDuplicatesOfStatus } from '~/utils/BestillingStatusFormattering'
 
 export default function FagsystemStatus({ statusrapportListe }) {
 	if (statusrapportListe.length <= 0) return false

@@ -50,6 +50,7 @@ spec:
         - host: tps-forvalteren-dev-proxy.dev-fss-pub.nais.io
         - host: dolly-backend-dev.dev-fss-pub.nais.io
         - host: testnav-inntektstub-proxy.dev-fss-pub.nais.io
+        - host: testnav-norg2-proxy.dev-fss-pub.nais.io
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
   replicas:
     min: 1

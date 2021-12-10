@@ -29,8 +29,9 @@ const Statsborgerskap = ({ statsborgerskap }) => {
 	)
 }
 
-export const Nasjonalitet = ({ data, visTittel = true }) => {
-	const { statsborgerskap, sprakKode, innvandretUtvandret } = data
+export const Nasjonalitet = ({ data, tpsMessagingData, visTittel = true }) => {
+	const { statsborgerskap, innvandretUtvandret } = data
+	console.log('tpsMessagingData: ', tpsMessagingData) //TODO - SLETT MEG
 
 	return (
 		<div>
@@ -45,7 +46,11 @@ export const Nasjonalitet = ({ data, visTittel = true }) => {
 				) : (
 					<Statsborgerskap statsborgerskap={statsborgerskap[0]} />
 				)}
-				<TitleValue title="Språk" kodeverk={PersoninformasjonKodeverk.Spraak} value={sprakKode} />
+				<TitleValue
+					title="Språk"
+					kodeverk={PersoninformasjonKodeverk.Spraak}
+					value={tpsMessagingData?.sprakKode}
+				/>
 			</div>
 
 			{innvandretUtvandret?.length > 0 && (

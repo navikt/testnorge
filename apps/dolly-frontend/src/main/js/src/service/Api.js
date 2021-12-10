@@ -9,6 +9,7 @@ import UdiService from './services/udi/UdiService'
 import PensjonService from './services/pensjon/PensjonService'
 import AaregService from './services/aareg/AaregService'
 import InntektstubService from './services/inntektstub/InntektstubService'
+import Norg2Service from './services/norg2/Norg2Service'
 import BrregstubService from './services/brregstub/BrregstubService'
 import HodejegerenService from '~/service/services/hodejegeren/HodejegerenService'
 import VarslingerService from './services/varslinger/VarslingerService'
@@ -30,6 +31,7 @@ export const UdiApi = UdiService
 export const PensjonApi = PensjonService
 export const AaregApi = AaregService
 export const InntektstubApi = InntektstubService
+export const Norg2Api = Norg2Service
 export const BrregstubApi = BrregstubService
 export const HodejegerenApi = HodejegerenService
 export const VarslingerApi = VarslingerService
@@ -50,6 +52,7 @@ export default {
 	PensjonApi: PensjonService,
 	AaregApi: AaregService,
 	InntektstubApi: InntektstubService,
+	Norg2Api: Norg2Service,
 	HodejegerenApi: HodejegerenService,
 	BrregstubApi: BrregstubService,
 	VarslingerApi: VarslingerService,

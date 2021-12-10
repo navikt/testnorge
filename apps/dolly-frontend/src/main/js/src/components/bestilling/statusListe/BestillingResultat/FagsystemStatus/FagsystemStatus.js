@@ -2,23 +2,9 @@ import React from 'react'
 import Icon from '~/components/ui/icon/Icon'
 
 import './FagsystemStatus.less'
+import { fixNamesAndDuplicatesOfStatus } from '~/utils/BestillingStatusFormattering'
 
 export default function FagsystemStatus({ bestilling }) {
-	function fixNamesAndDuplicatesOfStatus(statusListe) {
-		return [
-			...new Map(
-				statusListe
-					.map((status) => {
-						if (status.navn?.includes('Testnav TPS messaging')) {
-							status.navn = 'Tjenestebasert personsystem (TPS)'
-						}
-						return status
-					})
-					.map((v) => [JSON.stringify([v.navn, v.miljo]), v])
-			).values(),
-		]
-	}
-
 	const iconTypes = {
 		suksess: 'feedback-check-circle',
 		avvik: 'report-problem-circle',

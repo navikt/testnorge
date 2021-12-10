@@ -92,6 +92,7 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 
 PersoninformasjonPanel.heading = 'Personinformasjon'
 
+// @ts-ignore
 PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 	const { personFoerLeggTil } = opts
 
@@ -305,21 +306,35 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		},
 		sikkerhetstiltak: {
 			label: 'Sikkerhetstiltak',
-			checked: has('tpsf.typeSikkerhetTiltak'),
+			checked: has('pdldata.person.sikkerhetstiltak'),
 			add: () =>
 				setMulti(
-					['tpsf.typeSikkerhetTiltak', ''],
-					['tpsf.beskrSikkerhetTiltak', ''],
-					['tpsf.sikkerhetTiltakDatoFom', new Date()],
-					['tpsf.sikkerhetTiltakDatoTom', '']
+					[
+						'pdldata.person.sikkerhetstiltak',
+						{
+							tiltakstype: '',
+							beskrivelse: '',
+							kontaktperson: {
+								personident: '',
+								enhet: '',
+							},
+							gyldigFraOgMed: new Date(),
+							gyldigTilOgMed: '',
+							kilde: 'Dolly',
+							master: 'PDL',
+						},
+					],
+					[
+						'tpsMessaging.sikkerhetstiltak',
+						{
+							tiltakstype: '',
+							beskrivelse: '',
+							gyldigFraOgMed: new Date(),
+							gyldigTilOgMed: '',
+						},
+					]
 				),
-			remove: () =>
-				del([
-					'tpsf.typeSikkerhetTiltak',
-					'tpsf.beskrSikkerhetTiltak',
-					'tpsf.sikkerhetTiltakDatoFom',
-					'tpsf.sikkerhetTiltakDatoTom',
-				]),
+			remove: () => del(['pdldata.person.sikkerhetstiltak', 'tpsMessaging.sikkerhetstiltak']),
 		},
 		utenlandskBankkonto: {
 			label: 'Utenlandsk bank',

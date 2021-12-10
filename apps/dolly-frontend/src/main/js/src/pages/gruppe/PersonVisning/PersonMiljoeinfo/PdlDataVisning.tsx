@@ -9,6 +9,7 @@ import { PdlPersonInfo } from '~/components/fagsystem/pdlf/visning/partials/PdlP
 import { PdlNasjonalitet } from '~/components/fagsystem/pdlf/visning/partials/PdlNasjonalitet'
 import { PdlBoadresse } from '~/components/fagsystem/pdlf/visning/partials/PdlBoadresse'
 import { PdlFullmakt } from '~/components/fagsystem/pdlf/visning/partials/PdlFullmakt'
+import { PdlSikkerhetstiltak } from '~/components/fagsystem/pdlf/visning/partials/PdlSikkerhetstiltak'
 
 type PdlData = {
 	data: Data
@@ -29,6 +30,7 @@ type Ident = {
 type HentPerson = {
 	bostedsadresse: Array<BostedData>
 	fullmakt: [FullmaktData]
+	sikkerhetstiltak: [SikkerhetstiltakData]
 }
 
 type BostedData = {
@@ -43,6 +45,20 @@ type FullmaktData = {
 	motpartsPersonident: string
 	motpartsRolle: string
 	omraader: []
+}
+
+type SikkerhetstiltakData = {
+	gyldigFraOgMed: Date
+	gyldigTilOgMed: Date
+	tiltakstype: string
+	beskrivelse: string
+	kontaktperson: Kontaktperson
+	omraader: []
+}
+
+type Kontaktperson = {
+	personident: string
+	enhet: string
 }
 
 export const PdlDataVisning = ({ data }: PdlData) => {
@@ -65,6 +81,7 @@ export const PdlDataVisning = ({ data }: PdlData) => {
 				<PdlNasjonalitet data={identInfo.hentPerson} />
 				<PdlBoadresse data={gjeldendeAdresse(identInfo.hentPerson.bostedsadresse)} />
 				<PdlFullmakt data={identInfo.hentPerson.fullmakt} />
+				<PdlSikkerhetstiltak data={identInfo.hentPerson.sikkerhetstiltak} />
 			</div>
 		)
 	}

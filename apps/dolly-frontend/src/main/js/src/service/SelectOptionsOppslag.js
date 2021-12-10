@@ -1,5 +1,5 @@
 import { useAsync } from 'react-use'
-import { BrregstubApi, DollyApi, KrrApi } from '~/service/Api'
+import { BrregstubApi, DollyApi, KrrApi, Norg2Api } from '~/service/Api'
 import Api from '~/api'
 import _isNil from 'lodash/isNil'
 
@@ -17,6 +17,10 @@ export const SelectOptionsOppslag = {
 
 	hentKrrLeverandoerer: () => {
 		return useAsync(async () => KrrApi.getSdpLeverandoerListe(), [KrrApi.getSdpLeverandoerListe])
+	},
+
+	hentNavEnheter: () => {
+		return useAsync(async () => Norg2Api.getNavEnheter(), [Norg2Api.getNavEnheter])
 	},
 
 	hentPersonnavn: () => {

@@ -78,6 +78,11 @@ module.exports = (env) =>
 					changeOrigin: true,
 					secure: false,
 				},
+				'/testnav-norg2-proxy/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false,
+				},
 				'/tps-forvalteren-proxy/api': {
 					target: env.backend,
 					changeOrigin: true,
