@@ -100,10 +100,10 @@ public class TpsMessagingClient implements ClientRegister {
             sendBankkontoer(bestilling, dollyPerson, status);
 
         } catch (RuntimeException e) {
-            status.append(errorStatusDecoder.decodeRuntimeException(e));
+            progress.setFeil(errorStatusDecoder.decodeRuntimeException(e));
             log.error("Kall til TPS messaging service feilet: {}", e.getMessage(), e);
         }
-        progress.setFeil(status.toString());
+        progress.setTpsMessagingStatus(status.toString());
     }
 
     @Override
