@@ -82,7 +82,7 @@ public class TpsMessagingClient implements ClientRegister {
                                 .filter(result -> !result.getUtfyllendeMelding().contains("ingen aktiv telefonr funnet"))
                                 .toList(),
                         status,
-                        "Telefonnummer_opprett"
+                        "Telefonnummer_slett"
                 );
             }
 
@@ -93,7 +93,7 @@ public class TpsMessagingClient implements ClientRegister {
                                 bestilling.getEnvironments(),
                                 bestilling.getTpsMessaging().getTelefonnummer()),
                         status,
-                        "Telefonnummer_slett"
+                        "Telefonnummer_opprett"
                 );
             }
 
