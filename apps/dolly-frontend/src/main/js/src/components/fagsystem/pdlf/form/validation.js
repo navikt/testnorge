@@ -1,5 +1,6 @@
 import * as Yup from 'yup'
 import { ifPresent, requiredDate, requiredString } from '~/utils/YupValidations'
+import _get from 'lodash/get'
 
 const personnavnSchema = Yup.object({
 	fornavn: Yup.string(),
@@ -125,12 +126,42 @@ const kontaktDoedsbo = Yup.array().of(
 	})
 )
 
+const testTelefonnummer = () =>
+	Yup.string()
+		.max(20, 'Telefonnummer kan ikke ha mer enn 20 sifre')
+		.when('landskode', {
+			is: '+47',
+			then: Yup.string().length(8, 'Norsk telefonnummer må ha 8 sifre'),
+		})
+		.required('Feltet er påkrevd')
+		.matches(/^[1-9]\d*$/, 'Telefonnummer må være numerisk, og kan ikke starte med 0')
+
+const testPrioritet = (val) => {
+	return val.test('prioritet', 'Kan ikke ha lik prioritet', function erEgenPrio() {
+		const values = this.options.context
+		const index = this.options.index
+		const tlfListe = _get(values, 'pdldata.person.telefonnummer')
+		if (tlfListe.length < 2) return true
+		const index2 = index === 0 ? 1 : 0
+		return tlfListe[index]?.prioritet !== tlfListe[index2]?.prioritet
+	})
+}
+
+const telefonnummer = Yup.array().of(
+	Yup.object({
+		landskode: requiredString,
+		nummer: testTelefonnummer(),
+		prioritet: testPrioritet(requiredString).nullable(),
+	})
+)
+
 export const validation = {
 	pdldata: Yup.object({
 		person: Yup.object({
 			bostedsadresse: ifPresent('$pdldata.person.bostedsadresse', bostedsadresse),
 			fullmakt: ifPresent('$pdldata.person.fullmakt', fullmakt),
 			falskIdentitet: ifPresent('$pdldata.person.falskIdentitet', falskIdentitet),
+			telefonnummer: ifPresent('$pdldata.person.telefonnummer', telefonnummer),
 			utenlandskIdentifikasjonsnummer: ifPresent(
 				'$pdldata.person.utenlandskIdentifikasjonsnummer',
 				utenlandskId

@@ -73,13 +73,37 @@ public class TpsMessagingClient implements ClientRegister {
                 );
             }
 
+            if (nonNull(bestilling.getTpsMessaging().getTelefonnummer())) {
+                var tlfStatus = tpsMessagingConsumer.deleteTelefonnummerRequest(
+                        dollyPerson.getHovedperson(),
+                        bestilling.getEnvironments());
+
+                appendResponseStatus(tlfStatus.stream()
+                                .filter(result -> !result.getUtfyllendeMelding().contains("ingen aktiv telefonr funnet"))
+                                .toList(),
+                        status,
+                        "Telefonnummer_opprett"
+                );
+            }
+
+            if (nonNull(bestilling.getTpsMessaging().getTelefonnummer())) {
+                appendResponseStatus(
+                        tpsMessagingConsumer.sendTelefonnummerRequest(
+                                dollyPerson.getHovedperson(),
+                                bestilling.getEnvironments(),
+                                bestilling.getTpsMessaging().getTelefonnummer()),
+                        status,
+                        "Telefonnummer_slett"
+                );
+            }
+
             sendBankkontoer(bestilling, dollyPerson, status);
 
         } catch (RuntimeException e) {
             status.append(errorStatusDecoder.decodeRuntimeException(e));
             log.error("Kall til TPS messaging service feilet: {}", e.getMessage(), e);
         }
-        progress.setTpsMessagingStatus(status.toString());
+        progress.setFeil(status.toString());
     }
 
     @Override

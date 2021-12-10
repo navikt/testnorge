@@ -7,11 +7,11 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { Diskresjonskoder } from './diskresjonskoder/Diskresjonskoder'
-import { Telefonnummer } from './telefonnummer/Telefonnummer'
 import _get from 'lodash/get'
 import styled from 'styled-components'
 import { Checkbox as NavCheckbox } from 'nav-frontend-skjema'
 import Hjelpetekst from '~/components/hjelpetekst'
+import { Telefonnummer } from '~/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
 
 const StyledCheckbox = styled(NavCheckbox)`
 	&&& {
@@ -119,7 +119,7 @@ export const Diverse = ({ formikBag }) => {
 				<FormikDatepicker
 					name="tpsf.forsvunnetDato"
 					label="Forsvunnet dato"
-					disabled={!formikBag.values.tpsf.erForsvunnet}
+					disabled={!formikBag.values.tpsf?.erForsvunnet}
 					fastfield={false}
 				/>
 			</Vis>

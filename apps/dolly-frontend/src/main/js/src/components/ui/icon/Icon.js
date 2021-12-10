@@ -8,6 +8,7 @@ import Search from '~/assets/icons/nav-ikoner/line/SVG/01-edition/search.svg'
 import Skull from '~/assets/icons/nav-ikoner/line/SVG/01-edition/skull-1.svg'
 import Lock from '~/assets/icons/nav-ikoner/line/SVG/01-edition/line-version-lock-close-2.svg'
 import ChatBubble from '~/assets/icons/nav-ikoner/line/SVG/06-comment-chat/bubble-chat-1.svg'
+import Telephone from '~/assets/icons/nav-ikoner/line/SVG/06-comment-chat/Telephone.svg'
 import ThumbsUp from '~/assets/icons/nav-ikoner/line/SVG/05-votes-rewards/filled-version-thumbs-up-2.svg'
 import ThumbsDown from '~/assets/icons/nav-ikoner/line/SVG/05-votes-rewards/filled-version-thumbs-down-2.svg'
 import Star from '~/assets/icons/nav-ikoner/line/SVG/05-votes-rewards/rank-army-star-1.svg'
@@ -155,6 +156,7 @@ export const icons = {
 	fullmakt: Group2,
 	link: Link,
 	linkBroken: LinkBroken,
+	telephone: Telephone,
 }
 
 const px = (v) => `${v}px`

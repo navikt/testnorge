@@ -7,6 +7,7 @@ import Formatters from '~/utils/DataFormatter'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import { initialPdlPerson } from '~/components/fagsystem/pdlf/form/initialValues'
 import { addDays, subDays } from 'date-fns'
+import { cloneDeep } from 'lodash'
 
 const innvandret = (personFoerLeggTil) =>
 	_get(personFoerLeggTil, 'tpsf.innvandretUtvandret[0].innutvandret') === 'INNVANDRET'
@@ -80,8 +81,8 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 				<Attributt attr={sm.attrs.erForsvunnet} />
 				<Attributt attr={sm.attrs.norskBankkonto} disabled={sm.attrs.utenlandskBankkonto.checked} />
 				<Attributt attr={sm.attrs.utenlandskBankkonto} disabled={sm.attrs.norskBankkonto.checked} />
-				<Attributt attr={sm.attrs.telefonnummer_1} />
 				<Attributt attr={sm.attrs.spesreg} />
+				<Attributt attr={sm.attrs.telefonnummer} />
 				<Attributt attr={sm.attrs.vergemaal} />
 				<Attributt attr={sm.attrs.fullmakt} />
 				<Attributt attr={sm.attrs.sikkerhetstiltak} />
@@ -94,6 +95,17 @@ PersoninformasjonPanel.heading = 'Personinformasjon'
 
 PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 	const { personFoerLeggTil } = opts
+
+	const telefonnummerFoerLeggTil = () => {
+		const tlfListe = _get(personFoerLeggTil, 'pdlforvalter[0].person.telefonnummer')
+		const tlfListeClone = cloneDeep(tlfListe)
+		tlfListeClone.forEach((nr) => {
+			if (_has(nr, 'id')) {
+				delete nr.id
+			}
+		})
+		return tlfListeClone
+	}
 
 	return {
 		alder: {
@@ -220,29 +232,43 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 				del(['tpsf.erForsvunnet', 'tpsf.forsvunnetDato'])
 			},
 		},
-		telefonnummer_1: {
+		telefonnummer: {
 			label: 'Telefonnummer',
-			checked: has('tpsf.telefonnummer_1'),
+			checked: has('pdldata.person.telefonnummer'),
 			add() {
-				_has(personFoerLeggTil, 'tpsf.telefonnummer_2')
+				_has(personFoerLeggTil, 'pdlforvalter[0].person.telefonnummer')
 					? setMulti(
-							['tpsf.telefonLandskode_1', _get(personFoerLeggTil, 'tpsf.telefonLandskode_1')],
-							['tpsf.telefonnummer_1', _get(personFoerLeggTil, 'tpsf.telefonnummer_1')],
-							['tpsf.telefonLandskode_2', _get(personFoerLeggTil, 'tpsf.telefonLandskode_2')],
-							['tpsf.telefonnummer_2', _get(personFoerLeggTil, 'tpsf.telefonnummer_2')]
+							['pdldata.person.telefonnummer', telefonnummerFoerLeggTil()],
+							['tpsMessaging.telefonnummer', _get(personFoerLeggTil, 'tpsMessaging.telefonnumre')]
 					  )
 					: setMulti(
-							['tpsf.telefonLandskode_1', _get(personFoerLeggTil, 'tpsf.telefonLandskode_1') || ''],
-							['tpsf.telefonnummer_1', _get(personFoerLeggTil, 'tpsf.telefonnummer_1') || '']
+							[
+								'pdldata.person.telefonnummer',
+								[
+									{
+										landskode: '',
+										nummer: '',
+										prioritet: 1,
+										kilde: 'Dolly',
+										master: 'PDL',
+										gjeldende: true,
+									},
+								],
+							],
+							[
+								'tpsMessaging.telefonnummer',
+								[
+									{
+										telefonnummer: '',
+										landkode: '',
+										telefontype: 'MOBI',
+									},
+								],
+							]
 					  )
 			},
 			remove() {
-				del([
-					'tpsf.telefonLandskode_1',
-					'tpsf.telefonnummer_1',
-					'tpsf.telefonLandskode_2',
-					'tpsf.telefonnummer_2',
-				])
+				del(['pdldata.person.telefonnummer', 'tpsMessaging.telefonnummer'])
 			},
 		},
 		spesreg: {
@@ -301,7 +327,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 						gjeldende: true,
 					},
 				]),
-			remove: () => del('tpsf.fullmakt'),
+			remove: () => del('pdldata.person.fullmakt'),
 		},
 		sikkerhetstiltak: {
 			label: 'Sikkerhetstiltak',
