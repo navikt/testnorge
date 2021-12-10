@@ -9,11 +9,15 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 		bestillingsdata
 	if (
 		!instdata &&
-		!pdldata &&
 		!arenaforvalter &&
 		!pensjonforvalter &&
 		!sykemelding &&
-		!_get(udistub, 'oppholdStatus')
+		!_get(udistub, 'oppholdStatus') &&
+		!_get(pdldata, 'bostedsadresse') &&
+		!_get(pdldata, 'fullmakt') &&
+		!_get(pdldata, 'falskIdentitet') &&
+		!_get(pdldata, 'utenlandskIdentifikasjonsnummer') &&
+		!_get(pdldata, 'kontaktinformasjonForDoedsbo')
 	)
 		return null
 

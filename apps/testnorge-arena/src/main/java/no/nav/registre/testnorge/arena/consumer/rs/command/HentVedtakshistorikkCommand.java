@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
@@ -22,20 +23,17 @@ import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.NAV_CALL_
 import static no.nav.registre.testnorge.arena.consumer.rs.util.Headers.NAV_CONSUMER_ID;
 
 @Slf4j
+@AllArgsConstructor
 public class HentVedtakshistorikkCommand implements Callable<List<Vedtakshistorikk>> {
 
-    private final List<String> oppstartsdatoer;
     private final WebClient webClient;
+    private final List<String> oppstartsdatoer;
+    private final String token;
 
     private static final ParameterizedTypeReference<List<String>> REQUEST_TYPE = new ParameterizedTypeReference<>() {
     };
     private static final ParameterizedTypeReference<List<Vedtakshistorikk>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
     };
-
-    public HentVedtakshistorikkCommand(WebClient webClient, List<String> oppstartsdatoer) {
-        this.webClient = webClient;
-        this.oppstartsdatoer = oppstartsdatoer;
-    }
 
     @Override
     public List<Vedtakshistorikk> call() {
@@ -43,12 +41,10 @@ public class HentVedtakshistorikkCommand implements Callable<List<Vedtakshistori
             log.info("Henter vedtakshistorikk.");
             return webClient.post()
                     .uri(builder ->
-                            builder.path("/v1/arena/vedtakshistorikk")
+                            builder.path("/api/v1/vedtakshistorikk")
                                     .build()
                     )
-                    .header(CALL_ID, NAV_CALL_ID)
-                    .header(CONSUMER_ID, NAV_CONSUMER_ID)
-                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .header("Authorization", "Bearer " + token)
                     .body(BodyInserters.fromPublisher(Mono.just(oppstartsdatoer), REQUEST_TYPE))
                     .retrieve()
                     .bodyToMono(RESPONSE_TYPE)

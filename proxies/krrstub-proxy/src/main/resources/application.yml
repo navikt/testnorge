@@ -25,5 +25,5 @@ consumers:
   krrstub:
     name: digdir-krr-stub
     namespace: team-rocket
-    url: https://digdir-krr-stub.dev.intern.nav.no/
-    cluster: dev-fss
+    url: https://digdir-krr-stub.dev.intern.nav.no
+    cluster: dev-gcp

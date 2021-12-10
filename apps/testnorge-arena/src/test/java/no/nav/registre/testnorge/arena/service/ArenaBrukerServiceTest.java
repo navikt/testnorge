@@ -39,8 +39,6 @@ public class ArenaBrukerServiceTest {
     @Mock
     private BrukereArenaForvalterConsumer brukereArenaForvalterConsumer;
     @Mock
-    private Random random;
-    @Mock
     private IdentService identService;
     @Mock
     private ArenaBrukerUtils arenaBrukerUtils;

@@ -48,14 +48,6 @@ const _getTpsfBestillingData = (data) => {
 		obj('Forsvunnet dato', Formatters.formatDate(data.forsvunnetDato)),
 		obj('Har bankkontonummer', Formatters.oversettBoolean(data.harBankkontonr)),
 		obj('Bankkonto opprettet', Formatters.formatDate(data.bankkontonrRegdato)),
-		obj(
-			data.telefonnummer_2 ? 'Telefonnummer 1' : 'Telefonnummer',
-			data.telefonnummer_1 && `${data.telefonLandskode_1} ${data.telefonnummer_1}`
-		),
-		obj(
-			'Telefonnummer 2',
-			data.telefonnummer_2 && `${data.telefonLandskode_2} ${data.telefonnummer_2}`
-		),
 		obj('Skjerming fra', Formatters.formatDate(data.egenAnsattDatoFom)),
 		obj('Skjerming til', Formatters.formatDate(data.egenAnsattDatoTom)),
 		obj(
@@ -409,9 +401,207 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		}
 	}
 
+	const pdldataKriterier = bestillingData.pdldata?.person
+
+	if (pdldataKriterier) {
+		const {
+			telefonnummer,
+			fullmakt,
+			falskIdentitet,
+			utenlandskIdentifikasjonsnummer,
+			bostedsadresse,
+			kontaktinformasjonForDoedsbo,
+		} = pdldataKriterier
+
+		if (telefonnummer) {
+			const telefonnummerData = {
+				header: 'Telefonnummer',
+				itemRows: telefonnummer.map((item, idx) => {
+					return [
+						{ numberHeader: `Telefonnummer ${idx + 1}` },
+						obj('Telefonnummer', `${item.landskode} ${item.nummer}`),
+						obj('Prioritet', item.prioritet),
+					]
+				}),
+			}
+			data.push(telefonnummerData)
+		}
+
+		if (fullmakt) {
+			const fullmaktData = {
+				header: 'Fullmakt',
+				itemRows: fullmakt.map((item, idx) => {
+					return [
+						{ numberHeader: `Fullmakt ${idx + 1}` },
+						obj('Områder', Formatters.omraaderArrayToString(item.omraader)),
+						obj('Gyldig fra og med', Formatters.formatDate(item.gyldigFraOgMed)),
+						obj('Gyldig til og med', Formatters.formatDate(item.gyldigTilOgMed)),
+					]
+				}),
+			}
+			data.push(fullmaktData)
+		}
+
+		if (bostedsadresse) {
+			const bostedsadresseData = {
+				header: 'Bostedsadresse',
+				itemRows: bostedsadresse.map((item, idx) => {
+					if (item.utenlandskAdresse) {
+						const adresseData = item.utenlandskAdresse
+						const isEmpty =
+							adresseData.empty || Object.values(adresseData).every((x) => x === null || x === '')
+						return [
+							{ numberHeader: `Utenlandsk boadresse ${idx + 1}` },
+							obj('', isEmpty && 'Ingen verdier satt'),
+							obj('Gatenavn og husnummer', adresseData.adressenavnNummer),
+							obj('Postnummer og -navn', adresseData.postboksNummerNavn),
+							obj('Postkode', adresseData.postkode),
+							obj('By eller sted', adresseData.bySted),
+							obj('Land', adresseData.landkode, AdresseKodeverk.StatsborgerskapLand),
+							obj('Bygg-/leilighetsinfo', adresseData.bygningEtasjeLeilighet),
+							obj('Region/distrikt/område', adresseData.regionDistriktOmraade),
+						]
+					}
+				}),
+			}
+			data.push(bostedsadresseData)
+		}
+
+		const sjekkRettIdent = (item) => {
+			if (_has(item, 'rettIdentitetErUkjent')) {
+				return 'Ukjent'
+			} else if (_has(item, 'rettIdentitetVedIdentifikasjonsnummer')) {
+				return 'Ved identifikasjonsnummer'
+			}
+			return _has(item, 'rettIdentitetVedOpplysninger') ? 'Ved personopplysninger' : 'Ingen'
+		}
+
+		if (falskIdentitet) {
+			const falskIdentitetData = {
+				header: 'Falsk identitet',
+				itemRows: falskIdentitet.map((item, idx) => {
+					return [
+						{ numberHeader: `Falsk identitet ${idx + 1}` },
+						obj('Opplysninger om rett ident', sjekkRettIdent(item)),
+						obj('Identifikasjonsnummer', item.rettIdentitetVedIdentifikasjonsnummer),
+						obj('Fornavn', item.rettIdentitetVedOpplysninger?.personnavn?.fornavn),
+						obj('Mellomnavn', item.rettIdentitetVedOpplysninger?.personnavn?.mellomnavn),
+						obj('Etternavn', item.rettIdentitetVedOpplysninger?.personnavn?.etternavn),
+						obj(
+							'Fødselsdato',
+							Formatters.formatDate(item.rettIdentitetVedOpplysninger?.foedselsdato)
+						),
+						obj('Kjønn', item.rettIdentitetVedOpplysninger?.kjoenn),
+						obj('Statsborgerskap', item.rettIdentitetVedOpplysninger?.statsborgerskap.join(', ')),
+					]
+				}),
+			}
+			data.push(falskIdentitetData)
+		}
+
+		if (utenlandskIdentifikasjonsnummer) {
+			const utenlandskIdentData = {
+				header: 'Utenlandsk identifikasjonsnummer',
+				itemRows: utenlandskIdentifikasjonsnummer.map((item, idx) => {
+					return [
+						{
+							numberHeader: `Utenlandsk ID ${idx + 1}`,
+						},
+						obj('Utenlandsk ID', item.identifikasjonsnummer),
+						obj('Utenlandsk ID opphørt', Formatters.oversettBoolean(item.opphoert)),
+						obj('Utstederland', item.utstederland, AdresseKodeverk.Utstederland),
+					]
+				}),
+			}
+			data.push(utenlandskIdentData)
+		}
+
+		if (kontaktinformasjonForDoedsbo) {
+			const doedsboData = {
+				header: 'Kontaktinformasjon for dødsbo',
+				itemRows: kontaktinformasjonForDoedsbo.map((item, idx) => {
+					const {
+						skifteform,
+						attestutstedelsesdato,
+						kontaktType,
+						advokatSomKontakt,
+						organisasjonSomKontakt,
+						personSomKontakt,
+						adresse,
+					} = item
+
+					const getKontakttype = () => {
+						if (advokatSomKontakt) {
+							return 'Advokat'
+						} else if (personSomKontakt) {
+							return 'Person'
+						} else if (organisasjonSomKontakt) {
+							return 'Organisasjon'
+						} else return null
+					}
+
+					return [
+						{ numberHeader: `Kontaktinformasjon for dødsbo ${idx + 1}` },
+						obj('Skifteform', skifteform),
+						obj('Utstedelsesdato skifteattest', Formatters.formatDate(attestutstedelsesdato)),
+						obj(
+							'Kontakttype',
+							kontaktType ? Formatters.showLabel('kontaktType', kontaktType) : getKontakttype()
+						),
+
+						obj(
+							'Organisasjonsnummer',
+							advokatSomKontakt?.organisasjonsnummer || organisasjonSomKontakt?.organisasjonsnummer
+						),
+						obj(
+							'Organisasjonsnavn',
+							advokatSomKontakt?.organisasjonsnavn || organisasjonSomKontakt?.organisasjonsnavn
+						),
+						obj('Identifikasjonsnummer', personSomKontakt?.identifikasjonsnummer),
+						obj('Fødselsdato', Formatters.formatDate(personSomKontakt?.foedselsdato)),
+
+						obj(
+							'Kontaktperson fornavn',
+							advokatSomKontakt?.kontaktperson?.fornavn ||
+								organisasjonSomKontakt?.kontaktperson?.fornavn ||
+								personSomKontakt?.navn?.fornavn
+						),
+						obj(
+							'Kontaktperson mellomnavn',
+							advokatSomKontakt?.kontaktperson?.mellomnavn ||
+								organisasjonSomKontakt?.kontaktperson?.mellomnavn ||
+								personSomKontakt?.navn?.mellomnavn
+						),
+						obj(
+							'Kontaktperson etternavn',
+							advokatSomKontakt?.kontaktperson?.etternavn ||
+								organisasjonSomKontakt?.kontaktperson?.etternavn ||
+								personSomKontakt?.navn?.etternavn
+						),
+						obj('Land', adresse?.landkode, AdresseKodeverk.PostadresseLand),
+						obj('Adresselinje 1', adresse?.adresselinje1),
+						obj('Adresselinje 2', adresse?.adresselinje2),
+						obj(
+							'Postnummer og -sted',
+							(adresse?.postnummer || adresse?.poststedsnavn) &&
+								`${adresse?.postnummer} ${adresse?.poststedsnavn}`
+						),
+					]
+				}),
+			}
+			data.push(doedsboData)
+		}
+	}
+
 	const tpsMessaging = _get(bestillingData, 'tpsMessaging')
 
-	if (tpsMessaging) {
+	if (
+		tpsMessaging?.spraakKode ||
+		tpsMessaging?.egenAnsattDatoFom ||
+		tpsMessaging?.egenAnsattDatoTom ||
+		tpsMessaging?.norskBankkonto ||
+		tpsMessaging?.utenlandskBankkonto
+	) {
 		const tpsMessagingData = {
 			header: 'Personinformasjon',
 			items: [
@@ -818,183 +1008,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		}
 
 		data.push(krrStub)
-	}
-
-	const pdldataKriterier = bestillingData.pdldata?.person
-
-	if (pdldataKriterier) {
-		const {
-			fullmakt,
-			falskIdentitet,
-			utenlandskIdentifikasjonsnummer,
-			bostedsadresse,
-			kontaktinformasjonForDoedsbo,
-		} = pdldataKriterier
-
-		if (fullmakt) {
-			const fullmaktData = {
-				header: 'Fullmakt',
-				itemRows: fullmakt.map((item, idx) => {
-					return [
-						{ numberHeader: `Fullmakt ${idx + 1}` },
-						obj('Områder', Formatters.omraaderArrayToString(item.omraader)),
-						obj('Gyldig fra og med', Formatters.formatDate(item.gyldigFraOgMed)),
-						obj('Gyldig til og med', Formatters.formatDate(item.gyldigTilOgMed)),
-					]
-				}),
-			}
-			data.push(fullmaktData)
-		}
-
-		if (bostedsadresse) {
-			const bostedsadresseData = {
-				header: 'Bostedsadresse',
-				itemRows: bostedsadresse.map((item, idx) => {
-					if (item.utenlandskAdresse) {
-						const adresseData = item.utenlandskAdresse
-						const isEmpty =
-							adresseData.empty || Object.values(adresseData).every((x) => x === null || x === '')
-						return [
-							{ numberHeader: `Utenlandsk boadresse ${idx + 1}` },
-							obj('', isEmpty && 'Ingen verdier satt'),
-							obj('Gatenavn og husnummer', adresseData.adressenavnNummer),
-							obj('Postnummer og -navn', adresseData.postboksNummerNavn),
-							obj('Postkode', adresseData.postkode),
-							obj('By eller sted', adresseData.bySted),
-							obj('Land', adresseData.landkode, AdresseKodeverk.StatsborgerskapLand),
-							obj('Bygg-/leilighetsinfo', adresseData.bygningEtasjeLeilighet),
-							obj('Region/distrikt/område', adresseData.regionDistriktOmraade),
-						]
-					}
-				}),
-			}
-			data.push(bostedsadresseData)
-		}
-
-		const sjekkRettIdent = (item) => {
-			if (_has(item, 'rettIdentitetErUkjent')) {
-				return 'Ukjent'
-			} else if (_has(item, 'rettIdentitetVedIdentifikasjonsnummer')) {
-				return 'Ved identifikasjonsnummer'
-			}
-			return _has(item, 'rettIdentitetVedOpplysninger') ? 'Ved personopplysninger' : 'Ingen'
-		}
-
-		if (falskIdentitet) {
-			const falskIdentitetData = {
-				header: 'Falsk identitet',
-				itemRows: falskIdentitet.map((item, idx) => {
-					return [
-						{ numberHeader: `Falsk identitet ${idx + 1}` },
-						obj('Opplysninger om rett ident', sjekkRettIdent(item)),
-						obj('Identifikasjonsnummer', item.rettIdentitetVedIdentifikasjonsnummer),
-						obj('Fornavn', item.rettIdentitetVedOpplysninger?.personnavn?.fornavn),
-						obj('Mellomnavn', item.rettIdentitetVedOpplysninger?.personnavn?.mellomnavn),
-						obj('Etternavn', item.rettIdentitetVedOpplysninger?.personnavn?.etternavn),
-						obj(
-							'Fødselsdato',
-							Formatters.formatDate(item.rettIdentitetVedOpplysninger?.foedselsdato)
-						),
-						obj('Kjønn', item.rettIdentitetVedOpplysninger?.kjoenn),
-						obj('Statsborgerskap', item.rettIdentitetVedOpplysninger?.statsborgerskap.join(', ')),
-					]
-				}),
-			}
-			data.push(falskIdentitetData)
-		}
-
-		if (utenlandskIdentifikasjonsnummer) {
-			const utenlandskIdentData = {
-				header: 'Utenlandsk identifikasjonsnummer',
-				itemRows: utenlandskIdentifikasjonsnummer.map((item, idx) => {
-					return [
-						{
-							numberHeader: `Utenlandsk ID ${idx + 1}`,
-						},
-						obj('Utenlandsk ID', item.identifikasjonsnummer),
-						obj('Utenlandsk ID opphørt', Formatters.oversettBoolean(item.opphoert)),
-						obj('Utstederland', item.utstederland, AdresseKodeverk.Utstederland),
-					]
-				}),
-			}
-			data.push(utenlandskIdentData)
-		}
-
-		if (kontaktinformasjonForDoedsbo) {
-			const doedsboData = {
-				header: 'Kontaktinformasjon for dødsbo',
-				itemRows: kontaktinformasjonForDoedsbo.map((item, idx) => {
-					const {
-						skifteform,
-						attestutstedelsesdato,
-						kontaktType,
-						advokatSomKontakt,
-						organisasjonSomKontakt,
-						personSomKontakt,
-						adresse,
-					} = item
-
-					const getKontakttype = () => {
-						if (advokatSomKontakt) {
-							return 'Advokat'
-						} else if (personSomKontakt) {
-							return 'Person'
-						} else if (organisasjonSomKontakt) {
-							return 'Organisasjon'
-						} else return null
-					}
-
-					return [
-						{ numberHeader: `Kontaktinformasjon for dødsbo ${idx + 1}` },
-						obj('Skifteform', skifteform),
-						obj('Utstedelsesdato skifteattest', Formatters.formatDate(attestutstedelsesdato)),
-						obj(
-							'Kontakttype',
-							kontaktType ? Formatters.showLabel('kontaktType', kontaktType) : getKontakttype()
-						),
-
-						obj(
-							'Organisasjonsnummer',
-							advokatSomKontakt?.organisasjonsnummer || organisasjonSomKontakt?.organisasjonsnummer
-						),
-						obj(
-							'Organisasjonsnavn',
-							advokatSomKontakt?.organisasjonsnavn || organisasjonSomKontakt?.organisasjonsnavn
-						),
-						obj('Identifikasjonsnummer', personSomKontakt?.identifikasjonsnummer),
-						obj('Fødselsdato', Formatters.formatDate(personSomKontakt?.foedselsdato)),
-
-						obj(
-							'Kontaktperson fornavn',
-							advokatSomKontakt?.kontaktperson?.fornavn ||
-								organisasjonSomKontakt?.kontaktperson?.fornavn ||
-								personSomKontakt?.navn?.fornavn
-						),
-						obj(
-							'Kontaktperson mellomnavn',
-							advokatSomKontakt?.kontaktperson?.mellomnavn ||
-								organisasjonSomKontakt?.kontaktperson?.mellomnavn ||
-								personSomKontakt?.navn?.mellomnavn
-						),
-						obj(
-							'Kontaktperson etternavn',
-							advokatSomKontakt?.kontaktperson?.etternavn ||
-								organisasjonSomKontakt?.kontaktperson?.etternavn ||
-								personSomKontakt?.navn?.etternavn
-						),
-						obj('Land', adresse?.landkode, AdresseKodeverk.PostadresseLand),
-						obj('Adresselinje 1', adresse?.adresselinje1),
-						obj('Adresselinje 2', adresse?.adresselinje2),
-						obj(
-							'Postnummer og -sted',
-							(adresse?.postnummer || adresse?.poststedsnavn) &&
-								`${adresse?.postnummer} ${adresse?.poststedsnavn}`
-						),
-					]
-				}),
-			}
-			data.push(doedsboData)
-		}
 	}
 
 	const arenaKriterier = bestillingData.arenaforvalter

@@ -31,7 +31,7 @@ public class ServiceUtils {
     public static final LocalDate ARENA_AAP_UNG_UFOER_DATE_LIMIT = LocalDate.of(2020, 1, 31);
     public static final String AKTIVITETSFASE_SYKEPENGEERSTATNING = "SPE";
 
-    private final Random rand;
+    private final Random rand = new Random();
 
     public KodeMedSannsynlighet velgKodeBasertPaaSannsynlighet(List<KodeMedSannsynlighet> koder) {
         var totalSum = 0;

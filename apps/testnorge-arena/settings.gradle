@@ -6,6 +6,8 @@ rootProject.name = 'testnorge-arena'
 
 
 includeBuild '../../libs/servlet-core'
+includeBuild '../../libs/servlet-insecure-security'
+includeBuild '../../libs/security-core'
 includeBuild '../../libs/domain'
 includeBuild '../../libs/security-token-service'
 includeBuild '../../libs/testing'

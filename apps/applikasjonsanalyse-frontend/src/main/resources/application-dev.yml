@@ -1,8 +1,0 @@
-azure.app.client.id: ${client_id}
-azure.app.client.secret: ${client_secret}
-
-consumers:
-  applikasjonsanalyse-service:
-    url: https://testnav-applikasjonsanalyse-service.dev.intern.nav.no
-  testnorge-profil-api:
-    url: https://testnorge-profil-api.dev.intern.nav.no

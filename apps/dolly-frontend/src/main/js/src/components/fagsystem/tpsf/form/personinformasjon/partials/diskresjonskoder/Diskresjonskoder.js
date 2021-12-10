@@ -35,7 +35,7 @@ export const Diskresjonskoder = ({ basePath, formikBag }) => {
 	return (
 		<Vis attributt={Object.values(paths)}>
 			<div className="spesreg-component">
-				{formikBag.values.tpsf.spesreg && formikBag.values.tpsf.spesreg.includes('SFU') && (
+				{formikBag.values.tpsf?.spesreg && formikBag.values.tpsf?.spesreg.includes('SFU') && (
 					<Alertstripe type="info">
 						Diskresjonskode 19 vil bli omgjort til kode 6 i TPS da kode 19 ikke støttes.
 					</Alertstripe>

@@ -216,6 +216,13 @@ const innvandringUtvandringDatoTest = (schema) => {
 		'datoEtterSisteInnUtvandring',
 		`Datoen må være etter siste inn-/utvandring (${''})`,
 		function erEtterSisteDato(dato) {
+			if (isAfter(new Date(dato), new Date())) {
+				return this.createError({
+					message: 'Dato kan ikke være etter dagens dato',
+					path: this.options.path,
+				})
+			}
+
 			const values = this.options.context
 			const personFoerLeggTil = values.personFoerLeggTil
 			if (!dato || !personFoerLeggTil) return true
@@ -393,16 +400,6 @@ const foreldre = Yup.array()
 	)
 	.nullable()
 
-const testTelefonnummer = (nr) =>
-	Yup.string()
-		.max(20, 'Telefonnummer kan ikke ha mer enn 20 sifre')
-		.when(`telefonLandskode_${nr}`, {
-			is: '+47',
-			then: Yup.string().length(8, 'Norsk telefonnummer må ha 8 sifre'),
-		})
-		.required(messages.required)
-		.matches(/^[1-9][0-9]*$/, 'Telefonnummer må være numerisk, og kan ikke starte med 0')
-
 export const validation = {
 	tpsf: ifPresent(
 		'$tpsf',
@@ -450,10 +447,6 @@ export const validation = {
 					}
 				)
 			),
-			telefonLandskode_1: ifPresent('$tpsf.telefonLandskode_1', requiredString),
-			telefonnummer_1: ifPresent('$tpsf.telefonnummer_1', testTelefonnummer('1')),
-			telefonLandskode_2: ifPresent('$tpsf.telefonLandskode_2', requiredString).nullable(),
-			telefonnummer_2: ifPresent('$tpsf.telefonnummer_2', testTelefonnummer('2')).nullable(),
 			spesreg: ifPresent(
 				'$tpsf.spesreg',
 				Yup.string().when('utenFastBopel', {

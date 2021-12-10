@@ -6,6 +6,11 @@ import com.nimbusds.jose.jwk.RSAKey;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.securitycore.command.ExchangeCommand;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.Token;
+import no.nav.testnav.libs.securitycore.domain.tokenx.TokenXProperties;
+import no.nav.testnav.libs.securitycore.domain.tokenx.WellKnown;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -14,12 +19,6 @@ import reactor.core.publisher.Mono;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
-
-import no.nav.testnav.libs.securitycore.command.ExchangeCommand;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.securitycore.domain.Token;
-import no.nav.testnav.libs.securitycore.domain.tokenx.TokenXProperties;
-import no.nav.testnav.libs.securitycore.domain.tokenx.WellKnown;
 
 @Slf4j
 @RequiredArgsConstructor
