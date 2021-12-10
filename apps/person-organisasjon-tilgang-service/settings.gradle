@@ -7,6 +7,8 @@ rootProject.name = 'person-organisasjon-tilgang-service'
 
 includeBuild '../../libs/reactive-core'
 includeBuild '../../libs/reactive-security'
+includeBuild '../../libs/security-core'
+includeBuild '../../libs/integration-test'
 
 gradleEnterprise {
     buildScan {

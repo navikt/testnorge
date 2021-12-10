@@ -1,0 +1,20 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        tokenx:
+          issuer-uri: http://tokendings:8080
+          jwk-set-uri: http://tokendings:8080/jwks
+          accepted-audience: dev-gcp:dolly:testnav-person-organisasjon-tilgang-service
+altinn:
+  api:
+    url: http://altinn:8080
+    key: dummy-altinn-key
+
+
+TOKEN_X_CLIENT_ID: dev-gcp:dolly:testnav-person-organisasjon-tilgang-service
+TOKEN_X_WELL_KNOWN_URL: http://tokendings:8080/.well-known/oauth-authorization-server
+
+MASKINPORTEN_CLIENT_ID: client-id
+MASKINPORTEN_SCOPES: scopes
+MASKINPORTEN_WELL_KNOWN_URL: http://maskinporten:8080/.well-known/oauth-authorization-server

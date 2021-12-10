@@ -61,7 +61,11 @@ spec:
   ingresses:
     - "https://testnav-person-organisasjon-tilgang-service-dev.dev.intern.nav.no"
   env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
     - name: ACCEPTED_AUDIENCE
       value: dev-gcp:dolly:testnav-person-organisasjon-tilgang-service-dev
     - name: ALTINN_URL
       value: https://tt02.altinn.no
+    - name: TOKENDINGS_URL
+      value: https://tokendings.dev-gcp.nais.io

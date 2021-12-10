@@ -1,0 +1,49 @@
+plugins {
+    id "org.sonarqube" version "3.3"
+    id 'java-library'
+    id 'io.spring.dependency-management' version "1.0.11.RELEASE"
+}
+
+sonarqube {
+    properties {
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.projectKey", "integration-test"
+        property "sonar.projectName", "integration-test"
+        property "sonar.organization", "navit"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.project.monorepo.enabled", true
+        property "sonar.login", System.getenv("SONAR_TOKEN")
+    }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.boot:spring-boot-dependencies:2.5.7'
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+group = 'no.nav.testnav.libs'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+if (project.hasProperty("releaseVersion")) {
+    version = releaseVersion
+}
+
+java.sourceCompatibility = JavaVersion.VERSION_17
+
+dependencies {
+    implementation 'no.nav.testnav.libs:security-core'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    implementation 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+}

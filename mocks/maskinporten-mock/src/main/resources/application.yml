@@ -1,0 +1,4 @@
+spring:
+  application:
+    name: maskinporten-mock
+    desciption: En mock for maskinporten

@@ -50,7 +50,7 @@ import static no.nav.registre.testnorge.arena.service.util.ServiceUtils.MIN_ALDE
 @RequiredArgsConstructor
 public class RequestUtils {
 
-    private final Random rand;
+    private final Random rand = new Random();
     private final ServiceUtils serviceUtils;
 
     private static final Map<String, List<String>> deltakerstatuskoderMedAarsakkoder;

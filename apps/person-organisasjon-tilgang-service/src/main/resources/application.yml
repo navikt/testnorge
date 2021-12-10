@@ -7,8 +7,8 @@ spring:
     oauth2:
       resourceserver:
         tokenx:
-          issuer-uri: https://tokendings.dev-gcp.nais.io
-          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          issuer-uri: ${TOKENDINGS_URL}
+          jwk-set-uri: ${TOKENDINGS_URL}/jwks
           accepted-audience: ${ACCEPTED_AUDIENCE}
   jackson:
     serialization:
