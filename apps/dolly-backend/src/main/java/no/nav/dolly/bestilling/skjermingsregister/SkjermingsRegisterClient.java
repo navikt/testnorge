@@ -39,19 +39,29 @@ public class SkjermingsRegisterClient implements ClientRegister {
 
         dollyPersonCache.fetchIfEmpty(dollyPerson);
 
-        if (nonNull(bestilling.getTpsf()) && nonNull(bestilling.getTpsf().getEgenAnsattDatoFom())) {
+        if ((nonNull(bestilling.getTpsf()) && nonNull(bestilling.getTpsf().getEgenAnsattDatoFom())) ||
+                (nonNull(bestilling.getSkjerming()))) {
+
+            var skjermetFra = nonNull(bestilling.getSkjerming())
+                    ? bestilling.getSkjerming().getEgenAnsattDatoFom()
+                    : bestilling.getTpsf().getEgenAnsattDatoFom();
+
+            var skjermetTil = nonNull(bestilling.getSkjerming()) && nonNull(bestilling.getSkjerming().getEgenAnsattDatoTom())
+                    ? bestilling.getSkjerming().getEgenAnsattDatoTom()
+                    : bestilling.getTpsf().getEgenAnsattDatoTom();
 
             StringBuilder status = new StringBuilder();
             for (Person person : dollyPerson.getPersondetaljer()) {
                 try {
                     SkjermingsDataRequest skjermingsDataRequest = mapperFacade.map(BestillingPersonWrapper.builder()
-                                    .bestilling(bestilling.getTpsf())
+                                    .skjermetFra(skjermetFra)
+                                    .skjermetTil(skjermetTil)
                                     .person(person)
                                     .build(),
                             SkjermingsDataRequest.class);
-                    if (isAlleredeSkjermet(person) && nonNull(bestilling.getTpsf().getEgenAnsattDatoTom())) {
+                    if (isAlleredeSkjermet(person) && nonNull(skjermetTil)) {
                         skjermingsRegisterConsumer.putSkjerming(person.getIdent());
-                    } else if (!isAlleredeSkjermet(person) && isNull(bestilling.getTpsf().getEgenAnsattDatoTom())) {
+                    } else if (!isAlleredeSkjermet(person) && isNull(skjermetTil)) {
                         skjermingsRegisterConsumer.postSkjerming(List.of(skjermingsDataRequest));
                     }
                 } catch (RuntimeException e) {

@@ -6,7 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.dolly.domain.resultset.tpsf.Person;
-import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -16,5 +17,6 @@ import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 public class BestillingPersonWrapper {
 
     private Person person;
-    private RsTpsfUtvidetBestilling bestilling;
+    private LocalDateTime skjermetFra;
+    private LocalDateTime skjermetTil;
 }
