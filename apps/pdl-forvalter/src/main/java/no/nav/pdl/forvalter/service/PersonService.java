@@ -63,6 +63,7 @@ public class PersonService {
     private final PdlTestdataConsumer pdlTestdataConsumer;
     private final AliasRepository aliasRepository;
     private final ValidateArtifactsService validateArtifactsService;
+    private final GjeldendeService gjeldendeService;
 
     @Transactional
     public String updatePerson(String ident, PersonUpdateRequestDTO request) {
@@ -84,6 +85,7 @@ public class PersonService {
 
         var mergedPerson = mergeService.merge(request.getPerson(), dbPerson.getPerson());
         validateArtifactsService.validate(mergedPerson);
+        gjeldendeService.update(mergedPerson);
 
         var extendedArtifacts = personArtifactService.buildPerson(mergedPerson);
         dbPerson.setPerson(extendedArtifacts);

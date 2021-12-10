@@ -15,11 +15,12 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO.Adre
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG_UTLAND;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FNR;
+import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
-public class AdressebeskyttelseService implements BiValidation<AdressebeskyttelseDTO, PersonDTO> {
+public class AdressebeskyttelseService implements BiValidation<AdressebeskyttelseDTO, PersonDTO>, Applicable<List<AdressebeskyttelseDTO>>{
 
     private static final String VALIDATION_UTLAND_MASTER_ERROR = "Adressebeskyttelse: Gradering STRENGT_FORTROLIG_UTLAND " +
             "kan kun settes hvis master er PDL";
@@ -65,6 +66,16 @@ public class AdressebeskyttelseService implements BiValidation<Adressebeskyttels
             person.setOppholdsadresse(null);
             person.setKontaktadresse(null);
             person.getKontaktadresse().add(getStrengtFortroligKontaktadresse());
+        }
+    }
+
+    @Override
+    public void applicable(List<AdressebeskyttelseDTO> artifact) {
+
+        if (artifact.stream().anyMatch(type -> isTrue(type.getIsNew()))) {
+            artifact.stream()
+                    .filter(type -> isNotTrue(type.getIsNew()))
+                    .forEach(type -> type.setGjeldende(false));
         }
     }
 }
