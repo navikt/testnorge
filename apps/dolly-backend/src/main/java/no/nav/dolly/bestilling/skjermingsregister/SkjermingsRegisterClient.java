@@ -66,7 +66,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
                     }
                 } catch (RuntimeException e) {
                     status.append(errorStatusDecoder.decodeRuntimeException(e));
-                    log.error("Feilet å skjerme person med ident: {}", person.getIdent(), e);
+                    log.error("Feilet å skjerme person: {}", person.getIdent(), e);
                     break;
                 }
             }
