@@ -84,6 +84,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
 
         try {
             ResponseEntity<SkjermingsDataResponse> skjermingResponseEntity = skjermingsRegisterConsumer.getSkjerming(person.getIdent());
+            log.info("Respons fra skjermingsregister: {}", skjermingResponseEntity.getBody());
             if (skjermingResponseEntity.getStatusCode().equals(HttpStatus.OK)) {
                 return true;
             }
