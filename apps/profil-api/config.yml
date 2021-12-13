@@ -41,8 +41,6 @@ spec:
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
-        - application: oppsummeringsdokument-frontend
-          cluster: dev-gcp
     outbound:
       rules:
         - application: testnav-person-organisasjon-tilgang-service
