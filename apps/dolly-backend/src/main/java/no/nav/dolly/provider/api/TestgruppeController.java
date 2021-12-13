@@ -12,6 +12,7 @@ import no.nav.dolly.bestilling.service.OpprettPersonerByKriterierService;
 import no.nav.dolly.bestilling.service.OpprettPersonerFraIdenterMedKriterierService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyBestillingFraIdenterRequest;
 import no.nav.dolly.domain.resultset.RsDollyBestillingLeggTilPaaGruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
@@ -69,6 +70,27 @@ public class TestgruppeController {
     public RsTestgruppeMedBestillingId oppdaterTestgruppe(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsOpprettEndreTestgruppe testgruppe) {
         Testgruppe gruppe = testgruppeService.oppdaterTestgruppe(gruppeId, testgruppe);
         return mapperFacade.map(gruppe, RsTestgruppeMedBestillingId.class);
+    }
+
+    @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
+    @Transactional
+    @PutMapping(value = "/{gruppeId}/ident/{ident}")
+    @Operation(description = "Legg til ident paa gruppe")
+    public void leggTilIdent(@PathVariable("gruppeId") Long gruppeId,
+                                                    @PathVariable("ident") String ident,
+                                                    @RequestParam Testident.Master master) {
+
+        testgruppeService.leggTilIdent(gruppeId, ident, master);
+    }
+
+    @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
+    @Transactional
+    @DeleteMapping(value = "/{gruppeId}/ident/{ident}")
+    @Operation(description = "Slette ident fra gruppe")
+    public void slettIdent(@PathVariable("gruppeId") Long gruppeId,
+                           @PathVariable("ident") String ident) {
+
+        testgruppeService.slettIdent(gruppeId, ident);
     }
 
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
