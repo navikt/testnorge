@@ -54,7 +54,8 @@ public class SecurityConfig {
                         "/bundle.*.js",
                         "/swagger-ui.html",
                         "/webjars/**",
-                        "/v3/api-docs/**"
+                        "/v3/api-docs/**",
+                        "/oauth2/logout"
                 ).permitAll()
                 .anyExchange().authenticated()
                 .and().oauth2Login(
