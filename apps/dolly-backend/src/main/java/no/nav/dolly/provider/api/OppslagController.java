@@ -123,7 +123,7 @@ public class OppslagController {
     }
 
     @GetMapping("/skjermingsregister/{ident}")
-    @Operation(description = "Hent informasjon på ident fra skjermingsregister")
+    @Operation(description = "Hent informasjon fra skjermingsregister på ident")
     public ResponseEntity<SkjermingsDataResponse> getSkjermingData(@PathVariable String ident) {
         return skjermingsRegisterConsumer.getSkjerming(ident);
     }
