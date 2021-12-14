@@ -10,12 +10,6 @@ metadata:
 spec:
   tokenx:
     enabled: true
-  idporten:
-    enabled: true
-    frontchannelLogoutPath: /oauth2/logout
-    redirectPath: /login/oauth2/code/idporten
-    postLogoutRedirectURIs:
-      - https://dolly-frontend.dev.intern.nav.no/login
   azure:
     application:
       enabled: true
@@ -82,6 +76,8 @@ spec:
       cpu: 1500m
       memory: 2048Mi
   image: {{image}}
+  envFrom:
+    - secret: idporten-dolly-dev-gcp
   env:
     - name: DOLLY_BACKEND_NAME
       value: dolly-backend
