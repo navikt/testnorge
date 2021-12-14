@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -51,25 +52,9 @@ public class SkjermingsRegisterClient implements ClientRegister {
                     : bestilling.getTpsf().getEgenAnsattDatoTom();
 
             StringBuilder status = new StringBuilder();
-            for (Person person : dollyPerson.getPersondetaljer()) {
-                try {
-                    SkjermingsDataRequest skjermingsDataRequest = mapperFacade.map(BestillingPersonWrapper.builder()
-                                    .skjermetFra(skjermetFra)
-                                    .skjermetTil(skjermetTil)
-                                    .person(person)
-                                    .build(),
-                            SkjermingsDataRequest.class);
-                    if (isAlleredeSkjermet(person) && nonNull(skjermetTil)) {
-                        skjermingsRegisterConsumer.putSkjerming(person.getIdent());
-                    } else if (!isAlleredeSkjermet(person) && isNull(skjermetTil)) {
-                        skjermingsRegisterConsumer.postSkjerming(List.of(skjermingsDataRequest));
-                    }
-                } catch (RuntimeException e) {
-                    status.append(errorStatusDecoder.decodeRuntimeException(e));
-                    log.error("Feilet å skjerme person: {}", person.getIdent(), e);
-                    break;
-                }
-            }
+
+            sendSkjermingDataRequests(dollyPerson, skjermetFra, skjermetTil, status);
+
             progress.setSkjermingsregisterStatus(isNotBlank(status) ? status.toString() : "OK");
         }
     }
@@ -78,6 +63,28 @@ public class SkjermingsRegisterClient implements ClientRegister {
     public void release(List<String> identer) {
 
         identer.forEach(skjermingsRegisterConsumer::deleteSkjerming);
+    }
+
+    private void sendSkjermingDataRequests(DollyPerson dollyPerson, LocalDateTime skjermetFra, LocalDateTime skjermetTil, StringBuilder status) {
+        for (Person person : dollyPerson.getPersondetaljer()) {
+            try {
+                SkjermingsDataRequest skjermingsDataRequest = mapperFacade.map(BestillingPersonWrapper.builder()
+                                .skjermetFra(skjermetFra)
+                                .skjermetTil(skjermetTil)
+                                .person(person)
+                                .build(),
+                        SkjermingsDataRequest.class);
+                if (isAlleredeSkjermet(person) && nonNull(skjermetTil)) {
+                    skjermingsRegisterConsumer.putSkjerming(person.getIdent());
+                } else if (!isAlleredeSkjermet(person) && isNull(skjermetTil)) {
+                    skjermingsRegisterConsumer.postSkjerming(List.of(skjermingsDataRequest));
+                }
+            } catch (RuntimeException e) {
+                status.append(errorStatusDecoder.decodeRuntimeException(e));
+                log.error("Feilet å skjerme person: {}", person.getIdent(), e);
+                break;
+            }
+        }
     }
 
     private boolean isAlleredeSkjermet(Person person) {
