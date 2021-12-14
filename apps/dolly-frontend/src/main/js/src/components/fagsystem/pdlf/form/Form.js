@@ -7,9 +7,15 @@ import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FalskIdentitet } from './partials/falskIdentitet/FalskIdentitet'
 import { UtenlandsId } from './partials/utenlandsId/UtenlandsId'
 import { KontaktinformasjonForDoedsbo } from './partials/kontaktinformasjonForDoedsbo/KontaktinformasjonForDoedsbo'
-import { UtenlandskAdresse } from './partials/bostedsadresse/UtenlandskAdresse'
+import { UtenlandskAdresse } from './partials/adresser/adressetyper/UtenlandskAdresse'
+import { Adresser } from '~/components/fagsystem/pdlf/form/partials/adresser/Adresser'
 
-const bostedsadresseAttributt = 'pdldata.person.bostedsadresse'
+const adresseAttributter = [
+	'pdldata.person.bostedsadresse',
+	'pdldata.person.oppholdsadresse',
+	'pdldata.person.kontaktadresse',
+	'pdldata.person.adressebeskyttelse',
+]
 const identifikasjonAttributt = [
 	'pdldata.person.falskIdentitet',
 	'pdldata.person.utenlandskIdentifikasjonsnummer',
@@ -18,18 +24,29 @@ const doedsboAttributt = 'pdldata.person.kontaktinformasjonForDoedsbo'
 
 export const PdlfForm = ({ formikBag }) => (
 	<React.Fragment>
-		<Vis attributt={bostedsadresseAttributt}>
+		<Vis attributt={adresseAttributter}>
 			<Panel
-				heading="Bostedsadresse"
-				hasErrors={panelError(formikBag, bostedsadresseAttributt)}
+				heading="Adresser"
+				hasErrors={panelError(formikBag, adresseAttributter)}
 				iconType="adresse"
-				startOpen={() => erForste(formikBag.values, bostedsadresseAttributt)}
+				startOpen={() => erForste(formikBag.values, adresseAttributter)}
 			>
-				<Kategori title="Utenlandsk boadresse" vis="pdldata.person.bostedsadresse">
-					<UtenlandskAdresse formikBag={formikBag} />
-				</Kategori>
+				<Adresser formikBag={formikBag} />
 			</Panel>
 		</Vis>
+
+		{/*<Vis attributt={bostedsadresseAttributt}>*/}
+		{/*	<Panel*/}
+		{/*		heading="Bostedsadresse"*/}
+		{/*		hasErrors={panelError(formikBag, bostedsadresseAttributt)}*/}
+		{/*		iconType="adresse"*/}
+		{/*		startOpen={() => erForste(formikBag.values, bostedsadresseAttributt)}*/}
+		{/*	>*/}
+		{/*		<Kategori title="Utenlandsk boadresse" vis="pdldata.person.bostedsadresse">*/}
+		{/*			<UtenlandskAdresse formikBag={formikBag} />*/}
+		{/*		</Kategori>*/}
+		{/*	</Panel>*/}
+		{/*</Vis>*/}
 
 		<Vis attributt={identifikasjonAttributt}>
 			<Panel

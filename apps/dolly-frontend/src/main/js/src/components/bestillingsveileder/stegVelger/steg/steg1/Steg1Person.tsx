@@ -13,10 +13,12 @@ import { UdiPanel } from './paneler/Udi'
 import { BrregPanel } from './paneler/Brreg'
 import { DokarkivPanel } from './paneler/Dokarkiv'
 import { SykdomPanel } from './paneler/Sykdom'
+import { AdressePdlPanel } from '~/components/bestillingsveileder/stegVelger/steg/steg1/paneler/AdressePdl'
 
 export const Steg1Person = ({ stateModifier }: any) => {
 	const checked = [
 		PersoninformasjonPanel,
+		AdressePdlPanel,
 		AdressePanel,
 		FamilierelasjonPanel,
 		ArbeidInntektPanel,
@@ -39,6 +41,7 @@ export const Steg1Person = ({ stateModifier }: any) => {
 	return (
 		<AttributtVelger checked={checked}>
 			<PersoninformasjonPanel stateModifier={stateModifier} />
+			<AdressePdlPanel stateModifier={stateModifier} />
 			<AdressePanel stateModifier={stateModifier} />
 			<FamilierelasjonPanel stateModifier={stateModifier} />
 			<ArbeidInntektPanel stateModifier={stateModifier} />

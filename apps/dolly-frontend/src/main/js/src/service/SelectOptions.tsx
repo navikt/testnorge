@@ -114,6 +114,14 @@ const selectOptions: SelectOptions = {
 		{ value: 'UGRADERT', label: 'Ugradert' },
 	],
 
+	//PDLF - adresser
+	adressetypePdl: [
+		{ value: 'VEGADRESSE', label: 'Vegadresse' },
+		{ value: 'MATRIKKELADRESSE', label: 'Matrikkeladresse' },
+		{ value: 'UTENLANDSK_ADRESSE', label: 'Utenlandsk adresse' },
+		{ value: 'UKJENT_BOSTED', label: 'Ukjent bosted' },
+	],
+
 	//PDLF - kontaktinformasjon dødsbo
 	kontaktType: [
 		{ value: 'ADVOKAT', label: 'Advokat' },
