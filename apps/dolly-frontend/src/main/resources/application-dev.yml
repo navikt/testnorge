@@ -27,6 +27,7 @@ VARSLINGER_NAME: testnav-varslinger-service-dev
 VARSLINGER_URL: https://testnav-varslinger-service-dev.dev.intern.nav.no
 
 POST_LOGOUT_REDIRECT_URI: 'http://localhost:3000/login'
+IDPORTEN_ISSUER_URI: https://oidc-ver2.difi.no/idporten-oidc-provider/
 
 spring:
   session:

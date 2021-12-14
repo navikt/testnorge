@@ -116,3 +116,5 @@ spec:
       value: testnorge-profil-api-dev
     - name: TESTNORGE_PROFIL_API_URL
       value: https://testnorge-profil-api-dev.dev.intern.nav.no
+    - name: IDPORTEN_ISSUER_URI
+      value: https://oidc-ver2.difi.no/idporten-oidc-provider/

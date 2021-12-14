@@ -27,7 +27,7 @@ spring:
             token-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/token
             jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           idporten:
-            issuer-uri: https://oidc-ver2.difi.no/idporten-oidc-provider/
+            issuer-uri: ${IDPORTEN_ISSUER_URI}
 consumers:
   testnav-tps-messaging-service:
     cluster: dev-gcp
