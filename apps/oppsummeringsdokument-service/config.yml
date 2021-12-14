@@ -19,8 +19,6 @@ spec:
           cluster: dev-gcp
         - application: mn-synt-arbeidsforhold-service
           cluster: dev-fss
-        - application: oppsummeringsdokument-frontend
-          cluster: dev-gcp
         - application: testnav-generer-arbeidsforhold-populasjon-service
           cluster: dev-gcp
         - application: testnav-amelding-service

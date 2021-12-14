@@ -41,7 +41,15 @@ module.exports = (env) =>
 					target: env.backend,
 					secure: false,
 				},
+				'/oauth2/authorization/idporten': {
+					target: env.backend,
+					secure: false,
+				},
 				'/login/oauth2/code/aad': {
+					target: env.backend,
+					secure: false,
+				},
+				'/login/oauth2/code/idporten': {
 					target: env.backend,
 					secure: false,
 				},
@@ -49,7 +57,15 @@ module.exports = (env) =>
 					target: env.backend,
 					secure: false,
 				},
+				'/oauth2/logout': {
+					target: env.backend,
+					secure: false,
+				},
 				'/session/ping': {
+					target: env.backend,
+					secure: false,
+				},
+				'/session/user': {
 					target: env.backend,
 					secure: false,
 				},
@@ -168,7 +184,17 @@ module.exports = (env) =>
 					changeOrigin: true,
 					secure: false,
 				},
+				'/testnav-person-organisasjon-tilgang-service/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false,
+				},
 				'/testnav-pdl-forvalter/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false,
+				},
+				'/testnav-bruker-service/api': {
 					target: env.backend,
 					changeOrigin: true,
 					secure: false,

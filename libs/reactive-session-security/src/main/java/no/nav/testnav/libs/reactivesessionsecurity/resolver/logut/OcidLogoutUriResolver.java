@@ -7,5 +7,5 @@ import java.net.URI;
 
 @FunctionalInterface
 public interface OcidLogoutUriResolver {
-    Mono<URI> generateUrl(DefaultOidcUser user);
+    Mono<URI> generateUrl(DefaultOidcUser user, String state);
 }

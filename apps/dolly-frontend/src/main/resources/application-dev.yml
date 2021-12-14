@@ -8,7 +8,6 @@ consumers:
     url: https://testnav-udistub-proxy.dev-fss-pub.nais.io/udistub-dev
     cluster: dev-fss
 
-
 azure.app.client.id: ${client_id}
 azure.app.client.secret: ${client_secret}
 
@@ -16,13 +15,18 @@ DOLLY_BACKEND_NAME: dolly-backend-dev
 DOLLY_BACKEND_URL: https://dolly-backend-dev.dev.intern.nav.no
 TPS_FORVALTERN_PROXY_NAME: tps-forvalteren-dev-proxy
 TPS_FORVALTERN_PROXY_URL: https://tps-forvalteren-dev.dev.adeo.no
+TESTNAV_PERSON_ORG_TILGANG_SERVICE_NAME: testnav-person-organisasjon-tilgang-service-dev
+TESTNAV_PERSON_ORG_TILGANG_SERVICE_URL: https://testnav-person-organisasjon-tilgang-service-dev.dev.intern.nav.no
 PDL_FORVALTER_URL: https://testnav-pdl-forvalter-dev.dev.intern.nav.no
 PDL_FORVALTER_NAME: testnav-pdl-forvalter-dev
-
-POST_LOGOUT_REDIRECT_URI: 'http://localhost:3000/login'
-
+TESTNAV_BRUKER_SERVICE_NAME: testnav-bruker-service-dev
+TESTNAV_BRUKER_SERVICE_URL: https://testnav-bruker-service-dev.dev.intern.nav.no
+TESTNORGE_PROFIL_API_NAME: testnorge-profil-api-dev
+TESTNORGE_PROFIL_API_URL: https://testnorge-profil-api-dev.dev.intern.nav.no
 VARSLINGER_NAME: testnav-varslinger-service-dev
 VARSLINGER_URL: https://testnav-varslinger-service-dev.dev.intern.nav.no
+
+POST_LOGOUT_REDIRECT_URI: 'http://localhost:3000/login'
 
 spring:
   session:
