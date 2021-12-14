@@ -1,0 +1,31 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+spring:
+  application:
+    name: import-fra-tpsf-service
+  flyway:
+    enabled: false
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+        tokenx:
+          issuer-uri: https://tokendings.dev-gcp.nais.io
+          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          accepted-audience: ${TOKEN_X_CLIENT_ID}
+
+
+consumers:
+  tps-forvalteren:
+    url: https://tps-forvalteren-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+    namespace: dolly
+    name: tps-forvalteren-proxy
+  pdl-forvalter:
+    url: https://testnav-pdl-forvalter.dev.intern.nav.no
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-pdl-forvalter
