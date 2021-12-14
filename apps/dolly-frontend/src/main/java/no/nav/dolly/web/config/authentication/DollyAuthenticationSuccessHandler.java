@@ -1,5 +1,6 @@
 package no.nav.dolly.web.config.authentication;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.server.DefaultServerRedirectStrategy;
 import org.springframework.security.web.server.ServerRedirectStrategy;
@@ -10,6 +11,7 @@ import reactor.core.publisher.Mono;
 
 import java.net.URI;
 
+@Slf4j
 public class DollyAuthenticationSuccessHandler implements ServerAuthenticationSuccessHandler {
 
     private final URI idPortenLocation = URI.create("/bruker");
@@ -23,8 +25,10 @@ public class DollyAuthenticationSuccessHandler implements ServerAuthenticationSu
         var requestPath = exchange.getRequest().getPath().toString();
 
         if (requestPath.equals("/login/oauth2/code/idporten")){
+            log.info("Redirecter til bruker-side");
             return redirectStrategy.sendRedirect(exchange, idPortenLocation);
         }else {
+            log.info("Redirecter til dolly forside");
             return redirectStrategy.sendRedirect(exchange, defaultLocation);
         }
     }
