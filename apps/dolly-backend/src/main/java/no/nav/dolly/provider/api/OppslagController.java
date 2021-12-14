@@ -10,6 +10,8 @@ import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdResponse;
 import no.nav.dolly.bestilling.inntektstub.InntektstubConsumer;
 import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer;
+import no.nav.dolly.bestilling.skjermingsregister.SkjermingsRegisterConsumer;
+import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingsDataResponse;
 import no.nav.dolly.bestilling.sykemelding.HelsepersonellConsumer;
 import no.nav.dolly.bestilling.sykemelding.domain.dto.HelsepersonellListeDTO;
 import no.nav.dolly.consumer.fastedatasett.DatasettType;
@@ -63,6 +65,7 @@ public class OppslagController {
     private final GenererNavnConsumer genererNavnConsumer;
     private final InntektsmeldingEnumService inntektsmeldingEnumService;
     private final ProfilApiConsumer profilApiConsumer;
+    private final SkjermingsRegisterConsumer skjermingsRegisterConsumer;
     private final TransaksjonMappingService transaksjonMappingService;
     private final HelsepersonellConsumer helsepersonellConsumer;
 
@@ -117,6 +120,12 @@ public class OppslagController {
     @Operation(description = "Hent liste med helsepersonell")
     public ResponseEntity<HelsepersonellListeDTO> getHelsepersonell() {
         return helsepersonellConsumer.getHelsepersonell();
+    }
+
+    @GetMapping("/skjermingsregister/{ident}")
+    @Operation(description = "Hent informasjon på ident fra skjermingsregister")
+    public ResponseEntity<SkjermingsDataResponse> getSkjermingData(@PathVariable String ident) {
+        return skjermingsRegisterConsumer.getSkjerming(ident);
     }
 
     @GetMapping("/fastedatasett/{datasettype}")
