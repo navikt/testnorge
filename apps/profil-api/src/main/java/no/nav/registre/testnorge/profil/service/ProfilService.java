@@ -61,5 +61,4 @@ public class ProfilService {
                 .get(JwtClaimNames.ISS)
                 .equals(tokenXResourceServerProperties.getIssuerUri());
     }
-
 }

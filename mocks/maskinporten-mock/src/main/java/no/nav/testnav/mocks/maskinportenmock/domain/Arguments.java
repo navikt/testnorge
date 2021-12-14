@@ -1,4 +1,4 @@
-package no.nav.testnav.mocks.tokendingsmock.domain;
+package no.nav.testnav.mocks.maskinportenmock.domain;
 
 import lombok.Getter;
 import lombok.Setter;

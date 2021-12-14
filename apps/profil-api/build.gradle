@@ -5,7 +5,6 @@ plugins {
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
 
-
 sonarqube {
     properties {
         property "sonar.sourceEncoding", "UTF-8"
@@ -21,10 +20,24 @@ sonarqube {
 bootJar {
     archiveFileName = "app.jar"
 }
+
 dependencyManagement {
     imports {
         mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.4'
     }
+}
+
+def test = tasks.named("test") {
+    useJUnitPlatform {
+        excludeTags "integration"
+    }
+}
+
+def iTest = tasks.register("iTest", Test) {
+    useJUnitPlatform {
+        includeTags "integration"
+    }
+    shouldRunAfter test
 }
 
 test {
@@ -35,7 +48,6 @@ repositories {
     mavenCentral()
     mavenLocal()
 }
-
 
 dependencies {
     implementation 'no.nav.testnav.libs:security-core'
@@ -60,8 +72,10 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 
+    testImplementation 'org.assertj:assertj-core:3.21.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
+    testImplementation 'no.nav.testnav.libs:integration-test'
 }
 
 description = 'profil-api'
