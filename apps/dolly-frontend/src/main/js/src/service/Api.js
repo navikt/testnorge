@@ -15,8 +15,11 @@ import VarslingerService from './services/varslinger/VarslingerService'
 import OrganisasjonForvalterService from '~/service/services/organisasjonforvalter/OrganisasjonForvalterService'
 import OrganisasjonService from '~/service/services/organisasjonservice/OrganisasjonService'
 import MiljoeService from '~/service/services/miljoe/MiljoeService'
+import PersonOrganisasjonTilgangService from '~/service/services/personOrganisasjonTilgang/PersonOrganisasjonTilgangService'
+import BrukerService from '~/service/services/bruker/BrukerService'
 import PdlForvalterService from '~/service/services/pdl/PdlForvalterService'
 import TpsMessagingService from '~/service/services/tpsmessaging/TpsMessagingService'
+import SessionService from '~/service/services/session/SessionService'
 
 export const DollyApi = DollyService
 export const ProfilApi = ProfilService
@@ -36,7 +39,10 @@ export const VarslingerApi = VarslingerService
 export const OrgforvalterApi = OrganisasjonForvalterService
 export const OrgserviceApi = OrganisasjonService
 export const MiljoeApi = MiljoeService
+export const PersonOrgTilgangApi = PersonOrganisasjonTilgangService
+export const BrukerApi = BrukerService
 export const PdlforvalterApi = PdlForvalterService
+export const SessionApi = SessionService
 
 export default {
 	DollyApi: DollyService,
@@ -56,5 +62,8 @@ export default {
 	OrgforvalterApi: OrganisasjonForvalterService,
 	OrgserviceApi: OrganisasjonService,
 	MiljoeApi: MiljoeService,
+	PersonOrgTilgangApi: PersonOrganisasjonTilgangService,
+	BrukerApi: BrukerService,
 	PdlforvalterApi: PdlForvalterService,
+	SessionApi: SessionService,
 }
