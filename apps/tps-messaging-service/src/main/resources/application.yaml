@@ -2,7 +2,7 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 
 spring:
   application:
-    name: adresse-service
+    name: testnav-tps-messaging-service
   flyway:
     enabled: false
   security:

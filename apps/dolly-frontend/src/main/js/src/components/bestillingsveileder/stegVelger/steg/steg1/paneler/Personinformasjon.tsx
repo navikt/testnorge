@@ -211,7 +211,14 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 							_get(personFoerLeggTil, 'tpsMessaging.egenAnsattDatoFom') ||
 							new Date(),
 					],
-					['tpsMessaging.egenAnsattDatoTom', undefined]
+					['tpsMessaging.egenAnsattDatoTom', undefined],
+					[
+						'skjerming.egenAnsattDatoFom',
+						_get(personFoerLeggTil, 'tpsf.egenAnsattDatoFom') ||
+							_get(personFoerLeggTil, 'tpsMessaging.egenAnsattDatoFom') ||
+							new Date(),
+					],
+					['skjerming.egenAnsattDatoTom', undefined]
 				)
 			},
 			remove() {
@@ -220,6 +227,8 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 					'tpsMessaging.egenAnsattDatoTom',
 					'tpsf.egenAnsattDatoFom',
 					'tpsf.egenAnsattDatoTom',
+					'skjerming.egenAnsattDatoFom',
+					'skjerming.egenAnsattDatoTom',
 				])
 			},
 		},

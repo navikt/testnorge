@@ -41,7 +41,8 @@ public class FrontChannelLogoutController {
                 .filter(session -> {
                     var securityContext = (SecurityContextImpl) session.getAttribute("SPRING_SECURITY_CONTEXT");
                     if (securityContext.getAuthentication().getPrincipal() instanceof DefaultOidcUser user) {
-                        return user.getIdToken().getClaim("sid").equals(sid);
+                        var claim = user.getIdToken().getClaim("sid");
+                        return claim != null && claim.equals(sid);
                     }
                     return false;
                 })
