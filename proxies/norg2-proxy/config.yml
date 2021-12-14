@@ -9,8 +9,8 @@ spec:
   image: {{image}}
   port: 8080
   webproxy: true
-  tokenx:
-    enabled: true
+  #  tokenx:
+  #    enabled: true
   azure:
     application:
       enabled: true
@@ -21,11 +21,7 @@ spec:
         - application: team-dolly-lokal-app
           cluster: dev-fss
         - application: dolly-frontend
-          cluster: dev-fss
-        - application: dolly-frontend
           cluster: dev-gcp
-        - application: dolly-frontend-dev
-          cluster: dev-fss
         - application: dolly-frontend-dev
           cluster: dev-gcp
         - application: dolly-backend
