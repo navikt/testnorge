@@ -97,7 +97,6 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                                 .importFraTps(mapIdents(bestilling.getTpsImport()))
                                 .tpsMessaging(bestillingRequest.getTpsMessaging())
                                 .importFraPdl(mapIdents(bestilling.getPdlImport()))
-                                .tpsMessaging(bestillingRequest.getTpsMessaging())
                                 .kildeMiljoe(bestilling.getKildeMiljoe())
                                 .navSyntetiskIdent(bestilling.getNavSyntetiskIdent())
                                 .build());
