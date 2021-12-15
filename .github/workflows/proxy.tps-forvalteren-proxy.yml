@@ -40,7 +40,7 @@ jobs:
     name: Deploy dev
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' || 'refs/heads/master/feature/oppdater_tpsf_forvalteren_proxy'}}
+    if: ${{ github.ref == 'refs/heads/master' }}
     with:
       resource: 'proxies/tps-forvalteren-proxy/config.dev.yml'
       app-name: 'tps-forvalteren-proxy'
