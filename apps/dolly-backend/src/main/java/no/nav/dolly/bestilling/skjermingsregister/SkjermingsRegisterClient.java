@@ -49,7 +49,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
 
             var skjermetTil = nonNull(bestilling.getSkjerming()) && nonNull(bestilling.getSkjerming().getEgenAnsattDatoTom())
                     ? bestilling.getSkjerming().getEgenAnsattDatoTom()
-                    : isNull(bestilling.getTpsf())
+                    : nonNull(bestilling.getTpsf())
                     ? bestilling.getTpsf().getEgenAnsattDatoTom()
                     : null;
 
