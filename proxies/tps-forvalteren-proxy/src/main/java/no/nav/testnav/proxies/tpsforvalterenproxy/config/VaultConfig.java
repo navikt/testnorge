@@ -3,6 +3,7 @@ package no.nav.testnav.proxies.tpsforvalterenproxy.config;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.vault.annotation.VaultPropertySource;
 import org.springframework.vault.authentication.ClientAuthentication;
 import org.springframework.vault.authentication.TokenAuthentication;
@@ -11,6 +12,7 @@ import org.springframework.vault.config.AbstractVaultConfiguration;
 
 @Slf4j
 @Configuration
+@Profile({"dev", "prod"})
 @RequiredArgsConstructor
 @VaultPropertySource(value = "serviceuser/dev/srvtps-forvalteren", propertyNamePrefix = "credentials.", ignoreSecretNotFound = false)
 public class VaultConfig extends AbstractVaultConfiguration {
