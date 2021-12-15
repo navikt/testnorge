@@ -1,5 +1,6 @@
 import api from '@/api'
 import Logger from '~/logger'
+import { messages } from '~/utils/YupValidations'
 
 export default class Request {
 	static get(url: string, headers: Record<string, string> = {}) {
@@ -34,6 +35,7 @@ export default class Request {
 
 	private static logError(error: any, url: string) {
 		const event = `Henting av data fra ${url} feilet.`
+		console.error(event, error.message)
 		Logger.error({
 			event: event,
 			message: error.message,

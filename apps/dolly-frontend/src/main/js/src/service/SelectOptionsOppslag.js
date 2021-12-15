@@ -123,6 +123,13 @@ export const SelectOptionsOppslag = {
 				options.push({ value: rolle[0], label: rolle[1] })
 			})
 			return options
+		} else if (type === 'navEnheter') {
+			const enheter = data.value ? Object.entries(data.value.data) : []
+			const options = []
+			enheter.forEach((enhet) => {
+				options.push({ value: enhet?.[1]?.enhetNr, label: enhet?.[1]?.navn })
+			})
+			return options
 		} else if (type === 'sdpLeverandoer') {
 			const leverandoerer = data.value ? Object.entries(data.value.data) : []
 			const options = []
