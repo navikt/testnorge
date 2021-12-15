@@ -16,7 +16,7 @@ class ProfilIntegrationTest {
     private final WebClient webClient = WebClient.builder().baseUrl("http://localhost:8003").build();
 
     @Test
-    public void should_get_azure_profil() {
+    void should_get_azure_profil() {
         var token = azureAdClient.generateToken("dev-gcp.dolly.testnorge-profil-api", "sad", "dsa").block();
 
         var actual = webClient.get()
