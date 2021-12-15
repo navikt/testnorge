@@ -35,8 +35,6 @@ spec:
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
-        - application: dolly-backend
-          cluster: dev-fss
         - application: dolly-backend-dev
           cluster: dev-fss
         - application: import-fra-tpsf-service-dev
