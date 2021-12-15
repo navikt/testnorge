@@ -12,7 +12,7 @@ import org.springframework.vault.config.AbstractVaultConfiguration;
 
 @Slf4j
 @Configuration
-@Profile({"dev", "prod"})
+@Profile({"dev"})
 @RequiredArgsConstructor
 @VaultPropertySource(value = "serviceuser/dev/srvtps-forvalteren", propertyNamePrefix = "credentials.", ignoreSecretNotFound = false)
 public class VaultConfig extends AbstractVaultConfiguration {
@@ -26,7 +26,7 @@ public class VaultConfig extends AbstractVaultConfiguration {
     public ClientAuthentication clientAuthentication() {
         var token = System.getProperty("spring.cloud.vault.token");
         if (token == null) {
-            throw new IllegalArgumentException("Påkreved property 'spring.cloud.vault.token' er ikke satt.");
+            throw new IllegalArgumentException("Påkrevet property 'spring.cloud.vault.token' er ikke satt.");
         }
         return new TokenAuthentication(System.getProperty("spring.cloud.vault.token"));
     }

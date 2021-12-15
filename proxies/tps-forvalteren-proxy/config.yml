@@ -52,6 +52,9 @@ spec:
     max: 1
   vault:
     enabled: true
+    paths:
+      - kvPath: /serviceuser/data/dev/srvtps-forvalteren
+        mountPath: /credentials
   resources:
     requests:
       cpu: 200m
