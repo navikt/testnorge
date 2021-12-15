@@ -35,8 +35,8 @@ spec:
           cluster: dev-gcp
         - application: dolly-backend
           cluster: dev-fss
-        - application: dolly-backend-dev
-          cluster: dev-fss
+        - application: import-fra-tpsf-service
+          cluster: dev-gcp
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -52,6 +52,9 @@ spec:
     max: 1
   vault:
     enabled: true
+    paths:
+      - kvPath: /serviceuser/data/dev/srvtps-forvalteren
+        mountPath: /credentials
   resources:
     requests:
       cpu: 200m

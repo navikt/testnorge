@@ -1,4 +1,4 @@
-package no.nav.testnav.proxies.tpsforvaterenproxy;
+package no.nav.testnav.proxies.tpsforvalterenproxy;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
