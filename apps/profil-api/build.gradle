@@ -40,10 +40,6 @@ def iTest = tasks.register("iTest", Test) {
     shouldRunAfter test
 }
 
-test {
-    useJUnitPlatform()
-}
-
 repositories {
     mavenCentral()
     mavenLocal()
