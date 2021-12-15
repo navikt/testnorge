@@ -20,7 +20,7 @@ spring:
           accepted-audience: ${TOKEN_X_CLIENT_ID}
 
 access.scopes:
-  - https://graph.microsoft.com/.default
+  - https://graph.microsoft .com/.default
 
 api.azuread.url: https://graph.microsoft.com
 
@@ -28,5 +28,5 @@ consumers:
   testnav-person-organisasjon-tilgang-service:
     cluster: dev-gcp
     namespace: dolly
-    name: testnav-person-organisasjon-tilgang-service-dev
-    url: https://testnav-person-organisasjon-tilgang-service-dev.dev.intern.nav.no
+    name: ${PERSON_ORG_TILGANG_NAME}
+    url: ${PERSON_ORG_TILGANG_URL}
