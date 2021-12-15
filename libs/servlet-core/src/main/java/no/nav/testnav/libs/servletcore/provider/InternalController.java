@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Profile({"prod","dev"})
+@Profile({"prod", "dev", "virtual"})
 @RestController
 @RequestMapping("/internal")
 public class InternalController {
