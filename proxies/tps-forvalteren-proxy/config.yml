@@ -35,8 +35,10 @@ spec:
           cluster: dev-gcp
         - application: dolly-backend
           cluster: dev-fss
-        - application: dolly-backend-dev
+        - application: dolly-backend
           cluster: dev-fss
+        - application: import-fra-tpsf-service
+          cluster: dev-gcp
   liveness:
     path: /internal/isAlive
     initialDelay: 4
