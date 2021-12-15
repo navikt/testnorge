@@ -34,13 +34,12 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 	const navEnheterOptions = SelectOptionsOppslag.formatOptions('navEnheter', navEnheter)
 
 	const paths = {
-		rootPath: 'pdldata.person.sikkerhetstiltak',
+		rootPath: 'pdldata.person.sikkerhetstiltak[0]',
+		tiltakstype: 'pdldata.person.sikkerhetstiltak[0].tiltakstype',
+		kontaktperson: 'pdldata.person.sikkerhetstiltak[0].kontaktperson',
+		gyldigFraOgMed: 'pdldata.person.sikkerhetstiltak[0].gyldigFraOgMed',
+		gyldigTilOgMed: 'pdldata.person.sikkerhetstiltak[0].gyldigTilOgMed',
 		tpsMessagingRootPath: 'tpsMessaging.sikkerhetstiltak',
-		tiltakstype: 'pdldata.person.sikkerhetstiltak.tiltakstype',
-		beskrivelse: 'pdldata.person.sikkerhetstiltak.beskrivelse',
-		kontaktperson: 'pdldata.person.sikkerhetstiltak.kontaktperson',
-		gyldigFraOgMed: 'pdldata.person.sikkerhetstiltak.gyldigFraOgMed',
-		gyldigTilOgMed: 'pdldata.person.sikkerhetstiltak.gyldigTilOgMed',
 	}
 
 	const indexBeskrSikkerhetTiltak = 7
@@ -60,7 +59,7 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 
 	const [randomNavUsers, setRandomNavUsers] = useState([])
 	const [personident, setPersonident] = useState(
-		_get(formikBag.values, 'pdldata.person.sikkerhetstiltak.kontaktperson.personident')
+		_get(formikBag.values, 'pdldata.person.sikkerhetstiltak[0].kontaktperson.personident')
 	)
 
 	useEffect(() => {

@@ -45,6 +45,19 @@ const fullmakt = Yup.array().of(
 	})
 )
 
+const sikkerhetstiltak = Yup.array().of(
+	Yup.object({
+		tiltakstype: requiredString.nullable(),
+		beskrivelse: Yup.string().optional(),
+		kontaktperson: Yup.object({
+			personident: requiredString.nullable(),
+			enhet: requiredString.nullable(),
+		}),
+		gyldigFraOgMed: requiredDate.nullable(),
+		gyldigTilOgMed: requiredDate.nullable(),
+	})
+)
+
 const falskIdentitet = Yup.array().of(
 	Yup.object({
 		rettIdentErUkjent: Yup.boolean(),
@@ -160,6 +173,7 @@ export const validation = {
 		person: Yup.object({
 			bostedsadresse: ifPresent('$pdldata.person.bostedsadresse', bostedsadresse),
 			fullmakt: ifPresent('$pdldata.person.fullmakt', fullmakt),
+			sikkerhetstiltak: ifPresent('$pdldata.person.sikkerhetstiltak', sikkerhetstiltak),
 			falskIdentitet: ifPresent('$pdldata.person.falskIdentitet', falskIdentitet),
 			telefonnummer: ifPresent('$pdldata.person.telefonnummer', telefonnummer),
 			utenlandskIdentifikasjonsnummer: ifPresent(

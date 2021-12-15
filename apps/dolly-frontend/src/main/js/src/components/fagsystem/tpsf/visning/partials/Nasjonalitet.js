@@ -31,7 +31,6 @@ const Statsborgerskap = ({ statsborgerskap }) => {
 
 export const Nasjonalitet = ({ data, tpsMessagingData, visTittel = true }) => {
 	const { statsborgerskap, innvandretUtvandret } = data
-	console.log('tpsMessagingData: ', tpsMessagingData) //TODO - SLETT MEG
 
 	return (
 		<div>

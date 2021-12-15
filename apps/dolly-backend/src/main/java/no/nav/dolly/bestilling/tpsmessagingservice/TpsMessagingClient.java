@@ -95,9 +95,6 @@ public class TpsMessagingClient implements ClientRegister {
                         status,
                         "Telefonnummer_slett"
                 );
-            }
-
-            if (nonNull(bestilling.getTpsMessaging().getTelefonnummer())) {
                 appendResponseStatus(
                         tpsMessagingConsumer.sendTelefonnummerRequest(
                                 dollyPerson.getHovedperson(),

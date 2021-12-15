@@ -49,10 +49,10 @@ const vergemaalPath = ['tpsf.vergemaal']
 const fullmaktPath = ['pdldata.person.fullmakt']
 
 const sikkerhetstiltakPaths = [
-	'pdldata.person.sikkerhetstiltak.tiltakstype',
-	'pdldata.person.sikkerhetstiltak.beskrivelse',
-	'pdldata.person.sikkerhetstiltak.gyldigFraOgMed',
-	'pdldata.person.sikkerhetstiltak.gyldigTilOgMed',
+	'pdldata.person.sikkerhetstiltak[0].tiltakstype',
+	'pdldata.person.sikkerhetstiltak[0].beskrivelse',
+	'pdldata.person.sikkerhetstiltak[0].gyldigFraOgMed',
+	'pdldata.person.sikkerhetstiltak[0].gyldigTilOgMed',
 	'tpsf.typeSikkerhetTiltak',
 	'tpsf.beskrSikkerhetTiltak',
 	'tpsf.sikkerhetTiltakDatoFom',

@@ -50,7 +50,8 @@ export const Visning = ({ data }: Data) => {
 }
 
 export const PdlSikkerhetstiltak = ({ data }: DataListe) => {
-	if (!data) return null
+	console.log('data: ', data) //TODO - SLETT MEG
+	if (!data || data.length === 0) return null
 	return (
 		<div>
 			<SubOverskrift label="Sikkerhetstiltak" iconKind="sikkerhetstiltak" />

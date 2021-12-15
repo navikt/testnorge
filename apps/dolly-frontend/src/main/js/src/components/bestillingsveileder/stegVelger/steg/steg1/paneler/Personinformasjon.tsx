@@ -346,18 +346,20 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 				setMulti(
 					[
 						'pdldata.person.sikkerhetstiltak',
-						{
-							tiltakstype: '',
-							beskrivelse: '',
-							kontaktperson: {
-								personident: '',
-								enhet: '',
+						[
+							{
+								tiltakstype: '',
+								beskrivelse: '',
+								kontaktperson: {
+									personident: '',
+									enhet: '',
+								},
+								gyldigFraOgMed: new Date(),
+								gyldigTilOgMed: null,
+								kilde: 'Dolly',
+								master: 'PDL',
 							},
-							gyldigFraOgMed: new Date(),
-							gyldigTilOgMed: '',
-							kilde: 'Dolly',
-							master: 'PDL',
-						},
+						],
 					],
 					[
 						'tpsMessaging.sikkerhetstiltak',
@@ -365,7 +367,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 							tiltakstype: '',
 							beskrivelse: '',
 							gyldigFraOgMed: new Date(),
-							gyldigTilOgMed: '',
+							gyldigTilOgMed: null,
 						},
 					]
 				),

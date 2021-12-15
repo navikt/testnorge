@@ -14,8 +14,6 @@ export default function FagsystemStatus({ statusrapportListe }) {
 
 	const statusrapport = fixNamesAndDuplicatesOfStatus(statusrapportListe)
 
-	console.log('statusrapport: ', statusrapport) //TODO - SLETT MEG
-
 	const getIconType = (status) => {
 		const melding = status.melding
 		return melding && !melding.includes('OK')
