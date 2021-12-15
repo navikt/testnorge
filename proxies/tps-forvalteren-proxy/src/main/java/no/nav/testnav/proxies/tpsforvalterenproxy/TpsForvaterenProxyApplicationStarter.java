@@ -27,13 +27,15 @@ public class TpsForvaterenProxyApplicationStarter {
     private String username;
     @Value("{credentials.password}")
     private String password;
+    @Value("${proxy.url}")
+    private String url;
 
     public static void main(String[] args) {
         SpringApplication.run(TpsForvaterenProxyApplicationStarter.class, args);
     }
 
     @Bean
-    public RouteLocator customRouteLocator(RouteLocatorBuilder builder, @Value("${proxy.url}") String url) {
+    public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
 
         return builder.routes()
                 .route(spec -> spec
