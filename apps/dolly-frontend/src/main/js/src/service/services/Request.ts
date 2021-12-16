@@ -1,6 +1,5 @@
 import api from '@/api'
 import Logger from '~/logger'
-import { messages } from '~/utils/YupValidations'
 
 export default class Request {
 	static get(url: string, headers: Record<string, string> = {}) {
