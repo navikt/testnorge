@@ -1,5 +1,6 @@
 package no.nav.testnav.proxies.tpsforvalterenproxy;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
@@ -15,6 +16,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.encodeBasicAuth;
 
+@Slf4j
 @Import({
         CoreConfig.class,
         DevConfig.class,
@@ -36,6 +38,8 @@ public class TpsForvaterenProxyApplicationStarter {
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+
+        log.info("TPS-forvalteren-proxy kalles med brukernavn: {}", username);
 
         return builder.routes()
                 .route(spec -> spec
