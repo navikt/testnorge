@@ -14,8 +14,11 @@ consumers:
     namespace: dolly
     name: mn-organisasjon-api
     url: https://mn-organisasjon-api.dev.adeo.no
-  syntrest:
-    url: https://syntrest.dev.adeo.no
+  synt-amelding:
+    cluster: dev-gcp
+    namespace: dolly
+    name: synthdata-amelding
+    url: https://synthdata-amelding.dev.intern.nav.no
   oppsummeringsdokument-service:
     cluster: dev-gcp
     namespace: dolly
