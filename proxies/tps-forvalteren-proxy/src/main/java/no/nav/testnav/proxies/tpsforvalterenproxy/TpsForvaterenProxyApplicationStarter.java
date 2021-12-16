@@ -39,14 +39,12 @@ public class TpsForvaterenProxyApplicationStarter {
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
 
-        log.info("TPS-forvalteren-proxy kalles med brukernavn: {}", username);
-
         return builder.routes()
                 .route(spec -> spec
                         .path("/**")
                         .filters(filterSpec -> filterSpec
                                 .removeRequestHeader("Origin")
-                                .addRequestHeader(AUTHORIZATION, encodeBasicAuth(username, password, UTF_8)))
+                                .addRequestHeader(AUTHORIZATION, "Basic " + encodeBasicAuth(username, password, UTF_8)))
                         .uri(url)
                 ).build();
     }
