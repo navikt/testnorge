@@ -21,6 +21,8 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
         - application: team-dolly-lokal-app
           cluster: dev-fss
         - application: endringsmelding-service
