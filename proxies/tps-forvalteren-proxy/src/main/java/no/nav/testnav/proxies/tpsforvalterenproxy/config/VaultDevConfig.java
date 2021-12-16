@@ -14,9 +14,9 @@ import org.springframework.vault.config.AbstractVaultConfiguration;
 @Configuration
 @Profile({"dev"})
 @RequiredArgsConstructor
-//@VaultPropertySource(value = "serviceuser/dev/srvtps-forvalteren", propertyNamePrefix = "credentials.", ignoreSecretNotFound = false)
+@VaultPropertySource(value = "serviceuser/dev/srvtps-forvalteren", propertyNamePrefix = "credentials.", ignoreSecretNotFound = false)
 @VaultPropertySource(value = "kv/preprod/fss/import-fra-tpsf-service/local", ignoreSecretNotFound = false)
-public class VaultConfig extends AbstractVaultConfiguration {
+public class VaultDevConfig extends AbstractVaultConfiguration {
 
     @Override
     public VaultEndpoint vaultEndpoint() {
