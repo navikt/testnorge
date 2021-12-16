@@ -8,9 +8,6 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 consumers:
   hodejegeren:
     url: https://testnorge-hodejegeren.dev.adeo.no
-  helsepersonell:
-    client_id: af686685-d25a-462a-a0ea-e2a348c457d3
-    url: https://testnorge-helsepersonell-api.dev.adeo.no
   synt-sykemelding:
     url: https://synthdata-elsam-gcp.dev.intern.nav.no
     name: synthdata-elsam-gcp

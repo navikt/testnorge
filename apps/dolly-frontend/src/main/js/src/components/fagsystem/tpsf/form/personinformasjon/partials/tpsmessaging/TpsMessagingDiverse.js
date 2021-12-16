@@ -22,6 +22,11 @@ export const TpsMessagingDiverse = ({ formikBag }) => {
 		}
 	}
 
+	const settFormikDate = (value, path) => {
+		formikBag.setFieldValue(`tpsMessaging.${path}`, value)
+		formikBag.setFieldValue(`skjerming.${path}`, value)
+	}
+
 	const harSkjerming = HarAktivSkjerming()
 
 	return (
@@ -38,12 +43,18 @@ export const TpsMessagingDiverse = ({ formikBag }) => {
 				name="tpsMessaging.egenAnsattDatoFom"
 				label="Skjerming fra"
 				disabled={harSkjerming}
+				onChange={(date) => {
+					settFormikDate(date, 'egenAnsattDatoFom')
+				}}
 				visHvisAvhuket
 			/>
 			{harSkjerming && (
 				<FormikDatepicker
 					name="tpsMessaging.egenAnsattDatoTom"
 					label="Skjerming til"
+					onChange={(date) => {
+						settFormikDate(date, 'egenAnsattDatoTom')
+					}}
 					visHvisAvhuket
 				/>
 			)}

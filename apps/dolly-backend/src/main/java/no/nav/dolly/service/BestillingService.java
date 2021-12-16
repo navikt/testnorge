@@ -345,6 +345,7 @@ public class BestillingService {
                 .brregstub(request.getBrregstub())
                 .dokarkiv(request.getDokarkiv())
                 .tpsMessaging(request.getTpsMessaging())
+                .skjerming(request.getSkjerming())
                 .sykemelding(request.getSykemelding())
                 .build());
     }

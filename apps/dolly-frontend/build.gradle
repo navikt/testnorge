@@ -44,6 +44,7 @@ dependencies {
     implementation 'no.nav.testnav.libs:reactive-frontend'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
     implementation 'no.nav.testnav.libs:reactive-proxy'
+    implementation 'no.nav.testnav.libs:security-core'
 
     // Session
     implementation 'redis.clients:jedis'

@@ -8,8 +8,11 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: 50m
 spec:
+  tokenx:
+    enabled: true
   idporten:
     enabled: true
+    frontchannelLogoutPath: /oauth2/logout
     redirectPath: /login/oauth2/code/idporten
     postLogoutRedirectURIs:
       - https://dolly-frontend-dev.dev.intern.nav.no/login
@@ -30,13 +33,15 @@ spec:
         - application: testnav-miljoer-service
         - application: testnav-organisasjon-service
         - application: testnav-organisasjon-forvalter
-        - application: testnorge-profil-api
+        - application: testnorge-profil-api-dev
         - application: testnav-joark-dokument-service
         - application: testnav-organisasjon-faste-data-service
         - application: testnav-tps-messaging-service
         - application: testnav-varslinger-service-dev
         - application: dolly-dev-redis-session
+        - application: testnav-person-organisasjon-tilgang-service-dev
         - application: testnav-pdl-forvalter-dev
+        - application: testnav-bruker-service-dev
       external:
         - host: person-search-service.dev-fss-pub.nais.io
         - host: udi-stub-dev.dev-fss-pub.nais.io
@@ -91,11 +96,25 @@ spec:
       value: https://dolly-frontend-dev.dev.intern.nav.no/login
     - name: REDIS_HOST
       value: dolly-dev-redis-session.dolly.svc.cluster.local
+    - name: TESTNAV_PERSON_ORG_TILGANG_SERVICE_NAME
+      value: testnav-person-organisasjon-tilgang-service-dev
+    - name: TESTNAV_PERSON_ORG_TILGANG_SERVICE_URL
+      value: https://testnav-person-organisasjon-tilgang-service-dev.dev.intern.nav.no
     - name: PDL_FORVALTER_URL
       value: https://testnav-pdl-forvalter-dev.dev.intern.nav.no
     - name: PDL_FORVALTER_NAME
       value: testnav-pdl-forvalter-dev
+    - name: TESTNAV_BRUKER_SERVICE_NAME
+      value: testnav-bruker-service-dev
+    - name: TESTNAV_BRUKER_SERVICE_URL
+      value: https://testnav-bruker-service-dev.dev.intern.nav.no
     - name: VARSLINGER_NAME
       value: testnav-varslinger-service-dev
     - name: VARSLINGER_URL
       value: https://testnav-varslinger-service-dev.dev.intern.nav.no
+    - name: TESTNORGE_PROFIL_API_NAME
+      value: testnorge-profil-api-dev
+    - name: TESTNORGE_PROFIL_API_URL
+      value: https://testnorge-profil-api-dev.dev.intern.nav.no
+    - name: IDPORTEN_ISSUER_URI
+      value: https://oidc-ver2.difi.no/idporten-oidc-provider/
