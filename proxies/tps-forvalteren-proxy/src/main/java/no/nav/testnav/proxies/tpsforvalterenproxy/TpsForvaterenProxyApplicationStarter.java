@@ -4,13 +4,16 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
+import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import reactor.core.publisher.Mono;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -39,12 +42,15 @@ public class TpsForvaterenProxyApplicationStarter {
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
 
+        var authenticationHeaderFilter = AddAuthenticationRequestGatewayFilterFactory
+                .createBasicAuthenticationHeaderFilter(username, password);
+
         return builder.routes()
                 .route(spec -> spec
                         .path("/**")
                         .filters(filterSpec -> filterSpec
                                 .removeRequestHeader("Origin")
-                                .addRequestHeader(AUTHORIZATION, "Basic " + encodeBasicAuth(username, password, UTF_8)))
+                                .filter(authenticationHeaderFilter))
                         .uri(url)
                 ).build();
     }
