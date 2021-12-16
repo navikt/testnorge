@@ -23,9 +23,9 @@ import static org.springframework.http.HttpHeaders.encodeBasicAuth;
 @SpringBootApplication
 public class TpsForvaterenProxyApplicationStarter {
 
-    @Value("{credentials.username}")
+    @Value("${username}")
     private String username;
-    @Value("{credentials.password}")
+    @Value("${password}")
     private String password;
     @Value("${proxy.url}")
     private String url;
