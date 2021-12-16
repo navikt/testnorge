@@ -88,7 +88,7 @@ public class SyntAmeldingConsumer {
                 arbeidsforhold.getIdent(),
                 arbeidsforhold.getArbeidsforholdId(),
                 arbeidsforhold.getVirksomhetsnummer())
-        ).collect(Collectors.toList());
+        ).toList();
 
         list.stream()
                 .filter(value -> value.getSluttdato() != null)
