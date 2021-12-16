@@ -15,9 +15,6 @@ spring:
 consumers:
   hodejegeren:
     url: http://localhost:${wiremock.server.port}/hodejegeren
-  helsepersonell:
-    client_id: dummy
-    url: http://localhost:${wiremock.server.port}/helsepersonell
   synt-sykemelding:
     url: http://localhost:${wiremock.server.port}/synt
     name: synthdata-elsam-gcp

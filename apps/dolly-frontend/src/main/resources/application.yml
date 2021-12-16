@@ -9,6 +9,12 @@ spring:
     oauth2:
       client:
         registration:
+          idporten:
+            client-id: ${IDPORTEN_CLIENT_ID}
+            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+            post-logout-redirect-uri: ${POST_LOGOUT_REDIRECT_URI}
+            scope: openid
+            client-authentication-method: private_key_jwt
           aad:
             client-id: ${azure.app.client.id}
             client-secret: ${azure.app.client.secret}
@@ -20,6 +26,8 @@ spring:
             authorization-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/authorize
             token-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/token
             jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          idporten:
+            issuer-uri: ${IDPORTEN_ISSUER_URI}
 consumers:
   testnav-tps-messaging-service:
     cluster: dev-gcp
@@ -94,8 +102,8 @@ consumers:
   testnorge-profil-api:
     cluster: dev-gcp
     namespace: dolly
-    name: testnorge-profil-api
-    url: https://testnorge-profil-api.dev.intern.nav.no
+    name: ${TESTNORGE_PROFIL_API_NAME}
+    url: ${TESTNORGE_PROFIL_API_URL}
   testnav-varslinger-service:
     cluster: dev-gcp
     namespace: dolly
@@ -136,6 +144,16 @@ consumers:
     namespace: dolly
     name: testnorge-tilbakemelding-api
     url: https://testnorge-tilbakemelding-api.dev.intern.nav.no
+  testnav-person-organisasjon-tilgang-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: ${TESTNAV_PERSON_ORG_TILGANG_SERVICE_NAME}
+    url: ${TESTNAV_PERSON_ORG_TILGANG_SERVICE_URL}
+  testnav-bruker-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: ${TESTNAV_BRUKER_SERVICE_NAME}
+    url: ${TESTNAV_BRUKER_SERVICE_URL}
   testnav-pdl-forvalter:
     cluster: dev-gcp
     namespace: dolly

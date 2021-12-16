@@ -17,6 +17,7 @@ const mapStateToProps = (state) => ({
 	gruppeListe: _orderBy(sokSelectorGruppeOversikt(state), 'id', 'desc'),
 	gruppeInfo: state.gruppe.gruppeInfo,
 	importerteZIdenter: state.gruppe.importerteZIdenter,
+	brukerProfil: state.bruker.brukerProfil,
 })
 
 const mapDispatchToProps = {

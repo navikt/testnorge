@@ -10,11 +10,6 @@ spec:
   port: 8080
   tokenx:
     enabled: true
-  maskinporten:
-    enabled: true
-    scopes:
-      consumes:
-        - name: "altinn:serviceowner/reportees"
   accessPolicy:
     inbound:
       rules:
@@ -39,6 +34,7 @@ spec:
     failureThreshold: 500
   envFrom:
     - secret: altinn-prod
+    - secret: maskinporten-dolly-dev-gcp
   replicas:
     min: 1
     max: 1

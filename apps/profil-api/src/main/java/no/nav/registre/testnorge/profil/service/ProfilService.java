@@ -37,7 +37,7 @@ public class ProfilService {
                                     userInfo.brukernavn(),
                                     "[ukjent]",
                                     "[ukjent]",
-                                    dto.navn() + ("AS".equals(dto.organisasjonsfrom()) ? " AS" : ""),
+                                    dto.navn(),
                                     "BankId")
                             ).block()
             ).orElse(new Profil(
@@ -61,5 +61,4 @@ public class ProfilService {
                 .get(JwtClaimNames.ISS)
                 .equals(tokenXResourceServerProperties.getIssuerUri());
     }
-
 }

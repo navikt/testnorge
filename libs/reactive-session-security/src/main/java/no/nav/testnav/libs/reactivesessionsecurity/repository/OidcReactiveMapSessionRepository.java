@@ -72,7 +72,8 @@ public class OidcReactiveMapSessionRepository implements ReactiveSessionReposito
             var securityContext = (SecurityContextImpl) value.getAttribute("SPRING_SECURITY_CONTEXT");
             if (securityContext != null) {
                 var principal = (DefaultOidcUser) securityContext.getAuthentication().getPrincipal();
-                if (Objects.equals(sid, principal.getClaims().get("sid"))) sessionsWithSid.add(key);
+                var sidClaim = principal.getClaims().get("sid");
+                if (sidClaim != null && Objects.equals(sid, sidClaim)) sessionsWithSid.add(key);
             }
         });
 

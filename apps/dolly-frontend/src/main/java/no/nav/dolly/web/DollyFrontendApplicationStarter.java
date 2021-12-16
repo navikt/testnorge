@@ -2,6 +2,21 @@ package no.nav.dolly.web;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.gateway.filter.GatewayFilter;
+import org.springframework.cloud.gateway.route.Route;
+import org.springframework.cloud.gateway.route.RouteLocator;
+import org.springframework.cloud.gateway.route.builder.Buildable;
+import org.springframework.cloud.gateway.route.builder.PredicateSpec;
+import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
+import reactor.core.publisher.Mono;
+
+import java.util.Optional;
+import java.util.function.Function;
+
 import no.nav.dolly.web.credentials.DollyBackendProperties;
 import no.nav.dolly.web.credentials.PersonSearchServiceProperties;
 import no.nav.dolly.web.credentials.TestnavAdresseServiceProperties;
@@ -17,6 +32,7 @@ import no.nav.dolly.web.credentials.TestnavOrganisasjonForvalterProperties;
 import no.nav.dolly.web.credentials.TestnavOrganisasjonServiceProperties;
 import no.nav.dolly.web.credentials.TestnavPdlForvalterProperties;
 import no.nav.dolly.web.credentials.TestnavPensjonTestdataFacadeProxyProperties;
+import no.nav.dolly.web.credentials.TestnavPersonOrganisasjonTilgangServiceProperties;
 import no.nav.dolly.web.credentials.TestnavSigrunstubProxyProperties;
 import no.nav.dolly.web.credentials.TestnavTestnorgeAaregProxyProperties;
 import no.nav.dolly.web.credentials.TestnavTestnorgeInstProxyProperties;
@@ -28,21 +44,14 @@ import no.nav.dolly.web.credentials.UdiStubProxyProperties;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
 import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
+import no.nav.testnav.libs.reactivefrontend.filter.AddUserJwtHeaderToRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.TestnavBrukerServiceProperties;
+import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.UserJwtExchange;
+import no.nav.testnav.libs.securitycore.config.UserSessionConstant;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.gateway.filter.GatewayFilter;
-import org.springframework.cloud.gateway.route.Route;
-import org.springframework.cloud.gateway.route.RouteLocator;
-import org.springframework.cloud.gateway.route.builder.Buildable;
-import org.springframework.cloud.gateway.route.builder.PredicateSpec;
-import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 
-import java.util.function.Function;
 
 @Slf4j
 @Import({
@@ -54,12 +63,14 @@ import java.util.function.Function;
 public class DollyFrontendApplicationStarter {
 
     private final TokenExchange tokenExchange;
+    private final UserJwtExchange userJwtExchange;
 
     private final TestnavOrganisasjonFasteDataServiceProperties testnavOrganisasjonFasteDataServiceProperties;
     private final TestnavJoarkDokumentServiceProperties testnavJoarkDokumentServiceProperties;
     private final TestnavInntektstubProxyProperties testnavInntektstubProxyProperties;
     private final TpsForvalterenProxyProperties tpsForvalterenProxyProperties;
     private final TpsMessagingServiceProperties tpsMessagingServiceProperties;
+    private final TestnavBrukerServiceProperties testnavBrukerServiceProperties;
     private final TestnavBrregstubProxyProperties testnavBrregstubProxyProperties;
     private final TestnavHodejegerenProxyProperties testnavHodejegerenProxyProperties;
     private final TestnavArenaForvalterenProxyProperties testnavArenaForvalterenProxyProperties;
@@ -68,6 +79,7 @@ public class DollyFrontendApplicationStarter {
     private final TestnavTestnorgeInstProxyProperties testnavTestnorgeInstProxyProperties;
     private final TestnavSigrunstubProxyProperties testnavSigrunstubProxyProperties;
     private final TestnavPensjonTestdataFacadeProxyProperties testnavPensjonTestdataFacadeProxyProperties;
+    private final TestnavPersonOrganisasjonTilgangServiceProperties testnavPersonOrganisasjonTilgangServiceProperties;
     private final DollyBackendProperties dollyBackendProperties;
     private final TestnorgeProfilApiProperties testnorgeProfilApiProperties;
     private final TestnavVarslingerServiceProperties testnavVarslingerServiceProperties;
@@ -89,6 +101,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(testnavVarslingerServiceProperties, "testnav-varslinger-service"))
                 .route(createRoute(testnorgeProfilApiProperties))
                 .route(createRoute(tpsMessagingServiceProperties, "testnav-tps-messaging-service"))
+                .route(createRoute(testnorgeProfilApiProperties, "testnorge-profil-api"))
                 .route(createRoute(testnavMiljoerServiceProperties))
                 .route(createRoute(dollyBackendProperties, "dolly-backend"))
                 .route(createRoute(testnavJoarkDokumentServiceProperties))
@@ -106,6 +119,8 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(udiStubProxyProperties, "udi-stub"))
                 .route(createRoute(testnavPdlForvalterProperties, "testnav-pdl-forvalter"))
                 .route(createRoute(personSearchServiceProperties))
+                .route(createRoute(testnavPersonOrganisasjonTilgangServiceProperties, "testnav-person-organisasjon-tilgang-service"))
+                .route(createRoute(testnavBrukerServiceProperties, "testnav-bruker-service"))
                 .build();
     }
 
@@ -120,6 +135,16 @@ public class DollyFrontendApplicationStarter {
                             .exchange(serverProperties, exchange)
                             .map(AccessToken::getTokenValue);
                 });
+    }
+
+    private GatewayFilter addUserJwtHeaderFilter() {
+        return new AddUserJwtHeaderToRequestGatewayFilterFactory().apply(exchange -> {
+            return exchange.getSession()
+                    .flatMap(session -> Optional.ofNullable(session.getAttribute(UserSessionConstant.SESSION_USER_ID_KEY))
+                            .map(value -> Mono.just((String) value))
+                            .orElse(Mono.empty())
+                    ).flatMap(id -> userJwtExchange.generateJwt(id, exchange));
+        });
     }
 
     private Function<PredicateSpec, Buildable<Route>> createRoute(ServerProperties serverProperties) {
@@ -139,12 +164,11 @@ public class DollyFrontendApplicationStarter {
     }
 
     private Function<PredicateSpec, Buildable<Route>> createRoute(String segment, String host, GatewayFilter filter) {
-        log.info("Redirect fra segment {} til host {}.", segment, host);
         return spec -> spec
                 .path("/" + segment + "/**")
                 .filters(filterSpec -> filterSpec
                         .rewritePath("/" + segment + "/(?<segment>.*)", "/${segment}")
-                        .filter(filter)
+                        .filters(filter, addUserJwtHeaderFilter())
                 ).uri(host);
     }
 }

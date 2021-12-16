@@ -6,6 +6,11 @@ metadata:
   labels:
     team: dolly
 spec:
+  env:
+    - name: PERSON_ORG_TILGANG_NAME
+      value: testnav-person-organisasjon-tilgang-service
+    - name: PERSON_ORG_TILGANG_URL
+      value: https://testnav-person-organisasjon-tilgang-service.dev.intern.nav.no
   image: {{image}}
   tokenx:
     enabled: true
@@ -68,3 +73,6 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://testnorge-profil-api.dev.intern.nav.no"
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod

@@ -23,17 +23,19 @@ import static org.springframework.http.HttpHeaders.encodeBasicAuth;
 @SpringBootApplication
 public class TpsForvaterenProxyApplicationStarter {
 
-    @Value("${username}")
+    @Value("{credentials.username}")
     private String username;
-    @Value("${password}")
+    @Value("{credentials.password}")
     private String password;
+    @Value("${proxy.url}")
+    private String url;
 
     public static void main(String[] args) {
         SpringApplication.run(TpsForvaterenProxyApplicationStarter.class, args);
     }
 
     @Bean
-    public RouteLocator customRouteLocator(RouteLocatorBuilder builder, @Value("${proxy.url}") String url) {
+    public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
 
         return builder.routes()
                 .route(spec -> spec

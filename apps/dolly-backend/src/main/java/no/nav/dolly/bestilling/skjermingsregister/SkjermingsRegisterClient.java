@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -39,27 +40,23 @@ public class SkjermingsRegisterClient implements ClientRegister {
 
         dollyPersonCache.fetchIfEmpty(dollyPerson);
 
-        if (nonNull(bestilling.getTpsf()) && nonNull(bestilling.getTpsf().getEgenAnsattDatoFom())) {
+        if ((nonNull(bestilling.getTpsf()) && nonNull(bestilling.getTpsf().getEgenAnsattDatoFom())) ||
+                (nonNull(bestilling.getSkjerming()))) {
+
+            var skjermetFra = nonNull(bestilling.getSkjerming())
+                    ? bestilling.getSkjerming().getEgenAnsattDatoFom()
+                    : bestilling.getTpsf().getEgenAnsattDatoFom();
+
+            var skjermetTil = nonNull(bestilling.getSkjerming()) && nonNull(bestilling.getSkjerming().getEgenAnsattDatoTom())
+                    ? bestilling.getSkjerming().getEgenAnsattDatoTom()
+                    : nonNull(bestilling.getTpsf())
+                    ? bestilling.getTpsf().getEgenAnsattDatoTom()
+                    : null;
 
             StringBuilder status = new StringBuilder();
-            for (Person person : dollyPerson.getPersondetaljer()) {
-                try {
-                    SkjermingsDataRequest skjermingsDataRequest = mapperFacade.map(BestillingPersonWrapper.builder()
-                                    .bestilling(bestilling.getTpsf())
-                                    .person(person)
-                                    .build(),
-                            SkjermingsDataRequest.class);
-                    if (isAlleredeSkjermet(person) && nonNull(bestilling.getTpsf().getEgenAnsattDatoTom())) {
-                        skjermingsRegisterConsumer.putSkjerming(person.getIdent());
-                    } else if (!isAlleredeSkjermet(person) && isNull(bestilling.getTpsf().getEgenAnsattDatoTom())) {
-                        skjermingsRegisterConsumer.postSkjerming(List.of(skjermingsDataRequest));
-                    }
-                } catch (RuntimeException e) {
-                    status.append(errorStatusDecoder.decodeRuntimeException(e));
-                    log.error("Feilet å skjerme person med ident: {}", person.getIdent(), e);
-                    break;
-                }
-            }
+
+            sendSkjermingDataRequests(dollyPerson, skjermetFra, skjermetTil, status);
+
             progress.setSkjermingsregisterStatus(isNotBlank(status) ? status.toString() : "OK");
         }
     }
@@ -70,10 +67,33 @@ public class SkjermingsRegisterClient implements ClientRegister {
         identer.forEach(skjermingsRegisterConsumer::deleteSkjerming);
     }
 
+    private void sendSkjermingDataRequests(DollyPerson dollyPerson, LocalDateTime skjermetFra, LocalDateTime skjermetTil, StringBuilder status) {
+        for (Person person : dollyPerson.getPersondetaljer()) {
+            try {
+                SkjermingsDataRequest skjermingsDataRequest = mapperFacade.map(BestillingPersonWrapper.builder()
+                                .skjermetFra(skjermetFra)
+                                .skjermetTil(skjermetTil)
+                                .person(person)
+                                .build(),
+                        SkjermingsDataRequest.class);
+                if (isAlleredeSkjermet(person) && nonNull(skjermetTil)) {
+                    skjermingsRegisterConsumer.putSkjerming(person.getIdent());
+                } else if (!isAlleredeSkjermet(person) && isNull(skjermetTil)) {
+                    skjermingsRegisterConsumer.postSkjerming(List.of(skjermingsDataRequest));
+                }
+            } catch (RuntimeException e) {
+                status.append(errorStatusDecoder.decodeRuntimeException(e));
+                log.error("Feilet å skjerme person: {}", person.getIdent(), e);
+                break;
+            }
+        }
+    }
+
     private boolean isAlleredeSkjermet(Person person) {
 
         try {
             ResponseEntity<SkjermingsDataResponse> skjermingResponseEntity = skjermingsRegisterConsumer.getSkjerming(person.getIdent());
+            log.info("Respons fra skjermingsregister: {}", skjermingResponseEntity.getBody());
             if (skjermingResponseEntity.getStatusCode().equals(HttpStatus.OK)) {
                 return true;
             }

@@ -162,4 +162,17 @@ public class TestgruppeService {
 
         return testgruppe;
     }
+
+    public void leggTilIdent(Long gruppeId, String ident, Testident.Master master) {
+
+        var testgruppe = fetchTestgruppeById(gruppeId);
+        identService.saveIdentTilGruppe(ident, testgruppe, master, null);
+    }
+
+    public void slettIdent(Long gruppeId, String ident) {
+
+        fetchTestgruppeById(gruppeId);
+        identService.getTestIdent(ident);
+        identService.slettTestident(ident);
+    }
 }
