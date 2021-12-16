@@ -127,7 +127,10 @@ export const SelectOptionsOppslag = {
 			const enheter = data.value ? Object.entries(data.value.data) : []
 			const options = []
 			enheter.forEach((enhet) => {
-				options.push({ value: enhet?.[1]?.enhetNr, label: enhet?.[1]?.navn })
+				options.push({
+					value: enhet?.[1]?.enhetNr,
+					label: `${enhet?.[1]?.navn} (${enhet?.[1]?.enhetNr})`,
+				})
 			})
 			return options
 		} else if (type === 'sdpLeverandoer') {

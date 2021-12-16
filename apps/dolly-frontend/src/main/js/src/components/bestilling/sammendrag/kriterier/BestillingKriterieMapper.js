@@ -452,7 +452,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						obj('Type sikkerhetstiltak', item.tiltakstype),
 						obj('Beskrivelse', item.beskrivelse),
 						obj('Kontaktperson', item.kontaktperson.personident),
-						obj('Kontaktperson enhet', item.kontaktperson.enhet),
+						obj('Navkontor kode', item.kontaktperson.enhet),
 						obj('Gyldig fra og med', Formatters.formatDate(item.gyldigFraOgMed)),
 						obj('Gyldig til og med', Formatters.formatDate(item.gyldigTilOgMed)),
 					]

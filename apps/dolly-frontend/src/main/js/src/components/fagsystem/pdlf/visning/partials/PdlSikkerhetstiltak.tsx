@@ -42,7 +42,7 @@ export const Visning = ({ data }: Data) => {
 					<TitleValue title="Tiltakstype" value={data.tiltakstype} />
 					<TitleValue title="Beskrivelse" value={data.beskrivelse} />
 					<TitleValue title="Kontaktperson ident" value={data.kontaktperson.personident} />
-					<TitleValue title="Kontaktperson enhet" value={data.kontaktperson.enhet} />
+					<TitleValue title="NAV kontor" value={data.kontaktperson.enhet} />
 				</ErrorBoundary>
 			</div>
 		</>
@@ -50,7 +50,6 @@ export const Visning = ({ data }: Data) => {
 }
 
 export const PdlSikkerhetstiltak = ({ data }: DataListe) => {
-	console.log('data: ', data) //TODO - SLETT MEG
 	if (!data || data.length === 0) return null
 	return (
 		<div>

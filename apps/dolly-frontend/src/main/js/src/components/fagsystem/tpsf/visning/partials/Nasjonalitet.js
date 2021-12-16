@@ -43,7 +43,9 @@ export const Nasjonalitet = ({ data, tpsMessagingData, visTittel = true }) => {
 						</DollyFieldArray>
 					</ErrorBoundary>
 				) : (
-					<Statsborgerskap statsborgerskap={statsborgerskap[0]} />
+					<Statsborgerskap
+						statsborgerskap={Array.isArray(statsborgerskap) ? statsborgerskap[0] : statsborgerskap}
+					/>
 				)}
 				<TitleValue
 					title="Språk"
