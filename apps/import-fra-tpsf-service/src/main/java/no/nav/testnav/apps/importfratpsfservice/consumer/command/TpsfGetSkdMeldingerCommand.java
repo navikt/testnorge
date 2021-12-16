@@ -10,13 +10,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
 @Slf4j
 @RequiredArgsConstructor
-public class TpsfGetSkdMeldingerCommand implements Callable<Mono<SkdEndringsmelding[]>> {
+public class TpsfGetSkdMeldingerCommand implements Callable<Flux<SkdEndringsmelding>> {
 
     private static final String TPSF_SKD_GRUPPE_URL = "/api/v1/endringsmelding/skd/gruppe/meldinger/{gruppeId}/{pageNumber}";
     private static final String IMPORT_FRA_TPSF = "Import-fra-TPSF-service";
@@ -34,7 +35,7 @@ public class TpsfGetSkdMeldingerCommand implements Callable<Mono<SkdEndringsmeld
     }
 
     @Override
-    public Mono<SkdEndringsmelding[]> call() {
+    public Flux<SkdEndringsmelding> call() {
 
         return webClient
                 .get()
@@ -42,7 +43,7 @@ public class TpsfGetSkdMeldingerCommand implements Callable<Mono<SkdEndringsmeld
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
-                .bodyToMono(SkdEndringsmelding[].class)
+                .bodyToFlux(SkdEndringsmelding.class)
                 .onErrorResume(throwable -> {
                     log.error(getMessage(throwable));
                     if (throwable instanceof WebClientResponseException) {

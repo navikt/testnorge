@@ -5,17 +5,18 @@ import no.nav.testnav.apps.importfratpsfservice.config.credentials.TpsfPropertie
 import no.nav.testnav.apps.importfratpsfservice.consumer.command.TpsfGetSkdMeldingerCommand;
 import no.nav.testnav.apps.importfratpsfservice.dto.SkdEndringsmelding;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 
 @Slf4j
 @Service
 public class TpsfConsumer {
 
     private final WebClient webClient;
-    private final no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange tokenExchange;
-    private final no.nav.testnav.libs.securitycore.domain.ServerProperties properties;
+    private final TokenExchange tokenExchange;
+    private final ServerProperties properties;
 
     public TpsfConsumer(TokenExchange tokenExchange, TpsfProperties properties) {
         this.tokenExchange = tokenExchange;
@@ -26,9 +27,9 @@ public class TpsfConsumer {
                 .build();
     }
 
-    public Mono<SkdEndringsmelding[]> getSkdMeldinger(Long gruppeId, Long sidenummer) {
+    public Flux<SkdEndringsmelding> getSkdMeldinger(Long gruppeId, Long sidenummer) {
 
-        return tokenExchange.exchange(properties).flatMap(
+        return tokenExchange.exchange(properties).flatMapMany(
                 token -> new TpsfGetSkdMeldingerCommand(webClient, gruppeId, sidenummer, token.getTokenValue()).call());
     }
 }

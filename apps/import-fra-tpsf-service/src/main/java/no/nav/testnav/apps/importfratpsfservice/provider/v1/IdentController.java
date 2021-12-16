@@ -2,6 +2,7 @@ package no.nav.testnav.apps.importfratpsfservice.provider.v1;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import no.nav.testnav.apps.importfratpsfservice.dto.SkdEndringsmelding;
 import no.nav.testnav.apps.importfratpsfservice.service.TpsfService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,8 +21,8 @@ public class IdentController {
 
     @Operation(description = "Leser SKD-meldinger med personer fra TPSF-gruppe og legger disse inn PDL-forvalter + eksisterende Dolly-gruppe")
     @PutMapping(value = "/gruppe/{gruppeId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<Object> importIdenter(@PathVariable("gruppeId") Long skdGruppeId,
-                                              @RequestParam Long dollyGruppeId) {
+    public Flux<SkdEndringsmelding> importIdenter(@PathVariable("gruppeId") Long skdGruppeId,
+                                                 @RequestParam Long dollyGruppeId) {
 
         return tpsfService.importIdenter(skdGruppeId, dollyGruppeId);
     }
