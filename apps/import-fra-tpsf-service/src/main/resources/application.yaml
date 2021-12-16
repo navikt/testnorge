@@ -3,8 +3,7 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 spring:
   application:
     name: import-fra-tpsf-service
-  flyway:
-    enabled: false
+    description: Tjeneste for å hente SKD-meldinger og sende disse til PDL
   security:
     oauth2:
       resourceserver:
@@ -15,7 +14,7 @@ spring:
         tokenx:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
-          accepted-audience: ${TOKEN_X_CLIENT_ID}
+          accepted-audience: dev-gcp:dolly:testnav-person-faste-data-service
 
 
 consumers:

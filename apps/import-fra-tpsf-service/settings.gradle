@@ -4,9 +4,10 @@ plugins {
 
 rootProject.name = 'import-fra-tpsf-service'
 
+includeBuild '../../libs/reactive-core'
+includeBuild '../../libs/reactive-proxy'
+includeBuild '../../libs/reactive-security'
 includeBuild '../../libs/security-core'
-includeBuild '../../libs/servlet-core'
-includeBuild '../../libs/servlet-security'
 includeBuild '../../libs/data-transfer-objects'
 
 

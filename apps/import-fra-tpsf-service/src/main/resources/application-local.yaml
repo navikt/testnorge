@@ -3,6 +3,9 @@ azure.app.client.secret: ${client_secret}
 TOKEN_X_CLIENT_ID: dev-gcp:dolly:import-fra-tpsf-service
 
 consumers:
+  tps-forvalteren:
+    url: https://tps-forvalteren-dev-proxy.dev-fss-pub.nais.io
+    name: tps-forvalteren-dev-proxy
   pdl-forvalter:
     url: https://testnav-pdl-forvalter-dev.dev.intern.nav.no
     name: testnav-pdl-forvalter-dev
