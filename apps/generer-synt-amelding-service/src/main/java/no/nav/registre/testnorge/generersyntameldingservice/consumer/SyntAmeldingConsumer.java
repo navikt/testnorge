@@ -9,6 +9,7 @@ import no.nav.testnav.libs.domain.dto.aareg.amelding.ArbeidsforholdPeriode;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
@@ -23,7 +24,14 @@ public class SyntAmeldingConsumer {
     public SyntAmeldingConsumer(TokenExchange tokenExchange, SyntAmeldingProperties properties) {
         this.tokenExchange = tokenExchange;
         this.properties = properties;
-        this.webClient = WebClient.builder().baseUrl(properties.getUrl()).build();
+        this.webClient = WebClient.builder()
+                .exchangeStrategies(ExchangeStrategies.builder()
+                        .codecs(configurer -> configurer
+                                .defaultCodecs()
+                                .maxInMemorySize(16 * 1024 * 1024))
+                        .build())
+                .baseUrl(properties.getUrl())
+                .build();
     }
 
     public Arbeidsforhold getEnkeltArbeidsforhold(ArbeidsforholdPeriode periode, ArbeidsforholdType arbeidsforholdType) {
