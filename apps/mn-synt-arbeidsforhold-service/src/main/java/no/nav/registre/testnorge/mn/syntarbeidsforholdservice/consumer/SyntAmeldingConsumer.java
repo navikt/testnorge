@@ -71,13 +71,22 @@ public class SyntAmeldingConsumer {
     }
 
     @SneakyThrows
-    public List<Arbeidsforhold> getArbeidsforholdHistorikk(Arbeidsforhold arbeidsforhold, LocalDate kalendermaaned, Integer count) {
+    public List<Arbeidsforhold> getArbeidsforholdHistorikk(
+            Arbeidsforhold arbeidsforhold,
+            LocalDate kalendermaaned,
+            Integer count,
+            boolean retry
+    ) {
         log.info("Finner arbeidsforhold historikk fra og med {}.", kalendermaaned.plusMonths(1));
         List<ArbeidsforholdResponse> response = getArbeidsforholdHistorikkResponse(arbeidsforhold, kalendermaaned, count);
 
         if (response.isEmpty()) {
-            log.info("Fant ikke historikk. Prøver på nytt.");
-            return getArbeidsforholdHistorikk(arbeidsforhold, kalendermaaned, count);
+            if (retry) {
+                log.info("Fant ikke historikk. Prøver på nytt.");
+                return getArbeidsforholdHistorikk(arbeidsforhold, kalendermaaned, count, false);
+            } else {
+                throw new SyntetiseringException(OPPRETTELSE_FEILMELDING + "empty response.");
+            }
         }
 
         log.info("Fant historikk for {} måneder.", response.size());

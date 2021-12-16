@@ -26,7 +26,7 @@ public class ArbeidsforholdSyntService {
     }
 
     public List<Arbeidsforhold> getArbeidsforholdHistorikk(Arbeidsforhold arbeidsforhold, LocalDate kalendermaaned, Integer count) {
-        return syntAmeldingConsumer.getArbeidsforholdHistorikk(arbeidsforhold, kalendermaaned, count);
+        return syntAmeldingConsumer.getArbeidsforholdHistorikk(arbeidsforhold, kalendermaaned, count, true);
     }
 
 }
