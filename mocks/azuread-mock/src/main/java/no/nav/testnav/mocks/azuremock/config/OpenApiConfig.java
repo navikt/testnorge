@@ -1,4 +1,4 @@
-package no.nav.testnav.mocks.tokendingsmock.config;
+package no.nav.testnav.mocks.azuremock.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
