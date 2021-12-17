@@ -1,7 +1,8 @@
 package no.nav.testnav.apps.oversiktfrontend;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.libs.reactivesessionsecurity.config.OidcInMemorySessionV2Configuration;
+
+import no.nav.testnav.libs.reactivesessionsecurity.config.OicdInMemorySessionConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -32,7 +33,7 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 
 @Import({
         CoreConfig.class,
-        OidcInMemorySessionV2Configuration.class,
+        OicdInMemorySessionConfiguration.class,
         FrontendConfig.class
 })
 @SpringBootApplication
