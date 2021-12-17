@@ -10,7 +10,7 @@ import { addDays, subDays } from 'date-fns'
 import { cloneDeep } from 'lodash'
 
 const innvandret = (personFoerLeggTil) =>
-	_get(personFoerLeggTil, 'tpsf.innvandretUtvandret[0].innutvandret') === 'INNVANDRET'
+	_get(personFoerLeggTil, 'pdldata.person.innvandretUtvandret[0].innutvandret') === 'INNVANDRET'
 
 export const PersoninformasjonPanel = ({ stateModifier }) => {
 	const sm = stateModifier(PersoninformasjonPanel.initialValues)
@@ -20,7 +20,7 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 	const { personFoerLeggTil } = opts
 
 	const tomInnvandretUtvandret =
-		personFoerLeggTil && _get(personFoerLeggTil, 'tpsf.innvandretUtvandret').length < 1
+		personFoerLeggTil && _get(personFoerLeggTil, 'pdldata.person.innvandretUtvandret').length < 1
 
 	const harFnr = opts.identtype === 'FNR'
 	const harFnrLeggTil = _get(personFoerLeggTil, 'tpsf.identtype') === 'FNR'
@@ -139,22 +139,53 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		},
 		innvandretFraLand: {
 			label: 'Innvandret fra',
-			checked: has('tpsf.innvandretFraLand'),
+			checked: has('pdldata.person.innvandring'),
 			add() {
-				setMulti(['tpsf.innvandretFraLand', ''], ['tpsf.innvandretFraLandFlyttedato', null])
+				_has(personFoerLeggTil, 'pdlforvalter[0].person.innvandretFraLand') //TODO Sjekke om denne er good
+					? setMulti([
+							'pdldata.person.innvandring',
+							_get(personFoerLeggTil, 'pdlforvalter[0].person.innvandretFraLand'),
+					  ])
+					: setMulti([
+							'pdldata.person.innvandring',
+							[
+								{
+									fraflyttingsland: '',
+									fraflyttingsstedIUtlandet: '',
+									master: 'PDL',
+									kilde: 'Dolly',
+								},
+							],
+					  ])
 			},
 			remove() {
-				del(['tpsf.innvandretFraLand', 'tpsf.innvandretFraLandFlyttedato'])
+				del('pdldata.person.innvandring')
 			},
 		},
-		utvandretTilLand: {
-			label: 'Utvandret til',
-			checked: has('tpsf.utvandretTilLand'),
+		utvandretFraLand: {
+			label: 'Utvandret fra',
+			checked: has('pdldata.person.utvandring'),
 			add() {
-				setMulti(['tpsf.utvandretTilLand', ''], ['tpsf.utvandretTilLandFlyttedato', null])
+				_has(personFoerLeggTil, 'pdlforvalter[0].person.utvandretFraLand') //TODO Sjekke om denne er good
+					? setMulti([
+							'pdldata.person.utvandring',
+							_get(personFoerLeggTil, 'pdlforvalter[0].person.utvandretFraLand'),
+					  ])
+					: setMulti([
+							'pdldata.person.utvandring',
+							[
+								{
+									tilflyttingsland: '',
+									tilflyttingsstedIUtlandet: '',
+									utflyttingsdato: new Date(),
+									master: 'PDL',
+									kilde: 'Dolly',
+								},
+							],
+					  ])
 			},
 			remove() {
-				del(['tpsf.utvandretTilLand', 'tpsf.utvandretTilLandFlyttedato'])
+				del('pdldata.person.utvandring')
 			},
 		},
 		identHistorikk: {
