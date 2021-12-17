@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static no.nav.testnav.apps.importfratpsfservice.mapper.HusbokstavDekoder.getHusbokstav;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -28,7 +29,7 @@ public class AdresseMappingStrategy implements MappingStrategy {
     }
 
     private static LocalDateTime getDate(String dato) {
-        return isNotBlank(dato) ? LocalDate.parse(dato).atStartOfDay() : null;
+        return isNotBlank(dato) ? LocalDate.parse(dato, DateTimeFormatter.ofPattern("yyyyMMdd")).atStartOfDay() : null;
     }
 
     @Override

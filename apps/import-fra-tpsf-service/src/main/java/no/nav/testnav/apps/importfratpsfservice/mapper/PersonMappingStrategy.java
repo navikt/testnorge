@@ -12,7 +12,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -51,6 +50,7 @@ public class PersonMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(SkdEndringsmeldingTrans1 source, PersonDTO target, MappingContext context) {
 
+                        target.setIdent(source.getFodselsdato() + source.getPersonnummer());
                         target.getNavn().add(NavnDTO.builder()
                                 .fornavn(source.getFornavn())
                                 .mellomnavn(source.getMellomnavn())
