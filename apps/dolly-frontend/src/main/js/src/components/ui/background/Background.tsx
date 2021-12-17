@@ -29,7 +29,8 @@ export const ChristmasBackground = styled.div`
 
 export const SnowingBackground = styled.div`
 	background-image: url(data:image/svg+xml;base64,${btoa(Snowing)});
-	background-size: cover;
+	background-size: 100% auto;
+	background-repeat: no-repeat;
 	background-position: bottom;
 	background-color: #005077;
 `

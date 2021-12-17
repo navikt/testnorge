@@ -1,0 +1,6 @@
+{
+  "issuer": "http://azuread:8080",
+  "authorization_endpoint": "http://azuread:8080/authorization",
+  "token_endpoint": "http://azuread:8080/token",
+  "jwks_uri": "http://azuread:8080/jwks"
+}

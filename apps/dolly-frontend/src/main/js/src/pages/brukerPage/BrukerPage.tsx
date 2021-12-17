@@ -2,15 +2,15 @@ import React from 'react'
 import BlankHeader from '~/components/layout/blankHeader/BlankHeader'
 import BrukerModal from '~/pages/brukerPage/BrukerModel'
 import './BrukerPage.less'
-import { ChristmasBackground } from '~/components/ui/background/Background'
+import { SnowingBackground } from '~/components/ui/background/Background'
 
 export default () => {
 	return (
 		<React.Fragment>
 			<BlankHeader />
-			<ChristmasBackground>
+			<SnowingBackground>
 				<BrukerModal />
-			</ChristmasBackground>
+			</SnowingBackground>
 		</React.Fragment>
 	)
 }
