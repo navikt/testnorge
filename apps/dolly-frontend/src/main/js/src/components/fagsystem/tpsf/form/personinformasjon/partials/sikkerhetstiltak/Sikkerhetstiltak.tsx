@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { FormikProps } from 'formik'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
-import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
+import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import _get from 'lodash/get'
