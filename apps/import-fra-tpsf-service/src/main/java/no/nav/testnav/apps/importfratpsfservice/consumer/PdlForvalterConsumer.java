@@ -1,6 +1,8 @@
 package no.nav.testnav.apps.importfratpsfservice.consumer;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import no.nav.testnav.apps.importfratpsfservice.config.credentials.PdlForvalterProperties;
+import no.nav.testnav.apps.importfratpsfservice.consumer.command.PdlForvalterOrdreCommand;
 import no.nav.testnav.apps.importfratpsfservice.consumer.command.PdlForvalterPutCommand;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
@@ -29,5 +31,11 @@ public class PdlForvalterConsumer {
 
         return tokenExchange.exchange(properties).flatMap(
                 token -> new PdlForvalterPutCommand(webClient, ident, person, token.getTokenValue()).call());
+    }
+
+    public Mono<JsonNode> postOrdrePdlPerson(String ident) {
+
+        return tokenExchange.exchange(properties).flatMap(
+                token -> new PdlForvalterOrdreCommand(webClient, ident, token.getTokenValue()).call());
     }
 }

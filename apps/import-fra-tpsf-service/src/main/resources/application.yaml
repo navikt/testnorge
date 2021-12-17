@@ -18,6 +18,11 @@ spring:
 
 
 consumers:
+  dolly-backend:
+    url: https://dolly-backend.dev-fss-pub.nais.io
+    cluster: dev-fss
+    namespace: dolly
+    name: dolly-backend
   tps-forvalteren:
     url: https://tps-forvalteren-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
