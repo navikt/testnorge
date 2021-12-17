@@ -78,7 +78,7 @@ export const getBestillingById = (state, id) => state.bestillingStatuser.byId[id
 // Henter alle bestillinger som er gjort på en ident
 export const getBestillingsListe = (state, IDer) => {
 	const bestillingsListe = []
-	for (let id in IDer) {
+	for (let id of IDer) {
 		const bestilling = {
 			data: state.bestillingStatuser.byId[id].bestilling,
 			id: id,
