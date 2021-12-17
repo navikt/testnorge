@@ -44,9 +44,9 @@ public class PdlProxyApplicationStarter {
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder, StsOidcTokenService stsOidcTokenService) {
 
         var addAuthenticationHeaderFilter = AddAuthenticationRequestGatewayFilterFactory
-                .createAuthenticationHeaderFilter(stsOidcTokenService::getToken);
+                .bearerAuthenticationHeaderFilter(stsOidcTokenService::getToken);
         var addAuthorizationAndNavConsumerTokenToRouteFilter = AddAuthenticationRequestGatewayFilterFactory
-                .createAuthenticationAndNavConsumerTokenHeaderFilter(stsOidcTokenService::getToken);
+                .bearerAuthenticationAndNavConsumerTokenHeaderFilter(stsOidcTokenService::getToken);
 
         return builder
                 .routes()

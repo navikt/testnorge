@@ -52,9 +52,9 @@ public class DokarkivProxyApplicationStarter {
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder, StsOidcTokenService stsTestOidcTokenService, StsOidcTokenService stsPreprodOidcTokenService) {
         var preprodFilter = AddAuthenticationRequestGatewayFilterFactory
-                .createAuthenticationHeaderFilter(stsPreprodOidcTokenService::getToken);
+                .bearerAuthenticationHeaderFilter(stsPreprodOidcTokenService::getToken);
         var testFilter = AddAuthenticationRequestGatewayFilterFactory
-                .createAuthenticationHeaderFilter(stsTestOidcTokenService::getToken);
+                .bearerAuthenticationHeaderFilter(stsTestOidcTokenService::getToken);
         return builder
                 .routes()
                 .route(createRoute("q1", preprodFilter))

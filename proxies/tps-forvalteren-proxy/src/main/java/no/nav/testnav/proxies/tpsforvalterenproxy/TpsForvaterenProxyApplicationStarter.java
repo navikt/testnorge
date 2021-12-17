@@ -8,16 +8,10 @@ import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayF
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-import reactor.core.publisher.Mono;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.HttpHeaders.encodeBasicAuth;
 
 @Slf4j
 @Import({
@@ -43,7 +37,7 @@ public class TpsForvaterenProxyApplicationStarter {
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
 
         var authenticationHeaderFilter = AddAuthenticationRequestGatewayFilterFactory
-                .createBasicAuthenticationHeaderFilter(username, password);
+                .basicAuthAuthenticationHeaderFilter(username, password);
 
         return builder.routes()
                 .route(spec -> spec
