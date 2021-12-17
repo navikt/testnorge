@@ -1,5 +1,4 @@
 import React from 'react'
-import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { AdresseVelger } from '~/components/adresseVelger'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import LoadableComponent from '~/components/ui/loading/LoadableComponent'
@@ -8,6 +7,11 @@ import { AdresseKodeverk } from '~/config/kodeverk'
 import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
+import styled from 'styled-components'
+
+const StyledVegadresse = styled.div`
+	width: 100%;
+`
 
 export const Vegadresse = ({ formikBag, path }) => {
 	const settVegadresse = (adresse) => {
@@ -26,22 +30,8 @@ export const Vegadresse = ({ formikBag, path }) => {
 
 	const renderAdresse = (postnummerListe) => {
 		const { adressenavn, husnummer, postnummer } = _get(formikBag.values, path)
-		// let poststed = _get(formikBag.values, `${path}.poststed`)
 		if (!adressenavn) return ''
-
 		const poststed = postnummerListe.koder.find((element) => element.value === postnummer)?.label
-		console.log('poststed', poststed)
-
-		// if (postnummerListe.koder && postnummer) {
-		// 	for (let i = 0; i < postnummerListe.koder.length; i++) {
-		// 		if (postnummerListe.koder[i].value === postnummer) {
-		// 			// poststed = postnummerListe.koder[i].label
-		// 			// formikBag.setFieldValue(`${path}.poststed`, poststed)
-		// 			break
-		// 		}
-		// 	}
-		// }
-
 		return `${adressenavn} ${parseInt(husnummer)}, ${postnummer} ${poststed}`
 	}
 
@@ -56,7 +46,7 @@ export const Vegadresse = ({ formikBag, path }) => {
 
 	return (
 		<div className="flexbox--flex-wrap">
-			<div className="gateadresse">
+			<StyledVegadresse>
 				<AdresseVelger onSelect={settVegadresse} formikBag={formikBag} />
 				<ErrorBoundary>
 					<LoadableComponent
@@ -75,7 +65,7 @@ export const Vegadresse = ({ formikBag, path }) => {
 						)}
 					/>
 				</ErrorBoundary>
-			</div>
+			</StyledVegadresse>
 		</div>
 	)
 }

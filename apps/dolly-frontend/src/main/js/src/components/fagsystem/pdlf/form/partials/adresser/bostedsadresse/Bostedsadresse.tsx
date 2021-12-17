@@ -20,6 +20,8 @@ import _set from 'lodash/set'
 import { UkjentBosted } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/UkjentBosted'
 import { Matrikkeladresse } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/Matrikkeladresse'
 import { Vegadresse } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/Vegadresse'
+import { VegadresseVelger } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/VegadresseVelger'
+import styled from 'styled-components'
 
 export const Bostedsadresse = ({ formikBag }) => {
 	const handleChangeAdressetype = (target, path) => {
@@ -65,17 +67,25 @@ export const Bostedsadresse = ({ formikBag }) => {
 			>
 				{(path: string, idx: number) => {
 					const valgtAdressetype = _get(formikBag.values, `${path}.adressetype`)
+
 					return (
-						<>
-							<FormikSelect
-								name={`${path}.adressetype`}
-								label="Adressetype"
-								options={Options('adressetypePdl')}
-								onChange={(target) => handleChangeAdressetype(target, path)}
-								size="large"
-							/>
+						<React.Fragment key={idx}>
+							<div className="flexbox--full-width">
+								<FormikSelect
+									name={`${path}.adressetype`}
+									label="Adressetype"
+									options={Options('adressetypePdl')}
+									onChange={(target) => handleChangeAdressetype(target, path)}
+									size="large"
+								/>
+							</div>
 							{valgtAdressetype === 'VEGADRESSE' && (
-								<Vegadresse formikBag={formikBag} path={`${path}.vegadresse`} />
+								<VegadresseVelger
+									formikBag={formikBag}
+									path={`${path}.vegadresse`}
+									id={idx}
+									key={`veg_${idx}`}
+								/>
 							)}
 							{valgtAdressetype === 'MATRIKKELADRESSE' && (
 								<Matrikkeladresse formikBag={formikBag} path={`${path}.matrikkeladresse`} />
@@ -86,9 +96,11 @@ export const Bostedsadresse = ({ formikBag }) => {
 							{valgtAdressetype === 'UKJENT_BOSTED' && (
 								<UkjentBosted formikBag={formikBag} path={`${path}.ukjentBosted`} />
 							)}
-							<FormikDatepicker name={`${path}.angittFlyttedato`} label="Flyttedato" />
+							<div className="flexbox--full-width">
+								<FormikDatepicker name={`${path}.angittFlyttedato`} label="Flyttedato" />
+							</div>
 							<AvansertForm path={path} kanVelgeMaster={false} />
-						</>
+						</React.Fragment>
 					)
 				}}
 			</FormikDollyFieldArray>
