@@ -11,4 +11,5 @@ public class OrganisasjonForvalterApplicationStarter {
         SpringApplication.run(OrganisasjonForvalterApplicationStarter.class, args);
 
     }
+
 }
