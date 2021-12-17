@@ -1,15 +1,15 @@
 package no.nav.testnav.apps.importfratpsfservice.mapper;
 
+import lombok.experimental.UtilityClass;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import lombok.experimental.UtilityClass;
-import org.springframework.stereotype.Component;
 
 @UtilityClass
 public class HusbokstavDekoder {
 
     private static Map<String, String> encodingMap;
+
     static {
         encodingMap = new HashMap<>();
         encodingMap.put("9901", "A");
@@ -43,7 +43,7 @@ public class HusbokstavDekoder {
         encodingMap.put("9929", "Å");
         encodingMap.put("9930", "Á");
     }
-    
+
     public static String getHusbokstav(String skdKode) {
         return encodingMap.get(skdKode);
     }

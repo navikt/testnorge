@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -24,10 +23,11 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Component
 public class PersonMappingStrategy implements MappingStrategy {
 
+    private static final String EMPTY_VAL = "00000000";
     private static final String UTEN_FAST_BOSTED = "5";
 
     private static LocalDateTime getDate(String dato) {
-        return Objects.nonNull(dato) ? LocalDate.parse(dato).atStartOfDay() : null;
+        return isNotBlank(dato) && !EMPTY_VAL.equals(dato) ? LocalDate.parse(dato).atStartOfDay() : null;
     }
 
     private static AdresseBeskyttelse getAdressebeskyttelse(String spesreg) {

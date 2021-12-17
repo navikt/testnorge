@@ -23,13 +23,15 @@ public class AdresseMappingStrategy implements MappingStrategy {
     private static final String GATE_ADRESSE = "O";
     private static final String MATRIKKEL_ADRESSE = "M";
     private static final String UTEN_FAST_BOSTED = "5";
+    private static final String EMPTY_VAL = "00000000";
 
     private static Integer toNumeric(String number) {
         return isNotBlank(number) && isNumeric(number) ? Integer.getInteger(number) : null;
     }
 
     private static LocalDateTime getDate(String dato) {
-        return isNotBlank(dato) ? LocalDate.parse(dato, DateTimeFormatter.ofPattern("yyyyMMdd")).atStartOfDay() : null;
+        return isNotBlank(dato) && !EMPTY_VAL.equals(dato) ?
+                LocalDate.parse(dato, DateTimeFormatter.ofPattern("yyyyMMdd")).atStartOfDay() : null;
     }
 
     @Override

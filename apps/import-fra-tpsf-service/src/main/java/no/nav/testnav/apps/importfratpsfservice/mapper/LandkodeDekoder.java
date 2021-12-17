@@ -1,20 +1,9 @@
 package no.nav.testnav.apps.importfratpsfservice.mapper;
 
-import static java.time.LocalDateTime.of;
+import lombok.experimental.UtilityClass;
 
-import java.security.SecureRandom;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
-
-import lombok.experimental.UtilityClass;
-import org.springframework.stereotype.Service;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @UtilityClass
 public class LandkodeDekoder {
@@ -280,32 +269,5 @@ public class LandkodeDekoder {
         landkoderMap.put("359", "ZAF");
         landkoderMap.put("389", "ZMB");
         landkoderMap.put("326", "ZWE");
-
-//    public String getRandomLandTla() {
-//
-//        String landkode;
-//        do {
-//            landkode = (String) landkoderMap.keySet().toArray()[1 + random.nextInt(landkoderMap.size() - 2)];
-//
-//        } while (landkoderMap.get(landkode).fom.isAfter(START_OF_ERA) ||
-//                landkoderMap.get(landkode).tom.isBefore(FORESEEABLE_FUTURE) ||
-//                "NOR".equals(landkode));
-//
-//        return landkode;
-//    }
-//
-//    public String encode(String statsborgerskap) {
-//        return landkoderMap.getOrDefault(statsborgerskap, DEFAULT).getTpsCode();
-//    }
-
-//    @Getter
-//    @Setter
-//    @NoArgsConstructor
-//    @AllArgsConstructor
-//    static class LandDetails {
-//        private String tpsCode;
-//        private LocalDateTime fom;
-//        private LocalDateTime tom;
-//    }
     }
 }
