@@ -9,8 +9,9 @@ import _get from 'lodash/get'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import { genererTilfeldigeNavPersonidenter } from '~/utils/GenererTilfeldigeNavPersonidenter'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
-import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
 import { isToday } from 'date-fns'
+import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
+import { InputWarning } from '~/components/ui/form/inputWarning/inputWarning'
 
 interface SikkerhetstiltakValues {
 	tiltakstype: string
@@ -59,10 +60,6 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 		formikBag.setFieldValue(`${paths.tpsMessagingRootPath}.${path}`, value)
 	}
 
-	const gyldigFomErDagensDato = () => {
-		return isToday(_get(formikBag.values, 'pdldata.person.sikkerhetstiltak[0].gyldigFraOgMed'))
-	}
-
 	const [randomNavUsers, setRandomNavUsers] = useState([])
 	const [personident, setPersonident] = useState(
 		_get(formikBag.values, 'pdldata.person.sikkerhetstiltak[0].kontaktperson.personident')
@@ -75,12 +72,6 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 	return (
 		<Vis attributt={Object.values(paths)} formik>
 			<div className="flexbox--flex-wrap">
-				{!gyldigFomErDagensDato() && (
-					<AlertStripeAdvarsel>
-						TPS støtter kun sikkerhetstiltak fra gjeldende dato. Endre til dagens dato dersom et
-						gyldig sikkerhetstiltak fra TPS er ønsket.
-					</AlertStripeAdvarsel>
-				)}
 				<DollySelect
 					name={paths.tiltakstype}
 					label="Type sikkerhetstiltak"
@@ -116,14 +107,22 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 					size={'xxxlarge'}
 					options={navEnheterOptions}
 				/>
-				<FormikDatepicker
-					name={paths.gyldigFraOgMed}
-					label="Sikkerhetstiltak starter"
-					onChange={(date: Date) => {
-						// @ts-ignore
-						handleValueChange(date, 'gyldigFraOgMed')
-					}}
-				/>
+				<InputWarning
+					visWarning={
+						!isToday(_get(formikBag.values, 'pdldata.person.sikkerhetstiltak[0].gyldigFraOgMed'))
+					}
+					warningText="TPS støtter kun sikkerhetstiltak fra gjeldende dato. Endre til dagens dato dersom et
+						gyldig sikkerhetstiltak fra TPS er ønsket."
+				>
+					<FormikDatepicker
+						name={paths.gyldigFraOgMed}
+						label="Sikkerhetstiltak starter"
+						onChange={(date: Date) => {
+							// @ts-ignore
+							handleValueChange(date, 'gyldigFraOgMed')
+						}}
+					/>
+				</InputWarning>
 				<FormikDatepicker
 					name={paths.gyldigTilOgMed}
 					label="Sikkerhetstiltak opphører"
@@ -132,6 +131,7 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 						handleValueChange(date, 'gyldigTilOgMed')
 					}}
 				/>
+				<AvansertForm path={paths.rootPath} kanVelgeMaster={false} />
 			</div>
 		</Vis>
 	)

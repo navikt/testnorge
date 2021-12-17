@@ -7,6 +7,7 @@ import EditIcon from '~/assets/icons/nav-ikoner/line/SVG/01-edition/pencil-2.svg
 import Search from '~/assets/icons/nav-ikoner/line/SVG/01-edition/search.svg'
 import Skull from '~/assets/icons/nav-ikoner/line/SVG/01-edition/skull-1.svg'
 import Lock from '~/assets/icons/nav-ikoner/line/SVG/01-edition/line-version-lock-close-2.svg'
+import Lock_Black from '~/assets/icons/nav-ikoner/line/SVG/01-edition/lock-black.svg'
 import ChatBubble from '~/assets/icons/nav-ikoner/line/SVG/06-comment-chat/bubble-chat-1.svg'
 import Telephone from '~/assets/icons/nav-ikoner/line/SVG/06-comment-chat/Telephone.svg'
 import ThumbsUp from '~/assets/icons/nav-ikoner/line/SVG/05-votes-rewards/filled-version-thumbs-up-2.svg'
@@ -104,7 +105,7 @@ export const icons = {
 	collapse: ChevronUp,
 	ThumbsUp: ThumbsUp,
 	ThumbsDown: ThumbsDown,
-	lock: Lock,
+	lock: Lock_Black,
 	logout: Logout,
 
 	man: Man,
