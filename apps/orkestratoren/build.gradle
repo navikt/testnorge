@@ -67,7 +67,7 @@ dependencies {
     implementation 'io.micrometer:micrometer-registry-prometheus'
 
     implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
-    implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.1'
     implementation 'com.ibm.mq:mq-jms-spring-boot-starter:2.5.7'
     implementation 'javax.xml.bind:jaxb-api'
 
