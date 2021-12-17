@@ -4,7 +4,10 @@ import {
 	Attributt,
 	AttributtKategori,
 } from '~/components/bestillingsveileder/stegVelger/steg/steg1/Attributt'
-import { initialBostedsadresse } from '~/components/fagsystem/pdlf/form/initialValues'
+import {
+	initialBostedsadresse,
+	initialOppholdsadresse,
+} from '~/components/fagsystem/pdlf/form/initialValues'
 
 export const AdressePdlPanel = ({ stateModifier }) => {
 	const sm = stateModifier(AdressePdlPanel.initialValues)
@@ -45,14 +48,7 @@ AdressePdlPanel.initialValues = ({ set, setMulti, del, has }) => ({
 		label: 'Oppholdsadresse',
 		checked: has('pdldata.person.oppholdsadresse'),
 		add() {
-			set('pdldata.person.oppholdsadresse', [
-				{
-					adressetype: null,
-					kilde: 'Dolly',
-					master: 'PDL',
-					gjeldende: true,
-				},
-			])
+			set('pdldata.person.oppholdsadresse', [initialOppholdsadresse])
 		},
 		remove() {
 			del('pdldata.person.oppholdsadresse')

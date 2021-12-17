@@ -115,11 +115,25 @@ const selectOptions: SelectOptions = {
 	],
 
 	//PDLF - adresser
-	adressetypePdl: [
+	adressetypeBostedsadresse: [
 		{ value: 'VEGADRESSE', label: 'Vegadresse' },
 		{ value: 'MATRIKKELADRESSE', label: 'Matrikkeladresse' },
 		{ value: 'UTENLANDSK_ADRESSE', label: 'Utenlandsk adresse' },
 		{ value: 'UKJENT_BOSTED', label: 'Ukjent bosted' },
+	],
+
+	adressetypeOppholdsadresse: [
+		{ value: 'VEGADRESSE', label: 'Vegadresse' },
+		{ value: 'MATRIKKELADRESSE', label: 'Matrikkeladresse' },
+		{ value: 'UTENLANDSK_ADRESSE', label: 'Utenlandsk adresse' },
+		{ value: 'OPPHOLD_ANNET_STED', label: 'Opphold annet sted' },
+	],
+
+	oppholdAnnetSted: [
+		{ value: 'MILITAER', label: 'Militær' },
+		{ value: 'UTENRIKS', label: 'Utenriks' },
+		{ value: 'PAA_SVALBARD', label: 'På Svalbard' },
+		{ value: 'PENDLER', label: 'Pendler' },
 	],
 
 	//PDLF - kontaktinformasjon dødsbo

@@ -1,7 +1,6 @@
 import React from 'react'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { AdresseKodeverk } from '~/config/kodeverk'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import {
 	initialBostedsadresse,
@@ -19,9 +18,7 @@ import _cloneDeep from 'lodash/cloneDeep'
 import _set from 'lodash/set'
 import { UkjentBosted } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/UkjentBosted'
 import { Matrikkeladresse } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/Matrikkeladresse'
-import { Vegadresse } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/Vegadresse'
 import { VegadresseVelger } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/VegadresseVelger'
-import styled from 'styled-components'
 
 export const Bostedsadresse = ({ formikBag }) => {
 	const handleChangeAdressetype = (target, path) => {
@@ -74,7 +71,7 @@ export const Bostedsadresse = ({ formikBag }) => {
 								<FormikSelect
 									name={`${path}.adressetype`}
 									label="Adressetype"
-									options={Options('adressetypePdl')}
+									options={Options('adressetypeBostedsadresse')}
 									onChange={(target) => handleChangeAdressetype(target, path)}
 									size="large"
 								/>

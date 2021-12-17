@@ -64,6 +64,10 @@ export const initialUkjentBosted = {
 	bostedskommune: null as string,
 }
 
+export const initialOppholdAnnetSted = {
+	oppholdAnnetSted: null as string,
+}
+
 export const initialKontaktinfoForDoedebo = {
 	skifteform: null as string,
 	attestutstedelsesdato: null as string,
