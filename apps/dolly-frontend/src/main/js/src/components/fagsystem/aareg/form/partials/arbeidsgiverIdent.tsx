@@ -28,7 +28,7 @@ export const ArbeidsgiverIdent = ({ formikBag, path }: ArbeidsgiverIdentProps) =
 		let personnr = event.target.value
 
 		// TODO: move to frontend validation
-		if (personnr.match(/^[0-9]{11}$/) != null) {
+		if (personnr.match(/^\d{11}$/) != null) {
 			handleManualPersonnrChange(personnr)
 		} else {
 			setError('Ident må være et tall med 11 siffer.')

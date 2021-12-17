@@ -60,8 +60,6 @@ export const PermisjonForm = ({
 			hjelpetekst={infotekst}
 			newEntry={initialPermisjon}
 			nested
-			// handleNewEntry={maaneder ? handleNewEntry : null}
-			// handleRemoveEntry={maaneder ? handleRemoveEntry : null}
 		>
 			{(path, idx) => (
 				<React.Fragment key={idx}>
