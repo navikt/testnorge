@@ -139,15 +139,15 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		},
 		innvandretFraLand: {
 			label: 'Innvandret fra',
-			checked: has('pdldata.person.innvandring'),
+			checked: has('pdldata.person.innflytting'),
 			add() {
 				_has(personFoerLeggTil, 'pdlforvalter[0].person.innvandretFraLand') //TODO Sjekke om denne er good
 					? setMulti([
-							'pdldata.person.innvandring',
+							'pdldata.person.innflytting',
 							_get(personFoerLeggTil, 'pdlforvalter[0].person.innvandretFraLand'),
 					  ])
 					: setMulti([
-							'pdldata.person.innvandring',
+							'pdldata.person.innflytting',
 							[
 								{
 									fraflyttingsland: '',
@@ -159,20 +159,20 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 					  ])
 			},
 			remove() {
-				del('pdldata.person.innvandring')
+				del('pdldata.person.innflytting')
 			},
 		},
-		utvandretFraLand: {
+		utvandretTilLand: {
 			label: 'Utvandret fra',
-			checked: has('pdldata.person.utvandring'),
+			checked: has('pdldata.person.utflytting'),
 			add() {
-				_has(personFoerLeggTil, 'pdlforvalter[0].person.utvandretFraLand') //TODO Sjekke om denne er good
+				_has(personFoerLeggTil, 'pdlforvalter[0].person.utvandretTilLand') //TODO Sjekke om denne er good
 					? setMulti([
-							'pdldata.person.utvandring',
-							_get(personFoerLeggTil, 'pdlforvalter[0].person.utvandretFraLand'),
+							'pdldata.person.utflytting',
+							_get(personFoerLeggTil, 'pdlforvalter[0].person.utvandretTilLand'),
 					  ])
 					: setMulti([
-							'pdldata.person.utvandring',
+							'pdldata.person.utflytting',
 							[
 								{
 									tilflyttingsland: '',
@@ -185,7 +185,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 					  ])
 			},
 			remove() {
-				del('pdldata.person.utvandring')
+				del('pdldata.person.utflytting')
 			},
 		},
 		identHistorikk: {

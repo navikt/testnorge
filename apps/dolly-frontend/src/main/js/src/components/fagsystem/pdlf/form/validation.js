@@ -155,6 +155,14 @@ const telefonnummer = Yup.array().of(
 	})
 )
 
+const innvandring = Yup.array().of(
+	Yup.object({
+		fraflyttingsland: requiredString,
+		fraflyttingsstedIUtlandet: Yup.string().optional().nullable(),
+		innvandretFraLandFlyttedato: Yup.date().required().nullable(),
+	})
+)
+
 export const validation = {
 	pdldata: Yup.object({
 		person: Yup.object({

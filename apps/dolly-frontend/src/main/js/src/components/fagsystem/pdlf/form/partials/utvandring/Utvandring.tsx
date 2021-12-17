@@ -8,55 +8,59 @@ import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFiel
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import _get from 'lodash/get'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 
-export interface InnvandringArray {
+export interface UtvandringArray {
 	person: {
-		innvandretFraLand: Array<InnvandringValues>
+		innvandretFraLand: Array<UtvandringValues>
 	}
 }
 
-interface InnvandringValues {
-	fraflyttingsland?: string
-	fraflyttingsstedIUtlandet?: string
+interface UtvandringValues {
+	tilflyttingsland?: string
+	tilflyttingsstedIUtlandet?: string
+	utflyttingsdato?: Date
 }
 
-interface InnvandringProps {
-	formikBag: FormikProps<{ pdldata: InnvandringArray }>
+interface UtvandringProps {
+	formikBag: FormikProps<{ pdldata: UtvandringArray }>
 }
 
-const initialInnvandring = {
-	fraflyttingsland: '',
-	fraflyttingsstedIUtlandet: '',
+const initialUtvandring = {
+	tilflyttingsland: '',
+	tilflyttingsstedIUtlandet: '',
+	utflyttingsdato: new Date(),
 	master: 'PDL',
 	kilde: 'Dolly',
 }
 
-export const Innvandring = ({ formikBag }: InnvandringProps) => {
-	const innvandringListe = _get(formikBag.values, 'pdldata.person.innvandretFraLand')
+export const Utvandring = ({ formikBag }: UtvandringProps) => {
+	const utvandringListe = _get(formikBag.values, 'pdldata.person.utvandretTilLand')
 
 	const handleNewEntry = () => {
-		formikBag.setFieldValue('pdldata.person.innflytting', [...innvandringListe, initialInnvandring])
+		formikBag.setFieldValue('pdldata.person.utflytting', [...utvandringListe, initialUtvandring])
 	}
 
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikDollyFieldArray
-				name={'pdldata.person.innflytting'}
-				header="Innvandring"
-				newEntry={initialInnvandring}
+				name={'pdldata.person.utflytting'}
+				header="Utvandring"
+				newEntry={initialUtvandring}
 				canBeEmpty={false}
 				handleNewEntry={handleNewEntry}
 			>
 				{(path: string, idx: number) => (
 					<>
 						<FormikSelect
-							name={`${path}.fraflyttingsland`}
-							label="Innvandret fra"
+							name={`${path}.tilflyttingsland`}
+							label="Utvandret til"
 							kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
 							size="large"
 							isClearable={false}
 						/>
-						<FormikTextInput name={`${path}.fraflyttingsstedIUtlandet`} label="Fraflyttingssted" />
+						<FormikTextInput name={`${path}.tilflyttingsstedIUtlandet`} label="Tilflyttingssted" />
+						<FormikDatepicker name={`${path}.utflyttingsdato`} label="Utflyttingsdato" />
 						<AvansertForm path={path} kanVelgeMaster={false} />
 					</>
 				)}
