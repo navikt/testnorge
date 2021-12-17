@@ -24,7 +24,13 @@ export const initialBostedsadresse = {
 
 export const initialOppholdsadresse = {
 	adressetype: null as string,
-	angittFlyttedato: null as string,
+	kilde: 'Dolly',
+	master: 'FREG',
+	gjeldende: true,
+}
+
+export const initialKontaktadresse = {
+	adressetype: null as string,
 	kilde: 'Dolly',
 	master: 'FREG',
 	gjeldende: true,
@@ -60,13 +66,17 @@ export const initialUtenlandskAdresse = {
 	regionDistriktOmraade: null as string,
 }
 
+export const initialPostboksadresse = {
+	postboks: null as string,
+	postbokseier: null as string,
+	postnummer: null as string,
+}
+
 export const initialUkjentBosted = {
 	bostedskommune: null as string,
 }
 
-export const initialOppholdAnnetSted = {
-	oppholdAnnetSted: null as string,
-}
+export const initialOppholdAnnetSted = null as string
 
 export const initialKontaktinfoForDoedebo = {
 	skifteform: null as string,

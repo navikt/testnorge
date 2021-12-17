@@ -129,6 +129,12 @@ const selectOptions: SelectOptions = {
 		{ value: 'OPPHOLD_ANNET_STED', label: 'Opphold annet sted' },
 	],
 
+	adressetypeKontaktadresse: [
+		{ value: 'VEGADRESSE', label: 'Vegadresse' },
+		{ value: 'UTENLANDSK_ADRESSE', label: 'Utenlandsk adresse' },
+		{ value: 'POSTBOKSADRESSE', label: 'Postboksadresse' },
+	],
+
 	oppholdAnnetSted: [
 		{ value: 'MILITAER', label: 'Militær' },
 		{ value: 'UTENRIKS', label: 'Utenriks' },

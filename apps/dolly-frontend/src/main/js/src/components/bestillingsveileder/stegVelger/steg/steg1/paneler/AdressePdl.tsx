@@ -6,6 +6,7 @@ import {
 } from '~/components/bestillingsveileder/stegVelger/steg/steg1/Attributt'
 import {
 	initialBostedsadresse,
+	initialKontaktadresse,
 	initialOppholdsadresse,
 } from '~/components/fagsystem/pdlf/form/initialValues'
 
@@ -58,14 +59,7 @@ AdressePdlPanel.initialValues = ({ set, setMulti, del, has }) => ({
 		label: 'Kontaktadresse',
 		checked: has('pdldata.person.kontaktadresse'),
 		add() {
-			set('pdldata.person.kontaktadresse', [
-				{
-					adressetype: null,
-					kilde: 'Dolly',
-					master: 'PDL',
-					gjeldende: true,
-				},
-			])
+			set('pdldata.person.kontaktadresse', [initialKontaktadresse])
 		},
 		remove() {
 			del('pdldata.person.kontaktadresse')
