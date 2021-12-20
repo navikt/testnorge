@@ -3,6 +3,7 @@ import { Bostedsadresse } from '~/components/fagsystem/pdlf/form/partials/adress
 import { Oppholdsadresse } from '~/components/fagsystem/pdlf/form/partials/adresser/oppholdsadresse/Oppholdsadresse'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { Kontaktadresse } from '~/components/fagsystem/pdlf/form/partials/adresser/kontaktadresse/Kontaktadresse'
+import { Adressebeskyttelse } from '~/components/fagsystem/pdlf/form/partials/adresser/adressebeskyttelse/Adressebeskyttelse'
 
 export const Adresser = ({ formikBag }) => {
 	return (
@@ -15,6 +16,9 @@ export const Adresser = ({ formikBag }) => {
 			</Vis>
 			<Vis attributt={'pdldata.person.kontaktadresse'}>
 				<Kontaktadresse formikBag={formikBag} />
+			</Vis>
+			<Vis attributt={'pdldata.person.adressebeskyttelse'}>
+				<Adressebeskyttelse formikBag={formikBag} />
 			</Vis>
 		</>
 	)

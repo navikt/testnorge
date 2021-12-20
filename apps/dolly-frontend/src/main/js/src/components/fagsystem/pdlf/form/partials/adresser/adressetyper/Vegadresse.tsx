@@ -15,7 +15,6 @@ const StyledVegadresse = styled.div`
 
 export const Vegadresse = ({ formikBag, path }) => {
 	const settVegadresse = (adresse) => {
-		console.log('adresse', adresse)
 		formikBag.setFieldValue(path, {
 			postnummer: adresse.postnummer,
 			adressenavn: adresse.adressenavn,
@@ -25,6 +24,7 @@ export const Vegadresse = ({ formikBag, path }) => {
 			// husbokstav: adresse.husbokstav,
 			kommunenummer: adresse.kommunenummer,
 			// bruksenhetsnummer: adresse.bruksenhetsnummer,
+			vegadresseType: _get(formikBag.values, `${path}.vegadresseType`),
 		})
 	}
 
@@ -35,6 +35,7 @@ export const Vegadresse = ({ formikBag, path }) => {
 		return `${adressenavn} ${parseInt(husnummer)}, ${postnummer} ${poststed}`
 	}
 
+	// TODO - mulig denne ikke funker, sjekk path!
 	const feilmelding = (feil) => {
 		if (
 			!_get(formikBag.values, `${path}.vegadresse`) &&

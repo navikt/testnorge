@@ -36,6 +36,13 @@ export const initialKontaktadresse = {
 	gjeldende: true,
 }
 
+export const initialAdressebeskyttelse = {
+	gradering: null as string,
+	kilde: 'Dolly',
+	master: 'PDL',
+	gjeldende: true,
+}
+
 export const initialVegadresse = {
 	adressekode: null as string,
 	adressenavn: null as string,

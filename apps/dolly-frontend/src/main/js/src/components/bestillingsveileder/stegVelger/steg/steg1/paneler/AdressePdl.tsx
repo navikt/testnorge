@@ -5,6 +5,7 @@ import {
 	AttributtKategori,
 } from '~/components/bestillingsveileder/stegVelger/steg/steg1/Attributt'
 import {
+	initialAdressebeskyttelse,
 	initialBostedsadresse,
 	initialKontaktadresse,
 	initialOppholdsadresse,
@@ -69,14 +70,7 @@ AdressePdlPanel.initialValues = ({ set, setMulti, del, has }) => ({
 		label: 'Adressebeskyttelse',
 		checked: has('pdldata.person.adressebeskyttelse'),
 		add() {
-			set('pdldata.person.adressebeskyttelse', [
-				{
-					gradering: null,
-					kilde: 'Dolly',
-					master: 'PDL',
-					gjeldende: true,
-				},
-			])
+			set('pdldata.person.adressebeskyttelse', [initialAdressebeskyttelse])
 		},
 		remove() {
 			del('pdldata.person.adressebeskyttelse')
