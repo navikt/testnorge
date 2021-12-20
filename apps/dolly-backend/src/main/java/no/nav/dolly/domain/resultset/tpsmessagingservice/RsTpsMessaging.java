@@ -26,7 +26,7 @@ public class RsTpsMessaging {
     private LocalDate egenAnsattDatoFom;
     private LocalDate egenAnsattDatoTom;
     private BankkontonrUtlandDTO utenlandskBankkonto;
-    private SikkerhetstiltakDTO sikkerhetstiltak;
+    private List<SikkerhetstiltakDTO> sikkerhetstiltak;
     private BankkontonrNorskDTO norskBankkonto;
     private List<TelefonnummerDTO> telefonnummer;
 }

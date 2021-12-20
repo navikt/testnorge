@@ -59,6 +59,12 @@ public class TpsMessagingConsumer {
         return new SendTpsMessagingCommand(webClient, ident, miljoer, body, NORSK_BANKKONTO_URL, serviceProperties.getAccessToken(tokenService)).call();
     }
 
+    @Timed(name = "providers", tags = { "operation", "tps_messaging_deleteSikkerhetstiltak" })
+    public List<TpsMeldingResponseDTO> deleteSikkerhetstiltakRequest(String ident, List<String> miljoer) {
+
+        return new DeleteSikkerhetstiltakCommand(webClient, ident, miljoer, SIKKERHETSTILTAK_URL, serviceProperties.getAccessToken(tokenService)).call();
+    }
+
     @Timed(name = "providers", tags = { "operation", "tps_messaging_createSikkerhetstiltak" })
     public List<TpsMeldingResponseDTO> sendSikkerhetstiltakRequest(String ident, List<String> miljoer, Object body) {
 

@@ -363,12 +363,14 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 					],
 					[
 						'tpsMessaging.sikkerhetstiltak',
-						{
-							tiltakstype: '',
-							beskrivelse: '',
-							gyldigFraOgMed: new Date(),
-							gyldigTilOgMed: null,
-						},
+						[
+							{
+								tiltakstype: '',
+								beskrivelse: '',
+								gyldigFraOgMed: new Date(),
+								gyldigTilOgMed: null,
+							},
+						],
 					]
 				),
 			remove: () => del(['pdldata.person.sikkerhetstiltak', 'tpsMessaging.sikkerhetstiltak']),

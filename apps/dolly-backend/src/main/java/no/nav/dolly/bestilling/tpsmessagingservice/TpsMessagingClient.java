@@ -52,7 +52,18 @@ public class TpsMessagingClient implements ClientRegister {
                 );
             }
 
-            if (nonNull(bestilling.getTpsMessaging().getSikkerhetstiltak())) {
+            if (nonNull(bestilling.getTpsMessaging().getSikkerhetstiltak()) && !bestilling.getTpsMessaging().getSikkerhetstiltak().isEmpty()) {
+                var sikkerhetstiltakStatus = tpsMessagingConsumer.deleteSikkerhetstiltakRequest(
+                        dollyPerson.getHovedperson(),
+                        bestilling.getEnvironments());
+
+                appendResponseStatus(sikkerhetstiltakStatus.stream()
+                                .filter(result -> !result.getUtfyllendeMelding().contains("ingen aktiv sikkerhetstiltak funnet"))
+                                .toList(),
+                        status,
+                        "Sikkerhetstiltak_slett"
+                );
+
                 appendResponseStatus(
                         tpsMessagingConsumer.sendSikkerhetstiltakRequest(
                                 dollyPerson.getHovedperson(),
@@ -84,7 +95,7 @@ public class TpsMessagingClient implements ClientRegister {
                 );
             }
 
-            if (nonNull(bestilling.getTpsMessaging().getTelefonnummer())) {
+            if (nonNull(bestilling.getTpsMessaging().getTelefonnummer()) && !bestilling.getTpsMessaging().getTelefonnummer().isEmpty()) {
                 var tlfStatus = tpsMessagingConsumer.deleteTelefonnummerRequest(
                         dollyPerson.getHovedperson(),
                         bestilling.getEnvironments());
