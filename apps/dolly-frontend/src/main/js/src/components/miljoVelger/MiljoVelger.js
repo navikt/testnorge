@@ -79,9 +79,7 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 
 						return (
 							<fieldset key={type} name={`Liste over ${type}-miljøer`}>
-								<StyledH3>
-									{type}-miljøer{' '}
-								</StyledH3>
+								<StyledH3>{type}-miljøer </StyledH3>
 								<div className="miljo-velger_checkboxes">
 									{category.map((env) => (
 										<DollyCheckbox
