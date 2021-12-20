@@ -152,6 +152,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 								{
 									fraflyttingsland: '',
 									fraflyttingsstedIUtlandet: '',
+									innflyttingsdato: new Date(),
 									master: 'PDL',
 									kilde: 'Dolly',
 								},

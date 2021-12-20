@@ -159,7 +159,15 @@ const innvandring = Yup.array().of(
 	Yup.object({
 		fraflyttingsland: requiredString,
 		fraflyttingsstedIUtlandet: Yup.string().optional().nullable(),
-		innvandretFraLandFlyttedato: Yup.date().required().nullable(),
+		innflyttingsdato: Yup.date().required().nullable(),
+	})
+)
+
+const utvandring = Yup.array().of(
+	Yup.object({
+		tilflyttingsland: requiredString,
+		tilflyttingsstedIUtlandet: Yup.string().optional().nullable(),
+		utflyttingsdato: Yup.date().required().nullable(),
 	})
 )
 
@@ -170,6 +178,8 @@ export const validation = {
 			fullmakt: ifPresent('$pdldata.person.fullmakt', fullmakt),
 			falskIdentitet: ifPresent('$pdldata.person.falskIdentitet', falskIdentitet),
 			telefonnummer: ifPresent('$pdldata.person.telefonnummer', telefonnummer),
+			innvandring: ifPresent('$pdldata.person.innflytting', innvandring),
+			utvandring: ifPresent('$pdldata.person.utflytting', utvandring),
 			utenlandskIdentifikasjonsnummer: ifPresent(
 				'$pdldata.person.utenlandskIdentifikasjonsnummer',
 				utenlandskId

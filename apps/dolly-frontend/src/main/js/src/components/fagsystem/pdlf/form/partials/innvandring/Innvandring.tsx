@@ -8,6 +8,7 @@ import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFiel
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import _get from 'lodash/get'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 
 export interface InnvandringArray {
 	person: {
@@ -18,6 +19,7 @@ export interface InnvandringArray {
 interface InnvandringValues {
 	fraflyttingsland?: string
 	fraflyttingsstedIUtlandet?: string
+	innflyttingsdato?: Date
 }
 
 interface InnvandringProps {
@@ -27,6 +29,7 @@ interface InnvandringProps {
 const initialInnvandring = {
 	fraflyttingsland: '',
 	fraflyttingsstedIUtlandet: '',
+	innflyttingsdato: new Date(),
 	master: 'PDL',
 	kilde: 'Dolly',
 }
@@ -57,6 +60,7 @@ export const Innvandring = ({ formikBag }: InnvandringProps) => {
 							isClearable={false}
 						/>
 						<FormikTextInput name={`${path}.fraflyttingsstedIUtlandet`} label="Fraflyttingssted" />
+						<FormikDatepicker name={`${path}.innflyttingsdato`} label="Innflyttingsdato" />
 						<AvansertForm path={path} kanVelgeMaster={false} />
 					</>
 				)}
