@@ -50,7 +50,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
 
     implementation 'org.hibernate.validator:hibernate-validator'
-    implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.1'
 
     implementation 'org.aspectj:aspectjweaver:1.9.7'
 

@@ -5,7 +5,6 @@ plugins {
     id 'io.spring.dependency-management' version "1.0.11.RELEASE"
 }
 
-
 sonarqube {
     properties {
         property "sonar.sourceEncoding", "UTF-8"
@@ -21,21 +20,30 @@ sonarqube {
 bootJar {
     archiveFileName = "app.jar"
 }
+
 dependencyManagement {
     imports {
         mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.4'
     }
 }
 
-test {
-    useJUnitPlatform()
+def test = tasks.named("test") {
+    useJUnitPlatform {
+        excludeTags "integration"
+    }
+}
+
+def iTest = tasks.register("iTest", Test) {
+    useJUnitPlatform {
+        includeTags "integration"
+    }
+    shouldRunAfter test
 }
 
 repositories {
     mavenCentral()
     mavenLocal()
 }
-
 
 dependencies {
     implementation 'no.nav.testnav.libs:security-core'
@@ -52,7 +60,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
 
-    implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.1'
     implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
     implementation 'org.hibernate.validator:hibernate-validator'
 
@@ -60,8 +68,10 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 
+    testImplementation 'org.assertj:assertj-core:3.21.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
+    testImplementation 'no.nav.testnav.libs:integration-test'
 }
 
 description = 'profil-api'

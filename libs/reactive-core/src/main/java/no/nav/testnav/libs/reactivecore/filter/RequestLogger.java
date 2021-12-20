@@ -69,8 +69,8 @@ public class RequestLogger implements WebFilter {
             if (!log.isTraceEnabled()) {
                 return;
             }
-            Map<String, String> original = MDC.getCopyOfContextMap();
-            Map<String, String> contextMap = MDC.getCopyOfContextMap();
+            Map<String, String> original = MDC.getCopyOfContextMap() != null ? MDC.getCopyOfContextMap() : new HashMap<>();
+            Map<String, String> contextMap = MDC.getCopyOfContextMap() != null ? MDC.getCopyOfContextMap() : new HashMap<>();
             var method = request.getMethod().name();
             var uri = request.getPath().toString();
             var statusCode = response.getRawStatusCode();

@@ -7,6 +7,5 @@ azure:
 proxy:
   url: http://localhost
 
-credentials:
-  username: dummy
-  password: dummy
+username: dummy
+password: dummy
