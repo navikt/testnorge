@@ -432,7 +432,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 
 		if (utflytting) {
 			const utflyttingData = {
-				header: 'Utvandringf',
+				header: 'Utvandring',
 				itemRows: utflytting.map((item, idx) => {
 					return [
 						{ numberHeader: `Utvandring ${idx + 1}` },

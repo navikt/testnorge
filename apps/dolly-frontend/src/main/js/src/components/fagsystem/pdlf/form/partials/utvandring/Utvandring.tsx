@@ -30,7 +30,7 @@ const initialUtvandring = {
 	tilflyttingsland: '',
 	tilflyttingsstedIUtlandet: '',
 	utflyttingsdato: new Date(),
-	master: 'PDL',
+	master: 'FREG',
 	kilde: 'Dolly',
 }
 

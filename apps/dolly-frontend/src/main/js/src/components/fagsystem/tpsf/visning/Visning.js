@@ -36,10 +36,18 @@ export const TpsfVisning = ({ data, environments }) => {
 			<Postadresse postadresse={data.postadresse} />
 			<MidlertidigAdresse midlertidigAdresse={data.midlertidigAdresse} />
 			<UtenlandskBankkonto
-				data={tpsMessagingData ? tpsMessagingData.bankkontonrUtland : data.bankkontonrUtland}
+				data={
+					tpsMessagingData?.bankkontonrUtland
+						? tpsMessagingData.bankkontonrUtland
+						: data.bankkontonrUtland
+				}
 			/>
 			<NorskBankkonto
-				data={tpsMessagingData ? tpsMessagingData.bankkontonrNorsk : data.bankkontonrNorsk}
+				data={
+					tpsMessagingData?.bankkontonrNorsk
+						? tpsMessagingData.bankkontonrNorsk
+						: data.bankkontonrNorsk
+				}
 			/>
 			<Identhistorikk identhistorikk={data.identHistorikk} />
 			<Relasjoner relasjoner={data.relasjoner} />
