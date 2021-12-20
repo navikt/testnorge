@@ -4,7 +4,6 @@ import { ErrorMessage, FieldArray } from 'formik'
 import LinkButton from '~/components/ui/button/LinkButton/LinkButton'
 import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { MiljoeInfo } from './MiljoeInfo/MiljoeInfo'
-import Hjelpetekst from '~/components/hjelpetekst'
 
 import './MiljoVelger.less'
 import styled from 'styled-components'
@@ -88,7 +87,7 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 										<DollyCheckbox
 											key={env.id}
 											id={env.id}
-											disabled={env.disabled)}
+											disabled={env.disabled}
 											label={env.id}
 											checked={values.includes(env.id)}
 											onClick={onClick}
