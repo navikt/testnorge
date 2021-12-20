@@ -15,7 +15,7 @@ import {
 } from './partials'
 import { TpsMessagingApi } from '~/service/Api'
 
-export const TpsfVisning = ({ data, environments }) => {
+export const TpsfVisning = ({ data, environments, pdlData }) => {
 	const [tpsMessagingData, setTpsMessagingData] = useState(null)
 	useEffect(() => {
 		if (environments && environments.length > 0) {
@@ -29,7 +29,7 @@ export const TpsfVisning = ({ data, environments }) => {
 	return (
 		<div>
 			<Personinfo data={data} tpsMessagingData={tpsMessagingData} />
-			<Nasjonalitet data={data} />
+			<Nasjonalitet data={data} pdlData={pdlData} />
 			<Vergemaal data={data.vergemaal} />
 			<Fullmakt data={data.fullmakt} relasjoner={data.relasjoner} />
 			<Boadresse boadresse={data.boadresse} />

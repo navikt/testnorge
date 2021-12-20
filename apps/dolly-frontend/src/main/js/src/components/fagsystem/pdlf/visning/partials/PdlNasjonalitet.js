@@ -26,7 +26,7 @@ const Statsborgerskap = ({ statsborgerskap }) =>
 	) : null
 
 export const PdlNasjonalitet = ({ data, visTittel = true }) => {
-	const { statsborgerskap, innflyttingTilNorge, utflyttingFraNorge } = data
+	const { statsborgerskap, innflytting: innflyttingTilNorge, utflytting: utflyttingFraNorge } = data
 	if (
 		statsborgerskap?.length < 1 &&
 		innflyttingTilNorge?.length < 1 &&
@@ -45,7 +45,7 @@ export const PdlNasjonalitet = ({ data, visTittel = true }) => {
 						</DollyFieldArray>
 					</ErrorBoundary>
 				) : (
-					<Statsborgerskap statsborgerskap={statsborgerskap[0]} />
+					<Statsborgerskap statsborgerskap={statsborgerskap?.[0]} />
 				)}
 			</div>
 
@@ -53,11 +53,17 @@ export const PdlNasjonalitet = ({ data, visTittel = true }) => {
 				<ErrorBoundary>
 					<DollyFieldArray data={innflyttingTilNorge} header={'Innvandret'} nested>
 						{(id, idx) => (
-							<TitleValue
-								title="Fraflyttingsland"
-								value={innflyttingTilNorge[idx].fraflyttingsland}
-								kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
-							/>
+							<>
+								<TitleValue
+									title="Fraflyttingsland"
+									value={innflyttingTilNorge[idx].fraflyttingsland}
+									kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
+								/>
+								<TitleValue
+									title="Fraflyttingssted"
+									value={innflyttingTilNorge[idx].fraflyttingsstedIUtlandet}
+								/>
+							</>
 						)}
 					</DollyFieldArray>
 				</ErrorBoundary>
@@ -67,11 +73,17 @@ export const PdlNasjonalitet = ({ data, visTittel = true }) => {
 				<ErrorBoundary>
 					<DollyFieldArray data={utflyttingFraNorge} header={'Utvandret'} nested>
 						{(id, idx) => (
-							<TitleValue
-								title="Tilflyttingsland"
-								value={utflyttingFraNorge[idx].tilflyttingsland}
-								kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
-							/>
+							<>
+								<TitleValue
+									title="Tilflyttingsland"
+									value={utflyttingFraNorge[idx].tilflyttingsland}
+									kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
+								/>
+								<TitleValue
+									title="Tilflyttingssted"
+									value={utflyttingFraNorge[idx].tilflyttingsstedIUtlandet}
+								/>
+							</>
 						)}
 					</DollyFieldArray>
 				</ErrorBoundary>

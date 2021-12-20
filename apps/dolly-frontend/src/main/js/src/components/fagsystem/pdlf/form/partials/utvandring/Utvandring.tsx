@@ -35,7 +35,7 @@ const initialUtvandring = {
 }
 
 export const Utvandring = ({ formikBag }: UtvandringProps) => {
-	const utvandringListe = _get(formikBag.values, 'pdldata.person.utvandretTilLand')
+	const utvandringListe = _get(formikBag.values, 'pdldata.person.utflytting')
 
 	const handleNewEntry = () => {
 		formikBag.setFieldValue('pdldata.person.utflytting', [...utvandringListe, initialUtvandring])

@@ -35,7 +35,7 @@ const initialInnvandring = {
 }
 
 export const Innvandring = ({ formikBag }: InnvandringProps) => {
-	const innvandringListe = _get(formikBag.values, 'pdldata.person.innvandretFraLand')
+	const innvandringListe = _get(formikBag.values, 'pdldata.person.innflytting')
 
 	const handleNewEntry = () => {
 		formikBag.setFieldValue('pdldata.person.innflytting', [...innvandringListe, initialInnvandring])

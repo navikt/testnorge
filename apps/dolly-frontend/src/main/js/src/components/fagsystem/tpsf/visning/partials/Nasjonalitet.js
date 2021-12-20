@@ -29,8 +29,13 @@ const Statsborgerskap = ({ statsborgerskap }) => {
 	)
 }
 
-export const Nasjonalitet = ({ data, visTittel = true }) => {
+export const Nasjonalitet = ({ data, visTittel = true, pdlData }) => {
 	const { statsborgerskap, sprakKode, innvandretUtvandret } = data
+	const pdlPerson = pdlData?.[0]?.person
+
+	if (!data && !pdlData) {
+		return null
+	}
 
 	return (
 		<div>
@@ -71,6 +76,46 @@ export const Nasjonalitet = ({ data, visTittel = true }) => {
 									</>
 								)}
 							</React.Fragment>
+						)}
+					</DollyFieldArray>
+				</ErrorBoundary>
+			)}
+
+			{pdlPerson?.innflytting?.length > 0 && (
+				<ErrorBoundary>
+					<DollyFieldArray data={pdlPerson.innflytting} header={'Innvandret'} nested>
+						{(id, idx) => (
+							<>
+								<TitleValue
+									title="Fraflyttingsland"
+									value={pdlPerson.innflytting[idx].fraflyttingsland}
+									kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
+								/>
+								<TitleValue
+									title="Fraflyttingssted"
+									value={pdlPerson.innflytting[idx].fraflyttingsstedIUtlandet}
+								/>
+							</>
+						)}
+					</DollyFieldArray>
+				</ErrorBoundary>
+			)}
+
+			{pdlPerson?.utflytting?.length > 0 && (
+				<ErrorBoundary>
+					<DollyFieldArray data={pdlPerson.utflytting} header={'Utvandret'} nested>
+						{(id, idx) => (
+							<>
+								<TitleValue
+									title="Tilflyttingsland"
+									value={pdlPerson.utflytting[idx].tilflyttingsland}
+									kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
+								/>
+								<TitleValue
+									title="Tilflyttingssted"
+									value={pdlPerson.utflytting[idx].tilflyttingsstedIUtlandet}
+								/>
+							</>
 						)}
 					</DollyFieldArray>
 				</ErrorBoundary>
