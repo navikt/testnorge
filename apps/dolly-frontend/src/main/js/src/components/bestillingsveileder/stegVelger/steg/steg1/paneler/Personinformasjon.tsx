@@ -116,25 +116,26 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		},
 		doedsdato: {
 			label: 'Dødsdato',
-			checked: has('tpsf.doedsdato'),
-			add: () => set('tpsf.doedsdato', null),
-			remove: () => del(['tpsf.doedsdato', 'tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer']),
+			checked: has('pdldata.person.doedsfall'),
+			add: () => set('pdldata.person.doedsfall.doedsdato', new Date()),
+			remove: () => del(['pdldata.person.doedsfall']),
 		},
 		statsborgerskap: {
 			label: 'Statsborgerskap',
-			checked: has('tpsf.statsborgerskap'),
+			checked: has('pdldata.person.statsborgerskap'),
 			add() {
-				setMulti(
-					['tpsf.statsborgerskap', ''],
-					['tpsf.statsborgerskapRegdato', null],
-					['tpsf.statsborgerskapTildato', null]
-				)
+				setMulti([
+					'pdldata.person.statsborgerskap',
+					{
+						landkode: null,
+						gyldigFraOgMed: null,
+						gyldigTilOgMed: null,
+						bekreftelsesdato: nul,
+					,
+				])
 			},
 			remove() {
-				del(
-					['tpsf.statsborgerskap', 'tpsf.statsborgerskapRegdato'],
-					['tpsf.statsborgerskap', 'tpsf.statsborgerskapTildato']
-				)
+				del(['pdldata.person.statsborgerskap'])
 			},
 		},
 		innvandretFraLand: {

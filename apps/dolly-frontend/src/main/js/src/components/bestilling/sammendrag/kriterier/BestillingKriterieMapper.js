@@ -411,6 +411,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			utenlandskIdentifikasjonsnummer,
 			bostedsadresse,
 			kontaktinformasjonForDoedsbo,
+			doedsfall,
 		} = pdldataKriterier
 
 		if (telefonnummer) {
@@ -435,11 +436,24 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						{ numberHeader: `Fullmakt ${idx + 1}` },
 						obj('Områder', Formatters.omraaderArrayToString(item.omraader)),
 						obj('Gyldig fra og med', Formatters.formatDate(item.gyldigFraOgMed)),
-						obj('Gyldig til og med', Formatters.formatDate(item.gyldigTilOgMed)),
+						obj('Gyldig til og med', Formatters.formatDate(item.gyldigTilOgMed),
 					]
 				}),
 			}
 			data.push(fullmaktData)
+		}
+
+		if (doedsfall) {
+			const doedsfallData = {
+				header: 'Dødsfall',
+				itemRows: fullmakt.map((item, idx) => {
+					return [
+						{ numberHeader: `Dødsfall ${idx + 1}` },
+						obj('Dødsdato', Formatters.formatDate(item.gyldigTilOgMed),
+					]
+				},
+			}
+			data.push(doedsfallData)
 		}
 
 		if (bostedsadresse) {
