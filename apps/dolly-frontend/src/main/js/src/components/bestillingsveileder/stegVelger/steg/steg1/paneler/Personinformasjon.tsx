@@ -117,7 +117,12 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		doedsdato: {
 			label: 'Dødsdato',
 			checked: has('pdldata.person.doedsfall'),
-			add: () => set('pdldata.person.doedsfall.doedsdato', new Date()),
+			add: () =>
+				set('pdldata.person.doedsfall', [
+					{
+						doedsdato: new Date(),
+					},
+				]),
 			remove: () => del(['pdldata.person.doedsfall']),
 		},
 		statsborgerskap: {
@@ -126,12 +131,17 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			add() {
 				setMulti([
 					'pdldata.person.statsborgerskap',
-					{
-						landkode: null,
-						gyldigFraOgMed: null,
-						gyldigTilOgMed: null,
-						bekreftelsesdato: nul,
-					,
+					[
+						{
+							landkode: null,
+							gyldigFraOgMed: new Date(),
+							gyldigTilOgMed: null,
+							bekreftelsesdato: null,
+							kilde: 'Dolly',
+							master: 'PDL',
+							gjeldende: true,
+						},
+					],
 				])
 			},
 			remove() {

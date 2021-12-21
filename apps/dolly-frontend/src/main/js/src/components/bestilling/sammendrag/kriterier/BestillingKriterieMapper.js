@@ -412,6 +412,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			bostedsadresse,
 			kontaktinformasjonForDoedsbo,
 			doedsfall,
+			statsborgerskap,
 		} = pdldataKriterier
 
 		if (telefonnummer) {
@@ -436,22 +437,38 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						{ numberHeader: `Fullmakt ${idx + 1}` },
 						obj('Områder', Formatters.omraaderArrayToString(item.omraader)),
 						obj('Gyldig fra og med', Formatters.formatDate(item.gyldigFraOgMed)),
-						obj('Gyldig til og med', Formatters.formatDate(item.gyldigTilOgMed),
+						obj('Gyldig til og med', Formatters.formatDate(item.gyldigTilOgMed)),
 					]
 				}),
 			}
 			data.push(fullmaktData)
 		}
 
+		if (statsborgerskap) {
+			const statsborgerskapData = {
+				header: 'Statsborgerskap',
+				itemRows: statsborgerskap.map((item, idx) => {
+					return [
+						{ numberHeader: `Statsborgerskap ${idx + 1}` },
+						obj('Statsborgerskap', item.landkode),
+						obj('Statsborgerskap fra', Formatters.formatDate(item.gyldigFraOgMed)),
+						obj('Statsborgerskap til', Formatters.formatDate(item.gyldigTilOgMed)),
+						obj('Bekreftelsesdato', Formatters.formatDate(item.bekreftelsesdato)),
+					]
+				}),
+			}
+			data.push(statsborgerskapData)
+		}
+
 		if (doedsfall) {
 			const doedsfallData = {
 				header: 'Dødsfall',
-				itemRows: fullmakt.map((item, idx) => {
+				itemRows: doedsfall.map((item, idx) => {
 					return [
 						{ numberHeader: `Dødsfall ${idx + 1}` },
-						obj('Dødsdato', Formatters.formatDate(item.gyldigTilOgMed),
+						obj('Dødsdato', Formatters.formatDate(item.doedsdato)),
 					]
-				},
+				}),
 			}
 			data.push(doedsfallData)
 		}

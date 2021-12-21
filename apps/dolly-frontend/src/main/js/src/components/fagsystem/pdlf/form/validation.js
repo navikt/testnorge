@@ -147,6 +147,21 @@ const testPrioritet = (val) => {
 	})
 }
 
+const doedsfall = Yup.array().of(
+	Yup.object({
+		doedsdato: requiredDate.nullable(),
+	})
+)
+
+const statsborgerskap = Yup.array().of(
+	Yup.object({
+		landkode: requiredString.nullable(),
+		gyldigFraOgMed: Yup.date().optional().nullable(),
+		gyldigTilOgMed: Yup.date().optional().nullable(),
+		bekreftelsesdato: Yup.date().optional().nullable(),
+	})
+)
+
 const telefonnummer = Yup.array().of(
 	Yup.object({
 		landskode: requiredString,
@@ -162,6 +177,8 @@ export const validation = {
 			fullmakt: ifPresent('$pdldata.person.fullmakt', fullmakt),
 			falskIdentitet: ifPresent('$pdldata.person.falskIdentitet', falskIdentitet),
 			telefonnummer: ifPresent('$pdldata.person.telefonnummer', telefonnummer),
+			statsborgerskap: ifPresent('$pdldata.person.statsborgerskap', statsborgerskap),
+			doedsfall: ifPresent('$pdldata.person.doedsfall', doedsfall),
 			utenlandskIdentifikasjonsnummer: ifPresent(
 				'$pdldata.person.utenlandskIdentifikasjonsnummer',
 				utenlandskId

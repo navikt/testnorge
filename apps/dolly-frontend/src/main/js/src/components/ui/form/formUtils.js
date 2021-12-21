@@ -56,6 +56,8 @@ export const erForste = (values, attributt) => {
 		'sykemelding',
 		'brregstub',
 		'pdldata.person.telefonnummer',
+		'pdldata.person.doedsfall',
+		'pdldata.person.statsborgerskap',
 		'pdlforvalter.falskIdentitet',
 		'pdlforvalter.utenlandskIdentifikasjonsnummer',
 		'pdlforvalter.kontaktinformasjonForDoedsbo',

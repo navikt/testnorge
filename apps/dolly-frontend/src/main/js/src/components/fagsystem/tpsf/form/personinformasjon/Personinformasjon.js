@@ -15,14 +15,12 @@ import _get from 'lodash/get'
 import { Alder } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/alder/Alder'
 import { TpsMessagingDiverse } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/tpsmessaging/TpsMessagingDiverse'
 import { Telefonnummer } from '~/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
+import { Doedsfall } from '~/components/fagsystem/pdlf/form/partials/doedsfall/Doedsfall'
+import { Statsborgerskap } from '~/components/fagsystem/pdlf/form/partials/statsborgerskap/Statsborgerskap'
 
 const alderPaths = ['tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer', 'tpsf.doedsdato']
 
-const nasjonalitetPaths = [
-	'tpsf.statsborgerskap',
-	'tpsf.innvandretFraLand',
-	'tpsf.utvandretTilLand',
-]
+const nasjonalitetPaths = ['pdldata.person.statsborgerskap']
 
 const diversePaths = [
 	'tpsf.kjonn',
@@ -44,6 +42,8 @@ const diversePaths = [
 ]
 
 const telefonnummerPath = ['pdldata.person.telefonnummer']
+const statsborgerskapPath = ['pdldata.person.statsborgerskap']
+const doedsfallPath = ['pdldata.person.doedsfall']
 const vergemaalPath = ['tpsf.vergemaal']
 const fullmaktPath = ['pdldata.person.fullmakt']
 
@@ -59,9 +59,11 @@ const panelPaths = [
 	nasjonalitetPaths,
 	diversePaths,
 	telefonnummerPath,
+	doedsfallPath,
 	vergemaalPath,
 	fullmaktPath,
 	sikkerhetstiltakPaths,
+	statsborgerskapPath,
 ].flat()
 
 export const Personinformasjon = ({ formikBag }) => {
@@ -75,27 +77,30 @@ export const Personinformasjon = ({ formikBag }) => {
 				startOpen={() =>
 					erForste(
 						formikBag.values,
-						alderPaths.concat(nasjonalitetPaths, diversePaths, vergemaalPath, fullmaktPath)
+						alderPaths.concat(
+							nasjonalitetPaths,
+							diversePaths,
+							vergemaalPath,
+							fullmaktPath,
+							doedsfallPath,
+							statsborgerskapPath
+						)
 					)
 				}
 			>
-				{(!personFoerLeggTil || _get(formikBag.touched, 'tpsf.doedsdato')) && (
+				{(!personFoerLeggTil || _get(formikBag.touched, 'pdldata.person.doedsfall.doedsdato')) && (
 					<Kategori title="Alder" vis={alderPaths}>
 						<Alder basePath="tpsf" formikBag={formikBag} />
 					</Kategori>
 				)}
 
+				<Kategori title="Dødsfall" vis={doedsfallPath}>
+					<Doedsfall formikBag={formikBag} />
+				</Kategori>
+
 				<Kategori title="Nasjonalitet" vis={nasjonalitetPaths}>
-					<Vis attributt="tpsf.statsborgerskap">
-						<FormikSelect
-							name="tpsf.statsborgerskap"
-							label="Statsborgerskap"
-							kodeverk={AdresseKodeverk.StatsborgerskapLand}
-							size="large"
-							isClearable={false}
-						/>
-						<FormikDatepicker name="tpsf.statsborgerskapRegdato" label="Statsborgerskap fra" />
-						<FormikDatepicker name="tpsf.statsborgerskapTildato" label="Statsborgerskap til" />
+					<Vis attributt={statsborgerskapPath}>
+						<Statsborgerskap formikBag={formikBag} />
 					</Vis>
 
 					<Vis attributt="tpsf.innvandretFraLand">
