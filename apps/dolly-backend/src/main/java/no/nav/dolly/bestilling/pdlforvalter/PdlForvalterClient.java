@@ -172,6 +172,7 @@ public class PdlForvalterClient implements ClientRegister {
 
         if (IdentType.FDAT != IdentTypeUtil.getIdentType(person.getIdent())) {
             log.info("Sender PdlForvalter bestilling: {}", Json.pretty(bestilling.getPdldata()));
+            log.info("Sender PdlForvalter person: {}", Json.pretty(person));
             sendOpprettPerson(person, dollyPerson);
             sendFoedselsmelding(person);
             sendNavn(person);
