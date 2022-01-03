@@ -1,8 +1,3 @@
 title: Testnav
 remote_theme: pmarsceill/just-the-docs
-
-collections:
-  docs:
-    name: Applikasjoner
-    permalink: "../apps/"
-    output: true
+logo: "/assets/logo.ico"
