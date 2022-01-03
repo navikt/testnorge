@@ -45,7 +45,7 @@ public final class BestillingTpsMessagingStatusMapper {
                                                     .map(status -> StatusTemp.builder()
                                                             .ident(progress.getIdent())
                                                             .melding(cleanOK(String.format("%s %s", melding.split("#")[0],
-                                                                    status.split(":")[1]).replace("=", ":")))
+                                                                    status.split(":").length > 1 ? status.split(":")[1] : "NA").replace("=", ":")))
                                                             .miljoe(status.split(":")[0])
                                                             .build())
                                                     .toList())
