@@ -6,11 +6,16 @@ parent: Dolly
 
 # {{ page.title }}
 
-## Innhold
-{: .no_toc .text-delta }
+{: .no_toc }
 
+<details open markdown="block">
+  <summary>
+    Innhold
+  </summary>
+  {: .text-delta }
 1. TOC
-   {:toc}
+{:toc}
+</details>
 
 ---
 
