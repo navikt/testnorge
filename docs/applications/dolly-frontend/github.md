@@ -1,7 +1,7 @@
 ---
 title: Åpen kildekode
 layout: default
-nav_order: 2
+parent: Dolly brukerveiledning
 ---
 
 # {{ page.title }}
@@ -10,4 +10,4 @@ Dolly er åpen kildekode som er lagert i GitHub.
 
 ---
 
-[Se i GitHUb](https://github.com/navikt/dolly-frontend/){: .btn }
+[Se i GitHUb](https://github.com/navikt/testnorge/tree/master/apps/dolly-frontend/){: .btn }
