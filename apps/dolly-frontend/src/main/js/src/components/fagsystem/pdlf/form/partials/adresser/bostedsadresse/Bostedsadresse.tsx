@@ -26,6 +26,13 @@ export const Bostedsadresse = ({ formikBag }) => {
 		const adresseClone = _cloneDeep(adresse)
 
 		_set(adresseClone, 'adressetype', target?.value || null)
+
+		if (!target) {
+			_set(adresseClone, 'vegadresse', undefined)
+			_set(adresseClone, 'matrikkeladresse', undefined)
+			_set(adresseClone, 'utenlandskAdresse', undefined)
+			_set(adresseClone, 'ukjentBosted', undefined)
+		}
 		if (target?.value === 'VEGADRESSE') {
 			_set(adresseClone, 'vegadresse', initialVegadresse)
 			_set(adresseClone, 'matrikkeladresse', undefined)
