@@ -270,4 +270,9 @@ public class LandkodeDekoder {
         landkoderMap.put("389", "ZMB");
         landkoderMap.put("326", "ZWE");
     }
+
+    public static String convert(String landkode) {
+
+        return landkoderMap.get(landkode);
+    }
 }

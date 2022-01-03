@@ -63,7 +63,7 @@ public class PersonMappingStrategy implements MappingStrategy {
                                 .doedsdato(getDate(source.getDatoDoed()))
                                 .build());
                         target.getStatsborgerskap().add(StatsborgerskapDTO.builder()
-                                .landkode(source.getStatsborgerskap())
+                                .landkode(LandkodeDekoder.convert(source.getStatsborgerskap()))
                                 .bekreftelsesdato(getDate(source.getStatsborgerskapRegdato()))
                                 .build());
                         target.getAdressebeskyttelse().add(AdressebeskyttelseDTO.builder()
