@@ -1,7 +1,7 @@
 ---
 title: Åpen kildekode
 layout: default
-parent: Dolly brukerveiledning
+parent: Dolly
 ---
 
 # {{ page.title }}

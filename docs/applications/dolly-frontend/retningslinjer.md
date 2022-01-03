@@ -1,7 +1,7 @@
 ---
 title: Retningslinjer for bruk av testdata i NAV
 layout: default
-nav_order: 3
+parent: Dolly
 ---
 
 # {{ page.title }}
