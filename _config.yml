@@ -1,5 +1,6 @@
 title: Testnav
 remote_theme: pmarsceill/just-the-docs
+logo: "/assets/logo.ico"
 
 collections:
   docs:
