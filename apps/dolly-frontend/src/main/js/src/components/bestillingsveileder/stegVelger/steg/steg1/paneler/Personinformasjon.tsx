@@ -121,6 +121,9 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 				set('pdldata.person.doedsfall', [
 					{
 						doedsdato: new Date(),
+						kilde: 'Dolly',
+						master: 'PDL',
+						gjeldende: true,
 					},
 				]),
 			remove: () => del(['pdldata.person.doedsfall']),

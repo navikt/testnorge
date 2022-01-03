@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 // @ts-ignore
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 // @ts-ignore
 import { PersoninformasjonKodeverk } from '~/config/kodeverk'
 import { FormikProps } from 'formik'
@@ -26,6 +25,9 @@ interface DoedsfallProps {
 
 const initialDoedsfall = {
 	doedsdato: new Date(),
+	kilde: 'Dolly',
+	master: 'PDL',
+	gjeldende: true,
 }
 
 export const Doedsfall = ({ formikBag }: DoedsfallProps) => {
