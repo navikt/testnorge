@@ -1,5 +1,6 @@
 package no.nav.testnav.proxies.krrstubproxy;
 
+import no.nav.testnav.proxies.krrstubproxy.config.LocalConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -18,7 +19,7 @@ import no.nav.testnav.proxies.krrstubproxy.config.credentials.KrrStubProperties;
 
 @Import({
         CoreConfig.class,
-        DevConfig.class,
+        LocalConfig.class,
         SecurityConfig.class,
         SecureOAuth2ServerToServerConfiguration.class
 })
