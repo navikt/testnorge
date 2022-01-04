@@ -26,7 +26,7 @@ const Statsborgerskap = ({ statsborgerskap }) =>
 	) : null
 
 export const PdlNasjonalitet = ({ data, visTittel = true }) => {
-	const { statsborgerskap, innflytting: innflyttingTilNorge, utflytting: utflyttingFraNorge } = data
+	const { statsborgerskap, innflyttingTilNorge, utflyttingFraNorge } = data
 	if (
 		statsborgerskap?.length < 1 &&
 		innflyttingTilNorge?.length < 1 &&

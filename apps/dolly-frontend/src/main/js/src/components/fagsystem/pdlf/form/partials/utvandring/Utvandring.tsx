@@ -6,9 +6,9 @@ import { AdresseKodeverk, PersoninformasjonKodeverk } from '~/config/kodeverk'
 import { FormikProps } from 'formik'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import _get from 'lodash/get'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
+import { initialUtvandring } from '~/components/fagsystem/pdlf/form/initialValues'
 
 export interface UtvandringArray {
 	person: {
@@ -26,21 +26,7 @@ interface UtvandringProps {
 	formikBag: FormikProps<{ pdldata: UtvandringArray }>
 }
 
-const initialUtvandring = {
-	tilflyttingsland: '',
-	tilflyttingsstedIUtlandet: '',
-	utflyttingsdato: new Date(),
-	master: 'FREG',
-	kilde: 'Dolly',
-}
-
 export const Utvandring = ({ formikBag }: UtvandringProps) => {
-	const utvandringListe = _get(formikBag.values, 'pdldata.person.utflytting')
-
-	const handleNewEntry = () => {
-		formikBag.setFieldValue('pdldata.person.utflytting', [...utvandringListe, initialUtvandring])
-	}
-
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikDollyFieldArray
@@ -48,7 +34,6 @@ export const Utvandring = ({ formikBag }: UtvandringProps) => {
 				header="Utvandring"
 				newEntry={initialUtvandring}
 				canBeEmpty={false}
-				handleNewEntry={handleNewEntry}
 			>
 				{(path: string, idx: number) => (
 					<>

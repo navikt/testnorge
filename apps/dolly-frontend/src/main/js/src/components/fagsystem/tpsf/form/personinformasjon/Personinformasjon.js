@@ -22,8 +22,6 @@ const alderPaths = ['tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer', 'tpsf.doe
 
 const nasjonalitetPaths = [
 	'tpsf.statsborgerskap',
-	'tpsf.innvandretFraLand',
-	'tpsf.utvandretTilLand',
 	'pdldata.person.innflytting',
 	'pdldata.person.utflytting',
 ]

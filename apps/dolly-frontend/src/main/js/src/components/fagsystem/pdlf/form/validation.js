@@ -159,7 +159,7 @@ const innflytting = Yup.array().of(
 	Yup.object({
 		fraflyttingsland: requiredString,
 		fraflyttingsstedIUtlandet: Yup.string().optional().nullable(),
-		innflyttingsdato: Yup.date().required().nullable(),
+		innflyttingsdato: requiredDate.nullable(),
 	})
 )
 
@@ -167,7 +167,7 @@ const utflytting = Yup.array().of(
 	Yup.object({
 		tilflyttingsland: requiredString,
 		tilflyttingsstedIUtlandet: Yup.string().optional().nullable(),
-		utflyttingsdato: Yup.date().required().nullable(),
+		utflyttingsdato: requiredDate.nullable(),
 	})
 )
 

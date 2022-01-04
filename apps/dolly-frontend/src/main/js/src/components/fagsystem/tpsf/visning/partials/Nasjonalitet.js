@@ -30,7 +30,7 @@ const Statsborgerskap = ({ statsborgerskap }) => {
 }
 
 export const Nasjonalitet = ({ data, visTittel = true, pdlData }) => {
-	const { statsborgerskap, sprakKode, innvandretUtvandret } = data
+	const { statsborgerskap, sprakKode } = data
 	const pdlPerson = pdlData?.[0]?.person
 
 	if (!data && !pdlData) {
@@ -53,34 +53,6 @@ export const Nasjonalitet = ({ data, visTittel = true, pdlData }) => {
 				<TitleValue title="Språk" kodeverk={PersoninformasjonKodeverk.Spraak} value={sprakKode} />
 			</div>
 
-			{innvandretUtvandret?.length > 0 && (
-				<ErrorBoundary>
-					<DollyFieldArray data={innvandretUtvandret} header={'Innvandret/utvandret'} nested>
-						{(id, idx) => (
-							<React.Fragment>
-								{innvandretUtvandret && (
-									<>
-										<TitleValue
-											title={
-												innvandretUtvandret[idx].innutvandret === 'UTVANDRET'
-													? 'Utvandret til'
-													: 'Innvandret fra'
-											}
-											kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
-											value={innvandretUtvandret[idx].landkode}
-										/>
-										<TitleValue
-											title="Flyttedato"
-											value={Formatters.formatDate(innvandretUtvandret[idx].flyttedato)}
-										/>
-									</>
-								)}
-							</React.Fragment>
-						)}
-					</DollyFieldArray>
-				</ErrorBoundary>
-			)}
-
 			{pdlPerson?.innflytting?.length > 0 && (
 				<ErrorBoundary>
 					<DollyFieldArray data={pdlPerson.innflytting} header={'Innvandret'} nested>
@@ -94,6 +66,10 @@ export const Nasjonalitet = ({ data, visTittel = true, pdlData }) => {
 								<TitleValue
 									title="Fraflyttingssted"
 									value={pdlPerson.innflytting[idx].fraflyttingsstedIUtlandet}
+								/>
+								<TitleValue
+									title="Innflyttingsdato"
+									value={pdlPerson.innflytting[idx].innflyttingsdato}
 								/>
 							</>
 						)}
@@ -114,6 +90,10 @@ export const Nasjonalitet = ({ data, visTittel = true, pdlData }) => {
 								<TitleValue
 									title="Tilflyttingssted"
 									value={pdlPerson.utflytting[idx].tilflyttingsstedIUtlandet}
+								/>
+								<TitleValue
+									title="Utflyttingsdato"
+									value={pdlPerson.innflytting[idx].utflyttingsdato}
 								/>
 							</>
 						)}
