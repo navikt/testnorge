@@ -2,10 +2,10 @@
 title: Brukerveiledning
 layout: default
 parent: Dolly
+nav_order: 1
 ---
 
 # {{ page.title }}
-
 {: .no_toc }
 
 ## Table of contents
