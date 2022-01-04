@@ -41,7 +41,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
         dollyPersonCache.fetchIfEmpty(dollyPerson);
 
         if ((nonNull(bestilling.getTpsf()) && nonNull(bestilling.getTpsf().getEgenAnsattDatoFom())) ||
-                (nonNull(bestilling.getSkjerming()))) {
+                ((nonNull(bestilling.getSkjerming())) && nonNull(bestilling.getSkjerming().getEgenAnsattDatoFom()))) {
 
             var skjermetFra = nonNull(bestilling.getSkjerming())
                     ? bestilling.getSkjerming().getEgenAnsattDatoFom()
