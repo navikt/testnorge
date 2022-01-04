@@ -21,6 +21,7 @@ import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility.getIdenttype;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FNR;
+import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
@@ -44,14 +45,16 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
         this.dummyAdresseService = dummyAdresseService;
     }
 
-    public List<BostedadresseDTO> convert(PersonDTO person) {
+    public List<BostedadresseDTO> convert(PersonDTO person, Boolean relaxed) {
 
         for (var adresse : person.getBostedsadresse()) {
 
             if (isTrue(adresse.getIsNew())) {
 
                 populateMiscFields(adresse, person);
-                handle(adresse, person);
+                if (isNotTrue(relaxed)) {
+                    handle(adresse, person);
+                }
             }
         }
         enforceIntegrity(person.getBostedsadresse());

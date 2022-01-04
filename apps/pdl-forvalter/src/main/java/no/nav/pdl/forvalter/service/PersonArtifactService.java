@@ -36,13 +36,13 @@ public class PersonArtifactService {
     private final DoedfoedtBarnService doedfoedtBarnService;
     private final SikkerhetstiltakService sikkerhetstiltakService;
 
-    public PersonDTO buildPerson(PersonDTO person) {
+    public PersonDTO buildPerson(PersonDTO person, Boolean relaxed) {
 
         // Orders below matters to some degree, don´t rearrange without checking consequences
         person.setKjoenn(kjoennService.convert(person));
         person.setInnflytting(innflyttingService.convert(person.getInnflytting()));
         person.setStatsborgerskap(statsborgerskapService.convert(person));
-        person.setBostedsadresse(bostedAdresseService.convert(person));
+        person.setBostedsadresse(bostedAdresseService.convert(person, relaxed));
         person.setFoedsel(foedselService.convert(person));
         person.setNavn(navnService.convert(person.getNavn()));
         person.setOppholdsadresse(oppholdsadresseService.convert(person));
@@ -53,7 +53,7 @@ public class PersonArtifactService {
         person.setTilrettelagtKommunikasjon(tilrettelagtKommunikasjonService.convert(person.getTilrettelagtKommunikasjon()));
         person.setDoedsfall(doedsfallService.convert(person.getDoedsfall()));
         person.setFullmakt(fullmaktService.convert(person));
-        person.setKontaktadresse(kontaktAdresseService.convert(person));
+        person.setKontaktadresse(kontaktAdresseService.convert(person, relaxed));
         person.setUtenlandskIdentifikasjonsnummer(utenlandsidentifikasjonsnummerService
                 .convert(person.getUtenlandskIdentifikasjonsnummer()));
         person.setVergemaal(vergemaalService.convert(person));
