@@ -1,18 +1,6 @@
 package no.nav.testnav.libs.servletsecurity.exchange;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
-import reactor.netty.http.client.HttpClient;
-import reactor.netty.transport.ProxyProvider;
-
-import java.net.URI;
-import java.time.Duration;
-
 import no.nav.testnav.libs.securitycore.command.azuread.ClientCredentialExchangeCommand;
 import no.nav.testnav.libs.securitycore.command.azuread.GetWellKnownCommand;
 import no.nav.testnav.libs.securitycore.command.azuread.OnBehalfOfExchangeCommand;
@@ -24,6 +12,17 @@ import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
 import no.nav.testnav.libs.securitycore.domain.azuread.WellKnown;
 import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedToken;
 import no.nav.testnav.libs.servletsecurity.domain.ResourceServerType;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.transport.ProxyProvider;
+
+import java.net.URI;
+import java.time.Duration;
 
 @Slf4j
 @Service
@@ -77,7 +76,7 @@ public class AzureAdTokenService implements TokenService {
     }
 
     private Mono<AccessToken> generateClientCredentialAccessToken(ServerProperties serverProperties) {
-        return new ClientCredentialExchangeCommand(webClient, clientCredential, serverProperties.toAzureAdScope(), wellKnown).call();
+        return new ClientCredentialExchangeCommand(webClient, clientCredential, serverProperties.toAzureAdScope()).call();
 
     }
 

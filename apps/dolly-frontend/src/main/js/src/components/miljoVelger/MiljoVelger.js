@@ -4,7 +4,6 @@ import { ErrorMessage, FieldArray } from 'formik'
 import LinkButton from '~/components/ui/button/LinkButton/LinkButton'
 import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { MiljoeInfo } from './MiljoeInfo/MiljoeInfo'
-import Hjelpetekst from '~/components/hjelpetekst'
 
 import './MiljoVelger.less'
 import styled from 'styled-components'
@@ -80,20 +79,13 @@ export const MiljoVelger = ({ bestillingsdata, heading }) => {
 
 						return (
 							<fieldset key={type} name={`Liste over ${type}-miljøer`}>
-								<StyledH3>
-									{type}-miljøer{' '}
-									{type === 'Q' && erOrganisasjon && (
-										<Hjelpetekst hjelpetekstFor={'miljoer'}>
-											Q2 er disablet mens EREG jobb kjører. Forventes ferdigstilt torsdag 24.09.21
-										</Hjelpetekst>
-									)}
-								</StyledH3>
+								<StyledH3>{type}-miljøer </StyledH3>
 								<div className="miljo-velger_checkboxes">
 									{category.map((env) => (
 										<DollyCheckbox
 											key={env.id}
 											id={env.id}
-											disabled={env.disabled || (env.id === 'q2' && erOrganisasjon)}
+											disabled={env.disabled}
 											label={env.id}
 											checked={values.includes(env.id)}
 											onClick={onClick}

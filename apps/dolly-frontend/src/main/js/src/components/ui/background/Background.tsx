@@ -5,6 +5,8 @@ import Summer from '~/components/ui/background/backgrounds/Summer.svg'
 // @ts-ignore
 import Christmas from '~/components/ui/background/backgrounds/Christmas.svg'
 // @ts-ignore
+import Winter from '~/components/ui/background/backgrounds/Winter.svg'
+// @ts-ignore
 import Halloween from '~/components/ui/background/backgrounds/Halloween.svg'
 // @ts-ignore
 import Snowing from '~/components/ui/background/backgrounds/Snowing.svg'
@@ -27,9 +29,18 @@ export const ChristmasBackground = styled.div`
 	background-color: #005077;
 `
 
+export const WinterBackground = styled.div`
+	background-image: url(data:image/svg+xml;base64,${btoa(Winter)});
+	background-size: 100% auto;
+	background-repeat: no-repeat;
+	background-position: bottom;
+	background-color: #005077;
+`
+
 export const SnowingBackground = styled.div`
 	background-image: url(data:image/svg+xml;base64,${btoa(Snowing)});
-	background-size: cover;
+	background-size: 100% auto;
+	background-repeat: no-repeat;
 	background-position: bottom;
 	background-color: #005077;
 `

@@ -19,6 +19,7 @@ import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdResponse;
 public class GenerateStartArbeidsforholdCommand implements Callable<ArbeidsforholdResponse> {
     private final WebClient webClient;
     private final LocalDate startdate;
+    private final String token;
 
     @Override
     public ArbeidsforholdResponse call() {
@@ -27,9 +28,10 @@ public class GenerateStartArbeidsforholdCommand implements Callable<Arbeidsforho
         try {
             ArbeidsforholdResponse[] array = webClient
                     .post()
-                    .uri("/api/v1/generate/amelding/arbeidsforhold/start")
-                    .body(BodyInserters.fromPublisher(Mono.just(new LocalDate[]{startdate}), LocalDate[].class))
+                    .uri("/api/v1/arbeidsforhold/start")
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .body(BodyInserters.fromPublisher(Mono.just(new LocalDate[]{startdate}), LocalDate[].class))
                     .retrieve()
                     .bodyToMono(ArbeidsforholdResponse[].class)
                     .block();

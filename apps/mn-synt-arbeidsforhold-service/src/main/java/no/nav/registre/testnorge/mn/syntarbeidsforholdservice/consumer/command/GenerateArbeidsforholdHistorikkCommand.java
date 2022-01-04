@@ -17,17 +17,21 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @RequiredArgsConstructor
 public class GenerateArbeidsforholdHistorikkCommand implements Callable<List<ArbeidsforholdResponse>> {
+
     private final WebClient webClient;
     private final ArbeidsforholdRequest arbeidsforholdDTO;
+    private final String token;
 
     @Override
     public List<ArbeidsforholdResponse> call() {
         log.info("Genererer arbeidsforhold historikk.");
+
         return webClient
                 .post()
-                .uri("/api/v1/generate/amelding/arbeidsforhold")
-                .body(BodyInserters.fromPublisher(Mono.just(arbeidsforholdDTO), ArbeidsforholdRequest.class))
+                .uri("/api/v1/arbeidsforhold")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .body(BodyInserters.fromPublisher(Mono.just(arbeidsforholdDTO), ArbeidsforholdRequest.class))
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<ArbeidsforholdResponse>>(){})
                 .block();

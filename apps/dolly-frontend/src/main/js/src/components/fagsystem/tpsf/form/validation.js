@@ -92,9 +92,9 @@ const midlertidigAdresse = Yup.object({
 		function validDate(dato) {
 			if (!dato) return true
 			const ettAarFraIDag = new Date(new Date().setFullYear(new Date().getFullYear() + 1))
-			const dateValid =
+			return (
 				isAfter(new Date(dato), addDays(new Date(), -1)) && isBefore(new Date(dato), ettAarFraIDag)
-			return dateValid
+			)
 		}
 	),
 	gateadresseNrInfo: Yup.object({

@@ -19,7 +19,7 @@ import pdfjsworker from 'react-pdf/src/pdf.worker.entry'
 
 pdfjs.GlobalWorkerOptions.workerSrc = pdfjsworker
 
-interface DokarkivForm {
+interface DokarkivFormProps {
 	formikBag: FormikProps<{}>
 }
 
@@ -57,7 +57,7 @@ enum Kodeverk {
 
 const dokarkivAttributt = 'dokarkiv'
 
-export const DokarkivForm = ({ formikBag }: DokarkivForm) => {
+export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 	const sessionDokumenter = JSON.parse(sessionStorage.getItem('dokarkiv_vedlegg'))
 	const digitalInnsending = _get(formikBag.values, 'dokarkiv.avsenderMottaker')
 	const [files, setFiles] = useState(sessionDokumenter ? sessionDokumenter : [])
@@ -176,7 +176,7 @@ DokarkivForm.validation = {
 			journalfoerendeEnhet: Yup.string()
 				.optional()
 				.nullable()
-				.matches(/^[0-9]*$/, 'Journalfoerende enhet må enten være blank eller et tall med 4 sifre')
+				.matches(/^\d*$/, 'Journalfoerende enhet må enten være blank eller et tall med 4 sifre')
 				.test(
 					'len',
 					'Journalfoerende enhet må enten være blank eller et tall med 4 sifre',
@@ -188,7 +188,7 @@ DokarkivForm.validation = {
 					.when('idType', {
 						is: 'ORGNR',
 						then: Yup.string()
-							.matches(/^[0-9]*$/, 'Orgnummer må være et tall med 9 sifre')
+							.matches(/^\d*$/, 'Orgnummer må være et tall med 9 sifre')
 							.test(
 								'len',
 								'Orgnummer må være et tall med 9 sifre',
@@ -198,7 +198,7 @@ DokarkivForm.validation = {
 					.when('idType', {
 						is: 'FNR',
 						then: Yup.string()
-							.matches(/^[0-9]*$/, 'Ident må være et tall med 11 sifre')
+							.matches(/^\d*$/, 'Ident må være et tall med 11 sifre')
 							.test('len', 'Ident må være et tall med 11 sifre', (val) => val && val.length === 11),
 					}),
 				navn: Yup.string().optional(),

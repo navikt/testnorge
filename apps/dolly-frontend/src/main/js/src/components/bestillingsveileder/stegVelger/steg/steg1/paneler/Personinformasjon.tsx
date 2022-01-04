@@ -258,8 +258,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 					'tpsMessaging.egenAnsattDatoTom',
 					'tpsf.egenAnsattDatoFom',
 					'tpsf.egenAnsattDatoTom',
-					'skjerming.egenAnsattDatoFom',
-					'skjerming.egenAnsattDatoTom',
+					'skjerming',
 				])
 			},
 		},

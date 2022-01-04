@@ -5,6 +5,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import no.nav.registre.testnorge.generersyntameldingservice.consumer.SyntAmeldingConsumer;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -12,7 +14,6 @@ import org.springframework.web.server.ResponseStatusException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.domain.dto.aareg.amelding.ArbeidsforholdPeriode;
-import no.nav.registre.testnorge.generersyntameldingservice.consumer.SyntrestConsumer;
 import no.nav.registre.testnorge.generersyntameldingservice.provider.request.SyntAmeldingRequest;
 import no.nav.registre.testnorge.generersyntameldingservice.provider.response.ArbeidsforholdDTO;
 
@@ -21,12 +22,12 @@ import no.nav.registre.testnorge.generersyntameldingservice.provider.response.Ar
 @RequiredArgsConstructor
 public class GenererSyntAmeldingService {
 
-    private final SyntrestConsumer syntrestConsumer;
+    private final SyntAmeldingConsumer syntAmeldingConsumer;
 
     public List<ArbeidsforholdDTO> generateAmeldinger(SyntAmeldingRequest request) {
         var antallMeldinger = getAntallMeldinger(request.getStartdato(), request.getSluttdato());
 
-        var initialAmelding = syntrestConsumer.getEnkeltArbeidsforhold(
+        var initialAmelding = syntAmeldingConsumer.getEnkeltArbeidsforhold(
                 ArbeidsforholdPeriode.builder()
                         .startdato(request.getStartdato())
                         .build(),
@@ -37,7 +38,7 @@ public class GenererSyntAmeldingService {
             initialAmelding.emptyPermisjoner();
             initialAmelding.setNumEndringer(antallMeldinger - 1);
 
-            var response = syntrestConsumer.getHistorikk(initialAmelding);
+            var response = syntAmeldingConsumer.getHistorikk(initialAmelding);
             response.add(0, initialAmelding);
             return response.stream().map(ArbeidsforholdDTO::new).collect(Collectors.toList());
         }

@@ -3,7 +3,6 @@ package no.nav.registre.syntrest.config;
 import lombok.RequiredArgsConstructor;
 import no.nav.registre.syntrest.consumer.SyntGetConsumer;
 import no.nav.registre.syntrest.consumer.SyntPostConsumer;
-import no.nav.registre.syntrest.consumer.domain.SyntAmeldingConsumer;
 import no.nav.registre.syntrest.domain.aareg.Arbeidsforholdsmelding;
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
 
@@ -28,8 +27,6 @@ public class SyntConsumerConfig {
     private String arenaMeldekortUrl;
     @Value("${synth-inntekt-url}")
     private String inntektUrl;
-    @Value("${synth-amelding-url}")
-    private String ameldingUrl;
 
     private final ApplicationManager applicationManager;
     private final WebClient.Builder webClientBuilder;
@@ -79,14 +76,4 @@ public class SyntConsumerConfig {
                 webClientBuilder);
     }
 
-
-    @Bean
-    SyntAmeldingConsumer ameldingConsumer() throws MalformedURLException {
-        return new SyntAmeldingConsumer(
-                applicationManager,
-                "synthdata-amelding",
-                ameldingUrl,
-                false,
-                webClientBuilder);
-    }
 }

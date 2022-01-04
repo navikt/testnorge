@@ -1,6 +1,11 @@
 package no.nav.testnav.libs.servletsecurity.exchange;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.securitycore.command.azuread.ClientCredentialExchangeCommand;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.securitycore.domain.azuread.AzureNavClientCredential;
+import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
@@ -10,15 +15,6 @@ import reactor.netty.http.client.HttpClient;
 import reactor.netty.transport.ProxyProvider;
 
 import java.net.URI;
-import java.time.Duration;
-
-import no.nav.testnav.libs.securitycore.command.azuread.ClientCredentialExchangeCommand;
-import no.nav.testnav.libs.securitycore.command.azuread.GetWellKnownCommand;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.securitycore.domain.azuread.AzureNavClientCredential;
-import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
-import no.nav.testnav.libs.securitycore.domain.azuread.WellKnown;
 
 
 @Slf4j
@@ -26,7 +22,6 @@ import no.nav.testnav.libs.securitycore.domain.azuread.WellKnown;
 public class AzureAdTokenService implements ExchangeToken {
     private final WebClient webClient;
     private final ClientCredential clientCredential;
-    private final Mono<WellKnown> wellKnown;
 
     public AzureAdTokenService(
             @Value("${http.proxy:#{null}}") String proxyHost,
@@ -51,11 +46,6 @@ public class AzureAdTokenService implements ExchangeToken {
         }
         this.webClient = builder.build();
         this.clientCredential = clientCredential;
-        this.wellKnown = new GetWellKnownCommand(this.webClient, issuerUrl).call().cache(
-                value -> Duration.ofDays(7),
-                value -> Duration.ZERO,
-                () -> Duration.ZERO
-        );
     }
 
     @Override
@@ -63,8 +53,7 @@ public class AzureAdTokenService implements ExchangeToken {
         return new ClientCredentialExchangeCommand(
                 webClient,
                 clientCredential,
-                serverProperties.toAzureAdScope(),
-                wellKnown
+                serverProperties.toAzureAdScope()
         ).call();
     }
 }
