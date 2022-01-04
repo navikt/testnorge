@@ -1,4 +1,4 @@
-package no.nav.testnav.mocks.tokendingsmock.config;
+package no.nav.testnav.mocks.maskinportenmock.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,0 +1,21 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: http://azuread:8080
+          jwk-set-uri: http://azuread:8080/jwks
+          accepted-audience: dev-gcp.dolly.testnorge-profil-api, api://dev-gcp.dolly.testnorge-profil-api
+        tokenx:
+          issuer-uri: http://tokendings:8080
+          jwk-set-uri: http://tokendings:8080/jwks
+          accepted-audience: dev-gcp:dolly:testnorge-profil-api
+
+api.azuread.url: http://azure:8080
+
+consumers:
+  testnav-person-organisasjon-tilgang-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-person-organisasjon-tilgang-service
+    url: http://testnav-person-organisasjon-tilgang-service:8080

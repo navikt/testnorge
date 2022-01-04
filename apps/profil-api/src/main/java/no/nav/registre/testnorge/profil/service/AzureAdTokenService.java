@@ -2,8 +2,6 @@ package no.nav.registre.testnorge.profil.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -12,11 +10,14 @@ import reactor.netty.http.client.HttpClient;
 import reactor.netty.transport.ProxyProvider;
 
 import java.net.URI;
+import java.time.Duration;
 
+import no.nav.testnav.libs.securitycore.command.azuread.GetWellKnownCommand;
 import no.nav.testnav.libs.securitycore.command.azuread.OnBehalfOfExchangeCommand;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.azuread.AzureNavClientCredential;
 import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
+import no.nav.testnav.libs.securitycore.domain.azuread.WellKnown;
 import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedToken;
 
 @Slf4j
@@ -25,22 +26,20 @@ public class AzureAdTokenService {
     private final WebClient webClient;
     private final ClientCredential clientCredential;
     private final GetAuthenticatedToken getAuthenticatedToken;
+    private final Mono<WellKnown> wellKnown;
 
     public AzureAdTokenService(
             @Value("${http.proxy:#{null}}") String proxyHost,
-            @Value("${AAD_ISSUER_URI}") String issuerUrl,
+            @Value("${spring.security.oauth2.resourceserver.aad.issuer-uri}") String issuerUrl,
             AzureNavClientCredential clientCredential,
             GetAuthenticatedToken getAuthenticatedToken
     ) {
         log.info("Init custom AzureAd token exchange.");
         this.getAuthenticatedToken = getAuthenticatedToken;
-        WebClient.Builder builder = WebClient
-                .builder()
-                .baseUrl(issuerUrl + "/oauth2/v2.0/token")
-                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
+        WebClient.Builder builder = WebClient.builder();
 
         if (proxyHost != null) {
-            log.info("Setter opp proxy host {} for Client Credentials", proxyHost);
+            log.info("Setter opp proxy host {} for AzureAd.", proxyHost);
             var uri = URI.create(proxyHost);
 
             HttpClient httpClient = HttpClient
@@ -54,10 +53,15 @@ public class AzureAdTokenService {
         }
         this.webClient = builder.build();
         this.clientCredential = clientCredential;
+        this.wellKnown = new GetWellKnownCommand(this.webClient, issuerUrl).call().cache(
+                value -> Duration.ofDays(7),
+                value -> Duration.ZERO,
+                () -> Duration.ZERO
+        );
     }
 
     public Mono<AccessToken> exchange(String scope) {
-        return new OnBehalfOfExchangeCommand(webClient, clientCredential, scope, getAuthenticatedToken.call()).call();
+        return new OnBehalfOfExchangeCommand(webClient, clientCredential, scope, getAuthenticatedToken.call(), wellKnown).call();
     }
 
 }
