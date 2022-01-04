@@ -93,7 +93,7 @@ export const Nasjonalitet = ({ data, visTittel = true, pdlData }) => {
 								/>
 								<TitleValue
 									title="Utflyttingsdato"
-									value={pdlPerson.innflytting[idx].utflyttingsdato}
+									value={pdlPerson.utflytting[idx].utflyttingsdato}
 								/>
 							</>
 						)}

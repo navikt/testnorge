@@ -10,8 +10,10 @@ import { addDays, subDays } from 'date-fns'
 import { cloneDeep } from 'lodash'
 
 const innvandret = (personFoerLeggTil) =>
-	_get(personFoerLeggTil, 'pdlforvalter.person.innvandretUtvandret[0].innutvandret') ===
-	'INNVANDRET'
+	_get(personFoerLeggTil, 'pdlforvalter[0].person.innflytting')
+
+const utvandret = (personFoerLeggTil) =>
+	_get(personFoerLeggTil, 'pdlforvalter[0].person.utflytting')
 
 export const PersoninformasjonPanel = ({ stateModifier }) => {
 	const sm = stateModifier(PersoninformasjonPanel.initialValues)
@@ -20,9 +22,6 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 	const leggTil = opts.is.leggTil
 	const { personFoerLeggTil } = opts
 
-	const tomInnvandretUtvandret =
-		personFoerLeggTil && _get(personFoerLeggTil, 'pdldata.person.innvandretUtvandret').length < 1
-
 	const harFnr = opts.identtype === 'FNR'
 	const harFnrLeggTil = _get(personFoerLeggTil, 'tpsf.identtype') === 'FNR'
 	//Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
@@ -30,7 +29,7 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 	const utvandretTitle = () => {
 		if (!harFnr) {
 			return 'Personer med identtype DNR eller BOST kan ikke utvandre fordi de ikke har norsk statsborgerskap'
-		} else if (leggTil && !tomInnvandretUtvandret && !innvandret(personFoerLeggTil)) {
+		} else if (leggTil && !innvandret(personFoerLeggTil)) {
 			return 'Personen må innvandre før den kan utvandre igjen'
 		} else return null
 	}
@@ -53,12 +52,10 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 				<Attributt
 					attr={sm.attrs.innvandretFraLand}
 					disabled={
-						(tomInnvandretUtvandret && harFnrLeggTil) ||
-						(!tomInnvandretUtvandret && innvandret(personFoerLeggTil))
+						(harFnrLeggTil || innvandret(personFoerLeggTil)) && !utvandret(personFoerLeggTil)
 					}
 					title={
-						(tomInnvandretUtvandret && harFnrLeggTil) ||
-						(!tomInnvandretUtvandret && innvandret(personFoerLeggTil))
+						(harFnrLeggTil || innvandret(personFoerLeggTil)) && !utvandret(personFoerLeggTil)
 							? 'Personen må utvandre før den kan innvandre igjen'
 							: null
 					}
@@ -66,7 +63,7 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 				<Attributt
 					attr={sm.attrs.utvandretTilLand}
 					disabled={
-						!harFnr || (leggTil && !tomInnvandretUtvandret && !innvandret(personFoerLeggTil))
+						!harFnr || (leggTil && utvandret(personFoerLeggTil) && !innvandret(personFoerLeggTil))
 					}
 					title={utvandretTitle()}
 				/>
