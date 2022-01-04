@@ -13,6 +13,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.DoedsfallDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
@@ -89,6 +90,9 @@ public class PersonMappingStrategy implements MappingStrategy {
 
                         if (isNotBlank(source.getAdressetype()) || UTEN_FAST_BOSTED.equals(source.getSpesRegType())) {
                             target.getBostedsadresse().add(mapperFacade.map(source, BostedadresseDTO.class));
+                        }
+                        if (isNotBlank(source.getAdresse1())) {
+                            target.getKontaktadresse().add(mapperFacade.map(source, KontaktadresseDTO.class));
                         }
                         if (isNotBlank(source.getInnvandretFraLand())) {
                             target.getInnflytting().add(InnflyttingDTO.builder()

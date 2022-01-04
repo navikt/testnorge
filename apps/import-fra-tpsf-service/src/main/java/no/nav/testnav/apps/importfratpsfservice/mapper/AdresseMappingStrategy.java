@@ -3,12 +3,10 @@ package no.nav.testnav.apps.importfratpsfservice.mapper;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.testnav.apps.importfratpsfservice.dto.SkdEndringsmelding;
 import no.nav.testnav.apps.importfratpsfservice.dto.SkdEndringsmeldingTrans1;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdsadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +14,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
 import static no.nav.testnav.apps.importfratpsfservice.mapper.HusbokstavDekoder.decode;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -38,6 +37,21 @@ public class AdresseMappingStrategy implements MappingStrategy {
     private static LocalDateTime getDate(String dato) {
         return isNotBlank(dato) && !EMPTY_VAL.equals(dato) ?
                 LocalDate.parse(dato, DateTimeFormatter.ofPattern("yyyyMMdd")).atStartOfDay() : null;
+    }
+
+    private static List<String> getAdresselinjer(SkdEndringsmeldingTrans1 adresse) {
+
+        var adresseLinjer = new ArrayList<String>();
+        if (isNotBlank(adresse.getAdresse1())) {
+            adresseLinjer.add(adresse.getAdresse1());
+        }
+        if (isNotBlank(adresse.getAdresse2())) {
+            adresseLinjer.add(adresse.getAdresse2());
+        }
+        if (isNotBlank(adresse.getAdresse3())) {
+            adresseLinjer.add(adresse.getAdresse3());
+        }
+        return adresseLinjer;
     }
 
     @Override
@@ -80,15 +94,18 @@ public class AdresseMappingStrategy implements MappingStrategy {
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(SkdEndringsmeldingTrans1 source, KontaktadresseDTO target, MappingContext context) {
+
                         if (isBlank(source.getPostadrLand()) || NORGE.equals(source.getPostadrLand())) {
-                            var adresseLinjer = new ArrayList<String>();
-                            if (isNotBlank(source.getAdresse1())) {
-                                adresseLinjer.add(source.getAdresse1());
-                            }
                             target.setPostadresseIFrittFormat(KontaktadresseDTO.PostadresseIFrittFormat.builder()
-                                            .adresselinjer(new StringBuilder()
-                                                    .append(source.get)))
-                                    .build()
+                                    .adresselinjer(getAdresselinjer(source))
+                                    .build());
+                        }
+
+                        if (isNotBlank(source.getPostadrLand()) && !NORGE.equals(source.getPostadrLand())) {
+                            target.setUtenlandskAdresseIFrittFormat(KontaktadresseDTO.UtenlandskAdresseIFrittFormat.builder()
+                                    .adresselinjer(getAdresselinjer(source))
+                                    .landkode(LandkodeDekoder.convert(source.getPostadrLand()))
+                                    .build());
                         }
                     }
                 })
