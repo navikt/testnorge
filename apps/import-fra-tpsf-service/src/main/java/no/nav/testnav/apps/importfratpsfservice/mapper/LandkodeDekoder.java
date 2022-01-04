@@ -273,6 +273,6 @@ public class LandkodeDekoder {
 
     public static String convert(String landkode) {
 
-        return landkoderMap.get(landkode);
+        return landkoderMap.getOrDefault(landkode, DEFAULT);
     }
 }

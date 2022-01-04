@@ -7,8 +7,8 @@ consumers:
     url: https://dolly-backend-dev.dev-fss-pub.nais.io
     name: dolly-backend-dev
   tps-forvalteren:
-    url: https://tps-forvalteren-dev-proxy.dev-fss-pub.nais.io
-    name: tps-forvalteren-dev-proxy
+    url: https://tps-forvalteren-proxy.dev-fss-pub.nais.io
+    name: tps-forvalteren-proxy
   pdl-forvalter:
     url: https://testnav-pdl-forvalter-dev.dev.intern.nav.no
     name: testnav-pdl-forvalter-dev

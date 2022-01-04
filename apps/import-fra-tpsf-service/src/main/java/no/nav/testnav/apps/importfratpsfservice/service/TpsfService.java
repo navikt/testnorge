@@ -27,9 +27,10 @@ public class TpsfService {
         return tpsfConsumer.getSkdGrupper()
                 .filter(gruppe -> gruppe.getId().equals(skdgruppeId))
                 .next()
-                .flatMapMany(gruppe -> Flux.range(0, gruppe.getAntallSider().intValue()))
+                .flatMapMany(gruppe -> Flux.range(0, 1)) //gruppe.getAntallSider().intValue()))
                 .flatMap(page ->  tpsfConsumer.getSkdMeldinger(skdgruppeId, page.longValue()))
-                .map(melding -> mapperFacade.map(melding, PersonDTO.class))
+                .map(melding ->
+                        mapperFacade.map(melding, PersonDTO.class))
 //                .flatMap(person -> pdlForvalterConsumer.putPdlPerson(person.getIdent(), person).thenReturn(person))
 //                .flatMap(person -> pdlForvalterConsumer.postOrdrePdlPerson(person.getIdent()).thenReturn(person))
 //                .flatMap(person -> dollyConsumer.putGrupperIdent(dollyGruppeId, person.getIdent(), Master.PDL).thenReturn(person))

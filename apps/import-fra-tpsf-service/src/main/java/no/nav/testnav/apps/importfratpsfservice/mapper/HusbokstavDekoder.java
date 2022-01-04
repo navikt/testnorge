@@ -44,7 +44,7 @@ public class HusbokstavDekoder {
         encodingMap.put("9930", "Á");
     }
 
-    public static String getHusbokstav(String skdKode) {
+    public static String decode(String skdKode) {
         return encodingMap.get(skdKode);
     }
 }
