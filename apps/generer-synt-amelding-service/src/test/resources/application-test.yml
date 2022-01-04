@@ -1,0 +1,17 @@
+azure:
+  app:
+    client:
+      id: dummy
+      secret: dummy
+
+spring:
+  cloud:
+    vault:
+      token: dummy
+
+consumers:
+  synt-amelding:
+    url: dummy
+    cluster: dev-gcp
+    namespace: dolly
+    name: synthdata-amelding

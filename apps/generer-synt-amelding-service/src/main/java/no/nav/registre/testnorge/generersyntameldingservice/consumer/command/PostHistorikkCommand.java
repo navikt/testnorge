@@ -27,7 +27,7 @@ public class PostHistorikkCommand implements Callable<List<Arbeidsforhold>> {
 
             return webClient.post()
                     .uri(builder -> builder
-                            .path("/api/v1/generate/amelding/arbeidsforhold")
+                            .path("/api/v1/arbeidsforhold")
                             .queryParam("avvik", "false")
                             .queryParam("sluttdato", "false")
                             .build())
