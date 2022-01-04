@@ -1,7 +1,8 @@
-﻿apiVersion: nais.io/v1
+﻿---
+apiVersion: nais.io/v1
 kind: AzureAdApplication
 metadata:
-  name: testnav-krrstub-proxy
+  name: testnav-krrstub-proxy-trygdeetaten
   namespace: dolly
   labels:
     team: dolly
@@ -9,6 +10,15 @@ spec:
   secretName: azure-trygdeetaten-testnav-krrstub-proxy-trygdeetaten
   secretKeyPrefix: "AZURE_TRYGDEETATEN"
   tenant: trygdeetaten.no
+---
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: testnav-krrstub-proxy
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
   image: {{image}}
   port: 8080
   webproxy: true
