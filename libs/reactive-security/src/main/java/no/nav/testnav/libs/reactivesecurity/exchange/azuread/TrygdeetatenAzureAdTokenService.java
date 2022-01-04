@@ -33,7 +33,6 @@ public class TrygdeetatenAzureAdTokenService implements ExchangeToken {
 
     public TrygdeetatenAzureAdTokenService(
             @Value("${http.proxy:#{null}}") String proxyHost,
-            @Value("${spring.security.oauth2.resourceserver.aad.issuer-uri}") String issuerUrl,
             AzureTrygdeetatenClientCredential azureTrygdeetatenClientCredential
     ) {
         this.clientCredential = azureTrygdeetatenClientCredential;
