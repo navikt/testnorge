@@ -68,7 +68,7 @@ public class TpsMessagingClient implements ClientRegister {
                         tpsMessagingConsumer.sendSikkerhetstiltakRequest(
                                 dollyPerson.getHovedperson(),
                                 bestilling.getEnvironments(),
-                                bestilling.getTpsMessaging().getSikkerhetstiltak()),
+                                bestilling.getTpsMessaging().getSikkerhetstiltak().get(0)),
                         status,
                         "Sikkerhetstiltak_opprett"
                 );
