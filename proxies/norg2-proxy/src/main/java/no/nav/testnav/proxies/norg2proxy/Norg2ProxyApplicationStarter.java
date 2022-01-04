@@ -25,7 +25,7 @@ public class Norg2ProxyApplicationStarter {
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route(spec -> spec.path("/**").uri("https://norg2.dev.intern.nav.no/norg2/"))
+                .route(spec -> spec.path("/norg2/**").uri("https://norg2.dev.intern.nav.no/"))
                 .build();
     }
 }
