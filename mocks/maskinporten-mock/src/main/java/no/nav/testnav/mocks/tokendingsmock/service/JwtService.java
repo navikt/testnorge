@@ -1,4 +1,4 @@
-package no.nav.testnav.mocks.maskinportenmock.service;
+package no.nav.testnav.mocks.tokendingsmock.service;
 
 
 import com.auth0.jwt.JWT;
@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import no.nav.testnav.mocks.maskinportenmock.domain.AccessToken;
+import no.nav.testnav.mocks.tokendingsmock.domain.AccessToken;
 
 @Service
 public class JwtService {

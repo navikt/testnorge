@@ -73,6 +73,3 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://testnorge-profil-api.dev.intern.nav.no"
-  env:
-    - name: SPRING_PROFILES_ACTIVE
-      value: prod
