@@ -47,11 +47,11 @@ class KontaktAdresseServiceTest {
     void whenTooFewDigitsInPostnummer_thenThrowExecption() {
 
         var request = KontaktadresseDTO.builder()
-                        .postboksadresse(PostboksadresseDTO.builder()
-                                .postboks("123")
-                                .build())
-                        .isNew(true)
-                        .build();
+                .postboksadresse(PostboksadresseDTO.builder()
+                        .postboks("123")
+                        .build())
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 kontaktAdresseService.validate(request, new PersonDTO()));
@@ -63,10 +63,10 @@ class KontaktAdresseServiceTest {
     void whenPostboksadresseAndPostboksIsOmitted_thenThrowExecption() {
 
         var request = KontaktadresseDTO.builder()
-                        .postboksadresse(PostboksadresseDTO.builder()
-                                .build())
-                        .isNew(true)
-                        .build();
+                .postboksadresse(PostboksadresseDTO.builder()
+                        .build())
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 kontaktAdresseService.validate(request, new PersonDTO()));
@@ -78,8 +78,8 @@ class KontaktAdresseServiceTest {
     void whenNoAdressProvided_thenThrowExecption() {
 
         var request = KontaktadresseDTO.builder()
-                        .isNew(true)
-                        .build();
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 kontaktAdresseService.validate(request, new PersonDTO()));
@@ -91,10 +91,10 @@ class KontaktAdresseServiceTest {
     void whenMultipleAdressesProvided_thenThrowExecption() {
 
         var request = KontaktadresseDTO.builder()
-                        .vegadresse(new VegadresseDTO())
-                        .utenlandskAdresse(new UtenlandskAdresseDTO())
-                        .isNew(true)
-                        .build();
+                .vegadresse(new VegadresseDTO())
+                .utenlandskAdresse(new UtenlandskAdresseDTO())
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 kontaktAdresseService.validate(request, new PersonDTO()));
@@ -106,10 +106,10 @@ class KontaktAdresseServiceTest {
     void whenMasterPDLWithoutGyldighet_thenThrowExecption() {
 
         var request = KontaktadresseDTO.builder()
-                        .master(DbVersjonDTO.Master.PDL)
-                        .postboksadresse(new PostboksadresseDTO())
-                        .isNew(true)
-                        .build();
+                .master(DbVersjonDTO.Master.PDL)
+                .postboksadresse(new PostboksadresseDTO())
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 kontaktAdresseService.validate(request, new PersonDTO()));
@@ -122,11 +122,11 @@ class KontaktAdresseServiceTest {
     void whenPDLAdresseWithoutGyldighet_thenThrowExecption() {
 
         var request = KontaktadresseDTO.builder()
-                        .vegadresse(VegadresseDTO.builder()
-                                .adressenavn("Denne veien")
-                                .build())
-                        .isNew(true)
-                        .build();
+                .vegadresse(VegadresseDTO.builder()
+                        .adressenavn("Denne veien")
+                        .build())
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 kontaktAdresseService.validate(request, new PersonDTO()));
@@ -139,11 +139,11 @@ class KontaktAdresseServiceTest {
     void whenAdresseHasUgyldigBruksenhetsnummer_thenThrowExecption() {
 
         var request = KontaktadresseDTO.builder()
-                        .vegadresse(VegadresseDTO.builder()
-                                .bruksenhetsnummer("W12345")
-                                .build())
-                        .isNew(true)
-                        .build();
+                .vegadresse(VegadresseDTO.builder()
+                        .bruksenhetsnummer("W12345")
+                        .build())
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 kontaktAdresseService.validate(request, new PersonDTO()));
@@ -176,7 +176,7 @@ class KontaktAdresseServiceTest {
                 .build();
 
         var kontaktadresse =
-                kontaktAdresseService.convert(request).get(0);
+                kontaktAdresseService.convert(request, null).get(0);
 
         verify(adresseServiceConsumer).getVegadresse(any(VegadresseDTO.class), nullable(String.class));
         verify(mapperFacade).map(eq(vegadresse), any(VegadresseDTO.class));

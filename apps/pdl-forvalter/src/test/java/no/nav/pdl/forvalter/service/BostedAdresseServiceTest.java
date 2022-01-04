@@ -178,7 +178,7 @@ class BostedAdresseServiceTest {
                 .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.convert(request));
+                bostedAdresseService.convert(request, null));
 
         assertThat(exception.getMessage(), containsString("Adresse: Overlappende adressedatoer er ikke lov"));
     }
@@ -205,7 +205,7 @@ class BostedAdresseServiceTest {
                 .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                bostedAdresseService.convert(request));
+                bostedAdresseService.convert(request, null));
 
         assertThat(exception.getMessage(), containsString("Adresse: Overlappende adressedatoer er ikke lov"));
     }
@@ -222,7 +222,7 @@ class BostedAdresseServiceTest {
                         .build()))
                 .build();
 
-        var target = bostedAdresseService.convert(request).get(0);
+        var target = bostedAdresseService.convert(request, null).get(0);
 
         assertThat(target.getGyldigFraOgMed(), is(equalTo(LocalDate.of(2020, 1, 1).atStartOfDay())));
     }
@@ -246,7 +246,7 @@ class BostedAdresseServiceTest {
                                 .build()))
                 .build();
 
-        var target = bostedAdresseService.convert(request);
+        var target = bostedAdresseService.convert(request, null);
 
         assertThat(target.get(1).getGyldigTilOgMed(), is(equalTo(LocalDate.of(2020, 2, 3).atStartOfDay())));
     }
@@ -264,7 +264,7 @@ class BostedAdresseServiceTest {
                         .build()))
                 .build();
 
-        var target = bostedAdresseService.convert(request).get(0);
+        var target = bostedAdresseService.convert(request, null).get(0);
 
         assertThat(target.countAdresser(), is(0));
     }
@@ -282,7 +282,7 @@ class BostedAdresseServiceTest {
         when(adresseServiceConsumer.getVegadresse(any(VegadresseDTO.class), any()))
                 .thenReturn(new no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO());
 
-        var target = bostedAdresseService.convert(request).get(0);
+        var target = bostedAdresseService.convert(request, null).get(0);
 
         assertThat(target.countAdresser(), is(1));
         assertThat(target.getVegadresse(), is(notNullValue()));
@@ -300,7 +300,7 @@ class BostedAdresseServiceTest {
 
         when(dummyAdresseService.getUtenlandskAdresse(any())).thenReturn(new UtenlandskAdresseDTO());
 
-        var target = bostedAdresseService.convert(request).get(0);
+        var target = bostedAdresseService.convert(request, null).get(0);
 
         assertThat(target.getMaster(), is(Master.PDL));
         assertThat(target.countAdresser(), is(1));
