@@ -39,16 +39,12 @@ SigrunstubForm.validation = {
 						const path = this.options.path
 						const index = path.charAt(path.indexOf('[') + 1)
 						if (values.sigrunstub[index].tjeneste === 'BEREGNET_SKATT') {
-							if (values.sigrunstub[index].grunnlag.length > 0) {
-								return true
-							} else return false
+							return values.sigrunstub[index].grunnlag.length > 0
 						} else if (values.sigrunstub[index].tjeneste === 'SUMMERT_SKATTEGRUNNLAG') {
-							if (
+							return (
 								values.sigrunstub[index].grunnlag.length > 0 ||
 								values.sigrunstub[index].svalbardGrunnlag.length > 0
-							) {
-								return true
-							} else return false
+							)
 						} else return true
 					}),
 				inntektsaar: Yup.number().integer('Ugyldig årstall').required('Tast inn et gyldig år'),

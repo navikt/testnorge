@@ -13,11 +13,9 @@ import NavButton from '~/components/ui/button/NavButton/NavButton'
 import Button from '~/components/ui/button/Button'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import {
-	initialAmelding,
 	initialArbeidsforholdOrg,
 	initialFartoy,
 	initialForenkletOppgjoersordningOrg,
-	initialPeriode,
 } from '../initialValues'
 import { ArbeidsforholdForm } from './arbeidsforholdForm'
 import { Monthpicker } from '~/components/ui/form/inputs/monthpicker/Monthpicker'
