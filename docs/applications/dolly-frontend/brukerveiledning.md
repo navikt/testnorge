@@ -8,7 +8,7 @@ nav_order: 1
 # {{ page.title }}
 {: .no_toc }
 
-## Table of contents
+## Innhold
 {: .no_toc .text-delta }
 
 1. TOC
