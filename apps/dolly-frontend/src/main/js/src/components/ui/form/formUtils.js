@@ -45,6 +45,7 @@ export const erForste = (values, attributt) => {
 		'tpsf.midlertidigAdresse',
 		'tpsMessaging.utenlandskBankkonto',
 		'tpsMessaging.harBankkontonr',
+		'tpsMessaging.sikkerhetstiltak',
 		'tpsMessaging.spraakKode',
 		'tpsMessaging.egenAnsattDatoFom',
 		'tpsMessaging.egenAnsattDatoTom',

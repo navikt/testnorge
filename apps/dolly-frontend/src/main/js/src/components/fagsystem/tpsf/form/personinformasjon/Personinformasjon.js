@@ -9,7 +9,7 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { Diverse } from './partials/Diverse'
 import { Vergemaal } from './partials/vergemaal/Vergemaal'
 import { Fullmakt } from './partials/fullmakt/Fullmakt'
-import { Sikkerhetstiltak } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/sikkerhetstiltak/Sikkerhetstiltak'
+import { Sikkerhetstiltak } from '~/components/fagsystem/pdlf/form/partials/sikkerhetstiltak/Sikkerhetstiltak'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import _get from 'lodash/get'
 import { Alder } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/alder/Alder'
@@ -40,6 +40,7 @@ const diversePaths = [
 	'tpsf.erForsvunnet',
 	'tpsMessaging.utenlandskBankkonto',
 	'tpsMessaging.norskBankkonto',
+	'tpsMessaging.sikkerhetstiltak',
 	'tpsMessaging.spraakKode',
 	'tpsMessaging.egenAnsattDatoFom',
 	'tpsMessaging.egenAnsattDatoTom',
@@ -52,6 +53,7 @@ const vergemaalPath = ['tpsf.vergemaal']
 const fullmaktPath = ['pdldata.person.fullmakt']
 
 const sikkerhetstiltakPaths = [
+	'pdldata.person.sikkerhetstiltak',
 	'tpsf.typeSikkerhetTiltak',
 	'tpsf.beskrSikkerhetTiltak',
 	'tpsf.sikkerhetTiltakDatoFom',

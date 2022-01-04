@@ -4,8 +4,8 @@ import { PersoninformasjonKodeverk } from '~/config/kodeverk'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
-import { UtenlandskBankkonto } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/utenlandskbankkonto/UtenlandskBankkonto'
-import { NorskBankkonto } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/norskbankkonto/NorskBankkonto'
+import { UtenlandskBankkonto } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/tpsmessaging/utenlandskbankkonto/UtenlandskBankkonto'
+import { NorskBankkonto } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/tpsmessaging/norskbankkonto/NorskBankkonto'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 
 const bankkontoPath = ['tpsMessaging.utenlandskBankkonto', 'tpsMessaging.norskBankkonto']

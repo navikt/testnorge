@@ -413,6 +413,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			innflytting,
 			utflytting,
 			kontaktinformasjonForDoedsbo,
+			sikkerhetstiltak,
 		} = pdldataKriterier
 
 		if (innflytting) {
@@ -472,6 +473,24 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				}),
 			}
 			data.push(fullmaktData)
+		}
+
+		if (sikkerhetstiltak) {
+			const sikkerhetstiltakData = {
+				header: 'Sikkerhetstiltak',
+				itemRows: sikkerhetstiltak.map((item, idx) => {
+					return [
+						{ numberHeader: `Sikkerhetstiltak ${idx + 1}` },
+						obj('Type sikkerhetstiltak', item.tiltakstype),
+						obj('Beskrivelse', item.beskrivelse),
+						obj('Kontaktperson', item.kontaktperson.personident),
+						obj('Navkontor kode', item.kontaktperson.enhet),
+						obj('Gyldig fra og med', Formatters.formatDate(item.gyldigFraOgMed)),
+						obj('Gyldig til og med', Formatters.formatDate(item.gyldigTilOgMed)),
+					]
+				}),
+			}
+			data.push(sikkerhetstiltakData)
 		}
 
 		if (bostedsadresse) {

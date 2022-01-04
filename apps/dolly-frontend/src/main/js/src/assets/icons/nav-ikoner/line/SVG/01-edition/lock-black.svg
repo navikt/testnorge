@@ -1,0 +1,12 @@
+<svg contentScriptType="text/ecmascript" width="24"
+     zoomAndPan="magnify"
+     contentStyleType="text/css" viewBox="0 0 24 24" height="24"
+     preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"
+     version="1.0">
+    <g fill="none" stroke-miterlimit="10" stroke="#000000"
+       stroke-linejoin="round">
+        <circle r=".5" cx="12" cy="15"/>
+        <path stroke-linecap="round" d="M12 15.5v3"/>
+        <path d="M3.5 9.5h17v14h-17zM6.5 6c0-3.037 2.462-5.5 5.5-5.5s5.5 2.463 5.5 5.5v3.5h-11v-3.5z"/>
+    </g>
+</svg>
