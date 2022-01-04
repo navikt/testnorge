@@ -58,7 +58,7 @@ public class TpsMessagingClient implements ClientRegister {
                         bestilling.getEnvironments());
 
                 appendResponseStatus(sikkerhetstiltakStatus.stream()
-                                .filter(result -> !result.getUtfyllendeMelding().contains("ingen aktiv sikkerhetstiltak funnet"))
+                                .filter(result -> !result.getUtfyllendeMelding().contains("Opphør på ikke eksist. sikkerhet"))
                                 .toList(),
                         status,
                         "Sikkerhetstiltak_slett"
