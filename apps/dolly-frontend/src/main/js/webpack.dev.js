@@ -94,7 +94,7 @@ module.exports = (env) =>
 					changeOrigin: true,
 					secure: false,
 				},
-				'/testnav-norg2-proxy/norg2/api': {
+				'/testnav-norg2-proxy/norg2': {
 					target: env.backend,
 					changeOrigin: true,
 					secure: false,
