@@ -410,9 +410,41 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			falskIdentitet,
 			utenlandskIdentifikasjonsnummer,
 			bostedsadresse,
+			innflytting,
+			utflytting,
 			kontaktinformasjonForDoedsbo,
 			sikkerhetstiltak,
 		} = pdldataKriterier
+
+		if (innflytting) {
+			const innflyttingData = {
+				header: 'Innvandring',
+				itemRows: innflytting.map((item, idx) => {
+					return [
+						{ numberHeader: `Innvandring ${idx + 1}` },
+						obj('Fraflyttingsland', item.fraflyttingsland, AdresseKodeverk.InnvandretUtvandretLand),
+						obj('Fraflyttingssted', item.fraflyttingsstedIUtlandet),
+						obj('Fraflyttingsdato', Formatters.formatDate(item.innflyttingsdato)),
+					]
+				}),
+			}
+			data.push(innflyttingData)
+		}
+
+		if (utflytting) {
+			const utflyttingData = {
+				header: 'Utvandring',
+				itemRows: utflytting.map((item, idx) => {
+					return [
+						{ numberHeader: `Utvandring ${idx + 1}` },
+						obj('Tilflyttingsland', item.tilflyttingsland, AdresseKodeverk.InnvandretUtvandretLand),
+						obj('Tilflyttingssted', item.tilflyttingsstedIUtlandet),
+						obj('Utvandringsdato', Formatters.formatDate(item.utflyttingsdato)),
+					]
+				}),
+			}
+			data.push(utflyttingData)
+		}
 
 		if (telefonnummer) {
 			const telefonnummerData = {

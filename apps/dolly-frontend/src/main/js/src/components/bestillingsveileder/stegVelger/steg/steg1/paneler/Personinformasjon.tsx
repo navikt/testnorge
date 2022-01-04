@@ -10,7 +10,10 @@ import { addDays, subDays } from 'date-fns'
 import { cloneDeep } from 'lodash'
 
 const innvandret = (personFoerLeggTil) =>
-	_get(personFoerLeggTil, 'tpsf.innvandretUtvandret[0].innutvandret') === 'INNVANDRET'
+	_get(personFoerLeggTil, 'pdlforvalter[0].person.innflytting')
+
+const utvandret = (personFoerLeggTil) =>
+	_get(personFoerLeggTil, 'pdlforvalter[0].person.utflytting')
 
 export const PersoninformasjonPanel = ({ stateModifier }) => {
 	const sm = stateModifier(PersoninformasjonPanel.initialValues)
@@ -19,9 +22,6 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 	const leggTil = opts.is.leggTil
 	const { personFoerLeggTil } = opts
 
-	const tomInnvandretUtvandret =
-		personFoerLeggTil && _get(personFoerLeggTil, 'tpsf.innvandretUtvandret').length < 1
-
 	const harFnr = opts.identtype === 'FNR'
 	const harFnrLeggTil = _get(personFoerLeggTil, 'tpsf.identtype') === 'FNR'
 	//Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
@@ -29,7 +29,7 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 	const utvandretTitle = () => {
 		if (!harFnr) {
 			return 'Personer med identtype DNR eller BOST kan ikke utvandre fordi de ikke har norsk statsborgerskap'
-		} else if (leggTil && !tomInnvandretUtvandret && !innvandret(personFoerLeggTil)) {
+		} else if (leggTil && !innvandret(personFoerLeggTil)) {
 			return 'Personen må innvandre før den kan utvandre igjen'
 		} else return null
 	}
@@ -52,12 +52,10 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 				<Attributt
 					attr={sm.attrs.innvandretFraLand}
 					disabled={
-						(tomInnvandretUtvandret && harFnrLeggTil) ||
-						(!tomInnvandretUtvandret && innvandret(personFoerLeggTil))
+						(harFnrLeggTil || innvandret(personFoerLeggTil)) && !utvandret(personFoerLeggTil)
 					}
 					title={
-						(tomInnvandretUtvandret && harFnrLeggTil) ||
-						(!tomInnvandretUtvandret && innvandret(personFoerLeggTil))
+						(harFnrLeggTil || innvandret(personFoerLeggTil)) && !utvandret(personFoerLeggTil)
 							? 'Personen må utvandre før den kan innvandre igjen'
 							: null
 					}
@@ -65,7 +63,7 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 				<Attributt
 					attr={sm.attrs.utvandretTilLand}
 					disabled={
-						!harFnr || (leggTil && !tomInnvandretUtvandret && !innvandret(personFoerLeggTil))
+						!harFnr || (leggTil && utvandret(personFoerLeggTil) && !innvandret(personFoerLeggTil))
 					}
 					title={utvandretTitle()}
 				/>
@@ -108,6 +106,17 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		return tlfListeClone
 	}
 
+	const flyttingFoerLeggTil = (path: string) => {
+		const flyttingListe = _get(personFoerLeggTil, `pdlforvalter[0].person.${path}`)
+		const flyttinglisteClone = cloneDeep(flyttingListe)
+		flyttinglisteClone.forEach((flytting) => {
+			if (_has(flytting, 'id')) {
+				delete flytting.id
+			}
+		})
+		return flyttinglisteClone
+	}
+
 	return {
 		alder: {
 			label: 'Alder',
@@ -140,22 +149,42 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		},
 		innvandretFraLand: {
 			label: 'Innvandret fra',
-			checked: has('tpsf.innvandretFraLand'),
+			checked: has('pdldata.person.innflytting'),
 			add() {
-				setMulti(['tpsf.innvandretFraLand', ''], ['tpsf.innvandretFraLandFlyttedato', null])
+				_has(personFoerLeggTil, 'pdlforvalter[0].person.innflytting')
+					? set('pdldata.person.innflytting', flyttingFoerLeggTil('innflytting'))
+					: set('pdldata.person.innflytting', [
+							{
+								fraflyttingsland: '',
+								fraflyttingsstedIUtlandet: '',
+								innflyttingsdato: new Date(),
+								master: 'FREG',
+								kilde: 'Dolly',
+							},
+					  ])
 			},
 			remove() {
-				del(['tpsf.innvandretFraLand', 'tpsf.innvandretFraLandFlyttedato'])
+				del('pdldata.person.innflytting')
 			},
 		},
 		utvandretTilLand: {
 			label: 'Utvandret til',
-			checked: has('tpsf.utvandretTilLand'),
+			checked: has('pdldata.person.utflytting'),
 			add() {
-				setMulti(['tpsf.utvandretTilLand', ''], ['tpsf.utvandretTilLandFlyttedato', null])
+				_has(personFoerLeggTil, 'pdlforvalter[0].person.utflytting')
+					? set('pdldata.person.utflytting', flyttingFoerLeggTil('utflytting'))
+					: set('pdldata.person.utflytting', [
+							{
+								tilflyttingsland: '',
+								tilflyttingsstedIUtlandet: '',
+								utflyttingsdato: new Date(),
+								master: 'FREG',
+								kilde: 'Dolly',
+							},
+					  ])
 			},
 			remove() {
-				del(['tpsf.utvandretTilLand', 'tpsf.utvandretTilLandFlyttedato'])
+				del('pdldata.person.utflytting')
 			},
 		},
 		identHistorikk: {
@@ -227,8 +256,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 					'tpsMessaging.egenAnsattDatoTom',
 					'tpsf.egenAnsattDatoFom',
 					'tpsf.egenAnsattDatoTom',
-					'skjerming.egenAnsattDatoFom',
-					'skjerming.egenAnsattDatoTom',
+					'skjerming',
 				])
 			},
 		},

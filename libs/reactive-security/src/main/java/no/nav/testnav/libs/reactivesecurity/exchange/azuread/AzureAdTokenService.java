@@ -85,8 +85,7 @@ public class AzureAdTokenService implements TokenService {
         return new ClientCredentialExchangeCommand(
                 webClient,
                 clientCredential,
-                serverProperties.toAzureAdScope(),
-                wellKnown
+                serverProperties.toAzureAdScope()
         ).call();
     }
 

@@ -15,7 +15,7 @@ import {
 } from './partials'
 import { TpsMessagingApi } from '~/service/Api'
 
-export const TpsfVisning = ({ data, environments }) => {
+export const TpsfVisning = ({ data, environments, pdlData }) => {
 	const [tpsMessagingData, setTpsMessagingData] = useState(null)
 	useEffect(() => {
 		if (environments && environments.length > 0) {
@@ -29,17 +29,25 @@ export const TpsfVisning = ({ data, environments }) => {
 	return (
 		<div>
 			<Personinfo data={data} tpsMessagingData={tpsMessagingData} />
-			<Nasjonalitet data={data} tpsMessagingData={tpsMessagingData} />
+			<Nasjonalitet data={data} pdlData={pdlData} tpsMessagingData={tpsMessagingData} />
 			<Vergemaal data={data.vergemaal} />
 			<Fullmakt data={data.fullmakt} relasjoner={data.relasjoner} />
 			<Boadresse boadresse={data.boadresse} />
 			<Postadresse postadresse={data.postadresse} />
 			<MidlertidigAdresse midlertidigAdresse={data.midlertidigAdresse} />
 			<UtenlandskBankkonto
-				data={tpsMessagingData ? tpsMessagingData.bankkontonrUtland : data.bankkontonrUtland}
+				data={
+					tpsMessagingData?.bankkontonrUtland
+						? tpsMessagingData.bankkontonrUtland
+						: data.bankkontonrUtland
+				}
 			/>
 			<NorskBankkonto
-				data={tpsMessagingData ? tpsMessagingData.bankkontonrNorsk : data.bankkontonrNorsk}
+				data={
+					tpsMessagingData?.bankkontonrNorsk
+						? tpsMessagingData.bankkontonrNorsk
+						: data.bankkontonrNorsk
+				}
 			/>
 			<Identhistorikk identhistorikk={data.identHistorikk} />
 			<Relasjoner relasjoner={data.relasjoner} />

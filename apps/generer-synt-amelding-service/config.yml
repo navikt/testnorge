@@ -30,8 +30,9 @@ spec:
           namespace: plattformsikkerhet
           cluster: dev-gcp
     outbound:
-      external:
-        - host: testnav-syntrest-proxy.dev-fss-pub.nais.io
+      rules:
+        - application: synthdata-amelding
+          cluster: dev-gcp
   tokenx:
     enabled: true
   azure:
