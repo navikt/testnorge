@@ -39,7 +39,7 @@ public class TpsMessagingClient implements ClientRegister {
         StringBuilder status = new StringBuilder();
 
         try {
-            log.info("Bestilling fra Dolly-frontend: {}", Json.pretty(bestilling));
+            log.info("Bestilling fra Dolly: {}", Json.pretty(bestilling));
 
             if (nonNull(bestilling.getTpsMessaging().getSpraakKode())) {
                 appendResponseStatus(

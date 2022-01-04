@@ -14,6 +14,7 @@ import {
 	Vergemaal,
 } from './partials'
 import { TpsMessagingApi } from '~/service/Api'
+import { PdlSikkerhetstiltak } from '~/components/fagsystem/pdlf/visning/partials/PdlSikkerhetstiltak'
 
 export const TpsfVisning = ({ data, environments, pdlData }) => {
 	const [tpsMessagingData, setTpsMessagingData] = useState(null)
@@ -26,6 +27,8 @@ export const TpsfVisning = ({ data, environments, pdlData }) => {
 	}, [])
 	if (!data) return null
 
+	console.log('pdlData: ', pdlData) //TODO - SLETT MEG
+
 	return (
 		<div>
 			<Personinfo data={data} tpsMessagingData={tpsMessagingData} />
@@ -35,6 +38,9 @@ export const TpsfVisning = ({ data, environments, pdlData }) => {
 			<Boadresse boadresse={data.boadresse} />
 			<Postadresse postadresse={data.postadresse} />
 			<MidlertidigAdresse midlertidigAdresse={data.midlertidigAdresse} />
+			{pdlData?.[0]?.person?.sikkerhetstiltak && (
+				<PdlSikkerhetstiltak data={pdlData[0].person.sikkerhetstiltak} />
+			)}
 			<UtenlandskBankkonto
 				data={
 					tpsMessagingData?.bankkontonrUtland
