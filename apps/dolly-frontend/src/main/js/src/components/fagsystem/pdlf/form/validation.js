@@ -155,6 +155,22 @@ const telefonnummer = Yup.array().of(
 	})
 )
 
+const innflytting = Yup.array().of(
+	Yup.object({
+		fraflyttingsland: requiredString,
+		fraflyttingsstedIUtlandet: Yup.string().optional().nullable(),
+		innflyttingsdato: requiredDate.nullable(),
+	})
+)
+
+const utflytting = Yup.array().of(
+	Yup.object({
+		tilflyttingsland: requiredString,
+		tilflyttingsstedIUtlandet: Yup.string().optional().nullable(),
+		utflyttingsdato: requiredDate.nullable(),
+	})
+)
+
 export const validation = {
 	pdldata: Yup.object({
 		person: Yup.object({
@@ -162,6 +178,8 @@ export const validation = {
 			fullmakt: ifPresent('$pdldata.person.fullmakt', fullmakt),
 			falskIdentitet: ifPresent('$pdldata.person.falskIdentitet', falskIdentitet),
 			telefonnummer: ifPresent('$pdldata.person.telefonnummer', telefonnummer),
+			innflytting: ifPresent('$pdldata.person.innflytting', innflytting),
+			utflytting: ifPresent('$pdldata.person.utflytting', utflytting),
 			utenlandskIdentifikasjonsnummer: ifPresent(
 				'$pdldata.person.utenlandskIdentifikasjonsnummer',
 				utenlandskId
