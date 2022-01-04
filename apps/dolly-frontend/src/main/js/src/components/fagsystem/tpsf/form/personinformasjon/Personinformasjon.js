@@ -105,11 +105,11 @@ export const Personinformasjon = ({ formikBag }) => {
 					</Vis>
 
 					<Kategori title="Innvandring" vis={innvandringPath}>
-						<Innvandring formikBag={formikBag} />
+						<Innvandring />
 					</Kategori>
 
 					<Kategori title="Utvandring" vis={utvandringPath}>
-						<Utvandring formikBag={formikBag} />
+						<Utvandring />
 					</Kategori>
 				</Kategori>
 				<Kategori title="Diverse" vis={diversePaths}>
