@@ -49,7 +49,7 @@ export default ({ brukerProfil, brukerBilde }: Props) => {
 				</a>
 				<NavLink to="/soek">Søk</NavLink>
 				<a
-					href="https://navikt.github.io/dolly-frontend/"
+					href="https://navikt.github.io/testnorge/applications/dolly/"
 					target="_blank"
 					onClick={() => Logger.log({ event: 'Trykket på dokumentasjon header' })}
 				>
