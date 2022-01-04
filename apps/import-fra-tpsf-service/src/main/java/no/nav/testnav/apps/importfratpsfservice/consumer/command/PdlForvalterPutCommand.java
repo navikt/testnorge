@@ -1,7 +1,7 @@
 package no.nav.testnav.apps.importfratpsfservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -17,7 +17,7 @@ public class PdlForvalterPutCommand implements Callable<Mono<String>> {
 
     private final WebClient webClient;
     private final String ident;
-    private final PersonDTO person;
+    private final PersonUpdateRequestDTO personUpdateRequest;
     private final String token;
 
     @Override
@@ -28,7 +28,9 @@ public class PdlForvalterPutCommand implements Callable<Mono<String>> {
                 .uri(builder -> builder.path(PDL_PERSON_URL).build(ident))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .body(BodyInserters.fromValue(person))
+                .header("overwrite", "true")
+                .header("relaxed", "true")
+                .body(BodyInserters.fromValue(personUpdateRequest))
                 .retrieve()
                 .bodyToMono(String.class);
     }

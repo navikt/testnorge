@@ -7,6 +7,7 @@ import no.nav.testnav.apps.importfratpsfservice.consumer.DollyConsumer;
 import no.nav.testnav.apps.importfratpsfservice.consumer.PdlForvalterConsumer;
 import no.nav.testnav.apps.importfratpsfservice.consumer.TpsfConsumer;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -31,7 +32,11 @@ public class TpsfService {
                 .flatMap(page ->  tpsfConsumer.getSkdMeldinger(skdgruppeId, page.longValue()))
                 .map(melding ->
                         mapperFacade.map(melding, PersonDTO.class))
-//                .flatMap(person -> pdlForvalterConsumer.putPdlPerson(person.getIdent(), person).thenReturn(person))
+                .flatMap(person ->
+                        pdlForvalterConsumer.putPdlPerson(person.getIdent(),
+                                PersonUpdateRequestDTO.builder()
+                                .person(person)
+                                .build()).thenReturn(person))
 //                .flatMap(person -> pdlForvalterConsumer.postOrdrePdlPerson(person.getIdent()).thenReturn(person))
 //                .flatMap(person -> dollyConsumer.putGrupperIdent(dollyGruppeId, person.getIdent(), Master.PDL).thenReturn(person))
                 .map(person -> format("Importert ident %s -- %s %s", person.getIdent(),

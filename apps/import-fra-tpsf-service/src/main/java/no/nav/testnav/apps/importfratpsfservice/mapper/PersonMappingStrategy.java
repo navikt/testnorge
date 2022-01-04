@@ -77,9 +77,11 @@ public class PersonMappingStrategy implements MappingStrategy {
                         target.getKjoenn().add(KjoennDTO.builder()
                                 .kjoenn(KjoennFraIdentUtility.getKjoenn(target.getIdent()))
                                 .build());
-                        target.getDoedsfall().add(DoedsfallDTO.builder()
-                                .doedsdato(getDate(source.getDatoDoed()))
-                                .build());
+                        if (isNotBlank(source.getDatoDoed())) {
+                            target.getDoedsfall().add(DoedsfallDTO.builder()
+                                    .doedsdato(getDate(source.getDatoDoed()))
+                                    .build());
+                        }
                         target.getStatsborgerskap().add(StatsborgerskapDTO.builder()
                                 .landkode(LandkodeDekoder.convert(source.getStatsborgerskap()))
                                 .bekreftelsesdato(getDate(source.getStatsborgerskapRegdato()))
