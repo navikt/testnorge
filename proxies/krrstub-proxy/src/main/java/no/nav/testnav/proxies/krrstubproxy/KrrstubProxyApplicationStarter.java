@@ -1,5 +1,13 @@
 package no.nav.testnav.proxies.krrstubproxy;
 
+import no.nav.testnav.libs.reactivecore.config.CoreConfig;
+import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
+import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
+import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
+import no.nav.testnav.libs.reactivesecurity.exchange.azuread.TrygdeetatenAzureAdTokenService;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.proxies.krrstubproxy.config.LocalConfig;
+import no.nav.testnav.proxies.krrstubproxy.config.credentials.KrrStubProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -7,18 +15,9 @@ import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
-import no.nav.testnav.libs.reactivecore.config.CoreConfig;
-import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
-import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
-import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
-import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
-import no.nav.testnav.libs.reactivesecurity.exchange.azuread.TrygdeetatenAzureAdTokenService;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.proxies.krrstubproxy.config.credentials.KrrStubProperties;
-
 @Import({
         CoreConfig.class,
-        DevConfig.class,
+        LocalConfig.class,
         SecurityConfig.class,
         SecureOAuth2ServerToServerConfiguration.class
 })
