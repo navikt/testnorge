@@ -6,6 +6,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.testnav.apps.importfratpsfservice.consumer.DollyConsumer;
 import no.nav.testnav.apps.importfratpsfservice.consumer.PdlForvalterConsumer;
 import no.nav.testnav.apps.importfratpsfservice.consumer.TpsfConsumer;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import org.springframework.stereotype.Service;
@@ -29,16 +30,18 @@ public class TpsfService {
                 .filter(gruppe -> gruppe.getId().equals(skdgruppeId))
                 .next()
                 .flatMapMany(gruppe -> Flux.range(0, 1)) //gruppe.getAntallSider().intValue()))
-                .flatMap(page ->  tpsfConsumer.getSkdMeldinger(skdgruppeId, page.longValue()))
+                .flatMap(page -> tpsfConsumer.getSkdMeldinger(skdgruppeId, page.longValue()))
                 .map(melding ->
                         mapperFacade.map(melding, PersonDTO.class))
                 .flatMap(person ->
                         pdlForvalterConsumer.putPdlPerson(person.getIdent(),
                                 PersonUpdateRequestDTO.builder()
-                                .person(person)
-                                .build()).thenReturn(person))
-//                .flatMap(person -> pdlForvalterConsumer.postOrdrePdlPerson(person.getIdent()).thenReturn(person))
-//                .flatMap(person -> dollyConsumer.putGrupperIdent(dollyGruppeId, person.getIdent(), Master.PDL).thenReturn(person))
+                                        .person(person)
+                                        .build()).thenReturn(person))
+                .flatMap(person ->
+                        pdlForvalterConsumer.postOrdrePdlPerson(person.getIdent()).thenReturn(person))
+                .flatMap(person ->
+                        dollyConsumer.putGrupperIdent(dollyGruppeId, person.getIdent(), Master.PDL).thenReturn(person))
                 .map(person -> format("Importert ident %s -- %s %s", person.getIdent(),
                         person.getNavn().get(0).getFornavn(), person.getNavn().get(0).getEtternavn()));
     }
