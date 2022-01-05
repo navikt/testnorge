@@ -39,7 +39,7 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 		<Panel
 			heading={PersoninformasjonPanel.heading}
 			startOpen
-			checkAttributeArray={sm.batchAdd}
+			checkAttributeArray={() => sm.batchAdd('identtype')}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType={'personinformasjon'}
 		>
@@ -320,7 +320,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		identtype: {
 			label: 'Identtype',
 			checked: has('tpsf.identtype'),
-			add: () =>
+			add() {
 				setMulti(
 					['tpsf.identtype', 'FNR'],
 					personFoerLeggTil?.tpsf?.foedselsdato && [
@@ -331,7 +331,8 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 						'tpsf.foedtEtter',
 						subDays(new Date(personFoerLeggTil.tpsf.foedselsdato), 14),
 					]
-				),
+				)
+			},
 			remove: () => del(['tpsf.identtype', 'tpsf.foedtEtter', 'tpsf.foedtFoer']),
 		},
 		vergemaal: {
