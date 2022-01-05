@@ -1,5 +1,5 @@
 import { useAsync } from 'react-use'
-import { BrregstubApi, DollyApi, KrrApi } from '~/service/Api'
+import { BrregstubApi, DollyApi, KrrApi, Norg2Api } from '~/service/Api'
 import Api from '~/api'
 import _isNil from 'lodash/isNil'
 
@@ -17,6 +17,10 @@ export const SelectOptionsOppslag = {
 
 	hentKrrLeverandoerer: () => {
 		return useAsync(async () => KrrApi.getSdpLeverandoerListe(), [KrrApi.getSdpLeverandoerListe])
+	},
+
+	hentNavEnheter: () => {
+		return useAsync(async () => Norg2Api.getNavEnheter(), [Norg2Api.getNavEnheter])
 	},
 
 	hentPersonnavn: () => {
@@ -117,6 +121,16 @@ export const SelectOptionsOppslag = {
 			const options = []
 			roller.forEach((rolle) => {
 				options.push({ value: rolle[0], label: rolle[1] })
+			})
+			return options
+		} else if (type === 'navEnheter') {
+			const enheter = data.value ? Object.entries(data.value.data) : []
+			const options = []
+			enheter.forEach((enhet) => {
+				options.push({
+					value: enhet?.[1]?.enhetNr,
+					label: `${enhet?.[1]?.navn} (${enhet?.[1]?.enhetNr})`,
+				})
 			})
 			return options
 		} else if (type === 'sdpLeverandoer') {

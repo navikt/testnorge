@@ -4,12 +4,15 @@ import Icon from '~/components/ui/icon/Icon'
 
 import './FagsystemStatus.less'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { fixNamesAndDuplicatesOfStatus } from '~/utils/BestillingStatusFormattering'
 
-export default function FagsystemStatus({ statusrapport }) {
-	if (statusrapport.length <= 0) return false
+export default function FagsystemStatus({ statusrapportListe }) {
+	if (statusrapportListe.length <= 0) return false
 
 	// Feilmeldinger som skal ha gul problem-circle legges inn her
 	const problemCircleFeil = ['InnvandringOpprettingsmelding: STATUS: TIDSAVBRUDD']
+
+	const statusrapport = fixNamesAndDuplicatesOfStatus(statusrapportListe)
 
 	const getIconType = (status) => {
 		const melding = status.melding

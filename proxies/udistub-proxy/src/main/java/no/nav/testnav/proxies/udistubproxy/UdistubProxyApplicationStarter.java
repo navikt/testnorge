@@ -49,10 +49,10 @@ public class UdistubProxyApplicationStarter {
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
 
         var addAuthenticationHeaderFilter = AddAuthenticationRequestGatewayFilterFactory
-                .createAuthenticationHeaderFilter(() -> tokenExchange.exchange(udistubServiceProperties).map(AccessToken::getTokenValue));
+                .bearerAuthenticationHeaderFilter(() -> tokenExchange.exchange(udistubServiceProperties).map(AccessToken::getTokenValue));
 
         var addAuthenticationHeaderDevFilter = AddAuthenticationRequestGatewayFilterFactory
-                .createAuthenticationHeaderFilter(() -> tokenExchange.exchange(udistubDevServiceProperties).map(AccessToken::getTokenValue));
+                .bearerAuthenticationHeaderFilter(() -> tokenExchange.exchange(udistubDevServiceProperties).map(AccessToken::getTokenValue));
 
         return builder
                 .routes()

@@ -53,9 +53,9 @@ public class AaregProxyApplicationStarter {
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder, StsOidcTokenService stsTestOidcTokenService, StsOidcTokenService stsPreprodOidcTokenService) {
 
         var preprodFilter = AddAuthenticationRequestGatewayFilterFactory
-                .createAuthenticationAndNavConsumerTokenHeaderFilter(stsPreprodOidcTokenService::getToken);
+                .bearerAuthenticationAndNavConsumerTokenHeaderFilter(stsPreprodOidcTokenService::getToken);
         var testFilter = AddAuthenticationRequestGatewayFilterFactory
-                .createAuthenticationAndNavConsumerTokenHeaderFilter(stsTestOidcTokenService::getToken);
+                .bearerAuthenticationAndNavConsumerTokenHeaderFilter(stsTestOidcTokenService::getToken);
         return builder
                 .routes()
                 .route(createRoute("q0", preprodFilter))

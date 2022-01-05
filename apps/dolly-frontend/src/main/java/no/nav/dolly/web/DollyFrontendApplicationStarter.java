@@ -2,6 +2,7 @@ package no.nav.dolly.web;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.web.credentials.TestnavNorg2ProxyProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -90,6 +91,7 @@ public class DollyFrontendApplicationStarter {
     private final PersonSearchServiceProperties personSearchServiceProperties;
     private final TestnavAdresseServiceProperties testnavAdresseServiceProperties;
     private final TestnavPdlForvalterProperties testnavPdlForvalterProperties;
+    private final TestnavNorg2ProxyProperties testnavNorg2ProxyProperties;
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
@@ -114,6 +116,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(testnavTestnorgeInstProxyProperties))
                 .route(createRoute(testnavTestnorgeAaregProxyProperties))
                 .route(createRoute(testnavKrrstubProxyProperties, "testnav-krrstub-proxy"))
+                .route(createRoute(testnavNorg2ProxyProperties, "testnav-norg2-proxy"))
                 .route(createRoute(testnavOrganisasjonServiceProperties))
                 .route(createRoute(testnavSigrunstubProxyProperties))
                 .route(createRoute(udiStubProxyProperties, "udi-stub"))

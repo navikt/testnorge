@@ -34,6 +34,7 @@ export default class Request {
 
 	private static logError(error: any, url: string) {
 		const event = `Henting av data fra ${url} feilet.`
+		console.error(event, error.message)
 		Logger.error({
 			event: event,
 			message: error.message,

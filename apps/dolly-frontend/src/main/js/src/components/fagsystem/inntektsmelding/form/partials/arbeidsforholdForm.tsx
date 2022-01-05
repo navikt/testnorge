@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { get as _get } from 'lodash'
 import InntektsmeldingSelect from './InntektsmeldingSelect'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'

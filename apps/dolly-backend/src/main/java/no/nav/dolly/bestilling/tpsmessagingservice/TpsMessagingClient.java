@@ -39,7 +39,7 @@ public class TpsMessagingClient implements ClientRegister {
         StringBuilder status = new StringBuilder();
 
         try {
-            log.info("Bestilling fra Dolly-frontend: {}", Json.pretty(bestilling));
+            log.info("Bestilling fra Dolly: {}", Json.pretty(bestilling));
 
             if (nonNull(bestilling.getTpsMessaging().getSpraakKode())) {
                 appendResponseStatus(
@@ -48,7 +48,29 @@ public class TpsMessagingClient implements ClientRegister {
                                 bestilling.getEnvironments(),
                                 mapperFacade.map(bestilling.getTpsMessaging().getSpraakKode(), SpraakDTO.class)),
                         status,
-                        "SprakKode"
+                        "SprakKode_opprett"
+                );
+            }
+
+            if (nonNull(bestilling.getTpsMessaging().getSikkerhetstiltak()) && !bestilling.getTpsMessaging().getSikkerhetstiltak().isEmpty()) {
+                var sikkerhetstiltakStatus = tpsMessagingConsumer.deleteSikkerhetstiltakRequest(
+                        dollyPerson.getHovedperson(),
+                        bestilling.getEnvironments());
+
+                appendResponseStatus(sikkerhetstiltakStatus.stream()
+                                .filter(result -> !result.getUtfyllendeMelding().contains("Opphør på ikke eksist. sikkerhet"))
+                                .toList(),
+                        status,
+                        "Sikkerhetstiltak_slett"
+                );
+
+                appendResponseStatus(
+                        tpsMessagingConsumer.sendSikkerhetstiltakRequest(
+                                dollyPerson.getHovedperson(),
+                                bestilling.getEnvironments(),
+                                bestilling.getTpsMessaging().getSikkerhetstiltak().get(0)),
+                        status,
+                        "Sikkerhetstiltak_opprett"
                 );
             }
 
@@ -73,7 +95,7 @@ public class TpsMessagingClient implements ClientRegister {
                 );
             }
 
-            if (nonNull(bestilling.getTpsMessaging().getTelefonnummer())) {
+            if (nonNull(bestilling.getTpsMessaging().getTelefonnummer()) && !bestilling.getTpsMessaging().getTelefonnummer().isEmpty()) {
                 var tlfStatus = tpsMessagingConsumer.deleteTelefonnummerRequest(
                         dollyPerson.getHovedperson(),
                         bestilling.getEnvironments());
@@ -84,9 +106,6 @@ public class TpsMessagingClient implements ClientRegister {
                         status,
                         "Telefonnummer_slett"
                 );
-            }
-
-            if (nonNull(bestilling.getTpsMessaging().getTelefonnummer())) {
                 appendResponseStatus(
                         tpsMessagingConsumer.sendTelefonnummerRequest(
                                 dollyPerson.getHovedperson(),

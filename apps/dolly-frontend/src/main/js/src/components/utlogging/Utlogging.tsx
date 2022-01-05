@@ -11,8 +11,7 @@ function getCookie(cookieName: string) {
 	const name = cookieName + '='
 	const decodedCookie = decodeURIComponent(document.cookie)
 	const list = decodedCookie.split(';')
-	for (let index = 0; index < list.length; index++) {
-		let value = list[index]
+	for (let value of list) {
 		while (value.charAt(0) == ' ') {
 			value = value.substring(1)
 		}
