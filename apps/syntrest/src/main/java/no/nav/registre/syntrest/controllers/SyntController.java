@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import no.nav.registre.syntrest.consumer.SyntInntektConsumer;
 import no.nav.registre.syntrest.consumer.SyntMeldekortConsumer;
 import no.nav.registre.syntrest.consumer.SyntPostConsumer;
 
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import no.nav.registre.syntrest.domain.aareg.Arbeidsforholdsmelding;
+import no.nav.registre.syntrest.domain.inntekt.Inntektsmelding;
 import no.nav.registre.syntrest.utils.InputValidator;
 
 import static java.util.Objects.isNull;
@@ -39,8 +41,7 @@ public class SyntController {
     ///////////// SYNT CONSUMERS //////////////
     private final SyntPostConsumer<List<String>, List<Arbeidsforholdsmelding>> aaregConsumer;
     private final SyntMeldekortConsumer meldekortConsumer;
-    private final SyntPostConsumer<Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>,
-            Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>> inntektConsumer;
+    private final SyntInntektConsumer inntektConsumer;
 
 
     @PostMapping("/aareg")
@@ -95,10 +96,10 @@ public class SyntController {
             "Hvis man legger ved en tom liste til fødselsnummeret blir en inntektsmelding generert basert på en kernel " +
             "density model.")
     @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-inntekt"})
-    public ResponseEntity<Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>> generateInntektsMelding(
+    public ResponseEntity<Map<String, List<Inntektsmelding>>> generateInntektsMelding(
             @ApiParam(value = "Map der key=fødselsnummer, value=liste med inntektsmeldinger", required = true)
-            @RequestBody Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>> fnrInntektMap
-    ) throws InterruptedException, ApiException {
+            @RequestBody Map<String, List<Inntektsmelding>> fnrInntektMap
+    ) {
         InputValidator.validateInput(new ArrayList<>(fnrInntektMap.keySet()));
         var response = inntektConsumer.synthesizeData(fnrInntektMap);
         doResponseValidation(response);

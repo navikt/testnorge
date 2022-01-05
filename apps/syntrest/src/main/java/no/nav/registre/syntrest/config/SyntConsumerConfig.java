@@ -13,7 +13,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.net.MalformedURLException;
 import java.util.List;
-import java.util.Map;
 
 @Configuration
 @RequiredArgsConstructor
@@ -23,9 +22,6 @@ public class SyntConsumerConfig {
     @Value("${synth-aareg-url}")
     private String aaregUrl;
 
-    @Value("${synth-inntekt-url}")
-    private String inntektUrl;
-
     private final ApplicationManager applicationManager;
     private final WebClient.Builder webClientBuilder;
 
@@ -34,8 +30,7 @@ public class SyntConsumerConfig {
     };
     private static final ParameterizedTypeReference<List<Arbeidsforholdsmelding>> ARBEIDSFORHOLDSMELDING_LIST_TYPE = new ParameterizedTypeReference<>() {
     };
-    private static final ParameterizedTypeReference<Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>> INNTEKTSMELDING_MAP_TYPE = new ParameterizedTypeReference<>() {
-    };
+
 
     @Bean
     SyntPostConsumer<List<String>, List<Arbeidsforholdsmelding>> aaregConsumer() throws MalformedURLException {
@@ -49,16 +44,4 @@ public class SyntConsumerConfig {
                 webClientBuilder);
     }
 
-    @Bean
-    SyntPostConsumer<Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>,
-            Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>> inntektConsumer() throws MalformedURLException {
-        return new SyntPostConsumer<>(
-                applicationManager,
-                "synthdata-inntekt",
-                inntektUrl,
-                false,
-                INNTEKTSMELDING_MAP_TYPE,
-                INNTEKTSMELDING_MAP_TYPE,
-                webClientBuilder);
-    }
 }
