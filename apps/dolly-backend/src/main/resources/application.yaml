@@ -207,3 +207,7 @@ management:
     heapdump.enabled: true
   metrics.export:
     prometheus.enabled: true
+
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true

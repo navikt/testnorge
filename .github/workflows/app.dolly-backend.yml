@@ -39,7 +39,7 @@ jobs:
     name: Deploy dev
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/feature/tps-messaging-sikkerhetstiltak'  }}
+    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/bugfix/swagger-versjon'  }}
     with:
       resource: 'apps/dolly-backend/config.dev.yml'
       app-name: 'testnav-dolly-backend'
