@@ -4,26 +4,15 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { AdresseKodeverk } from '~/config/kodeverk'
+import { UtenlandskAdresseData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 
 type DataListe = {
 	data: Array<Data>
 }
 
 type Data = {
-	enhet: Enhet
+	enhet: UtenlandskAdresseData
 	idx: number
-}
-
-type Enhet = {
-	utenlandskAdresse?: {
-		adressenavnNummer?: string
-		postboksNummerNavn?: string
-		postkode?: string
-		bySted?: string
-		landkode?: string
-		bygningEtasjeLeilighet?: string
-		regionDistriktOmraade?: string
-	}
 }
 
 export const UtenlandskBoadresse = ({ data }: DataListe) => {
@@ -60,7 +49,9 @@ export const UtenlandskBoadresse = ({ data }: DataListe) => {
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header="" nested>
-						{(enhet: Enhet, idx: number) => <UtenlandskBoadresseVisning enhet={enhet} idx={idx} />}
+						{(enhet: UtenlandskAdresseData, idx: number) => (
+							<UtenlandskBoadresseVisning enhet={enhet} idx={idx} />
+						)}
 					</DollyFieldArray>
 				</ErrorBoundary>
 			</div>

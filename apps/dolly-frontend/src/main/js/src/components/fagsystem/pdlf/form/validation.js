@@ -46,10 +46,17 @@ const fullmakt = Yup.array().of(
 	})
 )
 
+const tilrettelagtKommunikasjon = Yup.array().of(
+	Yup.object({
+		spraakForTaletolk: Yup.string().nullable(),
+		spraakForTegnspraakTolk: Yup.string().nullable(),
+	})
+)
+
 const sikkerhetstiltak = Yup.array().of(
 	Yup.object({
 		tiltakstype: requiredString.nullable(),
-		beskrivelse: Yup.string().optional(),
+		beskrivelse: Yup.string().nullable(),
 		kontaktperson: Yup.object({
 			personident: requiredString.nullable(),
 			enhet: requiredString.nullable(),
@@ -228,6 +235,10 @@ export const validation = {
 			bostedsadresse: ifPresent('$pdldata.person.bostedsadresse', bostedsadresse),
 			fullmakt: ifPresent('$pdldata.person.fullmakt', fullmakt),
 			sikkerhetstiltak: ifPresent('$pdldata.person.sikkerhetstiltak', sikkerhetstiltak),
+			tilrettelagtKommunikasjon: ifPresent(
+				'$pdldata.person.tilrettelagtKommunikasjon',
+				tilrettelagtKommunikasjon
+			),
 			falskIdentitet: ifPresent('$pdldata.person.falskIdentitet', falskIdentitet),
 			telefonnummer: ifPresent('$pdldata.person.telefonnummer', telefonnummer),
 			statsborgerskap: ifPresent('$pdldata.person.statsborgerskap', statsborgerskap),

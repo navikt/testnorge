@@ -6,7 +6,11 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { getPlaceholder, setNavn } from '../utils'
 import _get from 'lodash/get'
-import { initialPdlPerson } from '~/components/fagsystem/pdlf/form/initialValues'
+import {
+	initialNyPerson,
+	initialOrganisasjon,
+	initialPerson,
+} from '~/components/fagsystem/pdlf/form/initialValues'
 import { OrganisasjonSelect } from '~/components/organisasjonSelect'
 import _cloneDeep from 'lodash/cloneDeep'
 import _set from 'lodash/set'
@@ -26,29 +30,6 @@ type TypeValues = {
 type OrgValues = {
 	orgnr: string
 	navn: string
-}
-
-const initialOrganisasjon = {
-	organisasjonsnummer: null as string,
-	organisasjonsnavn: null as string,
-	kontaktperson: {
-		fornavn: null as string,
-		mellomnavn: null as string,
-		etternavn: null as string,
-	},
-}
-
-const initialPerson = {
-	foedselsdato: null as string,
-	navn: {
-		fornavn: null as string,
-		mellomnavn: null as string,
-		etternavn: null as string,
-	},
-}
-
-const initialNyPerson = {
-	nyKontaktperson: initialPdlPerson,
 }
 
 export const Kontakt = ({ formikBag, path }: KontaktValues) => {

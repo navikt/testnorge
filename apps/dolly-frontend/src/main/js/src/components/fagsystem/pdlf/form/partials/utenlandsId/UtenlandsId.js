@@ -5,21 +5,13 @@ import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-
-const initialValues = {
-	identifikasjonsnummer: '',
-	opphoert: false,
-	utstederland: '',
-	kilde: 'Dolly',
-	master: 'FREG',
-	gjeldende: true,
-}
+import { initialUtenlandsIdValues } from '~/components/fagsystem/pdlf/form/initialValues'
 
 export const UtenlandsId = () => (
 	<FormikDollyFieldArray
 		name="pdldata.person.utenlandskIdentifikasjonsnummer"
 		header="Utenlandsk ID"
-		newEntry={initialValues}
+		newEntry={initialUtenlandsIdValues}
 		canBeEmpty={false}
 	>
 		{(path, idx) => (

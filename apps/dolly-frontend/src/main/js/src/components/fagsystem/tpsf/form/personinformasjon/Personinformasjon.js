@@ -1,11 +1,8 @@
 import React, { useContext } from 'react'
 import Panel from '~/components/ui/panel/Panel'
-import { AdresseKodeverk } from '~/config/kodeverk'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { erForste, panelError } from '~/components/ui/form/formUtils'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { Diverse } from './partials/Diverse'
 import { Vergemaal } from './partials/vergemaal/Vergemaal'
 import { Fullmakt } from './partials/fullmakt/Fullmakt'
@@ -19,6 +16,7 @@ import { Doedsfall } from '~/components/fagsystem/pdlf/form/partials/doedsfall/D
 import { Statsborgerskap } from '~/components/fagsystem/pdlf/form/partials/statsborgerskap/Statsborgerskap'
 import { Innvandring } from '~/components/fagsystem/pdlf/form/partials/innvandring/Innvandring'
 import { Utvandring } from '~/components/fagsystem/pdlf/form/partials/utvandring/Utvandring'
+import { TilrettelagtKommunikasjon } from '~/components/fagsystem/pdlf/form/partials/tilrettelagtkommunikasjon/TilrettelagtKommunikasjon'
 
 const alderPaths = ['tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer', 'tpsf.doedsdato']
 
@@ -49,6 +47,7 @@ const diversePaths = [
 ]
 
 const telefonnummerPath = ['pdldata.person.telefonnummer']
+const tilrettelagtKommunikasjonPath = ['pdldata.person.tilrettelagtKommunikasjon']
 const innvandringPath = ['pdldata.person.innflytting']
 const utvandringPath = ['pdldata.person.utflytting']
 const statsborgerskapPath = ['pdldata.person.statsborgerskap']
@@ -71,6 +70,7 @@ const panelPaths = [
 	innvandringPath,
 	utvandringPath,
 	telefonnummerPath,
+	tilrettelagtKommunikasjonPath,
 	doedsfallPath,
 	vergemaalPath,
 	fullmaktPath,
@@ -107,12 +107,12 @@ export const Personinformasjon = ({ formikBag }) => {
 				)}
 
 				<Kategori title="Dødsfall" vis={doedsfallPath}>
-					<Doedsfall formikBag={formikBag} />
+					<Doedsfall />
 				</Kategori>
 
 				<Kategori title="Nasjonalitet" vis={nasjonalitetPaths}>
 					<Vis attributt={statsborgerskapPath}>
-						<Statsborgerskap formikBag={formikBag} />
+						<Statsborgerskap />
 					</Vis>
 
 					<Kategori title="Innvandring" vis={innvandringPath}>
@@ -138,6 +138,9 @@ export const Personinformasjon = ({ formikBag }) => {
 				</Kategori>
 				<Kategori title="Sikkerhetstiltak" vis={sikkerhetstiltakPaths}>
 					<Sikkerhetstiltak formikBag={formikBag} />
+				</Kategori>
+				<Kategori title="Tilrettelagt kommunikasjon" vis={tilrettelagtKommunikasjonPath}>
+					<TilrettelagtKommunikasjon />
 				</Kategori>
 			</Panel>
 		</Vis>

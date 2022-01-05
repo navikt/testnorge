@@ -416,6 +416,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			doedsfall,
 			statsborgerskap,
 			sikkerhetstiltak,
+			tilrettelagtKommunikasjon,
 		} = pdldataKriterier
 
 		if (innflytting) {
@@ -493,6 +494,20 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				}),
 			}
 			data.push(sikkerhetstiltakData)
+		}
+
+		if (tilrettelagtKommunikasjon) {
+			const tilrettelagtKommunikasjonData = {
+				header: 'Tilrettelagt Komm.',
+				itemRows: tilrettelagtKommunikasjon.map((item, idx) => {
+					return [
+						{ numberHeader: `Tolk ${idx + 1}` },
+						obj('Talespraak', item.spraakForTaletolk, PersoninformasjonKodeverk.Spraak),
+						obj('Tegnspråk', item.spraakForTegnspraakTolk, PersoninformasjonKodeverk.Spraak),
+					]
+				}),
+			}
+			data.push(tilrettelagtKommunikasjonData)
 		}
 
 		if (statsborgerskap) {

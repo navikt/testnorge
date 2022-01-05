@@ -10,13 +10,7 @@ import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFiel
 import _has from 'lodash/has'
 import { FalskIdentitetToggle } from '~/components/fagsystem/pdlf/form/partials/falskIdentitet/FalskIdentitetToggle'
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-
-const initialValues = {
-	erFalsk: true,
-	kilde: 'Dolly',
-	master: 'FREG',
-	gjeldende: true,
-}
+import { initialFalskIdentitetValues } from '~/components/fagsystem/pdlf/form/initialValues'
 
 export const FalskIdentitet = ({ formikBag }) => {
 	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
@@ -51,7 +45,7 @@ export const FalskIdentitet = ({ formikBag }) => {
 		<FormikDollyFieldArray
 			name="pdldata.person.falskIdentitet"
 			header="Falsk identitet"
-			newEntry={initialValues}
+			newEntry={initialFalskIdentitetValues}
 			canBeEmpty={false}
 		>
 			{(path, idx) => {
