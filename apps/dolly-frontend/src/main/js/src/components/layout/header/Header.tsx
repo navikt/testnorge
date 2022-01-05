@@ -58,8 +58,8 @@ export default ({ brukerProfil, brukerBilde }: Props) => {
 				<a
 					href={
 						window.location.hostname.includes('frontend')
-							? 'https://dolly-backend-dev.dev.intern.nav.no/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config'
-							: 'https://dolly-backend.dev.intern.nav.no/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config'
+							? 'https://dolly-backend-dev.dev.intern.nav.no/swagger'
+							: 'https://dolly-backend.dev.intern.nav.no/swagger'
 					}
 					target="_blank"
 				>
