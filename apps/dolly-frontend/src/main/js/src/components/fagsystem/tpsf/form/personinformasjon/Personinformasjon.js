@@ -9,7 +9,7 @@ import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { Diverse } from './partials/Diverse'
 import { Vergemaal } from './partials/vergemaal/Vergemaal'
 import { Fullmakt } from './partials/fullmakt/Fullmakt'
-import { Sikkerhetstiltak } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/sikkerhetstiltak/Sikkerhetstiltak'
+import { Sikkerhetstiltak } from '~/components/fagsystem/pdlf/form/partials/sikkerhetstiltak/Sikkerhetstiltak'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import _get from 'lodash/get'
 import { Alder } from '~/components/fagsystem/tpsf/form/personinformasjon/partials/alder/Alder'
@@ -17,10 +17,16 @@ import { TpsMessagingDiverse } from '~/components/fagsystem/tpsf/form/personinfo
 import { Telefonnummer } from '~/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
 import { Doedsfall } from '~/components/fagsystem/pdlf/form/partials/doedsfall/Doedsfall'
 import { Statsborgerskap } from '~/components/fagsystem/pdlf/form/partials/statsborgerskap/Statsborgerskap'
+import { Innvandring } from '~/components/fagsystem/pdlf/form/partials/innvandring/Innvandring'
+import { Utvandring } from '~/components/fagsystem/pdlf/form/partials/utvandring/Utvandring'
 
 const alderPaths = ['tpsf.alder', 'tpsf.foedtEtter', 'tpsf.foedtFoer', 'tpsf.doedsdato']
 
-const nasjonalitetPaths = ['pdldata.person.statsborgerskap']
+const nasjonalitetPaths = [
+	'pdldata.person.statsborgerskap',
+	'pdldata.person.innflytting',
+	'pdldata.person.utflytting',
+]
 
 const diversePaths = [
 	'tpsf.kjonn',
@@ -36,18 +42,22 @@ const diversePaths = [
 	'tpsf.erForsvunnet',
 	'tpsMessaging.utenlandskBankkonto',
 	'tpsMessaging.norskBankkonto',
+	'tpsMessaging.sikkerhetstiltak',
 	'tpsMessaging.spraakKode',
 	'tpsMessaging.egenAnsattDatoFom',
 	'tpsMessaging.egenAnsattDatoTom',
 ]
 
 const telefonnummerPath = ['pdldata.person.telefonnummer']
+const innvandringPath = ['pdldata.person.innflytting']
+const utvandringPath = ['pdldata.person.utflytting']
 const statsborgerskapPath = ['pdldata.person.statsborgerskap']
 const doedsfallPath = ['pdldata.person.doedsfall']
 const vergemaalPath = ['tpsf.vergemaal']
 const fullmaktPath = ['pdldata.person.fullmakt']
 
 const sikkerhetstiltakPaths = [
+	'pdldata.person.sikkerhetstiltak',
 	'tpsf.typeSikkerhetTiltak',
 	'tpsf.beskrSikkerhetTiltak',
 	'tpsf.sikkerhetTiltakDatoFom',
@@ -58,6 +68,8 @@ const panelPaths = [
 	alderPaths,
 	nasjonalitetPaths,
 	diversePaths,
+	innvandringPath,
+	utvandringPath,
 	telefonnummerPath,
 	doedsfallPath,
 	vergemaalPath,
@@ -103,27 +115,13 @@ export const Personinformasjon = ({ formikBag }) => {
 						<Statsborgerskap formikBag={formikBag} />
 					</Vis>
 
-					<Vis attributt="tpsf.innvandretFraLand">
-						<FormikSelect
-							name="tpsf.innvandretFraLand"
-							label="Innvandret fra"
-							kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
-							size="large"
-							isClearable={false}
-						/>
-						<FormikDatepicker name="tpsf.innvandretFraLandFlyttedato" label="Innvandret dato" />
-					</Vis>
+					<Kategori title="Innvandring" vis={innvandringPath}>
+						<Innvandring />
+					</Kategori>
 
-					<Vis attributt="tpsf.utvandretTilLand">
-						<FormikSelect
-							name="tpsf.utvandretTilLand"
-							label="Utvandret til"
-							kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
-							size="large"
-							isClearable={false}
-						/>
-						<FormikDatepicker name="tpsf.utvandretTilLandFlyttedato" label="Utvandret dato" />
-					</Vis>
+					<Kategori title="Utvandring" vis={utvandringPath}>
+						<Utvandring />
+					</Kategori>
 				</Kategori>
 				<Kategori title="Diverse" vis={diversePaths}>
 					<Diverse formikBag={formikBag} />

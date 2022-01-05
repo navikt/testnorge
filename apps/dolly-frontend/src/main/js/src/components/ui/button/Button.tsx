@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { ReactNode } from 'react'
 // @ts-ignore
 import cn from 'classnames'
 // @ts-ignore

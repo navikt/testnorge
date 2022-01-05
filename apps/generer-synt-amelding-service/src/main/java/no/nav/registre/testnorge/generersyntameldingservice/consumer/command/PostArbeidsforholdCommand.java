@@ -23,7 +23,7 @@ public class PostArbeidsforholdCommand implements Callable<Arbeidsforhold> {
         this.webClient = webClient;
         this.periode = periode;
         this.token = token;
-        this.path = String.format("/api/v1/generate/amelding/arbeidsforhold/start/%s", arbeidsforholdType);
+        this.path = String.format("/api/v1/arbeidsforhold/start/%s", arbeidsforholdType);
     }
 
     @Override

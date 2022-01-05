@@ -184,9 +184,7 @@ export const ArbeidsforholdForm = ({
 						kodeverk={ArbeidKodeverk.SluttaarsakAareg}
 						size="xlarge"
 						onChange={onChangeLenket('ansettelsesPeriode.sluttaarsak')}
-						disabled={
-							_get(formikBag.values, `${path}.ansettelsesPeriode.tom`) === null ? true : false
-						}
+						disabled={_get(formikBag.values, `${path}.ansettelsesPeriode.tom`) === null}
 					/>
 				)}
 				{arbeidsforholdstype === 'forenkletOppgjoersordning' && (
@@ -211,41 +209,10 @@ export const ArbeidsforholdForm = ({
 
 			{arbeidsforholdstype !== 'forenkletOppgjoersordning' && (
 				<>
-					<TimeloennetForm
-						path={`${path}.antallTimerForTimeloennet`}
-						ameldingIndex={ameldingIndex}
-						arbeidsforholdIndex={arbeidsforholdIndex}
-						formikBag={formikBag}
-						erLenket={erLenket}
-						onChangeLenket={onChangeLenket}
-					/>
-
-					<UtenlandsoppholdForm
-						path={`${path}.utenlandsopphold`}
-						ameldingIndex={ameldingIndex}
-						arbeidsforholdIndex={arbeidsforholdIndex}
-						formikBag={formikBag}
-						erLenket={erLenket}
-						onChangeLenket={onChangeLenket}
-					/>
-
-					<PermisjonForm
-						path={`${path}.permisjon`}
-						ameldingIndex={ameldingIndex}
-						arbeidsforholdIndex={arbeidsforholdIndex}
-						formikBag={formikBag}
-						erLenket={erLenket}
-						onChangeLenket={onChangeLenket}
-					/>
-
-					<PermitteringForm
-						path={`${path}.permittering`}
-						ameldingIndex={ameldingIndex}
-						arbeidsforholdIndex={arbeidsforholdIndex}
-						formikBag={formikBag}
-						erLenket={erLenket}
-						onChangeLenket={onChangeLenket}
-					/>
+					<TimeloennetForm path={`${path}.antallTimerForTimeloennet`} />
+					<UtenlandsoppholdForm path={`${path}.utenlandsopphold`} />
+					<PermisjonForm path={`${path}.permisjon`} />
+					<PermitteringForm path={`${path}.permittering`} />
 				</>
 			)}
 		</React.Fragment>

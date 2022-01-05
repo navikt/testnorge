@@ -3,7 +3,6 @@ package no.nav.pdl.forvalter.service;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdsadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
@@ -82,23 +81,6 @@ class OppholdsadresseServiceTest {
 
         assertThat(exception.getMessage(), containsString("" +
                 "Oppholdsadresse: Personer med adressebeskyttelse == STRENGT_FORTROLIG skal ikke ha oppholdsadresse"));
-    }
-
-    @Test
-    void whenUtenlandskAdresseProvidedAndMasterIsFreg_thenThrowExecption() {
-
-        var request = OppholdsadresseDTO.builder()
-                .utenlandskAdresse(new UtenlandskAdresseDTO())
-                .master(Master.FREG)
-                .isNew(true)
-                .build();
-
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                oppholdsadresseService.validate(request, PersonDTO.builder()
-                        .ident(FNR_IDENT)
-                        .build()));
-
-        assertThat(exception.getMessage(), containsString("Utenlandsk adresse krever at master er PDL"));
     }
 
     @Test

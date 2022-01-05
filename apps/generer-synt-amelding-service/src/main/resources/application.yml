@@ -21,11 +21,12 @@ spring:
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
           accepted-audience: dev-gcp:dolly:testnav-generer-synt-amelding-service
 
-consumers.syntrest-proxy:
-  url: https://testnav-syntrest-proxy.dev-fss-pub.nais.io
-  cluster: dev-fss
-  namespace: dolly
-  name: testnav-syntrest-proxy
+consumers:
+  synt-amelding:
+    url: https://synthdata-amelding.dev.intern.nav.no
+    cluster: dev-gcp
+    namespace: dolly
+    name: synthdata-amelding
 
 server:
   error:

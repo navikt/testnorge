@@ -54,6 +54,7 @@ spec:
         - host: tps-forvalteren-proxy.dev-fss-pub.nais.io
         - host: dolly-backend.dev-fss-pub.nais.io
         - host: testnav-inntektstub-proxy.dev-fss-pub.nais.io
+        - host: testnav-norg2-proxy.dev-fss-pub.nais.io
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
   liveness:
     path: /internal/isAlive

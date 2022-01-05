@@ -1,6 +1,7 @@
 import * as Yup from 'yup'
 import { ifPresent, requiredDate, requiredString } from '~/utils/YupValidations'
 import _get from 'lodash/get'
+import { differenceInWeeks, isAfter, isSameDay } from 'date-fns'
 
 const personnavnSchema = Yup.object({
 	fornavn: Yup.string(),
@@ -42,6 +43,41 @@ const fullmakt = Yup.array().of(
 		gyldigFraOgMed: requiredDate,
 		gyldigTilOgMed: requiredDate,
 		nyFullmektig: nyPerson,
+	})
+)
+
+const sikkerhetstiltak = Yup.array().of(
+	Yup.object({
+		tiltakstype: requiredString.nullable(),
+		beskrivelse: Yup.string().optional(),
+		kontaktperson: Yup.object({
+			personident: requiredString.nullable(),
+			enhet: requiredString.nullable(),
+		}),
+		gyldigFraOgMed: requiredDate.nullable(),
+		gyldigTilOgMed: Yup.string()
+			.test(
+				'is-after-startdato',
+				'Dato må være lik eller etter startdato, og ikke mer enn 12 uker etter startdato',
+				function validDate(dato) {
+					const values = this.options.context
+					return (
+						(isAfter(
+							new Date(dato),
+							new Date(_get(values, 'pdldata.person.sikkerhetstiltak[0].gyldigFraOgMed'))
+						) ||
+							isSameDay(
+								new Date(dato),
+								new Date(_get(values, 'pdldata.person.sikkerhetstiltak[0].gyldigFraOgMed'))
+							)) &&
+						differenceInWeeks(
+							new Date(dato),
+							new Date(_get(values, 'pdldata.person.sikkerhetstiltak[0].gyldigFraOgMed'))
+						) <= 12
+					)
+				}
+			)
+			.nullable(),
 	})
 )
 
@@ -170,15 +206,34 @@ const telefonnummer = Yup.array().of(
 	})
 )
 
+const innflytting = Yup.array().of(
+	Yup.object({
+		fraflyttingsland: requiredString,
+		fraflyttingsstedIUtlandet: Yup.string().optional().nullable(),
+		innflyttingsdato: requiredDate.nullable(),
+	})
+)
+
+const utflytting = Yup.array().of(
+	Yup.object({
+		tilflyttingsland: requiredString,
+		tilflyttingsstedIUtlandet: Yup.string().optional().nullable(),
+		utflyttingsdato: requiredDate.nullable(),
+	})
+)
+
 export const validation = {
 	pdldata: Yup.object({
 		person: Yup.object({
 			bostedsadresse: ifPresent('$pdldata.person.bostedsadresse', bostedsadresse),
 			fullmakt: ifPresent('$pdldata.person.fullmakt', fullmakt),
+			sikkerhetstiltak: ifPresent('$pdldata.person.sikkerhetstiltak', sikkerhetstiltak),
 			falskIdentitet: ifPresent('$pdldata.person.falskIdentitet', falskIdentitet),
 			telefonnummer: ifPresent('$pdldata.person.telefonnummer', telefonnummer),
 			statsborgerskap: ifPresent('$pdldata.person.statsborgerskap', statsborgerskap),
 			doedsfall: ifPresent('$pdldata.person.doedsfall', doedsfall),
+			innflytting: ifPresent('$pdldata.person.innflytting', innflytting),
+			utflytting: ifPresent('$pdldata.person.utflytting', utflytting),
 			utenlandskIdentifikasjonsnummer: ifPresent(
 				'$pdldata.person.utenlandskIdentifikasjonsnummer',
 				utenlandskId

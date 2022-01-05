@@ -6,8 +6,7 @@ export default function TilgjengeligeMiljoer({ endepunkt, dollyEnvironments }) {
 	if (!endepunkt) return false
 
 	const state = useAsync(async () => {
-		const response = await endepunkt()
-		return response
+		return endepunkt()
 	}, [endepunkt])
 
 	let message = 'Laster tilgjengelige miljøer..'

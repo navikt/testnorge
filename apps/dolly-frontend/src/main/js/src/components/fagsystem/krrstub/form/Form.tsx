@@ -112,7 +112,7 @@ KrrstubForm.validation = {
 	krrstub: Yup.object({
 		epost: Yup.string(),
 		gyldigFra: Yup.date().nullable(),
-		mobil: Yup.string().matches(/^[0-9]*$/, 'Ugyldig mobilnummer'),
+		mobil: Yup.string().matches(/^\d*$/, 'Ugyldig mobilnummer'),
 		sdpAdresse: Yup.string(),
 		sdpLeverandoer: Yup.string(),
 		spraak: Yup.string(),

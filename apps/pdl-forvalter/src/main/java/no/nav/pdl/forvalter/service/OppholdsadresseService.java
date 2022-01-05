@@ -14,6 +14,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -30,7 +31,6 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
             "matrikkeladresse, utenlandskAdresse)";
     private static final String VALIDATION_PROTECTED_ADDRESS = "Oppholdsadresse: Personer med adressebeskyttelse == " +
             "STRENGT_FORTROLIG skal ikke ha oppholdsadresse";
-    private static final String VALIDATION_MASTER_PDL_ERROR = "Oppholdsadresse: Utenlandsk adresse krever at master er PDL";
 
     private final AdresseServiceConsumer adresseServiceConsumer;
     private final MapperFacade mapperFacade;
@@ -51,8 +51,8 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
 
             if (isTrue(adresse.getIsNew())) {
 
-                handle(adresse, person);
                 populateMiscFields(adresse, person);
+                handle(adresse, person);
             }
         }
         enforceIntegrity(person.getOppholdsadresse());
@@ -72,13 +72,7 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
                 adresse.countAdresser() > 0) {
             throw new InvalidRequestException(VALIDATION_PROTECTED_ADDRESS);
         }
-        if (Master.FREG == adresse.getMaster() && nonNull(adresse.getUtenlandskAdresse())) {
-            throw new InvalidRequestException(VALIDATION_MASTER_PDL_ERROR);
-        }
-        if (Master.PDL == adresse.getMaster() &&
-                (isNull(adresse.getGyldigFraOgMed()) || isNull(adresse.getGyldigTilOgMed()))) {
-            throw new InvalidRequestException(VALIDATION_MASTER_PDL_ERROR);
-        }
+
         if (nonNull(adresse.getVegadresse()) && isNotBlank(adresse.getVegadresse().getBruksenhetsnummer())) {
             validateBruksenhet(adresse.getVegadresse().getBruksenhetsnummer());
         }
@@ -133,5 +127,12 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
 
         oppholdsadresse.setCoAdressenavn(genererCoNavn(oppholdsadresse.getOpprettCoAdresseNavn()));
         oppholdsadresse.setOpprettCoAdresseNavn(null);
+
+        if (Master.PDL == oppholdsadresse.getMaster() && isNull(oppholdsadresse.getGyldigFraOgMed())) {
+            oppholdsadresse.setGyldigFraOgMed(LocalDateTime.now());
+        }
+        if (Master.PDL == oppholdsadresse.getMaster() && isNull(oppholdsadresse.getGyldigTilOgMed())) {
+            oppholdsadresse.setGyldigTilOgMed(LocalDateTime.now().plusYears(1));
+        }
     }
 }
