@@ -1,6 +1,7 @@
 package no.nav.registre.syntrest.config;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.registre.syntrest.consumer.SyntGetConsumer;
 import no.nav.registre.syntrest.consumer.SyntPostConsumer;
 import no.nav.registre.syntrest.domain.aareg.Arbeidsforholdsmelding;
 import no.nav.registre.syntrest.kubernetes.ApplicationManager;
@@ -22,7 +23,8 @@ public class SyntConsumerConfig {
     ///////////// URLs //////////////
     @Value("${synth-aareg-url}")
     private String aaregUrl;
-
+    @Value("${synth-arena-meldekort-url}")
+    private String arenaMeldekortUrl;
     @Value("${synth-inntekt-url}")
     private String inntektUrl;
 
@@ -50,6 +52,18 @@ public class SyntConsumerConfig {
     }
 
     @Bean
+    SyntGetConsumer<List<String>> meldekortConsumer() throws MalformedURLException {
+        return new SyntGetConsumer<>(
+                applicationManager,
+                "synthdata-arena-meldekort",
+                arenaMeldekortUrl,
+                false,
+                STRING_LIST_TYPE,
+                webClientBuilder);
+    }
+
+
+    @Bean
     SyntPostConsumer<Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>,
             Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>> inntektConsumer() throws MalformedURLException {
         return new SyntPostConsumer<>(
@@ -61,4 +75,5 @@ public class SyntConsumerConfig {
                 INNTEKTSMELDING_MAP_TYPE,
                 webClientBuilder);
     }
+
 }

@@ -7,8 +7,9 @@ import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import no.nav.registre.syntrest.consumer.SyntMeldekortConsumer;
+import no.nav.registre.syntrest.consumer.SyntGetConsumer;
 import no.nav.registre.syntrest.consumer.SyntPostConsumer;
+import no.nav.registre.syntrest.utils.UrlUtils;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,7 @@ import no.nav.registre.syntrest.domain.aareg.Arbeidsforholdsmelding;
 import no.nav.registre.syntrest.utils.InputValidator;
 
 import static java.util.Objects.isNull;
+import static no.nav.registre.syntrest.utils.UrlUtils.createQueryString;
 
 @Slf4j
 @RestController
@@ -38,10 +40,11 @@ public class SyntController {
 
     ///////////// SYNT CONSUMERS //////////////
     private final SyntPostConsumer<List<String>, List<Arbeidsforholdsmelding>> aaregConsumer;
-    private final SyntMeldekortConsumer meldekortConsumer;
+    private final SyntGetConsumer<List<String>> meldekortConsumer;
     private final SyntPostConsumer<Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>,
             Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>> inntektConsumer;
 
+    private final UrlUtils urlUtils;
 
     @PostMapping("/aareg")
     @ApiOperation(value = "Aareg", notes = "Genererer syntetiske arbeidshistorikker bestående av meldinger på AAREG format.")
@@ -74,15 +77,17 @@ public class SyntController {
             @RequestParam int numToGenerate,
             @ApiParam(value = "Verdi som vil overskrive alle ArbeidetTimerSum i meldekort")
             @RequestParam(required = false) Double arbeidstimer
-    ) {
+    ) throws ApiException, InterruptedException {
         InputValidator.validateInput(numToGenerate);
         InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.MELDEGRUPPE, meldegruppe);
 
+        var expandedPath = urlUtils.expandPath(meldekortConsumer.getUrl(), String.valueOf(numToGenerate), meldegruppe);
         List<String> response;
         if (isNull(arbeidstimer)) {
-            response = meldekortConsumer.getSyntheticMeldekort(meldegruppe, numToGenerate);
+            response = meldekortConsumer.synthesizeData(expandedPath);
         } else {
-            response = meldekortConsumer.getSyntheticMeldekort(meldegruppe, numToGenerate, arbeidstimer.toString());
+            var queryString = createQueryString("arbeidstimer", arbeidstimer.toString(), "");
+            response = meldekortConsumer.synthesizeData(expandedPath, queryString);
         }
         doResponseValidation(response);
         return ResponseEntity.ok(response);

@@ -31,22 +31,6 @@ spec:
       cpu: 500m
       memory: 2048Mi
   image: {{ image }}
-  accessPolicy:
-    inbound:
-      rules:
-        - application: team-dolly-lokal-app
-          cluster: dev-fss
-        - application: arena-forvalteren
-          namespace: teamarenanais
-          cluster: dev-fss
-        - application: testnorge-aareg
-          cluster: dev-fss
-        - application: testnorge-inntekt
-          cluster: dev-fss
-  azure:
-    application:
-      enabled: true
-      tenant: nav.no
   ingresses:
     - "https://syntrest.nais.preprod.local"
     - "https://syntrest.dev.adeo.no"

@@ -1,0 +1,38 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: synthdata-arena-meldekort
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  image: "docker.pkg.github.com/navikt/testnorge-syntetiseringspakker/synt_meldekort:latest"
+  port: 8080
+  liveness:
+    path: /internal/isAlive
+    initialDelay: 4
+    periodSeconds: 5
+    failureThreshold: 500
+  readiness:
+    path: /internal/isReady
+    initialDelay: 4
+    periodSeconds: 5
+    failureThreshold: 500
+  prometheus:
+    path: /metrics
+  replicas:
+    min: 1
+    max: 4
+  vault:
+    enabled: true
+  resources:
+    requests:
+      cpu: 200m
+      memory: 11000Mi
+    limits:
+      cpu: 500m
+      memory: 12000Mi
+  ingresses:
+    - "https://nais-synthdata-arena-meldekort.nais.preprod.local"
+    - "https://nais-synthdata-arena-meldekort.dev.adeo.no"
+    - "https://nais-synthdata-arena-meldekort.dev.intern.nav.no"
