@@ -24,7 +24,7 @@ export const Bostedsadresse = ({ formikBag }) => {
 	const handleChangeAdressetype = (target, path) => {
 		const adresse = _get(formikBag.values, path)
 		const adresseClone = _cloneDeep(adresse)
-		console.log('adresseClone', adresseClone)
+
 		_set(adresseClone, 'adressetype', target?.value || null)
 
 		if (!target) {

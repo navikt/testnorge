@@ -5,22 +5,41 @@ import { KontaktinformasjonForDoedsbo } from './partials/KontaktinformasjonForDo
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import Loading from '~/components/ui/loading/Loading'
 import { Fullmakt } from '~/components/fagsystem/pdlf/visning/partials/Fullmakt'
-import { UtenlandskBoadresse } from '~/components/fagsystem/pdlf/visning/partials/UtenlandskBoadresse'
 import { Telefonnummer } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
+import { Boadresse } from '~/components/fagsystem/pdlf/visning/partials/Boadresse'
+import { Oppholdsadresse } from '~/components/fagsystem/pdlf/visning/partials/Oppholdsadresse'
+import { Kontaktadresse } from '~/components/fagsystem/pdlf/visning/partials/Kontaktadresse'
+import { Adressebeskyttelse } from '~/components/fagsystem/pdlf/visning/partials/Adressebeskyttelse'
 
 export const PdlfVisning = ({ data, loading }) => {
 	if (loading) return <Loading label="Laster PDL-data" />
-	if (!data || data.length < 1 || !data[0].person) return null
+	if (!data || data.length < 1 || !data[0]?.person) return null
+
+	const {
+		telefonnummer,
+		bostedsadresse,
+		oppholdsadresse,
+		kontaktadresse,
+		adressebeskyttelse,
+		fullmakt,
+		relasjoner,
+		utenlandskIdentifikasjonsnummer,
+		falskIdentitet,
+		kontaktinformasjonForDoedsbo,
+	} = data[0].person
 
 	return (
 		<ErrorBoundary>
 			<div>
-				<Telefonnummer data={data[0]?.person?.telefonnummer} />
-				<UtenlandskBoadresse data={data[0]?.person?.bostedsadresse} />
-				<Fullmakt data={data[0]?.person?.fullmakt} relasjoner={data[0]?.relasjoner} />
-				<UtenlandsId data={data[0]?.person?.utenlandskIdentifikasjonsnummer} />
-				<FalskIdentitet data={data[0]?.person?.falskIdentitet} />
-				<KontaktinformasjonForDoedsbo data={data[0]?.person?.kontaktinformasjonForDoedsbo} />
+				<Telefonnummer data={telefonnummer} />
+				<Boadresse data={bostedsadresse} />
+				<Oppholdsadresse data={oppholdsadresse} />
+				<Kontaktadresse data={kontaktadresse} />
+				<Adressebeskyttelse data={adressebeskyttelse} />
+				<Fullmakt data={fullmakt} relasjoner={relasjoner} />
+				<UtenlandsId data={utenlandskIdentifikasjonsnummer} />
+				<FalskIdentitet data={falskIdentitet} />
+				<KontaktinformasjonForDoedsbo data={kontaktinformasjonForDoedsbo} />
 			</div>
 		</ErrorBoundary>
 	)
