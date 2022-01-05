@@ -41,11 +41,14 @@ dependencies {
     implementation 'org.eclipse.jetty:jetty-servlet:11.0.7'
 
     implementation 'no.nav.testnav.libs:servlet-core'
+    implementation 'no.nav.testnav.libs:security-core'
+    implementation 'no.nav.testnav.libs:servlet-insecure-security'
     implementation 'no.nav.testnav.libs:domain'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
