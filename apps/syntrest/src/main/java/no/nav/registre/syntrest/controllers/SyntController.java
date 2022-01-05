@@ -46,9 +46,9 @@ public class SyntController {
     @ApiOperation(value = "Aareg", notes = "Genererer syntetiske arbeidshistorikker bestående av meldinger på AAREG format.")
     @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-aareg"})
     public ResponseEntity<List<Arbeidsforholdsmelding>> generateAareg(
-            @ApiParam(value = "Liste med identifikasjonsnumre for fikitve personer", required = true)
+            @ApiParam(value = "Liste med identifikasjonsnumre for fiktive personer", required = true)
             @RequestBody List<String> fnrs
-    ){
+    ) {
         InputValidator.validateInput(fnrs);
         var response = aaregConsumer.synthesizeData(fnrs);
         doResponseValidation(response);
