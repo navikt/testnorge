@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.servletcore.config.ApplicationCoreConfig;
 
+import no.nav.testnav.libs.servletsecurity.config.InsecureJwtServerToServerConfiguration;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -27,7 +28,10 @@ import java.util.concurrent.ScheduledExecutorService;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-@Import(ApplicationCoreConfig.class)
+@Import(value = {
+        ApplicationCoreConfig.class,
+        InsecureJwtServerToServerConfiguration.class
+})
 @Profile("!test")
 public class AppConfig {
 
