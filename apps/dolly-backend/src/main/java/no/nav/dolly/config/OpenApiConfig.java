@@ -1,4 +1,4 @@
-package no.nav.dolly.provider.api.documentation;
+package no.nav.dolly.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -107,6 +107,6 @@ public class OpenApiConfig implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/swagger").setViewName("redirect:/swagger-ui/index.html?url=/v3/api-docs/");
+        registry.addViewController("/swagger").setViewName("redirect:/swagger-ui.html");
     }
 }
