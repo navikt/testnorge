@@ -1,15 +1,14 @@
 package no.nav.registre.syntrest.controllers;
 
-import io.kubernetes.client.ApiException;
 import io.micrometer.core.annotation.Timed;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import no.nav.registre.syntrest.consumer.SyntAaregConsumer;
 import no.nav.registre.syntrest.consumer.SyntInntektConsumer;
 import no.nav.registre.syntrest.consumer.SyntMeldekortConsumer;
-import no.nav.registre.syntrest.consumer.SyntPostConsumer;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,8 +37,7 @@ import static java.util.Objects.isNull;
 @RequiredArgsConstructor
 public class SyntController {
 
-    ///////////// SYNT CONSUMERS //////////////
-    private final SyntPostConsumer<List<String>, List<Arbeidsforholdsmelding>> aaregConsumer;
+    private final SyntAaregConsumer aaregConsumer;
     private final SyntMeldekortConsumer meldekortConsumer;
     private final SyntInntektConsumer inntektConsumer;
 
@@ -50,7 +48,7 @@ public class SyntController {
     public ResponseEntity<List<Arbeidsforholdsmelding>> generateAareg(
             @ApiParam(value = "Liste med identifikasjonsnumre for fikitve personer", required = true)
             @RequestBody List<String> fnrs
-    ) throws ApiException, InterruptedException {
+    ){
         InputValidator.validateInput(fnrs);
         var response = aaregConsumer.synthesizeData(fnrs);
         doResponseValidation(response);
