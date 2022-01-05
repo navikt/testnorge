@@ -1,5 +1,3 @@
-import { Bostedsadresse } from '~/components/fagsystem/pdlf/form/partials/adresser/bostedsadresse/Bostedsadresse'
-
 export const initialPdlPerson = {
 	identtype: null as string,
 	kjoenn: null as string,
@@ -17,6 +15,8 @@ export const initialPdlPerson = {
 export const initialBostedsadresse = {
 	adressetype: null as string,
 	angittFlyttedato: null as string,
+	gyldigFraOgMed: new Date(),
+	gyldigTilOgMed: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
 	kilde: 'Dolly',
 	master: 'FREG',
 	gjeldende: true,
@@ -24,6 +24,8 @@ export const initialBostedsadresse = {
 
 export const initialOppholdsadresse = {
 	adressetype: null as string,
+	gyldigFraOgMed: new Date(),
+	gyldigTilOgMed: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
 	kilde: 'Dolly',
 	master: 'FREG',
 	gjeldende: true,
@@ -31,6 +33,8 @@ export const initialOppholdsadresse = {
 
 export const initialKontaktadresse = {
 	adressetype: null as string,
+	gyldigFraOgMed: new Date(),
+	gyldigTilOgMed: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
 	kilde: 'Dolly',
 	master: 'FREG',
 	gjeldende: true,

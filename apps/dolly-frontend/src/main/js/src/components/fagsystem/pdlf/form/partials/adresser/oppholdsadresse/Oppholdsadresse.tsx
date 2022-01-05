@@ -18,6 +18,7 @@ import { Matrikkeladresse } from '~/components/fagsystem/pdlf/form/partials/adre
 import { UtenlandskAdresse } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/UtenlandskAdresse'
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { OppholdAnnetSted } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/OppholdAnnetSted'
+import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 
 export const Oppholdsadresse = ({ formikBag }) => {
 	const handleChangeAdressetype = (target, path) => {
@@ -31,30 +32,35 @@ export const Oppholdsadresse = ({ formikBag }) => {
 			_set(adresseClone, 'matrikkeladresse', undefined)
 			_set(adresseClone, 'utenlandskAdresse', undefined)
 			_set(adresseClone, 'oppholdAnnetSted', undefined)
+			_set(adresseClone, 'master', 'FREG')
 		}
 		if (target?.value === 'VEGADRESSE') {
 			_set(adresseClone, 'vegadresse', initialVegadresse)
 			_set(adresseClone, 'matrikkeladresse', undefined)
 			_set(adresseClone, 'utenlandskAdresse', undefined)
 			_set(adresseClone, 'oppholdAnnetSted', undefined)
+			_set(adresseClone, 'master', 'FREG')
 		}
 		if (target?.value === 'MATRIKKELADRESSE') {
 			_set(adresseClone, 'matrikkeladresse', initialMatrikkeladresse)
 			_set(adresseClone, 'vegadresse', undefined)
 			_set(adresseClone, 'utenlandskAdresse', undefined)
 			_set(adresseClone, 'oppholdAnnetSted', undefined)
+			_set(adresseClone, 'master', 'FREG')
 		}
 		if (target?.value === 'UTENLANDSK_ADRESSE') {
 			_set(adresseClone, 'utenlandskAdresse', initialUtenlandskAdresse)
 			_set(adresseClone, 'vegadresse', undefined)
 			_set(adresseClone, 'matrikkeladresse', undefined)
 			_set(adresseClone, 'oppholdAnnetSted', undefined)
+			_set(adresseClone, 'master', 'PDL')
 		}
 		if (target?.value === 'OPPHOLD_ANNET_STED') {
 			_set(adresseClone, 'oppholdAnnetSted', initialOppholdAnnetSted)
 			_set(adresseClone, 'vegadresse', undefined)
 			_set(adresseClone, 'matrikkeladresse', undefined)
 			_set(adresseClone, 'utenlandskAdresse', undefined)
+			_set(adresseClone, 'master', 'FREG')
 		}
 
 		formikBag.setFieldValue(path, adresseClone)
@@ -99,7 +105,11 @@ export const Oppholdsadresse = ({ formikBag }) => {
 							{valgtAdressetype === 'OPPHOLD_ANNET_STED' && (
 								<OppholdAnnetSted formikBag={formikBag} path={`${path}.oppholdAnnetSted`} />
 							)}
-							<AvansertForm path={path} kanVelgeMaster={false} />
+							<div className="flexbox--flex-wrap">
+								<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
+								<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
+							</div>
+							<AvansertForm path={path} />
 						</React.Fragment>
 					)
 				}}

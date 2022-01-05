@@ -24,7 +24,7 @@ export const Bostedsadresse = ({ formikBag }) => {
 	const handleChangeAdressetype = (target, path) => {
 		const adresse = _get(formikBag.values, path)
 		const adresseClone = _cloneDeep(adresse)
-
+		console.log('adresseClone', adresseClone)
 		_set(adresseClone, 'adressetype', target?.value || null)
 
 		if (!target) {
@@ -32,30 +32,35 @@ export const Bostedsadresse = ({ formikBag }) => {
 			_set(adresseClone, 'matrikkeladresse', undefined)
 			_set(adresseClone, 'utenlandskAdresse', undefined)
 			_set(adresseClone, 'ukjentBosted', undefined)
+			_set(adresseClone, 'master', 'FREG')
 		}
 		if (target?.value === 'VEGADRESSE') {
 			_set(adresseClone, 'vegadresse', initialVegadresse)
 			_set(adresseClone, 'matrikkeladresse', undefined)
 			_set(adresseClone, 'utenlandskAdresse', undefined)
 			_set(adresseClone, 'ukjentBosted', undefined)
+			_set(adresseClone, 'master', 'FREG')
 		}
 		if (target?.value === 'MATRIKKELADRESSE') {
 			_set(adresseClone, 'matrikkeladresse', initialMatrikkeladresse)
 			_set(adresseClone, 'vegadresse', undefined)
 			_set(adresseClone, 'utenlandskAdresse', undefined)
 			_set(adresseClone, 'ukjentBosted', undefined)
+			_set(adresseClone, 'master', 'FREG')
 		}
 		if (target?.value === 'UTENLANDSK_ADRESSE') {
 			_set(adresseClone, 'utenlandskAdresse', initialUtenlandskAdresse)
 			_set(adresseClone, 'vegadresse', undefined)
 			_set(adresseClone, 'matrikkeladresse', undefined)
 			_set(adresseClone, 'ukjentBosted', undefined)
+			_set(adresseClone, 'master', 'PDL')
 		}
 		if (target?.value === 'UKJENT_BOSTED') {
 			_set(adresseClone, 'ukjentBosted', initialUkjentBosted)
 			_set(adresseClone, 'vegadresse', undefined)
 			_set(adresseClone, 'matrikkeladresse', undefined)
 			_set(adresseClone, 'utenlandskAdresse', undefined)
+			_set(adresseClone, 'master', 'FREG')
 		}
 
 		formikBag.setFieldValue(path, adresseClone)
@@ -100,10 +105,12 @@ export const Bostedsadresse = ({ formikBag }) => {
 							{valgtAdressetype === 'UKJENT_BOSTED' && (
 								<UkjentBosted formikBag={formikBag} path={`${path}.ukjentBosted`} />
 							)}
-							<div className="flexbox--full-width">
+							<div className="flexbox--flex-wrap">
 								<FormikDatepicker name={`${path}.angittFlyttedato`} label="Flyttedato" />
+								<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
+								<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
 							</div>
-							<AvansertForm path={path} kanVelgeMaster={false} />
+							<AvansertForm path={path} />
 						</React.Fragment>
 					)
 				}}

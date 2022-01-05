@@ -16,6 +16,7 @@ import { VegadresseVelger } from '~/components/fagsystem/pdlf/form/partials/adre
 import { UtenlandskAdresse } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/UtenlandskAdresse'
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { Postboksadresse } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/Postboksadresse'
+import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 
 export const Kontaktadresse = ({ formikBag }) => {
 	const handleChangeAdressetype = (target, path) => {
@@ -84,6 +85,10 @@ export const Kontaktadresse = ({ formikBag }) => {
 							{valgtAdressetype === 'POSTBOKSADRESSE' && (
 								<Postboksadresse formikBag={formikBag} path={`${path}.postboksadresse`} />
 							)}
+							<div className="flexbox--flex-wrap">
+								<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
+								<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
+							</div>
 							<AvansertForm path={path} kanVelgeMaster={false} />
 						</React.Fragment>
 					)

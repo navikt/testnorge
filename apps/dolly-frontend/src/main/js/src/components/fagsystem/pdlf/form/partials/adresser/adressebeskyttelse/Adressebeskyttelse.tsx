@@ -26,7 +26,7 @@ export const Adressebeskyttelse = ({ formikBag }) => {
 									size="large"
 								/>
 							</div>
-							<AvansertForm path={path} kanVelgeMaster={false} />
+							<AvansertForm path={path} />
 						</React.Fragment>
 					)
 				}}

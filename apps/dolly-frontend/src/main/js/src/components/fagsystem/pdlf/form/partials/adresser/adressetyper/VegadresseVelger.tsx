@@ -20,26 +20,30 @@ export const VegadresseVelger = ({ formikBag, path, id }) => {
 	}
 
 	return (
-		<div className="flexbox--full-width" key={`vegadresse_${id}`}>
+		<div
+			className="flexbox--full-width"
+			key={`vegadresse_${path}`}
+			style={{ marginBottom: '10px' }}
+		>
 			<RadioPanelGruppe
-				name={`vegadresse_${id}`}
-				key={`vegadresse_${id}`}
+				name={`vegadresse_${path}`}
+				key={`vegadresse_${path}`}
 				legend="Hva slags vegadresse vil du opprette?"
 				radios={[
 					{
 						label: 'Tilfeldig vegadresse basert på postnummer ...',
 						value: vegadresseValg.POSTNUMMER,
-						id: `postnummer_${id}`,
+						id: `postnummer_${path}`,
 					},
 					{
 						label: 'Tilfeldig vegadresse basert på kommunenummer ...',
 						value: vegadresseValg.KOMMUNENUMMER,
-						id: `kommunenummer_${id}`,
+						id: `kommunenummer_${path}`,
 					},
 					{
 						label: 'Detaljert vegadresse ...',
 						value: vegadresseValg.DETALJERT,
-						id: `detaljert_${id}`,
+						id: `detaljert_${path}`,
 					},
 				]}
 				checked={vegadresseType}

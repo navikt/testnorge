@@ -485,6 +485,14 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			]
 		}
 
+		const datoer = (data) => {
+			return [
+				obj('Flyttedato', Formatters.formatDate(data.angittFlyttedato)),
+				obj('Gyldig f.o.m.', Formatters.formatDate(data.gyldigFraOgMed)),
+				obj('Gyldig t.o.m.', Formatters.formatDate(data.gyldigTilOgMed)),
+			]
+		}
+
 		if (bostedsadresse) {
 			const bostedsadresseData = {
 				header: 'Bostedsadresse',
@@ -493,38 +501,39 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						const adresseData = item.vegadresse
 						return [
 							{ numberHeader: `Bostedsadresse ${idx + 1}: Vegadresse` },
-							obj('', isEmpty(adresseData) && 'Ingen verdier satt'),
+							obj('Vegadresse', isEmpty(adresseData) && 'Ingen verdier satt'),
 							...vegadresse(adresseData),
-							obj('Flyttedato', Formatters.formatDate(item.angittFlyttedato)),
+							...datoer(item),
 						]
 					}
 					if (item.matrikkeladresse) {
 						const adresseData = item.matrikkeladresse
 						return [
 							{ numberHeader: `Bostedsadresse ${idx + 1}: Matrikkeladresse` },
-							obj('', isEmpty(adresseData) && 'Ingen verdier satt'),
+							obj('Matrikkeladresse', isEmpty(adresseData) && 'Ingen verdier satt'),
 							...matrikkeladresse(adresseData),
-							obj('Flyttedato', Formatters.formatDate(item.angittFlyttedato)),
+							...datoer(item),
 						]
 					}
 					if (item.utenlandskAdresse) {
 						const adresseData = item.utenlandskAdresse
 						return [
 							{ numberHeader: `Bostedsadresse ${idx + 1}: Utenlandsk adresse` },
-							obj('', isEmpty(adresseData) && 'Ingen verdier satt'),
+							obj('Utenlandsk adresse', isEmpty(adresseData) && 'Ingen verdier satt'),
 							...utenlandskAdresse(adresseData),
-							obj('Flyttedato', Formatters.formatDate(item.angittFlyttedato)),
+							...datoer(item),
 						]
 					}
 					if (item.ukjentBosted) {
 						const adresseData = item.ukjentBosted
 						return [
-							{ numberHeader: `Bostedsadresse ${idx + 1}: Utenlandsk adresse` },
-							obj('', isEmpty(adresseData) && 'Ingen verdier satt'),
+							{ numberHeader: `Bostedsadresse ${idx + 1}: Ukjent bosted` },
+							obj('Ukjent bosted', isEmpty(adresseData) && 'Ingen verdier satt'),
 							obj('Bostedskommune', adresseData.bostedskommune),
-							obj('Flyttedato', Formatters.formatDate(item.angittFlyttedato)),
+							...datoer(item),
 						]
 					}
+					return [obj('Bostedsadresse', 'Ingen verdier satt'), ...datoer(item)]
 				}),
 			}
 			data.push(bostedsadresseData)
@@ -538,36 +547,41 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						const adresseData = item.vegadresse
 						return [
 							{ numberHeader: `Oppholdsadresse ${idx + 1}: Vegadresse` },
-							obj('', isEmpty(adresseData) && 'Ingen verdier satt'),
+							obj('Vegadresse', isEmpty(adresseData) && 'Ingen verdier satt'),
 							...vegadresse(adresseData),
+							...datoer(item),
 						]
 					}
 					if (item.matrikkeladresse) {
 						const adresseData = item.matrikkeladresse
 						return [
 							{ numberHeader: `Oppholdsadresse ${idx + 1}: Matrikkeladresse` },
-							obj('', isEmpty(adresseData) && 'Ingen verdier satt'),
+							obj('Matrikkeladresse', isEmpty(adresseData) && 'Ingen verdier satt'),
 							...matrikkeladresse(adresseData),
+							...datoer(item),
 						]
 					}
 					if (item.utenlandskAdresse) {
 						const adresseData = item.utenlandskAdresse
 						return [
 							{ numberHeader: `Oppholdsadresse ${idx + 1}: Utenlandsk adresse` },
-							obj('', isEmpty(adresseData) && 'Ingen verdier satt'),
+							obj('Utenlandsk adresse', isEmpty(adresseData) && 'Ingen verdier satt'),
 							...utenlandskAdresse(adresseData),
+							...datoer(item),
 						]
 					}
-					if (item.oppholdAnnetSted !== undefined) {
+					if (item.oppholdAnnetSted) {
 						return [
 							{ numberHeader: `Oppholdsadresse ${idx + 1}: Opphold annet sted` },
-							obj('', item.oppholdAnnetSted === null && 'Ingen verdier satt'),
+							// obj('Opphold annet sted', item.oppholdAnnetSted === null && 'Ingen verdier satt'),
 							obj(
 								'Opphold annet sted',
 								Formatters.showLabel('oppholdAnnetSted', item.oppholdAnnetSted)
 							),
+							...datoer(item),
 						]
 					}
+					return [obj('Oppholdsadresse', 'Ingen verdier satt'), ...datoer(item)]
 				}),
 			}
 			data.push(oppholdsadresseData)
@@ -581,28 +595,32 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 						const adresseData = item.vegadresse
 						return [
 							{ numberHeader: `Kontaktadresse ${idx + 1}: Vegadresse` },
-							obj('', isEmpty(adresseData) && 'Ingen verdier satt'),
+							obj('Vegadresse', isEmpty(adresseData) && 'Ingen verdier satt'),
 							...vegadresse(adresseData),
+							...datoer(item),
 						]
 					}
 					if (item.utenlandskAdresse) {
 						const adresseData = item.utenlandskAdresse
 						return [
 							{ numberHeader: `Kontaktadresse ${idx + 1}: Utenlandsk adresse` },
-							obj('', isEmpty(adresseData) && 'Ingen verdier satt'),
+							obj('Utenlandsk adresse', isEmpty(adresseData) && 'Ingen verdier satt'),
 							...utenlandskAdresse(adresseData),
+							...datoer(item),
 						]
 					}
 					if (item.postboksadresse) {
 						const adresseData = item.postboksadresse
 						return [
 							{ numberHeader: `Kontaktadresse ${idx + 1}: Postboksadresse` },
-							obj('', isEmpty(adresseData) && 'Ingen verdier satt'),
+							obj('Postboksadresse', isEmpty(adresseData) && 'Ingen verdier satt'),
 							obj('Postbokseier', adresseData.postbokseier),
 							obj('Postboks', adresseData.postboks),
 							obj('Postnummer', adresseData.postnummer),
+							...datoer(item),
 						]
 					}
+					return [obj('Kontaktadresse', 'Ingen verdier satt'), ...datoer(item)]
 				}),
 			}
 			data.push(kontaktadresseData)

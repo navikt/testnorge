@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import { ifPresent, requiredDate, requiredString } from '~/utils/YupValidations'
+import { ifPresent, messages, requiredDate, requiredString } from '~/utils/YupValidations'
 import _get from 'lodash/get'
 
 const personnavnSchema = Yup.object({
@@ -22,17 +22,124 @@ const nyPerson = Yup.object({
 	gradering: Yup.string().nullable(),
 })
 
+const vegadresse = Yup.object({
+	adressekode: Yup.string().nullable(),
+	adressenavn: Yup.string().nullable(),
+	tilleggsnavn: Yup.string().nullable(),
+	bruksenhetsnummer: Yup.string().nullable(),
+	husbokstav: Yup.string().nullable(),
+	husnummer: Yup.string().nullable(),
+	kommunenummer: Yup.string().nullable(),
+	postnummer: Yup.string().nullable(),
+})
+
+const matrikkeladresse = Yup.object({
+	kommunenummer: Yup.string().nullable(),
+	gaardsnummer: Yup.string().max(5, 'Gårdsnummeret må være under 99999').nullable(),
+	bruksnummer: Yup.string().max(4, 'Bruksnummeret må være under 9999').nullable(),
+	postnummer: Yup.string().nullable(),
+	bruksenhetsnummer: Yup.string()
+		.matches(
+			/^[HULK]\d{4}$/,
+			'Bruksenhetsnummer består av bokstaven H, L, U eller K etterfulgt av 4 sifre'
+		)
+		.transform((i, j) => (j === '' ? null : i))
+		.nullable(),
+	tilleggsnavn: Yup.string().nullable(),
+})
+
+const utenlandskAdresse = Yup.object({
+	adressenavnNummer: Yup.string().nullable(),
+	postboksNummerNavn: Yup.string().nullable(),
+	postkode: Yup.string().nullable(),
+	bySted: Yup.string().nullable(),
+	landkode: Yup.string().nullable(),
+	bygningEtasjeLeilighet: Yup.string().nullable(),
+	regionDistriktOmraade: Yup.string().nullable(),
+})
+
+const postboksadresse = Yup.object({
+	postboks: requiredString.nullable(), // TODO: gjøres mindre streng?
+	postbokseier: Yup.string().nullable(),
+	postnummer: requiredString.nullable(), // TODO: gjøres mindre streng?
+})
+
+const ukjentBosted = Yup.object({
+	bostedskommune: Yup.string().nullable(),
+})
+
 const bostedsadresse = Yup.array().of(
 	Yup.object({
-		utenlandskAdresse: Yup.object({
-			adressenavnNummer: Yup.string().nullable(),
-			postboksNummerNavn: Yup.string().nullable(),
-			postkode: Yup.string().nullable(),
-			bySted: Yup.string().nullable(),
-			landkode: Yup.string().nullable(),
-			bygningEtasjeLeilighet: Yup.string().nullable(),
-			regionDistriktOmraade: Yup.string().nullable(),
+		adressetype: Yup.string().nullable(),
+		angittFlyttedato: Yup.string().nullable(),
+		gyldigFraOgMed: Yup.string().nullable(),
+		gyldigTilOgMed: Yup.string().nullable(),
+		vegadresse: Yup.mixed().when('adressetype', {
+			is: 'VEGADRESSE',
+			then: vegadresse,
 		}),
+		matrikkeladresse: Yup.mixed().when('adressetype', {
+			is: 'MATRIKKELADRESSE',
+			then: matrikkeladresse,
+		}),
+		utenlandskAdresse: Yup.mixed().when('adressetype', {
+			is: 'UTENLANDSK_ADRESSE',
+			then: utenlandskAdresse,
+		}),
+		ukjentBosted: Yup.mixed().when('adressetype', {
+			is: 'UKJENT_BOSTED',
+			then: ukjentBosted,
+		}),
+	})
+)
+
+const oppholdsadresse = Yup.array().of(
+	Yup.object({
+		adressetype: Yup.string().nullable(),
+		gyldigFraOgMed: Yup.string().nullable(),
+		gyldigTilOgMed: Yup.string().nullable(),
+		vegadresse: Yup.mixed().when('adressetype', {
+			is: 'VEGADRESSE',
+			then: vegadresse,
+		}),
+		matrikkeladresse: Yup.mixed().when('adressetype', {
+			is: 'MATRIKKELADRESSE',
+			then: matrikkeladresse,
+		}),
+		utenlandskAdresse: Yup.mixed().when('adressetype', {
+			is: 'UTENLANDSK_ADRESSE',
+			then: utenlandskAdresse,
+		}),
+		oppholdAnnetSted: Yup.mixed().when('adressetype', {
+			is: 'OPPHOLD_ANNET_STED',
+			then: requiredString.nullable(),
+		}),
+	})
+)
+
+const kontaktadresse = Yup.array().of(
+	Yup.object({
+		adressetype: Yup.string().nullable(),
+		gyldigFraOgMed: Yup.string().nullable(),
+		gyldigTilOgMed: Yup.string().nullable(),
+		vegadresse: Yup.mixed().when('adressetype', {
+			is: 'VEGADRESSE',
+			then: vegadresse,
+		}),
+		utenlandskAdresse: Yup.mixed().when('adressetype', {
+			is: 'UTENLANDSK_ADRESSE',
+			then: utenlandskAdresse,
+		}),
+		postboksadresse: Yup.mixed().when('adressetype', {
+			is: 'POSTBOKSADRESSE',
+			then: postboksadresse,
+		}),
+	})
+)
+
+const adressebeskyttelse = Yup.array().of(
+	Yup.object({
+		gradering: requiredString.nullable(),
 	})
 )
 
@@ -159,6 +266,9 @@ export const validation = {
 	pdldata: Yup.object({
 		person: Yup.object({
 			bostedsadresse: ifPresent('$pdldata.person.bostedsadresse', bostedsadresse),
+			oppholdsadresse: ifPresent('$pdldata.person.oppholdsadresse', oppholdsadresse),
+			kontaktadresse: ifPresent('$pdldata.person.kontaktadresse', kontaktadresse),
+			adressebeskyttelse: ifPresent('$pdldata.person.adressebeskyttelse', adressebeskyttelse),
 			fullmakt: ifPresent('$pdldata.person.fullmakt', fullmakt),
 			falskIdentitet: ifPresent('$pdldata.person.falskIdentitet', falskIdentitet),
 			telefonnummer: ifPresent('$pdldata.person.telefonnummer', telefonnummer),

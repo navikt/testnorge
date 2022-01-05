@@ -9,7 +9,6 @@ export const Matrikkeladresse = ({ formikBag, path }) => {
 			<FormikTextInput name={`${path}.gaardsnummer`} label="Gårdsnummer" type="number" />
 			<FormikTextInput name={`${path}.bruksnummer`} label="Bruksnummer" type="number" />
 			<FormikTextInput name={`${path}.bruksenhetsnummer`} label="Bruksenhetsnummer" />
-			{/*pattern: (?i)^[HULK][0-9]{4}$|^$*/}
 			<FormikTextInput name={`${path}.tilleggsnavn`} label="Tilleggsnavn" />
 			<FormikSelect
 				name={`${path}.postnummer`}

@@ -19,11 +19,11 @@ export const Vegadresse = ({ formikBag, path }) => {
 			postnummer: adresse.postnummer,
 			adressenavn: adresse.adressenavn,
 			adressekode: adresse.adressekode,
-			// tilleggsnavn: adresse.tilleggsnavn,
+			tilleggsnavn: adresse.tilleggsnavn,
 			husnummer: adresse.husnummer,
-			// husbokstav: adresse.husbokstav,
+			husbokstav: adresse.husbokstav,
 			kommunenummer: adresse.kommunenummer,
-			// bruksenhetsnummer: adresse.bruksenhetsnummer,
+			bruksenhetsnummer: adresse.bruksenhetsnummer,
 			vegadresseType: _get(formikBag.values, `${path}.vegadresseType`),
 		})
 	}
