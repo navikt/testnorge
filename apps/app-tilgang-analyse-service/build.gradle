@@ -57,7 +57,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml'
 
     implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
-    implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.5.12'
+    implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.6.4'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
