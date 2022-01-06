@@ -8,7 +8,7 @@ import { UtenlandskAdresse } from '~/components/fagsystem/pdlf/visning/partials/
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 
 export const Boadresse = ({ data }) => {
-	if (!data || data.length === 0) return false
+	if (!data || data.length === 0) return null
 
 	return (
 		<>

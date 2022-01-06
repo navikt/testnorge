@@ -7,9 +7,12 @@ import { IdentInfo } from '~/components/fagsystem/pdlf/visning/partials/Identinf
 import { GeografiskTilknytning } from '~/components/fagsystem/pdlf/visning/partials/GeografiskTilknytning'
 import { PdlPersonInfo } from '~/components/fagsystem/pdlf/visning/partials/PdlPersonInfo'
 import { PdlNasjonalitet } from '~/components/fagsystem/pdlf/visning/partials/PdlNasjonalitet'
-import { PdlBoadresse } from '~/components/fagsystem/pdlf/visning/partials/PdlBoadresse'
 import { PdlFullmakt } from '~/components/fagsystem/pdlf/visning/partials/PdlFullmakt'
 import { Telefonnummer } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
+import { Boadresse } from '~/components/fagsystem/pdlf/visning/partials/Boadresse'
+import { Oppholdsadresse } from '~/components/fagsystem/pdlf/visning/partials/Oppholdsadresse'
+import { Kontaktadresse } from '~/components/fagsystem/pdlf/visning/partials/Kontaktadresse'
+import { Adressebeskyttelse } from '~/components/fagsystem/pdlf/visning/partials/Adressebeskyttelse'
 
 type PdlData = {
 	data: Data
@@ -54,26 +57,29 @@ type TelefonData = {
 }
 
 export const PdlDataVisning = ({ data }: PdlData) => {
-	if (!data || !data.hentPerson) {
-		return null
-	}
+	const { hentPerson, hentIdenter, hentGeografiskTilknytning } = data
+	const {
+		telefonnummer,
+		bostedsadresse,
+		oppholdsadresse,
+		kontaktadresse,
+		adressebeskyttelse,
+		fullmakt,
+	} = hentPerson
 
-	const gjeldendeAdresse = (adresseListe: Array<BostedData>) => {
-		if (!adresseListe || adresseListe.length === 0) return null
-		const filteredArray = adresseListe.filter((adresse: BostedData) => !adresse.metadata.historisk)
-		return filteredArray.length > 0 ? filteredArray : adresseListe
-	}
-
-	const getPersonInfo = (identInfo: Data) => {
+	const getPersonInfo = () => {
 		return (
 			<div className="boks">
-				<PdlPersonInfo data={identInfo.hentPerson} />
-				<IdentInfo pdlResponse={identInfo.hentIdenter} />
-				<GeografiskTilknytning data={identInfo.hentGeografiskTilknytning} />
-				<PdlNasjonalitet data={identInfo.hentPerson} />
-				<PdlBoadresse data={gjeldendeAdresse(identInfo.hentPerson.bostedsadresse)} />
-				<Telefonnummer data={identInfo.hentPerson.telefonnummer} />
-				<PdlFullmakt data={identInfo.hentPerson.fullmakt} />
+				<PdlPersonInfo data={hentPerson} />
+				<IdentInfo pdlResponse={hentIdenter} />
+				<GeografiskTilknytning data={hentGeografiskTilknytning} />
+				<PdlNasjonalitet data={hentPerson} />
+				<Telefonnummer data={telefonnummer} />
+				<Boadresse data={bostedsadresse} />
+				<Oppholdsadresse data={oppholdsadresse} />
+				<Kontaktadresse data={kontaktadresse} />
+				<Adressebeskyttelse data={adressebeskyttelse} />
+				<PdlFullmakt data={fullmakt} />
 			</div>
 		)
 	}
@@ -81,7 +87,7 @@ export const PdlDataVisning = ({ data }: PdlData) => {
 	return (
 		<div className="flexbox--flex-wrap">
 			<Tooltip
-				overlay={getPersonInfo(data)}
+				overlay={getPersonInfo()}
 				placement="top"
 				align={{
 					offset: ['0', '-10'],

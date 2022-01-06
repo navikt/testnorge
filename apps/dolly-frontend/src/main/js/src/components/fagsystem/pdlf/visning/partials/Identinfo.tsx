@@ -24,7 +24,7 @@ export const IdentInfo = ({ pdlResponse }: Data) => {
 	return (
 		<ErrorBoundary>
 			<div>
-				<SubOverskrift label="Ident informasjon" iconKind="personinformasjon" />
+				<SubOverskrift label="Identinformasjon" iconKind="personinformasjon" />
 				{pdlResponse.identer.map((ident: Ident, index: number) => (
 					<div key={index}>
 						<h4 style={{ marginTop: '0px' }}>{ident.gruppe}</h4>

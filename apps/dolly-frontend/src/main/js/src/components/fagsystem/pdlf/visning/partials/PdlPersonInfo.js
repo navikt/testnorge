@@ -12,7 +12,6 @@ export const PdlPersonInfo = ({ data, visTittel = true }) => {
 		return null
 	}
 
-	const adressebeskyttelse = data.adressebeskyttelse?.length > 0 ? data.adressebeskyttelse[0] : null
 	const personNavn = data.navn?.length > 0 ? data.navn[0] : null
 	const personKjoenn = data.kjoenn?.length > 0 ? data.kjoenn[0] : null
 	const personSivilstand = data.sivilstand?.length > 0 ? data.sivilstand[0] : null
@@ -30,27 +29,6 @@ export const PdlPersonInfo = ({ data, visTittel = true }) => {
 					<TitleValue title="Kjønn" value={personKjoenn?.kjoenn} />
 					<TitleValue title="Sivilstand" value={personSivilstand?.type} />
 					<TitleValue title="Fødselsdato" value={personFoedsel?.foedselsdato} />
-					{adressebeskyttelse && (
-						<div className="person-visning_content">
-							<h4 style={{ marginTop: '0px' }}>Adressebeskyttelse</h4>
-							<div className="person-visning_content">
-								<TitleValue
-									title="Gradering (Diskresjonskode)"
-									value={adressebeskyttelse?.gradering}
-								/>
-								<TitleValue
-									title="Kilde"
-									value={adressebeskyttelse?.folkeregistermetadata?.kilde}
-								/>
-								<TitleValue
-									title="Gyldighetstidspunkt"
-									value={Formatters.formatDate(
-										adressebeskyttelse?.folkeregistermetadata?.gyldighetstidspunkt
-									)}
-								/>
-							</div>
-						</div>
-					)}
 					{sikkerhetstiltak && (
 						<div className="person-visning_content">
 							<h4 style={{ marginTop: '5px' }}>Sikkerhetstiltak</h4>

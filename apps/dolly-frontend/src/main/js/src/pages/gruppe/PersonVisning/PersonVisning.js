@@ -86,7 +86,7 @@ export const PersonVisning = ({
 			/>
 			<DokarkivVisning ident={ident.ident} />
 			<PersonMiljoeinfo ident={ident.ident} miljoe={bestilling.environments} />
-			<PdlPersonMiljoeInfo ident={ident.ident} />
+			<PdlPersonMiljoeInfo data={data.pdl} loading={loading.pdl} />
 			<TidligereBestillinger ids={ident.bestillingId} />
 			<BeskrivelseConnector ident={ident} iLaastGruppe={iLaastGruppe} />
 		</div>
