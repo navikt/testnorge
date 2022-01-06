@@ -11,13 +11,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  person-organisasjon-tilgang-service:
-    uses: navikt/testnorge/.github/workflows/common.integtation-test.yml@master
-    with:
-      working-directory: 'apps/person-organisasjon-tilgang-service/'
-      healthcheck: 'http://localhost:8001/internal/isAlive'
-    secrets:
-      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
   bruker-service:
     uses: navikt/testnorge/.github/workflows/common.integtation-test.yml@master
     with:
@@ -25,10 +18,10 @@ jobs:
       healthcheck: 'http://localhost:8002/internal/isAlive'
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-  testnorge-profil-api:
+  person-organisasjon-tilgang-service:
     uses: navikt/testnorge/.github/workflows/common.integtation-test.yml@master
     with:
-      working-directory: 'apps/profil-api/'
-      healthcheck: 'http://localhost:8003/internal/isAlive'
+      working-directory: 'apps/person-organisasjon-tilgang-service/'
+      healthcheck: 'http://localhost:8001/internal/isAlive'
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}

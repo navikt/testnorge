@@ -27,8 +27,6 @@ export const TpsfVisning = ({ data, environments, pdlData }) => {
 	}, [])
 	if (!data) return null
 
-	console.log('pdlData: ', pdlData) //TODO - SLETT MEG
-
 	return (
 		<div>
 			<Personinfo data={data} tpsMessagingData={tpsMessagingData} />

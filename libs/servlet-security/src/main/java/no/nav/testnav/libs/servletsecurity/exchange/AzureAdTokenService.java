@@ -1,19 +1,10 @@
 package no.nav.testnav.libs.servletsecurity.exchange;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.libs.securitycore.command.azuread.ClientCredentialExchangeCommand;
-import no.nav.testnav.libs.securitycore.command.azuread.GetWellKnownCommand;
-import no.nav.testnav.libs.securitycore.command.azuread.OnBehalfOfExchangeCommand;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.securitycore.domain.Token;
-import no.nav.testnav.libs.securitycore.domain.azuread.AzureNavClientCredential;
-import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
-import no.nav.testnav.libs.securitycore.domain.azuread.WellKnown;
-import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedToken;
-import no.nav.testnav.libs.servletsecurity.domain.ResourceServerType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -22,7 +13,16 @@ import reactor.netty.http.client.HttpClient;
 import reactor.netty.transport.ProxyProvider;
 
 import java.net.URI;
-import java.time.Duration;
+
+import no.nav.testnav.libs.securitycore.command.azuread.ClientCredentialExchangeCommand;
+import no.nav.testnav.libs.securitycore.command.azuread.OnBehalfOfExchangeCommand;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.securitycore.domain.Token;
+import no.nav.testnav.libs.securitycore.domain.azuread.AzureNavClientCredential;
+import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
+import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedToken;
+import no.nav.testnav.libs.servletsecurity.domain.ResourceServerType;
 
 @Slf4j
 @Service
@@ -31,17 +31,19 @@ public class AzureAdTokenService implements TokenService {
     private final WebClient webClient;
     private final ClientCredential clientCredential;
     private final GetAuthenticatedToken getAuthenticatedToken;
-    private final Mono<WellKnown> wellKnown;
 
     public AzureAdTokenService(
             @Value("${http.proxy:#{null}}") String proxyHost,
-            @Value("${spring.security.oauth2.resourceserver.aad.issuer-uri}") String issuerUrl,
+            @Value("${AAD_ISSUER_URI}") String issuerUrl,
             AzureNavClientCredential clientCredential,
             GetAuthenticatedToken getAuthenticatedToken
     ) {
         log.info("Init AzureAd token exchange.");
         this.getAuthenticatedToken = getAuthenticatedToken;
-        WebClient.Builder builder = WebClient.builder();
+        WebClient.Builder builder = WebClient
+                .builder()
+                .baseUrl(issuerUrl + "/oauth2/v2.0/token")
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
 
         if (proxyHost != null) {
             log.info("Setter opp proxy host {} for Client Credentials", proxyHost);
@@ -58,11 +60,6 @@ public class AzureAdTokenService implements TokenService {
         }
         this.webClient = builder.build();
         this.clientCredential = clientCredential;
-        this.wellKnown = new GetWellKnownCommand(this.webClient, issuerUrl).call().cache(
-                value -> Duration.ofDays(7),
-                value -> Duration.ZERO,
-                () -> Duration.ZERO
-        );
     }
 
     @Override
@@ -81,7 +78,7 @@ public class AzureAdTokenService implements TokenService {
     }
 
     private Mono<AccessToken> generateOnBehalfOfAccessToken(Token token, ServerProperties serverProperties) {
-        return new OnBehalfOfExchangeCommand(webClient, clientCredential, serverProperties.toAzureAdScope(), token, wellKnown).call();
+        return new OnBehalfOfExchangeCommand(webClient, clientCredential, serverProperties.toAzureAdScope(), token).call();
     }
 
     @Override

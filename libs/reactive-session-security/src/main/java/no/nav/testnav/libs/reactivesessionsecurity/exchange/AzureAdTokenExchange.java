@@ -1,23 +1,22 @@
 package no.nav.testnav.libs.reactivesessionsecurity.exchange;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.libs.reactivesessionsecurity.resolver.TokenResolver;
-import no.nav.testnav.libs.securitycore.command.azuread.ClientCredentialExchangeCommand;
-import no.nav.testnav.libs.securitycore.command.azuread.GetWellKnownCommand;
-import no.nav.testnav.libs.securitycore.command.azuread.OnBehalfOfExchangeCommand;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.securitycore.domain.azuread.AzureNavClientCredential;
-import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
-import no.nav.testnav.libs.securitycore.domain.azuread.WellKnown;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import java.time.Duration;
+import no.nav.testnav.libs.reactivesessionsecurity.resolver.TokenResolver;
+import no.nav.testnav.libs.securitycore.command.azuread.ClientCredentialExchangeCommand;
+import no.nav.testnav.libs.securitycore.command.azuread.OnBehalfOfExchangeCommand;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.securitycore.domain.azuread.AzureNavClientCredential;
+import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
 
 @Slf4j
 @Service
@@ -28,7 +27,6 @@ public class AzureAdTokenExchange implements ExchangeToken {
     private final WebClient webClient;
     private final TokenResolver tokenResolver;
     private final ClientCredential clientCredential;
-    private final Mono<WellKnown> wellKnown;
 
     public AzureAdTokenExchange(
             @Value("${AAD_ISSUER_URI}") String issuerUrl,
@@ -37,14 +35,11 @@ public class AzureAdTokenExchange implements ExchangeToken {
     ) {
         this.webClient = WebClient
                 .builder()
+                .baseUrl(issuerUrl + "/oauth2/v2.0/token")
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                 .build();
         this.tokenResolver = tokenResolver;
         this.clientCredential = clientCredential;
-        this.wellKnown = new GetWellKnownCommand(this.webClient, issuerUrl + "/v2.0").call().cache(
-                value -> Duration.ofDays(7),
-                value -> Duration.ZERO,
-                () -> Duration.ZERO
-        );
     }
 
     @Override
@@ -55,8 +50,7 @@ public class AzureAdTokenExchange implements ExchangeToken {
                         webClient,
                         clientCredential,
                         serverProperties.toAzureAdScope(),
-                        token,
-                        wellKnown
+                        token
                 ).call());
     }
 
