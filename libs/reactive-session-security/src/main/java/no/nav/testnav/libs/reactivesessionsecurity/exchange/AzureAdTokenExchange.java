@@ -1,6 +1,15 @@
 package no.nav.testnav.libs.reactivesessionsecurity.exchange;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Import;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
+
+import java.time.Duration;
+
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.TokenResolver;
 import no.nav.testnav.libs.securitycore.command.azuread.ClientCredentialExchangeCommand;
 import no.nav.testnav.libs.securitycore.command.azuread.GetWellKnownCommand;
@@ -10,14 +19,6 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.securitycore.domain.azuread.AzureNavClientCredential;
 import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
 import no.nav.testnav.libs.securitycore.domain.azuread.WellKnown;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Import;
-import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Mono;
-
-import java.time.Duration;
 
 @Slf4j
 @Service
@@ -61,7 +62,7 @@ public class AzureAdTokenExchange implements ExchangeToken {
     }
 
     public Mono<AccessToken> generateClientCredentialAccessToken(ServerProperties serverProperties) {
-        return new ClientCredentialExchangeCommand(webClient, clientCredential, serverProperties.toAzureAdScope()).call();
+        return new ClientCredentialExchangeCommand(webClient, clientCredential, serverProperties.toAzureAdScope(), wellKnown).call();
     }
 
 }
