@@ -1,8 +1,8 @@
 package no.nav.testnav.apps.importfratpsfservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.testnav.apps.importfratpsfservice.consumer.DollyConsumer;
 import no.nav.testnav.apps.importfratpsfservice.utils.ErrorhandlerUtils;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -20,7 +20,7 @@ public class DollyPutIdentCommand implements Callable<Mono<Void>> {
     private final WebClient webClient;
     private final Long gruppeId;
     private final String ident;
-    private final Master master;
+    private final DollyConsumer.Master master;
     private final String token;
 
     @Override

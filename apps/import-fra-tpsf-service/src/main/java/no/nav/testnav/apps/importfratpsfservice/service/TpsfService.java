@@ -6,7 +6,6 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.testnav.apps.importfratpsfservice.consumer.DollyConsumer;
 import no.nav.testnav.apps.importfratpsfservice.consumer.PdlForvalterConsumer;
 import no.nav.testnav.apps.importfratpsfservice.consumer.TpsfConsumer;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import org.springframework.stereotype.Service;
@@ -41,7 +40,9 @@ public class TpsfService {
                 .flatMap(person ->
                         pdlForvalterConsumer.postOrdrePdlPerson(person.getIdent()).thenReturn(person))
                 .flatMap(person ->
-                        dollyConsumer.putGrupperIdent(dollyGruppeId, person.getIdent(), Master.PDL).thenReturn(person))
+                        dollyConsumer.putGrupperIdent(dollyGruppeId,
+                                person.getIdent(),
+                                DollyConsumer.Master.PDLF).thenReturn(person))
                 .map(person -> format("Importert ident %s -- %s %s", person.getIdent(),
                         person.getNavn().get(0).getFornavn(), person.getNavn().get(0).getEtternavn()));
     }
