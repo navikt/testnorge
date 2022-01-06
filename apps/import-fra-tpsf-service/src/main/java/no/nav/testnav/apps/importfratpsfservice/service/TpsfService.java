@@ -11,6 +11,8 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
+import java.time.Duration;
+
 import static java.lang.String.format;
 
 @Slf4j
@@ -28,7 +30,8 @@ public class TpsfService {
         return tpsfConsumer.getSkdGrupper()
                 .filter(gruppe -> gruppe.getId().equals(skdgruppeId))
                 .next()
-                .flatMapMany(gruppe -> Flux.range(0, 1)) //gruppe.getAntallSider().intValue()))
+                .flatMapMany(gruppe -> Flux.range(0, gruppe.getAntallSider().intValue()))
+                .delayElements(Duration.ofMillis(1000))
                 .flatMap(page -> tpsfConsumer.getSkdMeldinger(skdgruppeId, page.longValue()))
                 .map(melding ->
                         mapperFacade.map(melding, PersonDTO.class))

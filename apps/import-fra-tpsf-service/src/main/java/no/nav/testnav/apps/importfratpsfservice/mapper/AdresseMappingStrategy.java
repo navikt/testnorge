@@ -31,7 +31,8 @@ public class AdresseMappingStrategy implements MappingStrategy {
     private static final String NORGE = "000";
 
     private static Integer toNumeric(String number) {
-        return isNotBlank(number) && isNumeric(number) ? Integer.decode(number) : null;
+        return isNotBlank(number) && isNumeric(number) ?
+                Integer.decode(number.replaceFirst("^0+(?!$)", "")) : null;
     }
 
     private static LocalDateTime getDate(String dato) {
