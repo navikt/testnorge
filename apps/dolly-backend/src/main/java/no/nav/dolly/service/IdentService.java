@@ -118,7 +118,7 @@ public class IdentService {
             return new PageImpl<>(identerMedBestilling.getContent(), PageRequest.of(pageNo, pageSize),
                     identerMedBestilling.getTotalElements() + identerUtenBestilling.getTotalElements());
 
-        } else if (identerMedBestilling.getContent().size() > 0) {
+        } else if (!identerMedBestilling.getContent().isEmpty()) {
             var identerUtenBestilling2 =
                     identRepository.getTestidentByTestgruppeIdOrderByIdentAsc(gruppeId, PageRequest.of(0, pageSize - identerMedBestilling.getContent().size()));
 
