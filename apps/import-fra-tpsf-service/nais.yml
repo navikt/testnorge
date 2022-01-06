@@ -1,7 +1,7 @@
 apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
-  name: import-fra-tpsf-service
+  name: testnav-import-fra-tpsf-service
   namespace: dolly
   labels:
     team: dolly
@@ -15,7 +15,7 @@ spec:
       enabled: true
       tenant: nav.no
   ingresses:
-    - "https://import-fra-tpsf-service.dev.intern.nav.no"
+    - "https://testnav-import-fra-tpsf-service.dev.intern.nav.no"
   liveness:
     path: /internal/isAlive
     periodSeconds: 30
