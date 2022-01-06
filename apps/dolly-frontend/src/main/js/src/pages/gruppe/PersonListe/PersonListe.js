@@ -34,6 +34,7 @@ export default function PersonListe({
 	visPerson,
 	iLaastGruppe,
 	fetchTpsfPersoner,
+	fetchPdlPersoner,
 }) {
 	const [isKommentarModalOpen, openKommentarModal, closeKommentarModal] = useBoolean(false)
 	const [selectedIdent, setSelectedIdent] = useState(null)
@@ -63,6 +64,7 @@ export default function PersonListe({
 	useEffect(() => {
 		if (gruppeEndret()) {
 			fetchTpsfPersoner()
+			fetchPdlPersoner()
 			previousValues.current = identer
 		}
 	}, [identer])

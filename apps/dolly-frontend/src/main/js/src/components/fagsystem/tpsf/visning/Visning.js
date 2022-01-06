@@ -72,7 +72,7 @@ TpsfVisning.filterValues = (data, bestillingsListe) => {
 	if (harFoedselsinnvandring)
 		data = {
 			...data,
-			innvandretUtvandret: data.innvandretUtvandret.filter(
+			innvandretUtvandret: data?.innvandretUtvandret?.filter(
 				(i, idx) => idx !== data.innvandretUtvandret.length - 1 || i.innutvandret === 'UTVANDRET'
 			),
 		}

@@ -40,18 +40,20 @@ export const Nasjonalitet = ({ data, visTittel = true, pdlData }) => {
 	return (
 		<div>
 			{visTittel && <SubOverskrift label="Nasjonalitet" iconKind="nasjonalitet" />}
-			<div className="person-visning_content">
-				{statsborgerskap.length > 1 ? (
-					<ErrorBoundary>
-						<DollyFieldArray data={statsborgerskap} header="Statsborgerskap" nested>
-							{(statsborgerskap, idx) => <Statsborgerskap statsborgerskap={statsborgerskap} />}
-						</DollyFieldArray>
-					</ErrorBoundary>
-				) : (
-					<Statsborgerskap statsborgerskap={statsborgerskap[0]} />
-				)}
-				<TitleValue title="Språk" kodeverk={PersoninformasjonKodeverk.Spraak} value={sprakKode} />
-			</div>
+			{statsborgerskap && (
+				<div className="person-visning_content">
+					{statsborgerskap.length > 1 ? (
+						<ErrorBoundary>
+							<DollyFieldArray data={statsborgerskap} header="Statsborgerskap" nested>
+								{(statsborgerskap, idx) => <Statsborgerskap statsborgerskap={statsborgerskap} />}
+							</DollyFieldArray>
+						</ErrorBoundary>
+					) : (
+						<Statsborgerskap statsborgerskap={statsborgerskap[0]} />
+					)}
+					<TitleValue title="Språk" kodeverk={PersoninformasjonKodeverk.Spraak} value={sprakKode} />
+				</div>
+			)}
 
 			{pdlPerson?.innflytting?.length > 0 && (
 				<ErrorBoundary>

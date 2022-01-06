@@ -40,6 +40,17 @@ export const PersonVisning = ({
 }) => {
 	useMount(fetchDataFraFagsystemer)
 
+	console.log('data: ', data) //TODO - SLETT MEG
+
+	const personInfo = data.tpsf
+		? data.tpsf
+		: {
+				kjonn: data.pdlforvalter?.kjoenn?.[0]?.kjoenn,
+				ident: data.pdlforvalter?.ident,
+				fornavn: data.pdlforvalter?.navn?.[0]?.fornavn,
+				etternavn: data.pdlforvalter?.navn?.[0]?.etternavn,
+		  }
+
 	return (
 		<div className="person-visning">
 			<div className="person-visning_actions">
@@ -49,7 +60,7 @@ export const PersonVisning = ({
 					</Button>
 				)}
 				{!iLaastGruppe && (
-					<LeggTilRelasjonModal environments={bestilling.environments} personInfo={data.tpsf} />
+					<LeggTilRelasjonModal environments={bestilling.environments} personInfo={personInfo} />
 				)}
 				<BestillingSammendragModal bestilling={bestilling} />
 				{!iLaastGruppe && (

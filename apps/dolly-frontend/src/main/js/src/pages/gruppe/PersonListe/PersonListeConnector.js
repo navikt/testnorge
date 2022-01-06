@@ -1,6 +1,7 @@
 import { connect } from 'react-redux'
 import {
 	actions as actionList,
+	fetchPdlPersoner,
 	fetchTpsfPersoner,
 	selectPersonListe,
 	sokSelector,
@@ -25,6 +26,6 @@ const mapStateToProps = (state, ownProps) => {
 	}
 }
 
-const mapDispatchToProps = { fetchTpsfPersoner }
+const mapDispatchToProps = { fetchTpsfPersoner, fetchPdlPersoner }
 
 export default connect(mapStateToProps, mapDispatchToProps)(personListe)
