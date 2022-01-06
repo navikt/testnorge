@@ -1,14 +1,6 @@
 package no.nav.testnav.libs.reactivesecurity.exchange.azuread;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.libs.reactivesecurity.domain.AzureTrygdeetatenClientCredential;
-import no.nav.testnav.libs.reactivesecurity.exchange.ExchangeToken;
-import no.nav.testnav.libs.securitycore.command.azuread.ClientCredentialExchangeCommand;
-import no.nav.testnav.libs.securitycore.command.azuread.GetWellKnownCommand;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
-import no.nav.testnav.libs.securitycore.domain.azuread.WellKnown;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpHeaders;
@@ -23,6 +15,15 @@ import reactor.netty.transport.ProxyProvider;
 import java.net.URI;
 import java.time.Duration;
 
+import no.nav.testnav.libs.reactivesecurity.domain.AzureTrygdeetatenClientCredential;
+import no.nav.testnav.libs.reactivesecurity.exchange.ExchangeToken;
+import no.nav.testnav.libs.securitycore.command.azuread.ClientCredentialExchangeCommand;
+import no.nav.testnav.libs.securitycore.command.azuread.GetWellKnownCommand;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
+import no.nav.testnav.libs.securitycore.domain.azuread.WellKnown;
+
 @Slf4j
 @Service
 @ConditionalOnProperty("spring.security.oauth2.resourceserver.aad.issuer-uri")
@@ -30,9 +31,11 @@ public class TrygdeetatenAzureAdTokenService implements ExchangeToken {
 
     private final WebClient webClient;
     private final ClientCredential clientCredential;
+    private final Mono<WellKnown> wellKnown;
 
     public TrygdeetatenAzureAdTokenService(
             @Value("${http.proxy:#{null}}") String proxyHost,
+            @Value("${spring.security.oauth2.resourceserver.aad.issuer-uri}") String issuerUrl,
             AzureTrygdeetatenClientCredential azureTrygdeetatenClientCredential
     ) {
         this.clientCredential = azureTrygdeetatenClientCredential;
@@ -55,6 +58,13 @@ public class TrygdeetatenAzureAdTokenService implements ExchangeToken {
             builder.clientConnector(new ReactorClientHttpConnector(httpClient));
         }
         this.webClient = builder.build();
+
+        this.wellKnown = new GetWellKnownCommand(this.webClient, issuerUrl).call().cache(
+                value -> Duration.ofDays(7),
+                value -> Duration.ZERO,
+                () -> Duration.ZERO
+        );
+
     }
 
     @Override
@@ -62,7 +72,9 @@ public class TrygdeetatenAzureAdTokenService implements ExchangeToken {
         return new ClientCredentialExchangeCommand(
                 webClient,
                 clientCredential,
-                serverProperties.toAzureAdScope())
-                .call();
+                serverProperties.toAzureAdScope(),
+                wellKnown
+        ).call();
+
     }
 }

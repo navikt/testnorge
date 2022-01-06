@@ -2,9 +2,8 @@ package no.nav.testnav.libs.securitycore.command.azuread;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.libs.securitycore.command.ExchangeCommand;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -13,13 +12,18 @@ import reactor.util.retry.Retry;
 
 import java.time.Duration;
 
+import no.nav.testnav.libs.securitycore.command.ExchangeCommand;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
+import no.nav.testnav.libs.securitycore.domain.azuread.WellKnown;
+
 @Slf4j
 @RequiredArgsConstructor
 public class ClientCredentialExchangeCommand implements ExchangeCommand {
-
     private final WebClient webClient;
     private final ClientCredential clientCredential;
     private final String scope;
+    private final Mono<WellKnown> wellKnown;
 
     @Override
     public Mono<AccessToken> call() {
@@ -31,22 +35,28 @@ public class ClientCredentialExchangeCommand implements ExchangeCommand {
                 .with("grant_type", "client_credentials");
 
         log.trace("Access token opprettet for OAuth 2.0 Client Credentials flow.");
-        return webClient.post()
-                .body(body)
-                .retrieve()
-                .bodyToMono(AccessToken.class)
-                .retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(1))
-                        .filter(throwable -> !(throwable instanceof WebClientResponseException.BadRequest))
-                        .doBeforeRetry(value -> log.warn("Prøver å opprette tilkobling til azure på nytt.")))
-                .doOnError(
-                        WebClientResponseException.class::isInstance,
-                        throwable -> log.error(
-                                "Feil ved henting av access token for {}. Feilmelding: {}.",
-                                scope,
-                                ((WebClientResponseException) throwable).getResponseBodyAsString())
-                ).doOnError(
-                        throwable -> !(throwable instanceof WebClientResponseException),
-                        throwable -> log.error("Feil ved henting av access token for {}", scope, throwable)
-                );
+        return wellKnown.flatMap(config ->
+                webClient.post()
+                        .uri(config.getToken_endpoint())
+                        .body(body)
+                        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                        .retrieve()
+                        .bodyToMono(AccessToken.class)
+                        .retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(1))
+                                .filter(throwable -> !(throwable instanceof WebClientResponseException.BadRequest))
+                                .doBeforeRetry(value -> log.warn("Prøver å opprette tilkobling til azure på nytt."))
+                        ).doOnError(
+                                WebClientResponseException.class::isInstance,
+                                throwable -> log.error(
+                                        "Feil ved henting av access token for {}. Feilmelding: {}.",
+                                        scope,
+                                        ((WebClientResponseException) throwable).getResponseBodyAsString()
+                                )
+                        )
+                        .doOnError(
+                                throwable -> !(throwable instanceof WebClientResponseException),
+                                throwable -> log.error("Feil ved henting av access token for {}", scope, throwable)
+                        )
+        );
     }
 }

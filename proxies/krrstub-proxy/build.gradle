@@ -31,8 +31,6 @@ repositories {
     mavenLocal()
 }
 
-java.sourceCompatibility = JavaVersion.VERSION_17
-
 test {
     useJUnitPlatform()
 }
