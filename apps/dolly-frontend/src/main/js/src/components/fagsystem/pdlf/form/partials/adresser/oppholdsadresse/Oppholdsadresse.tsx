@@ -19,6 +19,7 @@ import { UtenlandskAdresse } from '~/components/fagsystem/pdlf/form/partials/adr
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { OppholdAnnetSted } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/OppholdAnnetSted'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
+import { MatrikkeladresseVelger } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/MatrikkeladresseVelger'
 
 export const Oppholdsadresse = ({ formikBag }) => {
 	const handleChangeAdressetype = (target, path) => {
@@ -96,7 +97,7 @@ export const Oppholdsadresse = ({ formikBag }) => {
 								/>
 							)}
 							{valgtAdressetype === 'MATRIKKELADRESSE' && (
-								<Matrikkeladresse formikBag={formikBag} path={`${path}.matrikkeladresse`} />
+								<MatrikkeladresseVelger formikBag={formikBag} path={`${path}.matrikkeladresse`} />
 							)}
 							{valgtAdressetype === 'UTENLANDSK_ADRESSE' && (
 								<UtenlandskAdresse formikBag={formikBag} path={`${path}.utenlandskAdresse`} />

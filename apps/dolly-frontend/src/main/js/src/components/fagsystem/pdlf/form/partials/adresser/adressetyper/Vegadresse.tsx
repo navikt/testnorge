@@ -6,7 +6,6 @@ import { DollyApi } from '~/service/Api'
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import _get from 'lodash/get'
-import _has from 'lodash/has'
 import styled from 'styled-components'
 
 const StyledVegadresse = styled.div`
@@ -35,16 +34,6 @@ export const Vegadresse = ({ formikBag, path }) => {
 		return `${adressenavn} ${parseInt(husnummer)}, ${postnummer} ${poststed}`
 	}
 
-	// TODO - mulig denne ikke funker, sjekk path!
-	const feilmelding = (feil) => {
-		if (
-			!_get(formikBag.values, `${path}.vegadresse`) &&
-			_has(formikBag.touched, `${path}.vegadresse`)
-		) {
-			return { feilmelding: _get(formikBag.errors, `${path}.vegadresse`) }
-		} else return feil
-	}
-
 	return (
 		<div className="flexbox--flex-wrap">
 			<StyledVegadresse>
@@ -61,7 +50,6 @@ export const Vegadresse = ({ formikBag, path }) => {
 								readOnly
 								placeholder="Ingen valgt adresse"
 								title="Endre adressen i adressevelgeren over"
-								feil={feilmelding(feil)}
 							/>
 						)}
 					/>

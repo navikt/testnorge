@@ -19,6 +19,7 @@ import _set from 'lodash/set'
 import { UkjentBosted } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/UkjentBosted'
 import { Matrikkeladresse } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/Matrikkeladresse'
 import { VegadresseVelger } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/VegadresseVelger'
+import { MatrikkeladresseVelger } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/MatrikkeladresseVelger'
 
 export const Bostedsadresse = ({ formikBag }) => {
 	const handleChangeAdressetype = (target, path) => {
@@ -96,7 +97,7 @@ export const Bostedsadresse = ({ formikBag }) => {
 								/>
 							)}
 							{valgtAdressetype === 'MATRIKKELADRESSE' && (
-								<Matrikkeladresse formikBag={formikBag} path={`${path}.matrikkeladresse`} />
+								<MatrikkeladresseVelger formikBag={formikBag} path={`${path}.matrikkeladresse`} />
 							)}
 							{valgtAdressetype === 'UTENLANDSK_ADRESSE' && (
 								<UtenlandskAdresse formikBag={formikBag} path={`${path}.utenlandskAdresse`} />

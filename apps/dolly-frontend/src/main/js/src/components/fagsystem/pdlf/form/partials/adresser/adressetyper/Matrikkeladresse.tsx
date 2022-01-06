@@ -5,7 +5,7 @@ import { AdresseKodeverk } from '~/config/kodeverk'
 
 export const Matrikkeladresse = ({ formikBag, path }) => {
 	return (
-		<div className="flexbox--flex-wrap">
+		<div className="flexbox--flex-wrap" style={{ marginTop: '10px' }}>
 			<FormikTextInput name={`${path}.gaardsnummer`} label="Gårdsnummer" type="number" />
 			<FormikTextInput name={`${path}.bruksnummer`} label="Bruksnummer" type="number" />
 			<FormikTextInput name={`${path}.bruksenhetsnummer`} label="Bruksenhetsnummer" />
@@ -27,17 +27,3 @@ export const Matrikkeladresse = ({ formikBag, path }) => {
 		</div>
 	)
 }
-
-// bruksenhetsnummer: "H5454"
-// bruksnummer: 2121
-// gaardsnummer: 9878
-// kommunenummer: "3039"
-// postnummer: "1384"
-// tilleggsnavn: "Gården"
-//
-// bruksenhetsnummer: "H5454"
-// bruksnummer: 89
-// gaardsnummer: 41
-// kommunenummer: "4626"
-// postnummer: "5355"
-// tilleggsnavn: "VALEN"
