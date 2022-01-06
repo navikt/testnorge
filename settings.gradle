@@ -152,7 +152,6 @@ includeBuild './examples/reactive-rest-example'
 
 includeBuild './mocks/tokendings-mock'
 includeBuild './mocks/maskinporten-mock'
-includeBuild './mocks/azuread-mock'
 
 include(':proxies')
 include(':navikt')

@@ -1,4 +1,0 @@
-spring:
-  application:
-    name: auzre-mock
-    desciption: En mock for azure

@@ -16,7 +16,6 @@ class BrukerServiceIntegrationTest {
 
     private static final String PID = "01810048413";
     private static final String ORGNUMMER = "811306312";
-
     private final TokendingsClient tokendingsClient = new TokendingsClient();
     private final WebClient webClient = WebClient.builder().baseUrl("http://localhost:8002").build();
 
