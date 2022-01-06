@@ -21,6 +21,7 @@ spec:
     max: 3
   port: 8080
   ingresses:
+    - https://dolly.dev.intern.nav.no
     - https://dolly.ekstern.dev.nav.no
   accessPolicy:
     outbound:
