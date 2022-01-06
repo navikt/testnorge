@@ -6,6 +6,7 @@ import no.nav.testnav.apps.importfratpsfservice.dto.SkdEndringsmelding;
 import no.nav.testnav.apps.importfratpsfservice.dto.SkdEndringsmeldingGruppe;
 import no.nav.testnav.apps.importfratpsfservice.exception.BadRequestException;
 import no.nav.testnav.apps.importfratpsfservice.exception.NotFoundException;
+import no.nav.testnav.apps.importfratpsfservice.utils.ErrorhandlerUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,7 +22,7 @@ import java.util.concurrent.Callable;
 public class TpsfGetSkdMeldingsgrupperCommand implements Callable<Flux<SkdEndringsmeldingGruppe>> {
 
     private static final String TPSF_SKD_GRUPPE_URL = "/api/v1/endringsmelding/skd/grupper";
-    private static final String GRUPPER_FRA_TPSF = "Les grupper fra TPSF";
+    private static final String GRUPPER_FRA_TPSF = "Les grupper (GET) fra TPS-forvalteren: ";
 
     private final WebClient webClient;
     private final String token;
@@ -43,17 +44,6 @@ public class TpsfGetSkdMeldingsgrupperCommand implements Callable<Flux<SkdEndrin
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToFlux(SkdEndringsmeldingGruppe.class)
-                .onErrorResume(throwable -> {
-                    log.error(getMessage(throwable));
-                    if (throwable instanceof WebClientResponseException) {
-                        if (((WebClientResponseException) throwable).getStatusCode() == HttpStatus.NOT_FOUND) {
-                            return Mono.error(new NotFoundException(GRUPPER_FRA_TPSF + getMessage(throwable)));
-                        } else {
-                            return Mono.error(new BadRequestException(GRUPPER_FRA_TPSF + getMessage(throwable)));
-                        }
-                    } else {
-                        return Mono.error(new InternalError(GRUPPER_FRA_TPSF + getMessage(throwable)));
-                    }
-                });
+                .onErrorResume(throwable -> ErrorhandlerUtils.handleError(throwable, GRUPPER_FRA_TPSF));
     }
 }

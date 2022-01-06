@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.importfratpsfservice.dto.SkdEndringsmelding;
 import no.nav.testnav.apps.importfratpsfservice.exception.BadRequestException;
 import no.nav.testnav.apps.importfratpsfservice.exception.NotFoundException;
+import no.nav.testnav.apps.importfratpsfservice.utils.ErrorhandlerUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,7 +21,7 @@ import java.util.concurrent.Callable;
 public class TpsfGetSkdMeldingerCommand implements Callable<Flux<SkdEndringsmelding>> {
 
     private static final String TPSF_SKD_GRUPPE_URL = "/api/v1/endringsmelding/skd/gruppe/meldinger/{gruppeId}/{pageNumber}";
-    private static final String IMPORT_FRA_TPSF = "Import-fra-TPSF-service";
+    private static final String IMPORT_FRA_TPSF = "Les SKD-melding (GET) fra TPS-forvalteren: ";
 
     private final WebClient webClient;
     private final Long gruppeId;
@@ -44,17 +45,6 @@ public class TpsfGetSkdMeldingerCommand implements Callable<Flux<SkdEndringsmeld
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToFlux(SkdEndringsmelding.class)
-                .onErrorResume(throwable -> {
-                    log.error(getMessage(throwable));
-                    if (throwable instanceof WebClientResponseException) {
-                        if (((WebClientResponseException) throwable).getStatusCode() == HttpStatus.NOT_FOUND) {
-                            return Mono.error(new NotFoundException(IMPORT_FRA_TPSF + getMessage(throwable)));
-                        } else {
-                            return Mono.error(new BadRequestException(IMPORT_FRA_TPSF + getMessage(throwable)));
-                        }
-                    } else {
-                        return Mono.error(new InternalError(IMPORT_FRA_TPSF + getMessage(throwable)));
-                    }
-                });
+                .onErrorResume(throwable -> ErrorhandlerUtils.handleError(throwable, IMPORT_FRA_TPSF));
     }
 }

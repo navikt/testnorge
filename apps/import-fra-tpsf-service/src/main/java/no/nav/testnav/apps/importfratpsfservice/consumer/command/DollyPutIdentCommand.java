@@ -1,12 +1,10 @@
 package no.nav.testnav.apps.importfratpsfservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.apps.importfratpsfservice.utils.ErrorhandlerUtils;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -17,6 +15,7 @@ public class DollyPutIdentCommand implements Callable<Mono<Void>> {
 
     private static final String DOLLY_GRUPPE_URL = "/api/v1/gruppe/{gruppeId}/ident/{ident}";
     private static final String MASTER = "master";
+    private static final String DOLLY_BACKEND = "Opprett ident (PUT) i gruppe til Dolly backend: ";
 
     private final WebClient webClient;
     private final Long gruppeId;
@@ -35,6 +34,7 @@ public class DollyPutIdentCommand implements Callable<Mono<Void>> {
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
-                .bodyToMono(Void.class);
+                .bodyToMono(Void.class)
+                .onErrorResume(throwable -> ErrorhandlerUtils.handleError(throwable, DOLLY_BACKEND));
     }
 }
