@@ -38,20 +38,6 @@ services:
     volumes:
       - ./mocks/altinn-mock/wiremock/__files:/home/wiremock/__files
       - ./mocks/altinn-mock/wiremock/mappings:/home/wiremock/mappings
-  azure:
-    image: wiremock/wiremock
-    container_name: azure
-    volumes:
-      - ./mocks/azure-mock/wiremock/__files:/home/wiremock/__files
-      - ./mocks/azure-mock/wiremock/mappings:/home/wiremock/mappings
-  azuread:
-    container_name: azuread
-    build:
-      context: ./mocks/azuread-mock
-    environment:
-      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
-    ports:
-      - "9003:8080"
   testnav-bruker-service-db:
     image: postgres
     restart: always
@@ -74,18 +60,3 @@ services:
     ports:
       - "8002:8080"
       - "5002:5005"
-  testnorge-profil-api:
-    container_name: testnorge-profil-api
-    environment:
-      - SPRING_PROFILES_ACTIVE=virtual
-      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
-    build:
-      context: ./apps/profil-api
-    depends_on:
-      - azure
-      - azuread
-      - tokendings
-      - testnav-person-organisasjon-tilgang-service
-    ports:
-      - "8003:8080"
-      - "5003:5005"

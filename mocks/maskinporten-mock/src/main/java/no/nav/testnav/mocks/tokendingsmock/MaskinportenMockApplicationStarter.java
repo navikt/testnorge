@@ -1,4 +1,4 @@
-package no.nav.testnav.mocks.azuremock;
+package no.nav.testnav.mocks.tokendingsmock;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,8 +12,8 @@ import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 })
 @EnableWebFlux
 @SpringBootApplication
-public class AzureMockApplicationStarter {
+public class MaskinportenMockApplicationStarter {
     public static void main(String[] args) {
-        SpringApplication.run(AzureMockApplicationStarter.class, args);
+        SpringApplication.run(MaskinportenMockApplicationStarter.class, args);
     }
 }

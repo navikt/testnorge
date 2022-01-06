@@ -6,7 +6,7 @@ import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayF
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.TrygdeetatenAzureAdTokenService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.proxies.krrstubproxy.config.LocalConfig;
+import no.nav.testnav.proxies.krrstubproxy.config.LocalVaultConfig;
 import no.nav.testnav.proxies.krrstubproxy.config.credentials.KrrStubProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Import;
 
 @Import({
         CoreConfig.class,
-        LocalConfig.class,
+        LocalVaultConfig.class,
         SecurityConfig.class,
         SecureOAuth2ServerToServerConfiguration.class
 })

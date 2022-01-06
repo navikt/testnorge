@@ -1,4 +1,4 @@
-package no.nav.testnav.mocks.maskinportenmock.controller;
+package no.nav.testnav.mocks.tokendingsmock.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
-import no.nav.testnav.mocks.maskinportenmock.domain.AccessToken;
-import no.nav.testnav.mocks.maskinportenmock.domain.Arguments;
-import no.nav.testnav.mocks.maskinportenmock.service.JwtService;
+import no.nav.testnav.mocks.tokendingsmock.domain.AccessToken;
+import no.nav.testnav.mocks.tokendingsmock.domain.Arguments;
+import no.nav.testnav.mocks.tokendingsmock.service.JwtService;
 
 @Slf4j
 @RestController
