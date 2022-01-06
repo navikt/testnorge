@@ -2,7 +2,6 @@ package no.nav.pdl.forvalter.service;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO.PostboksadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
@@ -100,22 +99,6 @@ class KontaktAdresseServiceTest {
                 kontaktAdresseService.validate(request, new PersonDTO()));
 
         assertThat(exception.getMessage(), containsString("kun én adresse skal være satt"));
-    }
-
-    @Test
-    void whenMasterPDLWithoutGyldighet_thenThrowExecption() {
-
-        var request = KontaktadresseDTO.builder()
-                        .master(DbVersjonDTO.Master.PDL)
-                        .postboksadresse(new PostboksadresseDTO())
-                        .isNew(true)
-                        .build();
-
-        var exception = assertThrows(HttpClientErrorException.class, () ->
-                kontaktAdresseService.validate(request, new PersonDTO()));
-
-        assertThat(exception.getMessage(), containsString(
-                "Feltene gyldigFraOgMed og gyldigTilOgMed må ha verdi hvis master er PDL"));
     }
 
     @Test

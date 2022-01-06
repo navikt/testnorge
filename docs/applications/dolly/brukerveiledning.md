@@ -1,10 +1,12 @@
 ---
-title: Dolly brukerveileding
+title: Brukerveiledning
 layout: default
+parent: Dolly
 nav_order: 1
 ---
 
 # {{ page.title }}
+{: .no_toc }
 
 ## Innhold
 {: .no_toc .text-delta }
@@ -16,11 +18,11 @@ nav_order: 1
 
 Dolly er NAVs selvbetjeningsløsning for å opprette syntetiske testdata.  I Dolly kan du opprette syntetiske testpersoner med forskjellige egenskaper, og tilgjengeliggjøre testdataene i valgte testmiljøer.
 
-Fra enhet som er satt opp med Naisdevice: 
+Fra enhet som er satt opp med Naisdevice:
 
 [dolly.ekstern.dev.nav.no/](https://dolly.ekstern.dev.nav.no/)
 
-Utenfor de interne Nav systemene benytt: 
+Utenfor de interne Nav systemene benytt:
 
 [dolly.nais-dev-fss.adeo.no](https://dolly.nais-dev-fss.adeo.no/)
 
@@ -28,7 +30,7 @@ Denne lenken krever tilgangen "Utvikling på laptop"
 
 ---
 
-## Dolly pålogging 
+## Dolly pålogging
 
 Dolly benytter seg nå av Single Sign On (SSO) som fører til at du blir innlogget gjennom dette systemet.
 Du vil derfor som oftest være logget inn på din bruker med en gang du åpner Dolly.
@@ -37,7 +39,7 @@ Det første som møter deg når du har logget inn er en startside med noen menyv
 
 ![Startside](assets/startside.png)
 
-Noen ganger vil du bli møtt av en eller flere meldinger når du åpner Dolly, f.eks. om det er første gang du bruker applikasjonen, eller om det har dukket opp nyheter. 
+Noen ganger vil du bli møtt av en eller flere meldinger når du åpner Dolly, f.eks. om det er første gang du bruker applikasjonen, eller om det har dukket opp nyheter.
 
 Det er viktig at du leser disse meldingene, da de inneholder nyttig informasjon om bruk av Dolly.
 
@@ -66,7 +68,7 @@ Det kommer opp en boks der du får to valg:
 
 Vi velger å opprette nye og angir at vi ønsker 10 personer i bestillingen.
 
-Opprettelse av testpersoner følger en prosess med tre steg: 
+Opprettelse av testpersoner følger en prosess med tre steg:
 
 ![Opprettelse prossess](assets/opprettelse_prossess.png)
 
@@ -79,15 +81,15 @@ Opprettelse av testpersoner følger en prosess med tre steg:
 ![Velg egenskaper](assets/velg_egenskaper.png)
 
 Som du ser av skjermbildet over, så er det en lang rekke områder med egenskaper du kan velge. Trykk på pil ned til høyre i boksen for å ekspandere hvert område. I de fleste tilfellene er det kun noen utvalgte egenskaper som er nødvendig å definere for det eller de testscenariene du skal gjennomføre.
-For at du skal slippe å velge alle egenskaper som trengs for å få en komplett testperson vil Dolly tildele verdier til de egenskapene som ikke er avgjørende for din test, altså de du ikke krysser av for i skjermbildet. 
+For at du skal slippe å velge alle egenskaper som trengs for å få en komplett testperson vil Dolly tildele verdier til de egenskapene som ikke er avgjørende for din test, altså de du ikke krysser av for i skjermbildet.
 
-I dette eksemplet ønsker vi å teste endringer i arbeidsforhold og krysser av for følgende egenskaper: 
+I dette eksemplet ønsker vi å teste endringer i arbeidsforhold og krysser av for følgende egenskaper:
 
 ![Valgt egenskap](assets/valgt_egenskap.png)
 
-Team Dolly jobber kontinuerlig med videreutvikling av Dolly og nye egenskaper legges til fortløpende. Om det er noe du savner, så meld det inn på [#Dolly](https://nav-it.slack.com/archives/CA3P9NGA2) på Slack. 
+Team Dolly jobber kontinuerlig med videreutvikling av Dolly og nye egenskaper legges til fortløpende. Om det er noe du savner, så meld det inn på [#Dolly](https://nav-it.slack.com/archives/CA3P9NGA2) på Slack.
 
-Når du har angitt aktuelle verdier for egenskapene trykk videre og i neste steg får du mulighet til å velge hvilke(t) miljø testpersonene skal opprettes i. 
+Når du har angitt aktuelle verdier for egenskapene trykk videre og i neste steg får du mulighet til å velge hvilke(t) miljø testpersonene skal opprettes i.
 
 For mer informasjon om NAVs testmiljøer se: [Miljøer](https://confluence.adeo.no/pages/viewpage.action?pageId=305341700)
 
@@ -97,7 +99,7 @@ Velg miljø og trykk opprett
 
 ![Opprettet gruppe](assets/opprettet_gruppe.png)
 
-Testdatagruppen har fått nye testpersoner og du kan jobbe med disse i relevante fagsystemer.  Trykk på pil ned til høyre på raden for å få opp detaljinformasjon om hver enkelt testperson. 
+Testdatagruppen har fått nye testpersoner og du kan jobbe med disse i relevante fagsystemer.  Trykk på pil ned til høyre på raden for å få opp detaljinformasjon om hver enkelt testperson.
 
 ---
 
@@ -119,11 +121,11 @@ Når du da starter bestillingen vil du få de valgte egenskapene og verdiene som
 
 ## Endringsmelding
 
-Øverst i menyen kan du velge endringsmelding. Her har du mulighet til å sende inn en fødselsmelding eller dødsmelding til et ønsket testmiljø. 
+Øverst i menyen kan du velge endringsmelding. Her har du mulighet til å sende inn en fødselsmelding eller dødsmelding til et ønsket testmiljø.
 
 Merk at det kun er mulig å sende inn endringsmelding på en person om gangen.
 
-!!Denne er udatert og vil bli fjernet i nær fremtid!! 
+!!Denne er udatert og vil bli fjernet i nær fremtid!!
 
 Det vil fortsatt være mulig å sende fødselsmeldinger og dødsmeldinger i Dolly:
 
@@ -131,12 +133,12 @@ Det vil fortsatt være mulig å sende fødselsmeldinger og dødsmeldinger i Doll
     * Velg "Legg til/endre", og huk av for "Barn" i første steg. I neste steg kan et utvalg av egenskaper velges for barnet.
     * Hvis barnet (og eventuelt den andre forelderen) allerede er opprettet i testdatagruppen: Velg "Legg til relasjoner" og legg til barn.
 
-* Sende dødsmelding: 
-    * Gå til testdatagruppe og finn personen det skal sendes dødsmelding på. 
-    * Velg "Legg til/endre", og huk av for "Dødsdato" i første steg. 
-    * I neste steg kan dødsdatoen settes, før dødsmeldingen sendes som en vanlig bestilling. 
-    
-    For å sende dødsmelding på personens partner/barn må partner eller barn hukes av i første steg. Da vil det være mulig å sette dødsdato på eksisterende relasjoener i steg to.
+* Sende dødsmelding:
+    * Gå til testdatagruppe og finn personen det skal sendes dødsmelding på.
+    * Velg "Legg til/endre", og huk av for "Dødsdato" i første steg.
+    * I neste steg kan dødsdatoen settes, før dødsmeldingen sendes som en vanlig bestilling.
+
+  For å sende dødsmelding på personens partner/barn må partner eller barn hukes av i første steg. Da vil det være mulig å sette dødsdato på eksisterende relasjoener i steg to.
 
 For personer som ikke eksisterer i Dolly må disse først hentes inn ved å opprette person, velge "Eksisterende person" og skrive inn ident.
 
@@ -146,7 +148,7 @@ For personer som ikke eksisterer i Dolly må disse først hentes inn ved å oppr
 
 ## API-dok
 
-Øverst i menyen ligger også en lenke til API dokumentasjon. Den tar deg til Swagger og dokumentasjon av tilgjengelige APIer. 
+Øverst i menyen ligger også en lenke til API dokumentasjon. Den tar deg til Swagger og dokumentasjon av tilgjengelige APIer.
 
 ![API dok](assets/api_dok.png)
 
@@ -157,7 +159,7 @@ For personer som ikke eksisterer i Dolly må disse først hentes inn ved å oppr
 Dersom du tidligere har brukt Dolly med en Z-bruker, vil du se at testdatagruppe-oversikten er tom første gang du logger deg på med personlig brukerkonto.
 
 Ikke bekymre deg - testpersonene dine er ikke slettet! Men fordi de er koblet til Z-brukeren din må du importere dem til din personlige brukerkonto for å få tilgang til dem.
- 
+
 Import fra Z-bruker kan du gjøre direkte fra testdatagruppe-oversikten, eller fra Min side.
 
 ![Import fra min side](assets/minside.png)

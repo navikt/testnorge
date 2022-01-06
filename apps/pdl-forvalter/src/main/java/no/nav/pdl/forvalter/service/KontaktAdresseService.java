@@ -6,7 +6,7 @@ import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
@@ -14,6 +14,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -77,10 +78,6 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
         if (adresse.countAdresser() > 1) {
             throw new InvalidRequestException(VALIDATION_AMBIGUITY_ERROR);
         }
-        if (DbVersjonDTO.Master.PDL == adresse.getMaster() &&
-                (isNull(adresse.getGyldigFraOgMed()) || isNull(adresse.getGyldigTilOgMed()))) {
-            throw new InvalidRequestException(VALIDATION_MASTER_PDL_ERROR);
-        }
         if (nonNull(adresse.getVegadresse()) && isNotBlank(adresse.getVegadresse().getBruksenhetsnummer())) {
             validateBruksenhet(adresse.getVegadresse().getBruksenhetsnummer());
         }
@@ -129,5 +126,12 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
 
         kontaktadresse.setCoAdressenavn(genererCoNavn(kontaktadresse.getOpprettCoAdresseNavn()));
         kontaktadresse.setOpprettCoAdresseNavn(null);
+
+        if (Master.PDL == kontaktadresse.getMaster() && isNull(kontaktadresse.getGyldigFraOgMed())) {
+            kontaktadresse.setGyldigFraOgMed(LocalDateTime.now());
+        }
+        if (Master.PDL == kontaktadresse.getMaster() && isNull(kontaktadresse.getGyldigTilOgMed())) {
+            kontaktadresse.setGyldigTilOgMed(LocalDateTime.now().plusYears(1));
+        }
     }
 }
