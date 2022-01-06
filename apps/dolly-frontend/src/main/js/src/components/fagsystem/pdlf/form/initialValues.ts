@@ -43,7 +43,7 @@ export const initialKontaktadresse = {
 export const initialAdressebeskyttelse = {
 	gradering: null as string,
 	kilde: 'Dolly',
-	master: 'PDL',
+	master: 'FREG',
 	gjeldende: true,
 }
 

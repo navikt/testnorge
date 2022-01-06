@@ -32,7 +32,6 @@ export const Oppholdsadresse = ({ formikBag }) => {
 			_set(adresseClone, 'matrikkeladresse', undefined)
 			_set(adresseClone, 'utenlandskAdresse', undefined)
 			_set(adresseClone, 'oppholdAnnetSted', undefined)
-			_set(adresseClone, 'master', 'FREG')
 		}
 		if (target?.value === 'VEGADRESSE') {
 			_set(adresseClone, 'vegadresse', initialVegadresse)
@@ -109,7 +108,13 @@ export const Oppholdsadresse = ({ formikBag }) => {
 								<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
 								<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
 							</div>
-							<AvansertForm path={path} />
+							<AvansertForm
+								path={path}
+								kanVelgeMaster={
+									valgtAdressetype !== 'MATRIKKELADRESSE' &&
+									valgtAdressetype !== 'OPPHOLD_ANNET_STED'
+								}
+							/>
 						</React.Fragment>
 					)
 				}}

@@ -34,11 +34,13 @@ export const Kontaktadresse = ({ formikBag }) => {
 			_set(adresseClone, 'vegadresse', initialVegadresse)
 			_set(adresseClone, 'utenlandskAdresse', undefined)
 			_set(adresseClone, 'postboksadresse', undefined)
+			_set(adresseClone, 'master', 'PDL')
 		}
 		if (target?.value === 'UTENLANDSK_ADRESSE') {
 			_set(adresseClone, 'utenlandskAdresse', initialUtenlandskAdresse)
 			_set(adresseClone, 'vegadresse', undefined)
 			_set(adresseClone, 'postboksadresse', undefined)
+			_set(adresseClone, 'master', 'PDL')
 		}
 		if (target?.value === 'POSTBOKSADRESSE') {
 			_set(adresseClone, 'postboksadresse', initialPostboksadresse)
@@ -89,7 +91,12 @@ export const Kontaktadresse = ({ formikBag }) => {
 								<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
 								<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
 							</div>
-							<AvansertForm path={path} kanVelgeMaster={false} />
+							<AvansertForm
+								path={path}
+								kanVelgeMaster={
+									valgtAdressetype !== 'VEGADRESSE' && valgtAdressetype !== 'UTENLANDSK_ADRESSE'
+								}
+							/>
 						</React.Fragment>
 					)
 				}}
