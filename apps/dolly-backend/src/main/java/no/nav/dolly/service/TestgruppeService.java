@@ -59,8 +59,10 @@ public class TestgruppeService {
     }
 
     public RsTestgruppeMedBestillingId fetchPaginertTestgruppeById(Long gruppeId, Integer pageNo, Integer pageSize) {
+
         Testgruppe testgruppe = fetchTestgruppeById(gruppeId);
-        Page<Testident> testidentPage = identService.getBestillingerFromGruppePaginert(gruppeId, pageNo, pageSize);
+        var testidentPage = identService.getBestillingerFromGruppePaginert(gruppeId, pageNo, pageSize);
+
         testgruppe.setTestidenter(testidentPage.toList());
         RsTestgruppeMedBestillingId rsTestgruppe = mapperFacade.map(testgruppe, RsTestgruppeMedBestillingId.class);
         rsTestgruppe.setAntallIdenter((int) testidentPage.getTotalElements());

@@ -29,7 +29,7 @@ import java.util.List;
 @Table(name = "TEST_IDENT")
 public class Testident {
 
-    public enum Master {PDL, TPSF}
+    public enum Master {PDL, PDLF, TPSF}
 
     @Id
     private String ident;

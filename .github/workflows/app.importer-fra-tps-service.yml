@@ -1,0 +1,36 @@
+name: App import-fra-tpsf-service
+
+on:
+  push:
+    paths:
+      - apps/import-fra-tpsf-service/**
+      - .github/workflows/app.import-fra-tpsf-service.yml
+
+jobs:
+  scan:
+    name: Scan
+    uses: navikt/testnorge/.github/workflows/common.sonar.yml@master
+    with:
+      working-directory: 'apps/import-fra-tpsf-service/'
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  build:
+    name: Build
+    uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@master
+    with:
+      working-directory: 'apps/import-fra-tpsf-service/'
+      app-name: 'import-fra-tps-service'
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+  deploy:
+    name: Deploy
+    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
+    needs: build
+    if: ${{ github.ref == 'refs/heads/master' || 'refs/heads/master/feature/import-fra_tpsf-service'}}
+    with:
+      resource: 'apps/import-fra-tpsf-service/nais.yml'
+      app-name: 'import-fra-tps-service'
+      cluster: 'dev-gcp'
+    secrets:
+      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
