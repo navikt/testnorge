@@ -22,12 +22,12 @@ export const TilrettelagtKommunikasjon = ({ data }: DataListe) => {
 		return (
 			<div className="person-visning_content" key={idx}>
 				<TitleValue
-					title="Talespraak"
+					title="Talespråk"
 					value={item.talespraaktolk ? item.talespraaktolk.spraak : item.spraakForTaletolk}
 					kodeverk={PersoninformasjonKodeverk.Spraak}
 				/>
 				<TitleValue
-					title="Tegnspraak"
+					title="Tegnspråk"
 					value={item.tegnspraaktolk ? item.tegnspraaktolk.spraak : item.spraakForTegnspraakTolk}
 					kodeverk={PersoninformasjonKodeverk.Spraak}
 				/>
@@ -40,7 +40,7 @@ export const TilrettelagtKommunikasjon = ({ data }: DataListe) => {
 			<SubOverskrift label="Tilrettelagt kommunikasjon" iconKind="kommentar" />
 			<div className="person-visning_content">
 				<ErrorBoundary>
-					<DollyFieldArray data={data} header="Tolk" nested>
+					<DollyFieldArray data={data} header="Tolk">
 						{(item: TilrettelagtKommunikasjonData, idx: number) => (
 							<TilrettelagtKommunikasjonVisning item={item} idx={idx} />
 						)}

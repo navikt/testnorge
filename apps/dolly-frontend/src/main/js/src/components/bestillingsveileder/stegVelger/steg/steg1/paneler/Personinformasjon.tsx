@@ -5,7 +5,10 @@ import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import Formatters from '~/utils/DataFormatter'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
-import { initialPdlPerson } from '~/components/fagsystem/pdlf/form/initialValues'
+import {
+	initialPdlPerson,
+	initialTilrettelagtKommunikasjon,
+} from '~/components/fagsystem/pdlf/form/initialValues'
 import { addDays, subDays } from 'date-fns'
 
 const innvandret = (personFoerLeggTil: {}) =>
@@ -412,15 +415,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 							'pdldata.person.tilrettelagtKommunikasjon',
 							fjernIdFoerLeggTil('tilrettelagtKommunikasjon')
 					  )
-					: set('pdldata.person.tilrettelagtKommunikasjon', [
-							{
-								spraakForTaletolk: '',
-								spraakForTegnspraakTolk: '',
-								master: 'PDL',
-								kilde: 'Dolly',
-								gjeldende: true,
-							},
-					  ])
+					: set('pdldata.person.tilrettelagtKommunikasjon', [initialTilrettelagtKommunikasjon])
 			},
 			remove() {
 				del('pdldata.person.tilrettelagtKommunikasjon')

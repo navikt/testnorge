@@ -69,21 +69,6 @@ export const initialStatsborgerskap = {
 	gjeldende: true,
 }
 
-export const initialTelefonnummer = {
-	landskode: '',
-	nummer: '',
-	prioritet: 2,
-	kilde: 'Dolly',
-	master: 'PDL',
-	gjeldende: true,
-}
-
-export const initialTpsTelefonnummer = {
-	landkode: '',
-	telefonnummer: '',
-	telefontype: 'HJET',
-}
-
 export const initialTilrettelagtKommunikasjon = {
 	spraakForTaletolk: '',
 	spraakForTegnspraakTolk: '',

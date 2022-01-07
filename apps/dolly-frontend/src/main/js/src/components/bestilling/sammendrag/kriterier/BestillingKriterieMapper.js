@@ -498,11 +498,11 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 
 		if (tilrettelagtKommunikasjon) {
 			const tilrettelagtKommunikasjonData = {
-				header: 'Tilrettelagt Komm.',
+				header: 'Tilrettelagt Kommunikasjon',
 				itemRows: tilrettelagtKommunikasjon.map((item, idx) => {
 					return [
 						{ numberHeader: `Tolk ${idx + 1}` },
-						obj('Talespraak', item.spraakForTaletolk, PersoninformasjonKodeverk.Spraak),
+						obj('Talespråk', item.spraakForTaletolk, PersoninformasjonKodeverk.Spraak),
 						obj('Tegnspråk', item.spraakForTegnspraakTolk, PersoninformasjonKodeverk.Spraak),
 					]
 				}),
@@ -516,7 +516,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				itemRows: statsborgerskap.map((item, idx) => {
 					return [
 						{ numberHeader: `Statsborgerskap ${idx + 1}` },
-						obj('Statsborgerskap', item.landkode),
+						obj('Statsborgerskap', item.landkode, AdresseKodeverk.StatsborgerskapLand),
 						obj('Statsborgerskap fra', Formatters.formatDate(item.gyldigFraOgMed)),
 						obj('Statsborgerskap til', Formatters.formatDate(item.gyldigTilOgMed)),
 						obj('Bekreftelsesdato', Formatters.formatDate(item.bekreftelsesdato)),

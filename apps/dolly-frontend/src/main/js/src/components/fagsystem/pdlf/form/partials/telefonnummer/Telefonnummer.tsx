@@ -8,10 +8,21 @@ import { FormikProps } from 'formik'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import _get from 'lodash/get'
-import {
-	initialTelefonnummer,
-	initialTpsTelefonnummer,
-} from '~/components/fagsystem/pdlf/form/initialValues'
+
+const initialTelefonnummer = {
+	landskode: '',
+	nummer: '',
+	prioritet: 2,
+	kilde: 'Dolly',
+	master: 'PDL',
+	gjeldende: true,
+}
+
+const initialTpsTelefonnummer = {
+	landkode: '',
+	telefonnummer: '',
+	telefontype: 'HJET',
+}
 
 export interface TelefonnummerArray {
 	person: {

@@ -20,12 +20,12 @@ export const TilrettelagtKommunikasjon = () => {
 					<>
 						<FormikSelect
 							name={`${path}.spraakForTaletolk`}
-							label="Talespraak"
+							label="Talespråk"
 							kodeverk={PersoninformasjonKodeverk.Spraak}
 						/>
 						<FormikSelect
 							name={`${path}.spraakForTegnspraakTolk`}
-							label="Tegnspraak"
+							label="Tegnspråk"
 							kodeverk={PersoninformasjonKodeverk.Spraak}
 						/>
 						<AvansertForm path={path} kanVelgeMaster={false} />
