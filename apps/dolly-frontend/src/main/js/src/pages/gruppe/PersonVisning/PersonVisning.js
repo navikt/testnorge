@@ -60,6 +60,7 @@ export const PersonVisning = ({
 			</div>
 			<TpsfVisning
 				data={TpsfVisning.filterValues(data.tpsf, bestillingsListe)}
+				pdlData={data.pdlforvalter}
 				environments={bestilling.environments}
 			/>
 			<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />

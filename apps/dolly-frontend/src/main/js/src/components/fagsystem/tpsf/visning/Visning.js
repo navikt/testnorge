@@ -15,7 +15,7 @@ import {
 } from './partials'
 import { TpsMessagingApi } from '~/service/Api'
 
-export const TpsfVisning = ({ data, environments }) => {
+export const TpsfVisning = ({ data, pdlData, environments }) => {
 	const [tpsMessagingData, setTpsMessagingData] = useState(null)
 	useEffect(() => {
 		if (environments && environments.length > 0) {
@@ -25,6 +25,9 @@ export const TpsfVisning = ({ data, environments }) => {
 		}
 	}, [])
 	if (!data) return null
+	const harPdlBoadresse = pdlData && _has(pdlData[0], 'person.bostedsadresse')
+	const harPdlOppholdsadresse = pdlData && _has(pdlData[0], 'person.oppholdsadresse')
+	const harPdlKontaktadresse = pdlData && _has(pdlData[0], 'person.kontaktadresse')
 
 	return (
 		<div>
@@ -32,9 +35,9 @@ export const TpsfVisning = ({ data, environments }) => {
 			<Nasjonalitet data={data} />
 			<Vergemaal data={data.vergemaal} />
 			<Fullmakt data={data.fullmakt} relasjoner={data.relasjoner} />
-			<Boadresse boadresse={data.boadresse} />
-			<Postadresse postadresse={data.postadresse} />
-			<MidlertidigAdresse midlertidigAdresse={data.midlertidigAdresse} />
+			{!harPdlBoadresse && <Boadresse boadresse={data.boadresse} />}
+			{!harPdlOppholdsadresse && <Postadresse postadresse={data.postadresse} />}
+			{!harPdlKontaktadresse && <MidlertidigAdresse midlertidigAdresse={data.midlertidigAdresse} />}
 			<UtenlandskBankkonto
 				data={tpsMessagingData ? tpsMessagingData.bankkontonrUtland : data.bankkontonrUtland}
 			/>
