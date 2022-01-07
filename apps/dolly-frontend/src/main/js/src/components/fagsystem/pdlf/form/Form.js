@@ -7,7 +7,6 @@ import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FalskIdentitet } from './partials/falskIdentitet/FalskIdentitet'
 import { UtenlandsId } from './partials/utenlandsId/UtenlandsId'
 import { KontaktinformasjonForDoedsbo } from './partials/kontaktinformasjonForDoedsbo/KontaktinformasjonForDoedsbo'
-import { UtenlandskAdresse } from './partials/adresser/adressetyper/UtenlandskAdresse'
 import { Adresser } from '~/components/fagsystem/pdlf/form/partials/adresser/Adresser'
 
 const adresseAttributter = [
@@ -23,7 +22,7 @@ const identifikasjonAttributt = [
 const doedsboAttributt = 'pdldata.person.kontaktinformasjonForDoedsbo'
 
 export const PdlfForm = ({ formikBag }) => (
-	<React.Fragment>
+	<>
 		<Vis attributt={adresseAttributter}>
 			<Panel
 				heading="Adresser"
@@ -34,19 +33,6 @@ export const PdlfForm = ({ formikBag }) => (
 				<Adresser formikBag={formikBag} />
 			</Panel>
 		</Vis>
-
-		{/*<Vis attributt={bostedsadresseAttributt}>*/}
-		{/*	<Panel*/}
-		{/*		heading="Bostedsadresse"*/}
-		{/*		hasErrors={panelError(formikBag, bostedsadresseAttributt)}*/}
-		{/*		iconType="adresse"*/}
-		{/*		startOpen={() => erForste(formikBag.values, bostedsadresseAttributt)}*/}
-		{/*	>*/}
-		{/*		<Kategori title="Utenlandsk boadresse" vis="pdldata.person.bostedsadresse">*/}
-		{/*			<UtenlandskAdresse formikBag={formikBag} />*/}
-		{/*		</Kategori>*/}
-		{/*	</Panel>*/}
-		{/*</Vis>*/}
 
 		<Vis attributt={identifikasjonAttributt}>
 			<Panel
@@ -78,7 +64,7 @@ export const PdlfForm = ({ formikBag }) => (
 				<KontaktinformasjonForDoedsbo formikBag={formikBag} />
 			</Panel>
 		</Vis>
-	</React.Fragment>
+	</>
 )
 
 PdlfForm.validation = validation

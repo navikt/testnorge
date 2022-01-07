@@ -11,11 +11,11 @@ import {
 	initialOppholdsadresse,
 } from '~/components/fagsystem/pdlf/form/initialValues'
 
-export const AdressePdlPanel = ({ stateModifier }) => {
-	const sm = stateModifier(AdressePdlPanel.initialValues)
+export const AdressePanel = ({ stateModifier }) => {
+	const sm = stateModifier(AdressePanel.initialValues)
 	return (
 		<Panel
-			heading={AdressePdlPanel.heading}
+			heading={AdressePanel.heading}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="adresse"
@@ -33,9 +33,9 @@ export const AdressePdlPanel = ({ stateModifier }) => {
 	)
 }
 
-AdressePdlPanel.heading = 'Adresser'
+AdressePanel.heading = 'Adresser'
 
-AdressePdlPanel.initialValues = ({ set, setMulti, del, has }) => ({
+AdressePanel.initialValues = ({ set, setMulti, del, has }) => ({
 	bostedsadresse: {
 		label: 'Bostedsadresse',
 		checked: has('pdldata.person.bostedsadresse'),
