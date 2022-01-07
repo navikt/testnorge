@@ -12,13 +12,17 @@ const bankkontoPath = ['tpsMessaging.utenlandskBankkonto', 'tpsMessaging.norskBa
 
 export const TpsMessagingDiverse = ({ formikBag }) => {
 	const { personFoerLeggTil } = useContext(BestillingsveilederContext)
+
 	const HarAktivSkjerming = () => {
-		if (personFoerLeggTil?.tpsMessaging?.hasOwnProperty('egenAnsattDatoTom')) {
-			return personFoerLeggTil?.tpsMessaging?.hasOwnProperty('egenAnsattDatoFom')
-				? isAfter(new Date(personFoerLeggTil?.tpsMessaging?.egenAnsattDatoTom), new Date())
+		if (personFoerLeggTil?.skjermingsregister?.skjermetTil) {
+			return personFoerLeggTil?.skjermingsregister?.skjermetFra
+				? isAfter(
+						new Date(personFoerLeggTil?.skjermingsregister?.skjermetTil?.substring(0, 10)),
+						new Date()
+				  )
 				: false
 		} else {
-			return personFoerLeggTil?.tpsMessaging?.hasOwnProperty('egenAnsattDatoFom')
+			return personFoerLeggTil?.skjermingsregister?.hasOwnProperty('skjermetFra')
 		}
 	}
 

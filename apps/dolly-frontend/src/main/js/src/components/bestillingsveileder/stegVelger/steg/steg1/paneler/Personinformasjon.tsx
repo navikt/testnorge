@@ -236,14 +236,14 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 				setMulti(
 					[
 						'tpsMessaging.egenAnsattDatoFom',
-						_get(personFoerLeggTil, 'tpsf.egenAnsattDatoFom') ||
+						_get(personFoerLeggTil, 'skjermingsregister.skjermetFra')?.substring(0, 10) ||
 							_get(personFoerLeggTil, 'tpsMessaging.egenAnsattDatoFom') ||
 							new Date(),
 					],
 					['tpsMessaging.egenAnsattDatoTom', undefined],
 					[
 						'skjerming.egenAnsattDatoFom',
-						_get(personFoerLeggTil, 'tpsf.egenAnsattDatoFom') ||
+						_get(personFoerLeggTil, 'skjermingsregister.skjermetFra')?.substring(0, 10) ||
 							_get(personFoerLeggTil, 'tpsMessaging.egenAnsattDatoFom') ||
 							new Date(),
 					],

@@ -16,8 +16,8 @@ export default {
 	},
 
 	getSkjerming(ident) {
-		return Request.get(Endpoints.)
-	}
+		return Request.get(Endpoints.skjermingByIdent(ident))
+	},
 
 	getGruppeById(gruppeId) {
 		return Request.get(Endpoints.gruppeById(gruppeId))
