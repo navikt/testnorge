@@ -104,6 +104,12 @@ export const actions = createActions(
 				identer,
 			}),
 		],
+		getSkjermingsregister: [
+			DollyApi.getSkjerming,
+			(ident) => ({
+				ident,
+			}),
+		],
 		slettPerson: [
 			DollyApi.slettPerson,
 			(ident) => ({
@@ -151,6 +157,7 @@ const initialState = {
 	udistub: {},
 	pensjonforvalter: {},
 	brregstub: {},
+	skjermingsregister: {},
 }
 
 export default handleActions(
