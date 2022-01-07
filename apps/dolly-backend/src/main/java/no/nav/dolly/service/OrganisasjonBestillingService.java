@@ -19,7 +19,6 @@ import no.nav.dolly.mapper.BestillingOrganisasjonStatusMapper;
 import no.nav.dolly.mapper.strategy.JsonBestillingMapper;
 import no.nav.dolly.repository.OrganisasjonBestillingRepository;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -43,7 +42,6 @@ import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status.COMPLETED;
 import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status.ERROR;
 import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status.FAILED;
-import static no.nav.dolly.config.CachingConfig.CACHE_ORG_BESTILLING;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -66,7 +64,7 @@ public class OrganisasjonBestillingService {
     private final JsonBestillingMapper jsonBestillingMapper;
     private final GetUserInfo getUserInfo;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public RsOrganisasjonBestillingStatus fetchBestillingStatusById(Long bestillingId) {
 
         OrganisasjonBestilling bestilling = bestillingRepository.findById(bestillingId)
@@ -148,7 +146,6 @@ public class OrganisasjonBestillingService {
     }
 
     @Transactional
-    @CacheEvict(value = CACHE_ORG_BESTILLING, allEntries = true)
     public OrganisasjonBestilling saveBestillingToDB(OrganisasjonBestilling bestilling) {
 
         try {
@@ -159,7 +156,6 @@ public class OrganisasjonBestillingService {
     }
 
     @Transactional
-    @CacheEvict(value = CACHE_ORG_BESTILLING, allEntries = true)
     public OrganisasjonBestilling saveBestilling(RsOrganisasjonBestilling request) {
 
         return saveBestillingToDB(
@@ -173,7 +169,6 @@ public class OrganisasjonBestillingService {
     }
 
     @Transactional
-    @CacheEvict(value = CACHE_ORG_BESTILLING, allEntries = true)
     public OrganisasjonBestilling saveBestilling(RsOrganisasjonBestillingStatus status) {
 
         return saveBestillingToDB(
@@ -188,7 +183,6 @@ public class OrganisasjonBestillingService {
     }
 
     @Transactional
-    @CacheEvict(value = CACHE_ORG_BESTILLING, allEntries = true)
     public void setBestillingFeil(Long bestillingId, String feil) {
 
         Optional<OrganisasjonBestilling> byId = bestillingRepository.findById(bestillingId);
@@ -202,7 +196,6 @@ public class OrganisasjonBestillingService {
     }
 
     @Transactional
-    @CacheEvict(value = CACHE_ORG_BESTILLING, allEntries = true)
     public void setBestillingFerdig(Long bestillingId) {
 
         Optional<OrganisasjonBestilling> byId = bestillingRepository.findById(bestillingId);

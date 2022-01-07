@@ -7,6 +7,8 @@ import no.nav.dolly.bestilling.organisasjonforvalter.OrganisasjonClient;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployRequest;
 import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling;
+import no.nav.dolly.domain.resultset.RsOrganisasjonStatusRapport;
+import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsOrganisasjonBestillingStatus;
 import no.nav.dolly.service.OrganisasjonBestillingService;
 import org.springframework.cache.annotation.CacheEvict;
@@ -37,6 +39,25 @@ public class OrganisasjonController {
     private final OrganisasjonClient organisasjonClient;
     private final OrganisasjonBestillingService bestillingService;
 
+    private static RsOrganisasjonBestillingStatus getStatus(OrganisasjonBestilling bestilling, String orgnummer) {
+
+        return RsOrganisasjonBestillingStatus.builder()
+                .id(bestilling.getId())
+                .sistOppdatert(bestilling.getSistOppdatert())
+                .antallLevert(0)
+                .ferdig(false)
+                .organisasjonNummer(orgnummer)
+                .status(List.of(RsOrganisasjonStatusRapport.builder()
+                        .id(SystemTyper.ORGANISASJON_FORVALTER)
+                        .navn(SystemTyper.ORGANISASJON_FORVALTER.getBeskrivelse())
+                        .statuser(List.of(RsOrganisasjonStatusRapport.Status.builder()
+                                .melding("Bestilling startet ...")
+                                .orgnummer(orgnummer)
+                                .build()))
+                        .build()))
+                .build();
+    }
+
     @ResponseStatus(HttpStatus.CREATED)
     @CacheEvict(value = CACHE_ORG_BESTILLING, allEntries = true)
     @PostMapping("/bestilling")
@@ -46,7 +67,7 @@ public class OrganisasjonController {
         OrganisasjonBestilling bestilling = bestillingService.saveBestilling(request);
         organisasjonClient.opprett(request, bestilling.getId());
 
-        return bestillingService.fetchBestillingStatusById(bestilling.getId());
+        return getStatus(bestilling, "Ikke bestemt ...");
     }
 
     @PutMapping("/gjenopprett/{bestillingId}")
@@ -70,7 +91,7 @@ public class OrganisasjonController {
 
         organisasjonClient.gjenopprett(request, bestilling.getId());
 
-        return bestillingService.fetchBestillingStatusById(bestilling.getId());
+        return getStatus(bestilling, bestillingStatus.getOrganisasjonNummer());
     }
 
     @GetMapping("/bestilling")
