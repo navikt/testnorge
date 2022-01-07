@@ -40,8 +40,6 @@ export const PersonVisning = ({
 }) => {
 	useMount(fetchDataFraFagsystemer)
 
-	console.log('data: ', data) //TODO - SLETT MEG
-
 	const personInfo = data.tpsf
 		? data.tpsf
 		: {

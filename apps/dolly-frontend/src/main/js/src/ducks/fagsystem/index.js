@@ -204,6 +204,7 @@ export default handleActions(
 			state.pdl[action.meta.ident] = action.payload.data
 		},
 		[onSuccess(actions.getPdlForvalter)](state, action) {
+			console.log('action.payload.data: ', action.payload.data) //TODO - SLETT MEG
 			action.payload?.data?.forEach((ident) => {
 				state.pdlforvalter[ident.person.ident] = ident.person
 			})
@@ -377,6 +378,8 @@ export const selectPersonListe = (state) => {
 
 	if (_isEmpty(fagsystem.tpsf) && _isEmpty(fagsystem.pdlforvalter)) return null
 
+	console.log('gruppe: ', gruppe) //TODO - SLETT MEG
+
 	// Sortert etter bestillingsId
 	const identer = Object.values(gruppe.ident)
 		.filter(
@@ -400,13 +403,9 @@ export const selectPersonListe = (state) => {
 			const pdlIdent = fagsystem.pdlforvalter[ident.ident]
 			const mellomnavn = tpsfIdent?.mellomnavn ? `${tpsfIdent.mellomnavn.charAt(0)}.` : ''
 
-			console.log('pdlIdent: ', pdlIdent) //TODO - SLETT MEG
-			console.log('fagsystem.tpsf: ', fagsystem.tpsf) //TODO - SLETT MEG
-			console.log('fagsystem.pdlforvalter: ', fagsystem.pdlforvalter) //TODO - SLETT MEG
+			if (ident.master !== 'PDLF' && _isEmpty(fagsystem.tpsf)) return null
 
-			if (ident.master !== 'PDL' && _isEmpty(fagsystem.tpsf)) return null
-
-			return ident.master === 'PDL' //TODO: Endre til PDLF når dette er endret i backend
+			return ident.master === 'PDLF'
 				? {
 						ident,
 						identNr: pdlIdent.ident,

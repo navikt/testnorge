@@ -29,10 +29,12 @@ type Ident = {
 }
 
 type HentPerson = {
-	bostedsadresse: Array<BostedData>
+	bostedsadresse: [BostedData]
 	fullmakt: [FullmaktData]
 	telefonnummer: Array<TelefonData>
 	sikkerhetstiltak: [SikkerhetstiltakData]
+	adressebeskyttelse: [AdresseBeskyttelse]
+	folkeregisterPersonstatus: [FolkeregisterPersonstatus]
 }
 
 type BostedData = {
@@ -62,6 +64,18 @@ type SikkerhetstiltakData = {
 	beskrivelse: string
 	kontaktperson: Kontaktperson
 	omraader: []
+}
+
+type AdresseBeskyttelse = {
+	gradering: string
+	kilde: string
+	folkeregistermetadata: {
+		gyldighetstidspunkt: Date
+	}
+}
+
+type FolkeregisterPersonstatus = {
+	status: string
 }
 
 type Kontaktperson = {

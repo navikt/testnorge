@@ -14,6 +14,7 @@ import personListe from './PersonListe'
 const loadingSelector = createLoadingSelector([
 	actions.getById,
 	actionList.getTpsf,
+	actionList.getPdlForvalter,
 	getBestillinger,
 ])
 const mapStateToProps = (state, ownProps) => {

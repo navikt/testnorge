@@ -29,79 +29,28 @@ const Statsborgerskap = ({ statsborgerskap }) => {
 	)
 }
 
-export const Nasjonalitet = ({ data, visTittel = true, pdlData }) => {
+export const Nasjonalitet = ({ data, visTittel = true }) => {
 	const { statsborgerskap, sprakKode } = data
-	const pdlPerson = pdlData?.[0]?.person
 
-	if (!data && !pdlData) {
+	if (!statsborgerskap) {
 		return null
 	}
 
 	return (
 		<div>
 			{visTittel && <SubOverskrift label="Nasjonalitet" iconKind="nasjonalitet" />}
-			{statsborgerskap && (
-				<div className="person-visning_content">
-					{statsborgerskap.length > 1 ? (
-						<ErrorBoundary>
-							<DollyFieldArray data={statsborgerskap} header="Statsborgerskap" nested>
-								{(statsborgerskap, idx) => <Statsborgerskap statsborgerskap={statsborgerskap} />}
-							</DollyFieldArray>
-						</ErrorBoundary>
-					) : (
-						<Statsborgerskap statsborgerskap={statsborgerskap[0]} />
-					)}
-					<TitleValue title="Språk" kodeverk={PersoninformasjonKodeverk.Spraak} value={sprakKode} />
-				</div>
-			)}
-
-			{pdlPerson?.innflytting?.length > 0 && (
-				<ErrorBoundary>
-					<DollyFieldArray data={pdlPerson.innflytting} header={'Innvandret'} nested>
-						{(id, idx) => (
-							<>
-								<TitleValue
-									title="Fraflyttingsland"
-									value={pdlPerson.innflytting[idx].fraflyttingsland}
-									kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
-								/>
-								<TitleValue
-									title="Fraflyttingssted"
-									value={pdlPerson.innflytting[idx].fraflyttingsstedIUtlandet}
-								/>
-								<TitleValue
-									title="Innflyttingsdato"
-									value={pdlPerson.innflytting[idx].innflyttingsdato}
-								/>
-							</>
-						)}
-					</DollyFieldArray>
-				</ErrorBoundary>
-			)}
-
-			{pdlPerson?.utflytting?.length > 0 && (
-				<ErrorBoundary>
-					<DollyFieldArray data={pdlPerson.utflytting} header={'Utvandret'} nested>
-						{(id, idx) => (
-							<>
-								<TitleValue
-									title="Tilflyttingsland"
-									value={pdlPerson.utflytting[idx].tilflyttingsland}
-									kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
-								/>
-								<TitleValue
-									title="Tilflyttingssted"
-									value={pdlPerson.utflytting[idx].tilflyttingsstedIUtlandet}
-								/>
-								<TitleValue
-									title="Utflyttingsdato"
-									value={pdlPerson.utflytting[idx].utflyttingsdato}
-								/>
-							</>
-						)}
-					</DollyFieldArray>
-				</ErrorBoundary>
-			)}
+			<div className="person-visning_content">
+				{statsborgerskap.length > 1 ? (
+					<ErrorBoundary>
+						<DollyFieldArray data={statsborgerskap} header="Statsborgerskap" nested>
+							{(statsborgerskap, idx) => <Statsborgerskap statsborgerskap={statsborgerskap} />}
+						</DollyFieldArray>
+					</ErrorBoundary>
+				) : (
+					<Statsborgerskap statsborgerskap={statsborgerskap[0]} />
+				)}
+				<TitleValue title="Språk" kodeverk={PersoninformasjonKodeverk.Spraak} value={sprakKode} />
+			</div>
 		</div>
 	)
 }
