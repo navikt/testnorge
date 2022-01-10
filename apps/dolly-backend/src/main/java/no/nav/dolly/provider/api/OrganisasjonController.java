@@ -11,8 +11,6 @@ import no.nav.dolly.domain.resultset.RsOrganisasjonStatusRapport;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsOrganisasjonBestillingStatus;
 import no.nav.dolly.service.OrganisasjonBestillingService;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +27,6 @@ import java.util.List;
 import java.util.Set;
 
 import static java.util.Arrays.asList;
-import static no.nav.dolly.config.CachingConfig.CACHE_ORG_BESTILLING;
 
 @RestController
 @RequiredArgsConstructor
@@ -59,7 +56,6 @@ public class OrganisasjonController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @CacheEvict(value = CACHE_ORG_BESTILLING, allEntries = true)
     @PostMapping("/bestilling")
     @Operation(description = "Opprett organisasjon")
     public RsOrganisasjonBestillingStatus opprettOrganisasjonBestilling(@RequestBody RsOrganisasjonBestilling request) {
@@ -71,7 +67,6 @@ public class OrganisasjonController {
     }
 
     @PutMapping("/gjenopprett/{bestillingId}")
-    @CacheEvict(value = CACHE_ORG_BESTILLING, allEntries = true)
     @Operation(description = "Gjenopprett organisasjon")
     public RsOrganisasjonBestillingStatus gjenopprettOrganisasjon(@PathVariable("bestillingId") Long bestillingId, @RequestParam(value = "miljoer", required = false) String miljoer) {
 
@@ -95,7 +90,6 @@ public class OrganisasjonController {
     }
 
     @GetMapping("/bestilling")
-    @CacheEvict(value = CACHE_ORG_BESTILLING, allEntries = true)
     @Operation(description = "Hent status på bestilling basert på bestillingId")
     public RsOrganisasjonBestillingStatus hentBestilling(
             @Parameter(description = "ID på bestilling av organisasjon", example = "123") @RequestParam Long bestillingId) {
@@ -104,7 +98,6 @@ public class OrganisasjonController {
     }
 
     @GetMapping("/bestillingsstatus")
-    @Cacheable(value = CACHE_ORG_BESTILLING)
     @Operation(description = "Hent status på bestilling basert på brukerId")
     public List<RsOrganisasjonBestillingStatus> hentBestillingStatus(
             @Parameter(description = "BrukerID som er unik til en Azure bruker (Dolly autensiering)", example = "1k9242uc-638g-1234-5678-7894k0j7lu6n") @RequestParam String brukerId) {
@@ -112,7 +105,6 @@ public class OrganisasjonController {
         return bestillingService.fetchBestillingStatusByBrukerId(brukerId);
     }
 
-    @CacheEvict(value = CACHE_ORG_BESTILLING, allEntries = true)
     @DeleteMapping("/bestilling/{orgnummer}")
     @Operation(description = "Slett gruppe")
     public void slettgruppe(@PathVariable("orgnummer") String orgnummer) {

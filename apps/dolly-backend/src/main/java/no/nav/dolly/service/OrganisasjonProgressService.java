@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.OrganisasjonBestillingProgress;
 import no.nav.dolly.repository.OrganisasjonBestillingProgressRepository;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,8 +13,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static no.nav.dolly.config.CachingConfig.CACHE_ORG_BESTILLING;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -24,14 +21,12 @@ public class OrganisasjonProgressService {
     private final OrganisasjonBestillingProgressRepository organisasjonProgressRepository;
 
     @Transactional
-    @CacheEvict(value = CACHE_ORG_BESTILLING, allEntries = true)
     public Optional<OrganisasjonBestillingProgress> save(OrganisasjonBestillingProgress progress) {
 
         return organisasjonProgressRepository.save(progress);
     }
 
     @Transactional
-    @CacheEvict(value = CACHE_ORG_BESTILLING, allEntries = true)
     public void setBestillingFeil(Long bestillingsId, String status) {
 
         Optional<List<OrganisasjonBestillingProgress>> bestillingProgress =
@@ -68,13 +63,11 @@ public class OrganisasjonProgressService {
     }
 
     @Transactional
-    @CacheEvict(value = CACHE_ORG_BESTILLING, allEntries = true)
     public void deleteByBestillingId(Long bestillingId) {
         organisasjonProgressRepository.deleteByBestillingId(bestillingId);
     }
 
     @Transactional
-    @CacheEvict(value = CACHE_ORG_BESTILLING, allEntries = true)
     public void deleteByOrgnummer(String orgnummer) {
         organisasjonProgressRepository.deleteByOrganisasjonsnummer(orgnummer);
     }

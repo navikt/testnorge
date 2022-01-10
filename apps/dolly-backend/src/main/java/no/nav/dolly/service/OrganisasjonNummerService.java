@@ -4,14 +4,11 @@ import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.OrganisasjonNummer;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.OrganisasjonNummerRepository;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-
-import static no.nav.dolly.config.CachingConfig.CACHE_ORG_BESTILLING;
 
 @Service
 @RequiredArgsConstructor
@@ -35,13 +32,11 @@ public class OrganisasjonNummerService {
     }
 
     @Transactional
-    @CacheEvict(value = CACHE_ORG_BESTILLING, allEntries = true)
     public void deleteByBestillingId(Long bestillingId) {
         organisasjonNummerRepository.deleteByBestillingId(bestillingId);
     }
 
     @Transactional
-    @CacheEvict(value = CACHE_ORG_BESTILLING, allEntries = true)
     public void deleteByOrgnummer(String orgnummer) {
         organisasjonNummerRepository.deleteByOrganisasjonsnr(orgnummer);
     }
