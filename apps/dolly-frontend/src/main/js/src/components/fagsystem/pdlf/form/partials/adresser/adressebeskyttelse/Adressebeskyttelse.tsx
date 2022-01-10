@@ -8,9 +8,19 @@ import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert
 import _get from 'lodash/get'
 import _cloneDeep from 'lodash/cloneDeep'
 import _set from 'lodash/set'
+import { FormikProps } from 'formik'
 
-export const Adressebeskyttelse = ({ formikBag }) => {
-	const handleChangeGradering = (target, path) => {
+interface AdressebeskyttelseValues {
+	formikBag: FormikProps<{}>
+}
+
+type Target = {
+	value: string
+}
+
+export const Adressebeskyttelse = ({ formikBag }: AdressebeskyttelseValues) => {
+	const handleChangeGradering = (target: Target, path: string) => {
+		console.log('target', target)
 		const adressebeskyttelse = _get(formikBag.values, path)
 		const adressebeskyttelseClone = _cloneDeep(adressebeskyttelse)
 		_set(adressebeskyttelseClone, 'gradering', target?.value || null)
@@ -38,7 +48,7 @@ export const Adressebeskyttelse = ({ formikBag }) => {
 									name={`${path}.gradering`}
 									label="Gradering"
 									options={Options('gradering')}
-									onChange={(target) => handleChangeGradering(target, path)}
+									onChange={(target: Target) => handleChangeGradering(target, path)}
 									size="large"
 								/>
 							</div>

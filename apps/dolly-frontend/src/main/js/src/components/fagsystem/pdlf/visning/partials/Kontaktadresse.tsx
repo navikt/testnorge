@@ -6,7 +6,11 @@ import { Vegadresse } from '~/components/fagsystem/pdlf/visning/partials/Vegadre
 import { UtenlandskAdresse } from '~/components/fagsystem/pdlf/visning/partials/UtenlandskAdresse'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 
-export const Kontaktadresse = ({ data }) => {
+type Data = {
+	data: Array<any>
+}
+
+export const Kontaktadresse = ({ data }: Data) => {
 	if (!data || data.length === 0) return null
 
 	return (
@@ -15,7 +19,7 @@ export const Kontaktadresse = ({ data }) => {
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header="" nested>
-						{(adresse, idx: number) => {
+						{(adresse: any, idx: number) => {
 							return (
 								<>
 									{adresse.vegadresse && <Vegadresse adresse={adresse} idx={idx} />}

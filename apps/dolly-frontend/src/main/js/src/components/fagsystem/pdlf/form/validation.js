@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import { ifPresent, messages, requiredDate, requiredString } from '~/utils/YupValidations'
+import { ifPresent, requiredDate, requiredString } from '~/utils/YupValidations'
 import _get from 'lodash/get'
 import { differenceInWeeks, isAfter, isSameDay } from 'date-fns'
 
@@ -60,9 +60,9 @@ const utenlandskAdresse = Yup.object({
 })
 
 const postboksadresse = Yup.object({
-	postboks: requiredString.nullable(), // TODO: gjøres mindre streng?
+	postboks: requiredString.nullable(),
 	postbokseier: Yup.string().nullable(),
-	postnummer: requiredString.nullable(), // TODO: gjøres mindre streng?
+	postnummer: requiredString.nullable(),
 })
 
 const ukjentBosted = Yup.object({

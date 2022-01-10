@@ -5,8 +5,14 @@ import { Vegadresse } from '~/components/fagsystem/pdlf/form/partials/adresser/a
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import _get from 'lodash/get'
+import { FormikProps } from 'formik'
 
-export const VegadresseVelger = ({ formikBag, path, id }) => {
+interface VegadressevelgerValues {
+	formikBag: FormikProps<{}>
+	path: string
+}
+
+export const VegadresseVelger = ({ formikBag, path }: VegadressevelgerValues) => {
 	const vegadresseValg = {
 		POSTNUMMER: 'POSTNUMMER',
 		KOMMUNENUMMER: 'KOMMUNENUMMER',
@@ -15,7 +21,7 @@ export const VegadresseVelger = ({ formikBag, path, id }) => {
 
 	const vegadresseType = _get(formikBag.values, `${path}.vegadresseType`) || null
 
-	const handleRadioChange = (valg) => {
+	const handleRadioChange = (valg: any) => {
 		formikBag.setFieldValue(path, { ...initialVegadresse, vegadresseType: valg.target.value })
 	}
 

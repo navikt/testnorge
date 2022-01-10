@@ -451,7 +451,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 					if (item.oppholdAnnetSted) {
 						return [
 							{ numberHeader: `Oppholdsadresse ${idx + 1}: Opphold annet sted` },
-							// obj('Opphold annet sted', item.oppholdAnnetSted === null && 'Ingen verdier satt'),
 							obj(
 								'Opphold annet sted',
 								Formatters.showLabel('oppholdAnnetSted', item.oppholdAnnetSted)

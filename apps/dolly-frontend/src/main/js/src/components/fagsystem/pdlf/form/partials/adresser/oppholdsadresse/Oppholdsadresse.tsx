@@ -14,15 +14,23 @@ import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFiel
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { VegadresseVelger } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/VegadresseVelger'
-import { Matrikkeladresse } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/Matrikkeladresse'
 import { UtenlandskAdresse } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/UtenlandskAdresse'
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { OppholdAnnetSted } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/OppholdAnnetSted'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { MatrikkeladresseVelger } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/MatrikkeladresseVelger'
+import { FormikProps } from 'formik'
 
-export const Oppholdsadresse = ({ formikBag }) => {
-	const handleChangeAdressetype = (target, path) => {
+interface OppholdsadresseValues {
+	formikBag: FormikProps<{}>
+}
+
+type Target = {
+	value: string
+}
+
+export const Oppholdsadresse = ({ formikBag }: OppholdsadresseValues) => {
+	const handleChangeAdressetype = (target: Target, path: string) => {
 		const adresse = _get(formikBag.values, path)
 		const adresseClone = _cloneDeep(adresse)
 
@@ -84,7 +92,7 @@ export const Oppholdsadresse = ({ formikBag }) => {
 									name={`${path}.adressetype`}
 									label="Adressetype"
 									options={Options('adressetypeOppholdsadresse')}
-									onChange={(target) => handleChangeAdressetype(target, path)}
+									onChange={(target: Target) => handleChangeAdressetype(target, path)}
 									size="large"
 								/>
 							</div>
@@ -92,7 +100,6 @@ export const Oppholdsadresse = ({ formikBag }) => {
 								<VegadresseVelger
 									formikBag={formikBag}
 									path={`${path}.vegadresse`}
-									id={idx}
 									key={`veg_${idx}`}
 								/>
 							)}

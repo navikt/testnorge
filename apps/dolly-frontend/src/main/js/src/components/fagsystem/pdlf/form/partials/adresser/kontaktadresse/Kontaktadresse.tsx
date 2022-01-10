@@ -17,9 +17,18 @@ import { UtenlandskAdresse } from '~/components/fagsystem/pdlf/form/partials/adr
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { Postboksadresse } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/Postboksadresse'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
+import { FormikProps } from 'formik'
 
-export const Kontaktadresse = ({ formikBag }) => {
-	const handleChangeAdressetype = (target, path) => {
+interface KontaktadresseValues {
+	formikBag: FormikProps<{}>
+}
+
+type Target = {
+	value: string
+}
+
+export const Kontaktadresse = ({ formikBag }: KontaktadresseValues) => {
+	const handleChangeAdressetype = (target: Target, path: string) => {
 		const adresse = _get(formikBag.values, path)
 		const adresseClone = _cloneDeep(adresse)
 
@@ -69,7 +78,7 @@ export const Kontaktadresse = ({ formikBag }) => {
 									name={`${path}.adressetype`}
 									label="Adressetype"
 									options={Options('adressetypeKontaktadresse')}
-									onChange={(target) => handleChangeAdressetype(target, path)}
+									onChange={(target: Target) => handleChangeAdressetype(target, path)}
 									size="large"
 								/>
 							</div>
@@ -77,7 +86,6 @@ export const Kontaktadresse = ({ formikBag }) => {
 								<VegadresseVelger
 									formikBag={formikBag}
 									path={`${path}.vegadresse`}
-									id={idx}
 									key={`veg_${idx}`}
 								/>
 							)}

@@ -17,12 +17,20 @@ import { UtenlandskAdresse } from '~/components/fagsystem/pdlf/form/partials/adr
 import _cloneDeep from 'lodash/cloneDeep'
 import _set from 'lodash/set'
 import { UkjentBosted } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/UkjentBosted'
-import { Matrikkeladresse } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/Matrikkeladresse'
 import { VegadresseVelger } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/VegadresseVelger'
 import { MatrikkeladresseVelger } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/MatrikkeladresseVelger'
+import { FormikProps } from 'formik'
 
-export const Bostedsadresse = ({ formikBag }) => {
-	const handleChangeAdressetype = (target, path) => {
+interface BostedsadresseValues {
+	formikBag: FormikProps<{}>
+}
+
+type Target = {
+	value: string
+}
+
+export const Bostedsadresse = ({ formikBag }: BostedsadresseValues) => {
+	const handleChangeAdressetype = (target: Target, path: string) => {
 		const adresse = _get(formikBag.values, path)
 		const adresseClone = _cloneDeep(adresse)
 
@@ -84,7 +92,7 @@ export const Bostedsadresse = ({ formikBag }) => {
 									name={`${path}.adressetype`}
 									label="Adressetype"
 									options={Options('adressetypeBostedsadresse')}
-									onChange={(target) => handleChangeAdressetype(target, path)}
+									onChange={(target: Target) => handleChangeAdressetype(target, path)}
 									size="large"
 								/>
 							</div>
@@ -92,7 +100,6 @@ export const Bostedsadresse = ({ formikBag }) => {
 								<VegadresseVelger
 									formikBag={formikBag}
 									path={`${path}.vegadresse`}
-									id={idx}
 									key={`veg_${idx}`}
 								/>
 							)}

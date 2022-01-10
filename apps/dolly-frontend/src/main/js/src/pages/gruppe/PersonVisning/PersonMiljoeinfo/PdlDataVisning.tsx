@@ -33,6 +33,9 @@ type Ident = {
 
 type HentPerson = {
 	bostedsadresse: Array<BostedData>
+	oppholdsadresse: Array<{}>
+	kontaktadresse: Array<{}>
+	adressebeskyttelse: Array<{}>
 	fullmakt: [FullmaktData]
 	telefonnummer: Array<TelefonData>
 	sikkerhetstiltak: [SikkerhetstiltakData]

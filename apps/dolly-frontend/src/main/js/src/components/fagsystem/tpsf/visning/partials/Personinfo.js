@@ -82,9 +82,9 @@ function hentSikkerhetstiltakData(sikkerhetstiltakPath) {
 }
 
 export const Personinfo = ({ data, visTittel = true, tpsMessagingData, pdlData }) => {
-	console.log('pdlData', pdlData)
 	const harPdlAdressebeskyttelse = pdlData && _has(pdlData[0], 'person.adressebeskyttelse')
 	const harPdlUfb = pdlData && _has(pdlData[0], 'person.bostedsadresse[0].ukjentBosted')
+
 	return (
 		<div>
 			{visTittel && <SubOverskrift label="Persondetaljer" iconKind="personinformasjon" />}

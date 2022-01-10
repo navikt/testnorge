@@ -1,6 +1,7 @@
 import React from 'react'
 import { AttributtVelger } from './attributtVelger/AttributtVelger'
 import { PersoninformasjonPanel } from './paneler/Personinformasjon'
+import { AdressePanel } from './paneler/Adresse'
 import { IdentifikasjonPanel } from './paneler/Identifikasjon'
 import { FamilierelasjonPanel } from './paneler/Familierelasjoner'
 import { ArbeidInntektPanel } from './paneler/ArbeidInntekt'
@@ -12,7 +13,6 @@ import { UdiPanel } from './paneler/Udi'
 import { BrregPanel } from './paneler/Brreg'
 import { DokarkivPanel } from './paneler/Dokarkiv'
 import { SykdomPanel } from './paneler/Sykdom'
-import { AdressePanel } from '~/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Adresse'
 
 export const Steg1Person = ({ stateModifier }: any) => {
 	const checked = [

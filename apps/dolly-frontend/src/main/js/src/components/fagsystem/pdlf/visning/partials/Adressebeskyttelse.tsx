@@ -5,7 +5,15 @@ import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 
-export const Adressebeskyttelse = ({ data }) => {
+type Data = {
+	data: Array<AdressebeskyttelseData>
+}
+
+type AdressebeskyttelseData = {
+	gradering: string
+}
+
+export const Adressebeskyttelse = ({ data }: Data) => {
 	if (!data || data.length === 0) return null
 
 	return (
@@ -14,7 +22,7 @@ export const Adressebeskyttelse = ({ data }) => {
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header="" nested>
-						{(adressebeskyttelse, idx: number) => {
+						{(adressebeskyttelse: AdressebeskyttelseData, idx: number) => {
 							return (
 								<>
 									<div className="person-visning_content" key={idx}>

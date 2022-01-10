@@ -10,12 +10,12 @@ const StyledMatrikkeladresse = styled.div`
 	width: 100%;
 `
 
-type AdresseProps = {
+type MatrikkeladresseProps = {
 	formikBag: FormikProps<{}>
 	path: string
 }
 
-export const MatrikkeladresseTilfeldig = ({ formikBag, path }: AdresseProps) => {
+export const MatrikkeladresseTilfeldig = ({ formikBag, path }: MatrikkeladresseProps) => {
 	const settMatrikkelAdresse = (adresse: MatrikkelAdresse) => {
 		formikBag.setFieldValue(path, {
 			kommunenummer: adresse.kommunenummer,
@@ -29,7 +29,7 @@ export const MatrikkeladresseTilfeldig = ({ formikBag, path }: AdresseProps) => 
 	}
 
 	const renderAdresse = () => {
-		const { kommunenummer, gaardsnummer, bruksnummer, postnummer, poststed, tilleggsnavn } = _get(
+		const { kommunenummer, gaardsnummer, bruksnummer, postnummer, tilleggsnavn } = _get(
 			formikBag.values,
 			path
 		)
@@ -42,7 +42,6 @@ export const MatrikkeladresseTilfeldig = ({ formikBag, path }: AdresseProps) => 
 	}
 
 	return (
-		// <Kategori title="Matrikkeladressse">
 		<div className="flexbox--flex-wrap">
 			<StyledMatrikkeladresse>
 				<MatrikkelAdresseVelger onSelect={settMatrikkelAdresse} />
@@ -50,7 +49,7 @@ export const MatrikkeladresseTilfeldig = ({ formikBag, path }: AdresseProps) => 
 					name="matrikkeladresse"
 					// @ts-ignore
 					size="grow"
-					value={renderAdresse(formikBag)}
+					value={renderAdresse()}
 					label="Matrikkeladresse"
 					readOnly
 					placeholder="Ingen valgt adresse"
@@ -58,6 +57,5 @@ export const MatrikkeladresseTilfeldig = ({ formikBag, path }: AdresseProps) => 
 				/>
 			</StyledMatrikkeladresse>
 		</div>
-		// </Kategori>
 	)
 }

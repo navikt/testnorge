@@ -1,8 +1,19 @@
 import React from 'react'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
+import { MatrikkelAdresse } from '~/service/services/AdresseService'
 
-export const Matrikkeladresse = ({ adresse, idx }) => {
+interface MatrikkeladresseValues {
+	adresse: {
+		matrikkeladresse: MatrikkelAdresse
+		angittFlyttedato: string
+		gyldigFraOgMed: string
+		gyldigTilOgMed: string
+	}
+	idx: number
+}
+
+export const Matrikkeladresse = ({ adresse, idx }: MatrikkeladresseValues) => {
 	const { kommunenummer, gaardsnummer, bruksnummer, postnummer, bruksenhetsnummer, tilleggsnavn } =
 		adresse.matrikkeladresse
 	const { angittFlyttedato, gyldigFraOgMed, gyldigTilOgMed } = adresse

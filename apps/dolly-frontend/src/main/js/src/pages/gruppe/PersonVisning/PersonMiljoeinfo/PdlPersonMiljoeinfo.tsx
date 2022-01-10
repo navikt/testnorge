@@ -4,7 +4,12 @@ import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { PdlDataVisning } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataVisning'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
-export const PdlPersonMiljoeInfo = ({ data, loading }) => {
+interface PdlMiljoeValues {
+	data: any
+	loading: boolean
+}
+
+export const PdlPersonMiljoeInfo = ({ data, loading }: PdlMiljoeValues) => {
 	if (!data && !loading) return null
 
 	return (

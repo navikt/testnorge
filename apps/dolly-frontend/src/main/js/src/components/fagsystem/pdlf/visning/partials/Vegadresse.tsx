@@ -1,8 +1,19 @@
 import React from 'react'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
+import { Adresse } from '~/service/services/AdresseService'
 
-export const Vegadresse = ({ adresse, idx }) => {
+interface VegadresseValues {
+	adresse: {
+		vegadresse: Adresse
+		angittFlyttedato: string
+		gyldigFraOgMed: string
+		gyldigTilOgMed: string
+	}
+	idx: number
+}
+
+export const Vegadresse = ({ adresse, idx }: VegadresseValues) => {
 	const {
 		adressekode,
 		adressenavn,

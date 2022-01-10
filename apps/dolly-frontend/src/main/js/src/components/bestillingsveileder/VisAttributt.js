@@ -2,7 +2,7 @@ import { connect } from 'formik'
 import _isNil from 'lodash/isNil'
 import _has from 'lodash/has'
 
-const InternalVis = ({ formik, attributt, children }) => {
+const InternalVis = ({ formik = null, attributt, children }) => {
 	const isChecked = (values, attributtPath) => {
 		// Ignore if values ikke er satt
 		if (_isNil(attributtPath)) return false

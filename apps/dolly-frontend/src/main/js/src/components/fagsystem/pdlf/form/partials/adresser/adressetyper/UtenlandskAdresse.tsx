@@ -1,11 +1,8 @@
 import React from 'react'
-import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import _get from 'lodash/get'
-import { initialUtenlandskAdresse } from '~/components/fagsystem/pdlf/form/initialValues'
 import { FormikProps } from 'formik'
 
 interface UtenlandskAdresseForm {
