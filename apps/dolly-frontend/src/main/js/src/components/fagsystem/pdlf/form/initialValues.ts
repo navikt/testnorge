@@ -105,6 +105,90 @@ export const initialKontaktinfoForDoedebo = {
 	gjeldende: true,
 }
 
+export const initialSikkerhetstiltak = {
+	tiltakstype: '',
+	beskrivelse: '',
+	kontaktperson: {
+		personident: '',
+		enhet: '',
+	},
+	gyldigFraOgMed: new Date(),
+	gyldigTilOgMed: null,
+	kilde: 'Dolly',
+	master: 'PDL',
+	gjeldende: true,
+}
+
+export const initialTpsSikkerhetstiltak = {
+	tiltakstype: '',
+	beskrivelse: '',
+	gyldigFraOgMed: new Date(),
+	gyldigTilOgMed: null,
+}
+
+export const initialStatsborgerskap = {
+	landkode: null,
+	gyldigFraOgMed: new Date(),
+	gyldigTilOgMed: null,
+	kilde: 'Dolly',
+	master: 'PDL',
+	gjeldende: true,
+}
+
+export const initialTilrettelagtKommunikasjon = {
+	spraakForTaletolk: '',
+	spraakForTegnspraakTolk: '',
+	kilde: 'Dolly',
+	master: 'PDL',
+	gjeldende: true,
+}
+
+export const initialDoedsfall = {
+	doedsdato: new Date(),
+	kilde: 'Dolly',
+	master: 'PDL',
+	gjeldende: true,
+}
+
+export const initialOrganisasjon = {
+	organisasjonsnummer: null as string,
+	organisasjonsnavn: null as string,
+	kontaktperson: {
+		fornavn: null as string,
+		mellomnavn: null as string,
+		etternavn: null as string,
+	},
+}
+
+export const initialPerson = {
+	foedselsdato: null as string,
+	navn: {
+		fornavn: null as string,
+		mellomnavn: null as string,
+		etternavn: null as string,
+	},
+}
+
+export const initialNyPerson = {
+	nyKontaktperson: initialPdlPerson,
+}
+
+export const initialUtenlandsIdValues = {
+	identifikasjonsnummer: '',
+	opphoert: false,
+	utstederland: '',
+	kilde: 'Dolly',
+	master: 'FREG',
+	gjeldende: true,
+}
+
+export const initialFalskIdentitetValues = {
+	erFalsk: true,
+	kilde: 'Dolly',
+	master: 'FREG',
+	gjeldende: true,
+}
+
 export const initialInnvandring = {
 	fraflyttingsland: '',
 	fraflyttingsstedIUtlandet: '',

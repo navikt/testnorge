@@ -6,6 +6,7 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import Loading from '~/components/ui/loading/Loading'
 import { Fullmakt } from '~/components/fagsystem/pdlf/visning/partials/Fullmakt'
 import { Telefonnummer } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
+import { TilrettelagtKommunikasjon } from '~/components/fagsystem/pdlf/visning/partials/TilrettelagtKommunikasjon'
 import { Boadresse } from '~/components/fagsystem/pdlf/visning/partials/Boadresse'
 import { Oppholdsadresse } from '~/components/fagsystem/pdlf/visning/partials/Oppholdsadresse'
 import { Kontaktadresse } from '~/components/fagsystem/pdlf/visning/partials/Kontaktadresse'
@@ -17,6 +18,7 @@ export const PdlfVisning = ({ data, loading }) => {
 
 	const {
 		telefonnummer,
+		tilrettelagtKommunikasjon,
 		bostedsadresse,
 		oppholdsadresse,
 		kontaktadresse,
@@ -32,6 +34,7 @@ export const PdlfVisning = ({ data, loading }) => {
 		<ErrorBoundary>
 			<div>
 				<Telefonnummer data={telefonnummer} />
+				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />
 				<Boadresse data={bostedsadresse} />
 				<Oppholdsadresse data={oppholdsadresse} />
 				<Kontaktadresse data={kontaktadresse} />

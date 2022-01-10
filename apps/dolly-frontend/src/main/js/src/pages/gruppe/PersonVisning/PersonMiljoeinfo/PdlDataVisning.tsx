@@ -1,7 +1,5 @@
 import React from 'react'
 import './DataVisning.less'
-// @ts-ignore
-import Tooltip from 'rc-tooltip'
 import 'rc-tooltip/assets/bootstrap_white.css'
 import { IdentInfo } from '~/components/fagsystem/pdlf/visning/partials/Identinfo'
 import { GeografiskTilknytning } from '~/components/fagsystem/pdlf/visning/partials/GeografiskTilknytning'
@@ -10,75 +8,22 @@ import { PdlNasjonalitet } from '~/components/fagsystem/pdlf/visning/partials/Pd
 import { PdlFullmakt } from '~/components/fagsystem/pdlf/visning/partials/PdlFullmakt'
 import { PdlSikkerhetstiltak } from '~/components/fagsystem/pdlf/visning/partials/PdlSikkerhetstiltak'
 import { Telefonnummer } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
+import { TilrettelagtKommunikasjon } from '~/components/fagsystem/pdlf/visning/partials/TilrettelagtKommunikasjon'
 import { Boadresse } from '~/components/fagsystem/pdlf/visning/partials/Boadresse'
 import { Oppholdsadresse } from '~/components/fagsystem/pdlf/visning/partials/Oppholdsadresse'
 import { Kontaktadresse } from '~/components/fagsystem/pdlf/visning/partials/Kontaktadresse'
 import { Adressebeskyttelse } from '~/components/fagsystem/pdlf/visning/partials/Adressebeskyttelse'
+import { PdlDataWrapper } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import Tooltip from 'rc-tooltip'
 
-type PdlData = {
-	data: Data
-}
-
-type Data = {
-	hentIdenter: { identer: [Ident] }
-	hentPerson: HentPerson
-	hentGeografiskTilknytning: object
-}
-
-type Ident = {
-	gruppe: string
-	ident: string
-	historisk: boolean
-}
-
-type HentPerson = {
-	bostedsadresse: Array<BostedData>
-	oppholdsadresse: Array<{}>
-	kontaktadresse: Array<{}>
-	adressebeskyttelse: Array<{}>
-	fullmakt: [FullmaktData]
-	telefonnummer: Array<TelefonData>
-	sikkerhetstiltak: [SikkerhetstiltakData]
-}
-
-type BostedData = {
-	metadata: {
-		historisk: boolean
+export const PdlDataVisning = ({ data }: PdlDataWrapper) => {
+	if (!data || !data.hentPerson) {
+		return null
 	}
-}
-
-type FullmaktData = {
-	gyldigFraOgMed: Date
-	gyldigTilOgMed: Date
-	motpartsPersonident: string
-	motpartsRolle: string
-	omraader: []
-}
-
-type TelefonData = {
-	landskode: string
-	nummer: string
-	prioritet: number
-}
-
-type SikkerhetstiltakData = {
-	gyldigFraOgMed: Date
-	gyldigTilOgMed: Date
-	tiltakstype: string
-	beskrivelse: string
-	kontaktperson: Kontaktperson
-	omraader: []
-}
-
-type Kontaktperson = {
-	personident: string
-	enhet: string
-}
-
-export const PdlDataVisning = ({ data }: PdlData) => {
 	const { hentPerson, hentIdenter, hentGeografiskTilknytning } = data
 	const {
 		telefonnummer,
+		tilrettelagtKommunikasjon,
 		bostedsadresse,
 		oppholdsadresse,
 		kontaktadresse,
@@ -95,6 +40,7 @@ export const PdlDataVisning = ({ data }: PdlData) => {
 				<GeografiskTilknytning data={hentGeografiskTilknytning} />
 				<PdlNasjonalitet data={hentPerson} />
 				<Telefonnummer data={telefonnummer} />
+				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />
 				<Boadresse data={bostedsadresse} />
 				<Oppholdsadresse data={oppholdsadresse} />
 				<Kontaktadresse data={kontaktadresse} />
@@ -111,11 +57,11 @@ export const PdlDataVisning = ({ data }: PdlData) => {
 				overlay={getPersonInfo()}
 				placement="top"
 				align={{
-					offset: ['0', '-10'],
+					offset: [0, -10],
 				}}
 				mouseEnterDelay={0.1}
 				mouseLeaveDelay={0.1}
-				arrowContent={<div className="rc-tooltip-arrow-inner"></div>}
+				arrowContent={<div className="rc-tooltip-arrow-inner" />}
 				overlayStyle={{ opacity: 1 }}
 			>
 				<div className="miljoe-knapp">PDL</div>

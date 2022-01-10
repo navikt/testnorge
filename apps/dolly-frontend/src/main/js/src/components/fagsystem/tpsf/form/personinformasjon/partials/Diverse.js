@@ -26,6 +26,12 @@ const StyledDiv = styled.div`
 	margin-top: 3px;
 `
 
+const StyledFlexRow = styled.div`
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+`
+
 export const Diverse = ({ formikBag }) => {
 	if (!formikBag.values.tpsf) {
 		return null
@@ -41,7 +47,7 @@ export const Diverse = ({ formikBag }) => {
 		: false
 
 	return (
-		<React.Fragment>
+		<StyledFlexRow>
 			<FormikSelect
 				name="tpsf.identtype"
 				label="Identtype"
@@ -123,6 +129,6 @@ export const Diverse = ({ formikBag }) => {
 				/>
 			</Vis>
 			<Telefonnummer formikBag={formikBag} />
-		</React.Fragment>
+		</StyledFlexRow>
 	)
 }

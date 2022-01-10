@@ -13,6 +13,10 @@ import { isToday } from 'date-fns'
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { InputWarning } from '~/components/ui/form/inputWarning/inputWarning'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import {
+	initialSikkerhetstiltak,
+	initialTpsSikkerhetstiltak,
+} from '~/components/fagsystem/pdlf/form/initialValues'
 
 interface SikkerhetstiltakValues {
 	tiltakstype: string
@@ -24,26 +28,6 @@ interface SikkerhetstiltakValues {
 
 interface SikkerhetstiltakProps {
 	formikBag: FormikProps<{ tpsf: SikkerhetstiltakValues }>
-}
-
-const initialSikkerhetstiltak = {
-	tiltakstype: '',
-	beskrivelse: '',
-	kontaktperson: {
-		personident: '',
-		enhet: '',
-	},
-	gyldigFraOgMed: new Date(),
-	gyldigTilOgMed: null,
-	kilde: 'Dolly',
-	master: 'PDL',
-}
-
-const initialTpsSikkerhetstiltak = {
-	tiltakstype: '',
-	beskrivelse: '',
-	gyldigFraOgMed: new Date(),
-	gyldigTilOgMed: null,
 }
 
 type Option = {
@@ -133,7 +117,7 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 											  )
 									}
 									size="large"
-									onChange={(option) => handleSikkerhetstiltakChange(option, idx)}
+									onChange={(option: Option) => handleSikkerhetstiltakChange(option, idx)}
 									value={_get(formikBag.values, `${path}.tiltakstype`)}
 									isClearable={false}
 									feil={
