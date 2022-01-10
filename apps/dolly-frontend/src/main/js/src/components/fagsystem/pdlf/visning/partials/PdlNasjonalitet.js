@@ -6,8 +6,8 @@ import Formatters from '~/utils/DataFormatter'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
-const Statsborgerskap = ({ statsborgerskap }) => {
-	return statsborgerskap ? (
+const Statsborgerskap = ({ statsborgerskap }) =>
+	statsborgerskap ? (
 		<div className="person-visning_content">
 			<TitleValue
 				title="Statsborgerskap"
@@ -24,7 +24,6 @@ const Statsborgerskap = ({ statsborgerskap }) => {
 			/>
 		</div>
 	) : null
-}
 
 export const PdlNasjonalitet = ({ data, visTittel = true }) => {
 	const { statsborgerskap, innflyttingTilNorge, utflyttingFraNorge, innflytting, utflytting } = data
