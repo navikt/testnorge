@@ -137,7 +137,6 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 								landkode: null,
 								gyldigFraOgMed: new Date(),
 								gyldigTilOgMed: null,
-								bekreftelsesdato: null,
 								kilde: 'Dolly',
 								master: 'PDL',
 								gjeldende: true,

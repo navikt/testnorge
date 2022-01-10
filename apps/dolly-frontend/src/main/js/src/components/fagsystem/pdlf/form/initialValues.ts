@@ -63,7 +63,6 @@ export const initialStatsborgerskap = {
 	landkode: null,
 	gyldigFraOgMed: new Date(),
 	gyldigTilOgMed: null,
-	bekreftelsesdato: null,
 	kilde: 'Dolly',
 	master: 'PDL',
 	gjeldende: true,

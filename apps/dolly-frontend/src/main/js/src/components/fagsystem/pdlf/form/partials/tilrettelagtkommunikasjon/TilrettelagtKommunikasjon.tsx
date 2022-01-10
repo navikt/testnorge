@@ -1,7 +1,5 @@
 import React from 'react'
-// @ts-ignore
-import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
-// @ts-ignore
+import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { PersoninformasjonKodeverk } from '~/config/kodeverk'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'

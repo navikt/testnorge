@@ -1,7 +1,5 @@
 import React from 'react'
 import './DataVisning.less'
-// @ts-ignore
-import Tooltip from 'rc-tooltip'
 import 'rc-tooltip/assets/bootstrap_white.css'
 import { IdentInfo } from '~/components/fagsystem/pdlf/visning/partials/Identinfo'
 import { GeografiskTilknytning } from '~/components/fagsystem/pdlf/visning/partials/GeografiskTilknytning'
@@ -17,6 +15,7 @@ import {
 	PdlData,
 	PdlDataWrapper,
 } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import Tooltip from 'rc-tooltip'
 
 export const PdlDataVisning = ({ data }: PdlDataWrapper) => {
 	if (!data || !data.hentPerson) {

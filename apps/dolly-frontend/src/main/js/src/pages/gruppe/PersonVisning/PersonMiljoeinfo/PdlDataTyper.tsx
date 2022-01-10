@@ -1,8 +1,4 @@
 import React from 'react'
-import './DataVisning.less'
-// @ts-ignore
-import Tooltip from 'rc-tooltip'
-import 'rc-tooltip/assets/bootstrap_white.css'
 
 export type PdlDataWrapper = {
 	data: PdlData
@@ -39,7 +35,7 @@ export type FullmaktData = {
 	gyldigTilOgMed: Date
 	motpartsPersonident: string
 	motpartsRolle: string
-	omraader: Array<String>
+	omraader: Array<string>
 	id: number
 }
 
