@@ -52,7 +52,7 @@ public class TpsMessagingClient implements ClientRegister {
                 );
             }
 
-            if (nonNull(bestilling.getTpsMessaging().getSikkerhetstiltak())) {
+            if (nonNull(bestilling.getTpsMessaging().getSikkerhetstiltak()) && !bestilling.getTpsMessaging().getSikkerhetstiltak().isEmpty()) {
                 var sikkerhetstiltakStatus = tpsMessagingConsumer.deleteSikkerhetstiltakRequest(
                         dollyPerson.getHovedperson(),
                         bestilling.getEnvironments());
@@ -68,7 +68,7 @@ public class TpsMessagingClient implements ClientRegister {
                         tpsMessagingConsumer.sendSikkerhetstiltakRequest(
                                 dollyPerson.getHovedperson(),
                                 bestilling.getEnvironments(),
-                                bestilling.getTpsMessaging().getSikkerhetstiltak()),
+                                bestilling.getTpsMessaging().getSikkerhetstiltak().get(0)),
                         status,
                         "Sikkerhetstiltak_opprett"
                 );
