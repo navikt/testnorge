@@ -174,14 +174,14 @@ class OppholdsadresseServiceTest {
         var request = PersonDTO.builder()
                 .ident(FNR_IDENT)
                 .oppholdsadresse(List.of(OppholdsadresseDTO.builder()
-                                .gyldigFraOgMed(LocalDate.of(2020, 2, 3).atStartOfDay())
-                                .matrikkeladresse(new MatrikkeladresseDTO())
-                                .isNew(true)
-                                .build(),
-                        OppholdsadresseDTO.builder()
                                 .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
                                 .gyldigTilOgMed(LocalDate.of(2020, 2, 3).atStartOfDay())
                                 .utenlandskAdresse(new UtenlandskAdresseDTO())
+                                .isNew(true)
+                                .build(),
+                        OppholdsadresseDTO.builder()
+                                .gyldigFraOgMed(LocalDate.of(2020, 2, 3).atStartOfDay())
+                                .matrikkeladresse(new MatrikkeladresseDTO())
                                 .isNew(true)
                                 .build()))
                 .build();
@@ -280,7 +280,7 @@ class OppholdsadresseServiceTest {
                 .ident(DNR_IDENT)
                 .oppholdsadresse(List.of(OppholdsadresseDTO.builder()
                         .isNew(true)
-                                .utenlandskAdresse(new UtenlandskAdresseDTO())
+                        .utenlandskAdresse(new UtenlandskAdresseDTO())
                         .build()))
                 .build();
 

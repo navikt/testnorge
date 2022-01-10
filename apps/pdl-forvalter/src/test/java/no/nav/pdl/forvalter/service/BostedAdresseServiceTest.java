@@ -191,15 +191,16 @@ class BostedAdresseServiceTest {
 
         var request = PersonDTO.builder()
                 .ident(FNR_IDENT)
-                .bostedsadresse(List.of(BostedadresseDTO.builder()
-                                .gyldigFraOgMed(LocalDate.of(2020, 2, 3).atStartOfDay())
-                                .matrikkeladresse(new MatrikkeladresseDTO())
-                                .isNew(true)
-                                .build(),
+                .bostedsadresse(List.of(
                         BostedadresseDTO.builder()
                                 .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
                                 .gyldigTilOgMed(LocalDate.of(2020, 2, 3).atStartOfDay())
                                 .utenlandskAdresse(new UtenlandskAdresseDTO())
+                                .isNew(true)
+                                .build(),
+                        BostedadresseDTO.builder()
+                                .gyldigFraOgMed(LocalDate.of(2020, 2, 3).atStartOfDay())
+                                .matrikkeladresse(new MatrikkeladresseDTO())
                                 .isNew(true)
                                 .build()))
                 .build();
