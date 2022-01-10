@@ -21,6 +21,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FNR;
+import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
@@ -56,13 +57,15 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
         }
     }
 
-    public List<KontaktadresseDTO> convert(PersonDTO person) {
+    public List<KontaktadresseDTO> convert(PersonDTO person, Boolean relaxed) {
 
         for (var adresse : person.getKontaktadresse()) {
 
             if (isTrue(adresse.getIsNew())) {
 
-                handle(adresse, person);
+                if (isNotTrue(relaxed)) {
+                    handle(adresse, person);
+                }
                 populateMiscFields(adresse, person);
             }
         }

@@ -32,3 +32,8 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-geografiske-kodeverk-service
+
+spring:
+  datasource:
+    testOnBorrow: true
+    validationQuery: select 1

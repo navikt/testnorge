@@ -47,7 +47,7 @@ spec:
           cluster: dev-fss
         - application: dolly-frontend
           cluster: dev-gcp
-        - application: import-fra-tpsf-service
+        - application: testnav-import-fra-tpsf-service
           cluster: dev-gcp
     outbound:
       rules:

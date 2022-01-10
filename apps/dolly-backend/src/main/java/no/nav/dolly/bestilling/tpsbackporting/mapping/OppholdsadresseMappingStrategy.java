@@ -43,7 +43,7 @@ public class OppholdsadresseMappingStrategy implements MappingStrategy {
 
                         } else if (nonNull(source.getMatrikkeladresse())) {
                             target.setPostadresse(List.of(RsPostadresse.builder()
-                                    .postLinje1(format("Gaardsnummer: %s, Bruksnummer: %s",
+                                    .postLinje1(format("Gaardsnr: %s, Bruksnr: %s",
                                             source.getMatrikkeladresse().getGaardsnummer(),
                                             source.getMatrikkeladresse().getBruksenhetsnummer()))
                                     .postLinje2(format("Kommune: %s %s",

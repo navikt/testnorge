@@ -47,6 +47,13 @@ public interface IdentRepository extends PagingAndSortingRepository<Testident, S
             "order by bp.id desc, bp.bestilling.id desc")
     Page<Testident> getTestidentByTestgruppeIdOrderByBestillingProgressIdDesc(@Param(value = "gruppeId") Long gruppeId, Pageable pageable);
 
+    @Query("select ti from Testident ti " +
+            "where ti.testgruppe.id = :gruppeId " +
+            "and not exists " +
+            "(select bp from BestillingProgress bp where bp.ident = ti.ident) " +
+            "order by ti.ident asc")
+    Page<Testident> getTestidentByTestgruppeIdOrderByIdentAsc(@Param(value = "gruppeId") Long gruppeId, Pageable pageable);
+
     @Query(value = "select idx-1 from ( " +
             "         select ti.*, count(*) over (order by bp.id desc, bp.bestilling_id desc ) as idx " +
             "         from test_ident ti, bestilling_progress bp " +

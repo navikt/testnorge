@@ -15,7 +15,7 @@ spec:
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
-        - application: import-fra-tpsf-service
+        - application: testnav-import-fra-tpsf-service
           cluster: dev-gcp
   webproxy: true
   azure:

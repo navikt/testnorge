@@ -32,7 +32,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-    implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.5.12'
+    implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.6.4'
 
     compileOnly 'javax.servlet:javax.servlet-api:3.1.0'
 

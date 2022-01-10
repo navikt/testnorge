@@ -104,6 +104,12 @@ export const actions = createActions(
 				identer,
 			}),
 		],
+		getSkjermingsregister: [
+			DollyApi.getSkjerming,
+			(ident) => ({
+				ident,
+			}),
+		],
 		slettPerson: [
 			DollyApi.slettPerson,
 			(ident) => ({
@@ -151,6 +157,7 @@ const initialState = {
 	udistub: {},
 	pensjonforvalter: {},
 	brregstub: {},
+	skjermingsregister: {},
 }
 
 export default handleActions(
@@ -181,6 +188,9 @@ export default handleActions(
 		},
 		[onSuccess(actions.getInntektstub)](state, action) {
 			state.inntektstub[action.meta.ident] = action.payload.data
+		},
+		[onSuccess(actions.getSkjermingsregister)](state, action) {
+			state.skjermingsregister[action.meta.ident] = action.payload.data
 		},
 		[onSuccess(actions.getKrr)](state, action) {
 			state.krrstub[action.meta.ident] = action.payload.data
@@ -300,6 +310,8 @@ export const fetchDataFraFagsystemer = (personId) => (dispatch, getState) => {
 				return dispatch(actions.getPensjon(personId, success[system][0]))
 			case 'BRREGSTUB':
 				return dispatch(actions.getBrreg(personId))
+			case 'SKJERMINGSREGISTER':
+				return dispatch(actions.getSkjermingsregister(personId))
 		}
 	})
 }
@@ -339,6 +351,8 @@ export const fetchDataFraFagsystemerForSoek = (personId) => (dispatch) => {
 				return dispatch(actions.getPensjon(personId, 'q2'))
 			case 'AAREG':
 				return dispatch(actions.getAareg(personId, 'q2'))
+			case 'SKJERMINGSREGISTER':
+				return dispatch(actions.getSkjermingsregister(personId))
 		}
 	})
 }
@@ -447,5 +461,6 @@ export const selectDataForIdent = (state, ident) => {
 		udistub: state.fagsystem.udistub[ident],
 		pensjonforvalter: state.fagsystem.pensjonforvalter[ident],
 		brregstub: state.fagsystem.brregstub[ident],
+		skjermingsregister: state.fagsystem.skjermingsregister[ident],
 	}
 }
