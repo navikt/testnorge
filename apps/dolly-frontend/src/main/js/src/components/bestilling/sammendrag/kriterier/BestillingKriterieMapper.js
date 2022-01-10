@@ -350,11 +350,11 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			]
 		}
 
-		const datoer = (data) => {
+		const datoer = (datoData) => {
 			return [
-				obj('Flyttedato', Formatters.formatDate(data.angittFlyttedato)),
-				obj('Gyldig f.o.m.', Formatters.formatDate(data.gyldigFraOgMed)),
-				obj('Gyldig t.o.m.', Formatters.formatDate(data.gyldigTilOgMed)),
+				obj('Flyttedato', Formatters.formatDate(datoData.angittFlyttedato)),
+				obj('Gyldig f.o.m.', Formatters.formatDate(datoData.gyldigFraOgMed)),
+				obj('Gyldig t.o.m.', Formatters.formatDate(datoData.gyldigTilOgMed)),
 			]
 		}
 
@@ -407,11 +407,9 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				itemRows: bostedsadresse.map((item, idx) => {
 					if (item.utenlandskAdresse) {
 						const adresseData = item.utenlandskAdresse
-						const isEmpty =
-							adresseData.empty || Object.values(adresseData).every((x) => x === null || x === '')
 						return [
 							{ numberHeader: `Utenlandsk boadresse ${idx + 1}` },
-							obj('', isEmpty && 'Ingen verdier satt'),
+							obj('', isEmpty(adresseData) && 'Ingen verdier satt'),
 							obj('Gatenavn og husnummer', adresseData.adressenavnNummer),
 							obj('Postnummer og -navn', adresseData.postboksNummerNavn),
 							obj('Postkode', adresseData.postkode),
