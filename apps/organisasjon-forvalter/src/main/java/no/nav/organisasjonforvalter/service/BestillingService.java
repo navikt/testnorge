@@ -14,6 +14,7 @@ import no.nav.organisasjonforvalter.dto.responses.BestillingResponse;
 import no.nav.organisasjonforvalter.jpa.entity.Organisasjon;
 import no.nav.organisasjonforvalter.jpa.repository.OrganisasjonRepository;
 import no.nav.organisasjonforvalter.util.CurrentAuthentication;
+import no.nav.organisasjonforvalter.util.UtenlandskAdresseUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,11 +22,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.logging.log4j.util.Strings.isBlank;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class BestillingService {
+
+    private static final String NORGE = "NO";
 
     private final AdresseServiceConsumer adresseServiceConsumer;
     private final GenererNavnServiceConsumer genererNavnServiceConsumer;
@@ -96,9 +100,15 @@ public class BestillingService {
         }
 
         orgRequest.getAdresser().forEach(adresse -> {
-            String query = adresseQuery(adresse);
-            adresse.setAdresselinjer(new ArrayList<>());
-            mapperFacade.map(adresseServiceConsumer.getAdresser(query).stream().findFirst().get(), adresse);
+
+            if (isBlank(adresse.getLandkode()) || NORGE.equals(adresse.getLandkode())) {
+                String query = adresseQuery(adresse);
+                adresse.setAdresselinjer(new ArrayList<>());
+                mapperFacade.map(adresseServiceConsumer.getAdresser(query).stream().findFirst().get(), adresse);
+
+            } else {
+                UtenlandskAdresseUtil.prepareUtenlandskAdresse(adresse);
+            }
         });
     }
 }

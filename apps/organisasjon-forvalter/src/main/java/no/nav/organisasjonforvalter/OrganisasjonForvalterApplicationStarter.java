@@ -9,6 +9,5 @@ public class OrganisasjonForvalterApplicationStarter {
     public static void main(String[] args) {
 
         SpringApplication.run(OrganisasjonForvalterApplicationStarter.class, args);
-
     }
 }
