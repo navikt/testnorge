@@ -27,9 +27,9 @@ public class GetUserInfo implements Callable<Optional<UserInfo>> {
     @Override
     public Optional<UserInfo> call() {
         var request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        log.info("Prøver å hente JWT fra request...");
+        log.trace("Prøver å hente JWT fra request...");
         return Optional.ofNullable(request.getHeader(UserConstant.USER_HEADER_JWT)).map(token -> {
-            log.info("Fant JWT i request.");
+            log.trace("Fant JWT i request.");
             var jwt = JWT.decode(token);
             var verifier = JWT.require(Algorithm.HMAC256(secret)).build();
             verifier.verify(jwt);

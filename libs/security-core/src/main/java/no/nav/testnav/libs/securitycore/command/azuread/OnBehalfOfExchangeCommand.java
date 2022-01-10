@@ -2,18 +2,20 @@ package no.nav.testnav.libs.securitycore.command.azuread;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.securitycore.command.ExchangeCommand;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.Token;
+import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
 import org.slf4j.MDC;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
+import java.util.HashMap;
 import java.util.Map;
 
-import no.nav.testnav.libs.securitycore.command.ExchangeCommand;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.securitycore.domain.Token;
-import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -27,7 +29,7 @@ public class OnBehalfOfExchangeCommand implements ExchangeCommand {
     public Mono<AccessToken> call() {
         String oid = token.getUserId();
         if (oid != null) {
-            Map<String, String> contextMap = MDC.getCopyOfContextMap();
+            Map<String, String> contextMap = nonNull(MDC.getCopyOfContextMap()) ? MDC.getCopyOfContextMap() : new HashMap<>();
             contextMap.put("oid", oid);
             MDC.setContextMap(contextMap);
         }

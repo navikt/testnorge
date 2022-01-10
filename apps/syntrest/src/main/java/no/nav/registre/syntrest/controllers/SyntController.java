@@ -7,7 +7,6 @@ import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import no.nav.registre.syntrest.consumer.domain.SyntAmeldingConsumer;
 import no.nav.registre.syntrest.consumer.SyntGetConsumer;
 import no.nav.registre.syntrest.consumer.SyntPostConsumer;
 import no.nav.registre.syntrest.utils.UrlUtils;
@@ -30,9 +29,6 @@ import java.util.Map;
 import no.nav.registre.syntrest.domain.aareg.Arbeidsforholdsmelding;
 import no.nav.registre.syntrest.utils.InputValidator;
 
-import no.nav.testnav.libs.domain.dto.aareg.amelding.Arbeidsforhold;
-import no.nav.testnav.libs.domain.dto.aareg.amelding.ArbeidsforholdPeriode;
-
 import static java.util.Objects.isNull;
 import static no.nav.registre.syntrest.utils.UrlUtils.createQueryString;
 
@@ -47,13 +43,12 @@ public class SyntController {
     private final SyntGetConsumer<List<String>> meldekortConsumer;
     private final SyntPostConsumer<Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>,
             Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>> inntektConsumer;
-    private final SyntAmeldingConsumer ameldingConsumer;
 
     private final UrlUtils urlUtils;
 
     @PostMapping("/aareg")
     @ApiOperation(value = "Aareg", notes = "Genererer syntetiske arbeidshistorikker bestående av meldinger på AAREG format.")
-    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-aareg" })
+    @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-aareg"})
     public ResponseEntity<List<Arbeidsforholdsmelding>> generateAareg(
             @ApiParam(value = "Liste med identifikasjonsnumre for fikitve personer", required = true)
             @RequestBody List<String> fnrs
@@ -74,7 +69,7 @@ public class SyntController {
             "postgresdatabasen og legges inn på nytt.\n\nMerk at dette ikke er mulig med dagens NAIS oppsett da dette " +
             "tar lang tid og applikasjonen timer ut. Dette må enten gjøres lokalt med samme python versjon som blir " +
             "kjørt på NAIS (3.7.1 per dags dato), eller så må NAIS instillingene oppdateres.")
-    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-meldekort" })
+    @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-meldekort"})
     public ResponseEntity<List<String>> generateMeldekort(
             @ApiParam(value = "Meldegruppe", required = true)
             @PathVariable String meldegruppe,
@@ -104,95 +99,13 @@ public class SyntController {
             "per fødselsnummer, (altså forrige måneds inntektsmelding) blir den nye inntektsmeldingen basert på disse. " +
             "Hvis man legger ved en tom liste til fødselsnummeret blir en inntektsmelding generert basert på en kernel " +
             "density model.")
-    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-inntekt" })
+    @Timed(value = "syntrest.resource.latency", extraTags = {"operation", "synthdata-inntekt"})
     public ResponseEntity<Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>>> generateInntektsMelding(
             @ApiParam(value = "Map der key=fødselsnummer, value=liste med inntektsmeldinger", required = true)
             @RequestBody Map<String, List<no.nav.registre.syntrest.domain.inntekt.Inntektsmelding>> fnrInntektMap
     ) throws InterruptedException, ApiException {
         InputValidator.validateInput(new ArrayList<>(fnrInntektMap.keySet()));
         var response = inntektConsumer.synthesizeData(fnrInntektMap);
-        doResponseValidation(response);
-
-        return ResponseEntity.ok(response);
-    }
-
-
-    @PostMapping("/amelding/arbeidsforhold")
-    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-amelding" })
-    public ResponseEntity<List<Arbeidsforhold>> generateArbeidforholdHistorikk(
-            @RequestBody Arbeidsforhold tidligereArbeidsforhold,
-            @ApiParam(value = "Verdi bestemmer om det skal være mulig at avvik blir generert i arbeidforhold.")
-            @RequestParam(required = false) String avvik,
-            @ApiParam(value = "Verdi bestemmer om det skal være mulig at sluttdato blir generert i arbeidforhold.")
-            @RequestParam(required = false) String sluttdato
-    ) throws InterruptedException, ApiException {
-        var queryString = createQueryString("avvik", avvik, "");
-        queryString = createQueryString("sluttdato", sluttdato, queryString);
-
-        var response = ameldingConsumer.synthesizeArbeidsforholdHistorikk(tidligereArbeidsforhold, queryString);
-        doResponseValidation(response);
-
-        return ResponseEntity.ok(response);
-    }
-
-    @PostMapping("/amelding/arbeidsforhold/historikk")
-    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-amelding" })
-    public ResponseEntity<List<List<Arbeidsforhold>>> generateArbeidforholdHistorikkV2(
-            @RequestBody List<Arbeidsforhold> tidligereArbeidsforhold,
-            @ApiParam(value = "Verdi bestemmer om det skal være mulig at avvik blir generert i arbeidforhold.")
-            @RequestParam(required = false) String avvik,
-            @ApiParam(value = "Verdi bestemmer om det skal være mulig at sluttdato blir generert i arbeidforhold.")
-            @RequestParam(required = false) String sluttdato
-    ) throws InterruptedException, ApiException {
-        var queryString = createQueryString("avvik", avvik, "");
-        queryString = createQueryString("sluttdato", sluttdato, queryString);
-
-        var response = ameldingConsumer.synthesizeArbeidsforholdHistorikk(tidligereArbeidsforhold, queryString);
-        doResponseValidation(response);
-
-        return ResponseEntity.ok(response);
-    }
-
-    @PostMapping("/amelding/arbeidsforhold/start")
-    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-amelding" })
-    public ResponseEntity<List<Arbeidsforhold>> generateArbeidforholdStart(
-            @RequestBody List<String> startdatoer,
-            @ApiParam(value = "Verdi bestemmer om det skal være mulig at avvik blir generert i arbeidforhold.")
-            @RequestParam(required = false) String avvik
-    ) throws InterruptedException, ApiException {
-        var queryString = createQueryString("avvik", avvik, "");
-        var response = ameldingConsumer.synthesizeArbeidsforholdStart(startdatoer, queryString);
-        doResponseValidation(response);
-
-        return ResponseEntity.ok(response);
-    }
-
-    @PostMapping("/amelding/arbeidsforhold/start/{arbeidsforholdType}")
-    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-amelding" })
-    public ResponseEntity<Arbeidsforhold> generateArbeidforholdMedType(
-            @ApiParam(value = "Arbeidsforhold type.", required = true)
-            @PathVariable String arbeidsforholdType,
-            @RequestBody ArbeidsforholdPeriode request,
-            @ApiParam(value = "Verdi bestemmer om det skal være mulig at avvik blir generert i arbeidforhold.")
-            @RequestParam(required = false) String avvik
-    ) throws InterruptedException, ApiException {
-        InputValidator.validateInput(InputValidator.INPUT_STRING_TYPE.ARBEIDSFORHOLD_TYPE, arbeidsforholdType);
-        var queryString = createQueryString("avvik", avvik, "");
-        var response = ameldingConsumer.synthesizeArbeidsforholdStart(request, arbeidsforholdType, queryString);
-        doResponseValidation(response);
-
-        return ResponseEntity.ok(response);
-    }
-
-    @PostMapping("/amelding/arbeidsforhold/initial")
-    @Timed(value = "syntrest.resource.latency", extraTags = { "operation", "synthdata-amelding" })
-    public ResponseEntity<List<Arbeidsforhold>> generateArbeidforholdStartV2(
-            @RequestBody ArbeidsforholdPeriode request,
-            @ApiParam(value = "Verdi bestemmer om det skal være mulig at avvik blir generert i arbeidforhold.")
-            @RequestParam(required = false) String avvik
-    ) throws InterruptedException, ApiException {
-        var queryString = createQueryString("avvik", avvik, "");
-        var response = ameldingConsumer.synthesizeArbeidsforholdStart(request, queryString);
         doResponseValidation(response);
 
         return ResponseEntity.ok(response);

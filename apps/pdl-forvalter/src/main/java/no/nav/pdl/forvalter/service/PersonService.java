@@ -41,6 +41,8 @@ import static java.lang.System.currentTimeMillis;
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
 
@@ -65,7 +67,7 @@ public class PersonService {
     private final ValidateArtifactsService validateArtifactsService;
 
     @Transactional
-    public String updatePerson(String ident, PersonUpdateRequestDTO request) {
+    public String updatePerson(String ident, PersonUpdateRequestDTO request, Boolean overwrite, Boolean relaxed) {
 
         if (!isNumeric(ident) || ident.length() != 11) {
 
@@ -73,19 +75,14 @@ public class PersonService {
         }
 
         checkAlias(ident);
-        var dbPerson = personRepository.findByIdent(ident)
-                .orElseGet(() -> personRepository.save(DbPerson.builder()
-                        .ident(ident)
-                        .person(PersonDTO.builder()
-                                .ident(ident)
-                                .build())
-                        .sistOppdatert(now())
-                        .build()));
+        var dbPerson = getDbPerson(ident, overwrite);
 
         var mergedPerson = mergeService.merge(request.getPerson(), dbPerson.getPerson());
-        validateArtifactsService.validate(mergedPerson);
+        if (isNotTrue(relaxed)) {
+            validateArtifactsService.validate(mergedPerson);
+        }
 
-        var extendedArtifacts = personArtifactService.buildPerson(mergedPerson);
+        var extendedArtifacts = personArtifactService.buildPerson(mergedPerson, relaxed);
         dbPerson.setPerson(extendedArtifacts);
         dbPerson.setFornavn(extendedArtifacts.getNavn().stream().findFirst().orElse(new NavnDTO()).getFornavn());
         dbPerson.setMellomnavn(extendedArtifacts.getNavn().stream().findFirst().orElse(new NavnDTO()).getMellomnavn());
@@ -195,7 +192,7 @@ public class PersonService {
 
         return updatePerson(request.getPerson().getIdent(), PersonUpdateRequestDTO.builder()
                 .person(request.getPerson())
-                .build());
+                .build(), null, null);
     }
 
     private void checkAlias(String ident) {
@@ -205,5 +202,20 @@ public class PersonService {
             throw new InvalidRequestException(
                     format(VIOLATION_ALIAS_EXISTS, alias.get().getPerson().getIdent()));
         }
+    }
+
+    private DbPerson getDbPerson(String ident, Boolean overwrite) {
+
+        if (isTrue(overwrite)) {
+            personRepository.deleteByIdent(ident);
+        }
+        return personRepository.findByIdent(ident)
+                .orElseGet(() -> personRepository.save(DbPerson.builder()
+                        .ident(ident)
+                        .person(PersonDTO.builder()
+                                .ident(ident)
+                                .build())
+                        .sistOppdatert(now())
+                        .build()));
     }
 }

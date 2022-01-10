@@ -242,8 +242,41 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			adressebeskyttelse,
 			falskIdentitet,
 			utenlandskIdentifikasjonsnummer,
+			innflytting,
+			utflytting,
 			kontaktinformasjonForDoedsbo,
+			sikkerhetstiltak,
 		} = pdldataKriterier
+
+		if (innflytting) {
+			const innflyttingData = {
+				header: 'Innvandring',
+				itemRows: innflytting.map((item, idx) => {
+					return [
+						{ numberHeader: `Innvandring ${idx + 1}` },
+						obj('Fraflyttingsland', item.fraflyttingsland, AdresseKodeverk.InnvandretUtvandretLand),
+						obj('Fraflyttingssted', item.fraflyttingsstedIUtlandet),
+						obj('Fraflyttingsdato', Formatters.formatDate(item.innflyttingsdato)),
+					]
+				}),
+			}
+			data.push(innflyttingData)
+		}
+
+		if (utflytting) {
+			const utflyttingData = {
+				header: 'Utvandring',
+				itemRows: utflytting.map((item, idx) => {
+					return [
+						{ numberHeader: `Utvandring ${idx + 1}` },
+						obj('Tilflyttingsland', item.tilflyttingsland, AdresseKodeverk.InnvandretUtvandretLand),
+						obj('Tilflyttingssted', item.tilflyttingsstedIUtlandet),
+						obj('Utvandringsdato', Formatters.formatDate(item.utflyttingsdato)),
+					]
+				}),
+			}
+			data.push(utflyttingData)
+		}
 
 		if (telefonnummer) {
 			const telefonnummerData = {
@@ -326,6 +359,22 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			const bostedsadresseData = {
 				header: 'Bostedsadresse',
 				itemRows: bostedsadresse.map((item, idx) => {
+					if (item.utenlandskAdresse) {
+						const adresseData = item.utenlandskAdresse
+						const isEmpty =
+							adresseData.empty || Object.values(adresseData).every((x) => x === null || x === '')
+						return [
+							{ numberHeader: `Utenlandsk boadresse ${idx + 1}` },
+							obj('', isEmpty && 'Ingen verdier satt'),
+							obj('Gatenavn og husnummer', adresseData.adressenavnNummer),
+							obj('Postnummer og -navn', adresseData.postboksNummerNavn),
+							obj('Postkode', adresseData.postkode),
+							obj('By eller sted', adresseData.bySted),
+							obj('Land', adresseData.landkode, AdresseKodeverk.StatsborgerskapLand),
+							obj('Bygg-/leilighetsinfo', adresseData.bygningEtasjeLeilighet),
+							obj('Region/distrikt/område', adresseData.regionDistriktOmraade),
+						]
+					}
 					if (item.vegadresse) {
 						const adresseData = item.vegadresse
 						return [
@@ -466,6 +515,24 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				}),
 			}
 			data.push(adressebeskyttelseData)
+		}
+
+		if (sikkerhetstiltak) {
+			const sikkerhetstiltakData = {
+				header: 'Sikkerhetstiltak',
+				itemRows: sikkerhetstiltak.map((item, idx) => {
+					return [
+						{ numberHeader: `Sikkerhetstiltak ${idx + 1}` },
+						obj('Type sikkerhetstiltak', item.tiltakstype),
+						obj('Beskrivelse', item.beskrivelse),
+						obj('Kontaktperson', item.kontaktperson.personident),
+						obj('Navkontor kode', item.kontaktperson.enhet),
+						obj('Gyldig fra og med', Formatters.formatDate(item.gyldigFraOgMed)),
+						obj('Gyldig til og med', Formatters.formatDate(item.gyldigTilOgMed)),
+					]
+				}),
+			}
+			data.push(sikkerhetstiltakData)
 		}
 
 		const sjekkRettIdent = (item) => {

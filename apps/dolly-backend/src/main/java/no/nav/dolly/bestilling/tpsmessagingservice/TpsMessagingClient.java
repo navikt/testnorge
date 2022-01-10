@@ -39,7 +39,7 @@ public class TpsMessagingClient implements ClientRegister {
         StringBuilder status = new StringBuilder();
 
         try {
-            log.info("Bestilling fra Dolly-frontend: {}", Json.pretty(bestilling));
+            log.info("Bestilling fra Dolly: {}", Json.pretty(bestilling));
 
             if (nonNull(bestilling.getTpsMessaging().getSpraakKode())) {
                 appendResponseStatus(
@@ -48,7 +48,29 @@ public class TpsMessagingClient implements ClientRegister {
                                 bestilling.getEnvironments(),
                                 mapperFacade.map(bestilling.getTpsMessaging().getSpraakKode(), SpraakDTO.class)),
                         status,
-                        "SprakKode"
+                        "SprakKode_opprett"
+                );
+            }
+
+            if (nonNull(bestilling.getTpsMessaging().getSikkerhetstiltak()) && !bestilling.getTpsMessaging().getSikkerhetstiltak().isEmpty()) {
+                var sikkerhetstiltakStatus = tpsMessagingConsumer.deleteSikkerhetstiltakRequest(
+                        dollyPerson.getHovedperson(),
+                        bestilling.getEnvironments());
+
+                appendResponseStatus(sikkerhetstiltakStatus.stream()
+                                .filter(result -> !result.getUtfyllendeMelding().contains("Opphør på ikke eksist. sikkerhet"))
+                                .toList(),
+                        status,
+                        "Sikkerhetstiltak_slett"
+                );
+
+                appendResponseStatus(
+                        tpsMessagingConsumer.sendSikkerhetstiltakRequest(
+                                dollyPerson.getHovedperson(),
+                                bestilling.getEnvironments(),
+                                bestilling.getTpsMessaging().getSikkerhetstiltak().get(0)),
+                        status,
+                        "Sikkerhetstiltak_opprett"
                 );
             }
 
@@ -73,7 +95,7 @@ public class TpsMessagingClient implements ClientRegister {
                 );
             }
 
-            if (nonNull(bestilling.getTpsMessaging().getTelefonnummer())) {
+            if (nonNull(bestilling.getTpsMessaging().getTelefonnummer()) && !bestilling.getTpsMessaging().getTelefonnummer().isEmpty()) {
                 var tlfStatus = tpsMessagingConsumer.deleteTelefonnummerRequest(
                         dollyPerson.getHovedperson(),
                         bestilling.getEnvironments());
@@ -82,28 +104,25 @@ public class TpsMessagingClient implements ClientRegister {
                                 .filter(result -> !result.getUtfyllendeMelding().contains("ingen aktiv telefonr funnet"))
                                 .toList(),
                         status,
-                        "Telefonnummer_opprett"
+                        "Telefonnummer_slett"
                 );
-            }
-
-            if (nonNull(bestilling.getTpsMessaging().getTelefonnummer())) {
                 appendResponseStatus(
                         tpsMessagingConsumer.sendTelefonnummerRequest(
                                 dollyPerson.getHovedperson(),
                                 bestilling.getEnvironments(),
                                 bestilling.getTpsMessaging().getTelefonnummer()),
                         status,
-                        "Telefonnummer_slett"
+                        "Telefonnummer_opprett"
                 );
             }
 
             sendBankkontoer(bestilling, dollyPerson, status);
 
         } catch (RuntimeException e) {
-            status.append(errorStatusDecoder.decodeRuntimeException(e));
+            progress.setFeil(errorStatusDecoder.decodeRuntimeException(e));
             log.error("Kall til TPS messaging service feilet: {}", e.getMessage(), e);
         }
-        progress.setFeil(status.toString());
+        progress.setTpsMessagingStatus(status.toString());
     }
 
     @Override

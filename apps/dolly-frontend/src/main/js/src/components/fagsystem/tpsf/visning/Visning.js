@@ -14,6 +14,7 @@ import {
 	Vergemaal,
 } from './partials'
 import { TpsMessagingApi } from '~/service/Api'
+import { PdlSikkerhetstiltak } from '~/components/fagsystem/pdlf/visning/partials/PdlSikkerhetstiltak'
 
 export const TpsfVisning = ({ data, pdlData, environments }) => {
 	const [tpsMessagingData, setTpsMessagingData] = useState(null)
@@ -32,17 +33,28 @@ export const TpsfVisning = ({ data, pdlData, environments }) => {
 	return (
 		<div>
 			<Personinfo data={data} tpsMessagingData={tpsMessagingData} />
-			<Nasjonalitet data={data} />
+			<Nasjonalitet data={data} pdlData={pdlData} tpsMessagingData={tpsMessagingData} />
 			<Vergemaal data={data.vergemaal} />
 			<Fullmakt data={data.fullmakt} relasjoner={data.relasjoner} />
 			{!harPdlBoadresse && <Boadresse boadresse={data.boadresse} />}
 			{!harPdlOppholdsadresse && <Postadresse postadresse={data.postadresse} />}
 			{!harPdlKontaktadresse && <MidlertidigAdresse midlertidigAdresse={data.midlertidigAdresse} />}
+			{pdlData?.[0]?.person?.sikkerhetstiltak && (
+				<PdlSikkerhetstiltak data={pdlData[0].person.sikkerhetstiltak} />
+			)}
 			<UtenlandskBankkonto
-				data={tpsMessagingData ? tpsMessagingData.bankkontonrUtland : data.bankkontonrUtland}
+				data={
+					tpsMessagingData?.bankkontonrUtland
+						? tpsMessagingData.bankkontonrUtland
+						: data.bankkontonrUtland
+				}
 			/>
 			<NorskBankkonto
-				data={tpsMessagingData ? tpsMessagingData.bankkontonrNorsk : data.bankkontonrNorsk}
+				data={
+					tpsMessagingData?.bankkontonrNorsk
+						? tpsMessagingData.bankkontonrNorsk
+						: data.bankkontonrNorsk
+				}
 			/>
 			<Identhistorikk identhistorikk={data.identHistorikk} />
 			<Relasjoner relasjoner={data.relasjoner} />

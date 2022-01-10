@@ -8,6 +8,7 @@ import { GeografiskTilknytning } from '~/components/fagsystem/pdlf/visning/parti
 import { PdlPersonInfo } from '~/components/fagsystem/pdlf/visning/partials/PdlPersonInfo'
 import { PdlNasjonalitet } from '~/components/fagsystem/pdlf/visning/partials/PdlNasjonalitet'
 import { PdlFullmakt } from '~/components/fagsystem/pdlf/visning/partials/PdlFullmakt'
+import { PdlSikkerhetstiltak } from '~/components/fagsystem/pdlf/visning/partials/PdlSikkerhetstiltak'
 import { Telefonnummer } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
 import { Boadresse } from '~/components/fagsystem/pdlf/visning/partials/Boadresse'
 import { Oppholdsadresse } from '~/components/fagsystem/pdlf/visning/partials/Oppholdsadresse'
@@ -34,6 +35,7 @@ type HentPerson = {
 	bostedsadresse: Array<BostedData>
 	fullmakt: [FullmaktData]
 	telefonnummer: Array<TelefonData>
+	sikkerhetstiltak: [SikkerhetstiltakData]
 }
 
 type BostedData = {
@@ -56,6 +58,20 @@ type TelefonData = {
 	prioritet: number
 }
 
+type SikkerhetstiltakData = {
+	gyldigFraOgMed: Date
+	gyldigTilOgMed: Date
+	tiltakstype: string
+	beskrivelse: string
+	kontaktperson: Kontaktperson
+	omraader: []
+}
+
+type Kontaktperson = {
+	personident: string
+	enhet: string
+}
+
 export const PdlDataVisning = ({ data }: PdlData) => {
 	const { hentPerson, hentIdenter, hentGeografiskTilknytning } = data
 	const {
@@ -65,6 +81,7 @@ export const PdlDataVisning = ({ data }: PdlData) => {
 		kontaktadresse,
 		adressebeskyttelse,
 		fullmakt,
+		sikkerhetstiltak,
 	} = hentPerson
 
 	const getPersonInfo = () => {
@@ -80,6 +97,7 @@ export const PdlDataVisning = ({ data }: PdlData) => {
 				<Kontaktadresse data={kontaktadresse} />
 				<Adressebeskyttelse data={adressebeskyttelse} />
 				<PdlFullmakt data={fullmakt} />
+				<PdlSikkerhetstiltak data={sikkerhetstiltak} />
 			</div>
 		)
 	}

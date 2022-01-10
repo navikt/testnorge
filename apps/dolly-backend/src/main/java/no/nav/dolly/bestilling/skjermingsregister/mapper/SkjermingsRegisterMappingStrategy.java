@@ -24,8 +24,8 @@ public class SkjermingsRegisterMappingStrategy implements MappingStrategy {
                         request.setPersonident(wrapper.getPerson().getIdent());
                         request.setFornavn(wrapper.getPerson().getFornavn());
                         request.setEtternavn(wrapper.getPerson().getEtternavn());
-                        request.setSkjermetFra(wrapper.getBestilling().getEgenAnsattDatoFom());
-                        request.setSkjermetTil(wrapper.getBestilling().getEgenAnsattDatoTom());
+                        request.setSkjermetFra(wrapper.getSkjermetFra());
+                        request.setSkjermetTil(wrapper.getSkjermetTil());
                     }
                 })
                 .register();

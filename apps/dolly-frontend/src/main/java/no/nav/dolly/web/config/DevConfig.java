@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Profile;
 import no.nav.testnav.libs.reactivesessionsecurity.config.OicdInMemorySessionConfiguration;
 
 @Configuration
-@Profile("dev")
+@Profile({"dev", "test"})
 @Import({
         OicdInMemorySessionConfiguration.class
 })

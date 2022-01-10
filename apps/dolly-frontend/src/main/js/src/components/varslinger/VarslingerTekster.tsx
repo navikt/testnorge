@@ -9,12 +9,15 @@ export const VarslingerTekster = ({ varslingId }: VarslingId) => {
 	if (!varslingId) return null
 
 	const brukerveiledning = (
-		<a href="https://navikt.github.io/dolly-frontend/" target="_blank">
+		<a
+			href="https://navikt.github.io/testnorge/applications/dolly/brukerveiledning"
+			target="_blank"
+		>
 			her
 		</a>
 	)
 	const retningslinjer = (
-		<a href="https://navikt.github.io/dolly-frontend/retningslinjer" target="_blank">
+		<a href="https://navikt.github.io/testnorge/applications/dolly/retningslinjer" target="_blank">
 			her
 		</a>
 	)

@@ -54,7 +54,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
 
     implementation 'org.hibernate.validator:hibernate-validator'
-    implementation 'org.springdoc:springdoc-openapi-ui:1.5.12'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.1'
     implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
 
     testImplementation 'no.nav.testnav.libs:testing'

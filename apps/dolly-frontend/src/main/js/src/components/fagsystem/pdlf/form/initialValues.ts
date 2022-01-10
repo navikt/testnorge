@@ -104,3 +104,19 @@ export const initialKontaktinfoForDoedebo = {
 	master: 'FREG',
 	gjeldende: true,
 }
+
+export const initialInnvandring = {
+	fraflyttingsland: '',
+	fraflyttingsstedIUtlandet: '',
+	innflyttingsdato: new Date(),
+	master: 'FREG',
+	kilde: 'Dolly',
+}
+
+export const initialUtvandring = {
+	tilflyttingsland: '',
+	tilflyttingsstedIUtlandet: '',
+	utflyttingsdato: new Date(),
+	master: 'FREG',
+	kilde: 'Dolly',
+}

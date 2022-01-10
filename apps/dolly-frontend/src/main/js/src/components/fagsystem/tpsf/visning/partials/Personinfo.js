@@ -38,6 +38,48 @@ function hentSkjermingData(skjermingPath) {
 	)
 }
 
+function hentSikkerhetstiltakData(sikkerhetstiltakPath) {
+	if (!sikkerhetstiltakPath) {
+		return null
+	}
+	return (
+		<>
+			{sikkerhetstiltakPath.typeSikkerhetTiltak && (
+				<>
+					<TitleValue
+						title="Type sikkerhetstiltak"
+						value={`${sikkerhetstiltakPath.typeSikkerhetTiltak} - ${sikkerhetstiltakPath.beskrSikkerhetTiltak}`}
+					/>
+					<TitleValue
+						title="Sikkerhetstiltak starter"
+						value={Formatters.formatDate(sikkerhetstiltakPath.sikkerhetTiltakDatoFom)}
+					/>
+					<TitleValue
+						title="Sikkerhetstiltak opphører"
+						value={Formatters.formatDate(sikkerhetstiltakPath.sikkerhetTiltakDatoTom)}
+					/>
+				</>
+			)}
+			{sikkerhetstiltakPath.tiltakstype && (
+				<>
+					<TitleValue
+						title="Type sikkerhetstiltak"
+						value={`${sikkerhetstiltakPath.tiltakstype} - ${sikkerhetstiltakPath.beskrivelse}`}
+					/>
+					<TitleValue
+						title="Sikkerhetstiltak starter"
+						value={Formatters.formatDate(sikkerhetstiltakPath.gyldigFraOgMed)}
+					/>
+					<TitleValue
+						title="Sikkerhetstiltak opphører"
+						value={Formatters.formatDate(sikkerhetstiltakPath.gyldigTilOgMed)}
+					/>
+				</>
+			)}
+		</>
+	)
+}
+
 export const Personinfo = ({ data, visTittel = true, tpsMessagingData }) => (
 	<div>
 		{visTittel && <SubOverskrift label="Persondetaljer" iconKind="personinformasjon" />}
@@ -112,23 +154,11 @@ export const Personinfo = ({ data, visTittel = true, tpsMessagingData }) => (
 				value={data.tknavn ? `${data.tknr} - ${data.tknavn}` : data.tknr}
 				size="medium"
 			/>
-			{hentSkjermingData(data)}
-			{hentSkjermingData(tpsMessagingData)}
-			{data.typeSikkerhetTiltak && (
-				<>
-					<TitleValue
-						title="Type sikkerhetstiltak"
-						value={`${data.typeSikkerhetTiltak} - ${data.beskrSikkerhetTiltak}`}
-					/>
-					<TitleValue
-						title="Sikkerhetstiltak starter"
-						value={Formatters.formatDate(data.sikkerhetTiltakDatoFom)}
-					/>
-					<TitleValue
-						title="Sikkerhetstiltak opphører"
-						value={Formatters.formatDate(data.sikkerhetTiltakDatoTom)}
-					/>
-				</>
+			{hentSkjermingData(tpsMessagingData?.egenAnsattDatoFom ? tpsMessagingData : data)}
+			{hentSikkerhetstiltakData(
+				tpsMessagingData?.sikkerhetstiltak
+					? tpsMessagingData.sikkerhetstiltak
+					: data.sikkerhetstiltak
 			)}
 		</div>
 	</div>

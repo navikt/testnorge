@@ -29,8 +29,13 @@ const Statsborgerskap = ({ statsborgerskap }) => {
 	)
 }
 
-export const Nasjonalitet = ({ data, visTittel = true }) => {
-	const { statsborgerskap, sprakKode, innvandretUtvandret } = data
+export const Nasjonalitet = ({ data, visTittel = true, pdlData }) => {
+	const { statsborgerskap, sprakKode } = data
+	const pdlPerson = pdlData?.[0]?.person
+
+	if (!data && !pdlData) {
+		return null
+	}
 
 	return (
 		<div>
@@ -48,29 +53,49 @@ export const Nasjonalitet = ({ data, visTittel = true }) => {
 				<TitleValue title="Språk" kodeverk={PersoninformasjonKodeverk.Spraak} value={sprakKode} />
 			</div>
 
-			{innvandretUtvandret?.length > 0 && (
+			{pdlPerson?.innflytting?.length > 0 && (
 				<ErrorBoundary>
-					<DollyFieldArray data={innvandretUtvandret} header={'Innvandret/utvandret'} nested>
+					<DollyFieldArray data={pdlPerson.innflytting} header={'Innvandret'} nested>
 						{(id, idx) => (
-							<React.Fragment>
-								{innvandretUtvandret && (
-									<>
-										<TitleValue
-											title={
-												innvandretUtvandret[idx].innutvandret === 'UTVANDRET'
-													? 'Utvandret til'
-													: 'Innvandret fra'
-											}
-											kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
-											value={innvandretUtvandret[idx].landkode}
-										/>
-										<TitleValue
-											title="Flyttedato"
-											value={Formatters.formatDate(innvandretUtvandret[idx].flyttedato)}
-										/>
-									</>
-								)}
-							</React.Fragment>
+							<>
+								<TitleValue
+									title="Fraflyttingsland"
+									value={pdlPerson.innflytting[idx].fraflyttingsland}
+									kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
+								/>
+								<TitleValue
+									title="Fraflyttingssted"
+									value={pdlPerson.innflytting[idx].fraflyttingsstedIUtlandet}
+								/>
+								<TitleValue
+									title="Innflyttingsdato"
+									value={pdlPerson.innflytting[idx].innflyttingsdato}
+								/>
+							</>
+						)}
+					</DollyFieldArray>
+				</ErrorBoundary>
+			)}
+
+			{pdlPerson?.utflytting?.length > 0 && (
+				<ErrorBoundary>
+					<DollyFieldArray data={pdlPerson.utflytting} header={'Utvandret'} nested>
+						{(id, idx) => (
+							<>
+								<TitleValue
+									title="Tilflyttingsland"
+									value={pdlPerson.utflytting[idx].tilflyttingsland}
+									kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
+								/>
+								<TitleValue
+									title="Tilflyttingssted"
+									value={pdlPerson.utflytting[idx].tilflyttingsstedIUtlandet}
+								/>
+								<TitleValue
+									title="Utflyttingsdato"
+									value={pdlPerson.utflytting[idx].utflyttingsdato}
+								/>
+							</>
 						)}
 					</DollyFieldArray>
 				</ErrorBoundary>

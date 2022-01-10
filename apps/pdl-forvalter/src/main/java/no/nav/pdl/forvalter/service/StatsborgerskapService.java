@@ -11,7 +11,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -41,7 +40,7 @@ public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
                 handle(type, person.getIdent(), person.getInnflytting().stream().reduce((a, b) -> b).orElse(null));
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
-                type.setGjeldende(nonNull(type.getGjeldende()) ? type.getGjeldende(): true);
+                type.setGjeldende(nonNull(type.getGjeldende()) ? type.getGjeldende() : true);
             }
         }
         return person.getStatsborgerskap();
@@ -74,10 +73,6 @@ public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
 
         if (isNull(statsborgerskap.getGyldigFraOgMed())) {
             statsborgerskap.setGyldigFraOgMed(DatoFraIdentUtility.getDato(ident).atStartOfDay());
-        }
-
-        if (isNull(statsborgerskap.getBekreftelsesdato()) && Master.PDL == statsborgerskap.getMaster()) {
-            statsborgerskap.setBekreftelsesdato(LocalDateTime.now());
         }
     }
 }

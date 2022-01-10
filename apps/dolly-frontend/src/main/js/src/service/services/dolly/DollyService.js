@@ -15,6 +15,10 @@ export default {
 		return Request.get(Endpoints.gruppeByIdPaginert(gruppeId, pageNo, pageSize))
 	},
 
+	getSkjerming(ident) {
+		return Request.get(Endpoints.skjermingByIdent(ident))
+	},
+
 	getGruppeById(gruppeId) {
 		return Request.get(Endpoints.gruppeById(gruppeId))
 	},
