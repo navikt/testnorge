@@ -79,7 +79,6 @@ export const PersoninformasjonPanel = ({ stateModifier }) => {
 				<Attributt attr={sm.attrs.erForsvunnet} />
 				<Attributt attr={sm.attrs.norskBankkonto} disabled={sm.attrs.utenlandskBankkonto.checked} />
 				<Attributt attr={sm.attrs.utenlandskBankkonto} disabled={sm.attrs.norskBankkonto.checked} />
-				<Attributt attr={sm.attrs.spesreg} />
 				<Attributt attr={sm.attrs.telefonnummer} />
 				<Attributt attr={sm.attrs.vergemaal} />
 				<Attributt attr={sm.attrs.fullmakt} />
@@ -307,16 +306,6 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			},
 			remove() {
 				del(['pdldata.person.telefonnummer', 'tpsMessaging.telefonnummer'])
-			},
-		},
-		spesreg: {
-			label: 'Diskresjonskode',
-			checked: has('tpsf.spesreg') || has('tpsf.utenFastBopel'),
-			add() {
-				setMulti(['tpsf.spesreg', ''], ['tpsf.utenFastBopel', false])
-			},
-			remove() {
-				del(['tpsf.spesreg', 'tpsf.utenFastBopel'])
 			},
 		},
 		identtype: {

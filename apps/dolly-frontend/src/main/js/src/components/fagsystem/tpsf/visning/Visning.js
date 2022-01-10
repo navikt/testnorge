@@ -32,7 +32,7 @@ export const TpsfVisning = ({ data, pdlData, environments }) => {
 
 	return (
 		<div>
-			<Personinfo data={data} tpsMessagingData={tpsMessagingData} />
+			<Personinfo data={data} tpsMessagingData={tpsMessagingData} pdlData={pdlData} />
 			<Nasjonalitet data={data} pdlData={pdlData} tpsMessagingData={tpsMessagingData} />
 			<Vergemaal data={data.vergemaal} />
 			<Fullmakt data={data.fullmakt} relasjoner={data.relasjoner} />

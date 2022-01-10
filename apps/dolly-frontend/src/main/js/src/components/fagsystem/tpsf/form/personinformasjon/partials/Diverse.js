@@ -6,7 +6,6 @@ import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { Diskresjonskoder } from './diskresjonskoder/Diskresjonskoder'
 import _get from 'lodash/get'
 import styled from 'styled-components'
 import { Checkbox as NavCheckbox } from 'nav-frontend-skjema'
@@ -124,7 +123,6 @@ export const Diverse = ({ formikBag }) => {
 				/>
 			</Vis>
 			<Telefonnummer formikBag={formikBag} />
-			<Diskresjonskoder basePath="tpsf" formikBag={formikBag} />
 		</React.Fragment>
 	)
 }
