@@ -17,15 +17,14 @@ const loadingSelector = createLoadingSelector([
 	actionList.getPdlForvalter,
 	getBestillinger,
 ])
-const mapStateToProps = (state, ownProps) => {
-	return {
-		personListe: sokSelector(selectPersonListe(state), state.search),
-		gruppeInfo: state.gruppe.gruppeInfo,
-		identer: state.gruppe.ident,
-		isFetching: loadingSelector(state),
-		visPerson: state.finnPerson.visPerson,
-	}
-}
+
+const mapStateToProps = (state, ownProps) => ({
+	personListe: sokSelector(selectPersonListe(state), state.search),
+	gruppeInfo: state.gruppe.gruppeInfo,
+	identer: state.gruppe.ident,
+	isFetching: loadingSelector(state),
+	visPerson: state.finnPerson.visPerson,
+})
 
 const mapDispatchToProps = { fetchTpsfPersoner, fetchPdlPersoner }
 

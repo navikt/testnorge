@@ -242,16 +242,18 @@ export default handleActions(
 // Thunk
 export const fetchTpsfPersoner = () => (dispatch, getState) => {
 	const state = getState()
-
 	let identListe = []
-	Object.values(state.gruppe?.ident)?.forEach((person) => identListe.push(person.ident))
+	Object.values(state.gruppe?.ident)?.forEach((person) => {
+		if (!person.master || person.master !== 'PDLF') {
+			identListe.push(person.ident)
+		}
+	})
 
 	if (identListe && identListe.length >= 1) dispatch(actions.getTpsf(identListe))
 }
 
 export const fetchPdlPersoner = () => (dispatch, getState) => {
 	const state = getState()
-
 	let identListe = []
 	Object.values(state.gruppe?.ident)?.forEach((person) => identListe.push(person.ident))
 
@@ -298,8 +300,6 @@ export const fetchDataFraFagsystemer = (personId) => (dispatch, getState) => {
 				return dispatch(actions.getArena(personId))
 			case 'PDL':
 				return dispatch(actions.getPDL(personId))
-			case 'PDL_FORVALTER':
-				return dispatch(actions.getPdlForvalter(personId))
 			case 'UDISTUB':
 				return dispatch(actions.getUdi(personId))
 			case 'AAREG':
@@ -324,7 +324,6 @@ export const fetchDataFraFagsystemerForSoek = (personId) => (dispatch) => {
 		'INNTK',
 		'ARENA',
 		'PDL',
-		'PDL_FORVALTER',
 		'INST2,',
 		'PEN_INNTEKT',
 		'AAREG',
@@ -369,8 +368,9 @@ export const sokSelector = (items, searchStr) => {
 }
 
 const hentPersonStatus = (ident, bestillingStatus) => {
-	if (!bestillingStatus) return null
 	let totalStatus = 'Ferdig'
+
+	if (!bestillingStatus) return totalStatus
 
 	bestillingStatus.status.forEach((fagsystem) => {
 		_get(fagsystem, 'statuser', []).forEach((status) => {

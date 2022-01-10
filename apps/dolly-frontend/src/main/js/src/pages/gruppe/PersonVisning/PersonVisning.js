@@ -58,7 +58,7 @@ export const PersonVisning = ({
 					</Button>
 				)}
 				{!iLaastGruppe && (
-					<LeggTilRelasjonModal environments={bestilling.environments} personInfo={personInfo} />
+					<LeggTilRelasjonModal environments={bestilling?.environments} personInfo={personInfo} />
 				)}
 				<BestillingSammendragModal bestilling={bestilling} />
 				{!iLaastGruppe && (
@@ -69,7 +69,7 @@ export const PersonVisning = ({
 			</div>
 			<TpsfVisning
 				data={TpsfVisning.filterValues(data.tpsf, bestillingsListe)}
-				environments={bestilling.environments}
+				environments={bestilling?.environments}
 				pdlData={data.pdlforvalter}
 			/>
 			<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
@@ -91,11 +91,11 @@ export const PersonVisning = ({
 				loading={loading.arenaforvalteren}
 			/>
 			<UdiVisning
-				data={UdiVisning.filterValues(data.udistub, bestilling.bestilling.udistub)}
+				data={UdiVisning.filterValues(data.udistub, bestilling?.bestilling.udistub)}
 				loading={loading.udistub}
 			/>
 			<DokarkivVisning ident={ident.ident} />
-			<PersonMiljoeinfo ident={ident.ident} miljoe={bestilling.environments} />
+			<PersonMiljoeinfo ident={ident.ident} miljoe={bestilling?.environments} />
 			<PdlPersonMiljoeInfo ident={ident.ident} />
 			<TidligereBestillinger ids={ident.bestillingId} />
 			<BeskrivelseConnector ident={ident} iLaastGruppe={iLaastGruppe} />

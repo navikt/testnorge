@@ -25,9 +25,9 @@ export const TpsfVisning = ({ data, environments, pdlData }) => {
 	const [tpsMessagingData, setTpsMessagingData] = useState(null)
 	useEffect(() => {
 		if (environments && environments.length > 0) {
-			TpsMessagingApi.getTpsPersonInfo(data.ident, environments[0]).then((response) => {
+			TpsMessagingApi.getTpsPersonInfo(data.ident, environments[0]).then((response) =>
 				setTpsMessagingData(response?.data[0]?.person)
-			})
+			)
 		}
 	}, [])
 	if (!data) return null
@@ -90,7 +90,8 @@ TpsfVisning.filterValues = (data, bestillingsListe) => {
 		data = {
 			...data,
 			innvandretUtvandret: data?.innvandretUtvandret?.filter(
-				(i, idx) => idx !== data.innvandretUtvandret.length - 1 || i.innutvandret === 'UTVANDRET'
+				(element, idx) =>
+					idx !== data.innvandretUtvandret.length - 1 || element?.innutvandret === 'UTVANDRET'
 			),
 		}
 	return data
