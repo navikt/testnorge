@@ -75,6 +75,8 @@ public class SkjermingsRegisterConsumer {
                         .pathSegment(ident)
                         .build())
                 .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
+                .header(HEADER_NAV_CALL_ID, callid)
+                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .retrieve().toEntity(SkjermingsDataResponse.class)
                 .block();
     }
