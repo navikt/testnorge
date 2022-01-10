@@ -4,6 +4,7 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { SikkerhetstiltakData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 
 type Data = {
 	data: SikkerhetstiltakData
@@ -11,19 +12,6 @@ type Data = {
 
 type DataListe = {
 	data: Array<SikkerhetstiltakData>
-}
-
-type SikkerhetstiltakData = {
-	gyldigFraOgMed: Date
-	gyldigTilOgMed: Date
-	tiltakstype: string
-	beskrivelse: string
-	kontaktperson: Kontaktperson
-}
-
-type Kontaktperson = {
-	personident: string
-	enhet: string
 }
 
 export const Visning = ({ data }: Data) => {

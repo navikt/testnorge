@@ -4,6 +4,7 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { FullmaktData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 
 type Data = {
 	data: FullmaktData
@@ -11,14 +12,6 @@ type Data = {
 
 type DataListe = {
 	data: Array<FullmaktData>
-}
-
-type FullmaktData = {
-	gyldigFraOgMed: Date
-	gyldigTilOgMed: Date
-	motpartsPersonident: string
-	motpartsRolle: string
-	omraader: []
 }
 
 export const Visning = ({ data }: Data) => {

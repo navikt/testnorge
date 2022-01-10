@@ -9,21 +9,6 @@ import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFiel
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import _get from 'lodash/get'
 
-export interface TelefonnummerArray {
-	person: {
-		telefonnummer: Array<TelefonnummerValues>
-	}
-}
-
-interface TelefonnummerValues {
-	landskode?: string
-	nummer?: string
-}
-
-interface TelefonnummerProps {
-	formikBag: FormikProps<{ pdldata: TelefonnummerArray }>
-}
-
 const initialTelefonnummer = {
 	landskode: '',
 	nummer: '',
@@ -37,6 +22,21 @@ const initialTpsTelefonnummer = {
 	landkode: '',
 	telefonnummer: '',
 	telefontype: 'HJET',
+}
+
+export interface TelefonnummerArray {
+	person: {
+		telefonnummer: Array<TelefonnummerValues>
+	}
+}
+
+interface TelefonnummerValues {
+	landskode?: string
+	nummer?: string
+}
+
+interface TelefonnummerProps {
+	formikBag: FormikProps<{ pdldata: TelefonnummerArray }>
 }
 
 export const Telefonnummer = ({ formikBag }: TelefonnummerProps) => {
