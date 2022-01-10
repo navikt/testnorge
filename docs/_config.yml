@@ -1,8 +1,11 @@
-title: testnorge
+title: Testnav
 remote_theme: pmarsceill/just-the-docs
+logo: "assets/logo.ico"
 
-collections:
-  docs:
-    name: Applikasjoner
-    permalink: "../apps/"
-    output: true
+exclude: [
+    "applications/avhengighetsanalyse.md",
+    "applications/endringsmelding.md",
+    "applications/oppsummeringsdokument.md",
+    "solution-description/index.md",
+    "solution-description/azure-ad-og-z-ident.md"
+]

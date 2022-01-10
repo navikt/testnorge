@@ -66,7 +66,7 @@ public class OrganisasjonBestillingService {
     private final JsonBestillingMapper jsonBestillingMapper;
     private final GetUserInfo getUserInfo;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public RsOrganisasjonBestillingStatus fetchBestillingStatusById(Long bestillingId) {
 
         OrganisasjonBestilling bestilling = bestillingRepository.findById(bestillingId)
@@ -215,6 +215,7 @@ public class OrganisasjonBestillingService {
     }
 
     @Transactional
+    @CacheEvict(value = CACHE_ORG_BESTILLING, allEntries = true)
     public void slettBestillingByOrgnummer(String orgnummer) {
 
         List<Long> bestillinger = organisasjonNummerService.fetchBestillingsIdFromOrganisasjonNummer(orgnummer).stream()

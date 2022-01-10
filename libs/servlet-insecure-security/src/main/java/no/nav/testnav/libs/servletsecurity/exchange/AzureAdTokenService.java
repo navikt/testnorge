@@ -1,12 +1,9 @@
 package no.nav.testnav.libs.servletsecurity.exchange;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.libs.securitycore.command.azuread.ClientCredentialExchangeCommand;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.securitycore.domain.azuread.AzureNavClientCredential;
-import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -15,6 +12,12 @@ import reactor.netty.http.client.HttpClient;
 import reactor.netty.transport.ProxyProvider;
 
 import java.net.URI;
+
+import no.nav.testnav.libs.securitycore.command.azuread.ClientCredentialExchangeCommand;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.securitycore.domain.azuread.AzureNavClientCredential;
+import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
 
 
 @Slf4j
@@ -25,11 +28,14 @@ public class AzureAdTokenService implements ExchangeToken {
 
     public AzureAdTokenService(
             @Value("${http.proxy:#{null}}") String proxyHost,
-            @Value("${spring.security.oauth2.resourceserver.aad.issuer-uri:${AAD_ISSUER_URI}/v2.0}") String issuerUrl,
+            @Value("${AAD_ISSUER_URI}") String issuerUrl,
             AzureNavClientCredential clientCredential
     ) {
         log.info("Init AzureAd token exchange.");
-        WebClient.Builder builder = WebClient.builder();
+        WebClient.Builder builder = WebClient
+                .builder()
+                .baseUrl(issuerUrl + "/oauth2/v2.0/token")
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
 
         if (proxyHost != null) {
             log.info("Setter opp proxy host {} for Client Credentials", proxyHost);
@@ -50,10 +56,6 @@ public class AzureAdTokenService implements ExchangeToken {
 
     @Override
     public Mono<AccessToken> exchange(ServerProperties serverProperties) {
-        return new ClientCredentialExchangeCommand(
-                webClient,
-                clientCredential,
-                serverProperties.toAzureAdScope()
-        ).call();
+        return new ClientCredentialExchangeCommand(webClient, clientCredential, serverProperties.toAzureAdScope()).call();
     }
 }

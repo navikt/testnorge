@@ -9,6 +9,8 @@ import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdResponse;
 import no.nav.dolly.bestilling.inntektstub.InntektstubConsumer;
 import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer;
+import no.nav.dolly.bestilling.skjermingsregister.SkjermingsRegisterConsumer;
+import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingsDataResponse;
 import no.nav.dolly.bestilling.sykemelding.HelsepersonellConsumer;
 import no.nav.dolly.bestilling.sykemelding.domain.dto.HelsepersonellListeDTO;
 import no.nav.dolly.consumer.fastedatasett.DatasettType;
@@ -63,6 +65,7 @@ public class OppslagController {
     private final ProfilApiConsumer profilApiConsumer;
     private final TransaksjonMappingService transaksjonMappingService;
     private final HelsepersonellConsumer helsepersonellConsumer;
+    private final SkjermingsRegisterConsumer skjermingsRegisterConsumer;
 
     @Cacheable(CACHE_KODEVERK)
     @GetMapping("/kodeverk/{kodeverkNavn}")
@@ -109,6 +112,12 @@ public class OppslagController {
         return asList(SystemTyper.values()).stream()
                 .map(type -> SystemTyper.SystemBeskrivelse.builder().system(type.name()).beskrivelse(type.getBeskrivelse()).build())
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping("/skjerming/{ident}")
+    @Operation(description = "Hent skjerming på ident")
+    public ResponseEntity<SkjermingsDataResponse> getSkjerming(@PathVariable String ident) {
+        return skjermingsRegisterConsumer.getSkjerming(ident);
     }
 
     @GetMapping("/helsepersonell")
