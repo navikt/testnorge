@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.CommonKeysAndUtils.PDL_TPS_CREATE_ENV;
 import static no.nav.dolly.domain.CommonKeysAndUtils.isPdlTpsCreate;
 
@@ -29,7 +30,9 @@ public class TpsSyncClient implements ClientRegister {
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (isPdlTpsCreate(bestilling.getEnvironments())) {
+        if (isPdlTpsCreate(bestilling.getEnvironments()) &&
+                (nonNull(bestilling.getTpsMessaging()) ||
+                        nonNull(bestilling.getArenaforvalter()))) {
 
             var startTime = System.currentTimeMillis();
             List<TpsIdentStatusDTO> response;

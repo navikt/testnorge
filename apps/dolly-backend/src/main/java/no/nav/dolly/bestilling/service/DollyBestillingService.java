@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.tpsf.TpsfResponseHandler;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
@@ -18,7 +19,6 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyRelasjonRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
-import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.RsOppdaterPersonResponse;
 import no.nav.dolly.domain.resultset.tpsf.RsSkdMeldingResponse;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
@@ -33,6 +33,7 @@ import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -83,6 +84,7 @@ public class DollyBestillingService {
     private final List<ClientRegister> clientRegisters;
     private final CounterCustomRegistry counterCustomRegistry;
     private final PdlPersonConsumer pdlPersonConsumer;
+    private final PdlDataConsumer pdlDataConsumer;
 
     private static String getHovedpersonAvBestillingsidenter(List<String> identer) {
         return identer.get(0); //Rask fix for å hente hoveperson i bestilling. Vet at den er første, men burde gjøre en sikrere sjekk
@@ -362,7 +364,7 @@ public class DollyBestillingService {
 
         DollyPerson dollyPerson = null;
         if (progress.isTpsf()) {
-            List<Person> personer = tpsfService.hentTestpersoner(List.of(progress.getIdent()));
+            var personer = tpsfService.hentTestpersoner(List.of(progress.getIdent()));
             if (!personer.isEmpty()) {
                 dollyPerson = dollyPersonCache.prepareTpsPersoner(personer.get(0));
                 sendIdenterTilTPS(asList(bestilling.getMiljoer().split(",")),
@@ -372,8 +374,12 @@ public class DollyBestillingService {
                         bestilling.getGruppe(), progress, bestilling.getBeskrivelse());
             }
 
+        } else if (progress.isPdlf()) {
+            var pdlfPerson = pdlDataConsumer.getPersoner(List.of(progress.getIdent()));
+            dollyPerson = dollyPersonCache.preparePdlfPerson(pdlfPerson.stream().findFirst().orElse(new FullPersonDTO()));
+
         } else if (progress.isPdl()) {
-            PdlPerson pdlPerson = objectMapper.readValue(pdlPersonConsumer.getPdlPerson(progress.getIdent()).toString(), PdlPerson.class);
+            var pdlPerson = objectMapper.readValue(pdlPersonConsumer.getPdlPerson(progress.getIdent()).toString(), PdlPerson.class);
             dollyPerson = dollyPersonCache.preparePdlPersoner(pdlPerson);
         }
 

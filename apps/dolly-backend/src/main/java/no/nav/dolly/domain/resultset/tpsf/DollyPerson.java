@@ -2,22 +2,23 @@ package no.nav.dolly.domain.resultset.tpsf;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import no.nav.dolly.domain.jpa.Testident;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.isNull;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class DollyPerson {
+
+    private FullPersonDTO pdlfPerson;
 
     private List<Person> persondetaljer;
 
