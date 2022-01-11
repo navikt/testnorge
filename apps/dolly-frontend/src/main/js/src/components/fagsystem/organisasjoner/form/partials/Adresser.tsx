@@ -28,6 +28,7 @@ export const Adresser = ({ formikBag, path }: AdresserProps) => {
 	return (
 		<>
 			<Kategori
+				flexRow={true}
 				title="Forretningsadresse"
 				vis="organisasjon.forretningsadresse"
 				hjelpetekst={hjelpetekstAdresser}
@@ -78,6 +79,7 @@ export const Adresser = ({ formikBag, path }: AdresserProps) => {
 				title="Postadresse"
 				vis="organisasjon.postadresse"
 				hjelpetekst={hjelpetekstAdresser}
+				flexRow={true}
 			>
 				<FormikSelect
 					name={`${path}.postadresse.landkode`}
