@@ -58,7 +58,10 @@ export const Adresser = ({ formikBag, path }: AdresserProps) => {
 						/>
 					</>
 				) : (
-					<FormikTextInput name={`${path}.forretningsadresse.poststed`} label="Poststed" />
+					<>
+						<FormikTextInput name={`${path}.forretningsadresse.postnr`} label="Postnummer" />
+						<FormikTextInput name={`${path}.forretningsadresse.poststed`} label="Poststed" />
+					</>
 				)}
 
 				<FormikTextInput
@@ -105,7 +108,10 @@ export const Adresser = ({ formikBag, path }: AdresserProps) => {
 						/>
 					</>
 				) : (
-					<FormikTextInput name={`${path}.postadresse.poststed`} label="Poststed" />
+					<>
+						<FormikTextInput name={`${path}.postadresse.postnr`} label="Postnummer" />
+						<FormikTextInput name={`${path}.postadresse.poststed`} label="Poststed" />
+					</>
 				)}
 				<FormikTextInput name={`${path}.postadresse.adresselinjer[0]`} label="Adresselinje 1" />
 				<FormikTextInput name={`${path}.postadresse.adresselinjer[1]`} label="Adresselinje 2" />
