@@ -5,6 +5,9 @@ import Button from '~/components/ui/button/Button'
 import BestillingSammendrag from '~/components/bestilling/sammendrag/BestillingSammendrag'
 
 export const BestillingSammendragModal = ({ bestilling }) => {
+	if (!bestilling) {
+		return null
+	}
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 
 	return (
