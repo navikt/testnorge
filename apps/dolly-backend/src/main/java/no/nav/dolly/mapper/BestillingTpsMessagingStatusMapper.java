@@ -40,12 +40,14 @@ public final class BestillingTpsMessagingStatusMapper {
                     .map(progress ->
                             Stream.of(progress.getTpsMessagingStatus().split("\\$"))
                                     .filter(Strings::isNotBlank)
+                                    .filter(melding -> !melding.equals("Telefonnummer_slett#"))
+                                    .filter(melding -> !melding.equals("Sikkerhetstiltak_slett#"))
                                     .map(melding ->
                                             Stream.of(melding.split("#")[1].split(","))
                                                     .map(status -> StatusTemp.builder()
                                                             .ident(progress.getIdent())
                                                             .melding(cleanOK(String.format("%s %s", melding.split("#")[0],
-                                                                    status.split(":").length > 1 ? status.split(":")[1] : "NA").replace("=", ":")))
+                                                                    status.split(":")[1]).replace("=", ":")))
                                                             .miljoe(status.split(":")[0])
                                                             .build())
                                                     .toList())
