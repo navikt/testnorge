@@ -2,19 +2,19 @@ import React from 'react'
 import cn from 'classnames'
 import './ApiFeilmelding.less'
 
-export default function ApiFeilmelding({ feilmelding, container }) {
-	if (!feilmelding || feilmelding === 'OK') return false
-	const feilmeldingSetninger = feilmelding.split(' ')
-	const formatertFeilmelding = feilmeldingSetninger.map((setning) => {
-		console.log('setning: ', setning) //TODO - SLETT MEG
-		console.log('setning.length: ', setning.length) //TODO - SLETT MEG
+function formaterFeilmelding(feilmeldingSetninger) {
+	return feilmeldingSetninger.map((setning) => {
 		if (setning.length < 60) {
-			return setning
+			return setning.concat(' ')
 		} else {
-			return setning
+			return setning.replaceAll('/', ' /').concat(' ')
 		}
 	})
-	console.log('form: ', formatertFeilmelding) //TODO - SLETT MEG
+}
+
+export default function ApiFeilmelding({ feilmelding, container }) {
+	if (!feilmelding || feilmelding === 'OK') return false
+	const formatertFeilmelding = formaterFeilmelding(feilmelding.split(' '))
 	const css = cn('api-feilmelding', {
 		'api-feilmelding-container': container,
 	})

@@ -416,8 +416,8 @@ export const selectPersonListe = (state) => {
 					ident,
 					identNr: pdlIdent.ident,
 					bestillingId: ident.bestillingId,
-					importFra: 'PDL',
 					identtype: 'FNR',
+					kilde: 'PDL',
 					navn: `${pdlIdent.navn?.[0]?.fornavn} ${pdlIdent.navn?.[0]?.etternavn}`,
 					kjonn: pdlIdent.kjoenn?.[0]?.kjoenn,
 					alder: Formatters.formatAlder(
@@ -435,6 +435,7 @@ export const selectPersonListe = (state) => {
 					bestillingId: ident.bestillingId,
 					importFra: tpsfIdent.importFra,
 					identtype: tpsfIdent.identtype,
+					kilde: 'TPS',
 					navn: `${tpsfIdent.fornavn} ${mellomnavn} ${tpsfIdent.etternavn}`,
 					kjonn: Formatters.kjonn(tpsfIdent.kjonn, tpsfIdent.alder),
 					alder: Formatters.formatAlder(tpsfIdent.alder, tpsfIdent.doedsdato),

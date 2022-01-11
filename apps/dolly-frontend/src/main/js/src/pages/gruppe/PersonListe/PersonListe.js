@@ -140,7 +140,7 @@ export default function PersonListe({
 		},
 		{
 			text: 'Bestilling-ID',
-			width: '25',
+			width: '20',
 			dataField: 'bestillingId',
 			formatter: (cell, row) => {
 				const arr = row.bestillingId
@@ -160,6 +160,11 @@ export default function PersonListe({
 			dataField: 'status',
 
 			formatter: (cell) => <Icon kind={ikonTypeMap[cell]} title={cell} />,
+		},
+		{
+			text: 'Kilde',
+			width: '10',
+			dataField: 'kilde',
 		},
 		{
 			text: 'Brukt',
@@ -225,6 +230,7 @@ export default function PersonListe({
 						bestillingsIdListe={bruker.ident.bestillingId}
 						gruppeId={bruker.ident.gruppeId}
 						iLaastGruppe={iLaastGruppe}
+						kildePdl={bruker?.kilde === 'PDL'}
 					/>
 				)}
 			/>

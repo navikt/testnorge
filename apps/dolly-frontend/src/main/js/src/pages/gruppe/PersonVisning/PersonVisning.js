@@ -37,6 +37,7 @@ export const PersonVisning = ({
 	slettPerson,
 	leggTilPaaPerson,
 	iLaastGruppe,
+	kildePdl,
 }) => {
 	useMount(fetchDataFraFagsystemer)
 
@@ -52,16 +53,16 @@ export const PersonVisning = ({
 	return (
 		<div className="person-visning">
 			<div className="person-visning_actions">
-				{!iLaastGruppe && (
+				{!iLaastGruppe && !kildePdl && (
 					<Button onClick={() => leggTilPaaPerson(data, bestillingsListe)} kind="add-circle">
 						LEGG TIL/ENDRE
 					</Button>
 				)}
-				{!iLaastGruppe && (
+				{!iLaastGruppe && !kildePdl && (
 					<LeggTilRelasjonModal environments={bestilling?.environments} personInfo={personInfo} />
 				)}
 				<BestillingSammendragModal bestilling={bestilling} />
-				{!iLaastGruppe && (
+				{!iLaastGruppe && !kildePdl && (
 					<SlettButton action={slettPerson} loading={loading.slettPerson}>
 						Er du sikker på at du vil slette denne personen?
 					</SlettButton>
