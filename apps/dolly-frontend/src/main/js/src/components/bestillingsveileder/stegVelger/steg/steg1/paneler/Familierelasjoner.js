@@ -3,6 +3,7 @@ import _get from 'lodash/get'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import Formatters from '~/utils/DataFormatter'
+import { initialSivilstand } from '~/components/fagsystem/pdlf/form/initialValues'
 
 export const FamilierelasjonPanel = ({ stateModifier }) => {
 	const sm = stateModifier(FamilierelasjonPanel.initialValues)
@@ -14,6 +15,9 @@ export const FamilierelasjonPanel = ({ stateModifier }) => {
 			uncheckAttributeArray={sm.batchRemove}
 			iconType={'relasjoner'}
 		>
+			<AttributtKategori title="Sivilstand">
+				<Attributt attr={sm.attrs.sivilstand} />
+			</AttributtKategori>
 			<AttributtKategori title="Partner">
 				<Attributt attr={sm.attrs.partner} />
 			</AttributtKategori>
@@ -30,6 +34,16 @@ export const FamilierelasjonPanel = ({ stateModifier }) => {
 FamilierelasjonPanel.heading = 'Familierelasjoner'
 
 FamilierelasjonPanel.initialValues = ({ set, del, has, opts }) => ({
+	sivilstand: {
+		label: 'Sivilstand',
+		checked: has('pdldata.person.sivilstand'),
+		add() {
+			set('pdldata.person.sivilstand', [initialSivilstand])
+		},
+		remove() {
+			del('pdldata.person.sivilstand')
+		},
+	},
 	partner: {
 		label: 'Har partner',
 		checked: has('tpsf.relasjoner.partnere'),

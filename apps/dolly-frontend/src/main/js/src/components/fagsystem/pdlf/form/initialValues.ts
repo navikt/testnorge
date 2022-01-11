@@ -137,3 +137,15 @@ export const initialUtvandring = {
 	master: 'FREG',
 	kilde: 'Dolly',
 }
+
+export const initialSivilstand = {
+	type: null as string,
+	sivilstandsdato: null as string,
+	relatertVedSivilstand: null as string,
+	bekreftelsesdato: null as string,
+	borIkkeSammen: false,
+	nyRelatertPerson: initialPdlPerson,
+	kilde: 'Dolly',
+	master: 'FREG',
+	gjeldende: true,
+}

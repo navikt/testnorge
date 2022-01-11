@@ -2,6 +2,7 @@ import * as Yup from 'yup'
 import { ifPresent, requiredDate, requiredString } from '~/utils/YupValidations'
 import _get from 'lodash/get'
 import { differenceInWeeks, isAfter, isSameDay } from 'date-fns'
+import { initialPdlPerson } from '~/components/fagsystem/pdlf/form/initialValues'
 
 const personnavnSchema = Yup.object({
 	fornavn: Yup.string(),
@@ -229,6 +230,17 @@ const utflytting = Yup.array().of(
 	})
 )
 
+const sivilstand = Yup.array().of(
+	Yup.object({
+		type: requiredString.nullable(),
+		sivilstandsdato: requiredString.nullable(),
+		relatertVedSivilstand: Yup.string().nullable(),
+		bekreftelsesdato: Yup.string().nullable(),
+		borIkkeSammen: Yup.boolean(),
+		nyRelatertPerson: nyPerson,
+	})
+)
+
 export const validation = {
 	pdldata: Yup.object({
 		person: Yup.object({
@@ -253,6 +265,7 @@ export const validation = {
 				'$pdldata.person.kontaktinformasjonForDoedsbo',
 				kontaktDoedsbo
 			),
+			sivilstand: ifPresent('$pdldata.person.sivilstand', sivilstand),
 		}),
 	}),
 }
