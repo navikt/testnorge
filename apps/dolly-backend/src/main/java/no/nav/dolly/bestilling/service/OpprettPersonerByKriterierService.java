@@ -23,7 +23,6 @@ import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -53,7 +52,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                              PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer) {
         super(tpsfResponseHandler, tpsfService, dollyPersonCache, identService, bestillingProgressService,
                 bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry,
-                pdlPersonConsumer);
+                pdlPersonConsumer, pdlDataConsumer);
 
         this.bestillingService = bestillingService;
         this.errorStatusDecoder = errorStatusDecoder;
