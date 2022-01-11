@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.tpsf.TpsfResponseHandler;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
@@ -43,13 +44,17 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
     private ObjectMapper objectMapper;
     private PdlPersonConsumer pdlPersonConsumer;
 
-    public LeggTilPaaGruppeService(TpsfResponseHandler tpsfResponseHandler, TpsfService tpsfService, DollyPersonCache dollyPersonCache,
-                                   IdentService identService, BestillingProgressService bestillingProgressService,
-                                   BestillingService bestillingService, MapperFacade mapperFacade, CacheManager cacheManager,
-                                   ObjectMapper objectMapper, List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
-                                   ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool, PdlPersonConsumer pdlPersonConsumer) {
+    public LeggTilPaaGruppeService(TpsfResponseHandler tpsfResponseHandler, TpsfService tpsfService,
+                                   DollyPersonCache dollyPersonCache, IdentService identService,
+                                   BestillingProgressService bestillingProgressService,
+                                   BestillingService bestillingService, MapperFacade mapperFacade,
+                                   CacheManager cacheManager, ObjectMapper objectMapper,
+                                   List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
+                                   ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool,
+                                   PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer) {
         super(tpsfResponseHandler, tpsfService, dollyPersonCache, identService, bestillingProgressService,
-                bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry, pdlPersonConsumer);
+                bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry,
+                pdlPersonConsumer, pdlDataConsumer);
 
         this.mapperFacade = mapperFacade;
         this.bestillingService = bestillingService;

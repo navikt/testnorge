@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.pdlforvalter;
 
-import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -171,8 +170,6 @@ public class PdlForvalterClient implements ClientRegister {
     private void sendArtifacter(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, Person person) {
 
         if (IdentType.FDAT != IdentTypeUtil.getIdentType(person.getIdent())) {
-            log.info("Sender PdlForvalter bestilling: {}", Json.pretty(bestilling.getPdldata()));
-            log.info("Sender PdlForvalter person: {}", Json.pretty(person));
             sendOpprettPerson(person, dollyPerson);
             sendFoedselsmelding(person);
             sendNavn(person);
