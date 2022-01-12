@@ -20,7 +20,6 @@ type Target = {
 
 export const Adressebeskyttelse = ({ formikBag }: AdressebeskyttelseValues) => {
 	const handleChangeGradering = (target: Target, path: string) => {
-		console.log('target', target)
 		const adressebeskyttelse = _get(formikBag.values, path)
 		const adressebeskyttelseClone = _cloneDeep(adressebeskyttelse)
 		_set(adressebeskyttelseClone, 'gradering', target?.value || null)

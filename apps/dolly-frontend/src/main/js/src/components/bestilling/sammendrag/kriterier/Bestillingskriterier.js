@@ -47,7 +47,7 @@ const _renderBestillingsDetaljer = (data) => {
 							{kategori.itemRows.map((row, i) => (
 								<div className="dfa-blokk" key={i}>
 									{/*className endres under styling. Kun eksempel*/}
-									{row && row[0].numberHeader && <h4>{row[0].numberHeader}</h4>}
+									{row?.[0].numberHeader && <h4>{row[0].numberHeader}</h4>}
 									<div className={'flexbox--align-start flexbox--wrap'} key={i}>
 										{row && row.map(_renderStaticValue)}
 									</div>
