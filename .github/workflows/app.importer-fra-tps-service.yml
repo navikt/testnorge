@@ -27,7 +27,7 @@ jobs:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' || 'refs/heads/master/feature/import-fra_tpsf-service'}}
+    if: ${{ github.ref == 'refs/heads/master' || 'refs/heads/feature/pdl-tilpasninger'}}
     with:
       resource: 'apps/import-fra-tpsf-service/nais.yml'
       app-name: 'import-fra-tps-service'

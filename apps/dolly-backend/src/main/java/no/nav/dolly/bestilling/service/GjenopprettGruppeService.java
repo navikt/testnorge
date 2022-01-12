@@ -4,9 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.aktoeridsyncservice.AktoerIdSyncClient;
+import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient;
-import no.nav.dolly.bestilling.aktoeridsyncservice.AktoerIdSyncClient;
 import no.nav.dolly.bestilling.tpsf.TpsfResponseHandler;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
@@ -42,13 +43,17 @@ public class GjenopprettGruppeService extends DollyBestillingService {
     private List<ClientRegister> clientRegisters;
     private IdentService identService;
 
-    public GjenopprettGruppeService(TpsfResponseHandler tpsfResponseHandler, TpsfService tpsfService, DollyPersonCache dollyPersonCache,
-                                    IdentService identService, BestillingProgressService bestillingProgressService,
-                                    BestillingService bestillingService, MapperFacade mapperFacade, CacheManager cacheManager,
-                                    ObjectMapper objectMapper, List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
-                                    ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool, PdlPersonConsumer pdlPersonConsumer) {
-        super(tpsfResponseHandler, tpsfService, dollyPersonCache, identService, bestillingProgressService, bestillingService,
-                mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry, pdlPersonConsumer);
+    public GjenopprettGruppeService(TpsfResponseHandler tpsfResponseHandler, TpsfService tpsfService,
+                                    DollyPersonCache dollyPersonCache, IdentService identService,
+                                    BestillingProgressService bestillingProgressService,
+                                    BestillingService bestillingService, MapperFacade mapperFacade,
+                                    CacheManager cacheManager, ObjectMapper objectMapper,
+                                    List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
+                                    ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool,
+                                    PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer) {
+        super(tpsfResponseHandler, tpsfService, dollyPersonCache, identService, bestillingProgressService,
+                bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry,
+                pdlPersonConsumer, pdlDataConsumer);
 
         this.bestillingService = bestillingService;
         this.errorStatusDecoder = errorStatusDecoder;

@@ -11,7 +11,7 @@ import { TilrettelagtKommunikasjon } from '~/components/fagsystem/pdlf/visning/p
 
 export const PdlfVisning = ({ data, loading }) => {
 	if (loading) return <Loading label="Laster PDL-data" />
-	if (!data || data.length < 1 || !data[0].person) return null
+	if (!data || data.length < 1 || !data?.[0]?.person) return null
 
 	return (
 		<ErrorBoundary>

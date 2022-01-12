@@ -12,6 +12,7 @@ interface ImportFraEtikettProps {
 
 const importType = (fra: string) => {
 	if (fra === 'TPS') return 'Mini-Norge'
+	else if (fra === 'PDL' || fra === 'PDLF') return 'PDL'
 	else return 'Ukjent'
 }
 

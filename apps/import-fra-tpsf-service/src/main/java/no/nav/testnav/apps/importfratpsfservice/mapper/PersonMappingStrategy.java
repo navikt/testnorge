@@ -65,15 +65,17 @@ public class PersonMappingStrategy implements MappingStrategy {
                                 .mellomnavn(source.getMellomnavn())
                                 .etternavn(source.getSlektsnavn())
                                 .build());
-                        target.getFoedsel().add(FoedselDTO.builder()
-                                .foedeland(LAND.equals(source.getFoedekommLand().substring(0, 1)) ?
-                                        LandkodeDekoder.convert(source.getFoedekommLand().substring(1)) : null)
-                                .fodekommune(!LAND.equals(source.getFoedekommLand().substring(0, 1)) ?
-                                        source.getFoedekommLand() : null)
-                                .foedested(source.getFoedested())
-                                .foedselsdato(DatoFraIdentUtility.getDato(target.getIdent()).atStartOfDay())
-                                .foedselsaar(DatoFraIdentUtility.getDato(target.getIdent()).getYear())
-                                .build());
+                        if (isNotBlank(source.getFoedekommLand())) {
+                            target.getFoedsel().add(FoedselDTO.builder()
+                                    .foedeland(LAND.equals(source.getFoedekommLand().substring(0, 1)) ?
+                                            LandkodeDekoder.convert(source.getFoedekommLand().substring(1)) : null)
+                                    .fodekommune(!LAND.equals(source.getFoedekommLand().substring(0, 1)) ?
+                                            source.getFoedekommLand() : null)
+                                    .foedested(source.getFoedested())
+                                    .foedselsdato(DatoFraIdentUtility.getDato(target.getIdent()).atStartOfDay())
+                                    .foedselsaar(DatoFraIdentUtility.getDato(target.getIdent()).getYear())
+                                    .build());
+                        }
                         target.getKjoenn().add(KjoennDTO.builder()
                                 .kjoenn(KjoennFraIdentUtility.getKjoenn(target.getIdent()))
                                 .build());
