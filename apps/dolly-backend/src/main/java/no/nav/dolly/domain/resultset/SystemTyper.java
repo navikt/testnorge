@@ -31,9 +31,9 @@ public enum SystemTyper {
     SYKEMELDING("Testnorge Sykemelding"),
     TPSIMPORT("Import av identer (MINI-NORGE)"),
     PDLIMPORT("Import av identer (TESTNORGE)"),
-    SKJERMINGSREGISTER("NAV-ansatt Skjermingsregister"),
+    SKJERMINGSREGISTER("Skjermingsregisteret"),
     SAKOGARKIV("Sak og arkivfasade (SAF)"),
-    ORGANISASJON_FORVALTER("Forvalter av syntetiske organisasjoner"),
+    ORGANISASJON_FORVALTER("Enhetsregisteret (EREG)"),
     PDL_DATA("Persondataløsning (PDL) ny");
 
     private String beskrivelse;
