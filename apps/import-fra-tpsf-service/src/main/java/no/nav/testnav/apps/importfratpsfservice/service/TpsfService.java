@@ -14,6 +14,7 @@ import reactor.core.publisher.Flux;
 import java.time.Duration;
 
 import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
@@ -25,12 +26,15 @@ public class TpsfService {
     private final DollyConsumer dollyConsumer;
     private final MapperFacade mapperFacade;
 
-    public Flux<String> importIdenter(Long skdgruppeId, Long dollyGruppeId) {
+    public Flux<String> importIdenter(Long skdgruppeId, Long dollyGruppeId, Integer fraSideNr, Integer tilSideNr) {
+
 
         return tpsfConsumer.getSkdGrupper()
                 .filter(gruppe -> gruppe.getId().equals(skdgruppeId))
                 .next()
-                .flatMapMany(gruppe -> Flux.range(0, gruppe.getAntallSider().intValue()))
+                .flatMapMany(gruppe -> Flux.range(nonNull(fraSideNr) ? fraSideNr : 0,
+                        nonNull(tilSideNr) ? Math.min(tilSideNr, gruppe.getAntallSider().intValue()) :
+                                gruppe.getAntallSider().intValue()))
                 .delayElements(Duration.ofMillis(10000))
                 .flatMap(page -> tpsfConsumer.getSkdMeldinger(skdgruppeId, page.longValue()))
                 .map(melding ->
