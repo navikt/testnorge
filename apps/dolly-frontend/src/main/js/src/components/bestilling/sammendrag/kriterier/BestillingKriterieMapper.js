@@ -417,6 +417,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			statsborgerskap,
 			sikkerhetstiltak,
 			tilrettelagtKommunikasjon,
+			sivilstand,
 		} = pdldataKriterier
 
 		if (innflytting) {
