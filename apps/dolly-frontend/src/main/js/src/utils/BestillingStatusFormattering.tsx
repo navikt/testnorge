@@ -2,13 +2,21 @@ export const fixNamesAndDuplicatesOfStatus = (statusListe: []) => {
 	return [
 		...new Map(
 			statusListe
-				.map((status: { navn: string; miljo: string }) => {
-					if (status.navn?.includes('Testnav TPS messaging')) {
-						status.navn = 'Tjenestebasert personsystem (TPS)'
+				.map(
+					(status: {
+						id: string
+						navn: string
+						miljo: string
+						melding: string
+						orgnummer: string
+					}) => {
+						if (status.id?.includes('TPS_MESSAGING')) {
+							status.navn = 'Tjenestebasert personsystem (TPS)'
+						}
+						return status
 					}
-					return status
-				})
-				.map((v) => [JSON.stringify([v.navn, v.miljo]), v])
+				)
+				.map((v) => [JSON.stringify([v.id, v.navn, v.miljo]), v])
 		).values(),
 	]
 }

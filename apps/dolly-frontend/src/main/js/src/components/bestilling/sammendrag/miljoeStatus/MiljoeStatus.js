@@ -13,6 +13,7 @@ const mapStatusrapport = (bestillingstatus) => {
 				curr.statuser.map((status) => {
 					const feil = {
 						navn: curr.navn,
+						id: curr.id,
 						melding: status.melding !== 'OK' ? status.melding : null,
 					}
 

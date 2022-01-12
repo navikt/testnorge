@@ -323,6 +323,7 @@ export const fetchDataFraFagsystemerForSoek = (personId) => (dispatch) => {
 		'SIGRUNSTUB',
 		'INNTK',
 		'ARENA',
+		'PDL_FORVALTER',
 		'PDL',
 		'INST2,',
 		'PEN_INNTEKT',
