@@ -2,7 +2,10 @@ package no.nav.dolly.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.jpa.OrganisasjonBestillingProgress;
+import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.OrganisasjonBestillingProgressRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,7 @@ import java.util.Optional;
 public class OrganisasjonProgressService {
 
     private final OrganisasjonBestillingProgressRepository organisasjonProgressRepository;
+    private final BrukerRepository brukerRepository;
 
     @Transactional
     public Optional<OrganisasjonBestillingProgress> save(OrganisasjonBestillingProgress progress) {
@@ -51,15 +55,19 @@ public class OrganisasjonProgressService {
         return bestillingProgress.get();
     }
 
-    public List<OrganisasjonBestillingProgress> fetchOrganisasjonBestillingProgressByBrukerId(String brukerId) {
+    public List<OrganisasjonBestilling> fetchOrganisasjonBestillingProgressByBrukerId(String brukerId) {
 
-        Optional<List<OrganisasjonBestillingProgress>> bestillingProgress =
-                organisasjonProgressRepository.findbyBrukerId(brukerId);
-        if (bestillingProgress.isEmpty()) {
-            throw new HttpClientErrorException(HttpStatus.NOT_FOUND,
-                    "Fant ikke noen bestillingStatus med brukerId: " + brukerId);
-        }
-        return bestillingProgress.get();
+        var bruker = brukerRepository.findBrukerByBrukerId(brukerId)
+                .orElseThrow(() -> new NotFoundException("Bruker ikke funnet med id " + brukerId ));
+
+        return organisasjonProgressRepository.findByBruker(bruker)
+                        .orElseThrow(() -> new NotFoundException("Bestilling ikke funnet for bruker " + brukerId));
+//
+//        if (bestillingProgress.isEmpty()) {
+//            throw new NotFoundException(
+//                    "Fant ikke noen bestillingStatus med brukerId: " + brukerId);
+//        }
+//        return bestillingProgress.get();
     }
 
     @Transactional

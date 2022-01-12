@@ -12,6 +12,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
@@ -34,9 +36,6 @@ public class OrganisasjonBestillingProgress {
     })
     private Long id;
 
-    @Column(name = "bestilling_id")
-    private Long bestillingId;
-
     @Column(name = "organisasjonsnr")
     private String organisasjonsnummer;
 
@@ -45,4 +44,8 @@ public class OrganisasjonBestillingProgress {
 
     @Column(name = "uuid")
     private String uuid;
+
+    @ManyToOne
+    @JoinColumn(name = "bestilling_id", nullable = false)
+    private OrganisasjonBestilling bestilling;
 }

@@ -26,9 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,7 +35,6 @@ import java.util.stream.Collectors;
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
-import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status.COMPLETED;
 import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status.ERROR;
@@ -104,43 +102,23 @@ public class OrganisasjonBestillingService {
 
     public List<RsOrganisasjonBestillingStatus> fetchBestillingStatusByBrukerId(String brukerId) {
 
-        List<OrganisasjonBestillingProgress> bestillingProgress;
+        var bestillinger = progressService.fetchOrganisasjonBestillingProgressByBrukerId(brukerId);
 
-        try {
-            bestillingProgress = progressService.fetchOrganisasjonBestillingProgressByBrukerId(brukerId);
-        } catch (WebClientResponseException e) {
-            if (404 == e.getRawStatusCode()) {
-                log.info("Brukeren har ingen bestilte organisasjoner");
-            } else {
-                log.info("Klarte ikke å hente organisasjon bestillinger på brukeren");
-            }
-            return emptyList();
-        }
-
-        List<RsOrganisasjonBestillingStatus> statusListe = new ArrayList<>();
-        bestillingProgress.forEach(bestillingStatus -> {
-
-                    OrganisasjonBestilling orgBestilling = bestillingRepository.findById(bestillingStatus.getBestillingId()).orElseThrow(() ->
-                            new HttpClientErrorException(HttpStatus.BAD_REQUEST,
-                                    "Fant ikke noen bestillinger med bestillingId: " + bestillingStatus.getBestillingId())
-                    );
-                    statusListe.add(RsOrganisasjonBestillingStatus.builder()
-                            .status(BestillingOrganisasjonStatusMapper.buildOrganisasjonStatusMap(bestillingStatus, null))
-                            .bestilling(jsonBestillingMapper.mapOrganisasjonBestillingRequest(orgBestilling.getBestKriterier()))
-                            .sistOppdatert(orgBestilling.getSistOppdatert())
-                            .organisasjonNummer(bestillingStatus.getOrganisasjonsnummer())
-                            .id(bestillingStatus.getBestillingId())
-                            .ferdig(isTrue(orgBestilling.getFerdig()))
-                            .feil(orgBestilling.getFeil())
-                            .environments(Arrays.asList(orgBestilling.getMiljoer().split(",")))
-                            .antallLevert(isTrue(orgBestilling.getFerdig()) && isBlank(orgBestilling.getFeil()) ? 1 : 0)
-                            .build());
-
-                }
-        );
-        return statusListe.stream()
-                .sorted(Comparator.comparingLong(RsOrganisasjonBestillingStatus::getId))
-                .collect(Collectors.toList());
+        return bestillinger.stream()
+                .map(OrganisasjonBestilling::getProgresser)
+                .flatMap(Collection::stream)
+                .map(progress -> RsOrganisasjonBestillingStatus.builder()
+                        .status(BestillingOrganisasjonStatusMapper.buildOrganisasjonStatusMap(progress, null))
+                        .bestilling(jsonBestillingMapper.mapOrganisasjonBestillingRequest(progress.getBestilling().getBestKriterier()))
+                        .sistOppdatert(progress.getBestilling().getSistOppdatert())
+                        .organisasjonNummer(progress.getOrganisasjonsnummer())
+                        .id(progress.getBestilling().getId())
+                        .ferdig(isTrue(progress.getBestilling().getFerdig()))
+                        .feil(progress.getBestilling().getFeil())
+                        .environments(Arrays.asList(progress.getBestilling().getMiljoer().split(",")))
+                        .antallLevert(isTrue(progress.getBestilling().getFerdig()) && isBlank(progress.getBestilling().getFeil()) ? 1 : 0)
+                        .build())
+                .toList();
     }
 
     @Transactional
@@ -182,11 +160,11 @@ public class OrganisasjonBestillingService {
 
     private OrgStatus updateBestilling(OrganisasjonBestilling bestilling, OrgStatus orgStatus) {
 
-            bestilling.setFeil(orgStatus.getError());
-            bestilling.setFerdig(DEPLOY_ENDED_STATUS_LIST.stream().anyMatch(status -> status.equals(orgStatus.getStatus())));
-            bestilling.setSistOppdatert(now());
+        bestilling.setFeil(orgStatus.getError());
+        bestilling.setFerdig(DEPLOY_ENDED_STATUS_LIST.stream().anyMatch(status -> status.equals(orgStatus.getStatus())));
+        bestilling.setSistOppdatert(now());
 
-            return orgStatus;
+        return orgStatus;
     }
 
     @Transactional
