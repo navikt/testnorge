@@ -82,6 +82,9 @@ public class Testgruppe {
     @Column(name = "LAAST_BESKRIVELSE")
     private String laastBeskrivelse;
 
+    @Column(name = "TAGS")
+    private String tags;
+
     public List<Testident> getTestidenter() {
         if (isNull(testidenter)) {
             testidenter = new ArrayList<>();
