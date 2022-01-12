@@ -23,6 +23,12 @@ const obj = (label, value, apiKodeverkId) => ({
 	...(apiKodeverkId && { apiKodeverkId }),
 })
 
+const expandable = (expandableHeader, vis, objects) => ({
+	expandableHeader,
+	vis,
+	objects,
+})
+
 const _getTpsfBestillingData = (data) => {
 	return [
 		obj('Identtype', data.identtype),
@@ -409,6 +415,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 			fullmakt,
 			falskIdentitet,
 			utenlandskIdentifikasjonsnummer,
+			sivilstand,
 			bostedsadresse,
 			innflytting,
 			utflytting,
@@ -562,6 +569,40 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 				}),
 			}
 			data.push(bostedsadresseData)
+		}
+
+		if (sivilstand) {
+			console.log('sivilstand', sivilstand)
+			const sivilstandData = {
+				header: 'Sivilstand',
+				itemRows: sivilstand.map((item, idx) => {
+					return [
+						{ numberHeader: `Sivilstand ${idx + 1}` },
+						obj('Type sivilstand', Formatters.showLabel('sivilstandType', item.type)),
+						obj('Gyldig fra og med', Formatters.formatDate(item.sivilstandsdato)),
+						obj('Bekreftelsesdato', Formatters.formatDate(item.bekreftelsesdato)),
+						obj('Bor ikke sammen', Formatters.oversettBoolean(item.borIkkeSammen)),
+						obj('Person relatert til', item.relatertVedSivilstand),
+						//TODO lag gjenbrukbar komponent
+						expandable('PERSON RELATERT TIL', item.relatertVedSivilstand === null, [
+							obj('Identtype', item.nyRelatertPerson?.identtype),
+							obj('Kjønn', item.nyRelatertPerson?.kjoenn),
+							obj('Født etter', Formatters.formatDate(item.nyRelatertPerson?.foedtEtter)),
+							obj('Født før', Formatters.formatDate(item.nyRelatertPerson?.foedtFoer)),
+							obj('Alder', item.nyRelatertPerson?.alder),
+							obj(
+								'Statsborgerskap',
+								item.nyRelatertPerson?.statsborgerskapLandkode,
+								AdresseKodeverk.StatsborgerskapLand
+							),
+							obj('Gradering', Formatters.showLabel(item.nyRelatertPerson?.gradering)),
+							obj('Syntetisk', item.nyRelatertPerson?.syntetisk && 'JA'),
+							obj('Har mellomnavn', item.nyRelatertPerson?.nyttNavn?.hasMellomnavn && 'JA'),
+						]),
+					]
+				}),
+			}
+			data.push(sivilstandData)
 		}
 
 		const sjekkRettIdent = (item) => {
