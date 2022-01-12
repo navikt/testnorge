@@ -76,10 +76,11 @@ public class AdresseMappingStrategy implements MappingStrategy {
                         } else if (MATRIKKEL_ADRESSE.equalsIgnoreCase(source.getAdressetype())) {
                             target.setMatrikkeladresse(MatrikkeladresseDTO.builder()
                                     .gaardsnummer(toNumeric(source.getGateGaard()))
-                                    .bruksenhetsnummer(source.getHusBruk())
+                                    .bruksnummer(toNumeric(source.getHusBruk()))
                                     .kommunenummer(source.getKommunenummer())
                                     .postnummer(source.getPostnummer())
                                     .tilleggsnavn(source.getTilleggsadresse())
+                                    .bruksenhetsnummer(source.getBolignr())
                                     .build());
                         } else if (UTEN_FAST_BOSTED.equals(source.getSpesRegType())) {
                             target.setUkjentBosted(BostedadresseDTO.UkjentBostedDTO.builder()

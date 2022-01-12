@@ -19,6 +19,7 @@ import no.nav.dolly.service.OrganisasjonProgressService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -47,6 +48,7 @@ public class OrganisasjonClient {
     private final MapperFacade mapperFacade;
 
     @Async
+    @Transactional
     public void opprett(RsOrganisasjonBestilling bestilling, Long bestillingId) {
 
         BestillingRequest bestillingRequest = BestillingRequest.builder()
@@ -85,7 +87,6 @@ public class OrganisasjonClient {
                 log.error("Feilet med å opprette organisasjon(er)", e);
                 organisasjonBestillingService.setBestillingFeil(bestillingId, errorStatusDecoder.decodeRuntimeException(e));
                 organisasjonProgressService.setBestillingFeil(bestillingId, errorStatusDecoder.decodeRuntimeException(e));
-                organisasjonBestillingService.setBestillingFerdig(bestillingId);
             }
         });
     }
