@@ -411,10 +411,7 @@ export const selectPersonListe = (state) => {
 		const mellomnavn = tpsfIdent?.mellomnavn ? `${tpsfIdent.mellomnavn.charAt(0)}.` : ''
 
 		if (ident.master !== 'PDLF' && !tpsfIdent) return null
-		// console.log('ident.master', ident.master)
-		// console.log('fagsystem.tpsf', fagsystem.tpsf)
-		// console.log('tpsfIdent', tpsfIdent)
-		// console.log('pdlIdent', pdlIdent)
+
 		return ident.master === 'PDLF'
 			? {
 					ident,
