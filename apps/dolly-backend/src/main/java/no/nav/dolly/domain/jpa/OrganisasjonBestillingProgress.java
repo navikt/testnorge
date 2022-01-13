@@ -42,9 +42,6 @@ public class OrganisasjonBestillingProgress {
     @Column(name = "org_forvalter_status")
     private String organisasjonsforvalterStatus;
 
-    @Column(name = "uuid")
-    private String uuid;
-
     @ManyToOne
     @JoinColumn(name = "bestilling_id", nullable = false)
     private OrganisasjonBestilling bestilling;

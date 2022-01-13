@@ -10,20 +10,18 @@ import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDeploySt
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status;
 import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.jpa.OrganisasjonBestillingProgress;
-import no.nav.dolly.domain.jpa.OrganisasjonNummer;
 import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsOrganisasjonBestillingStatus;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.mapper.BestillingOrganisasjonStatusMapper;
 import no.nav.dolly.mapper.strategy.JsonBestillingMapper;
+import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.OrganisasjonBestillingRepository;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.Arrays;
@@ -32,7 +30,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.nonNull;
@@ -52,10 +49,10 @@ public class OrganisasjonBestillingService {
 
     private static final List<Status> DEPLOY_ENDED_STATUS_LIST = List.of(COMPLETED, ERROR, FAILED);
 
+    private final BrukerRepository brukerRepository;
     private final OrganisasjonBestillingRepository bestillingRepository;
     private final OrganisasjonProgressService progressService;
     private final OrganisasjonConsumer organisasjonConsumer;
-    private final OrganisasjonNummerService organisasjonNummerService;
     private final BrukerService brukerService;
     private final ObjectMapper objectMapper;
     private final JsonBestillingMapper jsonBestillingMapper;
@@ -65,25 +62,21 @@ public class OrganisasjonBestillingService {
     public RsOrganisasjonBestillingStatus fetchBestillingStatusById(Long bestillingId) {
 
         OrganisasjonBestilling bestilling = bestillingRepository.findById(bestillingId)
-                .orElseThrow(() -> new NotFoundException(format("Fant ikke bestilling på bestillingId %d", bestillingId)));
+                .orElseThrow(() -> new NotFoundException("Fant ikke bestilling med id " + bestillingId));
 
         OrganisasjonBestillingProgress bestillingProgress;
         OrgStatus orgStatus = null;
 
         try {
-            List<OrganisasjonBestillingProgress> bestillingProgressList = progressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestillingId);
-
-            if (bestillingProgressList.isEmpty()) {
-                throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
-            }
-            bestillingProgress = bestillingProgressList.get(0);
+            bestillingProgress = progressService.fetchOrganisasjonBestillingProgressByBestillingsId(bestillingId)
+                    .stream().findFirst().orElseThrow(() -> new NotFoundException("Status ikke funnet for bestillingId " + bestillingId));
 
             if (isNotTrue(bestilling.getFerdig())) {
                 orgStatus = getOrgforvalterStatus(bestilling, bestillingProgress);
             }
 
         } catch (WebClientResponseException e) {
-            log.info("Status ikke opprettet for bestilling enda");
+            log.info("Status ennå ikke opprettet for bestilling");
             return RsOrganisasjonBestillingStatus.builder().build();
         }
 
@@ -102,7 +95,7 @@ public class OrganisasjonBestillingService {
 
     public List<RsOrganisasjonBestillingStatus> fetchBestillingStatusByBrukerId(String brukerId) {
 
-        var bestillinger = progressService.fetchOrganisasjonBestillingProgressByBrukerId(brukerId);
+        var bestillinger = fetchOrganisasjonBestillingProgressByBrukerId(brukerId);
 
         return bestillinger.stream()
                 .map(OrganisasjonBestilling::getProgresser)
@@ -183,14 +176,24 @@ public class OrganisasjonBestillingService {
     @Transactional
     public void slettBestillingByOrgnummer(String orgnummer) {
 
-        List<Long> bestillinger = organisasjonNummerService.fetchBestillingsIdFromOrganisasjonNummer(orgnummer).stream()
-                .map(OrganisasjonNummer::getBestillingId)
-                .collect(Collectors.toList());
+        var progresser = progressService.findByOrganisasjonnummer(orgnummer);
 
-        organisasjonNummerService.deleteByOrgnummer(orgnummer);
+        var bestillinger = progresser.stream()
+                .map(OrganisasjonBestillingProgress::getBestilling)
+                .collect(Collectors.toSet());
+
         progressService.deleteByOrgnummer(orgnummer);
 
         bestillinger.forEach(bestillingRepository::deleteBestillingWithNoChildren);
+    }
+
+    private List<OrganisasjonBestilling> fetchOrganisasjonBestillingProgressByBrukerId(String brukerId) {
+
+        var bruker = brukerRepository.findBrukerByBrukerId(brukerId)
+                .orElseThrow(() -> new NotFoundException("Bruker ikke funnet med id " + brukerId));
+
+        return bestillingRepository.findByBruker(bruker)
+                .orElseThrow(() -> new NotFoundException("Bestilling ikke funnet for bruker " + brukerId));
     }
 
     private OrgStatus getOrgforvalterStatus(OrganisasjonBestilling bestilling, OrganisasjonBestillingProgress bestillingProgress) {

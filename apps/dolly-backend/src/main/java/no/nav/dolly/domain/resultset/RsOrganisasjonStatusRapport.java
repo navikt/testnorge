@@ -30,7 +30,6 @@ public class RsOrganisasjonStatusRapport {
     public static class Status {
 
         private String melding;
-        private String orgnummer;
         private List<Detaljert> detaljert;
     }
 

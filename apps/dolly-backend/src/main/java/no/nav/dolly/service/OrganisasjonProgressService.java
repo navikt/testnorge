@@ -2,17 +2,14 @@ package no.nav.dolly.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.jpa.OrganisasjonBestillingProgress;
 import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.OrganisasjonBestillingProgressRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,7 +19,6 @@ import java.util.Optional;
 public class OrganisasjonProgressService {
 
     private final OrganisasjonBestillingProgressRepository organisasjonProgressRepository;
-    private final BrukerRepository brukerRepository;
 
     @Transactional
     public Optional<OrganisasjonBestillingProgress> save(OrganisasjonBestillingProgress progress) {
@@ -46,28 +42,15 @@ public class OrganisasjonProgressService {
     }
 
     public List<OrganisasjonBestillingProgress> fetchOrganisasjonBestillingProgressByBestillingsId(Long bestillingsId) {
-        Optional<List<OrganisasjonBestillingProgress>> bestillingProgress =
-                organisasjonProgressRepository.findByBestillingId(bestillingsId);
-        if (bestillingProgress.isEmpty()) {
-            log.info("Fant ikke noen bestillingStatus med bestillingId: " + bestillingsId);
-            return Collections.emptyList();
-        }
-        return bestillingProgress.get();
+
+        return organisasjonProgressRepository.findByBestillingId(bestillingsId)
+                .orElseThrow(() -> new NotFoundException("Fant ingen status for bestillingId " + bestillingsId));
     }
 
-    public List<OrganisasjonBestilling> fetchOrganisasjonBestillingProgressByBrukerId(String brukerId) {
+    public List<OrganisasjonBestillingProgress> findByOrganisasjonnummer(String orgnr) {
 
-        var bruker = brukerRepository.findBrukerByBrukerId(brukerId)
-                .orElseThrow(() -> new NotFoundException("Bruker ikke funnet med id " + brukerId ));
-
-        return organisasjonProgressRepository.findByBruker(bruker)
-                        .orElseThrow(() -> new NotFoundException("Bestilling ikke funnet for bruker " + brukerId));
-//
-//        if (bestillingProgress.isEmpty()) {
-//            throw new NotFoundException(
-//                    "Fant ikke noen bestillingStatus med brukerId: " + brukerId);
-//        }
-//        return bestillingProgress.get();
+        return organisasjonProgressRepository.findByOrganisasjonsnummer(orgnr)
+                .orElseThrow(() -> new NotFoundException("Organisajonnummer ikke funnet i database " + orgnr));
     }
 
     @Transactional
