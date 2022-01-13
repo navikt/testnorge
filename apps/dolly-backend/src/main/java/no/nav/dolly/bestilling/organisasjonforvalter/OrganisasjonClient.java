@@ -57,7 +57,7 @@ public class OrganisasjonClient {
 
         organisasjonProgressService.save(OrganisasjonBestillingProgress.builder()
                 .bestilling(bestilling)
-                .organisasjonsnummer("Ikke bestemt ...")
+                .organisasjonsnummer("Ubestemt")
                 .organisasjonsforvalterStatus(rsBestilling.getEnvironments().stream().map(env -> env + ":Pågående").collect(Collectors.joining(",")))
                 .build());
 
