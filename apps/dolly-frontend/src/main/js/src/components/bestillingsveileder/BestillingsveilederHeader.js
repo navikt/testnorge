@@ -37,6 +37,7 @@ export const BestillingsveilederHeader = () => {
 				{opts.is.nyBestillingFraMal && (
 					<Header.TitleValue title="Basert på mal" value={opts.mal.malNavn} />
 				)}
+				{opts.is.importTestnorge && <Header.TitleValue title="Importer fra" value="Testnorge" />}
 				{opts.is.leggTil && (
 					<Header.TitleValue
 						title="Legg til/endre på person"
