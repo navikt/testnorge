@@ -70,8 +70,8 @@ export const PersonVisning = ({
 			</div>
 			<TpsfVisning
 				data={TpsfVisning.filterValues(data.tpsf, bestillingsListe)}
-				environments={bestilling?.environments}
 				pdlData={data.pdlforvalter}
+				environments={bestilling?.environments}
 			/>
 			<PdlfVisning data={data.pdlforvalter} loading={loading.pdlforvalter} />
 			<AaregVisning liste={data.aareg} loading={loading.aareg} />
@@ -97,7 +97,7 @@ export const PersonVisning = ({
 			/>
 			<DokarkivVisning ident={ident.ident} />
 			{data.tpsf && <PersonMiljoeinfo ident={ident.ident} miljoe={bestilling?.environments} />}
-			<PdlPersonMiljoeInfo ident={ident.ident} />
+			<PdlPersonMiljoeInfo data={data.pdl} loading={loading.pdl} />
 			<TidligereBestillinger ids={ident.bestillingId} />
 			<BeskrivelseConnector ident={ident} iLaastGruppe={iLaastGruppe} />
 		</div>

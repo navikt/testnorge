@@ -179,6 +179,8 @@ Formatters.showLabel = (optionsGruppe, value) => {
 	if (_get(obj, 'label') || _get(obj, '[0].label')) {
 		return obj.label || obj[0].label
 	}
+
+	return value
 }
 
 Formatters.getYearRangeOptions = (start, stop) => {

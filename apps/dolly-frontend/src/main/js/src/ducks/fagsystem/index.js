@@ -410,7 +410,7 @@ export const selectPersonListe = (state) => {
 		const pdlIdent = fagsystem.pdlforvalter[ident.ident]
 		const mellomnavn = tpsfIdent?.mellomnavn ? `${tpsfIdent.mellomnavn.charAt(0)}.` : ''
 
-		if (ident.master !== 'PDLF' && _isEmpty(fagsystem.tpsf)) return null
+		if (ident.master !== 'PDLF' && !tpsfIdent) return null
 
 		return ident.master === 'PDLF'
 			? {
